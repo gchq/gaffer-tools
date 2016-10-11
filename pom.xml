@@ -21,7 +21,7 @@
     <parent>
         <groupId>gaffer</groupId>
         <artifactId>gaffer2</artifactId>
-        <version>0.4.3</version>
+        <version>0.4.4-SNAPSHOT</version>
     </parent>
 
     <artifactId>gaffer-tools</artifactId>
@@ -31,9 +31,10 @@
     <modules>
         <module>mini-accumulo-cluster</module>
         <module>graffer-ql</module>
+        <module>road-traffic</module>
     </modules>
 
     <properties>
-        <gaffer.version>0.4.3</gaffer.version>
+        <gaffer.version>0.4.4-SNAPSHOT</gaffer.version>
     </properties>
 </project>
