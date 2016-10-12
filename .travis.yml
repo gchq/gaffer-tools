@@ -1,5 +1,5 @@
 language: java
 jdk:
   - oraclejdk8
-install: mvn install -PreducedMemory -Dfindbugs.skip=true
-script: mvn findbugs:findbugs && mvn javadoc:javadoc
+install: git clone https://github.com/gchq/Gaffer.git && cd Gaffer && git checkout develop && mvn clean install -Pquick
+script: mvn install -PreducedMemory -Dfindbugs.skip=true && mvn findbugs:findbugs && mvn javadoc:javadoc
