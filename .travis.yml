@@ -1,5 +1,5 @@
 language: java
 jdk:
   - oraclejdk8
-install: git clone https://github.com/gchq/Gaffer.git && cd Gaffer && git checkout develop && mvn clean install -Pquick
+install: git clone https://github.com/gchq/Gaffer.git gafferTmp && cd gafferTmp && git checkout develop && mvn clean install -Pquick && cd ../ && rm -rf gafferTmp
 script: mvn install -PreducedMemory -Dfindbugs.skip=true && mvn findbugs:findbugs && mvn javadoc:javadoc
