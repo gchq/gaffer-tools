@@ -97,8 +97,6 @@ public class RoadUseElementGenerator extends OneToManyElementGenerator<String> {
                         .source(region)
                         .dest(location)
                         .directed(true)
-                        .property("startTime", date)
-                        .property("endTime", endTime)
                         .build()
         );
 
@@ -107,8 +105,6 @@ public class RoadUseElementGenerator extends OneToManyElementGenerator<String> {
                         .source(location)
                         .dest(road)
                         .directed(true)
-                        .property("startTime", date)
-                        .property("endTime", endTime)
                         .build()
         );
 
@@ -117,8 +113,6 @@ public class RoadUseElementGenerator extends OneToManyElementGenerator<String> {
                         .source(road)
                         .dest(junctionA)
                         .directed(true)
-                        .property("startTime", date)
-                        .property("endTime", endTime)
                         .build()
         );
 
@@ -127,8 +121,6 @@ public class RoadUseElementGenerator extends OneToManyElementGenerator<String> {
                         .source(road)
                         .dest(junctionB)
                         .directed(true)
-                        .property("startTime", date)
-                        .property("endTime", endTime)
                         .build()
         );
 
@@ -150,7 +142,7 @@ public class RoadUseElementGenerator extends OneToManyElementGenerator<String> {
 
         elements.add(new Edge.Builder()
                         .group(ElementGroup.ROAD_USE)
-                        .source(road)
+                        .source(junctionA)
                         .dest(junctionB)
                         .directed(false)
                         .property("startTime", date)
