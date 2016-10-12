@@ -144,7 +144,7 @@ public class RoadUseElementGenerator extends OneToManyElementGenerator<String> {
                         .group(ElementGroup.ROAD_USE)
                         .source(junctionA)
                         .dest(junctionB)
-                        .directed(false)
+                        .directed(true)
                         .property("startTime", date)
                         .property("endTime", endTime)
                         .property("totalCount", getTotalCount(vehicleCountsByType))

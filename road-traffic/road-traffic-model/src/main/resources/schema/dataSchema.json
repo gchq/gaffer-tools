@@ -32,13 +32,13 @@
     },
     "JunctionLocatedAt": {
       "source": "junction",
-      "destination": "location",
+      "destination": "coordinate",
       "directed": "true"
     },
     "RoadUse": {
       "source": "junction",
       "destination": "junction",
-      "directed": "false",
+      "directed": "true",
       "properties": {
         "startTime": "date.earliest",
         "endTime": "date.latest",

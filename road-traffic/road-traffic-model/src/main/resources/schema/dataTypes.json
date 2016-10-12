@@ -30,6 +30,16 @@
         }
       ]
     },
+    "coordinate": {
+      "class": "java.lang.String",
+      "validateFunctions": [
+        {
+          "function": {
+            "class": "gaffer.function.simple.filter.Exists"
+          }
+        }
+      ]
+    },
     "region": {
       "class": "java.lang.String",
       "validateFunctions": [
