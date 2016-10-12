@@ -18,41 +18,17 @@
     "RegionContainsLocation": {
       "source": "region",
       "destination": "location",
-      "directed": "true",
-      "properties": {
-        "startTime": "date.earliest",
-        "endTime": "date.latest"
-      },
-      "groupBy": [
-        "startTime",
-        "endTime"
-      ]
+      "directed": "true"
     },
     "LocationContainsRoad": {
       "source": "location",
       "destination": "road",
-      "directed": "true",
-      "properties": {
-        "startTime": "date.earliest",
-        "endTime": "date.latest"
-      },
-      "groupBy": [
-        "startTime",
-        "endTime"
-      ]
+      "directed": "true"
     },
     "RoadHasJunction": {
       "source": "road",
       "destination": "junction",
-      "directed": "true",
-      "properties": {
-        "startTime": "date.earliest",
-        "endTime": "date.latest"
-      },
-      "groupBy": [
-        "startTime",
-        "endTime"
-      ]
+      "directed": "true"
     },
     "JunctionLocatedAt": {
       "source": "junction",
