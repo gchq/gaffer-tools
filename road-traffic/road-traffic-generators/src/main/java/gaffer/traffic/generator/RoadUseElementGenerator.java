@@ -33,63 +33,33 @@ import java.util.Collections;
 import java.util.Date;
 
 public class RoadUseElementGenerator extends OneToManyElementGenerator<String> {
-    private String[] fieldNames = {
-            //"field_name",position
-            "Region_Name", //0
-            "ONS_LACode", //1
-            "ONS_LA_Name", //2
-            "CP", //3
-            "S_Ref_E", //4
-            "S_Ref_N", //5
-            "Road", //6
-            "A_Junction", //7
-            "A_Ref_E", //8
-            "A_Ref_N", //9
-            "B_Junction", //10
-            "B_Ref_E", //11
-            "B_Ref_N", //12
-            "RCate", //13
-            "iDir", //14
-            "Year", //15
-            "dCount", //16
-            "Hour", //17
-            "PC", //18
-            "WMV2", //19
-            "CAR", //20
-            "BUS", //21
-            "LGV", //22
-            "HGVR2", //23
-            "HGVR3", //24
-            "HGVR4", //25
-            "HGVA3", //26
-            "HGVA5", //27
-            "HGVA6", //28
-            "HGV", //29
-            "AMV" //30
-    };
+
 
     @Override
     public Iterable<Element> getElements(final String line) {
+        // Check if the line is a header
         if (line.startsWith("\"Region Name (GO)\",")) {
             return Collections.emptyList();
         }
 
-        final String[] fields = getFields(line);
+        final String[] fields = extractFields(line);
         if (null == fields) {
             return Collections.emptyList();
         }
 
-        final FreqMap vehicleCountsByType = getFreqMap(fields);
-        final Date date = getDate(fields[16], fields[17]);
-        final Date endTime = DateUtils.addHours(date, 1);
-        final String region = fields[0];
-        final String location = fields[2];
-        final String road = fields[6];
-        final String junctionA = road + ":" + fields[7];
-        final String junctionB = road + ":" + fields[10];
-        final String junctionALocation = fields[8] + "," + fields[9];
-        final String junctionBLocation = fields[11] + "," + fields[12];
+        // Extract required fields
+        final FreqMap vehicleCountsByType = getVehicleCounts(fields);
+        final Date date = getDate(fields[Field.dCount.index()], fields[Field.Hour.index()]);
+        final Date endTime = null != date ? DateUtils.addHours(date, 1) : null;
+        final String region = fields[Field.Region_Name.index()];
+        final String location = fields[Field.ONS_LA_Name.index()];
+        final String road = fields[Field.Road.index()];
+        final String junctionA = road + ":" + fields[Field.A_Junction.index()];
+        final String junctionB = road + ":" + fields[Field.B_Junction.index()];
+        final String junctionALocation = fields[Field.A_Ref_E.index()] + "," + fields[Field.A_Ref_N.index()];
+        final String junctionBLocation = fields[Field.B_Ref_E.index()] + "," + fields[Field.B_Ref_N.index()];
 
+        // Create elements
         final Collection<Element> elements = new ArrayList<>(9);
 
         elements.add(new Edge.Builder()
@@ -175,19 +145,41 @@ public class RoadUseElementGenerator extends OneToManyElementGenerator<String> {
         return elements;
     }
 
+    @Override
+    public Iterable<String> getObjects(final Iterable<Element> elements) {
+        throw new UnsupportedOperationException("This generator cannot be used to map the elements back into csv");
+    }
+
+    private FreqMap getVehicleCounts(final String[] fields) {
+        final FreqMap freqMap = new FreqMap();
+        for (final Field fieldName : Field.VEHICLE_COUNTS) {
+            freqMap.upsert(fieldName.name(), Long.parseLong(fields[fieldName.index()]));
+        }
+        return freqMap;
+    }
+
+    private long getTotalCount(final FreqMap freqmap) {
+        long sum = 0;
+        for (final Long count : freqmap.values()) {
+            sum += count;
+        }
+
+        return sum;
+    }
+
     private Date getDate(final String dCountString, final String hour) {
         Date dCount = null;
         try {
             dCount = new SimpleDateFormat("dd/MM/yyyy HH:mm").parse(dCountString);
         } catch (ParseException e) {
-            //try the hyphens
+            // incorrect date format
         }
 
         if (null == dCount) {
             try {
                 dCount = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(dCountString);
             } catch (ParseException e) {
-                //this one doesn't work either
+                // another incorrect date format
             }
         }
 
@@ -198,37 +190,54 @@ public class RoadUseElementGenerator extends OneToManyElementGenerator<String> {
         return DateUtils.addHours(dCount, Integer.parseInt(hour));
     }
 
-    @Override
-    public Iterable<String> getObjects(final Iterable<Element> elements) {
-        return null;
-    }
-
-
-    private FreqMap getFreqMap(final String[] fields) {
-        final FreqMap freqMap = new FreqMap();
-        for (int i = 18; i < fields.length; i++) {
-            freqMap.upsert(fieldNames[i], Long.parseLong(fields[i]));
-        }
-        return freqMap;
-    }
-
-    private long getTotalCount(final FreqMap freqmap) {
-        long sum = 0;
-        for (Long count : freqmap.values()) {
-            sum += count;
-        }
-
-        return sum;
-    }
-
     @SuppressFBWarnings(value = "PZLA_PREFER_ZERO_LENGTH_ARRAYS", justification = "private method and the null result is handled properly")
-    private String[] getFields(final String line) {
+    private String[] extractFields(final String line) {
         final String trimStart = StringUtils.removeStart(line, "\"");
         final String trimEnd = StringUtils.removeEnd(trimStart, "\"");
         final String[] fields = trimEnd.split("\",\"");
-        if (fields.length != fieldNames.length) {
+        if (fields.length != Field.values().length) {
             return null;
         }
         return fields;
+    }
+
+    private enum Field {
+        Region_Name,
+        ONS_LACode,
+        ONS_LA_Name,
+        CP,
+        S_Ref_E,
+        S_Ref_N,
+        Road,
+        A_Junction,
+        A_Ref_E,
+        A_Ref_N,
+        B_Junction,
+        B_Ref_E,
+        B_Ref_N,
+        RCate,
+        iDir,
+        Year,
+        dCount,
+        Hour,
+        PC,
+        WMV2,
+        CAR,
+        BUS,
+        LGV,
+        HGVR2,
+        HGVR3,
+        HGVR4,
+        HGVA3,
+        HGVA5,
+        HGVA6,
+        HGV,
+        AMV;
+
+        public static final Field[] VEHICLE_COUNTS = {PC, WMV2, CAR, BUS, LGV, HGVR2, HGVR3, HGVR4, HGVA3, HGVA5, HGVA6, HGV, AMV};
+
+        public int index() {
+            return ordinal();
+        }
     }
 }
