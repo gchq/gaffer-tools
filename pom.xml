@@ -32,6 +32,7 @@
         <module>mini-accumulo-cluster</module>
         <module>graffer-ql</module>
         <module>road-traffic</module>
+        <module>tinkerpop</module>
     </modules>
 
     <properties>
