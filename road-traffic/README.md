@@ -17,7 +17,7 @@ Road Use Demo
 
 ## Deployment
 
-To run the demo you will first need to build the corresponding version of Gaffer.
+To run the demo you will first need to build the corresponding version of Gaffer:
 
 ```bash
 git clone https://github.com/gchq/Gaffer.git
@@ -26,7 +26,7 @@ git checkout gaffer2-0.4.4
 mvn clean install -Pquick
 ```
 
-To start the demo run:
+To start the demo run the following from within the gaffer-tools repository:
 
 ```bash
 mvn clean install -Pquick -Proad-traffic-standalone
