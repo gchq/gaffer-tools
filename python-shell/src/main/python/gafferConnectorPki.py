@@ -34,8 +34,7 @@ class GafferConnector(gafferConnector.GafferConnector):
         """
         super().__init__(host=host, verbose=verbose)
         self._opener = urllib.request.build_opener(
-            urllib.request.HTTPSHandler(self._host,
-                                        context=pki.get_ssl_context(protocol)))
+            urllib.request.HTTPSHandler(context=pki.get_ssl_context(protocol)))
 
 
 ########################################################
