@@ -1,5 +1,5 @@
 language: java
 jdk:
   - oraclejdk8
-install: mvn install -PreducedMemory -Dfindbugs.skip=true
-script: mvn findbugs:findbugs && mvn javadoc:javadoc
+install: travis_wait git clone https://github.com/gchq/Gaffer.git gafferTmp && cd gafferTmp && git checkout gaffer2-0.4.4 && mvn -q clean install -Pquick && cd ../ && rm -rf gafferTmp
+script: mvn install -PreducedMemory -Dfindbugs.skip=true && mvn findbugs:findbugs && mvn javadoc:javadoc
