@@ -47,4 +47,10 @@
             scm:git:https://github.com/gchq/gaffer-tools.git
         </scm.developer.connection>
     </properties>
+
+    <scm>
+        <url>${scm.url}</url>
+        <connection>${scm.connection}</connection>
+        <developerConnection>${scm.developer.connection}</developerConnection>
+    </scm>
 </project>
