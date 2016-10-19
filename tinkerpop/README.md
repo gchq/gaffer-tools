@@ -20,6 +20,8 @@ GafferPop is a lightweight Gaffer implementation of TinkerPop, where TinkerPop m
 
 It is still experimental and should be used with caution.
 
+The implementation is very basic and currently suffers from very poor performance in comparison to using Gaffer directly.
+
 
 Setup
 ------------------
