@@ -86,7 +86,7 @@ There are several restrictions with this implementation. The following is not su
  - Updating properties
  - Undirected edges
  - Entity group 'id' is reserved for an empty group containing only the vertex id
- - When you get the in or out Vertex directly off and Edge it will not contain any actual properties - it just returns the ID vertex. This is due to Gaffer allowing multiple entities to be associated with the source and destination vertices of an Edge.
+ - When you get the in or out Vertex directly off an Edge it will not contain any actual properties - it just returns the ID vertex. This is due to Gaffer allowing multiple entities to be associated with the source and destination vertices of an Edge.
 
 Gaffer allows for graphs containing no entities. In order to traverse the graph in TinkerPop
 the result of all vertex queries will also contain an empty Vertex labeled 'id' (even if no entities are found in Gaffer).
