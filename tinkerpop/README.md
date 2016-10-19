@@ -60,7 +60,12 @@ do some queries:
 
 calculate the shortest path from 1 to 3 (max 6 loops):
 
-    start = '1'; end = '3'; g.V(start).hasLabel('id').store('v').repeat(bothE().where(without('e')).store('e').inV().hasLabel('id').where(without('v'))).until{it.get().id() == end || it.loops() == 6}.path().filter{it.get().last().id() == end}
+    start = '1';
+    end = '3';
+    g.V(start).hasLabel('id').
+       repeat(bothE().otherV().hasLabel('id').simplePath()).
+         until(hasId(end).or().loops().is(6)).
+       hasId(end).path()
 
 Gaffer mapping to TinkerPop terms
 ------------------
@@ -79,8 +84,7 @@ There are several restrictions with this implementation. The following is not su
  - Updating properties
  - Undirected edges
  - Entity group 'id' is reserved for an empty group containing only the vertex id
+ - When you get the in or out Vertex directly off and Edge it will not contain any actual properties - it just returns the ID vertex. This is due to Gaffer allowing multiple entities to be associated with the source and destination vertices of an Edge.
 
 Gaffer allows for graphs containing no entities. In order to traverse the graph in TinkerPop
 the result of all vertex queries will also contain an empty Vertex labeled 'id' (even if no entities are found in Gaffer).
-
-Gaffer allows multiple entities associated with each vertex. This means that in TinkerPop, edges can have multiple vertices at either end.

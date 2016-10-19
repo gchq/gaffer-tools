@@ -19,27 +19,19 @@
 package gaffer.gafferpop;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 
 import com.google.common.collect.Lists;
 import gaffer.commonutil.TestGroups;
 import gaffer.commonutil.TestPropertyNames;
-import gaffer.commonutil.iterable.CloseableIterator;
-import gaffer.commonutil.iterable.WrappedCloseableIterator;
-import org.apache.tinkerpop.gremlin.structure.Direction;
 import org.apache.tinkerpop.gremlin.structure.Property;
 import org.apache.tinkerpop.gremlin.structure.Vertex;
 import org.hamcrest.core.IsCollectionContaining;
 import org.junit.Test;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.Iterator;
 
 public class GafferPopEdgeTest {
@@ -49,13 +41,20 @@ public class GafferPopEdgeTest {
         final String source = "source";
         final String dest = "dest";
         final GafferPopGraph graph = mock(GafferPopGraph.class);
+        final GafferPopVertex outVertex = new GafferPopVertex(GafferPopGraph.ID_LABEL, source, graph);
+        final GafferPopVertex inVertex = new GafferPopVertex(GafferPopGraph.ID_LABEL, dest, graph);
 
         // When
-        final GafferPopEdge edge = new GafferPopEdge(TestGroups.EDGE, source, dest, graph);
+        final GafferPopEdge edge = new GafferPopEdge(TestGroups.EDGE, outVertex, inVertex, graph);
 
         // Then
         assertEquals(source, edge.id().getSource());
         assertEquals(dest, edge.id().getDest());
+        assertSame(outVertex, edge.outVertex());
+        assertSame(inVertex, edge.inVertex());
+        final Iterator<Vertex> vertices = edge.bothVertices();
+        assertSame(outVertex, vertices.next());
+        assertSame(inVertex, vertices.next());
         assertSame(graph, edge.graph());
         assertTrue(edge.keys().isEmpty());
     }
@@ -100,85 +99,6 @@ public class GafferPopEdgeTest {
                 new GafferPopProperty<>(edge, TestPropertyNames.STRING, propValue1),
                 new GafferPopProperty<>(edge, TestPropertyNames.INT, propValue2)
         ));
-    }
-
-    @Test
-    public void shouldThrowUnsupportedExceptionForInVertex() {
-        // Given
-        final GafferPopGraph graph = mock(GafferPopGraph.class);
-        final GafferPopEdge edge = new GafferPopEdge(TestGroups.EDGE, "source", "dest", graph);
-
-        // When / Then
-        try {
-            edge.inVertex();
-            fail("Exception expected");
-        } catch (final UnsupportedOperationException e) {
-            assertNotNull(e.getMessage());
-        }
-    }
-
-    @Test
-    public void shouldThrowUnsupportedExceptionForOutVertex() {
-        // Given
-        final GafferPopGraph graph = mock(GafferPopGraph.class);
-        final GafferPopEdge edge = new GafferPopEdge(TestGroups.EDGE, "source", "dest", graph);
-
-        // When / Then
-        try {
-            edge.outVertex();
-            fail("Exception expected");
-        } catch (final UnsupportedOperationException e) {
-            assertNotNull(e.getMessage());
-        }
-    }
-
-    @Test
-    public void shouldDelegateInVerticesMethodToGraph() {
-        // Given
-        final GafferPopGraph graph = mock(GafferPopGraph.class);
-        final GafferPopEdge edge = new GafferPopEdge(TestGroups.EDGE, "source", "dest", graph);
-        final GafferPopVertex inVertex = new GafferPopVertex(TestGroups.ENTITY, "source", graph);
-        final CloseableIterator<Vertex> inVertices = new WrappedCloseableIterator<>(Collections.singleton((Vertex) inVertex).iterator());
-        given(graph.vertices("dest")).willReturn(inVertices);
-
-        // When
-        final Iterator<Vertex> resultVertices = edge.vertices(Direction.IN);
-
-        // Then
-        assertSame(inVertices, resultVertices);
-    }
-
-    @Test
-    public void shouldDelegateOutVerticesMethodToGraph() {
-        // Given
-        final GafferPopGraph graph = mock(GafferPopGraph.class);
-        final GafferPopEdge edge = new GafferPopEdge(TestGroups.EDGE, "source", "dest", graph);
-        final GafferPopVertex outVertex = new GafferPopVertex(TestGroups.ENTITY, "dest", graph);
-        final CloseableIterator<Vertex> outVertices = new WrappedCloseableIterator<>(Collections.singleton((Vertex) outVertex).iterator());
-        given(graph.vertices("source")).willReturn(outVertices);
-
-        // When
-        final Iterator<Vertex> resultVertices = edge.vertices(Direction.OUT);
-
-        // Then
-        assertSame(outVertices, resultVertices);
-    }
-
-    @Test
-    public void shouldDelegateBothVerticesMethodToGraph() {
-        // Given
-        final GafferPopGraph graph = mock(GafferPopGraph.class);
-        final GafferPopEdge edge = new GafferPopEdge(TestGroups.EDGE, "source", "dest", graph);
-        final GafferPopVertex inVertex = new GafferPopVertex(TestGroups.ENTITY, "source", graph);
-        final GafferPopVertex outVertex = new GafferPopVertex(TestGroups.ENTITY, "dest", graph);
-        final CloseableIterator<Vertex> vertices = new WrappedCloseableIterator<>(Arrays.asList((Vertex) inVertex, outVertex).iterator());
-        given(graph.vertices("source", "dest")).willReturn(vertices);
-
-        // When
-        final Iterator<Vertex> resultVertices = edge.vertices(Direction.BOTH);
-
-        // Then
-        assertSame(vertices, resultVertices);
     }
 
     @Test
