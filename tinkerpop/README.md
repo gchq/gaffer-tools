@@ -47,16 +47,13 @@ To get going with the tinkerpop-modern dataset backed by a MockAccumuloStore you
     mkdir $gremlinConsolePath/conf/gafferpop
     mkdir -p $gremlinConsolePath/ext/gafferpop/plugin
 
-
     # Copy the required files into the gremlin console folder
     cp -R tinkerpop/src/test/resources/* $gremlinConsolePath/conf/gafferpop
     cp -R tinkerpop/target/tinkerpop-*.jar tinkerpop/target/gafferpop-*.jar  $gremlinConsolePath/ext/gafferpop/plugin
 
-
     # Start gremlin
     cd $gremlinConsolePath
     ./bin/gremlin.sh
-
 
     # Activate the GafferPop plugin
     :plugin use gaffer.gafferpop.GafferPopGraph
