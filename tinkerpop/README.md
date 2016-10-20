@@ -37,17 +37,31 @@ To use the gremlin console download 'apache-gremlin-console-3.2.0-incubating-bin
 
 To get going with the tinkerpop-modern dataset backed by a MockAccumuloStore you can do the following:
 
-    run: mvn clean install -Pquick -Pgafferpop
-    add the files in tinkerpop/src/test/resources to <gremlin-console>/conf/gafferpop
-    add tinkerpop/target/tinkerpop-<version>.jar and tinkerpop/target/gafferpop-jar-with-dependencies.jar to <gremlin-console>/ext/gafferpop/plugin
+```bash
+    # Build the code
+    mvn clean install -Pquick -Pgafferpop
 
-open the gremlin shell:
-    cd <gremlin-console>
+    gremlinConsolePath=[gremlin-console-path]
+
+    # Create the necessary directories in the gremlin console folder
+    mkdir $gremlinConsolePath/conf/gafferpop
+    mkdir -p $gremlinConsolePath/ext/gafferpop/plugin
+
+
+    # Copy the required files into the gremlin console folder
+    cp -R tinkerpop/src/test/resources/* $gremlinConsolePath/conf/gafferpop
+    cp -R tinkerpop/target/tinkerpop-*.jar tinkerpop/target/gafferpop-*.jar  $gremlinConsolePath/ext/gafferpop/plugin
+
+
+    # Start gremlin
+    cd $gremlinConsolePath
     ./bin/gremlin.sh
 
-active the GafferPop plugin:
 
+    # Activate the GafferPop plugin
     :plugin use gaffer.gafferpop.GafferPopGraph
+```
+
 
 load the tinkerpop modern data set:
 
