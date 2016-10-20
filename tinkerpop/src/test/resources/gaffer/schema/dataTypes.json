@@ -1,6 +1,9 @@
 {
   "types": {
-    "id": {
+    "person": {
+      "class": "java.lang.String"
+    },
+    "software": {
       "class": "java.lang.String"
     },
     "true": {
