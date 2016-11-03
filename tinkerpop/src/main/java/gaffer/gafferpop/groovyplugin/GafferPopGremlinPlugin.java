@@ -15,7 +15,6 @@
  */
 package gaffer.gafferpop.groovyplugin;
 
-import gaffer.data.element.ElementComponentKey;
 import gaffer.data.element.IdentifierType;
 import gaffer.data.element.function.ElementFilter;
 import gaffer.data.element.function.ElementTransformer;
@@ -39,7 +38,6 @@ public final class GafferPopGremlinPlugin extends AbstractGremlinPlugin {
             add(getPackage(ViewElementDefinition.class));
             add(getPackage(ElementFilter.class));
             add(getPackage(ElementTransformer.class));
-            add(getPackage(ElementComponentKey.class));
             add(getPackage(IdentifierType.class));
             add(getPackage(Exists.class));
             add(getPackage(Concat.class));
