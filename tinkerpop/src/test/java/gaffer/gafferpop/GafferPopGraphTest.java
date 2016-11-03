@@ -220,7 +220,9 @@ public class GafferPopGraphTest {
         // Given
         final Graph gafferGraph = getGafferGraph();
         final GafferPopGraph graph = GafferPopGraph.open(TEST_CONFIGURATION, gafferGraph);
-        final GafferPopEdge edgeToAdd = new GafferPopEdge(CREATED_EDGE_GROUP, VERTEX_1, VERTEX_2, graph);
+        final GafferPopVertex gafferPopOutVertex = new GafferPopVertex(GafferPopGraph.ID_LABEL, VERTEX_1, graph);
+        final GafferPopVertex gafferPopInVertex = new GafferPopVertex(GafferPopGraph.ID_LABEL, VERTEX_2, graph);
+        final GafferPopEdge edgeToAdd = new GafferPopEdge(CREATED_EDGE_GROUP, gafferPopOutVertex, gafferPopInVertex, graph);
         edgeToAdd.property(WEIGHT_PROPERTY, 1.5);
 
         // When
@@ -233,6 +235,8 @@ public class GafferPopGraphTest {
         assertEquals(VERTEX_1, ((EdgeId) edge.id()).getSource());
         assertEquals(VERTEX_2, ((EdgeId) edge.id()).getDest());
         assertEquals(CREATED_EDGE_GROUP, edge.label());
+        assertEquals(gafferPopInVertex, edge.inVertex());
+        assertEquals(gafferPopOutVertex, edge.outVertex());
         assertEquals(1.5, (Double) edge.property(WEIGHT_PROPERTY).value(), 0);
     }
 

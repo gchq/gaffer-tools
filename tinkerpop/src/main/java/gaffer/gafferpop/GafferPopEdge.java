@@ -43,9 +43,17 @@ import java.util.stream.Collectors;
  */
 public final class GafferPopEdge extends GafferPopElement implements Edge {
     private Map<String, Property> properties;
+    private GafferPopVertex inVertex;
+    private GafferPopVertex outVertex;
 
-    public GafferPopEdge(final String label, final Object source, final Object dest, final GafferPopGraph graph) {
-        super(label, new EdgeId(source, dest), graph);
+    public GafferPopEdge(final String label, final Object outVertexId, final Object inVertexId, final GafferPopGraph graph) {
+        this(label, checkVertex(outVertexId, graph), checkVertex(inVertexId, graph), graph);
+    }
+
+    public GafferPopEdge(final String label, final GafferPopVertex outVertex, final GafferPopVertex inVertex, final GafferPopGraph graph) {
+        super(label, new EdgeId(outVertex.id(), inVertex.id()), graph);
+        this.outVertex = checkVertex(outVertex, graph);
+        this.inVertex = checkVertex(inVertex, graph);
     }
 
     @Override
@@ -60,7 +68,6 @@ public final class GafferPopEdge extends GafferPopElement implements Edge {
         }
         this.properties.put(key, newProperty);
         return newProperty;
-
     }
 
     @Override
@@ -87,14 +94,14 @@ public final class GafferPopEdge extends GafferPopElement implements Edge {
 
     @Override
     public Iterator<Vertex> vertices(final Direction direction) {
-        if (Direction.IN.equals(direction)) {
-            return graph().vertices(id().getDest());
+        switch (direction) {
+            case OUT:
+                return IteratorUtils.of(outVertex);
+            case IN:
+                return IteratorUtils.of(inVertex);
+            default:
+                return IteratorUtils.of(outVertex, inVertex);
         }
-
-        if (Direction.OUT.equals(direction)) {
-            return graph().vertices(id().getSource());
-        }
-        return graph().vertices(id().getSource(), id().getDest());
     }
 
     @Override
@@ -114,11 +121,37 @@ public final class GafferPopEdge extends GafferPopElement implements Edge {
 
     @Override
     public Vertex outVertex() {
-        throw new UnsupportedOperationException("Use 'vertices(Direction)' instead - it may return multiple vertices");
+        return outVertex;
     }
 
     @Override
     public Vertex inVertex() {
-        throw new UnsupportedOperationException("Use 'vertices(Direction)' instead - it may return multiple vertices");
+        return inVertex;
+    }
+
+    private static GafferPopVertex checkVertex(final Object vertexId, final GafferPopGraph graph) {
+        final GafferPopVertex gafferPopVertex;
+        if (vertexId instanceof Vertex) {
+            if (vertexId instanceof GafferPopVertex) {
+                gafferPopVertex = checkVertex(((GafferPopVertex) vertexId), graph);
+            } else {
+                gafferPopVertex = new GafferPopVertex(GafferPopGraph.ID_LABEL, ((Vertex) vertexId).id(), graph);
+            }
+        } else {
+            gafferPopVertex = new GafferPopVertex(GafferPopGraph.ID_LABEL, vertexId, graph);
+        }
+
+        return gafferPopVertex;
+    }
+
+    private static GafferPopVertex checkVertex(final GafferPopVertex gafferPopVertex, final GafferPopGraph graph) {
+        final GafferPopVertex gafferPopVertexId;
+        if (GafferPopGraph.ID_LABEL.equals(gafferPopVertex.label())) {
+            gafferPopVertexId = gafferPopVertex;
+        } else {
+            gafferPopVertexId = new GafferPopVertex(GafferPopGraph.ID_LABEL, gafferPopVertex.id(), graph);
+        }
+
+        return gafferPopVertexId;
     }
 }
