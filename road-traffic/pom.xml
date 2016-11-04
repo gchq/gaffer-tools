@@ -30,12 +30,12 @@
         </dependency>
         <dependency>
             <groupId>gaffer</groupId>
-            <artifactId>simple-types-library</artifactId>
+            <artifactId>types-library</artifactId>
             <version>${gaffer.version}</version>
         </dependency>
         <dependency>
             <groupId>gaffer</groupId>
-            <artifactId>simple-function-library</artifactId>
+            <artifactId>function-library</artifactId>
             <version>${gaffer.version}</version>
         </dependency>
         <dependency>
