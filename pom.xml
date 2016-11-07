@@ -25,7 +25,7 @@
     </parent>
 
     <artifactId>gaffer-tools</artifactId>
-    <version>0.0.2-SNAPSHOT</version>
+    <version>0.4.7-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <modules>
