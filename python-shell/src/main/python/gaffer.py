@@ -250,11 +250,7 @@ class FilterFunction(GafferFunction):
 
     def toJson(self):
         function_context = super().toJson()
-
-        selection_json = []
-        for item in self.selection:
-            selection_json.append(item.toJson())
-        function_context['selection'] = selection_json
+        function_context['selection'] = self.selection
 
         return function_context
 
@@ -267,41 +263,10 @@ class TransformFunction(GafferFunction):
 
     def toJson(self):
         function_context = super().toJson()
-
-        selection_json = []
-        for item in self.selection:
-            selection_json.append(item.toJson())
-        function_context['selection'] = selection_json
-        function_context['selection'] = selection_json
-
-        projection_json = []
-        for item in self.projection:
-            projection_json.append(item.toJson())
-        function_context['projection'] = projection_json
+        function_context['selection'] = self.selection
+        function_context['projection'] = self.projection
 
         return function_context
-
-
-class PropertyKey(ToJson):
-    def __init__(self, key):
-        # Validate the arguments
-        if not isinstance(key, str):
-            raise TypeError('key must be a string')
-        self.key = key
-
-    def toJson(self):
-        return {'key': self.key, 'isId': False}
-
-
-class IdentifierKey(ToJson):
-    def __init__(self, key):
-        # Validate the arguments
-        if not isinstance(key, str):
-            raise TypeError('key must be a string')
-        self.key = key
-
-    def toJson(self):
-        return {'key': self.key, 'isId': True}
 
 
 class IncludeEdges:

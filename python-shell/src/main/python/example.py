@@ -109,15 +109,15 @@ def get_elements(gc):
                         filter_functions=[
                             g.FilterFunction(
                                 class_name='gaffer.function.simple.filter.IsEqual',
-                                selection=[g.IdentifierKey('VERTEX')],
+                                selection=['VERTEX'],
                                 function_fields={'value': '1'}
                             )
                         ],
                         transform_functions=[
                             g.TransformFunction(
                                 class_name='gaffer.rest.example.ExampleTransformFunction',
-                                selection=[g.IdentifierKey('VERTEX')],
-                                projection=[g.PropertyKey('newProperty')]
+                                selection=['VERTEX'],
+                                projection=['newProperty']
                             )
                         ]
                     )

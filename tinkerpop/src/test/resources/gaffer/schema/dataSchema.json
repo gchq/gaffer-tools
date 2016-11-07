@@ -1,14 +1,14 @@
 {
   "entities": {
     "person": {
-      "vertex": "id",
+      "vertex": "person",
       "properties": {
         "name": "name.string",
         "age": "age.integer"
       }
     },
     "software": {
-      "vertex": "id",
+      "vertex": "software",
       "properties": {
         "name": "name.string",
         "lang": "name.string"
@@ -17,29 +17,29 @@
   },
   "edges": {
     "knows": {
-      "source": "id",
-      "destination": "id",
+      "source": "person",
+      "destination": "person",
       "directed": "true",
       "properties": {
         "weight": "weight.double"
       }
     },
     "created": {
-      "source": "id",
-      "destination": "id",
+      "source": "person",
+      "destination": "software",
       "directed": "true",
       "properties": {
         "weight": "weight.double"
       }
     },
     "dependsOn": {
-      "source": "id",
-      "destination": "id",
+      "source": "software",
+      "destination": "software",
       "directed": "true"
     },
     "encapsulates": {
-      "source": "id",
-      "destination": "id",
+      "source": "software",
+      "destination": "software",
       "directed": "true"
     }
   }
