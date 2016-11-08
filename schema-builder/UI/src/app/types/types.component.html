@@ -1,0 +1,60 @@
+<div style="padding: 15px;">
+    <div class="row">
+        <div class="col s12 m10 offset-m1 l10 offset-l1">
+            <md-card>
+                <md-card-title style="margin-bottom: 0;">Types</md-card-title>
+                <div class="type-title-buttons">
+                    <button md-button color="warn" (click)="resetTypes();">
+                        Reset
+                    </button>
+                    <button md-button color="primary" (click)="addNewType();">
+                        Add type
+                    </button>
+                </div>
+            </md-card>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col s12 m10 offset-m1 l10 offset-l1" style="padding: 0;">
+            <div class="row">
+                <div class="col s12 m6 l4" *ngFor="let type of types; let i = index" style="margin-bottom: 15px;">
+                    <md-card>
+                        <md-card-title>{{type.type}}</md-card-title>
+                        <md-card-content>
+                            <div class="type-edit-button row">
+                                <button md-icon-button (click)="type.editing = true;"  *ngIf="!type.editing">
+                                    <md-icon class="md-16">edit</md-icon>
+                                </button>
+                                <button md-icon-button color="warn" (click)="removeType(i)">
+                                    <md-icon class="md-16">delete</md-icon>
+                                </button>
+                            </div>
+                            <div *ngIf="!type.editing">
+                                <md-list dense>
+                                    <md-list-item>
+                                        <h3 md-line><b>Class</b></h3>
+                                        <p md-line>{{type.class}}</p>
+                                    </md-list-item>
+                                    <md-list-item>
+                                        <h3 md-line><b>Position</b></h3>
+                                        <p md-line>{{type.position || 'null'}}</p>
+                                    </md-list-item>
+                                    <md-list-item>
+                                        <h3 md-line><b>Serialiser</b></h3>
+                                        <p md-line>{{type.serialiserClass || 'null'}}</p>
+                                    </md-list-item>
+                                    <md-list-item>
+                                        <h3 md-line><b>Aggregator</b></h3>
+                                        <p md-line *ngIf="type.aggregateFunction && type.aggregateFunction.class">{{type.aggregateFunction.class}}</p>
+                                        <p md-line *ngIf="!type.aggregateFunction || !type.aggregateFunction.class">null</p>
+                                    </md-list-item>
+                                </md-list>
+                            </div>
+                            <app-type-form [type]="types[i]" (typeChange)="typeChanged($event)" *ngIf="type.editing"></app-type-form>
+                        </md-card-content>
+                    </md-card>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

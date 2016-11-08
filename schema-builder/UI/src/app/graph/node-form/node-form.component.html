@@ -1,0 +1,11 @@
+<form #e="ngForm" novalidate materialize class="col s12">
+  <div class="form-group">
+    <div class="row">
+      <div class="input-field col s12 m6">
+        <input class="form-control" type="text" name="label" placeholder="Group name" [(ngModel)]="_node.label">
+        <label>Group</label>
+      </div>
+      <button class="form-button" type="submit" (click)="save(e.value, e.valid)" md-raised-button color="primary">Update</button>
+    </div>
+  </div>
+</form> 

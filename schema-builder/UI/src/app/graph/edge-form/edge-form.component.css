@@ -1,0 +1,13 @@
+.form-row {
+    display: flex;
+    flex-flow: row wrap;
+}
+
+.input-field {
+    margin-right: 30px;
+}
+
+.form-button {
+    margin: 20px;
+    height: 35px;
+}

@@ -1,0 +1,16 @@
+<md-card>
+  <form [formGroup]="registerForm">
+    <md-input placeholder="First name" type="text" formControlName="firstname" required></md-input>
+    <md-input placeholder="Last name" type="text" formControlName="lastname" required></md-input>
+    <div formGroupName="address">
+      <md-input placeholder="Street" type="text" formControlName="street"></md-input>
+      <md-input placeholder="Post Code" type="text" formControlName="postcode"></md-input>
+      <md-input placeholder="City" type="text" formControlName="city"></md-input>
+    </div>
+    <button md-raised-button md-tooltip="Submit form" (click)="save(registerForm.value, registerForm.valid)" [disabled]="!registerForm.valid">Submit</button>
+  </form>
+  <pre>Submitted: {{submitted}}</pre>
+  <pre>Valid: {{registerForm.valid}}</pre>
+  <div *ngIf="formResult"><pre>{{formResult | json}}</pre></div>
+  <div><pre>{{events | json}}</pre></div>
+</md-card>

@@ -1,0 +1,43 @@
+<md-sidenav-layout [class.m2app-dark]="isDarkTheme">
+
+  <md-sidenav #sidenav mode="side" class="app-sidenav">
+    Sidenav
+  </md-sidenav>
+
+  <md-toolbar color="primary">
+    <button class="app-icon-button" (click)="sidenav.toggle()">
+      <i class="material-icons app-toolbar-menu">menu</i>
+    </button>
+
+    Gaffer Schema Builder
+
+    <span class="app-toolbar-filler"></span>
+    <!--<button md-button (click)="isDarkTheme = !isDarkTheme">TOGGLE DARK THEME</button>-->
+  </md-toolbar>
+  <md-tab-group class="mdTabs" [class.m2app-dark]="isDarkTheme">
+    <md-tab>
+      <template md-tab-label>
+        Graph
+      </template>
+      <template md-tab-content>
+        <app-graph></app-graph>
+      </template>
+    </md-tab>
+    <md-tab>
+      <template md-tab-label>
+        Types
+      </template>
+      <template md-tab-content>
+        <app-types></app-types>
+      </template>
+    </md-tab>
+    <md-tab>
+      <template md-tab-label>
+        Schema
+      </template>
+      <template md-tab-content>
+        <app-schema></app-schema>
+      </template>
+    </md-tab>
+  </md-tab-group>
+</md-sidenav-layout>
