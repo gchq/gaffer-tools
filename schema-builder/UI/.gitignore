@@ -13,6 +13,7 @@
 /.vscode
 .project
 .classpath
+.editorconfig
 *.launch
 .settings/
 

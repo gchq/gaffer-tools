@@ -4,8 +4,6 @@ import { FormsModule } from '@angular/forms';
 import { MaterialModule } from '@angular/material';
 import { HttpModule } from '@angular/http';
 import { ReactiveFormsModule } from '@angular/forms';
-import { PostsComponent } from './posts/posts.component';
-import { FormComponent } from './form/form.component';
 import { GraphComponent } from './graph/graph.component';
 import { EdgeFormComponent } from './graph/edge-form/edge-form.component';
 import { MaterializeDirective } from 'angular2-materialize';
@@ -20,8 +18,6 @@ import { TypeFormComponent } from './types/type-form/type-form.component';
 @NgModule({
   declarations: [
     AppComponent,
-    PostsComponent,
-    FormComponent,
     GraphComponent,
     EdgeFormComponent,
     MaterializeDirective,
