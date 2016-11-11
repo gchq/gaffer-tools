@@ -67,11 +67,11 @@ class GafferConnector:
 
         # Query Gaffer
         if self._verbose:
-            print('\nQuery operations:\n' + json.dumps(operation_chain.toJson(),
+            print('\nQuery operations:\n' + json.dumps(operation_chain.to_json(),
                                                        indent=4) + '\n')
 
         # Convert the query dictionary into JSON and post the query to Gaffer
-        json_body = bytes(json.dumps(operation_chain.toJson()), 'ascii')
+        json_body = bytes(json.dumps(operation_chain.to_json()), 'ascii')
         request = urllib.request.Request(url,
                                          headers={
                                              'Content-Type': 'application/json;charset=utf-8'},

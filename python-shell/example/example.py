@@ -15,7 +15,7 @@
 #
 
 import gaffer as g
-import gafferConnector
+from gaffer import gaffer_connector
 
 
 def run(host, verbose=False):
@@ -40,7 +40,7 @@ def run_with_connector(gc):
 
 
 def create_connector(host, verbose=False):
-    return gafferConnector.GafferConnector(host, verbose)
+    return gaffer_connector.GafferConnector(host, verbose)
 
 
 def add_elements(gc):

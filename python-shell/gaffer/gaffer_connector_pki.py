@@ -23,13 +23,14 @@ import getpass
 import urllib.request
 import urllib.error
 
-import gafferConnector
+from gaffer import gaffer_connector
 
 
-class GafferConnector(gafferConnector.GafferConnector):
+class GafferConnector(gaffer_connector.GafferConnector):
     def __init__(self, host, pki, protocol=None, verbose=False):
         """
-        This initialiser sets up a connection to the specified Gaffer server as per gafferConnector.GafferConnector and
+        This initialiser sets up a connection to the specified Gaffer server as
+        per gafferConnector.GafferConnector and
         requires the additional pki object.
         """
         super().__init__(host=host, verbose=verbose)
