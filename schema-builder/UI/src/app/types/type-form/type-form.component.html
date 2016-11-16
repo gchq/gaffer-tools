@@ -32,16 +32,16 @@
         <label>Aggregator class</label>
       </div>
       <div class="input-field col s12">
-        <input class="form-control" type="text" name="aggregateFields" placeholder="Aggregator fields" [(ngModel)]="aggregateFields" (ngModelChange)="changeType($event, 'aggregateFields')">
+        <input class="form-control" type="text" [disabled]="aggregateFieldsDisabled" name="aggregateFields" placeholder="Aggregator fields" [(ngModel)]="aggregateFields" (ngModelChange)="changeType($event, 'aggregateFields')">
         <p style="color: red; margin-top: -10px;" *ngIf="!aggregateFieldsValid">Invalid JSON</p>
         <label>Aggregator fields</label>
       </div>
       <div class="col s12" *ngIf="functions !== undefined">
         <p style="color: red" *ngIf="functions && !functions.valid">{{functions.message}}</p>
       </div>
-      <div class="col s12" *ngIf="functions !== undefined">
+      <!--<div class="col s12" *ngIf="functions !== undefined">
         <pre *ngIf="functions && functions.valid">{{_type | json}}</pre>
-      </div>
+      </div>-->
       <button class="form-button" type="submit" md-raised-button color="primary" [disabled]="functions && !functions.valid || !aggregateFieldsValid">Update</button>
     </div>
   </div>

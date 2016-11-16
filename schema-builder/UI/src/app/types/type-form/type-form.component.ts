@@ -13,6 +13,7 @@ export class TypeFormComponent implements OnInit {
     _type: any;
     aggregateFields: any;
     aggregateFieldsValid: any;
+    aggregateFieldsDisabled: any;
     functions: any;
     errorMessage: any;
 
@@ -22,14 +23,17 @@ export class TypeFormComponent implements OnInit {
         if (this._type.aggregateFunction !== null && this._type.aggregateFunction.class !== 'NULL') {
             this.aggregateFields = _.cloneDeep(this._type.aggregateFunction);
             this.aggregateFields.class = undefined;
+            this.aggregateFieldsDisabled = false;
             try {
                 this.aggregateFields = JSON.stringify(this.aggregateFields);
                 this.aggregateFieldsValid = true;
-            } catch(e) {
+            } catch (e) {
                 this.aggregateFieldsValid = false;
             }
         } else {
             this.aggregateFields = '';
+            this.aggregateFieldsValid = true;
+            this.aggregateFieldsDisabled = true;
         }
         this.getGafferFunctions(type.type, type.class);
     }
@@ -59,12 +63,16 @@ export class TypeFormComponent implements OnInit {
     changeType(value: any, key: any, secondaryKey: any) {
         if (key === 'aggregateFields') {
             try {
-                let fieldsObject = JSON.parse(value);
+                let fieldsObject = JSON.parse(this.aggregateFields);
                 fieldsObject.class = this._type.aggregateFunction.class;
                 this._type.aggregateFunction = fieldsObject;
                 this.aggregateFieldsValid = true;
-            } catch(e) {
-                this.aggregateFieldsValid = false;
+            } catch (e) {
+                if (this._type.aggregateFunction !== null && this._type.aggregateFunction.class !== 'NULL') {
+                    this.aggregateFieldsValid = false;
+                } else {
+                    this.aggregateFieldsValid = true;
+                }
             }
         } else {
             if (!secondaryKey) {
@@ -76,7 +84,16 @@ export class TypeFormComponent implements OnInit {
             if (key === 'type' || key === 'class') {
                 this.getGafferFunctions(this._type.type, this._type.class);
             }
+            if (key === 'aggregateFunction' && value !== 'NULL') {
+                this.changeType(this.aggregateFields, 'aggregateFields', undefined);
+            }
         }
+        if (this._type.aggregateFunction !== null && this._type.aggregateFunction.class !== 'NULL') {
+            this.aggregateFieldsDisabled = false;
+        } else {
+            this.aggregateFieldsDisabled = true;
+        }
+
     }
 
     save() {
