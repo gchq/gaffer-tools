@@ -11,7 +11,6 @@ import 'rxjs/add/operator/distinctUntilChanged';
 import 'rxjs/add/operator/switchMap';
 import 'angular2-materialize';
 
-
 if (environment.production) {
   enableProdMode();
 }
