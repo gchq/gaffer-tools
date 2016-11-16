@@ -1,25 +1,43 @@
 <div style="padding: 15px;">
     <div class="row">
-        <div class="col s12 m10 offset-m1 l10 offset-l1">
-            <md-card style="padding: 0;">
-                <md-card-content>
-                    <div id="mynetwork"></div>
-                </md-card-content>
-            </md-card>
+        <div class="col s12 m11 offset-m1 l11 offset-l1">
+            <div class="row">
+                <div class="col s12 m12 l9">
+                    <md-card style="padding: 0;">
+                        <md-card-content>
+                            <div id="mynetwork"></div>
+                        </md-card-content>
+                    </md-card>
+                </div>
+                <div class="col s12 m12 l3">
+                    <md-card style="margin: 70px 0 20px 0; overflow: auto" *ngIf="selectedEdge && !selectedNode">
+                        <div class="content-card-header">
+                            <md-card-title>Selected Edge</md-card-title>
+                        </div>
+                        <md-card-content>
+                            <app-edge-form [selectedEdge]="selectedEdge" [edges]="edges" [nodes]="nodes" [network]="network"></app-edge-form>
+                        </md-card-content>
+                    </md-card>
 
-            <md-card style="margin: 20px 0; overflow: auto" *ngIf="selectedEdge && !selectedNode">
-                <md-card-title>Selected Edge</md-card-title>
-                <md-card-content>
-                    <app-edge-form [selectedEdge]="selectedEdge" [edges]="edges" [nodes]="nodes" [network]="network"></app-edge-form>
-                </md-card-content>
-            </md-card>
+                    <md-card style="margin: 70px 0 20px 0; overflow: auto" *ngIf="selectedNode">
+                        <div class="content-card-header">
+                            <md-card-title>Selected Node</md-card-title>
+                        </div>
+                        <md-card-content>
+                            <app-node-form [selectedNode]="selectedNode" [nodes]="nodes" [network]="network"></app-node-form>
+                        </md-card-content>
+                    </md-card>
 
-            <md-card style="margin: 20px 0; overflow: auto" *ngIf="selectedNode">
-                <md-card-title>Selected Node</md-card-title>
-                <md-card-content>
-                    <app-node-form [selectedNode]="selectedNode" [nodes]="nodes" [network]="network"></app-node-form>
-                </md-card-content>
-            </md-card>
+                    <md-card style="margin: 70px 0 20px 0; overflow: auto" *ngIf="!selectedNode && !selectedEdge">
+                        <div class="content-card-header">
+                            <md-card-title>None Selected</md-card-title>
+                        </div>
+                        <md-card-content>
+                            <p>Select a node or edge from the graph.</p>
+                        </md-card-content>
+                    </md-card>
+                </div>
+            </div>
         </div>
     </div>
 </div>

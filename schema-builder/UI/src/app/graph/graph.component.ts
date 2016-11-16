@@ -108,7 +108,7 @@ export class GraphComponent implements OnInit {
                 shadow: true
             },
             autoResize: true,
-            height: '500px',
+            height: '600px',
             manipulation: {
                 enabled: true,
                 initiallyActive: true,

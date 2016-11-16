@@ -12,6 +12,11 @@ md-sidenav-layout {
   height:100vh;
 }
 
+md-card-title {
+  margin-bottom: 0 !important;
+  color: white;
+}
+
 .app-content {
   padding: 20px;
 }
@@ -122,3 +127,17 @@ div.vis-network div.vis-close {
   margin: 20px;
 }
 
+.card-header {
+  margin: -24px !important;
+  padding: 24px !important;
+}
+
+.content-card-header {
+  margin: -24px -24px 15px -24px !important;
+  padding: 24px !important;
+}
+
+.button-spacing {
+  margin-left: 8px !important;
+  margin-right: 8px !important;
+}
