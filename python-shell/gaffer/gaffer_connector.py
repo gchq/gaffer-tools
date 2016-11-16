@@ -45,19 +45,20 @@ class GafferConnector:
         self._opener = urllib.request.build_opener(
             urllib.request.HTTPHandler())
 
-    def execute_operation(self, operation):
+    def execute_operation(self, operation, headers={}):
         """
         This method queries Gaffer with the single provided operation.
         """
-        return self.execute_operations([operation])
+        return self.execute_operations([operation], headers)
 
-    def execute_operations(self, operations):
+    def execute_operations(self, operations, headers={}):
         """
         This method queries Gaffer with the provided array of operations.
         """
-        return self.execute_operation_chain(g.OperationChain(operations))
+        return self.execute_operation_chain(g.OperationChain(operations),
+                                            headers)
 
-    def execute_operation_chain(self, operation_chain):
+    def execute_operation_chain(self, operation_chain, headers={}):
         """
         This method queries Gaffer with the provided operation chain.
         """
@@ -67,22 +68,23 @@ class GafferConnector:
 
         # Query Gaffer
         if self._verbose:
-            print('\nQuery operations:\n' + json.dumps(operation_chain.to_json(),
-                                                       indent=4) + '\n')
+            print('\nQuery operations:\n'
+                  + json.dumps(operation_chain.to_json(), indent=4) + '\n')
 
         # Convert the query dictionary into JSON and post the query to Gaffer
         json_body = bytes(json.dumps(operation_chain.to_json()), 'ascii')
-        request = urllib.request.Request(url,
-                                         headers={
-                                             'Content-Type': 'application/json;charset=utf-8'},
-                                         data=json_body)
+        headers['Content-Type'] = 'application/json;charset=utf-8'
+
+        request = urllib.request.Request(url, headers=headers, data=json_body)
 
         try:
             response = self._opener.open(request)
         except urllib.error.HTTPError as error:
             error_body = error.read().decode('utf-8')
-            new_error_string = 'HTTP error ' + str(
-                error.code) + ' ' + error.reason + ': ' + error_body
+            new_error_string = ('HTTP error '
+                                + str(error.code) + ' '
+                                + error.reason + ': '
+                                + error_body)
             raise ConnectionError(new_error_string)
         response_text = response.read().decode('utf-8')
 
@@ -95,3 +97,41 @@ class GafferConnector:
             result = None
 
         return operation_chain.operations[-1].convert_result(result)
+
+    def execute_get(self, operation, headers={}):
+        url = self._host + operation.get_url()
+        headers['Content-Type'] = 'application/json;charset=utf-8'
+        request = urllib.request.Request(url, headers=headers)
+
+        try:
+            response = self._opener.open(request)
+        except urllib.error.HTTPError as error:
+            error_body = error.read().decode('utf-8')
+            new_error_string = ('HTTP error '
+                                + str(error.code) + ' '
+                                + error.reason + ': '
+                                + error_body)
+            raise ConnectionError(new_error_string)
+
+        return response.read().decode('utf-8')
+
+    def is_operation_supported(self, operation, headers={}):
+        url = self._host + '/graph/isOperationSupported'
+        headers['Content-Type'] = 'application/json;charset=utf-8'
+        json_body = bytes(json.dumps(operation.get_operation()), 'ascii')
+
+        request = urllib.request.Request(url, headers=headers, data=json_body)
+
+        try:
+            response = self._opener.open(request)
+        except urllib.error.HTTPError as error:
+            error_body = error.read().decode('utf-8')
+            new_error_string = ('HTTP error '
+                                + str(error.code) + ' '
+                                + error.reason + ': '
+                                + error_body)
+            raise ConnectionError(new_error_string)
+
+        response_text = response.read().decode('utf-8')
+
+        return response_text

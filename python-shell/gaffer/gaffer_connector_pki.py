@@ -42,8 +42,9 @@ class GafferConnector(gaffer_connector.GafferConnector):
 
 class PkiCredentials:
     """
-    This class holds a set of PKI credentials. These are loaded from a PEM file, which
-    should contain the private key and the public keys for the entire certificate chain.
+    This class holds a set of PKI credentials. These are loaded from a PEM file
+    which should contain the private key and the public keys for the entire
+    certificate chain.
     """
 
     def __init__(self, cert_filename, password=None):
@@ -52,7 +53,8 @@ class PkiCredentials:
         and the file is password-protected then the password will be requested.
         """
 
-        # Read the contents of the certificate file to check that it is readable
+        # Read the contents of the certificate file to check that it is
+        # readable
         with open(cert_filename, 'r') as cert_file:
             self._cert_file_contents = cert_file.read()
             cert_file.close()

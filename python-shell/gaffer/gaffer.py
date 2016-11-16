@@ -23,7 +23,7 @@ import json
 
 class ToJson:
     """
-    Enables implementations to be converted to json via a toJson method
+    Enables implementations to be converted to json via a to_json method
     """
 
     def __repr__(self):
@@ -179,13 +179,25 @@ class View(ToJson):
         return view
 
 
+class ResultLimit(ToJson):
+    def __init__(self, result_limit=None):
+        super().__init__()
+        if not isinstance(result_limit, int):
+            raise TypeError('Result Limit must be an integer')
+
+        self.result_limit = result_limit
+
+    def to_json(self):
+        return self.result_limit
+
+
 class ElementDefinition(ToJson):
     def __init__(self, group, transient_properties=None, filter_functions=None,
                  transform_functions=None, group_by=None):
         super().__init__()
         self.group = group
         self.transient_properties = transient_properties
-        self.filter_functions = filter_functions
+        self.pre_aggregation_filter_functions = filter_functions
         self.transform_functions = transform_functions
         if group_by is None:
             group_by = []
@@ -198,9 +210,9 @@ class ElementDefinition(ToJson):
             for prop in self.transient_properties:
                 props[prop.name] = prop.class_name
             element_def['transientProperties'] = props
-        if self.filter_functions is not None:
+        if self.pre_aggregation_filter_functions is not None:
             funcs = []
-            for func in self.filter_functions:
+            for func in self.pre_aggregation_filter_functions:
                 funcs.append(func.to_json())
             element_def['preAggregationFilterFunctions'] = funcs
         if self.transform_functions is not None:
@@ -294,10 +306,11 @@ class OperationChain(ToJson):
 
 
 class Operation(ToJson):
-    def __init__(self, class_name, view=None, options=None):
+    def __init__(self, class_name, view=None, result_limit=None, options=None):
         self.class_name = class_name
         self.view = view
         self.options = options
+        self.result_limit = result_limit
 
     def convert_result(self, result):
         raise NotImplementedError('Use an implementation of Operation instead')
@@ -308,6 +321,9 @@ class Operation(ToJson):
             operation['options'] = self.options
         if self.view is not None:
             operation['view'] = self.view.to_json()
+        if self.result_limit is not None:
+            operation['resultLimit'] = self.result_limit.to_json()
+
         return operation
 
 
@@ -466,10 +482,10 @@ class FetchExport(Operation):
 
 
 class GetOperation(Operation):
-    def __init__(self, class_name, seeds=None, view=None,
+    def __init__(self, class_name, seeds=None, view=None, result_limit=None,
                  include_entities=True, include_edges=IncludeEdges.ALL,
-                 in_out_type=InOutType.BOTH, options=None):
-        super().__init__(class_name, view, options)
+                 in_out_type=InOutType.BOTH, deduplicate=None, options=None):
+        super().__init__(class_name, view, result_limit, options)
         if not isinstance(class_name, str):
             raise TypeError(
                 'ClassName must be the operation class name as a string')
@@ -478,6 +494,7 @@ class GetOperation(Operation):
         self.include_entities = include_entities
         self.include_edges = include_edges
         self.in_out_type = in_out_type
+        self.deduplicate = deduplicate
 
     def convert_result(self, result):
         return ResultConverter.to_elements(result)
@@ -499,99 +516,106 @@ class GetOperation(Operation):
         operation['includeEntities'] = self.include_entities
         operation['includeEdges'] = self.include_edges
         operation['includeIncomingOutGoing'] = self.in_out_type
+
+        if self.deduplicate is not None:
+            operation['deduplicate'] = self.deduplicate
         return operation
 
 
 class GetRelatedElements(GetOperation):
-    def __init__(self, seeds=None, view=None,
+    def __init__(self, seeds=None, view=None, result_limit=None,
                  include_entities=True, include_edges=IncludeEdges.ALL,
-                 in_out_type=InOutType.BOTH, options=None):
+                 in_out_type=InOutType.BOTH, deduplicate=None, options=None):
         super().__init__('gaffer.operation.impl.get.GetRelatedElements', seeds,
-                         view, include_entities, include_edges,
-                         in_out_type, options)
+                         view, result_limit, include_entities, include_edges,
+                         in_out_type, deduplicate, options)
 
 
 class GetRelatedEntities(GetOperation):
-    def __init__(self, seeds=None, view=None,
-                 in_out_type=InOutType.BOTH, options=None):
+    def __init__(self, seeds=None, view=None, result_limit=None,
+                 in_out_type=InOutType.BOTH, deduplicate=None, options=None):
         super().__init__('gaffer.operation.impl.get.GetRelatedEntities', seeds,
-                         view, True, IncludeEdges.NONE,
-                         in_out_type, options)
+                         view, result_limit, True, IncludeEdges.NONE,
+                         in_out_type, deduplicate, options)
 
 
 class GetRelatedEdges(GetOperation):
-    def __init__(self, seeds=None, view=None,
+    def __init__(self, seeds=None, view=None, result_limit=None,
                  include_edges=IncludeEdges.ALL,
-                 in_out_type=InOutType.BOTH, options=None):
+                 in_out_type=InOutType.BOTH, deduplicate=None, options=None):
         super().__init__('gaffer.operation.impl.get.GetRelatedEdges', seeds,
-                         view, False, include_edges,
-                         in_out_type, options)
+                         view, result_limit, False, include_edges,
+                         in_out_type, deduplicate, options)
 
 
 class GetElementsBySeed(GetOperation):
-    def __init__(self, seeds=None, view=None,
+    def __init__(self, seeds=None, view=None, result_limit=None,
                  include_entities=True, include_edges=IncludeEdges.ALL,
-                 in_out_type=InOutType.BOTH, options=None):
+                 in_out_type=InOutType.BOTH, deduplicate=None, options=None):
         super().__init__('gaffer.operation.impl.get.GetElementsBySeed', seeds,
-                         view, include_entities, include_edges,
-                         in_out_type, options)
+                         view, result_limit, include_entities, include_edges,
+                         in_out_type, deduplicate, options)
 
 
 class GetEntitiesBySeed(GetOperation):
-    def __init__(self, seeds=None, view=None,
-                 in_out_type=InOutType.BOTH, options=None):
+    def __init__(self, seeds=None, view=None, result_limit=None,
+                 in_out_type=InOutType.BOTH, deduplicate=None, options=None):
         super().__init__('gaffer.operation.impl.get.GetEntitiesBySeed', seeds,
-                         view, True, IncludeEdges.NONE,
-                         in_out_type, options)
+                         view, result_limit, True, IncludeEdges.NONE,
+                         in_out_type, deduplicate, options)
 
 
 class GetEdgesBySeed(GetOperation):
-    def __init__(self, seeds=None, view=None,
+    def __init__(self, seeds=None, view=None, result_limit=None,
                  include_edges=IncludeEdges.ALL,
-                 in_out_type=InOutType.BOTH, options=None):
+                 in_out_type=InOutType.BOTH, deduplicate=None, options=None):
         super().__init__('gaffer.operation.impl.get.GetEntitiesBySeed', seeds,
-                         view, False, include_edges,
-                         in_out_type, options)
+                         view, result_limit, False, include_edges,
+                         in_out_type, deduplicate, options)
 
 
 class GetAdjacentEntitySeeds(GetOperation):
-    def __init__(self, seeds=None, view=None,
-                 in_out_type=InOutType.BOTH, options=None):
+    def __init__(self, seeds=None, view=None, result_limit=None,
+                 in_out_type=InOutType.BOTH, deduplicate=None, options=None):
         super().__init__('gaffer.operation.impl.get.GetAdjacentEntitySeeds',
-                         seeds, view, True, IncludeEdges.ALL,
-                         in_out_type, options)
+                         seeds, result_limit, view, True, IncludeEdges.ALL,
+                         in_out_type, deduplicate, options)
 
     def convert_result(self, result):
         return ResultConverter.to_entity_seeds(result)
 
 
 class GetAllElements(GetOperation):
-    def __init__(self, view=None, include_entities=True,
-                 include_edges=IncludeEdges.ALL, options=None):
+    def __init__(self, view=None, include_entities=True, result_limit=None,
+                 include_edges=IncludeEdges.ALL, deduplicate=None,
+                 options=None):
         super().__init__('gaffer.operation.impl.get.GetAllElements',
-                         None, view, include_entities, include_edges,
-                         InOutType.OUT, options)
+                         None, view, result_limit, include_entities,
+                         include_edges,
+                         InOutType.OUT, deduplicate, options)
 
     def convert_result(self, result):
         return ResultConverter.to_elements(result)
 
 
 class GetAllEntities(GetOperation):
-    def __init__(self, view=None, options=None):
+    def __init__(self, view=None, result_limit=None, deduplicate=None,
+                 options=None):
         super().__init__('gaffer.operation.impl.get.GetAllEntities',
-                         None, view, True, IncludeEdges.NONE,
-                         InOutType.OUT, options)
+                         None, view, result_limit, True, IncludeEdges.NONE,
+                         InOutType.OUT, deduplicate, options)
 
     def convert_result(self, result):
         return ResultConverter.to_elements(result)
 
 
 class GetAllEdges(GetOperation):
-    def __init__(self, view=None,
-                 include_edges=IncludeEdges.ALL, options=None):
+    def __init__(self, result_limit=None, view=None,
+                 include_edges=IncludeEdges.ALL, deduplicate=None,
+                 options=None):
         super().__init__('gaffer.operation.impl.get.GetAllEdges',
-                         None, view, False, include_edges,
-                         InOutType.OUT, options)
+                         None, view, result_limit, False, include_edges,
+                         InOutType.OUT, deduplicate, options)
 
     def convert_result(self, result):
         return ResultConverter.to_elements(result)
@@ -613,3 +637,51 @@ class CountGroups(Operation):
 
     def convert_result(self, result):
         return result
+
+
+class GetGraph():
+    def get_url(self):
+        return self.url
+
+
+class GetSchema(GetGraph):
+    def __init__(self, url=None):
+        self.url = '/graph/schema'
+
+
+class GetFilterFunctions(GetGraph):
+    def __init__(self, url=None):
+        self.url = '/graph/filterFunctions'
+
+
+class GetClassFilterFunctions(GetGraph):
+    def __init__(self, class_name=None, url=None):
+        self.url = '/graph/filterFunctions/' + class_name
+
+
+class GetGenerators(GetGraph):
+    def __init__(self, url=None):
+        self.url = '/graph/generators'
+
+
+class GetOperations(GetGraph):
+    def __init__(self, url=None):
+        self.url = '/graph/operations'
+
+
+class GetSerialisedFields(GetGraph):
+    def __init__(self, class_name=None, url=None):
+        self.url = '/graph/serialisedFields/' + class_name
+
+
+class GetStoreTraits(GetGraph):
+    def __init__(self, url=None):
+        self.url = '/graph/storeTraits'
+
+
+class IsOperationSupported():
+    def __init__(self, operation=None):
+        self.operation = operation
+
+    def get_operation(self):
+        return self.operation
