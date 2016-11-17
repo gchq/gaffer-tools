@@ -60,6 +60,25 @@ export class TypeFormComponent implements OnInit {
         }
     }
 
+    changeValidations(checked: boolean, validator: any) {
+        if (checked) {
+            if (this._type.validateFunctions === null) {
+                this._type.validateFunctions = [];
+            }
+            this._type.validateFunctions.push({
+                function: {
+                    class: validator
+                }
+            });
+        } else {
+            for (let i = 0; i < this._type.validateFunctions.length; i++) {
+                if (this._type.validateFunctions[i].function.class === validator) {
+                    this._type.validateFunctions.splice(i, 1);
+                }
+            }
+        }
+    }
+
     changeType(value: any, key: any, secondaryKey: any) {
         if (key === 'aggregateFields') {
             try {
@@ -93,7 +112,18 @@ export class TypeFormComponent implements OnInit {
         } else {
             this.aggregateFieldsDisabled = true;
         }
+    }
 
+    checkValidation(validator) {
+        var result = false;
+        if (this._type.validateFunctions !== null) {
+            this._type.validateFunctions.forEach(function(v) {
+                if (v.function.class === validator) {
+                    result = true;
+                }
+            });
+        }
+        return result;
     }
 
     save() {

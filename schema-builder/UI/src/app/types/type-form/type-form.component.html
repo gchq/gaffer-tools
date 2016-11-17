@@ -1,48 +1,61 @@
 <form #e="ngForm" (ngSubmit)="save()" novalidate materialize>
-  <div class="form-group">
-    <div class="row" style="margin-bottom: 0;">
-      <div class="input-field col s12">
-        <input class="form-control" type="text" name="type" placeholder="Type name" [(ngModel)]="_type.type" (ngModelChange)="changeType($event, 'type')">
-        <label>Type</label>
-      </div>
-      <div class="input-field col s12">
-        <input class="form-control" type="text" name="class" placeholder="Java class" [(ngModel)]="_type.class" (ngModelChange)="changeType($event, 'class')">
-        <label>Java class</label>
-      </div>
-      <div class="input-field col s12">
-        <select id="position" materialize="material_select" (change)="changeType($event.target.value, 'position')">
+    <div class="form-group">
+        <div class="row" style="margin-bottom: 0;">
+            <div class="input-field col s12">
+                <input class="form-control" type="text" name="type" placeholder="Type name" [(ngModel)]="_type.type" (ngModelChange)="changeType($event, 'type')">
+                <label>Type</label>
+            </div>
+            <div class="input-field col s12">
+                <input class="form-control" type="text" name="class" placeholder="Java class" [(ngModel)]="_type.class" (ngModelChange)="changeType($event, 'class')">
+                <label>Java class</label>
+            </div>
+            <div class="input-field col s12">
+                <select id="position" materialize="material_select" (change)="changeType($event.target.value, 'position')">
           <option value="NULL" [selected]="_type.position === null || _type.position === 'NULL'">null</option>
           <option value="KEY" [selected]="_type.position === 'KEY'">key</option>
           <option value="VALUE" [selected]="_type.position === 'VALUE'">value</option>
         </select>
-        <label>Position</label>
-      </div>
-      <div class="input-field col s12" *ngIf="functions && functions.valid">
-        <select id="serialiserClass" materialize="material_select" [materializeSelectOptions]="functions.serialiserClasses" (change)="changeType($event.target.value, 'serialiserClass')">
+                <label>Position</label>
+            </div>
+            <div class="input-field col s12" *ngIf="functions && functions.valid">
+                <select id="serialiserClass" materialize="material_select" [materializeSelectOptions]="functions.serialiserClasses" (change)="changeType($event.target.value, 'serialiserClass')">
           <option value="NULL" [selected]="_type.serialiserClass === null || _type.serialiserClass === 'NULL'">null</option>
           <option *ngFor="let serialiser of functions.serialiserClasses" [value]="serialiser" [selected]="serialiser === _type.serialiserClass">{{serialiser}}</option>
         </select>
-        <label>Serialiser class</label>
-      </div>
-      <div class="input-field col s12" *ngIf="functions && functions.valid">
-        <select id="aggregateFunction" materialize="material_select" [materializeSelectOptions]="functions.aggregateClasses" (change)="changeType($event.target.value, 'aggregateFunction', 'class')">
+                <label>Serialiser class</label>
+            </div>
+            <div class="input-field col s12" *ngIf="functions && functions.valid">
+                <select id="aggregateFunction" materialize="material_select" [materializeSelectOptions]="functions.aggregateClasses" (change)="changeType($event.target.value, 'aggregateFunction', 'class')">
           <option value="NULL" [selected]="_type.aggregateFunction === null || _type.aggregateFunction === 'NULL'">null</option>
           <option *ngFor="let aggregator of functions.aggregateClasses" [value]="aggregator" [selected]="_type.aggregateFunction && _type.aggregateFunction.class && aggregator === _type.aggregateFunction.class">{{aggregator}}</option>
         </select>
-        <label>Aggregator class</label>
-      </div>
-      <div class="input-field col s12">
-        <input class="form-control" type="text" [disabled]="aggregateFieldsDisabled" name="aggregateFields" placeholder="Aggregator fields" [(ngModel)]="aggregateFields" (ngModelChange)="changeType($event, 'aggregateFields')">
-        <p style="color: red; margin-top: -10px;" *ngIf="!aggregateFieldsValid">Invalid JSON</p>
-        <label>Aggregator fields</label>
-      </div>
-      <div class="col s12" *ngIf="functions !== undefined">
-        <p style="color: red" *ngIf="functions && !functions.valid">{{functions.message}}</p>
-      </div>
-      <!--<div class="col s12" *ngIf="functions !== undefined">
-        <pre *ngIf="functions && functions.valid">{{_type | json}}</pre>
-      </div>-->
-      <button class="form-button" type="submit" md-raised-button color="primary" [disabled]="functions && !functions.valid || !aggregateFieldsValid">Update</button>
+                <label>Aggregator class</label>
+            </div>
+            <div class="input-field col s12" *ngIf="functions && functions.valid">
+                <input class="form-control" type="text" [disabled]="aggregateFieldsDisabled" name="aggregateFields" placeholder="Aggregator fields"
+                    [(ngModel)]="aggregateFields" (ngModelChange)="changeType($event, 'aggregateFields')">
+                <p style="color: red; margin-top: -10px;" *ngIf="!aggregateFieldsValid">Invalid JSON</p>
+                <label>Aggregator fields</label>
+            </div>
+            <div class="col s12" *ngIf="functions && functions.valid">
+                <label>Validation</label>
+                <div *ngFor="let validator of functions.validateClasses" style="padding: 10px 0;">
+                    <md-checkbox [checked]="checkValidation(validator)" (change)="changeValidations($event.checked, validator)">
+                        {{validator}}
+                    </md-checkbox>
+                    <div *ngIf="checkValidation(validator)" style="margin-left: 30px;">
+                        <input class="form-control" type="text" name="validatorField" placeholder="Validator fields">
+                        <p style="color: red; margin-top: -10px;" *ngIf="!aggregateFieldsValid">Invalid JSON</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col s12" *ngIf="functions !== undefined">
+                <pre *ngIf="functions && functions.valid">{{_type | json}}</pre>
+            </div>
+            <div class="col s12" *ngIf="functions !== undefined">
+                <p style="color: red" *ngIf="functions && !functions.valid">{{functions.message}}</p>
+            </div>
+            <button class="form-button" type="submit" md-raised-button color="primary" [disabled]="functions && !functions.valid || !aggregateFieldsValid">Update</button>
+        </div>
     </div>
-  </div>
 </form>
