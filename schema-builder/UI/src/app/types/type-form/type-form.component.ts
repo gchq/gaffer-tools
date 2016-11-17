@@ -14,6 +14,8 @@ export class TypeFormComponent implements OnInit {
     aggregateFields: any;
     aggregateFieldsValid: any;
     aggregateFieldsDisabled: any;
+    validationFields: any;
+    validateFieldsValid: any;
     functions: any;
     errorMessage: any;
 
@@ -34,6 +36,16 @@ export class TypeFormComponent implements OnInit {
             this.aggregateFields = '';
             this.aggregateFieldsValid = true;
             this.aggregateFieldsDisabled = true;
+        }
+        this.validationFields = {};
+        this.validateFieldsValid = true;
+        if (this._type.validateFunctions !== null && this._type.validateFunctions.length > 0) {
+            let tempValidationFields = _.cloneDeep(this._type.validateFunctions);
+            for (let i = 0; i < tempValidationFields.length; i++) {
+                let vFields = _.cloneDeep(tempValidationFields[i].function);
+                vFields.class = undefined;
+                this.validationFields[tempValidationFields[i].function.class] = JSON.stringify(vFields);
+            }
         }
         this.getGafferFunctions(type.type, type.class);
     }
@@ -70,6 +82,11 @@ export class TypeFormComponent implements OnInit {
                     class: validator
                 }
             });
+            if (this.validationFields[validator] === undefined || this.validationFields[validator].length === 0) {
+                this.validationFields[validator] = '{}';
+            } else {
+                this.changeType(this.validationFields[validator], 'validationFields', _.cloneDeep(validator));
+            }
         } else {
             for (let i = 0; i < this._type.validateFunctions.length; i++) {
                 if (this._type.validateFunctions[i].function.class === validator) {
@@ -91,6 +108,23 @@ export class TypeFormComponent implements OnInit {
                     this.aggregateFieldsValid = false;
                 } else {
                     this.aggregateFieldsValid = true;
+                }
+            }
+        } else if (key === 'validationFields') {
+            try {
+                let fieldsObject = JSON.parse(this.validationFields[secondaryKey]);
+                fieldsObject.class = secondaryKey;
+                for (let i = 0; i < this._type.validateFunctions.length; i++) {
+                    if (this._type.validateFunctions[i].function.class === secondaryKey) {
+                        this._type.validateFunctions[i].function = fieldsObject;
+                    }
+                }
+                this.validateFieldsValid = true;
+            } catch (e) {
+                if (this._type.validateFunctions !== null && this._type.validateFunctions.length > 0) {
+                    this.validateFieldsValid = false;
+                } else {
+                    this.validateFieldsValid = true;
                 }
             }
         } else {
@@ -117,7 +151,7 @@ export class TypeFormComponent implements OnInit {
     checkValidation(validator) {
         var result = false;
         if (this._type.validateFunctions !== null) {
-            this._type.validateFunctions.forEach(function(v) {
+            this._type.validateFunctions.forEach(function (v) {
                 if (v.function.class === validator) {
                     result = true;
                 }

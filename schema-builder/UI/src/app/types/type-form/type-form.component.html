@@ -44,18 +44,19 @@
                         {{validator}}
                     </md-checkbox>
                     <div *ngIf="checkValidation(validator)" style="margin-left: 30px;">
-                        <input class="form-control" type="text" name="validatorField" placeholder="Validator fields">
-                        <p style="color: red; margin-top: -10px;" *ngIf="!aggregateFieldsValid">Invalid JSON</p>
+                        <input class="form-control" type="text" name="validatorField_{{validator}}" placeholder="Validator fields" [(ngModel)]="validationFields[validator]" (change)="changeType($event, 'validationFields', validator)">
+                        <p style="color: red; margin-top: -10px;" *ngIf="!validateFieldsValid">Invalid JSON</p>
                     </div>
                 </div>
             </div>
-            <div class="col s12" *ngIf="functions !== undefined">
+            <!--<div class="col s12" *ngIf="functions !== undefined">
                 <pre *ngIf="functions && functions.valid">{{_type | json}}</pre>
-            </div>
+                <pre *ngIf="functions && functions.valid">{{validationFields | json}}</pre>
+            </div>-->
             <div class="col s12" *ngIf="functions !== undefined">
                 <p style="color: red" *ngIf="functions && !functions.valid">{{functions.message}}</p>
             </div>
-            <button class="form-button" type="submit" md-raised-button color="primary" [disabled]="functions && !functions.valid || !aggregateFieldsValid">Update</button>
+            <button class="form-button" type="submit" md-raised-button color="primary" [disabled]="functions && !functions.valid || !aggregateFieldsValid || !validateFieldsValid">Update</button>
         </div>
     </div>
 </form>
