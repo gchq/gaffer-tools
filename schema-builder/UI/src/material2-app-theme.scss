@@ -33,13 +33,17 @@ $theme: md-light-theme($primary, $accent);
   }
 }
 
-.mdTabs > .md-tab-header {
+.mdTabs > * > .tabs {
   background-color: md-color($primary, 700) !important;
   color: md-color($primary, default-contrast) !important;
 }
 
-md-ink-bar {
-  background-color: md-color($accent, A400);
+.mdTabs > * > .tabs li a{
+  color: md-color($primary, default-contrast) !important;
+}
+
+md-ink-bar, .indicator {
+  background-color: md-color($accent, A400) !important;
   height: 4px !important;
 }
 

@@ -52,6 +52,11 @@
                                         <p md-line *ngIf="type.aggregateFunction && type.aggregateFunction.class">{{type.aggregateFunction.class}}</p>
                                         <p md-line *ngIf="!type.aggregateFunction || !type.aggregateFunction.class">null</p>
                                     </md-list-item>
+                                    <md-list-item class="autoheight-list">
+                                        <h3 md-line><b>Validators</b></h3>
+                                        <p md-line *ngFor="let validator of type.validateFunctions">{{validator.function.class}}</p>
+                                        <p md-line *ngIf="!type.validateFunctions || type.validateFunctions.length === 0">null</p>
+                                    </md-list-item>
                                 </md-list>
                             </div>
                             <app-type-form [type]="types[i]" (typeChange)="typeChanged($event)" *ngIf="type.editing"></app-type-form>

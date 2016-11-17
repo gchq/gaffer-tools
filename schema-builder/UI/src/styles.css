@@ -49,6 +49,11 @@ div.vis-network div.vis-close {
   background: transparent !important;
 }
 
+.autoheight-list .md-list-item {
+  height: auto !important;
+  padding-top: 15px !important;
+}
+
 .vis-button {
   border-radius: 3px !important;
   padding: 5px 15px !important;
