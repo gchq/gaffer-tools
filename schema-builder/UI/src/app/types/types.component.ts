@@ -11,6 +11,7 @@ import { GafferService } from '../services/gaffer.service';
 export class TypesComponent implements OnInit {
 
     types: Array<any>;
+    nodeTypes: Array<any>;
     errorMessage: any;
 
     constructor(private storage: LocalStorageService, private gafferService: GafferService) { }
@@ -19,8 +20,28 @@ export class TypesComponent implements OnInit {
         let storedTypes = this.storage.retrieve('types');
         if (storedTypes !== null) {
             this.types = storedTypes;
+            this.getNodes();
         } else {
             this.resetTypes();
+        }
+    }
+
+    getNodes() {
+        let storedNodes = this.storage.retrieve('graphNodes');
+        if (storedNodes !== null) {
+            this.nodeTypes = [];
+            for (let key in storedNodes._data) {
+                if (storedNodes._data.hasOwnProperty(key)) {
+                    this.nodeTypes.push({
+                        type: storedNodes._data[key].label,
+                        class: storedNodes._data[key].class || 'java.lang.String',
+                        validateFunctions: storedNodes._data[key].validateFunctions || [],
+                        aggregateFunction: null,
+                        index: this.nodeTypes.length,
+                        node: true
+                    });
+                }
+            }
         }
     }
 
@@ -29,6 +50,7 @@ export class TypesComponent implements OnInit {
             .subscribe(
             commonTypes => this.formatTypes(commonTypes.types),
             error => this.errorMessage = <any>error);
+        this.getNodes();
     }
 
     removeType(index) {
@@ -65,5 +87,22 @@ export class TypesComponent implements OnInit {
         this.types[type.index] = type;
         this.types[type.index].editing = false;
         this.storage.store('types', this.types);
+    }
+
+    nodeTypeChanged(event) {
+        let type = event.value;
+        let storedNodes = this.storage.retrieve('graphNodes');
+        if (storedNodes !== null) {
+            for (let key in storedNodes._data) {
+                if (storedNodes._data.hasOwnProperty(key)) {
+                    if (storedNodes._data[key].label === type.type) {
+                        storedNodes._data[key].class = type.class;
+                        storedNodes._data[key].validateFunctions = type.validateFunctions;
+                    }
+                }
+            }
+        }
+        this.nodeTypes[type.index].editing = false;
+        this.storage.store('graphNodes', storedNodes);
     }
 }

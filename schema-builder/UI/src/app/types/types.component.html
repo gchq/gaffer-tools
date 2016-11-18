@@ -64,6 +64,39 @@
                     </md-card>
                 </div>
             </div>
+            <div class="row">
+                <div class="col s12 m12 l6" *ngFor="let type of nodeTypes; let i = index" style="margin-bottom: 15px;">
+                    <md-card>
+                        <div class="content-card-header">
+                            <md-card-title>{{type.type}}</md-card-title>
+                            <div class="type-edit-button row">
+                                <button md-mini-fab (click)="type.editing = true;"  *ngIf="!type.editing" class="button-spacing">
+                                    <md-icon class="md-16">edit</md-icon>
+                                </button>
+                                <button md-mini-fab color="warn" (click)="removeType(i)" class="button-spacing">
+                                    <md-icon class="md-16">delete</md-icon>
+                                </button>
+                            </div>
+                        </div>
+                        <md-card-content>
+                            <div *ngIf="!type.editing">
+                                <md-list dense>
+                                    <md-list-item>
+                                        <h3 md-line><b>Class</b></h3>
+                                        <p md-line>{{type.class}}</p>
+                                    </md-list-item>
+                                    <md-list-item class="autoheight-list">
+                                        <h3 md-line><b>Validators</b></h3>
+                                        <p md-line *ngFor="let validator of type.validateFunctions">{{validator.function.class}}</p>
+                                        <p md-line *ngIf="!type.validateFunctions || type.validateFunctions.length === 0">null</p>
+                                    </md-list-item>
+                                </md-list>
+                            </div>
+                            <app-type-form [type]="nodeTypes[i]" (typeChange)="nodeTypeChanged($event)" *ngIf="type.editing"></app-type-form>
+                        </md-card-content>
+                    </md-card>
+                </div>
+            </div>
         </div>
     </div>
 </div>
