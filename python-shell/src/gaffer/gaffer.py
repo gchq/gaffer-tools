@@ -639,7 +639,7 @@ class CountGroups(Operation):
         return result
 
 
-class GetGraph():
+class GetGraph:
     def get_url(self):
         return self.url
 
@@ -679,7 +679,7 @@ class GetStoreTraits(GetGraph):
         self.url = '/graph/storeTraits'
 
 
-class IsOperationSupported():
+class IsOperationSupported:
     def __init__(self, operation=None):
         self.operation = operation
 

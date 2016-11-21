@@ -15,7 +15,8 @@
 #
 
 import gaffer as g
-from gaffer import gaffer_connector
+
+from src.gaffer import gaffer_connector
 
 
 def run(host, verbose=False):
@@ -30,7 +31,7 @@ def run_with_connector(gc):
 
     get_schema(gc)
     get_filter_functions(gc)
-    get_class_filter_functions((gc))
+    get_class_filter_functions(gc)
     get_generators(gc)
     get_operations(gc)
     get_serialised_fields(gc)
@@ -196,8 +197,8 @@ def add_elements(gc):
 
 def get_elements(gc):
     # Get Elements
-    filterClass = 'gaffer.function.simple.filter.IsEqual'
-    transformClass = 'gaffer.rest.example.ExampleTransformFunction'
+    filter_class = 'gaffer.function.simple.filter.IsEqual'
+    transform_class = 'gaffer.rest.example.ExampleTransformFunction'
     elements = gc.execute_operation(
         g.GetRelatedElements(
             seeds=[g.EntitySeed('1')],
@@ -239,7 +240,7 @@ def get_elements(gc):
 
 def get_adj_seeds(gc):
     # Adjacent Elements - chain 2 adjacent entities together
-    adjSeeds = gc.execute_operations(
+    adj_seeds = gc.execute_operations(
         [
             g.GetAdjacentEntitySeeds(
                 seeds=[
@@ -253,7 +254,7 @@ def get_adj_seeds(gc):
         ]
     )
     print('Adjacent entities - 2 hop')
-    print(adjSeeds)
+    print(adj_seeds)
     print()
 
 
@@ -263,7 +264,7 @@ def get_all_elements(gc):
         g.GetAllElements(
             result_limit=g.ResultLimit(3),
             deduplicate=True
-    )
+        )
     )
     print('All elements (Limited to first 3)')
     print(all_elements)

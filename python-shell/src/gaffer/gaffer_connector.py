@@ -19,10 +19,10 @@ This module queries a Gaffer REST API
 """
 
 import json
-import urllib.request
 import urllib.error
+import urllib.request
 
-import gaffer as g
+from src import gaffer as g
 
 
 class GafferConnector:
@@ -68,8 +68,8 @@ class GafferConnector:
 
         # Query Gaffer
         if self._verbose:
-            print('\nQuery operations:\n'
-                  + json.dumps(operation_chain.to_json(), indent=4) + '\n')
+            print('\nQuery operations:\n' +
+                  json.dumps(operation_chain.to_json(), indent=4) + '\n')
 
         # Convert the query dictionary into JSON and post the query to Gaffer
         json_body = bytes(json.dumps(operation_chain.to_json()), 'ascii')
@@ -81,10 +81,10 @@ class GafferConnector:
             response = self._opener.open(request)
         except urllib.error.HTTPError as error:
             error_body = error.read().decode('utf-8')
-            new_error_string = ('HTTP error '
-                                + str(error.code) + ' '
-                                + error.reason + ': '
-                                + error_body)
+            new_error_string = ('HTTP error ' +
+                                str(error.code) + ' ' +
+                                error.reason + ': ' +
+                                error_body)
             raise ConnectionError(new_error_string)
         response_text = response.read().decode('utf-8')
 
@@ -107,10 +107,10 @@ class GafferConnector:
             response = self._opener.open(request)
         except urllib.error.HTTPError as error:
             error_body = error.read().decode('utf-8')
-            new_error_string = ('HTTP error '
-                                + str(error.code) + ' '
-                                + error.reason + ': '
-                                + error_body)
+            new_error_string = ('HTTP error ' +
+                                str(error.code) + ' ' +
+                                error.reason + ': ' +
+                                error_body)
             raise ConnectionError(new_error_string)
 
         return response.read().decode('utf-8')
@@ -126,10 +126,10 @@ class GafferConnector:
             response = self._opener.open(request)
         except urllib.error.HTTPError as error:
             error_body = error.read().decode('utf-8')
-            new_error_string = ('HTTP error '
-                                + str(error.code) + ' '
-                                + error.reason + ': '
-                                + error_body)
+            new_error_string = ('HTTP error ' +
+                                str(error.code) + ' ' +
+                                error.reason + ': ' +
+                                error_body)
             raise ConnectionError(new_error_string)
 
         response_text = response.read().decode('utf-8')

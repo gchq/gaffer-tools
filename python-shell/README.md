@@ -37,3 +37,27 @@ will need to export your PKI certificate into a .pem file:
 ```
 python3 python-shell/src/main/python/examplePki.py
 ```
+
+## Installation
+
+The python shell can be compiled and distributed for inclusion in other Python projects.
+
+The project can be compiled by running the following command from the root of the python-shell project:
+
+```
+python3 setup.py bdist_wheel
+```
+
+This creates a distributable Python wheel which can installed locally to provide the Gaffer Python shell to other applications.
+
+The wheel file is install using pip:
+
+```
+pip3 install gaffer_shell-0.4.6-py2.py3-none-any.whl
+```
+
+After installation the shell can be imported into an application as below:
+
+```python
+from gaffer_shell import gaffer as g
+```

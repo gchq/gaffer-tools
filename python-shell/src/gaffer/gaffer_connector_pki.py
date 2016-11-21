@@ -18,12 +18,12 @@
 This module queries a Gaffer REST API with PKI authentication
 """
 
-import ssl
 import getpass
-import urllib.request
+import ssl
 import urllib.error
+import urllib.request
 
-from gaffer import gaffer_connector
+from src.gaffer import gaffer_connector
 
 
 class GafferConnector(gaffer_connector.GafferConnector):
@@ -49,8 +49,9 @@ class PkiCredentials:
 
     def __init__(self, cert_filename, password=None):
         """
-        Construct the credentials class from a PEM file. If a password is not supplied
-        and the file is password-protected then the password will be requested.
+        Construct the credentials class from a PEM file. If a password is not
+        supplied and the file is password-protected then the password will be
+        requested.
         """
 
         # Read the contents of the certificate file to check that it is
