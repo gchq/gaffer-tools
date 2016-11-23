@@ -69,8 +69,8 @@ export class SchemaComponent implements OnInit {
       if (this.schema.nodes._data.hasOwnProperty(key)) {
         let node = this.schema.nodes._data[key];
         let formattedNode = {
-          class: 'java.lang.String',
-          validateFunctions: []
+          class: this.schema.nodes._data[key].class || 'java.lang.String',
+          validateFunctions: this.schema.nodes._data[key].validateFunctions || []
         };
         this.dataTypes.types[node.label] = formattedNode;
       }
