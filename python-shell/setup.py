@@ -5,7 +5,7 @@ import re
 
 ###############################################################################
 
-name = "gaffer-shell"
+name = "gafferpy"
 packages = find_packages(where="src")
 meta_path = path.join("src", "gaffer", "__init__.py")
 keywords = ["class", "attribute", "boilerplate"]

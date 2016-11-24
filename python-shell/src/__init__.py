@@ -1,6 +1,8 @@
 from . import gaffer
 from . import gaffer_connector
 from . import gaffer_connector_pki
+from . import example
+from . import example_pki
 
 __version__ = "0.4.6"
 

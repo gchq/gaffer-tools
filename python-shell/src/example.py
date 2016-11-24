@@ -14,9 +14,9 @@
 # limitations under the License.
 #
 
-import gaffer as g
+import gaffer.gaffer as g
 
-from src.gaffer import gaffer_connector
+from gaffer import gaffer_connector
 
 
 def run(host, verbose=False):

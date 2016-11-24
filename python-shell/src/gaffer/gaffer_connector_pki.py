@@ -23,7 +23,7 @@ import ssl
 import urllib.error
 import urllib.request
 
-from src.gaffer import gaffer_connector
+from gaffer import gaffer_connector
 
 
 class GafferConnector(gaffer_connector.GafferConnector):
