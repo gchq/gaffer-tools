@@ -8,7 +8,7 @@ $primary: md-palette($md-cyan);
 $accent:  md-palette($md-lime, A200, A100, A400);
 $warn:    md-palette($md-red);
 
-$header:  md-palette($md-grey);
+$grey:  md-palette($md-grey);
 
 $theme: md-light-theme($primary, $accent);
 
@@ -45,6 +45,11 @@ $theme: md-light-theme($primary, $accent);
 md-ink-bar, .indicator {
   background-color: md-color($accent, A400) !important;
   height: 4px !important;
+}
+
+.alt-background {
+  background-color: md-color($grey, 200);
+  overflow: visible;
 }
 
 .card-header {

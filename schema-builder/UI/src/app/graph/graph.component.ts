@@ -9,7 +9,6 @@ declare var vis: any;
     styleUrls: ['./graph.component.css']
 })
 export class GraphComponent implements OnInit {
-
     nodes: any;
     edges: any;
     network: any;
@@ -40,7 +39,7 @@ export class GraphComponent implements OnInit {
 
     saveNodes(data, callback) {
         if (data.label === 'new') {
-            data.label = 'vertex ' + (Object.keys(this.nodes._data).length + 1);
+            data.label = 'node ' + (Object.keys(this.nodes._data).length + 1);
         }
         callback(data);
         this.storage.store('graphEdges', this.edges);
@@ -87,7 +86,6 @@ export class GraphComponent implements OnInit {
             this.edges = new vis.DataSet();
         }
 
-        // create a network
         this.container = document.getElementById('mynetwork');
         this.data = {
             nodes: this.nodes,

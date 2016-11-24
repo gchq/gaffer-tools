@@ -14,6 +14,7 @@ import { TypesComponent } from './types/types.component';
 
 import { AppComponent } from './app.component';
 import { TypeFormComponent } from './types/type-form/type-form.component';
+import { EntityFormComponent } from './graph/entity-form/entity-form.component';
 
 @NgModule({
   declarations: [
@@ -24,7 +25,8 @@ import { TypeFormComponent } from './types/type-form/type-form.component';
     NodeFormComponent,
     SchemaComponent,
     TypesComponent,
-    TypeFormComponent
+    TypeFormComponent,
+    EntityFormComponent
   ],
   imports: [
     BrowserModule,

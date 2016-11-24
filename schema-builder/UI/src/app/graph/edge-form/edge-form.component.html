@@ -1,32 +1,32 @@
 <form #e="ngForm" novalidate materialize class="col s12">
-  <div class="form-group">
-    <div class="row">
-      <div class="col s12 m12 l12 row" style="padding: 0;">
-        <div class="input-field col s12 m6 l12" style="padding: 0;">
-          <select id="source" materialize="material_select" [materializeSelectOptions]="nodeOptions" (change)="changeEdge($event.target.value, 'from')">
-          <option *ngFor="let node of nodeOptions" [value]="node.id" [selected]="node.id === _edge.from">{{node.label}}</option>
-        </select>
-          <label>Source</label>
+    <div class="form-group">
+        <div class="row">
+            <div class="col s12 m12 l12 row" style="padding: 0;">
+                <div class="input-field col s12 m6 l12" style="padding: 0;">
+                    <select id="source" materialize="material_select" [materializeSelectOptions]="nodeOptions" (change)="changeEdge($event.target.value, 'from')">
+                        <option *ngFor="let node of nodeOptions" [value]="node.id" [selected]="node.id === _edge.from">{{node.label}}</option>
+                    </select>
+                    <label>Source</label>
+                </div>
+                <div class="input-field col s12 m6 l12" style="padding: 0;">
+                    <select id="destination" materialize="material_select" [materializeSelectOptions]="nodeOptions" (change)="changeEdge($event.target.value, 'to')">
+                        <option *ngFor="let node of nodeOptions" [value]="node.id" [selected]="node.id === _edge.to">{{node.label}}</option>
+                    </select>
+                    <label>Destination</label>
+                </div>
+                <div class="input-field col s12 m4 l12" style="padding: 0;">
+                    <input class="form-control" type="text" name="label" placeholder="Edge name" [(ngModel)]="_edge.label">
+                    <label>Name</label>
+                </div>
+                <div class="input-field col s12 m4 l12" style="padding: 0;">
+                    <select id="destination" materialize="material_select" (change)="changeEdge($event.target.value, 'arrows')">
+                        <option value="to" [selected]="_edge.arrows === 'to'">True</option>
+                        <option value="none" [selected]="_edge.arrows !== 'to'">False</option>
+                    </select>
+                    <label>Directed</label>
+                </div>
+            </div>
+            <button class="form-button" type="submit" (click)="save(e.value, e.valid)" md-raised-button color="primary">Update</button>
         </div>
-        <div class="input-field col s12 m6 l12" style="padding: 0;">
-          <select id="destination" materialize="material_select" [materializeSelectOptions]="nodeOptions" (change)="changeEdge($event.target.value, 'to')">
-          <option *ngFor="let node of nodeOptions" [value]="node.id" [selected]="node.id === _edge.to">{{node.label}}</option>
-        </select>
-          <label>Destination</label>
-        </div>
-        <div class="input-field col s12 m4 l12" style="padding: 0;">
-          <input class="form-control" type="text" name="label" placeholder="Group name" [(ngModel)]="_edge.label">
-          <label>Group</label>
-        </div>
-        <div class="input-field col s12 m4 l12" style="padding: 0;">
-          <select id="destination" materialize="material_select" (change)="changeEdge($event.target.value, 'arrows')">
-          <option value="to" [selected]="_edge.arrows === 'to'">True</option>
-          <option value="none" [selected]="_edge.arrows !== 'to'">False</option>
-        </select>
-          <label>Directed</label>
-        </div>
-      </div>
-      <button class="form-button" type="submit" (click)="save(e.value, e.valid)" md-raised-button color="primary">Update</button>
     </div>
-  </div>
 </form>

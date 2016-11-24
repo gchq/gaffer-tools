@@ -2,14 +2,14 @@
     <div class="row">
         <div class="col s12 m11 offset-m1 l11 offset-l1">
             <div class="row">
-                <div class="col s12 m12 l9">
+                <div class="col s12 m12 l8">
                     <md-card style="padding: 0;">
                         <md-card-content>
                             <div id="mynetwork"></div>
                         </md-card-content>
                     </md-card>
                 </div>
-                <div class="col s12 m12 l3">
+                <div class="col s12 m12 l4">
                     <md-card style="margin: 70px 0 20px 0; overflow: auto" *ngIf="selectedEdge && !selectedNode">
                         <div class="content-card-header">
                             <md-card-title>Selected Edge</md-card-title>
@@ -25,6 +25,15 @@
                         </div>
                         <md-card-content>
                             <app-node-form [selectedNode]="selectedNode" [nodes]="nodes" [network]="network"></app-node-form>
+                        </md-card-content>
+                    </md-card>
+
+                    <md-card style="margin: 20px 0 20px 0; overflow-y: auto" *ngIf="selectedNode">
+                        <div class="content-card-header">
+                            <md-card-title>Node Entities</md-card-title>
+                        </div>
+                        <md-card-content>
+                            <app-entity-form [selectedNode]="selectedNode" [nodes]="nodes"></app-entity-form>
                         </md-card-content>
                     </md-card>
 
