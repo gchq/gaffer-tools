@@ -7,7 +7,7 @@ import re
 
 name = "gafferpy"
 packages = find_packages(where="src")
-meta_path = path.join("src", "gaffer", "__init__.py")
+meta_path = path.join("src", "gafferpy", "__init__.py")
 keywords = ["class", "attribute", "boilerplate"]
 classifiers = [
     "Development Status :: 4 - Beta",
@@ -81,5 +81,5 @@ setup(
     zip_safe=False,
     classifiers=classifiers,
     install_requires=install_requires,
-    py_modules=['gaffer.gaffer', 'gaffer.example']
+    py_modules=['gafferpy.gafferpy', 'gafferpy.example']
 )

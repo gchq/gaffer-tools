@@ -14,9 +14,8 @@
 # limitations under the License.
 #
 
-import gaffer.gaffer as g
-
-from gaffer import gaffer_connector
+from gafferpy import gaffer as g
+from gafferpy import gaffer_connector
 
 
 def run(host, verbose=False):
@@ -78,12 +77,12 @@ def get_filter_functions(gc):
 
 def get_class_filter_functions(gc):
     # Get Schema
-    class_name = 'gaffer.function.simple.filter.IsMoreThan'
+    class_name = 'gafferpy.function.simple.filter.IsMoreThan'
     result = gc.execute_get(
         g.GetClassFilterFunctions(class_name=class_name)
     )
 
-    print('Class Filter Functions (gaffer.function.simple.filter.IsMoreThan):')
+    print('Class Filter Functions (gafferpy.function.simple.filter.IsMoreThan):')
     print(result)
     print()
 
@@ -112,12 +111,12 @@ def get_operations(gc):
 
 def get_serialised_fields(gc):
     # Get Schema
-    class_name = 'gaffer.function.simple.filter.IsMoreThan'
+    class_name = 'gafferpy.function.simple.filter.IsMoreThan'
     result = gc.execute_get(
         g.GetSerialisedFields(class_name=class_name)
     )
 
-    print('Serialised Fields (gaffer.function.simple.filter.IsMoreThan):')
+    print('Serialised Fields (gafferpy.function.simple.filter.IsMoreThan):')
     print(result)
     print()
 
@@ -134,12 +133,12 @@ def get_store_traits(gc):
 
 
 def is_operation_supported(gc):
-    operation = 'gaffer.operation.impl.add.AddElements'
+    operation = 'gafferpy.operation.impl.add.AddElements'
     result = gc.is_operation_supported(
         g.IsOperationSupported(operation=operation)
     )
 
-    print('\nOperation supported ("gaffer.operation.impl.add.AddElements"):')
+    print('\nOperation supported ("gafferpy.operation.impl.add.AddElements"):')
     print(result)
     print()
 
@@ -197,8 +196,8 @@ def add_elements(gc):
 
 def get_elements(gc):
     # Get Elements
-    filter_class = 'gaffer.function.simple.filter.IsEqual'
-    transform_class = 'gaffer.rest.example.ExampleTransformFunction'
+    filter_class = 'gafferpy.function.simple.filter.IsEqual'
+    transform_class = 'gafferpy.rest.example.ExampleTransformFunction'
     elements = gc.execute_operation(
         g.GetRelatedElements(
             seeds=[g.EntitySeed('1')],
@@ -211,14 +210,14 @@ def get_elements(gc):
                         ],
                         filter_functions=[
                             g.FilterFunction(
-                                class_name='gaffer.function.simple.filter.IsEqual',
+                                class_name='gafferpy.function.simple.filter.IsEqual',
                                 selection=['VERTEX'],
                                 function_fields={'value': '1'}
                             )
                         ],
                         transform_functions=[
                             g.TransformFunction(
-                                class_name='gaffer.rest.example.ExampleTransformFunction',
+                                class_name='gafferpy.rest.example.ExampleTransformFunction',
                                 selection=['VERTEX'],
                                 projection=['newProperty']
                             )
@@ -274,10 +273,10 @@ def get_all_elements(gc):
 def generate_elements(gc):
     # Generate Elements
     elements = gc.execute_operation(
-        g.GenerateElements('gaffer.rest.example.ExampleDomainObjectGenerator',
+        g.GenerateElements('gafferpy.rest.example.ExampleDomainObjectGenerator',
                            objects=[
                                {
-                                   'class': 'gaffer.rest.example.ExampleDomainObject',
+                                   'class': 'gafferpy.rest.example.ExampleDomainObject',
                                    'ids': [
                                        '1',
                                        '2',
@@ -286,7 +285,7 @@ def generate_elements(gc):
                                    'type': 'edge'
                                },
                                {
-                                   'class': 'gaffer.rest.example.ExampleDomainObject',
+                                   'class': 'gafferpy.rest.example.ExampleDomainObject',
                                    'ids': [
                                        '1'
                                    ],
@@ -303,7 +302,7 @@ def generate_elements(gc):
 def generate_domain_objs(gc):
     # Generate Domain Objects - single provided element
     objects = gc.execute_operation(
-        g.GenerateObjects('gaffer.rest.example.ExampleDomainObjectGenerator',
+        g.GenerateObjects('gafferpy.rest.example.ExampleDomainObjectGenerator',
                           elements=[
                               g.Entity('entity', '1'),
                               g.Edge('edge', '1', '2', True)
@@ -323,7 +322,7 @@ def generate_domain_objects_chain(gc):
                 seeds=[g.EntitySeed('1')]
             ),
             g.GenerateObjects(
-                'gaffer.rest.example.ExampleDomainObjectGenerator')
+                'gafferpy.rest.example.ExampleDomainObjectGenerator')
         ]
     )
     print('Generated objects from get elements by seed')

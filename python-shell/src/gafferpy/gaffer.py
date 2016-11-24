@@ -43,10 +43,10 @@ class ResultConverter:
         if result is not None and isinstance(result, list):
             for result_item in result:
                 if 'class' in result_item:
-                    if result_item['class'] == 'gaffer.data.element.Entity':
+                    if result_item['class'] == 'gafferpy.data.element.Entity':
                         element = Entity(result_item['group'],
                                          result_item['vertex'])
-                    elif result_item['class'] == 'gaffer.data.element.Edge':
+                    elif result_item['class'] == 'gafferpy.data.element.Edge':
                         element = Edge(result_item['group'],
                                        result_item['source'],
                                        result_item['destination'],
@@ -89,7 +89,7 @@ class EntitySeed(ElementSeed):
         self.vertex = vertex
 
     def to_json(self):
-        return {'class': 'gaffer.operation.data.EntitySeed',
+        return {'class': 'gafferpy.operation.data.EntitySeed',
                 'vertex': self.vertex}
 
 
@@ -102,7 +102,7 @@ class EdgeSeed(ElementSeed):
 
     def to_json(self):
         return {
-            'class': 'gaffer.operation.data.EdgeSeed',
+            'class': 'gafferpy.operation.data.EdgeSeed',
             'source': self.source,
             'destination': self.destination,
             'directed': self.directed}
@@ -130,7 +130,7 @@ class Element(ToJson):
 
 class Entity(Element):
     def __init__(self, group, vertex, properties=None):
-        super().__init__('gaffer.data.element.Entity', group, properties)
+        super().__init__('gafferpy.data.element.Entity', group, properties)
         self.vertex = vertex
 
     def to_json(self):
@@ -141,7 +141,7 @@ class Entity(Element):
 
 class Edge(Element):
     def __init__(self, group, source, destination, directed, properties=None):
-        super().__init__('gaffer.data.element.Edge', group, properties)
+        super().__init__('gafferpy.data.element.Edge', group, properties)
         # Validate the arguments
         if not isinstance(directed, bool):
             raise TypeError('Directed must be a boolean')
@@ -320,7 +320,7 @@ class AddElements(Operation):
     def __init__(self, elements=None, skip_invalid_elements=False,
                  validate=True,
                  view=None, options=None):
-        super().__init__('gaffer.operation.impl.add.AddElements', view, options)
+        super().__init__('gafferpy.operation.impl.add.AddElements', view, options)
         self.elements = elements
         self.skip_invalid_elements = skip_invalid_elements
         self.validate = validate
@@ -343,7 +343,7 @@ class AddElements(Operation):
 class GenerateElements(Operation):
     def __init__(self, generator_class_name, element_generator_fields=None,
                  objects=None, view=None, options=None):
-        super().__init__('gaffer.operation.impl.generate.GenerateElements',
+        super().__init__('gafferpy.operation.impl.generate.GenerateElements',
                          view, options)
         self.generator_class_name = generator_class_name
         self.element_generator_fields = element_generator_fields
@@ -369,7 +369,7 @@ class GenerateElements(Operation):
 class GenerateObjects(Operation):
     def __init__(self, generator_class_name, element_generator_fields=None,
                  elements=None, view=None, options=None):
-        super().__init__('gaffer.operation.impl.generate.GenerateObjects', view,
+        super().__init__('gafferpy.operation.impl.generate.GenerateObjects', view,
                          options)
         self.generator_class_name = generator_class_name
         self.element_generator_fields = element_generator_fields
@@ -398,7 +398,7 @@ class GenerateObjects(Operation):
 class InitialiseSetExport(Operation):
     def __init__(self, key=None, options=None):
         super().__init__(
-            'gaffer.operation.impl.export.initialise.InitialiseSetExport',
+            'gafferpy.operation.impl.export.initialise.InitialiseSetExport',
             None,
             options)
         if not isinstance(key, str) and key is not None:
@@ -419,7 +419,7 @@ class InitialiseSetExport(Operation):
 
 class UpdateExport(Operation):
     def __init__(self, key=None, options=None):
-        super().__init__('gaffer.operation.impl.export.UpdateExport', None,
+        super().__init__('gafferpy.operation.impl.export.UpdateExport', None,
                          options)
         if not isinstance(key, str) and key is not None:
             raise TypeError('key must be a string')
@@ -439,7 +439,7 @@ class UpdateExport(Operation):
 
 class FetchExporter(Operation):
     def __init__(self, options=None):
-        super().__init__('gaffer.operation.impl.export.FetchExporter', None,
+        super().__init__('gafferpy.operation.impl.export.FetchExporter', None,
                          options)
 
     def convert_result(self, result):
@@ -448,7 +448,7 @@ class FetchExporter(Operation):
 
 class FetchExport(Operation):
     def __init__(self, key=None, options=None):
-        super().__init__('gaffer.operation.impl.export.FetchExport', None,
+        super().__init__('gafferpy.operation.impl.export.FetchExport', None,
                          options)
         if not isinstance(key, str) and key is not None:
             raise TypeError('key must be a string')
@@ -511,7 +511,7 @@ class GetRelatedElements(GetOperation):
     def __init__(self, seeds=None, view=None, result_limit=None,
                  include_entities=True, include_edges=IncludeEdges.ALL,
                  in_out_type=InOutType.BOTH, deduplicate=None, options=None):
-        super().__init__('gaffer.operation.impl.get.GetRelatedElements', seeds,
+        super().__init__('gafferpy.operation.impl.get.GetRelatedElements', seeds,
                          view, result_limit, include_entities, include_edges,
                          in_out_type, deduplicate, options)
 
@@ -519,7 +519,7 @@ class GetRelatedElements(GetOperation):
 class GetRelatedEntities(GetOperation):
     def __init__(self, seeds=None, view=None, result_limit=None,
                  in_out_type=InOutType.BOTH, deduplicate=None, options=None):
-        super().__init__('gaffer.operation.impl.get.GetRelatedEntities', seeds,
+        super().__init__('gafferpy.operation.impl.get.GetRelatedEntities', seeds,
                          view, result_limit, True, IncludeEdges.NONE,
                          in_out_type, deduplicate, options)
 
@@ -528,7 +528,7 @@ class GetRelatedEdges(GetOperation):
     def __init__(self, seeds=None, view=None, result_limit=None,
                  include_edges=IncludeEdges.ALL,
                  in_out_type=InOutType.BOTH, deduplicate=None, options=None):
-        super().__init__('gaffer.operation.impl.get.GetRelatedEdges', seeds,
+        super().__init__('gafferpy.operation.impl.get.GetRelatedEdges', seeds,
                          view, result_limit, False, include_edges,
                          in_out_type, deduplicate, options)
 
@@ -537,7 +537,7 @@ class GetElementsBySeed(GetOperation):
     def __init__(self, seeds=None, view=None, result_limit=None,
                  include_entities=True, include_edges=IncludeEdges.ALL,
                  in_out_type=InOutType.BOTH, deduplicate=None, options=None):
-        super().__init__('gaffer.operation.impl.get.GetElementsBySeed', seeds,
+        super().__init__('gafferpy.operation.impl.get.GetElementsBySeed', seeds,
                          view, result_limit, include_entities, include_edges,
                          in_out_type, deduplicate, options)
 
@@ -545,7 +545,7 @@ class GetElementsBySeed(GetOperation):
 class GetEntitiesBySeed(GetOperation):
     def __init__(self, seeds=None, view=None, result_limit=None,
                  in_out_type=InOutType.BOTH, deduplicate=None, options=None):
-        super().__init__('gaffer.operation.impl.get.GetEntitiesBySeed', seeds,
+        super().__init__('gafferpy.operation.impl.get.GetEntitiesBySeed', seeds,
                          view, result_limit, True, IncludeEdges.NONE,
                          in_out_type, deduplicate, options)
 
@@ -554,7 +554,7 @@ class GetEdgesBySeed(GetOperation):
     def __init__(self, seeds=None, view=None, result_limit=None,
                  include_edges=IncludeEdges.ALL,
                  in_out_type=InOutType.BOTH, deduplicate=None, options=None):
-        super().__init__('gaffer.operation.impl.get.GetEntitiesBySeed', seeds,
+        super().__init__('gafferpy.operation.impl.get.GetEntitiesBySeed', seeds,
                          view, result_limit, False, include_edges,
                          in_out_type, deduplicate, options)
 
@@ -562,7 +562,7 @@ class GetEdgesBySeed(GetOperation):
 class GetAdjacentEntitySeeds(GetOperation):
     def __init__(self, seeds=None, view=None, result_limit=None,
                  in_out_type=InOutType.BOTH, deduplicate=None, options=None):
-        super().__init__('gaffer.operation.impl.get.GetAdjacentEntitySeeds',
+        super().__init__('gafferpy.operation.impl.get.GetAdjacentEntitySeeds',
                          seeds, result_limit, view, True, IncludeEdges.ALL,
                          in_out_type, deduplicate, options)
 
@@ -574,7 +574,7 @@ class GetAllElements(GetOperation):
     def __init__(self, view=None, include_entities=True, result_limit=None,
                  include_edges=IncludeEdges.ALL, deduplicate=None,
                  options=None):
-        super().__init__('gaffer.operation.impl.get.GetAllElements',
+        super().__init__('gafferpy.operation.impl.get.GetAllElements',
                          None, view, result_limit, include_entities,
                          include_edges,
                          InOutType.OUT, deduplicate, options)
@@ -586,7 +586,7 @@ class GetAllElements(GetOperation):
 class GetAllEntities(GetOperation):
     def __init__(self, view=None, result_limit=None, deduplicate=None,
                  options=None):
-        super().__init__('gaffer.operation.impl.get.GetAllEntities',
+        super().__init__('gafferpy.operation.impl.get.GetAllEntities',
                          None, view, result_limit, True, IncludeEdges.NONE,
                          InOutType.OUT, deduplicate, options)
 
@@ -598,7 +598,7 @@ class GetAllEdges(GetOperation):
     def __init__(self, result_limit=None, view=None,
                  include_edges=IncludeEdges.ALL, deduplicate=None,
                  options=None):
-        super().__init__('gaffer.operation.impl.get.GetAllEdges',
+        super().__init__('gafferpy.operation.impl.get.GetAllEdges',
                          None, view, result_limit, False, include_edges,
                          InOutType.OUT, deduplicate, options)
 
@@ -608,7 +608,7 @@ class GetAllEdges(GetOperation):
 
 class CountGroups(Operation):
     def __init__(self, limit=None, options=None):
-        super().__init__('gaffer.operation.impl.CountGroups',
+        super().__init__('gafferpy.operation.impl.CountGroups',
                          None, options)
         self.limit = limit
 

@@ -14,7 +14,7 @@
 # limitations under the License.
 #
 
-from gaffer import gaffer_connector_pki
+from gafferpy import gaffer_connector_pki
 import example
 
 def run(host, verbose=False, pki_cert='cert.pem'):

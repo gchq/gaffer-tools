@@ -22,7 +22,7 @@ import json
 import urllib.error
 import urllib.request
 
-from gaffer import gaffer as g
+from gafferpy import gaffer as g
 
 
 class GafferConnector:
