@@ -262,7 +262,7 @@ def get_all_elements(gc):
     # Get all elements, but limit the total results to 3, deduplication true
     all_elements = gc.execute_operation(
         g.GetAllElements(
-            result_limit=g.ResultLimit(3),
+            result_limit=3,
             deduplicate=True
         )
     )

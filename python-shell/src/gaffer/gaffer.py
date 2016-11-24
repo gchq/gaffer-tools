@@ -178,19 +178,6 @@ class View(ToJson):
 
         return view
 
-
-class ResultLimit(ToJson):
-    def __init__(self, result_limit=None):
-        super().__init__()
-        if not isinstance(result_limit, int):
-            raise TypeError('Result Limit must be an integer')
-
-        self.result_limit = result_limit
-
-    def to_json(self):
-        return self.result_limit
-
-
 class ElementDefinition(ToJson):
     def __init__(self, group, transient_properties=None, filter_functions=None,
                  transform_functions=None, group_by=None):
@@ -321,8 +308,6 @@ class Operation(ToJson):
             operation['options'] = self.options
         if self.view is not None:
             operation['view'] = self.view.to_json()
-        if self.result_limit is not None:
-            operation['resultLimit'] = self.result_limit.to_json()
 
         return operation
 
