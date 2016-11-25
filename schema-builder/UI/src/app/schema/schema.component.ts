@@ -21,7 +21,8 @@ export class SchemaComponent implements OnInit {
 
     parseDataSchema() {
         this.dataSchema = {
-            edges: {}
+            edges: {},
+            entities: {}
         };
         for (let key in this.schema.edges._data) {
             if (this.schema.edges._data.hasOwnProperty(key)) {
@@ -36,6 +37,27 @@ export class SchemaComponent implements OnInit {
                     directed: directed
                 };
                 this.dataSchema.edges[edge.label] = formattedEdge;
+            }
+        }
+        for (let key in this.schema.nodes._data) {
+            if (this.schema.nodes._data.hasOwnProperty(key)) {
+                let node = this.schema.nodes._data[key];
+                if (node.entities) {
+                    for (let i = 0; i < node.entities.length; i++) {
+                        let entity = node.entities[i];
+                        let formattedEntity = {
+                            vertex: node.label,
+                            properties: {}
+                        }
+                        if (entity.properties) {
+                            for (let j = 0; j < entity.properties.length; j++) {
+                                let property = entity.properties[j];
+                                formattedEntity.properties[property.name] = property.type;
+                            }
+                        }
+                        this.dataSchema.entities[entity.name] = formattedEntity;
+                    }
+                }
             }
         }
     }
