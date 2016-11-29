@@ -24,10 +24,10 @@ You can start the Gaffer example rest server (see Gaffer repository example-rest
 mvn clean install -Pquick -Pstandalone
 ```
 
-Once this is running you can run the python example using the command:
+Once this is running you can run the python example by using the command (all commands are run from the root of the python-shell project):
 
 ```
-python3 python-shell/src/gafferpy/example.py
+python3 src/example.py
 ```
 
 Alternatively if you have you own REST API running that is authenticated with
@@ -35,16 +35,22 @@ PKI certificates then you can follow the pki example. Before using the example y
 will need to export your PKI certificate into a .pem file:
 
 ```
-python3 python-shell/src/gafferpy/examplePki.py
+python3 src/examplePki.py
 ```
 
 ## Installation
 
 The python shell can be compiled and distributed for inclusion in other Python projects.
 
-The project can be compiled by running the following command from the root of the python-shell project:
+Compilation of the project requires the bdist package, this can be installed using pip:
 
+```bash
+pip3 install bdist
 ```
+
+The project can then be compiled by running the following command from the root of the python-shell project:
+
+```bash
 python3 setup.py bdist_wheel
 ```
 
@@ -52,7 +58,7 @@ This creates a distributable Python wheel which can installed locally to provide
 
 The wheel file is install using pip:
 
-```
+```bash
 pip3 install gaffer_shell-0.4.6-py2.py3-none-any.whl
 ```
 
