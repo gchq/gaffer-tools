@@ -59,3 +59,9 @@ md-ink-bar, .indicator {
 .content-card-header {
   background-color: md-color($primary, 800);
 }
+
+.string { color: green; }
+.number { color: darkorange; }
+.boolean { color: blue; }
+.null { color: magenta; }
+.key { color: red; }
