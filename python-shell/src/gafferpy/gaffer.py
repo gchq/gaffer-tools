@@ -23,13 +23,13 @@ import json
 
 class ToJson:
     """
-    Enables implementations to be converted to json via a toJson method
+    Enables implementations to be converted to json via a to_json method
     """
 
     def __repr__(self):
-        return json.dumps(self.toJson())
+        return json.dumps(self.to_json())
 
-    def toJson(self):
+    def to_json(self):
         """
         Converts an object to a simple json dictionary
         """
@@ -41,27 +41,27 @@ class ResultConverter:
     def to_elements(result):
         elements = []
         if result is not None and isinstance(result, list):
-            for resultItem in result:
-                if 'class' in resultItem:
-                    if resultItem['class'] == 'gaffer.data.element.Entity':
-                        element = Entity(resultItem['group'],
-                                         resultItem['vertex'])
-                    elif resultItem['class'] == 'gaffer.data.element.Edge':
-                        element = Edge(resultItem['group'],
-                                       resultItem['source'],
-                                       resultItem['destination'],
-                                       resultItem['directed'])
+            for result_item in result:
+                if 'class' in result_item:
+                    if result_item['class'] == 'gaffer.data.element.Entity':
+                        element = Entity(result_item['group'],
+                                         result_item['vertex'])
+                    elif result_item['class'] == 'gaffer.data.element.Edge':
+                        element = Edge(result_item['group'],
+                                       result_item['source'],
+                                       result_item['destination'],
+                                       result_item['directed'])
                     else:
                         raise TypeError(
                             'Element type is not recognised: ' + str(
-                                resultItem))
+                                result_item))
 
-                    if 'properties' in resultItem:
-                        element.properties = resultItem['properties']
+                    if 'properties' in result_item:
+                        element.properties = result_item['properties']
                     elements.append(element)
                 else:
                     raise TypeError(
-                        'Element type is not recognised: ' + str(resultItem))
+                        'Element type is not recognised: ' + str(result_item))
 
         # Return the elements
         return elements
@@ -70,16 +70,16 @@ class ResultConverter:
     def to_entity_seeds(result):
         entities_seeds = []
         if result is not None and isinstance(result, list):
-            for resultItem in result:
-                entities_seeds.append(EntitySeed(resultItem['vertex']))
+            for result_item in result:
+                entities_seeds.append(EntitySeed(result_item['vertex']))
         return entities_seeds
 
 
 class ElementSeed(ToJson):
     def __repr__(self):
-        return json.dumps(self.toJson())
+        return json.dumps(self.to_json())
 
-    def toJson(self):
+    def to_json(self):
         raise NotImplementedError('Use either EntitySeed or EdgeSeed')
 
 
@@ -88,7 +88,7 @@ class EntitySeed(ElementSeed):
         super().__init__()
         self.vertex = vertex
 
-    def toJson(self):
+    def to_json(self):
         return {'class': 'gaffer.operation.data.EntitySeed',
                 'vertex': self.vertex}
 
@@ -100,7 +100,7 @@ class EdgeSeed(ElementSeed):
         self.destination = destination
         self.directed = directed
 
-    def toJson(self):
+    def to_json(self):
         return {
             'class': 'gaffer.operation.data.EdgeSeed',
             'source': self.source,
@@ -121,7 +121,7 @@ class Element(ToJson):
         self.group = group
         self.properties = properties
 
-    def toJson(self):
+    def to_json(self):
         element = {'class': self.class_name, 'group': self.group}
         if self.properties is not None:
             element['properties'] = self.properties
@@ -133,8 +133,8 @@ class Entity(Element):
         super().__init__('gaffer.data.element.Entity', group, properties)
         self.vertex = vertex
 
-    def toJson(self):
-        entity = super().toJson()
+    def to_json(self):
+        entity = super().to_json()
         entity['vertex'] = self.vertex
         return entity
 
@@ -149,8 +149,8 @@ class Edge(Element):
         self.destination = destination
         self.directed = directed
 
-    def toJson(self):
-        edge = super().toJson()
+    def to_json(self):
+        edge = super().to_json()
         edge['source'] = self.source
         edge['destination'] = self.destination
         edge['directed'] = self.directed
@@ -163,50 +163,49 @@ class View(ToJson):
         self.entities = entities
         self.edges = edges
 
-    def toJson(self):
+    def to_json(self):
         view = {}
         if self.entities is not None:
             el_defs = {}
-            for elDef in self.entities:
-                el_defs[elDef.group] = elDef.toJson()
+            for el_def in self.entities:
+                el_defs[el_def.group] = el_def.to_json()
             view['entities'] = el_defs
         if self.edges is not None:
             el_defs = {}
-            for elDef in self.edges:
-                el_defs[elDef.group] = elDef.toJson()
+            for el_def in self.edges:
+                el_defs[el_def.group] = el_def.to_json()
             view['edges'] = el_defs
 
         return view
-
 
 class ElementDefinition(ToJson):
     def __init__(self, group, transient_properties=None, filter_functions=None,
                  transform_functions=None, group_by=None):
         super().__init__()
         self.group = group
-        self.transientProperties = transient_properties
-        self.preAggregationFilterFunctions = filter_functions
-        self.transformFunctions = transform_functions
+        self.transient_properties = transient_properties
+        self.pre_aggregation_filter_functions = filter_functions
+        self.transform_functions = transform_functions
         if group_by is None:
             group_by = []
         self.group_by = group_by
 
-    def toJson(self):
+    def to_json(self):
         element_def = {}
-        if self.transientProperties is not None:
+        if self.transient_properties is not None:
             props = {}
-            for prop in self.transientProperties:
+            for prop in self.transient_properties:
                 props[prop.name] = prop.class_name
             element_def['transientProperties'] = props
-        if self.preAggregationFilterFunctions is not None:
+        if self.pre_aggregation_filter_functions is not None:
             funcs = []
-            for func in self.preAggregationFilterFunctions:
-                funcs.append(func.toJson())
+            for func in self.pre_aggregation_filter_functions:
+                funcs.append(func.to_json())
             element_def['preAggregationFilterFunctions'] = funcs
-        if self.transformFunctions is not None:
+        if self.transform_functions is not None:
             funcs = []
-            for func in self.transformFunctions:
-                funcs.append(func.toJson())
+            for func in self.transform_functions:
+                funcs.append(func.to_json())
             element_def['transformFunctions'] = funcs
         element_def['groupBy'] = self.group_by
         return element_def
@@ -222,7 +221,7 @@ class Property(ToJson):
         self.name = name
         self.class_name = class_name
 
-    def toJson(self):
+    def to_json(self):
         return {self.name: self.class_name}
 
 
@@ -230,14 +229,14 @@ class GafferFunction(ToJson):
     def __init__(self, class_name, function_fields=None):
         super().__init__()
         self.class_name = class_name
-        self.functionFields = function_fields
+        self.function_fields = function_fields
 
-    def toJson(self):
+    def to_json(self):
         function_context = {}
         function = {'class': self.class_name}
-        if self.functionFields is not None:
-            for key in self.functionFields:
-                function[key] = self.functionFields[key]
+        if self.function_fields is not None:
+            for key in self.function_fields:
+                function[key] = self.function_fields[key]
         function_context['function'] = function
 
         return function_context
@@ -248,8 +247,8 @@ class FilterFunction(GafferFunction):
         super().__init__(class_name, function_fields)
         self.selection = selection
 
-    def toJson(self):
-        function_context = super().toJson()
+    def to_json(self):
+        function_context = super().to_json()
         function_context['selection'] = self.selection
 
         return function_context
@@ -261,8 +260,8 @@ class TransformFunction(GafferFunction):
         self.selection = selection
         self.projection = projection
 
-    def toJson(self):
-        function_context = super().toJson()
+    def to_json(self):
+        function_context = super().to_json()
         function_context['selection'] = self.selection
         function_context['projection'] = self.projection
 
@@ -286,28 +285,30 @@ class OperationChain(ToJson):
     def __init__(self, operations):
         self.operations = operations
 
-    def toJson(self):
+    def to_json(self):
         operations_json = []
         for operation in self.operations:
-            operations_json.append(operation.toJson())
+            operations_json.append(operation.to_json())
         return {'operations': operations_json}
 
 
 class Operation(ToJson):
-    def __init__(self, class_name, view=None, options=None):
+    def __init__(self, class_name, view=None, result_limit=None, options=None):
         self.class_name = class_name
         self.view = view
         self.options = options
+        self.result_limit = result_limit
 
     def convert_result(self, result):
         raise NotImplementedError('Use an implementation of Operation instead')
 
-    def toJson(self):
+    def to_json(self):
         operation = {'class': self.class_name}
         if self.options is not None:
             operation['options'] = self.options
         if self.view is not None:
-            operation['view'] = self.view.toJson()
+            operation['view'] = self.view.to_json()
+
         return operation
 
 
@@ -321,17 +322,17 @@ class AddElements(Operation):
                  view=None, options=None):
         super().__init__('gaffer.operation.impl.add.AddElements', view, options)
         self.elements = elements
-        self.skipInvalidElements = skip_invalid_elements
+        self.skip_invalid_elements = skip_invalid_elements
         self.validate = validate
 
-    def toJson(self):
-        operation = super().toJson()
-        operation['skipInvalidElements'] = self.skipInvalidElements
+    def to_json(self):
+        operation = super().to_json()
+        operation['skipInvalidElements'] = self.skip_invalid_elements
         operation['validate'] = self.validate
         if self.elements is not None:
             elements_json = []
             for element in self.elements:
-                elements_json.append(element.toJson())
+                elements_json.append(element.to_json())
             operation['elements'] = elements_json
         return operation
 
@@ -344,19 +345,19 @@ class GenerateElements(Operation):
                  objects=None, view=None, options=None):
         super().__init__('gaffer.operation.impl.generate.GenerateElements',
                          view, options)
-        self.generatorClassName = generator_class_name
-        self.elementGeneratorFields = element_generator_fields
+        self.generator_class_name = generator_class_name
+        self.element_generator_fields = element_generator_fields
         self.objects = objects
 
-    def toJson(self):
-        operation = super().toJson()
+    def to_json(self):
+        operation = super().to_json()
 
         if self.objects is not None:
             operation['objects'] = self.objects
 
-        element_generator = {'class': self.generatorClassName}
-        if self.elementGeneratorFields is not None:
-            for field in self.elementGeneratorFields:
+        element_generator = {'class': self.generator_class_name}
+        if self.element_generator_fields is not None:
+            for field in self.element_generator_fields:
                 element_generator[field.key] = field.value
         operation['elementGenerator'] = element_generator
         return operation
@@ -370,22 +371,22 @@ class GenerateObjects(Operation):
                  elements=None, view=None, options=None):
         super().__init__('gaffer.operation.impl.generate.GenerateObjects', view,
                          options)
-        self.generatorClassName = generator_class_name
-        self.elementGeneratorFields = element_generator_fields
+        self.generator_class_name = generator_class_name
+        self.element_generator_fields = element_generator_fields
         self.elements = elements
 
-    def toJson(self):
-        operation = super().toJson()
+    def to_json(self):
+        operation = super().to_json()
 
         if self.elements is not None:
             elements_json = []
             for element in self.elements:
-                elements_json.append(element.toJson())
+                elements_json.append(element.to_json())
             operation['elements'] = elements_json
 
-        element_generator = {'class': self.generatorClassName}
-        if self.elementGeneratorFields is not None:
-            for field in self.elementGeneratorFields:
+        element_generator = {'class': self.generator_class_name}
+        if self.element_generator_fields is not None:
+            for field in self.element_generator_fields:
                 element_generator[field.key] = field.value
         operation['elementGenerator'] = element_generator
         return operation
@@ -404,8 +405,8 @@ class InitialiseSetExport(Operation):
             raise TypeError('key must be a string')
         self.key = key
 
-    def toJson(self):
-        operation = super().toJson()
+    def to_json(self):
+        operation = super().to_json()
 
         if self.key is not None:
             operation['key'] = self.key
@@ -424,8 +425,8 @@ class UpdateExport(Operation):
             raise TypeError('key must be a string')
         self.key = key
 
-    def toJson(self):
-        operation = super().toJson()
+    def to_json(self):
+        operation = super().to_json()
 
         if self.key is not None:
             operation['key'] = self.key
@@ -453,8 +454,8 @@ class FetchExport(Operation):
             raise TypeError('key must be a string')
         self.key = key
 
-    def toJson(self):
-        operation = super().toJson()
+    def to_json(self):
+        operation = super().to_json()
 
         if self.key is not None:
             operation['key'] = self.key
@@ -466,10 +467,10 @@ class FetchExport(Operation):
 
 
 class GetOperation(Operation):
-    def __init__(self, class_name, seeds=None, view=None,
+    def __init__(self, class_name, seeds=None, view=None, result_limit=None,
                  include_entities=True, include_edges=IncludeEdges.ALL,
-                 in_out_type=InOutType.BOTH, options=None):
-        super().__init__(class_name, view, options)
+                 in_out_type=InOutType.BOTH, deduplicate=None, options=None):
+        super().__init__(class_name, view, result_limit, options)
         if not isinstance(class_name, str):
             raise TypeError(
                 'ClassName must be the operation class name as a string')
@@ -478,20 +479,21 @@ class GetOperation(Operation):
         self.include_entities = include_entities
         self.include_edges = include_edges
         self.in_out_type = in_out_type
+        self.deduplicate = deduplicate
 
     def convert_result(self, result):
         return ResultConverter.to_elements(result)
 
-    def toJson(self):
-        operation = super().toJson()
+    def to_json(self):
+        operation = super().to_json()
 
         if self.seeds is not None:
             json_seeds = []
             for seed in self.seeds:
                 if isinstance(seed, ElementSeed):
-                    json_seeds.append(seed.toJson())
+                    json_seeds.append(seed.to_json())
                 elif isinstance(seed, str):
-                    json_seeds.append(EntitySeed(seed).toJson())
+                    json_seeds.append(EntitySeed(seed).to_json())
                 else:
                     raise TypeError(
                         'Seeds argument must contain ElementSeed objects')
@@ -499,99 +501,106 @@ class GetOperation(Operation):
         operation['includeEntities'] = self.include_entities
         operation['includeEdges'] = self.include_edges
         operation['includeIncomingOutGoing'] = self.in_out_type
+
+        if self.deduplicate is not None:
+            operation['deduplicate'] = self.deduplicate
         return operation
 
 
 class GetRelatedElements(GetOperation):
-    def __init__(self, seeds=None, view=None,
+    def __init__(self, seeds=None, view=None, result_limit=None,
                  include_entities=True, include_edges=IncludeEdges.ALL,
-                 in_out_type=InOutType.BOTH, options=None):
+                 in_out_type=InOutType.BOTH, deduplicate=None, options=None):
         super().__init__('gaffer.operation.impl.get.GetRelatedElements', seeds,
-                         view, include_entities, include_edges,
-                         in_out_type, options)
+                         view, result_limit, include_entities, include_edges,
+                         in_out_type, deduplicate, options)
 
 
 class GetRelatedEntities(GetOperation):
-    def __init__(self, seeds=None, view=None,
-                 in_out_type=InOutType.BOTH, options=None):
+    def __init__(self, seeds=None, view=None, result_limit=None,
+                 in_out_type=InOutType.BOTH, deduplicate=None, options=None):
         super().__init__('gaffer.operation.impl.get.GetRelatedEntities', seeds,
-                         view, True, IncludeEdges.NONE,
-                         in_out_type, options)
+                         view, result_limit, True, IncludeEdges.NONE,
+                         in_out_type, deduplicate, options)
 
 
 class GetRelatedEdges(GetOperation):
-    def __init__(self, seeds=None, view=None,
+    def __init__(self, seeds=None, view=None, result_limit=None,
                  include_edges=IncludeEdges.ALL,
-                 in_out_type=InOutType.BOTH, options=None):
+                 in_out_type=InOutType.BOTH, deduplicate=None, options=None):
         super().__init__('gaffer.operation.impl.get.GetRelatedEdges', seeds,
-                         view, False, include_edges,
-                         in_out_type, options)
+                         view, result_limit, False, include_edges,
+                         in_out_type, deduplicate, options)
 
 
 class GetElementsBySeed(GetOperation):
-    def __init__(self, seeds=None, view=None,
+    def __init__(self, seeds=None, view=None, result_limit=None,
                  include_entities=True, include_edges=IncludeEdges.ALL,
-                 in_out_type=InOutType.BOTH, options=None):
+                 in_out_type=InOutType.BOTH, deduplicate=None, options=None):
         super().__init__('gaffer.operation.impl.get.GetElementsBySeed', seeds,
-                         view, include_entities, include_edges,
-                         in_out_type, options)
+                         view, result_limit, include_entities, include_edges,
+                         in_out_type, deduplicate, options)
 
 
 class GetEntitiesBySeed(GetOperation):
-    def __init__(self, seeds=None, view=None,
-                 in_out_type=InOutType.BOTH, options=None):
+    def __init__(self, seeds=None, view=None, result_limit=None,
+                 in_out_type=InOutType.BOTH, deduplicate=None, options=None):
         super().__init__('gaffer.operation.impl.get.GetEntitiesBySeed', seeds,
-                         view, True, IncludeEdges.NONE,
-                         in_out_type, options)
+                         view, result_limit, True, IncludeEdges.NONE,
+                         in_out_type, deduplicate, options)
 
 
 class GetEdgesBySeed(GetOperation):
-    def __init__(self, seeds=None, view=None,
+    def __init__(self, seeds=None, view=None, result_limit=None,
                  include_edges=IncludeEdges.ALL,
-                 in_out_type=InOutType.BOTH, options=None):
+                 in_out_type=InOutType.BOTH, deduplicate=None, options=None):
         super().__init__('gaffer.operation.impl.get.GetEntitiesBySeed', seeds,
-                         view, False, include_edges,
-                         in_out_type, options)
+                         view, result_limit, False, include_edges,
+                         in_out_type, deduplicate, options)
 
 
 class GetAdjacentEntitySeeds(GetOperation):
-    def __init__(self, seeds=None, view=None,
-                 in_out_type=InOutType.BOTH, options=None):
+    def __init__(self, seeds=None, view=None, result_limit=None,
+                 in_out_type=InOutType.BOTH, deduplicate=None, options=None):
         super().__init__('gaffer.operation.impl.get.GetAdjacentEntitySeeds',
-                         seeds, view, True, IncludeEdges.ALL,
-                         in_out_type, options)
+                         seeds, result_limit, view, True, IncludeEdges.ALL,
+                         in_out_type, deduplicate, options)
 
     def convert_result(self, result):
         return ResultConverter.to_entity_seeds(result)
 
 
 class GetAllElements(GetOperation):
-    def __init__(self, view=None, include_entities=True,
-                 include_edges=IncludeEdges.ALL, options=None):
+    def __init__(self, view=None, include_entities=True, result_limit=None,
+                 include_edges=IncludeEdges.ALL, deduplicate=None,
+                 options=None):
         super().__init__('gaffer.operation.impl.get.GetAllElements',
-                         None, view, include_entities, include_edges,
-                         InOutType.OUT, options)
+                         None, view, result_limit, include_entities,
+                         include_edges,
+                         InOutType.OUT, deduplicate, options)
 
     def convert_result(self, result):
         return ResultConverter.to_elements(result)
 
 
 class GetAllEntities(GetOperation):
-    def __init__(self, view=None, options=None):
+    def __init__(self, view=None, result_limit=None, deduplicate=None,
+                 options=None):
         super().__init__('gaffer.operation.impl.get.GetAllEntities',
-                         None, view, True, IncludeEdges.NONE,
-                         InOutType.OUT, options)
+                         None, view, result_limit, True, IncludeEdges.NONE,
+                         InOutType.OUT, deduplicate, options)
 
     def convert_result(self, result):
         return ResultConverter.to_elements(result)
 
 
 class GetAllEdges(GetOperation):
-    def __init__(self, view=None,
-                 include_edges=IncludeEdges.ALL, options=None):
+    def __init__(self, result_limit=None, view=None,
+                 include_edges=IncludeEdges.ALL, deduplicate=None,
+                 options=None):
         super().__init__('gaffer.operation.impl.get.GetAllEdges',
-                         None, view, False, include_edges,
-                         InOutType.OUT, options)
+                         None, view, result_limit, False, include_edges,
+                         InOutType.OUT, deduplicate, options)
 
     def convert_result(self, result):
         return ResultConverter.to_elements(result)
@@ -603,8 +612,8 @@ class CountGroups(Operation):
                          None, options)
         self.limit = limit
 
-    def toJson(self):
-        operation = super().toJson()
+    def to_json(self):
+        operation = super().to_json()
 
         if self.limit is not None:
             operation['limit'] = self.limit
@@ -613,3 +622,51 @@ class CountGroups(Operation):
 
     def convert_result(self, result):
         return result
+
+
+class GetGraph:
+    def get_url(self):
+        return self.url
+
+
+class GetSchema(GetGraph):
+    def __init__(self, url=None):
+        self.url = '/graph/schema'
+
+
+class GetFilterFunctions(GetGraph):
+    def __init__(self, url=None):
+        self.url = '/graph/filterFunctions'
+
+
+class GetClassFilterFunctions(GetGraph):
+    def __init__(self, class_name=None, url=None):
+        self.url = '/graph/filterFunctions/' + class_name
+
+
+class GetGenerators(GetGraph):
+    def __init__(self, url=None):
+        self.url = '/graph/generators'
+
+
+class GetOperations(GetGraph):
+    def __init__(self, url=None):
+        self.url = '/graph/operations'
+
+
+class GetSerialisedFields(GetGraph):
+    def __init__(self, class_name=None, url=None):
+        self.url = '/graph/serialisedFields/' + class_name
+
+
+class GetStoreTraits(GetGraph):
+    def __init__(self, url=None):
+        self.url = '/graph/storeTraits'
+
+
+class IsOperationSupported:
+    def __init__(self, operation=None):
+        self.operation = operation
+
+    def get_operation(self):
+        return self.operation
