@@ -18,18 +18,19 @@
 This module queries a Gaffer REST API with PKI authentication
 """
 
-import ssl
 import getpass
-import urllib.request
+import ssl
 import urllib.error
+import urllib.request
 
-import gafferConnector
+from gafferpy import gaffer_connector
 
 
-class GafferConnector(gafferConnector.GafferConnector):
+class GafferConnector(gaffer_connector.GafferConnector):
     def __init__(self, host, pki, protocol=None, verbose=False):
         """
-        This initialiser sets up a connection to the specified Gaffer server as per gafferConnector.GafferConnector and
+        This initialiser sets up a connection to the specified Gaffer server as
+        per gafferConnector.GafferConnector and
         requires the additional pki object.
         """
         super().__init__(host=host, verbose=verbose)
@@ -41,17 +42,20 @@ class GafferConnector(gafferConnector.GafferConnector):
 
 class PkiCredentials:
     """
-    This class holds a set of PKI credentials. These are loaded from a PEM file, which
-    should contain the private key and the public keys for the entire certificate chain.
+    This class holds a set of PKI credentials. These are loaded from a PEM file
+    which should contain the private key and the public keys for the entire
+    certificate chain.
     """
 
     def __init__(self, cert_filename, password=None):
         """
-        Construct the credentials class from a PEM file. If a password is not supplied
-        and the file is password-protected then the password will be requested.
+        Construct the credentials class from a PEM file. If a password is not
+        supplied and the file is password-protected then the password will be
+        requested.
         """
 
-        # Read the contents of the certificate file to check that it is readable
+        # Read the contents of the certificate file to check that it is
+        # readable
         with open(cert_filename, 'r') as cert_file:
             self._cert_file_contents = cert_file.read()
             cert_file.close()

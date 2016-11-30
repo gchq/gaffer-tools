@@ -22,7 +22,7 @@ To run the demo you will first need to build the corresponding version of Gaffer
 ```bash
 git clone https://github.com/gchq/Gaffer.git
 cd Gaffer
-git checkout gaffer2-0.4.6
+git checkout gaffer2-0.4.7
 mvn clean install -Pquick
 ```
 
