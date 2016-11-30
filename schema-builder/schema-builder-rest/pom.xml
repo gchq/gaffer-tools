@@ -19,7 +19,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <parent>
         <groupId>gaffer</groupId>
-        <artifactId>gaffer-tools</artifactId>
+        <artifactId>schema-builder</artifactId>
         <version>0.4.8-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
@@ -33,8 +33,8 @@
     <dependencies>
         <dependency>
             <groupId>gaffer</groupId>
-            <artifactId>example</artifactId>
-            <version>${project.parent.version}</version>
+            <artifactId>example-graph</artifactId>
+            <version>${gaffer.version}</version>
         </dependency>
         <dependency>
             <groupId>com.sun.jersey</groupId>
@@ -172,7 +172,7 @@
                             <webApp>
                                 <contextPath>/schema-builder</contextPath>
                             </webApp>
-                            <war>${project.basedir}/target/${project.artifactId}.war</war>
+                            <war>${project.basedir}/target/${project.artifactId}-${project.version}.war</war>
                         </configuration>
                         <executions>
                             <execution>
