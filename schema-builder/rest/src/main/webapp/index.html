@@ -1,0 +1,346 @@
+﻿<!DOCTYPE html>
+
+<!--
+  ~ Copyright 2016 Crown Copyright
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<html>
+<head>
+    <meta charset=utf-8/>
+    <meta name="viewport"
+          content="user-scalable=no, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0">
+    <title>Gaffer Schema Builder</title>
+    <script src="js/jquery.min.js"></script>
+    <script src="js/cytoscape.min.js"></script>
+    <script src="js/angular.min.js"></script>
+    <script src="js/cytoscape-edgehandles.js"></script>
+    <script src="js/schema-builder-app.js"></script>
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/bootstrap-theme.min.css" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet"/>
+</head>
+
+<body ng-app="app" ng-controller="ElementsCtrl">
+
+<nav class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+        <div class="navbar-header">
+            <a class="navbar-brand" href=".">Gaffer Schema Builder</a>
+        </div>
+        <div id="navbar">
+            <ul class="nav navbar-nav">
+                <li ng-class="{ active: showGraph }">
+                    <a href="#graph" ng-click="openGraph()">Graph</a>
+                </li>
+                <li ng-class="{ active: showTypes }">
+                    <a href="#types" ng-click="openTypes()">Types</a>
+                </li>
+                <li ng-class="{ active: showSchema }">
+                    <a href="#schema" ng-click="openSchema()">Schema</a>
+                </li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                <li><a class="nav-button">
+                    <button ng-click="addNewVertex()"
+                            class="btn btn-primary">Add vertex
+                    </button>
+                </a></li>
+                <li><a class="nav-button">
+                    <button ng-click="redraw()"
+                            class="btn btn-default">Redraw
+                    </button>
+                </a></li>
+                <li><a class="nav-button">
+                    <button ng-click="clear();initialise();"
+                            class="btn btn-danger">Clear
+                    </button>
+                </a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div id="cy" ng-show="showGraph"></div>
+
+<div class="container" ng-show="showTypes">
+    <div class="panelHeading">
+        <h4 class="inline right-space">Types</h4>
+        <button class="btn btn-primary inline" ng-click="addType()">
+            Add type
+        </button>
+    </div>
+
+    <div ng-repeat="(type, typeDef) in types">
+        <div class="alert alert-warning" role="alert"
+             ng-show="typeDef.valid === false">
+            <strong>Warning! </strong>{{typeDef.validateMsg}}
+        </div>
+    </div>
+    <table class="table table-striped">
+        <tbody>
+        <tr>
+            <th>Type</th>
+            <th>Java Class</th>
+            <th>Validate Functions</th>
+            <th>Aggregate Function</th>
+            <th>Serialiser</th>
+            <th>Position</th>
+            <th></th>
+        </tr>
+        <tr ng-repeat="(type, typeDef) in types">
+            <td>
+                <input class="form-control" type="text" placeholder="Type name"
+                       ng-focus="typeDef.prevName = type"
+                       ng-blur="onTypeNameChange(type, typeDef.prevName)"
+                       ng-keyup="$event.which === 13 && onTypeNameChange(type, typeDef.prevName)"
+                       ng-disabled="typeDef.locked"
+                       ng-model="type"/>
+            </td>
+            <td>
+                <input class="form-control" type="text"
+                       placeholder="Full java class name"
+                       ng-blur="onTypeClassChange(type)"
+                       ng-keyup="$event.which === 13 && onTypeClassChange(type, typeDef)"
+                       ng-model="typeDef.class"/>
+            </td>
+            <td>
+                <table class="table transparent">
+                    <tbody>
+                    <tr>
+                        <th>ValidateFunction</th>
+                    </tr>
+                    <tr ng-repeat="validateFunction in typeDef.validateFunctions">
+                        <td>
+                            <select class="form-control"
+                                    ng-model="validateFunction.class"
+                                    ng-options="validateFunction as validateFunction for validateFunction in typeDef.availableValidateFunctions">
+                            </select>
+                            <input class="form-control" type="text"
+                                   placeholder="Fields"
+                                   ng-model="validateFunction.fields"/>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+                <button class="btn btn-default"
+                        ng-click="addValidateFunction(typeDef)">
+                    Add function
+                </button>
+            </td>
+            <td>
+                <select class="form-control"
+                        ng-model="typeDef.aggregateFunction.class"
+                        ng-options="aggregateFunction as aggregateFunction for aggregateFunction in typeDef.availableAggregateFunctions"
+                        ng-show="!typeDef.locked">
+                </select>
+                <input class="form-control" type="text"
+                       placeholder="Fields"
+                       ng-model="typeDef.aggregateFunction.fields"
+                       ng-show="!typeDef.locked"/>
+            </td>
+            <td>
+                <select class="form-control" ng-model="typeDef.serialiser"
+                        ng-options="serialiser as serialiser for serialiser in typeDef.availableSerialisers"
+                        ng-show="!typeDef.locked">
+                </select>
+            </td>
+            <td>
+                <select class="form-control" ng-model="typeDef.position"
+                        ng-options="position.value as position.key for position in positions"
+                        ng-show="!typeDef.locked">
+                </select>
+            </td>
+            <td>
+                <button class="btn btn-danger"
+                        ng-click="deleteType(type)"
+                        ng-show="!typeDef.locked">
+                    Delete
+                </button>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+<div class="container" ng-show="showSchema">
+    <div class="panelHeading">
+        <h4 class="inline right-space">Schema</h4>
+        <button class="btn btn-primary inline" ng-show="!editSchema"
+                ng-click="openEditSchema()">
+            Edit
+        </button>
+        <button class="btn btn-primary inline" ng-show="editSchema"
+                ng-click="saveSchema()">
+            Save
+        </button>
+    </div>
+
+    <div class="alert alert-warning" role="alert" ng-show="!validSchema">
+        <strong>Warning! </strong>{{validateMsg}}
+    </div>
+
+    <h5>Data schema</h5>
+    <textarea ng-model="dataSchemaJson" ng-show="editSchema"></textarea>
+        <pre ng-show="!editSchema">
+            {{dataSchema | json}}
+        </pre>
+    <h5>Data types</h5>
+    <textarea ng-model="dataTypesJson" ng-show="editSchema"></textarea>
+        <pre ng-show="!editSchema">
+            {{dataTypes | json}}
+        </pre>
+    <h5>Store types</h5>
+    <textarea ng-model="storeTypesJson" ng-show="editSchema"></textarea>
+        <pre ng-show="!editSchema">
+            {{storeTypes | json}}
+        </pre>
+</div>
+
+<div id="footer" class="container">
+    <div ng-show="selectedVertex">
+        <div class="panelHeading">
+            <h4 class="inline">Selected Vertex:</h4>
+            <input class="form-control inline" type="text"
+                   ng-model="selectedVertex.id"
+                   ng-keyup="$event.which === 13 && onVertexIdChange(selectedVertex)"
+                   ng-blur="onVertexIdChange(selectedVertex)"/>
+            <button class="btn btn-danger"
+                    ng-click="deleteVertex(selectedVertex)">
+                Delete
+            </button>
+        </div>
+        <h4>Entity groups</h4>
+        <table class="table table-striped">
+            <tbody>
+            <tr>
+                <th>Group</th>
+                <th>Properties</th>
+                <th></th>
+            </tr>
+            <tr ng-repeat="group in selectedVertex.groups">
+                <td>
+                    <input class="form-control" type="text"
+                           ng-model="group.name"/>
+                </td>
+                <td>
+                    <table class="table transparent">
+                        <tbody>
+                        <tr ng-repeat="property in group.properties">
+                            <td>
+                                <input class="form-control" type="text"
+                                       ng-model="property.name"/>
+                            </td>
+                            <td>
+                                <select class="form-control"
+                                        ng-model="property.type"
+                                        ng-options="name as name for (name, def) in types">
+                                </select>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    <button class="btn btn-default"
+                            ng-click="addProperty(group.properties)">
+                        Add property
+                    </button>
+                </td>
+                <td>
+                    <button class="btn btn-danger"
+                            ng-click="deleteGroup(selectedVertex.groups, group)">
+                        Delete group
+                    </button>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+        <button class="btn btn-primary"
+                ng-click="addEntityGroup(selectedVertex)">
+            Add group
+        </button>
+    </div>
+
+
+    <div ng-show="selectedEdge">
+        <div class="panelHeading">
+            <h4 class="inline">Selected Edge</h4>
+            <button class="btn btn-danger" ng-click="deleteEdge(selectedEdge)">
+                Delete
+            </button>
+        </div>
+        <table class="table table-striped" ng-show="selectedEdge">
+            <tbody>
+            <tr>
+                <th>Source</th>
+                <th>Destination</th>
+                <th>Directed</th>
+                <th>Group</th>
+                <th>Properties</th>
+            </tr>
+            <tr>
+                <td>
+                    <select class="form-control" ng-model="selectedEdge.source"
+                            ng-change="onSourceChange(selectedEdge)"
+                            ng-options="vertex._id as vertex.id for (id, vertex) in verticesById">
+                    </select>
+                </td>
+                <td>
+                    <select class="form-control"
+                            ng-model="selectedEdge.destination"
+                            ng-change="onDestinationChange(selectedEdge)"
+                            ng-options="vertex._id as vertex.id for (id, vertex) in verticesById">
+                    </select>
+                </td>
+                <td>
+                    <select class="form-control"
+                            ng-model="selectedEdge.directed"
+                            ng-change="onDirectedChange(selectedEdge)"
+                            ng-options="opt.v as opt.k for opt in [{ k: 'True', v: true }, { k: 'False', v: false }]">
+                    </select>
+                </td>
+                <td>
+                    <input class="form-control" type="text"
+                           ng-model="selectedEdge.group.name"
+                           ng-keyup="$event.which === 13 && onEdgeGroupChange(selectedEdge)"
+                           ng-blur="onEdgeGroupChange(selectedEdge)"/>
+                </td>
+                <td>
+                    <table class="table transparent">
+                        <tbody>
+                        <tr ng-repeat="property in selectedEdge.group.properties">
+                            <td>
+                                <input class="form-control" type="text"
+                                       ng-model="property.name"/>
+                            </td>
+                            <td>
+                                <select class="form-control"
+                                        ng-model="property.type"
+                                        ng-options="name as name for (name, def) in types">
+                                </select>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    <button class="btn btn-default"
+                            ng-click="addProperty(selectedEdge.group.properties)">
+                        Add property
+                    </button>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+</body>
+</html>

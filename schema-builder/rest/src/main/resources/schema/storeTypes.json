@@ -1,0 +1,18 @@
+{
+  "types": {
+    "int": {
+      "position": "VALUE",
+      "aggregateFunction": {
+        "class": "gaffer.function.simple.aggregate.Sum"
+      },
+      "serialiserClass": "gaffer.serialisation.simple.IntegerSerialiser"
+    },
+    "string": {
+      "position": "VALUE",
+      "aggregateFunction": {
+        "class": "gaffer.function.simple.aggregate.StringConcat"
+      },
+      "serialiserClass": "gaffer.serialisation.simple.StringSerialiser"
+    }
+  }
+}
