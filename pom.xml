@@ -21,7 +21,7 @@
     <parent>
         <groupId>gaffer</groupId>
         <artifactId>gaffer2</artifactId>
-        <version>0.4.6</version>
+        <version>0.4.7</version>
     </parent>
 
     <artifactId>gaffer-tools</artifactId>
@@ -35,7 +35,7 @@
     </modules>
 
     <properties>
-        <gaffer.version>0.4.6</gaffer.version>
+        <gaffer.version>0.4.7</gaffer.version>
         <scm.url>
             https://github.com/gchq/gaffer-tools
         </scm.url>
