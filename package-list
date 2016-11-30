@@ -1,6 +1,3 @@
-gaffer.gafferpop
-gaffer.gafferpop.generator
-gaffer.gafferpop.groovyplugin
 gaffer.graphql
 gaffer.graphql.definitions
 gaffer.graphql.fetch
