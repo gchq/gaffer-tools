@@ -15,7 +15,7 @@ limitations under the License.
 Python shell
 ============
 
-This python shell connects to a Gaffer REST API and requires python 3.x
+This python shell connects to a Gaffer REST API and requires Python 3.x
 
 To start using the python shell you will need an instance of the REST API running.
 You can start the Gaffer example rest server (see Gaffer repository example-rest/README.md) using the command on the Gaffer project:
@@ -24,10 +24,10 @@ You can start the Gaffer example rest server (see Gaffer repository example-rest
 mvn clean install -Pquick -Pstandalone
 ```
 
-Once this is running you can run the python example using the command:
+Once this is running you can run the python example by using the command (all commands are run from the root of the python-shell project):
 
 ```
-python3 python-shell/src/main/python/example.py
+python3 src/example.py
 ```
 
 Alternatively if you have you own REST API running that is authenticated with
@@ -35,5 +35,35 @@ PKI certificates then you can follow the pki example. Before using the example y
 will need to export your PKI certificate into a .pem file:
 
 ```
-python3 python-shell/src/main/python/examplePki.py
+python3 src/examplePki.py
+```
+
+## Installation
+
+The python shell can be compiled and distributed for inclusion in other Python projects.
+
+Compilation of the project requires the bdist package, this can be installed using pip:
+
+```bash
+pip3 install bdist
+```
+
+The project can then be compiled by running the following command from the root of the python-shell project:
+
+```bash
+python3 setup.py bdist_wheel
+```
+
+This creates a distributable Python wheel which can installed locally to provide the Gaffer Python shell to other applications.
+
+The wheel file is install using pip:
+
+```bash
+pip3 install gaffer_shell-0.4.6-py2.py3-none-any.whl
+```
+
+After installation the shell can be imported into an application as below:
+
+```python
+from gaffer_shell import gaffer as g
 ```

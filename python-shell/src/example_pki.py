@@ -14,19 +14,18 @@
 # limitations under the License.
 #
 
-import gafferConnectorPki
+from gafferpy import gaffer_connector_pki
 import example
-
 
 def run(host, verbose=False, pki_cert='cert.pem'):
     # Store your PKI certificate in file cert.pem
-    pki = gafferConnectorPki.PkiCredentials(pki_cert)
+    pki = gaffer_connector_pki.PkiCredentials(pki_cert)
 
     example.run_with_connector(create_connector(host, pki, verbose))
 
 
 def create_connector(host, pki, verbose=False):
-    return gafferConnectorPki.GafferConnector(host, pki, verbose)
+    return gaffer_connector_pki.GafferConnector(host, pki, verbose)
 
 
 if __name__ == "__main__":
