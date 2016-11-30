@@ -14,8 +14,8 @@
 # limitations under the License.
 #
 
-import gaffer as g
-import gafferConnector
+from gafferpy import gaffer as g
+from gafferpy import gaffer_connector
 
 
 def run(host, verbose=False):
@@ -27,6 +27,16 @@ def run_with_connector(gc):
     print('Running operations')
     print('--------------------------')
     print()
+
+    get_schema(gc)
+    get_filter_functions(gc)
+    get_class_filter_functions(gc)
+    get_generators(gc)
+    get_operations(gc)
+    get_serialised_fields(gc)
+    get_store_traits(gc)
+
+    is_operation_supported(gc)
 
     add_elements(gc)
     get_elements(gc)
@@ -40,7 +50,97 @@ def run_with_connector(gc):
 
 
 def create_connector(host, verbose=False):
-    return gafferConnector.GafferConnector(host, verbose)
+    return gaffer_connector.GafferConnector(host, verbose)
+
+
+def get_schema(gc):
+    # Get Schema
+    result = gc.execute_get(
+        g.GetSchema()
+    )
+
+    print('Schema:')
+    print(result)
+    print()
+
+
+def get_filter_functions(gc):
+    # Get Schema
+    result = gc.execute_get(
+        g.GetFilterFunctions()
+    )
+
+    print('Filter Functions:')
+    print(result)
+    print()
+
+
+def get_class_filter_functions(gc):
+    # Get Schema
+    class_name = 'gaffer.function.simple.filter.IsMoreThan'
+    result = gc.execute_get(
+        g.GetClassFilterFunctions(class_name=class_name)
+    )
+
+    print('Class Filter Functions (gaffer.function.simple.filter.IsMoreThan):')
+    print(result)
+    print()
+
+
+def get_generators(gc):
+    # Get Schema
+    result = gc.execute_get(
+        g.GetGenerators()
+    )
+
+    print('Generators:')
+    print(result)
+    print()
+
+
+def get_operations(gc):
+    # Get Schema
+    result = gc.execute_get(
+        g.GetOperations()
+    )
+
+    print('Operations:')
+    print(result)
+    print()
+
+
+def get_serialised_fields(gc):
+    # Get Schema
+    class_name = 'gaffer.function.simple.filter.IsMoreThan'
+    result = gc.execute_get(
+        g.GetSerialisedFields(class_name=class_name)
+    )
+
+    print('Serialised Fields (gaffer.function.simple.filter.IsMoreThan):')
+    print(result)
+    print()
+
+
+def get_store_traits(gc):
+    # Get Store Traits
+    result = gc.execute_get(
+        g.GetStoreTraits()
+    )
+
+    print('Store Traits:')
+    print(result)
+    print()
+
+
+def is_operation_supported(gc):
+    operation = 'gaffer.operation.impl.add.AddElements'
+    result = gc.is_operation_supported(
+        g.IsOperationSupported(operation=operation)
+    )
+
+    print('\nOperation supported ("gaffer.operation.impl.add.AddElements"):')
+    print(result)
+    print()
 
 
 def add_elements(gc):
@@ -96,6 +196,8 @@ def add_elements(gc):
 
 def get_elements(gc):
     # Get Elements
+    filter_class = 'gaffer.function.simple.filter.IsEqual'
+    transform_class = 'gaffer.rest.example.ExampleTransformFunction'
     elements = gc.execute_operation(
         g.GetRelatedElements(
             seeds=[g.EntitySeed('1')],
@@ -137,7 +239,7 @@ def get_elements(gc):
 
 def get_adj_seeds(gc):
     # Adjacent Elements - chain 2 adjacent entities together
-    adjSeeds = gc.execute_operations(
+    adj_seeds = gc.execute_operations(
         [
             g.GetAdjacentEntitySeeds(
                 seeds=[
@@ -151,16 +253,19 @@ def get_adj_seeds(gc):
         ]
     )
     print('Adjacent entities - 2 hop')
-    print(adjSeeds)
+    print(adj_seeds)
     print()
 
 
 def get_all_elements(gc):
-    # Adjacent Elements - chain 2 adjacent entities together
+    # Get all elements, but limit the total results to 3, deduplication true
     all_elements = gc.execute_operation(
-        g.GetAllElements()
+        g.GetAllElements(
+            result_limit=3,
+            deduplicate=True
+        )
     )
-    print('All elements')
+    print('All elements (Limited to first 3)')
     print(all_elements)
     print()
 
@@ -258,5 +363,5 @@ def get_sub_graph(gc):
     print()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     run('http://localhost:8080/rest/v1')
