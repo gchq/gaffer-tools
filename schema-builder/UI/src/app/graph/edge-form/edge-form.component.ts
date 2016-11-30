@@ -1,6 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { LocalStorageService } from 'ng2-webstorage';
-declare var $: any;
+import { UUID } from 'angular2-uuid';
 
 @Component({
     selector: 'app-edge-form',
@@ -12,6 +12,7 @@ export class EdgeFormComponent implements OnInit {
     _edges: any;
     _nodes: any;
     _network: any;
+    _storedTypes: any;
     nodeOptions: any;
 
     @Input()
@@ -40,11 +41,23 @@ export class EdgeFormComponent implements OnInit {
     constructor(private storage: LocalStorageService) { }
 
     ngOnInit() {
-
+        this._storedTypes = this.storage.retrieve('types');
     }
 
     changeEdge(value: any, key: any) {
         this._edge[key] = value;
+    }
+
+    addNewProperty() {
+        let uuid = UUID.UUID();
+        if (!this._edge.properties) {
+            this._edge.properties = [];
+        }
+        this._edge.properties.push({
+            id: uuid,
+            name: 'New Property',
+            type: this._storedTypes[0].type || 'string'
+        })
     }
 
     save(isValid: boolean, e: any) {

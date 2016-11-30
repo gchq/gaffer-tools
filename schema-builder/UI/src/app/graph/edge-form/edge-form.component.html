@@ -25,6 +25,27 @@
                     </select>
                     <label>Directed</label>
                 </div>
+                <div class="row">
+                    <div class="col s2">
+                        <button md-raised-button color="accent" (click)="addNewProperty();" class="button-spacing">
+                            Add Property
+                        </button>
+                    </div>
+                </div>
+            
+                <div class="row" *ngFor="let property of _edge.properties">
+                    <h5 style="margin-left: 10px; font-size: 16pt">{{property.name}}</h5>
+                    <div class="input-field col s6 m6 l12">
+                        <input class="form-control" type="text" name="{{property.id}}Name" placeholder="Property name" [(ngModel)]="property.name">
+                        <label>Property Name</label>
+                    </div>
+                    <div class="input-field col s6 m6 l12">
+                        <select id="{{property.id}}Type" materialize="material_select" [materializeSelectOptions]="_storedTypes" (change)="property.type = $event.target.value">
+                            <option *ngFor="let type of _storedTypes" [value]="type.type" [selected]="property.type === type.type">{{type.type}}</option>
+                        </select>
+                        <label>Property Type</label>
+                    </div>
+                </div>
             </div>
             <button class="form-button" type="submit" (click)="save(e.value, e.valid)" md-raised-button color="primary">Update</button>
         </div>
