@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package gaffer.gafferpop.generator;
+package uk.gov.gchq.gaffer.gafferpop.generator;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -25,11 +25,11 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 
 import com.google.common.collect.Lists;
-import gaffer.commonutil.TestGroups;
-import gaffer.commonutil.TestPropertyNames;
-import gaffer.data.element.Edge;
-import gaffer.gafferpop.GafferPopEdge;
-import gaffer.gafferpop.GafferPopGraph;
+import uk.gov.gchq.gaffer.commonutil.TestGroups;
+import uk.gov.gchq.gaffer.commonutil.TestPropertyNames;
+import uk.gov.gchq.gaffer.data.element.Edge;
+import uk.gov.gchq.gaffer.gafferpop.GafferPopEdge;
+import uk.gov.gchq.gaffer.gafferpop.GafferPopGraph;
 import org.junit.Test;
 
 public class GafferPopEdgeGeneratorTest {

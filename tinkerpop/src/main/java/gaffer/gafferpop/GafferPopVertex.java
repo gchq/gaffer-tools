@@ -13,9 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package gaffer.gafferpop;
+package uk.gov.gchq.gaffer.gafferpop;
 
-import gaffer.data.elementdefinition.view.View;
+import uk.gov.gchq.gaffer.data.elementdefinition.view.View;
 import org.apache.tinkerpop.gremlin.structure.Direction;
 import org.apache.tinkerpop.gremlin.structure.Edge;
 import org.apache.tinkerpop.gremlin.structure.Graph;

@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package gaffer.gafferpop;
+package uk.gov.gchq.gaffer.gafferpop;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertSame;
@@ -25,8 +25,8 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 
 import com.google.common.collect.Lists;
-import gaffer.commonutil.TestGroups;
-import gaffer.commonutil.TestPropertyNames;
+import uk.gov.gchq.gaffer.commonutil.TestGroups;
+import uk.gov.gchq.gaffer.commonutil.TestPropertyNames;
 import org.apache.tinkerpop.gremlin.structure.Property;
 import org.apache.tinkerpop.gremlin.structure.Vertex;
 import org.hamcrest.core.IsCollectionContaining;

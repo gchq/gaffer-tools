@@ -62,7 +62,7 @@ For example:
     "source": "M32:1",
     "destination": "M32:M4 (19)",
     "directed": true,
-    "class": "gaffer.data.element.Edge",
+    "class": "uk.gov.gchq.gaffer.data.element.Edge",
     "properties": {
       "countByVehicleType": {
         "gaffer.types.simple.FreqMap": {

@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package gaffer.gafferpop;
+package uk.gov.gchq.gaffer.gafferpop;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -24,10 +24,10 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
 
-import gaffer.commonutil.StreamUtil;
-import gaffer.data.elementdefinition.view.View;
-import gaffer.graph.Graph;
-import gaffer.user.User;
+import uk.gov.gchq.gaffer.commonutil.StreamUtil;
+import uk.gov.gchq.gaffer.data.elementdefinition.view.View;
+import uk.gov.gchq.gaffer.graph.Graph;
+import uk.gov.gchq.gaffer.user.User;
 import org.apache.commons.configuration.BaseConfiguration;
 import org.apache.commons.configuration.Configuration;
 import org.apache.tinkerpop.gremlin.process.computer.GraphComputer;

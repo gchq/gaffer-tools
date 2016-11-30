@@ -13,15 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package gaffer.gafferpop.generator;
+package uk.gov.gchq.gaffer.gafferpop.generator;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-import gaffer.data.element.Edge;
-import gaffer.data.element.Element;
-import gaffer.data.element.Entity;
-import gaffer.data.generator.OneToOneElementGenerator;
-import gaffer.gafferpop.GafferPopEdge;
-import gaffer.gafferpop.GafferPopGraph;
+import uk.gov.gchq.gaffer.data.element.Edge;
+import uk.gov.gchq.gaffer.data.element.Element;
+import uk.gov.gchq.gaffer.data.element.Entity;
+import uk.gov.gchq.gaffer.data.generator.OneToOneElementGenerator;
+import uk.gov.gchq.gaffer.gafferpop.GafferPopEdge;
+import uk.gov.gchq.gaffer.gafferpop.GafferPopGraph;
 import org.apache.tinkerpop.gremlin.structure.Property;
 import java.util.Iterator;
 import java.util.Map.Entry;

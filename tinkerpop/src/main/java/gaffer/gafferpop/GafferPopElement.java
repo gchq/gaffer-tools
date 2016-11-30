@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package gaffer.gafferpop;
+package uk.gov.gchq.gaffer.gafferpop;
 
 import org.apache.tinkerpop.gremlin.structure.Element;
 import org.apache.tinkerpop.gremlin.structure.util.ElementHelper;
