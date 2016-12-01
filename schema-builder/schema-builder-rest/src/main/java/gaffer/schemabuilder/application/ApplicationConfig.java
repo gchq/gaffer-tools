@@ -16,12 +16,13 @@
 package gaffer.schemabuilder.application;
 
 import gaffer.schemabuilder.service.SchemaBuilderService;
+
 import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.Application;
 import java.util.HashSet;
 import java.util.Set;
 
-@ApplicationPath("rest")
+@ApplicationPath("v1")
 public class ApplicationConfig extends Application {
     protected final Set<Object> singletons = new HashSet<>();
     protected final Set<Class<?>> resources = new HashSet<>();

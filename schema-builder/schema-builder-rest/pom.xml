@@ -170,7 +170,7 @@
                         <version>9.2.11.v20150529</version>
                         <configuration>
                             <webApp>
-                                <contextPath>/schema-builder</contextPath>
+                                <contextPath>/schema-builder-rest</contextPath>
                             </webApp>
                             <war>${project.basedir}/target/${project.artifactId}-${project.version}.war</war>
                         </configuration>
