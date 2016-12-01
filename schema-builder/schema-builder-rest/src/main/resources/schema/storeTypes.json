@@ -1,0 +1,14 @@
+{
+  "types": {
+    "int": {
+      "aggregateFunction": {
+        "class": "gaffer.function.simple.aggregate.Sum"
+      }
+    },
+    "string": {
+      "aggregateFunction": {
+        "class": "gaffer.function.simple.aggregate.StringConcat"
+      }
+    }
+  }
+}
