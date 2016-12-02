@@ -9,14 +9,6 @@
                 <input class="form-control" type="text" name="class" placeholder="Java class" [(ngModel)]="_type.class" (ngModelChange)="changeType($event, 'class')">
                 <label>Java class</label>
             </div>
-            <div class="input-field col s12" *ngIf="!_type.node">
-                <select id="position" materialize="material_select" (change)="changeType($event.target.value, 'position')">
-                    <option value="NULL" [selected]="_type.position === null || _type.position === 'NULL'">null</option>
-                    <option value="KEY" [selected]="_type.position === 'KEY'">key</option>
-                    <option value="VALUE" [selected]="_type.position === 'VALUE'">value</option>
-                </select>
-                <label>Position</label>
-            </div>
             <div class="input-field col s12" *ngIf="functions && functions.valid && !_type.node">
                 <select id="serialiserClass" materialize="material_select" [materializeSelectOptions]="functions.serialiserClasses" (change)="changeType($event.target.value, 'serialiserClass')">
                     <option value="NULL" [selected]="_type.serialiserClass === null || _type.serialiserClass === 'NULL'">null</option>

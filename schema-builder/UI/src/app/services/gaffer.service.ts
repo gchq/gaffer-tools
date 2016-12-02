@@ -26,7 +26,7 @@ export class GafferService {
   }
 
   getCommonTypes(): Observable<any> {
-    let gafferUrl = 'http://localhost:8080/schema-builder/rest/commonSchema';
+    let gafferUrl = 'http://localhost:8080/schema-builder-rest/v1/commonSchema';
     let headers = new Headers({ 'Content-Type': 'application/json' });
     let options = new RequestOptions({ headers: headers });
     return this.http.get(gafferUrl, options)
@@ -35,7 +35,7 @@ export class GafferService {
   }
 
   getSimpleFunctions(typeName: string, typeClass: string): Observable<any> {
-    let gafferUrl = 'http://localhost:8080/schema-builder/rest/functions';
+    let gafferUrl = 'http://localhost:8080/schema-builder-rest/v1/functions';
     let headers = new Headers({ 'Content-Type': 'application/json' });
     let options = new RequestOptions({ headers: headers });
     let params = {
@@ -48,7 +48,7 @@ export class GafferService {
   }
 
   validateSchema(dataSchema: any, dataTypes: any, storeTypes: any): Observable<any> {
-    let gafferUrl = 'http://localhost:8080/schema-builder/rest/validate';
+    let gafferUrl = 'http://localhost:8080/schema-builder-rest/v1/validate';
     let headers = new Headers({ 'Content-Type': 'application/json' });
     let options = new RequestOptions({ headers: headers });
     let params = [dataSchema, dataTypes, storeTypes];

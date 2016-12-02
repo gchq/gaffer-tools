@@ -61,7 +61,6 @@ export class TypesComponent implements OnInit {
     addNewType() {
         this.types.push({
             type: 'new type',
-            position: null,
             aggregateFunction: null,
             serialiserClass: null,
             class: '',

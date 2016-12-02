@@ -1,16 +1,17 @@
 <div style="padding: 15px;">
     <div class="row">
         <div class="col s12 m10 offset-m1 l10 offset-l1">
-            <div *ngIf="validation" style="margin: 30px 0;">
-                <h5 style="color:green;" *ngIf="validation.valid">
-                    <md-icon class="md-16" >check</md-icon>
+            <div style="margin: 30px 0;">
+                <h5 style="color:green;" *ngIf="(validation && validation.valid) && !errorMessage">
+                    <md-icon class="md-16">check</md-icon>
                     {{validation.message}}
                 </h5>
-                <h5 style="color:red;" *ngIf="!validation.valid">
+                <h5 style="color:red;" *ngIf="(validation && !validation.valid) || errorMessage">
                     <md-icon class="md-16">close</md-icon>
                     {{validation.message}}
                 </h5>
             </div>
+            <pre>{{errorMessage | json}}</pre>
             <md-card style="margin-bottom: 20px;">
                 <div class="content-card-header">
                     <md-card-title>Data Schema</md-card-title>
