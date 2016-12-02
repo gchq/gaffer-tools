@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { LocalStorageService } from 'ng2-webstorage';
 import { GafferService } from '../services/gaffer.service';
 
+declare var $: any;
+
 @Component({
     selector: 'app-schema',
     templateUrl: './schema.component.html',
@@ -18,6 +20,7 @@ export class SchemaComponent implements OnInit {
     commonTypes: any;
     validation: any;
     errorMessage: any;
+    editingDataSchema: Boolean;
 
     parseDataSchema() {
         this.dataSchema = {
