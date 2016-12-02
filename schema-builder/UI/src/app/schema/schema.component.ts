@@ -97,7 +97,6 @@ export class SchemaComponent implements OnInit {
                 let type = this.schema.types[key];
                 if (type.aggregateFunction !== null || type.serialiserClass !== null) {
                     let formattedType = {
-                        position: type.position || null,
                         aggregateFunction: type.aggregateFunction || null,
                         serialiserClass: type.serialiserClass || null
                     };
