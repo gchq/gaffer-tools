@@ -144,23 +144,25 @@ export class SchemaComponent implements OnInit {
                 _.forEach(editedText.edges, (editedEdge: any, edgeName) => {
                     let fromId;
                     let toId;
-                    if (!_.some(newNodes, {label: editedEdge.source})) {
+                    if (!_.some(newNodes, { label: editedEdge.source })) {
                         fromId = UUID.UUID();
                         newNodes.push({
                             id: fromId,
+                            entities: [],
                             label: editedEdge.source
                         });
                     } else {
-                        fromId = _.find(newNodes, {label: editedEdge.source}).id;
+                        fromId = _.find(newNodes, { label: editedEdge.source }).id;
                     }
-                    if (!_.some(newNodes, {label: editedEdge.destination})) {
+                    if (!_.some(newNodes, { label: editedEdge.destination })) {
                         toId = UUID.UUID();
                         newNodes.push({
                             id: toId,
+                            entities: [],
                             label: editedEdge.destination
                         });
                     } else {
-                        toId = _.find(newNodes, {label: editedEdge.destination}).id;
+                        toId = _.find(newNodes, { label: editedEdge.destination }).id;
                     }
                     let props = [];
                     _.forEach(editedEdge.properties, (value: string, name) => {
@@ -168,7 +170,7 @@ export class SchemaComponent implements OnInit {
                             id: UUID.UUID(),
                             name: name,
                             type: value
-                        })
+                        });
                     });
                     newEdges.push({
                         id: UUID.UUID(),
@@ -179,6 +181,43 @@ export class SchemaComponent implements OnInit {
                         arrows: 'to',
                         to: toId
                     });
+                });
+            }
+            if (editedText.entities) {
+                _.forEach(editedText.entities, (editedEntity: any, entityName) => {
+                    let nodeId;
+                    let props = [];
+                    _.forEach(editedEntity.properties, (value: string, name) => {
+                        props.push({
+                            id: UUID.UUID(),
+                            name: name,
+                            type: value
+                        });
+                    });
+                    if (!_.some(newNodes, { label: editedEntity.vertex })) {
+                        nodeId = UUID.UUID();
+                        let newNode = {
+                            id: nodeId,
+                            entities: [],
+                            label: editedEntity.vertex
+                        };
+                        newNode.entities.push({
+                            id: UUID.UUID(),
+                            name: entityName,
+                            properties: props
+                        });
+                        newNodes.push(newNode);
+                    } else {
+                        _.forEach(newNodes, (node: any) => {
+                            if (node.label === editedEntity.vertex) {
+                                node.entities.push({
+                                    id: UUID.UUID(),
+                                    name: entityName,
+                                    properties: props
+                                });
+                            }
+                        });
+                    }
                 });
             }
             nodes.add(newNodes);
