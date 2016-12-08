@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { LocalStorageService } from 'ng2-webstorage';
 import { GafferService } from '../services/gaffer.service';
+import { UUID } from 'angular2-uuid';
 import * as _ from 'lodash';
 
 declare var $: any;
@@ -134,12 +135,44 @@ export class SchemaComponent implements OnInit {
             let edges = new vis.DataSet();
             let nodes = new vis.DataSet();
             let newNodes = [];
+            let newEdges = [];
             this.errors.dataSchema = undefined;
             if (editedText.edges) {
-                _.forEach(editedText.edges, (editedEdge: any) => {
-                    let test = editedEdge;
+                _.forEach(editedText.edges, (editedEdge: any, edgeName) => {
+                    let fromId;
+                    let toId;
+                    if (!_.some(newNodes, {label: editedEdge.source})) {
+                        fromId = UUID.UUID();
+                        newNodes.push({
+                            id: fromId,
+                            label: editedEdge.source
+                        });
+                    } else {
+                        fromId = _.find(newNodes, {label: editedEdge.source}).id;
+                    }
+                    if (!_.some(newNodes, {label: editedEdge.destination})) {
+                        toId = UUID.UUID();
+                        newNodes.push({
+                            id: toId,
+                            label: editedEdge.destination
+                        });
+                    } else {
+                        toId = _.find(newNodes, {label: editedEdge.destination}).id;
+                    }
+                    let edgeId = 
+                    newEdges.push({
+                        id: UUID.UUID(),
+                        from: fromId,
+                        label: edgeName,
+                        arrows: 'to',
+                        to: toId
+                    });
                 });
             }
+            nodes.add(newNodes);
+            edges.add(newEdges);
+            this.storage.store('graphNodes', nodes);
+            this.storage.store('graphEdges', edges);
             this.editing.dataSchema = false;
         }
     }
