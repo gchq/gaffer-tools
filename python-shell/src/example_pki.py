@@ -13,10 +13,20 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-gaffer.store.class=gaffer.accumulostore.SingleUseMockAccumuloStore
-gaffer.store.properties.class=gaffer.accumulostore.AccumuloProperties
-accumulo.instance=someInstanceName
-accumulo.zookeepers=aZookeeper
-accumulo.table=table1
-accumulo.user=user01
-accumulo.password=password
+
+from gafferpy import gaffer_connector_pki
+import example
+
+def run(host, verbose=False, pki_cert='cert.pem'):
+    # Store your PKI certificate in file cert.pem
+    pki = gaffer_connector_pki.PkiCredentials(pki_cert)
+
+    example.run_with_connector(create_connector(host, pki, verbose))
+
+
+def create_connector(host, pki, verbose=False):
+    return gaffer_connector_pki.GafferConnector(host, pki, verbose)
+
+
+if __name__ == "__main__":
+    run('localhost:8080/rest/v1')
