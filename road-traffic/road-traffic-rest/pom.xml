@@ -65,7 +65,9 @@
                                     <version>${gaffer.version}</version>
                                     <type>war</type>
                                     <overWrite>false</overWrite>
-                                    <outputDirectory>${project.build.directory}/${project.artifactId}-${project.version}</outputDirectory>
+                                    <outputDirectory>
+                                        ${project.build.directory}/${project.artifactId}-${project.version}
+                                    </outputDirectory>
                                 </artifactItem>
                             </artifactItems>
                         </configuration>
