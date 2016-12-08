@@ -162,11 +162,20 @@ export class SchemaComponent implements OnInit {
                     } else {
                         toId = _.find(newNodes, {label: editedEdge.destination}).id;
                     }
-                    let edgeId = 
+                    let props = [];
+                    _.forEach(editedEdge.properties, (value: string, name) => {
+                        props.push({
+                            id: UUID.UUID(),
+                            name: name,
+                            type: value
+                        })
+                    });
                     newEdges.push({
                         id: UUID.UUID(),
                         from: fromId,
                         label: edgeName,
+                        properties: props,
+                        length: 200,
                         arrows: 'to',
                         to: toId
                     });
