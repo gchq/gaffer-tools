@@ -22,6 +22,6 @@ In order to use these tools you will first need to have the relevant version of 
 ```bash
 git clone https://github.com/gchq/Gaffer.git
 cd Gaffer
-git checkout gaffer2-0.4.7
+git checkout gaffer2-0.4.7.1
 mvn clean install -Pquick
 ```
