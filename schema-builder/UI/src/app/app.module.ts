@@ -16,6 +16,7 @@ import { JsonPipe } from '@angular/common';
 import { AppComponent } from './app.component';
 import { TypeFormComponent } from './types/type-form/type-form.component';
 import { EntityFormComponent } from './graph/entity-form/entity-form.component';
+import * as spinner from 'ng2-spin-kit/app/spinners'
 
 @NgModule({
   declarations: [
@@ -27,7 +28,8 @@ import { EntityFormComponent } from './graph/entity-form/entity-form.component';
     SchemaComponent,
     TypesComponent,
     TypeFormComponent,
-    EntityFormComponent
+    EntityFormComponent,
+    spinner.FoldingCubeComponent
   ],
   imports: [
     BrowserModule,

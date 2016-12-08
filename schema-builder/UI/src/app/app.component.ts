@@ -7,7 +7,13 @@ import { Component } from '@angular/core';
 })
 export class AppComponent {
   isDarkTheme: boolean = false;
+  tab: string;
 
   constructor() {
+    this.tab = 'graph';
+  }
+
+  changeTab(newTab) {
+    this.tab = newTab;
   }
 }

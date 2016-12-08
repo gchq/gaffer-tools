@@ -78,6 +78,7 @@ export class SchemaComponent implements OnInit {
                 }
             });
         }
+        $('#dataSchemaTextArea').trigger('autoresize');
     }
 
     parseDataTypes() {
@@ -102,6 +103,7 @@ export class SchemaComponent implements OnInit {
                 this.dataTypes.types[node.label] = formattedNode;
             });
         }
+        $('#dataTypesTextArea').trigger('autoresize');
     }
 
     parseStoreTypes() {
@@ -119,6 +121,7 @@ export class SchemaComponent implements OnInit {
                 }
             });
         }
+        $('#storeTypesTextArea').trigger('autoresize');
     }
 
     updateDataSchema() {
@@ -174,6 +177,7 @@ export class SchemaComponent implements OnInit {
             this.storage.store('graphNodes', nodes);
             this.storage.store('graphEdges', edges);
             this.editing.dataSchema = false;
+            this.ngOnInit()
         }
     }
 

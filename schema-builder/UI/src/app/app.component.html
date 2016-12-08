@@ -7,13 +7,13 @@
     <div class="row" class="mdTabs">
         <div class="col s12">
             <ul class="tabs">
-                <li class="tab col s3"><a href="#graph">Graph</a></li>
-                <li class="tab col s3"><a href="#types">Types</a></li>
-                <li class="tab col s3"><a href="#schema">Schema</a></li>
+                <li class="tab col s3"><a href="#graph" (click)="changeTab('graph')">Graph</a></li>
+                <li class="tab col s3"><a href="#types" (click)="changeTab('types')">Types</a></li>
+                <li class="tab col s3"><a href="#schema" (click)="changeTab('schema')">Schema</a></li>
             </ul>
         </div>
-        <div id="graph" class="col s12"><app-graph></app-graph></div>
-        <div id="types" class="col s12"><app-types></app-types></div>
-        <div id="schema" class="col s12"><app-schema></app-schema></div>
+        <div id="graph" class="col s12"><app-graph *ngIf="tab === 'graph'"></app-graph></div>
+        <div id="types" class="col s12"><app-types *ngIf="tab === 'types'"></app-types></div>
+        <div id="schema" class="col s12"><app-schema *ngIf="tab === 'schema'"></app-schema></div>
     </div>
 </md-sidenav-layout>
