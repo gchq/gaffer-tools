@@ -6,7 +6,7 @@ jdk:
   - oraclejdk8
 install: travis_wait git clone https://github.com/gchq/Gaffer.git gafferTmp
           && cd gafferTmp
-          && git checkout gaffer2-0.4.7.1
+          && git checkout gaffer2-0.4.7.2
           && mvn -q clean install -Pquick
           && cd ../
           && rm -rf gafferTmp
