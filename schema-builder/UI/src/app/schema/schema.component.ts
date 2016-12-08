@@ -1,8 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { LocalStorageService } from 'ng2-webstorage';
 import { GafferService } from '../services/gaffer.service';
+import * as _ from 'lodash';
 
 declare var $: any;
+declare var vis: any;
 
 @Component({
     selector: 'app-schema',
@@ -20,31 +22,43 @@ export class SchemaComponent implements OnInit {
     commonTypes: any;
     validation: any;
     errorMessage: any;
-    editingDataSchema: Boolean;
+
+    edgesById: any;
+    edgesByName: any;
+    nodesById: any;
+    nodesByName: any;
+
+    errors: any;
+    editing: any;
 
     parseDataSchema() {
         this.dataSchema = {
             edges: {},
             entities: {}
         };
-        for (let key in this.schema.edges._data) {
-            if (this.schema.edges._data.hasOwnProperty(key)) {
-                let edge = this.schema.edges._data[key];
+        if (this.schema.hasOwnProperty('edges')) {
+            _.forEach(this.schema.edges._data, (edge: any) => {
                 let directed = 'true';
                 if (edge.arrows !== 'to') {
                     directed = 'false';
                 }
                 let formattedEdge = {
-                    source: this.schema.nodes._data[edge.from].label,
-                    destination: this.schema.nodes._data[edge.to].label,
-                    directed: directed
+                    source: this.nodesById[edge.from],
+                    destination: this.nodesById[edge.to],
+                    directed: directed,
+                    properties: {}
                 };
+                if (edge.hasOwnProperty('properties')) {
+                    for (let j = 0; j < edge.properties.length; j++) {
+                        let property = edge.properties[j];
+                        formattedEdge.properties[property.name] = property.type;
+                    }
+                }
                 this.dataSchema.edges[edge.label] = formattedEdge;
-            }
+            });
         }
-        for (let key in this.schema.nodes._data) {
-            if (this.schema.nodes._data.hasOwnProperty(key)) {
-                let node = this.schema.nodes._data[key];
+        if (this.schema.hasOwnProperty('nodes')) {
+            _.forEach(this.schema.nodes._data, (node: any) => {
                 if (node.entities) {
                     for (let i = 0; i < node.entities.length; i++) {
                         let entity = node.entities[i];
@@ -52,7 +66,7 @@ export class SchemaComponent implements OnInit {
                             vertex: node.label,
                             properties: {}
                         }
-                        if (entity.properties) {
+                        if (entity.hasOwnProperty('properties')) {
                             for (let j = 0; j < entity.properties.length; j++) {
                                 let property = entity.properties[j];
                                 formattedEntity.properties[property.name] = property.type;
@@ -61,7 +75,7 @@ export class SchemaComponent implements OnInit {
                         this.dataSchema.entities[entity.name] = formattedEntity;
                     }
                 }
-            }
+            });
         }
     }
 
@@ -69,25 +83,23 @@ export class SchemaComponent implements OnInit {
         this.dataTypes = {
             types: {}
         };
-        for (let key in this.schema.types) {
-            if (this.schema.types.hasOwnProperty(key)) {
-                let type = this.schema.types[key];
+        if (this.schema.hasOwnProperty('types')) {
+            _.forEach(this.schema.types, (type: any) => {
                 let formattedType = {
                     class: type.class || 'java.lang.String',
                     validateFunctions: type.validateFunctions || undefined
                 };
                 this.dataTypes.types[type.type] = formattedType;
-            }
+            });
         }
-        for (let key in this.schema.nodes._data) {
-            if (this.schema.nodes._data.hasOwnProperty(key)) {
-                let node = this.schema.nodes._data[key];
+        if (this.schema.hasOwnProperty('nodes')) {
+            _.forEach(this.schema.nodes._data, (node: any) => {
                 let formattedNode = {
                     class: node.class || 'java.lang.String',
                     validateFunctions: node.validateFunctions || undefined
                 };
                 this.dataTypes.types[node.label] = formattedNode;
-            }
+            });
         }
     }
 
@@ -95,9 +107,8 @@ export class SchemaComponent implements OnInit {
         this.storeTypes = {
             types: {}
         };
-        for (let key in this.schema.types) {
-            if (this.schema.types.hasOwnProperty(key)) {
-                let type = this.schema.types[key];
+        if (this.schema.hasOwnProperty('types')) {
+            _.forEach(this.schema.types, (type: any) => {
                 if (type.aggregateFunction !== null || type.serialiserClass !== null) {
                     let formattedType = {
                         aggregateFunction: type.aggregateFunction || null,
@@ -105,8 +116,56 @@ export class SchemaComponent implements OnInit {
                     };
                     this.storeTypes.types[type.type] = formattedType;
                 }
-            }
+            });
         }
+    }
+
+    updateDataSchema() {
+        let editedText;
+        try {
+            editedText = JSON.parse($('#dataSchemaTextArea').val());
+        } catch (e) {
+            editedText = undefined;
+            this.errors.dataSchema = 'Failed to parse JSON: ' + e.message;
+        }
+        if (editedText) {
+            this.setupEdgeLookups();
+            this.setupNodeLookups();
+            let edges = new vis.DataSet();
+            let nodes = new vis.DataSet();
+            let newNodes = [];
+            this.errors.dataSchema = undefined;
+            if (editedText.edges) {
+                _.forEach(editedText.edges, (editedEdge: any) => {
+                    let test = editedEdge;
+                });
+            }
+            this.editing.dataSchema = false;
+        }
+    }
+
+    setupEdgeLookups() {
+        let edgesByName = {};
+        let edgesById = {};
+        let storedEdges = this.storage.retrieve('graphEdges');
+        _.forEach(storedEdges._data, (storedEdge: any, storedId) => {
+            edgesById[storedId] = storedEdge.label;
+            edgesByName[storedEdge.label] = storedId;
+        });
+        this.edgesById = edgesById;
+        this.edgesByName = edgesByName;
+    }
+
+    setupNodeLookups() {
+        let nodesByName = {};
+        let nodesById = {};
+        let storedNodes = this.storage.retrieve('graphNodes');
+        _.forEach(storedNodes._data, (storedNode: any, storedId) => {
+            nodesById[storedId] = storedNode.label;
+            nodesByName[storedNode.label] = storedId;
+        });
+        this.nodesById = nodesById;
+        this.nodesByName = nodesByName;
     }
 
     constructor(private storage: LocalStorageService, private gafferService: GafferService) { }
@@ -120,6 +179,18 @@ export class SchemaComponent implements OnInit {
             edges: storedEdges,
             types: storedTypes
         };
+        this.errors = {
+            dataSchema: undefined,
+            dataTypes: undefined,
+            storeTypes: undefined
+        }
+        this.editing = {
+            dataSchema: false,
+            dataTypes: false,
+            storeTypes: false
+        }
+        this.setupEdgeLookups();
+        this.setupNodeLookups();
         if (storedEdges !== null && storedNodes !== null) {
             this.parseDataSchema();
             this.parseDataTypes();
