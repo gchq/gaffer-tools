@@ -54,10 +54,17 @@
                                 </webapp>
                             </webapps>
                             <systemProperties>
-                                <gaffer.rest-api.basePath>rest/v1</gaffer.rest-api.basePath>
-                                <gaffer.schemas>${project.parent.basedir}/road-traffic-model/src/main/resources/schema</gaffer.schemas>
-                                <gaffer.storeProperties>${project.build.outputDirectory}/mockaccumulo.properties</gaffer.storeProperties>
-                                <roadTraffic.dataLoader.dataPath>${project.build.outputDirectory}/sampleData.csv</roadTraffic.dataLoader.dataPath>
+                                <gaffer.rest-api.basePath>rest/v1
+                                </gaffer.rest-api.basePath>
+                                <gaffer.schemas>
+                                    ${project.parent.basedir}/road-traffic-model/src/main/resources/schema
+                                </gaffer.schemas>
+                                <gaffer.storeProperties>
+                                    ${project.build.outputDirectory}/mockaccumulo.properties
+                                </gaffer.storeProperties>
+                                <roadTraffic.dataLoader.dataPath>
+                                    ${project.build.outputDirectory}/sampleData.csv
+                                </roadTraffic.dataLoader.dataPath>
                             </systemProperties>
                         </configuration>
                         <executions>
