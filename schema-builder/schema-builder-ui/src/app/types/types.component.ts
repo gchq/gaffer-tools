@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { LocalStorageService } from 'ng2-webstorage';
 import { GafferService } from '../services/gaffer.service';
 
+import * as _ from 'lodash';
+
 @Component({
     selector: 'app-types',
     templateUrl: './types.component.html',
@@ -30,18 +32,16 @@ export class TypesComponent implements OnInit {
         let storedNodes = this.storage.retrieve('graphNodes');
         if (storedNodes !== null) {
             this.nodeTypes = [];
-            for (let key in storedNodes._data) {
-                if (storedNodes._data.hasOwnProperty(key)) {
-                    this.nodeTypes.push({
-                        type: storedNodes._data[key].label,
-                        class: storedNodes._data[key].class || 'java.lang.String',
-                        validateFunctions: storedNodes._data[key].validateFunctions || [],
-                        aggregateFunction: null,
-                        index: this.nodeTypes.length,
-                        node: true
-                    });
-                }
-            }
+            _.forEach(storedNodes._data, (node: any) => {
+                this.nodeTypes.push({
+                    type: node.label,
+                    class: node.class || 'java.lang.String',
+                    validateFunctions: node.validateFunctions || [],
+                    aggregateFunction: null,
+                    index: this.nodeTypes.length,
+                    node: true
+                });
+            });
         }
     }
 
@@ -70,14 +70,11 @@ export class TypesComponent implements OnInit {
 
     formatTypes(commonTypes) {
         this.types = [];
-        for (let key in commonTypes) {
-            if (commonTypes.hasOwnProperty(key)) {
-                let type = commonTypes[key];
-                type.type = key;
-                type.index = this.types.length;
-                this.types.push(type);
-            }
-        }
+        _.forEach(commonTypes, (type: any, key) => {
+            type.type = key;
+            type.index = this.types.length;
+            this.types.push(type);
+        });
         this.storage.store('types', this.types);
     }
 
@@ -92,14 +89,12 @@ export class TypesComponent implements OnInit {
         let type = event.value;
         let storedNodes = this.storage.retrieve('graphNodes');
         if (storedNodes !== null) {
-            for (let key in storedNodes._data) {
-                if (storedNodes._data.hasOwnProperty(key)) {
-                    if (storedNodes._data[key].label === type.type) {
-                        storedNodes._data[key].class = type.class;
-                        storedNodes._data[key].validateFunctions = type.validateFunctions;
-                    }
+            _.forEach(storedNodes._data, (node: any) => {
+                if (node.label === type.type) {
+                    node.class = type.class;
+                    node.validateFunctions = type.validateFunctions;
                 }
-            }
+            });
         }
         this.nodeTypes[type.index].editing = false;
         this.storage.store('graphNodes', storedNodes);

@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
 import { LocalStorageService } from 'ng2-webstorage';
+import * as _ from 'lodash';
 declare var vis: any;
 
 @Component({
@@ -63,11 +64,9 @@ export class GraphComponent implements OnInit {
         let storedNodes = this.storage.retrieve('graphNodes');
         if (storedNodes !== null) {
             let nodeArray = [];
-            for (let key in storedNodes._data) {
-                if (storedNodes._data.hasOwnProperty(key)) {
-                    nodeArray.push(storedNodes._data[key]);
-                }
-            }
+            _.forEach(storedNodes._data, (storedNode: any) => {
+                nodeArray.push(storedNode);
+            });
             this.nodes = new vis.DataSet(nodeArray);
         } else {
             this.nodes = new vis.DataSet();
@@ -76,11 +75,9 @@ export class GraphComponent implements OnInit {
         let storedEdges = this.storage.retrieve('graphEdges');
         if (storedEdges !== null) {
             let edgeArray = [];
-            for (let key in storedEdges._data) {
-                if (storedEdges._data.hasOwnProperty(key)) {
-                    edgeArray.push(storedEdges._data[key]);
-                }
-            }
+            _.forEach(storedEdges._data, (storedEdge: any) => {
+                edgeArray.push(storedEdge);
+            });
             this.edges = new vis.DataSet(edgeArray);
         } else {
             this.edges = new vis.DataSet();

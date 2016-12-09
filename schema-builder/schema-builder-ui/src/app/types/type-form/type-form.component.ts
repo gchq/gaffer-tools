@@ -41,11 +41,11 @@ export class TypeFormComponent implements OnInit {
         this.validateFieldsValid = true;
         if (this._type.validateFunctions !== null && this._type.validateFunctions.length > 0) {
             let tempValidationFields = _.cloneDeep(this._type.validateFunctions);
-            for (let i = 0; i < tempValidationFields.length; i++) {
-                let vFields = _.cloneDeep(tempValidationFields[i].function);
+            _.forEach(tempValidationFields, (field: any) => {
+                let vFields = _.cloneDeep(field.function);
                 vFields.class = undefined;
-                this.validationFields[tempValidationFields[i].function.class] = JSON.stringify(vFields);
-            }
+                this.validationFields[field.function.class] = JSON.stringify(vFields);
+            });
         }
         this.getGafferFunctions(type.type, type.class);
     }

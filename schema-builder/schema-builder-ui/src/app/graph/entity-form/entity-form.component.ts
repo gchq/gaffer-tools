@@ -43,9 +43,6 @@ export class EntityFormComponent implements OnInit {
             id: uuid,
             name: 'New Entity',
             properties: []
-        })
-        $(document).ready(function(){
-            $('ul.entity-tabs').tabs();
         });
     }
 
