@@ -1,0 +1,35 @@
+div.vis-network div.vis-manipulation {
+  background: transparent !important;
+  height: 35px !important;
+  padding-top: 0 !important;
+  border: 0 !important;
+  margin: 10px 0;
+  top: -55px !important;
+}
+
+div.vis-network div.vis-edit-mode {
+  padding-top: 0 !important;
+  border: 0 !important;
+  margin: 10px 0;
+  top: -27px !important;
+}
+
+div.vis-network div.vis-close {
+  display: none !important;
+}
+
+.vis-separator-line {
+  background: transparent !important;
+}
+
+.vis-button {
+  border-radius: 3px !important;
+  padding: 5px 15px !important;
+  height: 35px !important;
+  background-position: 8px 5px !important;
+}
+
+.vis-network {
+  margin-top: 70px;
+  overflow: visible !important;
+}
