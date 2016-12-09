@@ -225,7 +225,69 @@ export class SchemaComponent implements OnInit {
             this.storage.store('graphNodes', nodes);
             this.storage.store('graphEdges', edges);
             this.editing.dataSchema = false;
-            this.ngOnInit()
+            this.ngOnInit();
+        }
+    }
+
+    updateDataTypes() {
+        let editedText;
+        try {
+            editedText = JSON.parse($('#dataTypesTextArea').val());
+        } catch (e) {
+            editedText = undefined;
+            this.errors.dataTypes = 'Failed to parse JSON: ' + e.message;
+        }
+        if (editedText) {
+            this.setupEdgeLookups();
+            this.setupNodeLookups();
+            let storedNodes = this.storage.retrieve('graphNodes');
+            let newTypes = [];
+            //class validateFunctions
+            if (editedText.types) {
+                _.forEach(editedText.types, (editedType: any, typeName) => {
+                    var found = false;
+                    _.forEach(storedNodes._data, (storedNode: any, storedId) => {
+                        if (storedNode.label === typeName) {
+                            storedNode.class = editedType.class;
+                            storedNode.validateFunctions = editedText.validateFunctions;
+                            found = true;
+                        }
+                    });
+                    if (!found) {
+                        newTypes.push({
+                            class: editedType.class,
+                            type: typeName,
+                            validateFunctions: editedType.validateFunctions
+                        });
+                    }
+                });
+                this.storage.store('graphNodes', storedNodes);
+                this.storage.store('types', newTypes);
+                this.updateStoreTypes();
+                this.editing.dataTypes = false;
+            }
+        }
+    }
+
+    updateStoreTypes() {
+        let editedText;
+        try {
+            editedText = JSON.parse($('#storeTypesTextArea').val());
+        } catch (e) {
+            editedText = undefined;
+            this.errors.storeTypes = 'Failed to parse JSON: ' + e.message;
+        }
+        if (editedText && editedText.types) {
+            let storedTypes = this.storage.retrieve('types');
+            _.forEach(editedText.types, (editedType: any, typeName) => {
+                let existingType = _.find(storedTypes, {type: typeName});
+                if (existingType) {
+                    existingType = _.merge(existingType, editedType);
+                }
+            });
+            this.storage.store('types', storedTypes);
+            this.editing.storeTypes = false;
+            this.ngOnInit();
         }
     }
 
