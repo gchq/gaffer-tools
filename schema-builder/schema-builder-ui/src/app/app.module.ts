@@ -12,11 +12,12 @@ import { Ng2Webstorage } from 'ng2-webstorage';
 import { SchemaComponent } from './schema/schema.component';
 import { TypesComponent } from './types/types.component';
 import { PrettyJsonModule, SafeJsonPipe } from 'angular2-prettyjson';
-import { JsonPipe } from '@angular/common';
 import { AppComponent } from './app.component';
 import { TypeFormComponent } from './types/type-form/type-form.component';
 import { EntityFormComponent } from './graph/entity-form/entity-form.component';
-import * as spinner from 'ng2-spin-kit/app/spinners'
+import * as spinner from 'ng2-spin-kit/app/spinners';
+import { PropertiesComponent } from './properties/properties.component';
+import { PropertyFormComponent } from './properties/property-form/property-form.component'
 
 @NgModule({
   declarations: [
@@ -29,7 +30,9 @@ import * as spinner from 'ng2-spin-kit/app/spinners'
     TypesComponent,
     TypeFormComponent,
     EntityFormComponent,
-    spinner.FoldingCubeComponent
+    spinner.FoldingCubeComponent,
+    PropertiesComponent,
+    PropertyFormComponent
   ],
   imports: [
     BrowserModule,
@@ -43,9 +46,7 @@ import * as spinner from 'ng2-spin-kit/app/spinners'
   entryComponents: [
     AppComponent
   ],
-  providers: [
-    { provide: JsonPipe, useClass: SafeJsonPipe }
-  ],
+  providers: [],
   bootstrap: [AppComponent]
 })
 export class AppModule {

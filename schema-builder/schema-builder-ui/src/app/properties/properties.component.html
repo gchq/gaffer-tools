@@ -1,0 +1,69 @@
+<div style="padding: 15px;">
+    <div class="row">
+        <div class="col s12 m10 offset-m1 l10 offset-l1">
+            <h4 style="font-size: 16pt;">Edges</h4>
+            <md-card *ngFor="let edge of edges" style="margin-bottom: 20px;">
+                <div class="content-card-header">
+                    <md-card-title>{{edge.label}}</md-card-title>
+                    <div class="properties-edit-button row">
+                        <button md-mini-fab (click)="edge.editing = true;" *ngIf="!edge.editing" class="button-spacing">
+                            <md-icon class="md-16">edit</md-icon>
+                        </button>
+                    </div>
+                </div>
+                <md-card-content *ngIf="!edge.editing">
+                    <div *ngIf="!edge.properties || edge.properties.length === 0">
+                        <md-list dense>
+                            <md-list-item>
+                                <h3 md-line><b>No properties</b></h3>
+                            </md-list-item>
+                        </md-list>
+                    </div>
+                    <div *ngIf="edge.properties && edge.properties.length > 0">
+                        <md-list dense>
+                            <md-list-item *ngFor="let property of edge.properties">
+                                <h3 md-line><b>{{property.name}}</b></h3>
+                                <p md-line>{{property.type}}</p>
+                            </md-list-item>
+                        </md-list>
+                    </div>
+                </md-card-content>
+                <md-card-content *ngIf="edge.editing" style="overflow: auto;">
+                    <app-property-form [selectedEdge]="edge.id" [edges]="edges" [nodes]="nodes" [network]="network"></app-property-form>
+                </md-card-content>
+            </md-card>
+            <!--<pre>{{edges | json}}</pre>-->
+            <h4 style="font-size: 16pt;">Entities</h4>
+            <span *ngFor="let node of nodes">
+                <md-card *ngFor="let entity of node.entities" style="margin-bottom: 20px;">
+                    <div class="content-card-header">
+                        <md-card-title>{{entity.name}}</md-card-title>
+                        <div class="properties-edit-button row">
+                            <button md-mini-fab (click)="entity.editing = true;" *ngIf="!entity.editing" class="button-spacing">
+                                <md-icon class="md-16">edit</md-icon>
+                            </button>
+                        </div>
+                    </div>
+                    <md-card-content>
+                        <div *ngIf="!entity.properties || entity.properties.length === 0">
+                            <md-list dense>
+                                <md-list-item>
+                                    <h3 md-line><b>No properties</b></h3>
+                                </md-list-item>
+                            </md-list>
+                        </div>
+                        <div *ngIf="entity.properties && entity.properties.length > 0">
+                            <md-list dense>
+                                <md-list-item *ngFor="let property of entity.properties">
+                                    <h3 md-line><b>{{property.name}}</b></h3>
+                                    <p md-line>{{property.type}}</p>
+                                </md-list-item>
+                            </md-list>
+                        </div>
+                    </md-card-content>
+                </md-card>
+            </span>
+            <!--<pre>{{nodes | json}}</pre>-->
+        </div>
+    </div>
+</div>

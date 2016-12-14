@@ -1,0 +1,31 @@
+<form #e="ngForm" novalidate materialize class="col s12">
+    <div class="form-group">
+        <div class="row">
+            <button md-raised-button color="accent" (click)="addNewProperty();" class="button-spacing" style="float: right;">
+                Add Property
+            </button>
+        </div>
+        <div style="margin-top: 20px;">
+            <div class="row" *ngFor="let property of _edge.properties">
+                <div class="input-field col s5 m5 l5">
+                    <input class="form-control" type="text" name="{{property.id}} Name" placeholder="Property name" [(ngModel)]="property.name">
+                    <label>Property Name</label>
+                </div>
+                <div class="input-field col s5 m5 l5">
+                    <select id="{{property.id}}Type" materialize="material_select" [materializeSelectOptions]="_storedTypes" (change)="property.type = $event.target.value">
+                        <option *ngFor="let type of _storedTypes" [value]="type.type" [selected]="property.type === type.type">{{type.type}}</option>
+                    </select>
+                    <label>Property Type</label>
+                </div>
+                <div class="col s2 m2 l2">
+                    <button md-mini-fab color="warn" (click)="removeType(i)" class="button-spacing" style="float: right; margin-top: 15px;">
+                        <md-icon class="md-16">delete</md-icon>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <button class="form-button button-spacing" type="submit" (click)="save()" style="float: right;" md-raised-button color="primary">Update</button>
+        </div>
+    </div>
+</form>

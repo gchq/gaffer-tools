@@ -1,0 +1,20 @@
+.form-row {
+    display: flex;
+    flex-flow: row wrap;
+}
+
+.properties-tile {
+    overflow: auto;
+}
+
+.properties-edit-button {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+}
+
+.properties-title-buttons {
+    position: absolute;
+    top: 25px;
+    right: 25px;
+}
