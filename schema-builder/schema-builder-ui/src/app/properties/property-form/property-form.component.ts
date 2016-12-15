@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter  } from '@angular/core';
 import { LocalStorageService } from 'ng2-webstorage';
 import { UUID } from 'angular2-uuid';
 import * as _ from 'lodash';
@@ -9,50 +9,19 @@ import * as _ from 'lodash';
     styleUrls: ['./property-form.component.css']
 })
 export class PropertyFormComponent implements OnInit {
-    _edge: any;
-    _entity: any;
-    _edges: any;
-    _nodes: any;
-    _network: any;
+    _propertyHolder: any;
     _storedTypes: any;
     nodeOptions: any;
 
     @Input()
-    set edges(edges: any) {
-        this._edges = edges;
+    set propertyHolder(propertyHolder: any) {
+        this._propertyHolder = propertyHolder;
     }
-    get edges() { return this._edges; }
-
-    @Input()
-    set nodes(nodes: any) {
-        this._nodes = nodes;
-    }
-    get nodes() { return this._nodes; }
-
-    @Input()
-    set selectedEdge(selectedEdge: any) {
-        _.forEach(this._edges, (edge: any) => {
-            if (edge.id === selectedEdge) {
-                this._edge = edge;
-            }
-        });
+    get propertyHolder() {
+        return this._propertyHolder;
     }
 
-    @Input()
-    set selectedEntity(selectedEntity: any) {
-        _.forEach(this._nodes._data, (node: any) => {
-            _.forEach(node.entities, (entity: any) => {
-                if (entity.id === selectedEntity) {
-                    this._entity = entity;
-                }
-            });
-        });
-    }
-
-    @Input()
-    set network(network: any) {
-        this._network = network;
-    }
+    @Output() holderChange = new EventEmitter();
 
     constructor(private storage: LocalStorageService) { }
 
@@ -60,26 +29,21 @@ export class PropertyFormComponent implements OnInit {
         this._storedTypes = this.storage.retrieve('types');
     }
 
-    changeEdge(value: any, key: any) {
-        this._edge[key] = value;
-    }
-
     addNewProperty() {
         let uuid = UUID.UUID();
-        if (!this._edge.properties) {
-            this._edge.properties = [];
+        if (!this._propertyHolder.properties) {
+            this._propertyHolder.properties = [];
         }
-        this._edge.properties.push({
+        this._propertyHolder.properties.push({
             id: uuid,
             name: 'New Property',
             type: this._storedTypes[0].type || 'string'
         });
     }
 
-    save(isValid: boolean, e: any) {
-        if (!isValid) {
-            return;
-        }
-        this.storage.store('graphEdges', this._edges);
+    save() {
+        this.holderChange.emit({
+            value: this.propertyHolder
+        });
     }
 }

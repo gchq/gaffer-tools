@@ -34,4 +34,15 @@ export class PropertiesComponent implements OnInit {
         }
     }
 
+    edgePropertiesChanged(event) {
+        _.forEach(this.edges, (edge: any) => {
+            if (edge.id === event.value.id) {
+                edge.properties = event.value.properties;
+                edge.editing = false;
+            }
+        });
+        this.edges.update(this.edges);
+        this.storage.store('graphEdges', this.edges);
+    }
+
 }

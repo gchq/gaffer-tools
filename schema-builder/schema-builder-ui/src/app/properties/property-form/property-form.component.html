@@ -6,7 +6,7 @@
             </button>
         </div>
         <div style="margin-top: 20px;">
-            <div class="row" *ngFor="let property of _edge.properties">
+            <div class="row" *ngFor="let property of _propertyHolder.properties">
                 <div class="input-field col s5 m5 l5">
                     <input class="form-control" type="text" name="{{property.id}} Name" placeholder="Property name" [(ngModel)]="property.name">
                     <label>Property Name</label>

@@ -29,7 +29,7 @@
                     </div>
                 </md-card-content>
                 <md-card-content *ngIf="edge.editing" style="overflow: auto;">
-                    <app-property-form [selectedEdge]="edge.id" [edges]="edges" [nodes]="nodes" [network]="network"></app-property-form>
+                    <app-property-form [propertyHolder]="edge" (holderChange)="edgePropertiesChanged($event)"></app-property-form>
                 </md-card-content>
             </md-card>
             <!--<pre>{{edges | json}}</pre>-->
