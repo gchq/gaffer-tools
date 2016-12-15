@@ -2,6 +2,17 @@
     <div class="row">
         <div class="col s12 m10 offset-m1 l10 offset-l1">
             <h4 style="font-size: 16pt;">Edges</h4>
+            <md-card *ngIf="!edges || edges.length === 0">
+                <md-card-content>
+                    <div>
+                        <md-list dense>
+                            <md-list-item>
+                                <h3 md-line><b>No edges</b></h3>
+                            </md-list-item>
+                        </md-list>
+                    </div>
+                </md-card-content>
+            </md-card>
             <md-card *ngFor="let edge of edges" style="margin-bottom: 20px;">
                 <div class="content-card-header">
                     <md-card-title>{{edge.label}}</md-card-title>
@@ -32,8 +43,27 @@
                     <app-property-form [propertyHolder]="edge" (holderChange)="edgePropertiesChanged($event)"></app-property-form>
                 </md-card-content>
             </md-card>
-            <!--<pre>{{edges | json}}</pre>-->
-            <h4 style="font-size: 16pt;">Entities</h4>
+            <div class="row">
+                <div class="col s10">
+                    <h4 style="font-size: 16pt;">Entities</h4>
+                </div>
+                <div class="col s2" style="text-align: right; padding-top: 5px;">
+                    <button md-raised-button color="accent" (click)="addNewEntity();" class="button-spacing">
+                        Add Entity
+                    </button>
+                </div>
+            </div>
+            <md-card *ngIf="!nodes || nodes.length === 0">
+                <md-card-content>
+                    <div>
+                        <md-list dense>
+                            <md-list-item>
+                                <h3 md-line><b>No entities</b></h3>
+                            </md-list-item>
+                        </md-list>
+                    </div>
+                </md-card-content>
+            </md-card>
             <span *ngFor="let node of nodes">
                 <md-card *ngFor="let entity of node.entities" style="margin-bottom: 20px;">
                     <div class="content-card-header">
@@ -63,7 +93,6 @@
                     </md-card-content>
                 </md-card>
             </span>
-            <!--<pre>{{nodes | json}}</pre>-->
         </div>
     </div>
 </div>

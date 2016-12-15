@@ -34,15 +34,24 @@ export class PropertiesComponent implements OnInit {
         }
     }
 
+    addNewEntity() {
+        // let uuid = UUID.UUID();
+        // this.entities.push({
+        //     id: uuid,
+        //     name: 'New Entity',
+        //     properties: []
+        // });
+    }
+
     edgePropertiesChanged(event) {
-        _.forEach(this.edges, (edge: any) => {
+        let storedEdges = this.storage.retrieve('graphEdges');
+        _.forEach(storedEdges._data, (edge: any) => {
             if (edge.id === event.value.id) {
                 edge.properties = event.value.properties;
                 edge.editing = false;
             }
         });
-        this.edges.update(this.edges);
-        this.storage.store('graphEdges', this.edges);
+        this.storage.store('graphEdges', storedEdges);
     }
 
 }

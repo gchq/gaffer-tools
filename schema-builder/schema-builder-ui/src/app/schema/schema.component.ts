@@ -279,9 +279,11 @@ export class SchemaComponent implements OnInit {
     setupNodeLookups() {
         let nodesById = {};
         let storedNodes = this.storage.retrieve('graphNodes');
-        _.forEach(storedNodes._data, (storedNode: any, storedId) => {
-            nodesById[storedId] = storedNode.label;
-        });
+        if (storedNodes) {
+            _.forEach(storedNodes._data, (storedNode: any, storedId) => {
+                nodesById[storedId] = storedNode.label;
+            });
+        }
         this.nodesById = nodesById;
     }
 

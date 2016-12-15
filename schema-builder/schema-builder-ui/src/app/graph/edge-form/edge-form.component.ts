@@ -48,18 +48,6 @@ export class EdgeFormComponent implements OnInit {
         this._edge[key] = value;
     }
 
-    addNewProperty() {
-        let uuid = UUID.UUID();
-        if (!this._edge.properties) {
-            this._edge.properties = [];
-        }
-        this._edge.properties.push({
-            id: uuid,
-            name: 'New Property',
-            type: this._storedTypes[0].type || 'string'
-        })
-    }
-
     save(isValid: boolean, e: any) {
         if (!isValid) {
             return;

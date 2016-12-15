@@ -1,10 +1,10 @@
-<form #e="ngForm" novalidate materialize class="col s12">
+<div class="row">
+    <button md-raised-button color="accent" (click)="addNewProperty();" class="button-spacing" style="float: right;">
+        Add Property
+    </button>
+</div>
+<form #e="ngForm" novalidate (ngSubmit)="save()" materialize class="col s12">
     <div class="form-group">
-        <div class="row">
-            <button md-raised-button color="accent" (click)="addNewProperty();" class="button-spacing" style="float: right;">
-                Add Property
-            </button>
-        </div>
         <div style="margin-top: 20px;">
             <div class="row" *ngFor="let property of _propertyHolder.properties">
                 <div class="input-field col s5 m5 l5">
@@ -25,7 +25,7 @@
             </div>
         </div>
         <div class="row">
-            <button class="form-button button-spacing" type="submit" (click)="save()" style="float: right;" md-raised-button color="primary">Update</button>
+            <button class="form-button button-spacing" type="submit" style="float: right;" md-raised-button color="primary">Update</button>
         </div>
     </div>
 </form>
