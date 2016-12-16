@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright 2017 Crown Copyright
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>uk.gov.gchq.gaffer</groupId>
+        <artifactId>gaffer-tools</artifactId>
+        <version>0.5.2-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>gaffer-slider</artifactId>
+
+    <properties>
+        <addon.pkg.name>Gaffer</addon.pkg.name>
+        <addon.pkg.file>${project.artifactId}-${project.version}</addon.pkg.file>
+        <!-- Dependency Versions -->
+        <slider.version>0.92.0-incubating-SNAPSHOT</slider.version>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.apache.slider</groupId>
+            <artifactId>slider-core</artifactId>
+            <version>${slider.version}</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+            </resource>
+            <resource>
+                <directory>scripts</directory>
+                <filtering>true</filtering>
+                <targetPath>${project.build.directory}/scripts</targetPath>
+            </resource>
+        </resources>
+
+        <plugins>
+            <plugin>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <version>${dependency.plugin.version}</version>
+                <configuration>
+                    <overWriteIfNewer>true</overWriteIfNewer>
+                    <overWriteReleases>true</overWriteReleases>
+                    <overWriteSnapshots>true</overWriteSnapshots>
+                </configuration>
+
+                <executions>
+                    <execution>
+                        <id>get-gaffer-iterators</id>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>copy</goal>
+                        </goals>
+                        <configuration>
+                            <artifactItems>
+                                <artifactItem>
+                                    <groupId>uk.gov.gchq.gaffer</groupId>
+                                    <artifactId>accumulo-store</artifactId>
+                                    <classifier>iterators</classifier>
+                                    <version>${gaffer.version}</version>
+                                </artifactItem>
+                            </artifactItems>
+                            <outputDirectory>${project.build.directory}/jars</outputDirectory>
+                        </configuration>
+                    </execution>
+
+                    <execution>
+                        <id>get-slider-distribution</id>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>unpack</goal>
+                        </goals>
+                        <configuration>
+                            <artifactItems>
+                                <artifactItem>
+                                    <groupId>org.apache.slider</groupId>
+                                    <artifactId>slider-assembly</artifactId>
+                                    <classifier>all</classifier>
+                                    <type>zip</type>
+                                    <version>${slider.version}</version>
+                                </artifactItem>
+                            </artifactItems>
+                            <outputDirectory>${project.build.directory}/slider</outputDirectory>
+                        </configuration>
+                    </execution>
+
+                    <execution>
+                        <id>get-accumulo-app-pkg</id>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>copy</goal>
+                        </goals>
+                        <configuration>
+                            <artifactItems>
+                                <artifactItem>
+                                    <groupId>org.apache.slider.packages</groupId>
+                                    <artifactId>slider-accumulo-app-package</artifactId>
+                                    <type>zip</type>
+                                    <version>${slider.version}</version>
+                                </artifactItem>
+                            </artifactItems>
+                            <outputDirectory>${project.build.directory}/accumulo-pkg</outputDirectory>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <version>2.6</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                        <configuration>
+                            <descriptor>src/assembly/package.xml</descriptor>
+                            <appendAssemblyId>false</appendAssemblyId>
+                            <finalName>${addon.pkg.file}</finalName>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>
