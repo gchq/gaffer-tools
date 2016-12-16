@@ -74,7 +74,7 @@
                             </button>
                         </div>
                     </div>
-                    <md-card-content>
+                    <md-card-content *ngIf="!entity.editing">
                         <div *ngIf="!entity.properties || entity.properties.length === 0">
                             <md-list dense>
                                 <md-list-item>
@@ -90,6 +90,9 @@
                                 </md-list-item>
                             </md-list>
                         </div>
+                    </md-card-content>
+                    <md-card-content *ngIf="entity.editing" style="overflow: auto;">
+                        <app-property-form [propertyHolder]="entity" (holderChange)="entityPropertiesChanged($event)"></app-property-form>
                     </md-card-content>
                 </md-card>
             </span>

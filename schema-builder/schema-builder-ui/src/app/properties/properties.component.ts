@@ -54,4 +54,17 @@ export class PropertiesComponent implements OnInit {
         this.storage.store('graphEdges', storedEdges);
     }
 
+    entityPropertiesChanged(event) {
+        let storedNodes = this.storage.retrieve('graphNodes');
+        _.forEach(storedNodes._data, (node: any) => {
+            _.forEach(node.entities, (entity: any) => {
+                if (entity.id === event.value.id) {
+                    entity.properties = event.value.properties;
+                    entity.editing = false;
+                }
+            });
+        });
+        this.storage.store('graphNodes', storedNodes);
+    }
+
 }
