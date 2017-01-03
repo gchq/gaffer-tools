@@ -47,6 +47,7 @@ def run_with_connector(gc):
     generate_domain_objects_chain(gc)
     get_element_group_counts(gc)
     get_sub_graph(gc)
+    op_chain_in_json(gc)
 
 
 def create_connector(host, verbose=False):
@@ -334,20 +335,20 @@ def generate_domain_objects_chain(gc):
 
 def get_element_group_counts(gc):
     # Get Elements
-    elements = gc.execute_operations([
+    group_counts = gc.execute_operations([
         g.GetElements(
             seeds=[g.EntitySeed('1')]
         ),
         g.CountGroups(limit=1000)
     ])
     print('Groups counts (limited to 1000 elements)')
-    print(elements)
+    print(group_counts)
     print()
 
 
 def get_sub_graph(gc):
     # Initialise, update and fetch an in memory set export
-    result = gc.execute_operations(
+    entity_seeds = gc.execute_operations(
         [
             g.InitialiseSetExport(),
             g.GetAdjacentEntitySeeds(
@@ -360,8 +361,23 @@ def get_sub_graph(gc):
         ]
     )
     print('Initialise, update and fetch export with adjacent entities')
-    entity_seeds = g.ResultConverter.to_entity_seeds(result)
     print(entity_seeds)
+    print()
+
+
+def op_chain_in_json(gc):
+    # Operation chain defined in json
+    result = gc.execute_operation_chain(
+        {
+            "operations": [{
+                "class": "uk.gov.gchq.gaffer.operation.impl.get.GetAllElements",
+            }, {
+                "class": "uk.gov.gchq.gaffer.operation.impl.CountGroups"
+            }]
+        }
+    )
+    print('Operation chain defined in json')
+    print(result)
     print()
 
 

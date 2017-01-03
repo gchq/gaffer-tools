@@ -38,43 +38,47 @@ class ToJson:
 
 class ResultConverter:
     @staticmethod
-    def to_elements(result):
-        elements = []
+    def to_gaffer_objects(result):
+        objs = result
         if result is not None and isinstance(result, list):
+            objs = []
             for result_item in result:
                 if 'class' in result_item:
                     if result_item[
                         'class'] == 'uk.gov.gchq.gaffer.data.element.Entity':
                         element = Entity(result_item['group'],
                                          result_item['vertex'])
+                        if 'properties' in result_item:
+                            element.properties = result_item['properties']
+                        objs.append(element)
                     elif result_item[
                         'class'] == 'uk.gov.gchq.gaffer.data.element.Edge':
                         element = Edge(result_item['group'],
                                        result_item['source'],
                                        result_item['destination'],
                                        result_item['directed'])
+                        if 'properties' in result_item:
+                            element.properties = result_item['properties']
+                        objs.append(element)
+                    elif result_item[
+                        'class'] == 'uk.gov.gchq.gaffer.operation.data.EntitySeed':
+                        objs.append(EntitySeed(result_item['vertex']))
+                    elif result_item[
+                        'class'] == 'uk.gov.gchq.gaffer.operation.data.EdgeSeed':
+                        objs.append(EdgeSeed(result_item['source'],
+                                             result_item['destination'],
+                                             result_item['directed']))
                     else:
                         raise TypeError(
                             'Element type is not recognised: ' + str(
                                 result_item))
-
-                    if 'properties' in result_item:
-                        element.properties = result_item['properties']
-                    elements.append(element)
+                elif 'vertex' in result_item:
+                    objs.append(EntitySeed(result_item['vertex']))
                 else:
-                    raise TypeError(
-                        'Element type is not recognised: ' + str(result_item))
+                    objs.append(result_item)
 
-        # Return the elements
-        return elements
-
-    @staticmethod
-    def to_entity_seeds(result):
-        entities_seeds = []
-        if result is not None and isinstance(result, list):
-            for result_item in result:
-                entities_seeds.append(EntitySeed(result_item['vertex']))
-        return entities_seeds
+        # Return the objects
+        return objs
 
 
 class ElementSeed(ToJson):
@@ -325,9 +329,6 @@ class Operation(ToJson):
         self.options = options
         self.result_limit = result_limit
 
-    def convert_result(self, result):
-        raise NotImplementedError('Use an implementation of Operation instead')
-
     def to_json(self):
         operation = {'class': self.class_name}
         if self.options is not None:
@@ -363,9 +364,6 @@ class AddElements(Operation):
             operation['elements'] = elements_json
         return operation
 
-    def convert_result(self, result):
-        return None
-
 
 class GenerateElements(Operation):
     def __init__(self, generator_class_name, element_generator_fields=None,
@@ -389,9 +387,6 @@ class GenerateElements(Operation):
                 element_generator[field.key] = field.value
         operation['elementGenerator'] = element_generator
         return operation
-
-    def convert_result(self, result):
-        return ResultConverter.to_elements(result)
 
 
 class GenerateObjects(Operation):
@@ -420,9 +415,6 @@ class GenerateObjects(Operation):
         operation['elementGenerator'] = element_generator
         return operation
 
-    def convert_result(self, result):
-        return result
-
 
 class InitialiseSetExport(Operation):
     def __init__(self, key=None, options=None):
@@ -442,9 +434,6 @@ class InitialiseSetExport(Operation):
 
         return operation
 
-    def convert_result(self, result):
-        return None
-
 
 class UpdateExport(Operation):
     def __init__(self, key=None, options=None):
@@ -463,18 +452,12 @@ class UpdateExport(Operation):
 
         return operation
 
-    def convert_result(self, result):
-        return None
-
 
 class FetchExporter(Operation):
     def __init__(self, options=None):
         super().__init__(
             'uk.gov.gchq.gaffer.operation.impl.export.FetchExporter', None,
             options)
-
-    def convert_result(self, result):
-        return result
 
 
 class FetchExport(Operation):
@@ -494,9 +477,6 @@ class FetchExport(Operation):
 
         return operation
 
-    def convert_result(self, result):
-        return result
-
 
 class GetOperation(Operation):
     def __init__(self, class_name, seeds=None, view=None, result_limit=None,
@@ -515,9 +495,6 @@ class GetOperation(Operation):
         self.in_out_type = in_out_type
         self.deduplicate = deduplicate
         self.seed_matching_type = seed_matching_type
-
-    def convert_result(self, result):
-        return ResultConverter.to_elements(result)
 
     def to_json(self):
         operation = super().to_json()
@@ -583,9 +560,6 @@ class GetAdjacentEntitySeeds(GetOperation):
             seeds, result_limit, view, True, IncludeEdges.ALL,
             in_out_type, deduplicate, options)
 
-    def convert_result(self, result):
-        return ResultConverter.to_entity_seeds(result)
-
 
 class GetAllElements(GetOperation):
     def __init__(self, view=None, include_entities=True, result_limit=None,
@@ -596,9 +570,6 @@ class GetAllElements(GetOperation):
                          include_edges,
                          InOutType.OUT, deduplicate, options)
 
-    def convert_result(self, result):
-        return ResultConverter.to_elements(result)
-
 
 class GetAllEntities(GetOperation):
     def __init__(self, view=None, result_limit=None, deduplicate=None,
@@ -606,9 +577,6 @@ class GetAllEntities(GetOperation):
         super().__init__('uk.gov.gchq.gaffer.operation.impl.get.GetAllEntities',
                          None, view, result_limit, True, IncludeEdges.NONE,
                          InOutType.OUT, deduplicate, options)
-
-    def convert_result(self, result):
-        return ResultConverter.to_elements(result)
 
 
 class GetAllEdges(GetOperation):
@@ -618,9 +586,6 @@ class GetAllEdges(GetOperation):
         super().__init__('uk.gov.gchq.gaffer.operation.impl.get.GetAllEdges',
                          None, view, result_limit, False, include_edges,
                          InOutType.OUT, deduplicate, options)
-
-    def convert_result(self, result):
-        return ResultConverter.to_elements(result)
 
 
 class CountGroups(Operation):
@@ -636,9 +601,6 @@ class CountGroups(Operation):
             operation['limit'] = self.limit
 
         return operation
-
-    def convert_result(self, result):
-        return result
 
 
 class GetGraph:
