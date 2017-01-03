@@ -65,7 +65,7 @@ For example:
     "class": "uk.gov.gchq.gaffer.data.element.Edge",
     "properties": {
       "countByVehicleType": {
-        "gaffer.types.simple.FreqMap": {
+        "uk.gov.gchq.gaffer.types.simple.FreqMap": {
           "HGVR3": 2004,
           "BUS": 1375,
           "HGVR4": 1803,
@@ -154,7 +154,7 @@ Scroll to zoom in/out.
 - Enter the following startTime filter:
 ```
 property: startTime
-function: gaffer.function.simple.filter.IsMoreThan
+function: gaffer.function.filter.IsMoreThan
 orEqualTo: true
 value: {"java.util.Date": 1115100000000}
 ```
@@ -162,7 +162,7 @@ value: {"java.util.Date": 1115100000000}
 - Enter the following endTime filter:
 ```
 property: endTime
-function: gaffer.function.simple.filter.IsLessThan
+function: gaffer.function.filter.IsLessThan
 orEqualTo: true
 value: {"java.util.Date": 1115103600000}
 ```
@@ -174,7 +174,7 @@ If you find the 'RoadUse' edge in the graph and click on it, you will see the fo
 ```
 M32:1 to M32:M4 (19)
 RoadUse	
-countByVehicleType: {"gaffer.types.simple.FreqMap":{"HGVR3":44,"BUS":10,"HGVR4":28,"AMV":6993,"HGVR2":184,"HGVA3":19,"PC":0,"HGVA5":99,"HGVA6":40,"CAR":5480,"HGV":414,"WMV2":44,"LGV":1045}}
+countByVehicleType: {"uk.gov.gchq.gaffer.types.simple.FreqMap":{"HGVR3":44,"BUS":10,"HGVR4":28,"AMV":6993,"HGVR2":184,"HGVA3":19,"PC":0,"HGVA5":99,"HGVA6":40,"CAR":5480,"HGV":414,"WMV2":44,"LGV":1045}}
 
 startTime: {"java.util.Date":1115100000000}
 
@@ -203,7 +203,7 @@ Clicking the 'Raw' tab at the top of the UI displays the Json constructed and ha
 - Enter the following startTime filter:
 ```
 property: startTime
-function: gaffer.function.simple.filter.IsMoreThan
+function: gaffer.function.filter.IsMoreThan
 orEqualTo: true
 value: {"java.util.Date": 1115100000000}
 ```
@@ -211,7 +211,7 @@ value: {"java.util.Date": 1115100000000}
 - Enter the following endTime filter:
 ```
 property: endTime
-function: gaffer.function.simple.filter.IsLessThan
+function: gaffer.function.filter.IsLessThan
 orEqualTo: true
 value: {"java.util.Date": 1115107200000}
 ```
@@ -223,7 +223,7 @@ Now if you click on the 'RoadUse' edge, or visit the 'Edges' Table view, you'll 
 ```
 M32:1 to M32:M4 (19)
 RoadUse	
-countByVehicleType: {"gaffer.types.simple.FreqMap":{"HGVR3":44,"BUS":10,"HGVR4":28,"AMV":6993,"HGVR2":184,"HGVA3":19,"PC":0,"HGVA5":99,"HGVA6":40,"CAR":5480,"HGV":414,"WMV2":44,"LGV":1045}}
+countByVehicleType: {"uk.gov.gchq.gaffer.types.simple.FreqMap":{"HGVR3":44,"BUS":10,"HGVR4":28,"AMV":6993,"HGVR2":184,"HGVA3":19,"PC":0,"HGVA5":99,"HGVA6":40,"CAR":5480,"HGV":414,"WMV2":44,"LGV":1045}}
 
 startTime: {"java.util.Date":1115100000000}
 
@@ -232,7 +232,7 @@ endTime: {"java.util.Date":1115103600000}
 totalCount: {"java.lang.Long":14400}
 
 RoadUse	
-countByVehicleType: {"gaffer.types.simple.FreqMap":{"HGVR3":68,"BUS":28,"HGVR4":50,"AMV":13640,"HGVR2":370,"HGVA3":35,"PC":0,"HGVA5":204,"HGVA6":96,"CAR":10924,"HGV":823,"WMV2":95,"LGV":1770}}
+countByVehicleType: {"uk.gov.gchq.gaffer.types.simple.FreqMap":{"HGVR3":68,"BUS":28,"HGVR4":50,"AMV":13640,"HGVR2":370,"HGVA3":35,"PC":0,"HGVA5":204,"HGVA6":96,"CAR":10924,"HGV":823,"WMV2":95,"LGV":1770}}
 
 startTime: {"java.util.Date":1115100000000}
 
