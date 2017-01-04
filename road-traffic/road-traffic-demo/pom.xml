@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
-        <groupId>gaffer</groupId>
+        <groupId>uk.gov.gchq.gaffer</groupId>
         <artifactId>road-traffic</artifactId>
-        <version>0.4.8-SNAPSHOT</version>
+        <version>0.5.1-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -17,7 +17,7 @@
 
     <dependencies>
         <dependency>
-            <groupId>gaffer</groupId>
+            <groupId>uk.gov.gchq.gaffer</groupId>
             <artifactId>road-traffic-generators</artifactId>
             <version>${project.parent.version}</version>
         </dependency>
@@ -38,7 +38,7 @@
                             <webapps>
                                 <webapp>
                                     <contextPath>/ui</contextPath>
-                                    <groupId>gaffer</groupId>
+                                    <groupId>uk.gov.gchq.gaffer</groupId>
                                     <artifactId>ui</artifactId>
                                     <version>${gaffer.version}</version>
                                     <type>war</type>
@@ -46,7 +46,7 @@
                                 </webapp>
                                 <webapp>
                                     <contextPath>/rest</contextPath>
-                                    <groupId>gaffer</groupId>
+                                    <groupId>uk.gov.gchq.gaffer</groupId>
                                     <artifactId>road-traffic-rest</artifactId>
                                     <version>${project.parent.version}</version>
                                     <type>war</type>

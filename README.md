@@ -16,12 +16,6 @@ limitations under the License.
 Gaffer Tools
 ============================
 
-A repository for Gaffer Tools. 
+A repository for Gaffer Tools. Please refer to the README.md files in the
+subfolders for information on how to use each tool.
 
-In order to use these tools you will first need to have the relevant version of Gaffer compiled:
-```bash
-git clone https://github.com/gchq/Gaffer.git
-cd Gaffer
-git checkout gaffer2-0.4.7.2
-mvn clean install -Pquick
-```
