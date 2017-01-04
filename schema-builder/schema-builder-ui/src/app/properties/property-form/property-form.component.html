@@ -1,31 +1,38 @@
-<div class="row">
-    <button md-raised-button color="accent" (click)="addNewProperty();" class="button-spacing" style="float: right;">
+<div class="flex-container" fxLayout="row">
+    <div fxFlex></div>
+    <button md-raised-button color="accent" (click)="addNewProperty();" class="button-spacing">
         Add Property
     </button>
 </div>
-<form #e="ngForm" novalidate (ngSubmit)="save()" materialize class="col s12">
+<form #e="ngForm" novalidate (ngSubmit)="save()" materialize>
     <div class="form-group">
         <div style="margin-top: 20px;">
-            <div class="row" *ngFor="let property of _propertyHolder.properties">
-                <div class="input-field col s5 m5 l5">
+            <div *ngIf="!_propertyHolder.properties || _propertyHolder.properties.length === 0">
+                <md-list dense>
+                    <md-list-item>
+                        <h3 md-line><b>No properties</b></h3>
+                    </md-list-item>
+                </md-list>
+            </div>
+            <div class="flex-container" fxLayout="row" fxLayoutGap="10px" *ngFor="let property of _propertyHolder.properties">
+                <div class="input-field" fxFlex>
                     <input class="form-control" type="text" name="{{property.id}} Name" placeholder="Property name" [(ngModel)]="property.name">
                     <label>Property Name</label>
                 </div>
-                <div class="input-field col s5 m5 l5">
+                <div class="input-field" fxFlex>
                     <select id="{{property.id}}Type" materialize="material_select" [materializeSelectOptions]="_storedTypes" (change)="property.type = $event.target.value">
                         <option *ngFor="let type of _storedTypes" [value]="type.type" [selected]="property.type === type.type">{{type.type}}</option>
                     </select>
                     <label>Property Type</label>
                 </div>
-                <div class="col s2 m2 l2">
-                    <button md-mini-fab color="warn" (click)="removeType(i)" class="button-spacing" style="float: right; margin-top: 15px;">
-                        <md-icon class="md-16">delete</md-icon>
-                    </button>
-                </div>
+                <button md-mini-fab color="warn" (click)="removeProperty(property.id)" class="button-spacing" style="float: right; margin-top: 15px;">
+                    <md-icon class="md-16">delete</md-icon>
+                </button>
             </div>
         </div>
-        <div class="row">
-            <button class="form-button button-spacing" type="submit" style="float: right;" md-raised-button color="primary">Update</button>
+        <div class="flex-container" fxLayout="row">
+            <div fxFlex></div>
+            <button class="form-button button-spacing" type="submit" md-raised-button color="primary">Update</button>
         </div>
     </div>
 </form>

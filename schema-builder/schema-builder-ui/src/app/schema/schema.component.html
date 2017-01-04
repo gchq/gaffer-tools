@@ -1,74 +1,74 @@
-<div style="padding: 15px;">
-    <div class="row">
-        <div class="col s12 m10 offset-m1 l10 offset-l1">
-            <div style="margin: 30px 0;">
-                <h5 style="color:green;" *ngIf="(validation && validation.valid) && !errorMessage">
-                    <md-icon class="md-16">check</md-icon>
-                    {{validation.message}}
-                </h5>
-                <h5 style="color:red;" *ngIf="(validation && !validation.valid) || errorMessage">
-                    <md-icon class="md-16">close</md-icon>
-                    <span *ngIf="validation && validation.message">{{validation.message}}</span>
-                    <span *ngIf="!validation || validation.message">Unknown validation error</span>
-                </h5>
-            </div>
-            <pre>{{errorMessage | json}}</pre>
-            <md-card style="margin-bottom: 20px;">
-                <div class="content-card-header">
-                    <md-card-title>Data Schema</md-card-title>
-                    <div class="type-edit-button row">
-                        <button md-mini-fab (click)="this.editing.dataSchema = true;" *ngIf="!editing.dataSchema" class="button-spacing">
-                            <md-icon class="md-16">edit</md-icon>
-                        </button>
-                        <button md-mini-fab (click)="updateDataSchema()" *ngIf="editing.dataSchema" class="button-spacing">
-                            <md-icon class="md-16">done</md-icon>
-                        </button>
-                    </div>
-                </div>
-                <md-card-content>
-                    <pre [hidden]="editing.dataSchema" [innerHtml]="dataSchema | prettyjson:4"></pre>
-                    <p style="color: red" *ngIf="errors.dataSchema">{{errors.dataSchema}}</p>
-                    <textarea id="dataSchemaTextArea" [hidden]="!editing.dataSchema" class="materialize-textarea" value="{{dataSchema | json:4}}"></textarea>
-                </md-card-content>
-            </md-card>
-
-            <md-card style="margin-bottom: 20px;">
-                <div class="content-card-header">
-                    <md-card-title>Data Types</md-card-title>
-                    <div class="type-edit-button row">
-                        <button md-mini-fab (click)="editing.dataTypes = true;" *ngIf="!editing.dataTypes" class="button-spacing">
-                            <md-icon class="md-16">edit</md-icon>
-                        </button>
-                        <button md-mini-fab (click)="updateDataTypes()" *ngIf="editing.dataTypes" class="button-spacing">
-                            <md-icon class="md-16">done</md-icon>
-                        </button>
-                    </div>
-                </div>
-                <md-card-content>
-                    <pre [hidden]="editing.dataTypes" [innerHtml]="dataTypes | prettyjson:4"></pre>
-                    <p style="color: red" *ngIf="errors.dataTypes">{{errors.dataTypes}}</p>
-                    <textarea id="dataTypesTextArea" [hidden]="!editing.dataTypes" class="materialize-textarea" value="{{dataTypes | json:4}}"></textarea>
-                </md-card-content>
-            </md-card>
-
-            <md-card>
-                <div class="content-card-header">
-                    <md-card-title>Store Types</md-card-title>
-                    <div class="type-edit-button row">
-                        <button md-mini-fab (click)="editing.storeTypes = true;" *ngIf="!editing.storeTypes" class="button-spacing">
-                            <md-icon class="md-16">edit</md-icon>
-                        </button>
-                        <button md-mini-fab (click)="updateStoreTypes()" *ngIf="editing.storeTypes" class="button-spacing">
-                            <md-icon class="md-16">done</md-icon>
-                        </button>
-                    </div>
-                </div>
-                <md-card-content>
-                    <pre [hidden]="editing.storeTypes" [innerHtml]="storeTypes | prettyjson:4"></pre>
-                    <p style="color: red" *ngIf="errors.storeTypes">{{errors.storeTypes}}</p>
-                    <textarea id="storeTypesTextArea" [hidden]="!editing.storeTypes" class="materialize-textarea" value="{{storeTypes | json:4}}"></textarea>
-                </md-card-content>
-            </md-card>
+<div style="padding: 15px;" class="flex-container" fxLayout="row" fxLayoutAlign="center start">
+    <div fxFlex="10%" fxShow="true" fxShow.sm="false" fxShow.xs="false"></div>
+    <div fxFlex>
+        <div style="margin: 30px 0;">
+            <h5 style="color:green;" *ngIf="(validation && validation.valid) && !errorMessage">
+                <md-icon class="md-16">check</md-icon>
+                {{validation.message}}
+            </h5>
+            <h5 style="color:red;" *ngIf="(validation && !validation.valid) || errorMessage">
+                <md-icon class="md-16">close</md-icon>
+                <span *ngIf="validation && validation.message">{{validation.message}}</span>
+                <span *ngIf="!validation || validation.message">Unknown validation error</span>
+            </h5>
         </div>
+        <pre>{{errorMessage | json}}</pre>
+        <md-card style="margin-bottom: 20px;">
+            <div class="content-card-header">
+                <md-card-title>Data Schema</md-card-title>
+                <div class="type-edit-button row">
+                    <button md-mini-fab (click)="this.editing.dataSchema = true;" *ngIf="!editing.dataSchema" class="button-spacing">
+                            <md-icon class="md-16">edit</md-icon>
+                        </button>
+                    <button md-mini-fab (click)="updateDataSchema()" *ngIf="editing.dataSchema" class="button-spacing">
+                            <md-icon class="md-16">done</md-icon>
+                        </button>
+                </div>
+            </div>
+            <md-card-content>
+                <pre [hidden]="editing.dataSchema" [innerHtml]="dataSchema | prettyjson:4"></pre>
+                <p style="color: red" *ngIf="errors.dataSchema">{{errors.dataSchema}}</p>
+                <textarea id="dataSchemaTextArea" [hidden]="!editing.dataSchema" class="materialize-textarea" value="{{dataSchema | json:4}}"></textarea>
+            </md-card-content>
+        </md-card>
+
+        <md-card style="margin-bottom: 20px;">
+            <div class="content-card-header">
+                <md-card-title>Data Types</md-card-title>
+                <div class="type-edit-button row">
+                    <button md-mini-fab (click)="editing.dataTypes = true;" *ngIf="!editing.dataTypes" class="button-spacing">
+                            <md-icon class="md-16">edit</md-icon>
+                        </button>
+                    <button md-mini-fab (click)="updateDataTypes()" *ngIf="editing.dataTypes" class="button-spacing">
+                            <md-icon class="md-16">done</md-icon>
+                        </button>
+                </div>
+            </div>
+            <md-card-content>
+                <pre [hidden]="editing.dataTypes" [innerHtml]="dataTypes | prettyjson:4"></pre>
+                <p style="color: red" *ngIf="errors.dataTypes">{{errors.dataTypes}}</p>
+                <textarea id="dataTypesTextArea" [hidden]="!editing.dataTypes" class="materialize-textarea" value="{{dataTypes | json:4}}"></textarea>
+            </md-card-content>
+        </md-card>
+
+        <md-card>
+            <div class="content-card-header">
+                <md-card-title>Store Types</md-card-title>
+                <div class="type-edit-button row">
+                    <button md-mini-fab (click)="editing.storeTypes = true;" *ngIf="!editing.storeTypes" class="button-spacing">
+                            <md-icon class="md-16">edit</md-icon>
+                        </button>
+                    <button md-mini-fab (click)="updateStoreTypes()" *ngIf="editing.storeTypes" class="button-spacing">
+                            <md-icon class="md-16">done</md-icon>
+                        </button>
+                </div>
+            </div>
+            <md-card-content>
+                <pre [hidden]="editing.storeTypes" [innerHtml]="storeTypes | prettyjson:4"></pre>
+                <p style="color: red" *ngIf="errors.storeTypes">{{errors.storeTypes}}</p>
+                <textarea id="storeTypesTextArea" [hidden]="!editing.storeTypes" class="materialize-textarea" value="{{storeTypes | json:4}}"></textarea>
+            </md-card-content>
+        </md-card>
     </div>
+    <div fxFlex="10%" fxShow="true" fxShow.sm="false" fxShow.xs="false"></div>
 </div>

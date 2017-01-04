@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { MaterialModule } from '@angular/material';
 import { HttpModule } from '@angular/http';
 import { ReactiveFormsModule } from '@angular/forms';
+import {FlexLayoutModule} from '@angular/flex-layout';
 import { GraphComponent } from './graph/graph.component';
 import { EdgeFormComponent } from './graph/edge-form/edge-form.component';
 import { MaterializeDirective } from 'angular2-materialize';
@@ -17,7 +18,8 @@ import { TypeFormComponent } from './types/type-form/type-form.component';
 import { EntityFormComponent } from './graph/entity-form/entity-form.component';
 import * as spinner from 'ng2-spin-kit/app/spinners';
 import { PropertiesComponent } from './properties/properties.component';
-import { PropertyFormComponent } from './properties/property-form/property-form.component'
+import { PropertyFormComponent } from './properties/property-form/property-form.component';
+
 
 @NgModule({
   declarations: [
@@ -39,6 +41,7 @@ import { PropertyFormComponent } from './properties/property-form/property-form.
     FormsModule,
     HttpModule,
     PrettyJsonModule,
+    FlexLayoutModule.forRoot(),
     MaterialModule.forRoot(),
     ReactiveFormsModule,
     Ng2Webstorage

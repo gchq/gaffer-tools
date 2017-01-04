@@ -1,6 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { LocalStorageService } from 'ng2-webstorage';
-import { FormsModule, ReactiveFormsModule, FormBuilder } from '@angular/forms';
+import { FormBuilder } from '@angular/forms';
 import * as _ from 'lodash';
 declare var $: any;
 

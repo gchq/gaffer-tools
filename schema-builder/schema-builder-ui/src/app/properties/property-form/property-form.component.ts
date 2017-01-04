@@ -41,6 +41,12 @@ export class PropertyFormComponent implements OnInit {
         });
     }
 
+    removeProperty(propertyId) {
+        this._propertyHolder.properties = _.filter(this._propertyHolder.properties, (property: any) => {
+            return property.id !== propertyId;
+        });
+    }
+
     save() {
         this.holderChange.emit({
             value: this.propertyHolder
