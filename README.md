@@ -18,3 +18,4 @@ Gaffer Tools
 
 A repository for Gaffer Tools. Please refer to the README.md files in the
 subfolders for information on how to use each tool.
+
