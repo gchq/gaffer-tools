@@ -66,13 +66,18 @@ class GafferConnector:
         # Construct the full URL path to the Gaffer server
         url = self._host + '/graph/doOperation'
 
+        if hasattr(operation_chain, "to_json"):
+            op_chain_json_obj = operation_chain.to_json()
+        else:
+            op_chain_json_obj = operation_chain
+
         # Query Gaffer
         if self._verbose:
             print('\nQuery operations:\n' +
-                  json.dumps(operation_chain.to_json(), indent=4) + '\n')
+                  json.dumps(op_chain_json_obj, indent=4) + '\n')
 
         # Convert the query dictionary into JSON and post the query to Gaffer
-        json_body = bytes(json.dumps(operation_chain.to_json()), 'ascii')
+        json_body = bytes(json.dumps(op_chain_json_obj), 'ascii')
         headers['Content-Type'] = 'application/json;charset=utf-8'
 
         request = urllib.request.Request(url, headers=headers, data=json_body)
@@ -96,7 +101,7 @@ class GafferConnector:
         else:
             result = None
 
-        return operation_chain.operations[-1].convert_result(result)
+        return g.ResultConverter.to_gaffer_objects(result)
 
     def execute_get(self, operation, headers={}):
         url = self._host + operation.get_url()

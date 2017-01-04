@@ -21,7 +21,7 @@ This allows you to write GraphQL queries which will be converted to Gaffer opera
 
 The Gaffer Element properties returned are used to generate GraphQL compliant responses.
 
-Currently the library simply configures an instance graphql.GraphQL with a gaffer.store.schema.Schema.
+Currently the library simply configures an instance graphql.GraphQL with a uk.gov.gchq.gaffer.store.schema.Schema.
 There is no REST interface for this yet so native Java access is the only way to use it.
 
 Setup
@@ -49,7 +49,7 @@ Construct a User
         .userId("me")
         .dataAuth("see_everything")
                 
-Build a context for GrafferQL to use, this requires the gaffer.graph.Gaffer graph and the gaffer.user.User
+Build a context for GrafferQL to use, this requires the uk.gov.gchq.gaffer.graph.Gaffer graph and the uk.gov.gchq.gaffer.user.User
 
     GrafferQLContext context = new GrafferQLContext.Builder()
         .graph(graph) // will be same value for all requests to this graph

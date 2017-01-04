@@ -1,13 +1,13 @@
-package gaffer.traffic;
+package uk.gov.gchq.gaffer.traffic;
 
-import gaffer.commonutil.StreamUtil;
-import gaffer.graph.Graph;
-import gaffer.operation.OperationChain;
-import gaffer.operation.OperationException;
-import gaffer.operation.impl.add.AddElements;
-import gaffer.operation.impl.generate.GenerateElements;
-import gaffer.traffic.generator.RoadUseElementGenerator;
-import gaffer.user.User;
+import uk.gov.gchq.gaffer.commonutil.StreamUtil;
+import uk.gov.gchq.gaffer.graph.Graph;
+import uk.gov.gchq.gaffer.operation.OperationChain;
+import uk.gov.gchq.gaffer.operation.OperationException;
+import uk.gov.gchq.gaffer.operation.impl.add.AddElements;
+import uk.gov.gchq.gaffer.operation.impl.generate.GenerateElements;
+import uk.gov.gchq.gaffer.traffic.generator.RoadUseElementGenerator;
+import uk.gov.gchq.gaffer.user.User;
 import org.apache.commons.io.IOUtils;
 import org.junit.Test;
 import java.io.IOException;

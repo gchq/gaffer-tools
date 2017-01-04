@@ -47,6 +47,7 @@ def run_with_connector(gc):
     generate_domain_objects_chain(gc)
     get_element_group_counts(gc)
     get_sub_graph(gc)
+    op_chain_in_json(gc)
 
 
 def create_connector(host, verbose=False):
@@ -77,12 +78,12 @@ def get_filter_functions(gc):
 
 def get_class_filter_functions(gc):
     # Get Schema
-    class_name = 'gaffer.function.simple.filter.IsMoreThan'
+    class_name = 'uk.gov.gchq.gaffer.function.filter.IsMoreThan'
     result = gc.execute_get(
         g.GetClassFilterFunctions(class_name=class_name)
     )
 
-    print('Class Filter Functions (gaffer.function.simple.filter.IsMoreThan):')
+    print('Class Filter Functions (IsMoreThan):')
     print(result)
     print()
 
@@ -111,12 +112,12 @@ def get_operations(gc):
 
 def get_serialised_fields(gc):
     # Get Schema
-    class_name = 'gaffer.function.simple.filter.IsMoreThan'
+    class_name = 'uk.gov.gchq.gaffer.function.filter.IsMoreThan'
     result = gc.execute_get(
         g.GetSerialisedFields(class_name=class_name)
     )
 
-    print('Serialised Fields (gaffer.function.simple.filter.IsMoreThan):')
+    print('Serialised Fields (IsMoreThan):')
     print(result)
     print()
 
@@ -133,12 +134,13 @@ def get_store_traits(gc):
 
 
 def is_operation_supported(gc):
-    operation = 'gaffer.operation.impl.add.AddElements'
+    operation = 'uk.gov.gchq.gaffer.operation.impl.add.AddElements'
     result = gc.is_operation_supported(
         g.IsOperationSupported(operation=operation)
     )
 
-    print('\nOperation supported ("gaffer.operation.impl.add.AddElements"):')
+    print(
+        '\nOperation supported ("uk.gov.gchq.gaffer.operation.impl.add.AddElements"):')
     print(result)
     print()
 
@@ -196,10 +198,8 @@ def add_elements(gc):
 
 def get_elements(gc):
     # Get Elements
-    filter_class = 'gaffer.function.simple.filter.IsEqual'
-    transform_class = 'gaffer.rest.example.ExampleTransformFunction'
     elements = gc.execute_operation(
-        g.GetRelatedElements(
+        g.GetElements(
             seeds=[g.EntitySeed('1')],
             view=g.View(
                 entities=[
@@ -208,16 +208,16 @@ def get_elements(gc):
                         transient_properties=[
                             g.Property('newProperty', 'java.lang.String')
                         ],
-                        filter_functions=[
+                        pre_aggregation_filter_functions=[
                             g.FilterFunction(
-                                class_name='gaffer.function.simple.filter.IsEqual',
+                                class_name='uk.gov.gchq.gaffer.function.filter.IsEqual',
                                 selection=['VERTEX'],
                                 function_fields={'value': '1'}
                             )
                         ],
                         transform_functions=[
                             g.TransformFunction(
-                                class_name='gaffer.rest.example.ExampleTransformFunction',
+                                class_name='uk.gov.gchq.gaffer.rest.example.ExampleTransformFunction',
                                 selection=['VERTEX'],
                                 projection=['newProperty']
                             )
@@ -273,26 +273,27 @@ def get_all_elements(gc):
 def generate_elements(gc):
     # Generate Elements
     elements = gc.execute_operation(
-        g.GenerateElements('gaffer.rest.example.ExampleDomainObjectGenerator',
-                           objects=[
-                               {
-                                   'class': 'gaffer.rest.example.ExampleDomainObject',
-                                   'ids': [
-                                       '1',
-                                       '2',
-                                       True
-                                   ],
-                                   'type': 'edge'
-                               },
-                               {
-                                   'class': 'gaffer.rest.example.ExampleDomainObject',
-                                   'ids': [
-                                       '1'
-                                   ],
-                                   'type': 'entity'
-                               }
-                           ]
-                           )
+        g.GenerateElements(
+            'uk.gov.gchq.gaffer.rest.example.ExampleDomainObjectGenerator',
+            objects=[
+                {
+                    'class': 'uk.gov.gchq.gaffer.rest.example.ExampleDomainObject',
+                    'ids': [
+                        '1',
+                        '2',
+                        True
+                    ],
+                    'type': 'edge'
+                },
+                {
+                    'class': 'uk.gov.gchq.gaffer.rest.example.ExampleDomainObject',
+                    'ids': [
+                        '1'
+                    ],
+                    'type': 'entity'
+                }
+            ]
+        )
     )
     print('Generated elements from provided domain objects')
     print(elements)
@@ -302,12 +303,13 @@ def generate_elements(gc):
 def generate_domain_objs(gc):
     # Generate Domain Objects - single provided element
     objects = gc.execute_operation(
-        g.GenerateObjects('gaffer.rest.example.ExampleDomainObjectGenerator',
-                          elements=[
-                              g.Entity('entity', '1'),
-                              g.Edge('edge', '1', '2', True)
-                          ]
-                          )
+        g.GenerateObjects(
+            'uk.gov.gchq.gaffer.rest.example.ExampleDomainObjectGenerator',
+            elements=[
+                g.Entity('entity', '1'),
+                g.Edge('edge', '1', '2', True)
+            ]
+        )
     )
     print('Generated objects from provided elements')
     print(objects)
@@ -318,11 +320,12 @@ def generate_domain_objects_chain(gc):
     # Generate Domain Objects - chain of get elements then generate objects
     objects = gc.execute_operations(
         [
-            g.GetElementsBySeed(
-                seeds=[g.EntitySeed('1')]
+            g.GetElements(
+                seeds=[g.EntitySeed('1')],
+                seed_matching_type=g.SeedMatchingType.EQUAL
             ),
             g.GenerateObjects(
-                'gaffer.rest.example.ExampleDomainObjectGenerator')
+                'uk.gov.gchq.gaffer.rest.example.ExampleDomainObjectGenerator')
         ]
     )
     print('Generated objects from get elements by seed')
@@ -332,20 +335,20 @@ def generate_domain_objects_chain(gc):
 
 def get_element_group_counts(gc):
     # Get Elements
-    elements = gc.execute_operations([
-        g.GetRelatedElements(
+    group_counts = gc.execute_operations([
+        g.GetElements(
             seeds=[g.EntitySeed('1')]
         ),
         g.CountGroups(limit=1000)
     ])
     print('Groups counts (limited to 1000 elements)')
-    print(elements)
+    print(group_counts)
     print()
 
 
 def get_sub_graph(gc):
     # Initialise, update and fetch an in memory set export
-    result = gc.execute_operations(
+    entity_seeds = gc.execute_operations(
         [
             g.InitialiseSetExport(),
             g.GetAdjacentEntitySeeds(
@@ -358,8 +361,23 @@ def get_sub_graph(gc):
         ]
     )
     print('Initialise, update and fetch export with adjacent entities')
-    entity_seeds = g.ResultConverter.to_entity_seeds(result)
     print(entity_seeds)
+    print()
+
+
+def op_chain_in_json(gc):
+    # Operation chain defined in json
+    result = gc.execute_operation_chain(
+        {
+            "operations": [{
+                "class": "uk.gov.gchq.gaffer.operation.impl.get.GetAllElements",
+            }, {
+                "class": "uk.gov.gchq.gaffer.operation.impl.CountGroups"
+            }]
+        }
+    )
+    print('Operation chain defined in json')
+    print(result)
     print()
 
 
