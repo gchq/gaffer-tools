@@ -33,10 +33,6 @@ export class EntityFormComponent implements OnInit {
         this._storedTypes = this.storage.retrieve('types');
     }
 
-    changeNode(value: any, key: any) {
-        this._node[key] = value;
-    }
-
     addNewEntity() {
         let uuid = UUID.UUID();
         this.entities.push({
@@ -44,15 +40,6 @@ export class EntityFormComponent implements OnInit {
             name: 'New Entity',
             properties: []
         });
-    }
-
-    addNewEntityProperty(entity) {
-        let uuid = UUID.UUID();
-        entity.properties.push({
-            id: uuid,
-            name: 'New Property',
-            type: this._storedTypes[0].type || 'string'
-        })
     }
 
     save() {

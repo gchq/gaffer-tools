@@ -1,16 +1,20 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { LocalStorageService } from 'ng2-webstorage';
+import { FormsModule, ReactiveFormsModule, FormBuilder } from '@angular/forms';
+import * as _ from 'lodash';
 declare var $: any;
 
 @Component({
     selector: 'app-node-form',
     templateUrl: './node-form.component.html',
-    styleUrls: ['./node-form.component.css']
+    styleUrls: ['./node-form.component.css'],
+    providers: [FormBuilder]
 })
 export class NodeFormComponent implements OnInit {
     _node: any;
     _nodes: any;
     _network: any;
+    form: any;
 
     @Input()
     set nodes(nodes: any) {
@@ -21,6 +25,7 @@ export class NodeFormComponent implements OnInit {
     @Input()
     set selectedNode(selectedNode: any) {
         this._node = this._nodes.get(selectedNode);
+        this.updateForm(this._node);
     }
 
     @Input()
@@ -28,20 +33,23 @@ export class NodeFormComponent implements OnInit {
         this._network = network;
     }
 
-    constructor(private storage: LocalStorageService) { }
+    constructor(private storage: LocalStorageService, private formBuilder: FormBuilder) {}
 
     ngOnInit() {
-
+        this.form.valueChanges
+            .debounceTime(400)
+            .distinctUntilChanged()
+            .subscribe((data) => this.save(data));
     }
 
-    changeNode(value: any, key: any) {
-        this._node[key] = value;
+    updateForm(node: any) {
+        this.form = this.formBuilder.group({
+            label: node.label
+        });
     }
 
-    save(isValid: boolean, e: any) {
-        if (!isValid) {
-            return;
-        }
+    save(data) {
+        this._node = _.merge(this._node, data);
         this._nodes.update(this._node);
         this.storage.store('graphNodes', this._nodes);
     }

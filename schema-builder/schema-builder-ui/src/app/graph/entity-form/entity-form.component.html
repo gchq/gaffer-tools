@@ -1,47 +1,23 @@
-<button md-raised-button color="accent" (click)="addNewEntity();" class="button-spacing" style="position: absolute; top: 25px; right: 10px">
-    Add Entity
-</button>
-<div class="row">
+<div class="row" style="margin: 0;">
+    <button md-raised-button color="accent" (click)="addNewEntity();" class="button-spacing" style="float: right;">
+        Add Entity
+    </button>
+</div>
+<div class="row" style="margin: 10px 0 0 0;">
     <div *ngFor="let entity of entities" id="{{entity.id}}" class="col s12 z-depth-1" style="margin: 5px 0; padding: 10px 0 0 0;">
         <form #e="ngForm" novalidate materialize class="col s12">
             <div class="form-group">
-                <h4 style="margin-left: 10px; font-size: 18pt;">{{entity.name}}</h4>
+                <h4 style="margin-left: 10px; font-size: 18pt; word-break: break-all;">{{entity.name}}</h4>
                 <div class="row">
                     <div class="input-field col s6 m6 l12">
                         <input class="form-control" type="text" name="name" placeholder="Entity name" [(ngModel)]="entity.name">
                         <label>Name</label>
                     </div>
                 </div>
-                <div class="row">
-                    <div class="col s2">
-                        <button md-raised-button color="accent" (click)="addNewEntityProperty(entity);" class="button-spacing">
-                            Add Property
-                        </button>
-                    </div>
-                </div>
-            
-                <div class="row" *ngFor="let property of entity.properties">
-                    <h5 style="margin-left: 10px; font-size: 16pt">{{property.name}}</h5>
-                    <div class="input-field col s6 m6 l12">
-                        <input class="form-control" type="text" name="{{entity.id}}{{property.id}}Name" placeholder="Property name" [(ngModel)]="property.name">
-                        <label>Property Name</label>
-                    </div>
-                    <div class="input-field col s6 m6 l12">
-                        <select id="{{entity.id}}{{property.id}}Type" materialize="material_select" [materializeSelectOptions]="_storedTypes" (change)="property.type = $event.target.value">
-                            <option *ngFor="let type of _storedTypes" [value]="type.type" [selected]="property.type === type.type">{{type.type}}</option>
-                        </select>
-                        <label>Property Type</label>
-                    </div>
-                </div>
             </div>
         </form>
     </div>
 </div>
-
-<div class="row">
-    <div class="col s2">
-        <button class="form-button" type="submit" (click)="save()" md-raised-button color="primary">
-            Update
-        </button>
-    </div>
+<div class="row" style="margin: 0;">
+    <button class="form-button button-spacing" type="submit" style="float: right;" (click)="save()" md-raised-button color="primary">Update</button>
 </div>

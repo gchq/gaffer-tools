@@ -1,11 +1,24 @@
 <form #e="ngForm" novalidate materialize class="col s12">
-  <div class="form-group">
-    <div class="row">
-      <div class="input-field col s6 m6 l12">
-        <input class="form-control" type="text" name="label" placeholder="Node name" [(ngModel)]="_node.label">
-        <label>Name</label>
-      </div>
-      <button class="form-button" type="submit" (click)="save(e.value, e.valid)" md-raised-button color="primary">Update</button>
+    <div class="form-group">
+        <div class="row" style="margin: 0;">
+            <div class="input-field col s6 m6 l12">
+                <input class="form-control" type="text" name="label" placeholder="Node name" [(ngModel)]="_node.label">
+                <label>Name</label>
+            </div>
+            <div class="row" style="margin: 0;">
+                <button class="form-button button-spacing" type="submit" style="float: right;" (click)="save(e.value, e.valid)" md-raised-button
+                    color="primary">Update</button>
+            </div>
+        </div>
     </div>
-  </div>
+</form>
+
+
+<form [formGroup]="form" materialize class="col s12">
+    <div class="form-group">
+        <div class="input-field col s6 m6 l12">
+            <input class="form-control" formControlName="label" type="text" name="label" placeholder="Node name">
+            <label>Name</label>
+        </div>
+    </div>
 </form>
