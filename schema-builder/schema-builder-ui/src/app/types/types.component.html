@@ -1,93 +1,84 @@
-<div style="padding: 15px;">
-    <div class="row">
-        <div class="col s12 m2 offset-m9 l10 offset-l1">
-            <div style="float: right; margin: 15px 10px;">
-                <button md-raised-button color="accent" (click)="addNewType();" class="button-spacing">
-                    Add type
-                </button>
-                <button md-raised-button color="warn" (click)="resetTypes();" class="button-spacing">
-                    Reset
-                </button>
+<div style="padding: 15px;" class="flex-container" fxLayout="row" fxLayoutAlign="center start">
+    <div fxFlex="10%" fxShow="true" fxShow.sm="false" fxShow.xs="false"></div>
+    <div fxFlex>
+        <div class="flex-container" fxLayout="row">
+            <div fxFlex></div>
+            <button md-raised-button color="accent" (click)="addNewType();" class="button-spacing">
+                Add type
+            </button>
+            <button md-raised-button color="warn" (click)="resetTypes();" class="button-spacing">
+                Reset
+            </button>
+        </div>
+        <div class="flex-container" fxLayout="row" fxLayoutWrap="wrap">
+            <div fxFlex="100%" fxFlex.gt-sm="50%" style="padding: 10px;" *ngFor="let type of types; let i = index">
+                <md-card>
+                    <div class="content-card-header" fxLayout="row">
+                        <md-card-title fxFlex style="word-break: break-all;">{{type.type}}</md-card-title>
+                        <button md-mini-fab (click)="type.editing = true;" *ngIf="!type.editing" class="button-spacing">
+                            <md-icon class="md-16">edit</md-icon>
+                        </button>
+                        <button md-mini-fab color="warn" (click)="removeType(i)" class="button-spacing">
+                            <md-icon class="md-16">delete</md-icon>
+                        </button>
+                    </div>
+                    <md-card-content>
+                        <div *ngIf="!type.editing">
+                            <md-list dense>
+                                <md-list-item>
+                                    <h3 md-line><b>Class</b></h3>
+                                    <p md-line>{{type.class}}</p>
+                                </md-list-item>
+                                <md-list-item>
+                                    <h3 md-line><b>Serialiser</b></h3>
+                                    <p md-line>{{type.serialiserClass || 'null'}}</p>
+                                </md-list-item>
+                                <md-list-item>
+                                    <h3 md-line><b>Aggregator</b></h3>
+                                    <p md-line *ngIf="type.aggregateFunction && type.aggregateFunction.class">{{type.aggregateFunction.class}}</p>
+                                    <p md-line *ngIf="!type.aggregateFunction || !type.aggregateFunction.class">null</p>
+                                </md-list-item>
+                                <md-list-item class="autoheight-list">
+                                    <h3 md-line><b>Validators</b></h3>
+                                    <p md-line *ngFor="let validator of type.validateFunctions">{{validator.function.class}}</p>
+                                    <p md-line *ngIf="!type.validateFunctions || type.validateFunctions.length === 0">null</p>
+                                </md-list-item>
+                            </md-list>
+                        </div>
+                        <app-type-form [type]="types[i]" (typeChange)="typeChanged($event)" *ngIf="type.editing"></app-type-form>
+                    </md-card-content>
+                </md-card>
+            </div>
+            <div  fxFlex="100%" fxFlex.gt-sm="50%" style="padding: 10px;" *ngFor="let type of nodeTypes; let i = index">
+                <md-card>
+                    <div class="content-card-header" fxLayout="row">
+                        <md-card-title fxFlex style="word-break: break-all;">{{type.type}}</md-card-title>
+                        <button md-mini-fab (click)="type.editing = true;" *ngIf="!type.editing" class="button-spacing">
+                            <md-icon class="md-16">edit</md-icon>
+                        </button>
+                        <button md-mini-fab color="warn" (click)="removeType(i)" class="button-spacing">
+                            <md-icon class="md-16">delete</md-icon>
+                        </button>
+                    </div>
+                    <md-card-content>
+                        <div *ngIf="!type.editing">
+                            <md-list dense>
+                                <md-list-item>
+                                    <h3 md-line><b>Class</b></h3>
+                                    <p md-line>{{type.class}}</p>
+                                </md-list-item>
+                                <md-list-item class="autoheight-list">
+                                    <h3 md-line><b>Validators</b></h3>
+                                    <p md-line *ngFor="let validator of type.validateFunctions">{{validator.function.class}}</p>
+                                    <p md-line *ngIf="!type.validateFunctions || type.validateFunctions.length === 0">null</p>
+                                </md-list-item>
+                            </md-list>
+                        </div>
+                        <app-type-form [type]="nodeTypes[i]" (typeChange)="nodeTypeChanged($event)" *ngIf="type.editing"></app-type-form>
+                    </md-card-content>
+                </md-card>
             </div>
         </div>
     </div>
-    <div class="row">
-        <div class="col s12 m10 offset-m1 l10 offset-l1" style="padding: 0;">
-            <div class="row">
-                <div class="col s12 m12 l6" *ngFor="let type of types; let i = index" style="margin-bottom: 15px;">
-                    <md-card>
-                        <div class="content-card-header">
-                            <md-card-title>{{type.type}}</md-card-title>
-                            <div class="type-edit-button row">
-                                <button md-mini-fab (click)="type.editing = true;" *ngIf="!type.editing" class="button-spacing">
-                                    <md-icon class="md-16">edit</md-icon>
-                                </button>
-                                <button md-mini-fab color="warn" (click)="removeType(i)" class="button-spacing">
-                                    <md-icon class="md-16">delete</md-icon>
-                                </button>
-                            </div>
-                        </div>
-                        <md-card-content>
-                            <div *ngIf="!type.editing">
-                                <md-list dense>
-                                    <md-list-item>
-                                        <h3 md-line><b>Class</b></h3>
-                                        <p md-line>{{type.class}}</p>
-                                    </md-list-item>
-                                    <md-list-item>
-                                        <h3 md-line><b>Serialiser</b></h3>
-                                        <p md-line>{{type.serialiserClass || 'null'}}</p>
-                                    </md-list-item>
-                                    <md-list-item>
-                                        <h3 md-line><b>Aggregator</b></h3>
-                                        <p md-line *ngIf="type.aggregateFunction && type.aggregateFunction.class">{{type.aggregateFunction.class}}</p>
-                                        <p md-line *ngIf="!type.aggregateFunction || !type.aggregateFunction.class">null</p>
-                                    </md-list-item>
-                                    <md-list-item class="autoheight-list">
-                                        <h3 md-line><b>Validators</b></h3>
-                                        <p md-line *ngFor="let validator of type.validateFunctions">{{validator.function.class}}</p>
-                                        <p md-line *ngIf="!type.validateFunctions || type.validateFunctions.length === 0">null</p>
-                                    </md-list-item>
-                                </md-list>
-                            </div>
-                            <app-type-form [type]="types[i]" (typeChange)="typeChanged($event)" *ngIf="type.editing"></app-type-form>
-                        </md-card-content>
-                    </md-card>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col s12 m12 l6" *ngFor="let type of nodeTypes; let i = index" style="margin-bottom: 15px;">
-                    <md-card>
-                        <div class="content-card-header">
-                            <md-card-title>{{type.type}}</md-card-title>
-                            <div class="type-edit-button row">
-                                <button md-mini-fab (click)="type.editing = true;" *ngIf="!type.editing" class="button-spacing">
-                                    <md-icon class="md-16">edit</md-icon>
-                                </button>
-                                <button md-mini-fab color="warn" (click)="removeType(i)" class="button-spacing">
-                                    <md-icon class="md-16">delete</md-icon>
-                                </button>
-                            </div>
-                        </div>
-                        <md-card-content>
-                            <div *ngIf="!type.editing">
-                                <md-list dense>
-                                    <md-list-item>
-                                        <h3 md-line><b>Class</b></h3>
-                                        <p md-line>{{type.class}}</p>
-                                    </md-list-item>
-                                    <md-list-item class="autoheight-list">
-                                        <h3 md-line><b>Validators</b></h3>
-                                        <p md-line *ngFor="let validator of type.validateFunctions">{{validator.function.class}}</p>
-                                        <p md-line *ngIf="!type.validateFunctions || type.validateFunctions.length === 0">null</p>
-                                    </md-list-item>
-                                </md-list>
-                            </div>
-                            <app-type-form [type]="nodeTypes[i]" (typeChange)="nodeTypeChanged($event)" *ngIf="type.editing"></app-type-form>
-                        </md-card-content>
-                    </md-card>
-                </div>
-            </div>
-        </div>
-    </div>
+    <div fxFlex="10%" fxShow="true" fxShow.sm="false" fxShow.xs="false"></div>
 </div>
