@@ -38,7 +38,7 @@ import java.nio.file.WatchService;
  * the main method invoked from the command line using:
  * java -jar target/mini-accumulo-cluster-jar-with-dependencies.jar
  *
- * @see gaffer.miniaccumulocluster.MiniAccumuloClusterController.Builder
+ * @see uk.gov.gchq.gaffer.miniaccumulocluster.MiniAccumuloClusterController.Builder
  */
 public final class MiniAccumuloClusterController {
     private static final Logger LOGGER = Logger.getLogger(MiniAccumuloClusterController.class);

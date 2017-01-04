@@ -85,7 +85,7 @@
       ]
     },
     "counts.freqmap": {
-      "class": "uk.gov.gchq.gaffer.types.simple.FreqMap",
+      "class": "uk.gov.gchq.gaffer.types.FreqMap",
       "validateFunctions": [
         {
           "function": {

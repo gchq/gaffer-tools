@@ -16,6 +16,7 @@
 
 package uk.gov.gchq.gaffer.traffic.listeners;
 
+import org.apache.commons.io.FileUtils;
 import uk.gov.gchq.gaffer.graph.Graph;
 import uk.gov.gchq.gaffer.operation.OperationChain;
 import uk.gov.gchq.gaffer.operation.OperationException;
@@ -24,16 +25,13 @@ import uk.gov.gchq.gaffer.operation.impl.generate.GenerateElements;
 import uk.gov.gchq.gaffer.rest.GraphFactory;
 import uk.gov.gchq.gaffer.traffic.generator.RoadUseElementGenerator;
 import uk.gov.gchq.gaffer.user.User;
-import org.apache.commons.io.FileUtils;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
-import javax.servlet.annotation.WebListener;
 import java.io.File;
 import java.io.IOException;
 import java.util.Iterator;
 import java.util.logging.Logger;
 
-@WebListener
 public class DataLoader implements ServletContextListener {
     public static final String DATA_PATH = "roadTraffic.dataLoader.dataPath";
 

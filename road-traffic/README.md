@@ -16,16 +16,6 @@ Road Use Demo
 =============
 
 ## Deployment
-
-To run the demo you will first need to build the corresponding version of Gaffer:
-
-```bash
-git clone https://github.com/gchq/Gaffer.git
-cd Gaffer
-git checkout gaffer2-0.4.8
-mvn clean install -Pquick
-```
-
 To start the demo run the following from within the gaffer-tools repository:
 
 ```bash
@@ -154,7 +144,7 @@ Scroll to zoom in/out.
 - Enter the following startTime filter:
 ```
 property: startTime
-function: gaffer.function.filter.IsMoreThan
+function: uk.gov.gchq.gaffer.function.filter.IsMoreThan
 orEqualTo: true
 value: {"java.util.Date": 1115100000000}
 ```
@@ -162,7 +152,7 @@ value: {"java.util.Date": 1115100000000}
 - Enter the following endTime filter:
 ```
 property: endTime
-function: gaffer.function.filter.IsLessThan
+function: uk.gov.gchq.gaffer.function.filter.IsLessThan
 orEqualTo: true
 value: {"java.util.Date": 1115103600000}
 ```
@@ -174,7 +164,7 @@ If you find the 'RoadUse' edge in the graph and click on it, you will see the fo
 ```
 M32:1 to M32:M4 (19)
 RoadUse	
-countByVehicleType: {"uk.gov.gchq.gaffer.types.simple.FreqMap":{"HGVR3":44,"BUS":10,"HGVR4":28,"AMV":6993,"HGVR2":184,"HGVA3":19,"PC":0,"HGVA5":99,"HGVA6":40,"CAR":5480,"HGV":414,"WMV2":44,"LGV":1045}}
+countByVehicleType: {"uk.gov.gchq.gaffer.types.FreqMap":{"HGVR3":44,"BUS":10,"HGVR4":28,"AMV":6993,"HGVR2":184,"HGVA3":19,"PC":0,"HGVA5":99,"HGVA6":40,"CAR":5480,"HGV":414,"WMV2":44,"LGV":1045}}
 
 startTime: {"java.util.Date":1115100000000}
 
@@ -203,7 +193,7 @@ Clicking the 'Raw' tab at the top of the UI displays the Json constructed and ha
 - Enter the following startTime filter:
 ```
 property: startTime
-function: gaffer.function.filter.IsMoreThan
+function: uk.gov.gchq.gaffer.function.filter.IsMoreThan
 orEqualTo: true
 value: {"java.util.Date": 1115100000000}
 ```
@@ -211,7 +201,7 @@ value: {"java.util.Date": 1115100000000}
 - Enter the following endTime filter:
 ```
 property: endTime
-function: gaffer.function.filter.IsLessThan
+function: uk.gov.gchq.gaffer.function.filter.IsLessThan
 orEqualTo: true
 value: {"java.util.Date": 1115107200000}
 ```

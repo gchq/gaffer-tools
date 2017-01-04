@@ -16,6 +16,7 @@
 package uk.gov.gchq.gaffer.graphql.fetch;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import graphql.schema.DataFetchingEnvironment;
 import uk.gov.gchq.gaffer.commonutil.iterable.CloseableIterable;
 import uk.gov.gchq.gaffer.data.element.Edge;
 import uk.gov.gchq.gaffer.data.elementdefinition.view.View;
@@ -23,10 +24,8 @@ import uk.gov.gchq.gaffer.graphql.definitions.Constants;
 import uk.gov.gchq.gaffer.operation.OperationChain;
 import uk.gov.gchq.gaffer.operation.data.EdgeSeed;
 import uk.gov.gchq.gaffer.operation.data.EntitySeed;
+import uk.gov.gchq.gaffer.operation.impl.get.GetEdges;
 import uk.gov.gchq.gaffer.operation.impl.get.GetEdgesBySeed;
-import uk.gov.gchq.gaffer.operation.impl.get.GetRelatedEdges;
-import graphql.schema.DataFetchingEnvironment;
-
 import java.util.Map;
 
 /**
@@ -70,7 +69,7 @@ public abstract class EdgeDataFetcher extends ElementDataFetcher<Edge> {
         switch (nonNullCount) {
             case 1:
                 opChain = new OperationChain.Builder()
-                        .first(new GetRelatedEdges.Builder<EntitySeed>()
+                        .first(new GetEdges.Builder<EntitySeed>()
                                 .addSeed(new EntitySeed(lastArg))
                                 .view(new View.Builder()
                                         .edge(getGroup())
