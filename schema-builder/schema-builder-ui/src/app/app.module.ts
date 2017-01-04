@@ -12,7 +12,7 @@ import { NodeFormComponent } from './graph/node-form/node-form.component';
 import { Ng2Webstorage } from 'ng2-webstorage';
 import { SchemaComponent } from './schema/schema.component';
 import { TypesComponent } from './types/types.component';
-import { PrettyJsonModule, SafeJsonPipe } from 'angular2-prettyjson';
+import { PrettyJsonModule } from 'angular2-prettyjson';
 import { AppComponent } from './app.component';
 import { TypeFormComponent } from './types/type-form/type-form.component';
 import { EntityFormComponent } from './graph/entity-form/entity-form.component';
