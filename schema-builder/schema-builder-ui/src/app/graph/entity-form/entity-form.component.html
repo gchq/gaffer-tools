@@ -1,10 +1,11 @@
-<div style="margin: 0;">
-    <button md-raised-button color="accent" (click)="addNewEntity();" class="button-spacing" style="float: right;">
+<div class="flex-container" fxLayout="row">
+    <div fxFlex></div>
+    <button md-raised-button color="accent" (click)="addNewEntity();" class="button-spacing">
         Add Entity
     </button>
 </div>
 <div style="margin: 10px 0 0 0;">
-    <div *ngFor="let entity of entities" id="{{entity.id}}" class="col s12 z-depth-1" style="margin: 5px 0; padding: 10px 0 0 0;">
+    <div *ngFor="let entity of entities" id="{{entity.id}}" class="col s12 z-depth-1" style="margin: 10px 0; padding: 10px;">
         <form #e="ngForm" novalidate materialize class="col s12">
             <div class="form-group">
                 <div class="flex-container" fxLayout="row">

@@ -1,13 +1,13 @@
 <div style="padding: 15px; box-sizing: content-box;">
-    <div class="flex-container" fxLayout="row" fxLayout.md="column" fxLayout.sm="column" fxLayout.xs="column" fxLayoutAlign="center start" fxLayoutGap.gtmd="15px">
-        <div fxFlex fxFill>
+    <div class="flex-container" fxLayout="row" fxLayoutWrap="wrap">
+        <div fxFlex="100%" fxFlex.gt-md="70%" style="padding: 10px;">
             <md-card style="padding: 0;">
                 <md-card-content>
                     <div id="mynetwork"></div>
                 </md-card-content>
             </md-card>
         </div>
-        <div fxFlex.gtmd="30%" fxFill>
+        <div fxFlex="100%" fxFlex.gt-md="30%" style="padding: 10px;">
             <md-card style="overflow: auto" *ngIf="selectedEdge && !selectedNode">
                 <div class="content-card-header">
                     <md-card-title>Selected Edge</md-card-title>

@@ -1,35 +1,35 @@
 <form #e="ngForm" (ngSubmit)="save()" novalidate materialize>
     <div class="form-group">
-        <div class="row" style="margin-bottom: 0;">
-            <div class="input-field col s12" *ngIf="!_type.node">
+        <div style="margin-bottom: 0;">
+            <div class="input-field" *ngIf="!_type.node">
                 <input class="form-control" type="text" name="type" placeholder="Type name" [(ngModel)]="_type.type" (ngModelChange)="changeType($event, 'type')">
                 <label>Type</label>
             </div>
-            <div class="input-field col s12">
+            <div class="input-field">
                 <input class="form-control" type="text" name="class" placeholder="Java class" [(ngModel)]="_type.class" (ngModelChange)="changeType($event, 'class')">
                 <label>Java class</label>
             </div>
-            <div class="input-field col s12" *ngIf="functions && functions.valid && !_type.node">
+            <div class="input-field" *ngIf="functions && functions.valid && !_type.node">
                 <select id="serialiserClass" materialize="material_select" [materializeSelectOptions]="functions.serialiserClasses" (change)="changeType($event.target.value, 'serialiserClass')">
                     <option value="NULL" [selected]="_type.serialiserClass === null || _type.serialiserClass === 'NULL'">null</option>
                     <option *ngFor="let serialiser of functions.serialiserClasses" [value]="serialiser" [selected]="serialiser === _type.serialiserClass">{{serialiser}}</option>
                 </select>
                 <label>Serialiser class</label>
             </div>
-            <div class="input-field col s12" *ngIf="functions && functions.valid && !_type.node">
+            <div class="input-field" *ngIf="functions && functions.valid && !_type.node">
                 <select id="aggregateFunction" materialize="material_select" [materializeSelectOptions]="functions.aggregateClasses" (change)="changeType($event.target.value, 'aggregateFunction', 'class')">
                     <option value="NULL" [selected]="_type.aggregateFunction === null || _type.aggregateFunction === 'NULL'">null</option>
                     <option *ngFor="let aggregator of functions.aggregateClasses" [value]="aggregator" [selected]="_type.aggregateFunction && _type.aggregateFunction.class && aggregator === _type.aggregateFunction.class">{{aggregator}}</option>
                 </select>
                 <label>Aggregator class</label>
             </div>
-            <div class="input-field col s12" *ngIf="functions && functions.valid && !_type.node">
+            <div class="input-field" *ngIf="functions && functions.valid && !_type.node">
                 <input class="form-control" type="text" [disabled]="aggregateFieldsDisabled" name="aggregateFields" placeholder="Aggregator fields"
                     [(ngModel)]="aggregateFields" (ngModelChange)="changeType($event, 'aggregateFields')">
                 <p style="color: red; margin-top: -10px;" *ngIf="!aggregateFieldsValid">Invalid JSON</p>
                 <label>Aggregator fields</label>
             </div>
-            <div class="col s12" *ngIf="functions && functions.valid">
+            <div *ngIf="functions && functions.valid">
                 <label>Validation</label>
                 <div *ngFor="let validator of functions.validateClasses" style="padding: 10px 0;">
                     <md-checkbox [checked]="checkValidation(validator)" (change)="changeValidations($event.checked, validator)">
@@ -42,14 +42,13 @@
                     </div>
                 </div>
             </div>
-            <!--<div class="col s12" *ngIf="functions !== undefined">
-                <pre *ngIf="functions && functions.valid">{{_type | json}}</pre>
-                <pre *ngIf="functions && functions.valid">{{validationFields | json}}</pre>
-            </div>-->
-            <div class="col s12" *ngIf="functions !== undefined">
+            <div *ngIf="functions !== undefined">
                 <p style="color: red" *ngIf="functions && !functions.valid">{{functions.message}}</p>
             </div>
-            <button class="form-button" type="submit" md-raised-button color="primary" [disabled]="functions && !functions.valid || !aggregateFieldsValid || !validateFieldsValid">Update</button>
+            <div class="flex-container" fxLayout="row">
+                <div fxFlex></div>
+                 <button class="form-button" type="submit" md-raised-button color="primary" [disabled]="functions && !functions.valid || !aggregateFieldsValid || !validateFieldsValid">Update</button>
+            </div>
         </div>
     </div>
 </form>
