@@ -5,7 +5,7 @@
       "validateFunctions": [
         {
           "function": {
-            "class": "gaffer.function.simple.filter.Exists"
+            "class": "uk.gov.gchq.gaffer.function.filter.Exists"
           }
         }
       ]
@@ -15,7 +15,7 @@
       "validateFunctions": [
         {
           "function": {
-            "class": "gaffer.function.simple.filter.Exists"
+            "class": "uk.gov.gchq.gaffer.function.filter.Exists"
           }
         }
       ]
@@ -25,7 +25,7 @@
       "validateFunctions": [
         {
           "function": {
-            "class": "gaffer.function.simple.filter.Exists"
+            "class": "uk.gov.gchq.gaffer.function.filter.Exists"
           }
         }
       ]
@@ -35,7 +35,7 @@
       "validateFunctions": [
         {
           "function": {
-            "class": "gaffer.function.simple.filter.Exists"
+            "class": "uk.gov.gchq.gaffer.function.filter.Exists"
           }
         }
       ]
@@ -45,7 +45,7 @@
       "validateFunctions": [
         {
           "function": {
-            "class": "gaffer.function.simple.filter.Exists"
+            "class": "uk.gov.gchq.gaffer.function.filter.Exists"
           }
         }
       ]
@@ -55,7 +55,7 @@
       "validateFunctions": [
         {
           "function": {
-            "class": "gaffer.function.simple.filter.IsMoreThan",
+            "class": "uk.gov.gchq.gaffer.function.filter.IsMoreThan",
             "orEqualTo": true,
             "value": {
               "java.lang.Long": 0
@@ -69,7 +69,7 @@
       "validateFunctions": [
         {
           "function": {
-            "class": "gaffer.function.simple.filter.Exists"
+            "class": "uk.gov.gchq.gaffer.function.filter.Exists"
           }
         }
       ]
@@ -79,17 +79,17 @@
       "validateFunctions": [
         {
           "function": {
-            "class": "gaffer.function.simple.filter.Exists"
+            "class": "uk.gov.gchq.gaffer.function.filter.Exists"
           }
         }
       ]
     },
     "counts.freqmap": {
-      "class": "gaffer.types.simple.FreqMap",
+      "class": "uk.gov.gchq.gaffer.types.FreqMap",
       "validateFunctions": [
         {
           "function": {
-            "class": "gaffer.function.simple.filter.Exists"
+            "class": "uk.gov.gchq.gaffer.function.filter.Exists"
           }
         }
       ]
@@ -99,7 +99,7 @@
       "validateFunctions": [
         {
           "function": {
-            "class": "gaffer.function.simple.filter.IsTrue"
+            "class": "uk.gov.gchq.gaffer.function.filter.IsTrue"
           }
         }
       ]
@@ -109,7 +109,7 @@
       "validateFunctions": [
         {
           "function": {
-            "class": "gaffer.function.simple.filter.IsFalse"
+            "class": "uk.gov.gchq.gaffer.function.filter.IsFalse"
           }
         }
       ]

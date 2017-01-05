@@ -15,19 +15,19 @@
   ~ limitations under the License.
   -->
 
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
         <groupId>uk.gov.gchq.gaffer</groupId>
         <artifactId>gaffer2</artifactId>
-        <version>1.5.1</version>
+        <version>0.5.1</version>
     </parent>
 
     <artifactId>gaffer-tools</artifactId>
-    <version>0.4.8-SNAPSHOT</version>
-
+    <version>0.5.1</version>
     <packaging>pom</packaging>
 
     <modules>
@@ -38,7 +38,7 @@
     </modules>
 
     <properties>
-        <gaffer.version>0.4.7.2</gaffer.version>
+        <gaffer.version>0.5.1</gaffer.version>
         <scm.url>
             https://github.com/gchq/gaffer-tools
         </scm.url>
@@ -50,10 +50,26 @@
         </scm.developer.connection>
     </properties>
 
+    <developers>
+        <developer>
+            <name>GafferDevelopers</name>
+            <organization>GCHQ</organization>
+            <organizationUrl>https://github.com/gchq</organizationUrl>
+        </developer>
+    </developers>
+
     <scm>
         <url>${scm.url}</url>
         <connection>${scm.connection}</connection>
         <developerConnection>${scm.developer.connection}</developerConnection>
         <tag>HEAD</tag>
     </scm>
+
+    <licenses>
+        <license>
+            <name>Apache License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+        </license>
+    </licenses>
+
 </project>
