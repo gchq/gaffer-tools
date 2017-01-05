@@ -24,7 +24,7 @@
         </layout>
     </appender>
 
-    <logger name="gaffer.graphql">
+    <logger name="uk.gov.gchq.gaffer.graphql">
         <level value="INFO"/>
     </logger>
 

@@ -2,9 +2,9 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
     <parent>
-        <groupId>gaffer</groupId>
+        <groupId>uk.gov.gchq.gaffer</groupId>
         <artifactId>gaffer-tools</artifactId>
-        <version>0.4.8-SNAPSHOT</version>
+        <version>0.5.2-SNAPSHOT</version>
     </parent>
 
     <artifactId>graffer-ql</artifactId>
@@ -22,12 +22,12 @@
         </dependency>
 
         <dependency>
-            <groupId>gaffer</groupId>
+            <groupId>uk.gov.gchq.gaffer</groupId>
             <artifactId>graph</artifactId>
             <version>${gaffer.version}</version>
         </dependency>
         <dependency>
-            <groupId>gaffer</groupId>
+            <groupId>uk.gov.gchq.gaffer</groupId>
             <artifactId>example-graph</artifactId>
             <version>${gaffer.version}</version>
         </dependency>
