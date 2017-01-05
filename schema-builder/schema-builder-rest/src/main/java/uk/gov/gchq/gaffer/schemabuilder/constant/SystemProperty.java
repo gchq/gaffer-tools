@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package gaffer.schemabuilder.constant;
+package uk.gov.gchq.gaffer.schemabuilder.constant;
 
 /**
  * System property keys and default values.
@@ -25,7 +25,7 @@ public abstract class SystemProperty {
 
     // DEFAULTS
     /**
-     * Comma separated list of package prefixes to search for {@link gaffer.function.Function}s and {@link gaffer.serialisation.Serialisation}s.
+     * Comma separated list of package prefixes to search for {@link uk.gov.gchq.gaffer.function.Function}s and {@link uk.gov.gchq.gaffer.serialisation.Serialisation}s.
      */
-    public static final String PACKAGE_PREFIXES_DEFAULT = "gaffer";
+    public static final String PACKAGE_PREFIXES_DEFAULT = "uk.gov.gchq.gaffer";
 }

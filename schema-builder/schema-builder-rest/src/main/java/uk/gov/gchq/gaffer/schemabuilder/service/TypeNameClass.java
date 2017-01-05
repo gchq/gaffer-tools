@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package gaffer.schemabuilder.service;
+package uk.gov.gchq.gaffer.schemabuilder.service;
 
 public class TypeNameClass {
     private String typeName;

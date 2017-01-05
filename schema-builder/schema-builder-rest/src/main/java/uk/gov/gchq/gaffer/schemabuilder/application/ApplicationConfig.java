@@ -13,10 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package gaffer.schemabuilder.application;
+package uk.gov.gchq.gaffer.schemabuilder.application;
 
-import gaffer.schemabuilder.service.SchemaBuilderService;
-
+import uk.gov.gchq.gaffer.schemabuilder.serialisation.RestJsonProvider;
+import uk.gov.gchq.gaffer.schemabuilder.service.SchemaBuilderService;
 import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.Application;
 import java.util.HashSet;
@@ -29,6 +29,7 @@ public class ApplicationConfig extends Application {
 
     public ApplicationConfig() {
         resources.add(SchemaBuilderService.class);
+        resources.add(RestJsonProvider.class);
     }
 
     @Override
