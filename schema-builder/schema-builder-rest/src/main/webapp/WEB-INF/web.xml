@@ -8,10 +8,14 @@
 
     <servlet>
         <servlet-name>Resteasy</servlet-name>
-        <servlet-class>org.jboss.resteasy.plugins.server.servlet.HttpServletDispatcher</servlet-class>
+        <servlet-class>
+            org.jboss.resteasy.plugins.server.servlet.HttpServletDispatcher
+        </servlet-class>
         <init-param>
             <param-name>javax.ws.rs.Application</param-name>
-            <param-value>gaffer.schemabuilder.application.ApplicationConfig</param-value>
+            <param-value>
+                uk.gov.gchq.gaffer.schemabuilder.application.ApplicationConfig
+            </param-value>
         </init-param>
     </servlet>
 

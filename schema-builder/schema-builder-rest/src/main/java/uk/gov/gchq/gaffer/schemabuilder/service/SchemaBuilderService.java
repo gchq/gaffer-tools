@@ -14,19 +14,21 @@
  * limitations under the License.
  */
 
-package gaffer.schemabuilder.service;
+package uk.gov.gchq.gaffer.schemabuilder.service;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-import gaffer.commonutil.StreamUtil;
-import gaffer.function.AggregateFunction;
-import gaffer.function.ConsumerFunction;
-import gaffer.function.FilterFunction;
-import gaffer.schemabuilder.constant.SystemProperty;
-import gaffer.serialisation.Serialisation;
-import gaffer.store.schema.Schema;
 import org.apache.commons.lang3.StringUtils;
 import org.reflections.Reflections;
 import org.reflections.util.ClasspathHelper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import uk.gov.gchq.gaffer.commonutil.StreamUtil;
+import uk.gov.gchq.gaffer.function.AggregateFunction;
+import uk.gov.gchq.gaffer.function.ConsumerFunction;
+import uk.gov.gchq.gaffer.function.FilterFunction;
+import uk.gov.gchq.gaffer.schemabuilder.constant.SystemProperty;
+import uk.gov.gchq.gaffer.serialisation.Serialisation;
+import uk.gov.gchq.gaffer.store.schema.Schema;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -47,6 +49,8 @@ import java.util.Set;
 @Path("")
 @Produces(MediaType.APPLICATION_JSON)
 public class SchemaBuilderService {
+    private static final Logger LOGGER = LoggerFactory.getLogger(SchemaBuilderService.class);
+
     private static final List<FilterFunction> VALIDATION_FUNCTIONS = getSubClassInstances(FilterFunction.class);
     private static final List<AggregateFunction> AGGREGATE_FUNCTIONS = getSubClassInstances(AggregateFunction.class);
     private static final List<Serialisation> SERIALISERS = getSubClassInstances(Serialisation.class);
@@ -137,7 +141,7 @@ public class SchemaBuilderService {
             try {
                 instances.add(((Class<T>) aClass).newInstance());
             } catch (InstantiationException | IllegalAccessException e) {
-                e.printStackTrace();
+                LOGGER.warn("unable to find class: " + aClass, e);
             }
         }
 

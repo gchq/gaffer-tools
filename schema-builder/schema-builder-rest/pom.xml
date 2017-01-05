@@ -15,12 +15,13 @@
   ~ limitations under the License.
   -->
 
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <parent>
-        <groupId>gaffer</groupId>
+        <groupId>uk.gov.gchq.gaffer</groupId>
         <artifactId>schema-builder</artifactId>
-        <version>0.4.8-SNAPSHOT</version>
+        <version>0.5.2-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>schema-builder-rest</artifactId>
@@ -32,7 +33,7 @@
     <packaging>war</packaging>
     <dependencies>
         <dependency>
-            <groupId>gaffer</groupId>
+            <groupId>uk.gov.gchq.gaffer</groupId>
             <artifactId>example-graph</artifactId>
             <version>${gaffer.version}</version>
         </dependency>
@@ -172,7 +173,9 @@
                             <webApp>
                                 <contextPath>/schema-builder-rest</contextPath>
                             </webApp>
-                            <war>${project.basedir}/target/${project.artifactId}-${project.version}.war</war>
+                            <war>
+                                ${project.basedir}/target/${project.artifactId}-${project.version}.war
+                            </war>
                         </configuration>
                         <executions>
                             <execution>
