@@ -149,7 +149,7 @@ export class TypeFormComponent implements OnInit {
     }
 
     checkValidation(validator) {
-        var result = false;
+        let result = false;
         if (this._type.validateFunctions !== null) {
             this._type.validateFunctions.forEach(function (v) {
                 if (v.function.class === validator) {

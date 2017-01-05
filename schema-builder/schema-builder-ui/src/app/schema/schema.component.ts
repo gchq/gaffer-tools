@@ -60,7 +60,7 @@ export class SchemaComponent implements OnInit {
                     let formattedEntity = {
                         vertex: node.label,
                         properties: {}
-                    }
+                    };
                     _.forEach(entity.properties, (property: any) => {
                         formattedEntity.properties[property.name] = property.type;
                     });
@@ -230,7 +230,7 @@ export class SchemaComponent implements OnInit {
             let newTypes = [];
             if (editedText.types) {
                 _.forEach(editedText.types, (editedType: any, typeName) => {
-                    var found = false;
+                    let found = false;
                     _.forEach(storedNodes._data, (storedNode: any, storedId) => {
                         if (storedNode.label === typeName) {
                             storedNode.class = editedType.class;
@@ -302,12 +302,12 @@ export class SchemaComponent implements OnInit {
             dataSchema: undefined,
             dataTypes: undefined,
             storeTypes: undefined
-        }
+        };
         this.editing = {
             dataSchema: false,
             dataTypes: false,
             storeTypes: false
-        }
+        };
         this.setupNodeLookups();
         if (storedEdges !== null && storedNodes !== null) {
             this.parseDataSchema();
