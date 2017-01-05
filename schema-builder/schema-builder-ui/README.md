@@ -4,11 +4,11 @@ This project was generated with [angular-cli](https://github.com/angular/angular
 
 ## How to run
 
-To install [NPM](https://www.npmjs.com/) and run `npm install` from this folder (schema-builder/UI).
+Install [NPM](https://www.npmjs.com/) and run `npm install` from this folder (gaffer-tools/schema-builder/schema-builder-ui).
 
 Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
 
-For the validation and class lookup, the backend service also need to be running.
+For the validation and class lookup, the backend REST service also need to be running (gaffer-tools/schema-builder/schema-builder-rest).
 
 ## Contributing and deploying
 
