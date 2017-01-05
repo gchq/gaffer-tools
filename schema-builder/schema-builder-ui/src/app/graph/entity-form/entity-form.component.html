@@ -5,23 +5,20 @@
     </button>
 </div>
 <div style="margin: 10px 0 0 0;">
-    <div *ngFor="let entity of entities" id="{{entity.id}}" class="col s12 z-depth-1" style="margin: 10px 0; padding: 10px;">
-        <form #e="ngForm" novalidate materialize class="col s12">
+    <form [formGroup]="form" novalidate materialize>
+        <div *ngFor="let entity of entities" id="{{entity.id}}" style="margin: 10px 0; padding: 10px;">
             <div class="form-group">
                 <div class="flex-container" fxLayout="row">
                     <h4 style="margin-left: 10px; font-size: 18pt; word-break: break-all;" fxFlex>{{entity.name}}</h4>
-                    <button md-mini-fab color="warn" (click)="removeType(i)" class="button-spacing" style="margin-top: 10px;">
+                    <button md-mini-fab color="warn" (click)="removeEntity(entity.id)" class="button-spacing" style="margin-top: 10px;">
                         <md-icon class="md-16">delete</md-icon>
                     </button>
                 </div>
-                <div class="input-field col s6 m6 l12">
-                    <input class="form-control" type="text" name="name" placeholder="Entity name" [(ngModel)]="entity.name">
+                <div class="input-field">
+                    <input class="form-control" type="text" name="name" placeholder="Entity name" formControlName="{{entity.id}}">
                     <label>Name</label>
                 </div>
             </div>
-        </form>
-    </div>
-</div>
-<div style="margin: 0;">
-    <button class="form-button button-spacing" type="submit" style="float: right;" (click)="save()" md-raised-button color="primary">Update</button>
+        </div>
+    </form>
 </div>
