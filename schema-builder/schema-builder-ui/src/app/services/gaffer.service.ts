@@ -5,6 +5,8 @@ import { Observable } from 'rxjs/Observable';
 @Injectable()
 export class GafferService {
 
+  GAFFER_HOST = 'http://localhost:8080';
+
   constructor(private http: Http) { }
 
   private extractData(res: Response) {
@@ -26,7 +28,7 @@ export class GafferService {
   }
 
   getCommonTypes(): Observable<any> {
-    let gafferUrl = 'http://localhost:8080/schema-builder-rest/v1/commonSchema';
+    let gafferUrl = this.GAFFER_HOST + '/schema-builder-rest/v1/commonSchema';
     let headers = new Headers({ 'Content-Type': 'application/json' });
     let options = new RequestOptions({ headers: headers });
     return this.http.get(gafferUrl, options)
@@ -35,7 +37,7 @@ export class GafferService {
   }
 
   getSimpleFunctions(typeName: string, typeClass: string): Observable<any> {
-    let gafferUrl = 'http://localhost:8080/schema-builder-rest/v1/functions';
+    let gafferUrl = this.GAFFER_HOST + '/schema-builder-rest/v1/functions';
     let headers = new Headers({ 'Content-Type': 'application/json' });
     let options = new RequestOptions({ headers: headers });
     let params = {
@@ -48,7 +50,7 @@ export class GafferService {
   }
 
   validateSchema(dataSchema: any, dataTypes: any, storeTypes: any): Observable<any> {
-    let gafferUrl = 'http://localhost:8080/schema-builder-rest/v1/validate';
+    let gafferUrl = this.GAFFER_HOST + '/schema-builder-rest/v1/validate';
     let headers = new Headers({ 'Content-Type': 'application/json' });
     let options = new RequestOptions({ headers: headers });
     let params = [dataSchema, dataTypes, storeTypes];
