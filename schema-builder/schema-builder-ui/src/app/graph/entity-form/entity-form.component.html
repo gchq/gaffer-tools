@@ -1,6 +1,6 @@
 <div class="flex-container" fxLayout="row">
     <div fxFlex></div>
-    <button md-raised-button color="accent" (click)="addNewEntity();" class="button-spacing">
+    <button md-raised-button color="accent" mdTooltip="add new entity" aria-label="add new entity" (click)="addNewEntity();" class="button-spacing">
         Add Entity
     </button>
 </div>
@@ -10,7 +10,7 @@
             <div class="form-group">
                 <div class="flex-container" fxLayout="row">
                     <h4 style="margin-left: 10px; font-size: 18pt; word-break: break-all;" fxFlex>{{entity.name}}</h4>
-                    <button md-mini-fab color="warn" (click)="removeEntity(entity.id)" class="button-spacing" style="margin-top: 10px;">
+                    <button md-mini-fab color="warn" mdTooltip="delete entity" aria-label="delete entity" (click)="removeEntity(entity.id)" class="button-spacing" style="margin-top: 10px;">
                         <md-icon class="md-16">delete</md-icon>
                     </button>
                 </div>

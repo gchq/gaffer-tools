@@ -1,22 +1,22 @@
-<form [formGroup]="form" materialize class="col s12">
+<form [formGroup]="form" materialize style="padding-top: 10px;">
     <div class="form-group">
-        <div class="input-field col s12 m6 l12">
+        <div class="input-field">
             <select id="source" materialize="material_select" [materializeSelectOptions]="nodeOptions" formControlName="from">
                 <option *ngFor="let node of nodeOptions" [value]="node.id" [selected]="node.id === _edge.from">{{node.label}}</option>
             </select>
             <label>Source</label>
         </div>
-        <div class="input-field col s12 m6 l12">
+        <div class="input-field">
             <select id="destination" materialize="material_select" [materializeSelectOptions]="nodeOptions" formControlName="to">
                 <option *ngFor="let node of nodeOptions" [value]="node.id" [selected]="node.id === _edge.to">{{node.label}}</option>
             </select>
             <label>Destination</label>
         </div>
-        <div class="input-field col s6 m6 l12">
+        <div class="input-field">
             <input class="form-control" formControlName="label" type="text" name="label" placeholder="Edge name">
             <label>Name</label>
         </div>
-        <div class="input-field col s12 m4 l12">
+        <div class="input-field">
             <select id="destination" materialize="material_select" formControlName="arrows">
                 <option value="to" [selected]="_edge.arrows === 'to'">True</option>
                 <option value="none" [selected]="_edge.arrows !== 'to'">False</option>

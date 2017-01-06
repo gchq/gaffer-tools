@@ -17,18 +17,21 @@
             <div class="content-card-header">
                 <md-card-title>Data Schema</md-card-title>
                 <div class="type-edit-button row">
-                    <button md-mini-fab (click)="this.editing.dataSchema = true;" *ngIf="!editing.dataSchema" class="button-spacing">
-                            <md-icon class="md-16">edit</md-icon>
-                        </button>
-                    <button md-mini-fab (click)="updateDataSchema()" *ngIf="editing.dataSchema" class="button-spacing">
-                            <md-icon class="md-16">done</md-icon>
-                        </button>
+                    <button md-mini-fab (click)="enableEditMode('dataSchema')" *ngIf="!editing.dataSchema" class="button-spacing">
+                        <md-icon class="md-16">edit</md-icon>
+                    </button>
                 </div>
             </div>
             <md-card-content>
                 <pre [hidden]="editing.dataSchema" [innerHtml]="dataSchema | prettyjson:4"></pre>
                 <p style="color: red" *ngIf="errors.dataSchema">{{errors.dataSchema}}</p>
-                <textarea id="dataSchemaTextArea" [hidden]="!editing.dataSchema" class="materialize-textarea" value="{{dataSchema | json:4}}"></textarea>
+                <md-input-container style="width: 100%" [hidden]=!editing.dataSchema>
+                    <textarea md-input id="dataSchemaTextArea" value="{{dataSchema | json:4}}"></textarea>
+                </md-input-container>
+                <div class="flex-container" fxLayout="row" *ngIf="editing.dataSchema">
+                    <div fxFlex></div>
+                    <button class="form-button button-spacing" (click)="updateDataSchema()" md-raised-button color="primary">Update</button>
+                </div>
             </md-card-content>
         </md-card>
 
@@ -36,18 +39,21 @@
             <div class="content-card-header">
                 <md-card-title>Data Types</md-card-title>
                 <div class="type-edit-button row">
-                    <button md-mini-fab (click)="editing.dataTypes = true;" *ngIf="!editing.dataTypes" class="button-spacing">
-                            <md-icon class="md-16">edit</md-icon>
-                        </button>
-                    <button md-mini-fab (click)="updateDataTypes()" *ngIf="editing.dataTypes" class="button-spacing">
-                            <md-icon class="md-16">done</md-icon>
-                        </button>
+                    <button md-mini-fab (click)="enableEditMode('dataTypes')" *ngIf="!editing.dataTypes" class="button-spacing">
+                        <md-icon class="md-16">edit</md-icon>
+                    </button>
                 </div>
             </div>
             <md-card-content>
                 <pre [hidden]="editing.dataTypes" [innerHtml]="dataTypes | prettyjson:4"></pre>
                 <p style="color: red" *ngIf="errors.dataTypes">{{errors.dataTypes}}</p>
-                <textarea id="dataTypesTextArea" [hidden]="!editing.dataTypes" class="materialize-textarea" value="{{dataTypes | json:4}}"></textarea>
+                <md-input-container style="width: 100%" [hidden]=!editing.dataTypes>
+                    <textarea md-input id="dataTypesTextArea" value="{{dataTypes | json:4}}"></textarea>
+                </md-input-container>
+                <div class="flex-container" fxLayout="row" *ngIf="editing.dataTypes">
+                    <div fxFlex></div>
+                    <button class="form-button button-spacing" (click)="updateDataTypes()" md-raised-button color="primary">Update</button>
+                </div>
             </md-card-content>
         </md-card>
 
@@ -55,18 +61,21 @@
             <div class="content-card-header">
                 <md-card-title>Store Types</md-card-title>
                 <div class="type-edit-button row">
-                    <button md-mini-fab (click)="editing.storeTypes = true;" *ngIf="!editing.storeTypes" class="button-spacing">
-                            <md-icon class="md-16">edit</md-icon>
-                        </button>
-                    <button md-mini-fab (click)="updateStoreTypes()" *ngIf="editing.storeTypes" class="button-spacing">
-                            <md-icon class="md-16">done</md-icon>
-                        </button>
+                    <button md-mini-fab (click)="enableEditMode('storeTypes')" *ngIf="!editing.storeTypes" class="button-spacing">
+                        <md-icon class="md-16">edit</md-icon>
+                    </button>
                 </div>
             </div>
             <md-card-content>
                 <pre [hidden]="editing.storeTypes" [innerHtml]="storeTypes | prettyjson:4"></pre>
                 <p style="color: red" *ngIf="errors.storeTypes">{{errors.storeTypes}}</p>
-                <textarea id="storeTypesTextArea" [hidden]="!editing.storeTypes" class="materialize-textarea" value="{{storeTypes | json:4}}"></textarea>
+                <md-input-container style="width: 100%" [hidden]=!editing.storeTypes>
+                    <textarea md-input id="storeTypesTextArea" value="{{storeTypes | json:4}}"></textarea>
+                </md-input-container>
+                <div class="flex-container" fxLayout="row" *ngIf="editing.storeTypes">
+                    <div fxFlex></div>
+                    <button class="form-button button-spacing" (click)="updateStoreTypes()" md-raised-button color="primary">Update</button>
+                </div>
             </md-card-content>
         </md-card>
     </div>

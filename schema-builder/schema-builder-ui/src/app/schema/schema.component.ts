@@ -68,7 +68,6 @@ export class SchemaComponent implements OnInit {
                 });
             });
         }
-        $('#dataSchemaTextArea').trigger('autoresize');
     }
 
     parseDataTypes() {
@@ -93,7 +92,6 @@ export class SchemaComponent implements OnInit {
                 this.dataTypes.types[node.label] = formattedNode;
             });
         }
-        $('#dataTypesTextArea').trigger('autoresize');
     }
 
     parseStoreTypes() {
@@ -111,7 +109,11 @@ export class SchemaComponent implements OnInit {
                 }
             });
         }
-        $('#storeTypesTextArea').trigger('autoresize');
+    }
+
+    enableEditMode(key: string) {
+        this.editing[key] = true;
+        $('#' + key + 'TextArea').trigger('input');
     }
 
     updateDataSchema() {
@@ -309,6 +311,14 @@ export class SchemaComponent implements OnInit {
             storeTypes: false
         };
         this.setupNodeLookups();
+        $('textarea').each(function () {
+            this.setAttribute('style', 'height:' + (this.scrollHeight) + 'px;overflow-y:hidden;');
+        }).on('input', function () {
+            this.style.height = 'auto';
+            setTimeout(() => {
+                this.style.height = (this.scrollHeight) + 'px';
+            }, 100);
+        });
         if (storedEdges !== null && storedNodes !== null) {
             this.parseDataSchema();
             this.parseDataTypes();
