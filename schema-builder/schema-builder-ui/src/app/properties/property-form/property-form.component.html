@@ -1,6 +1,6 @@
 <div class="flex-container" fxLayout="row">
     <div fxFlex></div>
-    <button md-raised-button color="accent" (click)="addNewProperty();" class="button-spacing">
+    <button md-raised-button color="accent" (click)="addNewProperty();" mdTooltip="add new property" aria-label="add new property" class="button-spacing">
         Add Property
     </button>
 </div>
@@ -25,14 +25,14 @@
                     </select>
                     <label>Property Type</label>
                 </div>
-                <button md-mini-fab color="warn" (click)="removeProperty(property.id)" class="button-spacing" style="float: right; margin-top: 15px;">
+                <button md-mini-fab color="warn" (click)="removeProperty(property.id)" mdTooltip="delete property" aria-label="delete property" class="button-spacing" style="margin-top: 15px;">
                     <md-icon class="md-16">delete</md-icon>
                 </button>
             </div>
         </div>
         <div class="flex-container" fxLayout="row">
             <div fxFlex></div>
-            <button class="form-button button-spacing" type="submit" md-raised-button color="primary">Update</button>
+            <button class="form-button button-spacing" type="submit" mdTooltip="update properties" aria-label="update properties" md-raised-button color="primary">Update</button>
         </div>
     </div>
 </form>

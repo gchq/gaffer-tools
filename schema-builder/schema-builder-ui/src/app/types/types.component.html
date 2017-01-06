@@ -3,10 +3,10 @@
     <div fxFlex>
         <div class="flex-container" fxLayout="row">
             <div fxFlex></div>
-            <button md-raised-button color="accent" (click)="addNewType();" class="button-spacing">
+            <button md-raised-button color="accent" (click)="addNewType();" mdTooltip="add new type" aria-label="add new type" class="button-spacing">
                 Add type
             </button>
-            <button md-raised-button color="warn" (click)="resetTypes();" class="button-spacing">
+            <button md-raised-button color="warn" (click)="resetTypes();" mdTooltip="reset to default types" aria-label="reset to default types" class="button-spacing">
                 Reset
             </button>
         </div>
@@ -15,10 +15,10 @@
                 <md-card>
                     <div class="content-card-header" fxLayout="row">
                         <md-card-title fxFlex style="word-break: break-all;">{{type.type}}</md-card-title>
-                        <button md-mini-fab (click)="type.editing = true;" *ngIf="!type.editing" class="button-spacing">
+                        <button md-mini-fab (click)="type.editing = true;" mdTooltip="edit type" aria-label="edit type" *ngIf="!type.editing" class="button-spacing">
                             <md-icon class="md-16">edit</md-icon>
                         </button>
-                        <button md-mini-fab color="warn" (click)="removeType(i)" class="button-spacing">
+                        <button md-mini-fab color="warn" (click)="removeType(i)" mdTooltip="delete type" aria-label="delete type" class="button-spacing">
                             <md-icon class="md-16">delete</md-icon>
                         </button>
                     </div>
@@ -53,10 +53,10 @@
                 <md-card>
                     <div class="content-card-header" fxLayout="row">
                         <md-card-title fxFlex style="word-break: break-all;">{{type.type}}</md-card-title>
-                        <button md-mini-fab (click)="type.editing = true;" *ngIf="!type.editing" class="button-spacing">
+                        <button md-mini-fab (click)="type.editing = true;" mdTooltip="edit type" aria-label="edit type" *ngIf="!type.editing" class="button-spacing">
                             <md-icon class="md-16">edit</md-icon>
                         </button>
-                        <button md-mini-fab color="warn" (click)="removeType(i)" class="button-spacing">
+                        <button md-mini-fab color="warn" (click)="removeType(i)" mdTooltip="delete type" aria-label="delete type" class="button-spacing">
                             <md-icon class="md-16">delete</md-icon>
                         </button>
                     </div>

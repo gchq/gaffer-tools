@@ -17,7 +17,7 @@
             <div class="content-card-header">
                 <md-card-title>Data Schema</md-card-title>
                 <div class="type-edit-button row">
-                    <button md-mini-fab (click)="enableEditMode('dataSchema')" *ngIf="!editing.dataSchema" class="button-spacing">
+                    <button md-mini-fab (click)="enableEditMode('dataSchema')" mdTooltip="edit data schema" aria-label="edit data schema" *ngIf="!editing.dataSchema" class="button-spacing">
                         <md-icon class="md-16">edit</md-icon>
                     </button>
                 </div>
@@ -30,7 +30,7 @@
                 </md-input-container>
                 <div class="flex-container" fxLayout="row" *ngIf="editing.dataSchema">
                     <div fxFlex></div>
-                    <button class="form-button button-spacing" (click)="updateDataSchema()" md-raised-button color="primary">Update</button>
+                    <button class="form-button button-spacing" (click)="updateDataSchema()" mdTooltip="update data schema" aria-label="update data schema" md-raised-button color="primary">Update</button>
                 </div>
             </md-card-content>
         </md-card>
@@ -39,7 +39,7 @@
             <div class="content-card-header">
                 <md-card-title>Data Types</md-card-title>
                 <div class="type-edit-button row">
-                    <button md-mini-fab (click)="enableEditMode('dataTypes')" *ngIf="!editing.dataTypes" class="button-spacing">
+                    <button md-mini-fab (click)="enableEditMode('dataTypes')" mdTooltip="edit data types" aria-label="edit data types" *ngIf="!editing.dataTypes" class="button-spacing">
                         <md-icon class="md-16">edit</md-icon>
                     </button>
                 </div>
@@ -52,7 +52,7 @@
                 </md-input-container>
                 <div class="flex-container" fxLayout="row" *ngIf="editing.dataTypes">
                     <div fxFlex></div>
-                    <button class="form-button button-spacing" (click)="updateDataTypes()" md-raised-button color="primary">Update</button>
+                    <button class="form-button button-spacing" (click)="updateDataTypes()" mdTooltip="update data types" aria-label="update data types" md-raised-button color="primary">Update</button>
                 </div>
             </md-card-content>
         </md-card>
@@ -61,7 +61,7 @@
             <div class="content-card-header">
                 <md-card-title>Store Types</md-card-title>
                 <div class="type-edit-button row">
-                    <button md-mini-fab (click)="enableEditMode('storeTypes')" *ngIf="!editing.storeTypes" class="button-spacing">
+                    <button md-mini-fab (click)="enableEditMode('storeTypes')" mdTooltip="edit store types" aria-label="edit store types" *ngIf="!editing.storeTypes" class="button-spacing">
                         <md-icon class="md-16">edit</md-icon>
                     </button>
                 </div>
@@ -74,7 +74,7 @@
                 </md-input-container>
                 <div class="flex-container" fxLayout="row" *ngIf="editing.storeTypes">
                     <div fxFlex></div>
-                    <button class="form-button button-spacing" (click)="updateStoreTypes()" md-raised-button color="primary">Update</button>
+                    <button class="form-button button-spacing" (click)="updateStoreTypes()" mdTooltip="update store types" aria-label="update store types" md-raised-button color="primary">Update</button>
                 </div>
             </md-card-content>
         </md-card>
