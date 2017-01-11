@@ -58,6 +58,7 @@ export class EntityFormComponent implements OnInit {
             properties: []
         });
         this.updateForm(this.entities);
+        this.save(this.form._value);
     }
 
     removeEntity(entityId) {
@@ -65,6 +66,7 @@ export class EntityFormComponent implements OnInit {
             return entity.id !== entityId;
         });
         this.updateForm(this.entities);
+        this.save(this.form._value);
     }
 
     save(data) {
