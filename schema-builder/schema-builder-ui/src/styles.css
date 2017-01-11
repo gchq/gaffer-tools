@@ -149,6 +149,10 @@ div.vis-network div.vis-close {
   margin: 20px;
 }
 
+.white-text {
+  color: white;
+}
+
 .app-progress {
   margin: 20px;
 }

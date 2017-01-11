@@ -18,7 +18,7 @@
                 <md-card>
                     <div class="content-card-header" fxLayout="row">
                         <md-card-title fxFlex style="word-break: break-all;">{{edge.label}}</md-card-title>
-                        <button md-mini-fab (click)="edge.editing = true;" mdTooltip="edit edge properties" aria-label="edit edge properties" *ngIf="!edge.editing" class="button-spacing">
+                        <button md-icon-button color="accent" (click)="edge.editing = true;" mdTooltip="edit edge properties" aria-label="edit edge properties" *ngIf="!edge.editing" class="button-spacing">
                             <md-icon class="md-16">edit</md-icon>
                         </button>
                     </div>
@@ -64,7 +64,7 @@
                     <md-card>
                         <div class="content-card-header" fxLayout="row">
                             <md-card-title fxFlex style="word-break: break-all;">{{entity.name}}</md-card-title>
-                            <button md-mini-fab (click)="entity.editing = true;" mdTooltip="edit entity properties" aria-label="edit entity properties" *ngIf="!entity.editing" class="button-spacing">
+                            <button md-icon-button color="accent" (click)="entity.editing = true;" mdTooltip="edit entity properties" aria-label="edit entity properties" *ngIf="!entity.editing" class="button-spacing">
                                 <md-icon class="md-16">edit</md-icon>
                             </button>
                         </div>
