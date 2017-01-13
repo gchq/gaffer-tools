@@ -19,6 +19,7 @@ import { EntityFormComponent } from './graph/entity-form/entity-form.component';
 import * as spinner from 'ng2-spin-kit/app/spinners';
 import { PropertiesComponent } from './properties/properties.component';
 import { PropertyFormComponent } from './properties/property-form/property-form.component';
+import { routing } from './app.routes';
 
 
 @NgModule({
@@ -44,7 +45,8 @@ import { PropertyFormComponent } from './properties/property-form/property-form.
     FlexLayoutModule.forRoot(),
     MaterialModule.forRoot(),
     ReactiveFormsModule,
-    Ng2Webstorage
+    Ng2Webstorage,
+    routing
   ],
   entryComponents: [
     AppComponent
