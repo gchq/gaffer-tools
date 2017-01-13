@@ -1,18 +1,32 @@
 <div style="padding: 15px;" class="flex-container" fxLayout="row" fxLayoutAlign="center start">
     <div fxFlex="10%" fxShow="true" fxShow.sm="false" fxShow.xs="false"></div>
     <div fxFlex>
-        <div style="margin: 30px 0;">
-            <h5 style="color:green;" *ngIf="(validation && validation.valid) && !errorMessage">
-                <md-icon class="md-16">check</md-icon>
-                {{validation.message}}
-            </h5>
-            <h5 style="color:red;" *ngIf="(validation && !validation.valid) || errorMessage">
-                <md-icon class="md-16">close</md-icon>
-                <span *ngIf="validation && validation.message">{{validation.message}}</span>
-                <span *ngIf="!validation || validation.message">Unknown validation error</span>
-            </h5>
+        <div fxLayout="row">
+            <div fxFlex style="margin-top: 15px;">
+                <h5 style="color:green;" *ngIf="validation && validation.valid">
+                    <md-icon class="md-16">check</md-icon>
+                    {{validation.message}}
+                </h5>
+                <h5 style="color:red;" *ngIf="validation && !validation.valid">
+                    <md-icon class="md-16">close</md-icon>
+                    <span *ngIf="validation && validation.message">{{validation.message}}</span>
+                    <span *ngIf="!validation || validation.message">Unknown validation error</span>
+                </h5>
+            </div>
+            <div fxFlex>
+                <div fxFlex fxLayout="row">
+                    <div fxFlex class="input-field">
+                        <input class="form-control" type="text" name="class" [(ngModel)]="schemaUrl">
+                        <label>Gaffer schema REST URL</label>
+                    </div>
+                    <button md-raised-button color="accent" style="height: 40px; margin-top: 16px;" (click)="loadFromUrl()" mdTooltip="load schema from URL" aria-label="load schema from URL" class="button-spacing">
+                        Load from URL
+                    </button>
+                </div>
+                <p style="color:red; margin-top: 0;" *ngIf="errorMessageURL">{{errorMessageURL}}</p>
+                <p style="color:green; margin-top: 0;" *ngIf="successURL">{{successURL}}</p>
+            </div>
         </div>
-        <pre>{{errorMessage | json}}</pre>
         <md-card style="margin-bottom: 20px;">
             <div class="content-card-header">
                 <md-card-title>Data Schema</md-card-title>
@@ -30,7 +44,7 @@
                 </md-input-container>
                 <div class="flex-container" fxLayout="row" *ngIf="editing.dataSchema">
                     <div fxFlex></div>
-                    <button class="form-button button-spacing" (click)="updateDataSchema()" mdTooltip="update data schema" aria-label="update data schema" md-raised-button color="primary">Update</button>
+                    <button class="form-button button-spacing" (click)="updateDataSchema(undefined)" mdTooltip="update data schema" aria-label="update data schema" md-raised-button color="primary">Update</button>
                 </div>
             </md-card-content>
         </md-card>
@@ -52,7 +66,7 @@
                 </md-input-container>
                 <div class="flex-container" fxLayout="row" *ngIf="editing.dataTypes">
                     <div fxFlex></div>
-                    <button class="form-button button-spacing" (click)="updateDataTypes()" mdTooltip="update data types" aria-label="update data types" md-raised-button color="primary">Update</button>
+                    <button class="form-button button-spacing" (click)="updateDataTypes(undefined)" mdTooltip="update data types" aria-label="update data types" md-raised-button color="primary">Update</button>
                 </div>
             </md-card-content>
         </md-card>
@@ -74,7 +88,7 @@
                 </md-input-container>
                 <div class="flex-container" fxLayout="row" *ngIf="editing.storeTypes">
                     <div fxFlex></div>
-                    <button class="form-button button-spacing" (click)="updateStoreTypes()" mdTooltip="update store types" aria-label="update store types" md-raised-button color="primary">Update</button>
+                    <button class="form-button button-spacing" (click)="updateStoreTypes(undefined)" mdTooltip="update store types" aria-label="update store types" md-raised-button color="primary">Update</button>
                 </div>
             </md-card-content>
         </md-card>

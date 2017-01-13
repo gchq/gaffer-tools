@@ -21,12 +21,17 @@ export class SchemaComponent implements OnInit {
     functions: any;
     commonTypes: any;
     validation: any;
+
     errorMessage: any;
+    errorMessageURL: any;
+    successURL: any;
 
     edgesById: any;
     edgesByName: any;
     nodesById: any;
     nodesByName: any;
+
+    schemaUrl: string;
 
     errors: any;
     editing: any;
@@ -116,13 +121,17 @@ export class SchemaComponent implements OnInit {
         $('#' + key + 'TextArea').trigger('input');
     }
 
-    updateDataSchema() {
+    updateDataSchema(input) {
         let editedText;
-        try {
-            editedText = JSON.parse($('#dataSchemaTextArea').val());
-        } catch (e) {
-            editedText = undefined;
-            this.errors.dataSchema = 'Failed to parse JSON: ' + e.message;
+        if (input) {
+            editedText = input;
+        } else {
+            try {
+                editedText = JSON.parse($('#dataSchemaTextArea').val());
+            } catch (e) {
+                editedText = undefined;
+                this.errors.dataSchema = 'Failed to parse JSON: ' + e.message;
+            }
         }
         if (editedText) {
             let edges = new vis.DataSet();
@@ -219,13 +228,17 @@ export class SchemaComponent implements OnInit {
         }
     }
 
-    updateDataTypes() {
+    updateDataTypes(input) {
         let editedText;
-        try {
-            editedText = JSON.parse($('#dataTypesTextArea').val());
-        } catch (e) {
-            editedText = undefined;
-            this.errors.dataTypes = 'Failed to parse JSON: ' + e.message;
+        if (input) {
+            editedText = input;
+        } else {
+            try {
+                editedText = JSON.parse($('#dataTypesTextArea').val());
+            } catch (e) {
+                editedText = undefined;
+                this.errors.dataTypes = 'Failed to parse JSON: ' + e.message;
+            }
         }
         if (editedText) {
             let storedNodes = this.storage.retrieve('graphNodes');
@@ -250,19 +263,23 @@ export class SchemaComponent implements OnInit {
                 });
                 this.storage.store('graphNodes', storedNodes);
                 this.storage.store('types', newTypes);
-                this.updateStoreTypes();
+                this.updateStoreTypes(undefined);
                 this.editing.dataTypes = false;
             }
         }
     }
 
-    updateStoreTypes() {
+    updateStoreTypes(input) {
         let editedText;
-        try {
-            editedText = JSON.parse($('#storeTypesTextArea').val());
-        } catch (e) {
-            editedText = undefined;
-            this.errors.storeTypes = 'Failed to parse JSON: ' + e.message;
+        if (input) {
+            editedText = input;
+        } else {
+            try {
+                editedText = JSON.parse($('#storeTypesTextArea').val());
+            } catch (e) {
+                editedText = undefined;
+                this.errors.storeTypes = 'Failed to parse JSON: ' + e.message;
+            }
         }
         if (editedText && editedText.types) {
             let storedTypes = this.storage.retrieve('types');
@@ -287,6 +304,26 @@ export class SchemaComponent implements OnInit {
             });
         }
         this.nodesById = nodesById;
+    }
+
+    loadFromUrl() {
+        this.successURL = undefined;
+        this.gafferService.getSchemaFromURL(this.schemaUrl)
+            .subscribe(
+                result => this.formatSchemaResult(result),
+                error => this.errorMessageURL = <any>error);
+    }
+
+    formatSchemaResult(result) {
+        this.errorMessageURL = undefined;
+        this.errorMessage = undefined;
+        if (result.hasOwnProperty('types') && result.hasOwnProperty('edges')) {
+            this.updateDataSchema(result);
+            this.updateDataTypes(result);
+            this.updateStoreTypes(result);
+        }
+        this.successURL = 'Successfully loaded schema from URL';
+        let test = result;
     }
 
     constructor(private storage: LocalStorageService, private gafferService: GafferService) { }
@@ -314,7 +351,6 @@ export class SchemaComponent implements OnInit {
         $('textarea').each(function () {
             this.setAttribute('style', 'height:' + (this.scrollHeight) + 'px;overflow-y:hidden;');
         }).on('input', function () {
-            this.style.height = 'auto';
             setTimeout(() => {
                 this.style.height = (this.scrollHeight) + 'px';
             }, 100);
@@ -323,6 +359,8 @@ export class SchemaComponent implements OnInit {
             this.parseDataSchema();
             this.parseDataTypes();
             this.parseStoreTypes();
+            this.validation = undefined;
+            this.errorMessage = undefined;
             this.gafferService.validateSchema(this.dataSchema, this.dataTypes, this.storeTypes)
                 .subscribe(
                 validation => this.validation = validation,
