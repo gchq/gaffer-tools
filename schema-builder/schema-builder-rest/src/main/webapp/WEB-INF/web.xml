@@ -19,4 +19,15 @@
         </init-param>
     </servlet>
 
+    <filter>
+        <filter-name>OriginFilter</filter-name>
+        <filter-class>uk.gov.gchq.gaffer.schemabuilder.filter.OriginFilter
+        </filter-class>
+    </filter>
+
+    <filter-mapping>
+        <filter-name>OriginFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+
 </web-app>
