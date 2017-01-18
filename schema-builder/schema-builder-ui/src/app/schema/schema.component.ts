@@ -1,4 +1,21 @@
+/*
+ * Copyright 2016 Crown Copyright
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 import { Component, OnInit } from '@angular/core';
+import { Router, ActivatedRoute } from '@angular/router';
 import { LocalStorageService } from 'ng2-webstorage';
 import { GafferService } from '../services/gaffer.service';
 import { UUID } from 'angular2-uuid';
@@ -314,9 +331,17 @@ export class SchemaComponent implements OnInit {
                 error => this.errorMessageURL = <any>error);
     }
 
+    schemaUrlChanged() {
+        if (this.schemaUrl.length === 0) {
+            this.storage.clear('schemaURL');
+            this.router.navigate(['/schema']);
+        }
+    }
+
     formatSchemaResult(result) {
         this.errorMessageURL = undefined;
         this.errorMessage = undefined;
+        this.router.navigate(['/schema', { url: this.schemaUrl }]);
         if (result.hasOwnProperty('types') && result.hasOwnProperty('edges')) {
             this.updateDataSchema(result);
             this.updateDataTypes(result);
@@ -326,7 +351,8 @@ export class SchemaComponent implements OnInit {
         let test = result;
     }
 
-    constructor(private storage: LocalStorageService, private gafferService: GafferService) { }
+    constructor(private storage: LocalStorageService, private gafferService: GafferService,
+                private router: Router, private route: ActivatedRoute) { }
 
     ngOnInit() {
         let storedNodes = this.storage.retrieve('graphNodes');
@@ -347,6 +373,19 @@ export class SchemaComponent implements OnInit {
             dataTypes: false,
             storeTypes: false
         };
+        this.schemaUrl = '';
+        this.route.params.distinctUntilChanged().subscribe((routeParams: any) => {
+            if (routeParams.hasOwnProperty('url')) {
+                this.schemaUrl = routeParams.url;
+                this.storage.store('schemaURL', routeParams.url);
+            } else {
+                let storedSchemaUrl = this.storage.retrieve('schemaURL');
+                if (storedSchemaUrl && storedSchemaUrl !== null) {
+                    this.schemaUrl = this.storage.retrieve('schemaURL');
+                    this.router.navigate(['/schema', { url: this.schemaUrl }]);
+                }
+            }
+        });
         this.setupNodeLookups();
         $('textarea').each(function () {
             this.setAttribute('style', 'height:' + (this.scrollHeight) + 'px;overflow-y:hidden;');

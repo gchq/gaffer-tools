@@ -1,4 +1,20 @@
-<div style="padding: 15px;" class="flex-container" fxLayout="row" fxLayoutAlign="center start">
+<!--
+  ~ Copyright 2016 Crown Copyright
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+  
+  <div style="padding: 15px;" class="flex-container" fxLayout="row" fxLayoutAlign="center start">
     <div fxFlex="10%" fxShow="true" fxShow.sm="false" fxShow.xs="false"></div>
     <div fxFlex>
         <div fxLayout="row">
@@ -16,8 +32,7 @@
             <div fxFlex>
                 <div fxFlex fxLayout="row">
                     <div fxFlex class="input-field">
-                        <input class="form-control" type="text" name="class" [(ngModel)]="schemaUrl">
-                        <label>Gaffer schema REST URL</label>
+                        <input class="form-control" type="text" name="class" placeholder="Gaffer schema URL: <url>/rest/v1/graph/schema" [(ngModel)]="schemaUrl" (ngModelChange)="schemaUrlChanged()">
                     </div>
                     <button md-raised-button color="accent" style="height: 40px; margin-top: 16px;" (click)="loadFromUrl()" mdTooltip="load schema from URL" aria-label="load schema from URL" class="button-spacing">
                         Load from URL
