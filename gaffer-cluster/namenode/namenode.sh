@@ -38,11 +38,11 @@ echo "Creating NameNode at $NAMENODE_IP"
 echo "Hadoop v$HADOOP_VERSION"
 
 # Copy across required files
-scp -B -q hadoop.sh $NAMENODE_IP:/root
-scp -B -q core-site.xml $NAMENODE_IP:/root
-scp -B -q hdfs-site.xml $NAMENODE_IP:/root
-scp -B -q mapred-site.xml $NAMENODE_IP:/root
-scp -B -q yarn-site.xml $NAMENODE_IP:/root
+scp hadoop.sh $NAMENODE_IP:/tmp
+scp core-site.xml $NAMENODE_IP:/tmp
+scp hdfs-site.xml $NAMENODE_IP:/tmp
+scp mapred-site.xml $NAMENODE_IP:/tmp
+scp yarn-site.xml $NAMENODE_IP:/tmp
 
 ssh $NAMENODE_IP
 
@@ -64,23 +64,23 @@ mv hadoop-$HADOOP_VERSION hadoop
 mkdir -p /usr/local/hadoop_work/hdfs/namenode
 
 # setup /etc/profile/hadoop.sh
-mv ~/hadoop.sh /etc/profile.d/
+mv /tmp/hadoop.sh /etc/profile.d/
 source /etc/profile.d/hadoop.sh
 
 # setup core-site.xml
-mv ~/core-site.xml $HADOOP_HOME/etc/hadoop/core-site.xml
+mv /tmp/core-site.xml $HADOOP_HOME/etc/hadoop/core-site.xml
 #sed -i.bak s///g $HADOOP_HOME/etc/hadoop/core-site.xml
 
 # setup hdfs-site.xml
-mv ~/hdfs-site.xml $HADOOP_HOME/etc/hadoop/hdfs-site.xml
+mv /tmp/hdfs-site.xml $HADOOP_HOME/etc/hadoop/hdfs-site.xml
 #sed -i.bak s///g $HADOOP_HOME/etc/hadoop/hdfs-site.xml
 
 # setup mapred-site.xml
-mv ~/mapred-site.xml $HADOOP_HOME/etc/hadoop/mapred-site.xml
+mv /tmp/mapred-site.xml $HADOOP_HOME/etc/hadoop/mapred-site.xml
 #sed -i.bak s///g $HADOOP_HOME/etc/hadoop/ampred-site.xml
 
 # setup yarn-site.xml
-mv ~/yarn-site.xml $HADOOP_HOME/etc/hadoop/yarn-site.xml
+mv /tmp/yarn-site.xml $HADOOP_HOME/etc/hadoop/yarn-site.xml
 #sed -i.bak s///g $HADOOP_HOME/etc/hadoop/yarn-site.xml
 
 #hadoop namenode -format
