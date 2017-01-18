@@ -38,19 +38,19 @@ echo "Creating NameNode at $NAMENODE_IP"
 echo "Hadoop v$HADOOP_VERSION"
 
 # Copy across required files
-scp hadoop.sh $NAMENODE_IP:/tmp
-scp core-site.xml $NAMENODE_IP:/tmp
-scp hdfs-site.xml $NAMENODE_IP:/tmp
-scp mapred-site.xml $NAMENODE_IP:/tmp
-scp yarn-site.xml $NAMENODE_IP:/tmp
+scp -B -v hadoop.sh $NAMENODE_IP:/tmp
+scp -B core-site.xml $NAMENODE_IP:/tmp
+scp -B hdfs-site.xml $NAMENODE_IP:/tmp
+scp -B mapred-site.xml $NAMENODE_IP:/tmp
+scp -B yarn-site.xml $NAMENODE_IP:/tmp
 
 ssh $NAMENODE_IP
 
 echo "Applying YUM updates..."
-yum update -y > /dev/null
-yum install -y java-1.8.0-openjdk-devel wget > /dev/null
+ssh $NAMENODE_IP 'yum update -y > /dev/null'
+ssh $NAMENODE_IP 'yum install -y java-1.8.0-openjdk-devel wget > /dev/null'
 echo "Done"
-
+exit
 echo "$NAMENODE_IP NameNode" > /etc/hosts
 
 cd /usr/local
