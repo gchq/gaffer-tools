@@ -24,6 +24,16 @@ esac
 shift
 done
 
+if [[ "$HADOOP_VERSION" = ""  ]]; then
+    echo "Hadoop version not set - exiting."
+    exit
+fi
+
+if [[ "$NAMENODE_IP" = ""  ]]; then
+    echo "NameNode IP address not set - exiting."
+    exit
+fi
+
 echo "Creating NameNode at $NAMENODE_IP"
 echo "Hadoop v$HADOOP_VERSION"
 
