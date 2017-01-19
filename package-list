@@ -1,7 +1,7 @@
-gaffer.graphql
-gaffer.graphql.definitions
-gaffer.graphql.fetch
-gaffer.miniaccumulocluster
-gaffer.traffic
-gaffer.traffic.generator
-gaffer.traffic.listeners
+uk.gov.gchq.gaffer.graphql
+uk.gov.gchq.gaffer.graphql.definitions
+uk.gov.gchq.gaffer.graphql.fetch
+uk.gov.gchq.gaffer.miniaccumulocluster
+uk.gov.gchq.gaffer.traffic
+uk.gov.gchq.gaffer.traffic.generator
+uk.gov.gchq.gaffer.traffic.listeners
