@@ -14,13 +14,13 @@ limitations under the License.
 
 # Gaffer Schema Builder
 
-This project was generated with [angular-cli](https://github.com/angular/angular-cli) version 1.0.0-beta.19-3.
+This project was generated with [angular-cli](https://github.com/angular/angular-cli).
 
 ## How to run
 
 Install [NPM](https://www.npmjs.com/) and run `npm install` from this folder (gaffer-tools/schema-builder/schema-builder-ui).
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
+Run `ng serve` or `ng serve --prod` to set up a server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
 
 For the validation and class lookup, the backend REST service also need to be running (gaffer-tools/schema-builder/schema-builder-rest).
 

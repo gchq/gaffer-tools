@@ -35,8 +35,12 @@ import { EntityFormComponent } from './graph/entity-form/entity-form.component';
 import * as spinner from 'ng2-spin-kit/app/spinners';
 import { PropertiesComponent } from './properties/properties.component';
 import { PropertyFormComponent } from './properties/property-form/property-form.component';
+import { ConfigModule, ConfigLoader, ConfigStaticLoader } from 'ng2-config';
 import { routing } from './app.routes';
 
+export function configFactory() {
+    return new ConfigStaticLoader('/config.json');
+}
 
 @NgModule({
   declarations: [
@@ -62,7 +66,11 @@ import { routing } from './app.routes';
     MaterialModule.forRoot(),
     ReactiveFormsModule,
     Ng2Webstorage,
-    routing
+    routing,
+    ConfigModule.forRoot({
+      provide: ConfigLoader,
+      useFactory: (configFactory)
+    })
   ],
   entryComponents: [
     AppComponent

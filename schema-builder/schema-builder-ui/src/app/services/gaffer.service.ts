@@ -17,13 +17,14 @@
 import { Injectable } from '@angular/core';
 import { Http, Headers, Response, RequestOptions } from '@angular/http';
 import { Observable } from 'rxjs/Observable';
+import { ConfigService } from 'ng2-config';
 
 @Injectable()
 export class GafferService {
 
-  GAFFER_HOST = 'http://localhost:8080';
+  GAFFER_HOST:string = this.config.getSettings('system', 'gafferUrl');
 
-  constructor(private http: Http) { }
+  constructor(private http: Http, private config: ConfigService) { }
 
   private extractData(res: Response) {
     let body = res.json();

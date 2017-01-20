@@ -128,61 +128,15 @@ export class GraphComponent implements OnInit {
                 editEdge: (data, callback) => this.saveEdges(data, callback),
                 deleteNode: (data, callback) => this.saveNodes(data, callback),
                 deleteEdge: (data, callback) => this.saveEdges(data, callback),
-                controlNodeStyle: {
-                    // all node options are valid.
-                }
+                controlNodeStyle: {}
             }
         };
 
         this.network = new vis.Network(this.container, this.data, this.options);
-        this.events = 'test';
-
-        this.network.on('click', function (params) {
-            this.events = params;
-        });
-        this.network.on('doubleClick', function (params) {
-            console.log(params);
-        });
-        this.network.on('oncontext', function (params) {
-            console.log(params);
-        });
-        this.network.on('dragStart', function (params) {
-            console.log(params);
-        });
-        this.network.on('dragging', function (params) {
-            console.log(params);
-        });
-        this.network.on('dragEnd', function (params) {
-            console.log(params);
-        });
-        this.network.on('zoom', function (params) {
-            console.log(params);
-        });
-        this.network.on('showPopup', function (params) {
-            console.log(params);
-        });
-        this.network.on('hidePopup', function (params) {
-            console.log(params);
-        });
-        this.network.on('select', function (params) {
-            console.log(params);
-        });
         this.network.on('selectNode', params => this.selectNode(params));
         this.network.on('selectEdge', params => this.selectEdge(params));
         this.network.on('deselectNode', params => this.deselectNode());
         this.network.on('deselectEdge', params => this.deselectEdge());
-        this.network.on('hoverNode', function (params) {
-            console.log(params);
-        });
-        this.network.on('hoverEdge', function (params) {
-            console.log(params);
-        });
-        this.network.on('blurNode', function (params) {
-            console.log(params);
-        });
-        this.network.on('blurEdge', function (params) {
-            console.log(params);
-        });
     }
 
 }
