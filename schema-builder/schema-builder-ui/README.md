@@ -18,7 +18,9 @@ This project was generated with [angular-cli](https://github.com/angular/angular
 
 ## How to run
 
-Install [NPM](https://www.npmjs.com/) and run `npm install` from this folder (gaffer-tools/schema-builder/schema-builder-ui).
+Install [NPM](https://www.npmjs.com/).
+Install angular-cli globally `npm install -g angular-cli`.
+Install dependencies `npm install` from this folder (gaffer-tools/schema-builder/schema-builder-ui).
 
 Run `ng serve` or `ng serve --prod` to set up a server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
 
