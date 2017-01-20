@@ -22,7 +22,7 @@ SLIDER=../target/slider/slider-*/bin/slider
 ACCUMULO_PKG=../target/accumulo-pkg/slider-accumulo-app-package-*.zip
 GAFFER_PKG=../target/gaffer-slider-*.zip
 
-export SLIDER_CONF_DIR=../target/scripts/
-APPCONFIG=../target/scripts/appConfig-default.json
-RESOURCES=../target/scripts/resources.json
+export SLIDER_CONF_DIR=../target/scripts/conf/slider/
+APPCONFIG=../target/scripts/conf/accumulo/appConfig-default.json
+RESOURCES=../target/scripts/conf/accumulo/resources.json
 CLIENT_DESTINATION=../target/scripts/accumulo-shell
