@@ -29,4 +29,4 @@ if [ ! -d "$CLIENT_DESTINATION" ]; then
 		--debug
 fi
 
-$CLIENT_DESTINATION/*/bin/accumulo shell
+$CLIENT_DESTINATION/*/bin/accumulo shell -u root
