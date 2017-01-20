@@ -22,7 +22,7 @@ import { ConfigService } from 'ng2-config';
 @Injectable()
 export class GafferService {
 
-  GAFFER_HOST:string = this.config.getSettings('system', 'gafferUrl');
+  GAFFER_HOST: string = this.config.getSettings('system', 'gafferUrl');
 
   constructor(private http: Http, private config: ConfigService) { }
 

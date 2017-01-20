@@ -16,12 +16,70 @@
 
 /* tslint:disable:no-unused-variable */
 
-import { TestBed, async } from '@angular/core/testing';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
+import { By } from '@angular/platform-browser';
+import { DebugElement } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { PrettyJsonModule } from 'angular2-prettyjson';
+import { ConfigModule, ConfigLoader, ConfigStaticLoader } from 'ng2-config';
+import { Http, BaseRequestOptions, HttpModule, Response, ResponseOptions } from '@angular/http';
+import { MockBackend, MockConnection } from '@angular/http/testing';
 import { SchemaComponent } from './schema.component';
 
-describe('Component: Schema', () => {
-  it('should create an instance', () => {
-    let component = new SchemaComponent();
+let apiEndpoint = '/config.json';
+let settingsRepository = {
+    'system': {
+        'applicationName': 'Mighty Mouse',
+        'applicationUrl': 'http://localhost:8000'
+    },
+    'i18n': {
+        'locale': 'en'
+    }
+};
+
+export function configFactory() {
+    return new ConfigStaticLoader(apiEndpoint);
+}
+
+describe('SchemaComponent', () => {
+  let component: SchemaComponent;
+  let fixture: ComponentFixture<SchemaComponent>;
+
+  beforeEach(async(() => {
+    TestBed.configureTestingModule({
+      schemas: [CUSTOM_ELEMENTS_SCHEMA],
+      declarations: [
+        SchemaComponent
+      ],
+      imports: [
+        FormsModule,
+        PrettyJsonModule,
+        HttpModule,
+        ConfigModule.forRoot({ provide: ConfigLoader, useFactory: (configFactory) })
+      ],
+      providers: [
+        {
+          provide: Http,
+          useFactory: (mockBackend: MockBackend, options: BaseRequestOptions) => {
+            return new Http(mockBackend, options);
+          },
+          deps: [MockBackend, BaseRequestOptions]
+        },
+        MockBackend,
+        BaseRequestOptions
+      ]
+    })
+    .compileComponents();
+  }));
+
+  beforeEach(() => {
+    fixture = TestBed.createComponent(SchemaComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+  });
+
+  it('should create', () => {
     expect(component).toBeTruthy();
   });
 });

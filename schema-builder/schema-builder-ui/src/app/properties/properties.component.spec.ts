@@ -16,7 +16,9 @@
 
 /* tslint:disable:no-unused-variable */
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
 import { By } from '@angular/platform-browser';
+import { LocalStorageService } from 'ng2-webstorage';
 import { DebugElement } from '@angular/core';
 
 import { PropertiesComponent } from './properties.component';
@@ -27,7 +29,14 @@ describe('PropertiesComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ PropertiesComponent ]
+      schemas: [CUSTOM_ELEMENTS_SCHEMA],
+      declarations: [
+        PropertiesComponent
+      ],
+      imports: [],
+      providers: [
+        LocalStorageService
+      ]
     })
     .compileComponents();
   }));

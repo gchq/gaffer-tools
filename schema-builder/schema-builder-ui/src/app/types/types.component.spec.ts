@@ -16,12 +16,37 @@
 
 /* tslint:disable:no-unused-variable */
 
-import { TestBed, async } from '@angular/core/testing';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
+import { By } from '@angular/platform-browser';
+import { DebugElement } from '@angular/core';
+import { HttpModule } from '@angular/http';
 import { TypesComponent } from './types.component';
 
-describe('Component: Types', () => {
-  it('should create an instance', () => {
-    let component = new TypesComponent();
+describe('TypesComponent', () => {
+  let component: TypesComponent;
+  let fixture: ComponentFixture<TypesComponent>;
+
+  beforeEach(async(() => {
+    TestBed.configureTestingModule({
+      schemas: [CUSTOM_ELEMENTS_SCHEMA],
+      declarations: [
+        TypesComponent
+      ],
+      imports: [
+        HttpModule
+      ]
+    })
+    .compileComponents();
+  }));
+
+  beforeEach(() => {
+    fixture = TestBed.createComponent(TypesComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+  });
+
+  it('should create', () => {
     expect(component).toBeTruthy();
   });
 });

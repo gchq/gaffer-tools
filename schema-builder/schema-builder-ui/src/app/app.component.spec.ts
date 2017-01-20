@@ -17,14 +17,34 @@
 /* tslint:disable:no-unused-variable */
 
 import { TestBed, async } from '@angular/core/testing';
+import { APP_BASE_HREF } from '@angular/common';
+import { CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { PropertiesComponent } from './properties/properties.component';
+import { GraphComponent } from './graph/graph.component';
+import { SchemaComponent } from './schema/schema.component';
+import { PrettyJsonModule } from 'angular2-prettyjson';
+import { TypesComponent } from './types/types.component';
+import { routing } from './app.routes';
 import { AppComponent } from './app.component';
 
-describe('App: M2App', () => {
+describe('App: Gaffer Schema Builder', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
+      schemas: [CUSTOM_ELEMENTS_SCHEMA],
       declarations: [
-        AppComponent
+        AppComponent,
+        GraphComponent,
+        PropertiesComponent,
+        SchemaComponent,
+        TypesComponent
       ],
+      imports: [
+        FormsModule,
+        PrettyJsonModule,
+        routing
+      ],
+      providers: [{provide: APP_BASE_HREF, useValue : '/' }]
     });
   });
 
@@ -34,16 +54,10 @@ describe('App: M2App', () => {
     expect(app).toBeTruthy();
   }));
 
-  it(`should have as title 'app works!'`, async(() => {
-    let fixture = TestBed.createComponent(AppComponent);
-    let app = fixture.debugElement.componentInstance;
-    expect(app.title).toEqual('app works!');
-  }));
-
   it('should render title in a h1 tag', async(() => {
     let fixture = TestBed.createComponent(AppComponent);
     fixture.detectChanges();
     let compiled = fixture.debugElement.nativeElement;
-    expect(compiled.querySelector('h1').textContent).toContain('app works!');
+    expect(compiled.querySelector('h1').textContent).toContain('Gaffer Schema Builder');
   }));
 });

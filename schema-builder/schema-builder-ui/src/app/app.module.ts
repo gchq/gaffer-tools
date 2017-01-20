@@ -1,14 +1,3 @@
-import { BrowserModule } from '@angular/platform-browser';
-import { NgModule, ApplicationRef } from '@angular/core';
-import { FormsModule } from '@angular/forms';
-import { MaterialModule } from '@angular/material';
-import { HttpModule } from '@angular/http';
-import { ReactiveFormsModule } from '@angular/forms';
-import {FlexLayoutModule} from '@angular/flex-layout';
-import { GraphComponent } from './graph/graph.component';
-import { EdgeFormComponent } from './graph/edge-form/edge-form.component';
-import { MaterializeDirective } from 'angular2-materialize';
-import { NodeFormComponent } from './graph/node-form/node-form.component';
 /*
  * Copyright 2016 Crown Copyright
  *
@@ -25,6 +14,17 @@ import { NodeFormComponent } from './graph/node-form/node-form.component';
  * limitations under the License.
  */
 
+import { BrowserModule } from '@angular/platform-browser';
+import { NgModule, ApplicationRef } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { MaterialModule } from '@angular/material';
+import { HttpModule } from '@angular/http';
+import { ReactiveFormsModule } from '@angular/forms';
+import { FlexLayoutModule } from '@angular/flex-layout';
+import { GraphComponent } from './graph/graph.component';
+import { EdgeFormComponent } from './graph/edge-form/edge-form.component';
+import { MaterializeDirective } from 'angular2-materialize';
+import { NodeFormComponent } from './graph/node-form/node-form.component';
 import { Ng2Webstorage } from 'ng2-webstorage';
 import { SchemaComponent } from './schema/schema.component';
 import { TypesComponent } from './types/types.component';

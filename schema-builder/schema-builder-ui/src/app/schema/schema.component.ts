@@ -348,7 +348,6 @@ export class SchemaComponent implements OnInit {
             this.updateStoreTypes(result);
         }
         this.successURL = 'Successfully loaded schema from URL';
-        let test = result;
     }
 
     constructor(private storage: LocalStorageService, private gafferService: GafferService,
