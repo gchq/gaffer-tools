@@ -104,7 +104,7 @@ localhost:8080/ui
 - click 'Build query'
 - click on the 'South West' vertex (displayed as a grey circle in the top left hand corner of the page) 
 - click 'Next'
-- select 'regionContainsLocation'
+- select 'RegionContainsLocation'
 - click 'Next'
 - click 'Next'
 - click 'Execute'
