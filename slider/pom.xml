@@ -32,7 +32,7 @@
         <addon.pkg.name>Gaffer</addon.pkg.name>
         <addon.pkg.file>${project.artifactId}-${project.version}</addon.pkg.file>
         <!-- Dependency Versions -->
-        <slider.version>0.92.0-incubating-SNAPSHOT</slider.version>
+        <slider.version>0.91.0-incubating</slider.version>
     </properties>
 
     <dependencies>
@@ -105,23 +105,26 @@
                             <outputDirectory>${project.build.directory}/slider</outputDirectory>
                         </configuration>
                     </execution>
+                </executions>
+            </plugin>
 
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>1.5.0</version>
+                <executions>
                     <execution>
-                        <id>get-accumulo-app-pkg</id>
-                        <phase>generate-resources</phase>
+			<phase>generate-resources</phase>
                         <goals>
-                            <goal>copy</goal>
+                            <goal>exec</goal>
                         </goals>
                         <configuration>
-                            <artifactItems>
-                                <artifactItem>
-                                    <groupId>org.apache.slider.packages</groupId>
-                                    <artifactId>slider-accumulo-app-package</artifactId>
-                                    <type>zip</type>
-                                    <version>${slider.version}</version>
-                                </artifactItem>
-                            </artifactItems>
-                            <outputDirectory>${project.build.directory}/accumulo-pkg</outputDirectory>
+                            <executable>scripts/build_accumulo_package.sh</executable>
+                            <arguments>
+                                <argument>${accumulo.version}</argument>
+                                <argument>${project.build.directory}/accumulo-pkg</argument>
+                                <argument>--build-native</argument>
+                            </arguments>
                         </configuration>
                     </execution>
                 </executions>
