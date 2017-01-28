@@ -28,6 +28,21 @@ It does this by injecting an additional installation step into the deployment of
 | gaffer.deploy.hdfs.jars    | string  | Can be used to specify a directory in HDFS that JARs should be copied from. Useful if you are making changes to Gaffer's server-side code as it makes it easy to deploy the changes without having to re-build this package. |
 
 
+## Why deploy Gaffer using Slider?
+
+Although there are a few different ways to deploy Gaffer, deploying instances onto a cluster using Slider provides the following benefits:
+
+* any user can deploy Gaffer instances, not just administrators
+* multiple instances can easily be deployed and run at the same time
+* different users / applications can run different versions of Gaffer
+* each instance can be configured differently
+* users control when instances are started, stopped, upgraded etc
+* the number of Accumulo tablet servers can be scaled up and down (a.k.a flexed) during runtime
+* users can have root access to their Accumulo instance
+* failed Accumulo components are detected and automatically restarted by Slider
+* YARN's monitoring is leveraged to detect and recover from container and node failures - restarting failed containers and, in the case of failed nodes, migrating containers to other nodes in the cluster
+
+
 ## Quick Start
 
 Use the following instructions to quickly deploy a Gaffer instance. It will deploy the latest stable version of Gaffer onto an Accumulo instance (version determined by [Gaffer's pom.xml](https://github.com/gchq/Gaffer/search?q=path%3A%2F+filename%3Apom.xml+"accumulo.version")) called `$USER-gaffer-test`.
