@@ -4,41 +4,61 @@
 # Gaffer cluster setup script
 #
 
+source common/cluster.sh
 
+# Shutdown any currently running nodes
 
+echo ""
+echo "Searching for previous cluster instances"
+echo ""
+ssh -tt $NAMENODE_IP 'bash -s' < ./shutdown.sh
 
 # Setup NameNode
 
-ssh $NAMENODE_IP
+echo ""
+echo "Setting up NameNode with Hadoop $HADOOP_VERSION at $NAMENODE_IP"
+echo ""
 
-yum update -y
-yum install -y java-1.8.0-openjdk-devel wget
+scp namenode/namenode.tar.gz $NAMENODE_IP:/tmp
+scp common/cluster.sh $NAMENODE_IP:/tmp
+scp common/hadoop.sh $NAMENODE_IP:/tmp
+ssh -tt $NAMENODE_IP 'tar xzvf /tmp/namenode.tar.gz -C /tmp'
 
-echo "$NAMENODE_IP NameNode" > /etc/hosts
+ssh -tt $NAMENODE_IP 'bash -s' < ./namenode/namenode.sh - -h $HADOOP_VERSION -ip $NAMENODE_IP -z $ZOOKEEPER_VERSION
 
-cd /usr/local
+echo ""
+echo "Setting up SecondaryNameNode with Hadoop $HADOOP_VERSION at $SECONDARY_NAMENODE_IP"
+echo ""
 
-wget http://www.us.apache.org/dist/hadoop/common/hadoop-$HADOOP_VERSION/hadoop-$HADOOP_VERSION.tar.gz
+ssh-copy-id $SECONDARY_NAMENODE_IP
+scp common/cluster.sh $SECONDARY_NAMENODE_IP:/tmp
 
-tar xzvf hadoop-$HADOOP_VERSION.tar.gz
+ssh -tt $SECONDARY_NAMENODE_IP 'bash -s' < ./secondary_namenode/secondary_namenode.sh
 
-mv hadoop-$HADOOP_VERSION hadoop
+echo ""
+echo "Setting up DataNodes with Hadoop $HADOOP_VERSION"
+echo ""
 
-mkdir -p /usr/local/hadoop_work/hdfs/namenode
+# parallelise?
+while IFS='=' read -r name value ; do
+  if [[ $name == DATANODE*IP ]]; then
 
-# setup /etc/profile/hadoop.sh
+    echo "Setting up data node at " $value
 
-# setup core-site.xml
+    ssh-copy-id $value
 
-# setup hdfs-site.xml
+    scp common/cluster.sh $value:/tmp
+    scp common/hadoop.sh $value:/tmp
 
-# setup mapred-site.xml
+    ssh -tt $value 'bash -s' < ./datanode/datanode.sh - -ip $value
+  fi
+done < <(env | sort)
 
-# setup yarn-site.xml
+# Start the cluster
 
-# add secondary namenode information...........
+echo ""
+echo "Starting the Hadoop cluster"
+echo ""
 
-hadoop namenode -format
-
-# setup datanodes...........
-
+ssh -tt $NAMENODE_IP 'bash -s' < startup.sh
+ssh -tt $NAMENODE_IP 'bash -s' < initialise.sh

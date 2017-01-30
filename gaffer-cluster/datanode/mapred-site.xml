@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<!-- mapred-site.xml -->
+<configuration>
+<property>
+<name>mapreduce.framework.name</name>
+<value>yarn</value>
+</property>
+<property>
+<name>mapreduce.jobhistory.address</name>
+<value>NameNode:10020</value>
+</property>
+<property>
+<name>mapreduce.jobhistory.webapp.address</name>
+<value>NameNode:19888</value>
+</property>
+<property>
+<name>yarn.app.mapreduce.am.staging-dir</name>
+<value>/user/app</value>
+</property>
+<property>
+<name>mapred.child.java.opts</name>
+<value>-Djava.security.egd=file:/dev/../dev/urandom</value>
+</property>
+</configuration>

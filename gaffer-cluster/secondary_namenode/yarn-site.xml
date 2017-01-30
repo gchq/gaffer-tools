@@ -37,12 +37,4 @@
 <name>yarn.nodemanager.remote-app-log-dir</name>
 <value>hdfs://NameNode:8020/var/log/hadoop-yarn/apps</value>
 </property>
-<property>
-<name>yarn.scheduler.minimum-allocation-mb</name>
-<value>256</value>
-</property>
-<property>
-<name>yarn.nodemanager.delete.debug-delay-sec</name>
-<value>3600</value>
-</property>
 </configuration>

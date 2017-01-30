@@ -21,8 +21,4 @@
 <name>dfs.block.size</name>
 <value>134217728</value>
 </property>
-<property>
-<name>dfs.namenode.secondary.http-address</name>
-<value>SecondaryNameNode:50090</value>
-</property>
 </configuration>
