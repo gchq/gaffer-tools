@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>uk.gov.gchq.gaffer</groupId>
+        <artifactId>gaffer-tools</artifactId>
+        <version>0.6.1-SNAPSHOT</version>
+    </parent>
+    <artifactId>federated-rest-api</artifactId>
+    <packaging>war</packaging>
+
+    <dependencies>
+        <dependency>
+            <groupId>uk.gov.gchq.gaffer</groupId>
+            <artifactId>rest-api</artifactId>
+            <version>${gaffer.version}</version>
+            <classifier>classes</classifier>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <sourceDirectory>src/main/java</sourceDirectory>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-war-plugin</artifactId>
+                <version>${maven-war-plugin.version}</version>
+                <configuration>
+                    <webResources>
+                        <resource>
+                            <directory>dependencies/swagger</directory>
+                        </resource>
+                    </webResources>
+                    <attachClasses>true</attachClasses>
+                    <classesClassifier>classes</classesClassifier>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+    <!-- Use this profile to create an war with embedded tomcat-->
+    <profiles>
+        <profile>
+            <id>standalone-federated</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.tomcat.maven</groupId>
+                        <artifactId>tomcat7-maven-plugin</artifactId>
+                        <version>${tomcat-maven-plugin.version}</version>
+                        <configuration>
+                            <path>/</path>
+                            <port>8082</port>
+                            <webapps>
+                                <webapp>
+                                    <contextPath>/rest</contextPath>
+                                    <groupId>uk.gov.gchq.gaffer</groupId>
+                                    <artifactId>federated-rest-api</artifactId>
+                                    <version>${project.parent.version}</version>
+                                    <type>war</type>
+                                    <asWebapp>true</asWebapp>
+                                </webapp>
+                            </webapps>
+                            <systemProperties>
+                                <gaffer.rest-api.basePath>rest/v1
+                                </gaffer.rest-api.basePath>
+                                <gaffer.federated-rest-api.urls>
+                                    http://localhost:8080/rest/v1,http://localhost:8081/rest/v1
+                                </gaffer.federated-rest-api.urls>
+                                <org.apache.tomcat.util.buf.UDecoder.ALLOW_ENCODED_SLASH>
+                                    true
+                                </org.apache.tomcat.util.buf.UDecoder.ALLOW_ENCODED_SLASH>
+                            </systemProperties>
+                        </configuration>
+                        <dependencies>
+                            <dependency>
+                                <groupId>uk.gov.gchq.gaffer</groupId>
+                                <artifactId>federated-rest-api</artifactId>
+                                <version>${project.parent.version}</version>
+                                <type>war</type>
+                            </dependency>
+                        </dependencies>
+                        <executions>
+                            <execution>
+                                <!-- this will fire up jetty as soon as you reach the integration-test phase in the test profile -->
+                                <phase>integration-test</phase>
+                                <goals>
+                                    <goal>run-war</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+</project>
