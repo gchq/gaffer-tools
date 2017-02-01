@@ -20,9 +20,11 @@ echo "Setting up NameNode with Hadoop $HADOOP_VERSION at $NAMENODE_IP"
 echo ""
 
 scp namenode/namenode.tar.gz $NAMENODE_IP:/tmp
+scp slider/slider.tar.gz $NAMENODE_IP:/tmp
 scp common/cluster.sh $NAMENODE_IP:/tmp
 scp common/hadoop.sh $NAMENODE_IP:/tmp
 ssh -tt $NAMENODE_IP 'tar xzvf /tmp/namenode.tar.gz -C /tmp'
+ssh -tt $NAMENODE_IP 'tar xzvf /tmp/slider.tar.gz -C /tmp'
 
 ssh -tt $NAMENODE_IP 'bash -s' < ./namenode/namenode.sh - -h $HADOOP_VERSION -ip $NAMENODE_IP -z $ZOOKEEPER_VERSION
 
