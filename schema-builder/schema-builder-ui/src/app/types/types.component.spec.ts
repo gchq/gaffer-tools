@@ -18,14 +18,25 @@
 
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
+import { GafferService } from '../services/gaffer.service';
+import { Router, ActivatedRoute } from '@angular/router';
 import { By } from '@angular/platform-browser';
 import { DebugElement } from '@angular/core';
 import { HttpModule } from '@angular/http';
+import { LocalStorageService } from 'ng2-webstorage';
+import { Observable } from 'rxjs';
 import { TypesComponent } from './types.component';
+
+class MockGafferService {
+  getCommonTypes() {
+    return Observable.from([{ 'test': 1 }]);
+  }
+}
 
 describe('TypesComponent', () => {
   let component: TypesComponent;
   let fixture: ComponentFixture<TypesComponent>;
+  let routerStub = {} as Router;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -35,8 +46,18 @@ describe('TypesComponent', () => {
       ],
       imports: [
         HttpModule
+      ],
+      providers: [
+        LocalStorageService
       ]
-    })
+    }).overrideComponent(TypesComponent, {
+      set: {
+        providers: [
+          {provide: GafferService, useClass: MockGafferService},
+          {provide: ActivatedRoute, useValue: { 'params': Observable.from([{ 'id': 1 }]) }},
+          {provide: Router, useValue: routerStub},
+        ]
+    }})
     .compileComponents();
   }));
 

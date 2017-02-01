@@ -21,30 +21,30 @@ import { CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
 import { By } from '@angular/platform-browser';
 import { DebugElement } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { Router, ActivatedRoute } from '@angular/router';
 import { PrettyJsonModule } from 'angular2-prettyjson';
-import { ConfigModule, ConfigLoader, ConfigStaticLoader } from 'ng2-config';
+import { GafferService } from '../services/gaffer.service';
+import { ConfigModule, ConfigLoader, ConfigStaticLoader, ConfigService } from 'ng2-config';
 import { Http, BaseRequestOptions, HttpModule, Response, ResponseOptions } from '@angular/http';
 import { MockBackend, MockConnection } from '@angular/http/testing';
+import { LocalStorageService } from 'ng2-webstorage';
+import { Observable } from 'rxjs';
 import { SchemaComponent } from './schema.component';
 
-let apiEndpoint = '/config.json';
-let settingsRepository = {
-    'system': {
-        'applicationName': 'Mighty Mouse',
-        'applicationUrl': 'http://localhost:8000'
-    },
-    'i18n': {
-        'locale': 'en'
-    }
-};
+class MockGafferService {
+  getSchemaFromURL() {
+    return {};
+  }
 
-export function configFactory() {
-    return new ConfigStaticLoader(apiEndpoint);
+  validateSchema() {
+    return {};
+  }
 }
 
 describe('SchemaComponent', () => {
   let component: SchemaComponent;
   let fixture: ComponentFixture<SchemaComponent>;
+  let routerStub = {} as Router;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -55,21 +55,19 @@ describe('SchemaComponent', () => {
       imports: [
         FormsModule,
         PrettyJsonModule,
-        HttpModule,
-        ConfigModule.forRoot({ provide: ConfigLoader, useFactory: (configFactory) })
+        HttpModule
       ],
       providers: [
-        {
-          provide: Http,
-          useFactory: (mockBackend: MockBackend, options: BaseRequestOptions) => {
-            return new Http(mockBackend, options);
-          },
-          deps: [MockBackend, BaseRequestOptions]
-        },
-        MockBackend,
-        BaseRequestOptions
+        LocalStorageService
       ]
-    })
+    }).overrideComponent(SchemaComponent, {
+      set: {
+        providers: [
+          {provide: GafferService, useClass: MockGafferService},
+          {provide: ActivatedRoute, useValue: { 'params': Observable.from([{ 'id': 1 }]) }},
+          {provide: Router, useValue: routerStub},
+        ]
+    }})
     .compileComponents();
   }));
 

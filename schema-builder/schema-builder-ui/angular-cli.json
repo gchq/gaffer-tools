@@ -18,7 +18,7 @@
       "mobile": false,
       "styles": [
         "styles.css",
-        "material2-app-theme.scss",
+        "theme.scss",
         "../node_modules/vis/dist/vis.css",
         "../node_modules/materialize-css/bin/materialize.css"
       
