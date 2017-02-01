@@ -99,7 +99,7 @@ export class GraphComponent implements OnInit {
             this.edges = new vis.DataSet();
         }
 
-        this.container = document.getElementById('mynetwork');
+        this.container = document.getElementById('schema-graph');
         this.data = {
             nodes: this.nodes,
             edges: this.edges

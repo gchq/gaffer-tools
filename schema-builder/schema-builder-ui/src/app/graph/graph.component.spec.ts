@@ -47,7 +47,15 @@ describe('GraphComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it('should create GraphComponent', () => {
     expect(component).toBeTruthy();
   });
+
+  it('should render the vis network', async(() => {
+    let de = fixture.debugElement.query(By.css('#schema-graph'));
+    let el = de.nativeElement;
+    expect(el.firstChild.className).toEqual('vis-network');
+    expect(el.innerText).toContain('Add Node');
+    expect(el.innerText).toContain('Add Edge');
+  }));
 });

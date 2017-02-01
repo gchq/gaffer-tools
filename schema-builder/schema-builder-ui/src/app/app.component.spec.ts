@@ -18,6 +18,7 @@
 
 import { TestBed, async } from '@angular/core/testing';
 import { APP_BASE_HREF } from '@angular/common';
+import { By }              from '@angular/platform-browser';
 import { CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { PropertiesComponent } from './properties/properties.component';
@@ -57,7 +58,8 @@ describe('App: Gaffer Schema Builder', () => {
   it('should render title in a h1 tag', async(() => {
     let fixture = TestBed.createComponent(AppComponent);
     fixture.detectChanges();
-    let compiled = fixture.debugElement.nativeElement;
-    expect(compiled.querySelector('h1').textContent).toContain('Gaffer Schema Builder');
+    let de = fixture.debugElement.query(By.css('h1'));
+    let el = de.nativeElement;
+    expect(el.innerText).toEqual('Gaffer Schema Builder');
   }));
 });
