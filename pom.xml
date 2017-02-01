@@ -32,6 +32,7 @@
         <module>mini-accumulo-cluster</module>
         <module>graffer-ql</module>
         <module>road-traffic</module>
+        <module>random-element-generation</module>
     </modules>
 
     <properties>
