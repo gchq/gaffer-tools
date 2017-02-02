@@ -16,52 +16,39 @@
 
 package uk.gov.gchq.gaffer.rest;
 
-import com.google.common.collect.Lists;
-import uk.gov.gchq.gaffer.commonutil.iterable.CloseableIterable;
-import uk.gov.gchq.gaffer.commonutil.iterable.CloseableIterator;
-import uk.gov.gchq.gaffer.commonutil.iterable.WrappedCloseableIterator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
 
-public class BlockedCloseableChainedIterable<T> implements CloseableIterable<T> {
+public class BlockingResultIterable implements Iterable<Object> {
     public static final int SLEEP_TIME_IN_MS = 200;
-    public static final int DEFAULT_TIMEOUT_IN_MS = 60000;
-    protected final List<Iterable<T>> itrs;
+    protected final List<Object> results;
     protected final int n;
     protected final long timeout;
+    private final boolean skipErrors;
+    private final boolean firstResult;
 
-    public BlockedCloseableChainedIterable(final List<Iterable<T>> itrs, final int n) {
-        this(itrs, n, DEFAULT_TIMEOUT_IN_MS);
-    }
-
-    public BlockedCloseableChainedIterable(final Iterable<T>[] itrs, final int n, final long timeout) {
-        this(Lists.newArrayList(itrs), n, timeout);
-    }
-
-    public BlockedCloseableChainedIterable(final List<Iterable<T>> itrs, final int n, final long timeout) {
-        if (null == itrs) {
+    public BlockingResultIterable(final List<Object> results, final int n, final long timeout, final boolean skipErrors, final boolean firstResult) {
+        if (null == results) {
             throw new IllegalArgumentException("Iterable list cannot be null");
         }
-        this.itrs = itrs;
+        this.results = results;
         this.n = n;
         this.timeout = timeout;
+        this.skipErrors = skipErrors;
+        this.firstResult = firstResult;
     }
 
 
     @Override
-    public void close() {
-        iterator().close();
+    public Iterator<Object> iterator() {
+        return new ResultIterator();
     }
 
-    @Override
-    public CloseableIterator<T> iterator() {
-        return new WrappedCloseableIterator<>(new IteratorWrapper());
-    }
-
-    private class IteratorWrapper implements CloseableIterator<T> {
-        private final Iterator<T>[] iterators = new Iterator[n];
+    private class ResultIterator implements Iterator<Object> {
+        private final Iterator<Object>[] iterators = new Iterator[n];
         private int index = 0;
+        private boolean resultsReturned = false;
 
         @Override
         public boolean hasNext() {
@@ -69,12 +56,13 @@ public class BlockedCloseableChainedIterable<T> implements CloseableIterable<T> 
         }
 
         @Override
-        public T next() {
+        public Object next() {
             index = getNextIndex();
             if (-1 == index) {
                 throw new NoSuchElementException();
             }
 
+            resultsReturned = true;
             return getIterator(index).next();
         }
 
@@ -82,6 +70,11 @@ public class BlockedCloseableChainedIterable<T> implements CloseableIterable<T> 
             boolean hasNext = getIterator(index).hasNext();
             int nextIndex = index;
             while (!hasNext) {
+                if (firstResult && resultsReturned) {
+                    nextIndex = -1;
+                    break;
+                }
+
                 nextIndex = nextIndex + 1;
                 if (nextIndex < n) {
                     hasNext = getIterator(nextIndex).hasNext();
@@ -99,7 +92,7 @@ public class BlockedCloseableChainedIterable<T> implements CloseableIterable<T> 
             getIterator(index).remove();
         }
 
-        private Iterator<T> getIterator(final int i) {
+        private Iterator<Object> getIterator(final int i) {
             if (null == iterators[i]) {
                 iterators[i] = getIterable(i).iterator();
             }
@@ -107,9 +100,9 @@ public class BlockedCloseableChainedIterable<T> implements CloseableIterable<T> 
             return iterators[i];
         }
 
-        private Iterable<T> getIterable(final int i) {
+        private Iterable<Object> getIterable(final int i) {
             final long startTime = System.currentTimeMillis();
-            while (itrs.size() <= i && (System.currentTimeMillis() - startTime < timeout)) {
+            while (results.size() <= i && (System.currentTimeMillis() - startTime < timeout)) {
                 // block until there is an iterator available
                 try {
                     Thread.sleep(SLEEP_TIME_IN_MS);
@@ -118,32 +111,20 @@ public class BlockedCloseableChainedIterable<T> implements CloseableIterable<T> 
                 }
             }
 
-            if (itrs.size() <= i) {
+            if (results.size() <= i) {
                 throw new RuntimeException("Iterable failed to be returned after " + (0.001 * timeout) + " seconds.");
             }
 
-            final Iterable<T> itr = itrs.get(i);
-            if (null == itr) {
-                throw new RuntimeException("Iterable was null - this is likely due to an error upstream. Check the logs.");
-            }
-
-            return itr;
-        }
-
-        @Override
-        public void close() {
-            for (int i = 0; i < n; i++) {
-                final Iterable<T> itr = getIterable(i);
-                if (itr instanceof CloseableIterable) {
-                    ((CloseableIterable) itr).close();
+            Object result = results.get(i);
+            if (result instanceof Exception) {
+                if (!skipErrors) {
+                    throw new RuntimeException((Exception) result);
                 }
+            } else if (result instanceof Iterable) {
+                return ((Iterable<Object>) result);
             }
 
-            for (final Iterator<T> iterator : iterators) {
-                if (iterator instanceof CloseableIterator) {
-                    ((CloseableIterator) iterator).close();
-                }
-            }
+            throw new RuntimeException("Invalid result type");
         }
     }
 }

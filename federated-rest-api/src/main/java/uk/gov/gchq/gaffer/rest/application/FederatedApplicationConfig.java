@@ -16,22 +16,52 @@
 
 package uk.gov.gchq.gaffer.rest.application;
 
+import io.swagger.jaxrs.config.BeanConfig;
+import io.swagger.jaxrs.listing.ApiListingResource;
+import io.swagger.jaxrs.listing.SwaggerSerializers;
+import org.glassfish.jersey.server.ResourceConfig;
+import uk.gov.gchq.gaffer.rest.SystemProperty;
+import uk.gov.gchq.gaffer.rest.serialisation.RestJsonProvider;
 import uk.gov.gchq.gaffer.rest.service.FederatedGraphConfigurationService;
 import uk.gov.gchq.gaffer.rest.service.FederatedOperationService;
-import uk.gov.gchq.gaffer.rest.service.SimpleGraphConfigurationService;
-import uk.gov.gchq.gaffer.rest.service.SimpleOperationService;
+import uk.gov.gchq.gaffer.rest.service.SystemStatusService;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
- * An <code>ApplicationConfig</code> sets up the application resources.
+ * An <code>FederatedApplicationConfig</code> sets up the application resources.
  */
-public class FederatedApplicationConfig extends ApplicationConfig {
-    @Override
-    protected void addServices() {
-        super.addServices();
-        resources.remove(SimpleOperationService.class);
-        resources.remove(SimpleGraphConfigurationService.class);
+public class FederatedApplicationConfig extends ResourceConfig {
+    protected final Set<Class<?>> resources = new HashSet<>();
 
+    public FederatedApplicationConfig() {
+        addSystemResources();
+        addServices();
+        setupBeanConfig();
+        registerClasses(resources);
+    }
+
+    protected void setupBeanConfig() {
+        BeanConfig beanConfig = new BeanConfig();
+        String baseUrl = System.getProperty(SystemProperty.BASE_URL, SystemProperty.BASE_URL_DEFAULT);
+        if (!baseUrl.startsWith("/")) {
+            baseUrl = "/" + baseUrl;
+        }
+        beanConfig.setBasePath(baseUrl);
+        beanConfig.setVersion(System.getProperty(SystemProperty.VERSION, SystemProperty.CORE_VERSION));
+        beanConfig.setResourcePackage(System.getProperty(SystemProperty.SERVICES_PACKAGE_PREFIX, SystemProperty.SERVICES_PACKAGE_PREFIX_DEFAULT));
+        beanConfig.setScan(true);
+    }
+
+    protected void addServices() {
+        resources.add(SystemStatusService.class);
         resources.add(FederatedOperationService.class);
         resources.add(FederatedGraphConfigurationService.class);
+    }
+
+    protected void addSystemResources() {
+        resources.add(ApiListingResource.class);
+        resources.add(SwaggerSerializers.class);
+        resources.add(RestJsonProvider.class);
     }
 }

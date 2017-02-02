@@ -18,9 +18,17 @@ package uk.gov.gchq.gaffer.rest.dto;
 
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
+import uk.gov.gchq.gaffer.rest.util.CloneUtil;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Set;
 
+/**
+ * Based on {@link uk.gov.gchq.gaffer.data.elementdefinition.view.View} but without the need
+ * to deserialise all function classes. This means the jvm does not need all
+ * classes from all delegate Gaffer graphs on the class path.
+ */
 public class View {
     private Map<String, Map> entities = new LinkedHashMap<>();
     private Map<String, Map> edges = new LinkedHashMap<>();
@@ -54,12 +62,33 @@ public class View {
     }
 
     public View clone() {
-        final View op = new View();
-        op.entities = new LinkedHashMap<>(entities);
-        op.edges = new LinkedHashMap<>(edges);
-        op.other.putAll(other);
+        final View view = new View();
+        view.entities = CloneUtil.clone(entities);
+        view.edges = CloneUtil.clone(edges);
+        view.other = CloneUtil.clone(other);
 
-        return op;
+        return view;
+    }
+
+    public void removeInvalidGroups(final Schema schema) {
+        if (hasGroups()) {
+            final Set<String> invalidEntities = new HashSet<>(entities.keySet());
+            final Set<String> invalidEdges = new HashSet<>(edges.keySet());
+            invalidEntities.removeAll(schema.getEntities().keySet());
+            invalidEdges.removeAll(schema.getEdges().keySet());
+
+            for (final String unknownEntity : invalidEntities) {
+                entities.remove(unknownEntity);
+            }
+
+            for (final String unknownEdge : invalidEdges) {
+                edges.remove(unknownEdge);
+            }
+        }
+    }
+
+    public boolean hasGroups() {
+        return !edges.isEmpty() || !entities.isEmpty();
     }
 }
 

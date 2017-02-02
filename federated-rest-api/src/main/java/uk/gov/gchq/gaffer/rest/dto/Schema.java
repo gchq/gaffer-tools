@@ -18,9 +18,18 @@ package uk.gov.gchq.gaffer.rest.dto;
 
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
+import uk.gov.gchq.gaffer.rest.util.CloneUtil;
+import java.util.Collections;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.Map;
+import java.util.Set;
 
+/**
+ * Based on {@link uk.gov.gchq.gaffer.store.schema.Schema} but without the need
+ * to deserialise all function classes. This means the jvm does not need all
+ * classes from all delegate Gaffer graphs on the class path.
+ */
 public class Schema {
     private Map<String, Map> entities = new LinkedHashMap<>();
     private Map<String, Map> edges = new LinkedHashMap<>();
@@ -63,13 +72,54 @@ public class Schema {
     }
 
     public Schema clone() {
-        final Schema op = new Schema();
-        op.entities = new LinkedHashMap<>(entities);
-        op.edges = new LinkedHashMap<>(edges);
-        op.types = new LinkedHashMap<>(types);
-        op.other.putAll(other);
+        final Schema schema = new Schema();
+        schema.entities = CloneUtil.clone(entities);
+        schema.edges = CloneUtil.clone(edges);
+        schema.types = CloneUtil.clone(types);
+        schema.other = CloneUtil.clone(other);
 
-        return op;
+        return schema;
+    }
+
+    /**
+     * Performs a rough merge - this may differ slightly to how Gaffer actually
+     * merges schemas.
+     *
+     * @param schema the schema to merge into this schema
+     */
+    public void merge(final Schema schema) {
+        if (null != schema) {
+            mergeMaps(entities, schema.entities);
+            mergeMaps(edges, schema.edges);
+            mergeMaps(types, schema.types);
+            mergeMaps(other, schema.other);
+        }
+    }
+
+    private void mergeMaps(final Map map1, final Map map2) {
+        mergeMapObjects(map1, map2);
+    }
+
+    private void mergeMapObjects(final Map<Object, Object> map1, final Map<Object, Object> map2) {
+        for (final Map.Entry<Object, Object> entry : map2.entrySet()) {
+            final Object map1Value = map1.get(entry.getKey());
+            final Object map2Value = entry.getValue();
+            if (null == map1Value) {
+                map1.put(entry.getKey(), map2Value);
+            } else if (null != map2Value) {
+                if (map1Value instanceof Map && map2Value instanceof Map) {
+                    mergeMaps((Map) map1Value, (Map) map2Value);
+                } else if (map1Value instanceof Object[] && map2Value instanceof Object[]) {
+                    final Set<Object> mergedValue = new LinkedHashSet<>();
+                    Collections.addAll(mergedValue, ((Object[]) map1Value));
+                    Collections.addAll(mergedValue, ((Object[]) map2Value));
+                    map1.put(entry.getKey(), mergedValue.toArray(new Object[mergedValue.size()]));
+                } else {
+                    // Override value
+                    map1.put(entry.getKey(), map2Value);
+                }
+            }
+        }
     }
 }
 

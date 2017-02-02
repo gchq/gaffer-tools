@@ -21,76 +21,137 @@ import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.introspect.BeanPropertyDefinition;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import uk.gov.gchq.gaffer.function.FilterFunction;
+import uk.gov.gchq.gaffer.rest.FederatedConfig;
 import uk.gov.gchq.gaffer.rest.FederatedExecutor;
+import uk.gov.gchq.gaffer.rest.dto.FederatedSystemStatus;
 import uk.gov.gchq.gaffer.rest.dto.Schema;
+import uk.gov.gchq.gaffer.store.Context;
 import uk.gov.gchq.gaffer.store.StoreTrait;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 public class FederatedGraphConfigurationService implements IFederatedGraphConfigurationService {
     private static final Logger LOGGER = LoggerFactory.getLogger(FederatedOperationService.class);
+    protected final FederatedExecutor executor = createExecutor();
 
-    private final FederatedExecutor executor = new FederatedExecutor(true);
+    protected FederatedExecutor createExecutor() {
+        return new FederatedExecutor();
+    }
+
+    protected Context createContext() {
+        return new Context();
+    }
 
     @Override
-    public void addUrl(final String url) {
-        LOGGER.info("Adding URL: " + url);
-        executor.getProperties().getUrls().add(url);
+    public void addUrl(final String name, final String url) {
+        final FederatedConfig config = executor.getConfig(createContext());
+        if (config.getUrlMap().containsKey(name)) {
+            throw new IllegalArgumentException("URL name is already in use: " + name);
+        }
+
+        if (config.getUrlMap().containsValue(url)) {
+            throw new IllegalArgumentException("URL has already been registered: " + url);
+        }
+
+        LOGGER.info("Adding URL: " + name + ",  " + url);
+        config.getUrlMap().put(name, url);
         refresh();
     }
 
     @Override
-    public void refresh() {
-        executor.initialiseProperties();
+    public List<FederatedSystemStatus> refresh() {
+        final Context context = createContext();
+        executor.reinitialiseConfig(context);
+        return executor.fetchSystemStatuses(context);
     }
 
     @Override
-    public Set<String> urls() {
-        return executor.getProperties().getUrls();
+    public boolean deleteUrl(final String name) {
+        final Context context = createContext();
+        final String url = executor.getConfig(context).getUrlMap().remove(name);
+        final boolean success = null != url;
+        if (success) {
+            executor.reinitialiseConfig(context);
+        }
+
+        return success;
     }
 
     @Override
-    public Map<String, Schema> getSchema() {
-        return executor.getProperties().getSchemas();
+    public List<FederatedSystemStatus> urlsStatus() {
+        return executor.fetchSystemStatuses(createContext());
+    }
+
+    @Override
+    public Schema getSchema() {
+        return executor.getConfig(createContext()).getMergedSchema();
     }
 
     @Override
     public Set<String> getFilterFunctions() {
-        return executor.getProperties().getFilterFunctions();
+        return executor.getConfig(createContext()).getFilterFunctions();
     }
 
+    @SuppressFBWarnings(value = "REC_CATCH_EXCEPTION", justification = "Need to wrap all runtime exceptions before they are given to the user")
     @Override
     public Set<String> getFilterFunctions(final String inputClass) {
-        return executor.getFunctions(inputClass);
+        if (StringUtils.isEmpty(inputClass)) {
+            return executor.getConfig(createContext()).getFilterFunctions();
+        }
+
+        final Class<?> clazz;
+        try {
+            clazz = Class.forName(inputClass);
+        } catch (Exception e) {
+            throw new IllegalArgumentException("Input class was not recognised: " + inputClass, e);
+        }
+
+        final Set<String> classes = new HashSet<>();
+        for (final String functionClass : executor.getConfig(createContext()).getFilterFunctions()) {
+            try {
+                final Class<?> classInstance = Class.forName(functionClass);
+                final FilterFunction function = (FilterFunction) classInstance.newInstance();
+                final Class<?>[] inputs = function.getInputClasses();
+                if (inputs.length == 1 && inputs[0].isAssignableFrom(clazz)) {
+                    classes.add(functionClass);
+                }
+            } catch (final Exception e) {
+                // just add the function.
+                classes.add(functionClass);
+            }
+        }
+
+        return classes;
     }
 
     @Override
     public Set<String> getTransformFunctions() {
-        return executor.getProperties().getFilterFunctions();
+        return executor.getConfig(createContext()).getFilterFunctions();
     }
 
     @Override
     public Set<String> getGenerators() {
-        return executor.getProperties().getGenerators();
+        return executor.getConfig(createContext()).getGenerators();
     }
 
     @Override
     public Set<String> getOperations() {
-        return executor.getProperties().getOperations();
+        return executor.getConfig(createContext()).getOperations();
     }
 
     @Override
     public Set<StoreTrait> getStoreTraits() {
-        return executor.getProperties().getTraits();
+        return executor.getConfig(createContext()).getTraits();
     }
 
     @Override
     public Boolean isOperationSupported(final String className) {
-        return executor.getProperties().getOperations().contains(className);
+        return executor.getConfig(createContext()).getOperations().contains(className);
     }
 
     @SuppressFBWarnings(value = "REC_CATCH_EXCEPTION", justification = "Need to wrap all runtime exceptions before they are given to the user")

@@ -22,7 +22,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 
-@Path("/graph/doOperation")
+@Path("/graph/" + IFederatedOperationService.DO_OPERATION_PATH)
 @Api(
         value = "operations",
         description = "Allows operations to be executed on the graph. See <a href=\'https://github.com/gchq/Gaffer/wiki/operation-examples\' target=\'_blank\'>Wiki</a>."
@@ -30,21 +30,34 @@ import javax.ws.rs.QueryParam;
 @Consumes({"application/json"})
 @Produces({"application/json"})
 public interface IFederatedOperationService {
+    String SKIP_ERRORS_MSG = "if true, then errors from delete URLs will be skipped";
+    String FIRST_RESULT_MSG = "if true, the result will only contain the first result returned from the delegate URLs";
+    String RUN_INDIVIDUALLY_MSG = "if true, operations will be executed one at a time";
+    String SKIP_ERRORS_PARAM = "skipErrors";
+    String RUN_INDIVIDUALLY_PARAM = "runIndividually";
+    String FIRST_RESULT_PARAM = "firstResult";
+    String DO_OPERATION_PATH = "doOperation";
+
     @POST
     @ApiOperation(
             value = "Performs the given operation chain on the graph",
-            response = Object.class
+            response = Object.class,
+            responseContainer = "List"
     )
-    Object execute(OperationChain opChain,
-                   @ApiParam(value = "if true, then errors from will be skipped") @QueryParam("skipErrors") boolean skipErrors,
-                   @ApiParam(value = "if true, operations will be executed one at a time") @QueryParam("runIndividually") boolean runIndividually);
+    Iterable<Object> execute(OperationChain opChain,
+                             @ApiParam(value = SKIP_ERRORS_MSG) @QueryParam(SKIP_ERRORS_PARAM) boolean skipErrors,
+                             @ApiParam(value = RUN_INDIVIDUALLY_MSG) @QueryParam(RUN_INDIVIDUALLY_PARAM) boolean runIndividually,
+                             @ApiParam(value = FIRST_RESULT_MSG) @QueryParam(FIRST_RESULT_PARAM) boolean firstResult);
 
     @POST
     @Path("/chunked")
-    @ApiOperation(value = "Performs the given operation chain on the graph, returned chunked output. NOTE - does not work in Swagger.", response = Element.class)
+    @ApiOperation(value = "Performs the given operation chain on the graph, returned chunked output. NOTE - does not work in Swagger.",
+            response = Object.class,
+            responseContainer = "List")
     ChunkedOutput<String> executeChunked(OperationChain opChain,
-                                         @ApiParam(value = "if true, then errors from will be skipped") @QueryParam("skipErrors") boolean skipErrors,
-                                         @ApiParam(value = "if true, operations will be executed one at a time") @QueryParam("runIndividually") boolean runIndividually);
+                                         @ApiParam(value = SKIP_ERRORS_MSG) @QueryParam(SKIP_ERRORS_PARAM) boolean skipErrors,
+                                         @ApiParam(value = RUN_INDIVIDUALLY_MSG) @QueryParam(RUN_INDIVIDUALLY_PARAM) boolean runIndividually,
+                                         @ApiParam(value = FIRST_RESULT_MSG) @QueryParam(FIRST_RESULT_PARAM) boolean firstResult);
 
     @POST
     @Path("/generate/objects")
@@ -53,8 +66,9 @@ public interface IFederatedOperationService {
             response = Object.class,
             responseContainer = "List"
     )
-    Object generateObjects(Operation var1,
-                           @ApiParam(value = "if true, then errors from will be skipped") @QueryParam("skipErrors") boolean skipErrors);
+    Iterable<Object> generateObjects(Operation operation,
+                                     @ApiParam(value = SKIP_ERRORS_MSG) @QueryParam(SKIP_ERRORS_PARAM) boolean skipErrors,
+                                     @ApiParam(value = FIRST_RESULT_MSG) @QueryParam(FIRST_RESULT_PARAM) boolean firstResult);
 
     @POST
     @Path("/generate/elements")
@@ -63,8 +77,9 @@ public interface IFederatedOperationService {
             response = Element.class,
             responseContainer = "List"
     )
-    Object generateElements(Operation var1,
-                            @ApiParam(value = "if true, then errors from will be skipped") @QueryParam("skipErrors") boolean skipErrors);
+    Iterable<Object> generateElements(Operation operation,
+                                      @ApiParam(value = SKIP_ERRORS_MSG) @QueryParam(SKIP_ERRORS_PARAM) boolean skipErrors,
+                                      @ApiParam(value = FIRST_RESULT_MSG) @QueryParam(FIRST_RESULT_PARAM) boolean firstResult);
 
 
     @POST
@@ -74,8 +89,9 @@ public interface IFederatedOperationService {
             response = EntitySeed.class,
             responseContainer = "List"
     )
-    Object getAdjacentEntitySeeds(Operation var1,
-                                  @ApiParam(value = "if true, then errors from will be skipped") @QueryParam("skipErrors") boolean skipErrors);
+    Iterable<Object> getAdjacentEntitySeeds(Operation operation,
+                                            @ApiParam(value = SKIP_ERRORS_MSG) @QueryParam(SKIP_ERRORS_PARAM) boolean skipErrors,
+                                            @ApiParam(value = FIRST_RESULT_MSG) @QueryParam(FIRST_RESULT_PARAM) boolean firstResult);
 
     @POST
     @Path("/get/elements/all")
@@ -84,8 +100,9 @@ public interface IFederatedOperationService {
             response = Element.class,
             responseContainer = "List"
     )
-    Object getAllElements(Operation var1,
-                          @ApiParam(value = "if true, then errors from will be skipped") @QueryParam("skipErrors") boolean skipErrors);
+    Iterable<Object> getAllElements(Operation operation,
+                                    @ApiParam(value = SKIP_ERRORS_MSG) @QueryParam(SKIP_ERRORS_PARAM) boolean skipErrors,
+                                    @ApiParam(value = FIRST_RESULT_MSG) @QueryParam(FIRST_RESULT_PARAM) boolean firstResult);
 
     @POST
     @Path("/get/entities/all")
@@ -94,8 +111,9 @@ public interface IFederatedOperationService {
             response = Entity.class,
             responseContainer = "List"
     )
-    Object getAllEntities(Operation var1,
-                          @ApiParam(value = "if true, then errors from will be skipped") @QueryParam("skipErrors") boolean skipErrors);
+    Iterable<Object> getAllEntities(Operation operation,
+                                    @ApiParam(value = SKIP_ERRORS_MSG) @QueryParam(SKIP_ERRORS_PARAM) boolean skipErrors,
+                                    @ApiParam(value = FIRST_RESULT_MSG) @QueryParam(FIRST_RESULT_PARAM) boolean firstResult);
 
     @POST
     @Path("/get/edges/all")
@@ -104,8 +122,9 @@ public interface IFederatedOperationService {
             response = Edge.class,
             responseContainer = "List"
     )
-    Object getAllEdges(Operation var1,
-                       @ApiParam(value = "if true, then errors from will be skipped") @QueryParam("skipErrors") boolean skipErrors);
+    Iterable<Object> getAllEdges(Operation operation,
+                                 @ApiParam(value = SKIP_ERRORS_MSG) @QueryParam(SKIP_ERRORS_PARAM) boolean skipErrors,
+                                 @ApiParam(value = FIRST_RESULT_MSG) @QueryParam(FIRST_RESULT_PARAM) boolean firstResult);
 
     @POST
     @Path("/get/elements")
@@ -114,8 +133,9 @@ public interface IFederatedOperationService {
             response = Element.class,
             responseContainer = "List"
     )
-    Object getElements(Operation var1,
-                       @ApiParam(value = "if true, then errors from will be skipped") @QueryParam("skipErrors") boolean skipErrors);
+    Iterable<Object> getElements(Operation operation,
+                                 @ApiParam(value = SKIP_ERRORS_MSG) @QueryParam(SKIP_ERRORS_PARAM) boolean skipErrors,
+                                 @ApiParam(value = FIRST_RESULT_MSG) @QueryParam(FIRST_RESULT_PARAM) boolean firstResult);
 
     @POST
     @Path("/get/entities")
@@ -124,8 +144,9 @@ public interface IFederatedOperationService {
             response = Entity.class,
             responseContainer = "List"
     )
-    Object getEntities(Operation var1,
-                       @ApiParam(value = "if true, then errors from will be skipped") @QueryParam("skipErrors") boolean skipErrors);
+    Iterable<Object> getEntities(Operation operation,
+                                 @ApiParam(value = SKIP_ERRORS_MSG) @QueryParam(SKIP_ERRORS_PARAM) boolean skipErrors,
+                                 @ApiParam(value = FIRST_RESULT_MSG) @QueryParam(FIRST_RESULT_PARAM) boolean firstResult);
 
     @POST
     @Path("/get/edges")
@@ -134,15 +155,14 @@ public interface IFederatedOperationService {
             response = Edge.class,
             responseContainer = "List"
     )
-    Object getEdges(Operation var1,
-                    @ApiParam(value = "if true, then errors from will be skipped") @QueryParam("skipErrors") boolean skipErrors);
+    Iterable<Object> getEdges(Operation operation,
+                              @ApiParam(value = SKIP_ERRORS_MSG) @QueryParam(SKIP_ERRORS_PARAM) boolean skipErrors,
+                              @ApiParam(value = FIRST_RESULT_MSG) @QueryParam(FIRST_RESULT_PARAM) boolean firstResult);
 
     @PUT
     @Path("/add/elements")
     @ApiOperation(
-            value = "Add elements to the graph",
-            response = Boolean.class
+            value = "Add elements to the graph"
     )
-    void addElements(Operation var1,
-                     @ApiParam(value = "if true, then errors from will be skipped") @QueryParam("skipErrors") boolean skipErrors);
+    void addElements(Operation operation);
 }

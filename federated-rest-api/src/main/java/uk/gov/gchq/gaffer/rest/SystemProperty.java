@@ -24,13 +24,12 @@ public abstract class SystemProperty {
     public static final String BASE_URL = "gaffer.rest-api.basePath";
     public static final String VERSION = "gaffer.rest-api.version";
     public static final String GAFFER_URLS = "gaffer.federated-rest-api.urls";
+    public static final String SERVICES_PACKAGE_PREFIX = "gaffer.rest-api.resourcePackage";
     public static final String CONNECT_TIMEOUT = "gaffer.federated-rest-api.connect-timeout";
     public static final String READ_TIMEOUT = "gaffer.federated-rest-api.read-timeout";
 
     // DEFAULTS
-    /**
-     * Comma separated list of package prefixes to search for {@link uk.gov.gchq.gaffer.function.Function}s and {@link uk.gov.gchq.gaffer.operation.Operation}s.
-     */
+    public static final String SERVICES_PACKAGE_PREFIX_DEFAULT = "uk.gov.gchq.gaffer.rest";
     public static final String BASE_URL_DEFAULT = "rest/v1";
     public static final String CORE_VERSION = "1.0.0";
     public static final String CONNECT_TIMEOUT_DEFAULT = "60000";

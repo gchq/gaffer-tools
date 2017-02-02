@@ -20,14 +20,19 @@ import uk.gov.gchq.gaffer.jsonserialisation.JSONSerialiser;
 import uk.gov.gchq.gaffer.rest.dto.Schema;
 import uk.gov.gchq.gaffer.store.StoreTrait;
 import javax.ws.rs.client.Client;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-public class FederatedProperties {
-    protected JSONSerialiser jsonSerialiser;
-    private Set<String> urls;
+public class FederatedConfig {
+    /**
+     * Map of name to URL
+     */
+    private Map<String, String> urlMap = new HashMap<>();
+
+    private JSONSerialiser jsonSerialiser;
     private Map<String, Client> clients;
-    private Map<String, Schema> schemas;
     private Set<StoreTrait> traits;
     private Set<String> filterFunctions;
     private Set<String> transformFunctions;
@@ -36,6 +41,26 @@ public class FederatedProperties {
     private int connectTimeout = Integer.parseInt(SystemProperty.CONNECT_TIMEOUT_DEFAULT);
     private int readTimeout = Integer.parseInt(SystemProperty.READ_TIMEOUT_DEFAULT);
 
+    private Map<String, Schema> schemas;
+    private Schema mergedSchema;
+
+    private static FederatedConfig sharedConfig = new FederatedConfig();
+
+    public static FederatedConfig getSharedConfig() {
+        return sharedConfig;
+    }
+
+    public boolean isInitialised() {
+        return null != mergedSchema;
+    }
+
+    public boolean hasUrls() {
+        return !urlMap.isEmpty();
+    }
+
+    public int getNumUrls() {
+        return urlMap.size();
+    }
 
     public JSONSerialiser getJsonSerialiser() {
         return jsonSerialiser;
@@ -45,12 +70,16 @@ public class FederatedProperties {
         this.jsonSerialiser = jsonSerialiser;
     }
 
-    public Set<String> getUrls() {
-        return urls;
+    public Map<String, String> getUrlMap() {
+        return urlMap;
     }
 
-    public void setUrls(final Set<String> urls) {
-        this.urls = urls;
+    public Collection<String> getUrls() {
+        return urlMap.values();
+    }
+
+    public void setUrlMap(final Map<String, String> urls) {
+        this.urlMap = urls;
     }
 
     public Map<String, Client> getClients() {
@@ -67,6 +96,14 @@ public class FederatedProperties {
 
     public void setSchemas(final Map<String, Schema> schemas) {
         this.schemas = schemas;
+        mergedSchema = new Schema();
+        for (Schema schema : schemas.values()) {
+            mergedSchema.merge(schema);
+        }
+    }
+
+    public Schema getMergedSchema() {
+        return mergedSchema;
     }
 
     public Set<StoreTrait> getTraits() {

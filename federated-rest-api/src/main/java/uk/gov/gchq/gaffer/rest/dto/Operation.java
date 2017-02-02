@@ -20,9 +20,15 @@ import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonSetter;
+import uk.gov.gchq.gaffer.rest.util.CloneUtil;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+/**
+ * Based on {@link uk.gov.gchq.gaffer.operation.Operation} but without the need
+ * to deserialise all operation classes. This means the jvm does not need all
+ * classes from all delegate Gaffer graphs on the class path.
+ */
 public class Operation {
     private View view;
     private Object input;
@@ -77,11 +83,21 @@ public class Operation {
     public Operation clone() {
         final Operation op = new Operation();
         op.view = null != view ? view.clone() : null;
-        op.input = input;
+        op.input = CloneUtil.clone(input);
         op.clazz = clazz;
-        op.other.putAll(other);
+        op.other = CloneUtil.clone(other);
 
         return op;
+    }
+
+    @Override
+    public String toString() {
+        return "Operation{" +
+                "view=" + view +
+                ", input=" + input +
+                ", class='" + clazz + '\'' +
+                ", other=" + other +
+                '}';
     }
 }
 
