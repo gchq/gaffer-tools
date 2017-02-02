@@ -46,8 +46,7 @@ trap "rm -rf $TEMP_DIR" EXIT
 # Build Accumulo Application Package
 git clone https://github.com/apache/incubator-slider.git $TEMP_DIR
 cd $TEMP_DIR
-git checkout develop
-mvn clean install -DskipTests
+git checkout branches/branch-0.91
 cd app-packages/accumulo
 mvn clean package -Paccumulo-app-package-maven -Daccumulo.version=$ACCUMULO_VERSION -Dpkg.version=$ACCUMULO_VERSION || exit 1
 cd target
