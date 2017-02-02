@@ -32,7 +32,6 @@ if [ "$3" == "--build-native" ]; then
 fi
 
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-TEMP_DIR=$(mktemp -d -t slider-XXXX)
 APP_PKG_FILE=slider-accumulo-app-package-$ACCUMULO_VERSION.zip
 
 if [ -f "$DESTINATION/$APP_PKG_FILE" ]; then
@@ -40,13 +39,17 @@ if [ -f "$DESTINATION/$APP_PKG_FILE" ]; then
 	exit 0
 fi
 
+TEMP_DIR=$(mktemp -d -t slider-XXXX)
+# Cleanup temp dir when script exists
+trap "rm -rf $TEMP_DIR" EXIT
+
 # Build Accumulo Application Package
 git clone https://github.com/apache/incubator-slider.git $TEMP_DIR
 cd $TEMP_DIR
 git checkout develop
 mvn clean install -DskipTests
 cd app-packages/accumulo
-mvn clean package -Paccumulo-app-package-maven -Daccumulo.version=$ACCUMULO_VERSION -Dpkg.version=$ACCUMULO_VERSION
+mvn clean package -Paccumulo-app-package-maven -Daccumulo.version=$ACCUMULO_VERSION -Dpkg.version=$ACCUMULO_VERSION || exit 1
 cd target
 
 if [ "$BUILD_NATIVE" == "true" ]; then
@@ -68,7 +71,4 @@ fi
 cd $DIR
 mkdir -p $DESTINATION
 cp $TEMP_DIR/app-packages/accumulo/target/$APP_PKG_FILE $DESTINATION
-
-# Cleanup
-rm -rf $TEMP_DIR
 
