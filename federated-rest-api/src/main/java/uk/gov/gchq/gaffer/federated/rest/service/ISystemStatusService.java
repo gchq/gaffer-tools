@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package uk.gov.gchq.gaffer.rest.service;
+package uk.gov.gchq.gaffer.federated.rest.service;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
-import uk.gov.gchq.gaffer.rest.dto.SystemStatus;
+import uk.gov.gchq.gaffer.federated.rest.dto.SystemStatus;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;

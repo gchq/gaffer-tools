@@ -14,27 +14,40 @@
  * limitations under the License.
  */
 
-package uk.gov.gchq.gaffer.rest.dto;
+package uk.gov.gchq.gaffer.federated.rest.dto;
 
 
 import io.swagger.annotations.ApiModelProperty;
 
-public class SystemStatus {
+public class FederatedSystemStatus extends SystemStatus {
     @ApiModelProperty
-    private String description;
+    private String name;
 
-    public SystemStatus() {
+    @ApiModelProperty
+    private String url;
+
+    public String getName() {
+        return name;
     }
 
-    public SystemStatus(final String description) {
-        this.description = description;
+    public void setName(final String name) {
+        this.name = name;
     }
 
-    public String getDescription() {
-        return description;
+    public String getUrl() {
+        return url;
     }
 
-    public void setDescription(final String description) {
-        this.description = description;
+    public void setUrl(final String url) {
+        this.url = url;
+    }
+
+    @Override
+    public String toString() {
+        return "FederatedSystemStatus{" +
+                "name='" + name + '\'' +
+                ", url='" + url + '\'' +
+                ", description='" + getDescription() + '\'' +
+                '}';
     }
 }

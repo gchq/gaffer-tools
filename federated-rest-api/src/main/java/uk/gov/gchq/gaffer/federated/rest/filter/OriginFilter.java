@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package uk.gov.gchq.gaffer.rest.filter;
+package uk.gov.gchq.gaffer.federated.rest.filter;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;

@@ -14,13 +14,16 @@
  * limitations under the License.
  */
 
-package uk.gov.gchq.gaffer.rest.service;
+package uk.gov.gchq.gaffer.federated.rest.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.io.IOUtils;
 import org.glassfish.jersey.server.ChunkedOutput;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import uk.gov.gchq.gaffer.federated.rest.FederatedExecutor;
+import uk.gov.gchq.gaffer.federated.rest.dto.Operation;
+import uk.gov.gchq.gaffer.federated.rest.dto.OperationChain;
 import uk.gov.gchq.gaffer.operation.impl.add.AddElements;
 import uk.gov.gchq.gaffer.operation.impl.generate.GenerateElements;
 import uk.gov.gchq.gaffer.operation.impl.generate.GenerateObjects;
@@ -31,9 +34,6 @@ import uk.gov.gchq.gaffer.operation.impl.get.GetAllEntities;
 import uk.gov.gchq.gaffer.operation.impl.get.GetEdges;
 import uk.gov.gchq.gaffer.operation.impl.get.GetElements;
 import uk.gov.gchq.gaffer.operation.impl.get.GetEntities;
-import uk.gov.gchq.gaffer.rest.FederatedExecutor;
-import uk.gov.gchq.gaffer.rest.dto.Operation;
-import uk.gov.gchq.gaffer.rest.dto.OperationChain;
 import uk.gov.gchq.gaffer.store.Context;
 import java.io.Closeable;
 import java.io.IOException;

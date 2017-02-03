@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2017 Crown Copyright
+ * Copyright 2016 Crown Copyright
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,13 +14,27 @@
  * limitations under the License.
  */
 
-package uk.gov.gchq.gaffer.rest.service;
+package uk.gov.gchq.gaffer.federated.rest.dto;
 
-import uk.gov.gchq.gaffer.rest.dto.SystemStatus;
 
-public class SystemStatusService implements ISystemStatusService {
-    @Override
-    public SystemStatus status() {
-        return new SystemStatus("The system is working normally.");
+import io.swagger.annotations.ApiModelProperty;
+
+public class SystemStatus {
+    @ApiModelProperty
+    private String description;
+
+    public SystemStatus() {
+    }
+
+    public SystemStatus(final String description) {
+        this.description = description;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(final String description) {
+        this.description = description;
     }
 }

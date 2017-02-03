@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package uk.gov.gchq.gaffer.rest.service;
+package uk.gov.gchq.gaffer.federated.rest.service;
 
 import com.fasterxml.jackson.databind.BeanDescription;
 import com.fasterxml.jackson.databind.JavaType;
@@ -24,11 +24,11 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import uk.gov.gchq.gaffer.federated.rest.FederatedConfig;
+import uk.gov.gchq.gaffer.federated.rest.FederatedExecutor;
+import uk.gov.gchq.gaffer.federated.rest.dto.FederatedSystemStatus;
 import uk.gov.gchq.gaffer.function.FilterFunction;
-import uk.gov.gchq.gaffer.rest.FederatedConfig;
-import uk.gov.gchq.gaffer.rest.FederatedExecutor;
-import uk.gov.gchq.gaffer.rest.dto.FederatedSystemStatus;
-import uk.gov.gchq.gaffer.rest.dto.Schema;
+import uk.gov.gchq.gaffer.federated.rest.dto.Schema;
 import uk.gov.gchq.gaffer.store.Context;
 import uk.gov.gchq.gaffer.store.StoreTrait;
 import java.util.HashSet;

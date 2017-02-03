@@ -3,7 +3,7 @@
 // (powered by Fernflower decompiler)
 //
 
-package uk.gov.gchq.gaffer.rest.service;
+package uk.gov.gchq.gaffer.federated.rest.service;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -12,9 +12,9 @@ import org.glassfish.jersey.server.ChunkedOutput;
 import uk.gov.gchq.gaffer.data.element.Edge;
 import uk.gov.gchq.gaffer.data.element.Element;
 import uk.gov.gchq.gaffer.data.element.Entity;
+import uk.gov.gchq.gaffer.federated.rest.dto.Operation;
+import uk.gov.gchq.gaffer.federated.rest.dto.OperationChain;
 import uk.gov.gchq.gaffer.operation.data.EntitySeed;
-import uk.gov.gchq.gaffer.rest.dto.Operation;
-import uk.gov.gchq.gaffer.rest.dto.OperationChain;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;

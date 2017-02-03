@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-package uk.gov.gchq.gaffer.rest;
+package uk.gov.gchq.gaffer.federated.rest;
 
 import uk.gov.gchq.gaffer.jsonserialisation.JSONSerialiser;
-import uk.gov.gchq.gaffer.rest.dto.Schema;
+import uk.gov.gchq.gaffer.federated.rest.dto.Schema;
 import uk.gov.gchq.gaffer.store.StoreTrait;
 import javax.ws.rs.client.Client;
 import java.util.Collection;

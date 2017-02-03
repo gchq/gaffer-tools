@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package uk.gov.gchq.gaffer.rest.util;
+package uk.gov.gchq.gaffer.federated.rest.util;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package uk.gov.gchq.gaffer.rest;
+package uk.gov.gchq.gaffer.federated.rest;
 
 /**
  * System property keys and default values.

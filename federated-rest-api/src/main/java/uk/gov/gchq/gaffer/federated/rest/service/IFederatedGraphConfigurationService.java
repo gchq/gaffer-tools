@@ -3,12 +3,12 @@
 // (powered by Fernflower decompiler)
 //
 
-package uk.gov.gchq.gaffer.rest.service;
+package uk.gov.gchq.gaffer.federated.rest.service;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
-import uk.gov.gchq.gaffer.rest.dto.FederatedSystemStatus;
+import uk.gov.gchq.gaffer.federated.rest.dto.FederatedSystemStatus;
 import uk.gov.gchq.gaffer.store.StoreTrait;
 import uk.gov.gchq.gaffer.store.schema.Schema;
 import javax.ws.rs.DELETE;
@@ -78,7 +78,7 @@ public interface IFederatedGraphConfigurationService {
             value = "Gets the schema",
             response = Schema.class
     )
-    uk.gov.gchq.gaffer.rest.dto.Schema getSchema();
+    uk.gov.gchq.gaffer.federated.rest.dto.Schema getSchema();
 
     @GET
     @Path("/" + FILTER_FUNCTIONS_PATH)

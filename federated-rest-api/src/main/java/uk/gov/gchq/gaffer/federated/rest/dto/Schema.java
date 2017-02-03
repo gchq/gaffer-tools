@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package uk.gov.gchq.gaffer.rest.dto;
+package uk.gov.gchq.gaffer.federated.rest.dto;
 
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
-import uk.gov.gchq.gaffer.rest.util.CloneUtil;
+import uk.gov.gchq.gaffer.federated.rest.util.CloneUtil;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;

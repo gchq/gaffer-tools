@@ -12,7 +12,7 @@
         <init-param>
             <param-name>javax.ws.rs.Application</param-name>
             <param-value>
-                uk.gov.gchq.gaffer.rest.application.FederatedApplicationConfig
+                uk.gov.gchq.gaffer.federated.rest.application.FederatedApplicationConfig
             </param-value>
         </init-param>
         <init-param>
@@ -28,7 +28,7 @@
 
     <filter>
         <filter-name>OriginFilter</filter-name>
-        <filter-class>uk.gov.gchq.gaffer.rest.filter.OriginFilter</filter-class>
+        <filter-class>uk.gov.gchq.gaffer.federated.rest.filter.OriginFilter</filter-class>
     </filter>
 
     <filter-mapping>

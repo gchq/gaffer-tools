@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package uk.gov.gchq.gaffer.rest.serialisation;
+package uk.gov.gchq.gaffer.federated.rest.serialisation;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import uk.gov.gchq.gaffer.jsonserialisation.JSONSerialiser;

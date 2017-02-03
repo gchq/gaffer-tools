@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package uk.gov.gchq.gaffer.rest;
+package uk.gov.gchq.gaffer.federated.rest;
 
 import java.util.Iterator;
 import java.util.List;
