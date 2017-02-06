@@ -76,6 +76,8 @@ Deploying a Gaffer instance onto a YARN managed cluster requires:
 * A build of this gaffer-slider add-on package
 * Configuration for the instance (appConfig.json and resources.json)
 
+The cluster being deployed to must be running HDFS, YARN and ZooKeeper.
+
 Distributions of Slider can be [downloaded from Maven Central](http://search.maven.org/#search%7Cgav%7C1%7Cg%3A%22org.apache.slider%22%20AND%20a%3A%22slider-assembly%22), or [built from source](https://slider.incubator.apache.org/docs/getting_started.html#build). Slider needs to be configured with the location of the YARN Resource Manager and the ZooKeeper quorum for the cluster it will be deploying to. It will try to read these from `$HADOOP_CONF_DIR`, otherwise ensure that the `yarn.resourcemanager.address` and `hadoop.registry.zk.quorum` properties are set in `<slider>/conf/slider-client.xml`.
 
 Pre-built Accumulo application packages are not currently released so must be built from source. [Follow these instructions](https://github.com/apache/incubator-slider/blob/develop/app-packages/accumulo/README.md) or [use this script](scripts/build_accumulo_package.sh).
