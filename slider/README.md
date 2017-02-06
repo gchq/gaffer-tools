@@ -48,7 +48,8 @@ Although there are a few different ways to deploy Gaffer, deploying instances on
 Use the following instructions to quickly deploy a Gaffer instance. It will deploy the latest stable version of Gaffer onto an Accumulo instance (version determined by [Gaffer's pom.xml](https://github.com/gchq/Gaffer/search?q=path%3A%2F+filename%3Apom.xml+"accumulo.version")) called `$USER-gaffer-test`.
 
 ```
-# Edit the files in the scripts/conf directory to match your cluster configuration
+# Identify the profile in [src/test/clusters/](src/test/clusters/) that matches your cluster configuration, or create a new one
+# Update `$CLUSTER_TYPE` in [scripts/common.sh](scripts/common.sh) to the name of the configuration profile to use
 mvn clean package
 scripts/deploy_test_cluster.sh
 ```
@@ -79,7 +80,7 @@ Distributions of Slider can be [downloaded from Maven Central](http://search.mav
 
 Pre-built Accumulo application packages are not currently released so must be built from source. [Follow these instructions](https://github.com/apache/incubator-slider/blob/develop/app-packages/accumulo/README.md) or [use this script](scripts/build_accumulo_package.sh).
 
-Two JSON files are used to configure how an instance of a Slider application is deployed and executed. `appConfig.json` is used to specify the configuration that is to be applied to the application after it has been installed, and before it is executed. `resources.json` is used to specify the resources that Slider should request for each container from YARN. Example configuration files for deploying a Gaffer instance can be found in [scripts/conf/accumulo/](scripts/conf/accumulo/). Take care to ensure that if the amount of memory requested for any of the containers is changed, then the appropriate Accumulo configuration is also updated (i.e. increasing the heap size property for a component to take advantage of additional memory being available, or reducing the heap size to ensure the component runs within the new limit). Refer to [Slider's documentation](https://slider.incubator.apache.org/docs/configuration/index.html) for full details on how these configuration files are used and what properties can be set.
+Two JSON files are used to configure how an instance of a Slider application is deployed and executed. `appConfig.json` is used to specify the configuration that is to be applied to the application after it has been installed, and before it is executed. `resources.json` is used to specify the resources that Slider should request for each container from YARN. Example configuration files for deploying a Gaffer instance can be found in [src/test/clusters/](src/test/clusters/). Take care to ensure that if the amount of memory requested for any of the containers is changed, then the appropriate Accumulo configuration is also updated (i.e. increasing the heap size property for a component to take advantage of additional memory being available, or reducing the heap size to ensure the component runs within the new limit). Refer to [Slider's documentation](https://slider.incubator.apache.org/docs/configuration/index.html) for full details on how these configuration files are used and what properties can be set.
 
 A Gaffer instance can then be deployed using the following command:
 

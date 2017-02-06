@@ -24,6 +24,6 @@
 
 	<property>
 		<name>HADOOP_CONF_DIR</name>
-		<value>${env.HADOOP_CONF_DIR}</value>
+		<value>/etc/hadoop/conf</value>
 	</property>
 </configuration>

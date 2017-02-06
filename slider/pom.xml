@@ -45,16 +45,16 @@
     </dependencies>
 
     <build>
-        <resources>
-            <resource>
-                <directory>src/main/resources</directory>
-            </resource>
-            <resource>
-                <directory>scripts</directory>
+        <testResources>
+            <testResource>
+                <directory>src/test/resources</directory>
+            </testResource>
+            <testResource>
+                <directory>src/test/clusters</directory>
                 <filtering>true</filtering>
-                <targetPath>${project.build.directory}/scripts</targetPath>
-            </resource>
-        </resources>
+                <targetPath>${project.build.directory}/clusters</targetPath>
+            </testResource>
+        </testResources>
 
         <plugins>
             <plugin>
