@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+package uk.gov.gchq.gaffer.slider;
+
 import org.apache.slider.core.exceptions.SliderException;
 import org.apache.slider.providers.agent.application.metadata.AddonPackageMetainfoParser;
 import org.apache.slider.providers.agent.application.metadata.Metainfo;
@@ -23,9 +25,12 @@ import org.junit.Test;
 import java.io.IOException;
 import java.io.InputStream;
 
+/**
+ * Tests that the gaffer-slider metainfo.xml file is well formed
+ */
 public class MetainfoTest {
 
-	private static final String METAINFO_FILE = "metainfo.xml";
+	private static final String METAINFO_FILE = "/metainfo.xml";
 
 	@Test
 	public void checkMetainfoIsValid () throws IOException, SliderException {
