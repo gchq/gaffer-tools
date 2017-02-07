@@ -97,3 +97,10 @@ slider create <gafferInstanceName> \
 **NB:** If this is the first time you have deployed a Slider application with this particular instance name then you will be prompted for 3 different passwords. Please ensure that the password you enter for `trace.token.property.password` is the same as the one you provide for `root.initial.password`.
 
 See the [Slider documentation](https://slider.incubator.apache.org/docs/getting_started.html#installapp) for commands that can be used to start, stop, delete, grow, shrink and upgrade running applications.
+
+## Running Integration Tests
+
+```
+# Identify the profile in [src/test/clusters/](src/test/clusters/) that matches your cluster configuration, or create a new one
+mvn verify -Dtest.cluster.type=<profileName>
+```

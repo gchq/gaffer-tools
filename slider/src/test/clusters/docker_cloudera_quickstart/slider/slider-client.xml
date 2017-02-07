@@ -26,4 +26,9 @@
 		<name>HADOOP_CONF_DIR</name>
 		<value>/etc/hadoop/conf</value>
 	</property>
+
+	<property>
+		<name>slider.test.agent.enabled</name>
+		<value>true</value>
+	</property>
 </configuration>
