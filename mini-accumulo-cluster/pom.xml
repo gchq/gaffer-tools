@@ -63,14 +63,13 @@
                         <id>mini-accumulo-cluster</id>
                         <phase>package</phase>
                         <goals>
-                            <goal>assembly</goal>
+                            <goal>single</goal>
                         </goals>
                         <configuration>
                             <descriptorRefs>
                                 <descriptorRef>jar-with-dependencies
                                 </descriptorRef>
                             </descriptorRefs>
-                            <finalName>mini-accumulo-cluster</finalName>
                         </configuration>
                     </execution>
                 </executions>
