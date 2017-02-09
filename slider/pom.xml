@@ -28,7 +28,7 @@
 
     <properties>
         <addon.pkg.name>Gaffer</addon.pkg.name>
-        <addon.pkg.file>${project.artifactId}-${project.version}</addon.pkg.file>
+        <addon.pkg.file>gaffer-slider-${project.version}</addon.pkg.file>
 
         <!-- Overriding parent hadoop.version as slider-funtest requires 2.7.1+ otherwise NoSuchMethodError: org.apache.hadoop.tracing.SpanReceiverHost -->
         <hadoop.version>2.7.1</hadoop.version>
