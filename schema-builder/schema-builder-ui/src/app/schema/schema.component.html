@@ -20,11 +20,11 @@
         <div fxLayout="row">
             <div fxFlex style="margin-top: 15px;">
                 <h5 style="color:green;" *ngIf="validation && validation.valid">
-                    <md-icon class="md-16">check</md-icon>
+                    <md-icon>check</md-icon>
                     {{validation.message}}
                 </h5>
                 <h5 style="color:red;" *ngIf="validation && !validation.valid">
-                    <md-icon class="md-16">close</md-icon>
+                    <md-icon>close</md-icon>
                     <span *ngIf="validation && validation.message">{{validation.message}}</span>
                     <span *ngIf="!validation || validation.message">Unknown validation error</span>
                 </h5>
@@ -47,7 +47,7 @@
                 <md-card-title>Data Schema</md-card-title>
                 <div class="type-edit-button row">
                     <button md-icon-button color="accent" (click)="enableEditMode('dataSchema')" mdTooltip="edit data schema" aria-label="edit data schema" *ngIf="!editing.dataSchema" class="button-spacing">
-                        <md-icon class="md-16">edit</md-icon>
+                        <md-icon>edit</md-icon>
                     </button>
                 </div>
             </div>
@@ -69,7 +69,7 @@
                 <md-card-title>Data Types</md-card-title>
                 <div class="type-edit-button row">
                     <button md-icon-button color="accent" (click)="enableEditMode('dataTypes')" mdTooltip="edit data types" aria-label="edit data types" *ngIf="!editing.dataTypes" class="button-spacing">
-                        <md-icon class="md-16">edit</md-icon>
+                        <md-icon>edit</md-icon>
                     </button>
                 </div>
             </div>
@@ -91,7 +91,7 @@
                 <md-card-title>Store Types</md-card-title>
                 <div class="type-edit-button row">
                     <button md-icon-button color="accent" (click)="enableEditMode('storeTypes')" mdTooltip="edit store types" aria-label="edit store types" *ngIf="!editing.storeTypes" class="button-spacing">
-                        <md-icon class="md-16">edit</md-icon>
+                        <md-icon>edit</md-icon>
                     </button>
                 </div>
             </div>
