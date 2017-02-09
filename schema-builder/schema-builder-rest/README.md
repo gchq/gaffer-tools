@@ -40,6 +40,11 @@ To build it and its dependencies, use the following command from the parent dire
 'mvn clean install -Pstandalone-schema-builder-rest -Pquick'
 This uses the 'standalone-schema-builder-rest' profile to run jetty with the schema-builder-rest project after it and its dependencies have been built.
 
-This should launch an embedded jetty container, which can then be accessed via your browser pointing to the following url:
+This should launch an embedded jetty container, the base for the REST API is:
+
 http://localhost:8080/schema-builder-rest/v1
 
+Endpoints:
+/schema-builder-rest/v1/commonSchema - GET the standard base schema
+/schema-builder-rest/v1/validate - POST a full schema, a validation result will return
+/schema-builder-rest/v1/functions - POST a typeName and a typeClass, will return a list of valid functions.
