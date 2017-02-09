@@ -133,6 +133,14 @@ export class SchemaComponent implements OnInit {
         }
     }
 
+    clearSchema() {
+        this.storage.clear();
+        this.ngOnInit();
+        this.dataSchema = undefined;
+        this.dataTypes = undefined;
+        this.storeTypes = undefined;
+    }
+
     enableEditMode(key: string) {
         this.editing[key] = true;
         $('#' + key + 'TextArea').trigger('input');

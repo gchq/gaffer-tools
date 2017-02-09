@@ -37,6 +37,9 @@
                     <button md-raised-button color="accent" style="height: 40px; margin-top: 16px;" (click)="loadFromUrl()" mdTooltip="load schema from URL" aria-label="load schema from URL" class="button-spacing">
                         Load from URL
                     </button>
+                    <button md-raised-button color="warn" style="height: 40px; margin-top: 16px;" (click)="clearSchema()" mdTooltip="load schema from URL" aria-label="load schema from URL" class="button-spacing">
+                        Clear schema
+                    </button>
                 </div>
                 <p style="color:red; margin-top: 0;" *ngIf="errorMessageURL">{{errorMessageURL}}</p>
                 <p style="color:green; margin-top: 0;" *ngIf="successURL">{{successURL}}</p>
