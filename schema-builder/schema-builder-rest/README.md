@@ -45,6 +45,9 @@ This should launch an embedded jetty container, the base for the REST API is:
 http://localhost:8080/schema-builder-rest/v1
 
 Endpoints:
+
 /schema-builder-rest/v1/commonSchema - GET the standard base schema
+
 /schema-builder-rest/v1/validate - POST a full schema, a validation result will return
+
 /schema-builder-rest/v1/functions - POST a typeName and a typeClass, will return a list of valid functions.
