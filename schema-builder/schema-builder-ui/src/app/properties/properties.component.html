@@ -35,7 +35,7 @@
                     <div class="content-card-header" fxLayout="row">
                         <md-card-title fxFlex style="word-break: break-all;">{{edge.label}}</md-card-title>
                         <button md-icon-button color="accent" (click)="edge.editing = true;" mdTooltip="edit edge properties" aria-label="edit edge properties" *ngIf="!edge.editing" class="button-spacing">
-                            <md-icon class="md-16">edit</md-icon>
+                            <md-icon>edit</md-icon>
                         </button>
                     </div>
                     <md-card-content *ngIf="!edge.editing">
@@ -74,14 +74,14 @@
             </md-card-content>
         </md-card>
         <div *ngFor="let node of nodes">
-            <h3 style="font-size: 12pt;" *ngIf="node.entities.length > 0"><b>{{node.label}}</b></h3>
+            <h3 style="font-size: 12pt;" *ngIf="node.entities && node.entities.length > 0"><b>{{node.label}}</b></h3>
             <div class="flex-container" fxLayout="row" fxLayoutWrap="wrap">
                 <div fxFlex="50%" fxFlex.gt-md="33%" fxFlex.xs="100%" style="padding: 10px;" *ngFor="let entity of node.entities">
                     <md-card>
                         <div class="content-card-header" fxLayout="row">
                             <md-card-title fxFlex style="word-break: break-all;">{{entity.name}}</md-card-title>
                             <button md-icon-button color="accent" (click)="entity.editing = true;" mdTooltip="edit entity properties" aria-label="edit entity properties" *ngIf="!entity.editing" class="button-spacing">
-                                <md-icon class="md-16">edit</md-icon>
+                                <md-icon>edit</md-icon>
                             </button>
                         </div>
                         <md-card-content *ngIf="!entity.editing">

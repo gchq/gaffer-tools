@@ -16,18 +16,21 @@
 
 import { Component, OnInit, Input, Output, EventEmitter  } from '@angular/core';
 import { LocalStorageService } from 'ng2-webstorage';
+import { GafferService } from '../../services/gaffer.service';
 import { UUID } from 'angular2-uuid';
 import * as _ from 'lodash';
 
 @Component({
     selector: 'app-property-form',
     templateUrl: './property-form.component.html',
-    styleUrls: ['./property-form.component.css']
+    styleUrls: ['./property-form.component.css'],
+    providers: [GafferService]
 })
 export class PropertyFormComponent implements OnInit {
     _propertyHolder: any;
     _storedTypes: any;
     nodeOptions: any;
+    errorMessage: any;
 
     @Input()
     set propertyHolder(propertyHolder: any) {
@@ -39,10 +42,32 @@ export class PropertyFormComponent implements OnInit {
 
     @Output() holderChange = new EventEmitter();
 
-    constructor(private storage: LocalStorageService) { }
+    constructor(private storage: LocalStorageService, private gafferService: GafferService) { }
 
     ngOnInit() {
-        this._storedTypes = this.storage.retrieve('types');
+        let storedTypes = this.storage.retrieve('types');
+        if (storedTypes !== null) {
+            this._storedTypes = storedTypes;
+        } else {
+            this.resetTypes();
+        }
+    }
+
+    resetTypes() {
+        this.gafferService.getCommonTypes()
+            .subscribe(
+            commonTypes => this.formatTypes(commonTypes.types),
+            error => this.errorMessage = <any>error);
+    }
+
+    formatTypes(commonTypes) {
+        this._storedTypes = [];
+        _.forEach(commonTypes, (type: any, key) => {
+            type.type = key;
+            type.index = this._storedTypes.length;
+            this._storedTypes.push(type);
+        });
+        this.storage.store('types', this._storedTypes);
     }
 
     addNewProperty() {
