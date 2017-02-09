@@ -30,8 +30,6 @@
         <addon.pkg.name>Gaffer</addon.pkg.name>
         <addon.pkg.file>${project.artifactId}-${project.version}</addon.pkg.file>
 
-        <!-- TEMPORARY: ITs require https://github.com/gchq/Gaffer/pull/669 which is currently unreleased -->
-        <gaffer.version>0.6.1-SNAPSHOT</gaffer.version>
         <!-- Overriding parent hadoop.version as slider-funtest requires 2.7.1+ otherwise NoSuchMethodError: org.apache.hadoop.tracing.SpanReceiverHost -->
         <hadoop.version>2.7.1</hadoop.version>
 
