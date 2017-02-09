@@ -28,10 +28,16 @@
 
     <properties>
         <addon.pkg.name>Gaffer</addon.pkg.name>
-        <addon.pkg.file>${project.artifactId}-${project.version}
-        </addon.pkg.file>
+        <addon.pkg.file>gaffer-slider-${project.version}</addon.pkg.file>
+
         <!-- Dependency Versions -->
         <slider.version>0.91.0-incubating</slider.version>
+        <slider.accumulo.branch>branches/branch-0.91</slider.accumulo.branch>
+
+        <!-- Output Locations -->
+        <gaffer.output.directory>${project.build.directory}/gaffer</gaffer.output.directory>
+        <slider.output.directory>${project.build.directory}/slider</slider.output.directory>
+        <slider.accumulo.output.directory>${project.build.directory}/accumulo-pkg</slider.accumulo.output.directory>
     </properties>
 
     <dependencies>
@@ -81,8 +87,7 @@
                                     <version>${gaffer.version}</version>
                                 </artifactItem>
                             </artifactItems>
-                            <outputDirectory>${project.build.directory}/jars
-                            </outputDirectory>
+                            <outputDirectory>${gaffer.output.directory}</outputDirectory>
                         </configuration>
                     </execution>
 
@@ -102,8 +107,7 @@
                                     <version>${slider.version}</version>
                                 </artifactItem>
                             </artifactItems>
-                            <outputDirectory>${project.build.directory}/slider
-                            </outputDirectory>
+                            <outputDirectory>${slider.output.directory}</outputDirectory>
                         </configuration>
                     </execution>
                 </executions>
@@ -120,13 +124,11 @@
                             <goal>exec</goal>
                         </goals>
                         <configuration>
-                            <executable>scripts/build_accumulo_package.sh
-                            </executable>
+                            <executable>scripts/build_accumulo_package.sh</executable>
                             <arguments>
+                                <argument>${slider.accumulo.branch}</argument>
                                 <argument>${accumulo.version}</argument>
-                                <argument>
-                                    ${project.build.directory}/accumulo-pkg
-                                </argument>
+                                <argument>${slider.accumulo.output.directory}</argument>
                                 <argument>--build-native</argument>
                             </arguments>
                         </configuration>
