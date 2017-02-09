@@ -20,7 +20,7 @@
     <parent>
         <groupId>uk.gov.gchq.gaffer</groupId>
         <artifactId>gaffer-tools</artifactId>
-        <version>0.6.0</version>
+        <version>0.6.1</version>
     </parent>
 
     <artifactId>mini-accumulo-cluster</artifactId>
@@ -63,14 +63,13 @@
                         <id>mini-accumulo-cluster</id>
                         <phase>package</phase>
                         <goals>
-                            <goal>assembly</goal>
+                            <goal>single</goal>
                         </goals>
                         <configuration>
                             <descriptorRefs>
                                 <descriptorRef>jar-with-dependencies
                                 </descriptorRef>
                             </descriptorRefs>
-                            <finalName>mini-accumulo-cluster</finalName>
                         </configuration>
                     </execution>
                 </executions>

@@ -1,5 +1,7 @@
+#!/bin/bash
+
 #
-# Copyright 2016 Crown Copyright
+# Copyright 2017 Crown Copyright
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -13,12 +15,21 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-gaffer.store.class=uk.gov.gchq.gaffer.accumulostore.AccumuloStore
-gaffer.store.properties.class=uk.gov.gchq.gaffer.accumulostore.AccumuloProperties
-accumulo.instance=instance
-accumulo.table=table1
-accumulo.user=root
-accumulo.password=password
 
-# Add the port when the cluster has started
-#accumulo.zookeepers=localhost:<PORT>
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+cd $DIR
+
+source ./common.sh
+
+if [ ! -d "$CLIENT_DESTINATION" ]; then
+	mkdir -p $CLIENT_DESTINATION
+
+	$SLIDER client \
+		--install \
+		--dest $CLIENT_DESTINATION \
+		--package $ACCUMULO_PKG \
+		--name $CLUSTER_NAME \
+		--debug
+fi
+
+$CLIENT_DESTINATION/*/bin/accumulo shell -u root
