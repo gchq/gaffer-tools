@@ -38,7 +38,7 @@ export class TypeFormComponent implements OnInit {
     @Input()
     set type(type: any) {
         this._type = type;
-        if (!this._type.node && this._type.aggregateFunction !== null && this._type.aggregateFunction.class !== 'NULL') {
+        if (!this._type.node && this._type.aggregateFunction !== null && this._type.aggregateFunction !== undefined && this._type.aggregateFunction.class !== 'NULL') {
             this.aggregateFields = _.cloneDeep(this._type.aggregateFunction);
             this.aggregateFields.class = undefined;
             this.aggregateFieldsDisabled = false;
