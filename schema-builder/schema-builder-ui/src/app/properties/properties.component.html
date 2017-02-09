@@ -55,7 +55,7 @@
                             </md-list>
                         </div>
                     </md-card-content>
-                    <md-card-content *ngIf="edge.editing" style="overflow: auto;">
+                    <md-card-content *ngIf="edge.editing" style="overflow: visible;">
                         <app-property-form [propertyHolder]="edge" (holderChange)="edgePropertiesChanged($event)"></app-property-form>
                     </md-card-content>
                 </md-card>
@@ -101,7 +101,7 @@
                                 </md-list>
                             </div>
                         </md-card-content>
-                        <md-card-content *ngIf="entity.editing" style="overflow: auto;">
+                        <md-card-content *ngIf="entity.editing" style="overflow: visible;">
                             <app-property-form [propertyHolder]="entity" (holderChange)="entityPropertiesChanged($event)"></app-property-form>
                         </md-card-content>
                     </md-card>
