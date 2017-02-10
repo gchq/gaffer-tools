@@ -52,6 +52,7 @@
                     <button md-icon-button color="accent" (click)="enableEditMode('dataSchema')" mdTooltip="edit data schema" aria-label="edit data schema" *ngIf="!editing.dataSchema" class="button-spacing">
                         <md-icon>edit</md-icon>
                     </button>
+                    <a class="btn-floating waves-effect waves-light btn-flat" [href]="sanitize(dataSchemaDownload)" download="dataSchema.json" mdTooltip="save to file" aria-label="save to file" *ngIf="!editing.dataSchema"><i class="material-icons left">file_download</i></a>
                 </div>
             </div>
             <md-card-content>
@@ -74,6 +75,7 @@
                     <button md-icon-button color="accent" (click)="enableEditMode('dataTypes')" mdTooltip="edit data types" aria-label="edit data types" *ngIf="!editing.dataTypes" class="button-spacing">
                         <md-icon>edit</md-icon>
                     </button>
+                    <a class="btn-floating waves-effect waves-light btn-flat" [href]="sanitize(dataTypesDownload)" download="dataTypes.json" mdTooltip="save to file" aria-label="save to file" *ngIf="!editing.dataTypes"><i class="material-icons left">file_download</i></a>
                 </div>
             </div>
             <md-card-content>
@@ -96,6 +98,7 @@
                     <button md-icon-button color="accent" (click)="enableEditMode('storeTypes')" mdTooltip="edit store types" aria-label="edit store types" *ngIf="!editing.storeTypes" class="button-spacing">
                         <md-icon>edit</md-icon>
                     </button>
+                    <a class="btn-floating waves-effect waves-light btn-flat" [href]="sanitize(storeTypesDownload)" download="storeTypes.json" mdTooltip="save to file" aria-label="save to file" *ngIf="!editing.storeTypes"><i class="material-icons left">file_download</i></a>
                 </div>
             </div>
             <md-card-content>

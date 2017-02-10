@@ -15,6 +15,7 @@
  */
 
 import { Component, OnInit } from '@angular/core';
+import { DomSanitizer } from '@angular/platform-browser';
 import { Router, ActivatedRoute } from '@angular/router';
 import { LocalStorageService } from 'ng2-webstorage';
 import { GafferService } from '../services/gaffer.service';
@@ -53,6 +54,10 @@ export class SchemaComponent implements OnInit {
     errors: any;
     editing: any;
 
+    dataSchemaDownload: any;
+    dataTypesDownload: any;
+    storeTypesDownload: any;
+
     parseDataSchema() {
         this.dataSchema = {
             edges: {},
@@ -90,6 +95,8 @@ export class SchemaComponent implements OnInit {
                 });
             });
         }
+        this.dataSchemaDownload = 'data:text/json;charset=utf-8,' +
+            encodeURIComponent(JSON.stringify(this.dataSchema, null, 2));
     }
 
     parseDataTypes() {
@@ -114,6 +121,8 @@ export class SchemaComponent implements OnInit {
                 this.dataTypes.types[node.label] = formattedNode;
             });
         }
+        this.dataTypesDownload = 'data:text/json;charset=utf-8,' +
+            encodeURIComponent(JSON.stringify(this.dataTypes, null, 2));
     }
 
     parseStoreTypes() {
@@ -131,6 +140,12 @@ export class SchemaComponent implements OnInit {
                 }
             });
         }
+        this.storeTypesDownload = 'data:text/json;charset=utf-8,' +
+            encodeURIComponent(JSON.stringify(this.storeTypes, null, 2));
+    }
+
+    sanitize(url:string){
+        return this.sanitizer.bypassSecurityTrustUrl(url);
     }
 
     clearSchema() {
@@ -359,7 +374,7 @@ export class SchemaComponent implements OnInit {
     }
 
     constructor(private storage: LocalStorageService, private gafferService: GafferService,
-                private router: Router, private route: ActivatedRoute) { }
+                private router: Router, private route: ActivatedRoute, private sanitizer: DomSanitizer) { }
 
     ngOnInit() {
         let storedNodes = this.storage.retrieve('graphNodes');
