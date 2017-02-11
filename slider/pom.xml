@@ -36,9 +36,16 @@
         <!-- Dependency Versions -->
         <slider.version>0.91.0-incubating</slider.version>
         <slider.accumulo.version>0.80.0-incubating</slider.accumulo.version>
+        <slider.accumulo.branch>branches/branch-0.91</slider.accumulo.branch>
 
         <!-- Testing Properties -->
         <test.cluster.type>docker_cloudera_quickstart</test.cluster.type>
+
+        <!-- Output Locations -->
+        <gaffer.output.directory>${project.build.directory}/gaffer</gaffer.output.directory>
+        <slider.output.directory>${project.build.directory}/slider</slider.output.directory>
+        <slider.accumulo.output.directory>${project.build.directory}/accumulo-pkg</slider.accumulo.output.directory>
+        <cluster.config.output.directory>${project.build.directory}/clusters</cluster.config.output.directory>
     </properties>
 
     <dependencies>
@@ -114,6 +121,18 @@
     </dependencies>
 
     <build>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+            </resource>
+            <resource>
+                <directory>scripts</directory>
+                <filtering>true</filtering>
+                <targetPath>${project.build.directory}/scripts</targetPath>
+            </resource>
+        </resources>
+
         <testResources>
             <testResource>
                 <directory>src/test/resources</directory>
@@ -121,7 +140,7 @@
             <testResource>
                 <directory>src/test/clusters</directory>
                 <filtering>true</filtering>
-                <targetPath>${project.build.directory}/clusters</targetPath>
+                <targetPath>${cluster.config.output.directory}</targetPath>
             </testResource>
         </testResources>
 
@@ -151,7 +170,7 @@
                                     <version>${gaffer.version}</version>
                                 </artifactItem>
                             </artifactItems>
-                            <outputDirectory>${project.build.directory}/jars</outputDirectory>
+                            <outputDirectory>${gaffer.output.directory}</outputDirectory>
                         </configuration>
                     </execution>
 
@@ -171,7 +190,7 @@
                                     <version>${slider.version}</version>
                                 </artifactItem>
                             </artifactItems>
-                            <outputDirectory>${project.build.directory}/slider</outputDirectory>
+                            <outputDirectory>${slider.output.directory}</outputDirectory>
                         </configuration>
                     </execution>
                 </executions>
@@ -190,8 +209,9 @@
                         <configuration>
                             <executable>scripts/build_accumulo_package.sh</executable>
                             <arguments>
+                                <argument>${slider.accumulo.branch}</argument>
                                 <argument>${accumulo.version}</argument>
-                                <argument>${project.build.directory}/accumulo-pkg</argument>
+                                <argument>${slider.accumulo.output.directory}</argument>
                                 <argument>--build-native</argument>
                             </arguments>
                         </configuration>
@@ -222,10 +242,10 @@
                 <configuration>
                     <systemPropertyVariables>
                         <!-- Location of the Slider distribution and config to use -->
-                        <slider.conf.dir>${project.build.directory}/clusters/${test.cluster.type}/slider</slider.conf.dir>
-                        <slider.bin.dir>${project.build.directory}/slider/slider-${slider.version}</slider.bin.dir>
+                        <slider.conf.dir>${cluster.config.output.directory}/${test.cluster.type}/slider</slider.conf.dir>
+                        <slider.bin.dir>${slider.output.directory}/slider-${slider.version}</slider.bin.dir>
                         <!-- Location of the Accumulo slider app package to use -->
-                        <test.app.pkg.dir>${project.build.directory}/accumulo-pkg</test.app.pkg.dir>
+                        <test.app.pkg.dir>${slider.accumulo.output.directory}</test.app.pkg.dir>
                         <test.app.pkg.file>slider-accumulo-app-package-${accumulo.version}.zip</test.app.pkg.file>
                         <test.app.pkg.name>ACCUMULO</test.app.pkg.name>
                         <!-- Location of the Gaffer addon package to use -->
@@ -233,7 +253,7 @@
                         <test.addon.pkg.file>${addon.pkg.file}.zip</test.addon.pkg.file>
                         <test.addon.pkg.name>${addon.pkg.name}</test.addon.pkg.name>
                         <!-- Location of the cluster specific configuration to use -->
-                        <test.app.resources.dir>${project.build.directory}/clusters/${test.cluster.type}/accumulo</test.app.resources.dir>
+                        <test.app.resources.dir>${cluster.config.output.directory}/${test.cluster.type}/accumulo</test.app.resources.dir>
                     </systemPropertyVariables>
                 </configuration>
             </plugin>

@@ -19,11 +19,12 @@
 CLUSTER_NAME=gaffer-test
 CLUSTER_TYPE=docker_cloudera_quickstart
 
-SLIDER=../target/slider/slider-*/bin/slider
-ACCUMULO_PKG=../target/accumulo-pkg/slider-accumulo-app-package-*.zip
-GAFFER_PKG=../target/gaffer-slider-*.zip
+SLIDER="${slider.output.directory}/slider-*/bin/slider"
+ACCUMULO_PKG="${slider.accumulo.output.directory}/slider-accumulo-app-package-*.zip"
+GAFFER_PKG="${project.build.directory}/${addon.pkg.file}.zip"
 
-export SLIDER_CONF_DIR=../target/clusters/$CLUSTER_TYPE/slider/
-APPCONFIG=../target/clusters/$CLUSTER_TYPE/accumulo/appConfig-default.json
-RESOURCES=../target/clusters/$CLUSTER_TYPE/accumulo/resources.json
-CLIENT_DESTINATION=../target/accumulo-shell
+export SLIDER_CONF_DIR="${cluster.config.output.directory}/${test.cluster.type}/slider/"
+APPCONFIG="${cluster.config.output.directory}/${test.cluster.type}/accumulo/appConfig-default.json"
+RESOURCES="${cluster.config.output.directory}/${test.cluster.type}/accumulo/resources.json"
+CLIENT_DESTINATION="${project.build.directory}/accumulo-shell"
+
