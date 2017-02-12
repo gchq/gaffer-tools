@@ -128,8 +128,8 @@ public class AccumuloSliderUtils {
 			try {
 				accumulo = new ZooKeeperInstance(instanceName, zookeepers);
 
-				// Wait for the Accumulo master server to come online
-				if (accumulo.getMasterLocations().size() == 0) {
+				// Wait for the Accumulo Master and Root Tablet server to come online
+				if (accumulo.getMasterLocations().size() == 0 || accumulo.getRootTabletLocation() == null) {
 					accumulo = null;
 				}
 			} catch (RuntimeException e) {
