@@ -153,6 +153,10 @@ public class GafferSliderDeployer extends AgentCommandTestBase {
 			tracePassword = rootPassword;
 		}
 
+		log.info("Accumulo Root Password: {}", rootPassword);
+		log.info("Accumulo Instance Secret: {}", instanceSecret);
+		log.info("Accumulo Tracer Password: {}", tracePassword);
+
 		File passwordFile = AccumuloSliderUtils.generatePasswordFile(this.folder, rootPassword, instanceSecret, tracePassword);
 
 		SliderShell shell = this.createTemplatedSliderApplication(
