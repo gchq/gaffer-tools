@@ -21,11 +21,11 @@ cd $DIR
 
 source ../target/scripts/common.sh
 
-$SLIDER version
+if [ ! -d "$HBASE_CLIENT_DESTINATION" ]; then
+	mkdir -p $HBASE_CLIENT_DESTINATION
+	cd $HBASE_CLIENT_DESTINATION
+	unzip $HBASE_PKG hbase-slider hbase-slider.py
+fi
 
-$SLIDER create $CLUSTER_NAME \
-	--appdef $ACCUMULO_PKG \
-	--addon Gaffer $GAFFER_PKG \
-	--template $APPCONFIG \
-	--resources $RESOURCES \
-	--debug
+cd $HBASE_CLIENT_DESTINATION
+SLIDER_HOME=$SLIDER_HOME ./hbase-slider $CLUSTER_NAME

@@ -28,8 +28,26 @@ class Gaffer (Script):
 	def install (self, env):
 		# Grab config
 		config = Script.get_config()
+		configs = config['configurations']
 		component = config['componentName']
 		componentConfig = config['componentConfig'][component]
+
+		dst = os.path.join(configs['global']['app_root'], 'lib')
+		hadoopConfDir = os.path.join('etc', 'hadoop', 'conf')
+
+		# Detect base application that Gaffer is being deployed onto
+		appType = 'unknown'
+
+		if 'accumulo-site' in configs or 'accumulo-env' in configs:
+			appType = 'accumulo'
+			dst = os.path.join(dst, 'ext')
+			hadoopConfDir = configs['accumulo-env']['hadoop_conf_dir']
+		elif 'hbase-site' in configs or 'hbase-env' in configs:
+			appType = 'hbase'
+
+		Logger.info("Detected AppType: %s" % appType)
+		Logger.info("Destination Directory: %s" % dst)
+		Logger.info("Hadoop Config Directory: %s" % hadoopConfDir)
 
 		# Parse and set config
 		copyPackageJars = True
@@ -44,25 +62,31 @@ class Gaffer (Script):
 		Logger.info("Copy JARs from inside add-on package: %s" % copyPackageJars)
 		Logger.info("Copy JARs from a location in HDFS: %s" % copyHdfsJars)
 
-		# Delete any existing additional JARs first
-		dst = config['configurations']['global']['app_root'] + '/lib/ext/'
-		Logger.info("Destination Directory: %s" % dst)
-		shutil.rmtree(dst)
+		originalFiles = os.listdir(dst)
 
 		# Copy additional JARs that have been bundled inside this add-on package
 		if copyPackageJars:
-			src = config['commandParams']['addonPackageRoot'] + '/package/files/'
-			Logger.info("Copying additional JARS from add-on package: %s" % src)
-			shutil.copytree(src, dst)
+			src = os.path.join(config['commandParams']['addonPackageRoot'], 'package', 'files')
+			Logger.info("Copying additional JARs from add-on package: %s" % src)
 
-			files = os.listdir(dst)
-			for f in files:
-				Logger.info("\tCopied %s" % f)
+			if appType == 'accumulo' or appType == 'unknown':
+				accumuloSrc = os.path.join(src, 'accumulo')
+				for f in os.listdir(accumuloSrc):
+					shutil.copy2(os.path.join(accumuloSrc, f), dst)
+			if appType == 'hbase' or appType == 'unknown':
+				hbaseSrc = os.path.join(src, 'hbase')
+				for f in os.listdir(hbaseSrc):
+					shutil.copy2(os.path.join(hbaseSrc, f), dst)
+
+			newFiles = os.listdir(dst)
+			for f in newFiles:
+				if f not in originalFiles:
+					Logger.info("\tCopied %s" % f)
+			originalFiles = newFiles
 
 		# Copy additional JARs from a location in HDFS
 		if copyHdfsJars:
 			hdfsSrc = format(componentConfig[Gaffer.HDFS_JARS_PROPERTY])
-			hadoopConfDir = config['configurations']['accumulo-env']['hadoop_conf_dir']
 			Logger.info("Copying additional JARs from HDFS: %s" % hdfsSrc)
 
 			ExecuteHadoop(
@@ -73,7 +97,7 @@ class Gaffer (Script):
 
 			newFiles = os.listdir(dst)
 			for f in newFiles:
-				if f not in files:
+				if f not in originalFiles:
 					Logger.info("\tCopied %s" % f)
 
 if __name__ == "__main__":

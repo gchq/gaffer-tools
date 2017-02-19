@@ -21,16 +21,12 @@ cd $DIR
 
 source ../target/scripts/common.sh
 
-if [ ! -d "$ACCUMULO_CLIENT_DESTINATION" ]; then
-	mkdir -p $ACCUMULO_CLIENT_DESTINATION
+$SLIDER version
 
-	$SLIDER client \
-		--install \
-		--dest $ACCUMULO_CLIENT_DESTINATION \
-		--package $ACCUMULO_PKG \
-		--name $CLUSTER_NAME \
-		--debug
-fi
-
-$ACCUMULO_CLIENT_DESTINATION/*/bin/accumulo shell -u root
+$SLIDER create $CLUSTER_NAME \
+	--appdef $HBASE_PKG \
+	--addon Gaffer $GAFFER_PKG \
+	--template $HBASE_APPCONFIG \
+	--resources $HBASE_RESOURCES \
+	--debug
 

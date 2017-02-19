@@ -18,11 +18,19 @@
 
 CLUSTER_NAME=gaffer-test
 
-SLIDER="${slider.output.directory}/slider-*/bin/slider"
-ACCUMULO_PKG="${slider.accumulo.output.directory}/slider-accumulo-app-package-*.zip"
+export SLIDER_HOME="${slider.output.directory}/slider-*"
+SLIDER="$SLIDER_HOME/bin/slider"
+export SLIDER_CONF_DIR="${project.build.directory}/scripts/conf/slider/"
+
 GAFFER_PKG="${project.build.directory}/${addon.pkg.file}.zip"
 
-export SLIDER_CONF_DIR="${project.build.directory}/scripts/conf/slider/"
-APPCONFIG="${project.build.directory}/scripts/conf/accumulo/appConfig-default.json"
-RESOURCES="${project.build.directory}/scripts/conf/accumulo/resources.json"
-CLIENT_DESTINATION="${project.build.directory}/accumulo-shell"
+ACCUMULO_PKG="${slider.accumulo.output.directory}/slider-accumulo-app-package-*.zip"
+ACCUMULO_APPCONFIG="${project.build.directory}/scripts/conf/accumulo/appConfig-default.json"
+ACCUMULO_RESOURCES="${project.build.directory}/scripts/conf/accumulo/resources.json"
+ACCUMULO_CLIENT_DESTINATION="${project.build.directory}/accumulo-shell"
+
+HBASE_PKG="${slider.hbase.output.directory}/slider-hbase-app-package-*.zip"
+HBASE_APPCONFIG="${project.build.directory}/scripts/conf/hbase/appConfig-default.json"
+HBASE_RESOURCES="${project.build.directory}/scripts/conf/hbase/resources.json"
+HBASE_CLIENT_DESTINATION="${project.build.directory}/hbase-shell"
+

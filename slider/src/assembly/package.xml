@@ -45,8 +45,14 @@
 
 	<fileSets>
 		<fileSet>
-			<directory>${gaffer.output.directory}</directory>
-			<outputDirectory>package/files</outputDirectory>
+			<directory>${gaffer.accumulo.output.directory}</directory>
+			<outputDirectory>package/files/accumulo</outputDirectory>
+			<fileMode>0644</fileMode>
+		</fileSet>
+
+		<fileSet>
+			<directory>${gaffer.hbase.output.directory}</directory>
+			<outputDirectory>package/files/hbase</outputDirectory>
 			<fileMode>0644</fileMode>
 		</fileSet>
 
