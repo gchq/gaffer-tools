@@ -19,7 +19,7 @@
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 cd $DIR
 
-source ./common.sh
+source ../target/scripts/common.sh
 
 if [ ! -d "$CLIENT_DESTINATION" ]; then
 	mkdir -p $CLIENT_DESTINATION
