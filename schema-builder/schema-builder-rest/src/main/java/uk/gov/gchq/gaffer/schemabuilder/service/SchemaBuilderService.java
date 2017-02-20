@@ -119,13 +119,12 @@ public class SchemaBuilderService {
         if (schemas == null || schemas.length == 0) {
             response = new ValidateResponse(false, "Schema couldn't be validated - at least 1 schema is required");
         } else {
-            final Schema fullSchema = schemas[0];
-            if (schemas.length > 1) {
-                for (int i = 1; i < schemas.length; i++) {
-                    fullSchema.merge(schemas[i]);
-                }
+            final Schema.Builder schemaBuilder = new Schema.Builder();
+            for (Schema schema : schemas) {
+                schemaBuilder.merge(schema);
             }
-            if (fullSchema.validate()) {
+
+            if (schemaBuilder.build().validate()) {
                 response = new ValidateResponse(true, "The schema is valid");
             } else {
                 response = new ValidateResponse(false, "The schema is invalid");
