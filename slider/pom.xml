@@ -53,6 +53,122 @@
         </dependency>
     </dependencies>
 
+    <profiles>
+        <profile>
+            <id>accumulo</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <artifactId>maven-dependency-plugin</artifactId>
+                        <version>${dependency.plugin.version}</version>
+                        <executions>
+                            <execution>
+                                <id>get-gaffer-accumulo-iterators</id>
+                                <phase>generate-resources</phase>
+                                <goals>
+                                    <goal>copy</goal>
+                                </goals>
+                                <configuration>
+                                    <artifactItems>
+                                        <artifactItem>
+                                            <groupId>uk.gov.gchq.gaffer</groupId>
+                                            <artifactId>accumulo-store</artifactId>
+                                            <classifier>iterators</classifier>
+                                            <version>${gaffer.version}</version>
+                                        </artifactItem>
+                                    </artifactItems>
+                                    <outputDirectory>${gaffer.accumulo.output.directory}</outputDirectory>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>exec-maven-plugin</artifactId>
+                        <version>1.5.0</version>
+                        <executions>
+                            <execution>
+                                <id>build-accumulo-pkg</id>
+                                <phase>generate-resources</phase>
+                                <goals>
+                                    <goal>exec</goal>
+                                </goals>
+                                <configuration>
+                                    <executable>scripts/build_accumulo_package.sh</executable>
+                                    <arguments>
+                                        <argument>${slider.accumulo.branch}</argument>
+                                        <argument>${accumulo.version}</argument>
+                                        <argument>${slider.accumulo.output.directory}</argument>
+                                        <argument>--build-native</argument>
+                                    </arguments>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+        <profile>
+            <id>hbase</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <artifactId>maven-dependency-plugin</artifactId>
+                        <version>${dependency.plugin.version}</version>
+                        <executions>
+                            <execution>
+                                <id>get-gaffer-hbase-iterators</id>
+                                <phase>generate-resources</phase>
+                                <goals>
+                                    <goal>copy</goal>
+                                </goals>
+                                <configuration>
+                                    <artifactItems>
+                                        <artifactItem>
+                                            <groupId>uk.gov.gchq.gaffer</groupId>
+                                            <artifactId>hbase-store</artifactId>
+                                            <classifier>iterators</classifier>
+                                            <version>${gaffer.version}</version>
+                                        </artifactItem>
+                                    </artifactItems>
+                                    <outputDirectory>${gaffer.hbase.output.directory}</outputDirectory>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>exec-maven-plugin</artifactId>
+                        <version>1.5.0</version>
+                        <executions>
+                            <execution>
+                                <id>build-hbase-pkg</id>
+                                <phase>generate-resources</phase>
+                                <goals>
+                                    <goal>exec</goal>
+                                </goals>
+                                <configuration>
+                                    <executable>scripts/build_hbase_package.sh</executable>
+                                    <arguments>
+                                        <argument>${slider.hbase.branch}</argument>
+                                        <argument>${hbase.version}</argument>
+                                        <argument>${slider.hbase.output.directory}</argument>
+                                    </arguments>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+
     <build>
         <resources>
             <resource>
@@ -69,51 +185,7 @@
             <plugin>
                 <artifactId>maven-dependency-plugin</artifactId>
                 <version>${dependency.plugin.version}</version>
-                <configuration>
-                    <overWriteIfNewer>true</overWriteIfNewer>
-                    <overWriteReleases>true</overWriteReleases>
-                    <overWriteSnapshots>true</overWriteSnapshots>
-                </configuration>
-
                 <executions>
-                    <execution>
-                        <id>get-gaffer-accumulo-iterators</id>
-                        <phase>generate-resources</phase>
-                        <goals>
-                            <goal>copy</goal>
-                        </goals>
-                        <configuration>
-                            <artifactItems>
-                                <artifactItem>
-                                    <groupId>uk.gov.gchq.gaffer</groupId>
-                                    <artifactId>accumulo-store</artifactId>
-                                    <classifier>iterators</classifier>
-                                    <version>${gaffer.version}</version>
-                                </artifactItem>
-                            </artifactItems>
-                            <outputDirectory>${gaffer.accumulo.output.directory}</outputDirectory>
-                        </configuration>
-                    </execution>
-
-                    <execution>
-                        <id>get-gaffer-hbase-iterators</id>
-                        <phase>generate-resources</phase>
-                        <goals>
-                            <goal>copy</goal>
-                        </goals>
-                        <configuration>
-                            <artifactItems>
-                                <artifactItem>
-                                    <groupId>uk.gov.gchq.gaffer</groupId>
-                                    <artifactId>hbase-store</artifactId>
-                                    <classifier>iterators</classifier>
-                                    <version>${gaffer.version}</version>
-                                </artifactItem>
-                            </artifactItems>
-                            <outputDirectory>${gaffer.hbase.output.directory}</outputDirectory>
-                        </configuration>
-                    </execution>
-
                     <execution>
                         <id>get-slider-distribution</id>
                         <phase>generate-resources</phase>
@@ -131,46 +203,6 @@
                                 </artifactItem>
                             </artifactItems>
                             <outputDirectory>${slider.output.directory}</outputDirectory>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>exec-maven-plugin</artifactId>
-                <version>1.5.0</version>
-                <executions>
-                    <execution>
-                        <id>build-accumulo-pkg</id>
-                        <phase>generate-resources</phase>
-                        <goals>
-                            <goal>exec</goal>
-                        </goals>
-                        <configuration>
-                            <executable>scripts/build_accumulo_package.sh</executable>
-                            <arguments>
-                                <argument>${slider.accumulo.branch}</argument>
-                                <argument>${accumulo.version}</argument>
-                                <argument>${slider.accumulo.output.directory}</argument>
-                                <argument>--build-native</argument>
-                            </arguments>
-                        </configuration>
-                    </execution>
-
-                    <execution>
-                        <id>build-hbase-pkg</id>
-                        <phase>generate-resources</phase>
-                        <goals>
-                            <goal>exec</goal>
-                        </goals>
-                        <configuration>
-                            <executable>scripts/build_hbase_package.sh</executable>
-                            <arguments>
-                                <argument>${slider.hbase.branch}</argument>
-                                <argument>${hbase.version}</argument>
-                                <argument>${slider.hbase.output.directory}</argument>
-                            </arguments>
                         </configuration>
                     </execution>
                 </executions>
