@@ -1,0 +1,100 @@
+<!--
+  ~ Copyright 2016 Crown Copyright
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+  
+  <div style="padding: 15px;" class="flex-container" fxLayout="row" fxLayoutAlign="center start">
+    <div fxFlex="10%" fxShow="true" fxShow.sm="false" fxShow.xs="false"></div>
+    <div fxFlex>
+        <div class="flex-container" fxLayout="row">
+            <div fxFlex></div>
+            <button md-raised-button color="accent" (click)="addNewType();" mdTooltip="add new type" aria-label="add new type" class="button-spacing">
+                Add type
+            </button>
+            <button md-raised-button color="warn" (click)="resetTypes();" mdTooltip="reset to default types" aria-label="reset to default types" class="button-spacing">
+                Reset
+            </button>
+        </div>
+        <div class="flex-container" fxLayout="row" fxLayoutWrap="wrap">
+            <div fxFlex="100%" fxFlex.gt-sm="50%" style="padding: 10px;" *ngFor="let type of types; let i = index">
+                <md-card>
+                    <div class="content-card-header" fxLayout="row">
+                        <md-card-title fxFlex style="word-break: break-all;">{{type.type}}</md-card-title>
+                        <button md-icon-button color="accent" (click)="type.editing = true;" mdTooltip="edit type" aria-label="edit type" *ngIf="!type.editing" class="button-spacing">
+                            <md-icon>edit</md-icon>
+                        </button>
+                        <button md-icon-button color="warn" (click)="removeType(i)" mdTooltip="delete type" aria-label="delete type" class="button-spacing">
+                            <md-icon>delete</md-icon>
+                        </button>
+                    </div>
+                    <md-card-content>
+                        <div *ngIf="!type.editing">
+                            <md-list dense>
+                                <md-list-item>
+                                    <h3 md-line><b>Class</b></h3>
+                                    <p md-line>{{type.class}}</p>
+                                </md-list-item>
+                                <md-list-item>
+                                    <h3 md-line><b>Serialiser</b></h3>
+                                    <p md-line>{{type.serialiserClass || 'null'}}</p>
+                                </md-list-item>
+                                <md-list-item>
+                                    <h3 md-line><b>Aggregator</b></h3>
+                                    <p md-line *ngIf="type.aggregateFunction && type.aggregateFunction.class">{{type.aggregateFunction.class}}</p>
+                                    <p md-line *ngIf="!type.aggregateFunction || !type.aggregateFunction.class">null</p>
+                                </md-list-item>
+                                <md-list-item class="autoheight-list">
+                                    <h3 md-line><b>Validators</b></h3>
+                                    <p md-line *ngFor="let validator of type.validateFunctions">{{validator.function.class}}</p>
+                                    <p md-line *ngIf="!type.validateFunctions || type.validateFunctions.length === 0">null</p>
+                                </md-list-item>
+                            </md-list>
+                        </div>
+                        <app-type-form [type]="types[i]" (typeChange)="typeChanged($event)" *ngIf="type.editing"></app-type-form>
+                    </md-card-content>
+                </md-card>
+            </div>
+            <div  fxFlex="100%" fxFlex.gt-sm="50%" style="padding: 10px;" *ngFor="let type of nodeTypes; let i = index">
+                <md-card>
+                    <div class="content-card-header" fxLayout="row">
+                        <md-card-title fxFlex style="word-break: break-all;">{{type.type}}</md-card-title>
+                        <button md-icon-button color="accent" (click)="type.editing = true;" mdTooltip="edit type" aria-label="edit type" *ngIf="!type.editing" class="button-spacing">
+                            <md-icon>edit</md-icon>
+                        </button>
+                        <button md-icon-button color="warn" (click)="removeType(i)" mdTooltip="delete type" aria-label="delete type" class="button-spacing">
+                            <md-icon>delete</md-icon>
+                        </button>
+                    </div>
+                    <md-card-content>
+                        <div *ngIf="!type.editing">
+                            <md-list dense>
+                                <md-list-item>
+                                    <h3 md-line><b>Class</b></h3>
+                                    <p md-line>{{type.class}}</p>
+                                </md-list-item>
+                                <md-list-item class="autoheight-list">
+                                    <h3 md-line><b>Validators</b></h3>
+                                    <p md-line *ngFor="let validator of type.validateFunctions">{{validator.function.class}}</p>
+                                    <p md-line *ngIf="!type.validateFunctions || type.validateFunctions.length === 0">null</p>
+                                </md-list-item>
+                            </md-list>
+                        </div>
+                        <app-type-form [type]="nodeTypes[i]" (typeChange)="nodeTypeChanged($event)" *ngIf="type.editing"></app-type-form>
+                    </md-card-content>
+                </md-card>
+            </div>
+        </div>
+    </div>
+    <div fxFlex="10%" fxShow="true" fxShow.sm="false" fxShow.xs="false"></div>
+</div>

@@ -1,0 +1,81 @@
+/*
+ * Copyright 2016 Crown Copyright
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+@import '~@angular/material/core/theming/all-theme';
+
+@include md-core();
+
+$primary: md-palette($md-cyan);
+$accent:  md-palette($md-lime, A200, A100, A400);
+$warn:    md-palette($md-red);
+
+$grey:  md-palette($md-grey);
+
+$theme: md-light-theme($primary, $accent);
+
+@include angular-material-theme($theme);
+
+.m2app-dark {
+  $dark-primary: md-palette($md-pink, 700, 500, 900);
+  $dark-accent:  md-palette($md-blue-grey, A200, A100, A400);
+  $dark-warn:    md-palette($md-deep-orange);
+
+  $dark-theme: md-dark-theme($dark-primary, $dark-accent, $dark-warn);
+
+  @include angular-material-theme($dark-theme);
+
+  .mdTabs.m2app-dark  > .md-tab-header {
+    background-color: md-color($dark-primary, 900) !important;
+    color: md-color($dark-primary, default-contrast) !important;
+  }
+
+  .mdTabs.m2app-dark > * > md-ink-bar{
+    background-color: md-color($dark-accent, A400) !important;
+  }
+}
+
+.mdTabs > * > .tabs {
+  background-color: md-color($primary, 700) !important;
+  color: md-color($primary, default-contrast) !important;
+}
+
+.mdTabs > * > .tabs li a{
+  color: md-color($primary, default-contrast) !important;
+}
+
+md-ink-bar, .indicator {
+  background-color: md-color($accent, A400) !important;
+  height: 4px !important;
+}
+
+.alt-background {
+  background-color: md-color($grey, 200);
+  overflow: visible;
+}
+
+.card-header {
+  background-color: md-color($primary, 800);
+}
+
+.content-card-header {
+  background-color: md-color($primary, 800);
+}
+
+.string { color: green; }
+.number { color: darkorange; }
+.boolean { color: blue; }
+.null { color: magenta; }
+.key { color: red; }
