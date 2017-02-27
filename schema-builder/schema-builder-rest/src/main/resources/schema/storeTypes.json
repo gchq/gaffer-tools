@@ -1,0 +1,14 @@
+{
+  "types": {
+    "int": {
+      "aggregateFunction": {
+        "class": "uk.gov.gchq.gaffer.function.aggregate.Sum"
+      }
+    },
+    "string": {
+      "aggregateFunction": {
+        "class": "uk.gov.gchq.gaffer.function.aggregate.StringConcat"
+      }
+    }
+  }
+}
