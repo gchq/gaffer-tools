@@ -64,16 +64,14 @@ public class FederatedOperationService implements IFederatedOperationService {
         final ChunkedOutput<String> output = new ChunkedOutput<>(String.class, "\r\n");
 
         // write chunks to the chunked output object
-        new Thread() {
-            public void run() {
-                try {
-                    final Object result = execute(opChain, skipErrors, runIndividually, firstResult);
-                    chunkResult(result, output);
-                } finally {
-                    IOUtils.closeQuietly(output);
-                }
+        new Thread(() -> {
+            try {
+                final Object result = execute(opChain, skipErrors, runIndividually, firstResult);
+                chunkResult(result, output);
+            } finally {
+                IOUtils.closeQuietly(output);
             }
-        }.start();
+        }).start();
 
         return output;
     }

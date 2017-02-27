@@ -21,7 +21,7 @@ import uk.gov.gchq.gaffer.federated.rest.dto.FederatedSystemStatus;
 import java.util.Set;
 
 public class TypeReferenceFederatedImpl {
-    public TypeReferenceFederatedImpl() {
+    private TypeReferenceFederatedImpl() {
     }
 
     public static class SetString extends TypeReference<Set<String>> {

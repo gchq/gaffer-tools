@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2017 Crown Copyright
+ * Copyright 2017 Crown Copyright
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,31 +13,35 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package uk.gov.gchq.gaffer.federated.rest.dto;
 
-
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModelProperty;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 
-public class SystemStatus {
+public class GafferUrl {
+
     @ApiModelProperty
-    private String description;
+    private final String name;
 
-    public SystemStatus() {
+    @ApiModelProperty
+    private final String url;
+
+    @JsonCreator
+    public GafferUrl(@JsonProperty("name") final String name,
+            @JsonProperty("url") final String url) {
+        this.name = name;
+        this.url = url;
     }
 
-    public SystemStatus(final String description) {
-        this.description = description;
+    public String getName() {
+        return name;
     }
 
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(final String description) {
-        this.description = description;
+    public String getUrl() {
+        return url;
     }
 
     @Override
@@ -50,17 +54,27 @@ public class SystemStatus {
             return false;
         }
 
-        final SystemStatus that = (SystemStatus) obj;
+        final GafferUrl gafferUrl = (GafferUrl) obj;
 
         return new EqualsBuilder()
-                .append(description, that.description)
+                .append(name, gafferUrl.name)
+                .append(url, gafferUrl.url)
                 .isEquals();
     }
 
     @Override
     public int hashCode() {
         return new HashCodeBuilder(17, 37)
-                .append(description)
+                .append(name)
+                .append(url)
                 .toHashCode();
+    }
+
+    @Override
+    public String toString() {
+        return "GafferUrl{" +
+                "name=" + name +
+                ", url=" + url +
+                '}';
     }
 }

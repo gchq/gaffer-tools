@@ -27,6 +27,7 @@ import org.slf4j.LoggerFactory;
 import uk.gov.gchq.gaffer.federated.rest.FederatedConfig;
 import uk.gov.gchq.gaffer.federated.rest.FederatedExecutor;
 import uk.gov.gchq.gaffer.federated.rest.dto.FederatedSystemStatus;
+import uk.gov.gchq.gaffer.federated.rest.dto.GafferUrl;
 import uk.gov.gchq.gaffer.function.FilterFunction;
 import uk.gov.gchq.gaffer.federated.rest.dto.Schema;
 import uk.gov.gchq.gaffer.store.Context;
@@ -37,7 +38,16 @@ import java.util.Set;
 
 public class FederatedGraphConfigurationService implements IFederatedGraphConfigurationService {
     private static final Logger LOGGER = LoggerFactory.getLogger(FederatedOperationService.class);
-    protected final FederatedExecutor executor = createExecutor();
+    protected final FederatedExecutor executor;
+
+
+    public FederatedGraphConfigurationService(final FederatedExecutor executor) {
+        this.executor = executor;
+    }
+
+    public FederatedGraphConfigurationService() {
+        this.executor = createExecutor();
+    }
 
     protected FederatedExecutor createExecutor() {
         return new FederatedExecutor();
@@ -48,19 +58,21 @@ public class FederatedGraphConfigurationService implements IFederatedGraphConfig
     }
 
     @Override
-    public void addUrl(final String name, final String url) {
+    public GafferUrl addUrl(final GafferUrl url) {
         final FederatedConfig config = executor.getConfig(createContext());
-        if (config.getUrlMap().containsKey(name)) {
-            throw new IllegalArgumentException("URL name is already in use: " + name);
+        if (config.getUrlMap().containsKey(url.getName())) {
+            throw new IllegalArgumentException("URL name is already in use: " + url.getName());
         }
 
-        if (config.getUrlMap().containsValue(url)) {
+        if (config.getUrlMap().containsValue(url.getUrl())) {
             throw new IllegalArgumentException("URL has already been registered: " + url);
         }
 
-        LOGGER.info("Adding URL: " + name + ",  " + url);
-        config.getUrlMap().put(name, url);
+        LOGGER.info("Adding URL: " + url.getName() + ",  " + url.getUrl());
+        config.getUrlMap().put(url.getName(), url.getUrl());
         refresh();
+
+        return url;
     }
 
     @Override

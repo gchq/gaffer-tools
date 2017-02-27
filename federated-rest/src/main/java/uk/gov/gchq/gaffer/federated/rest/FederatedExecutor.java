@@ -120,17 +120,15 @@ public class FederatedExecutor {
         for (final Map.Entry<String, String> entry : config.getUrlMap().entrySet()) {
             final String name = entry.getKey();
             final String url = entry.getValue();
-            new Thread() {
-                public void run() {
-                    try {
-                        results.add(executeOperationChainViaUrl(operationChain.clone(), context, url, skipErrors));
-                    } catch (final Exception e) {
-                        final String msg = "Failed to execute operations via: " + name + ". " + e.getMessage();
-                        results.add(new OperationException(msg, e));
-                        LOGGER.error(msg, e);
-                    }
+            new Thread(() -> {
+                try {
+                    results.add(executeOperationChainViaUrl(operationChain.clone(), context, url, skipErrors));
+                } catch (final Exception e) {
+                    final String msg = "Failed to execute operations via: " + name + ". " + e.getMessage();
+                    results.add(new OperationException(msg, e));
+                    LOGGER.error(msg, e);
                 }
-            }.start();
+            }).start();
         }
 
         return new BlockingResultIterable(results, config.getNumUrls(), config.getConnectTimeout(), skipErrors, firstResult);
