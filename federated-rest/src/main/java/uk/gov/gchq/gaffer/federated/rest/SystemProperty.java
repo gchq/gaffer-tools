@@ -21,6 +21,8 @@ package uk.gov.gchq.gaffer.federated.rest;
  */
 public abstract class SystemProperty {
     // KEYS
+    public static final String SCHEMA_PATHS = "gaffer.schemas";
+    public static final String STORE_PROPERTIES_PATH = "gaffer.storeProperties";
     public static final String BASE_URL = "gaffer.federated-rest.basePath";
     public static final String VERSION = "gaffer.federated-rest.version";
     public static final String GAFFER_URLS = "gaffer.federated-rest.urls";
@@ -34,5 +36,8 @@ public abstract class SystemProperty {
     public static final String CORE_VERSION = "1.0.0";
     public static final String CONNECT_TIMEOUT_DEFAULT = "60000";
     public static final String READ_TIMEOUT_DEFAULT = "60000";
+
+    // Auth roles
+    public static final String FEDERATED_ADMIN_AUTH = "gaffer.federated-rest.admin-auth";
 
 }

@@ -27,11 +27,9 @@ import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
 import java.util.List;
 import java.util.Set;
 
@@ -63,15 +61,6 @@ public interface IFederatedGraphConfigurationService {
     )
     GafferUrl addUrl(final GafferUrl url);
 
-    @POST
-    @Path(REFRESH_PATH)
-    @ApiOperation(
-            value = "Updates the cache containing the " + SCHEMA_PATH + "s fetched from the URLs",
-            response = FederatedSystemStatus.class,
-            responseContainer = "List"
-    )
-    List<FederatedSystemStatus> refresh();
-
     @DELETE
     @Path(URLS_PATH + "/{name}")
     @ApiOperation(
@@ -84,10 +73,19 @@ public interface IFederatedGraphConfigurationService {
     @Path(URLS_PATH)
     @ApiOperation(
             value = "Gets the set of urls",
+            response = GafferUrl.class,
+            responseContainer = "Set"
+    )
+    Set<GafferUrl> getUrls();
+
+    @POST
+    @Path(REFRESH_PATH)
+    @ApiOperation(
+            value = "Updates the cache containing the " + SCHEMA_PATH + "s fetched from the URLs",
             response = FederatedSystemStatus.class,
             responseContainer = "List"
     )
-    List<FederatedSystemStatus> urlsStatus();
+    List<FederatedSystemStatus> refresh();
 
     @GET
     @Path(SCHEMA_PATH)
@@ -113,7 +111,7 @@ public interface IFederatedGraphConfigurationService {
             response = Class.class,
             responseContainer = "Set"
     )
-    Set<String> getFilterFunctions(@ApiParam("a function input java class") @PathParam("inputClass") String className);
+    Set<String> getFilterFunctions(@ApiParam("a function input java class") @PathParam("inputClass") final String className);
 
     @GET
     @Path(TRANSFORM_FUNCTIONS_PATH)
@@ -166,5 +164,5 @@ public interface IFederatedGraphConfigurationService {
             response = String.class,
             responseContainer = "Set"
     )
-    Set<String> getSerialisedFields(@ApiParam("a java class name") @PathParam("className") String className);
+    Set<String> getSerialisedFields(@ApiParam("a java class name") @PathParam("className") final String className);
 }

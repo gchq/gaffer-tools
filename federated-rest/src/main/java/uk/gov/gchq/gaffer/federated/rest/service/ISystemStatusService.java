@@ -20,20 +20,37 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+import uk.gov.gchq.gaffer.federated.rest.dto.FederatedSystemStatus;
 import uk.gov.gchq.gaffer.federated.rest.dto.SystemStatus;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
-@Path("/status")
-@Produces(MediaType.APPLICATION_JSON)
+import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
+
+@Path("/")
+@Produces(APPLICATION_JSON)
 @Api(value = "/status", description = "Methods to check the status of the system.")
 public interface ISystemStatusService {
+
     @GET
-    @ApiOperation(value = "Returns the status of the federated server",
+    @Path("/status")
+    @ApiOperation(
+            value = "Returns the status of the federated server",
             response = SystemStatus.class)
-    @ApiResponses(value = {@ApiResponse(code = 200, message = "OK"),
-            @ApiResponse(code = 500, message = "Something wrong in Server")})
-    SystemStatus status();
+    @ApiResponses(
+            value = {@ApiResponse(code = 200, message = "OK"),
+                    @ApiResponse(code = 500, message = "Something wrong in Server")})
+    Response status();
+
+    @GET
+    @Path("/statuses")
+    @ApiOperation(
+            value = "Returns the statuses of the child servers",
+            response = FederatedSystemStatus.class,
+            responseContainer = "Set"
+    )
+    @ApiResponse(code = 207, message = "See individual statuses for more information")
+    Response statuses();
 }

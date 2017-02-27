@@ -17,10 +17,14 @@
 package uk.gov.gchq.gaffer.federated.rest;
 
 import com.fasterxml.jackson.core.type.TypeReference;
+import uk.gov.gchq.gaffer.data.element.Element;
 import uk.gov.gchq.gaffer.federated.rest.dto.FederatedSystemStatus;
+import uk.gov.gchq.gaffer.federated.rest.dto.GafferUrl;
+import javax.ws.rs.core.GenericType;
+import java.util.List;
 import java.util.Set;
 
-public class TypeReferenceFederatedImpl {
+public final class TypeReferenceFederatedImpl {
     private TypeReferenceFederatedImpl() {
     }
 
@@ -31,5 +35,14 @@ public class TypeReferenceFederatedImpl {
     }
 
     public static class SystemStatus extends TypeReference<FederatedSystemStatus> {
+    }
+
+    public static class SetGafferUrls extends GenericType<Set<GafferUrl>> {
+    }
+
+    public static class ListElements extends GenericType<List<Element>> {
+    }
+
+    public static class ListFederatedSystemStatus extends GenericType<List<FederatedSystemStatus>> {
     }
 }

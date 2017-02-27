@@ -57,20 +57,20 @@ public interface IFederatedOperationService {
             response = Object.class,
             responseContainer = "List"
     )
-    Iterable<Object> execute(OperationChain opChain,
-            @ApiParam(value = SKIP_ERRORS_MSG) @QueryParam(SKIP_ERRORS_PARAM) boolean skipErrors,
-            @ApiParam(value = RUN_INDIVIDUALLY_MSG) @QueryParam(RUN_INDIVIDUALLY_PARAM) boolean runIndividually,
-            @ApiParam(value = FIRST_RESULT_MSG) @QueryParam(FIRST_RESULT_PARAM) boolean firstResult);
+    Iterable<Object> execute(final OperationChain opChain,
+            @ApiParam(SKIP_ERRORS_MSG) @QueryParam(SKIP_ERRORS_PARAM) boolean skipErrors,
+            @ApiParam(RUN_INDIVIDUALLY_MSG) @QueryParam(RUN_INDIVIDUALLY_PARAM) boolean runIndividually,
+            @ApiParam(FIRST_RESULT_MSG) @QueryParam(FIRST_RESULT_PARAM) boolean firstResult);
 
     @POST
     @Path("/chunked")
     @ApiOperation(value = "Performs the given operation chain on the graph, returned chunked output. NOTE - does not work in Swagger.",
             response = Object.class,
             responseContainer = "List")
-    ChunkedOutput<String> executeChunked(OperationChain opChain,
-            @ApiParam(value = SKIP_ERRORS_MSG) @QueryParam(SKIP_ERRORS_PARAM) boolean skipErrors,
-            @ApiParam(value = RUN_INDIVIDUALLY_MSG) @QueryParam(RUN_INDIVIDUALLY_PARAM) boolean runIndividually,
-            @ApiParam(value = FIRST_RESULT_MSG) @QueryParam(FIRST_RESULT_PARAM) boolean firstResult);
+    ChunkedOutput<String> executeChunked(final OperationChain opChain,
+            @ApiParam(SKIP_ERRORS_MSG) @QueryParam(SKIP_ERRORS_PARAM) boolean skipErrors,
+            @ApiParam(RUN_INDIVIDUALLY_MSG) @QueryParam(RUN_INDIVIDUALLY_PARAM) boolean runIndividually,
+            @ApiParam(FIRST_RESULT_MSG) @QueryParam(FIRST_RESULT_PARAM) boolean firstResult);
 
     @POST
     @Path("/generate/objects")
@@ -79,9 +79,9 @@ public interface IFederatedOperationService {
             response = Object.class,
             responseContainer = "List"
     )
-    Iterable<Object> generateObjects(Operation operation,
-            @ApiParam(value = SKIP_ERRORS_MSG) @QueryParam(SKIP_ERRORS_PARAM) boolean skipErrors,
-            @ApiParam(value = FIRST_RESULT_MSG) @QueryParam(FIRST_RESULT_PARAM) boolean firstResult);
+    Iterable<Object> generateObjects(final Operation operation,
+            @ApiParam(SKIP_ERRORS_MSG) @QueryParam(SKIP_ERRORS_PARAM) boolean skipErrors,
+            @ApiParam(FIRST_RESULT_MSG) @QueryParam(FIRST_RESULT_PARAM) boolean firstResult);
 
     @POST
     @Path("/generate/elements")
@@ -90,9 +90,9 @@ public interface IFederatedOperationService {
             response = Element.class,
             responseContainer = "List"
     )
-    Iterable<Object> generateElements(Operation operation,
-            @ApiParam(value = SKIP_ERRORS_MSG) @QueryParam(SKIP_ERRORS_PARAM) boolean skipErrors,
-            @ApiParam(value = FIRST_RESULT_MSG) @QueryParam(FIRST_RESULT_PARAM) boolean firstResult);
+    Iterable<Object> generateElements(final Operation operation,
+            @ApiParam(SKIP_ERRORS_MSG) @QueryParam(SKIP_ERRORS_PARAM) boolean skipErrors,
+            @ApiParam(FIRST_RESULT_MSG) @QueryParam(FIRST_RESULT_PARAM) boolean firstResult);
 
 
     @POST
@@ -102,9 +102,9 @@ public interface IFederatedOperationService {
             response = EntitySeed.class,
             responseContainer = "List"
     )
-    Iterable<Object> getAdjacentEntitySeeds(Operation operation,
-            @ApiParam(value = SKIP_ERRORS_MSG) @QueryParam(SKIP_ERRORS_PARAM) boolean skipErrors,
-            @ApiParam(value = FIRST_RESULT_MSG) @QueryParam(FIRST_RESULT_PARAM) boolean firstResult);
+    Iterable<Object> getAdjacentEntitySeeds(final Operation operation,
+            @ApiParam(SKIP_ERRORS_MSG) @QueryParam(SKIP_ERRORS_PARAM) boolean skipErrors,
+            @ApiParam(FIRST_RESULT_MSG) @QueryParam(FIRST_RESULT_PARAM) boolean firstResult);
 
     @POST
     @Path("/get/elements/all")
@@ -113,9 +113,9 @@ public interface IFederatedOperationService {
             response = Element.class,
             responseContainer = "List"
     )
-    Iterable<Object> getAllElements(Operation operation,
-            @ApiParam(value = SKIP_ERRORS_MSG) @QueryParam(SKIP_ERRORS_PARAM) boolean skipErrors,
-            @ApiParam(value = FIRST_RESULT_MSG) @QueryParam(FIRST_RESULT_PARAM) boolean firstResult);
+    Iterable<Object> getAllElements(final Operation operation,
+            @ApiParam(SKIP_ERRORS_MSG) @QueryParam(SKIP_ERRORS_PARAM) boolean skipErrors,
+            @ApiParam(FIRST_RESULT_MSG) @QueryParam(FIRST_RESULT_PARAM) boolean firstResult);
 
     @POST
     @Path("/get/entities/all")
@@ -124,9 +124,9 @@ public interface IFederatedOperationService {
             response = Entity.class,
             responseContainer = "List"
     )
-    Iterable<Object> getAllEntities(Operation operation,
-            @ApiParam(value = SKIP_ERRORS_MSG) @QueryParam(SKIP_ERRORS_PARAM) boolean skipErrors,
-            @ApiParam(value = FIRST_RESULT_MSG) @QueryParam(FIRST_RESULT_PARAM) boolean firstResult);
+    Iterable<Object> getAllEntities(final Operation operation,
+            @ApiParam(SKIP_ERRORS_MSG) @QueryParam(SKIP_ERRORS_PARAM) boolean skipErrors,
+            @ApiParam(FIRST_RESULT_MSG) @QueryParam(FIRST_RESULT_PARAM) boolean firstResult);
 
     @POST
     @Path("/get/edges/all")
@@ -135,9 +135,9 @@ public interface IFederatedOperationService {
             response = Edge.class,
             responseContainer = "List"
     )
-    Iterable<Object> getAllEdges(Operation operation,
-            @ApiParam(value = SKIP_ERRORS_MSG) @QueryParam(SKIP_ERRORS_PARAM) boolean skipErrors,
-            @ApiParam(value = FIRST_RESULT_MSG) @QueryParam(FIRST_RESULT_PARAM) boolean firstResult);
+    Iterable<Object> getAllEdges(final Operation operation,
+            @ApiParam(SKIP_ERRORS_MSG) @QueryParam(SKIP_ERRORS_PARAM) boolean skipErrors,
+            @ApiParam(FIRST_RESULT_MSG) @QueryParam(FIRST_RESULT_PARAM) boolean firstResult);
 
     @POST
     @Path("/get/elements")
@@ -146,9 +146,9 @@ public interface IFederatedOperationService {
             response = Element.class,
             responseContainer = "List"
     )
-    Iterable<Object> getElements(Operation operation,
-            @ApiParam(value = SKIP_ERRORS_MSG) @QueryParam(SKIP_ERRORS_PARAM) boolean skipErrors,
-            @ApiParam(value = FIRST_RESULT_MSG) @QueryParam(FIRST_RESULT_PARAM) boolean firstResult);
+    Iterable<Object> getElements(final Operation operation,
+            @ApiParam(SKIP_ERRORS_MSG) @QueryParam(SKIP_ERRORS_PARAM) boolean skipErrors,
+            @ApiParam(FIRST_RESULT_MSG) @QueryParam(FIRST_RESULT_PARAM) boolean firstResult);
 
     @POST
     @Path("/get/entities")
@@ -157,9 +157,9 @@ public interface IFederatedOperationService {
             response = Entity.class,
             responseContainer = "List"
     )
-    Iterable<Object> getEntities(Operation operation,
-            @ApiParam(value = SKIP_ERRORS_MSG) @QueryParam(SKIP_ERRORS_PARAM) boolean skipErrors,
-            @ApiParam(value = FIRST_RESULT_MSG) @QueryParam(FIRST_RESULT_PARAM) boolean firstResult);
+    Iterable<Object> getEntities(final Operation operation,
+            @ApiParam(SKIP_ERRORS_MSG) @QueryParam(SKIP_ERRORS_PARAM) boolean skipErrors,
+            @ApiParam(FIRST_RESULT_MSG) @QueryParam(FIRST_RESULT_PARAM) boolean firstResult);
 
     @POST
     @Path("/get/edges")
@@ -168,14 +168,14 @@ public interface IFederatedOperationService {
             response = Edge.class,
             responseContainer = "List"
     )
-    Iterable<Object> getEdges(Operation operation,
-            @ApiParam(value = SKIP_ERRORS_MSG) @QueryParam(SKIP_ERRORS_PARAM) boolean skipErrors,
-            @ApiParam(value = FIRST_RESULT_MSG) @QueryParam(FIRST_RESULT_PARAM) boolean firstResult);
+    Iterable<Object> getEdges(final Operation operation,
+            @ApiParam(SKIP_ERRORS_MSG) @QueryParam(SKIP_ERRORS_PARAM) boolean skipErrors,
+            @ApiParam(FIRST_RESULT_MSG) @QueryParam(FIRST_RESULT_PARAM) boolean firstResult);
 
     @PUT
     @Path("/add/elements")
     @ApiOperation(
             value = "Add elements to the graph"
     )
-    void addElements(Operation operation);
+    void addElements(final Operation operation);
 }
