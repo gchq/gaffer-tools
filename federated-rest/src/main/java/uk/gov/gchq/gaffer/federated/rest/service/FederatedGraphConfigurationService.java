@@ -28,12 +28,15 @@ import uk.gov.gchq.gaffer.federated.rest.FederatedConfig;
 import uk.gov.gchq.gaffer.federated.rest.FederatedExecutor;
 import uk.gov.gchq.gaffer.federated.rest.dto.FederatedSystemStatus;
 import uk.gov.gchq.gaffer.federated.rest.dto.GafferUrl;
-import uk.gov.gchq.gaffer.function.FilterFunction;
 import uk.gov.gchq.gaffer.federated.rest.dto.Schema;
+import uk.gov.gchq.gaffer.function.FilterFunction;
 import uk.gov.gchq.gaffer.store.Context;
 import uk.gov.gchq.gaffer.store.StoreTrait;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 public class FederatedGraphConfigurationService implements IFederatedGraphConfigurationService {
@@ -95,8 +98,15 @@ public class FederatedGraphConfigurationService implements IFederatedGraphConfig
     }
 
     @Override
-    public List<FederatedSystemStatus> urlsStatus() {
-        return executor.fetchSystemStatuses(createContext());
+    public List<GafferUrl> getUrls() {
+        final Map<String, String> urlMap = executor.getConfig(createContext()).getUrlMap();
+        final List<GafferUrl> gafferUrls = new ArrayList<>(urlMap.size());
+
+        for (final Entry<String, String> entry : urlMap.entrySet()) {
+            gafferUrls.add(new GafferUrl(entry.getKey(), entry.getValue()));
+        }
+
+        return gafferUrls;
     }
 
     @Override

@@ -21,6 +21,8 @@ package uk.gov.gchq.gaffer.federated.rest;
  */
 public abstract class SystemProperty {
     // KEYS
+    public static final String SCHEMA_PATHS = "gaffer.schemas";
+    public static final String STORE_PROPERTIES_PATH = "gaffer.storeProperties";
     public static final String BASE_URL = "gaffer.federated-rest.basePath";
     public static final String VERSION = "gaffer.federated-rest.version";
     public static final String GAFFER_URLS = "gaffer.federated-rest.urls";

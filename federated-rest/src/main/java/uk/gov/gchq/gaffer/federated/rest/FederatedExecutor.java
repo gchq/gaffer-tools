@@ -22,14 +22,14 @@ import org.slf4j.LoggerFactory;
 import uk.gov.gchq.gaffer.federated.rest.dto.FederatedSystemStatus;
 import uk.gov.gchq.gaffer.federated.rest.dto.Operation;
 import uk.gov.gchq.gaffer.federated.rest.dto.OperationChain;
+import uk.gov.gchq.gaffer.federated.rest.dto.Schema;
+import uk.gov.gchq.gaffer.federated.rest.service.IFederatedGraphConfigurationService;
+import uk.gov.gchq.gaffer.federated.rest.service.IFederatedOperationService;
 import uk.gov.gchq.gaffer.jsonserialisation.JSONSerialiser;
 import uk.gov.gchq.gaffer.operation.OperationException;
 import uk.gov.gchq.gaffer.operation.impl.Validate;
 import uk.gov.gchq.gaffer.operation.impl.add.AddElements;
 import uk.gov.gchq.gaffer.operation.serialisation.TypeReferenceImpl;
-import uk.gov.gchq.gaffer.federated.rest.dto.Schema;
-import uk.gov.gchq.gaffer.federated.rest.service.IFederatedGraphConfigurationService;
-import uk.gov.gchq.gaffer.federated.rest.service.IFederatedOperationService;
 import uk.gov.gchq.gaffer.store.Context;
 import uk.gov.gchq.gaffer.store.StoreTrait;
 import uk.gov.gchq.gaffer.store.TypeReferenceStoreImpl;
@@ -191,10 +191,17 @@ public class FederatedExecutor {
             if (null == status) {
                 status = new FederatedSystemStatus();
                 status.setDescription("No response");
+                status.setStatus(404);
             }
 
             status.setUrl(url);
             status.setName(name);
+
+            if (status.getDescription().contains("The system is working normally.")) {
+                status.setStatus(200);
+            } else if (status.getStatus() != 0) {
+                status.setStatus(500);
+            }
 
             LOGGER.info(status.toString());
             results.add(status);

@@ -18,6 +18,8 @@ package uk.gov.gchq.gaffer.federated.rest.dto;
 
 
 import io.swagger.annotations.ApiModelProperty;
+import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.HashCodeBuilder;
 
 public class FederatedSystemStatus extends SystemStatus {
     @ApiModelProperty
@@ -25,6 +27,9 @@ public class FederatedSystemStatus extends SystemStatus {
 
     @ApiModelProperty
     private String url;
+
+    @ApiModelProperty
+    private int status;
 
     public String getName() {
         return name;
@@ -42,12 +47,51 @@ public class FederatedSystemStatus extends SystemStatus {
         this.url = url;
     }
 
+    public int getStatus() {
+        return status;
+    }
+
+    public void setStatus(final int status) {
+        this.status = status;
+    }
+
+    @Override
+    public boolean equals(final Object obj) {
+        if (this == obj) {
+            return true;
+        }
+
+        if (obj == null || getClass() != obj.getClass()) {
+            return false;
+        }
+
+        final FederatedSystemStatus that = (FederatedSystemStatus) obj;
+
+        return new EqualsBuilder()
+                .appendSuper(super.equals(obj))
+                .append(status, that.status)
+                .append(name, that.name)
+                .append(url, that.url)
+                .isEquals();
+    }
+
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder(17, 37)
+                .appendSuper(super.hashCode())
+                .append(name)
+                .append(url)
+                .append(status)
+                .toHashCode();
+    }
+
     @Override
     public String toString() {
         return "FederatedSystemStatus{" +
                 "name='" + name + '\'' +
                 ", url='" + url + '\'' +
                 ", description='" + getDescription() + '\'' +
+                ", status='" + getStatus() + '\'' +
                 '}';
     }
 }

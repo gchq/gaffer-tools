@@ -20,7 +20,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import uk.gov.gchq.gaffer.federated.rest.dto.FederatedSystemStatus;
 import java.util.Set;
 
-public class TypeReferenceFederatedImpl {
+public final class TypeReferenceFederatedImpl {
     private TypeReferenceFederatedImpl() {
     }
 
