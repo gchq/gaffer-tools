@@ -13,12 +13,13 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-  
-  <form [formGroup]="form" materialize style="padding-top: 10px;">
+
+<form [formGroup]="form" style="padding-top: 10px;">
     <div class="form-group">
         <div class="input-field">
-            <input class="form-control" formControlName="label" type="text" name="label" placeholder="Node name">
-            <label>Name</label>
+            <md-input-container class="full-width">
+                <input mdInput placeholder="Node name" formControlName="label" name="label">
+            </md-input-container>
         </div>
     </div>
 </form>
