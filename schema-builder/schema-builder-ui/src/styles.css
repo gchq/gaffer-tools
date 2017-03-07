@@ -16,8 +16,10 @@
 
 /* You can add global styles to this file, and also import other style files */
 
+html, 
 body {
-  margin: 0;
+    height: 100%;
+    margin: 0;
   font-family: Roboto,"Helvetica Neue",sans-serif;
 }
 
@@ -35,7 +37,6 @@ md-card-title {
     transition: opacity .8s ease-in-out;
     text-align: center;
     vertical-align: center;
-    padding: 100px;
     position: fixed;
     height: 100%;
     width: 100%;

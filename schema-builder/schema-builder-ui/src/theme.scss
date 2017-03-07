@@ -33,6 +33,10 @@ mat-ink-bar, .indicator {
   height: 4px !important;
 }
 
+body {
+  background-color: mat-color($grey, 100);
+}
+
 .alt-background {
   background-color: mat-color($grey, 100);
   overflow: visible;
