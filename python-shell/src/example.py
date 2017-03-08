@@ -47,6 +47,14 @@ def run_with_connector(gc):
     generate_domain_objects_chain(gc)
     get_element_group_counts(gc)
     get_sub_graph(gc)
+    export_to_gaffer_result_cache(gc)
+    get_job_details(gc)
+    get_all_job_details(gc)
+    add_named_operation(gc)
+    get_all_named_operations(gc)
+    named_operation(gc)
+    delete_named_operation(gc)
+
     op_chain_in_json(gc)
 
 
@@ -347,21 +355,121 @@ def get_element_group_counts(gc):
 
 
 def get_sub_graph(gc):
-    # Initialise, update and fetch an in memory set export
+    # Export and Get to/from an in memory set
     entity_seeds = gc.execute_operations(
         [
-            g.InitialiseSetExport(),
             g.GetAdjacentEntitySeeds(
                 seeds=[g.EntitySeed('1')],
             ),
-            g.UpdateExport(),
+            g.ExportToSet(),
             g.GetAdjacentEntitySeeds(),
-            g.UpdateExport(),
-            g.FetchExport()
+            g.ExportToSet(),
+            g.GetSetExport()
         ]
     )
-    print('Initialise, update and fetch export with adjacent entities')
+    print('Export and Get to/from an in memory set')
     print(entity_seeds)
+    print()
+
+
+def export_to_gaffer_result_cache(gc):
+    # Export to Gaffer Result Cache and Get from Gaffer Result Cache
+    job_details = gc.execute_operations(
+        [
+            g.GetAdjacentEntitySeeds(
+                seeds=[g.EntitySeed('1')],
+            ),
+            g.ExportToGafferResultCache(),
+            g.GetJobDetails()
+        ]
+    )
+    print('Export to Gaffer Result Cache. Job Details:')
+    print(job_details)
+    print()
+
+    job_id = job_details['jobId']
+    entity_seeds = gc.execute_operation(
+        g.GetGafferResultCacheExport(job_id=job_id),
+    )
+    print('Get Gaffer Result Cache Export.')
+    print(entity_seeds)
+    print()
+
+
+def get_job_details(gc):
+    # Get all job details
+    job_details_initial = gc.execute_operations(
+        [
+            g.GetAdjacentEntitySeeds(
+                seeds=[g.EntitySeed('1')],
+            ),
+            g.ExportToGafferResultCache(),
+            g.GetJobDetails()
+        ]
+    )
+
+    job_id = job_details_initial['jobId']
+
+    job_details = gc.execute_operation(
+        g.GetJobDetails(job_id=job_id),
+    )
+    print('Get job details')
+    print(job_details)
+    print()
+
+
+def get_all_job_details(gc):
+    # Get all job details
+    all_job_details = gc.execute_operation(
+        g.GetAllJobDetails(),
+    )
+    print('Get all job details (just prints the first 3 results)')
+    print(all_job_details[:3])
+    print()
+
+
+def delete_named_operation(gc):
+    gc.execute_operation(
+        g.DeleteNamedOperation('CountAllElementGroups')
+    )
+    print('Deleted named operation: CountAllElementGroups')
+    print()
+
+
+def add_named_operation(gc):
+    gc.execute_operation(
+        g.AddNamedOperation(
+            operation_chain={
+                "operations": [{
+                    "class": "uk.gov.gchq.gaffer.operation.impl.get.GetAllElements",
+                }, {
+                    "class": "uk.gov.gchq.gaffer.operation.impl.CountGroups"
+                }]
+            },
+            name='CountAllElementGroups',
+            description='Counts all element groups',
+            overwrite=True
+        )
+    )
+    print('Added named operation: CountAllElementGroups')
+    print()
+
+
+def get_all_named_operations(gc):
+    namedOperations = gc.execute_operation(
+        g.GetAllNamedOperations()
+    )
+    print('Named operations')
+    print(namedOperations)
+    print()
+
+
+def named_operation(gc):
+    result = gc.execute_operation(
+        g.NamedOperation('CountAllElementGroups')
+    )
+    print('Execute named operation')
+    print(result)
     print()
 
 
