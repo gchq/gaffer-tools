@@ -33,6 +33,10 @@ mat-ink-bar, .indicator {
   height: 4px !important;
 }
 
+.mat-tab-links {
+  background-color: white;
+}
+
 body {
   background-color: mat-color($grey, 100);
 }
