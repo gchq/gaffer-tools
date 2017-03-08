@@ -432,7 +432,7 @@ class ExportToGafferResultCache(Operation):
         if self.key is not None:
             operation['key'] = self.key
 
-        if self.key is not None:
+        if self.op_auths is not None:
             operation['opAuths'] = self.op_auths
         return operation
 

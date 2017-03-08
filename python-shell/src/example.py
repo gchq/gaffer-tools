@@ -490,4 +490,4 @@ def op_chain_in_json(gc):
 
 
 if __name__ == "__main__":
-    run('http://localhost:8080/rest/v1')
+    run('http://localhost:8080/rest/v1', False)
