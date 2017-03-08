@@ -15,25 +15,29 @@
   ~ limitations under the License.
   -->
 
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
         <groupId>uk.gov.gchq.gaffer</groupId>
         <artifactId>gaffer-tools</artifactId>
-        <version>0.6.1</version>
+        <version>0.6.2</version>
     </parent>
 
     <artifactId>slider</artifactId>
 
     <properties>
         <addon.pkg.name>Gaffer</addon.pkg.name>
-        <addon.pkg.file>${project.artifactId}-${project.version}
-        </addon.pkg.file>
+        <addon.pkg.file>gaffer-slider-${project.version}</addon.pkg.file>
+
         <!-- Dependency Versions -->
         <slider.version>0.91.0-incubating</slider.version>
+        <slider.accumulo.branch>branches/branch-0.91</slider.accumulo.branch>
+
+        <!-- Output Locations -->
+        <gaffer.output.directory>${project.build.directory}/gaffer</gaffer.output.directory>
+        <slider.output.directory>${project.build.directory}/slider</slider.output.directory>
+        <slider.accumulo.output.directory>${project.build.directory}/accumulo-pkg</slider.accumulo.output.directory>
     </properties>
 
     <dependencies>
@@ -83,8 +87,7 @@
                                     <version>${gaffer.version}</version>
                                 </artifactItem>
                             </artifactItems>
-                            <outputDirectory>${project.build.directory}/jars
-                            </outputDirectory>
+                            <outputDirectory>${gaffer.output.directory}</outputDirectory>
                         </configuration>
                     </execution>
 
@@ -104,8 +107,7 @@
                                     <version>${slider.version}</version>
                                 </artifactItem>
                             </artifactItems>
-                            <outputDirectory>${project.build.directory}/slider
-                            </outputDirectory>
+                            <outputDirectory>${slider.output.directory}</outputDirectory>
                         </configuration>
                     </execution>
                 </executions>
@@ -122,13 +124,11 @@
                             <goal>exec</goal>
                         </goals>
                         <configuration>
-                            <executable>scripts/build_accumulo_package.sh
-                            </executable>
+                            <executable>scripts/build_accumulo_package.sh</executable>
                             <arguments>
+                                <argument>${slider.accumulo.branch}</argument>
                                 <argument>${accumulo.version}</argument>
-                                <argument>
-                                    ${project.build.directory}/accumulo-pkg
-                                </argument>
+                                <argument>${slider.accumulo.output.directory}</argument>
                                 <argument>--build-native</argument>
                             </arguments>
                         </configuration>
