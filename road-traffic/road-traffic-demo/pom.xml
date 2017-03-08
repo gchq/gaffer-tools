@@ -12,7 +12,7 @@
 
     <properties>
         <standalone-path>/</standalone-path>
-        <standalone-port>8081</standalone-port>
+        <standalone-port>8080</standalone-port>
     </properties>
 
     <dependencies>
