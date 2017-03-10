@@ -18,20 +18,11 @@ package uk.gov.gchq.gaffer.federated.rest.service;
 
 import uk.gov.gchq.gaffer.federated.rest.FederatedExecutor;
 import uk.gov.gchq.gaffer.federated.rest.dto.SystemStatus;
-import uk.gov.gchq.gaffer.store.Context;
 import javax.ws.rs.core.Response;
 
 public class SystemStatusService implements ISystemStatusService {
 
-    protected final FederatedExecutor executor = createExecutor();
-
-    protected FederatedExecutor createExecutor() {
-        return new FederatedExecutor();
-    }
-
-    protected Context createContext() {
-        return new Context();
-    }
+    private final FederatedExecutor executor = new FederatedExecutor();
 
     @Override
     public Response status() {
@@ -42,7 +33,7 @@ public class SystemStatusService implements ISystemStatusService {
     @Override
     public Response statuses() {
         return Response.status(207)
-                       .entity(executor.fetchSystemStatuses(createContext()))
+                       .entity(executor.fetchSystemStatuses())
                        .build();
     }
 

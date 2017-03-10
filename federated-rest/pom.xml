@@ -5,7 +5,7 @@
     <parent>
         <groupId>uk.gov.gchq.gaffer</groupId>
         <artifactId>gaffer-tools</artifactId>
-        <version>0.6.2-SNAPSHOT</version>
+        <version>0.6.3-SNAPSHOT</version>
     </parent>
     <artifactId>federated-rest</artifactId>
     <packaging>war</packaging>
@@ -94,7 +94,6 @@
             <groupId>uk.gov.gchq.gaffer</groupId>
             <artifactId>rest-api</artifactId>
             <classifier>classes</classifier>
-            <scope>test</scope>
             <version>${gaffer.version}</version>
         </dependency>
         <dependency>

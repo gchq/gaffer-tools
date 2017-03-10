@@ -39,7 +39,6 @@ public class FederatedStatusUtil {
                      .get();
     }
 
-    @Test
     public static void checkServerStatus(final String url) {
         // Given
         final Response response = client.target(url)

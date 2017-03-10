@@ -24,16 +24,19 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import uk.gov.gchq.gaffer.commonutil.exception.UnauthorisedException;
 import uk.gov.gchq.gaffer.federated.rest.FederatedConfig;
 import uk.gov.gchq.gaffer.federated.rest.FederatedExecutor;
 import uk.gov.gchq.gaffer.federated.rest.SystemProperty;
+import uk.gov.gchq.gaffer.federated.rest.auth.FederatedConfigAuthoriser;
 import uk.gov.gchq.gaffer.federated.rest.dto.FederatedSystemStatus;
 import uk.gov.gchq.gaffer.federated.rest.dto.GafferUrl;
 import uk.gov.gchq.gaffer.federated.rest.dto.Schema;
 import uk.gov.gchq.gaffer.function.FilterFunction;
-import uk.gov.gchq.gaffer.store.Context;
+import uk.gov.gchq.gaffer.rest.factory.UserFactory;
 import uk.gov.gchq.gaffer.store.StoreTrait;
 import uk.gov.gchq.gaffer.user.User;
+import javax.inject.Inject;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -42,30 +45,21 @@ import java.util.Set;
 
 public class FederatedGraphConfigurationService implements IFederatedGraphConfigurationService {
     private static final Logger LOGGER = LoggerFactory.getLogger(FederatedOperationService.class);
-    protected final FederatedExecutor executor;
+private final FederatedConfigAuthoriser authoriser = new FederatedConfigAuthoriser();
+    private final FederatedExecutor executor = new FederatedExecutor();
 
+    @Inject
+    private UserFactory userFactory;
 
-    public FederatedGraphConfigurationService(final FederatedExecutor executor) {
-        this.executor = executor;
-    }
-
-    public FederatedGraphConfigurationService() {
-        this.executor = createExecutor();
-    }
-
-    protected FederatedExecutor createExecutor() {
-        return new FederatedExecutor();
-    }
-
-    protected Context createContext() {
-        return new Context();
+    private User createUser() {
+        System.out.println(userFactory.getClass());
+        return userFactory.createUser();
     }
 
     @Override
     public GafferUrl addUrl(final GafferUrl url) {
-        final Context context = createContext();
-        if (isAuthorised(context.getUser())) {
-            final FederatedConfig config = executor.getConfig(createContext());
+        if (authoriser.authorise(createUser())) {
+            final FederatedConfig config = executor.getConfig();
             if (config.getUrlMap().containsKey(url.getName())) {
                 throw new IllegalArgumentException("URL name is already in use: " + url
                         .getName());
@@ -84,24 +78,24 @@ public class FederatedGraphConfigurationService implements IFederatedGraphConfig
 
     @Override
     public List<FederatedSystemStatus> refresh() {
-        final Context context = createContext();
-        executor.reinitialiseConfig(context);
-        return executor.fetchSystemStatuses(context);
+        executor.reinitialiseConfig();
+        return executor.fetchSystemStatuses();
     }
 
     @Override
     public boolean deleteUrl(final String name) {
-        boolean success = false;
-        final Context context = createContext();
-        if (isAuthorised(context.getUser())) {
+        boolean success;
+        if (authoriser.authorise(createUser())) {
 
-            final String url = executor.getConfig(context)
+            final String url = executor.getConfig()
                                        .getUrlMap()
                                        .remove(name);
             success = null != url;
             if (success) {
-                executor.reinitialiseConfig(context);
+                executor.reinitialiseConfig();
             }
+        } else {
+            throw new UnauthorisedException("");
         }
 
         return success;
@@ -109,7 +103,7 @@ public class FederatedGraphConfigurationService implements IFederatedGraphConfig
 
     @Override
     public Set<GafferUrl> getUrls() {
-        final Map<String, String> urlMap = executor.getConfig(createContext())
+        final Map<String, String> urlMap = executor.getConfig()
                                                    .getUrlMap();
         final Set<GafferUrl> gafferUrls = new HashSet<>(urlMap.size());
 
@@ -122,19 +116,19 @@ public class FederatedGraphConfigurationService implements IFederatedGraphConfig
 
     @Override
     public Schema getSchema() {
-        return executor.getConfig(createContext()).getMergedSchema();
+        return executor.getConfig().getMergedSchema();
     }
 
     @Override
     public Set<String> getFilterFunctions() {
-        return executor.getConfig(createContext()).getFilterFunctions();
+        return executor.getConfig().getFilterFunctions();
     }
 
     @SuppressFBWarnings(value = "REC_CATCH_EXCEPTION", justification = "Need to wrap all runtime exceptions before they are given to the user")
     @Override
     public Set<String> getFilterFunctions(final String inputClass) {
         if (StringUtils.isEmpty(inputClass)) {
-            return executor.getConfig(createContext()).getFilterFunctions();
+            return executor.getConfig().getFilterFunctions();
         }
 
         final Class<?> clazz;
@@ -145,7 +139,7 @@ public class FederatedGraphConfigurationService implements IFederatedGraphConfig
         }
 
         final Set<String> classes = new HashSet<>();
-        for (final String functionClass : executor.getConfig(createContext())
+        for (final String functionClass : executor.getConfig()
                                                   .getFilterFunctions()) {
             try {
                 final Class<?> classInstance = Class.forName(functionClass);
@@ -165,27 +159,27 @@ public class FederatedGraphConfigurationService implements IFederatedGraphConfig
 
     @Override
     public Set<String> getTransformFunctions() {
-        return executor.getConfig(createContext()).getFilterFunctions();
+        return executor.getConfig().getFilterFunctions();
     }
 
     @Override
     public Set<String> getGenerators() {
-        return executor.getConfig(createContext()).getGenerators();
+        return executor.getConfig().getGenerators();
     }
 
     @Override
     public Set<String> getOperations() {
-        return executor.getConfig(createContext()).getOperations();
+        return executor.getConfig().getOperations();
     }
 
     @Override
     public Set<StoreTrait> getStoreTraits() {
-        return executor.getConfig(createContext()).getTraits();
+        return executor.getConfig().getTraits();
     }
 
     @Override
     public Boolean isOperationSupported(final String className) {
-        return executor.getConfig(createContext())
+        return executor.getConfig()
                        .getOperations()
                        .contains(className);
     }
@@ -214,18 +208,20 @@ public class FederatedGraphConfigurationService implements IFederatedGraphConfig
         return fields;
     }
 
-    private boolean isAuthorised(final User user) {
-        boolean authorised = false;
-
-        if (null != System.getProperty(SystemProperty.FEDERATED_ADMIN_AUTH)) {
-            if (user.getOpAuths()
-                    .contains(SystemProperty.FEDERATED_ADMIN_AUTH)) {
-                authorised = true;
-            }
-        } else {
-            throw new RuntimeException("Missing system property: " + SystemProperty.FEDERATED_ADMIN_AUTH);
-        }
-
-        return authorised;
-    }
+//    private boolean isAuthorised(final User user) {
+//        boolean authorised = false;
+//
+//        System.out.println("!!! - " + user);
+//
+//            if (user.getOpAuths()
+//                    .contains(SystemProperty.FEDERATED_ADMIN_AUTH)) {
+//                authorised = true;
+//        } else {
+//            throw new RuntimeException("Missing system property: " + SystemProperty.FEDERATED_ADMIN_AUTH);
+//        }
+//
+//        System.out.println("Auth: " + authorised);
+//
+//        return authorised;
+//    }
 }

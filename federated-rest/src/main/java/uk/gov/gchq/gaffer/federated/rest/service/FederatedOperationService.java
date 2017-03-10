@@ -34,7 +34,9 @@ import uk.gov.gchq.gaffer.operation.impl.get.GetAllEntities;
 import uk.gov.gchq.gaffer.operation.impl.get.GetEdges;
 import uk.gov.gchq.gaffer.operation.impl.get.GetElements;
 import uk.gov.gchq.gaffer.operation.impl.get.GetEntities;
-import uk.gov.gchq.gaffer.store.Context;
+import uk.gov.gchq.gaffer.rest.factory.UserFactory;
+import uk.gov.gchq.gaffer.user.User;
+import javax.inject.Inject;
 import java.io.Closeable;
 import java.io.IOException;
 
@@ -42,20 +44,19 @@ import static uk.gov.gchq.gaffer.jsonserialisation.JSONSerialiser.createDefaultM
 
 public class FederatedOperationService implements IFederatedOperationService {
     private static final Logger LOGGER = LoggerFactory.getLogger(FederatedOperationService.class);
-    protected final ObjectMapper mapper = createDefaultMapper();
-    protected final FederatedExecutor executor = createExecutor();
+    private final ObjectMapper mapper = createDefaultMapper();
+    private final FederatedExecutor executor = new FederatedExecutor();
 
-    protected FederatedExecutor createExecutor() {
-        return new FederatedExecutor();
-    }
+    @Inject
+    private UserFactory userFactory;
 
-    protected Context createContext() {
-        return new Context();
+    private User createUser() {
+        return userFactory.createUser();
     }
 
     @Override
     public Iterable<Object> execute(final OperationChain operationChain, final boolean skipErrors, final boolean runIndividually, final boolean firstResult) {
-        return executor.executeOperationChain(operationChain, createContext(), skipErrors, runIndividually, firstResult);
+        return executor.executeOperationChain(operationChain, createUser(), skipErrors, runIndividually, firstResult);
     }
 
     @Override
@@ -78,52 +79,52 @@ public class FederatedOperationService implements IFederatedOperationService {
 
     @Override
     public Iterable<Object> generateObjects(final Operation operation, final boolean skipErrors, final boolean firstResult) {
-        return executor.executeOperation(operation, GenerateObjects.class, createContext(), skipErrors, firstResult);
+        return executor.executeOperation(operation, GenerateObjects.class, createUser(), skipErrors, firstResult);
     }
 
     @Override
     public Iterable<Object> generateElements(final Operation operation, final boolean skipErrors, final boolean firstResult) {
-        return executor.executeOperation(operation, GenerateElements.class, createContext(), skipErrors, firstResult);
+        return executor.executeOperation(operation, GenerateElements.class, createUser(), skipErrors, firstResult);
     }
 
     @Override
     public Iterable<Object> getAdjacentEntitySeeds(final Operation operation, final boolean skipErrors, final boolean firstResult) {
-        return executor.executeOperation(operation, GetAdjacentEntitySeeds.class, createContext(), skipErrors, firstResult);
+        return executor.executeOperation(operation, GetAdjacentEntitySeeds.class, createUser(), skipErrors, firstResult);
     }
 
     @Override
     public Iterable<Object> getAllElements(final Operation operation, final boolean skipErrors, final boolean firstResult) {
-        return executor.executeOperation(operation, GetAllElements.class, createContext(), skipErrors, firstResult);
+        return executor.executeOperation(operation, GetAllElements.class, createUser(), skipErrors, firstResult);
     }
 
     @Override
     public Iterable<Object> getAllEntities(final Operation operation, final boolean skipErrors, final boolean firstResult) {
-        return executor.executeOperation(operation, GetAllEntities.class, createContext(), skipErrors, firstResult);
+        return executor.executeOperation(operation, GetAllEntities.class, createUser(), skipErrors, firstResult);
     }
 
     @Override
     public Iterable<Object> getAllEdges(final Operation operation, final boolean skipErrors, final boolean firstResult) {
-        return executor.executeOperation(operation, GetAllEdges.class, createContext(), skipErrors, firstResult);
+        return executor.executeOperation(operation, GetAllEdges.class, createUser(), skipErrors, firstResult);
     }
 
     @Override
     public Iterable<Object> getElements(final Operation operation, final boolean skipErrors, final boolean firstResult) {
-        return executor.executeOperation(operation, GetElements.class, createContext(), skipErrors, firstResult);
+        return executor.executeOperation(operation, GetElements.class, createUser(), skipErrors, firstResult);
     }
 
     @Override
     public Iterable<Object> getEntities(final Operation operation, final boolean skipErrors, final boolean firstResult) {
-        return executor.executeOperation(operation, GetEntities.class, createContext(), skipErrors, firstResult);
+        return executor.executeOperation(operation, GetEntities.class, createUser(), skipErrors, firstResult);
     }
 
     @Override
     public Iterable<Object> getEdges(final Operation operation, final boolean skipErrors, final boolean firstResult) {
-        return executor.executeOperation(operation, GetEdges.class, createContext(), skipErrors, firstResult);
+        return executor.executeOperation(operation, GetEdges.class, createUser(), skipErrors, firstResult);
     }
 
     @Override
     public void addElements(final Operation operation) {
-        executor.executeOperation(operation, AddElements.class, createContext(), false, false);
+        executor.executeOperation(operation, AddElements.class, createUser(), false, false);
     }
 
     protected void chunkResult(final Object result, final ChunkedOutput<String> output) {

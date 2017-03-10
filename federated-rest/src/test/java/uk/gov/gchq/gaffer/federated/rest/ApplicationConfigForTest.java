@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2017 Crown Copyright
+ * Copyright 2017 Crown Copyright
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,34 +13,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-package uk.gov.gchq.gaffer.federated.rest.application;
+package uk.gov.gchq.gaffer.federated.rest;
 
 import io.swagger.jaxrs.config.BeanConfig;
 import io.swagger.jaxrs.listing.ApiListingResource;
 import io.swagger.jaxrs.listing.SwaggerSerializers;
 import org.glassfish.jersey.server.ResourceConfig;
-import uk.gov.gchq.gaffer.federated.rest.FederatedBinder;
-import uk.gov.gchq.gaffer.federated.rest.SystemProperty;
 import uk.gov.gchq.gaffer.federated.rest.serialisation.RestJsonProvider;
 import uk.gov.gchq.gaffer.federated.rest.service.FederatedGraphConfigurationService;
 import uk.gov.gchq.gaffer.federated.rest.service.FederatedOperationService;
 import uk.gov.gchq.gaffer.federated.rest.service.SystemStatusService;
+import uk.gov.gchq.gaffer.rest.service.GraphConfigurationService;
 import java.util.HashSet;
 import java.util.Set;
 
 /**
  * An <code>FederatedApplicationConfig</code> sets up the application resources.
  */
-public class FederatedApplicationConfig extends ResourceConfig {
+public class ApplicationConfigForTest extends ResourceConfig {
     protected final Set<Class<?>> resources = new HashSet<>();
 
-    public FederatedApplicationConfig() {
+    public ApplicationConfigForTest() {
         addSystemResources();
         addServices();
         setupBeanConfig();
 
-        register(new FederatedBinder());
+        register(new FederatedBinderForTest());
 
         registerClasses(resources);
     }

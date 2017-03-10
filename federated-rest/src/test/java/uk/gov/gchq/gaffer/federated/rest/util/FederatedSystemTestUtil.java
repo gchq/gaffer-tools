@@ -25,7 +25,6 @@ import org.slf4j.LoggerFactory;
 import uk.gov.gchq.gaffer.commonutil.StreamUtil;
 import uk.gov.gchq.gaffer.data.element.Element;
 import uk.gov.gchq.gaffer.federated.rest.SystemProperty;
-import uk.gov.gchq.gaffer.federated.rest.application.FederatedApplicationConfig;
 import uk.gov.gchq.gaffer.federated.rest.dto.SystemStatus;
 import uk.gov.gchq.gaffer.jsonserialisation.JSONSerialiser;
 import uk.gov.gchq.gaffer.operation.Operation;
@@ -55,19 +54,11 @@ public class FederatedSystemTestUtil {
     private static final JSONSerialiser JSON_SERIALISER = new JSONSerialiser();
     private final static Logger LOGGER = LoggerFactory.getLogger(FederatedSystemTestUtil.class);
     public static final Client client = ClientBuilder.newClient();
-    private static HttpServer federatedServer;
 
     private static Map<String, HttpServer> serverMap = new HashMap<>();
 
     private FederatedSystemTestUtil() {
         // This class should not be constructed it only has utility methods
-    }
-
-    public static void stopFederatedServer() {
-        if (null != federatedServer) {
-            federatedServer.shutdownNow();
-            federatedServer = null;
-        }
     }
 
     public static void reinitialiseGraph(final TemporaryFolder testFolder, final String schemaResourcePath, final String storePropertiesResourcePath) throws IOException {
@@ -112,43 +103,6 @@ public class FederatedSystemTestUtil {
                      .path("/graph/doOperation/chunked")
                      .request()
                      .post(Entity.entity(JSON_SERIALISER.serialise(opChain), APPLICATION_JSON_TYPE));
-    }
-
-    public static void startServer(final String name, final String url) {
-        if (null != federatedServer) {
-            if (serverMap.get(name) == null) {
-
-                final HttpServer server = GrizzlyHttpServerFactory.createHttpServer(URI
-                        .create(url), new ApplicationConfig());
-                serverMap.put(name, server);
-
-                addUrl(name, url);
-
-                checkServerStatus(url);
-            }
-        } else {
-            LOGGER.error("Cannot start server since Federated server is not running.");
-        }
-    }
-
-
-    public static void stopServer(final String name) {
-        if (null != federatedServer) {
-            if (null != serverMap.get(name)) {
-                serverMap.get(name).shutdownNow();
-                serverMap.remove(name);
-
-                deleteUrl(name);
-            }
-        } else {
-            LOGGER.error("Cannot stop server since Federated server is not running.");
-        }
-    }
-
-    public static void startFederatedServer() {
-        if (null == federatedServer) {
-            federatedServer = GrizzlyHttpServerFactory.createHttpServer(URI.create(FED_URI), new FederatedApplicationConfig());
-        }
     }
 
     private static void checkServerStatus(final String url) {

@@ -30,9 +30,9 @@ import uk.gov.gchq.gaffer.operation.OperationException;
 import uk.gov.gchq.gaffer.operation.impl.Validate;
 import uk.gov.gchq.gaffer.operation.impl.add.AddElements;
 import uk.gov.gchq.gaffer.operation.serialisation.TypeReferenceImpl;
-import uk.gov.gchq.gaffer.store.Context;
 import uk.gov.gchq.gaffer.store.StoreTrait;
 import uk.gov.gchq.gaffer.store.TypeReferenceStoreImpl;
+import uk.gov.gchq.gaffer.user.User;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import java.util.ArrayList;
@@ -67,15 +67,15 @@ public class FederatedExecutor {
         }
     }
 
-    public FederatedConfig getConfig(final Context context) {
+    public FederatedConfig getConfig() {
         if (!config.isInitialised()) {
-            reinitialiseConfig(context);
+            reinitialiseConfig();
         }
 
         return config;
     }
 
-    public FederatedConfig reinitialiseConfig(final Context context) {
+    public FederatedConfig reinitialiseConfig() {
         config.setClients(createClients());
         config.setTraits(fetchTraits());
         config.setOperations(fetchClasses(IFederatedGraphConfigurationService.OPERATIONS_PATH));
@@ -87,20 +87,20 @@ public class FederatedExecutor {
         return config;
     }
 
-    public Iterable<Object> executeOperation(final Operation operation, final Class opClass, final Context context, final boolean skipErrors, final boolean firstResult) {
+    public Iterable<Object> executeOperation(final Operation operation, final Class opClass, final User user, final boolean skipErrors, final boolean firstResult) {
         final OperationChain opChain = new OperationChain();
         operation.setClazz(opClass.getName());
         opChain.setOperations(Collections.singletonList(operation));
-        return executeOperationChain(opChain, context, skipErrors, false, firstResult);
+        return executeOperationChain(opChain, user, skipErrors, false, firstResult);
     }
 
-    public Iterable<Object> executeOperationChain(final OperationChain operationChain, final Context context, final boolean skipErrors, final boolean runIndividually, final boolean firstResult) {
+    public Iterable<Object> executeOperationChain(final OperationChain operationChain, final User user, final boolean skipErrors, final boolean runIndividually, final boolean firstResult) {
         if (!config.hasUrls()) {
             throw new RuntimeException("No URLs specified to delegate operation chain to");
         }
 
         if (!config.isInitialised()) {
-            reinitialiseConfig(context);
+            reinitialiseConfig();
         }
 
         if (runIndividually && config.getNumUrls() > 1 && operationChain.getOperations().size() > 1) {
@@ -110,7 +110,7 @@ public class FederatedExecutor {
                     operation.setInput(previousResult);
                 }
 
-                previousResult = executeOperationChain(new OperationChain(operation), context, skipErrors, false, firstResult);
+                previousResult = executeOperationChain(new OperationChain(operation), user, skipErrors, false, firstResult);
             }
             return previousResult;
         }
@@ -122,7 +122,7 @@ public class FederatedExecutor {
             final String url = entry.getValue();
             new Thread(() -> {
                 try {
-                    results.add(executeOperationChainViaUrl(operationChain.clone(), context, url, skipErrors));
+                    results.add(executeOperationChainViaUrl(operationChain.clone(), user, url, skipErrors));
                 } catch (final Exception e) {
                     final String msg = "Failed to execute operations via: " + name + ". " + e.getMessage();
                     results.add(new OperationException(msg, e));
@@ -134,12 +134,12 @@ public class FederatedExecutor {
         return new BlockingResultIterable(results, config.getNumUrls(), config.getConnectTimeout(), skipErrors, firstResult);
     }
 
-    protected Iterable<Object> executeOperationChainViaUrl(final OperationChain operationChain, final Context context, final String url, final boolean skipErrors) {
+    protected Iterable<Object> executeOperationChainViaUrl(final OperationChain operationChain, final User user, final String url, final boolean skipErrors) {
         final boolean viewHasGroups = updateOperationViews(operationChain, url);
 
         Object resultObj = null;
         if (viewHasGroups) {
-            resultObj = requestor.doPost(url, "graph/" + IFederatedOperationService.DO_OPERATION_PATH, operationChain, new TypeReferenceImpl.Object(), context, skipErrors);
+            resultObj = requestor.doPost(url, "graph/" + IFederatedOperationService.DO_OPERATION_PATH, operationChain, new TypeReferenceImpl.Object(), user, skipErrors);
         }
 
         final Iterable<Object> result;
@@ -181,7 +181,7 @@ public class FederatedExecutor {
         return clients;
     }
 
-    public List<FederatedSystemStatus> fetchSystemStatuses(final Context context) {
+    public List<FederatedSystemStatus> fetchSystemStatuses() {
         final List<FederatedSystemStatus> results = new ArrayList<>();
         for (final Map.Entry<String, String> entry : config.getUrlMap().entrySet()) {
             final String name = entry.getKey();

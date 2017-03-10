@@ -22,7 +22,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.gov.gchq.gaffer.commonutil.CommonConstants;
 import uk.gov.gchq.gaffer.exception.SerialisationException;
-import uk.gov.gchq.gaffer.store.Context;
+import uk.gov.gchq.gaffer.user.User;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.Invocation;
 import javax.ws.rs.core.MediaType;
@@ -39,17 +39,17 @@ public class FederatedRequestor {
 
     public <T> T doPost(final String url, final String urlSuffix, final Object body,
                         final TypeReference<T> outputTypeReference,
-                        final Context context,
+                        final User user,
                         final boolean skipErrors) {
-        return doPost(url, urlSuffix, toJson(body), outputTypeReference, context, skipErrors);
+        return doPost(url, urlSuffix, toJson(body), outputTypeReference, user, skipErrors);
     }
 
     public <T> T doPost(final String url, final String urlSuffix, final String jsonBody,
                         final TypeReference<T> outputTypeReference,
-                        final Context context,
+                        final User user,
                         final boolean skipErrors) {
         try {
-            return handleResponse(executePost(url, urlSuffix, jsonBody, context), outputTypeReference, url);
+            return handleResponse(executePost(url, urlSuffix, jsonBody), outputTypeReference, url);
         } catch (final Exception e) {
             if (!skipErrors) {
                 throw new RuntimeException(getErrorMsg(url, urlSuffix, e), e);
@@ -77,17 +77,17 @@ public class FederatedRequestor {
         return null;
     }
 
-    protected Response executePost(final String url, final String urlSuffix, final String jsonBody, final Context context) {
-        final Invocation.Builder request = createRequest(jsonBody, url, urlSuffix, context);
+    protected Response executePost(final String url, final String urlSuffix, final String jsonBody) {
+        final Invocation.Builder request = createRequest(jsonBody, url, urlSuffix);
         return request.post(Entity.json(jsonBody));
     }
 
     protected Response executeGet(final String url, final String urlSuffix) {
-        final Invocation.Builder request = createRequest(null, url, urlSuffix, null);
+        final Invocation.Builder request = createRequest(null, url, urlSuffix);
         return request.get();
     }
 
-    protected Invocation.Builder createRequest(final String body, final String url, final String urlSuffix, final Context context) {
+    protected Invocation.Builder createRequest(final String body, final String url, final String urlSuffix) {
         final Invocation.Builder request = getConfig().getClients().get(url)
                 .target(getFullUrl(url, urlSuffix))
                 .request();
