@@ -1,4 +1,4 @@
-Copyright 2016 Crown Copyright
+Copyright 2017 Crown Copyright
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -17,12 +17,12 @@ Jar Shader
 ============================
 
 If deploying jars to a CDH cluster then the classpath will contain an old version of Jackson, that is not compatible with Gaffer.
-To avoid using this incorrect versio of Jackson this utility will shade your jars relocating com.fasterxml.jackson to uk.gov.gchq.gaffer.shaded.com.fasterxml.jackson.
+To avoid using this incorrect version of Jackson this utility will shade your jars relocating com.fasterxml.jackson to uk.gov.gchq.gaffer.shaded.com.fasterxml.jackson.
 
 Usage:
 
 ```bash
- build.sh <path to jar file>
+ shade.sh <path to jar file>
  ```
 
 The output will be a shaded jar: <input-jar-name>-shaded.jar in your current directory.
