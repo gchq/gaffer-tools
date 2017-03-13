@@ -52,6 +52,6 @@ To build it and its dependencies, use the following command from the parent dire
 This uses the 'standalone-federated' profile to start the rest service in tomcat.
 
 This should launch an embedded tomcat container, which can then be accessed via your browser pointing to the following url:
-http://localhost:8080/rest/
+http://localhost:8081/rest/
 
 If you need to change the port there is a 'port' property in the pom, in the standalone-federated profile section.

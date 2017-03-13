@@ -57,6 +57,13 @@ public class FederatedGraphConfigurationService implements IFederatedGraphConfig
 
     @Override
     public GafferUrl addUrl(final GafferUrl url) {
+        if (null == url.getUrl() || url.getUrl().isEmpty()) {
+            throw new IllegalArgumentException("URL is required");
+        }
+        if (null == url.getName() || url.getName().isEmpty()) {
+            throw new IllegalArgumentException("URL name is required");
+        }
+
         if (authoriser.authorise(createUser())) {
             final FederatedConfig config = executor.getConfig();
             if (config.getUrlMap().containsKey(url.getName())) {

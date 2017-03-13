@@ -43,8 +43,8 @@ import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 @Consumes(APPLICATION_JSON)
 @Produces(APPLICATION_JSON)
 public interface IFederatedOperationService {
-    String SKIP_ERRORS_MSG = "if true, then errors from delete URLs will be skipped";
-    String FIRST_RESULT_MSG = "if true, the result will only contain the first result returned from the delegate URLs";
+    String SKIP_ERRORS_MSG = "if true, then errors from delegate URLs will be skipped";
+    String FIRST_RESULT_MSG = "if true, the result will only contain the results from the first delegate URL to respond";
     String RUN_INDIVIDUALLY_MSG = "if true, operations will be executed one at a time";
     String SKIP_ERRORS_PARAM = "skipErrors";
     String RUN_INDIVIDUALLY_PARAM = "runIndividually";
@@ -58,9 +58,9 @@ public interface IFederatedOperationService {
             responseContainer = "List"
     )
     Iterable<Object> execute(final OperationChain opChain,
-            @ApiParam(SKIP_ERRORS_MSG) @QueryParam(SKIP_ERRORS_PARAM) boolean skipErrors,
-            @ApiParam(RUN_INDIVIDUALLY_MSG) @QueryParam(RUN_INDIVIDUALLY_PARAM) boolean runIndividually,
-            @ApiParam(FIRST_RESULT_MSG) @QueryParam(FIRST_RESULT_PARAM) boolean firstResult);
+                             @ApiParam(SKIP_ERRORS_MSG) @QueryParam(SKIP_ERRORS_PARAM) boolean skipErrors,
+                             @ApiParam(RUN_INDIVIDUALLY_MSG) @QueryParam(RUN_INDIVIDUALLY_PARAM) boolean runIndividually,
+                             @ApiParam(FIRST_RESULT_MSG) @QueryParam(FIRST_RESULT_PARAM) boolean firstResult);
 
     @POST
     @Path("/chunked")
@@ -68,9 +68,9 @@ public interface IFederatedOperationService {
             response = Object.class,
             responseContainer = "List")
     ChunkedOutput<String> executeChunked(final OperationChain opChain,
-            @ApiParam(SKIP_ERRORS_MSG) @QueryParam(SKIP_ERRORS_PARAM) boolean skipErrors,
-            @ApiParam(RUN_INDIVIDUALLY_MSG) @QueryParam(RUN_INDIVIDUALLY_PARAM) boolean runIndividually,
-            @ApiParam(FIRST_RESULT_MSG) @QueryParam(FIRST_RESULT_PARAM) boolean firstResult);
+                                         @ApiParam(SKIP_ERRORS_MSG) @QueryParam(SKIP_ERRORS_PARAM) boolean skipErrors,
+                                         @ApiParam(RUN_INDIVIDUALLY_MSG) @QueryParam(RUN_INDIVIDUALLY_PARAM) boolean runIndividually,
+                                         @ApiParam(FIRST_RESULT_MSG) @QueryParam(FIRST_RESULT_PARAM) boolean firstResult);
 
     @POST
     @Path("/generate/objects")
@@ -80,8 +80,8 @@ public interface IFederatedOperationService {
             responseContainer = "List"
     )
     Iterable<Object> generateObjects(final Operation operation,
-            @ApiParam(SKIP_ERRORS_MSG) @QueryParam(SKIP_ERRORS_PARAM) boolean skipErrors,
-            @ApiParam(FIRST_RESULT_MSG) @QueryParam(FIRST_RESULT_PARAM) boolean firstResult);
+                                     @ApiParam(SKIP_ERRORS_MSG) @QueryParam(SKIP_ERRORS_PARAM) boolean skipErrors,
+                                     @ApiParam(FIRST_RESULT_MSG) @QueryParam(FIRST_RESULT_PARAM) boolean firstResult);
 
     @POST
     @Path("/generate/elements")
@@ -91,8 +91,8 @@ public interface IFederatedOperationService {
             responseContainer = "List"
     )
     Iterable<Object> generateElements(final Operation operation,
-            @ApiParam(SKIP_ERRORS_MSG) @QueryParam(SKIP_ERRORS_PARAM) boolean skipErrors,
-            @ApiParam(FIRST_RESULT_MSG) @QueryParam(FIRST_RESULT_PARAM) boolean firstResult);
+                                      @ApiParam(SKIP_ERRORS_MSG) @QueryParam(SKIP_ERRORS_PARAM) boolean skipErrors,
+                                      @ApiParam(FIRST_RESULT_MSG) @QueryParam(FIRST_RESULT_PARAM) boolean firstResult);
 
 
     @POST
@@ -103,8 +103,8 @@ public interface IFederatedOperationService {
             responseContainer = "List"
     )
     Iterable<Object> getAdjacentEntitySeeds(final Operation operation,
-            @ApiParam(SKIP_ERRORS_MSG) @QueryParam(SKIP_ERRORS_PARAM) boolean skipErrors,
-            @ApiParam(FIRST_RESULT_MSG) @QueryParam(FIRST_RESULT_PARAM) boolean firstResult);
+                                            @ApiParam(SKIP_ERRORS_MSG) @QueryParam(SKIP_ERRORS_PARAM) boolean skipErrors,
+                                            @ApiParam(FIRST_RESULT_MSG) @QueryParam(FIRST_RESULT_PARAM) boolean firstResult);
 
     @POST
     @Path("/get/elements/all")
@@ -114,8 +114,8 @@ public interface IFederatedOperationService {
             responseContainer = "List"
     )
     Iterable<Object> getAllElements(final Operation operation,
-            @ApiParam(SKIP_ERRORS_MSG) @QueryParam(SKIP_ERRORS_PARAM) boolean skipErrors,
-            @ApiParam(FIRST_RESULT_MSG) @QueryParam(FIRST_RESULT_PARAM) boolean firstResult);
+                                    @ApiParam(SKIP_ERRORS_MSG) @QueryParam(SKIP_ERRORS_PARAM) boolean skipErrors,
+                                    @ApiParam(FIRST_RESULT_MSG) @QueryParam(FIRST_RESULT_PARAM) boolean firstResult);
 
     @POST
     @Path("/get/entities/all")
@@ -125,8 +125,8 @@ public interface IFederatedOperationService {
             responseContainer = "List"
     )
     Iterable<Object> getAllEntities(final Operation operation,
-            @ApiParam(SKIP_ERRORS_MSG) @QueryParam(SKIP_ERRORS_PARAM) boolean skipErrors,
-            @ApiParam(FIRST_RESULT_MSG) @QueryParam(FIRST_RESULT_PARAM) boolean firstResult);
+                                    @ApiParam(SKIP_ERRORS_MSG) @QueryParam(SKIP_ERRORS_PARAM) boolean skipErrors,
+                                    @ApiParam(FIRST_RESULT_MSG) @QueryParam(FIRST_RESULT_PARAM) boolean firstResult);
 
     @POST
     @Path("/get/edges/all")
@@ -136,8 +136,8 @@ public interface IFederatedOperationService {
             responseContainer = "List"
     )
     Iterable<Object> getAllEdges(final Operation operation,
-            @ApiParam(SKIP_ERRORS_MSG) @QueryParam(SKIP_ERRORS_PARAM) boolean skipErrors,
-            @ApiParam(FIRST_RESULT_MSG) @QueryParam(FIRST_RESULT_PARAM) boolean firstResult);
+                                 @ApiParam(SKIP_ERRORS_MSG) @QueryParam(SKIP_ERRORS_PARAM) boolean skipErrors,
+                                 @ApiParam(FIRST_RESULT_MSG) @QueryParam(FIRST_RESULT_PARAM) boolean firstResult);
 
     @POST
     @Path("/get/elements")
@@ -147,8 +147,8 @@ public interface IFederatedOperationService {
             responseContainer = "List"
     )
     Iterable<Object> getElements(final Operation operation,
-            @ApiParam(SKIP_ERRORS_MSG) @QueryParam(SKIP_ERRORS_PARAM) boolean skipErrors,
-            @ApiParam(FIRST_RESULT_MSG) @QueryParam(FIRST_RESULT_PARAM) boolean firstResult);
+                                 @ApiParam(SKIP_ERRORS_MSG) @QueryParam(SKIP_ERRORS_PARAM) boolean skipErrors,
+                                 @ApiParam(FIRST_RESULT_MSG) @QueryParam(FIRST_RESULT_PARAM) boolean firstResult);
 
     @POST
     @Path("/get/entities")
@@ -158,8 +158,8 @@ public interface IFederatedOperationService {
             responseContainer = "List"
     )
     Iterable<Object> getEntities(final Operation operation,
-            @ApiParam(SKIP_ERRORS_MSG) @QueryParam(SKIP_ERRORS_PARAM) boolean skipErrors,
-            @ApiParam(FIRST_RESULT_MSG) @QueryParam(FIRST_RESULT_PARAM) boolean firstResult);
+                                 @ApiParam(SKIP_ERRORS_MSG) @QueryParam(SKIP_ERRORS_PARAM) boolean skipErrors,
+                                 @ApiParam(FIRST_RESULT_MSG) @QueryParam(FIRST_RESULT_PARAM) boolean firstResult);
 
     @POST
     @Path("/get/edges")
@@ -169,8 +169,8 @@ public interface IFederatedOperationService {
             responseContainer = "List"
     )
     Iterable<Object> getEdges(final Operation operation,
-            @ApiParam(SKIP_ERRORS_MSG) @QueryParam(SKIP_ERRORS_PARAM) boolean skipErrors,
-            @ApiParam(FIRST_RESULT_MSG) @QueryParam(FIRST_RESULT_PARAM) boolean firstResult);
+                              @ApiParam(SKIP_ERRORS_MSG) @QueryParam(SKIP_ERRORS_PARAM) boolean skipErrors,
+                              @ApiParam(FIRST_RESULT_MSG) @QueryParam(FIRST_RESULT_PARAM) boolean firstResult);
 
     @PUT
     @Path("/add/elements")
