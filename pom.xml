@@ -38,7 +38,7 @@
     </modules>
 
     <properties>
-        <gaffer.version>0.6.3-SNAPSHOT</gaffer.version>
+        <gaffer.version>0.6.2</gaffer.version>
         <scm.url>
             https://github.com/gchq/gaffer-tools
         </scm.url>
