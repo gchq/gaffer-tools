@@ -16,6 +16,8 @@
 
 package uk.gov.gchq.gaffer.federated.rest;
 
+import uk.gov.gchq.gaffer.rest.factory.UnknownUserFactory;
+
 /**
  * System property keys and default values.
  */
@@ -29,6 +31,7 @@ public abstract class SystemProperty {
     public static final String SERVICES_PACKAGE_PREFIX = "gaffer.federated-rest.resourcePackage";
     public static final String CONNECT_TIMEOUT = "gaffer.federated-rest.connect-timeout";
     public static final String READ_TIMEOUT = "gaffer.federated-rest.read-timeout";
+    public static final String USER_FACTORY_CLASS = "gaffer.user.factory.class";
 
     // DEFAULTS
     public static final String SERVICES_PACKAGE_PREFIX_DEFAULT = "uk.gov.gchq.gaffer.federated.rest";
@@ -36,6 +39,7 @@ public abstract class SystemProperty {
     public static final String CORE_VERSION = "1.0.0";
     public static final String CONNECT_TIMEOUT_DEFAULT = "60000";
     public static final String READ_TIMEOUT_DEFAULT = "60000";
+    public static final String USER_FACTORY_CLASS_DEFAULT = UnknownUserFactory.class.getName();
 
     // Auth roles
     public static final String FEDERATED_ADMIN_AUTH = "gaffer.federated-rest.admin-auth";

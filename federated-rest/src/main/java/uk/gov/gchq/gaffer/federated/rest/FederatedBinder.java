@@ -16,15 +16,23 @@
 package uk.gov.gchq.gaffer.federated.rest;
 
 import org.glassfish.hk2.utilities.binding.AbstractBinder;
-import uk.gov.gchq.gaffer.rest.factory.DefaultGraphFactory;
-import uk.gov.gchq.gaffer.rest.factory.GraphFactory;
-import uk.gov.gchq.gaffer.rest.factory.UnknownUserFactory;
 import uk.gov.gchq.gaffer.rest.factory.UserFactory;
 
 public class FederatedBinder extends AbstractBinder {
     @Override
     protected void configure() {
-        bind(DefaultGraphFactory.class).to(GraphFactory.class);
-        bind(UnknownUserFactory.class).to(UserFactory.class);
+        bind(getDefaultUserFactory()).to(UserFactory.class);
+    }
+
+    private Class<?> getDefaultUserFactory() {
+        final String userFactoryClass = System.getProperty(SystemProperty.USER_FACTORY_CLASS,
+                SystemProperty.USER_FACTORY_CLASS_DEFAULT);
+
+        try {
+            return Class.forName(userFactoryClass)
+                    .asSubclass(UserFactory.class);
+        } catch (final ClassNotFoundException e) {
+            throw new IllegalArgumentException("Unable to create user factory from class: " + userFactoryClass, e);
+        }
     }
 }
