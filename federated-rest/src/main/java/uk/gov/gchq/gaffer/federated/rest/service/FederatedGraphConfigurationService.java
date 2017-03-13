@@ -27,7 +27,6 @@ import org.slf4j.LoggerFactory;
 import uk.gov.gchq.gaffer.commonutil.exception.UnauthorisedException;
 import uk.gov.gchq.gaffer.federated.rest.FederatedConfig;
 import uk.gov.gchq.gaffer.federated.rest.FederatedExecutor;
-import uk.gov.gchq.gaffer.federated.rest.SystemProperty;
 import uk.gov.gchq.gaffer.federated.rest.auth.FederatedConfigAuthoriser;
 import uk.gov.gchq.gaffer.federated.rest.dto.FederatedSystemStatus;
 import uk.gov.gchq.gaffer.federated.rest.dto.GafferUrl;
@@ -45,7 +44,7 @@ import java.util.Set;
 
 public class FederatedGraphConfigurationService implements IFederatedGraphConfigurationService {
     private static final Logger LOGGER = LoggerFactory.getLogger(FederatedOperationService.class);
-private final FederatedConfigAuthoriser authoriser = new FederatedConfigAuthoriser();
+    private final FederatedConfigAuthoriser authoriser = new FederatedConfigAuthoriser();
     private final FederatedExecutor executor = new FederatedExecutor();
 
     @Inject
@@ -88,8 +87,8 @@ private final FederatedConfigAuthoriser authoriser = new FederatedConfigAuthoris
         if (authoriser.authorise(createUser())) {
 
             final String url = executor.getConfig()
-                                       .getUrlMap()
-                                       .remove(name);
+                    .getUrlMap()
+                    .remove(name);
             success = null != url;
             if (success) {
                 executor.reinitialiseConfig();
@@ -104,7 +103,7 @@ private final FederatedConfigAuthoriser authoriser = new FederatedConfigAuthoris
     @Override
     public Set<GafferUrl> getUrls() {
         final Map<String, String> urlMap = executor.getConfig()
-                                                   .getUrlMap();
+                .getUrlMap();
         final Set<GafferUrl> gafferUrls = new HashSet<>(urlMap.size());
 
         for (final Entry<String, String> entry : urlMap.entrySet()) {
@@ -140,7 +139,7 @@ private final FederatedConfigAuthoriser authoriser = new FederatedConfigAuthoris
 
         final Set<String> classes = new HashSet<>();
         for (final String functionClass : executor.getConfig()
-                                                  .getFilterFunctions()) {
+                .getFilterFunctions()) {
             try {
                 final Class<?> classInstance = Class.forName(functionClass);
                 final FilterFunction function = (FilterFunction) classInstance.newInstance();
@@ -180,8 +179,8 @@ private final FederatedConfigAuthoriser authoriser = new FederatedConfigAuthoris
     @Override
     public Boolean isOperationSupported(final String className) {
         return executor.getConfig()
-                       .getOperations()
-                       .contains(className);
+                .getOperations()
+                .contains(className);
     }
 
     @SuppressFBWarnings(value = "REC_CATCH_EXCEPTION", justification = "Need to wrap all runtime exceptions before they are given to the user")
@@ -197,7 +196,7 @@ private final FederatedConfigAuthoriser authoriser = new FederatedConfigAuthoris
         final ObjectMapper mapper = new ObjectMapper();
         final JavaType type = mapper.getTypeFactory().constructType(clazz);
         final BeanDescription introspection = mapper.getSerializationConfig()
-                                                    .introspect(type);
+                .introspect(type);
         final List<BeanPropertyDefinition> properties = introspection.findProperties();
 
         final Set<String> fields = new HashSet<>();

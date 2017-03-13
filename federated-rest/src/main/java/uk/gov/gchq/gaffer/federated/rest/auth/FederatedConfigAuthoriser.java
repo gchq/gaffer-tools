@@ -17,7 +17,6 @@ package uk.gov.gchq.gaffer.federated.rest.auth;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
-import uk.gov.gchq.gaffer.commonutil.exception.UnauthorisedException;
 import uk.gov.gchq.gaffer.federated.rest.SystemProperty;
 import uk.gov.gchq.gaffer.user.User;
 import java.io.IOException;
@@ -105,15 +104,13 @@ public class FederatedConfigAuthoriser {
     }
 
     private void loadOpAuthMap(final Properties props) {
-        for (final String opClassName : props.stringPropertyNames()) {
-            final Set<String> auths = new HashSet<>();
-            for (final String auth : props.getProperty(SystemProperty.FEDERATED_ADMIN_AUTH)
-                                          .split(AUTH_SEPARATOR)) {
-                if (!StringUtils.isEmpty(auth)) {
-                    auths.add(auth);
-                }
+        final Set<String> auths = new HashSet<>();
+        for (final String auth : props.getProperty(SystemProperty.FEDERATED_ADMIN_AUTH)
+                .split(AUTH_SEPARATOR)) {
+            if (!StringUtils.isEmpty(auth)) {
+                auths.add(auth);
             }
-            setOpAuths(auths);
         }
+        setOpAuths(auths);
     }
 }

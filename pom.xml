@@ -21,11 +21,11 @@
     <parent>
         <groupId>uk.gov.gchq.gaffer</groupId>
         <artifactId>gaffer2</artifactId>
-        <version>0.6.3-SNAPSHOT</version>
+        <version>0.6.2</version>
     </parent>
 
     <artifactId>gaffer-tools</artifactId>
-    <version>0.6.3-SNAPSHOT</version>
+    <version>0.6.2</version>
     <packaging>pom</packaging>
 
     <modules>
