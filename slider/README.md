@@ -48,8 +48,7 @@ Although there are a few different ways to deploy Gaffer, deploying instances on
 Use the following instructions to quickly deploy a Gaffer instance. It will deploy the latest stable version of Gaffer onto an Accumulo instance (version determined by [Gaffer's pom.xml](https://github.com/gchq/Gaffer/search?q=path%3A%2F+filename%3Apom.xml+"accumulo.version")) called `$USER-gaffer-test`.
 
 * Identify the profile in [src/test/clusters/](src/test/clusters/) that matches your cluster configuration, or create a new one
-* Update `$CLUSTER_TYPE` in [scripts/common.sh](scripts/common.sh) to the name of the configuration profile to use
-* `mvn clean package`
+* `mvn clean package -Dtest.cluster.type=<profileName>`
 * `scripts/deploy_test_cluster.sh`
 
 
