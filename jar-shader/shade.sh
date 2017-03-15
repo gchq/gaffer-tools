@@ -18,12 +18,17 @@
 # Simply utility for building jars with shaded jackson version
 
 if [[ -z $1 ]]; then
-  echo "Usage: shade.sh <path to jar file>"
+  echo "Usage: shade.sh <path to jar file> [<path to output jar>]"
   exit 1
 fi
 
 jarShaderDir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 jarPath=$1
-filename="${jarPath##*/}"
+filename=$jarPath
+
+if [[ ! -z "$2" ]]; then
+	filename="$2"
+fi
+
 java -jar $jarShaderDir/lib/jarjar-1.4.1.jar process $jarShaderDir/shadeRules.txt $jarPath $filename
 

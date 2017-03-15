@@ -22,9 +22,10 @@ To avoid using this incorrect version of Jackson this utility will shade your ja
 Usage:
 
 ```bash
- shade.sh <path to jar file>
+ shade.sh <path to jar file> [<path to output jar>]
  ```
 
-The output will be a shaded jar: <input-jar-name>-shaded.jar in your current directory.
+If an output path is not provided then the input jar will be overwritten with the shaded jar.
 
 The script uses [jarjar](https://github.com/mike-hogan/jarjar-forkfork/tree/master/jarjar) to shade the jar so you must have java 8 installed.
+
