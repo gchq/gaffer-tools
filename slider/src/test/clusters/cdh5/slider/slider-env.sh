@@ -16,15 +16,6 @@
 # limitations under the License.
 #
 
-CLUSTER_NAME=gaffer-test
-CLUSTER_TYPE="${test.cluster.type}"
-
-SLIDER="${slider.output.directory}/slider-*/bin/slider"
-ACCUMULO_PKG="${slider.accumulo.output.directory}/slider-accumulo-app-package-*.zip"
-GAFFER_PKG="${project.build.directory}/${addon.pkg.file}.zip"
-
-export SLIDER_CONF_DIR="${cluster.config.output.directory}/$CLUSTER_TYPE/slider/"
-APPCONFIG="${cluster.config.output.directory}/$CLUSTER_TYPE/accumulo/appConfig-default.json"
-RESOURCES="${cluster.config.output.directory}/$CLUSTER_TYPE/accumulo/resources.json"
-CLIENT_DESTINATION="${project.build.directory}/accumulo-shell"
+export JAVA_HOME=/etc/alternatives/jre_1.8.0
+export HADOOP_CONF_DIR=/etc/hadoop/conf
 
