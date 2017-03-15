@@ -95,7 +95,7 @@ slider create <gafferInstanceName> \
 
 See the [Slider documentation](https://slider.incubator.apache.org/docs/getting_started.html#installapp) for commands that can be used to start, stop, delete, grow, shrink and upgrade running applications.
 
-## Running Integration Tests
+## Running Functional Tests
 
 * Identify the profile in [src/test/clusters/](src/test/clusters/) that matches your cluster configuration, or create a new one
-* `mvn verify -Dtest.cluster.type=<profileName>`
+* `mvn verify -Paccumulo-funtest -Dtest.cluster.type=<profileName>`

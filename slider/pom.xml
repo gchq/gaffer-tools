@@ -251,28 +251,43 @@
                     </execution>
                 </executions>
             </plugin>
-
-            <plugin>
-                <artifactId>maven-failsafe-plugin</artifactId>
-                <configuration>
-                    <systemPropertyVariables>
-                        <!-- Location of the Slider distribution and config to use -->
-                        <slider.conf.dir>${cluster.config.output.directory}/${test.cluster.type}/slider</slider.conf.dir>
-                        <slider.bin.dir>${slider.output.directory}/slider-${slider.version}</slider.bin.dir>
-                        <!-- Location of the Accumulo slider app package to use -->
-                        <test.app.pkg.dir>${slider.accumulo.output.directory}</test.app.pkg.dir>
-                        <test.app.pkg.file>slider-accumulo-app-package-${accumulo.version}.zip</test.app.pkg.file>
-                        <test.app.pkg.name>ACCUMULO</test.app.pkg.name>
-                        <!-- Location of the Gaffer addon package to use -->
-                        <test.addon.pkg.dir>${project.build.directory}</test.addon.pkg.dir>
-                        <test.addon.pkg.file>${addon.pkg.file}.zip</test.addon.pkg.file>
-                        <test.addon.pkg.name>${addon.pkg.name}</test.addon.pkg.name>
-                        <!-- Location of the cluster specific configuration to use -->
-                        <test.app.resources.dir>${cluster.config.output.directory}/${test.cluster.type}/accumulo</test.app.resources.dir>
-                    </systemPropertyVariables>
-                </configuration>
-            </plugin>
         </plugins>
     </build>
+
+    <profiles>
+        <profile>
+            <id>accumulo-funtest</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <artifactId>maven-failsafe-plugin</artifactId>
+                        <configuration>
+                            <includes>
+                                <include>**/*FunctionalTest.java</include>
+                                <include>**/*FunctionalTests.java</include>
+                                <include>**/*FT.java</include>
+                                <include>**/*FTs.java</include>
+                            </includes>
+                            <systemPropertyVariables>
+                                <!-- Location of the Slider distribution and config to use -->
+                                <slider.conf.dir>${cluster.config.output.directory}/${test.cluster.type}/slider</slider.conf.dir>
+                                <slider.bin.dir>${slider.output.directory}/slider-${slider.version}</slider.bin.dir>
+                                <!-- Location of the Accumulo slider app package to use -->
+                                <test.app.pkg.dir>${slider.accumulo.output.directory}</test.app.pkg.dir>
+                                <test.app.pkg.file>slider-accumulo-app-package-${accumulo.version}.zip</test.app.pkg.file>
+                                <test.app.pkg.name>ACCUMULO</test.app.pkg.name>
+                                <!-- Location of the Gaffer addon package to use -->
+                                <test.addon.pkg.dir>${project.build.directory}</test.addon.pkg.dir>
+                                <test.addon.pkg.file>${addon.pkg.file}.zip</test.addon.pkg.file>
+                                <test.addon.pkg.name>${addon.pkg.name}</test.addon.pkg.name>
+                                <!-- Location of the cluster specific configuration to use -->
+                                <test.app.resources.dir>${cluster.config.output.directory}/${test.cluster.type}/accumulo</test.app.resources.dir>
+                            </systemPropertyVariables>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 
 </project>
