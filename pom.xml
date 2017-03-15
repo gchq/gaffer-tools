@@ -25,12 +25,13 @@
     </parent>
 
     <artifactId>gaffer-tools</artifactId>
-    <version>0.6.3-SNAPSHOT</version>
+    <version>0.6.2</version>
     <packaging>pom</packaging>
 
     <modules>
         <module>mini-accumulo-cluster</module>
         <module>graffer-ql</module>
+        <module>federated-rest</module>
         <module>road-traffic</module>
         <module>schema-builder</module>
         <module>slider</module>

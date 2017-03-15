@@ -21,7 +21,7 @@
     <parent>
         <groupId>uk.gov.gchq.gaffer</groupId>
         <artifactId>gaffer-tools</artifactId>
-        <version>0.6.3-SNAPSHOT</version>
+        <version>0.6.2</version>
     </parent>
 
     <artifactId>slider</artifactId>
@@ -119,6 +119,7 @@
                 <version>1.5.0</version>
                 <executions>
                     <execution>
+                        <id>build-accumulo-package</id>
                         <phase>generate-resources</phase>
                         <goals>
                             <goal>exec</goal>
@@ -130,6 +131,20 @@
                                 <argument>${accumulo.version}</argument>
                                 <argument>${slider.accumulo.output.directory}</argument>
                                 <argument>--build-native</argument>
+                            </arguments>
+                        </configuration>
+                    </execution>
+
+                    <execution>
+                        <id>shade-accumulo-iterator-jar</id>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>exec</goal>
+                        </goals>
+                        <configuration>
+                            <executable>${project.basedir}/../jar-shader/shade.sh</executable>
+                            <arguments>
+                                <argument>${gaffer.output.directory}/accumulo-store-${gaffer.version}-iterators.jar</argument>
                             </arguments>
                         </configuration>
                     </execution>
