@@ -30,14 +30,22 @@
         <addon.pkg.name>Gaffer</addon.pkg.name>
         <addon.pkg.file>gaffer-slider-${project.version}</addon.pkg.file>
 
+        <!-- Overriding parent hadoop.version as slider-funtest requires 2.7.1+ otherwise NoSuchMethodError: org.apache.hadoop.tracing.SpanReceiverHost -->
+        <hadoop.version>2.7.1</hadoop.version>
+
         <!-- Dependency Versions -->
         <slider.version>0.91.0-incubating</slider.version>
+        <slider.accumulo.version>0.80.0-incubating</slider.accumulo.version>
         <slider.accumulo.branch>branches/branch-0.91</slider.accumulo.branch>
+
+        <!-- Testing Properties -->
+        <test.cluster.type>docker_cloudera_quickstart</test.cluster.type>
 
         <!-- Output Locations -->
         <gaffer.output.directory>${project.build.directory}/gaffer</gaffer.output.directory>
         <slider.output.directory>${project.build.directory}/slider</slider.output.directory>
         <slider.accumulo.output.directory>${project.build.directory}/accumulo-pkg</slider.accumulo.output.directory>
+        <cluster.config.output.directory>${project.build.directory}/clusters</cluster.config.output.directory>
     </properties>
 
     <dependencies>
@@ -47,12 +55,76 @@
             <version>${slider.version}</version>
             <scope>test</scope>
         </dependency>
+
+        <dependency>
+            <groupId>org.apache.slider</groupId>
+            <artifactId>slider-funtest</artifactId>
+            <version>${slider.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.slider.packages</groupId>
+            <artifactId>slider-accumulo-app-package</artifactId>
+            <version>${slider.accumulo.version}</version>
+            <scope>test</scope>
+            <!-- The pom for 0.80.0-incubating depends on Accumulo 1.7.0-SNAPSHOT :( -->
+            <exclusions>
+                <exclusion>
+                    <groupId>org.apache.accumulo</groupId>
+                    <artifactId>accumulo-server-base</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.accumulo</groupId>
+                    <artifactId>accumulo-core</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <dependency>
+            <groupId>uk.gov.gchq.gaffer</groupId>
+            <artifactId>common-util</artifactId>
+            <version>${gaffer.version}</version>
+            <type>test-jar</type>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>uk.gov.gchq.gaffer</groupId>
+            <artifactId>integration-test</artifactId>
+            <type>test-jar</type>
+            <version>${gaffer.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>uk.gov.gchq.gaffer</groupId>
+            <artifactId>accumulo-store</artifactId>
+            <version>${gaffer.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>uk.gov.gchq.gaffer</groupId>
+            <artifactId>accumulo-store</artifactId>
+            <type>test-jar</type>
+            <version>${gaffer.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.hadoop</groupId>
+            <artifactId>hadoop-client</artifactId>
+            <version>${hadoop.version}</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <build>
         <resources>
             <resource>
                 <directory>src/main/resources</directory>
+                <filtering>true</filtering>
             </resource>
             <resource>
                 <directory>scripts</directory>
@@ -60,6 +132,17 @@
                 <targetPath>${project.build.directory}/scripts</targetPath>
             </resource>
         </resources>
+
+        <testResources>
+            <testResource>
+                <directory>src/test/resources</directory>
+            </testResource>
+            <testResource>
+                <directory>src/test/clusters</directory>
+                <filtering>true</filtering>
+                <targetPath>${cluster.config.output.directory}</targetPath>
+            </testResource>
+        </testResources>
 
         <plugins>
             <plugin>
@@ -170,5 +253,41 @@
             </plugin>
         </plugins>
     </build>
+
+    <profiles>
+        <profile>
+            <id>accumulo-funtest</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <artifactId>maven-failsafe-plugin</artifactId>
+                        <configuration>
+                            <includes>
+                                <include>**/*FunctionalTest.java</include>
+                                <include>**/*FunctionalTests.java</include>
+                                <include>**/*FT.java</include>
+                                <include>**/*FTs.java</include>
+                            </includes>
+                            <systemPropertyVariables>
+                                <!-- Location of the Slider distribution and config to use -->
+                                <slider.conf.dir>${cluster.config.output.directory}/${test.cluster.type}/slider</slider.conf.dir>
+                                <slider.bin.dir>${slider.output.directory}/slider-${slider.version}</slider.bin.dir>
+                                <!-- Location of the Accumulo slider app package to use -->
+                                <test.app.pkg.dir>${slider.accumulo.output.directory}</test.app.pkg.dir>
+                                <test.app.pkg.file>slider-accumulo-app-package-${accumulo.version}.zip</test.app.pkg.file>
+                                <test.app.pkg.name>ACCUMULO</test.app.pkg.name>
+                                <!-- Location of the Gaffer addon package to use -->
+                                <test.addon.pkg.dir>${project.build.directory}</test.addon.pkg.dir>
+                                <test.addon.pkg.file>${addon.pkg.file}.zip</test.addon.pkg.file>
+                                <test.addon.pkg.name>${addon.pkg.name}</test.addon.pkg.name>
+                                <!-- Location of the cluster specific configuration to use -->
+                                <test.app.resources.dir>${cluster.config.output.directory}/${test.cluster.type}/accumulo</test.app.resources.dir>
+                            </systemPropertyVariables>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 
 </project>
