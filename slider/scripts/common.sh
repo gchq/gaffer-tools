@@ -17,12 +17,14 @@
 #
 
 CLUSTER_NAME=gaffer-test
+CLUSTER_TYPE="${test.cluster.type}"
 
 SLIDER="${slider.output.directory}/slider-*/bin/slider"
 ACCUMULO_PKG="${slider.accumulo.output.directory}/slider-accumulo-app-package-*.zip"
 GAFFER_PKG="${project.build.directory}/${addon.pkg.file}.zip"
 
-export SLIDER_CONF_DIR="${project.build.directory}/scripts/conf/slider/"
-APPCONFIG="${project.build.directory}/scripts/conf/accumulo/appConfig-default.json"
-RESOURCES="${project.build.directory}/scripts/conf/accumulo/resources.json"
+export SLIDER_CONF_DIR="${cluster.config.output.directory}/$CLUSTER_TYPE/slider/"
+APPCONFIG="${cluster.config.output.directory}/$CLUSTER_TYPE/accumulo/appConfig-default.json"
+RESOURCES="${cluster.config.output.directory}/$CLUSTER_TYPE/accumulo/resources.json"
 CLIENT_DESTINATION="${project.build.directory}/accumulo-shell"
+

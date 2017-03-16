@@ -20,7 +20,7 @@ Gaffer tools is built using maven. This process will automatically pull in depen
  projects below.
 
 
-Gaffer (uk.gov.gchq.gaffer:gaffer2:0.6.1):
+Gaffer (uk.gov.gchq.gaffer:gaffer2:0.6.3):
 
 - Apache License, Version 2.0
 
@@ -37,5 +37,10 @@ Graph QL (com.graphql-java:graphql-java:2.1.0):
 Gaffer tool schema-builder-ui is built using angular-cli/webpack. The dependencies are imported using npm, none of them are bundled with this distribution.
 
 Gaffer Schema Builder UI:
+
+- Apache License, Version 2.0
+
+
+mike-hogan/jarjar-forkfork:
 
 - Apache License, Version 2.0

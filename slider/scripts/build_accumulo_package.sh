@@ -69,3 +69,4 @@ fi
 cd $DIR
 mkdir -p $DESTINATION
 cp $TEMP_DIR/app-packages/accumulo/target/$APP_PKG_FILE $DESTINATION
+
