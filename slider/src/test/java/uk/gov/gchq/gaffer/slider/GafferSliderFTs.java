@@ -23,5 +23,5 @@ import org.junit.runner.RunWith;
  * Slider's functional testing library and then running all of Gaffer's integration tests against it.
  */
 @RunWith(GafferSliderTestSuite.class)
-public class GafferSliderITs {
+public class GafferSliderFTs {
 }

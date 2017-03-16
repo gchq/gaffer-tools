@@ -187,7 +187,7 @@ public class FederatedExecutor {
             final String name = entry.getKey();
             final String url = entry.getValue();
 
-            FederatedSystemStatus status = requestor.doGet(url, "status", new TypeReferenceFederatedImpl.SystemStatus(), true);
+            FederatedSystemStatus status = requestor.doGet(url, "status", new TypeReferenceFederatedImpl.SystemStatus(), null, true);
             if (null == status) {
                 status = new FederatedSystemStatus();
                 status.setDescription("No response");
@@ -213,7 +213,7 @@ public class FederatedExecutor {
     protected Set<StoreTrait> fetchTraits() {
         final Set<StoreTrait> proxyTraits = new HashSet<>();
         for (final String url : config.getUrls()) {
-            final Set<StoreTrait> traits = requestor.doGet(url, "graph/" + IFederatedGraphConfigurationService.STORE_TRAITS_PATH, new TypeReferenceStoreImpl.StoreTraits(), true);
+            final Set<StoreTrait> traits = requestor.doGet(url, "graph/" + IFederatedGraphConfigurationService.STORE_TRAITS_PATH, new TypeReferenceStoreImpl.StoreTraits(), null, true);
             if (null != traits) {
                 proxyTraits.addAll(traits);
             }
@@ -227,7 +227,7 @@ public class FederatedExecutor {
     protected Set<String> fetchClasses(final String classType) {
         final Set<String> ops = new HashSet<>();
         for (final String url : config.getUrls()) {
-            final Set<String> classes = requestor.doGet(url, "graph/" + classType, new TypeReferenceFederatedImpl.SetString(), true);
+            final Set<String> classes = requestor.doGet(url, "graph/" + classType, new TypeReferenceFederatedImpl.SetString(), null, true);
             if (null != classes) {
                 ops.addAll(classes);
             }
@@ -240,7 +240,7 @@ public class FederatedExecutor {
         final Map<String, Schema> schemaMap = new HashMap<>();
 
         for (final String url : config.getUrls()) {
-            final Schema schemaPart = requestor.doGet(url, "graph/" + IFederatedGraphConfigurationService.SCHEMA_PATH, new TypeReferenceFederatedImpl.Schema(), true);
+            final Schema schemaPart = requestor.doGet(url, "graph/" + IFederatedGraphConfigurationService.SCHEMA_PATH, new TypeReferenceFederatedImpl.Schema(), null, true);
             schemaMap.put(url, schemaPart);
         }
 
