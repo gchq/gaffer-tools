@@ -45,14 +45,10 @@ import static uk.gov.gchq.gaffer.jsonserialisation.JSONSerialiser.createDefaultM
 public class FederatedOperationService implements IFederatedOperationService {
     private static final Logger LOGGER = LoggerFactory.getLogger(FederatedOperationService.class);
     private final ObjectMapper mapper = createDefaultMapper();
-    private final FederatedExecutor executor = new FederatedExecutor();
+    private final FederatedExecutor executor = createExecutor();
 
     @Inject
     private UserFactory userFactory;
-
-    private User createUser() {
-        return userFactory.createUser();
-    }
 
     @Override
     public Iterable<Object> execute(final OperationChain operationChain, final boolean skipErrors, final boolean runIndividually, final boolean firstResult) {
@@ -148,5 +144,13 @@ public class FederatedOperationService implements IFederatedOperationService {
                 LOGGER.warn("IOException (chunks)", ioe);
             }
         }
+    }
+
+    protected FederatedExecutor createExecutor() {
+        return new FederatedExecutor();
+    }
+
+    protected User createUser() {
+        return userFactory.createUser();
     }
 }
