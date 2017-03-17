@@ -19,6 +19,7 @@ import { NgModule, ApplicationRef } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MaterialModule } from '@angular/material';
 import { HttpModule } from '@angular/http';
+import { RouterModule } from '@angular/router';
 import { ReactiveFormsModule } from '@angular/forms';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { GraphComponent } from './graph/graph.component';
@@ -62,6 +63,7 @@ export function configFactory() {
     MaterialModule.forRoot(),
     ReactiveFormsModule,
     Ng2Webstorage,
+    RouterModule,
     routing,
     ConfigModule.forRoot({
       provide: ConfigLoader,

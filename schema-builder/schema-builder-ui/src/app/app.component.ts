@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { Component } from '@angular/core';
+import { Component, AfterViewInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 
 import * as _ from 'lodash';
@@ -24,7 +24,7 @@ import * as _ from 'lodash';
   templateUrl: 'app.component.html',
   styleUrls: ['app.component.css']
 })
-export class AppComponent{
+export class AppComponent implements AfterViewInit{
   activeLinkIndex:number;
   pages:Array<any> = [
     { title: "Graph", route: "graph" },
@@ -32,22 +32,17 @@ export class AppComponent{
     { title: "Types", route: "types" },
     { title: "Schema", route: "schema" }
   ];
+  rlaSafe:boolean = false;
+
+  public ngAfterViewInit() {
+    this.rlaSafe = true;
+  }
 
   activateLink(index: number, linkIsActivated: boolean) {
     this.activeLinkIndex = index;
     console.log(linkIsActivated);
   }
 
-  constructor(private router: Router,
-    private route: ActivatedRoute) {
-    router.events.subscribe((val) => {
-      let tab:string = 'graph';
-      if (val.url && val.url.length > 2) {
-        tab = val.url.substr(1).split(';', 1)[0];
-      }
-      this.activeLinkIndex = _.findIndex(this.pages, function (o) {
-        return o.route === tab;
-      });
-    });
+  constructor(private router: Router, private route: ActivatedRoute) {
   }
 }
