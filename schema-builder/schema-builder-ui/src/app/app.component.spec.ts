@@ -49,17 +49,17 @@ describe('App: Gaffer Schema Builder', () => {
     });
   });
 
-  // it('should create the app', async(() => {
-  //   let fixture = TestBed.createComponent(AppComponent);
-  //   let app = fixture.debugElement.componentInstance;
-  //   expect(app).toBeTruthy();
-  // }));
+  it('should create the app', async(() => {
+    let fixture = TestBed.createComponent(AppComponent);
+    let app = fixture.debugElement.componentInstance;
+    expect(app).toBeTruthy();
+  }));
 
-  // it('should render title in a h1 tag', async(() => {
-  //   let fixture = TestBed.createComponent(AppComponent);
-  //   fixture.detectChanges();
-  //   let de = fixture.debugElement.query(By.css('h1'));
-  //   let el = de.nativeElement;
-  //   expect(el.innerText).toEqual('Gaffer Schema Builder');
-  // }));
+  it('should render title in a h1 tag', async(() => {
+    let fixture = TestBed.createComponent(AppComponent);
+    fixture.detectChanges();
+    let de = fixture.debugElement.query(By.css('h1'));
+    let el = de.nativeElement;
+    expect(el.innerText).toEqual('Gaffer Schema Builder');
+  }));
 });

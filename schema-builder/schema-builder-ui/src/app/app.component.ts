@@ -14,35 +14,47 @@
  * limitations under the License.
  */
 
-import { Component, AfterViewInit } from '@angular/core';
+import { Component, Input, AfterViewInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 
 import * as _ from 'lodash';
 
 @Component({
-  selector: 'app-root',
-  templateUrl: 'app.component.html',
-  styleUrls: ['app.component.css']
+    selector: 'app-root',
+    templateUrl: 'app.component.html',
+    styleUrls: ['app.component.css']
 })
-export class AppComponent implements AfterViewInit{
-  activeLinkIndex:number;
-  pages:Array<any> = [
-    { title: "Graph", route: "graph" },
-    { title: "Properties", route: "properties" },
-    { title: "Types", route: "types" },
-    { title: "Schema", route: "schema" }
-  ];
-  rlaSafe:boolean = false;
+export class AppComponent implements AfterViewInit {
+    activeLinkIndex: number;
+    pages: Array<any> = [
+        { title: "Graph", route: "graph" },
+        { title: "Properties", route: "properties" },
+        { title: "Types", route: "types" },
+        { title: "Schema", route: "schema" }
+    ];
+    rlaSafe: boolean = false;
 
-  public ngAfterViewInit() {
-    this.rlaSafe = true;
-  }
+    public ngAfterViewInit() {
+        this.rlaSafe = true;
+    }
 
-  activateLink(index: number, linkIsActivated: boolean) {
-    this.activeLinkIndex = index;
-    console.log(linkIsActivated);
-  }
+    activateLink(index: number, linkIsActivated: boolean) {
+        this.activeLinkIndex = index;
+        console.log(linkIsActivated);
+    }
 
-  constructor(private router: Router, private route: ActivatedRoute) {
-  }
+    constructor(private router: Router, private route: ActivatedRoute) {
+    }
+}
+
+@Component({
+    selector: 'nav-link',
+    template: '{{_tabName}}'
+})
+export class NavLinkComponent {
+    _tabName: string;
+    @Input()
+    set tabName(name: string) {
+        this._tabName = name;
+    }
 }

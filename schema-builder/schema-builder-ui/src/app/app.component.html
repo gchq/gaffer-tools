@@ -19,11 +19,12 @@
     <span class="app-toolbar-filler"></span>
 </md-toolbar>
 <nav md-tab-nav-bar>
-    <a md-tab-link [routerLink]="child.route"
+    <nav-link md-tab-link
+        *ngFor="let child of pages"
+        [routerLink]="child.route"
         routerLinkActive #rla="routerLinkActive"
-        [active]="rlaSafe && rla.isActive">
-        {{child.title}}
-    </a>
+        [active]="rlaSafe && rla.isActive" [tabName]="child.title">
+    </nav-link>
 </nav>
 
 <router-outlet class="alt-background"></router-outlet>

@@ -31,6 +31,7 @@ import { TypesComponent } from './types/types.component';
 import { PrettyJsonModule } from 'angular2-prettyjson';
 import { AppComponent } from './app.component';
 import { TypeFormComponent } from './types/type-form/type-form.component';
+import { NavLinkComponent } from './app.component';
 import { EntityFormComponent } from './graph/entity-form/entity-form.component';
 import { PropertiesComponent } from './properties/properties.component';
 import { PropertyFormComponent } from './properties/property-form/property-form.component';
@@ -52,7 +53,8 @@ export function configFactory() {
     TypeFormComponent,
     EntityFormComponent,
     PropertiesComponent,
-    PropertyFormComponent
+    PropertyFormComponent,
+    NavLinkComponent
   ],
   imports: [
     BrowserModule,
