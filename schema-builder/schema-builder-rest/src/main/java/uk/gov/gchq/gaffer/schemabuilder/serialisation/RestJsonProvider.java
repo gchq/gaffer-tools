@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Crown Copyright
+ * Copyright 2016-2017 Crown Copyright
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,24 +13,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package uk.gov.gchq.gaffer.schemabuilder.serialisation;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.jaxrs.json.JacksonJaxbJsonProvider;
 import uk.gov.gchq.gaffer.jsonserialisation.JSONSerialiser;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
+import javax.ws.rs.ext.ContextResolver;
 import javax.ws.rs.ext.Provider;
 
+/**
+ * A {@link javax.ws.rs.ext.ContextResolver} implementation to provide a default
+ * {@link com.fasterxml.jackson.databind.ObjectMapper} for converting objects to
+ * JSON.
+ */
 @Provider
-@Produces(MediaType.APPLICATION_JSON)
-public class RestJsonProvider extends JacksonJaxbJsonProvider {
+public class RestJsonProvider implements ContextResolver<ObjectMapper> {
+    public final ObjectMapper mapper;
+
     public RestJsonProvider() {
-        super.setMapper(createMapper());
+        this.mapper = createMapper();
     }
 
-    public RestJsonProvider(final ObjectMapper mapper) {
-        super.setMapper(mapper);
+    @Override
+    public ObjectMapper getContext(final Class<?> aClass) {
+        return mapper;
     }
 
     protected ObjectMapper createMapper() {

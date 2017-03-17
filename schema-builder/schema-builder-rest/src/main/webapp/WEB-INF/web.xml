@@ -4,12 +4,11 @@
          xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
          version="3.0">
 
-    <display-name>Schema builder REST</display-name>
+    <display-name>Gaffer Schema Builder REST</display-name>
 
     <servlet>
-        <servlet-name>Resteasy</servlet-name>
-        <servlet-class>
-            org.jboss.resteasy.plugins.server.servlet.HttpServletDispatcher
+        <servlet-name>Gaffer Schema Builder REST</servlet-name>
+        <servlet-class>org.glassfish.jersey.servlet.ServletContainer
         </servlet-class>
         <init-param>
             <param-name>javax.ws.rs.Application</param-name>
@@ -17,7 +16,13 @@
                 uk.gov.gchq.gaffer.schemabuilder.application.ApplicationConfig
             </param-value>
         </init-param>
+        <load-on-startup>1</load-on-startup>
+        <async-supported>true</async-supported>
     </servlet>
+    <servlet-mapping>
+        <servlet-name>Gaffer Schema Builder REST</servlet-name>
+        <url-pattern>/v1/*</url-pattern>
+    </servlet-mapping>
 
     <filter>
         <filter-name>OriginFilter</filter-name>

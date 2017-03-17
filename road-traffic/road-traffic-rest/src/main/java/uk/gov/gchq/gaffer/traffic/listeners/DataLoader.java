@@ -22,7 +22,7 @@ import uk.gov.gchq.gaffer.operation.OperationChain;
 import uk.gov.gchq.gaffer.operation.OperationException;
 import uk.gov.gchq.gaffer.operation.impl.add.AddElements;
 import uk.gov.gchq.gaffer.operation.impl.generate.GenerateElements;
-import uk.gov.gchq.gaffer.rest.GraphFactory;
+import uk.gov.gchq.gaffer.rest.factory.GraphFactory;
 import uk.gov.gchq.gaffer.traffic.generator.RoadUseElementGenerator;
 import uk.gov.gchq.gaffer.user.User;
 import javax.servlet.ServletContextEvent;

@@ -18,12 +18,17 @@
 
 <configuration>
 	<property>
-		<name>yarn.resourcemanager.address</name>
-		<value>127.0.0.1:8032</value>
+		<name>hadoop.registry.zk.quorum</name>
+		<value>zoo1,zoo2,zoo3</value>
 	</property>
 
 	<property>
 		<name>HADOOP_CONF_DIR</name>
-		<value>${env.HADOOP_CONF_DIR}</value>
+		<value>/etc/hadoop/conf</value>
+	</property>
+
+	<property>
+		<name>slider.test.agent.enabled</name>
+		<value>true</value>
 	</property>
 </configuration>
