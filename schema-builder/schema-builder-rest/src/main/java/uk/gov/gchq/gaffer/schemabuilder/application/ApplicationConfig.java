@@ -15,30 +15,26 @@
  */
 package uk.gov.gchq.gaffer.schemabuilder.application;
 
+import org.glassfish.jersey.server.ResourceConfig;
 import uk.gov.gchq.gaffer.schemabuilder.serialisation.RestJsonProvider;
 import uk.gov.gchq.gaffer.schemabuilder.service.SchemaBuilderService;
-import javax.ws.rs.ApplicationPath;
-import javax.ws.rs.core.Application;
 import java.util.HashSet;
 import java.util.Set;
 
-@ApplicationPath("v1")
-public class ApplicationConfig extends Application {
-    protected final Set<Object> singletons = new HashSet<>();
+public class ApplicationConfig extends ResourceConfig {
     protected final Set<Class<?>> resources = new HashSet<>();
 
     public ApplicationConfig() {
+        addSystemResources();
+        addServices();
+        registerClasses(resources);
+    }
+
+    protected void addServices() {
         resources.add(SchemaBuilderService.class);
+    }
+
+    protected void addSystemResources() {
         resources.add(RestJsonProvider.class);
-    }
-
-    @Override
-    public Set<Class<?>> getClasses() {
-        return resources;
-    }
-
-    @Override
-    public Set<Object> getSingletons() {
-        return singletons;
     }
 }

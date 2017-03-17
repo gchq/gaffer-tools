@@ -13,22 +13,18 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-  
-  <md-sidenav-layout [class.m2app-dark]="isDarkTheme">
-    <md-toolbar color="primary">
-        <img src="assets/gafferlogowhite.png" width="30px" style="margin-right: 15px;"/>
-        <h1 style="font-size: 22pt; font-weight: 800;">Gaffer Schema Builder</h1>
-        <span class="app-toolbar-filler"></span>
-    </md-toolbar>
-    <div class="mdTabs">
-        <div>
-            <ul class="tabs">
-                <li class="tab col s3"><a href="#graph" [ngClass]="{'active': tab === 'graph'}" (click)="changeTab('graph')">Graph</a></li>
-                <li class="tab col s3"><a href="#properties" [ngClass]="{'active': tab === 'properties'}" (click)="changeTab('properties')">Properties</a></li>
-                <li class="tab col s3"><a href="#types" [ngClass]="{'active': tab === 'types'}" (click)="changeTab('types')">Types</a></li>
-                <li class="tab col s3"><a href="#schema" [ngClass]="{'active': tab === 'schema'}" (click)="changeTab('schema')">Schema</a></li>
-            </ul>
-        </div>
-        <router-outlet></router-outlet>
-    </div>
-</md-sidenav-layout>
+<md-toolbar color="primary">
+    <img src="assets/gafferlogowhite.png" width="30px" style="margin-right: 15px;" />
+    <h1 style="font-size: 22pt; font-weight: 800;">Gaffer Schema Builder</h1>
+    <span class="app-toolbar-filler"></span>
+</md-toolbar>
+<nav md-tab-nav-bar>
+    <nav-link md-tab-link
+        *ngFor="let child of pages"
+        [routerLink]="child.route"
+        routerLinkActive #rla="routerLinkActive"
+        [active]="rlaSafe && rla.isActive" [tabName]="child.title">
+    </nav-link>
+</nav>
+
+<router-outlet class="alt-background"></router-outlet>
