@@ -19,31 +19,25 @@ This project was generated with [angular-cli](https://github.com/angular/angular
 ## How to run
 
 Install [NPM](https://www.npmjs.com/).
-Install angular-cli globally `npm install -g angular-cli`.
+Install angular-cli globally `npm install -g @angular/cli`.
 Install dependencies `npm install` from this folder (gaffer-tools/schema-builder/schema-builder-ui).
 
 Run `ng serve` or `ng serve --prod` to set up a server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
 
 For the validation and class lookup, the backend REST service also need to be running (gaffer-tools/schema-builder/schema-builder-rest).
 
-## Contributing and deploying
+### Config
 
-### Code scaffolding
-
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive/pipe/service/class`.
+There is a config file located in 'src/config.json'
+From here you can set the url of the Gaffer REST API you want the UI to use. By default this is set to use 'localhost:8080'.
 
 ### Build
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `-prod` flag for a production build.
+Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `--prod` flag for a production build.
 
 ### Running unit tests
 
 Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
-
-### Running end-to-end tests
-
-Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protractortest.org/).
-Before running the tests make sure you are serving the app via `ng serve`.
 
 ### Deploying to Github Pages
 

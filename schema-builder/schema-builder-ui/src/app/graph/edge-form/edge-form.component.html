@@ -13,31 +13,37 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-  
-  <form [formGroup]="form" materialize style="padding-top: 10px;">
+
+<form [formGroup]="form" style="padding-top: 10px;">
     <div class="form-group">
         <div class="input-field">
-            <select id="source" materialize="material_select" [materializeSelectOptions]="nodeOptions" formControlName="from">
-                <option *ngFor="let node of nodeOptions" [value]="node.id" [selected]="node.id === _edge.from">{{node.label}}</option>
-            </select>
-            <label>Source</label>
+            <md-select id="source" placeholder="Source" formControlName="from" [(ngModel)]="_edge.from" class="full-width">
+                <md-option *ngFor="let node of nodeOptions" [value]="node.id">
+                    {{ node.label }}
+                </md-option>
+            </md-select>
         </div>
         <div class="input-field">
-            <select id="destination" materialize="material_select" [materializeSelectOptions]="nodeOptions" formControlName="to">
-                <option *ngFor="let node of nodeOptions" [value]="node.id" [selected]="node.id === _edge.to">{{node.label}}</option>
-            </select>
-            <label>Destination</label>
+            <md-select id="destination" placeholder="Destination" formControlName="to" [(ngModel)]="_edge.to" class="full-width">
+                <md-option *ngFor="let node of nodeOptions" [value]="node.id">
+                    {{ node.label }}
+                </md-option>
+            </md-select>
         </div>
         <div class="input-field">
-            <input class="form-control" formControlName="label" type="text" name="label" placeholder="Edge name">
-            <label>Name</label>
+            <md-input-container class="full-width">
+                <input mdInput placeholder="Edge name" formControlName="label" [(ngModel)]="_edge.label">
+            </md-input-container>
         </div>
         <div class="input-field">
-            <select id="destination" materialize="material_select" formControlName="arrows">
-                <option value="to" [selected]="_edge.arrows === 'to'">True</option>
-                <option value="none" [selected]="_edge.arrows !== 'to'">False</option>
-            </select>
-            <label>Directed</label>
+            <md-select id="directed" placeholder="Directed" formControlName="arrows" [(ngModel)]="_edge.arrows" class="full-width">
+                <md-option value="to">
+                    True
+                </md-option>
+                <md-option value="none">
+                    False
+                </md-option>
+            </md-select>
         </div>
     </div>
 </form>

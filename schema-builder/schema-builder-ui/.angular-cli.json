@@ -1,6 +1,7 @@
 {
+  
+  "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
   "project": {
-    "version": "1.0.0-beta.19-3",
     "name": "gaffer-schema-builder"
   },
   "apps": [
@@ -8,28 +9,27 @@
       "root": "src",
       "outDir": "dist",
       "assets": [
-        "assets"
+        "assets",
+        "config.json"
       ],
       "index": "index.html",
       "main": "main.ts",
+      "polyfills": "polyfills.ts",
       "test": "test.ts",
-      "tsconfig": "tsconfig.json",
+      "tsconfig": "tsconfig.app.json",
+      "testTsconfig": "tsconfig.spec.json",
       "prefix": "app",
-      "mobile": false,
       "styles": [
         "styles.css",
         "theme.scss",
-        "../node_modules/vis/dist/vis.css",
-        "../node_modules/materialize-css/bin/materialize.css"
-      
+        "../node_modules/vis/dist/vis.css"
       ],
       "scripts": [
         "../node_modules/vis/dist/vis.js",
-        "../node_modules/jquery/dist/jquery.min.js",
-        "../node_modules/materialize-css/bin/materialize.js"
+        "../node_modules/jquery/dist/jquery.min.js"
       ],
+      "environmentSource": "environments/environment.ts",
       "environments": {
-        "source": "environments/environment.ts",
         "dev": "environments/environment.ts",
         "prod": "environments/environment.prod.ts"
       }
@@ -37,11 +37,6 @@
   ],
   "addons": [],
   "packages": [],
-  "e2e": {
-    "protractor": {
-      "config": "./protractor.conf.js"
-    }
-  },
   "test": {
     "karma": {
       "config": "./karma.conf.js"

@@ -14,29 +14,47 @@
  * limitations under the License.
  */
 
-import { Component } from '@angular/core';
+import { Component, Input, AfterViewInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 
+import * as _ from 'lodash';
+
 @Component({
-  selector: 'app-root',
-  templateUrl: 'app.component.html',
-  styleUrls: ['app.component.css']
+    selector: 'app-root',
+    templateUrl: 'app.component.html',
+    styleUrls: ['app.component.css']
 })
-export class AppComponent {
-  isDarkTheme: boolean = false;
-  tab: string;
+export class AppComponent implements AfterViewInit {
+    activeLinkIndex: number;
+    pages: Array<any> = [
+        { title: "Graph", route: "graph" },
+        { title: "Properties", route: "properties" },
+        { title: "Types", route: "types" },
+        { title: "Schema", route: "schema" }
+    ];
+    rlaSafe: boolean = false;
 
-  constructor(private router: Router,
-    private route: ActivatedRoute) {
-    this.tab = 'graph';
-    router.events.subscribe((val) => {
-      if (val.url && val.url.length > 2) {
-        this.tab = val.url.substr(1).split(';', 1)[0];
-      }
-    });
-  }
+    public ngAfterViewInit() {
+        this.rlaSafe = true;
+    }
 
-  changeTab(newTab) {
-    this.router.navigate(['/' + newTab]);
-  }
+    activateLink(index: number, linkIsActivated: boolean) {
+        this.activeLinkIndex = index;
+        console.log(linkIsActivated);
+    }
+
+    constructor(private router: Router, private route: ActivatedRoute) {
+    }
+}
+
+@Component({
+    selector: 'nav-link',
+    template: '{{_tabName}}'
+})
+export class NavLinkComponent {
+    _tabName: string;
+    @Input()
+    set tabName(name: string) {
+        this._tabName = name;
+    }
 }

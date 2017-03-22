@@ -13,8 +13,8 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-  
-  <div style="padding: 15px;" class="flex-container" fxLayout="row" fxLayoutAlign="center start">
+
+<div style="padding: 15px;" class="flex-container" fxLayout="row" fxLayoutAlign="center start">
     <div fxFlex="10%" fxShow="true" fxShow.sm="false" fxShow.xs="false"></div>
     <div fxFlex>
         <div fxLayout="row">
@@ -32,14 +32,19 @@
             <div fxFlex>
                 <div fxFlex fxLayout="row">
                     <div fxFlex class="input-field">
-                        <input class="form-control" type="text" name="class" placeholder="Gaffer schema URL: <url>/rest/v1/graph/schema" [(ngModel)]="schemaUrl" (ngModelChange)="schemaUrlChanged()">
+                        <md-input-container class="full-width">
+                            <input mdInput class="form-control" type="text" name="class" placeholder="Gaffer schema URL: <url>/rest/v1/graph/schema" [(ngModel)]="schemaUrl"
+                                (ngModelChange)="schemaUrlChanged()">
+                        </md-input-container>
                     </div>
-                    <button md-raised-button color="accent" style="height: 40px; margin-top: 16px;" (click)="loadFromUrl()" mdTooltip="load schema from URL" aria-label="load schema from URL" class="button-spacing">
+                    <button md-raised-button color="accent" style="height: 40px; margin-top: 16px;" (click)="loadFromUrl()" mdTooltip="load schema from URL"
+                        aria-label="load schema from URL" class="button-spacing">
                         Load from URL
-                    </button>
-                    <button md-raised-button color="warn" style="height: 40px; margin-top: 16px;" (click)="clearSchema()" mdTooltip="load schema from URL" aria-label="load schema from URL" class="button-spacing">
-                        Clear schema
-                    </button>
+                        </button>
+                        <button md-raised-button color="warn" style="height: 40px; margin-top: 16px;" (click)="clearSchema()" mdTooltip="load schema from URL"
+                            aria-label="load schema from URL" class="button-spacing">
+                            Clear schema
+                            </button>
                 </div>
                 <p style="color:red; margin-top: 0;" *ngIf="errorMessageURL">{{errorMessageURL}}</p>
                 <p style="color:green; margin-top: 0;" *ngIf="successURL">{{successURL}}</p>
@@ -49,21 +54,23 @@
             <div class="content-card-header">
                 <md-card-title>Data Schema</md-card-title>
                 <div class="type-edit-button row">
-                    <button md-icon-button color="accent" (click)="enableEditMode('dataSchema')" mdTooltip="edit data schema" aria-label="edit data schema" *ngIf="!editing.dataSchema" class="button-spacing">
+                    <button md-icon-button color="accent" (click)="enableEditMode('dataSchema')" mdTooltip="edit data schema" aria-label="edit data schema"
+                        *ngIf="!editing.dataSchema" class="button-spacing">
                         <md-icon>edit</md-icon>
-                    </button>
-                    <a class="btn-floating waves-effect waves-light btn-flat" [href]="sanitize(dataSchemaDownload)" download="dataSchema.json" mdTooltip="save to file" aria-label="save to file" *ngIf="!editing.dataSchema"><i class="material-icons left">file_download</i></a>
+                        </button>
+                        <a class="download-button" [href]="sanitize(dataSchemaDownload)" download="dataSchema.json" mdTooltip="save to file" aria-label="save to file" *ngIf="!editing.dataSchema"><i class="material-icons left">file_download</i></a>
                 </div>
             </div>
             <md-card-content>
                 <pre [hidden]="editing.dataSchema" [innerHtml]="dataSchema | prettyjson:4"></pre>
                 <p style="color: red" *ngIf="errors.dataSchema">{{errors.dataSchema}}</p>
-                <md-input-container style="width: 100%" [hidden]=!editing.dataSchema>
-                    <textarea md-input id="dataSchemaTextArea" value="{{dataSchema | json:4}}"></textarea>
+                <md-input-container style="width: 100%">
+                    <textarea mdInput id="dataSchemaTextArea" value="{{dataSchema | json:4}}" [hidden]="!editing.dataSchema"></textarea>
                 </md-input-container>
                 <div class="flex-container" fxLayout="row" *ngIf="editing.dataSchema">
                     <div fxFlex></div>
-                    <button class="form-button button-spacing" (click)="updateDataSchema(undefined)" mdTooltip="update data schema" aria-label="update data schema" md-raised-button color="primary">Update</button>
+                    <button class="form-button button-spacing" (click)="updateDataSchema(undefined)" mdTooltip="update data schema" aria-label="update data schema"
+                        md-raised-button color="primary">Update</button>
                 </div>
             </md-card-content>
         </md-card>
@@ -72,21 +79,23 @@
             <div class="content-card-header">
                 <md-card-title>Data Types</md-card-title>
                 <div class="type-edit-button row">
-                    <button md-icon-button color="accent" (click)="enableEditMode('dataTypes')" mdTooltip="edit data types" aria-label="edit data types" *ngIf="!editing.dataTypes" class="button-spacing">
+                    <button md-icon-button color="accent" (click)="enableEditMode('dataTypes')" mdTooltip="edit data types" aria-label="edit data types"
+                        *ngIf="!editing.dataTypes" class="button-spacing">
                         <md-icon>edit</md-icon>
-                    </button>
-                    <a class="btn-floating waves-effect waves-light btn-flat" [href]="sanitize(dataTypesDownload)" download="dataTypes.json" mdTooltip="save to file" aria-label="save to file" *ngIf="!editing.dataTypes"><i class="material-icons left">file_download</i></a>
+                        </button>
+                        <a class="download-button" [href]="sanitize(dataTypesDownload)" download="dataTypes.json" mdTooltip="save to file" aria-label="save to file" *ngIf="!editing.dataTypes"><i class="material-icons left">file_download</i></a>
                 </div>
             </div>
             <md-card-content>
                 <pre [hidden]="editing.dataTypes" [innerHtml]="dataTypes | prettyjson:4"></pre>
                 <p style="color: red" *ngIf="errors.dataTypes">{{errors.dataTypes}}</p>
-                <md-input-container style="width: 100%" [hidden]=!editing.dataTypes>
-                    <textarea md-input id="dataTypesTextArea" value="{{dataTypes | json:4}}"></textarea>
+                <md-input-container style="width: 100%">
+                    <textarea mdInput id="dataTypesTextArea" value="{{dataTypes | json:4}}" [hidden]="!editing.dataTypes"></textarea>
                 </md-input-container>
                 <div class="flex-container" fxLayout="row" *ngIf="editing.dataTypes">
                     <div fxFlex></div>
-                    <button class="form-button button-spacing" (click)="updateDataTypes(undefined)" mdTooltip="update data types" aria-label="update data types" md-raised-button color="primary">Update</button>
+                    <button class="form-button button-spacing" (click)="updateDataTypes(undefined)" mdTooltip="update data types" aria-label="update data types"
+                        md-raised-button color="primary">Update</button>
                 </div>
             </md-card-content>
         </md-card>
@@ -95,21 +104,23 @@
             <div class="content-card-header">
                 <md-card-title>Store Types</md-card-title>
                 <div class="type-edit-button row">
-                    <button md-icon-button color="accent" (click)="enableEditMode('storeTypes')" mdTooltip="edit store types" aria-label="edit store types" *ngIf="!editing.storeTypes" class="button-spacing">
+                    <button md-icon-button color="accent" (click)="enableEditMode('storeTypes')" mdTooltip="edit store types" aria-label="edit store types"
+                        *ngIf="!editing.storeTypes" class="button-spacing">
                         <md-icon>edit</md-icon>
-                    </button>
-                    <a class="btn-floating waves-effect waves-light btn-flat" [href]="sanitize(storeTypesDownload)" download="storeTypes.json" mdTooltip="save to file" aria-label="save to file" *ngIf="!editing.storeTypes"><i class="material-icons left">file_download</i></a>
+                        </button>
+                        <a class="download-button" [href]="sanitize(storeTypesDownload)" download="storeTypes.json" mdTooltip="save to file" aria-label="save to file" *ngIf="!editing.storeTypes"><i class="material-icons left">file_download</i></a>
                 </div>
             </div>
             <md-card-content>
                 <pre [hidden]="editing.storeTypes" [innerHtml]="storeTypes | prettyjson:4"></pre>
                 <p style="color: red" *ngIf="errors.storeTypes">{{errors.storeTypes}}</p>
-                <md-input-container style="width: 100%" [hidden]=!editing.storeTypes>
-                    <textarea md-input id="storeTypesTextArea" value="{{storeTypes | json:4}}"></textarea>
+                <md-input-container style="width: 100%">
+                    <textarea mdInput id="storeTypesTextArea" value="{{storeTypes | json:4}}" [hidden]="!editing.storeTypes"></textarea>
                 </md-input-container>
                 <div class="flex-container" fxLayout="row" *ngIf="editing.storeTypes">
                     <div fxFlex></div>
-                    <button class="form-button button-spacing" (click)="updateStoreTypes(undefined)" mdTooltip="update store types" aria-label="update store types" md-raised-button color="primary">Update</button>
+                    <button class="form-button button-spacing" (click)="updateStoreTypes(undefined)" mdTooltip="update store types" aria-label="update store types"
+                        md-raised-button color="primary">Update</button>
                 </div>
             </md-card-content>
         </md-card>
