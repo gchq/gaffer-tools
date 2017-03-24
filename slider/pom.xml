@@ -34,9 +34,9 @@
         <hadoop.version>2.7.1</hadoop.version>
 
         <!-- Dependency Versions -->
-        <slider.version>0.91.0-incubating</slider.version>
+        <slider.version>0.92.0-incubating</slider.version>
         <slider.accumulo.version>0.80.0-incubating</slider.accumulo.version>
-        <slider.accumulo.branch>branches/branch-0.91</slider.accumulo.branch>
+        <slider.accumulo.branch>branches/branch-0.92</slider.accumulo.branch>
 
         <!-- Testing Properties -->
         <test.cluster.type>docker_cloudera_quickstart</test.cluster.type>
