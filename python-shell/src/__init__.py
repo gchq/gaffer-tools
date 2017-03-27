@@ -2,7 +2,7 @@ from . import gafferpy
 from gafferpy import gaffer_connector
 from gafferpy import gaffer_connector_pki
 
-__version__ = "0.6.0"
+__version__ = "0.6.3"
 
 __title__ = "gafferpy"
 __description__ = "Gaffer Python Shell"
