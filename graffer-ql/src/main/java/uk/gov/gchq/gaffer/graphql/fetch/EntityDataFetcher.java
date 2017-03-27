@@ -15,15 +15,15 @@
  */
 package uk.gov.gchq.gaffer.graphql.fetch;
 
+import graphql.schema.DataFetchingEnvironment;
 import uk.gov.gchq.gaffer.commonutil.iterable.CloseableIterable;
+import uk.gov.gchq.gaffer.data.element.Element;
 import uk.gov.gchq.gaffer.data.element.Entity;
 import uk.gov.gchq.gaffer.data.elementdefinition.view.View;
 import uk.gov.gchq.gaffer.graphql.definitions.Constants;
 import uk.gov.gchq.gaffer.operation.OperationChain;
 import uk.gov.gchq.gaffer.operation.data.EntitySeed;
-import uk.gov.gchq.gaffer.operation.impl.get.GetEntitiesBySeed;
-import graphql.schema.DataFetchingEnvironment;
-
+import uk.gov.gchq.gaffer.operation.impl.get.GetElements;
 import java.util.Map;
 
 /**
@@ -37,13 +37,13 @@ public abstract class EntityDataFetcher extends ElementDataFetcher<Entity> {
 
     protected abstract String getVertex(final DataFetchingEnvironment environment);
 
-    protected OperationChain<CloseableIterable<Entity>> getOperationChain(final DataFetchingEnvironment environment,
+    protected OperationChain<CloseableIterable<? extends Element>> getOperationChain(final DataFetchingEnvironment environment,
                                                                           final StringBuilder keyBuilder) {
         final String vertexArg = getVertex(environment);
         keyBuilder.append(vertexArg);
-        final OperationChain<CloseableIterable<Entity>> opChain = new OperationChain.Builder()
-                .first(new GetEntitiesBySeed.Builder()
-                        .addSeed(new EntitySeed(vertexArg))
+        final OperationChain<CloseableIterable<? extends Element>> opChain = new OperationChain.Builder()
+                .first(new GetElements.Builder()
+                        .input(new EntitySeed(vertexArg))
                         .view(new View.Builder()
                                 .entity(getGroup())
                                 .build())

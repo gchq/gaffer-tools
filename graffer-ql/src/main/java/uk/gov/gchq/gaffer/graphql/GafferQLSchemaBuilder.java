@@ -15,6 +15,10 @@
  */
 package uk.gov.gchq.gaffer.graphql;
 
+import graphql.GraphQL;
+import graphql.schema.GraphQLObjectType;
+import graphql.schema.GraphQLSchema;
+import org.apache.log4j.Logger;
 import uk.gov.gchq.gaffer.graphql.definitions.DataTypeGQLBuilder;
 import uk.gov.gchq.gaffer.graphql.definitions.EdgeTypeGQLBuilder;
 import uk.gov.gchq.gaffer.graphql.definitions.EntityTypeGQLBuilder;
@@ -22,11 +26,6 @@ import uk.gov.gchq.gaffer.store.schema.Schema;
 import uk.gov.gchq.gaffer.store.schema.SchemaEdgeDefinition;
 import uk.gov.gchq.gaffer.store.schema.SchemaEntityDefinition;
 import uk.gov.gchq.gaffer.store.schema.TypeDefinition;
-import graphql.GraphQL;
-import graphql.schema.GraphQLObjectType;
-import graphql.schema.GraphQLSchema;
-import org.apache.log4j.Logger;
-
 import java.util.HashMap;
 import java.util.Map;
 

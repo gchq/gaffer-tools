@@ -16,7 +16,6 @@
 
 package uk.gov.gchq.gaffer.graphql.fetch;
 
-import uk.gov.gchq.gaffer.graphql.fetch.VertexArgDataFetcher;
 import graphql.schema.DataFetchingEnvironment;
 import org.junit.Test;
 

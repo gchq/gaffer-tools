@@ -15,7 +15,6 @@
  */
 package uk.gov.gchq.gaffer.federated.rest.util;
 
-import org.junit.Test;
 import uk.gov.gchq.gaffer.federated.rest.dto.SystemStatus;
 import javax.ws.rs.core.Response;
 

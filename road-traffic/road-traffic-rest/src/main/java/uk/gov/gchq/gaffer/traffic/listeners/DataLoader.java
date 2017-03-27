@@ -55,7 +55,7 @@ public class DataLoader implements ServletContextListener {
 
         final OperationChain<Void> populateChain = new OperationChain.Builder()
                 .first(new GenerateElements.Builder<String>()
-                        .objects(getData(dataPath))
+                        .input(getData(dataPath))
                         .generator(new RoadUseElementGenerator())
                         .build())
                 .then(new AddElements.Builder()

@@ -1,8 +1,8 @@
 package uk.gov.gchq.gaffer.traffic;
 
+import org.junit.Test;
 import uk.gov.gchq.gaffer.commonutil.StreamUtil;
 import uk.gov.gchq.gaffer.graph.Graph;
-import org.junit.Test;
 import java.io.IOException;
 import java.io.InputStream;
 

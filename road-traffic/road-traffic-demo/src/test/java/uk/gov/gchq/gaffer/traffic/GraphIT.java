@@ -1,5 +1,7 @@
 package uk.gov.gchq.gaffer.traffic;
 
+import org.apache.commons.io.IOUtils;
+import org.junit.Test;
 import uk.gov.gchq.gaffer.commonutil.StreamUtil;
 import uk.gov.gchq.gaffer.graph.Graph;
 import uk.gov.gchq.gaffer.operation.OperationChain;
@@ -8,8 +10,6 @@ import uk.gov.gchq.gaffer.operation.impl.add.AddElements;
 import uk.gov.gchq.gaffer.operation.impl.generate.GenerateElements;
 import uk.gov.gchq.gaffer.traffic.generator.RoadUseElementGenerator;
 import uk.gov.gchq.gaffer.user.User;
-import org.apache.commons.io.IOUtils;
-import org.junit.Test;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -27,7 +27,7 @@ public class GraphIT {
 
         final OperationChain<Void> populateChain = new OperationChain.Builder()
                 .first(new GenerateElements.Builder<String>()
-                        .objects(IOUtils.readLines(StreamUtil.openStream(GraphIT.class, "sampleData.csv")))
+                        .input(IOUtils.readLines(StreamUtil.openStream(GraphIT.class, "sampleData.csv")))
                         .generator(new RoadUseElementGenerator())
                         .build())
                 .then(new AddElements.Builder()

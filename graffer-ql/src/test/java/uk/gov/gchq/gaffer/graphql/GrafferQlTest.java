@@ -15,19 +15,17 @@
  */
 package uk.gov.gchq.gaffer.graphql;
 
-import uk.gov.gchq.gaffer.commonutil.StreamUtil;
-import uk.gov.gchq.gaffer.example.films.analytic.LoadAndQuery;
-import uk.gov.gchq.gaffer.example.films.data.Certificate;
-import uk.gov.gchq.gaffer.graph.Graph;
-import uk.gov.gchq.gaffer.graphql.GafferQLSchemaBuilder;
-import uk.gov.gchq.gaffer.graphql.GrafferQLContext;
-import uk.gov.gchq.gaffer.jsonserialisation.JSONSerialiser;
-import uk.gov.gchq.gaffer.operation.OperationChain;
-import uk.gov.gchq.gaffer.user.User;
 import graphql.ExecutionResult;
 import graphql.GraphQL;
 import org.apache.log4j.Logger;
 import org.junit.Test;
+import uk.gov.gchq.gaffer.commonutil.StreamUtil;
+import uk.gov.gchq.gaffer.example.films.analytic.LoadAndQuery;
+import uk.gov.gchq.gaffer.example.films.data.Certificate;
+import uk.gov.gchq.gaffer.graph.Graph;
+import uk.gov.gchq.gaffer.jsonserialisation.JSONSerialiser;
+import uk.gov.gchq.gaffer.operation.OperationChain;
+import uk.gov.gchq.gaffer.user.User;
 
 import static org.junit.Assert.fail;
 

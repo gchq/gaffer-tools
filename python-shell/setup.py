@@ -1,7 +1,7 @@
-from setuptools import setup, find_packages
+import re
 from codecs import open
 from os import path
-import re
+from setuptools import setup, find_packages
 
 ###############################################################################
 

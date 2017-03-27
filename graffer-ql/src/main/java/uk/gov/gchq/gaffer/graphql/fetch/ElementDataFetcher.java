@@ -15,16 +15,15 @@
  */
 package uk.gov.gchq.gaffer.graphql.fetch;
 
+import graphql.schema.DataFetcher;
+import graphql.schema.DataFetchingEnvironment;
+import org.apache.log4j.Logger;
 import uk.gov.gchq.gaffer.commonutil.iterable.CloseableIterable;
 import uk.gov.gchq.gaffer.data.element.Element;
 import uk.gov.gchq.gaffer.graphql.GrafferQLContext;
 import uk.gov.gchq.gaffer.graphql.definitions.Constants;
 import uk.gov.gchq.gaffer.operation.OperationChain;
 import uk.gov.gchq.gaffer.operation.OperationException;
-import graphql.schema.DataFetcher;
-import graphql.schema.DataFetchingEnvironment;
-import org.apache.log4j.Logger;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -52,7 +51,7 @@ public abstract class ElementDataFetcher<E extends Element> implements DataFetch
 
     protected static final String KEY_DELIMITER = "-";
 
-    protected abstract OperationChain<CloseableIterable<E>> getOperationChain(
+    protected abstract OperationChain<CloseableIterable<? extends Element>> getOperationChain(
             DataFetchingEnvironment environment,
             StringBuilder keyBuilder
     );
@@ -70,19 +69,19 @@ public abstract class ElementDataFetcher<E extends Element> implements DataFetch
         final StringBuilder keyBuilder = new StringBuilder();
         keyBuilder.append(this.getClass());
         keyBuilder.append(KEY_DELIMITER);
-        final OperationChain<CloseableIterable<E>> opChain = getOperationChain(environment, keyBuilder);
+        final OperationChain<CloseableIterable<? extends Element>> opChain = getOperationChain(environment, keyBuilder);
 
         final List<Object> results = new ArrayList<>();
         try {
-            CloseableIterable<E> elements = context.fetchCache(keyBuilder.toString(), clazz);
+            CloseableIterable<? extends Element> elements = context.fetchCache(keyBuilder.toString(), clazz);
             if (null == elements) {
                 elements = context.getGraph().execute(opChain, context.getUser());
                 context.registerOperation(opChain, keyBuilder.toString(), elements);
             }
 
-            for (final E e : elements) {
+            for (final Element e : elements) {
                 final Map<String, Object> result = new HashMap<>();
-                addFixedValues(e, result);
+                addFixedValues((E) e, result);
                 for (final Map.Entry<String, Object> p : e.getProperties().entrySet()) {
                     if (p.getValue() != null) {
                         final Map<String, Object> value = new HashMap<>();

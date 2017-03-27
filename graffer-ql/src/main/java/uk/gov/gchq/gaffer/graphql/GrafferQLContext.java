@@ -15,13 +15,12 @@
  */
 package uk.gov.gchq.gaffer.graphql;
 
+import org.apache.log4j.Logger;
 import uk.gov.gchq.gaffer.commonutil.iterable.CloseableIterable;
 import uk.gov.gchq.gaffer.data.element.Element;
 import uk.gov.gchq.gaffer.graph.Graph;
 import uk.gov.gchq.gaffer.operation.OperationChain;
 import uk.gov.gchq.gaffer.user.User;
-import org.apache.log4j.Logger;
-
 import java.util.HashMap;
 import java.util.Map;
 

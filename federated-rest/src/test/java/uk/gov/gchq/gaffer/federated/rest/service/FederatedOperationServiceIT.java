@@ -58,7 +58,7 @@ public class FederatedOperationServiceIT extends AbstractFederatedSystemIT {
         addElements(entity);
 
         // Then
-        final GetAllElements<Element> getAllElements = new GetAllElements.Builder<>()
+        final GetAllElements getAllElements = new GetAllElements.Builder()
                 .build();
 
         for (final Entry<String, String> entry : services.entrySet()) {

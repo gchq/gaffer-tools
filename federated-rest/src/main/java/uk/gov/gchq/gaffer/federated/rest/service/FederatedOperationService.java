@@ -27,13 +27,9 @@ import uk.gov.gchq.gaffer.federated.rest.dto.OperationChain;
 import uk.gov.gchq.gaffer.operation.impl.add.AddElements;
 import uk.gov.gchq.gaffer.operation.impl.generate.GenerateElements;
 import uk.gov.gchq.gaffer.operation.impl.generate.GenerateObjects;
-import uk.gov.gchq.gaffer.operation.impl.get.GetAdjacentEntitySeeds;
-import uk.gov.gchq.gaffer.operation.impl.get.GetAllEdges;
+import uk.gov.gchq.gaffer.operation.impl.get.GetAdjacentIds;
 import uk.gov.gchq.gaffer.operation.impl.get.GetAllElements;
-import uk.gov.gchq.gaffer.operation.impl.get.GetAllEntities;
-import uk.gov.gchq.gaffer.operation.impl.get.GetEdges;
 import uk.gov.gchq.gaffer.operation.impl.get.GetElements;
-import uk.gov.gchq.gaffer.operation.impl.get.GetEntities;
 import uk.gov.gchq.gaffer.rest.factory.UserFactory;
 import uk.gov.gchq.gaffer.user.User;
 import javax.inject.Inject;
@@ -84,8 +80,8 @@ public class FederatedOperationService implements IFederatedOperationService {
     }
 
     @Override
-    public Iterable<Object> getAdjacentEntitySeeds(final Operation operation, final boolean skipErrors, final boolean firstResult) {
-        return executor.executeOperation(operation, GetAdjacentEntitySeeds.class, createUser(), skipErrors, firstResult);
+    public Iterable<Object> getAdjacentIds(final Operation operation, final boolean skipErrors, final boolean firstResult) {
+        return executor.executeOperation(operation, GetAdjacentIds.class, createUser(), skipErrors, firstResult);
     }
 
     @Override
@@ -94,28 +90,8 @@ public class FederatedOperationService implements IFederatedOperationService {
     }
 
     @Override
-    public Iterable<Object> getAllEntities(final Operation operation, final boolean skipErrors, final boolean firstResult) {
-        return executor.executeOperation(operation, GetAllEntities.class, createUser(), skipErrors, firstResult);
-    }
-
-    @Override
-    public Iterable<Object> getAllEdges(final Operation operation, final boolean skipErrors, final boolean firstResult) {
-        return executor.executeOperation(operation, GetAllEdges.class, createUser(), skipErrors, firstResult);
-    }
-
-    @Override
     public Iterable<Object> getElements(final Operation operation, final boolean skipErrors, final boolean firstResult) {
         return executor.executeOperation(operation, GetElements.class, createUser(), skipErrors, firstResult);
-    }
-
-    @Override
-    public Iterable<Object> getEntities(final Operation operation, final boolean skipErrors, final boolean firstResult) {
-        return executor.executeOperation(operation, GetEntities.class, createUser(), skipErrors, firstResult);
-    }
-
-    @Override
-    public Iterable<Object> getEdges(final Operation operation, final boolean skipErrors, final boolean firstResult) {
-        return executor.executeOperation(operation, GetEdges.class, createUser(), skipErrors, firstResult);
     }
 
     @Override
