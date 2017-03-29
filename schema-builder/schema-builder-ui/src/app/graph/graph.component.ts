@@ -33,8 +33,8 @@ export class GraphComponent implements OnInit {
     events: any;
     data: any;
     options: any;
-    selectedNode: Observable<any>;
-    selectedEdge: Observable<any>;
+    selectedNode: Observable<string>;
+    selectedEdge: Observable<string>;
 
     constructor(private storage: LocalStorageService) { }
 
