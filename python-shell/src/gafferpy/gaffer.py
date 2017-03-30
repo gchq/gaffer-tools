@@ -610,8 +610,8 @@ class GetAdjacentEntitySeeds(GetOperation):
                  in_out_type=InOutType.BOTH, deduplicate=None, options=None):
         super().__init__(
             'uk.gov.gchq.gaffer.operation.impl.get.GetAdjacentEntitySeeds',
-            seeds, result_limit, view, True, IncludeEdges.ALL,
-            in_out_type, deduplicate, options)
+            seeds, view, result_limit, True, IncludeEdges.ALL,
+            in_out_type, deduplicate, SeedMatchingType.RELATED, options)
 
 
 class GetAllElements(GetOperation):

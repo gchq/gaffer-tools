@@ -255,6 +255,11 @@ def get_adj_seeds(gc):
                         vertex='1'
                     )
                 ],
+                view=g.View(
+                    edges=[
+                        g.ElementDefinition('edge')
+                    ]
+                ),
                 in_out_type=g.InOutType.OUT
             ),
             g.GetAdjacentEntitySeeds(in_out_type=g.InOutType.OUT)
