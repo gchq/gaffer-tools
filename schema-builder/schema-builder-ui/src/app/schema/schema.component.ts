@@ -40,9 +40,9 @@ export class SchemaComponent implements OnInit {
     commonTypes: any;
     validation: any;
 
-    errorMessage: any;
-    errorMessageURL: any;
-    successURL: any;
+    errorMessage: string;
+    errorMessageURL: string;
+    successURL: string;
 
     edgesById: any;
     edgesByName: any;

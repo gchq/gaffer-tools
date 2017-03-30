@@ -16,6 +16,7 @@
 
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { LocalStorageService } from 'ng2-webstorage';
+import { GraphQLType } from '../../shared/graphql-type.interface';
 import { GafferService } from '../../services/gaffer.service';
 import * as _ from 'lodash';
 
@@ -26,19 +27,21 @@ import * as _ from 'lodash';
     providers: [GafferService]
 })
 export class TypeFormComponent implements OnInit {
-    _type: any;
+    _type: GraphQLType;
     aggregateFields: any;
     aggregateFieldsValid: any;
     aggregateFieldsDisabled: any;
     validationFields: any;
     validateFieldsValid: any;
     functions: any;
-    errorMessage: any;
+    errorMessage: string;
 
     @Input()
     set type(type: any) {
         this._type = type;
-        if (!this._type.node && this._type.aggregateFunction !== null && this._type.aggregateFunction !== undefined && this._type.aggregateFunction.class !== 'NULL') {
+        if (!this._type.node && this._type.aggregateFunction !== null &&
+        this._type.aggregateFunction !== undefined && this._type.aggregateFunction !== null &&
+        this._type.aggregateFunction.class !== 'NULL') {
             this.aggregateFields = _.cloneDeep(this._type.aggregateFunction);
             this.aggregateFields.class = undefined;
             this.aggregateFieldsDisabled = false;
@@ -86,6 +89,7 @@ export class TypeFormComponent implements OnInit {
         } else {
             this.functions = undefined;
         }
+        this._type.aggregateFunction = {};
     }
 
     changeValidations(checked: boolean, validator: any) {

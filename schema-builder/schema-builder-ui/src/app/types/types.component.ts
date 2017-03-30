@@ -16,6 +16,7 @@
 
 import { Component, OnInit } from '@angular/core';
 import { LocalStorageService } from 'ng2-webstorage';
+import { GraphQLType } from '../shared/graphql-type.interface';
 import { GafferService } from '../services/gaffer.service';
 
 import * as _ from 'lodash';
@@ -28,7 +29,7 @@ import * as _ from 'lodash';
 })
 export class TypesComponent implements OnInit {
 
-    types: Array<any>;
+    types: Array<GraphQLType>;
     nodeTypes: Array<any>;
     errorMessage: any;
 
