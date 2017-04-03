@@ -92,7 +92,7 @@
         </dependency>
         <dependency>
             <groupId>uk.gov.gchq.gaffer</groupId>
-            <artifactId>rest-api</artifactId>
+            <artifactId>core-rest</artifactId>
             <classifier>classes</classifier>
             <version>${gaffer.version}</version>
         </dependency>

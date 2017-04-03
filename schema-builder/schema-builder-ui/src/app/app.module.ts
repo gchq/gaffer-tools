@@ -16,6 +16,7 @@
 
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule, ApplicationRef } from '@angular/core';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FormsModule } from '@angular/forms';
 import { MaterialModule } from '@angular/material';
 import { HttpModule } from '@angular/http';
@@ -65,6 +66,7 @@ export function configFactory() {
     MaterialModule.forRoot(),
     ReactiveFormsModule,
     Ng2Webstorage,
+    BrowserAnimationsModule,
     RouterModule,
     routing,
     ConfigModule.forRoot({
