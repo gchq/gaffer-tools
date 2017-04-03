@@ -49,7 +49,7 @@ public class FederatedRequestor {
                         final User user,
                         final boolean skipErrors) {
         try {
-            return handleResponse(executePost(url, urlSuffix, jsonBody), outputTypeReference, url);
+            return handleResponse(executePost(url, urlSuffix, jsonBody, user), outputTypeReference, url);
         } catch (final Exception e) {
             if (!skipErrors) {
                 throw new RuntimeException(getErrorMsg(url, urlSuffix, e), e);
@@ -63,9 +63,10 @@ public class FederatedRequestor {
 
     public <T> T doGet(final String url, final String urlSuffix,
                        final TypeReference<T> outputTypeReference,
+                       final User user,
                        final boolean skipErrors) {
         try {
-            return handleResponse(executeGet(url, urlSuffix), outputTypeReference, url);
+            return handleResponse(executeGet(url, urlSuffix, user), outputTypeReference, url);
         } catch (final Exception e) {
             if (!skipErrors) {
                 throw new RuntimeException(getErrorMsg(url, urlSuffix, e), e);
@@ -77,17 +78,17 @@ public class FederatedRequestor {
         return null;
     }
 
-    protected Response executePost(final String url, final String urlSuffix, final String jsonBody) {
-        final Invocation.Builder request = createRequest(jsonBody, url, urlSuffix);
+    protected Response executePost(final String url, final String urlSuffix, final String jsonBody, final User user) {
+        final Invocation.Builder request = createRequest(jsonBody, url, urlSuffix, user);
         return request.post(Entity.json(jsonBody));
     }
 
-    protected Response executeGet(final String url, final String urlSuffix) {
-        final Invocation.Builder request = createRequest(null, url, urlSuffix);
+    protected Response executeGet(final String url, final String urlSuffix, final User user) {
+        final Invocation.Builder request = createRequest(null, url, urlSuffix, user);
         return request.get();
     }
 
-    protected Invocation.Builder createRequest(final String body, final String url, final String urlSuffix) {
+    protected Invocation.Builder createRequest(final String body, final String url, final String urlSuffix, final User user) {
         final Invocation.Builder request = getConfig().getClients().get(url)
                 .target(getFullUrl(url, urlSuffix))
                 .request();

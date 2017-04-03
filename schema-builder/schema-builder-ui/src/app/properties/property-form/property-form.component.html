@@ -13,14 +13,14 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-  
-  <div class="flex-container" fxLayout="row">
+
+<div class="flex-container" fxLayout="row">
     <div fxFlex></div>
-    <button md-raised-button color="accent" (click)="addNewProperty();" mdTooltip="add new property" aria-label="add new property" class="button-spacing">
+    <button md-raised-button color="accent" (click)="addNewProperty();" mdTooltip="add new property" aria-label="add new property"
+        class="button-spacing">
         Add Property
-    </button>
+        </button>
 </div>
-<form #e="ngForm" novalidate (ngSubmit)="save()" materialize>
     <div class="form-group">
         <div style="margin-top: 20px;">
             <div *ngIf="!_propertyHolder.properties || _propertyHolder.properties.length === 0">
@@ -32,14 +32,16 @@
             </div>
             <div class="flex-container" fxLayout="row" fxLayoutGap="10px" *ngFor="let property of _propertyHolder.properties">
                 <div class="input-field" fxFlex>
-                    <input class="form-control" type="text" name="{{property.id}} Name" placeholder="Property name" [(ngModel)]="property.name">
-                    <label>Property Name</label>
+                    <md-input-container class="full-width">
+                        <input mdInput placeholder="Property name" [(ngModel)]="property.name">
+                    </md-input-container>
                 </div>
                 <div class="input-field" fxFlex>
-                    <select id="{{property.id}}Type" materialize="material_select" [materializeSelectOptions]="_storedTypes" (change)="property.type = $event.target.value">
-                        <option *ngFor="let type of _storedTypes" [value]="type.type" [selected]="property.type === type.type">{{type.type}}</option>
-                    </select>
-                    <label>Property Type</label>
+                    <md-select id="{{property.id}}Type" placeholder="Property Type" [(ngModel)]="property.type">
+                        <md-option *ngFor="let type of _storedTypes" [value]="type.type">
+                            {{ type.type}}
+                        </md-option>
+                    </md-select>
                 </div>
                 <button md-icon-button color="warn" (click)="removeProperty(property.id)" mdTooltip="delete property" aria-label="delete property" class="button-spacing" style="margin-top: 15px;">
                     <md-icon>delete</md-icon>
@@ -48,7 +50,6 @@
         </div>
         <div class="flex-container" fxLayout="row">
             <div fxFlex></div>
-            <button class="form-button button-spacing" type="submit" mdTooltip="update properties" aria-label="update properties" md-raised-button color="primary">Update</button>
+            <button class="form-button button-spacing" (click)="save()" mdTooltip="update properties" aria-label="update properties" md-raised-button color="primary">Update</button>
         </div>
     </div>
-</form>
