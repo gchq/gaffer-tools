@@ -26,3 +26,5 @@ target/
 */.classpath
 __pycache__
 *.pem
+.DS_Store
+*/.DS_Store
