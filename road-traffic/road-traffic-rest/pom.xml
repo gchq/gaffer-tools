@@ -44,7 +44,7 @@
         </dependency>
         <dependency>
             <groupId>uk.gov.gchq.gaffer</groupId>
-            <artifactId>rest-api</artifactId>
+            <artifactId>core-rest</artifactId>
             <classifier>classes</classifier>
             <version>${gaffer.version}</version>
         </dependency>
@@ -73,7 +73,7 @@
                             <artifactItems>
                                 <artifactItem>
                                     <groupId>${project.parent.groupId}</groupId>
-                                    <artifactId>rest-api</artifactId>
+                                    <artifactId>core-rest</artifactId>
                                     <version>${gaffer.version}</version>
                                     <type>war</type>
                                     <overWrite>false</overWrite>
