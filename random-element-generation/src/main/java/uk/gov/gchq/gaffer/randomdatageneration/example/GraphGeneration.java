@@ -17,14 +17,12 @@ package uk.gov.gchq.gaffer.randomdatageneration.example;
 
 import uk.gov.gchq.gaffer.commonutil.iterable.CloseableIterable;
 import uk.gov.gchq.gaffer.data.element.Edge;
-import uk.gov.gchq.gaffer.data.element.Entity;
 import uk.gov.gchq.gaffer.graph.Graph;
 import uk.gov.gchq.gaffer.operation.OperationChain;
 import uk.gov.gchq.gaffer.operation.OperationException;
 import uk.gov.gchq.gaffer.operation.impl.add.AddElements;
 import uk.gov.gchq.gaffer.operation.impl.generate.GenerateElements;
 import uk.gov.gchq.gaffer.operation.impl.get.GetAllEdges;
-import uk.gov.gchq.gaffer.operation.impl.get.GetAllEntities;
 import uk.gov.gchq.gaffer.randomdatageneration.Constants;
 import uk.gov.gchq.gaffer.randomdatageneration.generator.RandomElementGenerator;
 import uk.gov.gchq.gaffer.randomdatageneration.generator.RandomElementGeneratorWithRepeats;
@@ -32,7 +30,6 @@ import uk.gov.gchq.gaffer.user.User;
 
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.stream.StreamSupport;
 
 /**
  *
@@ -129,8 +126,14 @@ public class GraphGeneration {
     }
 
     public static void main(final String[] args) throws OperationException {
+        if (args.length != 3) {
+            System.err.println("Usage: <accumulo_properties_file> <number_of_nodes> <number_of_edges>");
+        }
+        final long numberOfNodes = Long.parseLong(args[1]);
+        final long numberOfEdges = Long.parseLong(args[2]);
+
         final Graph graph = new Graph.Builder()
-                .storeProperties(GraphGeneration.class.getResourceAsStream("/mockaccumulostore.properties"))
+                .storeProperties(GraphGeneration.class.getResourceAsStream(args[0]))
                 .addSchema(GraphGeneration.class.getResourceAsStream("/schema/DataSchema.json"))
                 .addSchema(GraphGeneration.class.getResourceAsStream("/schema/DataTypes.json"))
                 .addSchema(GraphGeneration.class.getResourceAsStream("/schema/StoreTypes.json"))
@@ -138,19 +141,23 @@ public class GraphGeneration {
 
         final GraphGeneration graphGeneration = new GraphGeneration.Builder()
                 .graph(graph)
-                .numNodes(1000)
-                .numEdges(10000L)
+                .numNodes(numberOfNodes)
+                .numEdges(numberOfEdges)
                 .probabilities(new Constants().rmatProbabilities)
                 .build();
 
         graphGeneration.run();
 
-        final GetAllEntities getAllEntities = new GetAllEntities.Builder().build();
-        CloseableIterable<Entity> entities = graph.execute(getAllEntities, new User());
-        System.out.println("Number of entities = " + StreamSupport.stream(entities.spliterator(), false).count());
-
+        System.out.println("Sample of edges:");
         final GetAllEdges getAllEdges = new GetAllEdges.Builder().build();
-        CloseableIterable<Edge> edges = graph.execute(getAllEdges, new User());
-        System.out.println("Number of edges = " + StreamSupport.stream(edges.spliterator(), false).count());
+        final CloseableIterable<Edge> edges = graph.execute(getAllEdges, new User());
+        int i = 0;
+        for (final Edge edge : edges) {
+            System.out.println(edge);
+            i++;
+            if (i > 100) {
+                break;
+            }
+        }
     }
 }
