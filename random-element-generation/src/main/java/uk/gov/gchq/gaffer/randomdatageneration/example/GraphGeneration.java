@@ -133,7 +133,7 @@ public class GraphGeneration {
         final long numberOfEdges = Long.parseLong(args[2]);
 
         final Graph graph = new Graph.Builder()
-                .storeProperties(GraphGeneration.class.getResourceAsStream(args[0]))
+                .storeProperties(args[0])
                 .addSchema(GraphGeneration.class.getResourceAsStream("/schema/DataSchema.json"))
                 .addSchema(GraphGeneration.class.getResourceAsStream("/schema/DataTypes.json"))
                 .addSchema(GraphGeneration.class.getResourceAsStream("/schema/StoreTypes.json"))
