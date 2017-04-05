@@ -76,6 +76,10 @@ div.vis-network div.vis-close {
   display: none !important;
 }
 
+.vis-label {
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+}
+
 .vis-separator-line {
   background: transparent !important;
 }

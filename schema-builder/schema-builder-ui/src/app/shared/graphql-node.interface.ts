@@ -1,5 +1,5 @@
 import { Node } from '@types/vis';
 
-export interface NodeEntities extends Node {
+export interface GraphQLNode extends Node {
     entities?: Array<any>
 }
