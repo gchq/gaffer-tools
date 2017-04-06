@@ -19,7 +19,7 @@
     <parent>
         <groupId>uk.gov.gchq.gaffer</groupId>
         <artifactId>road-traffic</artifactId>
-        <version>0.6.4-SNAPSHOT</version>
+        <version>0.6.7-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -44,7 +44,7 @@
         </dependency>
         <dependency>
             <groupId>uk.gov.gchq.gaffer</groupId>
-            <artifactId>rest-api</artifactId>
+            <artifactId>core-rest</artifactId>
             <classifier>classes</classifier>
             <version>${gaffer.version}</version>
         </dependency>
@@ -73,7 +73,7 @@
                             <artifactItems>
                                 <artifactItem>
                                     <groupId>${project.parent.groupId}</groupId>
-                                    <artifactId>rest-api</artifactId>
+                                    <artifactId>core-rest</artifactId>
                                     <version>${gaffer.version}</version>
                                     <type>war</type>
                                     <overWrite>false</overWrite>

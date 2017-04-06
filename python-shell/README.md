@@ -59,7 +59,7 @@ This creates a distributable Python wheel which can installed locally to provide
 The wheel file is install using pip:
 
 ```bash
-pip3 install gaffer_shell-0.6.3-py2.py3-none-any.whl
+pip3 install gaffer_shell-0.6.6-py2.py3-none-any.whl
 ```
 
 After installation the shell can be imported into an application as below:
