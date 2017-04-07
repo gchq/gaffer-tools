@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package uk.gov.gchq.gaffer.randomdatageneration;
+package uk.gov.gchq.gaffer.randomelementgeneration;
 
 /**
  *
@@ -24,11 +24,9 @@ public final class Constants {
      * These values are taken from @see
      * <a href="http://www.graph500.org/specifications#sec-3_3">the Graph500 specifications</a>.
      */
-    public final double[] rmatProbabilities = new double[]{0.57, 0.19, 0.19, 1.0 - 0.57 - 0.19 - 0.19};
+    public static final double[] RMAT_PROBABILITIES = new double[]{0.57, 0.19, 0.19, 1.0 - 0.57 - 0.19 - 0.19};
 
-    public Constants() {
+    private Constants() {
 
     }
-
-
 }

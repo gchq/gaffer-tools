@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package uk.gov.gchq.gaffer.randomdatageneration.example;
+package uk.gov.gchq.gaffer.randomelementgeneration.example;
 
 import uk.gov.gchq.gaffer.commonutil.iterable.CloseableIterable;
 import uk.gov.gchq.gaffer.data.element.Edge;
@@ -23,9 +23,9 @@ import uk.gov.gchq.gaffer.operation.OperationException;
 import uk.gov.gchq.gaffer.operation.impl.add.AddElements;
 import uk.gov.gchq.gaffer.operation.impl.generate.GenerateElements;
 import uk.gov.gchq.gaffer.operation.impl.get.GetAllEdges;
-import uk.gov.gchq.gaffer.randomdatageneration.Constants;
-import uk.gov.gchq.gaffer.randomdatageneration.generator.RandomElementGenerator;
-import uk.gov.gchq.gaffer.randomdatageneration.generator.RandomElementGeneratorWithRepeats;
+import uk.gov.gchq.gaffer.randomelementgeneration.Constants;
+import uk.gov.gchq.gaffer.randomelementgeneration.generator.RandomElementGenerator;
+import uk.gov.gchq.gaffer.randomelementgeneration.generator.RandomElementGeneratorWithRepeats;
 import uk.gov.gchq.gaffer.user.User;
 
 import java.util.Arrays;
@@ -143,7 +143,7 @@ public class GraphGeneration {
                 .graph(graph)
                 .numNodes(numberOfNodes)
                 .numEdges(numberOfEdges)
-                .probabilities(new Constants().rmatProbabilities)
+                .probabilities(Constants.RMAT_PROBABILITIES)
                 .build();
 
         graphGeneration.run();

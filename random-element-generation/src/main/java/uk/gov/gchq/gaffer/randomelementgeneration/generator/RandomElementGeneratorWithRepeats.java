@@ -13,11 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package uk.gov.gchq.gaffer.randomdatageneration.generator;
+package uk.gov.gchq.gaffer.randomelementgeneration.generator;
 
 import uk.gov.gchq.gaffer.data.element.Edge;
 import uk.gov.gchq.gaffer.data.element.Element;
-import uk.gov.gchq.gaffer.randomdatageneration.PreferentialAttachmentCache;
+import uk.gov.gchq.gaffer.randomelementgeneration.PreferentialAttachmentCache;
 
 import java.util.Collections;
 import java.util.Set;
@@ -54,18 +54,14 @@ public class RandomElementGeneratorWithRepeats extends RandomElementGenerator {
             double prob = random.nextDouble();
             if (prob < repeatProb) {
                 final Element element = cache.get();
-                if (element == null) {
-                    return Collections.emptySet();
-                } else {
-                    return Collections.singleton(cache.get());
-                }
+                return element == null ? Collections.emptySet() : Collections.singleton(element);
             } else {
                 final Set<Element> results = super.get();
                 for (final Element element : results) {
                     if (element instanceof Edge) {
                         Edge clone = ((Edge) element).emptyClone();
                         clone.copyProperties(element.getProperties());
-                        cache.add(element);
+                        cache.add(clone);
                     }
                 }
                 return results;

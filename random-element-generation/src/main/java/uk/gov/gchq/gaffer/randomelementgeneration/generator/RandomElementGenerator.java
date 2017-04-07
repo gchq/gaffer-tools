@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package uk.gov.gchq.gaffer.randomdatageneration.generator;
+package uk.gov.gchq.gaffer.randomelementgeneration.generator;
 
 import com.clearspring.analytics.stream.cardinality.HyperLogLogPlus;
 import uk.gov.gchq.gaffer.data.element.Edge;
