@@ -25,7 +25,8 @@ import uk.gov.gchq.gaffer.operation.impl.generate.GenerateElements;
 import uk.gov.gchq.gaffer.operation.impl.get.GetAllEdges;
 import uk.gov.gchq.gaffer.randomelementgeneration.Constants;
 import uk.gov.gchq.gaffer.randomelementgeneration.generator.RandomElementGenerator;
-import uk.gov.gchq.gaffer.randomelementgeneration.generator.RandomElementGeneratorWithRepeats;
+import uk.gov.gchq.gaffer.randomelementgeneration.supplier.ElementSupplierWithRepeats;
+import uk.gov.gchq.gaffer.randomelementgeneration.supplier.RmatElementSupplier;
 import uk.gov.gchq.gaffer.user.User;
 
 import java.util.Arrays;
@@ -73,9 +74,10 @@ public class GraphGeneration {
     public void run() throws OperationException {
         final RandomElementGenerator elementGenerator;
         if (!withRepeats) {
-            elementGenerator = new RandomElementGenerator(numNodes, numEdges, probabilities);
+            elementGenerator = new RandomElementGenerator(numEdges, new RmatElementSupplier(probabilities, numNodes));
         } else {
-            elementGenerator = new RandomElementGeneratorWithRepeats(numNodes, numEdges, probabilities, repeatProbability);
+            elementGenerator = new RandomElementGenerator(numEdges,
+                    new ElementSupplierWithRepeats(numNodes, new RmatElementSupplier(probabilities, numNodes), repeatProbability));
         }
         final OperationChain addOpChain = new OperationChain.Builder()
                 .first(new GenerateElements.Builder<String>()
@@ -127,7 +129,7 @@ public class GraphGeneration {
 
     public static void main(final String[] args) throws OperationException {
         if (args.length != 3) {
-            System.err.println("Usage: <accumulo_properties_file> <number_of_nodes> <number_of_edges>");
+            System.err.println("Usage: <store_properties_file> <number_of_nodes> <number_of_edges>");
         }
         final long numberOfNodes = Long.parseLong(args[1]);
         final long numberOfEdges = Long.parseLong(args[2]);
@@ -145,7 +147,6 @@ public class GraphGeneration {
                 .numEdges(numberOfEdges)
                 .probabilities(Constants.RMAT_PROBABILITIES)
                 .build();
-
         graphGeneration.run();
 
         System.out.println("Sample of edges:");

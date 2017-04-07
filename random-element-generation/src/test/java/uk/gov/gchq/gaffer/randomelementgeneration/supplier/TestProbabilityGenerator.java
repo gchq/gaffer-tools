@@ -1,7 +1,7 @@
-package uk.gov.gchq.gaffer.randomelementgeneration.preferentialattachmentcache;
+package uk.gov.gchq.gaffer.randomelementgeneration.supplier;
 
 import org.junit.Test;
-import uk.gov.gchq.gaffer.randomelementgeneration.ProbabilityGenerator;
+import uk.gov.gchq.gaffer.randomelementgeneration.supplier.ProbabilityGenerator;
 
 import java.util.Map;
 import java.util.SortedMap;

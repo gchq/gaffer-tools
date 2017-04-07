@@ -13,13 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package uk.gov.gchq.gaffer.randomelementgeneration;
+package uk.gov.gchq.gaffer.randomelementgeneration.cache;
 
 import org.apache.log4j.Logger;
+import uk.gov.gchq.gaffer.randomelementgeneration.supplier.ProbabilityGenerator;
 
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
@@ -38,13 +38,11 @@ public class PreferentialAttachmentCache<T> {
     private TreeMap<Long, Set<T>> mapFreqToItems;
     private TreeMap<T, Long> itemsToFreq;
     private int maxSize;
-    private boolean full;
 
     public PreferentialAttachmentCache(final int maxSize) {
         this.mapFreqToItems = new TreeMap<>(Collections.reverseOrder());
         this.itemsToFreq = new TreeMap<>();
         this.maxSize = maxSize;
-        this.full = full;
     }
 
     public void add(final T t) {
@@ -107,43 +105,7 @@ public class PreferentialAttachmentCache<T> {
         // Increment current count for the sample
         itemsToFreq.put(sample, itemsToFreq.get(sample) + 1L);
         return sample;
-
-//        long index = (long) (random.nextDouble() * totalCount);
-//        // Iterate through itemsToFreq, return random
-//        long count = 0;
-//        Iterator<Map.Entry<Long, Set<T>>> it = mapFreqToItems.entrySet().iterator();
-//        while (it.hasNext()) {
-//            Map.Entry<Long, Set<T>> entry = it.next();
-//            count += entry.getKey() * entry.getValue().size();
-//            if (count >= index) {
-//                T t = entry.getValue().iterator().next();
-//                incrementFrequency(t);
-//                return t;
-//            }
-//        }
-//        throw new IllegalStateException("Should be impossible to reach here");
     }
-
-//    public T get() {
-//        final long totalCount = getNumberOfElements();
-//        if (totalCount == 0) {
-//            LOGGER.warn("get() called on empty cache");
-//            return null;
-//        }
-//        long index = (long) (random.nextDouble() * totalCount);
-//        // Iterate through freqToItems, return random
-//        long count = 0;
-//        Iterator<Map.Entry<Long, Set<T>>> it = mapFreqToItems.entrySet().iterator();
-//        while (it.hasNext()) {
-//            Map.Entry<Long, Set<T>> entry = it.next();
-//            count += entry.getKey() * entry.getValue().size();
-//            if (count >= index) {
-//                T t = entry.getValue().iterator().next();
-//                return t;
-//            }
-//        }
-//        throw new IllegalStateException("Should be impossible to reach here");
-//    }
 
     public long getNumberOfElements() {
         return itemsToFreq.values().stream().mapToLong(Long::longValue).sum();

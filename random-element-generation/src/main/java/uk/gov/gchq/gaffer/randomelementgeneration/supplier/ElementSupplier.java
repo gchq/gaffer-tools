@@ -13,23 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package uk.gov.gchq.gaffer.randomelementgeneration;
+package uk.gov.gchq.gaffer.randomelementgeneration.supplier;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import uk.gov.gchq.gaffer.data.element.Element;
+
+import java.util.Set;
+import java.util.function.Supplier;
 
 /**
  *
  */
-public final class Constants {
-
-    /**
-     * These values are taken from @see
-     * <a href="http://www.graph500.org/specifications#sec-3_3">the Graph500 specifications</a>.
-     */
-    @SuppressFBWarnings("MS_MUTABLE_ARRAY")
-    public static final double[] RMAT_PROBABILITIES = new double[]{0.57, 0.19, 0.19, 1.0 - 0.57 - 0.19 - 0.19};
-
-    private Constants() {
-
-    }
+public interface ElementSupplier extends Supplier<Set<Element>> {
 }

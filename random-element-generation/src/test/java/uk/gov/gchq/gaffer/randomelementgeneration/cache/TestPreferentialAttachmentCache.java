@@ -13,10 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package uk.gov.gchq.gaffer.randomelementgeneration.preferentialattachmentcache;
+package uk.gov.gchq.gaffer.randomelementgeneration.cache;
 
 import org.junit.Test;
-import uk.gov.gchq.gaffer.randomelementgeneration.PreferentialAttachmentCache;
 
 import java.util.*;
 import java.util.stream.IntStream;
