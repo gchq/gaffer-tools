@@ -32,11 +32,13 @@ public class RmatElementSupplier implements ElementSupplier {
     protected final Random random = new Random();
     private double[] cumulativeProbs;
     private int numBits;
+    private boolean includeEntities;
 
-    public RmatElementSupplier(final double[] probabilities, final long numNodes) {
+    public RmatElementSupplier(final double[] probabilities, final long maxNodeId, final boolean includeEntities) {
         validateProbabilities(probabilities);
         setCumulativeProbs(probabilities);
-        this.numBits = (int) (Math.log(numNodes) / Math.log(2));
+        this.numBits = (int) (Math.log(maxNodeId) / Math.log(2));
+        this.includeEntities = includeEntities;
     }
 
     /**
@@ -65,24 +67,25 @@ public class RmatElementSupplier implements ElementSupplier {
                 destination = destination ^ (1 << i);
             }
         }
+        final Set<Element> results = new HashSet<>();
         // Create edge, and source and destination entities
         final Edge edge = new Edge("edgeGroup", source, destination, true);
         edge.putProperty("count", 1L);
-        final Entity sourceEntity = new Entity("entityGroup", source);
-        sourceEntity.putProperty("count", 1L);
-        final HyperLogLogPlus sourceHLLPP = new HyperLogLogPlus(5, 5);
-        sourceHLLPP.offer(destination);
-        sourceEntity.putProperty("approxDegree", sourceHLLPP);
-        final Entity destinationEntity = new Entity("entityGroup", destination);
-        destinationEntity.putProperty("count", 1L);
-        final HyperLogLogPlus destinationHLLPP = new HyperLogLogPlus(5, 5);
-        destinationHLLPP.offer(destination);
-        destinationEntity.putProperty("approxDegree", destinationHLLPP);
-        // Create set of results and return
-        final Set<Element> results = new HashSet<>();
         results.add(edge);
-        results.add(sourceEntity);
-        results.add(destinationEntity);
+        if (includeEntities) {
+            final Entity sourceEntity = new Entity("entityGroup", source);
+            sourceEntity.putProperty("count", 1L);
+            final HyperLogLogPlus sourceHLLPP = new HyperLogLogPlus(5, 5);
+            sourceHLLPP.offer(destination);
+            sourceEntity.putProperty("approxDegree", sourceHLLPP);
+            results.add(sourceEntity);
+            final Entity destinationEntity = new Entity("entityGroup", destination);
+            destinationEntity.putProperty("count", 1L);
+            final HyperLogLogPlus destinationHLLPP = new HyperLogLogPlus(5, 5);
+            destinationHLLPP.offer(destination);
+            destinationEntity.putProperty("approxDegree", destinationHLLPP);
+            results.add(destinationEntity);
+        }
         return results;
     }
 

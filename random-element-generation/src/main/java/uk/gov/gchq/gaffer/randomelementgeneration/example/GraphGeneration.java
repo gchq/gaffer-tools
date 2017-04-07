@@ -37,8 +37,9 @@ import java.util.Collections;
  */
 public class GraphGeneration {
     private Graph graph;
-    private long numNodes;
+    private long maxNodeId;
     private long numEdges;
+    private boolean outputEntities;
     private double[] probabilities;
     private boolean withRepeats = false;
     private double repeatProbability;
@@ -48,24 +49,28 @@ public class GraphGeneration {
     }
 
     public GraphGeneration(final Graph graph,
-                           final long numNodes,
+                           final long maxNodeId,
                            final long numEdges,
+                           final boolean outputEntities,
                            final double[] probabilities) {
         this.graph = graph;
-        this.numNodes = numNodes;
+        this.maxNodeId = maxNodeId;
         this.numEdges = numEdges;
+        this.outputEntities = outputEntities;
         this.probabilities = Arrays.copyOf(probabilities, probabilities.length);
         this.withRepeats = false;
     }
 
     public GraphGeneration(final Graph graph,
-                           final long numNodes,
+                           final long maxNodeId,
                            final long numEdges,
+                           final boolean outputEntities,
                            final double[] probabilities,
                            final double repeatProbability) {
         this.graph = graph;
-        this.numNodes = numNodes;
+        this.maxNodeId = maxNodeId;
         this.numEdges = numEdges;
+        this.outputEntities = outputEntities;
         this.probabilities = Arrays.copyOf(probabilities, probabilities.length);
         this.withRepeats = true;
         this.repeatProbability = repeatProbability;
@@ -74,10 +79,13 @@ public class GraphGeneration {
     public void run() throws OperationException {
         final RandomElementGenerator elementGenerator;
         if (!withRepeats) {
-            elementGenerator = new RandomElementGenerator(numEdges, new RmatElementSupplier(probabilities, numNodes));
+            elementGenerator = new RandomElementGenerator(numEdges,
+                    new RmatElementSupplier(probabilities, maxNodeId, outputEntities));
         } else {
             elementGenerator = new RandomElementGenerator(numEdges,
-                    new ElementSupplierWithRepeats(numNodes, new RmatElementSupplier(probabilities, numNodes), repeatProbability));
+                    new ElementSupplierWithRepeats(maxNodeId,
+                            new RmatElementSupplier(probabilities, maxNodeId, outputEntities),
+                            repeatProbability));
         }
         final OperationChain addOpChain = new OperationChain.Builder()
                 .first(new GenerateElements.Builder<String>()
@@ -102,7 +110,7 @@ public class GraphGeneration {
         }
 
         public Builder numNodes(final long numNodes) {
-            graphGeneration.numNodes = numNodes;
+            graphGeneration.maxNodeId = numNodes;
             return this;
         }
 
