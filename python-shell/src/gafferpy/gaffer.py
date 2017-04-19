@@ -327,7 +327,7 @@ class Operation(ToJson):
         self.class_name = class_name
         self.view = view
         self.options = options
-	self.result_limit = result_limit
+	 self.result_limit = result_limit
 
     def to_json(self):
         operation = {'class': self.class_name}
@@ -335,8 +335,8 @@ class Operation(ToJson):
             operation['options'] = self.options
         if self.view is not None:
             operation['view'] = self.view.to_json()
-	if self.result_limit is not None:
-	    operation['resultLimit'] = self.result_limit
+	 if self.result_limit is not None:
+	     operation['resultLimit'] = self.result_limit
 
         return operation
 
