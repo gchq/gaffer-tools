@@ -1,0 +1,88 @@
+/*
+ * Copyright 2017 Crown Copyright
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package uk.gov.gchq.gaffer.performancetesting.ingest;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import uk.gov.gchq.gaffer.graph.Graph;
+import uk.gov.gchq.gaffer.operation.OperationException;
+import uk.gov.gchq.gaffer.operation.impl.add.AddElements;
+import uk.gov.gchq.gaffer.randomelementgeneration.generator.RandomElementGenerator;
+import uk.gov.gchq.gaffer.randomelementgeneration.supplier.ElementSupplier;
+import uk.gov.gchq.gaffer.randomelementgeneration.supplier.RmatElementSupplier;
+import uk.gov.gchq.gaffer.user.User;
+
+/**
+ *
+ */
+public class RandomElementIngestTest {
+    private static final Logger LOGGER = LoggerFactory.getLogger(RandomElementIngestTest.class);
+
+    private Graph graph;
+    private RandomElementIngestTestProperties testProperties;
+
+    public RandomElementIngestTest(final Graph graph,
+                                   final RandomElementIngestTestProperties testProperties) {
+        this.graph = graph;
+        this.testProperties = testProperties;
+    }
+
+    public boolean run() {
+        // Create generator
+        final long numEdges = testProperties.getNumEdges();
+        final ElementSupplier elementSupplier = new ElementSupplierFactory(testProperties).get();
+        final RandomElementGenerator generator = new RandomElementGenerator(testProperties.getNumEdges(), elementSupplier);
+
+        // Add elements
+        final AddElements addElements = new AddElements.Builder()
+                .elements(generator.getElements("DUMMY"))
+                .validate(false)
+                .build();
+        final long startTime = System.currentTimeMillis();
+        try {
+            graph.execute(addElements, new User());
+        } catch (final OperationException e) {
+            LOGGER.error("OperationException thrown after " + (System.currentTimeMillis() - startTime) / 1000.0
+                    + " seconds");
+            return false;
+        }
+        final long endTime = System.currentTimeMillis();
+        final double durationInSeconds = (endTime - startTime) / 1000.0;
+        LOGGER.info(numEdges + " edges added in " + durationInSeconds + " seconds");
+        return true;
+    }
+
+
+    private static class ElementSupplierFactory {
+        private RandomElementIngestTestProperties testProperties;
+
+        ElementSupplierFactory(final RandomElementIngestTestProperties testProperties) {
+            this.testProperties = testProperties;
+        }
+
+        ElementSupplier get() {
+            final String elementSupplierClass = testProperties.getElementSupplierClass();
+            if (elementSupplierClass.equals(RmatElementSupplier.class.getName())) {
+                final double[] rmatProbabilities = testProperties.getRmatProbabilities();
+                final long maxNodeId = testProperties.getRmatMaxNodeId();
+                final boolean includeEntities = testProperties.getRmatIncludeEntities();
+                return new RmatElementSupplier(rmatProbabilities, maxNodeId, includeEntities);
+            } else {
+                throw new RuntimeException("Unknown ElementSupplier class of " + elementSupplierClass);
+            }
+        }
+    }
+}

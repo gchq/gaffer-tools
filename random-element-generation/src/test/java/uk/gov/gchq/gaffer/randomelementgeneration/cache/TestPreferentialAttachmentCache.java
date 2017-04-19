@@ -64,19 +64,18 @@ public class TestPreferentialAttachmentCache {
         // Given
         final PreferentialAttachmentCache<String> cache = new PreferentialAttachmentCache<>(10);
         IntStream.range(0, 10).forEach(i -> cache.add("A" + i));
-        final Map<String, Long> itemsToCount = new HashMap<>();
+        final Map<String, Long> itemToCount = new HashMap<>();
 
         // When
         IntStream.range(0, 1000000).forEach(i -> {
             final String item = cache.get();
-            if (!itemsToCount.containsKey(item)) {
-                itemsToCount.put(item, 0L);
+            if (!itemToCount.containsKey(item)) {
+                itemToCount.put(item, 0L);
             }
-            itemsToCount.put(item, itemsToCount.get(item) + 1L);
+            itemToCount.put(item, itemToCount.get(item) + 1L);
         });
-        final long maxFrequency = itemsToCount.values().stream().mapToLong(Long::longValue).max().getAsLong();
-        final long minFrequency = itemsToCount.values().stream().mapToLong(Long::longValue).min().getAsLong();
-        System.out.println(itemsToCount);
+        final long maxFrequency = itemToCount.values().stream().mapToLong(Long::longValue).max().getAsLong();
+        final long minFrequency = itemToCount.values().stream().mapToLong(Long::longValue).min().getAsLong();
 
         // Then
         assertTrue(maxFrequency / minFrequency > 5);
