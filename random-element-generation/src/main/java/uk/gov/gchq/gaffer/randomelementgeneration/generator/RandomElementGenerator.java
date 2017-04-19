@@ -25,20 +25,20 @@ import java.util.stream.Stream;
  *
  */
 public class RandomElementGenerator extends OneToManyElementGenerator<String> {
-    protected long numEdges;
+    protected long numElements;
     protected ElementSupplier elementSupplier;
 
-    public RandomElementGenerator(final long numEdges,
+    public RandomElementGenerator(final long numElements,
                                   final ElementSupplier elementSupplier) {
-        this.numEdges = numEdges;
+        this.numElements = numElements;
         this.elementSupplier = elementSupplier;
     }
 
     @Override
     public Iterable<Element> getElements(final String domainObject) {
         return Stream.generate(elementSupplier)
-                .limit(numEdges)
                 .flatMap(x -> x.stream())
+                .limit(numElements)
                 ::iterator;
     }
 

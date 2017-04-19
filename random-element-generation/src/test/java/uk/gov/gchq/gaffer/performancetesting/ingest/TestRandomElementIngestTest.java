@@ -33,7 +33,7 @@ public class TestRandomElementIngestTest {
     public void testRandomElementIngestTestRuns() {
         // Given
         final RandomElementIngestTestProperties testProperties = new RandomElementIngestTestProperties();
-        testProperties.setNumEdges(100L);
+        testProperties.setNumElements(100L);
         testProperties.setElementSupplierClass(RmatElementSupplier.class.getName());
         testProperties.setRmatProbabilities(Constants.RMAT_PROBABILITIES);
         testProperties.setRmatMaxNodeId(100L);

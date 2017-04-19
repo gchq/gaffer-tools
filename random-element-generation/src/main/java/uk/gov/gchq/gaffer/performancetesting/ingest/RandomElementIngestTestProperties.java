@@ -15,8 +15,13 @@
  */
 package uk.gov.gchq.gaffer.performancetesting.ingest;
 
+import uk.gov.gchq.gaffer.randomelementgeneration.Constants;
 import uk.gov.gchq.gaffer.randomelementgeneration.supplier.RmatElementSupplier;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -26,7 +31,7 @@ public class RandomElementIngestTestProperties extends Properties {
     private static final long serialVersionUID = 8594474188709038747L;
 
     private static final String ELEMENT_SUPPLIER_CLASS = "gaffer.performancetesting.ingest.elementSupplierClass";
-    private static final String NUMBER_OF_EDGES = "gaffer.performancetesting.ingest.numberOfEdges";
+    private static final String NUMBER_OF_ELEMENTS = "gaffer.performancetesting.ingest.numberOfElements";
     private static final String RMAT_PROBABILITIES = "gaffer.performancetesting.ingest.rmat.probabilities";
     private static final String RMAT_INCLUDE_ENTITIES = "gaffer.performancetesting.ingest.rmat.includeEntities";
     private static final String RMAT_MAX_NODEID = "gaffer.performancetesting.ingest.rmat.maxNodeId";
@@ -43,18 +48,21 @@ public class RandomElementIngestTestProperties extends Properties {
         setProperty(ELEMENT_SUPPLIER_CLASS, elementSupplierClass);
     }
 
-    public long getNumEdges() {
-        return Long.parseLong(getProperty(NUMBER_OF_EDGES));
+    public long getNumElements() {
+        return Long.parseLong(getProperty(NUMBER_OF_ELEMENTS));
     }
 
-    public void setNumEdges(final long numEdges) {
+    public void setNumElements(final long numEdges) {
         if (numEdges <= 0) {
             throw new IllegalArgumentException("The number of edges must be greater than 0.");
         }
-        setProperty(NUMBER_OF_EDGES, "" + numEdges);
+        setProperty(NUMBER_OF_ELEMENTS, "" + numEdges);
     }
 
     public double[] getRmatProbabilities() {
+        if (null == getProperty(RMAT_PROBABILITIES)) {
+            return Constants.RMAT_PROBABILITIES;
+        }
         return stringToDoubleArray(getProperty(RMAT_PROBABILITIES));
     }
 
@@ -110,5 +118,17 @@ public class RandomElementIngestTestProperties extends Properties {
             values.add(Double.parseDouble(item));
         }
         return values.stream().mapToDouble(Double::doubleValue).toArray();
+    }
+
+    public void loadTestProperties(final String pathStr) {
+        loadTestProperties(Paths.get(pathStr));
+    }
+
+    public void loadTestProperties(final Path testPropertiesPath) {
+        try {
+            super.load(Files.newInputStream(testPropertiesPath));
+        } catch (final IOException e) {
+            throw new RuntimeException("Failed to load test properties file: " + e.getMessage(), e);
+        }
     }
 }

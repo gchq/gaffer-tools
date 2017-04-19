@@ -23,7 +23,11 @@ import uk.gov.gchq.gaffer.operation.impl.add.AddElements;
 import uk.gov.gchq.gaffer.randomelementgeneration.generator.RandomElementGenerator;
 import uk.gov.gchq.gaffer.randomelementgeneration.supplier.ElementSupplier;
 import uk.gov.gchq.gaffer.randomelementgeneration.supplier.RmatElementSupplier;
+import uk.gov.gchq.gaffer.store.StoreProperties;
+import uk.gov.gchq.gaffer.store.schema.Schema;
 import uk.gov.gchq.gaffer.user.User;
+
+import java.io.File;
 
 /**
  *
@@ -42,9 +46,9 @@ public class RandomElementIngestTest {
 
     public boolean run() {
         // Create generator
-        final long numEdges = testProperties.getNumEdges();
+        final long numElements = testProperties.getNumElements();
         final ElementSupplier elementSupplier = new ElementSupplierFactory(testProperties).get();
-        final RandomElementGenerator generator = new RandomElementGenerator(testProperties.getNumEdges(), elementSupplier);
+        final RandomElementGenerator generator = new RandomElementGenerator(numElements, elementSupplier);
 
         // Add elements
         final AddElements addElements = new AddElements.Builder()
@@ -61,7 +65,8 @@ public class RandomElementIngestTest {
         }
         final long endTime = System.currentTimeMillis();
         final double durationInSeconds = (endTime - startTime) / 1000.0;
-        LOGGER.info(numEdges + " edges added in " + durationInSeconds + " seconds");
+        final double rate = numElements / durationInSeconds;
+        LOGGER.info(numElements + " elements added in " + durationInSeconds + " seconds (rate was " + rate + " per second)");
         return true;
     }
 
@@ -84,5 +89,22 @@ public class RandomElementIngestTest {
                 throw new RuntimeException("Unknown ElementSupplier class of " + elementSupplierClass);
             }
         }
+    }
+
+    public static void main(final String[] args) {
+        if (args.length != 3) {
+            throw new RuntimeException("Usage: <schema_directory> <store_properties_file> <test_properties_file>");
+        }
+        final Schema schema = Schema.fromJson(new File(args[0]).toPath());
+        final StoreProperties storeProperties = StoreProperties.loadStoreProperties(args[1]);
+        final RandomElementIngestTestProperties testProperties = new RandomElementIngestTestProperties();
+        testProperties.loadTestProperties(args[2]);
+        final Graph graph = new Graph.Builder()
+                .storeProperties(storeProperties)
+                .addSchema(schema)
+                .build();
+        final RandomElementIngestTest test = new RandomElementIngestTest(graph, testProperties);
+        final boolean result = test.run();
+        LOGGER.info("Test " + (result ? "ran successfully" : "failed"));
     }
 }
