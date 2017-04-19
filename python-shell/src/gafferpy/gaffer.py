@@ -307,7 +307,7 @@ class InOutType:
 
 
 class SeedMatchingType:
-    RELATED = 'RElATED'
+    RELATED = 'RELATED'
     EQUAL = 'EQUAL'
 
 
@@ -323,10 +323,11 @@ class OperationChain(ToJson):
 
 
 class Operation(ToJson):
-    def __init__(self, class_name, view=None, options=None):
+    def __init__(self, class_name, view=None, result_limit=None, options=None):
         self.class_name = class_name
         self.view = view
         self.options = options
+	self.result_limit = result_limit
 
     def to_json(self):
         operation = {'class': self.class_name}
@@ -334,6 +335,8 @@ class Operation(ToJson):
             operation['options'] = self.options
         if self.view is not None:
             operation['view'] = self.view.to_json()
+	if self.result_limit is not None:
+	    operation['resultLimit'] = self.result_limit
 
         return operation
 
