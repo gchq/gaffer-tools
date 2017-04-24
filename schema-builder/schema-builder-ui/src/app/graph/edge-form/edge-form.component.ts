@@ -16,8 +16,9 @@
 
 import { Component, OnInit, Input } from '@angular/core';
 import { LocalStorageService } from 'ng2-webstorage';
-import { DataSet, Network, Edge } from '@types/vis';
-import { NodeEntities } from '../../shared/node-entities.interface';
+import { DataSet, Network } from '@types/vis';
+import { GraphQLNode } from '../../shared/graphql-node.interface';
+import { GraphQLEdge } from '../../shared/graphql-edge.interface';
 import { GraphQLType } from '../../shared/graphql-type.interface';
 import { FormBuilder } from '@angular/forms';
 import * as _ from 'lodash';
@@ -29,9 +30,9 @@ import * as _ from 'lodash';
     providers: [FormBuilder]
 })
 export class EdgeFormComponent implements OnInit {
-    _edge: Edge;
-    _edges: DataSet<Edge>;
-    _nodes: DataSet<NodeEntities>;
+    _edge: GraphQLEdge;
+    _edges: DataSet<GraphQLEdge>;
+    _nodes: DataSet<GraphQLNode>;
     _network: Network;
     _storedTypes: Array<GraphQLType>;
     nodeOptions: any;
