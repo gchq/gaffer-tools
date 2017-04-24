@@ -19,6 +19,11 @@ import { Router, ActivatedRoute } from '@angular/router';
 
 import * as _ from 'lodash';
 
+export interface RouteLink {
+    title: string,
+    route: string
+}
+
 @Component({
     selector: 'app-root',
     templateUrl: 'app.component.html',
@@ -26,7 +31,7 @@ import * as _ from 'lodash';
 })
 export class AppComponent implements AfterViewInit {
     activeLinkIndex: number;
-    pages: Array<any> = [
+    pages: Array<RouteLink> = [
         { title: "Graph", route: "graph" },
         { title: "Properties", route: "properties" },
         { title: "Types", route: "types" },

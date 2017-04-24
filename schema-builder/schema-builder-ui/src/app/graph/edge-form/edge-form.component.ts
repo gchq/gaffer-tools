@@ -16,6 +16,10 @@
 
 import { Component, OnInit, Input } from '@angular/core';
 import { LocalStorageService } from 'ng2-webstorage';
+import { DataSet, Network } from '@types/vis';
+import { GraphQLNode } from '../../shared/graphql-node.interface';
+import { GraphQLEdge } from '../../shared/graphql-edge.interface';
+import { GraphQLType } from '../../shared/graphql-type.interface';
 import { FormBuilder } from '@angular/forms';
 import * as _ from 'lodash';
 
@@ -26,11 +30,11 @@ import * as _ from 'lodash';
     providers: [FormBuilder]
 })
 export class EdgeFormComponent implements OnInit {
-    _edge: any;
-    _edges: any;
-    _nodes: any;
-    _network: any;
-    _storedTypes: any;
+    _edge: GraphQLEdge;
+    _edges: DataSet<GraphQLEdge>;
+    _nodes: DataSet<GraphQLNode>;
+    _network: Network;
+    _storedTypes: Array<GraphQLType>;
     nodeOptions: any;
     form: any;
 
@@ -48,7 +52,7 @@ export class EdgeFormComponent implements OnInit {
     get nodes() { return this._nodes; }
 
     @Input()
-    set selectedEdge(selectedEdge: any) {
+    set selectedEdge(selectedEdge: string) {
         this._edge = this._edges.get(selectedEdge);
         this.updateForm(this._edge);
     }

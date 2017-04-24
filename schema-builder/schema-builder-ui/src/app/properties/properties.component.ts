@@ -16,6 +16,9 @@
 
 import { Component, OnInit } from '@angular/core';
 import { LocalStorageService } from 'ng2-webstorage';
+import { DataSet, Edge } from '@types/vis';
+import { GraphQLType } from '../shared/graphql-type.interface';
+import { GraphQLNode } from '../shared/graphql-node.interface';
 import * as _ from 'lodash';
 
 @Component({
@@ -24,9 +27,9 @@ import * as _ from 'lodash';
     styleUrls: ['./properties.component.css']
 })
 export class PropertiesComponent implements OnInit {
-    edges: any;
-    nodes: any;
-    types: any;
+    edges: Array<Edge>;
+    nodes: Array<GraphQLNode>;
+    types: Array<GraphQLType>;
 
     constructor(private storage: LocalStorageService) { }
 

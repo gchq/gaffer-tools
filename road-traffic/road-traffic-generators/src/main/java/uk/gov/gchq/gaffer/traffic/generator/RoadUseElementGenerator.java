@@ -32,11 +32,10 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 
-public class RoadUseElementGenerator extends OneToManyElementGenerator<String> {
-
+public class RoadUseElementGenerator implements OneToManyElementGenerator<String> {
 
     @Override
-    public Iterable<Element> getElements(final String line) {
+    public Iterable<Element> _apply(final String line) {
         // Check if the line is a header
         if (line.startsWith("\"Region Name (GO)\",")) {
             return Collections.emptyList();
@@ -63,91 +62,86 @@ public class RoadUseElementGenerator extends OneToManyElementGenerator<String> {
         final Collection<Element> elements = new ArrayList<>(9);
 
         elements.add(new Edge.Builder()
-                        .group(ElementGroup.REGION_CONTAINS_LOCATION)
-                        .source(region)
-                        .dest(location)
-                        .directed(true)
-                        .build()
+                .group(ElementGroup.REGION_CONTAINS_LOCATION)
+                .source(region)
+                .dest(location)
+                .directed(true)
+                .build()
         );
 
         elements.add(new Edge.Builder()
-                        .group(ElementGroup.LOCATION_CONTAINS_ROAD)
-                        .source(location)
-                        .dest(road)
-                        .directed(true)
-                        .build()
+                .group(ElementGroup.LOCATION_CONTAINS_ROAD)
+                .source(location)
+                .dest(road)
+                .directed(true)
+                .build()
         );
 
         elements.add(new Edge.Builder()
-                        .group(ElementGroup.ROAD_HAS_JUNCTION)
-                        .source(road)
-                        .dest(junctionA)
-                        .directed(true)
-                        .build()
+                .group(ElementGroup.ROAD_HAS_JUNCTION)
+                .source(road)
+                .dest(junctionA)
+                .directed(true)
+                .build()
         );
 
         elements.add(new Edge.Builder()
-                        .group(ElementGroup.ROAD_HAS_JUNCTION)
-                        .source(road)
-                        .dest(junctionB)
-                        .directed(true)
-                        .build()
+                .group(ElementGroup.ROAD_HAS_JUNCTION)
+                .source(road)
+                .dest(junctionB)
+                .directed(true)
+                .build()
         );
 
         elements.add(new Edge.Builder()
-                        .group(ElementGroup.JUNCTION_LOCATED_AT)
-                        .source(junctionA)
-                        .dest(junctionALocation)
-                        .directed(true)
-                        .build()
+                .group(ElementGroup.JUNCTION_LOCATED_AT)
+                .source(junctionA)
+                .dest(junctionALocation)
+                .directed(true)
+                .build()
         );
 
         elements.add(new Edge.Builder()
-                        .group(ElementGroup.JUNCTION_LOCATED_AT)
-                        .source(junctionB)
-                        .dest(junctionBLocation)
-                        .directed(true)
-                        .build()
+                .group(ElementGroup.JUNCTION_LOCATED_AT)
+                .source(junctionB)
+                .dest(junctionBLocation)
+                .directed(true)
+                .build()
         );
 
         elements.add(new Edge.Builder()
-                        .group(ElementGroup.ROAD_USE)
-                        .source(junctionA)
-                        .dest(junctionB)
-                        .directed(true)
-                        .property("startTime", date)
-                        .property("endTime", endTime)
-                        .property("totalCount", getTotalCount(vehicleCountsByType))
-                        .property("countByVehicleType", vehicleCountsByType)
-                        .build()
+                .group(ElementGroup.ROAD_USE)
+                .source(junctionA)
+                .dest(junctionB)
+                .directed(true)
+                .property("startTime", date)
+                .property("endTime", endTime)
+                .property("totalCount", getTotalCount(vehicleCountsByType))
+                .property("countByVehicleType", vehicleCountsByType)
+                .build()
         );
 
         elements.add(new Entity.Builder()
-                        .group(ElementGroup.JUNCTION_USE)
-                        .vertex(junctionA)
-                        .property("trafficByType", vehicleCountsByType)
-                        .property("endTime", endTime)
-                        .property("startTime", date)
-                        .property("totalCount", getTotalCount(vehicleCountsByType))
-                        .build()
+                .group(ElementGroup.JUNCTION_USE)
+                .vertex(junctionA)
+                .property("trafficByType", vehicleCountsByType)
+                .property("endTime", endTime)
+                .property("startTime", date)
+                .property("totalCount", getTotalCount(vehicleCountsByType))
+                .build()
         );
 
         elements.add(new Entity.Builder()
-                        .group(ElementGroup.JUNCTION_USE)
-                        .vertex(junctionB)
-                        .property("trafficByType", vehicleCountsByType)
-                        .property("endTime", endTime)
-                        .property("startTime", date)
-                        .property("totalCount", getTotalCount(vehicleCountsByType))
-                        .build()
+                .group(ElementGroup.JUNCTION_USE)
+                .vertex(junctionB)
+                .property("trafficByType", vehicleCountsByType)
+                .property("endTime", endTime)
+                .property("startTime", date)
+                .property("totalCount", getTotalCount(vehicleCountsByType))
+                .build()
         );
 
         return elements;
-    }
-
-    @Override
-    public Iterable<String> getObjects(final Iterable<? extends Element> elements) {
-        throw new UnsupportedOperationException("This generator cannot be used to map the elements back into csv");
     }
 
     private FreqMap getVehicleCounts(final String[] fields) {

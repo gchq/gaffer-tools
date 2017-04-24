@@ -25,15 +25,19 @@
                 </h5>
                 <h5 style="color:red;" *ngIf="validation && !validation.valid">
                     <md-icon>close</md-icon>
-                    <span *ngIf="validation && validation.message">{{validation.message}}</span>
-                    <span *ngIf="!validation || validation.message">Unknown validation error</span>
+                    <span *ngIf="validation && validation.errors">{{validation.errors}}</span>
+                    <span *ngIf="!validation || validation.errors">Unknown validation error</span>
+                </h5>
+                <h5 style="color:red;" *ngIf="errorMessage">
+                    <md-icon>close</md-icon>
+                    <span>{{errorMessage}}</span>
                 </h5>
             </div>
             <div fxFlex>
                 <div fxFlex fxLayout="row">
                     <div fxFlex class="input-field">
                         <md-input-container class="full-width">
-                            <input mdInput class="form-control" type="text" name="class" placeholder="Gaffer schema URL: <url>/rest/v1/graph/schema" [(ngModel)]="schemaUrl"
+                            <input mdInput class="form-control" type="text" name="class" placeholder="Gaffer schema URL: <url>/rest/v1/graph/schema" mdTooltip="Gaffer schema URL: <url>/rest/v1/graph/schema" [(ngModel)]="schemaUrl"
                                 (ngModelChange)="schemaUrlChanged()">
                         </md-input-container>
                     </div>
