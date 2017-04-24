@@ -307,7 +307,7 @@ class InOutType:
 
 
 class SeedMatchingType:
-    RELATED = 'RElATED'
+    RELATED = 'RELATED'
     EQUAL = 'EQUAL'
 
 
