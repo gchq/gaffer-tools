@@ -13,7 +13,6 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-
 <div class="form-group">
     <div style="margin-bottom: 0;">
         <div class="input-field" *ngIf="!_type.node">
@@ -33,7 +32,7 @@
                 <md-option *ngFor="let serialiser of functions.serialiserClasses" [value]="serialiser">
                     {{ serialiser }}
                 </md-option>
-                </md-select>
+            </md-select>
         </div>
         <div class="input-field" *ngIf="functions && functions.valid && !_type.node">
             <md-select class="full-width" id="aggregateFunction" placeholder="Aggregator class" (change)="changeType(_type.aggregateFunction.class, 'aggregateFunction', 'class')"

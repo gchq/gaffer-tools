@@ -80,7 +80,7 @@ export class TypeFormComponent implements OnInit {
 
     }
 
-    getGafferFunctions(type: any, javaClass: any) {
+    getGafferFunctions(type: string, javaClass: string) {
         if (type !== undefined && javaClass !== undefined) {
             this.gafferService.getSimpleFunctions(type, javaClass)
                 .subscribe(
@@ -116,7 +116,7 @@ export class TypeFormComponent implements OnInit {
         }
     }
 
-    changeType(value: any, key: any, secondaryKey: any) {
+    changeType(value: any, key: string, secondaryKey?: string) {
         if (key === 'aggregateFields') {
             try {
                 let fieldsObject = JSON.parse(this.aggregateFields);
