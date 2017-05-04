@@ -33,5 +33,6 @@
         }
       ]
     }
-  }
+  },
+  "vertexSerialiserClass": "uk.gov.gchq.gaffer.serialisation.LongSerialiser"
 }
