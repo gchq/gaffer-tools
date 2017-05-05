@@ -15,8 +15,8 @@
  */
 package uk.gov.gchq.gaffer.graphql.fetch;
 
-import uk.gov.gchq.gaffer.graphql.definitions.Constants;
 import graphql.schema.DataFetchingEnvironment;
+import uk.gov.gchq.gaffer.graphql.definitions.Constants;
 
 /**
  * Will fetch entities based on arguments from the query.

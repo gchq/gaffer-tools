@@ -15,10 +15,9 @@
  */
 package uk.gov.gchq.gaffer.graphql.fetch;
 
-import uk.gov.gchq.gaffer.graphql.definitions.Constants;
 import graphql.schema.DataFetcher;
 import graphql.schema.DataFetchingEnvironment;
-
+import uk.gov.gchq.gaffer.graphql.definitions.Constants;
 import java.util.HashMap;
 import java.util.Map;
 

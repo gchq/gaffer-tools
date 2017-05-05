@@ -21,7 +21,7 @@
     <parent>
         <groupId>uk.gov.gchq.gaffer</groupId>
         <artifactId>gaffer2</artifactId>
-        <version>0.6.6</version>
+        <version>0.7.0</version>
     </parent>
 
     <artifactId>gaffer-tools</artifactId>
@@ -32,13 +32,12 @@
         <module>mini-accumulo-cluster</module>
         <module>graffer-ql</module>
         <module>federated-rest</module>
-        <module>road-traffic</module>
         <module>schema-builder</module>
         <module>slider</module>
     </modules>
 
     <properties>
-        <gaffer.version>0.6.6</gaffer.version>
+        <gaffer.version>0.7.0</gaffer.version>
         <scm.url>
             https://github.com/gchq/gaffer-tools
         </scm.url>
