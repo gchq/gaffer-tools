@@ -28,8 +28,23 @@
         </dependency>
         <dependency>
             <groupId>uk.gov.gchq.gaffer</groupId>
-            <artifactId>example-graph</artifactId>
+            <artifactId>accumulo-store</artifactId>
             <version>${gaffer.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>uk.gov.gchq.gaffer</groupId>
+            <artifactId>road-traffic-rest</artifactId>
+            <version>${gaffer.version}</version>
+            <classifier>classes</classifier>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>uk.gov.gchq.gaffer</groupId>
+            <artifactId>road-traffic-demo</artifactId>
+            <version>${gaffer.version}</version>
+            <classifier>classes</classifier>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 

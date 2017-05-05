@@ -19,6 +19,7 @@ import graphql.schema.DataFetchingEnvironment;
 import uk.gov.gchq.gaffer.commonutil.iterable.CloseableIterable;
 import uk.gov.gchq.gaffer.data.element.Element;
 import uk.gov.gchq.gaffer.data.element.Entity;
+import uk.gov.gchq.gaffer.data.elementdefinition.view.GlobalViewElementDefinition;
 import uk.gov.gchq.gaffer.data.elementdefinition.view.View;
 import uk.gov.gchq.gaffer.graphql.definitions.Constants;
 import uk.gov.gchq.gaffer.operation.OperationChain;
@@ -38,19 +39,21 @@ public abstract class EntityDataFetcher extends ElementDataFetcher<Entity> {
     protected abstract String getVertex(final DataFetchingEnvironment environment);
 
     protected OperationChain<CloseableIterable<? extends Element>> getOperationChain(final DataFetchingEnvironment environment,
-                                                                          final StringBuilder keyBuilder) {
+                                                                                     final StringBuilder keyBuilder) {
         final String vertexArg = getVertex(environment);
         keyBuilder.append(vertexArg);
-        final OperationChain<CloseableIterable<? extends Element>> opChain = new OperationChain.Builder()
+
+        return new OperationChain.Builder()
                 .first(new GetElements.Builder()
                         .input(new EntitySeed(vertexArg))
                         .view(new View.Builder()
+                                .globalElements(new GlobalViewElementDefinition.Builder()
+                                        .groupBy()
+                                        .build())
                                 .entity(getGroup())
                                 .build())
                         .build())
                 .build();
-
-        return opChain;
     }
 
     protected void addFixedValues(final Entity element, final Map<String, Object> result) {

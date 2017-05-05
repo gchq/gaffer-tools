@@ -38,7 +38,7 @@
         </dependency>
         <dependency>
             <groupId>uk.gov.gchq.gaffer</groupId>
-            <artifactId>example-graph</artifactId>
+            <artifactId>graph</artifactId>
             <version>${gaffer.version}</version>
         </dependency>
         <dependency>

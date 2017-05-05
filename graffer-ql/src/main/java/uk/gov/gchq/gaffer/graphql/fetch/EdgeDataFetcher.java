@@ -20,6 +20,7 @@ import graphql.schema.DataFetchingEnvironment;
 import uk.gov.gchq.gaffer.commonutil.iterable.CloseableIterable;
 import uk.gov.gchq.gaffer.data.element.Edge;
 import uk.gov.gchq.gaffer.data.element.Element;
+import uk.gov.gchq.gaffer.data.elementdefinition.view.GlobalViewElementDefinition;
 import uk.gov.gchq.gaffer.data.elementdefinition.view.View;
 import uk.gov.gchq.gaffer.graphql.definitions.Constants;
 import uk.gov.gchq.gaffer.operation.OperationChain;
@@ -45,7 +46,7 @@ public abstract class EdgeDataFetcher extends ElementDataFetcher<Edge> {
 
     @SuppressFBWarnings("NP_LOAD_OF_KNOWN_NULL_VALUE")
     protected OperationChain<CloseableIterable<? extends Element>> getOperationChain(final DataFetchingEnvironment environment,
-                                                                        final StringBuilder keyBuilder) {
+                                                                                     final StringBuilder keyBuilder) {
         final String vertexArg = getVertex(environment);
         final String sourceArg = getSource(environment);
         final String destinationArg = getDestination(environment);
@@ -72,6 +73,9 @@ public abstract class EdgeDataFetcher extends ElementDataFetcher<Edge> {
                         .first(new GetElements.Builder()
                                 .input(new EntitySeed(lastArg))
                                 .view(new View.Builder()
+                                        .globalElements(new GlobalViewElementDefinition.Builder()
+                                                .groupBy()
+                                                .build())
                                         .edge(getGroup())
                                         .build())
                                 .build())
@@ -81,6 +85,11 @@ public abstract class EdgeDataFetcher extends ElementDataFetcher<Edge> {
                 opChain = new OperationChain.Builder()
                         .first(new GetElements.Builder()
                                 .input(new EdgeSeed(sourceArg, destinationArg, true))
+                                .view(new View.Builder()
+                                        .globalElements(new GlobalViewElementDefinition.Builder()
+                                                .groupBy()
+                                                .build())
+                                        .build())
                                 .build())
                         .build();
                 break;

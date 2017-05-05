@@ -17,14 +17,18 @@ package uk.gov.gchq.gaffer.graphql;
 
 import graphql.ExecutionResult;
 import graphql.GraphQL;
+import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
 import org.junit.Test;
 import uk.gov.gchq.gaffer.commonutil.StreamUtil;
-import uk.gov.gchq.gaffer.example.films.analytic.LoadAndQuery;
-import uk.gov.gchq.gaffer.example.films.data.Certificate;
 import uk.gov.gchq.gaffer.graph.Graph;
 import uk.gov.gchq.gaffer.jsonserialisation.JSONSerialiser;
 import uk.gov.gchq.gaffer.operation.OperationChain;
+import uk.gov.gchq.gaffer.operation.impl.add.AddElements;
+import uk.gov.gchq.gaffer.operation.impl.generate.GenerateElements;
+import uk.gov.gchq.gaffer.traffic.DemoData;
+import uk.gov.gchq.gaffer.traffic.ElementGroup;
+import uk.gov.gchq.gaffer.traffic.generator.RoadTrafficElementGenerator;
 import uk.gov.gchq.gaffer.user.User;
 
 import static org.junit.Assert.fail;
@@ -37,26 +41,28 @@ public class GrafferQlTest {
 
     @Test
     public void test() throws Exception {
-
         // Setup User
         final User user = new User.Builder()
                 .userId("user02")
-                .dataAuth(Certificate.U.name())
-                .dataAuth(Certificate.PG.name())
-                .dataAuth(Certificate._12A.name())
-                .dataAuth(Certificate._15.name())
-                .dataAuth(Certificate._18.name())
                 .build();
         final JSONSerialiser json = new JSONSerialiser();
 
         // Setup graph
         final Graph graph = new Graph.Builder()
-                .storeProperties(StreamUtil.openStream(LoadAndQuery.class, "/example/films/mockaccumulostore.properties"))
-                .addSchemas(StreamUtil.openStreams(LoadAndQuery.class, "/example/films/schema"))
+                .storeProperties(StreamUtil.openStream(DemoData.class, "mockaccumulo.properties"))
+                .addSchemas(StreamUtil.openStreams(ElementGroup.class, "schema"))
                 .build();
 
         // Populate graph with some films data
-        final OperationChain<Void> populateChain = json.deserialise(StreamUtil.openStream(LoadAndQuery.class, "/example/films/json/load.json"), OperationChain.class);
+        final OperationChain<Void> populateChain = new OperationChain.Builder()
+                .first(new GenerateElements.Builder<String>()
+                        .input(IOUtils.readLines(StreamUtil.openStream(DemoData.class, "roadTrafficSampleData.csv")))
+                        .generator(new RoadTrafficElementGenerator())
+                        .build())
+                .then(new AddElements.Builder()
+                        .skipInvalidElements(false)
+                        .build())
+                .build();
         graph.execute(populateChain, user); // Execute the populate operation chain on the graph
 
         // Build GraphQL based on Gaffer Graph
@@ -73,60 +79,30 @@ public class GrafferQlTest {
         // Viewing Schema
         runGraphQL(graphQL, context, "{__schema{types{name}}}");
 
-        // Look for a film filmC
-        runGraphQL(graphQL, context, "{film(vertex:\"filmC\"){vertex{value} certificate{value} name{value}}}");
+        // Look for a junction use of M32:1
+        runGraphQL(graphQL, context, "{JunctionUse(vertex:\"M32:1\"){vertex{value} count{value}}}");
 
-        // Look for a person user03
-        runGraphQL(graphQL, context, "{person(vertex:\"user03\"){name{value} age{value}}}");
+        // Look for junction use for all junctions on M32 shows multiple queries
+        runGraphQL(graphQL, context, "{RoadHasJunction(source:\"M32\"){destination{JunctionUse{vertex{value} count{value}}}}}");
 
-        // Look for reviews for filmA
-        runGraphQL(graphQL, context, "{review(vertex:\"filmA\"){userId{value} rating{value}}}");
-
-        // Look for reviews, any vertex of user01
-        runGraphQL(graphQL, context, "{viewing(vertex:\"user01\"){source{value} destination{value} startTime{value}}}");
-
-        // Look for reviews, source of user02
-        runGraphQL(graphQL, context, "{viewing(source:\"user02\"){destination{value} startTime{value}}}");
-
-        // Look for reviews, destination filmC
-        runGraphQL(graphQL, context, "{viewing(destination:\"filmC\"){source_value destination{value} startTime{value}}}");
-
-        // Look for name of the reviewers of for filmA, shows hopping between entities
-        runGraphQL(graphQL, context, "{review(vertex:\"filmA\"){vertex{film{name{value}}}}}");
-
-        // Look for all the ratings for a film reviewed filmA, shows hopping back and forth
-        runGraphQL(graphQL, context, "{review(vertex:\"filmA\"){rating{value} vertex{film{vertex{review{rating{value}}}}}}}");
-
-        // Attempt to traverse from person -> viewing (FORWARDS)
-        runGraphQL(graphQL, context, "{person(vertex:\"user01\"){vertex{viewing{startTime{value}}}}}");
-
-        // Attempt to traverse from film -> viewing (BACKWARDS)
-        runGraphQL(graphQL, context, "{film(vertex:\"filmA\"){vertex{viewing{startTime{value}}}}}");
-
-        // Attempt to traverse from person -> viewing -> film.name (FORWARDS)
-        runGraphQL(graphQL, context, "{person(vertex:\"user01\"){vertex{viewing{startTime{value} destination{film{name{value}}}}}}}");
-
-        // Attempt to traverse from film -> viewing -> person.name (BACKWARDS)
-        runGraphQL(graphQL, context, "{film(vertex:\"filmA\"){name{value} vertex{viewing{startTime{value} source{person{name{value}}}}}}}");
-
-        // Attempt to traverse from review -> film and user (hop out to vertex from userId property)
-        runGraphQL(graphQL, context, "{review(vertex:\"filmA\"){vertex{film{name{value}}} userId{person{name{value}}}}}");
+        // Look for junction use for all junctions in Bristol. Multi hop query.
+        runGraphQL(graphQL, context, "{LocationContainsRoad(source:\"Bristol, City of\"){destination{RoadHasJunction{destination{JunctionUse{vertex{value} count{value}}}}}}}");
     }
 
-    private final void runGraphQL(final GraphQL graphQL,
-                                  final GrafferQLContext context,
-                                  final String query) {
+    private void runGraphQL(final GraphQL graphQL,
+                            final GrafferQLContext context,
+                            final String query) {
         LOGGER.info("Running Query");
         context.reset();
         final ExecutionResult result = graphQL
                 .execute(query, context);
-        LOGGER.info("Viewing Result: " + result.getData());
+        LOGGER.info("Result: " + result.getData());
         LOGGER.info(String.format("Operations Run (%d, cache used %d) %s",
                 context.getOperations().size(),
                 context.getCacheUsed(),
                 context.getOperations()));
         if (result.getErrors().size() > 0) {
-            LOGGER.info("Viewing Errors: " + result.getErrors());
+            LOGGER.info("Errors: " + result.getErrors());
             fail("GraphQL Reported Errors " + result.getErrors());
         }
 
