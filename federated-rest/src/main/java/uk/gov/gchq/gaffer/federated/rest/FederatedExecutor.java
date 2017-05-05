@@ -89,7 +89,9 @@ public class FederatedExecutor {
 
     public Iterable<Object> executeOperation(final Operation operation, final Class opClass, final User user, final boolean skipErrors, final boolean firstResult) {
         final OperationChain opChain = new OperationChain();
-        operation.setClazz(opClass.getName());
+        if (null != opClass) {
+            operation.setClazz(opClass.getName());
+        }
         opChain.setOperations(Collections.singletonList(operation));
         return executeOperationChain(opChain, user, skipErrors, false, firstResult);
     }

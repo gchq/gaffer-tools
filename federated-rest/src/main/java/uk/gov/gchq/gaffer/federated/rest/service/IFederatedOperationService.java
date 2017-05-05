@@ -61,6 +61,24 @@ public interface IFederatedOperationService {
                              @ApiParam(FIRST_RESULT_MSG) @QueryParam(FIRST_RESULT_PARAM) boolean firstResult);
 
     @POST
+    @Path("/operation")
+    @ApiOperation(
+            value = "Performs the given operation on the graph",
+            response = Object.class)
+    Object execute(final Operation operation,
+                   @ApiParam(SKIP_ERRORS_MSG) @QueryParam(SKIP_ERRORS_PARAM) boolean skipErrors,
+                   @ApiParam(FIRST_RESULT_MSG) @QueryParam(FIRST_RESULT_PARAM) boolean firstResult);
+
+    @POST
+    @Path("/chunked/operation")
+    @ApiOperation(
+            value = "Performs the given operation on the graph, returned chunked output. NOTE - does not work in Swagger.",
+            response = Object.class)
+    ChunkedOutput<String> executeChunked(final Operation operation,
+                                         @ApiParam(SKIP_ERRORS_MSG) @QueryParam(SKIP_ERRORS_PARAM) boolean skipErrors,
+                                         @ApiParam(FIRST_RESULT_MSG) @QueryParam(FIRST_RESULT_PARAM) boolean firstResult);
+
+    @POST
     @Path("/chunked")
     @ApiOperation(value = "Performs the given operation chain on the graph, returned chunked output. NOTE - does not work in Swagger.",
             response = Object.class,
@@ -101,8 +119,8 @@ public interface IFederatedOperationService {
             responseContainer = "List"
     )
     Iterable<Object> getAdjacentIds(final Operation operation,
-                                            @ApiParam(SKIP_ERRORS_MSG) @QueryParam(SKIP_ERRORS_PARAM) boolean skipErrors,
-                                            @ApiParam(FIRST_RESULT_MSG) @QueryParam(FIRST_RESULT_PARAM) boolean firstResult);
+                                    @ApiParam(SKIP_ERRORS_MSG) @QueryParam(SKIP_ERRORS_PARAM) boolean skipErrors,
+                                    @ApiParam(FIRST_RESULT_MSG) @QueryParam(FIRST_RESULT_PARAM) boolean firstResult);
 
     @POST
     @Path("/get/elements/all")

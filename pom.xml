@@ -32,7 +32,6 @@
         <module>mini-accumulo-cluster</module>
         <module>graffer-ql</module>
         <module>federated-rest</module>
-        <module>road-traffic</module>
         <module>schema-builder</module>
         <module>slider</module>
     </modules>

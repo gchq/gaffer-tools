@@ -35,6 +35,7 @@ import uk.gov.gchq.gaffer.user.User;
 import javax.inject.Inject;
 import java.io.Closeable;
 import java.io.IOException;
+import java.util.Collections;
 
 import static uk.gov.gchq.gaffer.jsonserialisation.JSONSerialiser.createDefaultMapper;
 
@@ -49,6 +50,18 @@ public class FederatedOperationService implements IFederatedOperationService {
     @Override
     public Iterable<Object> execute(final OperationChain operationChain, final boolean skipErrors, final boolean runIndividually, final boolean firstResult) {
         return executor.executeOperationChain(operationChain, createUser(), skipErrors, runIndividually, firstResult);
+    }
+
+    @Override
+    public Object execute(final Operation operation, final boolean skipErrors, final boolean firstResult) {
+        return executor.executeOperation(operation, Operation.class, createUser(), skipErrors, firstResult);
+    }
+
+    @Override
+    public ChunkedOutput<String> executeChunked(final Operation operation, final boolean skipErrors, final boolean firstResult) {
+        final OperationChain opChain = new OperationChain();
+        opChain.setOperations(Collections.singletonList(operation));
+        return executeChunked(opChain, skipErrors, false, firstResult);
     }
 
     @Override

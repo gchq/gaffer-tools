@@ -18,10 +18,10 @@ Python shell
 This python shell connects to a Gaffer REST API and requires Python 3.x
 
 To start using the python shell you will need an instance of the REST API running.
-You can start the Gaffer example rest server (see Gaffer repository example-rest/README.md) using the command on the Gaffer project:
+You can start the Gaffer example rest server (see Gaffer repository example/road-traffic/README.md) using the command on the Gaffer project:
 
 ```
-mvn clean install -Pquick -Pstandalone
+mvn clean install -Pquick -Proad-traffic-demo
 ```
 
 Once this is running you can run the python example by using the command (all commands are run from the root of the python-shell project):
