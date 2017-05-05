@@ -45,16 +45,11 @@ import java.util.function.Predicate;
 
 public class FederatedGraphConfigurationService implements IFederatedGraphConfigurationService {
     private static final Logger LOGGER = LoggerFactory.getLogger(FederatedOperationService.class);
-    private final FederatedConfigAuthoriser authoriser = new FederatedConfigAuthoriser();
-    private final FederatedExecutor executor = new FederatedExecutor();
+    private final FederatedConfigAuthoriser authoriser = createAuthoriser();
+    private final FederatedExecutor executor = createExecutor();
 
     @Inject
     private UserFactory userFactory;
-
-    private User createUser() {
-        System.out.println(userFactory.getClass());
-        return userFactory.createUser();
-    }
 
     @Override
     public GafferUrl addUrl(final GafferUrl url) {
@@ -213,5 +208,17 @@ public class FederatedGraphConfigurationService implements IFederatedGraphConfig
         }
 
         return fields;
+    }
+
+    protected User createUser() {
+        return userFactory.createUser();
+    }
+
+    protected FederatedExecutor createExecutor() {
+        return new FederatedExecutor();
+    }
+
+    protected FederatedConfigAuthoriser createAuthoriser() {
+        return new FederatedConfigAuthoriser();
     }
 }
