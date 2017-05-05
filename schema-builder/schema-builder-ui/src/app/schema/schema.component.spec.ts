@@ -28,7 +28,7 @@ import { ConfigModule, ConfigLoader, ConfigStaticLoader, ConfigService } from 'n
 import { Http, BaseRequestOptions, HttpModule, Response, ResponseOptions } from '@angular/http';
 import { MockBackend, MockConnection } from '@angular/http/testing';
 import { LocalStorageService } from 'ng2-webstorage';
-import { Observable } from 'rxjs';
+import { Observable } from 'rxjs/Rx';
 import { SchemaComponent } from './schema.component';
 
 class MockGafferService {
@@ -44,7 +44,7 @@ class MockGafferService {
 describe('SchemaComponent', () => {
   let component: SchemaComponent;
   let fixture: ComponentFixture<SchemaComponent>;
-  let routerStub = {} as Router;
+  const routerStub = {} as Router;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({

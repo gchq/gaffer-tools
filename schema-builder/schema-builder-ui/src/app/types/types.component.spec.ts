@@ -24,7 +24,7 @@ import { By } from '@angular/platform-browser';
 import { DebugElement } from '@angular/core';
 import { HttpModule } from '@angular/http';
 import { LocalStorageService } from 'ng2-webstorage';
-import { Observable } from 'rxjs';
+import { Observable } from 'rxjs/Rx';
 import { TypesComponent } from './types.component';
 
 class MockGafferService {
@@ -36,7 +36,7 @@ class MockGafferService {
 describe('TypesComponent', () => {
   let component: TypesComponent;
   let fixture: ComponentFixture<TypesComponent>;
-  let routerStub = {} as Router;
+  const routerStub = {} as Router;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({

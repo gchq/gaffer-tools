@@ -20,7 +20,7 @@ import { DataSet, Network } from '@types/vis';
 import { GraphQLNode } from '../../shared/graphql-node.interface';
 import { FormBuilder } from '@angular/forms';
 import * as _ from 'lodash';
-declare var $: any;
+declare const $: any;
 
 @Component({
     selector: 'app-node-form',
