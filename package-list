@@ -13,6 +13,3 @@ uk.gov.gchq.gaffer.schemabuilder.constant
 uk.gov.gchq.gaffer.schemabuilder.filter
 uk.gov.gchq.gaffer.schemabuilder.serialisation
 uk.gov.gchq.gaffer.schemabuilder.service
-uk.gov.gchq.gaffer.traffic
-uk.gov.gchq.gaffer.traffic.generator
-uk.gov.gchq.gaffer.traffic.listeners
