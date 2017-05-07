@@ -25,8 +25,8 @@
                 </h5>
                 <h5 style="color:red;" *ngIf="validation && !validation.valid">
                     <md-icon>close</md-icon>
-                    <span *ngIf="validation && validation.message">{{validation.message}}</span>
-                    <span *ngIf="!validation || validation.message">Unknown validation error</span>
+                    <span *ngIf="validation && validation.errors">{{validation.errors}}</span>
+                    <span *ngIf="!validation || validation.errors">Unknown validation error</span>
                 </h5>
                 <h5 style="color:red;" *ngIf="errorMessage">
                     <md-icon>close</md-icon>

@@ -15,14 +15,14 @@
  */
 package uk.gov.gchq.gaffer.graphql.definitions;
 
-import uk.gov.gchq.gaffer.data.element.Edge;
-import uk.gov.gchq.gaffer.graphql.fetch.EdgeByArgDataFetcher;
-import uk.gov.gchq.gaffer.graphql.fetch.VertexSourceDataFetcher;
-import uk.gov.gchq.gaffer.store.schema.SchemaEdgeDefinition;
 import graphql.schema.GraphQLInterfaceType;
 import graphql.schema.GraphQLList;
 import graphql.schema.GraphQLNonNull;
 import graphql.schema.GraphQLObjectType;
+import uk.gov.gchq.gaffer.data.element.Edge;
+import uk.gov.gchq.gaffer.graphql.fetch.EdgeByArgDataFetcher;
+import uk.gov.gchq.gaffer.graphql.fetch.VertexSourceDataFetcher;
+import uk.gov.gchq.gaffer.store.schema.SchemaEdgeDefinition;
 
 import static graphql.Scalars.GraphQLString;
 import static graphql.schema.GraphQLArgument.newArgument;

@@ -15,6 +15,12 @@
  */
 package uk.gov.gchq.gaffer.graphql.definitions;
 
+import graphql.schema.GraphQLInterfaceType;
+import graphql.schema.GraphQLList;
+import graphql.schema.GraphQLNonNull;
+import graphql.schema.GraphQLObjectType;
+import graphql.schema.GraphQLTypeReference;
+import org.apache.commons.lang3.CharUtils;
 import uk.gov.gchq.gaffer.graphql.GrafferQLException;
 import uk.gov.gchq.gaffer.graphql.fetch.EdgeByVertexDataFetcher;
 import uk.gov.gchq.gaffer.graphql.fetch.EntityByVertexDataFetcher;
@@ -23,13 +29,6 @@ import uk.gov.gchq.gaffer.store.schema.Schema;
 import uk.gov.gchq.gaffer.store.schema.SchemaEdgeDefinition;
 import uk.gov.gchq.gaffer.store.schema.SchemaEntityDefinition;
 import uk.gov.gchq.gaffer.store.schema.TypeDefinition;
-import graphql.schema.GraphQLInterfaceType;
-import graphql.schema.GraphQLList;
-import graphql.schema.GraphQLNonNull;
-import graphql.schema.GraphQLObjectType;
-import graphql.schema.GraphQLTypeReference;
-import org.apache.commons.lang.CharUtils;
-
 import java.util.Map;
 
 import static graphql.Scalars.GraphQLString;
@@ -120,7 +119,8 @@ public class DataTypeGQLBuilder {
                         .dataFetcher(new EdgeByVertexDataFetcher(entry.getKey(), true))
                         .build());
             }
-            if (rawName.equals(entry.getValue().getDestination())) {
+            if (!entry.getValue().getSource().equals(entry.getValue().getDestination())
+                    && rawName.equals(entry.getValue().getDestination())) {
                 vertexTypeBuilder.field(newFieldDefinition()
                         .name(entry.getKey())
                         .type(new GraphQLList(new GraphQLTypeReference(entry.getKey())))

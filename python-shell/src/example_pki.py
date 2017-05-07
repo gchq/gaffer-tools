@@ -14,8 +14,9 @@
 # limitations under the License.
 #
 
-from gafferpy import gaffer_connector_pki
 import example
+from gafferpy import gaffer_connector_pki
+
 
 def run(host, verbose=False, pki_cert='cert.pem'):
     # Store your PKI certificate in file cert.pem

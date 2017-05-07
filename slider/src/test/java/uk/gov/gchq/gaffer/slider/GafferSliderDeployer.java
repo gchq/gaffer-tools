@@ -37,9 +37,12 @@ import org.slf4j.LoggerFactory;
 import uk.gov.gchq.gaffer.accumulostore.AccumuloProperties;
 import uk.gov.gchq.gaffer.accumulostore.SingleUseAccumuloStore;
 import uk.gov.gchq.gaffer.commonutil.StreamUtil;
-import uk.gov.gchq.gaffer.slider.util.*;
+import uk.gov.gchq.gaffer.slider.util.AccumuloSliderProperties;
+import uk.gov.gchq.gaffer.slider.util.AccumuloSliderUtils;
+import uk.gov.gchq.gaffer.slider.util.GafferSliderProperties;
+import uk.gov.gchq.gaffer.slider.util.SliderKeystoreUtils;
+import uk.gov.gchq.gaffer.slider.util.SliderUtils;
 import uk.gov.gchq.gaffer.store.StoreProperties;
-
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;

@@ -21,7 +21,6 @@ import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.security.ProviderUtils;
 import org.apache.slider.core.conf.ConfTree;
 import org.apache.slider.funtest.framework.CommandTestBase;
-
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;

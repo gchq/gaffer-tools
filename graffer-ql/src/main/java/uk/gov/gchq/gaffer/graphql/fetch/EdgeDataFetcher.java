@@ -19,13 +19,14 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import graphql.schema.DataFetchingEnvironment;
 import uk.gov.gchq.gaffer.commonutil.iterable.CloseableIterable;
 import uk.gov.gchq.gaffer.data.element.Edge;
+import uk.gov.gchq.gaffer.data.element.Element;
+import uk.gov.gchq.gaffer.data.elementdefinition.view.GlobalViewElementDefinition;
 import uk.gov.gchq.gaffer.data.elementdefinition.view.View;
 import uk.gov.gchq.gaffer.graphql.definitions.Constants;
 import uk.gov.gchq.gaffer.operation.OperationChain;
 import uk.gov.gchq.gaffer.operation.data.EdgeSeed;
 import uk.gov.gchq.gaffer.operation.data.EntitySeed;
-import uk.gov.gchq.gaffer.operation.impl.get.GetEdges;
-import uk.gov.gchq.gaffer.operation.impl.get.GetEdgesBySeed;
+import uk.gov.gchq.gaffer.operation.impl.get.GetElements;
 import java.util.Map;
 
 /**
@@ -44,8 +45,8 @@ public abstract class EdgeDataFetcher extends ElementDataFetcher<Edge> {
     protected abstract String getDestination(final DataFetchingEnvironment environment);
 
     @SuppressFBWarnings("NP_LOAD_OF_KNOWN_NULL_VALUE")
-    protected OperationChain<CloseableIterable<Edge>> getOperationChain(final DataFetchingEnvironment environment,
-                                                                        final StringBuilder keyBuilder) {
+    protected OperationChain<CloseableIterable<? extends Element>> getOperationChain(final DataFetchingEnvironment environment,
+                                                                                     final StringBuilder keyBuilder) {
         final String vertexArg = getVertex(environment);
         final String sourceArg = getSource(environment);
         final String destinationArg = getDestination(environment);
@@ -65,13 +66,16 @@ public abstract class EdgeDataFetcher extends ElementDataFetcher<Edge> {
         lastArg = (sourceArg != null) ? sourceArg : lastArg;
         lastArg = (destinationArg != null) ? destinationArg : lastArg;
 
-        OperationChain<CloseableIterable<Edge>> opChain = null;
+        OperationChain<CloseableIterable<? extends Element>> opChain = null;
         switch (nonNullCount) {
             case 1:
                 opChain = new OperationChain.Builder()
-                        .first(new GetEdges.Builder<EntitySeed>()
-                                .addSeed(new EntitySeed(lastArg))
+                        .first(new GetElements.Builder()
+                                .input(new EntitySeed(lastArg))
                                 .view(new View.Builder()
+                                        .globalElements(new GlobalViewElementDefinition.Builder()
+                                                .groupBy()
+                                                .build())
                                         .edge(getGroup())
                                         .build())
                                 .build())
@@ -79,8 +83,13 @@ public abstract class EdgeDataFetcher extends ElementDataFetcher<Edge> {
                 break;
             case 2:
                 opChain = new OperationChain.Builder()
-                        .first(new GetEdgesBySeed.Builder()
-                                .addSeed(new EdgeSeed(sourceArg, destinationArg, true))
+                        .first(new GetElements.Builder()
+                                .input(new EdgeSeed(sourceArg, destinationArg, true))
+                                .view(new View.Builder()
+                                        .globalElements(new GlobalViewElementDefinition.Builder()
+                                                .groupBy()
+                                                .build())
+                                        .build())
                                 .build())
                         .build();
                 break;
