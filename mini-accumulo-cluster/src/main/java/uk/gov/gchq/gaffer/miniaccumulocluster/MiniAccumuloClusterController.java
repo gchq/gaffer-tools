@@ -16,9 +16,6 @@
 
 package uk.gov.gchq.gaffer.miniaccumulocluster;
 
-import static java.nio.file.StandardWatchEventKinds.ENTRY_CREATE;
-import static java.nio.file.StandardWatchEventKinds.OVERFLOW;
-
 import org.apache.accumulo.minicluster.MiniAccumuloCluster;
 import org.apache.accumulo.minicluster.MiniAccumuloConfig;
 import org.apache.commons.io.FileUtils;
@@ -32,6 +29,9 @@ import java.nio.file.Paths;
 import java.nio.file.WatchEvent;
 import java.nio.file.WatchKey;
 import java.nio.file.WatchService;
+
+import static java.nio.file.StandardWatchEventKinds.ENTRY_CREATE;
+import static java.nio.file.StandardWatchEventKinds.OVERFLOW;
 
 /**
  * Starts a mini accumulo cluster. Can be run directly from an IDE or compiled and

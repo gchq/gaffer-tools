@@ -21,7 +21,6 @@ import org.apache.slider.api.ClusterDescription;
 import org.apache.slider.api.ResourceKeys;
 import org.apache.slider.client.SliderClient;
 import org.apache.slider.core.conf.ConfTree;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;

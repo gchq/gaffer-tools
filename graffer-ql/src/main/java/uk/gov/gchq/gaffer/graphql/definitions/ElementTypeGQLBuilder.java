@@ -15,15 +15,14 @@
  */
 package uk.gov.gchq.gaffer.graphql.definitions;
 
+import graphql.schema.GraphQLInterfaceType;
+import graphql.schema.GraphQLObjectType;
+import org.apache.log4j.Logger;
 import uk.gov.gchq.gaffer.data.element.Element;
 import uk.gov.gchq.gaffer.graphql.GrafferQLException;
 import uk.gov.gchq.gaffer.store.schema.Schema;
 import uk.gov.gchq.gaffer.store.schema.SchemaElementDefinition;
 import uk.gov.gchq.gaffer.store.schema.TypeDefinition;
-import graphql.schema.GraphQLInterfaceType;
-import graphql.schema.GraphQLObjectType;
-import org.apache.log4j.Logger;
-
 import java.util.Map;
 
 import static graphql.schema.GraphQLFieldDefinition.newFieldDefinition;
