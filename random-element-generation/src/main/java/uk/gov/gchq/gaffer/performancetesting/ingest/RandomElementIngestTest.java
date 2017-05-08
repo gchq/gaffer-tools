@@ -28,6 +28,7 @@ import uk.gov.gchq.gaffer.store.schema.Schema;
 import uk.gov.gchq.gaffer.user.User;
 
 import java.io.File;
+import java.util.Collections;
 
 /**
  *
@@ -52,7 +53,7 @@ public class RandomElementIngestTest {
 
         // Add elements
         final AddElements addElements = new AddElements.Builder()
-                .elements(generator.getElements("DUMMY"))
+                .input(generator.apply(Collections.singletonList("DUMMY")))
                 .validate(false)
                 .build();
         final long startTime = System.currentTimeMillis();

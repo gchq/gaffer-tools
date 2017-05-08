@@ -18,7 +18,7 @@ package uk.gov.gchq.gaffer.accumulostore.performancetesting.ingest;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.lib.input.SequenceFileInputFormat;
-import uk.gov.gchq.gaffer.hdfs.operation.MapReduceOperation;
+import uk.gov.gchq.gaffer.hdfs.operation.MapReduce;
 import uk.gov.gchq.gaffer.hdfs.operation.handler.job.initialiser.JobInitialiser;
 import uk.gov.gchq.gaffer.store.Store;
 
@@ -31,11 +31,11 @@ import java.util.List;
 public class SequenceFileJobInitialiser implements JobInitialiser {
 
     @Override
-    public void initialiseJob(final Job job, final MapReduceOperation operation, final Store store) throws IOException {
+    public void initialiseJob(final Job job, final MapReduce operation, final Store store) throws IOException {
         initialiseInput(job, operation);
     }
 
-    private void initialiseInput(final Job job, final MapReduceOperation operation) throws IOException {
+    private void initialiseInput(final Job job, final MapReduce operation) throws IOException {
         job.setInputFormatClass(SequenceFileInputFormat.class);
         final List<String> paths = operation.getInputPaths();
         for (final String path : paths) {

@@ -41,6 +41,7 @@ import uk.gov.gchq.gaffer.user.User;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Collections;
 
 /**
  *
@@ -81,7 +82,7 @@ public class AccumuloRandomElementIngestTest extends Configured {
                     SequenceFile.Writer.compression(SequenceFile.CompressionType.NONE),
                     SequenceFile.Writer.keyClass(NullWritable.class),
                     SequenceFile.Writer.valueClass(BytesWritable.class));
-            for (final Element element : generator.getElements("DUMMY")) {
+            for (final Element element : generator.apply(Collections.singletonList("DUMMY"))) {
                 writer.append(NullWritable.get(), new BytesWritable(serialisation.serialise(element)));
             }
             writer.close();

@@ -48,7 +48,7 @@ public class TestRandomElementIngestTest {
                 .build();
 
         // When
-        RandomElementIngestTest test = new RandomElementIngestTest(graph, testProperties);
+        final RandomElementIngestTest test = new RandomElementIngestTest(graph, testProperties);
         final boolean result = test.run();
 
         // Then

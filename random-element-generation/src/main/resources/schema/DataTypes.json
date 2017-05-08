@@ -4,9 +4,7 @@
       "class": "java.lang.Long",
       "validateFunctions": [
         {
-          "function": {
-            "class": "uk.gov.gchq.gaffer.function.filter.Exists"
-          }
+          "class": "uk.gov.gchq.koryphe.impl.predicate.Exists"
         }
       ]
     },
@@ -17,9 +15,7 @@
       "class": "com.clearspring.analytics.stream.cardinality.HyperLogLogPlus",
       "validateFunctions": [
         {
-          "function": {
-            "class": "uk.gov.gchq.gaffer.function.filter.Exists"
-          }
+          "class": "uk.gov.gchq.koryphe.impl.predicate.Exists"
         }
       ]
     },
@@ -27,12 +23,10 @@
       "class": "java.lang.Boolean",
       "validateFunctions": [
         {
-          "function": {
-            "class": "uk.gov.gchq.gaffer.function.filter.IsTrue"
-          }
+          "class": "uk.gov.gchq.koryphe.impl.predicate.Exists"
         }
       ]
     }
   },
-  "vertexSerialiserClass": "uk.gov.gchq.gaffer.serialisation.LongSerialiser"
+  "vertexSerialiserClass": "uk.gov.gchq.gaffer.serialisation.implementation.raw.CompactRawLongSerialiser"
 }

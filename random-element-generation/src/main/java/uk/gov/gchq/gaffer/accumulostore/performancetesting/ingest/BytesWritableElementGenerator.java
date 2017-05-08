@@ -36,13 +36,11 @@ public class BytesWritableElementGenerator implements ElementGenerator<BytesWrit
     }
 
     @Override
-    public Iterable<Element> getElements(final Iterable<BytesWritable> domainObjects) {
+    public Iterable<? extends Element> apply(final Iterable<? extends BytesWritable> domainObjects) {
         final Stream<Element> elementStream = StreamSupport
                 .stream(domainObjects.spliterator(), false)
                 .map(bw -> {
                     try {
-                        System.out.println(bw.getLength());
-                        System.out.println(elementSerialisation.deserialise(bw.getBytes()));
                         return elementSerialisation.deserialise(bw.getBytes());
                     } catch (final SerialisationException e) {
                         throw new RuntimeException("SerialisationException getting elements from BytesWritable", e);
@@ -50,10 +48,5 @@ public class BytesWritableElementGenerator implements ElementGenerator<BytesWrit
                 });
         final Iterable<Element> elementIterable = elementStream::iterator;
         return new WrappedCloseableIterable<>(elementIterable::iterator);
-    }
-
-    @Override
-    public Iterable<BytesWritable> getObjects(final Iterable<Element> elements) {
-        throw new UnsupportedOperationException("getObjects is not currently supported");
     }
 }

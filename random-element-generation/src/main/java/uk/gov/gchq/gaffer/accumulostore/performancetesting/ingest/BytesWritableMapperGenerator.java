@@ -59,7 +59,7 @@ public class BytesWritableMapperGenerator implements MapperGenerator<NullWritabl
     }
 
     @Override
-    public Iterable<Element> getElements(final NullWritable nullWritable,
+    public Iterable<? extends Element> getElements(final NullWritable nullWritable,
                                          final BytesWritable bytesWritable,
                                          final MapContext<NullWritable, BytesWritable, ?, ?> context) {
         if (null == elementGenerator) {
@@ -68,8 +68,8 @@ public class BytesWritableMapperGenerator implements MapperGenerator<NullWritabl
         singleItemList.clear();
         singleItemList.add(bytesWritable);
 
-        elementGenerator.getElements(singleItemList).forEach(System.out::println);
-        return elementGenerator.getElements(singleItemList);
+        elementGenerator.apply(singleItemList).forEach(System.out::println);
+        return elementGenerator.apply(singleItemList);
     }
 
     public ElementGenerator<BytesWritable> getElementGenerator() {

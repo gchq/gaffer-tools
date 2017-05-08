@@ -24,7 +24,7 @@ import java.util.stream.Stream;
 /**
  *
  */
-public class RandomElementGenerator extends OneToManyElementGenerator<String> {
+public class RandomElementGenerator implements OneToManyElementGenerator<String> {
     protected long numElements;
     protected ElementSupplier elementSupplier;
 
@@ -35,15 +35,10 @@ public class RandomElementGenerator extends OneToManyElementGenerator<String> {
     }
 
     @Override
-    public Iterable<Element> getElements(final String domainObject) {
+    public Iterable<Element> _apply(final String domainObject) {
         return Stream.generate(elementSupplier)
                 .flatMap(x -> x.stream())
                 .limit(numElements)
                 ::iterator;
-    }
-
-    @Override
-    public Iterable<String> getObjects(final Iterable<Element> elements) {
-        throw new UnsupportedOperationException("Generation of domain objects from random data is not supported.");
     }
 }
