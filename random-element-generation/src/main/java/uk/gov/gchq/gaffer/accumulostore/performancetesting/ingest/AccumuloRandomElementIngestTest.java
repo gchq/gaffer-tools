@@ -140,21 +140,29 @@ public class AccumuloRandomElementIngestTest extends Configured {
         }
     }
 
-    public static void main(final String[] args) throws StoreException {
+    public static void main(final String[] args) throws StoreException, IOException {
         if (args.length != 3) {
             throw new RuntimeException("Usage: <schema_directory> <store_properties_file> <test_properties_file>");
         }
         final Schema schema = Schema.fromJson(new File(args[0]).toPath());
+        LOGGER.info("Using schema of {}", schema);
         final StoreProperties storeProperties = StoreProperties.loadStoreProperties(args[1]);
         final AccumuloStore accumuloStore = new AccumuloStore();
         accumuloStore.initialise(schema, storeProperties);
+        LOGGER.info("Initialised Accumulo store (instance name is {}, table name is {})",
+                accumuloStore.getProperties().getInstance(),
+                accumuloStore.getProperties().getTable());
         final AccumuloRandomElementIngestTestProperties testProperties = new AccumuloRandomElementIngestTestProperties();
         testProperties.loadTestProperties(args[2]);
+        LOGGER.info("Using test properties of {}", testProperties);
         final Graph graph = new Graph.Builder()
-                .storeProperties(storeProperties)
+                .store(accumuloStore)
                 .addSchema(schema)
                 .build();
         final AccumuloRandomElementIngestTest test = new AccumuloRandomElementIngestTest(graph, testProperties);
+        Configuration conf = new Configuration();
+        test.setConf(conf);
+        LOGGER.info("Running test");
         try {
             test.run();
             LOGGER.info("Test ran successfully");
