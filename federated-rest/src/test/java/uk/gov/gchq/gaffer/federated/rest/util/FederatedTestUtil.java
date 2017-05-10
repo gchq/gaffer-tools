@@ -82,11 +82,11 @@ public class FederatedTestUtil {
 
     public static void addElements(final Element... elements) throws IOException {
         executeOperation(new AddElements.Builder()
-                .elements(elements)
+                .input(elements)
                 .build());
     }
 
-    public static Response executeServerOperation(final String url, final Operation<?, ?> operation) throws SerialisationException {
+    public static Response executeServerOperation(final String url, final Operation operation) throws SerialisationException {
         return executeServerOperationChain(url, new OperationChain<>(operation));
     }
 
@@ -97,7 +97,7 @@ public class FederatedTestUtil {
                 .post(Entity.entity(JSON_SERIALISER.serialise(opChain), APPLICATION_JSON_TYPE));
     }
 
-    public static Response executeOperation(final Operation<?, ?> operation) throws IOException {
+    public static Response executeOperation(final Operation operation) throws IOException {
         return client.target(FED_URI)
                      .path("/graph/doOperation")
                      .request()

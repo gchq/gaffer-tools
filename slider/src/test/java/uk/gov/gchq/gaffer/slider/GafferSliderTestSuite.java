@@ -16,7 +16,11 @@
 
 package uk.gov.gchq.gaffer.slider;
 
-import org.junit.*;
+import org.junit.After;
+import org.junit.AfterClass;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Rule;
 import org.junit.internal.runners.statements.Fail;
 import org.junit.internal.runners.statements.RunAfters;
 import org.junit.internal.runners.statements.RunBefores;
@@ -30,10 +34,12 @@ import org.junit.runners.model.Statement;
 import org.junit.runners.model.TestClass;
 import org.reflections.Reflections;
 import uk.gov.gchq.gaffer.integration.AbstractStoreIT;
-
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import java.util.*;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Set;
 
 /**
  * A custom JUnit test suite which deploys a Gaffer instance using {@link GafferSliderDeployer} before running each of
