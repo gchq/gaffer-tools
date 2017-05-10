@@ -105,7 +105,6 @@ public class ElementSerialisation {
 
         // Read vertex
         final Object vertex = deserialiseVertex(bais);
-
         // Create Entity
         final Entity entity = new Entity(group, vertex);
 
@@ -235,9 +234,8 @@ public class ElementSerialisation {
                                      final ByteArrayOutputStream baos) throws SerialisationException {
         // Write the properties: each property is written in turn, first a flag to indicate whether it is null or not,
         // then the number of bytes in the serialised form, then the serialised bytes.
-        for (final Map.Entry<String, Object> entry : properties.entrySet()) {
-            final String propertyName = entry.getKey();
-            final Object property = entry.getValue();
+        for (final String propertyName : sed.getProperties()) {
+            final Object property = properties.get(propertyName);
             if (property == null) {
                 baos.write(NULL);
             } else {
