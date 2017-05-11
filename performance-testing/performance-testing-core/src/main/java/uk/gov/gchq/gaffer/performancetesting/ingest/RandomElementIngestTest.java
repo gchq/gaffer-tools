@@ -31,7 +31,10 @@ import java.io.File;
 import java.util.Collections;
 
 /**
+ * This class measures the time taken to add some elements to the provided {@link Graph}.
  *
+ * <p>The test is configured using a {@link RandomElementIngestTestProperties}. This specifies the class to be
+ * used to generate the random elements and the number of random elements.
  */
 public class RandomElementIngestTest {
     private static final Logger LOGGER = LoggerFactory.getLogger(RandomElementIngestTest.class);
