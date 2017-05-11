@@ -17,6 +17,8 @@ limitations under the License.
 Random element generation
 =========================
 
+TODO: Improve this doc; remove unused num tablet servers option, move into modules
+
 This module allows the creation of randomly generated large-scale graphs. Currently it uses the [RMAT](http://www.cs.cmu.edu/~christos/PUBLICATIONS/siam04.pdf) graph generation technique. The user specifies the number of nodes and edges the graph should have. The nodes are longs between 0 and the number of nodes specified. Edges are generated at random between nodes. The RMAT technique ensures that the degree distribution is roughly power-law. The Edges have a simple count. The Entities also have a count and a HyperLogLogPlusPlus sketch which gives an approximation to the degree.
 
 The Example class shows how to add random data to a Gaffer graph backed by Accumulo.

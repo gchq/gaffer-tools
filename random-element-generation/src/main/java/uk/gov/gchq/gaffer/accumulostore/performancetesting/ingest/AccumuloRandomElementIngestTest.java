@@ -30,10 +30,8 @@ import uk.gov.gchq.gaffer.data.element.Element;
 import uk.gov.gchq.gaffer.graph.Graph;
 import uk.gov.gchq.gaffer.operation.OperationException;
 import uk.gov.gchq.gaffer.performancetesting.ingest.RandomElementIngestTest;
-import uk.gov.gchq.gaffer.performancetesting.ingest.RandomElementIngestTestProperties;
 import uk.gov.gchq.gaffer.randomelementgeneration.generator.RandomElementGenerator;
 import uk.gov.gchq.gaffer.randomelementgeneration.supplier.ElementSupplier;
-import uk.gov.gchq.gaffer.randomelementgeneration.supplier.RmatElementSupplier;
 import uk.gov.gchq.gaffer.store.StoreException;
 import uk.gov.gchq.gaffer.store.StoreProperties;
 import uk.gov.gchq.gaffer.store.schema.Schema;
@@ -63,7 +61,7 @@ public class AccumuloRandomElementIngestTest extends Configured {
         final Configuration conf = getConf();
 
         // Create generator
-        final ElementSupplier elementSupplier = new ElementSupplierFactory(testProperties).get();
+        final ElementSupplier elementSupplier = new RandomElementIngestTest.ElementSupplierFactory(testProperties).get();
         final RandomElementGenerator generator = new RandomElementGenerator(
                 Long.parseLong(testProperties.getNumElementsForSplitEstimation()), elementSupplier);
 
@@ -118,26 +116,6 @@ public class AccumuloRandomElementIngestTest extends Configured {
         LOGGER.info("Running RandomElementIngestTest");
         final RandomElementIngestTest test = new RandomElementIngestTest(graph, testProperties);
         test.run();
-    }
-
-    private static class ElementSupplierFactory {
-        private RandomElementIngestTestProperties testProperties;
-
-        ElementSupplierFactory(final RandomElementIngestTestProperties testProperties) {
-            this.testProperties = testProperties;
-        }
-
-        ElementSupplier get() {
-            final String elementSupplierClass = testProperties.getElementSupplierClass();
-            if (elementSupplierClass.equals(RmatElementSupplier.class.getName())) {
-                final double[] rmatProbabilities = testProperties.getRmatProbabilities();
-                final long maxNodeId = testProperties.getRmatMaxNodeId();
-                final boolean includeEntities = testProperties.getRmatIncludeEntities();
-                return new RmatElementSupplier(rmatProbabilities, maxNodeId, includeEntities);
-            } else {
-                throw new RuntimeException("Unknown ElementSupplier class of " + elementSupplierClass);
-            }
-        }
     }
 
     public static void main(final String[] args) throws StoreException, IOException {

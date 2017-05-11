@@ -72,14 +72,14 @@ public class RandomElementIngestTest {
     }
 
 
-    private static class ElementSupplierFactory {
+    public static class ElementSupplierFactory {
         private RandomElementIngestTestProperties testProperties;
 
-        ElementSupplierFactory(final RandomElementIngestTestProperties testProperties) {
+        public ElementSupplierFactory(final RandomElementIngestTestProperties testProperties) {
             this.testProperties = testProperties;
         }
 
-        ElementSupplier get() {
+        public ElementSupplier get() {
             final String elementSupplierClass = testProperties.getElementSupplierClass();
             if (elementSupplierClass.equals(RmatElementSupplier.class.getName())) {
                 final double[] rmatProbabilities = testProperties.getRmatProbabilities();
