@@ -19,6 +19,7 @@ import com.clearspring.analytics.stream.cardinality.HyperLogLogPlus;
 import uk.gov.gchq.gaffer.data.element.Edge;
 import uk.gov.gchq.gaffer.data.element.Element;
 import uk.gov.gchq.gaffer.data.element.Entity;
+import uk.gov.gchq.gaffer.randomelementgeneration.Constants;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -39,6 +40,10 @@ public class RmatElementSupplier implements ElementSupplier {
         setCumulativeProbs(probabilities);
         this.numBits = (int) (Math.log(maxNodeId) / Math.log(2));
         this.includeEntities = includeEntities;
+    }
+
+    public RmatElementSupplier(final long maxNodeId, final boolean includeEntities) {
+        this(Constants.RMAT_PROBABILITIES, maxNodeId, includeEntities);
     }
 
     /**
