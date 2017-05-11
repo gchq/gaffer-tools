@@ -47,12 +47,4 @@ public class AccumuloRandomElementIngestTestProperties extends RandomElementInge
     public void setNumElementsForSplitEstimation(final String numElementsForSplitEstimation) {
         setProperty(NUM_ELEMENTS_FOR_SPLIT_ESTIMATION, numElementsForSplitEstimation);
     }
-
-    public String getNumTabletServers() {
-        return getProperty(NUM_TABLET_SERVERS);
-    }
-
-    public void setNumTabletServers(final String numTabletServers) {
-        setProperty(NUM_TABLET_SERVERS, numTabletServers);
-    }
 }
