@@ -27,7 +27,7 @@ export class GafferService {
   constructor(private http: Http, private config: ConfigService) { }
 
   private extractData(res: Response) {
-    let body = res.json();
+    const body = res.json();
     return body || { };
   }
 
@@ -45,19 +45,19 @@ export class GafferService {
   }
 
   getCommonTypes(): Observable<any> {
-    let gafferUrl = this.GAFFER_HOST + '/schema-builder-rest/v1/commonSchema';
-    let headers = new Headers({ 'Content-Type': 'application/json' });
-    let options = new RequestOptions({ headers: headers });
+    const gafferUrl = this.GAFFER_HOST + '/schema-builder-rest/v1/commonSchema';
+    const headers = new Headers({ 'Content-Type': 'application/json' });
+    const options = new RequestOptions({ headers: headers });
     return this.http.get(gafferUrl, options)
           .map(this.extractData)
           .catch(this.handleError);
   }
 
   getSimpleFunctions(typeName: string, typeClass: string): Observable<any> {
-    let gafferUrl = this.GAFFER_HOST + '/schema-builder-rest/v1/functions';
-    let headers = new Headers({ 'Content-Type': 'application/json' });
-    let options = new RequestOptions({ headers: headers });
-    let params = {
+    const gafferUrl = this.GAFFER_HOST + '/schema-builder-rest/v1/functions';
+    const headers = new Headers({ 'Content-Type': 'application/json' });
+    const options = new RequestOptions({ headers: headers });
+    const params = {
       typeName: typeName,
       typeClass: typeClass
     };
@@ -67,18 +67,18 @@ export class GafferService {
   }
 
   validateSchema(dataSchema: any, dataTypes: any, storeTypes: any): Observable<any> {
-    let gafferUrl = this.GAFFER_HOST + '/schema-builder-rest/v1/validate';
-    let headers = new Headers({ 'Content-Type': 'application/json' });
-    let options = new RequestOptions({ headers: headers });
-    let params = [dataSchema, dataTypes, storeTypes];
+    const gafferUrl = this.GAFFER_HOST + '/schema-builder-rest/v1/validate';
+    const headers = new Headers({ 'Content-Type': 'application/json' });
+    const options = new RequestOptions({ headers: headers });
+    const params = [dataSchema, dataTypes, storeTypes];
     return this.http.post(gafferUrl, params, options)
           .map(this.extractData)
           .catch(this.handleError);
   }
 
   getSchemaFromURL(url) {
-    let headers = new Headers({ 'Content-Type': 'application/json' });
-    let options = new RequestOptions({ headers: headers });
+    const headers = new Headers({ 'Content-Type': 'application/json' });
+    const options = new RequestOptions({ headers: headers });
     return this.http.get(url, options)
           .map(this.extractData)
           .catch(this.handleError);

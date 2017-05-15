@@ -24,7 +24,7 @@ import { GraphQLType } from '../../shared/graphql-type.interface';
 import { UUID } from 'angular2-uuid';
 import * as _ from 'lodash';
 
-declare var $: any;
+declare const $: any;
 
 @Component({
     selector: 'app-entity-form',
@@ -59,7 +59,7 @@ export class EntityFormComponent implements OnInit {
     }
 
     updateForm(entities: any) {
-        let formObject = {};
+        const formObject = {};
         _.forEach(entities, (entity: any) => {
             formObject[entity.id] = entity.name;
         });
@@ -71,7 +71,7 @@ export class EntityFormComponent implements OnInit {
     }
 
     addNewEntity() {
-        let uuid = UUID.UUID();
+        const uuid = UUID.UUID();
         this.entities.push({
             id: uuid,
             name: 'New Entity',
