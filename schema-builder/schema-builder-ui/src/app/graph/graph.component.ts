@@ -19,7 +19,7 @@ import { Observable } from 'rxjs/Observable';
 import { DataSet, Network, Node, Edge, Options } from '@types/vis';
 import { LocalStorageService } from 'ng2-webstorage';
 import * as _ from 'lodash';
-declare var vis: any;
+declare const vis: any;
 
 export interface DataContainer {
     nodes: DataSet<Node>,
@@ -82,9 +82,9 @@ export class GraphComponent implements OnInit {
     }
 
     ngOnInit() {
-        let storedNodes = this.storage.retrieve('graphNodes');
+        const storedNodes = this.storage.retrieve('graphNodes');
         if (storedNodes !== null) {
-            let nodeArray = [];
+            const nodeArray = [];
             _.forEach(storedNodes._data, (storedNode: any) => {
                 nodeArray.push(storedNode);
             });
@@ -93,9 +93,9 @@ export class GraphComponent implements OnInit {
             this.nodes = new vis.DataSet();
         }
 
-        let storedEdges = this.storage.retrieve('graphEdges');
+        const storedEdges = this.storage.retrieve('graphEdges');
         if (storedEdges !== null) {
-            let edgeArray = [];
+            const edgeArray = [];
             _.forEach(storedEdges._data, (storedEdge: any) => {
                 edgeArray.push(storedEdge);
             });

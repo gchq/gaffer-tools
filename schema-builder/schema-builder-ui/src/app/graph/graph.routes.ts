@@ -16,7 +16,7 @@
 
 import { Routes } from '@angular/router';
 
-import { GraphComponent }    from './graph.component';
+import { GraphComponent } from './graph.component';
 
 export const graphRoutes: Routes = [
   { path: 'graph', component: GraphComponent }

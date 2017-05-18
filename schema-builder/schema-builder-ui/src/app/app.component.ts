@@ -32,12 +32,12 @@ export interface RouteLink {
 export class AppComponent implements AfterViewInit {
     activeLinkIndex: number;
     pages: Array<RouteLink> = [
-        { title: "Graph", route: "graph" },
-        { title: "Properties", route: "properties" },
-        { title: "Types", route: "types" },
-        { title: "Schema", route: "schema" }
+        { title: 'Graph', route: 'graph' },
+        { title: 'Properties', route: 'properties' },
+        { title: 'Types', route: 'types' },
+        { title: 'Schema', route: 'schema' }
     ];
-    rlaSafe: boolean = false;
+    rlaSafe = false;
 
     public ngAfterViewInit() {
         this.rlaSafe = true;
@@ -53,7 +53,7 @@ export class AppComponent implements AfterViewInit {
 }
 
 @Component({
-    selector: 'nav-link',
+    selector: 'app-nav-link',
     template: '{{_tabName}}'
 })
 export class NavLinkComponent {

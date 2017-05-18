@@ -1,4 +1,4 @@
-export interface GraphQLAggregate { 
+export interface GraphQLAggregate {
     class?: string,
     separator?: string
 }

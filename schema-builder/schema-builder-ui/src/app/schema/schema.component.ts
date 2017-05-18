@@ -22,8 +22,8 @@ import { GafferService } from '../services/gaffer.service';
 import { UUID } from 'angular2-uuid';
 import * as _ from 'lodash';
 
-declare var $: any;
-declare var vis: any;
+declare const $: any;
+declare const vis: any;
 
 @Component({
     selector: 'app-schema',
@@ -69,7 +69,7 @@ export class SchemaComponent implements OnInit {
                 if (edge.arrows !== 'to') {
                     directed = 'false';
                 }
-                let formattedEdge = {
+                const formattedEdge = {
                     source: this.nodesById[edge.from],
                     destination: this.nodesById[edge.to],
                     directed: directed,
@@ -84,7 +84,7 @@ export class SchemaComponent implements OnInit {
         if (this.schema.hasOwnProperty('nodes')) {
             _.forEach(this.schema.nodes._data, (node: any) => {
                 _.forEach(node.entities, (entity: any) => {
-                    let formattedEntity = {
+                    const formattedEntity = {
                         vertex: node.label,
                         properties: {}
                     };
@@ -105,7 +105,7 @@ export class SchemaComponent implements OnInit {
         };
         if (this.schema.hasOwnProperty('types')) {
             _.forEach(this.schema.types, (type: any) => {
-                let formattedType = {
+                const formattedType = {
                     class: type.class || 'java.lang.String',
                     validateFunctions: type.validateFunctions || undefined
                 };
@@ -114,7 +114,7 @@ export class SchemaComponent implements OnInit {
         }
         if (this.schema.hasOwnProperty('nodes')) {
             _.forEach(this.schema.nodes._data, (node: any) => {
-                let formattedNode = {
+                const formattedNode = {
                     class: node.class || 'java.lang.String',
                     validateFunctions: node.validateFunctions || undefined
                 };
@@ -132,7 +132,7 @@ export class SchemaComponent implements OnInit {
         if (this.schema.hasOwnProperty('types')) {
             _.forEach(this.schema.types, (type: any) => {
                 if (type.aggregateFunction !== null || type.serialiserClass !== null) {
-                    let formattedType = {
+                    const formattedType = {
                         aggregateFunction: type.aggregateFunction || null,
                         serialiserClass: type.serialiserClass || null
                     };
@@ -144,7 +144,7 @@ export class SchemaComponent implements OnInit {
             encodeURIComponent(JSON.stringify(this.storeTypes, null, 2));
     }
 
-    sanitize(url:string){
+    sanitize(url: string) {
         return this.sanitizer.bypassSecurityTrustUrl(url);
     }
 
@@ -174,10 +174,10 @@ export class SchemaComponent implements OnInit {
             }
         }
         if (editedText) {
-            let edges = new vis.DataSet();
-            let nodes = new vis.DataSet();
-            let newNodes = [];
-            let newEdges = [];
+            const edges = new vis.DataSet();
+            const nodes = new vis.DataSet();
+            const newNodes = [];
+            const newEdges = [];
             this.errors.dataSchema = undefined;
             if (editedText.edges) {
                 _.forEach(editedText.edges, (editedEdge: any, edgeName) => {
@@ -203,7 +203,7 @@ export class SchemaComponent implements OnInit {
                     } else {
                         toId = _.find(newNodes, { label: editedEdge.destination }).id;
                     }
-                    let props = [];
+                    const props = [];
                     _.forEach(editedEdge.properties, (value: string, name) => {
                         props.push({
                             id: UUID.UUID(),
@@ -225,7 +225,7 @@ export class SchemaComponent implements OnInit {
             if (editedText.entities) {
                 _.forEach(editedText.entities, (editedEntity: any, entityName) => {
                     let nodeId;
-                    let props = [];
+                    const props = [];
                     _.forEach(editedEntity.properties, (value: string, name) => {
                         props.push({
                             id: UUID.UUID(),
@@ -235,7 +235,7 @@ export class SchemaComponent implements OnInit {
                     });
                     if (!_.some(newNodes, { label: editedEntity.vertex })) {
                         nodeId = UUID.UUID();
-                        let newNode = {
+                        const newNode = {
                             id: nodeId,
                             entities: [],
                             label: editedEntity.vertex
@@ -281,8 +281,8 @@ export class SchemaComponent implements OnInit {
             }
         }
         if (editedText) {
-            let storedNodes = this.storage.retrieve('graphNodes');
-            let newTypes = [];
+            const storedNodes = this.storage.retrieve('graphNodes');
+            const newTypes = [];
             if (editedText.types) {
                 _.forEach(editedText.types, (editedType: any, typeName) => {
                     let found = false;
@@ -322,7 +322,7 @@ export class SchemaComponent implements OnInit {
             }
         }
         if (editedText && editedText.types) {
-            let storedTypes = this.storage.retrieve('types');
+            const storedTypes = this.storage.retrieve('types');
             _.forEach(editedText.types, (editedType: any, typeName) => {
                 let existingType = _.find(storedTypes, { type: typeName });
                 if (existingType) {
@@ -336,8 +336,8 @@ export class SchemaComponent implements OnInit {
     }
 
     setupNodeLookups() {
-        let nodesById = {};
-        let storedNodes = this.storage.retrieve('graphNodes');
+        const nodesById = {};
+        const storedNodes = this.storage.retrieve('graphNodes');
         if (storedNodes) {
             _.forEach(storedNodes._data, (storedNode: any, storedId) => {
                 nodesById[storedId] = storedNode.label;
@@ -377,9 +377,9 @@ export class SchemaComponent implements OnInit {
                 private router: Router, private route: ActivatedRoute, private sanitizer: DomSanitizer) { }
 
     ngOnInit() {
-        let storedNodes = this.storage.retrieve('graphNodes');
-        let storedEdges = this.storage.retrieve('graphEdges');
-        let storedTypes = this.storage.retrieve('types');
+        const storedNodes = this.storage.retrieve('graphNodes');
+        const storedEdges = this.storage.retrieve('graphEdges');
+        const storedTypes = this.storage.retrieve('types');
         this.schema = {
             nodes: storedNodes,
             edges: storedEdges,
@@ -401,7 +401,7 @@ export class SchemaComponent implements OnInit {
                 this.schemaUrl = routeParams.url;
                 this.storage.store('schemaURL', routeParams.url);
             } else {
-                let storedSchemaUrl = this.storage.retrieve('schemaURL');
+                const storedSchemaUrl = this.storage.retrieve('schemaURL');
                 if (storedSchemaUrl && storedSchemaUrl !== null) {
                     this.schemaUrl = this.storage.retrieve('schemaURL');
                     this.router.navigate(['/schema', { url: this.schemaUrl }]);

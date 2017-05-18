@@ -59,9 +59,9 @@ export class TypeFormComponent implements OnInit {
         this.validationFields = {};
         this.validateFieldsValid = true;
         if (this._type.validateFunctions !== null && this._type.validateFunctions.length > 0) {
-            let tempValidationFields = _.cloneDeep(this._type.validateFunctions);
+            const tempValidationFields = _.cloneDeep(this._type.validateFunctions);
             _.forEach(tempValidationFields, (field: any) => {
-                let vFields = _.cloneDeep(field.function);
+                const vFields = _.cloneDeep(field.function);
                 vFields.class = undefined;
                 this.validationFields[field.function.class] = JSON.stringify(vFields);
             });
@@ -119,7 +119,7 @@ export class TypeFormComponent implements OnInit {
     changeType(value: any, key: string, secondaryKey?: string) {
         if (key === 'aggregateFields') {
             try {
-                let fieldsObject = JSON.parse(this.aggregateFields);
+                const fieldsObject = JSON.parse(this.aggregateFields);
                 fieldsObject.class = this._type.aggregateFunction.class;
                 this._type.aggregateFunction = fieldsObject;
                 this.aggregateFieldsValid = true;
@@ -132,7 +132,7 @@ export class TypeFormComponent implements OnInit {
             }
         } else if (key === 'validationFields') {
             try {
-                let fieldsObject = JSON.parse(this.validationFields[secondaryKey]);
+                const fieldsObject = JSON.parse(this.validationFields[secondaryKey]);
                 fieldsObject.class = secondaryKey;
                 for (let i = 0; i < this._type.validateFunctions.length; i++) {
                     if (this._type.validateFunctions[i].function.class === secondaryKey) {

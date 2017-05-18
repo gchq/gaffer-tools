@@ -55,6 +55,11 @@ def run_with_connector(gc):
     get_all_named_operations(gc)
     named_operation(gc)
     delete_named_operation(gc)
+
+    sort_elements(gc)
+    max_element(gc)
+    min_element(gc)
+
     complex_op_chain(gc)
 
     op_chain_in_json(gc)
@@ -473,6 +478,85 @@ def named_operation(gc):
     )
     print('Execute named operation')
     print(result)
+    print()
+
+
+def sort_elements(gc):
+    # Get sorted Elements
+    elements = gc.execute_operations([
+        g.GetAllElements(
+            view=g.View(
+                edges=[
+                    g.ElementDefinition(
+                        group='RoadUse'
+                    )
+                ]
+            )
+        ),
+        g.Sort(
+            comparators=[
+                g.ElementPropertyComparator(
+                    groups=['RoadUse'],
+                    property='count'
+                )
+            ],
+            result_limit=5
+        )
+    ])
+    print('Sorted elements')
+    print(elements)
+    print()
+
+
+def max_element(gc):
+    # Get sorted Elements
+    elements = gc.execute_operations([
+        g.GetAllElements(
+            view=g.View(
+                edges=[
+                    g.ElementDefinition(
+                        group='RoadUse'
+                    )
+                ]
+            )
+        ),
+        g.Max(
+            comparators=[
+                g.ElementPropertyComparator(
+                    groups=['RoadUse'],
+                    property='count'
+                )
+            ]
+        )
+    ])
+    print('Max element')
+    print(elements)
+    print()
+
+
+def min_element(gc):
+    # Get sorted Elements
+    elements = gc.execute_operations([
+        g.GetAllElements(
+            view=g.View(
+                edges=[
+                    g.ElementDefinition(
+                        group='RoadUse'
+                    )
+                ]
+            )
+        ),
+        g.Min(
+            comparators=[
+                g.ElementPropertyComparator(
+                    groups=['RoadUse'],
+                    property='count'
+                )
+            ]
+        )
+    ])
+    print('Min element')
+    print(elements)
     print()
 
 
