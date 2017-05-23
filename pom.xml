@@ -21,11 +21,11 @@
     <parent>
         <groupId>uk.gov.gchq.gaffer</groupId>
         <artifactId>gaffer2</artifactId>
-        <version>0.7.2</version>
+        <version>0.7.3</version>
     </parent>
 
     <artifactId>gaffer-tools</artifactId>
-    <version>0.7.2</version>
+    <version>0.7.3</version>
     <packaging>pom</packaging>
 
     <modules>
@@ -37,7 +37,7 @@
     </modules>
 
     <properties>
-        <gaffer.version>0.7.2</gaffer.version>
+        <gaffer.version>0.7.3</gaffer.version>
         <scm.url>
             https://github.com/gchq/gaffer-tools
         </scm.url>
