@@ -37,7 +37,10 @@ The application can be built and then run as a basic executable standalone war f
 
 To build it and its dependencies, use the following command from the parent directory:
 
-'mvn clean install -Pstandalone-schema-builder-rest -Pquick'
+```bash
+mvn clean install -Pstandalone-schema-builder-rest -Pquick
+```
+
 This uses the 'standalone-schema-builder-rest' profile to run jetty with the schema-builder-rest project after it and its dependencies have been built.
 
 This should launch an embedded jetty container, the base for the REST API is:
