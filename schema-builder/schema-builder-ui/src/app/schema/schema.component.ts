@@ -136,6 +136,10 @@ export class SchemaComponent implements OnInit {
                         aggregateFunction: type.aggregateFunction || null,
                         serialiserClass: type.serialiserClass || null
                     };
+                    if(formattedType.aggregateFunction && Object.keys(formattedType.aggregateFunction).length === 0) {
+                        formattedType.aggregateFunction = null;
+                    }
+                    console.log(formattedType);
                     this.storeTypes.types[type.type] = formattedType;
                 }
             });

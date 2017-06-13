@@ -805,6 +805,12 @@ class GetAllNamedOperations(Operation):
         return operation
 
 
+class DiscardOutput(Operation):
+    def __init__(self):
+        super().__init__(
+            class_name='uk.gov.gchq.gaffer.operation.impl.DiscardOutput')
+
+
 class CountGroups(Operation):
     def __init__(self, limit=None, options=None):
         super().__init__(

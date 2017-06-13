@@ -182,19 +182,20 @@ def add_elements(gc):
                     vertex='M1:1',
                     properties={
                         'countByVehicleType': {
-                            'class': 'uk.gov.gchq.gaffer.types.FreqMap',
-                            'BUS': 10,
-                            'CAR': 50,
+                            "uk.gov.gchq.gaffer.types.FreqMap": {
+                                'BUS': 10,
+                                'CAR': 50
+                            }
                         },
-                        'endDate': [
-                            'java.util.Date', 1034319600000
-                        ],
-                        'count': [
-                            'java.lang.Long', 60
-                        ],
-                        'startDate': [
-                            'java.util.Date', 1034316000000
-                        ]
+                        'endDate': {
+                            'java.util.Date': 1034319600000
+                        },
+                        'count': {
+                            'java.lang.Long': 60
+                        },
+                        'startDate': {
+                            'java.util.Date': 1034316000000
+                        }
                     }
                 ),
                 g.Edge(
@@ -371,6 +372,7 @@ def get_sub_graph(gc):
             g.ExportToSet(),
             g.GetAdjacentIds(in_out_type=g.InOutType.OUT),
             g.ExportToSet(),
+            g.DiscardOutput(),
             g.GetSetExport()
         ]
     )
@@ -388,6 +390,7 @@ def export_to_gaffer_result_cache(gc):
                 in_out_type=g.InOutType.OUT
             ),
             g.ExportToGafferResultCache(),
+            g.DiscardOutput(),
             g.GetJobDetails()
         ]
     )
@@ -412,6 +415,7 @@ def get_job_details(gc):
                 seeds=[g.EntitySeed('1')],
             ),
             g.ExportToGafferResultCache(),
+            g.DiscardOutput(),
             g.GetJobDetails()
         ]
     )
