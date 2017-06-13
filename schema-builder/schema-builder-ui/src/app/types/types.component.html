@@ -13,7 +13,7 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-  
+
   <div style="padding: 15px;" class="flex-container alt-background" fxLayout="row" fxLayoutAlign="center start">
     <div fxFlex="10%" fxShow="true" fxShow.sm="false" fxShow.xs="false"></div>
     <div fxFlex>
@@ -56,7 +56,7 @@
                                 </md-list-item>
                                 <md-list-item class="autoheight-list">
                                     <h3 md-line><b>Validators</b></h3>
-                                    <p md-line *ngFor="let validator of type.validateFunctions">{{validator.function.class}}</p>
+                                    <p md-line *ngFor="let validator of type.validateFunctions">{{validator.class}}</p>
                                     <p md-line *ngIf="!type.validateFunctions || type.validateFunctions.length === 0">null</p>
                                 </md-list-item>
                             </md-list>
@@ -85,7 +85,7 @@
                                 </md-list-item>
                                 <md-list-item class="autoheight-list">
                                     <h3 md-line><b>Validators</b></h3>
-                                    <p md-line *ngFor="let validator of type.validateFunctions">{{validator.function.class}}</p>
+                                    <p md-line *ngFor="let validator of type.validateFunctions">{{validator.class}}</p>
                                     <p md-line *ngIf="!type.validateFunctions || type.validateFunctions.length === 0">null</p>
                                 </md-list-item>
                             </md-list>
