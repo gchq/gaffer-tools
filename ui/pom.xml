@@ -26,8 +26,8 @@
     <packaging>war</packaging>
     <properties>
         <standalone-ui-path>ui</standalone-ui-path>
-        <standalone-port>8080</standalone-port>
         <standalone-rest-path>rest</standalone-rest-path>
+        <standalone-port>8080</standalone-port>
     </properties>
     <build>
         <plugins>
