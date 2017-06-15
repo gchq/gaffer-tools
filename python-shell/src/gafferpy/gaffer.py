@@ -88,6 +88,9 @@ class ElementSeed(ToJson):
     def to_json(self):
         raise NotImplementedError('Use either EntitySeed or EdgeSeed')
 
+    def to_json_wrapped(self):
+        raise NotImplementedError('Use either EntitySeed or EdgeSeed')
+
 
 class EntitySeed(ElementSeed):
     def __init__(self, vertex):
@@ -97,6 +100,13 @@ class EntitySeed(ElementSeed):
     def to_json(self):
         return {'class': 'uk.gov.gchq.gaffer.operation.data.EntitySeed',
                 'vertex': self.vertex}
+
+    def to_json_wrapped(self):
+        return {
+            'uk.gov.gchq.gaffer.operation.data.EntitySeed': {
+                'vertex': self.vertex
+            }
+        }
 
 
 class EdgeSeed(ElementSeed):
@@ -112,6 +122,68 @@ class EdgeSeed(ElementSeed):
             'source': self.source,
             'destination': self.destination,
             'directed': self.directed}
+
+    def to_json_wrapped(self):
+        return {
+            'uk.gov.gchq.gaffer.operation.data.EdgeSeed': {
+                'source': self.source,
+                'destination': self.destination,
+                'directed': self.directed
+            }
+        }
+
+
+class Comparator(ToJson):
+    def __init__(self, class_name, fields):
+        super().__init__()
+
+        self.class_name = class_name
+        self.fields = fields
+
+    def to_json(self):
+        json = {
+            'class': self.class_name
+        }
+
+        if self.fields is not None:
+            for key in self.fields:
+                json[key] = self.fields[key]
+
+        return json
+
+
+class ElementPropertyComparator(Comparator):
+    def __init__(self, groups, property, reversed=False):
+        super().__init__(
+            class_name='uk.gov.gchq.gaffer.data.element.comparison.ElementPropertyComparator',
+            fields={
+                'groups': groups,
+                'property': property,
+                'reversed': reversed
+            }
+        )
+
+
+class SeedPair(ToJson):
+    def __init__(self, first, second):
+        super().__init__()
+
+        if isinstance(first, ElementSeed):
+            self.first = first
+        else:
+            self.first = EntitySeed(first)
+
+        if isinstance(second, ElementSeed):
+            self.second = second
+        else:
+            self.second = EntitySeed(second)
+
+    def to_json(self):
+        return {
+            'class': 'uk.gov.gchq.gaffer.commonutil.pair.Pair',
+            'first': self.first.to_json_wrapped(),
+            'second': self.second.to_json_wrapped()
+        }
 
 
 class Element(ToJson):
@@ -593,18 +665,15 @@ class GetOperation(Operation):
             for seed in self.seeds:
                 if isinstance(seed, ElementSeed):
                     json_seeds.append(seed.to_json())
-                elif isinstance(seed, str):
-                    json_seeds.append(EntitySeed(seed).to_json())
                 else:
-                    raise TypeError(
-                        'Seeds argument must contain ElementSeed objects')
+                    json_seeds.append(EntitySeed(seed).to_json())
             operation['input'] = json_seeds
 
-        if self.seed_matching_type is not SeedMatchingType.RELATED:
+        if self.seed_matching_type is not None and self.seed_matching_type is not SeedMatchingType.RELATED:
             operation['seedMatching'] = self.seed_matching_type
-        if self.directed_type is not DirectedType.BOTH:
+        if self.directed_type is not None and self.directed_type is not DirectedType.BOTH:
             operation['directedType'] = self.directed_type
-        if self.in_out_type is not InOutType.BOTH:
+        if self.in_out_type is not None and self.in_out_type is not InOutType.BOTH:
             operation['includeIncomingOutGoing'] = self.in_out_type
         return operation
 
@@ -736,6 +805,12 @@ class GetAllNamedOperations(Operation):
         return operation
 
 
+class DiscardOutput(Operation):
+    def __init__(self):
+        super().__init__(
+            class_name='uk.gov.gchq.gaffer.operation.impl.DiscardOutput')
+
+
 class CountGroups(Operation):
     def __init__(self, limit=None, options=None):
         super().__init__(
@@ -829,6 +904,94 @@ class ToMapCsv(Operation):
         operation = super().to_json()
 
         operation['elementGenerator'] = self.element_generator
+
+        return operation
+
+
+class Sort(Operation):
+    def __init__(self, comparators, elements=None, result_limit=None):
+        super().__init__(
+            class_name='uk.gov.gchq.gaffer.operation.impl.compare.Sort'
+        )
+        self.comparators = comparators
+        self.elements = elements
+        self.result_limit = result_limit
+
+    def to_json(self):
+        operation = super().to_json()
+
+        comparators_json = []
+        for comparator in self.comparators:
+            if not isinstance(comparator, Comparator):
+                raise TypeError(
+                    'All comparators must be a Gaffer Comparator object')
+            comparators_json.append(comparator.to_json())
+        operation['comparators'] = comparators_json
+
+        if self.elements is not None:
+            elements_json = []
+            for element in self.elements:
+                elements_json.append(element.to_json())
+            operation['input'] = elements_json
+
+        if self.result_limit is not None:
+            operation['resultLimit'] = self.result_limit
+
+        return operation
+
+
+class Max(Operation):
+    def __init__(self, comparators, elements=None):
+        super().__init__(
+            class_name='uk.gov.gchq.gaffer.operation.impl.compare.Max'
+        )
+        self.comparators = comparators
+        self.elements = elements
+
+    def to_json(self):
+        operation = super().to_json()
+
+        comparators_json = []
+        for comparator in self.comparators:
+            if not isinstance(comparator, Comparator):
+                raise TypeError(
+                    'All comparators must be a Gaffer Comparator object')
+            comparators_json.append(comparator.to_json())
+        operation['comparators'] = comparators_json
+
+        if self.elements is not None:
+            elements_json = []
+            for element in self.elements:
+                elements_json.append(element.to_json())
+            operation['input'] = elements_json
+
+        return operation
+
+
+class Min(Operation):
+    def __init__(self, comparators, elements=None):
+        super().__init__(
+            class_name='uk.gov.gchq.gaffer.operation.impl.compare.Min'
+        )
+        self.comparators = comparators
+        self.elements = elements
+
+    def to_json(self):
+        operation = super().to_json()
+
+        comparators_json = []
+        for comparator in self.comparators:
+            if not isinstance(comparator, Comparator):
+                raise TypeError(
+                    'All comparators must be a Gaffer Comparator object')
+            comparators_json.append(comparator.to_json())
+        operation['comparators'] = comparators_json
+
+        if self.elements is not None:
+            elements_json = []
+            for element in self.elements:
+                elements_json.append(element.to_json())
+            operation['input'] = elements_json
 
         return operation
 

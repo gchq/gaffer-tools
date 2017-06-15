@@ -21,14 +21,15 @@
     <parent>
         <groupId>uk.gov.gchq.gaffer</groupId>
         <artifactId>gaffer2</artifactId>
-        <version>0.7.0</version>
+        <version>0.7.4</version>
     </parent>
 
     <artifactId>gaffer-tools</artifactId>
-    <version>0.7.1-SNAPSHOT</version>
+    <version>0.7.5-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <modules>
+        <module>ui</module>
         <module>mini-accumulo-cluster</module>
         <module>graffer-ql</module>
         <module>federated-rest</module>
@@ -39,7 +40,7 @@
     </modules>
 
     <properties>
-        <gaffer.version>0.7.0</gaffer.version>
+        <gaffer.version>0.7.4</gaffer.version>
         <scm.url>
             https://github.com/gchq/gaffer-tools
         </scm.url>

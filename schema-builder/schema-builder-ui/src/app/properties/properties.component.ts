@@ -35,7 +35,7 @@ export class PropertiesComponent implements OnInit {
 
     ngOnInit() {
         this.types = this.storage.retrieve('types');
-        let storedEdges = this.storage.retrieve('graphEdges');
+        const storedEdges = this.storage.retrieve('graphEdges');
         if (storedEdges !== null) {
             this.edges = [];
             _.forEach(storedEdges._data, (edge: any, key) => {
@@ -43,7 +43,7 @@ export class PropertiesComponent implements OnInit {
                 this.edges.push(edge);
             });
         }
-        let storedNodes = this.storage.retrieve('graphNodes');
+        const storedNodes = this.storage.retrieve('graphNodes');
         if (storedNodes !== null) {
             this.nodes = [];
             _.forEach(storedNodes._data, (node: any, key) => {
@@ -54,7 +54,7 @@ export class PropertiesComponent implements OnInit {
     }
 
     edgePropertiesChanged(event) {
-        let storedEdges = this.storage.retrieve('graphEdges');
+        const storedEdges = this.storage.retrieve('graphEdges');
         _.forEach(storedEdges._data, (edge: any) => {
             if (edge.id === event.value.id) {
                 edge.properties = event.value.properties;
@@ -65,7 +65,7 @@ export class PropertiesComponent implements OnInit {
     }
 
     entityPropertiesChanged(event) {
-        let storedNodes = this.storage.retrieve('graphNodes');
+        const storedNodes = this.storage.retrieve('graphNodes');
         _.forEach(storedNodes._data, (node: any) => {
             _.forEach(node.entities, (entity: any) => {
                 if (entity.id === event.value.id) {

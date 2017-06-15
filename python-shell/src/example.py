@@ -55,6 +55,11 @@ def run_with_connector(gc):
     get_all_named_operations(gc)
     named_operation(gc)
     delete_named_operation(gc)
+
+    sort_elements(gc)
+    max_element(gc)
+    min_element(gc)
+
     complex_op_chain(gc)
 
     op_chain_in_json(gc)
@@ -177,19 +182,20 @@ def add_elements(gc):
                     vertex='M1:1',
                     properties={
                         'countByVehicleType': {
-                            'class': 'uk.gov.gchq.gaffer.types.FreqMap',
-                            'BUS': 10,
-                            'CAR': 50,
+                            "uk.gov.gchq.gaffer.types.FreqMap": {
+                                'BUS': 10,
+                                'CAR': 50
+                            }
                         },
-                        'endDate': [
-                            'java.util.Date', 1034319600000
-                        ],
-                        'count': [
-                            'java.lang.Long', 60
-                        ],
-                        'startDate': [
-                            'java.util.Date', 1034316000000
-                        ]
+                        'endDate': {
+                            'java.util.Date': 1034319600000
+                        },
+                        'count': {
+                            'java.lang.Long': 60
+                        },
+                        'startDate': {
+                            'java.util.Date': 1034316000000
+                        }
                     }
                 ),
                 g.Edge(
@@ -366,6 +372,7 @@ def get_sub_graph(gc):
             g.ExportToSet(),
             g.GetAdjacentIds(in_out_type=g.InOutType.OUT),
             g.ExportToSet(),
+            g.DiscardOutput(),
             g.GetSetExport()
         ]
     )
@@ -383,6 +390,7 @@ def export_to_gaffer_result_cache(gc):
                 in_out_type=g.InOutType.OUT
             ),
             g.ExportToGafferResultCache(),
+            g.DiscardOutput(),
             g.GetJobDetails()
         ]
     )
@@ -407,6 +415,7 @@ def get_job_details(gc):
                 seeds=[g.EntitySeed('1')],
             ),
             g.ExportToGafferResultCache(),
+            g.DiscardOutput(),
             g.GetJobDetails()
         ]
     )
@@ -473,6 +482,85 @@ def named_operation(gc):
     )
     print('Execute named operation')
     print(result)
+    print()
+
+
+def sort_elements(gc):
+    # Get sorted Elements
+    elements = gc.execute_operations([
+        g.GetAllElements(
+            view=g.View(
+                edges=[
+                    g.ElementDefinition(
+                        group='RoadUse'
+                    )
+                ]
+            )
+        ),
+        g.Sort(
+            comparators=[
+                g.ElementPropertyComparator(
+                    groups=['RoadUse'],
+                    property='count'
+                )
+            ],
+            result_limit=5
+        )
+    ])
+    print('Sorted elements')
+    print(elements)
+    print()
+
+
+def max_element(gc):
+    # Get sorted Elements
+    elements = gc.execute_operations([
+        g.GetAllElements(
+            view=g.View(
+                edges=[
+                    g.ElementDefinition(
+                        group='RoadUse'
+                    )
+                ]
+            )
+        ),
+        g.Max(
+            comparators=[
+                g.ElementPropertyComparator(
+                    groups=['RoadUse'],
+                    property='count'
+                )
+            ]
+        )
+    ])
+    print('Max element')
+    print(elements)
+    print()
+
+
+def min_element(gc):
+    # Get sorted Elements
+    elements = gc.execute_operations([
+        g.GetAllElements(
+            view=g.View(
+                edges=[
+                    g.ElementDefinition(
+                        group='RoadUse'
+                    )
+                ]
+            )
+        ),
+        g.Min(
+            comparators=[
+                g.ElementPropertyComparator(
+                    groups=['RoadUse'],
+                    property='count'
+                )
+            ]
+        )
+    ])
+    print('Min element')
+    print(elements)
     print()
 
 
