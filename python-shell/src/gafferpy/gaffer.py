@@ -114,7 +114,12 @@ class EdgeSeed(ElementSeed):
         super().__init__()
         self.source = source
         self.destination = destination
-        self.directed = directed
+        if isinstance(directed, DirectedType):
+            self.directed = directed
+        elif directed:
+            self.directed = True
+        else:
+            self.directed = False
 
     def to_json(self):
         return {
@@ -368,13 +373,13 @@ class TransformFunction(GafferFunction):
 
 
 class DirectedType:
-    BOTH = 'BOTH'
+    EITHER = 'EITHER'
     DIRECTED = 'DIRECTED'
     UNDIRECTED = 'UNDIRECTED'
 
 
 class InOutType:
-    BOTH = 'BOTH'
+    EITHER = 'EITHER'
     IN = 'INCOMING'
     OUT = 'OUTGOING'
 
@@ -388,7 +393,7 @@ class EdgeVertices:
     NONE = 'NONE'
     SOURCE = 'SOURCE'
     DESTINATION = 'DESTINATION'
-    BOTH = 'BOTH'
+    EITHER = 'EITHER'
 
 
 class OperationChain(ToJson):
@@ -639,8 +644,8 @@ class GetOperation(Operation):
                  class_name,
                  seeds=None,
                  view=None,
-                 directed_type=DirectedType.BOTH,
-                 in_out_type=InOutType.BOTH,
+                 directed_type=DirectedType.EITHER,
+                 in_out_type=InOutType.EITHER,
                  seed_matching_type=SeedMatchingType.RELATED,
                  options=None):
         super().__init__(
@@ -671,9 +676,9 @@ class GetOperation(Operation):
 
         if self.seed_matching_type is not None and self.seed_matching_type is not SeedMatchingType.RELATED:
             operation['seedMatching'] = self.seed_matching_type
-        if self.directed_type is not None and self.directed_type is not DirectedType.BOTH:
+        if self.directed_type is not None and self.directed_type is not DirectedType.EITHER:
             operation['directedType'] = self.directed_type
-        if self.in_out_type is not None and self.in_out_type is not InOutType.BOTH:
+        if self.in_out_type is not None and self.in_out_type is not InOutType.EITHER:
             operation['includeIncomingOutGoing'] = self.in_out_type
         return operation
 
@@ -682,8 +687,8 @@ class GetElements(GetOperation):
     def __init__(self,
                  seeds=None,
                  view=None,
-                 directed_type=DirectedType.BOTH,
-                 in_out_type=InOutType.BOTH,
+                 directed_type=DirectedType.EITHER,
+                 in_out_type=InOutType.EITHER,
                  seed_matching_type=SeedMatchingType.RELATED,
                  options=None):
         super().__init__(
@@ -700,13 +705,13 @@ class GetAdjacentIds(GetOperation):
     def __init__(self,
                  seeds=None,
                  view=None,
-                 in_out_type=InOutType.BOTH,
+                 in_out_type=InOutType.EITHER,
                  options=None):
         super().__init__(
             class_name='uk.gov.gchq.gaffer.operation.impl.get.GetAdjacentIds',
             seeds=seeds,
             view=view,
-            directed_type=DirectedType.BOTH,
+            directed_type=DirectedType.EITHER,
             in_out_type=in_out_type,
             seed_matching_type=SeedMatchingType.RELATED,
             options=options)
@@ -715,14 +720,14 @@ class GetAdjacentIds(GetOperation):
 class GetAllElements(GetOperation):
     def __init__(self,
                  view=None,
-                 directed_type=DirectedType.BOTH,
+                 directed_type=DirectedType.EITHER,
                  options=None):
         super().__init__(
             class_name='uk.gov.gchq.gaffer.operation.impl.get.GetAllElements',
             seeds=None,
             view=view,
             directed_type=directed_type,
-            in_out_type=InOutType.BOTH,
+            in_out_type=InOutType.EITHER,
             options=options)
 
 
@@ -736,8 +741,8 @@ class NamedOperation(GetOperation):
             class_name='uk.gov.gchq.gaffer.named.operation.NamedOperation',
             seeds=seeds,
             view=view,
-            directed_type=DirectedType.BOTH,
-            in_out_type=InOutType.BOTH,
+            directed_type=DirectedType.EITHER,
+            in_out_type=InOutType.EITHER,
             seed_matching_type=SeedMatchingType.RELATED,
             options=options)
         self.name = name
