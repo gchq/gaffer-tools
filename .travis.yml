@@ -20,4 +20,4 @@ install: mvn -q install -P quick,travis -B -V
 script: mvn -q test -P travis,build-extras -B
 after_success:
   - ./cd/before_deploy.sh
-  - ./cd/deploy.sh
+  - travis_wait 45 ./cd/deploy.sh
