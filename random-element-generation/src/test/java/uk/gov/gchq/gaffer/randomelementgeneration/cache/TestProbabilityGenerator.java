@@ -13,9 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package uk.gov.gchq.gaffer.randomelementgeneration.supplier;
+package uk.gov.gchq.gaffer.randomelementgeneration.cache;
 
 import org.junit.Test;
+import uk.gov.gchq.gaffer.randomelementgeneration.cache.ProbabilityGenerator;
 
 import java.util.Map;
 import java.util.SortedMap;
@@ -25,9 +26,6 @@ import java.util.stream.IntStream;
 
 import static junit.framework.TestCase.assertTrue;
 
-/**
- *
- */
 public class TestProbabilityGenerator {
 
     @Test

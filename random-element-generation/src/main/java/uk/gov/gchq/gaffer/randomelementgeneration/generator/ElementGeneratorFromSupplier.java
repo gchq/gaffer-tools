@@ -17,28 +17,28 @@ package uk.gov.gchq.gaffer.randomelementgeneration.generator;
 
 import uk.gov.gchq.gaffer.data.element.Element;
 import uk.gov.gchq.gaffer.data.generator.OneToManyElementGenerator;
-import uk.gov.gchq.gaffer.randomelementgeneration.supplier.ElementSupplier;
 
+import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 /**
- *
+ * Given a {@link Supplier} of {@link Element}s, this class generates an {@link Iterable} of {@link Element}s, limited
+ * in size to the specified maximum number.
  */
-public class RandomElementGenerator implements OneToManyElementGenerator<String> {
-    protected long numElements;
-    protected ElementSupplier elementSupplier;
+public class ElementGeneratorFromSupplier implements OneToManyElementGenerator<String> {
+    protected long maximumNumberOfElements;
+    protected Supplier<Element> elementSupplier;
 
-    public RandomElementGenerator(final long numElements,
-                                  final ElementSupplier elementSupplier) {
-        this.numElements = numElements;
+    public ElementGeneratorFromSupplier(final long maximumNumberOfElements,
+                                        final Supplier<Element> elementSupplier) {
+        this.maximumNumberOfElements = maximumNumberOfElements;
         this.elementSupplier = elementSupplier;
     }
 
     @Override
     public Iterable<Element> _apply(final String domainObject) {
         return Stream.generate(elementSupplier)
-                .flatMap(x -> x.stream())
-                .limit(numElements)
+                .limit(maximumNumberOfElements)
                 ::iterator;
     }
 }

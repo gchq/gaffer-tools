@@ -13,15 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package uk.gov.gchq.gaffer.randomelementgeneration.supplier;
+package uk.gov.gchq.gaffer.randomelementgeneration.cache;
 
-import uk.gov.gchq.gaffer.data.element.Element;
+public interface Cache<T> {
 
-import java.util.Set;
-import java.util.function.Supplier;
+    void add(T t);
 
-/**
- *
- */
-public interface ElementSupplier extends Supplier<Set<Element>> {
+    T get();
 }

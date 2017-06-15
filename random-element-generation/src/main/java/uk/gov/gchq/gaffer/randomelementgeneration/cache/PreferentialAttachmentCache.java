@@ -16,7 +16,6 @@
 package uk.gov.gchq.gaffer.randomelementgeneration.cache;
 
 import org.apache.log4j.Logger;
-import uk.gov.gchq.gaffer.randomelementgeneration.supplier.ProbabilityGenerator;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -28,10 +27,20 @@ import java.util.Set;
 import java.util.TreeMap;
 
 /**
+ * A {@link Cache} that has a maximum size. Each item is associated with a count. As an item is added that count is
+ * incremented. If more than the maximum number of items are added then the one with the smallest count is removed.
+ * When the <code>get()</code> method is called, one of the items is returned at random. The probability of each item
+ * being returned is proportional to its count - items with large counts are more likely to be returned. When the
+ * <code>get()</code> method is called the count of that item is incremented. The result is that the rich grow richer
+ * --- items that are returned become more likely to be returned, and over time some items in the cache will be
+ * returned much more often than others.
  *
- * <p> This has a maximum size: when more than that number of distinct items have been added then no more can be added.
+ * <p>This can be used to generate graphs which are power-law in the number of times elements are added, i.e. by
+ * adding elements to both a graph and this cache, and repeatedly also adding the result of calling <code>get()</code>
+ * on this cache, then some elements will be added many more times that others. This can be used to test the performance
+ * when the same element is added multiple times causing many aggregations.
  */
-public class PreferentialAttachmentCache<T> {
+public class PreferentialAttachmentCache<T> implements Cache<T> {
     private static final Logger LOGGER = Logger.getLogger(PreferentialAttachmentCache.class);
 
     private final Random random = new Random();
@@ -45,6 +54,7 @@ public class PreferentialAttachmentCache<T> {
         this.maxSize = maxSize;
     }
 
+    @Override
     public void add(final T t) {
         if (!itemsToFreq.containsKey(t)) {
             itemsToFreq.put(t, 1L);
@@ -54,10 +64,10 @@ public class PreferentialAttachmentCache<T> {
                 mapFreqToItems.put(1L, new HashSet<>(Arrays.asList(t)));
             }
             if (itemsToFreq.keySet().size() > maxSize) {
-                Set<T> items = mapFreqToItems.get(mapFreqToItems.lastKey()); // Last key as stored in reverse order
-                int itemToRemove = random.nextInt(items.size());
+                final Set<T> items = mapFreqToItems.get(mapFreqToItems.lastKey()); // Last key as stored in reverse order
+                final int itemToRemove = random.nextInt(items.size());
                 int count = 0;
-                Iterator<T> it = items.iterator();
+                final Iterator<T> it = items.iterator();
                 while (it.hasNext()) {
                     T x = it.next();
                     if (count == itemToRemove) {
@@ -94,6 +104,7 @@ public class PreferentialAttachmentCache<T> {
      *
      * @return A random element from the cache with probability proportional to the frequency with which it has been returned.
      */
+    @Override
     public T get() {
         final long totalCount = getNumberOfElements();
         if (totalCount == 0) {

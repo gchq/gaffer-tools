@@ -17,11 +17,12 @@ package uk.gov.gchq.gaffer.performancetesting.ingest;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import uk.gov.gchq.gaffer.data.element.Element;
 import uk.gov.gchq.gaffer.graph.Graph;
 import uk.gov.gchq.gaffer.operation.OperationException;
 import uk.gov.gchq.gaffer.operation.impl.add.AddElements;
-import uk.gov.gchq.gaffer.randomelementgeneration.generator.RandomElementGenerator;
-import uk.gov.gchq.gaffer.randomelementgeneration.supplier.ElementSupplier;
+import uk.gov.gchq.gaffer.randomelementgeneration.generator.ElementGeneratorFromSupplier;
+import uk.gov.gchq.gaffer.randomelementgeneration.supplier.IterableOfElementsSupplier;
 import uk.gov.gchq.gaffer.randomelementgeneration.supplier.RmatElementSupplier;
 import uk.gov.gchq.gaffer.store.StoreProperties;
 import uk.gov.gchq.gaffer.store.schema.Schema;
@@ -29,6 +30,7 @@ import uk.gov.gchq.gaffer.user.User;
 
 import java.io.File;
 import java.util.Collections;
+import java.util.function.Supplier;
 
 /**
  * This class measures the time taken to add some elements to the provided {@link Graph}.
@@ -51,8 +53,8 @@ public class RandomElementIngestTest {
     public boolean run() {
         // Create generator
         final long numElements = testProperties.getNumElements();
-        final ElementSupplier elementSupplier = new ElementSupplierFactory(testProperties).get();
-        final RandomElementGenerator generator = new RandomElementGenerator(numElements, elementSupplier);
+        final Supplier<Element> elementSupplier = new ElementSupplierFactory(testProperties).get();
+        final ElementGeneratorFromSupplier generator = new ElementGeneratorFromSupplier(numElements, elementSupplier);
 
         // Add elements
         final AddElements addElements = new AddElements.Builder()
@@ -82,13 +84,13 @@ public class RandomElementIngestTest {
             this.testProperties = testProperties;
         }
 
-        public ElementSupplier get() {
+        public Supplier<Element> get() {
             final String elementSupplierClass = testProperties.getElementSupplierClass();
             if (elementSupplierClass.equals(RmatElementSupplier.class.getName())) {
                 final double[] rmatProbabilities = testProperties.getRmatProbabilities();
                 final long maxNodeId = testProperties.getRmatMaxNodeId();
                 final boolean includeEntities = testProperties.getRmatIncludeEntities();
-                return new RmatElementSupplier(rmatProbabilities, maxNodeId, includeEntities);
+                return new IterableOfElementsSupplier(new RmatElementSupplier(rmatProbabilities, maxNodeId, includeEntities));
             } else {
                 throw new RuntimeException("Unknown ElementSupplier class of " + elementSupplierClass);
             }

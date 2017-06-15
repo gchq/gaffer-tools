@@ -25,11 +25,21 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Random;
 import java.util.Set;
+import java.util.function.Supplier;
 
 /**
+ * This class uses the RMAT random graph generation method (http://www.cs.cmu.edu/~christos/PUBLICATIONS/siam04.pdf)
+ * to generate random {@link Element}s. The vertices are {@link java.lang.Long}s in the range 0 to a user defined
+ * maximum value.
  *
+ * <p>Each call to <code>get()</code> returns a {@link Set} of {@link Element}s. If the <code>includeEntities</code>
+ * option is true, then the set will contain a single {@link Edge} and an {@link Entity} for each vertex in the
+ * {@link Edge}. If the <code>includeEntities</code> option is false, then the set will contain a single {@link Edge}.
+ *
+ * <p>By default, the probabilities used for the generation of the edges are the same as those specified in the
+ * Graph500 challenge, but other probabilities can be specified if desired.
  */
-public class RmatElementSupplier implements ElementSupplier {
+public class RmatElementSupplier implements Supplier<Set<Element>> {
     protected final Random random = new Random();
     private double[] cumulativeProbs;
     private int numBits;

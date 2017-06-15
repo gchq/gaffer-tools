@@ -30,8 +30,7 @@ import uk.gov.gchq.gaffer.data.element.Element;
 import uk.gov.gchq.gaffer.graph.Graph;
 import uk.gov.gchq.gaffer.operation.OperationException;
 import uk.gov.gchq.gaffer.performancetesting.ingest.RandomElementIngestTest;
-import uk.gov.gchq.gaffer.randomelementgeneration.generator.RandomElementGenerator;
-import uk.gov.gchq.gaffer.randomelementgeneration.supplier.ElementSupplier;
+import uk.gov.gchq.gaffer.randomelementgeneration.generator.ElementGeneratorFromSupplier;
 import uk.gov.gchq.gaffer.store.StoreException;
 import uk.gov.gchq.gaffer.store.StoreProperties;
 import uk.gov.gchq.gaffer.store.schema.Schema;
@@ -40,6 +39,7 @@ import uk.gov.gchq.gaffer.user.User;
 import java.io.File;
 import java.io.IOException;
 import java.util.Collections;
+import java.util.function.Supplier;
 
 /**
  *
@@ -61,8 +61,8 @@ public class AccumuloRandomElementIngestTest extends Configured {
         final Configuration conf = getConf();
 
         // Create generator
-        final ElementSupplier elementSupplier = new RandomElementIngestTest.ElementSupplierFactory(testProperties).get();
-        final RandomElementGenerator generator = new RandomElementGenerator(
+        final Supplier<Element> elementSupplier = new RandomElementIngestTest.ElementSupplierFactory(testProperties).get();
+        final ElementGeneratorFromSupplier generator = new ElementGeneratorFromSupplier(
                 Long.parseLong(testProperties.getNumElementsForSplitEstimation()), elementSupplier);
 
         // Serialiser to go from elements to a byte array and back
