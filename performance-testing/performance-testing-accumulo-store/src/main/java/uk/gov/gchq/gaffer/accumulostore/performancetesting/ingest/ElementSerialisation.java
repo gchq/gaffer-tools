@@ -22,6 +22,7 @@ import uk.gov.gchq.gaffer.data.element.Element;
 import uk.gov.gchq.gaffer.data.element.Entity;
 import uk.gov.gchq.gaffer.data.element.Properties;
 import uk.gov.gchq.gaffer.exception.SerialisationException;
+import uk.gov.gchq.gaffer.serialisation.ToBytesSerialiser;
 import uk.gov.gchq.gaffer.serialisation.implementation.raw.CompactRawSerialisationUtils;
 import uk.gov.gchq.gaffer.store.schema.Schema;
 import uk.gov.gchq.gaffer.store.schema.SchemaElementDefinition;
@@ -205,7 +206,7 @@ public class ElementSerialisation {
     }
 
     private void serialiseVertex(final Object vertex, final ByteArrayOutputStream baos) throws SerialisationException {
-        final byte[] serialisedVertex = schema.getVertexSerialiser().serialise(vertex);
+        final byte[] serialisedVertex = ((ToBytesSerialiser) schema.getVertexSerialiser()).serialise(vertex);
         try {
             baos.write(CompactRawSerialisationUtils.writeLong(serialisedVertex.length));
             baos.write(serialisedVertex);
@@ -240,7 +241,8 @@ public class ElementSerialisation {
                 baos.write(NULL);
             } else {
                 baos.write(NON_NULL);
-                final byte[] serialisedProperty = sed.getPropertyTypeDef(propertyName).getSerialiser().serialise(property);
+                final byte[] serialisedProperty = ((ToBytesSerialiser) sed.getPropertyTypeDef(propertyName).getSerialiser())
+                        .serialise(property);
                 try {
                     baos.write(CompactRawSerialisationUtils.writeLong(serialisedProperty.length));
                     baos.write(serialisedProperty);
