@@ -26,8 +26,8 @@ class GetElementsBetweenSets(g.GetOperation):
                  seeds=None,
                  seeds_b=None,
                  view=None,
-                 directed_type=g.DirectedType.BOTH,
-                 in_out_type=g.InOutType.BOTH,
+                 directed_type=g.DirectedType.EITHER,
+                 in_out_type=g.InOutType.EITHER,
                  seed_matching_type=g.SeedMatchingType.RELATED,
                  options=None):
         super().__init__(
@@ -61,7 +61,7 @@ class GetElementsWithinSet(g.GetOperation):
     def __init__(self,
                  seeds=None,
                  view=None,
-                 directed_type=g.DirectedType.BOTH,
+                 directed_type=g.DirectedType.EITHER,
                  options=None):
         super().__init__(
             class_name='uk.gov.gchq.gaffer.accumulostore.operation.impl.GetElementsWithinSet',
@@ -76,8 +76,8 @@ class GetElementsInRanges(g.GetOperation):
     def __init__(self,
                  seed_pairs=None,
                  view=None,
-                 directed_type=g.DirectedType.BOTH,
-                 in_out_type=g.InOutType.BOTH,
+                 directed_type=g.DirectedType.EITHER,
+                 in_out_type=g.InOutType.EITHER,
                  seed_matching_type=g.SeedMatchingType.RELATED,
                  options=None):
         super().__init__(
