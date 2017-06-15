@@ -28,10 +28,10 @@ import java.util.function.Supplier;
  * This class is a {@link Supplier} of {@link Element}s. It is formed from a {@link Supplier} of {@link Set}s of
  * {@link Element}s by repeatedly calling that {@link Supplier}'s <code>get()</code> method.
  */
-public class IterableOfElementsSupplier implements Supplier<Element> {
+public class ElementsSupplier implements Supplier<Element> {
     private Iterator<Element> elementIterator;
 
-    public IterableOfElementsSupplier(final Supplier<Set<Element>> elementSupplier) {
+    public ElementsSupplier(final Supplier<Set<Element>> elementSupplier) {
         this.elementIterator = new ElementIterator(elementSupplier);
     }
 

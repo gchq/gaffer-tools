@@ -24,9 +24,6 @@ import uk.gov.gchq.gaffer.exception.SerialisationException;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
-/**
- *
- */
 public class BytesWritableElementGenerator implements ElementGenerator<BytesWritable> {
 
     private ElementSerialisation elementSerialisation;

@@ -18,7 +18,7 @@
         <dependency>
             <groupId>uk.gov.gchq.gaffer</groupId>
             <artifactId>performance-testing-core</artifactId>
-            <version>0.7.1-SNAPSHOT</version>
+            <version>${project.parent.version}</version>
         </dependency>
     </dependencies>
 

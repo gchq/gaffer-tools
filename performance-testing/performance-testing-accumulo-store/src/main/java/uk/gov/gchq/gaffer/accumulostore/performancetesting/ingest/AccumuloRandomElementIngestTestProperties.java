@@ -17,9 +17,6 @@ package uk.gov.gchq.gaffer.accumulostore.performancetesting.ingest;
 
 import uk.gov.gchq.gaffer.performancetesting.ingest.RandomElementIngestTestProperties;
 
-/**
- *
- */
 public class AccumuloRandomElementIngestTestProperties extends RandomElementIngestTestProperties {
     private static final long serialVersionUID = -5817791421306186151L;
 

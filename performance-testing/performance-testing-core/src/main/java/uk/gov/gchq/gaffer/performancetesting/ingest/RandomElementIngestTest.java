@@ -22,7 +22,7 @@ import uk.gov.gchq.gaffer.graph.Graph;
 import uk.gov.gchq.gaffer.operation.OperationException;
 import uk.gov.gchq.gaffer.operation.impl.add.AddElements;
 import uk.gov.gchq.gaffer.randomelementgeneration.generator.ElementGeneratorFromSupplier;
-import uk.gov.gchq.gaffer.randomelementgeneration.supplier.IterableOfElementsSupplier;
+import uk.gov.gchq.gaffer.randomelementgeneration.supplier.ElementsSupplier;
 import uk.gov.gchq.gaffer.randomelementgeneration.supplier.RmatElementSupplier;
 import uk.gov.gchq.gaffer.store.StoreProperties;
 import uk.gov.gchq.gaffer.store.schema.Schema;
@@ -90,7 +90,7 @@ public class RandomElementIngestTest {
                 final double[] rmatProbabilities = testProperties.getRmatProbabilities();
                 final long maxNodeId = testProperties.getRmatMaxNodeId();
                 final boolean includeEntities = testProperties.getRmatIncludeEntities();
-                return new IterableOfElementsSupplier(new RmatElementSupplier(rmatProbabilities, maxNodeId, includeEntities));
+                return new ElementsSupplier(new RmatElementSupplier(rmatProbabilities, maxNodeId, includeEntities));
             } else {
                 throw new RuntimeException("Unknown ElementSupplier class of " + elementSupplierClass);
             }

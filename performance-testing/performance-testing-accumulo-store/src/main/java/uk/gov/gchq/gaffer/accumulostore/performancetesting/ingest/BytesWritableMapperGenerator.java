@@ -31,9 +31,6 @@ import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- *
- */
 public class BytesWritableMapperGenerator implements MapperGenerator<NullWritable, BytesWritable> {
 
     private final List<BytesWritable> singleItemList = new ArrayList<>(1);

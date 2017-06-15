@@ -24,16 +24,16 @@ import java.util.Set;
 import java.util.function.Supplier;
 
 /**
- * This class extends {@link IterableOfElementsSupplier} by maintaining a cache of some of the {@link Element}s
+ * This class extends {@link ElementsSupplier} by maintaining a cache of some of the {@link Element}s
  * that have previously been output, and with a certain probability, reoutputting an {@link Element} that has
  * previously been output.
  */
-public class IterableOfElementsSupplierWithRepeats extends IterableOfElementsSupplier {
+public class ElementsSupplierWithRepeats extends ElementsSupplier {
     private Iterator<Element> elementIterator;
 
-    public IterableOfElementsSupplierWithRepeats(final Supplier<Set<Element>> elementSupplier,
-                                                 final double repeatProb,
-                                                 final Cache<Element> cache) {
+    public ElementsSupplierWithRepeats(final Supplier<Set<Element>> elementSupplier,
+                                       final double repeatProb,
+                                       final Cache<Element> cache) {
         super(elementSupplier);
         this.elementIterator = new ElementIteratorWithRepeats(new ElementIterator(elementSupplier), repeatProb, cache);
     }
