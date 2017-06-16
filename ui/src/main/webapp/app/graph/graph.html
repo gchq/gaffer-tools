@@ -322,7 +322,8 @@
                                 </p>
                             </div>
 
-                            <md-radio-group id="inoutflag" ng-model="inOutFlag">
+                            <md-radio-group id="inoutflag" ng-model="inOutFlag"
+                                            ng-change="onInOutFlagChange(inOutFlag)">
                                 <label>In/Out edges:</label>
                                 <md-radio-button value="INCOMING">
                                     Incoming

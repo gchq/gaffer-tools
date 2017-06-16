@@ -546,5 +546,9 @@ angular.module('app').controller('AppController',
       $scope.editingOperations = false;
    }
 
+   $scope.onInOutFlagChange = function(newInOutFlag) {
+       $scope.inOutFlag = newInOutFlag;
+   }
+
   $scope.initialise();
 } ]);
