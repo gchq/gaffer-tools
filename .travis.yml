@@ -30,7 +30,7 @@ script:
   - mvn install -P quick,travis,road-traffic-demo -pl ui &
   - sleep 2m
   - mvn verify -P travis,system-test -Dwebdriver.gecko.driver=geckodriver -pl ui
-  - cd python-shell && python3 src/example.py && cd ../
+  - cd python-shell && python3 -m unittest discover -s src && cd ../
 after_success:
   - ./cd/before_deploy.sh
   - ./cd/deploy.sh
