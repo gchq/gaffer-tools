@@ -9,6 +9,7 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.support.ui.Select;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
@@ -17,14 +18,50 @@ import static org.junit.Assert.assertTrue;
  * Assumes the Road Traffic Demo UI is running at localhost:8080.
  * To run this selenium test you must have installed the gecko driver, see
  * https://github.com/mozilla/geckodriver/releases
- * This test can be run via the main method or as a junit test:
+ * This test can be run via maven using the system-test profile
  * <pre>
- * mvn -Dit.test=QueryBuilderST verify -Dwebdriver.gecko.driver=/path/to/geckodriver -pl ui/
+ * mvn verify -Psystem-test -Dwebdriver.gecko.driver=/path/to/geckodriver -pl ui/
  * </pre>
  */
 public class QueryBuilderST {
-    private static final int SLOW_FACTOR = 1;
-    private static final String URL = "http://localhost:8080/ui";
+    public static final String GECKO_PROPERTY = "webdriver.gecko.driver";
+    public static final String URL_PROPERTY = "gaffer.ui.test.url";
+    public static final String SLOW_FACTOR_PROPERTY = "gaffer.ui.test.slow-factor";
+
+    private static final String DEFAULT_URL = "http://localhost:8080/ui";
+    private static final String DEFAULT_SLOW_FACTOR = "5";
+
+    private static final String EXPECTED_OPERATION_JSON = "{\n" +
+            "  \"class\": \"uk.gov.gchq.gaffer.operation.impl.get.GetElements\",\n" +
+            "  \"input\": [\n" +
+            "    {\n" +
+            "      \"class\": \"uk.gov.gchq.gaffer.operation.data.EntitySeed\",\n" +
+            "      \"vertex\": \"M5:10\"\n" +
+            "    }\n" +
+            "  ],\n" +
+            "  \"view\": {\n" +
+            "    \"entities\": {},\n" +
+            "    \"edges\": {\n" +
+            "      \"RoadUse\": {\n" +
+            "        \"groupBy\": [],\n" +
+            "        \"preAggregationFilterFunctions\": [\n" +
+            "          {\n" +
+            "            \"predicate\": {\n" +
+            "              \"class\": \"uk.gov.gchq.koryphe.impl.predicate.IsMoreThan\",\n" +
+            "              \"value\": {\n" +
+            "                \"java.util.Date\": 971416800000\n" +
+            "              }\n" +
+            "            },\n" +
+            "            \"selection\": [\n" +
+            "              \"startDate\"\n" +
+            "            ]\n" +
+            "          }\n" +
+            "        ]\n" +
+            "      }\n" +
+            "    }\n" +
+            "  },\n" +
+            "  \"includeIncomingOutGoing\": \"EITHER\"\n" +
+            "}";
     private static final String EXPECTED_RESULTS[] = {
             "\"group\": \"RoadUse\",\n" +
                     "    \"source\": \"M5:10\",\n" +
@@ -37,29 +74,16 @@ public class QueryBuilderST {
                     "    \"directed\": true,\n" +
                     "    \"class\": \"uk.gov.gchq.gaffer.data.element.Edge\"\n"
     };
-    public static final String GECKO_SYS_PROPERTY = "webdriver.gecko.driver";
 
     private WebDriver driver;
-
-    public static void main(String[] args) throws Exception {
-        final QueryBuilderST test = new QueryBuilderST();
-        if (args.length < 1) {
-            System.out.println("Usage: <path to gecko driver>");
-            System.exit(1);
-        }
-
-        System.setProperty(GECKO_SYS_PROPERTY, args[0]);
-        test.setup();
-        try {
-            test.shouldFindRoadUseAroundJunctionM5_10();
-        } finally {
-            test.cleanUp();
-        }
-    }
+    private String url;
+    private int slowFactor;
 
     @Before
     public void setup() {
-        assertNotNull("System property " + GECKO_SYS_PROPERTY + " has not been set", System.getProperty(GECKO_SYS_PROPERTY));
+        assertNotNull("System property " + GECKO_PROPERTY + " has not been set", System.getProperty(GECKO_PROPERTY));
+        url = System.getProperty(URL_PROPERTY, DEFAULT_URL);
+        slowFactor = Integer.parseInt(System.getProperty(SLOW_FACTOR_PROPERTY, DEFAULT_SLOW_FACTOR));
         driver = new FirefoxDriver();
     }
 
@@ -74,10 +98,8 @@ public class QueryBuilderST {
 
     @Test
     public void shouldFindRoadUseAroundJunctionM5_10() throws InterruptedException {
-        // Go to the Google Suggest home page
-        driver.get(URL);
-
-        Thread.sleep(SLOW_FACTOR * 1000);
+        driver.get(url);
+        Thread.sleep(slowFactor * 1000);
 
         // Enter the query string "Cheese"
         click("add-seed");
@@ -102,9 +124,9 @@ public class QueryBuilderST {
         click("step-4-execute");
 
         click("open-raw");
-        clickTab("Results");
+        assertEquals(EXPECTED_OPERATION_JSON, getElement("operation-0-json").getText().trim());
 
-        // And now list the suggestions
+        clickTab("Results");
         final String results = getElement("raw-edge-results").getText().trim();
         for (String expectedResult : EXPECTED_RESULTS) {
             assertTrue("Results did not contain: \n" + expectedResult
@@ -119,12 +141,12 @@ public class QueryBuilderST {
     private void selectOption(final String id, final String optionValue) throws InterruptedException {
         Select dropdown = new Select(getElement(id));
         dropdown.selectByValue("string:" + optionValue);
-        Thread.sleep(SLOW_FACTOR * 500);
+        Thread.sleep(slowFactor * 500);
     }
 
     private void click(final String id) throws InterruptedException {
         getElement(id).click();
-        Thread.sleep(SLOW_FACTOR * 500);
+        Thread.sleep(slowFactor * 500);
     }
 
     private void clickTab(final String tabTitle) {
