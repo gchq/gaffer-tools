@@ -7,6 +7,7 @@ jdk:
   - oraclejdk8
 sudo: false
 addons:
+  firefox: latest
   apt:
     packages:
       - oracle-java8-installer
@@ -23,13 +24,13 @@ before_script:
   - "sh -e /etc/init.d/xvfb start"
   - curl -OL https://github.com/mozilla/geckodriver/releases/download/v0.17.0/geckodriver-v0.17.0-linux64.tar.gz
   - tar -xf geckodriver-v0.17.0-linux64.tar.gz
+  - mv geckodriver ui/
 script:
   - mvn -q test -P travis,build-extras -B
-  - mvn install -P quick,road-traffic-demo -pl ui &
+  - mvn install -P quick,travis,road-traffic-demo -pl ui &
   - sleep 2m
   - cd python-shell && python3 src/example.py && cd ../
   - mvn -Dit.test=QueryBuilderST verify -Dwebdriver.gecko.driver=geckodriver -pl ui/
-
 after_success:
   - ./cd/before_deploy.sh
   - ./cd/deploy.sh

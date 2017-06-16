@@ -9,8 +9,8 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.support.ui.Select;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 /**
  * UI system test. Runs a simple query for road use around junction M5:10.
@@ -19,84 +19,24 @@ import static org.junit.Assert.assertNotNull;
  * https://github.com/mozilla/geckodriver/releases
  * This test can be run via the main method or as a junit test:
  * <pre>
- * mvn -Dit.test=SimpleQueryST verify -Dwebdriver.gecko.driver=/path/to/geckodriver -pl ui/
+ * mvn -Dit.test=QueryBuilderST verify -Dwebdriver.gecko.driver=/path/to/geckodriver -pl ui/
  * </pre>
  */
 public class QueryBuilderST {
-    private static final int SLOW_FACTOR = 5;
+    private static final int SLOW_FACTOR = 1;
     private static final String URL = "http://localhost:8080/ui";
-    private static final String EXPECTED_RESULT = "[\n" +
-            "  {\n" +
-            "    \"properties\": {\n" +
-            "      \"countByVehicleType\": {\n" +
-            "        \"uk.gov.gchq.gaffer.types.FreqMap\": {\n" +
-            "          \"HGVR3\": 6136,\n" +
-            "          \"BUS\": 3499,\n" +
-            "          \"HGVR4\": 3755,\n" +
-            "          \"AMV\": 1064526,\n" +
-            "          \"HGVR2\": 37163,\n" +
-            "          \"HGVA3\": 11971,\n" +
-            "          \"PC\": 7,\n" +
-            "          \"HGVA5\": 38446,\n" +
-            "          \"HGVA6\": 35858,\n" +
-            "          \"CAR\": 793165,\n" +
-            "          \"HGV\": 133329,\n" +
-            "          \"WMV2\": 3352,\n" +
-            "          \"LGV\": 131181\n" +
-            "        }\n" +
-            "      },\n" +
-            "      \"endDate\": {\n" +
-            "        \"java.util.Date\": 1433527200000\n" +
-            "      },\n" +
-            "      \"count\": {\n" +
-            "        \"java.lang.Long\": 2262388\n" +
-            "      },\n" +
-            "      \"startDate\": {\n" +
-            "        \"java.util.Date\": 971420400000\n" +
-            "      }\n" +
-            "    },\n" +
-            "    \"group\": \"RoadUse\",\n" +
-            "    \"source\": \"M5:10\",\n" +
-            "    \"destination\": \"M5:9\",\n" +
-            "    \"directed\": true,\n" +
-            "    \"class\": \"uk.gov.gchq.gaffer.data.element.Edge\"\n" +
-            "  },\n" +
-            "  {\n" +
-            "    \"properties\": {\n" +
-            "      \"countByVehicleType\": {\n" +
-            "        \"uk.gov.gchq.gaffer.types.FreqMap\": {\n" +
-            "          \"HGVR3\": 2723,\n" +
-            "          \"BUS\": 1356,\n" +
-            "          \"HGVR4\": 1922,\n" +
-            "          \"AMV\": 483965,\n" +
-            "          \"HGVR2\": 18143,\n" +
-            "          \"HGVA3\": 6009,\n" +
-            "          \"PC\": 5,\n" +
-            "          \"HGVA5\": 21119,\n" +
-            "          \"HGVA6\": 16420,\n" +
-            "          \"CAR\": 355697,\n" +
-            "          \"HGV\": 66336,\n" +
-            "          \"WMV2\": 1896,\n" +
-            "          \"LGV\": 58680\n" +
-            "        }\n" +
-            "      },\n" +
-            "      \"endDate\": {\n" +
-            "        \"java.util.Date\": 1337796000000\n" +
-            "      },\n" +
-            "      \"count\": {\n" +
-            "        \"java.lang.Long\": 1034271\n" +
-            "      },\n" +
-            "      \"startDate\": {\n" +
-            "        \"java.util.Date\": 989820000000\n" +
-            "      }\n" +
-            "    },\n" +
-            "    \"group\": \"RoadUse\",\n" +
-            "    \"source\": \"M5:11\",\n" +
-            "    \"destination\": \"M5:10\",\n" +
-            "    \"directed\": true,\n" +
-            "    \"class\": \"uk.gov.gchq.gaffer.data.element.Edge\"\n" +
-            "  }\n" +
-            "]";
+    private static final String EXPECTED_RESULTS[] = {
+            "\"group\": \"RoadUse\",\n" +
+                    "    \"source\": \"M5:10\",\n" +
+                    "    \"destination\": \"M5:9\",\n" +
+                    "    \"directed\": true,\n" +
+                    "    \"class\": \"uk.gov.gchq.gaffer.data.element.Edge\"\n",
+            "\"group\": \"RoadUse\",\n" +
+                    "    \"source\": \"M5:11\",\n" +
+                    "    \"destination\": \"M5:10\",\n" +
+                    "    \"directed\": true,\n" +
+                    "    \"class\": \"uk.gov.gchq.gaffer.data.element.Edge\"\n"
+    };
     public static final String GECKO_SYS_PROPERTY = "webdriver.gecko.driver";
 
     private WebDriver driver;
@@ -133,7 +73,7 @@ public class QueryBuilderST {
     }
 
     @Test
-    private void shouldFindRoadUseAroundJunctionM5_10() throws InterruptedException {
+    public void shouldFindRoadUseAroundJunctionM5_10() throws InterruptedException {
         // Go to the Google Suggest home page
         driver.get(URL);
 
@@ -161,12 +101,15 @@ public class QueryBuilderST {
 
         click("step-4-execute");
 
-
         click("open-raw");
         clickTab("Results");
 
         // And now list the suggestions
-        assertEquals(EXPECTED_RESULT, getElement("raw-edge-results").getText().trim());
+        final String results = getElement("raw-edge-results").getText().trim();
+        for (String expectedResult : EXPECTED_RESULTS) {
+            assertTrue("Results did not contain: \n" + expectedResult
+                    + "\nActual results: \n" + results, results.contains(expectedResult));
+        }
     }
 
     private void enterText(final String id, final String value) {
