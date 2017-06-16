@@ -47,6 +47,11 @@ mike-hogan/jarjar-forkfork:
 - Apache License, Version 2.0
 
 
+Selenium (org.seleniumhq.selenium:selenium-server:3.4.0)
+
+- Apache License, Version 2.0
+
+
 ----------------------------------------------------------------------
 
 The UI contains the following javascript dependencies

@@ -29,6 +29,19 @@
         <standalone-rest-path>rest</standalone-rest-path>
         <standalone-port>8080</standalone-port>
     </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.seleniumhq.selenium</groupId>
+            <artifactId>selenium-server</artifactId>
+            <version>3.4.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>21.0</version>
+        </dependency>
+    </dependencies>
     <build>
         <plugins>
             <plugin>

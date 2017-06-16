@@ -2,7 +2,7 @@
     <div ng-cloak layout-fill>
         <md-content layout-fill>
             <md-tabs layout-fill md-max-height md-border-bottom>
-                <md-tab label="Entities">
+                <md-tab class="entities-table" label="Entities">
                     <md-content class="md-padding">
                         <input ng-model="searchResults" type="text"
                                class="form-control"
@@ -11,7 +11,8 @@
                         <div ng-repeat="(group, schemaEntity) in rawData.schema.entities">
                             <div ng-show="table.data.entities[group].length > 0">
                                 <h4><b>{{group}}</b></h4>
-                                <table class="table table-striped">
+                                <table id="entity-{{group}}-table-elements"
+                                       class="table table-striped">
                                     <tbody>
                                     <tr>
                                         <th>
@@ -43,7 +44,7 @@
                     </md-content>
                 </md-tab>
 
-                <md-tab label="Edges">
+                <md-tab class="edges-table" label="Edges">
                     <md-content class="md-padding">
                         <input ng-model="searchResults" type="text"
                                class="form-control"
@@ -52,7 +53,8 @@
                         <div ng-repeat="(group, schemaEdge) in rawData.schema.edges">
                             <div ng-show="table.data.edges[group].length > 0">
                                 <h4><b>{{group}}</b></h4>
-                                <table class="table table-striped">
+                                <table id="edge-{{group}}-table-elements"
+                                       class="table table-striped">
                                     <tbody>
                                     <tr>
                                         <th>
