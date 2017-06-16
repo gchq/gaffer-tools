@@ -199,11 +199,12 @@ def add_elements(gc):
                     }
                 ),
                 g.Edge(
-                    group='RoadHasJunction',
+                    # TODO remove this deliberate typo
+                    group='Unknown group!',
                     source='M1',
                     destination='M1:1',
                     directed=True,
-                    properties={}
+                    property={}
                 )
             ]
         )
@@ -228,7 +229,8 @@ def get_elements(gc):
             view=g.View(
                 edges=[
                     g.ElementDefinition(
-                        group='RoadUse',
+                        # TODO remove this deliberate typo
+                        group='Unknown group!',
                         transient_properties=[
                             g.Property('description', 'java.lang.String')
                         ],
