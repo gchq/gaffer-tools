@@ -21,7 +21,6 @@ import uk.gov.gchq.gaffer.data.element.Element;
 import uk.gov.gchq.gaffer.graph.Graph;
 import uk.gov.gchq.gaffer.operation.OperationException;
 import uk.gov.gchq.gaffer.operation.impl.add.AddElements;
-import uk.gov.gchq.gaffer.randomelementgeneration.generator.ElementGeneratorFromSupplier;
 import uk.gov.gchq.gaffer.randomelementgeneration.supplier.ElementsSupplier;
 import uk.gov.gchq.gaffer.randomelementgeneration.supplier.RmatElementSupplier;
 import uk.gov.gchq.gaffer.store.StoreProperties;
@@ -29,36 +28,56 @@ import uk.gov.gchq.gaffer.store.schema.Schema;
 import uk.gov.gchq.gaffer.user.User;
 
 import java.io.File;
-import java.util.Collections;
 import java.util.function.Supplier;
+import java.util.stream.Stream;
 
 /**
  * This class measures the time taken to add some elements to the provided {@link Graph}.
  *
- * <p>The test is configured using a {@link RandomElementIngestTestProperties}. This specifies the class to be
+ * <p>The test is configured using a {@link ElementIngestTestProperties}. This specifies the class to be
  * used to generate the random elements and the number of random elements.
  */
-public class RandomElementIngestTest {
-    private static final Logger LOGGER = LoggerFactory.getLogger(RandomElementIngestTest.class);
+public class ElementIngestTest {
+    private static final Logger LOGGER = LoggerFactory.getLogger(ElementIngestTest.class);
 
     private Graph graph;
-    private RandomElementIngestTestProperties testProperties;
+    private ElementIngestTestProperties testProperties;
 
-    public RandomElementIngestTest(final Graph graph,
-                                   final RandomElementIngestTestProperties testProperties) {
+    public ElementIngestTest(final Graph graph,
+                             final ElementIngestTestProperties testProperties) {
         this.graph = graph;
         this.testProperties = testProperties;
     }
 
-    public boolean run() {
-        // Create generator
+    /**
+     * Runs a test of adding elements in batches.
+     *
+     * @return The rate at which elements were added (number of elements per second).
+     */
+    public double run() {
         final long numElements = testProperties.getNumElements();
+        final long batchSize = testProperties.getBatchSize();
         final Supplier<Element> elementSupplier = new ElementSupplierFactory(testProperties).get();
-        final ElementGeneratorFromSupplier generator = new ElementGeneratorFromSupplier(numElements, elementSupplier);
+        long totalAdded = 0L;
+        long batchNumber = 0L;
+        final long startTime = System.currentTimeMillis();
+        while (totalAdded < numElements) {
+            batchNumber++;
+            addBatch(elementSupplier, batchSize, batchNumber);
+            totalAdded += batchSize;
+        }
+        final long endTime = System.currentTimeMillis();
+        final double durationInSeconds = (endTime - startTime) / 1000.0;
+        final double rate = (double) numElements / durationInSeconds;
+        LOGGER.info("Test result: " + numElements + " elements added in " + durationInSeconds + " seconds (rate was "
+                + rate + " per second)");
+        return rate;
+    }
 
-        // Add elements
+    private void addBatch(final Supplier<Element> elementSupplier, final long batchSize, final long batchNumber) {
+        final Iterable<Element> elements = Stream.generate(elementSupplier).limit(batchSize)::iterator;
         final AddElements addElements = new AddElements.Builder()
-                .input(generator.apply(Collections.singletonList("DUMMY")))
+                .input(elements)
                 .validate(false)
                 .build();
         final long startTime = System.currentTimeMillis();
@@ -67,20 +86,19 @@ public class RandomElementIngestTest {
         } catch (final OperationException e) {
             LOGGER.error("OperationException thrown after " + (System.currentTimeMillis() - startTime) / 1000.0
                     + " seconds");
-            return false;
+            throw new RuntimeException("Exception thrown adding elements");
         }
         final long endTime = System.currentTimeMillis();
         final double durationInSeconds = (endTime - startTime) / 1000.0;
-        final double rate = numElements / durationInSeconds;
-        LOGGER.info(numElements + " elements added in " + durationInSeconds + " seconds (rate was " + rate + " per second)");
-        return true;
+        final double rate = batchSize / durationInSeconds;
+        LOGGER.info("Batch number = " + batchNumber + ": " + batchSize + " elements added in " + durationInSeconds
+                + " seconds (rate was " + rate + " per second)");
     }
 
-
     public static class ElementSupplierFactory {
-        private RandomElementIngestTestProperties testProperties;
+        private ElementIngestTestProperties testProperties;
 
-        public ElementSupplierFactory(final RandomElementIngestTestProperties testProperties) {
+        public ElementSupplierFactory(final ElementIngestTestProperties testProperties) {
             this.testProperties = testProperties;
         }
 
@@ -103,14 +121,14 @@ public class RandomElementIngestTest {
         }
         final Schema schema = Schema.fromJson(new File(args[0]).toPath());
         final StoreProperties storeProperties = StoreProperties.loadStoreProperties(args[1]);
-        final RandomElementIngestTestProperties testProperties = new RandomElementIngestTestProperties();
+        final ElementIngestTestProperties testProperties = new ElementIngestTestProperties();
         testProperties.loadTestProperties(args[2]);
         final Graph graph = new Graph.Builder()
                 .storeProperties(storeProperties)
                 .addSchema(schema)
                 .build();
-        final RandomElementIngestTest test = new RandomElementIngestTest(graph, testProperties);
-        final boolean result = test.run();
-        LOGGER.info("Test " + (result ? "ran successfully" : "failed"));
+        final ElementIngestTest test = new ElementIngestTest(graph, testProperties);
+        final double result = test.run();
+        LOGGER.info("Test result: elements were added at a rate of " + result + " per second");
     }
 }

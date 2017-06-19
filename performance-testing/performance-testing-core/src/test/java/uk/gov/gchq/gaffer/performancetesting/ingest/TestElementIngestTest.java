@@ -24,16 +24,14 @@ import uk.gov.gchq.gaffer.randomelementgeneration.supplier.RmatElementSupplier;
 
 import static org.junit.Assert.assertTrue;
 
-/**
- *
- */
-public class TestRandomElementIngestTest {
+public class TestElementIngestTest {
 
     @Test
-    public void testRandomElementIngestTestRuns() {
+    public void testElementIngestTestRuns() {
         // Given
-        final RandomElementIngestTestProperties testProperties = new RandomElementIngestTestProperties();
+        final ElementIngestTestProperties testProperties = new ElementIngestTestProperties();
         testProperties.setNumElements(100L);
+        testProperties.setBatchSize(10L);
         testProperties.setElementSupplierClass(RmatElementSupplier.class.getName());
         testProperties.setRmatProbabilities(Constants.RMAT_PROBABILITIES);
         testProperties.setRmatMaxNodeId(100L);
@@ -42,17 +40,16 @@ public class TestRandomElementIngestTest {
         storeProperties.setTable("table");
         final Graph graph = new Graph.Builder()
                 .storeProperties(storeProperties)
-                .addSchema(TestRandomElementIngestTest.class.getResourceAsStream("/schema/DataSchema.json"))
-                .addSchema(TestRandomElementIngestTest.class.getResourceAsStream("/schema/DataTypes.json"))
-                .addSchema(TestRandomElementIngestTest.class.getResourceAsStream("/schema/StoreTypes.json"))
+                .addSchema(TestElementIngestTest.class.getResourceAsStream("/schema/DataSchema.json"))
+                .addSchema(TestElementIngestTest.class.getResourceAsStream("/schema/DataTypes.json"))
+                .addSchema(TestElementIngestTest.class.getResourceAsStream("/schema/StoreTypes.json"))
                 .build();
 
         // When
-        final RandomElementIngestTest test = new RandomElementIngestTest(graph, testProperties);
-        final boolean result = test.run();
+        final ElementIngestTest test = new ElementIngestTest(graph, testProperties);
+        final double result = test.run();
 
         // Then
-        assertTrue(result);
+        assertTrue(result > 0.0D);
     }
-
 }

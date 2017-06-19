@@ -40,18 +40,18 @@ public class TestAccumuloStoreRandomElementIngestTest {
     @Test
     public void testAccumuloStoreRandomElementIngestTestRuns() throws StoreException, OperationException {
         // Given
-//        final AccumuloRandomElementIngestTestProperties testProperties = new AccumuloRandomElementIngestTestProperties();
+//        final AccumuloElementIngestTestProperties testProperties = new AccumuloElementIngestTestProperties();
 //        testProperties.setNumElements(100L);
 //        testProperties.setElementSupplierClass(RmatElementSupplier.class.getName());
 //        testProperties.setRmatProbabilities(Constants.RMAT_PROBABILITIES);
 //        testProperties.setRmatMaxNodeId(100L);
 //        testProperties.setTempDirectory(tempFolder.toString());
 //        final Schema schema = Schema.fromJson(
-//                AccumuloRandomElementIngestTest.class.getResourceAsStream("/schema/DataSchema.json"),
-//                AccumuloRandomElementIngestTest.class.getResourceAsStream("/schema/DataTypes.json"),
-//                AccumuloRandomElementIngestTest.class.getResourceAsStream("/schema/StoreTypes.json"));
+//                AccumuloElementIngestTest.class.getResourceAsStream("/schema/DataSchema.json"),
+//                AccumuloElementIngestTest.class.getResourceAsStream("/schema/DataTypes.json"),
+//                AccumuloElementIngestTest.class.getResourceAsStream("/schema/StoreTypes.json"));
 //        final AccumuloProperties storeProperties = AccumuloProperties.loadStoreProperties(
-//                AccumuloRandomElementIngestTest.class.getResourceAsStream("/mockaccumulostore.properties"));
+//                AccumuloElementIngestTest.class.getResourceAsStream("/mockaccumulostore.properties"));
 //
 //        final AccumuloStore accumuloStore = new MockAccumuloStore();
 //        accumuloStore.initialise(schema, storeProperties);
@@ -64,7 +64,7 @@ public class TestAccumuloStoreRandomElementIngestTest {
 //        conf.set("io.seqfile.compression.type", "NONE");
 //
 //        // When, then should run successfully
-//        AccumuloRandomElementIngestTest test = new AccumuloRandomElementIngestTest(graph, testProperties);
+//        AccumuloElementIngestTest test = new AccumuloElementIngestTest(graph, testProperties);
 //        test.setConf(conf);
 //        test.run();
     }

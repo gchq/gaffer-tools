@@ -27,16 +27,17 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 
-public class RandomElementIngestTestProperties extends Properties {
+public class ElementIngestTestProperties extends Properties {
     private static final long serialVersionUID = 8594474188709038747L;
 
     private static final String ELEMENT_SUPPLIER_CLASS = "gaffer.performancetesting.ingest.elementSupplierClass";
     private static final String NUMBER_OF_ELEMENTS = "gaffer.performancetesting.ingest.numberOfElements";
+    private static final String BATCH_SIZE = "gaffer.performancetesting.ingest.batchSize";
     private static final String RMAT_PROBABILITIES = "gaffer.performancetesting.ingest.rmat.probabilities";
     private static final String RMAT_INCLUDE_ENTITIES = "gaffer.performancetesting.ingest.rmat.includeEntities";
     private static final String RMAT_MAX_NODEID = "gaffer.performancetesting.ingest.rmat.maxNodeId";
 
-    public RandomElementIngestTestProperties() {
+    public ElementIngestTestProperties() {
 
     }
 
@@ -53,10 +54,21 @@ public class RandomElementIngestTestProperties extends Properties {
     }
 
     public void setNumElements(final long numEdges) {
-        if (numEdges <= 0) {
+        if (numEdges <= 0L) {
             throw new IllegalArgumentException("The number of edges must be greater than 0.");
         }
         setProperty(NUMBER_OF_ELEMENTS, "" + numEdges);
+    }
+
+    public long getBatchSize() {
+        return Long.parseLong(getProperty(BATCH_SIZE));
+    }
+
+    public void setBatchSize(final long batchSize) {
+        if (batchSize <= 0L) {
+            throw new IllegalArgumentException("The batch size must be greater than 0.");
+        }
+        setProperty(BATCH_SIZE, "" + batchSize);
     }
 
     public double[] getRmatProbabilities() {

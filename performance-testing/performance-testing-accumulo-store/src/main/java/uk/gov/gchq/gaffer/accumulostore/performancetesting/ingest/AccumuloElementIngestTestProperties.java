@@ -15,9 +15,9 @@
  */
 package uk.gov.gchq.gaffer.accumulostore.performancetesting.ingest;
 
-import uk.gov.gchq.gaffer.performancetesting.ingest.RandomElementIngestTestProperties;
+import uk.gov.gchq.gaffer.performancetesting.ingest.ElementIngestTestProperties;
 
-public class AccumuloRandomElementIngestTestProperties extends RandomElementIngestTestProperties {
+public class AccumuloElementIngestTestProperties extends ElementIngestTestProperties {
     private static final long serialVersionUID = -5817791421306186151L;
 
     private static final String TEMP_DIRECTORY = "gaffer.accumulostore.performancetesting.ingest.tempDirectory";
@@ -25,7 +25,7 @@ public class AccumuloRandomElementIngestTestProperties extends RandomElementInge
             "gaffer.accumulostore.performancetesting.ingest.numElementsForSplitEstimation";
     private static final String NUM_TABLET_SERVERS = "gaffer.accumulostore.performancetesting.ingest.numTabletServers";
 
-    public AccumuloRandomElementIngestTestProperties() {
+    public AccumuloElementIngestTestProperties() {
         super();
     }
 

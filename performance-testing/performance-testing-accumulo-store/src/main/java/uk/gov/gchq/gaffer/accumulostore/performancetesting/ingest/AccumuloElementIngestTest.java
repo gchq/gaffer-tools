@@ -29,7 +29,7 @@ import uk.gov.gchq.gaffer.accumulostore.operation.hdfs.operation.SplitTable;
 import uk.gov.gchq.gaffer.data.element.Element;
 import uk.gov.gchq.gaffer.graph.Graph;
 import uk.gov.gchq.gaffer.operation.OperationException;
-import uk.gov.gchq.gaffer.performancetesting.ingest.RandomElementIngestTest;
+import uk.gov.gchq.gaffer.performancetesting.ingest.ElementIngestTest;
 import uk.gov.gchq.gaffer.randomelementgeneration.generator.ElementGeneratorFromSupplier;
 import uk.gov.gchq.gaffer.store.StoreException;
 import uk.gov.gchq.gaffer.store.StoreProperties;
@@ -44,14 +44,14 @@ import java.util.function.Supplier;
 /**
  *
  */
-public class AccumuloRandomElementIngestTest extends Configured {
-    private static final Logger LOGGER = LoggerFactory.getLogger(AccumuloRandomElementIngestTest.class);
+public class AccumuloElementIngestTest extends Configured {
+    private static final Logger LOGGER = LoggerFactory.getLogger(AccumuloElementIngestTest.class);
 
     private Graph graph;
-    private AccumuloRandomElementIngestTestProperties testProperties;
+    private AccumuloElementIngestTestProperties testProperties;
 
-    public AccumuloRandomElementIngestTest(final Graph graph,
-                                           final AccumuloRandomElementIngestTestProperties testProperties) {
+    public AccumuloElementIngestTest(final Graph graph,
+                                     final AccumuloElementIngestTestProperties testProperties) {
         this.graph = graph;
         this.testProperties = testProperties;
     }
@@ -61,7 +61,7 @@ public class AccumuloRandomElementIngestTest extends Configured {
         final Configuration conf = getConf();
 
         // Create generator
-        final Supplier<Element> elementSupplier = new RandomElementIngestTest.ElementSupplierFactory(testProperties).get();
+        final Supplier<Element> elementSupplier = new ElementIngestTest.ElementSupplierFactory(testProperties).get();
         final ElementGeneratorFromSupplier generator = new ElementGeneratorFromSupplier(
                 Long.parseLong(testProperties.getNumElementsForSplitEstimation()), elementSupplier);
 
@@ -113,8 +113,8 @@ public class AccumuloRandomElementIngestTest extends Configured {
         graph.execute(splitTable, new User());
 
         // Run test
-        LOGGER.info("Running RandomElementIngestTest");
-        final RandomElementIngestTest test = new RandomElementIngestTest(graph, testProperties);
+        LOGGER.info("Running ElementIngestTest");
+        final ElementIngestTest test = new ElementIngestTest(graph, testProperties);
         test.run();
     }
 
@@ -130,14 +130,14 @@ public class AccumuloRandomElementIngestTest extends Configured {
         LOGGER.info("Initialised Accumulo store (instance name is {}, table name is {})",
                 accumuloStore.getProperties().getInstance(),
                 accumuloStore.getProperties().getTable());
-        final AccumuloRandomElementIngestTestProperties testProperties = new AccumuloRandomElementIngestTestProperties();
+        final AccumuloElementIngestTestProperties testProperties = new AccumuloElementIngestTestProperties();
         testProperties.loadTestProperties(args[2]);
         LOGGER.info("Using test properties of {}", testProperties);
         final Graph graph = new Graph.Builder()
                 .store(accumuloStore)
                 .addSchema(schema)
                 .build();
-        final AccumuloRandomElementIngestTest test = new AccumuloRandomElementIngestTest(graph, testProperties);
+        final AccumuloElementIngestTest test = new AccumuloElementIngestTest(graph, testProperties);
         Configuration conf = new Configuration();
         test.setConf(conf);
         LOGGER.info("Running test");
