@@ -216,7 +216,15 @@ def get_elements(gc):
     # Get Elements
     elements = gc.execute_operation(
         g.GetElements(
-            seeds=[g.EntitySeed('M5:10')],
+            seeds=[
+                g.EntitySeed('M5:10'),
+
+                # Edge seeds can be provided as follows
+                g.EdgeSeed('M5:10', 'M5:11', g.DirectedType.EITHER),
+                g.EdgeSeed('M5:10', 'M5:11', g.DirectedType.DIRECTED),
+                # Or you can use True or False for the direction
+                g.EdgeSeed('M5:10', 'M5:11', True)
+            ],
             view=g.View(
                 edges=[
                     g.ElementDefinition(
@@ -241,7 +249,7 @@ def get_elements(gc):
                     )
                 ]
             ),
-            directed_type=g.DirectedType.BOTH
+            directed_type=g.DirectedType.EITHER
         )
     )
     print('Related elements')
