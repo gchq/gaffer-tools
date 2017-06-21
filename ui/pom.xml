@@ -28,13 +28,14 @@
         <standalone-ui-path>ui</standalone-ui-path>
         <standalone-rest-path>rest</standalone-rest-path>
         <standalone-port>8080</standalone-port>
+        <selenium.version>3.4.0</selenium.version>
     </properties>
 
     <dependencies>
         <dependency>
             <groupId>org.seleniumhq.selenium</groupId>
             <artifactId>selenium-server</artifactId>
-            <version>3.4.0</version>
+            <version>${selenium.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>

@@ -96,7 +96,6 @@
                         </executions>
                         <configuration>
                             <skipITs>${skip.failsafe.tests}</skipITs>
-                            <argLine>${failsafeArgLine}</argLine>
                             <excludes>
                                 <exclude>**/*$*</exclude>
                                 <exclude>**/performance/**</exclude>
