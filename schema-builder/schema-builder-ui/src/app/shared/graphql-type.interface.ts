@@ -2,7 +2,7 @@ import { GraphQLAggregate } from './graphql-aggregate.interface';
 
 export interface GraphQLType {
     aggregateFunction?: GraphQLAggregate,
-    serialiserClass?: any,
+    serialiser?: any,
     validateFunctions?: Array<any>,
     class?: string,
     index?: number,

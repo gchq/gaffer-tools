@@ -3,6 +3,7 @@ cache:
   timeout: 1000
   directories:
   - $HOME/.m2
+dist: trusty
 jdk:
   - oraclejdk8
 sudo: false
@@ -10,7 +11,6 @@ addons:
   firefox: latest
   apt:
     packages:
-      - oracle-java8-installer
       - python3
 env:
   global:
@@ -33,4 +33,4 @@ script:
   - cd python-shell && python3 -m unittest discover -s src && cd ../
 after_success:
   - ./cd/before_deploy.sh
-  - ./cd/deploy.sh
+  - travis_wait 45 ./cd/deploy.sh
