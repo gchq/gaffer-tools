@@ -131,10 +131,10 @@ export class SchemaComponent implements OnInit {
         };
         if (this.schema.hasOwnProperty('types')) {
             _.forEach(this.schema.types, (type: any) => {
-                if (type.aggregateFunction !== null || type.serialiserClass !== null) {
+                if (type.aggregateFunction !== null || type.serialiser !== null) {
                     const formattedType = {
                         aggregateFunction: type.aggregateFunction || null,
-                        serialiserClass: type.serialiserClass || null
+                        serialiser: type.serialiser || null
                     };
                     if(formattedType.aggregateFunction && Object.keys(formattedType.aggregateFunction).length === 0) {
                         formattedType.aggregateFunction = null;

@@ -35,6 +35,12 @@ class ToJson:
         """
         raise NotImplementedError('Use an implementation')
 
+    def __str__(self):
+        return str(self.to_json())
+
+    def __eq__(self, other):
+        return self.to_json() == other.to_json()
+
 
 class ResultConverter:
     @staticmethod
@@ -114,12 +120,12 @@ class EdgeSeed(ElementSeed):
         super().__init__()
         self.source = source
         self.destination = destination
-        if isinstance(directed, DirectedType):
+        if isinstance(directed, str):
             self.directed = directed
         elif directed:
-            self.directed = True
+            self.directed = DirectedType.DIRECTED
         else:
-            self.directed = False
+            self.directed = DirectedType.UNDIRECTED
 
     def to_json(self):
         return {

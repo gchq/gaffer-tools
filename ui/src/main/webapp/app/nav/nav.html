@@ -7,18 +7,21 @@
         <div id="navbar">
             <ul class="nav navbar-nav">
                 <li ng-class="{ active: showGraph }">
-                    <a href="#graph"
+                    <a id="open-graph"
+                       href="#graph"
                        ng-click="openGraph()">Graph</a>
                 </li>
                 <li ng-class="{ active: showResultsTable }">
-                    <a href="#resultsTable"
+                    <a id="open-table"
+                       href="#resultsTable"
                        ng-click="openResultsTable()">Table</a>
                 </li>
                 <li ng-class="{ active: showRaw }">
-                    <a href="#raw" ng-click="openRaw()">Raw</a>
+                    <a id="open-raw" href="#raw" ng-click="openRaw()">Raw</a>
                 </li>
                 <li ng-class="{ active: showSettings }">
-                    <a href="#settings" ng-click="openSettings()">Settings</a>
+                    <a id="open-settings" href="#settings"
+                       ng-click="openSettings()">Settings</a>
                 </li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
@@ -31,13 +34,13 @@
                 </li>
                 <li><a class="nav-button"
                        ng-show="showGraph">
-                    <button ng-click="addSeedPrompt()"
+                    <button id="add-seed" ng-click="addSeedPrompt()"
                             class="btn btn-primary">Add Seed
                     </button>
                 </a></li>
                 <li><a class="nav-button"
                        ng-show="seeds.length != 0 || operations.length != 0">
-                    <button ng-click="buildQuery()"
+                    <button id="build-query" ng-click="buildQuery()"
                             class="btn btn-primary">Build query
                     </button>
                 </a></li>
