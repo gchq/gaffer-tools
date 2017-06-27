@@ -33,4 +33,4 @@ script:
   - cd python-shell && python3 -m unittest discover -s src && cd ../
 after_success:
   - ./cd/before_deploy.sh
-  - ./cd/deploy.sh
+  - travis_wait 45 ./cd/deploy.sh
