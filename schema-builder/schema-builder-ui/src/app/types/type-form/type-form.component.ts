@@ -90,7 +90,9 @@ export class TypeFormComponent implements OnInit {
         } else {
             this.functions = undefined;
         }
-        this._type.aggregateFunction = {};
+        if(!this._type.aggregateFunction) {
+            this._type.aggregateFunction = {};
+        }
     }
 
     changeValidations(checked: boolean, validator: any) {

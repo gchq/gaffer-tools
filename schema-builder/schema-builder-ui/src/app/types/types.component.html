@@ -47,7 +47,8 @@
                                 </md-list-item>
                                 <md-list-item>
                                     <h3 md-line><b>Serialiser</b></h3>
-                                    <p md-line>{{type.serialiserClass || 'null'}}</p>
+                                    <p md-line *ngIf="type.serialiser && type.serialiser.class">{{type.serialiser.class}}</p>
+                                    <p md-line *ngIf="!type.serialiser || !type.serialiser.class">null</p>
                                 </md-list-item>
                                 <md-list-item>
                                     <h3 md-line><b>Aggregator</b></h3>
