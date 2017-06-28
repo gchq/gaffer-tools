@@ -63,21 +63,21 @@ class GafferTest(unittest.TestCase):
         self.assertEqual(
             {
                 'class': 'uk.gov.gchq.gaffer.operation.data.EdgeSeed',
-                'source': 1,
-                'destination': 2,
+                'source': 'src',
+                'destination': 'dest',
                 'directed': 'DIRECTED'
             },
-            g.EdgeSeed(1, 2, True).to_json()
+            g.EdgeSeed("src", "dest", True).to_json()
         )
 
         self.assertEqual(
             {
                 'class': 'uk.gov.gchq.gaffer.operation.data.EdgeSeed',
-                'source': 1,
-                'destination': 2,
+                'source': 'src',
+                'destination': 'dest',
                 'directed': 'UNDIRECTED'
             },
-            g.EdgeSeed(1, 2, False).to_json()
+            g.EdgeSeed("src", "dest", False).to_json()
         )
 
     def test_comparator(self):
@@ -95,8 +95,8 @@ class GafferTest(unittest.TestCase):
                 'field3': 'field4'
             },
             g.Comparator("test_class_name", {
-                'field1': 'field2',
-                'field3': 'field4'}).to_json()
+                "field1": "field2",
+                "field3": "field4"}).to_json()
         )
 
     def test_element_property_comparator(self):
@@ -161,9 +161,9 @@ class GafferTest(unittest.TestCase):
             {
                 'class': 'test_class',
                 'group': 'group',
-                'properties': {"prop1": 1}
+                'properties': {'prop': 'prop1'}
             },
-            g.Element("test_class", "group", {"prop1": 1}).to_json()
+            g.Element("test_class", "group", {"prop": "prop1"}).to_json()
         )
 
     def test_entity(self):
@@ -181,9 +181,9 @@ class GafferTest(unittest.TestCase):
                 'class': 'uk.gov.gchq.gaffer.data.element.Entity',
                 'group': 'group',
                 'vertex': 'vertex',
-                'properties': {"prop1": 1}
+                'properties': {'prop': 'prop1'}
             },
-            g.Entity("group", "vertex", {"prop1": 1}).to_json()
+            g.Entity("group", "vertex", {"prop": "prop1"}).to_json()
         )
 
     def test_edge(self):
@@ -218,11 +218,11 @@ class GafferTest(unittest.TestCase):
                 'source': 'source',
                 'destination': 'destination',
                 'directed': False,
-                'properties': {"prop1": 1}
+                'properties': {'prop': 'prop1'}
 
             },
             g.Edge("group", "source", "destination", False,
-                   {"prop1": 1}).to_json()
+                   {"prop": "prop1"}).to_json()
         )
 
     def test_view(self):
@@ -243,7 +243,7 @@ class GafferTest(unittest.TestCase):
             g.View(
                 [
                     g.ElementDefinition(
-                        group='test'
+                        group="test"
                     ),
                     g.Edge("test", "source", "destination", False)
                 ]).to_json()
@@ -261,7 +261,7 @@ class GafferTest(unittest.TestCase):
             g.View(
                 edges=[
                     g.ElementDefinition(
-                        group='test'
+                        group="test"
                     ),
                     g.Edge("test", "source", "destination", False)
                 ]).to_json()
@@ -273,196 +273,183 @@ class GafferTest(unittest.TestCase):
             {
                 'groupBy': [],
             },
-            g.ElementDefinition('testGroup').to_json()
+            g.ElementDefinition("testGroup").to_json()
         )
 
         self.assertEqual(
             {
                 'groupBy': [],
-                'transientProperties': {'description': 'java.lang.String'}
+                'transientProperties': {'test_prop': 'test_prop_class'}
             },
-            g.ElementDefinition('test_group',
-                                [g.Property('description',
-                                            'java.lang.String')]).to_json()
+            g.ElementDefinition("test_group",
+                                [g.Property("test_prop",
+                                            "test_prop_class")]).to_json()
         )
 
         self.assertEqual(
             {
-                'groupBy': ["test_group"],
-                'transientProperties': {'description': 'java.lang.String'}
+                'groupBy': ['test_group'],
+                'transientProperties': {'test_prop': 'test_prop_class'}
             },
-            g.ElementDefinition('test_group',
-                                [g.Property('description', 'java.lang.String')],
+            g.ElementDefinition("test_group",
+                                [g.Property("test_prop", "test_prop_class")],
                                 ["test_group"]).to_json()
         )
 
         self.assertEqual(
             {
-                'groupBy': ["test_group"],
-                'transientProperties': {'description': 'java.lang.String'},
+                'groupBy': ['test_group'],
+                'transientProperties': {'test_prop': 'test_prop_class'},
                 'preAggregationFilterFunctions':
                     [{'predicate': {'class':
-                                        'uk.gov.gchq.koryphe'
-                                        '.impl.predicate.IsMoreThan',
+                                    'test_filter_class',
                                     'value': {
-                                        'java.lang.Long': 1}},
-                      'selection': ['count']}]
+                                        'test_value_class': 1}},
+                      'selection': ['test_selection']}]
             },
-            g.ElementDefinition('test_group',
-                                [g.Property('description', 'java.lang.String')],
+            g.ElementDefinition("test_group",
+                                [g.Property("test_prop", "test_prop_class")],
                                 ["test_group"],
                                 [g.FilterFunction(
-                                    'uk.gov.gchq.koryphe'
-                                    '.impl.predicate.IsMoreThan',
-                                    ['count'],
-                                    {'value': {'java.lang.Long': 1}}
+                                    "test_filter_class",
+                                    ["test_selection"],
+                                    {"value": {"test_value_class": 1}}
                                 )]).to_json()
         )
 
         self.assertEqual(
             {
-                'groupBy': ["test_group"],
-                'transientProperties': {'description': 'java.lang.String'},
+                'groupBy': ['test_group'],
+                'transientProperties': {'test_prop': 'test_prop_class'},
                 'preAggregationFilterFunctions':
                     [{'predicate': {'class':
-                                        'uk.gov.gchq.koryphe'
-                                        '.impl.predicate.IsMoreThan',
+                                    'test_filter_class',
                                     'value': {
-                                        'java.lang.Long': 1}},
-                      'selection': ['count']}],
+                                        'test_value_class': 1}},
+                      'selection': ['test_selection']}],
                 'postAggregationFilterFunctions':
                     [{'predicate': {'class':
-                                        'uk.gov.gchq.koryphe'
-                                        '.impl.predicate.IsLessThan',
+                                    'test_filter_class_1',
                                     'value': {
-                                        'java.lang.Long': 1}},
-                      'selection': ['count']}]
+                                        'test_value_class_1': 1}},
+                      'selection': ['test_selection_1']}]
             },
-            g.ElementDefinition('test_group',
-                                [g.Property('description', 'java.lang.String')],
+            g.ElementDefinition("test_group",
+                                [g.Property("test_prop", "test_prop_class")],
                                 ["test_group"],
                                 [g.FilterFunction(
-                                    'uk.gov.gchq.koryphe'
-                                    '.impl.predicate.IsMoreThan',
-                                    ['count'],
-                                    {'value': {'java.lang.Long': 1}}
+                                    "test_filter_class",
+                                    ["test_selection"],
+                                    {"value": {"test_value_class": 1}}
                                 )],
                                 [g.FilterFunction(
-                                    'uk.gov.gchq.koryphe'
-                                    '.impl.predicate.IsLessThan',
-                                    ['count'],
-                                    {'value': {'java.lang.Long': 1}}
+                                    "test_filter_class_1",
+                                    ["test_selection_1"],
+                                    {"value": {"test_value_class_1": 1}}
                                 )]).to_json()
         )
 
         self.assertEqual(
             {
-                'groupBy': ["test_group"],
-                'transientProperties': {'description': 'java.lang.String'},
+                'groupBy': ['test_group'],
+                'transientProperties': {'test_prop': 'test_prop_class'},
                 'preAggregationFilterFunctions':
                     [{'predicate': {'class':
-                                        'uk.gov.gchq.koryphe'
-                                        '.impl.predicate.IsMoreThan',
+                                    'test_filter_class',
                                     'value': {
-                                        'java.lang.Long': 1}},
-                      'selection': ['count']}],
+                                        'test_value_class': 1}},
+                      'selection': ['test_selection']}],
                 'postAggregationFilterFunctions':
                     [{'predicate': {'class':
-                                        'uk.gov.gchq.koryphe'
-                                        '.impl.predicate.IsLessThan',
+                                    'test_filter_class_1',
                                     'value': {
-                                        'java.lang.Long': 1}},
-                      'selection': ['count']}],
+                                        'test_value_class_1': 1}},
+                      'selection': ['test_selection_1']}],
                 'transformFunctions': [{'function': {'class': 'test_class'},
                                         'projection':
                                             ['description'],
                                         'selection':
-                                            ['SOURCE', 'DESTINATION', 'count']}]
+                                            ['src', 'dest', 'count']}]
             },
-            g.ElementDefinition('test_group',
-                                [g.Property('description', 'java.lang.String')],
+            g.ElementDefinition("test_group",
+                                [g.Property("test_prop", "test_prop_class")],
                                 ["test_group"],
                                 [g.FilterFunction(
-                                    'uk.gov.gchq.koryphe'
-                                    '.impl.predicate.IsMoreThan',
-                                    ['count'],
-                                    {'value': {'java.lang.Long': 1}}
+                                    "test_filter_class",
+                                    ["test_selection"],
+                                    {"value": {"test_value_class": 1}}
                                 )],
                                 [g.FilterFunction(
-                                    'uk.gov.gchq.koryphe'
-                                    '.impl.predicate.IsLessThan',
-                                    ['count'],
-                                    {'value': {'java.lang.Long': 1}}
+                                    "test_filter_class_1",
+                                    ["test_selection_1"],
+                                    {"value": {"test_value_class_1": 1}}
                                 )],
                                 [
                                     g.TransformFunction(
-                                        'test_class',
-                                        ['SOURCE', 'DESTINATION', 'count'],
-                                        ['description']
+                                        "test_class",
+                                        ["src", "dest", "count"],
+                                        ["description"]
                                     )
                                 ]).to_json()
         )
 
         self.assertEqual(
             {
-                'groupBy': ["test_group"],
-                'transientProperties': {'description': 'java.lang.String'},
+                'groupBy': ['test_group'],
+                'transientProperties': {'test_prop': 'test_prop_class'},
                 'preAggregationFilterFunctions':
                     [{'predicate': {'class':
-                                        'uk.gov.gchq.koryphe'
-                                        '.impl.predicate.IsMoreThan',
+                                    'test_filter_class',
                                     'value': {
-                                        'java.lang.Long': 1}},
-                      'selection': ['count']}],
+                                        'test_value_class': 1}},
+                      'selection': ['test_selection']}],
                 'postAggregationFilterFunctions':
                     [{'predicate': {'class':
-                                        'uk.gov.gchq.koryphe'
-                                        '.impl.predicate.IsLessThan',
+                                    'test_filter_class_1',
                                     'value': {
-                                        'java.lang.Long': 1}},
-                      'selection': ['count']}],
+                                        'test_value_class_1': 1}},
+                      'selection': ['test_selection_1']}],
                 'transformFunctions': [{'function': {'class': 'test_class'},
                                         'projection':
                                             ['description'],
                                         'selection':
-                                            ['SOURCE', 'DESTINATION',
+                                            ['src', 'dest',
                                              'count']}],
-                'postTransformFilterFunctions': [{'function': {'class': 'test_class'},
+                'postTransformFilterFunctions': [{'function': {'class':
+                                                               'test_class_1'},
                                                   'projection':
                                                       ['description'],
                                                   'selection':
-                                                      ['SOURCE', 'DESTINATION',
+                                                      ['src', 'dest',
                                                        'count']}
 
                                                  ]
             },
-            g.ElementDefinition('test_group',
-                                [g.Property('description', 'java.lang.String')],
+            g.ElementDefinition("test_group",
+                                [g.Property("test_prop", "test_prop_class")],
                                 ["test_group"],
                                 [g.FilterFunction(
-                                    'uk.gov.gchq.koryphe'
-                                    '.impl.predicate.IsMoreThan',
-                                    ['count'],
-                                    {'value': {'java.lang.Long': 1}}
+                                    "test_filter_class",
+                                    ["test_selection"],
+                                    {"value": {"test_value_class": 1}}
                                 )],
                                 [g.FilterFunction(
-                                    'uk.gov.gchq.koryphe'
-                                    '.impl.predicate.IsLessThan',
-                                    ['count'],
-                                    {'value': {'java.lang.Long': 1}}
+                                    "test_filter_class_1",
+                                    ["test_selection_1"],
+                                    {"value": {"test_value_class_1": 1}}
                                 )],
                                 [
                                     g.TransformFunction(
-                                        'test_class',
-                                        ['SOURCE', 'DESTINATION', 'count'],
-                                        ['description']
+                                        "test_class",
+                                        ["src", "dest", "count"],
+                                        ["description"]
                                     )
                                 ],
                                 [
                                     g.TransformFunction(
-                                        'test_class',
-                                        ['SOURCE', 'DESTINATION', 'count'],
-                                        ['description']
+                                        "test_class_1",
+                                        ["src", "dest", "count"],
+                                        ["description"]
                                     )
                                 ]).to_json()
         )
@@ -470,7 +457,7 @@ class GafferTest(unittest.TestCase):
     def test_property(self):
         self.assertEqual(
             {
-                "test_name": "test_class_name"
+                'test_name': 'test_class_name'
             },
             g.Property("test_name", "test_class_name").to_json()
         )
@@ -486,7 +473,7 @@ class GafferTest(unittest.TestCase):
         self.assertEqual(
             {
                 'test_classType': {'class': 'test_class',
-                                   "function_field1": "test_field1"}
+                                   'function_field1': 'test_field1'}
             },
             g.GafferFunction("test_class", "test_classType",
                              {"function_field1": "test_field1"}).to_json()
@@ -542,24 +529,24 @@ class GafferTest(unittest.TestCase):
             g.OperationChain(operations).to_json()
         )
 
-        test_op_chain2 = g.Operation("test_class", g.View())
+        test_op_chain2 = g.Operation("test_class_1", g.View())
         operations.append(test_op_chain2)
         self.assertEqual(
             {
                 'operations': [{'class': 'test_class'},
-                               {'class': 'test_class', 'view': {}}]
+                               {'class': 'test_class_1', 'view': {}}]
             },
             g.OperationChain(operations).to_json()
         )
 
-        test_op_chain3 = g.Operation("test_class", g.View(),
-                                     {'option1': 'option'})
+        test_op_chain3 = g.Operation("test_class_2", g.View(),
+                                     {"option1": "option"})
         operations.append(test_op_chain3)
         self.assertEqual(
             {
                 'operations': [{'class': 'test_class'},
-                               {'class': 'test_class', 'view': {}},
-                               {'class': 'test_class', 'view': {},
+                               {'class': 'test_class_1', 'view': {}},
+                               {'class': 'test_class_2', 'view': {},
                                 'options': {'option1': 'option'}}]
             },
             g.OperationChain(operations).to_json()
@@ -647,7 +634,7 @@ class GafferTest(unittest.TestCase):
             },
             g.AddElements(view=g.View(),
                           elements=[g.Entity("group", "vertex")],
-                          options={'options1': 'option'}).to_json()
+                          options={"options1": "option"}).to_json()
         )
 
     def test_generate_elements(self):
@@ -660,24 +647,26 @@ class GafferTest(unittest.TestCase):
             g.GenerateElements("generate_class_elements").to_json()
         )
 
-        # Needs writing to include element_generator_fields
         self.assertEqual(
             {
                 'class': 'uk.gov.gchq.gaffer.operation.impl'
                          '.generate.GenerateElements',
-                'elementGenerator': {'class': 'generate_class_elements'}
+                'elementGenerator': {'class': 'generate_class_elements',
+                                     'field1': 'value1'}
             },
-            g.GenerateElements("generate_class_elements").to_json()
+            g.GenerateElements("generate_class_elements",
+                               {"field1": "value1"}).to_json()
         )
 
-        # Needs writing to include objects
         self.assertEqual(
             {
                 'class': 'uk.gov.gchq.gaffer.operation.impl'
-                        '.generate.GenerateElements',
-               'elementGenerator': {'class': 'generate_class_elements'}
+                         '.generate.GenerateElements',
+                'elementGenerator': {'class': 'generate_class_elements'},
+                'input': ['test_object']
             },
-            g.GenerateElements("generate_class_elements").to_json()
+            g.GenerateElements("generate_class_elements",
+                               objects=["test_object"]).to_json()
         )
 
         self.assertEqual(
@@ -700,32 +689,15 @@ class GafferTest(unittest.TestCase):
                 'options': {'option1': 'option'}
             },
             g.GenerateElements("generate_class_elements",
-                               view=g.View(), options={'option1': 'option'})
-                .to_json()
+                               view=g.View(), options={"option1": "option"})
+            .to_json()
         )
 
     def test_generate_objects(self):
         self.assertEqual(
             {
-                'class': 'uk.gov.gchq.gaffer.operation.impl.generate.GenerateObjects',
-                'elementGenerator': {'class': 'test_class_name'}
-            },
-            g.GenerateObjects("test_class_name").to_json()
-        )
-
-        # Needs writing to test element_generator_fields
-        self.assertEqual(
-            {
-                'class': 'uk.gov.gchq.gaffer.operation.impl.generate.GenerateObjects',
-                'elementGenerator': {'class': 'test_class_name'}
-            },
-            g.GenerateObjects("test_class_name").to_json()
-        )
-
-        # Needs writing to test elements
-        self.assertEqual(
-            {
-                'class': 'uk.gov.gchq.gaffer.operation.impl.generate.GenerateObjects',
+                'class': 'uk.gov.gchq.gaffer.operation'
+                         '.impl.generate.GenerateObjects',
                 'elementGenerator': {'class': 'test_class_name'}
             },
             g.GenerateObjects("test_class_name").to_json()
@@ -733,7 +705,30 @@ class GafferTest(unittest.TestCase):
 
         self.assertEqual(
             {
-                'class': 'uk.gov.gchq.gaffer.operation.impl.generate.GenerateObjects',
+                'class': 'uk.gov.gchq.gaffer.operation'
+                         '.impl.generate.GenerateObjects',
+                'elementGenerator': {'class': 'test_class_name',
+                                     'key1': 'value1'},
+            },
+            g.GenerateObjects("test_class_name", {"key1": "value1"}).to_json()
+        )
+
+        self.assertEqual(
+            {
+                'class': 'uk.gov.gchq.gaffer.operation'
+                         '.impl.generate.GenerateObjects',
+                'elementGenerator': {'class': 'test_class_name'},
+                'input': [{'class': 'uk.gov.gchq.gaffer.data.element.Entity',
+                           'group': 'group',
+                           'vertex': 'vertex'}]
+            },
+            g.GenerateObjects("test_class_name", elements=[g.Entity("group", "vertex")]).to_json()
+        )
+
+        self.assertEqual(
+            {
+                'class': 'uk.gov.gchq.gaffer.operation'
+                         '.impl.generate.GenerateObjects',
                 'elementGenerator': {'class': 'test_class_name'},
                 'view': {}
             },
@@ -742,12 +737,14 @@ class GafferTest(unittest.TestCase):
 
         self.assertEqual(
             {
-                'class': 'uk.gov.gchq.gaffer.operation.impl.generate.GenerateObjects',
+                'class': 'uk.gov.gchq.gaffer.operation'
+                         '.impl.generate.GenerateObjects',
                 'elementGenerator': {'class': 'test_class_name'},
                 'view': {},
                 'options': {'option1': 'option'}
             },
-            g.GenerateObjects("test_class_name", view=g.View(), options={"option1": "option"}).to_json()
+            g.GenerateObjects("test_class_name", view=g.View(),
+                              options={"option1": "option"}).to_json()
         )
 
     def test_export_to_gaffer_result_cache(self):
@@ -787,7 +784,7 @@ class GafferTest(unittest.TestCase):
                 'options': {'option1': 'option'}
             },
             g.ExportToGafferResultCache("test_key", "test_op_auths",
-                                        {'option1': 'option'}).to_json()
+                                        {"option1": "option"}).to_json()
         )
 
     def test_get_gaffer_result_cache_export(self):
@@ -824,7 +821,7 @@ class GafferTest(unittest.TestCase):
                          '.export.resultcache.GetGafferResultCacheExport',
                 'jobId': 'test_job_id',
                 'key': 'test_key',
-                'options': {"option1": "option"}
+                'options': {'option1': 'option'}
             },
             g.GetGafferResultCacheExport("test_job_id", "test_key",
                                          {"option1": "option"}).to_json()
@@ -853,7 +850,7 @@ class GafferTest(unittest.TestCase):
                 'class': 'uk.gov.gchq.gaffer.operation.impl'
                          '.export.set.ExportToSet',
                 'key': 'test_key',
-                'options': {"option1": "option"}
+                'options': {'option1': 'option'}
             },
             g.ExportToSet("test_key", {"option1": "option"}).to_json()
         )
@@ -895,7 +892,7 @@ class GafferTest(unittest.TestCase):
                 'options': {'option1': 'option'}
             },
             g.GetSetExport("test_job_id", "test_key",
-                           {'option1': 'option'}).to_json()
+                           {"option1": "option"}).to_json()
         )
 
     def test_get_job_details(self):
@@ -1298,7 +1295,8 @@ class GafferTest(unittest.TestCase):
                 'overwriteFlag': False,
                 'description': 'test_description'
             },
-            g.AddNamedOperation("test_operation_chain", "test_name", "test_description").to_json()
+            g.AddNamedOperation("test_operation_chain", "test_name",
+                                "test_description").to_json()
         )
 
         self.assertEqual(
@@ -1311,7 +1309,8 @@ class GafferTest(unittest.TestCase):
                 'readAccessRoles': 'test_read_access_roles'
             },
             g.AddNamedOperation("test_operation_chain", "test_name",
-                                "test_description", 'test_read_access_roles').to_json()
+                                "test_description",
+                                "test_read_access_roles").to_json()
         )
 
         self.assertEqual(
@@ -1325,8 +1324,8 @@ class GafferTest(unittest.TestCase):
                 'writeAccessRoles': 'test_write_access_roles'
             },
             g.AddNamedOperation("test_operation_chain", "test_name",
-                                "test_description", 'test_read_access_roles',
-                                'test_write_access_roles').to_json()
+                                "test_description", "test_read_access_roles",
+                                "test_write_access_roles").to_json()
         )
 
         self.assertEqual(
@@ -1340,8 +1339,8 @@ class GafferTest(unittest.TestCase):
                 'writeAccessRoles': 'test_write_access_roles'
             },
             g.AddNamedOperation("test_operation_chain", "test_name",
-                                "test_description", 'test_read_access_roles',
-                                'test_write_access_roles', True).to_json()
+                                "test_description", "test_read_access_roles",
+                                "test_write_access_roles", True).to_json()
         )
 
         self.assertEqual(
@@ -1356,8 +1355,8 @@ class GafferTest(unittest.TestCase):
                 'options': {'option1': 'option'}
             },
             g.AddNamedOperation("test_operation_chain", "test_name",
-                                "test_description", 'test_read_access_roles',
-                                'test_write_access_roles', False,
+                                "test_description", "test_read_access_roles",
+                                "test_write_access_roles", False,
                                 {"option1": "option"}).to_json()
         )
 
@@ -1396,7 +1395,7 @@ class GafferTest(unittest.TestCase):
                          '.operation.GetAllNamedOperations',
                 'options': {'options1': 'option'}
             },
-            g.GetAllNamedOperations({'options1': 'option'}).to_json()
+            g.GetAllNamedOperations({"options1": "option"}).to_json()
         )
 
     def test_discard_output(self):
