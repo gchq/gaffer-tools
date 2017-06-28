@@ -20,7 +20,7 @@ Gaffer tools is built using maven. This process will automatically pull in depen
  projects below.
 
 
-Gaffer (uk.gov.gchq.gaffer:gaffer2:0.7.4):
+Gaffer (uk.gov.gchq.gaffer:gaffer2:0.7.5):
 
 - Apache License, Version 2.0
 
@@ -43,6 +43,11 @@ Gaffer Schema Builder UI:
 
 
 mike-hogan/jarjar-forkfork:
+
+- Apache License, Version 2.0
+
+
+Selenium (org.seleniumhq.selenium:selenium-server:3.4.0)
 
 - Apache License, Version 2.0
 

@@ -21,11 +21,11 @@
     <parent>
         <groupId>uk.gov.gchq.gaffer</groupId>
         <artifactId>gaffer2</artifactId>
-        <version>0.7.4</version>
+        <version>0.7.5</version>
     </parent>
 
     <artifactId>gaffer-tools</artifactId>
-    <version>0.7.5-SNAPSHOT</version>
+    <version>0.7.6-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <modules>
@@ -38,7 +38,7 @@
     </modules>
 
     <properties>
-        <gaffer.version>0.7.4</gaffer.version>
+        <gaffer.version>0.7.5</gaffer.version>
         <scm.url>
             https://github.com/gchq/gaffer-tools
         </scm.url>
@@ -72,4 +72,64 @@
         </license>
     </licenses>
 
+    <profiles>
+        <profile>
+            <id>system-test</id>
+            <properties>
+                <skip.surefire.tests>true</skip.surefire.tests>
+                <skip.failsafe.tests>false</skip.failsafe.tests>
+            </properties>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-failsafe-plugin</artifactId>
+                        <version>${failsafe.version}</version>
+                        <executions>
+                            <execution>
+                                <id>system-test</id>
+                                <goals>
+                                    <goal>integration-test</goal>
+                                    <goal>verify</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                        <configuration>
+                            <skipITs>${skip.failsafe.tests}</skipITs>
+                            <excludes>
+                                <exclude>**/*$*</exclude>
+                                <exclude>**/performance/**</exclude>
+                            </excludes>
+                            <includes>
+                                <include>**/*SystemTest.java</include>
+                                <include>**/*ST.java</include>
+                                <include>**/*STs.java</include>
+                                <include>**/*SystemTests.java</include>
+                            </includes>
+                        </configuration>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-checkstyle-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>validate</id>
+                                <phase>none</phase>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>findbugs-maven-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>analyze-compile</id>
+                                <phase>none</phase>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 </project>

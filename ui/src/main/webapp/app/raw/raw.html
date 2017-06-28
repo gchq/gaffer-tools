@@ -22,10 +22,12 @@
                         </h3>
 
                         <div ng-repeat="(i, json) in operations track by $index">
-                            <pre ng-show="!editingOperations">
+                            <pre id="operation-{{i}}-json"
+                                 ng-show="!editingOperations">
                                 {{operations[i] | json}}
                             </pre>
-                            <textarea ng-model="operationsForEdit[i]"
+                            <textarea id="editing-operation-{{i}}-json"
+                                      ng-model="operationsForEdit[i]"
                                       ng-blur="onOperationsChange()"
                                       ng-show="editingOperations">>
                             </textarea>
@@ -44,12 +46,12 @@
                         <h3>Results</h3>
 
                         <h4>Entities</h4>
-                        <pre>
+                        <pre id="raw-entity-results">
                             {{rawData.results.entities | json}}
                         </pre>
 
                         <h4>Edges</h4>
-                        <pre>
+                        <pre id="raw-edge-results">
                             {{rawData.results.edges | json}}
                         </pre>
                     </md-content>
