@@ -26,8 +26,8 @@
             </md-input-container>
         </div>
         <div class="input-field" *ngIf="functions && functions.valid && !_type.node">
-            <md-select class="full-width" id="serialiserClass" placeholder="Serialiser class" (change)="changeType(_type.serialiserClass, 'serialiserClass')"
-                [(ngModel)]="_type.serialiserClass">
+            <md-select class="full-width" id="serialiserClass" placeholder="Serialiser class" (change)="changeType(_type.serialiser, 'serialiser', 'class')"
+                [(ngModel)]="_type.serialiser">
                 <md-option value="NULL">null</md-option>
                 <md-option *ngFor="let serialiser of functions.serialiserClasses" [value]="serialiser">
                     {{ serialiser }}
@@ -35,8 +35,8 @@
             </md-select>
         </div>
         <div class="input-field" *ngIf="functions && functions.valid && !_type.node">
-            <md-select class="full-width" id="aggregateFunction" placeholder="Aggregator class" (change)="changeType(_type.aggregateFunction.class, 'aggregateFunction', 'class')"
-                [(ngModel)]="_type.aggregateFunction.class">
+            <md-select class="full-width" id="aggregateFunction" placeholder="Aggregator class" (change)="changeType(_type.aggregateFunction, 'aggregateFunction', 'class')"
+                [(ngModel)]="_type.aggregateFunction">
                 <md-option value="NULL">null</md-option>
                 <md-option *ngFor="let aggregator of functions.aggregateClasses" [value]="aggregator">
                     {{ aggregator }}

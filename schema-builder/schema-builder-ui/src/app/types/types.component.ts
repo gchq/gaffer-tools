@@ -79,7 +79,7 @@ export class TypesComponent implements OnInit {
         this.types.push({
             type: 'new type',
             aggregateFunction: null,
-            serialiserClass: null,
+            serialiser: null,
             class: '',
             validateFunctions: null
         });

@@ -486,8 +486,8 @@ class GenerateElements(Operation):
 
         element_generator = {'class': self.generator_class_name}
         if self.element_generator_fields is not None:
-            for field in self.element_generator_fields:
-                element_generator[field.key] = field.value
+            for key, value in self.element_generator_fields.items():
+                element_generator[key] = value
         operation['elementGenerator'] = element_generator
         return operation
 
@@ -518,8 +518,8 @@ class GenerateObjects(Operation):
 
         element_generator = {'class': self.generator_class_name}
         if self.element_generator_fields is not None:
-            for field in self.element_generator_fields:
-                element_generator[field.key] = field.value
+            for key, value in self.element_generator_fields.items():
+                element_generator[key] = value
         operation['elementGenerator'] = element_generator
         return operation
 
