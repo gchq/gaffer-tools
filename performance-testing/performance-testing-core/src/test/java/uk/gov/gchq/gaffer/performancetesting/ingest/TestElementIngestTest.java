@@ -97,9 +97,9 @@ public class TestElementIngestTest {
         // Then
         assertTrue(lines.size() > 0);
         final int offset = IngestMetrics.ELEMENTS_PER_SECOND.length() + 1;
-        lines.forEach(line2 -> {
-            assertTrue(line2.startsWith(IngestMetrics.ELEMENTS_PER_SECOND + ":"));
-            assertTrue(Double.parseDouble(line2.substring(offset)) > 0.0D);
+        lines.forEach(line -> {
+            assertTrue(line.startsWith(IngestMetrics.ELEMENTS_PER_SECOND + ":"));
+            assertTrue(Double.parseDouble(line.substring(offset)) > 0.0D);
         });
     }
 }
