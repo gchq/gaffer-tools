@@ -21,6 +21,7 @@ import uk.gov.gchq.gaffer.data.element.Element;
 import uk.gov.gchq.gaffer.graph.Graph;
 import uk.gov.gchq.gaffer.operation.OperationException;
 import uk.gov.gchq.gaffer.operation.impl.add.AddElements;
+import uk.gov.gchq.gaffer.performancetesting.MetricsListener;
 import uk.gov.gchq.gaffer.randomelementgeneration.supplier.ElementsSupplier;
 import uk.gov.gchq.gaffer.randomelementgeneration.supplier.RmatElementSupplier;
 import uk.gov.gchq.gaffer.store.StoreProperties;
@@ -42,11 +43,23 @@ public class ElementIngestTest {
 
     private Graph graph;
     private ElementIngestTestProperties testProperties;
+    private MetricsListener metricsListener;
 
     public ElementIngestTest(final Graph graph,
                              final ElementIngestTestProperties testProperties) {
         this.graph = graph;
         this.testProperties = testProperties;
+        if (null != testProperties.getMetricsListenerClass()) {
+            try {
+                metricsListener = Class.forName(testProperties.getMetricsListenerClass())
+                        .asSubclass(MetricsListener.class).newInstance();
+                metricsListener.initialise(testProperties);
+                LOGGER.info("Initialised MetricsListener of {}", metricsListener);
+            } catch (final ClassNotFoundException | InstantiationException | IllegalAccessException e) {
+                throw new IllegalArgumentException("MetricsListener could not be created: "
+                        + testProperties.getMetricsListenerClass(), e);
+            }
+        }
     }
 
     /**
@@ -71,6 +84,9 @@ public class ElementIngestTest {
         final double rate = (double) numElements / durationInSeconds;
         LOGGER.info("Test result: " + numElements + " elements added in " + durationInSeconds + " seconds (rate was "
                 + rate + " per second)");
+        if (null != metricsListener) {
+            metricsListener.close();
+        }
         return rate;
     }
 
@@ -93,6 +109,14 @@ public class ElementIngestTest {
         final double rate = batchSize / durationInSeconds;
         LOGGER.info("Batch number = " + batchNumber + ": " + batchSize + " elements added in " + durationInSeconds
                 + " seconds (rate was " + rate + " per second)");
+        log(rate);
+    }
+
+    private void log(final double elementsPerSecond) {
+        if (null != metricsListener) {
+            final IngestMetrics metrics = new IngestMetrics(elementsPerSecond);
+            metricsListener.update(metrics);
+        }
     }
 
     public static class ElementSupplierFactory {

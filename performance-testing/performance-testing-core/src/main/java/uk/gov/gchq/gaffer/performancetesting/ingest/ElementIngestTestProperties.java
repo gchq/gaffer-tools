@@ -33,6 +33,7 @@ public class ElementIngestTestProperties extends Properties {
     private static final String ELEMENT_SUPPLIER_CLASS = "gaffer.performancetesting.ingest.elementSupplierClass";
     private static final String NUMBER_OF_ELEMENTS = "gaffer.performancetesting.ingest.numberOfElements";
     private static final String BATCH_SIZE = "gaffer.performancetesting.ingest.batchSize";
+    private static final String METRICS_LISTENER_CLASS = "gaffer.performancetesting.ingest.metricsListener";
     private static final String RMAT_PROBABILITIES = "gaffer.performancetesting.ingest.rmat.probabilities";
     private static final String RMAT_INCLUDE_ENTITIES = "gaffer.performancetesting.ingest.rmat.includeEntities";
     private static final String RMAT_MAX_NODEID = "gaffer.performancetesting.ingest.rmat.maxNodeId";
@@ -69,6 +70,14 @@ public class ElementIngestTestProperties extends Properties {
             throw new IllegalArgumentException("The batch size must be greater than 0.");
         }
         setProperty(BATCH_SIZE, "" + batchSize);
+    }
+
+    public String getMetricsListenerClass() {
+        return getProperty(METRICS_LISTENER_CLASS);
+    }
+
+    public void setMetricsListenerClass(final String metricsListenerClass) {
+        setProperty(METRICS_LISTENER_CLASS, metricsListenerClass);
     }
 
     public double[] getRmatProbabilities() {
