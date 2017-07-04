@@ -19,20 +19,22 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.gov.gchq.gaffer.commonutil.iterable.CloseableIterable;
 import uk.gov.gchq.gaffer.data.element.Element;
-import uk.gov.gchq.gaffer.data.element.id.ElementId;
 import uk.gov.gchq.gaffer.graph.Graph;
 import uk.gov.gchq.gaffer.operation.OperationException;
+import uk.gov.gchq.gaffer.operation.data.ElementSeed;
 import uk.gov.gchq.gaffer.operation.impl.get.GetElements;
 import uk.gov.gchq.gaffer.performancetesting.MetricsListener;
-import uk.gov.gchq.gaffer.randomelementgeneration.supplier.ElementIdRmatSupplier;
+import uk.gov.gchq.gaffer.randomelementgeneration.supplier.EdgeSeedSupplier;
+import uk.gov.gchq.gaffer.randomelementgeneration.supplier.EntitySeedSupplier;
 import uk.gov.gchq.gaffer.user.User;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Supplier;
-import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 /**
- * This class measures the time taken to query for a given number of {@link ElementId}s.
+ * This class measures the time taken to query for a given number of {@link ElementSeed}s.
  *
  * <p>The test is configured using a {@link QueryTestProperties}. This specifies the class to be
  * used to generate the random seeds and the number of seeds to be queried for.
@@ -69,7 +71,7 @@ public class QueryTest {
     public double run() {
         final long numSeeds = testProperties.getNumSeeds();
         final long batchSize = testProperties.getBatchSize();
-        final Supplier<ElementId> elementIdSupplier = new ElementIdSupplierFactory(testProperties).get();
+        final Supplier<? extends ElementSeed> elementIdSupplier = new ElementIdSupplierFactory(testProperties).get();
         long totalQueried = 0L;
         long batchNumber = 0L;
         final long startTime = System.currentTimeMillis();
@@ -89,8 +91,12 @@ public class QueryTest {
         return rate;
     }
 
-    private void queryBatch(final Supplier<ElementId> elementIdSupplier, final long batchSize, final long batchNumber) {
-        final Iterable<ElementId> seeds = Stream.generate(elementIdSupplier).limit(batchSize)::iterator;
+    private void queryBatch(final Supplier<? extends ElementSeed> elementSeedSupplier, final long batchSize, final long batchNumber) {
+        // Create in-memory list of seeds, so that expense of creating random seeds is not included in the test results
+        final List<ElementSeed> seeds = new ArrayList<>();
+        for (int i = 0; i < batchSize; i++) {
+            seeds.add(elementSeedSupplier.get());
+        }
         final GetElements getElements = new GetElements.Builder()
                 .input(seeds)
                 .build();
@@ -128,33 +134,17 @@ public class QueryTest {
             this.testProperties = testProperties;
         }
 
-        public Supplier<ElementId> get() {
+        public Supplier<? extends ElementSeed> get() {
             final String elementIdSupplierClass = testProperties.getElementIdSupplierClass();
-            if (elementIdSupplierClass.equals(ElementIdRmatSupplier.class.getName())) {
-                final double[] rmatProbabilities = testProperties.getRmatProbabilities();
+            if (elementIdSupplierClass.equals(EntitySeedSupplier.class.getName())) {
                 final long maxNodeId = testProperties.getRmatMaxNodeId();
-                final boolean includeEntities = testProperties.getRmatIncludeEntities();
-                return new ElementIdRmatSupplier(rmatProbabilities, maxNodeId, includeEntities);
+                return new EntitySeedSupplier(maxNodeId);
+            } else if (elementIdSupplierClass.equals(EdgeSeedSupplier.class.getName())) {
+                final long maxNodeId = testProperties.getRmatMaxNodeId();
+                return new EdgeSeedSupplier(maxNodeId);
             } else {
                 throw new RuntimeException("Unknown ElementIdSupplier class of " + elementIdSupplierClass);
             }
         }
     }
-
-//    public static void main(final String[] args) {
-//        if (args.length != 3) {
-//            throw new RuntimeException("Usage: <schema_directory> <store_properties_file> <test_properties_file>");
-//        }
-//        final Schema schema = Schema.fromJson(new File(args[0]).toPath());
-//        final StoreProperties storeProperties = StoreProperties.loadStoreProperties(args[1]);
-//        final ElementIngestTestProperties testProperties = new ElementIngestTestProperties();
-//        testProperties.loadTestProperties(args[2]);
-//        final Graph graph = new Graph.Builder()
-//                .storeProperties(storeProperties)
-//                .addSchema(schema)
-//                .build();
-//        final QueryTest test = new QueryTest(graph, testProperties);
-//        final double result = test.run();
-//        LOGGER.info("Test result: elements were added at a rate of " + result + " per second");
-//    }
 }

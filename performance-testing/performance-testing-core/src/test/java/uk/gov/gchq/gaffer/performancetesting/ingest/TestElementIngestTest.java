@@ -26,9 +26,7 @@ import uk.gov.gchq.gaffer.performancetesting.FileWriterMetricsListener;
 import uk.gov.gchq.gaffer.randomelementgeneration.Constants;
 import uk.gov.gchq.gaffer.randomelementgeneration.supplier.RmatElementSupplier;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
 import java.util.List;
 
@@ -44,7 +42,7 @@ public class TestElementIngestTest {
         // Given
         final ElementIngestTestProperties testProperties = new ElementIngestTestProperties();
         testProperties.setNumElements(100L);
-        testProperties.setBatchSize(10L);
+        testProperties.setBatchSize(10);
         testProperties.setElementSupplierClass(RmatElementSupplier.class.getName());
         testProperties.setRmatProbabilities(Constants.RMAT_PROBABILITIES);
         testProperties.setRmatMaxNodeId(100L);
@@ -71,7 +69,7 @@ public class TestElementIngestTest {
         // Given
         final ElementIngestTestProperties testProperties = new ElementIngestTestProperties();
         testProperties.setNumElements(100L);
-        testProperties.setBatchSize(10L);
+        testProperties.setBatchSize(10);
         testProperties.setElementSupplierClass(RmatElementSupplier.class.getName());
         testProperties.setRmatProbabilities(Constants.RMAT_PROBABILITIES);
         testProperties.setRmatMaxNodeId(100L);

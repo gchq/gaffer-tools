@@ -37,11 +37,11 @@ public class TestProperties extends Properties {
         setProperty(METRICS_LISTENER_CLASS, metricsListenerClass);
     }
 
-    public long getBatchSize() {
-        return Long.parseLong(getProperty(BATCH_SIZE));
+    public int getBatchSize() {
+        return Integer.parseInt(getProperty(BATCH_SIZE));
     }
 
-    public void setBatchSize(final long batchSize) {
+    public void setBatchSize(final int batchSize) {
         if (batchSize <= 0L) {
             throw new IllegalArgumentException("The batch size must be greater than 0.");
         }

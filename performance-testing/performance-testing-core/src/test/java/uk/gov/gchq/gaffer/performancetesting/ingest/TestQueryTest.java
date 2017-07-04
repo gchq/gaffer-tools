@@ -29,8 +29,9 @@ import uk.gov.gchq.gaffer.performancetesting.query.QueryMetrics;
 import uk.gov.gchq.gaffer.performancetesting.query.QueryTest;
 import uk.gov.gchq.gaffer.performancetesting.query.QueryTestProperties;
 import uk.gov.gchq.gaffer.randomelementgeneration.Constants;
-import uk.gov.gchq.gaffer.randomelementgeneration.supplier.ElementIdRmatSupplier;
+import uk.gov.gchq.gaffer.randomelementgeneration.supplier.ElementSeedSupplier;
 import uk.gov.gchq.gaffer.randomelementgeneration.supplier.ElementsSupplier;
+import uk.gov.gchq.gaffer.randomelementgeneration.supplier.EntitySeedSupplier;
 import uk.gov.gchq.gaffer.randomelementgeneration.supplier.RmatElementSupplier;
 import uk.gov.gchq.gaffer.user.User;
 
@@ -51,8 +52,8 @@ public class TestQueryTest {
         // Given
         final QueryTestProperties testProperties = new QueryTestProperties();
         testProperties.setNumSeeds(100L);
-        testProperties.setBatchSize(10L);
-        testProperties.setElementIdSupplierClass(ElementIdRmatSupplier.class.getName());
+        testProperties.setBatchSize(10);
+        testProperties.setElementIdSupplierClass(EntitySeedSupplier.class.getName());
         testProperties.setRmatProbabilities(Constants.RMAT_PROBABILITIES);
         testProperties.setRmatMaxNodeId(100L);
         final AccumuloProperties storeProperties = new AccumuloProperties();
@@ -83,8 +84,8 @@ public class TestQueryTest {
         // Given
         final QueryTestProperties testProperties = new QueryTestProperties();
         testProperties.setNumSeeds(100L);
-        testProperties.setBatchSize(10L);
-        testProperties.setElementIdSupplierClass(ElementIdRmatSupplier.class.getName());
+        testProperties.setBatchSize(10);
+        testProperties.setElementIdSupplierClass(EntitySeedSupplier.class.getName());
         testProperties.setRmatProbabilities(Constants.RMAT_PROBABILITIES);
         testProperties.setRmatMaxNodeId(100L);
         testProperties.setMetricsListenerClass(FileWriterMetricsListener.class.getName());

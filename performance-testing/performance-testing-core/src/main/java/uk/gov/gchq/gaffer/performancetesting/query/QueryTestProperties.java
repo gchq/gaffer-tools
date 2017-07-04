@@ -16,7 +16,7 @@
 package uk.gov.gchq.gaffer.performancetesting.query;
 
 import uk.gov.gchq.gaffer.performancetesting.TestProperties;
-import uk.gov.gchq.gaffer.randomelementgeneration.supplier.RmatElementSupplier;
+import uk.gov.gchq.gaffer.randomelementgeneration.supplier.EntitySeedSupplier;
 
 public class QueryTestProperties extends TestProperties {
     private static final long serialVersionUID = 3639506677531571597L;
@@ -27,7 +27,7 @@ public class QueryTestProperties extends TestProperties {
     }
 
     public String getElementIdSupplierClass() {
-        return getProperty(ID_SUPPLIER_CLASS, RmatElementSupplier.class.getName());
+        return getProperty(ID_SUPPLIER_CLASS, EntitySeedSupplier.class.getName());
     }
 
     public void setElementIdSupplierClass(final String elementSupplierClass) {
