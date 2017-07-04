@@ -23,7 +23,6 @@ public class AccumuloElementIngestTestProperties extends ElementIngestTestProper
     private static final String TEMP_DIRECTORY = "gaffer.accumulostore.performancetesting.ingest.tempDirectory";
     private static final String NUM_ELEMENTS_FOR_SPLIT_ESTIMATION =
             "gaffer.accumulostore.performancetesting.ingest.numElementsForSplitEstimation";
-    private static final String NUM_TABLET_SERVERS = "gaffer.accumulostore.performancetesting.ingest.numTabletServers";
 
     public AccumuloElementIngestTestProperties() {
         super();
