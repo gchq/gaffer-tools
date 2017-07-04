@@ -22,30 +22,37 @@ import org.junit.rules.TemporaryFolder;
 import uk.gov.gchq.gaffer.accumulostore.AccumuloProperties;
 import uk.gov.gchq.gaffer.accumulostore.MockAccumuloStore;
 import uk.gov.gchq.gaffer.graph.Graph;
+import uk.gov.gchq.gaffer.operation.OperationException;
+import uk.gov.gchq.gaffer.operation.impl.add.AddElements;
 import uk.gov.gchq.gaffer.performancetesting.FileWriterMetricsListener;
+import uk.gov.gchq.gaffer.performancetesting.query.QueryMetrics;
+import uk.gov.gchq.gaffer.performancetesting.query.QueryTest;
+import uk.gov.gchq.gaffer.performancetesting.query.QueryTestProperties;
 import uk.gov.gchq.gaffer.randomelementgeneration.Constants;
+import uk.gov.gchq.gaffer.randomelementgeneration.supplier.ElementIdRmatSupplier;
+import uk.gov.gchq.gaffer.randomelementgeneration.supplier.ElementsSupplier;
 import uk.gov.gchq.gaffer.randomelementgeneration.supplier.RmatElementSupplier;
+import uk.gov.gchq.gaffer.user.User;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
 import java.util.List;
+import java.util.stream.Stream;
 
 import static org.junit.Assert.assertTrue;
 
-public class TestElementIngestTest {
+public class TestQueryTest {
 
     @Rule
     public TemporaryFolder folder = new TemporaryFolder();
 
     @Test
-    public void testElementIngestTestRuns() {
+    public void testQueryTestRuns() throws OperationException {
         // Given
-        final ElementIngestTestProperties testProperties = new ElementIngestTestProperties();
-        testProperties.setNumElements(100L);
+        final QueryTestProperties testProperties = new QueryTestProperties();
+        testProperties.setNumSeeds(100L);
         testProperties.setBatchSize(10L);
-        testProperties.setElementSupplierClass(RmatElementSupplier.class.getName());
+        testProperties.setElementIdSupplierClass(ElementIdRmatSupplier.class.getName());
         testProperties.setRmatProbabilities(Constants.RMAT_PROBABILITIES);
         testProperties.setRmatMaxNodeId(100L);
         final AccumuloProperties storeProperties = new AccumuloProperties();
@@ -57,9 +64,14 @@ public class TestElementIngestTest {
                 .addSchema(TestElementIngestTest.class.getResourceAsStream("/schema/DataTypes.json"))
                 .addSchema(TestElementIngestTest.class.getResourceAsStream("/schema/StoreTypes.json"))
                 .build();
+        graph.execute(new AddElements.Builder()
+                .input(Stream
+                        .generate(new ElementsSupplier(new RmatElementSupplier(Constants.RMAT_PROBABILITIES, 100L, true)))
+                        .limit(1000L)::iterator)
+                .build(), new User());
 
         // When
-        final ElementIngestTest test = new ElementIngestTest(graph, testProperties);
+        final QueryTest test = new QueryTest(graph, testProperties);
         final double result = test.run();
 
         // Then
@@ -67,12 +79,12 @@ public class TestElementIngestTest {
     }
 
     @Test
-    public void testElementIngestTestOutputsToListener() throws IOException {
+    public void testQueryTestOutputsToListener() throws IOException, OperationException {
         // Given
-        final ElementIngestTestProperties testProperties = new ElementIngestTestProperties();
-        testProperties.setNumElements(100L);
+        final QueryTestProperties testProperties = new QueryTestProperties();
+        testProperties.setNumSeeds(100L);
         testProperties.setBatchSize(10L);
-        testProperties.setElementSupplierClass(RmatElementSupplier.class.getName());
+        testProperties.setElementIdSupplierClass(ElementIdRmatSupplier.class.getName());
         testProperties.setRmatProbabilities(Constants.RMAT_PROBABILITIES);
         testProperties.setRmatMaxNodeId(100L);
         testProperties.setMetricsListenerClass(FileWriterMetricsListener.class.getName());
@@ -88,18 +100,25 @@ public class TestElementIngestTest {
                 .addSchema(TestElementIngestTest.class.getResourceAsStream("/schema/DataTypes.json"))
                 .addSchema(TestElementIngestTest.class.getResourceAsStream("/schema/StoreTypes.json"))
                 .build();
+        graph.execute(new AddElements.Builder()
+                .input(Stream
+                        .generate(new ElementsSupplier(new RmatElementSupplier(Constants.RMAT_PROBABILITIES, 100L, true)))
+                        .limit(1000L)::iterator)
+                .build(), new User());
 
         // When
-        final ElementIngestTest test = new ElementIngestTest(graph, testProperties);
+        final QueryTest test = new QueryTest(graph, testProperties);
         test.run();
         final List<String> lines = FileUtils.readLines(new File(metricsResultsFilename));
 
         // Then
         assertTrue(lines.size() > 0);
-        final int offset = IngestMetrics.ELEMENTS_PER_SECOND.length() + 1;
         lines.forEach(line -> {
-            assertTrue(line.startsWith(IngestMetrics.ELEMENTS_PER_SECOND + ":"));
-            assertTrue(Double.parseDouble(line.substring(offset)) > 0.0D);
+            final String[] fields = line.split(", ");
+            assertTrue(fields[0].startsWith(QueryMetrics.SEEDS_PER_SECOND));
+            assertTrue(Double.parseDouble(fields[0].split(":")[1]) > 0.0D);
+            assertTrue(fields[1].startsWith(QueryMetrics.RESULTS_PER_SECOND));
+            assertTrue(Double.parseDouble(fields[1].split(":")[1]) > 0.0D);
         });
     }
 }

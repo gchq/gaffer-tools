@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package uk.gov.gchq.gaffer.performancetesting.ingest;
+package uk.gov.gchq.gaffer.performancetesting.query;
 
 import uk.gov.gchq.gaffer.performancetesting.Metrics;
 
@@ -24,15 +24,17 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-public class IngestMetrics implements Metrics {
-    public static final String ELEMENTS_PER_SECOND = "elements_per_second";
+public class QueryMetrics implements Metrics {
+    public static final String SEEDS_PER_SECOND = "seeds_per_second";
+    public static final String RESULTS_PER_SECOND = "results_per_second";
     private static final Set<String> METRIC_NAMES = Collections.unmodifiableSet(new HashSet<>(
-            Arrays.asList(ELEMENTS_PER_SECOND)));
+            Arrays.asList(SEEDS_PER_SECOND, RESULTS_PER_SECOND)));
     private final Map<String, Double> metrics;
 
-    public IngestMetrics(final double elementsPerSecond) {
+    public QueryMetrics(final double seedsPerSecond, final double resultsPerSecond) {
         this.metrics = new HashMap<>();
-        metrics.put(ELEMENTS_PER_SECOND, elementsPerSecond);
+        metrics.put(SEEDS_PER_SECOND, seedsPerSecond);
+        metrics.put(RESULTS_PER_SECOND, resultsPerSecond);
     }
 
     @Override

@@ -45,9 +45,15 @@ public class FileWriterMetricsListener implements MetricsListener {
     @Override
     public void update(final Metrics metrics) {
         try {
+            int i = 0;
             for (final String metricName : metrics.getMetricNames()) {
-                writer.write(metricName + ": " + metrics.getMetric(metricName) + "\n");
+                if (i > 0) {
+                    writer.write(", ");
+                }
+                writer.write(metricName + ": " + metrics.getMetric(metricName));
+                i++;
             }
+            writer.write("\n");
         } catch (final IOException e) {
             throw new RuntimeException("IOException writing metrics to file", e);
         }
