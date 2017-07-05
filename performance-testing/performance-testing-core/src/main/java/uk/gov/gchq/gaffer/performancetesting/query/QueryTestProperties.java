@@ -18,6 +18,9 @@ package uk.gov.gchq.gaffer.performancetesting.query;
 import uk.gov.gchq.gaffer.performancetesting.TestProperties;
 import uk.gov.gchq.gaffer.randomelementgeneration.supplier.EntitySeedSupplier;
 
+/**
+ * These properties are used to specify a {@link uk.gov.gchq.gaffer.performancetesting.query.QueryTest}.
+ */
 public class QueryTestProperties extends TestProperties {
     private static final long serialVersionUID = 3639506677531571597L;
     private static final String ID_SUPPLIER_CLASS = "gaffer.performancetesting.query.idSupplierClass";

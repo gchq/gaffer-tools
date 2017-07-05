@@ -23,6 +23,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+/**
+ * These properties are used to specify a {@link uk.gov.gchq.gaffer.performancetesting.ingest.IngestMetrics}.
+ */
 public class ElementIngestTestProperties extends TestProperties {
     private static final long serialVersionUID = 8594474188709038747L;
     private static final String ELEMENT_SUPPLIER_CLASS = "gaffer.performancetesting.ingest.elementSupplierClass";

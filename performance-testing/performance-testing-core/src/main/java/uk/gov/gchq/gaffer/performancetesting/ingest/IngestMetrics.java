@@ -24,6 +24,10 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+/**
+ * This class contains the results from a {@link uk.gov.gchq.gaffer.performancetesting.ingest.ElementIngestTest}. It
+ * provides the number of {@link uk.gov.gchq.gaffer.data.element.Element}s ingested per second.
+ */
 public class IngestMetrics implements Metrics {
     public static final String ELEMENTS_PER_SECOND = "elements_per_second";
     private static final Set<String> METRIC_NAMES = Collections.unmodifiableSet(new HashSet<>(

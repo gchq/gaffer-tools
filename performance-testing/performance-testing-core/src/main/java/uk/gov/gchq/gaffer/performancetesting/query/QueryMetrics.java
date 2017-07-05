@@ -24,6 +24,10 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+/**
+ * This class contains the results from a {@link uk.gov.gchq.gaffer.performancetesting.query.QueryTest}. It provides
+ * the number of seeds queried for per second and the number of results per second.
+ */
 public class QueryMetrics implements Metrics {
     public static final String SEEDS_PER_SECOND = "seeds_per_second";
     public static final String RESULTS_PER_SECOND = "results_per_second";

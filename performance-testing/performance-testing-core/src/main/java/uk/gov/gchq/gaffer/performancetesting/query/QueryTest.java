@@ -34,10 +34,15 @@ import java.util.function.Supplier;
 import java.util.stream.StreamSupport;
 
 /**
- * This class measures the time taken to query for a given number of {@link ElementSeed}s.
+ * This class measures the time taken to query for a given number of {@link ElementSeed}s. The query is broken up into
+ * batches of a user specified size. For every batch, the number of seeds queried for per second and the number of
+ * results returned per second are recorded.
  *
  * <p>The test is configured using a {@link QueryTestProperties}. This specifies the class to be
  * used to generate the random seeds and the number of seeds to be queried for.
+ *
+ * <p>Optionally, a {@link MetricsListener} can be provided. This will receive an update of the performance at the end
+ * of every batch. This update is an instance of {@link QueryMetrics}.
  */
 public class QueryTest {
     private static final Logger LOGGER = LoggerFactory.getLogger(QueryTest.class);
@@ -91,8 +96,9 @@ public class QueryTest {
         return rate;
     }
 
-    private void queryBatch(final Supplier<? extends ElementSeed> elementSeedSupplier, final long batchSize, final long batchNumber) {
-        // Create in-memory list of seeds, so that expense of creating random seeds is not included in the test results
+    private void queryBatch(final Supplier<? extends ElementSeed> elementSeedSupplier, final long batchSize,
+                            final long batchNumber) {
+        // Create an in-memory list of seeds, so that expense of creating random seeds is not included in the test results
         final List<ElementSeed> seeds = new ArrayList<>();
         for (int i = 0; i < batchSize; i++) {
             seeds.add(elementSeedSupplier.get());

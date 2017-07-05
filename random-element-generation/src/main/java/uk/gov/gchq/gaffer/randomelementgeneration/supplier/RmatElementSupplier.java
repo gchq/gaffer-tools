@@ -39,7 +39,7 @@ import java.util.function.Supplier;
  * <p>By default, the probabilities used for the generation of the edges are the same as those specified in the
  * Graph500 challenge, but other probabilities can be specified if desired.
  */
-public class    RmatElementSupplier implements Supplier<Set<Element>> {
+public class RmatElementSupplier implements Supplier<Set<Element>> {
     protected final Random random = new Random();
     private double[] cumulativeProbs;
     private int numBits;
