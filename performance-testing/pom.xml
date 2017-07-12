@@ -13,6 +13,7 @@
     <modules>
         <module>performance-testing-core</module>
         <module>performance-testing-accumulo-store</module>
+        <module>performance-testing-aws</module>
     </modules>
 
 </project>
