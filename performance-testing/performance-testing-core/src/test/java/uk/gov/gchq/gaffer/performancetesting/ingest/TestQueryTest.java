@@ -116,9 +116,9 @@ public class TestQueryTest {
         assertTrue(lines.size() > 0);
         lines.forEach(line -> {
             final String[] fields = line.split(", ");
-            assertTrue(fields[0].startsWith(QueryMetrics.SEEDS_PER_SECOND));
+            assertTrue(fields[0].startsWith(QueryMetrics.RESULTS_PER_SECOND));
             assertTrue(Double.parseDouble(fields[0].split(":")[1]) > 0.0D);
-            assertTrue(fields[1].startsWith(QueryMetrics.RESULTS_PER_SECOND));
+            assertTrue(fields[1].startsWith(QueryMetrics.SEEDS_PER_SECOND));
             assertTrue(Double.parseDouble(fields[1].split(":")[1]) > 0.0D);
         });
     }

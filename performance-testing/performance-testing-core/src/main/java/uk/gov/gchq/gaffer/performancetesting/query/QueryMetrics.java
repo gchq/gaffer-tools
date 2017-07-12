@@ -50,7 +50,7 @@ public class QueryMetrics implements Metrics {
     }
 
     @Override
-    public void putMetric(String metricName, Object metric) {
+    public void putMetric(final String metricName, final Object metric) {
         if (!METRIC_NAMES.contains(metricName)) {
             throw new IllegalArgumentException("Unrecognised metric " + metricName);
         }
