@@ -84,6 +84,7 @@ public class ElementIngestTest {
         final double rate = (double) numElements / durationInSeconds;
         LOGGER.info("Test result: " + numElements + " elements added in " + durationInSeconds + " seconds (rate was "
                 + rate + " per second)");
+        log(numElements, true);
         if (null != metricsListener) {
             metricsListener.close();
         }
@@ -109,12 +110,17 @@ public class ElementIngestTest {
         final double rate = batchSize / durationInSeconds;
         LOGGER.info("Batch number = " + batchNumber + ": " + batchSize + " elements added in " + durationInSeconds
                 + " seconds (rate was " + rate + " per second)");
-        log(rate);
+        log(rate, false);
     }
 
-    private void log(final double elementsPerSecond) {
+    private void log(final double elementsPerSecond, final boolean finalResult) {
         if (null != metricsListener) {
-            final IngestMetrics metrics = new IngestMetrics(elementsPerSecond);
+            final IngestMetrics metrics = new IngestMetrics();
+            if (finalResult) {
+                metrics.putMetric(IngestMetrics.ELEMENTS_PER_SECOND_OVERALL, elementsPerSecond);
+            } else {
+                metrics.putMetric(IngestMetrics.ELEMENTS_PER_SECOND_BATCH, elementsPerSecond);
+            }
             metricsListener.update(metrics);
         }
     }

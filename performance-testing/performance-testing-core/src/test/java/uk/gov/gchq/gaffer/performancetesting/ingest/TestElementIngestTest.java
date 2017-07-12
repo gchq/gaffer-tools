@@ -94,10 +94,21 @@ public class TestElementIngestTest {
 
         // Then
         assertTrue(lines.size() > 0);
-        final int offset = IngestMetrics.ELEMENTS_PER_SECOND.length() + 1;
-        lines.forEach(line -> {
-            assertTrue(line.startsWith(IngestMetrics.ELEMENTS_PER_SECOND + ":"));
-            assertTrue(Double.parseDouble(line.substring(offset)) > 0.0D);
-        });
+        final int offsetBatch = IngestMetrics.ELEMENTS_PER_SECOND_BATCH.length() + 1;
+        final int offsetOverall = IngestMetrics.ELEMENTS_PER_SECOND_OVERALL.length() + 1;
+        for (int i = 0; i < lines.size() - 2; i++) {
+            final String[] tokens = lines.get(i).split(",");
+            assertTrue(tokens[0].replaceAll(" ", "").startsWith(IngestMetrics.ELEMENTS_PER_SECOND_BATCH + ":"));
+            assertTrue(nullOrPositive(tokens[0].substring(offsetBatch)));
+            assertTrue(tokens[1].replaceAll(" ", "").startsWith(IngestMetrics.ELEMENTS_PER_SECOND_OVERALL + ":"));
+            assertTrue(nullOrPositive(tokens[1].substring(offsetOverall)));
+        }
+    }
+
+    private boolean nullOrPositive(final String string) {
+        if (string.equals(": null")) {
+            return true;
+        }
+        return Double.parseDouble(string) > 0.0D;
     }
 }

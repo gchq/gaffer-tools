@@ -18,11 +18,10 @@ package uk.gov.gchq.gaffer.performancetesting.query;
 import uk.gov.gchq.gaffer.performancetesting.Metrics;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 /**
  * This class contains the results from a {@link uk.gov.gchq.gaffer.performancetesting.query.QueryTest}. It provides
@@ -31,8 +30,7 @@ import java.util.Set;
 public class QueryMetrics implements Metrics {
     public static final String SEEDS_PER_SECOND = "seeds_per_second";
     public static final String RESULTS_PER_SECOND = "results_per_second";
-    private static final Set<String> METRIC_NAMES = Collections.unmodifiableSet(new HashSet<>(
-            Arrays.asList(SEEDS_PER_SECOND, RESULTS_PER_SECOND)));
+    private static final SortedSet<String> METRIC_NAMES = new TreeSet<>(Arrays.asList(SEEDS_PER_SECOND, RESULTS_PER_SECOND));
     private final Map<String, Double> metrics;
 
     public QueryMetrics(final double seedsPerSecond, final double resultsPerSecond) {
@@ -42,12 +40,23 @@ public class QueryMetrics implements Metrics {
     }
 
     @Override
-    public Set<String> getMetricNames() {
+    public SortedSet<String> getMetricNames() {
         return METRIC_NAMES;
     }
 
     @Override
     public Object getMetric(final String metricName) {
         return metrics.get(metricName);
+    }
+
+    @Override
+    public void putMetric(String metricName, Object metric) {
+        if (!METRIC_NAMES.contains(metricName)) {
+            throw new IllegalArgumentException("Unrecognised metric " + metricName);
+        }
+        if (!(metric instanceof Double)) {
+            throw new IllegalArgumentException("Metric must be a double (got " + metricName.getClass().getName() + ")");
+        }
+        metrics.put(metricName, (Double) metric);
     }
 }

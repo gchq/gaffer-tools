@@ -15,11 +15,13 @@
  */
 package uk.gov.gchq.gaffer.performancetesting;
 
-import java.util.Set;
+import java.util.SortedSet;
 
 public interface Metrics {
 
-    Set<String> getMetricNames();
+    SortedSet<String> getMetricNames();
 
     Object getMetric(String metricName);
+
+    void putMetric(String metricName, Object metric);
 }
