@@ -58,8 +58,8 @@ public class TestQueryTest {
         testProperties.setRmatMaxNodeId(100L);
         final AccumuloProperties storeProperties = new AccumuloProperties();
         storeProperties.setStoreClass(MockAccumuloStore.class.getName());
-        storeProperties.setTable("table");
         final Graph graph = new Graph.Builder()
+                .graphId("id")
                 .storeProperties(storeProperties)
                 .addSchema(TestElementIngestTest.class.getResourceAsStream("/schema/DataSchema.json"))
                 .addSchema(TestElementIngestTest.class.getResourceAsStream("/schema/DataTypes.json"))
@@ -94,8 +94,8 @@ public class TestQueryTest {
         testProperties.setProperty(FileWriterMetricsListener.FILENAME, metricsResultsFilename);
         final AccumuloProperties storeProperties = new AccumuloProperties();
         storeProperties.setStoreClass(MockAccumuloStore.class.getName());
-        storeProperties.setTable("table");
         final Graph graph = new Graph.Builder()
+                .graphId("id")
                 .storeProperties(storeProperties)
                 .addSchema(TestElementIngestTest.class.getResourceAsStream("/schema/DataSchema.json"))
                 .addSchema(TestElementIngestTest.class.getResourceAsStream("/schema/DataTypes.json"))

@@ -24,11 +24,11 @@ import org.apache.hadoop.io.SequenceFile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.gov.gchq.gaffer.accumulostore.AccumuloStore;
-import uk.gov.gchq.gaffer.accumulostore.operation.hdfs.operation.SampleDataForSplitPoints;
-import uk.gov.gchq.gaffer.accumulostore.operation.hdfs.operation.SplitTable;
 import uk.gov.gchq.gaffer.data.element.Element;
 import uk.gov.gchq.gaffer.graph.Graph;
+import uk.gov.gchq.gaffer.hdfs.operation.SampleDataForSplitPoints;
 import uk.gov.gchq.gaffer.operation.OperationException;
+import uk.gov.gchq.gaffer.operation.impl.SplitStore;
 import uk.gov.gchq.gaffer.performancetesting.ingest.ElementIngestTest;
 import uk.gov.gchq.gaffer.randomelementgeneration.generator.ElementGeneratorFromSupplier;
 import uk.gov.gchq.gaffer.store.StoreException;
@@ -41,9 +41,6 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.function.Supplier;
 
-/**
- *
- */
 public class AccumuloElementIngestTest extends Configured {
     private static final Logger LOGGER = LoggerFactory.getLogger(AccumuloElementIngestTest.class);
 
@@ -96,7 +93,7 @@ public class AccumuloElementIngestTest extends Configured {
         LOGGER.info("Running SampleDataForSplitPoints job");
         final SampleDataForSplitPoints sample = new SampleDataForSplitPoints.Builder()
                 .addInputPath(tmpData)
-                .resultingSplitsFilePath(splitsFile)
+                .splitsFilePath(splitsFile)
                 .outputPath(splitsOutputPath)
                 .jobInitialiser(new SequenceFileJobInitialiser())
                 .validate(false)
@@ -107,7 +104,7 @@ public class AccumuloElementIngestTest extends Configured {
 
         // Add the splits point to the table
         LOGGER.info("Adding split points to table");
-        final SplitTable splitTable = new SplitTable.Builder()
+        final SplitStore splitTable = new SplitStore.Builder()
                 .inputPath(splitsFile)
                 .build();
         graph.execute(splitTable, new User());
@@ -126,7 +123,7 @@ public class AccumuloElementIngestTest extends Configured {
         LOGGER.info("Using schema of {}", schema);
         final StoreProperties storeProperties = StoreProperties.loadStoreProperties(args[1]);
         final AccumuloStore accumuloStore = new AccumuloStore();
-        accumuloStore.initialise(schema, storeProperties);
+        accumuloStore.initialise(accumuloStore.getProperties().getTable(), schema, storeProperties);
         LOGGER.info("Initialised Accumulo store (instance name is {}, table name is {})",
                 accumuloStore.getProperties().getInstance(),
                 accumuloStore.getProperties().getTable());
