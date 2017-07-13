@@ -23,11 +23,20 @@ import java.util.List;
 import java.util.Properties;
 
 public class TestProperties extends Properties {
+    private static final String GRAPH_ID = "gaffer.graph.id";
     private static final String METRICS_LISTENER_CLASS = "gaffer.performancetesting.ingest.metricsListener";
     private static final String BATCH_SIZE = "gaffer.performancetesting.ingest.batchSize";
     private static final String RMAT_PROBABILITIES = "gaffer.performancetesting.ingest.rmat.probabilities";
     private static final String RMAT_INCLUDE_ENTITIES = "gaffer.performancetesting.ingest.rmat.includeEntities";
     private static final String RMAT_MAX_NODEID = "gaffer.performancetesting.ingest.rmat.maxNodeId";
+
+    public String getGraphId() {
+        return getProperty(GRAPH_ID);
+    }
+
+    public void setGraphId(final String graphId) {
+        setProperty(GRAPH_ID, graphId);
+    }
 
     public String getMetricsListenerClass() {
         return getProperty(METRICS_LISTENER_CLASS);

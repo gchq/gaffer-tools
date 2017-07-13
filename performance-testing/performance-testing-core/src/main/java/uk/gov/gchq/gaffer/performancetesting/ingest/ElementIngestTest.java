@@ -154,6 +154,7 @@ public class ElementIngestTest {
         final ElementIngestTestProperties testProperties = new ElementIngestTestProperties();
         testProperties.loadTestProperties(args[2]);
         final Graph graph = new Graph.Builder()
+                .graphId(testProperties.getGraphId())
                 .storeProperties(storeProperties)
                 .addSchema(schema)
                 .build();
