@@ -130,6 +130,9 @@
                                 <gaffer.rest-api.basePath>
                                     ${standalone-rest-path}/v1
                                 </gaffer.rest-api.basePath>
+                                <gaffer.graph.id>
+                                    roadTraffic
+                                </gaffer.graph.id>
                                 <gaffer.schemas>
                                     ${project.basedir}/example/road-traffic/schema
                                 </gaffer.schemas>

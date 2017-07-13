@@ -49,6 +49,7 @@ public class GrafferQlTest {
 
         // Setup graph
         final Graph graph = new Graph.Builder()
+                .graphId("graph1")
                 .storeProperties(StreamUtil.openStream(DemoData.class, "mockaccumulo.properties"))
                 .addSchemas(StreamUtil.openStreams(ElementGroup.class, "schema"))
                 .build();

@@ -67,12 +67,12 @@ public class QueryBuilderST {
                     "    \"source\": \"M5:10\",\n" +
                     "    \"destination\": \"M5:9\",\n" +
                     "    \"directed\": true,\n" +
-                    "    \"class\": \"uk.gov.gchq.gaffer.data.element.Edge\"\n",
+                    "    \"matchedVertex\": \"SOURCE\"",
             "\"group\": \"RoadUse\",\n" +
                     "    \"source\": \"M5:11\",\n" +
                     "    \"destination\": \"M5:10\",\n" +
                     "    \"directed\": true,\n" +
-                    "    \"class\": \"uk.gov.gchq.gaffer.data.element.Edge\"\n"
+                    "    \"matchedVertex\": \"DESTINATION\""
     };
 
     private WebDriver driver;

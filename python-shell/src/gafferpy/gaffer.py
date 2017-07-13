@@ -65,15 +65,21 @@ class ResultConverter:
                                        result_item['directed'])
                         if 'properties' in result_item:
                             element.properties = result_item['properties']
+                        if 'matchedVertex' in result_item:
+                            element.matched_vertex = result_item[
+                                'matchedVertex']
                         objs.append(element)
                     elif result_item[
                         'class'] == 'uk.gov.gchq.gaffer.operation.data.EntitySeed':
                         objs.append(EntitySeed(result_item['vertex']))
                     elif result_item[
                         'class'] == 'uk.gov.gchq.gaffer.operation.data.EdgeSeed':
-                        objs.append(EdgeSeed(result_item['source'],
-                                             result_item['destination'],
-                                             result_item['directed']))
+                        seed = EdgeSeed(result_item['source'],
+                                        result_item['destination'],
+                                        result_item['directed'])
+                        if 'matchedVertex' in result_item:
+                            seed.matched_vertex = result_item['matchedVertex']
+                        objs.append(seed)
                     else:
                         raise TypeError(
                             'Element type is not recognised: ' + str(
@@ -116,7 +122,7 @@ class EntitySeed(ElementSeed):
 
 
 class EdgeSeed(ElementSeed):
-    def __init__(self, source, destination, directed):
+    def __init__(self, source, destination, directed, matched_vertex=None):
         super().__init__()
         self.source = source
         self.destination = destination
@@ -126,21 +132,33 @@ class EdgeSeed(ElementSeed):
             self.directed = DirectedType.DIRECTED
         else:
             self.directed = DirectedType.UNDIRECTED
+        self.matched_vertex = matched_vertex
 
     def to_json(self):
-        return {
+        seed = {
             'class': 'uk.gov.gchq.gaffer.operation.data.EdgeSeed',
             'source': self.source,
             'destination': self.destination,
-            'directed': self.directed}
+            'directed': self.directed
+        }
+
+        if self.matched_vertex is not None:
+            seed['matchedVertex'] = self.matched_vertex
+
+        return seed
 
     def to_json_wrapped(self):
+        seed = {
+            'source': self.source,
+            'destination': self.destination,
+            'directed': self.directed
+        }
+
+        if self.matched_vertex is not None:
+            seed['matchedVertex'] = self.matched_vertex
+
         return {
-            'uk.gov.gchq.gaffer.operation.data.EdgeSeed': {
-                'source': self.source,
-                'destination': self.destination,
-                'directed': self.directed
-            }
+            'uk.gov.gchq.gaffer.operation.data.EdgeSeed': seed
         }
 
 
@@ -230,7 +248,8 @@ class Entity(Element):
 
 
 class Edge(Element):
-    def __init__(self, group, source, destination, directed, properties=None):
+    def __init__(self, group, source, destination, directed, properties=None,
+                 matched_vertex=None):
         super().__init__('uk.gov.gchq.gaffer.data.element.Edge', group,
                          properties)
         # Validate the arguments
@@ -239,12 +258,16 @@ class Edge(Element):
         self.source = source
         self.destination = destination
         self.directed = directed
+        self.matched_vertex = matched_vertex
 
     def to_json(self):
         edge = super().to_json()
         edge['source'] = self.source
         edge['destination'] = self.destination
         edge['directed'] = self.directed
+        if self.matched_vertex is not None:
+            edge['matchedVertex'] = self.matched_vertex
+
         return edge
 
 
