@@ -31,6 +31,7 @@ An example can be seen in graphql.gaffer.GrafferQlTest.
 Create a Gaffer graph in the normal way
 
     Graph graph = new Graph.Builder()
+        .graphId("aUniqueIdForYourGraph")
         .storeProperties(...stuff...)
         .addSchemas(...stuff...)
         .build();

@@ -39,7 +39,8 @@ class GafferConnectorTest(unittest.TestCase):
         )
 
         self.assertEqual(
-            [g.Edge("JunctionLocatedAt", "M5:10", "390466,225615", True, {})],
+            [g.Edge("JunctionLocatedAt", "M5:10", "390466,225615", True, {},
+                    "SOURCE")],
             elements)
 
 

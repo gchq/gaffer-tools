@@ -278,8 +278,8 @@ angular.module('app').controller('AppController',
         try {
              JSON.parse(vertex);
         } catch(err) {
-             // Try adding quotes
-             vertex = "\"" + vertex + "\"";
+             // Try using stringify
+             vertex = JSON.stringify(vertex);
         }
 
         return vertex;

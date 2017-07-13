@@ -19,7 +19,7 @@
     <parent>
         <groupId>uk.gov.gchq.gaffer</groupId>
         <artifactId>gaffer-tools</artifactId>
-        <version>0.7.6-SNAPSHOT</version>
+        <version>0.7.7-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>ui</artifactId>
@@ -130,6 +130,9 @@
                                 <gaffer.rest-api.basePath>
                                     ${standalone-rest-path}/v1
                                 </gaffer.rest-api.basePath>
+                                <gaffer.graph.id>
+                                    roadTraffic
+                                </gaffer.graph.id>
                                 <gaffer.schemas>
                                     ${project.basedir}/example/road-traffic/schema
                                 </gaffer.schemas>
