@@ -35,9 +35,11 @@ class GafferTest(unittest.TestCase):
                 'class': 'uk.gov.gchq.gaffer.operation.data.EdgeSeed',
                 'source': 'src',
                 'destination': 'dest',
-                'directed': 'DIRECTED'
+                'directed': 'DIRECTED',
+                'matchedVertex': 'SOURCE'
             },
-            g.EdgeSeed("src", "dest", g.DirectedType.DIRECTED).to_json()
+            g.EdgeSeed("src", "dest", g.DirectedType.DIRECTED,
+                       "SOURCE").to_json()
         )
 
         self.assertEqual(
@@ -45,9 +47,11 @@ class GafferTest(unittest.TestCase):
                 'class': 'uk.gov.gchq.gaffer.operation.data.EdgeSeed',
                 'source': 'src',
                 'destination': 'dest',
-                'directed': 'UNDIRECTED'
+                'directed': 'UNDIRECTED',
+                'matchedVertex': 'DESTINATION'
             },
-            g.EdgeSeed("src", "dest", g.DirectedType.UNDIRECTED).to_json()
+            g.EdgeSeed("src", "dest", g.DirectedType.UNDIRECTED,
+                       "DESTINATION").to_json()
         )
 
         self.assertEqual(
@@ -193,10 +197,12 @@ class GafferTest(unittest.TestCase):
                 'group': 'group',
                 'source': 'source',
                 'destination': 'destination',
-                'directed': True
-
+                'directed': True,
+                'matchedVertex': 'SOURCE',
+                'properties': {}
             },
-            g.Edge("group", "source", "destination", True).to_json()
+            g.Edge("group", "source", "destination", True, {},
+                   "SOURCE").to_json()
         )
 
         self.assertEqual(
@@ -205,10 +211,11 @@ class GafferTest(unittest.TestCase):
                 'group': 'group',
                 'source': 'source',
                 'destination': 'destination',
-                'directed': False
-
+                'directed': False,
+                'matchedVertex': 'DESTINATION'
             },
-            g.Edge("group", "source", "destination", False).to_json()
+            g.Edge("group", "source", "destination", False, None,
+                   "DESTINATION").to_json()
         )
 
         self.assertEqual(
@@ -302,7 +309,7 @@ class GafferTest(unittest.TestCase):
                 'transientProperties': {'test_prop': 'test_prop_class'},
                 'preAggregationFilterFunctions':
                     [{'predicate': {'class':
-                                    'test_filter_class',
+                                        'test_filter_class',
                                     'value': {
                                         'test_value_class': 1}},
                       'selection': ['test_selection']}]
@@ -323,13 +330,13 @@ class GafferTest(unittest.TestCase):
                 'transientProperties': {'test_prop': 'test_prop_class'},
                 'preAggregationFilterFunctions':
                     [{'predicate': {'class':
-                                    'test_filter_class',
+                                        'test_filter_class',
                                     'value': {
                                         'test_value_class': 1}},
                       'selection': ['test_selection']}],
                 'postAggregationFilterFunctions':
                     [{'predicate': {'class':
-                                    'test_filter_class_1',
+                                        'test_filter_class_1',
                                     'value': {
                                         'test_value_class_1': 1}},
                       'selection': ['test_selection_1']}]
@@ -355,13 +362,13 @@ class GafferTest(unittest.TestCase):
                 'transientProperties': {'test_prop': 'test_prop_class'},
                 'preAggregationFilterFunctions':
                     [{'predicate': {'class':
-                                    'test_filter_class',
+                                        'test_filter_class',
                                     'value': {
                                         'test_value_class': 1}},
                       'selection': ['test_selection']}],
                 'postAggregationFilterFunctions':
                     [{'predicate': {'class':
-                                    'test_filter_class_1',
+                                        'test_filter_class_1',
                                     'value': {
                                         'test_value_class_1': 1}},
                       'selection': ['test_selection_1']}],
@@ -399,13 +406,13 @@ class GafferTest(unittest.TestCase):
                 'transientProperties': {'test_prop': 'test_prop_class'},
                 'preAggregationFilterFunctions':
                     [{'predicate': {'class':
-                                    'test_filter_class',
+                                        'test_filter_class',
                                     'value': {
                                         'test_value_class': 1}},
                       'selection': ['test_selection']}],
                 'postAggregationFilterFunctions':
                     [{'predicate': {'class':
-                                    'test_filter_class_1',
+                                        'test_filter_class_1',
                                     'value': {
                                         'test_value_class_1': 1}},
                       'selection': ['test_selection_1']}],
@@ -416,7 +423,7 @@ class GafferTest(unittest.TestCase):
                                             ['src', 'dest',
                                              'count']}],
                 'postTransformFilterFunctions': [{'function': {'class':
-                                                               'test_class_1'},
+                                                                   'test_class_1'},
                                                   'projection':
                                                       ['description'],
                                                   'selection':
@@ -506,7 +513,7 @@ class GafferTest(unittest.TestCase):
                 'projection': 'projection'
             },
             g.TransformFunction("test_class", "selection", "projection")
-            .to_json()
+                .to_json()
         )
 
         self.assertEqual(
@@ -690,7 +697,7 @@ class GafferTest(unittest.TestCase):
             },
             g.GenerateElements("generate_class_elements",
                                view=g.View(), options={"option1": "option"})
-            .to_json()
+                .to_json()
         )
 
     def test_generate_objects(self):
@@ -722,7 +729,8 @@ class GafferTest(unittest.TestCase):
                            'group': 'group',
                            'vertex': 'vertex'}]
             },
-            g.GenerateObjects("test_class_name", elements=[g.Entity("group", "vertex")]).to_json()
+            g.GenerateObjects("test_class_name",
+                              elements=[g.Entity("group", "vertex")]).to_json()
         )
 
         self.assertEqual(
