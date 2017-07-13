@@ -136,14 +136,15 @@ public class AccumuloElementIngestTest extends Configured {
         LOGGER.info("Using schema of {}", schema);
         final StoreProperties storeProperties = StoreProperties.loadStoreProperties(args[1]);
         final AccumuloStore accumuloStore = new AccumuloStore();
-        accumuloStore.initialise(accumuloStore.getProperties().getTable(), schema, storeProperties);
-        LOGGER.info("Initialised Accumulo store (instance name is {}, table name is {})",
+        accumuloStore.initialise(storeProperties.getId(), schema, storeProperties);
+        LOGGER.info("Initialised Accumulo store (instance name is {}, graph id is {})",
                 accumuloStore.getProperties().getInstance(),
                 accumuloStore.getProperties().getTable());
         final AccumuloElementIngestTestProperties testProperties = new AccumuloElementIngestTestProperties();
         testProperties.loadTestProperties(args[2]);
         LOGGER.info("Using test properties of {}", testProperties);
         final Graph graph = new Graph.Builder()
+                .graphId(storeProperties.getId())
                 .store(accumuloStore)
                 .addSchema(schema)
                 .build();
