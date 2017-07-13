@@ -23,6 +23,8 @@ public class AccumuloElementIngestTestProperties extends ElementIngestTestProper
     private static final String TEMP_DIRECTORY = "gaffer.accumulostore.performancetesting.ingest.tempDirectory";
     private static final String NUM_ELEMENTS_FOR_SPLIT_ESTIMATION =
             "gaffer.accumulostore.performancetesting.ingest.numElementsForSplitEstimation";
+    private static final String NUM_SPLIT_POINTS_PER_TABLET_SERVER =
+            "gaffer.accumulostore.performancetesting.ingest.numSplitPointsPerTabletServer";
 
     public AccumuloElementIngestTestProperties() {
         super();
@@ -42,5 +44,13 @@ public class AccumuloElementIngestTestProperties extends ElementIngestTestProper
 
     public void setNumElementsForSplitEstimation(final String numElementsForSplitEstimation) {
         setProperty(NUM_ELEMENTS_FOR_SPLIT_ESTIMATION, numElementsForSplitEstimation);
+    }
+
+    public String getNumSplitPointsPerTabletServer() {
+        return getProperty(NUM_SPLIT_POINTS_PER_TABLET_SERVER, "1");
+    }
+
+    public void setNumSplitPointsPerTabletServer(final String numSplitPointsPerTabletServer) {
+        setProperty(NUM_SPLIT_POINTS_PER_TABLET_SERVER, numSplitPointsPerTabletServer);
     }
 }

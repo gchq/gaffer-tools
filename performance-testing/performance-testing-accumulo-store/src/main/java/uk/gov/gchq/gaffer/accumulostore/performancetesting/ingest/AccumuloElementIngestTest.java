@@ -45,11 +45,14 @@ public class AccumuloElementIngestTest extends Configured {
     private static final Logger LOGGER = LoggerFactory.getLogger(AccumuloElementIngestTest.class);
 
     private Graph graph;
+    private AccumuloStore accumuloStore;
     private AccumuloElementIngestTestProperties testProperties;
 
     public AccumuloElementIngestTest(final Graph graph,
+                                     final AccumuloStore accumuloStore,
                                      final AccumuloElementIngestTestProperties testProperties) {
         this.graph = graph;
+        this.accumuloStore = accumuloStore;
         this.testProperties = testProperties;
     }
 
@@ -63,7 +66,7 @@ public class AccumuloElementIngestTest extends Configured {
                 Long.parseLong(testProperties.getNumElementsForSplitEstimation()), elementSupplier);
 
         // Serialiser to go from elements to a byte array and back
-        final ElementSerialisation serialisation = new ElementSerialisation(graph.getSchema());
+        final ElementSerialisation serialisation = new ElementSerialisation(accumuloStore.getSchema());
 
         // Write random data to a sequence file
         LOGGER.info("Writing random elements to a temporary file");
@@ -85,6 +88,15 @@ public class AccumuloElementIngestTest extends Configured {
             throw new OperationException("IOException creating SequenceFile of random data", e);
         }
 
+        // Find out number of tablet servers so that we can create the correct number of split points
+        final int numTabletServers;
+        try {
+            numTabletServers = accumuloStore.getConnection().instanceOperations().getTabletServers().size();
+        } catch (final StoreException e) {
+            throw new OperationException("StoreException obtaining the number of tablet servers");
+        }
+        final int numSplitPoints = numTabletServers * Integer.parseInt(testProperties.getNumSplitPointsPerTabletServer());
+
         // Sample this data to estimate split points.
         // NB: Use a sample proportion of 1 to indicate that all the data should be sampled as we only wrote out
         // enough data to create a good size sample.
@@ -92,6 +104,7 @@ public class AccumuloElementIngestTest extends Configured {
         final String splitsOutputPath = testProperties.getTempDirectory() + "/splits_output/";
         LOGGER.info("Running SampleDataForSplitPoints job");
         final SampleDataForSplitPoints sample = new SampleDataForSplitPoints.Builder()
+                .numSplits(numSplitPoints)
                 .addInputPath(tmpData)
                 .splitsFilePath(splitsFile)
                 .outputPath(splitsOutputPath)
@@ -100,14 +113,14 @@ public class AccumuloElementIngestTest extends Configured {
                 .proportionToSample(1.0F)
                 .mapperGenerator(BytesWritableMapperGenerator.class)
                 .build();
-        graph.execute(sample, new User());
+        accumuloStore.execute(sample, new User());
 
         // Add the splits point to the table
         LOGGER.info("Adding split points to table");
         final SplitStore splitTable = new SplitStore.Builder()
                 .inputPath(splitsFile)
                 .build();
-        graph.execute(splitTable, new User());
+        accumuloStore.execute(splitTable, new User());
 
         // Run test
         LOGGER.info("Running ElementIngestTest");
@@ -134,7 +147,7 @@ public class AccumuloElementIngestTest extends Configured {
                 .store(accumuloStore)
                 .addSchema(schema)
                 .build();
-        final AccumuloElementIngestTest test = new AccumuloElementIngestTest(graph, testProperties);
+        final AccumuloElementIngestTest test = new AccumuloElementIngestTest(graph, accumuloStore, testProperties);
         Configuration conf = new Configuration();
         test.setConf(conf);
         LOGGER.info("Running test");
