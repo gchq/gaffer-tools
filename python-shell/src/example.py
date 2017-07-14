@@ -473,7 +473,7 @@ def add_named_operation(gc):
                 }]
             },
             name='2-hop-with-limit',
-            description='2 hop query with settable limit',
+            description='2 hop query with limit',
             overwrite=True,
             read_access_roles=["read-user"],
             write_access_roles=["write-user"],
