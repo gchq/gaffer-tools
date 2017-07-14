@@ -422,7 +422,38 @@ class EdgeVertices:
     NONE = 'NONE'
     SOURCE = 'SOURCE'
     DESTINATION = 'DESTINATION'
-    EITHER = 'EITHER'
+    BOTH = 'BOTH'
+
+
+class UseMatchedVertex:
+    IGNORE = 'IGNORE'
+    EQUAL = 'EQUAL'
+    OPPOSITE = 'OPPOSITE'
+
+
+class NamedOperationParameter:
+    def __init__(self,
+                 name,
+                 value_class,
+                 description=None,
+                 default_value=None,
+                 required=False):
+        self.name = name
+        self.value_class = value_class
+        self.description = description
+        self.default_value = default_value
+        self.required = required
+
+    def get_detail(self):
+        detail = {
+            "valueClass": self.value_class,
+            "required": self.required
+        }
+        if self.description is not None:
+            detail['description'] = self.description
+        if self.default_value is not None:
+            detail['defaultValue'] = self.default_value
+        return detail
 
 
 class OperationChain(ToJson):
@@ -765,6 +796,7 @@ class NamedOperation(GetOperation):
                  name,
                  seeds=None,
                  view=None,
+                 parameters=None,
                  options=None):
         super().__init__(
             class_name='uk.gov.gchq.gaffer.named.operation.NamedOperation',
@@ -775,10 +807,13 @@ class NamedOperation(GetOperation):
             seed_matching_type=SeedMatchingType.RELATED,
             options=options)
         self.name = name
+        self.parameters = parameters;
 
     def to_json(self):
         operation = super().to_json()
         operation['operationName'] = self.name
+        if self.parameters is not None:
+            operation['parameters'] = self.parameters
         return operation
 
 
@@ -790,6 +825,7 @@ class AddNamedOperation(Operation):
                  read_access_roles=None,
                  write_access_roles=None,
                  overwrite=False,
+                 parameters=None,
                  options=None):
         super().__init__(
             class_name='uk.gov.gchq.gaffer.named.operation.AddNamedOperation',
@@ -800,6 +836,7 @@ class AddNamedOperation(Operation):
         self.read_access_roles = read_access_roles
         self.write_access_roles = write_access_roles
         self.overwrite = overwrite
+        self.parameters = parameters
 
     def to_json(self):
         operation = super().to_json()
@@ -812,6 +849,14 @@ class AddNamedOperation(Operation):
             operation['readAccessRoles'] = self.read_access_roles
         if self.write_access_roles is not None:
             operation['writeAccessRoles'] = self.write_access_roles
+        if self.parameters is not None:
+            operation['parameters'] = {}
+            for param in self.parameters:
+                if not isinstance(param, NamedOperationParameter):
+                    raise TypeError(
+                        'All parameters must be a NamedOperationParameter')
+                operation['parameters'][param.name] = param.get_detail()
+
         return operation
 
 
@@ -893,16 +938,20 @@ class ToEntitySeeds(Operation):
 
 
 class ToVertices(Operation):
-    def __init__(self, edge_vertices):
+    def __init__(self, edge_vertices=None, use_matched_vertex=None):
         super().__init__(
             class_name='uk.gov.gchq.gaffer.operation.impl.output.ToVertices')
         self.edge_vertices = edge_vertices
+        self.use_matched_vertex = use_matched_vertex;
 
     def to_json(self):
         operation = super().to_json()
 
         if self.edge_vertices is not None:
             operation['edgeVertices'] = self.edge_vertices
+
+        if self.use_matched_vertex is not None:
+            operation['useMatchedVertex'] = self.use_matched_vertex
 
         return operation
 

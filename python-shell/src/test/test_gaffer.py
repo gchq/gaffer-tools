@@ -1278,10 +1278,12 @@ class GafferTest(unittest.TestCase):
                                     '.operation.data.EntitySeed',
                            'vertex': 'test_vertex'}],
                 'view': {},
+                'parameters': {'param1': 'value1'},
                 'options': {'option1': 'option'}
             },
             g.NamedOperation("test_op_name", [g.EntitySeed("test_vertex")],
-                             g.View(), {"option1": "option"}).to_json()
+                             g.View(), {'param1': 'value1'},
+                             {"option1": "option"}).to_json()
         )
 
     def test_add_named_operation(self):
@@ -1360,11 +1362,25 @@ class GafferTest(unittest.TestCase):
                 'description': 'test_description',
                 'readAccessRoles': 'test_read_access_roles',
                 'writeAccessRoles': 'test_write_access_roles',
+                'parameters': {
+                    'param1': {'defaultValue': 1,
+                               'description': 'param description',
+                               'required': False,
+                               'valueClass': 'java.lang.Long'
+                               }
+                },
                 'options': {'option1': 'option'}
             },
             g.AddNamedOperation("test_operation_chain", "test_name",
                                 "test_description", "test_read_access_roles",
                                 "test_write_access_roles", False,
+                                [g.NamedOperationParameter(
+                                    name="param1",
+                                    description='param description',
+                                    default_value=1,
+                                    value_class="java.lang.Long",
+                                    required=False
+                                )],
                                 {"option1": "option"}).to_json()
         )
 
@@ -1477,9 +1493,11 @@ class GafferTest(unittest.TestCase):
         self.assertEqual(
             {
                 'class': 'uk.gov.gchq.gaffer.operation.impl.output.ToVertices',
-                'edgeVertices': 'test_edge_vertices'
+                'edgeVertices': 'SOURCE',
+                'useMatchedVertex': 'OPPOSITE',
             },
-            g.ToVertices("test_edge_vertices").to_json()
+            g.ToVertices(g.EdgeVertices.SOURCE,
+                         g.UseMatchedVertex.OPPOSITE).to_json()
         )
 
     def test_to_csv(self):
