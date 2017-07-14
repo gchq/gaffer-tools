@@ -28,6 +28,7 @@ Once this is running you can run the python example by using the command (all co
 
 ```
 python3 src/example.py
+python3 src/example_accumulo.py
 ```
 
 Alternatively if you have you own REST API running that is authenticated with
@@ -36,6 +37,7 @@ will need to export your PKI certificate into a .pem file:
 
 ```
 python3 src/examplePki.py
+python3 src/example_accumulo_pki.py
 ```
 
 ## Installation
