@@ -59,6 +59,7 @@ def run_with_connector(gc):
     sort_elements(gc)
     max_element(gc)
     min_element(gc)
+    to_vertices_to_entity_seeds(gc)
 
     complex_op_chain(gc)
 
@@ -450,9 +451,9 @@ def get_all_job_details(gc):
 
 def delete_named_operation(gc):
     gc.execute_operation(
-        g.DeleteNamedOperation('CountAllElementGroups')
+        g.DeleteNamedOperation('2-hop-with-limit')
     )
-    print('Deleted named operation: CountAllElementGroups')
+    print('Deleted named operation: 2-hop-with-limit')
     print()
 
 
@@ -460,18 +461,35 @@ def add_named_operation(gc):
     gc.execute_operation(
         g.AddNamedOperation(
             operation_chain={
-                'operations': [{
-                    'class': 'uk.gov.gchq.gaffer.operation.impl.get.GetAllElements',
+                "operations": [{
+                    "class": "uk.gov.gchq.gaffer.operation.impl.get.GetAdjacentIds",
+                    "includeIncomingOutGoing": "OUTGOING"
                 }, {
-                    'class': 'uk.gov.gchq.gaffer.operation.impl.CountGroups'
+                    "class": "uk.gov.gchq.gaffer.operation.impl.get.GetAdjacentIds",
+                    "includeIncomingOutGoing": "OUTGOING"
+                }, {
+                    "class": "uk.gov.gchq.gaffer.operation.impl.Limit",
+                    "resultLimit": "${param1}"
                 }]
             },
-            name='CountAllElementGroups',
-            description='Counts all element groups',
-            overwrite=True
+            name='2-hop-with-limit',
+            description='2 hop query with limit',
+            overwrite=True,
+            read_access_roles=["read-user"],
+            write_access_roles=["write-user"],
+            parameters=[
+                g.NamedOperationParameter(
+                    name="param1",
+                    description="Limit param",
+                    default_value=1,
+                    value_class="java.lang.Long",
+                    required=False
+                )
+            ]
         )
     )
-    print('Added named operation: CountAllElementGroups')
+
+    print('Added named operation: 2-hop-with-limit')
     print()
 
 
@@ -486,7 +504,15 @@ def get_all_named_operations(gc):
 
 def named_operation(gc):
     result = gc.execute_operation(
-        g.NamedOperation('CountAllElementGroups')
+        g.NamedOperation(
+            name='2-hop-with-limit',
+            parameters={
+                'param1': 2
+            },
+            seeds=[
+                g.EntitySeed('M5')
+            ]
+        )
     )
     print('Execute named operation')
     print(result)
@@ -568,6 +594,42 @@ def min_element(gc):
         )
     ])
     print('Min element')
+    print(elements)
+    print()
+
+
+def to_vertices_to_entity_seeds(gc):
+    # Get sorted Elements
+    elements = gc.execute_operations([
+        g.GetElements(
+            seeds=[
+                g.EntitySeed(
+                    vertex='South West'
+                )
+            ],
+            view=g.View(
+                edges=[
+                    g.ElementDefinition('RegionContainsLocation')
+                ]
+            ),
+            in_out_type=g.InOutType.OUT
+        ),
+        g.ToVertices(
+            edge_vertices=g.EdgeVertices.DESTINATION,
+            use_matched_vertex=g.UseMatchedVertex.OPPOSITE
+        ),
+        g.ToEntitySeeds(),
+        g.GetElements(
+            view=g.View(
+                edges=[
+                    g.ElementDefinition('LocationContainsRoad')
+                ]
+            ),
+            in_out_type=g.InOutType.OUT
+        ),
+        g.Limit(5)
+    ])
+    print('ToVertices then ToEntitySeeds')
     print(elements)
     print()
 
