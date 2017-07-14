@@ -17,6 +17,10 @@ package uk.gov.gchq.gaffer.performancetesting;
 
 import uk.gov.gchq.gaffer.randomelementgeneration.Constants;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -116,5 +120,17 @@ public class TestProperties extends Properties {
             values.add(Double.parseDouble(item));
         }
         return values.stream().mapToDouble(Double::doubleValue).toArray();
+    }
+
+    public void loadTestProperties(final String pathStr) {
+        loadTestProperties(Paths.get(pathStr));
+    }
+
+    public void loadTestProperties(final Path testPropertiesPath) {
+        try {
+            super.load(Files.newInputStream(testPropertiesPath));
+        } catch (final IOException e) {
+            throw new RuntimeException("Failed to load test properties file: " + e.getMessage(), e);
+        }
     }
 }

@@ -26,8 +26,11 @@ import uk.gov.gchq.gaffer.operation.impl.get.GetElements;
 import uk.gov.gchq.gaffer.performancetesting.MetricsListener;
 import uk.gov.gchq.gaffer.randomelementgeneration.supplier.EdgeSeedSupplier;
 import uk.gov.gchq.gaffer.randomelementgeneration.supplier.EntitySeedSupplier;
+import uk.gov.gchq.gaffer.store.StoreProperties;
+import uk.gov.gchq.gaffer.store.schema.Schema;
 import uk.gov.gchq.gaffer.user.User;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
@@ -152,5 +155,23 @@ public class QueryTest {
                 throw new RuntimeException("Unknown ElementIdSupplier class of " + elementIdSupplierClass);
             }
         }
+    }
+
+    public static void main(final String[] args) {
+        if (args.length != 3) {
+            throw new RuntimeException("Usage: <schema_directory> <store_properties_file> <test_properties_file>");
+        }
+        final Schema schema = Schema.fromJson(new File(args[0]).toPath());
+        final StoreProperties storeProperties = StoreProperties.loadStoreProperties(args[1]);
+        final QueryTestProperties testProperties = new QueryTestProperties();
+        testProperties.loadTestProperties(args[2]);
+        final Graph graph = new Graph.Builder()
+                .graphId(testProperties.getGraphId())
+                .storeProperties(storeProperties)
+                .addSchema(schema)
+                .build();
+        final QueryTest test = new QueryTest(graph, testProperties);
+        final double result = test.run();
+        LOGGER.info("Test result: seeds were queried for at a rate of " + result + " per second");
     }
 }

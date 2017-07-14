@@ -18,11 +18,6 @@ package uk.gov.gchq.gaffer.performancetesting.ingest;
 import uk.gov.gchq.gaffer.performancetesting.TestProperties;
 import uk.gov.gchq.gaffer.randomelementgeneration.supplier.RmatElementSupplier;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-
 /**
  * These properties are used to specify a {@link uk.gov.gchq.gaffer.performancetesting.ingest.IngestMetrics}.
  */
@@ -52,17 +47,5 @@ public class ElementIngestTestProperties extends TestProperties {
             throw new IllegalArgumentException("The number of edges must be greater than 0.");
         }
         setProperty(NUMBER_OF_ELEMENTS, "" + numEdges);
-    }
-
-    public void loadTestProperties(final String pathStr) {
-        loadTestProperties(Paths.get(pathStr));
-    }
-
-    public void loadTestProperties(final Path testPropertiesPath) {
-        try {
-            super.load(Files.newInputStream(testPropertiesPath));
-        } catch (final IOException e) {
-            throw new RuntimeException("Failed to load test properties file: " + e.getMessage(), e);
-        }
     }
 }
