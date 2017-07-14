@@ -19,7 +19,7 @@ import unittest
 import example_accumulo
 
 
-class ExampleTest(unittest.TestCase):
+class ExampleAccumuloTest(unittest.TestCase):
     def test_example_accumulo_does_not_error(self):
         example_accumulo.run('http://localhost:8080/rest/v1')
 
