@@ -20,15 +20,16 @@ import uk.gov.gchq.gaffer.commonutil.iterable.WrappedCloseableIterable;
 import uk.gov.gchq.gaffer.data.element.Element;
 import uk.gov.gchq.gaffer.data.generator.ElementGenerator;
 import uk.gov.gchq.gaffer.exception.SerialisationException;
+import uk.gov.gchq.gaffer.serialisation.ToBytesSerialiser;
 
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 public class BytesWritableElementGenerator implements ElementGenerator<BytesWritable> {
 
-    private ElementSerialisation elementSerialisation;
+    private ToBytesSerialiser<Element> elementSerialisation;
 
-    public BytesWritableElementGenerator(final ElementSerialisation elementSerialisation) {
+    public BytesWritableElementGenerator(final ToBytesSerialiser<Element> elementSerialisation) {
         this.elementSerialisation = elementSerialisation;
     }
 

@@ -26,6 +26,7 @@ import uk.gov.gchq.gaffer.data.generator.ElementGenerator;
 import uk.gov.gchq.gaffer.hdfs.operation.handler.job.factory.SampleDataForSplitPointsJobFactory;
 import uk.gov.gchq.gaffer.hdfs.operation.mapper.generator.MapperGenerator;
 import uk.gov.gchq.gaffer.store.schema.Schema;
+import uk.gov.gchq.gaffer.store.serialiser.lengthvalue.ElementSerialiser;
 
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
@@ -52,7 +53,7 @@ public class BytesWritableMapperGenerator implements MapperGenerator<NullWritabl
         } catch (final UnsupportedEncodingException e) {
             throw new SchemaException("Unable to deserialise Store Schema from JSON", e);
         }
-        this.elementGenerator = new BytesWritableElementGenerator(new ElementSerialisation(schema));
+        this.elementGenerator = new BytesWritableElementGenerator(new ElementSerialiser(schema));
     }
 
     @Override

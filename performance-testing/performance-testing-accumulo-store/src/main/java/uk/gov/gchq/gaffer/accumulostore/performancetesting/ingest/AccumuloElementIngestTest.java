@@ -31,9 +31,11 @@ import uk.gov.gchq.gaffer.operation.OperationException;
 import uk.gov.gchq.gaffer.operation.impl.SplitStore;
 import uk.gov.gchq.gaffer.performancetesting.ingest.ElementIngestTest;
 import uk.gov.gchq.gaffer.randomelementgeneration.generator.ElementGeneratorFromSupplier;
+import uk.gov.gchq.gaffer.serialisation.ToBytesSerialiser;
 import uk.gov.gchq.gaffer.store.StoreException;
 import uk.gov.gchq.gaffer.store.StoreProperties;
 import uk.gov.gchq.gaffer.store.schema.Schema;
+import uk.gov.gchq.gaffer.store.serialiser.lengthvalue.ElementSerialiser;
 import uk.gov.gchq.gaffer.user.User;
 
 import java.io.File;
@@ -66,7 +68,7 @@ public class AccumuloElementIngestTest extends Configured {
                 Long.parseLong(testProperties.getNumElementsForSplitEstimation()), elementSupplier);
 
         // Serialiser to go from elements to a byte array and back
-        final ElementSerialisation serialisation = new ElementSerialisation(accumuloStore.getSchema());
+        final ToBytesSerialiser<Element> serialisation = new ElementSerialiser(accumuloStore.getSchema());
 
         // Write random data to a sequence file
         LOGGER.info("Writing random elements to a temporary file");
