@@ -16,14 +16,53 @@
 
 angular.module('app').factory('table', [function(){
     var table = {};
-    table.data = {entities: {}, edges: {}};
-
+    table.data = {entities: {}, edges: {}, entitySeeds: [], other: []};
+    table.selectedTab = 0;
+    table.selectedSeeds = [];
     table.clear = function() {
-       table.data = {entities: {}, edges: {}};
+       table.data = {entities: {}, edges: {}, entitySeeds: [], other: []};
+    }
+
+//    table.onSeedSelectToggle = function(vertex) {
+//        var index = table.selectedSeeds.indexOf(vertex);
+//        if(index > -1) {
+//            table.selectedSeeds.splice(index, 1);
+//        } else {
+//            table.selectedSeeds.push(vertex);
+//        }
+//    }
+//
+//    table.onSeedSelect = function(vertex) {
+//        if(table.selectedSeeds.indexOf(vertex) == -1
+//        && table.data.entitySeeds.indexOf(vertex) > -1) {
+//            table.selectedSeeds.push(vertex);
+//        }
+//    }
+//
+//    table.onSeedDeselect = function(vertex) {
+//        var index = table.selectedSeeds.indexOf(vertex);
+//        if(index > -1) {
+//            table.selectedSeeds.splice(index, 1);
+//        }
+//    }
+
+    var parseVertex = function(vertex) {
+        if(typeof vertex === 'string' || vertex instanceof String) {
+            vertex = "\"" + vertex + "\"";
+        }
+
+        try {
+             JSON.parse(vertex);
+        } catch(err) {
+             // Try using stringify
+             vertex = JSON.stringify(vertex);
+        }
+
+        return vertex;
     }
 
     table.update = function(results) {
-            table.data = {entities: {}, edges: {}};
+            table.clear();
             for (var i in results.entities) {
                 var entity = results.entities[i];
                 if(!table.data.entities[entity.group]) {
@@ -39,7 +78,18 @@ angular.module('app').factory('table', [function(){
                 }
                 table.data.edges[edge.group].push(edge);
             }
+
+            for (var i in results.entitySeeds) {
+                table.data.entitySeeds.push(
+                    parseVertex(results.entitySeeds[i])
+                );
+            }
+
+            for (var i in results.other) {
+                table.data.other.push(results.other[i]);
+            }
         }
+
 
     return table;
 } ]);

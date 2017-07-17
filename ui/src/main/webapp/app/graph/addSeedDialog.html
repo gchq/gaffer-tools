@@ -16,10 +16,14 @@
                             id="vertexType">
                     </select>
 
-                    <label for="vertex">Value:</label>
-                    <input type="text" class="form-control"
-                           ng-model="addSeedVertex"
-                           id="vertex">
+                    <div ng-repeat="type in settings.getType(rawData.schema.types[addSeedVertexType].class).types">
+                        <label for="addSeedVertex{{type.key}}">{{type.label}}:</label>
+                        <input id="addSeedVertex{{type.key}}"
+                               type="{{type.type}}"
+                               step="{{type.step}}"
+                               class="form-control"
+                               ng-model="addSeedVertexParts[type.key]"/>
+                    </div>
                 </div>
             </div>
         </md-dialog-content>

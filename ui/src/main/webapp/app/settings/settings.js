@@ -15,8 +15,197 @@
  */
 
 angular.module('app').factory('settings', [function(){
+  var defaultShortValue = function(value) {
+      return JSON.stringify(value);
+  };
+
+  var types = {
+       "unknownType": {
+          types: [
+           {
+              label: "Value",
+              type: "text",
+              class: "java.lang.String"
+           }
+          ],
+          getShortValue: defaultShortValue
+       },
+       "java.lang.Long": {
+          types: [
+           {
+              label: "Value",
+              type: "number",
+              step: "1",
+              class: "java.lang.Long"
+           }
+          ],
+          wrapInJson: true
+       },
+       "java.lang.Integer": {
+          types: [
+           {
+              label: "Value",
+              type: "number",
+              step: "1",
+              class: "java.lang.Integer"
+           }
+          ]
+       },
+       "java.lang.Short": {
+          types: [
+           {
+              label: "Value",
+              type: "number",
+              step: "1",
+              class: "java.lang.Short"
+           }
+          ],
+          wrapInJson: true
+       },
+       "java.lang.Double": {
+          types: [
+           {
+              label: "Value",
+              type: "number",
+              step: "0.1",
+              class: "java.lang.Double"
+           }
+          ],
+          wrapInJson: true
+       },
+       "java.lang.Float": {
+          types: [
+           {
+              label: "Value",
+              type: "number",
+              step: "0.1",
+              class: "java.lang.Float"
+           }
+          ],
+          wrapInJson: true
+       },
+       "java.lang.String": {
+          types: [
+           {
+              label: "Value",
+              type: "text",
+              class: "java.lang.String",
+           }
+          ]
+       },
+       "uk.gov.gchq.gaffer.types.TypeValue": {
+          types: [
+             {
+               label: "Type",
+               type: "text",
+               key: "type",
+               class: "java.lang.String"
+             },
+             {
+               label: "Value",
+               type: "text",
+               key: "value",
+               class: "java.lang.String"
+             }
+          ],
+          wrapInJson: true
+       },
+       "uk.gov.gchq.gaffer.types.TypeSubTypeValue": {
+          types: [
+             {
+               label: "Type",
+               type: "text",
+               key: "type",
+               class: "java.lang.String"
+             },
+             {
+               label: "Sub Type",
+               type: "text",
+               key: "subType",
+               class: "java.lang.String"
+             },
+             {
+               label: "Value",
+               type: "text",
+               key: "value",
+               class: "java.lang.String"
+             }
+          ],
+          wrapInJson: true
+       }
+   };
+
+  var getType = function(typeClass) {
+     var type = types[typeClass];
+     if(!type) {
+         type = types.unknownType;
+     }
+
+     if(!type.createValue) {
+        type.createValue = function(typeClass, parts) {
+            if(type.wrapInJson || Object.keys(parts).length > 1) {
+                return parts;
+            }
+
+            return parts[Object.keys(parts)[0]];
+        }
+     }
+
+     if(!type.createValueAsJsonWrapperObj) {
+         type.createValueAsJsonWrapperObj = function(typeClass, parts, stringify) {
+             if(type.wrapInJson || Object.keys(parts).length > 1) {
+                 var value = {};
+                 value[typeClass] = parts;
+                 if(stringify) {
+                    value = JSON.stringify(value);
+                 }
+                 return value;
+             }
+
+             return parts[Object.keys(parts)[0]];
+         }
+      }
+
+     if(!type.createParts) {
+         type.createParts = function(typeClass, value) {
+             if(value[typeClass]) {
+                 return value[typeClass];
+             }
+
+             var parts = {};
+             parts[type.key] = value;
+             return parts;
+         }
+     }
+
+     if(!type.getShortValue) {
+        type.getShortValue = function(value) {
+            if(typeof value === 'string'
+                || value instanceof String
+                || typeof value === 'number') {
+                return value;
+            }
+
+            if(Object.keys(value).length != 1) {
+                return defaultShortValue(value);
+            }
+
+            var typeClass = Object.keys(value)[0]
+            var parts = value[typeClass];
+            return Object.values(parts).join("|");
+        }
+     }
+
+     return type;
+  };
+
+  var opWhiteList = undefined;
+  var opBlackList = [];
+
   return {
      resultLimit: 100,
-     restUrl: window.location.origin + "/rest/v1"
-   };
+     restUrl: window.location.origin + "/rest/v1",
+     getType: getType,
+     defaultOp: "uk.gov.gchq.gaffer.operation.impl.get.GetElements"
+   }
 } ]);

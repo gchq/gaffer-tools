@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-angular.module('app').factory('graph', [ '$q', function( $q ){
+angular.module('app').factory('graph', [ '$q', 'settings', function( $q, settings){
   var graphCy;
   var graph = {};
 
@@ -95,7 +95,7 @@ angular.module('app').factory('graph', [ '$q', function( $q ){
           group: 'nodes',
           data: {
             id: id,
-            label: id,
+            label: graph.createLabel(id),
             radius: 60,
             color: '#337ab7',
             selectedColor: '#204d74'
@@ -115,7 +115,7 @@ angular.module('app').factory('graph', [ '$q', function( $q ){
           group: 'nodes',
           data: {
             id: edge.source,
-            label: edge.source,
+            label: graph.createLabel(edge.source),
             radius: 20,
             color: '#888',
             selectedColor: '#444',
@@ -133,7 +133,7 @@ angular.module('app').factory('graph', [ '$q', function( $q ){
           group: 'nodes',
           data: {
             id: edge.destination,
-            label: edge.destination,
+            label: graph.createLabel(edge.destination),
             radius: 20,
             color: '#888',
             selectedColor: '#444',
@@ -159,6 +159,11 @@ angular.module('app').factory('graph', [ '$q', function( $q ){
         });
       }
     }
+
+    for (var id in results.entitySeeds) {
+      graph.addSeed(results.entitySeeds[id].vertexType, id);
+    }
+
     graph.redraw();
   }
   graph.onGraphElementSelect = function(fn){
@@ -177,7 +182,24 @@ angular.module('app').factory('graph', [ '$q', function( $q ){
 
   graph.redraw = function() {
     graphCy.layout({name: 'concentric'});
-  }
+  };
+
+  graph.createLabel = function(vertex) {
+    var label;
+    var json = JSON.parse(vertex);
+    if(typeof json === 'string'
+        || json instanceof String
+        || typeof json === 'number') {
+      label = vertex;
+    } else if(Object.keys(json).length == 1) {
+      var typeClass = Object.keys(json)[0];
+      label = settings.getType(typeClass).getShortValue(json);
+    } else {
+      label = vertex;
+    }
+
+    return label;
+  };
 
   graph.addSeed = function(vertexType, vertex){
     if(graphCy.getElementById(vertex).length === 0) {
@@ -185,7 +207,7 @@ angular.module('app').factory('graph', [ '$q', function( $q ){
         group: 'nodes',
         data: {
           id: vertex,
-          label: vertex,
+          label: graph.createLabel(vertex),
           vertex: vertex,
           color: '#888',
           selectedColor: '#444',
