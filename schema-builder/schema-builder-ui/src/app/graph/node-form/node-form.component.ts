@@ -16,9 +16,11 @@
 
 import { Component, OnInit, Input } from '@angular/core';
 import { LocalStorageService } from 'ng2-webstorage';
+import { DataSet, Network } from '@types/vis';
+import { GraphQLNode } from '../../shared/graphql-node.interface';
 import { FormBuilder } from '@angular/forms';
 import * as _ from 'lodash';
-declare var $: any;
+declare const $: any;
 
 @Component({
     selector: 'app-node-form',
@@ -27,9 +29,9 @@ declare var $: any;
     providers: [FormBuilder]
 })
 export class NodeFormComponent implements OnInit {
-    _node: any;
-    _nodes: any;
-    _network: any;
+    _node: GraphQLNode;
+    _nodes: DataSet<GraphQLNode>;
+    _network: Network;
     form: any;
 
     @Input()

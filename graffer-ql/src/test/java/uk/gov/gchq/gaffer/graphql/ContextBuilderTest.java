@@ -19,9 +19,9 @@ package uk.gov.gchq.gaffer.graphql;
 import org.junit.Before;
 import org.junit.Test;
 import uk.gov.gchq.gaffer.commonutil.StreamUtil;
-import uk.gov.gchq.gaffer.example.films.analytic.LoadAndQuery;
-import uk.gov.gchq.gaffer.example.films.data.Certificate;
 import uk.gov.gchq.gaffer.graph.Graph;
+import uk.gov.gchq.gaffer.traffic.DemoData;
+import uk.gov.gchq.gaffer.traffic.ElementGroup;
 import uk.gov.gchq.gaffer.user.User;
 
 import static org.junit.Assert.assertEquals;
@@ -37,17 +37,13 @@ public class ContextBuilderTest {
         // Setup User
         user = new User.Builder()
                 .userId("user02")
-                .dataAuth(Certificate.U.name())
-                .dataAuth(Certificate.PG.name())
-                .dataAuth(Certificate._12A.name())
-                .dataAuth(Certificate._15.name())
-                .dataAuth(Certificate._18.name())
                 .build();
 
         // Setup graph
         graph = new Graph.Builder()
-                .storeProperties(StreamUtil.openStream(LoadAndQuery.class, "/example/films/mockaccumulostore.properties"))
-                .addSchemas(StreamUtil.openStreams(LoadAndQuery.class, "/example/films/schema"))
+                .graphId("graph1")
+                .storeProperties(StreamUtil.openStream(DemoData.class, "mockaccumulo.properties"))
+                .addSchemas(StreamUtil.openStreams(ElementGroup.class, "schema"))
                 .build();
     }
 

@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright 2016 Crown Copyright
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <parent>
+        <groupId>uk.gov.gchq.gaffer</groupId>
+        <artifactId>gaffer-tools</artifactId>
+        <version>0.7.8-SNAPSHOT</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>ui</artifactId>
+    <packaging>war</packaging>
+    <properties>
+        <standalone-ui-path>ui</standalone-ui-path>
+        <standalone-rest-path>rest</standalone-rest-path>
+        <standalone-port>8080</standalone-port>
+        <selenium.version>3.4.0</selenium.version>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.seleniumhq.selenium</groupId>
+            <artifactId>selenium-server</artifactId>
+            <version>${selenium.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>21.0</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-war-plugin</artifactId>
+                <version>${maven-war-plugin.version}</version>
+                <configuration>
+                    <webResources>
+                        <resource>
+                            <directory>dependencies</directory>
+                        </resource>
+                    </webResources>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+    <profiles>
+        <profile>
+            <id>standalone-ui</id>
+            <properties>
+                <maven.test.skip>true</maven.test.skip>
+            </properties>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.tomcat.maven</groupId>
+                        <artifactId>tomcat7-maven-plugin</artifactId>
+                        <version>2.0</version>
+                        <configuration>
+                            <path>${standalone-ui-path}</path>
+                            <port>${standalone-port}</port>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <id>deploy</id>
+                                <phase>integration-test</phase>
+                                <goals>
+                                    <goal>run-war</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+        <profile>
+            <id>road-traffic-demo</id>
+            <properties>
+                <maven.test.skip>true</maven.test.skip>
+            </properties>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.tomcat.maven</groupId>
+                        <artifactId>tomcat7-maven-plugin</artifactId>
+                        <version>2.0</version>
+                        <configuration>
+                            <path>/</path>
+                            <port>${standalone-port}</port>
+                            <webapps>
+                                <webapp>
+                                    <contextPath>/${standalone-ui-path}
+                                    </contextPath>
+                                    <groupId>uk.gov.gchq.gaffer</groupId>
+                                    <artifactId>ui</artifactId>
+                                    <version>${project.parent.version}</version>
+                                    <type>war</type>
+                                    <asWebapp>true</asWebapp>
+                                </webapp>
+                                <webapp>
+                                    <contextPath>/${standalone-rest-path}
+                                    </contextPath>
+                                    <groupId>uk.gov.gchq.gaffer</groupId>
+                                    <artifactId>road-traffic-rest</artifactId>
+                                    <version>${gaffer.version}</version>
+                                    <type>war</type>
+                                    <asWebapp>true</asWebapp>
+                                </webapp>
+                            </webapps>
+                            <systemProperties>
+                                <gaffer.rest-api.basePath>
+                                    ${standalone-rest-path}/v1
+                                </gaffer.rest-api.basePath>
+                                <gaffer.graph.id>
+                                    roadTraffic
+                                </gaffer.graph.id>
+                                <gaffer.schemas>
+                                    ${project.basedir}/example/road-traffic/schema
+                                </gaffer.schemas>
+                                <gaffer.storeProperties>
+                                    ${project.basedir}/example/road-traffic/mockaccumulo.properties
+                                </gaffer.storeProperties>
+                                <roadTraffic.dataLoader.dataPath>
+                                    ${project.basedir}/example/road-traffic/roadTrafficSampleData.csv
+                                </roadTraffic.dataLoader.dataPath>
+                                <gaffer.error-mode.debug>
+                                    false
+                                </gaffer.error-mode.debug>
+                            </systemProperties>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <id>deploy</id>
+                                <phase>integration-test</phase>
+                                <goals>
+                                    <goal>run-war</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+</project>

@@ -20,7 +20,7 @@
     <parent>
         <groupId>uk.gov.gchq.gaffer</groupId>
         <artifactId>gaffer-tools</artifactId>
-        <version>0.6.4-SNAPSHOT</version>
+        <version>0.7.8-SNAPSHOT</version>
     </parent>
 
     <artifactId>mini-accumulo-cluster</artifactId>
@@ -38,7 +38,7 @@
         </dependency>
         <dependency>
             <groupId>uk.gov.gchq.gaffer</groupId>
-            <artifactId>example-graph</artifactId>
+            <artifactId>graph</artifactId>
             <version>${gaffer.version}</version>
         </dependency>
         <dependency>

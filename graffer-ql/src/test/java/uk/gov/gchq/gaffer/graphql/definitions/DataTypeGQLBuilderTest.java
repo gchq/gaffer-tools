@@ -16,16 +16,14 @@
 
 package uk.gov.gchq.gaffer.graphql.definitions;
 
+import graphql.schema.GraphQLFieldDefinition;
+import graphql.schema.GraphQLObjectType;
+import org.junit.Test;
 import uk.gov.gchq.gaffer.graphql.GrafferQLException;
-import uk.gov.gchq.gaffer.graphql.definitions.DataTypeGQLBuilder;
 import uk.gov.gchq.gaffer.store.schema.Schema;
 import uk.gov.gchq.gaffer.store.schema.SchemaEdgeDefinition;
 import uk.gov.gchq.gaffer.store.schema.SchemaEntityDefinition;
 import uk.gov.gchq.gaffer.store.schema.TypeDefinition;
-import graphql.schema.GraphQLFieldDefinition;
-import graphql.schema.GraphQLObjectType;
-import org.junit.Test;
-
 import java.util.HashMap;
 import java.util.Map;
 

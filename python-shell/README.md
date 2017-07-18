@@ -18,16 +18,17 @@ Python shell
 This python shell connects to a Gaffer REST API and requires Python 3.x
 
 To start using the python shell you will need an instance of the REST API running.
-You can start the Gaffer example rest server (see Gaffer repository example-rest/README.md) using the command on the Gaffer project:
+You can start the Gaffer road-traffic-demo rest server and ui (see ui/README.md) using the command:
 
 ```
-mvn clean install -Pquick -Pstandalone
+mvn install -Pquick -Proad-traffic-demo -pl ui -am
 ```
 
 Once this is running you can run the python example by using the command (all commands are run from the root of the python-shell project):
 
 ```
 python3 src/example.py
+python3 src/example_accumulo.py
 ```
 
 Alternatively if you have you own REST API running that is authenticated with
@@ -36,6 +37,7 @@ will need to export your PKI certificate into a .pem file:
 
 ```
 python3 src/examplePki.py
+python3 src/example_accumulo_pki.py
 ```
 
 ## Installation
@@ -59,7 +61,7 @@ This creates a distributable Python wheel which can installed locally to provide
 The wheel file is install using pip:
 
 ```bash
-pip3 install gaffer_shell-0.6.3-py2.py3-none-any.whl
+pip3 install gaffer_shell-0.7.7-py2.py3-none-any.whl
 ```
 
 After installation the shell can be imported into an application as below:

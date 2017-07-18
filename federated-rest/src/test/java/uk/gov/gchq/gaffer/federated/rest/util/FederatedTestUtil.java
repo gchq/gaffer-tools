@@ -72,21 +72,22 @@ public class FederatedTestUtil {
 
         try (OutputStream out = new FileOutputStream(testFolder.newFile("store.properties"))) {
             storeProperties.getProperties()
-                           .store(out, "This is an optional header comment string");
+                    .store(out, "This is an optional header comment string");
         }
 
         // set properties for REST service
+        System.setProperty(uk.gov.gchq.gaffer.rest.SystemProperty.GRAPH_ID, "graph1");
         System.setProperty(SystemProperty.STORE_PROPERTIES_PATH, testFolder.getRoot() + "/store.properties");
         System.setProperty(SystemProperty.SCHEMA_PATHS, testFolder.getRoot() + "/schema.json");
     }
 
     public static void addElements(final Element... elements) throws IOException {
         executeOperation(new AddElements.Builder()
-                .elements(elements)
+                .input(elements)
                 .build());
     }
 
-    public static Response executeServerOperation(final String url, final Operation<?, ?> operation) throws SerialisationException {
+    public static Response executeServerOperation(final String url, final Operation operation) throws SerialisationException {
         return executeServerOperationChain(url, new OperationChain<>(operation));
     }
 
@@ -97,25 +98,25 @@ public class FederatedTestUtil {
                 .post(Entity.entity(JSON_SERIALISER.serialise(opChain), APPLICATION_JSON_TYPE));
     }
 
-    public static Response executeOperation(final Operation<?, ?> operation) throws IOException {
+    public static Response executeOperation(final Operation operation) throws IOException {
         return client.target(FED_URI)
-                     .path("/graph/doOperation")
-                     .request()
-                     .post(Entity.entity(JSON_SERIALISER.serialise(new OperationChain<>(operation)), APPLICATION_JSON_TYPE));
+                .path("/graph/doOperation")
+                .request()
+                .post(Entity.entity(JSON_SERIALISER.serialise(new OperationChain<>(operation)), APPLICATION_JSON_TYPE));
     }
 
     public static Response executeOperationChain(final OperationChain opChain) throws IOException {
         return client.target(FED_URI)
-                     .path("/graph/doOperation")
-                     .request()
-                     .post(Entity.entity(JSON_SERIALISER.serialise(opChain), APPLICATION_JSON_TYPE));
+                .path("/graph/doOperation")
+                .request()
+                .post(Entity.entity(JSON_SERIALISER.serialise(opChain), APPLICATION_JSON_TYPE));
     }
 
     public static Response executeOperationChainChunked(final OperationChain opChain) throws IOException {
         return client.target(FED_URI)
-                     .path("/graph/doOperation/chunked")
-                     .request()
-                     .post(Entity.entity(JSON_SERIALISER.serialise(opChain), APPLICATION_JSON_TYPE));
+                .path("/graph/doOperation/chunked")
+                .request()
+                .post(Entity.entity(JSON_SERIALISER.serialise(opChain), APPLICATION_JSON_TYPE));
     }
 
     public static void startServer(final String name, final String url) {

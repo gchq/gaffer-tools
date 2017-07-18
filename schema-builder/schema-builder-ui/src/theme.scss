@@ -14,64 +14,44 @@
  * limitations under the License.
  */
 
-@import '~@angular/material/core/theming/all-theme';
+@import "~@angular/material/_theming.scss";
 
-@include md-core();
+@include mat-core();
 
-$primary: md-palette($md-cyan);
-$accent:  md-palette($md-lime, A200, A100, A400);
-$warn:    md-palette($md-red);
+$primary: mat-palette($mat-cyan);
+$accent:  mat-palette($mat-lime, A200, A100, A400);
+$warn:    mat-palette($mat-red);
 
-$grey:  md-palette($md-grey);
+$grey:  mat-palette($mat-grey);
 
-$theme: md-light-theme($primary, $accent);
+$theme: mat-light-theme($primary, $accent);
 
 @include angular-material-theme($theme);
 
-.m2app-dark {
-  $dark-primary: md-palette($md-pink, 700, 500, 900);
-  $dark-accent:  md-palette($md-blue-grey, A200, A100, A400);
-  $dark-warn:    md-palette($md-deep-orange);
-
-  $dark-theme: md-dark-theme($dark-primary, $dark-accent, $dark-warn);
-
-  @include angular-material-theme($dark-theme);
-
-  .mdTabs.m2app-dark  > .md-tab-header {
-    background-color: md-color($dark-primary, 900) !important;
-    color: md-color($dark-primary, default-contrast) !important;
-  }
-
-  .mdTabs.m2app-dark > * > md-ink-bar{
-    background-color: md-color($dark-accent, A400) !important;
-  }
-}
-
-.mdTabs > * > .tabs {
-  background-color: md-color($primary, 700) !important;
-  color: md-color($primary, default-contrast) !important;
-}
-
-.mdTabs > * > .tabs li a{
-  color: md-color($primary, default-contrast) !important;
-}
-
-md-ink-bar, .indicator {
-  background-color: md-color($accent, A400) !important;
+mat-ink-bar, .indicator {
+  background-color: mat-color($accent, A400) !important;
   height: 4px !important;
 }
 
+.mat-tab-links {
+  background-color: white;
+}
+
+body {
+  background-color: mat-color($grey, 100);
+}
+
 .alt-background {
-  background-color: md-color($grey, 200);
+  background-color: mat-color($grey, 100);
   overflow: visible;
 }
 
-.card-header {
-  background-color: md-color($primary, 800);
+.content-card-header {
+  background-color: mat-color($primary, 800) !important;
 }
 
-.content-card-header {
-  background-color: md-color($primary, 800);
+.download-button {
+  color: mat-color($accent);
 }
 
 .string { color: green; }

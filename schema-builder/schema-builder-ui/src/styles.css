@@ -16,16 +16,11 @@
 
 /* You can add global styles to this file, and also import other style files */
 
+html, 
 body {
-  margin: 0;
-}
-
-md-sidenav-layout.m2app-dark {
-  background: black;
-}
-
-md-sidenav-layout {
-  height:100vh;
+    height: 100%;
+    margin: 0;
+  font-family: Roboto,"Helvetica Neue",sans-serif;
 }
 
 md-card-title {
@@ -42,7 +37,6 @@ md-card-title {
     transition: opacity .8s ease-in-out;
     text-align: center;
     vertical-align: center;
-    padding: 100px;
     position: fixed;
     height: 100%;
     width: 100%;
@@ -80,6 +74,10 @@ div.vis-network div.vis-edit-mode {
 
 div.vis-network div.vis-close {
   display: none !important;
+}
+
+.vis-label {
+  font-family: Roboto, "Helvetica Neue", sans-serif;
 }
 
 .vis-separator-line {
@@ -191,21 +189,30 @@ h1, h2, h3, h4 {
   margin-left: 8px !important;
   margin-right: 8px !important;
 }
-/*
- * Copyright 2016 Crown Copyright
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+
+.mat-select {
+  margin: 20px 0;
+}
+
+.full-width {
+  width: 100%;
+}
+
+.mat-input-wrapper {
+  margin: 2em 0 !important;
+}
+
+.mat-input-placeholder.mat-float.mat-focused, .mat-input-placeholder.mat-float:not(.mat-empty) {
+  transform: translateY(-2em) scale(.85) !important;
+}
+
+.mat-input-placeholder-wrapper {
+  top: -2em !important;
+}
+
+.mat-input-placeholder, .mat-input-placeholder-wrapper {
+  padding-top: 2em !important;
+}
 
 /* fallback */
 @font-face {

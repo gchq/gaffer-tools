@@ -18,7 +18,6 @@ package uk.gov.gchq.gaffer.federated.rest.util;
 
 import org.apache.commons.io.FileUtils;
 import org.glassfish.grizzly.http.server.HttpServer;
-import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory;
 import org.junit.rules.TemporaryFolder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,7 +29,6 @@ import uk.gov.gchq.gaffer.jsonserialisation.JSONSerialiser;
 import uk.gov.gchq.gaffer.operation.Operation;
 import uk.gov.gchq.gaffer.operation.OperationChain;
 import uk.gov.gchq.gaffer.operation.impl.add.AddElements;
-import uk.gov.gchq.gaffer.rest.application.ApplicationConfig;
 import uk.gov.gchq.gaffer.store.StoreProperties;
 import uk.gov.gchq.gaffer.store.schema.Schema;
 import javax.ws.rs.client.Client;
@@ -40,14 +38,11 @@ import javax.ws.rs.core.Response;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON_TYPE;
 import static org.junit.Assert.assertEquals;
-import static uk.gov.gchq.gaffer.federated.rest.util.FederatedSystemTestGraphConfigurationUtil.addUrl;
-import static uk.gov.gchq.gaffer.federated.rest.util.FederatedSystemTestGraphConfigurationUtil.deleteUrl;
 
 public class FederatedSystemTestUtil {
     public static final String FED_URI = "http://localhost:8080/fed/v1";
@@ -80,11 +75,11 @@ public class FederatedSystemTestUtil {
 
     public static void addElements(final Element... elements) throws IOException {
         executeOperation(new AddElements.Builder()
-                .elements(elements)
+                .input(elements)
                 .build());
     }
 
-    public static Response executeOperation(final Operation<?, ?> operation) throws IOException {
+    public static Response executeOperation(final Operation operation) throws IOException {
         return client.target(FED_URI)
                      .path("/graph/doOperation")
                      .request()

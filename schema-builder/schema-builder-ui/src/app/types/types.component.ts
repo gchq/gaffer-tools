@@ -16,6 +16,7 @@
 
 import { Component, OnInit } from '@angular/core';
 import { LocalStorageService } from 'ng2-webstorage';
+import { GraphQLType } from '../shared/graphql-type.interface';
 import { GafferService } from '../services/gaffer.service';
 
 import * as _ from 'lodash';
@@ -28,14 +29,14 @@ import * as _ from 'lodash';
 })
 export class TypesComponent implements OnInit {
 
-    types: Array<any>;
+    types: Array<GraphQLType>;
     nodeTypes: Array<any>;
     errorMessage: any;
 
     constructor(private storage: LocalStorageService, private gafferService: GafferService) { }
 
     ngOnInit() {
-        let storedTypes = this.storage.retrieve('types');
+        const storedTypes = this.storage.retrieve('types');
         if (storedTypes !== null) {
             this.types = storedTypes;
             this.getNodes();
@@ -45,7 +46,7 @@ export class TypesComponent implements OnInit {
     }
 
     getNodes() {
-        let storedNodes = this.storage.retrieve('graphNodes');
+        const storedNodes = this.storage.retrieve('graphNodes');
         if (storedNodes !== null) {
             this.nodeTypes = [];
             _.forEach(storedNodes._data, (node: any) => {
@@ -78,7 +79,7 @@ export class TypesComponent implements OnInit {
         this.types.push({
             type: 'new type',
             aggregateFunction: null,
-            serialiserClass: null,
+            serialiser: null,
             class: '',
             validateFunctions: null
         });
@@ -95,15 +96,15 @@ export class TypesComponent implements OnInit {
     }
 
     typeChanged(event) {
-        let type = event.value;
+        const type = event.value;
         this.types[type.index] = type;
         this.types[type.index].editing = false;
         this.storage.store('types', this.types);
     }
 
     nodeTypeChanged(event) {
-        let type = event.value;
-        let storedNodes = this.storage.retrieve('graphNodes');
+        const type = event.value;
+        const storedNodes = this.storage.retrieve('graphNodes');
         if (storedNodes !== null) {
             _.forEach(storedNodes._data, (node: any) => {
                 if (node.label === type.type) {

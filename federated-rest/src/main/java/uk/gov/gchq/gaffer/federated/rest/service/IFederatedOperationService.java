@@ -20,9 +20,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.glassfish.jersey.server.ChunkedOutput;
-import uk.gov.gchq.gaffer.data.element.Edge;
 import uk.gov.gchq.gaffer.data.element.Element;
-import uk.gov.gchq.gaffer.data.element.Entity;
 import uk.gov.gchq.gaffer.federated.rest.dto.Operation;
 import uk.gov.gchq.gaffer.federated.rest.dto.OperationChain;
 import uk.gov.gchq.gaffer.operation.data.EntitySeed;
@@ -61,6 +59,24 @@ public interface IFederatedOperationService {
                              @ApiParam(SKIP_ERRORS_MSG) @QueryParam(SKIP_ERRORS_PARAM) boolean skipErrors,
                              @ApiParam(RUN_INDIVIDUALLY_MSG) @QueryParam(RUN_INDIVIDUALLY_PARAM) boolean runIndividually,
                              @ApiParam(FIRST_RESULT_MSG) @QueryParam(FIRST_RESULT_PARAM) boolean firstResult);
+
+    @POST
+    @Path("/operation")
+    @ApiOperation(
+            value = "Performs the given operation on the graph",
+            response = Object.class)
+    Object execute(final Operation operation,
+                   @ApiParam(SKIP_ERRORS_MSG) @QueryParam(SKIP_ERRORS_PARAM) boolean skipErrors,
+                   @ApiParam(FIRST_RESULT_MSG) @QueryParam(FIRST_RESULT_PARAM) boolean firstResult);
+
+    @POST
+    @Path("/chunked/operation")
+    @ApiOperation(
+            value = "Performs the given operation on the graph, returned chunked output. NOTE - does not work in Swagger.",
+            response = Object.class)
+    ChunkedOutput<String> executeChunked(final Operation operation,
+                                         @ApiParam(SKIP_ERRORS_MSG) @QueryParam(SKIP_ERRORS_PARAM) boolean skipErrors,
+                                         @ApiParam(FIRST_RESULT_MSG) @QueryParam(FIRST_RESULT_PARAM) boolean firstResult);
 
     @POST
     @Path("/chunked")
@@ -102,9 +118,9 @@ public interface IFederatedOperationService {
             response = EntitySeed.class,
             responseContainer = "List"
     )
-    Iterable<Object> getAdjacentEntitySeeds(final Operation operation,
-                                            @ApiParam(SKIP_ERRORS_MSG) @QueryParam(SKIP_ERRORS_PARAM) boolean skipErrors,
-                                            @ApiParam(FIRST_RESULT_MSG) @QueryParam(FIRST_RESULT_PARAM) boolean firstResult);
+    Iterable<Object> getAdjacentIds(final Operation operation,
+                                    @ApiParam(SKIP_ERRORS_MSG) @QueryParam(SKIP_ERRORS_PARAM) boolean skipErrors,
+                                    @ApiParam(FIRST_RESULT_MSG) @QueryParam(FIRST_RESULT_PARAM) boolean firstResult);
 
     @POST
     @Path("/get/elements/all")
@@ -118,28 +134,6 @@ public interface IFederatedOperationService {
                                     @ApiParam(FIRST_RESULT_MSG) @QueryParam(FIRST_RESULT_PARAM) boolean firstResult);
 
     @POST
-    @Path("/get/entities/all")
-    @ApiOperation(
-            value = "Gets all entities",
-            response = Entity.class,
-            responseContainer = "List"
-    )
-    Iterable<Object> getAllEntities(final Operation operation,
-                                    @ApiParam(SKIP_ERRORS_MSG) @QueryParam(SKIP_ERRORS_PARAM) boolean skipErrors,
-                                    @ApiParam(FIRST_RESULT_MSG) @QueryParam(FIRST_RESULT_PARAM) boolean firstResult);
-
-    @POST
-    @Path("/get/edges/all")
-    @ApiOperation(
-            value = "Gets all edges",
-            response = Edge.class,
-            responseContainer = "List"
-    )
-    Iterable<Object> getAllEdges(final Operation operation,
-                                 @ApiParam(SKIP_ERRORS_MSG) @QueryParam(SKIP_ERRORS_PARAM) boolean skipErrors,
-                                 @ApiParam(FIRST_RESULT_MSG) @QueryParam(FIRST_RESULT_PARAM) boolean firstResult);
-
-    @POST
     @Path("/get/elements")
     @ApiOperation(
             value = "Gets elements",
@@ -149,28 +143,6 @@ public interface IFederatedOperationService {
     Iterable<Object> getElements(final Operation operation,
                                  @ApiParam(SKIP_ERRORS_MSG) @QueryParam(SKIP_ERRORS_PARAM) boolean skipErrors,
                                  @ApiParam(FIRST_RESULT_MSG) @QueryParam(FIRST_RESULT_PARAM) boolean firstResult);
-
-    @POST
-    @Path("/get/entities")
-    @ApiOperation(
-            value = "Gets entities",
-            response = Entity.class,
-            responseContainer = "List"
-    )
-    Iterable<Object> getEntities(final Operation operation,
-                                 @ApiParam(SKIP_ERRORS_MSG) @QueryParam(SKIP_ERRORS_PARAM) boolean skipErrors,
-                                 @ApiParam(FIRST_RESULT_MSG) @QueryParam(FIRST_RESULT_PARAM) boolean firstResult);
-
-    @POST
-    @Path("/get/edges")
-    @ApiOperation(
-            value = "Gets edges",
-            response = Edge.class,
-            responseContainer = "List"
-    )
-    Iterable<Object> getEdges(final Operation operation,
-                              @ApiParam(SKIP_ERRORS_MSG) @QueryParam(SKIP_ERRORS_PARAM) boolean skipErrors,
-                              @ApiParam(FIRST_RESULT_MSG) @QueryParam(FIRST_RESULT_PARAM) boolean firstResult);
 
     @PUT
     @Path("/add/elements")

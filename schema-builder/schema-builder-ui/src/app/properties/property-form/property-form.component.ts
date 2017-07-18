@@ -45,7 +45,7 @@ export class PropertyFormComponent implements OnInit {
     constructor(private storage: LocalStorageService, private gafferService: GafferService) { }
 
     ngOnInit() {
-        let storedTypes = this.storage.retrieve('types');
+        const storedTypes = this.storage.retrieve('types');
         if (storedTypes !== null) {
             this._storedTypes = storedTypes;
         } else {
@@ -71,7 +71,7 @@ export class PropertyFormComponent implements OnInit {
     }
 
     addNewProperty() {
-        let uuid = UUID.UUID();
+        const uuid = UUID.UUID();
         if (!this._propertyHolder.properties) {
             this._propertyHolder.properties = [];
         }

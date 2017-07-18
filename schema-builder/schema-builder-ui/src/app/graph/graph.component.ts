@@ -16,9 +16,15 @@
 
 import { Component, OnInit } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
+import { DataSet, Network, Node, Edge, Options } from '@types/vis';
 import { LocalStorageService } from 'ng2-webstorage';
 import * as _ from 'lodash';
-declare var vis: any;
+declare const vis: any;
+
+export interface DataContainer {
+    nodes: DataSet<Node>,
+    edges: DataSet<Edge>
+}
 
 @Component({
     selector: 'app-graph',
@@ -26,15 +32,14 @@ declare var vis: any;
     styleUrls: ['./graph.component.css']
 })
 export class GraphComponent implements OnInit {
-    nodes: any;
-    edges: any;
-    network: any;
+    nodes: DataSet<Node>;
+    edges: DataSet<Edge>;
+    network: Network;
     container: any;
-    events: any;
-    data: any;
-    options: any;
-    selectedNode: Observable<any>;
-    selectedEdge: Observable<any>;
+    data: DataContainer;
+    options: Options;
+    selectedNode: Observable<string>;
+    selectedEdge: Observable<string>;
 
     constructor(private storage: LocalStorageService) { }
 
@@ -56,7 +61,7 @@ export class GraphComponent implements OnInit {
 
     saveNodes(data, callback) {
         if (data.label === 'new') {
-            data.label = 'node ' + (Object.keys(this.nodes._data).length + 1);
+            data.label = 'node ' + (this.nodes.get().length + 1);
         }
         callback(data);
         this.storage.store('graphEdges', this.edges);
@@ -68,7 +73,7 @@ export class GraphComponent implements OnInit {
             data.length = 200;
             data.arrows = 'to';
             if (data.label === undefined) {
-                data.label = 'edge ' + (Object.keys(this.edges._data).length + 1);
+                data.label = 'edge ' + (this.edges.get().length + 1);
             }
         }
         callback(data);
@@ -77,9 +82,9 @@ export class GraphComponent implements OnInit {
     }
 
     ngOnInit() {
-        let storedNodes = this.storage.retrieve('graphNodes');
+        const storedNodes = this.storage.retrieve('graphNodes');
         if (storedNodes !== null) {
-            let nodeArray = [];
+            const nodeArray = [];
             _.forEach(storedNodes._data, (storedNode: any) => {
                 nodeArray.push(storedNode);
             });
@@ -88,9 +93,9 @@ export class GraphComponent implements OnInit {
             this.nodes = new vis.DataSet();
         }
 
-        let storedEdges = this.storage.retrieve('graphEdges');
+        const storedEdges = this.storage.retrieve('graphEdges');
         if (storedEdges !== null) {
-            let edgeArray = [];
+            const edgeArray = [];
             _.forEach(storedEdges._data, (storedEdge: any) => {
                 edgeArray.push(storedEdge);
             });

@@ -31,29 +31,25 @@ import uk.gov.gchq.gaffer.federated.rest.auth.FederatedConfigAuthoriser;
 import uk.gov.gchq.gaffer.federated.rest.dto.FederatedSystemStatus;
 import uk.gov.gchq.gaffer.federated.rest.dto.GafferUrl;
 import uk.gov.gchq.gaffer.federated.rest.dto.Schema;
-import uk.gov.gchq.gaffer.function.FilterFunction;
 import uk.gov.gchq.gaffer.rest.factory.UserFactory;
 import uk.gov.gchq.gaffer.store.StoreTrait;
 import uk.gov.gchq.gaffer.user.User;
+import uk.gov.gchq.koryphe.signature.Signature;
 import javax.inject.Inject;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.function.Predicate;
 
 public class FederatedGraphConfigurationService implements IFederatedGraphConfigurationService {
     private static final Logger LOGGER = LoggerFactory.getLogger(FederatedOperationService.class);
-    private final FederatedConfigAuthoriser authoriser = new FederatedConfigAuthoriser();
-    private final FederatedExecutor executor = new FederatedExecutor();
+    private final FederatedConfigAuthoriser authoriser = createAuthoriser();
+    private final FederatedExecutor executor = createExecutor();
 
     @Inject
     private UserFactory userFactory;
-
-    private User createUser() {
-        System.out.println(userFactory.getClass());
-        return userFactory.createUser();
-    }
 
     @Override
     public GafferUrl addUrl(final GafferUrl url) {
@@ -149,9 +145,9 @@ public class FederatedGraphConfigurationService implements IFederatedGraphConfig
                 .getFilterFunctions()) {
             try {
                 final Class<?> classInstance = Class.forName(functionClass);
-                final FilterFunction function = (FilterFunction) classInstance.newInstance();
-                final Class<?>[] inputs = function.getInputClasses();
-                if (inputs.length == 1 && inputs[0].isAssignableFrom(clazz)) {
+                final Predicate function = (Predicate) classInstance.newInstance();
+                final Signature signature = Signature.getInputSignature(function);
+                if (signature.assignable(clazz).isValid()) {
                     classes.add(functionClass);
                 }
             } catch (final Exception e) {
@@ -214,20 +210,15 @@ public class FederatedGraphConfigurationService implements IFederatedGraphConfig
         return fields;
     }
 
-//    private boolean isAuthorised(final User user) {
-//        boolean authorised = false;
-//
-//        System.out.println("!!! - " + user);
-//
-//            if (user.getOpAuths()
-//                    .contains(SystemProperty.FEDERATED_ADMIN_AUTH)) {
-//                authorised = true;
-//        } else {
-//            throw new RuntimeException("Missing system property: " + SystemProperty.FEDERATED_ADMIN_AUTH);
-//        }
-//
-//        System.out.println("Auth: " + authorised);
-//
-//        return authorised;
-//    }
+    protected User createUser() {
+        return userFactory.createUser();
+    }
+
+    protected FederatedExecutor createExecutor() {
+        return new FederatedExecutor();
+    }
+
+    protected FederatedConfigAuthoriser createAuthoriser() {
+        return new FederatedConfigAuthoriser();
+    }
 }

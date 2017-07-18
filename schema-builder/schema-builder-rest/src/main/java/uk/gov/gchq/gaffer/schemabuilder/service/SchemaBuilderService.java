@@ -23,12 +23,12 @@ import org.reflections.util.ClasspathHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.gov.gchq.gaffer.commonutil.StreamUtil;
-import uk.gov.gchq.gaffer.function.AggregateFunction;
-import uk.gov.gchq.gaffer.function.ConsumerFunction;
-import uk.gov.gchq.gaffer.function.FilterFunction;
 import uk.gov.gchq.gaffer.schemabuilder.constant.SystemProperty;
-import uk.gov.gchq.gaffer.serialisation.Serialisation;
+import uk.gov.gchq.gaffer.serialisation.Serialiser;
+import uk.gov.gchq.gaffer.serialisation.ToBytesSerialiser;
 import uk.gov.gchq.gaffer.store.schema.Schema;
+import uk.gov.gchq.koryphe.ValidationResult;
+import uk.gov.gchq.koryphe.signature.Signature;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -38,12 +38,13 @@ import java.lang.reflect.Modifier;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import java.util.function.BinaryOperator;
+import java.util.function.Predicate;
 
 
 @Path("")
@@ -51,9 +52,9 @@ import java.util.Set;
 public class SchemaBuilderService {
     private static final Logger LOGGER = LoggerFactory.getLogger(SchemaBuilderService.class);
 
-    private static final List<FilterFunction> VALIDATION_FUNCTIONS = getSubClassInstances(FilterFunction.class);
-    private static final List<AggregateFunction> AGGREGATE_FUNCTIONS = getSubClassInstances(AggregateFunction.class);
-    private static final List<Serialisation> SERIALISERS = getSubClassInstances(Serialisation.class);
+    private static final List<Predicate> VALIDATION_FUNCTIONS = getSubClassInstances(Predicate.class);
+    private static final List<BinaryOperator> AGGREGATE_FUNCTIONS = getSubClassInstances(BinaryOperator.class);
+    private static final List<ToBytesSerialiser> SERIALISERS = getSubClassInstances(ToBytesSerialiser.class);
     private static final Schema COMMON_SCHEMA = loadCommonSchema();
 
     private static Schema loadCommonSchema() {
@@ -74,17 +75,17 @@ public class SchemaBuilderService {
             }
 
             final List<Class> serialiserClasses = new ArrayList<>();
-            for (Serialisation serialisation : SERIALISERS) {
-                if (serialisation.canHandle(clazz)) {
-                    serialiserClasses.add(serialisation.getClass());
+            for (final Serialiser serialise : SERIALISERS) {
+                if (serialise.canHandle(clazz)) {
+                    serialiserClasses.add(serialise.getClass());
                 }
             }
 
             final List<Class> validateClasses = new ArrayList<>();
-            for (final ConsumerFunction function : VALIDATION_FUNCTIONS) {
+            for (final Predicate function : VALIDATION_FUNCTIONS) {
                 try {
-                    final Class<?>[] inputs = function.getInputClasses();
-                    if (inputs.length == 1 && inputs[0].isAssignableFrom(clazz)) {
+                    final Signature signature = Signature.getInputSignature(function);
+                    if (signature.assignable(clazz).isValid()) {
                         validateClasses.add(function.getClass());
                     }
                 } catch (final Exception e) {
@@ -94,10 +95,9 @@ public class SchemaBuilderService {
             }
 
             final List<Class> aggregateClasses = new ArrayList<>();
-            for (final ConsumerFunction function : AGGREGATE_FUNCTIONS) {
-                final Class<?>[] inputs = function.getInputClasses();
-
-                if (inputs.length == 1 && inputs[0].isAssignableFrom(clazz)) {
+            for (final BinaryOperator function : AGGREGATE_FUNCTIONS) {
+                final Signature signature = Signature.getInputSignature(function);
+                if (signature.assignable(clazz).isValid()) {
                     aggregateClasses.add(function.getClass());
                 }
             }
@@ -114,21 +114,18 @@ public class SchemaBuilderService {
 
     @POST
     @Path("/validate")
-    public ValidateResponse validate(final Schema[] schemas) {
-        final ValidateResponse response;
+    public ValidationResult validate(final Schema[] schemas) {
+        final ValidationResult response;
         if (schemas == null || schemas.length == 0) {
-            response = new ValidateResponse(false, "Schema couldn't be validated - at least 1 schema is required");
+            response = new ValidationResult();
+            response.addError("Schema couldn't be validated - at least 1 schema is required");
         } else {
             final Schema.Builder schemaBuilder = new Schema.Builder();
             for (Schema schema : schemas) {
                 schemaBuilder.merge(schema);
             }
 
-            if (schemaBuilder.build().validate()) {
-                response = new ValidateResponse(true, "The schema is valid");
-            } else {
-                response = new ValidateResponse(false, "The schema is invalid");
-            }
+            response = schemaBuilder.build().validate();
         }
 
         return response;
@@ -140,7 +137,7 @@ public class SchemaBuilderService {
             try {
                 instances.add(((Class<T>) aClass).newInstance());
             } catch (InstantiationException | IllegalAccessException e) {
-                LOGGER.warn("unable to find class: " + aClass, e);
+                LOGGER.debug("unable to find class: " + aClass, e);
             }
         }
 
@@ -153,14 +150,9 @@ public class SchemaBuilderService {
             urls.addAll(ClasspathHelper.forPackage(packagePrefix));
         }
 
-        final List<Class> classes = new ArrayList<Class>(new Reflections(urls).getSubTypesOf(clazz));
+        final List<Class> classes = new ArrayList<>(new Reflections(urls).getSubTypesOf(clazz));
         keepPublicConcreteClasses(classes);
-        Collections.sort(classes, new Comparator<Class>() {
-            @Override
-            public int compare(final Class class1, final Class class2) {
-                return class1.getName().compareTo(class2.getName());
-            }
-        });
+        classes.sort(Comparator.comparing(Class::getName));
 
         return classes;
 

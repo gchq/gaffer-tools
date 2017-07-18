@@ -25,7 +25,7 @@ public abstract class SystemProperty {
 
     // DEFAULTS
     /**
-     * Comma separated list of package prefixes to search for {@link uk.gov.gchq.gaffer.function.Function}s and {@link uk.gov.gchq.gaffer.serialisation.Serialisation}s.
+     * Comma separated list of package prefixes to search for functions and serialisers.
      */
-    public static final String PACKAGE_PREFIXES_DEFAULT = "uk.gov.gchq.gaffer";
+    public static final String PACKAGE_PREFIXES_DEFAULT = "uk.gov.gchq";
 }
