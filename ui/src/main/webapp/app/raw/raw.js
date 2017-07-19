@@ -17,22 +17,7 @@
 angular.module('app').factory('raw', ['$http', 'settings', function($http, settings){
     var raw = {};
     raw.results = {entities: [], edges: [], entitySeeds: [], other: []};
-    raw.defaultAvailableOps = [
-      {
-          name: "uk.gov.gchq.gaffer.operation.impl.get.GetElements",
-          input: true,
-          view: true,
-          inOutFlag: true,
-          arrayOutput: true
-      },
-      {
-          name: "uk.gov.gchq.gaffer.operation.impl.get.GetAdjacentIds",
-          input: true,
-          view: true,
-          inOutFlag: true,
-          arrayOutput: true
-      }
-    ];
+    raw.namedOpClass = "uk.gov.gchq.gaffer.named.operation.NamedOperation";
     raw.availableOps = [];
 
     var updateResultsListener;
@@ -183,9 +168,9 @@ angular.module('app').factory('raw', ['$http', 'settings', function($http, setti
     }
     var updateNamedOperations = function(results) {
         raw.availableOps = [];
-        for(var i in raw.defaultAvailableOps) {
-            if(opAllowed(raw.defaultAvailableOps[i].name)) {
-                raw.availableOps.push(raw.defaultAvailableOps[i]);
+        for(var i in settings.defaultAvailableOps) {
+            if(opAllowed(settings.defaultAvailableOps[i].name)) {
+                raw.availableOps.push(settings.defaultAvailableOps[i]);
             }
         }
 
@@ -204,9 +189,11 @@ angular.module('app').factory('raw', ['$http', 'settings', function($http, setti
                         }
                     }
                     raw.availableOps.push({
+                        class: raw.namedOpClass,
                         name: results[i].operationName,
                         parameters: results[i].parameters,
                         description: results[i].description,
+                        operations: results[i].operations,
                         view: false,
                         input: true,
                         namedOp: true,

@@ -192,7 +192,27 @@ angular.module('app').factory('settings', [function(){
 
             var typeClass = Object.keys(value)[0]
             var parts = value[typeClass];
-            return Object.values(parts).join("|");
+            return Object.keys(parts).map(function(key){return parts[key]}).join("|");
+        }
+     }
+
+     if(type.csvHeader === undefined) {
+        var partKeys = [];
+        for(var i in type.types) {
+            if(type.types[i].key === undefined) {
+                partKeys.push("");
+            } else {
+                partKeys.push(type.types[i].key);
+            }
+        }
+
+        if(partKeys.length == 0) {
+            type.csvHeader = "";
+        } else {
+            if(partKeys.length > 1) {
+                console.log('test: ' + partKeys);
+            }
+            type.csvHeader = partKeys.join(",");
         }
      }
 
@@ -206,6 +226,26 @@ angular.module('app').factory('settings', [function(){
      resultLimit: 100,
      restUrl: window.location.origin + "/rest/v1",
      getType: getType,
-     defaultOp: "uk.gov.gchq.gaffer.operation.impl.get.GetElements"
+     defaultOp: "uk.gov.gchq.gaffer.operation.impl.get.GetElements",
+     defaultAvailableOps: [
+       {
+           name: "Get Elements",
+           class: "uk.gov.gchq.gaffer.operation.impl.get.GetElements",
+           description: "Given your selected seeds, it gets related Entities and Edges.",
+           input: true,
+           view: true,
+           inOutFlag: true,
+           arrayOutput: true
+       },
+       {
+           name: "Get Adjacent IDs",
+           class: "uk.gov.gchq.gaffer.operation.impl.get.GetAdjacentIds",
+           description: "Given your selected seeds, it gets vertices at the opposite end of connected edges.",
+           input: true,
+           view: true,
+           inOutFlag: true,
+           arrayOutput: true
+       }
+     ]
    }
 } ]);

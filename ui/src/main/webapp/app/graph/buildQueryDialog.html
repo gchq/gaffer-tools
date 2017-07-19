@@ -15,23 +15,39 @@
                         <md-content class="md-padding">
                             <h3>Select operation</h3>
 
+                            <input ng-model="opSearchResults" type="text"
+                                   class="form-control"
+                                   placeholder="Search for operation name">
                             <table class="table table-striped">
                                 <tbody>
                                 <tr>
                                     <th>
-                                        Name
+                                        <a href="#"
+                                           ng-click="sortType = 'name'; sortReverse = !sortReverse">
+                                            Name
+                                                <span ng-show="sortType === 'name' && !sortReverse"
+                                                      class="caret"></span>
+                                                <span ng-show="sortType === 'name' && sortReverse"
+                                                      class="caret caret-up"></span>
+                                        </a>
                                     </th>
                                     <th>
                                         Description
                                     </th>
                                 </tr>
-                                <tr ng-repeat="op in rawData.availableOps"
-                                    ng-click="buildQuery.onSelectedOpChange(op)">
+                                <tr ng-repeat="op in rawData.availableOps | orderBy:sortType:sortReverse | filter:opSearchResults">
                                     <td>
-                                        {{op.name}}
+                                        <a href="#"
+                                           ng-click="buildQuery.onSelectedOpChange(op)">
+                                            {{op.name}}
+                                        </a>
                                     </td>
                                     <td>
                                         {{op.description}}
+                                        <button ng-click='buildQuery.showOperations(op.operations)'
+                                                ng-show="op.operations">
+                                            i
+                                        </button>
                                     </td>
                                 </tr>
                                 </tbody>
@@ -110,7 +126,7 @@
                                 <h3>Configure View</h3>
 
                                 <p>
-                                    If you don't select any Entities or Edges
+                                    If you don' t select any Entities or Edges
                                     then all Entities and Edges will be
                                     returned.
                                 </p>
@@ -122,9 +138,10 @@
                                 </p>
 
                                 <div ng-repeat="entity in relatedEntities">
-                                    <md-checkbox id="related-entity-{{entity}}"
-                                                 ng-checked="buildQuery.exists(entity, buildQuery.expandEntities)"
-                                                 ng-click="buildQuery.toggle(entity, buildQuery.expandEntities)">
+                                    <md-checkbox
+                                            id="related-entity-{{entity}}"
+                                            ng-checked="buildQuery.exists(entity, buildQuery.expandEntities)"
+                                            ng-click="buildQuery.toggle(entity, buildQuery.expandEntities)">
                                         {{entity}}
                                     </md-checkbox>
 
@@ -199,9 +216,10 @@
                                 </p>
 
                                 <div ng-repeat="edge in relatedEdges">
-                                    <md-checkbox id="related-edge-{{edge}}"
-                                                 ng-checked="buildQuery.exists(edge, buildQuery.expandEdges)"
-                                                 ng-click="buildQuery.toggle(edge, buildQuery.expandEdges)">
+                                    <md-checkbox
+                                            id="related-edge-{{edge}}"
+                                            ng-checked="buildQuery.exists(edge, buildQuery.expandEdges)"
+                                            ng-click="buildQuery.toggle(edge, buildQuery.expandEdges)">
                                         {{edge}}
                                     </md-checkbox>
 

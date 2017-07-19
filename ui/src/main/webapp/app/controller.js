@@ -67,20 +67,44 @@ angular.module('app').controller('AppController',
         raw.initialise(updateResultsListener, updateScope);
     };
 
+    var createSeed = function(type, parts) {
+      var typeClass = $scope.rawData.schema.types[type].class;
+      var vertex = settings.getType(typeClass).createValueAsJsonWrapperObj(typeClass, parts);
+      return {vertexType: type, vertex: vertex};
+    }
     function addSeedDialogController($scope, $mdDialog) {
         $scope.addSeedCancel = function() {
           $mdDialog.cancel();
         };
 
         $scope.addSeedAdd = function() {
-          var vertexTypeClass = $scope.rawData.schema.types[$scope.addSeedVertexType].class;
-          $scope.addSeedVertex = settings.getType(vertexTypeClass).createValueAsJsonWrapperObj(vertexTypeClass, $scope.addSeedVertexParts);
-
-          var seed = {vertexType: $scope.addSeedVertexType, vertex: $scope.addSeedVertex};
+          var seeds = [];
+          if($scope.addMultipleSeeds) {
+              var vertices = $scope.addSeedVertices.trim().split("\n");
+              for(var i in vertices) {
+                var vertex = vertices[i];
+                var vertexType = $scope.addSeedVertexType;
+                var typeClass = $scope.rawData.schema.types[vertexType].class;
+                var partValues = vertex.trim().split(",");
+                var types = settings.getType(typeClass).types;
+                if(types.length != partValues.length) {
+                    alert("Wrong number of parameters for seed: " + vertex + ". " + vertexType + " requires " + types.length + " parameters");
+                    break;
+                }
+                var parts = {};
+                for(var j = 0; j< types.length; j++) {
+                    parts[types[j].key] = partValues[j];
+                }
+                seeds.push(createSeed(vertexType, parts));
+              }
+          } else {
+              seeds.push(createSeed($scope.addSeedVertexType, $scope.addSeedVertexParts));
+          }
           $scope.addSeedVertexType = '';
           $scope.addSeedVertex = '';
+          $scope.addSeedVertices = '';
           $scope.addSeedVertexParts = {};
-          $mdDialog.hide(seed);
+          $mdDialog.hide(seeds);
         };
       }
 
@@ -95,8 +119,10 @@ angular.module('app').controller('AppController',
               clickOutsideToClose: true,
               fullscreen: $scope.customFullscreen
             })
-            .then(function(seed) {
-              $scope.addSeed(seed.vertexType, seed.vertex);
+            .then(function(seeds) {
+              for(var i in seeds) {
+                  $scope.addSeed(seeds[i].vertexType, seeds[i].vertex);
+              }
               if(nav.showResultsTable) {
                 table.selectedTab = 2;
               }
@@ -308,7 +334,7 @@ angular.module('app').controller('AppController',
       var _id = element.id();
       for (var id in $scope.graphData.entities) {
             if(_id == id) {
-                table.onSeedSelect(id);
+//                table.onSeedSelect(id);
                 $scope.selectedEntities[id] = $scope.graphData.entities[id];
                 $scope.selectedEntitiesCount = Object.keys($scope.selectedEntities).length;
                 updateRelatedEntities();

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-angular.module('app').factory('buildQuery', [ '$q', 'raw', 'settings', function( $q, raw, settings ){
+angular.module('app').factory('buildQuery', [ '$q', '$window', 'raw', 'settings', function( $q, $window, raw, settings ){
     var buildQuery = {};
 
     buildQuery.selectedEntities = {};
@@ -128,13 +128,12 @@ angular.module('app').factory('buildQuery', [ '$q', 'raw', 'settings', function(
     }
 
     var createOperation = function() {
-        var op = {};
+        var op = {
+             class: buildQuery.selectedOp.class
+        };
 
         if(buildQuery.selectedOp.namedOp) {
-            op.class = "uk.gov.gchq.gaffer.named.operation.NamedOperation";
             op.operationName = buildQuery.selectedOp.name;
-        } else {
-            op.class = buildQuery.selectedOp.name;
         }
 
         if (buildQuery.selectedOp.input) {
@@ -270,6 +269,17 @@ angular.module('app').factory('buildQuery', [ '$q', 'raw', 'settings', function(
 
     buildQuery.exists = function(item, list) {
       return list && list.indexOf(item) > -1;
+    }
+
+    buildQuery.showOperations = function(operations) {
+        var newWindow = $window.open('about:blank', '', '_blank');
+        var prettyOps;
+        try {
+            prettyOps = JSON.stringify(JSON.parse(operations), null, 2);
+        } catch(e) {
+            prettyOps = operations;
+        }
+        newWindow.document.write("<pre>" + prettyOps + "</pre>");
     }
 
   return buildQuery;
