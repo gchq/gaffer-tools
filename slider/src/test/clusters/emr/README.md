@@ -20,11 +20,3 @@ When creating an EMR cluster, as a minimum, ensure you select the following soft
 * Hadoop
 * ZooKeeper
 
-
-## Running Integration Tests on AWS EMR
-
-`deploy-gaffer-tests-on-emr.[sh|py]` can be used to run Gaffer's integration tests on an ephemeral AWS EMR cluster. They use the AWS API to provision a new EMR cluster with the software and configuration required to run the tests. Once the tests have run, the cluster will automatically terminate.
-
-If the final status of the cluster is "Terminated" then all the integration tests passed successfully. If the final status is "Terminated with errors" the one, or more, of the tests failed.
-
-The test output is stored in S3 so that it can be reviewed after the cluster has been terminated. The scripts will output the location that they have been written to.
