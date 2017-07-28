@@ -15,6 +15,8 @@
  */
 package uk.gov.gchq.gaffer.performancetesting;
 
+import uk.gov.gchq.gaffer.commonutil.ToStringBuilder;
+
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -72,9 +74,8 @@ public class FileWriterMetricsListener implements MetricsListener {
 
     @Override
     public String toString() {
-        return "FileWriterMetricsListener{" +
-                "filename='" + filename + '\'' +
-                ", writer=" + writer +
-                '}';
+        return new ToStringBuilder(this)
+                .append("filename", filename)
+                .build();
     }
 }
