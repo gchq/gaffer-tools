@@ -18,6 +18,7 @@ package uk.gov.gchq.gaffer.performancetesting.ingest;
 import uk.gov.gchq.gaffer.performancetesting.Metrics;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.SortedSet;
@@ -30,8 +31,8 @@ import java.util.TreeSet;
 public class IngestMetrics implements Metrics {
     public static final String ELEMENTS_PER_SECOND_BATCH = "elements_per_second_batch";
     public static final String ELEMENTS_PER_SECOND_OVERALL = "elements_per_second_overall";
-    private static final SortedSet<String> METRIC_NAMES = new TreeSet<>(
-            Arrays.asList(ELEMENTS_PER_SECOND_BATCH, ELEMENTS_PER_SECOND_OVERALL));
+    private static final SortedSet<String> METRIC_NAMES = Collections.unmodifiableSortedSet(new TreeSet<>(
+            Arrays.asList(ELEMENTS_PER_SECOND_BATCH, ELEMENTS_PER_SECOND_OVERALL)));
     private final Map<String, Double> metrics;
 
     public IngestMetrics() {

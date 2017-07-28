@@ -17,6 +17,10 @@ package uk.gov.gchq.gaffer.performancetesting;
 
 import java.util.SortedSet;
 
+/**
+ * An implementation of this interface contains information about the performance of a test. Each metric has a name
+ * and a value. The name is just a {@link String} and the value can be any {@link Object}.
+ */
 public interface Metrics {
 
     SortedSet<String> getMetricNames();

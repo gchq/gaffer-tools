@@ -20,9 +20,6 @@ import java.util.List;
 import java.util.Random;
 import java.util.SortedMap;
 
-/**
- *
- */
 public class ProbabilityGenerator<T> {
     private final Random random = new Random();
     private T[] items;

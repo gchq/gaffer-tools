@@ -18,6 +18,7 @@ package uk.gov.gchq.gaffer.performancetesting.query;
 import uk.gov.gchq.gaffer.performancetesting.Metrics;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.SortedSet;
@@ -30,7 +31,8 @@ import java.util.TreeSet;
 public class QueryMetrics implements Metrics {
     public static final String SEEDS_PER_SECOND = "seeds_per_second";
     public static final String RESULTS_PER_SECOND = "results_per_second";
-    private static final SortedSet<String> METRIC_NAMES = new TreeSet<>(Arrays.asList(SEEDS_PER_SECOND, RESULTS_PER_SECOND));
+    private static final SortedSet<String> METRIC_NAMES = Collections.unmodifiableSortedSet(
+            new TreeSet<>(Arrays.asList(SEEDS_PER_SECOND, RESULTS_PER_SECOND)));
     private final Map<String, Double> metrics;
 
     public QueryMetrics(final double seedsPerSecond, final double resultsPerSecond) {

@@ -17,6 +17,11 @@ package uk.gov.gchq.gaffer.performancetesting;
 
 import java.util.Properties;
 
+/**
+ * An implementation of this interface receives a {@link Metrics} object describing the current performance of a test.
+ * It can then choose what to do with this information, e.g. store it in a file or database, or display it in a
+ * dashboard.
+ */
 public interface MetricsListener {
 
     void initialise(Properties properties);
