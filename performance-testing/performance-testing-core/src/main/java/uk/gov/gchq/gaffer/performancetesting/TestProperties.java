@@ -54,7 +54,7 @@ public class TestProperties extends Properties {
         return Integer.parseInt(getProperty(BATCH_SIZE));
     }
 
-    public void setBatchSize(final int batchSize) {
+    public void setBatchSize(final long batchSize) {
         if (batchSize <= 0L) {
             throw new IllegalArgumentException("The batch size must be greater than 0.");
         }

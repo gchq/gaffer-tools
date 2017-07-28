@@ -17,6 +17,7 @@ package uk.gov.gchq.gaffer.accumulostore.performancetesting.ingest;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.conf.Configured;
+import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.BytesWritable;
 import org.apache.hadoop.io.NullWritable;
@@ -61,6 +62,12 @@ public class AccumuloElementIngestTest extends Configured {
     protected void run() throws OperationException {
         // Configuration
         final Configuration conf = getConf();
+        final FileSystem fs;
+        try {
+            fs = FileSystem.get(conf);
+        } catch (final IOException e) {
+            throw new OperationException("IOException obtaining FileSystem from conf", e);
+        }
 
         // Create generator
         final Supplier<Element> elementSupplier = new ElementIngestTest.ElementSupplierFactory(testProperties).get();
@@ -117,12 +124,26 @@ public class AccumuloElementIngestTest extends Configured {
                 .build();
         accumuloStore.execute(sample, new User());
 
-        // Add the splits point to the table
-        LOGGER.info("Adding split points to table");
-        final SplitStore splitTable = new SplitStore.Builder()
-                .inputPath(splitsFile)
-                .build();
-        accumuloStore.execute(splitTable, new User());
+        // Check if split points were output (if there was only 1 tablet server then no split points will be output)
+        boolean splitsFileExists = false;
+        try {
+            if (fs.exists(new Path(splitsFile))) {
+                splitsFileExists = true;
+            }
+        } catch (final IOException e) {
+            throw new OperationException("IOException finding out if splits file exists", e);
+        }
+
+        if (!splitsFileExists) {
+            LOGGER.info("No splits file was written by SampleDataForSplitPoints so not adding split points to table");
+        } else {
+            // Add the splits point to the table
+            LOGGER.info("Adding split points to table");
+            final SplitStore splitTable = new SplitStore.Builder()
+                    .inputPath(splitsFile)
+                    .build();
+            accumuloStore.execute(splitTable, new User());
+        }
 
         // Run test
         LOGGER.info("Running ElementIngestTest");

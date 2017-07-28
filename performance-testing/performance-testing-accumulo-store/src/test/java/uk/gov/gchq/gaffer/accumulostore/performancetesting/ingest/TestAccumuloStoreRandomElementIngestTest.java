@@ -15,13 +15,22 @@
  */
 package uk.gov.gchq.gaffer.accumulostore.performancetesting.ingest;
 
+import org.apache.hadoop.conf.Configuration;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
+import uk.gov.gchq.gaffer.accumulostore.AccumuloProperties;
+import uk.gov.gchq.gaffer.accumulostore.AccumuloStore;
+import uk.gov.gchq.gaffer.accumulostore.MockAccumuloStore;
+import uk.gov.gchq.gaffer.graph.Graph;
 import uk.gov.gchq.gaffer.operation.OperationException;
+import uk.gov.gchq.gaffer.randomelementgeneration.Constants;
+import uk.gov.gchq.gaffer.randomelementgeneration.supplier.RmatElementSupplier;
 import uk.gov.gchq.gaffer.store.StoreException;
+import uk.gov.gchq.gaffer.store.schema.Schema;
 
 import java.io.File;
+import java.io.IOException;
 
 /**
  *
@@ -29,7 +38,7 @@ import java.io.File;
 public class TestAccumuloStoreRandomElementIngestTest {
 
     @Rule
-    public TemporaryFolder tempFolder = new TemporaryFolder(new File("/tmp/"));
+    public TemporaryFolder tempFolder = new TemporaryFolder();
 
     /**
      * Currently commented out due to issue https://github.com/gchq/Gaffer/issues/866
@@ -38,34 +47,36 @@ public class TestAccumuloStoreRandomElementIngestTest {
      * @throws OperationException
      */
     @Test
-    public void testAccumuloStoreRandomElementIngestTestRuns() throws StoreException, OperationException {
+    public void testAccumuloStoreRandomElementIngestTestRuns() throws StoreException, OperationException, IOException {
         // Given
-//        final AccumuloElementIngestTestProperties testProperties = new AccumuloElementIngestTestProperties();
-//        testProperties.setNumElements(100L);
-//        testProperties.setElementSupplierClass(RmatElementSupplier.class.getName());
-//        testProperties.setRmatProbabilities(Constants.RMAT_PROBABILITIES);
-//        testProperties.setRmatMaxNodeId(100L);
-//        testProperties.setTempDirectory(tempFolder.toString());
-//        final Schema schema = Schema.fromJson(
-//                AccumuloElementIngestTest.class.getResourceAsStream("/schema/DataSchema.json"),
-//                AccumuloElementIngestTest.class.getResourceAsStream("/schema/DataTypes.json"),
-//                AccumuloElementIngestTest.class.getResourceAsStream("/schema/StoreTypes.json"));
-//        final AccumuloProperties storeProperties = AccumuloProperties.loadStoreProperties(
-//                AccumuloElementIngestTest.class.getResourceAsStream("/mockaccumulostore.properties"));
-//
-//        final AccumuloStore accumuloStore = new MockAccumuloStore();
-//        accumuloStore.initialise(schema, storeProperties);
-//        final Graph graph = new Graph.Builder()
-//                .addSchema(schema)
-//                .storeProperties(storeProperties)
-//                .build();
-//
-//        Configuration conf = new Configuration();
-//        conf.set("io.seqfile.compression.type", "NONE");
-//
-//        // When, then should run successfully
-//        AccumuloElementIngestTest test = new AccumuloElementIngestTest(graph, testProperties);
-//        test.setConf(conf);
-//        test.run();
+        final AccumuloElementIngestTestProperties testProperties = new AccumuloElementIngestTestProperties();
+        testProperties.setNumElements(100L);
+        testProperties.setBatchSize(10);
+        testProperties.setElementSupplierClass(RmatElementSupplier.class.getName());
+        testProperties.setRmatProbabilities(Constants.RMAT_PROBABILITIES);
+        testProperties.setRmatMaxNodeId(100L);
+        testProperties.setTempDirectory(tempFolder.newFolder().getCanonicalPath().toString());
+        final Schema schema = Schema.fromJson(
+                AccumuloElementIngestTest.class.getResourceAsStream("/schema/DataSchema.json"),
+                AccumuloElementIngestTest.class.getResourceAsStream("/schema/DataTypes.json"),
+                AccumuloElementIngestTest.class.getResourceAsStream("/schema/StoreTypes.json"));
+        final AccumuloProperties storeProperties = AccumuloProperties.loadStoreProperties(
+                AccumuloElementIngestTest.class.getResourceAsStream("/mockaccumulostore.properties"));
+
+        final AccumuloStore accumuloStore = new MockAccumuloStore();
+        accumuloStore.initialise("1", schema, storeProperties);
+        final Graph graph = new Graph.Builder()
+                .graphId("1")
+                .addSchema(schema)
+                .storeProperties(storeProperties)
+                .build();
+
+        Configuration conf = new Configuration();
+        conf.set("io.seqfile.compression.type", "NONE");
+
+        // When, then should run successfully
+        AccumuloElementIngestTest test = new AccumuloElementIngestTest(graph, accumuloStore, testProperties);
+        test.setConf(conf);
+        test.run();
     }
 }
