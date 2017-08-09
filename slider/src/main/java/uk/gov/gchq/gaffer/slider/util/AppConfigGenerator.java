@@ -24,6 +24,7 @@ import org.apache.hadoop.yarn.api.records.YarnClusterMetrics;
 import org.apache.hadoop.yarn.client.api.YarnClient;
 import org.apache.hadoop.yarn.client.api.YarnClientApplication;
 import org.apache.hadoop.yarn.exceptions.YarnException;
+import org.apache.log4j.Logger;
 import org.apache.slider.api.ResourceKeys;
 import org.apache.slider.core.conf.ConfTree;
 import org.apache.slider.core.persist.ConfTreeSerDeser;
@@ -47,6 +48,8 @@ import java.util.Map;
  * </pre>
  */
 public class AppConfigGenerator implements Runnable {
+
+    private static final Logger LOGGER = Logger.getLogger(AppConfigGenerator.class);
 
     static class SliderAppConfig {
 
@@ -172,19 +175,19 @@ public class AppConfigGenerator implements Runnable {
         this.singleNode = singleNode;
     }
 
-    private void validateArguments() {
+    private void validateArguments() throws Exception {
         this.help = true;
 
         if (this.tserversPerNode <= 0) {
-            System.err.println("A minimum of 1 tablet server must be provisioned on each node!");
+            throw new Exception("A minimum of 1 tablet server must be provisioned on each node!");
         } else if (this.componentCores <= 0) {
-            System.err.println("Each component must be provisioned with at least 1 core!");
+            throw new Exception("Each component must be provisioned with at least 1 core!");
         } else if (this.defaultComponentMemory <= 0) {
-            System.err.println("Components can't be provisioned with a negative amount of memory!");
+            throw new Exception("Components can't be provisioned with a negative amount of memory!");
         } else if (this.clusterUsagePercent <= 0 || this.clusterUsagePercent > 100) {
-            System.err.println("Cluster usage must be provided as a percentage!");
+            throw new Exception("Cluster usage must be provided as a percentage!");
         } else if (this.files.size() != 3) {
-            System.err.println("Invalid number of arguments!");
+            throw new Exception("Invalid number of arguments!");
         } else {
             this.initialAppConfigPath = this.files.get(0);
             this.appConfigOutputPath = this.files.get(1);
@@ -240,7 +243,7 @@ public class AppConfigGenerator implements Runnable {
 
         totalCoresAvailable = Math.round((float) totalCoresAvailable * ((float) this.clusterUsagePercent / 100f));
         totalMemoryAvailable = Math.round((float) totalMemoryAvailable * ((float) this.clusterUsagePercent / 100f));
-        System.out.println(String.format("Trying to use %s%% of available resources across cluster = cores: %s mem: %s", this.clusterUsagePercent, totalCoresAvailable, totalMemoryAvailable));
+        LOGGER.info(String.format("Trying to use %s%% of available resources across cluster = cores: %s mem: %s", this.clusterUsagePercent, totalCoresAvailable, totalMemoryAvailable));
 
         // Slider Application Master
         totalCoresAvailable -= ResourceKeys.DEF_YARN_CORES;
@@ -296,7 +299,7 @@ public class AppConfigGenerator implements Runnable {
 
         int coresRemainingPerNode = Math.round((float) availableResources.getMaxCores() * ((float) this.clusterUsagePercent / 100f));
         int memoryRemainingPerNode = Math.round((float) availableResources.getMaxMemory() * ((float) this.clusterUsagePercent / 100f));
-        System.out.println(String.format("Trying to use %s%% of available resources per node = cores: %s mem: %s", this.clusterUsagePercent, coresRemainingPerNode, memoryRemainingPerNode));
+        LOGGER.info(String.format("Trying to use %s%% of available resources per node = cores: %s mem: %s", this.clusterUsagePercent, coresRemainingPerNode, memoryRemainingPerNode));
 
         // Slider Application Master
         coresRemainingPerNode -= ResourceKeys.DEF_YARN_CORES;
@@ -375,27 +378,27 @@ public class AppConfigGenerator implements Runnable {
             ConfTreeSerDeser parser = new ConfTreeSerDeser();
 
             ConfTree initialAppConfig = parser.fromFile(new File(this.initialAppConfigPath));
-            System.out.println("Initial appConfig.json:");
-            System.out.println(initialAppConfig);
+            LOGGER.info("Initial appConfig.json:");
+            LOGGER.info(initialAppConfig);
 
             AvailableResources availableClusterResources = null;
 
             availableClusterResources = this.getYarnResources();
-            System.out.println("Available Cluster Resources:" + System.currentTimeMillis());
-            System.out.println(availableClusterResources);
+            LOGGER.info("Available Cluster Resources:" + System.currentTimeMillis());
+            LOGGER.info(availableClusterResources);
 
             // We query twice because for some reason YARN on EMR lies about the max resources
             // available per node the first time round :S
             // TODO: Work out why this is the case!
             availableClusterResources = this.getYarnResources();
-            System.out.println("Available Cluster Resources:" + System.currentTimeMillis());
-            System.out.println(availableClusterResources);
+            LOGGER.info("Available Cluster Resources:" + System.currentTimeMillis());
+            LOGGER.info(availableClusterResources);
 
             SliderAppConfig config = this.generateSliderAppConfig(initialAppConfig, availableClusterResources);
-            System.out.println("Generated appConfig.json:");
-            System.out.println(config.getAppConfig());
-            System.out.println("Generated resources.json:");
-            System.out.println(config.getResources());
+            LOGGER.info("Generated appConfig.json:");
+            LOGGER.info(config.getAppConfig());
+            LOGGER.info("Generated resources.json:");
+            LOGGER.info(config.getResources());
 
             parser.save(config.getAppConfig(), new File(this.appConfigOutputPath));
             parser.save(config.getResources(), new File(this.resourcesOutputPath));
@@ -409,7 +412,12 @@ public class AppConfigGenerator implements Runnable {
 
         JCommander argParser = new JCommander(generator, args);
         argParser.setProgramName(AppConfigGenerator.class.getSimpleName());
-        generator.validateArguments();
+
+        try {
+            generator.validateArguments();
+        } catch (Exception e) {
+            LOGGER.error(e.getMessage());
+        }
 
         if (generator.help) {
             argParser.usage();
