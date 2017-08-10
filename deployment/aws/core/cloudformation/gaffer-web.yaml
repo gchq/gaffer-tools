@@ -197,10 +197,10 @@ Resources:
 
             WAIT_HANDLE_URL="${WebServerReadyHandler}"
             if [[ "$WAIT_HANDLE_URL" ]]; then
-            	function awsSignal {
-            		/opt/aws/bin/cfn-signal -e $? "$WAIT_HANDLE_URL"
-            	}
-            	trap awsSignal EXIT
+              function awsSignal {
+                /opt/aws/bin/cfn-signal -e $? "$WAIT_HANDLE_URL"
+              }
+              trap awsSignal EXIT
             fi
 
             GAFFER_VERSION="${GafferVersion}"
