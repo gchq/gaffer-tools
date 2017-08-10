@@ -1,0 +1,21 @@
+{
+  "entities": {
+    "entityGroup": {
+      "vertex": "long",
+      "properties": {
+        "count": "count.long",
+        "approxDegree": "hllp"
+      }
+    }
+  },
+  "edges": {
+    "edgeGroup": {
+      "source": "long",
+      "destination": "long",
+      "directed": "true",
+      "properties": {
+        "count": "count.long"
+      }
+    }
+  }
+}
