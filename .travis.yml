@@ -12,6 +12,7 @@ addons:
   apt:
     packages:
       - python3
+
 env:
   matrix:
   - MODULES=:gaffer-tools,:ui,:mini-accumulo-cluster,:graffer-ql,:federated-rest,:schema-builder,:schema-builder-rest
