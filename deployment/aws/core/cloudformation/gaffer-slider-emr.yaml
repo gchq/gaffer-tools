@@ -434,7 +434,7 @@ Resources:
       MemorySize: 128
       Timeout: 180
       Code:
-        ZipFile: |
+        ZipFile: !Sub |
           #!/usr/bin/env python
 
           import boto3

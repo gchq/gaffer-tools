@@ -183,7 +183,7 @@ if [[ ! -f gaffer-slider-$GAFFER_TOOLS_VERSION.zip || ! -f gaffer-slider-$GAFFER
 	mvn clean package -Pquick -Dgaffer.version=$GAFFER_POM_VERSION
 
 	GAFFER_SLIDER_POM_VERSION=$(xmllint --xpath '/*[local-name()="project"]/*[local-name()="version"]/text()' ../pom.xml)
-	echo "Detected gaffer-slider versions as $GAFFER_SLIDER_POM_VERSION"
+	echo "Detected gaffer-slider version as $GAFFER_SLIDER_POM_VERSION"
 
 	cp target/slider-$GAFFER_SLIDER_POM_VERSION.jar $DST/gaffer-slider/gaffer-slider-$GAFFER_SLIDER_POM_VERSION.jar
 	cp target/gaffer-slider-$GAFFER_SLIDER_POM_VERSION.zip $DST/gaffer-slider/
@@ -280,12 +280,12 @@ ACCUMULO_VERSION=\$(cat ./etc/accumulo.version)
 
 if [ ! -d "\$DST" ]; then
 	mkdir -p "\$DST"
-	./slider client \
-		--install \
-		--dest "\$DST" \
-		--package ./accumulo-pkg/slider-accumulo-app-package-\$ACCUMULO_VERSION.zip \
-		--name \$CLUSTER_NAME \
-		--debug \
+	./slider client \\
+		--install \\
+		--dest "\$DST" \\
+		--package ./accumulo-pkg/slider-accumulo-app-package-\$ACCUMULO_VERSION.zip \\
+		--name \$CLUSTER_NAME \\
+		--debug \\
 	|| (rm -rf "\$DST" && exit 1)
 fi
 
