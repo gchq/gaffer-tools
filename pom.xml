@@ -33,6 +33,8 @@
         <module>mini-accumulo-cluster</module>
         <module>graffer-ql</module>
         <module>federated-rest</module>
+        <module>performance-testing</module>
+        <module>random-element-generation</module>
         <module>schema-builder</module>
         <module>slider</module>
     </modules>
