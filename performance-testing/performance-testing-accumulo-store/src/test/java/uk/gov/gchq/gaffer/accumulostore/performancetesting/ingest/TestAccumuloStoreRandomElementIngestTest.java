@@ -22,6 +22,7 @@ import org.junit.rules.TemporaryFolder;
 import uk.gov.gchq.gaffer.accumulostore.AccumuloProperties;
 import uk.gov.gchq.gaffer.accumulostore.AccumuloStore;
 import uk.gov.gchq.gaffer.accumulostore.MockAccumuloStore;
+import uk.gov.gchq.gaffer.commonutil.CommonTestConstants;
 import uk.gov.gchq.gaffer.graph.Graph;
 import uk.gov.gchq.gaffer.operation.OperationException;
 import uk.gov.gchq.gaffer.randomelementgeneration.Constants;
@@ -29,23 +30,13 @@ import uk.gov.gchq.gaffer.randomelementgeneration.supplier.RmatElementSupplier;
 import uk.gov.gchq.gaffer.store.StoreException;
 import uk.gov.gchq.gaffer.store.schema.Schema;
 
-import java.io.File;
 import java.io.IOException;
 
-/**
- *
- */
 public class TestAccumuloStoreRandomElementIngestTest {
 
     @Rule
-    public TemporaryFolder tempFolder = new TemporaryFolder();
+    public TemporaryFolder tempFolder = new TemporaryFolder(CommonTestConstants.TMP_DIRECTORY);
 
-    /**
-     * Currently commented out due to issue https://github.com/gchq/Gaffer/issues/866
-     *
-     * @throws StoreException
-     * @throws OperationException
-     */
     @Test
     public void testAccumuloStoreRandomElementIngestTestRuns() throws StoreException, OperationException, IOException {
         // Given
