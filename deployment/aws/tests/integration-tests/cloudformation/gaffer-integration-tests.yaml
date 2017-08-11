@@ -1,0 +1,293 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: "Runs Gaffer's integration tests against an instance deployed on AWS"
+
+Parameters:
+
+  GafferVersion:
+    Type: String
+    Default: develop
+    MinLength: 1
+    AllowedPattern: "\\S+"
+    Description: The version of Gaffer to deploy and test - can be a version number (e.g. 0.7.8) or a git branch (e.g. gh-X-feature-name) / commit hash etc
+
+  GafferToolsVersion:
+    Type: String
+    Default: develop
+    MinLength: 1
+    AllowedPattern: "\\S+"
+    Description: The version of Gaffer Tools to use to deploy Gaffer on EMR - can be a version number (e.g. 0.7.8) or a git branch (e.g. gh-X-feature-name) / commit hash etc
+
+  EmrRelease:
+    Type: String
+    Default: emr-5.7.0
+    AllowedValues:
+      - emr-5.7.0
+    ConstraintDescription: Please select a valid EMR release
+
+  EmrInstanceType:
+    Type: String
+    Default: m3.xlarge
+    MinLength: 1
+    Description: Specify the type of instances to deploy in the EMR cluster
+
+  EmrCoreInstanceCount:
+    Type: Number
+    Default: 3
+    MinValue: 0
+    Description: The number of (core) instances to deploy as part of the EMR cluster
+
+  VpcId:
+    Type: AWS::EC2::VPC::Id
+    Description: The VPC to deploy the EMR cluster into
+
+  SubnetId:
+    Type: AWS::EC2::Subnet::Id
+    Description: The subnet to deploy the EMR cluster into. Make sure the subnet resides in the VPC you have selected above!
+
+  ExtraSecurityGroups:
+    Type: List<AWS::EC2::SecurityGroup::Id>
+    Description: Additional security groups that EMR instances should be a member of
+
+  KeyName:
+    Type: AWS::EC2::KeyPair::KeyName
+    Description: Name of an existing EC2 KeyPair that you would like to be able to use to SSH into any instances
+    ConstraintDescription: Must be the name of an existing EC2 KeyPair
+
+Metadata:
+
+  AWS::CloudFormation::Interface:
+    ParameterGroups:
+      - Label:
+          default: Versions
+        Parameters:
+          - GafferVersion
+          - GafferToolsVersion
+          - EmrRelease
+      - Label:
+          default: EMR Config
+        Parameters:
+          - EmrInstanceType
+          - EmrCoreInstanceCount
+          - VpcId
+          - SubnetId
+          - KeyName
+          - ExtraSecurityGroups
+
+Resources:
+
+  GafferWithUser:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL: !Join ["", ["https://s3.amazonaws.com/", Ref: S3Bucket, "/", !GetAtt FileUploadCustomResource.DeployGafferWithUserStack]]
+      Parameters:
+        GafferVersion: !Ref GafferVersion
+        GafferToolsVersion: !Ref GafferToolsVersion
+        EmrRelease: !Ref EmrRelease
+        EmrInstanceType: !Ref EmrInstanceType
+        EmrCoreInstanceCount: !Ref EmrCoreInstanceCount
+        VpcId: !Ref VpcId
+        SubnetId: !Ref SubnetId
+        ExtraEmrSecurityGroups: !Join [",", Ref: ExtraSecurityGroups]
+        KeyName: !Ref KeyName
+        GafferInstanceName: "gaffer-test"
+        UserName: "gaffer_test"
+        AccumuloVisibilities: "vis1,vis2,publicVisibility,privateVisibility"
+
+  ###########################################
+  ## EMR step script to run integration tests
+  ###########################################
+
+  WaitForTestsToFinishCondition:
+    Type: AWS::CloudFormation::WaitCondition
+    Properties:
+      Handle: !Ref WaitForTestsToFinishHandler
+      Timeout: 3600
+
+  WaitForTestsToFinishHandler:
+    Type: AWS::CloudFormation::WaitConditionHandle
+    DependsOn: GafferWithUser
+
+  RunTests:
+    Type: AWS::EMR::Step
+    Properties:
+      JobFlowId: !Sub ${GafferWithUser.Outputs.EmrClusterId}
+      Name: run-gaffer-tests
+      HadoopJarStep:
+        Jar: s3://elasticmapreduce/libs/script-runner/script-runner.jar
+        Args:
+          - !Join ["", ["s3://", !Ref S3Bucket, "/", !GetAtt FileUploadCustomResource.RunIntegrationTestsScript]]
+          - !Ref GafferVersion
+          - "-i"
+          - !Sub ${GafferWithUser.Outputs.AccumuloInstanceName}
+          - "-k"
+          - !Sub ${GafferWithUser.Outputs.PasswordEncryptionKey}
+          - "-p"
+          - !Sub ${GafferWithUser.Outputs.PasswordParameter}
+          - "-u"
+          - !Sub ${GafferWithUser.Outputs.UserName}
+          - "-z"
+          - !Sub ${GafferWithUser.Outputs.EmrMasterPublicDNS}
+          - "-w"
+          - !Ref WaitForTestsToFinishHandler
+      ActionOnFailure: CANCEL_AND_WAIT
+
+  ##############################
+  ## Upload dependencies into S3
+  ##############################
+
+  S3Bucket:
+    Type: AWS::S3::Bucket
+    DeletionPolicy: Delete
+
+  FileUploadCustomResource:
+    Type: AWS::CloudFormation::CustomResource
+    Version: "1.0"
+    Properties:
+      ServiceToken: !GetAtt FileUploadLambda.Arn
+      BucketName: !Ref S3Bucket
+
+  FileUploadLambda:
+    Type: AWS::Lambda::Function
+    Properties:
+      Description: Uploads files required to run Gaffer's integration tests into an S3 bucket
+      Role: !GetAtt FileUploadRole.Arn
+      Runtime: python2.7
+      Handler: index.lambda_handler
+      MemorySize: 128
+      Timeout: 180
+      Code:
+        ZipFile: !Sub |
+          #!/usr/bin/env python
+
+          import boto3
+          import base64
+          import urllib2
+          import cfnresponse
+
+          s3 = boto3.client('s3')
+
+          files=[]
+
+          files.append({
+            'Output': 'DeployGafferWithUserStack',
+            'Key': 'cloudformation/gaffer-with-user.yaml',
+            'Urls': [
+              'https://raw.githubusercontent.com/gchq/gaffer-tools/gaffer-tools-${GafferToolsVersion}/deployment/aws/core/cloudformation/gaffer-with-user.yaml',
+              'https://raw.githubusercontent.com/gchq/gaffer-tools/${GafferToolsVersion}/deployment/aws/core/cloudformation/gaffer-with-user.yaml'
+            ]
+          })
+
+          files.append({
+            'Output': 'RunIntegrationTestsScript',
+            'Key': 'step/run-gaffer-integration-tests.sh',
+            'Urls': [
+              'https://raw.githubusercontent.com/gchq/gaffer-tools/gaffer-tools-${GafferToolsVersion}/deployment/aws/tests/integration-tests/emr-step-scripts/run-gaffer-integration-tests.sh',
+              'https://raw.githubusercontent.com/gchq/gaffer-tools/${GafferToolsVersion}/deployment/aws/tests/integration-tests/emr-step-scripts/run-gaffer-integration-tests.sh'
+            ]
+          })
+
+          def upload_files(bucket):
+            outputs = {}
+
+            for file in files:
+              body = None
+              if 'Body' in file:
+                body = file['Body']
+              elif 'Body64' in file:
+                body = base64.b64decode(file['Body64'])
+              elif 'Url' in file:
+                body = urllib2.urlopen(file['Url']).read()
+              elif 'Urls' in file:
+                lastError = None
+                for url in file['Urls']:
+                  try:
+                    body = urllib2.urlopen(url).read()
+                    break
+                  except Exception as e:
+                    print('Request for ' + url + ' error: ' + str(e))
+                    lastError = e
+                if body is None and lastError is not None:
+                  raise lastError
+
+              if body is not None:
+                s3.put_object(
+                  Bucket=bucket,
+                  Key=file['Key'],
+                  Body=body
+                )
+
+                if 'Output' in file:
+                  outputs[file['Output']] = file['Key']
+
+            return outputs
+
+          def cleanup_files(bucket):
+            for file in files:
+              s3.delete_object(
+                Bucket=bucket,
+                Key=file['Key']
+              )
+
+          def lambda_handler(evt, cntx):
+            try:
+              print(evt)
+
+              bucket = evt['ResourceProperties']['BucketName']
+              print('S3 Bucket: ' + bucket)
+
+              requestType = evt['RequestType']
+              if requestType == 'Create' or requestType == 'Update':
+                outputs = upload_files(bucket)
+                cfnresponse.send(evt, cntx, cfnresponse.SUCCESS, outputs)
+              elif requestType == 'Delete':
+                cleanup_files(bucket)
+                cfnresponse.send(evt, cntx, cfnresponse.SUCCESS, {})
+              else:
+                raise Exception('Unrecognised RequestType: ' + requestType)
+
+            except Exception as e:
+              cfnresponse.send(evt, cntx, cfnresponse.FAILED, { 'Error': str(e) })
+              raise
+
+  FileUploadRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - lambda.amazonaws.com
+            Action:
+              - sts:AssumeRole
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+      Policies:
+        - PolicyName: !Join ["-", [Ref: "AWS::StackName", "file-upload-policy"]]
+          PolicyDocument:
+            Version: 2012-10-17
+            Statement:
+              - Effect: Allow
+                Resource:
+                  - !GetAtt S3Bucket.Arn
+                  - !Join ["", [!GetAtt S3Bucket.Arn, "/*"]]
+                Action:
+                  - s3:ListBucket
+                  - s3:GetObject
+                  - s3:PutObject
+                  - s3:DeleteObject
+
+Outputs:
+  EmrMasterPublicDNS:
+    Value: !Sub ${GafferWithUser.Outputs.EmrMasterPublicDNS}
+  EmrClusterId:
+    Value: !Sub ${GafferWithUser.Outputs.EmrClusterId}
+  AccumuloInstanceName:
+    Value: !Sub ${GafferWithUser.Outputs.AccumuloInstanceName}
+  UserName:
+    Value: !Sub ${GafferWithUser.Outputs.UserName}
+  PasswordParameter:
+    Value: !Sub ${GafferWithUser.Outputs.PasswordParameter}
+  PasswordEncryptionKey:
+    Value: !Sub ${GafferWithUser.Outputs.PasswordEncryptionKey}
