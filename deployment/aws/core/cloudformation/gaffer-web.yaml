@@ -1,0 +1,375 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: "Deploys a web server that serves the Gaffer REST API (for Accumulo) and UI"
+
+Parameters:
+
+  GafferVersion:
+    Type: String
+    Default: 0.7.8
+    MinLength: 1
+    AllowedPattern: "\\S+"
+    Description: The version of the Gaffer REST API to deploy - can be a version number (e.g. 0.7.8) or a git branch (e.g. gh-X-feature-name) / commit hash etc
+
+  GafferToolsVersion:
+    Type: String
+    Default: 0.7.8
+    MinLength: 1
+    AllowedPattern: "\\S+"
+    Description: The version of Gaffer UI to deploy - can be a version number (e.g. 0.7.8) or a git branch (e.g. gh-X-feature-name) / commit hash etc
+
+  InstanceType:
+    Type: String
+    Default: t2.small
+    MinLength: 1
+    Description: Specify the type of instance to be used to deploy the Gaffer REST API and Web UI
+
+  SubnetId:
+    Type: AWS::EC2::Subnet::Id
+    Description: The subnet to deploy the web server into
+
+  ExtraSecurityGroups:
+    Type: List<AWS::EC2::SecurityGroup::Id>
+    Description: Additional security groups that the web server should be a member of
+
+  KeyName:
+    Type: AWS::EC2::KeyPair::KeyName
+    Description: Name of an existing EC2 KeyPair that you would like to be able to use to SSH into the web server
+    ConstraintDescription: Must be the name of an existing EC2 KeyPair
+
+  AccumuloInstanceName:
+    Type: String
+    Default: hadoop-gaffer
+    MinLength: 1
+    AllowedPattern: "[A-Za-z0-9-_]+"
+    Description: The name of the Accumulo instance that Gaffer is running on
+
+  GraphId:
+    Type: String
+    Default: gaffer
+    MinLength: 1
+    AllowedPattern: "[A-Za-z0-9_]+"
+    Description: The name of the Accumulo table that the Gaffer graph is stored in
+
+  UserName:
+    Type: String
+    Default: gaffer_user
+    MinLength: 1
+    AllowedPattern: "[A-Za-z0-9-_]+"
+    Description: The name of the user that should be used to authenticate with the Gaffer instance
+
+  PasswordParameter:
+    Type: String
+    MinLength: 1
+    Description: The name of the SSM Parameter which contains the (encrypted) password for the Gaffer user
+
+  EncryptionKey:
+    Type: String
+    MinLength: 1
+    Description: The ARN of the KMS that should be used to decrypt the Accumulo password stored in the SSM Parameter
+
+  GafferEmrMasterDNS:
+    Type: String
+    MinLength: 1
+    Description: The public DNS address of the EMR master node that is hosting the Gaffer instance the web server should connect to
+
+  GafferSchemaJarUrl:
+    Type: String
+    Default: https://repo1.maven.org/maven2/uk/gov/gchq/gaffer/basic-model/0.7.8/basic-model-0.7.8.jar
+    MinLength: 1
+    Description: A URL that can be used to download a JAR which contains the schema for your Gaffer graph i.e. schema/dataSchema.json schema/dataTypes.json schema/storeTypes.json
+    AllowedPattern: "https?://\\S+\\.jar"
+    ConstraintDescription: Please make sure this is a http / https URL
+
+Metadata:
+  AWS::CloudFormation::Interface:
+    ParameterGroups:
+      - Label:
+          default: Versions
+        Parameters:
+          - GafferVersion
+          - GafferToolsVersion
+      - Label:
+          default: Web Server Config
+        Parameters:
+          - InstanceType
+          - SubnetId
+          - ExtraSecurityGroups
+          - KeyName
+      - Label:
+          default: Gaffer Connection Config
+        Parameters:
+          - GafferEmrMasterDNS
+          - AccumuloInstanceName
+          - GraphId
+          - UserName
+          - PasswordParameter
+          - EncryptionKey
+      - Label:
+          default: Gaffer Graph Config
+        Parameters:
+          - GafferSchemaJarUrl
+
+Mappings:
+
+  # Amazon Linux AMI: https://aws.amazon.com/amazon-linux-ami/
+  InstanceAmi:
+
+    # N. Virginia
+    us-east-1:
+      64ebs: ami-a4c7edb2
+
+    # Ohio
+    us-east-2:
+      64ebs: ami-8a7859ef
+
+    # N. California
+    us-west-1:
+      64ebs: ami-327f5352
+
+    # Oregon
+    us-west-2:
+      64ebs: ami-6df1e514
+
+    # Canada
+    ca-central-1:
+      64ebs: ami-a7aa15c3
+
+    # Frankfurt
+    eu-central-1:
+      64ebs: ami-82be18ed
+
+    # Ireland
+    eu-west-1:
+      64ebs: ami-d7b9a2b1
+
+    # London
+    eu-west-2:
+      64ebs: ami-ed100689
+
+    # Mumbai
+    ap-south-1:
+      64ebs: ami-47205e28
+
+    # Tokyo
+    ap-northeast-1:
+      64ebs: ami-3bd3c45c
+
+    # Seoul
+    ap-northeast-2:
+      64ebs: ami-e21cc38c
+
+    # Singapore
+    ap-southeast-1:
+      64ebs: ami-77af2014
+
+    # Sydney
+    ap-southeast-2:
+      64ebs: ami-10918173
+
+    # Sao Paulo
+    sa-east-1:
+      64ebs: ami-87dab1eb
+
+Resources:
+
+  WebServer:
+    Type: AWS::EC2::Instance
+    Properties:
+      ImageId: !FindInMap [InstanceAmi, Ref: "AWS::Region", 64ebs]
+      InstanceType: !Ref InstanceType
+      KeyName: !Ref KeyName
+      IamInstanceProfile: !Ref WebServerInstanceProfile
+      NetworkInterfaces:
+        - DeviceIndex: 0
+          Description: !Join ["-", [Ref: "AWS::StackName", "eth0"]]
+          SubnetId: !Ref SubnetId
+          GroupSet: !Ref ExtraSecurityGroups
+          AssociatePublicIpAddress: true
+          DeleteOnTermination: true
+      SourceDestCheck: true
+      Tags:
+        - Key: Name
+          Value: !Join ["-", [Ref: "AWS::StackName", "web"]]
+      UserData:
+        Fn::Base64:
+          !Sub |
+            #!/bin/bash -xe
+
+            WAIT_HANDLE_URL="${WebServerReadyHandler}"
+            if [[ "$WAIT_HANDLE_URL" ]]; then
+              function awsSignal {
+                /opt/aws/bin/cfn-signal -e $? "$WAIT_HANDLE_URL"
+              }
+              trap awsSignal EXIT
+            fi
+
+            GAFFER_VERSION="${GafferVersion}"
+            GAFFER_TOOLS_VERSION="${GafferToolsVersion}"
+
+            MAVEN_VERSION=3.5.0
+            MAVEN_DOWNLOAD_URL=http://www.mirrorservice.org/sites/ftp.apache.org/maven/maven-3/$MAVEN_VERSION/binaries/apache-maven-$MAVEN_VERSION-bin.tar.gz
+
+            # Upgrade Java and install Tomcat
+            yum remove -y java-1.7.0-openjdk
+            yum install -y java-1.8.0-openjdk-devel tomcat7 tomcat7-admin-webapps
+
+            /etc/init.d/tomcat7 stop
+
+            tee -a /etc/tomcat7/tomcat7.conf <<EOF
+            CATALINA_OPTS="-Djava.net.preferIPv4Stack=true"
+            EOF
+
+            function install_dev_tools {
+              # Install git
+              if ! which git >/dev/null 2>&1; then
+                yum install -y git
+              fi
+
+              # Install Apache Maven
+              if ! which mvn >/dev/null 2>&1; then
+                echo "Downloading Apache Maven $MAVEN_VERSION from $MAVEN_DOWNLOAD_URL"
+                curl -fLO $MAVEN_DOWNLOAD_URL
+                tar -xf apache-maven-$MAVEN_VERSION-bin.tar.gz
+                rm -f apache-maven-$MAVEN_VERSION-bin.tar.gz
+                export PATH=$PWD/apache-maven-$MAVEN_VERSION/bin:$PATH
+              fi
+            }
+
+            # Need to work out if we can download the Gaffer accumulo-rest.war or if we need to build it from source...
+            if ! curl -fL -o rest.war https://repo1.maven.org/maven2/uk/gov/gchq/gaffer/accumulo-rest/$GAFFER_VERSION/accumulo-rest-$GAFFER_VERSION.war; then
+              echo "Building Gaffer accumulo-rest.war from branch $GAFFER_VERSION..."
+              install_dev_tools
+              git clone -b $GAFFER_VERSION https://github.com/gchq/Gaffer.git
+              cd Gaffer
+              mvn clean package -Pquick -pl rest-api/accumulo-rest --also-make
+              GAFFER_POM_VERSION=$(xmllint --xpath '/*[local-name()="project"]/*[local-name()="version"]/text()' pom.xml)
+              echo "Detected Gaffer version as $GAFFER_POM_VERSION"
+              cp rest-api/accumulo-rest/target/accumulo-rest-$GAFFER_POM_VERSION.war /var/lib/tomcat7/webapps/rest.war
+              cd ..
+              rm -rf Gaffer
+            else
+              echo "Using Gaffer accumulo-rest.war from Maven Central..."
+              mv rest.war /var/lib/tomcat7/webapps/
+              GAFFER_POM_VERSION=$GAFFER_VERSION
+            fi
+
+            # Need to work out if we can download the Gaffer UI or if we need to build it from source...
+            if ! curl -fL -o ui.war https://repo1.maven.org/maven2/uk/gov/gchq/gaffer/ui/$GAFFER_TOOLS_VERSION/ui-$GAFFER_TOOLS_VERSION.war; then
+              echo "Building the Gaffer UI from branch $GAFFER_TOOLS_VERSION..."
+              install_dev_tools
+              git clone -b $GAFFER_TOOLS_VERSION https://github.com/gchq/gaffer-tools.git
+              cd gaffer-tools
+              mvn clean package -Pquick -pl ui --also-make
+              GAFFER_TOOLS_POM_VERSION=$(xmllint --xpath '/*[local-name()="project"]/*[local-name()="version"]/text()' pom.xml)
+              echo "Detected Gaffer Tools version as $GAFFER_TOOLS_POM_VERSION"
+              cp ui/target/ui-$GAFFER_TOOLS_POM_VERSION.war /var/lib/tomcat7/webapps/ui.war
+              cd ..
+              rm -rf gaffer-tools
+            else
+              echo "Using Gaffer UI from Maven Central..."
+              mv ui.war /var/lib/tomcat7/webapps/
+            fi
+
+            # Grab the Accumulo password from an SSM Parameter
+            ENCRYPTED_PASSWORD=$(aws ssm get-parameters --names "${PasswordParameter}" --region "${AWS::Region}" --output text --query Parameters[0].Value)
+            if [ "$ENCRYPTED_PASSWORD" == "" ]; then
+              echo "Unable to retrieve Gaffer password from AWS SSM Parameter: ${PasswordParameter}"
+              exit 1
+            fi
+
+            # Decrypt the Accumulo password
+            PASSWORD=$(aws kms decrypt --region "${AWS::Region}" --ciphertext-blob fileb://<(echo "$ENCRYPTED_PASSWORD" | base64 -d) --query Plaintext --output text | base64 -d)
+            if [ "$PASSWORD" == "" ]; then
+              echo "Unable to decrypt Gaffer password!"
+              exit 2
+            fi
+
+            # Create Gaffer configuration
+            GAFFER_CONF_DIR=/opt/gaffer
+
+            mkdir -p $GAFFER_CONF_DIR/etc
+            mkdir -p $GAFFER_CONF_DIR/schemas
+
+            tee -a $GAFFER_CONF_DIR/etc/store.properties <<EOF
+            gaffer.store.class=uk.gov.gchq.gaffer.accumulostore.AccumuloStore
+            gaffer.store.properties.class=uk.gov.gchq.gaffer.accumulostore.AccumuloProperties
+            accumulo.instance=${AccumuloInstanceName}
+            accumulo.zookeepers=${GafferEmrMasterDNS}
+            accumulo.table=${GraphId}
+            accumulo.user=${UserName}
+            accumulo.password=$PASSWORD
+            EOF
+
+            # Point Tomcat at Gaffer config
+            tee -a /etc/tomcat7/tomcat7.conf <<EOF
+            CATALINA_OPTS="-Dgaffer.graph.id=${GraphId} \$CATALINA_OPTS"
+            CATALINA_OPTS="-Dgaffer.rest-api.basePath=rest/v1 \$CATALINA_OPTS"
+            CATALINA_OPTS="-Dgaffer.schemas=$GAFFER_CONF_DIR/schemas \$CATALINA_OPTS"
+            CATALINA_OPTS="-Dgaffer.storeProperties=$GAFFER_CONF_DIR/etc/store.properties \$CATALINA_OPTS"
+            EOF
+
+            # Copy graph schema into $GAFFER_CONF_DIR/schemas/
+            cd /tmp
+            curl -fL -o schema.jar ${GafferSchemaJarUrl}
+            jar -xf schema.jar schema/dataSchema.json schema/dataTypes.json schema/storeTypes.json
+            mv schema/*.json $GAFFER_CONF_DIR/schemas/
+
+            # Allow Tomcat to be reached on port 80
+            /sbin/iptables -A PREROUTING -t nat -p tcp --dport 80 -j REDIRECT --to-port 8080
+
+            /etc/init.d/tomcat7 start
+
+  WebServerInstanceProfile:
+    Type: AWS::IAM::InstanceProfile
+    Properties:
+      InstanceProfileName: !Join ["-", [Ref: "AWS::StackName", "web"]]
+      Roles:
+        - Ref: WebServerRole
+
+  WebServerRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - ec2.amazonaws.com
+            Action:
+              - sts:AssumeRole
+      Policies:
+        - PolicyName: !Join ["-", [Ref: "AWS::StackName", "web-kms-ssm-access"]]
+          PolicyDocument:
+            Version: 2012-10-17
+            Statement:
+              - Effect: Allow
+                Resource: !Ref EncryptionKey
+                Action:
+                  - kms:Decrypt
+              - Effect: Allow
+                Resource: !Join ["", ["arn:aws:ssm:", Ref: "AWS::Region", ":", Ref: "AWS::AccountId", ":parameter/", Ref: PasswordParameter]]
+                Action:
+                  - ssm:GetParameters
+
+  WebServerReadyCondition:
+    Type: AWS::CloudFormation::WaitCondition
+    Properties:
+      Handle: !Ref WebServerReadyHandler
+      Timeout: 900
+
+  WebServerReadyHandler:
+    Type: AWS::CloudFormation::WaitConditionHandle
+    DependsOn: WebServerInstanceProfile
+
+Outputs:
+  PrivateIp:
+    Value: !GetAtt WebServer.PrivateIp
+  PublicDNS:
+    Value: !GetAtt WebServer.PublicDnsName
+  RestApi:
+    Value: !Join ["", [ "http://", !GetAtt WebServer.PublicDnsName, "/rest" ]]
+  GraphApi:
+    Value: !Join ["", [ "http://", !GetAtt WebServer.PublicDnsName, "/rest/v1/graph" ]]
+  WebUi:
+    Value: !Join ["", [ "http://", !GetAtt WebServer.PublicDnsName, "/ui" ]]
