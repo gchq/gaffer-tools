@@ -27,3 +27,5 @@ target/
 __pycache__
 *.pem
 *.pyc
+.DS_Store
+*/.DS_Store

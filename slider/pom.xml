@@ -21,7 +21,7 @@
     <parent>
         <groupId>uk.gov.gchq.gaffer</groupId>
         <artifactId>gaffer-tools</artifactId>
-        <version>0.7.7</version>
+        <version>0.7.8</version>
     </parent>
 
     <artifactId>slider</artifactId>
@@ -34,9 +34,9 @@
         <hadoop.version>2.7.1</hadoop.version>
 
         <!-- Dependency Versions -->
-        <slider.version>0.91.0-incubating</slider.version>
+        <slider.version>0.92.0-incubating</slider.version>
         <slider.accumulo.version>0.80.0-incubating</slider.accumulo.version>
-        <slider.accumulo.branch>branches/branch-0.91</slider.accumulo.branch>
+        <slider.accumulo.branch>branches/branch-0.92</slider.accumulo.branch>
 
         <!-- Testing Properties -->
         <test.cluster.type>docker_cloudera_quickstart</test.cluster.type>
@@ -53,7 +53,6 @@
             <groupId>org.apache.slider</groupId>
             <artifactId>slider-core</artifactId>
             <version>${slider.version}</version>
-            <scope>test</scope>
         </dependency>
 
         <dependency>

@@ -62,7 +62,7 @@ export function configFactory() {
     FormsModule,
     HttpModule,
     PrettyJsonModule,
-    FlexLayoutModule.forRoot(),
+    FlexLayoutModule,
     MaterialModule,
     ReactiveFormsModule,
     Ng2Webstorage,
