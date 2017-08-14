@@ -76,7 +76,7 @@ Parameters:
     Type: String
     Default: https://repo1.maven.org/maven2/uk/gov/gchq/gaffer/basic-model/0.7.8/basic-model-0.7.8.jar
     MinLength: 1
-    Description: A URL that can be used to download a JAR which contains the schema for your Gaffer graph i.e. schema/dataSchema.json schema/dataTypes.json schema/storeTypes.json
+    Description: A URL that can be used to download a JAR which contains the schema for your Gaffer graph i.e. json files in a 'schema' directory
     AllowedPattern: "https?://\\S+\\.jar"
     ConstraintDescription: Please make sure this is a http / https URL
 
@@ -311,7 +311,7 @@ Resources:
             # Copy graph schema into $GAFFER_CONF_DIR/schemas/
             cd /tmp
             curl -fL -o schema.jar ${GafferSchemaJarUrl}
-            jar -xf schema.jar schema/dataSchema.json schema/dataTypes.json schema/storeTypes.json
+            jar -xf schema.jar schema/
             mv schema/*.json $GAFFER_CONF_DIR/schemas/
 
             # Allow Tomcat to be reached on port 80
