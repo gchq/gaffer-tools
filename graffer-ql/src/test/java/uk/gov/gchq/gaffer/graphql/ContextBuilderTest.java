@@ -20,7 +20,6 @@ import org.junit.Before;
 import org.junit.Test;
 import uk.gov.gchq.gaffer.commonutil.StreamUtil;
 import uk.gov.gchq.gaffer.graph.Graph;
-import uk.gov.gchq.gaffer.traffic.DemoData;
 import uk.gov.gchq.gaffer.traffic.ElementGroup;
 import uk.gov.gchq.gaffer.user.User;
 
@@ -42,7 +41,7 @@ public class ContextBuilderTest {
         // Setup graph
         graph = new Graph.Builder()
                 .graphId("graph1")
-                .storeProperties(StreamUtil.openStream(DemoData.class, "mockaccumulo.properties"))
+                .storeProperties(StreamUtil.openStream(getClass(), "map-store.properties"))
                 .addSchemas(StreamUtil.openStreams(ElementGroup.class, "schema"))
                 .build();
     }

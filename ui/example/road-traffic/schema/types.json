@@ -55,7 +55,10 @@
             "java.lang.Long": 0
           }
         }
-      ]
+      ],
+      "aggregateFunction": {
+        "class": "uk.gov.gchq.koryphe.impl.binaryoperator.Sum"
+      }
     },
     "true": {
       "description": "A simple boolean that must always be true.",
@@ -73,7 +76,10 @@
         {
           "class": "uk.gov.gchq.koryphe.impl.predicate.Exists"
         }
-      ]
+      ],
+      "aggregateFunction": {
+        "class": "uk.gov.gchq.koryphe.impl.binaryoperator.Min"
+      }
     },
     "date.latest": {
       "description": "A Date that when aggregated together will be the latest date.",
@@ -82,13 +88,25 @@
         {
           "class": "uk.gov.gchq.koryphe.impl.predicate.Exists"
         }
-      ]
+      ],
+      "aggregateFunction": {
+        "class": "uk.gov.gchq.koryphe.impl.binaryoperator.Max"
+      }
     },
     "set": {
-      "class": "java.util.TreeSet"
+      "class": "java.util.TreeSet",
+      "aggregateFunction": {
+        "class": "uk.gov.gchq.koryphe.impl.binaryoperator.CollectionConcat"
+      }
     },
     "hllp": {
-      "class": "com.clearspring.analytics.stream.cardinality.HyperLogLogPlus"
+      "class": "com.clearspring.analytics.stream.cardinality.HyperLogLogPlus",
+      "aggregateFunction": {
+        "class": "uk.gov.gchq.gaffer.sketches.binaryoperator.HyperLogLogPlusAggregator"
+      },
+      "serialiser": {
+        "class": "uk.gov.gchq.gaffer.sketches.serialisation.HyperLogLogPlusSerialiser"
+      }
     },
     "counts.freqmap": {
       "class": "uk.gov.gchq.gaffer.types.FreqMap",
@@ -96,7 +114,10 @@
         {
           "class": "uk.gov.gchq.koryphe.impl.predicate.Exists"
         }
-      ]
+      ],
+      "aggregateFunction": {
+        "class": "uk.gov.gchq.gaffer.binaryoperator.FreqMapAggregator"
+      }
     }
   }
 }

@@ -58,8 +58,7 @@ public class SchemaBuilderService {
     private static final Schema COMMON_SCHEMA = loadCommonSchema();
 
     private static Schema loadCommonSchema() {
-        return Schema.fromJson(StreamUtil.dataTypes(SchemaBuilderService.class), StreamUtil.storeTypes(SchemaBuilderService.class));
-
+        return Schema.fromJson(StreamUtil.schemas(SchemaBuilderService.class));
     }
 
     @SuppressFBWarnings("REC_CATCH_EXCEPTION")
@@ -150,7 +149,7 @@ public class SchemaBuilderService {
             urls.addAll(ClasspathHelper.forPackage(packagePrefix));
         }
 
-        final List<Class> classes = new ArrayList<>(new Reflections(urls).getSubTypesOf(clazz));
+        final List<Class> classes = new ArrayList<Class>(new Reflections(urls).getSubTypesOf(clazz));
         keepPublicConcreteClasses(classes);
         classes.sort(Comparator.comparing(Class::getName));
 

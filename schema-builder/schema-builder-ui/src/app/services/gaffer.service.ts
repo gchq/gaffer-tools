@@ -66,11 +66,11 @@ export class GafferService {
           .catch(this.handleError);
   }
 
-  validateSchema(dataSchema: any, dataTypes: any, storeTypes: any): Observable<any> {
+  validateSchema(elements: any, types: any): Observable<any> {
     const gafferUrl = this.GAFFER_HOST + '/schema-builder-rest/v1/validate';
     const headers = new Headers({ 'Content-Type': 'application/json' });
     const options = new RequestOptions({ headers: headers });
-    const params = [dataSchema, dataTypes, storeTypes];
+    const params = [elements, types];
     return this.http.post(gafferUrl, params, options)
           .map(this.extractData)
           .catch(this.handleError);

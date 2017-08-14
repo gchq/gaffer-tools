@@ -1,4 +1,4 @@
-import { Edge } from '@types/vis';
+import { Edge } from 'vis';
 
 export interface GraphQLEdge extends Edge {
     arrows?: string,
