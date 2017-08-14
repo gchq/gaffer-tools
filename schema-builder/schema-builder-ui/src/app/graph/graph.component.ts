@@ -16,7 +16,7 @@
 
 import { Component, OnInit } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
-import { DataSet, Network, Node, Edge, Options } from '@types/vis';
+import { DataSet, Network, Node, Edge, Options } from 'vis';
 import { LocalStorageService } from 'ng2-webstorage';
 import * as _ from 'lodash';
 declare const vis: any;
