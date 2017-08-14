@@ -63,7 +63,7 @@ public class GafferQLSchemaBuilder {
         // Prepare lists for entity/edge type builders, keyed by their name in Gaffer
         final Map<String, GraphQLObjectType> dataObjectTypes = new HashMap<>();
 
-        // Register the data types
+        // Register the types
         for (final Map.Entry<String, TypeDefinition> t : gafferSchema.getTypes().entrySet()) {
             final GraphQLObjectType vertexType = new DataTypeGQLBuilder()
                     .name(t.getKey())

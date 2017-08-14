@@ -38,7 +38,7 @@ The application can be built and then run as a basic executable standalone war f
 To build it and its dependencies, use the following command from the parent directory:
 
 ```bash
-mvn clean install -Pstandalone-schema-builder-rest -Pquick
+mvn clean install -Pstandalone-schema-builder-rest -Pquick -pl :schema-builder-rest -am
 ```
 
 This uses the 'standalone-schema-builder-rest' profile to run jetty with the schema-builder-rest project after it and its dependencies have been built.

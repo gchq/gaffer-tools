@@ -23,13 +23,13 @@ import uk.gov.gchq.gaffer.accumulostore.AccumuloProperties;
 import uk.gov.gchq.gaffer.accumulostore.AccumuloStore;
 import uk.gov.gchq.gaffer.accumulostore.MockAccumuloStore;
 import uk.gov.gchq.gaffer.commonutil.CommonTestConstants;
+import uk.gov.gchq.gaffer.commonutil.StreamUtil;
 import uk.gov.gchq.gaffer.graph.Graph;
 import uk.gov.gchq.gaffer.operation.OperationException;
 import uk.gov.gchq.gaffer.randomelementgeneration.Constants;
 import uk.gov.gchq.gaffer.randomelementgeneration.supplier.RmatElementSupplier;
 import uk.gov.gchq.gaffer.store.StoreException;
 import uk.gov.gchq.gaffer.store.schema.Schema;
-
 import java.io.IOException;
 
 public class TestAccumuloStoreRandomElementIngestTest {
@@ -47,19 +47,16 @@ public class TestAccumuloStoreRandomElementIngestTest {
         testProperties.setRmatProbabilities(Constants.RMAT_PROBABILITIES);
         testProperties.setRmatMaxNodeId(100L);
         testProperties.setTempDirectory(tempFolder.newFolder().getCanonicalPath().toString());
-        final Schema schema = Schema.fromJson(
-                AccumuloElementIngestTest.class.getResourceAsStream("/schema/DataSchema.json"),
-                AccumuloElementIngestTest.class.getResourceAsStream("/schema/DataTypes.json"),
-                AccumuloElementIngestTest.class.getResourceAsStream("/schema/StoreTypes.json"));
-        final AccumuloProperties storeProperties = AccumuloProperties.loadStoreProperties(
-                AccumuloElementIngestTest.class.getResourceAsStream("/mockaccumulostore.properties"));
 
+        final Schema schema = Schema.fromJson(StreamUtil.schema(Constants.class));
+        final AccumuloProperties storeProperties = AccumuloProperties.loadStoreProperties(
+                StreamUtil.openStream(Constants.class, "mockaccumulostore.properties")
+        );
         final AccumuloStore accumuloStore = new MockAccumuloStore();
         accumuloStore.initialise("1", schema, storeProperties);
         final Graph graph = new Graph.Builder()
                 .graphId("1")
-                .addSchema(schema)
-                .storeProperties(storeProperties)
+                .store(accumuloStore)
                 .build();
 
         Configuration conf = new Configuration();

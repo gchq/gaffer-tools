@@ -9,7 +9,10 @@
       ]
     },
     "count.long": {
-      "class": "java.lang.Long"
+      "class": "java.lang.Long",
+      "aggregateFunction": {
+        "class": "uk.gov.gchq.koryphe.impl.binaryoperator.Sum"
+      }
     },
     "hllp": {
       "class": "com.clearspring.analytics.stream.cardinality.HyperLogLogPlus",
@@ -17,7 +20,11 @@
         {
           "class": "uk.gov.gchq.koryphe.impl.predicate.Exists"
         }
-      ]
+      ],
+      "aggregateFunction": {
+        "class": "uk.gov.gchq.gaffer.sketches.binaryoperator.HyperLogLogPlusAggregator"
+      },
+      "serialiserClass": "uk.gov.gchq.gaffer.sketches.serialisation.HyperLogLogPlusSerialiser"
     },
     "true": {
       "class": "java.lang.Boolean",

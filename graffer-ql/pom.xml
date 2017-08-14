@@ -28,15 +28,20 @@
         </dependency>
         <dependency>
             <groupId>uk.gov.gchq.gaffer</groupId>
-            <artifactId>accumulo-store</artifactId>
+            <artifactId>map-store</artifactId>
             <version>${gaffer.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>uk.gov.gchq.gaffer</groupId>
-            <artifactId>road-traffic-rest</artifactId>
+            <artifactId>road-traffic-model</artifactId>
             <version>${gaffer.version}</version>
-            <classifier>classes</classifier>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>uk.gov.gchq.gaffer</groupId>
+            <artifactId>road-traffic-generators</artifactId>
+            <version>${gaffer.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>

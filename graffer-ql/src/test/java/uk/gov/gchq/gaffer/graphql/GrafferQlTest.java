@@ -22,7 +22,6 @@ import org.apache.log4j.Logger;
 import org.junit.Test;
 import uk.gov.gchq.gaffer.commonutil.StreamUtil;
 import uk.gov.gchq.gaffer.graph.Graph;
-import uk.gov.gchq.gaffer.jsonserialisation.JSONSerialiser;
 import uk.gov.gchq.gaffer.operation.OperationChain;
 import uk.gov.gchq.gaffer.operation.impl.add.AddElements;
 import uk.gov.gchq.gaffer.operation.impl.generate.GenerateElements;
@@ -45,12 +44,11 @@ public class GrafferQlTest {
         final User user = new User.Builder()
                 .userId("user02")
                 .build();
-        final JSONSerialiser json = new JSONSerialiser();
 
         // Setup graph
         final Graph graph = new Graph.Builder()
                 .graphId("graph1")
-                .storeProperties(StreamUtil.openStream(DemoData.class, "mockaccumulo.properties"))
+                .storeProperties(StreamUtil.openStream(DemoData.class, "map-store.properties"))
                 .addSchemas(StreamUtil.openStreams(ElementGroup.class, "schema"))
                 .build();
 

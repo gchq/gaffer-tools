@@ -22,6 +22,7 @@ import org.junit.rules.TemporaryFolder;
 import uk.gov.gchq.gaffer.accumulostore.AccumuloProperties;
 import uk.gov.gchq.gaffer.accumulostore.MockAccumuloStore;
 import uk.gov.gchq.gaffer.commonutil.CommonTestConstants;
+import uk.gov.gchq.gaffer.commonutil.StreamUtil;
 import uk.gov.gchq.gaffer.graph.Graph;
 import uk.gov.gchq.gaffer.operation.OperationException;
 import uk.gov.gchq.gaffer.operation.impl.add.AddElements;
@@ -30,12 +31,10 @@ import uk.gov.gchq.gaffer.performancetesting.query.QueryMetrics;
 import uk.gov.gchq.gaffer.performancetesting.query.QueryTest;
 import uk.gov.gchq.gaffer.performancetesting.query.QueryTestProperties;
 import uk.gov.gchq.gaffer.randomelementgeneration.Constants;
-import uk.gov.gchq.gaffer.randomelementgeneration.supplier.ElementSeedSupplier;
 import uk.gov.gchq.gaffer.randomelementgeneration.supplier.ElementsSupplier;
 import uk.gov.gchq.gaffer.randomelementgeneration.supplier.EntitySeedSupplier;
 import uk.gov.gchq.gaffer.randomelementgeneration.supplier.RmatElementSupplier;
 import uk.gov.gchq.gaffer.user.User;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
@@ -62,9 +61,7 @@ public class TestQueryTest {
         final Graph graph = new Graph.Builder()
                 .graphId("id")
                 .storeProperties(storeProperties)
-                .addSchema(TestElementIngestTest.class.getResourceAsStream("/schema/DataSchema.json"))
-                .addSchema(TestElementIngestTest.class.getResourceAsStream("/schema/DataTypes.json"))
-                .addSchema(TestElementIngestTest.class.getResourceAsStream("/schema/StoreTypes.json"))
+                .addSchemas(StreamUtil.schemas(Constants.class))
                 .build();
         graph.execute(new AddElements.Builder()
                 .input(Stream
@@ -98,9 +95,7 @@ public class TestQueryTest {
         final Graph graph = new Graph.Builder()
                 .graphId("id")
                 .storeProperties(storeProperties)
-                .addSchema(TestElementIngestTest.class.getResourceAsStream("/schema/DataSchema.json"))
-                .addSchema(TestElementIngestTest.class.getResourceAsStream("/schema/DataTypes.json"))
-                .addSchema(TestElementIngestTest.class.getResourceAsStream("/schema/StoreTypes.json"))
+                .addSchemas(StreamUtil.schemas(Constants.class))
                 .build();
         graph.execute(new AddElements.Builder()
                 .input(Stream
