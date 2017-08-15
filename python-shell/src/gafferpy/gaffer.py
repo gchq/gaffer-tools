@@ -1078,6 +1078,82 @@ class Min(Operation):
 
         return operation
 
+class ExportToOtherGraph(Operation):
+    def __init__(self, graph_id=None, elements=None, parent_schema_ids=None, schema=None, parent_store_properties_id=None, store_properties=None):
+        super().__init__(
+            'uk.gov.gchq.gaffer.operation.export.graph.ExportToOtherGraph'
+        )
+
+        self.graph_id=graph_id
+        self.elements=elements
+        self.parent_schema_ids=parent_schema_ids
+        self.schema=schema
+        self.parent_store_properties_id=parent_store_properties_id
+        self.store_properties=store_properties
+
+    def to_json(self):
+        operation = super().to_json()
+
+        if self.graph_id is not None:
+            operation['graphId'] = self.graph_id
+
+        if self.elements is not None:
+            elements_json = []
+            for element in self.elements:
+                elements_json.append(element.to_json())
+            operation['input'] = elements_json
+
+        if self.parent_schema_ids is not None:
+            parent_schema_ids_json = []
+            for id in self.parent_schema_ids:
+                parent_schema_ids_json.append(id.to_json())
+            operation['parentSchemaIds'] = parent_schema_ids_json
+
+        if self.schema is not None:
+            operation['schema'] = self.schema
+
+        if self.parent_store_properties_id is not None:
+            operation['parentStorePropertiesId'] = self.parent_store_properties_id
+
+        if self.store_properties is not None:
+            operation['storeProperties'] = self.store_properties
+
+        return operation
+
+class exportToOtherAuthorisedGraph(Operation):
+    def __init__(self, graph_id=None, elements=None, parent_schema_ids=None, parent_store_properties_id=None):
+        super().__init__(
+            'uk.gov.gchq.gaffer.operation.export.graph.ExportToOtherAuthorisedGraph'
+        )
+
+        self.graph_id=graph_id
+        self.elements=elements
+        self.parent_schema_ids=parent_schema_ids
+        self.parent_store_properties_id=parent_store_properties_id
+
+    def to_json(self):
+        operation = super().to_json()
+
+        if self.graph_id is not None:
+            operation['graphId'] = self.graph_id
+
+        if self.elements is not None:
+            elements_json = []
+            for element in self.elements:
+                elements_json.append(element.to_json())
+            operation['input'] = elements_json
+
+        if self.parent_schema_ids is not None:
+            parent_schema_ids_json = []
+            for id in self.parent_schema_ids:
+                parent_schema_ids_json.append(id.to_json())
+            operation['parentSchemaIds'] = parent_schema_ids_json
+
+        if self.parent_store_properties_id is not None:
+            operation['parentStorePropertiesId'] = self.parent_store_properties_id
+
+        return operation
+
 
 class GetGraph:
     def get_url(self):

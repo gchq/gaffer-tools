@@ -1647,6 +1647,46 @@ class GafferTest(unittest.TestCase):
                   [g.Entity("test_group", "test_vertex")]).to_json()
         )
 
+    def testExportToOtherGraph(self):
+        self.assertEqual(
+            {
+                'class': 'uk.gov.gchq.gaffer.operation.export.ExportToOtherGraph',
+                'graphId': 'test_graph_id',
+                'input': [{'class': 'uk.gov.gchq.gaffer.data.element.Entity',
+                           'group': 'test_group',
+                           'vertex': 'test_vertex'}],
+                'parentSchemaIds': ["testSchemaId1", "testSchemaId2"],
+                'schema': "testSchema",
+                'parentStorePropertiesId': "testStorePropertiesId",
+                'storeProperties': "storeProps"
+            },
+            g.ExportToOtherGraph("test_graph_id",
+                                 [g.Entity("test_group", "test_vertex")],
+                                 ["testSchemaId1", "testSchemaId2"],
+                                 "testSchema",
+                                 "testStorePropertiesId",
+                                 "storeProps").to_json()
+        )
+
+    def testExportToOtherAuthorisedGraph(self):
+        self.assertEqual(
+            {
+                'class': 'uk.gov.gchq.gaffer.operation.export.ExportToOtherAuthorisedGraph',
+                'graphId': 'test_graph_id',
+                'input': [{'class': 'uk.gov.gchq.gaffer.data.element.Entity',
+                           'group': 'test_group',
+                           'vertex': 'test_vertex'}],
+                'parentSchemaIds': ["testSchemaId1", "testSchemaId2"],
+                'schema': "testSchema",
+                'parentStorePropertiesId': "testStorePropertiesId",
+                'storeProperties': "storeProps"
+            },
+            g.ExportToOtherAuthorisedGraph("test_graph_id",
+                                 [g.Entity("test_group", "test_vertex")],
+                                 ["testSchemaId1", "testSchemaId2"],
+                                 "testStorePropertiesId").to_json()
+        )
+
 
 if __name__ == "__main__":
     unittest.main()
