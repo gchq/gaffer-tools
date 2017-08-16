@@ -935,6 +935,102 @@ class DiscardOutput(Operation):
         super().__init__(
             class_name='uk.gov.gchq.gaffer.operation.impl.DiscardOutput')
 
+
+class GetElementsBetweenSets(Operation):
+    def __init__(self, options=None, view=None, seed_matching=None,
+                 in_out_type=None, directed_type=None, input_b=None):
+        super().__init__(
+            class_name='uk.gov.gchq.gaffer.accumulostore.operation.impl.GetElementsBetweenSets',
+            options=options,
+            view=view
+        )
+        self.seed_matching = seed_matching
+        self.in_out_type = in_out_type
+        self.directed_type = directed_type
+        self.input_b = input_b
+
+    def to_json(self):
+        operation = super().to_json()
+
+        if self.seed_matching is not None:
+            operation['seedMatching'] = self.seed_matching
+
+        if self.in_out_type is not None:
+            operation['includeIncomingOutGoing'] = self.in_out_type
+
+        if self.directed_type is not None:
+            operation['directedType'] = self.directed_type
+
+        if self.input_b is not None:
+            operation['inputB'] = self.input_b
+
+        return operation
+
+
+class GetElementsWithinSet(Operation):
+    def __init__(self, options=None, view=None, directed_type=None):
+        super().__init__(
+            class_name='uk.gov.gchq.gaffer.accumulostore.operation.impl.GetElementsWithinSet',
+            options=options,
+            view=view
+        )
+        self.directed_type = directed_type
+
+    def to_json(self):
+        operation = super().to_json()
+
+        if self.directed_type is not None:
+            operation['directedType'] = self.directed_type
+
+        return operation
+
+
+class SummariseGroupOverRanges(Operation):
+    def __init__(self, options=None, view=None,
+                 in_out_type=None, directed_type=None):
+        super().__init__(
+            class_name='uk.gov.gchq.gaffer.accumulostore.operation.impl.SummariseGroupOverRanges',
+            options=options,
+            view=view
+        )
+        self.in_out_type = in_out_type
+        self.directed_type = directed_type
+
+    def to_json(self):
+        operation = super().to_json()
+
+        if self.in_out_type is not None:
+            operation['includeIncomingOutGoing'] = self.in_out_type
+
+        if self.directed_type is not None:
+            operation['directedType'] = self.directed_type
+
+        return operation
+
+
+class GetElementsInRanges(Operation):
+    def __init__(self, options=None, view=None,
+                 directed_type=None, in_out_type=None):
+        super().__init__(
+            class_name='uk.gov.gchq.gaffer.accumulostore.operation.impl.GetElementsInRanges',
+            options=options,
+            view=view
+        )
+        self.in_out_type = in_out_type
+        self.directed_type = directed_type
+
+    def to_json(self):
+        operation = super().to_json()
+
+        if self.in_out_type is not None:
+            operation['includeIncomingOutGoing'] = self.in_out_type
+
+        if self.directed_type is not None:
+            operation['directedType'] = self.directed_type
+
+        return operation
+
+
 class Count(Operation):
     def __init__(self):
         super().__init__(
@@ -1210,6 +1306,89 @@ class ExportToOtherAuthorisedGraph(Operation):
         if self.parent_store_properties_id is not None:
             operation[
                 'parentStorePropertiesId'] = self.parent_store_properties_id
+
+        return operation
+
+
+class AddElementsFromSocket(Operation):
+    def __init__(self, hostname=None, port=None, element_generator=None,
+                 parallelism=None, validate=None, skip_invalid_elements=None,
+                 delimiter=None, options=None):
+        super().__init__(
+            'uk.gov.gchq.gaffer.operation.impl.add.AddElementsFromSocket',
+            options=options
+        )
+
+        self.hostname = hostname
+        self.port = port
+        self.element_generator = element_generator
+        self.parallelism = parallelism
+        self.validate = validate
+        self.skip_invalid_elements = skip_invalid_elements
+        self.delimiter = delimiter
+
+    def to_json(self):
+        operation = super().to_json()
+
+        if self.hostname is not None:
+            operation['hostname'] = self.hostname
+
+        if self.port is not None:
+            operation['port'] = self.port
+
+        if self.element_generator is not None:
+            operation['elementGenerator'] = self.element_generator
+
+        if self.parallelism is not None:
+            operation['parallelism'] = self.parallelism
+
+        if self.validate is not None:
+            operation['validate'] = self.validate
+
+        if self.skip_invalid_elements is not None:
+            operation['skipInvalidElements'] = self.skip_invalid_elements
+
+        if self.delimiter is not None:
+            operation['delimiter'] = self.delimiter
+
+        return operation
+
+
+class AddElementsFromFile(Operation):
+    def __init__(self, filename=None, element_generator=None,
+                 parallelism=None, validate=None, skip_invalid_elements=None,
+                 options=None):
+        super().__init__(
+            'uk.gov.gchq.gaffer.operation.impl.add.AddElementsFromSocket',
+            options=options
+        )
+
+        self.filename = filename
+        self.element_generator = element_generator
+        self.parallelism = parallelism
+        self.validate = validate
+        self.skip_invalid_elements = skip_invalid_elements
+
+    def to_json(self):
+        operation = super().to_json()
+
+        if self.filename is not None:
+            operation['filename'] = self.filename
+
+        if self.element_generator is not None:
+            operation['elementGenerator'] = self.element_generator
+
+        if self.parallelism is not None:
+            operation['parallelism'] = self.parallelism
+
+        if self.validate is not None:
+            operation['validate'] = self.validate
+
+        if self.skip_invalid_elements is not None:
+            operation['skipInvalidElements'] = self.skip_invalid_elements
+
+        if self.delimiter is not None:
+            operation['delimiter'] = self.delimiter
 
         return operation
 
