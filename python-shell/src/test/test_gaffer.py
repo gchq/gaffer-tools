@@ -755,6 +755,16 @@ class GafferTest(unittest.TestCase):
                               options={"option1": "option"}).to_json()
         )
 
+    def test_validate(self):
+        self.assertEqual(
+            {
+                'class': 'uk.gov.gchq.gaffer.operation.impl.Validate',
+                'validate': True,
+                'skipInvalidElements': False
+            },
+            g.Validate(True, False).to_json()
+        )
+
     def test_export_to_gaffer_result_cache(self):
         self.assertEqual(
             {
@@ -903,6 +913,16 @@ class GafferTest(unittest.TestCase):
                            {"option1": "option"}).to_json()
         )
 
+    def test_get_exports(self):
+        self.assertEqual(
+            {
+                'class': 'uk.gov.gchq.gaffer.operation.impl.export.GetExports',
+                'getExports': ['test']
+            },
+            g.GetExports(["test"]).to_json()
+
+        )
+
     def test_get_job_details(self):
         self.assertEqual(
             {
@@ -944,6 +964,14 @@ class GafferTest(unittest.TestCase):
                 'options': {'option1': 'option'}
             },
             g.GetAllJobDetails({"option1": "option"}).to_json()
+        )
+
+    def test_get_job_results(self):
+        self.assertEqual(
+            {
+                'class': 'uk.gov.gchq.gaffer.operation.impl.job.GetJobResults'
+            },
+            g.GetJobResults().to_json()
         )
 
     def test_get_operation(self):
@@ -1430,6 +1458,14 @@ class GafferTest(unittest.TestCase):
             g.DiscardOutput().to_json()
         )
 
+    def test_count(self):
+        self.assertEqual(
+            {
+                'class': 'uk.gov.gchq.gaffer.operation.impl.Count'
+            },
+            g.Count().to_json()
+        )
+
     def test_count_groups(self):
         self.assertEqual(
             {
@@ -1487,6 +1523,15 @@ class GafferTest(unittest.TestCase):
                          '.impl.output.ToEntitySeeds'
             },
             g.ToEntitySeeds().to_json()
+        )
+
+    def test_to_list(self):
+        self.assertEqual(
+            {
+                'class': 'uk.gov.gchq.gaffer.operation'
+                         '.impl.output.ToList'
+            },
+            g.ToList().to_json()
         )
 
     def test_to_vertices(self):
@@ -1647,44 +1692,43 @@ class GafferTest(unittest.TestCase):
                   [g.Entity("test_group", "test_vertex")]).to_json()
         )
 
-    def testExportToOtherGraph(self):
+    def test_export_to_other_graph(self):
         self.assertEqual(
             {
-                'class': 'uk.gov.gchq.gaffer.operation.export.ExportToOtherGraph',
+                'class': 'uk.gov.gchq.gaffer.operation.export.graph.ExportToOtherGraph',
                 'graphId': 'test_graph_id',
                 'input': [{'class': 'uk.gov.gchq.gaffer.data.element.Entity',
                            'group': 'test_group',
                            'vertex': 'test_vertex'}],
                 'parentSchemaIds': ["testSchemaId1", "testSchemaId2"],
-                'schema': "testSchema",
+                'schema': {'schema1': 'schemaVal'},
                 'parentStorePropertiesId': "testStorePropertiesId",
-                'storeProperties': "storeProps"
+                'storeProperties': {'storeProp1': 'storeValue'}
             },
             g.ExportToOtherGraph("test_graph_id",
                                  [g.Entity("test_group", "test_vertex")],
                                  ["testSchemaId1", "testSchemaId2"],
-                                 "testSchema",
+                                 {"schema1": "schemaVal"},
                                  "testStorePropertiesId",
-                                 "storeProps").to_json()
+                                 {"storeProp1": "storeValue"}).to_json()
         )
 
-    def testExportToOtherAuthorisedGraph(self):
+    def test_export_to_other_authorised_graph(self):
         self.assertEqual(
             {
-                'class': 'uk.gov.gchq.gaffer.operation.export.ExportToOtherAuthorisedGraph',
+                'class': 'uk.gov.gchq.gaffer.operation.export.graph.ExportToOtherAuthorisedGraph',
                 'graphId': 'test_graph_id',
                 'input': [{'class': 'uk.gov.gchq.gaffer.data.element.Entity',
                            'group': 'test_group',
                            'vertex': 'test_vertex'}],
                 'parentSchemaIds': ["testSchemaId1", "testSchemaId2"],
-                'schema': "testSchema",
-                'parentStorePropertiesId': "testStorePropertiesId",
-                'storeProperties': "storeProps"
+                'parentStorePropertiesId': "testStorePropertiesId"
             },
             g.ExportToOtherAuthorisedGraph("test_graph_id",
-                                 [g.Entity("test_group", "test_vertex")],
-                                 ["testSchemaId1", "testSchemaId2"],
-                                 "testStorePropertiesId").to_json()
+                                           [g.Entity("test_group",
+                                                     "test_vertex")],
+                                           ["testSchemaId1", "testSchemaId2"],
+                                           "testStorePropertiesId").to_json()
         )
 
 

@@ -578,6 +578,24 @@ class GenerateObjects(Operation):
         return operation
 
 
+class Validate(Operation):
+    def __init__(self,
+                 validate,
+                 skip_invalid_elements=True):
+        super().__init__(
+            class_name='uk.gov.gchq.gaffer.operation.impl.Validate')
+
+        self.validate = validate
+        self.skip_invalid_elements = skip_invalid_elements
+
+    def to_json(self):
+        operation = super().to_json()
+
+        operation['validate'] = self.validate
+        operation['skipInvalidElements'] = self.skip_invalid_elements
+        return operation
+
+
 class ExportToGafferResultCache(Operation):
     def __init__(self,
                  key=None,
@@ -667,6 +685,25 @@ class GetSetExport(Operation):
         return operation
 
 
+class GetExports(Operation):
+    def __init__(self,
+                 get_exports=None,
+                 options=None):
+        super().__init__(
+            class_name='uk.gov.gchq.gaffer.operation.impl.export.GetExports',
+            view=None,
+            options=options)
+        self.get_exports = get_exports
+
+    def to_json(self):
+        operation = super().to_json()
+
+        if self.get_exports is not None:
+            operation['getExports'] = self.get_exports
+
+        return operation
+
+
 class GetJobDetails(Operation):
     def __init__(self,
                  job_id=None,
@@ -690,6 +727,19 @@ class GetAllJobDetails(Operation):
     def __init__(self, options=None):
         super().__init__(
             class_name='uk.gov.gchq.gaffer.operation.impl.job.GetAllJobDetails',
+            view=None,
+            options=options)
+
+    def to_json(self):
+        operation = super().to_json()
+
+        return operation
+
+
+class GetJobResults(Operation):
+    def __init__(self, options=None):
+        super().__init__(
+            class_name='uk.gov.gchq.gaffer.operation.impl.job.GetJobResults',
             view=None,
             options=options)
 
@@ -879,15 +929,17 @@ class GetAllNamedOperations(Operation):
             class_name='uk.gov.gchq.gaffer.named.operation.GetAllNamedOperations',
             options=options)
 
-    def to_json(self):
-        operation = super().to_json()
-        return operation
-
 
 class DiscardOutput(Operation):
     def __init__(self):
         super().__init__(
             class_name='uk.gov.gchq.gaffer.operation.impl.DiscardOutput')
+
+class Count(Operation):
+    def __init__(self):
+        super().__init__(
+            class_name='uk.gov.gchq.gaffer.operation.impl.Count'
+        )
 
 
 class CountGroups(Operation):
@@ -935,6 +987,12 @@ class ToEntitySeeds(Operation):
     def __init__(self):
         super().__init__(
             class_name='uk.gov.gchq.gaffer.operation.impl.output.ToEntitySeeds')
+
+
+class ToList(Operation):
+    def __init__(self):
+        super().__init__(
+            class_name='uk.gov.gchq.gaffer.operation.impl.output.ToList')
 
 
 class ToVertices(Operation):
@@ -1078,18 +1136,21 @@ class Min(Operation):
 
         return operation
 
+
 class ExportToOtherGraph(Operation):
-    def __init__(self, graph_id=None, elements=None, parent_schema_ids=None, schema=None, parent_store_properties_id=None, store_properties=None):
+    def __init__(self, graph_id=None, elements=None, parent_schema_ids=None,
+                 schema=None, parent_store_properties_id=None,
+                 store_properties=None):
         super().__init__(
             'uk.gov.gchq.gaffer.operation.export.graph.ExportToOtherGraph'
         )
 
-        self.graph_id=graph_id
-        self.elements=elements
-        self.parent_schema_ids=parent_schema_ids
-        self.schema=schema
-        self.parent_store_properties_id=parent_store_properties_id
-        self.store_properties=store_properties
+        self.graph_id = graph_id
+        self.elements = elements
+        self.parent_schema_ids = parent_schema_ids
+        self.schema = schema
+        self.parent_store_properties_id = parent_store_properties_id
+        self.store_properties = store_properties
 
     def to_json(self):
         operation = super().to_json()
@@ -1104,32 +1165,32 @@ class ExportToOtherGraph(Operation):
             operation['input'] = elements_json
 
         if self.parent_schema_ids is not None:
-            parent_schema_ids_json = []
-            for id in self.parent_schema_ids:
-                parent_schema_ids_json.append(id.to_json())
-            operation['parentSchemaIds'] = parent_schema_ids_json
+            operation['parentSchemaIds'] = self.parent_schema_ids
 
         if self.schema is not None:
             operation['schema'] = self.schema
 
         if self.parent_store_properties_id is not None:
-            operation['parentStorePropertiesId'] = self.parent_store_properties_id
+            operation[
+                'parentStorePropertiesId'] = self.parent_store_properties_id
 
         if self.store_properties is not None:
             operation['storeProperties'] = self.store_properties
 
         return operation
 
-class exportToOtherAuthorisedGraph(Operation):
-    def __init__(self, graph_id=None, elements=None, parent_schema_ids=None, parent_store_properties_id=None):
+
+class ExportToOtherAuthorisedGraph(Operation):
+    def __init__(self, graph_id=None, elements=None, parent_schema_ids=None,
+                 parent_store_properties_id=None):
         super().__init__(
             'uk.gov.gchq.gaffer.operation.export.graph.ExportToOtherAuthorisedGraph'
         )
 
-        self.graph_id=graph_id
-        self.elements=elements
-        self.parent_schema_ids=parent_schema_ids
-        self.parent_store_properties_id=parent_store_properties_id
+        self.graph_id = graph_id
+        self.elements = elements
+        self.parent_schema_ids = parent_schema_ids
+        self.parent_store_properties_id = parent_store_properties_id
 
     def to_json(self):
         operation = super().to_json()
@@ -1144,13 +1205,11 @@ class exportToOtherAuthorisedGraph(Operation):
             operation['input'] = elements_json
 
         if self.parent_schema_ids is not None:
-            parent_schema_ids_json = []
-            for id in self.parent_schema_ids:
-                parent_schema_ids_json.append(id.to_json())
-            operation['parentSchemaIds'] = parent_schema_ids_json
+            operation['parentSchemaIds'] = self.parent_schema_ids
 
         if self.parent_store_properties_id is not None:
-            operation['parentStorePropertiesId'] = self.parent_store_properties_id
+            operation[
+                'parentStorePropertiesId'] = self.parent_store_properties_id
 
         return operation
 
