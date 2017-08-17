@@ -1010,7 +1010,7 @@ class SummariseGroupOverRanges(Operation):
 
 class GetElementsInRanges(Operation):
     def __init__(self, options=None, view=None,
-                 directed_type=None, in_out_type=None):
+                 in_out_type=None, directed_type=None):
         super().__init__(
             class_name='uk.gov.gchq.gaffer.accumulostore.operation.impl.GetElementsInRanges',
             options=options,
@@ -1359,7 +1359,7 @@ class AddElementsFromFile(Operation):
                  parallelism=None, validate=None, skip_invalid_elements=None,
                  options=None):
         super().__init__(
-            'uk.gov.gchq.gaffer.operation.impl.add.AddElementsFromSocket',
+            'uk.gov.gchq.gaffer.operation.impl.add.AddElementsFromFile',
             options=options
         )
 
@@ -1386,9 +1386,6 @@ class AddElementsFromFile(Operation):
 
         if self.skip_invalid_elements is not None:
             operation['skipInvalidElements'] = self.skip_invalid_elements
-
-        if self.delimiter is not None:
-            operation['delimiter'] = self.delimiter
 
         return operation
 

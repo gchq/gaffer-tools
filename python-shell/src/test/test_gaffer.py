@@ -1458,6 +1458,60 @@ class GafferTest(unittest.TestCase):
             g.DiscardOutput().to_json()
         )
 
+    def test_get_elements_between_sets(self):
+        self.assertEqual(
+            {
+                'class': 'uk.gov.gchq.gaffer.accumulostore.operation.impl.GetElementsBetweenSets',
+                'options': {'option1': 'option'},
+                'view': {},
+                'seedMatching': True,
+                'includeIncomingOutGoing': False,
+                'directedType': 'directed',
+                'inputB': 'input1'
+            },
+            g.GetElementsBetweenSets({"option1": "option"}, g.View(), True,
+                                     False, 'directed', 'input1'
+                                     ).to_json()
+        )
+
+    def test_get_elements_within_set(self):
+        self.assertEqual(
+            {
+                'class': 'uk.gov.gchq.gaffer.accumulostore.operation.impl.GetElementsWithinSet',
+                'options': {'option1': 'option'},
+                'view': {},
+                'directedType': 'directed'
+            },
+            g.GetElementsWithinSet({'option1': 'option'}, g.View(),
+                                   'directed').to_json()
+        )
+
+    def test_summarise_group_over_ranges(self):
+        self.assertEqual(
+            {
+                'class': 'uk.gov.gchq.gaffer.accumulostore.operation.impl.SummariseGroupOverRanges',
+                'options': {'option1': 'option'},
+                'view': {},
+                'includeIncomingOutGoing': True,
+                'directedType': 'directed'
+            },
+            g.SummariseGroupOverRanges({'option1': 'option'}, g.View(), True,
+                                       'directed').to_json()
+        )
+
+    def test_get_elements_in_ranges(self):
+        self.assertEqual(
+            {
+                'class': 'uk.gov.gchq.gaffer.accumulostore.operation.impl.GetElementsInRanges',
+                'options': {'option1': 'option'},
+                'view': {},
+                'includeIncomingOutGoing': True,
+                'directedType': 'directed'
+            },
+            g.GetElementsInRanges({'option1': 'option'}, g.View(), True,
+                                  'directed').to_json()
+        )
+
     def test_count(self):
         self.assertEqual(
             {
@@ -1729,6 +1783,40 @@ class GafferTest(unittest.TestCase):
                                                      "test_vertex")],
                                            ["testSchemaId1", "testSchemaId2"],
                                            "testStorePropertiesId").to_json()
+        )
+
+    def test_add_elements_from_socket(self):
+        self.assertEqual(
+            {
+                'class': 'uk.gov.gchq.gaffer.operation.impl.add.AddElementsFromSocket',
+                'hostname': 'hostName',
+                'port': 2321,
+                'elementGenerator': 'GenerateElements',
+                'parallelism': 'parallel',
+                'validate': True,
+                'skipInvalidElements': False,
+                'delimiter': 'delimiter',
+                'options': {'option1': 'option'}
+            },
+            g.AddElementsFromSocket("hostName", 2321, "GenerateElements",
+                                    "parallel", True, False, "delimiter",
+                                    {"option1": "option"}).to_json()
+        )
+
+    def test_add_elements_from_file(self):
+        self.assertEqual(
+            {
+                'class': 'uk.gov.gchq.gaffer.operation.impl.add.AddElementsFromFile',
+                'filename': 'fileName',
+                'elementGenerator': 'GenerateElements',
+                'parallelism': 'parallel',
+                'validate': True,
+                'skipInvalidElements': False,
+                'options': {'option1': 'option'}
+            },
+            g.AddElementsFromFile("fileName", "GenerateElements",
+                                  "parallel", True, False,
+                                  {"option1": "option"}).to_json()
         )
 
 
