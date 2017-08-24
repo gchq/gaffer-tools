@@ -103,8 +103,8 @@ if ! which mvn >/dev/null 2>&1; then
 	export PATH=$PWD/apache-maven-$MAVEN_VERSION/bin:$PATH
 fi
 
-if ! git clone -b gaffer2-$GAFFER_VERSION https://github.com/gchq/Gaffer.git; then
-	git clone -b $GAFFER_VERSION https://github.com/gchq/Gaffer.git
+if ! git clone -b gaffer2-$GAFFER_VERSION --depth 1 https://github.com/gchq/Gaffer.git; then
+	git clone -b $GAFFER_VERSION --depth 1 https://github.com/gchq/Gaffer.git
 fi
 
 cd Gaffer
