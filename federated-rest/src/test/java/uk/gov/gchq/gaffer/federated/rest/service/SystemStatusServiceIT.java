@@ -16,11 +16,14 @@
 package uk.gov.gchq.gaffer.federated.rest.service;
 
 import org.junit.Test;
+
 import uk.gov.gchq.gaffer.federated.rest.AbstractFederatedSystemIT;
 import uk.gov.gchq.gaffer.federated.rest.TypeReferenceFederatedImpl.ListFederatedSystemStatus;
 import uk.gov.gchq.gaffer.federated.rest.dto.FederatedSystemStatus;
 import uk.gov.gchq.gaffer.federated.rest.util.FederatedStatusUtil;
+
 import javax.ws.rs.core.Response;
+
 import java.util.List;
 import java.util.Map;
 

@@ -18,6 +18,7 @@ package uk.gov.gchq.gaffer.graphql.fetch;
 
 import graphql.schema.DataFetchingEnvironment;
 import org.junit.Test;
+
 import java.util.HashMap;
 import java.util.Map;
 

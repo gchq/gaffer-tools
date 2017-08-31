@@ -25,6 +25,7 @@ import com.amazonaws.services.cloudwatch.model.PutMetricDataResult;
 import com.amazonaws.services.cloudwatch.model.StandardUnit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import uk.gov.gchq.gaffer.performancetesting.Metrics;
 import uk.gov.gchq.gaffer.performancetesting.MetricsListener;
 
@@ -78,7 +79,7 @@ public class CloudWatchMetricsListener implements MetricsListener {
 
         Date now = new Date();
 
-        for (String name : metrics.getMetricNames()) {
+        for (final String name : metrics.getMetricNames()) {
             Object value = metrics.getMetric(name);
 
             if (value instanceof Double) {

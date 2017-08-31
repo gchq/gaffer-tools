@@ -16,6 +16,7 @@
 package uk.gov.gchq.gaffer.federated.rest;
 
 import org.glassfish.hk2.utilities.binding.AbstractBinder;
+
 import uk.gov.gchq.gaffer.rest.factory.UserFactory;
 
 public class FederatedBinder extends AbstractBinder {

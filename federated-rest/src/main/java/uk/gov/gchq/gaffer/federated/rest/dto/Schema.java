@@ -19,7 +19,9 @@ package uk.gov.gchq.gaffer.federated.rest.dto;
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+
 import uk.gov.gchq.gaffer.federated.rest.util.CloneUtil;
+
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;

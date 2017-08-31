@@ -16,9 +16,11 @@
 package uk.gov.gchq.gaffer.federated.rest.service;
 
 import org.junit.Test;
+
 import uk.gov.gchq.gaffer.federated.rest.AbstractFederatedSystemIT;
 import uk.gov.gchq.gaffer.federated.rest.dto.GafferUrl;
 import uk.gov.gchq.gaffer.federated.rest.util.FederatedGraphConfigurationUtil;
+
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Map.Entry;

@@ -20,6 +20,7 @@ import org.apache.accumulo.minicluster.MiniAccumuloCluster;
 import org.apache.accumulo.minicluster.MiniAccumuloConfig;
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.FileSystems;
@@ -109,7 +110,7 @@ public final class MiniAccumuloClusterController {
                 cluster.stop();
                 cluster = null;
                 LOGGER.info("Cluster stopped");
-            } catch (IOException | InterruptedException e) {
+            } catch (final IOException | InterruptedException e) {
                 e.printStackTrace();
             }
         }
@@ -118,7 +119,7 @@ public final class MiniAccumuloClusterController {
             try {
                 FileUtils.deleteDirectory(clusterPath.toFile());
                 clusterPath = null;
-            } catch (IOException e) {
+            } catch (final IOException e) {
                 e.printStackTrace();
             }
         }
@@ -146,7 +147,7 @@ public final class MiniAccumuloClusterController {
             config.setInstanceName(instanceName);
             cluster = new MiniAccumuloCluster(config);
             cluster.start();
-        } catch (InterruptedException | IOException e) {
+        } catch (final InterruptedException | IOException e) {
             LOGGER.error("Failed to configure cluster", e);
             throw new RuntimeException("Failed to start cluster", e);
         }
@@ -160,7 +161,7 @@ public final class MiniAccumuloClusterController {
             final File propsFile = new File(clusterPath + "/store.properties");
             FileUtils.copyInputStreamToFile(getClass().getResourceAsStream("/store.properties.template"), propsFile);
             FileUtils.write(propsFile, "accumulo.zookeepers=" + cluster.getZooKeepers(), true);
-        } catch (IOException e) {
+        } catch (final IOException e) {
             LOGGER.error("Failed to write properties file", e);
         }
 
@@ -179,7 +180,7 @@ public final class MiniAccumuloClusterController {
                 WatchKey key;
                 try {
                     key = watcher.take();
-                } catch (InterruptedException e) {
+                } catch (final InterruptedException e) {
                     return;
                 }
 
@@ -208,7 +209,7 @@ public final class MiniAccumuloClusterController {
             }
 
             LOGGER.info("Finished Watching Shutdown");
-        } catch (IOException e) {
+        } catch (final IOException e) {
             LOGGER.error("Failed to watch shutdown", e);
         }
     }
@@ -219,7 +220,7 @@ public final class MiniAccumuloClusterController {
         if (Files.exists(clusterPath)) {
             try {
                 FileUtils.deleteDirectory(clusterPath.toFile());
-            } catch (IOException e1) {
+            } catch (final IOException e1) {
                 LOGGER.error("Failed to delete old directory", e1);
             }
         }
@@ -230,7 +231,7 @@ public final class MiniAccumuloClusterController {
             } else {
                 clusterPath = Files.createDirectory(clusterPath);
             }
-        } catch (IOException e) {
+        } catch (final IOException e) {
             LOGGER.error("Failed to create temp dir", e);
             throw new RuntimeException("Unable to create directory", e);
         }

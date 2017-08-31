@@ -19,7 +19,9 @@ package uk.gov.gchq.gaffer.federated.rest.dto;
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+
 import uk.gov.gchq.gaffer.federated.rest.util.CloneUtil;
+
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -63,7 +65,7 @@ public class OperationChain implements Cloneable {
     @SuppressFBWarnings(value = "CN_IDIOM_NO_SUPER_CALL", justification = "All fields are cloned")
     public OperationChain clone() {
         final OperationChain opChain = new OperationChain();
-        for (Operation operation : operations) {
+        for (final Operation operation : operations) {
             opChain.operations.add(operation.clone());
         }
 

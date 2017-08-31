@@ -20,6 +20,7 @@ import org.apache.accumulo.core.util.shell.Shell;
 import org.apache.accumulo.minicluster.MiniAccumuloCluster;
 import org.apache.accumulo.minicluster.MiniAccumuloConfig;
 import org.apache.commons.io.FileUtils;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -103,7 +104,7 @@ public final class MiniAccumuloClusterWithShellController {
                 throw new RuntimeException("Shell failed with code: " + shell.getExitCode());
             }
             shell.start();
-        } catch (IOException e) {
+        } catch (final IOException e) {
             throw new RuntimeException("Failed to start shell");
         }
     }
@@ -119,7 +120,7 @@ public final class MiniAccumuloClusterWithShellController {
                 cluster.stop();
                 cluster = null;
                 System.out.println("Cluster stopped");
-            } catch (IOException | InterruptedException e) {
+            } catch (final IOException | InterruptedException e) {
                 e.printStackTrace();
             }
         }
@@ -128,7 +129,7 @@ public final class MiniAccumuloClusterWithShellController {
             try {
                 FileUtils.deleteDirectory(clusterPath.toFile());
                 clusterPath = null;
-            } catch (IOException e) {
+            } catch (final IOException e) {
                 e.printStackTrace();
             }
         }
@@ -156,7 +157,7 @@ public final class MiniAccumuloClusterWithShellController {
             config.setInstanceName(instanceName);
             cluster = new MiniAccumuloCluster(config);
             cluster.start();
-        } catch (InterruptedException | IOException e) {
+        } catch (final InterruptedException | IOException e) {
             throw new RuntimeException("Failed to start cluster", e);
         }
 
@@ -169,7 +170,7 @@ public final class MiniAccumuloClusterWithShellController {
             final File propsFile = new File(clusterPath + "/store.properties");
             FileUtils.copyInputStreamToFile(getClass().getResourceAsStream("/store.properties.template"), propsFile);
             FileUtils.write(propsFile, "accumulo.zookeepers=" + cluster.getZooKeepers(), true);
-        } catch (IOException e) {
+        } catch (final IOException e) {
             e.printStackTrace();
         }
     }
@@ -179,7 +180,7 @@ public final class MiniAccumuloClusterWithShellController {
         if (Files.exists(clusterPath)) {
             try {
                 FileUtils.deleteDirectory(clusterPath.toFile());
-            } catch (IOException e1) {
+            } catch (final IOException e1) {
                 System.err.println("Failed to delete old directory");
             }
         }
@@ -190,7 +191,7 @@ public final class MiniAccumuloClusterWithShellController {
             } else {
                 clusterPath = Files.createDirectory(clusterPath);
             }
-        } catch (IOException e) {
+        } catch (final IOException e) {
             throw new RuntimeException("Unable to create directory", e);
         }
     }

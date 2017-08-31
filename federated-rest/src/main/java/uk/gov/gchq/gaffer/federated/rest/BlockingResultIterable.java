@@ -106,7 +106,7 @@ public class BlockingResultIterable implements Iterable<Object> {
                 // block until there is an iterator available
                 try {
                     Thread.sleep(SLEEP_TIME_IN_MS);
-                } catch (InterruptedException e) {
+                } catch (final InterruptedException e) {
                     throw new RuntimeException(e.getMessage(), e);
                 }
             }

@@ -16,6 +16,7 @@
 package uk.gov.gchq.gaffer.federated.rest.util;
 
 import uk.gov.gchq.gaffer.federated.rest.dto.GafferUrl;
+
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.Response;
 

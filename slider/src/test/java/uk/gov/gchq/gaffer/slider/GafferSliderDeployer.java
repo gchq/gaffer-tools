@@ -34,6 +34,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import uk.gov.gchq.gaffer.accumulostore.AccumuloProperties;
 import uk.gov.gchq.gaffer.accumulostore.SingleUseAccumuloStore;
 import uk.gov.gchq.gaffer.commonutil.StreamUtil;
@@ -43,6 +44,7 @@ import uk.gov.gchq.gaffer.slider.util.GafferSliderProperties;
 import uk.gov.gchq.gaffer.slider.util.SliderKeystoreUtils;
 import uk.gov.gchq.gaffer.slider.util.SliderUtils;
 import uk.gov.gchq.gaffer.store.StoreProperties;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -89,7 +91,7 @@ public class GafferSliderDeployer extends AgentCommandTestBase {
 		return new BigInteger(130, random).toString(32);
 	}
 
-	private String createGafferAccumuloUser (Connector accumulo, String user, String password) throws AccumuloSecurityException, AccumuloException {
+	private String createGafferAccumuloUser (final Connector accumulo, final String user, final String password) throws AccumuloSecurityException, AccumuloException {
 		accumulo.securityOperations().createLocalUser(user, new PasswordToken(password));
 		accumulo.securityOperations().grantSystemPermission(user, SystemPermission.CREATE_TABLE);
 		accumulo.securityOperations().changeUserAuthorizations(user, new Authorizations(
@@ -107,7 +109,7 @@ public class GafferSliderDeployer extends AgentCommandTestBase {
 		return password;
 	}
 
-	private StoreProperties buildGafferStoreProperties (String zookeepers, String instanceName, String user, String password) throws IOException {
+	private StoreProperties buildGafferStoreProperties (final String zookeepers, final String instanceName, final String user, final String password) throws IOException {
 		Properties props = new Properties();
 
 		// Load base store properties from file
@@ -118,7 +120,7 @@ public class GafferSliderDeployer extends AgentCommandTestBase {
 			} finally {
 				try {
 					baseStorePropertiesFile.close();
-				} catch (IOException e) {
+				} catch (final IOException e) {
 					// Ignore
 				}
 			}

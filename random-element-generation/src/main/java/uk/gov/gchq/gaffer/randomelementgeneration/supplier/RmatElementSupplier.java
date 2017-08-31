@@ -16,6 +16,7 @@
 package uk.gov.gchq.gaffer.randomelementgeneration.supplier;
 
 import com.clearspring.analytics.stream.cardinality.HyperLogLogPlus;
+
 import uk.gov.gchq.gaffer.data.element.Edge;
 import uk.gov.gchq.gaffer.data.element.Element;
 import uk.gov.gchq.gaffer.data.element.Entity;
