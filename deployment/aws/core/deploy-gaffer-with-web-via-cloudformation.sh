@@ -36,9 +36,9 @@ SUBNET_ID=""
 # The name of an existing KeyPair that can be used to SSH into the provisioned cluster
 KEYNAME=""
 
-# The id of a security group to add to all EMR instances
+# The id of any security groups to add to all EMR instances
 # Usually used to allow SSH access to the cluster from your IP address
-EXTRA_SECURITY_GROUP=""
+EXTRA_SECURITY_GROUPS=""
 
 EMR_VERSION="emr-5.7.0"
 EMR_INSTANCE_TYPE="m3.xlarge"
@@ -76,7 +76,7 @@ aws cloudformation create-stack \
 		ParameterKey=EmrCoreInstanceCount,ParameterValue=$EMR_INSTANCE_COUNT \
 		ParameterKey=VpcId,ParameterValue=$VPC_ID \
 		ParameterKey=SubnetId,ParameterValue=$SUBNET_ID \
-		ParameterKey=ExtraSecurityGroups,ParameterValue=$EXTRA_SECURITY_GROUP \
+		ParameterKey=ExtraSecurityGroups,ParameterValue=\"$EXTRA_SECURITY_GROUPS\" \
 		ParameterKey=KeyName,ParameterValue=$KEYNAME \
 		ParameterKey=GafferInstanceName,ParameterValue=$GAFFER_GRAPH_ID \
 		ParameterKey=UserName,ParameterValue=$GAFFER_USERNAME \
