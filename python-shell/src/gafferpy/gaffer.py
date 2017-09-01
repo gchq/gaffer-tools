@@ -578,6 +578,24 @@ class GenerateObjects(Operation):
         return operation
 
 
+class Validate(Operation):
+    def __init__(self,
+                 validate,
+                 skip_invalid_elements=True):
+        super().__init__(
+            class_name='uk.gov.gchq.gaffer.operation.impl.Validate')
+
+        self.validate = validate
+        self.skip_invalid_elements = skip_invalid_elements
+
+    def to_json(self):
+        operation = super().to_json()
+
+        operation['validate'] = self.validate
+        operation['skipInvalidElements'] = self.skip_invalid_elements
+        return operation
+
+
 class ExportToGafferResultCache(Operation):
     def __init__(self,
                  key=None,
@@ -667,6 +685,25 @@ class GetSetExport(Operation):
         return operation
 
 
+class GetExports(Operation):
+    def __init__(self,
+                 get_exports=None,
+                 options=None):
+        super().__init__(
+            class_name='uk.gov.gchq.gaffer.operation.impl.export.GetExports',
+            view=None,
+            options=options)
+        self.get_exports = get_exports
+
+    def to_json(self):
+        operation = super().to_json()
+
+        if self.get_exports is not None:
+            operation['getExports'] = self.get_exports
+
+        return operation
+
+
 class GetJobDetails(Operation):
     def __init__(self,
                  job_id=None,
@@ -690,6 +727,19 @@ class GetAllJobDetails(Operation):
     def __init__(self, options=None):
         super().__init__(
             class_name='uk.gov.gchq.gaffer.operation.impl.job.GetAllJobDetails',
+            view=None,
+            options=options)
+
+    def to_json(self):
+        operation = super().to_json()
+
+        return operation
+
+
+class GetJobResults(Operation):
+    def __init__(self, options=None):
+        super().__init__(
+            class_name='uk.gov.gchq.gaffer.operation.impl.job.GetJobResults',
             view=None,
             options=options)
 
@@ -879,15 +929,113 @@ class GetAllNamedOperations(Operation):
             class_name='uk.gov.gchq.gaffer.named.operation.GetAllNamedOperations',
             options=options)
 
-    def to_json(self):
-        operation = super().to_json()
-        return operation
-
 
 class DiscardOutput(Operation):
     def __init__(self):
         super().__init__(
             class_name='uk.gov.gchq.gaffer.operation.impl.DiscardOutput')
+
+
+class GetElementsBetweenSets(Operation):
+    def __init__(self, options=None, view=None, seed_matching=None,
+                 in_out_type=None, directed_type=None, input_b=None):
+        super().__init__(
+            class_name='uk.gov.gchq.gaffer.accumulostore.operation.impl.GetElementsBetweenSets',
+            options=options,
+            view=view
+        )
+        self.seed_matching = seed_matching
+        self.in_out_type = in_out_type
+        self.directed_type = directed_type
+        self.input_b = input_b
+
+    def to_json(self):
+        operation = super().to_json()
+
+        if self.seed_matching is not None:
+            operation['seedMatching'] = self.seed_matching
+
+        if self.in_out_type is not None:
+            operation['includeIncomingOutGoing'] = self.in_out_type
+
+        if self.directed_type is not None:
+            operation['directedType'] = self.directed_type
+
+        if self.input_b is not None:
+            operation['inputB'] = self.input_b
+
+        return operation
+
+
+class GetElementsWithinSet(Operation):
+    def __init__(self, options=None, view=None, directed_type=None):
+        super().__init__(
+            class_name='uk.gov.gchq.gaffer.accumulostore.operation.impl.GetElementsWithinSet',
+            options=options,
+            view=view
+        )
+        self.directed_type = directed_type
+
+    def to_json(self):
+        operation = super().to_json()
+
+        if self.directed_type is not None:
+            operation['directedType'] = self.directed_type
+
+        return operation
+
+
+class SummariseGroupOverRanges(Operation):
+    def __init__(self, options=None, view=None,
+                 in_out_type=None, directed_type=None):
+        super().__init__(
+            class_name='uk.gov.gchq.gaffer.accumulostore.operation.impl.SummariseGroupOverRanges',
+            options=options,
+            view=view
+        )
+        self.in_out_type = in_out_type
+        self.directed_type = directed_type
+
+    def to_json(self):
+        operation = super().to_json()
+
+        if self.in_out_type is not None:
+            operation['includeIncomingOutGoing'] = self.in_out_type
+
+        if self.directed_type is not None:
+            operation['directedType'] = self.directed_type
+
+        return operation
+
+
+class GetElementsInRanges(Operation):
+    def __init__(self, options=None, view=None,
+                 in_out_type=None, directed_type=None):
+        super().__init__(
+            class_name='uk.gov.gchq.gaffer.accumulostore.operation.impl.GetElementsInRanges',
+            options=options,
+            view=view
+        )
+        self.in_out_type = in_out_type
+        self.directed_type = directed_type
+
+    def to_json(self):
+        operation = super().to_json()
+
+        if self.in_out_type is not None:
+            operation['includeIncomingOutGoing'] = self.in_out_type
+
+        if self.directed_type is not None:
+            operation['directedType'] = self.directed_type
+
+        return operation
+
+
+class Count(Operation):
+    def __init__(self):
+        super().__init__(
+            class_name='uk.gov.gchq.gaffer.operation.impl.Count'
+        )
 
 
 class CountGroups(Operation):
@@ -935,6 +1083,12 @@ class ToEntitySeeds(Operation):
     def __init__(self):
         super().__init__(
             class_name='uk.gov.gchq.gaffer.operation.impl.output.ToEntitySeeds')
+
+
+class ToList(Operation):
+    def __init__(self):
+        super().__init__(
+            class_name='uk.gov.gchq.gaffer.operation.impl.output.ToList')
 
 
 class ToVertices(Operation):
@@ -1075,6 +1229,163 @@ class Min(Operation):
             for element in self.elements:
                 elements_json.append(element.to_json())
             operation['input'] = elements_json
+
+        return operation
+
+
+class ExportToOtherGraph(Operation):
+    def __init__(self, graph_id=None, elements=None, parent_schema_ids=None,
+                 schema=None, parent_store_properties_id=None,
+                 store_properties=None):
+        super().__init__(
+            'uk.gov.gchq.gaffer.operation.export.graph.ExportToOtherGraph'
+        )
+
+        self.graph_id = graph_id
+        self.elements = elements
+        self.parent_schema_ids = parent_schema_ids
+        self.schema = schema
+        self.parent_store_properties_id = parent_store_properties_id
+        self.store_properties = store_properties
+
+    def to_json(self):
+        operation = super().to_json()
+
+        if self.graph_id is not None:
+            operation['graphId'] = self.graph_id
+
+        if self.elements is not None:
+            elements_json = []
+            for element in self.elements:
+                elements_json.append(element.to_json())
+            operation['input'] = elements_json
+
+        if self.parent_schema_ids is not None:
+            operation['parentSchemaIds'] = self.parent_schema_ids
+
+        if self.schema is not None:
+            operation['schema'] = self.schema
+
+        if self.parent_store_properties_id is not None:
+            operation[
+                'parentStorePropertiesId'] = self.parent_store_properties_id
+
+        if self.store_properties is not None:
+            operation['storeProperties'] = self.store_properties
+
+        return operation
+
+
+class ExportToOtherAuthorisedGraph(Operation):
+    def __init__(self, graph_id=None, elements=None, parent_schema_ids=None,
+                 parent_store_properties_id=None):
+        super().__init__(
+            'uk.gov.gchq.gaffer.operation.export.graph.ExportToOtherAuthorisedGraph'
+        )
+
+        self.graph_id = graph_id
+        self.elements = elements
+        self.parent_schema_ids = parent_schema_ids
+        self.parent_store_properties_id = parent_store_properties_id
+
+    def to_json(self):
+        operation = super().to_json()
+
+        if self.graph_id is not None:
+            operation['graphId'] = self.graph_id
+
+        if self.elements is not None:
+            elements_json = []
+            for element in self.elements:
+                elements_json.append(element.to_json())
+            operation['input'] = elements_json
+
+        if self.parent_schema_ids is not None:
+            operation['parentSchemaIds'] = self.parent_schema_ids
+
+        if self.parent_store_properties_id is not None:
+            operation[
+                'parentStorePropertiesId'] = self.parent_store_properties_id
+
+        return operation
+
+
+class AddElementsFromSocket(Operation):
+    def __init__(self, hostname=None, port=None, element_generator=None,
+                 parallelism=None, validate=None, skip_invalid_elements=None,
+                 delimiter=None, options=None):
+        super().__init__(
+            'uk.gov.gchq.gaffer.operation.impl.add.AddElementsFromSocket',
+            options=options
+        )
+
+        self.hostname = hostname
+        self.port = port
+        self.element_generator = element_generator
+        self.parallelism = parallelism
+        self.validate = validate
+        self.skip_invalid_elements = skip_invalid_elements
+        self.delimiter = delimiter
+
+    def to_json(self):
+        operation = super().to_json()
+
+        if self.hostname is not None:
+            operation['hostname'] = self.hostname
+
+        if self.port is not None:
+            operation['port'] = self.port
+
+        if self.element_generator is not None:
+            operation['elementGenerator'] = self.element_generator
+
+        if self.parallelism is not None:
+            operation['parallelism'] = self.parallelism
+
+        if self.validate is not None:
+            operation['validate'] = self.validate
+
+        if self.skip_invalid_elements is not None:
+            operation['skipInvalidElements'] = self.skip_invalid_elements
+
+        if self.delimiter is not None:
+            operation['delimiter'] = self.delimiter
+
+        return operation
+
+
+class AddElementsFromFile(Operation):
+    def __init__(self, filename=None, element_generator=None,
+                 parallelism=None, validate=None, skip_invalid_elements=None,
+                 options=None):
+        super().__init__(
+            'uk.gov.gchq.gaffer.operation.impl.add.AddElementsFromFile',
+            options=options
+        )
+
+        self.filename = filename
+        self.element_generator = element_generator
+        self.parallelism = parallelism
+        self.validate = validate
+        self.skip_invalid_elements = skip_invalid_elements
+
+    def to_json(self):
+        operation = super().to_json()
+
+        if self.filename is not None:
+            operation['filename'] = self.filename
+
+        if self.element_generator is not None:
+            operation['elementGenerator'] = self.element_generator
+
+        if self.parallelism is not None:
+            operation['parallelism'] = self.parallelism
+
+        if self.validate is not None:
+            operation['validate'] = self.validate
+
+        if self.skip_invalid_elements is not None:
+            operation['skipInvalidElements'] = self.skip_invalid_elements
 
         return operation
 

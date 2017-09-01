@@ -755,6 +755,16 @@ class GafferTest(unittest.TestCase):
                               options={"option1": "option"}).to_json()
         )
 
+    def test_validate(self):
+        self.assertEqual(
+            {
+                'class': 'uk.gov.gchq.gaffer.operation.impl.Validate',
+                'validate': True,
+                'skipInvalidElements': False
+            },
+            g.Validate(True, False).to_json()
+        )
+
     def test_export_to_gaffer_result_cache(self):
         self.assertEqual(
             {
@@ -903,6 +913,16 @@ class GafferTest(unittest.TestCase):
                            {"option1": "option"}).to_json()
         )
 
+    def test_get_exports(self):
+        self.assertEqual(
+            {
+                'class': 'uk.gov.gchq.gaffer.operation.impl.export.GetExports',
+                'getExports': ['test']
+            },
+            g.GetExports(["test"]).to_json()
+
+        )
+
     def test_get_job_details(self):
         self.assertEqual(
             {
@@ -944,6 +964,14 @@ class GafferTest(unittest.TestCase):
                 'options': {'option1': 'option'}
             },
             g.GetAllJobDetails({"option1": "option"}).to_json()
+        )
+
+    def test_get_job_results(self):
+        self.assertEqual(
+            {
+                'class': 'uk.gov.gchq.gaffer.operation.impl.job.GetJobResults'
+            },
+            g.GetJobResults().to_json()
         )
 
     def test_get_operation(self):
@@ -1430,6 +1458,68 @@ class GafferTest(unittest.TestCase):
             g.DiscardOutput().to_json()
         )
 
+    def test_get_elements_between_sets(self):
+        self.assertEqual(
+            {
+                'class': 'uk.gov.gchq.gaffer.accumulostore.operation.impl.GetElementsBetweenSets',
+                'options': {'option1': 'option'},
+                'view': {},
+                'seedMatching': True,
+                'includeIncomingOutGoing': False,
+                'directedType': 'directed',
+                'inputB': 'input1'
+            },
+            g.GetElementsBetweenSets({"option1": "option"}, g.View(), True,
+                                     False, 'directed', 'input1'
+                                     ).to_json()
+        )
+
+    def test_get_elements_within_set(self):
+        self.assertEqual(
+            {
+                'class': 'uk.gov.gchq.gaffer.accumulostore.operation.impl.GetElementsWithinSet',
+                'options': {'option1': 'option'},
+                'view': {},
+                'directedType': 'directed'
+            },
+            g.GetElementsWithinSet({'option1': 'option'}, g.View(),
+                                   'directed').to_json()
+        )
+
+    def test_summarise_group_over_ranges(self):
+        self.assertEqual(
+            {
+                'class': 'uk.gov.gchq.gaffer.accumulostore.operation.impl.SummariseGroupOverRanges',
+                'options': {'option1': 'option'},
+                'view': {},
+                'includeIncomingOutGoing': True,
+                'directedType': 'directed'
+            },
+            g.SummariseGroupOverRanges({'option1': 'option'}, g.View(), True,
+                                       'directed').to_json()
+        )
+
+    def test_get_elements_in_ranges(self):
+        self.assertEqual(
+            {
+                'class': 'uk.gov.gchq.gaffer.accumulostore.operation.impl.GetElementsInRanges',
+                'options': {'option1': 'option'},
+                'view': {},
+                'includeIncomingOutGoing': True,
+                'directedType': 'directed'
+            },
+            g.GetElementsInRanges({'option1': 'option'}, g.View(), True,
+                                  'directed').to_json()
+        )
+
+    def test_count(self):
+        self.assertEqual(
+            {
+                'class': 'uk.gov.gchq.gaffer.operation.impl.Count'
+            },
+            g.Count().to_json()
+        )
+
     def test_count_groups(self):
         self.assertEqual(
             {
@@ -1487,6 +1577,15 @@ class GafferTest(unittest.TestCase):
                          '.impl.output.ToEntitySeeds'
             },
             g.ToEntitySeeds().to_json()
+        )
+
+    def test_to_list(self):
+        self.assertEqual(
+            {
+                'class': 'uk.gov.gchq.gaffer.operation'
+                         '.impl.output.ToList'
+            },
+            g.ToList().to_json()
         )
 
     def test_to_vertices(self):
@@ -1645,6 +1744,79 @@ class GafferTest(unittest.TestCase):
             g.Min([g.ElementPropertyComparator("test_groups",
                                                "test_property")],
                   [g.Entity("test_group", "test_vertex")]).to_json()
+        )
+
+    def test_export_to_other_graph(self):
+        self.assertEqual(
+            {
+                'class': 'uk.gov.gchq.gaffer.operation.export.graph.ExportToOtherGraph',
+                'graphId': 'test_graph_id',
+                'input': [{'class': 'uk.gov.gchq.gaffer.data.element.Entity',
+                           'group': 'test_group',
+                           'vertex': 'test_vertex'}],
+                'parentSchemaIds': ["testSchemaId1", "testSchemaId2"],
+                'schema': {'schema1': 'schemaVal'},
+                'parentStorePropertiesId': "testStorePropertiesId",
+                'storeProperties': {'storeProp1': 'storeValue'}
+            },
+            g.ExportToOtherGraph("test_graph_id",
+                                 [g.Entity("test_group", "test_vertex")],
+                                 ["testSchemaId1", "testSchemaId2"],
+                                 {"schema1": "schemaVal"},
+                                 "testStorePropertiesId",
+                                 {"storeProp1": "storeValue"}).to_json()
+        )
+
+    def test_export_to_other_authorised_graph(self):
+        self.assertEqual(
+            {
+                'class': 'uk.gov.gchq.gaffer.operation.export.graph.ExportToOtherAuthorisedGraph',
+                'graphId': 'test_graph_id',
+                'input': [{'class': 'uk.gov.gchq.gaffer.data.element.Entity',
+                           'group': 'test_group',
+                           'vertex': 'test_vertex'}],
+                'parentSchemaIds': ["testSchemaId1", "testSchemaId2"],
+                'parentStorePropertiesId': "testStorePropertiesId"
+            },
+            g.ExportToOtherAuthorisedGraph("test_graph_id",
+                                           [g.Entity("test_group",
+                                                     "test_vertex")],
+                                           ["testSchemaId1", "testSchemaId2"],
+                                           "testStorePropertiesId").to_json()
+        )
+
+    def test_add_elements_from_socket(self):
+        self.assertEqual(
+            {
+                'class': 'uk.gov.gchq.gaffer.operation.impl.add.AddElementsFromSocket',
+                'hostname': 'hostName',
+                'port': 2321,
+                'elementGenerator': 'GenerateElements',
+                'parallelism': 'parallel',
+                'validate': True,
+                'skipInvalidElements': False,
+                'delimiter': 'delimiter',
+                'options': {'option1': 'option'}
+            },
+            g.AddElementsFromSocket("hostName", 2321, "GenerateElements",
+                                    "parallel", True, False, "delimiter",
+                                    {"option1": "option"}).to_json()
+        )
+
+    def test_add_elements_from_file(self):
+        self.assertEqual(
+            {
+                'class': 'uk.gov.gchq.gaffer.operation.impl.add.AddElementsFromFile',
+                'filename': 'fileName',
+                'elementGenerator': 'GenerateElements',
+                'parallelism': 'parallel',
+                'validate': True,
+                'skipInvalidElements': False,
+                'options': {'option1': 'option'}
+            },
+            g.AddElementsFromFile("fileName", "GenerateElements",
+                                  "parallel", True, False,
+                                  {"option1": "option"}).to_json()
         )
 
 
