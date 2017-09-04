@@ -20,13 +20,16 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import uk.gov.gchq.gaffer.commonutil.CommonConstants;
 import uk.gov.gchq.gaffer.exception.SerialisationException;
 import uk.gov.gchq.gaffer.user.User;
+
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.Invocation;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+
 import java.io.UnsupportedEncodingException;
 
 public class FederatedRequestor {
@@ -111,7 +114,7 @@ public class FederatedRequestor {
 
         try {
             return handleSuccessfulResponse(outputJson, outputTypeReference);
-        } catch (SerialisationException e) {
+        } catch (final SerialisationException e) {
             throw new RuntimeException("Unable to deserialise response from URL: " + url, e);
         }
     }

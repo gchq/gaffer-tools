@@ -16,6 +16,7 @@
 package uk.gov.gchq.gaffer.graphql.fetch;
 
 import graphql.schema.DataFetchingEnvironment;
+
 import uk.gov.gchq.gaffer.commonutil.iterable.CloseableIterable;
 import uk.gov.gchq.gaffer.data.element.Element;
 import uk.gov.gchq.gaffer.data.element.Entity;
@@ -25,6 +26,7 @@ import uk.gov.gchq.gaffer.graphql.definitions.Constants;
 import uk.gov.gchq.gaffer.operation.OperationChain;
 import uk.gov.gchq.gaffer.operation.data.EntitySeed;
 import uk.gov.gchq.gaffer.operation.impl.get.GetElements;
+
 import java.util.Map;
 
 /**

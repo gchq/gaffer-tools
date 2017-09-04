@@ -128,7 +128,7 @@ public class QueryBuilderST {
 
         clickTab("Results");
         final String results = getElement("raw-edge-results").getText().trim();
-        for (String expectedResult : EXPECTED_RESULTS) {
+        for (final String expectedResult : EXPECTED_RESULTS) {
             assertTrue("Results did not contain: \n" + expectedResult
                     + "\nActual results: \n" + results, results.contains(expectedResult));
         }

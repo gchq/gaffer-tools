@@ -19,7 +19,9 @@ package uk.gov.gchq.gaffer.federated.rest;
 import uk.gov.gchq.gaffer.federated.rest.dto.Schema;
 import uk.gov.gchq.gaffer.jsonserialisation.JSONSerialiser;
 import uk.gov.gchq.gaffer.store.StoreTrait;
+
 import javax.ws.rs.client.Client;
+
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -97,7 +99,7 @@ public class FederatedConfig {
     public void setSchemas(final Map<String, Schema> schemas) {
         this.schemas = schemas;
         mergedSchema = new Schema();
-        for (Schema schema : schemas.values()) {
+        for (final Schema schema : schemas.values()) {
             mergedSchema.merge(schema);
         }
     }

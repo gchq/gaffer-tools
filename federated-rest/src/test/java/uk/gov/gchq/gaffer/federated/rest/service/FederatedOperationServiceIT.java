@@ -16,13 +16,16 @@
 package uk.gov.gchq.gaffer.federated.rest.service;
 
 import org.junit.Test;
+
 import uk.gov.gchq.gaffer.commonutil.TestGroups;
 import uk.gov.gchq.gaffer.data.element.Element;
 import uk.gov.gchq.gaffer.data.element.Entity;
 import uk.gov.gchq.gaffer.federated.rest.AbstractFederatedSystemIT;
 import uk.gov.gchq.gaffer.federated.rest.TypeReferenceFederatedImpl.ListElements;
 import uk.gov.gchq.gaffer.operation.impl.get.GetAllElements;
+
 import javax.ws.rs.core.Response;
+
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;

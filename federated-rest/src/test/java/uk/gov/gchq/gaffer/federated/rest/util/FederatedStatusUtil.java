@@ -16,6 +16,7 @@
 package uk.gov.gchq.gaffer.federated.rest.util;
 
 import uk.gov.gchq.gaffer.federated.rest.dto.SystemStatus;
+
 import javax.ws.rs.core.Response;
 
 import static org.junit.Assert.assertEquals;

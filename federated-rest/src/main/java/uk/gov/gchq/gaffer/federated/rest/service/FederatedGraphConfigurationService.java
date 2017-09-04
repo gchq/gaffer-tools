@@ -24,6 +24,7 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import uk.gov.gchq.gaffer.commonutil.exception.UnauthorisedException;
 import uk.gov.gchq.gaffer.federated.rest.FederatedConfig;
 import uk.gov.gchq.gaffer.federated.rest.FederatedExecutor;
@@ -35,7 +36,9 @@ import uk.gov.gchq.gaffer.rest.factory.UserFactory;
 import uk.gov.gchq.gaffer.store.StoreTrait;
 import uk.gov.gchq.gaffer.user.User;
 import uk.gov.gchq.koryphe.signature.Signature;
+
 import javax.inject.Inject;
+
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -136,7 +139,7 @@ public class FederatedGraphConfigurationService implements IFederatedGraphConfig
         final Class<?> clazz;
         try {
             clazz = Class.forName(inputClass);
-        } catch (Exception e) {
+        } catch (final Exception e) {
             throw new IllegalArgumentException("Input class was not recognised: " + inputClass, e);
         }
 
@@ -192,7 +195,7 @@ public class FederatedGraphConfigurationService implements IFederatedGraphConfig
         final Class<?> clazz;
         try {
             clazz = Class.forName(className);
-        } catch (Exception e) {
+        } catch (final Exception e) {
             throw new IllegalArgumentException("Class name was not recognised: " + className, e);
         }
 

@@ -21,6 +21,7 @@ import org.apache.slider.api.ClusterDescription;
 import org.apache.slider.api.ResourceKeys;
 import org.apache.slider.client.SliderClient;
 import org.apache.slider.core.conf.ConfTree;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -30,32 +31,32 @@ import java.util.regex.Pattern;
 
 public class SliderUtils {
 
-	public static void replaceTokens (ConfTree appConfig, String clusterName) throws IOException {
+	public static void replaceTokens (final ConfTree appConfig, final String clusterName) throws IOException {
 		// Replace ${USER} and ${USER_NAME}
 		SliderClient.replaceTokens(appConfig, UserGroupInformation.getCurrentUser().getShortUserName(), clusterName);
 		// Replace ${CLUSTER_NAME}
 		replaceClusterTokens(appConfig, clusterName);
 	}
 
-	public static void replaceClusterTokens (ConfTree appConfig, String clusterName) {
+	public static void replaceClusterTokens (final ConfTree appConfig, final String clusterName) {
 		Map<String,String> newglobal = new HashMap<>();
-		for (Map.Entry<String, String> entry : appConfig.global.entrySet()) {
+		for (final Map.Entry<String, String> entry : appConfig.global.entrySet()) {
 			newglobal.put(entry.getKey(), replaceClusterTokens(entry.getValue(), clusterName));
 		}
 		appConfig.global.putAll(newglobal);
 
-		for (String component : appConfig.components.keySet()) {
+		for (final String component : appConfig.components.keySet()) {
 			Map<String, String> newComponent = new HashMap<>();
-			for (Map.Entry<String, String> entry : appConfig.components.get(component).entrySet()) {
+			for (final Map.Entry<String, String> entry : appConfig.components.get(component).entrySet()) {
 				newComponent.put(entry.getKey(), replaceClusterTokens(entry.getValue(), clusterName));
 			}
 			appConfig.components.get(component).putAll(newComponent);
 		}
 
 		Map<String,List<String>> newcred = new HashMap<>();
-		for (Map.Entry<String, List<String>> entry : appConfig.credentials.entrySet()) {
+		for (final Map.Entry<String, List<String>> entry : appConfig.credentials.entrySet()) {
 			List<String> resultList = new ArrayList<>();
-			for (String v : entry.getValue()) {
+			for (final String v : entry.getValue()) {
 				resultList.add(replaceClusterTokens(v, clusterName));
 			}
 			newcred.put(replaceClusterTokens(entry.getKey(), clusterName), resultList);
@@ -64,7 +65,7 @@ public class SliderUtils {
 		appConfig.credentials.putAll(newcred);
 	}
 
-	public static String replaceClusterTokens (String input, String clusterName) {
+	public static String replaceClusterTokens (final String input, final String clusterName) {
 		return input.replaceAll(Pattern.quote("${CLUSTER_NAME}"), clusterName);
 	}
 
@@ -73,9 +74,9 @@ public class SliderUtils {
 	 * @param clusterDescription Cluster description for an application instance
 	 * @return The number of desired instances for each application component
 	 */
-	public static Map<String, Integer> getRoleMap (ClusterDescription clusterDescription) {
+	public static Map<String, Integer> getRoleMap (final ClusterDescription clusterDescription) {
 		Map<String, Integer> roleMap = new HashMap<String, Integer>();
-		for (String role : clusterDescription.getRoleNames()) {
+		for (final String role : clusterDescription.getRoleNames()) {
 			int desiredInstances = clusterDescription.getRoleOptInt(role, ResourceKeys.COMPONENT_INSTANCES, 0);
 			roleMap.put(role, desiredInstances);
 		}

@@ -21,6 +21,7 @@ import org.apache.commons.io.IOUtils;
 import org.glassfish.jersey.server.ChunkedOutput;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import uk.gov.gchq.gaffer.federated.rest.FederatedExecutor;
 import uk.gov.gchq.gaffer.federated.rest.dto.Operation;
 import uk.gov.gchq.gaffer.federated.rest.dto.OperationChain;
@@ -32,7 +33,9 @@ import uk.gov.gchq.gaffer.operation.impl.get.GetAllElements;
 import uk.gov.gchq.gaffer.operation.impl.get.GetElements;
 import uk.gov.gchq.gaffer.rest.factory.UserFactory;
 import uk.gov.gchq.gaffer.user.User;
+
 import javax.inject.Inject;
+
 import java.io.Closeable;
 import java.io.IOException;
 import java.util.Collections;
@@ -129,7 +132,7 @@ public class FederatedOperationService implements IFederatedOperationService {
         } else {
             try {
                 output.write(mapper.writeValueAsString(result));
-            } catch (IOException ioe) {
+            } catch (final IOException ioe) {
                 LOGGER.warn("IOException (chunks)", ioe);
             }
         }

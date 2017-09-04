@@ -19,6 +19,7 @@ package uk.gov.gchq.gaffer.federated.rest;
 import org.glassfish.jersey.client.ClientProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import uk.gov.gchq.gaffer.federated.rest.dto.FederatedSystemStatus;
 import uk.gov.gchq.gaffer.federated.rest.dto.Operation;
 import uk.gov.gchq.gaffer.federated.rest.dto.OperationChain;
@@ -33,8 +34,10 @@ import uk.gov.gchq.gaffer.operation.serialisation.TypeReferenceImpl;
 import uk.gov.gchq.gaffer.store.StoreTrait;
 import uk.gov.gchq.gaffer.store.TypeReferenceStoreImpl;
 import uk.gov.gchq.gaffer.user.User;
+
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;

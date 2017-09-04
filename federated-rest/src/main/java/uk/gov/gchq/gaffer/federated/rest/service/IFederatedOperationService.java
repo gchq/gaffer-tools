@@ -20,10 +20,12 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.glassfish.jersey.server.ChunkedOutput;
+
 import uk.gov.gchq.gaffer.data.element.Element;
 import uk.gov.gchq.gaffer.federated.rest.dto.Operation;
 import uk.gov.gchq.gaffer.federated.rest.dto.OperationChain;
 import uk.gov.gchq.gaffer.operation.data.EntitySeed;
+
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;

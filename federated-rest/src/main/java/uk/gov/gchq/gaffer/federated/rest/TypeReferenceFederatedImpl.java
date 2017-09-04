@@ -17,10 +17,13 @@
 package uk.gov.gchq.gaffer.federated.rest;
 
 import com.fasterxml.jackson.core.type.TypeReference;
+
 import uk.gov.gchq.gaffer.data.element.Element;
 import uk.gov.gchq.gaffer.federated.rest.dto.FederatedSystemStatus;
 import uk.gov.gchq.gaffer.federated.rest.dto.GafferUrl;
+
 import javax.ws.rs.core.GenericType;
+
 import java.util.List;
 import java.util.Set;
 

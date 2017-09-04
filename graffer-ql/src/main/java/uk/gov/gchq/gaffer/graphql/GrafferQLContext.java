@@ -16,11 +16,13 @@
 package uk.gov.gchq.gaffer.graphql;
 
 import org.apache.log4j.Logger;
+
 import uk.gov.gchq.gaffer.commonutil.iterable.CloseableIterable;
 import uk.gov.gchq.gaffer.data.element.Element;
 import uk.gov.gchq.gaffer.graph.Graph;
 import uk.gov.gchq.gaffer.operation.OperationChain;
 import uk.gov.gchq.gaffer.user.User;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -85,7 +87,7 @@ public final class GrafferQLContext {
             try {
                 result = (CloseableIterable<E>) iterable;
                 cacheUsed++;
-            } catch (ClassCastException e) {
+            } catch (final ClassCastException e) {
                 LOGGER.warn("Cache: " + key + ", expected: " + clazz + ", had problem" + e.getLocalizedMessage());
             }
         }

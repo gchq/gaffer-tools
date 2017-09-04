@@ -19,6 +19,7 @@ import graphql.schema.GraphQLInterfaceType;
 import graphql.schema.GraphQLList;
 import graphql.schema.GraphQLNonNull;
 import graphql.schema.GraphQLObjectType;
+
 import uk.gov.gchq.gaffer.data.element.Entity;
 import uk.gov.gchq.gaffer.graphql.fetch.EntityByArgDataFetcher;
 import uk.gov.gchq.gaffer.graphql.fetch.VertexSourceDataFetcher;

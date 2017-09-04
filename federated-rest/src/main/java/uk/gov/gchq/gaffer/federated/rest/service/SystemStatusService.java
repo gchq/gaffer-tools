@@ -18,6 +18,7 @@ package uk.gov.gchq.gaffer.federated.rest.service;
 
 import uk.gov.gchq.gaffer.federated.rest.FederatedExecutor;
 import uk.gov.gchq.gaffer.federated.rest.dto.SystemStatus;
+
 import javax.ws.rs.core.Response;
 
 public class SystemStatusService implements ISystemStatusService {

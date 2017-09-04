@@ -20,12 +20,14 @@ import io.swagger.jaxrs.config.BeanConfig;
 import io.swagger.jaxrs.listing.ApiListingResource;
 import io.swagger.jaxrs.listing.SwaggerSerializers;
 import org.glassfish.jersey.server.ResourceConfig;
+
 import uk.gov.gchq.gaffer.federated.rest.FederatedBinder;
 import uk.gov.gchq.gaffer.federated.rest.SystemProperty;
 import uk.gov.gchq.gaffer.federated.rest.service.FederatedGraphConfigurationService;
 import uk.gov.gchq.gaffer.federated.rest.service.FederatedOperationService;
 import uk.gov.gchq.gaffer.federated.rest.service.SystemStatusService;
 import uk.gov.gchq.gaffer.rest.serialisation.RestJsonProvider;
+
 import java.util.HashSet;
 import java.util.Set;
 

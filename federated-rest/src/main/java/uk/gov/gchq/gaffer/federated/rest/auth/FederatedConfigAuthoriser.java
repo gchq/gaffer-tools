@@ -17,8 +17,10 @@ package uk.gov.gchq.gaffer.federated.rest.auth;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
+
 import uk.gov.gchq.gaffer.federated.rest.SystemProperty;
 import uk.gov.gchq.gaffer.user.User;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;

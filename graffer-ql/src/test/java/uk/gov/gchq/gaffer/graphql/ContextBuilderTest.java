@@ -18,6 +18,7 @@ package uk.gov.gchq.gaffer.graphql;
 
 import org.junit.Before;
 import org.junit.Test;
+
 import uk.gov.gchq.gaffer.commonutil.StreamUtil;
 import uk.gov.gchq.gaffer.graph.Graph;
 import uk.gov.gchq.gaffer.traffic.ElementGroup;
