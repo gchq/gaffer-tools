@@ -150,7 +150,7 @@ cd $DST
 
 if ! curl -fL -o /dev/null https://repo1.maven.org/maven2/uk/gov/gchq/gaffer/gaffer2/$GAFFER_VERSION/gaffer2-$GAFFER_VERSION.pom; then
 	echo "Building Gaffer from branch $GAFFER_VERSION..."
-	git clone -b $GAFFER_VERSION https://github.com/gchq/Gaffer.git
+	git clone -b $GAFFER_VERSION --depth 1 https://github.com/gchq/Gaffer.git
 	cd Gaffer
 	mvn clean install -Pquick -pl store-implementation/accumulo-store/ --also-make
 
@@ -178,7 +178,7 @@ fi
 if [[ ! -f gaffer-slider-$GAFFER_TOOLS_VERSION.zip || ! -f gaffer-slider-$GAFFER_TOOLS_VERSION.jar ]]; then
 	echo "Building gaffer-slider from gaffer-tools branch $GAFFER_TOOLS_VERSION..."
 	cd $DST
-	git clone -b $GAFFER_TOOLS_VERSION https://github.com/gchq/gaffer-tools.git
+	git clone -b $GAFFER_TOOLS_VERSION --depth 1 https://github.com/gchq/gaffer-tools.git
 	cd gaffer-tools/slider
 	mvn clean package -Pquick -Dgaffer.version=$GAFFER_POM_VERSION
 

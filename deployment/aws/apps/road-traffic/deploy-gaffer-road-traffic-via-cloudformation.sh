@@ -18,11 +18,11 @@
 
 # ----- CONFIG ----- #
 
-# The version of Gaffer to deploy and test. Can be a branch name or version number.
-GAFFER_VERSION="develop"
+# The version of Gaffer to deploy. Can be a branch name or version number.
+GAFFER_VERSION="1.0.0"
 
 # The version of gaffer-tools to use to deploy Gaffer. Can be a branch name or version number.
-GAFFER_TOOLS_VERSION="develop"
+GAFFER_TOOLS_VERSION="1.0.0"
 
 # The ID of the VPC that the EMR cluster should be deployed into
 VPC_ID=""
@@ -37,12 +37,15 @@ KEYNAME=""
 # Usually used to allow SSH access to the cluster from your IP address
 EXTRA_SECURITY_GROUPS=""
 
-# EMR Cluster Config
 EMR_VERSION="emr-5.7.0"
-CLUSTER_NAME="$KEYNAME-gaffer-tests-${GAFFER_VERSION//./-}"
+EMR_INSTANCE_TYPE="m3.xlarge"
+EMR_INSTANCE_COUNT=3
+WEB_INSTANCE_TYPE="t2.small"
+
+GAFFER_SCHEMA_JAR_URL="https://repo1.maven.org/maven2/uk/gov/gchq/gaffer/road-traffic-model/$GAFFER_VERSION/road-traffic-model-$GAFFER_VERSION.jar"
+ROAD_TRAFFIC_DATA_URL="https://raw.githubusercontent.com/gchq/Gaffer/master/example/road-traffic/road-traffic-demo/src/main/resources/roadTrafficSampleData.csv"
 
 # ----- CONFIG END ----- #
-
 
 # Quick check to make sure the config is complete
 if [[ -z "$VPC_ID" || -z "$SUBNET_ID" || -z "$KEYNAME" ]]; then
@@ -56,8 +59,8 @@ cd $DIR
 
 # Deploy cluster via CloudFormation
 aws cloudformation create-stack \
-	--stack-name $CLUSTER_NAME \
-	--template-body file://cloudformation/gaffer-integration-tests.yaml \
+	--stack-name $KEYNAME-road-traffic \
+	--template-body file://cloudformation/gaffer-road-traffic.yaml \
 	--capabilities CAPABILITY_NAMED_IAM \
 	--tags \
 		Key=gaffer-version,Value=$GAFFER_VERSION \
@@ -66,7 +69,12 @@ aws cloudformation create-stack \
 		ParameterKey=GafferVersion,ParameterValue=$GAFFER_VERSION \
 		ParameterKey=GafferToolsVersion,ParameterValue=$GAFFER_TOOLS_VERSION \
 		ParameterKey=EmrRelease,ParameterValue=$EMR_VERSION \
+		ParameterKey=EmrInstanceType,ParameterValue=$EMR_INSTANCE_TYPE \
+		ParameterKey=EmrCoreInstanceCount,ParameterValue=$EMR_INSTANCE_COUNT \
+		ParameterKey=WebInstanceType,ParameterValue=$WEB_INSTANCE_TYPE \
 		ParameterKey=VpcId,ParameterValue=$VPC_ID \
 		ParameterKey=SubnetId,ParameterValue=$SUBNET_ID \
 		ParameterKey=ExtraSecurityGroups,ParameterValue=\"$EXTRA_SECURITY_GROUPS\" \
-		ParameterKey=KeyName,ParameterValue=$KEYNAME
+		ParameterKey=KeyName,ParameterValue=$KEYNAME \
+		ParameterKey=GafferSchemaJarUrl,ParameterValue=$GAFFER_SCHEMA_JAR_URL \
+		ParameterKey=RoadTrafficDataUrl,ParameterValue=$ROAD_TRAFFIC_DATA_URL

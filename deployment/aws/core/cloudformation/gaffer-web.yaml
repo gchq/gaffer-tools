@@ -239,7 +239,7 @@ Resources:
             if ! curl -fL -o rest.war https://repo1.maven.org/maven2/uk/gov/gchq/gaffer/accumulo-rest/$GAFFER_VERSION/accumulo-rest-$GAFFER_VERSION.war; then
               echo "Building Gaffer accumulo-rest.war from branch $GAFFER_VERSION..."
               install_dev_tools
-              git clone -b $GAFFER_VERSION https://github.com/gchq/Gaffer.git
+              git clone -b $GAFFER_VERSION --depth 1 https://github.com/gchq/Gaffer.git
               cd Gaffer
               mvn clean package -Pquick -pl rest-api/accumulo-rest --also-make
               GAFFER_POM_VERSION=$(xmllint --xpath '/*[local-name()="project"]/*[local-name()="version"]/text()' pom.xml)
@@ -257,7 +257,7 @@ Resources:
             if ! curl -fL -o ui.war https://repo1.maven.org/maven2/uk/gov/gchq/gaffer/ui/$GAFFER_TOOLS_VERSION/ui-$GAFFER_TOOLS_VERSION.war; then
               echo "Building the Gaffer UI from branch $GAFFER_TOOLS_VERSION..."
               install_dev_tools
-              git clone -b $GAFFER_TOOLS_VERSION https://github.com/gchq/gaffer-tools.git
+              git clone -b $GAFFER_TOOLS_VERSION --depth 1 https://github.com/gchq/gaffer-tools.git
               cd gaffer-tools
               mvn clean package -Pquick -pl ui --also-make
               GAFFER_TOOLS_POM_VERSION=$(xmllint --xpath '/*[local-name()="project"]/*[local-name()="version"]/text()' pom.xml)

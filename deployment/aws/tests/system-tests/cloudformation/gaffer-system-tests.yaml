@@ -1,21 +1,21 @@
 AWSTemplateFormatVersion: "2010-09-09"
-Description: "Deploys a Gaffer instance on AWS EMR, along with the REST API and web UI"
+Description: "Runs the Gaffer Road Traffic System Tests"
 
 Parameters:
 
   GafferVersion:
     Type: String
-    Default: 0.7.8
+    Default: 1.0.0
     MinLength: 1
     AllowedPattern: "\\S+"
-    Description: The version of Gaffer to deploy - can be a version number (e.g. 0.7.8) or a git branch (e.g. gh-X-feature-name) / commit hash etc
+    Description: The version of Gaffer to deploy - can be a version number (e.g. 1.0.0) or a git branch (e.g. gh-X-feature-name) / commit hash etc
 
   GafferToolsVersion:
     Type: String
-    Default: 0.7.8
+    Default: 1.0.0
     MinLength: 1
     AllowedPattern: "\\S+"
-    Description: The version of Gaffer Tools to use to deploy Gaffer on EMR - can be a version number (e.g. 0.7.8) or a git branch (e.g. gh-X-feature-name) / commit hash etc
+    Description: The version of Gaffer Tools to use to deploy Gaffer on EMR - can be a version number (e.g. 1.0.0) or a git branch (e.g. gh-X-feature-name) / commit hash etc
 
   EmrRelease:
     Type: String
@@ -53,43 +53,6 @@ Parameters:
     Description: Name of an existing EC2 KeyPair that you would like to be able to use to SSH into any instances
     ConstraintDescription: Must be the name of an existing EC2 KeyPair
 
-  ManageSecurityGroups:
-    Type: String
-    Default: false
-    AllowedValues:
-      - true
-      - false
-    Description: Should this stack create (and delete) security groups to be used by the EMR master/core/task/service nodes? If false, it will use the default groups created by AWS e.g. EMR_DefaultRole. If you are deploying into a public subnet (i.e. a subnet with an InternetGateway) then this needs to be false!
-    ConstraintDescription: Please select either 'true' or 'false'
-
-  GafferInstanceName:
-    Type: String
-    Default: gaffer
-    MinLength: 1
-    AllowedPattern: "[A-Za-z0-9-_]+"
-    ConstraintDescription: Please choose a name which is made up of [A-Za-z0-9]
-
-  GraphId:
-    Type: String
-    Default: gaffer
-    MinLength: 1
-    AllowedPattern: "[A-Za-z0-9_]+"
-    Description: The name of the Accumulo table that the Gaffer graph should be stored in
-
-  UserName:
-    Type: String
-    Default: gaffer_user
-    MinLength: 1
-    AllowedPattern: "[A-Za-z0-9-_]+"
-    Description: The name of the user that should be created
-
-  AccumuloVisibilities:
-    Type: String
-    Default: none
-    MinLength: 1
-    AllowedPattern: "[A-Za-z0-9-_:,]+"
-    Description: The visibility authorisations that the user should be granted (as a csv list)
-
   WebInstanceType:
     Type: String
     Default: t2.small
@@ -98,7 +61,7 @@ Parameters:
 
   GafferSchemaJarUrl:
     Type: String
-    Default: https://repo1.maven.org/maven2/uk/gov/gchq/gaffer/road-traffic-model/0.7.8/road-traffic-model-0.7.8.jar
+    Default: https://repo1.maven.org/maven2/uk/gov/gchq/gaffer/road-traffic-model/1.0.0/road-traffic-model-1.0.0.jar
     MinLength: 1
     Description: A URL that can be used to download a JAR which contains the schema for your Gaffer graph i.e. json files in a 'schema' directory
     AllowedPattern: "https?://\\S+\\.jar"
@@ -116,10 +79,6 @@ Metadata:
       - Label:
           default: Gaffer Config
         Parameters:
-          - GafferInstanceName
-          - GraphId
-          - UserName
-          - AccumuloVisibilities
           - GafferSchemaJarUrl
       - Label:
           default: Infrastructure Config
@@ -131,14 +90,13 @@ Metadata:
           - SubnetId
           - KeyName
           - ExtraSecurityGroups
-          - ManageSecurityGroups
 
 Resources:
 
-  GafferWithUser:
+  GafferRoadTraffic:
     Type: AWS::CloudFormation::Stack
     Properties:
-      TemplateURL: !Join ["", ["https://s3.amazonaws.com/", Ref: S3Bucket, "/", !GetAtt FileUploadCustomResource.DeployGafferWithUserStack]]
+      TemplateURL: !Join ["", ["https://s3.amazonaws.com/", Ref: S3Bucket, "/", !GetAtt FileUploadCustomResource.DeployGafferRoadTrafficStack]]
       Parameters:
         GafferVersion: !Ref GafferVersion
         GafferToolsVersion: !Ref GafferToolsVersion
@@ -147,53 +105,61 @@ Resources:
         EmrCoreInstanceCount: !Ref EmrCoreInstanceCount
         VpcId: !Ref VpcId
         SubnetId: !Ref SubnetId
-        ExtraEmrSecurityGroups: !Join [",", [!Join [",", Ref: ExtraSecurityGroups], Ref: WebServerAccessToGafferSecurityGroup]]
+        ExtraSecurityGroups: !Join [",", [!Join [",", Ref: ExtraSecurityGroups], Ref: AllowAccessToWebServerSecurityGroup]]
         KeyName: !Ref KeyName
-        ManageSecurityGroups: !Ref ManageSecurityGroups
-        GafferInstanceName: !Ref GafferInstanceName
-        UserName: !Ref UserName
-        AccumuloVisibilities: !Ref AccumuloVisibilities
-
-  GafferWebServer:
-    Type: AWS::CloudFormation::Stack
-    Properties:
-      TemplateURL: !Join ["", ["https://s3.amazonaws.com/", Ref: S3Bucket, "/", !GetAtt FileUploadCustomResource.DeployGafferWebServerStack]]
-      Parameters:
-        GafferVersion: !Ref GafferVersion
-        GafferToolsVersion: !Ref GafferToolsVersion
-        InstanceType: !Ref WebInstanceType
-        SubnetId: !Ref SubnetId
-        ExtraSecurityGroups: !Join [",", Ref: ExtraSecurityGroups]
-        KeyName: !Ref KeyName
-        GafferEmrMasterDNS: !Sub ${GafferWithUser.Outputs.EmrMasterPublicDNS}
-        AccumuloInstanceName: !Sub ${GafferWithUser.Outputs.AccumuloInstanceName}
-        GraphId: !Ref GraphId
-        UserName: !Sub ${GafferWithUser.Outputs.UserName}
-        PasswordParameter: !Sub ${GafferWithUser.Outputs.PasswordParameter}
-        EncryptionKey: !Sub ${GafferWithUser.Outputs.PasswordEncryptionKey}
+        WebInstanceType: !Ref WebInstanceType
         GafferSchemaJarUrl: !Ref GafferSchemaJarUrl
+        RoadTrafficDataUrl: "https://raw.githubusercontent.com/gchq/Gaffer/master/example/road-traffic/road-traffic-demo/src/main/resources/roadTrafficSampleData.csv"
 
-  WebServerAccessToGafferSecurityGroup:
+  AllowAccessToWebServerSecurityGroup:
     Type: AWS::EC2::SecurityGroup
     Properties:
       VpcId: !Ref VpcId
-      GroupDescription: Allows web server to access Gaffer instance
+      GroupDescription: Allows access Gaffer Web Server
       Tags:
         - Key: Name
-          Value: !Join ["-", [Ref: "AWS::StackName", "web-gaffer-access"]]
+          Value: !Join ["-", [Ref: "AWS::StackName", "web-server-access"]]
 
-  WebServerAccessToGafferIngressRule:
+  AllowAccessToWebServerIngressRule:
     Type: AWS::EC2::SecurityGroupIngress
     Properties:
-      GroupId: !Ref WebServerAccessToGafferSecurityGroup
-      CidrIp:
-        Fn::Join:
-          - ""
-          - - !Sub ${GafferWebServer.Outputs.PrivateIp}
-            - "/32"
+      GroupId: !Ref AllowAccessToWebServerSecurityGroup
+      SourceSecurityGroupId: !Ref AllowAccessToWebServerSecurityGroup
       IpProtocol: tcp
-      FromPort: 0
-      ToPort: 65535
+      FromPort: 80
+      ToPort: 80
+
+  ###################################################
+  ## EMR step script to run Road Traffic System Tests
+  ###################################################
+
+  WaitForSystemTestsCondition:
+    Type: AWS::CloudFormation::WaitCondition
+    Properties:
+      Handle: !Ref WaitForSystemTestsHandler
+      Timeout: 3600
+
+  WaitForSystemTestsHandler:
+    Type: AWS::CloudFormation::WaitConditionHandle
+    DependsOn: GafferRoadTraffic
+
+  RunSystemTests:
+    Type: AWS::EMR::Step
+    Properties:
+      JobFlowId: !Sub ${GafferRoadTraffic.Outputs.EmrClusterId}
+      Name: run-road-traffic-system-tests
+      HadoopJarStep:
+        Jar: s3://elasticmapreduce/libs/script-runner/script-runner.jar
+        Args:
+          - !Join ["", ["s3://", !Ref S3Bucket, "/", !GetAtt FileUploadCustomResource.RunGafferSystemTestsScript]]
+          - !Ref GafferVersion
+          - "-h"
+          - !Sub ${GafferRoadTraffic.Outputs.WebServerPublicDNS}
+          - "-p"
+          - 80
+          - "-w"
+          - !Ref WaitForSystemTestsHandler
+      ActionOnFailure: CANCEL_AND_WAIT
 
   ##############################
   ## Upload dependencies into S3
@@ -213,7 +179,7 @@ Resources:
   FileUploadLambda:
     Type: AWS::Lambda::Function
     Properties:
-      Description: Uploads files required to deploy Gaffer with a web server to an S3 bucket
+      Description: Uploads files required to run the Gaffer Road Traffic System Tests to an S3 bucket
       Role: !GetAtt FileUploadRole.Arn
       Runtime: python2.7
       Handler: index.lambda_handler
@@ -233,20 +199,20 @@ Resources:
           files=[]
 
           files.append({
-            'Output': 'DeployGafferWithUserStack',
-            'Key': 'cloudformation/gaffer-with-user.yaml',
+            'Output': 'DeployGafferRoadTrafficStack',
+            'Key': 'cloudformation/gaffer-road-traffic.yaml',
             'Urls': [
-              'https://raw.githubusercontent.com/gchq/gaffer-tools/gaffer-tools-${GafferToolsVersion}/deployment/aws/core/cloudformation/gaffer-with-user.yaml',
-              'https://raw.githubusercontent.com/gchq/gaffer-tools/${GafferToolsVersion}/deployment/aws/core/cloudformation/gaffer-with-user.yaml'
+              'https://raw.githubusercontent.com/gchq/gaffer-tools/gaffer-tools-${GafferToolsVersion}/deployment/aws/apps/road-traffic/cloudformation/gaffer-road-traffic.yaml',
+              'https://raw.githubusercontent.com/gchq/gaffer-tools/${GafferToolsVersion}/deployment/aws/apps/road-traffic/cloudformation/gaffer-road-traffic.yaml'
             ]
           })
 
           files.append({
-            'Output': 'DeployGafferWebServerStack',
-            'Key': 'cloudformation/gaffer-web.yaml',
+            'Output': 'RunGafferSystemTestsScript',
+            'Key': 'step/run-gaffer-system-tests.sh',
             'Urls': [
-              'https://raw.githubusercontent.com/gchq/gaffer-tools/gaffer-tools-${GafferToolsVersion}/deployment/aws/core/cloudformation/gaffer-web.yaml',
-              'https://raw.githubusercontent.com/gchq/gaffer-tools/${GafferToolsVersion}/deployment/aws/core/cloudformation/gaffer-web.yaml'
+              'https://raw.githubusercontent.com/gchq/gaffer-tools/gaffer-tools-${GafferToolsVersion}/deployment/aws/tests/system-tests/emr-step-scripts/run-gaffer-system-tests.sh',
+              'https://raw.githubusercontent.com/gchq/gaffer-tools/${GafferToolsVersion}/deployment/aws/tests/system-tests/emr-step-scripts/run-gaffer-system-tests.sh'
             ]
           })
 
@@ -344,24 +310,24 @@ Resources:
 
 Outputs:
   EmrMasterPublicDNS:
-    Value: !Sub ${GafferWithUser.Outputs.EmrMasterPublicDNS}
+    Value: !Sub ${GafferRoadTraffic.Outputs.EmrMasterPublicDNS}
   EmrClusterId:
-    Value: !Sub ${GafferWithUser.Outputs.EmrClusterId}
+    Value: !Sub ${GafferRoadTraffic.Outputs.EmrClusterId}
   AccumuloInstanceName:
-    Value: !Sub ${GafferWithUser.Outputs.AccumuloInstanceName}
+    Value: !Sub ${GafferRoadTraffic.Outputs.AccumuloInstanceName}
   GraphId:
-    Value: !Ref GraphId
+    Value: !Sub ${GafferRoadTraffic.Outputs.GraphId}
   UserName:
-    Value: !Sub ${GafferWithUser.Outputs.UserName}
+    Value: !Sub ${GafferRoadTraffic.Outputs.UserName}
   PasswordParameter:
-    Value: !Sub ${GafferWithUser.Outputs.PasswordParameter}
+    Value: !Sub ${GafferRoadTraffic.Outputs.PasswordParameter}
   PasswordEncryptionKey:
-    Value: !Sub ${GafferWithUser.Outputs.PasswordEncryptionKey}
+    Value: !Sub ${GafferRoadTraffic.Outputs.PasswordEncryptionKey}
   WebServerPublicDNS:
-    Value: !Sub ${GafferWebServer.Outputs.PublicDNS}
+    Value: !Sub ${GafferRoadTraffic.Outputs.WebServerPublicDNS}
   RestApi:
-    Value: !Sub ${GafferWebServer.Outputs.RestApi}
+    Value: !Sub ${GafferRoadTraffic.Outputs.RestApi}
   GraphApi:
-    Value: !Sub ${GafferWebServer.Outputs.GraphApi}
+    Value: !Sub ${GafferRoadTraffic.Outputs.GraphApi}
   WebUi:
-    Value: !Sub ${GafferWebServer.Outputs.WebUi}
+    Value: !Sub ${GafferRoadTraffic.Outputs.WebUi}
