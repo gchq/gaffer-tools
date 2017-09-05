@@ -228,7 +228,7 @@ CREDSTORE=${CREDSTORE/\$\{USER\}/$USER}
 CREDSTORE=${CREDSTORE/\$\{CLUSTER_NAME\}/$CLUSTER_NAME}
 
 if hadoop credential list -provider $CREDSTORE | grep "root.initial.password"; then
-	hadoop fs -rm $CREDSTORE
+	hadoop fs -rm ${CREDSTORE/jceks:\/\/hdfs/}
 fi
 
 # Generate passwords for Accumulo
