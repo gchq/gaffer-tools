@@ -1397,27 +1397,27 @@ class GetGraph:
 
 class GetSchema(GetGraph):
     def __init__(self, url=None):
-        self.url = '/graph/schema'
+        self.url = '/graph/config/schema'
 
 
 class GetFilterFunctions(GetGraph):
     def __init__(self, url=None):
-        self.url = '/graph/filterFunctions'
+        self.url = '/graph/config/filterFunctions'
 
 
 class GetClassFilterFunctions(GetGraph):
     def __init__(self, class_name=None, url=None):
-        self.url = '/graph/filterFunctions/' + class_name
+        self.url = '/graph/config/filterFunctions/' + class_name
 
 
 class GetElementGenerators(GetGraph):
     def __init__(self, url=None):
-        self.url = '/graph/elementGenerators'
+        self.url = '/graph/config/elementGenerators'
 
 
 class GetObjectGenerators(GetGraph):
     def __init__(self, url=None):
-        self.url = '/graph/objectGenerators'
+        self.url = '/graph/config/objectGenerators'
 
 
 class GetOperations(GetGraph):
@@ -1427,12 +1427,12 @@ class GetOperations(GetGraph):
 
 class GetSerialisedFields(GetGraph):
     def __init__(self, class_name=None, url=None):
-        self.url = '/graph/serialisedFields/' + class_name
+        self.url = '/graph/config/serialisedFields/' + class_name
 
 
 class GetStoreTraits(GetGraph):
     def __init__(self, url=None):
-        self.url = '/graph/storeTraits'
+        self.url = '/graph/config/storeTraits'
 
 
 class IsOperationSupported:

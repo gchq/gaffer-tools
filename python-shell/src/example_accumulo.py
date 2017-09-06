@@ -109,4 +109,4 @@ def get_elements_in_ranges(gc):
 
 
 if __name__ == "__main__":
-    run('http://localhost:8080/rest/v1', False)
+    run('http://localhost:8080/rest/latest', False)

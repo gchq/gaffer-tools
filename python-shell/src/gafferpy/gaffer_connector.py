@@ -64,7 +64,7 @@ class GafferConnector:
         """
 
         # Construct the full URL path to the Gaffer server
-        url = self._host + '/graph/doOperation'
+        url = self._host + '/graph/operations'
 
         if hasattr(operation_chain, "to_json"):
             op_chain_json_obj = operation_chain.to_json()
@@ -120,12 +120,11 @@ class GafferConnector:
 
         return response.read().decode('utf-8')
 
-    def is_operation_supported(self, operation, headers={}):
-        url = self._host + '/graph/isOperationSupported'
+    def is_operation_supported(self, operation=None, headers={}):
+        url = self._host + '/graph/operations/' + operation.get_operation()
         headers['Content-Type'] = 'application/json;charset=utf-8'
-        json_body = bytes(json.dumps(operation.get_operation()), 'ascii')
 
-        request = urllib.request.Request(url, headers=headers, data=json_body)
+        request = urllib.request.Request(url, headers=headers)
 
         try:
             response = self._opener.open(request)

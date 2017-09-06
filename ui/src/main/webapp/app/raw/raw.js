@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Crown Copyright
+ * Copyright 2016-2017 Crown Copyright
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,7 +30,7 @@ angular.module('app').factory('raw', ['$http', 'settings', function($http, setti
         var schema;
         raw.schema = {};
         updateSchemaVertices();
-        $http.get(settings.restUrl + "/graph/schema")
+        $http.get(settings.restUrl + "/graph/config/schema")
              .success(function(data){
                 raw.schema = data;
                 updateSchemaVertices();
@@ -41,7 +41,7 @@ angular.module('app').factory('raw', ['$http', 'settings', function($http, setti
     };
 
     raw.execute = function(operationChain, onSuccess) {
-        var queryUrl = settings.restUrl + "/graph/doOperation";
+        var queryUrl = settings.restUrl + "/graph/operations";
         if(!queryUrl.startsWith("http")) {
             queryUrl = "http://" + queryUrl;
         }
@@ -105,7 +105,7 @@ angular.module('app').factory('raw', ['$http', 'settings', function($http, setti
          className = raw.schema.types[type].class;
        }
 
-       var queryUrl = settings.restUrl + "/graph/filterFunctions/" + className;
+       var queryUrl = settings.restUrl + "/graph/config/filterFunctions/" + className;
        if(!queryUrl.startsWith("http")) {
            queryUrl = "http://" + queryUrl;
        }
@@ -124,7 +124,7 @@ angular.module('app').factory('raw', ['$http', 'settings', function($http, setti
     }
 
     raw.functionParameters = function(functionClassName, onSuccess) {
-          var queryUrl = settings.restUrl + "/graph/serialisedFields/" + functionClassName;
+          var queryUrl = settings.restUrl + "/graph/config/serialisedFields/" + functionClassName;
           if(!queryUrl.startsWith("http")) {
               queryUrl = "http://" + queryUrl;
           }
