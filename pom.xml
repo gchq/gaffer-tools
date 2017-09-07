@@ -31,7 +31,6 @@
     <modules>
         <module>ui</module>
         <module>mini-accumulo-cluster</module>
-        <module>graffer-ql</module>
         <module>performance-testing</module>
         <module>random-element-generation</module>
         <module>schema-builder</module>
