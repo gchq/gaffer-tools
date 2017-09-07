@@ -115,7 +115,7 @@ public class AppConfigGenerator implements Runnable {
         ACCUMULO_PROXY
     }
 
-    private static Map<COMPONENT, String> componentToPropertyLookup = new HashMap<>();
+    static Map<COMPONENT, String> componentToPropertyLookup = new HashMap<>();
 
     static {
         componentToPropertyLookup.put(COMPONENT.ACCUMULO_MASTER, "site.accumulo-env.master_heapsize");
@@ -139,6 +139,9 @@ public class AppConfigGenerator implements Runnable {
 
     @Parameter(names = { "-u", "--usage" }, description = "The proportion of the cluster resources this application should be configured to use (as a percentage)")
     private int clusterUsagePercent = 85;
+
+    @Parameter(names = { "-r", "--heap-container-ratio" }, description = "The ratio that should be used to calculate the size of the requests for memory from YARN, based off the Java heap size for each component")
+    private float heapSizeToContainerMemoryRatio = 1.3f;
 
     @Parameter(names = "-s", description = "Generate the allocation so that all components could fit on a single node, otherwise the allocation will try to use as much of the resources available across the cluster as possible")
     private boolean singleNode = false;
@@ -268,8 +271,9 @@ public class AppConfigGenerator implements Runnable {
 
         int tserverCores = totalCoresAvailable / (this.tserversPerNode * availableResources.getNodeCount());
         int tserverMemory = totalMemoryAvailable / (this.tserversPerNode * availableResources.getNodeCount());
+        int tserverHeapSize = (int) Math.floor(tserverMemory / this.heapSizeToContainerMemoryRatio);
 
-        if (tserverCores <= 0 || tserverMemory <= 0) {
+        if (tserverCores <= 0 || tserverMemory <= 0 || tserverHeapSize <= 0) {
             throw new IOException(String.format("Not enough available resources to deploy %s tablet servers per node, only cores: %s memory: %s available across the cluster!", this.tserversPerNode, totalCoresAvailable, totalMemoryAvailable));
         }
 
@@ -278,7 +282,7 @@ public class AppConfigGenerator implements Runnable {
         tabletServerConfig.put(ResourceKeys.YARN_CORES, String.valueOf(tserverCores));
         tabletServerConfig.put(ResourceKeys.YARN_MEMORY, String.valueOf(tserverMemory));
 
-        appConfig.global.put(componentToPropertyLookup.get(COMPONENT.ACCUMULO_TSERVER), String.valueOf(tserverMemory) + "m");
+        appConfig.global.put(componentToPropertyLookup.get(COMPONENT.ACCUMULO_TSERVER), String.valueOf(tserverHeapSize) + "m");
 
         return app;
     }
@@ -324,8 +328,9 @@ public class AppConfigGenerator implements Runnable {
 
         int tserverCores = coresRemainingPerNode / (this.tserversPerNode * availableResources.getNodeCount());
         int tserverMemory = memoryRemainingPerNode / (this.tserversPerNode * availableResources.getNodeCount());
+        int tserverHeapSize = (int) Math.floor(tserverMemory / this.heapSizeToContainerMemoryRatio);
 
-        if (tserverCores <= 0 || tserverMemory <= 0) {
+        if (tserverCores <= 0 || tserverMemory <= 0 || tserverHeapSize <= 0) {
             throw new IOException(String.format("Not enough available resources to deploy %s tablet servers per node, only cores: %s memory: %s available per node!", this.tserversPerNode, coresRemainingPerNode, memoryRemainingPerNode));
         }
 
@@ -334,7 +339,7 @@ public class AppConfigGenerator implements Runnable {
         tabletServerConfig.put(ResourceKeys.YARN_CORES, String.valueOf(tserverCores));
         tabletServerConfig.put(ResourceKeys.YARN_MEMORY, String.valueOf(tserverMemory));
 
-        appConfig.global.put(componentToPropertyLookup.get(COMPONENT.ACCUMULO_TSERVER), String.valueOf(tserverMemory) + "m");
+        appConfig.global.put(componentToPropertyLookup.get(COMPONENT.ACCUMULO_TSERVER), String.valueOf(tserverHeapSize) + "m");
 
         return app;
     }
@@ -353,11 +358,12 @@ public class AppConfigGenerator implements Runnable {
 
             // Start with the default memory usage for each non-tablet server component
             int componentMemory = this.defaultComponentMemory;
+
             // Infer how much memory is required for the component based on what its heapsize is set to
             String propertyName = componentToPropertyLookup.get(component);
             if (appConfig.global.containsKey(propertyName)) {
-                String propertyValue = appConfig.global.get(propertyName);
-                componentMemory = this.convertHeapSizePropertyToNumBytes(propertyValue);
+                final String propertyValue = appConfig.global.get(propertyName);
+                componentMemory = (int) Math.ceil(this.convertHeapSizePropertyToNumBytes(propertyValue) * this.heapSizeToContainerMemoryRatio);
             }
             componentConfig.put(ResourceKeys.YARN_MEMORY, String.valueOf(componentMemory));
 
@@ -384,14 +390,14 @@ public class AppConfigGenerator implements Runnable {
             AvailableResources availableClusterResources = null;
 
             availableClusterResources = this.getYarnResources();
-            LOGGER.info("Available Cluster Resources:" + System.currentTimeMillis());
+            LOGGER.info("Available Cluster Resources:");
             LOGGER.info(availableClusterResources);
 
             // We query twice because for some reason YARN on EMR lies about the max resources
             // available per node the first time round :S
             // TODO: Work out why this is the case!
             availableClusterResources = this.getYarnResources();
-            LOGGER.info("Available Cluster Resources:" + System.currentTimeMillis());
+            LOGGER.info("Available Cluster Resources:");
             LOGGER.info(availableClusterResources);
 
             SliderAppConfig config = this.generateSliderAppConfig(initialAppConfig, availableClusterResources);
