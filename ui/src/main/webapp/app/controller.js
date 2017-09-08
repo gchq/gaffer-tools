@@ -367,7 +367,10 @@ angular.module('app').controller('AppController',
         var operation = createBuildQueryOperation();
         $scope.operations.push(operation);
         $scope.resetBuildQuery();
-        raw.execute(JSON.stringify({operations: [operation, createLimitOperation(), createDeduplicateOperation()]}));
+        raw.execute(JSON.stringify({
+            operations: [operation, createLimitOperation(), createDeduplicateOperation()],
+            class: "uk.gov.gchq.gaffer.operation.OperationChain"
+        }));
     };
 
     var createCountOperation = function() {
@@ -378,7 +381,10 @@ angular.module('app').controller('AppController',
     }
 
     var executeBuildQueryCounts = function() {
-        var operations = {operations: [createBuildQueryOperation(), createCountOperation()]};
+        var operations = {
+            operations: [createBuildQueryOperation(), createCountOperation()],
+            class: "uk.gov.gchq.gaffer.operation.OperationChain"
+        };
         var onSuccess = function(data) {
             if(!data.limitHit) {
                 var total = 0;
@@ -400,7 +406,10 @@ angular.module('app').controller('AppController',
         $scope.clearResults();
         $scope.resetBuildQuery();
        for(var i in $scope.operations) {
-           raw.execute(JSON.stringify({operations: [$scope.operations[i], createLimitOperation(), createDeduplicateOperation()]}));
+           raw.execute(JSON.stringify({
+               operations: [$scope.operations[i], createLimitOperation(), createDeduplicateOperation()],
+               class: "uk.gov.gchq.gaffer.operation.OperationChain"
+           }));
        }
     }
 
