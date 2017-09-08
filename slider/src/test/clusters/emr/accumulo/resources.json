@@ -11,7 +11,7 @@
 		"ACCUMULO_TSERVER": {
 			"yarn.role.priority": "2",
 			"yarn.component.instances": "3",
-			"yarn.memory": "1024"
+			"yarn.memory": "2048"
 		},
 		"ACCUMULO_MONITOR": {
 			"yarn.role.priority": "3",

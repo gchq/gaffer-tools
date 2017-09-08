@@ -115,6 +115,9 @@ public class AppConfigGenerator implements Runnable {
         ACCUMULO_PROXY
     }
 
+    static String ACCUMULO_TSERVER_NATIVE_MAPS_ENABLED_PROPERTY = "site.accumulo-site.tserver.memory.maps.native.enabled";
+    static String ACCUMULO_TSERVER_MAX_MEMORY_PROPERTY = "site.accumulo-site.tserver.memory.maps.max";
+
     static Map<COMPONENT, String> componentToPropertyLookup = new HashMap<>();
 
     static {
@@ -200,11 +203,12 @@ public class AppConfigGenerator implements Runnable {
         }
     }
 
-    private int convertHeapSizePropertyToNumBytes(final String value) {
-        if (value.endsWith("g")) {
-            return Integer.parseInt(value.substring(0, value.length() - 1)) * 1024;
-        } else if (value.endsWith("m")) {
-            return Integer.parseInt(value.substring(0, value.length() - 1));
+    private int convertPropertyToNumBytes(final String value) {
+        final String formattedValue = value.toLowerCase();
+        if (formattedValue.endsWith("g")) {
+            return Integer.parseInt(formattedValue.substring(0, formattedValue.length() - 1)) * 1024;
+        } else if (formattedValue.endsWith("m")) {
+            return Integer.parseInt(formattedValue.substring(0, formattedValue.length() - 1));
         }
 
         throw new NumberFormatException(String.format("Unable to convert %s to a number", value));
@@ -226,6 +230,16 @@ public class AppConfigGenerator implements Runnable {
         yarn.close();
 
         return new AvailableResources(resources.getVirtualCores(), resources.getMemory(), metrics.getNumNodeManagers());
+    }
+
+    private int getNativeMemoryMemoryRequirement(final ConfTree appConfig) {
+        final String isNativeMapEnabled = appConfig.global.get(ACCUMULO_TSERVER_NATIVE_MAPS_ENABLED_PROPERTY);
+        if (Boolean.parseBoolean(isNativeMapEnabled)) {
+            String maxMemProperty = appConfig.global.get(ACCUMULO_TSERVER_MAX_MEMORY_PROPERTY);
+            return this.convertPropertyToNumBytes(maxMemProperty);
+        }
+
+        return 0;
     }
 
     /**
@@ -271,6 +285,7 @@ public class AppConfigGenerator implements Runnable {
 
         int tserverCores = totalCoresAvailable / (this.tserversPerNode * availableResources.getNodeCount());
         int tserverMemory = totalMemoryAvailable / (this.tserversPerNode * availableResources.getNodeCount());
+        tserverMemory -= this.getNativeMemoryMemoryRequirement(appConfig);
         int tserverHeapSize = (int) Math.floor(tserverMemory / this.heapSizeToContainerMemoryRatio);
 
         if (tserverCores <= 0 || tserverMemory <= 0 || tserverHeapSize <= 0) {
@@ -328,6 +343,7 @@ public class AppConfigGenerator implements Runnable {
 
         int tserverCores = coresRemainingPerNode / (this.tserversPerNode * availableResources.getNodeCount());
         int tserverMemory = memoryRemainingPerNode / (this.tserversPerNode * availableResources.getNodeCount());
+        tserverMemory -= this.getNativeMemoryMemoryRequirement(appConfig);
         int tserverHeapSize = (int) Math.floor(tserverMemory / this.heapSizeToContainerMemoryRatio);
 
         if (tserverCores <= 0 || tserverMemory <= 0 || tserverHeapSize <= 0) {
@@ -363,7 +379,7 @@ public class AppConfigGenerator implements Runnable {
             String propertyName = componentToPropertyLookup.get(component);
             if (appConfig.global.containsKey(propertyName)) {
                 final String propertyValue = appConfig.global.get(propertyName);
-                componentMemory = (int) Math.ceil(this.convertHeapSizePropertyToNumBytes(propertyValue) * this.heapSizeToContainerMemoryRatio);
+                componentMemory = (int) Math.ceil(this.convertPropertyToNumBytes(propertyValue) * this.heapSizeToContainerMemoryRatio);
             }
             componentConfig.put(ResourceKeys.YARN_MEMORY, String.valueOf(componentMemory));
 
