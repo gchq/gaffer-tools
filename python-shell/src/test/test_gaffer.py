@@ -35,7 +35,7 @@ class GafferTest(unittest.TestCase):
                 'class': 'uk.gov.gchq.gaffer.operation.data.EdgeSeed',
                 'source': 'src',
                 'destination': 'dest',
-                'directed': 'DIRECTED',
+                'directedType': 'DIRECTED',
                 'matchedVertex': 'SOURCE'
             },
             g.EdgeSeed("src", "dest", g.DirectedType.DIRECTED,
@@ -47,7 +47,7 @@ class GafferTest(unittest.TestCase):
                 'class': 'uk.gov.gchq.gaffer.operation.data.EdgeSeed',
                 'source': 'src',
                 'destination': 'dest',
-                'directed': 'UNDIRECTED',
+                'directedType': 'UNDIRECTED',
                 'matchedVertex': 'DESTINATION'
             },
             g.EdgeSeed("src", "dest", g.DirectedType.UNDIRECTED,
@@ -59,7 +59,7 @@ class GafferTest(unittest.TestCase):
                 'class': 'uk.gov.gchq.gaffer.operation.data.EdgeSeed',
                 'source': 'src',
                 'destination': 'dest',
-                'directed': 'EITHER'
+                'directedType': 'EITHER'
             },
             g.EdgeSeed("src", "dest", g.DirectedType.EITHER).to_json()
         )
@@ -69,7 +69,7 @@ class GafferTest(unittest.TestCase):
                 'class': 'uk.gov.gchq.gaffer.operation.data.EdgeSeed',
                 'source': 'src',
                 'destination': 'dest',
-                'directed': 'DIRECTED'
+                'directedType': 'DIRECTED'
             },
             g.EdgeSeed("src", "dest", True).to_json()
         )
@@ -79,7 +79,7 @@ class GafferTest(unittest.TestCase):
                 'class': 'uk.gov.gchq.gaffer.operation.data.EdgeSeed',
                 'source': 'src',
                 'destination': 'dest',
-                'directed': 'UNDIRECTED'
+                'directedType': 'UNDIRECTED'
             },
             g.EdgeSeed("src", "dest", False).to_json()
         )
@@ -531,6 +531,7 @@ class GafferTest(unittest.TestCase):
         operations = [test_op_chain1]
         self.assertEqual(
             {
+                'class': 'uk.gov.gchq.gaffer.operation.OperationChain',
                 'operations': [{'class': 'test_class'}]
             },
             g.OperationChain(operations).to_json()
@@ -540,6 +541,7 @@ class GafferTest(unittest.TestCase):
         operations.append(test_op_chain2)
         self.assertEqual(
             {
+                'class': 'uk.gov.gchq.gaffer.operation.OperationChain',
                 'operations': [{'class': 'test_class'},
                                {'class': 'test_class_1', 'view': {}}]
             },
@@ -551,6 +553,7 @@ class GafferTest(unittest.TestCase):
         operations.append(test_op_chain3)
         self.assertEqual(
             {
+                'class': 'uk.gov.gchq.gaffer.operation.OperationChain',
                 'operations': [{'class': 'test_class'},
                                {'class': 'test_class_1', 'view': {}},
                                {'class': 'test_class_2', 'view': {},

@@ -115,13 +115,12 @@ public class AccumuloElementIngestTest extends Configured {
         LOGGER.info("Running SampleDataForSplitPoints job");
         final SampleDataForSplitPoints sample = new SampleDataForSplitPoints.Builder()
                 .numSplits(numSplitPoints)
-                .addInputPath(tmpData)
+                .addinputMapperPair(tmpData, BytesWritableMapperGenerator.class.getName())
                 .splitsFilePath(splitsFile)
                 .outputPath(splitsOutputPath)
                 .jobInitialiser(new SequenceFileJobInitialiser())
                 .validate(false)
                 .proportionToSample(1.0F)
-                .mapperGenerator(BytesWritableMapperGenerator.class)
                 .build();
         accumuloStore.execute(sample, new User());
 

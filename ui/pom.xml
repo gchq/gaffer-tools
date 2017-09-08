@@ -128,7 +128,7 @@
                             </webapps>
                             <systemProperties>
                                 <gaffer.rest-api.basePath>
-                                    ${standalone-rest-path}/v1
+                                    ${standalone-rest-path}/latest
                                 </gaffer.rest-api.basePath>
                                 <gaffer.graph.library.class>
                                     uk.gov.gchq.gaffer.store.library.FileGraphLibrary

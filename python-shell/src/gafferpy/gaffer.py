@@ -139,7 +139,7 @@ class EdgeSeed(ElementSeed):
             'class': 'uk.gov.gchq.gaffer.operation.data.EdgeSeed',
             'source': self.source,
             'destination': self.destination,
-            'directed': self.directed
+            'directedType': self.directed
         }
 
         if self.matched_vertex is not None:
@@ -151,7 +151,7 @@ class EdgeSeed(ElementSeed):
         seed = {
             'source': self.source,
             'destination': self.destination,
-            'directed': self.directed
+            'directedType': self.directed
         }
 
         if self.matched_vertex is not None:
@@ -458,14 +458,16 @@ class NamedOperationParameter:
 
 class OperationChain(ToJson):
     def __init__(self, operations):
+        self.class_name = "uk.gov.gchq.gaffer.operation.OperationChain"
         self.operations = operations
 
     def to_json(self):
+        operation_chain_json = {'class': self.class_name}
         operations_json = []
         for operation in self.operations:
             operations_json.append(operation.to_json())
-        return {'operations': operations_json}
-
+        operation_chain_json['operations'] = operations_json
+        return operation_chain_json
 
 class Operation(ToJson):
     def __init__(self,
@@ -1397,27 +1399,27 @@ class GetGraph:
 
 class GetSchema(GetGraph):
     def __init__(self, url=None):
-        self.url = '/graph/schema'
+        self.url = '/graph/config/schema'
 
 
 class GetFilterFunctions(GetGraph):
     def __init__(self, url=None):
-        self.url = '/graph/filterFunctions'
+        self.url = '/graph/config/filterFunctions'
 
 
 class GetClassFilterFunctions(GetGraph):
     def __init__(self, class_name=None, url=None):
-        self.url = '/graph/filterFunctions/' + class_name
+        self.url = '/graph/config/filterFunctions/' + class_name
 
 
 class GetElementGenerators(GetGraph):
     def __init__(self, url=None):
-        self.url = '/graph/elementGenerators'
+        self.url = '/graph/config/elementGenerators'
 
 
 class GetObjectGenerators(GetGraph):
     def __init__(self, url=None):
-        self.url = '/graph/objectGenerators'
+        self.url = '/graph/config/objectGenerators'
 
 
 class GetOperations(GetGraph):
@@ -1427,12 +1429,12 @@ class GetOperations(GetGraph):
 
 class GetSerialisedFields(GetGraph):
     def __init__(self, class_name=None, url=None):
-        self.url = '/graph/serialisedFields/' + class_name
+        self.url = '/graph/config/serialisedFields/' + class_name
 
 
 class GetStoreTraits(GetGraph):
     def __init__(self, url=None):
-        self.url = '/graph/storeTraits'
+        self.url = '/graph/config/storeTraits'
 
 
 class IsOperationSupported:

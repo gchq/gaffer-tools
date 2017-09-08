@@ -307,7 +307,7 @@ def generate_elements(gc):
     # Generate Elements
     elements = gc.execute_operation(
         g.GenerateElements(
-            'uk.gov.gchq.gaffer.traffic.generator.RoadTrafficElementGenerator',
+            'uk.gov.gchq.gaffer.traffic.generator.RoadTrafficStringElementGenerator',
             objects=[
                 '"South West","E06000054","Wiltshire","6016","389200","179080","M4","LA Boundary","381800","180030","17","391646","179560","TM","E","2000","2000-05-03 00:00:00","7","0","9","2243","15","426","127","21","20","37","106","56","367","3060"'
             ]
@@ -745,6 +745,7 @@ def op_chain_in_json(gc):
     # Operation chain defined in json
     result = gc.execute_operation_chain(
         {
+            "class": "uk.gov.gchq.gaffer.operation.OperationChain",
             "operations": [{
                 "class": "uk.gov.gchq.gaffer.operation.impl.get.GetAllElements",
             }, {
@@ -758,4 +759,4 @@ def op_chain_in_json(gc):
 
 
 if __name__ == "__main__":
-    run('http://localhost:8080/rest/v1', False)
+    run('http://localhost:8080/rest/latest', False)

@@ -16,7 +16,6 @@
 package uk.gov.gchq.gaffer.accumulostore.performancetesting.ingest;
 
 import org.apache.hadoop.conf.Configuration;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
@@ -51,7 +50,7 @@ public class TestAccumuloStoreRandomElementIngestTest {
         testProperties.setRmatMaxNodeId(100L);
         testProperties.setTempDirectory(tempFolder.newFolder().getCanonicalPath());
 
-        final Schema schema = Schema.fromJson(StreamUtil.schema(Constants.class));
+        final Schema schema = Schema.fromJson(StreamUtil.schemas(Constants.class));
         final AccumuloProperties storeProperties = AccumuloProperties.loadStoreProperties(
                 StreamUtil.openStream(Constants.class, "mockaccumulostore.properties")
         );
