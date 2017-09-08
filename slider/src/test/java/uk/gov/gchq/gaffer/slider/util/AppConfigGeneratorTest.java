@@ -25,7 +25,7 @@ import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
-import static uk.gov.gchq.gaffer.slider.util.AppConfigGenerator.componentToPropertyLookup;
+import static uk.gov.gchq.gaffer.slider.util.AppConfigGenerator.ACCUMULO_COMPONENT_PROPERTY_LOOKUP;
 import static uk.gov.gchq.gaffer.slider.util.AppConfigGenerator.COMPONENT;
 
 public class AppConfigGeneratorTest {
@@ -49,7 +49,7 @@ public class AppConfigGeneratorTest {
 		assertEquals("Number of cores", "2", tserverConfig.get(ResourceKeys.YARN_CORES));
 		assertEquals("Memory amount", "9130", tserverConfig.get(ResourceKeys.YARN_MEMORY));
 
-		final String tserverHeapSize = newConfig.getAppConfig().global.get(componentToPropertyLookup.get(COMPONENT.ACCUMULO_TSERVER));
+		final String tserverHeapSize = newConfig.getAppConfig().global.get(ACCUMULO_COMPONENT_PROPERTY_LOOKUP.get(COMPONENT.ACCUMULO_TSERVER));
 		assertEquals("Heap Size", "7023m", tserverHeapSize);
 	}
 
@@ -72,7 +72,7 @@ public class AppConfigGeneratorTest {
 		assertEquals("Number of cores", "4", tserverConfig.get(ResourceKeys.YARN_CORES));
 		assertEquals("Memory amount", "26060", tserverConfig.get(ResourceKeys.YARN_MEMORY));
 
-		final String tserverHeapSize = newConfig.getAppConfig().global.get(componentToPropertyLookup.get(COMPONENT.ACCUMULO_TSERVER));
+		final String tserverHeapSize = newConfig.getAppConfig().global.get(ACCUMULO_COMPONENT_PROPERTY_LOOKUP.get(COMPONENT.ACCUMULO_TSERVER));
 		assertEquals("Heap Size", "20046m", tserverHeapSize);
 	}
 
