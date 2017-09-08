@@ -64,7 +64,7 @@ class GafferConnector:
         """
 
         # Construct the full URL path to the Gaffer server
-        url = self._host + '/graph/operations'
+        url = self._host + '/graph/operations/execute'
 
         if hasattr(operation_chain, "to_json"):
             op_chain_json_obj = operation_chain.to_json()

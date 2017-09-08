@@ -139,7 +139,7 @@ class EdgeSeed(ElementSeed):
             'class': 'uk.gov.gchq.gaffer.operation.data.EdgeSeed',
             'source': self.source,
             'destination': self.destination,
-            'directed': self.directed
+            'directedType': self.directed
         }
 
         if self.matched_vertex is not None:
@@ -151,7 +151,7 @@ class EdgeSeed(ElementSeed):
         seed = {
             'source': self.source,
             'destination': self.destination,
-            'directed': self.directed
+            'directedType': self.directed
         }
 
         if self.matched_vertex is not None:
@@ -458,14 +458,16 @@ class NamedOperationParameter:
 
 class OperationChain(ToJson):
     def __init__(self, operations):
+        self.class_name = "uk.gov.gchq.gaffer.operation.OperationChain"
         self.operations = operations
 
     def to_json(self):
+        operation_chain_json = {'class': self.class_name}
         operations_json = []
         for operation in self.operations:
             operations_json.append(operation.to_json())
-        return {'operations': operations_json}
-
+        operation_chain_json['operations'] = operations_json
+        return operation_chain_json
 
 class Operation(ToJson):
     def __init__(self,
