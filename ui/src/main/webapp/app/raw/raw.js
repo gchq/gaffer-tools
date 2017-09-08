@@ -41,7 +41,7 @@ angular.module('app').factory('raw', ['$http', 'settings', function($http, setti
     };
 
     raw.execute = function(operationChain, onSuccess) {
-        var queryUrl = settings.restUrl + "/graph/operations";
+        var queryUrl = settings.restUrl + "/graph/operations/execute";
         if(!queryUrl.startsWith("http")) {
             queryUrl = "http://" + queryUrl;
         }
