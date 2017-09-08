@@ -1,13 +1,4 @@
 uk.gov.gchq.gaffer.accumulostore.performancetesting.ingest
-uk.gov.gchq.gaffer.federated.rest
-uk.gov.gchq.gaffer.federated.rest.application
-uk.gov.gchq.gaffer.federated.rest.auth
-uk.gov.gchq.gaffer.federated.rest.dto
-uk.gov.gchq.gaffer.federated.rest.service
-uk.gov.gchq.gaffer.federated.rest.util
-uk.gov.gchq.gaffer.graphql
-uk.gov.gchq.gaffer.graphql.definitions
-uk.gov.gchq.gaffer.graphql.fetch
 uk.gov.gchq.gaffer.miniaccumulocluster
 uk.gov.gchq.gaffer.performancetesting
 uk.gov.gchq.gaffer.performancetesting.aws
