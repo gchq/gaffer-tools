@@ -22,9 +22,9 @@
         }
       ],
       "aggregateFunction": {
-        "class": "uk.gov.gchq.gaffer.sketches.binaryoperator.HyperLogLogPlusAggregator"
+        "class": "uk.gov.gchq.gaffer.sketches.clearspring.cardinality.binaryoperator.HyperLogLogPlusAggregator"
       },
-      "serialiserClass": "uk.gov.gchq.gaffer.sketches.serialisation.HyperLogLogPlusSerialiser"
+      "serialiserClass": "uk.gov.gchq.gaffer.sketches.clearspring.cardinality.serialisation.HyperLogLogPlusSerialiser"
     },
     "true": {
       "class": "java.lang.Boolean",

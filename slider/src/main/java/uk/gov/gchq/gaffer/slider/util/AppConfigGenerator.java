@@ -250,7 +250,7 @@ public class AppConfigGenerator implements Runnable {
         totalMemoryAvailable -= ResourceKeys.DEF_YARN_MEMORY;
 
         // Accumulo Components
-        for (String componentName : resources.components.keySet()) {
+        for (final String componentName : resources.components.keySet()) {
             if (!componentName.equals(COMPONENT.ACCUMULO_TSERVER.name())) {
                 Map<String, String> componentConfig = resources.components.get(componentName);
                 int instanceCount = Integer.parseInt(componentConfig.get(ResourceKeys.COMPONENT_INSTANCES));
@@ -306,7 +306,7 @@ public class AppConfigGenerator implements Runnable {
         memoryRemainingPerNode -= ResourceKeys.DEF_YARN_MEMORY;
 
         // Accumulo Components
-        for (String componentName : resources.components.keySet()) {
+        for (final String componentName : resources.components.keySet()) {
             if (!componentName.equals(COMPONENT.ACCUMULO_TSERVER.name())) {
                 Map<String, String> componentConfig = resources.components.get(componentName);
                 int instanceCount = Integer.parseInt(componentConfig.get(ResourceKeys.COMPONENT_INSTANCES));
@@ -402,7 +402,7 @@ public class AppConfigGenerator implements Runnable {
 
             parser.save(config.getAppConfig(), new File(this.appConfigOutputPath));
             parser.save(config.getResources(), new File(this.resourcesOutputPath));
-        } catch (YarnException | IOException e) {
+        } catch (final YarnException | IOException e) {
             throw new RuntimeException(e);
         }
     }
@@ -415,7 +415,7 @@ public class AppConfigGenerator implements Runnable {
 
         try {
             generator.validateArguments();
-        } catch (Exception e) {
+        } catch (final Exception e) {
             LOGGER.error(e.getMessage());
         }
 

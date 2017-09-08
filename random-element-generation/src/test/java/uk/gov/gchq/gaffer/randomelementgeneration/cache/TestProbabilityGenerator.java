@@ -16,7 +16,6 @@
 package uk.gov.gchq.gaffer.randomelementgeneration.cache;
 
 import org.junit.Test;
-import uk.gov.gchq.gaffer.randomelementgeneration.cache.ProbabilityGenerator;
 
 import java.util.Map;
 import java.util.SortedMap;

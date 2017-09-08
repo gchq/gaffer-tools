@@ -83,7 +83,7 @@ public class AppConfigGeneratorTest {
 		try {
 			appConfigGenerator.generateSliderAppConfig(new ConfTree(), resources);
 			fail("Expected exception to be thrown");
-		} catch (IOException e) {
+		} catch (final IOException e) {
 			if (!e.getMessage().startsWith("No resources left")) {
 				fail("Caught unexpected exception: " + e);
 			}
@@ -103,7 +103,7 @@ public class AppConfigGeneratorTest {
 		try {
 			appConfigGenerator.generateSliderAppConfig(new ConfTree(), resources);
 			fail("Expected exception to be thrown");
-		} catch (IOException e) {
+		} catch (final IOException e) {
 			if (!e.getMessage().startsWith("Not enough available resources")) {
 				fail("Caught unexpected exception: " + e);
 			}
@@ -123,7 +123,7 @@ public class AppConfigGeneratorTest {
 		try {
 			appConfigGenerator.generateSliderAppConfig(new ConfTree(), resources);
 			fail("Expected exception to be thrown");
-		} catch (IOException e) {
+		} catch (final IOException e) {
 			if (!e.getMessage().startsWith("No resources left")) {
 				fail("Caught unexpected exception: " + e);
 			}
@@ -144,7 +144,7 @@ public class AppConfigGeneratorTest {
 		try {
 			appConfigGenerator.generateSliderAppConfig(new ConfTree(), resources);
 			fail("Expected exception to be thrown");
-		} catch (IOException e) {
+		} catch (final IOException e) {
 			if (!e.getMessage().startsWith("Not enough available resources")) {
 				fail("Caught unexpected exception: " + e);
 			}

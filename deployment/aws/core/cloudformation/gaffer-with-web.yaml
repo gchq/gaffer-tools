@@ -349,6 +349,8 @@ Outputs:
     Value: !Sub ${GafferWithUser.Outputs.EmrClusterId}
   AccumuloInstanceName:
     Value: !Sub ${GafferWithUser.Outputs.AccumuloInstanceName}
+  GraphId:
+    Value: !Ref GraphId
   UserName:
     Value: !Sub ${GafferWithUser.Outputs.UserName}
   PasswordParameter:

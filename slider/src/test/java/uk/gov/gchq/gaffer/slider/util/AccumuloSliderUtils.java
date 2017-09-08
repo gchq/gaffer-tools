@@ -28,6 +28,7 @@ import org.apache.slider.funtest.framework.CommandTestBase;
 import org.junit.rules.TemporaryFolder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
@@ -47,12 +48,12 @@ public class AccumuloSliderUtils {
 	 * @throws IOException
 	 * @throws URISyntaxException
 	 */
-	public static String getRootPassword (ConfTree appConfig) throws IOException, URISyntaxException {
+	public static String getRootPassword (final ConfTree appConfig) throws IOException, URISyntaxException {
 		Map<String, List<String>> keystores = SliderKeystoreUtils.getCredentialKeyStores(appConfig);
 		String passwordKeystore = null;
 
 		// Identify the keystore that is being used to store the Accumulo root user's password
-		for (Map.Entry<String, List<String>> keystore : keystores.entrySet()) {
+		for (final Map.Entry<String, List<String>> keystore : keystores.entrySet()) {
 			if (keystore.getValue().contains(CustomAuthenticator.ROOT_INITIAL_PASSWORD_PROPERTY)) {
 				passwordKeystore = keystore.getKey();
 			}
@@ -81,7 +82,7 @@ public class AccumuloSliderUtils {
 	 * @return The password response file that has been created
 	 * @throws IOException
 	 */
-	public static File generatePasswordFile (TemporaryFolder folder, String rootPassword, String instanceSecret, String tracePassword) throws IOException {
+	public static File generatePasswordFile (final TemporaryFolder folder, final String rootPassword, final String instanceSecret, final String tracePassword) throws IOException {
 		File passwordFile = folder.newFile();
 
 		BufferedWriter writer = new BufferedWriter(new FileWriter(passwordFile));
@@ -115,7 +116,7 @@ public class AccumuloSliderUtils {
 	 * @return Connection to the Accumulo instance
 	 * @throws Exception Reason why a connection was unable to be established
 	 */
-	public static Connector waitForAccumuloConnection (String zookeepers, String instanceName, String user, String password, long timeout) throws Exception {
+	public static Connector waitForAccumuloConnection (final String zookeepers, final String instanceName, final String user, final String password, final long timeout) throws Exception {
 		Duration duration = new Duration(timeout);
 		duration.start();
 
@@ -131,7 +132,7 @@ public class AccumuloSliderUtils {
 				if (accumulo.getMasterLocations().size() == 0 || accumulo.getRootTabletLocation() == null) {
 					accumulo = null;
 				}
-			} catch (RuntimeException e) {
+			} catch (final RuntimeException e) {
 				// Suppress the RuntimeException that is thrown because ZooKeeper does not contain any information
 				// yet about the Accumulo instance so that another attempt to connect can be made again later
 				if (!e.getMessage().contains("Instance name " + instanceName + " does not exist in zookeeper")) {
@@ -160,7 +161,7 @@ public class AccumuloSliderUtils {
 	 * @param timeout The maximum period of time (in millis) to wait for
 	 * @throws Exception
 	 */
-	public static void waitForAccumuloTabletServers (Connector accumulo, int tabletServerCount, long timeout) throws Exception {
+	public static void waitForAccumuloTabletServers (final Connector accumulo, final int tabletServerCount, final long timeout) throws Exception {
 		log.info("Waiting for {} Accumulo Tablet Servers to register with cluster, timeout = {} millis", tabletServerCount, timeout);
 
 		Duration duration = new Duration(timeout);
