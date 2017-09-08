@@ -22,7 +22,7 @@ from gafferpy import gaffer_connector
 
 class GafferConnectorTest(unittest.TestCase):
     def test_execute_operation(self):
-        gc = gaffer_connector.GafferConnector('http://localhost:8080/rest/v1')
+        gc = gaffer_connector.GafferConnector('http://localhost:8080/rest/latest')
         elements = gc.execute_operation(
             g.GetElements(
                 seeds=[

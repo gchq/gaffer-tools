@@ -21,7 +21,7 @@ import example_accumulo
 
 class ExampleAccumuloTest(unittest.TestCase):
     def test_example_accumulo_does_not_error(self):
-        example_accumulo.run('http://localhost:8080/rest/v1')
+        example_accumulo.run('http://localhost:8080/rest/latest')
 
 
 if __name__ == "__main__":
