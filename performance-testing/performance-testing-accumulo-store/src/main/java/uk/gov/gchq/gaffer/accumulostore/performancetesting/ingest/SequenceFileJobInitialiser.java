@@ -24,13 +24,9 @@ import uk.gov.gchq.gaffer.hdfs.operation.handler.job.initialiser.JobInitialiser;
 import uk.gov.gchq.gaffer.store.Store;
 
 import java.io.IOException;
-import java.util.List;
+import java.util.Map;
 
-/**
- *
- */
 public class SequenceFileJobInitialiser implements JobInitialiser {
-
     @Override
     public void initialiseJob(final Job job, final MapReduce operation, final Store store) throws IOException {
         initialiseInput(job, operation);
@@ -38,8 +34,8 @@ public class SequenceFileJobInitialiser implements JobInitialiser {
 
     private void initialiseInput(final Job job, final MapReduce operation) throws IOException {
         job.setInputFormatClass(SequenceFileInputFormat.class);
-        final List<String> paths = operation.getInputPaths();
-        for (final String path : paths) {
+        final Map<String, String> mapperPairs = operation.getInputMapperPairs();
+        for (final String path : mapperPairs.keySet()) {
             SequenceFileInputFormat.addInputPath(job, new Path(path));
         }
     }
