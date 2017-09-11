@@ -111,6 +111,7 @@ public class CloudWatchMetricsListener implements MetricsListener {
     @Override
     public void close() {
         this.cloudwatch.shutdown();
+        this.cloudwatch = null;
     }
 
 }
