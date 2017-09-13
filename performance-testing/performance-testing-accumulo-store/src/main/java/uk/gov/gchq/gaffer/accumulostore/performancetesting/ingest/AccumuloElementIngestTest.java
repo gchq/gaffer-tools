@@ -115,7 +115,7 @@ public class AccumuloElementIngestTest extends Configured {
         LOGGER.info("Running SampleDataForSplitPoints job");
         final SampleDataForSplitPoints sample = new SampleDataForSplitPoints.Builder()
                 .numSplits(numSplitPoints)
-                .addinputMapperPair(tmpData, BytesWritableMapperGenerator.class.getName())
+                .addInputMapperPair(tmpData, BytesWritableMapperGenerator.class.getName())
                 .splitsFilePath(splitsFile)
                 .outputPath(splitsOutputPath)
                 .jobInitialiser(new SequenceFileJobInitialiser())
