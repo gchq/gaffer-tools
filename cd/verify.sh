@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-if [ "$TRAVIS_BRANCH" != 'master' ] || [ "$TRAVIS_PULL_REQUEST" == 'true' ]; then
+if [ "$RELEASE" != 'true' ]; then
     if [ "$MODULES" == '' ]; then
         echo "Running verify script: mvn -q verify -P travis,analyze -B"
         mvn -q verify -P travis,analyze -B

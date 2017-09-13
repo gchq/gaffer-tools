@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-if [ "$TRAVIS_BRANCH" != 'master' ] || [ "$TRAVIS_PULL_REQUEST" == 'true' ]; then
+if [ "$RELEASE" != 'true' ]; then
     if [ "$MODULES" == '' ] || [[ $MODULES == *'!'* ]]; then
         echo "Running install script: mvn -q install -P quick,travis,build-extras -B -V"
         mvn -q install -P quick,travis,build-extras -B -V
