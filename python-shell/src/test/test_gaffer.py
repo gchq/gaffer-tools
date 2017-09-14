@@ -241,36 +241,28 @@ class GafferTest(unittest.TestCase):
         self.assertEqual(
             {
                 'entities': {
-                    'test': {'class': 'uk.gov.gchq.gaffer.data.element.Edge',
-                             'group': 'test',
-                             'source': 'source',
-                             'destination': 'destination',
-                             'directed': False}}
+                    'test': {}
+                }
             },
             g.View(
-                [
+                entities=[
                     g.ElementDefinition(
                         group="test"
                     ),
-                    g.Edge("test", "source", "destination", False)
                 ]).to_json()
         )
 
         self.assertEqual(
             {
                 'edges': {
-                    'test': {'class': 'uk.gov.gchq.gaffer.data.element.Edge',
-                             'group': 'test',
-                             'source': 'source',
-                             'destination': 'destination',
-                             'directed': False}}
+                    'test': {}
+                }
             },
             g.View(
                 edges=[
                     g.ElementDefinition(
                         group="test"
-                    ),
-                    g.Edge("test", "source", "destination", False)
+                    )
                 ]).to_json()
         )
 
@@ -278,14 +270,12 @@ class GafferTest(unittest.TestCase):
         self.maxDiff = None
         self.assertEqual(
             {
-                'groupBy': [],
             },
             g.ElementDefinition("testGroup").to_json()
         )
 
         self.assertEqual(
             {
-                'groupBy': [],
                 'transientProperties': {'test_prop': 'test_prop_class'}
             },
             g.ElementDefinition("test_group",
@@ -317,7 +307,7 @@ class GafferTest(unittest.TestCase):
             g.ElementDefinition("test_group",
                                 [g.Property("test_prop", "test_prop_class")],
                                 ["test_group"],
-                                [g.FilterFunction(
+                                [g.Predicate(
                                     "test_filter_class",
                                     ["test_selection"],
                                     {"value": {"test_value_class": 1}}
@@ -344,12 +334,12 @@ class GafferTest(unittest.TestCase):
             g.ElementDefinition("test_group",
                                 [g.Property("test_prop", "test_prop_class")],
                                 ["test_group"],
-                                [g.FilterFunction(
+                                [g.Predicate(
                                     "test_filter_class",
                                     ["test_selection"],
                                     {"value": {"test_value_class": 1}}
                                 )],
-                                [g.FilterFunction(
+                                [g.Predicate(
                                     "test_filter_class_1",
                                     ["test_selection_1"],
                                     {"value": {"test_value_class_1": 1}}
@@ -381,18 +371,18 @@ class GafferTest(unittest.TestCase):
             g.ElementDefinition("test_group",
                                 [g.Property("test_prop", "test_prop_class")],
                                 ["test_group"],
-                                [g.FilterFunction(
+                                [g.Predicate(
                                     "test_filter_class",
                                     ["test_selection"],
                                     {"value": {"test_value_class": 1}}
                                 )],
-                                [g.FilterFunction(
+                                [g.Predicate(
                                     "test_filter_class_1",
                                     ["test_selection_1"],
                                     {"value": {"test_value_class_1": 1}}
                                 )],
                                 [
-                                    g.TransformFunction(
+                                    g.Function(
                                         "test_class",
                                         ["src", "dest", "count"],
                                         ["description"]
@@ -404,61 +394,73 @@ class GafferTest(unittest.TestCase):
             {
                 'groupBy': ['test_group'],
                 'transientProperties': {'test_prop': 'test_prop_class'},
-                'preAggregationFilterFunctions':
-                    [{'predicate': {'class':
-                                        'test_filter_class',
-                                    'value': {
-                                        'test_value_class': 1}},
-                      'selection': ['test_selection']}],
-                'postAggregationFilterFunctions':
-                    [{'predicate': {'class':
-                                        'test_filter_class_1',
-                                    'value': {
-                                        'test_value_class_1': 1}},
-                      'selection': ['test_selection_1']}],
-                'transformFunctions': [{'function': {'class': 'test_class'},
-                                        'projection':
-                                            ['description'],
-                                        'selection':
-                                            ['src', 'dest',
-                                             'count']}],
-                'postTransformFilterFunctions': [{'function': {'class':
-                                                                   'test_class_1'},
-                                                  'projection':
-                                                      ['description'],
-                                                  'selection':
-                                                      ['src', 'dest',
-                                                       'count']}
-
-                                                 ]
+                'preAggregationFilterFunctions': [
+                    {
+                        'predicate': {
+                            'class': 'test_filter_class',
+                            'value': {
+                                'test_value_class': 1
+                            }
+                        },
+                        'selection': ['test_selection']
+                    }
+                ],
+                'postAggregationFilterFunctions': [
+                    {
+                        'predicate': {
+                            'class': 'test_filter_class_1',
+                            'value': {'test_value_class_1': 1}
+                        },
+                        'selection': ['test_selection_1']
+                    }
+                ],
+                'transformFunctions': [
+                    {
+                        'function': {'class': 'test_class'},
+                        'projection': ['description'],
+                        'selection': ['src', 'dest', 'count']
+                    }
+                ],
+                'postTransformFilterFunctions': [
+                    {
+                        'predicate': {'class': 'test_class_1'},
+                        'selection': ['src', 'dest', 'count']
+                    }
+                ]
             },
-            g.ElementDefinition("test_group",
-                                [g.Property("test_prop", "test_prop_class")],
-                                ["test_group"],
-                                [g.FilterFunction(
-                                    "test_filter_class",
-                                    ["test_selection"],
-                                    {"value": {"test_value_class": 1}}
-                                )],
-                                [g.FilterFunction(
-                                    "test_filter_class_1",
-                                    ["test_selection_1"],
-                                    {"value": {"test_value_class_1": 1}}
-                                )],
-                                [
-                                    g.TransformFunction(
+            g.ElementDefinition(group="test_group",
+                                transient_properties=[
+                                    g.Property("test_prop", "test_prop_class")
+                                ],
+                                group_by=["test_group"],
+                                pre_aggregation_filter_functions=[
+                                    g.Predicate(
+                                        "test_filter_class",
+                                        ["test_selection"],
+                                        {"value": {"test_value_class": 1}}
+                                    )
+                                ],
+                                post_aggregation_filter_functions=[
+                                    g.Predicate(
+                                        "test_filter_class_1",
+                                        ["test_selection_1"],
+                                        {"value": {"test_value_class_1": 1}}
+                                    )
+                                ],
+                                transform_functions=[
+                                    g.Function(
                                         "test_class",
                                         ["src", "dest", "count"],
                                         ["description"]
                                     )
                                 ],
-                                [
-                                    g.TransformFunction(
+                                post_transform_filter_functions=[
+                                    g.Predicate(
                                         "test_class_1",
-                                        ["src", "dest", "count"],
-                                        ["description"]
+                                        ["src", "dest", "count"]
                                     )
-                                ]).to_json()
+                                ]
+                                ).to_json()
         )
 
     def test_property(self):
@@ -492,7 +494,7 @@ class GafferTest(unittest.TestCase):
                 'predicate': {'class': 'test_class'},
                 'selection': 'selection'
             },
-            g.FilterFunction("test_class", "selection").to_json()
+            g.Predicate("test_class", "selection").to_json()
         )
 
         self.assertEqual(
@@ -501,8 +503,8 @@ class GafferTest(unittest.TestCase):
                               'function_field1': 'test_field1'},
                 'selection': 'selection'
             },
-            g.FilterFunction("test_class", "selection",
-                             {"function_field1": "test_field1"}).to_json()
+            g.Predicate("test_class", "selection",
+                        {"function_field1": "test_field1"}).to_json()
         )
 
     def test_transform_function(self):
@@ -512,7 +514,7 @@ class GafferTest(unittest.TestCase):
                 'selection': 'selection',
                 'projection': 'projection'
             },
-            g.TransformFunction("test_class", "selection", "projection")
+            g.Function("test_class", "selection", "projection")
                 .to_json()
         )
 
@@ -522,8 +524,8 @@ class GafferTest(unittest.TestCase):
                 'selection': 'selection',
                 'projection': {'function_field1': 'test_field1'}
             },
-            g.TransformFunction("test_class", "selection",
-                                {"function_field1": "test_field1"}).to_json()
+            g.Function("test_class", "selection",
+                       {"function_field1": "test_field1"}).to_json()
         )
 
     def test_operation_chain(self):
@@ -591,9 +593,7 @@ class GafferTest(unittest.TestCase):
     def test_add_elements(self):
         self.assertEqual(
             {
-                'class': 'uk.gov.gchq.gaffer.operation.impl.add.AddElements',
-                'skipInvalidElements': False,
-                'validate': True
+                'class': 'uk.gov.gchq.gaffer.operation.impl.add.AddElements'
             },
             g.AddElements().to_json()
         )
@@ -610,40 +610,22 @@ class GafferTest(unittest.TestCase):
         self.assertEqual(
             {
                 'class': 'uk.gov.gchq.gaffer.operation.impl.add.AddElements',
-                'skipInvalidElements': False,
-                'validate': True,
-                'view': {}
-            },
-            g.AddElements(view=g.View()).to_json()
-        )
-
-        self.assertEqual(
-            {
-                'class': 'uk.gov.gchq.gaffer.operation.impl.add.AddElements',
-                'skipInvalidElements': False,
-                'validate': True,
-                'view': {},
                 'input': [{'class': 'uk.gov.gchq.gaffer.data.element.Entity',
                            'group': 'group',
                            'vertex': 'vertex'}]
             },
-            g.AddElements(view=g.View(),
-                          elements=[g.Entity("group", "vertex")]).to_json()
+            g.AddElements(input=[g.Entity("group", "vertex")]).to_json()
         )
 
         self.assertEqual(
             {
                 'class': 'uk.gov.gchq.gaffer.operation.impl.add.AddElements',
-                'skipInvalidElements': False,
-                'validate': True,
-                'view': {},
                 'options': {'options1': 'option'},
                 'input': [{'class': 'uk.gov.gchq.gaffer.data.element.Entity',
                            'group': 'group',
                            'vertex': 'vertex'}]
             },
-            g.AddElements(view=g.View(),
-                          elements=[g.Entity("group", "vertex")],
+            g.AddElements(input=[g.Entity("group", "vertex")],
                           options={"options1": "option"}).to_json()
         )
 
@@ -654,7 +636,8 @@ class GafferTest(unittest.TestCase):
                          '.generate.GenerateElements',
                 'elementGenerator': {'class': 'generate_class_elements'}
             },
-            g.GenerateElements("generate_class_elements").to_json()
+            g.GenerateElements(g.ElementGenerator(
+                class_name="generate_class_elements")).to_json()
         )
 
         self.assertEqual(
@@ -662,10 +645,16 @@ class GafferTest(unittest.TestCase):
                 'class': 'uk.gov.gchq.gaffer.operation.impl'
                          '.generate.GenerateElements',
                 'elementGenerator': {'class': 'generate_class_elements',
-                                     'field1': 'value1'}
+                                     'field1': 'value1'},
+                'input': []
             },
-            g.GenerateElements("generate_class_elements",
-                               {"field1": "value1"}).to_json()
+            g.GenerateElements(
+                g.ElementGenerator(
+                    class_name="generate_class_elements",
+                    fields={"field1": "value1"}
+                ),
+                input=[]
+            ).to_json()
         )
 
         self.assertEqual(
@@ -675,8 +664,9 @@ class GafferTest(unittest.TestCase):
                 'elementGenerator': {'class': 'generate_class_elements'},
                 'input': ['test_object']
             },
-            g.GenerateElements("generate_class_elements",
-                               objects=["test_object"]).to_json()
+            g.GenerateElements(g.ElementGenerator(
+                class_name="generate_class_elements"),
+                input=["test_object"]).to_json()
         )
 
         self.assertEqual(
@@ -684,10 +674,10 @@ class GafferTest(unittest.TestCase):
                 'class': 'uk.gov.gchq.gaffer.operation'
                          '.impl.generate.GenerateElements',
                 'elementGenerator': {'class': 'generate_class_elements'},
-                'view': {}
             },
-            g.GenerateElements("generate_class_elements",
-                               view=g.View()).to_json()
+            g.GenerateElements(
+                g.ElementGenerator(class_name="generate_class_elements")
+            ).to_json()
         )
 
         self.assertEqual(
@@ -695,12 +685,12 @@ class GafferTest(unittest.TestCase):
                 'class': 'uk.gov.gchq.gaffer.operation'
                          '.impl.generate.GenerateElements',
                 'elementGenerator': {'class': 'generate_class_elements'},
-                'view': {},
                 'options': {'option1': 'option'}
             },
-            g.GenerateElements("generate_class_elements",
-                               view=g.View(), options={"option1": "option"})
-                .to_json()
+            g.GenerateElements(
+                g.ElementGenerator(class_name="generate_class_elements"),
+                options={"option1": "option"}
+            ).to_json()
         )
 
     def test_generate_objects(self):
@@ -710,7 +700,8 @@ class GafferTest(unittest.TestCase):
                          '.impl.generate.GenerateObjects',
                 'elementGenerator': {'class': 'test_class_name'}
             },
-            g.GenerateObjects("test_class_name").to_json()
+            g.GenerateObjects(g.ElementGenerator(
+                class_name="test_class_name")).to_json()
         )
 
         self.assertEqual(
@@ -720,7 +711,12 @@ class GafferTest(unittest.TestCase):
                 'elementGenerator': {'class': 'test_class_name',
                                      'key1': 'value1'},
             },
-            g.GenerateObjects("test_class_name", {"key1": "value1"}).to_json()
+            g.GenerateObjects(
+                g.ElementGenerator(
+                    class_name="test_class_name",
+                    fields={"key1": "value1"}
+                )
+            ).to_json()
         )
 
         self.assertEqual(
@@ -732,18 +728,19 @@ class GafferTest(unittest.TestCase):
                            'group': 'group',
                            'vertex': 'vertex'}]
             },
-            g.GenerateObjects("test_class_name",
-                              elements=[g.Entity("group", "vertex")]).to_json()
+            g.GenerateObjects(g.ElementGenerator(
+                class_name="test_class_name"),
+                input=[g.Entity("group", "vertex")]).to_json()
         )
 
         self.assertEqual(
             {
                 'class': 'uk.gov.gchq.gaffer.operation'
                          '.impl.generate.GenerateObjects',
-                'elementGenerator': {'class': 'test_class_name'},
-                'view': {}
+                'elementGenerator': {'class': 'test_class_name'}
             },
-            g.GenerateObjects("test_class_name", view=g.View()).to_json()
+            g.GenerateObjects(g.ElementGenerator(
+                class_name="test_class_name")).to_json()
         )
 
         self.assertEqual(
@@ -751,11 +748,11 @@ class GafferTest(unittest.TestCase):
                 'class': 'uk.gov.gchq.gaffer.operation'
                          '.impl.generate.GenerateObjects',
                 'elementGenerator': {'class': 'test_class_name'},
-                'view': {},
                 'options': {'option1': 'option'}
             },
-            g.GenerateObjects("test_class_name", view=g.View(),
-                              options={"option1": "option"}).to_json()
+            g.GenerateObjects(g.ElementGenerator(
+                class_name="test_class_name"),
+                options={"option1": "option"}).to_json()
         )
 
     def test_validate(self):
@@ -910,19 +907,26 @@ class GafferTest(unittest.TestCase):
                          '.export.set.GetSetExport',
                 'jobId': 'test_job_id',
                 'key': 'test_key',
+                'start': 1,
+                'end': 10,
                 'options': {'option1': 'option'}
             },
-            g.GetSetExport("test_job_id", "test_key",
-                           {"option1": "option"}).to_json()
+            g.GetSetExport(job_id="test_job_id",
+                           key="test_key",
+                           start=1,
+                           end=10,
+                           options={"option1": "option"}
+                           ).to_json()
         )
 
     def test_get_exports(self):
         self.assertEqual(
             {
                 'class': 'uk.gov.gchq.gaffer.operation.impl.export.GetExports',
-                'getExports': ['test']
+                'getExports': [{
+                    'class': 'uk.gov.gchq.gaffer.operation.impl.export.set.GetSetExport'}]
             },
-            g.GetExports(["test"]).to_json()
+            g.GetExports([g.GetSetExport()]).to_json()
 
         )
 
@@ -972,9 +976,10 @@ class GafferTest(unittest.TestCase):
     def test_get_job_results(self):
         self.assertEqual(
             {
-                'class': 'uk.gov.gchq.gaffer.operation.impl.job.GetJobResults'
+                'class': 'uk.gov.gchq.gaffer.operation.impl.job.GetJobResults',
+                'jobId': 'id1'
             },
-            g.GetJobResults().to_json()
+            g.GetJobResults(job_id='id1').to_json()
         )
 
     def test_get_operation(self):
@@ -1321,35 +1326,57 @@ class GafferTest(unittest.TestCase):
         self.assertEqual(
             {
                 'class': 'uk.gov.gchq.gaffer.named.operation.AddNamedOperation',
-                'operationChain': 'test_operation_chain',
-                'operationName': 'test_name',
-                'overwriteFlag': False
+                'operationChain': {
+                    "operations": [
+                        {
+                            "class": "uk.gov.gchq.gaffer.operation.impl.add.AddElements"
+                        }
+                    ]
+                },
+                'operationName': 'test_name'
             },
-            g.AddNamedOperation("test_operation_chain", "test_name").to_json()
+            g.AddNamedOperation(
+                operation_chain=g.OperationChain(operations=[g.AddElements()]),
+                operation_name="test_name"
+            ).to_json()
         )
 
         self.assertEqual(
             {
                 'class': 'uk.gov.gchq.gaffer.named.operation.AddNamedOperation',
-                'operationChain': 'test_operation_chain',
+                'operationChain': {
+                    "operations": [
+                        {
+                            "class": "uk.gov.gchq.gaffer.operation.impl.add.AddElements"
+                        }
+                    ]
+                },
                 'operationName': 'test_name',
-                'overwriteFlag': False,
                 'description': 'test_description'
             },
-            g.AddNamedOperation("test_operation_chain", "test_name",
-                                "test_description").to_json()
+            g.AddNamedOperation(
+                operation_chain=g.OperationChain(operations=[g.AddElements()]),
+                operation_name="test_name",
+                description="test_description"
+            ).to_json()
         )
 
         self.assertEqual(
             {
                 'class': 'uk.gov.gchq.gaffer.named.operation.AddNamedOperation',
-                'operationChain': 'test_operation_chain',
+                'operationChain': {
+                    "operations": [
+                        {
+                            "class": "uk.gov.gchq.gaffer.operation.impl.add.AddElements"
+                        }
+                    ]
+                },
                 'operationName': 'test_name',
-                'overwriteFlag': False,
                 'description': 'test_description',
                 'readAccessRoles': 'test_read_access_roles'
             },
-            g.AddNamedOperation("test_operation_chain", "test_name",
+            g.AddNamedOperation(g.OperationChain(operations=[g.AddElements()]),
+                                "test_name",
                                 "test_description",
                                 "test_read_access_roles").to_json()
         )
@@ -1357,14 +1384,20 @@ class GafferTest(unittest.TestCase):
         self.assertEqual(
             {
                 'class': 'uk.gov.gchq.gaffer.named.operation.AddNamedOperation',
-                'operationChain': 'test_operation_chain',
+                'operationChain': {
+                    "operations": [
+                        {
+                            "class": "uk.gov.gchq.gaffer.operation.impl.add.AddElements"
+                        }
+                    ]
+                },
                 'operationName': 'test_name',
-                'overwriteFlag': False,
                 'description': 'test_description',
                 'readAccessRoles': 'test_read_access_roles',
                 'writeAccessRoles': 'test_write_access_roles'
             },
-            g.AddNamedOperation("test_operation_chain", "test_name",
+            g.AddNamedOperation(g.OperationChain(operations=[g.AddElements()]),
+                                "test_name",
                                 "test_description", "test_read_access_roles",
                                 "test_write_access_roles").to_json()
         )
@@ -1372,14 +1405,21 @@ class GafferTest(unittest.TestCase):
         self.assertEqual(
             {
                 'class': 'uk.gov.gchq.gaffer.named.operation.AddNamedOperation',
-                'operationChain': 'test_operation_chain',
+                'operationChain': {
+                    "operations": [
+                        {
+                            "class": "uk.gov.gchq.gaffer.operation.impl.add.AddElements"
+                        }
+                    ]
+                },
                 'operationName': 'test_name',
                 'overwriteFlag': True,
                 'description': 'test_description',
                 'readAccessRoles': 'test_read_access_roles',
                 'writeAccessRoles': 'test_write_access_roles'
             },
-            g.AddNamedOperation("test_operation_chain", "test_name",
+            g.AddNamedOperation(g.OperationChain(operations=[g.AddElements()]),
+                                "test_name",
                                 "test_description", "test_read_access_roles",
                                 "test_write_access_roles", True).to_json()
         )
@@ -1387,7 +1427,13 @@ class GafferTest(unittest.TestCase):
         self.assertEqual(
             {
                 'class': 'uk.gov.gchq.gaffer.named.operation.AddNamedOperation',
-                'operationChain': 'test_operation_chain',
+                'operationChain': {
+                    "operations": [
+                        {
+                            "class": "uk.gov.gchq.gaffer.operation.impl.add.AddElements"
+                        }
+                    ]
+                },
                 'operationName': 'test_name',
                 'overwriteFlag': False,
                 'description': 'test_description',
@@ -1402,7 +1448,8 @@ class GafferTest(unittest.TestCase):
                 },
                 'options': {'option1': 'option'}
             },
-            g.AddNamedOperation("test_operation_chain", "test_name",
+            g.AddNamedOperation(g.OperationChain(operations=[g.AddElements()]),
+                                "test_name",
                                 "test_description", "test_read_access_roles",
                                 "test_write_access_roles", False,
                                 [g.NamedOperationParameter(
@@ -1467,14 +1514,29 @@ class GafferTest(unittest.TestCase):
                 'class': 'uk.gov.gchq.gaffer.accumulostore.operation.impl.GetElementsBetweenSets',
                 'options': {'option1': 'option'},
                 'view': {},
-                'seedMatching': True,
-                'includeIncomingOutGoing': False,
-                'directedType': 'directed',
-                'inputB': 'input1'
+                'seedMatching': 'RELATED',
+                'includeIncomingOutGoing': 'INCOMING',
+                'directedType': 'DIRECTED',
+                'input': [
+                    {
+                        'class': 'uk.gov.gchq.gaffer.operation.data.EntitySeed',
+                        'vertex': 'inputA1'
+                    }
+                ],
+                'inputB': [
+                    {
+                        'class': 'uk.gov.gchq.gaffer.operation.data.EntitySeed',
+                        'vertex': 'inputB1'
+                    }
+                ],
             },
-            g.GetElementsBetweenSets({"option1": "option"}, g.View(), True,
-                                     False, 'directed', 'input1'
-                                     ).to_json()
+            g.GetElementsBetweenSets(input=["inputA1"],
+                                     input_b=["inputB1"],
+                                     options={"option1": "option"},
+                                     view=g.View(),
+                                     seed_matching_type=g.SeedMatchingType.RELATED,
+                                     directed_type=g.DirectedType.DIRECTED,
+                                     include_incoming_out_going=g.InOutType.IN).to_json()
         )
 
     def test_get_elements_within_set(self):
@@ -1482,24 +1544,33 @@ class GafferTest(unittest.TestCase):
             {
                 'class': 'uk.gov.gchq.gaffer.accumulostore.operation.impl.GetElementsWithinSet',
                 'options': {'option1': 'option'},
+                'input': [
+                    {
+                        'class': 'uk.gov.gchq.gaffer.operation.data.EntitySeed',
+                        'vertex': 'inputA1'
+                    }
+                ],
                 'view': {},
-                'directedType': 'directed'
+                'directedType': 'DIRECTED'
             },
-            g.GetElementsWithinSet({'option1': 'option'}, g.View(),
-                                   'directed').to_json()
+            g.GetElementsWithinSet(input=["inputA1"],
+                                   view=g.View(),
+                                   options={'option1': 'option'},
+                                   directed_type=g.DirectedType.DIRECTED).to_json()
         )
 
     def test_summarise_group_over_ranges(self):
         self.assertEqual(
             {
                 'class': 'uk.gov.gchq.gaffer.accumulostore.operation.impl.SummariseGroupOverRanges',
+                'input': [
+                ],
                 'options': {'option1': 'option'},
-                'view': {},
-                'includeIncomingOutGoing': True,
-                'directedType': 'directed'
+                'view': {}
             },
-            g.SummariseGroupOverRanges({'option1': 'option'}, g.View(), True,
-                                       'directed').to_json()
+            g.SummariseGroupOverRanges(input=[],
+                                       options={'option1': 'option'},
+                                       view=g.View()).to_json()
         )
 
     def test_get_elements_in_ranges(self):
@@ -1507,12 +1578,10 @@ class GafferTest(unittest.TestCase):
             {
                 'class': 'uk.gov.gchq.gaffer.accumulostore.operation.impl.GetElementsInRanges',
                 'options': {'option1': 'option'},
-                'view': {},
-                'includeIncomingOutGoing': True,
-                'directedType': 'directed'
+                'view': {}
             },
-            g.GetElementsInRanges({'option1': 'option'}, g.View(), True,
-                                  'directed').to_json()
+            g.GetElementsInRanges(options={'option1': 'option'},
+                                  view=g.View()).to_json()
         )
 
     def test_count(self):
@@ -1606,28 +1675,35 @@ class GafferTest(unittest.TestCase):
         self.assertEqual(
             {
                 'class': 'uk.gov.gchq.gaffer.operation.impl.output.ToCsv',
-                'elementGenerator': 'test_element_generator',
+                'elementGenerator': {'class': 'test_element_generator'},
                 'includeHeader': True
             },
-            g.ToCsv("test_element_generator").to_json()
+            g.ToCsv(g.ElementGenerator(
+                class_name="test_element_generator")).to_json()
         )
 
         self.assertEqual(
             {
                 'class': 'uk.gov.gchq.gaffer.operation.impl.output.ToCsv',
-                'elementGenerator': 'test_element_generator',
+                'elementGenerator': {
+                    'class': 'test_element_generator',
+                },
                 'includeHeader': False
             },
-            g.ToCsv("test_element_generator", False).to_json()
+            g.ToCsv(g.ElementGenerator(
+                class_name="test_element_generator"), False).to_json()
         )
 
     def test_to_map_csv(self):
         self.assertEqual(
             {
                 'class': 'uk.gov.gchq.gaffer.operation.impl.output.ToMap',
-                'elementGenerator': 'test_element_generator'
+                'elementGenerator': {
+                    'class': 'test_element_generator'
+                }
             },
-            g.ToMapCsv("test_element_generator").to_json()
+            g.ToMapCsv(g.ElementGenerator(
+                class_name="test_element_generator")).to_json()
         )
 
     def test_sort(self):

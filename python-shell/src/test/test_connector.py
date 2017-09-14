@@ -25,7 +25,7 @@ class GafferConnectorTest(unittest.TestCase):
         gc = gaffer_connector.GafferConnector('http://localhost:8080/rest/latest')
         elements = gc.execute_operation(
             g.GetElements(
-                seeds=[
+                input=[
                     g.EntitySeed('M5:10')
                 ],
                 view=g.View(

@@ -177,7 +177,7 @@ def add_elements(gc):
     # Add Elements
     gc.execute_operation(
         g.AddElements(
-            elements=[
+            input=[
                 g.Entity(
                     group='JunctionUse',
                     vertex='M1:1',
@@ -215,12 +215,12 @@ def add_elements(gc):
 
 def get_elements(gc):
     # Get Elements
-    elements = gc.execute_operation(
+    input = gc.execute_operation(
         g.GetElements(
-            seeds=[
+            input=[
                 g.EntitySeed('M5:10'),
 
-                # Edge seeds can be provided as follows
+                # Edge input can be provided as follows
                 g.EdgeSeed('M5:10', 'M5:11', g.DirectedType.EITHER),
                 g.EdgeSeed('M5:10', 'M5:11', g.DirectedType.DIRECTED),
                 # Or you can use True or False for the direction
@@ -234,14 +234,14 @@ def get_elements(gc):
                             g.Property('description', 'java.lang.String')
                         ],
                         pre_aggregation_filter_functions=[
-                            g.FilterFunction(
+                            g.Predicate(
                                 class_name='uk.gov.gchq.koryphe.impl.predicate.IsMoreThan',
                                 selection=['count'],
                                 function_fields={'value': {'java.lang.Long': 1}}
                             )
                         ],
                         transform_functions=[
-                            g.TransformFunction(
+                            g.Function(
                                 class_name='uk.gov.gchq.gaffer.traffic.transform.DescriptionTransform',
                                 selection=['SOURCE', 'DESTINATION', 'count'],
                                 projection=['description']
@@ -253,8 +253,8 @@ def get_elements(gc):
             directed_type=g.DirectedType.EITHER
         )
     )
-    print('Related elements')
-    print(elements)
+    print('Related input')
+    print(input)
     print()
 
 
@@ -263,7 +263,7 @@ def get_adj_seeds(gc):
     adj_seeds = gc.execute_operations(
         [
             g.GetAdjacentIds(
-                seeds=[
+                input=[
                     g.EntitySeed(
                         vertex='M5'
                     )
@@ -273,7 +273,7 @@ def get_adj_seeds(gc):
                         g.ElementDefinition('RoadHasJunction')
                     ]
                 ),
-                in_out_type=g.InOutType.OUT
+                include_incoming_out_going=g.InOutType.OUT
             ),
             g.GetAdjacentIds(
                 view=g.View(
@@ -281,7 +281,7 @@ def get_adj_seeds(gc):
                         g.ElementDefinition('RoadUse')
                     ]
                 ),
-                in_out_type=g.InOutType.OUT
+                include_incoming_out_going=g.InOutType.OUT
             )
         ]
     )
@@ -291,55 +291,59 @@ def get_adj_seeds(gc):
 
 
 def get_all_elements(gc):
-    # Get all elements, but limit the total results to 3, deduplication true
+    # Get all input, but limit the total results to 3, deduplication true
     all_elements = gc.execute_operations(
         operations=[
             g.GetAllElements(),
             g.Limit(result_limit=3)
         ]
     )
-    print('All elements (Limited to first 3)')
+    print('All input (Limited to first 3)')
     print(all_elements)
     print()
 
 
 def generate_elements(gc):
     # Generate Elements
-    elements = gc.execute_operation(
+    input = gc.execute_operation(
         g.GenerateElements(
-            'uk.gov.gchq.gaffer.traffic.generator.RoadTrafficStringElementGenerator',
-            objects=[
+            element_generator=g.ElementGenerator(
+                class_name='uk.gov.gchq.gaffer.traffic.generator.RoadTrafficStringElementGenerator'
+            ),
+            input=[
                 '"South West","E06000054","Wiltshire","6016","389200","179080","M4","LA Boundary","381800","180030","17","391646","179560","TM","E","2000","2000-05-03 00:00:00","7","0","9","2243","15","426","127","21","20","37","106","56","367","3060"'
             ]
         )
     )
-    print('Generated elements from provided domain objects')
-    print(elements)
+    print('Generated input from provided domain input')
+    print(input)
     print()
 
 
 def generate_domain_objs(gc):
     # Generate Domain Objects - single provided element
-    objects = gc.execute_operation(
+    input = gc.execute_operation(
         g.GenerateObjects(
-            'uk.gov.gchq.gaffer.rest.example.ExampleDomainObjectGenerator',
-            elements=[
+            element_generator=g.ElementGenerator(
+                class_name='uk.gov.gchq.gaffer.rest.example.ExampleDomainObjectGenerator'
+            ),
+            input=[
                 g.Entity('entity', '1'),
                 g.Edge('edge', '1', '2', True)
             ]
         )
     )
-    print('Generated objects from provided elements')
-    print(objects)
+    print('Generated input from provided input')
+    print(input)
     print()
 
 
 def generate_domain_objects_chain(gc):
-    # Generate Domain Objects - chain of get elements then generate objects
-    objects = gc.execute_operations(
+    # Generate Domain Objects - chain of get input then generate input
+    input = gc.execute_operations(
         [
             g.GetElements(
-                seeds=[g.EntitySeed(vertex='M5')],
+                input=[g.EntitySeed(vertex='M5')],
                 seed_matching_type=g.SeedMatchingType.RELATED,
                 view=g.View(
                     edges=[
@@ -348,12 +352,16 @@ def generate_domain_objects_chain(gc):
                     ]
                 )
             ),
+
             g.GenerateObjects(
-                'uk.gov.gchq.gaffer.rest.example.ExampleDomainObjectGenerator')
+                element_generator=g.ElementGenerator(
+                    class_name='uk.gov.gchq.gaffer.rest.example.ExampleDomainObjectGenerator'
+                )
+            )
         ]
     )
-    print('Generated objects from get elements by seed')
-    print(objects)
+    print('Generated input from get input by seed')
+    print(input)
     print()
 
 
@@ -361,11 +369,11 @@ def get_element_group_counts(gc):
     # Get Elements
     group_counts = gc.execute_operations([
         g.GetElements(
-            seeds=[g.EntitySeed('M5')]
+            input=[g.EntitySeed('M5')]
         ),
         g.CountGroups(limit=1000)
     ])
-    print('Groups counts (limited to 1000 elements)')
+    print('Groups counts (limited to 1000 input)')
     print(group_counts)
     print()
 
@@ -375,11 +383,11 @@ def get_sub_graph(gc):
     entity_seeds = gc.execute_operations(
         [
             g.GetAdjacentIds(
-                seeds=[g.EntitySeed('South West')],
-                in_out_type=g.InOutType.OUT
+                input=[g.EntitySeed('South West')],
+                include_incoming_out_going=g.InOutType.OUT
             ),
             g.ExportToSet(),
-            g.GetAdjacentIds(in_out_type=g.InOutType.OUT),
+            g.GetAdjacentIds(include_incoming_out_going=g.InOutType.OUT),
             g.ExportToSet(),
             g.DiscardOutput(),
             g.GetSetExport()
@@ -395,8 +403,8 @@ def export_to_gaffer_result_cache(gc):
     job_details = gc.execute_operations(
         [
             g.GetAdjacentIds(
-                seeds=[g.EntitySeed('South West')],
-                in_out_type=g.InOutType.OUT
+                input=[g.EntitySeed('South West')],
+                include_incoming_out_going=g.InOutType.OUT
             ),
             g.ExportToGafferResultCache(),
             g.DiscardOutput(),
@@ -421,7 +429,7 @@ def get_job_details(gc):
     job_details_initial = gc.execute_operations(
         [
             g.GetAdjacentIds(
-                seeds=[g.EntitySeed('1')],
+                input=[g.EntitySeed('1')],
             ),
             g.ExportToGafferResultCache(),
             g.DiscardOutput(),
@@ -472,9 +480,9 @@ def add_named_operation(gc):
                     "resultLimit": "${param1}"
                 }]
             },
-            name='2-hop-with-limit',
+            operation_name='2-hop-with-limit',
             description='2 hop query with limit',
-            overwrite=True,
+            overwrite_flag=True,
             read_access_roles=["read-user"],
             write_access_roles=["write-user"],
             parameters=[
@@ -505,11 +513,11 @@ def get_all_named_operations(gc):
 def named_operation(gc):
     result = gc.execute_operation(
         g.NamedOperation(
-            name='2-hop-with-limit',
+            operation_name='2-hop-with-limit',
             parameters={
                 'param1': 2
             },
-            seeds=[
+            input=[
                 g.EntitySeed('M5')
             ]
         )
@@ -521,7 +529,7 @@ def named_operation(gc):
 
 def sort_elements(gc):
     # Get sorted Elements
-    elements = gc.execute_operations([
+    input = gc.execute_operations([
         g.GetAllElements(
             view=g.View(
                 edges=[
@@ -541,14 +549,14 @@ def sort_elements(gc):
             result_limit=5
         )
     ])
-    print('Sorted elements')
-    print(elements)
+    print('Sorted input')
+    print(input)
     print()
 
 
 def max_element(gc):
     # Get sorted Elements
-    elements = gc.execute_operations([
+    input = gc.execute_operations([
         g.GetAllElements(
             view=g.View(
                 edges=[
@@ -568,13 +576,13 @@ def max_element(gc):
         )
     ])
     print('Max element')
-    print(elements)
+    print(input)
     print()
 
 
 def min_element(gc):
     # Get sorted Elements
-    elements = gc.execute_operations([
+    input = gc.execute_operations([
         g.GetAllElements(
             view=g.View(
                 edges=[
@@ -594,15 +602,15 @@ def min_element(gc):
         )
     ])
     print('Min element')
-    print(elements)
+    print(input)
     print()
 
 
 def to_vertices_to_entity_seeds(gc):
     # Get sorted Elements
-    elements = gc.execute_operations([
+    input = gc.execute_operations([
         g.GetElements(
-            seeds=[
+            input=[
                 g.EntitySeed(
                     vertex='South West'
                 )
@@ -612,7 +620,7 @@ def to_vertices_to_entity_seeds(gc):
                     g.ElementDefinition('RegionContainsLocation')
                 ]
             ),
-            in_out_type=g.InOutType.OUT
+            include_incoming_out_going=g.InOutType.OUT
         ),
         g.ToVertices(
             edge_vertices=g.EdgeVertices.DESTINATION,
@@ -625,12 +633,12 @@ def to_vertices_to_entity_seeds(gc):
                     g.ElementDefinition('LocationContainsRoad')
                 ]
             ),
-            in_out_type=g.InOutType.OUT
+            include_incoming_out_going=g.InOutType.OUT
         ),
         g.Limit(5)
     ])
     print('ToVertices then ToEntitySeeds')
-    print(elements)
+    print(input)
     print()
 
 
@@ -639,7 +647,7 @@ def complex_op_chain(gc):
     junctions = gc.execute_operations(
         operations=[
             g.GetAdjacentIds(
-                seeds=[g.EntitySeed(vertex='South West')],
+                input=[g.EntitySeed(vertex='South West')],
                 view=g.View(
                     edges=[
                         g.ElementDefinition(group='RegionContainsLocation')
@@ -671,14 +679,14 @@ def complex_op_chain(gc):
                                 g.Property('busCount', 'java.lang.Long')
                             ],
                             pre_aggregation_filter_functions=[
-                                g.FilterFunction(
+                                g.Predicate(
                                     class_name='uk.gov.gchq.koryphe.impl.predicate.IsMoreThan',
                                     selection=['startDate'],
                                     function_fields={'value': {
                                         'java.util.Date': 946684800000},
                                         'orEqualTo': True}
                                 ),
-                                g.FilterFunction(
+                                g.Predicate(
                                     class_name='uk.gov.gchq.koryphe.impl.predicate.IsLessThan',
                                     selection=['endDate'],
                                     function_fields={'value': {
@@ -687,14 +695,14 @@ def complex_op_chain(gc):
                                 )
                             ],
                             post_aggregation_filter_functions=[
-                                g.FilterFunction(
+                                g.Predicate(
                                     class_name='uk.gov.gchq.koryphe.impl.predicate.IsMoreThan',
                                     selection=['startDate'],
                                     function_fields={'value': {
                                         'java.util.Date': 946684800000},
                                         'orEqualTo': True}
                                 ),
-                                g.FilterFunction(
+                                g.Predicate(
                                     class_name='uk.gov.gchq.koryphe.predicate.PredicateMap',
                                     selection=['countByVehicleType'],
                                     function_fields={
@@ -710,7 +718,7 @@ def complex_op_chain(gc):
                                 )
                             ],
                             transform_functions=[
-                                g.TransformFunction(
+                                g.Function(
                                     selection=['countByVehicleType'],
                                     class_name='uk.gov.gchq.gaffer.function.FreqMapExtractor',
                                     function_fields={'key': 'BUS'},
@@ -720,7 +728,7 @@ def complex_op_chain(gc):
                         )
                     ]
                 ),
-                in_out_type=g.InOutType.OUT
+                include_incoming_out_going=g.InOutType.OUT
             ),
             g.ToCsv(
                 element_generator={

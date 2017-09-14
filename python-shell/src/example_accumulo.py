@@ -15,7 +15,6 @@
 #
 
 from gafferpy import gaffer as g
-from gafferpy import gaffer_accumulo as ga
 from gafferpy import gaffer_connector
 
 
@@ -41,9 +40,9 @@ def create_connector(host, verbose=False):
 def get_elements_between_sets(gc):
     # Get Elements
     elements = gc.execute_operation(
-        ga.GetElementsBetweenSets(
-            seeds=[g.EntitySeed('M5')],
-            seeds_b=[g.EntitySeed('M5:10'), g.EntitySeed('M5:11')],
+        g.GetElementsBetweenSets(
+            input=[g.EntitySeed('M5')],
+            input_b=[g.EntitySeed('M5:10'), g.EntitySeed('M5:11')],
             view=g.View(
                 edges=[
                     g.ElementDefinition(
@@ -64,8 +63,8 @@ def get_elements_between_sets(gc):
 def get_elements_within_set(gc):
     # Get Elements within set
     elements = gc.execute_operation(
-        ga.GetElementsWithinSet(
-            seeds=[
+        g.GetElementsWithinSet(
+            input=[
                 g.EntitySeed('M5'),
                 g.EntitySeed('M5:10'),
                 g.EntitySeed('M5:11')
@@ -90,8 +89,8 @@ def get_elements_within_set(gc):
 def get_elements_in_ranges(gc):
     # Get Elements in ranges
     elements = gc.execute_operation(
-        ga.GetElementsInRanges(
-            seed_pairs=[
+        g.GetElementsInRanges(
+            input=[
                 g.SeedPair(g.EntitySeed('M5:10'), g.EntitySeed('M5:12'))
             ],
             view=g.View(
