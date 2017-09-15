@@ -116,7 +116,6 @@ def ensureDetailedMonitoringEnabled (instanceIds):
 
     if 'Reservations' in emrInstancesWithBasicMonitoringResponse:
         for reservation in emrInstancesWithBasicMonitoringResponse['Reservations']:
-            print(reservation)
             for instance in reservation['Instances']:
                 enableMonitoringInstanceIds.append(instance['InstanceId'])
 
@@ -278,7 +277,10 @@ def lambda_handler (evt, cntx):
     if 'STACK_NAME' in os.environ:
         stack = getPerformanceTestingStack(os.environ['STACK_NAME'])
         # print(stack['Outputs'])
-        return updateDashboardForStack(stack)
+
+        result = updateDashboardForStack(stack)
+        print(stack['StackName'] + ': ' + str(result))
+        return result
     else:
         raise Exception('Missing env var STACK_NAME!')
 
@@ -286,4 +288,5 @@ if __name__ == "__main__":
     stacks = getAllPerformanceTestingStacks()
     for stack in stacks:
         # print(stack['Outputs'])
-        print(updateDashboardForStack(stack))
+        result = updateDashboardForStack(stack)
+        print(stack['StackName'] + ': ' + str(result))
