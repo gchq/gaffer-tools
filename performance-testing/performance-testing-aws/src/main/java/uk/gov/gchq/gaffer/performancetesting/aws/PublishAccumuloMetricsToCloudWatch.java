@@ -18,6 +18,7 @@ package uk.gov.gchq.gaffer.performancetesting.aws;
 
 import com.amazonaws.services.cloudwatch.AmazonCloudWatch;
 import com.amazonaws.services.cloudwatch.AmazonCloudWatchClientBuilder;
+import com.amazonaws.services.cloudwatch.model.AmazonCloudWatchException;
 import com.amazonaws.services.cloudwatch.model.Dimension;
 import com.amazonaws.services.cloudwatch.model.MetricDatum;
 import com.amazonaws.services.cloudwatch.model.PutMetricDataRequest;
@@ -255,15 +256,27 @@ public class PublishAccumuloMetricsToCloudWatch implements Runnable {
     private void publishMetrics(final List<MetricDatum> metrics) {
         LOGGER.info("Submitting " + metrics.size() + " metrics to CloudWatch");
 
+        // CloudWatch throws InvalidParameterValue if a value has a high level of precision and is very close to 0
+        for (MetricDatum metric : metrics) {
+            if (Math.abs(metric.getValue()) < 0.0001) {
+                metric.setValue(0.0);
+            }
+        }
+
         // There's a limit on the AWS API which means only 20 metrics can be submitted at once!
         for (int i = 0; i < metrics.size(); i += 20) {
-            final PutMetricDataResult response = this.cloudwatch.putMetricData(
-                new PutMetricDataRequest()
-                    .withNamespace("Accumulo")
-                    .withMetricData(metrics.subList(i, i + 20 > metrics.size() ? metrics.size() : i + 20))
-            );
+            final List<MetricDatum> metricBatch = metrics.subList(i, i + 20 > metrics.size() ? metrics.size() : i + 20);
+            try {
+                final PutMetricDataResult response = this.cloudwatch.putMetricData(
+                    new PutMetricDataRequest()
+                        .withNamespace("Accumulo")
+                        .withMetricData(metricBatch)
+                );
 
-            LOGGER.debug(response.getSdkResponseMetadata().getRequestId());
+                LOGGER.debug(response.getSdkResponseMetadata().getRequestId());
+            } catch (AmazonCloudWatchException e) {
+                LOGGER.error("Failed publishing the following metrics to CloudWatch: " + metricBatch, e);
+            }
         }
     }
 
