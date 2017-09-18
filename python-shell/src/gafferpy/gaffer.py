@@ -82,7 +82,6 @@ class ToCodeString:
         new_line = ' \n' + indent
         new_line_indent = new_line + '  '
         fields = dict(self.__dict__)
-        # fields.pop('class_name', None)
 
         field_code_str = ''
 
@@ -234,36 +233,40 @@ class EdgeSeed(ElementSeed):
 
 
 class Comparator(ToJson, ToCodeString):
-    def __init__(self, class_name, fields):
+    def __init__(self, class_name, fields=None):
         super().__init__()
 
         self.class_name = class_name
         self.fields = fields
 
     def to_json(self):
-        json = {
+        tmp_json = {
             'class': self.class_name
         }
 
         if self.fields is not None:
             for key in self.fields:
-                json[key] = self.fields[key]
+                tmp_json[key] = self.fields[key]
 
-        return json
+        return tmp_json
 
 
 class ElementPropertyComparator(Comparator):
     CLASS = 'uk.gov.gchq.gaffer.data.element.comparison.ElementPropertyComparator'
 
     def __init__(self, groups, property, reversed=False):
-        super().__init__(
-            class_name=self.CLASS,
-            fields={
-                'groups': groups,
-                'property': property,
-                'reversed': reversed
-            }
-        )
+        super().__init__(class_name=None)
+        self.groups = groups
+        self.property = property
+        self.reversed = reversed
+
+    def to_json(self):
+        tmp_json = super().to_json()
+        tmp_json["class"] = self.CLASS
+        tmp_json['groups'] = self.groups
+        tmp_json['property'] = self.property
+        tmp_json['reversed'] = self.reversed
+        return tmp_json
 
 
 class SeedPair(ToJson, ToCodeString):
@@ -311,20 +314,20 @@ class SeedPair(ToJson, ToCodeString):
 
 
 class Element(ToJson, ToCodeString):
-    def __init__(self, class_name, group, properties=None):
+    def __init__(self, _class_name, group, properties=None):
         super().__init__()
-        if not isinstance(class_name, str):
+        if not isinstance(_class_name, str):
             raise TypeError('ClassName must be a class name string')
         if not isinstance(group, str):
             raise TypeError('Group must be a string')
         if not isinstance(properties, dict) and properties is not None:
             raise TypeError('properties must be a dictionary or None')
-        self.class_name = class_name
+        self._class_name = _class_name
         self.group = group
         self.properties = properties
 
     def to_json(self):
-        element = {'class': self.class_name, 'group': self.group}
+        element = {'class': self._class_name, 'group': self.group}
         if self.properties is not None:
             element['properties'] = self.properties
         return element
@@ -373,11 +376,14 @@ class Edge(Element):
 class View(ToJson, ToCodeString):
     CLASS = 'uk.gov.gchq.gaffer.data.elementdefinition.view.View'
 
-    def __init__(self, entities=None, edges=None, global_elements=None):
+    def __init__(self, entities=None, edges=None, global_elements=None,
+                 global_entities=None, global_edges=None):
         super().__init__()
         self.entities = None
         self.edges = None
         self.global_elements = None
+        self.global_entities = None
+        self.global_edges = None
 
         if entities is not None:
             self.entities = []
@@ -426,6 +432,36 @@ class View(ToJson, ToCodeString):
                             el_def, GlobalElementDefinition)
                     self.global_elements.append(el_def)
 
+        if global_entities is not None:
+            self.global_entities = []
+            if isinstance(global_entities, list):
+                for el_def in global_entities:
+                    if not isinstance(el_def, GlobalElementDefinition):
+                        el_def = JsonConverter.from_json(
+                            el_def, GlobalElementDefinition)
+                    self.global_entities.append(el_def)
+            else:
+                for group, el_def in global_entities.items():
+                    if not isinstance(el_def, GlobalElementDefinition):
+                        el_def = JsonConverter.from_json(
+                            el_def, GlobalElementDefinition)
+                    self.global_entities.append(el_def)
+
+        if global_edges is not None:
+            self.global_edges = []
+            if isinstance(global_edges, list):
+                for el_def in global_edges:
+                    if not isinstance(el_def, GlobalElementDefinition):
+                        el_def = JsonConverter.from_json(
+                            el_def, GlobalElementDefinition)
+                    self.global_edges.append(el_def)
+            else:
+                for group, el_def in global_edges.items():
+                    if not isinstance(el_def, GlobalElementDefinition):
+                        el_def = JsonConverter.from_json(
+                            el_def, GlobalElementDefinition)
+                    self.global_edges.append(el_def)
+
     def to_json(self):
         view = {}
         if self.entities is not None:
@@ -444,6 +480,18 @@ class View(ToJson, ToCodeString):
             for el_def in self.global_elements:
                 el_defs.append(el_def.to_json())
             view['globalElements'] = el_defs
+
+        if self.global_entities is not None:
+            el_defs = []
+            for el_def in self.global_entities:
+                el_defs.append(el_def.to_json())
+            view['globalEntities'] = el_defs
+
+        if self.global_edges is not None:
+            el_defs = []
+            for el_def in self.global_edges:
+                el_defs.append(el_def.to_json())
+            view['globalEdges'] = el_defs
 
         return view
 
@@ -627,10 +675,15 @@ class GafferFunction(ToJson, ToCodeString):
 
     def to_json(self):
         function_context = {}
-        function = {'class': self.class_name}
+        function = {}
+        if self.class_name is not None:
+            function['class'] = self.class_name
         if self.function_fields is not None:
             for key in self.function_fields:
-                function[key] = self.function_fields[key]
+                tmp_json = self.function_fields[key]
+                if isinstance(tmp_json, ToJson):
+                    tmp_json = tmp_json.to_json()
+                function[key] = tmp_json
         function_context[self._class_type] = function
 
         return function_context
@@ -725,7 +778,7 @@ class UseMatchedVertex:
     OPPOSITE = 'OPPOSITE'
 
 
-class NamedOperationParameter:
+class NamedOperationParameter(ToJson, ToCodeString):
     CLASS = 'gaffer.NamedOperationParameter'
 
     def __init__(self,
@@ -751,16 +804,24 @@ class NamedOperationParameter:
             detail['defaultValue'] = self.default_value
         return detail
 
+    def to_json(self):
+        return {
+            "description": self.description,
+            "defaultValue": self.default_value,
+            "valueClass": self.value_class,
+            "required": self.required
+        }
+
 
 class OperationChain(ToJson, ToCodeString):
     CLASS = "uk.gov.gchq.gaffer.operation.OperationChain"
 
     def __init__(self, operations):
-        self.class_name = self.CLASS
+        self._class_name = self.CLASS
         self.operations = operations
 
     def to_json(self):
-        operation_chain_json = {'class': self.class_name}
+        operation_chain_json = {'class': self._class_name}
         operations_json = []
         for operation in self.operations:
             if isinstance(operation, Operation):
