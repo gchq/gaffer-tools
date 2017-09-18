@@ -587,6 +587,110 @@ Resources:
                 Action:
                   - ssm:GetParameters
 
+
+  ##################################
+  ## CloudWatch Monitoring Dashboard
+  ##################################
+
+  MetricDashboard:
+    Type: AWS::CloudWatch::Dashboard
+    Properties:
+      DashboardName: !Ref "AWS::StackName"
+      DashboardBody: '{ "widgets": [{ "width": 24, "height": 2, "type": "text", "properties": { "markdown": "# Please wait for dashboard to initialise..." } }] }'
+
+  UpdateDashboardRule:
+    Type: AWS::Events::Rule
+    Properties:
+      ScheduleExpression: "rate(1 minute)"
+      Targets:
+        - Id: TargetLambdaFunction
+          Arn: !GetAtt UpdateDashboardLambda.Arn
+
+  PermissionForEventsToInvokeUpdateDashboardLambda:
+    Type: "AWS::Lambda::Permission"
+    Properties:
+      FunctionName: !Ref UpdateDashboardLambda
+      Action: lambda:InvokeFunction
+      Principal: events.amazonaws.com
+      SourceArn: !GetAtt UpdateDashboardRule.Arn
+
+  UpdateDashboardLambda:
+    Type: AWS::Lambda::Function
+    DependsOn:
+      - DataGeneratorScalingGroup
+      - QueryGeneratorScalingGroup
+    Properties:
+      Description: Updates the Metric Dashboard so that it contains all the metrics relevant to the performance test
+      Role: !GetAtt UpdateDashboardRole.Arn
+      Runtime: python3.6
+      Handler: script.lambda_handler
+      Environment:
+        Variables:
+          STACK_NAME: !Ref "AWS::StackName"
+      MemorySize: 128
+      Timeout: 180
+      Code:
+        S3Bucket: !Ref S3Bucket
+        S3Key: "lambda/update-cloudwatch-dashboard.zip"
+
+  UpdateDashboardRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - lambda.amazonaws.com
+            Action:
+              - sts:AssumeRole
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+      Policies:
+        - PolicyName: !Join ["-", [Ref: "AWS::StackName", "dashboard-update-policy"]]
+          PolicyDocument:
+            Version: 2012-10-17
+            Statement:
+              - Effect: Allow
+                Resource:
+                  Fn::Join:
+                    - ""
+                    - - "arn:aws:cloudformation:"
+                      - !Ref "AWS::Region"
+                      - ":"
+                      - !Ref "AWS::AccountId"
+                      - ":stack/"
+                      - !Ref "AWS::StackName"
+                      - "/*"
+                Action: cloudformation:DescribeStacks
+              - Effect: Allow
+                Resource:
+                  Fn::Join:
+                    - ""
+                    - - "arn:aws:elasticmapreduce:"
+                      - !Ref "AWS::Region"
+                      - ":"
+                      - !Ref "AWS::AccountId"
+                      - ":cluster/"
+                      - !Sub ${GafferWithUser.Outputs.EmrClusterId}
+                Action: elasticmapreduce:ListInstances
+              - Effect: Allow
+                Resource: "*"
+                Action:
+                  - autoscaling:DescribeAutoScalingGroups
+                  - ec2:DescribeInstances
+                  - ec2:MonitorInstances
+              - Effect: Allow
+                Resource:
+                  Fn::Join:
+                    - ""
+                    - - "arn:aws:cloudwatch::"
+                      - !Ref "AWS::AccountId"
+                      - ":dashboard/"
+                      - !Ref MetricDashboard
+                Action: cloudwatch:PutDashboard
+
   ##############################
   ## Upload dependencies into S3
   ##############################
@@ -617,6 +721,7 @@ Resources:
 
           import boto3
           import base64
+          import zipfile
           import urllib2
           import cfnresponse
 
@@ -651,6 +756,16 @@ Resources:
             ]
           })
 
+          files.append({
+            'Output': 'UpdateMetricsDashboardLambda',
+            'ZipFileName': 'script.py',
+            'Key': 'lambda/update-cloudwatch-dashboard.zip',
+            'Urls': [
+              'https://raw.githubusercontent.com/gchq/gaffer-tools/gaffer-tools-${GafferToolsVersion}/deployment/aws/tests/performance-tests/lambdas/update-cloudwatch-dashboard.py',
+              'https://raw.githubusercontent.com/gchq/gaffer-tools/${GafferToolsVersion}/deployment/aws/tests/performance-tests/lambdas/update-cloudwatch-dashboard.py'
+            ]
+          })
+
           def upload_files(bucket):
             outputs = {}
 
@@ -673,6 +788,13 @@ Resources:
                     lastError = e
                 if body is None and lastError is not None:
                   raise lastError
+
+              if body is not None and 'ZipFileName' in file:
+                with zipfile.ZipFile('/tmp/file.zip', 'w') as zipFile:
+                  zippedScriptInfo = zipfile.ZipInfo(file['ZipFileName'])
+                  zippedScriptInfo.external_attr = 0777 << 16L
+                  zipFile.writestr(zippedScriptInfo, body)
+                body = open('/tmp/file.zip', 'rb')
 
               if body is not None:
                 s3.put_object(
@@ -762,3 +884,11 @@ Outputs:
     Value: !Ref DataGeneratorScalingGroup
   QueryGeneratorAutoScalingGroupName:
     Value: !Ref QueryGeneratorScalingGroup
+  MetricDashboard:
+    Value:
+      Fn::Join:
+        - ""
+        - - "https://"
+          - !Ref "AWS::Region"
+          - ".console.aws.amazon.com/cloudwatch/home#dashboards:name="
+          - !Ref MetricDashboard
