@@ -14,13 +14,13 @@
 # limitations under the License.
 #
 
-import unittest
 import json
+import unittest
 
 from gafferpy import gaffer as g
 
 
-class GafferExamplesTest(unittest.TestCase):
+class GafferOperationsTest(unittest.TestCase):
     examples = [
         [
             '''
@@ -991,13 +991,14 @@ class GafferExamplesTest(unittest.TestCase):
                     edges=[
                         g.ElementDefinition(
                             pre_aggregation_filter_functions=[
-                                g.Predicate(
-                                    function_fields={'orEqualTo': False,
-                                                     'value': 1},
+                                g.PredicateContext(
                                     selection=[
                                         "count"
                                     ],
-                                    class_name="uk.gov.gchq.koryphe.impl.predicate.IsMoreThan"
+                                    predicate=g.IsMoreThan(
+                                        value=1,
+                                        or_equal_to=False
+                                    )
                                 )
                             ],
                             group="edge"
@@ -1057,13 +1058,12 @@ class GafferExamplesTest(unittest.TestCase):
                     entities=[
                         g.ElementDefinition(
                             pre_aggregation_filter_functions=[
-                                g.Predicate(
+                                g.PredicateContext(
                                     selection=[
                                         "count"
                                     ],
-                                    class_name="uk.gov.gchq.koryphe.impl.predicate.IsMoreThan",
-                                    function_fields={'value': 2,
-                                                     'orEqualTo': False}
+                                    predicate=g.IsMoreThan(value=2,
+                                                           or_equal_to=False)
                                 )
                             ],
                             group="entity"
@@ -1072,13 +1072,12 @@ class GafferExamplesTest(unittest.TestCase):
                     edges=[
                         g.ElementDefinition(
                             pre_aggregation_filter_functions=[
-                                g.Predicate(
+                                g.PredicateContext(
                                     selection=[
                                         "count"
                                     ],
-                                    class_name="uk.gov.gchq.koryphe.impl.predicate.IsMoreThan",
-                                    function_fields={'value': 2,
-                                                     'orEqualTo': False}
+                                    predicate=g.IsMoreThan(value=2,
+                                                           or_equal_to=False)
                                 )
                             ],
                             group="edge"
@@ -1173,13 +1172,12 @@ class GafferExamplesTest(unittest.TestCase):
                         g.ElementDefinition(
                             group="edge",
                             pre_aggregation_filter_functions=[
-                                g.Predicate(
+                                g.PredicateContext(
                                     selection=[
                                         "count"
                                     ],
-                                    function_fields={'value': 1,
-                                                     'orEqualTo': False},
-                                    class_name="uk.gov.gchq.koryphe.impl.predicate.IsMoreThan"
+                                    predicate=g.IsMoreThan(value=1,
+                                                           or_equal_to=False)
                                 )
                             ]
                         )
@@ -1188,13 +1186,12 @@ class GafferExamplesTest(unittest.TestCase):
                         g.ElementDefinition(
                             group="entity",
                             pre_aggregation_filter_functions=[
-                                g.Predicate(
+                                g.PredicateContext(
                                     selection=[
                                         "count"
                                     ],
-                                    function_fields={'value': 1,
-                                                     'orEqualTo': False},
-                                    class_name="uk.gov.gchq.koryphe.impl.predicate.IsMoreThan"
+                                    predicate=g.IsMoreThan(value=1,
+                                                           or_equal_to=False)
                                 )
                             ]
                         )
@@ -1300,10 +1297,11 @@ class GafferExamplesTest(unittest.TestCase):
                         g.ElementDefinition(
                             group="edge",
                             pre_aggregation_filter_functions=[
-                                g.Predicate(
-                                    class_name="uk.gov.gchq.koryphe.impl.predicate.IsMoreThan",
-                                    function_fields={'value': 1,
-                                                     'orEqualTo': False},
+                                g.PredicateContext(
+                                    predicate=g.IsMoreThan(
+                                        value=1,
+                                        or_equal_to=False
+                                    ),
                                     selection=[
                                         "count"
                                     ]
@@ -1315,13 +1313,12 @@ class GafferExamplesTest(unittest.TestCase):
                         g.ElementDefinition(
                             group="entity",
                             pre_aggregation_filter_functions=[
-                                g.Predicate(
-                                    class_name="uk.gov.gchq.koryphe.impl.predicate.IsMoreThan",
-                                    function_fields={'value': 1,
-                                                     'orEqualTo': False},
+                                g.PredicateContext(
                                     selection=[
                                         "count"
-                                    ]
+                                    ],
+                                    predicate=g.IsMoreThan(value=1,
+                                                           or_equal_to=False)
                                 )
                             ]
                         )
@@ -1376,48 +1373,45 @@ class GafferExamplesTest(unittest.TestCase):
             }
             ''',
             g.GetElements(
-                input=[
-                    g.EntitySeed(
-                        vertex=2
-                    ),
-                    g.EdgeSeed(
-                        destination=3,
-                        matched_vertex="SOURCE",
-                        directed_type="EITHER",
-                        source=2
-                    )
-                ],
                 view=g.View(
                     edges=[
                     ],
                     entities=[
                         g.ElementDefinition(
-                            group="entity",
                             pre_aggregation_filter_functions=[
-                                g.Predicate(
+                                g.PredicateContext(
                                     selection=[
                                         "count"
                                     ],
-                                    function_fields={
-                                        'predicates': [
-                                            {
-                                                'class': 'uk.gov.gchq.koryphe.impl.predicate.IsLessThan',
-                                                'orEqualTo': False,
-                                                'value': 2
-                                            },
-                                            {
-                                                'class': 'uk.gov.gchq.koryphe.impl.predicate.IsMoreThan',
-                                                'orEqualTo': False,
-                                                'value': 5
-                                            }
+                                    predicate=g.Or(
+                                        predicates=[
+                                            g.IsLessThan(
+                                                or_equal_to=False,
+                                                value=2
+                                            ),
+                                            g.IsMoreThan(
+                                                or_equal_to=False,
+                                                value=5
+                                            )
                                         ]
-                                    },
-                                    class_name="uk.gov.gchq.koryphe.impl.predicate.Or"
+                                    )
                                 )
-                            ]
+                            ],
+                            group="entity"
                         )
                     ]
-                )
+                ),
+                input=[
+                    g.EntitySeed(
+                        vertex=2
+                    ),
+                    g.EdgeSeed(
+                        directed_type="EITHER",
+                        matched_vertex="SOURCE",
+                        source=2,
+                        destination=3
+                    )
+                ]
             )
         ],
         [
@@ -1462,36 +1456,42 @@ class GafferExamplesTest(unittest.TestCase):
             ''',
             g.GetElements(
                 view=g.View(
-                    entities=[
-                    ],
                     edges=[
                         g.ElementDefinition(
-                            group="edge",
                             pre_aggregation_filter_functions=[
-                                g.Predicate(
-                                    function_fields={'predicates': [{
-                                        'predicate': {
-                                            'value': 2,
-                                            'class': 'uk.gov.gchq.koryphe.impl.predicate.IsLessThan',
-                                            'orEqualTo': False},
-                                        'class': 'uk.gov.gchq.koryphe.tuple.predicate.IntegerTupleAdaptedPredicate',
-                                        'selection': [
-                                            0]}, {
-                                        'predicate': {
-                                            'value': 3,
-                                            'class': 'uk.gov.gchq.koryphe.impl.predicate.IsMoreThan',
-                                            'orEqualTo': False},
-                                        'class': 'uk.gov.gchq.koryphe.tuple.predicate.IntegerTupleAdaptedPredicate',
-                                        'selection': [
-                                            1]}]},
-                                    class_name="uk.gov.gchq.koryphe.impl.predicate.Or",
+                                g.PredicateContext(
+                                    predicate=g.Or(
+                                        predicates=[
+                                            g.NestedPredicate(
+                                                predicate=g.IsLessThan(
+                                                    or_equal_to=False,
+                                                    value=2
+                                                ),
+                                                selection=[
+                                                    0
+                                                ]
+                                            ),
+                                            g.NestedPredicate(
+                                                predicate=g.IsMoreThan(
+                                                    or_equal_to=False,
+                                                    value=3
+                                                ),
+                                                selection=[
+                                                    1
+                                                ]
+                                            )
+                                        ]
+                                    ),
                                     selection=[
                                         "SOURCE",
                                         "DESTINATION"
                                     ]
                                 )
-                            ]
+                            ],
+                            group="edge"
                         )
+                    ],
+                    entities=[
                     ]
                 ),
                 input=[
@@ -1535,12 +1535,14 @@ class GafferExamplesTest(unittest.TestCase):
                     edges=[
                         g.ElementDefinition(
                             transform_functions=[
-                                g.Function(
+                                g.FunctionContext(
                                     projection=[
                                         "vertex|count"
                                     ],
-                                    class_name="uk.gov.gchq.koryphe.impl.function.Concat",
-                                    function_fields={'separator': '|'},
+                                    function=g.Function(
+                                        class_name="uk.gov.gchq.koryphe.impl.function.Concat",
+                                        fields={'separator': '|'}
+                                    ),
                                     selection=[
                                         "SOURCE",
                                         "count"
@@ -1600,25 +1602,27 @@ class GafferExamplesTest(unittest.TestCase):
                     ],
                     edges=[
                         g.ElementDefinition(
+                            exclude_properties=[
+                                "count"
+                            ],
+                            transient_properties={
+                                'vertex|count': 'java.lang.String'},
                             transform_functions=[
-                                g.Function(
+                                g.FunctionContext(
                                     selection=[
                                         "SOURCE",
                                         "count"
                                     ],
+                                    function=g.Function(
+                                        class_name="uk.gov.gchq.koryphe.impl.function.Concat",
+                                        fields={'separator': '|'}
+                                    ),
                                     projection=[
                                         "vertex|count"
-                                    ],
-                                    class_name="uk.gov.gchq.koryphe.impl.function.Concat",
-                                    function_fields={'separator': '|'}
+                                    ]
                                 )
                             ],
-                            transient_properties={
-                                'vertex|count': 'java.lang.String'},
-                            group="edge",
-                            exclude_properties=[
-                                "count"
-                            ]
+                            group="edge"
                         )
                     ]
                 ),
@@ -2086,16 +2090,18 @@ class GafferExamplesTest(unittest.TestCase):
                             edges=[
                                 g.ElementDefinition(
                                     transform_functions=[
-                                        g.Function(
+                                        g.FunctionContext(
                                             selection=[
                                                 "DESTINATION",
                                                 "count"
                                             ],
-                                            class_name="uk.gov.gchq.gaffer.doc.operation.function.ExampleScoreFunction",
+                                            function=g.Function(
+                                                class_name="uk.gov.gchq.gaffer.doc.operation.function.ExampleScoreFunction",
+                                                fields={}
+                                            ),
                                             projection=[
                                                 "score"
-                                            ],
-                                            function_fields={}
+                                            ]
                                         )
                                     ],
                                     group="edge",
@@ -2106,16 +2112,18 @@ class GafferExamplesTest(unittest.TestCase):
                             entities=[
                                 g.ElementDefinition(
                                     transform_functions=[
-                                        g.Function(
+                                        g.FunctionContext(
                                             selection=[
                                                 "VERTEX",
                                                 "count"
                                             ],
-                                            class_name="uk.gov.gchq.gaffer.doc.operation.function.ExampleScoreFunction",
+                                            function=g.Function(
+                                                class_name="uk.gov.gchq.gaffer.doc.operation.function.ExampleScoreFunction",
+                                                fields={}
+                                            ),
                                             projection=[
                                                 "score"
-                                            ],
-                                            function_fields={}
+                                            ]
                                         )
                                     ],
                                     group="entity",
@@ -2273,9 +2281,11 @@ class GafferExamplesTest(unittest.TestCase):
                             entities=[
                                 g.ElementDefinition(
                                     transform_functions=[
-                                        g.Function(
-                                            function_fields={},
-                                            class_name="uk.gov.gchq.gaffer.doc.operation.function.ExampleScoreFunction",
+                                        g.FunctionContext(
+                                            function=g.Function(
+                                                fields={},
+                                                class_name="uk.gov.gchq.gaffer.doc.operation.function.ExampleScoreFunction"
+                                            ),
                                             selection=[
                                                 "VERTEX",
                                                 "count"
@@ -2293,9 +2303,11 @@ class GafferExamplesTest(unittest.TestCase):
                             edges=[
                                 g.ElementDefinition(
                                     transform_functions=[
-                                        g.Function(
-                                            function_fields={},
-                                            class_name="uk.gov.gchq.gaffer.doc.operation.function.ExampleScoreFunction",
+                                        g.FunctionContext(
+                                            function=g.Function(
+                                                fields={},
+                                                class_name="uk.gov.gchq.gaffer.doc.operation.function.ExampleScoreFunction"
+                                            ),
                                             selection=[
                                                 "DESTINATION",
                                                 "count"
@@ -2755,33 +2767,10 @@ class GafferExamplesTest(unittest.TestCase):
                             )
                         ],
                         view=g.View(
-                            entities=[
-                                g.ElementDefinition(
-                                    group="entity",
-                                    transient_properties={
-                                        'score': 'java.lang.Integer'},
-                                    transform_functions=[
-                                        g.Function(
-                                            projection=[
-                                                "score"
-                                            ],
-                                            selection=[
-                                                "VERTEX",
-                                                "count"
-                                            ],
-                                            function_fields={},
-                                            class_name="uk.gov.gchq.gaffer.doc.operation.function.ExampleScoreFunction"
-                                        )
-                                    ]
-                                )
-                            ],
                             edges=[
                                 g.ElementDefinition(
-                                    group="edge",
-                                    transient_properties={
-                                        'score': 'java.lang.Integer'},
                                     transform_functions=[
-                                        g.Function(
+                                        g.FunctionContext(
                                             projection=[
                                                 "score"
                                             ],
@@ -2789,35 +2778,62 @@ class GafferExamplesTest(unittest.TestCase):
                                                 "DESTINATION",
                                                 "count"
                                             ],
-                                            function_fields={},
-                                            class_name="uk.gov.gchq.gaffer.doc.operation.function.ExampleScoreFunction"
+                                            function=g.Function(
+                                                class_name="uk.gov.gchq.gaffer.doc.operation.function.ExampleScoreFunction",
+                                                fields={}
+                                            )
                                         )
-                                    ]
+                                    ],
+                                    group="edge",
+                                    transient_properties={
+                                        'score': 'java.lang.Integer'}
+                                )
+                            ],
+                            entities=[
+                                g.ElementDefinition(
+                                    transform_functions=[
+                                        g.FunctionContext(
+                                            projection=[
+                                                "score"
+                                            ],
+                                            selection=[
+                                                "VERTEX",
+                                                "count"
+                                            ],
+                                            function=g.Function(
+                                                class_name="uk.gov.gchq.gaffer.doc.operation.function.ExampleScoreFunction",
+                                                fields={}
+                                            )
+                                        )
+                                    ],
+                                    group="entity",
+                                    transient_properties={
+                                        'score': 'java.lang.Integer'}
                                 )
                             ]
                         )
                     ),
                     g.Sort(
-                        deduplicate=True,
                         result_limit=4,
                         comparators=[
                             g.ElementPropertyComparator(
+                                property="count",
                                 groups=[
                                     "entity",
                                     "edge"
                                 ],
-                                reversed=False,
-                                property="count"
+                                reversed=False
                             ),
                             g.ElementPropertyComparator(
+                                property="score",
                                 groups=[
                                     "entity",
                                     "edge"
                                 ],
-                                reversed=False,
-                                property="score"
+                                reversed=False
                             )
-                        ]
+                        ],
+                        deduplicate=True
                     )
                 ]
             )
@@ -3410,7 +3426,7 @@ class GafferExamplesTest(unittest.TestCase):
         ]
     ]
 
-    def test_examples(self):
+    def test_operations(self):
         for example in self.examples:
             self.assertEqual(
                 json.loads(example[0]),

@@ -234,16 +234,18 @@ def get_elements(gc):
                             g.Property('description', 'java.lang.String')
                         ],
                         pre_aggregation_filter_functions=[
-                            g.Predicate(
-                                class_name='uk.gov.gchq.koryphe.impl.predicate.IsMoreThan',
+                            g.PredicateContext(
                                 selection=['count'],
-                                function_fields={'value': {'java.lang.Long': 1}}
+                                predicate=g.IsMoreThan(
+                                    value={'java.lang.Long': 1}
+                                )
                             )
                         ],
                         transform_functions=[
-                            g.Function(
-                                class_name='uk.gov.gchq.gaffer.traffic.transform.DescriptionTransform',
+                            g.FunctionContext(
                                 selection=['SOURCE', 'DESTINATION', 'count'],
+                                function=g.Function(
+                                    class_name='uk.gov.gchq.gaffer.traffic.transform.DescriptionTransform'),
                                 projection=['description']
                             )
                         ]
@@ -679,49 +681,47 @@ def complex_op_chain(gc):
                                 g.Property('busCount', 'java.lang.Long')
                             ],
                             pre_aggregation_filter_functions=[
-                                g.Predicate(
-                                    class_name='uk.gov.gchq.koryphe.impl.predicate.IsMoreThan',
+                                g.PredicateContext(
                                     selection=['startDate'],
-                                    function_fields={'value': {
-                                        'java.util.Date': 946684800000},
-                                        'orEqualTo': True}
+                                    predicate=g.IsMoreThan(
+                                        value={'java.util.Date': 946684800000},
+                                        or_equal_to=True
+                                    )
                                 ),
-                                g.Predicate(
-                                    class_name='uk.gov.gchq.koryphe.impl.predicate.IsLessThan',
-                                    selection=['endDate'],
-                                    function_fields={'value': {
-                                        'java.util.Date': 978307200000},
-                                        'orEqualTo': False}
+                                g.PredicateContext(
+                                    selection=['startDate'],
+                                    predicate=g.IsLessThan(
+                                        value={'java.util.Date': 978307200000},
+                                        or_equal_to=False
+                                    )
                                 )
                             ],
                             post_aggregation_filter_functions=[
-                                g.Predicate(
-                                    class_name='uk.gov.gchq.koryphe.impl.predicate.IsMoreThan',
+                                g.PredicateContext(
                                     selection=['startDate'],
-                                    function_fields={'value': {
-                                        'java.util.Date': 946684800000},
-                                        'orEqualTo': True}
+                                    predicate=g.IsMoreThan(
+                                        value={'java.util.Date': 946684800000},
+                                        or_equal_to=True
+                                    )
                                 ),
-                                g.Predicate(
-                                    class_name='uk.gov.gchq.koryphe.predicate.PredicateMap',
+                                g.PredicateContext(
                                     selection=['countByVehicleType'],
-                                    function_fields={
-                                        'predicate': {
-                                            'class': 'uk.gov.gchq.koryphe.impl.predicate.IsMoreThan',
-                                            'orEqualTo': False,
-                                            'value': {
-                                                'java.lang.Long': 1000
-                                            }
-                                        },
-                                        'key': 'BUS'
-                                    }
+                                    predicate=g.PredicateMap(
+                                        predicate=g.IsMoreThan(
+                                            value={'java.lang.Long': 1000},
+                                            or_equal_to=False
+                                        ),
+                                        key='BUS'
+                                    )
                                 )
                             ],
                             transform_functions=[
-                                g.Function(
+                                g.FunctionContext(
                                     selection=['countByVehicleType'],
-                                    class_name='uk.gov.gchq.gaffer.function.FreqMapExtractor',
-                                    function_fields={'key': 'BUS'},
+                                    function=g.Function(
+                                        class_name='uk.gov.gchq.gaffer.function.FreqMapExtractor',
+                                        fields={'key': 'BUS'}
+                                    ),
                                     projection=['busCount']
                                 )
                             ]

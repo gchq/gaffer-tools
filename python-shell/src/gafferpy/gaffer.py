@@ -525,16 +525,16 @@ class ElementDefinition(ToJson, ToCodeString):
                     self.transient_properties[propName] = propClass
 
         self.pre_aggregation_filter_functions = JsonConverter.from_json(
-            pre_aggregation_filter_functions, Predicate)
+            pre_aggregation_filter_functions, PredicateContext)
 
         self.post_aggregation_filter_functions = JsonConverter.from_json(
-            post_aggregation_filter_functions, Predicate)
+            post_aggregation_filter_functions, PredicateContext)
 
         self.transform_functions = JsonConverter.from_json(
-            transform_functions, Function)
+            transform_functions, FunctionContext)
 
         self.post_transform_filter_functions = JsonConverter.from_json(
-            post_transform_filter_functions, Predicate)
+            post_transform_filter_functions, PredicateContext)
 
         self.group_by = group_by
         self.properties = properties
@@ -607,7 +607,7 @@ class GlobalElementDefinition(ToJson, ToCodeString):
             post_aggregation_filter_functions, Predicate)
 
         self.transform_functions = JsonConverter.from_json(
-            transform_functions, Function)
+            transform_functions, FunctionContext)
 
         self.post_transform_filter_functions = JsonConverter.from_json(
             post_transform_filter_functions, Predicate)
@@ -666,64 +666,493 @@ class Property(ToJson, ToCodeString):
         return {self.name: self.class_name}
 
 
-class GafferFunction(ToJson, ToCodeString):
-    def __init__(self, class_name, _class_type, function_fields=None):
-        super().__init__()
-        self.class_name = class_name
-        self.function_fields = function_fields
-        self._class_type = _class_type
+########################################################
+#             Predicates and Functions                 #
+########################################################
+
+
+class PredicateContext(ToJson, ToCodeString):
+    CLASS = "gaffer.PredicateContext"
+
+    def __init__(self, selection=None, predicate=None):
+        self.selection = selection
+        self.predicate = predicate
 
     def to_json(self):
-        function_context = {}
-        function = {}
-        if self.class_name is not None:
-            function['class'] = self.class_name
-        if self.function_fields is not None:
-            for key in self.function_fields:
-                tmp_json = self.function_fields[key]
-                if isinstance(tmp_json, ToJson):
-                    tmp_json = tmp_json.to_json()
-                function[key] = tmp_json
-        function_context[self._class_type] = function
+        predicate_json = {}
+        if self.selection is not None:
+            predicate_json['selection'] = self.selection
+        if self.predicate is not None:
+            predicate_json['predicate'] = self.predicate.to_json()
 
-        return function_context
+        return predicate_json
 
 
-class Predicate(GafferFunction):
+class Predicate(ToJson, ToCodeString):
     CLASS = "java.util.function.Predicate"
 
-    def __init__(self, class_name, selection=None, function_fields=None):
-        super().__init__(class_name, _class_type='predicate',
-                         function_fields=function_fields)
-        self.selection = selection
+    def __init__(self, class_name=None, fields=None):
+        self.class_name = class_name
+        self.fields = fields
 
     def to_json(self):
-        function_context = super().to_json()
-        if self.selection is not None:
-            function_context['selection'] = self.selection
+        if self.fields is not None:
+            predicate_json = dict(self.fields)
+        else:
+            predicate_json = {}
 
-        return function_context
+        if self.class_name is not None:
+            predicate_json['class'] = self.class_name
+
+        return predicate_json
 
 
-class Function(GafferFunction):
-    CLASS = "java.util.function.Function"
+class AbstractPredicate(Predicate):
+    def __init__(self, _class_name=None):
+        self._class_name = _class_name
 
-    def __init__(self, class_name, selection=None, projection=None,
-                 function_fields=None):
-        super().__init__(class_name, _class_type='function',
-                         function_fields=function_fields)
+    def to_json(self):
+        predicate_json = {}
+
+        if self._class_name is not None:
+            predicate_json['class'] = self._class_name
+
+        return predicate_json
+
+
+class And(AbstractPredicate):
+    CLASS = "uk.gov.gchq.koryphe.impl.predicate.And"
+
+    def __init__(self, predicates=None):
+        super().__init__(_class_name=self.CLASS)
+        self.predicates = []
+        if predicates is not None:
+            for p in predicates:
+                if not isinstance(p, Predicate):
+                    p_class = p.get('class')
+                    p_fields = dict(p)
+                    p_fields.pop('class', None)
+                    p = Predicate(class_name=p_class, fields=p_fields)
+                self.predicates.append(p)
+
+    def to_json(self):
+        predicate_json = super().to_json()
+        if self.predicates is not None:
+            predicates_json = []
+            for p in self.predicates:
+                if isinstance(p, Predicate):
+                    predicates_json.append(p.to_json())
+                else:
+                    predicates_json.append(p)
+            predicate_json['predicates'] = predicates_json
+
+        return predicate_json
+
+
+class Or(AbstractPredicate):
+    CLASS = "uk.gov.gchq.koryphe.impl.predicate.Or"
+
+    def __init__(self, predicates=None):
+        super().__init__(_class_name=self.CLASS)
+        self.predicates = []
+        if predicates is not None:
+            for p in predicates:
+                if not isinstance(p, Predicate):
+                    p_class = p.get('class')
+                    p_fields = dict(p)
+                    p_fields.pop('class', None)
+                    p = Predicate(class_name=p_class, fields=p_fields)
+                self.predicates.append(p)
+
+    def to_json(self):
+        predicate_json = super().to_json()
+        predicate_json['class'] = self.CLASS
+        if self.predicates is not None:
+            predicates_json = []
+            for p in self.predicates:
+                if isinstance(p, Predicate):
+                    predicates_json.append(p.to_json())
+                else:
+                    predicates_json.append(p)
+            predicate_json['predicates'] = predicates_json
+
+        return predicate_json
+
+
+class Not(AbstractPredicate):
+    CLASS = "uk.gov.gchq.koryphe.impl.predicate.Not"
+
+    def __init__(self, predicate=None):
+        super().__init__(_class_name=self.CLASS)
+        if predicate is not None:
+            if not isinstance(predicate, Predicate):
+                p_class = predicate.get('class')
+                p_fields = dict(predicate)
+                p_fields.pop('class', None)
+                predicate = Predicate(class_name=p_class, fields=p_fields)
+        self.predicate = predicate
+
+    def to_json(self):
+        predicate_json = super().to_json()
+        predicate_json['class'] = self.CLASS
+        if self.predicate is not None:
+            if isinstance(self.predicate, Predicate):
+                nested_predicate_json = self.predicate.to_json()
+            else:
+                nested_predicate_json = self.predicate
+            predicate_json['predicate'] = nested_predicate_json
+
+        return predicate_json
+
+
+class NestedPredicate(AbstractPredicate):
+    CLASS = "uk.gov.gchq.koryphe.tuple.predicate.IntegerTupleAdaptedPredicate"
+
+    def __init__(self, selection=None, predicate=None):
+        super().__init__(_class_name=self.CLASS)
         self.selection = selection
+        if predicate is not None:
+            if not isinstance(predicate, Predicate):
+                p_class = predicate.get('class')
+                p_fields = dict(predicate)
+                p_fields.pop('class', None)
+                predicate = Predicate(class_name=p_class, fields=p_fields)
+        self.predicate = predicate
+
+    def to_json(self):
+        predicate_json = super().to_json()
+        if self.selection is not None:
+            predicate_json['selection'] = self.selection
+        if self.predicate is not None:
+            predicate_json['predicate'] = self.predicate.to_json()
+
+        return predicate_json
+
+
+class AgeOff(AbstractPredicate):
+    CLASS = "uk.gov.gchq.koryphe.impl.predicate.AgeOff"
+
+    def __init__(self, age_off_time):
+        super().__init__(_class_name=self.CLASS)
+        self.age_off_time = age_off_time
+
+    def to_json(self):
+        predicate_json = super().to_json()
+        predicate_json['ageOffTime'] = self.age_off_time
+        return predicate_json
+
+
+class AgeOffFromDays(AbstractPredicate):
+    CLASS = "uk.gov.gchq.koryphe.impl.predicate.AgeOffFromDays"
+
+    def __init__(self):
+        super().__init__(_class_name=self.CLASS)
+
+
+class AreEqual(AbstractPredicate):
+    CLASS = "uk.gov.gchq.koryphe.impl.predicate.AreEqual"
+
+    def __init__(self):
+        super().__init__(_class_name=self.CLASS)
+
+
+class AreIn(AbstractPredicate):
+    CLASS = "uk.gov.gchq.koryphe.impl.predicate.AreIn"
+
+    def __init__(self, values):
+        super().__init__(_class_name=self.CLASS)
+        self.values = values
+
+    def to_json(self):
+        predicate_json = super().to_json()
+        predicate_json['values'] = self.values
+        return predicate_json
+
+
+class CollectionContains(AbstractPredicate):
+    CLASS = "uk.gov.gchq.koryphe.impl.predicate.CollectionContains"
+
+    def __init__(self, value):
+        super().__init__(_class_name=self.CLASS)
+        self.value = value
+
+    def to_json(self):
+        predicate_json = super().to_json()
+        predicate_json['value'] = self.value
+        return predicate_json
+
+
+class Exists(AbstractPredicate):
+    CLASS = "uk.gov.gchq.koryphe.impl.predicate.Exists"
+
+    def __init__(self):
+        super().__init__(_class_name=self.CLASS)
+
+
+class HyperLogLogPlusIsLessThan(AbstractPredicate):
+    CLASS = "uk.gov.gchq.gaffer.sketches.clearspring.cardinality.predicate.HyperLogLogPlusIsLessThan"
+
+    def __init__(self, value, or_equal_to=None):
+        super().__init__(_class_name=self.CLASS)
+        self.value = value
+        self.or_equal_to = or_equal_to
+
+    def to_json(self):
+        predicate_json = super().to_json()
+        predicate_json['value'] = self.value
+        if self.or_equal_to is not None:
+            predicate_json['orEqualTo'] = self.or_equal_to
+        return predicate_json
+
+
+class IsA(AbstractPredicate):
+    CLASS = "uk.gov.gchq.koryphe.impl.predicate.IsA"
+
+    def __init__(self, type):
+        super().__init__(_class_name=self.CLASS)
+        self.type = type
+
+    def to_json(self):
+        predicate_json = super().to_json()
+        predicate_json['type'] = self.type
+        return predicate_json
+
+
+class IsEqual(AbstractPredicate):
+    CLASS = "uk.gov.gchq.koryphe.impl.predicate.IsEqual"
+
+    def __init__(self, value):
+        super().__init__(_class_name=self.CLASS)
+        self.value = value
+
+    def to_json(self):
+        predicate_json = super().to_json()
+        predicate_json['value'] = self.value
+        return predicate_json
+
+
+class IsFalse(AbstractPredicate):
+    CLASS = "uk.gov.gchq.koryphe.impl.predicate.IsFalse"
+
+    def __init__(self):
+        super().__init__(_class_name=self.CLASS)
+
+
+class IsTrue(AbstractPredicate):
+    CLASS = "uk.gov.gchq.koryphe.impl.predicate.IsTrue"
+
+    def __init__(self):
+        super().__init__(_class_name=self.CLASS)
+
+
+class IsIn(AbstractPredicate):
+    CLASS = "uk.gov.gchq.koryphe.impl.predicate.IsIn"
+
+    def __init__(self, values):
+        super().__init__(_class_name=self.CLASS)
+        self.values = values
+
+    def to_json(self):
+        predicate_json = super().to_json()
+        predicate_json['values'] = self.values
+        return predicate_json
+
+
+class IsLessThan(AbstractPredicate):
+    CLASS = "uk.gov.gchq.koryphe.impl.predicate.IsLessThan"
+
+    def __init__(self, value, or_equal_to=None):
+        super().__init__(_class_name=self.CLASS)
+        self.value = value
+        self.or_equal_to = or_equal_to
+
+    def to_json(self):
+        predicate_json = super().to_json()
+        predicate_json['value'] = self.value
+        if self.or_equal_to is not None:
+            predicate_json['orEqualTo'] = self.or_equal_to
+        return predicate_json
+
+
+class IsMoreThan(AbstractPredicate):
+    CLASS = "uk.gov.gchq.koryphe.impl.predicate.IsMoreThan"
+
+    def __init__(self, value, or_equal_to=None):
+        super().__init__(_class_name=self.CLASS)
+        self.value = value
+        self.or_equal_to = or_equal_to
+
+    def to_json(self):
+        predicate_json = super().to_json()
+        predicate_json['value'] = self.value
+        if self.or_equal_to is not None:
+            predicate_json['orEqualTo'] = self.or_equal_to
+        return predicate_json
+
+
+class IsShorterThan(AbstractPredicate):
+    CLASS = "uk.gov.gchq.koryphe.impl.predicate.IsShorterThan"
+
+    def __init__(self, max_length, or_equal_to=None):
+        super().__init__(_class_name=self.CLASS)
+        self.max_length = max_length
+        self.or_equal_to = or_equal_to
+
+    def to_json(self):
+        predicate_json = super().to_json()
+        predicate_json['maxLength'] = self.max_length
+        if self.or_equal_to is not None:
+            predicate_json['orEqualTo'] = self.or_equal_to
+        return predicate_json
+
+
+class IsXLessThanY(AbstractPredicate):
+    CLASS = "uk.gov.gchq.koryphe.impl.predicate.IsXLessThanY"
+
+    def __init__(self):
+        super().__init__(_class_name=self.CLASS)
+
+
+class IsXMoreThanY(AbstractPredicate):
+    CLASS = "uk.gov.gchq.koryphe.impl.predicate.IsXMoreThanY"
+
+    def __init__(self):
+        super().__init__(_class_name=self.CLASS)
+
+
+class MapContains(AbstractPredicate):
+    CLASS = "uk.gov.gchq.koryphe.impl.predicate.MapContains"
+
+    def __init__(self, key=None):
+        super().__init__(_class_name=self.CLASS)
+        self.key = key
+
+    def to_json(self):
+        predicate_json = super().to_json()
+        predicate_json['class'] = self.CLASS
+        predicate_json['key'] = self.key
+
+        return predicate_json
+
+
+class MapContainsPredicate(AbstractPredicate):
+    CLASS = "uk.gov.gchq.koryphe.impl.predicate.MapContainsPredicate"
+
+    def __init__(self, key_predicate=None):
+        super().__init__(_class_name=self.CLASS)
+        self.key_predicate = None
+        if key_predicate is not None:
+            if not isinstance(key_predicate, Predicate):
+                p_class = key_predicate.get('class')
+                p_fields = dict(key_predicate)
+                p_fields.pop('class', None)
+                key_predicate = Predicate(class_name=p_class,
+                                          fields=p_fields)
+        self.key_predicate = key_predicate
+
+    def to_json(self):
+        predicate_json = super().to_json()
+        predicate_json['class'] = self.CLASS
+        if self.key_predicate is not None:
+            if isinstance(self.key_predicate, Predicate):
+                nested_predicate_json = self.key_predicate.to_json()
+            else:
+                nested_predicate_json = self.key_predicate
+            predicate_json['keyPredicate'] = nested_predicate_json
+
+        return predicate_json
+
+
+class MultiRegex(AbstractPredicate):
+    CLASS = "uk.gov.gchq.koryphe.impl.predicate.MultiRegex"
+
+    def __init__(self, value):
+        super().__init__(_class_name=self.CLASS)
+        self.value = value
+
+    def to_json(self):
+        predicate_json = super().to_json()
+        predicate_json['value'] = self.value
+        return predicate_json
+
+
+class PredicateMap(AbstractPredicate):
+    CLASS = "uk.gov.gchq.koryphe.predicate.PredicateMap"
+
+    def __init__(self, predicate, key):
+        super().__init__(_class_name=self.CLASS)
+        self.key = key
+        if not isinstance(predicate, Predicate):
+            p_class = predicate.get('class')
+            p_fields = dict(predicate)
+            p_fields.pop('class', None)
+            predicate = Predicate(class_name=p_class,
+                                  fields=p_fields)
+        self.predicate = predicate
+
+    def to_json(self):
+        predicate_json = super().to_json()
+        predicate_json['class'] = self.CLASS
+        predicate_json['key'] = self.key
+        if isinstance(self.predicate, Predicate):
+            nested_predicate_json = self.predicate.to_json()
+        else:
+            nested_predicate_json = self.predicate
+        predicate_json['predicate'] = nested_predicate_json
+
+        return predicate_json
+
+
+class Regex(AbstractPredicate):
+    CLASS = "uk.gov.gchq.koryphe.impl.predicate.Regex"
+
+    def __init__(self, value):
+        super().__init__(_class_name=self.CLASS)
+        self.value = value
+
+    def to_json(self):
+        predicate_json = super().to_json()
+        predicate_json['value'] = self.value
+        return predicate_json
+
+
+class FunctionContext(ToJson, ToCodeString):
+    CLASS = "gaffer.FunctionContext"
+
+    def __init__(self, selection=None, function=None, projection=None):
+        self.selection = selection
+        self.function = function
         self.projection = projection
 
     def to_json(self):
-        function_context = super().to_json()
+        function_json = {}
         if self.selection is not None:
-            function_context['selection'] = self.selection
-
+            function_json['selection'] = self.selection
+        if self.function is not None:
+            function_json['function'] = self.function.to_json()
         if self.projection is not None:
-            function_context['projection'] = self.projection
+            function_json['projection'] = self.projection
 
-        return function_context
+        return function_json
+
+
+class Function(ToJson, ToCodeString):
+    CLASS = "java.util.function.Function"
+
+    def __init__(self, class_name=None, fields=None):
+        self.class_name = class_name
+        self.fields = fields
+
+    def to_json(self):
+        if self.fields is not None:
+            function_json = dict(self.fields)
+        else:
+            function_json = {}
+
+        if self.class_name is not None:
+            function_json['class'] = self.class_name
+
+        return function_json
 
 
 class ElementGenerator(ToJson, ToCodeString):
@@ -811,6 +1240,11 @@ class NamedOperationParameter(ToJson, ToCodeString):
             "valueClass": self.value_class,
             "required": self.required
         }
+
+
+########################################################
+#                    Operations                        #
+########################################################
 
 
 class OperationChain(ToJson, ToCodeString):
@@ -2067,34 +2501,94 @@ class JsonConverter:
             GENERIC_JSON_CONVERTERS[class_obj.CLASS] = \
                 lambda obj, class_obj=class_obj: class_obj(**obj)
 
-    def predicate_converter(obj):
+    def predicate_context_converter(obj):
         if 'class' in obj:
-            fields = dict(obj)
+            predicate = dict(obj)
         else:
-            fields = dict(obj['predicate'])
+            predicate = obj['predicate']
+            if isinstance(predicate, dict):
+                predicate = dict(predicate)
 
-        class_name = fields['class']
-        fields.pop('class', None)
+        if not isinstance(predicate, Predicate):
+            predicate = JsonConverter.from_json(predicate)
+            if not isinstance(predicate, Predicate):
+                class_name = predicate.get('class')
+                predicate.pop('class', None)
+                predicate = Predicate(
+                    class_name=class_name,
+                    fields=predicate
+                )
 
-        return Predicate(class_name=class_name,
-                         selection=obj.get('selection'),
-                         function_fields=fields)
+        return PredicateContext(
+            selection=obj.get('selection'),
+            predicate=predicate
+        )
+
+    CUSTOM_JSON_CONVERTERS[PredicateContext.CLASS] = predicate_context_converter
+
+    def predicate_converter(obj):
+        if isinstance(obj, dict):
+            predicate = dict(obj)
+        else:
+            predicate = obj
+
+        if not isinstance(predicate, Predicate):
+            predicate = JsonConverter.from_json(predicate)
+            if not isinstance(predicate, Predicate):
+                class_name = predicate.get('class')
+                predicate.pop('class', None)
+                predicate = Predicate(
+                    class_name=class_name,
+                    fields=predicate
+                )
+
+        return predicate
 
     CUSTOM_JSON_CONVERTERS[Predicate.CLASS] = predicate_converter
 
-    def function_converter(obj):
+    def function_context_converter(obj):
         if 'class' in obj:
-            fields = dict(obj)
+            function = dict(obj)
         else:
-            fields = dict(obj['function'])
+            function = obj['function']
+            if isinstance(function, dict):
+                function = dict(function)
 
-        class_name = fields['class']
-        fields.pop('class', None)
+        if not isinstance(function, Function):
+            function = JsonConverter.from_json(function)
+            if not isinstance(function, Function):
+                class_name = function.get('class')
+                function.pop('class', None)
+                function = Function(
+                    class_name=class_name,
+                    fields=function
+                )
 
-        return Function(class_name=class_name,
-                        selection=obj.get('selection'),
-                        projection=obj.get('projection'),
-                        function_fields=fields)
+        return FunctionContext(
+            selection=obj.get('selection'),
+            function=function,
+            projection=obj.get('projection')
+        )
+
+    CUSTOM_JSON_CONVERTERS[FunctionContext.CLASS] = function_context_converter
+
+    def function_converter(obj):
+        if isinstance(obj, dict):
+            function = dict(obj)
+        else:
+            function = obj
+
+        if not isinstance(function, Function):
+            function = JsonConverter.from_json(function)
+            if not isinstance(function, Function):
+                class_name = function.get('class')
+                function.pop('class', None)
+                function = Function(
+                    class_name=class_name,
+                    fields=function
+                )
+
+        return function
 
     CUSTOM_JSON_CONVERTERS[Function.CLASS] = function_converter
 
