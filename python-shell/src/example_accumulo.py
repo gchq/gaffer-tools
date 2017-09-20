@@ -46,10 +46,12 @@ def get_elements_between_sets(gc):
             view=g.View(
                 edges=[
                     g.ElementDefinition(
-                        group='RoadUse', group_by=[]
+                        group='RoadUse',
+                        group_by=[]
                     ),
                     g.ElementDefinition(
-                        group='RoadHasJunction', group_by=[]
+                        group='RoadHasJunction',
+                        group_by=[]
                     )
                 ]
             )
@@ -72,10 +74,12 @@ def get_elements_within_set(gc):
             view=g.View(
                 edges=[
                     g.ElementDefinition(
-                        group='RoadUse', group_by=[]
+                        group='RoadUse',
+                        group_by=[]
                     ),
                     g.ElementDefinition(
-                        group='RoadHasJunction', group_by=[]
+                        group='RoadHasJunction',
+                        group_by=[]
                     )
                 ]
             )
@@ -96,7 +100,8 @@ def get_elements_in_ranges(gc):
             view=g.View(
                 edges=[
                     g.ElementDefinition(
-                        group='RoadUse', group_by=[]
+                        group='RoadUse',
+                        group_by=[]
                     )
                 ]
             )

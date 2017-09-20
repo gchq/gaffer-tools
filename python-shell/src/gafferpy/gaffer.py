@@ -106,57 +106,6 @@ class ToCodeString:
                + new_line + ')'
 
 
-class ResultConverter:
-    @staticmethod
-    def to_gaffer_objects(result):
-        objs = result
-        if result is not None and isinstance(result, list):
-            objs = []
-            for result_item in result:
-                if 'class' in result_item:
-                    if result_item[
-                        'class'] == Entity.CLASS:
-                        element = Entity(result_item['group'],
-                                         result_item['vertex'])
-                        if 'properties' in result_item:
-                            element.properties = result_item['properties']
-                        objs.append(element)
-                    elif result_item[
-                        'class'] == Edge.CLASS:
-                        element = Edge(result_item['group'],
-                                       result_item['source'],
-                                       result_item['destination'],
-                                       result_item['directed'])
-                        if 'properties' in result_item:
-                            element.properties = result_item['properties']
-                        if 'matchedVertex' in result_item:
-                            element.matched_vertex = result_item[
-                                'matchedVertex']
-                        objs.append(element)
-                    elif result_item[
-                        'class'] == EntitySeed.CLASS:
-                        objs.append(EntitySeed(result_item['vertex']))
-                    elif result_item[
-                        'class'] == EdgeSeed.CLASS:
-                        seed = EdgeSeed(result_item['source'],
-                                        result_item['destination'],
-                                        result_item['directed'])
-                        if 'matchedVertex' in result_item:
-                            seed.matched_vertex = result_item['matchedVertex']
-                        objs.append(seed)
-                    else:
-                        raise TypeError(
-                            'Element type is not recognised: ' + str(
-                                result_item))
-                elif 'vertex' in result_item:
-                    objs.append(EntitySeed(result_item['vertex']))
-                else:
-                    objs.append(result_item)
-
-        # Return the input
-        return objs
-
-
 class ElementSeed(ToJson, ToCodeString):
     def __repr__(self):
         return json.dumps(self.to_json())
@@ -267,6 +216,66 @@ class ElementPropertyComparator(Comparator):
         tmp_json['property'] = self.property
         tmp_json['reversed'] = self.reversed
         return tmp_json
+
+
+class TypeSubTypeValue(ToJson, ToCodeString):
+    CLASS = 'uk.gov.gchq.gaffer.types.TypeSubTypeValue'
+
+    def __init__(self, type=None, sub_type=None, value=None):
+        super().__init__()
+        self.type = type
+        self.sub_type = sub_type
+        self.value = value
+
+    def to_json(self):
+        json_tmp = {
+            'class': self.CLASS,
+        }
+
+        if self.type is not None:
+            if isinstance(self.type, ToJson):
+                json_tmp['type'] = self.type.to_json()
+            else:
+                json_tmp['type'] = self.type
+        if self.sub_type is not None:
+            if isinstance(self.sub_type, ToJson):
+                json_tmp['subType'] = self.sub_type.to_json()
+            else:
+                json_tmp['subType'] = self.sub_type
+        if self.value is not None:
+            if isinstance(self.value, ToJson):
+                json_tmp['value'] = self.value.to_json()
+            else:
+                json_tmp['value'] = self.value
+
+        return json_tmp
+
+
+class TypeValue(ToJson, ToCodeString):
+    CLASS = 'uk.gov.gchq.gaffer.types.TypeValue'
+
+    def __init__(self, type=None, value=None):
+        super().__init__()
+        self.type = type
+        self.value = value
+
+    def to_json(self):
+        json_tmp = {
+            'class': self.CLASS,
+        }
+
+        if self.type is not None:
+            if isinstance(self.type, ToJson):
+                json_tmp['type'] = self.type.to_json()
+            else:
+                json_tmp['type'] = self.type
+        if self.value is not None:
+            if isinstance(self.value, ToJson):
+                json_tmp['value'] = self.value.to_json()
+            else:
+                json_tmp['value'] = self.value
+
+        return json_tmp
 
 
 class SeedPair(ToJson, ToCodeString):

@@ -101,7 +101,7 @@ class GafferConnector:
         else:
             result = None
 
-        return g.ResultConverter.to_gaffer_objects(result)
+        return g.JsonConverter.from_json(result)
 
     def execute_get(self, operation, headers={}):
         url = self._host + operation.get_url()

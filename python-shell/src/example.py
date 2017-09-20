@@ -230,6 +230,7 @@ def get_elements(gc):
                 edges=[
                     g.ElementDefinition(
                         group='RoadUse',
+                        group_by=[],
                         transient_properties=[
                             g.Property('description', 'java.lang.String')
                         ],
@@ -257,7 +258,6 @@ def get_elements(gc):
     )
     print('Related input')
     print(input)
-    print()
 
 
 def get_adj_seeds(gc):
@@ -272,7 +272,10 @@ def get_adj_seeds(gc):
                 ],
                 view=g.View(
                     edges=[
-                        g.ElementDefinition('RoadHasJunction')
+                        g.ElementDefinition(
+                            'RoadHasJunction',
+                            group_by=[]
+                        )
                     ]
                 ),
                 include_incoming_out_going=g.InOutType.OUT
@@ -280,7 +283,10 @@ def get_adj_seeds(gc):
             g.GetAdjacentIds(
                 view=g.View(
                     edges=[
-                        g.ElementDefinition('RoadUse')
+                        g.ElementDefinition(
+                            'RoadUse',
+                            group_by=[]
+                        )
                     ]
                 ),
                 include_incoming_out_going=g.InOutType.OUT
@@ -349,8 +355,10 @@ def generate_domain_objects_chain(gc):
                 seed_matching_type=g.SeedMatchingType.RELATED,
                 view=g.View(
                     edges=[
-                        g.ElementDefinition(group='RoadHasJunction',
-                                            group_by=[])
+                        g.ElementDefinition(
+                            group='RoadHasJunction',
+                            group_by=[]
+                        )
                     ]
                 )
             ),
@@ -536,7 +544,8 @@ def sort_elements(gc):
             view=g.View(
                 edges=[
                     g.ElementDefinition(
-                        group='RoadUse'
+                        group='RoadUse',
+                        group_by=[]
                     )
                 ]
             )
@@ -563,7 +572,8 @@ def max_element(gc):
             view=g.View(
                 edges=[
                     g.ElementDefinition(
-                        group='RoadUse'
+                        group='RoadUse',
+                        group_by=[]
                     )
                 ]
             )
@@ -589,7 +599,8 @@ def min_element(gc):
             view=g.View(
                 edges=[
                     g.ElementDefinition(
-                        group='RoadUse'
+                        group='RoadUse',
+                        group_by=[]
                     )
                 ]
             )
@@ -619,7 +630,10 @@ def to_vertices_to_entity_seeds(gc):
             ],
             view=g.View(
                 edges=[
-                    g.ElementDefinition('RegionContainsLocation')
+                    g.ElementDefinition(
+                        'RegionContainsLocation',
+                        group_by=[]
+                    )
                 ]
             ),
             include_incoming_out_going=g.InOutType.OUT
@@ -632,7 +646,10 @@ def to_vertices_to_entity_seeds(gc):
         g.GetElements(
             view=g.View(
                 edges=[
-                    g.ElementDefinition('LocationContainsRoad')
+                    g.ElementDefinition(
+                        'LocationContainsRoad',
+                        group_by=[]
+                    )
                 ]
             ),
             include_incoming_out_going=g.InOutType.OUT
@@ -652,14 +669,20 @@ def complex_op_chain(gc):
                 input=[g.EntitySeed(vertex='South West')],
                 view=g.View(
                     edges=[
-                        g.ElementDefinition(group='RegionContainsLocation')
+                        g.ElementDefinition(
+                            group='RegionContainsLocation',
+                            group_by=[]
+                        )
                     ]
                 )
             ),
             g.GetAdjacentIds(
                 view=g.View(
                     edges=[
-                        g.ElementDefinition(group='LocationContainsRoad')
+                        g.ElementDefinition(
+                            group='LocationContainsRoad',
+                            group_by=[]
+                        )
                     ]
                 )
             ),
@@ -667,7 +690,10 @@ def complex_op_chain(gc):
             g.GetAdjacentIds(
                 view=g.View(
                     edges=[
-                        g.ElementDefinition(group='RoadHasJunction')
+                        g.ElementDefinition(
+                            group='RoadHasJunction',
+                            group_by=[]
+                        )
                     ]
                 )
             ),
