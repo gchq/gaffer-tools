@@ -689,7 +689,9 @@ Resources:
                       - !Ref "AWS::AccountId"
                       - ":dashboard/"
                       - !Ref MetricDashboard
-                Action: cloudwatch:PutDashboard
+                Action:
+                  - cloudwatch:GetDashboard
+                  - cloudwatch:PutDashboard
 
   ##############################
   ## Upload dependencies into S3

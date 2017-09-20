@@ -124,29 +124,80 @@ def ensureDetailedMonitoringEnabled (instanceIds):
         ec2.monitor_instances(InstanceIds=enableMonitoringInstanceIds)
 
 def updateDashboardForStack (stack):
+    dataGenInstanceIds = []
+    queryGenInstanceIds = []
+    emrInstanceIds = []
+    currentlyActiveEmrInstanceIds = []
+    emrPrivateDnsNames = []
+
+    # Load instance Ids that we already know about from the existing Dashboard JSON
+    # This is so that we will continue to display metrics for instances that have been terminated
+    try:
+        existingDashboard = cloudwatch.get_dashboard(DashboardName=stack['StackName'])
+    except cloudwatch.exceptions.ResourceNotFound as e:
+        existingDashboard = None
+
+    if existingDashboard is not None:
+        if 'DashboardBody' in existingDashboard:
+            try:
+                dashboardJson = json.loads(existingDashboard['DashboardBody'])
+            except ValueError:
+                dashboardJson = None
+
+            if dashboardJson is not None:
+                if 'widgets' in dashboardJson:
+                    for widget in dashboardJson['widgets']:
+                        if 'properties' in widget and 'title' in widget['properties']:
+                            if widget['properties']['title'] == 'Data Generator CPU':
+                                for metric in widget['properties']['metrics']:
+                                    try:
+                                        dataGenInstanceIds.append(metric[metric.index('InstanceId') + 1])
+                                    except ValueError:
+                                        pass
+                            elif widget['properties']['title'] == 'Query Generator CPU':
+                                for metric in widget['properties']['metrics']:
+                                    try:
+                                        queryGenInstanceIds.append(metric[metric.index('InstanceId') + 1])
+                                    except ValueError:
+                                        pass
+                            elif widget['properties']['title'] == 'EMR CPU':
+                                for metric in widget['properties']['metrics']:
+                                    try:
+                                        emrInstanceIds.append(metric[metric.index('InstanceId') + 1])
+                                    except ValueError:
+                                        pass
+                            elif widget['properties']['title'] == 'Online Tablets':
+                                for metric in widget['properties']['metrics']:
+                                    try:
+                                        emrPrivateDnsNames.append(metric[metric.index('TabletServerName') + 1])
+                                    except ValueError:
+                                        pass
+
+    # ===== =====
+
     dataGenScalingGrpName = stack['Outputs']['DataGeneratorAutoScalingGroupName']
     queryGenScalingGrpName = stack['Outputs']['QueryGeneratorAutoScalingGroupName']
 
-    dataGenInstanceIds = []
     dataGenGrpResponse = autoscaling.describe_auto_scaling_groups(AutoScalingGroupNames=[dataGenScalingGrpName])
     for instance in dataGenGrpResponse['AutoScalingGroups'][0]['Instances']:
-        dataGenInstanceIds.append(instance['InstanceId'])
+        if instance['InstanceId'] not in dataGenInstanceIds:
+            dataGenInstanceIds.append(instance['InstanceId'])
 
-    queryGenInstanceIds = []
     queryGenGrpResponse = autoscaling.describe_auto_scaling_groups(AutoScalingGroupNames=[queryGenScalingGrpName])
     for instance in queryGenGrpResponse['AutoScalingGroups'][0]['Instances']:
-        queryGenInstanceIds.append(instance['InstanceId'])
+        if instance['InstanceId'] not in queryGenInstanceIds:
+            queryGenInstanceIds.append(instance['InstanceId'])
 
-    emrInstanceIds = []
-    emrPrivateDnsNames = []
     emrInstancesResponse = emr.list_instances(ClusterId=stack['Outputs']['EmrClusterId'])
     for instance in emrInstancesResponse['Instances']:
-        emrInstanceIds.append(instance['Ec2InstanceId'])
-        if 'PrivateDnsName' in instance:
+        currentlyActiveEmrInstanceIds.append(instance['Ec2InstanceId'])
+        if instance['Ec2InstanceId'] not in emrInstanceIds:
+            emrInstanceIds.append(instance['Ec2InstanceId'])
+        if 'PrivateDnsName' in instance and instance['PrivateDnsName'] not in emrPrivateDnsNames:
             emrPrivateDnsNames.append(instance['PrivateDnsName'])
 
-    if len(emrInstanceIds) > 0:
-        ensureDetailedMonitoringEnabled(emrInstanceIds)
+    if len(currentlyActiveEmrInstanceIds) > 0:
+        ensureDetailedMonitoringEnabled(currentlyActiveEmrInstanceIds)
 
     # ===== =====
 
