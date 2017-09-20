@@ -85,9 +85,15 @@ Parameters:
     MinValue: 1000
     Description: TODO
 
-  BatchSize:
+  IngestBatchSize:
     Type: Number
     Default: 10000000
+    MinValue: 1000
+    Description: The generators output a rate metric at the end of each batch. Altering this value will change how often it is output.
+
+  QueryBatchSize:
+    Type: Number
+    Default: 50000
     MinValue: 1000
     Description: The generators output a rate metric at the end of each batch. Altering this value will change how often it is output.
 
@@ -156,6 +162,7 @@ Metadata:
           - SplitEstimationElementCount
           - SplitsPerTabletServer
           - IngestElementCount
+          - IngestBatchSize
           - IngestMaxBufferBytes
           - IngestMaxTimeout
           - IngestThreadCount
@@ -165,11 +172,11 @@ Metadata:
           - QueryGeneratorCount
           - QueryGeneratorInstanceType
           - QuerySeedCount
+          - QueryBatchSize
       - Label:
           default: Common Generation Config
         Parameters:
           - RmatMaxNodeId
-          - BatchSize
       - Label:
           default: Placement and Security
         Parameters:
@@ -405,10 +412,10 @@ Resources:
             export AWS_REGION="${AWS::Region}"
 
             export RMAT_MAX_NODE_ID="${RmatMaxNodeId}"
-            export BATCH_SIZE="${BatchSize}"
 
             # Data Generation & Ingest Config
             export INGEST_NUM_ELEMENTS="${IngestElementCount}"
+            export BATCH_SIZE="${IngestBatchSize}"
             export INGEST_MAX_BUFFER_BYTES="${IngestMaxBufferBytes}"
             export INGEST_MAX_TIMEOUT_MILLIS="${IngestMaxTimeout}"
             export INGEST_NUM_THREADS="${IngestThreadCount}"
@@ -490,7 +497,6 @@ Resources:
             export AWS_REGION="${AWS::Region}"
 
             export RMAT_MAX_NODE_ID="${RmatMaxNodeId}"
-            export BATCH_SIZE="${BatchSize}"
 
             # Data Generation & Ingest Config
             export INGEST_NUM_ELEMENTS="${IngestElementCount}"
@@ -500,6 +506,7 @@ Resources:
 
             # Query Generation Config
             export QUERY_NUM_SEEDS="${QuerySeedCount}"
+            export BATCH_SIZE="${QueryBatchSize}"
 
             function awsSignal {
               # Wait a bit to give developers a chance to SSH in and view error logs
