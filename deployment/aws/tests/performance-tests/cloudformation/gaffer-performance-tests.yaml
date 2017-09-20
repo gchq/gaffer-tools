@@ -83,7 +83,6 @@ Parameters:
     Type: Number
     Default: 1000000000
     MinValue: 1000
-    Description: TODO
 
   IngestBatchSize:
     Type: Number
@@ -93,7 +92,7 @@ Parameters:
 
   QueryBatchSize:
     Type: Number
-    Default: 50000
+    Default: 100000
     MinValue: 1000
     Description: The generators output a rate metric at the end of each batch. Altering this value will change how often it is output.
 
@@ -105,9 +104,9 @@ Parameters:
 
   QuerySeedCount:
     Type: Number
-    Default: 100000
-    MinValue: 10
-    Description: The number of seeds to query for in each batch
+    Default: 10000000
+    MinValue: 1000
+    Description: The number of seeds each Query Generator should query for
 
   SplitEstimationElementCount:
     Type: Number
