@@ -218,66 +218,6 @@ class ElementPropertyComparator(Comparator):
         return tmp_json
 
 
-class TypeSubTypeValue(ToJson, ToCodeString):
-    CLASS = 'uk.gov.gchq.gaffer.types.TypeSubTypeValue'
-
-    def __init__(self, type=None, sub_type=None, value=None):
-        super().__init__()
-        self.type = type
-        self.sub_type = sub_type
-        self.value = value
-
-    def to_json(self):
-        json_tmp = {
-            'class': self.CLASS,
-        }
-
-        if self.type is not None:
-            if isinstance(self.type, ToJson):
-                json_tmp['type'] = self.type.to_json()
-            else:
-                json_tmp['type'] = self.type
-        if self.sub_type is not None:
-            if isinstance(self.sub_type, ToJson):
-                json_tmp['subType'] = self.sub_type.to_json()
-            else:
-                json_tmp['subType'] = self.sub_type
-        if self.value is not None:
-            if isinstance(self.value, ToJson):
-                json_tmp['value'] = self.value.to_json()
-            else:
-                json_tmp['value'] = self.value
-
-        return json_tmp
-
-
-class TypeValue(ToJson, ToCodeString):
-    CLASS = 'uk.gov.gchq.gaffer.types.TypeValue'
-
-    def __init__(self, type=None, value=None):
-        super().__init__()
-        self.type = type
-        self.value = value
-
-    def to_json(self):
-        json_tmp = {
-            'class': self.CLASS,
-        }
-
-        if self.type is not None:
-            if isinstance(self.type, ToJson):
-                json_tmp['type'] = self.type.to_json()
-            else:
-                json_tmp['type'] = self.type
-        if self.value is not None:
-            if isinstance(self.value, ToJson):
-                json_tmp['value'] = self.value.to_json()
-            else:
-                json_tmp['value'] = self.value
-
-        return json_tmp
-
-
 class SeedPair(ToJson, ToCodeString):
     CLASS = 'uk.gov.gchq.gaffer.commonutil.pair.Pair'
 
