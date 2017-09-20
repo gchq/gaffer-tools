@@ -14,34 +14,24 @@
 # limitations under the License.
 #
 
+import json
 import unittest
 
 from gafferpy import gaffer as g
 from gafferpy import gaffer_connector
 
 
-class GafferConnectorTest(unittest.TestCase):
-    def test_execute_operation(self):
-        gc = gaffer_connector.GafferConnector('http://localhost:8080/rest/latest')
-        elements = gc.execute_operation(
-            g.GetElements(
-                input=[
-                    g.EntitySeed('M5:10')
-                ],
-                view=g.View(
-                    edges=[
-                        g.ElementDefinition(
-                            group='JunctionLocatedAt'
-                        )
-                    ]
-                )
-            )
+class GafferOperationsIntegrationTest(unittest.TestCase):
+    def test_all_operations_have_classes(self):
+        gc = gaffer_connector.GafferConnector(
+            'http://localhost:8080/rest/latest')
+        operations = gc.execute_get(
+            g.GetOperations()
         )
-
-        self.assertEqual(
-            [g.Edge("JunctionLocatedAt", "M5:10", "390466,225615", True, {},
-                    "SOURCE")],
-            elements)
+        operations = json.loads(operations)
+        for op in operations:
+            self.assertTrue(op in g.JsonConverter.GENERIC_JSON_CONVERTERS,
+                            'Missing operation class: ' + op)
 
 
 if __name__ == "__main__":
