@@ -299,7 +299,7 @@ def get_adj_seeds(gc):
 
 
 def get_all_elements(gc):
-    # Get all input, but limit the total results to 3, deduplication true
+    # Get all input, but limit the total results to 3
     all_elements = gc.execute_operations(
         operations=[
             g.GetAllElements(),
