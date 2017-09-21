@@ -16,8 +16,10 @@
 package uk.gov.gchq.gaffer.schemabuilder.application;
 
 import org.glassfish.jersey.server.ResourceConfig;
+
 import uk.gov.gchq.gaffer.schemabuilder.serialisation.RestJsonProvider;
 import uk.gov.gchq.gaffer.schemabuilder.service.SchemaBuilderService;
+
 import java.util.HashSet;
 import java.util.Set;
 

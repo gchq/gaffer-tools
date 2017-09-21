@@ -18,6 +18,7 @@ package uk.gov.gchq.gaffer.miniaccumulocluster;
 import org.apache.accumulo.core.util.shell.Shell;
 import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -65,7 +66,7 @@ public final class MiniAccumuloShellController {
             password = props.getProperty(ACCUMULO_PASSWORD);
             zookeepers = props.getProperty(ACCUMULO_ZK);
 
-        } catch (IOException e) {
+        } catch (final IOException e) {
             LOGGER.error("Failed to initialise MiniAccumuloShell", e);
             throw new IllegalArgumentException("Properties file failed to load", e);
         }
@@ -107,7 +108,7 @@ public final class MiniAccumuloShellController {
             } else {
                 shell.start();
             }
-        } catch (IOException e) {
+        } catch (final IOException e) {
             LOGGER.error("Failed to run shell", e);
         } finally {
             if (null != shell) {

@@ -19,6 +19,7 @@ import org.apache.commons.io.FileUtils;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
+
 import uk.gov.gchq.gaffer.accumulostore.AccumuloProperties;
 import uk.gov.gchq.gaffer.accumulostore.MockAccumuloStore;
 import uk.gov.gchq.gaffer.commonutil.CommonTestConstants;
@@ -27,6 +28,7 @@ import uk.gov.gchq.gaffer.graph.Graph;
 import uk.gov.gchq.gaffer.performancetesting.FileWriterMetricsListener;
 import uk.gov.gchq.gaffer.randomelementgeneration.Constants;
 import uk.gov.gchq.gaffer.randomelementgeneration.supplier.RmatElementSupplier;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.List;

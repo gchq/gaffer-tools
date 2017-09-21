@@ -22,6 +22,7 @@ import org.reflections.Reflections;
 import org.reflections.util.ClasspathHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import uk.gov.gchq.gaffer.commonutil.StreamUtil;
 import uk.gov.gchq.gaffer.schemabuilder.constant.SystemProperty;
 import uk.gov.gchq.gaffer.serialisation.Serialiser;
@@ -29,11 +30,13 @@ import uk.gov.gchq.gaffer.serialisation.ToBytesSerialiser;
 import uk.gov.gchq.gaffer.store.schema.Schema;
 import uk.gov.gchq.koryphe.ValidationResult;
 import uk.gov.gchq.koryphe.signature.Signature;
+
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+
 import java.lang.reflect.Modifier;
 import java.net.URL;
 import java.util.ArrayList;
@@ -69,7 +72,7 @@ public class SchemaBuilderService {
             final Class<?> clazz;
             try {
                 clazz = Class.forName(type.getTypeClass());
-            } catch (Exception e) {
+            } catch (final Exception e) {
                 return new FunctionsResponse(type.getTypeName() + ": type class " + type.getTypeClass() + " was not recognised.");
             }
 
@@ -120,7 +123,7 @@ public class SchemaBuilderService {
             response.addError("Schema couldn't be validated - at least 1 schema is required");
         } else {
             final Schema.Builder schemaBuilder = new Schema.Builder();
-            for (Schema schema : schemas) {
+            for (final Schema schema : schemas) {
                 schemaBuilder.merge(schema);
             }
 
@@ -132,10 +135,10 @@ public class SchemaBuilderService {
 
     private static <T> List<T> getSubClassInstances(final Class<T> clazz) {
         final List<T> instances = new ArrayList<>();
-        for (Class aClass : getSubClasses(clazz)) {
+        for (final Class aClass : getSubClasses(clazz)) {
             try {
                 instances.add(((Class<T>) aClass).newInstance());
-            } catch (InstantiationException | IllegalAccessException e) {
+            } catch (final InstantiationException | IllegalAccessException e) {
                 LOGGER.debug("unable to find class: " + aClass, e);
             }
         }
@@ -145,7 +148,7 @@ public class SchemaBuilderService {
 
     private static List<Class> getSubClasses(final Class<?> clazz) {
         final Set<URL> urls = new HashSet<>();
-        for (String packagePrefix : System.getProperty(SystemProperty.PACKAGE_PREFIXES, SystemProperty.PACKAGE_PREFIXES_DEFAULT).split(",")) {
+        for (final String packagePrefix : System.getProperty(SystemProperty.PACKAGE_PREFIXES, SystemProperty.PACKAGE_PREFIXES_DEFAULT).split(",")) {
             urls.addAll(ClasspathHelper.forPackage(packagePrefix));
         }
 

@@ -24,6 +24,7 @@ import org.apache.hadoop.io.NullWritable;
 import org.apache.hadoop.io.SequenceFile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import uk.gov.gchq.gaffer.accumulostore.AccumuloStore;
 import uk.gov.gchq.gaffer.data.element.Element;
 import uk.gov.gchq.gaffer.graph.Graph;
@@ -114,13 +115,12 @@ public class AccumuloElementIngestTest extends Configured {
         LOGGER.info("Running SampleDataForSplitPoints job");
         final SampleDataForSplitPoints sample = new SampleDataForSplitPoints.Builder()
                 .numSplits(numSplitPoints)
-                .addInputPath(tmpData)
+                .addInputMapperPair(tmpData, BytesWritableMapperGenerator.class.getName())
                 .splitsFilePath(splitsFile)
                 .outputPath(splitsOutputPath)
                 .jobInitialiser(new SequenceFileJobInitialiser())
                 .validate(false)
                 .proportionToSample(1.0F)
-                .mapperGenerator(BytesWritableMapperGenerator.class)
                 .build();
         accumuloStore.execute(sample, new User());
 

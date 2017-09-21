@@ -21,6 +21,7 @@ import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.security.ProviderUtils;
 import org.apache.slider.core.conf.ConfTree;
 import org.apache.slider.funtest.framework.CommandTestBase;
+
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -30,19 +31,19 @@ import java.util.Set;
 
 public class SliderKeystoreUtils {
 
-	public static Map<String, List<String>> getCredentialKeyStores (ConfTree appConfig) throws IOException, URISyntaxException {
+	public static Map<String, List<String>> getCredentialKeyStores (final ConfTree appConfig) throws IOException, URISyntaxException {
 		return appConfig.credentials;
 	}
 
-	public static Set<String> getCredentialKeyStoreLocations (ConfTree appConfig) throws IOException, URISyntaxException {
+	public static Set<String> getCredentialKeyStoreLocations (final ConfTree appConfig) throws IOException, URISyntaxException {
 		return getCredentialKeyStores(appConfig).keySet();
 	}
 
-	public static void ensureCredentialKeyStoresAbsent (ConfTree appConfig) throws IOException, URISyntaxException {
+	public static void ensureCredentialKeyStoresAbsent (final ConfTree appConfig) throws IOException, URISyntaxException {
 		Set<String> keystores = getCredentialKeyStoreLocations(appConfig);
 		FileSystem fs = CommandTestBase.getClusterFS();
 
-		for (String keystore : keystores) {
+		for (final String keystore : keystores) {
 			// Convert from jceks URL
 			Path keystorePath = ProviderUtils.unnestUri(new URI(keystore));
 
@@ -52,11 +53,11 @@ public class SliderKeystoreUtils {
 		}
 	}
 
-	public static void deleteCredentialKeyStores (ConfTree appConfig) throws IOException, URISyntaxException {
+	public static void deleteCredentialKeyStores (final ConfTree appConfig) throws IOException, URISyntaxException {
 		Set<String> keystores = getCredentialKeyStoreLocations(appConfig);
 		FileSystem fs = CommandTestBase.getClusterFS();
 
-		for (String keystore : keystores) {
+		for (final String keystore : keystores) {
 			// Convert from jceks URL
 			Path keystorePath = ProviderUtils.unnestUri(new URI(keystore));
 

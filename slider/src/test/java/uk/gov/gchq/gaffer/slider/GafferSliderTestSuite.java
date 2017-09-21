@@ -33,7 +33,9 @@ import org.junit.runners.model.RunnerBuilder;
 import org.junit.runners.model.Statement;
 import org.junit.runners.model.TestClass;
 import org.reflections.Reflections;
+
 import uk.gov.gchq.gaffer.integration.AbstractStoreIT;
+
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.Collections;
@@ -86,11 +88,11 @@ public class GafferSliderTestSuite extends Suite {
 	}
 
 	@Override
-	protected Statement classBlock (RunNotifier notifier) {
+	protected Statement classBlock (final RunNotifier notifier) {
 		Method setupAbstractStoreITs;
 		try {
 			setupAbstractStoreITs = this.getClass().getMethod("setupAbstractStoreITs");
-		} catch (NoSuchMethodException e) {
+		} catch (final NoSuchMethodException e) {
 			return new Fail(e);
 		}
 

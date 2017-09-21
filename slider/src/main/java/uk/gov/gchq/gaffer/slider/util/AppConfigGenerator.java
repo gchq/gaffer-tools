@@ -424,7 +424,7 @@ public class AppConfigGenerator implements Runnable {
 
             parser.save(config.getAppConfig(), new File(this.appConfigOutputPath));
             parser.save(config.getResources(), new File(this.resourcesOutputPath));
-        } catch (YarnException | IOException e) {
+        } catch (final YarnException | IOException e) {
             throw new RuntimeException(e);
         }
     }
@@ -437,7 +437,7 @@ public class AppConfigGenerator implements Runnable {
 
         try {
             generator.validateArguments();
-        } catch (Exception e) {
+        } catch (final Exception e) {
             LOGGER.error(e.getMessage());
         }
 
