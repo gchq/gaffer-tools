@@ -361,7 +361,5 @@ Outputs:
     Value: !Sub ${GafferWebServer.Outputs.PublicDNS}
   RestApi:
     Value: !Sub ${GafferWebServer.Outputs.RestApi}
-  GraphApi:
-    Value: !Sub ${GafferWebServer.Outputs.GraphApi}
   WebUi:
     Value: !Sub ${GafferWebServer.Outputs.WebUi}
