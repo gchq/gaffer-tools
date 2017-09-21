@@ -327,7 +327,5 @@ Outputs:
     Value: !Sub ${GafferRoadTraffic.Outputs.WebServerPublicDNS}
   RestApi:
     Value: !Sub ${GafferRoadTraffic.Outputs.RestApi}
-  GraphApi:
-    Value: !Sub ${GafferRoadTraffic.Outputs.GraphApi}
   WebUi:
     Value: !Sub ${GafferRoadTraffic.Outputs.WebUi}

@@ -290,6 +290,12 @@ Resources:
             mkdir -p $GAFFER_CONF_DIR/etc
             mkdir -p $GAFFER_CONF_DIR/schemas
 
+            tee -a $GAFFER_CONF_DIR/etc/graphConfig.json <<EOF
+            {
+              "graphId": "${GraphId}"
+            }
+            EOF
+
             tee -a $GAFFER_CONF_DIR/etc/store.properties <<EOF
             gaffer.store.class=uk.gov.gchq.gaffer.accumulostore.AccumuloStore
             gaffer.store.properties.class=uk.gov.gchq.gaffer.accumulostore.AccumuloProperties
@@ -302,8 +308,8 @@ Resources:
 
             # Point Tomcat at Gaffer config
             tee -a /etc/tomcat7/tomcat7.conf <<EOF
-            CATALINA_OPTS="-Dgaffer.graph.id=${GraphId} \$CATALINA_OPTS"
-            CATALINA_OPTS="-Dgaffer.rest-api.basePath=rest/v1 \$CATALINA_OPTS"
+            CATALINA_OPTS="-Dgaffer.rest-api.basePath=rest \$CATALINA_OPTS"
+            CATALINA_OPTS="-Dgaffer.graph.config=$GAFFER_CONF_DIR/etc/graphConfig.json \$CATALINA_OPTS"
             CATALINA_OPTS="-Dgaffer.schemas=$GAFFER_CONF_DIR/schemas \$CATALINA_OPTS"
             CATALINA_OPTS="-Dgaffer.storeProperties=$GAFFER_CONF_DIR/etc/store.properties \$CATALINA_OPTS"
             EOF
@@ -369,7 +375,5 @@ Outputs:
     Value: !GetAtt WebServer.PublicDnsName
   RestApi:
     Value: !Join ["", [ "http://", !GetAtt WebServer.PublicDnsName, "/rest" ]]
-  GraphApi:
-    Value: !Join ["", [ "http://", !GetAtt WebServer.PublicDnsName, "/rest/v1/graph" ]]
   WebUi:
     Value: !Join ["", [ "http://", !GetAtt WebServer.PublicDnsName, "/ui" ]]
