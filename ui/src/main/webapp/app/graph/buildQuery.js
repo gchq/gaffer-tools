@@ -111,7 +111,13 @@ angular.module('app').factory('buildQuery', [ '$q', '$window', 'raw', 'settings'
 
                     for(var i in filter.availableFunctionParameters) {
                         if(filter.parameters[i]) {
-                            functionJson["predicate"][filter.availableFunctionParameters[i]] = JSON.parse(filter.parameters[i]);
+                            var param;
+                            try {
+                                param = JSON.parse(filter.parameters[i]);
+                            } catch(e) {
+                                param = filter.parameters[i];
+                            }
+                            functionJson["predicate"][filter.availableFunctionParameters[i]] = param;
                         }
                     }
 
@@ -232,16 +238,15 @@ angular.module('app').factory('buildQuery', [ '$q', '$window', 'raw', 'settings'
 
   buildQuery.onSelectedPropertyChange = function(group, selectedElement) {
     raw.functions(group, selectedElement.property, function(data) {
-        selectedElement.availableFunctions = data
-        buildQuery.$apply();
+        selectedElement.availableFunctions = data;
     });
     selectedElement.predicate = '';
   }
 
   buildQuery.onSelectedFunctionChange = function(group, selectedElement) {
-    raw.functionParameters(selectedElement['predicate'], function(data) {
+    raw.functionParameters(selectedElement.predicate, function(data) {
+        console.log(data);
         selectedElement.availableFunctionParameters = data;
-        buildQuery.$apply();
     });
 
     var elementDef = raw.schema.entities[group];

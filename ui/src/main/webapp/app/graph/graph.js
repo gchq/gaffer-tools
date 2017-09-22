@@ -190,8 +190,7 @@ angular.module('app').factory('graph', [ '$q', 'settings', function( $q, setting
     try {
       json = JSON.parse(vertex)
     } catch (e) {
-      // try adding quotes
-      json = JSON.parse('"' + vertex + '"');
+      json = vertex
     }
     if(typeof json === 'string'
         || json instanceof String

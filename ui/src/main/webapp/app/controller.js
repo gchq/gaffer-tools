@@ -121,7 +121,7 @@ angular.module('app').controller('AppController',
             })
             .then(function(seeds) {
               for(var i in seeds) {
-                  $scope.addSeed(seeds[i].vertexType, seeds[i].vertex);
+                  $scope.addSeed(seeds[i].vertexType, JSON.stringify(seeds[i].vertex));
               }
               if(nav.showResultsTable) {
                 table.selectedTab = 2;

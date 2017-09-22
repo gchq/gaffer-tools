@@ -145,17 +145,17 @@
                                         {{entity}}
                                     </md-checkbox>
 
-                                    <div ng-show="exists(entity, buildQuery.expandEntities)">
+                                    <div ng-show="buildQuery.exists(entity, buildQuery.expandEntities)">
                                         <table class="table table-striped no-bottom-border"
                                                ng-show="rawData.entityProperties(entity)">
                                             <tbody>
-                                            <tr ng-repeat="filter in expandEntitiesContent[entity].filters">
+                                            <tr ng-repeat="filter in buildQuery.expandEntitiesContent[entity].filters">
                                                 <td>
                                                     <select id="{{entity}}-property-selector"
                                                             class="form-control"
                                                             ng-model="filter.property"
                                                             ng-options="name as name for (name, type) in rawData.entityProperties(entity)"
-                                                            ng-change="onSelectedPropertyChange(entity, filter)">
+                                                            ng-change="buildQuery.onSelectedPropertyChange(entity, filter)">
                                                         <option value=""
                                                                 disabled
                                                                 selected>
@@ -223,7 +223,7 @@
                                         {{edge}}
                                     </md-checkbox>
 
-                                    <div ng-show="exists(edge, buildQuery.expandEdges)">
+                                    <div ng-show="buildQuery.exists(edge, buildQuery.expandEdges)">
                                         <table class="table table-striped no-bottom-border"
                                                ng-show="rawData.edgeProperties(edge)">
                                             <tbody>
@@ -279,7 +279,7 @@
                                             </tbody>
                                         </table>
                                         <button id="{{edge}}-add-filter"
-                                                ng-click="buildQuery.addFilterFunction(expandEdgesContent, edge)"
+                                                ng-click="buildQuery.addFilterFunction(buildQuery.expandEdgesContent, edge)"
                                                 class="btn btn-default"
                                                 ng-show="rawData.edgeProperties(edge)">
                                             Add filter
