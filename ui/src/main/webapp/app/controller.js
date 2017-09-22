@@ -196,11 +196,8 @@ angular.module('app').controller('AppController',
         }
     }
 
-    $scope.addSeed = function(vertex, value) {
-        raw.updateResults([{
-            "class": "uk.gov.gchq.gaffer.operation.data.EntitySeed",
-            "vertex": value
-        }]);
+    $scope.addSeed = function(vertexType, vertex) {
+        graph.addSeed(vertexType, vertex);
     }
 
     arrayContainsValue = function(arr, value) {

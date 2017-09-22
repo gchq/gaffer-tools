@@ -186,7 +186,13 @@ angular.module('app').factory('graph', [ '$q', 'settings', function( $q, setting
 
   graph.createLabel = function(vertex) {
     var label;
-    var json = JSON.parse(vertex);
+    var json;
+    try {
+      json = JSON.parse(vertex)
+    } catch (e) {
+      // try adding quotes
+      json = JSON.parse('"' + vertex + '"');
+    }
     if(typeof json === 'string'
         || json instanceof String
         || typeof json === 'number') {
