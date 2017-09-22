@@ -17,6 +17,12 @@ Parameters:
     AllowedPattern: "\\S+"
     Description: The version of Gaffer Tools to use to deploy Gaffer on EMR and run the tests - can be a version number (e.g. 0.7.8) or a git branch (e.g. gh-X-feature-name) / commit hash etc
 
+  AccumuloVersion:
+    Type: String
+    Default: 1.8.1
+    MinLength: 1
+    AllowedPattern: "\\S+"
+
   EmrRelease:
     Type: String
     Default: emr-5.7.0
@@ -147,6 +153,7 @@ Metadata:
         Parameters:
           - GafferVersion
           - GafferToolsVersion
+          - AccumuloVersion
           - EmrRelease
       - Label:
           default: EMR Cluster Config
@@ -254,6 +261,7 @@ Resources:
       Parameters:
         GafferVersion: !Ref GafferVersion
         GafferToolsVersion: !Ref GafferToolsVersion
+        AccumuloVersion: !Ref AccumuloVersion
         EmrRelease: !Ref EmrRelease
         EmrInstanceType: !Ref EmrInstanceType
         EmrCoreInstanceCount: !Ref EmrCoreInstanceCount
