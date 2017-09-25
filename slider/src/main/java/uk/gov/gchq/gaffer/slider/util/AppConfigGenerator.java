@@ -285,8 +285,7 @@ public class AppConfigGenerator implements Runnable {
 
         int tserverCores = totalCoresAvailable / (this.tserversPerNode * availableResources.getNodeCount());
         int tserverMemory = totalMemoryAvailable / (this.tserversPerNode * availableResources.getNodeCount());
-        tserverMemory -= this.getNativeMemoryMemoryRequirement(appConfig);
-        int tserverHeapSize = (int) Math.floor(tserverMemory / this.heapSizeToContainerMemoryRatio);
+        int tserverHeapSize = (int) Math.floor((tserverMemory - this.getNativeMemoryMemoryRequirement(appConfig)) / this.heapSizeToContainerMemoryRatio);
 
         if (tserverCores <= 0 || tserverMemory <= 0 || tserverHeapSize <= 0) {
             throw new IOException(String.format("Not enough available resources to deploy %s tablet servers per node, only cores: %s memory: %s available across the cluster!", this.tserversPerNode, totalCoresAvailable, totalMemoryAvailable));
@@ -343,8 +342,7 @@ public class AppConfigGenerator implements Runnable {
 
         int tserverCores = coresRemainingPerNode / (this.tserversPerNode * availableResources.getNodeCount());
         int tserverMemory = memoryRemainingPerNode / (this.tserversPerNode * availableResources.getNodeCount());
-        tserverMemory -= this.getNativeMemoryMemoryRequirement(appConfig);
-        int tserverHeapSize = (int) Math.floor(tserverMemory / this.heapSizeToContainerMemoryRatio);
+        int tserverHeapSize = (int) Math.floor((tserverMemory - this.getNativeMemoryMemoryRequirement(appConfig)) / this.heapSizeToContainerMemoryRatio);
 
         if (tserverCores <= 0 || tserverMemory <= 0 || tserverHeapSize <= 0) {
             throw new IOException(String.format("Not enough available resources to deploy %s tablet servers per node, only cores: %s memory: %s available per node!", this.tserversPerNode, coresRemainingPerNode, memoryRemainingPerNode));
