@@ -224,7 +224,10 @@ angular.module('app').factory('buildQuery', [ '$q', '$window', 'raw', 'settings'
     }
 
     var executeBuildQueryCounts = function() {
-        var operations = {operations: [createOperation(), createLimitOperation(), createCountOperation()]};
+        var operations = {
+            class: "uk.gov.gchq.gaffer.operation.OperationChain",
+            operations: [createOperation(), createLimitOperation(), createCountOperation()]
+        };
         var onSuccess = function(data) {
             buildQuery.expandQueryCounts = {
                 count: data,

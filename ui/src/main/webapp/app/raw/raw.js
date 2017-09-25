@@ -147,13 +147,11 @@ angular.module('app').factory('raw', ['$http', 'settings', function($http, setti
     }
 
     raw.loadNamedOps = function() {
-          raw.execute(JSON.stringify({
-              operations: [
+          raw.execute(JSON.stringify(
                 {
                     class: "uk.gov.gchq.gaffer.named.operation.GetAllNamedOperations"
                 }
-              ]
-          }), updateNamedOperations);
+          ), updateNamedOperations);
     }
 
     var opAllowed = function(opName) {

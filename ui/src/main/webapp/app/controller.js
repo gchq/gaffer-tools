@@ -144,7 +144,10 @@ angular.module('app').controller('AppController',
         })
         .then(function(operation) {
             $scope.operations.push(operation);
-            raw.execute(JSON.stringify({operations: [operation, createLimitOperation(), createDeduplicateOperation()]}));
+            raw.execute(JSON.stringify({
+                class: "uk.gov.gchq.gaffer.operation.OperationChain",
+                operations: [operation, createLimitOperation(), createDeduplicateOperation()]
+            }));
         });
     }
 
@@ -318,10 +321,16 @@ angular.module('app').controller('AppController',
         buildQuery.resetBuildQuery();
        for(var i in $scope.operations) {
            try {
-              raw.execute(JSON.stringify({operations: [$scope.operations[i], createLimitOperation(), createDeduplicateOperation()]}));
+              raw.execute(JSON.stringify({
+                class: "uk.gov.gchq.gaffer.operation.OperationChain",
+                operations: [$scope.operations[i], createLimitOperation(), createDeduplicateOperation()]
+            }));
            } catch(e) {
               // Try without the limit and deduplicate operations
-              raw.execute(JSON.stringify({operations: [$scope.operations[i]]}));
+              raw.execute(JSON.stringify({
+                class: "uk.gov.gchq.gaffer.operation.OperationChain",
+                operations: [$scope.operations[i]]
+            }));
            }
        }
     }

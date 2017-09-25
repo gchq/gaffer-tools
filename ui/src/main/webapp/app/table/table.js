@@ -38,6 +38,19 @@ angular.module('app').factory('table', [function(){
         return vertex;
     }
 
+    table.convertElements = function() {
+        for (var i in table.data.entities) {
+            for (var a in table.data.entities[i]) {
+                table.data.entities[i][a] = JSON.parse(table.data.entities[i][a]);
+            }
+        }
+        for (var i in table.data.edges) {
+            for (var a in table.data.edges[i])
+            table.data.edges[i][a] = JSON.parse(table.data.edges[i][a]);
+        }
+
+    }
+
     table.update = function(results) {
         table.clear();
         for (var i in results.entities) {
@@ -45,8 +58,8 @@ angular.module('app').factory('table', [function(){
             if(!table.data.entities[entity.group]) {
                 table.data.entities[entity.group] = [];
             }
-            if (table.data.entities[entity.group].indexOf(entity) === -1) {
-                table.data.entities[entity.group].push(entity);
+            if (table.data.entities[entity.group].indexOf(angular.toJson(entity)) === -1) {
+                table.data.entities[entity.group].push(angular.toJson(entity));
             }
         }
 
@@ -55,14 +68,14 @@ angular.module('app').factory('table', [function(){
             if(!table.data.edges[edge.group]) {
                 table.data.edges[edge.group] = [];
             }
-            if (table.data.edges[edge.group].indexOf(edge) === -1) {
-                table.data.edges[edge.group].push(edge);
+            if (table.data.edges[edge.group].indexOf(angular.toJson(edge)) == -1) {
+                table.data.edges[edge.group].push(angular.toJson(edge));
             }
         }
 
         for (var i in results.entitySeeds) {
             var es = parseVertex(results.entitySeeds[i]);
-            if (table.data.entitySeeds.indexOf(es) === -1) {
+            if (table.data.entitySeeds.indexOf(es) == -1) {
                 table.data.entitySeeds.push(es);
             }
         }
@@ -72,6 +85,8 @@ angular.module('app').factory('table', [function(){
                 table.data.other.push(results.other[i]);
             }
         }
+
+        table.convertElements();
     }
 
 
