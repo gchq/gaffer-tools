@@ -331,7 +331,6 @@ angular.module('app').controller('AppController',
       var _id = element.id();
       for (var id in $scope.graphData.entities) {
             if(_id == id) {
-//                table.onSeedSelect(id);
                 $scope.selectedEntities[id] = $scope.graphData.entities[id];
                 $scope.selectedEntitiesCount = Object.keys($scope.selectedEntities).length;
                 updateRelatedEntities();
@@ -353,7 +352,6 @@ angular.module('app').controller('AppController',
           }
       };
 
-//      table.onSeedSelect(_id);
       $scope.selectedEntities[_id] = [{vertexType: element.data().vertexType, vertex: _id}];
       $scope.selectedEntitiesCount = Object.keys($scope.selectedEntities).length;
       updateRelatedEntities();
@@ -368,7 +366,6 @@ angular.module('app').controller('AppController',
       $scope.selectedElementTabIndex = 0;
       if(element.id() in $scope.selectedEntities) {
         delete $scope.selectedEntities[element.id()];
-//        table.onSeedDeselect(element.id());
         $scope.selectedEntitiesCount = Object.keys($scope.selectedEntities).length;
         updateRelatedEntities();
         updateRelatedEdges();

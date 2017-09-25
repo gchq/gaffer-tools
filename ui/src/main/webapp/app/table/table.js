@@ -23,29 +23,6 @@ angular.module('app').factory('table', [function(){
        table.data = {entities: {}, edges: {}, entitySeeds: [], other: []};
     }
 
-//    table.onSeedSelectToggle = function(vertex) {
-//        var index = table.selectedSeeds.indexOf(vertex);
-//        if(index > -1) {
-//            table.selectedSeeds.splice(index, 1);
-//        } else {
-//            table.selectedSeeds.push(vertex);
-//        }
-//    }
-//
-//    table.onSeedSelect = function(vertex) {
-//        if(table.selectedSeeds.indexOf(vertex) == -1
-//        && table.data.entitySeeds.indexOf(vertex) > -1) {
-//            table.selectedSeeds.push(vertex);
-//        }
-//    }
-//
-//    table.onSeedDeselect = function(vertex) {
-//        var index = table.selectedSeeds.indexOf(vertex);
-//        if(index > -1) {
-//            table.selectedSeeds.splice(index, 1);
-//        }
-//    }
-
     var parseVertex = function(vertex) {
         if(typeof vertex === 'string' || vertex instanceof String) {
             vertex = "\"" + vertex + "\"";
@@ -62,33 +39,40 @@ angular.module('app').factory('table', [function(){
     }
 
     table.update = function(results) {
-            table.clear();
-            for (var i in results.entities) {
-                var entity = results.entities[i];
-                if(!table.data.entities[entity.group]) {
-                    table.data.entities[entity.group] = [];
-                }
+        table.clear();
+        for (var i in results.entities) {
+            var entity = results.entities[i];
+            if(!table.data.entities[entity.group]) {
+                table.data.entities[entity.group] = [];
+            }
+            if (table.data.entities[entity.group].indexOf(entity) === -1) {
                 table.data.entities[entity.group].push(entity);
             }
+        }
 
-            for (var i in results.edges) {
-                var edge = results.edges[i];
-                if(!table.data.edges[edge.group]) {
-                    table.data.edges[edge.group] = [];
-                }
+        for (var i in results.edges) {
+            var edge = results.edges[i];
+            if(!table.data.edges[edge.group]) {
+                table.data.edges[edge.group] = [];
+            }
+            if (table.data.edges[edge.group].indexOf(edge) === -1) {
                 table.data.edges[edge.group].push(edge);
             }
+        }
 
-            for (var i in results.entitySeeds) {
-                table.data.entitySeeds.push(
-                    parseVertex(results.entitySeeds[i])
-                );
+        for (var i in results.entitySeeds) {
+            var es = parseVertex(results.entitySeeds[i]);
+            if (table.data.entitySeeds.indexOf(es) === -1) {
+                table.data.entitySeeds.push(es);
             }
+        }
 
-            for (var i in results.other) {
+        for (var i in results.other) {
+            if (table.data.other.indexOf(results.other[i]) === -1) {
                 table.data.other.push(results.other[i]);
             }
         }
+    }
 
 
     return table;
