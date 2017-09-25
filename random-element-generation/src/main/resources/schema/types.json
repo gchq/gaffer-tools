@@ -1,0 +1,39 @@
+{
+  "types": {
+    "long": {
+      "class": "java.lang.Long",
+      "validateFunctions": [
+        {
+          "class": "uk.gov.gchq.koryphe.impl.predicate.Exists"
+        }
+      ]
+    },
+    "count.long": {
+      "class": "java.lang.Long",
+      "aggregateFunction": {
+        "class": "uk.gov.gchq.koryphe.impl.binaryoperator.Sum"
+      }
+    },
+    "hllp": {
+      "class": "com.clearspring.analytics.stream.cardinality.HyperLogLogPlus",
+      "validateFunctions": [
+        {
+          "class": "uk.gov.gchq.koryphe.impl.predicate.Exists"
+        }
+      ],
+      "aggregateFunction": {
+        "class": "uk.gov.gchq.gaffer.sketches.clearspring.cardinality.binaryoperator.HyperLogLogPlusAggregator"
+      },
+      "serialiserClass": "uk.gov.gchq.gaffer.sketches.clearspring.cardinality.serialisation.HyperLogLogPlusSerialiser"
+    },
+    "true": {
+      "class": "java.lang.Boolean",
+      "validateFunctions": [
+        {
+          "class": "uk.gov.gchq.koryphe.impl.predicate.Exists"
+        }
+      ]
+    }
+  },
+  "vertexSerialiserClass": "uk.gov.gchq.gaffer.serialisation.implementation.raw.CompactRawLongSerialiser"
+}

@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Crown Copyright
+ * Copyright 2016-2017 Crown Copyright
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -224,7 +224,7 @@ angular.module('app').factory('settings', [function(){
 
   return {
      resultLimit: 100,
-     restUrl: window.location.origin + "/rest/v1",
+     restUrl: window.location.origin + "/rest/latest",
      getType: getType,
      defaultOp: "uk.gov.gchq.gaffer.operation.impl.get.GetElements",
      defaultAvailableOps: [

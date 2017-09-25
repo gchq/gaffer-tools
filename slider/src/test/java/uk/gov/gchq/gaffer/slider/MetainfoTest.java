@@ -21,6 +21,7 @@ import org.apache.slider.providers.agent.application.metadata.AddonPackageMetain
 import org.apache.slider.providers.agent.application.metadata.Metainfo;
 import org.junit.Assert;
 import org.junit.Test;
+
 import java.io.IOException;
 import java.io.InputStream;
 

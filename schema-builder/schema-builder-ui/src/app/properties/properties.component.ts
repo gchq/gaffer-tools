@@ -16,7 +16,7 @@
 
 import { Component, OnInit } from '@angular/core';
 import { LocalStorageService } from 'ng2-webstorage';
-import { DataSet, Edge } from '@types/vis';
+import { DataSet, Edge } from 'vis';
 import { GraphQLType } from '../shared/graphql-type.interface';
 import { GraphQLNode } from '../shared/graphql-node.interface';
 import * as _ from 'lodash';

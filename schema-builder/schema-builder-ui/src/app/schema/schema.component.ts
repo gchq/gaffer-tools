@@ -33,9 +33,8 @@ declare const vis: any;
 })
 export class SchemaComponent implements OnInit {
     schema: any;
-    dataSchema: any;
-    dataTypes: any;
-    storeTypes: any;
+    elements: any;
+    types: any;
     functions: any;
     commonTypes: any;
     validation: any;
@@ -54,12 +53,11 @@ export class SchemaComponent implements OnInit {
     errors: any;
     editing: any;
 
-    dataSchemaDownload: any;
-    dataTypesDownload: any;
-    storeTypesDownload: any;
+    elementsDownload: any;
+    typesDownload: any;
 
-    parseDataSchema() {
-        this.dataSchema = {
+    parseElements() {
+        this.elements = {
             edges: {},
             entities: {}
         };
@@ -78,7 +76,7 @@ export class SchemaComponent implements OnInit {
                 _.forEach(edge.properties, (property: any) => {
                     formattedEdge.properties[property.name] = property.type;
                 });
-                this.dataSchema.edges[edge.label] = formattedEdge;
+                this.elements.edges[edge.label] = formattedEdge;
             });
         }
         if (this.schema.hasOwnProperty('nodes')) {
@@ -91,25 +89,30 @@ export class SchemaComponent implements OnInit {
                     _.forEach(entity.properties, (property: any) => {
                         formattedEntity.properties[property.name] = property.type;
                     });
-                    this.dataSchema.entities[entity.name] = formattedEntity;
+                    this.elements.entities[entity.name] = formattedEntity;
                 });
             });
         }
-        this.dataSchemaDownload = 'data:text/json;charset=utf-8,' +
-            encodeURIComponent(JSON.stringify(this.dataSchema, null, 2));
+        this.elementsDownload = 'data:text/json;charset=utf-8,' +
+            encodeURIComponent(JSON.stringify(this.elements, null, 2));
     }
 
-    parseDataTypes() {
-        this.dataTypes = {
+    parseTypes() {
+        this.types = {
             types: {}
         };
         if (this.schema.hasOwnProperty('types')) {
             _.forEach(this.schema.types, (type: any) => {
                 const formattedType = {
                     class: type.class || 'java.lang.String',
-                    validateFunctions: type.validateFunctions || undefined
+                    validateFunctions: type.validateFunctions || undefined,
+                    aggregateFunction: type.aggregateFunction || null,
+                    serialiser: type.serialiser || null
                 };
-                this.dataTypes.types[type.type] = formattedType;
+                if(formattedType.aggregateFunction && Object.keys(formattedType.aggregateFunction).length === 0) {
+                    formattedType.aggregateFunction = null;
+                }
+                this.types.types[type.type] = formattedType;
             });
         }
         if (this.schema.hasOwnProperty('nodes')) {
@@ -118,34 +121,12 @@ export class SchemaComponent implements OnInit {
                     class: node.class || 'java.lang.String',
                     validateFunctions: node.validateFunctions || undefined
                 };
-                this.dataTypes.types[node.label] = formattedNode;
+                this.types.types[node.label] = formattedNode;
             });
         }
-        this.dataTypesDownload = 'data:text/json;charset=utf-8,' +
-            encodeURIComponent(JSON.stringify(this.dataTypes, null, 2));
-    }
 
-    parseStoreTypes() {
-        this.storeTypes = {
-            types: {}
-        };
-        if (this.schema.hasOwnProperty('types')) {
-            _.forEach(this.schema.types, (type: any) => {
-                if (type.aggregateFunction !== null || type.serialiser !== null) {
-                    const formattedType = {
-                        aggregateFunction: type.aggregateFunction || null,
-                        serialiser: type.serialiser || null
-                    };
-                    if(formattedType.aggregateFunction && Object.keys(formattedType.aggregateFunction).length === 0) {
-                        formattedType.aggregateFunction = null;
-                    }
-                    console.log(formattedType);
-                    this.storeTypes.types[type.type] = formattedType;
-                }
-            });
-        }
-        this.storeTypesDownload = 'data:text/json;charset=utf-8,' +
-            encodeURIComponent(JSON.stringify(this.storeTypes, null, 2));
+        this.typesDownload = 'data:text/json;charset=utf-8,' +
+            encodeURIComponent(JSON.stringify(this.types, null, 2));
     }
 
     sanitize(url: string) {
@@ -155,9 +136,8 @@ export class SchemaComponent implements OnInit {
     clearSchema() {
         this.storage.clear();
         this.ngOnInit();
-        this.dataSchema = undefined;
-        this.dataTypes = undefined;
-        this.storeTypes = undefined;
+        this.elements = undefined;
+        this.types = undefined;
     }
 
     enableEditMode(key: string) {
@@ -165,16 +145,16 @@ export class SchemaComponent implements OnInit {
         $('#' + key + 'TextArea').trigger('input');
     }
 
-    updateDataSchema(input) {
+    updateElements(input) {
         let editedText;
         if (input) {
             editedText = input;
         } else {
             try {
-                editedText = JSON.parse($('#dataSchemaTextArea').val());
+                editedText = JSON.parse($('#elementsTextArea').val());
             } catch (e) {
                 editedText = undefined;
-                this.errors.dataSchema = 'Failed to parse JSON: ' + e.message;
+                this.errors.elements = 'Failed to parse JSON: ' + e.message;
             }
         }
         if (editedText) {
@@ -182,7 +162,7 @@ export class SchemaComponent implements OnInit {
             const nodes = new vis.DataSet();
             const newNodes = [];
             const newEdges = [];
-            this.errors.dataSchema = undefined;
+            this.errors.elements = undefined;
             if (editedText.edges) {
                 _.forEach(editedText.edges, (editedEdge: any, edgeName) => {
                     let fromId;
@@ -267,21 +247,21 @@ export class SchemaComponent implements OnInit {
             edges.add(newEdges);
             this.storage.store('graphNodes', nodes);
             this.storage.store('graphEdges', edges);
-            this.editing.dataSchema = false;
+            this.editing.elements = false;
             this.ngOnInit();
         }
     }
 
-    updateDataTypes(input) {
+    updateTypes(input) {
         let editedText;
         if (input) {
             editedText = input;
         } else {
             try {
-                editedText = JSON.parse($('#dataTypesTextArea').val());
+                editedText = JSON.parse($('#typesTextArea').val());
             } catch (e) {
                 editedText = undefined;
-                this.errors.dataTypes = 'Failed to parse JSON: ' + e.message;
+                this.errors.types = 'Failed to parse JSON: ' + e.message;
             }
         }
         if (editedText) {
@@ -307,35 +287,8 @@ export class SchemaComponent implements OnInit {
                 });
                 this.storage.store('graphNodes', storedNodes);
                 this.storage.store('types', newTypes);
-                this.updateStoreTypes(undefined);
-                this.editing.dataTypes = false;
+                this.editing.types = false;
             }
-        }
-    }
-
-    updateStoreTypes(input) {
-        let editedText;
-        if (input) {
-            editedText = input;
-        } else {
-            try {
-                editedText = JSON.parse($('#storeTypesTextArea').val());
-            } catch (e) {
-                editedText = undefined;
-                this.errors.storeTypes = 'Failed to parse JSON: ' + e.message;
-            }
-        }
-        if (editedText && editedText.types) {
-            const storedTypes = this.storage.retrieve('types');
-            _.forEach(editedText.types, (editedType: any, typeName) => {
-                let existingType = _.find(storedTypes, { type: typeName });
-                if (existingType) {
-                    existingType = _.merge(existingType, editedType);
-                }
-            });
-            this.storage.store('types', storedTypes);
-            this.editing.storeTypes = false;
-            this.ngOnInit();
         }
     }
 
@@ -370,9 +323,8 @@ export class SchemaComponent implements OnInit {
         this.errorMessage = undefined;
         this.router.navigate(['/schema', { url: this.schemaUrl }]);
         if (result.hasOwnProperty('types') && result.hasOwnProperty('edges')) {
-            this.updateDataSchema(result);
-            this.updateDataTypes(result);
-            this.updateStoreTypes(result);
+            this.updateElements(result);
+            this.updateTypes(result);
         }
         this.successURL = 'Successfully loaded schema from URL';
     }
@@ -390,14 +342,12 @@ export class SchemaComponent implements OnInit {
             types: storedTypes
         };
         this.errors = {
-            dataSchema: undefined,
-            dataTypes: undefined,
-            storeTypes: undefined
+            elements: undefined,
+            types: undefined,
         };
         this.editing = {
-            dataSchema: false,
-            dataTypes: false,
-            storeTypes: false
+            elements: false,
+            types: false
         };
         this.schemaUrl = '';
         this.route.params.distinctUntilChanged().subscribe((routeParams: any) => {
@@ -421,12 +371,11 @@ export class SchemaComponent implements OnInit {
             }, 100);
         });
         if (storedEdges !== null && storedNodes !== null) {
-            this.parseDataSchema();
-            this.parseDataTypes();
-            this.parseStoreTypes();
+            this.parseElements();
+            this.parseTypes();
             this.validation = undefined;
             this.errorMessage = undefined;
-            this.gafferService.validateSchema(this.dataSchema, this.dataTypes, this.storeTypes)
+            this.gafferService.validateSchema(this.elements, this.types)
                 .subscribe(
                 validation => this.validation = validation,
                 error => this.errorMessage = <any>error);

@@ -28,6 +28,7 @@ Once this is running you can run the python example by using the command (all co
 
 ```
 python3 src/example.py
+python3 src/example_accumulo.py
 ```
 
 Alternatively if you have you own REST API running that is authenticated with
@@ -36,6 +37,7 @@ will need to export your PKI certificate into a .pem file:
 
 ```
 python3 src/examplePki.py
+python3 src/example_accumulo_pki.py
 ```
 
 ## Installation
@@ -59,7 +61,7 @@ This creates a distributable Python wheel which can installed locally to provide
 The wheel file is install using pip:
 
 ```bash
-pip3 install gaffer_shell-0.7.6-py2.py3-none-any.whl
+pip3 install gaffer_shell-1.0.0-RC2-py2.py3-none-any.whl
 ```
 
 After installation the shell can be imported into an application as below:

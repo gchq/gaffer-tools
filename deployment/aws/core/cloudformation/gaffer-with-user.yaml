@@ -1,0 +1,309 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: "Deploys a Gaffer instance on AWS EMR using Apache Slider, pre-configured with a user"
+
+Parameters:
+
+  GafferVersion:
+    Type: String
+    Default: 0.7.8
+    MinLength: 1
+    AllowedPattern: "\\S+"
+    Description: The version of Gaffer to deploy - can be a version number (e.g. 0.7.8) or a git branch (e.g. gh-X-feature-name) / commit hash etc
+
+  GafferToolsVersion:
+    Type: String
+    Default: 0.7.8
+    MinLength: 1
+    AllowedPattern: "\\S+"
+    Description: The version of Gaffer Tools to use to deploy Gaffer on EMR - can be a version number (e.g. 0.7.8) or a git branch (e.g. gh-X-feature-name) / commit hash etc
+
+  AccumuloVersion:
+    Type: String
+    Default: 1.8.1
+    MinLength: 1
+    AllowedPattern: "\\S+"
+
+  EmrRelease:
+    Type: String
+    Default: emr-5.7.0
+    AllowedValues:
+      - emr-5.7.0
+    ConstraintDescription: Please select a valid EMR release
+
+  EmrInstanceType:
+    Type: String
+    Default: m3.xlarge
+    MinLength: 1
+    Description: Specify the type of instances to deploy in the EMR cluster
+
+  EmrCoreInstanceCount:
+    Type: Number
+    Default: 3
+    MinValue: 0
+    Description: The number of (core) instances to deploy as part of the EMR cluster
+
+  VpcId:
+    Type: AWS::EC2::VPC::Id
+    Description: The VPC to deploy the EMR cluster into
+
+  SubnetId:
+    Type: AWS::EC2::Subnet::Id
+    Description: The subnet to deploy the EMR cluster into. Make sure the subnet resides in the VPC you have selected above!
+
+  ExtraEmrSecurityGroups:
+    Type: List<AWS::EC2::SecurityGroup::Id>
+    Description: Additional security groups that EMR instances should be a member of
+
+  KeyName:
+    Type: AWS::EC2::KeyPair::KeyName
+    Description: Name of an existing EC2 KeyPair that you would like to be able to use to SSH into any instances
+    ConstraintDescription: Must be the name of an existing EC2 KeyPair
+
+  ManageSecurityGroups:
+    Type: String
+    Default: false
+    AllowedValues:
+      - true
+      - false
+    Description: Should this stack create (and delete) security groups to be used by the EMR master/core/task/service nodes? If false, it will use the default groups created by AWS e.g. EMR_DefaultRole. If you are deploying into a public subnet (i.e. a subnet with an InternetGateway) then this needs to be false!
+    ConstraintDescription: Please select either 'true' or 'false'
+
+  GafferInstanceName:
+    Type: String
+    Default: gaffer
+    MinLength: 1
+    AllowedPattern: "[A-Za-z0-9-_]+"
+    ConstraintDescription: Please choose a name which is made up of [A-Za-z0-9]
+
+  UserName:
+    Type: String
+    Default: gaffer_user
+    MinLength: 1
+    AllowedPattern: "[A-Za-z0-9-_]+"
+    Description: The name of the user that should be created
+
+  AccumuloVisibilities:
+    Type: String
+    Default: none
+    MinLength: 1
+    AllowedPattern: "[A-Za-z0-9-_:,]+"
+    Description: The visibility authorisations that the user should be granted (as a csv list)
+
+Metadata:
+  AWS::CloudFormation::Interface:
+    ParameterGroups:
+      - Label:
+          default: Versions
+        Parameters:
+          - GafferVersion
+          - GafferToolsVersion
+          - AccumuloVersion
+          - EmrRelease
+      - Label:
+          default: Gaffer Config
+        Parameters:
+          - GafferInstanceName
+          - UserName
+          - AccumuloVisibilities
+      - Label:
+          default: EMR Config
+        Parameters:
+          - EmrInstanceType
+          - EmrCoreInstanceCount
+          - VpcId
+          - SubnetId
+          - KeyName
+          - ExtraEmrSecurityGroups
+          - ManageSecurityGroups
+
+Resources:
+
+  GafferOnEmr:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL: !Join ["", ["https://s3.amazonaws.com/", Ref: S3Bucket, "/", !GetAtt FileUploadCustomResource.DeployGafferStack]]
+      Parameters:
+        GafferVersion: !Ref GafferVersion
+        GafferToolsVersion: !Ref GafferToolsVersion
+        AccumuloVersion: !Ref AccumuloVersion
+        EmrRelease: !Ref EmrRelease
+        EmrInstanceType: !Ref EmrInstanceType
+        EmrCoreInstanceCount: !Ref EmrCoreInstanceCount
+        VpcId: !Ref VpcId
+        SubnetId: !Ref SubnetId
+        ExtraEmrSecurityGroups: !Join [",", Ref: ExtraEmrSecurityGroups]
+        KeyName: !Ref KeyName
+        ManageSecurityGroups: !Ref ManageSecurityGroups
+        GafferInstanceName: !Ref GafferInstanceName
+
+  GafferUser:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL: !Join ["", ["https://s3.amazonaws.com/", Ref: S3Bucket, "/", !GetAtt FileUploadCustomResource.CreateGafferUserStack]]
+      Parameters:
+        EmrClusterId: !Sub ${GafferOnEmr.Outputs.EmrClusterId}
+        EmrIamRoleName: !Sub ${GafferOnEmr.Outputs.EmrIamRoleName}
+        GafferInstanceName: !Ref GafferInstanceName
+        UserName: !Ref UserName
+        AccumuloVisibilities: !Ref AccumuloVisibilities
+
+  ##############################
+  ## Upload dependencies into S3
+  ##############################
+
+  S3Bucket:
+    Type: AWS::S3::Bucket
+    DeletionPolicy: Delete
+
+  FileUploadCustomResource:
+    Type: AWS::CloudFormation::CustomResource
+    Version: "1.0"
+    Properties:
+      ServiceToken: !GetAtt FileUploadLambda.Arn
+      BucketName: !Ref S3Bucket
+
+  FileUploadLambda:
+    Type: AWS::Lambda::Function
+    Properties:
+      Description: Uploads files required to deploy Gaffer on EMR to an S3 bucket
+      Role: !GetAtt FileUploadRole.Arn
+      Runtime: python2.7
+      Handler: index.lambda_handler
+      MemorySize: 128
+      Timeout: 180
+      Code:
+        ZipFile: !Sub |
+          #!/usr/bin/env python
+
+          import boto3
+          import base64
+          import urllib2
+          import cfnresponse
+
+          s3 = boto3.client('s3')
+
+          files=[]
+
+          files.append({
+            'Output': 'DeployGafferStack',
+            'Key': 'cloudformation/gaffer-slider-emr.yaml',
+            'Urls': [
+              'https://raw.githubusercontent.com/gchq/gaffer-tools/gaffer-tools-${GafferToolsVersion}/deployment/aws/core/cloudformation/gaffer-slider-emr.yaml',
+              'https://raw.githubusercontent.com/gchq/gaffer-tools/${GafferToolsVersion}/deployment/aws/core/cloudformation/gaffer-slider-emr.yaml'
+            ]
+          })
+
+          files.append({
+            'Output': 'CreateGafferUserStack',
+            'Key': 'cloudformation/gaffer-user.yaml',
+            'Urls': [
+              'https://raw.githubusercontent.com/gchq/gaffer-tools/gaffer-tools-${GafferToolsVersion}/deployment/aws/core/cloudformation/gaffer-user.yaml',
+              'https://raw.githubusercontent.com/gchq/gaffer-tools/${GafferToolsVersion}/deployment/aws/core/cloudformation/gaffer-user.yaml'
+            ]
+          })
+
+          def upload_files(bucket):
+            outputs = {}
+
+            for file in files:
+              body = None
+              if 'Body' in file:
+                body = file['Body']
+              elif 'Body64' in file:
+                body = base64.b64decode(file['Body64'])
+              elif 'Url' in file:
+                body = urllib2.urlopen(file['Url']).read()
+              elif 'Urls' in file:
+                lastError = None
+                for url in file['Urls']:
+                  try:
+                    body = urllib2.urlopen(url).read()
+                    break
+                  except Exception as e:
+                    print('Request for ' + url + ' error: ' + str(e))
+                    lastError = e
+                if body is None and lastError is not None:
+                  raise lastError
+
+              if body is not None:
+                s3.put_object(
+                  Bucket=bucket,
+                  Key=file['Key'],
+                  Body=body
+                )
+
+                if 'Output' in file:
+                  outputs[file['Output']] = file['Key']
+
+            return outputs
+
+          def cleanup_files(bucket):
+            for file in files:
+              s3.delete_object(
+                Bucket=bucket,
+                Key=file['Key']
+              )
+
+          def lambda_handler(evt, cntx):
+            try:
+              print(evt)
+
+              bucket = evt['ResourceProperties']['BucketName']
+              print('S3 Bucket: ' + bucket)
+
+              requestType = evt['RequestType']
+              if requestType == 'Create' or requestType == 'Update':
+                outputs = upload_files(bucket)
+                cfnresponse.send(evt, cntx, cfnresponse.SUCCESS, outputs)
+              elif requestType == 'Delete':
+                cleanup_files(bucket)
+                cfnresponse.send(evt, cntx, cfnresponse.SUCCESS, {})
+              else:
+                raise Exception('Unrecognised RequestType: ' + requestType)
+
+            except Exception as e:
+              cfnresponse.send(evt, cntx, cfnresponse.FAILED, { 'Error': str(e) })
+              raise
+
+  FileUploadRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - lambda.amazonaws.com
+            Action:
+              - sts:AssumeRole
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+      Policies:
+        - PolicyName: !Join ["-", [Ref: "AWS::StackName", "file-upload-policy"]]
+          PolicyDocument:
+            Version: 2012-10-17
+            Statement:
+              - Effect: Allow
+                Resource:
+                  - !GetAtt S3Bucket.Arn
+                  - !Join ["", [!GetAtt S3Bucket.Arn, "/*"]]
+                Action:
+                  - s3:ListBucket
+                  - s3:GetObject
+                  - s3:PutObject
+                  - s3:DeleteObject
+
+Outputs:
+  EmrMasterPublicDNS:
+    Value: !Sub ${GafferOnEmr.Outputs.EmrMasterPublicDNS}
+  EmrClusterId:
+    Value: !Sub ${GafferOnEmr.Outputs.EmrClusterId}
+  AccumuloInstanceName:
+    Value: !Sub ${GafferOnEmr.Outputs.AccumuloInstanceName}
+  UserName:
+    Value: !Sub ${GafferUser.Outputs.UserName}
+  PasswordParameter:
+    Value: !Sub ${GafferUser.Outputs.PasswordParameter}
+  PasswordEncryptionKey:
+    Value: !Sub ${GafferUser.Outputs.EncryptionKey}

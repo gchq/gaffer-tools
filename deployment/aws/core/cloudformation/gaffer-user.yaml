@@ -1,0 +1,144 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: "Creates a user that can be used by applications to authenticate with Gaffer"
+
+Parameters:
+
+  EmrClusterId:
+    Type: String
+    MinLength: 1
+    AllowedPattern: "j-.+"
+    Description: The ID of the EMR cluster that the Gaffer instance has been deployed on
+    ConstraintDescription: "Sorry, that does not look like an EMR cluster ID. It should start: j-"
+
+  EmrIamRoleName:
+    Type: String
+    MinLength: 1
+    Description: The name of the IAM role used by the EMR cluster, so that it can be given additional permissions
+
+  GafferInstanceName:
+    Type: String
+    Default: gaffer
+    MinLength: 1
+    AllowedPattern: "[A-Za-z0-9-_]+"
+    Description: The name of the Gaffer instance to create the user for
+    ConstraintDescription: Please choose a name which is made up of [A-Za-z0-9]
+
+  UserName:
+    Type: String
+    Default: gaffer_user
+    MinLength: 1
+    AllowedPattern: "[A-Za-z0-9-_]+"
+    Description: The name of the user that should be created
+
+  AccumuloVisibilities:
+    Type: String
+    Default: none
+    MinLength: 1
+    AllowedPattern: "[A-Za-z0-9-_:,]+"
+    Description: The visibility authorisations that this user should be granted (as a csv list)
+
+Resources:
+
+  #################################
+  ## EMR step script to create user
+  #################################
+
+  WaitForGafferUserCondition:
+    Type: AWS::CloudFormation::WaitCondition
+    Properties:
+      Handle: !Ref WaitForGafferUserHandler
+      Timeout: 600
+
+  WaitForGafferUserHandler:
+    Type: AWS::CloudFormation::WaitConditionHandle
+    DependsOn:
+      - EmrStorePasswordPolicy
+      - SecretKey
+      - PasswordParameter
+
+  CreateGafferUser:
+    Type: AWS::EMR::Step
+    Properties:
+      JobFlowId: !Ref EmrClusterId
+      Name: create-gaffer-user
+      HadoopJarStep:
+        Jar: s3://elasticmapreduce/libs/script-runner/script-runner.jar
+        Args:
+          - !Join ["", ["/home/hadoop/slider-", Ref: GafferInstanceName, "/create-accumulo-user-with-kms.sh"]]
+          - !Ref UserName
+          - "-k"
+          - !Ref SecretKey
+          - "-p"
+          - !Ref PasswordParameter
+          - "-v"
+          - !Ref AccumuloVisibilities
+          - "-w"
+          - !Ref WaitForGafferUserHandler
+      ActionOnFailure: CANCEL_AND_WAIT
+
+  #########################################
+  ## KMS used to encrypt / decrypt password
+  #########################################
+
+  SecretKey:
+    Type: AWS::KMS::Key
+    Properties:
+      KeyPolicy:
+        Version: 2012-10-17
+        Statement:
+          - Sid: "Admin access"
+            Effect: Allow
+            Principal:
+              AWS: !Join ["", ["arn:aws:iam::", !Ref "AWS::AccountId", ":root"]]
+            Resource: "*"
+            Action:
+              - "kms:*"
+
+  SecretKeyAlias:
+    Type: AWS::KMS::Alias
+    Properties:
+      TargetKeyId: !Ref SecretKey
+      AliasName: !Join ["/", ["alias", Ref: "AWS::StackName", "secrets"]]
+
+  #####################################################
+  ## SSM Parameter used to store the encrypted password
+  #####################################################
+
+  PasswordParameter:
+    Type: AWS::SSM::Parameter
+    Properties:
+      Name: !Join ["-", [Ref: "AWS::StackName", "passwd"]]
+      Type: String
+      Value: "NotSetYetPleaseWait..."
+
+  #################################################################################
+  ## Additional IAM policy for EMR cluster to allow access to KMS and SSM Parameter
+  #################################################################################
+
+  EmrStorePasswordPolicy:
+    Type: AWS::IAM::Policy
+    Properties:
+      Roles:
+        - Ref: EmrIamRoleName
+      PolicyName: !Join ["-", [Ref: "AWS::StackName", "emr-kms-ssm-access"]]
+      PolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Resource: !GetAtt SecretKey.Arn
+            Action:
+              - kms:Encrypt
+              - kms:Decrypt
+          - Effect: Allow
+            Resource: !Join ["", ["arn:aws:ssm:", Ref: "AWS::Region", ":", Ref: "AWS::AccountId", ":parameter/", Ref: PasswordParameter]]
+            Action:
+              - ssm:PutParameter
+              - ssm:GetParameters
+
+Outputs:
+  UserName:
+    Value: !Ref UserName
+  PasswordParameter:
+    Value: !Ref PasswordParameter
+  EncryptionKey:
+    Value: !GetAtt SecretKey.Arn
