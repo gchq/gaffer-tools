@@ -33,7 +33,9 @@
     <script src="app/raw/raw.js"></script>
     <script src="app/table/table.js"></script>
     <script src="app/graph/graph.js"></script>
+    <script src="app/nav/nav.js"></script>
     <script src="app/controller.js"></script>
+    <script src="app/graph/buildQuery.js"></script>
     <link href="lib/angular/css/angular-material.min.css" rel="stylesheet">
     <link href="lib/bootstrap/css/bootstrap.min.css" rel="stylesheet">
     <link href="lib/bootstrap/css/bootstrap-theme.min.css" rel="stylesheet">
@@ -44,17 +46,18 @@
 
 <div ng-cloak ng-include="'app/nav/nav.html'"></div>
 
-<div ng-cloak class="container" ng-show="showGraph">
+<div ng-cloak class="container" ng-show="nav.showGraph">
     <div id="graphCy" class="cy"></div>
     <div ng-include="'app/graph/graph.html'"></div>
 </div>
 
 
-<div ng-cloak ng-show="showResultsTable" ng-include="'app/table/table.html'"
+<div ng-cloak ng-show="nav.showResultsTable" ng-include="'app/table/table.html'"
      class="fill"></div>
-<div ng-cloak ng-show="showRaw" ng-include="'app/raw/raw.html'"
+<div ng-cloak ng-show="nav.showRaw" ng-include="'app/raw/raw.html'"
      class="fill"></div>
-<div ng-cloak ng-show="showSettings" ng-include="'app/settings/settings.html'"
+<div ng-cloak ng-show="nav.showSettings"
+     ng-include="'app/settings/settings.html'"
      class="fill"></div>
 
 </body>

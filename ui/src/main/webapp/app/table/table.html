@@ -1,7 +1,8 @@
 <div layout-fill class="container">
     <div ng-cloak layout-fill>
         <md-content layout-fill>
-            <md-tabs layout-fill md-max-height md-border-bottom>
+            <md-tabs layout-fill md-max-height md-border-bottom
+                     md-selected="table.selectedTab">
                 <md-tab label="Entities">
                     <md-content class="md-padding">
                         <input ng-model="searchResults" type="text"
@@ -109,6 +110,71 @@
                                 </table>
                             </div>
                         </div>
+                    </md-content>
+                </md-tab>
+
+                <md-tab label="Seeds">
+                    <md-content class="md-padding">
+                        <input ng-model="searchResults" type="text"
+                               class="form-control"
+                               placeholder="Search vertices and properties">
+
+                        <h4><b>{{group}}</b></h4>
+                        <table id="seeds-result-table"
+                               class="table table-striped">
+                            <tbody>
+                            <tr>
+                                <th>
+                                    <a href="#"
+                                       ng-click="sortType = 'vertex'; sortReverse = !sortReverse">
+                                        Vertex
+                                                <span ng-show="sortType === 'vertex' && !sortReverse"
+                                                      class="caret"></span>
+                                                <span ng-show="sortType === 'vertex' && sortReverse"
+                                                      class="caret caret-up"></span>
+                                    </a>
+                                </th>
+                            </tr>
+                            <tr ng-repeat="vertex in table.data.entitySeeds | orderBy:sortType:sortReverse | filter:searchResults"
+                                ng-class="{'selected': table.selectedSeeds.indexOf(vertex) > - 1}">
+                                <td>
+                                    {{vertex}}
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </md-content>
+                </md-tab>
+
+                <md-tab label="Other">
+                    <md-content class="md-padding">
+                        <input ng-model="searchResults" type="text"
+                               class="form-control"
+                               placeholder="Search vertices and properties">
+
+                        <h4><b>{{group}}</b></h4>
+                        <table id="other-result-table"
+                               class="table table-striped">
+                            <tbody>
+                            <tr>
+                                <th>
+                                    <a href="#"
+                                       ng-click="sortType = 'value'; sortReverse = !sortReverse">
+                                        Value
+                                                <span ng-show="sortType === 'value' && !sortReverse"
+                                                      class="caret"></span>
+                                                <span ng-show="sortType === 'value' && sortReverse"
+                                                      class="caret caret-up"></span>
+                                    </a>
+                                </th>
+                            </tr>
+                            <tr ng-repeat="other in table.data.other | orderBy:sortType:sortReverse | filter:searchResults">
+                                <td>
+                                    {{other}}
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
                     </md-content>
                 </md-tab>
 
