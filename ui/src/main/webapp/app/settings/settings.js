@@ -236,15 +236,6 @@ angular.module('app').factory('settings', [function(){
            view: true,
            inOutFlag: true,
            arrayOutput: true
-       },
-       {
-           name: "Get Adjacent IDs",
-           class: "uk.gov.gchq.gaffer.operation.impl.get.GetAdjacentIds",
-           description: "Given your selected seeds, it gets vertices at the opposite end of connected edges.",
-           input: true,
-           view: true,
-           inOutFlag: true,
-           arrayOutput: true
        }
      ]
    }
