@@ -37,7 +37,7 @@ import uk.gov.gchq.gaffer.serialisation.ToBytesSerialiser;
 import uk.gov.gchq.gaffer.store.StoreException;
 import uk.gov.gchq.gaffer.store.StoreProperties;
 import uk.gov.gchq.gaffer.store.schema.Schema;
-import uk.gov.gchq.gaffer.store.serialiser.lengthvalue.ElementSerialiser;
+import uk.gov.gchq.gaffer.store.serialiser.ElementSerialiser;
 import uk.gov.gchq.gaffer.user.User;
 
 import java.io.File;

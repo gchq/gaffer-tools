@@ -15,7 +15,10 @@ limitations under the License.
 
 UI
 ============
+
+
 This module contains a Gaffer read only UI prototype that connects to a Gaffer REST API.
+See [gaffer-tools/ui](https://github.com/gchq/gaffer-tools/tree/master/ui).
 
 Limitations:
 - There are currently no error messages.

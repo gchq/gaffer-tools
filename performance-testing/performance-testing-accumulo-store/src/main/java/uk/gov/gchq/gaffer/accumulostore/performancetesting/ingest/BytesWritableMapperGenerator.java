@@ -27,7 +27,7 @@ import uk.gov.gchq.gaffer.data.generator.ElementGenerator;
 import uk.gov.gchq.gaffer.hdfs.operation.handler.job.factory.SampleDataForSplitPointsJobFactory;
 import uk.gov.gchq.gaffer.hdfs.operation.mapper.generator.MapperGenerator;
 import uk.gov.gchq.gaffer.store.schema.Schema;
-import uk.gov.gchq.gaffer.store.serialiser.lengthvalue.ElementSerialiser;
+import uk.gov.gchq.gaffer.store.serialiser.ElementSerialiser;
 
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
