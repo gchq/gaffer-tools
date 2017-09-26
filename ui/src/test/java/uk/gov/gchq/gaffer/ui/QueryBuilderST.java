@@ -4,6 +4,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.By;
+import org.openqa.selenium.Dimension;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -90,6 +91,10 @@ public class QueryBuilderST {
         url = System.getProperty(URL_PROPERTY, DEFAULT_URL);
         slowFactor = Integer.parseInt(System.getProperty(SLOW_FACTOR_PROPERTY, DEFAULT_SLOW_FACTOR));
         driver = new FirefoxDriver();
+
+        // Create a large window to ensure we don't need to scroll
+        final Dimension dimension = new Dimension(1200, 1000);
+        driver.manage().window().setSize(dimension);
     }
 
     @After
@@ -118,10 +123,6 @@ public class QueryBuilderST {
         click("Get Elements");
         click("select-all-seeds");
         click("related-edge-RoadUse");
-
-        // Scroll the button into view
-        execute("$('#RoadUse-add-filter').parents('md-dialog-content')[0].scrollTop = document.getElementById('RoadUse-add-filter').offsetTop");
-
         click("RoadUse-add-filter");
         selectOption("RoadUse-property-selector", "startDate");
         selectOption("RoadUse-startDate-predicate-selector", "uk.gov.gchq.koryphe.impl.predicate.IsMoreThan");
