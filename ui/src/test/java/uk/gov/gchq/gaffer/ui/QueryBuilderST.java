@@ -95,7 +95,7 @@ public class QueryBuilderST {
     @After
     public void cleanUp() {
         try {
-//            driver.close();
+            driver.close();
         } catch (final Exception e) {
             // ignore errors
         }
@@ -118,7 +118,10 @@ public class QueryBuilderST {
         click("Get Elements");
         click("select-all-seeds");
         click("related-edge-RoadUse");
-        scroll("RoadUse-add-filter");
+
+        // Scroll the button into view
+        execute("$('#RoadUse-add-filter').parents('md-dialog-content')[0].scrollTop = document.getElementById('RoadUse-add-filter').offsetTop");
+
         click("RoadUse-add-filter");
         selectOption("RoadUse-property-selector", "startDate");
         selectOption("RoadUse-startDate-predicate-selector", "uk.gov.gchq.koryphe.impl.predicate.IsMoreThan");
@@ -157,8 +160,8 @@ public class QueryBuilderST {
         driver.findElement(By.xpath("//md-tab-item//span[contains(text(), '" + tabTitle + "')]")).click();
     }
 
-    private void scroll(final String id) {
-        ((JavascriptExecutor) driver).executeScript("document.getElementById('" + id + "').scrollIntoView()");
+    private void execute(final String script) {
+        ((JavascriptExecutor) driver).executeScript(script);
     }
 
     private WebElement getElement(final String id) {
