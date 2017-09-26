@@ -45,15 +45,33 @@
                     <md-content class="md-padding">
                         <h3>Results</h3>
 
-                        <h4>Entities</h4>
-                        <pre id="raw-entity-results">
-                            {{rawData.results.entities | json}}
-                        </pre>
+                        <div ng.show="rawData.results.entities">
+                            <h4>Entities</h4>
+                            <pre id="raw-entity-results">
+                                {{rawData.results.entities | json}}
+                            </pre>
+                        </div>
 
-                        <h4>Edges</h4>
-                        <pre id="raw-edge-results">
-                            {{rawData.results.edges | json}}
-                        </pre>
+                        <div ng.show="rawData.results.edges">
+                            <h4>Edges</h4>
+                            <pre id="raw-edge-results">
+                                {{rawData.results.edges | json}}
+                            </pre>
+                        </div>
+
+                        <div ng.show="rawData.results.entitySeeds">
+                            <h4>Seeds</h4>
+                            <pre id="raw-entity-seed-results">
+                                {{rawData.results.entitySeeds | json}}
+                            </pre>
+                        </div>
+
+                        <div ng.show="rawData.results.other">
+                            <h4>Other</h4>
+                            <pre id="raw-other-results">
+                                {{rawData.results.other | json}}
+                            </pre>
+                        </div>
                     </md-content>
                 </md-tab>
             </md-tabs>

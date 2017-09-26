@@ -6,22 +6,23 @@
         </div>
         <div id="navbar">
             <ul class="nav navbar-nav">
-                <li ng-class="{ active: showGraph }">
+                <li ng-class="{ active: nav.showGraph }">
                     <a id="open-graph"
                        href="#graph"
-                       ng-click="openGraph()">Graph</a>
+                       ng-click="nav.openGraph()">Graph</a>
                 </li>
-                <li ng-class="{ active: showResultsTable }">
+                <li ng-class="{ active: nav.showResultsTable }">
                     <a id="open-table"
                        href="#resultsTable"
-                       ng-click="openResultsTable()">Table</a>
+                       ng-click="nav.openResultsTable()">Table</a>
                 </li>
-                <li ng-class="{ active: showRaw }">
-                    <a id="open-raw" href="#raw" ng-click="openRaw()">Raw</a>
+                <li ng-class="{ active: nav.showRaw }">
+                    <a id="open-raw" href="#raw"
+                       ng-click="nav.openRaw()">Raw</a>
                 </li>
-                <li ng-class="{ active: showSettings }">
+                <li ng-class="{ active: nav.showSettings }">
                     <a id="open-settings" href="#settings"
-                       ng-click="openSettings()">Settings</a>
+                       ng-click="nav.openSettings()">Settings</a>
                 </li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
@@ -32,15 +33,15 @@
                                           style="margin-top: 5px; margin-right: 10px;">
                     </md-progress-circular>
                 </li>
-                <li><a class="nav-button"
-                       ng-show="showGraph">
+                <li><a class="nav-button">
                     <button id="add-seed" ng-click="addSeedPrompt()"
                             class="btn btn-primary">Add Seed
                     </button>
                 </a></li>
                 <li><a class="nav-button"
                        ng-show="seeds.length != 0 || operations.length != 0">
-                    <button id="build-query" ng-click="buildQuery()"
+                    <button id="build-query"
+                            ng-click="openBuildQueryDialog()"
                             class="btn btn-primary">Build query
                     </button>
                 </a></li>
@@ -50,7 +51,7 @@
                     </button>
                 </a></li>
                 <li><a class="nav-button"
-                       ng-show="showGraph">
+                       ng-show="nav.showGraph">
                     <button ng-click="redraw()"
                             class="btn btn-default">Redraw
                     </button>
