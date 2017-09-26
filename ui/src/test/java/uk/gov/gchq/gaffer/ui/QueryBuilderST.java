@@ -4,6 +4,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.firefox.FirefoxDriver;
@@ -40,10 +41,14 @@ public class QueryBuilderST {
             "    }\n" +
             "  ],\n" +
             "  \"view\": {\n" +
+            "    \"globalElements\": [\n" +
+            "      {\n" +
+            "        \"groupBy\": []\n" +
+            "      }\n" +
+            "    ],\n" +
             "    \"entities\": {},\n" +
             "    \"edges\": {\n" +
             "      \"RoadUse\": {\n" +
-            "        \"groupBy\": [],\n" +
             "        \"preAggregationFilterFunctions\": [\n" +
             "          {\n" +
             "            \"predicate\": {\n" +
@@ -90,7 +95,7 @@ public class QueryBuilderST {
     @After
     public void cleanUp() {
         try {
-            driver.close();
+//            driver.close();
         } catch (final Exception e) {
             // ignore errors
         }
@@ -105,23 +110,22 @@ public class QueryBuilderST {
         click("add-seed");
 
         selectOption("vertexType", "junction");
-        enterText("vertex", "M5:10");
+        enterText("addSeedVertex", "M5:10");
         click("add-seed-confirm");
 
         click("build-query");
+
+        click("Get Elements");
         click("select-all-seeds");
-        click("step-1-next");
-
         click("related-edge-RoadUse");
-        click("step-2-next");
-
+        scroll("RoadUse-add-filter");
         click("RoadUse-add-filter");
         selectOption("RoadUse-property-selector", "startDate");
         selectOption("RoadUse-startDate-predicate-selector", "uk.gov.gchq.koryphe.impl.predicate.IsMoreThan");
         enterText("RoadUse-startDate-uk.gov.gchq.koryphe.impl.predicate.IsMoreThan-value", "{\"java.util.Date\": 971416800000}");
-        click("step-3-next");
+        click("build-query-next");
 
-        click("step-4-execute");
+        click("build-query-execute");
 
         click("open-raw");
         assertEquals(EXPECTED_OPERATION_JSON, getElement("operation-0-json").getText().trim());
@@ -151,6 +155,10 @@ public class QueryBuilderST {
 
     private void clickTab(final String tabTitle) {
         driver.findElement(By.xpath("//md-tab-item//span[contains(text(), '" + tabTitle + "')]")).click();
+    }
+
+    private void scroll(final String id) {
+        ((JavascriptExecutor) driver).executeScript("document.getElementById('" + id + "').scrollIntoView()");
     }
 
     private WebElement getElement(final String id) {

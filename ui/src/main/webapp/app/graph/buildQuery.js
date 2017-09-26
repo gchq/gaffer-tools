@@ -242,6 +242,7 @@ angular.module('app').factory('buildQuery', [ '$q', '$window', 'raw', 'settings'
   buildQuery.onSelectedPropertyChange = function(group, selectedElement) {
     raw.functions(group, selectedElement.property, function(data) {
         selectedElement.availableFunctions = data;
+        raw.updateScope();
     });
     selectedElement.predicate = '';
   }
@@ -250,6 +251,7 @@ angular.module('app').factory('buildQuery', [ '$q', '$window', 'raw', 'settings'
     raw.functionParameters(selectedElement.predicate, function(data) {
         console.log(data);
         selectedElement.availableFunctionParameters = data;
+        raw.updateScope();
     });
 
     var elementDef = raw.schema.entities[group];

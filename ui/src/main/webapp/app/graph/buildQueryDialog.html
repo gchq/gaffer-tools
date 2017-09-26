@@ -38,7 +38,8 @@
                                 <tr ng-repeat="op in rawData.availableOps | orderBy:sortType:sortReverse | filter:opSearchResults">
                                     <td>
                                         <a href="#"
-                                           ng-click="buildQuery.onSelectedOpChange(op)">
+                                           ng-click="buildQuery.onSelectedOpChange(op)"
+                                           id="{{op.name}}">
                                             {{op.name}}
                                         </a>
                                     </td>
