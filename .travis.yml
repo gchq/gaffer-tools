@@ -28,6 +28,5 @@ env:
 
 before_install: ./cd/before_install.sh
 install: travis_wait 45 ./cd/install.sh
-before_script: ./cd/before_script.sh
 script: travis_wait 45 ./cd/verify.sh
 after_success: travis_wait 45 ./cd/after_success.sh
