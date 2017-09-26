@@ -25,7 +25,7 @@
     </parent>
 
     <artifactId>gaffer-tools</artifactId>
-    <version>1.0.0-RC3-SNAPSHOT</version>
+    <version>1.0.0-RC3</version>
     <packaging>pom</packaging>
 
     <modules>
