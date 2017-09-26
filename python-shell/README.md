@@ -16,6 +16,7 @@ Python shell
 ============
 
 This python shell connects to a Gaffer REST API and requires Python 3.x
+See [gaffer-tools/python-shell](https://github.com/gchq/gaffer-tools/tree/master/python-shell).
 
 To start using the python shell you will need an instance of the REST API running.
 You can start the Gaffer road-traffic-demo rest server and ui (see ui/README.md) using the command:
@@ -61,7 +62,7 @@ This creates a distributable Python wheel which can installed locally to provide
 The wheel file is install using pip:
 
 ```bash
-pip3 install gaffer_shell-1.0.0-RC2-py2.py3-none-any.whl
+pip3 install gaffer_shell-1.0.0-RC3-py2.py3-none-any.whl
 ```
 
 After installation the shell can be imported into an application as below:

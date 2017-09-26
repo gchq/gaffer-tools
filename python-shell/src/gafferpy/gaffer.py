@@ -1065,6 +1065,24 @@ class Regex(AbstractPredicate):
         return predicate_json
 
 
+
+class StringContains(AbstractPredicate):
+    CLASS = "uk.gov.gchq.koryphe.impl.predicate.StringContains"
+
+    def __init__(self, value, ignore_case):
+        super().__init__(_class_name=self.CLASS)
+        self.value = value
+        self.ignore_case = ignore_case
+
+    def to_json(self):
+        predicate_json = super().to_json()
+        predicate_json['value'] = self.value
+        if self.ignore_case is not None:
+            predicate_json['ignoreCase'] = self.ignore_case
+        return predicate_json
+
+
+
 class FunctionContext(ToJson, ToCodeString):
     CLASS = "gaffer.FunctionContext"
 

@@ -456,6 +456,19 @@ class GafferPredicatesTest(unittest.TestCase):
             g.Regex(
                 value={'java.util.regex.Pattern': '[a-d0-4]'}
             )
+        ],
+        [
+            '''
+            {
+                "class":"uk.gov.gchq.koryphe.impl.predicate.StringContains",
+                "value":"someValue",
+                "ignoreCase":false
+            }
+            ''',
+            g.StringContains(
+                value='someValue',
+                ignore_case=False
+            )
         ]
     ]
 
