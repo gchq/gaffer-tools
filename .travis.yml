@@ -1,8 +1,0 @@
-language: java
-cache:
-  directories:
-  - $HOME/.m2
-jdk:
-  - oraclejdk8
-install: travis_wait git clone https://github.com/gchq/Gaffer.git gafferTmp && cd gafferTmp && git checkout gaffer2-0.4.6 && mvn -q clean install -Pquick && cd ../ && rm -rf gafferTmp
-script: mvn install -PreducedMemory -Dfindbugs.skip=true && mvn findbugs:findbugs && mvn javadoc:javadoc
