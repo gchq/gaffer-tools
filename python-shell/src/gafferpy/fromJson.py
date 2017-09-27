@@ -25,14 +25,11 @@ if __name__ == "__main__":
     json_str = sys.argv[1]
     if len(sys.argv) > 2:
         class_name = sys.argv[2]
-        validate = False
     else:
         class_name = None
-        validate = True
 
     pythonObj = g.JsonConverter.from_json(json_str,
-                                          class_name=class_name,
-                                          validate=validate, )
+                                          class_name=class_name)
     if not isinstance(pythonObj, g.ToCodeString):
         raise TypeError('Unable to convert JSON to a Python: ' + json_str)
 
