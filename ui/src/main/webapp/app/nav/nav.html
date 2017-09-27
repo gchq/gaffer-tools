@@ -2,39 +2,33 @@
 
     <div class="container">
         <div class="navbar-header">
-            <a class="navbar-brand" href=".">Gaffer UI</a>
+            <a class="navbar-brand" href="/">Gaffer UI</a>
         </div>
         <div id="navbar">
             <ul class="nav navbar-nav">
-                <li ng-class="{ active: nav.showGraph }">
-                    <a id="open-graph"
-                       href="#graph"
-                       ng-click="nav.openGraph()">Graph</a>
+                <li>
+                    <a id="open-graph" href="/">Graph</a>
                 </li>
-                <li ng-class="{ active: nav.showResultsTable }">
-                    <a id="open-table"
-                       href="#resultsTable"
-                       ng-click="nav.openResultsTable()">Table</a>
+                <li>
+                    <a id="open-table" href="/table">Table</a>
                 </li>
-                <li ng-class="{ active: nav.showRaw }">
-                    <a id="open-raw" href="#raw"
-                       ng-click="nav.openRaw()">Raw</a>
+                <li>
+                    <a id="open-raw" href="/raw">Raw</a>
                 </li>
-                <li ng-class="{ active: nav.showSettings }">
-                    <a id="open-settings" href="#settings"
-                       ng-click="nav.openSettings()">Settings</a>
+                <li>
+                    <a id="open-settings" href="/settings">Settings</a>
                 </li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
                 <li>
-                    <md-progress-circular ng-show="rawData.loading"
+                    <md-progress-circular ng-show="ctrl.isLoading()"
                                           md-mode="indeterminate"
                                           md-diameter="30"
                                           style="margin-top: 5px; margin-right: 10px;">
                     </md-progress-circular>
                 </li>
                 <li><a class="nav-button">
-                    <button id="add-seed" ng-click="addSeedPrompt()"
+                    <button id="add-seed" ng-click="ctrl.addSeedPrompt()"
                             class="btn btn-primary">Add Seed
                     </button>
                 </a></li>

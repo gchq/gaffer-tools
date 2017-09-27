@@ -1,51 +1,78 @@
-/*
- * Copyright 2016 Crown Copyright
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+(function() {
 
-angular.module('app').factory('nav', ['$http', 'graph', function($http, graph){
-    var nav = {};
-    var graphDataGraphLoaded = false;
-    var switchTabs = function(tabFlag) {
-          nav.showRaw = false;
-          nav.showGraph = false;
-          nav.showResultsTable = false;
-          nav.showSettings = false;
-          nav[tabFlag] = true;
-      };
+    function nav() {
+        return {
+            templateUrl: '/app/nav/nav.html',
+            controller: navController,
+            controllerAs: 'ctrl'
+        }
 
-      nav.openRaw = function() {
-         switchTabs('showRaw');
-      };
+        function navController($scope, $mdDialog) {
+            var loading = false
 
-      nav.openGraph = function() {
-         if(!graphDataGraphLoaded) {
-              graph.load()
-                   .then(function(){
-                     graphDataGraphLoaded = true;
-                   });
-          }
-         switchTabs('showGraph');
-      };
+            function isLoading() {
+                return loading
+            }
 
-      nav.openResultsTable = function() {
-        switchTabs('showResultsTable');
-      };
+            function addSeedPrompt(ev) {
+                 $mdDialog.show({
+                      scope: $scope,
+                      preserveScope: true,
+                      controller: addSeedDialogController,
+                      templateUrl: 'app/graph/addSeedDialog.html',
+                      parent: angular.element(document.body),
+                      targetEvent: ev,
+                      clickOutsideToClose: true,
+                      fullscreen: $scope.customFullscreen
+                 })
+                 .then(function(seeds) {
+                      for(var i in seeds) {
+                          $scope.addSeed(seeds[i].vertexType, JSON.stringify(seeds[i].vertex));
+                      }
+                      if(nav.showResultsTable) {
+                        table.selectedTab = 2;
+                      }
+                 });
+               }
 
-      nav.openSettings = function() {
-         switchTabs('showSettings');
-      };
 
-    return nav;
-} ]);
+
+        }
+
+        function addSeedDialogController($scope, $mdDialog) {
+                $scope.addSeedCancel = function() {
+                  $mdDialog.cancel();
+                };
+
+                $scope.addSeedAdd = function() {
+                  var seeds = [];
+                  if($scope.addMultipleSeeds) {
+                      var vertices = $scope.addSeedVertices.trim().split("\n");
+                      for(var i in vertices) {
+                        var vertex = vertices[i];
+                        var vertexType = $scope.addSeedVertexType;
+                        var typeClass = $scope.rawData.schema.types[vertexType].class;
+                        var partValues = vertex.trim().split(",");
+                        var types = settings.getType(typeClass).types;
+                        if(types.length != partValues.length) {
+                            alert("Wrong number of parameters for seed: " + vertex + ". " + vertexType + " requires " + types.length + " parameters");
+                            break;
+                        }
+                        var parts = {};
+                        for(var j = 0; j< types.length; j++) {
+                            parts[types[j].key] = partValues[j];
+                        }
+                        seeds.push(createSeed(vertexType, parts));
+                      }
+                  } else {
+                      seeds.push(createSeed($scope.addSeedVertexType, $scope.addSeedVertexParts));
+                  }
+                  $scope.addSeedVertexType = '';
+                  $scope.addSeedVertex = '';
+                  $scope.addSeedVertices = '';
+                  $scope.addSeedVertexParts = {};
+                  $mdDialog.hide(seeds);
+                };
+              }
+    }
+})()

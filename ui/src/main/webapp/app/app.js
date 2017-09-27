@@ -14,9 +14,4 @@
  * limitations under the License.
  */
 
-angular.module('app', ['ngMaterial']).config(['$locationProvider', function AppConfig($locationProvider) {
-    $locationProvider.html5Mode({
-        enabled: true,
-        requireBase: false
-    });
-}]);
+angular.module('app', ['ngMaterial', 'ngRoute']);

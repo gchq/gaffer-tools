@@ -1,0 +1,121 @@
+{
+  "operations": {
+    "defaultAvailable": [
+      {
+        "name": "Get Elements",
+        "class": "uk.gov.gchq.gaffer.operation.impl.get.GetElements",
+        "description": "Given your selected seeds, it gets related Entities and Edges.",
+        "input": true,
+        "view": true,
+        "inOutFlag": true,
+        "arrayOutput": true
+      }
+    ]
+  },
+  "types": {
+    "java.lang.Long": {
+      "types": [
+        {
+          "label": "Value",
+          "type": "number",
+          "step": "1",
+          "class": "java.lang.Long"
+        }
+      ],
+      "wrapInJson": true
+    },
+    "java.lang.Integer": {
+      "types": [
+        {
+          "label": "Value",
+          "type": "number",
+          "step": "1",
+          "class": "java.lang.Integer"
+        }
+      ]
+    },
+    "java.lang.Short": {
+      "types": [
+        {
+          "label": "Value",
+          "type": "number",
+          "step": "1",
+          "class": "java.lang.Short"
+        }
+      ],
+      "wrapInJson": true
+    },
+    "java.lang.Double": {
+      "types": [
+        {
+          "label": "Value",
+          "type": "number",
+          "step": "0.1",
+          "class": "java.lang.Double"
+        }
+      ],
+      "wrapInJson": true
+    },
+    "java.lang.Float": {
+      "types": [
+        {
+          "label": "Value",
+          "type": "number",
+          "step": "0.1",
+          "class": "java.lang.Float"
+        }
+      ],
+      "wrapInJson": true
+    },
+    "java.lang.String": {
+      "types": [
+        {
+          "label": "Value",
+          "type": "text",
+          "class": "java.lang.String"
+        }
+      ]
+    },
+    "uk.gov.gchq.gaffer.types.TypeValue": {
+      "types": [
+        {
+          "label": "Type",
+          "type": "text",
+          "key": "type",
+          "class": "java.lang.String"
+        },
+        {
+          "label": "Value",
+          "type": "text",
+          "key": "value",
+          "class": "java.lang.String"
+        }
+      ],
+      "wrapInJson": true
+    },
+    "uk.gov.gchq.gaffer.types.TypeSubTypeValue": {
+      "types": [
+        {
+          "label": "Type",
+          "type": "text",
+          "key": "type",
+          "class": "java.lang.String"
+        },
+        {
+          "label": "Sub Type",
+          "type": "text",
+          "key": "subType",
+          "class": "java.lang.String"
+        },
+        {
+          "label": "Value",
+          "type": "text",
+          "key": "value",
+          "class": "java.lang.String"
+        }
+      ],
+      "wrapInJson": true
+    }
+
+  }
+}

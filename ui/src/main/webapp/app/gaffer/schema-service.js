@@ -2,6 +2,8 @@
 
     'use strict'
 
+    angular.module('app').factory('schemaService', schemaService)
+
     function schemaService($http, settingsService) {
 
         loadSchema()
