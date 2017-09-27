@@ -5,16 +5,16 @@
 
     <div class="form-group">
         <label for="resturl">Rest api url:</label>
-        <input type="text" ng-blur="rawData.loadSchema()" class="form-control"
-               ng-model="settings.restUrl"
+        <input type="text" ng-change="ctrl.reloadSchema()" class="form-control"
+               ng-model="ctrl.restUrl"
                id="resturl">
 
         <label for="resultLimit">Default result limit:</label>
-        <input type="text" class="form-control" ng-model="settings.resultLimit"
-               id="resultLimit">
+        <input type="text" class="form-control" ng-model="ctrl.resultLimit"
+               id="resultLimit" ng-change="ctrl.updateResultLimit()">
 
         <label for="defaultOp">Default operation:</label>
-        <input type="text" class="form-control" ng-model="settings.defaultOp"
+        <input type="text" class="form-control" ng-model="ctrl.defaultOp"
                id="defaultOp">
     </div>
 </div>

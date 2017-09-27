@@ -24,58 +24,13 @@ angular.module('app').factory('raw', ['$http', 'settings', function($http, setti
     var updateScope;
 
     raw.initialise = function(newUpdateResultsListener, newUpdateScope) {
-        raw.loadSchema();
         updateResultsListener = newUpdateResultsListener;
         updateScope = newUpdateScope;
 
         raw.loadNamedOps();
     };
 
-    raw.loadSchema = function() {
-        var schema;
-        raw.schema = {};
-        updateSchemaVertices();
-        $http.get(settings.restUrl + "/graph/config/schema")
-             .success(function(data){
-                raw.schema = data;
-                updateSchemaVertices();
-             })
-             .error(function(arg) {
-                console.log("Unable to load schema: " + arg);
-             });
-    };
 
-    raw.execute = function(operationChain, onSuccess) {
-        var queryUrl = settings.restUrl + "/graph/operations/execute";
-        if(!queryUrl.startsWith("http")) {
-            queryUrl = "http://" + queryUrl;
-        }
-
-        if(!onSuccess) {
-            onSuccess = raw.updateResults;
-        }
-
-        raw.loading = true;
-        $.ajax({
-            url: queryUrl,
-            type: "POST",
-            data: operationChain,
-            dataType: "json",
-            contentType: "application/json",
-            accept: "application/json",
-            success: function(results){
-                raw.loading = false;
-                onSuccess(results);
-                updateScope();
-            },
-            error: function(xhr, status, err) {
-                console.log(queryUrl, status, err);
-                alert("Error: " + xhr.statusCode().responseText);
-                raw.loading = false;
-                updateScope();
-            }
-       });
-    }
 
     raw.clearResults = function() {
         raw.results = {entities: [], edges: [], entitySeeds: [], other: []};
@@ -144,14 +99,6 @@ angular.module('app').factory('raw', ['$http', 'settings', function($http, setti
                   console.log(queryUrl, status, err);
               }
          });
-    }
-
-    raw.loadNamedOps = function() {
-          raw.execute(JSON.stringify(
-                {
-                    class: "uk.gov.gchq.gaffer.named.operation.GetAllNamedOperations"
-                }
-          ), updateNamedOperations);
     }
 
     var opAllowed = function(opName) {
@@ -241,26 +188,6 @@ angular.module('app').factory('raw', ['$http', 'settings', function($http, setti
         updateResultsListener();
     }
 
-    var updateSchemaVertices = function() {
-        var vertices = [];
-        if(raw.schema) {
-            for(var i in raw.schema.entities) {
-                if(vertices.indexOf(raw.schema.entities[i].vertex) == -1) {
-                    vertices.push(raw.schema.entities[i].vertex);
-                }
-            }
-            for(var i in raw.schema.edges) {
-                if(vertices.indexOf(raw.schema.edges[i].source) == -1) {
-                    vertices.push(raw.schema.edges[i].source);
-                }
-                if(vertices.indexOf(raw.schema.edges[i].destination) == -1) {
-                    vertices.push(raw.schema.edges[i].destination);
-                }
-            }
-        }
-
-        raw.schemaVertices = vertices;
-    }
 
     return raw;
 } ]);
