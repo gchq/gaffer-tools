@@ -30,23 +30,23 @@
             vm.selectedOp = operationService.getAvailableOperations()[0] // TODO should this be the default operation in the settings?
 
             // watches
-            $scope.$watch(graphService.getSelectedEntities(), function(oldValue, newValue) {
+            $scope.$watch(graphService.getSelectedEntities, function(oldValue, newValue) {
                 if (oldValue !== newValue) {
                     vm.selectedEntities = newValue
                 }
             })
 
-            $scope.$watch(graphService.getSelectedEdges(), function(oldValue, newValue) {
+            $scope.$watch(graphService.getSelectedEdges, function(oldValue, newValue) {
                 if (oldValue !== newValue) {
                     vm.selectedEdges = newValue
                 }
             })
-            $scope.$watch(graphService.getRelatedEntities(), function (oldValue, newValue) {
+            $scope.$watch(graphService.getRelatedEntities, function (oldValue, newValue) {
                 if (oldValue !== newValue) {
                     vm.relatedEntities = newValue
                 }
             })
-            $scope.$watch(graphService.getRelatedEdges(), function (oldValue, newValue) {
+            $scope.$watch(graphService.getRelatedEdges, function (oldValue, newValue) {
                 if (oldValue !== newValue) {
                     vm.relatedEdges = newValue
                 }

@@ -16,7 +16,9 @@
             getSchemaVertices: getSchemaVertices,
             loadSchema: loadSchema,
             getEntityProperties: getEntityProperties,
-            getEdgeProperties: getEdgeProperties
+            getEdgeProperties: getEdgeProperties,
+            getVertexTypeFromEntityGroup: getVertexTypeFromEntityGroup,
+            getVertexTypesFromEdgeGroup: getVertexTypesFromEdgeGroup
         }
 
         function getSchema() {
@@ -71,6 +73,22 @@
                 return schema.edges[edge].properties;
             }
             return undefined;
+        }
+
+        function getVertexTypeFromEntityGroup(group) {
+                for(var entityGroup in schema.entities) {
+                    if(entityGroup === group) {
+                        return schema.entities[entityGroup].vertex;
+                    }
+                }
+            }
+
+        function getVertexTypesFromEdgeGroup(group) {
+            for(var edgeGroup in schema.edges) {
+                if(edgeGroup === group) {
+                   return [schema.edges[edgeGroup].source, schema.edges[edgeGroup].destination];
+                }
+            }
         }
 
 

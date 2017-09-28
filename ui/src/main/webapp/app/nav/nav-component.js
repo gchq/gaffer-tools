@@ -1,5 +1,7 @@
 (function() {
 
+    angular.module('app').component('nav', nav())
+
     function nav() {
         return {
             templateUrl: '/app/nav/nav.html',
@@ -53,6 +55,7 @@
                             class: "uk.gov.gchq.gaffer.operation.OperationChain",
                             operations: [operation, createLimitOperation(), createDeduplicateOperation()]
                         }), function(results) {
+                            loading = false
                             resultService.updateResults(results)
                             $scope.$apply()
                         })
@@ -60,38 +63,32 @@
                 }
 
             function addSeed(vertexType, vertex) {
-                graphService.addSeed(vertexType, vertex);
+                graphService.addSeed(vertexType, vertex, function () {
+                    $scope.$apply()
+                });
             }
 
             function executeAll() {
-                $scope.clearResults();
-                vm.resetBuildQuery();
-               for(var i in $scope.operations) {
-                   try {
-                      raw.execute(JSON.stringify({
-                        class: "uk.gov.gchq.gaffer.operation.OperationChain",
-                        operations: [$scope.operations[i], createLimitOperation(), createDeduplicateOperation()]
-                    }));
-                   } catch(e) {
-                      // Try without the limit and deduplicate operations
-                      raw.execute(JSON.stringify({
-                        class: "uk.gov.gchq.gaffer.operation.OperationChain",
-                        operations: [$scope.operations[i]]
-                    }));
+                resultService.clearResults();
+                for(var i in operationService.getOperations()) {
+                    try {
+                        operationService.execute(JSON.stringify({
+                            class: "uk.gov.gchq.gaffer.operation.OperationChain",
+                            operations: [$scope.operations[i], createLimitOperation(), createDeduplicateOperation()]
+                        }), function(results) {
+                            resultService.updateResults(results, function() {
+                                $scope.$apply()
+                            })
+                        });
+                    } catch(e) {
+                        // Try without the limit and deduplicate operations
+                        operationService.execute(JSON.stringify({
+                            class: "uk.gov.gchq.gaffer.operation.OperationChain",
+                            operations: [$scope.operations[i]]
+                        }));
                    }
                }
             }
-
-            vm.redraw = function() {
-                            if(vm.showGraph) {
-                                vm.selectedEntities = {};
-                                vm.selectedEdges = {};
-                                graph.redraw();
-                           }
-                        };
-
-
-
         }
     }
 })()

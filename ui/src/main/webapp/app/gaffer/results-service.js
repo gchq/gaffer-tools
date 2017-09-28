@@ -23,7 +23,7 @@
             results = {entities: [], edges: [], entitySeeds: [], other: []}
         }
 
-        function updateResults(results) {
+        function updateResults(results, callback) {
             if(results) {
                 for (var i in results) {
                     var result = results[i];
@@ -57,6 +57,7 @@
                         results.other.push(result);
                     }
                 }
+                callback()
             }
         }
     }

@@ -2,7 +2,7 @@
 
     'use strict'
 
-    angular.module('app').component('seedBuilder', seedBuilder)
+    angular.module('app').component('seedBuilder', seedBuilder())
 
     function seedBuilder() {
 
