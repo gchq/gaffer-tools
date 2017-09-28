@@ -32,8 +32,7 @@ angular.module('app').controller('AppController',
     $scope.selectedElementTabIndex = 0;
     $scope.editingOperations = false;
 
-    $scope.addSeedVertex = '';
-    $scope.addSeedVertexParts = {};
+
 
     $scope.onNamedOpSelect = function(op) {
        $scope.namedOp.onNamedOpSelect(op);
@@ -67,36 +66,12 @@ angular.module('app').controller('AppController',
         raw.initialise(updateResultsListener, updateScope);
     };
 
-    var createSeed = function(type, parts) {
-      var typeClass = $scope.rawData.schema.types[type].class;
-      var vertex = settings.getType(typeClass).createValueAsJsonWrapperObj(typeClass, parts);
-      return {vertexType: type, vertex: vertex};
-    }
 
 
 
 
-    $scope.openBuildQueryDialog = function(ev) {
-        $scope.buildQuery.step = 0;
 
-        $mdDialog.show({
-          scope: $scope,
-          preserveScope: true,
-          controller: $scope.buildQuery.dialogController,
-          templateUrl: 'app/graph/buildQueryDialog.html',
-          parent: angular.element(document.body),
-          targetEvent: ev,
-          clickOutsideToClose: true,
-          fullscreen: $scope.customFullscreen
-        })
-        .then(function(operation) {
-            $scope.operations.push(operation);
-            raw.execute(JSON.stringify({
-                class: "uk.gov.gchq.gaffer.operation.OperationChain",
-                operations: [operation, createLimitOperation(), createDeduplicateOperation()]
-            }));
-        });
-    }
+
 
     var getVertexTypeFromEntityGroup = function(group) {
         for(var entityGroup in raw.schema.entities) {
@@ -146,9 +121,7 @@ angular.module('app').controller('AppController',
         }
     }
 
-    $scope.addSeed = function(vertexType, vertex) {
-        graph.addSeed(vertexType, vertex);
-    }
+
 
     arrayContainsValue = function(arr, value) {
         var jsonValue = JSON.stringify(value);
@@ -263,24 +236,7 @@ angular.module('app').controller('AppController',
         };
     }
 
-    $scope.executeAll = function() {
-        $scope.clearResults();
-        buildQuery.resetBuildQuery();
-       for(var i in $scope.operations) {
-           try {
-              raw.execute(JSON.stringify({
-                class: "uk.gov.gchq.gaffer.operation.OperationChain",
-                operations: [$scope.operations[i], createLimitOperation(), createDeduplicateOperation()]
-            }));
-           } catch(e) {
-              // Try without the limit and deduplicate operations
-              raw.execute(JSON.stringify({
-                class: "uk.gov.gchq.gaffer.operation.OperationChain",
-                operations: [$scope.operations[i]]
-            }));
-           }
-       }
-    }
+
 
   graph.onGraphElementSelect(function(element){
      $scope.selectedElementTabIndex = 0;
@@ -352,10 +308,5 @@ angular.module('app').controller('AppController',
       }
       $scope.editingOperations = false;
    }
-
-   $scope.onInOutFlagChange = function(newInOutFlag) {
-       $scope.inOutFlag = newInOutFlag;
-   }
-
   $scope.initialise();
 } ]);

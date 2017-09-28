@@ -12,7 +12,7 @@
 
         function defaultShortValue(value) {
             return JSON.stringify(value);
-        }
+        } // TODO rename types to fields - avoid confusion
 
         var unknownTypeDefault =
         {

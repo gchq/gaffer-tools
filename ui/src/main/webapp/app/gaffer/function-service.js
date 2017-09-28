@@ -6,6 +6,11 @@
 
     function functionService($http, schemaService, settingsService) {
 
+        return {
+            getFunctions: getFunctions,
+            getFunctionParameters: getFunctionParameters
+        }
+
         function getFunctions(group, property, onSuccess) {
             var type;
             var schema = schemaService.getSchema()

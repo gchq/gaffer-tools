@@ -14,7 +14,9 @@
         return {
             getSchema: getSchema,
             getSchemaVertices: getSchemaVertices,
-            loadSchema: loadSchema
+            loadSchema: loadSchema,
+            getEntityProperties: getEntityProperties,
+            getEdgeProperties: getEdgeProperties
         }
 
         function getSchema() {
@@ -36,26 +38,40 @@
                   });
          }
 
-         var updateSchemaVertices() {
-                 var vertices = [];
-                 if(schema) {
-                     for(var i in schema.entities) {
-                         if(vertices.indexOf(schema.entities[i].vertex) == -1) {
-                             vertices.push(schema.entities[i].vertex);
-                         }
-                     }
-                     for(var i in schema.edges) {
-                         if(vertices.indexOf(schema.edges[i].source) == -1) {
-                             vertices.push(schema.edges[i].source);
-                         }
-                         if(vertices.indexOf(schema.edges[i].destination) == -1) {
-                             vertices.push(schema.edges[i].destination);
-                         }
-                     }
-                 }
+        var updateSchemaVertices() {
+            var vertices = [];
+            if(schema) {
+                for(var i in schema.entities) {
+                    if(vertices.indexOf(schema.entities[i].vertex) == -1) {
+                        vertices.push(schema.entities[i].vertex);
+                    }
+                }
+                for(var i in schema.edges) {
+                    if(vertices.indexOf(schema.edges[i].source) == -1) {
+                        vertices.push(schema.edges[i].source);
+                    }
+                    if(vertices.indexOf(schema.edges[i].destination) == -1) {
+                        vertices.push(schema.edges[i].destination);
+                    }
+                }
+            }
 
-                 schemaVertices = vertices;
-             }
+            schemaVertices = vertices;
+        }
+
+        function getEntityProperties(entity) {
+            if(Object.keys(schema.entities[entity].properties).length) {
+                return schema.entities[entity].properties;
+            }
+            return undefined;
+        }
+
+        function getEdgeProperties(edge) {
+            if(Object.keys(schema.edges[edge].properties).length) {
+                return schema.edges[edge].properties;
+            }
+            return undefined;
+        }
 
 
     }

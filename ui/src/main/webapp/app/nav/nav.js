@@ -7,72 +7,91 @@
             controllerAs: 'ctrl'
         }
 
-        function navController($scope, $mdDialog) {
-            var loading = false
+        function navController($scope, $mdDialog, schemaService, typeService, graphService, operationService, resultService) {
+            var vm = this;
+            vm.loading = false
+
+
+            vm.addMultipleSeeds = false
+
+            vm.isLoading = isLoading
+            vm.addSeedPrompt = addSeedPrompt
+            vm.addSeed = addSeed
 
             function isLoading() {
                 return loading
             }
 
             function addSeedPrompt(ev) {
-                 $mdDialog.show({
-                      scope: $scope,
-                      preserveScope: true,
-                      controller: addSeedDialogController,
-                      templateUrl: 'app/graph/addSeedDialog.html',
+                $mdDialog.show({
+                    preserveScope: true,
+                    template: '<seed-builder></seed-builder>',
+                    parent: angular.element(document.body),
+                    targetEvent: ev,
+                    clickOutsideToClose: true
+                })
+                .then(function(seeds) {
+                    for(var i in seeds) {
+                        vm.addSeed(seeds[i].vertexType, JSON.stringify(seeds[i].vertex));
+                    }
+                    if(nav.showResultsTable) {
+                        table.selectedTab = 2;
+                    }
+                });
+            }
+
+            function openBuildQueryDialog(ev) {
+                    $mdDialog.show({
+                      template: '<query-builder></query-builder>',
                       parent: angular.element(document.body),
                       targetEvent: ev,
-                      clickOutsideToClose: true,
-                      fullscreen: $scope.customFullscreen
-                 })
-                 .then(function(seeds) {
-                      for(var i in seeds) {
-                          $scope.addSeed(seeds[i].vertexType, JSON.stringify(seeds[i].vertex));
-                      }
-                      if(nav.showResultsTable) {
-                        table.selectedTab = 2;
-                      }
-                 });
+                      clickOutsideToClose: true
+                    })
+                    .then(function(operation) {
+                        operationService.addOperation(operation);
+                        operationService.execute(JSON.stringify({
+                            class: "uk.gov.gchq.gaffer.operation.OperationChain",
+                            operations: [operation, createLimitOperation(), createDeduplicateOperation()]
+                        }), function(results) {
+                            resultService.updateResults(results)
+                            $scope.$apply()
+                        })
+                    });
+                }
+
+            function addSeed(vertexType, vertex) {
+                graphService.addSeed(vertexType, vertex);
+            }
+
+            function executeAll() {
+                $scope.clearResults();
+                vm.resetBuildQuery();
+               for(var i in $scope.operations) {
+                   try {
+                      raw.execute(JSON.stringify({
+                        class: "uk.gov.gchq.gaffer.operation.OperationChain",
+                        operations: [$scope.operations[i], createLimitOperation(), createDeduplicateOperation()]
+                    }));
+                   } catch(e) {
+                      // Try without the limit and deduplicate operations
+                      raw.execute(JSON.stringify({
+                        class: "uk.gov.gchq.gaffer.operation.OperationChain",
+                        operations: [$scope.operations[i]]
+                    }));
+                   }
                }
+            }
+
+            vm.redraw = function() {
+                            if(vm.showGraph) {
+                                vm.selectedEntities = {};
+                                vm.selectedEdges = {};
+                                graph.redraw();
+                           }
+                        };
 
 
 
         }
-
-        function addSeedDialogController($scope, $mdDialog) {
-                $scope.addSeedCancel = function() {
-                  $mdDialog.cancel();
-                };
-
-                $scope.addSeedAdd = function() {
-                  var seeds = [];
-                  if($scope.addMultipleSeeds) {
-                      var vertices = $scope.addSeedVertices.trim().split("\n");
-                      for(var i in vertices) {
-                        var vertex = vertices[i];
-                        var vertexType = $scope.addSeedVertexType;
-                        var typeClass = $scope.rawData.schema.types[vertexType].class;
-                        var partValues = vertex.trim().split(",");
-                        var types = settings.getType(typeClass).types;
-                        if(types.length != partValues.length) {
-                            alert("Wrong number of parameters for seed: " + vertex + ". " + vertexType + " requires " + types.length + " parameters");
-                            break;
-                        }
-                        var parts = {};
-                        for(var j = 0; j< types.length; j++) {
-                            parts[types[j].key] = partValues[j];
-                        }
-                        seeds.push(createSeed(vertexType, parts));
-                      }
-                  } else {
-                      seeds.push(createSeed($scope.addSeedVertexType, $scope.addSeedVertexParts));
-                  }
-                  $scope.addSeedVertexType = '';
-                  $scope.addSeedVertex = '';
-                  $scope.addSeedVertices = '';
-                  $scope.addSeedVertexParts = {};
-                  $mdDialog.hide(seeds);
-                };
-              }
     }
 })()

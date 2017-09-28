@@ -29,21 +29,9 @@ angular.module('app').factory('raw', ['$http', 'settings', function($http, setti
         raw.results = {entities: [], edges: [], entitySeeds: [], other: []};
     }
 
-    raw.entityProperties = function(entity) {
-        if(Object.keys(raw.schema.entities[entity].properties).length) {
-            return raw.schema.entities[entity].properties;
-        }
 
-        return undefined;
-    }
 
-    raw.edgeProperties = function(edge) {
-        if(Object.keys(raw.schema.edges[edge].properties).length) {
-            return raw.schema.edges[edge].properties;
-        }
 
-        return undefined;
-    }
 
 
     }

@@ -10,9 +10,13 @@
             execute: execute,
             getNamedOperations: getNamedOperations,
             reloadNamedOperations: reloadNamedOperations,
-            getAvailableOperations: getAvailableOperations
+            getAvailableOperations: getAvailableOperations,
+            getOperations: getOperations,
+            addOperation: addOperation,
+            setOperations: setOperations
         }
 
+        var operations = []
         var opWhiteList = undefined; // TODO should probably be populated by GET graph/config/operations
         var opBlackList = [];        // TODO should probably be populated by the config service
         var availableOps = []
@@ -101,6 +105,18 @@
                  .error(function(err) {
                     console.err("Error: " + err);
                  });
+        }
+
+        function getOperations() {
+            return operations
+        }
+
+        function addOperation(operation) {
+            operations.push(operation)
+        }
+
+        function setOperations(ops) {
+            operations = ops
         }
 
     }
