@@ -23,6 +23,12 @@ Parameters:
     MinLength: 1
     AllowedPattern: "\\S+"
 
+  TabletServersPerYarnNode:
+    Type: Number
+    Default: 1
+    MinValue: 1
+    Description: The number of Accumulo Tablet Servers that should be deployed onto each YARN Node
+
   EmrRelease:
     Type: String
     Default: emr-5.7.0
@@ -160,6 +166,7 @@ Metadata:
         Parameters:
           - EmrCoreInstanceCount
           - EmrInstanceType
+          - TabletServersPerYarnNode
       - Label:
           default: Data Generation Config
         Parameters:
@@ -269,6 +276,7 @@ Resources:
         SubnetId: !Ref SubnetId
         ExtraEmrSecurityGroups: !Join [",", [!Join [",", Ref: ExtraSecurityGroups], Ref: GeneratorAccessToGafferSecurityGroup]]
         KeyName: !Ref KeyName
+        TabletServersPerYarnNode: !Ref TabletServersPerYarnNode
 
   # Security group that all generators (data and query) will be a member of
   GeneratorSecurityGroup:

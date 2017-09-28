@@ -23,6 +23,12 @@ Parameters:
     MinLength: 1
     AllowedPattern: "\\S+"
 
+  TabletServersPerYarnNode:
+    Type: Number
+    Default: 1
+    MinValue: 1
+    Description: The number of Accumulo Tablet Servers that should be deployed onto each YARN Node
+
   EmrRelease:
     Type: String
     Default: emr-5.7.0
@@ -89,6 +95,10 @@ Metadata:
           default: Gaffer Config
         Parameters:
           - GafferInstanceName
+      - Label:
+          default: Accumulo Config
+        Parameters:
+          - TabletServersPerYarnNode
       - Label:
           default: EMR Config
         Parameters:
@@ -403,6 +413,8 @@ Resources:
           - !Ref GafferToolsVersion
           - "-a"
           - !Ref AccumuloVersion
+          - "-n"
+          - !Ref TabletServersPerYarnNode
           - "-w"
           - !Ref WaitForGafferHandler
           - !Ref GafferInstanceName

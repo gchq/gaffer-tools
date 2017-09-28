@@ -7,6 +7,7 @@ GAFFER_VERSION=0.7.8
 GAFFER_TOOLS_VERSION=0.7.8
 MAVEN_VERSION=3.5.0
 
+TSERVERS_PER_YARN_NODE=1
 USAGE=85
 CLUSTER_NAME=""
 WAIT_HANDLE_URL=""
@@ -33,6 +34,10 @@ while [[ $# -gt 0 ]]; do
 			;;
 		-u|--usage)
 			USAGE=$2
+			shift
+			;;
+		-n)
+			TSERVERS_PER_YARN_NODE=$2
 			shift
 			;;
 		-w|--wait-handle-url)
@@ -210,6 +215,7 @@ echo "Generating gaffer-slider configuration based on current Hadoop environment
 cd $DST/gaffer-slider
 java -cp ./gaffer-slider-$GAFFER_SLIDER_POM_VERSION.jar:../slider-$SLIDER_VERSION/lib/*:$(hadoop classpath) \
 	uk.gov.gchq.gaffer.slider.util.AppConfigGenerator \
+	-t $TSERVERS_PER_YARN_NODE \
 	-u $USAGE \
 	appConfig-default.json \
 	appConfig.json \
