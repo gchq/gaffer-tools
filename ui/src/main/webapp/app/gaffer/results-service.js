@@ -8,14 +8,19 @@
 
         return {
             getResults: getResults,
-            updateResults: updateResults
+            updateResults: updateResults,
+            clearResults: clearResults
         }
 
 
-        var results = {entities: [], edges: [], entitySeeds: [], other: []};
+        var results = {entities: [], edges: [], entitySeeds: [], other: []}
 
         function getResults() {
             return results
+        }
+
+        function clearResults() {
+            results = {entities: [], edges: [], entitySeeds: [], other: []}
         }
 
         function updateResults(results) {

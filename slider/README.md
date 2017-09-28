@@ -1,4 +1,3 @@
-<!--
 Copyright 2017 Crown Copyright
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,11 +11,12 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
--->
 
-# gaffer-slider
+# Gaffer Slider
 
 gaffer-slider is an application package for [Apache Slider](https://slider.incubator.apache.org) which allows Gaffer instances to be deployed onto [YARN](https://hadoop.apache.org/docs/stable/hadoop-yarn/hadoop-yarn-site/index.html) managed clusters.
+
+See [gaffer-tools/slider](https://github.com/gchq/gaffer-tools/tree/master/slider).
 
 It is to be deployed in conjunction with the [Accumulo application package](https://github.com/apache/incubator-slider/tree/develop/app-packages/accumulo) and ensures that the [server-side code required](https://github.com/gchq/Gaffer/wiki/Accumulo-Store-User-Guide#accumulo-set-up) by Gaffer to provide functionality such as aggregation and filtering at ingest and query time is made available to each Accumulo tablet server.
 
