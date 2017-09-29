@@ -52,7 +52,7 @@ def header (markdown):
 
     return header
 
-def graph (title, metrics, width = 8, height = 6, stacked = False):
+def graph (title, metrics, width = 8, height = 6, stacked = False, stat = "Average"):
     global CURRENT_X, CURRENT_Y, CURRENT_MAX_Y, MAX_X
 
     if CURRENT_X + width > MAX_X:
@@ -71,7 +71,7 @@ def graph (title, metrics, width = 8, height = 6, stacked = False):
             "metrics": metrics,
             "period": 60,
             "region": REGION,
-            "stat": "Average",
+            "stat": stat,
             "view": "timeSeries",
             "stacked": stacked
         }
@@ -93,7 +93,7 @@ def ec2Graph (title, metricName, instanceIds, width = 8, height = 6, stacked = F
         ])
     return graph(title, metrics, width=width, height=height, stacked=stacked)
 
-def accumuloTabletServerGraph (title, metricName, emrPrivateDnsNames, emrClusterId, accumuloInstanceName, width = 8, height = 6, stacked = True):
+def accumuloTabletServerGraph (title, metricName, emrPrivateDnsNames, emrClusterId, accumuloInstanceName, width = 8, height = 6, stacked = True, stat = 'Sum'):
     metrics = []
     for emrPrivateDnsName in emrPrivateDnsNames:
         metrics.append([
@@ -104,7 +104,7 @@ def accumuloTabletServerGraph (title, metricName, emrPrivateDnsNames, emrCluster
             "TabletServerName", emrPrivateDnsName,
             { "label": emrPrivateDnsName }
         ])
-    return graph(title, metrics, width=width, height=height, stacked=stacked)
+    return graph(title, metrics, width=width, height=height, stacked=stacked, stat=stat)
 
 def ensureDetailedMonitoringEnabled (instanceIds):
     enableMonitoringInstanceIds = []
