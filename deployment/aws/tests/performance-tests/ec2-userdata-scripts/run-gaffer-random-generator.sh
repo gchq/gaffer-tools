@@ -74,7 +74,7 @@ gaffer.performancetesting.query.numSeeds=$QUERY_NUM_SEEDS
 
 gaffer.graph.id=$GAFFER_GRAPH_ID
 gaffer.performancetesting.batchSize=$BATCH_SIZE
-gaffer.performancetesting.rmat.includeEntities=true
+gaffer.performancetesting.rmat.includeEntities=$INGEST_INCLUDE_ENTITIES
 gaffer.performancetesting.rmat.maxNodeId=$RMAT_MAX_NODE_ID
 
 gaffer.performancetesting.metricsListener=uk.gov.gchq.gaffer.performancetesting.aws.CloudWatchMetricsListener

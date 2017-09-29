@@ -132,6 +132,14 @@ Parameters:
     MinValue: 1
     Description: Affects the initial number of tablets for the Accumulo table used to store the Gaffer graph.
 
+  IngestIncludeEntities:
+    Type: String
+    Default: true
+    AllowedValues:
+      - true
+      - false
+    Description: Should both entity and edge elements be generated? If false, only edge elements are generated.
+
   IngestMaxBufferBytes:
     Type: Number
     Default: 100000000
@@ -175,6 +183,7 @@ Metadata:
           - SplitEstimationElementCount
           - SplitsPerTabletServer
           - IngestElementCount
+          - IngestIncludeEntities
           - IngestBatchSize
           - IngestMaxBufferBytes
           - IngestMaxTimeout
@@ -430,6 +439,7 @@ Resources:
 
             # Data Generation & Ingest Config
             export INGEST_NUM_ELEMENTS="${IngestElementCount}"
+            export INGEST_INCLUDE_ENTITIES="${IngestIncludeEntities}"
             export BATCH_SIZE="${IngestBatchSize}"
             export INGEST_MAX_BUFFER_BYTES="${IngestMaxBufferBytes}"
             export INGEST_MAX_TIMEOUT_MILLIS="${IngestMaxTimeout}"
@@ -515,6 +525,7 @@ Resources:
 
             # Data Generation & Ingest Config
             export INGEST_NUM_ELEMENTS="${IngestElementCount}"
+            export INGEST_INCLUDE_ENTITIES="${IngestIncludeEntities}"
             export INGEST_MAX_BUFFER_BYTES="${IngestMaxBufferBytes}"
             export INGEST_MAX_TIMEOUT_MILLIS="${IngestMaxTimeout}"
             export INGEST_NUM_THREADS="${IngestThreadCount}"
