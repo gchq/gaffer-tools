@@ -2675,9 +2675,6 @@ class Aggregate(Operation):
         self.input = input
         self.entities = None
         self.edges = None
-        self.global_elements = None
-        self.global_entities = None
-        self.global_edges = None
 
         if entities is not None:
             self.entities = []
@@ -2747,9 +2744,6 @@ class Transform(Operation):
         self.input = input
         self.entities = None
         self.edges = None
-        self.global_elements = None
-        self.global_entities = None
-        self.global_edges = None
 
         if entities is not None:
             self.entities = []
