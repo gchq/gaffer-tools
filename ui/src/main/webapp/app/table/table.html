@@ -2,15 +2,15 @@
     <div ng-cloak layout-fill>
         <md-content layout-fill>
             <md-tabs layout-fill md-max-height md-border-bottom
-                     md-selected="table.selectedTab">
+                     md-selected="ctrl.selectedTab">
                 <md-tab label="Entities">
                     <md-content class="md-padding">
-                        <input ng-model="searchResults" type="text"
+                        <input ng-model="ctrl.searchTerm" type="text"
                                class="form-control"
                                placeholder="Search vertices and properties">
 
-                        <div ng-repeat="(group, schemaEntity) in rawData.schema.entities">
-                            <div ng-show="table.data.entities[group].length > 0">
+                        <div ng-repeat="(group, schemaEntity) in ctrl.schema.entities">
+                            <div ng-show="ctrl.data.entities[group].length > 0">
                                 <h4><b>{{group}}</b></h4>
                                 <table id="entity-{{group}}-table-elements"
                                        class="table table-striped">
@@ -30,7 +30,7 @@
                                             {{name}}
                                         </th>
                                     </tr>
-                                    <tr ng-repeat="entity in table.data.entities[group] | orderBy:sortType:sortReverse | filter:searchResults">
+                                    <tr ng-repeat="entity in ctrl.data.entities[group] | orderBy:sortType:sortReverse | filter:ctrl.searchTerm">
                                         <td>
                                             {{entity.vertex}}
                                         </td>
@@ -47,12 +47,12 @@
 
                 <md-tab label="Edges">
                     <md-content class="md-padding">
-                        <input ng-model="searchResults" type="text"
+                        <input ng-model="ctrl.searchTerm" type="text"
                                class="form-control"
                                placeholder="Search vertices and properties">
 
-                        <div ng-repeat="(group, schemaEdge) in rawData.schema.edges">
-                            <div ng-show="table.data.edges[group].length > 0">
+                        <div ng-repeat="(group, schemaEdge) in ctrl.schema.edges">
+                            <div ng-show="ctrl.data.edges[group].length > 0">
                                 <h4><b>{{group}}</b></h4>
                                 <table id="edge-{{group}}-table-elements"
                                        class="table table-striped">
@@ -92,7 +92,7 @@
                                             {{name}}
                                         </th>
                                     </tr>
-                                    <tr ng-repeat="edge in table.data.edges[group] | orderBy:sortType:sortReverse | filter:searchResults">
+                                    <tr ng-repeat="edge in ctrl.data.edges[group] | orderBy:sortType:sortReverse | filter:ctrl.searchTerm">
                                         <td>
                                             {{edge.source}}
                                         </td>
@@ -115,7 +115,7 @@
 
                 <md-tab label="Seeds">
                     <md-content class="md-padding">
-                        <input ng-model="searchResults" type="text"
+                        <input ng-model="ctrl.searchTerm" type="text"
                                class="form-control"
                                placeholder="Search vertices and properties">
 
@@ -135,8 +135,8 @@
                                     </a>
                                 </th>
                             </tr>
-                            <tr ng-repeat="vertex in table.data.entitySeeds | orderBy:sortType:sortReverse | filter:searchResults"
-                                ng-class="{'selected': table.selectedSeeds.indexOf(vertex) > - 1}">
+                            <tr ng-repeat="vertex in ctrl.data.entitySeeds | orderBy:sortType:sortReverse | filter:ctrl.searchTerm"
+                                ng-class="{'selected': ctrl.selectedSeeds.indexOf(vertex) > - 1}">
                                 <td>
                                     {{vertex}}
                                 </td>
@@ -148,7 +148,7 @@
 
                 <md-tab label="Other">
                     <md-content class="md-padding">
-                        <input ng-model="searchResults" type="text"
+                        <input ng-model="searchTerm" type="text"
                                class="form-control"
                                placeholder="Search vertices and properties">
 
@@ -168,7 +168,7 @@
                                     </a>
                                 </th>
                             </tr>
-                            <tr ng-repeat="other in table.data.other | orderBy:sortType:sortReverse | filter:searchResults">
+                            <tr ng-repeat="other in ctrl.data.other | orderBy:sortType:sortReverse | filter:searchTerm">
                                 <td>
                                     {{other}}
                                 </td>

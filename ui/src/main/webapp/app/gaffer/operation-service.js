@@ -13,7 +13,9 @@
             getAvailableOperations: getAvailableOperations,
             getOperations: getOperations,
             addOperation: addOperation,
-            setOperations: setOperations
+            setOperations: setOperations,
+            createDeduplicateOperation: createDeduplicateOperation,
+            createLimitOperation: createLimitOperation
         }
 
         var operations = []
@@ -117,6 +119,19 @@
 
         function setOperations(ops) {
             operations = ops
+        }
+
+        function createLimitOperation() {
+            return {
+                class: "uk.gov.gchq.gaffer.operation.impl.Limit",
+                resultLimit: settingsService.getResultLimit()
+            };
+        }
+
+        function createDeduplicateOperation() {
+            return {
+                class: "uk.gov.gchq.gaffer.operation.impl.output.ToSet",
+            };
         }
 
     }

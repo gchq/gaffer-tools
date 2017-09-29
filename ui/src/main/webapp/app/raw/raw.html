@@ -8,34 +8,33 @@
                             Operations
 
                             <button class="btn btn-primary"
-                                    ng-show="!editingOperations"
-                                    ng-click="editOperations()">
+                                    ng-show="!ctrl.editingOperations"
+                                    ng-click="ctrl.editOperations()">
                                 Edit
                             </button>
 
                             <button class="btn btn-primary"
-                                    ng-show="editingOperations"
-                                    ng-click="saveOperations()">
+                                    ng-show="ctrl.editingOperations"
+                                    ng-click="ctrl.saveOperations()">
                                 Save
                             </button>
 
                         </h3>
 
-                        <div ng-repeat="(i, json) in operations track by $index">
+                        <div ng-repeat="(i, json) in ctrl.operations track by $index">
                             <pre id="operation-{{i}}-json"
-                                 ng-show="!editingOperations">
+                                 ng-show="!ctrl.editingOperations">
                                 {{operations[i] | json}}
                             </pre>
                             <textarea id="editing-operation-{{i}}-json"
-                                      ng-model="operationsForEdit[i]"
-                                      ng-blur="onOperationsChange()"
-                                      ng-show="editingOperations">>
+                                      ng-model="ctrl.operationsForEdit[i]"
+                                      ng-show="ctrl.editingOperations">>
                             </textarea>
                         </div>
 
                         <!--<div>-->
                         <button class="btn btn-primary"
-                                ng-click="addOperation()">
+                                ng-click="ctrl.addOperation()">
                             Add Operation
                         </button>
                         <!--</div>-->
@@ -48,28 +47,28 @@
                         <div ng.show="rawData.results.entities">
                             <h4>Entities</h4>
                             <pre id="raw-entity-results">
-                                {{rawData.results.entities | json}}
+                                {{ctrl.results.entities | json}}
                             </pre>
                         </div>
 
                         <div ng.show="rawData.results.edges">
                             <h4>Edges</h4>
                             <pre id="raw-edge-results">
-                                {{rawData.results.edges | json}}
+                                {{ctrl.results.edges | json}}
                             </pre>
                         </div>
 
                         <div ng.show="rawData.results.entitySeeds">
                             <h4>Seeds</h4>
                             <pre id="raw-entity-seed-results">
-                                {{rawData.results.entitySeeds | json}}
+                                {{ctrl.results.entitySeeds | json}}
                             </pre>
                         </div>
 
                         <div ng.show="rawData.results.other">
                             <h4>Other</h4>
                             <pre id="raw-other-results">
-                                {{rawData.results.other | json}}
+                                {{ctrl.results.other | json}}
                             </pre>
                         </div>
                     </md-content>

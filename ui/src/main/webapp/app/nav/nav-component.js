@@ -53,7 +53,7 @@
                         operationService.addOperation(operation);
                         operationService.execute(JSON.stringify({
                             class: "uk.gov.gchq.gaffer.operation.OperationChain",
-                            operations: [operation, createLimitOperation(), createDeduplicateOperation()]
+                            operations: [operation, operationsService.createLimitOperation(), operationsService.createDeduplicateOperation()]
                         }), function(results) {
                             loading = false
                             resultService.updateResults(results)
@@ -70,13 +70,15 @@
 
             function executeAll() {
                 resultService.clearResults();
+                loading = true
                 for(var i in operationService.getOperations()) {
                     try {
                         operationService.execute(JSON.stringify({
                             class: "uk.gov.gchq.gaffer.operation.OperationChain",
-                            operations: [$scope.operations[i], createLimitOperation(), createDeduplicateOperation()]
+                            operations: [$scope.operations[i], operationsService.createLimitOperation(), operationsService.createDeduplicateOperation()]
                         }), function(results) {
                             resultService.updateResults(results, function() {
+                                loading = false
                                 $scope.$apply()
                             })
                         });
@@ -85,7 +87,12 @@
                         operationService.execute(JSON.stringify({
                             class: "uk.gov.gchq.gaffer.operation.OperationChain",
                             operations: [$scope.operations[i]]
-                        }));
+                        }), function(results) {
+                            resultService.updateResults(results, function() {
+                                loading = false
+                                $scope.$apply()
+                            })
+                        });
                    }
                }
             }

@@ -14,81 +14,122 @@
  * limitations under the License.
  */
 
-angular.module('app').factory('table', [function(){
-    var table = {};
-    table.data = {entities: {}, edges: {}, entitySeeds: [], other: []};
-    table.selectedTab = 0;
-    table.selectedSeeds = [];
-    table.clear = function() {
-       table.data = {entities: {}, edges: {}, entitySeeds: [], other: []};
+(function() {
+
+    'use strict'
+
+    angular.module('app').component('table', table())
+
+    function table() {
+        return {
+            templateUrl: 'app/table/table.html',
+            controller: tableController,
+            controllerAs: 'ctrl'
+        }
+
+        function tableController($scope, resultsService, schemaService, graphService) {
+            var vm = this
+            vm.data = {entities: {}, edges: {}, entitySeeds: [], other: []}
+            vm.selectedTab = 0
+            vm.selectedSeeds = []
+            vm.searchTerm = ''
+            vm.schema = schemaService.getSchema()
+            vm.selectedSeeds = graphService.getSelectedSeeds()
+
+            $scope.$watch(resultsService.getResults(), function(oldValue, newValue) {
+                if (oldValue !== newValue) {
+                    update(newValue)
+                    $scope.$apply()
+                }
+            })
+
+            $scope.$watch(schemaService.getSchema(), function(oldValue, newValue) {
+                if (oldValue !== newValue) {
+                    vm.schema = newValue
+                    $scope.$apply()
+                }
+            })
+
+            $scope.$watch(graphService.getSelectedSeeds(), function(oldValue, newValue) {
+                if (oldValue !== newValue) {
+                    vm.selectedSeeds = newValue
+                    $scope.$apply()
+                }
+            })
+
+            function clear() {
+                vm.data = {entities: {}, edges: {}, entitySeeds: [], other: []}
+            }
+
+            function parseVertex(vertex) {
+                if(typeof vertex === 'string' || vertex instanceof String) {
+                    vertex = "\"" + vertex + "\"";
+                }
+
+                try {
+                     JSON.parse(vertex);
+                } catch(err) {
+                     // Try using stringify
+                     vertex = JSON.stringify(vertex);
+                }
+
+                return vertex;
+            }
+
+            function convertElements() {
+                for (var i in vm.data.entities) {
+                    for (var a in vm.data.entities[i]) {
+                        vm.data.entities[i][a] = JSON.parse(vm.data.entities[i][a]);
+                    }
+                }
+                for (var i in vm.data.edges) {
+                    for (var a in vm.data.edges[i])
+                    vm.data.edges[i][a] = JSON.parse(vm.data.edges[i][a]);
+                }
+
+            }
+
+            function update(results) {
+                clear();
+                for (var i in results.entities) {
+                    var entity = results.entities[i];
+                    if(!vm.data.entities[entity.group]) {
+                        vm.data.entities[entity.group] = [];
+                    }
+                    if (vm.data.entities[entity.group].indexOf(angular.toJson(entity)) === -1) {
+                        vm.data.entities[entity.group].push(angular.toJson(entity));
+                    }
+                }
+
+                for (var i in results.edges) {
+                    var edge = results.edges[i];
+                    if(!vm.data.edges[edge.group]) {
+                        vm.data.edges[edge.group] = [];
+                    }
+                    if (vm.data.edges[edge.group].indexOf(angular.toJson(edge)) == -1) {
+                        vm.data.edges[edge.group].push(angular.toJson(edge));
+                    }
+                }
+
+                for (var i in results.entitySeeds) {
+                    var es = parseVertex(results.entitySeeds[i]);
+                    if (vm.data.entitySeeds.indexOf(es) == -1) {
+                        vm.data.entitySeeds.push(es);
+                    }
+                }
+
+                for (var i in results.other) {
+                    if (vm.data.other.indexOf(results.other[i]) === -1) {
+                        vm.data.other.push(results.other[i]);
+                    }
+                }
+
+                convertElements();
+            }
+
+
+
+
+        }
     }
-
-    var parseVertex = function(vertex) {
-        if(typeof vertex === 'string' || vertex instanceof String) {
-            vertex = "\"" + vertex + "\"";
-        }
-
-        try {
-             JSON.parse(vertex);
-        } catch(err) {
-             // Try using stringify
-             vertex = JSON.stringify(vertex);
-        }
-
-        return vertex;
-    }
-
-    table.convertElements = function() {
-        for (var i in table.data.entities) {
-            for (var a in table.data.entities[i]) {
-                table.data.entities[i][a] = JSON.parse(table.data.entities[i][a]);
-            }
-        }
-        for (var i in table.data.edges) {
-            for (var a in table.data.edges[i])
-            table.data.edges[i][a] = JSON.parse(table.data.edges[i][a]);
-        }
-
-    }
-
-    table.update = function(results) {
-        table.clear();
-        for (var i in results.entities) {
-            var entity = results.entities[i];
-            if(!table.data.entities[entity.group]) {
-                table.data.entities[entity.group] = [];
-            }
-            if (table.data.entities[entity.group].indexOf(angular.toJson(entity)) === -1) {
-                table.data.entities[entity.group].push(angular.toJson(entity));
-            }
-        }
-
-        for (var i in results.edges) {
-            var edge = results.edges[i];
-            if(!table.data.edges[edge.group]) {
-                table.data.edges[edge.group] = [];
-            }
-            if (table.data.edges[edge.group].indexOf(angular.toJson(edge)) == -1) {
-                table.data.edges[edge.group].push(angular.toJson(edge));
-            }
-        }
-
-        for (var i in results.entitySeeds) {
-            var es = parseVertex(results.entitySeeds[i]);
-            if (table.data.entitySeeds.indexOf(es) == -1) {
-                table.data.entitySeeds.push(es);
-            }
-        }
-
-        for (var i in results.other) {
-            if (table.data.other.indexOf(results.other[i]) === -1) {
-                table.data.other.push(results.other[i]);
-            }
-        }
-
-        table.convertElements();
-    }
-
-
-    return table;
-} ]);
+})()
