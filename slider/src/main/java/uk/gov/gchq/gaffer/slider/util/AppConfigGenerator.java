@@ -118,6 +118,9 @@ public class AppConfigGenerator implements Runnable {
     static final String ACCUMULO_TSERVER_NATIVE_MAPS_ENABLED_PROPERTY = "site.accumulo-site.tserver.memory.maps.native.enabled";
     static final String ACCUMULO_TSERVER_MAX_MEMORY_PROPERTY = "site.accumulo-site.tserver.memory.maps.max";
 
+    static final String ACCUMULO_TSERVER_CONCURRENT_MINC_PROPERTY = "site.accumulo-site.tserver.compaction.minor.concurrent.max";
+    static final String ACCUMULO_TSERVER_CONCURRENT_MAJC_PROPERTY = "site.accumulo-site.tserver.compaction.major.concurrent.max";
+
     static final Map<COMPONENT, String> ACCUMULO_COMPONENT_PROPERTY_LOOKUP = new HashMap<>();
 
     static {
@@ -383,6 +386,11 @@ public class AppConfigGenerator implements Runnable {
 
             resources.components.put(component.name(), componentConfig);
         }
+
+        // Common Config
+        // Allow minc and majc to max out the CPU on a YARN node
+        appConfig.global.put(ACCUMULO_TSERVER_CONCURRENT_MINC_PROPERTY, String.valueOf(availableResources.getMaxCores()));
+        appConfig.global.put(ACCUMULO_TSERVER_CONCURRENT_MAJC_PROPERTY, String.valueOf(availableResources.getMaxCores()));
 
         // Two possible resource allocation schemes for Tablet Servers:
         if (this.singleNode) {
