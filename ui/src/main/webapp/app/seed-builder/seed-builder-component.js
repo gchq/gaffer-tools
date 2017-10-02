@@ -7,12 +7,12 @@
     function seedBuilder() {
 
         return {
-            templateUrl: 'app/seed-builder/seed-builder.html'
-            controller: seedBuilderController,
+            templateUrl: 'app/seed-builder/seed-builder.html',
+            controller: SeedBuilderController,
             controllerAs: 'ctrl'
         }
 
-        function seedBuilderController(seedBuilderService, schemaService, typeService, $mdDialog) {
+        function SeedBuilderController(seedBuilderService, schemaService, typeService, $mdDialog) {
             var vm = this
             vm.seedVertex = ''
             vm.seedVertexParts = {}

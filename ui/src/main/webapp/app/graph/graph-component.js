@@ -21,11 +21,11 @@
     function graph() {
         return {
             templateUrl: 'app/graph/graph.html',
-            controller: graphController,
+            controller: GraphController,
             controllerAs: ctrl
         }
 
-        function graphController($scope, $q, graphService, schemaService, typeService, resultService) {
+        function GraphController($scope, $q, graphService, schemaService, typeService, resultsService) {
             var graphCy;
             load()
 

@@ -21,7 +21,7 @@
             </ul>
             <ul class="nav navbar-nav navbar-right">
                 <li>
-                    <md-progress-circular ng-show="ctrl.isLoading()"
+                    <md-progress-circular ng-show="ctrl.loading"
                                           md-mode="indeterminate"
                                           md-diameter="30"
                                           style="margin-top: 5px; margin-right: 10px;">
@@ -40,7 +40,7 @@
                     </button>
                 </a></li>
                 <li><a class="nav-button">
-                    <button ng-click="executeAll()"
+                    <button ng-click="ctrl.executeAll()"
                             class="btn btn-default">Execute All
                     </button>
                 </a></li>

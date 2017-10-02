@@ -23,11 +23,11 @@
     function table() {
         return {
             templateUrl: 'app/table/table.html',
-            controller: tableController,
+            controller: TableController,
             controllerAs: 'ctrl'
         }
 
-        function tableController($scope, resultsService, schemaService, graphService) {
+        function TableController($scope, resultsService, schemaService, graphService) {
             var vm = this
             vm.data = {entities: {}, edges: {}, entitySeeds: [], other: []}
             vm.selectedTab = 0

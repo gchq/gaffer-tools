@@ -5,24 +5,19 @@
     function nav() {
         return {
             templateUrl: '/app/nav/nav.html',
-            controller: navController,
+            controller: NavigationController,
             controllerAs: 'ctrl'
         }
 
-        function navController($scope, $mdDialog, schemaService, typeService, graphService, operationService, resultService) {
+        function NavigationController($scope, $mdDialog, schemaService, typeService, graphService, operationService, resultsService) {
             var vm = this;
             vm.loading = false
 
 
             vm.addMultipleSeeds = false
 
-            vm.isLoading = isLoading
             vm.addSeedPrompt = addSeedPrompt
             vm.addSeed = addSeed
-
-            function isLoading() {
-                return loading
-            }
 
             function addSeedPrompt(ev) {
                 $mdDialog.show({
@@ -56,7 +51,7 @@
                             operations: [operation, operationsService.createLimitOperation(), operationsService.createDeduplicateOperation()]
                         }), function(results) {
                             loading = false
-                            resultService.updateResults(results)
+                            resultsService.updateResults(results)
                             $scope.$apply()
                         })
                     });
@@ -69,7 +64,7 @@
             }
 
             function executeAll() {
-                resultService.clearResults();
+                resultsService.clearResults();
                 loading = true
                 for(var i in operationService.getOperations()) {
                     try {
@@ -77,7 +72,7 @@
                             class: "uk.gov.gchq.gaffer.operation.OperationChain",
                             operations: [$scope.operations[i], operationsService.createLimitOperation(), operationsService.createDeduplicateOperation()]
                         }), function(results) {
-                            resultService.updateResults(results, function() {
+                            resultsService.updateResults(results, function() {
                                 loading = false
                                 $scope.$apply()
                             })
@@ -88,7 +83,7 @@
                             class: "uk.gov.gchq.gaffer.operation.OperationChain",
                             operations: [$scope.operations[i]]
                         }), function(results) {
-                            resultService.updateResults(results, function() {
+                            resultsService.updateResults(results, function() {
                                 loading = false
                                 $scope.$apply()
                             })

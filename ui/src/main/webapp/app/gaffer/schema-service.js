@@ -40,7 +40,7 @@
                   });
          }
 
-        var updateSchemaVertices() {
+        function updateSchemaVertices() {
             var vertices = [];
             if(schema) {
                 for(var i in schema.entities) {

@@ -8,11 +8,11 @@
 
         return {
             templateUrl: 'app/query-builder/query-builder.html',
-            controller: queryBuilderController,
+            controller: QueryBuilderController,
             controllerAs: ctrl
         }
 
-        function queryBuilderController($scope, operationService, typeService, graphService, settingsService, functionService, $window, $mdDialog) {
+        function QueryBuilderController($scope, operationService, typeService, graphService, settingsService, functionService, $window, $mdDialog) {
 
             var vm = this
 
@@ -98,8 +98,8 @@
                 newWindow.document.write("<pre>" + prettyOps + "</pre>");
             }
 
-            function getTypes(class) {
-                return typeService.getType(class).types
+            function getTypes(clazz) {
+                return typeService.getType(clazz).types
             }
 
             function toggle(item, list) {

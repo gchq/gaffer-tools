@@ -8,11 +8,11 @@
 
         return {
             templateUrl: 'app/raw/raw.html',
-            controller: rawController,
+            controller: RawController,
             controllerAs: 'ctrl'
         }
 
-        function rawController(operationService) {
+        function RawController(operationService) {
             var vm = this
 
             // variables

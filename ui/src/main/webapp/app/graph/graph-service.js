@@ -67,6 +67,10 @@
             callback()
         }
 
+        function getSeedToAdd() {
+            return seedToAdd
+        }
+
         function unSelect(element, callback) {
             selectedElementTabIndex = 0
             if(element.id() in selectedEntities) {
