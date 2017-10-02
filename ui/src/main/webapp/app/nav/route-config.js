@@ -43,9 +43,6 @@
                 template: '<table></table>',
                 title: 'Table'
             })
-            .otherwise({
-                redirectTo: '/'
-            })
     }
 })()
 

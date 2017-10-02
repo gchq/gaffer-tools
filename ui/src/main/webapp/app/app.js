@@ -14,4 +14,4 @@
  * limitations under the License.
  */
 
-angular.module('app', ['ngMaterial', 'ngRoute']);
+angular.module('app', ['ngMaterial', 'ngRoute'])

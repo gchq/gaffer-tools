@@ -1,6 +1,6 @@
 (function() {
 
-    angular.module('app').component('nav', nav())
+    angular.module('app').component('navigation', nav())
 
     function nav() {
         return {
