@@ -12,7 +12,7 @@
             controllerAs: 'ctrl'
         }
 
-        function RawController(operationService) {
+        function RawController($scope, operationService, resultsService) {
             var vm = this
 
             // variables
@@ -36,7 +36,7 @@
                         })
 
             // functions
-            vm.editOperations = editingOperations
+            vm.editOperations = editOperations
             vm.saveOperations = saveOperations
 
             function editOperations() {

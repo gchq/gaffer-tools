@@ -23,47 +23,37 @@
 
     function settingsService() {
 
-        return {
-             getResultLimit: getResultLimit,
-             setResultLimit: setResultLimit,
-             getRestUrl: getRestUrl,
-             setRestUrl: setRestUrl,
-             getDefaultOp: getDefaultOp,
-             setDefaultOp: setDefaultOp,
+        var settings = {}
+
+        settings.resultLimit = 100
+        settings.restUrl = window.location.origin + "/rest/latest"
+        settings.defaultOp = "uk.gov.gchq.gaffer.operation.impl.get.GetElements"
+
+        settings.getResultLimit = function() {
+            return settings.resultLimit
         }
 
-        var resultLimit = 100;
-        var restUrl = window.location.origin + "/rest/latest"
-        var defaultOp = "uk.gov.gchq.gaffer.operation.impl.get.GetElements"
-
-        function getResultLimit() {
-            return resultLimit
+        settings.setResultLimit = function(limit) {
+            settings.resultLimit = limit
         }
 
-        function setResultLimit(limit) {
-            resultLimit = limit
+        settings.getRestUrl = function() {
+            return settings.restUrl
         }
 
-        function getRestUrl() {
-            return restUrl
+        settings.setRestUrl = function(url) {
+            settings.restUrl = url
         }
 
-        function setRestUrl(url) {
-            restUrl = url
-        }
-
-        function getDefaultOp() {
+        settings.getDefaultOp = function() {
             return defaultOp
         }
 
-        function setDefaultOp(op) {
-            defaultOp = op
+        settings.setDefaultOp = function(op) {
+            settings.defaultOp = op
         }
 
-
-        function defaultShortValue(value) {
-            return JSON.stringify(value);
-        };
+        return settings
     }
 
 })()

@@ -85,16 +85,18 @@
             return namedOperations
         }
 
-        function reloadNamedOperations() {
-            execute(JSON.stringify(
+        function reloadNamedOperations(url) {
+            execute(
+                url,
+                JSON.stringify(
                 {
                     class: "uk.gov.gchq.gaffer.named.operation.GetAllNamedOperations"
                 }), updateNamedOperations)
         }
 
 
-        function execute(operationChain, onSuccess) {
-            var queryUrl = settingsService.getRestUrl() + "/graph/operations/execute"
+        function execute(url, operationChain, onSuccess) {
+            var queryUrl = url + "/graph/operations/execute"
 
             if(!queryUrl.startsWith("http")) {
                 queryUrl = "http://" + queryUrl

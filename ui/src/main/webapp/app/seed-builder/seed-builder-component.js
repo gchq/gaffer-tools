@@ -31,7 +31,7 @@
             }
 
             function getTypes() {
-                return typeService.getType(rawData.schema.types[vm.seedVertexType].class).types
+                return typeService.getType(schemaService.getSchema().types[vm.seedVertexType].class).types
             }
 
             function getCsvHeader() {

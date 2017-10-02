@@ -4,10 +4,9 @@
 
     angular.module('app').factory('schemaService', schemaService)
 
-    function schemaService($http, settingsService) {
+    function schemaService($http) {
 
-        loadSchema()
-
+        var service =
         var schema = {}
         var schemaVertices = [];
 
@@ -29,8 +28,8 @@
             return schemaVertices;
         }
 
-        function loadSchema() {
-             $http.get(settingsService.getRestUrl() + "/graph/config/schema")
+        function loadSchema(restUrl) {
+             $http.get(restUrl + "/graph/config/schema")
                   .success(function(data){
                      schema = data;
                      updateSchemaVertices();

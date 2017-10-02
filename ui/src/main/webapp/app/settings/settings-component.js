@@ -21,9 +21,8 @@
 
             function reloadData() {
                 settingsService.setRestUrl(vm.restUrl)
-                schemaService.loadSchema()
-                operationService.reloadNamedOperations()
-                $scope.$apply()
+                schemaService.loadSchema(settingsService.getRestUrl())
+                operationService.reloadNamedOperations(settingsService.getRestUrl())
             }
 
             function updateResultLimit() {
