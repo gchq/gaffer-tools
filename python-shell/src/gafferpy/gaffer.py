@@ -39,11 +39,23 @@ class ToJson:
         """
         raise NotImplementedError('Use an implementation')
 
+    def to_json_str(self):
+        return json.dumps(self.to_json())
+
+    def to_json_pretty_str(self):
+        return json.dumps(self.to_json(), indent=4, separators=(',', ': '))
+
+    def pretty_print(self):
+        print(self.to_json_pretty_str())
+
     def __str__(self):
         return str(self.to_json())
 
     def __eq__(self, other):
-        return self.to_json() == other.to_json()
+        other_json = other
+        if isinstance(other_json, ToJson):
+            other_json = other.to_json()
+        return self.to_json() == other_json
 
 
 class ToCodeString:
@@ -374,6 +386,8 @@ class View(ToJson, ToCodeString):
                         el_def = JsonConverter.from_json(
                             el_def, GlobalElementDefinition)
                     self.global_elements.append(el_def)
+            elif isinstance(global_elements, GlobalElementDefinition):
+                self.global_elements.append(global_elements)
             else:
                 for group, el_def in global_elements.items():
                     if not isinstance(el_def, GlobalElementDefinition):
@@ -389,6 +403,8 @@ class View(ToJson, ToCodeString):
                         el_def = JsonConverter.from_json(
                             el_def, GlobalElementDefinition)
                     self.global_entities.append(el_def)
+            elif isinstance(global_entities, GlobalElementDefinition):
+                self.global_entities.append(global_entities)
             else:
                 for group, el_def in global_entities.items():
                     if not isinstance(el_def, GlobalElementDefinition):
@@ -404,6 +420,8 @@ class View(ToJson, ToCodeString):
                         el_def = JsonConverter.from_json(
                             el_def, GlobalElementDefinition)
                     self.global_edges.append(el_def)
+            elif isinstance(global_edges, GlobalElementDefinition):
+                self.global_edges.append(global_edges)
             else:
                 for group, el_def in global_edges.items():
                     if not isinstance(el_def, GlobalElementDefinition):
@@ -452,6 +470,7 @@ class ElementDefinition(ToJson, ToCodeString):
                  transient_properties=None,
                  group_by=None,
                  pre_aggregation_filter_functions=None,
+                 aggregate_functions=None,
                  post_aggregation_filter_functions=None,
                  transform_functions=None,
                  post_transform_filter_functions=None,
@@ -475,6 +494,9 @@ class ElementDefinition(ToJson, ToCodeString):
 
         self.pre_aggregation_filter_functions = JsonConverter.from_json(
             pre_aggregation_filter_functions, PredicateContext)
+
+        self.aggregate_functions = JsonConverter.from_json(
+            aggregate_functions, PredicateContext)
 
         self.post_aggregation_filter_functions = JsonConverter.from_json(
             post_aggregation_filter_functions, PredicateContext)
@@ -519,6 +541,90 @@ class ElementDefinition(ToJson, ToCodeString):
             element_def['properties'] = self.properties
         if self.exclude_properties is not None:
             element_def['excludeProperties'] = self.exclude_properties
+        return element_def
+
+
+class ElementTransformDefinition(ToJson, ToCodeString):
+    CLASS = 'uk.gov.gchq.gaffer.operation.impl.function.ElementTransformDefinition'
+
+    def __init__(self, group='',
+                 functions=None):
+        super().__init__()
+        self.group = group
+        self.functions = JsonConverter.from_json(
+            functions, FunctionContext)
+
+    def to_json(self):
+        element_def = {}
+        if self.functions is not None:
+            funcs = []
+            for func in self.functions:
+                funcs.append(func.to_json())
+            element_def['functions'] = funcs
+        return element_def
+
+
+class ElementAggregateDefinition(ToJson, ToCodeString):
+    CLASS = 'uk.gov.gchq.gaffer.operation.impl.function.ElementAggregateDefinition'
+
+    def __init__(self, group='',
+                 group_by=None,
+                 operators=None):
+        super().__init__()
+        self.group = group
+        if group_by is not None and not isinstance(group_by, list):
+            group_by = [group_by]
+        self.group_by = group_by
+        self.operators = JsonConverter.from_json(
+            operators, BinaryOperatorContext)
+
+    def to_json(self):
+        element_def = {}
+        if self.group_by is not None:
+            element_def['groupBy'] = self.group_by
+        if self.operators is not None:
+            funcs = []
+            for func in self.operators:
+                funcs.append(func.to_json())
+            element_def['operators'] = funcs
+        return element_def
+
+
+class ElementFilterDefinition(ToJson, ToCodeString):
+    CLASS = 'uk.gov.gchq.gaffer.operation.impl.function.ElementFilterDefinition'
+
+    def __init__(self, group='',
+                 predicates=None):
+        super().__init__()
+        self.group = group
+        self.filter_functions = JsonConverter.from_json(
+            predicates, PredicateContext)
+
+    def to_json(self):
+        element_def = {}
+        if self.filter_functions is not None:
+            funcs = []
+            for func in self.filter_functions:
+                funcs.append(func.to_json())
+            element_def['predicates'] = funcs
+        return element_def
+
+
+class GlobalElementFilterDefinition(ToJson, ToCodeString):
+    CLASS = 'uk.gov.gchq.gaffer.operation.impl.function.GlobalElementFilterDefinition'
+
+    def __init__(self, predicates=None):
+        super().__init__()
+        self.filter_functions = JsonConverter.from_json(
+            predicates, PredicateContext)
+
+    def to_json(self):
+        element_def = {}
+        if self.filter_functions is not None:
+            funcs = []
+            for func in self.filter_functions:
+                funcs.append(func.to_json())
+            element_def['predicates'] = funcs
         return element_def
 
 
@@ -624,7 +730,10 @@ class PredicateContext(ToJson, ToCodeString):
     CLASS = "gaffer.PredicateContext"
 
     def __init__(self, selection=None, predicate=None):
-        self.selection = selection
+        if isinstance(selection, list):
+            self.selection = selection
+        else:
+            self.selection = [selection]
         self.predicate = predicate
 
     def to_json(self):
@@ -1065,7 +1174,6 @@ class Regex(AbstractPredicate):
         return predicate_json
 
 
-
 class StringContains(AbstractPredicate):
     CLASS = "uk.gov.gchq.koryphe.impl.predicate.StringContains"
 
@@ -1082,14 +1190,19 @@ class StringContains(AbstractPredicate):
         return predicate_json
 
 
-
 class FunctionContext(ToJson, ToCodeString):
     CLASS = "gaffer.FunctionContext"
 
     def __init__(self, selection=None, function=None, projection=None):
-        self.selection = selection
+        if isinstance(selection, list):
+            self.selection = selection
+        else:
+            self.selection = [selection]
         self.function = function
-        self.projection = projection
+        if isinstance(projection, list):
+            self.projection = projection
+        else:
+            self.projection = [projection]
 
     def to_json(self):
         function_json = {}
@@ -1105,6 +1218,45 @@ class FunctionContext(ToJson, ToCodeString):
 
 class Function(ToJson, ToCodeString):
     CLASS = "java.util.function.Function"
+
+    def __init__(self, class_name=None, fields=None):
+        self.class_name = class_name
+        self.fields = fields
+
+    def to_json(self):
+        if self.fields is not None:
+            function_json = dict(self.fields)
+        else:
+            function_json = {}
+
+        if self.class_name is not None:
+            function_json['class'] = self.class_name
+
+        return function_json
+
+
+class BinaryOperatorContext(ToJson, ToCodeString):
+    CLASS = "gaffer.AggregatorContext"
+
+    def __init__(self, selection=None, binary_operator=None):
+        if isinstance(selection, list):
+            self.selection = selection
+        else:
+            self.selection = [selection]
+        self.binary_operator = binary_operator
+
+    def to_json(self):
+        function_json = {}
+        if self.selection is not None:
+            function_json['selection'] = self.selection
+        if self.binary_operator is not None:
+            function_json['binaryOperator'] = self.binary_operator.to_json()
+
+        return function_json
+
+
+class BinaryOperator(ToJson, ToCodeString):
+    CLASS = "java.util.function.BinaryOperator"
 
     def __init__(self, class_name=None, fields=None):
         self.class_name = class_name
@@ -2405,6 +2557,247 @@ class SummariseGroupOverRanges(Operation):
         return operation
 
 
+class Filter(Operation):
+    CLASS = 'uk.gov.gchq.gaffer.operation.impl.function.Filter'
+
+    def __init__(self,
+                 input=None,
+                 entities=None,
+                 edges=None,
+                 global_elements=None,
+                 global_entities=None,
+                 global_edges=None,
+                 options=None):
+        super().__init__(
+            _class_name=self.CLASS,
+            options=options
+        )
+        self.input = input
+        self.entities = None
+        self.edges = None
+        self.global_elements = None
+        self.global_entities = None
+        self.global_edges = None
+
+        if entities is not None:
+            self.entities = []
+            if isinstance(entities, list):
+                for el_def in entities:
+                    if not isinstance(el_def, ElementFilterDefinition):
+                        el_def = JsonConverter.from_json(
+                            el_def, ElementFilterDefinition)
+                    self.entities.append(el_def)
+            else:
+                for group, el_def in entities.items():
+                    if not isinstance(el_def, ElementFilterDefinition):
+                        el_def = JsonConverter.from_json(
+                            el_def, ElementFilterDefinition)
+                    el_def.group = group
+                    self.entities.append(el_def)
+
+        if edges is not None:
+            self.edges = []
+            if isinstance(edges, list):
+                for el_def in edges:
+                    if not isinstance(el_def, ElementFilterDefinition):
+                        el_def = JsonConverter.from_json(
+                            el_def, ElementFilterDefinition)
+                    self.edges.append(el_def)
+            else:
+                for group, el_def in edges.items():
+                    if not isinstance(el_def, ElementFilterDefinition):
+                        el_def = JsonConverter.from_json(
+                            el_def, ElementFilterDefinition)
+                    el_def.group = group
+                    self.edges.append(el_def)
+
+        if global_elements is not None:
+            if not isinstance(global_elements, GlobalElementFilterDefinition):
+                global_elements = JsonConverter.from_json(
+                    global_elements, GlobalElementFilterDefinition)
+            self.global_elements = global_elements
+
+        if global_entities is not None:
+            if not isinstance(global_entities, GlobalElementFilterDefinition):
+                global_entities = JsonConverter.from_json(
+                    global_entities, GlobalElementFilterDefinition)
+            self.global_entities = global_entities
+
+        if global_edges is not None:
+            if not isinstance(global_edges, GlobalElementFilterDefinition):
+                global_edges = JsonConverter.from_json(
+                    global_edges, GlobalElementFilterDefinition)
+            self.global_edges = global_edges
+
+    def to_json(self):
+        operation = super().to_json()
+        if self.input is not None:
+            elements_json = []
+            for element in self.input:
+                elements_json.append(element.to_json())
+            operation['input'] = elements_json
+
+        if self.entities is not None:
+            el_defs = {}
+            for el_def in self.entities:
+                el_defs[el_def.group] = el_def.to_json()
+            operation['entities'] = el_defs
+        if self.edges is not None:
+            el_defs = {}
+            for el_def in self.edges:
+                el_defs[el_def.group] = el_def.to_json()
+            operation['edges'] = el_defs
+
+        if self.global_elements is not None:
+            operation['globalElements'] = self.global_elements.to_json()
+
+        if self.global_entities is not None:
+            operation['globalEntities'] = self.global_entities.to_json()
+
+        if self.global_edges is not None:
+            operation['globalEdges'] = self.global_edges.to_json()
+
+        return operation
+
+
+class Aggregate(Operation):
+    CLASS = 'uk.gov.gchq.gaffer.operation.function.Aggregate'
+
+    def __init__(self,
+                 input=None,
+                 entities=None,
+                 edges=None,
+                 options=None):
+        super().__init__(
+            _class_name=self.CLASS,
+            options=options
+        )
+        self.input = input
+        self.entities = None
+        self.edges = None
+
+        if entities is not None:
+            self.entities = []
+            if isinstance(entities, list):
+                for el_def in entities:
+                    if not isinstance(el_def, ElementAggregateDefinition):
+                        el_def = JsonConverter.from_json(
+                            el_def, ElementAggregateDefinition)
+                    self.entities.append(el_def)
+            else:
+                for group, el_def in entities.items():
+                    if not isinstance(el_def, ElementAggregateDefinition):
+                        el_def = JsonConverter.from_json(
+                            el_def, ElementAggregateDefinition)
+                    el_def.group = group
+                    self.entities.append(el_def)
+
+        if edges is not None:
+            self.edges = []
+            if isinstance(edges, list):
+                for el_def in edges:
+                    if not isinstance(el_def, ElementAggregateDefinition):
+                        el_def = JsonConverter.from_json(
+                            el_def, ElementAggregateDefinition)
+                    self.edges.append(el_def)
+            else:
+                for group, el_def in edges.items():
+                    if not isinstance(el_def, ElementAggregateDefinition):
+                        el_def = JsonConverter.from_json(
+                            el_def, ElementAggregateDefinition)
+                    el_def.group = group
+                    self.edges.append(el_def)
+
+    def to_json(self):
+        operation = super().to_json()
+        if self.input is not None:
+            elements_json = []
+            for element in self.input:
+                elements_json.append(element.to_json())
+            operation['input'] = elements_json
+        if self.entities is not None:
+            el_defs = {}
+            for el_def in self.entities:
+                el_defs[el_def.group] = el_def.to_json()
+            operation['entities'] = el_defs
+        if self.edges is not None:
+            el_defs = {}
+            for el_def in self.edges:
+                el_defs[el_def.group] = el_def.to_json()
+            operation['edges'] = el_defs
+
+        return operation
+
+
+class Transform(Operation):
+    CLASS = 'uk.gov.gchq.gaffer.operation.impl.function.Transform'
+
+    def __init__(self,
+                 input=None,
+                 entities=None,
+                 edges=None,
+                 options=None):
+        super().__init__(
+            _class_name=self.CLASS,
+            options=options
+        )
+        self.input = input
+        self.entities = None
+        self.edges = None
+
+        if entities is not None:
+            self.entities = []
+            if isinstance(entities, list):
+                for el_def in entities:
+                    if not isinstance(el_def, ElementTransformDefinition):
+                        el_def = JsonConverter.from_json(
+                            el_def, ElementTransformDefinition)
+                    self.entities.append(el_def)
+            else:
+                for group, el_def in entities.items():
+                    if not isinstance(el_def, ElementTransformDefinition):
+                        el_def = JsonConverter.from_json(
+                            el_def, ElementTransformDefinition)
+                    el_def.group = group
+                    self.entities.append(el_def)
+
+        if edges is not None:
+            self.edges = []
+            if isinstance(edges, list):
+                for el_def in edges:
+                    if not isinstance(el_def, ElementTransformDefinition):
+                        el_def = JsonConverter.from_json(
+                            el_def, ElementTransformDefinition)
+                    self.edges.append(el_def)
+            else:
+                for group, el_def in edges.items():
+                    if not isinstance(el_def, ElementTransformDefinition):
+                        el_def = JsonConverter.from_json(
+                            el_def, ElementTransformDefinition)
+                    el_def.group = group
+                    self.edges.append(el_def)
+
+    def to_json(self):
+        operation = super().to_json()
+        if self.input is not None:
+            elements_json = []
+            for element in self.input:
+                elements_json.append(element.to_json())
+            operation['input'] = elements_json
+        if self.entities is not None:
+            el_defs = {}
+            for el_def in self.entities:
+                el_defs[el_def.group] = el_def.to_json()
+            operation['entities'] = el_defs
+        if self.edges is not None:
+            el_defs = {}
+            for el_def in self.edges:
+                el_defs[el_def.group] = el_def.to_json()
+            operation['edges'] = el_defs
+
+        return operation
+
+
 class GetGraph:
     def get_url(self):
         return self.url
@@ -2559,6 +2952,52 @@ class JsonConverter:
 
     CUSTOM_JSON_CONVERTERS[Function.CLASS] = function_converter
 
+    def binary_operator_context_converter(obj):
+        if 'class' in obj:
+            binary_operator = dict(obj)
+        else:
+            binary_operator = obj['binary_operator']
+            if isinstance(binary_operator, dict):
+                binary_operator = dict(binary_operator)
+
+        if not isinstance(binary_operator, BinaryOperator):
+            binary_operator = JsonConverter.from_json(binary_operator)
+            if not isinstance(binary_operator, BinaryOperator):
+                class_name = binary_operator.get('class')
+                binary_operator.pop('class', None)
+                binary_operator = BinaryOperator(
+                    class_name=class_name,
+                    fields=binary_operator
+                )
+
+        return BinaryOperatorContext(
+            selection=obj.get('selection'),
+            binary_operator=binary_operator
+        )
+
+    CUSTOM_JSON_CONVERTERS[
+        BinaryOperatorContext.CLASS] = binary_operator_context_converter
+
+    def binary_operator_converter(obj):
+        if isinstance(obj, dict):
+            binary_operator = dict(obj)
+        else:
+            binary_operator = obj
+
+        if not isinstance(binary_operator, BinaryOperator):
+            binary_operator = JsonConverter.from_json(binary_operator)
+            if not isinstance(binary_operator, BinaryOperator):
+                class_name = binary_operator.get('class')
+                binary_operator.pop('class', None)
+                binary_operator = BinaryOperator(
+                    class_name=class_name,
+                    fields=binary_operator
+                )
+
+        return binary_operator
+
+    CUSTOM_JSON_CONVERTERS[BinaryOperator.CLASS] = binary_operator_converter
+
     @staticmethod
     def to_snake_case(name):
         s1 = re.sub('(.)([A-Z][a-z]+)', r'\1_\2', name)
@@ -2625,6 +3064,11 @@ class JsonConverter:
                 elif isinstance(json_obj, ToJson):
                     json_obj = json_obj.to_json()
 
+                if not isinstance(obj, ToJson):
+                    if not isinstance(json_obj, str):
+                        json_obj = json.dumps(json_obj)
+                    raise TypeError(
+                        'Json object could not be deserialised correctly: \n' + json_obj)
                 if json_obj != obj.to_json():
                     raise TypeError(
                         'Json object could not be deserialised correctly: \n'
