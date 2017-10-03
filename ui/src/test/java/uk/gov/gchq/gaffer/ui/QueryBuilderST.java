@@ -4,6 +4,8 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.By;
+import org.openqa.selenium.Dimension;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.firefox.FirefoxDriver;
@@ -40,10 +42,14 @@ public class QueryBuilderST {
             "    }\n" +
             "  ],\n" +
             "  \"view\": {\n" +
+            "    \"globalElements\": [\n" +
+            "      {\n" +
+            "        \"groupBy\": []\n" +
+            "      }\n" +
+            "    ],\n" +
             "    \"entities\": {},\n" +
             "    \"edges\": {\n" +
             "      \"RoadUse\": {\n" +
-            "        \"groupBy\": [],\n" +
             "        \"preAggregationFilterFunctions\": [\n" +
             "          {\n" +
             "            \"predicate\": {\n" +
@@ -85,6 +91,10 @@ public class QueryBuilderST {
         url = System.getProperty(URL_PROPERTY, DEFAULT_URL);
         slowFactor = Integer.parseInt(System.getProperty(SLOW_FACTOR_PROPERTY, DEFAULT_SLOW_FACTOR));
         driver = new FirefoxDriver();
+
+        // Create a large window to ensure we don't need to scroll
+        final Dimension dimension = new Dimension(1200, 1000);
+        driver.manage().window().setSize(dimension);
     }
 
     @After
@@ -105,23 +115,21 @@ public class QueryBuilderST {
         click("add-seed");
 
         selectOption("vertexType", "junction");
-        enterText("vertex", "M5:10");
+        enterText("addSeedVertex", "M5:10");
         click("add-seed-confirm");
 
         click("build-query");
+
+        click("Get Elements");
         click("select-all-seeds");
-        click("step-1-next");
-
         click("related-edge-RoadUse");
-        click("step-2-next");
-
         click("RoadUse-add-filter");
         selectOption("RoadUse-property-selector", "startDate");
         selectOption("RoadUse-startDate-predicate-selector", "uk.gov.gchq.koryphe.impl.predicate.IsMoreThan");
         enterText("RoadUse-startDate-uk.gov.gchq.koryphe.impl.predicate.IsMoreThan-value", "{\"java.util.Date\": 971416800000}");
-        click("step-3-next");
+        click("build-query-next");
 
-        click("step-4-execute");
+        click("build-query-execute");
 
         click("open-raw");
         assertEquals(EXPECTED_OPERATION_JSON, getElement("operation-0-json").getText().trim());
@@ -151,6 +159,10 @@ public class QueryBuilderST {
 
     private void clickTab(final String tabTitle) {
         driver.findElement(By.xpath("//md-tab-item//span[contains(text(), '" + tabTitle + "')]")).click();
+    }
+
+    private void execute(final String script) {
+        ((JavascriptExecutor) driver).executeScript(script);
     }
 
     private WebElement getElement(final String id) {

@@ -16,14 +16,19 @@
 
 angular.module('app').factory('raw', ['$http', 'settings', function($http, settings){
     var raw = {};
-    raw.results = {entities: [], edges: []};
+    raw.results = {entities: [], edges: [], entitySeeds: [], other: []};
+    raw.namedOpClass = "uk.gov.gchq.gaffer.named.operation.NamedOperation";
+    raw.availableOps = [];
 
     var updateResultsListener;
-    var updateScope;
+    raw.updateScope;
+
     raw.initialise = function(newUpdateResultsListener, newUpdateScope) {
         raw.loadSchema();
         updateResultsListener = newUpdateResultsListener;
-        updateScope = newUpdateScope;
+        raw.updateScope = newUpdateScope;
+
+        raw.loadNamedOps();
     };
 
     raw.loadSchema = function() {
@@ -47,7 +52,7 @@ angular.module('app').factory('raw', ['$http', 'settings', function($http, setti
         }
 
         if(!onSuccess) {
-            onSuccess = updateResults;
+            onSuccess = raw.updateResults;
         }
 
         raw.loading = true;
@@ -61,19 +66,19 @@ angular.module('app').factory('raw', ['$http', 'settings', function($http, setti
             success: function(results){
                 raw.loading = false;
                 onSuccess(results);
-                updateScope();
+                raw.updateScope();
             },
             error: function(xhr, status, err) {
                 console.log(queryUrl, status, err);
                 alert("Error: " + xhr.statusCode().responseText);
                 raw.loading = false;
-                updateScope();
+                raw.updateScope();
             }
        });
     }
 
     raw.clearResults = function() {
-        raw.results = {entities: [], edges: []};
+        raw.results = {entities: [], edges: [], entitySeeds: [], other: []};
     }
 
     raw.entityProperties = function(entity) {
@@ -141,15 +146,94 @@ angular.module('app').factory('raw', ['$http', 'settings', function($http, setti
          });
     }
 
-    var updateResults = function(results) {
+    raw.loadNamedOps = function() {
+          raw.execute(JSON.stringify(
+                {
+                    class: "uk.gov.gchq.gaffer.named.operation.GetAllNamedOperations"
+                }
+          ), updateNamedOperations);
+    }
+
+    var opAllowed = function(opName) {
+        var allowed = true;
+        if(settings.whiteList) {
+            allowed = settings.whiteList.indexOf(opName) > -1;
+        }
+        if(allowed && settings.blackList) {
+            allowed = settings.backList.indexOf(opName) == -1;
+        }
+        return allowed;
+    }
+    var updateNamedOperations = function(results) {
+        raw.availableOps = [];
+        for(var i in settings.defaultAvailableOps) {
+            if(opAllowed(settings.defaultAvailableOps[i].name)) {
+                raw.availableOps.push(settings.defaultAvailableOps[i]);
+            }
+        }
+
         if(results) {
             for (var i in results) {
-                var element = results[i];
-                if(element.vertex !== undefined && element.vertex !== '') {
-                    raw.results.entities.push(element);
-                } else if(element.source !== undefined && element.source !== ''
-                && element.destination !== undefined && element.destination !== '') {
-                    raw.results.edges.push(element);
+                if(opAllowed(results[i].operationName)) {
+                    if(results[i].parameters) {
+                        for(j in results[i].parameters) {
+                            results[i].parameters[j].value = results[i].parameters[j].defaultValue;
+                            if(results[i].parameters[j].defaultValue) {
+                                var valueClass = results[i].parameters[j].valueClass;
+                                results[i].parameters[j].parts = settings.getType(valueClass).createParts(valueClass, results[i].parameters[j].defaultValue);
+                            } else {
+                                results[i].parameters[j].parts = {};
+                            }
+                        }
+                    }
+                    raw.availableOps.push({
+                        class: raw.namedOpClass,
+                        name: results[i].operationName,
+                        parameters: results[i].parameters,
+                        description: results[i].description,
+                        operations: results[i].operations,
+                        view: false,
+                        input: true,
+                        namedOp: true,
+                        inOutFlag: false
+                    });
+                }
+            }
+        }
+    }
+
+    raw.updateResults = function(results) {
+        if(results) {
+            for (var i in results) {
+                var result = results[i];
+
+                if(result.class === "uk.gov.gchq.gaffer.data.element.Entity") {
+                    if(result.vertex !== undefined && result.vertex !== '') {
+                        raw.results.entities.push(result);
+                        if(raw.results.entitySeeds.indexOf(result.vertex) == -1) {
+                            raw.results.entitySeeds.push(result.vertex);
+                        }
+                    }
+                } else if(result.class === "uk.gov.gchq.gaffer.operation.data.EntitySeed") {
+                   if(result.vertex !== undefined && result.vertex !== '') {
+                       if(raw.results.entitySeeds.indexOf(result.vertex) == -1) {
+                           raw.results.entitySeeds.push(result.vertex);
+                       }
+                   }
+                } else if(result.class === "uk.gov.gchq.gaffer.data.element.Edge") {
+                    if(result.source !== undefined && result.source !== ''
+                         && result.destination !== undefined && result.destination !== '') {
+                       raw.results.edges.push(result);
+
+                       if(raw.results.entitySeeds.indexOf(result.source) == -1) {
+                           raw.results.entitySeeds.push(result.source);
+                       }
+                       if(raw.results.entitySeeds.indexOf(result.destination) == -1) {
+                           raw.results.entitySeeds.push(result.destination);
+                       }
+                    }
+                } else {
+                    raw.results.other.push(result);
                 }
             }
         }

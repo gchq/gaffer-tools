@@ -124,3 +124,11 @@ textarea {
 .no-bottom-border {
     margin-bottom: 0;
 }
+
+.fullWidthDialog {
+    min-width: 940px;
+}
+
+tr.selected td {
+  background: #ccc!important;
+}

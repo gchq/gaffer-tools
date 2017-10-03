@@ -745,7 +745,7 @@ def complex_op_chain(gc):
                                 g.FunctionContext(
                                     selection=['countByVehicleType'],
                                     function=g.Function(
-                                        class_name='uk.gov.gchq.gaffer.function.FreqMapExtractor',
+                                        class_name='uk.gov.gchq.gaffer.types.function.FreqMapExtractor',
                                         fields={'key': 'BUS'}
                                     ),
                                     projection=['busCount']

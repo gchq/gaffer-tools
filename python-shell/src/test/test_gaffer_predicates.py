@@ -456,6 +456,19 @@ class GafferPredicatesTest(unittest.TestCase):
             g.Regex(
                 value={'java.util.regex.Pattern': '[a-d0-4]'}
             )
+        ],
+        [
+            '''
+            {
+                "class":"uk.gov.gchq.koryphe.impl.predicate.StringContains",
+                "value":"someValue",
+                "ignoreCase":false
+            }
+            ''',
+            g.StringContains(
+                value='someValue',
+                ignore_case=False
+            )
         ]
     ]
 
@@ -466,6 +479,7 @@ class GafferPredicatesTest(unittest.TestCase):
                 example[1].to_json(),
                 "json failed: \n" + example[0]
             )
+            g.JsonConverter.from_json(example[0], validate=True)
 
 
 if __name__ == "__main__":

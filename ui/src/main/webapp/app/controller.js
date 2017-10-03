@@ -15,44 +15,32 @@
  */
 
 angular.module('app').controller('AppController',
-    [ '$scope', '$mdDialog', '$http', '$location', 'settings', 'graph', 'raw', 'table',
-    function($scope, $mdDialog, $http, $location, settings, graph, raw, table){
+    [ '$scope', '$mdDialog', '$http', '$location', 'settings', 'graph', 'raw', 'table', 'buildQuery', 'nav',
+    function($scope, $mdDialog, $http, $location, settings, graph, raw, table, buildQuery, nav){
 
     $scope.settings = settings;
     $scope.rawData = raw;
     $scope.graph = graph;
     $scope.table = table;
+    $scope.buildQuery = buildQuery;
+    $scope.nav = nav;
+
     $scope.operations = [];
-
-    $scope.graphData = {entities: {}, edges: {}};
-
-    $scope.selectedElementTabIndex = 0;
+    $scope.graphData = {entities: {}, edges: {}, entitySeeds: {}};
     $scope.selectedEntities = {};
     $scope.selectedEdges = {};
-
-    $scope.buildQueryStep = 0;
-    $scope.expandEntities = [];
-    $scope.expandEdges = [];
-    $scope.expandEntitiesContent = {};
-    $scope.expandEdgesContent = {};
-    $scope.inOutFlag = "EITHER";
+    $scope.selectedElementTabIndex = 0;
     $scope.editingOperations = false;
 
-    $scope.buildQuery = function() {
-        $scope.openGraph();
-        $scope.showBuildQuery = true;
-        $scope.buildQueryTab = 0;
-    }
+    $scope.addSeedVertex = '';
+    $scope.addSeedVertexParts = {};
 
-    $scope.goToStep = function(stepId) {
-        $scope.buildQueryStep = stepId - 1;
-        if(stepId > 2) {
-            executeBuildQueryCounts();
-        }
+    $scope.onNamedOpSelect = function(op) {
+       $scope.namedOp.onNamedOpSelect(op);
     }
 
     $scope.redraw = function() {
-        if($scope.showGraph) {
+        if(nav.showGraph) {
             $scope.selectedEntities = {};
             $scope.selectedEdges = {};
             graph.redraw();
@@ -60,7 +48,7 @@ angular.module('app').controller('AppController',
     };
 
     $scope.initialise = function() {
-        $scope.openGraph();
+        $scope.nav.openGraph();
 
         var updateResultsListener = function() {
             updateGraphData(raw.results);
@@ -79,29 +67,44 @@ angular.module('app').controller('AppController',
         raw.initialise(updateResultsListener, updateScope);
     };
 
+    var createSeed = function(type, parts) {
+      var typeClass = $scope.rawData.schema.types[type].class;
+      var vertex = settings.getType(typeClass).createValueAsJsonWrapperObj(typeClass, parts);
+      return {vertexType: type, vertex: vertex};
+    }
     function addSeedDialogController($scope, $mdDialog) {
         $scope.addSeedCancel = function() {
           $mdDialog.cancel();
         };
 
         $scope.addSeedAdd = function() {
-          try {
-             JSON.parse($scope.addSeedVertex);
-          } catch(err) {
-             // Try adding quotes
-             $scope.addSeedVertex = "\"" + $scope.addSeedVertex + "\"";
-
-             try {
-               JSON.parse($scope.addSeedVertex);
-             } catch(err) {
-               alert("Error: vertex is not valid - " + $scope.addSeedVertex);
-             }
+          var seeds = [];
+          if($scope.addMultipleSeeds) {
+              var vertices = $scope.addSeedVertices.trim().split("\n");
+              for(var i in vertices) {
+                var vertex = vertices[i];
+                var vertexType = $scope.addSeedVertexType;
+                var typeClass = $scope.rawData.schema.types[vertexType].class;
+                var partValues = vertex.trim().split(",");
+                var types = settings.getType(typeClass).types;
+                if(types.length != partValues.length) {
+                    alert("Wrong number of parameters for seed: " + vertex + ". " + vertexType + " requires " + types.length + " parameters");
+                    break;
+                }
+                var parts = {};
+                for(var j = 0; j< types.length; j++) {
+                    parts[types[j].key] = partValues[j];
+                }
+                seeds.push(createSeed(vertexType, parts));
+              }
+          } else {
+              seeds.push(createSeed($scope.addSeedVertexType, $scope.addSeedVertexParts));
           }
-
-          var seed = {vertexType: $scope.addSeedVertexType, vertex: $scope.addSeedVertex};
-           $scope.addSeedVertexType = '';
-           $scope.addSeedVertex = '';
-          $mdDialog.hide(seed);
+          $scope.addSeedVertexType = '';
+          $scope.addSeedVertex = '';
+          $scope.addSeedVertices = '';
+          $scope.addSeedVertexParts = {};
+          $mdDialog.hide(seeds);
         };
       }
 
@@ -113,13 +116,40 @@ angular.module('app').controller('AppController',
               templateUrl: 'app/graph/addSeedDialog.html',
               parent: angular.element(document.body),
               targetEvent: ev,
-              clickOutsideToClose:true,
+              clickOutsideToClose: true,
               fullscreen: $scope.customFullscreen
             })
-            .then(function(seed) {
-              $scope.addSeed(seed.vertexType, seed.vertex);
+            .then(function(seeds) {
+              for(var i in seeds) {
+                  $scope.addSeed(seeds[i].vertexType, JSON.stringify(seeds[i].vertex));
+              }
+              if(nav.showResultsTable) {
+                table.selectedTab = 2;
+              }
             });
       };
+
+    $scope.openBuildQueryDialog = function(ev) {
+        $scope.buildQuery.step = 0;
+
+        $mdDialog.show({
+          scope: $scope,
+          preserveScope: true,
+          controller: $scope.buildQuery.dialogController,
+          templateUrl: 'app/graph/buildQueryDialog.html',
+          parent: angular.element(document.body),
+          targetEvent: ev,
+          clickOutsideToClose: true,
+          fullscreen: $scope.customFullscreen
+        })
+        .then(function(operation) {
+            $scope.operations.push(operation);
+            raw.execute(JSON.stringify({
+                class: "uk.gov.gchq.gaffer.operation.OperationChain",
+                operations: [operation, createLimitOperation(), createDeduplicateOperation()]
+            }));
+        });
+    }
 
     var getVertexTypeFromEntityGroup = function(group) {
         for(var entityGroup in raw.schema.entities) {
@@ -142,10 +172,14 @@ angular.module('app').controller('AppController',
         for(id in $scope.selectedEntities) {
             var vertexType = $scope.selectedEntities[id][0].vertexType;
             for(var entityGroup in raw.schema.entities) {
-                var entity = raw.schema.entities[entityGroup];
-                if(entity.vertex === vertexType
-                    && $scope.relatedEntities.indexOf(entityGroup) === -1) {
-                    $scope.relatedEntities.push(entityGroup);
+                if(vertexType === "unknown") {
+                     $scope.relatedEntities.push(entityGroup);
+                } else {
+                    var entity = raw.schema.entities[entityGroup];
+                    if(entity.vertex === vertexType
+                        && $scope.relatedEntities.indexOf(entityGroup) === -1) {
+                        $scope.relatedEntities.push(entityGroup);
+                    }
                 }
             }
         }
@@ -165,8 +199,8 @@ angular.module('app').controller('AppController',
         }
     }
 
-    $scope.addSeed = function(vertex, value) {
-        graph.addSeed(vertex, value);
+    $scope.addSeed = function(vertexType, vertex) {
+        graph.addSeed(vertexType, vertex);
     }
 
     arrayContainsValue = function(arr, value) {
@@ -180,88 +214,11 @@ angular.module('app').controller('AppController',
         return false;
     }
 
-    $scope.addFilterFunction = function(expandElementContent, element) {
-        if(!expandElementContent[element]) {
-            expandElementContent[element] = {};
-        }
-
-        if(!expandElementContent[element].filters) {
-            expandElementContent[element].filters = [];
-        }
-
-        expandElementContent[element].filters.push({});
-    }
-
-    createBuildQueryOperation = function() {
-        var operation = createOperation();
-        var jsonVertex;
-        for(var vertex in $scope.selectedEntities) {
-            try {
-               jsonVertex = JSON.parse(vertex);
-            } catch(err) {
-               jsonVertex = vertex;
-            }
-            operation.input.push({
-                      "class": "uk.gov.gchq.gaffer.operation.data.EntitySeed",
-                      "vertex": jsonVertex
-                   });
-        }
-
-        for(var i in $scope.expandEntities) {
-            var entity = $scope.expandEntities[i];
-            operation.view.entities[entity] = {groupBy: []};
-
-            var filterFunctions = convertFilterFunctions($scope.expandEntitiesContent[entity], raw.schema.entities[entity]);
-            if(filterFunctions.length > 0) {
-                operation.view.entities[entity].preAggregationFilterFunctions = filterFunctions;
-            }
-        }
-
-        for(var i in $scope.expandEdges) {
-            var edge = $scope.expandEdges[i];
-            operation.view.edges[edge] = {groupBy: []};
-
-            var filterFunctions = convertFilterFunctions($scope.expandEdgesContent[edge], raw.schema.edges[edge]);
-            if(filterFunctions.length > 0) {
-                operation.view.edges[edge].preAggregationFilterFunctions = filterFunctions;
-            }
-        }
-
-        operation.includeIncomingOutGoing = $scope.inOutFlag;
-        return operation;
-    }
-
-    var convertFilterFunctions = function(expandElementContent, elementDefinition) {
-        var filterFunctions = [];
-        if(expandElementContent && expandElementContent.filters) {
-            for(var index in expandElementContent.filters) {
-                var filter = expandElementContent.filters[index];
-                if(filter.property && filter['predicate']) {
-                    var functionJson = {
-                        "predicate": {
-                            class: filter['predicate']
-                        },
-                        selection: [ filter.property ]
-                    };
-
-                    for(var i in filter.availableFunctionParameters) {
-                        if(filter.parameters[i]) {
-                            functionJson["predicate"][filter.availableFunctionParameters[i]] = JSON.parse(filter.parameters[i]);
-                        }
-                    }
-
-                    filterFunctions.push(functionJson);
-                }
-            }
-        }
-        return filterFunctions;
-    }
-
     $scope.clearResults = function() {
         raw.clearResults();
         $scope.selectedEntities = {};
         $scope.selectedEdges = {};
-        $scope.graphData = {entities: {}, edges: {}};
+        $scope.graphData = {entities: {}, edges: {}, entitySeeds: {}};
         table.clear();
         graph.clear();
     }
@@ -286,7 +243,7 @@ angular.module('app').controller('AppController',
     }
 
     var updateGraphData = function(results) {
-        $scope.graphData = {entities: {}, edges: {}};
+        $scope.graphData = {entities: {}, edges: {}, entitySeeds: {}};
         for (var i in results.entities) {
             var entity = clone(results.entities[i]);
             entity.vertex = parseVertex(entity.vertex);
@@ -318,6 +275,21 @@ angular.module('app').controller('AppController',
                 $scope.graphData.edges[id] = [edge];
             }
         }
+
+        for (var i in results.entitySeeds) {
+            var entitySeed = {
+               vertex: parseVertex(results.entitySeeds[i]),
+               vertexType: "unknown"
+            }
+            var id = entitySeed.vertex;
+            if(id in $scope.graphData.entitySeeds) {
+                if(!arrayContainsValue($scope.graphData.entitySeeds[id], entitySeed)) {
+                    $scope.graphData.entitySeeds[id].push(entitySeed);
+                }
+            } else {
+                $scope.graphData.entitySeeds[id] = [entitySeed];
+            }
+        }
         $scope.updateGraph();
     }
 
@@ -325,18 +297,13 @@ angular.module('app').controller('AppController',
         return JSON.parse(JSON.stringify(obj));
     }
 
-    var createOperation = function() {
-        return {
-            class: "uk.gov.gchq.gaffer.operation.impl.get.GetElements",
-            input: [],
-            view: {
-                entities: {},
-                edges: {}
-            }
-        };
-    }
+    $scope.addOperation = function() {
+        $scope.operations.push({
+             class: settings.defaultOp
+        });
+    };
 
-    var createLimitOperation = function() {
+  var createLimitOperation = function() {
         return {
             class: "uk.gov.gchq.gaffer.operation.impl.Limit",
             resultLimit: settings.resultLimit
@@ -349,67 +316,22 @@ angular.module('app').controller('AppController',
         };
     }
 
-    $scope.addOperation = function() {
-        $scope.operations.push(createOperation());
-    };
-
-    $scope.resetBuildQuery = function() {
-        $scope.expandEdges = [];
-        $scope.expandEntities = [];
-        $scope.showBuildQuery = false;
-        $scope.buildQueryStep = 0;
-        $scope.expandQueryCounts = undefined;
-        $scope.expandEntitiesContent = {};
-        $scope.expandEdgesContent = {};
-    };
-
-    $scope.executeBuildQuery = function() {
-        var operation = createBuildQueryOperation();
-        $scope.operations.push(operation);
-        $scope.resetBuildQuery();
-        raw.execute(JSON.stringify({
-            operations: [operation, createLimitOperation(), createDeduplicateOperation()],
-            class: "uk.gov.gchq.gaffer.operation.OperationChain"
-        }));
-    };
-
-    var createCountOperation = function() {
-        return {
-            class: "uk.gov.gchq.gaffer.operation.impl.CountGroups",
-            limit: (settings.resultLimit - 1)
-        };
-    }
-
-    var executeBuildQueryCounts = function() {
-        var operations = {
-            operations: [createBuildQueryOperation(), createCountOperation()],
-            class: "uk.gov.gchq.gaffer.operation.OperationChain"
-        };
-        var onSuccess = function(data) {
-            if(!data.limitHit) {
-                var total = 0;
-                for(var i in data.entityGroups) {
-                    total += data.entityGroups[i];
-                }
-                for(var i in data.edgeGroups) {
-                    total += data.edgeGroups[i];
-                }
-                data.total = total;
-            }
-            $scope.expandQueryCounts = data;
-        }
-        $scope.expandQueryCounts = undefined;
-        raw.execute(JSON.stringify(operations), onSuccess);
-    };
-
     $scope.executeAll = function() {
         $scope.clearResults();
-        $scope.resetBuildQuery();
+        buildQuery.resetBuildQuery();
        for(var i in $scope.operations) {
-           raw.execute(JSON.stringify({
-               operations: [$scope.operations[i], createLimitOperation(), createDeduplicateOperation()],
-               class: "uk.gov.gchq.gaffer.operation.OperationChain"
-           }));
+           try {
+              raw.execute(JSON.stringify({
+                class: "uk.gov.gchq.gaffer.operation.OperationChain",
+                operations: [$scope.operations[i], createLimitOperation(), createDeduplicateOperation()]
+            }));
+           } catch(e) {
+              // Try without the limit and deduplicate operations
+              raw.execute(JSON.stringify({
+                class: "uk.gov.gchq.gaffer.operation.OperationChain",
+                operations: [$scope.operations[i]]
+            }));
+           }
        }
     }
 
@@ -463,77 +385,6 @@ angular.module('app').controller('AppController',
 
       $scope.$apply();
   });
-
-  $scope.toggle = function(item, list) {
-    var idx = list.indexOf(item);
-    if(idx > -1) {
-        list.splice(idx, 1);
-    } else {
-        list.push(item);
-    }
-  }
-
-  $scope.exists = function(item, list) {
-    return list.indexOf(item) > -1;
-  }
-
-  $scope.onSelectedPropertyChange = function(group, selectedElement) {
-    raw.functions(group, selectedElement.property, function(data) {
-        selectedElement.availableFunctions = data
-        $scope.$apply();
-    });
-    selectedElement.predicate = '';
-  }
-
-  $scope.onSelectedFunctionChange = function(group, selectedElement) {
-    raw.functionParameters(selectedElement['predicate'], function(data) {
-        selectedElement.availableFunctionParameters = data;
-        $scope.$apply();
-    });
-
-    var elementDef = raw.schema.entities[group];
-    if(!elementDef) {
-         elementDef = raw.schema.edges[group];
-    }
-    var propertyClass = raw.schema.types[elementDef.properties[selectedElement.property]].class;
-    if("java.lang.String" !== propertyClass
-        && "java.lang.Boolean" !== propertyClass
-        && "java.lang.Integer" !== propertyClass) {
-        selectedElement.propertyClass = propertyClass;
-    }
-
-    selectedElement.parameters = {};
-  }
-
-  var switchTabs = function(tabFlag) {
-      $scope.showRaw = false;
-      $scope.showGraph = false;
-      $scope.showResultsTable = false;
-      $scope.showSettings = false;
-      $scope[tabFlag] = true;
-  };
-
-  $scope.openRaw = function() {
-     switchTabs('showRaw');
-  };
-
-  $scope.openGraph = function() {
-      if(!$scope.graphDataGraphLoaded) {
-          graph.load()
-               .then(function(){
-                 $scope.graphDataGraphLoaded = true;
-               });
-       }
-     switchTabs('showGraph');
-  };
-
-  $scope.openResultsTable = function() {
-    switchTabs('showResultsTable');
-  };
-
-  $scope.openSettings = function() {
-     switchTabs('showSettings');
-  };
 
   $scope.editOperations = function() {
     $scope.operationsForEdit = [];
