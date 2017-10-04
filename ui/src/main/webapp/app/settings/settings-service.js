@@ -14,46 +14,38 @@
  * limitations under the License.
  */
 
-(function() {
+'use strict'
 
-    'use strict'
+angular.module('app').factory('settings', function() {
+    var settings = {}
 
-    angular.module('app').factory('settingsService', settingsService);
+    settings.resultLimit = 100
+    settings.restUrl = window.location.origin + "/rest/latest"
+    settings.defaultOp = "uk.gov.gchq.gaffer.operation.impl.get.GetElements"
 
-
-    function settingsService() {
-
-        var settings = {}
-
-        settings.resultLimit = 100
-        settings.restUrl = window.location.origin + "/rest/latest"
-        settings.defaultOp = "uk.gov.gchq.gaffer.operation.impl.get.GetElements"
-
-        settings.getResultLimit = function() {
-            return settings.resultLimit
-        }
-
-        settings.setResultLimit = function(limit) {
-            settings.resultLimit = limit
-        }
-
-        settings.getRestUrl = function() {
-            return settings.restUrl
-        }
-
-        settings.setRestUrl = function(url) {
-            settings.restUrl = url
-        }
-
-        settings.getDefaultOp = function() {
-            return defaultOp
-        }
-
-        settings.setDefaultOp = function(op) {
-            settings.defaultOp = op
-        }
-
-        return settings
+    settings.getResultLimit = function() {
+        return settings.resultLimit
     }
 
-})()
+    settings.setResultLimit = function(limit) {
+        settings.resultLimit = limit
+    }
+
+    settings.getRestUrl = function() {
+        return settings.restUrl
+    }
+
+    settings.setRestUrl = function(url) {
+        settings.restUrl = url
+    }
+
+    settings.getDefaultOp = function() {
+        return defaultOp
+    }
+
+    settings.setDefaultOp = function(op) {
+        settings.defaultOp = op
+    }
+
+    return settings
+})

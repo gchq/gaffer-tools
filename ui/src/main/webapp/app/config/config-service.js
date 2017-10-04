@@ -1,39 +1,30 @@
-(function() {
-
-    'use strict'
-
-    angular.module('app').factory('configService', configService)
-
-    function configService($http) {
-
-        var config = {}
-
-        loadConfig();
-
-        return {
-            getConfig: getConfig
-        }
-
-        function getConfig() {
-            return config;
-        }
-
-        function setConfig(conf) {
-            config = conf
-        }
-
-        function loadConfig() {
-            $http.get('/config/config.json')
-            .success(function(results) {
-                setConfig(results)
-            })
-            .error(function(err) {
-                console.err("Failed to load config: " + err)
-            })
-        }
 
 
+'use strict'
 
+angular.module('app').factory('config', ['$http', function($http) {
+
+    var configService = {}
+    configService.config = {}
+
+    configService.getConfig = function() {
+        return configService.config
     }
 
-})()
+    configService.setConfig = function(conf) {
+        configService.config = conf
+    }
+
+    configService.loadConfig = function() {
+        $http.get('/config/config.json')
+        .success(function(results) {
+            configService.setConfig(results)
+        })
+        .error(function(err) {
+            console.error("Failed to load config: " + err)
+        })
+    }
+
+    return configService
+
+}])

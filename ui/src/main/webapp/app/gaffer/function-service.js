@@ -1,58 +1,52 @@
-(function() {
+'use strict'
 
-    'use strict'
+angular.module('app').factory('functions', ['$http', 'schema', 'settings', function($http, schema, settings) {
 
-    angular.module('app').factory('functionService', functionService)
+    var functions = {}
 
-    function functionService($http, schemaService, settingsService) {
 
-        return {
-            getFunctions: getFunctions,
-            getFunctionParameters: getFunctionParameters
+    functions.getFunctions = function(group, property, onSuccess) {
+        var type;
+        var schema = schema.getSchema();
+
+        if(schema.entities[group]) {
+            type = schema.entities[group].properties[property];
+        } else if(schema.edges[group]) {
+           type = schema.edges[group].properties[property];
         }
 
-        function getFunctions(group, property, onSuccess) {
-            var type;
-            var schema = schemaService.getSchema()
-            if(schema.entities[group]) {
-                type = schema.entities[group].properties[property];
-            } else if(schema.edges[group]) {
-               type = schema.edges[group].properties[property];
-            }
-
-            var className = "";
-            if(type) {
-              className = schema.types[type].class;
-            }
-
-            var queryUrl = settingsService.getRestUrl + "/graph/config/filterFunctions/" + className;
-            
-            if(!queryUrl.startsWith("http")) {
-                queryUrl = "http://" + queryUrl;
-            }
-
-            $http.get(queryUrl)
-            .success(onSuccess)
-            .error(function(err) {
-                console.err('ERROR: error loading functions for group: ' + group + ', property: ' + property + '.\n' + err)
-            })
+        var className = "";
+        if(type) {
+          className = schema.types[type].class;
         }
 
-        function getFunctionParameters(functionClassName, onSuccess) {
-            var queryUrl = settings.restUrl + "/graph/config/serialisedFields/" + functionClassName;
+        var queryUrl = settings.getRestUrl() + "/graph/config/filterFunctions/" + className;
 
-            if(!queryUrl.startsWith("http")) {
-                queryUrl = "http://" + queryUrl;    // TODO create common util service
-            }
-
-            $http.get(queryUrl)
-            .success(onSuccess)
-            .error(function(err) {
-                console.err('ERROR: Failed to get serialised fields for ' + functionClassName + '.\n' + err)
-            })
-
-
+        if(!queryUrl.startsWith("http")) {
+            queryUrl = "http://" + queryUrl;
         }
 
+        $http.get(queryUrl)
+        .success(onSuccess)
+        .error(function(err) {
+            console.err('ERROR: error loading functions for group: ' + group + ', property: ' + property + '.\n' + err)
+        })
     }
-})()
+
+    functions.getFunctionParameters = function(functionClassName, onSuccess) {
+        var queryUrl = settings.restUrl + "/graph/config/serialisedFields/" + functionClassName;
+
+        if(!queryUrl.startsWith("http")) {
+            queryUrl = "http://" + queryUrl;    // TODO create common util service
+        }
+
+        $http.get(queryUrl)
+        .success(onSuccess)
+        .error(function(err) {
+            console.err('ERROR: Failed to get serialised fields for ' + functionClassName + '.\n' + err)
+        })
+    }
+
+    return functions;
+
+}])

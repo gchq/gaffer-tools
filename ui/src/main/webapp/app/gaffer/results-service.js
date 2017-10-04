@@ -1,64 +1,58 @@
-(function() {
+'use strict'
 
-    'use strict'
+angular.module('app').factory('results', ['$q', function($q) {
 
-    angular.module('app').factory('resultsService', resultsService)
+    var resultService = {}
+    resultService.results = {entities: [], edges: [], entitySeeds: [], other: []}
 
-    function resultsService() {
+    var defer = $q.defer()
 
-        return {
-            getResults: getResults,
-            updateResults: updateResults,
-            clearResults: clearResults
-        }
+    resultService.observeResults = function() {
+        return defer.promise
+    }
 
+    resultService.clearResults = function() {
+        resultService.results = {entities: [], edges: [], entitySeeds: [], other: []}
+    }
 
-        var results = {entities: [], edges: [], entitySeeds: [], other: []}
+    resultService.updateResults = function(results, callback) {
+        if(results) {
+            for (var i in results) {
+                var result = results[i];
 
-        function getResults() {
-            return results
-        }
-
-        function clearResults() {
-            results = {entities: [], edges: [], entitySeeds: [], other: []}
-        }
-
-        function updateResults(results, callback) {
-            if(results) {
-                for (var i in results) {
-                    var result = results[i];
-
-                    if(result.class === "uk.gov.gchq.gaffer.data.element.Entity") {
-                        if(result.vertex !== undefined && result.vertex !== '') {
-                            results.entities.push(result);
-                            if(results.entitySeeds.indexOf(result.vertex) == -1) {
-                                results.entitySeeds.push(result.vertex);
-                            }
+                if(result.class === "uk.gov.gchq.gaffer.data.element.Entity") {
+                    if(result.vertex !== undefined && result.vertex !== '') {
+                        resultService.results.entities.push(result);
+                        if(resultService.results.entitySeeds.indexOf(result.vertex) == -1) {
+                            resultService.results.entitySeeds.push(result.vertex);
                         }
-                    } else if(result.class === "uk.gov.gchq.gaffer.operation.data.EntitySeed") {
-                       if(result.vertex !== undefined && result.vertex !== '') {
-                           if(results.entitySeeds.indexOf(result.vertex) == -1) {
-                               results.entitySeeds.push(result.vertex);
-                           }
-                       }
-                    } else if(result.class === "uk.gov.gchq.gaffer.data.element.Edge") {
-                        if(result.source !== undefined && result.source !== ''
-                             && result.destination !== undefined && result.destination !== '') {
-                           results.edges.push(result);
-
-                           if(results.entitySeeds.indexOf(result.source) == -1) {
-                               results.entitySeeds.push(result.source);
-                           }
-                           if(results.entitySeeds.indexOf(result.destination) == -1) {
-                               results.entitySeeds.push(result.destination);
-                           }
-                        }
-                    } else {
-                        results.other.push(result);
                     }
+                } else if(result.class === "uk.gov.gchq.gaffer.operation.data.EntitySeed") {
+                   if(result.vertex !== undefined && result.vertex !== '') {
+                       if(resultService.results.entitySeeds.indexOf(result.vertex) == -1) {
+                           resultService.results.entitySeeds.push(result.vertex);
+                       }
+                   }
+                } else if(result.class === "uk.gov.gchq.gaffer.data.element.Edge") {
+                    if(result.source !== undefined && result.source !== ''
+                         && result.destination !== undefined && result.destination !== '') {
+                       resultService.results.edges.push(result);
+
+                       if(resultService.results.entitySeeds.indexOf(result.source) == -1) {
+                           resultService.results.entitySeeds.push(result.source);
+                       }
+                       if(resultService.results.entitySeeds.indexOf(result.destination) == -1) {
+                           resultService.results.entitySeeds.push(result.destination);
+                       }
+                    }
+                } else {
+                    resultService.results.other.push(result);
                 }
-                callback()
             }
+            defer.notify(resultService.results)
+            callback()
         }
     }
-})()
+
+    return resultService
+}])

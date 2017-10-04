@@ -7,16 +7,16 @@
         <div id="navbar">
             <ul class="nav navbar-nav">
                 <li>
-                    <a id="open-graph" href="/">Graph</a>
+                    <a id="open-graph" href="#/graph">Graph</a>
                 </li>
                 <li>
-                    <a id="open-table" href="/table">Table</a>
+                    <a id="open-table" href="#/table">Table</a>
                 </li>
                 <li>
-                    <a id="open-raw" href="/raw">Raw</a>
+                    <a id="open-raw" href="#/raw">Raw</a>
                 </li>
                 <li>
-                    <a id="open-settings" href="/settings">Settings</a>
+                    <a id="open-settings" href="#/settings">Settings</a>
                 </li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
@@ -35,7 +35,7 @@
                 <li><a class="nav-button"
                        ng-show="seeds.length != 0 || operations.length != 0">
                     <button id="build-query"
-                            ng-click="openBuildQueryDialog()"
+                            ng-click="ctrl.openBuildQueryDialog()"
                             class="btn btn-primary">Build query
                     </button>
                 </a></li>

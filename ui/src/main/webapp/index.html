@@ -23,6 +23,8 @@
               content="user-scalable=no, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0">
         <title>Gaffer UI</title>
 
+        <base href="/ui/">
+
         <!-- dependencies -->
         <script src="lib/jquery/js/jquery.min.js"></script>
         <script src="lib/cytoscape/js/cytoscape.min.js"></script>
@@ -33,26 +35,28 @@
         <script src="lib/angular/js/angular-route.min.js"></script>
         <!-- app -->
         <script src="app/app.js"></script>
-        <!-- factories / services -->
+        <!-- services -->
         <script src="app/config/config-service.js"></script>
         <script src="app/gaffer/function-service.js"></script>
         <script src="app/gaffer/operation-service.js"></script>
         <script src="app/gaffer/results-service.js"></script>
+        <script src="app/gaffer/query-service.js"></script>
         <script src="app/gaffer/schema-service.js"></script>
         <script src="app/gaffer/type-service.js"></script>
         <script src="app/graph/graph-service.js"></script>
-        <script src="app/seed-builder/seed-builder-service.js"></script>
         <script src="app/settings/settings-service.js"></script>
         <!-- components -->
         <script src="app/graph/graph-component.js"></script>
-        <script src="app/nav/nav-component.js"></script>
+        <script src="app/navigation/navigation-component.js"></script>
         <script src="app/query-builder/query-builder-component.js"></script>
         <script src="app/raw/raw-component.js"></script>
         <script src="app/seed-builder/seed-builder-component.js"></script>
         <script src="app/settings/settings-component.js"></script>
         <script src="app/table/table-component.js"></script>
         <!-- route -->
-        <script src="app/nav/route-config.js"></script>
+        <script src="app/navigation/route-config.js"></script>
+        <!-- controller -->
+        <script src="app/controller.js"></script>
 
         <link href="lib/angular/css/angular-material.min.css" rel="stylesheet">
         <link href="lib/bootstrap/css/bootstrap.min.css" rel="stylesheet">
@@ -60,8 +64,10 @@
         <link href="css/style.css" rel="stylesheet"/>
     </head>
 
-    <body ng-cloak ng-app="app">
-        <navigation></navigation>
-        <ng-view></ng-view>
+    <body ng-cloak ng-app="app" ng-controller="MainCtrl">
+        <div layout="column">
+            <navigation></navigation>
+            <ng-view></ng-view>
+        </div>
     </body>
 </html>
