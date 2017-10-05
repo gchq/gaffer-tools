@@ -1,13 +1,13 @@
 'use strict'
 
-angular.module('app').component('queryBuilder', queryBuilder)
+angular.module('app').component('queryBuilder', queryBuilder())
 
 function queryBuilder() {
 
     return {
         templateUrl: 'app/query-builder/query-builder.html',
         controller: QueryBuilderController,
-        controllerAs: ctrl
+        controllerAs: 'ctrl'
     }
 }
 
@@ -27,64 +27,45 @@ function QueryBuilderController($scope, operations, types, graph, settings, quer
     vm.selectedEdges = graph.selectedEdges
     vm.inOutFlag = "EITHER"
     vm.step = 0
-    vm.selectedOp = operations.getAvailableOperations()[0] // TODO should this be the default operation in the settings?
+    vm.availableOperations = operations.availableOperations
+    vm.selectedOp = vm.availableOperations[0] // TODO should this be the default operation in the settings?
 
     // watches
 
-    graph.onSelectedElementsChange(function(selectedElements) {
+    graph.onSelectedElementsUpdate(function(selectedElements) {
         vm.selectedEntities = selectedElements['entities']
         vm.selectedEdges = selectedElements['edges']
     })
 
-    graph.onRelatedEntitiesChange(function(relatedEntities) {
+    graph.onRelatedEntitiesUpdate(function(relatedEntities) {
         vm.relatedEntities = relatedEntities
     })
 
-    graph.onRelatedEdgesChange(function(relatedEdges) {
+    graph.onRelatedEdgesUpdate(function(relatedEdges) {
         vm.relatedEdges = relatedEdges
     })
 
 
-
-
-    // functions
-    vm.onSelectedOpChange = onSelectedOpChange
-    vm.goToNextStep = goToNextStep
-    vm.goToPrevStep = goToPrevStep
-    vm.getAvailableOperations = operations.getAvailableOperations
-    vm.getAllSeeds = graph.selectAllNodes
-    vm.showOperations = vm.showOperations
-    vm.cancel = $mdDialog.cancel
-    vm.getTypes = getTypes
-    vm.toggle = toggle
-    vm.exists = exists
-    vm.getEdgeProperties = schema.getEdgeProperties
-    vm.getEntityProperties = schema.getEntityProperties
-    vm.onSelectedPropertyChange = onSelectedPropertyChange
-    vm.onSelectedFunctionChange = onSelectedFunctionChange
-    vm.addFilterFunction = addFilterFunction
-
-
-    function onSelectedOpChange(op){
+    vm.onSelectedOpChange = function(op){
         vm.selectedOp = op;
         vm.goToNextStep();
     }
 
 
-    function goToNextStep() {
+    vm.goToNextStep = function() {
         vm.step = vm.step + 1;
         if(vm.step == 2 && vm.selectedOp.arrayOutput) {
             vm.executeBuildQueryCounts();
         }
     }
 
-    function goToPrevStep() {
+    vm.goToPrevStep = function() {
        vm.step = vm.step - 1;
     }
 
 
 
-    function showOperations(operations) {
+    vm.showOperations = function(operations) {
         var newWindow = $window.open('about:blank', '', '_blank');
         var prettyOps;
         try {
@@ -95,11 +76,11 @@ function QueryBuilderController($scope, operations, types, graph, settings, quer
         newWindow.document.write("<pre>" + prettyOps + "</pre>");
     }
 
-    function getTypes(clazz) {
+    vm.getTypes = function(clazz) {
         return types.getType(clazz).types
     }
 
-    function toggle(item, list) {
+    vm.toggle = function(item, list) {
         var idx = list.indexOf(item)
         if(idx > -1) {
             list.splice(idx, 1)
@@ -108,12 +89,12 @@ function QueryBuilderController($scope, operations, types, graph, settings, quer
         }
     }
 
-    function exists(item, list) {
+    vm.exists = function(item, list) {
         return list && list.indexOf(item) > -1
     }
 
 
-    function onSelectedPropertyChange(group, selectedElement) {
+    vm.onSelectedPropertyChange = function(group, selectedElement) {
         functions.getFunctions(group, selectedElement.property, function(data) {
             selectedElement.availableFunctions = data
             $scope.$apply()
@@ -121,7 +102,7 @@ function QueryBuilderController($scope, operations, types, graph, settings, quer
         selectedElement.predicate = '';
     }
 
-    function onSelectedFunctionChange(group, selectedElement) {
+    vm.onSelectedFunctionChange = function(group, selectedElement) {
         functions.getFunctionParameters(selectedElement.predicate, function(data) {
             selectedElement.availableFunctionParameters = data
             $scope.$apply()
@@ -143,7 +124,7 @@ function QueryBuilderController($scope, operations, types, graph, settings, quer
         selectedElement.parameters = {};
     }
 
-    function addFilterFunction(expandElementContent, element) {
+    vm.addFilterFunction = function(expandElementContent, element) {
         if(!expandElementContent[element]) {
             expandElementContent[element] = {};
         }
@@ -155,17 +136,17 @@ function QueryBuilderController($scope, operations, types, graph, settings, quer
         expandElementContent[element].filters.push({});
     }
 
-    function onInOutFlagChange(newInOutFlag) {
+    vm.onInOutFlagChange = function(newInOutFlag) {
         vm.inOutFlag = newInOutFlag;
     }
 
-    function execute() {
+    vm.execute = function() {
         var operation = createOperation();
         resetQueryBuilder();
         $mdDialog.hide(operation);
     }
 
-    function executeBuildQueryCounts() {
+    vm.executeBuildQueryCounts = function() {
         var operations = {
             class: "uk.gov.gchq.gaffer.operation.OperationChain",
             operations: [createOperation(), createLimitOperation(), createCountOperation()]
@@ -180,7 +161,7 @@ function QueryBuilderController($scope, operations, types, graph, settings, quer
         query.execute(JSON.stringify(operations), onSuccess);
     }
 
-    function createOpInput() {
+    vm.createOpInput = function() {
         var opInput = [];
         var jsonVertex;
         for(var vertex in vm.selectedEntities) {
@@ -197,7 +178,7 @@ function QueryBuilderController($scope, operations, types, graph, settings, quer
         return opInput;
     }
 
-    function convertFilterFunctions(expandElementContent, elementDefinition) {
+    vm.convertFilterFunctions = function(expandElementContent, elementDefinition) {
         var filterFunctions = [];
         if(expandElementContent && expandElementContent.filters) {
             for(var index in expandElementContent.filters) {
@@ -230,11 +211,11 @@ function QueryBuilderController($scope, operations, types, graph, settings, quer
     }
 
 
-    function clone(obj) {
+    var clone = function(obj) {
         return JSON.parse(JSON.stringify(obj));
     }
 
-    function createOperation() {
+    var createOperation = function() {
         var op = {
              class: vm.selectedOp.class
         };
@@ -301,7 +282,7 @@ function QueryBuilderController($scope, operations, types, graph, settings, quer
         return op;
     }
 
-    function resetQueryBuilder() {
+    var resetQueryBuilder = function() {
         vm.step = 0;
         vm.expandEdges = [];
         vm.expandEntities = [];
@@ -310,14 +291,14 @@ function QueryBuilderController($scope, operations, types, graph, settings, quer
         vm.expandEdgesContent = {};
     }
 
-    function createLimitOperation() {
+    var createLimitOperation = function() {
         return {
             class: "uk.gov.gchq.gaffer.operation.impl.Limit",
             resultLimit: settings.getResultLimit
         }
     }
 
-    function createCountOperation() {
+    var createCountOperation = function() {
         return {
             class: "uk.gov.gchq.gaffer.operation.impl.Count"
         }

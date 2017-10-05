@@ -17,7 +17,7 @@
 
 'use strict'
 
-angular.module('app').component('table', table())
+angular.module('app').component('resultsTable', table())
 
 function table() {
     return {

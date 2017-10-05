@@ -1,372 +1,370 @@
-<md-dialog aria-label="Build Query" class="fullWidthDialog">
-    <form ng-cloak>
-        <md-toolbar>
-            <div class="md-toolbar-tools">
-                <h2>Build Operation</h2>
-            </div>
-        </md-toolbar>
+<form ng-cloak>
+    <md-toolbar>
+        <div class="md-toolbar-tools">
+            <h2>Build Operation</h2>
+        </div>
+    </md-toolbar>
 
-        <md-dialog-content>
-            <div class="md-dialog-content">
-                <md-tabs md-dynamic-height md-border-bottom
-                         md-selected="buildQuery.step">
-                    <md-tab label="Choose operation"
-                            ng-disabled="ctrl.step != 0">
-                        <md-content class="md-padding">
-                            <h3>Select operation</h3>
+    <md-dialog-content>
+        <div class="md-dialog-content">
+            <md-tabs md-dynamic-height md-border-bottom
+                     md-selected="ctrl.step">
+                <md-tab label="Choose operation"
+                        ng-disabled="ctrl.step != 0">
+                    <md-content class="md-padding">
+                        <h3>Select operation</h3>
 
-                            <input ng-model="opSearchResults" type="text"
-                                   class="form-control"
-                                   placeholder="Search for operation name">
-                            <table class="table table-striped">
+                        <input ng-model="ctrl.opSearchTerm" type="text"
+                               class="form-control"
+                               placeholder="Search for operation name">
+                        <table class="table table-striped">
+                            <tbody>
+                            <tr>
+                                <th>
+                                    <a href="#"
+                                       ng-click="sortType = 'name'; sortReverse = !sortReverse">
+                                        Name
+                                            <span ng-show="sortType === 'name' && !sortReverse"
+                                                  class="caret"></span>
+                                            <span ng-show="sortType === 'name' && sortReverse"
+                                                  class="caret caret-up"></span>
+                                    </a>
+                                </th>
+                                <th>
+                                    Description
+                                </th>
+                            </tr>
+                            <tr ng-repeat="op in ctrl.availableOperations | orderBy:sortType:sortReverse | filter:ctrl.opSearchTerm">
+                                <td>
+                                    <a href="#"
+                                       ng-click="ctrl.onSelectedOpChange(op)">
+                                        {{op.name}}
+                                    </a>
+                                </td>
+                                <td>
+                                    {{op.description}}
+                                    <button ng-click="ctrl.showOperations(op.operations)"
+                                            ng-show="op.operations">
+                                        i
+                                    </button>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </md-content>
+                </md-tab>
+
+                <md-tab label="Configure Operation"
+                        ng-disabled="ctrl.step != 1">
+                    <md-content class="md-padding">
+                        <div ng-show="ctrl.selectedOp.input">
+                            <h3>
+                                Selected seeds
+                                <button id="select-all-seeds"
+                                        ng-click="selectAllSeeds()"
+                                        class="btn btn-default">
+                                    Select all
+                                </button>
+                            </h3>
+
+                            <p ng-repeat="(vertex, entities) in ctrl.selectedEntities">
+                                {{vertex}}
+                            </p>
+
+                            <p ng-show="!selectedEntities || selectedEntities.length == 0">
+                                No seeds selected.
+                            </p>
+                        </div>
+
+                        <div ng-show="ctrl.selectedOp.parameters">
+                            <label for="parameters">Parameters</label>
+
+                            <table id="parameters"
+                                   class="table table-striped">
                                 <tbody>
                                 <tr>
                                     <th>
-                                        <a href="#"
-                                           ng-click="sortType = 'name'; sortReverse = !sortReverse">
-                                            Name
-                                                <span ng-show="sortType === 'name' && !sortReverse"
-                                                      class="caret"></span>
-                                                <span ng-show="sortType === 'name' && sortReverse"
-                                                      class="caret caret-up"></span>
-                                        </a>
+                                        Name
                                     </th>
                                     <th>
                                         Description
                                     </th>
+                                    <th>
+                                        Required
+                                    </th>
+                                    <th>
+                                        Value
+                                    </th>
                                 </tr>
-                                <tr ng-repeat="op in ctrl.getAvailableOperations() | orderBy:sortType:sortReverse | filter:opSearchResults">
+                                <tr ng-repeat="(name, detail) in ctrl.selectedOp.parameters">
                                     <td>
-                                        <a href="#"
-                                           ng-click="ctrl.onSelectedOpChange(op)">
-                                            {{op.name}}
-                                        </a>
+                                        {{name}}
                                     </td>
                                     <td>
-                                        {{op.description}}
-                                        <button ng-click='ctrl.showOperations(op.operations)'
-                                                ng-show="op.operations">
-                                            i
-                                        </button>
+                                        {{detail.description}}
+                                    </td>
+                                    <td>
+                                        {{detail.required}}
+                                    </td>
+                                    <td>
+                                        <div ng-repeat="type in ctrl.getTypes({{detail.valueClass}})">
+                                            <label for="param-{{name}}-{{type.key}}">{{type.label}}:</label>
+                                            <input id="param-{{name}}-{{type.key}}"
+                                                   type="{{type.type}}"
+                                                   step="{{type.step}}"
+                                                   class="form-control"
+                                                   ng-model="detail.parts[type.key]"/>
+                                        </div>
                                     </td>
                                 </tr>
                                 </tbody>
                             </table>
-                        </md-content>
-                    </md-tab>
+                        </div>
 
-                    <md-tab label="Configure Operation"
-                            ng-disabled="ctrl.step != 1">
-                        <md-content class="md-padding">
-                            <div ng-show="ctrl.selectedOp.input">
-                                <h3>
-                                    Selected seeds
-                                    <button id="select-all-seeds"
-                                            ng-click="selectAllSeeds()"
-                                            class="btn btn-default">
-                                        Select all
-                                    </button>
-                                </h3>
+                        <div ng-show="ctrl.selectedOp.view">
+                            <h3>Configure View</h3>
 
-                                <p ng-repeat="(vertex, entities) in ctrl.selectedEntities">
-                                    {{vertex}}
-                                </p>
-
-                                <p ng-show="!selectedEntities || selectedEntities.length == 0">
-                                    No seeds selected.
-                                </p>
-                            </div>
-
-                            <div ng-show="ctrl.selectedOp.parameters">
-                                <label for="parameters">Parameters</label>
-
-                                <table id="parameters"
-                                       class="table table-striped">
-                                    <tbody>
-                                    <tr>
-                                        <th>
-                                            Name
-                                        </th>
-                                        <th>
-                                            Description
-                                        </th>
-                                        <th>
-                                            Required
-                                        </th>
-                                        <th>
-                                            Value
-                                        </th>
-                                    </tr>
-                                    <tr ng-repeat="(name, detail) in ctrl.selectedOp.parameters">
-                                        <td>
-                                            {{name}}
-                                        </td>
-                                        <td>
-                                            {{detail.description}}
-                                        </td>
-                                        <td>
-                                            {{detail.required}}
-                                        </td>
-                                        <td>
-                                            <div ng-repeat="type in ctrl.getTypes({{detail.valueClass}})">
-                                                <label for="param-{{name}}-{{type.key}}">{{type.label}}:</label>
-                                                <input id="param-{{name}}-{{type.key}}"
-                                                       type="{{type.type}}"
-                                                       step="{{type.step}}"
-                                                       class="form-control"
-                                                       ng-model="detail.parts[type.key]"/>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-
-                            <div ng-show="ctrl.selectedOp.view">
-                                <h3>Configure View</h3>
-
-                                <p>
-                                    If you don' t select any Entities or Edges
-                                    then all Entities and Edges will be
-                                    returned.
-                                </p>
-
-                                <h4>Entities</h4>
-
-                                <p ng-show="!relatedEntities || relatedEntities.length === 0">
-                                    No related entities
-                                </p>
-
-                                <div ng-repeat="entity in ctrl.relatedEntities">
-                                    <md-checkbox
-                                            id="related-entity-{{entity}}"
-                                            ng-checked="ctrl.exists(entity, ctrl.expandEntities)"
-                                            ng-click="ctrl.toggle(entity, ctrl.expandEntities)">
-                                        {{entity}}
-                                    </md-checkbox>
-
-                                    <div ng-show="ctrl.exists(entity, ctrl.expandEntities)">
-                                        <table class="table table-striped no-bottom-border"
-                                               ng-show="ctrl.getEntityProperties(entity)">
-                                            <tbody>
-                                            <tr ng-repeat="filter in ctrl.expandEntitiesContent[entity].filters">
-                                                <td>
-                                                    <select id="{{entity}}-property-selector"
-                                                            class="form-control"
-                                                            ng-model="filter.property"
-                                                            ng-options="name as name for (name, type) in ctrl.getEntityProperties(entity)"
-                                                            ng-change="ctrl.onSelectedPropertyChange(entity, filter)">
-                                                        <option value=""
-                                                                disabled
-                                                                selected>
-                                                            Select a property
-                                                        </option>
-                                                    </select>
-                                                </td>
-                                                <td>
-                                                    <select class="form-control"
-                                                            ng-model="filter.predicate"
-                                                            ng-options="predicate as predicate for predicate in filter.availableFunctions"
-                                                            ng-change="ctrl.onSelectedFunctionChange(entity, filter)">
-                                                        <option value=""
-                                                                disabled
-                                                                selected>
-                                                            Select a predicate
-                                                        </option>
-                                                    </select>
-                                                </td>
-
-                                                <td>
-                                                    <div ng-repeat="(idx, param) in filter.availableFunctionParameters">
-                                                        <p class="inline">
-                                                            {{param}}:</p>
-                                                        <input type="text"
-                                                               class="form-control inline"
-                                                               ng-model="filter.parameters[idx]">
-                                                    </div>
-                                                </td>
-                                                <td>
-                                                    <div ng-show="filter.availableFunctionParameters.length > 0 && filter.propertyClass">
-                                                        You may need to
-                                                        explicitly
-                                                        tell Gaffer the type of
-                                                        the
-                                                        parameter, e.g:
-                                                        {"{{filter.propertyClass}}":
-                                                        value}
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                            </tbody>
-                                        </table>
-                                        <button id="{{entity}}-add-filter"
-                                                ng-click="ctrl.addFilterFunction(ctrl.expandEntitiesContent, entity)"
-                                                class="btn btn-default"
-                                                ng-show="ctrl.getEntityProperties(entity)">
-                                            Add filter
-                                        </button>
-                                    </div>
-                                </div>
-
-
-                                <h4>Edges</h4>
-
-                                <p ng-show="!ctrl.relatedEdges || ctrl.relatedEdges.length === 0">
-                                    No related edges
-                                </p>
-
-                                <div ng-repeat="edge in relatedEdges">
-                                    <md-checkbox
-                                            id="related-edge-{{edge}}"
-                                            ng-checked="ctrl.exists(edge, ctrl.expandEdges)"
-                                            ng-click="ctrl.toggle(edge, ctrl.expandEdges)">
-                                        {{edge}}
-                                    </md-checkbox>
-
-                                    <div ng-show="ctrl.exists(edge, ctrl.expandEdges)">
-                                        <table class="table table-striped no-bottom-border"
-                                               ng-show="ctrl.getEdgeProperties(edge)">
-                                            <tbody>
-                                            <tr ng-repeat="filter in ctrl.expandEdgesContent[edge].filters">
-                                                <td>
-                                                    <select id="{{edge}}-property-selector"
-                                                            class="form-control"
-                                                            ng-model="filter.property"
-                                                            ng-options="name as name for (name, type) in ctrl.getEdgeProperties(edge)"
-                                                            ng-change="ctrl.onSelectedPropertyChange(edge, filter)">
-                                                        <option value=""
-                                                                disabled
-                                                                selected>
-                                                            Select a property
-                                                        </option>
-                                                    </select>
-                                                </td>
-                                                <td>
-                                                    <select id="{{edge}}-{{filter.property}}-predicate-selector"
-                                                            class="form-control"
-                                                            ng-model="filter.predicate"
-                                                            ng-options="predicate as predicate for predicate in filter.availableFunctions"
-                                                            ng-change="ctrl.onSelectedFunctionChange(edge, filter)">
-                                                        <option value=""
-                                                                disabled
-                                                                selected>
-                                                            Select a predicate
-                                                        </option>
-                                                    </select>
-                                                </td>
-                                                <td>
-                                                    <div ng-repeat="(idx, param) in filter.availableFunctionParameters">
-                                                        <p class="inline">
-                                                            {{param}}:</p>
-                                                        <input id="{{edge}}-{{filter.property}}-{{filter.predicate}}-{{param}}"
-                                                               type="text"
-                                                               class="form-control inline"
-                                                               ng-model="filter.parameters[idx]">
-                                                    </div>
-                                                </td>
-                                                <td>
-                                                    <div ng-show="filter.availableFunctionParameters.length > 0 && filter.propertyClass">
-                                                        You may need to
-                                                        explicitly
-                                                        tell Gaffer the type of
-                                                        the
-                                                        parameter, e.g:
-                                                        {"{{filter.propertyClass}}":
-                                                        value}
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                            </tbody>
-                                        </table>
-                                        <button id="{{edge}}-add-filter"
-                                                ng-click="ctrl.addFilterFunction(ctrl.expandEdgesContent, edge)"
-                                                class="btn btn-default"
-                                                ng-show="ctrl.getEdgeProperties(edge)">
-                                            Add filter
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-
-
-                            <div ng-show="ctrl.selectedOp.inOutFlag">
-                                <h3>Other options</h3>
-
-                                <label for="inOutFlag"
-                                       ng-show="ctrl.selectedOp.inOutFlag">In
-                                    Out
-                                    Edges</label>
-
-                                <div id="inOutFlag"
-                                     ng-show="ctrl.selectedOp.inOutFlag">
-                                    <md-radio-group
-                                            ng-model="ctrl.inOutFlag"
-                                            ng-change="ctrl.onInOutFlagChange(inOutFlag)">
-                                        <md-radio-button value="INCOMING">
-                                            Incoming
-                                        </md-radio-button>
-                                        <md-radio-button value="OUTGOING">
-                                            Outgoing
-                                        </md-radio-button>
-                                        <md-radio-button value="EITHER">
-                                            Either
-                                        </md-radio-button>
-                                    </md-radio-group>
-                                </div>
-                            </div>
-                        </md-content>
-                    </md-tab>
-
-                    <md-tab label="Execute"
-                            ng-disabled="ctrl.step != 2">
-                        <md-content class="md-padding">
-                            <p ng-show="!ctrl.expandQueryCounts && ctrl.selectedOp.arrayOutput">
-                                Calculating number of results...
+                            <p>
+                                If you don' t select any Entities or Edges
+                                then all Entities and Edges will be
+                                returned.
                             </p>
 
-                            <div ng-show="ctrl.expandQueryCounts">
-                                <p ng-show="ctrl.expandQueryCounts.limitHit">
-                                    The number of results may exceed
-                                    limit of {{settings.resultLimit}}.
-                                    Only the first {{settings.resultLimit}}
-                                    results will be used.
-                                </p>
+                            <h4>Entities</h4>
 
-                                <p ng-show="!ctrl.expandQueryCounts.limitHit">
-                                    Number of results will be:
-                                    {{ctrl.expandQueryCounts.count}}
-                                </p>
+                            <p ng-show="!relatedEntities || relatedEntities.length === 0">
+                                No related entities
+                            </p>
+
+                            <div ng-repeat="entity in ctrl.relatedEntities">
+                                <md-checkbox
+                                        id="related-entity-{{entity}}"
+                                        ng-checked="ctrl.exists(entity, ctrl.expandEntities)"
+                                        ng-click="ctrl.toggle(entity, ctrl.expandEntities)">
+                                    {{entity}}
+                                </md-checkbox>
+
+                                <div ng-show="ctrl.exists(entity, ctrl.expandEntities)">
+                                    <table class="table table-striped no-bottom-border"
+                                           ng-show="ctrl.getEntityProperties(entity)">
+                                        <tbody>
+                                        <tr ng-repeat="filter in ctrl.expandEntitiesContent[entity].filters">
+                                            <td>
+                                                <select id="{{entity}}-property-selector"
+                                                        class="form-control"
+                                                        ng-model="filter.property"
+                                                        ng-options="name as name for (name, type) in ctrl.getEntityProperties(entity)"
+                                                        ng-change="ctrl.onSelectedPropertyChange(entity, filter)">
+                                                    <option value=""
+                                                            disabled
+                                                            selected>
+                                                        Select a property
+                                                    </option>
+                                                </select>
+                                            </td>
+                                            <td>
+                                                <select class="form-control"
+                                                        ng-model="filter.predicate"
+                                                        ng-options="predicate as predicate for predicate in filter.availableFunctions"
+                                                        ng-change="ctrl.onSelectedFunctionChange(entity, filter)">
+                                                    <option value=""
+                                                            disabled
+                                                            selected>
+                                                        Select a predicate
+                                                    </option>
+                                                </select>
+                                            </td>
+
+                                            <td>
+                                                <div ng-repeat="(idx, param) in filter.availableFunctionParameters">
+                                                    <p class="inline">
+                                                        {{param}}:</p>
+                                                    <input type="text"
+                                                           class="form-control inline"
+                                                           ng-model="filter.parameters[idx]">
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div ng-show="filter.availableFunctionParameters.length > 0 && filter.propertyClass">
+                                                    You may need to
+                                                    explicitly
+                                                    tell Gaffer the type of
+                                                    the
+                                                    parameter, e.g:
+                                                    {"{{filter.propertyClass}}":
+                                                    value}
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                    <button id="{{entity}}-add-filter"
+                                            ng-click="ctrl.addFilterFunction(ctrl.expandEntitiesContent, entity)"
+                                            class="btn btn-default"
+                                            ng-show="ctrl.getEntityProperties(entity)">
+                                        Add filter
+                                    </button>
+                                </div>
                             </div>
 
-                        </md-content>
-                    </md-tab>
-                </md-tabs>
-            </div>
-        </md-dialog-content>
 
-        <md-dialog-actions layout="row">
-            <span flex></span>
-            <md-button ng-click="ctrl.cancel()"
-                       class="btn btn-default">
-                Cancel
-            </md-button>
-            <md-button ng-show="ctrl.step != 0"
-                       ng-click="ctrl.goToPrevStep()"
-                       class="btn btn-default">
-                Back
-            </md-button>
-            <md-button id="build-query-next"
-                       ng-show="ctrl.step == 1"
-                       ng-click="ctrl.goToNextStep()"
-                       class="btn btn-primary">
-                Next
-            </md-button>
-            <md-button id="build-query-execute"
-                       ng-show="ctrl.step == 2"
-                       ng-click="ctrl.execute()"
-                       class="btn btn-primary">
-                Execute
-            </md-button>
-        </md-dialog-actions>
-    </form>
-</md-dialog>
+                            <h4>Edges</h4>
+
+                            <p ng-show="!ctrl.relatedEdges || ctrl.relatedEdges.length === 0">
+                                No related edges
+                            </p>
+
+                            <div ng-repeat="edge in relatedEdges">
+                                <md-checkbox
+                                        id="related-edge-{{edge}}"
+                                        ng-checked="ctrl.exists(edge, ctrl.expandEdges)"
+                                        ng-click="ctrl.toggle(edge, ctrl.expandEdges)">
+                                    {{edge}}
+                                </md-checkbox>
+
+                                <div ng-show="ctrl.exists(edge, ctrl.expandEdges)">
+                                    <table class="table table-striped no-bottom-border"
+                                           ng-show="ctrl.getEdgeProperties(edge)">
+                                        <tbody>
+                                        <tr ng-repeat="filter in ctrl.expandEdgesContent[edge].filters">
+                                            <td>
+                                                <select id="{{edge}}-property-selector"
+                                                        class="form-control"
+                                                        ng-model="filter.property"
+                                                        ng-options="name as name for (name, type) in ctrl.getEdgeProperties(edge)"
+                                                        ng-change="ctrl.onSelectedPropertyChange(edge, filter)">
+                                                    <option value=""
+                                                            disabled
+                                                            selected>
+                                                        Select a property
+                                                    </option>
+                                                </select>
+                                            </td>
+                                            <td>
+                                                <select id="{{edge}}-{{filter.property}}-predicate-selector"
+                                                        class="form-control"
+                                                        ng-model="filter.predicate"
+                                                        ng-options="predicate as predicate for predicate in filter.availableFunctions"
+                                                        ng-change="ctrl.onSelectedFunctionChange(edge, filter)">
+                                                    <option value=""
+                                                            disabled
+                                                            selected>
+                                                        Select a predicate
+                                                    </option>
+                                                </select>
+                                            </td>
+                                            <td>
+                                                <div ng-repeat="(idx, param) in filter.availableFunctionParameters">
+                                                    <p class="inline">
+                                                        {{param}}:</p>
+                                                    <input id="{{edge}}-{{filter.property}}-{{filter.predicate}}-{{param}}"
+                                                           type="text"
+                                                           class="form-control inline"
+                                                           ng-model="filter.parameters[idx]">
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div ng-show="filter.availableFunctionParameters.length > 0 && filter.propertyClass">
+                                                    You may need to
+                                                    explicitly
+                                                    tell Gaffer the type of
+                                                    the
+                                                    parameter, e.g:
+                                                    {"{{filter.propertyClass}}":
+                                                    value}
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                    <button id="{{edge}}-add-filter"
+                                            ng-click="ctrl.addFilterFunction(ctrl.expandEdgesContent, edge)"
+                                            class="btn btn-default"
+                                            ng-show="ctrl.getEdgeProperties(edge)">
+                                        Add filter
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div ng-show="ctrl.selectedOp.inOutFlag">
+                            <h3>Other options</h3>
+
+                            <label for="inOutFlag"
+                                   ng-show="ctrl.selectedOp.inOutFlag">In
+                                Out
+                                Edges</label>
+
+                            <div id="inOutFlag"
+                                 ng-show="ctrl.selectedOp.inOutFlag">
+                                <md-radio-group
+                                        ng-model="ctrl.inOutFlag"
+                                        ng-change="ctrl.onInOutFlagChange(inOutFlag)">
+                                    <md-radio-button value="INCOMING">
+                                        Incoming
+                                    </md-radio-button>
+                                    <md-radio-button value="OUTGOING">
+                                        Outgoing
+                                    </md-radio-button>
+                                    <md-radio-button value="EITHER">
+                                        Either
+                                    </md-radio-button>
+                                </md-radio-group>
+                            </div>
+                        </div>
+                    </md-content>
+                </md-tab>
+
+                <md-tab label="Execute"
+                        ng-disabled="ctrl.step != 2">
+                    <md-content class="md-padding">
+                        <p ng-show="!ctrl.expandQueryCounts && ctrl.selectedOp.arrayOutput">
+                            Calculating number of results...
+                        </p>
+
+                        <div ng-show="ctrl.expandQueryCounts">
+                            <p ng-show="ctrl.expandQueryCounts.limitHit">
+                                The number of results may exceed
+                                limit of {{settings.resultLimit}}.
+                                Only the first {{settings.resultLimit}}
+                                results will be used.
+                            </p>
+
+                            <p ng-show="!ctrl.expandQueryCounts.limitHit">
+                                Number of results will be:
+                                {{ctrl.expandQueryCounts.count}}
+                            </p>
+                        </div>
+
+                    </md-content>
+                </md-tab>
+            </md-tabs>
+        </div>
+    </md-dialog-content>
+
+    <md-dialog-actions layout="row">
+        <span flex></span>
+        <md-button ng-click="ctrl.cancel()"
+                   class="btn btn-default">
+            Cancel
+        </md-button>
+        <md-button ng-show="ctrl.step != 0"
+                   ng-click="ctrl.goToPrevStep()"
+                   class="btn btn-default">
+            Back
+        </md-button>
+        <md-button id="build-query-next"
+                   ng-show="ctrl.step == 1"
+                   ng-click="ctrl.goToNextStep()"
+                   class="btn btn-primary">
+            Next
+        </md-button>
+        <md-button id="build-query-execute"
+                   ng-show="ctrl.step == 2"
+                   ng-click="ctrl.execute()"
+                   class="btn btn-primary">
+            Execute
+        </md-button>
+    </md-dialog-actions>
+</form>

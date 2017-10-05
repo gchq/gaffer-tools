@@ -20,7 +20,7 @@ angular.module('app').factory('query', ['$http', '$q', function($http, $q) {
             queryUrl = "http://" + queryUrl
         }
 
-        $http.post(queryUrl)
+        $http.post(queryUrl, operationChain)
              .success(function(results){
                 onSuccess(results)
              })

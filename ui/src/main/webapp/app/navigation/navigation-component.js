@@ -30,7 +30,7 @@ function NavigationController($scope, $mdDialog, graph, operations, results) {
 
     vm.openBuildQueryDialog = function(ev) {
         $mdDialog.show({
-          template: '<query-builder aria-label="Query Builder"></query-builder>',
+          template: '<query-builder aria-label="Query Builder" class="fullWidthDialog"></query-builder>',
           parent: angular.element(document.body),
           targetEvent: ev,
           clickOutsideToClose: true

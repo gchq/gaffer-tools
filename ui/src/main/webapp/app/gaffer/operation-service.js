@@ -2,18 +2,16 @@
 
 'use strict'
 
-angular.module('app').factory('operations', ['$http', 'settings', 'config', 'query', function($http, settings, config, query) {
+angular.module('app').factory('operations', ['$http', 'settings', 'config', 'query', 'types', function($http, settings, config, query, types) {
 
     var operations = {}
 
     var opWhiteList = undefined; // TODO should probably be populated by GET graph/config/operations
     var opBlackList = [];        // TODO should probably be populated by the config service
-    var availableOps = []
-    var namedOperations = []
+    operations.availableOperations = []
+    var namedOpClass = "uk.gov.gchq.gaffer.named.operation.NamedOperation"
 
-    operations.getAvailableOperations = function() {
-        return this.availableOps
-    }
+
 
     var opAllowed = function(opName) {
 //            var allowed = true;
@@ -28,11 +26,11 @@ angular.module('app').factory('operations', ['$http', 'settings', 'config', 'que
     }
 
     var updateNamedOperations = function(results) {
-        availableOps = [];
-        var config = config.getConfig().operations.defaultAvailable
-        for(var i in config[i]) {
-            if(opAllowed(config[i].name)) {
-                availableOps.push(settings.getDefaultAvailableOps[i]);
+        operations.availableOperations = [];
+        var defaults = config.getConfig().operations.defaultAvailable
+        for(var i in defaults) {
+            if(opAllowed(defaults[i].name)) {
+                operations.availableOperations.push(defaults[i])
             }
         }
 
@@ -44,14 +42,14 @@ angular.module('app').factory('operations', ['$http', 'settings', 'config', 'que
                             results[i].parameters[j].value = results[i].parameters[j].defaultValue;
                             if(results[i].parameters[j].defaultValue) {
                                 var valueClass = results[i].parameters[j].valueClass;
-                                results[i].parameters[j].parts = settings.getType(valueClass).createParts(valueClass, results[i].parameters[j].defaultValue);
+                                results[i].parameters[j].parts = types.getType(valueClass).createParts(valueClass, results[i].parameters[j].defaultValue);
                             } else {
                                 results[i].parameters[j].parts = {};
                             }
                         }
                     }
-                    availableOps.push({
-                        class: raw.namedOpClass,
+                    operations.availableOperations.push({
+                        class: namedOpClass,
                         name: results[i].operationName,
                         parameters: results[i].parameters,
                         description: results[i].description,

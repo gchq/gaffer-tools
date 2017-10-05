@@ -33,7 +33,7 @@ angular.module('app').config(['$locationProvider', '$routeProvider', function($l
             title: 'Raw'
         })
         .when('/table', {
-            template: '<table></table>',
+            template: '<results-table></results-table>',
             title: 'Table'
         })
         .when('/', {
