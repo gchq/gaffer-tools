@@ -147,11 +147,30 @@ angular.module('app').factory('raw', ['$http', 'settings', function($http, setti
     }
 
     raw.loadNamedOps = function() {
-          raw.execute(JSON.stringify(
+        var getAllClass = "uk.gov.gchq.gaffer.named.operation.GetAllNamedOperations"
+        ifOperationSupported(getAllClass, function() {
+            raw.execute(JSON.stringify(
                 {
                     class: "uk.gov.gchq.gaffer.named.operation.GetAllNamedOperations"
                 }
-          ), updateNamedOperations);
+            ), updateNamedOperations);
+        },
+        function() {
+            updateNamedOperations([]))
+        }
+
+    }
+
+    var ifOperationSupported = function(operationClass, onSupported, onUnsupported) {
+        var queryUrl = settings.restUrl + "/graph/operations/" + operationClass;
+
+        if(!queryUrl.startsWith("http")) {
+            queryUrl = "http://" + queryUrl;
+        }
+
+        $http.get(queryUrl)
+        .success(onSupported)
+        .error(onUnsupported)
     }
 
     var opAllowed = function(opName) {
