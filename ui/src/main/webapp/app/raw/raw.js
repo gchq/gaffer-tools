@@ -151,12 +151,12 @@ angular.module('app').factory('raw', ['$http', 'settings', function($http, setti
         ifOperationSupported(getAllClass, function() {
             raw.execute(JSON.stringify(
                 {
-                    class: "uk.gov.gchq.gaffer.named.operation.GetAllNamedOperations"
+                    class: getAllClass
                 }
             ), updateNamedOperations);
         },
         function() {
-            updateNamedOperations([])
+            updateNamedOperations([]);
         })
 
     }
