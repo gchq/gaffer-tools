@@ -156,21 +156,30 @@ angular.module('app').factory('raw', ['$http', 'settings', function($http, setti
             ), updateNamedOperations);
         },
         function() {
-            updateNamedOperations([]))
-        }
+            updateNamedOperations([])
+        })
 
     }
 
     var ifOperationSupported = function(operationClass, onSupported, onUnsupported) {
-        var queryUrl = settings.restUrl + "/graph/operations/" + operationClass;
+        var queryUrl = settings.restUrl + "/graph/operations";
 
         if(!queryUrl.startsWith("http")) {
             queryUrl = "http://" + queryUrl;
         }
 
         $http.get(queryUrl)
-        .success(onSupported)
-        .error(onUnsupported)
+        .success(function(ops) {
+            if (ops.indexOf(operationClass) !== -1) {
+                onSupported();
+                return;
+            }
+            onUnsupported();
+        })
+        .error(function(err) {
+            console.log("Error: " + err.statusCode + " - "  + err.status);
+            onUnsupported();
+        })
     }
 
     var opAllowed = function(opName) {
