@@ -74,18 +74,18 @@ angular.module('app').factory('operations', ['$http', 'settings', 'config', 'que
     }
 
 
-//    function createLimitOperation() {
-//        return {
-//            class: "uk.gov.gchq.gaffer.operation.impl.Limit",
-//            resultLimit: settings.getResultLimit()
-//        }
-//    }
-//
-//    function createDeduplicateOperation() {
-//        return {
-//            class: "uk.gov.gchq.gaffer.operation.impl.output.ToSet",
-//        };
-//    }
+    operations.createLimitOperation = function() {
+        return {
+            class: "uk.gov.gchq.gaffer.operation.impl.Limit",
+            resultLimit: settings.getResultLimit()
+        }
+    }
+
+    operations.createDeduplicateOperation = function() {
+        return {
+            class: "uk.gov.gchq.gaffer.operation.impl.output.ToSet",
+        };
+    }
 
     return operations
 

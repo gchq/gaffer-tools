@@ -21,7 +21,7 @@
                             <tbody>
                             <tr>
                                 <th>
-                                    <a href="#"
+                                    <a
                                        ng-click="sortType = 'name'; sortReverse = !sortReverse">
                                         Name
                                             <span ng-show="sortType === 'name' && !sortReverse"
@@ -36,7 +36,7 @@
                             </tr>
                             <tr ng-repeat="op in ctrl.availableOperations | orderBy:sortType:sortReverse | filter:ctrl.opSearchTerm">
                                 <td>
-                                    <a href="#"
+                                    <a
                                        ng-click="ctrl.onSelectedOpChange(op)">
                                         {{op.name}}
                                     </a>
@@ -61,7 +61,7 @@
                             <h3>
                                 Selected seeds
                                 <button id="select-all-seeds"
-                                        ng-click="selectAllSeeds()"
+                                        ng-click="ctrl.selectAllSeeds()"
                                         class="btn btn-default">
                                     Select all
                                 </button>
@@ -71,7 +71,7 @@
                                 {{vertex}}
                             </p>
 
-                            <p ng-show="!selectedEntities || selectedEntities.length == 0">
+                            <p ng-show="!ctrl.selectedEntities || ctrl.selectedEntities.length == 0">
                                 No seeds selected.
                             </p>
                         </div>
@@ -132,7 +132,7 @@
 
                             <h4>Entities</h4>
 
-                            <p ng-show="!relatedEntities || relatedEntities.length === 0">
+                            <p ng-show="!ctrl.relatedEntities || ctrl.relatedEntities.length === 0">
                                 No related entities
                             </p>
 
@@ -214,7 +214,7 @@
                                 No related edges
                             </p>
 
-                            <div ng-repeat="edge in relatedEdges">
+                            <div ng-repeat="edge in ctrl.relatedEdges">
                                 <md-checkbox
                                         id="related-edge-{{edge}}"
                                         ng-checked="ctrl.exists(edge, ctrl.expandEdges)"
@@ -299,8 +299,7 @@
                             <div id="inOutFlag"
                                  ng-show="ctrl.selectedOp.inOutFlag">
                                 <md-radio-group
-                                        ng-model="ctrl.inOutFlag"
-                                        ng-change="ctrl.onInOutFlagChange(inOutFlag)">
+                                        ng-model="ctrl.inOutFlag">
                                     <md-radio-button value="INCOMING">
                                         Incoming
                                     </md-radio-button>

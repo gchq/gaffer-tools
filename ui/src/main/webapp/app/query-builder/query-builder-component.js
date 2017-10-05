@@ -11,7 +11,7 @@ function queryBuilder() {
     }
 }
 
-function QueryBuilderController($scope, operations, types, graph, settings, query, functions, $window, $mdDialog) {
+function QueryBuilderController($scope, operations, types, graph, settings, query, functions, schema, $window, $mdDialog) {
 
     var vm = this
 
@@ -63,8 +63,6 @@ function QueryBuilderController($scope, operations, types, graph, settings, quer
        vm.step = vm.step - 1;
     }
 
-
-
     vm.showOperations = function(operations) {
         var newWindow = $window.open('about:blank', '', '_blank');
         var prettyOps;
@@ -78,6 +76,10 @@ function QueryBuilderController($scope, operations, types, graph, settings, quer
 
     vm.getTypes = function(clazz) {
         return types.getType(clazz).types
+    }
+
+    vm.selectAllSeeds = function() {
+        graph.selectAllNodes()
     }
 
     vm.toggle = function(item, list) {
@@ -136,10 +138,6 @@ function QueryBuilderController($scope, operations, types, graph, settings, quer
         expandElementContent[element].filters.push({});
     }
 
-    vm.onInOutFlagChange = function(newInOutFlag) {
-        vm.inOutFlag = newInOutFlag;
-    }
-
     vm.execute = function() {
         var operation = createOperation();
         resetQueryBuilder();
@@ -158,10 +156,10 @@ function QueryBuilderController($scope, operations, types, graph, settings, quer
             }
         }
         vm.expandQueryCounts = undefined;
-        query.execute(JSON.stringify(operations), onSuccess);
+        query.execute(settings.getRestUrl(), JSON.stringify(operations), onSuccess);
     }
 
-    vm.createOpInput = function() {
+    var createOpInput = function() {
         var opInput = [];
         var jsonVertex;
         for(var vertex in vm.selectedEntities) {
@@ -178,7 +176,7 @@ function QueryBuilderController($scope, operations, types, graph, settings, quer
         return opInput;
     }
 
-    vm.convertFilterFunctions = function(expandElementContent, elementDefinition) {
+    var convertFilterFunctions = function(expandElementContent, elementDefinition) {
         var filterFunctions = [];
         if(expandElementContent && expandElementContent.filters) {
             for(var index in expandElementContent.filters) {
@@ -258,7 +256,7 @@ function QueryBuilderController($scope, operations, types, graph, settings, quer
                 var entity = vm.expandEntities[i];
                 op.view.entities[entity] = {};
 
-                var filterFunctions = convertFilterFunctions(vm.expandEntitiesContent[entity], raw.schema.entities[entity]);
+                var filterFunctions = convertFilterFunctions(vm.expandEntitiesContent[entity], schema.getSchema().entities[entity]);
                 if(filterFunctions.length > 0) {
                     op.view.entities[entity].preAggregationFilterFunctions = filterFunctions;
                 }
@@ -294,7 +292,7 @@ function QueryBuilderController($scope, operations, types, graph, settings, quer
     var createLimitOperation = function() {
         return {
             class: "uk.gov.gchq.gaffer.operation.impl.Limit",
-            resultLimit: settings.getResultLimit
+            resultLimit: settings.getResultLimit()
         }
     }
 

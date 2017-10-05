@@ -11,7 +11,8 @@ function graphView() {
 
 
 function GraphController(graph, results) {
-    results.observeResults().then(function(results) {
+
+    results.observeResults().then(null, null, function(results) {
         graph.update(results)
     })
 

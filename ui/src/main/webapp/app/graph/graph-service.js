@@ -5,8 +5,8 @@ angular.module('app').factory('graph', ['schema', 'types', '$q', function(schema
     var graphCy;
     var graph = {};
 
-    graph.selectedEntities = []
-    graph.selectedEdges = []
+    graph.selectedEntities = {}
+    graph.selectedEdges = {}
     graph.relatedEntities = []
     graph.relatedEdges = []
 
@@ -163,7 +163,7 @@ angular.module('app').factory('graph', ['schema', 'types', '$q', function(schema
     graph.addSeed = function(vt, v) {
         var entitySeed = { vertexType: vt, vertex: v }
         if(v in graph.graphData.entitySeeds) {
-            if(!arrayContainsValue(graph.graphData.entitySeeds[v], entitySeed)) {
+            if(!ObjectContainsValue(graph.graphData.entitySeeds[v], entitySeed)) {
                 graph.graphData.entitySeeds[v].push(entitySeed);
             }
         } else {
@@ -180,12 +180,12 @@ angular.module('app').factory('graph', ['schema', 'types', '$q', function(schema
             entity.vertex = parseVertex(entity.vertex);
             var id = entity.vertex;
             entity.vertexType = schema.getVertexTypeFromEntityGroup(entity.group);
-            if(id in graph.graphData.entities) {
-                if(!arrayContainsValue(graph.graphData.entities[id], entity)) {
-                    graph.graphData.entities[id].push(entity);
+            if(id in graphData.entities) {
+                if(!ObjectContainsValue(graphData.entities[id], entity)) {
+                    graphData.entities[id].push(entity);
                 }
             } else {
-                graph.graphData.entities[id] = [entity];
+                graphData.entities[id] = [entity];
             }
         }
 
@@ -198,12 +198,12 @@ angular.module('app').factory('graph', ['schema', 'types', '$q', function(schema
             edge.sourceType = vertexTypes[0];
             edge.destinationType = vertexTypes[1];
             var id = edge.source + "|" + edge.destination + "|" + edge.directed + "|" + edge.group;
-            if(id in graph.graphData.edges) {
-                if(!arrayContainsValue(graph.graphData.edges[id], edge)) {
-                    graph.graphData.edges[id].push(edge);
+            if(id in graphData.edges) {
+                if(!ObjectContainsValue(graphData.edges[id], edge)) {
+                    graphData.edges[id].push(edge);
                 }
             } else {
-                graph.graphData.edges[id] = [edge];
+                graphData.edges[id] = [edge];
             }
         }
 
@@ -215,16 +215,20 @@ angular.module('app').factory('graph', ['schema', 'types', '$q', function(schema
 
             var id = entitySeed.vertex;
             if(id in graphData.entitySeeds) {
-                if(!arrayContainsValue(graph.graphData.entitySeeds[id], entitySeed)) {
-                    graph.graphData.entitySeeds[id].push(entitySeed);
+                if(!ObjectContainsValue(graphData.entitySeeds[id], entitySeed)) {
+                    graphData.entitySeeds[id].push(entitySeed);
                 }
             } else {
-                graph.graphData.entitySeeds[id] = [entitySeed];
+                graphData.entitySeeds[id] = [entitySeed];
             }
         }
 
         graph.graphData = graphData
         updateGraph(graph.graphData)
+    }
+
+    var clone = function(obj) {
+        return JSON.parse(JSON.stringify(obj))
     }
 
     function parseVertex(vertex) {
@@ -264,7 +268,8 @@ angular.module('app').factory('graph', ['schema', 'types', '$q', function(schema
                     position: {
                         x: 100,
                         y: 100
-                    }
+                    },
+                    selected: ObjectContainsValue(graph.selectedEntities, id)
                 });
             }
         }
@@ -285,7 +290,8 @@ angular.module('app').factory('graph', ['schema', 'types', '$q', function(schema
                     position: {
                         x: 100,
                         y: 100
-                    }
+                    },
+                    selected: ObjectContainsValue(graph.selectedEntities, edge.source)
                 });
             }
 
@@ -303,7 +309,8 @@ angular.module('app').factory('graph', ['schema', 'types', '$q', function(schema
                     position: {
                         x: 100,
                         y: 100
-                    }
+                    },
+                    selected: ObjectContainsValue(graph.selectedEntities, edge.destination)
                 });
             }
 
@@ -316,13 +323,14 @@ angular.module('app').factory('graph', ['schema', 'types', '$q', function(schema
                         target: edge.destination,
                         group: edge.group,
                         selectedColor: '#35500F',
-                    }
+                    },
+                    selected: ObjectContainsValue(graph.selectedEdges, id)
                 });
             }
         }
 
         for (var id in results.entitySeeds) {
-            addEntitySeed(results.entitySeeds[id].vertexType, id);
+            addEntitySeed(results.entitySeeds[id][0].vertexType, id);
         }
 
         graph.redraw();
@@ -388,10 +396,16 @@ angular.module('app').factory('graph', ['schema', 'types', '$q', function(schema
                 position: {
                     x: 100,
                     y: 100
-                }
+                },
+                selected: ObjectContainsValue(graph.selectedEntities, vertex)
             });
         }
     }
+
+    var ObjectContainsValue = function(obj, value) {
+        return (value in obj)
+    }
+
     graph.selectAllNodes = function() {
         graphCy.filter('node').select();
     }

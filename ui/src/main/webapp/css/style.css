@@ -18,6 +18,10 @@ body {
   width: auto;
 }
 
+[ng-click] {
+    cursor: pointer;
+}
+
 .nav-button {
    padding: 5px !important;
 }

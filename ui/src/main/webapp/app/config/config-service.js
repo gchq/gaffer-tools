@@ -15,10 +15,10 @@ angular.module('app').factory('config', ['$http', function($http) {
         configService.config = conf
     }
 
-    configService.loadConfig = function() {
+    configService.loadConfig = function(onSuccess) {
         $http.get('/config/config.json')
         .success(function(results) {
-            configService.setConfig(results)
+            onSuccess(results)
         })
         .error(function(err) {
             console.error("Failed to load config: " + err)

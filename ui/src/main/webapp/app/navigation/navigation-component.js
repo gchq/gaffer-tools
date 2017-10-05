@@ -8,7 +8,7 @@ function navigation() {
     }
 }
 
-function NavigationController($scope, $mdDialog, graph, operations, results) {
+function NavigationController($scope, $mdDialog, graph, operations, results, query, settings) {
     var vm = this;
     vm.loading = false
     vm.addMultipleSeeds = false
@@ -36,13 +36,13 @@ function NavigationController($scope, $mdDialog, graph, operations, results) {
           clickOutsideToClose: true
         })
         .then(function(operation) {
-            operations.addOperation(operation);
-            operations.execute(JSON.stringify({
+            query.addOperation(operation);
+            query.execute(settings.getRestUrl(), JSON.stringify({
                 class: "uk.gov.gchq.gaffer.operation.OperationChain",
-                operations: [operation, operationsService.createLimitOperation(), operationsService.createDeduplicateOperation()]
-            }), function(results) {
+                operations: [operation, operations.createLimitOperation(), operations.createDeduplicateOperation()]
+            }), function(data) {
                 loading = false
-                results.updateResults(results)
+                results.updateResults(data)
             })
         });
     }
@@ -50,26 +50,24 @@ function NavigationController($scope, $mdDialog, graph, operations, results) {
 
     vm.executeAll = function() {
         results.clearResults();
-        loading = true
-        for(var i in operations.getOperations()) {
+        vm.loading = true
+        for(var i in query.operations) {
             try {
-                operations.execute(JSON.stringify({
+                query.execute(settings.getRestUrl(), JSON.stringify({
                     class: "uk.gov.gchq.gaffer.operation.OperationChain",
-                    operations: [$scope.operations[i], operationsService.createLimitOperation(), operationsService.createDeduplicateOperation()]
-                }), function(results) {
-                    results.updateResults(results, function() {
-                        loading = false
-                    })
+                    operations: [query.operations[i], operations.createLimitOperation(), operations.createDeduplicateOperation()]
+                }), function(data) {
+                    results.updateResults(results)
+                    vm.loading = false
                 });
             } catch(e) {
                 // Try without the limit and deduplicate operations
-                operations.execute(JSON.stringify({
+                query.execute(settings.getRestUrl(), JSON.stringify({
                     class: "uk.gov.gchq.gaffer.operation.OperationChain",
-                    operations: [$scope.operations[i]]
-                }), function(results) {
-                    results.updateResults(results, function() {
-                        loading = false
-                    })
+                    operations: [query.operations[i]]
+                }), function(data) {
+                    results.updateResults(data)
+                    vm.loading = false
                 });
            }
        }

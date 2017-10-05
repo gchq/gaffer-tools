@@ -15,7 +15,7 @@ angular.module('app').factory('results', ['$q', function($q) {
         resultService.results = {entities: [], edges: [], entitySeeds: [], other: []}
     }
 
-    resultService.updateResults = function(results, callback) {
+    resultService.updateResults = function(results) {
         if(results) {
             for (var i in results) {
                 var result = results[i];
@@ -50,7 +50,6 @@ angular.module('app').factory('results', ['$q', function($q) {
                 }
             }
             defer.notify(resultService.results)
-            callback()
         }
     }
 
