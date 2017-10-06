@@ -1,80 +1,76 @@
-<div layout-fill class="container">
-    <div ng-cloak layout-fill>
-        <md-content layout-fill>
-            <md-tabs layout-fill md-max-height md-border-bottom>
-                <md-tab label="Query">
-                    <md-content class="md-padding">
-                        <h3>
-                            Operations
+<div ng-cloak>
+    <md-tabs md-max-height md-dynamic-height md-border-bottom>
+        <md-tab label="Query">
+            <md-content class="md-padding">
+                <h3>
+                    Operations
 
-                            <button class="btn btn-primary"
-                                    ng-show="!ctrl.editingOperations"
-                                    ng-click="ctrl.editOperations()">
-                                Edit
-                            </button>
+                    <button class="btn btn-primary"
+                            ng-show="!ctrl.editingOperations"
+                            ng-click="ctrl.editOperations()">
+                        Edit
+                    </button>
 
-                            <button class="btn btn-primary"
-                                    ng-show="ctrl.editingOperations"
-                                    ng-click="ctrl.saveOperations()">
-                                Save
-                            </button>
+                    <button class="btn btn-primary"
+                            ng-show="ctrl.editingOperations"
+                            ng-click="ctrl.saveOperations()">
+                        Save
+                    </button>
 
-                        </h3>
+                </h3>
 
-                        <div ng-show="!ctrl.editingOperations" ng-repeat="(i, json) in ctrl.operations track by $index">
-                            <pre id="operation-{{i}}-json">
-                                {{ctrl.operations[i] | json}}
-                            </pre>
-                        </div>
-                        <div ng-show="ctrl.editingOperations" ng-repeat="(i, json) in ctrl.operationsForEdit track by $index">
-                            <textarea id="editing-operation-{{i}}-json"
-                                   ng-model="ctrl.operationsForEdit[i]">
-                            </textarea>
-                        </div>
+                <div ng-show="!ctrl.editingOperations" ng-repeat="(i, json) in ctrl.operations track by $index">
+                    <pre id="operation-{{i}}-json">
+                        {{ctrl.operations[i] | json}}
+                    </pre>
+                </div>
+                <div ng-show="ctrl.editingOperations" ng-repeat="(i, json) in ctrl.operationsForEdit track by $index">
+                    <textarea id="editing-operation-{{i}}-json"
+                           ng-model="ctrl.operationsForEdit[i]">
+                    </textarea>
+                </div>
 
-                        <!--<div>-->
-                        <button class="btn btn-primary"
-                                ng-show="ctrl.editingOperations"
-                                ng-click="ctrl.addOperation()">
-                            Add Operation
-                        </button>
-                        <!--</div>-->
-                    </md-content>
-                </md-tab>
-                <md-tab label="Results">
-                    <md-content class="md-padding">
-                        <h3>Results</h3>
+                <!--<div>-->
+                <button class="btn btn-primary"
+                        ng-show="ctrl.editingOperations"
+                        ng-click="ctrl.addOperation()">
+                    Add Operation
+                </button>
+                <!--</div>-->
+            </md-content>
+        </md-tab>
+        <md-tab label="Results">
+            <md-content class="md-padding">
+                <h3>Results</h3>
 
-                        <div ng.show="ctrl.results.entities">
-                            <h4>Entities</h4>
-                            <pre id="raw-entity-results">
-                                {{ctrl.results.entities | json}}
-                            </pre>
-                        </div>
+                <div ng.show="ctrl.results.entities">
+                    <h4>Entities</h4>
+                    <pre id="raw-entity-results">
+                        {{ctrl.results.entities | json}}
+                    </pre>
+                </div>
 
-                        <div ng.show="ctrl.results.edges">
-                            <h4>Edges</h4>
-                            <pre id="raw-edge-results">
-                                {{ctrl.results.edges | json}}
-                            </pre>
-                        </div>
+                <div ng.show="ctrl.results.edges">
+                    <h4>Edges</h4>
+                    <pre id="raw-edge-results">
+                        {{ctrl.results.edges | json}}
+                    </pre>
+                </div>
 
-                        <div ng.show="ctrl.results.entitySeeds">
-                            <h4>Seeds</h4>
-                            <pre id="raw-entity-seed-results">
-                                {{ctrl.results.entitySeeds | json}}
-                            </pre>
-                        </div>
+                <div ng.show="ctrl.results.entitySeeds">
+                    <h4>Seeds</h4>
+                    <pre id="raw-entity-seed-results">
+                        {{ctrl.results.entitySeeds | json}}
+                    </pre>
+                </div>
 
-                        <div ng.show="ctrl.results.other">
-                            <h4>Other</h4>
-                            <pre id="raw-other-results">
-                                {{ctrl.results.other | json}}
-                            </pre>
-                        </div>
-                    </md-content>
-                </md-tab>
-            </md-tabs>
-        </md-content>
-    </div>
+                <div ng.show="ctrl.results.other">
+                    <h4>Other</h4>
+                    <pre id="raw-other-results">
+                        {{ctrl.results.other | json}}
+                    </pre>
+                </div>
+            </md-content>
+        </md-tab>
+    </md-tabs>
 </div>
