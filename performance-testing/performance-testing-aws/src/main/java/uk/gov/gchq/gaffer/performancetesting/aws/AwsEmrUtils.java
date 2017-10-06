@@ -43,7 +43,7 @@ public final class AwsEmrUtils {
                 if (info.containsKey("jobFlowId")) {
                     emrJobFlowId = info.get("jobFlowId").toString();
                 }
-            } catch (FileNotFoundException e) {
+            } catch (final FileNotFoundException e) {
                 LOGGER.error("Unable to open EMR job flow file: " + EMR_JOB_FLOW_FILE_LOCATION, e);
             }
         }

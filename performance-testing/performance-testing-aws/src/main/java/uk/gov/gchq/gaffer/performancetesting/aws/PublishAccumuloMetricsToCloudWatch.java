@@ -257,7 +257,7 @@ public class PublishAccumuloMetricsToCloudWatch implements Runnable {
         LOGGER.info("Submitting " + metrics.size() + " metrics to CloudWatch");
 
         // CloudWatch throws InvalidParameterValue if a value has a high level of precision and is very close to 0
-        for (MetricDatum metric : metrics) {
+        for (final MetricDatum metric : metrics) {
             if (Math.abs(metric.getValue()) < 0.0001) {
                 metric.setValue(0.0);
             }
@@ -274,7 +274,7 @@ public class PublishAccumuloMetricsToCloudWatch implements Runnable {
                 );
 
                 LOGGER.debug(response.getSdkResponseMetadata().getRequestId());
-            } catch (AmazonCloudWatchException e) {
+            } catch (final AmazonCloudWatchException e) {
                 LOGGER.error("Failed publishing the following metrics to CloudWatch: " + metricBatch, e);
             }
         }
@@ -309,7 +309,7 @@ public class PublishAccumuloMetricsToCloudWatch implements Runnable {
             try {
                 final List<MetricDatum> metrics = this.gatherMetrics();
                 this.publishMetrics(metrics);
-            } catch (TException e) {
+            } catch (final TException e) {
                 e.printStackTrace();
             }
 
@@ -319,7 +319,7 @@ public class PublishAccumuloMetricsToCloudWatch implements Runnable {
             if (delay > 0) {
                 try {
                     Thread.sleep(delay);
-                } catch (InterruptedException e) {
+                } catch (final InterruptedException e) {
                     run = false;
                 }
             }
