@@ -1,9 +1,9 @@
 'use strict'
 
-angular.module('app').controller('MainCtrl', ['schema', 'settings', 'config', 'graph', 'operations', function(schema, settings, config, graph, operations) {
+angular.module('app').controller('MainCtrl', ['schema', 'settings', 'config', 'graph', 'operationService', function(schema, settings, config, graph, operationService) {
     config.loadConfig(function(conf) {
         config.setConfig(conf)
-        operations.reloadNamedOperations(settings.getRestUrl())
+        operationService.reloadNamedOperations(settings.getRestUrl())
     })
     schema.loadSchema(settings.getRestUrl())
     graph.load()

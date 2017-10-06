@@ -21,19 +21,20 @@
 
                         </h3>
 
-                        <div ng-repeat="(i, json) in ctrl.operations track by $index">
-                            <pre id="operation-{{i}}-json"
-                                 ng-show="!ctrl.editingOperations">
+                        <div ng-show="!ctrl.editingOperations" ng-repeat="(i, json) in ctrl.operations track by $index">
+                            <pre id="operation-{{i}}-json">
                                 {{ctrl.operations[i] | json}}
                             </pre>
+                        </div>
+                        <div ng-show="ctrl.editingOperations" ng-repeat="(i, json) in ctrl.operationsForEdit track by $index">
                             <textarea id="editing-operation-{{i}}-json"
-                                      ng-model="ctrl.operationsForEdit[i]"
-                                      ng-show="ctrl.editingOperations">>
+                                   ng-model="ctrl.operationsForEdit[i]">
                             </textarea>
                         </div>
 
                         <!--<div>-->
                         <button class="btn btn-primary"
+                                ng-show="ctrl.editingOperations"
                                 ng-click="ctrl.addOperation()">
                             Add Operation
                         </button>

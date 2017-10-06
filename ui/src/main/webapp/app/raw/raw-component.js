@@ -11,7 +11,7 @@ function raw() {
     }
 }
 
-function RawController($scope, operations, results, query) {
+function RawController($scope, operationService, results, query) {
     var vm = this
 
     // variables
@@ -36,7 +36,7 @@ function RawController($scope, operations, results, query) {
         vm.operationsForEdit = []
 
         for(var i in vm.operations) {
-            vm.operationsForEdit.push(JSON.stringify(operations[i], null, 2));
+            vm.operationsForEdit.push(JSON.stringify(vm.operations[i], null, 2));
         }
         vm.editingOperations = true;
     }
@@ -49,7 +49,9 @@ function RawController($scope, operations, results, query) {
         query.setOperations([])
         for(var i in vm.operationsForEdit) {
             try {
-                query.addOperation(JSON.parse(vm.operationsForEdit[i]));
+                if (vm.operationsForEdit[i] !== "") {
+                    query.addOperation(JSON.parse(vm.operationsForEdit[i]));
+                }
             } catch(e) {
                 console.error('Invalid json: ' + vm.operationsForEdit[i]);
             }

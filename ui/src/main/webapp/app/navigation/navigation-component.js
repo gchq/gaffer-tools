@@ -8,7 +8,7 @@ function navigation() {
     }
 }
 
-function NavigationController($scope, $mdDialog, graph, operations, results, query, settings) {
+function NavigationController($scope, $mdDialog, graph, operationService, results, query, settings) {
     var vm = this;
     vm.loading = false
     vm.addMultipleSeeds = false
@@ -39,7 +39,7 @@ function NavigationController($scope, $mdDialog, graph, operations, results, que
             query.addOperation(operation);
             query.execute(settings.getRestUrl(), JSON.stringify({
                 class: "uk.gov.gchq.gaffer.operation.OperationChain",
-                operations: [operation, operations.createLimitOperation(), operations.createDeduplicateOperation()]
+                operations: [operation, operationService.createLimitOperation(), operationService.createDeduplicateOperation()]
             }), function(data) {
                 loading = false
                 results.updateResults(data)
@@ -55,9 +55,9 @@ function NavigationController($scope, $mdDialog, graph, operations, results, que
             try {
                 query.execute(settings.getRestUrl(), JSON.stringify({
                     class: "uk.gov.gchq.gaffer.operation.OperationChain",
-                    operations: [query.operations[i], operations.createLimitOperation(), operations.createDeduplicateOperation()]
+                    operations: [query.operations[i], operationService.createLimitOperation(), operationService.createDeduplicateOperation()]
                 }), function(data) {
-                    results.updateResults(results)
+                    results.updateResults(data)
                     vm.loading = false
                 });
             } catch(e) {

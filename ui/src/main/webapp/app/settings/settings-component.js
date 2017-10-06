@@ -11,14 +11,14 @@ function settings() {
     }
 }
 
-function SettingsController($scope, settings, schema, operations) {
+function SettingsController($scope, settings, schema, operationService) {
 
     var vm = this
 
     vm.reloadData = function() {
         settings.setRestUrl(vm.restUrl)
         schema.loadSchema(settings.getRestUrl())
-        operations.reloadNamedOperations(settings.getRestUrl())
+        operationService.reloadNamedOperations(settings.getRestUrl())
     }
 
     vm.updateResultLimit = function() {

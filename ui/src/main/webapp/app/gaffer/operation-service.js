@@ -2,13 +2,13 @@
 
 'use strict'
 
-angular.module('app').factory('operations', ['$http', 'settings', 'config', 'query', 'types', function($http, settings, config, query, types) {
+angular.module('app').factory('operationService', ['$http', 'settings', 'config', 'query', 'types', function($http, settings, config, query, types) {
 
-    var operations = {}
+    var operationService = {}
 
     var opWhiteList = undefined; // TODO should probably be populated by GET graph/config/operations
     var opBlackList = [];        // TODO should probably be populated by the config service
-    operations.availableOperations = []
+    operationService.availableOperations = []
     var namedOpClass = "uk.gov.gchq.gaffer.named.operation.NamedOperation"
 
 
@@ -26,11 +26,11 @@ angular.module('app').factory('operations', ['$http', 'settings', 'config', 'que
     }
 
     var updateNamedOperations = function(results) {
-        operations.availableOperations = [];
+        operationService.availableOperations = [];
         var defaults = config.getConfig().operations.defaultAvailable
         for(var i in defaults) {
             if(opAllowed(defaults[i].name)) {
-                operations.availableOperations.push(defaults[i])
+                operationService.availableOperations.push(defaults[i])
             }
         }
 
@@ -48,7 +48,7 @@ angular.module('app').factory('operations', ['$http', 'settings', 'config', 'que
                             }
                         }
                     }
-                    operations.availableOperations.push({
+                    operationService.availableOperations.push({
                         class: namedOpClass,
                         name: results[i].operationName,
                         parameters: results[i].parameters,
@@ -64,7 +64,7 @@ angular.module('app').factory('operations', ['$http', 'settings', 'config', 'que
         }
     }
 
-    operations.reloadNamedOperations = function(url) {
+    operationService.reloadNamedOperations = function(url) {
         query.execute(
             url,
             JSON.stringify(
@@ -74,19 +74,19 @@ angular.module('app').factory('operations', ['$http', 'settings', 'config', 'que
     }
 
 
-    operations.createLimitOperation = function() {
+    operationService.createLimitOperation = function() {
         return {
             class: "uk.gov.gchq.gaffer.operation.impl.Limit",
             resultLimit: settings.getResultLimit()
         }
     }
 
-    operations.createDeduplicateOperation = function() {
+    operationService.createDeduplicateOperation = function() {
         return {
             class: "uk.gov.gchq.gaffer.operation.impl.output.ToSet",
         };
     }
 
-    return operations
+    return operationService
 
 }])

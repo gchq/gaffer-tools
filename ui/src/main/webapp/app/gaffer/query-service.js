@@ -31,12 +31,12 @@ angular.module('app').factory('query', ['$http', '$q', function($http, $q) {
 
     query.addOperation = function(operation) {
         query.operations.push(operation)
-        defer.notify()
+        defer.notify(query.operations)
     }
 
     query.setOperations = function(ops) {
         query.operations = ops
-        defer.notify()
+        defer.notify(query.operations)
     }
 
 

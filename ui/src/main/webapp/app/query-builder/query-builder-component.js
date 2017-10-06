@@ -11,7 +11,7 @@ function queryBuilder() {
     }
 }
 
-function QueryBuilderController($scope, operations, types, graph, settings, query, functions, schema, $window, $mdDialog) {
+function QueryBuilderController($scope, operationService, types, graph, settings, query, functions, schema, $window, $mdDialog) {
 
     var vm = this
 
@@ -27,7 +27,7 @@ function QueryBuilderController($scope, operations, types, graph, settings, quer
     vm.selectedEdges = graph.selectedEdges
     vm.inOutFlag = "EITHER"
     vm.step = 0
-    vm.availableOperations = operations.availableOperations
+    vm.availableOperations = operationService.availableOperations
     vm.selectedOp = vm.availableOperations[0] // TODO should this be the default operation in the settings?
 
     // watches
