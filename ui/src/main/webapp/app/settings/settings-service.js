@@ -40,7 +40,7 @@ angular.module('app').factory('settings', function() {
     }
 
     settings.getDefaultOp = function() {
-        return defaultOp
+        return settings.defaultOp
     }
 
     settings.setDefaultOp = function(op) {

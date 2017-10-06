@@ -1,8 +1,8 @@
 'use strict'
 
-angular.module('app').component('settingsView', settings())
+angular.module('app').component('settingsView', settingsView())
 
-function settings() {
+function settingsView() {
 
     return {
         templateUrl: 'app/settings/settings.html',
@@ -14,6 +14,9 @@ function settings() {
 function SettingsController($scope, settings, schema, operationService) {
 
     var vm = this
+    vm.restUrl = settings.getRestUrl()
+    vm.resultLimit = settings.getResultLimit()
+    vm.defaultOp = settings.getDefaultOp()
 
     vm.reloadData = function() {
         settings.setRestUrl(vm.restUrl)
@@ -23,7 +26,6 @@ function SettingsController($scope, settings, schema, operationService) {
 
     vm.updateResultLimit = function() {
         settings.setResultLimit(vm.resultLimit)
-        $scope.$apply()
     }
 
     vm.updateDefaultOp = function() {
