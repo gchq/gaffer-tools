@@ -299,6 +299,9 @@ def updateDashboardForStack (stack):
         accumuloTabletServerGraph("Major Compactions", "MajorCompactionCount", emrPrivateDnsNames, stack['Outputs']['EmrClusterId'], stack['Outputs']['AccumuloInstanceName'], width=12),
         accumuloTabletServerGraph("Queued Minor Compactions", "MinorCompactionQueuedCount", emrPrivateDnsNames, stack['Outputs']['EmrClusterId'], stack['Outputs']['AccumuloInstanceName'], width=12),
         accumuloTabletServerGraph("Queued Major Compactions", "MajorCompactionQueuedCount", emrPrivateDnsNames, stack['Outputs']['EmrClusterId'], stack['Outputs']['AccumuloInstanceName'], width=12),
+
+        accumuloTabletServerGraph("Running Scans", "ScansRunning", emrPrivateDnsNames, stack['Outputs']['EmrClusterId'], stack['Outputs']['AccumuloInstanceName'], width=12),
+        accumuloTabletServerGraph("Queued Scans", "ScansQueued", emrPrivateDnsNames, stack['Outputs']['EmrClusterId'], stack['Outputs']['AccumuloInstanceName'], width=12),
     ]
 
     dashboard = { "widgets": widgets }
