@@ -24,7 +24,7 @@
                         <div ng-repeat="(i, json) in ctrl.operations track by $index">
                             <pre id="operation-{{i}}-json"
                                  ng-show="!ctrl.editingOperations">
-                                {{operations[i] | json}}
+                                {{ctrl.operations[i] | json}}
                             </pre>
                             <textarea id="editing-operation-{{i}}-json"
                                       ng-model="ctrl.operationsForEdit[i]"
@@ -44,28 +44,28 @@
                     <md-content class="md-padding">
                         <h3>Results</h3>
 
-                        <div ng.show="rawData.results.entities">
+                        <div ng.show="ctrl.results.entities">
                             <h4>Entities</h4>
                             <pre id="raw-entity-results">
                                 {{ctrl.results.entities | json}}
                             </pre>
                         </div>
 
-                        <div ng.show="rawData.results.edges">
+                        <div ng.show="ctrl.results.edges">
                             <h4>Edges</h4>
                             <pre id="raw-edge-results">
                                 {{ctrl.results.edges | json}}
                             </pre>
                         </div>
 
-                        <div ng.show="rawData.results.entitySeeds">
+                        <div ng.show="ctrl.results.entitySeeds">
                             <h4>Seeds</h4>
                             <pre id="raw-entity-seed-results">
                                 {{ctrl.results.entitySeeds | json}}
                             </pre>
                         </div>
 
-                        <div ng.show="rawData.results.other">
+                        <div ng.show="ctrl.results.other">
                             <h4>Other</h4>
                             <pre id="raw-other-results">
                                 {{ctrl.results.other | json}}

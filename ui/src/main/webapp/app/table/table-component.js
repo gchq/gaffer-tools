@@ -29,6 +29,9 @@ function resultsTable() {
 
 function TableController($scope, results, schema, table) {
     var vm = this
+
+    table.update(results.results)
+
     vm.data = table.data
     vm.selectedTab = 0
     vm.searchTerm = ''

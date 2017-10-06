@@ -149,9 +149,16 @@ angular.module('app').factory('graph', ['schema', 'types', '$q', function(schema
         fire('onSelectedElementsUpdate'[{"entities": graph.selectedEntities, "edges": graph.selectedEdges}])
     }
 
-    graph.reload = function() {
+    graph.reload = function(results) {
         graph.load()
-        updateGraph(graph.graphData)
+        if (results.entities.length === 0 &&
+        results.edges.length === 0 &&
+        results.entitySeeds.length === 0) {
+
+            updateGraph(graph.graphData)
+        } else {
+            graph.update(results)
+        }
     }
 
     graph.reset = function() {

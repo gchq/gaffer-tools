@@ -41,13 +41,17 @@ function RawController($scope, operations, results, query) {
         vm.editingOperations = true;
     }
 
+    vm.addOperation = function() {
+        vm.operationsForEdit.push("")
+    }
+
     vm.saveOperations = function() {
         query.setOperations([])
         for(var i in vm.operationsForEdit) {
             try {
                 query.addOperation(JSON.parse(vm.operationsForEdit[i]));
             } catch(e) {
-                console.err('Invalid json: ' + vm.operationsForEdit[i]);
+                console.error('Invalid json: ' + vm.operationsForEdit[i]);
             }
         }
         vm.editingOperations = false;

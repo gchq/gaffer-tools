@@ -16,5 +16,5 @@ function GraphController(graph, results) {
         graph.update(results)
     })
 
-    graph.reload()
+    graph.reload(results.results)
 }
