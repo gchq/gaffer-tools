@@ -116,8 +116,8 @@ angular.module('app').factory('graph', ['schema', 'types', '$q', function(schema
         var _id = element.id()
         for (var id in graph.graphData.entities) {
             if(_id == id) {
-                graph.selectedEntities[id] = graphData.entities[id]
-                fire('onSelectedElementsUpdate'[{"entities": graph.selectedEntities, "edges": graph.selectedEdges}])
+                graph.selectedEntities[id] = graph.graphData.entities[id]
+                fire('onSelectedElementsUpdate', [{"entities": graph.selectedEntities, "edges": graph.selectedEdges}])
                 updateRelatedEntities()
                 updateRelatedEdges()
                 return
@@ -126,12 +126,12 @@ angular.module('app').factory('graph', ['schema', 'types', '$q', function(schema
         for (var id in graph.graphData.edges) {
          if(_id == id) {
              graph.selectedEdges[id] = graph.graphData.edges[id]
-             fire('onSelectedElementsUpdate'[{"entities": graph.selectedEntities, "edges": graph.selectedEdges}])
+             fire('onSelectedElementsUpdate', [{"entities": graph.selectedEntities, "edges": graph.selectedEdges}])
              return
          }
         }
         graph.selectedEntities[_id] = [{vertexType: element.data().vertexType, vertex: _id}]
-        fire('onSelectedElementsUpdate'[{"entities": graph.selectedEntities, "edges": graph.selectedEdges}])
+        fire('onSelectedElementsUpdate', [{"entities": graph.selectedEntities, "edges": graph.selectedEdges}])
         updateRelatedEntities()
         updateRelatedEdges()
     }
@@ -146,7 +146,7 @@ angular.module('app').factory('graph', ['schema', 'types', '$q', function(schema
             delete graph.selectedEdges[element.id()]
         }
 
-        fire('onSelectedElementsUpdate'[{"entities": graph.selectedEntities, "edges": graph.selectedEdges}])
+        fire('onSelectedElementsUpdate', [{"entities": graph.selectedEntities, "edges": graph.selectedEdges}])
     }
 
     graph.reload = function(results) {
@@ -232,6 +232,7 @@ angular.module('app').factory('graph', ['schema', 'types', '$q', function(schema
 
         graph.graphData = graphData
         updateGraph(graph.graphData)
+        graph.redraw()
     }
 
     var clone = function(obj) {
@@ -339,8 +340,6 @@ angular.module('app').factory('graph', ['schema', 'types', '$q', function(schema
         for (var id in results.entitySeeds) {
             addEntitySeed(results.entitySeeds[id][0].vertexType, id);
         }
-
-        graph.redraw();
     }
 
     graph.onSelectedElementsUpdate = function(fn){
