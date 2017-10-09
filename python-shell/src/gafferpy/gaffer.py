@@ -2661,7 +2661,7 @@ class Filter(Operation):
 
 
 class Aggregate(Operation):
-    CLASS = 'uk.gov.gchq.gaffer.operation.function.Aggregate'
+    CLASS = 'uk.gov.gchq.gaffer.operation.impl.function.Aggregate'
 
     def __init__(self,
                  input=None,

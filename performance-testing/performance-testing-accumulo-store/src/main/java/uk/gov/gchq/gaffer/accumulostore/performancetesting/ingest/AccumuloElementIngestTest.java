@@ -34,11 +34,11 @@ import uk.gov.gchq.gaffer.operation.impl.SplitStore;
 import uk.gov.gchq.gaffer.performancetesting.ingest.ElementIngestTest;
 import uk.gov.gchq.gaffer.randomelementgeneration.generator.ElementGeneratorFromSupplier;
 import uk.gov.gchq.gaffer.serialisation.ToBytesSerialiser;
+import uk.gov.gchq.gaffer.store.Context;
 import uk.gov.gchq.gaffer.store.StoreException;
 import uk.gov.gchq.gaffer.store.StoreProperties;
 import uk.gov.gchq.gaffer.store.schema.Schema;
 import uk.gov.gchq.gaffer.store.serialiser.ElementSerialiser;
-import uk.gov.gchq.gaffer.user.User;
 
 import java.io.File;
 import java.io.IOException;
@@ -122,7 +122,7 @@ public class AccumuloElementIngestTest extends Configured {
                 .validate(false)
                 .proportionToSample(1.0F)
                 .build();
-        accumuloStore.execute(sample, new User());
+        accumuloStore.execute(sample, new Context());
 
         // Check if split points were output (if there was only 1 tablet server then no split points will be output)
         boolean splitsFileExists = false;
@@ -142,7 +142,7 @@ public class AccumuloElementIngestTest extends Configured {
             final SplitStore splitTable = new SplitStore.Builder()
                     .inputPath(splitsFile)
                     .build();
-            accumuloStore.execute(splitTable, new User());
+            accumuloStore.execute(splitTable, new Context());
         }
 
         // Run test

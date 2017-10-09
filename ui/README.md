@@ -127,11 +127,10 @@ localhost:8080/ui
 
 
 ##### Build and execute a query to find all locations within the South West region:
-- click 'Build query'
 - click on the 'South West' vertex (displayed as a grey circle in the top left hand corner of the page) 
-- click 'Next'
+- click 'Build query'
+- click on the 'Get Elements' link
 - select 'RegionContainsLocation'
-- click 'Next'
 - click 'Next'
 - click 'Execute'
 
@@ -140,31 +139,28 @@ Move the graph around by clicking and dragging the cursor.
 Scroll to zoom in/out.
 
 ##### Build and execute a query to find all roads within Bristol:
-- click 'Build query'
 - click on the 'Bristol, City of' vertex
-- click 'Next'
+- click 'Build query'
+- click on the 'Get Elements' link
 - select 'LocationContainsRoad'
-- click 'Next'
 - click 'Next'
 - click 'Execute'
 
 
 #### Build and execute a query to find all junctions on the M32:
-- click 'Build query'
 - click on the 'M32' vertex
-- click 'Next'
+- click 'Build query'
+- click on the 'Get Elements' link
 - select 'RoadHasJunction'
-- click 'Next'
 - click 'Next'
 - click 'Execute'
 
 
 #### Build and execute a query to find the road use between junctions M32:1 and M32:M4 between 6AM and 7AM on 5/3/2005:
-- click 'Build query'
 - click on the 'M32:1' vertex
-- click 'Next'
+- click 'Build query'
+- click on the 'Get Elements' link
 - select 'RoadUse'
-- click 'Next'
 - This time we are going to add a filter to the start and end times
 - click 'Add filter'
 - Enter the following startDate filter:
@@ -172,7 +168,7 @@ Scroll to zoom in/out.
 property: startDate
 function: uk.gov.gchq.koryphe.impl.predicate.IsMoreThan
 orEqualTo: true
-value: {"java.util.Date": 1115100000000}
+value: {"java.util.Date": 1115103600000}
 ```
 - click 'Add filter'
 - Enter the following endDate filter:
@@ -180,7 +176,7 @@ value: {"java.util.Date": 1115100000000}
 property: endDate
 function: uk.gov.gchq.koryphe.impl.predicate.IsLessThan
 orEqualTo: true
-value: {"java.util.Date": 1115103600000}
+value: {"java.util.Date": 1115107200000}
 ```
 - click 'Next'
 - click 'Execute'
@@ -192,11 +188,11 @@ M32:1 to M32:M4 (19)
 RoadUse	
 countByVehicleType: {"uk.gov.gchq.gaffer.types.FreqMap":{"HGVR3":44,"BUS":10,"HGVR4":28,"AMV":6993,"HGVR2":184,"HGVA3":19,"PC":0,"HGVA5":99,"HGVA6":40,"CAR":5480,"HGV":414,"WMV2":44,"LGV":1045}}
 
-startDate: {"java.util.Date":1115100000000}
-
-endDate: {"java.util.Date":1115103600000}
+endDate: {"java.util.Date":1115107200000}
 
 count: {"java.lang.Long":14400}
+
+startDate: {"java.util.Date":1115103600000}
 ```
 
 This shows the vehicle types and their counts between these two junctions for the time period described by the filters.
@@ -209,19 +205,18 @@ Clicking the 'Raw' tab at the top of the UI displays the Json constructed and ha
 
 
 #### Now we will repeat the previous query but with a bigger time window - this time between 6AM and 8AM on 5/3/2005:
-- click 'Build query'
 - click on the 'M32:1' vertex
-- click 'Next'
+- click 'Build query'
+- click on the 'Get Elements' link
 - select 'RoadUse'
-- click 'Next'
-- This time we are going to add a filter to the start and end times
+- This time we are going to add a filter to the start and end times with a bigger time window
 - click 'Add filter'
 - Enter the following startDate filter:
 ```
 property: startDate
 function: uk.gov.gchq.koryphe.impl.predicate.IsMoreThan
 orEqualTo: true
-value: {"java.util.Date": 1115100000000}
+value: {"java.util.Date": 1115103600000}
 ```
 - click 'Add filter'
 - Enter the following endDate filter:
@@ -229,7 +224,7 @@ value: {"java.util.Date": 1115100000000}
 property: endDate
 function: uk.gov.gchq.koryphe.impl.predicate.IsLessThan
 orEqualTo: true
-value: {"java.util.Date": 1115107200000}
+value: {"java.util.Date": 1115110800000}
 ```
 - click 'Next'
 - click 'Execute'
@@ -248,13 +243,13 @@ endDate: {"java.util.Date":1115103600000}
 count: {"java.lang.Long":14400}
 
 RoadUse	
-countByVehicleType: {"uk.gov.gchq.gaffer.types.simple.FreqMap":{"HGVR3":68,"BUS":28,"HGVR4":50,"AMV":13640,"HGVR2":370,"HGVA3":35,"PC":0,"HGVA5":204,"HGVA6":96,"CAR":10924,"HGV":823,"WMV2":95,"LGV":1770}}
+countByVehicleType: {"uk.gov.gchq.gaffer.types.FreqMap":{"HGVR3":68,"BUS":28,"HGVR4":50,"AMV":13640,"HGVR2":370,"HGVA3":35,"PC":0,"HGVA5":204,"HGVA6":96,"CAR":10924,"HGV":823,"WMV2":95,"LGV":1770}}
 
-startDate: {"java.util.Date":1115100000000}
-
-endDate: {"java.util.Date":1115107200000}
+endDate: {"java.util.Date":1115110800000}
 
 count: {"java.lang.Long":28103}
+
+startDate: {"java.util.Date":1115103600000}
 ```
 The top one is from the first query.
 
