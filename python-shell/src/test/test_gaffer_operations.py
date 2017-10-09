@@ -3372,55 +3372,517 @@ class GafferOperationsTest(unittest.TestCase):
             {
               "class" : "uk.gov.gchq.gaffer.operation.OperationChain",
               "operations" : [ {
-                "class" : "uk.gov.gchq.gaffer.operation.impl.get.GetElements",
-                "view" : {
-                  "edges" : {
-                    "edge" : { }
-                  },
-                  "entities" : { }
-                },
-                "includeIncomingOutGoing" : "OUTGOING",
-                "input" : [ {
-                  "vertex" : 1,
-                  "class" : "uk.gov.gchq.gaffer.operation.data.EntitySeed"
-                }, {
-                  "vertex" : 2,
-                  "class" : "uk.gov.gchq.gaffer.operation.data.EntitySeed"
-                } ]
+                "class" : "uk.gov.gchq.gaffer.operation.impl.job.GetJobResults",
+                "jobId" : "job1"
               }, {
-                "class" : "uk.gov.gchq.gaffer.operation.impl.output.ToVertices",
-                "useMatchedVertex" : "OPPOSITE"
-              }, {
-                "class" : "uk.gov.gchq.gaffer.operation.impl.output.ToSet"
+                "class" : "uk.gov.gchq.gaffer.operation.impl.function.Filter",
+                "globalEdges" : {
+                  "predicates" : [ {
+                    "predicate" : {
+                      "class" : "uk.gov.gchq.koryphe.impl.predicate.IsMoreThan",
+                      "orEqualTo" : false,
+                      "value" : 2
+                    },
+                    "selection" : [ "count" ]
+                  } ]
+                }
               } ]
             }
             ''',
             g.OperationChain(
                 operations=[
-                    g.GetElements(
-                        include_incoming_out_going="OUTGOING",
-                        view=g.View(
-                            entities=[
-                            ],
-                            edges=[
-                                g.ElementDefinition(
-                                    group="edge"
+                    g.GetJobResults(
+                        job_id="job1"
+                    ),
+                    g.Filter(
+                        global_edges=g.GlobalElementFilterDefinition(
+                            predicates=[
+                                g.PredicateContext(
+                                    selection=["count"],
+                                    predicate=g.IsMoreThan(
+                                        value=2,
+                                        or_equal_to=False
+                                    )
                                 )
                             ]
+                        )
+                    )
+                ]
+            )
+        ],
+        [
+            '''
+            {
+                "class": "uk.gov.gchq.gaffer.operation.impl.function.Filter",
+                "globalElements": {
+                    "predicates": [
+                        {
+                            "selection": [
+                                "timestamp"
+                            ],
+                            "predicate": {
+                                "class": "uk.gov.gchq.koryphe.impl.predicate.IsMoreThan",
+                                "value": 1,
+                                "orEqualTo": true
+                            }
+                        },
+                        {
+                            "selection": [
+                                "timestamp"
+                            ],
+                            "predicate": {
+                                "class": "uk.gov.gchq.koryphe.impl.predicate.IsLessThan",
+                                "value": 10,
+                                "orEqualTo": true
+                            }
+                        }
+                    ]
+                },
+                "edges": {
+                    "edge2": {
+                        "predicates": [
+                            {
+                                "selection": [
+                                    "prop2"
+                                ],
+                                "predicate": {
+                                    "class": "uk.gov.gchq.koryphe.impl.predicate.Regex",
+                                    "value": "a.*"
+                                }
+                            }
+                        ]
+                    },
+                    "edge1": {
+                        "predicates": [
+                            {
+                                "selection": [
+                                    "prop2"
+                                ],
+                                "predicate": {
+                                    "class": "uk.gov.gchq.koryphe.impl.predicate.Regex",
+                                    "value": "a.*"
+                                }
+                            }
+                        ]
+                    }
+                },
+                "globalEntities": {
+                    "predicates": [
+                        {
+                            "selection": [
+                                "timestamp"
+                            ],
+                            "predicate": {
+                                "class": "uk.gov.gchq.koryphe.impl.predicate.IsMoreThan",
+                                "value": 1,
+                                "orEqualTo": true
+                            }
+                        }
+                    ]
+                },
+                "entities": {
+                    "entity1": {
+                        "predicates": [
+                            {
+                                "selection": [
+                                    "prop"
+                                ],
+                                "predicate": {
+                                    "class": "uk.gov.gchq.koryphe.impl.predicate.Regex",
+                                    "value": "a.*"
+                                }
+                            }
+                        ]
+                    },
+                    "entity2": {
+                        "predicates": [
+                            {
+                                "selection": [
+                                    "prop"
+                                ],
+                                "predicate": {
+                                    "class": "uk.gov.gchq.koryphe.impl.predicate.Regex",
+                                    "value": "a.*"
+                                }
+                            }
+                        ]
+                    }
+                },
+                "globalEdges": {
+                    "predicates": [
+                        {
+                            "selection": [
+                                "count"
+                            ],
+                            "predicate": {
+                                "class": "uk.gov.gchq.koryphe.impl.predicate.IsMoreThan",
+                                "value": 2,
+                                "orEqualTo": false
+                            }
+                        }
+                    ]
+                }
+            }
+
+            ''',
+            g.Filter(
+                global_edges=g.GlobalElementFilterDefinition(
+                    predicates=[
+                        g.PredicateContext(
+                            selection=["count"],
+                            predicate=g.IsMoreThan(
+                                value=2,
+                                or_equal_to=False
+                            )
+                        )
+                    ]
+                ),
+                global_entities=g.GlobalElementFilterDefinition(
+                    predicates=[
+                        g.PredicateContext(
+                            selection=["timestamp"],
+                            predicate=g.IsMoreThan(
+                                value=1,
+                                or_equal_to=True
+                            )
+                        )
+                    ]
+                ),
+                global_elements=g.GlobalElementFilterDefinition(
+                    predicates=[
+                        g.PredicateContext(
+                            selection=["timestamp"],
+                            predicate=g.IsMoreThan(
+                                value=1,
+                                or_equal_to=True
+                            )
                         ),
-                        input=[
-                            g.EntitySeed(
-                                vertex=1
-                            ),
-                            g.EntitySeed(
-                                vertex=2
+                        g.PredicateContext(
+                            selection=["timestamp"],
+                            predicate=g.IsLessThan(
+                                value=10,
+                                or_equal_to=True
+                            )
+                        )
+                    ]
+                ),
+                entities=[
+                    g.ElementFilterDefinition(
+                        group="entity1",
+                        predicates=[
+                            g.PredicateContext(
+                                selection=["prop"],
+                                predicate=g.Regex(
+                                    value="a.*"
+                                )
                             )
                         ]
                     ),
-                    g.ToVertices(
-                        use_matched_vertex="OPPOSITE"
+                    g.ElementFilterDefinition(
+                        group="entity2",
+                        predicates=[
+                            g.PredicateContext(
+                                selection=["prop"],
+                                predicate=g.Regex(
+                                    value="a.*"
+                                )
+                            )
+                        ]
+                    )
+                ],
+                edges=[
+                    g.ElementFilterDefinition(
+                        group="edge1",
+                        predicates=[
+                            g.PredicateContext(
+                                selection=["prop2"],
+                                predicate=g.Regex(
+                                    value="a.*"
+                                )
+                            )
+                        ]
                     ),
-                    g.ToSet()
+                    g.ElementFilterDefinition(
+                        group="edge2",
+                        predicates=[
+                            g.PredicateContext(
+                                selection=["prop2"],
+                                predicate=g.Regex(
+                                    value="a.*"
+                                )
+                            )
+                        ]
+                    )
+                ]
+            )
+        ],
+        [
+            '''
+            {
+                "class": "uk.gov.gchq.gaffer.operation.OperationChain",
+                "operations": [
+                    {
+                        "class": "uk.gov.gchq.gaffer.operation.impl.job.GetJobResults",
+                        "jobId": "job1"
+                    },
+                    {
+                        "class": "uk.gov.gchq.gaffer.operation.impl.function.Aggregate",
+                        "entities": {
+                            "entity2": {
+                                "operators": [
+                                    {
+                                        "selection": [
+                                            "prop"
+                                        ],
+                                        "binaryOperator": {
+                                            "class": "exampleBinaryOperator"
+                                        }
+                                    }
+                                ],
+                                "groupBy": [
+                                    "timestamp"
+                                ]
+                            },
+                            "entity1": {
+                                "operators": [
+                                    {
+                                        "selection": [
+                                            "prop"
+                                        ],
+                                        "binaryOperator": {
+                                            "class": "exampleBinaryOperator"
+                                        }
+                                    }
+                                ]
+                            }
+                        },
+                        "edges": {
+                            "edge2": {
+                                "operators": [
+                                    {
+                                        "selection": [
+                                            "prop2"
+                                        ],
+                                        "binaryOperator": {
+                                            "class": "exampleBinaryOperator"
+                                        }
+                                    }
+                                ]
+                            },
+                            "edge1": {
+                                "operators": [
+                                    {
+                                        "selection": [
+                                            "prop2"
+                                        ],
+                                        "binaryOperator": {
+                                            "class": "exampleBinaryOperator"
+                                        }
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                ]
+            }
+            ''',
+            g.OperationChain(
+                operations=[
+                    g.GetJobResults(
+                        job_id="job1"
+                    ),
+                    g.Aggregate(
+                        entities=[
+                            g.ElementAggregateDefinition(
+                                group="entity1",
+                                operators=[
+                                    g.BinaryOperatorContext(
+                                        selection=["prop"],
+                                        binary_operator=g.BinaryOperator(
+                                            class_name="exampleBinaryOperator"
+                                        )
+                                    )
+                                ]
+                            ),
+                            g.ElementAggregateDefinition(
+                                group="entity2",
+                                group_by=["timestamp"],
+                                operators=[
+                                    g.BinaryOperatorContext(
+                                        selection=["prop"],
+                                        binary_operator=g.BinaryOperator(
+                                            class_name="exampleBinaryOperator"
+                                        )
+                                    )
+                                ]
+                            )
+                        ],
+                        edges=[
+                            g.ElementAggregateDefinition(
+                                group="edge1",
+                                operators=[
+                                    g.BinaryOperatorContext(
+                                        selection=["prop2"],
+                                        binary_operator=g.BinaryOperator(
+                                            class_name="exampleBinaryOperator"
+                                        )
+                                    )
+                                ]
+                            ),
+                            g.ElementAggregateDefinition(
+                                group="edge2",
+                                operators=[
+                                    g.BinaryOperatorContext(
+                                        selection=["prop2"],
+                                        binary_operator=g.BinaryOperator(
+                                            class_name="exampleBinaryOperator"
+                                        )
+                                    )
+                                ]
+                            )
+                        ]
+                    )
+                ]
+            )
+        ],
+        [
+            '''
+            {
+                "class": "uk.gov.gchq.gaffer.operation.OperationChain",
+                "operations": [
+                    {
+                        "class": "uk.gov.gchq.gaffer.operation.impl.job.GetJobResults",
+                        "jobId": "job1"
+                    },
+                    {
+                        "class": "uk.gov.gchq.gaffer.operation.impl.function.Transform",
+                        "edges": {
+                            "edge1": {
+                                "functions": [
+                                    {
+                                        "selection": [
+                                            "prop2"
+                                        ],
+                                        "projection": [
+                                            "newProp2"
+                                        ],
+                                        "function": {
+                                            "class": "exampleFunction"
+                                        }
+                                    }
+                                ]
+                            },
+                            "edge2": {
+                                "functions": [
+                                    {
+                                        "selection": [
+                                            "prop2"
+                                        ],
+                                        "projection": [
+                                            "newProp2"
+                                        ],
+                                        "function": {
+                                            "class": "exampleFunction"
+                                        }
+                                    }
+                                ]
+                            }
+                        },
+                        "entities": {
+                            "entity1": {
+                                "functions": [
+                                    {
+                                        "selection": [
+                                            "prop"
+                                        ],
+                                        "projection": [
+                                            "newProp"
+                                        ],
+                                        "function": {
+                                            "class": "exampleFunction"
+                                        }
+                                    }
+                                ]
+                            },
+                            "entity2": {
+                                "functions": [
+                                    {
+                                        "selection": [
+                                            "prop"
+                                        ],
+                                        "projection": [
+                                            "newProp"
+                                        ],
+                                        "function": {
+                                            "class": "exampleFunction"
+                                        }
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                ]
+            }
+            ''',
+            g.OperationChain(
+                operations=[
+                    g.GetJobResults(
+                        job_id="job1"
+                    ),
+                    g.Transform(
+                        entities=[
+                            g.ElementTransformDefinition(
+                                group="entity1",
+                                functions=[
+                                    g.FunctionContext(
+                                        selection=["prop"],
+                                        function=g.Function(
+                                            class_name="exampleFunction"
+                                        ),
+                                        projection=["newProp"]
+                                    )
+                                ]
+                            ),
+                            g.ElementTransformDefinition(
+                                group="entity2",
+                                functions=[
+                                    g.FunctionContext(
+                                        selection=["prop"],
+                                        function=g.Function(
+                                            class_name="exampleFunction"
+                                        ),
+                                        projection=["newProp"]
+                                    )
+                                ]
+                            )
+                        ],
+                        edges=[
+                            g.ElementTransformDefinition(
+                                group="edge1",
+                                functions=[
+                                    g.FunctionContext(
+                                        selection=["prop2"],
+                                        function=g.Function(
+                                            class_name="exampleFunction"
+                                        ),
+                                        projection=["newProp2"]
+                                    )
+                                ]
+                            ),
+                            g.ElementTransformDefinition(
+                                group="edge2",
+                                functions=[
+                                    g.FunctionContext(
+                                        selection=["prop2"],
+                                        function=g.Function(
+                                            class_name="exampleFunction"
+                                        ),
+                                        projection=["newProp2"]
+                                    )
+                                ]
+                            )
+                        ]
+                    )
                 ]
             )
         ]
@@ -3431,8 +3893,11 @@ class GafferOperationsTest(unittest.TestCase):
             self.assertEqual(
                 json.loads(example[0]),
                 example[1].to_json(),
-                "json failed: \n" + example[0]
+                "json failed: \n" + example[0] + "\n" + example[
+                    1].to_json_pretty_str()
             )
+
+            g.JsonConverter.from_json(example[0], validate=True)
 
 
 if __name__ == "__main__":

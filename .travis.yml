@@ -15,6 +15,7 @@ addons:
 
 env:
   matrix:
+  - RELEASE=true
   - MODULES=:gaffer-tools,:mini-accumulo-cluster,:schema-builder,:schema-builder-rest
   - MODULES=:ui
   - MODULES=:random-element-generation,:performance-testing,:performance-testing-core,:performance-testing-accumulo-store,:performance-testing-aws
@@ -29,4 +30,3 @@ env:
 before_install: ./cd/before_install.sh
 install: travis_wait 45 ./cd/install.sh
 script: travis_wait 45 ./cd/verify.sh
-after_success: travis_wait 45 ./cd/after_success.sh

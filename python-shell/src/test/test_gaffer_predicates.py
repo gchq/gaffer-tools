@@ -479,6 +479,7 @@ class GafferPredicatesTest(unittest.TestCase):
                 example[1].to_json(),
                 "json failed: \n" + example[0]
             )
+            g.JsonConverter.from_json(example[0], validate=True)
 
 
 if __name__ == "__main__":
