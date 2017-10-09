@@ -11,5 +11,6 @@ angular.module('app').controller('MainCtrl', ['schema', 'settings', 'config', 'g
         config.set(conf)
         operationService.reloadNamedOperations()
         schema.load()
+        graph.load()
     })
 }])

@@ -27,7 +27,7 @@ function QueryBuilderController($scope, operationService, types, graph, config, 
     vm.selectedEdges = graph.selectedEdges
     vm.inOutFlag = "EITHER"
     vm.step = 0
-    vm.availableOperations = operationService.availableOperations
+    vm.availableOperations = operationService.getAvailableOperations()
     vm.selectedOp = vm.availableOperations[0] // TODO should this be the default operation in the settings?
 
     // watches

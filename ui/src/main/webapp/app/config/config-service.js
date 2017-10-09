@@ -5,14 +5,15 @@
 angular.module('app').factory('config', ['$http', function($http) {
 
     var configService = {}
-    configService.config = {}
+
+    var config = {}
 
     configService.get = function() {
-        return configService.config
+        return config
     }
 
     configService.set = function(conf) {
-        configService.config = conf
+        config = conf
     }
 
     configService.load = function(onSuccess) {

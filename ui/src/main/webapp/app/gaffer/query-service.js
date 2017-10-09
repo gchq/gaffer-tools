@@ -7,7 +7,7 @@ angular.module('app').factory('query', ['$http', 'config', '$q', function($http,
     var query = {}
     var defer = $q.defer()
 
-    query.operations = []
+    var operations = []
 
     query.observeOperations = function() {
         return defer.promise
@@ -30,13 +30,13 @@ angular.module('app').factory('query', ['$http', 'config', '$q', function($http,
     }
 
     query.addOperation = function(operation) {
-        query.operations.push(operation)
-        defer.notify(query.operations)
+        operations.push(operation)
+        defer.notify(operations)
     }
 
     query.setOperations = function(ops) {
-        query.operations = ops
-        defer.notify(query.operations)
+        operations = ops
+        defer.notify(operations)
     }
 
 

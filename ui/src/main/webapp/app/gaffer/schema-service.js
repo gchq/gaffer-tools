@@ -3,9 +3,10 @@
 angular.module('app').factory('schema', ['$http', 'config', '$q', function($http, config, $q) {
 
     var schemaService = {}
+
     var defer = $q.defer()
-    schemaService.schema = {}
-    schemaService.schemaVertices = {}
+    var schema = {}
+    var schemaVertices = {}
 
 
     schemaService.observe = function() {
@@ -13,73 +14,73 @@ angular.module('app').factory('schema', ['$http', 'config', '$q', function($http
     }
 
     schemaService.get = function() {
-        return schemaService.schema
+        return schema
     }
 
     schemaService.getSchemaVertices = function() {
-        return schemaService.schemaVertices
+        return schemaVertices
     }
 
     schemaService.load = function() {
          $http.get(config.get().restEndpoint + "/graph/config/schema")
               .success(function(data){
-                 schemaService.schema = data
+                 schema = data
                  updateSchemaVertices()
-                 defer.notify(schemaService.schema)
+                 defer.notify(schema)
               })
-              .error(function(arg) {
-                 console.log("Unable to load schema: " + arg)
+              .error(function(err) {
+                 console.log("Unable to load schema: " + err.statusCode + " - " + err.status)
               })
     }
 
     var updateSchemaVertices = function() {
         var vertices = [];
-        if(schemaService.schema) {
-            for(var i in schemaService.schema.entities) {
-                if(vertices.indexOf(schemaService.schema.entities[i].vertex) == -1) {
-                    vertices.push(schemaService.schema.entities[i].vertex);
+        if(schema) {
+            for(var i in schema.entities) {
+                if(vertices.indexOf(schema.entities[i].vertex) == -1) {
+                    vertices.push(schema.entities[i].vertex);
                 }
             }
-            for(var i in schemaService.schema.edges) {
-                if(vertices.indexOf(schemaService.schema.edges[i].source) == -1) {
-                    vertices.push(schemaService.schema.edges[i].source);
+            for(var i in schema.edges) {
+                if(vertices.indexOf(schema.edges[i].source) == -1) {
+                    vertices.push(schema.edges[i].source);
                 }
-                if(vertices.indexOf(schemaService.schema.edges[i].destination) == -1) {
-                    vertices.push(schemaService.schema.edges[i].destination);
+                if(vertices.indexOf(schema.edges[i].destination) == -1) {
+                    vertices.push(schema.edges[i].destination);
                 }
             }
         }
 
-        schemaService.schemaVertices = vertices;
+        schemaVertices = vertices;
     }
 
     schemaService.getEntityProperties = function(entity) {
-        if(Object.keys(schemaService.schema.entities[entity].properties).length) {
-            return schemaService.schema.entities[entity].properties;
+        if(Object.keys(schema.entities[entity].properties).length) {
+            return schema.entities[entity].properties;
         }
         return undefined;
     }
 
     schemaService.getEdgeProperties = function(edge) {
-        if(Object.keys(schemaService.schema.edges[edge].properties).length) {
-            return schemaService.schema.edges[edge].properties;
+        if(Object.keys(schema.edges[edge].properties).length) {
+            return schema.edges[edge].properties;
         }
         return undefined;
     }
 
 
     schemaService.getVertexTypeFromEntityGroup = function(group) {
-        for(var entityGroup in schemaService.schema.entities) {
-            if(schemaService.entityGroup === group) {
-                return schemaService.schema.entities[entityGroup].vertex;
+        for(var entityGroup in schema.entities) {
+            if(entityGroup === group) {
+                return schema.entities[entityGroup].vertex;
             }
         }
     }
 
     schemaService.getVertexTypesFromEdgeGroup = function(group) {
-        for(var edgeGroup in schemaService.schema.edges) {
+        for(var edgeGroup in schema.edges) {
             if(edgeGroup === group) {
-               return [schemaService.schema.edges[edgeGroup].source, schemaService.schema.edges[edgeGroup].destination];
+               return [schema.edges[edgeGroup].source, schema.edges[edgeGroup].destination];
             }
         }
     }
