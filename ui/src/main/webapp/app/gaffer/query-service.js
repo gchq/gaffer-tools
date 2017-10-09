@@ -2,7 +2,7 @@
 
 'use strict'
 
-angular.module('app').factory('query', ['$http', '$q', function($http, $q) {
+angular.module('app').factory('query', ['$http', 'config', '$q', function($http, config, $q) {
 
     var query = {}
     var defer = $q.defer()
@@ -13,8 +13,8 @@ angular.module('app').factory('query', ['$http', '$q', function($http, $q) {
         return defer.promise
     }
 
-    query.execute = function(url, operationChain, onSuccess) {
-        var queryUrl = url + "/graph/operations/execute"
+    query.execute = function(operationChain, onSuccess) {
+        var queryUrl = config.get().restEndpoint + "/graph/operations/execute"
 
         if(!queryUrl.startsWith("http")) {
             queryUrl = "http://" + queryUrl

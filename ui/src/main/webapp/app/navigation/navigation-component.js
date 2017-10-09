@@ -37,7 +37,7 @@ function NavigationController($scope, $mdDialog, graph, operationService, result
         })
         .then(function(operation) {
             query.addOperation(operation);
-            query.execute(config.get().restEndpoint, JSON.stringify({
+            query.execute(JSON.stringify({
                 class: "uk.gov.gchq.gaffer.operation.OperationChain",
                 operations: [operation, operationService.createLimitOperation(), operationService.createDeduplicateOperation()]
             }), function(data) {
@@ -53,7 +53,7 @@ function NavigationController($scope, $mdDialog, graph, operationService, result
         vm.loading = true
         for(var i in query.operations) {
             try {
-                query.execute(config.get().restEndpoint, JSON.stringify({
+                query.execute(JSON.stringify({
                     class: "uk.gov.gchq.gaffer.operation.OperationChain",
                     operations: [query.operations[i], operationService.createLimitOperation(), operationService.createDeduplicateOperation()]
                 }), function(data) {
@@ -62,7 +62,7 @@ function NavigationController($scope, $mdDialog, graph, operationService, result
                 });
             } catch(e) {
                 // Try without the limit and deduplicate operations
-                query.execute(config.get().restEndpoint, JSON.stringify({
+                query.execute(JSON.stringify({
                     class: "uk.gov.gchq.gaffer.operation.OperationChain",
                     operations: [query.operations[i]]
                 }), function(data) {

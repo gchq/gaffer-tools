@@ -67,7 +67,7 @@ angular.module('app').factory('operationService', ['$http', 'settings', 'config'
     operationService.reloadNamedOperations = function() {
         var getAllClass = "uk.gov.gchq.gaffer.named.operation.GetAllNamedOperations"
         ifOperationSupported(getAllClass, function() {
-            query.execute(config.get().restEndpoint, JSON.stringify(
+            query.execute(JSON.stringify(
                 {
                     class: getAllClass
                 }

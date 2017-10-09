@@ -156,7 +156,7 @@ function QueryBuilderController($scope, operationService, types, graph, config, 
             }
         }
         vm.expandQueryCounts = undefined;
-        query.execute(config.get().restEndpoint, JSON.stringify(operations), onSuccess);
+        query.execute(JSON.stringify(operations), onSuccess);
     }
 
     var createOpInput = function() {
