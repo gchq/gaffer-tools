@@ -3626,7 +3626,7 @@ class GafferOperationsTest(unittest.TestCase):
                         "jobId": "job1"
                     },
                     {
-                        "class": "uk.gov.gchq.gaffer.operation.function.Aggregate",
+                        "class": "uk.gov.gchq.gaffer.operation.impl.function.Aggregate",
                         "entities": {
                             "entity2": {
                                 "operators": [
