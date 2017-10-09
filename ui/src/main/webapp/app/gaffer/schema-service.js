@@ -1,6 +1,6 @@
 'use strict'
 
-angular.module('app').factory('schema', ['$http', '$q', function($http, $q) {
+angular.module('app').factory('schema', ['$http', 'config', '$q', function($http, config, $q) {
 
     var schemaService = {}
     var defer = $q.defer()
@@ -8,11 +8,11 @@ angular.module('app').factory('schema', ['$http', '$q', function($http, $q) {
     schemaService.schemaVertices = {}
 
 
-    schemaService.observeSchema = function() {
+    schemaService.observe = function() {
         return defer.promise
     }
 
-    schemaService.getSchema = function() {
+    schemaService.get = function() {
         return schemaService.schema
     }
 
@@ -20,8 +20,8 @@ angular.module('app').factory('schema', ['$http', '$q', function($http, $q) {
         return schemaService.schemaVertices
     }
 
-    schemaService.loadSchema = function(restUrl) {
-         $http.get(restUrl + "/graph/config/schema")
+    schemaService.load = function() {
+         $http.get(config.get().restEndpoint + "/graph/config/schema")
               .success(function(data){
                  schemaService.schema = data
                  updateSchemaVertices()

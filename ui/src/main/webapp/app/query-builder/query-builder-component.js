@@ -110,7 +110,7 @@ function QueryBuilderController($scope, operationService, types, graph, config, 
             $scope.$apply()
         });
 
-        var gafferSchema = schema.getSchema()
+        var gafferSchema = schema.get()
 
         var elementDef = gafferSchema.entities[group];
         if(!elementDef) {
@@ -256,7 +256,7 @@ function QueryBuilderController($scope, operationService, types, graph, config, 
                 var entity = vm.expandEntities[i];
                 op.view.entities[entity] = {};
 
-                var filterFunctions = convertFilterFunctions(vm.expandEntitiesContent[entity], schema.getSchema().entities[entity]);
+                var filterFunctions = convertFilterFunctions(vm.expandEntitiesContent[entity], schema.get().entities[entity]);
                 if(filterFunctions.length > 0) {
                     op.view.entities[entity].preAggregationFilterFunctions = filterFunctions;
                 }
@@ -266,7 +266,7 @@ function QueryBuilderController($scope, operationService, types, graph, config, 
                 var edge = vm.expandEdges[i];
                 op.view.edges[edge] = {};
 
-                var filterFunctions = convertFilterFunctions(vm.expandEdgesContent[edge], schema.getSchema().edges[edge]);
+                var filterFunctions = convertFilterFunctions(vm.expandEdgesContent[edge], schema.get().edges[edge]);
                 if(filterFunctions.length > 0) {
                     op.view.edges[edge].preAggregationFilterFunctions = filterFunctions;
                 }

@@ -7,7 +7,7 @@ angular.module('app').factory('functions', ['$http', 'schema', 'config', functio
 
     functions.getFunctions = function(group, property, onSuccess) {
         var type;
-        var schema = schema.getSchema();
+        var schema = schema.get();
 
         if(schema.entities[group]) {
             type = schema.entities[group].properties[property];

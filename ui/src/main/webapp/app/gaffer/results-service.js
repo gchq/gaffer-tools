@@ -11,6 +11,10 @@ angular.module('app').factory('results', ['$q', function($q) {
         return defer.promise
     }
 
+    resultService.get = function() {
+        return resultService.results
+    }
+
     resultService.clear = function() {
         resultService.results = {entities: [], edges: [], entitySeeds: [], other: []}
     }

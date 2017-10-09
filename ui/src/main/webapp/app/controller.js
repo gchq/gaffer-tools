@@ -10,6 +10,6 @@ angular.module('app').controller('MainCtrl', ['schema', 'settings', 'config', 'g
         }
         config.set(conf)
         operationService.reloadNamedOperations()
-        schema.loadSchema(config.get().restEndpoint)
+        schema.load()
     })
 }])

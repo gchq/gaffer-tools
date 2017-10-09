@@ -80,12 +80,12 @@ angular.module('app').factory('graph', ['schema', 'types', '$q', function(schema
         graph.relatedEntities = []
         for(var id in graph.selectedEntities) {
             var vertexType = graph.selectedEntities[id][0].vertexType
-            for(var entityGroup in schema.getSchema().entities) {
+            for(var entityGroup in schema.get().entities) {
                 if(vertexType === "unknown") {
                      graph.relatedEntities.push(entityGroup)
                      fire('onRelatedEntitiesUpdate', [graph.relatedEntities])
                 } else {
-                    var entity = schema.getSchema().entities[entityGroup]
+                    var entity = schema.get().entities[entityGroup]
                     if(entity.vertex === vertexType
                         && graph.relatedEntities.indexOf(entityGroup) === -1) {
                         graph.relatedEntities.push(entityGroup)
@@ -101,8 +101,8 @@ angular.module('app').factory('graph', ['schema', 'types', '$q', function(schema
         graph.relatedEdges = [];
         for(var id in graph.selectedEntities) {
             var vertexType = graph.selectedEntities[id][0].vertexType;
-            for(var edgeGroup in schema.getSchema().edges) {
-                var edge = schema.getSchema().edges[edgeGroup]
+            for(var edgeGroup in schema.get().edges) {
+                var edge = schema.get().edges[edgeGroup]
                 if((edge.source === vertexType || edge.destination === vertexType)
                     && graph.relatedEdges.indexOf(edgeGroup) === -1) {
                     graph.relatedEdges.push(edgeGroup)

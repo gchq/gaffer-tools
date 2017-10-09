@@ -25,7 +25,7 @@ function SeedBuilderController(schema, types, $mdDialog) {
     }
 
     vm.getFields = function() {
-        var schemaType = schema.getSchema().types[vm.seedVertexType]
+        var schemaType = schema.get().types[vm.seedVertexType]
         if (!schemaType) {
             return types.getType(undefined).types
         }
@@ -33,7 +33,7 @@ function SeedBuilderController(schema, types, $mdDialog) {
     }
 
     vm.getCsvHeader = function() {
-        var schemaType = schema.getSchema().types[vm.seedVertexType]
+        var schemaType = schema.get().types[vm.seedVertexType]
         if (!schemaType) {
             return types.getType(undefined).csvHeader
         }
@@ -51,7 +51,7 @@ function SeedBuilderController(schema, types, $mdDialog) {
             for(var i in vertices) {
                 var vertex = vertices[i];
                 var vertexType = vm.seedVertexType;
-                var typeClass = schema.getSchema().types[vertexType].class;
+                var typeClass = schema.get().types[vertexType].class;
                 var partValues = vertex.trim().split(",");
                 var fields = types.getType(typeClass).types;
                 if(fields.length != partValues.length) {
@@ -80,7 +80,7 @@ function SeedBuilderController(schema, types, $mdDialog) {
     }
 
     var createSeed = function(type, parts) {
-        var typeClass = schema.getSchema().types[type].class
+        var typeClass = schema.get().types[type].class
         var vertex = types.getType(typeClass).createValueAsJsonWrapperObj(typeClass, parts)
         return {vertexType: type, vertex: vertex}
     }

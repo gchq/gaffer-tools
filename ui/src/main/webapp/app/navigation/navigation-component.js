@@ -49,7 +49,7 @@ function NavigationController($scope, $mdDialog, graph, operationService, result
 
 
     vm.executeAll = function() {
-        results.clearResults();
+        results.clear();
         vm.loading = true
         for(var i in query.operations) {
             try {
