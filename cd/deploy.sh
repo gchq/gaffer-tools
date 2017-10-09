@@ -2,12 +2,13 @@
 
 set -e
 
-repoName="Gaffer Tools"
-repoId="gaffer-tools"
-artifactId="gaffer-tools"
+repoName="Gaffer"
+repoId="Gaffer"
+artifactId="gaffer2"
 
 if [ "$RELEASE" == 'true' ] && [ "$TRAVIS_BRANCH" == 'master' ] && [ "$TRAVIS_PULL_REQUEST" == 'false' ]; then
     git checkout master
+    mvn org.apache.maven.plugins:maven-help-plugin:2.1.1:evaluate -Dexpression=project.version
     POM_VERSION=`mvn org.apache.maven.plugins:maven-help-plugin:2.1.1:evaluate -Dexpression=project.version | grep -v '\['`
     echo "POM_VERSION = $POM_VERSION"
     if [[ "$POM_VERSION" == *SNAPSHOT ]]; then
@@ -88,7 +89,7 @@ if [ "$RELEASE" == 'true' ] && [ "$TRAVIS_BRANCH" == 'master' ] && [ "$TRAVIS_PU
         echo "======================================"
         echo ""
 
-        openssl aes-256-cbc -K $encrypted_a7bb8cbce01c_key -iv $encrypted_a7bb8cbce01c_iv -in cd/codesigning.asc.enc -out cd/codesigning.asc -d
+        openssl aes-256-cbc -K $encrypted_de949738249f_key -iv $encrypted_de949738249f_iv -in cd/codesigning.asc.enc -out cd/codesigning.asc -d
         gpg --fast-import cd/codesigning.asc
 
         if [ "$MODULES" == '' ]; then
