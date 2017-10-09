@@ -36,9 +36,9 @@ if [ "$RELEASE" == 'true' ] && [ "$TRAVIS_BRANCH" == 'master' ] && [ "$TRAVIS_PU
         echo "--------------------------------------"
         mvn versions:set -DnewVersion=$RELEASE_VERSION -DgenerateBackupPoms=false
         git commit -a -m "prepare release $artifactId-$RELEASE_VERSION"
-        git push
         git tag $artifactId-$RELEASE_VERSION
         git push origin --tags
+        git push
 
         echo ""
         echo "--------------------------------------"
@@ -46,7 +46,17 @@ if [ "$RELEASE" == 'true' ] && [ "$TRAVIS_BRANCH" == 'master' ] && [ "$TRAVIS_PU
         echo "--------------------------------------"
         mvn -q clean install -Pquick -Dskip.jar-with-dependencies=true -Dshaded.jar.phase=true
         mvn -q javadoc:javadoc -Pquick
-        mvn -q scm-publish:publish-scm -Dmaven.javadoc.failOnError=false -Pquick
+        rm -rf .git/tmp-javadoc
+        mv target/site/apidocs .git/tmp-javadoc
+        git clean -fd
+        git reset --hard
+        git checkout gh-pages
+        git clean -fd
+        git reset --hard
+        rm -rf uk
+        mv .git/tmp-javadoc/* .
+        git commit -a -m "Updated javadoc - $RELEASE_VERSION"
+        git push
 
         echo ""
         echo "--------------------------------------"
