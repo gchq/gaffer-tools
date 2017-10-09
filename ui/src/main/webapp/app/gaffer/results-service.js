@@ -7,15 +7,15 @@ angular.module('app').factory('results', ['$q', function($q) {
 
     var defer = $q.defer()
 
-    resultService.observeResults = function() {
+    resultService.observe = function() {
         return defer.promise
     }
 
-    resultService.clearResults = function() {
+    resultService.clear = function() {
         resultService.results = {entities: [], edges: [], entitySeeds: [], other: []}
     }
 
-    resultService.updateResults = function(results) {
+    resultService.update = function(results) {
         if(results) {
             for (var i in results) {
                 var result = results[i];

@@ -30,14 +30,14 @@ function resultsTable() {
 function TableController($scope, results, schema, table) {
     var vm = this
 
-    table.update(results.results)
+    table.update(results.get())
 
     vm.data = table.data
     vm.selectedTab = 0
     vm.searchTerm = ''
     vm.schema = schema.getSchema()
 
-    results.observeResults().then(null, null, function(results) {
+    results.observe().then(null, null, function(results) {
         table.update(results)
         vm.data = table.data
     })

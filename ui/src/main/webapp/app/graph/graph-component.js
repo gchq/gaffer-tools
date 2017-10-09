@@ -23,7 +23,7 @@ function GraphController($scope, graph, results, $timeout) {
 
     var promise = null
 
-    results.observeResults().then(null, null, function(results) {
+    results.observe().then(null, null, function(results) {
         graph.update(results)
     })
 
@@ -41,7 +41,7 @@ function GraphController($scope, graph, results, $timeout) {
         }
     })
 
-    graph.reload(results.results)
+    graph.reload(results.get())
 
 
 

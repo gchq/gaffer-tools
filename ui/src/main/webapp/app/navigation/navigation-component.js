@@ -42,7 +42,7 @@ function NavigationController($scope, $mdDialog, graph, operationService, result
                 operations: [operation, operationService.createLimitOperation(), operationService.createDeduplicateOperation()]
             }), function(data) {
                 loading = false
-                results.updateResults(data)
+                results.update(data)
             })
         });
     }
@@ -57,7 +57,7 @@ function NavigationController($scope, $mdDialog, graph, operationService, result
                     class: "uk.gov.gchq.gaffer.operation.OperationChain",
                     operations: [query.operations[i], operationService.createLimitOperation(), operationService.createDeduplicateOperation()]
                 }), function(data) {
-                    results.updateResults(data)
+                    results.update(data)
                     vm.loading = false
                 });
             } catch(e) {
@@ -66,7 +66,7 @@ function NavigationController($scope, $mdDialog, graph, operationService, result
                     class: "uk.gov.gchq.gaffer.operation.OperationChain",
                     operations: [query.operations[i]]
                 }), function(data) {
-                    results.updateResults(data)
+                    results.update(data)
                     vm.loading = false
                 });
            }
