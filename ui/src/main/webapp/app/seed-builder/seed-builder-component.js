@@ -53,14 +53,14 @@ function SeedBuilderController(schema, types, $mdDialog) {
                 var vertexType = vm.seedVertexType;
                 var typeClass = schema.getSchema().types[vertexType].class;
                 var partValues = vertex.trim().split(",");
-                var types = types.getType(typeClass).types;
-                if(types.length != partValues.length) {
-                    alert("Wrong number of parameters for seed: " + vertex + ". " + vertexType + " requires " + types.length + " parameters");
+                var fields = types.getType(typeClass).types;
+                if(fields.length != partValues.length) {
+                    alert("Wrong number of parameters for seed: " + vertex + ". " + vertexType + " requires " + fields.length + " parameters");
                     break;
                 }
                 var parts = {};
-                for(var j = 0; j< types.length; j++) {
-                    parts[types[j].key] = partValues[j];
+                for(var j = 0; j< fields.length; j++) {
+                    parts[fields[j].key] = partValues[j];
                 }
                 seeds.push(createSeed(vertexType, parts));
             }

@@ -12,7 +12,7 @@ function graphView() {
 }
 
 
-function GraphController($scope, graph, results) {
+function GraphController($scope, graph, results, $timeout) {
 
     var vm = this
 
@@ -20,6 +20,8 @@ function GraphController($scope, graph, results) {
     vm.selectedEntities = graph.selectedEntities
     vm.selectedEntitiesCount = Object.keys(graph.selectedEntities).length
     vm.selectedEdgesCount = Object.keys(graph.selectedEdges).length
+
+    var promise = null
 
     results.observeResults().then(null, null, function(results) {
         graph.update(results)
@@ -30,7 +32,13 @@ function GraphController($scope, graph, results) {
         vm.selectedEntitiesCount = Object.keys(selectedElements.entities).length
         vm.selectedEdges = selectedElements.edges
         vm.selectedEntities = selectedElements.entities
-        $scope.$apply()
+
+        if(!promise) {
+            promise = $timeout(function() {
+                $scope.$apply()
+                promise = null
+            })
+        }
     })
 
     graph.reload(results.results)
