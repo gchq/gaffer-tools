@@ -85,11 +85,11 @@ if [ "$RELEASE" == 'true' ] && [ "$TRAVIS_BRANCH" == 'master' ] && [ "$TRAVIS_PU
     else
         echo ""
         echo "======================================"
-        echo "Tagging and releasing version $POM_VERSION"
+        echo "Releasing version $POM_VERSION"
         echo "======================================"
         echo ""
 
-        openssl aes-256-cbc -K $encrypted_de949738249f_key -iv $encrypted_de949738249f_iv -in cd/codesigning.asc.enc -out cd/codesigning.asc -d
+        openssl aes-256-cbc -K $encrypted_a7bb8cbce01c_key -iv $encrypted_a7bb8cbce01c_iv -in cd/codesigning.asc.enc -out cd/codesigning.asc -d
         gpg --fast-import cd/codesigning.asc
 
         if [ "$MODULES" == '' ]; then
