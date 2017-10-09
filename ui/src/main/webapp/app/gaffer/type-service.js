@@ -24,7 +24,7 @@ angular.module('app').factory('types', ['config', function(config) {
 
 
     types.getType = function(typeClass) {
-        var types = config.getConfig().types
+        var types = config.get().types
         var type = types[typeClass];
         if(!type) {
             type = unknownTypeDefault;
@@ -96,9 +96,6 @@ angular.module('app').factory('types', ['config', function(config) {
         if(partKeys.length == 0) {
             type.csvHeader = "";
         } else {
-            if(partKeys.length > 1) {
-                console.log('test: ' + partKeys);
-            }
             type.csvHeader = partKeys.join(",");
         }
 

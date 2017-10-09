@@ -378,7 +378,7 @@ angular.module('app').factory('graph', ['schema', 'types', '$q', function(schema
             label = vertex;
         } else if(Object.keys(json).length == 1) {
             var typeClass = Object.keys(json)[0];
-            label = settings.getType(typeClass).getShortValue(json);
+            label = types.getType(typeClass).getShortValue(json);
         } else {
             label = vertex;
         }

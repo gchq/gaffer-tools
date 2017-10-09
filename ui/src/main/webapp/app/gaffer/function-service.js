@@ -1,6 +1,6 @@
 'use strict'
 
-angular.module('app').factory('functions', ['$http', 'schema', 'settings', function($http, schema, settings) {
+angular.module('app').factory('functions', ['$http', 'schema', 'config', function($http, schema, config) {
 
     var functions = {}
 
@@ -20,7 +20,7 @@ angular.module('app').factory('functions', ['$http', 'schema', 'settings', funct
           className = schema.types[type].class;
         }
 
-        var queryUrl = settings.getRestUrl() + "/graph/config/filterFunctions/" + className;
+        var queryUrl = config.get().restEndpoint + "/graph/config/filterFunctions/" + className;
 
         if(!queryUrl.startsWith("http")) {
             queryUrl = "http://" + queryUrl;

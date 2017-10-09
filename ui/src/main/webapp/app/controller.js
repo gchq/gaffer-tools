@@ -1,10 +1,15 @@
 'use strict'
 
 angular.module('app').controller('MainCtrl', ['schema', 'settings', 'config', 'graph', 'operationService', function(schema, settings, config, graph, operationService) {
-    config.loadConfig(function(conf) {
-        config.setConfig(conf)
-        operationService.reloadNamedOperations(settings.getRestUrl())
+
+    var defaultRestEndpoint = window.location.origin + "/rest/latest"
+
+    config.load(function(conf) {
+        if (!conf.restEndpoint) {
+            conf.restEndpoint = defaultRestEndpoint
+        }
+        config.set(conf)
+        operationService.reloadNamedOperations()
+        schema.loadSchema(config.get().restEndpoint)
     })
-    schema.loadSchema(settings.getRestUrl())
-    graph.load()
 }])

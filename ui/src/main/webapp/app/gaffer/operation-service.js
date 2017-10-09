@@ -27,7 +27,7 @@ angular.module('app').factory('operationService', ['$http', 'settings', 'config'
 
     var updateNamedOperations = function(results) {
         operationService.availableOperations = [];
-        var defaults = config.getConfig().operations.defaultAvailable
+        var defaults = config.get().operations.defaultAvailable
         for(var i in defaults) {
             if(opAllowed(defaults[i].name)) {
                 operationService.availableOperations.push(defaults[i])
@@ -64,14 +64,42 @@ angular.module('app').factory('operationService', ['$http', 'settings', 'config'
         }
     }
 
-    operationService.reloadNamedOperations = function(url) {
-        query.execute(
-            url,
-            JSON.stringify(
-            {
-                class: "uk.gov.gchq.gaffer.named.operation.GetAllNamedOperations"
-            }), updateNamedOperations)
+    operationService.reloadNamedOperations = function() {
+        var getAllClass = "uk.gov.gchq.gaffer.named.operation.GetAllNamedOperations"
+        ifOperationSupported(getAllClass, function() {
+            query.execute(config.get().restEndpoint, JSON.stringify(
+                {
+                    class: getAllClass
+                }
+            ), updateNamedOperations);
+        },
+        function() {
+            updateNamedOperations([]);
+        })
+
     }
+
+    var ifOperationSupported = function(operationClass, onSupported, onUnsupported) {
+        var queryUrl = config.get().restEndpoint + "/graph/operations";
+
+        if(!queryUrl.startsWith("http")) {
+            queryUrl = "http://" + queryUrl;
+        }
+
+        $http.get(queryUrl)
+        .success(function(ops) {
+            if (ops.indexOf(operationClass) !== -1) {
+                onSupported();
+                return;
+            }
+            onUnsupported();
+        })
+        .error(function(err) {
+            console.log("Error: " + err.statusCode + " - "  + err.status);
+            onUnsupported();
+        })
+    }
+
 
 
     operationService.createLimitOperation = function() {

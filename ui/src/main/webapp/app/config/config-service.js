@@ -7,15 +7,15 @@ angular.module('app').factory('config', ['$http', function($http) {
     var configService = {}
     configService.config = {}
 
-    configService.getConfig = function() {
+    configService.get = function() {
         return configService.config
     }
 
-    configService.setConfig = function(conf) {
+    configService.set = function(conf) {
         configService.config = conf
     }
 
-    configService.loadConfig = function(onSuccess) {
+    configService.load = function(onSuccess) {
         $http.get('/config/config.json')
         .success(function(results) {
             onSuccess(results)

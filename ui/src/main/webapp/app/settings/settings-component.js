@@ -11,18 +11,12 @@ function settingsView() {
     }
 }
 
-function SettingsController($scope, settings, schema, operationService) {
+function SettingsController($scope, settings, schema, operationService, results) {
 
     var vm = this
-    vm.restUrl = settings.getRestUrl()
+
     vm.resultLimit = settings.getResultLimit()
     vm.defaultOp = settings.getDefaultOp()
-
-    vm.reloadData = function() {
-        settings.setRestUrl(vm.restUrl)
-        schema.loadSchema(settings.getRestUrl())
-        operationService.reloadNamedOperations(settings.getRestUrl())
-    }
 
     vm.updateResultLimit = function() {
         settings.setResultLimit(vm.resultLimit)

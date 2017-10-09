@@ -11,7 +11,7 @@ function queryBuilder() {
     }
 }
 
-function QueryBuilderController($scope, operationService, types, graph, settings, query, functions, schema, $window, $mdDialog) {
+function QueryBuilderController($scope, operationService, types, graph, config, settings, query, functions, schema, $window, $mdDialog) {
 
     var vm = this
 
@@ -156,7 +156,7 @@ function QueryBuilderController($scope, operationService, types, graph, settings
             }
         }
         vm.expandQueryCounts = undefined;
-        query.execute(settings.getRestUrl(), JSON.stringify(operations), onSuccess);
+        query.execute(config.get().restEndpoint, JSON.stringify(operations), onSuccess);
     }
 
     var createOpInput = function() {

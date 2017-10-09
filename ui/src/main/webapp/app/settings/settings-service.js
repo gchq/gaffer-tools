@@ -20,7 +20,6 @@ angular.module('app').factory('settings', function() {
     var settings = {}
 
     settings.resultLimit = 100
-    settings.restUrl = window.location.origin + "/rest/latest"
     settings.defaultOp = "uk.gov.gchq.gaffer.operation.impl.get.GetElements"
 
     settings.getResultLimit = function() {
@@ -29,14 +28,6 @@ angular.module('app').factory('settings', function() {
 
     settings.setResultLimit = function(limit) {
         settings.resultLimit = limit
-    }
-
-    settings.getRestUrl = function() {
-        return settings.restUrl
-    }
-
-    settings.setRestUrl = function(url) {
-        settings.restUrl = url
     }
 
     settings.getDefaultOp = function() {
