@@ -53,7 +53,7 @@ if [ "$RELEASE" == 'true' ] && [ "$TRAVIS_BRANCH" == 'master' ] && [ "$TRAVIS_PU
         echo "Creating GitHub release notes"
         echo "--------------------------------------"
         JSON_DATA="{
-                \"tag_name\": \"$repoId-$RELEASE_VERSION\",
+                \"tag_name\": \"$artifactId-$RELEASE_VERSION\",
                 \"name\": \"$repoName $RELEASE_VERSION\",
                 \"body\": \"[$RELEASE_VERSION issues resolved](https://github.com/gchq/$repoId/issues?q=milestone%3Av$RELEASE_VERSION)\n\n[$RELEASE_VERSION issues with migration steps](https://github.com/gchq/$repoId/issues?q=milestone%3Av$RELEASE_VERSION+label%3Amigration-required)\",
                 \"draft\": false
