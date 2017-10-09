@@ -35,7 +35,7 @@ if [ "$RELEASE" == 'true' ] && [ "$TRAVIS_BRANCH" == 'master' ] && [ "$TRAVIS_PU
         echo "Tagging version $RELEASE_VERSION"
         echo "--------------------------------------"
         mvn versions:set -DnewVersion=$RELEASE_VERSION -DgenerateBackupPoms=false
-        git commit -a -m "prepare release $repoId-$RELEASE_VERSION"
+        git commit -a -m "prepare release $artifactId-$RELEASE_VERSION"
         git push
         git tag $artifactId-$RELEASE_VERSION
         git push origin --tags
