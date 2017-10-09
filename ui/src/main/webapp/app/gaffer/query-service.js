@@ -9,6 +9,10 @@ angular.module('app').factory('query', ['$http', 'config', '$q', function($http,
 
     var operations = []
 
+    query.getOperations = function() {
+        return operations
+    }
+
     query.observeOperations = function() {
         return defer.promise
     }

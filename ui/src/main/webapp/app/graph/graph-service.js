@@ -5,15 +5,31 @@ angular.module('app').factory('graph', ['schema', 'types', '$q', function(schema
     var graphCy;
     var graph = {};
 
-    graph.selectedEntities = {}
-    graph.selectedEdges = {}
-    graph.relatedEntities = []
-    graph.relatedEdges = []
+    var selectedEntities = {}
+    var selectedEdges = {}
+    var relatedEntities = []
+    var relatedEdges = []
 
 
-    graph.graphData = {entities: {}, edges: {}, entitySeeds: {}}
+    var graphData = {entities: {}, edges: {}, entitySeeds: {}}
 
-    graph.listeners = {};
+    graph.getSelectedEntities = function() {
+        return selectedEntities
+    }
+
+    graph.getRelatedEntities = function() {
+        return relatedEntities
+    }
+
+    graph.getSelectedEdges = function() {
+        return selectedEdges
+    }
+
+    graph.getRelatedEdges = function() {
+        return relatedEdges
+    }
+
+    var listeners = {}
 
     graph.load = function() {
         var deferred = $q.defer();
@@ -77,19 +93,19 @@ angular.module('app').factory('graph', ['schema', 'types', '$q', function(schema
     }
 
     function updateRelatedEntities() {
-        graph.relatedEntities = []
-        for(var id in graph.selectedEntities) {
-            var vertexType = graph.selectedEntities[id][0].vertexType
+        relatedEntities = []
+        for(var id in selectedEntities) {
+            var vertexType = selectedEntities[id][0].vertexType
             for(var entityGroup in schema.get().entities) {
                 if(vertexType === "unknown") {
-                     graph.relatedEntities.push(entityGroup)
-                     fire('onRelatedEntitiesUpdate', [graph.relatedEntities])
+                     relatedEntities.push(entityGroup)
+                     fire('onRelatedEntitiesUpdate', [relatedEntities])
                 } else {
                     var entity = schema.get().entities[entityGroup]
                     if(entity.vertex === vertexType
-                        && graph.relatedEntities.indexOf(entityGroup) === -1) {
-                        graph.relatedEntities.push(entityGroup)
-                        fire('onRelatedEntitiesUpdate', [graph.relatedEntities])
+                        && relatedEntities.indexOf(entityGroup) === -1) {
+                        relatedEntities.push(entityGroup)
+                        fire('onRelatedEntitiesUpdate', [relatedEntities])
                     }
                 }
             }
@@ -99,8 +115,8 @@ angular.module('app').factory('graph', ['schema', 'types', '$q', function(schema
 
     function updateRelatedEdges() {
         graph.relatedEdges = [];
-        for(var id in graph.selectedEntities) {
-            var vertexType = graph.selectedEntities[id][0].vertexType;
+        for(var id in selectedEntities) {
+            var vertexType = selectedEntities[id][0].vertexType;
             for(var edgeGroup in schema.get().edges) {
                 var edge = schema.get().edges[edgeGroup]
                 if((edge.source === vertexType || edge.destination === vertexType)
@@ -114,39 +130,39 @@ angular.module('app').factory('graph', ['schema', 'types', '$q', function(schema
 
     function select(element) {
         var _id = element.id()
-        for (var id in graph.graphData.entities) {
+        for (var id in graphData.entities) {
             if(_id == id) {
-                graph.selectedEntities[id] = graph.graphData.entities[id]
-                fire('onSelectedElementsUpdate', [{"entities": graph.selectedEntities, "edges": graph.selectedEdges}])
+                selectedEntities[id] = graphData.entities[id]
+                fire('onSelectedElementsUpdate', [{"entities": selectedEntities, "edges": selectedEdges}])
                 updateRelatedEntities()
                 updateRelatedEdges()
                 return
             }
         }
-        for (var id in graph.graphData.edges) {
+        for (var id in graphData.edges) {
          if(_id == id) {
-             graph.selectedEdges[id] = graph.graphData.edges[id]
-             fire('onSelectedElementsUpdate', [{"entities": graph.selectedEntities, "edges": graph.selectedEdges}])
+             selectedEdges[id] = graphData.edges[id]
+             fire('onSelectedElementsUpdate', [{"entities": selectedEntities, "edges": selectedEdges}])
              return
          }
         }
-        graph.selectedEntities[_id] = [{vertexType: element.data().vertexType, vertex: _id}]
-        fire('onSelectedElementsUpdate', [{"entities": graph.selectedEntities, "edges": graph.selectedEdges}])
+        selectedEntities[_id] = [{vertexType: element.data().vertexType, vertex: _id}]
+        fire('onSelectedElementsUpdate', [{"entities": selectedEntities, "edges": selectedEdges}])
         updateRelatedEntities()
         updateRelatedEdges()
     }
 
     function unSelect(element) {
-        if(element.id() in graph.selectedEntities) {
-            delete graph.selectedEntities[element.id()]
+        if(element.id() in selectedEntities) {
+            delete selectedEntities[element.id()]
             updateRelatedEntities()
             updateRelatedEdges()
 
-        } else if(element.id() in graph.selectedEdges) {
-            delete graph.selectedEdges[element.id()]
+        } else if(element.id() in selectedEdges) {
+            delete selectedEdges[element.id()]
         }
 
-        fire('onSelectedElementsUpdate', [{"entities": graph.selectedEntities, "edges": graph.selectedEdges}])
+        fire('onSelectedElementsUpdate', [{"entities": selectedEntities, "edges": selectedEdges}])
     }
 
     graph.reload = function(results) {
@@ -155,40 +171,40 @@ angular.module('app').factory('graph', ['schema', 'types', '$q', function(schema
         results.edges.length === 0 &&
         results.entitySeeds.length === 0) {
 
-            updateGraph(graph.graphData)
+            updateGraph(graphData)
         } else {
             graph.update(results)
         }
     }
 
     graph.reset = function() {
-        graph.selectedEdges = {}
-        graph.selectedEntities = {}
-        fire('onSelectedElementsUpdate'[{"entities": graph.selectedEntities, "edges": graph.selectedEdges}])
+        selectedEdges = {}
+        selectedEntities = {}
+        fire('onSelectedElementsUpdate'[{"entities": selectedEntities, "edges": selectedEdges}])
     }
 
     graph.addSeed = function(vt, v) {
         var entitySeed = { vertexType: vt, vertex: v }
-        if(v in graph.graphData.entitySeeds) {
-            if(!ObjectContainsValue(graph.graphData.entitySeeds[v], entitySeed)) {
-                graph.graphData.entitySeeds[v].push(entitySeed);
+        if(v in graphData.entitySeeds) {
+            if(!arrayContainsValue(graphData.entitySeeds[v], entitySeed)) {
+                graphData.entitySeeds[v].push(entitySeed);
             }
         } else {
-            graph.graphData.entitySeeds[v] = [entitySeed];
+            graphData.entitySeeds[v] = [entitySeed];
         }
 
-        updateGraph(graph.graphData)
+        updateGraph(graphData)
     }
 
     graph.update = function(results) {
-        var graphData = {entities: {}, edges: {}, entitySeeds: {}};
+        graphData = { entities: {}, edges: {}, entitySeeds: {} };
         for (var i in results.entities) {
             var entity = clone(results.entities[i]);
             entity.vertex = parseVertex(entity.vertex);
             var id = entity.vertex;
             entity.vertexType = schema.getVertexTypeFromEntityGroup(entity.group);
             if(id in graphData.entities) {
-                if(!ObjectContainsValue(graphData.entities[id], entity)) {
+                if(!arrayContainsValue(graphData.entities[id], entity)) {
                     graphData.entities[id].push(entity);
                 }
             } else {
@@ -206,7 +222,7 @@ angular.module('app').factory('graph', ['schema', 'types', '$q', function(schema
             edge.destinationType = vertexTypes[1];
             var id = edge.source + "|" + edge.destination + "|" + edge.directed + "|" + edge.group;
             if(id in graphData.edges) {
-                if(!ObjectContainsValue(graphData.edges[id], edge)) {
+                if(!arrayContainsValue(graphData.edges[id], edge)) {
                     graphData.edges[id].push(edge);
                 }
             } else {
@@ -222,7 +238,7 @@ angular.module('app').factory('graph', ['schema', 'types', '$q', function(schema
 
             var id = entitySeed.vertex;
             if(id in graphData.entitySeeds) {
-                if(!ObjectContainsValue(graphData.entitySeeds[id], entitySeed)) {
+                if(!arrayContainsValue(graphData.entitySeeds[id], entitySeed)) {
                     graphData.entitySeeds[id].push(entitySeed);
                 }
             } else {
@@ -230,8 +246,7 @@ angular.module('app').factory('graph', ['schema', 'types', '$q', function(schema
             }
         }
 
-        graph.graphData = graphData
-        updateGraph(graph.graphData)
+        updateGraph(graphData)
         graph.redraw()
     }
 
@@ -277,7 +292,7 @@ angular.module('app').factory('graph', ['schema', 'types', '$q', function(schema
                         x: 100,
                         y: 100
                     },
-                    selected: ObjectContainsValue(graph.selectedEntities, id)
+                    selected: objectContainsValue(selectedEntities, id)
                 });
             }
         }
@@ -299,7 +314,7 @@ angular.module('app').factory('graph', ['schema', 'types', '$q', function(schema
                         x: 100,
                         y: 100
                     },
-                    selected: ObjectContainsValue(graph.selectedEntities, edge.source)
+                    selected: objectContainsValue(selectedEntities, edge.source)
                 });
             }
 
@@ -318,7 +333,7 @@ angular.module('app').factory('graph', ['schema', 'types', '$q', function(schema
                         x: 100,
                         y: 100
                     },
-                    selected: ObjectContainsValue(graph.selectedEntities, edge.destination)
+                    selected: objectContainsValue(selectedEntities, edge.destination)
                 });
             }
 
@@ -332,7 +347,7 @@ angular.module('app').factory('graph', ['schema', 'types', '$q', function(schema
                         group: edge.group,
                         selectedColor: '#35500F',
                     },
-                    selected: ObjectContainsValue(graph.selectedEdges, id)
+                    selected: objectContainsValue(selectedEdges, id)
                 });
             }
         }
@@ -403,13 +418,17 @@ angular.module('app').factory('graph', ['schema', 'types', '$q', function(schema
                     x: 100,
                     y: 100
                 },
-                selected: ObjectContainsValue(graph.selectedEntities, vertex)
+                selected: objectContainsValue(selectedEntities, vertex)
             });
         }
     }
 
-    var ObjectContainsValue = function(obj, value) {
+    var objectContainsValue = function(obj, value) {
         return (value in obj)
+    }
+
+    var arrayContainsValue = function(arr, value) {
+        return (arr.indexOf(value) !== -1)
     }
 
     graph.selectAllNodes = function() {
@@ -417,18 +436,18 @@ angular.module('app').factory('graph', ['schema', 'types', '$q', function(schema
     }
 
     function fire(e, args){
-        var listeners = graph.listeners[e];
+        var currentListeners = listeners[e];
 
-        for( var i = 0; listeners && i < listeners.length; i++ ){
-            var fn = listeners[i];
+        for( var i = 0; currentListeners && i < currentListeners.length; i++ ){
+            var fn = currentListeners[i];
 
             fn.apply( fn, args );
         }
     }
 
     function listen(e, fn){
-        var listeners = graph.listeners[e] = graph.listeners[e] || []
-        listeners.push(fn);
+        var currentListeners = listeners[e] = listeners[e] || []
+        currentListeners.push(fn);
     }
 
     return graph

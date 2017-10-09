@@ -17,7 +17,7 @@ function RawController($scope, operationService, results, query) {
     // variables
     vm.operationsForEdit = []
     vm.editingOperations = false
-    vm.operations = query.operations
+    vm.operations = query.getOperations()
     vm.results = results.get()
 
     // watches

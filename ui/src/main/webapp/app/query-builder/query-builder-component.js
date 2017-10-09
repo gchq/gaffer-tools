@@ -17,14 +17,14 @@ function QueryBuilderController($scope, operationService, types, graph, config, 
 
     // variables
 
-    vm.relatedEntities = graph.relatedEntities
-    vm.relatedEdges = graph.relatedEdges
+    vm.relatedEntities = graph.getRelatedEntities()
+    vm.relatedEdges = graph.getRelatedEdges()
     vm.expandEntities = []
     vm.expandEdges = []
     vm.expandEntitiesContent = {}
     vm.expandEdgesContent = {}
-    vm.selectedEntities = graph.selectedEntities
-    vm.selectedEdges = graph.selectedEdges
+    vm.selectedEntities = graph.getSelectedEntities()
+    vm.selectedEdges = graph.getSelectedEdges()
     vm.inOutFlag = "EITHER"
     vm.step = 0
     vm.availableOperations = operationService.getAvailableOperations()

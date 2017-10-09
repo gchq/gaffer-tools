@@ -1,8 +1,7 @@
 <div id="graphCy" class="cy"></div>
 
 <div md-padding>
-    <div class="bottomPanel"
-         ng-show="ctrl.selectedEntitiesCount">
+    <div class="bottomPanel">
 
         <div ng-repeat="(vertex, entities) in ctrl.selectedEntities">
             <h3>{{vertex}}</h3>
@@ -26,8 +25,7 @@
         </div>
     </div>
 
-    <div class="bottomPanel"
-         ng-show="ctrl.selectedEdgesCount">
+    <div class="bottomPanel">
         <div ng-repeat="(id, edges) in ctrl.selectedEdges">
             <h3>{{edges[0].source}} to {{edges[0].destination}}</h3>
             <table class="table table-striped">
