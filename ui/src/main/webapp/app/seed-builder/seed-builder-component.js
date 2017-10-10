@@ -19,7 +19,6 @@ function SeedBuilderController(schema, types, $mdDialog) {
     vm.seedVertices = ''
     vm.multipleSeeds = false
 
-
     vm.getSchemaVertices = function() {
         return schema.getSchemaVertices()
     }

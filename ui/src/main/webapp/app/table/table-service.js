@@ -1,6 +1,6 @@
 'use strict'
 
-angular.module('app').factory('table', [function() {
+angular.module('app').factory('table', ['common', function(common) {
     var table = {}
 
     var tableData = {entities: {}, edges: {}, entitySeeds: [], other: []}
@@ -32,7 +32,7 @@ angular.module('app').factory('table', [function() {
         }
 
         for (var i in results.entitySeeds) {
-            var es = parseVertex(results.entitySeeds[i]);
+            var es = common.parseVertex(results.entitySeeds[i]);
             if (tableData.entitySeeds.indexOf(es) == -1) {
                 tableData.entitySeeds.push(es);
             }
@@ -60,20 +60,6 @@ angular.module('app').factory('table', [function() {
 
     }
 
-    var parseVertex = function(vertex) {
-        if(typeof vertex === 'string' || vertex instanceof String) {
-            vertex = "\"" + vertex + "\"";
-        }
-
-        try {
-             JSON.parse(vertex);
-        } catch(err) {
-             // Try using stringify
-             vertex = JSON.stringify(vertex);
-        }
-
-        return vertex;
-    }
 
     return table
 }])

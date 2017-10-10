@@ -2,7 +2,7 @@
 
 'use strict'
 
-angular.module('app').factory('operationService', ['$http', 'settings', 'config', 'query', 'types', function($http, settings, config, query, types) {
+angular.module('app').factory('operationService', ['$http', 'settings', 'config', 'query', 'types', 'common', function($http, settings, config, query, types, common) {
 
     var operationService = {}
 
@@ -82,11 +82,7 @@ angular.module('app').factory('operationService', ['$http', 'settings', 'config'
     }
 
     var ifOperationSupported = function(operationClass, onSupported, onUnsupported) {
-        var queryUrl = config.get().restEndpoint + "/graph/operations";
-
-        if(!queryUrl.startsWith("http")) {
-            queryUrl = "http://" + queryUrl;
-        }
+        var queryUrl = common.parseUrl(config.get().restEndpoint + "/graph/operations");
 
         $http.get(queryUrl)
         .success(function(ops) {
@@ -115,6 +111,12 @@ angular.module('app').factory('operationService', ['$http', 'settings', 'config'
         return {
             class: "uk.gov.gchq.gaffer.operation.impl.output.ToSet",
         };
+    }
+
+    operationService.createCountOperation = function() {
+        return {
+            class: "uk.gov.gchq.gaffer.operation.impl.Count"
+        }
     }
 
     return operationService

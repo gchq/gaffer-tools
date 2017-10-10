@@ -139,12 +139,12 @@
                             <div ng-repeat="entity in ctrl.relatedEntities">
                                 <md-checkbox
                                         id="related-entity-{{entity}}"
-                                        ng-checked="ctrl.exists(entity, ctrl.expandEntities)"
+                                        ng-checked="ctrl.exists(ctrl.expandEntities, entity)"
                                         ng-click="ctrl.toggle(entity, ctrl.expandEntities)">
                                     {{entity}}
                                 </md-checkbox>
 
-                                <div ng-show="ctrl.exists(entity, ctrl.expandEntities)">
+                                <div ng-show="ctrl.exists(ctrl.expandEntities, entity)">
                                     <table class="table table-striped no-bottom-border"
                                            ng-show="ctrl.getEntityProperties(entity)">
                                         <tbody>
@@ -217,12 +217,12 @@
                             <div ng-repeat="edge in ctrl.relatedEdges">
                                 <md-checkbox
                                         id="related-edge-{{edge}}"
-                                        ng-checked="ctrl.exists(edge, ctrl.expandEdges)"
+                                        ng-checked="ctrl.exists(ctrl.expandEdges, edge)"
                                         ng-click="ctrl.toggle(edge, ctrl.expandEdges)">
                                     {{edge}}
                                 </md-checkbox>
 
-                                <div ng-show="ctrl.exists(edge, ctrl.expandEdges)">
+                                <div ng-show="ctrl.exists(ctrl.expandEdges, edge)">
                                     <table class="table table-striped no-bottom-border"
                                            ng-show="ctrl.getEdgeProperties(edge)">
                                         <tbody>

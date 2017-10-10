@@ -2,7 +2,7 @@
 
 'use strict'
 
-angular.module('app').factory('query', ['$http', 'config', '$q', function($http, config, $q) {
+angular.module('app').factory('query', ['$http', 'config', '$q', 'common', function($http, config, $q, common) {
 
     var query = {}
     var defer = $q.defer()
@@ -20,9 +20,7 @@ angular.module('app').factory('query', ['$http', 'config', '$q', function($http,
     query.execute = function(operationChain, onSuccess) {
         var queryUrl = config.get().restEndpoint + "/graph/operations/execute"
 
-        if(!queryUrl.startsWith("http")) {
-            queryUrl = "http://" + queryUrl
-        }
+        queryUrl = common.parseUrl(queryUrl)
 
         $http.post(queryUrl, operationChain)
              .success(function(results){

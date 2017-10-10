@@ -1,6 +1,6 @@
 'use strict'
 
-angular.module('app').factory('functions', ['$http', 'schema', 'config', function($http, schema, config) {
+angular.module('app').factory('functions', ['$http', 'schema', 'config', 'common', function($http, schema, config, common) {
 
     var functions = {}
 
@@ -20,11 +20,7 @@ angular.module('app').factory('functions', ['$http', 'schema', 'config', functio
           className = schema.types[type].class;
         }
 
-        var queryUrl = config.get().restEndpoint + "/graph/config/filterFunctions/" + className;
-
-        if(!queryUrl.startsWith("http")) {
-            queryUrl = "http://" + queryUrl;
-        }
+        var queryUrl = common.parseUrl(config.get().restEndpoint + "/graph/config/filterFunctions/" + className)
 
         $http.get(queryUrl)
         .success(onSuccess)
@@ -34,11 +30,7 @@ angular.module('app').factory('functions', ['$http', 'schema', 'config', functio
     }
 
     functions.getFunctionParameters = function(functionClassName, onSuccess) {
-        var queryUrl = settings.restUrl + "/graph/config/serialisedFields/" + functionClassName;
-
-        if(!queryUrl.startsWith("http")) {
-            queryUrl = "http://" + queryUrl;    // TODO create common util service
-        }
+        var queryUrl = common.parseUrl(config.get().restEndpoint + "/graph/config/serialisedFields/" + functionClassName);
 
         $http.get(queryUrl)
         .success(onSuccess)

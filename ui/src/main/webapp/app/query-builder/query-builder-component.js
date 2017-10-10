@@ -11,7 +11,7 @@ function queryBuilder() {
     }
 }
 
-function QueryBuilderController($scope, operationService, types, graph, config, settings, query, functions, schema, $window, $mdDialog) {
+function QueryBuilderController($scope, operationService, types, graph, config, settings, query, functions, schema, common, $window, $mdDialog) {
 
     var vm = this
 
@@ -91,9 +91,7 @@ function QueryBuilderController($scope, operationService, types, graph, config, 
         }
     }
 
-    vm.exists = function(item, list) {
-        return list && list.indexOf(item) > -1
-    }
+    vm.exists = common.arrayContainsValue
 
 
     vm.onSelectedPropertyChange = function(group, selectedElement) {
@@ -147,7 +145,7 @@ function QueryBuilderController($scope, operationService, types, graph, config, 
     vm.executeBuildQueryCounts = function() {
         var operations = {
             class: "uk.gov.gchq.gaffer.operation.OperationChain",
-            operations: [createOperation(), createLimitOperation(), createCountOperation()]
+            operations: [createOperation(), operationService.createLimitOperation(), operationService.createCountOperation()]
         };
         var onSuccess = function(data) {
             vm.expandQueryCounts = {
@@ -206,11 +204,6 @@ function QueryBuilderController($scope, operationService, types, graph, config, 
             }
         }
         return filterFunctions;
-    }
-
-
-    var clone = function(obj) {
-        return JSON.parse(JSON.stringify(obj));
     }
 
     var createOperation = function() {
@@ -287,18 +280,5 @@ function QueryBuilderController($scope, operationService, types, graph, config, 
         vm.expandQueryCounts = undefined;
         vm.expandEntitiesContent = {};
         vm.expandEdgesContent = {};
-    }
-
-    var createLimitOperation = function() {
-        return {
-            class: "uk.gov.gchq.gaffer.operation.impl.Limit",
-            resultLimit: settings.getResultLimit()
-        }
-    }
-
-    var createCountOperation = function() {
-        return {
-            class: "uk.gov.gchq.gaffer.operation.impl.Count"
-        }
     }
 }

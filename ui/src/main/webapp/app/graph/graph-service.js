@@ -1,6 +1,6 @@
 'use strict'
 
-angular.module('app').factory('graph', ['schema', 'types', '$q', 'results', function(schema, types, $q, results) {
+angular.module('app').factory('graph', ['schema', 'types', '$q', 'results', 'common', function(schema, types, $q, results, common) {
 
     var graphCy;
     var graph = {};
@@ -190,7 +190,7 @@ angular.module('app').factory('graph', ['schema', 'types', '$q', 'results', func
     graph.addSeed = function(vt, v) {
         var entitySeed = { vertexType: vt, vertex: v }
         if(v in graphData.entitySeeds) {
-            if(!arrayContainsValue(graphData.entitySeeds[v], entitySeed)) {
+            if(!common.arrayContainsValue(graphData.entitySeeds[v], entitySeed)) {
                 graphData.entitySeeds[v].push(entitySeed);
             }
         } else {
@@ -203,12 +203,12 @@ angular.module('app').factory('graph', ['schema', 'types', '$q', 'results', func
     graph.update = function(results) {
         graphData = { entities: {}, edges: {}, entitySeeds: {} };
         for (var i in results.entities) {
-            var entity = clone(results.entities[i]);
-            entity.vertex = parseVertex(entity.vertex);
+            var entity = common.clone(results.entities[i]);
+            entity.vertex = common.parseVertex(entity.vertex);
             var id = entity.vertex;
             entity.vertexType = schema.getVertexTypeFromEntityGroup(entity.group);
             if(id in graphData.entities) {
-                if(!arrayContainsValue(graphData.entities[id], entity)) {
+                if(!common.arrayContainsValue(graphData.entities[id], entity)) {
                     graphData.entities[id].push(entity);
                 }
             } else {
@@ -217,16 +217,16 @@ angular.module('app').factory('graph', ['schema', 'types', '$q', 'results', func
         }
 
         for (var i in results.edges) {
-            var edge = clone(results.edges[i]);
-            edge.source = parseVertex(edge.source);
-            edge.destination = parseVertex(edge.destination);
+            var edge = common.clone(results.edges[i]);
+            edge.source = common.parseVertex(edge.source);
+            edge.destination = common.parseVertex(edge.destination);
 
             var vertexTypes = schema.getVertexTypesFromEdgeGroup(edge.group);
             edge.sourceType = vertexTypes[0];
             edge.destinationType = vertexTypes[1];
             var id = edge.source + "|" + edge.destination + "|" + edge.directed + "|" + edge.group;
             if(id in graphData.edges) {
-                if(!arrayContainsValue(graphData.edges[id], edge)) {
+                if(!common.arrayContainsValue(graphData.edges[id], edge)) {
                     graphData.edges[id].push(edge);
                 }
             } else {
@@ -236,13 +236,13 @@ angular.module('app').factory('graph', ['schema', 'types', '$q', 'results', func
 
         for (var i in results.entitySeeds) {
             var entitySeed = {
-               vertex: parseVertex(results.entitySeeds[i]),
+               vertex: common.parseVertex(results.entitySeeds[i]),
                vertexType: "unknown"
             }
 
             var id = entitySeed.vertex;
             if(id in graphData.entitySeeds) {
-                if(!arrayContainsValue(graphData.entitySeeds[id], entitySeed)) {
+                if(!common.arrayContainsValue(graphData.entitySeeds[id], entitySeed)) {
                     graphData.entitySeeds[id].push(entitySeed);
                 }
             } else {
@@ -252,25 +252,6 @@ angular.module('app').factory('graph', ['schema', 'types', '$q', 'results', func
 
         updateGraph(graphData)
         graph.redraw()
-    }
-
-    var clone = function(obj) {
-        return JSON.parse(JSON.stringify(obj))
-    }
-
-    function parseVertex(vertex) {
-        if(typeof vertex === 'string' || vertex instanceof String) {
-            vertex = "\"" + vertex + "\"";
-        }
-
-        try {
-             JSON.parse(vertex);
-        } catch(err) {
-             // Try using stringify
-             vertex = JSON.stringify(vertex);
-        }
-
-        return vertex;
     }
 
     var updateGraph = function(results) {
@@ -287,7 +268,7 @@ angular.module('app').factory('graph', ['schema', 'types', '$q', 'results', func
                     group: 'nodes',
                     data: {
                         id: id,
-                        label: graph.createLabel(id),
+                        label: createLabel(id),
                         radius: 60,
                         color: '#337ab7',
                         selectedColor: '#204d74'
@@ -296,7 +277,7 @@ angular.module('app').factory('graph', ['schema', 'types', '$q', 'results', func
                         x: 100,
                         y: 100
                     },
-                    selected: objectContainsValue(selectedEntities, id)
+                    selected: common.objectContainsValue(selectedEntities, id)
                 });
             }
         }
@@ -308,7 +289,7 @@ angular.module('app').factory('graph', ['schema', 'types', '$q', 'results', func
                     group: 'nodes',
                     data: {
                         id: edge.source,
-                        label: graph.createLabel(edge.source),
+                        label: createLabel(edge.source),
                         radius: 20,
                         color: '#888',
                         selectedColor: '#444',
@@ -318,7 +299,7 @@ angular.module('app').factory('graph', ['schema', 'types', '$q', 'results', func
                         x: 100,
                         y: 100
                     },
-                    selected: objectContainsValue(selectedEntities, edge.source)
+                    selected: common.objectContainsValue(selectedEntities, edge.source)
                 });
             }
 
@@ -327,7 +308,7 @@ angular.module('app').factory('graph', ['schema', 'types', '$q', 'results', func
                     group: 'nodes',
                     data: {
                         id: edge.destination,
-                        label: graph.createLabel(edge.destination),
+                        label: createLabel(edge.destination),
                         radius: 20,
                         color: '#888',
                         selectedColor: '#444',
@@ -337,7 +318,7 @@ angular.module('app').factory('graph', ['schema', 'types', '$q', 'results', func
                         x: 100,
                         y: 100
                     },
-                    selected: objectContainsValue(selectedEntities, edge.destination)
+                    selected: common.objectContainsValue(selectedEntities, edge.destination)
                 });
             }
 
@@ -351,7 +332,7 @@ angular.module('app').factory('graph', ['schema', 'types', '$q', 'results', func
                         group: edge.group,
                         selectedColor: '#35500F',
                     },
-                    selected: objectContainsValue(selectedEdges, id)
+                    selected: common.objectContainsValue(selectedEdges, id)
                 });
             }
         }
@@ -383,7 +364,7 @@ angular.module('app').factory('graph', ['schema', 'types', '$q', 'results', func
         graphCy.layout({name: 'concentric'});
     }
 
-    graph.createLabel = function(vertex) {
+    var createLabel = function(vertex) {
         var label;
         var json;
         try {
@@ -411,7 +392,7 @@ angular.module('app').factory('graph', ['schema', 'types', '$q', 'results', func
                 group: 'nodes',
                 data: {
                     id: vertex,
-                    label: graph.createLabel(vertex),
+                    label: createLabel(vertex),
                     vertex: vertex,
                     color: '#888',
                     selectedColor: '#444',
@@ -422,18 +403,12 @@ angular.module('app').factory('graph', ['schema', 'types', '$q', 'results', func
                     x: 100,
                     y: 100
                 },
-                selected: objectContainsValue(selectedEntities, vertex)
+                selected: common.objectContainsValue(selectedEntities, vertex)
             });
         }
     }
 
-    var objectContainsValue = function(obj, value) {
-        return (value in obj)
-    }
 
-    var arrayContainsValue = function(arr, value) {
-        return (arr.indexOf(value) !== -1)
-    }
 
     graph.selectAllNodes = function() {
         graphCy.filter('node').select();

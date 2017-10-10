@@ -1,6 +1,6 @@
 'use strict'
 
-angular.module('app').factory('schema', ['$http', 'config', '$q', function($http, config, $q) {
+angular.module('app').factory('schema', ['$http', 'config', '$q', 'common', function($http, config, $q, common) {
 
     var schemaService = {}
 
@@ -22,15 +22,17 @@ angular.module('app').factory('schema', ['$http', 'config', '$q', function($http
     }
 
     schemaService.load = function() {
-         $http.get(config.get().restEndpoint + "/graph/config/schema")
-              .success(function(data){
-                 schema = data
-                 updateSchemaVertices()
-                 defer.notify(schema)
-              })
-              .error(function(err) {
-                 console.log("Unable to load schema: " + err.statusCode + " - " + err.status)
-              })
+        var queryUrl = common.parseUrl(config.get().restEndpoint + "/graph/config/schema")
+
+        $http.get(queryUrl)
+        .success(function(data){
+            schema = data
+            updateSchemaVertices()
+            defer.notify(schema)
+        })
+        .error(function(err) {
+            console.log("Unable to load schema: " + err.statusCode + " - " + err.status)
+        })
     }
 
     var updateSchemaVertices = function() {
