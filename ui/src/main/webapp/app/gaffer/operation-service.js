@@ -6,8 +6,6 @@ angular.module('app').factory('operationService', ['$http', 'settings', 'config'
 
     var operationService = {}
 
-    var opWhiteList = undefined; // TODO should probably be populated by GET graph/config/operations
-    var opBlackList = [];        // TODO should probably be populated by the config service
     var availableOperations = []
     var namedOpClass = "uk.gov.gchq.gaffer.named.operation.NamedOperation"
 
@@ -16,15 +14,17 @@ angular.module('app').factory('operationService', ['$http', 'settings', 'config'
     }
 
     var opAllowed = function(opName) {
-//            var allowed = true;
-//            if(settings.whiteList) {
-//                allowed = settings.whiteList.indexOf(opName) > -1;
-//            }
-//            if(allowed && settings.blackList) {
-//                allowed = settings.backList.indexOf(opName) == -1;
-//            }
-//            return allowed;
-        return true
+        var allowed = true;
+        var whiteList = config.get().operations.whiteList
+        var blackList = config.get().operations.blackList
+
+        if(whiteList) {
+            allowed = whiteList.indexOf(opName) > -1;
+        }
+        if(allowed && blackList) {
+            allowed = blackList.indexOf(opName) == -1;
+        }
+        return allowed;
     }
 
     var updateNamedOperations = function(results) {

@@ -6,21 +6,19 @@ angular.module('app').factory('types', ['config', function(config) {
 
     var defaultShortValue = function(value) {
         return JSON.stringify(value);
-    } // TODO rename types to fields - avoid confusion
+    }
 
     var unknownTypeDefault =
     {
-       types: [
-         {
-           label: "Value",
-           type: "text",
-           class: "java.lang.String"
-         }
-       ],
-       getShortValue: defaultShortValue
-     }
-
-     self = this
+        fields: [
+            {
+                label: "Value",
+                type: "text",
+                class: "java.lang.String"
+            }
+        ],
+        getShortValue: defaultShortValue
+    }
 
 
     types.getType = function(typeClass) {
@@ -85,11 +83,11 @@ angular.module('app').factory('types', ['config', function(config) {
 
 
         var partKeys = [];
-        for(var i in type.types) {
-            if(type.types[i].key === undefined) {
+        for(var i in type.fields) {
+            if(type.fields[i].key === undefined) {
                 partKeys.push("");
             } else {
-                partKeys.push(type.types[i].key);
+                partKeys.push(type.fields[i].key);
             }
         }
 

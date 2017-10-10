@@ -26,9 +26,9 @@ function SeedBuilderController(schema, types, $mdDialog) {
     vm.getFields = function() {
         var schemaType = schema.get().types[vm.seedVertexType]
         if (!schemaType) {
-            return types.getType(undefined).types
+            return types.getType(undefined).fields
         }
-        return types.getType(schemaType.class).types
+        return types.getType(schemaType.class).fields
     }
 
     vm.getCsvHeader = function() {
@@ -52,7 +52,7 @@ function SeedBuilderController(schema, types, $mdDialog) {
                 var vertexType = vm.seedVertexType;
                 var typeClass = schema.get().types[vertexType].class;
                 var partValues = vertex.trim().split(",");
-                var fields = types.getType(typeClass).types;
+                var fields = types.getType(typeClass).fields;
                 if(fields.length != partValues.length) {
                     alert("Wrong number of parameters for seed: " + vertex + ". " + vertexType + " requires " + fields.length + " parameters");
                     break;

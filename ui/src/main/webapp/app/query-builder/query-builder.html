@@ -107,7 +107,7 @@
                                         {{detail.required}}
                                     </td>
                                     <td>
-                                        <div ng-repeat="type in ctrl.getTypes({{detail.valueClass}})">
+                                        <div ng-repeat="type in ctrl.getFields({{detail.valueClass}})">
                                             <label for="param-{{name}}-{{type.key}}">{{type.label}}:</label>
                                             <input id="param-{{name}}-{{type.key}}"
                                                    type="{{type.type}}"

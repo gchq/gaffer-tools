@@ -74,8 +74,8 @@ function QueryBuilderController($scope, operationService, types, graph, config, 
         newWindow.document.write("<pre>" + prettyOps + "</pre>");
     }
 
-    vm.getTypes = function(clazz) {
-        return types.getType(clazz).types
+    vm.getFields = function(clazz) {
+        return types.getType(clazz).fields
     }
 
     vm.selectAllSeeds = function() {
