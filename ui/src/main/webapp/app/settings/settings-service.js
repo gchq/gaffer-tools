@@ -19,23 +19,23 @@
 angular.module('app').factory('settings', function() {
     var settings = {}
 
-    settings.resultLimit = 100
-    settings.defaultOp = "uk.gov.gchq.gaffer.operation.impl.get.GetElements"
+    var resultLimit = 100
+    var defaultOp = "uk.gov.gchq.gaffer.operation.impl.get.GetElements"
 
     settings.getResultLimit = function() {
-        return settings.resultLimit
+        return resultLimit
     }
 
     settings.setResultLimit = function(limit) {
-        settings.resultLimit = limit
+        resultLimit = limit
     }
 
     settings.getDefaultOp = function() {
-        return settings.defaultOp
+        return defaultOp
     }
 
     settings.setDefaultOp = function(op) {
-        settings.defaultOp = op
+        defaultOp = op
     }
 
     return settings

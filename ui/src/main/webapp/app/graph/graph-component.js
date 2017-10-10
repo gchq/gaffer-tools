@@ -21,10 +21,6 @@ function GraphController($scope, graph, results, $timeout) {
 
     var promise = null
 
-    results.observe().then(null, null, function(results) {
-        graph.update(results)
-    })
-
     graph.onSelectedElementsUpdate(function(selectedElements) {
         vm.selectedEdges = selectedElements.edges
         vm.selectedEntities = selectedElements.entities

@@ -1,6 +1,6 @@
 'use strict'
 
-angular.module('app').factory('graph', ['schema', 'types', '$q', function(schema, types, $q) {
+angular.module('app').factory('graph', ['schema', 'types', '$q', 'results', function(schema, types, $q, results) {
 
     var graphCy;
     var graph = {};
@@ -12,6 +12,10 @@ angular.module('app').factory('graph', ['schema', 'types', '$q', function(schema
 
 
     var graphData = {entities: {}, edges: {}, entitySeeds: {}}
+
+    results.observe().then(null, null, function(results) {
+        graph.update(results)
+    })
 
     graph.getSelectedEntities = function() {
         return selectedEntities

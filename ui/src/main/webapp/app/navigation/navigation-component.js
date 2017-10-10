@@ -50,12 +50,17 @@ function NavigationController($scope, $mdDialog, graph, operationService, result
 
     vm.executeAll = function() {
         results.clear();
-        vm.loading = true
-        for(var i in query.operations) {
+        var ops = query.getOperations()
+
+        if (ops.length > 0) {
+            vm.loading = true
+        }
+
+        for(var i in ops) {
             try {
                 query.execute(JSON.stringify({
                     class: "uk.gov.gchq.gaffer.operation.OperationChain",
-                    operations: [query.operations[i], operationService.createLimitOperation(), operationService.createDeduplicateOperation()]
+                    operations: [ops[i], operationService.createLimitOperation(), operationService.createDeduplicateOperation()]
                 }), function(data) {
                     results.update(data)
                     vm.loading = false
@@ -64,7 +69,7 @@ function NavigationController($scope, $mdDialog, graph, operationService, result
                 // Try without the limit and deduplicate operations
                 query.execute(JSON.stringify({
                     class: "uk.gov.gchq.gaffer.operation.OperationChain",
-                    operations: [query.operations[i]]
+                    operations: [ops[i]]
                 }), function(data) {
                     results.update(data)
                     vm.loading = false
