@@ -82,6 +82,9 @@ function QueryBuilderController($scope, operationService, types, graph, config, 
         graph.selectAllNodes()
     }
 
+    vm.getEntityProperties = schema.getEntityProperties
+    vm.getEdgeProperties = schema.getEdgeProperties
+
     vm.toggle = function(item, list) {
         var idx = list.indexOf(item)
         if(idx > -1) {
@@ -97,7 +100,6 @@ function QueryBuilderController($scope, operationService, types, graph, config, 
     vm.onSelectedPropertyChange = function(group, selectedElement) {
         functions.getFunctions(group, selectedElement.property, function(data) {
             selectedElement.availableFunctions = data
-            $scope.$apply()
         });
         selectedElement.predicate = '';
     }
@@ -105,7 +107,6 @@ function QueryBuilderController($scope, operationService, types, graph, config, 
     vm.onSelectedFunctionChange = function(group, selectedElement) {
         functions.getFunctionParameters(selectedElement.predicate, function(data) {
             selectedElement.availableFunctionParameters = data
-            $scope.$apply()
         });
 
         var gafferSchema = schema.get()
@@ -124,16 +125,28 @@ function QueryBuilderController($scope, operationService, types, graph, config, 
         selectedElement.parameters = {};
     }
 
-    vm.addFilterFunction = function(expandElementContent, element) {
+    vm.addFilterFunction = function(expandElementContent, element, isPreAggregation) {
         if(!expandElementContent[element]) {
             expandElementContent[element] = {};
         }
 
         if(!expandElementContent[element].filters) {
-            expandElementContent[element].filters = [];
+            expandElementContent[element].filters = {};
         }
 
-        expandElementContent[element].filters.push({});
+        if (isPreAggregation) {
+            if (!expandElementContent[element].filters.preAggregation) {
+                expandElementContent[element].filters.preAggregation = []
+            }
+            expandElementContent[element].filters.preAggregation.push({})
+
+        } else {
+            if (!expandElementContent[element].filters.postAggregation) {
+                expandElementContent[element].filters.postAggregation = []
+            }
+            expandElementContent[element].filters.postAggregation.push({})
+        }
+
     }
 
     vm.execute = function() {
@@ -174,34 +187,43 @@ function QueryBuilderController($scope, operationService, types, graph, config, 
         return opInput;
     }
 
-    var convertFilterFunctions = function(expandElementContent, elementDefinition) {
-        var filterFunctions = [];
-        if(expandElementContent && expandElementContent.filters) {
-            for(var index in expandElementContent.filters) {
-                var filter = expandElementContent.filters[index];
-                if(filter.property && filter['predicate']) {
-                    var functionJson = {
-                        "predicate": {
-                            class: filter['predicate']
-                        },
-                        selection: [ filter.property ]
-                    };
+    var generateFilterFunctions = function(filters) {
+        var filterFunctions = []
 
-                    for(var i in filter.availableFunctionParameters) {
-                        if(filter.parameters[i]) {
-                            var param;
-                            try {
-                                param = JSON.parse(filter.parameters[i]);
-                            } catch(e) {
-                                param = filter.parameters[i];
-                            }
-                            functionJson["predicate"][filter.availableFunctionParameters[i]] = param;
+        for(var index in filters) {
+            var filter = filters[index];
+            if(filter.property && filter['predicate']) {
+                var functionJson = {
+                    "predicate": {
+                        class: filter['predicate']
+                    },
+                    selection: [ filter.property ]
+                };
+
+                for(var i in filter.availableFunctionParameters) {
+                    if(filter.parameters[i]) {
+                        var param;
+                        try {
+                            param = JSON.parse(filter.parameters[i]);
+                        } catch(e) {
+                            param = filter.parameters[i];
                         }
+                        functionJson["predicate"][filter.availableFunctionParameters[i]] = param;
                     }
-
-                    filterFunctions.push(functionJson);
                 }
+                filterFunctions.push(functionJson)
             }
+        }
+
+        return filterFunctions
+
+    }
+
+    var convertFilterFunctions = function(expandElementContent) {
+        var filterFunctions = { preAggregation: [], postAggregation: [] };
+        if(expandElementContent && expandElementContent.filters) {
+            filterFunctions.preAggregation = generateFilterFunctions(expandElementContent.filters.preAggregation)
+            filterFunctions.postAggregation = generateFilterFunctions(expandElementContent.filters.postAggregation)
         }
         return filterFunctions;
     }
@@ -249,19 +271,26 @@ function QueryBuilderController($scope, operationService, types, graph, config, 
                 var entity = vm.expandEntities[i];
                 op.view.entities[entity] = {};
 
-                var filterFunctions = convertFilterFunctions(vm.expandEntitiesContent[entity], schema.get().entities[entity]);
-                if(filterFunctions.length > 0) {
-                    op.view.entities[entity].preAggregationFilterFunctions = filterFunctions;
+                var filterFunctions = convertFilterFunctions(vm.expandEntitiesContent[entity]);
+                if(filterFunctions.preAggregation.length > 0) {
+                    op.view.entities[entity].preAggregationFilterFunctions = filterFunctions.preAggregation;
                 }
+                if(filterFunctions.postAggregation.length > 0) {
+                    op.view.entities[entity].postAggregationFilterFunctions = filterFunctions.postAggregation;
+                }
+
             }
 
             for(var i in vm.expandEdges) {
                 var edge = vm.expandEdges[i];
                 op.view.edges[edge] = {};
 
-                var filterFunctions = convertFilterFunctions(vm.expandEdgesContent[edge], schema.get().edges[edge]);
-                if(filterFunctions.length > 0) {
-                    op.view.edges[edge].preAggregationFilterFunctions = filterFunctions;
+                var filterFunctions = convertFilterFunctions(vm.expandEdgesContent[edge]);
+                if(filterFunctions.preAggregation.length > 0) {
+                    op.view.entities[entity].preAggregationFilterFunctions = filterFunctions.preAggregation;
+                }
+                if(filterFunctions.postAggregation.length > 0) {
+                    op.view.entities[entity].postAggregationFilterFunctions = filterFunctions.postAggregation;
                 }
             }
         }

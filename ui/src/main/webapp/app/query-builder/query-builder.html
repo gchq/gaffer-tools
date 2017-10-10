@@ -144,13 +144,13 @@
                                     {{entity}}
                                 </md-checkbox>
 
-                                <div ng-show="ctrl.exists(ctrl.expandEntities, entity)">
+                                <div ng-show="ctrl.exists(ctrl.expandEntities, entity)" layout-margin>
                                     <table class="table table-striped no-bottom-border"
                                            ng-show="ctrl.getEntityProperties(entity)">
                                         <tbody>
-                                        <tr ng-repeat="filter in ctrl.expandEntitiesContent[entity].filters">
+                                        <tr ng-repeat="filter in ctrl.expandEntitiesContent[entity].filters.preAggregation">
                                             <td>
-                                                <select id="{{entity}}-property-selector"
+                                                <select id="{{entity}}-pre-property-selector"
                                                         class="form-control"
                                                         ng-model="filter.property"
                                                         ng-options="name as name for (name, type) in ctrl.getEntityProperties(entity)"
@@ -198,12 +198,72 @@
                                         </tr>
                                         </tbody>
                                     </table>
-                                    <button id="{{entity}}-add-filter"
-                                            ng-click="ctrl.addFilterFunction(ctrl.expandEntitiesContent, entity)"
+                                    <button id="{{entity}}-add-pre-filter"
+                                            ng-click="ctrl.addFilterFunction(ctrl.expandEntitiesContent, entity, true)"
                                             class="btn btn-default"
                                             ng-show="ctrl.getEntityProperties(entity)">
-                                        Add filter
+                                        Add Pre Aggregation filter
                                     </button>
+                                    <table class="table table-striped no-bottom-border"
+                                           ng-show="ctrl.getEntityProperties(entity)">
+                                        <tbody>
+                                        <tr ng-repeat="filter in ctrl.expandEntitiesContent[entity].filters.postAggregation">
+                                            <td>
+                                                <select id="{{entity}}-post-property-selector"
+                                                        class="form-control"
+                                                        ng-model="filter.property"
+                                                        ng-options="name as name for (name, type) in ctrl.getEntityProperties(entity)"
+                                                        ng-change="ctrl.onSelectedPropertyChange(entity, filter)">
+                                                    <option value=""
+                                                            disabled
+                                                            selected>
+                                                        Select a property
+                                                    </option>
+                                                </select>
+                                            </td>
+                                            <td>
+                                                <select class="form-control"
+                                                        ng-model="filter.predicate"
+                                                        ng-options="predicate as predicate for predicate in filter.availableFunctions"
+                                                        ng-change="ctrl.onSelectedFunctionChange(entity, filter)">
+                                                    <option value=""
+                                                            disabled
+                                                            selected>
+                                                        Select a predicate
+                                                    </option>
+                                                </select>
+                                            </td>
+
+                                            <td>
+                                                <div ng-repeat="(idx, param) in filter.availableFunctionParameters">
+                                                    <p class="inline">
+                                                        {{param}}:</p>
+                                                    <input type="text"
+                                                           class="form-control inline"
+                                                           ng-model="filter.parameters[idx]">
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div ng-show="filter.availableFunctionParameters.length > 0 && filter.propertyClass">
+                                                    You may need to
+                                                    explicitly
+                                                    tell Gaffer the type of
+                                                    the
+                                                    parameter, e.g:
+                                                    {"{{filter.propertyClass}}":
+                                                    value}
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                    <button id="{{entity}}-add-post-filter"
+                                            ng-click="ctrl.addFilterFunction(ctrl.expandEntitiesContent, entity, false)"
+                                            class="btn btn-default"
+                                            ng-show="ctrl.getEntityProperties(entity)">
+                                        Add Post Aggregation filter
+                                    </button>
+
                                 </div>
                             </div>
 

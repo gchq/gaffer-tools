@@ -1,13 +1,13 @@
 'use strict'
 
-angular.module('app').factory('functions', ['$http', 'schema', 'config', 'common', function($http, schema, config, common) {
+angular.module('app').factory('functions', ['$http', 'schema', 'config', 'common', function($http, schemaService, config, common) {
 
     var functions = {}
 
 
     functions.getFunctions = function(group, property, onSuccess) {
         var type;
-        var schema = schema.get();
+        var schema = schemaService.get();
 
         if(schema.entities[group]) {
             type = schema.entities[group].properties[property];
