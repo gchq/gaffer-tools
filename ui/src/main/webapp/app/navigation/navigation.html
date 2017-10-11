@@ -2,16 +2,16 @@
     <div layout="row" layout-align="space-around center" layout-fill>
 
         <div>
-            <md-button class="logo-btn md-icon-button" ng-click="ctrl.setCurrentPage('graph')">
+            <md-button class="logo-btn md-icon-button" ng-click="ctrl.goTo('graph')">
                 <md-icon md-svg-icon="logo" class="logo" aria-label="logo"></md-icon>
             </md-button>
         </div>
 
         <div layout="row">
-            <md-nav-item name="graph" md-nav-click="ctrl.setCurrentPage('graph')">Graph</md-nav-item>
-            <md-nav-item name="table" md-nav-click="ctrl.setCurrentPage('table')">Table</md-nav-item>
-            <md-nav-item name="raw" md-nav-click="ctrl.setCurrentPage('raw')">Raw</md-nav-item>
-            <md-nav-item name="settings" md-nav-click="ctrl.setCurrentPage('settings')">Settings</md-nav-item>
+            <md-nav-item name="graph" md-nav-click="ctrl.goTo('graph')">Graph</md-nav-item>
+            <md-nav-item name="table" md-nav-click="ctrl.goTo('table')">Table</md-nav-item>
+            <md-nav-item name="raw" md-nav-click="ctrl.goTo('raw')">Raw</md-nav-item>
+            <md-nav-item name="settings" md-nav-click="ctrl.goTo('settings')">Settings</md-nav-item>
         </div>
         <div layout="row">
             <md-progress-circular ng-show="ctrl.loading"

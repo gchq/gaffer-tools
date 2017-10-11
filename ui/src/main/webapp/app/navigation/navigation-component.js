@@ -1,6 +1,6 @@
-angular.module('app').component('navigation', navigation())
+angular.module('app').component('navBar', navBar())
 
-function navigation() {
+function navBar() {
     return {
         templateUrl: 'app/navigation/navigation.html',
         controller: NavigationController,
@@ -8,17 +8,18 @@ function navigation() {
     }
 }
 
-function NavigationController($scope, $mdDialog, $location, graph, operationService, results, query, config) {
+function NavigationController($scope, $mdDialog, navigation, graph, operationService, results, query, config) {
     var vm = this;
     vm.loading = false
     vm.addMultipleSeeds = false
 
-    vm.currentPage = "graph"
+    vm.currentPage = navigation.getCurrentPage()
 
-    vm.setCurrentPage = function(page) {
-        vm.currentPage = page
-        $location.path("/" + page)
-    }
+    navigation.observeCurrentPage().then(null, null, function(newCurrentPage) {
+        vm.currentPage = newCurrentPage
+    })
+
+    vm.goTo = navigation.goTo
 
     vm.addSeedPrompt = function(ev) {
         $mdDialog.show({
@@ -55,7 +56,7 @@ function NavigationController($scope, $mdDialog, $location, graph, operationServ
     }
 
     vm.isGraphInView = function() {
-        return $location.path() === '/graph'
+        return vm.currentPage === 'graph'
     }
 
     vm.redraw = function() {
