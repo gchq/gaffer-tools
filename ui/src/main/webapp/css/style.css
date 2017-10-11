@@ -1,9 +1,3 @@
-body {
-  padding-top: 70px;
-  padding-bottom: 30px;
-  margin: 0;
-}
-
 .theme-dropdown .dropdown-menu {
   position: static;
   display: block;
@@ -21,6 +15,13 @@ body {
 [ng-click] {
     cursor: pointer;
 }
+
+
+.logo {
+    height: 36px;
+    width: 36px;
+ }
+
 
 .nav-button {
    padding: 5px !important;

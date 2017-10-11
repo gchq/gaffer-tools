@@ -13,6 +13,13 @@ function NavigationController($scope, $mdDialog, $location, graph, operationServ
     vm.loading = false
     vm.addMultipleSeeds = false
 
+    vm.currentPage = "graph"
+
+    vm.setCurrentPage = function(page) {
+        vm.currentPage = page
+        $location.path("/" + page)
+    }
+
     vm.addSeedPrompt = function(ev) {
         $mdDialog.show({
             preserveScope: true,

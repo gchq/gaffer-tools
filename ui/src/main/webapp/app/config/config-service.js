@@ -18,11 +18,11 @@ angular.module('app').factory('config', ['$http', function($http) {
 
     configService.load = function(onSuccess) {
         $http.get('/config/config.json')
-        .success(function(results) {
-            onSuccess(results)
-        })
-        .error(function(err) {
-            console.error("Failed to load config: " + err)
+            .then(function(response) {
+                onSuccess(response.data)
+            },
+            function(err) {
+                console.error("Failed to load config: " + err)
         })
     }
 

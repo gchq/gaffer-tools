@@ -85,16 +85,17 @@ angular.module('app').factory('operationService', ['$http', 'settings', 'config'
         var queryUrl = common.parseUrl(config.get().restEndpoint + "/graph/operations");
 
         $http.get(queryUrl)
-        .success(function(ops) {
-            if (ops.indexOf(operationClass) !== -1) {
-                onSupported();
-                return;
-            }
-            onUnsupported();
-        })
-        .error(function(err) {
-            console.log("Error: " + err.statusCode + " - "  + err.status);
-            onUnsupported();
+            .then(function(response) {
+                var ops = response.data
+                if (ops.indexOf(operationClass) !== -1) {
+                    onSupported();
+                    return;
+                }
+                onUnsupported();
+            },
+            function(err) {
+                console.log("Error: " + err.statusCode + " - "  + err.status);
+                onUnsupported();
         })
     }
 

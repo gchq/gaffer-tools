@@ -23,12 +23,12 @@ angular.module('app').factory('query', ['$http', 'config', '$q', 'common', funct
         queryUrl = common.parseUrl(queryUrl)
 
         $http.post(queryUrl, operationChain)
-             .success(function(results){
-                onSuccess(results)
-             })
-             .error(function(err) {
+             .then(function(response){
+                onSuccess(response.data)
+             },
+             function(err) {
                 console.error("Error: " + err.statusCode + " - " + err.status);
-             });
+         });
     }
 
     query.addOperation = function(operation) {

@@ -25,13 +25,13 @@ angular.module('app').factory('schema', ['$http', 'config', '$q', 'common', func
         var queryUrl = common.parseUrl(config.get().restEndpoint + "/graph/config/schema")
 
         $http.get(queryUrl)
-        .success(function(data){
-            schema = data
-            updateSchemaVertices()
-            defer.notify(schema)
-        })
-        .error(function(err) {
-            console.log("Unable to load schema: " + err.statusCode + " - " + err.status)
+            .then(function(response){
+                schema = response.data
+                updateSchemaVertices()
+                defer.notify(schema)
+            },
+            function(err) {
+                console.log("Unable to load schema: " + err.statusCode + " - " + err.status)
         })
     }
 
