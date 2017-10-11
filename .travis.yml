@@ -28,5 +28,7 @@ env:
     - secure: "2mIgYi3USn9sB+3gQ0ULyRXspQUmpR/5M8StHzfMQ2aBGeSV9MaZ3mHxBZGoGIMejpLxE1dGLFagUZRbuH/gk+OI7tphEanfYN7quAdou0f/SzEMXEi5hlBkqFjl3eXE3FpMt5huxO5hBj2UD7dpMTe2AmIAM2LcEr1zybrQ78G19fDVJX6L5C5APC/5IKpPY4l50iFpv/A9GyT/i2Ax/FskCp73K3z5u3vCX+FsAAKu5iS63VKSdVzmjP5B+vRvLOZd80SvldDMmQM6gXTzpGiM6PoH+gehINT3Csq54mTsh6qDGMn1fPiFaczIRXc5Goe31UzhdN3aCVsnhPSoT+hTMwgNeCFcJRZbBntXoO9oUHtkjRkE9Vaz+0i//Yz6xs5k1CyN3Cm/iAQmSPsc3uS9sAlTTKH+oO6U4vcr7CAEUI78wUGLYMxiy0YEVfHHpFFiSyiPVwiVo4Y+EN1qtJp0zN4z7xecWpxgcnz7tORkK07QICiYpOnRKgbnM4Sz+8a//j9JZnZh/MTLudTCwZtWyJfqQkdWiKO4hHHWXiNF1rRY61EHrScx9w331Esk+EILSjuyZiqTIDlG/cd9gWIR26XxRiE2c4o4vELZMGngB0EWiIzlnSssh3nZ4XBjN2YX6S9ZNUE/hoQjBjCFivqUWZ7NOdV439eNx8zvBPE="
 
 before_install: ./cd/before_install.sh
-install: travis_wait 45 ./cd/install.sh
+script:
+  - travis_wait 45 ./cd/verify.sh
+  - ./cd/deploy.sh
 script: travis_wait 45 ./cd/verify.sh
