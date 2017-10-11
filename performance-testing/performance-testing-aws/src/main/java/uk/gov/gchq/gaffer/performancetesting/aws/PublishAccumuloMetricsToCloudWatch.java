@@ -88,8 +88,10 @@ public class PublishAccumuloMetricsToCloudWatch implements Runnable {
     }
 
     private void disconnect() {
-        this.cloudwatch.shutdown();
-        this.cloudwatch = null;
+        if (this.cloudwatch != null) {
+            this.cloudwatch.shutdown();
+            this.cloudwatch = null;
+        }
     }
 
     private String getTableNameForId(final String id) {
