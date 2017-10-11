@@ -84,6 +84,12 @@ function QueryBuilderController($scope, operationService, types, graph, config, 
 
     vm.getEntityProperties = schema.getEntityProperties
     vm.getEdgeProperties = schema.getEdgeProperties
+    vm.exists = common.arrayContainsValue
+
+    vm.cancel = function() {
+        resetQueryBuilder()
+        $mdDialog.cancel()
+    }
 
     vm.toggle = function(item, list) {
         var idx = list.indexOf(item)
@@ -93,8 +99,6 @@ function QueryBuilderController($scope, operationService, types, graph, config, 
             list.push(item)
         }
     }
-
-    vm.exists = common.arrayContainsValue
 
 
     vm.onSelectedPropertyChange = function(group, selectedElement) {
