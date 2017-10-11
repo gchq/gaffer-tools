@@ -564,24 +564,42 @@ class ElementTransformDefinition(ToJson, ToCodeString):
         return element_def
 
 
-class ElementAggregateDefinition(ToJson, ToCodeString):
-    CLASS = 'uk.gov.gchq.gaffer.operation.impl.function.ElementAggregateDefinition'
+class AggregatePair(ToJson, ToCodeString):
+    CLASS = 'uk.gov.gchq.gaffer.operation.util.AggregatePair'
 
-    def __init__(self, group='',
+    def __init__(self,
+                 group=None,
                  group_by=None,
-                 operators=None):
+                 element_aggregator=None):
         super().__init__()
         self.group = group
         if group_by is not None and not isinstance(group_by, list):
             group_by = [group_by]
         self.group_by = group_by
-        self.operators = JsonConverter.from_json(
-            operators, BinaryOperatorContext)
+        if not isinstance(element_aggregator, ElementAggregateDefinition):
+            element_aggregator = ElementAggregateDefinition(
+                operators=element_aggregator['operators'])
+        self.element_aggregator = element_aggregator
 
     def to_json(self):
         element_def = {}
         if self.group_by is not None:
             element_def['groupBy'] = self.group_by
+        if self.element_aggregator is not None:
+            element_def['elementAggregator'] = self.element_aggregator.to_json()
+        return element_def
+
+
+class ElementAggregateDefinition(ToJson, ToCodeString):
+    CLASS = 'uk.gov.gchq.gaffer.operation.impl.function.ElementAggregateDefinition'
+
+    def __init__(self, operators=None):
+        super().__init__()
+        self.operators = JsonConverter.from_json(
+            operators, BinaryOperatorContext)
+
+    def to_json(self):
+        element_def = {}
         if self.operators is not None:
             funcs = []
             for func in self.operators:
@@ -2661,7 +2679,7 @@ class Filter(Operation):
 
 
 class Aggregate(Operation):
-    CLASS = 'uk.gov.gchq.gaffer.operation.function.Aggregate'
+    CLASS = 'uk.gov.gchq.gaffer.operation.impl.function.Aggregate'
 
     def __init__(self,
                  input=None,
@@ -2680,15 +2698,15 @@ class Aggregate(Operation):
             self.entities = []
             if isinstance(entities, list):
                 for el_def in entities:
-                    if not isinstance(el_def, ElementAggregateDefinition):
+                    if not isinstance(el_def, AggregatePair):
                         el_def = JsonConverter.from_json(
-                            el_def, ElementAggregateDefinition)
+                            el_def, AggregatePair)
                     self.entities.append(el_def)
             else:
                 for group, el_def in entities.items():
-                    if not isinstance(el_def, ElementAggregateDefinition):
+                    if not isinstance(el_def, AggregatePair):
                         el_def = JsonConverter.from_json(
-                            el_def, ElementAggregateDefinition)
+                            el_def, AggregatePair)
                     el_def.group = group
                     self.entities.append(el_def)
 
@@ -2696,15 +2714,15 @@ class Aggregate(Operation):
             self.edges = []
             if isinstance(edges, list):
                 for el_def in edges:
-                    if not isinstance(el_def, ElementAggregateDefinition):
+                    if not isinstance(el_def, AggregatePair):
                         el_def = JsonConverter.from_json(
-                            el_def, ElementAggregateDefinition)
+                            el_def, AggregatePair)
                     self.edges.append(el_def)
             else:
                 for group, el_def in edges.items():
-                    if not isinstance(el_def, ElementAggregateDefinition):
+                    if not isinstance(el_def, AggregatePair):
                         el_def = JsonConverter.from_json(
-                            el_def, ElementAggregateDefinition)
+                            el_def, AggregatePair)
                     el_def.group = group
                     self.edges.append(el_def)
 

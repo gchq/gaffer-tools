@@ -43,7 +43,7 @@ python3 src/example_accumulo_pki.py
 
 ## Installation
 
-The python shell can be compiled and distributed for inclusion in other Python projects.
+You can either just refer to the python shell source files or the python shell can be compiled and distributed for inclusion in other Python projects.
 
 Compilation of the project requires the bdist package, this can be installed using pip:
 
@@ -62,7 +62,7 @@ This creates a distributable Python wheel which can installed locally to provide
 The wheel file is install using pip:
 
 ```bash
-pip3 install gaffer_shell-1.0.0-RC3-py2.py3-none-any.whl
+pip3 install gafferpy-1.0.0rc4-py2.py3-none-any.whl
 ```
 
 After installation the shell can be imported into an application as below:
