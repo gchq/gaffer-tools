@@ -8,7 +8,7 @@ function navigation() {
     }
 }
 
-function NavigationController($scope, $mdDialog, graph, operationService, results, query, config) {
+function NavigationController($scope, $mdDialog, $location, graph, operationService, results, query, config) {
     var vm = this;
     vm.loading = false
     vm.addMultipleSeeds = false
@@ -45,6 +45,14 @@ function NavigationController($scope, $mdDialog, graph, operationService, result
                 results.update(data)
             })
         });
+    }
+
+    vm.isGraphInView = function() {
+        return $location.path() === '/graph'
+    }
+
+    vm.redraw = function() {
+        graph.redraw()
     }
 
 
