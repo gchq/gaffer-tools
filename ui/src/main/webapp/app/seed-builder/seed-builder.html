@@ -1,54 +1,59 @@
-<form ng-cloak>
-    <md-toolbar>
-        <div class="md-toolbar-tools">
-            <h2>Add Seed</h2>
-        </div>
-    </md-toolbar>
-
-    <md-dialog-content>
+<md-toolbar>
+    <div class="md-toolbar-tools">
+        <h2>Add Seed</h2>
+    </div>
+</md-toolbar>
+<md-dialog-content>
+    <form layout-padding>
         <div class="md-dialog-content form-group">
-            <label for="vertexType">Vertex:</label>
-            <select class="form-control"
-                    ng-model="ctrl.seedVertexType"
-                    ng-options="vertexType as vertexType for vertexType in ctrl.getSchemaVertices()"
-                    id="vertexType">
-            </select>
+            <md-input-container layout-fill>
+                <label>Vertex</label>
+                <md-select
+                        ng-model="ctrl.seedVertexType"
+                        id="vertexType">
+                    <md-option ng-repeat="vertexType in ctrl.getSchemaVertices()" ng-value="vertexType">{{vertexType}}</md-option>
+                </md-select>
+            </md-input-container>
+
 
             <div ng-show="!ctrl.multipleSeeds">
                 <div ng-repeat="field in ctrl.getFields()">
-                    <label for="seedVertex{{field.key}}">{{field.label}}</label>
-                    <input id="seedVertex{{field.key}}"
-                           type="{{field.type}}"
-                           step="{{field.step}}"
-                           class="form-control"
-                           ng-model="ctrl.seedVertexParts[field.key]"/>
+                    <md-input-container id="field.label">
+                        <label>{{field.label}}</label>
+                        <input id="seedVertex{{field.key}}"
+                               type="{{field.type}}"
+                               step="{{field.step}}"
+                               class="form-control"
+                               ng-model="ctrl.seedVertexParts[field.key]"/>
+                    </md-input-container>
                 </div>
             </div>
 
-            <div ng-show="ctrl.multipleSeeds">
+            <div>
+                <md-input-container id="Multiple Seed input" ng-show="ctrl.multipleSeeds" md-no-float>
                     <textarea id="seedVertices"
-                              class="form-control"
+                              rows="5"
+                              md-detect-hidden
                               ng-model="ctrl.seedVertices"
                               placeholder="Enter your seeds, each seed on a new line.
-                              {{ctrl.getCsvHeader()}}
-                              ">
-                    </textarea>
+                          {{ctrl.getCsvHeader()}}
+                          ">
+                </textarea>
+                </md-input-container>
             </div>
 
-            <br/>
-            <input id="multi-seed-checkbox" type="checkbox"
-                   ng-model="ctrl.multipleSeeds">
-            <label for="multi-seed-checkbox">Multiple seeds?</label>
+            <md-checkbox aria-label="Multiple Seeds" ng-model="ctrl.multipleSeeds">
+                Multiple Seeds
+            </md-checkbox>
         </div>
-    </md-dialog-content>
-
-    <md-dialog-actions layout="row">
-        <span flex></span>
-        <md-button id="cancel" ng-click="ctrl.cancel()">
-            Cancel
-        </md-button>
-        <md-button id="add-seeds" ng-click="ctrl.submitSeeds()">
-            Add
-        </md-button>
-    </md-dialog-actions>
-</form>
+    </form>
+</md-dialog-content>
+<md-dialog-actions layout="row">
+    <span flex></span>
+    <md-button id="cancel" ng-click="ctrl.cancel()">
+        Cancel
+    </md-button>
+    <md-button class="md-primary" id="add-seeds" ng-click="ctrl.submitSeeds()">
+        Add
+    </md-button>
+</md-dialog-actions>
