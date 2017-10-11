@@ -124,9 +124,9 @@ angular.module('app').factory('graph', ['schema', 'types', '$q', 'results', 'com
             for(var edgeGroup in schema.get().edges) {
                 var edge = schema.get().edges[edgeGroup]
                 if((edge.source === vertexType || edge.destination === vertexType)
-                    && graph.relatedEdges.indexOf(edgeGroup) === -1) {
-                    graph.relatedEdges.push(edgeGroup)
-                    fire('onRelatedEdgesUpdate', [graph.relatedEdges])
+                    && relatedEdges.indexOf(edgeGroup) === -1) {
+                    relatedEdges.push(edgeGroup)
+                    fire('onRelatedEdgesUpdate', [relatedEdges])
                 }
             }
         }
@@ -208,7 +208,7 @@ angular.module('app').factory('graph', ['schema', 'types', '$q', 'results', 'com
             var id = entity.vertex;
             entity.vertexType = schema.getVertexTypeFromEntityGroup(entity.group);
             if(id in graphData.entities) {
-                if(!common.arrayContainsValue(graphData.entities[id], entity)) {
+                if(!common.arrayContainsObjectWithValue(graphData.entities[id], 'group', entity.group)) {
                     graphData.entities[id].push(entity);
                 }
             } else {
