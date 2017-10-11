@@ -56,7 +56,6 @@ gaffer.store.properties.class=uk.gov.gchq.gaffer.accumulostore.AccumuloPropertie
 
 accumulo.instance=$ACCUMULO_INSTANCE
 accumulo.zookeepers=$ZOOKEEPERS
-accumulo.table=$GAFFER_GRAPH_ID
 accumulo.user=$ACCUMULO_USERNAME
 accumulo.password=$PASSWORD
 
