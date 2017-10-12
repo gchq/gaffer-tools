@@ -226,7 +226,7 @@ angular.module('app').factory('graph', ['schema', 'types', '$q', 'results', 'com
             edge.destinationType = vertexTypes[1];
             var id = edge.source + "|" + edge.destination + "|" + edge.directed + "|" + edge.group;
             if(id in graphData.edges) {
-                if(!common.arrayContainsValue(graphData.edges[id], edge)) {
+                if(!common.arrayContainsObjectWithValue(graphData.edges[id], 'group', edge.group)) {
                     graphData.edges[id].push(edge);
                 }
             } else {
