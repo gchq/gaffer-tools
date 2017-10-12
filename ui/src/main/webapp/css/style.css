@@ -104,12 +104,7 @@ table table th{
 pre {
     background: white;
     padding: 5px;
-}
-
-textarea {
-    width: 100%;
-    min-height: 150px;
-    font-size: 14px;
+    font-family: Roboto,Helvetica Neue,sans-serif;
 }
 
 .right-space {
