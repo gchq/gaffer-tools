@@ -115,18 +115,18 @@ public class QueryBuilderST {
         click("add-seed");
 
         selectOption("vertexType", "junction");
-        enterText("addSeedVertex", "M5:10");
-        click("add-seed-confirm");
+        enterText("seedVertex", "M5:10");
+        click("add-seeds");
 
         click("build-query");
 
         click("Get Elements");
         click("select-all-seeds");
         click("related-edge-RoadUse");
-        click("RoadUse-add-filter");
-        selectOption("RoadUse-property-selector", "startDate");
-        selectOption("RoadUse-startDate-predicate-selector", "uk.gov.gchq.koryphe.impl.predicate.IsMoreThan");
-        enterText("RoadUse-startDate-uk.gov.gchq.koryphe.impl.predicate.IsMoreThan-value", "{\"java.util.Date\": 971416800000}");
+        click("RoadUse-add-pre-filter");
+        selectOption("RoadUse-pre-property-selector", "startDate");
+        selectOption("RoadUse-pre-startDate-predicate-selector", "uk.gov.gchq.koryphe.impl.predicate.IsMoreThan");
+        enterText("RoadUse-pre-startDate-uk.gov.gchq.koryphe.impl.predicate.IsMoreThan-value", "{\"java.util.Date\": 971416800000}");
         click("build-query-next");
 
         click("build-query-execute");

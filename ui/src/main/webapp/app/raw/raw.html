@@ -20,9 +20,7 @@
                 </h3>
 
                 <div ng-show="!ctrl.editingOperations" ng-repeat="(i, json) in ctrl.operations track by $index">
-                    <pre id="operation-{{i}}-json">
-                        {{ctrl.operations[i] | json}}
-                    </pre>
+                    <pre id="operation-{{i}}-json">{{ctrl.operations[i] | json}}</pre>
                 </div>
                 <div ng-show="ctrl.editingOperations" ng-repeat="(i, json) in ctrl.operationsForEdit track by $index">
                     <textarea id="editing-operation-{{i}}-json"
@@ -45,30 +43,22 @@
 
                 <div ng.show="ctrl.results.entities">
                     <h4>Entities</h4>
-                    <pre id="raw-entity-results">
-                        {{ctrl.results.entities | json}}
-                    </pre>
+                    <pre id="raw-entity-results">{{ctrl.results.entities | json}}</pre>
                 </div>
 
                 <div ng.show="ctrl.results.edges">
                     <h4>Edges</h4>
-                    <pre id="raw-edge-results">
-                        {{ctrl.results.edges | json}}
-                    </pre>
+                    <pre id="raw-edge-results">{{ctrl.results.edges | json}}</pre>
                 </div>
 
                 <div ng.show="ctrl.results.entitySeeds">
                     <h4>Seeds</h4>
-                    <pre id="raw-entity-seed-results">
-                        {{ctrl.results.entitySeeds | json}}
-                    </pre>
+                    <pre id="raw-entity-seed-results">{{ctrl.results.entitySeeds | json}}</pre>
                 </div>
 
                 <div ng.show="ctrl.results.other">
                     <h4>Other</h4>
-                    <pre id="raw-other-results">
-                        {{ctrl.results.other | json}}
-                    </pre>
+                    <pre id="raw-other-results">{{ctrl.results.other | json}}</pre>
                 </div>
             </md-content>
         </md-tab>

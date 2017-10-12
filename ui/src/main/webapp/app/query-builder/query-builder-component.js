@@ -291,10 +291,10 @@ function QueryBuilderController($scope, operationService, types, graph, config, 
 
                 var filterFunctions = convertFilterFunctions(vm.expandEdgesContent[edge]);
                 if(filterFunctions.preAggregation.length > 0) {
-                    op.view.entities[entity].preAggregationFilterFunctions = filterFunctions.preAggregation;
+                    op.view.edges[edge].preAggregationFilterFunctions = filterFunctions.preAggregation;
                 }
                 if(filterFunctions.postAggregation.length > 0) {
-                    op.view.entities[entity].postAggregationFilterFunctions = filterFunctions.postAggregation;
+                    op.view.edges[edge].postAggregationFilterFunctions = filterFunctions.postAggregation;
                 }
             }
         }

@@ -22,7 +22,7 @@
                             <tr>
                                 <th>
                                     <a
-                                       ng-click="sortType = 'name'; sortReverse = !sortReverse">
+                                            ng-click="sortType = 'name'; sortReverse = !sortReverse">
                                         Name
                                             <span ng-show="sortType === 'name' && !sortReverse"
                                                   class="caret"></span>
@@ -37,7 +37,7 @@
                             <tr ng-repeat="op in ctrl.availableOperations | orderBy:sortType:sortReverse | filter:ctrl.opSearchTerm">
                                 <td>
                                     <a
-                                       ng-click="ctrl.onSelectedOpChange(op)">
+                                            ng-click="ctrl.onSelectedOpChange(op)" id="{{op.name}}">
                                         {{op.name}}
                                     </a>
                                 </td>
@@ -164,6 +164,7 @@
                                             </td>
                                             <td>
                                                 <select class="form-control"
+                                                        id="{{entity}}-pre-{{filter.property}}-predicate-selector"
                                                         ng-model="filter.predicate"
                                                         ng-options="predicate as predicate for predicate in filter.availableFunctions"
                                                         ng-change="ctrl.onSelectedFunctionChange(entity, filter)">
@@ -180,6 +181,7 @@
                                                     <p class="inline">
                                                         {{param}}:</p>
                                                     <input type="text"
+                                                           id="{{entity}}-pre-{{filter.property}}-{{filter.predicate}}-{{param}}"
                                                            class="form-control inline"
                                                            ng-model="filter.parameters[idx]">
                                                 </div>
@@ -223,6 +225,7 @@
                                             </td>
                                             <td>
                                                 <select class="form-control"
+                                                        id="{{entity}}-post-{{filter.property}}-predicate-selector"
                                                         ng-model="filter.predicate"
                                                         ng-options="predicate as predicate for predicate in filter.availableFunctions"
                                                         ng-change="ctrl.onSelectedFunctionChange(entity, filter)">
@@ -239,6 +242,7 @@
                                                     <p class="inline">
                                                         {{param}}:</p>
                                                     <input type="text"
+                                                           id="{{entity}}-post-{{filter.property}}-{{filter.predicate}}-{{param}}"
                                                            class="form-control inline"
                                                            ng-model="filter.parameters[idx]">
                                                 </div>
@@ -282,13 +286,13 @@
                                     {{edge}}
                                 </md-checkbox>
 
-                                <div ng-show="ctrl.exists(ctrl.expandEdges, edge)">
+                                <div ng-show="ctrl.exists(ctrl.expandEdges, edge)" layout-margin>
                                     <table class="table table-striped no-bottom-border"
                                            ng-show="ctrl.getEdgeProperties(edge)">
                                         <tbody>
-                                        <tr ng-repeat="filter in ctrl.expandEdgesContent[edge].filters">
+                                        <tr ng-repeat="filter in ctrl.expandEdgesContent[edge].filters.preAggregation">
                                             <td>
-                                                <select id="{{edge}}-property-selector"
+                                                <select id="{{edge}}-pre-property-selector"
                                                         class="form-control"
                                                         ng-model="filter.property"
                                                         ng-options="name as name for (name, type) in ctrl.getEdgeProperties(edge)"
@@ -301,8 +305,8 @@
                                                 </select>
                                             </td>
                                             <td>
-                                                <select id="{{edge}}-{{filter.property}}-predicate-selector"
-                                                        class="form-control"
+                                                <select class="form-control"
+                                                        id="{{edge}}-pre-{{filter.property}}-predicate-selector"
                                                         ng-model="filter.predicate"
                                                         ng-options="predicate as predicate for predicate in filter.availableFunctions"
                                                         ng-change="ctrl.onSelectedFunctionChange(edge, filter)">
@@ -313,12 +317,13 @@
                                                     </option>
                                                 </select>
                                             </td>
+
                                             <td>
                                                 <div ng-repeat="(idx, param) in filter.availableFunctionParameters">
                                                     <p class="inline">
                                                         {{param}}:</p>
-                                                    <input id="{{edge}}-{{filter.property}}-{{filter.predicate}}-{{param}}"
-                                                           type="text"
+                                                    <input type="text"
+                                                           id="{{edge}}-pre-{{filter.property}}-{{filter.predicate}}-{{param}}"
                                                            class="form-control inline"
                                                            ng-model="filter.parameters[idx]">
                                                 </div>
@@ -337,11 +342,72 @@
                                         </tr>
                                         </tbody>
                                     </table>
-                                    <button id="{{edge}}-add-filter"
-                                            ng-click="ctrl.addFilterFunction(ctrl.expandEdgesContent, edge)"
+                                    <button id="{{edge}}-add-pre-filter"
+                                            ng-click="ctrl.addFilterFunction(ctrl.expandEdgesContent, edge, true)"
                                             class="btn btn-default"
                                             ng-show="ctrl.getEdgeProperties(edge)">
-                                        Add filter
+                                        Add Pre Aggregation filter
+                                    </button>
+                                    <table class="table table-striped no-bottom-border"
+                                           ng-show="ctrl.getEdgeProperties(edge)">
+                                        <tbody>
+                                        <tr ng-repeat="filter in ctrl.expandEdgesContent[edge].filters.postAggregation">
+                                            <td>
+                                                <select id="{{edge}}-post-property-selector"
+                                                        class="form-control"
+                                                        ng-model="filter.property"
+                                                        ng-options="name as name for (name, type) in ctrl.getEdgeProperties(edge)"
+                                                        ng-change="ctrl.onSelectedPropertyChange(edge, filter)">
+                                                    <option value=""
+                                                            disabled
+                                                            selected>
+                                                        Select a property
+                                                    </option>
+                                                </select>
+                                            </td>
+                                            <td>
+                                                <select class="form-control"
+                                                        id="{{edge}}-post-{{filter.property}}-predicate-selector"
+                                                        ng-model="filter.predicate"
+                                                        ng-options="predicate as predicate for predicate in filter.availableFunctions"
+                                                        ng-change="ctrl.onSelectedFunctionChange(edge, filter)">
+                                                    <option value=""
+                                                            disabled
+                                                            selected>
+                                                        Select a predicate
+                                                    </option>
+                                                </select>
+                                            </td>
+
+                                            <td>
+                                                <div ng-repeat="(idx, param) in filter.availableFunctionParameters">
+                                                    <p class="inline">
+                                                        {{param}}:</p>
+                                                    <input type="text"
+                                                           id="{{edge}}-post-{{filter.property}}-{{filter.predicate}}-{{param}}"
+                                                           class="form-control inline"
+                                                           ng-model="filter.parameters[idx]">
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div ng-show="filter.availableFunctionParameters.length > 0 && filter.propertyClass">
+                                                    You may need to
+                                                    explicitly
+                                                    tell Gaffer the type of
+                                                    the
+                                                    parameter, e.g:
+                                                    {"{{filter.propertyClass}}":
+                                                    value}
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                    <button id="{{edge}}-add-post-filter"
+                                            ng-click="ctrl.addFilterFunction(ctrl.expandEdgesContent, edge, false)"
+                                            class="btn btn-default"
+                                            ng-show="ctrl.getEdgeProperties(edge)">
+                                        Add Post Aggregation filter
                                     </button>
                                 </div>
                             </div>
