@@ -23,6 +23,12 @@ Parameters:
     MinLength: 1
     AllowedPattern: "\\S+"
 
+  TabletServersPerYarnNode:
+    Type: Number
+    Default: 1
+    MinValue: 1
+    Description: The number of Accumulo Tablet Servers that should be deployed onto each YARN Node
+
   EmrRelease:
     Type: String
     Default: emr-5.7.0
@@ -89,6 +95,10 @@ Metadata:
           default: Gaffer Config
         Parameters:
           - GafferInstanceName
+      - Label:
+          default: Accumulo Config
+        Parameters:
+          - TabletServersPerYarnNode
       - Label:
           default: EMR Config
         Parameters:
@@ -403,6 +413,8 @@ Resources:
           - !Ref GafferToolsVersion
           - "-a"
           - !Ref AccumuloVersion
+          - "-n"
+          - !Ref TabletServersPerYarnNode
           - "-w"
           - !Ref WaitForGafferHandler
           - !Ref GafferInstanceName
@@ -507,23 +519,30 @@ Resources:
 
           def cleanup_files(bucket):
             # Delete EMR logs
-            logListing = s3.list_objects_v2(
-              Bucket=bucket,
-              Prefix='emr-logs/'
-            )
+            continueDeletion = True
+            while continueDeletion:
+              continueDeletion = False
 
-            logFiles = []
-            if 'Contents' in logListing:
-              for log in logListing['Contents']:
-                logFiles.append({ 'Key': log['Key'] })
-
-            if len(logFiles) > 0:
-              s3.delete_objects(
+              logListing = s3.list_objects_v2(
                 Bucket=bucket,
-                Delete={
-                  'Objects': logFiles
-                }
+                Prefix='emr-logs/'
               )
+
+              if 'IsTruncated' in logListing:
+                continueDeletion = logListing['IsTruncated']
+
+              logFiles = []
+              if 'Contents' in logListing:
+                for log in logListing['Contents']:
+                  logFiles.append({ 'Key': log['Key'] })
+
+              if len(logFiles) > 0:
+                s3.delete_objects(
+                  Bucket=bucket,
+                  Delete={
+                    'Objects': logFiles
+                  }
+                )
 
             # Delete uploaded files
             for file in files:

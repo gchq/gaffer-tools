@@ -41,12 +41,12 @@
 		"site.accumulo-site.general.kerberos.keytab": "",
 		"site.accumulo-site.general.kerberos.principal": "",
 
-		"site.accumulo-site.tserver.memory.maps.native.enabled": "false",
-		"site.accumulo-site.tserver.memory.maps.max": "80M",
-		"site.accumulo-site.tserver.cache.data.size": "7M",
-		"site.accumulo-site.tserver.cache.index.size": "20M",
-		"site.accumulo-site.tserver.sort.buffer.size": "50M",
-		"site.accumulo-site.tserver.walog.max.size": "40M",
+		"site.accumulo-site.tserver.memory.maps.native.enabled": "true",
+		"site.accumulo-site.tserver.memory.maps.max": "1G",
+		"site.accumulo-site.tserver.cache.data.size": "128M",
+		"site.accumulo-site.tserver.cache.index.size": "512M",
+		"site.accumulo-site.tserver.sort.buffer.size": "200M",
+		"site.accumulo-site.tserver.walog.max.size": "1G",
 
 		"site.accumulo-site.trace.user": "root",
 		"site.accumulo-site.trace.zookeeper.path": "/accumulo/tracers-${USER}-${CLUSTER_NAME}",
