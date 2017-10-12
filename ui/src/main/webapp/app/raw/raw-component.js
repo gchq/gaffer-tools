@@ -11,7 +11,7 @@ function raw() {
     }
 }
 
-function RawController($scope, operationService, results, query) {
+function RawController($scope, operationService, results, query, $mdToast) {
     var vm = this
 
     // variables
@@ -53,7 +53,11 @@ function RawController($scope, operationService, results, query) {
                     query.addOperation(JSON.parse(vm.operationsForEdit[i]));
                 }
             } catch(e) {
-                console.error('Invalid json: ' + vm.operationsForEdit[i]);
+                $mdToast.show($mdToast.simple()
+                    .textContent('Invalid json for operation ' + (+i + 1))
+                    .position('bottom right'))
+                console.log('Invalid json: ' + vm.operationsForEdit[i]);
+                return;
             }
         }
         vm.editingOperations = false;
