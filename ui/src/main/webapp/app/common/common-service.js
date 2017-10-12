@@ -39,6 +39,18 @@ angular.module('app').factory('common', [function() {
         return arr && arr.indexOf(value) !== -1
     }
 
+    common.arrayContainsObject = function(arr, obj) {
+        if (!arr || !obj) {
+            return false
+        }
+        for (var i in arr) {
+            if (angular.equals(arr[i], obj)) {
+                return true
+            }
+        }
+        return false
+    }
+
     common.arrayContainsObjectWithValue = function(arr, property, value) {
         return indexOfObjectWithValue(arr, property, value) !== -1
     }

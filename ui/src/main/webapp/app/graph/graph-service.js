@@ -190,7 +190,7 @@ angular.module('app').factory('graph', ['schema', 'types', '$q', 'results', 'com
     graph.addSeed = function(vt, v) {
         var entitySeed = { vertexType: vt, vertex: v }
         if(v in graphData.entitySeeds) {
-            if(!common.arrayContainsValue(graphData.entitySeeds[v], entitySeed)) {
+            if(!common.arrayContainsObject(graphData.entitySeeds[v], entitySeed)) {
                 graphData.entitySeeds[v].push(entitySeed);
             }
         } else {
@@ -242,7 +242,7 @@ angular.module('app').factory('graph', ['schema', 'types', '$q', 'results', 'com
 
             var id = entitySeed.vertex;
             if(id in graphData.entitySeeds) {
-                if(!common.arrayContainsValue(graphData.entitySeeds[id], entitySeed)) {
+                if(!common.arrayContainsObject(graphData.entitySeeds[id], entitySeed)) {
                     graphData.entitySeeds[id].push(entitySeed);
                 }
             } else {
