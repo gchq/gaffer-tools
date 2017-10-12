@@ -3619,71 +3619,79 @@ class GafferOperationsTest(unittest.TestCase):
         [
             '''
             {
-                "class": "uk.gov.gchq.gaffer.operation.OperationChain",
                 "operations": [
                     {
-                        "class": "uk.gov.gchq.gaffer.operation.impl.job.GetJobResults",
-                        "jobId": "job1"
+                        "jobId": "job1",
+                        "class": "uk.gov.gchq.gaffer.operation.impl.job.GetJobResults"
                     },
                     {
-                        "class": "uk.gov.gchq.gaffer.operation.impl.function.Aggregate",
-                        "entities": {
-                            "entity2": {
-                                "operators": [
-                                    {
-                                        "selection": [
-                                            "prop"
-                                        ],
-                                        "binaryOperator": {
-                                            "class": "exampleBinaryOperator"
+                        "edges": {
+                            "edge2": {
+                                "elementAggregator": {
+                                    "operators": [
+                                        {
+                                            "selection": [
+                                                "prop2"
+                                            ],
+                                            "binaryOperator": {
+                                                "class": "exampleBinaryOperator"
+                                            }
                                         }
-                                    }
-                                ],
+                                    ]
+                                }
+                            },
+                            "edge1": {
+                                "elementAggregator": {
+                                    "operators": [
+                                        {
+                                            "selection": [
+                                                "prop2"
+                                            ],
+                                            "binaryOperator": {
+                                                "class": "exampleBinaryOperator"
+                                            }
+                                        }
+                                    ]
+                                }
+                            }
+                        },
+                        "entities": {
+                            "entity1": {
+                                "elementAggregator": {
+                                    "operators": [
+                                        {
+                                            "selection": [
+                                                "prop"
+                                            ],
+                                            "binaryOperator": {
+                                                "class": "exampleBinaryOperator"
+                                            }
+                                        }
+                                    ]
+                                }
+                            },
+                            "entity2": {
+                                "elementAggregator": {
+                                    "operators": [
+                                        {
+                                            "selection": [
+                                                "prop"
+                                            ],
+                                            "binaryOperator": {
+                                                "class": "exampleBinaryOperator"
+                                            }
+                                        }
+                                    ]
+                                },
                                 "groupBy": [
                                     "timestamp"
                                 ]
-                            },
-                            "entity1": {
-                                "operators": [
-                                    {
-                                        "selection": [
-                                            "prop"
-                                        ],
-                                        "binaryOperator": {
-                                            "class": "exampleBinaryOperator"
-                                        }
-                                    }
-                                ]
                             }
                         },
-                        "edges": {
-                            "edge2": {
-                                "operators": [
-                                    {
-                                        "selection": [
-                                            "prop2"
-                                        ],
-                                        "binaryOperator": {
-                                            "class": "exampleBinaryOperator"
-                                        }
-                                    }
-                                ]
-                            },
-                            "edge1": {
-                                "operators": [
-                                    {
-                                        "selection": [
-                                            "prop2"
-                                        ],
-                                        "binaryOperator": {
-                                            "class": "exampleBinaryOperator"
-                                        }
-                                    }
-                                ]
-                            }
-                        }
+                        "class": "uk.gov.gchq.gaffer.operation.impl.function.Aggregate"
                     }
-                ]
+                ],
+                "class": "uk.gov.gchq.gaffer.operation.OperationChain"
             }
             ''',
             g.OperationChain(
@@ -3693,52 +3701,62 @@ class GafferOperationsTest(unittest.TestCase):
                     ),
                     g.Aggregate(
                         entities=[
-                            g.ElementAggregateDefinition(
+                            g.AggregatePair(
                                 group="entity1",
-                                operators=[
-                                    g.BinaryOperatorContext(
-                                        selection=["prop"],
-                                        binary_operator=g.BinaryOperator(
-                                            class_name="exampleBinaryOperator"
+                                element_aggregator=g.ElementAggregateDefinition(
+                                    operators=[
+                                        g.BinaryOperatorContext(
+                                            selection=["prop"],
+                                            binary_operator=g.BinaryOperator(
+                                                class_name="exampleBinaryOperator"
+                                            )
                                         )
-                                    )
-                                ]
+                                    ]
+                                )
                             ),
-                            g.ElementAggregateDefinition(
+                            g.AggregatePair(
                                 group="entity2",
-                                group_by=["timestamp"],
-                                operators=[
-                                    g.BinaryOperatorContext(
-                                        selection=["prop"],
-                                        binary_operator=g.BinaryOperator(
-                                            class_name="exampleBinaryOperator"
+                                group_by=[
+                                    "timestamp"
+                                ],
+                                element_aggregator=g.ElementAggregateDefinition(
+                                    operators=[
+                                        g.BinaryOperatorContext(
+                                            selection=["prop"],
+                                            binary_operator=g.BinaryOperator(
+                                                class_name="exampleBinaryOperator"
+                                            )
                                         )
-                                    )
-                                ]
+                                    ]
+                                )
                             )
                         ],
                         edges=[
-                            g.ElementAggregateDefinition(
+                            g.AggregatePair(
                                 group="edge1",
-                                operators=[
-                                    g.BinaryOperatorContext(
-                                        selection=["prop2"],
-                                        binary_operator=g.BinaryOperator(
-                                            class_name="exampleBinaryOperator"
+                                element_aggregator=g.ElementAggregateDefinition(
+                                    operators=[
+                                        g.BinaryOperatorContext(
+                                            selection=["prop2"],
+                                            binary_operator=g.BinaryOperator(
+                                                class_name="exampleBinaryOperator"
+                                            )
                                         )
-                                    )
-                                ]
+                                    ]
+                                )
                             ),
-                            g.ElementAggregateDefinition(
+                            g.AggregatePair(
                                 group="edge2",
-                                operators=[
-                                    g.BinaryOperatorContext(
-                                        selection=["prop2"],
-                                        binary_operator=g.BinaryOperator(
-                                            class_name="exampleBinaryOperator"
+                                element_aggregator=g.ElementAggregateDefinition(
+                                    operators=[
+                                        g.BinaryOperatorContext(
+                                            selection=["prop2"],
+                                            binary_operator=g.BinaryOperator(
+                                                class_name="exampleBinaryOperator"
+                                            )
                                         )
-                                    )
-                                ]
+                                    ]
+                                )
                             )
                         ]
                     )

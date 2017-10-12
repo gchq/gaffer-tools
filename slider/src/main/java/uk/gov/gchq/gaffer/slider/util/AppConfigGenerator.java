@@ -53,8 +53,8 @@ public class AppConfigGenerator implements Runnable {
 
     static class SliderAppConfig {
 
-        private ConfTree appConfig;
-        private ConfTree resources;
+        private final ConfTree appConfig;
+        private final ConfTree resources;
 
         SliderAppConfig(final ConfTree appConfig, final ConfTree resources) {
             this.appConfig = appConfig;
@@ -73,9 +73,9 @@ public class AppConfigGenerator implements Runnable {
 
     static class AvailableResources {
 
-        private int maxCores;
-        private int maxMemory;
-        private int nodeCount;
+        private final int maxCores;
+        private final int maxMemory;
+        private final int nodeCount;
 
         AvailableResources(final int maxCores, final int maxMemory, final int nodeCount) {
             this.maxCores = maxCores;
@@ -115,15 +115,21 @@ public class AppConfigGenerator implements Runnable {
         ACCUMULO_PROXY
     }
 
-    private static Map<COMPONENT, String> componentToPropertyLookup = new HashMap<>();
+    static final String ACCUMULO_TSERVER_NATIVE_MAPS_ENABLED_PROPERTY = "site.accumulo-site.tserver.memory.maps.native.enabled";
+    static final String ACCUMULO_TSERVER_MAX_MEMORY_PROPERTY = "site.accumulo-site.tserver.memory.maps.max";
+
+    static final String ACCUMULO_TSERVER_CONCURRENT_MINC_PROPERTY = "site.accumulo-site.tserver.compaction.minor.concurrent.max";
+    static final String ACCUMULO_TSERVER_CONCURRENT_MAJC_PROPERTY = "site.accumulo-site.tserver.compaction.major.concurrent.max";
+
+    static final Map<COMPONENT, String> ACCUMULO_COMPONENT_PROPERTY_LOOKUP = new HashMap<>();
 
     static {
-        componentToPropertyLookup.put(COMPONENT.ACCUMULO_MASTER, "site.accumulo-env.master_heapsize");
-        componentToPropertyLookup.put(COMPONENT.ACCUMULO_TSERVER, "site.accumulo-env.tserver_heapsize");
-        componentToPropertyLookup.put(COMPONENT.ACCUMULO_MONITOR, "site.accumulo-env.monitor_heapsize");
-        componentToPropertyLookup.put(COMPONENT.ACCUMULO_GC, "site.accumulo-env.gc_heapsize");
-        componentToPropertyLookup.put(COMPONENT.ACCUMULO_TRACER, "site.accumulo-env.other_heapsize");
-        componentToPropertyLookup.put(COMPONENT.ACCUMULO_PROXY, "site.accumulo-env.other_heapsize");
+        ACCUMULO_COMPONENT_PROPERTY_LOOKUP.put(COMPONENT.ACCUMULO_MASTER, "site.accumulo-env.master_heapsize");
+        ACCUMULO_COMPONENT_PROPERTY_LOOKUP.put(COMPONENT.ACCUMULO_TSERVER, "site.accumulo-env.tserver_heapsize");
+        ACCUMULO_COMPONENT_PROPERTY_LOOKUP.put(COMPONENT.ACCUMULO_MONITOR, "site.accumulo-env.monitor_heapsize");
+        ACCUMULO_COMPONENT_PROPERTY_LOOKUP.put(COMPONENT.ACCUMULO_GC, "site.accumulo-env.gc_heapsize");
+        ACCUMULO_COMPONENT_PROPERTY_LOOKUP.put(COMPONENT.ACCUMULO_TRACER, "site.accumulo-env.other_heapsize");
+        ACCUMULO_COMPONENT_PROPERTY_LOOKUP.put(COMPONENT.ACCUMULO_PROXY, "site.accumulo-env.other_heapsize");
     }
 
     // Command line argument parsing
@@ -139,6 +145,9 @@ public class AppConfigGenerator implements Runnable {
 
     @Parameter(names = { "-u", "--usage" }, description = "The proportion of the cluster resources this application should be configured to use (as a percentage)")
     private int clusterUsagePercent = 85;
+
+    @Parameter(names = { "-r", "--heap-container-ratio" }, description = "The ratio that should be used to calculate the size of the requests for memory from YARN, based off the Java heap size for each component")
+    private float heapSizeToContainerMemoryRatio = 1.3f;
 
     @Parameter(names = "-s", description = "Generate the allocation so that all components could fit on a single node, otherwise the allocation will try to use as much of the resources available across the cluster as possible")
     private boolean singleNode = false;
@@ -197,32 +206,43 @@ public class AppConfigGenerator implements Runnable {
         }
     }
 
-    private int convertHeapSizePropertyToNumBytes(final String value) {
-        if (value.endsWith("g")) {
-            return Integer.parseInt(value.substring(0, value.length() - 1)) * 1024;
-        } else if (value.endsWith("m")) {
-            return Integer.parseInt(value.substring(0, value.length() - 1));
+    private int convertPropertyToNumBytes(final String value) {
+        final String formattedValue = value.toLowerCase();
+        if (formattedValue.endsWith("g")) {
+            return Integer.parseInt(formattedValue.substring(0, formattedValue.length() - 1)) * 1024;
+        } else if (formattedValue.endsWith("m")) {
+            return Integer.parseInt(formattedValue.substring(0, formattedValue.length() - 1));
         }
 
         throw new NumberFormatException(String.format("Unable to convert %s to a number", value));
     }
 
     private AvailableResources getYarnResources() throws IOException, YarnException {
-        Configuration config = new Configuration();
-        YarnClient yarn = YarnClient.createYarnClient();
+        final Configuration config = new Configuration();
+        final YarnClient yarn = YarnClient.createYarnClient();
         yarn.init(config);
         yarn.start();
 
         // Query YARN to find out the largest container it is capable of scheduling
-        YarnClientApplication app = yarn.createApplication();
-        Resource resources = app.getNewApplicationResponse().getMaximumResourceCapability();
+        final YarnClientApplication app = yarn.createApplication();
+        final Resource resources = app.getNewApplicationResponse().getMaximumResourceCapability();
 
         // Also find out how many nodes there are in the cluster by asking for the number of registered Node Managers
-        YarnClusterMetrics metrics = yarn.getYarnClusterMetrics();
+        final YarnClusterMetrics metrics = yarn.getYarnClusterMetrics();
 
         yarn.close();
 
         return new AvailableResources(resources.getVirtualCores(), resources.getMemory(), metrics.getNumNodeManagers());
+    }
+
+    private int getNativeMemoryMemoryRequirement(final ConfTree appConfig) {
+        final String isNativeMapEnabled = appConfig.global.get(ACCUMULO_TSERVER_NATIVE_MAPS_ENABLED_PROPERTY);
+        if (Boolean.parseBoolean(isNativeMapEnabled)) {
+            String maxMemProperty = appConfig.global.get(ACCUMULO_TSERVER_MAX_MEMORY_PROPERTY);
+            return this.convertPropertyToNumBytes(maxMemProperty);
+        }
+
+        return 0;
     }
 
     /**
@@ -235,8 +255,8 @@ public class AppConfigGenerator implements Runnable {
      * @throws IOException Not enough resources available to be split across all the requested tablet servers
      */
     private SliderAppConfig generateSliderAppConfigForMultiNode(final SliderAppConfig app, final AvailableResources availableResources) throws IOException {
-        ConfTree appConfig = app.getAppConfig();
-        ConfTree resources = app.getResources();
+        final ConfTree appConfig = app.getAppConfig();
+        final ConfTree resources = app.getResources();
 
         int totalCoresAvailable = availableResources.getMaxCores() * availableResources.getNodeCount();
         int totalMemoryAvailable = availableResources.getMaxMemory() * availableResources.getNodeCount();
@@ -252,10 +272,10 @@ public class AppConfigGenerator implements Runnable {
         // Accumulo Components
         for (final String componentName : resources.components.keySet()) {
             if (!componentName.equals(COMPONENT.ACCUMULO_TSERVER.name())) {
-                Map<String, String> componentConfig = resources.components.get(componentName);
-                int instanceCount = Integer.parseInt(componentConfig.get(ResourceKeys.COMPONENT_INSTANCES));
-                int cores = Integer.parseInt(componentConfig.get(ResourceKeys.YARN_CORES));
-                int memory = Integer.parseInt(componentConfig.get(ResourceKeys.YARN_MEMORY));
+                final Map<String, String> componentConfig = resources.components.get(componentName);
+                final int instanceCount = Integer.parseInt(componentConfig.get(ResourceKeys.COMPONENT_INSTANCES));
+                final int cores = Integer.parseInt(componentConfig.get(ResourceKeys.YARN_CORES));
+                final int memory = Integer.parseInt(componentConfig.get(ResourceKeys.YARN_MEMORY));
 
                 totalCoresAvailable -= cores * instanceCount;
                 totalMemoryAvailable -= memory * instanceCount;
@@ -268,17 +288,18 @@ public class AppConfigGenerator implements Runnable {
 
         int tserverCores = totalCoresAvailable / (this.tserversPerNode * availableResources.getNodeCount());
         int tserverMemory = totalMemoryAvailable / (this.tserversPerNode * availableResources.getNodeCount());
+        int tserverHeapSize = (int) Math.floor((tserverMemory - this.getNativeMemoryMemoryRequirement(appConfig)) / this.heapSizeToContainerMemoryRatio);
 
-        if (tserverCores <= 0 || tserverMemory <= 0) {
+        if (tserverCores <= 0 || tserverMemory <= 0 || tserverHeapSize <= 0) {
             throw new IOException(String.format("Not enough available resources to deploy %s tablet servers per node, only cores: %s memory: %s available across the cluster!", this.tserversPerNode, totalCoresAvailable, totalMemoryAvailable));
         }
 
-        Map<String, String> tabletServerConfig = resources.components.get(COMPONENT.ACCUMULO_TSERVER.name());
+        final Map<String, String> tabletServerConfig = resources.components.get(COMPONENT.ACCUMULO_TSERVER.name());
         tabletServerConfig.put(ResourceKeys.COMPONENT_INSTANCES, String.valueOf(availableResources.getNodeCount() * this.tserversPerNode));
         tabletServerConfig.put(ResourceKeys.YARN_CORES, String.valueOf(tserverCores));
         tabletServerConfig.put(ResourceKeys.YARN_MEMORY, String.valueOf(tserverMemory));
 
-        appConfig.global.put(componentToPropertyLookup.get(COMPONENT.ACCUMULO_TSERVER), String.valueOf(tserverMemory) + "m");
+        appConfig.global.put(ACCUMULO_COMPONENT_PROPERTY_LOOKUP.get(COMPONENT.ACCUMULO_TSERVER), String.valueOf(tserverHeapSize) + "m");
 
         return app;
     }
@@ -294,8 +315,8 @@ public class AppConfigGenerator implements Runnable {
      * @throws IOException Not enough resources available to be split across all the requested tablet servers
      */
     private SliderAppConfig generateSliderAppConfigForSingleNode(final SliderAppConfig app, final AvailableResources availableResources) throws IOException {
-        ConfTree appConfig = app.getAppConfig();
-        ConfTree resources = app.getResources();
+        final ConfTree appConfig = app.getAppConfig();
+        final ConfTree resources = app.getResources();
 
         int coresRemainingPerNode = Math.round((float) availableResources.getMaxCores() * ((float) this.clusterUsagePercent / 100f));
         int memoryRemainingPerNode = Math.round((float) availableResources.getMaxMemory() * ((float) this.clusterUsagePercent / 100f));
@@ -309,9 +330,9 @@ public class AppConfigGenerator implements Runnable {
         for (final String componentName : resources.components.keySet()) {
             if (!componentName.equals(COMPONENT.ACCUMULO_TSERVER.name())) {
                 Map<String, String> componentConfig = resources.components.get(componentName);
-                int instanceCount = Integer.parseInt(componentConfig.get(ResourceKeys.COMPONENT_INSTANCES));
-                int cores = Integer.parseInt(componentConfig.get(ResourceKeys.YARN_CORES));
-                int memory = Integer.parseInt(componentConfig.get(ResourceKeys.YARN_MEMORY));
+                final int instanceCount = Integer.parseInt(componentConfig.get(ResourceKeys.COMPONENT_INSTANCES));
+                final int cores = Integer.parseInt(componentConfig.get(ResourceKeys.YARN_CORES));
+                final int memory = Integer.parseInt(componentConfig.get(ResourceKeys.YARN_MEMORY));
 
                 coresRemainingPerNode -= cores * instanceCount;
                 memoryRemainingPerNode -= memory * instanceCount;
@@ -324,45 +345,52 @@ public class AppConfigGenerator implements Runnable {
 
         int tserverCores = coresRemainingPerNode / (this.tserversPerNode * availableResources.getNodeCount());
         int tserverMemory = memoryRemainingPerNode / (this.tserversPerNode * availableResources.getNodeCount());
+        int tserverHeapSize = (int) Math.floor((tserverMemory - this.getNativeMemoryMemoryRequirement(appConfig)) / this.heapSizeToContainerMemoryRatio);
 
-        if (tserverCores <= 0 || tserverMemory <= 0) {
+        if (tserverCores <= 0 || tserverMemory <= 0 || tserverHeapSize <= 0) {
             throw new IOException(String.format("Not enough available resources to deploy %s tablet servers per node, only cores: %s memory: %s available per node!", this.tserversPerNode, coresRemainingPerNode, memoryRemainingPerNode));
         }
 
-        Map<String, String> tabletServerConfig = resources.components.get(COMPONENT.ACCUMULO_TSERVER.name());
+        final Map<String, String> tabletServerConfig = resources.components.get(COMPONENT.ACCUMULO_TSERVER.name());
         tabletServerConfig.put(ResourceKeys.COMPONENT_INSTANCES, String.valueOf(availableResources.getNodeCount() * this.tserversPerNode));
         tabletServerConfig.put(ResourceKeys.YARN_CORES, String.valueOf(tserverCores));
         tabletServerConfig.put(ResourceKeys.YARN_MEMORY, String.valueOf(tserverMemory));
 
-        appConfig.global.put(componentToPropertyLookup.get(COMPONENT.ACCUMULO_TSERVER), String.valueOf(tserverMemory) + "m");
+        appConfig.global.put(ACCUMULO_COMPONENT_PROPERTY_LOOKUP.get(COMPONENT.ACCUMULO_TSERVER), String.valueOf(tserverHeapSize) + "m");
 
         return app;
     }
 
     public SliderAppConfig generateSliderAppConfig(final ConfTree appConfig, final AvailableResources availableResources) throws IOException {
-        ConfTree resources = new ConfTree();
+        final ConfTree resources = new ConfTree();
 
         // Generate baseline YARN resource config for each Accumulo component
         for (int i = 0; i < COMPONENT.values().length; i++) {
-            COMPONENT component = COMPONENT.values()[i];
+            final COMPONENT component = COMPONENT.values()[i];
 
-            Map<String, String> componentConfig = new HashMap<>();
+            final Map<String, String> componentConfig = new HashMap<>();
             componentConfig.put(ResourceKeys.COMPONENT_INSTANCES, "1");
             componentConfig.put(ResourceKeys.COMPONENT_PRIORITY, String.valueOf(component.ordinal() + 1));
             componentConfig.put(ResourceKeys.YARN_CORES, String.valueOf(this.componentCores));
 
             // Start with the default memory usage for each non-tablet server component
             int componentMemory = this.defaultComponentMemory;
+
             // Infer how much memory is required for the component based on what its heapsize is set to
-            String propertyName = componentToPropertyLookup.get(component);
+            final String propertyName = ACCUMULO_COMPONENT_PROPERTY_LOOKUP.get(component);
             if (appConfig.global.containsKey(propertyName)) {
-                String propertyValue = appConfig.global.get(propertyName);
-                componentMemory = this.convertHeapSizePropertyToNumBytes(propertyValue);
+                final String propertyValue = appConfig.global.get(propertyName);
+                componentMemory = (int) Math.ceil(this.convertPropertyToNumBytes(propertyValue) * this.heapSizeToContainerMemoryRatio);
             }
             componentConfig.put(ResourceKeys.YARN_MEMORY, String.valueOf(componentMemory));
 
             resources.components.put(component.name(), componentConfig);
         }
+
+        // Common Config
+        // Allow minc and majc to max out the CPU on a YARN node
+        appConfig.global.put(ACCUMULO_TSERVER_CONCURRENT_MINC_PROPERTY, String.valueOf(availableResources.getMaxCores()));
+        appConfig.global.put(ACCUMULO_TSERVER_CONCURRENT_MAJC_PROPERTY, String.valueOf(availableResources.getMaxCores()));
 
         // Two possible resource allocation schemes for Tablet Servers:
         if (this.singleNode) {
@@ -375,26 +403,26 @@ public class AppConfigGenerator implements Runnable {
     @Override
     public void run() {
         try {
-            ConfTreeSerDeser parser = new ConfTreeSerDeser();
+            final ConfTreeSerDeser parser = new ConfTreeSerDeser();
 
-            ConfTree initialAppConfig = parser.fromFile(new File(this.initialAppConfigPath));
+            final ConfTree initialAppConfig = parser.fromFile(new File(this.initialAppConfigPath));
             LOGGER.info("Initial appConfig.json:");
             LOGGER.info(initialAppConfig);
 
             AvailableResources availableClusterResources = null;
 
             availableClusterResources = this.getYarnResources();
-            LOGGER.info("Available Cluster Resources:" + System.currentTimeMillis());
+            LOGGER.info("Available Cluster Resources:");
             LOGGER.info(availableClusterResources);
 
             // We query twice because for some reason YARN on EMR lies about the max resources
             // available per node the first time round :S
             // TODO: Work out why this is the case!
             availableClusterResources = this.getYarnResources();
-            LOGGER.info("Available Cluster Resources:" + System.currentTimeMillis());
+            LOGGER.info("Available Cluster Resources:");
             LOGGER.info(availableClusterResources);
 
-            SliderAppConfig config = this.generateSliderAppConfig(initialAppConfig, availableClusterResources);
+            final SliderAppConfig config = this.generateSliderAppConfig(initialAppConfig, availableClusterResources);
             LOGGER.info("Generated appConfig.json:");
             LOGGER.info(config.getAppConfig());
             LOGGER.info("Generated resources.json:");
@@ -408,9 +436,9 @@ public class AppConfigGenerator implements Runnable {
     }
 
     public static void main(final String[] args) {
-        AppConfigGenerator generator = new AppConfigGenerator();
+        final AppConfigGenerator generator = new AppConfigGenerator();
 
-        JCommander argParser = new JCommander(generator, args);
+        final JCommander argParser = new JCommander(generator, args);
         argParser.setProgramName(AppConfigGenerator.class.getSimpleName());
 
         try {

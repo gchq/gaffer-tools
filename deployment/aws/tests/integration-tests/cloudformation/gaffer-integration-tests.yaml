@@ -99,7 +99,7 @@ Resources:
         KeyName: !Ref KeyName
         GafferInstanceName: "gaffer-test"
         UserName: "gaffer_test"
-        AccumuloVisibilities: "vis1,vis2,publicVisibility,privateVisibility"
+        AccumuloVisibilities: "vis1,vis2,publicVisibility,privateVisibility,public"
 
   ###########################################
   ## EMR step script to run integration tests

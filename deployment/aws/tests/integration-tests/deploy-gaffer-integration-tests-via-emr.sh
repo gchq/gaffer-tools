@@ -40,7 +40,7 @@ CLUSTER_NAME="gaffer-tests-$GAFFER_VERSION"
 GAFFER_GRAPH_ID="gaffer"
 GAFFER_USERNAME="gaffer_user"
 GAFFER_PASSWORD="gaffer_passwd"
-ACCUMULO_VISIBILITIES="vis1,vis2,publicVisibility,privateVisibility"
+ACCUMULO_VISIBILITIES="vis1,vis2,publicVisibility,privateVisibility,public"
 
 # ----- CONFIG END ----- #
 

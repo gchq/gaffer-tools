@@ -2,9 +2,9 @@
 
 set -e
 
-repoName="Gaffer"
-repoId="Gaffer"
-artifactId="gaffer2"
+repoName="Gaffer Tools"
+repoId="gaffer-tools"
+artifactId="gaffer-tools"
 
 if [ "$RELEASE" == 'true' ] && [ "$TRAVIS_BRANCH" == 'master' ] && [ "$TRAVIS_PULL_REQUEST" == 'false' ]; then
     git checkout master
@@ -31,6 +31,10 @@ if [ "$RELEASE" == 'true' ] && [ "$TRAVIS_BRANCH" == 'master' ] && [ "$TRAVIS_PU
         git config --global credential.helper "store --file=.git/credentials"
         echo "https://${GITHUB_TOKEN}:@github.com" > .git/credentials
 
+        # Add develop and gh-pages branches
+        git remote set-branches --add origin develop gh-pages
+        git pull
+
         echo ""
         echo "--------------------------------------"
         echo "Tagging version $RELEASE_VERSION"
@@ -47,17 +51,12 @@ if [ "$RELEASE" == 'true' ] && [ "$TRAVIS_BRANCH" == 'master' ] && [ "$TRAVIS_PU
         echo "--------------------------------------"
         mvn -q clean install -Pquick -Dskip.jar-with-dependencies=true -Dshaded.jar.phase=true
         mvn -q javadoc:javadoc -Pquick
-        rm -rf .git/tmp-javadoc
-        mv target/site/apidocs .git/tmp-javadoc
-        git clean -fd
-        git reset --hard
         git checkout gh-pages
-        git clean -fd
-        git reset --hard
         rm -rf uk
-        mv .git/tmp-javadoc/* .
+        mv target/site/apidocs/* .
         git commit -a -m "Updated javadoc - $RELEASE_VERSION"
         git push
+        git checkout master
 
         echo ""
         echo "--------------------------------------"
@@ -93,9 +92,11 @@ if [ "$RELEASE" == 'true' ] && [ "$TRAVIS_BRANCH" == 'master' ] && [ "$TRAVIS_PU
         gpg --fast-import cd/codesigning.asc
 
         if [ "$MODULES" == '' ]; then
-            mvn -q deploy -P sign,build-extras,quick --settings cd/mvnsettings.xml -B
+            echo "Running command: mvn -q deploy -P sign,build-extras,quick --settings cd/mvnsettings.xml -B"
+            mvn deploy -P sign,build-extras,quick --settings cd/mvnsettings.xml -B
         else
-            mvn -q deploy -P sign,build-extras,quick --settings cd/mvnsettings.xml -B -pl $MODULES
+            echo "Running command: mvn -q deploy -P sign,build-extras,quick --settings cd/mvnsettings.xml -B -pl $MODULES"
+            mvn deploy -P sign,build-extras,quick --settings cd/mvnsettings.xml -B -pl $MODULES
         fi
     fi
 fi
