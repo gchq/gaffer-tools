@@ -72,13 +72,19 @@ Parameters:
     MinLength: 1
     Description: The public DNS address of the EMR master node that is hosting the Gaffer instance the web server should connect to
 
-  GafferSchemaJarUrl:
+  GafferSchemaJarS3Url:
     Type: String
-    Default: https://repo1.maven.org/maven2/uk/gov/gchq/gaffer/basic-model/0.7.8/basic-model-0.7.8.jar
-    MinLength: 1
-    Description: A URL that can be used to download a JAR which contains the schema for your Gaffer graph i.e. json files in a 'schema' directory
-    AllowedPattern: "https?://\\S+\\.jar"
-    ConstraintDescription: Please make sure this is a http / https URL
+    Default: ""
+    Description: "S3 URL that can be used to download a JAR which contains the schema for your Gaffer graph i.e. json files in a 'schema' directory. Should be specified as: <bucketName>/<pathToJar>/<jarName>.jar"
+    AllowedPattern: "|(\\S+\\.jar)"
+    ConstraintDescription: "Please specify this as <bucketName>/<pathToJar>/<jarName>.jar"
+
+  GafferSchemaJarHttpUrl:
+    Type: String
+    Default: ""
+    Description: HTTP(S) URL that can be used to download a JAR which contains the schema for your Gaffer graph i.e. json files in a 'schema' directory
+    AllowedPattern: "|(https?://\\S+\\.jar)"
+    ConstraintDescription: Please make sure this is a http(s) URL
 
 Metadata:
   AWS::CloudFormation::Interface:
@@ -107,7 +113,8 @@ Metadata:
       - Label:
           default: Gaffer Graph Config
         Parameters:
-          - GafferSchemaJarUrl
+          - GafferSchemaJarS3Url
+          - GafferSchemaJarHttpUrl
 
 Mappings:
 
@@ -170,10 +177,16 @@ Mappings:
     sa-east-1:
       64ebs: ami-87dab1eb
 
+Conditions:
+
+    SchemaStoredInS3: !Not [!Equals [!Ref GafferSchemaJarS3Url, ""]]
+
 Resources:
 
   WebServer:
     Type: AWS::EC2::Instance
+    # We really need the following line, but CloudFormation doesn't currently support it :(
+    #DependsOn: !If [SchemaStoredInS3, "WebServerS3SchemaAccessPolicy", !Ref "AWS::NoValue"]
     Properties:
       ImageId: !FindInMap [InstanceAmi, Ref: "AWS::Region", 64ebs]
       InstanceType: !Ref InstanceType
@@ -316,7 +329,18 @@ Resources:
 
             # Copy graph schema into $GAFFER_CONF_DIR/schemas/
             cd /tmp
-            curl -fL -o schema.jar ${GafferSchemaJarUrl}
+
+            if [ "${GafferSchemaJarS3Url}" != "" ]; then
+              aws s3 cp "s3://${GafferSchemaJarS3Url}" schema.jar
+            elif [ "${GafferSchemaJarHttpUrl}" != "" ]; then
+              curl -fL -o schema.jar ${GafferSchemaJarHttpUrl}
+            fi
+
+            if [ ! -f schema.jar ]; then
+              echo "Unable to retrieve schema jar!"
+              exit 3
+            fi
+
             jar -xf schema.jar schema/
             mv schema/*.json $GAFFER_CONF_DIR/schemas/
 
@@ -357,6 +381,21 @@ Resources:
                 Resource: !Join ["", ["arn:aws:ssm:", Ref: "AWS::Region", ":", Ref: "AWS::AccountId", ":parameter/", Ref: PasswordParameter]]
                 Action:
                   - ssm:GetParameters
+
+  WebServerS3SchemaAccessPolicy:
+    Condition: SchemaStoredInS3
+    Type: AWS::IAM::Policy
+    Properties:
+      Roles:
+        - !Ref WebServerRole
+      PolicyName: !Join ["-", [Ref: "AWS::StackName", "schema-access"]]
+      PolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Resource: !Join ["", ["arn:aws:s3:::", Ref: GafferSchemaJarS3Url]]
+            Action:
+              - s3:GetObject
 
   WebServerReadyCondition:
     Type: AWS::CloudFormation::WaitCondition

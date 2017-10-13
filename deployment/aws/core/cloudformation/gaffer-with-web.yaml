@@ -102,13 +102,19 @@ Parameters:
     MinLength: 1
     Description: Specify the type of instance to be used to deploy the Gaffer REST API and Web UI
 
-  GafferSchemaJarUrl:
+  GafferSchemaJarS3Url:
     Type: String
-    Default: https://repo1.maven.org/maven2/uk/gov/gchq/gaffer/road-traffic-model/0.7.8/road-traffic-model-0.7.8.jar
-    MinLength: 1
-    Description: A URL that can be used to download a JAR which contains the schema for your Gaffer graph i.e. json files in a 'schema' directory
-    AllowedPattern: "https?://\\S+\\.jar"
-    ConstraintDescription: Please make sure this is a http / https URL
+    Default: ""
+    Description: "S3 URL that can be used to download a JAR which contains the schema for your Gaffer graph i.e. json files in a 'schema' directory. Should be specified as: <bucketName>/<pathToJar>/<jarName>.jar"
+    AllowedPattern: "|(\\S+\\.jar)"
+    ConstraintDescription: "Please specify this as <bucketName>/<pathToJar>/<jarName>.jar"
+
+  GafferSchemaJarHttpUrl:
+    Type: String
+    Default: ""
+    Description: HTTP(S) URL that can be used to download a JAR which contains the schema for your Gaffer graph i.e. json files in a 'schema' directory
+    AllowedPattern: "|(https?://\\S+\\.jar)"
+    ConstraintDescription: Please make sure this is a http(s) URL
 
 Metadata:
   AWS::CloudFormation::Interface:
@@ -127,7 +133,8 @@ Metadata:
           - GraphId
           - UserName
           - AccumuloVisibilities
-          - GafferSchemaJarUrl
+          - GafferSchemaJarS3Url
+          - GafferSchemaJarHttpUrl
       - Label:
           default: Infrastructure Config
         Parameters:
@@ -179,7 +186,8 @@ Resources:
         UserName: !Sub ${GafferWithUser.Outputs.UserName}
         PasswordParameter: !Sub ${GafferWithUser.Outputs.PasswordParameter}
         EncryptionKey: !Sub ${GafferWithUser.Outputs.PasswordEncryptionKey}
-        GafferSchemaJarUrl: !Ref GafferSchemaJarUrl
+        GafferSchemaJarS3Url: !Ref GafferSchemaJarS3Url
+        GafferSchemaJarHttpUrl: !Ref GafferSchemaJarHttpUrl
 
   WebServerAccessToGafferSecurityGroup:
     Type: AWS::EC2::SecurityGroup
