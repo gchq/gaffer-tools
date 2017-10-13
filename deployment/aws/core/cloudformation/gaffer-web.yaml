@@ -377,3 +377,5 @@ Outputs:
     Value: !Join ["", [ "http://", !GetAtt WebServer.PublicDnsName, "/rest" ]]
   WebUi:
     Value: !Join ["", [ "http://", !GetAtt WebServer.PublicDnsName, "/ui" ]]
+  IamRoleName:
+    Value: !Ref WebServerRole
