@@ -25,36 +25,41 @@ import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
+import static uk.gov.gchq.gaffer.slider.util.AppConfigGenerator.ACCUMULO_COMPONENT_PROPERTY_LOOKUP;
+import static uk.gov.gchq.gaffer.slider.util.AppConfigGenerator.COMPONENT;
 
 public class AppConfigGeneratorTest {
 
 	@Test
 	public void testSingleNodeConfigGeneration() throws IOException {
 		// 3 nodes of 12 cores and 32GB mem each
-		AppConfigGenerator.AvailableResources resources = new AppConfigGenerator.AvailableResources(12, 32 * 1024, 3);
+		final AppConfigGenerator.AvailableResources resources = new AppConfigGenerator.AvailableResources(12, 32 * 1024, 3);
 
-		AppConfigGenerator appConfigGenerator = new AppConfigGenerator();
+		final AppConfigGenerator appConfigGenerator = new AppConfigGenerator();
 		appConfigGenerator.setSingleNode(true);
 		appConfigGenerator.setClusterUsagePercent(100);
-		AppConfigGenerator.SliderAppConfig newConfig = appConfigGenerator.generateSliderAppConfig(new ConfTree(), resources);
+		final AppConfigGenerator.SliderAppConfig newConfig = appConfigGenerator.generateSliderAppConfig(new ConfTree(), resources);
 
 		// Slider AM uses 1 core + 256MB mem
 		// Non-tablet server Accumulo components (5) use 1 core + 1GB mem each = 5 cores + 5GB mem
 		// Leaving 6 cores + 26.75GB mem for the 3 tablet server instances
 
-		Map<String, String> tserverConfig = newConfig.getResources().components.get(AppConfigGenerator.COMPONENT.ACCUMULO_TSERVER.name());
+		final Map<String, String> tserverConfig = newConfig.getResources().components.get(AppConfigGenerator.COMPONENT.ACCUMULO_TSERVER.name());
 		assertEquals("Number of instances", "3", tserverConfig.get(ResourceKeys.COMPONENT_INSTANCES));
 		assertEquals("Number of cores", "2", tserverConfig.get(ResourceKeys.YARN_CORES));
 		assertEquals("Memory amount", "9130", tserverConfig.get(ResourceKeys.YARN_MEMORY));
+
+		final String tserverHeapSize = newConfig.getAppConfig().global.get(ACCUMULO_COMPONENT_PROPERTY_LOOKUP.get(COMPONENT.ACCUMULO_TSERVER));
+		assertEquals("Heap Size", "7023m", tserverHeapSize);
 	}
 
 	@Test
 	public void testMultiNodeConfigGeneration() throws IOException {
 		// 3 nodes of 8 cores and 32GB mem each
-		AppConfigGenerator.AvailableResources resources = new AppConfigGenerator.AvailableResources(8, 32 * 1024, 3);
+		final AppConfigGenerator.AvailableResources resources = new AppConfigGenerator.AvailableResources(8, 32 * 1024, 3);
 
-		AppConfigGenerator appConfigGenerator = new AppConfigGenerator();
-		AppConfigGenerator.SliderAppConfig newConfig = appConfigGenerator.generateSliderAppConfig(new ConfTree(), resources);
+		final AppConfigGenerator appConfigGenerator = new AppConfigGenerator();
+		final AppConfigGenerator.SliderAppConfig newConfig = appConfigGenerator.generateSliderAppConfig(new ConfTree(), resources);
 
 		// Total resource availability = 24 cores + 96GB mem
 		// Using 85% of cluster availability = 20 cores + 81.6GB mem
@@ -62,18 +67,21 @@ public class AppConfigGeneratorTest {
 		// Non-tablet server Accumulo components (5) use 1 core + 1GB mem each = 5 cores + 5GB mem
 		// Leaving 14 cores + 76.3GB mem for the 3 tablet server instances
 
-		Map<String, String> tserverConfig = newConfig.getResources().components.get(AppConfigGenerator.COMPONENT.ACCUMULO_TSERVER.name());
+		final Map<String, String> tserverConfig = newConfig.getResources().components.get(AppConfigGenerator.COMPONENT.ACCUMULO_TSERVER.name());
 		assertEquals("Number of instances", "3", tserverConfig.get(ResourceKeys.COMPONENT_INSTANCES));
 		assertEquals("Number of cores", "4", tserverConfig.get(ResourceKeys.YARN_CORES));
 		assertEquals("Memory amount", "26060", tserverConfig.get(ResourceKeys.YARN_MEMORY));
+
+		final String tserverHeapSize = newConfig.getAppConfig().global.get(ACCUMULO_COMPONENT_PROPERTY_LOOKUP.get(COMPONENT.ACCUMULO_TSERVER));
+		assertEquals("Heap Size", "20046m", tserverHeapSize);
 	}
 
 	@Test
 	public void testNoCoresAvailable() {
 		// 3 nodes of 6 cores and 32GB mem each
-		AppConfigGenerator.AvailableResources resources = new AppConfigGenerator.AvailableResources(6, 32 * 1024, 3);
+		final AppConfigGenerator.AvailableResources resources = new AppConfigGenerator.AvailableResources(6, 32 * 1024, 3);
 
-		AppConfigGenerator appConfigGenerator = new AppConfigGenerator();
+		final AppConfigGenerator appConfigGenerator = new AppConfigGenerator();
 		appConfigGenerator.setSingleNode(true);
 		appConfigGenerator.setClusterUsagePercent(100);
 
@@ -92,9 +100,9 @@ public class AppConfigGeneratorTest {
 
 	@Test
 	public void testNotEnoughCoresAvailable() {
-		AppConfigGenerator.AvailableResources resources = new AppConfigGenerator.AvailableResources(8, 32 * 1024, 3);
+		final AppConfigGenerator.AvailableResources resources = new AppConfigGenerator.AvailableResources(8, 32 * 1024, 3);
 
-		AppConfigGenerator appConfigGenerator = new AppConfigGenerator();
+		final AppConfigGenerator appConfigGenerator = new AppConfigGenerator();
 		appConfigGenerator.setSingleNode(true);
 		appConfigGenerator.setClusterUsagePercent(100);
 
@@ -112,9 +120,9 @@ public class AppConfigGeneratorTest {
 
 	@Test
 	public void testNoMemoryAvailable() {
-		AppConfigGenerator.AvailableResources resources = new AppConfigGenerator.AvailableResources(40, 5 * 1024, 3);
+		final AppConfigGenerator.AvailableResources resources = new AppConfigGenerator.AvailableResources(40, 5 * 1024, 3);
 
-		AppConfigGenerator appConfigGenerator = new AppConfigGenerator();
+		final AppConfigGenerator appConfigGenerator = new AppConfigGenerator();
 		appConfigGenerator.setSingleNode(true);
 		appConfigGenerator.setClusterUsagePercent(100);
 
@@ -132,9 +140,9 @@ public class AppConfigGeneratorTest {
 
 	@Test
 	public void testNotEnoughMemoryAvailable() {
-		AppConfigGenerator.AvailableResources resources = new AppConfigGenerator.AvailableResources(40, (5 * 1024) + 257, 3);
+		final AppConfigGenerator.AvailableResources resources = new AppConfigGenerator.AvailableResources(40, (5 * 1024) + 257, 3);
 
-		AppConfigGenerator appConfigGenerator = new AppConfigGenerator();
+		final AppConfigGenerator appConfigGenerator = new AppConfigGenerator();
 		appConfigGenerator.setSingleNode(true);
 		appConfigGenerator.setClusterUsagePercent(100);
 

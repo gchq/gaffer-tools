@@ -72,7 +72,7 @@ fi
 function install_dev_tools {
 	# Install git
 	if ! which git >/dev/null 2>&1; then
-		yum install -y git
+		sudo yum install -y git
 	fi
 
 	# Install Apache Maven
