@@ -43,7 +43,8 @@ angular.module('app').factory('functions', ['$http', 'schema', 'config', 'common
                 onSuccess(response.data)
             },
             function(err) {
-                console.error('ERROR: error loading functions for group: ' + group + ', property: ' + property + '.\n' + err)
+                alert('Error loading functions for group: ' + group + ', property: ' + property + '.\n' + err);
+                console.log(err)
         });
     }
 
@@ -55,7 +56,8 @@ angular.module('app').factory('functions', ['$http', 'schema', 'config', 'common
                 onSuccess(response.data)
             },
             function(err) {
-                console.error('ERROR: Failed to get serialised fields for ' + functionClassName + '.\n' + err)
+                alert('Failed to get serialised fields for ' + functionClassName + '.\n' + err)
+                console.log(err);
         });
     }
 

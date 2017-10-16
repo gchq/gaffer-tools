@@ -47,7 +47,8 @@ angular.module('app').factory('schema', ['$http', 'config', '$q', 'common', func
                 defer.notify(schema)
             },
             function(err) {
-                console.log("Unable to load schema: " + err.statusCode + " - " + err.status)
+                alert("Unable to load schema: " + err.statusCode + " - " + err.status);
+                console.log(err);
         });
     }
 
