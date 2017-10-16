@@ -1,3 +1,19 @@
+/*
+ * Copyright 2017 Crown Copyright
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 'use strict'
 
 angular.module('app').component('raw', raw())
@@ -11,7 +27,7 @@ function raw() {
     }
 }
 
-function RawController($scope, operationService, results, query) {
+function RawController($scope, operationService, results, query, $mdToast) {
     var vm = this
 
     // variables
@@ -53,7 +69,11 @@ function RawController($scope, operationService, results, query) {
                     query.addOperation(JSON.parse(vm.operationsForEdit[i]));
                 }
             } catch(e) {
-                console.error('Invalid json: ' + vm.operationsForEdit[i]);
+                $mdToast.show($mdToast.simple()
+                    .textContent('Invalid json for operation ' + (+i + 1))
+                    .position('bottom right'))
+                console.log('Invalid json: ' + vm.operationsForEdit[i]);
+                return;
             }
         }
         vm.editingOperations = false;

@@ -1,8 +1,24 @@
+/*
+ * Copyright 2017 Crown Copyright
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 'use strict'
 
 angular.module('app').factory('functions', ['$http', 'schema', 'config', 'common', function($http, schemaService, config, common) {
 
-    var functions = {}
+    var functions = {};
 
 
     functions.getFunctions = function(group, property, onSuccess) {
@@ -20,7 +36,7 @@ angular.module('app').factory('functions', ['$http', 'schema', 'config', 'common
           className = schema.types[type].class;
         }
 
-        var queryUrl = common.parseUrl(config.get().restEndpoint + "/graph/config/filterFunctions/" + className)
+        var queryUrl = common.parseUrl(config.get().restEndpoint + "/graph/config/filterFunctions/" + className);
 
         $http.get(queryUrl)
             .then(function(response) {
@@ -28,19 +44,19 @@ angular.module('app').factory('functions', ['$http', 'schema', 'config', 'common
             },
             function(err) {
                 console.error('ERROR: error loading functions for group: ' + group + ', property: ' + property + '.\n' + err)
-        })
+        });
     }
 
     functions.getFunctionParameters = function(functionClassName, onSuccess) {
         var queryUrl = common.parseUrl(config.get().restEndpoint + "/graph/config/serialisedFields/" + functionClassName);
 
         $http.get(queryUrl)
-        .then(function(response) {
-            onSuccess(response.data)
-        },
-        function(err) {
-            console.error('ERROR: Failed to get serialised fields for ' + functionClassName + '.\n' + err)
-        })
+            .then(function(response) {
+                onSuccess(response.data)
+            },
+            function(err) {
+                console.error('ERROR: Failed to get serialised fields for ' + functionClassName + '.\n' + err)
+        });
     }
 
     return functions;

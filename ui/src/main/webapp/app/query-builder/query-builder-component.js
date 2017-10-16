@@ -1,6 +1,22 @@
+/*
+ * Copyright 2017 Crown Copyright
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 'use strict'
 
-angular.module('app').component('queryBuilder', queryBuilder())
+angular.module('app').component('queryBuilder', queryBuilder());
 
 function queryBuilder() {
 
@@ -8,41 +24,41 @@ function queryBuilder() {
         templateUrl: 'app/query-builder/query-builder.html',
         controller: QueryBuilderController,
         controllerAs: 'ctrl'
-    }
+    };
 }
 
 function QueryBuilderController($scope, operationService, types, graph, config, settings, query, functions, schema, common, $window, $mdDialog) {
 
-    var vm = this
+    var vm = this;
 
     // variables
 
-    vm.relatedEntities = graph.getRelatedEntities()
-    vm.relatedEdges = graph.getRelatedEdges()
-    vm.expandEntities = []
-    vm.expandEdges = []
-    vm.expandEntitiesContent = {}
-    vm.expandEdgesContent = {}
-    vm.selectedEntities = graph.getSelectedEntities()
-    vm.selectedEdges = graph.getSelectedEdges()
-    vm.inOutFlag = "EITHER"
-    vm.step = 0
-    vm.availableOperations = operationService.getAvailableOperations()
+    vm.relatedEntities = graph.getRelatedEntities();
+    vm.relatedEdges = graph.getRelatedEdges();
+    vm.expandEntities = [];
+    vm.expandEdges = [];
+    vm.expandEntitiesContent = {};
+    vm.expandEdgesContent = {};
+    vm.selectedEntities = graph.getSelectedEntities();
+    vm.selectedEdges = graph.getSelectedEdges();
+    vm.inOutFlag = "EITHER";
+    vm.step = 0;
+    vm.availableOperations = operationService.getAvailableOperations();
     vm.selectedOp = vm.availableOperations[0] // TODO should this be the default operation in the settings?
 
     // watches
 
     graph.onSelectedElementsUpdate(function(selectedElements) {
-        vm.selectedEntities = selectedElements['entities']
-        vm.selectedEdges = selectedElements['edges']
+        vm.selectedEntities = selectedElements['entities'];
+        vm.selectedEdges = selectedElements['edges'];
     })
 
     graph.onRelatedEntitiesUpdate(function(relatedEntities) {
-        vm.relatedEntities = relatedEntities
+        vm.relatedEntities = relatedEntities;
     })
 
     graph.onRelatedEdgesUpdate(function(relatedEdges) {
-        vm.relatedEdges = relatedEdges
+        vm.relatedEdges = relatedEdges;
     })
 
 
@@ -75,45 +91,45 @@ function QueryBuilderController($scope, operationService, types, graph, config, 
     }
 
     vm.getFields = function(clazz) {
-        return types.getType(clazz).fields
+        return types.getType(clazz).fields;
     }
 
     vm.selectAllSeeds = function() {
-        graph.selectAllNodes()
+        graph.selectAllNodes();
     }
 
-    vm.getEntityProperties = schema.getEntityProperties
-    vm.getEdgeProperties = schema.getEdgeProperties
-    vm.exists = common.arrayContainsValue
+    vm.getEntityProperties = schema.getEntityProperties;
+    vm.getEdgeProperties = schema.getEdgeProperties;
+    vm.exists = common.arrayContainsValue;
 
     vm.cancel = function() {
-        resetQueryBuilder()
-        $mdDialog.cancel()
+        resetQueryBuilder();
+        $mdDialog.cancel();
     }
 
     vm.toggle = function(item, list) {
-        var idx = list.indexOf(item)
+        var idx = list.indexOf(item);
         if(idx > -1) {
-            list.splice(idx, 1)
+            list.splice(idx, 1);
         } else {
-            list.push(item)
+            list.push(item);
         }
     }
 
 
     vm.onSelectedPropertyChange = function(group, selectedElement) {
         functions.getFunctions(group, selectedElement.property, function(data) {
-            selectedElement.availableFunctions = data
+            selectedElement.availableFunctions = data;
         });
         selectedElement.predicate = '';
     }
 
     vm.onSelectedFunctionChange = function(group, selectedElement) {
         functions.getFunctionParameters(selectedElement.predicate, function(data) {
-            selectedElement.availableFunctionParameters = data
+            selectedElement.availableFunctionParameters = data;
         });
 
-        var gafferSchema = schema.get()
+        var gafferSchema = schema.get();
 
         var elementDef = gafferSchema.entities[group];
         if(!elementDef) {
@@ -140,15 +156,15 @@ function QueryBuilderController($scope, operationService, types, graph, config, 
 
         if (isPreAggregation) {
             if (!expandElementContent[element].filters.preAggregation) {
-                expandElementContent[element].filters.preAggregation = []
+                expandElementContent[element].filters.preAggregation = [];
             }
-            expandElementContent[element].filters.preAggregation.push({})
+            expandElementContent[element].filters.preAggregation.push({});
 
         } else {
             if (!expandElementContent[element].filters.postAggregation) {
-                expandElementContent[element].filters.postAggregation = []
+                expandElementContent[element].filters.postAggregation = [];
             }
-            expandElementContent[element].filters.postAggregation.push({})
+            expandElementContent[element].filters.postAggregation.push({});
         }
 
     }
@@ -168,7 +184,7 @@ function QueryBuilderController($scope, operationService, types, graph, config, 
             vm.expandQueryCounts = {
                 count: data,
                 limitHit: (data == settings.getResultLimit())
-            }
+            };
         }
         vm.expandQueryCounts = undefined;
         query.execute(JSON.stringify(operations), onSuccess);
@@ -192,7 +208,7 @@ function QueryBuilderController($scope, operationService, types, graph, config, 
     }
 
     var generateFilterFunctions = function(filters) {
-        var filterFunctions = []
+        var filterFunctions = [];
 
         for(var index in filters) {
             var filter = filters[index];
@@ -215,19 +231,19 @@ function QueryBuilderController($scope, operationService, types, graph, config, 
                         functionJson["predicate"][filter.availableFunctionParameters[i]] = param;
                     }
                 }
-                filterFunctions.push(functionJson)
+                filterFunctions.push(functionJson);
             }
         }
 
-        return filterFunctions
+        return filterFunctions;
 
     }
 
     var convertFilterFunctions = function(expandElementContent) {
         var filterFunctions = { preAggregation: [], postAggregation: [] };
         if(expandElementContent && expandElementContent.filters) {
-            filterFunctions.preAggregation = generateFilterFunctions(expandElementContent.filters.preAggregation)
-            filterFunctions.postAggregation = generateFilterFunctions(expandElementContent.filters.postAggregation)
+            filterFunctions.preAggregation = generateFilterFunctions(expandElementContent.filters.preAggregation);
+            filterFunctions.postAggregation = generateFilterFunctions(expandElementContent.filters.postAggregation);
         }
         return filterFunctions;
     }
@@ -291,10 +307,10 @@ function QueryBuilderController($scope, operationService, types, graph, config, 
 
                 var filterFunctions = convertFilterFunctions(vm.expandEdgesContent[edge]);
                 if(filterFunctions.preAggregation.length > 0) {
-                    op.view.entities[entity].preAggregationFilterFunctions = filterFunctions.preAggregation;
+                    op.view.edges[edge].preAggregationFilterFunctions = filterFunctions.preAggregation;
                 }
                 if(filterFunctions.postAggregation.length > 0) {
-                    op.view.entities[entity].postAggregationFilterFunctions = filterFunctions.postAggregation;
+                    op.view.edges[edge].postAggregationFilterFunctions = filterFunctions.postAggregation;
                 }
             }
         }

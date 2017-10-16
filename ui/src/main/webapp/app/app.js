@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Crown Copyright
+ * Copyright 2017 Crown Copyright
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,4 +14,4 @@
  * limitations under the License.
  */
 
-angular.module('app', ['ngMaterial', 'ngRoute'])
+angular.module('app', ['ngMaterial', 'ngRoute']);

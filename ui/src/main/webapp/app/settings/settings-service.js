@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2017 Crown Copyright
+ * Copyright 2017 Crown Copyright
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,26 +17,26 @@
 'use strict'
 
 angular.module('app').factory('settings', function() {
-    var settings = {}
+    var settings = {};
 
-    var resultLimit = 100
-    var defaultOp = "uk.gov.gchq.gaffer.operation.impl.get.GetElements"
+    var resultLimit = 100;
+    var defaultOp = "uk.gov.gchq.gaffer.operation.impl.get.GetElements";
 
     settings.getResultLimit = function() {
-        return resultLimit
+        return resultLimit;
     }
 
     settings.setResultLimit = function(limit) {
-        resultLimit = limit
+        resultLimit = limit;
     }
 
     settings.getDefaultOp = function() {
-        return defaultOp
+        return defaultOp;
     }
 
     settings.setDefaultOp = function(op) {
-        defaultOp = op
+        defaultOp = op;
     }
 
-    return settings
-})
+    return settings;
+});

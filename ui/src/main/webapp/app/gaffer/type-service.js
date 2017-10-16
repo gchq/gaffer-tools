@@ -1,8 +1,24 @@
+/*
+ * Copyright 2017 Crown Copyright
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 'use strict'
 
 angular.module('app').factory('types', ['config', function(config) {
 
-    var types = {}
+    var types = {};
 
     var defaultShortValue = function(value) {
         return JSON.stringify(value);
@@ -22,7 +38,7 @@ angular.module('app').factory('types', ['config', function(config) {
 
 
     types.getType = function(typeClass) {
-        var types = config.get().types
+        var types = config.get().types;
         var type = types[typeClass];
         if(!type) {
             type = unknownTypeDefault;
@@ -40,9 +56,13 @@ angular.module('app').factory('types', ['config', function(config) {
 
 
         type.createValueAsJsonWrapperObj = function(typeClass, parts, stringify) {
+            var value = {};
             if(type.wrapInJson || Object.keys(parts).length > 1) {
-                var value = {};
-                value[typeClass] = parts;
+                if (Object.keys(parts).length === 1 && Object.keys(parts).indexOf('undefined') !== -1) {
+                    value[typeClass] = parts['undefined'];
+                } else {
+                    value[typeClass] = parts;
+                }
                 if(stringify) {
                     value = JSON.stringify(value);
                 }
@@ -77,7 +97,12 @@ angular.module('app').factory('types', ['config', function(config) {
 
             var typeClass = Object.keys(value)[0]
             var parts = value[typeClass];
-            return Object.keys(parts).map(function(key){return parts[key]}).join("|");
+
+            if (Object.keys(parts).length > 0) {
+                return Object.keys(parts).map(function(key){return parts[key]}).join("|");
+            }
+
+            return value[typeClass];
         }
 
 
@@ -101,6 +126,6 @@ angular.module('app').factory('types', ['config', function(config) {
         return type;
     }
 
-    return types
+    return types;
 
-}])
+}]);
