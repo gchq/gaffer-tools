@@ -107,7 +107,8 @@ angular.module('app').factory('operationService', ['$http', 'settings', 'config'
             onUnsupported();
         })
         .error(function(err) {
-            console.log("Error: " + err.statusCode + " - "  + err.status);
+            console.log(err);
+            alert("Error running /graph/operations: " + err.statusCode + " - "  + err.status)
             onUnsupported();
         });
     }
