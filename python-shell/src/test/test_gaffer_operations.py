@@ -3903,6 +3903,75 @@ class GafferOperationsTest(unittest.TestCase):
                     )
                 ]
             )
+        ],
+        [
+            '''
+            {
+                "class" : "uk.gov.gchq.gaffer.operation.impl.ScoreOperationChain",
+                "operationChain" : {
+                    "class" : "uk.gov.gchq.gaffer.operation.OperationChain",
+                    "operations" : [ {
+                        "class" : "uk.gov.gchq.gaffer.operation.impl.get.GetElements"
+                    }, {
+                        "class" : "uk.gov.gchq.gaffer.named.operation.NamedOperation",
+                        "operationName" : "namedOp"
+                    }, {
+                        "class" : "uk.gov.gchq.gaffer.operation.impl.Limit",
+                        "resultLimit" : 3,
+                        "truncate" : true
+                    } ]
+                }
+            }
+            ''',
+            g.ScoreOperationChain(
+                operation_chain=g.OperationChain(
+                    operations=[
+                        g.GetElements(),
+                        g.NamedOperation(
+                            operation_name='namedOp'
+                        ),
+                        g.Limit(
+                            truncate=True,
+                            result_limit=3
+                        )
+                    ]
+                )
+            )
+        ],
+        [
+            '''
+            {
+                "class" : "uk.gov.gchq.gaffer.operation.impl.ScoreOperationChain",
+                "operationChain" : {
+                    "class" : "uk.gov.gchq.gaffer.operation.OperationChain",
+                    "operations" : [ {
+                        "class" : "uk.gov.gchq.gaffer.operation.impl.get.GetElements"
+                    }, {
+                        "class" : "uk.gov.gchq.gaffer.named.operation.NamedOperation",
+                        "operationName" : "namedOp"
+                    }, {
+                        "class" : "uk.gov.gchq.gaffer.operation.impl.Limit",
+                        "resultLimit" : 3,
+                        "truncate" : true
+                    } ]
+                }
+            }
+            ''',
+            g.ScoreOperationChain(
+                operation_chain={
+                    "class": "uk.gov.gchq.gaffer.operation.OperationChain",
+                    "operations": [{
+                        "class": "uk.gov.gchq.gaffer.operation.impl.get.GetElements"
+                    }, {
+                        "class": "uk.gov.gchq.gaffer.named.operation.NamedOperation",
+                        "operationName": "namedOp"
+                    }, {
+                        "class": "uk.gov.gchq.gaffer.operation.impl.Limit",
+                        "resultLimit": 3,
+                        "truncate": True
+                    }]
+                }
+            )
         ]
     ]
 
