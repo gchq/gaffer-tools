@@ -4,19 +4,19 @@
 
 angular.module('app').factory('operationService', ['$http', 'settings', 'config', 'query', 'types', 'common', function($http, settings, config, query, types, common) {
 
-    var operationService = {}
+    var operationService = {};
 
-    var availableOperations = []
-    var namedOpClass = "uk.gov.gchq.gaffer.named.operation.NamedOperation"
+    var availableOperations = [];
+    var namedOpClass = "uk.gov.gchq.gaffer.named.operation.NamedOperation";
 
     operationService.getAvailableOperations = function() {
-        return availableOperations
+        return availableOperations;
     }
 
     var opAllowed = function(opName) {
         var allowed = true;
-        var whiteList = config.get().operations.whiteList
-        var blackList = config.get().operations.blackList
+        var whiteList = config.get().operations.whiteList;
+        var blackList = config.get().operations.blackList;
 
         if(whiteList) {
             allowed = whiteList.indexOf(opName) > -1;
@@ -29,10 +29,10 @@ angular.module('app').factory('operationService', ['$http', 'settings', 'config'
 
     var updateNamedOperations = function(results) {
         availableOperations = [];
-        var defaults = config.get().operations.defaultAvailable
+        var defaults = config.get().operations.defaultAvailable;
         for(var i in defaults) {
             if(opAllowed(defaults[i].name)) {
-                availableOperations.push(defaults[i])
+                availableOperations.push(defaults[i]);
             }
         }
 
@@ -67,7 +67,7 @@ angular.module('app').factory('operationService', ['$http', 'settings', 'config'
     }
 
     operationService.reloadNamedOperations = function() {
-        var getAllClass = "uk.gov.gchq.gaffer.named.operation.GetAllNamedOperations"
+        var getAllClass = "uk.gov.gchq.gaffer.named.operation.GetAllNamedOperations";
         ifOperationSupported(getAllClass, function() {
             query.execute(JSON.stringify(
                 {
@@ -77,7 +77,7 @@ angular.module('app').factory('operationService', ['$http', 'settings', 'config'
         },
         function() {
             updateNamedOperations([]);
-        })
+        });
 
     }
 
@@ -95,7 +95,7 @@ angular.module('app').factory('operationService', ['$http', 'settings', 'config'
         .error(function(err) {
             console.log("Error: " + err.statusCode + " - "  + err.status);
             onUnsupported();
-        })
+        });
     }
 
 
@@ -104,7 +104,7 @@ angular.module('app').factory('operationService', ['$http', 'settings', 'config'
         return {
             class: "uk.gov.gchq.gaffer.operation.impl.Limit",
             resultLimit: settings.getResultLimit()
-        }
+        };
     }
 
     operationService.createDeduplicateOperation = function() {
@@ -116,9 +116,9 @@ angular.module('app').factory('operationService', ['$http', 'settings', 'config'
     operationService.createCountOperation = function() {
         return {
             class: "uk.gov.gchq.gaffer.operation.impl.Count"
-        }
+        };
     }
 
-    return operationService
+    return operationService;
 
-}])
+}]);

@@ -17,26 +17,26 @@
 'use strict'
 
 angular.module('app').factory('settings', function() {
-    var settings = {}
+    var settings = {};
 
-    var resultLimit = 100
-    var defaultOp = "uk.gov.gchq.gaffer.operation.impl.get.GetElements"
+    var resultLimit = 100;
+    var defaultOp = "uk.gov.gchq.gaffer.operation.impl.get.GetElements";
 
     settings.getResultLimit = function() {
-        return resultLimit
+        return resultLimit;
     }
 
     settings.setResultLimit = function(limit) {
-        resultLimit = limit
+        resultLimit = limit;
     }
 
     settings.getDefaultOp = function() {
-        return defaultOp
+        return defaultOp;
     }
 
     settings.setDefaultOp = function(op) {
-        defaultOp = op
+        defaultOp = op;
     }
 
-    return settings
-})
+    return settings;
+});

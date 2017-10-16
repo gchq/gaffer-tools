@@ -38,6 +38,6 @@ angular.module('app').config(['$locationProvider', '$routeProvider', function($l
         })
         .when('/', {
             redirectTo: '/graph'
-        })
-}])
+        });
+}]);
 

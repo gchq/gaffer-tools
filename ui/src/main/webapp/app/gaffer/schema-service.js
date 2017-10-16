@@ -2,36 +2,36 @@
 
 angular.module('app').factory('schema', ['$http', 'config', '$q', 'common', function($http, config, $q, common) {
 
-    var schemaService = {}
+    var schemaService = {};
 
-    var defer = $q.defer()
-    var schema = {}
-    var schemaVertices = {}
+    var defer = $q.defer();
+    var schema = {};
+    var schemaVertices = {};
 
 
     schemaService.observe = function() {
-        return defer.promise
+        return defer.promise;
     }
 
     schemaService.get = function() {
-        return schema
+        return schema;
     }
 
     schemaService.getSchemaVertices = function() {
-        return schemaVertices
+        return schemaVertices;
     }
 
     schemaService.load = function() {
-        var queryUrl = common.parseUrl(config.get().restEndpoint + "/graph/config/schema")
+        var queryUrl = common.parseUrl(config.get().restEndpoint + "/graph/config/schema");
 
         $http.get(queryUrl)
         .success(function(data){
-            schema = data
+            schema = data;
             updateSchemaVertices()
-            defer.notify(schema)
+            defer.notify(schema);
         })
         .error(function(err) {
-            console.log("Unable to load schema: " + err.statusCode + " - " + err.status)
+            console.log("Unable to load schema: " + err.statusCode + " - " + err.status);
         })
     }
 
@@ -88,6 +88,6 @@ angular.module('app').factory('schema', ['$http', 'config', '$q', 'common', func
     }
 
 
-    return schemaService
+    return schemaService;
 
-}])
+}]);

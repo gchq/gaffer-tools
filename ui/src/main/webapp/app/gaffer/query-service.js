@@ -4,23 +4,23 @@
 
 angular.module('app').factory('query', ['$http', 'config', '$q', 'common', function($http, config, $q, common) {
 
-    var query = {}
-    var defer = $q.defer()
+    var query = {};
+    var defer = $q.defer();
 
-    var operations = []
+    var operations = [];
 
     query.getOperations = function() {
-        return operations
+        return operations;
     }
 
     query.observeOperations = function() {
-        return defer.promise
+        return defer.promise;
     }
 
     query.execute = function(operationChain, onSuccess) {
-        var queryUrl = config.get().restEndpoint + "/graph/operations/execute"
+        var queryUrl = config.get().restEndpoint + "/graph/operations/execute";
 
-        queryUrl = common.parseUrl(queryUrl)
+        queryUrl = common.parseUrl(queryUrl);
 
         $http.post(queryUrl, operationChain)
              .success(function(results){
@@ -32,16 +32,16 @@ angular.module('app').factory('query', ['$http', 'config', '$q', 'common', funct
     }
 
     query.addOperation = function(operation) {
-        operations.push(operation)
-        defer.notify(operations)
+        operations.push(operation);
+        defer.notify(operations);
     }
 
     query.setOperations = function(ops) {
-        operations = ops
-        defer.notify(operations)
+        operations = ops;
+        defer.notify(operations);
     }
 
 
 
-    return query
-}])
+    return query;
+}]);

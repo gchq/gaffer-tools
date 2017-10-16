@@ -2,7 +2,7 @@
 
 angular.module('app').factory('functions', ['$http', 'schema', 'config', 'common', function($http, schemaService, config, common) {
 
-    var functions = {}
+    var functions = {};
 
 
     functions.getFunctions = function(group, property, onSuccess) {
@@ -20,13 +20,13 @@ angular.module('app').factory('functions', ['$http', 'schema', 'config', 'common
           className = schema.types[type].class;
         }
 
-        var queryUrl = common.parseUrl(config.get().restEndpoint + "/graph/config/filterFunctions/" + className)
+        var queryUrl = common.parseUrl(config.get().restEndpoint + "/graph/config/filterFunctions/" + className);
 
         $http.get(queryUrl)
         .success(onSuccess)
         .error(function(err) {
-            console.error('ERROR: error loading functions for group: ' + group + ', property: ' + property + '.\n' + err)
-        })
+            console.error('ERROR: error loading functions for group: ' + group + ', property: ' + property + '.\n' + err);
+        });
     }
 
     functions.getFunctionParameters = function(functionClassName, onSuccess) {
@@ -35,8 +35,8 @@ angular.module('app').factory('functions', ['$http', 'schema', 'config', 'common
         $http.get(queryUrl)
         .success(onSuccess)
         .error(function(err) {
-            console.error('ERROR: Failed to get serialised fields for ' + functionClassName + '.\n' + err)
-        })
+            console.error('ERROR: Failed to get serialised fields for ' + functionClassName + '.\n' + err);
+        });
     }
 
     return functions;

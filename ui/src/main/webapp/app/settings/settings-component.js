@@ -13,17 +13,17 @@ function settingsView() {
 
 function SettingsController($scope, settings, schema, operationService, results) {
 
-    var vm = this
+    var vm = this;
 
     vm.resultLimit = settings.getResultLimit()
-    vm.defaultOp = settings.getDefaultOp()
+    vm.defaultOp = settings.getDefaultOp();
 
     vm.updateResultLimit = function() {
-        settings.setResultLimit(vm.resultLimit)
+        settings.setResultLimit(vm.resultLimit);
     }
 
     vm.updateDefaultOp = function() {
-        settings.setDefaultOp(vm.defaultOp)
+        settings.setDefaultOp(vm.defaultOp);
     }
 
 }

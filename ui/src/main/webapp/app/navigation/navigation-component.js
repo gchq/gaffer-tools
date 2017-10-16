@@ -1,17 +1,17 @@
-angular.module('app').component('navigation', navigation())
+angular.module('app').component('navigation', navigation());
 
 function navigation() {
     return {
         templateUrl: 'app/navigation/navigation.html',
         controller: NavigationController,
         controllerAs: 'ctrl'
-    }
+    };
 }
 
 function NavigationController($scope, $mdDialog, $location, graph, operationService, results, query, config) {
     var vm = this;
-    vm.loading = false
-    vm.addMultipleSeeds = false
+    vm.loading = false;
+    vm.addMultipleSeeds = false;
 
     vm.addSeedPrompt = function(ev) {
         $mdDialog.show({
@@ -23,7 +23,7 @@ function NavigationController($scope, $mdDialog, $location, graph, operationServ
         })
         .then(function(seeds) {
             for(var i in seeds) {
-                graph.addSeed(seeds[i].vertexType, JSON.stringify(seeds[i].vertex))
+                graph.addSeed(seeds[i].vertexType, JSON.stringify(seeds[i].vertex));
             }
         });
     }
@@ -41,27 +41,27 @@ function NavigationController($scope, $mdDialog, $location, graph, operationServ
                 class: "uk.gov.gchq.gaffer.operation.OperationChain",
                 operations: [operation, operationService.createLimitOperation(), operationService.createDeduplicateOperation()]
             }), function(data) {
-                loading = false
-                results.update(data)
+                loading = false;
+                results.update(data);
             })
         });
     }
 
     vm.isGraphInView = function() {
-        return $location.path() === '/graph'
+        return $location.path() === '/graph';
     }
 
     vm.redraw = function() {
-        graph.redraw()
+        graph.redraw();
     }
 
 
     vm.executeAll = function() {
         results.clear();
-        var ops = query.getOperations()
+        var ops = query.getOperations();
 
         if (ops.length > 0) {
-            vm.loading = true
+            vm.loading = true;
         }
 
         for(var i in ops) {
@@ -70,8 +70,8 @@ function NavigationController($scope, $mdDialog, $location, graph, operationServ
                     class: "uk.gov.gchq.gaffer.operation.OperationChain",
                     operations: [ops[i], operationService.createLimitOperation(), operationService.createDeduplicateOperation()]
                 }), function(data) {
-                    results.update(data)
-                    vm.loading = false
+                    results.update(data);
+                    vm.loading = false;
                 });
             } catch(e) {
                 // Try without the limit and deduplicate operations
@@ -79,8 +79,8 @@ function NavigationController($scope, $mdDialog, $location, graph, operationServ
                     class: "uk.gov.gchq.gaffer.operation.OperationChain",
                     operations: [ops[i]]
                 }), function(data) {
-                    results.update(data)
-                    vm.loading = false
+                    results.update(data);
+                    vm.loading = false;
                 });
            }
        }

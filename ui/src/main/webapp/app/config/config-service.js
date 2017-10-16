@@ -2,30 +2,30 @@
 
 'use strict'
 
-angular.module('app').factory('config', ['$http', function($http) {
+angular.module('app').factory('config', ['$http', '$location', function($http, $location) {
 
-    var configService = {}
+    var configService = {};
 
-    var config = {}
+    var config = {};
 
     configService.get = function() {
-        return config
+        return config;
     }
 
     configService.set = function(conf) {
-        config = conf
+        config = conf;
     }
 
     configService.load = function(onSuccess) {
-        $http.get('/config/config.json')
+        $http.get('/ui/config/config.json')
         .success(function(results) {
-            onSuccess(results)
+            onSuccess(results);
         })
         .error(function(err) {
-            console.error("Failed to load config: " + err)
-        })
+            console.error("Failed to load config: " + err);
+        });
     }
 
-    return configService
+    return configService;
 
 }])

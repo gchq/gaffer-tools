@@ -2,21 +2,21 @@
 
 angular.module('app').factory('results', ['$q', function($q) {
 
-    var resultService = {}
-    var results = {entities: [], edges: [], entitySeeds: [], other: []}
+    var resultService = {};
+    var results = {entities: [], edges: [], entitySeeds: [], other: []};
 
-    var defer = $q.defer()
+    var defer = $q.defer();
 
     resultService.observe = function() {
-        return defer.promise
+        return defer.promise;
     }
 
     resultService.get = function() {
-        return results
+        return results;
     }
 
     resultService.clear = function() {
-        results = {entities: [], edges: [], entitySeeds: [], other: []}
+        results = {entities: [], edges: [], entitySeeds: [], other: []};
     }
 
     resultService.update = function(newResults) {
@@ -53,9 +53,9 @@ angular.module('app').factory('results', ['$q', function($q) {
                     results.other.push(result);
                 }
             }
-            defer.notify(results)
+            defer.notify(results);
         }
     }
 
-    return resultService
-}])
+    return resultService;
+}]);

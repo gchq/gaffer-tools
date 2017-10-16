@@ -1,16 +1,16 @@
 'use strict'
 
 angular.module('app').factory('table', ['common', function(common) {
-    var table = {}
+    var table = {};
 
-    var tableData = {entities: {}, edges: {}, entitySeeds: [], other: []}
+    var tableData = {entities: {}, edges: {}, entitySeeds: [], other: []};
 
     table.getData = function() {
-        return tableData
+        return tableData;
     }
 
     table.update = function(results) {
-        tableData = {entities: {}, edges: {}, entitySeeds: [], other: []}
+        tableData = {entities: {}, edges: {}, entitySeeds: [], other: []};
         for (var i in results.entities) {
             var entity = results.entities[i];
             if(!tableData.entities[entity.group]) {
@@ -54,12 +54,13 @@ angular.module('app').factory('table', ['common', function(common) {
             }
         }
         for (var i in tableData.edges) {
-            for (var a in tableData.edges[i])
-            tableData.edges[i][a] = JSON.parse(tableData.edges[i][a]);
+            for (var a in tableData.edges[i]) {
+                tableData.edges[i][a] = JSON.parse(tableData.edges[i][a]);
+            }
         }
 
     }
 
 
-    return table
-}])
+    return table;
+}]);
