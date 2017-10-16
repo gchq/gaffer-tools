@@ -1,6 +1,3 @@
-<<<<<<< HEAD
-angular.module('app').component('navBar', navBar())
-=======
 /*
  * Copyright 2017 Crown Copyright
  *
@@ -17,8 +14,7 @@ angular.module('app').component('navBar', navBar())
  * limitations under the License.
  */
 
-angular.module('app').component('navigation', navigation());
->>>>>>> gh-200-refactor-ui
+angular.module('app').component('navBar', navBar());
 
 function navBar() {
     return {
@@ -76,11 +72,7 @@ function NavigationController($scope, $mdDialog, navigation, graph, operationSer
     }
 
     vm.isGraphInView = function() {
-<<<<<<< HEAD
         return vm.currentPage === 'graph'
-=======
-        return $location.path() === '/graph';
->>>>>>> gh-200-refactor-ui
     }
 
     vm.redraw = function() {
