@@ -1,20 +1,21 @@
-<div class="container">
-    <div class="panelHeading">
-        <h3>Settings</h3>
+<md-content layout-padding layout-margin>
+    <div class="container">
+        <div class="panelHeading">
+            <h3>Settings</h3>
+        </div>
+
+        <div layout="column">
+            <md-input-container>
+                <label>Default result limit</label>
+                <input type="number" step="1" class="form-control" ng-model="ctrl.resultLimit"
+                       id="resultLimit" ng-blur="ctrl.updateResultLimit()">
+            </md-input-container>
+
+            <md-input-container>
+                <label>Default operation</label>
+                <input type="text" ng-blur="ctrl.updateDefaultOp()" class="form-control" ng-model="ctrl.defaultOp"
+                       id="defaultOp">
+            </md-input-container>
+        </div>
     </div>
-
-    <div class="form-group">
-        <label for="resturl">Rest api url:</label>
-        <input type="text" ng-blur="rawData.loadSchema()" class="form-control"
-               ng-model="settings.restUrl"
-               id="resturl">
-
-        <label for="resultLimit">Default result limit:</label>
-        <input type="text" class="form-control" ng-model="settings.resultLimit"
-               id="resultLimit">
-
-        <label for="defaultOp">Default operation:</label>
-        <input type="text" class="form-control" ng-model="settings.defaultOp"
-               id="defaultOp">
-    </div>
-</div>
+</md-content>

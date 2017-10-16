@@ -1,47 +1,41 @@
-<div>
-    <div class="container bottomPanel"
-         ng-show="selectedEntitiesCount && !showBuildQuery">
+<div id="graphCy" class="cy"></div>
 
-        <div ng-repeat="(vertex, entities) in selectedEntities">
-            <h3>{{vertex}}</h3>
+<div class="bottomPanel">
+    <div ng-repeat="(vertex, entities) in ctrl.selectedEntities">
+        <h3>{{vertex}}</h3>
 
-            <p ng-show="!entities.length || !entities[0].group">No entities</p>
-            <table class="table table-striped"
-                   ng-show="entities.length && entities[0].group">
-                <tbody>
-                <tr ng-repeat="entity in entities">
-                    <td>
-                        {{entity.group}}
-                    </td>
-                    <td>
-                        <p ng-repeat="(key, value) in entity.properties">
-                            {{key}}: {{value}}
-                        </p>
-                    </td>
-                </tr>
-                </tbody>
-            </table>
-        </div>
+        <p ng-show="!entities.length || !entities[0].group">No entities</p>
+        <table class="table table-striped"
+               ng-show="entities.length && entities[0].group">
+            <tbody>
+            <tr ng-repeat="entity in entities">
+                <td>
+                    {{entity.group}}
+                </td>
+                <td>
+                    <p ng-repeat="(key, value) in entity.properties">
+                        {{key}}: {{value}}
+                    </p>
+                </td>
+            </tr>
+            </tbody>
+        </table>
     </div>
-
-    <div class="container bottomPanel"
-         ng-show="selectedEdgesCount && !showBuildQuery">
-        <div ng-repeat="(id, edges) in selectedEdges">
-            <h3>{{edges[0].source}} to {{edges[0].destination}}</h3>
-            <table class="table table-striped">
-                <tbody>
-                <tr ng-repeat="edge in edges">
-                    <td>
-                        {{edge.group}}
-                    </td>
-                    <td>
-                        <p ng-repeat="(key, value) in edge.properties">
-                            {{key}}: {{value}}
-                        </p>
-                    </td>
-                </tr>
-                </tbody>
-            </table>
-        </div>
+    <div ng-repeat="(id, edges) in ctrl.selectedEdges">
+        <h3>{{edges[0].source}} to {{edges[0].destination}}</h3>
+        <table class="table table-striped">
+            <tbody>
+            <tr ng-repeat="edge in edges">
+                <td>
+                    {{edge.group}}
+                </td>
+                <td>
+                    <p ng-repeat="(key, value) in edge.properties">
+                        {{key}}: {{value}}
+                    </p>
+                </td>
+            </tr>
+            </tbody>
+        </table>
     </div>
 </div>

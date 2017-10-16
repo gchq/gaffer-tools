@@ -1,0 +1,28 @@
+<md-nav-bar aria-label="navigation bar" md-selected-nav-item="ctrl.currentPage" ng-cloak>
+    <div layout="row" layout-align="space-around center" layout-fill>
+
+        <div>
+            <md-button class="logo-btn md-icon-button" ng-click="ctrl.goTo('graph')">
+                <md-icon md-svg-icon="logo" class="logo" aria-label="logo"></md-icon>
+            </md-button>
+        </div>
+
+        <div layout="row">
+            <md-nav-item name="graph" md-nav-click="ctrl.goTo('graph')">Graph</md-nav-item>
+            <md-nav-item name="table" md-nav-click="ctrl.goTo('table')">Table</md-nav-item>
+            <md-nav-item name="raw" md-nav-click="ctrl.goTo('raw')">Raw</md-nav-item>
+            <md-nav-item name="settings" md-nav-click="ctrl.goTo('settings')">Settings</md-nav-item>
+        </div>
+        <div layout="row">
+            <md-progress-circular ng-show="ctrl.loading"
+                                  md-mode="indeterminate"
+                                  md-diameter="30"
+                                  style="margin-top: 5px; margin-right: 10px;">
+            </md-progress-circular>
+            <md-button class="md-raised md-primary" id="add-seed" ng-click="ctrl.addSeedPrompt($event)">Add Seed</md-button>
+            <md-button class="md-raised md-primary" id="build-query" ng-click="ctrl.openBuildQueryDialog($event)">Build Query</md-button>
+            <md-button class="md-raised" id="execute-all" ng-click="ctrl.executeAll()">Execute All</md-button>
+            <md-button class="md-raised" id="redraw" ng-disabled="!ctrl.isGraphInView()" ng-click="ctrl.redraw()">Redraw</md-button>
+        </div>
+    </div>
+</md-nav-bar>
