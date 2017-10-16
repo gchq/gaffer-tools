@@ -2389,6 +2389,50 @@ class GafferOperationsTest(unittest.TestCase):
                 operation_name="2-hop"
             )
         ],
+               [
+                   '''
+                   {
+                     "class" : "uk.gov.gchq.gaffer.named.operation.AddNamedOperation",
+                     "operationName" : "2-hop-with-score",
+                     "description" : "2 hop query",
+                     "readAccessRoles" : [ "read-user" ],
+                     "writeAccessRoles" : [ "write-user" ],
+                     "overwriteFlag" : true,
+                     "score" : 3,
+                     "operationChain" : {
+                       "operations" : [ {
+                         "class" : "uk.gov.gchq.gaffer.operation.impl.get.GetAdjacentIds",
+                         "includeIncomingOutGoing" : "OUTGOING"
+                       }, {
+                         "class" : "uk.gov.gchq.gaffer.operation.impl.get.GetAdjacentIds",
+                         "includeIncomingOutGoing" : "OUTGOING"
+                       } ]
+                     }
+                   }
+                   ''',
+                   g.AddNamedOperation(
+                       operation_chain=g.OperationChainDAO(
+                           operations=[
+                               g.GetAdjacentIds(
+                                   include_incoming_out_going="OUTGOING"
+                               ),
+                               g.GetAdjacentIds(
+                                   include_incoming_out_going="OUTGOING"
+                               )
+                           ]
+                       ),
+                       overwrite_flag=True,
+                       write_access_roles=[
+                           "write-user"
+                       ],
+                       description="2 hop query",
+                       read_access_roles=[
+                           "read-user"
+                       ],
+                       score=3,
+                       operation_name="2-hop-with-score"
+                   )
+               ],
         [
             '''
             {

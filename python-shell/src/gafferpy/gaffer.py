@@ -1876,7 +1876,8 @@ class AddNamedOperation(Operation):
                  write_access_roles=None,
                  overwrite_flag=None,
                  parameters=None,
-                 options=None):
+                 options=None,
+                 score=None):
         super().__init__(
             _class_name=self.CLASS,
             options=options)
@@ -1902,6 +1903,7 @@ class AddNamedOperation(Operation):
         self.read_access_roles = read_access_roles
         self.write_access_roles = write_access_roles
         self.overwrite_flag = overwrite_flag
+        self.score = score
 
         self.parameters = None
         if parameters is not None:
@@ -1935,6 +1937,8 @@ class AddNamedOperation(Operation):
             operation['readAccessRoles'] = self.read_access_roles
         if self.write_access_roles is not None:
             operation['writeAccessRoles'] = self.write_access_roles
+        if self.score is not None:
+            operation['score'] = self.score
         if self.parameters is not None:
             operation['parameters'] = {}
             for param in self.parameters:
