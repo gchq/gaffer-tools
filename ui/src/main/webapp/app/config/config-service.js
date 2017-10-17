@@ -31,7 +31,7 @@ angular.module('app').factory('config', ['$http', '$location', function($http, $
     }
 
     configService.load = function(onSuccess) {
-        $http.get('/config/config.json')
+        $http.get('config/config.json')
         .success(function(results) {
             onSuccess(results);
         })
