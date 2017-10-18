@@ -49,7 +49,12 @@ function GraphController($scope, graph, results, $timeout) {
         }
     });
 
-    graph.reload(results.get());
+    $timeout(function(evt) {
+        graph.load().then(function(cy) {
+            graph.reload();
+        })
+    })
+
 
 
 

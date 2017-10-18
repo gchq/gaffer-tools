@@ -13,44 +13,46 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-<div id="graphCy" class="cy"></div>
+<div layout="column" class="content">
+    <div id="graphCy" flex="70"></div>
 
-<div class="bottomPanel" layout-padding layout-margin>
-    <div ng-repeat="(vertex, entities) in ctrl.selectedEntities">
-        <h3>{{vertex}}</h3>
+    <div layout-padding layout-margin flex="30">
+        <div ng-repeat="(vertex, entities) in ctrl.selectedEntities">
+            <h3>{{vertex}}</h3>
 
-        <p ng-show="!entities.length || !entities[0].group">No entities</p>
-        <table class="table table-striped"
-               ng-show="entities.length && entities[0].group">
-            <tbody>
-            <tr ng-repeat="entity in entities">
-                <td>
-                    {{entity.group}}
-                </td>
-                <td>
-                    <p ng-repeat="(key, value) in entity.properties">
-                        {{key}}: {{value}}
-                    </p>
-                </td>
-            </tr>
-            </tbody>
-        </table>
-    </div>
-    <div ng-repeat="(id, edges) in ctrl.selectedEdges">
-        <h3>{{edges[0].source}} to {{edges[0].destination}}</h3>
-        <table class="table table-striped">
-            <tbody>
-            <tr ng-repeat="edge in edges">
-                <td>
-                    {{edge.group}}
-                </td>
-                <td>
-                    <p ng-repeat="(key, value) in edge.properties">
-                        {{key}}: {{value}}
-                    </p>
-                </td>
-            </tr>
-            </tbody>
-        </table>
+            <p ng-show="!entities.length || !entities[0].group">No entities</p>
+            <table md-table
+                   ng-show="entities.length && entities[0].group">
+                <tbody md-body>
+                <tr md-row ng-repeat="entity in entities">
+                    <td md-cell>
+                        {{entity.group}}
+                    </td>
+                    <td md-cell>
+                        <p ng-repeat="(key, value) in entity.properties">
+                            {{key}}: {{value}}
+                        </p>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <div ng-repeat="(id, edges) in ctrl.selectedEdges">
+            <h3>{{edges[0].source}} to {{edges[0].destination}}</h3>
+            <table md-table>
+                <tbody md-body>
+                <tr md-row ng-repeat="edge in edges">
+                    <td md-cell>
+                        {{edge.group}}
+                    </td>
+                    <td md-cell>
+                        <p ng-repeat="(key, value) in edge.properties">
+                            {{key}}: {{value}}
+                        </p>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
     </div>
 </div>

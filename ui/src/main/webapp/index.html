@@ -23,8 +23,6 @@
               content="user-scalable=no, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0">
         <title>Gaffer UI</title>
 
-        <base href="/ui/">
-
         <!-- dependencies -->
         <script src="lib/jquery/js/jquery.min.js"></script>
         <script src="lib/cytoscape/js/cytoscape.min.js"></script>
@@ -69,7 +67,7 @@
     </head>
 
     <body ng-cloak ng-app="app" ng-controller="MainCtrl">
-        <div layout="column">
+        <div layout="column" class="content">
             <nav-bar></nav-bar>
             <ng-view></ng-view>
         </div>

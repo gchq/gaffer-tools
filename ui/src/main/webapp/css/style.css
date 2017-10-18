@@ -16,6 +16,20 @@
     cursor: pointer;
 }
 
+html body {
+    height: 100%;
+    width: 100%;
+}
+
+ng-view {
+    height: 100%;
+    width: 100%;
+}
+
+.content {
+    height: 100%;
+    width: 100%;
+}
 
 .logo {
     height: 36px;
