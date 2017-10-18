@@ -28,44 +28,54 @@
                         ng-disabled="ctrl.step != 0">
                     <md-content class="md-padding">
                         <h3>Select operation</h3>
+                        <div layout="column">
+                            <md-input-container>
+                                <label>Search for operation name</label>
+                                <input ng-model="ctrl.opSearchTerm" type="text">
+                            </md-input-container>
 
-                        <input ng-model="ctrl.opSearchTerm" type="text"
-                               class="form-control"
-                               placeholder="Search for operation name">
-                        <table class="table table-striped">
-                            <tbody>
-                            <tr>
-                                <th>
-                                    <a
-                                            ng-click="sortType = 'name'; sortReverse = !sortReverse">
-                                        Name
-                                            <span ng-show="sortType === 'name' && !sortReverse"
-                                                  class="caret"></span>
-                                            <span ng-show="sortType === 'name' && sortReverse"
-                                                  class="caret caret-up"></span>
-                                    </a>
-                                </th>
-                                <th>
-                                    Description
-                                </th>
-                            </tr>
-                            <tr ng-repeat="op in ctrl.availableOperations | orderBy:sortType:sortReverse | filter:ctrl.opSearchTerm">
-                                <td>
-                                    <a
-                                            ng-click="ctrl.onSelectedOpChange(op)" id="{{op.name}}">
-                                        {{op.name}}
-                                    </a>
-                                </td>
-                                <td>
-                                    {{op.description}}
-                                    <button ng-click="ctrl.showOperations(op.operations)"
-                                            ng-show="op.operations">
-                                        i
-                                    </button>
-                                </td>
-                            </tr>
-                            </tbody>
-                        </table>
+                            <md-table-container>
+                                <table md-table >
+                                    <thead md-head>
+                                    <tr md-row>
+                                        <th md-column>
+                                            <a
+                                                    ng-click="sortType = 'name'; sortReverse = !sortReverse">
+                                                Name
+                                                        <span ng-show="sortType === 'name' && !sortReverse"
+                                                              class="caret"></span>
+                                                        <span ng-show="sortType === 'name' && sortReverse"
+                                                              class="caret caret-up"></span>
+                                            </a>
+                                        </th>
+                                        <th md-column>
+                                            Description
+                                        </th>
+                                    </tr>
+                                    </thead>
+                                    <tbody md-body>
+                                    <tr md-row ng-repeat="op in ctrl.availableOperations | orderBy:sortType:sortReverse | filter:ctrl.opSearchTerm">
+                                        <td md-cell>
+                                            <a href id="{{op.name}}" ng-click="ctrl.onSelectedOpChange(op)">
+                                                {{op.name}}
+                                            </a>
+                                        </td>
+                                        <td md-cell>
+                                            {{op.description}}
+                                        </td>
+                                        <td md-cell>
+                                            <md-button class="md-icon-button"
+                                                       ng-click="ctrl.showOperations(op.operations)"
+                                                       ng-show="op.operations">
+                                                <md-icon md-svg-icon="info"></md-icon>
+                                            </md-button>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </md-table-container>
+
+                        </div>
                     </md-content>
                 </md-tab>
 
