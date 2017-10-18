@@ -49,7 +49,8 @@ function NavigationController($scope, $mdDialog, navigation, graph, operationSer
             for(var i in seeds) {
                 graph.addSeed(seeds[i].vertexType, JSON.stringify(seeds[i].vertex));
             }
-        });
+        })
+        .catch(() => {}); // throw away possibly unhandled rejection errors
     }
 
     vm.openBuildQueryDialog = function(ev) {
@@ -68,7 +69,8 @@ function NavigationController($scope, $mdDialog, navigation, graph, operationSer
                 loading = false;
                 results.update(data);
             })
-        });
+        })
+        .catch(() => {}); // throw away possibly unhandled rejection errors
     }
 
     vm.isGraphInView = function() {
