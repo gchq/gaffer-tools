@@ -27,7 +27,7 @@
 
     <properties>
         <!-- Using older version as there were problems running the 1.7.2 mini accumulo cluster -->
-        <accumulo.version>1.6.5</accumulo.version>
+        <accumulo.version>1.8.1</accumulo.version>
     </properties>
 
     <dependencies>
