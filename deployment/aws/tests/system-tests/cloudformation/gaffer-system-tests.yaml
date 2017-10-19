@@ -65,14 +65,6 @@ Parameters:
     MinLength: 1
     Description: Specify the type of instance to be used to deploy the Gaffer REST API and Web UI
 
-  GafferSchemaJarUrl:
-    Type: String
-    Default: https://repo1.maven.org/maven2/uk/gov/gchq/gaffer/road-traffic-model/1.0.0/road-traffic-model-1.0.0.jar
-    MinLength: 1
-    Description: A URL that can be used to download a JAR which contains the schema for your Gaffer graph i.e. json files in a 'schema' directory
-    AllowedPattern: "https?://\\S+\\.jar"
-    ConstraintDescription: Please make sure this is a http / https URL
-
 Metadata:
   AWS::CloudFormation::Interface:
     ParameterGroups:
@@ -83,10 +75,6 @@ Metadata:
           - GafferToolsVersion
           - AccumuloVersion
           - EmrRelease
-      - Label:
-          default: Gaffer Config
-        Parameters:
-          - GafferSchemaJarUrl
       - Label:
           default: Infrastructure Config
         Parameters:
@@ -116,7 +104,6 @@ Resources:
         ExtraSecurityGroups: !Join [",", [!Join [",", Ref: ExtraSecurityGroups], Ref: AllowAccessToWebServerSecurityGroup]]
         KeyName: !Ref KeyName
         WebInstanceType: !Ref WebInstanceType
-        GafferSchemaJarUrl: !Ref GafferSchemaJarUrl
         RoadTrafficDataUrl: "https://raw.githubusercontent.com/gchq/Gaffer/master/example/road-traffic/road-traffic-demo/src/main/resources/roadTrafficSampleData.csv"
 
   AllowAccessToWebServerSecurityGroup:
