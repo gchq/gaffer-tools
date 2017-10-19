@@ -31,7 +31,7 @@
                 <div layout="column" ng-show="!ctrl.editingOperations" ng-repeat="(i, operation) in ctrl.operations track by $index">
                     <md-card>
                         <md-card-content>
-                            <pre>{{ctrl.operations[i] | json}}</pre>
+                            <pre id="operation-{{i}}-json">{{ctrl.operations[i] | json}}</pre>
                         </md-card-content>
                     </md-card>
                 </div>
