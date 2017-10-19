@@ -122,7 +122,7 @@ public class QueryBuilderST {
 
         click("Get Elements");
         click("select-all-seeds");
-        scrollToElement("related-edge-RoadUse");
+        scrollQueryBuilder();
         click("related-edge-RoadUse");
         jsClick("RoadUse-add-pre-filter");
         selectOption("RoadUse-pre-property-selector", "startDate");
@@ -143,6 +143,10 @@ public class QueryBuilderST {
         }
     }
 
+    private void scrollQueryBuilder() {
+        ((JavascriptExecutor) driver).executeScript("$('query-builder').parent()[0].scrollTop += 100");
+    }
+
     private void enterText(final String id, final String value) {
         getElement(id).sendKeys(value);
     }
@@ -152,7 +156,7 @@ public class QueryBuilderST {
 //        dropdown.selectByValue("string:" + optionValue);
         getElement(id).click();
 
-        WebElement choice  = driver.findElement(By.cssSelector("md-option[value = '" + optionValue + "']"));
+        WebElement choice = driver.findElement(By.cssSelector("md-option[value = '" + optionValue + "']"));
         choice.click();
 
         Thread.sleep(slowFactor * 500);
