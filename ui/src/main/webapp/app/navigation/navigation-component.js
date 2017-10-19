@@ -24,18 +24,25 @@ function navBar() {
     };
 }
 
-function NavigationController($scope, $mdDialog, navigation, graph, operationService, results, query, config) {
+function NavigationController($scope, $rootScope, $mdDialog, navigation, graph, operationService, results, query, config) {
     var vm = this;
     vm.loading = false;
     vm.addMultipleSeeds = false;
 
-    vm.currentPage = navigation.getCurrentPage()
+    vm.currentPage = navigation.getCurrentPage();
 
     navigation.observeCurrentPage().then(null, null, function(newCurrentPage) {
         vm.currentPage = newCurrentPage
     })
 
-    vm.goTo = navigation.goTo
+    vm.goTo = navigation.goTo;
+
+    $rootScope.$on('$routeChangeSuccess', function (event, current) {
+        var newPage = current.originalPath.substr(1);
+        if (newPage !== vm.currentPage) {
+            navigation.goTo(newPage);
+        }
+    });
 
     vm.addSeedPrompt = function(ev) {
         $mdDialog.show({
@@ -74,7 +81,7 @@ function NavigationController($scope, $mdDialog, navigation, graph, operationSer
     }
 
     vm.isGraphInView = function() {
-        return vm.currentPage === 'graph'
+        return vm.currentPage === 'graph';
     }
 
     vm.redraw = function() {
