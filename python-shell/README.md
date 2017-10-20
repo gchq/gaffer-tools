@@ -41,9 +41,68 @@ python3 src/examplePki.py
 python3 src/example_accumulo_pki.py
 ```
 
+To use the python shell without installing just ensure you are execute your
+scripts from within the python-shell directory.
+To connect to gaffer you will need to do something like this:
+
+```python
+from gafferpy import gaffer as g
+from gafferpy import gaffer_connector
+gc = gaffer_connector.GafferConnector("localhost:8080/rest/latest")
+```
+
+To fetch the Gaffer schema you can then run:
+
+```python
+result = gc.execute_get(g.GetSchema())
+
+print('Schema:')
+print(result)
+print()
+```
+
+You can run an operation like this:
+
+```python
+elements = gc.execute_operation(
+    operation=g.GetAllElements()
+)
+```
+
+Multiple operations like this:
+
+```python
+elements = gc.execute_operations(
+    operations=[
+        g.GetAllElements(),
+        g.Limit(result_limit=3)
+    ]
+)
+```
+
+And an operation chain like this:
+
+```python
+elements = gc.execute_operation_chain(
+    operation_chain=g.OperationChain(
+        operations=[
+            g.GetAllElements(),
+            g.Limit(
+                truncate=True,
+                result_limit=3
+            )
+        ]
+    )
+)
+```
+
+See [operation examples](https://gchq.github.io/gaffer-doc/getting-started/operation-examples.html) for more examples of operations in python.
+
+
 ## Installation
 
-You can either just refer to the python shell source files or the python shell can be compiled and distributed for inclusion in other Python projects.
+You can either just refer to the python shell source files as described above or
+the python shell can be compiled and distributed for inclusion in other Python projects.
 
 Compilation of the project requires the bdist package, this can be installed using pip:
 
@@ -69,4 +128,6 @@ After installation the shell can be imported into an application as below:
 
 ```python
 from gaffer_shell import gaffer as g
+from gaffer_shell import gaffer_connector
+gc = gaffer_connector.GafferConnector("localhost:8080/rest/latest")
 ```
