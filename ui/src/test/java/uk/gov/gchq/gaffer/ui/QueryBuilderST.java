@@ -118,7 +118,7 @@ public class QueryBuilderST {
 
         click("Get Elements");
         click("select-all-seeds");
-        scrollQueryBuilder();
+        scrollQueryBuilder(200);
         click("related-edge-RoadUse");
         click("RoadUse-add-pre-filter");
         selectOption("RoadUse-pre-property-selector", "startDate");
@@ -139,8 +139,8 @@ public class QueryBuilderST {
         }
     }
 
-    private void scrollQueryBuilder() {
-        execute("$('query-builder').parent()[0].scrollTop += 100");
+    private void scrollQueryBuilder(final int scrollBy) {
+        execute("$('query-builder').parent()[0].scrollTop += " + scrollBy);
     }
 
     private void enterText(final String id, final String value) {

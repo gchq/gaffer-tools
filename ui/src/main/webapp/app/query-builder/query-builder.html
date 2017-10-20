@@ -40,10 +40,12 @@
                                         <a
                                                 ng-click="sortType = 'name'; sortReverse = !sortReverse">
                                             Name
-                                                    <span ng-show="sortType === 'name' && !sortReverse"
-                                                          class="caret"></span>
-                                                    <span ng-show="sortType === 'name' && sortReverse"
-                                                          class="caret caret-up"></span>
+                                                    <span ng-show="sortType === 'name' && !sortReverse">
+                                                        <md-icon md-svg-icon="down-arrow"></md-icon>
+                                                    </span>
+                                                    <span ng-show="sortType === 'name' && sortReverse">
+                                                        <md-icon md-svg-icon="up-arrow"></md-icon>
+                                                    </span>
                                         </a>
                                     </th>
                                     <th md-column>
@@ -482,6 +484,7 @@
         </md-button>
         <md-button id="build-query-execute"
                    ng-disabled="!(ctrl.step == 2)"
+                   ng-click="ctrl.execute()"
                    ng-click="ctrl.execute()"
                    class="md-primary">
             Execute

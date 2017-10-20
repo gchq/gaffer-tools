@@ -65,7 +65,8 @@ function NavigationController($scope, $rootScope, $mdDialog, navigation, graph, 
           template: '<query-builder aria-label="Query Builder" class="fullWidthDialog"></query-builder>',
           parent: angular.element(document.body),
           targetEvent: ev,
-          clickOutsideToClose: true
+          clickOutsideToClose: true,
+          fullscreen: true
         })
         .then(function(operation) {
             query.addOperation(operation);

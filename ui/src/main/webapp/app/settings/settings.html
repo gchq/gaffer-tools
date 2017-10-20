@@ -22,13 +22,13 @@
         <div layout="column">
             <md-input-container>
                 <label>Default result limit</label>
-                <input type="number" step="1" class="form-control" ng-model="ctrl.resultLimit"
+                <input type="number" step="1" ng-model="ctrl.resultLimit"
                        id="resultLimit" ng-blur="ctrl.updateResultLimit()">
             </md-input-container>
 
             <md-input-container>
                 <label>Default operation</label>
-                <input type="text" ng-blur="ctrl.updateDefaultOp()" class="form-control" ng-model="ctrl.defaultOp"
+                <input type="text" ng-blur="ctrl.updateDefaultOp()" ng-model="ctrl.defaultOp"
                        id="defaultOp">
             </md-input-container>
         </div>

@@ -20,7 +20,7 @@
 </md-toolbar>
 <md-dialog-content>
     <form layout-padding>
-        <div class="md-dialog-content form-group">
+        <div class="md-dialog-content">
             <md-input-container layout-fill>
                 <label>Vertex</label>
                 <md-select
@@ -38,7 +38,6 @@
                         <input id="seedVertex{{field.key}}"
                                type="{{field.type}}"
                                step="{{field.step}}"
-                               class="form-control"
                                ng-model="ctrl.seedVertexParts[field.key]"/>
                     </md-input-container>
                 </div>

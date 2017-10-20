@@ -34,10 +34,12 @@
                                     <th md-column>
                                         <a ng-click="sortType = 'vertex'; sortReverse = !sortReverse">
                                             Vertex
-                                                    <span ng-show="sortType === 'vertex' && !sortReverse"
-                                                          class="caret"></span>
-                                                    <span ng-show="sortType === 'vertex' && sortReverse"
-                                                          class="caret caret-up"></span>
+                                                <span ng-show="sortType === 'vertex' && !sortReverse">
+                                                    <md-icon md-svg-icon="down-arrow"></md-icon>
+                                                </span>
+                                                <span ng-show="sortType === 'vertex' && sortReverse">
+                                                    <md-icon md-svg-icon="up-arrow"></md-icon>
+                                                </span>
                                         </a>
                                     </th>
                                     <th md-column ng-repeat="(name, type) in schemaEntity.properties">
@@ -80,28 +82,34 @@
                                     <th md-column>
                                         <a ng-click="sortType = 'source'; sortReverse = !sortReverse">
                                             Source
-                                                        <span ng-show="sortType === 'source' && !sortReverse"
-                                                              class="caret"></span>
-                                                        <span ng-show="sortType === 'source' && sortReverse"
-                                                              class="caret caret-up"></span>
+                                                <span ng-show="sortType === 'source' && !sortReverse">
+                                                    <md-icon md-svg-icon="down-arrow"></md-icon>
+                                                </span>
+                                                <span ng-show="sortType === 'source' && sortReverse">
+                                                    <md-icon md-svg-icon="up-arrow"></md-icon>
+                                                </span>
                                         </a>
                                     </th>
                                     <th md-column>
                                         <a ng-click="sortType = 'destination'; sortReverse = !sortReverse">
                                             Destination
-                                                        <span ng-show="sortType === 'destination' && !sortReverse"
-                                                              class="caret"></span>
-                                                        <span ng-show="sortType === 'destination' && sortReverse"
-                                                              class="caret caret-up"></span>
+                                                <span ng-show="sortType === 'destination' && !sortReverse">
+                                                    <md-icon md-svg-icon="down-arrow"></md-icon>
+                                                </span>
+                                                <span ng-show="sortType === 'destination' && sortReverse">
+                                                    <md-icon md-svg-icon="up-arrow"></md-icon>
+                                                </span>
                                         </a>
                                     </th>
                                     <th md-column>
                                         <a ng-click="sortType = 'directed'; sortReverse = !sortReverse">
                                             Directed
-                                                        <span ng-show="sortType === 'directed' && !sortReverse"
-                                                              class="caret"></span>
-                                                        <span ng-show="sortType === 'directed' && sortReverse"
-                                                              class="caret caret-up"></span>
+                                                <span ng-show="sortType === 'directed' && !sortReverse">
+                                                    <md-icon md-svg-icon="down-arrow"></md-icon>
+                                                </span>
+                                                <span ng-show="sortType === 'directed' && sortReverse">
+                                                    <md-icon md-svg-icon="up-arrow"></md-icon>
+                                                </span>
                                         </a>
                                     </th>
                                     <th md-column ng-repeat="(name, type) in schemaEdge.properties">
@@ -148,10 +156,12 @@
                             <th md-column>
                                 <a ng-click="sortType = 'vertex'; sortReverse = !sortReverse">
                                     Vertex
-                                            <span ng-show="sortType === 'vertex' && !sortReverse"
-                                                  class="caret"></span>
-                                            <span ng-show="sortType === 'vertex' && sortReverse"
-                                                  class="caret caret-up"></span>
+                                        <span ng-show="sortType === 'vertex' && !sortReverse">
+                                            <md-icon md-svg-icon="down-arrow"></md-icon>
+                                        </span>
+                                        <span ng-show="sortType === 'vertex' && sortReverse">
+                                            <md-icon md-svg-icon="up-arrow"></md-icon>
+                                        </span>
                                 </a>
                             </th>
                         </tr>
@@ -184,10 +194,12 @@
                             <th md-column>
                                 <a ng-click="sortType = 'value'; sortReverse = !sortReverse">
                                     Value
-                                            <span ng-show="sortType === 'value' && !sortReverse"
-                                                  class="caret"></span>
-                                            <span ng-show="sortType === 'value' && sortReverse"
-                                                  class="caret caret-up"></span>
+                                        <span ng-show="sortType === 'value' && !sortReverse">
+                                            <md-icon md-svg-icon="down-arrow"></md-icon>
+                                        </span>
+                                        <span ng-show="sortType === 'value' && sortReverse">
+                                            <md-icon md-svg-icon="up-arrow"></md-icon>
+                                        </span>
                                 </a>
                             </th>
                         </tr>

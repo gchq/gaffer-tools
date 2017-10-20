@@ -20,5 +20,7 @@ angular.module('app').config(['$mdIconProvider', function($mdIconProvider) {
 
     $mdIconProvider
         .icon('save', 'app/img/save.svg')
-        .icon('info', 'app/img/info.svg');
+        .icon('info', 'app/img/info.svg')
+        .icon('up-arrow', 'app/img/up-arrow.svg')
+        .icon('down-arrow', 'app/img/down-arrow.svg');
 }]);
