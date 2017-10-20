@@ -3972,6 +3972,60 @@ class GafferOperationsTest(unittest.TestCase):
                     }]
                 }
             )
+        ],
+        [
+            '''
+            {
+                "class": "uk.gov.gchq.gaffer.operation.OperationChain",
+                "operations": [{
+                    "class": "uk.gov.gchq.gaffer.operation.impl.Path",
+                    "input": [{
+                        "class": "uk.gov.gchq.gaffer.operation.data.EntitySeed",
+                        "vertex": 1
+                    }],
+                    "operations": [{
+                        "class": "uk.gov.gchq.gaffer.operation.impl.get.GetElements",
+                        "input": [{
+                            "class": "uk.gov.gchq.gaffer.operation.data.EntitySeed",
+                            "vertex": 2
+                        }]
+                    }, {
+                        "class": "uk.gov.gchq.gaffer.operation.impl.get.GetElements",
+                        "input": [{
+                            "class": "uk.gov.gchq.gaffer.operation.data.EntitySeed",
+                            "vertex": 4
+                        }]
+                    }]
+                }]
+            } 
+            ''',
+            g.OperationChain(
+                operations=[
+                    g.Path(
+                        input=[
+                            g.EntitySeed(
+                                vertex=1
+                            )
+                        ],
+                        operations=[
+                            g.GetElements(
+                                input=[
+                                    g.EntitySeed(
+                                        vertex=2
+                                    )
+                                ]
+                            ),
+                            g.GetElements(
+                                input=[
+                                    g.EntitySeed(
+                                        vertex=4
+                                    )
+                                ]
+                            )
+                        ]
+                    )
+                ]
+            )
         ]
     ]
 

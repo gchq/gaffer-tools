@@ -2835,6 +2835,46 @@ class ScoreOperationChain(Operation):
 
         return operation
 
+class Path(Operation):
+    CLASS = 'uk.gov.gchq.gaffer.operation.impl.Path'
+
+    def __init__(self,
+                 operations=None,
+                 input=None,
+                 options=None):
+        super().__init__(_class_name=self.CLASS,
+                         options=options)
+        self.operations = None
+        self.input = input
+
+        if operations is not None:
+            self.operations = []
+            for op in operations:
+                if not isinstance(op, GetElements):
+                    op = JsonConverter.from_json(
+                        op, GetElements)
+                self.operations.append(op)
+
+
+    def to_json(self):
+        operation = super().to_json()
+        if self.input is not None:
+            entity_seed_json = []
+            for entity_seed in self.input:
+                entity_seed_json.append(entity_seed.to_json)
+            operation['input'] = entity_seed_json
+
+        if self.operations is not None:
+            operations_json = []
+            for operation in self.operations:
+                if isinstance(operation, GetElements):
+                    operations_json.append(operation.to_json())
+                else:
+                    operations_json.append(operation)
+            operation['operations'] = operations_json
+
+        return operation
+
 class GetGraph:
     def get_url(self):
         return self.url
