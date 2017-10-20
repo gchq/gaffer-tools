@@ -4,7 +4,6 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.By;
-import org.openqa.selenium.Dimension;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -91,9 +90,6 @@ public class QueryBuilderST {
         slowFactor = Integer.parseInt(System.getProperty(SLOW_FACTOR_PROPERTY, DEFAULT_SLOW_FACTOR));
         driver = new FirefoxDriver();
 
-        // Create a large window to ensure we don't need to scroll
-        final Dimension dimension = new Dimension(1200, 1000);
-//        driver.manage().window().setSize(dimension);
         driver.manage().window().maximize();
     }
 
@@ -124,7 +120,7 @@ public class QueryBuilderST {
         click("select-all-seeds");
         scrollQueryBuilder();
         click("related-edge-RoadUse");
-        jsClick("RoadUse-add-pre-filter");
+        click("RoadUse-add-pre-filter");
         selectOption("RoadUse-pre-property-selector", "startDate");
         selectOption("RoadUse-pre-startDate-predicate-selector", "uk.gov.gchq.koryphe.impl.predicate.IsMoreThan");
         enterText("RoadUse-pre-startDate-uk.gov.gchq.koryphe.impl.predicate.IsMoreThan-value", "{\"java.util.Date\": 971416800000}");
@@ -144,7 +140,7 @@ public class QueryBuilderST {
     }
 
     private void scrollQueryBuilder() {
-        ((JavascriptExecutor) driver).executeScript("$('query-builder').parent()[0].scrollTop += 100");
+        execute("$('query-builder').parent()[0].scrollTop += 100");
     }
 
     private void enterText(final String id, final String value) {
@@ -152,8 +148,6 @@ public class QueryBuilderST {
     }
 
     private void selectOption(final String id, final String optionValue) throws InterruptedException {
-//        Select dropdown = new Select(getElement(id));
-//        dropdown.selectByValue("string:" + optionValue);
         getElement(id).click();
 
         WebElement choice = driver.findElement(By.cssSelector("md-option[value = '" + optionValue + "']"));
@@ -165,18 +159,6 @@ public class QueryBuilderST {
     private void click(final String id) throws InterruptedException {
         getElement(id).click();
         Thread.sleep(slowFactor * 500);
-    }
-
-    private void scrollToElement(final String id) {
-        // Will Fail CI
-        WebElement element = driver.findElement(By.id(id));
-        ((JavascriptExecutor) driver).executeScript("arguments[0].moveToElement(true);", element);
-    }
-
-    private void jsClick(final String id) {
-        JavascriptExecutor jse = (JavascriptExecutor) driver;
-        jse.executeScript("document.getElementById('" + id + "').click()");
-
     }
 
     private void clickTab(final String tabTitle) {

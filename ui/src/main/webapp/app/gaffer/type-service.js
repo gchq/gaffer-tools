@@ -46,7 +46,7 @@ angular.module('app').factory('types', ['config', function(config) {
 
 
         type.createValue = function(typeClass, parts) {
-            if(type.wrapInJson || Object.keys(parts).length > 1) {
+            if((type.wrapInJson && Object.keys(parts)[0] !== 'undefined') || Object.keys(parts).length > 1) {
                 return parts;
             }
 

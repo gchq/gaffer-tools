@@ -99,41 +99,45 @@
                     <div ng-show="ctrl.selectedOp.parameters">
                         <label for="parameters">Parameters</label>
 
-                        <table id="parameters"
-                               class="table table-striped">
-                            <tbody>
-                            <tr>
-                                <th>
+                        <table md-table id="parameters">
+                            <thead md-head>
+                            <tr md-row>
+                                <th md-column>
                                     Name
                                 </th>
-                                <th>
+                                <th md-column>
                                     Description
                                 </th>
-                                <th>
+                                <th md-column>
                                     Required
                                 </th>
-                                <th>
+                                <th md-column>
                                     Value
                                 </th>
                             </tr>
-                            <tr ng-repeat="(name, detail) in ctrl.selectedOp.parameters">
-                                <td>
+                            </thead>
+                            <tbody md-body>
+                            <tr ng-repeat="(name, detail) in ctrl.selectedOp.parameters" md-row>
+                                <td md-cell>
                                     {{name}}
                                 </td>
-                                <td>
+                                <td md-cell>
                                     {{detail.description}}
                                 </td>
-                                <td>
+                                <td md-cell>
                                     {{detail.required}}
                                 </td>
-                                <td>
-                                    <div ng-repeat="type in ctrl.getFields({{detail.valueClass}})">
-                                        <label for="param-{{name}}-{{type.key}}">{{type.label}}:</label>
-                                        <input id="param-{{name}}-{{type.key}}"
-                                               type="{{type.type}}"
-                                               step="{{type.step}}"
-                                               class="form-control"
-                                               ng-model="detail.parts[type.key]"/>
+                                <td md-cell>
+                                    <div layout="row" layout-wrap>
+                                        <div ng-repeat="field in ctrl.getFields(detail.valueClass)">
+                                            <md-input-container>
+                                                <label>{{field.label}}</label>
+                                                <input id="param-{{name}}-{{field.key}}"
+                                                       type="{{field.type}}"
+                                                       step="{{field.step}}"
+                                                       ng-model="detail.parts[field.key]"/>
+                                            </md-input-container>
+                                        </div>
                                     </div>
                                 </td>
                             </tr>
