@@ -1775,9 +1775,9 @@ class GetOperation(Operation):
 
         if self.seed_matching_type is not None:
             operation['seedMatching'] = self.seed_matching_type
-        if self.directed_type is not None:
-            operation['directedType'] = self.directed_type
         if self.include_incoming_out_going is not None:
+            if self.directed_type is not None:
+                operation['directedType'] = self.directed_type
             operation[
                 'includeIncomingOutGoing'] = self.include_incoming_out_going
         return operation
@@ -2815,6 +2815,7 @@ class Transform(Operation):
 
         return operation
 
+
 class ScoreOperationChain(Operation):
     CLASS = 'uk.gov.gchq.gaffer.operation.impl.ScoreOperationChain'
 
@@ -2825,15 +2826,17 @@ class ScoreOperationChain(Operation):
             raise TypeError('Operation Chain is required')
 
         if not isinstance(operation_chain, OperationChain):
-            operation_chain = JsonConverter.from_json(operation_chain, OperationChain)
+            operation_chain = JsonConverter.from_json(operation_chain,
+                                                      OperationChain)
 
-        self.operation_chain=operation_chain
+        self.operation_chain = operation_chain
 
     def to_json(self):
         operation = super().to_json()
         operation['operationChain'] = self.operation_chain.to_json()
 
         return operation
+
 
 class Path(Operation):
     CLASS = 'uk.gov.gchq.gaffer.operation.impl.Path'
@@ -2855,25 +2858,22 @@ class Path(Operation):
                         op, GetElements)
                 self.operations.append(op)
 
-
     def to_json(self):
         operation = super().to_json()
         if self.input is not None:
             entity_seed_json = []
             for entity_seed in self.input:
-                entity_seed_json.append(entity_seed.to_json)
+                entity_seed_json.append(entity_seed.to_json())
             operation['input'] = entity_seed_json
 
         if self.operations is not None:
             operations_json = []
-            for operation in self.operations:
-                if isinstance(operation, GetElements):
-                    operations_json.append(operation.to_json())
-                else:
-                    operations_json.append(operation)
+            for op in self.operations:
+                operations_json.append(op.to_json())
             operation['operations'] = operations_json
 
         return operation
+
 
 class GetGraph:
     def get_url(self):
