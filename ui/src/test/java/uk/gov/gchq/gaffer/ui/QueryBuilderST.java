@@ -162,7 +162,7 @@ public class QueryBuilderST {
     }
 
     private void clickTab(final String tabTitle) {
-        driver.findElement(By.xpath("//md-tab-item[contains(text(), 'Results')]")).click();
+        driver.findElement(By.xpath("//md-tab-item//span[contains(text(), '" + tabTitle + "')]")).click();
     }
 
     private void execute(final String script) {
