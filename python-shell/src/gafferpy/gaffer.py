@@ -2837,11 +2837,17 @@ class ScoreOperationChain(Operation):
 
         return operation
 
+class GetGraph:
+    def get_url(self):
+        return self.url
 
-class GetSchema(Operation):
+class GetSchema(Operation, GetGraph):
     CLASS = 'uk.gov.gchq.gaffer.store.operation.GetSchema'
 
-    def __init__(self, compact, options=None):
+    def __init__(self,
+                 compact=None,
+                 options=None,
+                 url=None):
         super().__init__(_class_name=self.CLASS,
                          options=options)
 
@@ -2849,6 +2855,8 @@ class GetSchema(Operation):
             self.compact = compact
         else:
             self.compact = False
+
+        self.url = '/graph/config/schema'
 
     def to_json(self):
         operation = super().to_json()
@@ -2859,14 +2867,9 @@ class GetSchema(Operation):
         return operation
 
 
-class GetGraph:
-    def get_url(self):
-        return self.url
-
-
-class GetSchema(GetGraph):
-    def __init__(self, url=None):
-        self.url = '/graph/config/schema'
+# class GetSchema(GetGraph):
+#     def __init__(self, url=None):
+#         self.url = '/graph/config/schema'
 
 
 class GetFilterFunctions(GetGraph):
