@@ -39,10 +39,10 @@ angular.module('app').factory('functions', ['$http', 'schema', 'config', 'common
         var queryUrl = common.parseUrl(config.get().restEndpoint + "/graph/config/filterFunctions/" + className);
 
         $http.get(queryUrl)
-            .then(function(response) {
-                onSuccess(response.data)
-            },
-            function(err) {
+            .success(function(response) {
+                onSuccess(response)
+            })
+            .error(function(err) {
                 alert('Error loading functions for group: ' + group + ', property: ' + property + '.\n' + err);
                 console.log(err)
         });
@@ -52,10 +52,10 @@ angular.module('app').factory('functions', ['$http', 'schema', 'config', 'common
         var queryUrl = common.parseUrl(config.get().restEndpoint + "/graph/config/serialisedFields/" + functionClassName);
 
         $http.get(queryUrl)
-            .then(function(response) {
-                onSuccess(response.data)
-            },
-            function(err) {
+            .success(function(response) {
+                onSuccess(response)
+            })
+            .error(function(err) {
                 alert('Failed to get serialised fields for ' + functionClassName + '.\n' + err)
                 console.log(err);
         });
