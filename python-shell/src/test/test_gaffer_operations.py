@@ -3972,6 +3972,17 @@ class GafferOperationsTest(unittest.TestCase):
                     }]
                 }
             )
+        ],
+        [
+            '''
+            {
+                "class": "uk.gov.gchq.gaffer.store.operation.GetSchema",
+                "compact": true
+            }
+            ''',
+            g.GetSchema(
+                compact=True
+            )
         ]
     ]
 
