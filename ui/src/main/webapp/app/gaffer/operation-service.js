@@ -111,7 +111,7 @@ angular.module('app').factory('operationService', ['$http', 'settings', 'config'
                     console.log(err);
                     alert("Error running /graph/operations: " + err.simpleMessage);
                 }
-                alert("Error running /graph/operations - received no response")
+                alert("Error running /graph/operations - received no response");
                 onUnsupported();
         });
     }

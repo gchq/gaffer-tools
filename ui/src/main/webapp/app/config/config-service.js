@@ -36,7 +36,7 @@ angular.module('app').factory('config', ['$http', '$location', function($http, $
                 onSuccess(response)
             })
             .error(function(err) {
-                console.log(err)
+                console.log(err);
                 alert("Failed to load config");
         });
     }
