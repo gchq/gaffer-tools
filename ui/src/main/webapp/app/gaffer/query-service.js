@@ -41,8 +41,13 @@ angular.module('app').factory('query', ['$http', 'config', '$q', 'common', funct
                 onSuccess(results)
              })
              .error(function(err) {
-                alert("Error executing operation: " + err.statusCode + " - " + err.status);
-                console.log(err)
+                 var errorString = 'Error executing operation';
+                 if (err && err !== "") {
+                     alert(errorString + err.simpleMessage);
+                     console.log(err);
+                 } else {
+                     alert(errorString);
+                 }
              });
     }
 
