@@ -2838,8 +2838,8 @@ class ScoreOperationChain(Operation):
         return operation
 
 
-class Path(Operation):
-    CLASS = 'uk.gov.gchq.gaffer.operation.impl.Path'
+class GetWalks(Operation):
+    CLASS = 'uk.gov.gchq.gaffer.operation.impl.GetWalks'
 
     def __init__(self,
                  operations=None,

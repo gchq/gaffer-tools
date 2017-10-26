@@ -3978,7 +3978,7 @@ class GafferOperationsTest(unittest.TestCase):
             {
                 "class": "uk.gov.gchq.gaffer.operation.OperationChain",
                 "operations": [{
-                    "class": "uk.gov.gchq.gaffer.operation.impl.Path",
+                    "class": "uk.gov.gchq.gaffer.operation.impl.GetWalks",
                     "input": [{
                         "class": "uk.gov.gchq.gaffer.operation.data.EntitySeed",
                         "vertex": 1
@@ -4001,7 +4001,7 @@ class GafferOperationsTest(unittest.TestCase):
             ''',
             g.OperationChain(
                 operations=[
-                    g.Path(
+                    g.GetWalks(
                         input=[
                             g.EntitySeed(
                                 vertex=1
