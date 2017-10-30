@@ -1,80 +1,81 @@
-<div layout-fill class="container">
-    <div ng-cloak layout-fill>
-        <md-content layout-fill>
-            <md-tabs layout-fill md-max-height md-border-bottom>
-                <md-tab label="Query">
-                    <md-content class="md-padding">
-                        <h3>
-                            Operations
+<!--
+  ~ Copyright 2017 Crown Copyright
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+<div ng-cloak>
+    <md-tabs md-max-height md-dynamic-height md-border-bottom>
+        <md-tab label="Query">
+            <md-content class="md-padding">
+                <h3>
+                    Operations
 
-                            <button class="btn btn-primary"
-                                    ng-show="!editingOperations"
-                                    ng-click="editOperations()">
-                                Edit
-                            </button>
+                    <button class="btn btn-primary"
+                            ng-show="!ctrl.editingOperations"
+                            ng-click="ctrl.editOperations()">
+                        Edit
+                    </button>
 
-                            <button class="btn btn-primary"
-                                    ng-show="editingOperations"
-                                    ng-click="saveOperations()">
-                                Save
-                            </button>
+                    <button class="btn btn-primary"
+                            ng-show="ctrl.editingOperations"
+                            ng-click="ctrl.saveOperations()">
+                        Save
+                    </button>
 
-                        </h3>
+                </h3>
 
-                        <div ng-repeat="(i, json) in operations track by $index">
-                            <pre id="operation-{{i}}-json"
-                                 ng-show="!editingOperations">
-                                {{operations[i] | json}}
-                            </pre>
-                            <textarea id="editing-operation-{{i}}-json"
-                                      ng-model="operationsForEdit[i]"
-                                      ng-blur="onOperationsChange()"
-                                      ng-show="editingOperations">>
-                            </textarea>
-                        </div>
+                <div ng-show="!ctrl.editingOperations" ng-repeat="(i, json) in ctrl.operations track by $index">
+                    <pre id="operation-{{i}}-json">{{ctrl.operations[i] | json}}</pre>
+                </div>
+                <div ng-show="ctrl.editingOperations" ng-repeat="(i, json) in ctrl.operationsForEdit track by $index">
+                    <textarea id="editing-operation-{{i}}-json"
+                           ng-model="ctrl.operationsForEdit[i]">
+                    </textarea>
+                </div>
 
-                        <!--<div>-->
-                        <button class="btn btn-primary"
-                                ng-click="addOperation()">
-                            Add Operation
-                        </button>
-                        <!--</div>-->
-                    </md-content>
-                </md-tab>
-                <md-tab label="Results">
-                    <md-content class="md-padding">
-                        <h3>Results</h3>
+                <!--<div>-->
+                <button class="btn btn-primary"
+                        ng-show="ctrl.editingOperations"
+                        ng-click="ctrl.addOperation()">
+                    Add Operation
+                </button>
+                <!--</div>-->
+            </md-content>
+        </md-tab>
+        <md-tab label="Results">
+            <md-content class="md-padding">
+                <h3>Results</h3>
 
-                        <div ng.show="rawData.results.entities">
-                            <h4>Entities</h4>
-                            <pre id="raw-entity-results">
-                                {{rawData.results.entities | json}}
-                            </pre>
-                        </div>
+                <div ng.show="ctrl.results.entities">
+                    <h4>Entities</h4>
+                    <pre id="raw-entity-results">{{ctrl.results.entities | json}}</pre>
+                </div>
 
-                        <div ng.show="rawData.results.edges">
-                            <h4>Edges</h4>
-                            <pre id="raw-edge-results">
-                                {{rawData.results.edges | json}}
-                            </pre>
-                        </div>
+                <div ng.show="ctrl.results.edges">
+                    <h4>Edges</h4>
+                    <pre id="raw-edge-results">{{ctrl.results.edges | json}}</pre>
+                </div>
 
-                        <div ng.show="rawData.results.entitySeeds">
-                            <h4>Seeds</h4>
-                            <pre id="raw-entity-seed-results">
-                                {{rawData.results.entitySeeds | json}}
-                            </pre>
-                        </div>
+                <div ng.show="ctrl.results.entitySeeds">
+                    <h4>Seeds</h4>
+                    <pre id="raw-entity-seed-results">{{ctrl.results.entitySeeds | json}}</pre>
+                </div>
 
-                        <div ng.show="rawData.results.other">
-                            <h4>Other</h4>
-                            <pre id="raw-other-results">
-                                {{rawData.results.other | json}}
-                            </pre>
-                        </div>
-                    </md-content>
-                </md-tab>
-            </md-tabs>
-        </md-content>
-    </div>
+                <div ng.show="ctrl.results.other">
+                    <h4>Other</h4>
+                    <pre id="raw-other-results">{{ctrl.results.other | json}}</pre>
+                </div>
+            </md-content>
+        </md-tab>
+    </md-tabs>
 </div>

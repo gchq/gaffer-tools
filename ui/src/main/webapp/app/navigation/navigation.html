@@ -1,58 +1,68 @@
+<!--
+  ~ Copyright 2017 Crown Copyright
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
 <nav class="navbar navbar-default navbar-fixed-top">
 
     <div class="container">
         <div class="navbar-header">
-            <a class="navbar-brand" href=".">Gaffer UI</a>
+            <a class="navbar-brand" href="#/graph">Gaffer UI</a>
         </div>
         <div id="navbar">
             <ul class="nav navbar-nav">
-                <li ng-class="{ active: nav.showGraph }">
-                    <a id="open-graph"
-                       href="#graph"
-                       ng-click="nav.openGraph()">Graph</a>
+                <li>
+                    <a id="open-graph" href="#/graph">Graph</a>
                 </li>
-                <li ng-class="{ active: nav.showResultsTable }">
-                    <a id="open-table"
-                       href="#resultsTable"
-                       ng-click="nav.openResultsTable()">Table</a>
+                <li>
+                    <a id="open-table" href="#/table">Table</a>
                 </li>
-                <li ng-class="{ active: nav.showRaw }">
-                    <a id="open-raw" href="#raw"
-                       ng-click="nav.openRaw()">Raw</a>
+                <li>
+                    <a id="open-raw" href="#/raw">Raw</a>
                 </li>
-                <li ng-class="{ active: nav.showSettings }">
-                    <a id="open-settings" href="#settings"
-                       ng-click="nav.openSettings()">Settings</a>
+                <li>
+                    <a id="open-settings" href="#/settings">Settings</a>
                 </li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
                 <li>
-                    <md-progress-circular ng-show="rawData.loading"
+                    <md-progress-circular ng-show="ctrl.loading"
                                           md-mode="indeterminate"
                                           md-diameter="30"
                                           style="margin-top: 5px; margin-right: 10px;">
                     </md-progress-circular>
                 </li>
                 <li><a class="nav-button">
-                    <button id="add-seed" ng-click="addSeedPrompt()"
+                    <button id="add-seed" ng-click="ctrl.addSeedPrompt($event)"
                             class="btn btn-primary">Add Seed
                     </button>
                 </a></li>
                 <li><a class="nav-button"
                        ng-show="seeds.length != 0 || operations.length != 0">
                     <button id="build-query"
-                            ng-click="openBuildQueryDialog()"
+                            ng-click="ctrl.openBuildQueryDialog()"
                             class="btn btn-primary">Build query
                     </button>
                 </a></li>
                 <li><a class="nav-button">
-                    <button ng-click="executeAll()"
+                    <button ng-click="ctrl.executeAll()"
                             class="btn btn-default">Execute All
                     </button>
                 </a></li>
                 <li><a class="nav-button"
-                       ng-show="nav.showGraph">
-                    <button ng-click="redraw()"
+                       ng-show="ctrl.isGraphInView()">
+                    <button ng-click="ctrl.redraw()"
                             class="btn btn-default">Redraw
                     </button>
                 </a></li>

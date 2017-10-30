@@ -16,17 +16,31 @@
 
 'use strict'
 
-angular.module('app').controller('MainCtrl', ['schema', 'settings', 'config', 'graph', 'operationService', function(schema, settings, config, graph, operationService) {
+angular.module('app').factory('config', ['$http', '$location', function($http, $location) {
 
-    var defaultRestEndpoint = window.location.origin + "/rest/latest";
+    var configService = {};
 
-    config.load(function(conf) {
-        if (!conf.restEndpoint) {
-            conf.restEndpoint = defaultRestEndpoint;
-        }
-        config.set(conf);
-        operationService.reloadNamedOperations();
-        schema.load();
-        graph.load();
-    });
-}]);
+    var config = {};
+
+    configService.get = function() {
+        return config;
+    }
+
+    configService.set = function(conf) {
+        config = conf;
+    }
+
+    configService.load = function(onSuccess) {
+        $http.get('config/config.json')
+        .success(function(results) {
+            onSuccess(results);
+        })
+        .error(function(err) {
+            console.log(err);
+            alert("Failed to load config");
+        });
+    }
+
+    return configService;
+
+}])
