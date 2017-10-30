@@ -138,6 +138,12 @@ angular.module('app').factory('operationService', ['$http', 'settings', 'config'
         };
     }
 
+    // function to be called when config is loaded
+    operationService.initialise = function() {
+        updateNamedOperations([]); // load default operations from config
+        operationService.reloadNamedOperations();
+    }
+
     return operationService;
 
 }]);

@@ -25,7 +25,7 @@ angular.module('app').controller('MainCtrl', ['schema', 'settings', 'config', 'g
             conf.restEndpoint = defaultRestEndpoint;
         }
         config.set(conf);
-        operationService.reloadNamedOperations();
+        operationService.initialise();
         schema.load();
         graph.load();
     });
