@@ -27,7 +27,12 @@
                 <md-tab label="Choose operation"
                         ng-disabled="ctrl.step != 0">
                     <md-content class="md-padding">
-                        <h3>Select operation</h3>
+                        <div layout="row" layout-padding layout-align="start center">
+                            <h3>Select operation</h3>
+                            <button type="button" class="btn btn-default" ng-click="ctrl.refreshNamedOperations()">
+                                Refresh
+                            </button>
+                        </div>
 
                         <input ng-model="ctrl.opSearchTerm" type="text"
                                class="form-control"

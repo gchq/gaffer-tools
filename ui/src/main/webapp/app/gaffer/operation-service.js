@@ -16,12 +16,13 @@
 
 'use strict'
 
-angular.module('app').factory('operationService', ['$http', 'settings', 'config', 'query', 'types', 'common', function($http, settings, config, query, types, common) {
+angular.module('app').factory('operationService', ['$http', '$q', 'settings', 'config', 'query', 'types', 'common', function($http, $q, settings, config, query, types, common) {
 
     var operationService = {};
 
     var availableOperations = [];
     var namedOpClass = "uk.gov.gchq.gaffer.named.operation.NamedOperation";
+    var defer = $q.defer();
 
     operationService.getAvailableOperations = function() {
         return availableOperations;
@@ -78,20 +79,30 @@ angular.module('app').factory('operationService', ['$http', 'settings', 'config'
                 }
             }
         }
+
+        defer.resolve(availableOperations);
     }
 
     operationService.reloadNamedOperations = function() {
+        defer = $q.defer();
         var getAllClass = "uk.gov.gchq.gaffer.named.operation.GetAllNamedOperations";
         ifOperationSupported(getAllClass, function() {
-            query.execute(JSON.stringify(
-                {
-                    class: getAllClass
-                }
-            ), updateNamedOperations);
+            try {
+                query.execute(JSON.stringify(
+                    {
+                        class: getAllClass
+                    }
+                ), updateNamedOperations);
+            } catch (err) {
+                console.log(err);
+                updateNamedOperations([]);
+            }
         },
         function() {
             updateNamedOperations([]);
         });
+
+        return defer.promise;
 
     }
 
@@ -136,12 +147,6 @@ angular.module('app').factory('operationService', ['$http', 'settings', 'config'
         return {
             class: "uk.gov.gchq.gaffer.operation.impl.Count"
         };
-    }
-
-    // function to be called when config is loaded
-    operationService.initialise = function() {
-        updateNamedOperations([]); // load default operations from config
-        operationService.reloadNamedOperations();
     }
 
     return operationService;

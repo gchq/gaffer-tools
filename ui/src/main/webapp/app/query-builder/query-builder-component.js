@@ -79,6 +79,12 @@ function QueryBuilderController($scope, operationService, types, graph, config, 
        vm.step = vm.step - 1;
     }
 
+    vm.refreshNamedOperations = function() {
+        operationService.reloadNamedOperations().then(function(availableOps) {
+            vm.availableOperations = availableOps;
+        });
+    }
+
     vm.showOperations = function(operations) {
         var newWindow = $window.open('about:blank', '', '_blank');
         var prettyOps;
