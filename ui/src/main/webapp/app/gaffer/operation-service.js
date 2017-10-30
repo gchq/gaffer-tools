@@ -83,20 +83,24 @@ angular.module('app').factory('operationService', ['$http', '$q', 'settings', 'c
         defer.resolve(availableOperations);
     }
 
-    operationService.reloadNamedOperations = function() {
+    operationService.reloadNamedOperations = function(loud) {
         defer = $q.defer();
         var getAllClass = "uk.gov.gchq.gaffer.named.operation.GetAllNamedOperations";
         ifOperationSupported(getAllClass, function() {
-            try {
-                query.execute(JSON.stringify(
-                    {
-                        class: getAllClass
-                    }
-                ), updateNamedOperations);
-            } catch (err) {
-                console.log(err);
+            query.execute(JSON.stringify(
+                {
+                    class: getAllClass
+                }
+            ),
+            updateNamedOperations,
+            function(err) {
                 updateNamedOperations([]);
-            }
+                if (loud) {
+                    console.log(err);
+                    alert('Failed to reload named operations: ' + err.simpleMessage);
+                }
+            });
+
         },
         function() {
             updateNamedOperations([]);

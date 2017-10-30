@@ -80,7 +80,7 @@ function QueryBuilderController($scope, operationService, types, graph, config, 
     }
 
     vm.refreshNamedOperations = function() {
-        operationService.reloadNamedOperations().then(function(availableOps) {
+        operationService.reloadNamedOperations(true).then(function(availableOps) {
             vm.availableOperations = availableOps;
         });
     }
