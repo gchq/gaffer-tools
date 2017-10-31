@@ -14,4 +14,11 @@
  * limitations under the License.
  */
 
-angular.module('app', ['ngMaterial', 'ngRoute', 'md.data.table']);
+'use strict'
+
+angular.module('app').config(['$mdThemingProvider', function($mdThemingProvider) {
+
+    $mdThemingProvider.theme('default')
+        .primaryPalette('teal')
+        .accentPalette('orange');
+}]);

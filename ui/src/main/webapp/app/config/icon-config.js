@@ -14,4 +14,14 @@
  * limitations under the License.
  */
 
-angular.module('app', ['ngMaterial', 'ngRoute', 'md.data.table']);
+'use strict'
+
+angular.module('app').config(['$mdIconProvider', function($mdIconProvider) {
+
+    $mdIconProvider
+        .icon('save', 'app/img/save.svg')
+        .icon('info', 'app/img/info.svg')
+        .icon('up-arrow', 'app/img/up-arrow.svg')
+        .icon('down-arrow', 'app/img/down-arrow.svg')
+        .icon('refresh', 'app/img/refresh.svg');
+}]);
