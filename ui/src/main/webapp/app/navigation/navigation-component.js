@@ -59,8 +59,7 @@ function NavigationController($scope, $rootScope, $mdDialog, navigation, graph, 
                 graph.addSeed(seeds[i].vertexType, JSON.stringify(seeds[i].vertex));
             }
         })
-        .catch(() => {}); // throw away possibly unhandled rejection errors
-
+        .catch(function(){}); // throw away possibly unhandled rejection errors
     }
 
     vm.openBuildQueryDialog = function(ev) {
@@ -81,7 +80,7 @@ function NavigationController($scope, $rootScope, $mdDialog, navigation, graph, 
                 results.update(data);
             })
         })
-        .catch(() => {}); // throw away possibly unhandled rejection errors
+        .catch(function(){}); // throw away possibly unhandled rejection errors
     }
 
     vm.isGraphInView = function() {
