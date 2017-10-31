@@ -31,8 +31,8 @@ angular.module('app').factory('graph', ['schema', 'types', '$q', 'results', 'com
 
     results.observe().then(null, null, function(results) {
         graph.update(results);
-        graph.redraw()
-    })
+        graph.redraw();
+    });
 
     graph.getSelectedEntities = function() {
         return selectedEntities;

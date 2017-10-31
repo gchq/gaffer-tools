@@ -48,14 +48,10 @@ function GraphController($scope, graph, results, $timeout) {
             })
         }
     });
-
+  
     $timeout(function(evt) {
         graph.load().then(function(cy) {
             graph.reload();
         })
-    })
-
-
-
-
+    });
 }

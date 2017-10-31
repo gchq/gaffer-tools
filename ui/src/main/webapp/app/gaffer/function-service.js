@@ -73,4 +73,4 @@ angular.module('app').factory('functions', ['$http', 'schema', 'config', 'common
 
     return functions;
 
-}])
+}]);

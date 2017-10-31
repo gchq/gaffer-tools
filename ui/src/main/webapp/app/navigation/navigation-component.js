@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+
 angular.module('app').component('navBar', navBar());
 
 function navBar() {
@@ -25,6 +26,7 @@ function navBar() {
 }
 
 function NavigationController($scope, $rootScope, $mdDialog, navigation, graph, operationService, results, query, config) {
+
     var vm = this;
     vm.loading = false;
     vm.addMultipleSeeds = false;
@@ -58,6 +60,7 @@ function NavigationController($scope, $rootScope, $mdDialog, navigation, graph, 
             }
         })
         .catch(() => {}); // throw away possibly unhandled rejection errors
+
     }
 
     vm.openBuildQueryDialog = function(ev) {
