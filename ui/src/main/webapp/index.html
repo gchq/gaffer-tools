@@ -31,9 +31,11 @@
         <script src="lib/angular/js/angular-animate.min.js"></script>
         <script src="lib/angular/js/angular-material.min.js"></script>
         <script src="lib/angular/js/angular-route.min.js"></script>
+        <script src="lib/md-data-table/js/md-data-table.min.js"></script>
         <!-- app -->
         <script src="app/app.js"></script>
         <!-- services -->
+        <script src="app/navigation/navigation-service.js"></script>
         <script src="app/config/config-service.js"></script>
         <script src="app/common/common-service.js"></script>
         <script src="app/gaffer/function-service.js"></script>
@@ -53,21 +55,24 @@
         <script src="app/seed-builder/seed-builder-component.js"></script>
         <script src="app/settings/settings-component.js"></script>
         <script src="app/table/table-component.js"></script>
-        <!-- route -->
-        <script src="app/navigation/route-config.js"></script>
+        <!-- config -->
+        <script src="app/config/theme-config.js"></script>
+        <script src="app/config/route-config.js"></script>
+        <script src="app/config/icon-config.js"></script>
         <!-- controller -->
         <script src="app/controller.js"></script>
 
         <link href="lib/angular/css/angular-material.min.css" rel="stylesheet">
-        <link href="lib/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-        <link href="lib/bootstrap/css/bootstrap-theme.min.css" rel="stylesheet">
+        <link href="lib/md-data-table/css/md-data-table.min.css" rel="stylesheet">
         <link href="css/style.css" rel="stylesheet"/>
     </head>
 
     <body ng-cloak ng-app="app" ng-controller="MainCtrl">
-        <div layout="column">
-            <navigation></navigation>
-            <ng-view></ng-view>
+        <div layout="column" class="content" flex>
+            <nav-bar></nav-bar>
+            <div layout="row" class="content" flex>
+                <ng-view class="content" flex></ng-view>
+            </div>
         </div>
     </body>
 </html>

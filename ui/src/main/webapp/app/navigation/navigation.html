@@ -14,59 +14,27 @@
   ~ limitations under the License.
   -->
 
-<nav class="navbar navbar-default navbar-fixed-top">
+<md-nav-bar aria-label="navigation bar" md-selected-nav-item="ctrl.currentPage" ng-cloak>
+    <div layout="row" layout-align="space-around center" layout-fill>
 
-    <div class="container">
-        <div class="navbar-header">
-            <a class="navbar-brand" href="#/graph">Gaffer UI</a>
+        <h1 class="md-headline title">Gaffer UI</h1>
+
+        <div layout="row">
+            <md-nav-item name="graph" id="open-graph" md-nav-click="ctrl.goTo('graph')">Graph</md-nav-item>
+            <md-nav-item name="table" id="open-table" md-nav-click="ctrl.goTo('table')">Table</md-nav-item>
+            <md-nav-item name="raw" id="open-raw" md-nav-click="ctrl.goTo('raw')">Raw</md-nav-item>
+            <md-nav-item name="settings" id="open-settings" md-nav-click="ctrl.goTo('settings')">Settings</md-nav-item>
         </div>
-        <div id="navbar">
-            <ul class="nav navbar-nav">
-                <li>
-                    <a id="open-graph" href="#/graph">Graph</a>
-                </li>
-                <li>
-                    <a id="open-table" href="#/table">Table</a>
-                </li>
-                <li>
-                    <a id="open-raw" href="#/raw">Raw</a>
-                </li>
-                <li>
-                    <a id="open-settings" href="#/settings">Settings</a>
-                </li>
-            </ul>
-            <ul class="nav navbar-nav navbar-right">
-                <li>
-                    <md-progress-circular ng-show="ctrl.loading"
-                                          md-mode="indeterminate"
-                                          md-diameter="30"
-                                          style="margin-top: 5px; margin-right: 10px;">
-                    </md-progress-circular>
-                </li>
-                <li><a class="nav-button">
-                    <button id="add-seed" ng-click="ctrl.addSeedPrompt($event)"
-                            class="btn btn-primary">Add Seed
-                    </button>
-                </a></li>
-                <li><a class="nav-button"
-                       ng-show="seeds.length != 0 || operations.length != 0">
-                    <button id="build-query"
-                            ng-click="ctrl.openBuildQueryDialog()"
-                            class="btn btn-primary">Build query
-                    </button>
-                </a></li>
-                <li><a class="nav-button">
-                    <button ng-click="ctrl.executeAll()"
-                            class="btn btn-default">Execute All
-                    </button>
-                </a></li>
-                <li><a class="nav-button"
-                       ng-show="ctrl.isGraphInView()">
-                    <button ng-click="ctrl.redraw()"
-                            class="btn btn-default">Redraw
-                    </button>
-                </a></li>
-            </ul>
+        <div layout="row">
+            <md-progress-circular ng-show="ctrl.loading"
+                                  md-mode="indeterminate"
+                                  md-diameter="30"
+                                  style="margin-top: 5px; margin-right: 10px;">
+            </md-progress-circular>
+            <md-button class="md-raised md-primary" id="add-seed" ng-click="ctrl.addSeedPrompt($event)">Add Seed</md-button>
+            <md-button class="md-raised md-primary" id="build-query" ng-click="ctrl.openBuildQueryDialog($event)">Build Query</md-button>
+            <md-button class="md-raised" id="execute-all" ng-click="ctrl.executeAll()">Execute All</md-button>
+            <md-button class="md-raised" id="redraw" ng-disabled="!ctrl.isGraphInView()" ng-click="ctrl.redraw()">Redraw</md-button>
         </div>
     </div>
-</nav>
+</md-nav-bar>

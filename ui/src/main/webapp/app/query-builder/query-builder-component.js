@@ -108,9 +108,9 @@ function QueryBuilderController($scope, operationService, types, graph, config, 
     vm.getEdgeProperties = schema.getEdgeProperties;
     vm.exists = common.arrayContainsValue;
 
-    vm.cancel = function() {
+    vm.cancel = function(event) {
         resetQueryBuilder();
-        $mdDialog.cancel();
+        $mdDialog.cancel(event);
     }
 
     vm.toggle = function(item, list) {

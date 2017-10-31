@@ -14,9 +14,10 @@
  * limitations under the License.
  */
 
-angular.module('app').component('navigation', navigation());
 
-function navigation() {
+angular.module('app').component('navBar', navBar());
+
+function navBar() {
     return {
         templateUrl: 'app/navigation/navigation.html',
         controller: NavigationController,
@@ -24,10 +25,26 @@ function navigation() {
     };
 }
 
-function NavigationController($scope, $mdDialog, $location, graph, operationService, results, query, config) {
+function NavigationController($scope, $rootScope, $mdDialog, navigation, graph, operationService, results, query, config) {
+
     var vm = this;
     vm.loading = false;
     vm.addMultipleSeeds = false;
+
+    vm.currentPage = navigation.getCurrentPage();
+
+    navigation.observeCurrentPage().then(null, null, function(newCurrentPage) {
+        vm.currentPage = newCurrentPage
+    })
+
+    vm.goTo = navigation.goTo;
+
+    $rootScope.$on('$routeChangeSuccess', function (event, current) {
+        var newPage = current.originalPath.substr(1);
+        if (newPage !== vm.currentPage) {
+            navigation.goTo(newPage);
+        }
+    });
 
     vm.addSeedPrompt = function(ev) {
         $mdDialog.show({
@@ -41,7 +58,8 @@ function NavigationController($scope, $mdDialog, $location, graph, operationServ
             for(var i in seeds) {
                 graph.addSeed(seeds[i].vertexType, JSON.stringify(seeds[i].vertex));
             }
-        });
+        })
+        .catch(function(){}); // throw away possibly unhandled rejection errors
     }
 
     vm.openBuildQueryDialog = function(ev) {
@@ -49,7 +67,8 @@ function NavigationController($scope, $mdDialog, $location, graph, operationServ
           template: '<query-builder aria-label="Query Builder" class="fullWidthDialog"></query-builder>',
           parent: angular.element(document.body),
           targetEvent: ev,
-          clickOutsideToClose: true
+          clickOutsideToClose: true,
+          fullscreen: true
         })
         .then(function(operation) {
             query.addOperation(operation);
@@ -60,11 +79,12 @@ function NavigationController($scope, $mdDialog, $location, graph, operationServ
                 loading = false;
                 results.update(data);
             })
-        });
+        })
+        .catch(function(){}); // throw away possibly unhandled rejection errors
     }
 
     vm.isGraphInView = function() {
-        return $location.path() === '/graph';
+        return vm.currentPage === 'graph';
     }
 
     vm.redraw = function() {

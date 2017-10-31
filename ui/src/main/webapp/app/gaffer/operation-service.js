@@ -55,7 +55,7 @@ angular.module('app').factory('operationService', ['$http', '$q', 'settings', 'c
             for (var i in results) {
                 if(opAllowed(results[i].operationName)) {
                     if(results[i].parameters) {
-                        for(j in results[i].parameters) {
+                        for(var j in results[i].parameters) {
                             results[i].parameters[j].value = results[i].parameters[j].defaultValue;
                             if(results[i].parameters[j].defaultValue) {
                                 var valueClass = results[i].parameters[j].valueClass;
@@ -114,21 +114,21 @@ angular.module('app').factory('operationService', ['$http', '$q', 'settings', 'c
         var queryUrl = common.parseUrl(config.get().restEndpoint + "/graph/operations");
 
         $http.get(queryUrl)
-        .success(function(ops) {
-            if (ops.indexOf(operationClass) !== -1) {
-                onSupported();
-                return;
-            }
-            onUnsupported();
-        })
-        .error(function(err) {
-            if (err !== "") {
-                console.log(err);
-                alert("Error running /graph/operations: " + err.simpleMessage);
-            } else {
-                alert("Error running /graph/operations - received no response");
-            }
-            onUnsupported();
+            .success(function(ops) {
+                if (ops.indexOf(operationClass) !== -1) {
+                    onSupported();
+                    return;
+                }
+                onUnsupported();
+            })
+            .error(function(err) {
+                if (err !== "") {
+                    console.log(err);
+                    alert("Error running /graph/operations: " + err.simpleMessage);
+                } else {
+                    alert("Error running /graph/operations - received no response");
+                }
+                onUnsupported();
         });
     }
 

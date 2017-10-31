@@ -31,7 +31,8 @@ angular.module('app').factory('graph', ['schema', 'types', '$q', 'results', 'com
 
     results.observe().then(null, null, function(results) {
         graph.update(results);
-    })
+        graph.redraw();
+    });
 
     graph.getSelectedEntities = function() {
         return selectedEntities;
@@ -185,16 +186,9 @@ angular.module('app').factory('graph', ['schema', 'types', '$q', 'results', 'com
         fire('onSelectedElementsUpdate', [{"entities": selectedEntities, "edges": selectedEdges}]);
     }
 
-    graph.reload = function(results) {
-        graph.load();
-        if (results.entities.length === 0 &&
-        results.edges.length === 0 &&
-        results.entitySeeds.length === 0) {
-
-            updateGraph(graphData);
-        } else {
-            graph.update(results);
-        }
+    graph.reload = function() {
+        updateGraph(graphData);
+        graph.redraw();
     }
 
     graph.reset = function() {
@@ -267,7 +261,6 @@ angular.module('app').factory('graph', ['schema', 'types', '$q', 'results', 'com
         }
 
         updateGraph(graphData);
-        graph.redraw();
     }
 
     var updateGraph = function(results) {

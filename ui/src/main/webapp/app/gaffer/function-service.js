@@ -39,15 +39,17 @@ angular.module('app').factory('functions', ['$http', 'schema', 'config', 'common
         var queryUrl = common.parseUrl(config.get().restEndpoint + "/graph/config/filterFunctions/" + className);
 
         $http.get(queryUrl)
-        .success(onSuccess)
-        .error(function(err) {
-            var errorString = 'Error loading functions for group: ' + group + ', property: ' + property + '.\n'
-            if (err && err !== "") {
-                alert(errorString + err.simpleMessage);
-                console.log(err);
-            } else {
-                alert(errorString);
-            }
+            .success(function(response) {
+                onSuccess(response)
+            })
+            .error(function(err) {
+                var errorString = 'Error loading functions for group: ' + group + ', property: ' + property + '.\n';
+                if (err && err !== "") {
+                    alert(errorString + err.simpleMessage);
+                    console.log(err);
+                } else {
+                    alert(errorString);
+                }
         });
     }
 
@@ -55,18 +57,20 @@ angular.module('app').factory('functions', ['$http', 'schema', 'config', 'common
         var queryUrl = common.parseUrl(config.get().restEndpoint + "/graph/config/serialisedFields/" + functionClassName);
 
         $http.get(queryUrl)
-        .success(onSuccess)
-        .error(function(err) {
-            var errorString = 'Failed to get serialised fields for ' + functionClassName + '.\n';
-            if (err && err !== "") {
-                alert(errorString + err.simpleMessage);
-                console.log(err);
-            } else {
-                alert(errorString);
-            }
+            .success(function(response) {
+                onSuccess(response)
+            })
+            .error(function(err) {
+                var errorString = 'Failed to get serialised fields for ' + functionClassName + '.\n';
+                if (err && err !== "") {
+                    alert(errorString + err.simpleMessage);
+                    console.log(err);
+                } else {
+                    alert(errorString);
+                }
         });
     }
 
     return functions;
 
-}])
+}]);

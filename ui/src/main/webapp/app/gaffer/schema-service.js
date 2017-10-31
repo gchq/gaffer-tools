@@ -41,19 +41,19 @@ angular.module('app').factory('schema', ['$http', 'config', '$q', 'common', func
         var queryUrl = common.parseUrl(config.get().restEndpoint + "/graph/config/schema");
 
         $http.get(queryUrl)
-        .success(function(data){
-            schema = data;
-            updateSchemaVertices()
-            defer.notify(schema);
-        })
-        .error(function(err) {
-            if (err !== "") {
-                alert("Unable to load schema: " + err.simpleMessage);
-                console.log(err);
-            } else {
-                alert("Unable to load schema. Received no response");
-            }
-        })
+            .success(function(response){
+                schema = response;
+                updateSchemaVertices()
+                defer.notify(schema)
+            })
+            .error(function(err) {
+                if (err !== "") {
+                    alert("Unable to load schema: " + err.simpleMessage);
+                    console.log(err);
+                } else {
+                    alert("Unable to load schema. Received no response");
+                }
+        });
     }
 
     var updateSchemaVertices = function() {

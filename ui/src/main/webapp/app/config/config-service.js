@@ -32,12 +32,12 @@ angular.module('app').factory('config', ['$http', '$location', function($http, $
 
     configService.load = function(onSuccess) {
         $http.get('config/config.json')
-        .success(function(results) {
-            onSuccess(results);
-        })
-        .error(function(err) {
-            console.log(err);
-            alert("Failed to load config");
+            .success(function(response) {
+                onSuccess(response)
+            })
+            .error(function(err) {
+                console.log(err);
+                alert("Failed to load config");
         });
     }
 
