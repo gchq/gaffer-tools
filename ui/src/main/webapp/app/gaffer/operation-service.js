@@ -16,12 +16,13 @@
 
 'use strict'
 
-angular.module('app').factory('operationService', ['$http', 'settings', 'config', 'query', 'types', 'common', function($http, settings, config, query, types, common) {
+angular.module('app').factory('operationService', ['$http', '$q', 'settings', 'config', 'query', 'types', 'common', function($http, $q, settings, config, query, types, common) {
 
     var operationService = {};
 
     var availableOperations = [];
     var namedOpClass = "uk.gov.gchq.gaffer.named.operation.NamedOperation";
+    var defer = $q.defer();
 
     operationService.getAvailableOperations = function() {
         return availableOperations;
@@ -78,20 +79,34 @@ angular.module('app').factory('operationService', ['$http', 'settings', 'config'
                 }
             }
         }
+
+        defer.resolve(availableOperations);
     }
 
-    operationService.reloadNamedOperations = function() {
+    operationService.reloadNamedOperations = function(loud) {
+        defer = $q.defer();
         var getAllClass = "uk.gov.gchq.gaffer.named.operation.GetAllNamedOperations";
         ifOperationSupported(getAllClass, function() {
             query.execute(JSON.stringify(
                 {
                     class: getAllClass
                 }
-            ), updateNamedOperations);
+            ),
+            updateNamedOperations,
+            function(err) {
+                updateNamedOperations([]);
+                if (loud) {
+                    console.log(err);
+                    alert('Failed to reload named operations: ' + err.simpleMessage);
+                }
+            });
+
         },
         function() {
             updateNamedOperations([]);
         });
+
+        return defer.promise;
 
     }
 
