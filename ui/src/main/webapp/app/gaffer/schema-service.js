@@ -50,8 +50,9 @@ angular.module('app').factory('schema', ['$http', 'config', '$q', 'common', func
                 if (err !== "") {
                     alert("Unable to load schema: " + err.simpleMessage);
                     console.log(err);
+                } else {
+                    alert("Unable to load schema. Received no response");
                 }
-                alert("Unable to load schema. Received no response");
         });
     }
 
