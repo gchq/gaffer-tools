@@ -37,16 +37,21 @@
                                 <thead md-head>
                                 <tr md-row>
                                     <th md-column>
-                                        <a
-                                                ng-click="sortType = 'name'; sortReverse = !sortReverse">
-                                            Name
-                                                    <span ng-show="sortType === 'name' && !sortReverse">
-                                                        <md-icon md-svg-icon="down-arrow"></md-icon>
-                                                    </span>
-                                                    <span ng-show="sortType === 'name' && sortReverse">
-                                                        <md-icon md-svg-icon="up-arrow"></md-icon>
-                                                    </span>
-                                        </a>
+                                        <div layout="row" layout-align="space-around center">
+                                            <a
+                                                    ng-click="sortType = 'name'; sortReverse = !sortReverse">
+                                                Name
+                                                        <span ng-show="sortType === 'name' && !sortReverse">
+                                                            <md-icon md-svg-icon="down-arrow"></md-icon>
+                                                        </span>
+                                                        <span ng-show="sortType === 'name' && sortReverse">
+                                                            <md-icon md-svg-icon="up-arrow"></md-icon>
+                                                        </span>
+                                            </a>
+                                            <md-button class="md-icon-button" aria-label="refresh named operations" ng-click="ctrl.refreshNamedOperations()">
+                                                <md-icon md-svg-icon="refresh"></md-icon>
+                                            </md-button>
+                                        </div>
                                     </th>
                                     <th md-column>
                                         Description

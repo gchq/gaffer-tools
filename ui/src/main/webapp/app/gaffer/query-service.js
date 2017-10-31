@@ -31,24 +31,28 @@ angular.module('app').factory('query', ['$http', 'config', '$q', 'common', funct
         return defer.promise;
     }
 
-    query.execute = function(operationChain, onSuccess) {
+    query.execute = function(operationChain, onSuccess, onFailure) {
         var queryUrl = config.get().restEndpoint + "/graph/operations/execute";
 
         queryUrl = common.parseUrl(queryUrl);
 
         $http.post(queryUrl, operationChain)
-            .success(function(response){
-                onSuccess(response)
+            .success(function(results){
+                onSuccess(results)
             })
             .error(function(err) {
-                var errorString = 'Error executing operation';
-                if (err && err !== "") {
-                    alert(errorString + err.simpleMessage);
-                    console.log(err);
+                if (onFailure) {
+                    onFailure(err);
                 } else {
-                    alert(errorString);
+                    var errorString = 'Error executing operation';
+                    if (err && err !== "") {
+                        alert(errorString + err.simpleMessage);
+                        console.log(err);
+                    } else {
+                        alert(errorString);
+                    }
                 }
-        });
+             });
     }
 
     query.addOperation = function(operation) {
