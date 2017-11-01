@@ -16,19 +16,19 @@
 
 'use strict'
 
-angular.module('app').controller('MainCtrl', ['schema', 'settings', 'config', 'graph', 'operationService', 'queryPage', function(schema, settings, config, graph, operationService, queryPage) {
+angular.module('app').factory('queryPage', ['$q', function($q) {
+    var service = {}
 
-    var defaultRestEndpoint = window.location.origin + "/rest/latest";
+    var defer = $q.defer();
 
-    config.load(function(conf) {
-        if (!conf.restEndpoint) {
-            conf.restEndpoint = defaultRestEndpoint;
-        }
-        config.set(conf);
-        operationService.reloadNamedOperations().then(function(availableOps) {
-            queryPage.initialise();
-        });
-        schema.load();
-        graph.load();
-    });
+    service.waitUntilReady = function() {
+        return defer.promise;
+    }
+
+    service.initialise = function() {
+        defer.resolve();
+    }
+
+    return service;
+
 }]);
