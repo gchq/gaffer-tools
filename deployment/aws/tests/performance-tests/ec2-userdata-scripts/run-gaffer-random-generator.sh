@@ -5,7 +5,7 @@ sudo yum remove -y java-1.7.0-openjdk
 sudo yum install -y java-1.8.0-openjdk-devel
 
 MAVEN_VERSION=3.5.0
-MAVEN_DOWNLOAD_URL=http://www.mirrorservice.org/sites/ftp.apache.org/maven/maven-3/$MAVEN_VERSION/binaries/apache-maven-$MAVEN_VERSION-bin.tar.gz
+MAVEN_DOWNLOAD_URL=https://archive.apache.org/dist/maven/maven-3/$MAVEN_VERSION/binaries/apache-maven-$MAVEN_VERSION-bin.tar.gz
 function install_dev_tools {
 	# Install git
 	if ! which git >/dev/null 2>&1; then
