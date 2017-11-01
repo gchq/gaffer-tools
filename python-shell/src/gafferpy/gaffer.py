@@ -2835,6 +2835,79 @@ class ScoreOperationChain(Operation):
 
         return operation
 
+class GetGraphFrameOfElements(Operation):
+    CLASS = 'uk.gov.gchq.gaffer.spark.operation.graphframe.GetGraphFrameOfElements'
+
+    def __init__(self,
+                 spark_session,
+                 converters,
+                 directed_type,
+                 view=None,
+                 options=None):
+        super().__init__(_class_name=self.CLASS,
+                         view=view,
+                         options=options)
+        if spark_session is None:
+            raise TypeError('SparkSession is required')
+
+        self.spark_session = spark_session
+        self.converters = converters
+        if isinstance(directed_type, str):
+            self.directed_type = directed_type
+        elif directed_type:
+            self.directed_type = DirectedType.DIRECTED
+        else:
+            self.directed_type = DirectedType.UNDIRECTED
+
+    def to_json(self):
+        operation = super().to_json()
+        if self.spark_session is not None:
+            operation['sparkSession'] = self.spark_session.to_json()
+        if self.converters is not None:
+            converters_json = []
+            for converter in self.converters:
+                converters_json.append(converter.to_json())
+            operation['converters'] = converters_json
+        if self.directed_type is not None:
+            operation['directedType'] = self.directed_type
+
+        return operation
+
+class PageRank(Operation):
+    CLASS = 'uk.gov.gchq.gaffer.spark.operation.graphframe.PageRank'
+
+    def __init__(self,
+                 input,
+                 tolerance,
+                 max_iterations,
+                 options=None):
+        super().__init__(_class_name=self.CLASS,
+                         options=options)
+        if tolerance is not None:
+            if max_iterations is not None:
+                raise TypeError('Must not specify both Max Iterations as well as Tolerance')
+            self.tolerance = tolerance
+
+        if tolerance is None:
+            if max_iterations is None:
+                raise TypeError('One of Max Iterations or Tolerance must be specified')
+            self.max_iterations = max_iterations
+
+        self.input = input
+
+    def to_json(self):
+        operation = super().to_json()
+        if self.tolerance is not None:
+            operation['tolerance'] = self.tolerance
+
+        if self.max_iterations is not None:
+            operation['maxIterations'] = self.max_iterations
+
+        if self.input is not None:
+            operation['input'] = self.input.to_json()
+
+        return operation
+
 class GetGraph:
     def get_url(self):
         return self.url
