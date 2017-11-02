@@ -28,10 +28,6 @@ pre {
     font-family: Roboto,Helvetica Neue,sans-serif;
 }
 
-.fullWidthDialog {
-    min-width: 940px;
-}
-
 md-icon svg {
     fill: inherit;
 }

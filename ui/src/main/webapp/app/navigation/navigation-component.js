@@ -62,20 +62,6 @@ function NavigationController($scope, $rootScope, $mdDialog, navigation, graph, 
         .catch(function(){}); // throw away possibly unhandled rejection errors
     }
 
-    vm.openBuildQueryDialog = function(ev) {
-        $mdDialog.show({
-          template: '<query-builder aria-label="Query Builder" class="fullWidthDialog"></query-builder>',
-          parent: angular.element(document.body),
-          targetEvent: ev,
-          clickOutsideToClose: true,
-          fullscreen: true
-        })
-        .then(function(operation) {
-
-        })
-        .catch(function(){}); // throw away possibly unhandled rejection errors
-    }
-
     vm.isGraphInView = function() {
         return vm.currentPage === 'graph';
     }
