@@ -31,73 +31,10 @@
 
                 <md-tab label="Configure Operation"
                         ng-disabled="ctrl.step != 1">
-                    <div ng-show="ctrl.selectedOp.input">
-                        <h3 class="md-headline">
-                            Selected seeds
-                            <md-button id="select-all-seeds"
-                                       ng-click="ctrl.selectAllSeeds()"
-                                       class="md-raised">
-                                Select all
-                            </md-button>
-                        </h3>
+                    <div ng-show="ctrl.selectedOp.input"></div>
 
-                        <p ng-repeat="(vertex, entities) in ctrl.selectedEntities">
-                            {{vertex}}
-                        </p>
 
-                        <p ng-show="!ctrl.selectedEntities || ctrl.selectedEntities.length == 0">
-                            No seeds selected.
-                        </p>
-                    </div>
 
-                    <div ng-show="ctrl.selectedOp.parameters">
-                        <label for="parameters">Parameters</label>
-
-                        <table md-table id="parameters">
-                            <thead md-head>
-                            <tr md-row>
-                                <th md-column>
-                                    Name
-                                </th>
-                                <th md-column>
-                                    Description
-                                </th>
-                                <th md-column>
-                                    Required
-                                </th>
-                                <th md-column>
-                                    Value
-                                </th>
-                            </tr>
-                            </thead>
-                            <tbody md-body>
-                            <tr ng-repeat="(name, detail) in ctrl.selectedOp.parameters" md-row>
-                                <td md-cell>
-                                    {{name}}
-                                </td>
-                                <td md-cell>
-                                    {{detail.description}}
-                                </td>
-                                <td md-cell>
-                                    {{detail.required}}
-                                </td>
-                                <td md-cell>
-                                    <div layout="row" layout-wrap>
-                                        <div ng-repeat="field in ctrl.getFields(detail.valueClass)">
-                                            <md-input-container>
-                                                <label>{{field.label}}</label>
-                                                <input id="param-{{name}}-{{field.key}}"
-                                                       type="{{field.type}}"
-                                                       step="{{field.step}}"
-                                                       ng-model="detail.parts[field.key]"/>
-                                            </md-input-container>
-                                        </div>
-                                    </div>
-                                </td>
-                            </tr>
-                            </tbody>
-                        </table>
-                    </div>
 
                     <div ng-show="ctrl.selectedOp.view">
                         <h3 class="md-headline">Configure View</h3>

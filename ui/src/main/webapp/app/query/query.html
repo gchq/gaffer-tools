@@ -11,43 +11,43 @@
                 <md-table-container>
                     <table md-table md-row-select ng-model="ctrl.selectedOp">
                         <thead md-head>
-                        <tr md-row>
-                            <th md-column>
-                                <a
-                                        ng-click="sortType = 'name'; sortReverse = !sortReverse">
-                                    Name
-                                                            <span ng-show="sortType === 'name' && !sortReverse">
-                                                                <md-icon md-svg-icon="down-arrow"></md-icon>
-                                                            </span>
-                                                            <span ng-show="sortType === 'name' && sortReverse">
-                                                                <md-icon md-svg-icon="up-arrow"></md-icon>
-                                                            </span>
-                                </a>
-                            </th>
-                            <th md-column>
-                                Description
-                            </th>
-                        </tr>
+                            <tr md-row>
+                                <th md-column>
+                                    <a
+                                            ng-click="sortType = 'name'; sortReverse = !sortReverse">
+                                        Name
+                                                                <span ng-show="sortType === 'name' && !sortReverse">
+                                                                    <md-icon md-svg-icon="down-arrow"></md-icon>
+                                                                </span>
+                                                                <span ng-show="sortType === 'name' && sortReverse">
+                                                                    <md-icon md-svg-icon="up-arrow"></md-icon>
+                                                                </span>
+                                    </a>
+                                </th>
+                                <th md-column>
+                                    Description
+                                </th>
+                            </tr>
                         </thead>
                         <tbody md-body>
-                        <tr md-row md-select="op" md-select-id="name"  md-auto-select ng-repeat="op in ctrl.availableOperations | orderBy:sortType:sortReverse | filter:ctrl.opSearchTerm">
-                            <td md-cell>
-                                <a id="{{op.name}}">
-                                    {{op.name}}
-                                </a>
-                            </td>
-                            <td md-cell>
-                                {{op.description}}
-                            </td>
-                            <td md-cell>
-                                <md-button class="md-icon-button"
-                                           ng-click="ctrl.showOperations(op.operations)"
-                                           aria-label="show operations"
-                                           ng-show="op.operations">
-                                    <md-icon md-svg-icon="info"></md-icon>
-                                </md-button>
-                            </td>
-                        </tr>
+                            <tr md-row md-select="op" md-select-id="name"  md-auto-select ng-repeat="op in ctrl.availableOperations | orderBy:sortType:sortReverse | filter:ctrl.opSearchTerm">
+                                <td md-cell>
+                                    <a id="{{op.name}}">
+                                        {{op.name}}
+                                    </a>
+                                </td>
+                                <td md-cell>
+                                    {{op.description}}
+                                </td>
+                                <td md-cell>
+                                    <md-button class="md-icon-button"
+                                               ng-click="ctrl.showOperations(op.operations)"
+                                               aria-label="show operations"
+                                               ng-show="op.operations">
+                                        <md-icon md-svg-icon="info"></md-icon>
+                                    </md-button>
+                                </td>
+                            </tr>
                         </tbody>
                     </table>
                 </md-table-container>
@@ -83,5 +83,59 @@
                 </md-button>
             </div>
         </md-card-actions>
+    </md-card>
+
+    <md-card ng-show="ctrl.getSelectedOp().parameters">
+        <md-card-title>
+            <md-card-title-text>
+                <span class="md-headline">Parameters</span>
+            </md-card-title-text>
+        </md-card-title>
+        <md-card-content>
+            <table md-table id="parameters">
+                <thead md-head>
+                    <tr md-row>
+                        <th md-column>
+                            Name
+                        </th>
+                        <th md-column>
+                            Description
+                        </th>
+                        <th md-column>
+                            Required
+                        </th>
+                        <th md-column>
+                            Value
+                        </th>
+                    </tr>
+                </thead>
+                <tbody md-body>
+                    <tr ng-repeat="(name, detail) in ctrl.selectedOp.parameters" md-row>
+                        <td md-cell>
+                            {{name}}
+                        </td>
+                        <td md-cell>
+                            {{detail.description}}
+                        </td>
+                        <td md-cell>
+                            {{detail.required}}
+                        </td>
+                        <td md-cell>
+                            <div layout="row" layout-wrap>
+                                <div ng-repeat="field in ctrl.getFields(detail.valueClass)">
+                                    <md-input-container>
+                                        <label>{{field.label}}</label>
+                                        <input id="param-{{name}}-{{field.key}}"
+                                               type="{{field.type}}"
+                                               step="{{field.step}}"
+                                               ng-model="detail.parts[field.key]"/>
+                                    </md-input-container>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </md-card-content>
     </md-card>
 </div>
