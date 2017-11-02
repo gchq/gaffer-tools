@@ -2815,6 +2815,25 @@ class Transform(Operation):
 
         return operation
 
+class ScoreOperationChain(Operation):
+    CLASS = 'uk.gov.gchq.gaffer.operation.impl.ScoreOperationChain'
+
+    def __init__(self, operation_chain, options=None):
+        super().__init__(_class_name=self.CLASS,
+                         options=options)
+        if operation_chain is None:
+            raise TypeError('Operation Chain is required')
+
+        if not isinstance(operation_chain, OperationChain):
+            operation_chain = JsonConverter.from_json(operation_chain, OperationChain)
+
+        self.operation_chain=operation_chain
+
+    def to_json(self):
+        operation = super().to_json()
+        operation['operationChain'] = self.operation_chain.to_json()
+
+        return operation
 
 class GetGraph:
     def get_url(self):
