@@ -3972,6 +3972,59 @@ class GafferOperationsTest(unittest.TestCase):
                     }]
                 }
             )
+        ],
+        [
+            '''
+            {
+                "class" : "uk.gov.gchq.gaffer.spark.operation.graphframe.GetGraphFrameOfElements",
+                "directedType" : "DIRECTED",
+                "view" : {
+                    "entities" : {
+                        "entity" : {}
+                    },
+                    "edges" : {
+                        "edge" : {}
+                    }
+                }
+            }
+            ''',
+            g.GetGraphFrameOfElements(
+                directed_type="DIRECTED",
+                view=g.View(
+                    edges=[
+                        g.ElementDefinition(
+                            group="edge"
+                        )
+                    ],
+                    entities=[
+                        g.ElementDefinition(
+                            group="entity"
+                        )
+                    ]
+                )
+            )
+        ],
+        [
+            '''
+            {
+                "class" : "uk.gov.gchq.gaffer.spark.operation.graphframe.PageRank",
+                "tolerance" : 0.01
+            }
+            ''',
+            g.PageRank(
+                tolerance=0.01
+            )
+        ],
+        [
+           '''
+           {
+                "class" : "uk.gov.gchq.gaffer.spark.operation.graphframe.PageRank",
+                "maxIterations" : 20
+           }
+           ''',
+            g.PageRank(
+                max_iterations=20
+            )
         ]
     ]
 
