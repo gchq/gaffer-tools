@@ -101,10 +101,6 @@ function QueryController($scope, queryPage, operationService, types, graph, conf
     vm.getEdgeProperties = schema.getEdgeProperties;
     vm.exists = common.arrayContainsValue;
 
-    vm.cancel = function(event) {
-        resetQueryBuilder();
-    }
-
     vm.toggle = function(item, list) {
         var idx = list.indexOf(item);
         if(idx > -1) {
@@ -170,13 +166,21 @@ function QueryController($scope, queryPage, operationService, types, graph, conf
     vm.execute = function() {
         var operation = createOperation();
         query.addOperation(operation);
-            query.execute(JSON.stringify({
-                class: "uk.gov.gchq.gaffer.operation.OperationChain",
-                operations: [operation, operationService.createLimitOperation(), operationService.createDeduplicateOperation()]
-            }), function(data) {
-                results.update(data);
-                navigation.goTo('graph')
-            })
+        query.execute(JSON.stringify({
+            class: "uk.gov.gchq.gaffer.operation.OperationChain",
+            operations: [operation, operationService.createLimitOperation(), operationService.createDeduplicateOperation()]
+        }), function(data) {
+            results.update(data);
+            navigation.goTo('graph');
+            resetViewConfig();
+        });
+    }
+
+    var resetViewConfig = function() {
+        vm.expandEntities = [];
+        vm.expandEdges = [];
+        vm.expandEntitiesContent = {};
+        vm.expandEdgesContent = {};
     }
 
     var createOpInput = function() {
