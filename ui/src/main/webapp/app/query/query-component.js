@@ -43,13 +43,12 @@ function QueryController($scope, queryPage, operationService, types, graph, conf
     vm.selectedEdges = graph.getSelectedEdges();
     vm.inOutFlag = "EITHER";
     vm.availableOperations;
-    vm.selectedOp;
+    vm.selectedOp = [];
 
     // watches
 
     queryPage.waitUntilReady().then(function() {
        vm.availableOperations = operationService.getAvailableOperations();
-       vm.selectedOp = vm.availableOperations[0]
     });
 
     graph.onSelectedElementsUpdate(function(selectedElements) {
@@ -65,16 +64,18 @@ function QueryController($scope, queryPage, operationService, types, graph, conf
         vm.relatedEdges = relatedEdges;
     });
 
+    // functions
 
-    vm.onSelectedOpChange = function(op){
-        vm.selectedOp = op;
-        vm.goToNextStep();
-    }
+    vm.keyValuePairs = common.keyValuePairs;
 
     vm.refreshNamedOperations = function() {
         operationService.reloadNamedOperations(true).then(function(availableOps) {
             vm.availableOperations = availableOps;
         });
+    }
+
+    vm.getSelectedOp = function() {
+        return vm.selectedOp[0];
     }
 
     vm.showOperations = function(operations) {
