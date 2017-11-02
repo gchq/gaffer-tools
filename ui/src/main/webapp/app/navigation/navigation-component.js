@@ -71,14 +71,7 @@ function NavigationController($scope, $rootScope, $mdDialog, navigation, graph, 
           fullscreen: true
         })
         .then(function(operation) {
-            query.addOperation(operation);
-            query.execute(JSON.stringify({
-                class: "uk.gov.gchq.gaffer.operation.OperationChain",
-                operations: [operation, operationService.createLimitOperation(), operationService.createDeduplicateOperation()]
-            }), function(data) {
-                loading = false;
-                results.update(data);
-            })
+
         })
         .catch(function(){}); // throw away possibly unhandled rejection errors
     }

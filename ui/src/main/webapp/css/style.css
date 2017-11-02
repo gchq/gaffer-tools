@@ -35,3 +35,7 @@ pre {
 md-icon svg {
     fill: inherit;
 }
+
+.submit-bottom-right {
+    position: fixed !important;
+}

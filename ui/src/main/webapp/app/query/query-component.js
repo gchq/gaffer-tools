@@ -27,7 +27,7 @@ function query() {
     };
 }
 
-function QueryController($scope, queryPage, operationService, types, graph, config, settings, query, functions, schema, common, $window) {
+function QueryController($scope, queryPage, operationService, types, graph, config, settings, query, functions, schema, common, results, navigation, $window) {
 
     var vm = this;
 
@@ -169,7 +169,14 @@ function QueryController($scope, queryPage, operationService, types, graph, conf
 
     vm.execute = function() {
         var operation = createOperation();
-        resetQueryBuilder();
+        query.addOperation(operation);
+            query.execute(JSON.stringify({
+                class: "uk.gov.gchq.gaffer.operation.OperationChain",
+                operations: [operation, operationService.createLimitOperation(), operationService.createDeduplicateOperation()]
+            }), function(data) {
+                results.update(data);
+                navigation.goTo('graph')
+            })
     }
 
     var createOpInput = function() {
@@ -231,15 +238,16 @@ function QueryController($scope, queryPage, operationService, types, graph, conf
     }
 
     var createOperation = function() {
+        var selectedOp = vm.getSelectedOp()
         var op = {
-             class: vm.selectedOp.class
+             class: selectedOp.class
         };
 
-        if(vm.selectedOp.namedOp) {
-            op.operationName = vm.selectedOp.name;
+        if(selectedOp.namedOp) {
+            op.operationName = selectedOp.name;
         }
 
-        if (vm.selectedOp.input) {
+        if (selectedOp.input) {
            var jsonVertex;
            for(var vertex in vm.selectedEntities) {
                try {
@@ -251,16 +259,16 @@ function QueryController($scope, queryPage, operationService, types, graph, conf
            }
         }
 
-        if (vm.selectedOp.parameters) {
+        if (selectedOp.parameters) {
             var opParams = {};
-            for(name in vm.selectedOp.parameters) {
-                var valueClass = vm.selectedOp.parameters[name].valueClass;
-                opParams[name] = types.getType(valueClass).createValue(valueClass, vm.selectedOp.parameters[name].parts);
+            for(name in selectedOp.parameters) {
+                var valueClass = selectedOp.parameters[name].valueClass;
+                opParams[name] = types.getType(valueClass).createValue(valueClass, selectedOp.parameters[name].parts);
             }
             op.parameters = opParams;
         }
 
-        if (vm.selectedOp.view) {
+        if (selectedOp.view) {
             op.view = {
                 globalElements: [{
                     groupBy: []
@@ -297,18 +305,10 @@ function QueryController($scope, queryPage, operationService, types, graph, conf
             }
         }
 
-        if (vm.selectedOp.inOutFlag) {
+        if (selectedOp.inOutFlag) {
             op.includeIncomingOutGoing = vm.inOutFlag;
         }
 
         return op;
-    }
-
-    var resetQueryBuilder = function() {
-        vm.expandEdges = [];
-        vm.expandEntities = [];
-        vm.expandQueryCounts = undefined;
-        vm.expandEntitiesContent = {};
-        vm.expandEdgesContent = {};
     }
 }
