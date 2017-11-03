@@ -146,8 +146,8 @@ Resources:
         EmrManagedMasterSecurityGroup: !If [SecurityGroupsManagedByStack, !Ref EmrMasterManagedSecurityGroup, !Ref "AWS::NoValue"]
         EmrManagedSlaveSecurityGroup: !If [SecurityGroupsManagedByStack, !Ref EmrSlaveManagedSecurityGroup, !Ref "AWS::NoValue"]
         ServiceAccessSecurityGroup: !If [SecurityGroupsManagedByStack, !Ref EmrServiceSecurityGroup, !Ref "AWS::NoValue"]
-        AdditionalMasterSecurityGroups: !Join [",", [!Join [",", !Ref ExtraEmrSecurityGroups], !Ref EmrMasterSecurityGroup]]
-        AdditionalSlaveSecurityGroups: !Join [",", [!Join [",", !Ref ExtraEmrSecurityGroups], !Ref EmrSlaveSecurityGroup]]
+        AdditionalMasterSecurityGroups: !Split [",", !Join [",", [!Join [",", !Ref ExtraEmrSecurityGroups], !Ref EmrMasterSecurityGroup]]]
+        AdditionalSlaveSecurityGroups: !Split [",", !Join [",", [!Join [",", !Ref ExtraEmrSecurityGroups], !Ref EmrSlaveSecurityGroup]]]
         Ec2KeyName: !Ref KeyName
         Ec2SubnetId: !Ref SubnetId
       JobFlowRole: !Ref EmrInstanceProfile
