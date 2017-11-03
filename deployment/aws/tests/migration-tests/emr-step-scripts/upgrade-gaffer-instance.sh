@@ -87,7 +87,7 @@ fi
 
 # Install Apache Maven
 export PATH=$DST/apache-maven-$MAVEN_VERSION/bin:$PATH
-MAVEN_DOWNLOAD_URL=http://www.mirrorservice.org/sites/ftp.apache.org/maven/maven-3/$MAVEN_VERSION/binaries/apache-maven-$MAVEN_VERSION-bin.tar.gz
+MAVEN_DOWNLOAD_URL=https://archive.apache.org/dist/maven/maven-3/$MAVEN_VERSION/binaries/apache-maven-$MAVEN_VERSION-bin.tar.gz
 if [ ! -d "apache-maven-$MAVEN_VERSION" ]; then
 	echo "Downloading Apache Maven $MAVEN_VERSION from $MAVEN_DOWNLOAD_URL"
 	curl -fLO $MAVEN_DOWNLOAD_URL
