@@ -101,25 +101,16 @@ Resources:
         EmrCoreInstanceCount: !Ref EmrCoreInstanceCount
         VpcId: !Ref VpcId
         SubnetId: !Ref SubnetId
-        ExtraSecurityGroups: !Join [",", [!Join [",", Ref: ExtraSecurityGroups], Ref: AllowAccessToWebServerSecurityGroup]]
+        ExtraSecurityGroups: !Join [",", Ref: ExtraSecurityGroups]
         KeyName: !Ref KeyName
         WebInstanceType: !Ref WebInstanceType
         RoadTrafficDataUrl: "https://raw.githubusercontent.com/gchq/Gaffer/master/example/road-traffic/road-traffic-demo/src/main/resources/roadTrafficSampleData.csv"
 
-  AllowAccessToWebServerSecurityGroup:
-    Type: AWS::EC2::SecurityGroup
-    Properties:
-      VpcId: !Ref VpcId
-      GroupDescription: Allows access Gaffer Web Server
-      Tags:
-        - Key: Name
-          Value: !Join ["-", [Ref: "AWS::StackName", "web-server-access"]]
-
-  AllowAccessToWebServerIngressRule:
+  AllowEmrToAccessWebServerIngressRule:
     Type: AWS::EC2::SecurityGroupIngress
     Properties:
-      GroupId: !Ref AllowAccessToWebServerSecurityGroup
-      SourceSecurityGroupId: !Ref AllowAccessToWebServerSecurityGroup
+      GroupId: !Sub ${GafferRoadTraffic.Outputs.WebServerSecurityGroup}
+      SourceSecurityGroupId: !Sub ${GafferRoadTraffic.Outputs.EmrMasterSecurityGroup}
       IpProtocol: tcp
       FromPort: 80
       ToPort: 80
@@ -136,7 +127,9 @@ Resources:
 
   WaitForSystemTestsHandler:
     Type: AWS::CloudFormation::WaitConditionHandle
-    DependsOn: GafferRoadTraffic
+    DependsOn:
+      - GafferRoadTraffic
+      - AllowEmrToAccessWebServerIngressRule
 
   RunSystemTests:
     Type: AWS::EMR::Step
@@ -308,6 +301,10 @@ Outputs:
     Value: !Sub ${GafferRoadTraffic.Outputs.EmrMasterPublicDNS}
   EmrClusterId:
     Value: !Sub ${GafferRoadTraffic.Outputs.EmrClusterId}
+  EmrMasterSecurityGroup:
+    Value: !Sub ${GafferRoadTraffic.Outputs.EmrMasterSecurityGroup}
+  EmrSlaveSecurityGroup:
+    Value: !Sub ${GafferRoadTraffic.Outputs.EmrSlaveSecurityGroup}
   AccumuloInstanceName:
     Value: !Sub ${GafferRoadTraffic.Outputs.AccumuloInstanceName}
   GraphId:
@@ -320,6 +317,8 @@ Outputs:
     Value: !Sub ${GafferRoadTraffic.Outputs.PasswordEncryptionKey}
   WebServerPublicDNS:
     Value: !Sub ${GafferRoadTraffic.Outputs.WebServerPublicDNS}
+  WebServerSecurityGroup:
+    Value: !Sub ${GafferRoadTraffic.Outputs.WebServerSecurityGroup}
   RestApi:
     Value: !Sub ${GafferRoadTraffic.Outputs.RestApi}
   WebUi:

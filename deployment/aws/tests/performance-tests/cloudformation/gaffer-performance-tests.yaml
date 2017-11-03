@@ -283,7 +283,7 @@ Resources:
         EmrCoreInstanceCount: !Ref EmrCoreInstanceCount
         VpcId: !Ref VpcId
         SubnetId: !Ref SubnetId
-        ExtraEmrSecurityGroups: !Join [",", [!Join [",", Ref: ExtraSecurityGroups], Ref: GeneratorAccessToGafferSecurityGroup]]
+        ExtraEmrSecurityGroups: !Join [",", Ref: ExtraSecurityGroups]
         KeyName: !Ref KeyName
         TabletServersPerYarnNode: !Ref TabletServersPerYarnNode
 
@@ -297,20 +297,25 @@ Resources:
         - Key: Name
           Value: !Join ["-", [Ref: "AWS::StackName", "generators"]]
 
-  # Additional security group to be applied to all Gaffer instances that will accept traffic from all generators
-  GeneratorAccessToGafferSecurityGroup:
-    Type: AWS::EC2::SecurityGroup
+  # Additional ingress rules to be applied to all Gaffer instances that will accept traffic from all generators
+
+  GeneratorAccessToEmrMasterIngressRule:
+    Type: AWS::EC2::SecurityGroupIngress
     Properties:
-      VpcId: !Ref VpcId
-      GroupDescription: Allow all generators to connect to the Gaffer instance
-      SecurityGroupIngress:
-        - SourceSecurityGroupId: !Ref GeneratorSecurityGroup
-          IpProtocol: tcp
-          FromPort: 0
-          ToPort: 65535
-      Tags:
-        - Key: Name
-          Value: !Join ["-", [Ref: "AWS::StackName", "generator-gaffer-access"]]
+      GroupId: !Sub ${GafferWithUser.Outputs.EmrMasterSecurityGroup}
+      SourceSecurityGroupId: !Ref GeneratorSecurityGroup
+      IpProtocol: tcp
+      FromPort: 0
+      ToPort: 65535
+
+  GeneratorAccessToEmrSlaveIngressRule:
+    Type: AWS::EC2::SecurityGroupIngress
+    Properties:
+      GroupId: !Sub ${GafferWithUser.Outputs.EmrSlaveSecurityGroup}
+      SourceSecurityGroupId: !Ref GeneratorSecurityGroup
+      IpProtocol: tcp
+      FromPort: 0
+      ToPort: 65535
 
   #####################################
   ## Install Accumulo metric collection
@@ -392,7 +397,10 @@ Resources:
 
   DataGeneratorScalingGroup:
     Type: AWS::AutoScaling::AutoScalingGroup
-    DependsOn: WaitForSplitPointsToBeSet
+    DependsOn:
+      - WaitForSplitPointsToBeSet
+      - GeneratorAccessToEmrMasterIngressRule
+      - GeneratorAccessToEmrSlaveIngressRule
     Properties:
       VPCZoneIdentifier:
         - !Ref SubnetId
@@ -478,7 +486,10 @@ Resources:
 
   QueryGeneratorScalingGroup:
     Type: AWS::AutoScaling::AutoScalingGroup
-    DependsOn: WaitForSplitPointsToBeSet
+    DependsOn:
+      - WaitForSplitPointsToBeSet
+      - GeneratorAccessToEmrMasterIngressRule
+      - GeneratorAccessToEmrSlaveIngressRule
     Properties:
       VPCZoneIdentifier:
         - !Ref SubnetId
@@ -907,6 +918,10 @@ Outputs:
     Value: !Sub ${GafferWithUser.Outputs.EmrMasterPublicDNS}
   EmrClusterId:
     Value: !Sub ${GafferWithUser.Outputs.EmrClusterId}
+  EmrMasterSecurityGroup:
+    Value: !Sub ${GafferWithUser.Outputs.EmrMasterSecurityGroup}
+  EmrSlaveSecurityGroup:
+    Value: !Sub ${GafferWithUser.Outputs.EmrSlaveSecurityGroup}
   AccumuloInstanceName:
     Value: !Sub ${GafferWithUser.Outputs.AccumuloInstanceName}
   UserName:

@@ -162,7 +162,7 @@ Resources:
         EmrCoreInstanceCount: !Ref EmrCoreInstanceCount
         VpcId: !Ref VpcId
         SubnetId: !Ref SubnetId
-        ExtraEmrSecurityGroups: !Join [",", [!Join [",", Ref: ExtraSecurityGroups], Ref: WebServerAccessToGafferSecurityGroup]]
+        ExtraEmrSecurityGroups: !Join [",", Ref: ExtraSecurityGroups]
         KeyName: !Ref KeyName
         ManageSecurityGroups: !Ref ManageSecurityGroups
         GafferInstanceName: !Ref GafferInstanceName
@@ -177,6 +177,7 @@ Resources:
         GafferVersion: !Ref GafferVersion
         GafferToolsVersion: !Ref GafferToolsVersion
         InstanceType: !Ref WebInstanceType
+        VpcId: !Ref VpcId
         SubnetId: !Ref SubnetId
         ExtraSecurityGroups: !Join [",", Ref: ExtraSecurityGroups]
         KeyName: !Ref KeyName
@@ -189,19 +190,23 @@ Resources:
         GafferSchemaJarS3Url: !Ref GafferSchemaJarS3Url
         GafferSchemaJarHttpUrl: !Ref GafferSchemaJarHttpUrl
 
-  WebServerAccessToGafferSecurityGroup:
-    Type: AWS::EC2::SecurityGroup
-    Properties:
-      VpcId: !Ref VpcId
-      GroupDescription: Allows web server to access Gaffer instance
-      Tags:
-        - Key: Name
-          Value: !Join ["-", [Ref: "AWS::StackName", "web-gaffer-access"]]
-
-  WebServerAccessToGafferIngressRule:
+  WebServerAccessToEmrMasterIngressRule:
     Type: AWS::EC2::SecurityGroupIngress
     Properties:
-      GroupId: !Ref WebServerAccessToGafferSecurityGroup
+      GroupId: !Sub ${GafferWithUser.Outputs.EmrMasterSecurityGroup}
+      CidrIp:
+        Fn::Join:
+          - ""
+          - - !Sub ${GafferWebServer.Outputs.PrivateIp}
+            - "/32"
+      IpProtocol: tcp
+      FromPort: 0
+      ToPort: 65535
+
+  WebServerAccessToEmrSlaveIngressRule:
+    Type: AWS::EC2::SecurityGroupIngress
+    Properties:
+      GroupId: !Sub ${GafferWithUser.Outputs.EmrSlaveSecurityGroup}
       CidrIp:
         Fn::Join:
           - ""
@@ -363,6 +368,10 @@ Outputs:
     Value: !Sub ${GafferWithUser.Outputs.EmrMasterPublicDNS}
   EmrClusterId:
     Value: !Sub ${GafferWithUser.Outputs.EmrClusterId}
+  EmrMasterSecurityGroup:
+    Value: !Sub ${GafferWithUser.Outputs.EmrMasterSecurityGroup}
+  EmrSlaveSecurityGroup:
+    Value: !Sub ${GafferWithUser.Outputs.EmrSlaveSecurityGroup}
   AccumuloInstanceName:
     Value: !Sub ${GafferWithUser.Outputs.AccumuloInstanceName}
   GraphId:
@@ -375,6 +384,8 @@ Outputs:
     Value: !Sub ${GafferWithUser.Outputs.PasswordEncryptionKey}
   WebServerPublicDNS:
     Value: !Sub ${GafferWebServer.Outputs.PublicDNS}
+  WebServerSecurityGroup:
+    Value: !Sub ${GafferWebServer.Outputs.SecurityGroup}
   RestApi:
     Value: !Sub ${GafferWebServer.Outputs.RestApi}
   WebUi:

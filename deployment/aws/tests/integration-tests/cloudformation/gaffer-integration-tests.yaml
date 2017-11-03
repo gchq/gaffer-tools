@@ -291,6 +291,10 @@ Outputs:
     Value: !Sub ${GafferWithUser.Outputs.EmrMasterPublicDNS}
   EmrClusterId:
     Value: !Sub ${GafferWithUser.Outputs.EmrClusterId}
+  EmrMasterSecurityGroup:
+    Value: !Sub ${GafferWithUser.Outputs.EmrMasterSecurityGroup}
+  EmrSlaveSecurityGroup:
+    Value: !Sub ${GafferWithUser.Outputs.EmrSlaveSecurityGroup}
   AccumuloInstanceName:
     Value: !Sub ${GafferWithUser.Outputs.AccumuloInstanceName}
   UserName:

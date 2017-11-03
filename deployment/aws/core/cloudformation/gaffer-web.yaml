@@ -23,6 +23,10 @@ Parameters:
     MinLength: 1
     Description: Specify the type of instance to be used to deploy the Gaffer REST API and Web UI
 
+  VpcId:
+    Type: AWS::EC2::VPC::Id
+    Description: The VPC to deploy the web server into
+
   SubnetId:
     Type: AWS::EC2::Subnet::Id
     Description: The subnet to deploy the web server into
@@ -196,7 +200,7 @@ Resources:
         - DeviceIndex: 0
           Description: !Join ["-", [Ref: "AWS::StackName", "eth0"]]
           SubnetId: !Ref SubnetId
-          GroupSet: !Ref ExtraSecurityGroups
+          GroupSet: !Join [",", [!Join [",", Ref: ExtraSecurityGroups], Ref: WebServerSecurityGroup]]
           AssociatePublicIpAddress: true
           DeleteOnTermination: true
       SourceDestCheck: true
@@ -349,6 +353,15 @@ Resources:
 
             /etc/init.d/tomcat7 start
 
+  WebServerSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      VpcId: !Ref VpcId
+      GroupDescription: Security group for Gaffer web server
+      Tags:
+        - Key: Name
+          Value: !Join ["-", [Ref: "AWS::StackName", "web"]]
+
   WebServerInstanceProfile:
     Type: AWS::IAM::InstanceProfile
     Properties:
@@ -418,3 +431,5 @@ Outputs:
     Value: !Join ["", [ "http://", !GetAtt WebServer.PublicDnsName, "/ui" ]]
   IamRoleName:
     Value: !Ref WebServerRole
+  SecurityGroup:
+    Value: !Ref WebServerSecurityGroup
