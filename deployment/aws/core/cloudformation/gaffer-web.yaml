@@ -200,7 +200,7 @@ Resources:
         - DeviceIndex: 0
           Description: !Join ["-", [Ref: "AWS::StackName", "eth0"]]
           SubnetId: !Ref SubnetId
-          GroupSet: !Join [",", [!Join [",", Ref: ExtraSecurityGroups], Ref: WebServerSecurityGroup]]
+          GroupSet: !Split [",", !Join [",", [!Join [",", Ref: ExtraSecurityGroups], Ref: WebServerSecurityGroup]]]
           AssociatePublicIpAddress: true
           DeleteOnTermination: true
       SourceDestCheck: true
