@@ -52,7 +52,7 @@ fi
 
 # Install Apache Maven
 if ! which mvn >/dev/null 2>&1; then
-	MAVEN_DOWNLOAD_URL=http://www.mirrorservice.org/sites/ftp.apache.org/maven/maven-3/$MAVEN_VERSION/binaries/apache-maven-$MAVEN_VERSION-bin.tar.gz
+	MAVEN_DOWNLOAD_URL=https://archive.apache.org/dist/maven/maven-3/$MAVEN_VERSION/binaries/apache-maven-$MAVEN_VERSION-bin.tar.gz
 	echo "Downloading Apache Maven $MAVEN_VERSION from $MAVEN_DOWNLOAD_URL"
 	curl -fLO $MAVEN_DOWNLOAD_URL
 	tar -xf apache-maven-$MAVEN_VERSION-bin.tar.gz
