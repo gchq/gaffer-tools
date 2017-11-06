@@ -419,7 +419,8 @@
         <md-card-content>
             <div id="inOutFlag">
                 <md-radio-group
-                        ng-model="ctrl.inOutFlag">
+                        ng-model="ctrl.inOutFlag"
+                        ng-change="ctrl.onInOutFlagChange()">
                     <md-radio-button value="INCOMING">
                         Incoming
                     </md-radio-button>

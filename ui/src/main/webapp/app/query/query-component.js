@@ -41,7 +41,7 @@ function QueryController($scope, queryPage, operationService, types, graph, conf
     vm.expandEntitiesContent = queryPage.expandEntitiesContent;
     vm.selectedEntities = graph.getSelectedEntities();
     vm.selectedEdges = graph.getSelectedEdges();
-    vm.inOutFlag = "EITHER";
+    vm.inOutFlag = queryPage.getInOutFlag();
     vm.availableOperations;
     vm.selectedOp = [];
 
@@ -171,6 +171,10 @@ function QueryController($scope, queryPage, operationService, types, graph, conf
             expandElementContent[element].filters.postAggregation.push({});
         }
 
+    }
+
+    vm.onInOutFlagChange = function() {
+        queryPage.setInOutFlag(vm.inOutFlag);
     }
 
     vm.execute = function() {
