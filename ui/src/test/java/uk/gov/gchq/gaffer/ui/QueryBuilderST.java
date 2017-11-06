@@ -4,6 +4,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.By;
+import org.openqa.selenium.Dimension;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -89,7 +90,9 @@ public class QueryBuilderST {
         slowFactor = Integer.parseInt(System.getProperty(SLOW_FACTOR_PROPERTY, DEFAULT_SLOW_FACTOR));
         driver = new FirefoxDriver();
 
-        driver.manage().window().maximize();
+        // Create a large window to ensure we don't need to scroll
+        final Dimension dimension = new Dimension(1200, 1000);
+        driver.manage().window().setSize(dimension);
     }
 
     @After
