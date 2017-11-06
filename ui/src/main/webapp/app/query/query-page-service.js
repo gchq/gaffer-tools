@@ -19,6 +19,10 @@
 angular.module('app').factory('queryPage', ['$q', function($q) {
     var service = {}
     var selectedOperation;
+    service.expandEntities = [];
+    service.expandEdges = [];
+    service.expandEntitiesContent = {};
+    service.expandEdgesContent = {};
 
     var defer = $q.defer();
 
@@ -36,6 +40,14 @@ angular.module('app').factory('queryPage', ['$q', function($q) {
 
     service.initialise = function() {
         defer.resolve();
+    }
+
+    service.reset = function() {
+        service.expandEntities = [];
+        service.expandEdges = [];
+        service.expandEntitiesContent = {};
+        service.expandEdgesContent = {};
+        selectedOperation = undefined;
     }
 
     return service;

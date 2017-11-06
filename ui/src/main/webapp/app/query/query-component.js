@@ -35,10 +35,10 @@ function QueryController($scope, queryPage, operationService, types, graph, conf
 
     vm.relatedEntities = graph.getRelatedEntities();
     vm.relatedEdges = graph.getRelatedEdges();
-    vm.expandEntities = [];
-    vm.expandEdges = [];
-    vm.expandEntitiesContent = {};
-    vm.expandEdgesContent = {};
+    vm.expandEdges = queryPage.expandEdges;
+    vm.expandEntities = queryPage.expandEntities;
+    vm.expandEdgesContent = queryPage.expandEdgesContent;
+    vm.expandEntitiesContent = queryPage.expandEntitiesContent;
     vm.selectedEntities = graph.getSelectedEntities();
     vm.selectedEdges = graph.getSelectedEdges();
     vm.inOutFlag = "EITHER";
@@ -53,6 +53,8 @@ function QueryController($scope, queryPage, operationService, types, graph, conf
         if (selected)  {
             vm.selectedOp = [ selected ];
         }
+
+
     });
 
     graph.onSelectedElementsUpdate(function(selectedElements) {
@@ -185,11 +187,7 @@ function QueryController($scope, queryPage, operationService, types, graph, conf
     }
 
     var resetViewConfig = function() {
-        vm.expandEntities = [];
-        vm.expandEdges = [];
-        vm.expandEntitiesContent = {};
-        vm.expandEdgesContent = {};
-        queryPage.setSelectedOperation(undefined);
+        queryPage.reset();
     }
 
     var createOpInput = function() {
