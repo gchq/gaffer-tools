@@ -30,7 +30,7 @@
                             </tr>
                         </thead>
                         <tbody md-body>
-                            <tr md-row md-select="op" md-select-id="name" md-on-select="ctrl.onSelectedOperationChange" md-auto-select ng-repeat="op in ctrl.availableOperations | orderBy:sortType:sortReverse | filter:ctrl.opSearchTerm">
+                            <tr md-row md-select="op" md-select-id="name" md-on-deselect="ctrl.onOperationDeselect" md-on-select="ctrl.onOperationSelect" md-auto-select ng-repeat="op in ctrl.availableOperations | orderBy:sortType:sortReverse | filter:ctrl.opSearchTerm">
                                 <td md-cell>
                                     <a id="{{op.name}}">
                                         {{op.name}}

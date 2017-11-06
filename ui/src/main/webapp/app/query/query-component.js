@@ -84,8 +84,14 @@ function QueryController($scope, queryPage, operationService, types, graph, conf
         return queryPage.getSelectedOperation();
     }
 
-    vm.onSelectedOperationChange = function(op) {
+    vm.onOperationSelect = function(op) {
         queryPage.setSelectedOperation(op);
+    }
+
+    vm.onOperationDeselect = function(unused) {
+        if (vm.selectedOp.length === 0) {
+            queryPage.setSelectedOperation({});
+        }
     }
 
     vm.showOperations = function(operations) {
