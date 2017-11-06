@@ -27,8 +27,7 @@ public class QueryBuilderST {
     public static final String GECKO_PROPERTY = "webdriver.gecko.driver";
     public static final String URL_PROPERTY = "gaffer.ui.test.url";
     public static final String SLOW_FACTOR_PROPERTY = "gaffer.ui.test.slow-factor";
-
-    private static final String DEFAULT_URL = "http://localhost:8080/ui";
+    private static final String DEFAULT_URL = "http://localhost:8080/ui/#/graph";
     private static final String DEFAULT_SLOW_FACTOR = "5";
 
     private static final String EXPECTED_OPERATION_JSON = "{\n" +
