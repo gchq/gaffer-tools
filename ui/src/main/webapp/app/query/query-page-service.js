@@ -18,8 +18,17 @@
 
 angular.module('app').factory('queryPage', ['$q', function($q) {
     var service = {}
+    var selectedOperation;
 
     var defer = $q.defer();
+
+    service.getSelectedOperation = function() {
+        return selectedOperation;
+    }
+
+    service.setSelectedOperation = function(op) {
+        selectedOperation = op;
+    }
 
     service.waitUntilReady = function() {
         return defer.promise;

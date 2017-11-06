@@ -48,7 +48,11 @@ function QueryController($scope, queryPage, operationService, types, graph, conf
     // watches
 
     queryPage.waitUntilReady().then(function() {
-       vm.availableOperations = operationService.getAvailableOperations();
+        vm.availableOperations = operationService.getAvailableOperations();
+        var selected = queryPage.getSelectedOperation();
+        if (selected)  {
+            vm.selectedOp = [ selected ];
+        }
     });
 
     graph.onSelectedElementsUpdate(function(selectedElements) {
@@ -75,7 +79,11 @@ function QueryController($scope, queryPage, operationService, types, graph, conf
     }
 
     vm.getSelectedOp = function() {
-        return vm.selectedOp[0];
+        return queryPage.getSelectedOperation();
+    }
+
+    vm.onSelectedOperationChange = function(op) {
+        queryPage.setSelectedOperation(op);
     }
 
     vm.showOperations = function(operations) {
@@ -181,6 +189,7 @@ function QueryController($scope, queryPage, operationService, types, graph, conf
         vm.expandEdges = [];
         vm.expandEntitiesContent = {};
         vm.expandEdgesContent = {};
+        queryPage.setSelectedOperation(undefined);
     }
 
     var createOpInput = function() {
