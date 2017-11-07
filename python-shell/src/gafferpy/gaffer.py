@@ -2869,11 +2869,6 @@ class GetSchema(Operation, GetGraph):
         return operation
 
 
-# class GetSchema(GetGraph):
-#     def __init__(self, url=None):
-#         self.url = '/graph/config/schema'
-
-
 class GetFilterFunctions(GetGraph):
     def __init__(self, url=None):
         self.url = '/graph/config/filterFunctions'

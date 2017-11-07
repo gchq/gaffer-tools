@@ -4017,7 +4017,8 @@ class GafferOperationsTest(unittest.TestCase):
           }
           ''',
           g.GetSchema(
-              compact=True 
+              compact=True
+          )
         ]
     ]
 
