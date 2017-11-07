@@ -4052,6 +4052,17 @@ class GafferOperationsTest(unittest.TestCase):
                 ],
                 options={"key1": "value1"}
             )
+        ],
+        [
+          '''
+          {
+              "class": "uk.gov.gchq.gaffer.store.operation.GetSchema",
+              "compact": true
+          }
+          ''',
+          g.GetSchema(
+              compact=True
+          )
         ]
     ]
 
