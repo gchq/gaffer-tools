@@ -1878,7 +1878,8 @@ class AddNamedOperation(Operation):
                  write_access_roles=None,
                  overwrite_flag=None,
                  parameters=None,
-                 options=None):
+                 options=None,
+                 score=None):
         super().__init__(
             _class_name=self.CLASS,
             options=options)
@@ -1904,6 +1905,7 @@ class AddNamedOperation(Operation):
         self.read_access_roles = read_access_roles
         self.write_access_roles = write_access_roles
         self.overwrite_flag = overwrite_flag
+        self.score = score
 
         self.parameters = None
         if parameters is not None:
@@ -1937,6 +1939,8 @@ class AddNamedOperation(Operation):
             operation['readAccessRoles'] = self.read_access_roles
         if self.write_access_roles is not None:
             operation['writeAccessRoles'] = self.write_access_roles
+        if self.score is not None:
+            operation['score'] = self.score
         if self.parameters is not None:
             operation['parameters'] = {}
             for param in self.parameters:
@@ -2891,8 +2895,7 @@ class GetSchema(Operation, GetGraph):
 
     def __init__(self,
                  compact=None,
-                 options=None,
-                 url=None):
+                 options=None):
         super().__init__(_class_name=self.CLASS,
                          options=options)
 
@@ -2913,37 +2916,37 @@ class GetSchema(Operation, GetGraph):
 
 
 class GetFilterFunctions(GetGraph):
-    def __init__(self, url=None):
+    def __init__(self):
         self.url = '/graph/config/filterFunctions'
 
 
 class GetClassFilterFunctions(GetGraph):
-    def __init__(self, class_name=None, url=None):
+    def __init__(self, class_name=None):
         self.url = '/graph/config/filterFunctions/' + class_name
 
 
 class GetElementGenerators(GetGraph):
-    def __init__(self, url=None):
+    def __init__(self):
         self.url = '/graph/config/elementGenerators'
 
 
 class GetObjectGenerators(GetGraph):
-    def __init__(self, url=None):
+    def __init__(self):
         self.url = '/graph/config/objectGenerators'
 
 
 class GetOperations(GetGraph):
-    def __init__(self, url=None):
+    def __init__(self):
         self.url = '/graph/operations'
 
 
 class GetSerialisedFields(GetGraph):
-    def __init__(self, class_name=None, url=None):
+    def __init__(self, class_name=None):
         self.url = '/graph/config/serialisedFields/' + class_name
 
 
 class GetStoreTraits(GetGraph):
-    def __init__(self, url=None):
+    def __init__(self):
         self.url = '/graph/config/storeTraits'
 
 
