@@ -66,11 +66,6 @@ JQuery (jquery-1.8.0.min.js)
 - MIT License
 
 
-Bootstrap (bootstrap.min.js)
-
-- MIT License
-
-
 Angular (angular.min.js)
 
 - MIT License
@@ -89,3 +84,17 @@ Angular Material (angular-aria.min.js)
 Angular Material (angular-material.min.js)
 
 - MIT License
+
+Angular Route (angular-route.min.js)
+
+- MIT Licence
+
+
+Google Material Design Icons (material.io)
+
+- Apache License, Version 2.0
+
+
+daniel-nagy/md-data-table (md-data-table)
+
+- MIT Licence

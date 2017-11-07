@@ -1383,38 +1383,6 @@ class NamedOperationParameter(ToJson, ToCodeString):
 #                    Operations                        #
 ########################################################
 
-
-class OperationChain(ToJson, ToCodeString):
-    CLASS = "uk.gov.gchq.gaffer.operation.OperationChain"
-
-    def __init__(self, operations):
-        self._class_name = self.CLASS
-        self.operations = operations
-
-    def to_json(self):
-        operation_chain_json = {'class': self._class_name}
-        operations_json = []
-        for operation in self.operations:
-            if isinstance(operation, Operation):
-                operations_json.append(operation.to_json())
-            else:
-                operations_json.append(operation)
-        operation_chain_json['operations'] = operations_json
-        return operation_chain_json
-
-
-class OperationChainDAO(OperationChain):
-    CLASS = "uk.gov.gchq.gaffer.operation.OperationChainDAO"
-
-    def __init__(self, operations):
-        super().__init__(operations=operations)
-
-    def to_json(self):
-        operation_chain_json = super().to_json()
-        operation_chain_json.pop('class', None)
-        return operation_chain_json
-
-
 class Operation(ToJson, ToCodeString):
     def __init__(self,
                  _class_name,
@@ -1434,6 +1402,40 @@ class Operation(ToJson, ToCodeString):
             operation['view'] = self.view.to_json()
 
         return operation
+
+
+class OperationChain(Operation):
+    CLASS = "uk.gov.gchq.gaffer.operation.OperationChain"
+
+    def __init__(self, operations, options=None):
+        super().__init__(
+            _class_name=self.CLASS,
+            options=options)
+        self._class_name = self.CLASS
+        self.operations = operations
+
+    def to_json(self):
+        operation_chain_json = super().to_json()
+        operations_json = []
+        for operation in self.operations:
+            if isinstance(operation, ToJson):
+                operations_json.append(operation.to_json())
+            else:
+                operations_json.append(operation)
+        operation_chain_json['operations'] = operations_json
+        return operation_chain_json
+
+
+class OperationChainDAO(OperationChain):
+    CLASS = "uk.gov.gchq.gaffer.operation.OperationChainDAO"
+
+    def __init__(self, operations):
+        super().__init__(operations=operations)
+
+    def to_json(self):
+        operation_chain_json = super().to_json()
+        operation_chain_json.pop('class', None)
+        return operation_chain_json
 
 
 class AddElements(Operation):
@@ -2879,10 +2881,30 @@ class GetGraph:
     def get_url(self):
         return self.url
 
+class GetSchema(Operation, GetGraph):
+    CLASS = 'uk.gov.gchq.gaffer.store.operation.GetSchema'
 
-class GetSchema(GetGraph):
-    def __init__(self, url=None):
+    def __init__(self,
+                 compact=None,
+                 options=None,
+                 url=None):
+        super().__init__(_class_name=self.CLASS,
+                         options=options)
+
+        if compact is not None:
+            self.compact = compact
+        else:
+            self.compact = False
+
         self.url = '/graph/config/schema'
+
+    def to_json(self):
+        operation = super().to_json()
+
+        if self.compact is not None:
+            operation['compact'] = self.compact
+
+        return operation
 
 
 class GetFilterFunctions(GetGraph):

@@ -9,7 +9,6 @@ import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.firefox.FirefoxDriver;
-import org.openqa.selenium.support.ui.Select;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -29,8 +28,7 @@ public class QueryBuilderST {
     public static final String GECKO_PROPERTY = "webdriver.gecko.driver";
     public static final String URL_PROPERTY = "gaffer.ui.test.url";
     public static final String SLOW_FACTOR_PROPERTY = "gaffer.ui.test.slow-factor";
-
-    private static final String DEFAULT_URL = "http://localhost:8080/ui";
+    private static final String DEFAULT_URL = "http://localhost:8080/ui/#/graph";
     private static final String DEFAULT_SLOW_FACTOR = "5";
 
     private static final String EXPECTED_OPERATION_JSON = "{\n" +
@@ -115,18 +113,19 @@ public class QueryBuilderST {
         click("add-seed");
 
         selectOption("vertexType", "junction");
-        enterText("addSeedVertex", "M5:10");
-        click("add-seed-confirm");
+        enterText("seedVertex", "M5:10");
+        click("add-seeds");
 
         click("build-query");
 
         click("Get Elements");
         click("select-all-seeds");
+        scrollQueryBuilder(200);
         click("related-edge-RoadUse");
-        click("RoadUse-add-filter");
-        selectOption("RoadUse-property-selector", "startDate");
-        selectOption("RoadUse-startDate-predicate-selector", "uk.gov.gchq.koryphe.impl.predicate.IsMoreThan");
-        enterText("RoadUse-startDate-uk.gov.gchq.koryphe.impl.predicate.IsMoreThan-value", "{\"java.util.Date\": 971416800000}");
+        click("RoadUse-add-pre-filter");
+        selectOption("RoadUse-pre-property-selector", "startDate");
+        selectOption("RoadUse-pre-startDate-predicate-selector", "uk.gov.gchq.koryphe.impl.predicate.IsMoreThan");
+        enterText("RoadUse-pre-startDate-uk.gov.gchq.koryphe.impl.predicate.IsMoreThan-value", "{\"java.util.Date\": 971416800000}");
         click("build-query-next");
 
         click("build-query-execute");
@@ -142,13 +141,20 @@ public class QueryBuilderST {
         }
     }
 
+    private void scrollQueryBuilder(final int scrollBy) {
+        execute("$('query-builder').parent()[0].scrollTop += " + scrollBy);
+    }
+
     private void enterText(final String id, final String value) {
         getElement(id).sendKeys(value);
     }
 
     private void selectOption(final String id, final String optionValue) throws InterruptedException {
-        Select dropdown = new Select(getElement(id));
-        dropdown.selectByValue("string:" + optionValue);
+        getElement(id).click();
+
+        WebElement choice = driver.findElement(By.cssSelector("md-option[value = '" + optionValue + "']"));
+        choice.click();
+
         Thread.sleep(slowFactor * 500);
     }
 
