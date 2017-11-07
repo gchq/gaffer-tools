@@ -1,0 +1,455 @@
+<!--
+  ~ Copyright 2017 Crown Copyright
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+<div layout-padding layout-margin>
+    <md-card>
+        <md-card-content>
+
+            <div layout="column">
+                <md-input-container>
+                    <label>Search for operation</label>
+                    <input ng-model="ctrl.opSearchTerm" type="text">
+                </md-input-container>
+
+                <md-table-container>
+                    <table md-table md-row-select ng-model="ctrl.selectedOp">
+                        <thead md-head>
+                            <tr md-row>
+                                <th md-column>
+                                    <a
+                                            ng-click="sortType = 'name'; sortReverse = !sortReverse">
+                                        Name
+                                                                <span ng-show="sortType === 'name' && !sortReverse">
+                                                                    <md-icon md-svg-icon="down-arrow"></md-icon>
+                                                                </span>
+                                                                <span ng-show="sortType === 'name' && sortReverse">
+                                                                    <md-icon md-svg-icon="up-arrow"></md-icon>
+                                                                </span>
+                                    </a>
+                                </th>
+                                <th md-column>
+                                    Description
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody md-body>
+                            <tr md-row md-select="op" md-select-id="name" md-on-deselect="ctrl.onOperationDeselect" md-on-select="ctrl.onOperationSelect" md-auto-select ng-repeat="op in ctrl.availableOperations | orderBy:sortType:sortReverse | filter:ctrl.opSearchTerm">
+                                <td md-cell>
+                                    <a id="{{op.name}}">
+                                        {{op.name}}
+                                    </a>
+                                </td>
+                                <td md-cell>
+                                    {{op.description}}
+                                </td>
+                                <td md-cell>
+                                    <md-button class="md-icon-button"
+                                               ng-click="ctrl.showOperations(op.operations)"
+                                               aria-label="show operations"
+                                               ng-show="op.operations">
+                                        <md-icon md-svg-icon="info"></md-icon>
+                                    </md-button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </md-table-container>
+            </div>
+        </md-card-content>
+        <md-card-actions layout="row" layout-align="center center">
+            <md-button class="md-icon-button" aria-label="refresh named operations" ng-click="ctrl.refreshNamedOperations()">
+                <md-icon md-svg-icon="refresh"></md-icon>
+            </md-button>
+        </md-card-actions>
+    </md-card>
+
+    <md-card ng-show="ctrl.getSelectedOp().input">
+        <md-card-title>
+            <md-card-title-text>
+                <span class="md-headline">Selected Seeds</span>
+            </md-card-title-text>
+        </md-card-title>
+        <md-card-content>
+            <p ng-repeat="(vertex, entities) in ctrl.selectedEntities">
+                {{vertex}}
+            </p>
+            <p ng-show="!ctrl.selectedEntities || ctrl.keyValuePairs(ctrl.selectedEntities) == 0">
+                No seeds selected.
+            </p>
+        </md-card-content>
+        <md-card-actions>
+            <div layout="row" layout-align="end center">
+                <md-button id="select-all-seeds"
+                           ng-click="ctrl.selectAllSeeds()"
+                           class="md-primary">
+                    Select all
+                </md-button>
+            </div>
+        </md-card-actions>
+    </md-card>
+
+    <md-card ng-show="ctrl.getSelectedOp().parameters">
+        <md-card-title>
+            <md-card-title-text>
+                <span class="md-headline">Parameters</span>
+            </md-card-title-text>
+        </md-card-title>
+        <md-card-content>
+            <table md-table id="parameters">
+                <thead md-head>
+                    <tr md-row>
+                        <th md-column>
+                            Name
+                        </th>
+                        <th md-column>
+                            Description
+                        </th>
+                        <th md-column>
+                            Required
+                        </th>
+                        <th md-column>
+                            Value
+                        </th>
+                    </tr>
+                </thead>
+                <tbody md-body>
+                    <tr ng-repeat="(name, detail) in ctrl.selectedOp.parameters" md-row>
+                        <td md-cell>
+                            {{name}}
+                        </td>
+                        <td md-cell>
+                            {{detail.description}}
+                        </td>
+                        <td md-cell>
+                            {{detail.required}}
+                        </td>
+                        <td md-cell>
+                            <div layout="row" layout-wrap>
+                                <div ng-repeat="field in ctrl.getFields(detail.valueClass)">
+                                    <md-input-container>
+                                        <label>{{field.label}}</label>
+                                        <input id="param-{{name}}-{{field.key}}"
+                                               type="{{field.type}}"
+                                               step="{{field.step}}"
+                                               ng-model="detail.parts[field.key]"/>
+                                    </md-input-container>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </md-card-content>
+    </md-card>
+
+    <md-card ng-show="ctrl.getSelectedOp().view">
+        <md-card-title>
+            <md-card-title-text>
+                <span class="md-headline">Configure View</span>
+                <span class="md-subhead">If you don't select any Entities or Edges, then all Entities and Edges will be returned</span>
+            </md-card-title-text>
+        </md-card-title>
+        <md-card-content>
+            <h4 class="md-title">Entities</h4>
+
+            <p ng-show="!ctrl.relatedEntities || ctrl.relatedEntities.length === 0">
+                No related entities
+            </p>
+
+            <div ng-repeat="entity in ctrl.relatedEntities">
+                <md-checkbox
+                        id="related-entity-{{entity}}"
+                        ng-checked="ctrl.exists(ctrl.expandEntities, entity)"
+                        ng-click="ctrl.toggle(entity, ctrl.expandEntities)">
+                    {{entity}}
+                </md-checkbox>
+
+                <div ng-show="ctrl.exists(ctrl.expandEntities, entity)">
+                    <table md-table
+                           ng-show="ctrl.getEntityProperties(entity)">
+                        <tbody md-body>
+                        <tr md-row ng-repeat="filter in ctrl.expandEntitiesContent[entity].filters.preAggregation">
+                            <td md-cell>
+                                <md-input-container flex>
+                                    <label>Select a property</label>
+                                    <md-select id="{{entity}}-pre-property-selector"
+                                               ng-model="filter.property"
+                                               ng-change="ctrl.onSelectedPropertyChange(entity, filter)">
+                                        <md-option ng-repeat="(name, type) in ctrl.getEntityProperties(entity)" ng-value="name">{{name}}</md-option>
+                                    </md-select>
+                                </md-input-container>
+                            </td>
+                            <td md-cell>
+                                <md-input-container flex>
+                                    <label>Select a predicate</label>
+                                    <md-select
+                                            id="{{entity}}-pre-{{filter.property}}-predicate-selector"
+                                            ng-model="filter.predicate"
+                                            ng-change="ctrl.onSelectedFunctionChange(entity, filter)">
+                                        <md-option ng-repeat="predicate in filter.availableFunctions" ng-value="predicate">{{predicate}}</md-option>
+                                    </md-select>
+                                </md-input-container>
+                            </td>
+
+                            <td md-cell>
+                                <div layout="row" layout-padding layout-align="center center">
+                                    <div layout="column" flex="50">
+                                        <md-input-container ng-repeat="(idx, param) in filter.availableFunctionParameters">
+                                            <label>{{param}}</label>
+                                            <input type="text"
+                                                   id="{{entity}}-pre-{{filter.property}}-{{filter.predicate}}-{{param}}"
+                                                   ng-model="filter.parameters[idx]">
+                                        </md-input-container>
+                                    </div>
+                                    <p ng-show="filter.availableFunctionParameters.length > 0 && filter.propertyClass" flex="50">
+                                        You may need to
+                                        explicitly
+                                        tell Gaffer the type of
+                                        the
+                                        parameter, e.g:
+                                        {"{{filter.propertyClass}}":
+                                        value}
+                                    </p>
+                                </div>
+
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    <md-button id="{{entity}}-add-pre-filter"
+                               ng-click="ctrl.addFilterFunction(ctrl.expandEntitiesContent, entity, true)"
+                               ng-show="ctrl.getEntityProperties(entity)">
+                        Add Pre Aggregation filter
+                    </md-button>
+                    <table md-table
+                           ng-show="ctrl.getEntityProperties(entity)">
+                        <tbody md-body>
+                        <tr md-row ng-repeat="filter in ctrl.expandEntitiesContent[entity].filters.postAggregation">
+                            <td md-cell>
+                                <md-input-container flex>
+                                    <label>Select a property</label>
+                                    <md-select id="{{entity}}-post-property-selector"
+                                               ng-model="filter.property"
+                                               ng-change="ctrl.onSelectedPropertyChange(entity, filter)">
+                                        <md-option ng-repeat="(name, type) in ctrl.getEntityProperties(entity)" ng-value="name">{{name}}</md-option>
+                                    </md-select>
+                                </md-input-container>
+                            </td>
+                            <td md-cell>
+                                <md-input-container flex>
+                                    <label>Select a predicate</label>
+                                    <md-select
+                                            id="{{entity}}-post-{{filter.property}}-predicate-selector"
+                                            ng-model="filter.predicate"
+                                            ng-change="ctrl.onSelectedFunctionChange(entity, filter)">
+                                        <md-option ng-repeat="predicate in filter.availableFunctions" ng-value="predicate">{{predicate}}</md-option>
+                                    </md-select>
+                                </md-input-container>
+                            </td>
+
+                            <td md-cell>
+                                <div layout="row" layout-padding layout-align="center center">
+                                    <div layout="column" flex="50">
+                                        <md-input-container ng-repeat="(idx, param) in filter.availableFunctionParameters">
+                                            <label>{{param}}</label>
+                                            <input type="text"
+                                                   id="{{entity}}-post-{{filter.property}}-{{filter.predicate}}-{{param}}"
+                                                   ng-model="filter.parameters[idx]">
+                                        </md-input-container>
+                                    </div>
+                                    <p ng-show="filter.availableFunctionParameters.length > 0 && filter.propertyClass" flex="50">
+                                        You may need to
+                                        explicitly
+                                        tell Gaffer the type of
+                                        the
+                                        parameter, e.g:
+                                        {"{{filter.propertyClass}}":
+                                        value}
+                                    </p>
+                                </div>
+
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    <md-button id="{{entity}}-add-post-filter"
+                               ng-click="ctrl.addFilterFunction(ctrl.expandEntitiesContent, entity, false)"
+                               ng-show="ctrl.getEntityProperties(entity)">
+                        Add Post Aggregation filter
+                    </md-button>
+                </div>
+            </div>
+
+
+            <h4 class="md-title">Edges</h4>
+
+            <p ng-show="!ctrl.relatedEdges || ctrl.relatedEdges.length === 0">
+                No related edges
+            </p>
+
+            <div ng-repeat="edge in ctrl.relatedEdges">
+                <md-checkbox
+                        id="related-edge-{{edge}}"
+                        ng-checked="ctrl.exists(ctrl.expandEdges, edge)"
+                        ng-click="ctrl.toggle(edge, ctrl.expandEdges)">
+                    {{edge}}
+                </md-checkbox>
+
+                <div ng-show="ctrl.exists(ctrl.expandEdges, edge)">
+                    <table md-table
+                           ng-show="ctrl.getEdgeProperties(edge)">
+                        <tbody md-body>
+                        <tr md-row ng-repeat="filter in ctrl.expandEdgesContent[edge].filters.preAggregation">
+                            <td md-cell>
+                                <md-input-container flex>
+                                    <label>Select a property</label>
+                                    <md-select id="{{edge}}-pre-property-selector"
+                                               ng-model="filter.property"
+                                               ng-change="ctrl.onSelectedPropertyChange(edge, filter)">
+                                        <md-option ng-repeat="(name, type) in ctrl.getEdgeProperties(edge)" ng-value="name">{{name}}</md-option>
+                                    </md-select>
+                                </md-input-container>
+                            </td>
+                            <td md-cell>
+                                <md-input-container flex>
+                                    <label>Select a predicate</label>
+                                    <md-select
+                                            id="{{edge}}-pre-{{filter.property}}-predicate-selector"
+                                            ng-model="filter.predicate"
+                                            ng-change="ctrl.onSelectedFunctionChange(edge, filter)">
+                                        <md-option ng-repeat="predicate in filter.availableFunctions" ng-value="predicate">{{predicate}}</md-option>
+                                    </md-select>
+                                </md-input-container>
+                            </td>
+
+                            <td md-cell>
+                                <div layout="row" layout-padding layout-align="center center">
+                                    <div layout="column" flex="50">
+                                        <md-input-container ng-repeat="(idx, param) in filter.availableFunctionParameters">
+                                            <label>{{param}}</label>
+                                            <input type="text"
+                                                   id="{{edge}}-pre-{{filter.property}}-{{filter.predicate}}-{{param}}"
+                                                   ng-model="filter.parameters[idx]">
+                                        </md-input-container>
+                                    </div>
+                                    <p ng-show="filter.availableFunctionParameters.length > 0 && filter.propertyClass" flex="50">
+                                        You may need to
+                                        explicitly
+                                        tell Gaffer the type of
+                                        the
+                                        parameter, e.g:
+                                        {"{{filter.propertyClass}}":
+                                        value}
+                                    </p>
+                                </div>
+
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    <md-button id="{{edge}}-add-pre-filter"
+                               ng-click="ctrl.addFilterFunction(ctrl.expandEdgesContent, edge, true)"
+                               ng-show="ctrl.getEdgeProperties(edge)">
+                        Add Pre Aggregation filter
+                    </md-button>
+                    <table md-table
+                           ng-show="ctrl.getEdgeProperties(edge)">
+                        <tbody md-body>
+                        <tr md-row ng-repeat="filter in ctrl.expandEdgesContent[edge].filters.postAggregation">
+                            <td md-cell>
+                                <md-input-container flex>
+                                    <label>Select a property</label>
+                                    <md-select id="{{edge}}-post-property-selector"
+                                               ng-model="filter.property"
+                                               ng-change="ctrl.onSelectedPropertyChange(edge, filter)">
+                                        <md-option ng-repeat="(name, type) in ctrl.getEdgeProperties(edge)" ng-value="name">{{name}}</md-option>
+                                    </md-select>
+                                </md-input-container>
+                            </td>
+                            <td md-cell>
+                                <md-input-container flex>
+                                    <label>Select a predicate</label>
+                                    <md-select
+                                            id="{{edge}}-post-{{filter.property}}-predicate-selector"
+                                            ng-model="filter.predicate"
+                                            ng-change="ctrl.onSelectedFunctionChange(edge, filter)">
+                                        <md-option ng-repeat="predicate in filter.availableFunctions" ng-value="predicate">{{predicate}}</md-option>
+                                    </md-select>
+                                </md-input-container>
+                            </td>
+
+                            <td md-cell>
+                                <div layout="row" layout-padding layout-align="center center">
+                                    <div layout="column" flex="50">
+                                        <md-input-container ng-repeat="(idx, param) in filter.availableFunctionParameters">
+                                            <label>{{param}}</label>
+                                            <input type="text"
+                                                   id="{{edge}}-post-{{filter.property}}-{{filter.predicate}}-{{param}}"
+                                                   ng-model="filter.parameters[idx]">
+                                        </md-input-container>
+                                    </div>
+                                    <p ng-show="filter.availableFunctionParameters.length > 0 && filter.propertyClass" flex="50">
+                                        You may need to
+                                        explicitly
+                                        tell Gaffer the type of
+                                        the
+                                        parameter, e.g:
+                                        {"{{filter.propertyClass}}":
+                                        value}
+                                    </p>
+                                </div>
+
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    <md-button id="{{edge}}-add-post-filter"
+                               ng-click="ctrl.addFilterFunction(ctrl.expandEdgesContent, edge, false)"
+                               ng-show="ctrl.getEdgeProperties(edge)">
+                        Add Post Aggregation filter
+                    </md-button>
+                </div>
+            </div>
+        </md-card-content>
+    </md-card>
+
+    <md-card ng-show="ctrl.getSelectedOp().inOutFlag">
+        <md-card-title>
+            <md-card-title-text>
+                <span class="md-headline">In Out Edges</span>
+            </md-card-title-text>
+        </md-card-title>
+        <md-card-content>
+            <div id="inOutFlag">
+                <md-radio-group
+                        ng-model="ctrl.inOutFlag"
+                        ng-change="ctrl.onInOutFlagChange()">
+                    <md-radio-button value="INCOMING">
+                        Incoming
+                    </md-radio-button>
+                    <md-radio-button value="OUTGOING">
+                        Outgoing
+                    </md-radio-button>
+                    <md-radio-button value="EITHER">
+                        Either
+                    </md-radio-button>
+                </md-radio-group>
+            </div>
+        </md-card-content>
+    </md-card>
+</div>
+<md-button class="md-fab md-fab-bottom-right submit-bottom-right md-accent" ng-disabled="!ctrl.canExecute()" aria-label="Execute Query" id="Execute Query" ng-click="ctrl.execute()">
+    <md-icon md-svg-icon="send"></md-icon>
+</md-button>

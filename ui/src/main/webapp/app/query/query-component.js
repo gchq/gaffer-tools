@@ -16,18 +16,18 @@
 
 'use strict'
 
-angular.module('app').component('queryBuilder', queryBuilder());
+angular.module('app').component('query', query());
 
-function queryBuilder() {
+function query() {
 
     return {
-        templateUrl: 'app/query-builder/query-builder.html',
-        controller: QueryBuilderController,
+        templateUrl: 'app/query/query.html',
+        controller: QueryController,
         controllerAs: 'ctrl'
     };
 }
 
-function QueryBuilderController($scope, operationService, types, graph, config, settings, query, functions, schema, common, $window, $mdDialog) {
+function QueryController($scope, queryPage, operationService, types, graph, config, settings, query, functions, schema, common, results, navigation, $window, $mdDialog, loading) {
 
     var vm = this;
 
@@ -35,54 +35,63 @@ function QueryBuilderController($scope, operationService, types, graph, config, 
 
     vm.relatedEntities = graph.getRelatedEntities();
     vm.relatedEdges = graph.getRelatedEdges();
-    vm.expandEntities = [];
-    vm.expandEdges = [];
-    vm.expandEntitiesContent = {};
-    vm.expandEdgesContent = {};
+    vm.expandEdges = queryPage.expandEdges;
+    vm.expandEntities = queryPage.expandEntities;
+    vm.expandEdgesContent = queryPage.expandEdgesContent;
+    vm.expandEntitiesContent = queryPage.expandEntitiesContent;
     vm.selectedEntities = graph.getSelectedEntities();
     vm.selectedEdges = graph.getSelectedEdges();
-    vm.inOutFlag = "EITHER";
-    vm.step = 0;
-    vm.availableOperations = operationService.getAvailableOperations();
-    vm.selectedOp = vm.availableOperations[0] // TODO should this be the default operation in the settings?
+    vm.inOutFlag = queryPage.getInOutFlag();
+    vm.availableOperations;
+    vm.selectedOp = [];
 
     // watches
+
+    queryPage.waitUntilReady().then(function() {
+        vm.availableOperations = operationService.getAvailableOperations();
+        var selected = queryPage.getSelectedOperation();
+        if (selected)  {
+            vm.selectedOp = [ selected ];
+        }
+
+
+    });
 
     graph.onSelectedElementsUpdate(function(selectedElements) {
         vm.selectedEntities = selectedElements['entities'];
         vm.selectedEdges = selectedElements['edges'];
-    })
+    });
 
     graph.onRelatedEntitiesUpdate(function(relatedEntities) {
         vm.relatedEntities = relatedEntities;
-    })
+    });
 
     graph.onRelatedEdgesUpdate(function(relatedEdges) {
         vm.relatedEdges = relatedEdges;
-    })
+    });
 
+    // functions
 
-    vm.onSelectedOpChange = function(op){
-        vm.selectedOp = op;
-        vm.goToNextStep();
-    }
-
-
-    vm.goToNextStep = function() {
-        vm.step = vm.step + 1;
-        if(vm.step == 2 && vm.selectedOp.arrayOutput) {
-            vm.executeBuildQueryCounts();
-        }
-    }
-
-    vm.goToPrevStep = function() {
-       vm.step = vm.step - 1;
-    }
+    vm.keyValuePairs = common.keyValuePairs;
 
     vm.refreshNamedOperations = function() {
         operationService.reloadNamedOperations(true).then(function(availableOps) {
             vm.availableOperations = availableOps;
         });
+    }
+
+    vm.getSelectedOp = function() {
+        return queryPage.getSelectedOperation();
+    }
+
+    vm.onOperationSelect = function(op) {
+        queryPage.setSelectedOperation(op);
+    }
+
+    vm.onOperationDeselect = function(unused) {
+        if (vm.selectedOp.length === 0) {
+            queryPage.setSelectedOperation({});
+        }
     }
 
     vm.showOperations = function(operations) {
@@ -107,11 +116,6 @@ function QueryBuilderController($scope, operationService, types, graph, config, 
     vm.getEntityProperties = schema.getEntityProperties;
     vm.getEdgeProperties = schema.getEdgeProperties;
     vm.exists = common.arrayContainsValue;
-
-    vm.cancel = function(event) {
-        resetQueryBuilder();
-        $mdDialog.cancel(event);
-    }
 
     vm.toggle = function(item, list) {
         var idx = list.indexOf(item);
@@ -175,25 +179,50 @@ function QueryBuilderController($scope, operationService, types, graph, config, 
 
     }
 
-    vm.execute = function() {
-        var operation = createOperation();
-        resetQueryBuilder();
-        $mdDialog.hide(operation);
+    vm.onInOutFlagChange = function() {
+        queryPage.setInOutFlag(vm.inOutFlag);
     }
 
-    vm.executeBuildQueryCounts = function() {
-        var operations = {
+    vm.canExecute = function() {
+        return ((vm.selectedOp.length === 1) && !loading.isLoading());
+    }
+
+    vm.execute = function() {
+        var operation = createOperation();
+        query.addOperation(operation);
+        loading.load()
+        query.execute(JSON.stringify({
             class: "uk.gov.gchq.gaffer.operation.OperationChain",
-            operations: [createOperation(), operationService.createLimitOperation(), operationService.createCountOperation()]
+            operations: [operation, operationService.createLimitOperation(), operationService.createDeduplicateOperation()]
+        }), function(data) {
+            loading.finish()
+            if (data.length === settings.getResultLimit()) {
+                prompt(data);
+            } else {
+                submitResults(data);
+            }
+        }), function(err) {
+            loading.finish();
         };
-        var onSuccess = function(data) {
-            vm.expandQueryCounts = {
-                count: data,
-                limitHit: (data == settings.getResultLimit())
-            };
-        }
-        vm.expandQueryCounts = undefined;
-        query.execute(JSON.stringify(operations), onSuccess);
+    }
+
+    var prompt = function(data) {
+        $mdDialog.show({
+            template: '<result-count-warning aria-label="Result Count Warning"></result-count-warning>',
+            parent: angular.element(document.body),
+            clickOutsideToClose: false
+        })
+        .then(function(command) {
+            if(command === 'results') {
+                submitResults(data);
+            }
+        });
+    }
+
+    var submitResults = function(data) {
+        results.update(data);
+        navigation.goTo('graph');
+        queryPage.reset();
     }
 
     var createOpInput = function() {
@@ -255,15 +284,16 @@ function QueryBuilderController($scope, operationService, types, graph, config, 
     }
 
     var createOperation = function() {
+        var selectedOp = vm.getSelectedOp()
         var op = {
-             class: vm.selectedOp.class
+             class: selectedOp.class
         };
 
-        if(vm.selectedOp.namedOp) {
-            op.operationName = vm.selectedOp.name;
+        if(selectedOp.namedOp) {
+            op.operationName = selectedOp.name;
         }
 
-        if (vm.selectedOp.input) {
+        if (selectedOp.input) {
            var jsonVertex;
            for(var vertex in vm.selectedEntities) {
                try {
@@ -275,16 +305,16 @@ function QueryBuilderController($scope, operationService, types, graph, config, 
            }
         }
 
-        if (vm.selectedOp.parameters) {
+        if (selectedOp.parameters) {
             var opParams = {};
-            for(name in vm.selectedOp.parameters) {
-                var valueClass = vm.selectedOp.parameters[name].valueClass;
-                opParams[name] = types.getType(valueClass).createValue(valueClass, vm.selectedOp.parameters[name].parts);
+            for(name in selectedOp.parameters) {
+                var valueClass = selectedOp.parameters[name].valueClass;
+                opParams[name] = types.getType(valueClass).createValue(valueClass, selectedOp.parameters[name].parts);
             }
             op.parameters = opParams;
         }
 
-        if (vm.selectedOp.view) {
+        if (selectedOp.view) {
             op.view = {
                 globalElements: [{
                     groupBy: []
@@ -321,19 +351,10 @@ function QueryBuilderController($scope, operationService, types, graph, config, 
             }
         }
 
-        if (vm.selectedOp.inOutFlag) {
+        if (selectedOp.inOutFlag) {
             op.includeIncomingOutGoing = vm.inOutFlag;
         }
 
         return op;
-    }
-
-    var resetQueryBuilder = function() {
-        vm.step = 0;
-        vm.expandEdges = [];
-        vm.expandEntities = [];
-        vm.expandQueryCounts = undefined;
-        vm.expandEntitiesContent = {};
-        vm.expandEdgesContent = {};
     }
 }
