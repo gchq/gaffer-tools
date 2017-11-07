@@ -35,3 +35,8 @@ md-icon svg {
 .submit-bottom-right {
     position: fixed !important;
 }
+
+.loading-container {
+    height: 30px;
+    width: 30px;
+}

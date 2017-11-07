@@ -27,11 +27,7 @@
             <md-nav-item name="settings" id="open-settings" md-nav-click="ctrl.goTo('settings')">Settings</md-nav-item>
         </div>
         <div layout="row">
-            <md-progress-circular ng-show="ctrl.loading"
-                                  md-mode="indeterminate"
-                                  md-diameter="30"
-                                  style="margin-top: 5px; margin-right: 10px;">
-            </md-progress-circular>
+            <loading-circle></loading-circle>
             <md-button class="md-raised md-primary" id="add-seed" ng-click="ctrl.addSeedPrompt($event)">Add Seed</md-button>
             <md-button class="md-raised" id="execute-all" ng-click="ctrl.executeAll()">Execute All</md-button>
             <md-button class="md-raised" id="redraw" ng-disabled="!ctrl.isGraphInView()" ng-click="ctrl.redraw()">Redraw</md-button>

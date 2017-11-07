@@ -25,10 +25,9 @@ function navBar() {
     };
 }
 
-function NavigationController($scope, $rootScope, $mdDialog, navigation, graph, operationService, results, query, config) {
+function NavigationController($scope, $rootScope, $mdDialog, navigation, graph, operationService, results, query, config, loading) {
 
     var vm = this;
-    vm.loading = false;
     vm.addMultipleSeeds = false;
 
     vm.currentPage = navigation.getCurrentPage();
@@ -76,7 +75,7 @@ function NavigationController($scope, $rootScope, $mdDialog, navigation, graph, 
         var ops = query.getOperations();
 
         if (ops.length > 0) {
-            vm.loading = true;
+            loading.load();
         }
 
         for(var i in ops) {
@@ -86,7 +85,7 @@ function NavigationController($scope, $rootScope, $mdDialog, navigation, graph, 
                     operations: [ops[i], operationService.createLimitOperation(), operationService.createDeduplicateOperation()]
                 }), function(data) {
                     results.update(data);
-                    vm.loading = false;
+                    loading.finish();
                 });
             } catch(e) {
                 // Try without the limit and deduplicate operations
@@ -95,7 +94,7 @@ function NavigationController($scope, $rootScope, $mdDialog, navigation, graph, 
                     operations: [ops[i]]
                 }), function(data) {
                     results.update(data);
-                    vm.loading = false;
+                    loading.finish();
                 });
            }
        }

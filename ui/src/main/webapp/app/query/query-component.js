@@ -27,7 +27,7 @@ function query() {
     };
 }
 
-function QueryController($scope, queryPage, operationService, types, graph, config, settings, query, functions, schema, common, results, navigation, $window, $mdDialog) {
+function QueryController($scope, queryPage, operationService, types, graph, config, settings, query, functions, schema, common, results, navigation, $window, $mdDialog, loading) {
 
     var vm = this;
 
@@ -183,19 +183,27 @@ function QueryController($scope, queryPage, operationService, types, graph, conf
         queryPage.setInOutFlag(vm.inOutFlag);
     }
 
+    vm.canExecute = function() {
+        return ((vm.selectedOp.length === 1) && !loading.isLoading());
+    }
+
     vm.execute = function() {
         var operation = createOperation();
         query.addOperation(operation);
+        loading.load()
         query.execute(JSON.stringify({
             class: "uk.gov.gchq.gaffer.operation.OperationChain",
             operations: [operation, operationService.createLimitOperation(), operationService.createDeduplicateOperation()]
         }), function(data) {
+            loading.finish()
             if (data.length === settings.getResultLimit()) {
                 prompt(data);
             } else {
                 submitResults(data);
             }
-        });
+        }), function(err) {
+            loading.finish();
+        };
     }
 
     var prompt = function(data) {
