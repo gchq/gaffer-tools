@@ -1777,9 +1777,9 @@ class GetOperation(Operation):
 
         if self.seed_matching_type is not None:
             operation['seedMatching'] = self.seed_matching_type
-        if self.directed_type is not None:
-            operation['directedType'] = self.directed_type
         if self.include_incoming_out_going is not None:
+            if self.directed_type is not None:
+                operation['directedType'] = self.directed_type
             operation[
                 'includeIncomingOutGoing'] = self.include_incoming_out_going
         return operation
@@ -2842,6 +2842,49 @@ class ScoreOperationChain(Operation):
         operation['operationChain'] = self.operation_chain.to_json()
 
         return operation
+
+
+class GetWalks(Operation):
+    CLASS = 'uk.gov.gchq.gaffer.operation.impl.GetWalks'
+
+    def __init__(self,
+                 input=None,
+                 operations=None,
+                 results_limit=None,
+                 options=None):
+        super().__init__(_class_name=self.CLASS,
+                         options=options)
+        self.input = input
+        self.operations = None
+        self.results_limit = results_limit
+
+        if operations is not None:
+            self.operations = []
+            for op in operations:
+                if not isinstance(op, GetElements):
+                    op = JsonConverter.from_json(
+                        op, GetElements)
+                self.operations.append(op)
+
+    def to_json(self):
+        operation = super().to_json()
+        if self.results_limit is not None:
+            operation['resultsLimit'] = self.results_limit
+
+        if self.input is not None:
+            entity_seed_json = []
+            for entity_seed in self.input:
+                entity_seed_json.append(entity_seed.to_json())
+            operation['input'] = entity_seed_json
+
+        if self.operations is not None:
+            operations_json = []
+            for op in self.operations:
+                operations_json.append(op.to_json())
+            operation['operations'] = operations_json
+
+        return operation
+
 
 class GetGraph:
     def get_url(self):
