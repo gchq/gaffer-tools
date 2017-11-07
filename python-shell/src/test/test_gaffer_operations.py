@@ -3976,13 +3976,48 @@ class GafferOperationsTest(unittest.TestCase):
         [
             '''
             {
-                "class": "uk.gov.gchq.gaffer.store.operation.GetSchema",
-                "compact": true
+                "class" : "uk.gov.gchq.gaffer.operation.OperationChain",
+                "operations" : [
+                    {
+                        "class" : "uk.gov.gchq.gaffer.operation.OperationChain",
+                        "operations" : [
+                            {
+                                "class" : "uk.gov.gchq.gaffer.operation.impl.get.GetElements"
+                            },
+                            {
+                                "class" : "uk.gov.gchq.gaffer.operation.impl.Limit",
+                                "resultLimit" : 3,
+                                "truncate" : true
+                            }
+                        ]
+                    }
+                ],
+                "options": {
+                    "key1": "value1"
+                }
             }
             ''',
-            g.GetSchema(
-                compact=True
+            g.OperationChain(
+                operations=[
+                    g.OperationChain(
+                        operations=[
+                            g.GetElements(),
+                            g.Limit(result_limit=3, truncate=True)
+                        ]
+                    )
+                ],
+                options={"key1": "value1"}
             )
+        ],
+        [
+          '''
+          {
+              "class": "uk.gov.gchq.gaffer.store.operation.GetSchema",
+              "compact": true
+          }
+          ''',
+          g.GetSchema(
+              compact=True 
         ]
     ]
 
