@@ -2848,14 +2848,14 @@ class GetWalks(Operation):
     CLASS = 'uk.gov.gchq.gaffer.operation.impl.GetWalks'
 
     def __init__(self,
-                 results_limit=1000000,
-                 operations=None,
                  input=None,
+                 operations=None,
+                 results_limit=None,
                  options=None):
         super().__init__(_class_name=self.CLASS,
                          options=options)
-        self.operations = None
         self.input = input
+        self.operations = None
         self.results_limit = results_limit
 
         if operations is not None:
