@@ -127,12 +127,10 @@ localhost:8080/ui
 
 
 ##### Build and execute a query to find all locations within the South West region:
-- click on the 'South West' vertex (displayed as a grey circle in the top left hand corner of the page) 
-- click 'Build query'
-- click on the 'Get Elements' link
-- select 'RegionContainsLocation'
-- click 'Next'
-- click 'Execute'
+- click on the 'Get Elements' row
+- click 'Select All' on the seeds card
+- select 'RegionContainsLocation' on the view card
+- click the button in the bottom right hand corner
 
 The South West vertex will still be selected - click on an empty part of the graph to deselect it.
 Move the graph around by clicking and dragging the cursor.
@@ -140,29 +138,27 @@ Scroll to zoom in/out.
 
 ##### Build and execute a query to find all roads within Bristol:
 - click on the 'Bristol, City of' vertex
-- click 'Build query'
-- click on the 'Get Elements' link
-- select 'LocationContainsRoad'
-- click 'Next'
-- click 'Execute'
+- navigate to the 'query' page
+- click on the 'Get Elements' row
+- select 'LocationContainsRoad' on the view card
+- click the button in the bottom right hand corner
 
 
 #### Build and execute a query to find all junctions on the M32:
 - click on the 'M32' vertex
-- click 'Build query'
-- click on the 'Get Elements' link
-- select 'RoadHasJunction'
-- click 'Next'
-- click 'Execute'
+- navigate to the 'query' page
+- click on the 'Get Elements' row
+- select 'RoadHasJunction' on the view card
+- click the button in the bottom right hand corner
 
 
 #### Build and execute a query to find the road use between junctions M32:1 and M32:M4 between 6AM and 7AM on 5/3/2005:
 - click on the 'M32:1' vertex
-- click 'Build query'
-- click on the 'Get Elements' link
-- select 'RoadUse'
+- navigate to the 'query' page
+- click on the 'Get Elements' row
+- select 'RoadUse' on the view card
 - This time we are going to add a filter to the start and end times
-- click 'Add filter'
+- click 'Add Pre Aggregation filter'
 - Enter the following startDate filter:
 ```
 property: startDate
@@ -170,7 +166,7 @@ function: uk.gov.gchq.koryphe.impl.predicate.IsMoreThan
 orEqualTo: true
 value: {"java.util.Date": 1115103600000}
 ```
-- click 'Add filter'
+- click 'Add Pre Aggregation filter'
 - Enter the following endDate filter:
 ```
 property: endDate
@@ -178,8 +174,7 @@ function: uk.gov.gchq.koryphe.impl.predicate.IsLessThan
 orEqualTo: true
 value: {"java.util.Date": 1115107200000}
 ```
-- click 'Next'
-- click 'Execute'
+- click the button in the bottom right hand corner
 
 If you find the 'RoadUse' edge in the graph and click on it, you will see the following information in the pop-up:
 
@@ -206,11 +201,11 @@ Clicking the 'Raw' tab at the top of the UI displays the Json constructed and ha
 
 #### Now we will repeat the previous query but with a bigger time window - this time between 6AM and 8AM on 5/3/2005:
 - click on the 'M32:1' vertex
-- click 'Build query'
-- click on the 'Get Elements' link
-- select 'RoadUse'
+- navigate to the 'query' page
+- click on the 'Get Elements' row
+- select 'RoadUse' on the view card
 - This time we are going to add a filter to the start and end times with a bigger time window
-- click 'Add filter'
+- click 'Add Pre Aggregation filter'
 - Enter the following startDate filter:
 ```
 property: startDate
@@ -218,7 +213,7 @@ function: uk.gov.gchq.koryphe.impl.predicate.IsMoreThan
 orEqualTo: true
 value: {"java.util.Date": 1115103600000}
 ```
-- click 'Add filter'
+- click 'Add Pre Aggregation filter'
 - Enter the following endDate filter:
 ```
 property: endDate
@@ -226,8 +221,7 @@ function: uk.gov.gchq.koryphe.impl.predicate.IsLessThan
 orEqualTo: true
 value: {"java.util.Date": 1115110800000}
 ```
-- click 'Next'
-- click 'Execute'
+- click the button in the bottom right hand corner
 
 Now if you click on the 'RoadUse' edge, or visit the 'Edges' Table view, you'll see that two 'RoadUse' summaries are displayed:
 
