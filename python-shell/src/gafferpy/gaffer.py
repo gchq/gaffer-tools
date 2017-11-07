@@ -2848,8 +2848,7 @@ class GetSchema(Operation, GetGraph):
 
     def __init__(self,
                  compact=None,
-                 options=None,
-                 url=None):
+                 options=None):
         super().__init__(_class_name=self.CLASS,
                          options=options)
 
@@ -2870,37 +2869,37 @@ class GetSchema(Operation, GetGraph):
 
 
 class GetFilterFunctions(GetGraph):
-    def __init__(self, url=None):
+    def __init__(self):
         self.url = '/graph/config/filterFunctions'
 
 
 class GetClassFilterFunctions(GetGraph):
-    def __init__(self, class_name=None, url=None):
+    def __init__(self, class_name=None):
         self.url = '/graph/config/filterFunctions/' + class_name
 
 
 class GetElementGenerators(GetGraph):
-    def __init__(self, url=None):
+    def __init__(self):
         self.url = '/graph/config/elementGenerators'
 
 
 class GetObjectGenerators(GetGraph):
-    def __init__(self, url=None):
+    def __init__(self):
         self.url = '/graph/config/objectGenerators'
 
 
 class GetOperations(GetGraph):
-    def __init__(self, url=None):
+    def __init__(self):
         self.url = '/graph/operations'
 
 
 class GetSerialisedFields(GetGraph):
-    def __init__(self, class_name=None, url=None):
+    def __init__(self, class_name=None):
         self.url = '/graph/config/serialisedFields/' + class_name
 
 
 class GetStoreTraits(GetGraph):
-    def __init__(self, url=None):
+    def __init__(self):
         self.url = '/graph/config/storeTraits'
 
 
