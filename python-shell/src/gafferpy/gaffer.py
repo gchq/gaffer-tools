@@ -2888,7 +2888,7 @@ class GetWalks(Operation):
 
 class GetGraph:
     def get_url(self):
-        return self.url
+        return self._url
 
 class GetSchema(Operation, GetGraph):
     CLASS = 'uk.gov.gchq.gaffer.store.operation.GetSchema'
@@ -2904,7 +2904,7 @@ class GetSchema(Operation, GetGraph):
         else:
             self.compact = False
 
-        self.url = '/graph/config/schema'
+        self._url = '/graph/config/schema'
 
     def to_json(self):
         operation = super().to_json()
@@ -2917,37 +2917,37 @@ class GetSchema(Operation, GetGraph):
 
 class GetFilterFunctions(GetGraph):
     def __init__(self):
-        self.url = '/graph/config/filterFunctions'
+        self._url = '/graph/config/filterFunctions'
 
 
 class GetClassFilterFunctions(GetGraph):
     def __init__(self, class_name=None):
-        self.url = '/graph/config/filterFunctions/' + class_name
+        self._url = '/graph/config/filterFunctions/' + class_name
 
 
 class GetElementGenerators(GetGraph):
     def __init__(self):
-        self.url = '/graph/config/elementGenerators'
+        self._url = '/graph/config/elementGenerators'
 
 
 class GetObjectGenerators(GetGraph):
     def __init__(self):
-        self.url = '/graph/config/objectGenerators'
+        self._url = '/graph/config/objectGenerators'
 
 
 class GetOperations(GetGraph):
     def __init__(self):
-        self.url = '/graph/operations'
+        self._url = '/graph/operations'
 
 
 class GetSerialisedFields(GetGraph):
     def __init__(self, class_name=None):
-        self.url = '/graph/config/serialisedFields/' + class_name
+        self._url = '/graph/config/serialisedFields/' + class_name
 
 
 class GetStoreTraits(GetGraph):
     def __init__(self):
-        self.url = '/graph/config/storeTraits'
+        self._url = '/graph/config/storeTraits'
 
 
 class IsOperationSupported:
