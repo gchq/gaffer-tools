@@ -25,10 +25,9 @@ function navBar() {
     };
 }
 
-function NavigationController($scope, $rootScope, $mdDialog, navigation, graph, operationService, results, query, config) {
+function NavigationController($scope, $rootScope, $mdDialog, navigation, graph, operationService, results, query, config, loading) {
 
     var vm = this;
-    vm.loading = false;
     vm.addMultipleSeeds = false;
 
     vm.currentPage = navigation.getCurrentPage();
@@ -62,27 +61,6 @@ function NavigationController($scope, $rootScope, $mdDialog, navigation, graph, 
         .catch(function(){}); // throw away possibly unhandled rejection errors
     }
 
-    vm.openBuildQueryDialog = function(ev) {
-        $mdDialog.show({
-          template: '<query-builder aria-label="Query Builder" class="fullWidthDialog"></query-builder>',
-          parent: angular.element(document.body),
-          targetEvent: ev,
-          clickOutsideToClose: true,
-          fullscreen: true
-        })
-        .then(function(operation) {
-            query.addOperation(operation);
-            query.execute(JSON.stringify({
-                class: "uk.gov.gchq.gaffer.operation.OperationChain",
-                operations: [operation, operationService.createLimitOperation(), operationService.createDeduplicateOperation()]
-            }), function(data) {
-                loading = false;
-                results.update(data);
-            })
-        })
-        .catch(function(){}); // throw away possibly unhandled rejection errors
-    }
-
     vm.isGraphInView = function() {
         return vm.currentPage === 'graph';
     }
@@ -97,7 +75,7 @@ function NavigationController($scope, $rootScope, $mdDialog, navigation, graph, 
         var ops = query.getOperations();
 
         if (ops.length > 0) {
-            vm.loading = true;
+            loading.load();
         }
 
         for(var i in ops) {
@@ -107,7 +85,7 @@ function NavigationController($scope, $rootScope, $mdDialog, navigation, graph, 
                     operations: [ops[i], operationService.createLimitOperation(), operationService.createDeduplicateOperation()]
                 }), function(data) {
                     results.update(data);
-                    vm.loading = false;
+                    loading.finish();
                 });
             } catch(e) {
                 // Try without the limit and deduplicate operations
@@ -116,7 +94,7 @@ function NavigationController($scope, $rootScope, $mdDialog, navigation, graph, 
                     operations: [ops[i]]
                 }), function(data) {
                     results.update(data);
-                    vm.loading = false;
+                    loading.finish();
                 });
            }
        }
