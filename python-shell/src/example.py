@@ -43,6 +43,7 @@ def run_with_connector(gc):
     get_elements(gc)
     get_adj_seeds(gc)
     get_all_elements(gc)
+    get_walks(gc)
     generate_elements(gc)
     generate_domain_objs(gc)
     generate_domain_objects_chain(gc)
@@ -308,6 +309,40 @@ def get_all_elements(gc):
     )
     print('All input (Limited to first 3)')
     print(all_elements)
+    print()
+
+
+def get_walks(gc):
+    # Get walks from M32 traversing down RoadHasJunction then JunctionLocatedAt
+    walks = gc.execute_operation(
+        g.GetWalks(
+            input=[
+                g.EntitySeed('M32'),
+            ],
+            operations=[
+                g.GetElements(
+                    view=g.View(
+                        edges=[
+                            g.ElementDefinition(
+                                group='RoadHasJunction'
+                            )
+                        ]
+                    )
+                ),
+                g.GetElements(
+                    view=g.View(
+                        edges=[
+                            g.ElementDefinition(
+                                group='JunctionLocatedAt'
+                            )
+                        ]
+                    )
+                )
+            ]
+        )
+    )
+    print('Walks from M32 traversing down RoadHasJunction then JunctionLocatedAt')
+    print(walks)
     print()
 
 
