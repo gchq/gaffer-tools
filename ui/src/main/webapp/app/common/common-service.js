@@ -78,5 +78,9 @@ angular.module('app').factory('common', [function() {
         return -1;
     }
 
+    common.keyValuePairs = function(obj) {
+        return Object.keys(obj).length;
+    }
+
     return common;
 }]);

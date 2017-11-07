@@ -28,7 +28,7 @@ public class QueryBuilderST {
     public static final String GECKO_PROPERTY = "webdriver.gecko.driver";
     public static final String URL_PROPERTY = "gaffer.ui.test.url";
     public static final String SLOW_FACTOR_PROPERTY = "gaffer.ui.test.slow-factor";
-    private static final String DEFAULT_URL = "http://localhost:8080/ui/#/graph";
+    private static final String DEFAULT_URL = "http://localhost:8080/ui";
     private static final String DEFAULT_SLOW_FACTOR = "5";
 
     private static final String EXPECTED_OPERATION_JSON = "{\n" +
@@ -116,19 +116,16 @@ public class QueryBuilderST {
         enterText("seedVertex", "M5:10");
         click("add-seeds");
 
-        click("build-query");
-
         click("Get Elements");
         click("select-all-seeds");
-        scrollQueryBuilder(200);
+        scrollQueryPage(200);
         click("related-edge-RoadUse");
         click("RoadUse-add-pre-filter");
         selectOption("RoadUse-pre-property-selector", "startDate");
         selectOption("RoadUse-pre-startDate-predicate-selector", "uk.gov.gchq.koryphe.impl.predicate.IsMoreThan");
         enterText("RoadUse-pre-startDate-uk.gov.gchq.koryphe.impl.predicate.IsMoreThan-value", "{\"java.util.Date\": 971416800000}");
-        click("build-query-next");
 
-        click("build-query-execute");
+        click("Execute Query");
 
         click("open-raw");
         assertEquals(EXPECTED_OPERATION_JSON, getElement("operation-0-json").getText().trim());
@@ -141,8 +138,8 @@ public class QueryBuilderST {
         }
     }
 
-    private void scrollQueryBuilder(final int scrollBy) {
-        execute("$('query-builder').parent()[0].scrollTop += " + scrollBy);
+    private void scrollQueryPage(final int scrollBy) {
+        execute("$('query').parent()[0].scrollTop += " + scrollBy);
     }
 
     private void enterText(final String id, final String value) {

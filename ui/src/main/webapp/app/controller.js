@@ -16,7 +16,7 @@
 
 'use strict'
 
-angular.module('app').controller('MainCtrl', ['schema', 'settings', 'config', 'graph', 'operationService', function(schema, settings, config, graph, operationService) {
+angular.module('app').controller('MainCtrl', ['schema', 'settings', 'config', 'graph', 'operationService', 'queryPage', function(schema, settings, config, graph, operationService, queryPage) {
 
     var defaultRestEndpoint = window.location.origin + "/rest/latest";
 
@@ -25,7 +25,9 @@ angular.module('app').controller('MainCtrl', ['schema', 'settings', 'config', 'g
             conf.restEndpoint = defaultRestEndpoint;
         }
         config.set(conf);
-        operationService.reloadNamedOperations();
+        operationService.reloadNamedOperations().then(function(availableOps) {
+            queryPage.initialise();
+        });
         schema.load();
         graph.load();
     });

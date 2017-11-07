@@ -20,6 +20,10 @@ angular.module('app').config(['$locationProvider', '$routeProvider', function($l
     $locationProvider.html5Mode(false)
 
     $routeProvider
+        .when('/query', {
+            template: '<query></query>',
+            title: 'Query'
+        })
         .when('/graph', {
             template: '<graph-view></graph-view>',
             title: 'Graph'
@@ -37,7 +41,7 @@ angular.module('app').config(['$locationProvider', '$routeProvider', function($l
             title: 'Table'
         })
         .when('/', {
-            redirectTo: '/graph'
+            redirectTo: '/query'
         });
 }]);
 

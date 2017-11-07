@@ -16,30 +16,23 @@
 
 'use strict'
 
-angular.module('app').component('settingsView', settingsView())
+angular.module('app').factory('loading', function() {
 
-function settingsView() {
+    var service = {};
+    var loading = false;
 
-    return {
-        templateUrl: 'app/settings/settings.html',
-        controller: SettingsController,
-        controllerAs: 'ctrl'
-    }
-}
-
-function SettingsController($scope, settings, schema, operationService, results) {
-
-    var vm = this;
-
-    vm.resultLimit = settings.getResultLimit()
-    vm.defaultOp = settings.getDefaultOp();
-
-    vm.updateResultLimit = function() {
-        settings.setResultLimit(vm.resultLimit);
+    service.load = function() {
+        loading = true;
     }
 
-    vm.updateDefaultOp = function() {
-        settings.setDefaultOp(vm.defaultOp);
+    service.finish = function() {
+        loading = false;
     }
 
-}
+    service.isLoading = function() {
+        return loading;
+    }
+
+    return service;
+
+});
