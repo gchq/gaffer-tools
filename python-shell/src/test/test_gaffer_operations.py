@@ -3979,6 +3979,7 @@ class GafferOperationsTest(unittest.TestCase):
                 "class": "uk.gov.gchq.gaffer.operation.OperationChain",
                 "operations": [{
                     "class": "uk.gov.gchq.gaffer.operation.impl.GetWalks",
+                    "resultsLimit": 500000,
                     "input": [{
                         "class": "uk.gov.gchq.gaffer.operation.data.EntitySeed",
                         "vertex": 1
@@ -4002,6 +4003,7 @@ class GafferOperationsTest(unittest.TestCase):
             g.OperationChain(
                 operations=[
                     g.GetWalks(
+                        results_limit=500000,
                         input=[
                             g.EntitySeed(
                                 vertex=1

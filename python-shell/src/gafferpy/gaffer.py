@@ -2844,6 +2844,7 @@ class GetWalks(Operation):
     CLASS = 'uk.gov.gchq.gaffer.operation.impl.GetWalks'
 
     def __init__(self,
+                 results_limit=1000000,
                  operations=None,
                  input=None,
                  options=None):
@@ -2851,6 +2852,7 @@ class GetWalks(Operation):
                          options=options)
         self.operations = None
         self.input = input
+        self.results_limit = results_limit
 
         if operations is not None:
             self.operations = []
@@ -2862,6 +2864,9 @@ class GetWalks(Operation):
 
     def to_json(self):
         operation = super().to_json()
+        if self.results_limit is not None:
+            operation['resultsLimit'] = self.results_limit
+
         if self.input is not None:
             entity_seed_json = []
             for entity_seed in self.input:
