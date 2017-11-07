@@ -125,7 +125,7 @@
                     </tr>
                 </thead>
                 <tbody md-body>
-                    <tr ng-repeat="(name, detail) in ctrl.selectedOp.parameters" md-row>
+                    <tr ng-repeat="(name, detail) in ctrl.getSelectedOp().parameters" md-row>
                         <td md-cell>
                             {{name}}
                         </td>
@@ -136,16 +136,14 @@
                             {{detail.required}}
                         </td>
                         <td md-cell>
-                            <div layout="row" layout-wrap>
-                                <div ng-repeat="field in ctrl.getFields(detail.valueClass)">
-                                    <md-input-container>
-                                        <label>{{field.label}}</label>
-                                        <input id="param-{{name}}-{{field.key}}"
-                                               type="{{field.type}}"
-                                               step="{{field.step}}"
-                                               ng-model="detail.parts[field.key]"/>
-                                    </md-input-container>
-                                </div>
+                            <div layout="column" layout-align="center stretch" ng-repeat="field in ctrl.getFields(detail.valueClass)">
+                                <md-input-container>
+                                    <label>{{field.label}}</label>
+                                    <input id="param-{{name}}-{{field.key}}"
+                                           type="{{field.type}}"
+                                           step="{{field.step}}"
+                                           ng-model="detail.parts[field.key]"/>
+                                </md-input-container>
                             </div>
                         </td>
                     </tr>
