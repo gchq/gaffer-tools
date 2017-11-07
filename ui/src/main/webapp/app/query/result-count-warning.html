@@ -1,0 +1,21 @@
+<md-dialog-content>
+    <div class="md-dialog-content">
+        <h2 class="md-headline">You hit the result count limit</h2>
+        <h3 class="md-subhead">
+            Your query returned more than {{ctrl.limit}} results.
+
+        </h3>
+        <p>
+            You can either proceed to results which will display the first {{ctrl.limit}}
+            results of the query. Alternatively you can add filters or remove seeds to reduce the
+            number of results returned.
+        </p>
+    </div>
+</md-dialog-content>
+<md-dialog-actions>
+    <div layout="row" layout-align="center center">
+        <div ng-repeat="option in ctrl.options">
+            <md-button ng-click="ctrl.answer(option.value)">{{option.name}}</md-button>
+        </div>
+    </div>
+</md-dialog-actions>

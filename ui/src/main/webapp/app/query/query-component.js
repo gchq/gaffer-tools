@@ -27,7 +27,7 @@ function query() {
     };
 }
 
-function QueryController($scope, queryPage, operationService, types, graph, config, settings, query, functions, schema, common, results, navigation, $window) {
+function QueryController($scope, queryPage, operationService, types, graph, config, settings, query, functions, schema, common, results, navigation, $window, $mdDialog) {
 
     var vm = this;
 
@@ -190,13 +190,30 @@ function QueryController($scope, queryPage, operationService, types, graph, conf
             class: "uk.gov.gchq.gaffer.operation.OperationChain",
             operations: [operation, operationService.createLimitOperation(), operationService.createDeduplicateOperation()]
         }), function(data) {
-            results.update(data);
-            navigation.goTo('graph');
-            resetViewConfig();
+            if (data.length === settings.getResultLimit()) {
+                prompt(data);
+            } else {
+                submitResults(data);
+            }
         });
     }
 
-    var resetViewConfig = function() {
+    var prompt = function(data) {
+        $mdDialog.show({
+            template: '<result-count-warning aria-label="Result Count Warning"></result-count-warning>',
+            parent: angular.element(document.body),
+            clickOutsideToClose: false
+        })
+        .then(function(command) {
+            if(command === 'results') {
+                submitResults(data);
+            }
+        });
+    }
+
+    var submitResults = function(data) {
+        results.update(data);
+        navigation.goTo('graph');
         queryPage.reset();
     }
 
