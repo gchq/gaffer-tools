@@ -2,6 +2,7 @@ package uk.gov.gchq.gaffer.ui;
 
 import com.google.common.collect.Maps;
 import org.junit.AfterClass;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.openqa.selenium.By;
@@ -10,6 +11,7 @@ import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.firefox.FirefoxDriver;
+
 import uk.gov.gchq.gaffer.exception.SerialisationException;
 import uk.gov.gchq.gaffer.graph.Graph;
 import uk.gov.gchq.gaffer.jsonserialisation.JSONSerialiser;
@@ -21,6 +23,7 @@ import uk.gov.gchq.gaffer.proxystore.ProxyStore;
 import uk.gov.gchq.gaffer.user.User;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
@@ -97,7 +100,7 @@ public class QueryBuilderST {
     private static int slowFactor;
 
     @BeforeClass
-    public static void setup() throws OperationException {
+    public static void beforeClass() throws OperationException {
         assertNotNull("System property " + GECKO_PROPERTY + " has not been set", System.getProperty(GECKO_PROPERTY));
         url = System.getProperty(URL_PROPERTY, DEFAULT_URL);
         slowFactor = Integer.parseInt(System.getProperty(SLOW_FACTOR_PROPERTY, DEFAULT_SLOW_FACTOR));
@@ -110,13 +113,120 @@ public class QueryBuilderST {
     }
 
     @AfterClass
-    public static void cleanUp() {
+    public static void afterClass() {
         try {
             driver.close();
             deleteNamedOperation();
         } catch (final Exception e) {
             // ignore errors
         }
+    }
+
+    @Before
+    public void before() throws InterruptedException {
+        driver.get(url);
+        Thread.sleep(slowFactor * 1000);
+    }
+
+    @Test
+    public void shouldFindRoadUseAroundJunctionM5_10() throws InterruptedException {
+        click("add-seed");
+        selectOption("vertexType", "junction");
+        enterText("seedVertex", "M5:10");
+        click("add-seeds");
+
+        click("Get Elements");
+        click("select-all-seeds");
+        scrollQueryPage(200);
+        click("related-edge-RoadUse");
+        click("RoadUse-add-pre-filter");
+        selectOption("RoadUse-pre-property-selector", "startDate");
+        selectOption("RoadUse-pre-startDate-predicate-selector", "uk.gov.gchq.koryphe.impl.predicate.IsMoreThan");
+        enterText("RoadUse-pre-startDate-uk.gov.gchq.koryphe.impl.predicate.IsMoreThan-value", "{\"java.util.Date\": 971416800000}");
+        click("Execute Query");
+
+        click("open-raw");
+        assertEquals(EXPECTED_OPERATION_JSON, getElement("operation-0-json").getText().trim());
+
+        clickTab("Results");
+        final String results = getElement("raw-edge-results").getText().trim();
+        for (final String expectedResult : EXPECTED_RESULTS) {
+            assertTrue("Results did not contain: \n" + expectedResult
+                    + "\nActual results: \n" + results, results.contains(expectedResult));
+        }
+    }
+
+    @Test
+    public void shouldBeAbleToRunParameterisedQueries() throws InterruptedException, SerialisationException {
+        click("add-seed");
+        selectOption("vertexType", "junction");
+        enterText("seedVertex", "M5:11");
+        click("add-seeds");
+
+        click("Two Hop With Limit");
+        click("select-all-seeds");
+        enterText("param-param1-", "2");
+        click("Execute Query");
+
+        click("open-raw");
+        clickTab("Results");
+
+        final String results = getElement("raw-entity-seed-results").getText().trim();
+        final List resultList = JSONSerialiser.deserialise(results.getBytes(), ArrayList.class);
+
+        assertEquals("Parameterised Named Operation returned wrong number of results", 2, resultList.size());
+
+        final String[] expectedResults = {"390466,225615", "M5:9"};
+        for (final String result : expectedResults) {
+            assertTrue(result + "was not found in results: " + resultList.toString(), resultList.contains(result));
+        }
+    }
+
+    private void scrollQueryPage(final int scrollBy) {
+        execute("$('query').parent()[0].scrollTop += " + scrollBy);
+    }
+
+    private void enterText(final String id, final String value) {
+        getElement(id).sendKeys(value);
+    }
+
+    private void selectOption(final String id, final String optionValue) throws InterruptedException {
+        getElement(id).click();
+
+        WebElement choice = driver.findElement(By.cssSelector("md-option[value = '" + optionValue + "']"));
+        choice.click();
+
+        Thread.sleep(slowFactor * 500);
+    }
+
+    private void click(final String id) throws InterruptedException {
+        getElement(id).click();
+        Thread.sleep(slowFactor * 500);
+    }
+
+    private void clickTab(final String tabTitle) {
+        driver.findElement(By.xpath("//md-tab-item//span[contains(text(), '" + tabTitle + "')]")).click();
+    }
+
+    private void execute(final String script) {
+        ((JavascriptExecutor) driver).executeScript(script);
+    }
+
+    private WebElement getElement(final String id) {
+        try {
+            return driver.findElement(By.id(id));
+        } catch (final Exception e) {
+            // ignore error
+        }
+
+        try {
+            return driver.findElement(By.className(id));
+        } catch (final Exception e) {
+            // ignore error
+        }
+
+        // try using the id as a tag name
+        return driver.findElement(By.tagName(id));
     }
 
     private static void deleteNamedOperation() throws OperationException {
@@ -178,124 +288,5 @@ public class QueryBuilderST {
                         .build(),
                 new User()
         );
-    }
-
-
-
-    @Test
-    public void shouldBeAbleToRunParameterisedQueries() throws InterruptedException, SerialisationException {
-        driver.get(url);
-        Thread.sleep(slowFactor * 1000);
-
-        click("add-seed");
-
-        selectOption("vertexType", "junction");
-        enterText("seedVertex", "M5:11");
-        click("add-seeds");
-
-        click("Two Hop With Limit");
-        click("select-all-seeds");
-
-        enterText("param-param1-", "2");
-
-        click("Execute Query");
-        click("open-raw");
-        clickTab("Results");
-
-
-        final String results = getElement("raw-entity-seed-results").getText().trim();
-
-        ArrayList resultList = JSONSerialiser.deserialise(results.getBytes(), ArrayList.class);
-
-        assertEquals("Parameterised Named Operation returned wrong number of results", 2, resultList.size());
-
-        final String[] expectedResults = {"390466,225615", "M5:9"};
-
-        for (final String result: expectedResults) {
-            assertTrue(result + "was not found in results: " + resultList.toString(), resultList.contains(result));
-        }
-
-    }
-
-    @Test
-    public void shouldFindRoadUseAroundJunctionM5_10() throws InterruptedException {
-        driver.get(url);
-        Thread.sleep(slowFactor * 1000);
-
-        // Enter the query string "Cheese"
-        click("add-seed");
-
-        selectOption("vertexType", "junction");
-        enterText("seedVertex", "M5:10");
-        click("add-seeds");
-
-        click("Get Elements");
-        click("select-all-seeds");
-        scrollQueryPage(200);
-        click("related-edge-RoadUse");
-        click("RoadUse-add-pre-filter");
-        selectOption("RoadUse-pre-property-selector", "startDate");
-        selectOption("RoadUse-pre-startDate-predicate-selector", "uk.gov.gchq.koryphe.impl.predicate.IsMoreThan");
-        enterText("RoadUse-pre-startDate-uk.gov.gchq.koryphe.impl.predicate.IsMoreThan-value", "{\"java.util.Date\": 971416800000}");
-
-        click("Execute Query");
-
-        click("open-raw");
-
-        assertEquals(EXPECTED_OPERATION_JSON, getElement("operation-0-json").getText().trim());
-
-        clickTab("Results");
-        final String results = getElement("raw-edge-results").getText().trim();
-        for (final String expectedResult : EXPECTED_RESULTS) {
-            assertTrue("Results did not contain: \n" + expectedResult
-                    + "\nActual results: \n" + results, results.contains(expectedResult));
-        }
-    }
-
-    private void scrollQueryPage(final int scrollBy) {
-        execute("$('query').parent()[0].scrollTop += " + scrollBy);
-    }
-
-    private void enterText(final String id, final String value) {
-        getElement(id).sendKeys(value);
-    }
-
-    private void selectOption(final String id, final String optionValue) throws InterruptedException {
-        getElement(id).click();
-
-        WebElement choice = driver.findElement(By.cssSelector("md-option[value = '" + optionValue + "']"));
-        choice.click();
-
-        Thread.sleep(slowFactor * 500);
-    }
-
-    private void click(final String id) throws InterruptedException {
-        getElement(id).click();
-        Thread.sleep(slowFactor * 500);
-    }
-
-    private void clickTab(final String tabTitle) {
-        driver.findElement(By.xpath("//md-tab-item//span[contains(text(), '" + tabTitle + "')]")).click();
-    }
-
-    private void execute(final String script) {
-        ((JavascriptExecutor) driver).executeScript(script);
-    }
-
-    private WebElement getElement(final String id) {
-        try {
-            return driver.findElement(By.id(id));
-        } catch (final Exception e) {
-            // ignore error
-        }
-
-        try {
-            return driver.findElement(By.className(id));
-        } catch (final Exception e) {
-            // ignore error
-        }
-
-        // try using the id as a tag name
-        return driver.findElement(By.tagName(id));
     }
 }
