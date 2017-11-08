@@ -50,10 +50,10 @@
                                 <tbody md-body>
                                 <tr md-row ng-repeat="entity in ctrl.data.entities[group] | orderBy:sortType:sortReverse | filter:ctrl.searchTerm">
                                     <td md-cell>
-                                        {{entity.vertex}}
+                                        {{ctrl.resolveEntityVertex(group, entity.vertex)}}
                                     </td>
                                     <td md-cell ng-repeat="(name, type) in schemaEntity.properties">
-                                        {{entity.properties[name]}}
+                                        {{ctrl.resolve(type, entity.properties[name])}}
                                     </td>
                                 </tr>
                                 </tbody>
@@ -120,16 +120,16 @@
                                 <tbody md-body>
                                 <tr md-row ng-repeat="edge in ctrl.data.edges[group] | orderBy:sortType:sortReverse | filter:ctrl.searchTerm">
                                     <td md-cell>
-                                        {{edge.source}}
+                                        {{ctrl.resolveEdgeVertex(group, edge.source, 0)}}
                                     </td>
                                     <td md-cell>
-                                        {{edge.destination}}
+                                        {{ctrl.resolveEdgeVertex(group, edge.destination, 1)}}
                                     </td>
                                     <td md-cell>
                                         {{edge.directed}}
                                     </td>
                                     <td md-cell ng-repeat="(name, type) in schemaEdge.properties">
-                                        {{edge.properties[name]}}
+                                        {{ctrl.resolve(type, edge.properties[name])}}
                                     </td>
                                 </tr>
                                 </tbody>

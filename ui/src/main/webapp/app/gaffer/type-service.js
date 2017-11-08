@@ -21,7 +21,18 @@ angular.module('app').factory('types', ['config', function(config) {
     var types = {};
 
     var defaultShortValue = function(value) {
-        return JSON.stringify(value);
+        return angular.toJson(value);
+    }
+
+    var mapShortValue = function(value) {
+        return Object.keys(value).map(function(key) {
+            return key + ": " + value[key];
+        }).join(", ");
+
+    }
+
+    var listShortValue = function(value) {
+        return value.join(', ')
     }
 
     var unknownTypeDefault =
@@ -98,8 +109,20 @@ angular.module('app').factory('types', ['config', function(config) {
             var typeClass = Object.keys(value)[0]
             var parts = value[typeClass];
 
+            if (typeClass.endsWith('Map')) {
+                return mapShortValue(parts);
+            } else if (typeClass.endsWith('List') || typeClass.endsWith('Set')) {
+                return listShortValue(parts);
+            }
+
             if (Object.keys(parts).length > 0) {
-                return Object.keys(parts).map(function(key){return parts[key]}).join("|");
+                return Object.keys(parts).map(function(key){
+                    var val = parts[key];
+                    if (typeof val === 'string' || val instanceof String || typeof val === 'number') {
+                        return parts[key];
+                    }
+                    return angular.toJson(parts[key]);
+                }).join("|");
             }
 
             return value[typeClass];
