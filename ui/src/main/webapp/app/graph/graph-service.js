@@ -150,27 +150,51 @@ angular.module('app').factory('graph', ['schema', 'types', '$q', 'results', 'com
     }
 
     function select(element) {
-        var _id = element.id();
-        for (var id in graphData.entities) {
-            if(_id == id) {
-                selectedEntities[id] = graphData.entities[id];
-                fire('onSelectedElementsUpdate', [{"entities": selectedEntities, "edges": selectedEdges}]);
-                updateRelatedEntities();
-                updateRelatedEdges();
-                return;
-            }
+        if(selectEntityId(element.id())) {
+            return;
         }
-        for (var id in graphData.edges) {
-         if(_id == id) {
-             selectedEdges[id] = graphData.edges[id];
-             fire('onSelectedElementsUpdate', [{"entities": selectedEntities, "edges": selectedEdges}]);
-             return;
-         }
+
+        if(selectEdgeId(element.id())) {
+            return;
         }
-        selectedEntities[_id] = [{vertexType: element.data().vertexType, vertex: _id}];
+
+        selectVertex(element.id(), element.data().vertexType);
+    }
+
+    function selectEntity(id, entity) {
+        selectedEntities[id] = entity;
         fire('onSelectedElementsUpdate', [{"entities": selectedEntities, "edges": selectedEdges}]);
         updateRelatedEntities();
         updateRelatedEdges();
+    }
+
+    function selectEntityId(entityId) {
+        for (var id in graphData.entities) {
+            if(entityId == id) {
+                selectEntity(id, graphData.entities[id]);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    function selectEdge(id, edge) {
+        selectedEdges[id] = edge;
+        fire('onSelectedElementsUpdate', [{"entities": selectedEntities, "edges": selectedEdges}]);
+    }
+
+    function selectEdgeId(edgeId) {
+        for (var id in graphData.edges) {
+            if(edgeId == id) {
+                selectEdge(id, graphData.edges[id]);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    function selectVertex(vertexId, vertexType) {
+        selectEntity(vertexId, [{vertexType: vertexType, vertex: vertexId}]);
     }
 
     function unSelect(element) {
@@ -194,6 +218,7 @@ angular.module('app').factory('graph', ['schema', 'types', '$q', 'results', 'com
     graph.reset = function() {
         selectedEdges = {};
         selectedEntities = {};
+        graphCy.elements().unselect();
         fire('onSelectedElementsUpdate'[{"entities": selectedEntities, "edges": selectedEdges}]);
     }
 
@@ -203,8 +228,10 @@ angular.module('app').factory('graph', ['schema', 'types', '$q', 'results', 'com
             if(!common.arrayContainsObject(graphData.entitySeeds[v], entitySeed)) {
                 graphData.entitySeeds[v].push(entitySeed);
             }
+            selectEntity(v, graphData.entitySeeds[v]);
         } else {
             graphData.entitySeeds[v] = [entitySeed];
+            selectEntity(v, [entitySeed]);
         }
 
         updateGraph(graphData);
@@ -266,11 +293,17 @@ angular.module('app').factory('graph', ['schema', 'types', '$q', 'results', 'com
     var updateGraph = function(results) {
         for (var id in results.entities) {
             var existingNodes = graphCy.getElementById(id);
+            var isSelected = common.objectContainsValue(selectedEntities, id);
             if(existingNodes.length > 0) {
                 if(existingNodes.data().radius < 60) {
                     existingNodes.data('radius', 60);
                     existingNodes.data('color', '#337ab7');
                     existingNodes.data('selectedColor', '#204d74');
+                }
+                if(isSelected) {
+                   existingNodes.select();
+                } else {
+                   existingNodes.unselect();
                 }
             } else {
                 graphCy.add({
@@ -286,14 +319,22 @@ angular.module('app').factory('graph', ['schema', 'types', '$q', 'results', 'com
                         x: 100,
                         y: 100
                     },
-                    selected: common.objectContainsValue(selectedEntities, id)
+                    selected: isSelected
                 });
             }
         }
 
         for (var id in results.edges) {
             var edge = results.edges[id][0];
-            if(graphCy.getElementById(edge.source).length === 0) {
+            var existingNodes = graphCy.getElementById(edge.source);
+            var isSelected = common.objectContainsValue(selectedEntities, edge.source);
+            if(existingNodes.length > 0) {
+                if(isSelected) {
+                   existingNodes.select();
+                } else {
+                   existingNodes.unselect();
+                }
+            } else {
                 graphCy.add({
                     group: 'nodes',
                     data: {
@@ -308,11 +349,19 @@ angular.module('app').factory('graph', ['schema', 'types', '$q', 'results', 'com
                         x: 100,
                         y: 100
                     },
-                    selected: common.objectContainsValue(selectedEntities, edge.source)
+                    selected:isSelected
                 });
             }
 
-            if(graphCy.getElementById(edge.destination).length === 0) {
+            existingNodes = graphCy.getElementById(edge.destination);
+            isSelected = common.objectContainsValue(selectedEntities, edge.destination);
+            if(existingNodes.length > 0) {
+                if(isSelected) {
+                   existingNodes.select();
+                } else {
+                   existingNodes.unselect();
+                }
+            } else {
                 graphCy.add({
                     group: 'nodes',
                     data: {
@@ -327,11 +376,19 @@ angular.module('app').factory('graph', ['schema', 'types', '$q', 'results', 'com
                         x: 100,
                         y: 100
                     },
-                    selected: common.objectContainsValue(selectedEntities, edge.destination)
+                    selected: isSelected
                 });
             }
 
-            if(graphCy.getElementById(id).length === 0) {
+            var existingEdges = graphCy.getElementById(id);
+            isSelected = common.objectContainsValue(selectedEdges, id);
+            if(existingEdges.length > 0) {
+                if(isSelected) {
+                   existingNodes.select();
+                } else {
+                   existingNodes.unselect();
+                }
+            } else {
                 graphCy.add({
                     group: 'edges',
                     data: {
@@ -341,7 +398,7 @@ angular.module('app').factory('graph', ['schema', 'types', '$q', 'results', 'com
                         group: edge.group,
                         selectedColor: '#35500F',
                     },
-                    selected: common.objectContainsValue(selectedEdges, id)
+                    selected: isSelected
                 });
             }
         }
@@ -396,7 +453,15 @@ angular.module('app').factory('graph', ['schema', 'types', '$q', 'results', 'com
     }
 
     var addEntitySeed = function(vertexType, vertex){
-        if(graphCy.getElementById(vertex).length === 0) {
+        var existingNodes = graphCy.getElementById(vertex);
+        var isSelected = common.objectContainsValue(selectedEntities, vertex);
+        if(existingNodes.length > 0) {
+            if(isSelected) {
+               existingNodes.select();
+            } else {
+               existingNodes.unselect();
+            }
+        } else {
             graphCy.add({
                 group: 'nodes',
                 data: {
@@ -412,15 +477,17 @@ angular.module('app').factory('graph', ['schema', 'types', '$q', 'results', 'com
                     x: 100,
                     y: 100
                 },
-                selected: common.objectContainsValue(selectedEntities, vertex)
+                selected: isSelected
             });
         }
     }
 
-
-
     graph.selectAllNodes = function() {
         graphCy.filter('node').select();
+    }
+
+    graph.deselectAll = function() {
+        graphCy.elements().unselect();
     }
 
     function fire(e, args){
