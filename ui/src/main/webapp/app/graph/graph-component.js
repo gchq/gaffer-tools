@@ -28,14 +28,19 @@ function graphView() {
 }
 
 
-function GraphController($scope, graph, results, $timeout) {
+function GraphController($scope, graph, results, $timeout, types, schema) {
 
     var vm = this;
 
     vm.selectedEdges = graph.getSelectedEdges();
     vm.selectedEntities = graph.getSelectedEntities();
+    vm.schema = schema.get();
 
     var promise = null;
+
+    schema.observe().then(null, null, function(schema) {
+        vm.schema = schema;
+    });
 
     graph.onSelectedElementsUpdate(function(selectedElements) {
         vm.selectedEdges = selectedElements.edges;
@@ -54,4 +59,28 @@ function GraphController($scope, graph, results, $timeout) {
             graph.reload();
         })
     });
+
+    vm.resolve = function(typeName, value) {
+        var clazz = vm.schema.types[typeName].class;
+        return types.getType(clazz).getShortValue(value);
+    }
+
+    vm.resolveEntityProperty = function(group, propertyName, value) {
+        return resolveProperty('entities', group, propertyName, value);
+    }
+
+    var resolveProperty = function(elementType, group, propertyName, value) {
+        var propertyType = vm.schema[elementType][group].properties[propertyName];
+        return vm.resolve(propertyType, value);
+    }
+
+    vm.resolveEdgeProperty = function(group, propertyName, value) {
+        return resolveProperty('edges', group, propertyName, value);
+    }
+
+    vm.resolveVertex = function(value) {
+        var vertexType = schema.getSchemaVertices()[0]
+        return vm.resolve(vertexType, value);
+    }
+
 }
