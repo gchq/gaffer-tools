@@ -201,9 +201,16 @@ function QueryController($scope, queryPage, operationService, types, graph, conf
             } else {
                 submitResults(data);
             }
-        }), function(err) {
+        }, function(err) {
             loading.finish();
-        };
+            var errorString = 'Error executing operation';
+            if (err && err !== "") {
+                alert(errorString + err.simpleMessage);
+                console.log(err);
+            } else {
+                alert(errorString);
+            }
+        });
     }
 
     var prompt = function(data) {
