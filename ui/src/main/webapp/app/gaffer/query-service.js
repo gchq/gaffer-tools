@@ -46,7 +46,7 @@ angular.module('app').factory('query', ['$http', 'config', '$q', 'common', funct
                 } else {
                     var errorString = 'Error executing operation';
                     if (err && err !== "") {
-                        alert(errorString + err.simpleMessage);
+                        alert(errorString + ": " + err.simpleMessage);
                         console.log(err);
                     } else {
                         alert(errorString);
