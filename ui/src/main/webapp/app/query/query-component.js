@@ -220,6 +220,7 @@ function QueryController($scope, queryPage, operationService, types, graph, conf
     }
 
     var submitResults = function(data) {
+        graph.deselectAll();
         results.update(data);
         navigation.goTo('graph');
         queryPage.reset();
