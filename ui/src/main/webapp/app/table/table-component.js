@@ -26,7 +26,7 @@ function resultsTable() {
     };
 }
 
-function TableController($scope, results, schema, table) {
+function TableController($scope, results, schema, table, types) {
     var vm = this;
 
     table.update(results.get());
@@ -39,9 +39,26 @@ function TableController($scope, results, schema, table) {
     results.observe().then(null, null, function(results) {
         table.update(results);
         vm.data = table.getData();
-    })
+    });
 
     schema.observe().then(null, null, function(schema) {
         vm.schema = schema;
-    })
+    });
+
+    vm.resolve = function(typeName, value) {
+        var clazz = vm.schema.types[typeName].class;
+        return types.getType(clazz).getShortValue(value);
+    }
+
+    vm.resolveEntityVertex = function(group, value) {
+        var vertexType = schema.getVertexTypeFromEntityGroup(group);
+        return vm.resolve(vertexType, value);
+    }
+
+    vm.resolveEdgeVertex = function(group, value, destFlag) {
+        var vertexType = schema.getVertexTypesFromEdgeGroup(group)[destFlag];
+        return vm.resolve(vertexType, value);
+    }
+
+
 }
