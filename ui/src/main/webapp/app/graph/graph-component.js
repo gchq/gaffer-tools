@@ -80,7 +80,7 @@ function GraphController($scope, graph, results, $timeout, types, schema) {
 
     vm.resolveVertex = function(value) {
         var vertexType = schema.getSchemaVertices()[0]
-        return vm.resolve(vertexType, value);
+        return vm.resolve(vertexType, JSON.parse(value));
     }
 
 }
