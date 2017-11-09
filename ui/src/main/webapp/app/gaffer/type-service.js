@@ -35,6 +35,25 @@ angular.module('app').factory('types', ['config', function(config) {
         return value.join(', ')
     }
 
+    var customShortValue = function(fields, parts) {
+        var showWithLabel = true;
+        if (fields.length === 1) {
+            showWithLabel = false;
+        }
+        return fields.map(function(field) {
+            var layers = field.key.split('.');
+            var customValue = parts;
+            for (var i in layers) {
+                customValue = customValue[layers[i]]
+            }
+
+            if (showWithLabel) {
+                return field.label + ': ' + customValue;
+            }
+            return customValue;
+        }).join(', ');
+    }
+
     var unknownTypeDefault =
     {
         fields: [
@@ -108,6 +127,10 @@ angular.module('app').factory('types', ['config', function(config) {
 
             var typeClass = Object.keys(value)[0]
             var parts = value[typeClass];
+
+            if (type.custom) {
+                return customShortValue(type.fields, parts)
+            }
 
             if (typeClass.endsWith('Map')) {
                 return mapShortValue(parts);
