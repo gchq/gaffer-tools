@@ -1,7 +1,9 @@
 package uk.gov.gchq.gaffer.ui;
 
-import org.junit.After;
+import com.google.common.collect.Maps;
+import org.junit.AfterClass;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Dimension;
@@ -9,6 +11,20 @@ import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.firefox.FirefoxDriver;
+
+import uk.gov.gchq.gaffer.exception.SerialisationException;
+import uk.gov.gchq.gaffer.graph.Graph;
+import uk.gov.gchq.gaffer.jsonserialisation.JSONSerialiser;
+import uk.gov.gchq.gaffer.named.operation.AddNamedOperation;
+import uk.gov.gchq.gaffer.named.operation.DeleteNamedOperation;
+import uk.gov.gchq.gaffer.named.operation.ParameterDetail;
+import uk.gov.gchq.gaffer.operation.OperationException;
+import uk.gov.gchq.gaffer.proxystore.ProxyStore;
+import uk.gov.gchq.gaffer.user.User;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -79,12 +95,12 @@ public class QueryBuilderST {
                     "    \"matchedVertex\": \"DESTINATION\""
     };
 
-    private WebDriver driver;
-    private String url;
-    private int slowFactor;
+    private static WebDriver driver;
+    private static String url;
+    private static int slowFactor;
 
-    @Before
-    public void setup() {
+    @BeforeClass
+    public static void beforeClass() throws OperationException {
         assertNotNull("System property " + GECKO_PROPERTY + " has not been set", System.getProperty(GECKO_PROPERTY));
         url = System.getProperty(URL_PROPERTY, DEFAULT_URL);
         slowFactor = Integer.parseInt(System.getProperty(SLOW_FACTOR_PROPERTY, DEFAULT_SLOW_FACTOR));
@@ -93,25 +109,28 @@ public class QueryBuilderST {
         // Create a large window to ensure we don't need to scroll
         final Dimension dimension = new Dimension(1200, 1000);
         driver.manage().window().setSize(dimension);
+        addNamedOperation();
     }
 
-    @After
-    public void cleanUp() {
+    @AfterClass
+    public static void afterClass() {
         try {
             driver.close();
+            deleteNamedOperation();
         } catch (final Exception e) {
             // ignore errors
         }
     }
 
-    @Test
-    public void shouldFindRoadUseAroundJunctionM5_10() throws InterruptedException {
+    @Before
+    public void before() throws InterruptedException {
         driver.get(url);
         Thread.sleep(slowFactor * 1000);
+    }
 
-        // Enter the query string "Cheese"
+    @Test
+    public void shouldFindRoadUseAroundJunctionM5_10() throws InterruptedException {
         click("add-seed");
-
         selectOption("vertexType", "junction");
         enterText("seedVertex", "M5:10");
         click("add-seeds");
@@ -124,7 +143,6 @@ public class QueryBuilderST {
         selectOption("RoadUse-pre-property-selector", "startDate");
         selectOption("RoadUse-pre-startDate-predicate-selector", "uk.gov.gchq.koryphe.impl.predicate.IsMoreThan");
         enterText("RoadUse-pre-startDate-uk.gov.gchq.koryphe.impl.predicate.IsMoreThan-value", "{\"java.util.Date\": 971416800000}");
-
         click("Execute Query");
 
         click("open-raw");
@@ -135,6 +153,32 @@ public class QueryBuilderST {
         for (final String expectedResult : EXPECTED_RESULTS) {
             assertTrue("Results did not contain: \n" + expectedResult
                     + "\nActual results: \n" + results, results.contains(expectedResult));
+        }
+    }
+
+    @Test
+    public void shouldBeAbleToRunParameterisedQueries() throws InterruptedException, SerialisationException {
+        click("add-seed");
+        selectOption("vertexType", "junction");
+        enterText("seedVertex", "M5:11");
+        click("add-seeds");
+
+        click("Two Hop With Limit");
+        click("select-all-seeds");
+        enterText("param-param1-", "2");
+        click("Execute Query");
+
+        click("open-raw");
+        clickTab("Results");
+
+        final String results = getElement("raw-entity-seed-results").getText().trim();
+        final List resultList = JSONSerialiser.deserialise(results.getBytes(), ArrayList.class);
+
+        assertEquals("Parameterised Named Operation returned wrong number of results", 2, resultList.size());
+
+        final String[] expectedResults = {"390466,225615", "M5:9"};
+        for (final String result : expectedResults) {
+            assertTrue(result + "was not found in results: " + resultList.toString(), resultList.contains(result));
         }
     }
 
@@ -183,5 +227,66 @@ public class QueryBuilderST {
 
         // try using the id as a tag name
         return driver.findElement(By.tagName(id));
+    }
+
+    private static void deleteNamedOperation() throws OperationException {
+        Graph graph = new Graph.Builder()
+                .store(new ProxyStore.Builder()
+                        .graphId("graphId1")
+                        .host("localhost")
+                        .port(8080)
+                        .connectTimeout(1000)
+                        .contextRoot("rest")
+                        .build())
+                .build();
+
+        graph.execute(new DeleteNamedOperation.Builder()
+                .name("Two Hop With Limit")
+                .build(), new User());
+    }
+
+    private static void addNamedOperation() throws OperationException {
+        Graph graph = new Graph.Builder()
+                .store(new ProxyStore.Builder()
+                        .graphId("graphId1")
+                        .host("localhost")
+                        .port(8080)
+                        .connectTimeout(1000)
+                        .contextRoot("rest")
+                        .build())
+                .build();
+
+        final String opChainString = "{" +
+                "    \"operations\" : [ {" +
+                "      \"class\" : \"uk.gov.gchq.gaffer.operation.impl.get.GetAdjacentIds\"," +
+                "      \"includeIncomingOutGoing\" : \"OUTGOING\"" +
+                "    }, {" +
+                "      \"class\" : \"uk.gov.gchq.gaffer.operation.impl.get.GetAdjacentIds\"," +
+                "      \"includeIncomingOutGoing\" : \"OUTGOING\"" +
+                "    }, {" +
+                "      \"class\" : \"uk.gov.gchq.gaffer.operation.impl.Limit\"," +
+                "      \"resultLimit\" : \"${param1}\"" +
+                "    }" +
+                " ]" +
+                "}";
+
+        ParameterDetail param = new ParameterDetail.Builder()
+                .defaultValue(1L)
+                .description("Limit param")
+                .valueClass(Long.class)
+                .build();
+        Map<String, ParameterDetail> paramMap = Maps.newHashMap();
+        paramMap.put("param1", param);
+
+        graph.execute(
+                new AddNamedOperation.Builder()
+                        .name("Two Hop With Limit")
+                        .description("Two Adjacent Ids queries with customisable limit")
+                        .operationChain(opChainString)
+                        .parameters(paramMap)
+                        .overwrite()
+                        .build(),
+                new User()
+        );
     }
 }
