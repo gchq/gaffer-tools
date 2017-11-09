@@ -205,7 +205,7 @@ function QueryController($scope, queryPage, operationService, types, graph, conf
             loading.finish();
             var errorString = 'Error executing operation';
             if (err && err !== "") {
-                alert(errorString + err.simpleMessage);
+                alert(errorString  + ": " + err.simpleMessage);
                 console.log(err);
             } else {
                 alert(errorString);
