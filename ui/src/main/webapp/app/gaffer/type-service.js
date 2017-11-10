@@ -18,13 +18,29 @@
 
 angular.module('app').factory('types', ['config', function(config) {
 
-    var types = {};
+    var service = {};
 
-    var defaultShortValue = function(value) {
+    var types = {}
+
+    service.initialise = function() {
+        types = config.get().types;
+    }
+
+    service.getFields = function(className) {
+        var knownType = types[className];
+
+        if(knownType) {
+            return knownType.fields;
+        }
+
+        return unknownType.fields;
+    }
+
+    var defaultShortValue = function(value) { // should only be used when no other options are available
         return JSON.stringify(value);
     }
 
-    var unknownTypeDefault =
+    var unknownType =
     {
         fields: [
             {
@@ -32,80 +48,74 @@ angular.module('app').factory('types', ['config', function(config) {
                 type: "text",
                 class: "java.lang.String"
             }
-        ],
-        getShortValue: defaultShortValue
+        ]
     }
 
-
-    types.getType = function(typeClass) {
-        var types = config.get().types;
-        var type = types[typeClass];
-        if(!type) {
-            type = unknownTypeDefault;
+    var getType = function(typeClass) {
+        if (types[typeClass]) {
+            return types[typeClass];
         }
+        return unknownType;
+    }
 
-
-        type.createValue = function(typeClass, parts) {
-            if((type.wrapInJson && Object.keys(parts)[0] !== 'undefined') || Object.keys(parts).length > 1) {
-                return parts;
-            }
-
-            return parts[Object.keys(parts)[0]];
-        }
-
-
-
-        type.createValueAsJsonWrapperObj = function(typeClass, parts, stringify) {
-            var value = {};
-            if(type.wrapInJson || Object.keys(parts).length > 1) {
-                if (Object.keys(parts).length === 1 && Object.keys(parts).indexOf('undefined') !== -1) {
-                    value[typeClass] = parts['undefined'];
-                } else {
-                    value[typeClass] = parts;
-                }
-                if(stringify) {
-                    value = JSON.stringify(value);
-                }
-                return value;
-            }
-
-            return parts[Object.keys(parts)[0]];
-        }
-
-
-
-        type.createParts = function(typeClass, value) {
-            if(value[typeClass]) {
-                return value[typeClass];
-            }
-
-            var parts = {};
-            parts[type.key] = value;
+    service.createValue = function(typeClass, parts) {
+        if (getType(typeClass).wrapInJson && Object.keys(parts)[0] !== 'undefined' || Object.keys(parts).length > 1) {
             return parts;
         }
+        return parts[Object.keys(parts)[0]];
+    }
 
+    service.createJsonValue = function(typeClass, parts) {
+        var value = {};
+        var type = getType(typeClass);
 
-
-        type.getShortValue = function(value) {
-            if(typeof value === 'string' || value instanceof String || typeof value === 'number') {
-                return value;
+        if(type.wrapInJson || Object.keys(parts).length > 1) {
+            if (Object.keys(parts).length === 1 && Object.keys(parts).indexOf('undefined') !== -1) {
+                value[typeClass] = parts['undefined'];
+            } else {
+                value[typeClass] = parts;
             }
-
-            if(Object.keys(value).length != 1) {
-                return defaultShortValue(value);
+            if(stringify) {
+                value = JSON.stringify(value);
             }
+            return value;
+        }
 
-            var typeClass = Object.keys(value)[0]
-            var parts = value[typeClass];
+        return parts[Object.keys(parts)[0]];
 
-            if (Object.keys(parts).length > 0) {
-                return Object.keys(parts).map(function(key){return parts[key]}).join("|");
-            }
+    }
 
+    service.createParts = function(typeClass, value) {
+        if(value[typeClass]) {
             return value[typeClass];
         }
 
+        var parts = {};
+        parts[type.key] = value;
+        return parts;
+    }
 
+    service.getShortValue = function(value) {
+        if(typeof value === 'string' || value instanceof String || typeof value === 'number') {
+            return value;
+        }
+
+        if(Object.keys(value).length != 1) {
+            return defaultShortValue(value);
+        }
+
+        var typeClass = Object.keys(value)[0]
+        var parts = value[typeClass];
+
+        if (Object.keys(parts).length > 0) {
+            return Object.keys(parts).map(function(key){return parts[key]}).join("|");
+        }
+
+        return value[typeClass];
+    }
+
+    service.getCsvHeader = function(typeClass) {
+        var type = getType(typeClass);
 
         var partKeys = [];
         for(var i in type.fields) {
@@ -117,15 +127,12 @@ angular.module('app').factory('types', ['config', function(config) {
         }
 
         if(partKeys.length == 0) {
-            type.csvHeader = "";
+            return "";
         } else {
-            type.csvHeader = partKeys.join(",");
+            return partKeys.join(",");
         }
-
-
-        return type;
     }
 
-    return types;
+    return service;
 
 }]);

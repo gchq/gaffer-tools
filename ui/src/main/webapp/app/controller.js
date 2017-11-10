@@ -25,6 +25,7 @@ angular.module('app').controller('MainCtrl', ['schema', 'settings', 'config', 'g
             conf.restEndpoint = defaultRestEndpoint;
         }
         config.set(conf);
+        types.initialise();
         operationService.reloadNamedOperations().then(function(availableOps) {
             queryPage.initialise();
         });
