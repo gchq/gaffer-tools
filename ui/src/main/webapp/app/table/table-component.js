@@ -47,7 +47,7 @@ function TableController($scope, results, schema, table, types) {
 
     vm.resolve = function(typeName, value) {
         var clazz = vm.schema.types[typeName].class;
-        return types.getType(clazz).getShortValue(value);
+        return types.getShortValue(clazz, value);
     }
 
     vm.resolveEntityVertex = function(group, value) {

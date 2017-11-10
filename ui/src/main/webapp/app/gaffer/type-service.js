@@ -96,7 +96,7 @@ angular.module('app').factory('types', ['config', function(config) {
         return parts[Object.keys(parts)[0]];
     }
 
-    service.createJsonValue = function(typeClass, parts) {
+    service.createJsonValue = function(typeClass, parts, stringify) {
         var value = {};
         var type = getType(typeClass);
 
@@ -126,7 +126,8 @@ angular.module('app').factory('types', ['config', function(config) {
         return parts;
     }
 
-    service.getShortValue = function(value) {
+    service.getShortValue = function(typeClass, value) {
+        var type = getType(typeClass);
 
         if (typeof value === 'string' || value instanceof String || typeof value === 'number') {
             return value;

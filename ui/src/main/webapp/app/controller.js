@@ -16,7 +16,7 @@
 
 'use strict'
 
-angular.module('app').controller('MainCtrl', ['schema', 'settings', 'config', 'graph', 'operationService', 'queryPage', function(schema, settings, config, graph, operationService, queryPage) {
+angular.module('app').controller('MainCtrl', ['schema', 'settings', 'config', 'graph', 'operationService', 'queryPage', 'types', function(schema, settings, config, graph, operationService, queryPage, types) {
 
     var defaultRestEndpoint = window.location.origin + "/rest/latest";
 

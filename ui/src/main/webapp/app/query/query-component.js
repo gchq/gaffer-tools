@@ -317,7 +317,7 @@ function QueryController($scope, queryPage, operationService, types, graph, conf
             var opParams = {};
             for(name in selectedOp.parameters) {
                 var valueClass = selectedOp.parameters[name].valueClass;
-                opParams[name] = types.getType(valueClass).createValue(valueClass, selectedOp.parameters[name].parts);
+                opParams[name] = types.createValue(valueClass, selectedOp.parameters[name].parts);
             }
             op.parameters = opParams;
         }

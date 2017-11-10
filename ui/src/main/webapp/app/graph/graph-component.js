@@ -62,7 +62,7 @@ function GraphController($scope, graph, results, $timeout, types, schema) {
 
     vm.resolve = function(typeName, value) {
         var clazz = vm.schema.types[typeName].class;
-        return types.getType(clazz).getShortValue(value);
+        return types.getShortValue(clazz, value);
     }
 
     vm.resolveEntityProperty = function(group, propertyName, value) {
