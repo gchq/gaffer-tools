@@ -136,7 +136,6 @@ public class QueryBuilderST {
         click("add-seeds");
 
         click("Get Elements");
-        click("select-all-seeds");
         click("related-edge-RoadUse");
         click("RoadUse-add-pre-filter");
         selectOption("RoadUse-pre-property-selector", "startDate");
