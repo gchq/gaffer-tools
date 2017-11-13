@@ -105,9 +105,7 @@ function QueryController($scope, queryPage, operationService, types, graph, conf
         newWindow.document.write("<pre>" + prettyOps + "</pre>");
     }
 
-    vm.getFields = function(clazz) {
-        return types.getType(clazz).fields;
-    }
+    vm.getFields = types.getFields;
 
     vm.selectAllSeeds = function() {
         graph.selectAllNodes();

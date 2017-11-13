@@ -124,7 +124,7 @@ angular.module('app').factory('types', ['config', function(config) {
         }
 
         var parts = {};
-        parts[type.key] = value;
+        parts[getType(typeClass).key] = value;
         return parts;
     }
 
