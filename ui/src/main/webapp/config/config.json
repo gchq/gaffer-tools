@@ -1,5 +1,4 @@
 {
-  "restEndpoint": "http://localhost:8081/rest/latest",
   "operations": {
     "defaultAvailable": [
       {

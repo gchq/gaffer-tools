@@ -33,7 +33,7 @@ angular.module('app').factory('types', ['config', function(config) {
     }
 
     var listShortValue = function(values) {
-        values.map(function(value) {
+        return values.map(function(value) {
             return service.getShortValue(value);
         }).join(', ');
     }
@@ -45,8 +45,10 @@ angular.module('app').factory('types', ['config', function(config) {
             var layers = field.key.split('.');
             var customValue = parts;
             for (var i in layers) {
-                customValue = service.getShortValue(customValue[layers[i]]);
+                customValue = customValue[layers[i]];
             }
+
+            customValue = service.getShortValue(customValue);
 
             if (showWithLabel) {
                 return field.label + ': ' + customValue;
