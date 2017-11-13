@@ -45,20 +45,8 @@ function TableController($scope, results, schema, table, types) {
         vm.schema = schema;
     });
 
-    vm.resolve = function(typeName, value) {
-        var clazz = vm.schema.types[typeName].class;
-        return types.getShortValue(clazz, value);
+    vm.resolve = function(value) {
+        return types.getShortValue(value);
     }
-
-    vm.resolveEntityVertex = function(group, value) {
-        var vertexType = schema.getVertexTypeFromEntityGroup(group);
-        return vm.resolve(vertexType, value);
-    }
-
-    vm.resolveEdgeVertex = function(group, value, destFlag) {
-        var vertexType = schema.getVertexTypesFromEdgeGroup(group)[destFlag];
-        return vm.resolve(vertexType, value);
-    }
-
 
 }

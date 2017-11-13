@@ -60,27 +60,12 @@ function GraphController($scope, graph, results, $timeout, types, schema) {
         })
     });
 
-    vm.resolve = function(typeName, value) {
-        var clazz = vm.schema.types[typeName].class;
-        return types.getShortValue(clazz, value);
-    }
-
-    vm.resolveEntityProperty = function(group, propertyName, value) {
-        return resolveProperty('entities', group, propertyName, value);
-    }
-
-    var resolveProperty = function(elementType, group, propertyName, value) {
-        var propertyType = vm.schema[elementType][group].properties[propertyName];
-        return vm.resolve(propertyType, value);
-    }
-
-    vm.resolveEdgeProperty = function(group, propertyName, value) {
-        return resolveProperty('edges', group, propertyName, value);
+    vm.resolve = function(value) {
+        return types.getShortValue(value);
     }
 
     vm.resolveVertex = function(value) {
-        var vertexType = schema.getSchemaVertices()[0]
-        return vm.resolve(vertexType, JSON.parse(value));
+        return types.getShortValue(JSON.parse(value));
     }
 
 }
