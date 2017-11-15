@@ -28,10 +28,10 @@ angular.module('app').factory('operationService', ['$http', '$q', 'settings', 'c
         return availableOperations;
     }
 
-    var opAllowed = function(opName) {
+    var opAllowed = function(opName, configuredOperations) {
         var allowed = true;
-        var whiteList = config.get().operations.whiteList;
-        var blackList = config.get().operations.blackList;
+        var whiteList = configuredOperations.whiteList;
+        var blackList = configuredOperations.blackList;
 
         if(whiteList) {
             allowed = whiteList.indexOf(opName) > -1;
@@ -44,41 +44,45 @@ angular.module('app').factory('operationService', ['$http', '$q', 'settings', 'c
 
     var updateNamedOperations = function(results) {
         availableOperations = [];
-        var defaults = config.get().operations.defaultAvailable;
-        for(var i in defaults) {
-            if(opAllowed(defaults[i].name)) {
-                availableOperations.push(defaults[i]);
-            }
-        }
-
-        if(results) {
-            for (var i in results) {
-                if(opAllowed(results[i].operationName)) {
-                    if(results[i].parameters) {
-                        for(var j in results[i].parameters) {
-                            results[i].parameters[j].value = results[i].parameters[j].defaultValue;
-                            if(results[i].parameters[j].defaultValue) {
-                                var valueClass = results[i].parameters[j].valueClass;
-                                results[i].parameters[j].parts = types.getType(valueClass).createParts(valueClass, results[i].parameters[j].defaultValue);
-                            } else {
-                                results[i].parameters[j].parts = {};
-                            }
-                        }
-                    }
-                    availableOperations.push({
-                        class: namedOpClass,
-                        name: results[i].operationName,
-                        parameters: results[i].parameters,
-                        description: results[i].description,
-                        operations: results[i].operations,
-                        view: false,
-                        input: true,
-                        namedOp: true,
-                        inOutFlag: false
-                    });
+        config.get().then(function(conf) {
+            var defaults = conf.operations.defaultAvailable;
+            for(var i in defaults) {
+                if(opAllowed(defaults[i].name, conf.operations)) {
+                    availableOperations.push(defaults[i]);
                 }
             }
-        }
+
+            if(results) {
+                for (var i in results) {
+                    if(opAllowed(results[i].operationName, conf.operations)) {
+                        if(results[i].parameters) {
+                            for(var j in results[i].parameters) {
+                                results[i].parameters[j].value = results[i].parameters[j].defaultValue;
+                                if(results[i].parameters[j].defaultValue) {
+                                    var valueClass = results[i].parameters[j].valueClass;
+                                    results[i].parameters[j].parts = types.getType(valueClass).createParts(valueClass, results[i].parameters[j].defaultValue);
+                                } else {
+                                    results[i].parameters[j].parts = {};
+                                }
+                            }
+                        }
+                        availableOperations.push({
+                            class: namedOpClass,
+                            name: results[i].operationName,
+                            parameters: results[i].parameters,
+                            description: results[i].description,
+                            operations: results[i].operations,
+                            view: false,
+                            input: true,
+                            namedOp: true,
+                            inOutFlag: false
+                        });
+                    }
+                }
+            }
+
+        })
+
 
         defer.resolve(availableOperations);
     }
@@ -111,25 +115,27 @@ angular.module('app').factory('operationService', ['$http', '$q', 'settings', 'c
     }
 
     var ifOperationSupported = function(operationClass, onSupported, onUnsupported) {
-        var queryUrl = common.parseUrl(config.get().restEndpoint + "/graph/operations");
+        config.get().then(function(conf) {
+            var queryUrl = common.parseUrl(conf.restEndpoint + "/graph/operations");
 
-        $http.get(queryUrl)
-            .success(function(ops) {
-                if (ops.indexOf(operationClass) !== -1) {
-                    onSupported();
-                    return;
-                }
-                onUnsupported();
-            })
-            .error(function(err) {
-                if (err !== "") {
-                    console.log(err);
-                    alert("Error running /graph/operations: " + err.simpleMessage);
-                } else {
-                    alert("Error running /graph/operations - received no response");
-                }
-                onUnsupported();
-        });
+            $http.get(queryUrl)
+                .success(function(ops) {
+                    if (ops.indexOf(operationClass) !== -1) {
+                        onSupported();
+                        return;
+                    }
+                    onUnsupported();
+                })
+                .error(function(err) {
+                    if (err !== "") {
+                        console.log(err);
+                        alert("Error running /graph/operations: " + err.simpleMessage);
+                    } else {
+                        alert("Error running /graph/operations - received no response");
+                    }
+                    onUnsupported();
+            });
+        })
     }
 
 

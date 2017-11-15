@@ -16,26 +16,39 @@
 
 'use strict'
 
-angular.module('app').factory('config', ['$http', '$location', function($http, $location) {
+angular.module('app').factory('config', ['$http', '$q', function($http, $q) {
 
     var configService = {};
+    var defaultRestEndpoint = window.location.origin + "/rest/latest";
 
-    var config = {};
+    var config;
 
     configService.get = function() {
-        return config;
+        var defer = $q.defer();
+
+        if (config) {
+            defer.resolve(config);
+        } else {
+            load(defer)
+        }
+        return defer.promise;
     }
 
     configService.set = function(conf) {
         config = conf;
     }
 
-    configService.load = function(onSuccess) {
+    var load = function(defer) {
         $http.get('config/config.json')
             .success(function(response) {
-                onSuccess(response)
+                if (!response.restEndpoint) {
+                    response.restEndpoint = defaultRestEndpoint;
+                }
+                config = response;
+                defer.resolve(config);
             })
             .error(function(err) {
+                defer.reject(err);
                 console.log(err);
                 alert("Failed to load config");
         });

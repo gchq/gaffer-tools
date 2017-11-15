@@ -19,6 +19,13 @@
 angular.module('app').factory('types', ['config', function(config) {
 
     var types = {};
+    var conf = {};
+
+    config.get().then(function(myConfig) {
+        if(myConfig) {
+            conf = myConfig;
+        }
+    });
 
     var defaultShortValue = function(value) {
         return angular.toJson(value);
@@ -68,7 +75,8 @@ angular.module('app').factory('types', ['config', function(config) {
 
 
     types.getType = function(typeClass) {
-        var types = config.get().types;
+
+        var types = conf.types;
         var type = types[typeClass];
         if(!type) {
             type = unknownTypeDefault;
