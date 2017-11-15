@@ -21,6 +21,5 @@ angular.module('app').controller('MainCtrl', ['schema', 'settings', 'graph', 'op
     operationService.reloadNamedOperations().then(function(availableOps) {
         queryPage.initialise();
     });
-    schema.load();
     graph.load();
 }]);

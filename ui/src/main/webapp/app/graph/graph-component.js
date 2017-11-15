@@ -34,11 +34,11 @@ function GraphController($scope, graph, results, $timeout, types, schema) {
 
     vm.selectedEdges = graph.getSelectedEdges();
     vm.selectedEntities = graph.getSelectedEntities();
-    vm.schema = schema.get();
+    vm.schema;
 
     var promise = null;
 
-    schema.observe().then(null, null, function(schema) {
+    schema.get().then(function(schema) {
         vm.schema = schema;
     });
 
