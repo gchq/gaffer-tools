@@ -136,8 +136,6 @@ public class QueryBuilderST {
         click("add-seeds");
 
         click("Get Elements");
-        click("select-all-seeds");
-        scrollQueryPage(200);
         click("related-edge-RoadUse");
         click("RoadUse-add-pre-filter");
         selectOption("RoadUse-pre-property-selector", "startDate");
@@ -164,7 +162,6 @@ public class QueryBuilderST {
         click("add-seeds");
 
         click("Two Hop With Limit");
-        click("select-all-seeds");
         enterText("param-param1-", "2");
         click("Execute Query");
 
@@ -180,10 +177,6 @@ public class QueryBuilderST {
         for (final String result : expectedResults) {
             assertTrue(result + "was not found in results: " + resultList.toString(), resultList.contains(result));
         }
-    }
-
-    private void scrollQueryPage(final int scrollBy) {
-        execute("$('query').parent()[0].scrollTop += " + scrollBy);
     }
 
     private void enterText(final String id, final String value) {
