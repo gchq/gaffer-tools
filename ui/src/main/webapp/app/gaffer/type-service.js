@@ -18,12 +18,12 @@
 
 angular.module('app').factory('types', ['config', function(config) {
 
+    var service = {};
     var types = {};
-    var conf = {};
 
     config.get().then(function(myConfig) {
         if(myConfig) {
-            conf = myConfig;
+            types = myConfig.types;
         }
     });
 
@@ -33,26 +33,28 @@ angular.module('app').factory('types', ['config', function(config) {
 
     var mapShortValue = function(value) {
         return Object.keys(value).map(function(key) {
-            return key + ": " + value[key];
+            return key + ": " + service.getShortValue(value[key]);
         }).join(", ");
 
     }
 
-    var listShortValue = function(value) {
-        return value.join(', ')
+    var listShortValue = function(values) {
+        return values.map(function(value) {
+            return service.getShortValue(value);
+        }).join(', ');
     }
 
     var customShortValue = function(fields, parts) {
-        var showWithLabel = true;
-        if (fields.length === 1) {
-            showWithLabel = false;
-        }
+        var showWithLabel = (fields.length !== 1)
+
         return fields.map(function(field) {
             var layers = field.key.split('.');
             var customValue = parts;
             for (var i in layers) {
-                customValue = customValue[layers[i]]
+                customValue = customValue[layers[i]];
             }
+
+            customValue = service.getShortValue(customValue);
 
             if (showWithLabel) {
                 return field.label + ': ' + customValue;
@@ -61,7 +63,19 @@ angular.module('app').factory('types', ['config', function(config) {
         }).join(', ');
     }
 
-    var unknownTypeDefault =
+    service.getFields = function(className) {
+        var knownType = types[className];
+
+        if(knownType) {
+            return knownType.fields;
+        }
+
+        return unknownType.fields;
+    }
+
+
+
+    var unknownType =
     {
         fields: [
             {
@@ -69,97 +83,92 @@ angular.module('app').factory('types', ['config', function(config) {
                 type: "text",
                 class: "java.lang.String"
             }
-        ],
-        getShortValue: defaultShortValue
+        ]
+    }
+
+    var getType = function(typeClass) {
+        if (types[typeClass]) {
+            return types[typeClass];
+        }
+        return unknownType;
     }
 
 
-    types.getType = function(typeClass) {
-
-        var types = conf.types;
-        var type = types[typeClass];
-        if(!type) {
-            type = unknownTypeDefault;
-        }
-
-
-        type.createValue = function(typeClass, parts) {
-            if((type.wrapInJson && Object.keys(parts)[0] !== 'undefined') || Object.keys(parts).length > 1) {
-                return parts;
-            }
-
-            return parts[Object.keys(parts)[0]];
-        }
-
-
-
-        type.createValueAsJsonWrapperObj = function(typeClass, parts, stringify) {
-            var value = {};
-            if(type.wrapInJson || Object.keys(parts).length > 1) {
-                if (Object.keys(parts).length === 1 && Object.keys(parts).indexOf('undefined') !== -1) {
-                    value[typeClass] = parts['undefined'];
-                } else {
-                    value[typeClass] = parts;
-                }
-                if(stringify) {
-                    value = JSON.stringify(value);
-                }
-                return value;
-            }
-
-            return parts[Object.keys(parts)[0]];
-        }
-
-
-
-        type.createParts = function(typeClass, value) {
-            if(value[typeClass]) {
-                return value[typeClass];
-            }
-
-            var parts = {};
-            parts[type.key] = value;
+    service.createValue = function(typeClass, parts) {
+        if (getType(typeClass).wrapInJson && Object.keys(parts)[0] !== 'undefined' || Object.keys(parts).length > 1) {
             return parts;
         }
+        return parts[Object.keys(parts)[0]];
+    }
 
+    service.createJsonValue = function(typeClass, parts, stringify) {
+        var value = {};
+        var type = getType(typeClass);
 
-
-        type.getShortValue = function(value) {
-            if(typeof value === 'string' || value instanceof String || typeof value === 'number') {
-                return value;
+        if(type.wrapInJson || Object.keys(parts).length > 1) {
+            if (Object.keys(parts).length === 1 && Object.keys(parts).indexOf('undefined') !== -1) {
+                value[typeClass] = parts['undefined'];
+            } else {
+                value[typeClass] = parts;
             }
-
-            if(Object.keys(value).length != 1) {
-                return defaultShortValue(value);
+            if(stringify) {
+                value = JSON.stringify(value);
             }
+            return value;
+        }
 
-            var typeClass = Object.keys(value)[0]
-            var parts = value[typeClass];
+        return parts[Object.keys(parts)[0]];
 
-            if (type.custom) {
-                return customShortValue(type.fields, parts)
-            }
+    }
 
-            if (typeClass.endsWith('Map')) {
-                return mapShortValue(parts);
-            } else if (typeClass.endsWith('List') || typeClass.endsWith('Set')) {
-                return listShortValue(parts);
-            }
-
-            if (Object.keys(parts).length > 0) {
-                return Object.keys(parts).map(function(key){
-                    var val = parts[key];
-                    if (typeof val === 'string' || val instanceof String || typeof val === 'number') {
-                        return parts[key];
-                    }
-                    return angular.toJson(parts[key]);
-                }).join("|");
-            }
-
+    service.createParts = function(typeClass, value) {
+        if(value[typeClass]) {
             return value[typeClass];
         }
 
+        var parts = {};
+        parts[getType(typeClass).key] = value;
+        return parts;
+    }
 
+    service.getShortValue = function(value) {
+
+        if (typeof value === 'string' || value instanceof String || typeof value === 'number') {
+            return value;
+        }
+
+        if(Object.keys(value).length != 1) {
+            return defaultShortValue(value);
+        }
+
+        var typeClass = Object.keys(value)[0]
+        var parts = value[typeClass]; // the value without the class prepended
+
+
+        var type = getType(typeClass);
+
+        if (type.custom) {
+            return customShortValue(type.fields, parts)
+        }
+
+        if (typeClass.endsWith('Map')) {
+            return mapShortValue(parts);
+        } else if (typeClass.endsWith('List') || typeClass.endsWith('Set')) {
+            return listShortValue(parts);
+        }
+
+        if (Object.keys(parts).length > 0) {
+            return Object.keys(parts).map(function(key){
+                var val = parts[key];
+                return service.getShortValue(val);
+            }).join("|");
+        }
+
+        return value[typeClass];
+    }
+
+    service.getCsvHeader = function(typeClass) {
+        var type = getType(typeClass);
 
         var partKeys = [];
         for(var i in type.fields) {
@@ -171,15 +180,12 @@ angular.module('app').factory('types', ['config', function(config) {
         }
 
         if(partKeys.length == 0) {
-            type.csvHeader = "";
+            return "";
         } else {
-            type.csvHeader = partKeys.join(",");
+            return partKeys.join(",");
         }
-
-
-        return type;
     }
 
-    return types;
+    return service;
 
 }]);

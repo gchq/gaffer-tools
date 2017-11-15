@@ -16,7 +16,7 @@
 
 'use strict'
 
-angular.module('app').controller('MainCtrl', ['schema', 'settings', 'graph', 'operationService', 'queryPage', function(schema, settings, graph, operationService, queryPage) {
+angular.module('app').controller('MainCtrl', ['graph', 'operationService', 'queryPage', function(graph, operationService, queryPage) {
 
     operationService.reloadNamedOperations().then(function(availableOps) {
         queryPage.initialise();

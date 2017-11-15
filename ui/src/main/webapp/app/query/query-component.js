@@ -105,9 +105,7 @@ function QueryController($scope, queryPage, operationService, types, graph, conf
         newWindow.document.write("<pre>" + prettyOps + "</pre>");
     }
 
-    vm.getFields = function(clazz) {
-        return types.getType(clazz).fields;
-    }
+    vm.getFields = types.getFields;
 
     vm.selectAllSeeds = function() {
         graph.selectAllNodes();
@@ -320,7 +318,7 @@ function QueryController($scope, queryPage, operationService, types, graph, conf
             var opParams = {};
             for(name in selectedOp.parameters) {
                 var valueClass = selectedOp.parameters[name].valueClass;
-                opParams[name] = types.getType(valueClass).createValue(valueClass, selectedOp.parameters[name].parts);
+                opParams[name] = types.createValue(valueClass, selectedOp.parameters[name].parts);
             }
             op.parameters = opParams;
         }

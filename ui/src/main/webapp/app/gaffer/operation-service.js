@@ -54,37 +54,38 @@ angular.module('app').factory('operationService', ['$http', '$q', 'settings', 'c
 
             if(results) {
                 for (var i in results) {
-                    if(opAllowed(results[i].operationName, conf.operations)) {
+                    if(opAllowed(results[i].operationName)) {
                         if(results[i].parameters) {
                             for(var j in results[i].parameters) {
                                 results[i].parameters[j].value = results[i].parameters[j].defaultValue;
                                 if(results[i].parameters[j].defaultValue) {
                                     var valueClass = results[i].parameters[j].valueClass;
-                                    results[i].parameters[j].parts = types.getType(valueClass).createParts(valueClass, results[i].parameters[j].defaultValue);
+                                    results[i].parameters[j].parts = types.createParts(valueClass, results[i].parameters[j].defaultValue);
                                 } else {
                                     results[i].parameters[j].parts = {};
                                 }
                             }
+                            availableOperations.push({
+                                class: namedOpClass,
+                                name: results[i].operationName,
+                                parameters: results[i].parameters,
+                                description: results[i].description,
+                                operations: results[i].operations,
+                                view: false,
+                                input: true,
+                                namedOp: true,
+                                inOutFlag: false
+                            });
                         }
-                        availableOperations.push({
-                            class: namedOpClass,
-                            name: results[i].operationName,
-                            parameters: results[i].parameters,
-                            description: results[i].description,
-                            operations: results[i].operations,
-                            view: false,
-                            input: true,
-                            namedOp: true,
-                            inOutFlag: false
-                        });
                     }
                 }
+
             }
+            defer.resolve(availableOperations);
+        });
 
-        })
 
 
-        defer.resolve(availableOperations);
     }
 
     operationService.reloadNamedOperations = function(loud) {

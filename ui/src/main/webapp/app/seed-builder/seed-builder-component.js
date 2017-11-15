@@ -45,17 +45,17 @@ function SeedBuilderController(schema, types, $mdDialog) {
     vm.getFields = function() {
         var schemaType = vm.schemaTypes[vm.seedVertexType];
         if (!schemaType) {
-            return types.getType(undefined).fields;
+            return types.getFields(undefined);
         }
-        return types.getType(schemaType.class).fields;
+        return types.getFields(schemaType.class);
     }
 
     vm.getCsvHeader = function() {
         var schemaType = vm.schemaTypes[vm.seedVertexType];
         if (!schemaType) {
-            return types.getType(undefined).csvHeader;
+            return types.getCsvHeader(undefined);
         }
-        return types.getType(schemaType.class).csvHeader;
+        return types.getCsvHeader(schemaType.class);
     }
 
     vm.cancel = function() {
@@ -71,7 +71,7 @@ function SeedBuilderController(schema, types, $mdDialog) {
                 var vertexType = vm.seedVertexType;
                 var typeClass = vm.schemaTypes[vertexType].class;
                 var partValues = vertex.trim().split(",");
-                var fields = types.getType(typeClass).fields;
+                var fields = types.getFields(typeClass);
                 if(fields.length != partValues.length) {
                     alert("Wrong number of parameters for seed: " + vertex + ". " + vertexType + " requires " + fields.length + " parameters");
                     break;
@@ -99,7 +99,7 @@ function SeedBuilderController(schema, types, $mdDialog) {
 
     var createSeed = function(type, parts) {
         var typeClass = vm.schemaTypes[type].class;
-        var vertex = types.getType(typeClass).createValueAsJsonWrapperObj(typeClass, parts);
+        var vertex = types.createJsonValue(typeClass, parts);
         return {vertexType: type, vertex: vertex};
     }
 }
