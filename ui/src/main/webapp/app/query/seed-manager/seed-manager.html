@@ -1,0 +1,24 @@
+<md-card>
+    <md-card-title>
+        <md-card-title-text>
+            <span class="md-headline">Selected Seeds</span>
+        </md-card-title-text>
+    </md-card-title>
+    <md-card-content>
+        <p ng-repeat="(vertex, entities) in ctrl.selectedEntities">
+            {{vertex}}
+        </p>
+        <p ng-show="!ctrl.selectedEntities || ctrl.keyValuePairs(ctrl.selectedEntities) == 0">
+            No seeds selected.
+        </p>
+    </md-card-content>
+    <md-card-actions>
+        <div layout="row" layout-align="end center">
+            <md-button id="select-all-seeds"
+                       ng-click="ctrl.selectAllSeeds()"
+                       class="md-primary">
+                Select all
+            </md-button>
+        </div>
+    </md-card-actions>
+</md-card>

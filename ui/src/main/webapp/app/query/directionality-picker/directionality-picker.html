@@ -1,0 +1,24 @@
+<md-card>
+    <md-card-title>
+        <md-card-title-text>
+            <span class="md-headline">In Out Edges</span>
+        </md-card-title-text>
+    </md-card-title>
+    <md-card-content>
+        <div id="inOutFlag">
+            <md-radio-group
+                    ng-model="ctrl.inOutFlag"
+                    ng-change="ctrl.onInOutFlagChange()">
+                <md-radio-button value="INCOMING">
+                    Incoming
+                </md-radio-button>
+                <md-radio-button value="OUTGOING">
+                    Outgoing
+                </md-radio-button>
+                <md-radio-button value="EITHER">
+                    Either
+                </md-radio-button>
+            </md-radio-group>
+        </div>
+    </md-card-content>
+</md-card>
