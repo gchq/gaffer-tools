@@ -54,7 +54,7 @@ angular.module('app').factory('operationService', ['$http', '$q', 'settings', 'c
 
             if(results) {
                 for (var i in results) {
-                    if(opAllowed(results[i].operationName)) {
+                    if(opAllowed(results[i].operationName, conf.operations)) {
                         if(results[i].parameters) {
                             for(var j in results[i].parameters) {
                                 results[i].parameters[j].value = results[i].parameters[j].defaultValue;
