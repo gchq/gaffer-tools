@@ -26,15 +26,15 @@ function seedManager() {
     }
 }
 
-function SeedManagerController(graph, queryPage, common) {
+function SeedManagerController(graph, queryPage, common, types) {
     var vm = this;
 
     vm.selectedEntities = graph.getSelectedEntities();
-    vm.selectedEdges = graph.getSelectedEdges();
+    vm.seedsMessage = "";
 
     graph.onSelectedElementsUpdate(function(selectedElements) {
         vm.selectedEntities = selectedElements['entities'];
-        vm.selectedEdges = selectedElements['edges'];
+        recalculateSeedsMessage();
     });
 
     vm.keyValuePairs = common.keyValuePairs;
@@ -42,6 +42,24 @@ function SeedManagerController(graph, queryPage, common) {
     vm.selectAllSeeds = function() {
         graph.selectAllNodes();
     }
+
+    var recalculateSeedsMessage = function() {
+        var selectedSeeds = Object.keys(vm.selectedEntities);
+        var displaySeeds = selectedSeeds.slice(-2);
+        var howManyMore = selectedSeeds.length - 2;
+
+        var message = displaySeeds.map(function(seed) {
+            return types.getShortValue(seed);
+        }).join(', ');
+
+        if (howManyMore > 0) {
+            message += " and " + howManyMore + " more";
+        }
+
+        vm.seedsMessage = message;
+    }
+
+    recalculateSeedsMessage();
 
 
 }

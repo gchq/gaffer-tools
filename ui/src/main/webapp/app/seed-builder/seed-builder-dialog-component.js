@@ -16,12 +16,12 @@
 
 'use strict'
 
-angular.module('app').component('seedBuilder', seedBuilder());
+angular.module('app').component('seedBuilderDialog', seedBuilder());
 
 function seedBuilder() {
 
     return {
-        templateUrl: 'app/seed-builder/seed-builder.html',
+        templateUrl: 'app/seed-builder/seed-builder-dialog.html',
         controller: SeedBuilderController,
         controllerAs: 'ctrl'
     };
