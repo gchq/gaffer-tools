@@ -49,7 +49,7 @@ function SeedManagerController(graph, queryPage, common, types) {
         var howManyMore = selectedSeeds.length - 2;
 
         var message = displaySeeds.map(function(seed) {
-            return types.getShortValue(seed);
+            return types.getShortValue(JSON.parse(seed));
         }).join(', ');
 
         if (howManyMore > 0) {
