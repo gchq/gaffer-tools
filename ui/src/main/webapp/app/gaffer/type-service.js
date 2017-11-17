@@ -21,6 +21,12 @@ angular.module('app').factory('types', ['config', function(config) {
     var service = {};
     var types = {};
 
+    config.get().then(function(myConfig) {
+        if(myConfig) {
+            types = myConfig.types;
+        }
+    });
+
     var defaultShortValue = function(value) {
         return angular.toJson(value);
     }
@@ -57,10 +63,6 @@ angular.module('app').factory('types', ['config', function(config) {
         }).join(', ');
     }
 
-    service.initialise = function() {
-        types = config.get().types;
-    }
-
     service.getFields = function(className) {
         var knownType = types[className];
 
@@ -90,6 +92,7 @@ angular.module('app').factory('types', ['config', function(config) {
         }
         return unknownType;
     }
+
 
     service.createValue = function(typeClass, parts) {
         if (getType(typeClass).wrapInJson && Object.keys(parts)[0] !== 'undefined' || Object.keys(parts).length > 1) {

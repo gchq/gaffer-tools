@@ -33,9 +33,14 @@ function InlineSeedBuilderController(schema, types, graph) {
     vm.seedVertices = '';
     vm.multipleSeeds = false;
 
-    vm.getSchemaVertices = function() {
-        return schema.getSchemaVertices();
-    }
+    vm.schemaTypes = {};
+
+    schema.get().then(function(gafferSchema) {
+        vm.schemaTypes = gafferSchema.types;
+    });
+
+
+    vm.getSchemaVertices = schema.getSchemaVertices
 
     vm.inputExists = function() {
         if (vm.multipleSeeds) {
@@ -50,7 +55,7 @@ function InlineSeedBuilderController(schema, types, graph) {
     }
 
     vm.getFields = function() {
-        var schemaType = schema.get().types[vm.seedVertexType];
+        var schemaType = vm.schemaTypes[vm.seedVertexType];
         if (!schemaType) {
             return types.getFields(undefined);
         }
@@ -58,7 +63,7 @@ function InlineSeedBuilderController(schema, types, graph) {
     }
 
     vm.getCsvHeader = function() {
-        var schemaType = schema.get().types[vm.seedVertexType];
+        var schemaType = vm.schemaTypes[vm.seedVertexType];
         if (!schemaType) {
             return types.getCsvHeader(undefined);
         }
@@ -71,7 +76,7 @@ function InlineSeedBuilderController(schema, types, graph) {
             for(var i in vertices) {
                 var vertex = vertices[i];
                 var vertexType = vm.seedVertexType;
-                var typeClass = schema.get().types[vertexType].class;
+                var typeClass = vm.schemaTypes[vertexType].class;
                 var partValues = vertex.trim().split(",");
                 var fields = types.getFields(typeClass);
                 if(fields.length != partValues.length) {
@@ -99,7 +104,7 @@ function InlineSeedBuilderController(schema, types, graph) {
     }
 
     var createSeed = function(type, parts) {
-        var typeClass = schema.get().types[type].class;
+        var typeClass = vm.schemaTypes[type].class;
         var vertex = types.createJsonValue(typeClass, parts);
         return {vertexType: type, vertex: vertex};
     }

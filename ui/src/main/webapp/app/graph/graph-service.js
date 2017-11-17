@@ -16,7 +16,7 @@
 
 'use strict'
 
-angular.module('app').factory('graph', ['schema', 'types', '$q', 'results', 'common', function(schema, types, $q, results, common) {
+angular.module('app').factory('graph', ['schema', 'types', '$q', 'results', 'common', function(schemaService, types, $q, results, common) {
 
     var graphCy;
     var graph = {};
@@ -115,37 +115,42 @@ angular.module('app').factory('graph', ['schema', 'types', '$q', 'results', 'com
 
     function updateRelatedEntities() {
         relatedEntities = [];
-        for(var id in selectedEntities) {
-            var vertexType = selectedEntities[id][0].vertexType;
-            for(var entityGroup in schema.get().entities) {
-                if(vertexType === "unknown") {
-                     relatedEntities.push(entityGroup);
-                } else {
-                    var entity = schema.get().entities[entityGroup];
-                    if(entity.vertex === vertexType
-                        && relatedEntities.indexOf(entityGroup) === -1) {
-                        relatedEntities.push(entityGroup);
+        schemaService.get().then(function(schema) {
+            for(var id in selectedEntities) {
+                var vertexType = selectedEntities[id][0].vertexType;
+                for(var entityGroup in schema.entities) {
+                    if(vertexType === "unknown") {
+                         relatedEntities.push(entityGroup);
+                    } else {
+                        var entity = schema.entities[entityGroup];
+                        if(entity.vertex === vertexType
+                            && relatedEntities.indexOf(entityGroup) === -1) {
+                            relatedEntities.push(entityGroup);
+                        }
                     }
                 }
             }
-        }
-        fire('onRelatedEntitiesUpdate', [relatedEntities]);
+            fire('onRelatedEntitiesUpdate', [relatedEntities]);
+
+        });
 
     }
 
     function updateRelatedEdges() {
         relatedEdges = [];
-        for(var id in selectedEntities) {
-            var vertexType = selectedEntities[id][0].vertexType;
-            for(var edgeGroup in schema.get().edges) {
-                var edge = schema.get().edges[edgeGroup];
-                if((edge.source === vertexType || edge.destination === vertexType)
-                    && relatedEdges.indexOf(edgeGroup) === -1) {
-                    relatedEdges.push(edgeGroup);
+        schemaService.get().then(function(schema) {
+            for(var id in selectedEntities) {
+                var vertexType = selectedEntities[id][0].vertexType;
+                for(var edgeGroup in schema.edges) {
+                    var edge = schema.edges[edgeGroup];
+                    if((edge.source === vertexType || edge.destination === vertexType)
+                        && relatedEdges.indexOf(edgeGroup) === -1) {
+                        relatedEdges.push(edgeGroup);
+                    }
                 }
             }
-        }
-        fire('onRelatedEdgesUpdate', [relatedEdges]);
+            fire('onRelatedEdgesUpdate', [relatedEdges]);
+        });
     }
 
     function select(element) {
@@ -243,7 +248,7 @@ angular.module('app').factory('graph', ['schema', 'types', '$q', 'results', 'com
             var entity = common.clone(results.entities[i]);
             entity.vertex = common.parseVertex(entity.vertex);
             var id = entity.vertex;
-            entity.vertexType = schema.getVertexTypeFromEntityGroup(entity.group);
+            entity.vertexType = schemaService.getVertexTypeFromEntityGroup(entity.group);
             if(id in graphData.entities) {
                 if(!common.arrayContainsObjectWithValue(graphData.entities[id], 'group', entity.group)) {
                     graphData.entities[id].push(entity);
@@ -258,7 +263,7 @@ angular.module('app').factory('graph', ['schema', 'types', '$q', 'results', 'com
             edge.source = common.parseVertex(edge.source);
             edge.destination = common.parseVertex(edge.destination);
 
-            var vertexTypes = schema.getVertexTypesFromEdgeGroup(edge.group);
+            var vertexTypes = schemaService.getVertexTypesFromEdgeGroup(edge.group);
             edge.sourceType = vertexTypes[0];
             edge.destinationType = vertexTypes[1];
             var id = edge.source + "|" + edge.destination + "|" + edge.directed + "|" + edge.group;

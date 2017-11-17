@@ -16,20 +16,10 @@
 
 'use strict'
 
-angular.module('app').controller('MainCtrl', ['schema', 'settings', 'config', 'graph', 'operationService', 'queryPage', 'types', function(schema, settings, config, graph, operationService, queryPage, types) {
+angular.module('app').controller('MainCtrl', ['graph', 'operationService', 'queryPage', function(graph, operationService, queryPage) {
 
-    var defaultRestEndpoint = window.location.origin + "/rest/latest";
-
-    config.load(function(conf) {
-        if (!conf.restEndpoint) {
-            conf.restEndpoint = defaultRestEndpoint;
-        }
-        config.set(conf);
-        types.initialise();
-        operationService.reloadNamedOperations().then(function(availableOps) {
-            queryPage.initialise();
-        });
-        schema.load();
-        graph.load();
+    operationService.reloadNamedOperations().then(function(availableOps) {
+        queryPage.initialise();
     });
+    graph.load();
 }]);

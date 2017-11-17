@@ -70,20 +70,20 @@ function ViewBuilderController(queryPage, graph, common, schema, functions) {
             selectedElement.availableFunctionParameters = data;
         });
 
-        var gafferSchema = schema.get();
+        schema.get().then(function(gafferSchema) {
+            var elementDef = gafferSchema.entities[group];
+            if(!elementDef) {
+                 elementDef = gafferSchema.edges[group];
+            }
+            var propertyClass = gafferSchema.types[elementDef.properties[selectedElement.property]].class;
+            if("java.lang.String" !== propertyClass
+                && "java.lang.Boolean" !== propertyClass
+                && "java.lang.Integer" !== propertyClass) {
+                selectedElement.propertyClass = propertyClass;
+            }
 
-        var elementDef = gafferSchema.entities[group];
-        if(!elementDef) {
-             elementDef = gafferSchema.edges[group];
-        }
-        var propertyClass = gafferSchema.types[elementDef.properties[selectedElement.property]].class;
-        if("java.lang.String" !== propertyClass
-            && "java.lang.Boolean" !== propertyClass
-            && "java.lang.Integer" !== propertyClass) {
-            selectedElement.propertyClass = propertyClass;
-        }
-
-        selectedElement.parameters = {};
+            selectedElement.parameters = {};
+        });
     }
 
     vm.addFilterFunction = function(expandElementContent, element, isPreAggregation) {
