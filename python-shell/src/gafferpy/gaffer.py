@@ -1383,38 +1383,6 @@ class NamedOperationParameter(ToJson, ToCodeString):
 #                    Operations                        #
 ########################################################
 
-
-class OperationChain(ToJson, ToCodeString):
-    CLASS = "uk.gov.gchq.gaffer.operation.OperationChain"
-
-    def __init__(self, operations):
-        self._class_name = self.CLASS
-        self.operations = operations
-
-    def to_json(self):
-        operation_chain_json = {'class': self._class_name}
-        operations_json = []
-        for operation in self.operations:
-            if isinstance(operation, Operation):
-                operations_json.append(operation.to_json())
-            else:
-                operations_json.append(operation)
-        operation_chain_json['operations'] = operations_json
-        return operation_chain_json
-
-
-class OperationChainDAO(OperationChain):
-    CLASS = "uk.gov.gchq.gaffer.operation.OperationChainDAO"
-
-    def __init__(self, operations):
-        super().__init__(operations=operations)
-
-    def to_json(self):
-        operation_chain_json = super().to_json()
-        operation_chain_json.pop('class', None)
-        return operation_chain_json
-
-
 class Operation(ToJson, ToCodeString):
     def __init__(self,
                  _class_name,
@@ -1434,6 +1402,40 @@ class Operation(ToJson, ToCodeString):
             operation['view'] = self.view.to_json()
 
         return operation
+
+
+class OperationChain(Operation):
+    CLASS = "uk.gov.gchq.gaffer.operation.OperationChain"
+
+    def __init__(self, operations, options=None):
+        super().__init__(
+            _class_name=self.CLASS,
+            options=options)
+        self._class_name = self.CLASS
+        self.operations = operations
+
+    def to_json(self):
+        operation_chain_json = super().to_json()
+        operations_json = []
+        for operation in self.operations:
+            if isinstance(operation, ToJson):
+                operations_json.append(operation.to_json())
+            else:
+                operations_json.append(operation)
+        operation_chain_json['operations'] = operations_json
+        return operation_chain_json
+
+
+class OperationChainDAO(OperationChain):
+    CLASS = "uk.gov.gchq.gaffer.operation.OperationChainDAO"
+
+    def __init__(self, operations):
+        super().__init__(operations=operations)
+
+    def to_json(self):
+        operation_chain_json = super().to_json()
+        operation_chain_json.pop('class', None)
+        return operation_chain_json
 
 
 class AddElements(Operation):
@@ -1775,9 +1777,9 @@ class GetOperation(Operation):
 
         if self.seed_matching_type is not None:
             operation['seedMatching'] = self.seed_matching_type
-        if self.directed_type is not None:
-            operation['directedType'] = self.directed_type
         if self.include_incoming_out_going is not None:
+            if self.directed_type is not None:
+                operation['directedType'] = self.directed_type
             operation[
                 'includeIncomingOutGoing'] = self.include_incoming_out_going
         return operation
@@ -1876,7 +1878,8 @@ class AddNamedOperation(Operation):
                  write_access_roles=None,
                  overwrite_flag=None,
                  parameters=None,
-                 options=None):
+                 options=None,
+                 score=None):
         super().__init__(
             _class_name=self.CLASS,
             options=options)
@@ -1902,6 +1905,7 @@ class AddNamedOperation(Operation):
         self.read_access_roles = read_access_roles
         self.write_access_roles = write_access_roles
         self.overwrite_flag = overwrite_flag
+        self.score = score
 
         self.parameters = None
         if parameters is not None:
@@ -1935,6 +1939,8 @@ class AddNamedOperation(Operation):
             operation['readAccessRoles'] = self.read_access_roles
         if self.write_access_roles is not None:
             operation['writeAccessRoles'] = self.write_access_roles
+        if self.score is not None:
+            operation['score'] = self.score
         if self.parameters is not None:
             operation['parameters'] = {}
             for param in self.parameters:
@@ -2815,6 +2821,7 @@ class Transform(Operation):
 
         return operation
 
+
 class ScoreOperationChain(Operation):
     CLASS = 'uk.gov.gchq.gaffer.operation.impl.ScoreOperationChain'
 
@@ -2825,9 +2832,10 @@ class ScoreOperationChain(Operation):
             raise TypeError('Operation Chain is required')
 
         if not isinstance(operation_chain, OperationChain):
-            operation_chain = JsonConverter.from_json(operation_chain, OperationChain)
+            operation_chain = JsonConverter.from_json(operation_chain,
+                                                      OperationChain)
 
-        self.operation_chain=operation_chain
+        self.operation_chain = operation_chain
 
     def to_json(self):
         operation = super().to_json()
@@ -2835,49 +2843,111 @@ class ScoreOperationChain(Operation):
 
         return operation
 
+
+class GetWalks(Operation):
+    CLASS = 'uk.gov.gchq.gaffer.operation.impl.GetWalks'
+
+    def __init__(self,
+                 input=None,
+                 operations=None,
+                 results_limit=None,
+                 options=None):
+        super().__init__(_class_name=self.CLASS,
+                         options=options)
+        self.input = input
+        self.operations = None
+        self.results_limit = results_limit
+
+        if operations is not None:
+            self.operations = []
+            for op in operations:
+                if not isinstance(op, GetElements):
+                    op = JsonConverter.from_json(
+                        op, GetElements)
+                self.operations.append(op)
+
+    def to_json(self):
+        operation = super().to_json()
+        if self.results_limit is not None:
+            operation['resultsLimit'] = self.results_limit
+
+        if self.input is not None:
+            entity_seed_json = []
+            for entity_seed in self.input:
+                entity_seed_json.append(entity_seed.to_json())
+            operation['input'] = entity_seed_json
+
+        if self.operations is not None:
+            operations_json = []
+            for op in self.operations:
+                operations_json.append(op.to_json())
+            operation['operations'] = operations_json
+
+        return operation
+
+
 class GetGraph:
     def get_url(self):
-        return self.url
+        return self._url
 
+class GetSchema(Operation, GetGraph):
+    CLASS = 'uk.gov.gchq.gaffer.store.operation.GetSchema'
 
-class GetSchema(GetGraph):
-    def __init__(self, url=None):
-        self.url = '/graph/config/schema'
+    def __init__(self,
+                 compact=None,
+                 options=None):
+        super().__init__(_class_name=self.CLASS,
+                         options=options)
+
+        if compact is not None:
+            self.compact = compact
+        else:
+            self.compact = False
+
+        self._url = '/graph/config/schema'
+
+    def to_json(self):
+        operation = super().to_json()
+
+        if self.compact is not None:
+            operation['compact'] = self.compact
+
+        return operation
 
 
 class GetFilterFunctions(GetGraph):
-    def __init__(self, url=None):
-        self.url = '/graph/config/filterFunctions'
+    def __init__(self):
+        self._url = '/graph/config/filterFunctions'
 
 
 class GetClassFilterFunctions(GetGraph):
-    def __init__(self, class_name=None, url=None):
-        self.url = '/graph/config/filterFunctions/' + class_name
+    def __init__(self, class_name=None):
+        self._url = '/graph/config/filterFunctions/' + class_name
 
 
 class GetElementGenerators(GetGraph):
-    def __init__(self, url=None):
-        self.url = '/graph/config/elementGenerators'
+    def __init__(self):
+        self._url = '/graph/config/elementGenerators'
 
 
 class GetObjectGenerators(GetGraph):
-    def __init__(self, url=None):
-        self.url = '/graph/config/objectGenerators'
+    def __init__(self):
+        self._url = '/graph/config/objectGenerators'
 
 
 class GetOperations(GetGraph):
-    def __init__(self, url=None):
-        self.url = '/graph/operations'
+    def __init__(self):
+        self._url = '/graph/operations'
 
 
 class GetSerialisedFields(GetGraph):
-    def __init__(self, class_name=None, url=None):
-        self.url = '/graph/config/serialisedFields/' + class_name
+    def __init__(self, class_name=None):
+        self._url = '/graph/config/serialisedFields/' + class_name
 
 
 class GetStoreTraits(GetGraph):
-    def __init__(self, url=None):
-        self.url = '/graph/config/storeTraits'
+    def __init__(self):
+        self._url = '/graph/config/storeTraits'
 
 
 class IsOperationSupported:

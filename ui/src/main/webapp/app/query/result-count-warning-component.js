@@ -16,30 +16,34 @@
 
 'use strict'
 
-angular.module('app').component('settingsView', settingsView())
+angular.module('app').component('resultCountWarning', resultCountWarning());
 
-function settingsView() {
+function resultCountWarning() {
 
     return {
-        templateUrl: 'app/settings/settings.html',
-        controller: SettingsController,
+        templateUrl: 'app/query/result-count-warning.html',
+        controller: ResultCountWarningController,
         controllerAs: 'ctrl'
     }
+
 }
 
-function SettingsController($scope, settings, schema, operationService, results) {
 
+function ResultCountWarningController($mdDialog, settings) {
     var vm = this;
 
-    vm.resultLimit = settings.getResultLimit()
-    vm.defaultOp = settings.getDefaultOp();
+    vm.limit = settings.getResultLimit();
 
-    vm.updateResultLimit = function() {
-        settings.setResultLimit(vm.resultLimit);
-    }
+    vm.options = [
+        {
+            name: 'Edit query',
+            value: 'query'
+        },
+        {
+            name: 'Proceed to results',
+            value: 'results'
+        }
+    ];
 
-    vm.updateDefaultOp = function() {
-        settings.setDefaultOp(vm.defaultOp);
-    }
-
+    vm.answer = $mdDialog.hide;
 }

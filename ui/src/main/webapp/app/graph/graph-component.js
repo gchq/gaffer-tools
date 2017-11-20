@@ -28,14 +28,19 @@ function graphView() {
 }
 
 
-function GraphController($scope, graph, results, $timeout) {
+function GraphController($scope, graph, results, $timeout, types, schema) {
 
     var vm = this;
 
     vm.selectedEdges = graph.getSelectedEdges();
     vm.selectedEntities = graph.getSelectedEntities();
+    vm.schema = schema.get();
 
     var promise = null;
+
+    schema.observe().then(null, null, function(schema) {
+        vm.schema = schema;
+    });
 
     graph.onSelectedElementsUpdate(function(selectedElements) {
         vm.selectedEdges = selectedElements.edges;
@@ -54,4 +59,13 @@ function GraphController($scope, graph, results, $timeout) {
             graph.reload();
         })
     });
+
+    vm.resolve = function(value) {
+        return types.getShortValue(value);
+    }
+
+    vm.resolveVertex = function(value) {
+        return types.getShortValue(JSON.parse(value));
+    }
+
 }

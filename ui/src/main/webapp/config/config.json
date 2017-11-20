@@ -115,6 +115,18 @@
         }
       ],
       "wrapInJson": true
+    },
+    "com.clearspring.analytics.stream.cardinality.HyperLogLogPlus": {
+      "fields": [
+        {
+          "label": "cardinality",
+          "type": "number",
+          "key": "hyperLogLogPlus.cardinality",
+          "class": "java.lang.Integer",
+          "step": 1
+        }
+      ],
+      "custom": true
     }
 
   }

@@ -26,7 +26,7 @@ function resultsTable() {
     };
 }
 
-function TableController($scope, results, schema, table) {
+function TableController($scope, results, schema, table, types) {
     var vm = this;
 
     table.update(results.get());
@@ -39,9 +39,14 @@ function TableController($scope, results, schema, table) {
     results.observe().then(null, null, function(results) {
         table.update(results);
         vm.data = table.getData();
-    })
+    });
 
     schema.observe().then(null, null, function(schema) {
         vm.schema = schema;
-    })
+    });
+
+    vm.resolve = function(value) {
+        return types.getShortValue(value);
+    }
+
 }
