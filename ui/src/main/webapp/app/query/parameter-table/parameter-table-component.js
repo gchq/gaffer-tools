@@ -14,16 +14,23 @@
  * limitations under the License.
  */
 
-'use strict'
+'use strict';
 
-angular.module('app').config(['$mdIconProvider', function($mdIconProvider) {
+angular.module('app').component('parameterTable', parameterTable());
 
-    $mdIconProvider
-        .icon('save', 'app/img/save.svg')
-        .icon('info', 'app/img/info.svg')
-        .icon('up-arrow', 'app/img/up-arrow.svg')
-        .icon('down-arrow', 'app/img/down-arrow.svg')
-        .icon('refresh', 'app/img/refresh.svg')
-        .icon('send', 'app/img/send.svg')
-        .icon('add', 'app/img/add.svg');
-}]);
+function parameterTable() {
+    return {
+        templateUrl: 'app/query/parameter-table/parameter-table.html',
+        controller: ParameterTableController,
+        controllerAs: 'ctrl'
+    }
+}
+
+function ParameterTableController(queryPage, types) {
+    var vm = this;
+
+    vm.getSelectedOp = queryPage.getSelectedOperation;
+
+
+    vm.getFields = types.getFields;
+}

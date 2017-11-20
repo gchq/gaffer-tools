@@ -1,0 +1,60 @@
+<md-card>
+    <md-card-content>
+
+        <div layout="column">
+            <md-input-container>
+                <label>Search for operation</label>
+                <input ng-model="ctrl.opSearchTerm" type="text">
+            </md-input-container>
+
+            <md-table-container>
+                <table md-table md-row-select ng-model="ctrl.selectedOp">
+                    <thead md-head>
+                    <tr md-row>
+                        <th md-column>
+                            <a
+                                    ng-click="sortType = 'name'; sortReverse = !sortReverse">
+                                Name
+                                <span ng-show="sortType === 'name' && !sortReverse">
+                                    <md-icon md-svg-icon="down-arrow"></md-icon>
+                                </span>
+                                <span ng-show="sortType === 'name' && sortReverse">
+                                    <md-icon md-svg-icon="up-arrow"></md-icon>
+                                </span>
+                            </a>
+                        </th>
+                        <th md-column>
+                            Description
+                        </th>
+                    </tr>
+                    </thead>
+                    <tbody md-body>
+                    <tr md-row md-select="op" md-select-id="name" md-on-deselect="ctrl.onOperationDeselect" md-on-select="ctrl.onOperationSelect" md-auto-select ng-repeat="op in ctrl.availableOperations | orderBy:sortType:sortReverse | filter:ctrl.opSearchTerm">
+                        <td md-cell>
+                            <a id="{{op.name}}">
+                                {{op.name}}
+                            </a>
+                        </td>
+                        <td md-cell>
+                            {{op.description}}
+                        </td>
+                        <td md-cell>
+                            <md-button class="md-icon-button"
+                                       ng-click="ctrl.showOperations(op.operations)"
+                                       aria-label="show operations"
+                                       ng-show="op.operations">
+                                <md-icon md-svg-icon="info"></md-icon>
+                            </md-button>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </md-table-container>
+        </div>
+    </md-card-content>
+    <md-card-actions layout="row" layout-align="center center">
+        <md-button class="md-icon-button" aria-label="refresh named operations" ng-click="ctrl.refreshNamedOperations()">
+            <md-icon md-svg-icon="refresh"></md-icon>
+        </md-button>
+    </md-card-actions>
+</md-card>
