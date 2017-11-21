@@ -4119,6 +4119,76 @@ class GafferOperationsTest(unittest.TestCase):
             g.GetSchema(
                 compact=True
             )
+        ],
+        [
+            '''
+            {
+                "class": "uk.gov.gchq.gaffer.operation.impl.SplitStoreFromFile",
+                "inputPath": "path/to/file"
+            }
+            ''',
+            g.SplitStoreFromFile(
+                input_path="path/to/file"
+            )
+        ],
+        [
+            '''
+            {
+                "class": "uk.gov.gchq.gaffer.operation.impl.SplitStoreFromIterable",
+                "input": [
+                    "1", "2", "3"
+                ]
+            }
+            ''',
+            g.SplitStoreFromIterable(
+                input=[
+                    "1", "2", "3"
+                ]
+            )
+        ],
+        [
+            '''
+            {
+                "class": "uk.gov.gchq.gaffer.operation.impl.SampleElementsForSplitPoints",
+                "input" : [ {
+                    "group" : "entity",
+                    "vertex" : 6,
+                    "properties" : {
+                      "count" : 1
+                    },
+                    "class" : "uk.gov.gchq.gaffer.data.element.Entity"
+                  }, {
+                    "group" : "edge",
+                    "source" : 5,
+                    "destination" : 6,
+                    "directed" : true,
+                    "properties" : {
+                      "count" : 1
+                    },
+                    "class" : "uk.gov.gchq.gaffer.data.element.Edge"
+                  } ],
+                "numSplits": 5,
+                "proportionToSample": 0.1
+            }
+            ''',
+            g.SampleElementsForSplitPoints(
+                input=[
+                    g.Entity(
+                        vertex=6,
+                        properties={'count': 1},
+                        group="entity"
+                    ),
+                    g.Edge(
+                        destination=6,
+                        source=5,
+                        group="edge",
+                        properties={'count': 1},
+                        directed=True
+                    )
+                ],
+                num_splits=5,
+                proportion_to_sample=0.1
+            )
         ]
     ]
 
