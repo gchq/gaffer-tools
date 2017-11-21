@@ -48,10 +48,10 @@ mvn install -Pquick -Pstandalone-ui -pl ui -am
 To demo the UI you can connect it to the Gaffer Road Traffic example REST API.
 
 To deploy both the road-traffic example REST API and the UI you can use the
-maven "road-traffic-demo" profile:
+road-traffic example start script:
 
 ```bash
-mvn install -Pquick -Proad-traffic-demo -pl ui -am
+./ui/example/road-traffic/scripts/start.sh
 ```
 
 ### Walkthrough
