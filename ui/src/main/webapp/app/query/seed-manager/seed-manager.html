@@ -1,0 +1,23 @@
+<md-card>
+    <md-card-title>
+        <md-card-title-text>
+            <span layout-padding>
+                <h1 class="md-headline">Add Seeds
+                    <span>
+                        <md-button id="select-all-seeds"
+                                   ng-click="ctrl.selectAllSeeds()"
+                                   class="md-primary">
+                            Select All
+                        </md-button>
+                    </span>
+                </h1>
+            </span>
+        </md-card-title-text>
+    </md-card-title>
+    <md-card-content>
+        <inline-seed-builder></inline-seed-builder>
+        <div layout-padding>
+            <p class="md-subhead">{{ctrl.seedsMessage}}</p>
+        </div>
+    </md-card-content>
+</md-card>
