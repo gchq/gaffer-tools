@@ -16,7 +16,7 @@
 
 'use strict';
 
-angular.module('app').factory('events', function() {
+angular.module('app').factory('events', ['common', function(common) {
 
     var service = {};
 
@@ -27,10 +27,12 @@ angular.module('app').factory('events', function() {
             events[eventName] = [];
         }
 
-        events[eventName].push(callback);
+        if (!common.arrayContainsObject(callback)) {
+            events[eventName].push(callback);
+        }
     }
 
-    service.broadcast(eventName, args) {
+    service.broadcast = function(eventName, args) {
         var listeners = events[eventName];
         var fn;
         for(var i in listeners) {
@@ -39,8 +41,10 @@ angular.module('app').factory('events', function() {
         }
     }
 
-    service.unsubscribe(eventName, callback) {
-        var events[eventName] = events[eventName].filter(function(fn) {
+
+
+    service.unsubscribe = function(eventName, callback) {
+        events[eventName] = events[eventName].filter(function(fn) {
             if (fn !== callback) {
                 return fn;
             }
@@ -48,4 +52,4 @@ angular.module('app').factory('events', function() {
     }
 
     return service;
-});
+}]);
