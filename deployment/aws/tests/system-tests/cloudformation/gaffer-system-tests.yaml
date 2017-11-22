@@ -305,6 +305,10 @@ Outputs:
     Value: !Sub ${GafferRoadTraffic.Outputs.EmrMasterSecurityGroup}
   EmrSlaveSecurityGroup:
     Value: !Sub ${GafferRoadTraffic.Outputs.EmrSlaveSecurityGroup}
+  EmrIamRoleName:
+    Value: !Sub ${GafferRoadTraffic.Outputs.EmrIamRoleName}
+  GafferInstanceName:
+    Value: !Sub ${GafferRoadTraffic.Outputs.GafferInstanceName}
   AccumuloInstanceName:
     Value: !Sub ${GafferRoadTraffic.Outputs.AccumuloInstanceName}
   GraphId:

@@ -630,5 +630,7 @@ Outputs:
     Value: !Ref EmrSlaveSecurityGroup
   EmrIamRoleName:
     Value: !Ref EmrJobFlowRole
+  GafferInstanceName:
+    Value: !Ref GafferInstanceName
   AccumuloInstanceName:
     Value: !Join ["-", ["hadoop", Ref: GafferInstanceName]]

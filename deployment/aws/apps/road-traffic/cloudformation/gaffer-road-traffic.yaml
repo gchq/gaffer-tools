@@ -416,6 +416,10 @@ Outputs:
     Value: !Sub ${GafferWithUser.Outputs.EmrMasterSecurityGroup}
   EmrSlaveSecurityGroup:
     Value: !Sub ${GafferWithUser.Outputs.EmrSlaveSecurityGroup}
+  EmrIamRoleName:
+    Value: !Sub ${GafferWithUser.Outputs.EmrIamRoleName}
+  GafferInstanceName:
+    Value: !Sub ${GafferWithUser.Outputs.GafferInstanceName}
   AccumuloInstanceName:
     Value: !Sub ${GafferWithUser.Outputs.AccumuloInstanceName}
   GraphId:

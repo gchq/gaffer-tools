@@ -311,6 +311,10 @@ Outputs:
     Value: !Sub ${GafferOnEmr.Outputs.EmrMasterSecurityGroup}
   EmrSlaveSecurityGroup:
     Value: !Sub ${GafferOnEmr.Outputs.EmrSlaveSecurityGroup}
+  EmrIamRoleName:
+    Value: !Sub ${GafferOnEmr.Outputs.EmrIamRoleName}
+  GafferInstanceName:
+    Value: !Sub ${GafferOnEmr.Outputs.GafferInstanceName}
   AccumuloInstanceName:
     Value: !Sub ${GafferOnEmr.Outputs.AccumuloInstanceName}
   UserName:
