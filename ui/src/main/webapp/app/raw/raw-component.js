@@ -27,7 +27,7 @@ function raw() {
     }
 }
 
-function RawController($scope, operationService, results, query, $mdToast, events) {
+function RawController(operationService, results, query, $mdToast, events) {
     var vm = this
 
     // variables
