@@ -1,0 +1,538 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: "Tests migrating a Gaffer graph store from one version to another."
+
+Parameters:
+
+  GafferVersionA:
+    Type: String
+    Default: 1.0.0
+    MinLength: 1
+    AllowedPattern: "\\S+"
+    Description: The version of Gaffer to deploy initially - can be a version number (e.g. 1.0.0) or a git branch (e.g. gh-X-feature-name) / commit hash etc
+
+  GafferToolsVersionA:
+    Type: String
+    Default: 1.0.0
+    MinLength: 1
+    AllowedPattern: "\\S+"
+    Description: The version of Gaffer Tools to use to deploy the initial version of Gaffer on EMR - can be a version number (e.g. 1.0.0) or a git branch (e.g. gh-X-feature-name) / commit hash etc
+
+  GafferVersionB:
+    Type: String
+    Default: 1.0.0
+    MinLength: 1
+    AllowedPattern: "\\S+"
+    Description: The version of Gaffer to migrate the cluster to - can be a version number (e.g. 1.0.0) or a git branch (e.g. gh-X-feature-name) / commit hash etc
+
+  GafferToolsVersionB:
+    Type: String
+    Default: 1.0.0
+    MinLength: 1
+    AllowedPattern: "\\S+"
+    Description: The version of Gaffer Tools to use to upgrade Gaffer - can be a version number (e.g. 1.0.0) or a git branch (e.g. gh-X-feature-name) / commit hash etc
+
+  EmrRelease:
+    Type: String
+    Default: emr-5.7.0
+    AllowedValues:
+      - emr-5.7.0
+    ConstraintDescription: Please select a valid EMR release
+
+  AccumuloVersion:
+    Type: String
+    Default: 1.8.1
+    MinLength: 1
+    AllowedPattern: "\\S+"
+
+  EmrInstanceType:
+    Type: String
+    Default: m3.xlarge
+    MinLength: 1
+    Description: Specify the type of instances to deploy in the EMR cluster
+
+  EmrCoreInstanceCount:
+    Type: Number
+    Default: 3
+    MinValue: 0
+    Description: The number of (core) instances to deploy as part of the EMR cluster
+
+  VpcId:
+    Type: AWS::EC2::VPC::Id
+    Description: The VPC to deploy infrastructure into
+
+  SubnetId:
+    Type: AWS::EC2::Subnet::Id
+    Description: The subnet to deploy infrastructure into. Make sure the subnet resides in the VPC you have selected above!
+
+  ExtraSecurityGroups:
+    Type: List<AWS::EC2::SecurityGroup::Id>
+    Description: Additional security groups that instances should be a member of
+
+  KeyName:
+    Type: AWS::EC2::KeyPair::KeyName
+    Description: Name of an existing EC2 KeyPair that you would like to be able to use to SSH into any instances
+    ConstraintDescription: Must be the name of an existing EC2 KeyPair
+
+  WebInstanceType:
+    Type: String
+    Default: t2.small
+    MinLength: 1
+    Description: Specify the type of instance to be used to deploy the Gaffer REST API and Web UI
+
+Metadata:
+  AWS::CloudFormation::Interface:
+    ParameterGroups:
+      - Label:
+          default: Initial Gaffer Version
+        Parameters:
+          - GafferVersionA
+          - GafferToolsVersionA
+      - Label:
+          default: Final Gaffer Version
+        Parameters:
+          - GafferVersionB
+          - GafferToolsVersionB
+      - Label:
+          default: Common Versions
+        Parameters:
+          - AccumuloVersion
+          - EmrRelease
+      - Label:
+          default: Infrastructure Config
+        Parameters:
+          - EmrInstanceType
+          - EmrCoreInstanceCount
+          - WebInstanceType
+          - VpcId
+          - SubnetId
+          - KeyName
+          - ExtraSecurityGroups
+
+Resources:
+
+  GafferCluster:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL: !Join ["", ["https://s3.amazonaws.com/", Ref: S3Bucket, "/", !GetAtt FileUploadCustomResource.DeployGafferSystemTestStack]]
+      Parameters:
+        GafferVersion: !Ref GafferVersionA
+        GafferToolsVersion: !Ref GafferToolsVersionA
+        AccumuloVersion: !Ref AccumuloVersion
+        EmrRelease: !Ref EmrRelease
+        EmrInstanceType: !Ref EmrInstanceType
+        EmrCoreInstanceCount: !Ref EmrCoreInstanceCount
+        VpcId: !Ref VpcId
+        SubnetId: !Ref SubnetId
+        ExtraSecurityGroups: !Join [",", Ref: ExtraSecurityGroups]
+        KeyName: !Ref KeyName
+        WebInstanceType: !Ref WebInstanceType
+
+  ###############################################
+  ## EMR step script to upgrade version of Gaffer
+  ###############################################
+
+  WaitForClusterUpgradeCondition:
+    Type: AWS::CloudFormation::WaitCondition
+    Properties:
+      Handle: !Ref WaitForClusterUpgradeHandler
+      Timeout: 3600
+
+  WaitForClusterUpgradeHandler:
+    Type: AWS::CloudFormation::WaitConditionHandle
+    DependsOn:
+      - WaitForSchemaJarCondition
+      - EmrS3SchemaAccessPolicy
+
+  UpgradeCluster:
+    Type: AWS::EMR::Step
+    Properties:
+      JobFlowId: !Sub ${GafferCluster.Outputs.EmrClusterId}
+      Name: upgrade-gaffer-instance
+      HadoopJarStep:
+        Jar: s3://elasticmapreduce/libs/script-runner/script-runner.jar
+        Args:
+          - !Join ["", ["s3://", !Ref S3Bucket, "/", !GetAtt FileUploadCustomResource.UpgradeGafferInstanceScript]]
+          - "-g"
+          - !Ref GafferVersionB
+          - "-t"
+          - !Ref GafferToolsVersionB
+          - "-a"
+          - !Ref AccumuloVersion
+          - "-k"
+          - !Sub ${GafferCluster.Outputs.PasswordEncryptionKey}
+          - "-p"
+          - !Sub ${GafferCluster.Outputs.PasswordParameter}
+          - "-u"
+          - !Sub ${GafferCluster.Outputs.UserName}
+          - "-gi"
+          - !Sub ${GafferCluster.Outputs.GafferInstanceName}
+          - "-ai"
+          - !Sub ${GafferCluster.Outputs.AccumuloInstanceName}
+          - "--schema"
+          - !Join ["", ["s3://", !Ref S3Bucket, "/schemas/road-traffic-model-", !Ref GafferVersionB, ".jar"]]
+          - "-z"
+          - !Sub ${GafferCluster.Outputs.EmrMasterPublicDNS}
+          - "-w"
+          - !Ref WaitForClusterUpgradeHandler
+          - !Sub ${GafferCluster.Outputs.GraphId}
+      ActionOnFailure: CANCEL_AND_WAIT
+
+  ################################################
+  # Build version B of the Road Traffic Schema JAR
+  ################################################
+
+  WaitForSchemaJarCondition:
+    Type: AWS::CloudFormation::WaitCondition
+    Properties:
+      Handle: !Ref WaitForSchemaJarHandler
+      Timeout: 3600
+
+  WaitForSchemaJarHandler:
+    Type: AWS::CloudFormation::WaitConditionHandle
+    DependsOn: GafferCluster
+
+  BuildSchemaJar:
+    Type: AWS::EMR::Step
+    Properties:
+      JobFlowId: !Sub ${GafferCluster.Outputs.EmrClusterId}
+      Name: build-road-traffic-schema
+      HadoopJarStep:
+        Jar: s3://elasticmapreduce/libs/script-runner/script-runner.jar
+        Args:
+          - !Join ["", ["s3://", !Ref S3Bucket, "/", !GetAtt FileUploadCustomResource.BuildRoadTrafficSchemaScript]]
+          - "-g"
+          - !Ref GafferVersionB
+          - "-w"
+          - !Ref WaitForSchemaJarHandler
+          - !Join ["", ["s3://", !Ref S3Bucket, "/schemas/road-traffic-model-", !Ref GafferVersionB, ".jar"]]
+      ActionOnFailure: CANCEL_AND_WAIT
+
+  EmrS3SchemaAccessPolicy:
+    Type: AWS::IAM::Policy
+    Properties:
+      Roles:
+        - !Sub ${GafferCluster.Outputs.EmrIamRoleName}
+      PolicyName: !Join ["-", [Ref: "AWS::StackName", "schema-access"]]
+      PolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Resource: !Join ["", ["arn:aws:s3:::", !Ref S3Bucket, "/schemas/road-traffic-model-", !Ref GafferVersionB, ".jar"]]
+            Action:
+              - s3:GetObject
+
+  #############################################
+  ## Deploy new Gaffer web server for version B
+  #############################################
+
+  GafferWebServer:
+    Type: AWS::CloudFormation::Stack
+    DependsOn:
+      - WaitForSchemaJarCondition
+      - WaitForClusterUpgradeCondition
+    Properties:
+      TemplateURL: !Join ["", ["https://s3.amazonaws.com/", Ref: S3Bucket, "/", !GetAtt FileUploadCustomResource.DeployGafferWebServerStack]]
+      Parameters:
+        GafferVersion: !Ref GafferVersionB
+        GafferToolsVersion: !Ref GafferToolsVersionB
+        InstanceType: !Ref WebInstanceType
+        VpcId: !Ref VpcId
+        SubnetId: !Ref SubnetId
+        ExtraSecurityGroups: !Join [",", Ref: ExtraSecurityGroups]
+        KeyName: !Ref KeyName
+        GafferEmrMasterDNS: !Sub ${GafferCluster.Outputs.EmrMasterPublicDNS}
+        AccumuloInstanceName: !Sub ${GafferCluster.Outputs.AccumuloInstanceName}
+        GraphId: !Sub ${GafferCluster.Outputs.GraphId}
+        UserName: !Sub ${GafferCluster.Outputs.UserName}
+        PasswordParameter: !Sub ${GafferCluster.Outputs.PasswordParameter}
+        EncryptionKey: !Sub ${GafferCluster.Outputs.PasswordEncryptionKey}
+        GafferSchemaJarS3Url: !Join ["", [!Ref S3Bucket, "/schemas/road-traffic-model-", !Ref GafferVersionB, ".jar"]]
+
+  WebServerAccessToEmrMasterIngressRule:
+    Type: AWS::EC2::SecurityGroupIngress
+    Properties:
+      GroupId: !Sub ${GafferCluster.Outputs.EmrMasterSecurityGroup}
+      CidrIp:
+        Fn::Join:
+          - ""
+          - - !Sub ${GafferWebServer.Outputs.PrivateIp}
+            - "/32"
+      IpProtocol: tcp
+      FromPort: 0
+      ToPort: 65535
+
+  WebServerAccessToEmrSlaveIngressRule:
+    Type: AWS::EC2::SecurityGroupIngress
+    Properties:
+      GroupId: !Sub ${GafferCluster.Outputs.EmrSlaveSecurityGroup}
+      CidrIp:
+        Fn::Join:
+          - ""
+          - - !Sub ${GafferWebServer.Outputs.PrivateIp}
+            - "/32"
+      IpProtocol: tcp
+      FromPort: 0
+      ToPort: 65535
+
+  AllowEmrToAccessWebServerIngressRule:
+    Type: AWS::EC2::SecurityGroupIngress
+    Properties:
+      GroupId: !Sub ${GafferWebServer.Outputs.SecurityGroup}
+      SourceSecurityGroupId: !Sub ${GafferCluster.Outputs.EmrMasterSecurityGroup}
+      IpProtocol: tcp
+      FromPort: 80
+      ToPort: 80
+
+  #######################################################################
+  ## EMR step script to run Road Traffic System Tests on Gaffer version B
+  #######################################################################
+
+  WaitForSystemTestsCondition:
+    Type: AWS::CloudFormation::WaitCondition
+    Properties:
+      Handle: !Ref WaitForSystemTestsHandler
+      Timeout: 3600
+
+  WaitForSystemTestsHandler:
+    Type: AWS::CloudFormation::WaitConditionHandle
+    DependsOn:
+      - WebServerAccessToEmrMasterIngressRule
+      - WebServerAccessToEmrSlaveIngressRule
+      - AllowEmrToAccessWebServerIngressRule
+
+  RunSystemTests:
+    Type: AWS::EMR::Step
+    Properties:
+      JobFlowId: !Sub ${GafferCluster.Outputs.EmrClusterId}
+      Name: run-road-traffic-system-tests
+      HadoopJarStep:
+        Jar: s3://elasticmapreduce/libs/script-runner/script-runner.jar
+        Args:
+          - !Join ["", ["s3://", !Ref S3Bucket, "/", !GetAtt FileUploadCustomResource.RunGafferSystemTestsScript]]
+          - !Ref GafferVersionB
+          - "-h"
+          - !Sub ${GafferWebServer.Outputs.PublicDNS}
+          - "-p"
+          - 80
+          - "-w"
+          - !Ref WaitForSystemTestsHandler
+      ActionOnFailure: CANCEL_AND_WAIT
+
+  ##############################
+  ## Upload dependencies into S3
+  ##############################
+
+  S3Bucket:
+    Type: AWS::S3::Bucket
+    DeletionPolicy: Delete
+
+  FileUploadCustomResource:
+    Type: AWS::CloudFormation::CustomResource
+    Version: "1.0"
+    Properties:
+      ServiceToken: !GetAtt FileUploadLambda.Arn
+      BucketName: !Ref S3Bucket
+
+  FileUploadLambda:
+    Type: AWS::Lambda::Function
+    Properties:
+      Description: Uploads files required to run the Gaffer Migration Test to an S3 bucket
+      Role: !GetAtt FileUploadRole.Arn
+      Runtime: python2.7
+      Handler: index.lambda_handler
+      MemorySize: 128
+      Timeout: 180
+      Code:
+        ZipFile: !Sub |
+          #!/usr/bin/env python
+
+          import boto3
+          import base64
+          import urllib2
+          import cfnresponse
+
+          s3 = boto3.client('s3')
+
+          files=[]
+
+          files.append({
+            'Output': 'DeployGafferSystemTestStack',
+            'Key': 'cloudformation/gaffer-system-tests.yaml',
+            'Urls': [
+              'https://raw.githubusercontent.com/gchq/gaffer-tools/gaffer-tools-${GafferToolsVersionA}/deployment/aws/tests/system-tests/cloudformation/gaffer-system-tests.yaml',
+              'https://raw.githubusercontent.com/gchq/gaffer-tools/${GafferToolsVersionA}/deployment/aws/tests/system-tests/cloudformation/gaffer-system-tests.yaml'
+            ]
+          })
+
+          files.append({
+            'Output': 'DeployGafferWebServerStack',
+            'Key': 'cloudformation/gaffer-web.yaml',
+            'Urls': [
+              'https://raw.githubusercontent.com/gchq/gaffer-tools/gaffer-tools-${GafferToolsVersionB}/deployment/aws/core/cloudformation/gaffer-web.yaml',
+              'https://raw.githubusercontent.com/gchq/gaffer-tools/${GafferToolsVersionB}/deployment/aws/core/cloudformation/gaffer-web.yaml'
+            ]
+          })
+
+          files.append({
+            'Output': 'UpgradeGafferInstanceScript',
+            'Key': 'step/upgrade-gaffer-instance.sh',
+            'Urls': [
+              'https://raw.githubusercontent.com/gchq/gaffer-tools/gaffer-tools-${GafferToolsVersionB}/deployment/aws/tests/migration-tests/emr-step-scripts/upgrade-gaffer-instance.sh',
+              'https://raw.githubusercontent.com/gchq/gaffer-tools/${GafferToolsVersionB}/deployment/aws/tests/migration-tests/emr-step-scripts/upgrade-gaffer-instance.sh'
+            ]
+          })
+
+          files.append({
+            'Output': 'BuildRoadTrafficSchemaScript',
+            'Key': 'step/build-road-traffic-schema.sh',
+            'Urls': [
+              'https://raw.githubusercontent.com/gchq/gaffer-tools/gaffer-tools-${GafferToolsVersionB}/deployment/aws/apps/road-traffic/emr-step-scripts/build-road-traffic-schema.sh',
+              'https://raw.githubusercontent.com/gchq/gaffer-tools/${GafferToolsVersionB}/deployment/aws/apps/road-traffic/emr-step-scripts/build-road-traffic-schema.sh'
+            ]
+          })
+
+          files.append({
+            'Output': 'RunGafferSystemTestsScript',
+            'Key': 'step/run-gaffer-system-tests.sh',
+            'Urls': [
+              'https://raw.githubusercontent.com/gchq/gaffer-tools/gaffer-tools-${GafferToolsVersionB}/deployment/aws/tests/system-tests/emr-step-scripts/run-gaffer-system-tests.sh',
+              'https://raw.githubusercontent.com/gchq/gaffer-tools/${GafferToolsVersionB}/deployment/aws/tests/system-tests/emr-step-scripts/run-gaffer-system-tests.sh'
+            ]
+          })
+
+          def upload_files(bucket):
+            outputs = {}
+
+            for file in files:
+              body = None
+              if 'Body' in file:
+                body = file['Body']
+              elif 'Body64' in file:
+                body = base64.b64decode(file['Body64'])
+              elif 'Url' in file:
+                body = urllib2.urlopen(file['Url']).read()
+              elif 'Urls' in file:
+                lastError = None
+                for url in file['Urls']:
+                  try:
+                    body = urllib2.urlopen(url).read()
+                    break
+                  except Exception as e:
+                    print('Request for ' + url + ' error: ' + str(e))
+                    lastError = e
+                if body is None and lastError is not None:
+                  raise lastError
+
+              if body is not None:
+                s3.put_object(
+                  Bucket=bucket,
+                  Key=file['Key'],
+                  Body=body
+                )
+
+                if 'Output' in file:
+                  outputs[file['Output']] = file['Key']
+
+            return outputs
+
+          def cleanup_files(bucket):
+            s3.delete_object(Bucket=bucket, Key='schemas/road-traffic-model-${GafferVersionB}.jar')
+
+            for file in files:
+              s3.delete_object(
+                Bucket=bucket,
+                Key=file['Key']
+              )
+
+          def lambda_handler(evt, cntx):
+            try:
+              print(evt)
+
+              bucket = evt['ResourceProperties']['BucketName']
+              print('S3 Bucket: ' + bucket)
+
+              requestType = evt['RequestType']
+              if requestType == 'Create' or requestType == 'Update':
+                outputs = upload_files(bucket)
+                cfnresponse.send(evt, cntx, cfnresponse.SUCCESS, outputs)
+              elif requestType == 'Delete':
+                cleanup_files(bucket)
+                cfnresponse.send(evt, cntx, cfnresponse.SUCCESS, {})
+              else:
+                raise Exception('Unrecognised RequestType: ' + requestType)
+
+            except Exception as e:
+              cfnresponse.send(evt, cntx, cfnresponse.FAILED, { 'Error': str(e) })
+              raise
+
+  FileUploadRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - lambda.amazonaws.com
+            Action:
+              - sts:AssumeRole
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+      Policies:
+        - PolicyName: !Join ["-", [Ref: "AWS::StackName", "file-upload-policy"]]
+          PolicyDocument:
+            Version: 2012-10-17
+            Statement:
+              - Effect: Allow
+                Resource:
+                  - !GetAtt S3Bucket.Arn
+                  - !Join ["", [!GetAtt S3Bucket.Arn, "/*"]]
+                Action:
+                  - s3:ListBucket
+                  - s3:GetObject
+                  - s3:PutObject
+                  - s3:DeleteObject
+
+Outputs:
+  EmrMasterPublicDNS:
+    Value: !Sub ${GafferCluster.Outputs.EmrMasterPublicDNS}
+  EmrClusterId:
+    Value: !Sub ${GafferCluster.Outputs.EmrClusterId}
+  EmrMasterSecurityGroup:
+    Value: !Sub ${GafferCluster.Outputs.EmrMasterSecurityGroup}
+  EmrSlaveSecurityGroup:
+    Value: !Sub ${GafferCluster.Outputs.EmrSlaveSecurityGroup}
+  EmrIamRoleName:
+    Value: !Sub ${GafferCluster.Outputs.EmrIamRoleName}
+
+  GafferInstanceName:
+    Value: !Sub ${GafferCluster.Outputs.GafferInstanceName}
+  AccumuloInstanceName:
+    Value: !Sub ${GafferCluster.Outputs.AccumuloInstanceName}
+  GraphId:
+    Value: !Sub ${GafferCluster.Outputs.GraphId}
+  UserName:
+    Value: !Sub ${GafferCluster.Outputs.UserName}
+  PasswordParameter:
+    Value: !Sub ${GafferCluster.Outputs.PasswordParameter}
+  PasswordEncryptionKey:
+    Value: !Sub ${GafferCluster.Outputs.PasswordEncryptionKey}
+
+  GafferAWebServerPublicDNS:
+    Value: !Sub ${GafferCluster.Outputs.WebServerPublicDNS}
+  GafferAWebServerSecurityGroup:
+    Value: !Sub ${GafferCluster.Outputs.WebServerSecurityGroup}
+  GafferARestApi:
+    Value: !Sub ${GafferCluster.Outputs.RestApi}
+  GafferAWebUi:
+    Value: !Sub ${GafferCluster.Outputs.WebUi}
+
+  GafferBWebServerPublicDNS:
+    Value: !Sub ${GafferWebServer.Outputs.PublicDNS}
+  GafferBWebServerSecurityGroup:
+    Value: !Sub ${GafferWebServer.Outputs.SecurityGroup}
+  GafferBRestApi:
+    Value: !Sub ${GafferWebServer.Outputs.RestApi}
+  GafferBWebUi:
+    Value: !Sub ${GafferWebServer.Outputs.WebUi}
