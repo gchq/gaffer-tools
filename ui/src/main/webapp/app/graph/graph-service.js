@@ -250,7 +250,7 @@ angular.module('app').factory('graph', ['schema', 'types', '$q', 'results', 'com
             var id = entity.vertex;
             entity.vertexType = schemaService.getVertexTypeFromEntityGroup(entity.group);
             if(id in graphData.entities) {
-                if(!common.arrayContainsObjectWithValue(graphData.entities[id], 'group', entity.group)) {
+                if(!common.arrayContainsObject(graphData.entities[id], entity)) {
                     graphData.entities[id].push(entity);
                 }
             } else {
@@ -268,7 +268,7 @@ angular.module('app').factory('graph', ['schema', 'types', '$q', 'results', 'com
             edge.destinationType = vertexTypes[1];
             var id = edge.source + "|" + edge.destination + "|" + edge.directed + "|" + edge.group;
             if(id in graphData.edges) {
-                if(!common.arrayContainsObjectWithValue(graphData.edges[id], 'group', edge.group)) {
+                if(!common.arrayContainsObject(graphData.edges[id], edge)) {
                     graphData.edges[id].push(edge);
                 }
             } else {

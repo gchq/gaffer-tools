@@ -1854,6 +1854,63 @@ class GetJobResults(Operation):
         return operation
 
 
+class SplitStoreFromFile(Operation):
+    CLASS = 'uk.gov.gchq.gaffer.operation.impl.SplitStoreFromFile'
+
+    def __init__(self, input_path, options=None):
+        super().__init__(
+            _class_name=self.CLASS,
+            view=None,
+            options=options)
+        self.input_path = input_path
+
+    def to_json(self):
+        operation = super().to_json()
+        operation['inputPath'] = self.input_path
+        return operation
+
+
+class SplitStoreFromIterable(Operation):
+    CLASS = 'uk.gov.gchq.gaffer.operation.impl.SplitStoreFromIterable'
+
+    def __init__(self, input=None, options=None):
+        super().__init__(
+            _class_name=self.CLASS,
+            view=None,
+            options=options)
+        self.input = input
+
+    def to_json(self):
+        operation = super().to_json()
+        if self.input is not None:
+            operation['input'] = self.input
+        return operation
+
+class SampleElementsForSplitPoints(Operation):
+    CLASS = 'uk.gov.gchq.gaffer.operation.impl.SampleElementsForSplitPoints'
+
+    def __init__(self, input=None, num_splits=None, proportion_to_sample=None, options=None):
+        super().__init__(
+            _class_name=self.CLASS,
+            view=None,
+            options=options)
+        self.input = input
+        self.num_splits = num_splits
+        self.proportion_to_sample = proportion_to_sample
+
+    def to_json(self):
+        operation = super().to_json()
+        if self.input is not None:
+            elements_json = []
+            for element in self.input:
+                elements_json.append(element.to_json())
+            operation['input'] = elements_json
+        if self.num_splits is not None:
+            operation['numSplits'] = self.num_splits
+        if self.proportion_to_sample is not None:
+            operation['proportionToSample'] = self.proportion_to_sample
+        return operation
+
 class GetOperation(Operation):
     def __init__(self,
                  _class_name,
