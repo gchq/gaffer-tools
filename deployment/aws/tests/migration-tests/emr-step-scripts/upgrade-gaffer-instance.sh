@@ -7,7 +7,14 @@ GAFFER_VERSION=0.7.8
 GAFFER_TOOLS_VERSION=0.7.8
 MAVEN_VERSION=3.5.0
 
-CLUSTER_NAME=""
+USERNAME=""
+KMS_ID=""
+PARAM_NAME=""
+GAFFER_INSTANCE_NAME=""
+ACCUMULO_INSTANCE_NAME=""
+GRAPH_ID=""
+SCHEMA=""
+ZOOKEEPERS="$HOSTNAME:2181"
 WAIT_HANDLE_URL=""
 
 while [[ $# -gt 0 ]]; do
@@ -30,12 +37,40 @@ while [[ $# -gt 0 ]]; do
 			GAFFER_TOOLS_VERSION=$2
 			shift
 			;;
+		-k|--kms)
+			KMS_ID=$2
+			shift
+			;;
+		-p|--param)
+			PARAM_NAME=$2
+			shift
+			;;
+		-u|--username)
+			USERNAME=$2
+			shift
+			;;
+		-gi|--gaffer-instance)
+			GAFFER_INSTANCE_NAME=$2
+			shift
+			;;
+		-ai|--accumulo-instance)
+			ACCUMULO_INSTANCE_NAME=$2
+			shift
+			;;
+		--schema)
+			SCHEMA=$2
+			shift
+			;;
 		-w|--wait-handle-url)
 			WAIT_HANDLE_URL=$2
 			shift
 			;;
+		-z|--zookeepers)
+			ZOOKEEPERS=$2
+			shift
+			;;
 		*)
-			CLUSTER_NAME=$1
+			GRAPH_ID=$1
 			;;
 	esac
 	shift
@@ -48,12 +83,44 @@ if [[ "$WAIT_HANDLE_URL" ]]; then
 	trap awsSignal EXIT
 fi
 
-if [ "$CLUSTER_NAME" == "" ]; then
-	echo "Usage: $0 <clusterName> [-a <accumuloVersion>] [-g <gafferVersion>] [-t <gafferToolsVersion>] [-s <sliderVersion>] [-w <awsWaitHandleUrl>]"
+if [[ "$GAFFER_INSTANCE_NAME" == "" || "$ACCUMULO_INSTANCE_NAME" == "" || "$GRAPH_ID" == "" || "$SCHEMA" == "" || "$USERNAME" == "" || "$KMS_ID" == "" || "$PARAM_NAME" == "" ]]; then
+	echo "Usage: $0 -gi <gafferInstanceName> -ai <accumuloInstanceName> -u <username> -k <kmsID> -p <ssmParameterName> --schema <schemaJar> <graphId> [-a <accumuloVersion>] [-g <gafferVersion>] [-t <gafferToolsVersion>] [-s <sliderVersion>] [-z <zookeepers>] [-w <awsWaitHandleUrl>]"
 	exit 1
 fi
 
-DST=~/slider-$CLUSTER_NAME
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+cd $DIR
+
+echo "Downloading new graph schema from S3..."
+aws s3 cp $SCHEMA schema.jar
+jar -xf schema.jar schema/
+
+echo "Obtaining Accumulo password from SSM parameter..."
+ENCRYPTED_PASSWORD=$(aws ssm get-parameters --names "$PARAM_NAME" --region "$AWS_DEFAULT_REGION" --output text --query Parameters[0].Value)
+if [ "$ENCRYPTED_PASSWORD" == "" ]; then
+	echo "Unable to retrieve Gaffer password from AWS SSM Parameter: $PARAM_NAME"
+	exit 1
+fi
+
+echo "Decrypting Accumulo password using KMS..."
+PASSWORD=$(aws kms decrypt --region "$AWS_DEFAULT_REGION" --ciphertext-blob fileb://<(echo "$ENCRYPTED_PASSWORD" | base64 -d) --query Plaintext --output text | base64 -d)
+if [ "$PASSWORD" == "" ]; then
+	echo "Unable to decrypt Gaffer password!"
+	exit 1
+fi
+
+echo "Creating Gaffer Store properties file..."
+tee store.props <<EOF
+gaffer.store.class=uk.gov.gchq.gaffer.accumulostore.AccumuloStore
+gaffer.store.properties.class=uk.gov.gchq.gaffer.accumulostore.AccumuloProperties
+accumulo.instance=$ACCUMULO_INSTANCE_NAME
+accumulo.zookeepers=$ZOOKEEPERS
+accumulo.table=$GRAPH_ID
+accumulo.user=$USERNAME
+accumulo.password=$PASSWORD
+EOF
+
+DST=~/slider-$GAFFER_INSTANCE_NAME
 if [ ! -d $DST ]; then
 	echo "Unable to find an existing Gaffer instance in: $DST"
 	exit 1
@@ -61,13 +128,16 @@ fi
 
 # Double check a Slider app with the requested name does already exist
 cd $DST
-if ! ./slider exists $CLUSTER_NAME; then
-	echo "A slider app called $CLUSTER_NAME does not exist!"
+if ! ./slider exists $GAFFER_INSTANCE_NAME; then
+	echo "A slider app called $GAFFER_INSTANCE_NAME does not exist!"
 	exit 1
 fi
 
-# Stop the Gaffer instance
-./slider stop $CLUSTER_NAME
+echo "Taking the Accumulo table offline..."
+./accumulo-shell.sh -e "offline $GRAPH_ID -w"
+
+echo "Stopping the Gaffer instance..."
+./slider stop $GAFFER_INSTANCE_NAME
 
 # Ensure some dependencies are installed
 PKGS_TO_INSTALL=()
@@ -145,9 +215,9 @@ if [ ! -f "slider-accumulo-app-package-$ACCUMULO_VERSION.zip" ]; then
 fi
 
 # Build and install Gaffer
-cd $DST
+cd $DIR
 
-if ! curl -fL -o /dev/null https://repo1.maven.org/maven2/uk/gov/gchq/gaffer/gaffer2/$GAFFER_VERSION/gaffer2-$GAFFER_VERSION.pom; then
+if ! curl -fLO https://repo1.maven.org/maven2/uk/gov/gchq/gaffer/accumulo-store/$GAFFER_VERSION/accumulo-store-$GAFFER_VERSION-utility.jar; then
 	echo "Building Gaffer from branch $GAFFER_VERSION..."
 	git clone -b $GAFFER_VERSION --depth 1 https://github.com/gchq/Gaffer.git
 	cd Gaffer
@@ -155,6 +225,8 @@ if ! curl -fL -o /dev/null https://repo1.maven.org/maven2/uk/gov/gchq/gaffer/gaf
 
 	GAFFER_POM_VERSION=$(xmllint --xpath '/*[local-name()="project"]/*[local-name()="version"]/text()' pom.xml)
 	echo "Detected Gaffer version as $GAFFER_POM_VERSION"
+
+	cp store-implementation/accumulo-store/target/accumulo-store-$GAFFER_VERSION-utility.jar ../
 
 	# Tidy up
 	cd ..
@@ -196,9 +268,9 @@ else
 fi
 
 echo "Upgrading Gaffer instance..."
-hadoop fs -rm .slider/cluster/$CLUSTER_NAME/appdef/appPkg.zip
-hadoop fs -rm .slider/cluster/$CLUSTER_NAME/addons/Gaffer/addon_Gaffer.zip
-./slider update $CLUSTER_NAME \
+hadoop fs -rm .slider/cluster/$GAFFER_INSTANCE_NAME/appdef/appPkg.zip
+hadoop fs -rm .slider/cluster/$GAFFER_INSTANCE_NAME/addons/Gaffer/addon_Gaffer.zip
+./slider update $GAFFER_INSTANCE_NAME \
 	--appdef ./accumulo-pkg/slider-accumulo-app-package-$ACCUMULO_VERSION.zip \
 	--addon Gaffer ./gaffer-slider/gaffer-slider-$GAFFER_SLIDER_POM_VERSION.zip \
 	--template ./gaffer-slider/appConfig.json \
@@ -206,7 +278,7 @@ hadoop fs -rm .slider/cluster/$CLUSTER_NAME/addons/Gaffer/addon_Gaffer.zip
 	--debug
 
 echo "Starting Gaffer instance..."
-./slider start $CLUSTER_NAME
+./slider start $GAFFER_INSTANCE_NAME
 
 CONFIG_DIR=$DST/etc
 echo "Updating configuration in $CONFIG_DIR..."
@@ -227,6 +299,21 @@ INTERVAL=10
 for (( i=0; i<=$MAX_ATTEMPTS; i++ )); do
 	if ./install-accumulo-client.sh; then
 		echo "Gaffer instance is ready :D"
+
+		echo "Migrating Accumulo Store..."
+		cd $DIR
+		java -cp ./accumulo-store-$GAFFER_VERSION-utility.jar \
+			uk.gov.gchq.gaffer.accumulostore.utils.AddUpdateTableIterator \
+			$GRAPH_ID \
+			./schema/ \
+			./store.props \
+			update
+
+		echo "Putting the Accumulo table back online..."
+		cd $DST
+		./accumulo-shell.sh -e "online $GRAPH_ID -w"
+
+		echo "Done!"
 		exit 0
 	else
 		echo "Gaffer instance is not ready yet, sleeping for $INTERVAL secs..."
