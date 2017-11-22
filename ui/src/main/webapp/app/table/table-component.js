@@ -26,10 +26,8 @@ function resultsTable() {
     };
 }
 
-function TableController($scope, results, schema, table, types) {
+function TableController(schema, results, table, events) {
     var vm = this;
-
-    table.update(results.get());
 
     vm.data = table.getData();
     vm.selectedTab = 0;
@@ -40,13 +38,10 @@ function TableController($scope, results, schema, table, types) {
         vm.schema = gafferSchema;
     });
 
-    results.observe().then(null, null, function(results) {
-        table.update(results);
-        vm.data = table.getData();
+    events.subscribe('tableUpdated', function(data) {
+        vm.data = data;
     });
 
-    vm.resolve = function(value) {
-        return types.getShortValue(value);
-    }
+    table.update(results.get());
 
 }

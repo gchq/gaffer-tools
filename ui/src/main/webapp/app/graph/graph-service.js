@@ -29,7 +29,7 @@ angular.module('app').factory('graph', ['schema', 'types', '$q', 'results', 'com
 
     var graphData = {entities: {}, edges: {}, entitySeeds: {}};
 
-    results.observe().then(null, null, function(results) {
+    events.subscribe('resultsUpdated', function(results) {
         graph.update(results);
         graph.redraw();
     });

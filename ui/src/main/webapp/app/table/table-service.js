@@ -16,7 +16,7 @@
 
 'use strict'
 
-angular.module('app').factory('table', ['common', function(common) {
+angular.module('app').factory('table', ['common', 'events', 'types', function(common, events, types) {
     var table = {};
 
     var tableData = {entities: {}, edges: {}, entitySeeds: [], other: []};
@@ -25,25 +25,62 @@ angular.module('app').factory('table', ['common', function(common) {
         return tableData;
     }
 
-    table.update = function(results) {
+    table.clear = function() {
         tableData = {entities: {}, edges: {}, entitySeeds: [], other: []};
+    }
+
+    var parseEntity = function(entity) {
+        var summarised = {};
+
+        summarised.vertex = types.getShortValue(entity.vertex);
+        summarised.group = entity.group;
+        summarised.properties = parseElementProperties(entity.properties);
+
+        return summarised;
+    }
+
+    var parseElementProperties = function(properties) {
+        var summarisedProperties = {};
+
+        var props = Object.keys(properties);
+        for (var i in props) {
+            summarisedProperties[props[i]] = types.getShortValue(properties[props[i]]);
+        }
+
+        return summarisedProperties;
+    }
+
+    var parseEdge = function(edge) {
+        var summarised = {};
+        summarised.source = types.getShortValue(edge.source);
+        summarised.destination = types.getShortValue(edge.destination);
+        summarised.group = edge.group;
+        summarised.directed = edge.directed;
+        summarised.properties = parseElementProperties(edge.properties);
+
+        return summarised;
+
+    }
+
+    table.update = function(results) {
         for (var i in results.entities) {
-            var entity = results.entities[i];
+            var entity = parseEntity(results.entities[i]);
             if(!tableData.entities[entity.group]) {
                 tableData.entities[entity.group] = [];
             }
-            if (tableData.entities[entity.group].indexOf(angular.toJson(entity)) === -1) {
-                tableData.entities[entity.group].push(angular.toJson(entity));
+
+            if (!common.arrayContainsObject(tableData.entities[entity.group], entity)) {
+                tableData.entities[entity.group].push(entity);
             }
         }
 
         for (var i in results.edges) {
-            var edge = results.edges[i];
+            var edge = parseEdge(results.edges[i]);
             if(!tableData.edges[edge.group]) {
                 tableData.edges[edge.group] = [];
             }
-            if (tableData.edges[edge.group].indexOf(angular.toJson(edge)) == -1) {
-                tableData.edges[edge.group].push(angular.toJson(edge));
+            if (!common.arrayContainsObject(tableData.edges[edge.group], edge)) {
+                tableData.edges[edge.group].push(edge);
             }
         }
 
@@ -59,21 +96,7 @@ angular.module('app').factory('table', ['common', function(common) {
                 tableData.other.push(results.other[i]);
             }
         }
-
-        convertElements();
-    }
-
-    var convertElements = function() {
-        for (var i in tableData.entities) {
-            for (var a in tableData.entities[i]) {
-                tableData.entities[i][a] = JSON.parse(tableData.entities[i][a]);
-            }
-        }
-        for (var i in tableData.edges) {
-            for (var a in tableData.edges[i]) {
-                tableData.edges[i][a] = JSON.parse(tableData.edges[i][a]);
-            }
-        }
+        events.broadcast('tableUpdated', [tableData]);
 
     }
 

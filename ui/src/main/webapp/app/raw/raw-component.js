@@ -27,7 +27,7 @@ function raw() {
     }
 }
 
-function RawController($scope, operationService, results, query, $mdToast) {
+function RawController($scope, operationService, results, query, $mdToast, events) {
     var vm = this
 
     // variables
@@ -42,7 +42,7 @@ function RawController($scope, operationService, results, query, $mdToast) {
         vm.operations = operations
     })
 
-    results.observe().then(null, null, function(results) {
+    events.subscribe('resultsUpdated', function(results) {
         vm.results = results
     })
 
