@@ -38,7 +38,7 @@ function RawController($scope, operationService, results, query, $mdToast, event
 
     // watches
 
-    query.observeOperations().then(null, null, function(operations) {
+    events.subscribe('operationsUpdated', function(operations) {
         vm.operations = operations
     })
 
