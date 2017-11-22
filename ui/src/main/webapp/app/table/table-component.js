@@ -29,6 +29,7 @@ function resultsTable() {
 function TableController(schema, results, table, events) {
     var vm = this;
 
+    table.update(results.get());
     vm.data = table.getData();
     vm.selectedTab = 0;
     vm.searchTerm = '';
@@ -38,10 +39,9 @@ function TableController(schema, results, table, events) {
         vm.schema = gafferSchema;
     });
 
-    events.subscribe('tableUpdated', function(data) {
-        vm.data = data;
+    events.subscribe('resultsUpdated', function(res) {
+        table.update(res);
+        vm.data = table.getData();
     });
-
-    table.update(results.get());
 
 }

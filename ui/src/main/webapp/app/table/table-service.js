@@ -25,10 +25,6 @@ angular.module('app').factory('table', ['common', 'events', 'types', function(co
         return tableData;
     }
 
-    table.clear = function() {
-        tableData = {entities: {}, edges: {}, entitySeeds: [], other: []};
-    }
-
     var parseEntity = function(entity) {
         var summarised = {};
 
@@ -63,24 +59,24 @@ angular.module('app').factory('table', ['common', 'events', 'types', function(co
     }
 
     table.update = function(results) {
+        tableData = { entities: {}, edges: {}, entitySeeds: [], other: [] };
         for (var i in results.entities) {
-            var entity = parseEntity(results.entities[i]);
+            var entity = results.entities[i];
             if(!tableData.entities[entity.group]) {
                 tableData.entities[entity.group] = [];
             }
-
-            if (!common.arrayContainsObject(tableData.entities[entity.group], entity)) {
-                tableData.entities[entity.group].push(entity);
+            if (tableData.entities[entity.group].indexOf(angular.toJson(entity)) === -1) {
+                tableData.entities[entity.group].push(angular.toJson(entity));
             }
         }
 
         for (var i in results.edges) {
-            var edge = parseEdge(results.edges[i]);
+            var edge = results.edges[i];
             if(!tableData.edges[edge.group]) {
                 tableData.edges[edge.group] = [];
             }
-            if (!common.arrayContainsObject(tableData.edges[edge.group], edge)) {
-                tableData.edges[edge.group].push(edge);
+            if (tableData.edges[edge.group].indexOf(angular.toJson(edge)) == -1) {
+                tableData.edges[edge.group].push(angular.toJson(edge));
             }
         }
 
@@ -96,7 +92,21 @@ angular.module('app').factory('table', ['common', 'events', 'types', function(co
                 tableData.other.push(results.other[i]);
             }
         }
-        events.broadcast('tableUpdated', [tableData]);
+
+        convertElements();
+    }
+
+    var convertElements = function() {
+        for (var i in tableData.entities) {
+            for (var a in tableData.entities[i]) {
+                tableData.entities[i][a] = parseEntity(JSON.parse(tableData.entities[i][a]));
+            }
+        }
+        for (var i in tableData.edges) {
+            for (var a in tableData.edges[i]) {
+                tableData.edges[i][a] = parseEdge(JSON.parse(tableData.edges[i][a]));
+            }
+        }
 
     }
 
