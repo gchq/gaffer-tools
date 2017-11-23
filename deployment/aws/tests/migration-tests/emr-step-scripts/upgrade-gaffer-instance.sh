@@ -226,7 +226,7 @@ if ! curl -fLO https://repo1.maven.org/maven2/uk/gov/gchq/gaffer/accumulo-store/
 	GAFFER_POM_VERSION=$(xmllint --xpath '/*[local-name()="project"]/*[local-name()="version"]/text()' pom.xml)
 	echo "Detected Gaffer version as $GAFFER_POM_VERSION"
 
-	cp store-implementation/accumulo-store/target/accumulo-store-$GAFFER_VERSION-utility.jar ../
+	cp store-implementation/accumulo-store/target/accumulo-store-$GAFFER_POM_VERSION-utility.jar ../
 
 	# Tidy up
 	cd ..
@@ -302,7 +302,7 @@ for (( i=0; i<=$MAX_ATTEMPTS; i++ )); do
 
 		echo "Migrating Accumulo Store..."
 		cd $DIR
-		java -cp ./accumulo-store-$GAFFER_VERSION-utility.jar \
+		java -cp ./accumulo-store-$GAFFER_POM_VERSION-utility.jar \
 			uk.gov.gchq.gaffer.accumulostore.utils.AddUpdateTableIterator \
 			$GRAPH_ID \
 			./schema/ \
