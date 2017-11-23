@@ -112,6 +112,8 @@ angular.module('app').factory('schema', ['$http', 'config', '$q', 'common', func
         }
     }
 
+    schemaService.get();
+
 
     return schemaService;
 
