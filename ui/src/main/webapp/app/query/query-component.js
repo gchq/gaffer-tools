@@ -27,162 +27,16 @@ function query() {
     };
 }
 
-function QueryController($scope, queryPage, operationService, types, graph, config, settings, query, functions, schema, common, results, navigation, $window, $mdDialog, loading) {
+function QueryController($scope, queryPage, operationService, types, graph, config, settings, query, functions, schema, common, results, navigation, $mdDialog, loading) {
 
     var vm = this;
-
-    // variables
-
-    vm.relatedEntities = graph.getRelatedEntities();
-    vm.relatedEdges = graph.getRelatedEdges();
-    vm.expandEdges = queryPage.expandEdges;
-    vm.expandEntities = queryPage.expandEntities;
-    vm.expandEdgesContent = queryPage.expandEdgesContent;
-    vm.expandEntitiesContent = queryPage.expandEntitiesContent;
-    vm.selectedEntities = graph.getSelectedEntities();
-    vm.selectedEdges = graph.getSelectedEdges();
-    vm.inOutFlag = queryPage.getInOutFlag();
-    vm.availableOperations;
-    vm.selectedOp = [];
-
-    // watches
-
-    queryPage.waitUntilReady().then(function() {
-        vm.availableOperations = operationService.getAvailableOperations();
-        var selected = queryPage.getSelectedOperation();
-        if (selected)  {
-            vm.selectedOp = [ selected ];
-        }
-
-
-    });
-
-    graph.onSelectedElementsUpdate(function(selectedElements) {
-        vm.selectedEntities = selectedElements['entities'];
-        vm.selectedEdges = selectedElements['edges'];
-    });
-
-    graph.onRelatedEntitiesUpdate(function(relatedEntities) {
-        vm.relatedEntities = relatedEntities;
-    });
-
-    graph.onRelatedEdgesUpdate(function(relatedEdges) {
-        vm.relatedEdges = relatedEdges;
-    });
-
-    // functions
-
-    vm.keyValuePairs = common.keyValuePairs;
-
-    vm.refreshNamedOperations = function() {
-        operationService.reloadNamedOperations(true).then(function(availableOps) {
-            vm.availableOperations = availableOps;
-        });
-    }
 
     vm.getSelectedOp = function() {
         return queryPage.getSelectedOperation();
     }
 
-    vm.onOperationSelect = function(op) {
-        queryPage.setSelectedOperation(op);
-    }
-
-    vm.onOperationDeselect = function(unused) {
-        if (vm.selectedOp.length === 0) {
-            queryPage.setSelectedOperation({});
-        }
-    }
-
-    vm.showOperations = function(operations) {
-        var newWindow = $window.open('about:blank', '', '_blank');
-        var prettyOps;
-        try {
-            prettyOps = JSON.stringify(JSON.parse(operations), null, 2);
-        } catch(e) {
-            prettyOps = operations;
-        }
-        newWindow.document.write("<pre>" + prettyOps + "</pre>");
-    }
-
-    vm.getFields = types.getFields;
-
-    vm.selectAllSeeds = function() {
-        graph.selectAllNodes();
-    }
-
-    vm.getEntityProperties = schema.getEntityProperties;
-    vm.getEdgeProperties = schema.getEdgeProperties;
-    vm.exists = common.arrayContainsValue;
-
-    vm.toggle = function(item, list) {
-        var idx = list.indexOf(item);
-        if(idx > -1) {
-            list.splice(idx, 1);
-        } else {
-            list.push(item);
-        }
-    }
-
-
-    vm.onSelectedPropertyChange = function(group, selectedElement) {
-        functions.getFunctions(group, selectedElement.property, function(data) {
-            selectedElement.availableFunctions = data;
-        });
-        selectedElement.predicate = '';
-    }
-
-    vm.onSelectedFunctionChange = function(group, selectedElement) {
-        functions.getFunctionParameters(selectedElement.predicate, function(data) {
-            selectedElement.availableFunctionParameters = data;
-        });
-
-        var gafferSchema = schema.get();
-
-        var elementDef = gafferSchema.entities[group];
-        if(!elementDef) {
-             elementDef = gafferSchema.edges[group];
-        }
-        var propertyClass = gafferSchema.types[elementDef.properties[selectedElement.property]].class;
-        if("java.lang.String" !== propertyClass
-            && "java.lang.Boolean" !== propertyClass
-            && "java.lang.Integer" !== propertyClass) {
-            selectedElement.propertyClass = propertyClass;
-        }
-
-        selectedElement.parameters = {};
-    }
-
-    vm.addFilterFunction = function(expandElementContent, element, isPreAggregation) {
-        if(!expandElementContent[element]) {
-            expandElementContent[element] = {};
-        }
-
-        if(!expandElementContent[element].filters) {
-            expandElementContent[element].filters = {};
-        }
-
-        if (isPreAggregation) {
-            if (!expandElementContent[element].filters.preAggregation) {
-                expandElementContent[element].filters.preAggregation = [];
-            }
-            expandElementContent[element].filters.preAggregation.push({});
-
-        } else {
-            if (!expandElementContent[element].filters.postAggregation) {
-                expandElementContent[element].filters.postAggregation = [];
-            }
-            expandElementContent[element].filters.postAggregation.push({});
-        }
-
-    }
-
-    vm.onInOutFlagChange = function() {
-        queryPage.setInOutFlag(vm.inOutFlag);
-    }
-
     vm.canExecute = function() {
-        return ((vm.selectedOp.length === 1) && !loading.isLoading());
+        return ((vm.getSelectedOp()) && !loading.isLoading());
     }
 
     vm.execute = function() {
@@ -234,7 +88,7 @@ function QueryController($scope, queryPage, operationService, types, graph, conf
     var createOpInput = function() {
         var opInput = [];
         var jsonVertex;
-        for(var vertex in vm.selectedEntities) {
+        for(var vertex in graph.getSelectedEntities()) {
             try {
                jsonVertex = JSON.parse(vertex);
             } catch(err) {
@@ -300,15 +154,7 @@ function QueryController($scope, queryPage, operationService, types, graph, conf
         }
 
         if (selectedOp.input) {
-           var jsonVertex;
-           for(var vertex in vm.selectedEntities) {
-               try {
-                  jsonVertex = JSON.parse(vertex);
-               } catch(err) {
-                  jsonVertex = vertex;
-               }
-               op.input = createOpInput();
-           }
+            op.input = createOpInput();
         }
 
         if (selectedOp.parameters) {
@@ -329,11 +175,11 @@ function QueryController($scope, queryPage, operationService, types, graph, conf
                 edges: {}
             };
 
-            for(var i in vm.expandEntities) {
-                var entity = vm.expandEntities[i];
+            for(var i in queryPage.expandEntities) {
+                var entity = queryPage.expandEntities[i];
                 op.view.entities[entity] = {};
 
-                var filterFunctions = convertFilterFunctions(vm.expandEntitiesContent[entity]);
+                var filterFunctions = convertFilterFunctions(queryPage.expandEntitiesContent[entity]);
                 if(filterFunctions.preAggregation.length > 0) {
                     op.view.entities[entity].preAggregationFilterFunctions = filterFunctions.preAggregation;
                 }
@@ -343,11 +189,11 @@ function QueryController($scope, queryPage, operationService, types, graph, conf
 
             }
 
-            for(var i in vm.expandEdges) {
-                var edge = vm.expandEdges[i];
+            for(var i in queryPage.expandEdges) {
+                var edge = queryPage.expandEdges[i];
                 op.view.edges[edge] = {};
 
-                var filterFunctions = convertFilterFunctions(vm.expandEdgesContent[edge]);
+                var filterFunctions = convertFilterFunctions(queryPage.expandEdgesContent[edge]);
                 if(filterFunctions.preAggregation.length > 0) {
                     op.view.edges[edge].preAggregationFilterFunctions = filterFunctions.preAggregation;
                 }
@@ -358,7 +204,7 @@ function QueryController($scope, queryPage, operationService, types, graph, conf
         }
 
         if (selectedOp.inOutFlag) {
-            op.includeIncomingOutGoing = vm.inOutFlag;
+            op.includeIncomingOutGoing = queryPage.getInOutFlag();
         }
 
         return op;

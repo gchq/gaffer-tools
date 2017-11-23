@@ -16,12 +16,12 @@
 
 'use strict'
 
-angular.module('app').component('seedBuilder', seedBuilder());
+angular.module('app').component('seedBuilderDialog', seedBuilder());
 
 function seedBuilder() {
 
     return {
-        templateUrl: 'app/seed-builder/seed-builder.html',
+        templateUrl: 'app/seed-builder/seed-builder-dialog.html',
         controller: SeedBuilderController,
         controllerAs: 'ctrl'
     };
@@ -34,13 +34,16 @@ function SeedBuilderController(schema, types, $mdDialog) {
     vm.seedVertexType = undefined;
     vm.seedVertices = '';
     vm.multipleSeeds = false;
+    vm.schemaTypes = {};
 
-    vm.getSchemaVertices = function() {
-        return schema.getSchemaVertices();
-    }
+    schema.get().then(function(gafferSchema) {
+        vm.schemaTypes = gafferSchema.types;
+    });
+
+    vm.getSchemaVertices = schema.getSchemaVertices;
 
     vm.getFields = function() {
-        var schemaType = schema.get().types[vm.seedVertexType];
+        var schemaType = vm.schemaTypes[vm.seedVertexType];
         if (!schemaType) {
             return types.getFields(undefined);
         }
@@ -48,7 +51,7 @@ function SeedBuilderController(schema, types, $mdDialog) {
     }
 
     vm.getCsvHeader = function() {
-        var schemaType = schema.get().types[vm.seedVertexType];
+        var schemaType = vm.schemaTypes[vm.seedVertexType];
         if (!schemaType) {
             return types.getCsvHeader(undefined);
         }
@@ -66,7 +69,7 @@ function SeedBuilderController(schema, types, $mdDialog) {
             for(var i in vertices) {
                 var vertex = vertices[i];
                 var vertexType = vm.seedVertexType;
-                var typeClass = schema.get().types[vertexType].class;
+                var typeClass = vm.schemaTypes[vertexType].class;
                 var partValues = vertex.trim().split(",");
                 var fields = types.getFields(typeClass);
                 if(fields.length != partValues.length) {
@@ -95,7 +98,7 @@ function SeedBuilderController(schema, types, $mdDialog) {
     }
 
     var createSeed = function(type, parts) {
-        var typeClass = schema.get().types[type].class;
+        var typeClass = vm.schemaTypes[type].class;
         var vertex = types.createJsonValue(typeClass, parts);
         return {vertexType: type, vertex: vertex};
     }

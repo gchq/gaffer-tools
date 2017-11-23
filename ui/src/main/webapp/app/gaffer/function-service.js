@@ -23,52 +23,61 @@ angular.module('app').factory('functions', ['$http', 'schema', 'config', 'common
 
     functions.getFunctions = function(group, property, onSuccess) {
         var type;
-        var schema = schemaService.get();
+        schemaService.get().then(function(schema) {
+            if(schema.entities[group]) {
+                type = schema.entities[group].properties[property];
+            } else if(schema.edges[group]) {
+               type = schema.edges[group].properties[property];
+            }
 
-        if(schema.entities[group]) {
-            type = schema.entities[group].properties[property];
-        } else if(schema.edges[group]) {
-           type = schema.edges[group].properties[property];
-        }
+            var className = "";
+            if(type) {
+              className = schema.types[type].class;
+            }
 
-        var className = "";
-        if(type) {
-          className = schema.types[type].class;
-        }
-
-        var queryUrl = common.parseUrl(config.get().restEndpoint + "/graph/config/filterFunctions/" + className);
-
-        $http.get(queryUrl)
-            .success(function(response) {
-                onSuccess(response)
-            })
-            .error(function(err) {
-                var errorString = 'Error loading functions for group: ' + group + ', property: ' + property + '.\n';
-                if (err && err !== "") {
-                    alert(errorString + err.simpleMessage);
-                    console.log(err);
-                } else {
-                    alert(errorString);
-                }
+            config.get().then(function(conf) {
+                var queryUrl = common.parseUrl(conf.restEndpoint + "/graph/config/filterFunctions/" + className);
+                $http.get(queryUrl)
+                    .success(function(response) {
+                        onSuccess(response)
+                    })
+                    .error(function(err) {
+                        var errorString = 'Error loading functions for group: ' + group + ', property: ' + property + '.\n';
+                        if (err && err !== "") {
+                            alert(errorString + err.simpleMessage);
+                            console.log(err);
+                        } else {
+                            alert(errorString);
+                        }
+                });
+            });
         });
+
+
+
+
+
     }
 
     functions.getFunctionParameters = function(functionClassName, onSuccess) {
-        var queryUrl = common.parseUrl(config.get().restEndpoint + "/graph/config/serialisedFields/" + functionClassName);
+        config.get().then(function(conf) {
+            var queryUrl = common.parseUrl(conf.restEndpoint + "/graph/config/serialisedFields/" + functionClassName);
 
-        $http.get(queryUrl)
-            .success(function(response) {
-                onSuccess(response)
-            })
-            .error(function(err) {
-                var errorString = 'Failed to get serialised fields for ' + functionClassName + '.\n';
-                if (err && err !== "") {
-                    alert(errorString + err.simpleMessage);
-                    console.log(err);
-                } else {
-                    alert(errorString);
-                }
-        });
+            $http.get(queryUrl)
+                .success(function(response) {
+                    onSuccess(response)
+                })
+                .error(function(err) {
+                    var errorString = 'Failed to get serialised fields for ' + functionClassName + '.\n';
+                    if (err && err !== "") {
+                        alert(errorString + err.simpleMessage);
+                        console.log(err);
+                    } else {
+                        alert(errorString);
+                    }
+            });
+
+        })
     }
 
     return functions;

@@ -34,15 +34,15 @@ function TableController($scope, results, schema, table, types) {
     vm.data = table.getData();
     vm.selectedTab = 0;
     vm.searchTerm = '';
-    vm.schema = schema.get();
+    vm.schema = {};
+
+    schema.get().then(function(gafferSchema) {
+        vm.schema = gafferSchema;
+    });
 
     results.observe().then(null, null, function(results) {
         table.update(results);
         vm.data = table.getData();
-    });
-
-    schema.observe().then(null, null, function(schema) {
-        vm.schema = schema;
     });
 
     vm.resolve = function(value) {

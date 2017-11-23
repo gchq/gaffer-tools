@@ -16,7 +16,7 @@
 
 'use strict'
 
-angular.module('app').factory('graph', ['schema', 'types', '$q', 'results', 'common', function(schema, types, $q, results, common) {
+angular.module('app').factory('graph', ['schema', 'types', '$q', 'results', 'common', function(schemaService, types, $q, results, common) {
 
     var graphCy;
     var graph = {};
@@ -115,38 +115,42 @@ angular.module('app').factory('graph', ['schema', 'types', '$q', 'results', 'com
 
     function updateRelatedEntities() {
         relatedEntities = [];
-        for(var id in selectedEntities) {
-            var vertexType = selectedEntities[id][0].vertexType;
-            for(var entityGroup in schema.get().entities) {
-                if(vertexType === "unknown") {
-                     relatedEntities.push(entityGroup);
-                     fire('onRelatedEntitiesUpdate', [relatedEntities]);
-                } else {
-                    var entity = schema.get().entities[entityGroup];
-                    if(entity.vertex === vertexType
-                        && relatedEntities.indexOf(entityGroup) === -1) {
-                        relatedEntities.push(entityGroup);
-                        fire('onRelatedEntitiesUpdate', [relatedEntities]);
+        schemaService.get().then(function(schema) {
+            for(var id in selectedEntities) {
+                var vertexType = selectedEntities[id][0].vertexType;
+                for(var entityGroup in schema.entities) {
+                    if(vertexType === "unknown") {
+                         relatedEntities.push(entityGroup);
+                    } else {
+                        var entity = schema.entities[entityGroup];
+                        if(entity.vertex === vertexType
+                            && relatedEntities.indexOf(entityGroup) === -1) {
+                            relatedEntities.push(entityGroup);
+                        }
                     }
                 }
             }
-        }
+            fire('onRelatedEntitiesUpdate', [relatedEntities]);
+
+        });
 
     }
 
     function updateRelatedEdges() {
-        graph.relatedEdges = [];
-        for(var id in selectedEntities) {
-            var vertexType = selectedEntities[id][0].vertexType;
-            for(var edgeGroup in schema.get().edges) {
-                var edge = schema.get().edges[edgeGroup];
-                if((edge.source === vertexType || edge.destination === vertexType)
-                    && relatedEdges.indexOf(edgeGroup) === -1) {
-                    relatedEdges.push(edgeGroup);
-                    fire('onRelatedEdgesUpdate', [relatedEdges]);
+        relatedEdges = [];
+        schemaService.get().then(function(schema) {
+            for(var id in selectedEntities) {
+                var vertexType = selectedEntities[id][0].vertexType;
+                for(var edgeGroup in schema.edges) {
+                    var edge = schema.edges[edgeGroup];
+                    if((edge.source === vertexType || edge.destination === vertexType)
+                        && relatedEdges.indexOf(edgeGroup) === -1) {
+                        relatedEdges.push(edgeGroup);
+                    }
                 }
             }
-        }
+            fire('onRelatedEdgesUpdate', [relatedEdges]);
+        });
     }
 
     function select(element) {
@@ -222,8 +226,9 @@ angular.module('app').factory('graph', ['schema', 'types', '$q', 'results', 'com
         fire('onSelectedElementsUpdate'[{"entities": selectedEntities, "edges": selectedEdges}]);
     }
 
-    graph.addSeed = function(vt, v) {
-        var entitySeed = { vertexType: vt, vertex: v };
+    graph.addSeed = function(seed) {
+        var v = JSON.stringify(seed.vertex);
+        var entitySeed = { vertexType: seed.vertexType, vertex: v };
         if(v in graphData.entitySeeds) {
             if(!common.arrayContainsObject(graphData.entitySeeds[v], entitySeed)) {
                 graphData.entitySeeds[v].push(entitySeed);
@@ -243,9 +248,9 @@ angular.module('app').factory('graph', ['schema', 'types', '$q', 'results', 'com
             var entity = common.clone(results.entities[i]);
             entity.vertex = common.parseVertex(entity.vertex);
             var id = entity.vertex;
-            entity.vertexType = schema.getVertexTypeFromEntityGroup(entity.group);
+            entity.vertexType = schemaService.getVertexTypeFromEntityGroup(entity.group);
             if(id in graphData.entities) {
-                if(!common.arrayContainsObjectWithValue(graphData.entities[id], 'group', entity.group)) {
+                if(!common.arrayContainsObject(graphData.entities[id], entity)) {
                     graphData.entities[id].push(entity);
                 }
             } else {
@@ -258,12 +263,12 @@ angular.module('app').factory('graph', ['schema', 'types', '$q', 'results', 'com
             edge.source = common.parseVertex(edge.source);
             edge.destination = common.parseVertex(edge.destination);
 
-            var vertexTypes = schema.getVertexTypesFromEdgeGroup(edge.group);
+            var vertexTypes = schemaService.getVertexTypesFromEdgeGroup(edge.group);
             edge.sourceType = vertexTypes[0];
             edge.destinationType = vertexTypes[1];
             var id = edge.source + "|" + edge.destination + "|" + edge.directed + "|" + edge.group;
             if(id in graphData.edges) {
-                if(!common.arrayContainsObjectWithValue(graphData.edges[id], 'group', edge.group)) {
+                if(!common.arrayContainsObject(graphData.edges[id], edge)) {
                     graphData.edges[id].push(edge);
                 }
             } else {
@@ -384,9 +389,9 @@ angular.module('app').factory('graph', ['schema', 'types', '$q', 'results', 'com
             isSelected = common.objectContainsValue(selectedEdges, id);
             if(existingEdges.length > 0) {
                 if(isSelected) {
-                   existingNodes.select();
+                   existingEdges.select();
                 } else {
-                   existingNodes.unselect();
+                   existingEdges.unselect();
                 }
             } else {
                 graphCy.add({

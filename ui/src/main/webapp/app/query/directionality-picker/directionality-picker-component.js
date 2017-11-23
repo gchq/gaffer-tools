@@ -14,16 +14,23 @@
  * limitations under the License.
  */
 
-'use strict'
+'use strict';
 
-angular.module('app').config(['$mdIconProvider', function($mdIconProvider) {
+angular.module('app').component('directionalityPicker', directionalityPicker());
 
-    $mdIconProvider
-        .icon('save', 'app/img/save.svg')
-        .icon('info', 'app/img/info.svg')
-        .icon('up-arrow', 'app/img/up-arrow.svg')
-        .icon('down-arrow', 'app/img/down-arrow.svg')
-        .icon('refresh', 'app/img/refresh.svg')
-        .icon('send', 'app/img/send.svg')
-        .icon('add', 'app/img/add.svg');
-}]);
+function directionalityPicker() {
+    return {
+        templateUrl: 'app/query/directionality-picker/directionality-picker.html',
+        controller: DirectionalityPickerController,
+        controllerAs: 'ctrl'
+    }
+}
+
+function DirectionalityPickerController(queryPage) {
+    var vm = this;
+    vm.inOutFlag = queryPage.getInOutFlag();
+
+    vm.onInOutFlagChange = function() {
+        queryPage.setInOutFlag(vm.inOutFlag);
+    }
+}

@@ -20,39 +20,43 @@ angular.module('app').factory('schema', ['$http', 'config', '$q', 'common', func
 
     var schemaService = {};
 
-    var defer = $q.defer();
-    var schema = {};
+    var schema;
     var schemaVertices = {};
 
 
-    schemaService.observe = function() {
-        return defer.promise;
-    }
-
     schemaService.get = function() {
-        return schema;
+        var defer = $q.defer();
+        if (schema) {
+            defer.resolve(schema);
+        } else {
+            load(defer);
+        }
+        return defer.promise;
     }
 
     schemaService.getSchemaVertices = function() {
         return schemaVertices;
     }
 
-    schemaService.load = function() {
-        var queryUrl = common.parseUrl(config.get().restEndpoint + "/graph/config/schema");
+    var load = function(defer) {
+        config.get().then(function(conf) {
+            var queryUrl = common.parseUrl(conf.restEndpoint + "/graph/config/schema");
 
-        $http.get(queryUrl)
-            .success(function(response){
-                schema = response;
-                updateSchemaVertices()
-                defer.notify(schema)
-            })
-            .error(function(err) {
-                if (err !== "") {
-                    alert("Unable to load schema: " + err.simpleMessage);
-                    console.log(err);
-                } else {
-                    alert("Unable to load schema. Received no response");
-                }
+            $http.get(queryUrl)
+                .success(function(response){
+                    schema = response;
+                    defer.resolve(schema)
+                    updateSchemaVertices()
+                })
+                .error(function(err) {
+                    defer.reject(err);
+                    if (err !== "") {
+                        alert("Unable to load schema: " + err.simpleMessage);
+                        console.log(err);
+                    } else {
+                        alert("Unable to load schema. Received no response");
+                    }
+            });
         });
     }
 

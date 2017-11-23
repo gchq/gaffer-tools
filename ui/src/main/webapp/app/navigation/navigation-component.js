@@ -48,14 +48,14 @@ function NavigationController($scope, $rootScope, $mdDialog, navigation, graph, 
     vm.addSeedPrompt = function(ev) {
         $mdDialog.show({
             preserveScope: true,
-            template: '<seed-builder aria-label="Seed Builder"></seed-builder>',
+            template: '<seed-builder-dialog aria-label="Seed Builder"></seed-builder-dialog>',
             parent: angular.element(document.body),
             targetEvent: ev,
             clickOutsideToClose: true
         })
         .then(function(seeds) {
             for(var i in seeds) {
-                graph.addSeed(seeds[i].vertexType, JSON.stringify(seeds[i].vertex));
+                graph.addSeed(seeds[i]);
             }
         })
         .catch(function(){}); // throw away possibly unhandled rejection errors
@@ -69,34 +69,41 @@ function NavigationController($scope, $rootScope, $mdDialog, navigation, graph, 
         graph.redraw();
     }
 
-
+    var recursivelyExecuteOperations = function(opIndex, ops) {
+        try {
+            query.execute(JSON.stringify({
+                class: "uk.gov.gchq.gaffer.operation.OperationChain",
+                operations: [ops[opIndex], operationService.createLimitOperation(), operationService.createDeduplicateOperation()]
+            }), function(data) {
+                results.update(data);
+                if((opIndex + 1) < ops.length) {
+                    recursivelyExecuteOperations(opIndex + 1, ops);
+                } else {
+                    loading.finish();
+                }
+            });
+        } catch(e) {
+            // Try without the limit and deduplicate operations
+            query.execute(JSON.stringify({
+                class: "uk.gov.gchq.gaffer.operation.OperationChain",
+                operations: [ops[opIndex]]
+            }), function(data) {
+                results.update(data);
+                if((opIndex + 1) < ops.length) {
+                    recursivelyExecuteOperations(opIndex + 1, ops);
+                } else {
+                    loading.finish();
+                }
+            });
+       }
+    }
     vm.executeAll = function() {
         results.clear();
         var ops = query.getOperations();
 
         if (ops.length > 0) {
             loading.load();
+            recursivelyExecuteOperations(0, ops);
         }
-
-        for(var i in ops) {
-            try {
-                query.execute(JSON.stringify({
-                    class: "uk.gov.gchq.gaffer.operation.OperationChain",
-                    operations: [ops[i], operationService.createLimitOperation(), operationService.createDeduplicateOperation()]
-                }), function(data) {
-                    results.update(data);
-                    loading.finish();
-                });
-            } catch(e) {
-                // Try without the limit and deduplicate operations
-                query.execute(JSON.stringify({
-                    class: "uk.gov.gchq.gaffer.operation.OperationChain",
-                    operations: [ops[i]]
-                }), function(data) {
-                    results.update(data);
-                    loading.finish();
-                });
-           }
-       }
     }
 }
