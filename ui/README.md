@@ -119,20 +119,18 @@ The following steps will take you through a simple exploration and summarisation
 localhost:8080/ui
 ```
 
-##### Add a seed as the starting point for your query:
-- click 'Add Seed'
-- vertex: ```region```
-- value: ```South West```
-- click 'Add'
+You will be taken directly to the query page. Here is where you can build your query.
 
 
 ##### Build and execute a query to find all locations within the South West region:
 - click on the 'Get Elements' row
-- click 'Select All' on the seeds card
-- select 'RegionContainsLocation' on the view card
-- click the button in the bottom right hand corner
+- in the "Add Seeds" section we will add a seed as the starting point for your query:
+  - Vertex Type: ```region```
+  - Value: ```South West```
+  - Click '+'  Don't forget this step!
+- in the "Configure View" section select 'RegionContainsLocation' to tell Gaffer you only want 'RegionContainsLocation' edges to be returned. If you didn't select any groups then you would just get all groups returned.
+- click the execute query button in the bottom right hand corner
 
-The South West vertex will still be selected - click on an empty part of the graph to deselect it.
 Move the graph around by clicking and dragging the cursor.
 Scroll to zoom in/out.
 
@@ -140,8 +138,9 @@ Scroll to zoom in/out.
 - click on the 'Bristol, City of' vertex
 - navigate to the 'query' page
 - click on the 'Get Elements' row
+- in the 'Add Seeds' section you can see the 'Bristol, City of' vertex is selected. We do not need to add anymore seeds this time.
 - select 'LocationContainsRoad' on the view card
-- click the button in the bottom right hand corner
+- click the execute button in the bottom right hand corner
 
 
 #### Build and execute a query to find all junctions on the M32:
@@ -149,7 +148,7 @@ Scroll to zoom in/out.
 - navigate to the 'query' page
 - click on the 'Get Elements' row
 - select 'RoadHasJunction' on the view card
-- click the button in the bottom right hand corner
+- click the execute button in the bottom right hand corner
 
 
 #### Build and execute a query to find the road use between junctions M32:1 and M32:M4 between 6AM and 7AM on 5/3/2005:
@@ -174,7 +173,7 @@ function: uk.gov.gchq.koryphe.impl.predicate.IsLessThan
 orEqualTo: true
 value: {"java.util.Date": 1115107200000}
 ```
-- click the button in the bottom right hand corner
+- click the execute button in the bottom right hand corner
 
 If you find the 'RoadUse' edge in the graph and click on it, you will see the following information in the pop-up:
 
@@ -221,7 +220,7 @@ function: uk.gov.gchq.koryphe.impl.predicate.IsLessThan
 orEqualTo: true
 value: {"java.util.Date": 1115110800000}
 ```
-- click the button in the bottom right hand corner
+- click the execute button in the bottom right hand corner
 
 Now if you click on the 'RoadUse' edge, or visit the 'Edges' Table view, you'll see that two 'RoadUse' summaries are displayed:
 
