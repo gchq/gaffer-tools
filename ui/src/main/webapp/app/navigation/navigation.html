@@ -17,7 +17,11 @@
 <md-nav-bar aria-label="navigation bar" md-selected-nav-item="ctrl.currentPage" ng-cloak>
     <div layout="row" layout-align="space-around center" layout-fill>
 
-        <h1 class="md-headline title">Gaffer UI</h1>
+        <div layout="row" layout-align="space-around center">
+            <md-icon md-svg-icon="logo" class="logo"></md-icon>
+            <h1 class="md-headline title">Gaffer UI</h1>
+        </div>
+
 
         <div layout="row">
             <md-nav-item name="query" id="open-query" md-nav-click="ctrl.goTo('query')">Query</md-nav-item>
