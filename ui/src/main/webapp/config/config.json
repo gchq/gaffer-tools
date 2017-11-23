@@ -1,5 +1,4 @@
 {
-  "title": "Road Traffic",
   "operations": {
     "defaultAvailable": [
       {
@@ -129,6 +128,5 @@
       ],
       "custom": true
     }
-
   }
 }
