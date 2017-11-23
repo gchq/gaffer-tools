@@ -16,19 +16,14 @@
 
 'use strict'
 
-angular.module('app').factory('query', ['$http', 'config', '$q', 'common', function($http, config, $q, common) {
+angular.module('app').factory('query', ['$http', 'config', 'events', 'common', function($http, config, events, common) {
 
     var query = {};
-    var defer = $q.defer();
 
     var operations = [];
 
     query.getOperations = function() {
         return operations;
-    }
-
-    query.observeOperations = function() {
-        return defer.promise;
     }
 
     query.execute = function(operationChain, onSuccess, onFailure) {
@@ -61,12 +56,12 @@ angular.module('app').factory('query', ['$http', 'config', '$q', 'common', funct
 
     query.addOperation = function(operation) {
         operations.push(operation);
-        defer.notify(operations);
+        events.broadcast('operationsUpdated', [operations])
     }
 
     query.setOperations = function(ops) {
         operations = ops;
-        defer.notify(operations);
+        events.broadcast('operationsUpdated', [operations]);
     }
 
 

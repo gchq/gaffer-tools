@@ -27,7 +27,7 @@ function settingsView() {
     }
 }
 
-function SettingsController($scope, settings, schema, operationService, results) {
+function SettingsController(settings, schema, operationService, results) {
 
     var vm = this;
 

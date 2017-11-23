@@ -14,18 +14,12 @@
  * limitations under the License.
  */
 
-'use strict'
+'use strict';
 
-angular.module('app').factory('results', ['$q', function($q) {
+angular.module('app').factory('results', ['events', function(events) {
 
     var resultService = {};
     var results = {entities: [], edges: [], entitySeeds: [], other: []};
-
-    var defer = $q.defer();
-
-    resultService.observe = function() {
-        return defer.promise;
-    }
 
     resultService.get = function() {
         return results;
@@ -69,7 +63,7 @@ angular.module('app').factory('results', ['$q', function($q) {
                     results.other.push(result);
                 }
             }
-            defer.notify(results);
+            events.broadcast('resultsUpdated', [results]);
         }
     }
 

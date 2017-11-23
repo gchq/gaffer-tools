@@ -65,18 +65,18 @@ angular.module('app').factory('operationService', ['$http', '$q', 'settings', 'c
                                     results[i].parameters[j].parts = {};
                                 }
                             }
-                            availableOperations.push({
-                                class: namedOpClass,
-                                name: results[i].operationName,
-                                parameters: results[i].parameters,
-                                description: results[i].description,
-                                operations: results[i].operations,
-                                view: false,
-                                input: true,
-                                namedOp: true,
-                                inOutFlag: false
-                            });
                         }
+                        availableOperations.push({
+                            class: namedOpClass,
+                            name: results[i].operationName,
+                            parameters: results[i].parameters,
+                            description: results[i].description,
+                            operations: results[i].operations,
+                            view: false,
+                            input: true,
+                            namedOp: true,
+                            inOutFlag: false
+                        });
                     }
                 }
 
@@ -138,8 +138,6 @@ angular.module('app').factory('operationService', ['$http', '$q', 'settings', 'c
             });
         })
     }
-
-
 
     operationService.createLimitOperation = function() {
         return {

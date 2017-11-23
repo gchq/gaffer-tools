@@ -25,8 +25,7 @@ function navBar() {
     };
 }
 
-function NavigationController($scope, $rootScope, $mdDialog, navigation, graph, operationService, results, query, config, loading, properties) {
-
+function NavigationController($rootScope, $mdDialog, navigation, graph, operationService, results, query, config, loading, events, properties) {
     var vm = this;
     vm.addMultipleSeeds = false;
     vm.appTitle;
@@ -61,9 +60,9 @@ function NavigationController($scope, $rootScope, $mdDialog, navigation, graph, 
 
     vm.currentPage = navigation.getCurrentPage();
 
-    navigation.observeCurrentPage().then(null, null, function(newCurrentPage) {
+    events.subscribe('routeChange', function(newCurrentPage) {
         vm.currentPage = newCurrentPage
-    })
+    });
 
     vm.goTo = navigation.goTo;
 
