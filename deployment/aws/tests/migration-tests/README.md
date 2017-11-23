@@ -16,7 +16,7 @@ limitations under the License.
 
 # Gaffer Migration Testing on AWS
 
-This test ensures that data ingested into a Gaffer instance can still accessed after the underlying store has been upgraded to a new version of Gaffer. It also checks that the instance continues to return the same query results as before the upgrade.
+This test ensures that data ingested into a Gaffer instance can still be accessed after the underlying store has been upgraded to a new version of Gaffer. It also checks that the instance continues to return the same query results as before the upgrade.
 
 The migration test is run by deploying a CloudFormation template on AWS, which:
 
