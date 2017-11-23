@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-'use strict'
+'use strict';
 
 angular.module('app').component('resultCountWarning', resultCountWarning());
 
@@ -27,7 +27,6 @@ function resultCountWarning() {
     }
 
 }
-
 
 function ResultCountWarningController($mdDialog, settings) {
     var vm = this;

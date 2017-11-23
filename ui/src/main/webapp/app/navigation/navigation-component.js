@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+'use strict';
 
 angular.module('app').component('navBar', navBar());
 
@@ -52,10 +53,6 @@ function NavigationController($rootScope, $mdDialog, navigation, graph, operatio
         function(err) {
             vm.appTitle = defaultTitle;
         });
-
-
-
-
     })
 
     vm.currentPage = navigation.getCurrentPage();

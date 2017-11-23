@@ -54,7 +54,4 @@ angular.module('app').factory('properties', ['config', '$q', 'common', '$http', 
     }
 
     return service;
-
-
-
-}])
+}]);
