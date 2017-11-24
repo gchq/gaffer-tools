@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-'use strict'
+'use strict';
 
 angular.module('app').factory('config', ['$http', '$q', function($http, $q) {
 

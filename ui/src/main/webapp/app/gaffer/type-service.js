@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-'use strict'
+'use strict';
 
 angular.module('app').factory('types', ['config', function(config) {
 
@@ -73,8 +73,6 @@ angular.module('app').factory('types', ['config', function(config) {
         return unknownType.fields;
     }
 
-
-
     var unknownType =
     {
         fields: [
@@ -92,7 +90,6 @@ angular.module('app').factory('types', ['config', function(config) {
         }
         return unknownType;
     }
-
 
     service.createValue = function(typeClass, parts) {
         if (getType(typeClass).wrapInJson && Object.keys(parts)[0] !== 'undefined' || Object.keys(parts).length > 1) {

@@ -110,6 +110,5 @@ angular.module('app').factory('table', ['common', 'events', 'types', function(co
 
     }
 
-
     return table;
 }]);

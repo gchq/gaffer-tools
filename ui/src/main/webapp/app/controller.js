@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-'use strict'
+'use strict';
 
 angular.module('app').controller('MainCtrl', ['graph', 'operationService', 'queryPage', function(graph, operationService, queryPage) {
 
