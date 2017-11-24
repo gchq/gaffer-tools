@@ -41,12 +41,13 @@ function OperationSelectorController(operationService, operationSelectorService,
         }
     }
 
-    if (!operationSelectorService.namedOperationsAlreadyLoaded()) {
-        operationService.reloadNamedOperations().then(populateTable);
-        operationSelectorService.namedOperationsLoaded();
-    } else {
-        operationService.getAvailableOperations().then(populateTable);
-    }
+    operationSelectorService.shouldLoadNamedOperationsOnStartup().then(function(yes) {
+        if (yes) {
+            operationService.reloadNamedOperations().then(populateTable);
+        } else {
+            operationService.getAvailableOperations().then(populateTable);
+        }
+    });
 
     vm.onOperationSelect = function(op) {
         queryPage.setSelectedOperation(op);
