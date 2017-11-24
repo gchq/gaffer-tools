@@ -16,6 +16,19 @@
 
 'use strict';
 
-angular.module('app').controller('MainCtrl', ['graph', function(graph) {
-    graph.load();
-}]);
+angular.module('app').factory('operationSelectorService', [function() {
+    var service = {};
+
+    var namedOperationsLoaded = false;
+
+
+    service.namedOperationsLoaded = function() {
+        namedOperationsLoaded = true;
+    }
+
+    service.namedOperationsAlreadyLoaded = function() {
+        return namedOperationsLoaded;
+    }
+
+    return service;
+}])

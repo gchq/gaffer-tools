@@ -27,18 +27,12 @@ angular.module('app').factory('queryPage', ['$q', function($q) {
     service.expandEntitiesContent = {};
     service.expandEdgesContent = {};
 
-    var defer = $q.defer();
-
     service.getSelectedOperation = function() {
         return selectedOperation;
     }
 
     service.setSelectedOperation = function(op) {
         selectedOperation = op;
-    }
-
-    service.waitUntilReady = function() {
-        return defer.promise;
     }
 
     service.getInOutFlag = function() {
@@ -48,11 +42,6 @@ angular.module('app').factory('queryPage', ['$q', function($q) {
     service.setInOutFlag = function(flag) {
         inOutFlag = flag;
     }
-
-    service.initialise = function() {
-        defer.resolve();
-    }
-
 
     service.reset = function() {
         service.expandEntities = [];
