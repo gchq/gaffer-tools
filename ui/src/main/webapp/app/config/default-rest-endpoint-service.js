@@ -16,14 +16,14 @@
 
 'use strict';
 
-angular.module('app').factory('defaultRestEndpointProvider', [function() {
+angular.module('app').factory('defaultRestEndpoint', [function() {
 
     var service = {}
 
-    var defaultRestUrl = window.location.origin + "/rest/latest";
+    var defaultRestEndpoint = window.location.origin + "/rest/latest";
 
     service.get = function() {
-        return defaultRestUrl;
+        return defaultRestEndpoint;
     }
 
     return service;
