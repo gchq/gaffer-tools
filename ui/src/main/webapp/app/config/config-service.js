@@ -16,10 +16,9 @@
 
 'use strict'
 
-angular.module('app').factory('config', ['$http', '$q', function($http, $q) {
+angular.module('app').factory('config', ['$http', '$q', 'defaultRestEndpointProvider', function($http, $q, defaultRestEndpointProvider) {
 
     var configService = {};
-    var defaultRestEndpoint = window.location.origin + "/rest/latest";
 
     var config;
 
@@ -42,7 +41,7 @@ angular.module('app').factory('config', ['$http', '$q', function($http, $q) {
         $http.get('config/config.json')
             .success(function(response) {
                 if (!response.restEndpoint) {
-                    response.restEndpoint = defaultRestEndpoint;
+                    response.restEndpoint = defaultRestEndpointProvider.get();
                 }
                 config = response;
                 defer.resolve(config);
