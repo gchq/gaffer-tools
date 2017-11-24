@@ -1,0 +1,50 @@
+<md-card layout-fill>
+    <div layout="column">
+        <md-card-header>
+            <md-card-header-text>
+                <span class="md-title">Selected Seeds</span>
+            </md-card-header-text>
+        </md-card-header>
+        <md-card-content class="layout-margin scrollable">
+            <div>
+                <div ng-repeat="(vertex, entities) in ctrl.selectedEntities">
+                    <h3>{{ctrl.resolveVertex(vertex)}}</h3>
+
+                    <p ng-show="!entities.length || !entities[0].group">No entities</p>
+                    <table md-table
+                           ng-show="entities.length && entities[0].group">
+                        <tbody md-body>
+                        <tr md-row ng-repeat="entity in entities">
+                            <td md-cell>
+                                {{entity.group}}
+                            </td>
+                            <td md-cell>
+                                <p ng-repeat="(key, value) in entity.properties">
+                                    {{key}}: {{ctrl.resolve(value)}}
+                                </p>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div ng-repeat="(id, edges) in ctrl.selectedEdges">
+                    <h3>{{ctrl.resolveVertex(edges[0].source)}} to {{ctrl.resolveVertex(edges[0].destination)}}</h3>
+                    <table md-table>
+                        <tbody md-body>
+                        <tr md-row ng-repeat="edge in edges">
+                            <td md-cell>
+                                {{edge.group}}
+                            </td>
+                            <td md-cell>
+                                <p ng-repeat="(key, value) in edge.properties">
+                                    {{key}}: {{ctrl.resolve(value)}}
+                                </p>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </md-card-content>
+    </div>
+</md-card>

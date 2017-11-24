@@ -49,3 +49,7 @@ md-nav-bar > div > nav {
     height: 30px;
     width: 30px;
 }
+
+.scrollable {
+    overflow-y: auto;
+}
