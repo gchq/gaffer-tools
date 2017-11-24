@@ -16,17 +16,17 @@
 
 'use strict';
 
-angular.module('app').component('selectedSeeds', selectedSeeds());
+angular.module('app').component('selectedElements', selectedElements());
 
-function selectedSeeds() {
+function selectedElements() {
     return {
-        templateUrl: 'app/graph/selected-seeds/selected-seeds.html',
-        controller: SelectedSeedsController,
+        templateUrl: 'app/graph/selected-elements/selected-elements.html',
+        controller: SelectedElementsController,
         controllerAs: 'ctrl'
     }
 }
 
-function SelectedSeedsController($scope, $timeout, events, graph, types, schema) {
+function SelectedElementsController($scope, $timeout, events, graph, types, schema) {
     var vm = this;
 
     vm.selectedEdges = graph.getSelectedEdges();
