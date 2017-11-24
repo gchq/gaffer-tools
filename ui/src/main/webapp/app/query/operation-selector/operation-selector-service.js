@@ -25,10 +25,10 @@ angular.module('app').factory('operationSelectorService', ['config', '$q', funct
         var defer = $q.defer();
         if (firstLoad) {
             config.get().then(function(conf) {
-                if (conf.operations.loadOnStartup) {
-                    defer.resolve(true);
-                } else {
+                if (conf.operations.loadOnStartup === false) {
                     defer.resolve(false);
+                } else {
+                    defer.resolve(true);
                 }
             })
             firstLoad = false;
