@@ -1,4 +1,5 @@
 {
+  "title": "Example title",
   "operations": {
     "defaultAvailable": [
       {
@@ -124,6 +125,5 @@
       ],
       "wrapInJson": true
     }
-
   }
 }

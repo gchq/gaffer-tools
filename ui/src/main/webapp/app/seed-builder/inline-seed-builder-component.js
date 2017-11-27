@@ -39,7 +39,6 @@ function InlineSeedBuilderController(schema, types, graph) {
         vm.schemaTypes = gafferSchema.types;
     });
 
-
     vm.getSchemaVertices = schema.getSchemaVertices
 
     vm.inputExists = function() {

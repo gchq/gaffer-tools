@@ -57,7 +57,6 @@ function ViewBuilderController(queryPage, graph, common, schema, functions, even
         }
     }
 
-
     vm.onSelectedPropertyChange = function(group, selectedElement) {
         functions.getFunctions(group, selectedElement.property, function(data) {
             selectedElement.availableFunctions = data;
@@ -107,7 +106,6 @@ function ViewBuilderController(queryPage, graph, common, schema, functions, even
             }
             expandElementContent[element].filters.postAggregation.push({});
         }
-
     }
 
 }
