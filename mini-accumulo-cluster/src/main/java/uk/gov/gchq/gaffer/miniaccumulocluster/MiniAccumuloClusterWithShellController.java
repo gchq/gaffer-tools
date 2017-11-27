@@ -16,9 +16,9 @@
 
 package uk.gov.gchq.gaffer.miniaccumulocluster;
 
-import org.apache.accumulo.core.util.shell.Shell;
 import org.apache.accumulo.minicluster.MiniAccumuloCluster;
 import org.apache.accumulo.minicluster.MiniAccumuloConfig;
+import org.apache.accumulo.shell.Shell;
 import org.apache.commons.io.FileUtils;
 
 import java.io.File;
