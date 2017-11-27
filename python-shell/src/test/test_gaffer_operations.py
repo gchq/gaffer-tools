@@ -4295,6 +4295,104 @@ class GafferOperationsTest(unittest.TestCase):
                 num_splits=5,
                 proportion_to_sample=0.1
             )
+        ],
+        [
+            '''
+            {
+                "class": "uk.gov.gchq.gaffer.operation.OperationChain",
+                "operations": [
+                    {
+                        "jobId": "job1",
+                        "class": "uk.gov.gchq.gaffer.operation.impl.job.GetJobResults"
+                    },
+                    {
+                        "edges": {
+                            "edge2": {}
+                        },
+                        "entities": {
+                            "entity1": {
+                                "elementAggregator": {
+                                    "operators": [
+                                        {
+                                            "selection": [
+                                                "prop"
+                                            ],
+                                            "binaryOperator": {
+                                                "class": "exampleBinaryOperator"
+                                            }
+                                        }
+                                    ]
+                                }
+                            },
+                            "entity2": {
+                                "elementAggregator": {
+                                    "operators": [
+                                        {
+                                            "selection": [
+                                                "prop"
+                                            ],
+                                            "binaryOperator": {
+                                                "class": "exampleBinaryOperator"
+                                            }
+                                        }
+                                    ]
+                                },
+                                "groupBy": [
+                                    "timestamp"
+                                ]
+                            }
+                        },
+                        "class": "uk.gov.gchq.gaffer.operation.impl.function.Aggregate"
+                    }
+                ]
+            }
+            ''',
+            g.OperationChain(
+                operations=[
+                    g.GetJobResults(
+                        job_id="job1"
+                    ),
+                    g.Aggregate(
+                        entities=[
+                            g.AggregatePair(
+                                group="entity1",
+                                element_aggregator=g.ElementAggregateDefinition(
+                                    operators=[
+                                        g.BinaryOperatorContext(
+                                            selection=["prop"],
+                                            binary_operator=g.BinaryOperator(
+                                                class_name="exampleBinaryOperator"
+                                            )
+                                        )
+                                    ]
+                                )
+                            ),
+                            g.AggregatePair(
+                                group="entity2",
+                                group_by=[
+                                    "timestamp"
+                                ],
+                                element_aggregator=g.ElementAggregateDefinition(
+                                    operators=[
+                                        g.BinaryOperatorContext(
+                                            selection=["prop"],
+                                            binary_operator=g.BinaryOperator(
+                                                class_name="exampleBinaryOperator"
+                                            )
+                                        )
+                                    ]
+                                )
+                            )
+                        ],
+                        edges=[
+                            g.AggregatePair(
+                                group="edge2",
+                                element_aggregator=None
+                            )
+                        ]
+                    )
+                ]
+            )
         ]
     ]
 

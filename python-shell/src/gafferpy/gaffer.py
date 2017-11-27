@@ -576,7 +576,7 @@ class AggregatePair(ToJson, ToCodeString):
         if group_by is not None and not isinstance(group_by, list):
             group_by = [group_by]
         self.group_by = group_by
-        if not isinstance(element_aggregator, ElementAggregateDefinition):
+        if element_aggregator is not None and not isinstance(element_aggregator, ElementAggregateDefinition):
             element_aggregator = ElementAggregateDefinition(
                 operators=element_aggregator['operators'])
         self.element_aggregator = element_aggregator
