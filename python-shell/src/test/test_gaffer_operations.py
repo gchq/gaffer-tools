@@ -2389,50 +2389,50 @@ class GafferOperationsTest(unittest.TestCase):
                 operation_name="2-hop"
             )
         ],
-               [
-                   '''
-                   {
-                     "class" : "uk.gov.gchq.gaffer.named.operation.AddNamedOperation",
-                     "operationName" : "2-hop-with-score",
-                     "description" : "2 hop query",
-                     "readAccessRoles" : [ "read-user" ],
-                     "writeAccessRoles" : [ "write-user" ],
-                     "overwriteFlag" : true,
-                     "score" : 3,
-                     "operationChain" : {
-                       "operations" : [ {
-                         "class" : "uk.gov.gchq.gaffer.operation.impl.get.GetAdjacentIds",
-                         "includeIncomingOutGoing" : "OUTGOING"
-                       }, {
-                         "class" : "uk.gov.gchq.gaffer.operation.impl.get.GetAdjacentIds",
-                         "includeIncomingOutGoing" : "OUTGOING"
-                       } ]
-                     }
-                   }
-                   ''',
-                   g.AddNamedOperation(
-                       operation_chain=g.OperationChainDAO(
-                           operations=[
-                               g.GetAdjacentIds(
-                                   include_incoming_out_going="OUTGOING"
-                               ),
-                               g.GetAdjacentIds(
-                                   include_incoming_out_going="OUTGOING"
-                               )
-                           ]
-                       ),
-                       overwrite_flag=True,
-                       write_access_roles=[
-                           "write-user"
-                       ],
-                       description="2 hop query",
-                       read_access_roles=[
-                           "read-user"
-                       ],
-                       score=3,
-                       operation_name="2-hop-with-score"
-                   )
-               ],
+        [
+            '''
+            {
+              "class" : "uk.gov.gchq.gaffer.named.operation.AddNamedOperation",
+              "operationName" : "2-hop-with-score",
+              "description" : "2 hop query",
+              "readAccessRoles" : [ "read-user" ],
+              "writeAccessRoles" : [ "write-user" ],
+              "overwriteFlag" : true,
+              "score" : 3,
+              "operationChain" : {
+                "operations" : [ {
+                  "class" : "uk.gov.gchq.gaffer.operation.impl.get.GetAdjacentIds",
+                  "includeIncomingOutGoing" : "OUTGOING"
+                }, {
+                  "class" : "uk.gov.gchq.gaffer.operation.impl.get.GetAdjacentIds",
+                  "includeIncomingOutGoing" : "OUTGOING"
+                } ]
+              }
+            }
+            ''',
+            g.AddNamedOperation(
+                operation_chain=g.OperationChainDAO(
+                    operations=[
+                        g.GetAdjacentIds(
+                            include_incoming_out_going="OUTGOING"
+                        ),
+                        g.GetAdjacentIds(
+                            include_incoming_out_going="OUTGOING"
+                        )
+                    ]
+                ),
+                overwrite_flag=True,
+                write_access_roles=[
+                    "write-user"
+                ],
+                description="2 hop query",
+                read_access_roles=[
+                    "read-user"
+                ],
+                score=3,
+                operation_name="2-hop-with-score"
+            )
+        ],
         [
             '''
             {
@@ -4123,6 +4123,112 @@ class GafferOperationsTest(unittest.TestCase):
         [
             '''
             {
+                "class": "uk.gov.gchq.gaffer.operation.OperationChain",
+                "operations": [{
+                    "class": "uk.gov.gchq.gaffer.operation.impl.GetWalks",
+                    "operations": [{
+                            "class": "uk.gov.gchq.gaffer.operation.impl.get.GetElements",
+                            "view": {
+                                "edges": {
+                                    "JunctionLocatedAt": {}
+                                },
+                                "entities": {}
+                            }
+                        },
+                        {
+                            "class": "uk.gov.gchq.gaffer.operation.impl.get.GetElements",
+                            "view": {
+                                "edges": {
+                                    "RoadUse": {}
+                                },
+                                "entities": {}
+                            }
+                        }
+                    ],
+                    "resultsLimit": 10000,
+                    "input": [{
+                        "class": "uk.gov.gchq.gaffer.operation.data.EntitySeed",
+                        "vertex": 293020
+            
+                    }]
+                }, {
+                    "class": "uk.gov.gchq.gaffer.operation.impl.Map",
+                    "function": {
+                        "class": "uk.gov.gchq.koryphe.impl.function.IterableFunction",
+                        "delegateFunction": {
+                            "class": "uk.gov.gchq.koryphe.impl.function.FirstItem"
+                        }
+                    }
+                }, {
+                    "class": "uk.gov.gchq.gaffer.operation.impl.Map",
+                    "function": {
+                        "class": "uk.gov.gchq.koryphe.impl.function.IterableFunction",
+                        "delegateFunction": {
+                            "class": "uk.gov.gchq.koryphe.impl.function.FirstItem"
+                        }
+                    }
+                }, {
+                    "class": "uk.gov.gchq.gaffer.operation.impl.output.ToVertices",
+                    "useMatchedVertex": "EQUAL",
+                    "edgeVertices": "SOURCE"
+                }, {
+                    "class": "uk.gov.gchq.gaffer.operation.impl.output.ToSet"
+                }]
+            }
+            ''',
+            g.OperationChain(
+                operations=[
+                    g.GetWalks(
+                        results_limit=10000,
+                        input=[
+                            g.EntitySeed(
+                                vertex=293020
+                            )
+                        ],
+                        operations=[
+                            g.GetElements(
+                                view=g.View(
+                                    edges=[
+                                        g.ElementDefinition(
+                                            group="JunctionLocatedAt"
+                                        )
+                                    ],
+                                    entities=[]
+                                )
+                            ),
+                            g.GetElements(
+                                view=g.View(
+                                    edges=[
+                                        g.ElementDefinition(
+                                            group="RoadUse"
+                                        )
+                                    ],
+                                    entities=[]
+                                )
+                            )
+                        ]
+                    ),
+                    g.Map(
+                        function=g.IterableFunction(
+                            delegate_function=g.FirstItem()
+                        )
+                    ),
+                    g.Map(
+                        function=g.IterableFunction(
+                            delegate_function=g.FirstItem()
+                        )
+                    ),
+                    g.ToVertices(
+                        use_matched_vertex="EQUAL",
+                        edge_vertices="SOURCE"
+                    ),
+                    g.ToSet()
+                ]
+            )
+        ],
+        [
+            '''
+            {
                 "class": "uk.gov.gchq.gaffer.operation.impl.SplitStoreFromFile",
                 "inputPath": "path/to/file"
             }
@@ -4188,6 +4294,104 @@ class GafferOperationsTest(unittest.TestCase):
                 ],
                 num_splits=5,
                 proportion_to_sample=0.1
+            )
+        ],
+        [
+            '''
+            {
+                "class": "uk.gov.gchq.gaffer.operation.OperationChain",
+                "operations": [
+                    {
+                        "jobId": "job1",
+                        "class": "uk.gov.gchq.gaffer.operation.impl.job.GetJobResults"
+                    },
+                    {
+                        "edges": {
+                            "edge2": {}
+                        },
+                        "entities": {
+                            "entity1": {
+                                "elementAggregator": {
+                                    "operators": [
+                                        {
+                                            "selection": [
+                                                "prop"
+                                            ],
+                                            "binaryOperator": {
+                                                "class": "exampleBinaryOperator"
+                                            }
+                                        }
+                                    ]
+                                }
+                            },
+                            "entity2": {
+                                "elementAggregator": {
+                                    "operators": [
+                                        {
+                                            "selection": [
+                                                "prop"
+                                            ],
+                                            "binaryOperator": {
+                                                "class": "exampleBinaryOperator"
+                                            }
+                                        }
+                                    ]
+                                },
+                                "groupBy": [
+                                    "timestamp"
+                                ]
+                            }
+                        },
+                        "class": "uk.gov.gchq.gaffer.operation.impl.function.Aggregate"
+                    }
+                ]
+            }
+            ''',
+            g.OperationChain(
+                operations=[
+                    g.GetJobResults(
+                        job_id="job1"
+                    ),
+                    g.Aggregate(
+                        entities=[
+                            g.AggregatePair(
+                                group="entity1",
+                                element_aggregator=g.ElementAggregateDefinition(
+                                    operators=[
+                                        g.BinaryOperatorContext(
+                                            selection=["prop"],
+                                            binary_operator=g.BinaryOperator(
+                                                class_name="exampleBinaryOperator"
+                                            )
+                                        )
+                                    ]
+                                )
+                            ),
+                            g.AggregatePair(
+                                group="entity2",
+                                group_by=[
+                                    "timestamp"
+                                ],
+                                element_aggregator=g.ElementAggregateDefinition(
+                                    operators=[
+                                        g.BinaryOperatorContext(
+                                            selection=["prop"],
+                                            binary_operator=g.BinaryOperator(
+                                                class_name="exampleBinaryOperator"
+                                            )
+                                        )
+                                    ]
+                                )
+                            )
+                        ],
+                        edges=[
+                            g.AggregatePair(
+                                group="edge2",
+                                element_aggregator=None
+                            )
+                        ]
+                    )
+                ]
             )
         ]
     ]

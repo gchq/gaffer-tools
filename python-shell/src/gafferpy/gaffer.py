@@ -576,7 +576,7 @@ class AggregatePair(ToJson, ToCodeString):
         if group_by is not None and not isinstance(group_by, list):
             group_by = [group_by]
         self.group_by = group_by
-        if not isinstance(element_aggregator, ElementAggregateDefinition):
+        if element_aggregator is not None and not isinstance(element_aggregator, ElementAggregateDefinition):
             element_aggregator = ElementAggregateDefinition(
                 operators=element_aggregator['operators'])
         self.element_aggregator = element_aggregator
@@ -1252,6 +1252,120 @@ class Function(ToJson, ToCodeString):
 
         return function_json
 
+class ExtractKeys(Function):
+    CLASS = 'uk.gov.gchq.koryphe.impl.function.ExtractKeys'
+
+    def __init__(self):
+        super().__init__(class_name=self.CLASS)
+
+    def to_json(self):
+        function = super().to_json()
+
+        return function
+
+
+class ExtractValues(Function):
+    CLASS = 'uk.gov.gchq.koryphe.impl.function.ExtractValues'
+
+    def __init__(self):
+        super().__init__(class_name=self.CLASS)
+
+    def to_json(self):
+        function = super().to_json()
+
+        return function
+
+class IsEmpty(Function):
+    CLASS = 'uk.gov.gchq.koryphe.impl.function.IsEmpty'
+
+    def __init__(self):
+        super().__init__(class_name=self.CLASS)
+
+    def to_json(self):
+        function = super().to_json()
+
+        return function
+
+class Size(Function):
+    CLASS = 'uk.gov.gchq.koryphe.impl.function.Size'
+
+    def __init__(self):
+        super().__init__(class_name=self.CLASS)
+
+    def to_json(self):
+        function = super().to_json()
+
+        return function
+
+class FirstItem(Function):
+    CLASS = 'uk.gov.gchq.koryphe.impl.function.FirstItem'
+
+    def __init__(self):
+        super().__init__(class_name=self.CLASS)
+
+    def to_json(self):
+        function = super().to_json()
+
+        return function
+
+class NthItem(Function):
+    CLASS = 'uk.gov.gchq.koryphe.impl.function.NthItem'
+
+    def __init__(self, selection):
+        super().__init__(class_name=self.CLASS)
+
+        self.selection = selection
+
+    def to_json(self):
+        function = super().to_json()
+
+        if self.selection is not None:
+            function['selection'] = self.selection
+
+        return function
+
+class LastItem(Function):
+    CLASS = 'uk.gov.gchq.koryphe.impl.function.LastItem'
+
+    def __init__(self):
+        super().__init__(class_name=self.CLASS)
+
+    def to_json(self):
+        function = super().to_json()
+
+        return function
+
+
+class IterableConcat(Function):
+    CLASS = 'uk.gov.gchq.koryphe.impl.function.IterableConcat'
+
+    def __init__(self):
+        super().__init__(class_name=self.CLASS)
+
+    def to_json(self):
+        function = super().to_json()
+
+        return function
+
+class IterableFunction(Function):
+    CLASS = 'uk.gov.gchq.koryphe.impl.function.IterableFunction'
+
+    def __init__(self, delegate_function):
+        super().__init__(class_name=self.CLASS)
+
+        if delegate_function is None:
+            raise TypeError('No function provided')
+        elif not isinstance(delegate_function, Function):
+            self.delegate_function = JsonConverter.from_json(delegate_function)
+        else:
+            self.delegate_function = delegate_function
+
+    def to_json(self):
+        function = super().to_json()
+
+        function['delegateFunction'] = self.delegate_function.to_json()
+
+        return function
 
 class BinaryOperatorContext(ToJson, ToCodeString):
     CLASS = "gaffer.AggregatorContext"
@@ -2942,6 +3056,31 @@ class GetWalks(Operation):
 
         return operation
 
+class Map(Operation):
+    CLASS = 'uk.gov.gchq.gaffer.operation.impl.Map'
+
+    def __init__(self,
+                 function,
+                 input=None,
+                 options=None):
+        super().__init__(_class_name=self.CLASS,
+                         options=options)
+
+        self.input = input
+        if not isinstance(function, Function):
+            self.function = JsonConverter.from_json(function)
+        else:
+            self.function = function
+
+    def to_json(self):
+        operation = super().to_json()
+        if self.input is not None:
+            operation['input'] = self.input
+
+        if self.function is not None:
+            operation['function'] = self.function.to_json()
+
+        return operation
 
 class GetGraph:
     def get_url(self):
