@@ -71,6 +71,41 @@
                     </webResources>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>com.github.searls</groupId>
+                <artifactId>jasmine-maven-plugin</artifactId>
+                <version>2.0</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>test</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <jsSrcDir>src/main/webapp/app</jsSrcDir>
+                    <sourceIncludes>
+                        <include>**/*.js</include>
+                        <include>*.js</include>
+                    </sourceIncludes>
+                    <jsTestSrcDir>src/test/webapp/app</jsTestSrcDir>
+                    <specIncludes>
+                        <include>*-spec.js</include>
+                    </specIncludes>
+                    <preloadSources>
+                        <source>dependencies/lib/angular/js/angular.min.js</source>
+                        <source>dependencies/lib/angular/js/angular-aria.min.js</source>
+                        <source>dependencies/lib/angular/js/angular-animate.min.js</source>
+                        <source>dependencies/lib/angular/js/angular-material.min.js</source>
+                        <source>dependencies/lib/angular/js/angular-route.min.js</source>
+                        <source>dependencies/lib/angular/js/angular-mocks.min.js</source>
+                        <source>dependencies/lib/cytoscape/js/cytoscape.min.js</source>
+                        <source>dependencies/lib/jquery/js/jquery.min.js</source>
+                        <source>dependencies/lib/md-data-table/js/md-data-table.min.js</source>
+                    </preloadSources>
+
+                </configuration>
+            </plugin>
         </plugins>
     </build>
 
