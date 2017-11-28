@@ -9,6 +9,6 @@ describe('MainCtrl', function() {
     }));
 
     it('shouldExist', function() {
-        expect(true).toBe(true);
+        expect(controller).toBeDefined();
     })
 });

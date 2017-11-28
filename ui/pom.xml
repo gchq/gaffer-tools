@@ -77,31 +77,33 @@
                 <version>2.0</version>
                 <executions>
                     <execution>
+                        <phase>integration-test</phase>
                         <goals>
                             <goal>test</goal>
                         </goals>
                     </execution>
                 </executions>
                 <configuration>
-                    <jsSrcDir>src/main/webapp/app</jsSrcDir>
+                    <jsSrcDir>${project.build.directory}/${project.build.finalName}/app</jsSrcDir>
                     <sourceIncludes>
                         <include>**/*.js</include>
                         <include>*.js</include>
                     </sourceIncludes>
                     <jsTestSrcDir>src/test/webapp/app</jsTestSrcDir>
                     <specIncludes>
+                        <include>**/*-spec.js</include>
                         <include>*-spec.js</include>
                     </specIncludes>
                     <preloadSources>
-                        <source>dependencies/lib/angular/js/angular.min.js</source>
-                        <source>dependencies/lib/angular/js/angular-aria.min.js</source>
-                        <source>dependencies/lib/angular/js/angular-animate.min.js</source>
-                        <source>dependencies/lib/angular/js/angular-material.min.js</source>
-                        <source>dependencies/lib/angular/js/angular-route.min.js</source>
-                        <source>dependencies/lib/angular/js/angular-mocks.min.js</source>
-                        <source>dependencies/lib/cytoscape/js/cytoscape.min.js</source>
-                        <source>dependencies/lib/jquery/js/jquery.min.js</source>
-                        <source>dependencies/lib/md-data-table/js/md-data-table.min.js</source>
+                        <source>${project.build.directory}/${project.build.finalName}/lib/angular/js/angular.min.js</source>
+                        <source>${project.build.directory}/${project.build.finalName}/lib/angular/js/angular-aria.min.js</source>
+                        <source>${project.build.directory}/${project.build.finalName}/lib/angular/js/angular-animate.min.js</source>
+                        <source>${project.build.directory}/${project.build.finalName}/lib/angular/js/angular-material.min.js</source>
+                        <source>${project.build.directory}/${project.build.finalName}/lib/angular/js/angular-route.min.js</source>
+                        <source>${project.build.directory}/${project.build.finalName}/lib/angular/js/angular-mocks.min.js</source>
+                        <source>${project.build.directory}/${project.build.finalName}/lib/cytoscape/js/cytoscape.min.js</source>
+                        <source>${project.build.directory}/${project.build.finalName}/lib/jquery/js/jquery.min.js</source>
+                        <source>${project.build.directory}/${project.build.finalName}/lib/md-data-table/js/md-data-table.min.js</source>
                     </preloadSources>
 
                 </configuration>
