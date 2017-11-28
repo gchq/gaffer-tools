@@ -576,7 +576,7 @@ class AggregatePair(ToJson, ToCodeString):
         if group_by is not None and not isinstance(group_by, list):
             group_by = [group_by]
         self.group_by = group_by
-        if not isinstance(element_aggregator, ElementAggregateDefinition):
+        if element_aggregator is not None and not isinstance(element_aggregator, ElementAggregateDefinition):
             element_aggregator = ElementAggregateDefinition(
                 operators=element_aggregator['operators'])
         self.element_aggregator = element_aggregator
@@ -615,14 +615,14 @@ class ElementFilterDefinition(ToJson, ToCodeString):
                  predicates=None):
         super().__init__()
         self.group = group
-        self.filter_functions = JsonConverter.from_json(
+        self.predicates = JsonConverter.from_json(
             predicates, PredicateContext)
 
     def to_json(self):
         element_def = {}
-        if self.filter_functions is not None:
+        if self.predicates is not None:
             funcs = []
-            for func in self.filter_functions:
+            for func in self.predicates:
                 funcs.append(func.to_json())
             element_def['predicates'] = funcs
         return element_def
@@ -633,14 +633,14 @@ class GlobalElementFilterDefinition(ToJson, ToCodeString):
 
     def __init__(self, predicates=None):
         super().__init__()
-        self.filter_functions = JsonConverter.from_json(
+        self.predicates = JsonConverter.from_json(
             predicates, PredicateContext)
 
     def to_json(self):
         element_def = {}
-        if self.filter_functions is not None:
+        if self.predicates is not None:
             funcs = []
-            for func in self.filter_functions:
+            for func in self.predicates:
                 funcs.append(func.to_json())
             element_def['predicates'] = funcs
         return element_def
