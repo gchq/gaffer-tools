@@ -50,6 +50,6 @@ md-nav-bar > div > nav {
     width: 30px;
 }
 
-.scrollable {
-    overflow-y: auto;
+.transparent {
+    background-color: transparent;
 }
