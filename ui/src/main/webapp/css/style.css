@@ -49,3 +49,7 @@ md-nav-bar > div > nav {
     height: 30px;
     width: 30px;
 }
+
+.transparent {
+    background-color: transparent;
+}
