@@ -52,6 +52,10 @@ Selenium (org.seleniumhq.selenium:selenium-server:3.4.0)
 - Apache License, Version 2.0
 
 
+Jasmine Maven Plugin (com.github.searls:jasmine-maven-plugin:2.0)
+
+- Apache License, Version 2.0
+
 ----------------------------------------------------------------------
 
 The UI contains the following javascript dependencies
@@ -67,6 +71,10 @@ JQuery (jquery-1.8.0.min.js)
 
 
 Angular (angular.min.js)
+
+- MIT License
+
+Angular Mocks (angular-mock.min.js)
 
 - MIT License
 
