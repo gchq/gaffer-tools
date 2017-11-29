@@ -1,6 +1,6 @@
 {
   "operations": {
-    "loadOnStartup": true,
+    "loadNamedOperationsOnStartup": true,
     "defaultAvailable": [
       {
         "name": "Get Elements",
