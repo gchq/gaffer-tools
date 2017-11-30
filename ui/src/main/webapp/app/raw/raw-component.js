@@ -35,6 +35,8 @@ function RawController(operationService, results, query, $mdToast, events) {
     vm.operations = query.getOperations();
     vm.results = results.get();
 
+    var currentTab
+
     events.subscribe('operationsUpdated', function(operations) {
         vm.operations = operations
     })
@@ -42,6 +44,14 @@ function RawController(operationService, results, query, $mdToast, events) {
     events.subscribe('resultsUpdated', function(results) {
         vm.results = results
     })
+
+    vm.setCurrentTab = function(tab) {
+        currentTab = tab;
+    }
+
+    vm.isEditingOperations = function() {
+        return vm.editingOperations && currentTab === 'query'
+    }
 
     vm.editOperations = function() {
         vm.operationsForEdit = []
