@@ -26,7 +26,7 @@ function viewBuilder() {
     }
 }
 
-function ViewBuilderController(queryPage, graph, common, schema, functions) {
+function ViewBuilderController(queryPage, graph, common, schema, functions, events) {
     var vm = this;
 
     vm.relatedEntities = graph.getRelatedEntities();
@@ -36,11 +36,11 @@ function ViewBuilderController(queryPage, graph, common, schema, functions) {
     vm.expandEdgesContent = queryPage.expandEdgesContent;
     vm.expandEntitiesContent = queryPage.expandEntitiesContent;
 
-    graph.onRelatedEntitiesUpdate(function(relatedEntities) {
+    events.subscribe('relatedEntitiesUpdate', function(relatedEntities) {
         vm.relatedEntities = relatedEntities;
     });
 
-    graph.onRelatedEdgesUpdate(function(relatedEdges) {
+    events.subscribe('relatedEdgesUpdate', function(relatedEdges) {
         vm.relatedEdges = relatedEdges;
     });
 
@@ -56,7 +56,6 @@ function ViewBuilderController(queryPage, graph, common, schema, functions) {
             list.push(item);
         }
     }
-
 
     vm.onSelectedPropertyChange = function(group, selectedElement) {
         functions.getFunctions(group, selectedElement.property, function(data) {
@@ -107,7 +106,6 @@ function ViewBuilderController(queryPage, graph, common, schema, functions) {
             }
             expandElementContent[element].filters.postAggregation.push({});
         }
-
     }
 
 }

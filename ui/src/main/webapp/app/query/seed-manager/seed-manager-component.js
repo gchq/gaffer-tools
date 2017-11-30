@@ -26,13 +26,13 @@ function seedManager() {
     }
 }
 
-function SeedManagerController(graph, queryPage, common, types) {
+function SeedManagerController(graph, queryPage, common, types, events) {
     var vm = this;
 
     vm.selectedEntities = graph.getSelectedEntities();
     vm.seedsMessage = "";
 
-    graph.onSelectedElementsUpdate(function(selectedElements) {
+    events.subscribe('selectedElementsUpdate', function(selectedElements) {
         vm.selectedEntities = selectedElements['entities'];
         recalculateSeedsMessage();
     });
@@ -60,6 +60,4 @@ function SeedManagerController(graph, queryPage, common, types) {
     }
 
     recalculateSeedsMessage();
-
-
 }

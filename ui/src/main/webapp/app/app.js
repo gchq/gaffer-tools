@@ -14,4 +14,6 @@
  * limitations under the License.
  */
 
+ 'use strict';
+
 angular.module('app', ['ngMaterial', 'ngRoute', 'md.data.table']);

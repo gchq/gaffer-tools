@@ -16,7 +16,7 @@
 
 'use strict'
 
-angular.module('app').factory('table', ['common', function(common) {
+angular.module('app').factory('table', ['common', 'events', 'types', function(common, events, types) {
     var table = {};
 
     var tableData = {entities: {}, edges: {}, entitySeeds: [], other: []};
@@ -25,8 +25,41 @@ angular.module('app').factory('table', ['common', function(common) {
         return tableData;
     }
 
+    var parseEntity = function(entity) {
+        var summarised = {};
+
+        summarised.vertex = types.getShortValue(entity.vertex);
+        summarised.group = entity.group;
+        summarised.properties = parseElementProperties(entity.properties);
+
+        return summarised;
+    }
+
+    var parseElementProperties = function(properties) {
+        var summarisedProperties = {};
+
+        var props = Object.keys(properties);
+        for (var i in props) {
+            summarisedProperties[props[i]] = types.getShortValue(properties[props[i]]);
+        }
+
+        return summarisedProperties;
+    }
+
+    var parseEdge = function(edge) {
+        var summarised = {};
+        summarised.source = types.getShortValue(edge.source);
+        summarised.destination = types.getShortValue(edge.destination);
+        summarised.group = edge.group;
+        summarised.directed = edge.directed;
+        summarised.properties = parseElementProperties(edge.properties);
+
+        return summarised;
+
+    }
+
     table.update = function(results) {
-        tableData = {entities: {}, edges: {}, entitySeeds: [], other: []};
+        tableData = { entities: {}, edges: {}, entitySeeds: [], other: [] };
         for (var i in results.entities) {
             var entity = results.entities[i];
             if(!tableData.entities[entity.group]) {
@@ -66,17 +99,16 @@ angular.module('app').factory('table', ['common', function(common) {
     var convertElements = function() {
         for (var i in tableData.entities) {
             for (var a in tableData.entities[i]) {
-                tableData.entities[i][a] = JSON.parse(tableData.entities[i][a]);
+                tableData.entities[i][a] = parseEntity(JSON.parse(tableData.entities[i][a]));
             }
         }
         for (var i in tableData.edges) {
             for (var a in tableData.edges[i]) {
-                tableData.edges[i][a] = JSON.parse(tableData.edges[i][a]);
+                tableData.edges[i][a] = parseEdge(JSON.parse(tableData.edges[i][a]));
             }
         }
 
     }
-
 
     return table;
 }]);

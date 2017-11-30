@@ -16,29 +16,16 @@
 
 'use strict';
 
-angular.module('app').component('settingsView', settingsView())
+angular.module('app').factory('defaultRestEndpoint', [function() {
 
-function settingsView() {
+    var service = {}
 
-    return {
-        templateUrl: 'app/settings/settings.html',
-        controller: SettingsController,
-        controllerAs: 'ctrl'
-    }
-}
+    var defaultRestEndpoint = window.location.origin + "/rest/latest";
 
-function SettingsController(settings, schema, operationService, results) {
-
-    var vm = this;
-
-    vm.resultLimit = settings.getResultLimit()
-    vm.defaultOp = settings.getDefaultOp();
-
-    vm.updateResultLimit = function() {
-        settings.setResultLimit(vm.resultLimit);
+    service.get = function() {
+        return defaultRestEndpoint;
     }
 
-    vm.updateDefaultOp = function() {
-        settings.setDefaultOp(vm.defaultOp);
-    }
-}
+    return service;
+
+}]);

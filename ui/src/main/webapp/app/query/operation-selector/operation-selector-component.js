@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-'use strict'
+'use strict';
 
 angular.module('app').component('operationSelector', operationSelector());
 
@@ -32,7 +32,6 @@ function OperationSelectorController(operationService, queryPage, $window) {
     vm.availableOperations;
     vm.selectedOp = [];
     vm.searchTerm = '';
-
 
     queryPage.waitUntilReady().then(function() {
         vm.availableOperations = operationService.getAvailableOperations();

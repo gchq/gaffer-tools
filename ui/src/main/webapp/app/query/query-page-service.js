@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-'use strict'
+'use strict';
 
 angular.module('app').factory('queryPage', ['$q', function($q) {
     var service = {}
@@ -26,8 +26,6 @@ angular.module('app').factory('queryPage', ['$q', function($q) {
     service.expandEdges = [];
     service.expandEntitiesContent = {};
     service.expandEdgesContent = {};
-
-
 
     var defer = $q.defer();
 

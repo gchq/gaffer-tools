@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-'use strict'
+'use strict';
 
 angular.module('app').factory('schema', ['$http', 'config', '$q', 'common', function($http, config, $q, common) {
 
@@ -22,7 +22,6 @@ angular.module('app').factory('schema', ['$http', 'config', '$q', 'common', func
 
     var schema;
     var schemaVertices = {};
-
 
     schemaService.get = function() {
         var defer = $q.defer();
@@ -111,6 +110,8 @@ angular.module('app').factory('schema', ['$http', 'config', '$q', 'common', func
             }
         }
     }
+
+    schemaService.get();
 
 
     return schemaService;

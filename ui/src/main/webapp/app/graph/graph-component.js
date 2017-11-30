@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-'use strict'
+'use strict';
 
 angular.module('app').component('graphView', graphView());
 
@@ -28,7 +28,7 @@ function graphView() {
 }
 
 
-function GraphController($scope, graph, results, $timeout, types, schema) {
+function GraphController($scope, graph, results, $timeout, types, schema, events) {
 
     var vm = this;
 
@@ -42,7 +42,7 @@ function GraphController($scope, graph, results, $timeout, types, schema) {
         vm.schema = schema;
     });
 
-    graph.onSelectedElementsUpdate(function(selectedElements) {
+    events.subscribe('selectedElementsUpdate', function(selectedElements) {
         vm.selectedEdges = selectedElements.edges;
         vm.selectedEntities = selectedElements.entities;
 
