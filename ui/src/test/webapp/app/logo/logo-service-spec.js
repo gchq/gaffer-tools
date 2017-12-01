@@ -1,0 +1,102 @@
+describe('The Logo Service', function() {
+
+    var logoService;
+
+    var rest = 'http://localhost:8080/rest/latest';
+    var imagePath = 'images/logo.png';
+
+    var propertiesGetFunction;
+    var configGetFunction;
+
+    beforeEach(module('app'));
+
+    beforeEach(module(function($provide) {
+        $provide.factory('config', function($q) {
+            configGetFunction = jasmine.createSpy('get').and.callFake(function() {
+                return $q.when({
+                    restEndpoint: rest
+                });
+            })
+
+            return {
+                get: configGetFunction
+            }
+        });
+
+        $provide.factory('properties', function($q) {
+            propertiesGetFunction = jasmine.createSpy('get').and.callFake(function() {
+                if (!imagePath) {
+                    return $q.when({});
+                } else {
+                    return $q.when({
+                        'gaffer.properties.app.logo.src': imagePath
+                    });
+                }
+            });
+
+            return {
+                get: propertiesGetFunction
+            }
+        });
+    }));
+
+    beforeEach(inject(function(_logo_) {
+        logoService = _logo_;
+    }));
+
+    it('should exist', function() {
+        expect(logoService).toBeDefined();
+    });
+
+    it('should retrieve the url of the logo', function() {
+        rest = 'http://localhost:8080/rest/latest';
+        imagePath = 'images/logo.png';
+
+        logoService.get().then(function(src) {
+            expect(src).toEqual('http://localhost:8080/rest/images/logo.png');
+        });
+    });
+
+    it('should return null in the promise when the property is not set', function() {
+        rest = 'http://localhost:8080/rest/latest';
+        imagePath = null;
+
+        logoService.get().then(function(src) {
+            expect(src).toBeNull();
+        })
+    });
+
+    it('should strip out last route param with trailing slash', function() {
+        rest = 'http://localhost:8080/rest/latest/';
+        imagePath = 'images/logo.png';
+
+        logoService.get().then(function(src) {
+            expect(src).toEqual('http://localhost:8080/rest/images/logo.png')
+        });
+    });
+
+    it('should not remove leading slashes from image path', function() {
+        rest = 'http://localhost:8080/rest/latest/';
+        imagePath = '/images/logo.png';
+
+        logoService.get().then(function(src) {
+            expect(src).toEqual('http://localhost:8080/rest//images/logo.png')
+        });
+    });
+
+    it('should only query the config and properties once when called twice', function() {
+        rest = 'http://localhost:8080/rest/latest';
+        imagePath = 'images/logo.png';
+
+        logoService.get().then(function(firstSrc) {
+            logoService.get().then(function(secondSrc) {
+                expect(firstSrc).toEqual(secondSrc);
+                expect(secondSrc).toEqual('http://localhost:8080/rest/images/logo.png');
+                expect(configGetFunction).toBeCalledTimes(1);
+                expect(propertiesGetFunction).toBeCalledTimes(1);
+            });
+        });
+
+    });
+
+});
