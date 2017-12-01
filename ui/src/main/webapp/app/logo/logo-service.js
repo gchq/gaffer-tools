@@ -40,7 +40,7 @@ angular.module('app').factory('logo', ['properties', '$q', 'config', function(pr
                 } else {
                     var srcPrefix = conf.restEndpoint.replace('\/$', ''); // remove trailing slash
                     srcPrefix = srcPrefix.substring(0, srcPrefix.lastIndexOf('/'));
-                    logo = srcPrefix + props['gaffer.properties.app.logo.src'];
+                    logo = srcPrefix + '/' + props['gaffer.properties.app.logo.src'];
                     defer.resolve(logo);
                 }
             });
