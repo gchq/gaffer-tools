@@ -16,14 +16,32 @@
 
 'use strict';
 
-angular.module('app').config(['$mdIconProvider', function($mdIconProvider) {
+angular.module('app').component('logo', logoImage());
 
-    $mdIconProvider
-        .icon('save', 'app/img/save.svg')
-        .icon('info', 'app/img/info.svg')
-        .icon('up-arrow', 'app/img/up-arrow.svg')
-        .icon('down-arrow', 'app/img/down-arrow.svg')
-        .icon('refresh', 'app/img/refresh.svg')
-        .icon('send', 'app/img/send.svg')
-        .icon('add', 'app/img/add.svg');
-}]);
+function logoImage() {
+    return {
+        templateUrl: 'app/logo/logo.html',
+        controller: LogoController,
+        controllerAs: 'ctrl'
+    }
+}
+
+function LogoController(logo) {
+    var vm = this;
+
+    vm.src;
+    var show;
+
+    vm.show = function () {
+        return show;
+    }
+
+    logo.get().then(function(src) {
+        if (!src) {
+            show = false;
+        } else {
+            vm.src = src;
+            show = true;
+        }
+    });
+}
