@@ -47,7 +47,7 @@ function OperationSelectorController(operationService, queryPage, $window) {
 
     vm.onOperationDeselect = function(unused) {
         if (vm.selectedOp.length === 0) {
-            queryPage.setSelectedOperation({});
+            queryPage.setSelectedOperation(undefined);
         }
     }
     vm.showOperations = function(operations) {
