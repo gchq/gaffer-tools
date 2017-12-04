@@ -35,7 +35,7 @@ describe('The graph component', function() {
 
             var ctrl = $componentController('graph');
             done();
-            expect(graph.load).toHaveBeenCalled();
+            expect(graph.load).toHaveBeenCalledTimes(1);
         });
     });
 });

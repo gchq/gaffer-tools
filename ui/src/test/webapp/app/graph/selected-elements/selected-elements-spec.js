@@ -63,8 +63,8 @@ describe('The Selected Elements Component', function() {
 
         it('should expose empty array when no elements are selected on startup', function() {
             var ctrl = $componentController('selectedElements');
-            expect(watchedFunctions['getSelectedEntities'].calls.count()).toEqual(1);
-            expect(watchedFunctions['getSelectedEdges'].calls.count()).toEqual(1);
+            expect(watchedFunctions['getSelectedEntities']).toHaveBeenCalledTimes(1);
+            expect(watchedFunctions['getSelectedEdges']).toHaveBeenCalledTimes(1);
             expect(ctrl.selectedEntities).toEqual([]);
             expect(ctrl.selectedEdges).toEqual([]);
         });
@@ -107,8 +107,8 @@ describe('The Selected Elements Component', function() {
             ]
 
             var ctrl = $componentController('selectedElements');
-            expect(watchedFunctions['getSelectedEntities'].calls.count()).toEqual(1);
-            expect(watchedFunctions['getSelectedEdges'].calls.count()).toEqual(1);
+            expect(watchedFunctions['getSelectedEntities']).toHaveBeenCalledTimes(1);
+            expect(watchedFunctions['getSelectedEdges']).toHaveBeenCalledTimes(1);
             expect(ctrl.selectedEntities).toEqual(testSelectedEntities);
             expect(ctrl.selectedEdges).toEqual(testSelectedEdges);
 
