@@ -8,7 +8,7 @@ describe('MainCtrl', function() {
         controller = $controller('MainCtrl', {'graph': graph, 'queryPage': queryPage, 'operationService': operationService});
     }));
 
-    it('shouldExist', function() {
+    it('should exist', function() {
         expect(controller).toBeDefined();
     })
 });

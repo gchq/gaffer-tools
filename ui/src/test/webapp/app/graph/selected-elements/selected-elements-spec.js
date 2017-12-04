@@ -38,7 +38,7 @@ describe('The Selected Elements Component', function() {
         element = $compile(element)(scope);
     }));
 
-    it('Exists', function() {
+    it('should exist', function() {
         expect(element).toBeDefined();
     });
 
