@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-'use strict'
+'use strict';
 
 angular.module('app').factory('functions', ['$http', 'schema', 'config', 'common', function($http, schemaService, config, common) {
 
@@ -52,10 +52,6 @@ angular.module('app').factory('functions', ['$http', 'schema', 'config', 'common
                 });
             });
         });
-
-
-
-
 
     }
 

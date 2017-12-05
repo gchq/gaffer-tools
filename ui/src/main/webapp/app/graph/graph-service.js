@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-'use strict'
+'use strict';
 
 angular.module('app').factory('graph', ['schema', 'types', '$q', 'results', 'common', 'events', function(schemaService, types, $q, results, common, events) {
 

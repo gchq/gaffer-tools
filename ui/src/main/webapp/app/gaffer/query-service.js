@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-'use strict'
+'use strict';
 
 angular.module('app').factory('query', ['$http', 'config', 'events', 'common', function($http, config, events, common) {
 
@@ -63,8 +63,6 @@ angular.module('app').factory('query', ['$http', 'config', 'events', 'common', f
         operations = ops;
         events.broadcast('operationsUpdated', [operations]);
     }
-
-
 
     return query;
 }]);

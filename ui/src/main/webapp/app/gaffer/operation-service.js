@@ -14,18 +14,32 @@
  * limitations under the License.
  */
 
-'use strict'
+'use strict';
 
 angular.module('app').factory('operationService', ['$http', '$q', 'settings', 'config', 'query', 'types', 'common', function($http, $q, settings, config, query, types, common) {
 
     var operationService = {};
 
-    var availableOperations = [];
+    var availableOperations;
     var namedOpClass = "uk.gov.gchq.gaffer.named.operation.NamedOperation";
     var defer = $q.defer();
 
     operationService.getAvailableOperations = function() {
-        return availableOperations;
+        var defer = $q.defer();
+        if (availableOperations) {
+            defer.resolve(availableOperations);
+        } else {
+            config.get().then(function(conf) {
+                if (conf.operations) {
+                    availableOperations = conf.operations.defaultAvailable;
+                    defer.resolve(availableOperations);
+                } else {
+                    defer.reject([]);
+                }
+            });
+
+        }
+        return defer.promise;
     }
 
     var opAllowed = function(opName, configuredOperations) {
@@ -83,9 +97,6 @@ angular.module('app').factory('operationService', ['$http', '$q', 'settings', 'c
             }
             defer.resolve(availableOperations);
         });
-
-
-
     }
 
     operationService.reloadNamedOperations = function(loud) {

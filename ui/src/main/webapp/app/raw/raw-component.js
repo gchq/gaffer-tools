@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-'use strict'
+'use strict';
 
 angular.module('app').component('raw', raw())
 
@@ -30,13 +30,12 @@ function raw() {
 function RawController(operationService, results, query, $mdToast, events) {
     var vm = this
 
-    // variables
-    vm.operationsForEdit = []
-    vm.editingOperations = false
-    vm.operations = query.getOperations()
-    vm.results = results.get()
+    vm.operationsForEdit = [];
+    vm.editingOperations = false;
+    vm.operations = query.getOperations();
+    vm.results = results.get();
 
-    // watches
+    var currentTab
 
     events.subscribe('operationsUpdated', function(operations) {
         vm.operations = operations
@@ -46,7 +45,13 @@ function RawController(operationService, results, query, $mdToast, events) {
         vm.results = results
     })
 
-    // functions
+    vm.setCurrentTab = function(tab) {
+        currentTab = tab;
+    }
+
+    vm.isEditingOperations = function() {
+        return vm.editingOperations && currentTab === 'query'
+    }
 
     vm.editOperations = function() {
         vm.operationsForEdit = []

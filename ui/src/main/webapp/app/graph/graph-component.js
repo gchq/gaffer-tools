@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-'use strict'
+'use strict';
 
-angular.module('app').component('graphView', graphView());
+angular.module('app').component('graph', graphView());
 
 function graphView() {
 
@@ -28,44 +28,12 @@ function graphView() {
 }
 
 
-function GraphController($scope, graph, results, $timeout, types, schema, events) {
-
-    var vm = this;
-
-    vm.selectedEdges = graph.getSelectedEdges();
-    vm.selectedEntities = graph.getSelectedEntities();
-    vm.schema;
-
-    var promise = null;
-
-    schema.get().then(function(schema) {
-        vm.schema = schema;
-    });
-
-    events.subscribe('selectedElementsUpdate', function(selectedElements) {
-        vm.selectedEdges = selectedElements.edges;
-        vm.selectedEntities = selectedElements.entities;
-
-        if(!promise) {
-            promise = $timeout(function() {
-                $scope.$apply();
-                promise = null;
-            })
-        }
-    });
+function GraphController(graph, $timeout) {
   
     $timeout(function(evt) {
         graph.load().then(function(cy) {
             graph.reload();
         })
     });
-
-    vm.resolve = function(value) {
-        return types.getShortValue(value);
-    }
-
-    vm.resolveVertex = function(value) {
-        return types.getShortValue(JSON.parse(value));
-    }
 
 }

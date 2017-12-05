@@ -16,23 +16,28 @@
 
 'use strict';
 
-angular.module('app').factory('loading', function() {
-
+angular.module('app').factory('operationSelectorService', ['config', '$q', function(config, $q) {
     var service = {};
-    var loading = false;
 
-    service.load = function() {
-        loading = true;
-    }
+    var firstLoad = true;
 
-    service.finish = function() {
-        loading = false;
-    }
+    service.shouldLoadNamedOperationsOnStartup = function() {
+        var defer = $q.defer();
+        if (firstLoad) {
+            config.get().then(function(conf) {
+                if (conf.operations.loadNamedOperationsOnStartup === false) {
+                    defer.resolve(false);
+                } else {
+                    defer.resolve(true);
+                }
+            })
+            firstLoad = false;
+        } else {
+            defer.resolve(false);
+        }
 
-    service.isLoading = function() {
-        return loading;
+        return defer.promise;
     }
 
     return service;
-
-});
+}]);

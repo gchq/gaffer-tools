@@ -60,6 +60,4 @@ function SeedManagerController(graph, queryPage, common, types, events) {
     }
 
     recalculateSeedsMessage();
-
-
 }

@@ -14,12 +14,11 @@
  * limitations under the License.
  */
 
-'use strict'
+'use strict';
 
-angular.module('app').factory('config', ['$http', '$q', function($http, $q) {
+angular.module('app').factory('config', ['$http', '$q', 'defaultRestEndpoint', function($http, $q, defaultRestEndpoint) {
 
     var configService = {};
-    var defaultRestEndpoint = window.location.origin + "/rest/latest";
 
     var config;
 
@@ -42,7 +41,7 @@ angular.module('app').factory('config', ['$http', '$q', function($http, $q) {
         $http.get('config/config.json')
             .success(function(response) {
                 if (!response.restEndpoint) {
-                    response.restEndpoint = defaultRestEndpoint;
+                    response.restEndpoint = defaultRestEndpoint.get();
                 }
                 config = response;
                 defer.resolve(config);

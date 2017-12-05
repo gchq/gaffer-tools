@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-'use strict'
+'use strict';
 
 angular.module('app').component('query', query());
 
@@ -131,7 +131,6 @@ function QueryController(queryPage, operationService, types, graph, config, sett
         }
 
         return filterFunctions;
-
     }
 
     var convertFilterFunctions = function(expandElementContent) {
@@ -186,7 +185,6 @@ function QueryController(queryPage, operationService, types, graph, config, sett
                 if(filterFunctions.postAggregation.length > 0) {
                     op.view.entities[entity].postAggregationFilterFunctions = filterFunctions.postAggregation;
                 }
-
             }
 
             for(var i in queryPage.expandEdges) {
