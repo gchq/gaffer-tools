@@ -1,59 +1,40 @@
 describe('The Selected Elements Component', function() {
-    var scope;
-    var element;
 
     var testSelectedEdges = [];
     var testSelectedEntities = [];
-
-    var watchedFunctions = {};
 
     beforeEach(module('app'));
 
     beforeEach(module(function($provide) {
         $provide.factory('graph', function() {
-            var getSelectedEdges = jasmine.createSpy('getSelectedEdges').and.callFake(function() {
+            var getSelectedEdges = function() {
                 return testSelectedEdges;
-            });
+            };
 
-            var getSelectedEntities = jasmine.createSpy('getSelectedEntities').and.callFake(function() {
+            var getSelectedEntities = function() {
                 return testSelectedEntities;
-            });
-
-            watchedFunctions['getSelectedEdges'] = getSelectedEdges;
-            watchedFunctions['getSelectedEntities'] = getSelectedEntities;
+            };
 
             return {
                 getSelectedEdges: getSelectedEdges,
                 getSelectedEntities: getSelectedEntities
             }
         });
-
-
     }));
-
-    beforeEach(inject(function($rootScope, $compile) {
-        scope = $rootScope.$new();
-        element = angular.element('<selected-seeds></selected-seeds>');
-
-        element = $compile(element)(scope);
-    }));
-
-    it('should exist', function() {
-        expect(element).toBeDefined();
-    });
 
     describe('The Selected Seeds Controller', function() {
         var $componentController;
-        var events
+        var events, graph
 
         beforeEach(function() {
             testSelectedEdges = [];
             testSelectedEntities = [];
         });
 
-        beforeEach(inject(function(_$componentController_, _events_) {
+        beforeEach(inject(function(_$componentController_, _events_, _graph_) {
             $componentController = _$componentController_;
             events = _events_;
+            graph = _graph_;
         }));
 
         it('should exist', function() {
@@ -62,9 +43,15 @@ describe('The Selected Elements Component', function() {
         })
 
         it('should expose empty array when no elements are selected on startup', function() {
+            spyOn(graph, 'getSelectedEntities').and.callThrough();
+            spyOn(graph, 'getSelectedEdges').and.callThrough();
+
             var ctrl = $componentController('selectedElements');
-            expect(watchedFunctions['getSelectedEntities']).toHaveBeenCalledTimes(1);
-            expect(watchedFunctions['getSelectedEdges']).toHaveBeenCalledTimes(1);
+
+            ctrl.$onInit();
+
+            expect(graph.getSelectedEntities).toHaveBeenCalledTimes(1);
+            expect(graph.getSelectedEdges).toHaveBeenCalledTimes(1);
             expect(ctrl.selectedEntities).toEqual([]);
             expect(ctrl.selectedEdges).toEqual([]);
         });
@@ -106,9 +93,15 @@ describe('The Selected Elements Component', function() {
                 }
             ]
 
+            spyOn(graph, 'getSelectedEntities').and.callThrough();
+            spyOn(graph, 'getSelectedEdges').and.callThrough();
+
             var ctrl = $componentController('selectedElements');
-            expect(watchedFunctions['getSelectedEntities']).toHaveBeenCalledTimes(1);
-            expect(watchedFunctions['getSelectedEdges']).toHaveBeenCalledTimes(1);
+
+            ctrl.$onInit();
+
+            expect(graph.getSelectedEntities).toHaveBeenCalledTimes(1);
+            expect(graph.getSelectedEdges).toHaveBeenCalledTimes(1);
             expect(ctrl.selectedEntities).toEqual(testSelectedEntities);
             expect(ctrl.selectedEdges).toEqual(testSelectedEdges);
 
@@ -118,12 +111,18 @@ describe('The Selected Elements Component', function() {
             spyOn(events, 'subscribe').and.callThrough();
             var ctrl = $componentController('selectedElements');
 
+            ctrl.$onInit();
+
+
             expect(events.subscribe.calls.mostRecent().args[0]).toEqual('selectedElementsUpdate');
 
         });
 
         it('should update the model when the selected elements changes', function() {
             var ctrl = $componentController('selectedElements');
+
+            ctrl.$onInit();
+
             expect(ctrl.selectedEntities).toEqual([]);
             expect(ctrl.selectedEdges).toEqual([]);
 
@@ -159,7 +158,7 @@ describe('The Selected Elements Component', function() {
             events.broadcast('selectedElementsUpdate', [newSelectedElements]);
             expect(ctrl.selectedEntities).toEqual(newSelectedElements['entities']);
             expect(ctrl.selectedEdges).toEqual(newSelectedElements['edges']);
-        })
+        });
     });
 
 

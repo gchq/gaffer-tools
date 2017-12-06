@@ -1,13 +1,13 @@
 describe('The navigation component', function() {
 
-    var scope;
-    var element;
     var configForTesting = {};
-    var gafferProperties = {};
+    var propertiesForTesting = {};
+    var schemaForTesting = {};
 
     beforeEach(function() {
-        gafferProperties = {};
+        propertiesForTesting = {};
         configForTesting = {};
+        schemaForTesting = {};
     });
 
     beforeEach(module('app'));
@@ -25,7 +25,7 @@ describe('The navigation component', function() {
 
         $provide.factory('properties', function($q) {
             var get = function() {
-                return $q.when(gafferProperties);
+                return $q.when(propertiesForTesting);
             }
 
             return {
@@ -35,8 +35,8 @@ describe('The navigation component', function() {
 
         $provide.factory('query', function($q) {
             return {
-                execute: function(opChain) {
-                    return $q.when([]);
+                execute: function(opChain, callback) {
+                    callback([]);
                 },
                 getOperations: function() {
                     return [
@@ -47,31 +47,28 @@ describe('The navigation component', function() {
                 }
             }
         });
+
+        $provide.factory('schema', function($q) {
+            return {
+                get: function() {
+                    return $q.when(schemaForTesting);
+                }
+            }
+        })
     }))
-
-    beforeEach(inject(function($rootScope, $compile) {
-        scope = $rootScope.$new();
-        element = angular.element('<nav-bar></nav-bar>');
-
-        element = $compile(element)(scope);
-    }));
-
-    it('should exist', function() {
-        expect(element).toBeDefined();
-    });
 
     describe('The Navigation Controller', function() {
 
         var $componentController;
-        var navigation;
+        var navigation, query, graph;;
         var $rootScope;
-        var query;
-        var graph;
+        var scope;
 
         beforeEach(inject(function(_$componentController_, _navigation_, _$rootScope_, _query_, _graph_) {
             $componentController = _$componentController_;
             navigation = _navigation_;
             $rootScope = _$rootScope_;
+            scope = $rootScope.$new();
             query = _query_;
             graph = _graph_;
         }));
@@ -81,59 +78,54 @@ describe('The navigation component', function() {
             expect(ctrl).toBeDefined();
         });
 
-        it('should use the config first service to get the app title', function(done) {
+        it('should use the config first service to get the app title', function() {
             configForTesting = { title: "test" };
-            var ctrl = $componentController('navBar');
-            done();
+            var ctrl = $componentController('navBar', {$scope: scope});
+            ctrl.$onInit();
+
+            scope.$digest();
 
             expect(ctrl.appTitle).toEqual('test');
         });
 
-        it('should use the gaffer properties endpoint if the title is not specified in the config', function(done) {
-             gafferProperties = { "gaffer.properties.app.title": "My Super Gaffer Graph" };
-             var ctrl = $componentController('navBar');
-             done();
+        it('should use the gaffer properties endpoint if the title is not specified in the config', function() {
+            propertiesForTesting = { "gaffer.properties.app.title": "My Super Gaffer Graph" };
+            var ctrl = $componentController('navBar', {$scope: scope});
+            ctrl.$onInit();
 
-             expect(ctrl.appTitle).toEqual('My Super Gaffer Graph');
+            scope.$digest();
+
+
+            expect(ctrl.appTitle).toEqual('My Super Gaffer Graph');
         });
 
-        it('should use the default name "Gaffer" if the title is neither specified in the gaffer properties or the config', function(done) {
-            var ctrl = $componentController('navBar');
-            done();
+        it('should use the default name "Gaffer" if the title is neither specified in the gaffer properties or the config', function() {
+            var ctrl = $componentController('navBar', {$scope: scope});
+            ctrl.$onInit();
+
+            scope.$digest();
 
             expect(ctrl.appTitle).toEqual('Gaffer');
         });
 
-        it('should update the current page when an external component updates the route', function(done) {
+        it('should update the current page when an external component updates the route', function() {
             var ctrl = $componentController('navBar');
+            ctrl.$onInit();
+
             navigation.goTo('settings');
-            done();
 
             expect(ctrl.currentPage).toEqual('settings');
         });
 
-        it('should listen to $rootScope broadcasts for a route change and update the navigation service', function(done) {
-            var ctrl = $componentController('navBar');
+        it('should listen to $rootScope broadcasts for a route change and update the navigation service', function() {
+            var ctrl = $componentController('navBar', {$scope: scope});
+            ctrl.$onInit();
+
             navigation.goTo('settings');
-            $rootScope.$broadcast('routeChangeSuccess', 'graph');
-            done();
+            $rootScope.$broadcast('$routeChangeSuccess', { originalPath: '/graph'});
 
             expect(ctrl.currentPage).toEqual('graph');
             expect(navigation.getCurrentPage()).toEqual('graph');
-        });
-
-        it('should Execute all operations in order', function(done) {
-            var ctrl = $componentController('navBar');
-            spyOn(query, 'execute');
-
-            ctrl.executeAll();
-            done();
-
-            expect(query.execute).toHaveBeenCalledTimes(3);
-
-            expect(query.execute.calls.argsFor(0)).toEqual('operation1');
-            expect(query.execute.calls.argsFor(1)).toEqual('operation2');
-            expect(query.execute.calls.argsFor(2)).toEqual('operation3');
         });
 
         it('should redraw the graph', function() {

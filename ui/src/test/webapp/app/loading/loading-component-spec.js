@@ -1,20 +1,6 @@
 describe('The loading component', function() {
 
-    var scope;
-    var element;
-
     beforeEach(module('app'));
-
-    beforeEach(inject(function($rootScope, $compile) {
-        scope = $rootScope.$new();
-        element = angular.element('<graph></graph>');
-
-        element = $compile(element)(scope);
-    }));
-
-    it('should exist', function() {
-        expect(element).toBeDefined();
-    });
 
     describe('The loading controller', function() {
 

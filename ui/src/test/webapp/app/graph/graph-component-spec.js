@@ -1,28 +1,38 @@
 describe('The graph component', function() {
 
-    var scope;
-    var element;
-
     beforeEach(module('app'));
 
-     beforeEach(inject(function($rootScope, $compile) {
-        scope = $rootScope.$new();
-        element = angular.element('<graph></graph>');
+    beforeEach(module(function($provide) {
+        $provide.factory('config', function($q) {
+            var get = function() {
+                return $q.when({});
+            }
 
-        element = $compile(element)(scope);
-    }));
+            return {
+                get: get
+            }
+        });
 
-    it('should exist', function() {
-        expect(element).toBeDefined();
-    });
+        $provide.factory('schema', function($q) {
+            return {
+                get: function() {
+                    return $q.when({});
+                }
+            }
+        });
+    }))
 
     describe('The Graph Controller', function() {
-        var $componentController;
-        var graph;
+        var $componentController, $timeout, $httpBackend;
+        var graph, scope;
 
-        beforeEach(inject(function(_$componentController_, _graph_) {
+
+        beforeEach(inject(function(_$componentController_, _graph_, _$rootScope_, _$timeout_) {
             $componentController = _$componentController_;
             graph = _graph_;
+            var $rootScope = _$rootScope_;
+            scope = $rootScope.$new();
+            $timeout = _$timeout_;
         }));
 
         it('should exist', function() {
@@ -30,12 +40,13 @@ describe('The graph component', function() {
             expect(ctrl).toBeDefined();
         });
 
-        it('should load the graph on startup', function(done) {
+        it('should load the graph on startup', function() {
             spyOn(graph, 'load').and.callThrough();
-
-            var ctrl = $componentController('graph');
-            done();
+            var ctrl = $componentController('graph', {$scope: scope});
+            ctrl.$onInit();
+            $timeout.flush();
             expect(graph.load).toHaveBeenCalledTimes(1);
+
         });
     });
 });

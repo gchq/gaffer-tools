@@ -116,7 +116,7 @@ function QueryController(queryPage, operationService, types, graph, config, sett
                 };
 
                 for(var i in filter.availableFunctionParameters) {
-                    if(filter.parameters[i]) {
+                    if(filter.parameters[i] !== undefined) {
                         var param;
                         try {
                             param = JSON.parse(filter.parameters[i]);
