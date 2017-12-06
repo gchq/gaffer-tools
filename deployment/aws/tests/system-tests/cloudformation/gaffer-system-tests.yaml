@@ -26,8 +26,7 @@ Parameters:
   EmrRelease:
     Type: String
     Default: emr-5.7.0
-    AllowedValues:
-      - emr-5.7.0
+    AllowedPattern: "emr-\\d+\\.\\d+\\.\\d+"
     ConstraintDescription: Please select a valid EMR release
 
   EmrInstanceType:
@@ -65,14 +64,6 @@ Parameters:
     MinLength: 1
     Description: Specify the type of instance to be used to deploy the Gaffer REST API and Web UI
 
-  GafferSchemaJarUrl:
-    Type: String
-    Default: https://repo1.maven.org/maven2/uk/gov/gchq/gaffer/road-traffic-model/1.0.0/road-traffic-model-1.0.0.jar
-    MinLength: 1
-    Description: A URL that can be used to download a JAR which contains the schema for your Gaffer graph i.e. json files in a 'schema' directory
-    AllowedPattern: "https?://\\S+\\.jar"
-    ConstraintDescription: Please make sure this is a http / https URL
-
 Metadata:
   AWS::CloudFormation::Interface:
     ParameterGroups:
@@ -83,10 +74,6 @@ Metadata:
           - GafferToolsVersion
           - AccumuloVersion
           - EmrRelease
-      - Label:
-          default: Gaffer Config
-        Parameters:
-          - GafferSchemaJarUrl
       - Label:
           default: Infrastructure Config
         Parameters:
@@ -113,26 +100,16 @@ Resources:
         EmrCoreInstanceCount: !Ref EmrCoreInstanceCount
         VpcId: !Ref VpcId
         SubnetId: !Ref SubnetId
-        ExtraSecurityGroups: !Join [",", [!Join [",", Ref: ExtraSecurityGroups], Ref: AllowAccessToWebServerSecurityGroup]]
+        ExtraSecurityGroups: !Join [",", Ref: ExtraSecurityGroups]
         KeyName: !Ref KeyName
         WebInstanceType: !Ref WebInstanceType
-        GafferSchemaJarUrl: !Ref GafferSchemaJarUrl
         RoadTrafficDataUrl: "https://raw.githubusercontent.com/gchq/Gaffer/master/example/road-traffic/road-traffic-demo/src/main/resources/roadTrafficSampleData.csv"
 
-  AllowAccessToWebServerSecurityGroup:
-    Type: AWS::EC2::SecurityGroup
-    Properties:
-      VpcId: !Ref VpcId
-      GroupDescription: Allows access Gaffer Web Server
-      Tags:
-        - Key: Name
-          Value: !Join ["-", [Ref: "AWS::StackName", "web-server-access"]]
-
-  AllowAccessToWebServerIngressRule:
+  AllowEmrToAccessWebServerIngressRule:
     Type: AWS::EC2::SecurityGroupIngress
     Properties:
-      GroupId: !Ref AllowAccessToWebServerSecurityGroup
-      SourceSecurityGroupId: !Ref AllowAccessToWebServerSecurityGroup
+      GroupId: !Sub ${GafferRoadTraffic.Outputs.WebServerSecurityGroup}
+      SourceSecurityGroupId: !Sub ${GafferRoadTraffic.Outputs.EmrMasterSecurityGroup}
       IpProtocol: tcp
       FromPort: 80
       ToPort: 80
@@ -149,7 +126,9 @@ Resources:
 
   WaitForSystemTestsHandler:
     Type: AWS::CloudFormation::WaitConditionHandle
-    DependsOn: GafferRoadTraffic
+    DependsOn:
+      - GafferRoadTraffic
+      - AllowEmrToAccessWebServerIngressRule
 
   RunSystemTests:
     Type: AWS::EMR::Step
@@ -321,6 +300,14 @@ Outputs:
     Value: !Sub ${GafferRoadTraffic.Outputs.EmrMasterPublicDNS}
   EmrClusterId:
     Value: !Sub ${GafferRoadTraffic.Outputs.EmrClusterId}
+  EmrMasterSecurityGroup:
+    Value: !Sub ${GafferRoadTraffic.Outputs.EmrMasterSecurityGroup}
+  EmrSlaveSecurityGroup:
+    Value: !Sub ${GafferRoadTraffic.Outputs.EmrSlaveSecurityGroup}
+  EmrIamRoleName:
+    Value: !Sub ${GafferRoadTraffic.Outputs.EmrIamRoleName}
+  GafferInstanceName:
+    Value: !Sub ${GafferRoadTraffic.Outputs.GafferInstanceName}
   AccumuloInstanceName:
     Value: !Sub ${GafferRoadTraffic.Outputs.AccumuloInstanceName}
   GraphId:
@@ -333,6 +320,8 @@ Outputs:
     Value: !Sub ${GafferRoadTraffic.Outputs.PasswordEncryptionKey}
   WebServerPublicDNS:
     Value: !Sub ${GafferRoadTraffic.Outputs.WebServerPublicDNS}
+  WebServerSecurityGroup:
+    Value: !Sub ${GafferRoadTraffic.Outputs.WebServerSecurityGroup}
   RestApi:
     Value: !Sub ${GafferRoadTraffic.Outputs.RestApi}
   WebUi:

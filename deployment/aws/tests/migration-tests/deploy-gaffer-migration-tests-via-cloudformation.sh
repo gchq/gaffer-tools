@@ -18,16 +18,14 @@
 
 # ----- CONFIG ----- #
 
-# The version of Gaffer to deploy. Can be a branch name or version number.
-GAFFER_VERSION="1.0.2"
+GAFFER_VERSION_A="1.0.0"
+GAFFER_TOOLS_VERSION_A="develop"
 
-# The version of gaffer-tools to use to deploy Gaffer. Can be a branch name or version number.
-GAFFER_TOOLS_VERSION="1.0.0"
+GAFFER_VERSION_B="develop"
+GAFFER_TOOLS_VERSION_B="develop"
 
-# The ID of the VPC that the EMR cluster should be deployed into
+# The IDs of the VPC and subnet that the EMR cluster should be deployed into
 VPC_ID=""
-
-# The ID of the subnet that the EMR cluster should be deployed into
 SUBNET_ID=""
 
 # The name of an existing KeyPair that can be used to SSH into the provisioned cluster
@@ -37,12 +35,7 @@ KEYNAME=""
 # Usually used to allow SSH access to the cluster from your IP address
 EXTRA_SECURITY_GROUPS=""
 
-EMR_VERSION="emr-5.7.0"
-EMR_INSTANCE_TYPE="m3.xlarge"
-EMR_INSTANCE_COUNT=3
-WEB_INSTANCE_TYPE="t2.small"
-
-ROAD_TRAFFIC_DATA_URL="https://raw.githubusercontent.com/gchq/Gaffer/master/example/road-traffic/road-traffic-demo/src/main/resources/roadTrafficSampleData.csv"
+CLUSTER_NAME="$KEYNAME-gaffer-migration-${GAFFER_VERSION_A//./}-${GAFFER_VERSION_B//./}"
 
 # ----- CONFIG END ----- #
 
@@ -58,22 +51,22 @@ cd $DIR
 
 # Deploy cluster via CloudFormation
 aws cloudformation create-stack \
-	--stack-name $KEYNAME-road-traffic \
-	--template-body file://cloudformation/gaffer-road-traffic.yaml \
+	--stack-name $CLUSTER_NAME \
+	--template-body file://cloudformation/gaffer-migration-tests.yaml \
 	--capabilities CAPABILITY_NAMED_IAM \
 	--on-failure DO_NOTHING \
 	--tags \
-		Key=gaffer-version,Value=$GAFFER_VERSION \
-		Key=gaffer-tools-version,Value=$GAFFER_TOOLS_VERSION \
+		Key=gaffer-version-a,Value=$GAFFER_VERSION_A \
+		Key=gaffer-tools-version-a,Value=$GAFFER_TOOLS_VERSION_A \
+		Key=gaffer-version-b,Value=$GAFFER_VERSION_B \
+		Key=gaffer-tools-version-b,Value=$GAFFER_TOOLS_VERSION_B \
 	--parameters \
-		ParameterKey=GafferVersion,ParameterValue=$GAFFER_VERSION \
-		ParameterKey=GafferToolsVersion,ParameterValue=$GAFFER_TOOLS_VERSION \
-		ParameterKey=EmrRelease,ParameterValue=$EMR_VERSION \
-		ParameterKey=EmrInstanceType,ParameterValue=$EMR_INSTANCE_TYPE \
-		ParameterKey=EmrCoreInstanceCount,ParameterValue=$EMR_INSTANCE_COUNT \
-		ParameterKey=WebInstanceType,ParameterValue=$WEB_INSTANCE_TYPE \
+		ParameterKey=GafferVersionA,ParameterValue=$GAFFER_VERSION_A \
+		ParameterKey=GafferToolsVersionA,ParameterValue=$GAFFER_TOOLS_VERSION_A \
+		ParameterKey=GafferVersionB,ParameterValue=$GAFFER_VERSION_B \
+		ParameterKey=GafferToolsVersionB,ParameterValue=$GAFFER_TOOLS_VERSION_B \
+		ParameterKey=AccumuloVersion,ParameterValue=1.8.1 \
 		ParameterKey=VpcId,ParameterValue=$VPC_ID \
 		ParameterKey=SubnetId,ParameterValue=$SUBNET_ID \
 		ParameterKey=ExtraSecurityGroups,ParameterValue=\"$EXTRA_SECURITY_GROUPS\" \
-		ParameterKey=KeyName,ParameterValue=$KEYNAME \
-		ParameterKey=RoadTrafficDataUrl,ParameterValue=$ROAD_TRAFFIC_DATA_URL
+		ParameterKey=KeyName,ParameterValue=$KEYNAME

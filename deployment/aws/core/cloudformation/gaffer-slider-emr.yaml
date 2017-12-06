@@ -32,8 +32,7 @@ Parameters:
   EmrRelease:
     Type: String
     Default: emr-5.7.0
-    AllowedValues:
-      - emr-5.7.0
+    AllowedPattern: "emr-\\d+\\.\\d+\\.\\d+"
     ConstraintDescription: Please select a valid EMR release
 
   EmrInstanceType:
@@ -143,11 +142,11 @@ Resources:
           Name: Core
           InstanceCount: !Ref EmrCoreInstanceCount
           InstanceType: !Ref EmrInstanceType
-        EmrManagedMasterSecurityGroup: !If [SecurityGroupsManagedByStack, !Ref EmrMasterSecurityGroup, !Ref "AWS::NoValue"]
-        EmrManagedSlaveSecurityGroup: !If [SecurityGroupsManagedByStack, !Ref EmrSlaveSecurityGroup, !Ref "AWS::NoValue"]
+        EmrManagedMasterSecurityGroup: !If [SecurityGroupsManagedByStack, !Ref EmrMasterManagedSecurityGroup, !Ref "AWS::NoValue"]
+        EmrManagedSlaveSecurityGroup: !If [SecurityGroupsManagedByStack, !Ref EmrSlaveManagedSecurityGroup, !Ref "AWS::NoValue"]
         ServiceAccessSecurityGroup: !If [SecurityGroupsManagedByStack, !Ref EmrServiceSecurityGroup, !Ref "AWS::NoValue"]
-        AdditionalMasterSecurityGroups: !Ref ExtraEmrSecurityGroups
-        AdditionalSlaveSecurityGroups: !Ref ExtraEmrSecurityGroups
+        AdditionalMasterSecurityGroups: !Split [",", !Join [",", [!Join [",", !Ref ExtraEmrSecurityGroups], !Ref EmrMasterSecurityGroup]]]
+        AdditionalSlaveSecurityGroups: !Split [",", !Join [",", [!Join [",", !Ref ExtraEmrSecurityGroups], !Ref EmrSlaveSecurityGroup]]]
         Ec2KeyName: !Ref KeyName
         Ec2SubnetId: !Ref SubnetId
       JobFlowRole: !Ref EmrInstanceProfile
@@ -162,7 +161,6 @@ Resources:
   ######################
 
   EmrMasterSecurityGroup:
-    Condition: SecurityGroupsManagedByStack
     Type: AWS::EC2::SecurityGroup
     Properties:
       VpcId: !Ref VpcId
@@ -172,7 +170,6 @@ Resources:
           Value: !Join ["-", [Ref: "AWS::StackName", "emr-master"]]
 
   EmrSlaveSecurityGroup:
-    Condition: SecurityGroupsManagedByStack
     Type: AWS::EC2::SecurityGroup
     Properties:
       VpcId: !Ref VpcId
@@ -181,15 +178,35 @@ Resources:
         - Key: Name
           Value: !Join ["-", [Ref: "AWS::StackName", "emr-slave"]]
 
+  EmrMasterManagedSecurityGroup:
+    Condition: SecurityGroupsManagedByStack
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      VpcId: !Ref VpcId
+      GroupDescription: Managed security group for EMR Master nodes
+      Tags:
+        - Key: Name
+          Value: !Join ["-", [Ref: "AWS::StackName", "emr-managed-master"]]
+
+  EmrSlaveManagedSecurityGroup:
+    Condition: SecurityGroupsManagedByStack
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      VpcId: !Ref VpcId
+      GroupDescription: Managed security group for EMR Slave nodes
+      Tags:
+        - Key: Name
+          Value: !Join ["-", [Ref: "AWS::StackName", "emr-managed-slave"]]
+
   EmrServiceSecurityGroup:
     Condition: SecurityGroupsManagedByStack
     Type: AWS::EC2::SecurityGroup
     Properties:
       VpcId: !Ref VpcId
-      GroupDescription: Security group for EMR services
+      GroupDescription: Managed security group for EMR services
       Tags:
         - Key: Name
-          Value: !Join ["-", [Ref: "AWS::StackName", "emr-service"]]
+          Value: !Join ["-", [Ref: "AWS::StackName", "emr-managed-service"]]
 
   # AWS manages the ingress and egress rules for the above 3 security groups. However, although it adds the rules, it
   # does not seem to delete them. As the rules that are added to the groups refer to one another, the groups cannot be
@@ -202,14 +219,14 @@ Resources:
     Type: AWS::CloudFormation::CustomResource
     Version: "1.0"
     DependsOn:
-      - EmrMasterSecurityGroup
-      - EmrSlaveSecurityGroup
+      - EmrMasterManagedSecurityGroup
+      - EmrSlaveManagedSecurityGroup
       - EmrServiceSecurityGroup
     Properties:
       ServiceToken: !GetAtt CleanupEmrSecurityGroupsLambda.Arn
       SecurityGroups:
-        - !Ref EmrMasterSecurityGroup
-        - !Ref EmrSlaveSecurityGroup
+        - !Ref EmrMasterManagedSecurityGroup
+        - !Ref EmrSlaveManagedSecurityGroup
         - !Ref EmrServiceSecurityGroup
 
   CleanupEmrSecurityGroupsLambda:
@@ -606,7 +623,13 @@ Outputs:
     Value: !Ref EmrCluster
   EmrMasterPublicDNS:
     Value: !GetAtt EmrCluster.MasterPublicDNS
+  EmrMasterSecurityGroup:
+    Value: !Ref EmrMasterSecurityGroup
+  EmrSlaveSecurityGroup:
+    Value: !Ref EmrSlaveSecurityGroup
   EmrIamRoleName:
     Value: !Ref EmrJobFlowRole
+  GafferInstanceName:
+    Value: !Ref GafferInstanceName
   AccumuloInstanceName:
     Value: !Join ["-", ["hadoop", Ref: GafferInstanceName]]
