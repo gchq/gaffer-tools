@@ -3,14 +3,18 @@ describe('The query component', function() {
     beforeEach(module('app'));
 
     describe('The Query Controller', function() {
-        var $componentController;
-        var queryPage, query, loading;
+        var $componentController, $mdDialog, $q;
+        var queryPage, query, loading, graph, settings;
 
-        beforeEach(inject(function(_$componentController_, _queryPage_, _query_, _loading_) {
+        beforeEach(inject(function(_$componentController_, _queryPage_, _query_, _loading_, _graph_, _$mdDialog_, _settings_, _$q_) {
             $componentController = _$componentController_;
             queryPage = _queryPage_;
             query = _query_;
             loading = _loading_;
+            graph = _graph_;
+            $mdDialog = _$mdDialog_;
+            settings = _settings_;
+            $q = _$q_;
         }));
 
         it('should expose the getSelectedOperation of the queryPage service', function() {
@@ -184,40 +188,306 @@ describe('The query component', function() {
         });
 
         it('should add parameters to named operations', function() {
-            expect(true).toBeTruthy()
+            spyOn(queryPage, 'getSelectedOperation').and.returnValue({
+                class: 'named.operation.class.Name',
+                name: 'test',
+                namedOp: true,
+                parameters: { "testParam": {
+                        valueClass: "java.lang.Long",
+                        parts: {
+                            "value": 42
+                        }
+                    }
+                }
+            });
+
+            spyOn(query, 'execute');
+
+            var ctrl = $componentController('query');
+            ctrl.execute();
+
+
+            var expectedParameters = JSON.stringify({
+                "testParam": 42
+            });
+
+
+            expect(query.execute.calls.first().args[0]).toContain(expectedParameters)
+
         });
 
         it('should not add parameters left blank if they are not required', function() {
-            // will fail
-            expect(true).toBeTruthy()
+            spyOn(queryPage, 'getSelectedOperation').and.returnValue({
+                class: 'named.operation.class.Name',
+                name: 'test',
+                namedOp: true,
+                parameters: { "testParam": {
+                        valueClass: "java.lang.Long",
+                        required: false,
+                        parts: {
+                            "value": ""
+                        }
+                    }
+                }
+            });
+
+            spyOn(query, 'execute');
+
+            var ctrl = $componentController('query');
+            ctrl.execute();
+
+
+            var expectedParameters = JSON.stringify({
+                "testParam": ""
+            });
+
+
+            expect(query.execute.calls.first().args[0]).not.toContain(expectedParameters)
         });
 
-        it('should add string seeds to the operation', function() {
-            expect(true).toBeTruthy()
+        it('should add blank parameters if the parameter is marked required', function() {
+            spyOn(queryPage, 'getSelectedOperation').and.returnValue({
+                class: 'named.operation.class.Name',
+                name: 'test',
+                namedOp: true,
+                parameters: { "testParam": {
+                        valueClass: "java.lang.Long",
+                        required: true,
+                        parts: {
+                            "value": ""
+                        }
+                    }
+                }
+            });
+
+            spyOn(query, 'execute');
+
+            var ctrl = $componentController('query');
+            ctrl.execute();
+
+
+            var expectedParameters = JSON.stringify({
+                "testParam": ""
+            });
+
+
+            expect(query.execute.calls.first().args[0]).toContain(expectedParameters)
+        });
+
+        it('should not allow null parameters if they are not required', function() {
+            spyOn(queryPage, 'getSelectedOperation').and.returnValue({
+                class: 'named.operation.class.Name',
+                name: 'test',
+                namedOp: true,
+                parameters: { "testParam": {
+                        valueClass: "java.lang.Long",
+                        required: false,
+                        parts: {
+                            "value": null
+                        }
+                    }
+                }
+            });
+
+            spyOn(query, 'execute');
+
+            var ctrl = $componentController('query');
+            ctrl.execute();
+
+
+            var expectedParameters = JSON.stringify({
+                "testParam": null
+            });
+
+
+            expect(query.execute.calls.first().args[0]).not.toContain(expectedParameters)
+        });
+
+        it('should add null parameters if the parameter is marked required', function() {
+            spyOn(queryPage, 'getSelectedOperation').and.returnValue({
+                class: 'named.operation.class.Name',
+                name: 'test',
+                namedOp: true,
+                parameters: { "testParam": {
+                        valueClass: "java.lang.Long",
+                        required: true,
+                        parts: {
+                            "value": null
+                        }
+                    }
+                }
+            });
+
+            spyOn(query, 'execute');
+
+            var ctrl = $componentController('query');
+            ctrl.execute();
+
+
+            var expectedParameters = JSON.stringify({
+                "testParam": null
+            });
+
+            expect(query.execute.calls.first().args[0]).toContain(expectedParameters)
+        });
+
+        it('should add string seeds from the selected entities to the operation', function() {
+            spyOn(queryPage, 'getSelectedOperation').and.returnValue({
+                class: 'operation.class.Name',
+                input: true
+            });
+
+            spyOn(graph, 'getSelectedEntities').and.returnValue({
+                "vertex1": [],
+                "vertex2": [],
+                "vertex3": []
+            });
+
+            spyOn(query, 'execute');
+
+            var ctrl = $componentController('query');
+            ctrl.execute();
+
+            var expectedInput = JSON.stringify([
+                { 'class': 'uk.gov.gchq.gaffer.operation.data.EntitySeed', 'vertex': 'vertex1'},
+                { 'class': 'uk.gov.gchq.gaffer.operation.data.EntitySeed', 'vertex': 'vertex2'},
+                { 'class': 'uk.gov.gchq.gaffer.operation.data.EntitySeed', 'vertex': 'vertex3'}])
+
+            expect(query.execute.calls.first().args[0]).toContain(expectedInput);
+
         });
 
         it('should add complex seeds to the operation', function() {
-            expect(true).toBeTruthy()
+            spyOn(queryPage, 'getSelectedOperation').and.returnValue({
+                class: 'operation.class.Name',
+                input: true
+            });
+
+            spyOn(graph, 'getSelectedEntities').and.returnValue({
+                '{ "my.complex.Type": { "type": "thing1", "value": "myVal1", "someField": "test1"}}': [],
+                '{ "my.complex.Type": { "type": "thing2", "value": "myVal2", "someField": "test2"}}': [],
+                '{ "my.complex.Type": { "type": "thing3", "value": "myVal3", "someField": "test3"}}': []
+            });
+
+            spyOn(query, 'execute');
+
+            var ctrl = $componentController('query');
+            ctrl.execute();
+
+            var expectedInput = JSON.stringify([
+                {
+                    'class': 'uk.gov.gchq.gaffer.operation.data.EntitySeed',
+                    'vertex': { "my.complex.Type": { "type": "thing1", "value": "myVal1", "someField": "test1"}
+                    }
+                },
+                {
+                    'class': 'uk.gov.gchq.gaffer.operation.data.EntitySeed',
+                    'vertex': { "my.complex.Type": { "type": "thing2", "value": "myVal2", "someField": "test2"}
+                    }
+                },
+                {
+                    'class': 'uk.gov.gchq.gaffer.operation.data.EntitySeed',
+                    'vertex': { "my.complex.Type": { "type": "thing3", "value": "myVal3", "someField": "test3"}
+                    }
+                }]);
+
+            expect(query.execute.calls.first().args[0]).toContain(expectedInput);
         });
 
         it('should add numerical seeds to the operation', function() {
-            expect(true).toBeTruthy()
+            spyOn(queryPage, 'getSelectedOperation').and.returnValue({
+                class: 'operation.class.Name',
+                input: true
+            });
+
+            spyOn(graph, 'getSelectedEntities').and.returnValue({
+                1: [],
+                2: [],
+                3: []
+            });
+
+            spyOn(query, 'execute');
+
+            var ctrl = $componentController('query');
+            ctrl.execute();
+
+            var expectedInput = JSON.stringify([
+                { 'class': 'uk.gov.gchq.gaffer.operation.data.EntitySeed', 'vertex': 1},
+                { 'class': 'uk.gov.gchq.gaffer.operation.data.EntitySeed', 'vertex': 2},
+                { 'class': 'uk.gov.gchq.gaffer.operation.data.EntitySeed', 'vertex': 3}])
+
+            expect(query.execute.calls.first().args[0]).toContain(expectedInput);
         });
 
         it('should add the edge direction to the operation', function() {
-            expect(true).toBeTruthy()
+
+            var direction;
+            spyOn(queryPage, 'getSelectedOperation').and.returnValue({
+                class: 'operation.class.Name',
+                inOutFlag: true
+            });
+
+            spyOn(queryPage, 'getInOutFlag').and.callFake(function() {
+                return direction;
+            });
+
+            spyOn(query, 'execute');
+
+            var ctrl = $componentController('query');
+
+
+            var flags = [ 'INCOMING', 'OUTGOING', 'EITHER']
+
+            for (var i in flags) {
+                var flag = flags[i];
+                direction = flag;
+                ctrl.execute();
+                expect(query.execute.calls.argsFor(i)[0]).toContain(flag);
+            }
         });
 
         it('should add the group by to the operation', function() {
-            expect(true).toBeTruthy()
+            spyOn(queryPage, 'getSelectedOperation').and.returnValue({
+                class: 'operation.class.Name',
+                view: true
+            });
+
+            spyOn(query, 'execute');
+
+            var ctrl = $componentController('query');
+            ctrl.execute();
+
+            expect(query.execute.calls.first().args[0]).toContain('"groupBy":[]');
         });
 
         it('should add the selected operation to the list of operations', function() {
-            expect(true).toBeTruthy()
+            spyOn(queryPage, 'getSelectedOperation').and.returnValue({
+                class: 'operation.class.Name'
+            });
+
+            spyOn(query, 'addOperation');
+
+            var ctrl = $componentController('query');
+            ctrl.execute();
+
+            expect(query.addOperation).toHaveBeenCalledTimes(1);
         });
 
         it('should display a dialog if the results numbered more than the result limit', function() {
-            expect(true).toBeTruthy()
+            spyOn(queryPage, 'getSelectedOperation').and.returnValue({
+                class: 'operation.class.Name'
+            });
+
+            spyOn(settings, 'getResultLimit').and.returnValue(2);
+            spyOn(query, 'execute').and.callFake(function(opChain, callback) {
+                callback([1, 2]);
+            });
+            spyOn($mdDialog, 'show').and.returnValue($q.defer().promise);
+
+            var ctrl = $componentController('query');
+            ctrl.execute();
+
+            expect($mdDialog.show).toHaveBeenCalledTimes(1);
         });
     });
 });
