@@ -16,10 +16,6 @@
 
 'use strict';
 
-angular.module('app').controller('MainCtrl', ['graph', 'operationService', 'queryPage', function(graph, operationService, queryPage) {
-
-    operationService.reloadNamedOperations().then(function(availableOps) {
-        queryPage.initialise();
-    });
+angular.module('app').controller('MainCtrl', ['graph', function(graph) {
     graph.load();
 }]);

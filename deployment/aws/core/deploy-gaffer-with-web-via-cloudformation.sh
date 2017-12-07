@@ -22,10 +22,10 @@ GAFFER_USERNAME="gaffer_user"
 ACCUMULO_VISIBILITIES="none"
 
 # The version of Gaffer to deploy. Can be a branch name or version number.
-GAFFER_VERSION="0.7.8"
+GAFFER_VERSION="1.0.2"
 
 # The version of gaffer-tools to use to deploy Gaffer. Can be a branch name or version number.
-GAFFER_TOOLS_VERSION="0.7.8"
+GAFFER_TOOLS_VERSION="1.0.2"
 
 # The ID of the VPC that the EMR cluster should be deployed into
 VPC_ID=""
@@ -46,7 +46,7 @@ EMR_INSTANCE_COUNT=3
 WEB_INSTANCE_TYPE="t2.small"
 
 GAFFER_GRAPH_ID="gaffer"
-GAFFER_SCHEMA_JAR_URL="https://repo1.maven.org/maven2/uk/gov/gchq/gaffer/road-traffic-model/0.7.8/road-traffic-model-0.7.8.jar"
+GAFFER_SCHEMA_JAR_URL="https://repo1.maven.org/maven2/uk/gov/gchq/gaffer/road-traffic-model/1.0.2/road-traffic-model-1.0.2.jar"
 
 # ----- CONFIG END ----- #
 
@@ -83,4 +83,4 @@ aws cloudformation create-stack \
 		ParameterKey=AccumuloVisibilities,ParameterValue=\"$ACCUMULO_VISIBILITIES\" \
 		ParameterKey=GraphId,ParameterValue=$GAFFER_GRAPH_ID \
 		ParameterKey=WebInstanceType,ParameterValue=$WEB_INSTANCE_TYPE \
-		ParameterKey=GafferSchemaJarUrl,ParameterValue=$GAFFER_SCHEMA_JAR_URL
+		ParameterKey=GafferSchemaJarHttpUrl,ParameterValue=$GAFFER_SCHEMA_JAR_URL
