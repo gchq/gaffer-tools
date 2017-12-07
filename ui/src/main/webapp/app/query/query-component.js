@@ -72,7 +72,6 @@ function QueryController(queryPage, operationService, types, graph, config, sett
             clickOutsideToClose: false
         })
         .then(function(command) {
-            console.error(command);
             if(command === 'results') {
                 submitResults(data);
             }
