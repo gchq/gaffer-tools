@@ -1,7 +1,7 @@
-describe('The directionality picker', function() {
+describe('The Directionality Picker Component', function() {
     beforeEach(module('app'));
 
-    describe('The controller', function() {
+    describe('The Controller', function() {
 
         var $componentController;
         var queryPage;
@@ -11,6 +11,11 @@ describe('The directionality picker', function() {
             queryPage = _queryPage_;
         }));
 
+        it('should exist', function() {
+            var ctrl = $componentController('directionalityPicker');
+            expect(ctrl).toBeDefined();
+        });
+
         it('should set the flag to the value in the queryPage service', function() {
             spyOn(queryPage, 'getInOutFlag').and.returnValue('test');
 
@@ -18,7 +23,7 @@ describe('The directionality picker', function() {
 
             expect(queryPage.getInOutFlag).toHaveBeenCalledTimes(1);
             expect(ctrl.inOutFlag).toEqual('test');
-        })
+        });
 
         it('should set the queryPage.inOutFlag when the direction is updated', function() {
             var ctrl = $componentController('directionalityPicker');

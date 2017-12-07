@@ -1,4 +1,4 @@
-describe('Operation Selector component', function() {
+describe('Operation Selector Component', function() {
     beforeEach(module('app'));
 
     beforeEach(module(function($provide) {
@@ -21,7 +21,7 @@ describe('Operation Selector component', function() {
         });
     }));
 
-    describe('The controller', function() {
+    describe('The Controller', function() {
         var $componentController, $q;
         var scope;
         var operationService;
@@ -38,6 +38,11 @@ describe('Operation Selector component', function() {
                 return $q.when([1, 2, 3]);
             });
         })
+
+        it('should exist', function() {
+            var ctrl = $componentController('operationSelector');
+            expect(ctrl).toBeDefined();
+        });
 
         describe('on startup', function() {
             var operationSelectorService;

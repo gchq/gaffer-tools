@@ -1,4 +1,4 @@
-describe('The navigation component', function() {
+describe('The Navigation Component', function() {
 
     var configForTesting = {};
     var propertiesForTesting = {};
@@ -57,7 +57,7 @@ describe('The navigation component', function() {
         })
     }))
 
-    describe('The Navigation Controller', function() {
+    describe('The Controller', function() {
 
         var $componentController;
         var navigation, query, graph;;

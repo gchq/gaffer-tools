@@ -1,8 +1,8 @@
-describe('The loading component', function() {
+describe('The Loading Component', function() {
 
     beforeEach(module('app'));
 
-    describe('The loading controller', function() {
+    describe('The Controller', function() {
 
         var loading;
         var $componentController;

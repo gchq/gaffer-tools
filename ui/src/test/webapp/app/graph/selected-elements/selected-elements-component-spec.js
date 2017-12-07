@@ -22,7 +22,7 @@ describe('The Selected Elements Component', function() {
         });
     }));
 
-    describe('The Selected Seeds Controller', function() {
+    describe('The Controller', function() {
         var $componentController;
         var events, graph
 

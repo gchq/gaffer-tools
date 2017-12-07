@@ -1,4 +1,4 @@
-describe('The graph component', function() {
+describe('The Graph Component', function() {
 
     beforeEach(module('app'));
 
@@ -20,9 +20,9 @@ describe('The graph component', function() {
                 }
             }
         });
-    }))
+    }));
 
-    describe('The Graph Controller', function() {
+    describe('The Controller', function() {
         var $componentController, $timeout, $httpBackend;
         var graph, scope;
 
