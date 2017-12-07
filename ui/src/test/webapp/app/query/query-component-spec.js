@@ -2,19 +2,37 @@ describe('The query component', function() {
 
     beforeEach(module('app'));
 
+    beforeEach(module(function($provide) {
+        $provide.factory('config', function($q) {
+            var get = function() {
+                return $q.when({});
+            }
+
+            return {
+                get: get
+            }
+        });
+
+        $provide.factory('schema', function($q) {
+            return {
+                get: function() {
+                    return $q.when({});
+                }
+            }
+        });
+    }));
+
     describe('The Query Controller', function() {
-        var $componentController, $mdDialog, $q;
+        var $componentController;
         var queryPage, query, loading, graph, settings;
 
-        beforeEach(inject(function(_$componentController_, _queryPage_, _query_, _loading_, _graph_, _$mdDialog_, _settings_, _$q_) {
+        beforeEach(inject(function(_$componentController_, _queryPage_, _query_, _loading_, _graph_, _settings_, _navigation_) {
             $componentController = _$componentController_;
             queryPage = _queryPage_;
             query = _query_;
             loading = _loading_;
             graph = _graph_;
-            $mdDialog = _$mdDialog_;
             settings = _settings_;
-            $q = _$q_;
         }));
 
         it('should expose the getSelectedOperation of the queryPage service', function() {
@@ -473,21 +491,104 @@ describe('The query component', function() {
             expect(query.addOperation).toHaveBeenCalledTimes(1);
         });
 
-        it('should display a dialog if the results numbered more than the result limit', function() {
-            spyOn(queryPage, 'getSelectedOperation').and.returnValue({
-                class: 'operation.class.Name'
+        describe('when the results returned number the same as the result limit', function() {
+            var scope;
+            var navigation, results;
+            var $mdDialog, $q;
+
+            var returnValue;
+            var ctrl;
+
+            beforeEach(inject(function(_navigation_, _$rootScope_, _$mdDialog_, _$q_, _results_) {
+                navigation = _navigation_;
+                scope = _$rootScope_.$new();
+                $mdDialog = _$mdDialog_;
+                $q = _$q_;
+                results = _results_;
+            }));
+
+            beforeEach(function() {
+                spyOn(queryPage, 'getSelectedOperation').and.returnValue({
+                    class: 'operation.class.Name'
+                });
+
+                spyOn(queryPage, 'reset');
+
+                spyOn(settings, 'getResultLimit').and.returnValue(2);
+                spyOn(query, 'execute').and.callFake(function(opChain, callback) {
+                    callback([1, 2]);
+                });
+
+                spyOn(graph, 'deselectAll');
+                spyOn(results, 'update');
+
+                spyOn($mdDialog, 'show').and.callFake(function() {
+                    return $q.when(returnValue);
+                });
+
+                spyOn(navigation, 'goTo');
             });
 
-            spyOn(settings, 'getResultLimit').and.returnValue(2);
-            spyOn(query, 'execute').and.callFake(function(opChain, callback) {
-                callback([1, 2]);
+            beforeEach(function() {
+                returnValue = 'results';
+            })
+
+            beforeEach(function() {
+                ctrl = $componentController('query', {$scope: scope});
+                ctrl.execute();
+                scope.$digest();
+            })
+
+            it('should display a dialog if the results numbered the same as the result limit', function() {
+                expect($mdDialog.show).toHaveBeenCalledTimes(1);
             });
-            spyOn($mdDialog, 'show').and.returnValue($q.defer().promise);
 
-            var ctrl = $componentController('query');
-            ctrl.execute();
+            it('should navigate to the graph if the dialog returns "results"', function() {
+                expect(navigation.goTo).toHaveBeenCalledTimes(1);
+                expect(navigation.goTo).toHaveBeenCalledWith('graph');
 
-            expect($mdDialog.show).toHaveBeenCalledTimes(1);
+                navigation.goTo.calls.reset();
+
+                returnValue = 'not results';
+                ctrl.execute();
+                expect(navigation.goTo).not.toHaveBeenCalled();
+            });
+
+            it('should submit the results if the dialog returns "results"', function() {
+                expect(results.update).toHaveBeenCalledTimes(1);
+                expect(results.update).toHaveBeenCalledWith([1, 2]);
+
+                results.update.calls.reset();
+
+                returnValue = 'query';
+                ctrl.execute();
+                scope.$digest();
+                expect(results.update).not.toHaveBeenCalled();
+
+            });
+
+            it('should clear the query page if the dialog returns "results"', function() {
+                expect(queryPage.reset).toHaveBeenCalledTimes(1);
+
+                queryPage.reset.calls.reset();
+
+                returnValue = 'A value which is not results';
+                ctrl.execute();
+                scope.$digest();
+                expect(queryPage.reset).not.toHaveBeenCalled();
+            });
+
+            it('should deselect all elements if the dialog returns "results"', function() {
+                expect(graph.deselectAll).toHaveBeenCalledTimes(1);
+
+                graph.deselectAll.calls.reset();
+
+                returnValue = 'query';
+                ctrl.execute();
+                scope.$digest();
+                expect(graph.deselectAll).not.toHaveBeenCalled();
+            });
         });
+
     });
 });

@@ -44,5 +44,7 @@ function ResultCountWarningController($mdDialog, settings) {
         }
     ];
 
-    vm.answer = $mdDialog.hide;
+    vm.answer = function(value) {
+        $mdDialog.hide(value);
+    }
 }
