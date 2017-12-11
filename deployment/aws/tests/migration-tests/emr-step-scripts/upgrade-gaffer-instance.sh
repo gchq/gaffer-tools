@@ -140,19 +140,9 @@ echo "Stopping the Gaffer instance..."
 ./slider stop $GAFFER_INSTANCE_NAME
 
 # Ensure some dependencies are installed
-PKGS_TO_INSTALL=()
-
 if ! which xmlstarlet >/dev/null 2>&1; then
-	PKGS_TO_INSTALL+=(xmlstarlet)
-fi
-
-if ! which git >/dev/null 2>&1; then
-	PKGS_TO_INSTALL+=(git)
-fi
-
-if [ ${#PKGS_TO_INSTALL[@]} -gt 0 ]; then
-	echo "Installing ${PKGS_TO_INSTALL[@]} ..."
-	sudo yum install -y ${PKGS_TO_INSTALL[@]}
+	echo "Installing xmlstarlet ..."
+	sudo yum install -y xmlstarlet
 fi
 
 # Install Apache Maven
@@ -219,8 +209,12 @@ cd $DIR
 
 if ! curl -fLO https://repo1.maven.org/maven2/uk/gov/gchq/gaffer/accumulo-store/$GAFFER_VERSION/accumulo-store-$GAFFER_VERSION-utility.jar; then
 	echo "Building Gaffer from branch $GAFFER_VERSION..."
-	git clone -b $GAFFER_VERSION --depth 1 https://github.com/gchq/Gaffer.git
-	cd Gaffer
+
+	curl -fLO https://github.com/gchq/Gaffer/archive/$GAFFER_VERSION.zip
+	unzip $GAFFER_VERSION.zip
+	rm $GAFFER_VERSION.zip
+	cd Gaffer-$GAFFER_VERSION
+
 	mvn clean install -Pquick -pl store-implementation/accumulo-store/ --also-make
 
 	GAFFER_POM_VERSION=$(xmllint --xpath '/*[local-name()="project"]/*[local-name()="version"]/text()' pom.xml)
@@ -230,7 +224,7 @@ if ! curl -fLO https://repo1.maven.org/maven2/uk/gov/gchq/gaffer/accumulo-store/
 
 	# Tidy up
 	cd ..
-	rm -rf Gaffer
+	rm -rf Gaffer-$GAFFER_VERSION
 else
 	echo "Will use Gaffer $GAFFER_VERSION from Maven Central..."
 	GAFFER_POM_VERSION=$GAFFER_VERSION
@@ -249,8 +243,12 @@ fi
 if [[ ! -f gaffer-slider-$GAFFER_TOOLS_VERSION.zip || ! -f gaffer-slider-$GAFFER_TOOLS_VERSION.jar ]]; then
 	echo "Building gaffer-slider from gaffer-tools branch $GAFFER_TOOLS_VERSION..."
 	cd $DST
-	git clone -b $GAFFER_TOOLS_VERSION --depth 1 https://github.com/gchq/gaffer-tools.git
-	cd gaffer-tools/slider
+
+	curl -fLO https://github.com/gchq/gaffer-tools/archive/$GAFFER_TOOLS_VERSION.zip
+	unzip $GAFFER_TOOLS_VERSION.zip
+	rm $GAFFER_TOOLS_VERSION.zip
+	cd gaffer-tools-$GAFFER_TOOLS_VERSION/slider
+
 	mvn clean package -Pquick -Dgaffer.version=$GAFFER_POM_VERSION
 
 	GAFFER_SLIDER_POM_VERSION=$(xmllint --xpath '/*[local-name()="project"]/*[local-name()="version"]/text()' ../pom.xml)
@@ -261,7 +259,7 @@ if [[ ! -f gaffer-slider-$GAFFER_TOOLS_VERSION.zip || ! -f gaffer-slider-$GAFFER
 
 	# Tidy up
 	cd ../../
-	rm -rf gaffer-tools
+	rm -rf gaffer-tools-$GAFFER_TOOLS_VERSION
 else
 	echo "Will use gaffer-slider $GAFFER_TOOLS_VERSION from Maven Central..."
 	GAFFER_SLIDER_POM_VERSION=$GAFFER_TOOLS_VERSION
