@@ -26,8 +26,7 @@ Parameters:
   EmrRelease:
     Type: String
     Default: emr-5.7.0
-    AllowedValues:
-      - emr-5.7.0
+    AllowedPattern: "emr-\\d+\\.\\d+\\.\\d+"
     ConstraintDescription: Please select a valid EMR release
 
   EmrInstanceType:
@@ -291,6 +290,14 @@ Outputs:
     Value: !Sub ${GafferWithUser.Outputs.EmrMasterPublicDNS}
   EmrClusterId:
     Value: !Sub ${GafferWithUser.Outputs.EmrClusterId}
+  EmrMasterSecurityGroup:
+    Value: !Sub ${GafferWithUser.Outputs.EmrMasterSecurityGroup}
+  EmrSlaveSecurityGroup:
+    Value: !Sub ${GafferWithUser.Outputs.EmrSlaveSecurityGroup}
+  EmrIamRoleName:
+    Value: !Sub ${GafferWithUser.Outputs.EmrIamRoleName}
+  GafferInstanceName:
+    Value: !Sub ${GafferWithUser.Outputs.GafferInstanceName}
   AccumuloInstanceName:
     Value: !Sub ${GafferWithUser.Outputs.AccumuloInstanceName}
   UserName:

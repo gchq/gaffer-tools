@@ -26,18 +26,26 @@ function operationSelector() {
     }
 }
 
-function OperationSelectorController(operationService, queryPage, $window) {
+function OperationSelectorController(operationService, operationSelectorService, queryPage, $window) {
     var vm = this;
 
     vm.availableOperations;
     vm.selectedOp = [];
     vm.searchTerm = '';
 
-    queryPage.waitUntilReady().then(function() {
-        vm.availableOperations = operationService.getAvailableOperations();
+    var populateTable = function(availableOperations) {
+        vm.availableOperations = availableOperations
         var selected = queryPage.getSelectedOperation();
         if (selected)  {
             vm.selectedOp = [ selected ];
+        }
+    }
+
+    operationSelectorService.shouldLoadNamedOperationsOnStartup().then(function(yes) {
+        if (yes) {
+            operationService.reloadNamedOperations().then(populateTable);
+        } else {
+            operationService.getAvailableOperations().then(populateTable);
         }
     });
 
