@@ -21,7 +21,6 @@ ng-view {
     width: 100%;
 }
 
-
 pre {
     background: white;
     padding: 5px;
@@ -52,4 +51,12 @@ md-nav-bar > div > nav {
 
 .transparent {
     background-color: transparent;
+}
+
+md-option > div {
+    flex: 1;
+}
+
+.standalone-icon {
+    margin: 0px;
 }
