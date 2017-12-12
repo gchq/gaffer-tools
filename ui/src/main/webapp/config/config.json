@@ -1,5 +1,6 @@
 {
   "operations": {
+    "loadNamedOperationsOnStartup": true,
     "defaultAvailable": [
       {
         "name": "Get Elements",
@@ -128,6 +129,5 @@
       ],
       "custom": true
     }
-
   }
 }

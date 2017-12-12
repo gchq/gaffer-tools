@@ -19,7 +19,7 @@
 # ----- CONFIG ----- #
 
 # The version of Gaffer to deploy. Can be a branch name or version number.
-GAFFER_VERSION="1.0.0"
+GAFFER_VERSION="1.0.2"
 
 # The version of gaffer-tools to use to deploy Gaffer. Can be a branch name or version number.
 GAFFER_TOOLS_VERSION="1.0.0"
@@ -42,7 +42,6 @@ EMR_INSTANCE_TYPE="m3.xlarge"
 EMR_INSTANCE_COUNT=3
 WEB_INSTANCE_TYPE="t2.small"
 
-GAFFER_SCHEMA_JAR_URL="https://repo1.maven.org/maven2/uk/gov/gchq/gaffer/road-traffic-model/$GAFFER_VERSION/road-traffic-model-$GAFFER_VERSION.jar"
 ROAD_TRAFFIC_DATA_URL="https://raw.githubusercontent.com/gchq/Gaffer/master/example/road-traffic/road-traffic-demo/src/main/resources/roadTrafficSampleData.csv"
 
 # ----- CONFIG END ----- #
@@ -62,6 +61,7 @@ aws cloudformation create-stack \
 	--stack-name $KEYNAME-road-traffic \
 	--template-body file://cloudformation/gaffer-road-traffic.yaml \
 	--capabilities CAPABILITY_NAMED_IAM \
+	--on-failure DO_NOTHING \
 	--tags \
 		Key=gaffer-version,Value=$GAFFER_VERSION \
 		Key=gaffer-tools-version,Value=$GAFFER_TOOLS_VERSION \
@@ -76,5 +76,4 @@ aws cloudformation create-stack \
 		ParameterKey=SubnetId,ParameterValue=$SUBNET_ID \
 		ParameterKey=ExtraSecurityGroups,ParameterValue=\"$EXTRA_SECURITY_GROUPS\" \
 		ParameterKey=KeyName,ParameterValue=$KEYNAME \
-		ParameterKey=GafferSchemaJarUrl,ParameterValue=$GAFFER_SCHEMA_JAR_URL \
 		ParameterKey=RoadTrafficDataUrl,ParameterValue=$ROAD_TRAFFIC_DATA_URL

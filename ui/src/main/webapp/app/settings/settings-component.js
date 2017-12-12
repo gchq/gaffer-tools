@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-'use strict'
+'use strict';
 
 angular.module('app').component('settingsView', settingsView())
 
@@ -27,7 +27,7 @@ function settingsView() {
     }
 }
 
-function SettingsController($scope, settings, schema, operationService, results) {
+function SettingsController(settings, schema, operationService, results) {
 
     var vm = this;
 
@@ -41,5 +41,4 @@ function SettingsController($scope, settings, schema, operationService, results)
     vm.updateDefaultOp = function() {
         settings.setDefaultOp(vm.defaultOp);
     }
-
 }

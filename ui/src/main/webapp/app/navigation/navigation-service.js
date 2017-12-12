@@ -14,14 +14,13 @@
  * limitations under the License.
  */
 
-'use strict'
+'use strict';
 
-angular.module('app').factory('navigation', ['$location', '$q', function($location, $q) {
+angular.module('app').factory('navigation', ['$location', 'events', function($location, events) {
 
     var navigation = {};
 
     var currentPage = $location.path().substr(1);
-    var defer = $q.defer();
 
     navigation.getCurrentPage = function() {
         return currentPage;
@@ -30,11 +29,7 @@ angular.module('app').factory('navigation', ['$location', '$q', function($locati
     navigation.goTo = function(pageName) {
         currentPage = pageName;
         $location.path('/' + pageName);
-        defer.notify(currentPage);
-    }
-
-    navigation.observeCurrentPage = function() {
-        return defer.promise;
+        events.broadcast('routeChange', [currentPage]);
     }
 
     return navigation;

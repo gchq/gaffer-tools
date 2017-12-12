@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-'use strict'
+'use strict';
 
 angular.module('app').config(['$locationProvider', '$routeProvider', function($locationProvider, $routeProvider) {
     $locationProvider.html5Mode(false)
@@ -25,7 +25,7 @@ angular.module('app').config(['$locationProvider', '$routeProvider', function($l
             title: 'Query'
         })
         .when('/graph', {
-            template: '<graph-view></graph-view>',
+            templateUrl: 'app/graph/graph-page.html',
             title: 'Graph'
         })
         .when('/settings', {

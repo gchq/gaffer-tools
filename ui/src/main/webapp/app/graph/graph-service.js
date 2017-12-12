@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-'use strict'
+'use strict';
 
-angular.module('app').factory('graph', ['schema', 'types', '$q', 'results', 'common', function(schemaService, types, $q, results, common) {
+angular.module('app').factory('graph', ['schema', 'types', '$q', 'results', 'common', 'events', function(schemaService, types, $q, results, common, events) {
 
     var graphCy;
     var graph = {};
@@ -29,7 +29,7 @@ angular.module('app').factory('graph', ['schema', 'types', '$q', 'results', 'com
 
     var graphData = {entities: {}, edges: {}, entitySeeds: {}};
 
-    results.observe().then(null, null, function(results) {
+    events.subscribe('resultsUpdated', function(results) {
         graph.update(results);
         graph.redraw();
     });
@@ -130,7 +130,7 @@ angular.module('app').factory('graph', ['schema', 'types', '$q', 'results', 'com
                     }
                 }
             }
-            fire('onRelatedEntitiesUpdate', [relatedEntities]);
+            events.broadcast('relatedEntitiesUpdate', [relatedEntities]);
 
         });
 
@@ -149,7 +149,7 @@ angular.module('app').factory('graph', ['schema', 'types', '$q', 'results', 'com
                     }
                 }
             }
-            fire('onRelatedEdgesUpdate', [relatedEdges]);
+            events.broadcast('relatedEdgesUpdate', [relatedEdges]);
         });
     }
 
@@ -167,7 +167,7 @@ angular.module('app').factory('graph', ['schema', 'types', '$q', 'results', 'com
 
     function selectEntity(id, entity) {
         selectedEntities[id] = entity;
-        fire('onSelectedElementsUpdate', [{"entities": selectedEntities, "edges": selectedEdges}]);
+        events.broadcast('selectedElementsUpdate', [{"entities": selectedEntities, "edges": selectedEdges}]);
         updateRelatedEntities();
         updateRelatedEdges();
     }
@@ -184,7 +184,7 @@ angular.module('app').factory('graph', ['schema', 'types', '$q', 'results', 'com
 
     function selectEdge(id, edge) {
         selectedEdges[id] = edge;
-        fire('onSelectedElementsUpdate', [{"entities": selectedEntities, "edges": selectedEdges}]);
+        events.broadcast('selectedElementsUpdate', [{"entities": selectedEntities, "edges": selectedEdges}]);
     }
 
     function selectEdgeId(edgeId) {
@@ -211,7 +211,7 @@ angular.module('app').factory('graph', ['schema', 'types', '$q', 'results', 'com
             delete selectedEdges[element.id()];
         }
 
-        fire('onSelectedElementsUpdate', [{"entities": selectedEntities, "edges": selectedEdges}]);
+        events.broadcast('selectedElementsUpdate', [{"entities": selectedEntities, "edges": selectedEdges}]);
     }
 
     graph.reload = function() {
@@ -223,7 +223,7 @@ angular.module('app').factory('graph', ['schema', 'types', '$q', 'results', 'com
         selectedEdges = {};
         selectedEntities = {};
         graphCy.elements().unselect();
-        fire('onSelectedElementsUpdate'[{"entities": selectedEntities, "edges": selectedEdges}]);
+        events.broadcast('selectedElementsUpdate'[{"entities": selectedEntities, "edges": selectedEdges}]);
     }
 
     graph.addSeed = function(seed) {
@@ -413,18 +413,6 @@ angular.module('app').factory('graph', ['schema', 'types', '$q', 'results', 'com
         }
     }
 
-    graph.onSelectedElementsUpdate = function(fn){
-        listen('onSelectedElementsUpdate', fn);
-    };
-
-    graph.onRelatedEntitiesUpdate = function(fn){
-        listen('onRelatedEntitiesUpdate', fn);
-    };
-
-     graph.onRelatedEdgesUpdate = function(fn){
-            listen('onRelatedEdgesUpdate', fn);
-        };
-
     graph.clear = function(){
         while(graphCy.elements().length > 0) {
             graphCy.remove(graphCy.elements()[0]);
@@ -492,21 +480,6 @@ angular.module('app').factory('graph', ['schema', 'types', '$q', 'results', 'com
 
     graph.deselectAll = function() {
         graphCy.elements().unselect();
-    }
-
-    function fire(e, args){
-        var currentListeners = listeners[e];
-
-        for( var i = 0; currentListeners && i < currentListeners.length; i++ ){
-            var fn = currentListeners[i];
-
-            fn.apply( fn, args );
-        }
-    }
-
-    function listen(e, fn){
-        var currentListeners = listeners[e] = listeners[e] || [];
-        currentListeners.push(fn);
     }
 
     return graph;

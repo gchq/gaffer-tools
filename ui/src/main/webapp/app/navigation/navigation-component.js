@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+'use strict';
 
 angular.module('app').component('navBar', navBar());
 
@@ -25,16 +26,40 @@ function navBar() {
     };
 }
 
-function NavigationController($scope, $rootScope, $mdDialog, navigation, graph, operationService, results, query, config, loading) {
-
+function NavigationController($rootScope, $mdDialog, navigation, graph, operationService, results, query, config, loading, events, properties) {
     var vm = this;
     vm.addMultipleSeeds = false;
+    vm.appTitle;
+
+    var defaultTitle = "Gaffer"
+
+    config.get().then(function(conf) {
+        if (conf.title) {
+            vm.appTitle = conf.title;
+            return;
+        }
+        properties.get().then(function(props) {
+            if (props) {
+                var configuredTitle = props["gaffer.properties.app.title"]
+                if (configuredTitle) {
+                    vm.appTitle = configuredTitle;
+                    return;
+                }
+            }
+
+            vm.appTitle = defaultTitle;
+
+        },
+        function(err) {
+            vm.appTitle = defaultTitle;
+        });
+    })
 
     vm.currentPage = navigation.getCurrentPage();
 
-    navigation.observeCurrentPage().then(null, null, function(newCurrentPage) {
+    events.subscribe('routeChange', function(newCurrentPage) {
         vm.currentPage = newCurrentPage
-    })
+    });
 
     vm.goTo = navigation.goTo;
 

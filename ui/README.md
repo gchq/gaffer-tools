@@ -251,3 +251,41 @@ The next is a summary over the two hours we specified in our second query. (You 
 In this example we have summarised the vehicle counts by adding them together. Gaffer users are free to define the objects that represent the properties on an edge and the functions used to summarise them and so supports things that are much more complex than adding integers together.
 
 There are some in-depth examples based around the Java API here: [Getting Started](https://gchq.github.io/gaffer-doc/summaries/getting-started.html).
+
+### Testing
+
+The UI contains both End-to-End Selenium tests and Jasmine unit tests. The former testing user interactions, and the
+latter testing small units of javascript. New functionality being added to the UI should be fully tested using both
+frameworks if appropriate.
+
+If adding functionality to the query page, you can append tests to QueryBuilderST.java. Otherwise, create a new system test.
+
+To add a new unit test, create a file in the "src/test/webapp/" which mirrors it's location in main. For example, to test for the graph service, I would create a file in "src/test/webapp/app/graph" and name that file "graph-service-spec.js". Be sure to end the file in "-spec.js" so that the jasmine plugin can run the test.
+
+Make your Jasmine specs self documenting as it should define the behaviour of the code.
+
+Start the test with the name of whatever component/service/controller your testing. Separate the spec into logical parts and then define what it's behaviour should be':
+
+```
+describe('SomeService', function() {
+    // all tests for someService go here
+
+    // inject dependencies and create new service for each test
+
+    // lets test it exists
+    it('should Exist', function() {
+        expect(service).toBeDefined();
+    });
+
+    // now test a specific part of the service
+    describe('add function', function() {
+        it('should add two positive numbers together', function() {
+            expect(someService.add(1, 4)).toEqual(5)
+        });
+    });
+})
+```
+you can manually run all the unit tests with the command:
+```
+mvn clean integration-test -pl ui
+```

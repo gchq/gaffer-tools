@@ -24,8 +24,6 @@ GAFFER_VERSION="develop"
 # The version of gaffer-tools to use to deploy Gaffer. Can be a branch name or version number.
 GAFFER_TOOLS_VERSION="develop"
 
-GAFFER_SCHEMA_JAR_URL="https://repo1.maven.org/maven2/uk/gov/gchq/gaffer/road-traffic-model/1.0.0/road-traffic-model-1.0.0.jar"
-
 # The ID of the VPC that the EMR cluster should be deployed into
 VPC_ID=""
 
@@ -62,6 +60,7 @@ aws cloudformation create-stack \
 	--stack-name $CLUSTER_NAME \
 	--template-body file://cloudformation/gaffer-system-tests.yaml \
 	--capabilities CAPABILITY_NAMED_IAM \
+	--on-failure DO_NOTHING \
 	--tags \
 		Key=gaffer-version,Value=$GAFFER_VERSION \
 		Key=gaffer-tools-version,Value=$GAFFER_TOOLS_VERSION \
@@ -75,5 +74,4 @@ aws cloudformation create-stack \
 		ParameterKey=VpcId,ParameterValue=$VPC_ID \
 		ParameterKey=SubnetId,ParameterValue=$SUBNET_ID \
 		ParameterKey=ExtraSecurityGroups,ParameterValue=\"$EXTRA_SECURITY_GROUPS\" \
-		ParameterKey=KeyName,ParameterValue=$KEYNAME \
-		ParameterKey=GafferSchemaJarUrl,ParameterValue=$GAFFER_SCHEMA_JAR_URL
+		ParameterKey=KeyName,ParameterValue=$KEYNAME
