@@ -193,7 +193,7 @@ if [[ ! -f gaffer-slider-$GAFFER_TOOLS_VERSION.zip || ! -f gaffer-slider-$GAFFER
 	rm $GAFFER_TOOLS_VERSION.zip
 	cd gaffer-tools-$GAFFER_TOOLS_VERSION
 
-	mvn clean package -Pquick -Dgaffer.version=$GAFFER_POM_VERSION
+	mvn clean package -Pquick -pl slider --also-make -Dgaffer.version=$GAFFER_POM_VERSION
 
 	GAFFER_SLIDER_POM_VERSION=$(xmllint --xpath '/*[local-name()="project"]/*[local-name()="version"]/text()' ../pom.xml)
 	echo "Detected gaffer-slider version as $GAFFER_SLIDER_POM_VERSION"
