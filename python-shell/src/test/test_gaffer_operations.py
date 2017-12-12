@@ -4123,57 +4123,52 @@ class GafferOperationsTest(unittest.TestCase):
         [
             '''
             {
-                "class": "uk.gov.gchq.gaffer.operation.OperationChain",
-                "operations": [{
-                    "class": "uk.gov.gchq.gaffer.operation.impl.GetWalks",
-                    "operations": [{
-                            "class": "uk.gov.gchq.gaffer.operation.impl.get.GetElements",
-                            "view": {
-                                "edges": {
-                                    "JunctionLocatedAt": {}
-                                },
-                                "entities": {}
-                            }
-                        },
-                        {
-                            "class": "uk.gov.gchq.gaffer.operation.impl.get.GetElements",
-                            "view": {
-                                "edges": {
-                                    "RoadUse": {}
-                                },
-                                "entities": {}
-                            }
-                        }
-                    ],
-                    "resultsLimit": 10000,
-                    "input": [{
-                        "class": "uk.gov.gchq.gaffer.operation.data.EntitySeed",
-                        "vertex": 293020
-            
-                    }]
-                }, {
-                    "class": "uk.gov.gchq.gaffer.operation.impl.Map",
-                    "function": {
-                        "class": "uk.gov.gchq.koryphe.impl.function.IterableFunction",
-                        "delegateFunction": {
-                            "class": "uk.gov.gchq.koryphe.impl.function.FirstItem"
-                        }
-                    }
-                }, {
-                    "class": "uk.gov.gchq.gaffer.operation.impl.Map",
-                    "function": {
-                        "class": "uk.gov.gchq.koryphe.impl.function.IterableFunction",
-                        "delegateFunction": {
-                            "class": "uk.gov.gchq.koryphe.impl.function.FirstItem"
-                        }
-                    }
-                }, {
-                    "class": "uk.gov.gchq.gaffer.operation.impl.output.ToVertices",
-                    "useMatchedVertex": "EQUAL",
-                    "edgeVertices": "SOURCE"
-                }, {
-                    "class": "uk.gov.gchq.gaffer.operation.impl.output.ToSet"
-                }]
+            	"class": "uk.gov.gchq.gaffer.operation.OperationChain",
+            	"operations": [{
+            		"class": "uk.gov.gchq.gaffer.operation.impl.GetWalks",
+            		"operations": [{
+            				"class": "uk.gov.gchq.gaffer.operation.impl.get.GetElements",
+            				"view": {
+            					"edges": {
+            						"JunctionLocatedAt": {}
+            					},
+            					"entities": {}
+            				}
+            			},
+            			{
+            				"class": "uk.gov.gchq.gaffer.operation.impl.get.GetElements",
+            				"view": {
+            					"edges": {
+            						"RoadUse": {}
+            					},
+            					"entities": {}
+            				}
+            			}
+            		],
+            		"resultsLimit": 10000,
+            		"input": [{
+            			"class": "uk.gov.gchq.gaffer.operation.data.EntitySeed",
+            			"vertex": 293020
+
+            		}]
+            	}, {
+            		"class": "uk.gov.gchq.gaffer.operation.impl.Map",
+            		"functions": [{
+            			"class": "uk.gov.gchq.koryphe.impl.function.IterableFunction",
+            			"functions": [{
+            				"class": "uk.gov.gchq.gaffer.data.graph.function.walk.ExtractWalkEdgesFromHop",
+            				"hop": 1
+            			}, {
+            				"class": "uk.gov.gchq.koryphe.impl.function.FirstItem"
+            			}]
+            		}]
+            	}, {
+            		"class": "uk.gov.gchq.gaffer.operation.impl.output.ToVertices",
+            		"useMatchedVertex": "EQUAL",
+            		"edgeVertices": "SOURCE"
+            	}, {
+            		"class": "uk.gov.gchq.gaffer.operation.impl.output.ToSet"
+            	}]
             }
             ''',
             g.OperationChain(
@@ -4209,14 +4204,15 @@ class GafferOperationsTest(unittest.TestCase):
                         ]
                     ),
                     g.Map(
-                        function=g.IterableFunction(
-                            delegate_function=g.FirstItem()
-                        )
-                    ),
-                    g.Map(
-                        function=g.IterableFunction(
-                            delegate_function=g.FirstItem()
-                        )
+                        functions=[
+                            g.IterableFunction(
+                                functions=[
+                                    g.ExtractWalkEdgesFromHop(
+                                        hop=1),
+                                    g.FirstItem()
+                                ]
+                            )
+                        ]
                     ),
                     g.ToVertices(
                         use_matched_vertex="EQUAL",
