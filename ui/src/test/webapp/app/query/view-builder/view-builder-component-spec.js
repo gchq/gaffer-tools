@@ -70,7 +70,7 @@ describe('The View Builder Component', function() {
             });
 
             beforeEach(function() {
-                spyOn(events, 'subscribe').and.callThrough();
+                spyOn(events, 'subscribe');
             });
 
             beforeEach(function() {
@@ -87,16 +87,6 @@ describe('The View Builder Component', function() {
                 expect(events.subscribe.calls.argsFor(1)[0]).toEqual('relatedEdgesUpdate');
             });
 
-            it('should update the related Edges model when the event is fired', function() {
-                events.broadcast('relatedEdgesUpdate', [['this', 'is', 'a', 'test']]);
-                expect(ctrl.relatedEdges).toEqual(['this', 'is', 'a', 'test']);
-            });
-
-            it('should update the related Entities model when the event is fired', function() {
-                events.broadcast('relatedEntitiesUpdate', [['this', 'is', 'a', 'test']]);
-                expect(ctrl.relatedEntities).toEqual(['this', 'is', 'a', 'test']);
-            });
-
             describe('when destroyed', function() {
                 var events;
                 var ctrl;
@@ -111,7 +101,7 @@ describe('The View Builder Component', function() {
                 });
 
                 beforeEach(function() {
-                    spyOn(events, 'unsubscribe').and.callThrough();
+                    spyOn(events, 'unsubscribe');
                 });
 
                 beforeEach(function() {
@@ -126,16 +116,6 @@ describe('The View Builder Component', function() {
                 it('should unsubscribe to the relatedEdgesUpdate event', function() {
                     expect(events.unsubscribe).toHaveBeenCalled();
                     expect(events.unsubscribe.calls.argsFor(1)[0]).toEqual('relatedEdgesUpdate');
-                });
-
-                it('should no longer update the related Edges model when the event is fired', function() {
-                    events.broadcast('relatedEdgesUpdate', [['this', 'is', 'a', 'test']]);
-                    expect(ctrl.relatedEdges).toEqual([]);
-                });
-
-                it('should no longer update the related Entities model when the event is fired', function() {
-                    events.broadcast('relatedEntitiesUpdate', [['this', 'is', 'a', 'test']]);
-                    expect(ctrl.relatedEntities).toEqual([]);
                 });
             });
         });

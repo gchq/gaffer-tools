@@ -5,23 +5,6 @@ describe('The Selected Elements Component', function() {
 
     beforeEach(module('app'));
 
-    beforeEach(module(function($provide) {
-        $provide.factory('graph', function() {
-            var getSelectedEdges = function() {
-                return testSelectedEdges;
-            };
-
-            var getSelectedEntities = function() {
-                return testSelectedEntities;
-            };
-
-            return {
-                getSelectedEdges: getSelectedEdges,
-                getSelectedEntities: getSelectedEntities
-            }
-        });
-    }));
-
     describe('The Controller', function() {
         var $componentController;
         var events, graph
@@ -37,97 +20,33 @@ describe('The Selected Elements Component', function() {
             graph = _graph_;
         }));
 
+        beforeEach(function() {
+            spyOn(graph, 'getSelectedEntities').and.callFake(function() {
+                return testSelectedEntities;
+            });
+
+            spyOn(graph, 'getSelectedEdges').and.callFake(function() {
+                return testSelectedEdges;
+            });
+        });
+
         it('should exist', function() {
             var ctrl = $componentController('selectedElements');
             expect(ctrl).toBeDefined()
-        })
-
-        it('should expose empty array when no elements are selected on startup', function() {
-            spyOn(graph, 'getSelectedEntities').and.callThrough();
-            spyOn(graph, 'getSelectedEdges').and.callThrough();
-
-            var ctrl = $componentController('selectedElements');
-
-            ctrl.$onInit();
-
-            expect(graph.getSelectedEntities).toHaveBeenCalledTimes(1);
-            expect(graph.getSelectedEdges).toHaveBeenCalledTimes(1);
-            expect(ctrl.selectedEntities).toEqual([]);
-            expect(ctrl.selectedEdges).toEqual([]);
         });
 
-        it('should expose array of selected elements when populated on startup', function() {
-            testSelectedEdges = [
-                {
-                    source: {
-                        vertex: 1,
-                        properties: {
-                            count: 3
-                        }
-                    },
-                    destination: {
-                        vertex: 5,
-                        properties: {
-                            count: 1
-                        }
-                    }
-                }
-            ];
+        describe('When created', function() {
+            it('should expose empty array when no elements are selected on startup', function() {
+                var ctrl = $componentController('selectedElements');
 
-            testSelectedEntities = [
-                {
-                    vertex: 1,
-                    properties: {}
-                },
-                {
-                    vertex: 2,
-                    properties: {}
-                },
-                {
-                    vertex: 5,
-                    properties: {}
-                },
-                {
-                    vertex: 42,
-                    properties: {}
-                }
-            ]
+                expect(graph.getSelectedEntities).toHaveBeenCalledTimes(1);
+                expect(graph.getSelectedEdges).toHaveBeenCalledTimes(1);
+                expect(ctrl.selectedEntities).toEqual([]);
+                expect(ctrl.selectedEdges).toEqual([]);
+            });
 
-            spyOn(graph, 'getSelectedEntities').and.callThrough();
-            spyOn(graph, 'getSelectedEdges').and.callThrough();
-
-            var ctrl = $componentController('selectedElements');
-
-            ctrl.$onInit();
-
-            expect(graph.getSelectedEntities).toHaveBeenCalledTimes(1);
-            expect(graph.getSelectedEdges).toHaveBeenCalledTimes(1);
-            expect(ctrl.selectedEntities).toEqual(testSelectedEntities);
-            expect(ctrl.selectedEdges).toEqual(testSelectedEdges);
-
-        });
-
-        it('should subscribe to event service to get updates to selected Elements', function() {
-            spyOn(events, 'subscribe').and.callThrough();
-            var ctrl = $componentController('selectedElements');
-
-            ctrl.$onInit();
-
-
-            expect(events.subscribe.calls.mostRecent().args[0]).toEqual('selectedElementsUpdate');
-
-        });
-
-        it('should update the model when the selected elements changes', function() {
-            var ctrl = $componentController('selectedElements');
-
-            ctrl.$onInit();
-
-            expect(ctrl.selectedEntities).toEqual([]);
-            expect(ctrl.selectedEdges).toEqual([]);
-
-            var newSelectedElements = {
-                'edges': [
+            it('should expose array of selected elements when populated on startup', function() {
+                testSelectedEdges = [
                     {
                         source: {
                             vertex: 1,
@@ -142,8 +61,9 @@ describe('The Selected Elements Component', function() {
                             }
                         }
                     }
-                ],
-                'entities': [
+                ];
+
+                testSelectedEntities = [
                     {
                         vertex: 1,
                         properties: {}
@@ -151,14 +71,39 @@ describe('The Selected Elements Component', function() {
                     {
                         vertex: 2,
                         properties: {}
+                    },
+                    {
+                        vertex: 5,
+                        properties: {}
+                    },
+                    {
+                        vertex: 42,
+                        properties: {}
                     }
                 ]
-            }
 
-            events.broadcast('selectedElementsUpdate', [newSelectedElements]);
-            expect(ctrl.selectedEntities).toEqual(newSelectedElements['entities']);
-            expect(ctrl.selectedEdges).toEqual(newSelectedElements['edges']);
+                var ctrl = $componentController('selectedElements');
+
+                expect(graph.getSelectedEntities).toHaveBeenCalledTimes(1);
+                expect(graph.getSelectedEdges).toHaveBeenCalledTimes(1);
+                expect(ctrl.selectedEntities).toEqual(testSelectedEntities);
+                expect(ctrl.selectedEdges).toEqual(testSelectedEdges);
+
+            });
+
+            describe('when initialised', function() {
+                it('should subscribe to event service to get updates to selected Elements', function() {
+                    spyOn(events, 'subscribe');
+                    var ctrl = $componentController('selectedElements');
+                    ctrl.$onInit();
+
+
+                    expect(events.subscribe.calls.mostRecent().args[0]).toEqual('selectedElementsUpdate');
+
+                });
+            });
         });
+
     });
 
 
