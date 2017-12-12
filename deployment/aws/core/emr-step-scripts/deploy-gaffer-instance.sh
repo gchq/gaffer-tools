@@ -198,11 +198,11 @@ if [[ ! -f gaffer-slider-$GAFFER_TOOLS_VERSION.zip || ! -f gaffer-slider-$GAFFER
 	GAFFER_SLIDER_POM_VERSION=$(xmllint --xpath '/*[local-name()="project"]/*[local-name()="version"]/text()' pom.xml)
 	echo "Detected gaffer-slider version as $GAFFER_SLIDER_POM_VERSION"
 
-	cp target/slider-$GAFFER_SLIDER_POM_VERSION.jar $DST/gaffer-slider/gaffer-slider-$GAFFER_SLIDER_POM_VERSION.jar
-	cp target/gaffer-slider-$GAFFER_SLIDER_POM_VERSION.zip $DST/gaffer-slider/
+	cp slider/target/slider-$GAFFER_SLIDER_POM_VERSION.jar $DST/gaffer-slider/gaffer-slider-$GAFFER_SLIDER_POM_VERSION.jar
+	cp slider/target/gaffer-slider-$GAFFER_SLIDER_POM_VERSION.zip $DST/gaffer-slider/
 
 	# Tidy up
-	cd ../../
+	cd ..
 	rm -rf gaffer-tools-$GAFFER_TOOLS_VERSION
 else
 	echo "Will use gaffer-slider $GAFFER_TOOLS_VERSION from Maven Central..."
