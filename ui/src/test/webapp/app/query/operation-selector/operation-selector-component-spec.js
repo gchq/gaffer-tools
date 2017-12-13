@@ -75,6 +75,59 @@ describe('Operation Selector Component', function() {
                 scope.$digest();
                 expect(operationService.reloadNamedOperations).not.toHaveBeenCalled();
             });
+
+            describe('when selecting the default selected operation', function() {
+                var queryPage;
+                var operationToReturn;
+                var ctrl;
+
+                beforeEach(inject(function(_queryPage_) {
+                    queryPage = _queryPage_;
+                }));
+
+                beforeEach(function() {
+                    spyOn(queryPage, 'getSelectedOperation').and.callFake(function() {
+                        return operationToReturn;
+                    });
+                });
+
+                beforeEach(function() {
+                    operationToReturn = undefined;
+                })
+
+                beforeEach(function() {
+                    ctrl = $componentController('operationSelector', {$scope: scope});
+                });
+
+                it('should set it to the selected operation in the queryPage service, if defined', function() {
+                    loadNamedOperations = true;
+                    operationToReturn = 'test';
+                    ctrl.$onInit();
+                    scope.$digest();
+
+                    expect(queryPage.getSelectedOperation).toHaveBeenCalledTimes(1);
+                    expect(ctrl.selectedOp).toEqual('test');
+                });
+
+                it('should set it to the first operation in the array if not defined in the queryPage service', function() {
+                    loadNamedOperations = true;
+                    ctrl.$onInit();
+                    scope.$digest();
+
+                    expect(queryPage.getSelectedOperation).toHaveBeenCalledTimes(1);
+                    expect(ctrl.selectedOp).toEqual(1);
+                });
+
+                it('should set it to undefined if no operations are returned in the available operations array or queryPage service', function() {
+                    spyOn(operationService, 'getAvailableOperations').and.returnValue($q.when([]));
+                    loadNamedOperations = false;
+                    ctrl.$onInit();
+                    scope.$digest();
+
+                    expect(queryPage.getSelectedOperation).toHaveBeenCalledTimes(1);
+                    expect(ctrl.selectedOp).not.toBeDefined();
+                });
+            });
         });
 
 

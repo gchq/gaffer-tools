@@ -37,6 +37,9 @@ function OperationSelectorController(operationService, operationSelectorService,
         var selected = queryPage.getSelectedOperation();
         if (selected)  {
             vm.selectedOp = selected;
+        } else {
+            vm.selectedOp = vm.availableOperations[0];
+            vm.updateModel();
         }
     }
 
