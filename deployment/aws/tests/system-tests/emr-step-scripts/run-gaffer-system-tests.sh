@@ -45,11 +45,6 @@ if [[ "$GAFFER_VERSION" == "" || "$HOST" == "" ]]; then
 	printUsage
 fi
 
-# Make sure git is installed
-if ! which git >/dev/null 2>&1; then
-	sudo yum install -y git
-fi
-
 # Install Apache Maven
 if ! which mvn >/dev/null 2>&1; then
 	MAVEN_DOWNLOAD_URL=https://archive.apache.org/dist/maven/maven-3/$MAVEN_VERSION/binaries/apache-maven-$MAVEN_VERSION-bin.tar.gz
@@ -60,11 +55,17 @@ if ! which mvn >/dev/null 2>&1; then
 	export PATH=$PWD/apache-maven-$MAVEN_VERSION/bin:$PATH
 fi
 
-if ! git clone -b gaffer2-$GAFFER_VERSION --depth 1 https://github.com/gchq/Gaffer.git; then
-	git clone -b $GAFFER_VERSION --depth 1 https://github.com/gchq/Gaffer.git
+if curl -fLO https://github.com/gchq/Gaffer/archive/gaffer2-$GAFFER_VERSION.zip; then
+	unzip gaffer2-$GAFFER_VERSION.zip
+	rm gaffer2-$GAFFER_VERSION.zip
+	cd Gaffer-gaffer2-$GAFFER_VERSION
+else
+	curl -fLO https://github.com/gchq/Gaffer/archive/$GAFFER_VERSION.zip
+	unzip $GAFFER_VERSION.zip
+	rm $GAFFER_VERSION.zip
+	cd Gaffer-$GAFFER_VERSION
 fi
 
-cd Gaffer
 GAFFER_POM_VERSION=$(xmllint --xpath '/*[local-name()="project"]/*[local-name()="version"]/text()' pom.xml)
 echo "Detected Gaffer version as $GAFFER_POM_VERSION"
 
@@ -79,5 +80,5 @@ mvn verify -Psystem-test -pl example/road-traffic/road-traffic-rest -Dgaffer.res
 
 # Tidy up
 cd ..
-rm -rf Gaffer
+rm -rf Gaffer-*
 rm -rf apache-maven-$MAVEN_VERSION
