@@ -26,7 +26,7 @@ function operationSelector() {
     }
 }
 
-function OperationSelectorController($scope, operationService, operationSelectorService, queryPage, $element) {
+function OperationSelectorController(operationService, operationSelectorService, queryPage, $mdDialog) {
     var vm = this;
 
     vm.availableOperations;
@@ -54,6 +54,20 @@ function OperationSelectorController($scope, operationService, operationSelector
             } else {
                 operationService.getAvailableOperations().then(populateOperations);
             }
+        });
+    }
+
+    vm.showOperationInfo = function(ev) {
+        $mdDialog.show({
+            templateUrl: 'app/query/operation-selector/operation-info/operation-info.html',
+            controller: 'OperationInfoController',
+            controllerAs: 'ctrl',
+            locals: {
+                operation: vm.selectedOp
+            },
+            parent: angular.element(document.body),
+            targetEvent: ev,
+            clickOutsideToClose: true
         });
     }
 
