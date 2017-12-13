@@ -70,11 +70,6 @@ if [[ "$DATA_URL" == "" || "$ACCUMULO_INSTANCE" == "" || "$USERNAME" == "" || "$
 fi
 
 function install_dev_tools {
-	# Install git
-	if ! which git >/dev/null 2>&1; then
-		sudo yum install -y git
-	fi
-
 	# Install Apache Maven
 	if ! which mvn >/dev/null 2>&1; then
 		echo "Downloading Apache Maven $MAVEN_VERSION from $MAVEN_DOWNLOAD_URL"
@@ -93,9 +88,14 @@ if \
 
 	echo "Building Gaffer road-traffic-generators.jar, road-traffic-model.jar and accumulo-store.jar from branch $GAFFER_VERSION..."
 	install_dev_tools
-	git clone -b $GAFFER_VERSION --depth 1 https://github.com/gchq/Gaffer.git
-	cd Gaffer
+
+	curl -fLO https://github.com/gchq/Gaffer/archive/$GAFFER_VERSION.zip
+	unzip $GAFFER_VERSION.zip
+	rm $GAFFER_VERSION.zip
+	cd Gaffer-$GAFFER_VERSION
+
 	mvn clean package -Pquick -pl example/road-traffic/road-traffic-generators,example/road-traffic/road-traffic-model,store-implementation/accumulo-store --also-make
+
 	GAFFER_POM_VERSION=$(xmllint --xpath '/*[local-name()="project"]/*[local-name()="version"]/text()' pom.xml)
 	echo "Detected Gaffer version as $GAFFER_POM_VERSION"
 
@@ -105,7 +105,7 @@ if \
 
 	# Tidy up
 	cd ..
-	rm -rf Gaffer
+	rm -rf Gaffer-$GAFFER_VERSION
 else
 	echo "Using Gaffer road-traffic-generators.jar, road-traffic-model.jar and accumulo-store.jar from Maven Central..."
 	GAFFER_POM_VERSION=$GAFFER_VERSION
