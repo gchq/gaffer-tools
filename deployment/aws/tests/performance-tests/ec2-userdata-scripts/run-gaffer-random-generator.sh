@@ -7,11 +7,6 @@ sudo yum install -y java-1.8.0-openjdk-devel
 MAVEN_VERSION=3.5.0
 MAVEN_DOWNLOAD_URL=https://archive.apache.org/dist/maven/maven-3/$MAVEN_VERSION/binaries/apache-maven-$MAVEN_VERSION-bin.tar.gz
 function install_dev_tools {
-	# Install git
-	if ! which git >/dev/null 2>&1; then
-		sudo yum install -y git
-	fi
-
 	# Install Apache Maven
 	if ! which mvn >/dev/null 2>&1; then
 		echo "Downloading Apache Maven $MAVEN_VERSION from $MAVEN_DOWNLOAD_URL"
@@ -92,16 +87,21 @@ EOF
 if ! curl -fLO https://repo1.maven.org/maven2/uk/gov/gchq/gaffer/performance-testing-aws/$GAFFER_TOOLS_VERSION/performance-testing-aws-$GAFFER_TOOLS_VERSION-full.jar; then
 	echo "Building aws performance testing JAR from branch $GAFFER_TOOLS_VERSION..."
 	install_dev_tools
-	git clone -b $GAFFER_TOOLS_VERSION --depth 1 https://github.com/gchq/gaffer-tools.git
-	cd gaffer-tools
+
+	curl -fLO https://github.com/gchq/gaffer-tools/archive/$GAFFER_TOOLS_VERSION.zip
+	unzip $GAFFER_TOOLS_VERSION.zip
+	rm $GAFFER_TOOLS_VERSION.zip
+	cd gaffer-tools-$GAFFER_TOOLS_VERSION
+
 	mvn clean package -Pquick -pl performance-testing/performance-testing-aws --also-make
 
 	GAFFER_TOOLS_POM_VERSION=$(xmllint --xpath '/*[local-name()="project"]/*[local-name()="version"]/text()' pom.xml)
 	echo "Detected Gaffer Tools version as $GAFFER_TOOLS_POM_VERSION"
 
 	cp performance-testing/performance-testing-aws/target/performance-testing-aws-$GAFFER_TOOLS_POM_VERSION-full.jar ../lib/
+
 	cd ..
-	rm -rf gaffer-tools
+	rm -rf gaffer-tools-$GAFFER_TOOLS_VERSION
 else
 	echo "Using aws performance testing JAR $GAFFER_TOOLS_VERSION from Maven Central..."
 	mv performance-testing-aws-$GAFFER_TOOLS_VERSION-full.jar lib/

@@ -423,8 +423,12 @@ Resources:
       KeyName: !Ref KeyName
       IamInstanceProfile: !Ref GeneratorInstanceProfile
       SecurityGroups:
-        - !Join [",", Ref: ExtraSecurityGroups]
-        - !Ref GeneratorSecurityGroup
+        !Split
+          - ","
+          - !Join
+              - ","
+              - - !Join [",", !Ref ExtraSecurityGroups]
+                - !Ref GeneratorSecurityGroup
       UserData:
         Fn::Base64:
           !Sub |
@@ -512,8 +516,12 @@ Resources:
       KeyName: !Ref KeyName
       IamInstanceProfile: !Ref GeneratorInstanceProfile
       SecurityGroups:
-        - !Join [",", Ref: ExtraSecurityGroups]
-        - !Ref GeneratorSecurityGroup
+        !Split
+          - ","
+          - !Join
+              - ","
+              - - !Join [",", !Ref ExtraSecurityGroups]
+                - !Ref GeneratorSecurityGroup
       UserData:
         Fn::Base64:
           !Sub |
