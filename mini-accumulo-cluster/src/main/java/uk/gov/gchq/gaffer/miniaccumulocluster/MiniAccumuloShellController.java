@@ -15,7 +15,7 @@
  */
 package uk.gov.gchq.gaffer.miniaccumulocluster;
 
-import org.apache.accumulo.core.util.shell.Shell;
+import org.apache.accumulo.shell.Shell;
 import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
 
