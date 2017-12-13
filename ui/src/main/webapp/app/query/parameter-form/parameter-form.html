@@ -13,6 +13,7 @@
                         <md-input-container ng-if="param.required" layout-fill>
                             <label>{{field.label}}</label>
                             <input required
+                                   id="{{name}}-{{field.key}}-required"
                                    name="{{name}}-{{field.label}}"
                                    type="{{field.type}}"
                                    md-select-on-focus
@@ -24,6 +25,7 @@
                         <md-input-container layout-fill ng-if="!param.required">
                             <label>{{field.label}}</label>
                             <input name="{{name}}-{{field.label}}"
+                                   id="{{name}}-{{field.key}}"
                                    type="{{field.type}}"
                                    md-select-on-focus
                                    ng-model="param.parts[field.key]">
