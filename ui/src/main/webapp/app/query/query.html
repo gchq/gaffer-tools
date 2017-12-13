@@ -16,7 +16,7 @@
 <div layout-padding layout-margin>
     <operation-selector></operation-selector>
     <seed-manager ng-show="ctrl.getSelectedOp().input"></seed-manager>
-    <parameter-table ng-show="ctrl.getSelectedOp().parameters"></parameter-table>
+    <parameter-form ng-if="ctrl.getSelectedOp().parameters" parameters="ctrl.getSelectedOp().parameters"></parameter-form>
     <view-builder ng-show="ctrl.getSelectedOp().view"></view-builder>
     <directionality-picker ng-show="ctrl.getSelectedOp().inOutFlag"></directionality-picker>
 </div>

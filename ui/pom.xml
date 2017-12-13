@@ -97,6 +97,7 @@
                     </specIncludes>
                     <preloadSources>
                         <source>${project.build.directory}/${project.build.finalName}/lib/angular/js/angular.min.js</source>
+                        <source>${project.build.directory}/${project.build.finalName}/lib/angular/js/angular-messages.min.js</source>
                         <source>${project.build.directory}/${project.build.finalName}/lib/angular/js/angular-aria.min.js</source>
                         <source>${project.build.directory}/${project.build.finalName}/lib/angular/js/angular-animate.min.js</source>
                         <source>${project.build.directory}/${project.build.finalName}/lib/angular/js/angular-material.min.js</source>

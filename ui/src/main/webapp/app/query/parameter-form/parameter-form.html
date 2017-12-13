@@ -1,0 +1,36 @@
+<div layout="column">
+    <form name="ctrl.parameterForm">
+        <h1 class="md-title">Parameters</h1>
+
+        <div ng-repeat="(name, param) in ctrl.parameters">
+            <div layout="row" layout-padding>
+                <h2 class="md-subhead" flex="none">
+                    {{name}}
+                    <md-tooltip md-direction="top">{{param.description}}</md-tooltip>
+                </h2>
+                <div layout="column" flex>
+                    <div ng-repeat="field in ctrl.getFields(param.valueClass)">
+                        <md-input-container ng-if="param.required" layout-fill>
+                            <label>{{field.label}}</label>
+                            <input required
+                                   name="{{name}}-{{field.label}}"
+                                   type="{{field.type}}"
+                                   md-select-on-focus
+                                   ng-model="param.parts[field.key]">
+                            <div class="errors" ng-messages="ctrl.parameterForm[name + '-' + field.label].$error">
+                                <div ng-message="required">Required</div>
+                            </div>
+                        </md-input-container>
+                        <md-input-container layout-fill ng-if="!param.required">
+                            <label>{{field.label}}</label>
+                            <input name="{{name}}-{{field.label}}"
+                                   type="{{field.type}}"
+                                   md-select-on-focus
+                                   ng-model="param.parts[field.key]">
+                        </md-input-container>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
