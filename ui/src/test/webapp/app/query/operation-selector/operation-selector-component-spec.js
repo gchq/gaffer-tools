@@ -88,78 +88,55 @@ describe('Operation Selector Component', function() {
             it('should update the queryPage service when a new operation is selected', function() {
                 var ctrl = $componentController('operationSelector');
                 queryPage.setSelectedOperation({})
-                ctrl.onOperationSelect("test");
+                ctrl.selectedOp = 'test'
+                ctrl.updateModel();
                 expect(queryPage.getSelectedOperation()).toEqual("test");
             });
         });
 
-        describe('when an operation is deselected', function() {
-            var queryPage;
+        describe('when a user clicks the more info icon', function() {
 
+            var $mdDialog;
             var ctrl;
 
-            beforeEach(inject(function(_queryPage_) {
-                queryPage = _queryPage_;
+            beforeEach(inject(function(_$mdDialog_) {
+                $mdDialog = _$mdDialog_;
             }));
 
             beforeEach(function() {
-                ctrl = $componentController('operationSelector');
-                queryPage.setSelectedOperation({})
-            });
-
-            it('should update the queryPage if no operation is selected', function() {
-                ctrl.selectedOp = [];
-                ctrl.onOperationDeselect(null);
-
-                expect(queryPage.getSelectedOperation()).not.toBeDefined();
-            });
-
-            it('should not update the queryPage if another operation is selected', function() {
-                ctrl.selectedOp = [ "some operation that will be sent to the query page by a different method"];
-                ctrl.onOperationDeselect(null);
-
-                expect(queryPage.getSelectedOperation()).toBeDefined();
-                expect(queryPage.getSelectedOperation()).toEqual({})
-            });
-        });
-
-        describe('when a user clicks the info icon', function() {
-
-            var $window;
-            var ctrl;
-            var writeSpy;
-
-            beforeEach(inject(function(_$window_) {
-                $window = _$window_;
-            }));
-
-            beforeEach(function() {
-                spyOn($window, 'open').and.callFake(function() {
-                    var fakeWindow = {
-                        document: {
-                            write: jasmine.createSpy('write')
-                        }
-                    };
-
-                    writeSpy = fakeWindow.document.write;
-
-                    return fakeWindow;
-                });
+                spyOn($mdDialog, 'show');
             });
 
             beforeEach(function() {
                 ctrl = $componentController('operationSelector');
-                ctrl.showOperations("My operation chain");
+                ctrl.selectedOp = "testOperation";
+                ctrl.showOperationInfo();
             });
 
-            it('should open a new window', function() {
-                expect($window.open).toHaveBeenCalledTimes(1);
+            it('should open a new dialog', function() {
+                expect($mdDialog.show).toHaveBeenCalledTimes(1);
             });
 
-            it('should write the operation chain of the operation to the screen', function() {
-                expect(writeSpy).toHaveBeenCalledTimes(1);
-                expect(writeSpy).toHaveBeenCalledWith("<pre>My operation chain</pre>");
+            it('should pass the selected operation as an argument', function() {
+                expect($mdDialog.show.calls.argsFor(0)[0]).toEqual(jasmine.objectContaining({locals: {operation: "testOperation"}}));
             });
+
+            it('should pass the operation-info.html to the dialog', function() {
+                expect($mdDialog.show.calls.argsFor(0)[0]).toEqual(jasmine.objectContaining({templateUrl: 'app/query/operation-selector/operation-info/operation-info.html'}));
+            });
+
+            it('should pass the name of the controller to the dialog', function() {
+                expect($mdDialog.show.calls.argsFor(0)[0]).toEqual(jasmine.objectContaining({controller: 'OperationInfoController'}));
+            });
+
+            it('should bind the controller to the dialog using controllerAs', function() {
+                expect($mdDialog.show.calls.argsFor(0)[0]).toEqual(jasmine.objectContaining({controllerAs: 'ctrl'}));
+            });
+
+            it('should allow the user to click outside the dialog to close it', function() {
+                expect($mdDialog.show.calls.argsFor(0)[0]).toEqual(jasmine.objectContaining({clickOutsideToClose: true}));
+            });
+
         });
 
         describe('when the user clicks the refresh button', function() {
