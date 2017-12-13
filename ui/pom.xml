@@ -106,7 +106,6 @@
                         <source>${project.build.directory}/${project.build.finalName}/lib/jquery/js/jquery.min.js</source>
                         <source>${project.build.directory}/${project.build.finalName}/lib/md-data-table/js/md-data-table.min.js</source>
                     </preloadSources>
-
                 </configuration>
             </plugin>
         </plugins>

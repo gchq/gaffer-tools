@@ -260,7 +260,7 @@ frameworks if appropriate.
 
 If adding functionality to the query page, you can append tests to QueryBuilderST.java. Otherwise, create a new system test.
 
-To add a new unit test, create a file in the "src/test/webapp/" which mirrors it's location in main. For example, to test for the graph service, I would create a file in "src/test/webapp/app/graph" and name that file "graph-service-spec.js". Be sure to end the file in "-spec.js" so that the jasmine plugin can run the test.
+To add a new unit test, create a file in the "src/test/webapp/" which mirrors it's location in main. For example, to test for the graph service, I would create a file in "src/test/webapp/app/graph" and name unit test file "graph-service-spec.js" and the integration test file "graph-service-integration-spec.js". Be sure to end the file in "-spec.js" so that the jasmine plugin can run the test.
 
 Make your Jasmine specs self documenting as it should define the behaviour of the code.
 
@@ -285,6 +285,7 @@ describe('SomeService', function() {
     });
 })
 ```
+
 you can manually run all the unit tests with the command:
 ```
 mvn clean integration-test -pl ui

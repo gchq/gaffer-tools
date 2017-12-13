@@ -31,44 +31,44 @@ function NavigationController($rootScope, $mdDialog, navigation, graph, operatio
     vm.addMultipleSeeds = false;
     vm.appTitle;
 
-    var defaultTitle = "Gaffer"
-
-    config.get().then(function(conf) {
-        if (conf.title) {
-            vm.appTitle = conf.title;
-            return;
-        }
-        properties.get().then(function(props) {
-            if (props) {
-                var configuredTitle = props["gaffer.properties.app.title"]
-                if (configuredTitle) {
-                    vm.appTitle = configuredTitle;
-                    return;
-                }
-            }
-
-            vm.appTitle = defaultTitle;
-
-        },
-        function(err) {
-            vm.appTitle = defaultTitle;
-        });
-    })
-
+    var defaultTitle = "Gaffer";
     vm.currentPage = navigation.getCurrentPage();
-
-    events.subscribe('routeChange', function(newCurrentPage) {
-        vm.currentPage = newCurrentPage
-    });
-
     vm.goTo = navigation.goTo;
 
-    $rootScope.$on('$routeChangeSuccess', function (event, current) {
-        var newPage = current.originalPath.substr(1);
-        if (newPage !== vm.currentPage) {
-            navigation.goTo(newPage);
-        }
-    });
+    vm.$onInit = function() {
+        config.get().then(function(conf) {
+            if (conf.title) {
+                vm.appTitle = conf.title;
+                return;
+            }
+            properties.get().then(function(props) {
+                if (props) {
+                    var configuredTitle = props["gaffer.properties.app.title"]
+                    if (configuredTitle) {
+                        vm.appTitle = configuredTitle;
+                        return;
+                    }
+                }
+
+                vm.appTitle = defaultTitle;
+
+            },
+            function(err) {
+                vm.appTitle = defaultTitle;
+            });
+        });
+
+        events.subscribe('routeChange', function(newCurrentPage) {
+            vm.currentPage = newCurrentPage
+        });
+
+        $rootScope.$on('$routeChangeSuccess', function (event, current) {
+            var newPage = current.originalPath.substr(1);
+            if (newPage !== vm.currentPage) {
+                navigation.goTo(newPage);
+            }
+        });
+    }
 
     vm.addSeedPrompt = function(ev) {
         $mdDialog.show({

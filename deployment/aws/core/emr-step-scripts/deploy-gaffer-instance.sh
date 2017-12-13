@@ -155,8 +155,12 @@ cd $DST
 
 if ! curl -fL -o /dev/null https://repo1.maven.org/maven2/uk/gov/gchq/gaffer/gaffer2/$GAFFER_VERSION/gaffer2-$GAFFER_VERSION.pom; then
 	echo "Building Gaffer from branch $GAFFER_VERSION..."
-	git clone -b $GAFFER_VERSION --depth 1 https://github.com/gchq/Gaffer.git
-	cd Gaffer
+
+	curl -fLO https://github.com/gchq/Gaffer/archive/$GAFFER_VERSION.zip
+	unzip $GAFFER_VERSION.zip
+	rm $GAFFER_VERSION.zip
+	cd Gaffer-$GAFFER_VERSION
+
 	mvn clean install -Pquick -pl store-implementation/accumulo-store/ --also-make
 
 	GAFFER_POM_VERSION=$(xmllint --xpath '/*[local-name()="project"]/*[local-name()="version"]/text()' pom.xml)
@@ -164,7 +168,7 @@ if ! curl -fL -o /dev/null https://repo1.maven.org/maven2/uk/gov/gchq/gaffer/gaf
 
 	# Tidy up
 	cd ..
-	rm -rf Gaffer
+	rm -rf Gaffer-$GAFFER_VERSION
 else
 	echo "Will use Gaffer $GAFFER_VERSION from Maven Central..."
 	GAFFER_POM_VERSION=$GAFFER_VERSION
@@ -183,19 +187,23 @@ fi
 if [[ ! -f gaffer-slider-$GAFFER_TOOLS_VERSION.zip || ! -f gaffer-slider-$GAFFER_TOOLS_VERSION.jar ]]; then
 	echo "Building gaffer-slider from gaffer-tools branch $GAFFER_TOOLS_VERSION..."
 	cd $DST
-	git clone -b $GAFFER_TOOLS_VERSION --depth 1 https://github.com/gchq/gaffer-tools.git
-	cd gaffer-tools/slider
-	mvn clean package -Pquick -Dgaffer.version=$GAFFER_POM_VERSION
 
-	GAFFER_SLIDER_POM_VERSION=$(xmllint --xpath '/*[local-name()="project"]/*[local-name()="version"]/text()' ../pom.xml)
+	curl -fLO https://github.com/gchq/gaffer-tools/archive/$GAFFER_TOOLS_VERSION.zip
+	unzip $GAFFER_TOOLS_VERSION.zip
+	rm $GAFFER_TOOLS_VERSION.zip
+	cd gaffer-tools-$GAFFER_TOOLS_VERSION
+
+	mvn clean package -Pquick -pl slider --also-make -Dgaffer.version=$GAFFER_POM_VERSION
+
+	GAFFER_SLIDER_POM_VERSION=$(xmllint --xpath '/*[local-name()="project"]/*[local-name()="version"]/text()' pom.xml)
 	echo "Detected gaffer-slider version as $GAFFER_SLIDER_POM_VERSION"
 
-	cp target/slider-$GAFFER_SLIDER_POM_VERSION.jar $DST/gaffer-slider/gaffer-slider-$GAFFER_SLIDER_POM_VERSION.jar
-	cp target/gaffer-slider-$GAFFER_SLIDER_POM_VERSION.zip $DST/gaffer-slider/
+	cp slider/target/slider-$GAFFER_SLIDER_POM_VERSION.jar $DST/gaffer-slider/gaffer-slider-$GAFFER_SLIDER_POM_VERSION.jar
+	cp slider/target/gaffer-slider-$GAFFER_SLIDER_POM_VERSION.zip $DST/gaffer-slider/
 
 	# Tidy up
-	cd ../../
-	rm -rf gaffer-tools
+	cd ..
+	rm -rf gaffer-tools-$GAFFER_TOOLS_VERSION
 else
 	echo "Will use gaffer-slider $GAFFER_TOOLS_VERSION from Maven Central..."
 	GAFFER_SLIDER_POM_VERSION=$GAFFER_TOOLS_VERSION

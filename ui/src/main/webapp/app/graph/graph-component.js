@@ -29,11 +29,17 @@ function graphView() {
 
 
 function GraphController(graph, $timeout) {
+
+    var vm = this;
+
+    vm.$onInit = function() {
+        $timeout(function(evt) {
+            graph.load().then(function(cy) {
+                graph.reload();
+            })
+        });
+    }
   
-    $timeout(function(evt) {
-        graph.load().then(function(cy) {
-            graph.reload();
-        })
-    });
+
 
 }
