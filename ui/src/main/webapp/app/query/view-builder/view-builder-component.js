@@ -36,13 +36,24 @@ function ViewBuilderController(queryPage, graph, common, schema, functions, even
     vm.expandEdgesContent = queryPage.expandEdgesContent;
     vm.expandEntitiesContent = queryPage.expandEntitiesContent;
 
-    events.subscribe('relatedEntitiesUpdate', function(relatedEntities) {
+    var setRelatedEntities = function(relatedEntities) {
         vm.relatedEntities = relatedEntities;
-    });
+    }
 
-    events.subscribe('relatedEdgesUpdate', function(relatedEdges) {
+    var setRelatedEdges = function(relatedEdges) {
         vm.relatedEdges = relatedEdges;
-    });
+    }
+
+    vm.$onInit = function() {
+        events.subscribe('relatedEntitiesUpdate', setRelatedEntities);
+        events.subscribe('relatedEdgesUpdate', setRelatedEdges);
+    }
+
+    vm.$onDestroy = function() {
+        events.unsubscribe('relatedEntitiesUpdate', setRelatedEntities);
+        events.unsubscribe('relatedEdgesUpdate', setRelatedEdges);
+    }
+
 
     vm.getEntityProperties = schema.getEntityProperties;
     vm.getEdgeProperties = schema.getEdgeProperties;
@@ -57,31 +68,36 @@ function ViewBuilderController(queryPage, graph, common, schema, functions, even
         }
     }
 
-    vm.onSelectedPropertyChange = function(group, selectedElement) {
-        functions.getFunctions(group, selectedElement.property, function(data) {
-            selectedElement.availableFunctions = data;
+    vm.onSelectedPropertyChange = function(group, filter) {
+        functions.getFunctions(group, filter.property, function(data) {
+            filter.availableFunctions = data;
         });
-        selectedElement.predicate = '';
+        filter.predicate = '';
     }
 
-    vm.onSelectedFunctionChange = function(group, selectedElement) {
-        functions.getFunctionParameters(selectedElement.predicate, function(data) {
-            selectedElement.availableFunctionParameters = data;
+    vm.onSelectedFunctionChange = function(group, filter) {
+        functions.getFunctionParameters(filter.predicate, function(data) {
+            filter.availableFunctionParameters = data;
         });
 
         schema.get().then(function(gafferSchema) {
-            var elementDef = gafferSchema.entities[group];
-            if(!elementDef) {
+            var elementDef;
+            if (gafferSchema.entities) {
+                elementDef = gafferSchema.entities[group];
+            }
+            if(!elementDef && gafferSchema.edges) {
                  elementDef = gafferSchema.edges[group];
             }
-            var propertyClass = gafferSchema.types[elementDef.properties[selectedElement.property]].class;
-            if("java.lang.String" !== propertyClass
-                && "java.lang.Boolean" !== propertyClass
-                && "java.lang.Integer" !== propertyClass) {
-                selectedElement.propertyClass = propertyClass;
+            if (gafferSchema.types) {
+                var propertyClass = gafferSchema.types[elementDef.properties[filter.property]].class;
+                if("java.lang.String" !== propertyClass
+                    && "java.lang.Boolean" !== propertyClass
+                    && "java.lang.Integer" !== propertyClass) {
+                    filter.propertyClass = propertyClass;
+                }
             }
 
-            selectedElement.parameters = {};
+            filter.parameters = {};
         });
     }
 

@@ -35,21 +35,25 @@ function SelectedElementsController($scope, $timeout, events, graph, types, sche
 
     var promise;
 
-    schema.get().then(function(schema) {
-        vm.schema = schema;
-    });
+    vm.$onInit = function() {
+        schema.get().then(function(schema) {
+            vm.schema = schema;
+        });
 
-    events.subscribe('selectedElementsUpdate', function(selectedElements) {
-        vm.selectedEdges = selectedElements.edges;
-        vm.selectedEntities = selectedElements.entities;
+        events.subscribe('selectedElementsUpdate', function(selectedElements) {
+            vm.selectedEdges = selectedElements.edges;
+            vm.selectedEntities = selectedElements.entities;
 
-        if(!promise) {
-            promise = $timeout(function() {
-                $scope.$apply();
-                promise = null;
-            })
-        }
-    });
+            if(!promise) {
+                promise = $timeout(function() {
+                    $scope.$apply();
+                    promise = null;
+                })
+            }
+        });
+    }
+
+
 
     vm.resolve = function(value) {
         return types.getShortValue(value);

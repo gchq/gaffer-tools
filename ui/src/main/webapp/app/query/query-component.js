@@ -116,7 +116,7 @@ function QueryController(queryPage, operationService, types, graph, config, sett
                 };
 
                 for(var i in filter.availableFunctionParameters) {
-                    if(filter.parameters[i]) {
+                    if(filter.parameters[i] !== undefined) {
                         var param;
                         try {
                             param = JSON.parse(filter.parameters[i]);
@@ -160,7 +160,10 @@ function QueryController(queryPage, operationService, types, graph, config, sett
             var opParams = {};
             for(name in selectedOp.parameters) {
                 var valueClass = selectedOp.parameters[name].valueClass;
-                opParams[name] = types.createValue(valueClass, selectedOp.parameters[name].parts);
+                var value = types.createValue(valueClass, selectedOp.parameters[name].parts);
+                if (selectedOp.parameters[name].required || (value !== "" && value !== null)) {
+                    opParams[name] = value;
+                }
             }
             op.parameters = opParams;
         }

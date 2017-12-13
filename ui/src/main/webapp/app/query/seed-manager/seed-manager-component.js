@@ -28,14 +28,24 @@ function seedManager() {
 
 function SeedManagerController(graph, queryPage, common, types, events) {
     var vm = this;
+    vm.selectedEntities;
 
-    vm.selectedEntities = graph.getSelectedEntities();
     vm.seedsMessage = "";
 
-    events.subscribe('selectedElementsUpdate', function(selectedElements) {
+    var onSelectedElementsUpdate = function(selectedElements) {
         vm.selectedEntities = selectedElements['entities'];
         recalculateSeedsMessage();
-    });
+    };
+
+    vm.$onInit = function() {
+        events.subscribe('selectedElementsUpdate', onSelectedElementsUpdate)
+        vm.selectedEntities = graph.getSelectedEntities();
+        recalculateSeedsMessage();
+    }
+
+    vm.$onDestroy = function() {
+        events.unsubscribe('selectedElementsUpdate', onSelectedElementsUpdate)
+    }
 
     vm.keyValuePairs = common.keyValuePairs;
 
@@ -58,6 +68,4 @@ function SeedManagerController(graph, queryPage, common, types, events) {
 
         vm.seedsMessage = message;
     }
-
-    recalculateSeedsMessage();
 }

@@ -29,6 +29,7 @@
         <standalone-rest-path>rest</standalone-rest-path>
         <standalone-port>8080</standalone-port>
         <selenium.version>3.4.0</selenium.version>
+        <jasmine.plugin.version>2.2</jasmine.plugin.version>
     </properties>
 
     <dependencies>
@@ -74,7 +75,7 @@
             <plugin>
                 <groupId>com.github.searls</groupId>
                 <artifactId>jasmine-maven-plugin</artifactId>
-                <version>2.0</version>
+                <version>${jasmine.plugin.version}</version>
                 <executions>
                     <execution>
                         <phase>integration-test</phase>
@@ -105,7 +106,6 @@
                         <source>${project.build.directory}/${project.build.finalName}/lib/jquery/js/jquery.min.js</source>
                         <source>${project.build.directory}/${project.build.finalName}/lib/md-data-table/js/md-data-table.min.js</source>
                     </preloadSources>
-
                 </configuration>
             </plugin>
         </plugins>
