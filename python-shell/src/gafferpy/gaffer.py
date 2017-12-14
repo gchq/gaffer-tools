@@ -576,7 +576,8 @@ class AggregatePair(ToJson, ToCodeString):
         if group_by is not None and not isinstance(group_by, list):
             group_by = [group_by]
         self.group_by = group_by
-        if element_aggregator is not None and not isinstance(element_aggregator, ElementAggregateDefinition):
+        if element_aggregator is not None and not isinstance(element_aggregator,
+                                                             ElementAggregateDefinition):
             element_aggregator = ElementAggregateDefinition(
                 operators=element_aggregator['operators'])
         self.element_aggregator = element_aggregator
@@ -1208,6 +1209,194 @@ class StringContains(AbstractPredicate):
         return predicate_json
 
 
+class InRange(AbstractPredicate):
+    CLASS = "uk.gov.gchq.koryphe.impl.predicate.range.InRange"
+
+    def __init__(self, start=None, end=None, start_inclusive=None,
+                 end_inclusive=None):
+        super().__init__(_class_name=self.CLASS)
+        self.start = start
+        self.end = end
+        self.start_inclusive = start_inclusive
+        self.end_inclusive = end_inclusive
+
+    def to_json(self):
+        predicate_json = super().to_json()
+        if self.start is not None:
+            predicate_json['start'] = self.start
+        if self.end is not None:
+            predicate_json['end'] = self.end
+        if self.start_inclusive is not None:
+            predicate_json['startInclusive'] = self.start_inclusive
+        if self.end_inclusive is not None:
+            predicate_json['endInclusive'] = self.end_inclusive
+        return predicate_json
+
+
+class InRangeDual(AbstractPredicate):
+    CLASS = "uk.gov.gchq.koryphe.impl.predicate.range.InRangeDual"
+
+    def __init__(self, start=None, end=None, start_inclusive=None,
+                 end_inclusive=None):
+        super().__init__(_class_name=self.CLASS)
+        self.start = start
+        self.end = end
+        self.start_inclusive = start_inclusive
+        self.end_inclusive = end_inclusive
+
+    def to_json(self):
+        predicate_json = super().to_json()
+        if self.start is not None:
+            predicate_json['start'] = self.start
+        if self.end is not None:
+            predicate_json['end'] = self.end
+        if self.start_inclusive is not None:
+            predicate_json['startInclusive'] = self.start_inclusive
+        if self.end_inclusive is not None:
+            predicate_json['endInclusive'] = self.end_inclusive
+        return predicate_json
+
+
+class TimeUnit:
+    DAY = 'DAY'
+    HOUR = 'HOUR'
+    MINUTE = 'MINUTE'
+    SECOND = 'SECOND'
+    MILLISECOND = 'MILLISECOND'
+
+
+class InTimeRange(AbstractPredicate):
+    CLASS = "uk.gov.gchq.koryphe.impl.predicate.range.InTimeRange"
+
+    def __init__(self, start=None, start_offset=None, end=None, end_offset=None,
+                 offset_unit=None, start_inclusive=None, end_inclusive=None):
+        super().__init__(_class_name=self.CLASS)
+        self.start = start
+        self.start_offset = start_offset
+        self.end = end
+        self.end_offset = end_offset
+        self.offset_unit = offset_unit
+        self.start_inclusive = start_inclusive
+        self.end_inclusive = end_inclusive
+
+    def to_json(self):
+        predicate_json = super().to_json()
+        if self.start is not None:
+            predicate_json['start'] = self.start
+        if self.start_offset is not None:
+            predicate_json['startOffset'] = self.start_offset
+        if self.end is not None:
+            predicate_json['end'] = self.end
+        if self.end_offset is not None:
+            predicate_json['endOffset'] = self.end_offset
+        if self.offset_unit is not None:
+            predicate_json['offsetUnit'] = self.offset_unit
+        if self.start_inclusive is not None:
+            predicate_json['startInclusive'] = self.start_inclusive
+        if self.end_inclusive is not None:
+            predicate_json['endInclusive'] = self.end_inclusive
+        return predicate_json
+
+
+class InTimeRangeDual(AbstractPredicate):
+    CLASS = "uk.gov.gchq.koryphe.impl.predicate.range.InTimeRangeDual"
+
+    def __init__(self, start=None, start_offset=None, end=None, end_offset=None,
+                 offset_unit=None, start_inclusive=None, end_inclusive=None):
+        super().__init__(_class_name=self.CLASS)
+        self.start = start
+        self.start_offset = start_offset
+        self.end = end
+        self.end_offset = end_offset
+        self.offset_unit = offset_unit
+        self.start_inclusive = start_inclusive
+        self.end_inclusive = end_inclusive
+
+    def to_json(self):
+        predicate_json = super().to_json()
+        if self.start is not None:
+            predicate_json['start'] = self.start
+        if self.start_offset is not None:
+            predicate_json['startOffset'] = self.start_offset
+        if self.end is not None:
+            predicate_json['end'] = self.end
+        if self.end_offset is not None:
+            predicate_json['endOffset'] = self.end_offset
+        if self.offset_unit is not None:
+            predicate_json['offsetUnit'] = self.offset_unit
+        if self.start_inclusive is not None:
+            predicate_json['startInclusive'] = self.start_inclusive
+        if self.end_inclusive is not None:
+            predicate_json['endInclusive'] = self.end_inclusive
+        return predicate_json
+
+
+class InDateRange(AbstractPredicate):
+    CLASS = "uk.gov.gchq.koryphe.impl.predicate.range.InDateRange"
+
+    def __init__(self, start=None, start_offset=None, end=None, end_offset=None,
+                 offset_unit=None, start_inclusive=None, end_inclusive=None):
+        super().__init__(_class_name=self.CLASS)
+        self.start = start
+        self.start_offset = start_offset
+        self.end = end
+        self.end_offset = end_offset
+        self.offset_unit = offset_unit
+        self.start_inclusive = start_inclusive
+        self.end_inclusive = end_inclusive
+
+    def to_json(self):
+        predicate_json = super().to_json()
+        if self.start is not None:
+            predicate_json['start'] = self.start
+        if self.start_offset is not None:
+            predicate_json['startOffset'] = self.start_offset
+        if self.end is not None:
+            predicate_json['end'] = self.end
+        if self.end_offset is not None:
+            predicate_json['endOffset'] = self.end_offset
+        if self.offset_unit is not None:
+            predicate_json['offsetUnit'] = self.offset_unit
+        if self.start_inclusive is not None:
+            predicate_json['startInclusive'] = self.start_inclusive
+        if self.end_inclusive is not None:
+            predicate_json['endInclusive'] = self.end_inclusive
+        return predicate_json
+
+
+class InDateRangeDual(AbstractPredicate):
+    CLASS = "uk.gov.gchq.koryphe.impl.predicate.range.InDateRangeDual"
+
+    def __init__(self, start=None, start_offset=None, end=None, end_offset=None,
+                 offset_unit=None, start_inclusive=None, end_inclusive=None):
+        super().__init__(_class_name=self.CLASS)
+        self.start = start
+        self.start_offset = start_offset
+        self.end = end
+        self.end_offset = end_offset
+        self.offset_unit = offset_unit
+        self.start_inclusive = start_inclusive
+        self.end_inclusive = end_inclusive
+
+    def to_json(self):
+        predicate_json = super().to_json()
+        if self.start is not None:
+            predicate_json['start'] = self.start
+        if self.start_offset is not None:
+            predicate_json['startOffset'] = self.start_offset
+        if self.end is not None:
+            predicate_json['end'] = self.end
+        if self.end_offset is not None:
+            predicate_json['endOffset'] = self.end_offset
+        if self.offset_unit is not None:
+            predicate_json['offsetUnit'] = self.offset_unit
+        if self.start_inclusive is not None:
+            predicate_json['startInclusive'] = self.start_inclusive
+        if self.end_inclusive is not None:
+            predicate_json['endInclusive'] = self.end_inclusive
+        return predicate_json
+
+
 class FunctionContext(ToJson, ToCodeString):
     CLASS = "gaffer.FunctionContext"
 
@@ -1772,10 +1961,12 @@ class SplitStoreFromIterable(Operation):
             operation['input'] = self.input
         return operation
 
+
 class SampleElementsForSplitPoints(Operation):
     CLASS = 'uk.gov.gchq.gaffer.operation.impl.SampleElementsForSplitPoints'
 
-    def __init__(self, input=None, num_splits=None, proportion_to_sample=None, options=None):
+    def __init__(self, input=None, num_splits=None, proportion_to_sample=None,
+                 options=None):
         super().__init__(
             _class_name=self.CLASS,
             view=None,
@@ -1796,6 +1987,7 @@ class SampleElementsForSplitPoints(Operation):
         if self.proportion_to_sample is not None:
             operation['proportionToSample'] = self.proportion_to_sample
         return operation
+
 
 class GetOperation(Operation):
     def __init__(self,
@@ -2946,6 +3138,7 @@ class GetWalks(Operation):
 class GetGraph:
     def get_url(self):
         return self._url
+
 
 class GetSchema(Operation, GetGraph):
     CLASS = 'uk.gov.gchq.gaffer.store.operation.GetSchema'
