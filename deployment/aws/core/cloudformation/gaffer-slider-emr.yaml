@@ -127,6 +127,7 @@ Resources:
       Applications:
         - Name: Hadoop
         - Name: ZooKeeper
+        - Name: Spark
         - Name: Ganglia
       BootstrapActions:
         - Name: SetSwappiness
