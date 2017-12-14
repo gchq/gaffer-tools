@@ -1252,6 +1252,181 @@ class Function(ToJson, ToCodeString):
 
         return function_json
 
+class ExtractKeys(Function):
+    CLASS = 'uk.gov.gchq.koryphe.impl.function.ExtractKeys'
+
+    def __init__(self):
+        super().__init__(class_name=self.CLASS)
+
+    def to_json(self):
+        function = super().to_json()
+
+        return function
+
+
+class ExtractValues(Function):
+    CLASS = 'uk.gov.gchq.koryphe.impl.function.ExtractValues'
+
+    def __init__(self):
+        super().__init__(class_name=self.CLASS)
+
+    def to_json(self):
+        function = super().to_json()
+
+        return function
+
+class IsEmpty(Function):
+    CLASS = 'uk.gov.gchq.koryphe.impl.function.IsEmpty'
+
+    def __init__(self):
+        super().__init__(class_name=self.CLASS)
+
+    def to_json(self):
+        function = super().to_json()
+
+        return function
+
+class Size(Function):
+    CLASS = 'uk.gov.gchq.koryphe.impl.function.Size'
+
+    def __init__(self):
+        super().__init__(class_name=self.CLASS)
+
+    def to_json(self):
+        function = super().to_json()
+
+        return function
+
+class FirstItem(Function):
+    CLASS = 'uk.gov.gchq.koryphe.impl.function.FirstItem'
+
+    def __init__(self):
+        super().__init__(class_name=self.CLASS)
+
+    def to_json(self):
+        function = super().to_json()
+
+        return function
+
+class NthItem(Function):
+    CLASS = 'uk.gov.gchq.koryphe.impl.function.NthItem'
+
+    def __init__(self, selection):
+        super().__init__(class_name=self.CLASS)
+
+        self.selection = selection
+
+    def to_json(self):
+        function = super().to_json()
+
+        if self.selection is not None:
+            function['selection'] = self.selection
+
+        return function
+
+class LastItem(Function):
+    CLASS = 'uk.gov.gchq.koryphe.impl.function.LastItem'
+
+    def __init__(self):
+        super().__init__(class_name=self.CLASS)
+
+    def to_json(self):
+        function = super().to_json()
+
+        return function
+
+
+class IterableConcat(Function):
+    CLASS = 'uk.gov.gchq.koryphe.impl.function.IterableConcat'
+
+    def __init__(self):
+        super().__init__(class_name=self.CLASS)
+
+    def to_json(self):
+        function = super().to_json()
+
+        return function
+
+class IterableFunction(Function):
+    CLASS = 'uk.gov.gchq.koryphe.impl.function.IterableFunction'
+
+    def __init__(self, functions):
+        super().__init__(class_name=self.CLASS)
+
+        if functions is None:
+            raise TypeError('No function(s) provided')
+        else:
+            self.functions = []
+            for func in functions:
+                if not isinstance(func, Function):
+                    func = JsonConverter.from_json(
+                        func, Function)
+                self.functions.append(func)
+
+
+    def to_json(self):
+        function = super().to_json()
+
+        functions_json = []
+        for func in self.functions:
+            functions_json.append(func.to_json())
+        function['functions'] = functions_json
+
+        return function
+
+class ExtractWalkEdges(Function):
+    CLASS = 'uk.gov.gchq.gaffer.data.graph.function.walk.ExtractWalkEdges'
+
+    def __init__(self):
+        super().__init__(class_name=self.CLASS)
+
+    def to_json(self):
+        return super().to_json()
+
+
+class ExtractWalkEdgesFromHop(Function):
+    CLASS = 'uk.gov.gchq.gaffer.data.graph.function.walk.ExtractWalkEdgesFromHop'
+
+    def __init__(self, hop=None):
+        super().__init__(class_name=self.CLASS)
+
+        self.hop = hop
+
+    def to_json(self):
+        function = super().to_json()
+
+        if self.hop is not None:
+            function['hop'] = self.hop
+
+        return function
+
+
+class ExtractWalkEntities(Function):
+    CLASS = 'uk.gov.gchq.gaffer.data.graph.function.walk.ExtractWalkEntities'
+
+    def __init__(self):
+        super().__init__(class_name=self.CLASS)
+
+    def to_json(self):
+        return super().to_json()
+
+
+class ExtractWalkEntitiesFromHop(Function):
+    CLASS = 'uk.gov.gchq.gaffer.data.graph.function.walk.ExtractWalkEntitiesFromHop'
+
+    def __init__(self, hop=None):
+        super().__init__(class_name=self.CLASS)
+
+        self.hop = hop
+
+    def to_json(self):
+        function = super().to_json()
+
+        if self.hop is not None:
+            function['hop'] = self.hop
+
+        return function
+
 
 class BinaryOperatorContext(ToJson, ToCodeString):
     CLASS = "gaffer.AggregatorContext"
@@ -2942,6 +3117,38 @@ class GetWalks(Operation):
 
         return operation
 
+class Map(Operation):
+    CLASS = 'uk.gov.gchq.gaffer.operation.impl.Map'
+
+    def __init__(self,
+                 functions,
+                 input=None,
+                 options=None):
+        super().__init__(_class_name=self.CLASS,
+                         options=options)
+
+        self.input = input
+
+        if functions is not None:
+            self.functions = []
+            for func in functions:
+                if not isinstance(func, Function):
+                    func = JsonConverter.from_json(
+                        func, Function)
+                self.functions.append(func)
+
+    def to_json(self):
+        operation = super().to_json()
+        if self.input is not None:
+            operation['input'] = self.input
+
+        if self.functions is not None:
+            functions_json = []
+            for func in self.functions:
+                functions_json.append(func.to_json())
+            operation['functions'] = functions_json
+
+        return operation
 
 class GetGraph:
     def get_url(self):
