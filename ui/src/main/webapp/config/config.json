@@ -83,7 +83,8 @@
           "label": "Type",
           "type": "text",
           "key": "type",
-          "class": "java.lang.String"
+          "class": "java.lang.String",
+          "optional": true
         },
         {
           "label": "Value",
@@ -100,13 +101,15 @@
           "label": "Type",
           "type": "text",
           "key": "type",
-          "class": "java.lang.String"
+          "class": "java.lang.String",
+          "optional": true
         },
         {
           "label": "Sub Type",
           "type": "text",
           "key": "subType",
-          "class": "java.lang.String"
+          "class": "java.lang.String",
+          "optional": true
         },
         {
           "label": "Value",

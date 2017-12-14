@@ -54,6 +54,69 @@ describe('The Parameter Form Component', function() {
             expect(ctrl.getFields()).toEqual('field test');
         });
 
+        describe('When determining whether a parameter field is required', function() {
+            var ctrl;
+
+            beforeEach(function() {
+                ctrl = $componentController('parameterForm');
+            });
+
+            it('should return true if the parameter is required and the field does not have an optional flag', function() {
+                var field = {
+                    "class": "some.java.Class",
+                    "type": "string"
+                };
+
+                var parameter = {
+                    required: true
+                }
+
+                expect(ctrl.isRequired(field, parameter)).toBeTruthy();
+            });
+
+            it('should return true if the parameter is required and the field has an optional flag set to false', function() {
+                var field = {
+                    "class": "some.java.Class",
+                    "type": "string",
+                    "optional": false
+                };
+
+                var parameter = {
+                    required: true
+                }
+
+                expect(ctrl.isRequired(field, parameter)).toBeTruthy();
+            });
+
+            it('should return false if the parameter is required but the optional flag is set to true', function() {
+                var field = {
+                    "class": "some.java.Class",
+                    "type": "string",
+                    "optional": true
+                };
+
+                var parameter = {
+                    required: true
+                }
+
+                expect(ctrl.isRequired(field, parameter)).toBeFalsy();
+            });
+
+            it('should return false if the required flag on the parameter is set to false', function() {
+                var field = {
+                    "class": "some.java.Class",
+                    "type": "string",
+                    "optional": false
+                };
+
+                var parameter = {
+                    required: false
+                }
+
+                expect(ctrl.isRequired(field, parameter)).toBeFalsy();
+            })
+        });
+
 
     })
 });

@@ -10,7 +10,7 @@
                 </h2>
                 <div layout="column" flex>
                     <div ng-repeat="field in ctrl.getFields(param.valueClass)">
-                        <md-input-container ng-if="param.required" layout-fill>
+                        <md-input-container ng-if="ctrl.isRequired(field, param)" layout-fill>
                             <label>{{field.label}}</label>
                             <input required
                                    id="{{name}}-{{field.key}}-required"
@@ -22,7 +22,7 @@
                                 <div ng-message="required">Required</div>
                             </div>
                         </md-input-container>
-                        <md-input-container layout-fill ng-if="!param.required">
+                        <md-input-container layout-fill ng-if="!ctrl.isRequired(field, param)">
                             <label>{{field.label}}</label>
                             <input name="{{name}}-{{field.label}}"
                                    id="{{name}}-{{field.key}}"

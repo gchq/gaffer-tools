@@ -38,5 +38,9 @@ function ParameterFormController(types) {
         }
     }
 
+    vm.isRequired = function(field, param) {
+        return param.required && !field.optional;
+    }
+
     vm.getFields = types.getFields;
 }
