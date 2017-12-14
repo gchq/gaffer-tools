@@ -2389,50 +2389,50 @@ class GafferOperationsTest(unittest.TestCase):
                 operation_name="2-hop"
             )
         ],
-               [
-                   '''
-                   {
-                     "class" : "uk.gov.gchq.gaffer.named.operation.AddNamedOperation",
-                     "operationName" : "2-hop-with-score",
-                     "description" : "2 hop query",
-                     "readAccessRoles" : [ "read-user" ],
-                     "writeAccessRoles" : [ "write-user" ],
-                     "overwriteFlag" : true,
-                     "score" : 3,
-                     "operationChain" : {
-                       "operations" : [ {
-                         "class" : "uk.gov.gchq.gaffer.operation.impl.get.GetAdjacentIds",
-                         "includeIncomingOutGoing" : "OUTGOING"
-                       }, {
-                         "class" : "uk.gov.gchq.gaffer.operation.impl.get.GetAdjacentIds",
-                         "includeIncomingOutGoing" : "OUTGOING"
-                       } ]
-                     }
-                   }
-                   ''',
-                   g.AddNamedOperation(
-                       operation_chain=g.OperationChainDAO(
-                           operations=[
-                               g.GetAdjacentIds(
-                                   include_incoming_out_going="OUTGOING"
-                               ),
-                               g.GetAdjacentIds(
-                                   include_incoming_out_going="OUTGOING"
-                               )
-                           ]
-                       ),
-                       overwrite_flag=True,
-                       write_access_roles=[
-                           "write-user"
-                       ],
-                       description="2 hop query",
-                       read_access_roles=[
-                           "read-user"
-                       ],
-                       score=3,
-                       operation_name="2-hop-with-score"
-                   )
-               ],
+        [
+            '''
+            {
+              "class" : "uk.gov.gchq.gaffer.named.operation.AddNamedOperation",
+              "operationName" : "2-hop-with-score",
+              "description" : "2 hop query",
+              "readAccessRoles" : [ "read-user" ],
+              "writeAccessRoles" : [ "write-user" ],
+              "overwriteFlag" : true,
+              "score" : 3,
+              "operationChain" : {
+                "operations" : [ {
+                  "class" : "uk.gov.gchq.gaffer.operation.impl.get.GetAdjacentIds",
+                  "includeIncomingOutGoing" : "OUTGOING"
+                }, {
+                  "class" : "uk.gov.gchq.gaffer.operation.impl.get.GetAdjacentIds",
+                  "includeIncomingOutGoing" : "OUTGOING"
+                } ]
+              }
+            }
+            ''',
+            g.AddNamedOperation(
+                operation_chain=g.OperationChainDAO(
+                    operations=[
+                        g.GetAdjacentIds(
+                            include_incoming_out_going="OUTGOING"
+                        ),
+                        g.GetAdjacentIds(
+                            include_incoming_out_going="OUTGOING"
+                        )
+                    ]
+                ),
+                overwrite_flag=True,
+                write_access_roles=[
+                    "write-user"
+                ],
+                description="2 hop query",
+                read_access_roles=[
+                    "read-user"
+                ],
+                score=3,
+                operation_name="2-hop-with-score"
+            )
+        ],
         [
             '''
             {
@@ -4118,6 +4118,108 @@ class GafferOperationsTest(unittest.TestCase):
             ''',
             g.GetSchema(
                 compact=True
+            )
+        ],
+        [
+            '''
+            {
+            	"class": "uk.gov.gchq.gaffer.operation.OperationChain",
+            	"operations": [{
+            		"class": "uk.gov.gchq.gaffer.operation.impl.GetWalks",
+            		"operations": [{
+            				"class": "uk.gov.gchq.gaffer.operation.impl.get.GetElements",
+            				"view": {
+            					"edges": {
+            						"JunctionLocatedAt": {}
+            					},
+            					"entities": {}
+            				}
+            			},
+            			{
+            				"class": "uk.gov.gchq.gaffer.operation.impl.get.GetElements",
+            				"view": {
+            					"edges": {
+            						"RoadUse": {}
+            					},
+            					"entities": {}
+            				}
+            			}
+            		],
+            		"resultsLimit": 10000,
+            		"input": [{
+            			"class": "uk.gov.gchq.gaffer.operation.data.EntitySeed",
+            			"vertex": 293020
+
+            		}]
+            	}, {
+            		"class": "uk.gov.gchq.gaffer.operation.impl.Map",
+            		"functions": [{
+            			"class": "uk.gov.gchq.koryphe.impl.function.IterableFunction",
+            			"functions": [{
+            				"class": "uk.gov.gchq.gaffer.data.graph.function.walk.ExtractWalkEdgesFromHop",
+            				"hop": 1
+            			}, {
+            				"class": "uk.gov.gchq.koryphe.impl.function.FirstItem"
+            			}]
+            		}]
+            	}, {
+            		"class": "uk.gov.gchq.gaffer.operation.impl.output.ToVertices",
+            		"useMatchedVertex": "EQUAL",
+            		"edgeVertices": "SOURCE"
+            	}, {
+            		"class": "uk.gov.gchq.gaffer.operation.impl.output.ToSet"
+            	}]
+            }
+            ''',
+            g.OperationChain(
+                operations=[
+                    g.GetWalks(
+                        results_limit=10000,
+                        input=[
+                            g.EntitySeed(
+                                vertex=293020
+                            )
+                        ],
+                        operations=[
+                            g.GetElements(
+                                view=g.View(
+                                    edges=[
+                                        g.ElementDefinition(
+                                            group="JunctionLocatedAt"
+                                        )
+                                    ],
+                                    entities=[]
+                                )
+                            ),
+                            g.GetElements(
+                                view=g.View(
+                                    edges=[
+                                        g.ElementDefinition(
+                                            group="RoadUse"
+                                        )
+                                    ],
+                                    entities=[]
+                                )
+                            )
+                        ]
+                    ),
+                    g.Map(
+                        functions=[
+                            g.IterableFunction(
+                                functions=[
+                                    g.ExtractWalkEdgesFromHop(
+                                        hop=1),
+                                    g.FirstItem()
+                                ]
+                            )
+                        ]
+                    ),
+                    g.ToVertices(
+                        use_matched_vertex="EQUAL",
+                        edge_vertices="SOURCE"
+                    ),
+                    g.ToSet()
+                ]
             )
         ],
         [
