@@ -218,6 +218,10 @@
                                 <gaffer.error-mode.debug>
                                     false
                                 </gaffer.error-mode.debug>
+                                <gaffer.properties.app.logo.src>
+                                    images/logo.png
+                                </gaffer.properties.app.logo.src>
+
                             </systemProperties>
                         </configuration>
                         <executions>
