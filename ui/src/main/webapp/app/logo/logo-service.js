@@ -38,7 +38,8 @@ angular.module('app').factory('logo', ['properties', '$q', 'config', function(pr
                 if (!props['gaffer.properties.app.logo.src']) {
                     defer.resolve(null);
                 } else {
-                    var srcPrefix = conf.restEndpoint.replace('\/$', ''); // remove trailing slash
+                    var srcPrefix = conf.restEndpoint.replace(/\/$/, ''); // remove trailing slash
+                    console.error(srcPrefix)
                     srcPrefix = srcPrefix.substring(0, srcPrefix.lastIndexOf('/'));
                     logo = srcPrefix + '/' + props['gaffer.properties.app.logo.src'];
                     defer.resolve(logo);
