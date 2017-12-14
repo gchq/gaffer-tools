@@ -4492,6 +4492,111 @@ class GafferOperationsTest(unittest.TestCase):
                 num_splits=5,
                 proportion_to_sample=0.1
             )
+        ],
+        [
+            '''
+            {
+                "class" : "uk.gov.gchq.koryphe.impl.function.Concat",
+                "separator" : "\u0020"
+            }
+            ''',
+            g.Concat(
+                separator=" "
+            )
+        ],
+        [
+            '''
+            {
+                "class" : "uk.gov.gchq.koryphe.impl.function.Divide"
+            }
+            ''',
+            g.Divide()
+        ],
+        [
+            '''
+            {
+                "class" : "uk.gov.gchq.koryphe.impl.function.DivideBy",
+                "by" : 3
+            }
+            ''',
+            g.DivideBy(
+                by=3
+            )
+        ],
+        [
+            '''
+            {
+                "class" : "uk.gov.gchq.koryphe.impl.function.ExtractKeys"
+            }
+            ''',
+            g.ExtractKeys()
+        ],
+        [
+            '''
+            {
+                "class" : "uk.gov.gchq.koryphe.impl.function.ExtractValues"
+            }
+            ''',
+            g.ExtractValues()
+        ],
+        [
+            '''
+            {
+                "class" : "uk.gov.gchq.koryphe.impl.function.Identity"
+            }
+            ''',
+            g.Identity()
+        ],
+        [
+            '''
+            {
+                "class" : "uk.gov.gchq.koryphe.impl.function.IsEmpty"
+            }
+            ''',
+            g.IsEmpty()
+        ],
+        [
+            '''
+            {
+                "class" : "uk.gov.gchq.koryphe.impl.function.IterableConcat"
+            }
+            ''',
+            g.IterableConcat()
+        ],
+        [
+            '''
+            {
+                "class" : "uk.gov.gchq.koryphe.impl.function.Multiply"
+            }
+            ''',
+            g.Multiply()
+        ],
+        [
+            '''
+            {
+                "class" : "uk.gov.gchq.koryphe.impl.function.MultiplyBy",
+                "by" : 4
+            }
+            ''',
+            g.MultiplyBy(
+                by=4
+            )
+        ],
+        [
+            '''
+            {
+                "class" : "uk.gov.gchq.koryphe.impl.function.Size"
+            }
+            ''',
+            g.Size()
+        ],
+        [
+            '''
+            {
+                "class" : "uk.gov.gchq.koryphe.impl.function.ToString"
+            }
+            ''',
+            g.ToString()
         ]
     ]
 

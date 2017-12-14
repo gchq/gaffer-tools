@@ -1448,9 +1448,7 @@ class ExtractKeys(Function):
         super().__init__(class_name=self.CLASS)
 
     def to_json(self):
-        function = super().to_json()
-
-        return function
+        return super().to_json()
 
 
 class ExtractValues(Function):
@@ -1460,9 +1458,8 @@ class ExtractValues(Function):
         super().__init__(class_name=self.CLASS)
 
     def to_json(self):
-        function = super().to_json()
+        return super().to_json()
 
-        return function
 
 class IsEmpty(Function):
     CLASS = 'uk.gov.gchq.koryphe.impl.function.IsEmpty'
@@ -1471,9 +1468,8 @@ class IsEmpty(Function):
         super().__init__(class_name=self.CLASS)
 
     def to_json(self):
-        function = super().to_json()
+        return super().to_json()
 
-        return function
 
 class Size(Function):
     CLASS = 'uk.gov.gchq.koryphe.impl.function.Size'
@@ -1482,9 +1478,8 @@ class Size(Function):
         super().__init__(class_name=self.CLASS)
 
     def to_json(self):
-        function = super().to_json()
+        return super().to_json()
 
-        return function
 
 class FirstItem(Function):
     CLASS = 'uk.gov.gchq.koryphe.impl.function.FirstItem'
@@ -1493,9 +1488,8 @@ class FirstItem(Function):
         super().__init__(class_name=self.CLASS)
 
     def to_json(self):
-        function = super().to_json()
+        return super().to_json()
 
-        return function
 
 class NthItem(Function):
     CLASS = 'uk.gov.gchq.koryphe.impl.function.NthItem'
@@ -1520,9 +1514,7 @@ class LastItem(Function):
         super().__init__(class_name=self.CLASS)
 
     def to_json(self):
-        function = super().to_json()
-
-        return function
+        return super().to_json()
 
 
 class IterableConcat(Function):
@@ -1532,9 +1524,8 @@ class IterableConcat(Function):
         super().__init__(class_name=self.CLASS)
 
     def to_json(self):
-        function = super().to_json()
+        return super().to_json()
 
-        return function
 
 class IterableFunction(Function):
     CLASS = 'uk.gov.gchq.koryphe.impl.function.IterableFunction'
@@ -1615,6 +1606,98 @@ class ExtractWalkEntitiesFromHop(Function):
             function['hop'] = self.hop
 
         return function
+
+
+class Concat(Function):
+    CLASS = 'uk.gov.gchq.koryphe.impl.function.Concat'
+
+    def __init__(self, separator=None):
+        super().__init__(class_name=self.CLASS)
+
+        self.separator = separator
+
+    def to_json(self):
+        function = super().to_json()
+
+        if self.separator is not None:
+            function['separator'] = self.separator
+
+        return function
+
+
+class Divide(Function):
+    CLASS = 'uk.gov.gchq.koryphe.impl.function.Divide'
+
+    def __init__(self):
+        super().__init__(class_name=self.CLASS)
+
+    def to_json(self):
+        return super().to_json()
+
+
+class DivideBy(Function):
+    CLASS = 'uk.gov.gchq.koryphe.impl.function.DivideBy'
+
+    def __init__(self, by=None):
+        super().__init__(class_name=self.CLASS)
+
+        self.by = by
+
+    def to_json(self):
+        function = super().to_json()
+
+        if self.by is not None:
+            function['by'] = self.by
+
+        return function
+
+
+class Identity(Function):
+    CLASS = 'uk.gov.gchq.koryphe.impl.function.Identity'
+
+    def __init__(self):
+        super().__init__(class_name=self.CLASS)
+
+    def to_json(self):
+        return super().to_json()
+
+
+class Multiply(Function):
+    CLASS = 'uk.gov.gchq.koryphe.impl.function.Multiply'
+
+    def __init__(self):
+        super().__init__(class_name=self.CLASS)
+
+    def to_json(self):
+        return super().to_json()
+
+
+class MultiplyBy(Function):
+    CLASS = 'uk.gov.gchq.koryphe.impl.function.MultiplyBy'
+
+    def __init__(self, by=None):
+        super().__init__(class_name=self.CLASS)
+
+        self.by = by
+
+    def to_json(self):
+        function = super().to_json()
+
+        if self.by is not None:
+            function['by'] = self.by
+
+        return function
+
+
+
+class ToString(Function):
+    CLASS = 'uk.gov.gchq.koryphe.impl.function.ToString'
+
+    def __init__(self):
+        super().__init__(class_name=self.CLASS)
+
+    def to_json(self):
+        return super().to_json()
 
 
 class BinaryOperatorContext(ToJson, ToCodeString):
