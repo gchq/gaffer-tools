@@ -3285,9 +3285,8 @@ class GetWalks(Operation):
         if operations is not None:
             self.operations = []
             for op in operations:
-                if not isinstance(op, GetElements):
-                    op = JsonConverter.from_json(
-                        op, GetElements)
+                if not isinstance(op, GetElements) and not isinstance(op, OperationChain):
+                    op = JsonConverter.from_json(op)
                 self.operations.append(op)
 
     def to_json(self):
