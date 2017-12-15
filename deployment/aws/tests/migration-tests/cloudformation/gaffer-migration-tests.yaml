@@ -352,14 +352,18 @@ Resources:
 
           s3 = boto3.client('s3')
 
+          ROOT_URL='https://raw.githubusercontent.com/gchq/gaffer-tools/'
+          TOOLS_A='${GafferToolsVersionA}'
+          TOOLS_B='${GafferToolsVersionB}'
+
           files=[]
 
           files.append({
             'Output': 'DeployGafferSystemTestStack',
             'Key': 'cloudformation/gaffer-system-tests.yaml',
             'Urls': [
-              'https://raw.githubusercontent.com/gchq/gaffer-tools/gaffer-tools-${GafferToolsVersionA}/deployment/aws/tests/system-tests/cloudformation/gaffer-system-tests.yaml',
-              'https://raw.githubusercontent.com/gchq/gaffer-tools/${GafferToolsVersionA}/deployment/aws/tests/system-tests/cloudformation/gaffer-system-tests.yaml'
+              ROOT_URL + 'gaffer-tools-' + TOOLS_A + '/deployment/aws/tests/system-tests/cloudformation/gaffer-system-tests.yaml',
+              ROOT_URL + TOOLS_A + '/deployment/aws/tests/system-tests/cloudformation/gaffer-system-tests.yaml'
             ]
           })
 
@@ -367,8 +371,8 @@ Resources:
             'Output': 'DeployGafferWebServerStack',
             'Key': 'cloudformation/gaffer-web.yaml',
             'Urls': [
-              'https://raw.githubusercontent.com/gchq/gaffer-tools/gaffer-tools-${GafferToolsVersionB}/deployment/aws/core/cloudformation/gaffer-web.yaml',
-              'https://raw.githubusercontent.com/gchq/gaffer-tools/${GafferToolsVersionB}/deployment/aws/core/cloudformation/gaffer-web.yaml'
+              ROOT_URL + 'gaffer-tools-' + TOOLS_B + '/deployment/aws/core/cloudformation/gaffer-web.yaml',
+              ROOT_URL + TOOLS_B + '/deployment/aws/core/cloudformation/gaffer-web.yaml'
             ]
           })
 
@@ -376,8 +380,8 @@ Resources:
             'Output': 'UpgradeGafferInstanceScript',
             'Key': 'step/upgrade-gaffer-instance.sh',
             'Urls': [
-              'https://raw.githubusercontent.com/gchq/gaffer-tools/gaffer-tools-${GafferToolsVersionB}/deployment/aws/tests/migration-tests/emr-step-scripts/upgrade-gaffer-instance.sh',
-              'https://raw.githubusercontent.com/gchq/gaffer-tools/${GafferToolsVersionB}/deployment/aws/tests/migration-tests/emr-step-scripts/upgrade-gaffer-instance.sh'
+              ROOT_URL + 'gaffer-tools-' + TOOLS_B + '/deployment/aws/tests/migration-tests/emr-step-scripts/upgrade-gaffer-instance.sh',
+              ROOT_URL + TOOLS_B + '/deployment/aws/tests/migration-tests/emr-step-scripts/upgrade-gaffer-instance.sh'
             ]
           })
 
@@ -385,8 +389,8 @@ Resources:
             'Output': 'BuildRoadTrafficSchemaScript',
             'Key': 'step/build-road-traffic-schema.sh',
             'Urls': [
-              'https://raw.githubusercontent.com/gchq/gaffer-tools/gaffer-tools-${GafferToolsVersionB}/deployment/aws/apps/road-traffic/emr-step-scripts/build-road-traffic-schema.sh',
-              'https://raw.githubusercontent.com/gchq/gaffer-tools/${GafferToolsVersionB}/deployment/aws/apps/road-traffic/emr-step-scripts/build-road-traffic-schema.sh'
+              ROOT_URL + 'gaffer-tools-' + TOOLS_B + '/deployment/aws/apps/road-traffic/emr-step-scripts/build-road-traffic-schema.sh',
+              ROOT_URL + TOOLS_B + '/deployment/aws/apps/road-traffic/emr-step-scripts/build-road-traffic-schema.sh'
             ]
           })
 
@@ -394,8 +398,8 @@ Resources:
             'Output': 'RunGafferSystemTestsScript',
             'Key': 'step/run-gaffer-system-tests.sh',
             'Urls': [
-              'https://raw.githubusercontent.com/gchq/gaffer-tools/gaffer-tools-${GafferToolsVersionB}/deployment/aws/tests/system-tests/emr-step-scripts/run-gaffer-system-tests.sh',
-              'https://raw.githubusercontent.com/gchq/gaffer-tools/${GafferToolsVersionB}/deployment/aws/tests/system-tests/emr-step-scripts/run-gaffer-system-tests.sh'
+              ROOT_URL + 'gaffer-tools-' + TOOLS_B + '/deployment/aws/tests/system-tests/emr-step-scripts/run-gaffer-system-tests.sh',
+              ROOT_URL + TOOLS_B + '/deployment/aws/tests/system-tests/emr-step-scripts/run-gaffer-system-tests.sh'
             ]
           })
 
@@ -404,23 +408,16 @@ Resources:
 
             for file in files:
               body = None
-              if 'Body' in file:
-                body = file['Body']
-              elif 'Body64' in file:
-                body = base64.b64decode(file['Body64'])
-              elif 'Url' in file:
-                body = urllib2.urlopen(file['Url']).read()
-              elif 'Urls' in file:
-                lastError = None
-                for url in file['Urls']:
-                  try:
-                    body = urllib2.urlopen(url).read()
-                    break
-                  except Exception as e:
-                    print('Request for ' + url + ' error: ' + str(e))
-                    lastError = e
-                if body is None and lastError is not None:
-                  raise lastError
+              lastError = None
+              for url in file['Urls']:
+                try:
+                  body = urllib2.urlopen(url).read()
+                  break
+                except Exception as e:
+                  print('Request for ' + url + ' error: ' + str(e))
+                  lastError = e
+              if body is None and lastError is not None:
+                raise lastError
 
               if body is not None:
                 s3.put_object(
@@ -446,7 +443,6 @@ Resources:
           def lambda_handler(evt, cntx):
             try:
               print(evt)
-
               bucket = evt['ResourceProperties']['BucketName']
               print('S3 Bucket: ' + bucket)
 
