@@ -741,7 +741,7 @@ class Property(ToJson, ToCodeString):
 
 
 ########################################################
-#             Predicates and Functions                 #
+#                    Predicates                        #
 ########################################################
 
 
@@ -1397,6 +1397,11 @@ class InDateRangeDual(AbstractPredicate):
         return predicate_json
 
 
+########################################################
+#                    Functions                         #
+########################################################
+
+
 class FunctionContext(ToJson, ToCodeString):
     CLASS = "gaffer.FunctionContext"
 
@@ -1441,67 +1446,76 @@ class Function(ToJson, ToCodeString):
 
         return function_json
 
-class ExtractKeys(Function):
+
+class AbstractFunction(Function):
+    CLASS = "java.util.function.Function"
+
+    def __init__(self, _class_name=None):
+        self._class_name = _class_name
+
+    def to_json(self):
+        function_json = {}
+        if self._class_name is not None:
+            function_json['class'] = self._class_name
+
+        return function_json
+
+
+class ExtractKeys(AbstractFunction):
     CLASS = 'uk.gov.gchq.koryphe.impl.function.ExtractKeys'
 
     def __init__(self):
-        super().__init__(class_name=self.CLASS)
+        super().__init__(_class_name=self.CLASS)
 
     def to_json(self):
-        function = super().to_json()
-
-        return function
+        return super().to_json()
 
 
-class ExtractValues(Function):
+class ExtractValues(AbstractFunction):
     CLASS = 'uk.gov.gchq.koryphe.impl.function.ExtractValues'
 
     def __init__(self):
-        super().__init__(class_name=self.CLASS)
+        super().__init__(_class_name=self.CLASS)
 
     def to_json(self):
-        function = super().to_json()
+        return super().to_json()
 
-        return function
 
-class IsEmpty(Function):
+class IsEmpty(AbstractFunction):
     CLASS = 'uk.gov.gchq.koryphe.impl.function.IsEmpty'
 
     def __init__(self):
-        super().__init__(class_name=self.CLASS)
+        super().__init__(_class_name=self.CLASS)
 
     def to_json(self):
-        function = super().to_json()
+        return super().to_json()
 
-        return function
 
-class Size(Function):
+class Size(AbstractFunction):
     CLASS = 'uk.gov.gchq.koryphe.impl.function.Size'
 
     def __init__(self):
-        super().__init__(class_name=self.CLASS)
+        super().__init__(_class_name=self.CLASS)
 
     def to_json(self):
-        function = super().to_json()
+        return super().to_json()
 
-        return function
 
-class FirstItem(Function):
+class FirstItem(AbstractFunction):
     CLASS = 'uk.gov.gchq.koryphe.impl.function.FirstItem'
 
     def __init__(self):
-        super().__init__(class_name=self.CLASS)
+        super().__init__(_class_name=self.CLASS)
 
     def to_json(self):
-        function = super().to_json()
+        return super().to_json()
 
-        return function
 
-class NthItem(Function):
+class NthItem(AbstractFunction):
     CLASS = 'uk.gov.gchq.koryphe.impl.function.NthItem'
 
     def __init__(self, selection):
-        super().__init__(class_name=self.CLASS)
+        super().__init__(_class_name=self.CLASS)
 
         self.selection = selection
 
@@ -1513,34 +1527,32 @@ class NthItem(Function):
 
         return function
 
-class LastItem(Function):
+
+class LastItem(AbstractFunction):
     CLASS = 'uk.gov.gchq.koryphe.impl.function.LastItem'
 
     def __init__(self):
-        super().__init__(class_name=self.CLASS)
+        super().__init__(_class_name=self.CLASS)
 
     def to_json(self):
-        function = super().to_json()
-
-        return function
+        return super().to_json()
 
 
-class IterableConcat(Function):
+class IterableConcat(AbstractFunction):
     CLASS = 'uk.gov.gchq.koryphe.impl.function.IterableConcat'
 
     def __init__(self):
-        super().__init__(class_name=self.CLASS)
+        super().__init__(_class_name=self.CLASS)
 
     def to_json(self):
-        function = super().to_json()
+        return super().to_json()
 
-        return function
 
-class IterableFunction(Function):
+class IterableFunction(AbstractFunction):
     CLASS = 'uk.gov.gchq.koryphe.impl.function.IterableFunction'
 
     def __init__(self, functions):
-        super().__init__(class_name=self.CLASS)
+        super().__init__(_class_name=self.CLASS)
 
         if functions is None:
             raise TypeError('No function(s) provided')
@@ -1552,7 +1564,6 @@ class IterableFunction(Function):
                         func, Function)
                 self.functions.append(func)
 
-
     def to_json(self):
         function = super().to_json()
 
@@ -1563,21 +1574,22 @@ class IterableFunction(Function):
 
         return function
 
-class ExtractWalkEdges(Function):
+
+class ExtractWalkEdges(AbstractFunction):
     CLASS = 'uk.gov.gchq.gaffer.data.graph.function.walk.ExtractWalkEdges'
 
     def __init__(self):
-        super().__init__(class_name=self.CLASS)
+        super().__init__(_class_name=self.CLASS)
 
     def to_json(self):
         return super().to_json()
 
 
-class ExtractWalkEdgesFromHop(Function):
+class ExtractWalkEdgesFromHop(AbstractFunction):
     CLASS = 'uk.gov.gchq.gaffer.data.graph.function.walk.ExtractWalkEdgesFromHop'
 
     def __init__(self, hop=None):
-        super().__init__(class_name=self.CLASS)
+        super().__init__(_class_name=self.CLASS)
 
         self.hop = hop
 
@@ -1590,21 +1602,21 @@ class ExtractWalkEdgesFromHop(Function):
         return function
 
 
-class ExtractWalkEntities(Function):
+class ExtractWalkEntities(AbstractFunction):
     CLASS = 'uk.gov.gchq.gaffer.data.graph.function.walk.ExtractWalkEntities'
 
     def __init__(self):
-        super().__init__(class_name=self.CLASS)
+        super().__init__(_class_name=self.CLASS)
 
     def to_json(self):
         return super().to_json()
 
 
-class ExtractWalkEntitiesFromHop(Function):
+class ExtractWalkEntitiesFromHop(AbstractFunction):
     CLASS = 'uk.gov.gchq.gaffer.data.graph.function.walk.ExtractWalkEntitiesFromHop'
 
     def __init__(self, hop=None):
-        super().__init__(class_name=self.CLASS)
+        super().__init__(_class_name=self.CLASS)
 
         self.hop = hop
 
@@ -1615,6 +1627,176 @@ class ExtractWalkEntitiesFromHop(Function):
             function['hop'] = self.hop
 
         return function
+
+
+class Concat(AbstractFunction):
+    CLASS = 'uk.gov.gchq.koryphe.impl.function.Concat'
+
+    def __init__(self, separator=None):
+        super().__init__(_class_name=self.CLASS)
+
+        self.separator = separator
+
+    def to_json(self):
+        function = super().to_json()
+
+        if self.separator is not None:
+            function['separator'] = self.separator
+
+        return function
+
+
+class Divide(AbstractFunction):
+    CLASS = 'uk.gov.gchq.koryphe.impl.function.Divide'
+
+    def __init__(self):
+        super().__init__(_class_name=self.CLASS)
+
+    def to_json(self):
+        return super().to_json()
+
+
+class DivideBy(AbstractFunction):
+    CLASS = 'uk.gov.gchq.koryphe.impl.function.DivideBy'
+
+    def __init__(self, by=None):
+        super().__init__(_class_name=self.CLASS)
+
+        self.by = by
+
+    def to_json(self):
+        function = super().to_json()
+
+        if self.by is not None:
+            function['by'] = self.by
+
+        return function
+
+
+class Identity(AbstractFunction):
+    CLASS = 'uk.gov.gchq.koryphe.impl.function.Identity'
+
+    def __init__(self):
+        super().__init__(_class_name=self.CLASS)
+
+    def to_json(self):
+        return super().to_json()
+
+
+class Multiply(AbstractFunction):
+    CLASS = 'uk.gov.gchq.koryphe.impl.function.Multiply'
+
+    def __init__(self):
+        super().__init__(_class_name=self.CLASS)
+
+    def to_json(self):
+        return super().to_json()
+
+
+class MultiplyBy(AbstractFunction):
+    CLASS = 'uk.gov.gchq.koryphe.impl.function.MultiplyBy'
+
+    def __init__(self, by=None):
+        super().__init__(_class_name=self.CLASS)
+
+        self.by = by
+
+    def to_json(self):
+        function = super().to_json()
+
+        if self.by is not None:
+            function['by'] = self.by
+
+        return function
+
+
+class ToString(AbstractFunction):
+    CLASS = 'uk.gov.gchq.koryphe.impl.function.ToString'
+
+    def __init__(self):
+        super().__init__(_class_name=self.CLASS)
+
+    def to_json(self):
+        return super().to_json()
+
+
+class MapGenerator(AbstractFunction):
+    CLASS = 'uk.gov.gchq.gaffer.data.generator.MapGenerator'
+
+    def __init__(self, fields=None, constants=None):
+        super().__init__(_class_name=self.CLASS)
+
+        self.fields = fields
+        self.constants = constants
+
+    def to_json(self):
+        function = super().to_json()
+
+        if self.fields is not None:
+            function['fields'] = self.fields
+
+        if self.constants is not None:
+            function['constants'] = self.constants
+
+        return function
+
+
+class CsvGenerator(AbstractFunction):
+    CLASS = 'uk.gov.gchq.gaffer.data.generator.CsvGenerator'
+
+    def __init__(self, fields=None, constants=None, quoted=None,
+                 comma_replacement=None):
+        super().__init__(_class_name=self.CLASS)
+
+        self.fields = fields
+        self.constants = constants
+        self.quoted = quoted
+        self.comma_replacement = comma_replacement
+
+    def to_json(self):
+        function = super().to_json()
+
+        if self.fields is not None:
+            function['fields'] = self.fields
+
+        if self.constants is not None:
+            function['constants'] = self.constants
+
+        if self.quoted is not None:
+            function['quoted'] = self.quoted
+
+        if self.comma_replacement is not None:
+            function['commaReplacement'] = self.comma_replacement
+
+        return function
+
+
+class FreqMapExtractor(AbstractFunction):
+    CLASS = 'uk.gov.gchq.gaffer.types.function.FreqMapExtractor'
+
+    def __init__(self, key):
+        super().__init__(_class_name=self.CLASS)
+        self.key = key
+
+    def to_json(self):
+        function_json = super().to_json()
+        function_json['key'] = self.key
+        return function_json
+
+
+class FunctionMap(AbstractFunction):
+    CLASS = 'uk.gov.gchq.koryphe.function.FunctionMap'
+
+    def __init__(self, function):
+        super().__init__(_class_name=self.CLASS)
+        if not isinstance(function, Function):
+            function = JsonConverter.from_json(function, Function)
+        self.function = function
+
+    def to_json(self):
+        function_json = super().to_json()
+        function_json['function'] = self.function.to_json()
+        return function_json
 
 
 class BinaryOperatorContext(ToJson, ToCodeString):
@@ -1656,26 +1838,13 @@ class BinaryOperator(ToJson, ToCodeString):
         return function_json
 
 
-class ElementGenerator(ToJson, ToCodeString):
+class ElementGenerator(Function):
     CLASS = 'uk.gov.gchq.gaffer.data.generator.ElementGenerator'
 
     def __init__(self,
                  class_name,
                  fields=None):
-        super().__init__()
-        self.class_name = class_name
-        if fields is not None and 'class' in fields:
-            fields = dict(fields)
-            fields.pop('class', None)
-        self.fields = fields
-
-    def to_json(self):
-        if self.fields is None:
-            json_str = {}
-        else:
-            json_str = dict(self.fields)
-        json_str['class'] = self.class_name
-        return json_str
+        super().__init__(class_name=class_name, fields=fields)
 
 
 class DirectedType:
@@ -2520,9 +2689,9 @@ class ToCsv(Operation):
         super().__init__(
             _class_name=self.CLASS
         )
-        if not isinstance(element_generator, ElementGenerator):
-            element_generator = ElementGenerator(element_generator['class'],
-                                                 element_generator)
+        if not isinstance(element_generator, CsvGenerator):
+            element_generator = JsonConverter.from_json(
+                element_generator, CsvGenerator)
         self.element_generator = element_generator
         self.include_header = include_header
 
@@ -2535,7 +2704,7 @@ class ToCsv(Operation):
         return operation
 
 
-class ToMapCsv(Operation):
+class ToMap(Operation):
     CLASS = 'uk.gov.gchq.gaffer.operation.impl.output.ToMap'
 
     def __init__(self,
@@ -2544,9 +2713,9 @@ class ToMapCsv(Operation):
             _class_name=self.CLASS
         )
 
-        if not isinstance(element_generator, ElementGenerator):
-            element_generator = ElementGenerator(element_generator['class'],
-                                                 element_generator)
+        if not isinstance(element_generator, MapGenerator):
+            element_generator = JsonConverter.from_json(
+                element_generator, MapGenerator)
         self.element_generator = element_generator
 
     def to_json(self):
@@ -3285,7 +3454,8 @@ class GetWalks(Operation):
         if operations is not None:
             self.operations = []
             for op in operations:
-                if not isinstance(op, GetElements) and not isinstance(op, OperationChain):
+                if not isinstance(op, GetElements) and not isinstance(op,
+                                                                      OperationChain):
                     op = JsonConverter.from_json(op)
                 self.operations.append(op)
 
@@ -3307,6 +3477,7 @@ class GetWalks(Operation):
             operation['operations'] = operations_json
 
         return operation
+
 
 class Map(Operation):
     CLASS = 'uk.gov.gchq.gaffer.operation.impl.Map'
@@ -3341,6 +3512,7 @@ class Map(Operation):
 
         return operation
 
+
 class GetGraph:
     def get_url(self):
         return self._url
@@ -3374,6 +3546,11 @@ class GetSchema(Operation, GetGraph):
 class GetFilterFunctions(GetGraph):
     def __init__(self):
         self._url = '/graph/config/filterFunctions'
+
+
+class GetTransformFunctions(GetGraph):
+    def __init__(self):
+        self._url = '/graph/config/transformFunctions'
 
 
 class GetClassFilterFunctions(GetGraph):
@@ -3507,8 +3684,8 @@ class JsonConverter:
                 class_name = function.get('class')
                 function.pop('class', None)
                 function = Function(
-                    class_name=class_name,
-                    fields=function
+                    _class_name=class_name,
+                    _fields=function
                 )
 
         return function
