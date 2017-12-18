@@ -1,24 +1,11 @@
-<md-card>
-    <md-card-title>
-        <md-card-title-text>
-            <span class="md-headline">In Out Edges</span>
-        </md-card-title-text>
-    </md-card-title>
-    <md-card-content>
-        <div id="inOutFlag">
-            <md-radio-group
-                    ng-model="ctrl.inOutFlag"
-                    ng-change="ctrl.onInOutFlagChange()">
-                <md-radio-button value="INCOMING">
-                    Incoming
-                </md-radio-button>
-                <md-radio-button value="OUTGOING">
-                    Outgoing
-                </md-radio-button>
-                <md-radio-button value="EITHER">
-                    Either
-                </md-radio-button>
-            </md-radio-group>
-        </div>
-    </md-card-content>
+<md-card layout-padding>
+    <md-input-container>
+        <label>Edge Direction</label>
+        <md-select ng-model="ctrl.inOutFlag" md-on-close="ctrl.onInOutFlagChange()">
+            <md-option value="INCOMING">Towards your seeds</md-option>
+            <md-option value="OUTGOING">Away from your seeds</md-option>
+            <md-option value="EITHER">Either</md-option>
+        </md-select>
+        <md-tooltip md-direction="down">Should the edges point towards, or away from your seeds?</md-tooltip>
+    </md-input-container>
 </md-card>
