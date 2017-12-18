@@ -61,7 +61,7 @@ describe('The Parameter Form Component', function() {
                 ctrl = $componentController('parameterForm');
             });
 
-            it('should return true if the parameter is required and the field does not have an optional flag', function() {
+            it('should return false if the parameter is required and the field does not have the required flag', function() {
                 var field = {
                     "class": "some.java.Class",
                     "type": "string"
@@ -71,28 +71,14 @@ describe('The Parameter Form Component', function() {
                     required: true
                 }
 
-                expect(ctrl.isRequired(field, parameter)).toBeTruthy();
+                expect(ctrl.isRequired(field, parameter)).toBeFalsy();
             });
 
-            it('should return true if the parameter is required and the field has an optional flag set to false', function() {
+            it('should return false if the parameter is required and the field has a required flag set to false', function() {
                 var field = {
                     "class": "some.java.Class",
                     "type": "string",
-                    "optional": false
-                };
-
-                var parameter = {
-                    required: true
-                }
-
-                expect(ctrl.isRequired(field, parameter)).toBeTruthy();
-            });
-
-            it('should return false if the parameter is required but the optional flag is set to true', function() {
-                var field = {
-                    "class": "some.java.Class",
-                    "type": "string",
-                    "optional": true
+                    "required": false
                 };
 
                 var parameter = {
@@ -102,11 +88,25 @@ describe('The Parameter Form Component', function() {
                 expect(ctrl.isRequired(field, parameter)).toBeFalsy();
             });
 
+            it('should return true if the parameter is required but the required flag is set to true', function() {
+                var field = {
+                    "class": "some.java.Class",
+                    "type": "string",
+                    "required": true
+                };
+
+                var parameter = {
+                    required: true
+                }
+
+                expect(ctrl.isRequired(field, parameter)).toBeTruthy();
+            });
+
             it('should return false if the required flag on the parameter is set to false', function() {
                 var field = {
                     "class": "some.java.Class",
                     "type": "string",
-                    "optional": false
+                    "required": true
                 };
 
                 var parameter = {

@@ -20,7 +20,8 @@
           "label": "Value",
           "type": "number",
           "step": "1",
-          "class": "java.lang.Long"
+          "class": "java.lang.Long",
+          "required": true
         }
       ],
       "wrapInJson": true
@@ -31,7 +32,8 @@
           "label": "Value",
           "type": "number",
           "step": "1",
-          "class": "java.lang.Integer"
+          "class": "java.lang.Integer",
+          "required": true
         }
       ]
     },
@@ -41,7 +43,8 @@
           "label": "Value",
           "type": "number",
           "step": "1",
-          "class": "java.lang.Short"
+          "class": "java.lang.Short",
+          "required": true
         }
       ],
       "wrapInJson": true
@@ -52,7 +55,8 @@
           "label": "Value",
           "type": "number",
           "step": "0.1",
-          "class": "java.lang.Double"
+          "class": "java.lang.Double",
+          "required": true
         }
       ],
       "wrapInJson": true
@@ -63,7 +67,8 @@
           "label": "Value",
           "type": "number",
           "step": "0.1",
-          "class": "java.lang.Float"
+          "class": "java.lang.Float",
+          "required": true
         }
       ],
       "wrapInJson": true
@@ -73,7 +78,8 @@
         {
           "label": "Value",
           "type": "text",
-          "class": "java.lang.String"
+          "class": "java.lang.String",
+          "required": true
         }
       ]
     },
@@ -83,14 +89,14 @@
           "label": "Type",
           "type": "text",
           "key": "type",
-          "class": "java.lang.String",
-          "optional": true
+          "class": "java.lang.String"
         },
         {
           "label": "Value",
           "type": "text",
           "key": "value",
-          "class": "java.lang.String"
+          "class": "java.lang.String",
+          "required": true
         }
       ],
       "wrapInJson": true
@@ -101,21 +107,20 @@
           "label": "Type",
           "type": "text",
           "key": "type",
-          "class": "java.lang.String",
-          "optional": true
+          "class": "java.lang.String"
         },
         {
           "label": "Sub Type",
           "type": "text",
           "key": "subType",
-          "class": "java.lang.String",
-          "optional": true
+          "class": "java.lang.String"
         },
         {
           "label": "Value",
           "type": "text",
           "key": "value",
-          "class": "java.lang.String"
+          "class": "java.lang.String",
+          "required": true
         }
       ],
       "wrapInJson": true
@@ -127,7 +132,8 @@
           "type": "number",
           "key": "hyperLogLogPlus.cardinality",
           "class": "java.lang.Integer",
-          "step": 1
+          "step": 1,
+          "required": true
         }
       ],
       "custom": true
