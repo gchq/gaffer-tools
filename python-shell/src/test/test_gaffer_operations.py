@@ -1539,10 +1539,7 @@ class GafferOperationsTest(unittest.TestCase):
                                     projection=[
                                         "vertex|count"
                                     ],
-                                    function=g.Function(
-                                        class_name="uk.gov.gchq.koryphe.impl.function.Concat",
-                                        fields={'separator': '|'}
-                                    ),
+                                    function=g.Concat(separator='|'),
                                     selection=[
                                         "SOURCE",
                                         "count"
@@ -1613,10 +1610,7 @@ class GafferOperationsTest(unittest.TestCase):
                                         "SOURCE",
                                         "count"
                                     ],
-                                    function=g.Function(
-                                        class_name="uk.gov.gchq.koryphe.impl.function.Concat",
-                                        fields={'separator': '|'}
-                                    ),
+                                    function=g.Concat(separator='|'),
                                     projection=[
                                         "vertex|count"
                                     ]
@@ -2939,7 +2933,6 @@ class GafferOperationsTest(unittest.TestCase):
                     "SOURCE" : "source",
                     "count" : "total count"
                   },
-                  "constants" : { },
                   "quoted" : false
                 },
                 "includeHeader" : true
@@ -2960,13 +2953,14 @@ class GafferOperationsTest(unittest.TestCase):
                     ),
                     g.ToCsv(
                         include_header=True,
-                        element_generator=g.ElementGenerator(
-                            class_name="uk.gov.gchq.gaffer.data.generator.CsvGenerator",
-                            fields={'constants': {}, 'quoted': False,
-                                    'fields': {'GROUP': 'Edge group',
-                                               'VERTEX': 'vertex',
-                                               'count': 'total count',
-                                               'SOURCE': 'source'}}
+                        element_generator=g.CsvGenerator(
+                            fields={
+                                'GROUP': 'Edge group',
+                                'VERTEX': 'vertex',
+                                'count': 'total count',
+                                'SOURCE': 'source'
+                            },
+                            quoted=False
                         )
                     )
                 ]
@@ -3062,8 +3056,7 @@ class GafferOperationsTest(unittest.TestCase):
                     "VERTEX" : "vertex",
                     "SOURCE" : "source",
                     "count" : "total count"
-                  },
-                  "constants" : { }
+                  }
                 }
               } ]
             }
@@ -3080,14 +3073,14 @@ class GafferOperationsTest(unittest.TestCase):
                             )
                         ]
                     ),
-                    g.ToMapCsv(
-                        element_generator=g.ElementGenerator(
-                            fields={'fields': {'SOURCE': 'source',
-                                               'count': 'total count',
-                                               'VERTEX': 'vertex',
-                                               'GROUP': 'group'},
-                                    'constants': {}},
-                            class_name="uk.gov.gchq.gaffer.data.generator.MapGenerator"
+                    g.ToMap(
+                        element_generator=g.MapGenerator(
+                            fields={
+                                'SOURCE': 'source',
+                                'count': 'total count',
+                                'VERTEX': 'vertex',
+                                'GROUP': 'group'
+                            }
                         )
                     )
                 ]
@@ -4042,7 +4035,7 @@ class GafferOperationsTest(unittest.TestCase):
                         }]
                     }]
                 }]
-            } 
+            }
             ''',
             g.OperationChain(
                 operations=[
