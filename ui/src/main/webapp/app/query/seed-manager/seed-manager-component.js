@@ -66,6 +66,10 @@ function SeedManagerController(graph, queryPage, common, types, events) {
             message += " and " + howManyMore + " more";
         }
 
+        if (!message || message === "") {
+            message = "No Seeds added. Type in your seeds and click add."
+        }
+
         vm.seedsMessage = message;
     }
 }

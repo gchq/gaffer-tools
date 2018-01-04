@@ -29,31 +29,19 @@ function viewBuilder() {
 function ViewBuilderController(queryPage, graph, common, schema, functions, events) {
     var vm = this;
 
-    vm.relatedEntities = graph.getRelatedEntities();
-    vm.relatedEdges = graph.getRelatedEdges();
+    vm.schemaEntities;
+    vm.schemaEdges;
     vm.expandEdges = queryPage.expandEdges;
     vm.expandEntities = queryPage.expandEntities;
     vm.expandEdgesContent = queryPage.expandEdgesContent;
     vm.expandEntitiesContent = queryPage.expandEntitiesContent;
 
-    var setRelatedEntities = function(relatedEntities) {
-        vm.relatedEntities = relatedEntities;
-    }
-
-    var setRelatedEdges = function(relatedEdges) {
-        vm.relatedEdges = relatedEdges;
-    }
-
     vm.$onInit = function() {
-        events.subscribe('relatedEntitiesUpdate', setRelatedEntities);
-        events.subscribe('relatedEdgesUpdate', setRelatedEdges);
+        schema.get().then(function(gafferSchema) {
+            vm.schemaEdges = Object.keys(gafferSchema.edges);
+            vm.schemaEntities = Object.keys(gafferSchema.entities);
+        });
     }
-
-    vm.$onDestroy = function() {
-        events.unsubscribe('relatedEntitiesUpdate', setRelatedEntities);
-        events.unsubscribe('relatedEdgesUpdate', setRelatedEdges);
-    }
-
 
     vm.getEntityProperties = schema.getEntityProperties;
     vm.getEdgeProperties = schema.getEdgeProperties;

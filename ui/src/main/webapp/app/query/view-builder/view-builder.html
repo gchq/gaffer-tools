@@ -8,11 +8,11 @@
     <md-card-content>
         <h4 class="md-title">Entities</h4>
 
-        <p ng-show="!ctrl.relatedEntities || ctrl.relatedEntities.length === 0">
+        <p ng-show="!ctrl.schemaEntities || ctrl.schemaEntities.length === 0">
             No related entities
         </p>
 
-        <div ng-repeat="entity in ctrl.relatedEntities">
+        <div ng-repeat="entity in ctrl.schemaEntities">
             <md-checkbox
                     id="related-entity-{{entity}}"
                     ng-checked="ctrl.exists(ctrl.expandEntities, entity)"
@@ -139,11 +139,11 @@
 
         <h4 class="md-title">Edges</h4>
 
-        <p ng-show="!ctrl.relatedEdges || ctrl.relatedEdges.length === 0">
+        <p ng-show="!ctrl.schemaEdges || ctrl.schemaEdges.length === 0">
             No related edges
         </p>
 
-        <div ng-repeat="edge in ctrl.relatedEdges">
+        <div ng-repeat="edge in ctrl.schemaEdges">
             <md-checkbox
                     id="related-edge-{{edge}}"
                     ng-checked="ctrl.exists(ctrl.expandEdges, edge)"

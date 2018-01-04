@@ -59,3 +59,7 @@ md-nav-bar > div > nav {
 .transparent {
     background-color: transparent;
 }
+
+md-input-container > textarea {
+    border-width: 2px !important;
+}

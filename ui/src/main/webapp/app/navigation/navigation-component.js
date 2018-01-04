@@ -70,22 +70,6 @@ function NavigationController($rootScope, $mdDialog, navigation, graph, operatio
         });
     }
 
-    vm.addSeedPrompt = function(ev) {
-        $mdDialog.show({
-            preserveScope: true,
-            template: '<seed-builder-dialog aria-label="Seed Builder"></seed-builder-dialog>',
-            parent: angular.element(document.body),
-            targetEvent: ev,
-            clickOutsideToClose: true
-        })
-        .then(function(seeds) {
-            for(var i in seeds) {
-                graph.addSeed(seeds[i]);
-            }
-        })
-        .catch(function(){}); // throw away possibly unhandled rejection errors
-    }
-
     vm.isGraphInView = function() {
         return vm.currentPage === 'graph';
     }

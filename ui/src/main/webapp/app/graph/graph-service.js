@@ -23,11 +23,8 @@ angular.module('app').factory('graph', ['schema', 'types', '$q', 'results', 'com
 
     var selectedEntities = {};
     var selectedEdges = {};
-    var relatedEntities = [];
-    var relatedEdges = [];
 
-
-    var graphData = {entities: {}, edges: {}, entitySeeds: {}};
+    var graphData = {entities: {}, edges: {}, entitySeeds: []};
 
     events.subscribe('resultsUpdated', function(results) {
         graph.update(results);
@@ -38,19 +35,9 @@ angular.module('app').factory('graph', ['schema', 'types', '$q', 'results', 'com
         return selectedEntities;
     }
 
-    graph.getRelatedEntities = function() {
-        return relatedEntities;
-    }
-
     graph.getSelectedEdges = function() {
         return selectedEdges;
     }
-
-    graph.getRelatedEdges = function() {
-        return relatedEdges;
-    }
-
-    var listeners = {};
 
     graph.load = function() {
         var deferred = $q.defer();
@@ -113,46 +100,6 @@ angular.module('app').factory('graph', ['schema', 'types', '$q', 'results', 'com
         return deferred.promise;
     }
 
-    function updateRelatedEntities() {
-        relatedEntities = [];
-        schemaService.get().then(function(schema) {
-            for(var id in selectedEntities) {
-                var vertexType = selectedEntities[id][0].vertexType;
-                for(var entityGroup in schema.entities) {
-                    if(vertexType === "unknown") {
-                         relatedEntities.push(entityGroup);
-                    } else {
-                        var entity = schema.entities[entityGroup];
-                        if(entity.vertex === vertexType
-                            && relatedEntities.indexOf(entityGroup) === -1) {
-                            relatedEntities.push(entityGroup);
-                        }
-                    }
-                }
-            }
-            events.broadcast('relatedEntitiesUpdate', [relatedEntities]);
-
-        });
-
-    }
-
-    function updateRelatedEdges() {
-        relatedEdges = [];
-        schemaService.get().then(function(schema) {
-            for(var id in selectedEntities) {
-                var vertexType = selectedEntities[id][0].vertexType;
-                for(var edgeGroup in schema.edges) {
-                    var edge = schema.edges[edgeGroup];
-                    if((edge.source === vertexType || edge.destination === vertexType)
-                        && relatedEdges.indexOf(edgeGroup) === -1) {
-                        relatedEdges.push(edgeGroup);
-                    }
-                }
-            }
-            events.broadcast('relatedEdgesUpdate', [relatedEdges]);
-        });
-    }
-
     function select(element) {
         if(selectEntityId(element.id())) {
             return;
@@ -162,14 +109,12 @@ angular.module('app').factory('graph', ['schema', 'types', '$q', 'results', 'com
             return;
         }
 
-        selectVertex(element.id(), element.data().vertexType);
+        selectVertex(element.id());
     }
 
     function selectEntity(id, entity) {
         selectedEntities[id] = entity;
         events.broadcast('selectedElementsUpdate', [{"entities": selectedEntities, "edges": selectedEdges}]);
-        updateRelatedEntities();
-        updateRelatedEdges();
     }
 
     function selectEntityId(entityId) {
@@ -197,16 +142,13 @@ angular.module('app').factory('graph', ['schema', 'types', '$q', 'results', 'com
         return false;
     }
 
-    function selectVertex(vertexId, vertexType) {
-        selectEntity(vertexId, [{vertexType: vertexType, vertex: vertexId}]);
+    function selectVertex(vertexId) {
+        selectEntity(vertexId, [{vertex: vertexId}]);
     }
 
     function unSelect(element) {
         if(element.id() in selectedEntities) {
             delete selectedEntities[element.id()];
-            updateRelatedEntities();
-            updateRelatedEdges();
-
         } else if(element.id() in selectedEdges) {
             delete selectedEdges[element.id()];
         }
@@ -227,28 +169,20 @@ angular.module('app').factory('graph', ['schema', 'types', '$q', 'results', 'com
     }
 
     graph.addSeed = function(seed) {
-        var v = JSON.stringify(seed.vertex);
-        var entitySeed = { vertexType: seed.vertexType, vertex: v };
-        if(v in graphData.entitySeeds) {
-            if(!common.arrayContainsObject(graphData.entitySeeds[v], entitySeed)) {
-                graphData.entitySeeds[v].push(entitySeed);
-            }
-            selectEntity(v, graphData.entitySeeds[v]);
-        } else {
-            graphData.entitySeeds[v] = [entitySeed];
-            selectEntity(v, [entitySeed]);
+        var entitySeed = JSON.stringify(seed);
+        if(!common.arrayContainsValue(graphData.entitySeeds, entitySeed)) {
+            graphData.entitySeeds.push(entitySeed);
         }
-
+        selectVertex(entitySeed);
         updateGraph(graphData);
     }
 
     graph.update = function(results) {
-        graphData = { entities: {}, edges: {}, entitySeeds: {} };
+        graphData = { entities: {}, edges: {}, entitySeeds: [] };
         for (var i in results.entities) {
             var entity = common.clone(results.entities[i]);
             entity.vertex = common.parseVertex(entity.vertex);
             var id = entity.vertex;
-            entity.vertexType = schemaService.getVertexTypeFromEntityGroup(entity.group);
             if(id in graphData.entities) {
                 if(!common.arrayContainsObject(graphData.entities[id], entity)) {
                     graphData.entities[id].push(entity);
@@ -262,10 +196,6 @@ angular.module('app').factory('graph', ['schema', 'types', '$q', 'results', 'com
             var edge = common.clone(results.edges[i]);
             edge.source = common.parseVertex(edge.source);
             edge.destination = common.parseVertex(edge.destination);
-
-            var vertexTypes = schemaService.getVertexTypesFromEdgeGroup(edge.group);
-            edge.sourceType = vertexTypes[0];
-            edge.destinationType = vertexTypes[1];
             var id = edge.source + "|" + edge.destination + "|" + edge.directed + "|" + edge.group;
             if(id in graphData.edges) {
                 if(!common.arrayContainsObject(graphData.edges[id], edge)) {
@@ -277,18 +207,9 @@ angular.module('app').factory('graph', ['schema', 'types', '$q', 'results', 'com
         }
 
         for (var i in results.entitySeeds) {
-            var entitySeed = {
-               vertex: common.parseVertex(results.entitySeeds[i]),
-               vertexType: "unknown"
-            };
-
-            var id = entitySeed.vertex;
-            if(id in graphData.entitySeeds) {
-                if(!common.arrayContainsObject(graphData.entitySeeds[id], entitySeed)) {
-                    graphData.entitySeeds[id].push(entitySeed);
-                }
-            } else {
-                graphData.entitySeeds[id] = [entitySeed];
+            var id = common.parseVertex(results.entitySeeds[i]);
+            if(!common.arrayContainsValue(graphData.entitySeeds, id)) {
+                graphData.entitySeeds.push(id);
             }
         }
 
@@ -347,8 +268,7 @@ angular.module('app').factory('graph', ['schema', 'types', '$q', 'results', 'com
                         label: createLabel(edge.source),
                         radius: 20,
                         color: '#888',
-                        selectedColor: '#444',
-                        vertexType: edge.sourceType
+                        selectedColor: '#444'
                     },
                     position: {
                         x: 100,
@@ -374,8 +294,7 @@ angular.module('app').factory('graph', ['schema', 'types', '$q', 'results', 'com
                         label: createLabel(edge.destination),
                         radius: 20,
                         color: '#888',
-                        selectedColor: '#444',
-                        vertexType: edge.destinationType
+                        selectedColor: '#444'
                     },
                     position: {
                         x: 100,
@@ -408,8 +327,8 @@ angular.module('app').factory('graph', ['schema', 'types', '$q', 'results', 'com
             }
         }
 
-        for (var id in results.entitySeeds) {
-            addEntitySeed(results.entitySeeds[id][0].vertexType, id);
+        for (var i in results.entitySeeds) {
+            addEntitySeed(results.entitySeeds[i]);
         }
     }
 
@@ -444,7 +363,7 @@ angular.module('app').factory('graph', ['schema', 'types', '$q', 'results', 'com
         return label;
     }
 
-    var addEntitySeed = function(vertexType, vertex){
+    var addEntitySeed = function(vertex){
         var existingNodes = graphCy.getElementById(vertex);
         var isSelected = common.objectContainsValue(selectedEntities, vertex);
         if(existingNodes.length > 0) {
@@ -462,8 +381,7 @@ angular.module('app').factory('graph', ['schema', 'types', '$q', 'results', 'com
                     vertex: vertex,
                     color: '#888',
                     selectedColor: '#444',
-                    radius: 20,
-                    vertexType: vertexType
+                    radius: 20
                 },
                 position: {
                     x: 100,
