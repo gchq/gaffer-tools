@@ -74,7 +74,7 @@ function awsSignal {
 trap awsSignal EXIT
 
 function printUsage {
-	echo "Usage: $0 <gafferVersion> -i <accumuloInstance> -k <kmsID> -p <ssmParameterName> -u <user> -z <zookeepers> [-s <snsTopicArn> --stack-id <stackId] [-w <awsWaitHandleUrl>]"
+	echo "Usage: $0 <gafferVersion> -i <accumuloInstance> -k <kmsID> -p <ssmParameterName> -u <user> -z <zookeepers> [-s <snsTopicArn> --stack-id <stackId>] [-w <awsWaitHandleUrl>]"
 	exit 1
 }
 
@@ -146,28 +146,37 @@ import json
 import sys
 import xml.etree.ElementTree as ET
 
-SNS_ARN = None
+PROJECT_ROOT = None
 STACK_ID = None
+SNS_ARN = None
 REPORT_NAME = 'accumulo-store-integration-tests'
 
-if len(sys.argv) > 1:
-	SNS_ARN = sys.argv[1]
-if len(sys.argv) > 2:
-	STACK_ID = sys.argv[2]
+if len(sys.argv) < 3:
+	print('Usage: ' + __file__ + ' <project> <stackId> [<snsARN> [<snsReportName>]]')
+	sys.exit(1)
 
-tree = ET.parse('store-implementation/accumulo-store/target/failsafe-reports/failsafe-summary.xml')
+PROJECT_ROOT = sys.argv[1]
+STACK_ID = sys.argv[2]
+
+if len(sys.argv) > 3:
+	SNS_ARN = sys.argv[3]
+
+if len(sys.argv) > 4:
+	REPORT_NAME = sys.argv[4]
+
+tree = ET.parse(PROJECT_ROOT + '/target/failsafe-reports/failsafe-summary.xml')
 root = tree.getroot()
 
-completedCount = root.findtext('completed')
-failureCount = root.findtext('failures')
-errorCount = root.findtext('errors')
-skippedCount = root.findtext('skipped')
+completedCount = int(root.findtext('completed'))
+failureCount = int(root.findtext('failures'))
+errorCount = int(root.findtext('errors'))
+skippedCount = int(root.findtext('skipped'))
 
 failures = []
 errors = []
 
 if failureCount is not None and errorCount is not None and (failureCount > 0 or errorCount > 0):
-	for f in glob.glob('store-implementation/accumulo-store/target/failsafe-reports/TEST-*.xml'):
+	for f in glob.glob(PROJECT_ROOT + '/target/failsafe-reports/TEST-*.xml'):
 		report = ET.parse(f)
 		if int(report.getroot().get('failures', 0)) > 0 or int(report.getroot().get('errors', 0)) > 0:
 			for test in report.getroot().findall('testcase'):
@@ -223,7 +232,7 @@ EOF
 function reportTestResults {
 	if [[ "$SNS_ARN" ]]; then
 		sudo pip install boto3
-		python failsafe-report.py $SNS_ARN $STACK_ID
+		python failsafe-report.py store-implementation/accumulo-store $STACK_ID $SNS_ARN
 	fi
 }
 
