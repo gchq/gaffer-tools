@@ -16,17 +16,17 @@
 
 'use strict';
 
-angular.module('app').component('inlineSeedBuilder', inlineSeedBuilder());
+angular.module('app').component('seedBuilder', seedBuilder());
 
-function inlineSeedBuilder() {
+function seedBuilder() {
     return {
-        templateUrl: 'app/query/seed-manager/seed-builder/inline-seed-builder.html',
-        controller: InlineSeedBuilderController,
+        templateUrl: 'app/query/seed-manager/seed-builder/seed-builder.html',
+        controller: SeedBuilderController,
         controllerAs: 'ctrl'
     }
 }
 
-function InlineSeedBuilderController(schema, types, graph) {
+function SeedBuilderController(schema, types, graph) {
     var vm = this;
     vm.seedVertexParts = {};
     vm.seedVertices = '';
@@ -46,7 +46,7 @@ function InlineSeedBuilderController(schema, types, graph) {
             return (vm.seedVertices !== '');
         }
         for(var part in vm.seedVertexParts) {
-            if (vm.seedVertexParts[part] && vm.seedVertexParts[part] !== "") {
+            if (vm.seedVertexParts[part] !== undefined && vm.seedVertexParts[part] !== "") {
                 return true;
             }
         }
@@ -69,7 +69,7 @@ function InlineSeedBuilderController(schema, types, graph) {
                 var partValues = vertex.trim().split(",");
                 var fields = types.getFields(vm.vertexClass);
                 if(fields.length != partValues.length) {
-                    alert("Wrong number of parameters for seed: " + vertex + ". " + vertexType + " requires " + fields.length + " parameters");
+                    alert("Wrong number of parameters for seed: " + vertex + ". " + vm.vertexClass + " requires " + fields.length + " parameters");
                     break;
                 }
                 var parts = {};
