@@ -31,7 +31,7 @@ S3_BUCKET=""
 SUBNET_ID=""
 
 # EMR Cluster Config
-EMR_VERSION="emr-5.7.0"
+EMR_VERSION="emr-5.11.0"
 INSTANCE_TYPE="m3.xlarge"
 INSTANCE_COUNT=3
 CLUSTER_NAME="gaffer-tests-$GAFFER_VERSION"

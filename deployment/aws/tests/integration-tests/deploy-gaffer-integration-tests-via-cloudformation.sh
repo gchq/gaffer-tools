@@ -38,7 +38,6 @@ KEYNAME=""
 EXTRA_SECURITY_GROUPS=""
 
 # EMR Cluster Config
-EMR_VERSION="emr-5.7.0"
 CLUSTER_NAME="$KEYNAME-gaffer-tests-${GAFFER_VERSION//./-}"
 
 # ----- CONFIG END ----- #
@@ -65,7 +64,6 @@ aws cloudformation create-stack \
 	--parameters \
 		ParameterKey=GafferVersion,ParameterValue=$GAFFER_VERSION \
 		ParameterKey=GafferToolsVersion,ParameterValue=$GAFFER_TOOLS_VERSION \
-		ParameterKey=EmrRelease,ParameterValue=$EMR_VERSION \
 		ParameterKey=VpcId,ParameterValue=$VPC_ID \
 		ParameterKey=SubnetId,ParameterValue=$SUBNET_ID \
 		ParameterKey=ExtraSecurityGroups,ParameterValue=\"$EXTRA_SECURITY_GROUPS\" \
