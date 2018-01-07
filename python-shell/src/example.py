@@ -247,7 +247,8 @@ def get_elements(gc):
                             g.FunctionContext(
                                 selection=['SOURCE', 'DESTINATION', 'count'],
                                 function=g.Function(
-                                    class_name='uk.gov.gchq.gaffer.traffic.transform.DescriptionTransform'),
+                                    class_name='uk.gov.gchq.gaffer.traffic.transform.DescriptionTransform'
+                                ),
                                 projection=['description']
                             )
                         ]
@@ -259,6 +260,7 @@ def get_elements(gc):
     )
     print('Related input')
     print(input)
+    print()
 
 
 def get_adj_seeds(gc):
@@ -341,7 +343,8 @@ def get_walks(gc):
             ]
         )
     )
-    print('Walks from M32 traversing down RoadHasJunction then JunctionLocatedAt')
+    print(
+        'Walks from M32 traversing down RoadHasJunction then JunctionLocatedAt')
     print(walks)
     print()
 
@@ -779,10 +782,7 @@ def complex_op_chain(gc):
                             transform_functions=[
                                 g.FunctionContext(
                                     selection=['countByVehicleType'],
-                                    function=g.Function(
-                                        class_name='uk.gov.gchq.gaffer.types.function.FreqMapExtractor',
-                                        fields={'key': 'BUS'}
-                                    ),
+                                    function=g.FreqMapExtractor(key='BUS'),
                                     projection=['busCount']
                                 )
                             ]
@@ -792,15 +792,14 @@ def complex_op_chain(gc):
                 include_incoming_out_going=g.InOutType.OUT
             ),
             g.ToCsv(
-                element_generator={
-                    'class': 'uk.gov.gchq.gaffer.data.generator.CsvGenerator',
-                    'fields': {
+                element_generator=g.CsvGenerator(
+                    fields={
                         'VERTEX': 'Junction',
                         'busCount': 'Bus Count'
                     },
-                    'quoted': False,
-                    'header': 'Junction,Bus Count'
-                }
+                    quoted=False
+                ),
+                include_header=True
             )
         ]
     )

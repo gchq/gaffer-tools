@@ -576,7 +576,8 @@ class AggregatePair(ToJson, ToCodeString):
         if group_by is not None and not isinstance(group_by, list):
             group_by = [group_by]
         self.group_by = group_by
-        if element_aggregator is not None and not isinstance(element_aggregator, ElementAggregateDefinition):
+        if element_aggregator is not None and not isinstance(element_aggregator,
+                                                             ElementAggregateDefinition):
             element_aggregator = ElementAggregateDefinition(
                 operators=element_aggregator['operators'])
         self.element_aggregator = element_aggregator
@@ -740,7 +741,7 @@ class Property(ToJson, ToCodeString):
 
 
 ########################################################
-#             Predicates and Functions                 #
+#                    Predicates                        #
 ########################################################
 
 
@@ -1208,6 +1209,199 @@ class StringContains(AbstractPredicate):
         return predicate_json
 
 
+class InRange(AbstractPredicate):
+    CLASS = "uk.gov.gchq.koryphe.impl.predicate.range.InRange"
+
+    def __init__(self, start=None, end=None, start_inclusive=None,
+                 end_inclusive=None):
+        super().__init__(_class_name=self.CLASS)
+        self.start = start
+        self.end = end
+        self.start_inclusive = start_inclusive
+        self.end_inclusive = end_inclusive
+
+    def to_json(self):
+        predicate_json = super().to_json()
+        if self.start is not None:
+            predicate_json['start'] = self.start
+        if self.end is not None:
+            predicate_json['end'] = self.end
+        if self.start_inclusive is not None:
+            predicate_json['startInclusive'] = self.start_inclusive
+        if self.end_inclusive is not None:
+            predicate_json['endInclusive'] = self.end_inclusive
+        return predicate_json
+
+
+class InRangeDual(AbstractPredicate):
+    CLASS = "uk.gov.gchq.koryphe.impl.predicate.range.InRangeDual"
+
+    def __init__(self, start=None, end=None, start_inclusive=None,
+                 end_inclusive=None):
+        super().__init__(_class_name=self.CLASS)
+        self.start = start
+        self.end = end
+        self.start_inclusive = start_inclusive
+        self.end_inclusive = end_inclusive
+
+    def to_json(self):
+        predicate_json = super().to_json()
+        if self.start is not None:
+            predicate_json['start'] = self.start
+        if self.end is not None:
+            predicate_json['end'] = self.end
+        if self.start_inclusive is not None:
+            predicate_json['startInclusive'] = self.start_inclusive
+        if self.end_inclusive is not None:
+            predicate_json['endInclusive'] = self.end_inclusive
+        return predicate_json
+
+
+class TimeUnit:
+    DAY = 'DAY'
+    HOUR = 'HOUR'
+    MINUTE = 'MINUTE'
+    SECOND = 'SECOND'
+    MILLISECOND = 'MILLISECOND'
+
+
+class InTimeRange(AbstractPredicate):
+    CLASS = "uk.gov.gchq.koryphe.impl.predicate.range.InTimeRange"
+
+    def __init__(self, start=None, start_offset=None, end=None, end_offset=None,
+                 offset_unit=None, start_inclusive=None, end_inclusive=None):
+        super().__init__(_class_name=self.CLASS)
+        self.start = start
+        self.start_offset = start_offset
+        self.end = end
+        self.end_offset = end_offset
+        self.offset_unit = offset_unit
+        self.start_inclusive = start_inclusive
+        self.end_inclusive = end_inclusive
+
+    def to_json(self):
+        predicate_json = super().to_json()
+        if self.start is not None:
+            predicate_json['start'] = self.start
+        if self.start_offset is not None:
+            predicate_json['startOffset'] = self.start_offset
+        if self.end is not None:
+            predicate_json['end'] = self.end
+        if self.end_offset is not None:
+            predicate_json['endOffset'] = self.end_offset
+        if self.offset_unit is not None:
+            predicate_json['offsetUnit'] = self.offset_unit
+        if self.start_inclusive is not None:
+            predicate_json['startInclusive'] = self.start_inclusive
+        if self.end_inclusive is not None:
+            predicate_json['endInclusive'] = self.end_inclusive
+        return predicate_json
+
+
+class InTimeRangeDual(AbstractPredicate):
+    CLASS = "uk.gov.gchq.koryphe.impl.predicate.range.InTimeRangeDual"
+
+    def __init__(self, start=None, start_offset=None, end=None, end_offset=None,
+                 offset_unit=None, start_inclusive=None, end_inclusive=None):
+        super().__init__(_class_name=self.CLASS)
+        self.start = start
+        self.start_offset = start_offset
+        self.end = end
+        self.end_offset = end_offset
+        self.offset_unit = offset_unit
+        self.start_inclusive = start_inclusive
+        self.end_inclusive = end_inclusive
+
+    def to_json(self):
+        predicate_json = super().to_json()
+        if self.start is not None:
+            predicate_json['start'] = self.start
+        if self.start_offset is not None:
+            predicate_json['startOffset'] = self.start_offset
+        if self.end is not None:
+            predicate_json['end'] = self.end
+        if self.end_offset is not None:
+            predicate_json['endOffset'] = self.end_offset
+        if self.offset_unit is not None:
+            predicate_json['offsetUnit'] = self.offset_unit
+        if self.start_inclusive is not None:
+            predicate_json['startInclusive'] = self.start_inclusive
+        if self.end_inclusive is not None:
+            predicate_json['endInclusive'] = self.end_inclusive
+        return predicate_json
+
+
+class InDateRange(AbstractPredicate):
+    CLASS = "uk.gov.gchq.koryphe.impl.predicate.range.InDateRange"
+
+    def __init__(self, start=None, start_offset=None, end=None, end_offset=None,
+                 offset_unit=None, start_inclusive=None, end_inclusive=None):
+        super().__init__(_class_name=self.CLASS)
+        self.start = start
+        self.start_offset = start_offset
+        self.end = end
+        self.end_offset = end_offset
+        self.offset_unit = offset_unit
+        self.start_inclusive = start_inclusive
+        self.end_inclusive = end_inclusive
+
+    def to_json(self):
+        predicate_json = super().to_json()
+        if self.start is not None:
+            predicate_json['start'] = self.start
+        if self.start_offset is not None:
+            predicate_json['startOffset'] = self.start_offset
+        if self.end is not None:
+            predicate_json['end'] = self.end
+        if self.end_offset is not None:
+            predicate_json['endOffset'] = self.end_offset
+        if self.offset_unit is not None:
+            predicate_json['offsetUnit'] = self.offset_unit
+        if self.start_inclusive is not None:
+            predicate_json['startInclusive'] = self.start_inclusive
+        if self.end_inclusive is not None:
+            predicate_json['endInclusive'] = self.end_inclusive
+        return predicate_json
+
+
+class InDateRangeDual(AbstractPredicate):
+    CLASS = "uk.gov.gchq.koryphe.impl.predicate.range.InDateRangeDual"
+
+    def __init__(self, start=None, start_offset=None, end=None, end_offset=None,
+                 offset_unit=None, start_inclusive=None, end_inclusive=None):
+        super().__init__(_class_name=self.CLASS)
+        self.start = start
+        self.start_offset = start_offset
+        self.end = end
+        self.end_offset = end_offset
+        self.offset_unit = offset_unit
+        self.start_inclusive = start_inclusive
+        self.end_inclusive = end_inclusive
+
+    def to_json(self):
+        predicate_json = super().to_json()
+        if self.start is not None:
+            predicate_json['start'] = self.start
+        if self.start_offset is not None:
+            predicate_json['startOffset'] = self.start_offset
+        if self.end is not None:
+            predicate_json['end'] = self.end
+        if self.end_offset is not None:
+            predicate_json['endOffset'] = self.end_offset
+        if self.offset_unit is not None:
+            predicate_json['offsetUnit'] = self.offset_unit
+        if self.start_inclusive is not None:
+            predicate_json['startInclusive'] = self.start_inclusive
+        if self.end_inclusive is not None:
+            predicate_json['endInclusive'] = self.end_inclusive
+        return predicate_json
+
+
+########################################################
+#                    Functions                         #
+########################################################
+
+
 class FunctionContext(ToJson, ToCodeString):
     CLASS = "gaffer.FunctionContext"
 
@@ -1253,6 +1447,358 @@ class Function(ToJson, ToCodeString):
         return function_json
 
 
+class AbstractFunction(Function):
+    CLASS = "java.util.function.Function"
+
+    def __init__(self, _class_name=None):
+        self._class_name = _class_name
+
+    def to_json(self):
+        function_json = {}
+        if self._class_name is not None:
+            function_json['class'] = self._class_name
+
+        return function_json
+
+
+class ExtractKeys(AbstractFunction):
+    CLASS = 'uk.gov.gchq.koryphe.impl.function.ExtractKeys'
+
+    def __init__(self):
+        super().__init__(_class_name=self.CLASS)
+
+    def to_json(self):
+        return super().to_json()
+
+
+class ExtractValues(AbstractFunction):
+    CLASS = 'uk.gov.gchq.koryphe.impl.function.ExtractValues'
+
+    def __init__(self):
+        super().__init__(_class_name=self.CLASS)
+
+    def to_json(self):
+        return super().to_json()
+
+
+class IsEmpty(AbstractFunction):
+    CLASS = 'uk.gov.gchq.koryphe.impl.function.IsEmpty'
+
+    def __init__(self):
+        super().__init__(_class_name=self.CLASS)
+
+    def to_json(self):
+        return super().to_json()
+
+
+class Size(AbstractFunction):
+    CLASS = 'uk.gov.gchq.koryphe.impl.function.Size'
+
+    def __init__(self):
+        super().__init__(_class_name=self.CLASS)
+
+    def to_json(self):
+        return super().to_json()
+
+
+class FirstItem(AbstractFunction):
+    CLASS = 'uk.gov.gchq.koryphe.impl.function.FirstItem'
+
+    def __init__(self):
+        super().__init__(_class_name=self.CLASS)
+
+    def to_json(self):
+        return super().to_json()
+
+
+class NthItem(AbstractFunction):
+    CLASS = 'uk.gov.gchq.koryphe.impl.function.NthItem'
+
+    def __init__(self, selection):
+        super().__init__(_class_name=self.CLASS)
+
+        self.selection = selection
+
+    def to_json(self):
+        function = super().to_json()
+
+        if self.selection is not None:
+            function['selection'] = self.selection
+
+        return function
+
+
+class LastItem(AbstractFunction):
+    CLASS = 'uk.gov.gchq.koryphe.impl.function.LastItem'
+
+    def __init__(self):
+        super().__init__(_class_name=self.CLASS)
+
+    def to_json(self):
+        return super().to_json()
+
+
+class IterableConcat(AbstractFunction):
+    CLASS = 'uk.gov.gchq.koryphe.impl.function.IterableConcat'
+
+    def __init__(self):
+        super().__init__(_class_name=self.CLASS)
+
+    def to_json(self):
+        return super().to_json()
+
+
+class IterableFunction(AbstractFunction):
+    CLASS = 'uk.gov.gchq.koryphe.impl.function.IterableFunction'
+
+    def __init__(self, functions):
+        super().__init__(_class_name=self.CLASS)
+
+        if functions is None:
+            raise TypeError('No function(s) provided')
+        else:
+            self.functions = []
+            for func in functions:
+                if not isinstance(func, Function):
+                    func = JsonConverter.from_json(
+                        func, Function)
+                self.functions.append(func)
+
+    def to_json(self):
+        function = super().to_json()
+
+        functions_json = []
+        for func in self.functions:
+            functions_json.append(func.to_json())
+        function['functions'] = functions_json
+
+        return function
+
+
+class ExtractWalkEdges(AbstractFunction):
+    CLASS = 'uk.gov.gchq.gaffer.data.graph.function.walk.ExtractWalkEdges'
+
+    def __init__(self):
+        super().__init__(_class_name=self.CLASS)
+
+    def to_json(self):
+        return super().to_json()
+
+
+class ExtractWalkEdgesFromHop(AbstractFunction):
+    CLASS = 'uk.gov.gchq.gaffer.data.graph.function.walk.ExtractWalkEdgesFromHop'
+
+    def __init__(self, hop=None):
+        super().__init__(_class_name=self.CLASS)
+
+        self.hop = hop
+
+    def to_json(self):
+        function = super().to_json()
+
+        if self.hop is not None:
+            function['hop'] = self.hop
+
+        return function
+
+
+class ExtractWalkEntities(AbstractFunction):
+    CLASS = 'uk.gov.gchq.gaffer.data.graph.function.walk.ExtractWalkEntities'
+
+    def __init__(self):
+        super().__init__(_class_name=self.CLASS)
+
+    def to_json(self):
+        return super().to_json()
+
+
+class ExtractWalkEntitiesFromHop(AbstractFunction):
+    CLASS = 'uk.gov.gchq.gaffer.data.graph.function.walk.ExtractWalkEntitiesFromHop'
+
+    def __init__(self, hop=None):
+        super().__init__(_class_name=self.CLASS)
+
+        self.hop = hop
+
+    def to_json(self):
+        function = super().to_json()
+
+        if self.hop is not None:
+            function['hop'] = self.hop
+
+        return function
+
+
+class Concat(AbstractFunction):
+    CLASS = 'uk.gov.gchq.koryphe.impl.function.Concat'
+
+    def __init__(self, separator=None):
+        super().__init__(_class_name=self.CLASS)
+
+        self.separator = separator
+
+    def to_json(self):
+        function = super().to_json()
+
+        if self.separator is not None:
+            function['separator'] = self.separator
+
+        return function
+
+
+class Divide(AbstractFunction):
+    CLASS = 'uk.gov.gchq.koryphe.impl.function.Divide'
+
+    def __init__(self):
+        super().__init__(_class_name=self.CLASS)
+
+    def to_json(self):
+        return super().to_json()
+
+
+class DivideBy(AbstractFunction):
+    CLASS = 'uk.gov.gchq.koryphe.impl.function.DivideBy'
+
+    def __init__(self, by=None):
+        super().__init__(_class_name=self.CLASS)
+
+        self.by = by
+
+    def to_json(self):
+        function = super().to_json()
+
+        if self.by is not None:
+            function['by'] = self.by
+
+        return function
+
+
+class Identity(AbstractFunction):
+    CLASS = 'uk.gov.gchq.koryphe.impl.function.Identity'
+
+    def __init__(self):
+        super().__init__(_class_name=self.CLASS)
+
+    def to_json(self):
+        return super().to_json()
+
+
+class Multiply(AbstractFunction):
+    CLASS = 'uk.gov.gchq.koryphe.impl.function.Multiply'
+
+    def __init__(self):
+        super().__init__(_class_name=self.CLASS)
+
+    def to_json(self):
+        return super().to_json()
+
+
+class MultiplyBy(AbstractFunction):
+    CLASS = 'uk.gov.gchq.koryphe.impl.function.MultiplyBy'
+
+    def __init__(self, by=None):
+        super().__init__(_class_name=self.CLASS)
+
+        self.by = by
+
+    def to_json(self):
+        function = super().to_json()
+
+        if self.by is not None:
+            function['by'] = self.by
+
+        return function
+
+
+class ToString(AbstractFunction):
+    CLASS = 'uk.gov.gchq.koryphe.impl.function.ToString'
+
+    def __init__(self):
+        super().__init__(_class_name=self.CLASS)
+
+    def to_json(self):
+        return super().to_json()
+
+
+class MapGenerator(AbstractFunction):
+    CLASS = 'uk.gov.gchq.gaffer.data.generator.MapGenerator'
+
+    def __init__(self, fields=None, constants=None):
+        super().__init__(_class_name=self.CLASS)
+
+        self.fields = fields
+        self.constants = constants
+
+    def to_json(self):
+        function = super().to_json()
+
+        if self.fields is not None:
+            function['fields'] = self.fields
+
+        if self.constants is not None:
+            function['constants'] = self.constants
+
+        return function
+
+
+class CsvGenerator(AbstractFunction):
+    CLASS = 'uk.gov.gchq.gaffer.data.generator.CsvGenerator'
+
+    def __init__(self, fields=None, constants=None, quoted=None,
+                 comma_replacement=None):
+        super().__init__(_class_name=self.CLASS)
+
+        self.fields = fields
+        self.constants = constants
+        self.quoted = quoted
+        self.comma_replacement = comma_replacement
+
+    def to_json(self):
+        function = super().to_json()
+
+        if self.fields is not None:
+            function['fields'] = self.fields
+
+        if self.constants is not None:
+            function['constants'] = self.constants
+
+        if self.quoted is not None:
+            function['quoted'] = self.quoted
+
+        if self.comma_replacement is not None:
+            function['commaReplacement'] = self.comma_replacement
+
+        return function
+
+
+class FreqMapExtractor(AbstractFunction):
+    CLASS = 'uk.gov.gchq.gaffer.types.function.FreqMapExtractor'
+
+    def __init__(self, key):
+        super().__init__(_class_name=self.CLASS)
+        self.key = key
+
+    def to_json(self):
+        function_json = super().to_json()
+        function_json['key'] = self.key
+        return function_json
+
+
+class FunctionMap(AbstractFunction):
+    CLASS = 'uk.gov.gchq.koryphe.function.FunctionMap'
+
+    def __init__(self, function):
+        super().__init__(_class_name=self.CLASS)
+        if not isinstance(function, Function):
+            function = JsonConverter.from_json(function, Function)
+        self.function = function
+
+    def to_json(self):
+        function_json = super().to_json()
+        function_json['function'] = self.function.to_json()
+        return function_json
+
+
 class BinaryOperatorContext(ToJson, ToCodeString):
     CLASS = "gaffer.AggregatorContext"
 
@@ -1292,26 +1838,13 @@ class BinaryOperator(ToJson, ToCodeString):
         return function_json
 
 
-class ElementGenerator(ToJson, ToCodeString):
+class ElementGenerator(Function):
     CLASS = 'uk.gov.gchq.gaffer.data.generator.ElementGenerator'
 
     def __init__(self,
                  class_name,
                  fields=None):
-        super().__init__()
-        self.class_name = class_name
-        if fields is not None and 'class' in fields:
-            fields = dict(fields)
-            fields.pop('class', None)
-        self.fields = fields
-
-    def to_json(self):
-        if self.fields is None:
-            json_str = {}
-        else:
-            json_str = dict(self.fields)
-        json_str['class'] = self.class_name
-        return json_str
+        super().__init__(class_name=class_name, fields=fields)
 
 
 class DirectedType:
@@ -1772,10 +2305,12 @@ class SplitStoreFromIterable(Operation):
             operation['input'] = self.input
         return operation
 
+
 class SampleElementsForSplitPoints(Operation):
     CLASS = 'uk.gov.gchq.gaffer.operation.impl.SampleElementsForSplitPoints'
 
-    def __init__(self, input=None, num_splits=None, proportion_to_sample=None, options=None):
+    def __init__(self, input=None, num_splits=None, proportion_to_sample=None,
+                 options=None):
         super().__init__(
             _class_name=self.CLASS,
             view=None,
@@ -1796,6 +2331,7 @@ class SampleElementsForSplitPoints(Operation):
         if self.proportion_to_sample is not None:
             operation['proportionToSample'] = self.proportion_to_sample
         return operation
+
 
 class GetOperation(Operation):
     def __init__(self,
@@ -2153,9 +2689,9 @@ class ToCsv(Operation):
         super().__init__(
             _class_name=self.CLASS
         )
-        if not isinstance(element_generator, ElementGenerator):
-            element_generator = ElementGenerator(element_generator['class'],
-                                                 element_generator)
+        if not isinstance(element_generator, CsvGenerator):
+            element_generator = JsonConverter.from_json(
+                element_generator, CsvGenerator)
         self.element_generator = element_generator
         self.include_header = include_header
 
@@ -2168,7 +2704,7 @@ class ToCsv(Operation):
         return operation
 
 
-class ToMapCsv(Operation):
+class ToMap(Operation):
     CLASS = 'uk.gov.gchq.gaffer.operation.impl.output.ToMap'
 
     def __init__(self,
@@ -2177,9 +2713,9 @@ class ToMapCsv(Operation):
             _class_name=self.CLASS
         )
 
-        if not isinstance(element_generator, ElementGenerator):
-            element_generator = ElementGenerator(element_generator['class'],
-                                                 element_generator)
+        if not isinstance(element_generator, MapGenerator):
+            element_generator = JsonConverter.from_json(
+                element_generator, MapGenerator)
         self.element_generator = element_generator
 
     def to_json(self):
@@ -2918,9 +3454,9 @@ class GetWalks(Operation):
         if operations is not None:
             self.operations = []
             for op in operations:
-                if not isinstance(op, GetElements):
-                    op = JsonConverter.from_json(
-                        op, GetElements)
+                if not isinstance(op, GetElements) and not isinstance(op,
+                                                                      OperationChain):
+                    op = JsonConverter.from_json(op)
                 self.operations.append(op)
 
     def to_json(self):
@@ -2943,9 +3479,44 @@ class GetWalks(Operation):
         return operation
 
 
+class Map(Operation):
+    CLASS = 'uk.gov.gchq.gaffer.operation.impl.Map'
+
+    def __init__(self,
+                 functions,
+                 input=None,
+                 options=None):
+        super().__init__(_class_name=self.CLASS,
+                         options=options)
+
+        self.input = input
+
+        if functions is not None:
+            self.functions = []
+            for func in functions:
+                if not isinstance(func, Function):
+                    func = JsonConverter.from_json(
+                        func, Function)
+                self.functions.append(func)
+
+    def to_json(self):
+        operation = super().to_json()
+        if self.input is not None:
+            operation['input'] = self.input
+
+        if self.functions is not None:
+            functions_json = []
+            for func in self.functions:
+                functions_json.append(func.to_json())
+            operation['functions'] = functions_json
+
+        return operation
+
+
 class GetGraph:
     def get_url(self):
         return self._url
+
 
 class GetSchema(Operation, GetGraph):
     CLASS = 'uk.gov.gchq.gaffer.store.operation.GetSchema'
@@ -2975,6 +3546,11 @@ class GetSchema(Operation, GetGraph):
 class GetFilterFunctions(GetGraph):
     def __init__(self):
         self._url = '/graph/config/filterFunctions'
+
+
+class GetTransformFunctions(GetGraph):
+    def __init__(self):
+        self._url = '/graph/config/transformFunctions'
 
 
 class GetClassFilterFunctions(GetGraph):
@@ -3108,8 +3684,8 @@ class JsonConverter:
                 class_name = function.get('class')
                 function.pop('class', None)
                 function = Function(
-                    class_name=class_name,
-                    fields=function
+                    _class_name=class_name,
+                    _fields=function
                 )
 
         return function

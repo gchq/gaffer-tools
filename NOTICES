@@ -20,7 +20,7 @@ Gaffer tools is built using maven. This process will automatically pull in depen
  projects below.
 
 
-Gaffer (uk.gov.gchq.gaffer:gaffer2:1.1.2):
+Gaffer (uk.gov.gchq.gaffer:gaffer2:1.2.0):
 
 - Apache License, Version 2.0
 
@@ -61,6 +61,11 @@ Jasmine Maven Plugin (com.github.searls:jasmine-maven-plugin:2.2)
 The UI contains the following javascript dependencies
 
 Cytoscape (cytoscape-2.7.4.min.js)
+
+- MIT License
+
+
+Cytoscape ngraph.forcelayout (cytoscape-ngraph.forcelayout-1.3.8.js)
 
 - MIT License
 
