@@ -419,6 +419,24 @@ if [[ "\$WAIT_HANDLE_URL" ]]; then
 	trap awsSignal EXIT
 fi
 
+function retry {
+	local cmd="\$@"
+	local rc=-1
+	local n=1
+	local limit=60
+
+	set +e
+	until [[ \$rc -eq 0 || \$n -gt \$limit ]]; do
+		let n=n+1
+		sleep 1
+		eval \$cmd
+		rc=\$?
+	done
+
+	set -e
+	return \$rc
+}
+
 if [[ "\$USERNAME" == "" || "\$KMS_ID" == "" || "\$PARAM_NAME" == "" ]]; then
 	echo "Usage: \$0 <username> -k <kmsID> -p <ssmParameterName> [-v <visibilities>] [-w <WaitHandleUrl>]"
 	exit 1
@@ -435,7 +453,11 @@ if [ "\$ENCRYPTED_PASSWORD" == "" ]; then
 fi
 
 # Put encrypted password into a SSM Parameter based Secret Store
-aws ssm put-parameter --name "\$PARAM_NAME" --value "\$ENCRYPTED_PASSWORD" --type String --overwrite
+# Since emr-5.7.0 this next command has started to fail as AWS is eventually consistent so sometimes this command runs
+# before the IAM policy that gives the EMR cluster access to the SSM Parameter has been applied, which causes an error
+# and this script to fail. We need to retry it for up to a minute.
+# @see https://stackoverflow.com/questions/20156043/how-long-should-i-wait-after-applying-an-aws-iam-policy-before-it-is-valid
+retry aws ssm put-parameter --name "\$PARAM_NAME" --value "\$ENCRYPTED_PASSWORD" --type String --overwrite
 
 DIR="\$( cd "\$( dirname "\${BASH_SOURCE[0]}" )" && pwd )"
 cd \$DIR
