@@ -132,7 +132,6 @@ public class QueryBuilderST {
     @Test
     public void shouldFindRoadUseAroundJunctionM5_10() throws InterruptedException {
         click("Get Elements");
-        selectOption("vertexType", "junction");
         enterText("seedVertex", "M5:10");
         click("add-seeds");
         click("related-edge-RoadUse");
@@ -156,7 +155,6 @@ public class QueryBuilderST {
     @Test
     public void shouldBeAbleToRunParameterisedQueries() throws InterruptedException, SerialisationException {
         click("Two Hop With Limit");
-        selectOption("vertexType", "road");
         enterText("seedVertex", "M5");
         click("add-seeds");
         enterText("param-param1-", Keys.BACK_SPACE.toString() + "2");
