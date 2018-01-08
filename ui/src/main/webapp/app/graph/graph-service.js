@@ -24,6 +24,26 @@ angular.module('app').factory('graph', ['schema', 'types', '$q', 'results', 'com
     var selectedEntities = {};
     var selectedEdges = {};
 
+    var layoutConf = {
+        name: 'cytoscape-ngraph.forcelayout',
+        async: {
+            maxIterations: 1000,
+            stepsPerCycle: 50,
+            waitForStep: true
+        },
+        physics: {
+            springLength: 30,
+            springCoeff: 0.000001,
+            gravity: -10,
+            dragCoeff: 0,
+            stableThreshold: 0.000001,
+            fit: true
+        },
+        iterations: 10000,
+        fit: true,
+        animate: false
+    };
+
     var graphData = {entities: {}, edges: {}, entitySeeds: []};
 
     events.subscribe('resultsUpdated', function(results) {
@@ -80,9 +100,7 @@ angular.module('app').factory('graph', ['schema', 'types', '$q', 'results', 'com
                     }
                 }
             ],
-            layout: {
-                name: 'concentric'
-            },
+            layout: layoutConf,
             elements: [],
             ready: function(){
                 deferred.resolve( this );
@@ -339,7 +357,7 @@ angular.module('app').factory('graph', ['schema', 'types', '$q', 'results', 'com
     }
 
     graph.redraw = function() {
-        graphCy.layout({name: 'concentric'});
+        graphCy.layout(layoutConf);
     }
 
     var createLabel = function(vertex) {
