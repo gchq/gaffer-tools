@@ -428,7 +428,7 @@ function retry {
 	set +e
 	until [[ \$rc -eq 0 || \$n -gt \$limit ]]; do
 		let n=n+1
-		sleep 1
+		sleep 10
 		eval \$cmd
 		rc=\$?
 	done
@@ -455,7 +455,7 @@ fi
 # Put encrypted password into a SSM Parameter based Secret Store
 # Since emr-5.7.0 this next command has started to fail as AWS is eventually consistent so sometimes this command runs
 # before the IAM policy that gives the EMR cluster access to the SSM Parameter has been applied, which causes an error
-# and this script to fail. We need to retry it for up to a minute.
+# and this script to fail. We need to retry it for a few minutes.
 # @see https://stackoverflow.com/questions/20156043/how-long-should-i-wait-after-applying-an-aws-iam-policy-before-it-is-valid
 retry aws ssm put-parameter --name "\$PARAM_NAME" --value "\$ENCRYPTED_PASSWORD" --type String --overwrite
 
