@@ -287,8 +287,14 @@ curl -fLO $TOOLS_GITHUB_ROOT_URL/deployment/aws/core/utility-scripts/install-acc
 curl -fLO $TOOLS_GITHUB_ROOT_URL/deployment/aws/core/utility-scripts/accumulo-shell.sh
 curl -fLO $TOOLS_GITHUB_ROOT_URL/deployment/aws/core/utility-scripts/create-accumulo-user.sh
 curl -fLO $TOOLS_GITHUB_ROOT_URL/deployment/aws/core/utility-scripts/create-accumulo-user-with-kms.sh
-
 chmod +x *.sh
+
+mkdir -p spark
+cd spark
+curl -fLO $TOOLS_GITHUB_ROOT_URL/deployment/aws/core/spark-scripts/gaffer-spark-shell.sh
+curl -fLO $TOOLS_GITHUB_ROOT_URL/deployment/aws/core/spark-scripts/gaffer-spark-shell.scala
+chmod +x *.sh
+cd ..
 
 echo "Waiting for deployed Gaffer instance to be ready..."
 MAX_ATTEMPTS=30

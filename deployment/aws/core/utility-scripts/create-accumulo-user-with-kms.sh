@@ -93,3 +93,21 @@ fi
 $PASSWORD
 $PASSWORD
 ARGS
+
+tee -a spark/gaffer-spark-shell-as-$USERNAME.sh <<EOF
+#!/bin/bash -e
+
+if [ "\$1" == "" ]; then
+	echo "Usage: \$0 <graphId>"
+	exit 1
+fi
+GRAPH_ID=\$1
+
+DIR="\$( cd "\$( dirname "\${BASH_SOURCE[0]}" )" && pwd )"
+cd \$DIR
+
+./gaffer-spark-shell.sh -i \$GRAPH_ID -k $KMS_ID -p $PARAM_NAME -u $USERNAME
+
+EOF
+
+chmod +x spark/gaffer-spark-shell-as-$USERNAME.sh
