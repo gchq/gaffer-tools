@@ -37,6 +37,9 @@ fi
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 cd $DIR
 
+MVN_BIN="$(cd $DIR/../apache-maven-*/bin && pwd)"
+export PATH=$MVN_BIN:$PATH
+
 if [[ ! -f ../etc/cluster.name || ! -f ../etc/gaffer.version || ! -f ../etc/gaffer.branch ]]; then
 	echo "Unable to locate required configuration files!"
 	exit 1
