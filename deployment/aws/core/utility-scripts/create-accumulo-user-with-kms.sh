@@ -9,7 +9,7 @@ WAIT_HANDLE_URL=""
 while [[ $# -gt 0 ]]; do
 	key="$1"
 
-	case \$key in
+	case $key in
 		-k|--kms)
 			KMS_ID=$2
 			shift
@@ -37,7 +37,7 @@ done
 
 if [[ "$WAIT_HANDLE_URL" ]]; then
 	function awsSignal {
-		/opt/aws/bin/cfn-signal -e \$? "$WAIT_HANDLE_URL"
+		/opt/aws/bin/cfn-signal -e $? "$WAIT_HANDLE_URL"
 	}
 	trap awsSignal EXIT
 fi
