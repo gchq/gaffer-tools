@@ -14,19 +14,43 @@ import uk.gov.gchq.gaffer.spark.operation.dataframe._
 
 import org.apache.accumulo.core.client.ZooKeeperInstance
 import org.apache.accumulo.core.client.security.tokens.PasswordToken
+import org.apache.accumulo.core.security.TablePermission
 
 import scala.io.Source
 import scala.collection.JavaConversions._
 
-val graphId = System.getenv("GRAPH_ID")
 
 val storeProperties = AccumuloProperties.loadStoreProperties(System.getenv("GAFFER_USER") + ".store.properties")
 
 val accumuloInstance = new ZooKeeperInstance(storeProperties.getInstance, storeProperties.getZookeepers)
 val accumulo = accumuloInstance.getConnector("root", new PasswordToken(Source.fromFile("../etc/root.password").mkString.trim))
 
+var graphId = System.getenv("GRAPH_ID")
+
+if (graphId == null || graphId.isEmpty) {
+	val tables = accumulo.tableOperations.list.filter(!_.startsWith("accumulo.")).filter(accumulo.securityOperations.hasTablePermission(storeProperties.getUser, _, TablePermission.READ))
+	if (tables.size == 0) {
+		println("There are no Accumulo tables that " + storeProperties.getUser + " can access!")
+		System.exit(1)
+	} else if (tables.size > 1) {
+		println("This Accumulo instance contains multiple Gaffer graphs, please specify the graphId that you wish to connect to on the command line")
+		System.exit(1)
+	} else {
+		graphId = tables.head
+	}
+} else if (!accumulo.tableOperations.exists(graphId)) {
+	println("Accumulo table does not exist for graphId: " + graphId)
+	System.exit(1)
+}
+
 val schemas = accumulo.tableOperations.getProperties(graphId).filter(prop => prop.getKey.startsWith("table.iterator.") && prop.getKey.endsWith(".Schema")).map(_.getValue)
-assert(schemas.toList.distinct.length == 1, "There are multiple different schemas stored on the Accumulo Table!")
+if (schemas.toList.distinct.length == 0) {
+	println("Unable to retrieve Gaffer Graph Schema from Accumulo Table!")
+	System.exit(1)
+} else if (schemas.toList.distinct.length > 1) {
+	println("There are multiple different schemas stored on the Accumulo Table. Unable to continue!")
+	System.exit(1)
+}
 val schema = Schema.fromJson(schemas.head.getBytes)
 
 val graph = new Graph.Builder().config(new GraphConfig.Builder().graphId(graphId).build()).addSchemas(schema).storeProperties(storeProperties).build()

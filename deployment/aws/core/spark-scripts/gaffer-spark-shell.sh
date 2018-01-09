@@ -29,8 +29,8 @@ while [[ $# -gt 0 ]]; do
 	shift
 done
 
-if [[ "$GRAPH_ID" == "" || "$GAFFER_USER" == "" || "$KMS_ID" == "" || "$KMS_ID" == "" || "$PARAM_NAME" == "" ]]; then
-	echo "Usage: $0 -i <graphId> -k <kmsID> -p <ssmParameterName> -u <username>"
+if [[ "$GAFFER_USER" == "" || "$KMS_ID" == "" || "$KMS_ID" == "" || "$PARAM_NAME" == "" ]]; then
+	echo "Usage: $0 -k <kmsID> -p <ssmParameterName> -u <username> [-i <graphId>]"
 	exit 1
 fi
 
