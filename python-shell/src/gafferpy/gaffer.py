@@ -1471,6 +1471,23 @@ class ExtractKeys(AbstractFunction):
         return super().to_json()
 
 
+class ExtractValue(AbstractFunction):
+    CLASS = 'uk.gov.gchq.koryphe.impl.function.ExtractValue'
+
+    def __init__(self, key=None):
+        super().__init__(_class_name=self.CLASS)
+
+        self.key = key
+
+    def to_json(self):
+        function = super().to_json()
+
+        if self.key is not None:
+            function['key'] = self.key
+
+        return function
+
+
 class ExtractValues(AbstractFunction):
     CLASS = 'uk.gov.gchq.koryphe.impl.function.ExtractValues'
 
@@ -1627,6 +1644,15 @@ class ExtractWalkEntitiesFromHop(AbstractFunction):
             function['hop'] = self.hop
 
         return function
+
+class ExtractWalkVertex(AbstractFunction):
+    CLASS = 'uk.gov.gchq.gaffer.data.graph.function.walk.ExtractWalkVertex'
+
+    def __init__(self):
+        super().__init__(_class_name=self.CLASS)
+
+    def to_json(self):
+        return super().to_json()
 
 
 class Concat(AbstractFunction):
