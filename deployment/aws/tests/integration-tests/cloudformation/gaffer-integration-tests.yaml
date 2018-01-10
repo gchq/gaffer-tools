@@ -58,6 +58,11 @@ Parameters:
     Description: Name of an existing EC2 KeyPair that you would like to be able to use to SSH into any instances
     ConstraintDescription: Must be the name of an existing EC2 KeyPair
 
+  TestReportSnsTopic:
+    Type: String
+    Default: ""
+    Description: The ARN of a SNS Topic that a notification should be sent to with the results of the integration tests
+
 Metadata:
 
   AWS::CloudFormation::Interface:
@@ -78,6 +83,14 @@ Metadata:
           - SubnetId
           - KeyName
           - ExtraSecurityGroups
+      - Label:
+          default: Test Config
+        Parameters:
+          - TestReportSnsTopic
+
+Conditions:
+
+  TestReportEnabled: !Not [!Equals [!Ref TestReportSnsTopic, ""]]
 
 Resources:
 
@@ -99,6 +112,21 @@ Resources:
         GafferInstanceName: "gaffer-test"
         UserName: "gaffer_test"
         AccumuloVisibilities: "vis1,vis2,publicVisibility,privateVisibility,public"
+
+  EmrSnsPolicy:
+    Condition: TestReportEnabled
+    Type: AWS::IAM::Policy
+    Properties:
+      Roles:
+        - !GetAtt GafferWithUser.Outputs.EmrIamRoleName
+      PolicyName: !Join ["-", [Ref: "AWS::StackName", "emr-sns-access"]]
+      PolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Resource: !Ref TestReportSnsTopic
+            Action:
+              - sns:Publish
 
   ###########################################
   ## EMR step script to run integration tests
@@ -130,12 +158,20 @@ Resources:
           - !Sub ${GafferWithUser.Outputs.PasswordEncryptionKey}
           - "-p"
           - !Sub ${GafferWithUser.Outputs.PasswordParameter}
+          - "-s"
+          - !If [TestReportEnabled, !Ref TestReportSnsTopic, "none"]
+          - "--stack-id"
+          - !Ref "AWS::StackName"
           - "-u"
           - !Sub ${GafferWithUser.Outputs.UserName}
           - "-z"
           - !Sub ${GafferWithUser.Outputs.EmrMasterPublicDNS}
           - "-w"
           - !Ref WaitForTestsToFinishHandler
+          # This is here to ensure that the IAM Policy that gives this script permission to publish to SNS has been
+          # applied. Unfortunately CloudFormation does not appear to allow DependsOn to be combined with Conditions.
+          - "--ignore"
+          - !If [TestReportEnabled, !Ref EmrSnsPolicy, "none"]
       ActionOnFailure: CANCEL_AND_WAIT
 
   ##############################
