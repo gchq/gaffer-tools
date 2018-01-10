@@ -90,6 +90,7 @@ if [ ! -f $GAFFER_USER.store.properties ]; then
 	accumulo.zookeepers=$HOSTNAME
 	accumulo.user=$GAFFER_USER
 	accumulo.password=$PASSWORD
+	gaffer.store.operation.declarations=sparkAccumuloOperationsDeclarations.json
 	EOF
 fi
 
