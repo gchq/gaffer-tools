@@ -115,6 +115,13 @@ Parameters:
     AllowedPattern: "|(https?://\\S+\\.jar)"
     ConstraintDescription: Please make sure this is a http(s) URL
 
+  MavenRepoTarball:
+    Type: String
+    Default: ""
+    Description: "(Optional) The path to a tarball, stored in S3, that should be used to bootstrap local Maven caches. Should be specified as: <bucketName>/<filename>.tar.gz"
+    AllowedPattern: "|(\\S+\\.tar\\.gz)"
+    ConstraintDescription: "Please specify this as <bucketName>/<filename>.tar.gz"
+
 Metadata:
   AWS::CloudFormation::Interface:
     ParameterGroups:
@@ -145,6 +152,7 @@ Metadata:
           - KeyName
           - ExtraSecurityGroups
           - ManageSecurityGroups
+          - MavenRepoTarball
 
 Resources:
 
@@ -167,6 +175,7 @@ Resources:
         GafferInstanceName: !Ref GafferInstanceName
         UserName: !Ref UserName
         AccumuloVisibilities: !Ref AccumuloVisibilities
+        MavenRepoTarball: !Ref MavenRepoTarball
 
   GafferWebServer:
     Type: AWS::CloudFormation::Stack
@@ -188,6 +197,7 @@ Resources:
         EncryptionKey: !Sub ${GafferWithUser.Outputs.PasswordEncryptionKey}
         GafferSchemaJarS3Url: !Ref GafferSchemaJarS3Url
         GafferSchemaJarHttpUrl: !Ref GafferSchemaJarHttpUrl
+        MavenRepoTarball: !Ref MavenRepoTarball
 
   WebServerAccessToEmrMasterIngressRule:
     Type: AWS::EC2::SecurityGroupIngress

@@ -38,6 +38,17 @@ if [ "$INSTANCE_ID" == "" ]; then
 	exit 1
 fi
 
+if [ "$MVN_REPO" != "" ]; then
+	# Bootstrapping the local Maven repo is allowed to fail, we will just fallback to downloading all the dependencies
+	# from Maven Central...
+	set +e
+	cd $HOME
+	aws s3 cp s3://$MVN_REPO maven-repo.tar.gz
+	tar -xf maven-repo.tar.gz
+	rm -f maven-repo.tar.gz
+	set -e
+fi
+
 # Create Gaffer configuration
 INSTALL_DIR=/opt/gaffer
 

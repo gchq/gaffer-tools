@@ -90,6 +90,13 @@ Parameters:
     AllowedPattern: "|(https?://\\S+\\.jar)"
     ConstraintDescription: Please make sure this is a http(s) URL
 
+  MavenRepoTarball:
+    Type: String
+    Default: ""
+    Description: "(Optional) The path to a tarball, stored in S3, that should be used to bootstrap the local Maven cache. Should be specified as: <bucketName>/<filename>.tar.gz"
+    AllowedPattern: "|(\\S+\\.tar\\.gz)"
+    ConstraintDescription: "Please specify this as <bucketName>/<filename>.tar.gz"
+
 Metadata:
   AWS::CloudFormation::Interface:
     ParameterGroups:
@@ -105,6 +112,7 @@ Metadata:
           - SubnetId
           - ExtraSecurityGroups
           - KeyName
+          - MavenRepoTarball
       - Label:
           default: Gaffer Connection Config
         Parameters:
@@ -246,6 +254,18 @@ Resources:
                 export PATH=$PWD/apache-maven-$MAVEN_VERSION/bin:$PATH
               fi
             }
+
+            if [ "${MavenRepoTarball}" != "" ]; then
+              # Bootstrapping the local Maven repo is allowed to fail, we will just fallback to downloading all the
+              # dependencies from Maven Central...
+              set +e
+              pushd $HOME
+              aws s3 cp s3://${MavenRepoTarball} maven-repo.tar.gz
+              tar -xf maven-repo.tar.gz
+              rm -f maven-repo.tar.gz
+              popd
+              set -e
+            fi
 
             # Need to work out if we can download the Gaffer accumulo-rest.war or if we need to build it from source...
             if ! curl -fL -o rest.war https://repo1.maven.org/maven2/uk/gov/gchq/gaffer/accumulo-rest/$GAFFER_VERSION/accumulo-rest-$GAFFER_VERSION.war; then

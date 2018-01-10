@@ -58,6 +58,13 @@ Parameters:
     Description: Name of an existing EC2 KeyPair that you would like to be able to use to SSH into any instances
     ConstraintDescription: Must be the name of an existing EC2 KeyPair
 
+  MavenRepoTarball:
+    Type: String
+    Default: ""
+    Description: "(Optional) The path to a tarball, stored in S3, that should be used to bootstrap local Maven caches. Should be specified as: <bucketName>/<filename>.tar.gz"
+    AllowedPattern: "|(\\S+\\.tar\\.gz)"
+    ConstraintDescription: "Please specify this as <bucketName>/<filename>.tar.gz"
+
 Metadata:
 
   AWS::CloudFormation::Interface:
@@ -78,6 +85,7 @@ Metadata:
           - SubnetId
           - KeyName
           - ExtraSecurityGroups
+          - MavenRepoTarball
 
 Resources:
 
@@ -99,6 +107,7 @@ Resources:
         GafferInstanceName: "gaffer-test"
         UserName: "gaffer_test"
         AccumuloVisibilities: "vis1,vis2,publicVisibility,privateVisibility,public"
+        MavenRepoTarball: !Ref MavenRepoTarball
 
   ###########################################
   ## EMR step script to run integration tests
