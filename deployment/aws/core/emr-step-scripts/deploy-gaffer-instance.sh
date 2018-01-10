@@ -6,6 +6,7 @@ ACCUMULO_VERSION=1.7.2
 GAFFER_VERSION=0.7.8
 GAFFER_TOOLS_VERSION=0.7.8
 MAVEN_VERSION=3.5.0
+MVN_REPO=""
 
 TSERVERS_PER_YARN_NODE=1
 USAGE=85
@@ -44,6 +45,15 @@ while [[ $# -gt 0 ]]; do
 			WAIT_HANDLE_URL=$2
 			shift
 			;;
+		--mvn-repo)
+			if [ "$2" != "none" ]; then
+				MVN_REPO=$2
+			fi
+			shift
+			;;
+		--ignore)
+			shift
+			;;
 		*)
 			CLUSTER_NAME=$1
 			;;
@@ -61,6 +71,17 @@ fi
 if [ "$CLUSTER_NAME" == "" ]; then
 	echo "Usage: $0 <clusterName> [-a <accumuloVersion>] [-g <gafferVersion>] [-t <gafferToolsVersion>] [-s <sliderVersion>] [-u <proportionOfClusterToUseInPercent>] [-w <awsWaitHandleUrl>]"
 	exit 1
+fi
+
+if [ "$MVN_REPO" != "" ]; then
+	# Bootstrapping the local Maven repo is allowed to fail, we will just fallback to downloading all the dependencies
+	# from Maven Central...
+	set +e
+	cd $HOME
+	aws s3 cp s3://$MVN_REPO maven-repo.tar.gz
+	tar -xf maven-repo.tar.gz
+	rm -f maven-repo.tar.gz
+	set -e
 fi
 
 # Install all required software and config into an instance specific directory
