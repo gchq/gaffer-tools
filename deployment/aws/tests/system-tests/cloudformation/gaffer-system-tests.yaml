@@ -64,6 +64,11 @@ Parameters:
     MinLength: 1
     Description: Specify the type of instance to be used to deploy the Gaffer REST API and Web UI
 
+  TestReportSnsTopic:
+    Type: String
+    Default: ""
+    Description: The ARN of a SNS Topic that a notification should be sent to with the results of the system tests
+
   MavenRepoTarball:
     Type: String
     Default: ""
@@ -92,6 +97,14 @@ Metadata:
           - KeyName
           - ExtraSecurityGroups
           - MavenRepoTarball
+      - Label:
+          default: Test Config
+        Parameters:
+          - TestReportSnsTopic
+
+Conditions:
+
+  TestReportEnabled: !Not [!Equals [!Ref TestReportSnsTopic, ""]]
 
 Resources:
 
@@ -113,6 +126,21 @@ Resources:
         WebInstanceType: !Ref WebInstanceType
         RoadTrafficDataUrl: "https://raw.githubusercontent.com/gchq/Gaffer/master/example/road-traffic/road-traffic-demo/src/main/resources/roadTrafficSampleData.csv"
         MavenRepoTarball: !Ref MavenRepoTarball
+
+  EmrSnsPolicy:
+    Condition: TestReportEnabled
+    Type: AWS::IAM::Policy
+    Properties:
+      Roles:
+        - !GetAtt GafferRoadTraffic.Outputs.EmrIamRoleName
+      PolicyName: !Join ["-", [Ref: "AWS::StackName", "emr-sns-access"]]
+      PolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Resource: !Ref TestReportSnsTopic
+            Action:
+              - sns:Publish
 
   AllowEmrToAccessWebServerIngressRule:
     Type: AWS::EC2::SecurityGroupIngress
@@ -153,8 +181,16 @@ Resources:
           - !Sub ${GafferRoadTraffic.Outputs.WebServerPublicDNS}
           - "-p"
           - 80
+          - "-s"
+          - !If [TestReportEnabled, !Ref TestReportSnsTopic, "none"]
+          - "--stack-id"
+          - !Ref "AWS::StackName"
           - "-w"
           - !Ref WaitForSystemTestsHandler
+          # This is here to ensure that the IAM Policy that gives this script permission to publish to SNS has been
+          # applied. Unfortunately CloudFormation does not appear to allow DependsOn to be combined with Conditions.
+          - "--ignore"
+          - !If [TestReportEnabled, !Ref EmrSnsPolicy, "none"]
       ActionOnFailure: CANCEL_AND_WAIT
 
   ##############################

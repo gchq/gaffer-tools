@@ -78,6 +78,11 @@ Parameters:
     MinLength: 1
     Description: Specify the type of instance to be used to deploy the Gaffer REST API and Web UI
 
+  TestReportSnsTopic:
+    Type: String
+    Default: ""
+    Description: The ARN of a SNS Topic that a notification should be sent to with the results of the migration tests
+
   MavenRepoTarball:
     Type: String
     Default: ""
@@ -114,6 +119,14 @@ Metadata:
           - KeyName
           - ExtraSecurityGroups
           - MavenRepoTarball
+      - Label:
+          default: Test Config
+        Parameters:
+          - TestReportSnsTopic
+
+Conditions:
+
+  TestReportEnabled: !Not [!Equals [!Ref TestReportSnsTopic, ""]]
 
 Resources:
 
@@ -134,6 +147,7 @@ Resources:
         KeyName: !Ref KeyName
         WebInstanceType: !Ref WebInstanceType
         MavenRepoTarball: !Ref MavenRepoTarball
+        TestReportSnsTopic: !Ref TestReportSnsTopic
 
   ###############################################
   ## EMR step script to upgrade version of Gaffer
@@ -323,6 +337,12 @@ Resources:
           - !Sub ${GafferWebServer.Outputs.PublicDNS}
           - "-p"
           - 80
+          - "-s"
+          - !If [TestReportEnabled, !Ref TestReportSnsTopic, "none"]
+          - "--stack-id"
+          - !Ref "AWS::StackName"
+          - "-r"
+          - "post-migration-system-tests"
           - "-w"
           - !Ref WaitForSystemTestsHandler
       ActionOnFailure: CANCEL_AND_WAIT
