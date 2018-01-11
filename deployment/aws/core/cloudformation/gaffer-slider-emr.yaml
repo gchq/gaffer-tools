@@ -119,8 +119,8 @@ Metadata:
 
 Conditions:
 
-    SecurityGroupsManagedByStack: !Equals [!Ref ManageSecurityGroups, "true"]
-    BootstrapLocalMavenRepo: !Not [!Equals [!Ref MavenRepoTarball, ""]]
+  SecurityGroupsManagedByStack: !Equals [!Ref ManageSecurityGroups, "true"]
+  BootstrapLocalMavenRepo: !Not [!Equals [!Ref MavenRepoTarball, ""]]
 
 Resources:
 
