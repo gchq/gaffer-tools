@@ -10,9 +10,6 @@
     <md-dialog-content>
         <div class="md-dialog-content">
             <ng-form name="ctrl.filterForm">
-                <md-switch ng-model="ctrl.filter.preAggregation"
-                           ng-change="ctrl.onPreAggregationChange()">{{ ctrl.preAggregationMessage }}
-                </md-switch>
                 <md-input-container layout-fill flex>
                     <label>Select a property</label>
                     <md-select required ng-model="ctrl.filter.property" ng-change="ctrl.onSelectedPropertyChange()">
@@ -41,19 +38,24 @@
 
                 </md-autocomplete>
                 <div layout="row" layout-wrap>
-                    <md-input-container ng-repeat="(idx, param) in ctrl.filter.availableFunctionParameters" layout-fill flex="{{ctrl.getFlexValue()}}">
+                    <md-input-container ng-repeat="param in ctrl.filter.availableFunctionParameters" layout-fill flex="{{ctrl.getFlexValue()}}">
                         <label>{{param}}</label>
                         <input type="text"
-                               ng-model="ctrl.filter.parameters[idx]">
+                               ng-model="ctrl.filter.parameters[param]">
                     </md-input-container>
                 </div>
+                <p class="md-body-1">Apply filter before or after results are summarised?</p>
+                <md-radio-group layout="row" ng-model="ctrl.filter.preAggregation">
+                    <md-radio-button ng-value="true" aria-label="before">Before</md-radio-button>
+                    <md-radio-button ng-value="false" aria-label="after">After</md-radio-button>
+                </md-radio-group>
             </ng-form>
         </div>
     </md-dialog-content>
     <md-dialog-actions layout="row" layout-align="end">
         <md-button ng-click="ctrl.cancel()">Cancel</md-button>
         <md-button ng-click="ctrl.resetForm()">Clear</md-button>
-        <md-button ng-disabled="ctrl.filterForm.$invalid" ng-click="ctrl.addAnother()">Add Another</md-button>
+        <md-button ng-if="!ctrl.editMode" ng-disabled="ctrl.filterForm.$invalid" ng-click="ctrl.addAnother()">Add Another</md-button>
         <md-button ng-disabled="ctrl.filterForm.$invalid" ng-click="ctrl.submit()" class="md-primary">Submit</md-button>
     </md-dialog-actions>
 </md-dialog>

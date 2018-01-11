@@ -19,11 +19,10 @@
 angular.module('app').controller('CustomFilterDialogController', ['$mdDialog', 'schema', 'functions', function($mdDialog, schema, functions) {
     var vm = this;
 
-    vm.filter = { preAggregation: true }
+    vm.filter = { preAggregation: false }
     vm.availablePredicates;
     vm.predicateText;
-
-    vm.preAggregationMessage = 'Apply filter before summarization';
+    vm.editMode = false;
 
     var createFilterFor = function(text) {
         var lowerCaseText = angular.lowercase(text);
@@ -50,16 +49,8 @@ angular.module('app').controller('CustomFilterDialogController', ['$mdDialog', '
         }
     }
 
-    vm.onPreAggregationChange = function() {
-        if (vm.filter.preAggregation) {
-            vm.preAggregationMessage = 'Apply filter before summarization';
-        } else {
-            vm.preAggregationMessage = 'Apply filter after summarization';
-        }
-    }
-
     vm.resetForm = function() {
-        vm.filter = { preAggregation: true };
+        vm.filter = { preAggregation: false };
         vm.filterForm.$setUntouched(true);
         vm.filter.availableFunctionParameters = [];
     }
@@ -89,11 +80,13 @@ angular.module('app').controller('CustomFilterDialogController', ['$mdDialog', '
         return value;
     }
 
-    vm.onSelectedPropertyChange = function() {
+    vm.onSelectedPropertyChange = function(editModeInit) {
         functions.getFunctions(vm.group, vm.filter.property, function(data) {
             vm.availablePredicates = data;
         });
-        vm.filter.predicate = '';
+        if (!editModeInit) {
+            vm.filter.predicate = '';
+        }
     }
 
     vm.onSelectedPredicateChange = function() {
@@ -120,9 +113,26 @@ angular.module('app').controller('CustomFilterDialogController', ['$mdDialog', '
                     vm.filter.propertyClass = propertyClass;
                 }
             }
-
-            vm.filter.parameters = {};
         });
+
+        vm.filter.parameters = {};
+    }
+
+    if (vm.filterForEdit) {
+        vm.filter.preAggregation = vm.filterForEdit.preAggregation;
+        vm.filter.property = vm.filterForEdit.property;
+        vm.onSelectedPropertyChange(true);
+        vm.filter.predicate = vm.filterForEdit.predicate;
+        vm.onSelectedPredicateChange();
+        for(var name in vm.filterForEdit.parameters) {
+            var param = vm.filterForEdit.parameters[name];
+            if(typeof param === 'string' || param instanceof String) {
+                vm.filter.parameters[name] = param;
+            } else {
+                vm.filter.parameters[name] = JSON.stringify(param)
+            }
+        }
+        vm.editMode = true;
     }
 
 

@@ -26,7 +26,7 @@ function viewBuilder() {
     }
 }
 
-function ViewBuilderController(view, graph, common, schema, functions, events, $mdDialog) {
+function ViewBuilderController(view, graph, common, schema, functions, events, types, $mdDialog) {
     var vm = this;
 
     vm.schemaEntities;
@@ -43,6 +43,91 @@ function ViewBuilderController(view, graph, common, schema, functions, events, $
         });
     }
 
+    vm.createFilterLabel = function(filter) {
+        var label = filter.selection[0] + ' ';
+
+
+
+        var classParts = filter.predicate.class.split('.');
+        var simpleName = classParts[classParts.length - 1];
+        label += simpleName;
+
+        for (var field in filter.predicate) {
+            if (field === 'class') {
+                continue;
+            }
+            label += (' ' + field + "=" + types.getShortValue(filter.predicate[field]));
+        }
+
+        return label;
+
+    }
+
+    vm.editFilter = function(group, elementType, preAggregation, filter, index) {
+        var filterForEdit = {
+            preAggregation: preAggregation,
+            property: filter.selection[0],
+            predicate: filter.predicate.class,
+            parameters: {}
+        }
+        for (var field in filter.predicate) {
+            if (field === 'class') {
+                continue;
+            }
+            filterForEdit.parameters[field] = filter.predicate[field];
+        }
+
+        vm.tmpPreAggregation = preAggregation;
+        vm.tmpIndex = index;
+
+        $mdDialog.show({
+            templateUrl: 'app/query/view-builder/custom-filter-dialog/custom-filter-dialog.html',
+            controller: 'CustomFilterDialogController',
+            controllerAs: 'ctrl',
+            bindToController: true,
+            locals: {
+                group: group,
+                elementType: elementType,
+                onSubmit: replaceFilterFunction,
+                filterForEdit: filterForEdit
+            },
+            clickOutsideToClose: false
+        }).then(function() {
+            if (elementType === 'edge') {
+                view.setEdgeFilters(vm.edgeFilters);
+            } else {
+                view.setEntityFilters(vm.entityFilters);
+            }
+        });
+    }
+
+    var getFilterArray = function(group, elementType, preAggregation) {
+        if (elementType === 'edge') {
+            if (preAggregation === true) {
+                return vm.edgeFilters[group].preAggregationFilterFunctions;
+            } else {
+                return vm.edgeFilters[group].postAggregationFilterFunctions;
+            }
+        } else {
+            if (preAggregation === true) {
+                return vm.entityFilters[group].preAggregationFilterFunctions;
+            } else {
+                return vm.entityFilters[group].postAggregationFilterFunctions;
+            }
+        }
+    }
+
+    vm.deleteFilter = function(group, elementType, preAggregation, index) {
+        var filters = getFilterArray(group, elementType, preAggregation);
+        filters.splice(index, 1);
+        if (elementType === 'edge') {
+            view.setEdgeFilters(vm.edgeFilters);
+        } else {
+            view.setEntityFilters(vm.entityFilters);
+        }
+    }
+
+
     vm.addFilters = function(ev, group, elementType) {
         $mdDialog.show({
             templateUrl: 'app/query/view-builder/custom-filter-dialog/custom-filter-dialog.html',
@@ -55,7 +140,6 @@ function ViewBuilderController(view, graph, common, schema, functions, events, $
                 onSubmit: addFilterFunction
             },
             clickOutsideToClose: false,
-            fullscreen: true,
             targetEvent: ev
         }).then(function() {
             if (elementType === 'edge') {
@@ -83,20 +167,49 @@ function ViewBuilderController(view, graph, common, schema, functions, events, $
         }
 
         for(var i in filter.availableFunctionParameters) {
-            if(filter.parameters[i] !== undefined) {
+            var paramName = filter.availableFunctionParameters[i];
+            if(filter.parameters[paramName] !== undefined) {
                 var param;
                 try {
-                    param = JSON.parse(filter.parameters[i]);
+                    param = JSON.parse(filter.parameters[paramName]);
                 } catch(e) {
-                    param = filter.parameters[i];
+                    param = filter.parameters[paramName];
                 }
-                functionJson["predicate"][filter.availableFunctionParameters[i]] = param;
+                functionJson["predicate"][paramName] = param;
             }
         }
 
         return functionJson;
     }
 
+    var replaceFilterFunction = function(filter, group, elementType) {
+        var filterArray = getFilterArray(group, elementType, vm.tmpPreAggregation);
+
+        if (filter.preAggregation !== vm.tmpPreAggregation) {
+            vm.deleteFilter(group, elementType, vm.tmpPreAggregation, vm.tmpIndex);
+            addFilterFunction(filter, group, elementType);
+            if (filterArray.length === 0) {
+                if (elementType === 'edge') {
+                    if (vm.tmpPreAggregation) {
+                        vm.edgeFilters[group].preAggregationFilterFunctions = undefined;
+                    } else {
+                        vm.edgeFilters[group].postAggregationFilterFunctions = undefined;
+                    }
+                } else {
+                    if (vm.tmpPreAggregation) {
+                        vm.entityFilters[group].preAggregationFilterFunctions = undefined;
+                    } else {
+                        vm.entityFilters[group].postAggregationFilterFunctions = undefined;
+                    }
+                }
+            }
+        } else {
+            filterArray[vm.tmpIndex] = generateFilterFunction(filter)
+        }
+
+        vm.tmpIndex = undefined;
+        vm.tmpPreAggregation = undefined;
+    }
 
     var addFilterFunction = function(filter, group, elementType) {
 
