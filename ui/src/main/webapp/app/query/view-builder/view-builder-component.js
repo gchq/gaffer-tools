@@ -43,7 +43,7 @@ function ViewBuilderController(view, graph, common, schema, functions, events, t
         });
     }
 
-    vm.createFilterLabel = function(filter) {
+    vm.createFilterLabel = function(filter, preAggregation) {
         var label = filter.selection[0] + ' ';
 
 
@@ -57,6 +57,12 @@ function ViewBuilderController(view, graph, common, schema, functions, events, t
                 continue;
             }
             label += (' ' + field + "=" + types.getShortValue(filter.predicate[field]));
+        }
+
+        if (preAggregation) {
+            label += ' before being summarised';
+        } else {
+            label += ' after being summarised';
         }
 
         return label;
