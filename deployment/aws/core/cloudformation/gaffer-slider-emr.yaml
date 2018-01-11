@@ -31,7 +31,7 @@ Parameters:
 
   EmrRelease:
     Type: String
-    Default: emr-5.7.0
+    Default: emr-5.11.0
     AllowedPattern: "emr-\\d+\\.\\d+\\.\\d+"
     ConstraintDescription: Please select a valid EMR release
 
@@ -127,6 +127,7 @@ Resources:
       Applications:
         - Name: Hadoop
         - Name: ZooKeeper
+        - Name: Spark
         - Name: Ganglia
       BootstrapActions:
         - Name: SetSwappiness
