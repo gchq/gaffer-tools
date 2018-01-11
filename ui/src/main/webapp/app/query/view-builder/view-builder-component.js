@@ -51,16 +51,13 @@ function ViewBuilderController(view, graph, common, schema, functions, events, $
             bindToController: true,
             locals: {
                 group: group,
-                elementType: elementType
+                elementType: elementType,
+                onSubmit: addFilterFunction
             },
             clickOutsideToClose: false,
             fullscreen: true,
             targetEvent: ev
-        }).then(function(filters) {
-            for (var i in filters) {
-                addFilterFunction(filters[i], group, elementType);
-            }
-
+        }).then(function() {
             if (elementType === 'edge') {
                 view.setEdgeFilters(vm.edgeFilters);
             } else {

@@ -19,8 +19,7 @@
 angular.module('app').controller('CustomFilterDialogController', ['$mdDialog', 'schema', 'functions', function($mdDialog, schema, functions) {
     var vm = this;
 
-    var filters = [];
-    vm.filterForEdit = { preAggregation: true }
+    vm.filter = { preAggregation: true }
     vm.availablePredicates;
     vm.predicateText;
 
@@ -52,7 +51,7 @@ angular.module('app').controller('CustomFilterDialogController', ['$mdDialog', '
     }
 
     vm.onPreAggregationChange = function() {
-        if (vm.filterForEdit.preAggregation) {
+        if (vm.filter.preAggregation) {
             vm.preAggregationMessage = 'Apply filter before summarization';
         } else {
             vm.preAggregationMessage = 'Apply filter after summarization';
@@ -60,34 +59,30 @@ angular.module('app').controller('CustomFilterDialogController', ['$mdDialog', '
     }
 
     vm.resetForm = function() {
-        vm.filterForEdit = { preAggregation: true };
+        vm.filter = { preAggregation: true };
         vm.filterForm.$setUntouched(true);
-        vm.filterForEdit.availableFunctionParameters = [];
+        vm.filter.availableFunctionParameters = [];
     }
 
     vm.cancel = function() {
         $mdDialog.cancel();
     }
 
-    vm.noValidFilters = function() {
-        return (filters.length === 0 && vm.filterForm && vm.filterForm.$invalid);
-    }
-
     vm.submit = function() {
-        filters.push(vm.filterForEdit);
-        $mdDialog.hide(filters)
+        vm.onSubmit(vm.filter, vm.group, vm.elementType);
+        $mdDialog.hide()
     }
 
     vm.addAnother = function() {
-        filters.push(vm.filterForEdit);
+        vm.onSubmit(vm.filter, vm.group, vm.elementType)
         vm.resetForm();
     }
 
     vm.getFlexValue = function() {
         var value = 33;
-        if (vm.filterForEdit.availableFunctionParameters.length % 2 === 0) {
+        if (vm.filter.availableFunctionParameters.length % 2 === 0) {
             value = 50;
-        } else if (vm.filterForEdit.availableFunctionParameters.length === 1) {
+        } else if (vm.filter.availableFunctionParameters.length === 1) {
             value = 100;
         }
 
@@ -95,18 +90,18 @@ angular.module('app').controller('CustomFilterDialogController', ['$mdDialog', '
     }
 
     vm.onSelectedPropertyChange = function() {
-        functions.getFunctions(vm.group, vm.filterForEdit.property, function(data) {
+        functions.getFunctions(vm.group, vm.filter.property, function(data) {
             vm.availablePredicates = data;
         });
-        vm.filterForEdit.predicate = '';
+        vm.filter.predicate = '';
     }
 
     vm.onSelectedPredicateChange = function() {
-        if (vm.filterForEdit.predicate === undefined || vm.filterForEdit.predicate === '' || vm.filterForEdit.predicate === null) {
+        if (vm.filter.predicate === undefined || vm.filter.predicate === '' || vm.filter.predicate === null) {
             return;
         }
-        functions.getFunctionParameters(vm.filterForEdit.predicate, function(data) {
-            vm.filterForEdit.availableFunctionParameters = data;
+        functions.getFunctionParameters(vm.filter.predicate, function(data) {
+            vm.filter.availableFunctionParameters = data;
         });
 
         schema.get().then(function(gafferSchema) {
@@ -118,15 +113,15 @@ angular.module('app').controller('CustomFilterDialogController', ['$mdDialog', '
                  elementDef = gafferSchema.edges[vm.group];
             }
             if (gafferSchema.types) {
-                var propertyClass = gafferSchema.types[elementDef.properties[vm.filterForEdit.property]].class;
+                var propertyClass = gafferSchema.types[elementDef.properties[vm.filter.property]].class;
                 if("java.lang.String" !== propertyClass
                     && "java.lang.Boolean" !== propertyClass
                     && "java.lang.Integer" !== propertyClass) {
-                    vm.filterForEdit.propertyClass = propertyClass;
+                    vm.filter.propertyClass = propertyClass;
                 }
             }
 
-            vm.filterForEdit.parameters = {};
+            vm.filter.parameters = {};
         });
     }
 

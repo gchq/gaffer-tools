@@ -10,19 +10,19 @@
     <md-dialog-content>
         <div class="md-dialog-content">
             <ng-form name="ctrl.filterForm">
-                <md-switch ng-model="ctrl.filterForEdit.preAggregation"
+                <md-switch ng-model="ctrl.filter.preAggregation"
                            ng-change="ctrl.onPreAggregationChange()">{{ ctrl.preAggregationMessage }}
                 </md-switch>
                 <md-input-container layout-fill flex>
                     <label>Select a property</label>
-                    <md-select required ng-model="ctrl.filterForEdit.property" ng-change="ctrl.onSelectedPropertyChange()">
+                    <md-select required ng-model="ctrl.filter.property" ng-change="ctrl.onSelectedPropertyChange()">
                         <md-option ng-repeat="(name, type) in ctrl.getProperties()" ng-value="name">{{name}}</md-option>
                     </md-select>
                 </md-input-container>
                 <md-autocomplete
                         required
-                        ng-disabled="!ctrl.filterForEdit.property"
-                        md-selected-item="ctrl.filterForEdit.predicate"
+                        ng-disabled="!ctrl.filter.property"
+                        md-selected-item="ctrl.filter.predicate"
                         md-selected-item-change="ctrl.onSelectedPredicateChange()"
                         md-search-text="ctrl.predicateText"
                         md-min-length="0"
@@ -41,10 +41,10 @@
 
                 </md-autocomplete>
                 <div layout="row" layout-wrap>
-                    <md-input-container ng-repeat="(idx, param) in ctrl.filterForEdit.availableFunctionParameters" layout-fill flex="{{ctrl.getFlexValue()}}">
+                    <md-input-container ng-repeat="(idx, param) in ctrl.filter.availableFunctionParameters" layout-fill flex="{{ctrl.getFlexValue()}}">
                         <label>{{param}}</label>
                         <input type="text"
-                               ng-model="ctrl.filterForEdit.parameters[idx]">
+                               ng-model="ctrl.filter.parameters[idx]">
                     </md-input-container>
                 </div>
             </ng-form>
@@ -54,6 +54,6 @@
         <md-button ng-click="ctrl.cancel()">Cancel</md-button>
         <md-button ng-click="ctrl.resetForm()">Clear</md-button>
         <md-button ng-disabled="ctrl.filterForm.$invalid" ng-click="ctrl.addAnother()">Add Another</md-button>
-        <md-button ng-disabled="ctrl.noValidFilters()" ng-click="ctrl.submit()" class="md-primary">Submit</md-button>
+        <md-button ng-disabled="ctrl.filterForm.$invalid" ng-click="ctrl.submit()" class="md-primary">Submit</md-button>
     </md-dialog-actions>
 </md-dialog>
