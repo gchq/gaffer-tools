@@ -59,3 +59,7 @@ md-nav-bar > div > nav {
 .transparent {
     background-color: transparent;
 }
+
+.no-ellipsis .md-select-value > span:not(.md-select-icon) {
+    white-space: normal;
+}

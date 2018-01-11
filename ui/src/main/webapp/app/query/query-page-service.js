@@ -16,16 +16,10 @@
 
 'use strict';
 
-angular.module('app').factory('queryPage', ['$q', function($q) {
+angular.module('app').factory('queryPage', function() {
     var service = {}
     var selectedOperation;
     var inOutFlag = 'EITHER';
-    var view = {}
-
-    service.expandEntities = [];
-    service.expandEdges = [];
-    service.expandEntitiesContent = {};
-    service.expandEdgesContent = {};
 
     service.getSelectedOperation = function() {
         return selectedOperation;
@@ -44,14 +38,10 @@ angular.module('app').factory('queryPage', ['$q', function($q) {
     }
 
     service.reset = function() {
-        service.expandEntities = [];
-        service.expandEdges = [];
-        service.expandEntitiesContent = {};
-        service.expandEdgesContent = {};
         selectedOperation = undefined;
         inOutFlag = 'EITHER';
     }
 
     return service;
 
-}]);
+});

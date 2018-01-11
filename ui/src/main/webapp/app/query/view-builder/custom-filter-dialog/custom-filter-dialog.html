@@ -1,0 +1,59 @@
+<md-dialog>
+
+    <md-toolbar>
+        <div class="md-toolbar-tools">
+            <span>
+                <h2 class="md-headline">Configure Custom Filter</h2>
+            </span>
+        </div>
+    </md-toolbar>
+    <md-dialog-content>
+        <div class="md-dialog-content">
+            <ng-form name="ctrl.filterForm">
+                <md-switch ng-model="ctrl.filterForEdit.preAggregation"
+                           ng-change="ctrl.onPreAggregationChange()">{{ ctrl.preAggregationMessage }}
+                </md-switch>
+                <md-input-container layout-fill flex>
+                    <label>Select a property</label>
+                    <md-select required ng-model="ctrl.filterForEdit.property" ng-change="ctrl.onSelectedPropertyChange()">
+                        <md-option ng-repeat="(name, type) in ctrl.getProperties()" ng-value="name">{{name}}</md-option>
+                    </md-select>
+                </md-input-container>
+                <md-autocomplete
+                        required
+                        ng-disabled="!ctrl.filterForEdit.property"
+                        md-selected-item="ctrl.filterForEdit.predicate"
+                        md-selected-item-change="ctrl.onSelectedPredicateChange()"
+                        md-search-text="ctrl.predicateText"
+                        md-min-length="0"
+                        md-items="predicate in ctrl.search(ctrl.predicateText)"
+                        md-item-text="ctrl.createFriendlyName(predicate)"
+                        md-floating-label="Select Filter"
+                        md-require-match
+                        md-select-on-focus
+                        md-autoselect>
+                    <md-item-template>
+                        <span md-highlight-text="ctrl.predicateText" md-highlight-flags="^i">{{ctrl.createFriendlyName(predicate)}}</span>
+                    </md-item-template>
+                    <md-not-found>
+                        No predicates matching {{ctrl.predicateText}} were found.
+                    </md-not-found>
+
+                </md-autocomplete>
+                <div layout="row" layout-wrap>
+                    <md-input-container ng-repeat="(idx, param) in ctrl.filterForEdit.availableFunctionParameters" layout-fill flex="{{ctrl.getFlexValue()}}">
+                        <label>{{param}}</label>
+                        <input type="text"
+                               ng-model="ctrl.filterForEdit.parameters[idx]">
+                    </md-input-container>
+                </div>
+            </ng-form>
+        </div>
+    </md-dialog-content>
+    <md-dialog-actions layout="row" layout-align="end">
+        <md-button ng-click="ctrl.cancel()">Cancel</md-button>
+        <md-button ng-click="ctrl.resetForm()">Clear</md-button>
+        <md-button ng-disabled="ctrl.filterForm.$invalid" ng-click="ctrl.addAnother()">Add Another</md-button>
+        <md-button ng-disabled="ctrl.noValidFilters()" ng-click="ctrl.submit()" class="md-primary">Submit</md-button>
+    </md-dialog-actions>
+</md-dialog>
