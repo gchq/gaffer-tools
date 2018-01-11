@@ -155,11 +155,13 @@ cd accumulo-pkg
 
 ACCUMULO_PKG_BUILD_URL1=https://raw.githubusercontent.com/gchq/gaffer-tools/gaffer-tools-$GAFFER_TOOLS_VERSION/slider/scripts/build_accumulo_package.sh
 ACCUMULO_PKG_BUILD_URL2=https://raw.githubusercontent.com/gchq/gaffer-tools/$GAFFER_TOOLS_VERSION/slider/scripts/build_accumulo_package.sh
+TOOLS_GITHUB_ROOT_URL="https://raw.githubusercontent.com/gchq/gaffer-tools/gaffer-tools-$GAFFER_TOOLS_VERSION"
 
 echo "Trying to download Accumulo build script from $ACCUMULO_PKG_BUILD_URL1"
 if ! curl -fLO $ACCUMULO_PKG_BUILD_URL1; then
 	echo "Trying to download Accumulo build script from $ACCUMULO_PKG_BUILD_URL2"
 	curl -fLO $ACCUMULO_PKG_BUILD_URL2
+	TOOLS_GITHUB_ROOT_URL="https://raw.githubusercontent.com/gchq/gaffer-tools/$GAFFER_TOOLS_VERSION"
 fi
 
 if [ ! -f ./build_accumulo_package.sh ]; then
@@ -300,179 +302,20 @@ echo "$GAFFER_SLIDER_POM_VERSION" >gaffer-slider.version
 echo "$ROOT_PWD" >root.password
 echo "$SECRET" >instance.secret
 
-echo "Generating admin helper scripts..."
+echo "Downloading utility scripts..."
 cd $DST
-
-tee install-accumulo-client.sh <<EOF
-#!/bin/bash -e
-
-DIR="\$( cd "\$( dirname "\${BASH_SOURCE[0]}" )" && pwd )"
-cd \$DIR
-
-DST=accumulo
-CLUSTER_NAME=\$(cat ./etc/cluster.name)
-ACCUMULO_VERSION=\$(cat ./etc/accumulo.version)
-
-if [ ! -d "\$DST" ]; then
-	mkdir -p "\$DST"
-	./slider client \\
-		--install \\
-		--dest "\$DST" \\
-		--package ./accumulo-pkg/slider-accumulo-app-package-\$ACCUMULO_VERSION.zip \\
-		--name \$CLUSTER_NAME \\
-		--debug \\
-	|| (rm -rf "\$DST" && exit 1)
-fi
-
-EOF
-
-tee accumulo-shell.sh <<EOF
-#!/bin/bash -e
-
-DIR="\$( cd "\$( dirname "\${BASH_SOURCE[0]}" )" && pwd )"
-cd \$DIR
-./install-accumulo-client.sh || exit 1
-./accumulo/*/bin/accumulo shell -u root -p file:./etc/root.password --disable-auth-timeout "\$@"
-
-EOF
-
-tee create-accumulo-user.sh <<EOF
-#!/bin/bash -e
-
-USERNAME=""
-PASSWORD=""
-VISIBILITIES=""
-
-while [[ \$# -gt 0 ]]; do
-	key="\$1"
-
-	case \$key in
-		-p|--password)
-			PASSWORD=\$2
-			shift
-			;;
-		-v|--visibilities)
-			VISIBILITIES=\$2
-			shift
-			;;
-		*)
-			USERNAME=\$1
-			;;
-	esac
-	shift
-done
-
-if [ "\$USERNAME" == "" ]; then
-	echo "Usage: \$0 <username> [-v <visibilities>]"
-	exit 1
-fi
-
-if [ "\$PASSWORD" == "" ]; then
-	while true; do
-		read -s -p "Password: " PASSWORD
-		echo
-		read -s -p "Confirm Password: " PASSWORD2
-		echo
-		[ "\$PASSWORD" = "\$PASSWORD2" ] && break
-		echo "Passwords do not match, please try again..."
-	done
-fi
-
-DIR="\$( cd "\$( dirname "\${BASH_SOURCE[0]}" )" && pwd )"
-cd \$DIR
-./install-accumulo-client.sh || exit 1
-
-./accumulo/*/bin/accumulo shell -u root -p file:./etc/root.password -e "createuser \$USERNAME" <<ARGS
-\$PASSWORD
-\$PASSWORD
-ARGS
-
-./accumulo/*/bin/accumulo shell -u root -p file:./etc/root.password -e "grant -u \$USERNAME -s System.CREATE_TABLE"
-
-if [[ "\$VISIBILITIES" != "" ]]; then
-	./accumulo/*/bin/accumulo shell -u root -p file:./etc/root.password -e "setauths -u \$USERNAME -s \$VISIBILITIES"
-fi
-
-EOF
-
-tee create-accumulo-user-with-kms.sh <<EOF
-#!/bin/bash -e
-
-USERNAME=""
-VISIBILITIES=""
-KMS_ID=""
-PARAM_NAME=""
-WAIT_HANDLE_URL=""
-
-while [[ \$# -gt 0 ]]; do
-	key="\$1"
-
-	case \$key in
-		-k|--kms)
-			KMS_ID=\$2
-			shift
-			;;
-		-p|--param)
-			PARAM_NAME=\$2
-			shift
-			;;
-		-v|--visibilities)
-			if [ "\$2" != "none" ]; then
-				VISIBILITIES=\$2
-			fi
-			shift
-			;;
-		-w|--wait-handle-url)
-			WAIT_HANDLE_URL=\$2
-			shift
-			;;
-		*)
-			USERNAME=\$1
-			;;
-	esac
-	shift
-done
-
-if [[ "\$WAIT_HANDLE_URL" ]]; then
-	function awsSignal {
-		/opt/aws/bin/cfn-signal -e \$? "\$WAIT_HANDLE_URL"
-	}
-	trap awsSignal EXIT
-fi
-
-if [[ "\$USERNAME" == "" || "\$KMS_ID" == "" || "\$PARAM_NAME" == "" ]]; then
-	echo "Usage: \$0 <username> -k <kmsID> -p <ssmParameterName> [-v <visibilities>] [-w <WaitHandleUrl>]"
-	exit 1
-fi
-
-# Generate password for Accumulo
-PASSWORD=\$(openssl rand -base64 32)
-
-# Encrypt password using AWS KMS
-ENCRYPTED_PASSWORD=\$(aws kms encrypt --region "\$AWS_DEFAULT_REGION" --key-id "\$KMS_ID" --plaintext "\$PASSWORD" --output text --query CiphertextBlob)
-if [ "\$ENCRYPTED_PASSWORD" == "" ]; then
-	echo "Unable to use AWS KMS: \$KMS_ID to encrypt password!"
-	exit 1
-fi
-
-# Put encrypted password into a SSM Parameter based Secret Store
-aws ssm put-parameter --name "\$PARAM_NAME" --value "\$ENCRYPTED_PASSWORD" --type String --overwrite
-
-DIR="\$( cd "\$( dirname "\${BASH_SOURCE[0]}" )" && pwd )"
-cd \$DIR
-
-if [[ "\$VISIBILITIES" != "" ]]; then
-	VISIBILITIES="-v \$VISIBILITIES"
-fi
-
-./create-accumulo-user.sh \$USERNAME \$VISIBILITIES <<ARGS
-\$PASSWORD
-\$PASSWORD
-ARGS
-
-EOF
-
+curl -fLO $TOOLS_GITHUB_ROOT_URL/deployment/aws/core/utility-scripts/install-accumulo-client.sh
+curl -fLO $TOOLS_GITHUB_ROOT_URL/deployment/aws/core/utility-scripts/accumulo-shell.sh
+curl -fLO $TOOLS_GITHUB_ROOT_URL/deployment/aws/core/utility-scripts/create-accumulo-user.sh
+curl -fLO $TOOLS_GITHUB_ROOT_URL/deployment/aws/core/utility-scripts/create-accumulo-user-with-kms.sh
 chmod +x *.sh
+
+mkdir -p spark
+cd spark
+curl -fLO $TOOLS_GITHUB_ROOT_URL/deployment/aws/core/spark-scripts/gaffer-spark-shell.sh
+curl -fLO $TOOLS_GITHUB_ROOT_URL/deployment/aws/core/spark-scripts/gaffer-spark-shell.scala
+chmod +x *.sh
+cd ..
 
 echo "Waiting for deployed Gaffer instance to be ready..."
 MAX_ATTEMPTS=30
