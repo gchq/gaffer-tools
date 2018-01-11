@@ -666,7 +666,7 @@ Resources:
     Type: AWS::IAM::Policy
     Properties:
       Roles:
-        - !Ref WebServerRole
+        - !Ref GeneratorRole
       PolicyName: !Join ["-", [Ref: "AWS::StackName", "mvn-tar-access"]]
       PolicyDocument:
         Version: 2012-10-17
