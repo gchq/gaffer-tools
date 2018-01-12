@@ -48,14 +48,6 @@ angular.module('app').factory('view', function() {
         viewEdges = edges;
     }
 
-    service.setEntityFilters = function(filters) {
-        entityFilters = filters;
-    }
-
-    service.setEdgeFilters = function(filters) {
-        edgeFilters = filters;
-    }
-
     service.reset = function() {
         viewEntities = [];
         viewEdges = [];

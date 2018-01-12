@@ -98,12 +98,6 @@ function ViewBuilderController(view, graph, common, schema, functions, events, t
                 filterForEdit: filterForEdit
             },
             clickOutsideToClose: false
-        }).then(function() {
-            if (elementType === 'edge') {
-                view.setEdgeFilters(vm.edgeFilters);
-            } else {
-                view.setEntityFilters(vm.entityFilters);
-            }
         });
     }
 
@@ -126,11 +120,6 @@ function ViewBuilderController(view, graph, common, schema, functions, events, t
     vm.deleteFilter = function(group, elementType, preAggregation, index) {
         var filters = getFilterArray(group, elementType, preAggregation);
         filters.splice(index, 1);
-        if (elementType === 'edge') {
-            view.setEdgeFilters(vm.edgeFilters);
-        } else {
-            view.setEntityFilters(vm.entityFilters);
-        }
     }
 
 
@@ -147,12 +136,6 @@ function ViewBuilderController(view, graph, common, schema, functions, events, t
             },
             clickOutsideToClose: false,
             targetEvent: ev
-        }).then(function() {
-            if (elementType === 'edge') {
-                view.setEdgeFilters(vm.edgeFilters);
-            } else {
-                view.setEntityFilters(vm.entityFilters);
-            }
         });
     }
 
