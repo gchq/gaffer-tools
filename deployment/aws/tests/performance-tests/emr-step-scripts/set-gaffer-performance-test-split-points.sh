@@ -97,6 +97,7 @@ if ! curl -fLO https://repo1.maven.org/maven2/uk/gov/gchq/gaffer/performance-tes
 	rm $GAFFER_TOOLS_VERSION.zip
 	cd gaffer-tools-$GAFFER_TOOLS_VERSION
 
+	source /etc/profile.d/maven.sh
 	mvn clean package -Pquick -pl performance-testing/performance-testing-accumulo-store --also-make
 
 	GAFFER_TOOLS_POM_VERSION=$(xmllint --xpath '/*[local-name()="project"]/*[local-name()="version"]/text()' pom.xml)

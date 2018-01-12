@@ -66,6 +66,8 @@ if [[ "$GAFFER_VERSION" == "" || "$HOST" == "" ]]; then
 	printUsage
 fi
 
+source /etc/profile.d/maven.sh
+
 if curl -fLO https://github.com/gchq/Gaffer/archive/gaffer2-$GAFFER_VERSION.zip; then
 	unzip gaffer2-$GAFFER_VERSION.zip
 	rm gaffer2-$GAFFER_VERSION.zip

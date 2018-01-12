@@ -78,6 +78,7 @@ if \
 	rm $GAFFER_VERSION.zip
 	cd Gaffer-$GAFFER_VERSION
 
+	source /etc/profile.d/maven.sh
 	mvn clean package -Pquick -pl example/road-traffic/road-traffic-generators,example/road-traffic/road-traffic-model,store-implementation/accumulo-store --also-make
 
 	GAFFER_POM_VERSION=$(xmllint --xpath '/*[local-name()="project"]/*[local-name()="version"]/text()' pom.xml)

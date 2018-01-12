@@ -138,6 +138,11 @@ echo "Taking the Accumulo table offline..."
 echo "Stopping the Gaffer instance..."
 ./slider stop $GAFFER_INSTANCE_NAME
 
+source /etc/profile.d/maven.sh
+
+# Set location of Hadoop config
+export HADOOP_CONF_DIR=/etc/hadoop/conf
+
 # Set location of JDK
 export JAVA_HOME=/etc/alternatives/java_sdk
 

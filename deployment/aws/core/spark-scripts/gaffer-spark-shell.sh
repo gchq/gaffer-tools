@@ -54,6 +54,7 @@ if [ ! -f spark-accumulo-library-$GAFFER_ACTUAL_VERSION-full.jar ]; then
 		rm $GAFFER_REQUESTED_VERSION.zip
 		cd Gaffer-$GAFFER_REQUESTED_VERSION
 
+		source /etc/profile.d/maven.sh
 		mvn clean install -Pquick -pl library/spark/spark-accumulo-library --also-make
 
 		cp library/spark/spark-accumulo-library/target/spark-accumulo-library-$GAFFER_ACTUAL_VERSION-full.jar ../

@@ -43,6 +43,7 @@ if ! curl -fLO https://repo1.maven.org/maven2/uk/gov/gchq/gaffer/road-traffic-mo
 	rm $GAFFER_VERSION.zip
 	cd Gaffer-$GAFFER_VERSION
 
+	source /etc/profile.d/maven.sh
 	mvn clean package -Pquick -pl example/road-traffic/road-traffic-model --also-make
 
 	GAFFER_POM_VERSION=$(xmllint --xpath '/*[local-name()="project"]/*[local-name()="version"]/text()' pom.xml)
