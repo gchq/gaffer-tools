@@ -222,7 +222,7 @@ if [ ! -d "slider-$SLIDER_VERSION" ]; then
 	rm -f slider-assembly-$SLIDER_VERSION-all.tar.gz
 fi
 
-if [ ! -f slider ]; then
+if [ -f slider ]; then
 	rm -f slider
 fi
 
