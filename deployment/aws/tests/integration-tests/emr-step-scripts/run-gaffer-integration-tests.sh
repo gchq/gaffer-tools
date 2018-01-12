@@ -11,8 +11,6 @@ ACCUMULO_USER=""
 WAIT_HANDLE_URL=""
 ZOOKEEPERS="$HOSTNAME:2181"
 
-MAVEN_VERSION=3.5.0
-
 while [[ $# -gt 0 ]]; do
 	key="$1"
 
@@ -102,16 +100,6 @@ if [[ "$PASSWORD" == "" ]]; then
 		exit 1
 	fi
 
-fi
-
-# Install Apache Maven
-if ! which mvn >/dev/null 2>&1; then
-	MAVEN_DOWNLOAD_URL=https://archive.apache.org/dist/maven/maven-3/$MAVEN_VERSION/binaries/apache-maven-$MAVEN_VERSION-bin.tar.gz
-	echo "Downloading Apache Maven $MAVEN_VERSION from $MAVEN_DOWNLOAD_URL"
-	curl -fLO $MAVEN_DOWNLOAD_URL
-	tar -xf apache-maven-$MAVEN_VERSION-bin.tar.gz
-	rm -f apache-maven-$MAVEN_VERSION-bin.tar.gz
-	export PATH=$PWD/apache-maven-$MAVEN_VERSION/bin:$PATH
 fi
 
 if curl -fLO https://github.com/gchq/Gaffer/archive/gaffer2-$GAFFER_VERSION.zip; then
@@ -257,4 +245,3 @@ reportTestResults
 # Clean up
 cd ..
 rm -rf Gaffer-*
-rm -rf apache-maven-$MAVEN_VERSION

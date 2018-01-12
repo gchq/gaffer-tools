@@ -84,6 +84,20 @@ if [ "$MVN_REPO" != "" ]; then
 	set -e
 fi
 
+# Install Apache Maven
+MAVEN_DOWNLOAD_URL=https://archive.apache.org/dist/maven/maven-3/$MAVEN_VERSION/binaries/apache-maven-$MAVEN_VERSION-bin.tar.gz
+echo "Downloading Apache Maven $MAVEN_VERSION from $MAVEN_DOWNLOAD_URL"
+cd $HOME
+curl -fLO $MAVEN_DOWNLOAD_URL
+tar -xf apache-maven-$MAVEN_VERSION-bin.tar.gz
+rm -f apache-maven-$MAVEN_VERSION-bin.tar.gz
+
+sudo tee /etc/profile.d/maven.sh <<EOF
+#!/bin/bash
+export PATH=$HOME/apache-maven-$MAVEN_VERSION/bin:\$PATH
+EOF
+source /etc/profile.d/maven.sh
+
 # Install all required software and config into an instance specific directory
 DST=~/slider-$CLUSTER_NAME
 if [ -d $DST ]; then
@@ -93,31 +107,7 @@ fi
 
 echo "Installing all software and configuration to $DST"
 mkdir -p $DST
-
-# Ensure some dependencies are installed
-PKGS_TO_INSTALL=()
-
-if ! which xmlstarlet >/dev/null 2>&1; then
-	PKGS_TO_INSTALL+=(xmlstarlet)
-fi
-
-if ! which git >/dev/null 2>&1; then
-	PKGS_TO_INSTALL+=(git)
-fi
-
-if [ ${#PKGS_TO_INSTALL[@]} -gt 0 ]; then
-	echo "Installing ${PKGS_TO_INSTALL[@]} ..."
-	sudo yum install -y ${PKGS_TO_INSTALL[@]}
-fi
-
-# Install Apache Maven
-MAVEN_DOWNLOAD_URL=https://archive.apache.org/dist/maven/maven-3/$MAVEN_VERSION/binaries/apache-maven-$MAVEN_VERSION-bin.tar.gz
-echo "Downloading Apache Maven $MAVEN_VERSION from $MAVEN_DOWNLOAD_URL"
 cd $DST
-curl -fLO $MAVEN_DOWNLOAD_URL
-tar -xf apache-maven-$MAVEN_VERSION-bin.tar.gz
-rm -f apache-maven-$MAVEN_VERSION-bin.tar.gz
-export PATH=$DST/apache-maven-$MAVEN_VERSION/bin:$PATH
 
 # Install Apache Slider
 SLIDER_DOWNLOAD_URL=https://repo1.maven.org/maven2/org/apache/slider/slider-assembly/$SLIDER_VERSION/slider-assembly-$SLIDER_VERSION-all.tar.gz
@@ -135,6 +125,8 @@ xmlstarlet ed --inplace \
 	-s "/configuration/zkProperty" -t elem -n value -v "$HOSTNAME" \
 	-r "/configuration/zkProperty" -v property \
 	./slider-$SLIDER_VERSION/conf/slider-client.xml
+echo "Installing git and xmlstarlet ..."
+sudo yum install -y git xmlstarlet
 
 # Set location of Hadoop config
 export HADOOP_CONF_DIR=/etc/hadoop/conf

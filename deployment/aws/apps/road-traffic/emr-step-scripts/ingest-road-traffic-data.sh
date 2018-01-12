@@ -9,9 +9,6 @@ USERNAME=""
 KMS_ID=""
 PARAM_NAME=""
 
-MAVEN_VERSION=3.5.0
-MAVEN_DOWNLOAD_URL=https://archive.apache.org/dist/maven/maven-3/$MAVEN_VERSION/binaries/apache-maven-$MAVEN_VERSION-bin.tar.gz
-
 GRAPH_ID=road_traffic
 
 while [[ $# -gt 0 ]]; do
@@ -69,17 +66,6 @@ if [[ "$DATA_URL" == "" || "$ACCUMULO_INSTANCE" == "" || "$USERNAME" == "" || "$
 	exit 1
 fi
 
-function install_dev_tools {
-	# Install Apache Maven
-	if ! which mvn >/dev/null 2>&1; then
-		echo "Downloading Apache Maven $MAVEN_VERSION from $MAVEN_DOWNLOAD_URL"
-		curl -fLO $MAVEN_DOWNLOAD_URL
-		tar -xf apache-maven-$MAVEN_VERSION-bin.tar.gz
-		rm -f apache-maven-$MAVEN_VERSION-bin.tar.gz
-		export PATH=$PWD/apache-maven-$MAVEN_VERSION/bin:$PATH
-	fi
-}
-
 # Need to work out if we can download the Gaffer road-traffic-generators.jar, road-traffic-model.jar and accumulo-store.jar or if we need to build it from source...
 if \
 	! curl -fLO https://repo1.maven.org/maven2/uk/gov/gchq/gaffer/road-traffic-generators/$GAFFER_VERSION/road-traffic-generators-$GAFFER_VERSION-utility.jar || \
@@ -87,8 +73,6 @@ if \
 	! curl -fLO https://repo1.maven.org/maven2/uk/gov/gchq/gaffer/accumulo-store/$GAFFER_VERSION/accumulo-store-$GAFFER_VERSION-utility.jar; then
 
 	echo "Building Gaffer road-traffic-generators.jar, road-traffic-model.jar and accumulo-store.jar from branch $GAFFER_VERSION..."
-	install_dev_tools
-
 	curl -fLO https://github.com/gchq/Gaffer/archive/$GAFFER_VERSION.zip
 	unzip $GAFFER_VERSION.zip
 	rm $GAFFER_VERSION.zip

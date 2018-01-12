@@ -5,7 +5,6 @@ SLIDER_ACCUMULO_BRANCH=branches/branch-0.92
 ACCUMULO_VERSION=1.7.2
 GAFFER_VERSION=0.7.8
 GAFFER_TOOLS_VERSION=0.7.8
-MAVEN_VERSION=3.5.0
 
 USERNAME=""
 KMS_ID=""
@@ -139,21 +138,6 @@ echo "Taking the Accumulo table offline..."
 echo "Stopping the Gaffer instance..."
 ./slider stop $GAFFER_INSTANCE_NAME
 
-# Ensure some dependencies are installed
-if ! which xmlstarlet >/dev/null 2>&1; then
-	echo "Installing xmlstarlet ..."
-	sudo yum install -y xmlstarlet
-fi
-
-# Install Apache Maven
-export PATH=$DST/apache-maven-$MAVEN_VERSION/bin:$PATH
-MAVEN_DOWNLOAD_URL=https://archive.apache.org/dist/maven/maven-3/$MAVEN_VERSION/binaries/apache-maven-$MAVEN_VERSION-bin.tar.gz
-if [ ! -d "apache-maven-$MAVEN_VERSION" ]; then
-	echo "Downloading Apache Maven $MAVEN_VERSION from $MAVEN_DOWNLOAD_URL"
-	curl -fLO $MAVEN_DOWNLOAD_URL
-	tar -xf apache-maven-$MAVEN_VERSION-bin.tar.gz
-	rm -f apache-maven-$MAVEN_VERSION-bin.tar.gz
-fi
 
 # Install Apache Slider
 SLIDER_DOWNLOAD_URL=https://repo1.maven.org/maven2/org/apache/slider/slider-assembly/$SLIDER_VERSION/slider-assembly-$SLIDER_VERSION-all.tar.gz
