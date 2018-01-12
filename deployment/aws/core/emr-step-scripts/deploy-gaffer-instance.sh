@@ -109,22 +109,6 @@ echo "Installing all software and configuration to $DST"
 mkdir -p $DST
 cd $DST
 
-# Install Apache Slider
-SLIDER_DOWNLOAD_URL=https://repo1.maven.org/maven2/org/apache/slider/slider-assembly/$SLIDER_VERSION/slider-assembly-$SLIDER_VERSION-all.tar.gz
-echo "Downloading Apache Slider $SLIDER_VERSION from $SLIDER_DOWNLOAD_URL"
-cd $DST
-curl -fLO $SLIDER_DOWNLOAD_URL
-tar -xf slider-assembly-$SLIDER_VERSION-all.tar.gz
-ln -s slider-$SLIDER_VERSION/bin/slider slider
-
-# Configure Slider with location of ZooKeeper
-echo "Configuring Slider with location of ZooKeeper ($HOSTNAME)..."
-xmlstarlet ed --inplace \
-	-s "/configuration" -t elem -n zkProperty -v "" \
-	-s "/configuration/zkProperty" -t elem -n name -v "hadoop.registry.zk.quorum" \
-	-s "/configuration/zkProperty" -t elem -n value -v "$HOSTNAME" \
-	-r "/configuration/zkProperty" -v property \
-	./slider-$SLIDER_VERSION/conf/slider-client.xml
 echo "Installing git and xmlstarlet ..."
 sudo yum install -y git xmlstarlet
 
@@ -139,38 +123,11 @@ EOF
 # Set location of JDK
 export JAVA_HOME=/etc/alternatives/java_sdk
 
-# Install Accumulo application package
-echo "Building Accumulo Slider Application Package..."
-cd $DST
-mkdir accumulo-pkg
-cd accumulo-pkg
-
-ACCUMULO_PKG_BUILD_URL1=https://raw.githubusercontent.com/gchq/gaffer-tools/gaffer-tools-$GAFFER_TOOLS_VERSION/slider/scripts/build_accumulo_package.sh
-ACCUMULO_PKG_BUILD_URL2=https://raw.githubusercontent.com/gchq/gaffer-tools/$GAFFER_TOOLS_VERSION/slider/scripts/build_accumulo_package.sh
-TOOLS_GITHUB_ROOT_URL="https://raw.githubusercontent.com/gchq/gaffer-tools/gaffer-tools-$GAFFER_TOOLS_VERSION"
-
-echo "Trying to download Accumulo build script from $ACCUMULO_PKG_BUILD_URL1"
-if ! curl -fLO $ACCUMULO_PKG_BUILD_URL1; then
-	echo "Trying to download Accumulo build script from $ACCUMULO_PKG_BUILD_URL2"
-	curl -fLO $ACCUMULO_PKG_BUILD_URL2
-	TOOLS_GITHUB_ROOT_URL="https://raw.githubusercontent.com/gchq/gaffer-tools/$GAFFER_TOOLS_VERSION"
-fi
-
-if [ ! -f ./build_accumulo_package.sh ]; then
-	echo "Failed to download the build_accumulo_package.sh script from the gaffer-tools github repo!"
-	exit 1
-fi
-
-echo "Running Accumulo build script..."
-chmod +x ./build_accumulo_package.sh
-./build_accumulo_package.sh $SLIDER_ACCUMULO_BRANCH $ACCUMULO_VERSION . --build-native
-
 # Build and install Gaffer
 cd $DST
 
 if ! curl -fL -o /dev/null https://repo1.maven.org/maven2/uk/gov/gchq/gaffer/gaffer2/$GAFFER_VERSION/gaffer2-$GAFFER_VERSION.pom; then
 	echo "Building Gaffer from branch $GAFFER_VERSION..."
-
 	curl -fLO https://github.com/gchq/Gaffer/archive/$GAFFER_VERSION.zip
 	unzip $GAFFER_VERSION.zip
 	rm $GAFFER_VERSION.zip
@@ -191,6 +148,7 @@ fi
 
 # Install gaffer-slider
 mkdir -p $DST/gaffer-slider
+mkdir -p $DST/accumulo-pkg
 cd $DST/gaffer-slider
 
 # Make sure we only use a pre-built version of gaffer-slider if it has been built for the requested version of Gaffer
@@ -208,13 +166,19 @@ if [[ ! -f gaffer-slider-$GAFFER_TOOLS_VERSION.zip || ! -f gaffer-slider-$GAFFER
 	rm $GAFFER_TOOLS_VERSION.zip
 	cd gaffer-tools-$GAFFER_TOOLS_VERSION
 
-	mvn clean package -Pquick -pl slider --also-make -Dgaffer.version=$GAFFER_POM_VERSION
+	mvn clean package -Pquick -pl slider --also-make \
+		-Dslider.version=$SLIDER_VERSION \
+		-Dslider.accumulo.branch=$SLIDER_ACCUMULO_BRANCH \
+		-Dgaffer.version=$GAFFER_POM_VERSION \
+		-Daccumulo.version=$ACCUMULO_VERSION
 
 	GAFFER_SLIDER_POM_VERSION=$(xmllint --xpath '/*[local-name()="project"]/*[local-name()="version"]/text()' pom.xml)
 	echo "Detected gaffer-slider version as $GAFFER_SLIDER_POM_VERSION"
 
 	cp slider/target/slider-$GAFFER_SLIDER_POM_VERSION.jar $DST/gaffer-slider/gaffer-slider-$GAFFER_SLIDER_POM_VERSION.jar
 	cp slider/target/gaffer-slider-$GAFFER_SLIDER_POM_VERSION.zip $DST/gaffer-slider/
+	cp slider/target/accumulo-pkg/slider-accumulo-app-package-$ACCUMULO_VERSION.zip $DST/accumulo-pkg/
+	cp -R slider/target/slider/slider-$SLIDER_VERSION $DST/
 
 	# Tidy up
 	cd ..
@@ -222,6 +186,50 @@ if [[ ! -f gaffer-slider-$GAFFER_TOOLS_VERSION.zip || ! -f gaffer-slider-$GAFFER
 else
 	echo "Will use gaffer-slider $GAFFER_TOOLS_VERSION from Maven Central..."
 	GAFFER_SLIDER_POM_VERSION=$GAFFER_TOOLS_VERSION
+fi
+
+# Apache Slider
+cd $DST
+if [ ! -d "slider-$SLIDER_VERSION" ]; then
+	SLIDER_DOWNLOAD_URL=https://repo1.maven.org/maven2/org/apache/slider/slider-assembly/$SLIDER_VERSION/slider-assembly-$SLIDER_VERSION-all.tar.gz
+	echo "Downloading Apache Slider $SLIDER_VERSION from $SLIDER_DOWNLOAD_URL"
+	curl -fLO $SLIDER_DOWNLOAD_URL
+	tar -xf slider-assembly-$SLIDER_VERSION-all.tar.gz
+	rm -f slider-assembly-$SLIDER_VERSION-all.tar.gz
+fi
+
+ln -s slider-$SLIDER_VERSION/bin/slider slider
+
+# Configure Slider with location of ZooKeeper
+echo "Configuring Slider with location of ZooKeeper ($HOSTNAME)..."
+xmlstarlet ed --inplace \
+	-s "/configuration" -t elem -n zkProperty -v "" \
+	-s "/configuration/zkProperty" -t elem -n name -v "hadoop.registry.zk.quorum" \
+	-s "/configuration/zkProperty" -t elem -n value -v "$HOSTNAME" \
+	-r "/configuration/zkProperty" -v property \
+	./slider-$SLIDER_VERSION/conf/slider-client.xml
+
+# Accumulo Slider Package
+cd $DST/accumulo-pkg
+if [ ! -f "slider-accumulo-app-package-$ACCUMULO_VERSION.zip" ]; then
+	echo "Building Accumulo Slider Application Package..."
+	ACCUMULO_PKG_BUILD_URL1=https://raw.githubusercontent.com/gchq/gaffer-tools/gaffer-tools-$GAFFER_TOOLS_VERSION/slider/scripts/build_accumulo_package.sh
+	ACCUMULO_PKG_BUILD_URL2=https://raw.githubusercontent.com/gchq/gaffer-tools/$GAFFER_TOOLS_VERSION/slider/scripts/build_accumulo_package.sh
+
+	echo "Trying to download Accumulo build script from $ACCUMULO_PKG_BUILD_URL1"
+	if ! curl -fLO $ACCUMULO_PKG_BUILD_URL1; then
+		echo "Trying to download Accumulo build script from $ACCUMULO_PKG_BUILD_URL2"
+		curl -fLO $ACCUMULO_PKG_BUILD_URL2
+	fi
+
+	if [ ! -f ./build_accumulo_package.sh ]; then
+		echo "Failed to download the build_accumulo_package.sh script from the gaffer-tools github repo!"
+		exit 1
+	fi
+
+	echo "Running Accumulo build script..."
+	chmod +x ./build_accumulo_package.sh
+	./build_accumulo_package.sh $SLIDER_ACCUMULO_BRANCH $ACCUMULO_VERSION . --build-native
 fi
 
 # Download default config for EMR clusters
@@ -296,7 +304,13 @@ echo "$SECRET" >instance.secret
 
 echo "Downloading utility scripts..."
 cd $DST
-curl -fLO $TOOLS_GITHUB_ROOT_URL/deployment/aws/core/utility-scripts/install-accumulo-client.sh
+TOOLS_GITHUB_ROOT_URL="https://raw.githubusercontent.com/gchq/gaffer-tools/gaffer-tools-$GAFFER_TOOLS_VERSION"
+
+if ! curl -fLO $TOOLS_GITHUB_ROOT_URL/deployment/aws/core/utility-scripts/install-accumulo-client.sh; then
+	TOOLS_GITHUB_ROOT_URL="https://raw.githubusercontent.com/gchq/gaffer-tools/$GAFFER_TOOLS_VERSION"
+	curl -fLO $TOOLS_GITHUB_ROOT_URL/deployment/aws/core/utility-scripts/install-accumulo-client.sh
+fi
+
 curl -fLO $TOOLS_GITHUB_ROOT_URL/deployment/aws/core/utility-scripts/accumulo-shell.sh
 curl -fLO $TOOLS_GITHUB_ROOT_URL/deployment/aws/core/utility-scripts/create-accumulo-user.sh
 curl -fLO $TOOLS_GITHUB_ROOT_URL/deployment/aws/core/utility-scripts/create-accumulo-user-with-kms.sh
