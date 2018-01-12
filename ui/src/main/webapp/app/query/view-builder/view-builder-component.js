@@ -89,8 +89,6 @@ function ViewBuilderController(view, graph, common, schema, functions, events, t
         $mdDialog.show({
             templateUrl: 'app/query/view-builder/custom-filter-dialog/custom-filter-dialog.html',
             controller: 'CustomFilterDialogController',
-            controllerAs: 'ctrl',
-            bindToController: true,
             locals: {
                 group: group,
                 elementType: elementType,
@@ -127,8 +125,6 @@ function ViewBuilderController(view, graph, common, schema, functions, events, t
         $mdDialog.show({
             templateUrl: 'app/query/view-builder/custom-filter-dialog/custom-filter-dialog.html',
             controller: 'CustomFilterDialogController',
-            controllerAs: 'ctrl',
-            bindToController: true,
             locals: {
                 group: group,
                 elementType: elementType,

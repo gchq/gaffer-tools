@@ -16,13 +16,12 @@
 
 'use strict';
 
-angular.module('app').controller('CustomFilterDialogController', ['$mdDialog', 'schema', 'functions', function($mdDialog, schema, functions) {
-    var vm = this;
+angular.module('app').controller('CustomFilterDialogController', ['$scope', '$mdDialog', 'schema', 'functions', function($scope, $mdDialog, schema, functions) {
 
-    vm.filter = { preAggregation: false }
-    vm.availablePredicates;
-    vm.predicateText;
-    vm.editMode = false;
+    $scope.filter = { preAggregation: false }
+    $scope.availablePredicates;
+    $scope.predicateText;
+    $scope.editMode = false;
 
     var createFilterFor = function(text) {
         var lowerCaseText = angular.lowercase(text);
@@ -31,108 +30,108 @@ angular.module('app').controller('CustomFilterDialogController', ['$mdDialog', '
         }
     }
 
-    vm.search = function(text) {
-        var results = text ? vm.availablePredicates.filter( createFilterFor(text) ) : vm.availablePredicates;
+    $scope.search = function(text) {
+        var results = text ? $scope.availablePredicates.filter( createFilterFor(text) ) : $scope.availablePredicates;
         return results;
     }
 
-    vm.createFriendlyName = function(javaClass) {
+    $scope.createFriendlyName = function(javaClass) {
         var classParts = javaClass.split('.');
         return classParts[classParts.length - 1];
     }
 
-    vm.getProperties = function() {
-        if (vm.elementType === 'entity') {
-            return schema.getEntityProperties(vm.group);
+    $scope.getProperties = function() {
+        if ($scope.elementType === 'entity') {
+            return schema.getEntityProperties($scope.group);
         } else {
-            return schema.getEdgeProperties(vm.group);
+            return schema.getEdgeProperties($scope.group);
         }
     }
 
-    vm.resetForm = function() {
-        vm.filter = { preAggregation: false };
-        vm.filterForm.$setUntouched(true);
-        vm.filter.availableFunctionParameters = [];
+    $scope.resetForm = function() {
+        $scope.filter = { preAggregation: false };
+        $scope.filterForm.$setUntouched(true);
+        $scope.filter.availableFunctionParameters = [];
     }
 
-    vm.cancel = function() {
+    $scope.cancel = function() {
         $mdDialog.cancel();
     }
 
-    vm.submit = function() {
-        vm.onSubmit(vm.filter, vm.group, vm.elementType);
+    $scope.submit = function() {
+        $scope.onSubmit($scope.filter, $scope.group, $scope.elementType);
         $mdDialog.hide()
     }
 
-    vm.addAnother = function() {
-        vm.onSubmit(vm.filter, vm.group, vm.elementType)
-        vm.resetForm();
+    $scope.addAnother = function() {
+        $scope.onSubmit($scope.filter, $scope.group, $scope.elementType)
+        $scope.resetForm();
     }
 
-    vm.getFlexValue = function() {
+    $scope.getFlexValue = function() {
         var value = 33;
-        if (vm.filter.availableFunctionParameters.length % 2 === 0) {
+        if ($scope.filter.availableFunctionParameters.length % 2 === 0) {
             value = 50;
-        } else if (vm.filter.availableFunctionParameters.length === 1) {
+        } else if ($scope.filter.availableFunctionParameters.length === 1) {
             value = 100;
         }
 
         return value;
     }
 
-    vm.onSelectedPropertyChange = function(editModeInit) {
-        functions.getFunctions(vm.group, vm.filter.property, function(data) {
-            vm.availablePredicates = data;
+    $scope.onSelectedPropertyChange = function(editModeInit) {
+        functions.getFunctions($scope.group, $scope.filter.property, function(data) {
+            $scope.availablePredicates = data;
         });
         if (!editModeInit) {
-            vm.filter.predicate = '';
+            $scope.filter.predicate = '';
         }
     }
 
-    vm.onSelectedPredicateChange = function() {
-        if (vm.filter.predicate === undefined || vm.filter.predicate === '' || vm.filter.predicate === null) {
+    $scope.onSelectedPredicateChange = function() {
+        if ($scope.filter.predicate === undefined || $scope.filter.predicate === '' || $scope.filter.predicate === null) {
             return;
         }
-        functions.getFunctionParameters(vm.filter.predicate, function(data) {
-            vm.filter.availableFunctionParameters = data;
+        functions.getFunctionParameters($scope.filter.predicate, function(data) {
+            $scope.filter.availableFunctionParameters = data;
         });
 
         schema.get().then(function(gafferSchema) {
             var elementDef;
             if (gafferSchema.entities) {
-                elementDef = gafferSchema.entities[vm.group];
+                elementDef = gafferSchema.entities[$scope.group];
             }
             if(!elementDef && gafferSchema.edges) {
-                 elementDef = gafferSchema.edges[vm.group];
+                 elementDef = gafferSchema.edges[$scope.group];
             }
             if (gafferSchema.types) {
-                var propertyClass = gafferSchema.types[elementDef.properties[vm.filter.property]].class;
+                var propertyClass = gafferSchema.types[elementDef.properties[$scope.filter.property]].class;
                 if("java.lang.String" !== propertyClass
                     && "java.lang.Boolean" !== propertyClass
                     && "java.lang.Integer" !== propertyClass) {
-                    vm.filter.propertyClass = propertyClass;
+                    $scope.filter.propertyClass = propertyClass;
                 }
             }
         });
 
-        vm.filter.parameters = {};
+        $scope.filter.parameters = {};
     }
 
-    if (vm.filterForEdit) {
-        vm.filter.preAggregation = vm.filterForEdit.preAggregation;
-        vm.filter.property = vm.filterForEdit.property;
-        vm.onSelectedPropertyChange(true);
-        vm.filter.predicate = vm.filterForEdit.predicate;
-        vm.onSelectedPredicateChange();
-        for(var name in vm.filterForEdit.parameters) {
-            var param = vm.filterForEdit.parameters[name];
+    if ($scope.filterForEdit) {
+        $scope.filter.preAggregation = $scope.filterForEdit.preAggregation;
+        $scope.filter.property = $scope.filterForEdit.property;
+        $scope.onSelectedPropertyChange(true);
+        $scope.filter.predicate = $scope.filterForEdit.predicate;
+        $scope.onSelectedPredicateChange();
+        for(var name in $scope.filterForEdit.parameters) {
+            var param = $scope.filterForEdit.parameters[name];
             if(typeof param === 'string' || param instanceof String) {
-                vm.filter.parameters[name] = param;
+                $scope.filter.parameters[name] = param;
             } else {
-                vm.filter.parameters[name] = JSON.stringify(param)
+                $scope.filter.parameters[name] = JSON.stringify(param)
             }
         }
-        vm.editMode = true;
+        $scope.editMode = true;
     }
 
 

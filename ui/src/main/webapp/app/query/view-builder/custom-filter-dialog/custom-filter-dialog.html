@@ -1,5 +1,4 @@
 <md-dialog>
-
     <md-toolbar>
         <div class="md-toolbar-tools">
             <span>
@@ -9,43 +8,42 @@
     </md-toolbar>
     <md-dialog-content>
         <div class="md-dialog-content">
-            <ng-form name="ctrl.filterForm">
+            <ng-form name="filterForm">
                 <md-input-container layout-fill flex>
                     <label>Select a property</label>
-                    <md-select required ng-model="ctrl.filter.property" ng-change="ctrl.onSelectedPropertyChange()">
-                        <md-option ng-repeat="(name, type) in ctrl.getProperties()" ng-value="name">{{name}}</md-option>
+                    <md-select required ng-model="filter.property" ng-change="onSelectedPropertyChange()">
+                        <md-option ng-repeat="(name, type) in getProperties()" ng-value="name">{{name}}</md-option>
                     </md-select>
                 </md-input-container>
                 <md-autocomplete
                         required
-                        ng-disabled="!ctrl.filter.property"
-                        md-selected-item="ctrl.filter.predicate"
-                        md-selected-item-change="ctrl.onSelectedPredicateChange()"
-                        md-search-text="ctrl.predicateText"
+                        ng-disabled="!filter.property"
+                        md-selected-item="filter.predicate"
+                        md-selected-item-change="onSelectedPredicateChange()"
+                        md-search-text="predicateText"
                         md-min-length="0"
-                        md-items="predicate in ctrl.search(ctrl.predicateText)"
-                        md-item-text="ctrl.createFriendlyName(predicate)"
+                        md-items="predicate in search(predicateText)"
+                        md-item-text="createFriendlyName(predicate)"
                         md-floating-label="Select Filter"
                         md-require-match
                         md-select-on-focus
                         md-autoselect>
                     <md-item-template>
-                        <span md-highlight-text="ctrl.predicateText" md-highlight-flags="^i">{{ctrl.createFriendlyName(predicate)}}</span>
+                        <span md-highlight-text="predicateText" md-highlight-flags="^i">{{createFriendlyName(predicate)}}</span>
                     </md-item-template>
                     <md-not-found>
-                        No predicates matching {{ctrl.predicateText}} were found.
+                        No predicates matching {{predicateText}} were found.
                     </md-not-found>
-
                 </md-autocomplete>
                 <div layout="row" layout-wrap>
-                    <md-input-container ng-repeat="param in ctrl.filter.availableFunctionParameters" layout-fill flex="{{ctrl.getFlexValue()}}">
+                    <md-input-container ng-repeat="param in filter.availableFunctionParameters" layout-fill flex="{{getFlexValue()}}">
                         <label>{{param}}</label>
                         <input type="text"
-                               ng-model="ctrl.filter.parameters[param]">
+                               ng-model="filter.parameters[param]">
                     </md-input-container>
                 </div>
                 <p class="md-body-1">Apply filter before or after results are summarised?</p>
-                <md-radio-group layout="row" ng-model="ctrl.filter.preAggregation">
+                <md-radio-group layout="row" ng-model="filter.preAggregation">
                     <md-radio-button ng-value="true" aria-label="before">Before</md-radio-button>
                     <md-radio-button ng-value="false" aria-label="after">After</md-radio-button>
                 </md-radio-group>
@@ -53,9 +51,9 @@
         </div>
     </md-dialog-content>
     <md-dialog-actions layout="row" layout-align="end">
-        <md-button ng-click="ctrl.cancel()">Cancel</md-button>
-        <md-button ng-click="ctrl.resetForm()">Clear</md-button>
-        <md-button ng-if="!ctrl.editMode" ng-disabled="ctrl.filterForm.$invalid" ng-click="ctrl.addAnother()">Add Another</md-button>
-        <md-button ng-disabled="ctrl.filterForm.$invalid" ng-click="ctrl.submit()" class="md-primary">Submit</md-button>
+        <md-button ng-click="cancel()">Cancel</md-button>
+        <md-button ng-click="resetForm()">Clear</md-button>
+        <md-button ng-if="!editMode" ng-disabled="filterForm.$invalid" ng-click="addAnother()">Add Another</md-button>
+        <md-button ng-disabled="filterForm.$invalid" ng-click="submit()" class="md-primary">Submit</md-button>
     </md-dialog-actions>
 </md-dialog>
