@@ -37,7 +37,6 @@ KEYNAME=""
 # Usually used to allow SSH access to the cluster from your IP address
 EXTRA_SECURITY_GROUPS=""
 
-EMR_VERSION="emr-5.7.0"
 EMR_INSTANCE_TYPE="m3.xlarge"
 EMR_INSTANCE_COUNT=3
 WEB_INSTANCE_TYPE="t2.small"
@@ -67,7 +66,6 @@ aws cloudformation create-stack \
 	--parameters \
 		ParameterKey=GafferVersion,ParameterValue=$GAFFER_VERSION \
 		ParameterKey=GafferToolsVersion,ParameterValue=$GAFFER_TOOLS_VERSION \
-		ParameterKey=EmrRelease,ParameterValue=$EMR_VERSION \
 		ParameterKey=EmrInstanceType,ParameterValue=$EMR_INSTANCE_TYPE \
 		ParameterKey=EmrCoreInstanceCount,ParameterValue=$EMR_INSTANCE_COUNT \
 		ParameterKey=WebInstanceType,ParameterValue=$WEB_INSTANCE_TYPE \

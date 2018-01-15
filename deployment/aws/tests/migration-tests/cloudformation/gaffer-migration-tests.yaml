@@ -33,7 +33,7 @@ Parameters:
 
   EmrRelease:
     Type: String
-    Default: emr-5.7.0
+    Default: emr-5.11.0
     AllowedPattern: "emr-\\d+\\.\\d+\\.\\d+"
     ConstraintDescription: Please select a valid EMR release
 
@@ -78,6 +78,11 @@ Parameters:
     MinLength: 1
     Description: Specify the type of instance to be used to deploy the Gaffer REST API and Web UI
 
+  TestReportSnsTopic:
+    Type: String
+    Default: ""
+    Description: The ARN of a SNS Topic that a notification should be sent to with the results of the migration tests
+
 Metadata:
   AWS::CloudFormation::Interface:
     ParameterGroups:
@@ -106,6 +111,14 @@ Metadata:
           - SubnetId
           - KeyName
           - ExtraSecurityGroups
+      - Label:
+          default: Test Config
+        Parameters:
+          - TestReportSnsTopic
+
+Conditions:
+
+  TestReportEnabled: !Not [!Equals [!Ref TestReportSnsTopic, ""]]
 
 Resources:
 
@@ -125,6 +138,7 @@ Resources:
         ExtraSecurityGroups: !Join [",", Ref: ExtraSecurityGroups]
         KeyName: !Ref KeyName
         WebInstanceType: !Ref WebInstanceType
+        TestReportSnsTopic: !Ref TestReportSnsTopic
 
   ###############################################
   ## EMR step script to upgrade version of Gaffer
@@ -313,6 +327,12 @@ Resources:
           - !Sub ${GafferWebServer.Outputs.PublicDNS}
           - "-p"
           - 80
+          - "-s"
+          - !If [TestReportEnabled, !Ref TestReportSnsTopic, "none"]
+          - "--stack-id"
+          - !Ref "AWS::StackName"
+          - "-r"
+          - "post-migration-system-tests"
           - "-w"
           - !Ref WaitForSystemTestsHandler
       ActionOnFailure: CANCEL_AND_WAIT
