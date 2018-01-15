@@ -102,24 +102,6 @@ angular.module('app').controller('CustomFilterDialogController', ['$scope', '$md
             $scope.filter.availableFunctionParameters = data;
         });
 
-        schema.get().then(function(gafferSchema) {
-            var elementDef;
-            if (gafferSchema.entities) {
-                elementDef = gafferSchema.entities[$scope.group];
-            }
-            if(!elementDef && gafferSchema.edges) {
-                 elementDef = gafferSchema.edges[$scope.group];
-            }
-            if (gafferSchema.types) {
-                var propertyClass = gafferSchema.types[elementDef.properties[$scope.filter.property]].class;
-                if("java.lang.String" !== propertyClass
-                    && "java.lang.Boolean" !== propertyClass
-                    && "java.lang.Integer" !== propertyClass) {
-                    $scope.filter.propertyClass = propertyClass;
-                }
-            }
-        });
-
         $scope.filter.parameters = {};
     }
 
