@@ -95,6 +95,7 @@ function ViewBuilderController(view, graph, common, schema, functions, events, t
                 onSubmit: replaceFilterFunction,
                 filterForEdit: filterForEdit
             },
+            bindToController: true,
             clickOutsideToClose: false
         });
     }
@@ -130,6 +131,7 @@ function ViewBuilderController(view, graph, common, schema, functions, events, t
                 elementType: elementType,
                 onSubmit: addFilterFunction
             },
+            bindToController: true,
             clickOutsideToClose: false,
             targetEvent: ev
         });

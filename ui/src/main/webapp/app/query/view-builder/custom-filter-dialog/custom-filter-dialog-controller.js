@@ -20,8 +20,15 @@ angular.module('app').controller('CustomFilterDialogController', ['$scope', '$md
 
     $scope.filter = { preAggregation: false }
     $scope.availablePredicates;
+    $scope.availableProperties = [];
     $scope.predicateText;
     $scope.editMode = false;
+
+    $scope.elementType = this.elementType;
+    $scope.group = this.group;
+    $scope.filterForEdit = this.filterForEdit;
+    $scope.onSubmit = this.onSubmit;
+
 
     var createFilterFor = function(text) {
         var lowerCaseText = angular.lowercase(text);
@@ -43,15 +50,14 @@ angular.module('app').controller('CustomFilterDialogController', ['$scope', '$md
     $scope.getProperties = function() {
         if ($scope.elementType === 'entity') {
             return schema.getEntityProperties($scope.group);
-        } else {
+        } else if ($scope.elementType === 'edge') {
             return schema.getEdgeProperties($scope.group);
-        }
+        } else throw 'Element type can be "edge" or "entity" but not ' + JSON.stringify($scope.elementType)
     }
 
     $scope.resetForm = function() {
         $scope.filter = { preAggregation: false };
         $scope.filterForm.$setUntouched(true);
-        $scope.filter.availableFunctionParameters = [];
     }
 
     $scope.cancel = function() {
@@ -70,7 +76,7 @@ angular.module('app').controller('CustomFilterDialogController', ['$scope', '$md
 
     $scope.getFlexValue = function() {
         var value = 33;
-        if ($scope.filter.availableFunctionParameters.length % 2 === 0) {
+        if ($scope.filter.availableFunctionParameters.length === 2) {
             value = 50;
         } else if ($scope.filter.availableFunctionParameters.length === 1) {
             value = 100;
@@ -133,6 +139,5 @@ angular.module('app').controller('CustomFilterDialogController', ['$scope', '$md
         }
         $scope.editMode = true;
     }
-
 
 }]);
