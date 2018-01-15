@@ -29,6 +29,14 @@ Parameters:
     MinValue: 1
     Description: The number of Accumulo Tablet Servers that should be deployed onto each YARN Node
 
+  ClusterUsage:
+    Type: Number
+    Default: 85
+    MinValue: 1
+    MaxValue: 100
+    Description: The proportion of the available cluster resources that should be assigned to Accumulo, specified as a percentage. If you plan to deploy other workloads (e.g. MR, Spark) on the EMR cluster then you should alter this parameter so that there will be resources available to them.
+    ConstraintDescription: Must be between 1% and 100%
+
   EmrRelease:
     Type: String
     Default: emr-5.11.0
@@ -118,6 +126,7 @@ Metadata:
           - UserName
           - AccumuloVisibilities
           - TabletServersPerYarnNode
+          - ClusterUsage
       - Label:
           default: EMR Config
         Parameters:
@@ -151,6 +160,7 @@ Resources:
         GafferInstanceName: !Ref GafferInstanceName
         TabletServersPerYarnNode: !Ref TabletServersPerYarnNode
         MavenRepoTarball: !Ref MavenRepoTarball
+        ClusterUsage: !Ref ClusterUsage
 
   GafferUser:
     Type: AWS::CloudFormation::Stack

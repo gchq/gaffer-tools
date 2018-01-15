@@ -41,6 +41,14 @@ Parameters:
     MinValue: 0
     Description: The number of (core) instances to deploy as part of the EMR cluster
 
+  ClusterUsage:
+    Type: Number
+    Default: 85
+    MinValue: 1
+    MaxValue: 100
+    Description: The proportion of the available cluster resources that should be assigned to Accumulo, specified as a percentage. If you plan to deploy other workloads (e.g. MR, Spark) on the EMR cluster then you should alter this parameter so that there will be resources available to them.
+    ConstraintDescription: Must be between 1% and 100%
+
   VpcId:
     Type: AWS::EC2::VPC::Id
     Description: The VPC to deploy infrastructure into
@@ -97,6 +105,7 @@ Metadata:
           - KeyName
           - ExtraSecurityGroups
           - MavenRepoTarball
+          - ClusterUsage
       - Label:
           default: Test Config
         Parameters:
@@ -126,6 +135,7 @@ Resources:
         WebInstanceType: !Ref WebInstanceType
         RoadTrafficDataUrl: "https://raw.githubusercontent.com/gchq/Gaffer/master/example/road-traffic/road-traffic-demo/src/main/resources/roadTrafficSampleData.csv"
         MavenRepoTarball: !Ref MavenRepoTarball
+        ClusterUsage: !Ref ClusterUsage
 
   EmrSnsPolicy:
     Condition: TestReportEnabled
