@@ -69,6 +69,13 @@ Parameters:
     Default: ""
     Description: The ARN of a SNS Topic that a notification should be sent to with the results of the system tests
 
+  MavenRepoTarball:
+    Type: String
+    Default: ""
+    Description: "(Optional) The path to a tarball, stored in S3, that should be used to bootstrap local Maven caches. Should be specified as: <bucketName>/<filename>.tar.gz"
+    AllowedPattern: "|(\\S+\\.tar\\.gz)"
+    ConstraintDescription: "Please specify this as <bucketName>/<filename>.tar.gz"
+
 Metadata:
   AWS::CloudFormation::Interface:
     ParameterGroups:
@@ -89,6 +96,7 @@ Metadata:
           - SubnetId
           - KeyName
           - ExtraSecurityGroups
+          - MavenRepoTarball
       - Label:
           default: Test Config
         Parameters:
@@ -117,6 +125,7 @@ Resources:
         KeyName: !Ref KeyName
         WebInstanceType: !Ref WebInstanceType
         RoadTrafficDataUrl: "https://raw.githubusercontent.com/gchq/Gaffer/master/example/road-traffic/road-traffic-demo/src/main/resources/roadTrafficSampleData.csv"
+        MavenRepoTarball: !Ref MavenRepoTarball
 
   EmrSnsPolicy:
     Condition: TestReportEnabled

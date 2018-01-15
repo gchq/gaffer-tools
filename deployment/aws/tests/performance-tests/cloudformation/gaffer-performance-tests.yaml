@@ -157,6 +157,13 @@ Parameters:
     MinValue: 1
     Description: The maximum number of threads that the Data Generators should use to write data to the tablet servers
 
+  MavenRepoTarball:
+    Type: String
+    Default: ""
+    Description: "(Optional) The path to a tarball, stored in S3, that should be used to bootstrap local Maven caches. Should be specified as: <bucketName>/<filename>.tar.gz"
+    AllowedPattern: "|(\\S+\\.tar\\.gz)"
+    ConstraintDescription: "Please specify this as <bucketName>/<filename>.tar.gz"
+
 Metadata:
 
   AWS::CloudFormation::Interface:
@@ -174,6 +181,7 @@ Metadata:
           - EmrCoreInstanceCount
           - EmrInstanceType
           - TabletServersPerYarnNode
+          - MavenRepoTarball
       - Label:
           default: Data Generation Config
         Parameters:
@@ -267,6 +275,10 @@ Mappings:
     sa-east-1:
       64ebs: ami-87dab1eb
 
+Conditions:
+
+  BootstrapLocalMavenRepo: !Not [!Equals [!Ref MavenRepoTarball, ""]]
+
 Resources:
 
   GafferWithUser:
@@ -285,6 +297,7 @@ Resources:
         ExtraEmrSecurityGroups: !Join [",", Ref: ExtraSecurityGroups]
         KeyName: !Ref KeyName
         TabletServersPerYarnNode: !Ref TabletServersPerYarnNode
+        MavenRepoTarball: !Ref MavenRepoTarball
 
   # Security group that all generators (data and query) will be a member of
   GeneratorSecurityGroup:
@@ -431,57 +444,62 @@ Resources:
                 - !Ref GeneratorSecurityGroup
       UserData:
         Fn::Base64:
-          !Sub |
-            #!/bin/bash -xe
+          !Sub
+            - |
+              #!/bin/bash -xe
 
-            # Common Config
-            export GENERATOR_TYPE="data"
-            export GAFFER_TOOLS_VERSION="${GafferToolsVersion}"
-            export GAFFER_GRAPH_ID="gaffer_performance_test"
+              # Common Config
+              export GENERATOR_TYPE="data"
+              export GAFFER_TOOLS_VERSION="${GafferToolsVersion}"
+              export GAFFER_GRAPH_ID="gaffer_performance_test"
 
-            export EMR_JOB_FLOW_ID="${GafferWithUser.Outputs.EmrClusterId}"
-            export ACCUMULO_INSTANCE="${GafferWithUser.Outputs.AccumuloInstanceName}"
-            export ACCUMULO_USERNAME="${GafferWithUser.Outputs.UserName}"
-            export PASSWORD_PARAM="${GafferWithUser.Outputs.PasswordParameter}"
-            export ZOOKEEPERS="${GafferWithUser.Outputs.EmrMasterPublicDNS}"
-            export AWS_REGION="${AWS::Region}"
+              export EMR_JOB_FLOW_ID="${GafferWithUser.Outputs.EmrClusterId}"
+              export ACCUMULO_INSTANCE="${GafferWithUser.Outputs.AccumuloInstanceName}"
+              export ACCUMULO_USERNAME="${GafferWithUser.Outputs.UserName}"
+              export PASSWORD_PARAM="${GafferWithUser.Outputs.PasswordParameter}"
+              export ZOOKEEPERS="${GafferWithUser.Outputs.EmrMasterPublicDNS}"
+              export AWS_REGION="${AWS::Region}"
 
-            export RMAT_MAX_NODE_ID="${RmatMaxNodeId}"
+              export RMAT_MAX_NODE_ID="${RmatMaxNodeId}"
 
-            # Data Generation & Ingest Config
-            export INGEST_NUM_ELEMENTS="${IngestElementCount}"
-            export INGEST_INCLUDE_ENTITIES="${IngestIncludeEntities}"
-            export BATCH_SIZE="${IngestBatchSize}"
-            export INGEST_MAX_BUFFER_BYTES="${IngestMaxBufferBytes}"
-            export INGEST_MAX_TIMEOUT_MILLIS="${IngestMaxTimeout}"
-            export INGEST_NUM_THREADS="${IngestThreadCount}"
+              export MVN_REPO="${MavenRepoTarball}"
 
-            # Query Generation Config
-            export QUERY_NUM_SEEDS="${QuerySeedCount}"
+              # Data Generation & Ingest Config
+              export INGEST_NUM_ELEMENTS="${IngestElementCount}"
+              export INGEST_INCLUDE_ENTITIES="${IngestIncludeEntities}"
+              export BATCH_SIZE="${IngestBatchSize}"
+              export INGEST_MAX_BUFFER_BYTES="${IngestMaxBufferBytes}"
+              export INGEST_MAX_TIMEOUT_MILLIS="${IngestMaxTimeout}"
+              export INGEST_NUM_THREADS="${IngestThreadCount}"
 
-            function awsSignal {
-              # Wait a bit to give developers a chance to SSH in and view error logs
-              sleep 300
+              # Query Generation Config
+              export QUERY_NUM_SEEDS="${QuerySeedCount}"
 
-              # Try to tell AWS EC2 AutoScaling service that this instance is broken and it should provision a new one
-              INSTANCE_ID=$(curl http://169.254.169.254/latest/meta-data/instance-id)
-              if [ "$INSTANCE_ID" != "" ]; then
-                /usr/bin/aws autoscaling set-instance-health --health-status "Unhealthy" --instance-id "$INSTANCE_ID" --region "${AWS::Region}"
+              function awsSignal {
+                # Wait a bit to give developers a chance to SSH in and view error logs
+                sleep 300
+
+                # Try to tell AWS EC2 AutoScaling service that this instance is broken and it should provision a new one
+                INSTANCE_ID=$(curl http://169.254.169.254/latest/meta-data/instance-id)
+                if [ "$INSTANCE_ID" != "" ]; then
+                  /usr/bin/aws autoscaling set-instance-health --health-status "Unhealthy" --instance-id "$INSTANCE_ID" --region "${AWS::Region}"
+                fi
+
+                # Shutdown the instance. If the above command (which directly tells the AutoScaling service that this instance
+                # is broken) fails, then shutting down the instance will cause the status checks to fail which the AutoScaling
+                # service will pick up on - it just takes it a little longer (~5mins vs. 30secs)
+                /sbin/shutdown now
+              }
+              trap awsSignal EXIT
+
+              if ! curl -fL -o ./script "https://raw.githubusercontent.com/gchq/gaffer-tools/gaffer-tools-${GafferToolsVersion}/deployment/aws/tests/performance-tests/ec2-userdata-scripts/run-gaffer-random-generator.sh"; then
+                curl -fL -o ./script "https://raw.githubusercontent.com/gchq/gaffer-tools/${GafferToolsVersion}/deployment/aws/tests/performance-tests/ec2-userdata-scripts/run-gaffer-random-generator.sh"
               fi
 
-              # Shutdown the instance. If the above command (which directly tells the AutoScaling service that this instance
-              # is broken) fails, then shutting down the instance will cause the status checks to fail which the AutoScaling
-              # service will pick up on - it just takes it a little longer (~5mins vs. 30secs)
-              /sbin/shutdown now
-            }
-            trap awsSignal EXIT
+              chmod +x ./script
+              ./script
 
-            if ! curl -fL -o ./script "https://raw.githubusercontent.com/gchq/gaffer-tools/gaffer-tools-${GafferToolsVersion}/deployment/aws/tests/performance-tests/ec2-userdata-scripts/run-gaffer-random-generator.sh"; then
-              curl -fL -o ./script "https://raw.githubusercontent.com/gchq/gaffer-tools/${GafferToolsVersion}/deployment/aws/tests/performance-tests/ec2-userdata-scripts/run-gaffer-random-generator.sh"
-            fi
-
-            chmod +x ./script
-            ./script
+            - MavenTarballAccessDependency: !If [BootstrapLocalMavenRepo, !Ref GeneratorS3AccessMavenTarballPolicy, ""]
 
   ###################
   ## Query Generators
@@ -524,57 +542,62 @@ Resources:
                 - !Ref GeneratorSecurityGroup
       UserData:
         Fn::Base64:
-          !Sub |
-            #!/bin/bash -xe
+          !Sub
+            - |
+              #!/bin/bash -xe
 
-            # Common Config
-            export GENERATOR_TYPE="query"
-            export GAFFER_TOOLS_VERSION="${GafferToolsVersion}"
-            export GAFFER_GRAPH_ID="gaffer_performance_test"
+              # Common Config
+              export GENERATOR_TYPE="query"
+              export GAFFER_TOOLS_VERSION="${GafferToolsVersion}"
+              export GAFFER_GRAPH_ID="gaffer_performance_test"
 
-            export EMR_JOB_FLOW_ID="${GafferWithUser.Outputs.EmrClusterId}"
-            export ACCUMULO_INSTANCE="${GafferWithUser.Outputs.AccumuloInstanceName}"
-            export ACCUMULO_USERNAME="${GafferWithUser.Outputs.UserName}"
-            export PASSWORD_PARAM="${GafferWithUser.Outputs.PasswordParameter}"
-            export ZOOKEEPERS="${GafferWithUser.Outputs.EmrMasterPublicDNS}"
-            export AWS_REGION="${AWS::Region}"
+              export EMR_JOB_FLOW_ID="${GafferWithUser.Outputs.EmrClusterId}"
+              export ACCUMULO_INSTANCE="${GafferWithUser.Outputs.AccumuloInstanceName}"
+              export ACCUMULO_USERNAME="${GafferWithUser.Outputs.UserName}"
+              export PASSWORD_PARAM="${GafferWithUser.Outputs.PasswordParameter}"
+              export ZOOKEEPERS="${GafferWithUser.Outputs.EmrMasterPublicDNS}"
+              export AWS_REGION="${AWS::Region}"
 
-            export RMAT_MAX_NODE_ID="${RmatMaxNodeId}"
+              export RMAT_MAX_NODE_ID="${RmatMaxNodeId}"
 
-            # Data Generation & Ingest Config
-            export INGEST_NUM_ELEMENTS="${IngestElementCount}"
-            export INGEST_INCLUDE_ENTITIES="${IngestIncludeEntities}"
-            export INGEST_MAX_BUFFER_BYTES="${IngestMaxBufferBytes}"
-            export INGEST_MAX_TIMEOUT_MILLIS="${IngestMaxTimeout}"
-            export INGEST_NUM_THREADS="${IngestThreadCount}"
+              export MVN_REPO="${MavenRepoTarball}"
 
-            # Query Generation Config
-            export QUERY_NUM_SEEDS="${QuerySeedCount}"
-            export BATCH_SIZE="${QueryBatchSize}"
+              # Data Generation & Ingest Config
+              export INGEST_NUM_ELEMENTS="${IngestElementCount}"
+              export INGEST_INCLUDE_ENTITIES="${IngestIncludeEntities}"
+              export INGEST_MAX_BUFFER_BYTES="${IngestMaxBufferBytes}"
+              export INGEST_MAX_TIMEOUT_MILLIS="${IngestMaxTimeout}"
+              export INGEST_NUM_THREADS="${IngestThreadCount}"
 
-            function awsSignal {
-              # Wait a bit to give developers a chance to SSH in and view error logs
-              sleep 300
+              # Query Generation Config
+              export QUERY_NUM_SEEDS="${QuerySeedCount}"
+              export BATCH_SIZE="${QueryBatchSize}"
 
-              # Try to tell AWS EC2 AutoScaling service that this instance is broken and it should provision a new one
-              INSTANCE_ID=$(curl http://169.254.169.254/latest/meta-data/instance-id)
-              if [ "$INSTANCE_ID" != "" ]; then
-                /usr/bin/aws autoscaling set-instance-health --health-status "Unhealthy" --instance-id "$INSTANCE_ID" --region "${AWS::Region}"
+              function awsSignal {
+                # Wait a bit to give developers a chance to SSH in and view error logs
+                sleep 300
+
+                # Try to tell AWS EC2 AutoScaling service that this instance is broken and it should provision a new one
+                INSTANCE_ID=$(curl http://169.254.169.254/latest/meta-data/instance-id)
+                if [ "$INSTANCE_ID" != "" ]; then
+                  /usr/bin/aws autoscaling set-instance-health --health-status "Unhealthy" --instance-id "$INSTANCE_ID" --region "${AWS::Region}"
+                fi
+
+                # Shutdown the instance. If the above command (which directly tells the AutoScaling service that this instance
+                # is broken) fails, then shutting down the instance will cause the status checks to fail which the AutoScaling
+                # service will pick up on - it just takes it a little longer (~5mins vs. 30secs)
+                /sbin/shutdown now
+              }
+              trap awsSignal EXIT
+
+              if ! curl -fL -o ./script "https://raw.githubusercontent.com/gchq/gaffer-tools/gaffer-tools-${GafferToolsVersion}/deployment/aws/tests/performance-tests/ec2-userdata-scripts/run-gaffer-random-generator.sh"; then
+                curl -fL -o ./script "https://raw.githubusercontent.com/gchq/gaffer-tools/${GafferToolsVersion}/deployment/aws/tests/performance-tests/ec2-userdata-scripts/run-gaffer-random-generator.sh"
               fi
 
-              # Shutdown the instance. If the above command (which directly tells the AutoScaling service that this instance
-              # is broken) fails, then shutting down the instance will cause the status checks to fail which the AutoScaling
-              # service will pick up on - it just takes it a little longer (~5mins vs. 30secs)
-              /sbin/shutdown now
-            }
-            trap awsSignal EXIT
+              chmod +x ./script
+              ./script
 
-            if ! curl -fL -o ./script "https://raw.githubusercontent.com/gchq/gaffer-tools/gaffer-tools-${GafferToolsVersion}/deployment/aws/tests/performance-tests/ec2-userdata-scripts/run-gaffer-random-generator.sh"; then
-              curl -fL -o ./script "https://raw.githubusercontent.com/gchq/gaffer-tools/${GafferToolsVersion}/deployment/aws/tests/performance-tests/ec2-userdata-scripts/run-gaffer-random-generator.sh"
-            fi
-
-            chmod +x ./script
-            ./script
+            - MavenTarballAccessDependency: !If [BootstrapLocalMavenRepo, !Ref GeneratorS3AccessMavenTarballPolicy, ""]
 
   ###############################
   ## Common Generator Permissions
@@ -638,6 +661,20 @@ Resources:
                 Action:
                   - ssm:GetParameters
 
+  GeneratorS3AccessMavenTarballPolicy:
+    Condition: BootstrapLocalMavenRepo
+    Type: AWS::IAM::Policy
+    Properties:
+      Roles:
+        - !Ref GeneratorRole
+      PolicyName: !Join ["-", [Ref: "AWS::StackName", "mvn-tar-access"]]
+      PolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Resource: !Join ["", ["arn:aws:s3:::", !Ref MavenRepoTarball]]
+            Action:
+              - s3:GetObject
 
   ##################################
   ## CloudWatch Monitoring Dashboard

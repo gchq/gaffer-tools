@@ -63,6 +63,13 @@ Parameters:
     Default: ""
     Description: The ARN of a SNS Topic that a notification should be sent to with the results of the integration tests
 
+  MavenRepoTarball:
+    Type: String
+    Default: ""
+    Description: "(Optional) The path to a tarball, stored in S3, that should be used to bootstrap local Maven caches. Should be specified as: <bucketName>/<filename>.tar.gz"
+    AllowedPattern: "|(\\S+\\.tar\\.gz)"
+    ConstraintDescription: "Please specify this as <bucketName>/<filename>.tar.gz"
+
 Metadata:
 
   AWS::CloudFormation::Interface:
@@ -83,6 +90,7 @@ Metadata:
           - SubnetId
           - KeyName
           - ExtraSecurityGroups
+          - MavenRepoTarball
       - Label:
           default: Test Config
         Parameters:
@@ -112,6 +120,7 @@ Resources:
         GafferInstanceName: "gaffer-test"
         UserName: "gaffer_test"
         AccumuloVisibilities: "vis1,vis2,publicVisibility,privateVisibility,public"
+        MavenRepoTarball: !Ref MavenRepoTarball
 
   EmrSnsPolicy:
     Condition: TestReportEnabled
