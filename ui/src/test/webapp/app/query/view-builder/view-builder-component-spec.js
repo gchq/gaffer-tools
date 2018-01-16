@@ -1,264 +1,210 @@
-//describe('The View Builder Component', function() {
-//    beforeEach(module('app'));
-//
-//     beforeEach(module(function($provide) {
-//        $provide.factory('config', function($q) {
-//            var get = function() {
-//                return $q.when({});
-//            }
-//
-//            return {
-//                get: get
-//            }
-//        });
-//
-//        $provide.factory('schema', function($q) {
-//            return {
-//                get: function() {
-//                    return $q.when({});
-//                }
-//            }
-//        });
-//    }));
-//
-//    describe('The Controller', function() {
-//        var $componentController;
-//        var scope;
-//
-//        beforeEach(inject(function(_$componentController_, _$rootScope_) {
-//            $componentController = _$componentController_;
-//            scope = _$rootScope_.$new();
-//        }));
-//
-//        it('should exist', function() {
-//            var ctrl = $componentController('viewBuilder');
-//            expect(ctrl).toBeDefined();
-//        });
-//
-//        describe('When created', function() {
-//
-//            var graph, queryPage;
-//
-//            beforeEach(inject(function(_graph_, _queryPage_) {
-//                graph = _graph_;
-//                queryPage = _queryPage_;
-//            }));
-//
-//            it('should use the graph service to set the initial value of the related entities', function() {
-//                spyOn(graph, 'getRelatedEntities').and.returnValue('test');
-//                var ctrl = $componentController('viewBuilder');
-//                expect(ctrl.relatedEntities).toEqual('test')
-//            });
-//
-//            it('should use the graph service to set the initial value of the related edges', function() {
-//                spyOn(graph, 'getRelatedEdges').and.returnValue('test');
-//                var ctrl = $componentController('viewBuilder');
-//                expect(ctrl.relatedEdges).toEqual('test');
-//            });
-//        });
-//
-//        describe('when initialised', function() {
-//            var events;
-//            var ctrl;
-//
-//            beforeEach(inject(function(_events_) {
-//                events = _events_;
-//            }));
-//
-//            beforeEach(function() {
-//                ctrl = $componentController('viewBuilder');
-//            });
-//
-//            beforeEach(function() {
-//                spyOn(events, 'subscribe');
-//            });
-//
-//            beforeEach(function() {
-//                ctrl.$onInit();
-//            });
-//
-//            it('should subscribe to the relatedEntitiesUpdate event', function() {
-//                expect(events.subscribe).toHaveBeenCalled();
-//                expect(events.subscribe.calls.first().args[0]).toEqual('relatedEntitiesUpdate');
-//            });
-//
-//            it('should subscribe to the relatedEdgesUpdate event', function() {
-//                expect(events.subscribe).toHaveBeenCalled();
-//                expect(events.subscribe.calls.argsFor(1)[0]).toEqual('relatedEdgesUpdate');
-//            });
-//
-//            describe('when destroyed', function() {
-//                var events;
-//                var ctrl;
-//
-//                beforeEach(inject(function(_events_) {
-//                    events = _events_;
-//                }));
-//
-//                beforeEach(function() {
-//                    ctrl = $componentController('viewBuilder');
-//                    ctrl.$onInit();
-//                });
-//
-//                beforeEach(function() {
-//                    spyOn(events, 'unsubscribe');
-//                });
-//
-//                beforeEach(function() {
-//                    ctrl.$onDestroy();
-//                });
-//
-//                it('should unsubscribe to the relatedEntitiesUpdate event', function() {
-//                    expect(events.unsubscribe).toHaveBeenCalled();
-//                    expect(events.unsubscribe.calls.first().args[0]).toEqual('relatedEntitiesUpdate');
-//                });
-//
-//                it('should unsubscribe to the relatedEdgesUpdate event', function() {
-//                    expect(events.unsubscribe).toHaveBeenCalled();
-//                    expect(events.unsubscribe.calls.argsFor(1)[0]).toEqual('relatedEdgesUpdate');
-//                });
-//            });
-//        });
-//
-//        describe('When the user adds a filter function', function() {
-//
-//            var ctrl;
-//
-//            beforeEach(function() {
-//                ctrl = $componentController('viewBuilder');
-//            })
-//
-//            it('should populate the expandElementContent if it is empty', function() {
-//                var expandedElementContent = {};
-//
-//                ctrl.addFilterFunction(expandedElementContent, 'MyElementGroup', true);
-//
-//                expect(expandedElementContent).toEqual({
-//                    "MyElementGroup": {
-//                        filters: {
-//                            preAggregation: [
-//                                {}
-//                            ]
-//                        }
-//                    }
-//                })
-//            });
-//        })
-//
-//        describe('When the toggle() function is called', function() {
-//            var ctrl;
-//
-//            beforeEach(function() {
-//                ctrl = $componentController('viewBuilder');
-//            });
-//
-//            it('should add an item to a list if it is not there',  function() {
-//                var list = [1, 2, 3];
-//
-//                ctrl.toggle(4, list);
-//
-//                expect(list).toContain(4);
-//            });
-//
-//            it('should remove an item from a list if it is there', function() {
-//                var list = [1, 2, 3];
-//
-//                ctrl.toggle(3, list);
-//
-//                expect(list).not.toContain(3);
-//            });
-//        });
-//
-//        describe('When the user changes the property', function() {
-//
-//            var functions;
-//            var ctrl;
-//
-//            var group, filter;
-//
-//            beforeEach(inject(function(_functions_) {
-//                functions = _functions_;
-//            }));
-//
-//            beforeEach(function() {
-//                ctrl = $componentController('viewBuilder');
-//            });
-//
-//            beforeEach(function() {
-//                spyOn(functions, 'getFunctions').and.callFake(function(thing, otherThing, callback) {
-//                    callback(['pred1', 'pred2', 'pred3'])
-//                });
-//            });
-//
-//            beforeEach(function() {
-//                group = "test";
-//                filter = {
-//                    property: "prop"
-//                }
-//
-//                ctrl.onSelectedPropertyChange(group, filter)
-//            })
-//
-//            it('should make a call to the function service to get back all the functions available for that property', function() {
-//                expect(functions.getFunctions).toHaveBeenCalledTimes(1)
-//            });
-//
-//            it('should set that availableFunctions of the filter', function() {
-//                expect(filter.availableFunctions).toEqual(['pred1', 'pred2', 'pred3']);
-//            });
-//
-//            it('should initialise the predicate field', function() {
-//                expect(filter.predicate).toEqual('');
-//            })
-//
-//        });
-//
-//        describe('When the user changes the predicate', function() {
-//
-//            var functions;
-//            var ctrl;
-//
-//            var group, filter;
-//
-//            beforeEach(inject(function(_functions_) {
-//                functions = _functions_;
-//            }));
-//
-//            beforeEach(function() {
-//                ctrl = $componentController('viewBuilder', {$scope: scope});
-//            });
-//
-//            beforeEach(function() {
-//                spyOn(functions, 'getFunctionParameters').and.callFake(function(thing, callback) {
-//                    callback(['param1', 'param2', 'param3'])
-//                });
-//            });
-//
-//            beforeEach(function() {
-//                group = "test";
-//                filter = {
-//                    property: "prop",
-//                    predicate: "some.Predicate"
-//                }
-//
-//                ctrl.onSelectedFunctionChange(group, filter)
-//            });
-//
-//            it('should make a call to the getSerialisedFields() method to get back the fields available', function() {
-//                expect(functions.getFunctionParameters).toHaveBeenCalledTimes(1);
-//            });
-//
-//            it('should set the availableFunctionParameters in the filter', function() {
-//                expect(filter.availableFunctionParameters).toEqual(['param1', 'param2', 'param3']);
-//            });
-//
-//            it('should initialise the parameters field', function() {
-//                scope.$digest();
-//                expect(filter.parameters).toEqual({})
-//            })
-//        });
-//
-//
-//
-//    });
-//})
+describe('The View Builder Component', function() {
+    beforeEach(module('app'));
+
+     beforeEach(module(function($provide) {
+        $provide.factory('config', function($q) {
+            var get = function() {
+                return $q.when({});
+            }
+
+            return {
+                get: get
+            }
+        });
+
+        $provide.factory('schema', function($q) {
+            return {
+                get: function() {
+                    return $q.when({});
+                },
+                getEdgeProperties: function(str) {
+                    return undefined;
+                },
+                getEntityProperties: function(str) {
+                    return undefined;
+                }
+            }
+        });
+    }));
+
+    describe('The Controller', function() {
+        var $componentController;
+        var scope;
+
+        beforeEach(inject(function(_$componentController_, _$rootScope_) {
+            $componentController = _$componentController_;
+            scope = _$rootScope_.$new();
+        }));
+
+        it('should exist', function() {
+            var ctrl = $componentController('viewBuilder');
+            expect(ctrl).toBeDefined();
+        });
+
+        describe('When created', function() {
+
+            var view;
+
+            beforeEach(inject(function(_view_) {
+                view = _view_;
+            }));
+
+            it('should use the view service to populate the view edges', function() {
+                spyOn(view, 'getViewEdges').and.returnValue(['my', 'schema', 'groups']);
+                var ctrl = $componentController('viewBuilder');
+                expect(ctrl.viewEdges).toEqual(['my', 'schema', 'groups'])
+            });
+
+            it('should use the view service to populate the view entities', function() {
+                spyOn(view, 'getViewEntities').and.returnValue(['the', 'view', 'groups']);
+                var ctrl = $componentController('viewBuilder');
+                expect(ctrl.viewEntities).toEqual(['the', 'view', 'groups'])
+            });
+
+            it('should use the view service to populate the edge filters', function() {
+                var serviceFilters = {
+                    "group1": { "preAgg": [ "filter1", "filter2"] }
+                }
+                spyOn(view, 'getEdgeFilters').and.returnValue(serviceFilters);
+                var ctrl = $componentController('viewBuilder');
+                expect(ctrl.edgeFilters).toEqual(serviceFilters);
+            });
+
+            it('should use the view service to populate the entity filters', function() {
+                var serviceFilters = {
+                    "group1": { "preAgg": [ "filter1", "filter2"] }
+                }
+                spyOn(view, 'getEntityFilters').and.returnValue(serviceFilters);
+                var ctrl = $componentController('viewBuilder');
+                expect(ctrl.entityFilters).toEqual(serviceFilters);
+            });
+        });
+
+        describe('ctrl.$onInit()', function() {
+
+            var schema;
+            var ctrl;
+            var $q;
+            var toReturn = {};
+
+            beforeEach(inject(function(_schema_, _$q_) {
+                schema = _schema_;
+                $q = _$q_;
+            }));
+
+            beforeEach(function() {
+                spyOn(schema, 'get').and.callFake(function() {
+                    return $q.when(toReturn);
+                })
+            })
+
+            beforeEach(function() {
+                ctrl = $componentController('viewBuilder', {$scope: scope});
+            });
+
+            it('should make a request to the schema service to ensure the schema is loaded', function() {
+                ctrl.$onInit();
+                expect(schema.get).toHaveBeenCalled();
+            });
+
+            it('should set the schema edges in the controller', function() {
+                toReturn = {"edges": "my edge values" };
+                ctrl.$onInit();
+                scope.$digest();
+                expect(ctrl.schemaEdges).toEqual("my edge values");
+            });
+
+            it('should set the schema entities in the controller', function() {
+                toReturn = {"entities": "my entity values" };
+                ctrl.$onInit();
+                scope.$digest();
+                expect(ctrl.schemaEntities).toEqual("my entity values");
+            });
+        });
+
+        describe('ctrl.noMore()', function() {
+
+            var ctrl;
+
+            var schema;
+            var edgesWithProperties = [];
+            var entitiesWithProperties = [];
+
+            beforeEach(inject(function(_schema_) {
+                schema = _schema_;
+            }));
+
+            beforeEach(function() {
+                edgesWithProperties = [];
+                entitiesWithProperties = [];
+            });
+
+            beforeEach(function() {
+                spyOn(schema, 'getEdgeProperties').and.callFake(function(group) {
+                    if (edgesWithProperties.indexOf(group) !== -1) {
+                        return {"prop1": "string"};
+                    };
+                    return undefined;
+                });
+
+                spyOn(schema, 'getEntityProperties').and.callFake(function(group) {
+                    if (entitiesWithProperties.indexOf(group) !== -1) {
+                        return {"prop1": "string"};
+                    };
+                    return undefined;
+                });
+            });
+
+            beforeEach(function() {
+                ctrl = $componentController('viewBuilder');
+            });
+
+            describe('when the input is an edge', function() {
+
+                beforeEach(function() {
+                    ctrl.viewEdges = [ 'edge1', 'edge2', 'edge3'];
+                    edgesWithProperties = ctrl.viewEdges;
+                });
+
+                it('should return true if it is the last edge in the view with properties', function() {
+                    expect(ctrl.noMore('edge3')).toBeTruthy();
+                });
+
+                it('should return true if there are more edges but they don\'t have properties', function() {
+                    edgesWithProperties = ['edge1', 'edge2'];
+                    expect(ctrl.noMore('edge2')).toBeTruthy();
+                });
+
+                it('should return false if it is not the last edge with properties', function() {
+                    expect(ctrl.noMore('edge2')).toBeFalsy();
+                });
+            });
+            describe('when the input is an entity', function() {
+
+                beforeEach(function() {
+                    ctrl.viewEntities = ['entity1', 'entity2', 'entity3']
+                    entitiesWithProperties = ctrl.viewEntities;
+                    ctrl.viewEdges = ['edge1'];
+                });
+
+                it('should return false if there are edges with properties', function() {
+                    edgesWithProperties = ctrl.viewEdges;
+                    expect(ctrl.noMore('entity3')).toBeFalsy();
+                });
+
+                it('should return true if there are more edges but they don\'t have properties and there are no more entities', function() {
+                    expect(ctrl.noMore('entity3')).toBeTruthy();
+                });
+
+                it('should return false if there are more entities with properties', function() {
+                    expect(ctrl.noMore('entity2')).toBeFalsy();
+                });
+
+                it('should return true if there are more entities but they don\'t have properties', function() {
+                    entitiesWithProperties = ['entity1'];
+                    expect(ctrl.noMore('entity1')).toBeTruthy();
+                });
+            });
+        });
+    });
+})

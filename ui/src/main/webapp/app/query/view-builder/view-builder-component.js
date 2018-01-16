@@ -53,7 +53,7 @@ function viewBuilder() {
     }
 }
 
-function ViewBuilderController(view, graph, common, schema, functions, events, types, $mdDialog, $element) {
+function ViewBuilderController(view, graph, common, schema, functions, events, types, $mdDialog) {
     var vm = this;
 
     vm.schemaEntities;
@@ -69,9 +69,9 @@ function ViewBuilderController(view, graph, common, schema, functions, events, t
             vm.schemaEntities = gafferSchema.entities;
         });
 
-        $element.find('.search-box').on('keydown', function(ev) {
+        angular.element(document).find('.search-box').on('keydown', function(ev) {
             ev.stopPropagation();
-        })
+        });
     }
 
     vm.noMore = function(group) {
