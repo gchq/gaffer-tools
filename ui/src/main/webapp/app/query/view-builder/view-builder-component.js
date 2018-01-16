@@ -16,7 +16,34 @@
 
 'use strict';
 
-angular.module('app').component('viewBuilder', viewBuilder());
+var app = angular.module('app');
+
+app.filter('schemaGroupFilter', function() {
+    return function(input, search) {
+        if(!input) {
+            return input;
+        }
+        if (!search) {
+            return input;
+        }
+        var lowercaseSearch = ('' + search).toLowerCase();
+        var result = {};
+
+        angular.forEach(input, function(info, group) {
+            var lowercaseGroup = group.toLowerCase();
+            var lowerCaseDescription = info.description.toLowerCase();
+            if (lowercaseGroup.indexOf(lowercaseSearch) !== -1) {
+                result[group] = info;
+            } else if (lowerCaseDescription.indexOf(lowercaseSearch) !== -1) {
+                result[group] = info;
+            }
+        });
+
+        return result;
+    }
+});
+
+app.component('viewBuilder', viewBuilder());
 
 function viewBuilder() {
     return {
@@ -26,7 +53,7 @@ function viewBuilder() {
     }
 }
 
-function ViewBuilderController(view, graph, common, schema, functions, events, types, $mdDialog) {
+function ViewBuilderController(view, graph, common, schema, functions, events, types, $mdDialog, $element) {
     var vm = this;
 
     vm.schemaEntities;
@@ -38,16 +65,25 @@ function ViewBuilderController(view, graph, common, schema, functions, events, t
 
     vm.$onInit = function() {
         schema.get().then(function(gafferSchema) {
-            vm.schemaEdges = Object.keys(gafferSchema.edges);
-            vm.schemaEntities = Object.keys(gafferSchema.entities);
+            vm.schemaEdges = gafferSchema.edges;
+            vm.schemaEntities = gafferSchema.entities;
         });
+
+        $element.find('.search-box').on('keydown', function(ev) {
+            ev.stopPropagation();
+        })
+    }
+
+    vm.createViewElementsLabel = function(elements, type) { // type is 'entities' or 'elements'
+        if (!elements || elements.length === 0) {
+            return 'Only include these ' + type;
+        } else {
+            return elements.join(', ');
+        }
     }
 
     vm.createFilterLabel = function(filter, preAggregation) {
         var label = filter.selection[0] + ' ';
-
-
-
         var classParts = filter.predicate.class.split('.');
         var simpleName = classParts[classParts.length - 1];
         label += simpleName;
@@ -140,9 +176,14 @@ function ViewBuilderController(view, graph, common, schema, functions, events, t
     vm.getEntityProperties = schema.getEntityProperties;
     vm.getEdgeProperties = schema.getEdgeProperties;
 
-    vm.onElementGroupChange = function() {
-        view.setViewEdges(vm.viewEdges);
-        view.setViewEntities(vm.viewEntities);
+    vm.onElementGroupChange = function(elementType) {
+        if(elementType === 'entity') {
+            view.setViewEntities(vm.viewEntities);
+            vm.entitySearchTerm = '';
+        } else if (elementType === 'edge') {
+            view.setViewEdges(vm.viewEdges);
+            vm.edgeSearchTerm = '';
+        }
     }
 
     var generateFilterFunction = function(filter) {
