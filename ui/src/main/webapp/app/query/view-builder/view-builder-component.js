@@ -74,6 +74,37 @@ function ViewBuilderController(view, graph, common, schema, functions, events, t
         })
     }
 
+    vm.noMore = function(group) {
+        var validEdges = [];
+
+        for (var i in vm.viewEdges) {
+            var edge = vm.viewEdges[i];
+            if (vm.getEdgeProperties(edge)) {
+                validEdges.push(edge);
+            }
+        }
+
+        if (validEdges.indexOf(group) === -1) { // group is an entity
+            if (validEdges.length > 0) {
+                return false;
+            }
+            var validEntities = [];
+
+            for (var i in vm.viewEntities) {
+                var entity = vm.viewEntities[i];
+                if (vm.getEntityProperties(entity)) {
+                    validEntities.push(entity);
+                }
+            }
+
+            return validEntities.indexOf(group) === validEntities.length - 1;
+        }
+
+        return validEdges.indexOf(group) === validEdges.length - 1;
+    }
+
+
+
     vm.createViewElementsLabel = function(elements, type) { // type is 'entities' or 'elements'
         if (!elements || elements.length === 0) {
             return 'Only include these ' + type;

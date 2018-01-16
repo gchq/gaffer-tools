@@ -86,3 +86,7 @@ md-nav-bar > div > nav {
 .searchable-select md-content._md {
     max-height: 240px;
 }
+
+.no-text-transform {
+    text-transform: none !important;
+}
