@@ -26,49 +26,56 @@ function operationSelector() {
     }
 }
 
-function OperationSelectorController(operationService, operationSelectorService, queryPage, $window) {
+function OperationSelectorController(operationService, operationSelectorService, queryPage, $mdDialog) {
     var vm = this;
 
     vm.availableOperations;
-    vm.selectedOp = [];
-    vm.searchTerm = '';
+    vm.selectedOp;
 
-    var populateTable = function(availableOperations) {
+    var populateOperations = function(availableOperations) {
         vm.availableOperations = availableOperations
         var selected = queryPage.getSelectedOperation();
         if (selected)  {
-            vm.selectedOp = [ selected ];
+            vm.selectedOp = selected;
+        } else {
+            vm.selectedOp = vm.availableOperations[0];
+            vm.updateModel();
         }
+    }
+
+    vm.getLabel = function() {
+        if (vm.selectedOp) {
+            return vm.selectedOp.name;
+        }
+        return "Select an operation";
     }
 
     vm.$onInit = function() {
         operationSelectorService.shouldLoadNamedOperationsOnStartup().then(function(yes) {
             if (yes) {
-                operationService.reloadNamedOperations().then(populateTable);
+                operationService.reloadNamedOperations().then(populateOperations);
             } else {
-                operationService.getAvailableOperations().then(populateTable);
+                operationService.getAvailableOperations().then(populateOperations);
             }
         });
     }
 
-    vm.onOperationSelect = function(op) {
-        queryPage.setSelectedOperation(op);
+    vm.showOperationInfo = function(ev) {
+        $mdDialog.show({
+            templateUrl: 'app/query/operation-selector/operation-info/operation-info.html',
+            controller: 'OperationInfoController',
+            controllerAs: 'ctrl',
+            locals: {
+                operation: vm.selectedOp
+            },
+            parent: angular.element(document.body),
+            targetEvent: ev,
+            clickOutsideToClose: true
+        });
     }
 
-    vm.onOperationDeselect = function(unused) {
-        if (vm.selectedOp.length === 0) {
-            queryPage.setSelectedOperation(undefined);
-        }
-    }
-    vm.showOperations = function(operations) {
-        var newWindow = $window.open('about:blank', '', '_blank');
-        var prettyOps;
-        try {
-            prettyOps = JSON.stringify(JSON.parse(operations), null, 2);
-        } catch(e) {
-            prettyOps = operations;
-        }
-        newWindow.document.write("<pre>" + prettyOps + "</pre>");
+    vm.updateModel = function() {
+        queryPage.setSelectedOperation(vm.selectedOp);
     }
 
     vm.refreshNamedOperations = function() {

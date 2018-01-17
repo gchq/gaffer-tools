@@ -129,7 +129,7 @@ public class QueryBuilderST {
 
     @Test
     public void shouldFindRoadUseAroundJunctionM5_10() throws InterruptedException {
-        click("Get Elements");
+        selectOptionWithAriaLabel("operation-name", "Get Elements");
         selectOption("vertexType", "junction");
         enterText("seedVertex", "M5:10");
         click("add-seeds");
@@ -153,7 +153,7 @@ public class QueryBuilderST {
 
     @Test
     public void shouldBeAbleToRunParameterisedQueries() throws InterruptedException, SerialisationException {
-        click("Two Hop With Limit");
+        selectOptionWithAriaLabel("operation-name", "Two Hop With Limit");
         selectOption("vertexType", "road");
         enterText("seedVertex", "M5");
         click("add-seeds");
@@ -185,6 +185,15 @@ public class QueryBuilderST {
         choice.click();
 
         Thread.sleep(slowFactor * 500);
+    }
+
+    private void selectOptionWithAriaLabel(final String id, final String label) throws InterruptedException {
+        getElement(id).click();
+        WebElement choice = driver.findElement(By.cssSelector("md-option[aria-label = '" + label + "']"));
+        choice.click();
+
+        Thread.sleep(slowFactor * 500);
+
     }
 
     private void click(final String id) throws InterruptedException {

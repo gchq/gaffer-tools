@@ -36,7 +36,7 @@ function QueryController(queryPage, operationService, types, graph, config, sett
     }
 
     vm.canExecute = function() {
-        return (vm.queryForm.$valid && queryPage.getSelectedOperation() && !loading.isLoading());
+        return vm.queryForm.$valid && !loading.isLoading();
     }
 
     vm.execute = function() {
