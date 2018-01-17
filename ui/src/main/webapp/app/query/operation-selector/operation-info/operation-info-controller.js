@@ -16,15 +16,10 @@
 
 'use strict';
 
-angular.module('app').config(['$mdIconProvider', function($mdIconProvider) {
+angular.module('app').controller('OperationInfoController', ['$scope', '$mdDialog', 'operation', function($scope, $mdDialog, operation) {
+    $scope.close = function() {
+        $mdDialog.hide();
+    }
 
-    $mdIconProvider
-        .icon('save', 'app/img/save.svg')
-        .icon('info', 'app/img/info.svg')
-        .icon('up-arrow', 'app/img/up-arrow.svg')
-        .icon('down-arrow', 'app/img/down-arrow.svg')
-        .icon('refresh', 'app/img/refresh.svg')
-        .icon('send', 'app/img/send.svg')
-        .icon('add', 'app/img/add.svg')
-        .icon('help', 'app/img/help.svg');
+    $scope.operation = operation;
 }]);
