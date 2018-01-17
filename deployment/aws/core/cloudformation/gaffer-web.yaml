@@ -90,6 +90,13 @@ Parameters:
     AllowedPattern: "|(https?://\\S+\\.jar)"
     ConstraintDescription: Please make sure this is a http(s) URL
 
+  MavenRepoTarball:
+    Type: String
+    Default: ""
+    Description: "(Optional) The path to a tarball, stored in S3, that should be used to bootstrap the local Maven cache. Should be specified as: <bucketName>/<filename>.tar.gz"
+    AllowedPattern: "|(\\S+\\.tar\\.gz)"
+    ConstraintDescription: "Please specify this as <bucketName>/<filename>.tar.gz"
+
 Metadata:
   AWS::CloudFormation::Interface:
     ParameterGroups:
@@ -102,9 +109,11 @@ Metadata:
           default: Web Server Config
         Parameters:
           - InstanceType
+          - VpcId
           - SubnetId
           - ExtraSecurityGroups
           - KeyName
+          - MavenRepoTarball
       - Label:
           default: Gaffer Connection Config
         Parameters:
@@ -183,14 +192,13 @@ Mappings:
 
 Conditions:
 
-    SchemaStoredInS3: !Not [!Equals [!Ref GafferSchemaJarS3Url, ""]]
+  SchemaStoredInS3: !Not [!Equals [!Ref GafferSchemaJarS3Url, ""]]
+  BootstrapLocalMavenRepo: !Not [!Equals [!Ref MavenRepoTarball, ""]]
 
 Resources:
 
   WebServer:
     Type: AWS::EC2::Instance
-    # We really need the following line, but CloudFormation doesn't currently support it :(
-    #DependsOn: !If [SchemaStoredInS3, "WebServerS3SchemaAccessPolicy", !Ref "AWS::NoValue"]
     Properties:
       ImageId: !FindInMap [InstanceAmi, Ref: "AWS::Region", 64ebs]
       InstanceType: !Ref InstanceType
@@ -209,158 +217,173 @@ Resources:
           Value: !Join ["-", [Ref: "AWS::StackName", "web"]]
       UserData:
         Fn::Base64:
-          !Sub |
-            #!/bin/bash -xe
+          !Sub
+            - |
+              #!/bin/bash -xe
 
-            WAIT_HANDLE_URL="${WebServerReadyHandler}"
-            if [[ "$WAIT_HANDLE_URL" ]]; then
-              function awsSignal {
-                /opt/aws/bin/cfn-signal -e $? "$WAIT_HANDLE_URL"
-              }
-              trap awsSignal EXIT
-            fi
-
-            GAFFER_VERSION="${GafferVersion}"
-            GAFFER_TOOLS_VERSION="${GafferToolsVersion}"
-
-            MAVEN_VERSION=3.5.0
-            MAVEN_DOWNLOAD_URL=https://archive.apache.org/dist/maven/maven-3/$MAVEN_VERSION/binaries/apache-maven-$MAVEN_VERSION-bin.tar.gz
-
-            # Upgrade Java and install Tomcat
-            yum remove -y java-1.7.0-openjdk
-            yum install -y java-1.8.0-openjdk-devel tomcat7 tomcat7-admin-webapps
-
-            /etc/init.d/tomcat7 stop
-
-            tee -a /etc/tomcat7/tomcat7.conf <<EOF
-            CATALINA_OPTS="-Djava.net.preferIPv4Stack=true"
-            EOF
-
-            function install_dev_tools {
-              # Install Apache Maven
-              if ! which mvn >/dev/null 2>&1; then
-                echo "Downloading Apache Maven $MAVEN_VERSION from $MAVEN_DOWNLOAD_URL"
-                curl -fLO $MAVEN_DOWNLOAD_URL
-                tar -xf apache-maven-$MAVEN_VERSION-bin.tar.gz
-                rm -f apache-maven-$MAVEN_VERSION-bin.tar.gz
-                export PATH=$PWD/apache-maven-$MAVEN_VERSION/bin:$PATH
+              WAIT_HANDLE_URL="${WebServerReadyHandler}"
+              if [[ "$WAIT_HANDLE_URL" ]]; then
+                function awsSignal {
+                  /opt/aws/bin/cfn-signal -e $? "$WAIT_HANDLE_URL"
+                }
+                trap awsSignal EXIT
               fi
-            }
 
-            # Need to work out if we can download the Gaffer accumulo-rest.war or if we need to build it from source...
-            if ! curl -fL -o rest.war https://repo1.maven.org/maven2/uk/gov/gchq/gaffer/accumulo-rest/$GAFFER_VERSION/accumulo-rest-$GAFFER_VERSION.war; then
-              echo "Building Gaffer accumulo-rest.war from branch $GAFFER_VERSION..."
-              install_dev_tools
+              GAFFER_VERSION="${GafferVersion}"
+              GAFFER_TOOLS_VERSION="${GafferToolsVersion}"
 
-              curl -fLO https://github.com/gchq/Gaffer/archive/$GAFFER_VERSION.zip
-              unzip $GAFFER_VERSION.zip
-              rm $GAFFER_VERSION.zip
-              cd Gaffer-$GAFFER_VERSION
+              MAVEN_VERSION=3.5.0
+              MAVEN_DOWNLOAD_URL=https://archive.apache.org/dist/maven/maven-3/$MAVEN_VERSION/binaries/apache-maven-$MAVEN_VERSION-bin.tar.gz
 
-              mvn clean package -Pquick -pl rest-api/accumulo-rest --also-make
+              # Upgrade Java and install Tomcat
+              yum remove -y java-1.7.0-openjdk
+              yum install -y java-1.8.0-openjdk-devel tomcat7 tomcat7-admin-webapps
 
-              GAFFER_POM_VERSION=$(xmllint --xpath '/*[local-name()="project"]/*[local-name()="version"]/text()' pom.xml)
-              echo "Detected Gaffer version as $GAFFER_POM_VERSION"
+              /etc/init.d/tomcat7 stop
 
-              cp rest-api/accumulo-rest/target/accumulo-rest-$GAFFER_POM_VERSION.war /var/lib/tomcat7/webapps/rest.war
+              tee -a /etc/tomcat7/tomcat7.conf <<EOF
+              CATALINA_OPTS="-Djava.net.preferIPv4Stack=true"
+              EOF
 
-              cd ..
-              rm -rf Gaffer-$GAFFER_VERSION
-            else
-              echo "Using Gaffer accumulo-rest.war from Maven Central..."
-              mv rest.war /var/lib/tomcat7/webapps/
-              GAFFER_POM_VERSION=$GAFFER_VERSION
-            fi
+              function install_dev_tools {
+                # Install Apache Maven
+                if ! which mvn >/dev/null 2>&1; then
+                  echo "Downloading Apache Maven $MAVEN_VERSION from $MAVEN_DOWNLOAD_URL"
+                  curl -fLO $MAVEN_DOWNLOAD_URL
+                  tar -xf apache-maven-$MAVEN_VERSION-bin.tar.gz
+                  rm -f apache-maven-$MAVEN_VERSION-bin.tar.gz
+                  export PATH=$PWD/apache-maven-$MAVEN_VERSION/bin:$PATH
+                fi
+              }
 
-            # Need to work out if we can download the Gaffer UI or if we need to build it from source...
-            if ! curl -fL -o ui.war https://repo1.maven.org/maven2/uk/gov/gchq/gaffer/ui/$GAFFER_TOOLS_VERSION/ui-$GAFFER_TOOLS_VERSION.war; then
-              echo "Building the Gaffer UI from branch $GAFFER_TOOLS_VERSION..."
-              install_dev_tools
+              cd /root
+              if [ "${MavenRepoTarball}" != "" ]; then
+                # Bootstrapping the local Maven repo is allowed to fail, we will just fallback to downloading all the
+                # dependencies from Maven Central...
+                set +e
+                aws s3 cp s3://${MavenRepoTarball} maven-repo.tar.gz
+                tar -xf maven-repo.tar.gz
+                rm -f maven-repo.tar.gz
+                set -e
+              fi
 
-              curl -fLO https://github.com/gchq/gaffer-tools/archive/$GAFFER_TOOLS_VERSION.zip
-              unzip $GAFFER_TOOLS_VERSION.zip
-              rm $GAFFER_TOOLS_VERSION.zip
-              cd gaffer-tools-$GAFFER_TOOLS_VERSION
+              # Need to work out if we can download the Gaffer accumulo-rest.war or if we need to build it from source...
+              if ! curl -fL -o rest.war https://repo1.maven.org/maven2/uk/gov/gchq/gaffer/accumulo-rest/$GAFFER_VERSION/accumulo-rest-$GAFFER_VERSION.war; then
+                echo "Building Gaffer accumulo-rest.war from branch $GAFFER_VERSION..."
+                install_dev_tools
 
-              mvn clean package -Pquick -pl ui --also-make
+                curl -fLO https://github.com/gchq/Gaffer/archive/$GAFFER_VERSION.zip
+                unzip $GAFFER_VERSION.zip
+                rm $GAFFER_VERSION.zip
+                cd Gaffer-$GAFFER_VERSION
 
-              GAFFER_TOOLS_POM_VERSION=$(xmllint --xpath '/*[local-name()="project"]/*[local-name()="version"]/text()' pom.xml)
-              echo "Detected Gaffer Tools version as $GAFFER_TOOLS_POM_VERSION"
+                mvn clean package -Pquick -pl rest-api/accumulo-rest --also-make
 
-              cp ui/target/ui-$GAFFER_TOOLS_POM_VERSION.war /var/lib/tomcat7/webapps/ui.war
+                GAFFER_POM_VERSION=$(xmllint --xpath '/*[local-name()="project"]/*[local-name()="version"]/text()' pom.xml)
+                echo "Detected Gaffer version as $GAFFER_POM_VERSION"
 
-              cd ..
-              rm -rf gaffer-tools-$GAFFER_TOOLS_VERSION
-            else
-              echo "Using Gaffer UI from Maven Central..."
-              mv ui.war /var/lib/tomcat7/webapps/
-            fi
+                cp rest-api/accumulo-rest/target/accumulo-rest-$GAFFER_POM_VERSION.war /var/lib/tomcat7/webapps/rest.war
 
-            # Grab the Accumulo password from an SSM Parameter
-            ENCRYPTED_PASSWORD=$(aws ssm get-parameters --names "${PasswordParameter}" --region "${AWS::Region}" --output text --query Parameters[0].Value)
-            if [ "$ENCRYPTED_PASSWORD" == "" ]; then
-              echo "Unable to retrieve Gaffer password from AWS SSM Parameter: ${PasswordParameter}"
-              exit 1
-            fi
+                cd ..
+                rm -rf Gaffer-$GAFFER_VERSION
+              else
+                echo "Using Gaffer accumulo-rest.war from Maven Central..."
+                mv rest.war /var/lib/tomcat7/webapps/
+                GAFFER_POM_VERSION=$GAFFER_VERSION
+              fi
 
-            # Decrypt the Accumulo password
-            PASSWORD=$(aws kms decrypt --region "${AWS::Region}" --ciphertext-blob fileb://<(echo "$ENCRYPTED_PASSWORD" | base64 -d) --query Plaintext --output text | base64 -d)
-            if [ "$PASSWORD" == "" ]; then
-              echo "Unable to decrypt Gaffer password!"
-              exit 2
-            fi
+              # Need to work out if we can download the Gaffer UI or if we need to build it from source...
+              if ! curl -fL -o ui.war https://repo1.maven.org/maven2/uk/gov/gchq/gaffer/ui/$GAFFER_TOOLS_VERSION/ui-$GAFFER_TOOLS_VERSION.war; then
+                echo "Building the Gaffer UI from branch $GAFFER_TOOLS_VERSION..."
+                install_dev_tools
 
-            # Create Gaffer configuration
-            GAFFER_CONF_DIR=/opt/gaffer
+                curl -fLO https://github.com/gchq/gaffer-tools/archive/$GAFFER_TOOLS_VERSION.zip
+                unzip $GAFFER_TOOLS_VERSION.zip
+                rm $GAFFER_TOOLS_VERSION.zip
+                cd gaffer-tools-$GAFFER_TOOLS_VERSION
 
-            mkdir -p $GAFFER_CONF_DIR/etc
-            mkdir -p $GAFFER_CONF_DIR/schemas
+                mvn clean package -Pquick -pl ui --also-make
 
-            tee -a $GAFFER_CONF_DIR/etc/graphConfig.json <<EOF
-            {
-              "graphId": "${GraphId}"
-            }
-            EOF
+                GAFFER_TOOLS_POM_VERSION=$(xmllint --xpath '/*[local-name()="project"]/*[local-name()="version"]/text()' pom.xml)
+                echo "Detected Gaffer Tools version as $GAFFER_TOOLS_POM_VERSION"
 
-            tee -a $GAFFER_CONF_DIR/etc/store.properties <<EOF
-            gaffer.store.class=uk.gov.gchq.gaffer.accumulostore.AccumuloStore
-            gaffer.store.properties.class=uk.gov.gchq.gaffer.accumulostore.AccumuloProperties
-            accumulo.instance=${AccumuloInstanceName}
-            accumulo.zookeepers=${GafferEmrMasterDNS}
-            accumulo.table=${GraphId}
-            accumulo.user=${UserName}
-            accumulo.password=$PASSWORD
-            EOF
+                cp ui/target/ui-$GAFFER_TOOLS_POM_VERSION.war /var/lib/tomcat7/webapps/ui.war
 
-            # Point Tomcat at Gaffer config
-            tee -a /etc/tomcat7/tomcat7.conf <<EOF
-            CATALINA_OPTS="-Dgaffer.rest-api.basePath=rest \$CATALINA_OPTS"
-            CATALINA_OPTS="-Dgaffer.graph.config=$GAFFER_CONF_DIR/etc/graphConfig.json \$CATALINA_OPTS"
-            CATALINA_OPTS="-Dgaffer.schemas=$GAFFER_CONF_DIR/schemas \$CATALINA_OPTS"
-            CATALINA_OPTS="-Dgaffer.storeProperties=$GAFFER_CONF_DIR/etc/store.properties \$CATALINA_OPTS"
-            EOF
+                cd ..
+                rm -rf gaffer-tools-$GAFFER_TOOLS_VERSION
+              else
+                echo "Using Gaffer UI from Maven Central..."
+                mv ui.war /var/lib/tomcat7/webapps/
+              fi
 
-            # Copy graph schema into $GAFFER_CONF_DIR/schemas/
-            cd /tmp
+              # Grab the Accumulo password from an SSM Parameter
+              ENCRYPTED_PASSWORD=$(aws ssm get-parameters --names "${PasswordParameter}" --region "${AWS::Region}" --output text --query Parameters[0].Value)
+              if [ "$ENCRYPTED_PASSWORD" == "" ]; then
+                echo "Unable to retrieve Gaffer password from AWS SSM Parameter: ${PasswordParameter}"
+                exit 1
+              fi
 
-            if [ "${GafferSchemaJarS3Url}" != "" ]; then
-              aws s3 cp "s3://${GafferSchemaJarS3Url}" schema.jar
-            elif [ "${GafferSchemaJarHttpUrl}" != "" ]; then
-              curl -fL -o schema.jar ${GafferSchemaJarHttpUrl}
-            fi
+              # Decrypt the Accumulo password
+              PASSWORD=$(aws kms decrypt --region "${AWS::Region}" --ciphertext-blob fileb://<(echo "$ENCRYPTED_PASSWORD" | base64 -d) --query Plaintext --output text | base64 -d)
+              if [ "$PASSWORD" == "" ]; then
+                echo "Unable to decrypt Gaffer password!"
+                exit 2
+              fi
 
-            if [ ! -f schema.jar ]; then
-              echo "Unable to retrieve schema jar!"
-              exit 3
-            fi
+              # Create Gaffer configuration
+              GAFFER_CONF_DIR=/opt/gaffer
 
-            jar -xf schema.jar schema/
-            mv schema/*.json $GAFFER_CONF_DIR/schemas/
+              mkdir -p $GAFFER_CONF_DIR/etc
+              mkdir -p $GAFFER_CONF_DIR/schemas
 
-            # Allow Tomcat to be reached on port 80
-            /sbin/iptables -A PREROUTING -t nat -p tcp --dport 80 -j REDIRECT --to-port 8080
+              tee -a $GAFFER_CONF_DIR/etc/graphConfig.json <<EOF
+              {
+                "graphId": "${GraphId}"
+              }
+              EOF
 
-            /etc/init.d/tomcat7 start
+              tee -a $GAFFER_CONF_DIR/etc/store.properties <<EOF
+              gaffer.store.class=uk.gov.gchq.gaffer.accumulostore.AccumuloStore
+              gaffer.store.properties.class=uk.gov.gchq.gaffer.accumulostore.AccumuloProperties
+              accumulo.instance=${AccumuloInstanceName}
+              accumulo.zookeepers=${GafferEmrMasterDNS}
+              accumulo.table=${GraphId}
+              accumulo.user=${UserName}
+              accumulo.password=$PASSWORD
+              EOF
+
+              # Point Tomcat at Gaffer config
+              tee -a /etc/tomcat7/tomcat7.conf <<EOF
+              CATALINA_OPTS="-Dgaffer.rest-api.basePath=rest \$CATALINA_OPTS"
+              CATALINA_OPTS="-Dgaffer.graph.config=$GAFFER_CONF_DIR/etc/graphConfig.json \$CATALINA_OPTS"
+              CATALINA_OPTS="-Dgaffer.schemas=$GAFFER_CONF_DIR/schemas \$CATALINA_OPTS"
+              CATALINA_OPTS="-Dgaffer.storeProperties=$GAFFER_CONF_DIR/etc/store.properties \$CATALINA_OPTS"
+              EOF
+
+              # Copy graph schema into $GAFFER_CONF_DIR/schemas/
+              cd /tmp
+
+              if [ "${GafferSchemaJarS3Url}" != "" ]; then
+                aws s3 cp "s3://${GafferSchemaJarS3Url}" schema.jar
+              elif [ "${GafferSchemaJarHttpUrl}" != "" ]; then
+                curl -fL -o schema.jar ${GafferSchemaJarHttpUrl}
+              fi
+
+              if [ ! -f schema.jar ]; then
+                echo "Unable to retrieve schema jar!"
+                exit 3
+              fi
+
+              jar -xf schema.jar schema/
+              mv schema/*.json $GAFFER_CONF_DIR/schemas/
+
+              # Allow Tomcat to be reached on port 80
+              /sbin/iptables -A PREROUTING -t nat -p tcp --dport 80 -j REDIRECT --to-port 8080
+
+              /etc/init.d/tomcat7 start
+
+            - SchemaAccessDependency: !If [SchemaStoredInS3, !Ref WebServerS3SchemaAccessPolicy, ""]
+              MavenTarballAccessDependency: !If [BootstrapLocalMavenRepo, !Ref WebServerS3AccessMavenTarballPolicy, ""]
 
   WebServerSecurityGroup:
     Type: AWS::EC2::SecurityGroup
@@ -416,6 +439,21 @@ Resources:
         Statement:
           - Effect: Allow
             Resource: !Join ["", ["arn:aws:s3:::", Ref: GafferSchemaJarS3Url]]
+            Action:
+              - s3:GetObject
+
+  WebServerS3AccessMavenTarballPolicy:
+    Condition: BootstrapLocalMavenRepo
+    Type: AWS::IAM::Policy
+    Properties:
+      Roles:
+        - !Ref WebServerRole
+      PolicyName: !Join ["-", [Ref: "AWS::StackName", "mvn-tar-access"]]
+      PolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Resource: !Join ["", ["arn:aws:s3:::", !Ref MavenRepoTarball]]
             Action:
               - s3:GetObject
 
