@@ -107,6 +107,9 @@ function ViewBuilderController(view, graph, common, schema, functions, events, t
 
     vm.createViewElementsLabel = function(elements, type) { // type is 'entities' or 'elements'
         if (!elements || elements.length === 0) {
+            if (!type) {
+                throw 'Cannot create label without either the elements or element type';
+            }
             return 'Only include these ' + type;
         } else {
             return elements.join(', ');
@@ -183,9 +186,28 @@ function ViewBuilderController(view, graph, common, schema, functions, events, t
         }
     }
 
+    var deleteFilterArray = function(group, elementType, preAggregation) {
+        if (elementType === 'edge') {
+            if (preAggregation === true) {
+                vm.edgeFilters[group].preAggregationFilterFunctions = undefined;
+            } else {
+                vm.edgeFilters[group].postAggregationFilterFunctions = undefined;
+            }
+        } else {
+            if (preAggregation === true) {
+                vm.entityFilters[group].preAggregationFilterFunctions = undefined;
+            } else {
+                vm.entityFilters[group].postAggregationFilterFunctions = undefined;
+            }
+        }
+    }
+
     vm.deleteFilter = function(group, elementType, preAggregation, index) {
         var filters = getFilterArray(group, elementType, preAggregation);
         filters.splice(index, 1);
+        if (filters.length === 0) {
+            deleteFilterArray(group, elementType, preAggregation);
+        }
     }
 
 
@@ -204,8 +226,13 @@ function ViewBuilderController(view, graph, common, schema, functions, events, t
         });
     }
 
-    vm.getEntityProperties = schema.getEntityProperties;
-    vm.getEdgeProperties = schema.getEdgeProperties;
+    vm.getEntityProperties = function(group) {
+        return schema.getEntityProperties(group);
+    }
+
+    vm.getEdgeProperties =  function(group) {
+        return schema.getEdgeProperties(group);
+    }
 
     vm.onElementGroupChange = function(elementType) {
         if(elementType === 'entity') {

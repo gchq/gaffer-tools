@@ -11,7 +11,7 @@
             <ng-form name="filterForm">
                 <md-input-container layout-fill flex>
                     <label>Select a property</label>
-                    <md-select required ng-model="filter.property" ng-change="onSelectedPropertyChange()">
+                    <md-select required id="property-selector" ng-model="filter.property" ng-change="onSelectedPropertyChange()">
                         <md-option ng-repeat="(name, type) in getProperties()" ng-value="name">{{name}}</md-option>
                     </md-select>
                 </md-input-container>
@@ -27,6 +27,7 @@
                         md-floating-label="Select Filter"
                         md-require-match
                         md-select-on-focus
+                        id="predicate-autocomplete"
                         md-autoselect>
                     <md-item-template>
                         <span md-highlight-text="predicateText" md-highlight-flags="^i">{{createFriendlyName(predicate)}}</span>
@@ -39,21 +40,22 @@
                     <md-input-container ng-repeat="param in filter.availableFunctionParameters" layout-fill flex="{{getFlexValue()}}">
                         <label>{{param}}</label>
                         <input type="text"
+                               id="{{param}}-parameter"
                                ng-model="filter.parameters[param]">
                     </md-input-container>
                 </div>
                 <p class="md-body-1">Apply filter before or after results are summarised?</p>
                 <md-radio-group layout="row" ng-model="filter.preAggregation">
-                    <md-radio-button ng-value="true" aria-label="before">Before</md-radio-button>
-                    <md-radio-button ng-value="false" aria-label="after">After</md-radio-button>
+                    <md-radio-button ng-value="true" id="before-aggregation" aria-label="before">Before</md-radio-button>
+                    <md-radio-button ng-value="false" id="after-aggregation" aria-label="after">After</md-radio-button>
                 </md-radio-group>
             </ng-form>
         </div>
     </md-dialog-content>
     <md-dialog-actions layout="row" layout-align="end">
-        <md-button ng-click="cancel()">Cancel</md-button>
-        <md-button ng-click="resetForm()">Clear</md-button>
-        <md-button ng-if="!editMode" ng-disabled="filterForm.$invalid" ng-click="addAnother()">Add Another</md-button>
-        <md-button ng-disabled="filterForm.$invalid" ng-click="submit()" class="md-primary">Submit</md-button>
+        <md-button id="cancel" ng-click="cancel()">Cancel</md-button>
+        <md-button id="clear" ng-click="resetForm()">Clear</md-button>
+        <md-button id="add-another" ng-if="!editMode" ng-disabled="filterForm.$invalid" ng-click="addAnother()">Add Another</md-button>
+        <md-button id="submit" ng-disabled="filterForm.$invalid" ng-click="submit()" class="md-primary">Submit</md-button>
     </md-dialog-actions>
 </md-dialog>

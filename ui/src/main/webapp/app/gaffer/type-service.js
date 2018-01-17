@@ -16,7 +16,7 @@
 
 'use strict';
 
-angular.module('app').factory('types', ['config', function(config) {
+angular.module('app').factory('types', ['config', 'common', function(config, common) {
 
     var service = {};
     var types = {};
@@ -138,7 +138,7 @@ angular.module('app').factory('types', ['config', function(config) {
             return defaultShortValue(value);
         }
 
-        var typeClass = Object.keys(value)[0]
+        var typeClass = Object.keys(value)[0];
         var parts = value[typeClass]; // the value without the class prepended
 
 
@@ -148,9 +148,9 @@ angular.module('app').factory('types', ['config', function(config) {
             return customShortValue(type.fields, parts)
         }
 
-        if (typeClass.endsWith('Map')) {
+        if (common.endsWith(typeClass, 'Map')) {
             return mapShortValue(parts);
-        } else if (typeClass.endsWith('List') || typeClass.endsWith('Set')) {
+        } else if (common.endsWith(typeClass, 'List') || common.endsWith(typeClass, 'Set')) {
             return listShortValue(parts);
         }
 
