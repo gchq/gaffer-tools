@@ -29,6 +29,14 @@ Parameters:
     MinValue: 1
     Description: The number of Accumulo Tablet Servers that should be deployed onto each YARN Node
 
+  ClusterUsage:
+    Type: Number
+    Default: 85
+    MinValue: 1
+    MaxValue: 100
+    Description: The proportion of the available cluster resources that should be assigned to Accumulo, specified as a percentage. If you plan to deploy other workloads (e.g. MR, Spark) on the EMR cluster then you should alter this parameter so that there will be resources available to them.
+    ConstraintDescription: Must be between 1% and 100%
+
   EmrRelease:
     Type: String
     Default: emr-5.11.0
@@ -94,6 +102,13 @@ Parameters:
     AllowedPattern: "[A-Za-z0-9-_:,]+"
     Description: The visibility authorisations that the user should be granted (as a csv list)
 
+  MavenRepoTarball:
+    Type: String
+    Default: ""
+    Description: "(Optional) The path to a tarball, stored in S3, that should be used to bootstrap local Maven caches. Should be specified as: <bucketName>/<filename>.tar.gz"
+    AllowedPattern: "|(\\S+\\.tar\\.gz)"
+    ConstraintDescription: "Please specify this as <bucketName>/<filename>.tar.gz"
+
 Metadata:
   AWS::CloudFormation::Interface:
     ParameterGroups:
@@ -111,6 +126,7 @@ Metadata:
           - UserName
           - AccumuloVisibilities
           - TabletServersPerYarnNode
+          - ClusterUsage
       - Label:
           default: EMR Config
         Parameters:
@@ -121,6 +137,7 @@ Metadata:
           - KeyName
           - ExtraEmrSecurityGroups
           - ManageSecurityGroups
+          - MavenRepoTarball
 
 Resources:
 
@@ -142,6 +159,8 @@ Resources:
         ManageSecurityGroups: !Ref ManageSecurityGroups
         GafferInstanceName: !Ref GafferInstanceName
         TabletServersPerYarnNode: !Ref TabletServersPerYarnNode
+        MavenRepoTarball: !Ref MavenRepoTarball
+        ClusterUsage: !Ref ClusterUsage
 
   GafferUser:
     Type: AWS::CloudFormation::Stack

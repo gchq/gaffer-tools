@@ -14,6 +14,12 @@
  * limitations under the License.
  */
 
- 'use strict';
+'use strict';
 
-angular.module('app', ['ngMaterial', 'ngRoute', 'md.data.table', 'ngMessages']);
+angular.module('app').controller('OperationInfoController', ['$scope', '$mdDialog', 'operation', function($scope, $mdDialog, operation) {
+    $scope.close = function() {
+        $mdDialog.hide();
+    }
+
+    $scope.operation = operation;
+}]);
