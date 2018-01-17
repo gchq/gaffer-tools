@@ -41,7 +41,7 @@ KEYNAME=""
 # Usually used to allow SSH access to the cluster from your IP address
 EXTRA_SECURITY_GROUP=""
 
-EMR_VERSION="emr-5.7.0"
+EMR_VERSION="emr-5.11.0"
 INSTANCE_TYPE="m3.xlarge"
 INSTANCE_COUNT=3
 CLUSTER_NAME="$KEYNAME-gaffer-$GAFFER_VERSION"
