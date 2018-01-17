@@ -37,9 +37,6 @@ fi
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 cd $DIR
 
-MVN_BIN="$(cd $DIR/../apache-maven-*/bin && pwd)"
-export PATH=$MVN_BIN:$PATH
-
 if [[ ! -f ../etc/cluster.name || ! -f ../etc/gaffer.version || ! -f ../etc/gaffer.branch ]]; then
 	echo "Unable to locate required configuration files!"
 	exit 1
@@ -57,6 +54,7 @@ if [ ! -f spark-accumulo-library-$GAFFER_ACTUAL_VERSION-full.jar ]; then
 		rm $GAFFER_REQUESTED_VERSION.zip
 		cd Gaffer-$GAFFER_REQUESTED_VERSION
 
+		source /etc/profile.d/maven.sh
 		mvn clean install -Pquick -pl library/spark/spark-accumulo-library --also-make
 
 		cp library/spark/spark-accumulo-library/target/spark-accumulo-library-$GAFFER_ACTUAL_VERSION-full.jar ../

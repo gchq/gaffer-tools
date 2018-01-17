@@ -7,7 +7,6 @@ WAIT_HANDLE_URL=""
 SNS_ARN=""
 SNS_REPORT_NAME="system-tests"
 STACK_ID=""
-MAVEN_VERSION=3.5.0
 
 while [[ $# -gt 0 ]]; do
 	key="$1"
@@ -67,15 +66,7 @@ if [[ "$GAFFER_VERSION" == "" || "$HOST" == "" ]]; then
 	printUsage
 fi
 
-# Install Apache Maven
-if ! which mvn >/dev/null 2>&1; then
-	MAVEN_DOWNLOAD_URL=https://archive.apache.org/dist/maven/maven-3/$MAVEN_VERSION/binaries/apache-maven-$MAVEN_VERSION-bin.tar.gz
-	echo "Downloading Apache Maven $MAVEN_VERSION from $MAVEN_DOWNLOAD_URL"
-	curl -fLO $MAVEN_DOWNLOAD_URL
-	tar -xf apache-maven-$MAVEN_VERSION-bin.tar.gz
-	rm -f apache-maven-$MAVEN_VERSION-bin.tar.gz
-	export PATH=$PWD/apache-maven-$MAVEN_VERSION/bin:$PATH
-fi
+source /etc/profile.d/maven.sh
 
 if curl -fLO https://github.com/gchq/Gaffer/archive/gaffer2-$GAFFER_VERSION.zip; then
 	unzip gaffer2-$GAFFER_VERSION.zip
@@ -219,4 +210,3 @@ reportTestResults
 # Tidy up
 cd ..
 rm -rf Gaffer-*
-rm -rf apache-maven-$MAVEN_VERSION

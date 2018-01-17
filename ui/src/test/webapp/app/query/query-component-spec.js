@@ -51,23 +51,30 @@ describe('The Query component', function() {
         });
 
         describe('When validating the query', function() {
+            var ctrl;
+            var valid;
 
-            it('should not allow execution if the selected operation is undefined', function() {
-                var ctrl = $componentController('query');
+            beforeEach(function() {
+                ctrl = $componentController('query');
+                ctrl.queryForm = {
+                    $valid: valid
+                };
+            });
+
+            it('should not allow execution if the form is invalid', function() {
+                valid = false
                 expect(ctrl.canExecute()).toBeFalsy();
             });
 
             it('should not allow execution if the selected operation is defined but results are loading', function() {
-                var ctrl = $componentController('query');
-                queryPage.setSelectedOperation('some operation');
+                valid = true;
                 loading.load();
 
                 expect(ctrl.canExecute()).toBeFalsy();
             });
 
             it('should allow execution if the selected operation is defined and the loading completes', function() {
-                var ctrl = $componentController('query');
-                queryPage.setSelectedOperation('some operation');
+                valid = true;
 
                 loading.load();
                 loading.finish();
@@ -75,9 +82,7 @@ describe('The Query component', function() {
             });
 
             it('should allow execution if the selected operation is defined and loading has not started', function() {
-                var ctrl = $componentController('query');
-                queryPage.setSelectedOperation('some operation');
-
+                valid = true;
                 expect(ctrl.canExecute()).toBeTruthy();
 
             });
