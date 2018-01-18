@@ -13,7 +13,31 @@
       }
     ]
   },
+  "time": {
+    "start": {
+      "property": "startDate",
+      "class": "java.util.Date",
+      "unit": "milliseconds"
+    },
+    "end": {
+      "property": "endDate",
+      "class": "java.util.Date",
+      "unit": "milliseconds"
+    }
+
+  },
   "types": {
+    "java.util.Date": {
+      "fields": [
+        {
+          "label": "Value",
+          "type": "number",
+          "step": "1",
+          "class": "java.util.Date"
+        }
+      ],
+      "wrapInJson": true
+    },
     "java.lang.Long": {
       "fields": [
         {
