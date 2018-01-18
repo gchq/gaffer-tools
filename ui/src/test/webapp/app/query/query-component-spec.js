@@ -53,12 +53,27 @@ describe('The Query component', function() {
         describe('When validating the query', function() {
             var ctrl;
             var valid;
+            var selectedOperation;
 
             beforeEach(function() {
                 ctrl = $componentController('query');
                 ctrl.queryForm = {
                     $valid: valid
                 };
+            });
+
+            beforeEach(function() {
+                valid = true;
+            });
+
+            beforeEach(function() {
+                spyOn(queryPage, 'getSelectedOperation').and.callFake(function() {
+                    return selectedOperation;
+                });
+            });
+
+            beforeEach(function() {
+                selectedOperation = "some operation"
             });
 
             it('should not allow execution if the form is invalid', function() {

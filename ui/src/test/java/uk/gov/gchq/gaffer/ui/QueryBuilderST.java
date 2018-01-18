@@ -8,11 +8,9 @@ import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.firefox.FirefoxDriver;
-
 import uk.gov.gchq.gaffer.exception.SerialisationException;
 import uk.gov.gchq.gaffer.graph.Graph;
 import uk.gov.gchq.gaffer.jsonserialisation.JSONSerialiser;
@@ -201,7 +199,7 @@ public class QueryBuilderST {
         selectOption("vertexType", "road");
         enterText("seedVertex", "M5");
         click("add-seeds");
-        enterText("param-param1-", Keys.BACK_SPACE.toString() + "2");
+        enterText("param1-", "2");
         click("Execute Query");
 
         click("open-raw");
