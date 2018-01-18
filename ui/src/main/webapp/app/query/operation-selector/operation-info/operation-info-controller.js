@@ -16,21 +16,10 @@
 
 'use strict';
 
-angular.module('app').component('parameterTable', parameterTable());
-
-function parameterTable() {
-    return {
-        templateUrl: 'app/query/parameter-table/parameter-table.html',
-        controller: ParameterTableController,
-        controllerAs: 'ctrl'
+angular.module('app').controller('OperationInfoController', ['$scope', '$mdDialog', 'operation', function($scope, $mdDialog, operation) {
+    $scope.close = function() {
+        $mdDialog.hide();
     }
-}
 
-function ParameterTableController(queryPage, types) {
-    var vm = this;
-
-    vm.getSelectedOp = queryPage.getSelectedOperation;
-
-
-    vm.getFields = types.getFields;
-}
+    $scope.operation = operation;
+}]);

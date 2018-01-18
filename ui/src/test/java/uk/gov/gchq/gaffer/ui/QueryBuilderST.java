@@ -8,11 +8,9 @@ import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.firefox.FirefoxDriver;
-
 import uk.gov.gchq.gaffer.exception.SerialisationException;
 import uk.gov.gchq.gaffer.graph.Graph;
 import uk.gov.gchq.gaffer.jsonserialisation.JSONSerialiser;
@@ -131,7 +129,7 @@ public class QueryBuilderST {
 
     @Test
     public void shouldFindRoadUseAroundJunctionM5_10() throws InterruptedException {
-        click("Get Elements");
+        selectOptionWithAriaLabel("operation-name", "Get Elements");
         enterText("seedVertex", "M5:10");
         click("add-seeds");
         click("related-edge-RoadUse");
@@ -154,10 +152,10 @@ public class QueryBuilderST {
 
     @Test
     public void shouldBeAbleToRunParameterisedQueries() throws InterruptedException, SerialisationException {
-        click("Two Hop With Limit");
+        selectOptionWithAriaLabel("operation-name", "Two Hop With Limit");
         enterText("seedVertex", "M5");
         click("add-seeds");
-        enterText("param-param1-", Keys.BACK_SPACE.toString() + "2");
+        enterText("param1-", "2");
         click("Execute Query");
 
         click("open-raw");
@@ -185,6 +183,15 @@ public class QueryBuilderST {
         choice.click();
 
         Thread.sleep(slowFactor * 500);
+    }
+
+    private void selectOptionWithAriaLabel(final String id, final String label) throws InterruptedException {
+        getElement(id).click();
+        WebElement choice = driver.findElement(By.cssSelector("md-option[aria-label = '" + label + "']"));
+        choice.click();
+
+        Thread.sleep(slowFactor * 500);
+
     }
 
     private void click(final String id) throws InterruptedException {

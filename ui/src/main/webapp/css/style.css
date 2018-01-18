@@ -21,7 +21,6 @@ ng-view {
     width: 100%;
 }
 
-
 pre {
     background: white;
     padding: 5px;
@@ -62,4 +61,12 @@ md-nav-bar > div > nav {
 
 md-input-container > textarea {
     border-width: 2px !important;
+}
+
+md-option > div {
+    flex: 1;
+}
+
+.standalone-icon {
+    margin: 0px;
 }

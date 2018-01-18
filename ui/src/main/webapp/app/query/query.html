@@ -14,11 +14,13 @@
   ~ limitations under the License.
   -->
 <div layout-padding layout-margin>
-    <operation-selector></operation-selector>
-    <seed-manager ng-show="ctrl.getSelectedOp().input"></seed-manager>
-    <parameter-table ng-show="ctrl.getSelectedOp().parameters"></parameter-table>
-    <view-builder ng-show="ctrl.getSelectedOp().view"></view-builder>
-    <directionality-picker ng-show="ctrl.getSelectedOp().inOutFlag"></directionality-picker>
+    <form name="ctrl.queryForm">
+        <operation-selector></operation-selector>
+        <seed-manager ng-show="ctrl.getSelectedOp().input"></seed-manager>
+        <parameter-form ng-if="ctrl.getSelectedOp().parameters" parameters="ctrl.getSelectedOp().parameters"></parameter-form>
+        <view-builder ng-show="ctrl.getSelectedOp().view"></view-builder>
+        <directionality-picker ng-show="ctrl.getSelectedOp().inOutFlag"></directionality-picker>
+    </form>
 </div>
 <md-button class="md-fab md-fab-bottom-right submit-bottom-right md-accent" ng-disabled="!ctrl.canExecute()" aria-label="Execute Query" id="Execute Query" ng-click="ctrl.execute()">
     <md-icon md-svg-icon="send"></md-icon>
