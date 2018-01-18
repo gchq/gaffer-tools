@@ -1,5 +1,5 @@
 <div layout="column">
-    <form name="ctrl.seedForm" ng-submit="ctrl.inputExists() && ctrl.addSeeds()">
+    <ng-form name="ctrl.seedForm">
         <div layout="row" flex layout-padding>
             <div layout="column" layout-align="start">
                 <md-switch class="md-primary" md-no-ink aria-label="Multiple Seeds" ng-model="ctrl.multipleSeeds">
@@ -29,11 +29,11 @@
                 </textarea>
             </md-input-container>
             <div layout="column" layout-align="end" layout-margin layout-padding>
-                <md-button class="md-icon-button md-primary" type="submit" ng-disabled="!ctrl.inputExists()" aria-label="add seeds" id="add-seeds">
+                <md-button class="md-icon-button md-primary" type="submit" ng-click="ctrl.inputExists() && ctrl.addSeeds()" ng-disabled="!ctrl.inputExists()" aria-label="add seeds" id="add-seeds">
                     <md-icon md-svg-icon="add"></md-icon>
                     <md-tooltip md-direction="top">Add seeds</md-tooltip>
                 </md-button>
             </div>
         </div>
-    </form>
+    </ng-form>
 </div>
