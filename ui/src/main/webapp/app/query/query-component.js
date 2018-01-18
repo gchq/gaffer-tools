@@ -90,6 +90,7 @@ function QueryController(queryPage, operationService, types, graph, config, sett
         results.update(data);
         navigation.goTo('graph');
         queryPage.reset();
+        time.resetDateRange();
     }
 
     var createOpInput = function() {

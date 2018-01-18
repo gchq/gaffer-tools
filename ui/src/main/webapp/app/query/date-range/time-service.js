@@ -38,6 +38,11 @@ angular.module('app').factory('time', function() {
         endDate = date;
     }
 
+    service.resetDateRange = function() {
+        endDate = undefined;
+        startDate = undefined;
+    }
+
     return service;
 
 });
