@@ -16,21 +16,31 @@
 
 'use strict';
 
-angular.module('app').component('parameterTable', parameterTable());
+angular.module('app').component('parameterForm', parameterForm());
 
-function parameterTable() {
+function parameterForm() {
     return {
-        templateUrl: 'app/query/parameter-table/parameter-table.html',
-        controller: ParameterTableController,
-        controllerAs: 'ctrl'
+        templateUrl: 'app/query/parameter-form/parameter-form.html',
+        controller: ParameterFormController,
+        controllerAs: 'ctrl',
+        bindings: {
+            parameters: '='
+        }
     }
 }
 
-function ParameterTableController(queryPage, types) {
+function ParameterFormController(types) {
     var vm = this;
 
-    vm.getSelectedOp = queryPage.getSelectedOperation;
+    vm.$onInit = function() {
+        if (vm.parameters === null || vm.parameters === undefined) {
+            console.error('Expected defined, non-null value for parameters. Got ' + vm.parameters);
+        }
+    }
 
+    vm.isRequired = function(field, param) {
+        return param.required === true && field.required === true;
+    }
 
     vm.getFields = types.getFields;
 }
