@@ -262,10 +262,10 @@ public final class MiniAccumuloClusterController {
     }
 
     public static class Builder {
-        private String dirName;
+        private String dirName = DEFAULT_DIR_NAME;
         private boolean isTempDir = false;
-        private String password;
-        private String instanceName;
+        private String password = DEFAULT_PASSWORD;
+        private String instanceName = DEFAULT_INSTANCE_NAME;
         private boolean shutdownHook = true;
 
         public Builder dirName(final String dirName) {
