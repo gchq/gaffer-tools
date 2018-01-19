@@ -10,14 +10,14 @@
                 <label>Start Date</label>
                 <md-datepicker ng-model="ctrl.start" name="start" ng-change="ctrl.onStartDateUpdate()"></md-datepicker>
                 <div ng-messages="ctrl.dateForm.start.$error">
-                    <div ng-message="valid">The start date entered is not a date. Use format dd/MM/YYYY</div>
+                    <div ng-message="valid">The start date entered is not a date.</div>
                 </div>
             </md-input-container>
             <md-input-container>
                 <label>End Date</label>
                 <md-datepicker ng-model="ctrl.end" name="end" ng-change="ctrl.onEndDateUpdate()"></md-datepicker>
                 <div ng-messages="ctrl.dateForm.end.$error">
-                    <div ng-message="valid">The end date entered is not a date. Use format dd/MM/YYYY</div>
+                    <div ng-message="valid">The end date entered is not a date.</div>
                 </div>
             </md-input-container>
         </div>
