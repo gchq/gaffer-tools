@@ -30,6 +30,7 @@ function query() {
 function QueryController(queryPage, view, operationService, types, graph, config, settings, query, functions, schema, common, results, navigation, $mdDialog, loading) {
 
     var vm = this;
+    var opOptionKeys;
 
     vm.getSelectedOp = function() {
         return queryPage.getSelectedOperation();
@@ -37,6 +38,10 @@ function QueryController(queryPage, view, operationService, types, graph, config
 
     vm.canExecute = function() {
         return vm.queryForm.$valid && !loading.isLoading();
+    }
+
+    vm.hasOpOptions = function() {
+        return opOptionKeys && Object.keys(opOptionKeys).length > 0;
     }
 
     vm.execute = function() {
@@ -63,6 +68,12 @@ function QueryController(queryPage, view, operationService, types, graph, config
             } else {
                 alert(errorString);
             }
+        });
+    }
+
+    vm.$onInit = function() {
+        settings.getOpOptionKeys().then(function(keys) {
+            opOptionKeys = keys;
         });
     }
 
@@ -170,8 +181,8 @@ function QueryController(queryPage, view, operationService, types, graph, config
             op.includeIncomingOutGoing = queryPage.getInOutFlag();
         }
 
-        if(settings.getDefaultOpOptions()) {
-            op.options = settings.getDefaultOpOptions();
+        if(queryPage.getOpOptions()) {
+            op.options = queryPage.getOpOptions();
         }
 
         return op;
