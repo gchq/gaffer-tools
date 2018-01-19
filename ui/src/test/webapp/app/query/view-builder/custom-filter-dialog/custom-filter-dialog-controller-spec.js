@@ -220,6 +220,45 @@ describe('The Custom Filter Dialog Controller', function() {
         });
     });
 
+    describe('$scope.showWarning()', function() {
+
+        beforeEach(function() {
+            createController();
+        });
+
+        beforeEach(function() {
+            scope.propertyClass = 'java.lang.Object';
+        });
+
+        beforeEach(function() {
+            scope.filter.availableFunctionParameters = ['prop1', 'prop2'];
+        });
+
+        it('should return true when there are function parameters and the property is a complex object', function() {
+            expect(scope.showWarning()).toBeTruthy();
+        });
+
+        it('should return false when the filter is undefined', function() {
+            scope.filter = undefined;
+            expect(scope.showWarning()).toBeFalsy();
+        });
+
+        it('should return false when the filters available function parameters are undefined', function() {
+            scope.filter.availableFunctionParameters = undefined;
+            expect(scope.showWarning()).toBeFalsy();
+        });
+
+        it('should return false when the filters available function parameters are an empty array', function() {
+            scope.filter.availableFunctionParameters = [];
+            expect(scope.showWarning()).toBeFalsy();
+        });
+
+        it('should return false when the propertyClass is undefined', function() {
+            scope.propertyClass = undefined;
+            expect(scope.showWarning()).toBeFalsy();
+        });
+    });
+
     describe('$scope.resetForm()', function() {
 
         var formReset = false;
@@ -513,6 +552,65 @@ describe('The Custom Filter Dialog Controller', function() {
             expect(scope.filter.parameters).toEqual({});
         });
 
+        it('should make a call to the schema service', function() {
+            scope.filter = originalFilter;
+            scope.onSelectedPredicateChange();
+            expect(schema.get).toHaveBeenCalled();
+        });
+
+        describe('When the schema is called', function() {
+
+            var resetSchema = function(propClass) {
+                gafferSchema = {
+                    "entities": {
+                        "testGroup": {
+                            "properties": {
+                                "testProp": "testPropThing"
+                            }
+                        }
+                    },
+                    "types": {
+                        "testPropThing": {
+                            "class": propClass
+                        }
+                    }
+                };
+            }
+
+            beforeEach(function() {
+                scope.filter = originalFilter;
+                scope.propertyClass = "an unset predicate class";
+                scope.group = "testGroup";
+            });
+
+            it('should set the property class to undefined when the property is a String', function() {
+                resetSchema("java.lang.String");
+                scope.onSelectedPredicateChange();
+                scope.$digest();
+                expect(scope.propertyClass).toBeUndefined();
+            });
+
+            it('should set the property class to undefined when the property is a Boolean', function() {
+                resetSchema("java.lang.Boolean");
+                scope.onSelectedPredicateChange();
+                scope.$digest();
+                expect(scope.propertyClass).toBeUndefined();
+            });
+
+            it('should set the property class to undefined when the property is a Integer', function() {
+                resetSchema("java.lang.Integer");
+                scope.onSelectedPredicateChange();
+                scope.$digest();
+                expect(scope.propertyClass).toBeUndefined();
+            });
+
+            it('should set the property class to any other object', function() {
+                resetSchema('java.lang.Object');
+                scope.onSelectedPredicateChange();
+                scope.$digest();
+                expect(scope.propertyClass).toEqual('java.lang.Object');
+            });
+        })
 
     });
 

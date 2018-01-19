@@ -20,7 +20,6 @@ angular.module('app').controller('CustomFilterDialogController', ['$scope', '$md
 
     $scope.filter = { preAggregation: false }
     $scope.availablePredicates;
-    $scope.availableProperties = [];
     $scope.predicateText;
     $scope.editMode = false;
 
@@ -28,6 +27,8 @@ angular.module('app').controller('CustomFilterDialogController', ['$scope', '$md
     $scope.group = this.group;
     $scope.filterForEdit = this.filterForEdit;
     $scope.onSubmit = this.onSubmit;
+
+    $scope.propertyClass = undefined;
 
 
     var createFilterFor = function(text) {
@@ -94,12 +95,39 @@ angular.module('app').controller('CustomFilterDialogController', ['$scope', '$md
         }
     }
 
+    $scope.showWarning = function() {
+        return $scope.propertyClass &&
+            $scope.filter &&
+            $scope.filter.availableFunctionParameters &&
+            $scope.filter.availableFunctionParameters.length !== 0;
+    }
+
     $scope.onSelectedPredicateChange = function() {
         if ($scope.filter.predicate === undefined || $scope.filter.predicate === '' || $scope.filter.predicate === null) {
             return;
         }
         functions.getFunctionParameters($scope.filter.predicate, function(data) {
             $scope.filter.availableFunctionParameters = data;
+        });
+
+        schema.get().then(function(gafferSchema) {
+            var elementDef;
+            if (gafferSchema.entities) {
+                elementDef = gafferSchema.entities[$scope.group];
+            }
+            if(!elementDef && gafferSchema.edges) {
+                 elementDef = gafferSchema.edges[$scope.group];
+            }
+            if (gafferSchema.types) {
+                var propertyClass = gafferSchema.types[elementDef.properties[$scope.filter.property]].class;
+                if("java.lang.String" !== propertyClass
+                    && "java.lang.Boolean" !== propertyClass
+                    && "java.lang.Integer" !== propertyClass) {
+                    $scope.propertyClass = propertyClass;
+                } else {
+                    $scope.propertyClass = undefined;
+                }
+            }
         });
 
         $scope.filter.parameters = {};

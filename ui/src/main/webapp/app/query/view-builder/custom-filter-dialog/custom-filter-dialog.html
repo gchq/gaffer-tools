@@ -15,7 +15,7 @@
                         <md-option ng-repeat="(name, type) in getProperties()" ng-value="name">{{name}}</md-option>
                     </md-select>
                 </md-input-container>
-                <md-autocomplete
+                    <md-autocomplete
                         required
                         ng-disabled="!filter.property"
                         md-selected-item="filter.predicate"
@@ -43,6 +43,11 @@
                                id="{{param}}-parameter"
                                ng-model="filter.parameters[param]">
                     </md-input-container>
+                    <p ng-show="showWarning()" flex="{{getFlexValue()}}">
+                        If you're entering anything other than an Integer, Boolean or String,
+                        you may need to wrap the object in JSON.
+                        For Example: { "{{propertyClass}}": value }
+                    </p>
                 </div>
                 <p class="md-body-1">Apply filter before or after results are summarised?</p>
                 <md-radio-group layout="row" ng-model="filter.preAggregation">
