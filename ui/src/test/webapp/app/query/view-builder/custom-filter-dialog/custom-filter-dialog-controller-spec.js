@@ -397,6 +397,16 @@ describe('The Custom Filter Dialog Controller', function() {
                 expect(scope.getFlexValue()).toEqual(33);
             }
         });
+
+        it('should return 0 if the filter is undefined', function() {
+            scope.filter = undefined;
+            expect(scope.getFlexValue()).toEqual(0);
+        });
+
+        it('should return 0 if the filter\' available parameters are undefined', function() {
+            scope.filter = { availableFunctionParameters: undefined };
+            expect(scope.getFlexValue()).toEqual(0);
+        })
     });
 
     describe('$scope.onSelectedPropertyChange()', function() {

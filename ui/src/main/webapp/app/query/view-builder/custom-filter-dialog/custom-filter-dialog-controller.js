@@ -76,14 +76,16 @@ angular.module('app').controller('CustomFilterDialogController', ['$scope', '$md
     }
 
     $scope.getFlexValue = function() {
-        var value = 33;
+        if (!$scope.filter || !$scope.filter.availableFunctionParameters) {
+            return 0;
+        }
         if ($scope.filter.availableFunctionParameters.length === 2) {
-            value = 50;
+            return 50;
         } else if ($scope.filter.availableFunctionParameters.length === 1) {
-            value = 100;
+            return 100;
         }
 
-        return value;
+        return 33;
     }
 
     $scope.onSelectedPropertyChange = function(editModeInit) {
