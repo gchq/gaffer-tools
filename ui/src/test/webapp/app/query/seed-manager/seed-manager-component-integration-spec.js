@@ -36,6 +36,11 @@ describe('The Seed Manager Component', function() {
             events.broadcast('selectedElementsUpdate', [ { entities: { '"This"': {}, '"is"': {}, '"my"': {}, '"test"': {}} }]);
             expect(ctrl.seedsMessage).toEqual("my, test and 2 more");
         });
+
+        it('should show a message even if no seeds are selected', function() {
+            events.broadcast('selectedElementsUpdate', [ { entities: {} }]);
+            expect(ctrl.seedsMessage).toEqual("No Seeds added. Type in your seeds and click add.")
+        });
     });
 
     describe('When the element is destroyed and an update is received', function() {

@@ -16,6 +16,10 @@ describe('The View Builder Component', function() {
             return {
                 get: function() {
                     return $q.when({});
+                },
+
+                getSchemaVertices: function() {
+                    return [];
                 }
             }
         });
@@ -35,89 +39,63 @@ describe('The View Builder Component', function() {
             expect(ctrl).toBeDefined();
         });
 
-        describe('When created', function() {
-
-            var graph, queryPage;
-
-            beforeEach(inject(function(_graph_, _queryPage_) {
-                graph = _graph_;
-                queryPage = _queryPage_;
-            }));
-
-            it('should use the graph service to set the initial value of the related entities', function() {
-                spyOn(graph, 'getRelatedEntities').and.returnValue('test');
-                var ctrl = $componentController('viewBuilder');
-                expect(ctrl.relatedEntities).toEqual('test')
-            });
-
-            it('should use the graph service to set the initial value of the related edges', function() {
-                spyOn(graph, 'getRelatedEdges').and.returnValue('test');
-                var ctrl = $componentController('viewBuilder');
-                expect(ctrl.relatedEdges).toEqual('test');
-            });
-        });
-
         describe('when initialised', function() {
-            var events;
+            var schema;
             var ctrl;
+            var $q;
+            var gafferSchema
+            var schemaVertices;
 
-            beforeEach(inject(function(_events_) {
-                events = _events_;
+            beforeEach(inject(function(_schema_, _$q_) {
+                schema = _schema_;
+                $q = _$q_;
             }));
 
             beforeEach(function() {
-                ctrl = $componentController('viewBuilder');
+                gafferSchema = {
+                    "edges": {
+                        "myEdge1": {},
+                        "myEdge2": {}
+                    },
+                    "entities": {
+                        "myEntity1": {},
+                        "myEntity2": {}
+                    }
+
+                };
             });
 
             beforeEach(function() {
-                spyOn(events, 'subscribe');
+                ctrl = $componentController('viewBuilder', {$scope: scope});
             });
 
             beforeEach(function() {
+                spyOn(schema, 'get').and.callFake(function() {
+                    return $q.when(gafferSchema);
+                });
+
+                spyOn(schema, 'getSchemaVertices').and.callFake(function() {
+                    return schemaVertices;
+                })
+            });
+
+            it('should get the schema', function() {
                 ctrl.$onInit();
+                expect(schema.get).toHaveBeenCalledTimes(1);
             });
 
-            it('should subscribe to the relatedEntitiesUpdate event', function() {
-                expect(events.subscribe).toHaveBeenCalled();
-                expect(events.subscribe.calls.first().args[0]).toEqual('relatedEntitiesUpdate');
+            it('should set the schema edges', function() {
+                ctrl.$onInit();
+                scope.$digest();
+                expect(ctrl.schemaEdges).toEqual(["myEdge1", "myEdge2"]);
             });
 
-            it('should subscribe to the relatedEdgesUpdate event', function() {
-                expect(events.subscribe).toHaveBeenCalled();
-                expect(events.subscribe.calls.argsFor(1)[0]).toEqual('relatedEdgesUpdate');
+            it('should set the schema entities', function() {
+                ctrl.$onInit();
+                scope.$digest();
+                expect(ctrl.schemaEntities).toEqual(["myEntity1", "myEntity2"])
             });
 
-            describe('when destroyed', function() {
-                var events;
-                var ctrl;
-
-                beforeEach(inject(function(_events_) {
-                    events = _events_;
-                }));
-
-                beforeEach(function() {
-                    ctrl = $componentController('viewBuilder');
-                    ctrl.$onInit();
-                });
-
-                beforeEach(function() {
-                    spyOn(events, 'unsubscribe');
-                });
-
-                beforeEach(function() {
-                    ctrl.$onDestroy();
-                });
-
-                it('should unsubscribe to the relatedEntitiesUpdate event', function() {
-                    expect(events.unsubscribe).toHaveBeenCalled();
-                    expect(events.unsubscribe.calls.first().args[0]).toEqual('relatedEntitiesUpdate');
-                });
-
-                it('should unsubscribe to the relatedEdgesUpdate event', function() {
-                    expect(events.unsubscribe).toHaveBeenCalled();
-                    expect(events.unsubscribe.calls.argsFor(1)[0]).toEqual('relatedEdgesUpdate');
-                });
-            });
         });
 
         describe('When the user adds a filter function', function() {
@@ -255,7 +233,7 @@ describe('The View Builder Component', function() {
             it('should initialise the parameters field', function() {
                 scope.$digest();
                 expect(filter.parameters).toEqual({})
-            })
+            });
         });
 
 

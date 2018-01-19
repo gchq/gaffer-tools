@@ -130,7 +130,6 @@ public class QueryBuilderST {
     @Test
     public void shouldFindRoadUseAroundJunctionM5_10() throws InterruptedException {
         selectOptionWithAriaLabel("operation-name", "Get Elements");
-        selectOption("vertexType", "junction");
         enterText("seedVertex", "M5:10");
         click("add-seeds");
         click("related-edge-RoadUse");
@@ -154,7 +153,6 @@ public class QueryBuilderST {
     @Test
     public void shouldBeAbleToRunParameterisedQueries() throws InterruptedException, SerialisationException {
         selectOptionWithAriaLabel("operation-name", "Two Hop With Limit");
-        selectOption("vertexType", "road");
         enterText("seedVertex", "M5");
         click("add-seeds");
         enterText("param1-", "2");

@@ -59,6 +59,10 @@ md-nav-bar > div > nav {
     background-color: transparent;
 }
 
+md-input-container > textarea {
+    border-width: 2px !important;
+}
+
 md-option > div {
     flex: 1;
 }
