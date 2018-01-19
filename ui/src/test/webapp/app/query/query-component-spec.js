@@ -122,17 +122,16 @@ describe('The Query component', function() {
 
             describe('when adding views', function() {
 
-                it('should create a basic view from the expanded edges and entities', function() {
-                    queryPage.expandEntities = [
-                        'elementGroup1',
-                        'elementGroup2',
-                        'elementGroup3'
-                    ];
+                var view;
 
-                    queryPage.expandEdges = [
-                        "edge1",
-                        "edge2"
-                    ];
+                beforeEach(inject(function(_view_) {
+                    view = _view_;
+                }));
+
+                it('should create a basic view from the view edges and entities', function() {
+
+                    spyOn(view, 'getViewEntities').and.returnValue(['elementGroup1','elementGroup2','elementGroup3']);
+                    spyOn(view, 'getViewEdges').and.returnValue(['edge1','edge2']);
 
                     spyOn(queryPage, 'getSelectedOperation').and.returnValue({
                         class: 'some.operation.with.View',
@@ -158,83 +157,6 @@ describe('The Query component', function() {
 
                     expect(query.execute.calls.argsFor(0)[0]).toContain(JSON.stringify(entities));
                     expect(query.execute.calls.argsFor(0)[0]).toContain(JSON.stringify(edges));
-
-                });
-
-                it('should create filter functions from the expand entities content', function() {
-                    queryPage.expandEdges = [ "element1" ];
-                    queryPage.expandEdgesContent = {
-                        "element1": {
-                            "filters": {
-                                "preAggregation": [
-                                    {
-                                        "property": "timestamp",
-                                        "predicate": "uk.gov.gchq.koryphe.some.Filter",
-                                        "parameters": [
-                                            5,
-                                            false
-                                        ],
-                                        "availableFunctionParameters": [
-                                            "value",
-                                            "someOtherParameter"
-                                        ]
-                                    }
-                                ],
-                                "postAggregation": [
-                                    {
-                                        "property": "count",
-                                        "predicate": "uk.gov.gchq.koryphe.another.Filter",
-                                        "parameters": [
-                                            "test"
-                                        ],
-                                        "availableFunctionParameters": [
-                                            "customFilterValue"
-                                        ]
-                                    }
-                                ]
-                            }
-                        }
-                    }
-
-                    spyOn(queryPage, 'getSelectedOperation').and.returnValue({
-                        class: 'some.operation.with.View',
-                        view: true
-                    });
-
-                    spyOn(query, 'execute');
-
-                    var ctrl = $componentController('query');
-                    ctrl.execute();
-
-                    var expectedEdges = {
-                        "element1": {
-                            preAggregationFilterFunctions: [
-                                {
-                                    predicate: {
-                                        class: "uk.gov.gchq.koryphe.some.Filter",
-                                        value: 5,
-                                        someOtherParameter: false
-                                    },
-                                    selection: [
-                                        "timestamp"
-                                    ]
-                                }
-                            ],
-                            postAggregationFilterFunctions: [
-                                {
-                                    predicate: {
-                                        class: "uk.gov.gchq.koryphe.another.Filter",
-                                        customFilterValue: "test"
-                                    },
-                                    selection: [
-                                        "count"
-                                    ]
-                                }
-                            ]
-                        }
-                    }
-
-                    expect(query.execute.calls.argsFor(0)[0]).toContain(JSON.stringify(expectedEdges));
 
                 });
 

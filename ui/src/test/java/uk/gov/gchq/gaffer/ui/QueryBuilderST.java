@@ -8,6 +8,7 @@ import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.firefox.FirefoxDriver;
@@ -132,11 +133,13 @@ public class QueryBuilderST {
         selectOptionWithAriaLabel("operation-name", "Get Elements");
         enterText("seedVertex", "M5:10");
         click("add-seeds");
-        click("related-edge-RoadUse");
-        click("RoadUse-add-pre-filter");
-        selectOption("RoadUse-pre-property-selector", "startDate");
-        selectOption("RoadUse-pre-startDate-predicate-selector", "uk.gov.gchq.koryphe.impl.predicate.IsMoreThan");
-        enterText("RoadUse-pre-startDate-uk.gov.gchq.koryphe.impl.predicate.IsMoreThan-value", "{\"java.util.Date\": 971416800000}");
+        selectMultiOption("view-edges", "RoadUse");
+        click("add-RoadUse-filters");
+        selectOption("property-selector", "startDate");
+        autoComplete("predicate-autocomplete", "ismore");
+        enterText("value-parameter", "{\"java.util.Date\": 971416800000}");
+        click("before-aggregation");
+        click("submit");
         click("Execute Query");
 
         click("open-raw");
@@ -148,6 +151,46 @@ public class QueryBuilderST {
             assertTrue("Results did not contain: \n" + expectedResult
                     + "\nActual results: \n" + results, results.contains(expectedResult));
         }
+    }
+
+    @Test
+    public void shouldBeAbleToDeleteFiltersOnceCreated() throws InterruptedException {
+
+        // given
+        selectOptionWithAriaLabel("operation-name", "Get Elements");
+        selectMultiOption("view-entities", "Cardinality");
+        click("add-Cardinality-filters");
+        selectOption("property-selector", "hllp");
+        autoComplete("predicate-autocomplete", "exists");
+        click("add-another");
+        selectOption("property-selector", "hllp");
+        autoComplete("predicate-autocomplete", "islessthan");
+        enterText("value-parameter", "20");
+        click("submit");
+
+        // when
+
+        click("delete-post-entity-Cardinality-filter-0");
+        click("delete-post-entity-Cardinality-filter-0");
+        click("Execute Query");
+        click("open-raw");
+
+        // then
+        String expectedString = "" +
+                "  \"view\": {\n" +
+                "    \"globalElements\": [\n" +
+                "      {\n" +
+                "        \"groupBy\": []\n" +
+                "      }\n" +
+                "    ],\n" +
+                "    \"entities\": {\n" +
+                "      \"Cardinality\": {}\n" +
+                "    },\n" +
+                "    \"edges\": {}\n";
+
+
+        assert(getElement("operation-0-json").getText().trim().contains(expectedString));
+
     }
 
     @Test
@@ -176,6 +219,14 @@ public class QueryBuilderST {
         getElement(id).sendKeys(value);
     }
 
+    private void autoComplete(final String id, final String input) throws InterruptedException {
+        WebElement ac = driver.findElement(By.cssSelector("#" + id + " md-autocomplete-wrap md-input-container input"));
+        ac.sendKeys(input);
+        ac.sendKeys(Keys.ENTER);
+
+        Thread.sleep(slowFactor * 500);
+    }
+
     private void selectOption(final String id, final String optionValue) throws InterruptedException {
         getElement(id).click();
 
@@ -183,6 +234,20 @@ public class QueryBuilderST {
         choice.click();
 
         Thread.sleep(slowFactor * 500);
+    }
+
+    private void selectMultiOption(final String id, final String... values) {
+        getElement(id).click();
+        WebElement choice = null;
+
+        for (final String value : values) {
+            choice = driver.findElement(By.cssSelector("md-option[value = '" + value + "']"));
+            choice.click();
+        }
+
+        assertNotNull("You must provide at least one option", choice);
+
+        choice.sendKeys(Keys.ESCAPE);
     }
 
     private void selectOptionWithAriaLabel(final String id, final String label) throws InterruptedException {
