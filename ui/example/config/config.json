@@ -125,5 +125,9 @@
       ],
       "wrapInJson": true
     }
+  },
+  "operationOptionKeys": {
+    "Federated Store - Graph IDs": "gaffer.federatedstore.operation.graphIds",
+    "Federated Store - Skip Failures": "gaffer.federatedstore.operation.skipFailedFederatedStoreExecute"
   }
 }

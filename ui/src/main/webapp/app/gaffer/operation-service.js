@@ -105,7 +105,8 @@ angular.module('app').factory('operationService', ['$http', '$q', 'settings', 'c
         ifOperationSupported(getAllClass, function() {
             query.execute(JSON.stringify(
                 {
-                    class: getAllClass
+                    class: getAllClass,
+                    options: settings.getDefaultOpOptions()
                 }
             ),
             updateNamedOperations,
@@ -123,7 +124,6 @@ angular.module('app').factory('operationService', ['$http', '$q', 'settings', 'c
         });
 
         return defer.promise;
-
     }
 
     var ifOperationSupported = function(operationClass, onSupported, onUnsupported) {
@@ -153,19 +153,22 @@ angular.module('app').factory('operationService', ['$http', '$q', 'settings', 'c
     operationService.createLimitOperation = function() {
         return {
             class: "uk.gov.gchq.gaffer.operation.impl.Limit",
-            resultLimit: settings.getResultLimit()
+            resultLimit: settings.getResultLimit(),
+            options: settings.getDefaultOpOptions()
         };
     }
 
     operationService.createDeduplicateOperation = function() {
         return {
             class: "uk.gov.gchq.gaffer.operation.impl.output.ToSet",
+            options: settings.getDefaultOpOptions()
         };
     }
 
     operationService.createCountOperation = function() {
         return {
-            class: "uk.gov.gchq.gaffer.operation.impl.Count"
+            class: "uk.gov.gchq.gaffer.operation.impl.Count",
+            options: settings.getDefaultOpOptions()
         };
     }
 

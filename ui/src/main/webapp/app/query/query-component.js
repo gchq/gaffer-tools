@@ -45,7 +45,8 @@ function QueryController(queryPage, operationService, types, graph, config, sett
         loading.load()
         query.execute(JSON.stringify({
             class: "uk.gov.gchq.gaffer.operation.OperationChain",
-            operations: [operation, operationService.createLimitOperation(), operationService.createDeduplicateOperation()]
+            operations: [operation, operationService.createLimitOperation(), operationService.createDeduplicateOperation()],
+            options: settings.getDefaultOpOptions()
         }), function(data) {
             loading.finish()
             if (data.length === settings.getResultLimit()) {
@@ -206,6 +207,10 @@ function QueryController(queryPage, operationService, types, graph, config, sett
 
         if (selectedOp.inOutFlag) {
             op.includeIncomingOutGoing = queryPage.getInOutFlag();
+        }
+
+        if(settings.getDefaultOpOptions()) {
+            op.options = settings.getDefaultOpOptions();
         }
 
         return op;
