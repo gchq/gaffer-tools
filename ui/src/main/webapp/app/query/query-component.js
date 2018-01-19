@@ -176,15 +176,15 @@ function QueryController(queryPage, operationService, types, graph, config, sett
             op.parameters = opParams;
         }
 
-        op.view = {
-            globalElements: [{
-                groupBy: []
-            }],
-            entities: {},
-            edges: {}
-        };
-
         if (selectedOp.view) {
+            op.view = {
+                globalElements: [{
+                    groupBy: []
+                }],
+                entities: {},
+                edges: {}
+            };
+
             for(var i in queryPage.expandEntities) {
                 var entity = queryPage.expandEntities[i];
                 op.view.entities[entity] = {};
@@ -210,32 +210,32 @@ function QueryController(queryPage, operationService, types, graph, config, sett
                     op.view.edges[edge].postAggregationFilterFunctions = filterFunctions.postAggregation;
                 }
             }
-        }
 
-        if (time.getStartDate()) {
-            op.view.globalElements.push({
-                "preAggregationFilterFunctions": [ {
-                    "predicate": {
-                        "class": "uk.gov.gchq.koryphe.impl.predicate.IsMoreThan",
-                        "orEqualTo": true,
-                        "value": types.createJsonValue(vm.timeConfig.start.class, time.getStartDate())
-                    },
-                    "selection": [ vm.timeConfig.start.property ]
-                }]
-            });
-        }
+            if (time.getStartDate()) {
+                op.view.globalElements.push({
+                    "preAggregationFilterFunctions": [ {
+                        "predicate": {
+                            "class": "uk.gov.gchq.koryphe.impl.predicate.IsMoreThan",
+                            "orEqualTo": true,
+                            "value": types.createJsonValue(vm.timeConfig.start.class, time.getStartDate())
+                        },
+                        "selection": [ vm.timeConfig.start.property ]
+                    }]
+                });
+            }
 
-        if (time.getEndDate()) {
-            op.view.globalElements.push({
-                "preAggregationFilterFunctions": [ {
-                    "predicate": {
-                        "class": "uk.gov.gchq.koryphe.impl.predicate.IsLessThan",
-                        "orEqualTo": true,
-                        "value": types.createJsonValue(vm.timeConfig.end.class, time.getEndDate())
-                    },
-                    "selection": [ vm.timeConfig.end.property ]
-                }]
-            });
+            if (time.getEndDate()) {
+                op.view.globalElements.push({
+                    "preAggregationFilterFunctions": [ {
+                        "predicate": {
+                            "class": "uk.gov.gchq.koryphe.impl.predicate.IsLessThan",
+                            "orEqualTo": true,
+                            "value": types.createJsonValue(vm.timeConfig.end.class, time.getEndDate())
+                        },
+                        "selection": [ vm.timeConfig.end.property ]
+                    }]
+                });
+            }
         }
 
         if (selectedOp.inOutFlag) {

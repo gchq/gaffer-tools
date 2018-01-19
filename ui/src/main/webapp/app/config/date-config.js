@@ -18,37 +18,17 @@
 
 angular.module('app').config(['$mdDateLocaleProvider', function($mdDateLocaleProvider) {
 
+    var locale = window.navigator.userLanguage || window.navigator.language;
+    moment.locale(locale);
+
     $mdDateLocaleProvider.parseDate = function(dateString) {
-        if (!dateString || typeof dateString !== "string") {
-            return Date(NaN);
-        }
-
-        var parts = dateString.split('/');
-        if (parts.length === 1) {
-            parts = dateString.split('-');
-            if (parts.length === 1) {
-                parts = dateString.split('.');
-                if (parts.length === 1) {
-                    return new Date(NaN);
-                }
-            }
-        }
-
-        if (parts.length === 3) {
-            var day = Number(parts[0]);
-            var month = Number(parts[1]);
-            var year = Number(parts[2]);
-
-            return new Date(year, month, day);
-
-        } else {
-            return new Date(NaN);
-        }
-
-
+        var m = moment(dateString, 'L', false);
+        return m.isValid() ? m.toDate() : new Date(NaN);
     }
 
     $mdDateLocaleProvider.formatDate = function(date) {
-        return date ? new Intl.DateTimeFormat('en-GB').format(date) : null;
+        var m = moment(date);
+        return m.isValid() ? m.format('L') : '';
     }
+
 }]);
