@@ -90,6 +90,10 @@ md-nav-bar > div > nav {
     text-transform: none !important;
 }
 
+md-input-container > textarea {
+    border-width: 2px !important;
+}
+
 md-option > div {
     flex: 1;
 }
