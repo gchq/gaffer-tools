@@ -211,7 +211,7 @@ function QueryController(queryPage, operationService, types, graph, config, sett
                 }
             }
 
-            if (time.getStartDate()) {
+            if (time.getStartDate() !== undefined && time.getStartDate() !== null) {
                 op.view.globalElements.push({
                     "preAggregationFilterFunctions": [ {
                         "predicate": {
@@ -224,7 +224,7 @@ function QueryController(queryPage, operationService, types, graph, config, sett
                 });
             }
 
-            if (time.getEndDate()) {
+            if (time.getEndDate() !== undefined && time.getEndDate !== null) {
                 op.view.globalElements.push({
                     "preAggregationFilterFunctions": [ {
                         "predicate": {
