@@ -89,7 +89,7 @@ describe('The seed builder component', function() {
             });
 
             it('should check the schema vertices', function() {
-                expect(schema.getSchemaVertices).toHaveBeenCalledTimes(1);
+                expect(schema.getSchemaVertices).toHaveBeenCalled();
             });
 
             it('should set the vertex class to that of the first item in the schema vertices array', function() {

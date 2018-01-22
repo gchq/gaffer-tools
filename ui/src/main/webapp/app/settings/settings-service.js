@@ -47,7 +47,7 @@ angular.module('app').factory('settings', ['$q', 'config', 'events', function($q
 
     settings.setDefaultOpOptions = function(opOptions) {
         defaultOpOptions = opOptions;
-        events.broadcast('defaultOpOptionsUpdated', defaultOpOptions);
+        events.broadcast('defaultOpOptionsUpdated');
     }
 
     settings.getOpOptionKeys = function() {

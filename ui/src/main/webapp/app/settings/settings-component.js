@@ -96,6 +96,10 @@ function SettingsController(settings, schema, operationService, results) {
         return keys;
     }
 
+    vm.hasOpOptions = function() {
+        return vm.opOptionKeys && Object.keys(vm.opOptionKeys).length > 0;
+    }
+
     vm.hasMoreOpOptions = function() {
         return vm.defaultOpOptionsArray.length < Object.keys(vm.opOptionKeys).length;
     }

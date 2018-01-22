@@ -20,7 +20,7 @@ angular.module('app').factory('queryPage', ['settings', 'events', function(setti
     var service = {}
     var selectedOperation;
     var inOutFlag = 'EITHER';
-    var opOptions = angular.copy(settings.getDefaultOpOptions());
+    var opOptions;
 
     service.getSelectedOperation = function() {
         return selectedOperation;
@@ -49,12 +49,15 @@ angular.module('app').factory('queryPage', ['settings', 'events', function(setti
     service.reset = function() {
         selectedOperation = undefined;
         inOutFlag = 'EITHER';
+        onDefaultOpOptionsUpdated(settings.getDefaultOpOptions());
+    }
+
+    var onDefaultOpOptionsUpdated = function() {
         opOptions = angular.copy(settings.getDefaultOpOptions());
     }
 
-    events.subscribe('defaultOpOptionsUpdated', function(results) {
-        opOptions = angular.copy(settings.getDefaultOpOptions());
-    });
+    events.subscribe('defaultOpOptionsUpdated', onDefaultOpOptionsUpdated)
+    onDefaultOpOptionsUpdated(settings.getDefaultOpOptions());
 
     return service;
 
