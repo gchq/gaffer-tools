@@ -16,32 +16,44 @@
 
 'use strict';
 
-angular.module('app').factory('queryPage', function() {
+angular.module('app').factory('view', function() {
     var service = {}
-    var selectedOperation;
-    var inOutFlag = 'EITHER';
 
-    service.getSelectedOperation = function() {
-        return selectedOperation;
+    var viewEntities = [];
+    var viewEdges = [];
+    var entityFilters = {};
+    var edgeFilters = {};
+
+    service.getViewEntities = function() {
+        return viewEntities;
     }
 
-    service.setSelectedOperation = function(op) {
-        selectedOperation = op;
+    service.getViewEdges = function() {
+        return viewEdges;
     }
 
-    service.getInOutFlag = function() {
-        return inOutFlag;
+    service.getEntityFilters = function() {
+        return entityFilters;
     }
 
-    service.setInOutFlag = function(flag) {
-        inOutFlag = flag;
+    service.getEdgeFilters = function() {
+        return edgeFilters;
+    }
+
+    service.setViewEntities = function(entities) {
+        viewEntities = entities;
+    }
+
+    service.setViewEdges = function(edges) {
+        viewEdges = edges;
     }
 
     service.reset = function() {
-        selectedOperation = undefined;
-        inOutFlag = 'EITHER';
+        viewEntities = [];
+        viewEdges = [];
+        entityFilters = {};
+        edgeFilters = {};
     }
 
     return service;
-
 });

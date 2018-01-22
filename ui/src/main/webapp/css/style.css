@@ -59,6 +59,37 @@ md-nav-bar > div > nav {
     background-color: transparent;
 }
 
+.no-ellipsis .md-select-value > span:not(.md-select-icon) {
+    white-space: normal;
+}
+
+.searchable-select .search-box {
+    border: none;
+    outline: none;
+    height: 100%;
+    width: 100%;
+    padding: 0;
+}
+
+.searchable-select .search-header {
+    box-shadow: 0 1px 0 0 rgba(0, 0, 0, 0.1), 0 0 0 0 rgba(0, 0, 0, 0.14), 0 0 0 0 rgba(0, 0, 0, 0.12);
+    padding-left: 10.667px;
+    height: 48px;
+    cursor: pointer;
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: auto;
+}
+
+.searchable-select md-content._md {
+    max-height: 240px;
+}
+
+.no-text-transform {
+    text-transform: none !important;
+}
+
 md-input-container > textarea {
     border-width: 2px !important;
 }

@@ -10,20 +10,14 @@
                            aria-label="operation picker"
                            md-on-close="ctrl.updateModel()">
                     <md-option ng-value="op" ng-repeat="op in ctrl.availableOperations" aria-label="{{op.name}}">
-                        <div layout="row" layout-align="space-between center">
-                            <span>{{op.name}}</span>
-                            <md-icon class="standalone-icon" flex="nogrow" md-svg-icon="info" title="{{op.description}}"></md-icon>
-                        </div>
+                        <div class="md-body-2">{{op.name}}</div>
+                        <em class="md-body-1">{{op.description}}</em>
                     </md-option>
                 </md-select>
                 <div class="errors" ng-messages="ctrl.operationForm.name.$error">
                     <div ng-message="required">Required</div>
                 </div>
             </md-input-container>
-            <md-button class="md-icon-button" ng-click="ctrl.showOperationInfo($event)" ng-disabled="ctrl.operationForm.$invalid">
-                <md-tooltip>More Info</md-tooltip>
-                <md-icon md-svg-icon="help"></md-icon>
-            </md-button>
             <md-button class="md-icon-button" ng-click="ctrl.refreshNamedOperations()">
                 <md-tooltip>Refresh named operations</md-tooltip>
                 <md-icon md-svg-icon="refresh"></md-icon>

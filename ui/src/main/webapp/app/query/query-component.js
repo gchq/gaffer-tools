@@ -27,7 +27,7 @@ function query() {
     };
 }
 
-function QueryController(queryPage, operationService, types, graph, config, settings, query, functions, schema, common, results, navigation, $mdDialog, loading) {
+function QueryController(queryPage, view, operationService, types, graph, config, settings, query, functions, schema, common, results, navigation, $mdDialog, loading) {
 
     var vm = this;
 
@@ -83,6 +83,7 @@ function QueryController(queryPage, operationService, types, graph, config, sett
         results.update(data);
         navigation.goTo('graph');
         queryPage.reset();
+        view.reset();
     }
 
     var createOpInput = function() {
@@ -100,46 +101,6 @@ function QueryController(queryPage, operationService, types, graph, config, sett
             });
         }
         return opInput;
-    }
-
-    var generateFilterFunctions = function(filters) {
-        var filterFunctions = [];
-
-        for(var index in filters) {
-            var filter = filters[index];
-            if(filter.property && filter['predicate']) {
-                var functionJson = {
-                    "predicate": {
-                        class: filter['predicate']
-                    },
-                    selection: [ filter.property ]
-                };
-
-                for(var i in filter.availableFunctionParameters) {
-                    if(filter.parameters[i] !== undefined) {
-                        var param;
-                        try {
-                            param = JSON.parse(filter.parameters[i]);
-                        } catch(e) {
-                            param = filter.parameters[i];
-                        }
-                        functionJson["predicate"][filter.availableFunctionParameters[i]] = param;
-                    }
-                }
-                filterFunctions.push(functionJson);
-            }
-        }
-
-        return filterFunctions;
-    }
-
-    var convertFilterFunctions = function(expandElementContent) {
-        var filterFunctions = { preAggregation: [], postAggregation: [] };
-        if(expandElementContent && expandElementContent.filters) {
-            filterFunctions.preAggregation = generateFilterFunctions(expandElementContent.filters.preAggregation);
-            filterFunctions.postAggregation = generateFilterFunctions(expandElementContent.filters.postAggregation);
-        }
-        return filterFunctions;
     }
 
     var createOperation = function() {
@@ -169,6 +130,11 @@ function QueryController(queryPage, operationService, types, graph, config, sett
         }
 
         if (selectedOp.view) {
+            var viewEdges = view.getViewEdges();
+            var viewEntities = view.getViewEntities();
+            var edgeFilters = view.getEdgeFilters();
+            var entityFilters = view.getEntityFilters();
+
             op.view = {
                 globalElements: [{
                     groupBy: []
@@ -177,29 +143,24 @@ function QueryController(queryPage, operationService, types, graph, config, sett
                 edges: {}
             };
 
-            for(var i in queryPage.expandEntities) {
-                var entity = queryPage.expandEntities[i];
+
+            for(var i in viewEntities) {
+                var entity = viewEntities[i];
                 op.view.entities[entity] = {};
 
-                var filterFunctions = convertFilterFunctions(queryPage.expandEntitiesContent[entity]);
-                if(filterFunctions.preAggregation.length > 0) {
-                    op.view.entities[entity].preAggregationFilterFunctions = filterFunctions.preAggregation;
-                }
-                if(filterFunctions.postAggregation.length > 0) {
-                    op.view.entities[entity].postAggregationFilterFunctions = filterFunctions.postAggregation;
+                var filterFunctions = entityFilters[entity];
+                if (filterFunctions) {
+                    op.view.entities[entity] = filterFunctions;
                 }
             }
 
-            for(var i in queryPage.expandEdges) {
-                var edge = queryPage.expandEdges[i];
+            for(var i in viewEdges) {
+                var edge = viewEdges[i];
                 op.view.edges[edge] = {};
 
-                var filterFunctions = convertFilterFunctions(queryPage.expandEdgesContent[edge]);
-                if(filterFunctions.preAggregation.length > 0) {
-                    op.view.edges[edge].preAggregationFilterFunctions = filterFunctions.preAggregation;
-                }
-                if(filterFunctions.postAggregation.length > 0) {
-                    op.view.edges[edge].postAggregationFilterFunctions = filterFunctions.postAggregation;
+                var filterFunctions = edgeFilters[edge];
+                if (filterFunctions) {
+                    op.view.edges[edge] = filterFunctions;
                 }
             }
         }

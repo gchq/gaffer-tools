@@ -60,20 +60,6 @@ function OperationSelectorController(operationService, operationSelectorService,
         });
     }
 
-    vm.showOperationInfo = function(ev) {
-        $mdDialog.show({
-            templateUrl: 'app/query/operation-selector/operation-info/operation-info.html',
-            controller: 'OperationInfoController',
-            controllerAs: 'ctrl',
-            locals: {
-                operation: vm.selectedOp
-            },
-            parent: angular.element(document.body),
-            targetEvent: ev,
-            clickOutsideToClose: true
-        });
-    }
-
     vm.updateModel = function() {
         queryPage.setSelectedOperation(vm.selectedOp);
     }

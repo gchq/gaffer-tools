@@ -20,6 +20,14 @@ angular.module('app').factory('common', [function() {
 
     var common = {};
 
+    common.endsWith = function(str, suffix) { // to support ES5
+        return str.indexOf(suffix, str.length - suffix.length) !== -1;
+    }
+
+    common.startsWith = function(str, prefix) { // to support ES5
+        return str.indexOf(prefix) === 0;
+    }
+
     common.clone = function(obj) {
         return JSON.parse(JSON.stringify(obj));
     }
@@ -40,7 +48,7 @@ angular.module('app').factory('common', [function() {
     }
 
     common.parseUrl = function(url) {
-        if(!url.startsWith("http")) {
+        if(!common.startsWith(url, "http")) {
             url = "http://" + url;
         }
 

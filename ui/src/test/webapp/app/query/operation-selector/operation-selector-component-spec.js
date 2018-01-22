@@ -147,51 +147,6 @@ describe('Operation Selector Component', function() {
             });
         });
 
-        describe('when a user clicks the more info icon', function() {
-
-            var $mdDialog;
-            var ctrl;
-
-            beforeEach(inject(function(_$mdDialog_) {
-                $mdDialog = _$mdDialog_;
-            }));
-
-            beforeEach(function() {
-                spyOn($mdDialog, 'show');
-            });
-
-            beforeEach(function() {
-                ctrl = $componentController('operationSelector');
-                ctrl.selectedOp = "testOperation";
-                ctrl.showOperationInfo();
-            });
-
-            it('should open a new dialog', function() {
-                expect($mdDialog.show).toHaveBeenCalledTimes(1);
-            });
-
-            it('should pass the selected operation as an argument', function() {
-                expect($mdDialog.show.calls.argsFor(0)[0]).toEqual(jasmine.objectContaining({locals: {operation: "testOperation"}}));
-            });
-
-            it('should pass the operation-info.html to the dialog', function() {
-                expect($mdDialog.show.calls.argsFor(0)[0]).toEqual(jasmine.objectContaining({templateUrl: 'app/query/operation-selector/operation-info/operation-info.html'}));
-            });
-
-            it('should pass the name of the controller to the dialog', function() {
-                expect($mdDialog.show.calls.argsFor(0)[0]).toEqual(jasmine.objectContaining({controller: 'OperationInfoController'}));
-            });
-
-            it('should bind the controller to the dialog using controllerAs', function() {
-                expect($mdDialog.show.calls.argsFor(0)[0]).toEqual(jasmine.objectContaining({controllerAs: 'ctrl'}));
-            });
-
-            it('should allow the user to click outside the dialog to close it', function() {
-                expect($mdDialog.show.calls.argsFor(0)[0]).toEqual(jasmine.objectContaining({clickOutsideToClose: true}));
-            });
-
-        });
-
         describe('when the user clicks the refresh button', function() {
             var ctrl;
 
