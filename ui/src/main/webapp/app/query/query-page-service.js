@@ -16,11 +16,11 @@
 
 'use strict';
 
-angular.module('app').factory('queryPage', ['settings', function(settings) {
+angular.module('app').factory('queryPage', ['settings', 'events', function(settings, events) {
     var service = {}
     var selectedOperation;
     var inOutFlag = 'EITHER';
-    var opOptions = settings.getDefaultOpOptions();
+    var opOptions = angular.copy(settings.getDefaultOpOptions());
 
     service.getSelectedOperation = function() {
         return selectedOperation;
@@ -51,6 +51,10 @@ angular.module('app').factory('queryPage', ['settings', function(settings) {
         inOutFlag = 'EITHER';
         opOptions = angular.copy(settings.getDefaultOpOptions());
     }
+
+    events.subscribe('defaultOpOptionsUpdated', function(results) {
+        opOptions = angular.copy(settings.getDefaultOpOptions());
+    });
 
     return service;
 

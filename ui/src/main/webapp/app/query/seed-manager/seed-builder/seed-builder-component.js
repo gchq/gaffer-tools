@@ -35,8 +35,10 @@ function SeedBuilderController(schema, types, graph) {
 
     vm.$onInit = function() {
         schema.get().then(function(gafferSchema) {
-            var vertexType = schema.getSchemaVertices()[0];
-            vm.vertexClass = gafferSchema.types[vertexType].class;
+            if(undefined !== schema.getSchemaVertices()[0]) {
+                var vertexType = schema.getSchemaVertices()[0];
+                vm.vertexClass = gafferSchema.types[vertexType].class;
+            }
         });
     }
 

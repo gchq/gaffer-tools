@@ -27,7 +27,6 @@ function optionsForm() {
 }
 
 function OptionsFormController(queryPage, settings) {
-    console.log(settings);
     var vm = this;
 
     var updateOpOptionsArray = function() {
@@ -40,7 +39,6 @@ function OptionsFormController(queryPage, settings) {
     }
 
     var updateOpOptions = function() {
-        console.log(vm.opOptionsArray);
         var newOpOptions = {};
         for (var i in vm.opOptionsArray) {
             if(vm.opOptionsArray[i].key) {
@@ -48,6 +46,7 @@ function OptionsFormController(queryPage, settings) {
             }
         }
         vm.opOptions = newOpOptions
+        queryPage.setOpOptions(vm.opOptions);
     }
 
     vm.opOptionKeys = {};
@@ -57,7 +56,6 @@ function OptionsFormController(queryPage, settings) {
 
     vm.updateOpOptions = function() {
         updateOpOptions();
-        queryPage.setOpOptions(vm.opOptions);
     }
 
     vm.addOperationOption = function() {
@@ -75,11 +73,15 @@ function OptionsFormController(queryPage, settings) {
     vm.getOpOptionKeys = function(opOption) {
         var keys = {};
         for(var k in vm.opOptionKeys) {
-            if(k === opOption.key || !(k in vm.opOptions)) {
+            if(vm.opOptionKeys[k] === opOption.key || !(vm.opOptionKeys[k] in vm.opOptions)) {
                 keys[k] = vm.opOptionKeys[k];
             }
         }
         return keys;
+    }
+
+    vm.hasMoreOpOptions = function() {
+        return vm.opOptionsArray.length < Object.keys(vm.opOptionKeys).length;
     }
 
     vm.$onInit = function() {

@@ -16,7 +16,7 @@
 
 'use strict';
 
-angular.module('app').factory('schema', ['$http', 'config', '$q', 'common', function($http, config, $q, common) {
+angular.module('app').factory('schema', ['$http', 'config', '$q', 'common', 'operationService', 'query', function($http, config, $q, common, operationService, query) {
 
     var schemaService = {};
 
@@ -33,29 +33,71 @@ angular.module('app').factory('schema', ['$http', 'config', '$q', 'common', func
         return defer.promise;
     }
 
+    schemaService.update = function() {
+        var defer = $q.defer();
+        load(defer);
+        return defer.promise;
+    }
+
     schemaService.getSchemaVertices = function() {
         return schemaVertices;
     }
 
-    var load = function(defer) {
-        config.get().then(function(conf) {
-            var queryUrl = common.parseUrl(conf.restEndpoint + "/graph/config/schema");
+    var loadSchemaFromUrl = function(conf, defer) {
+        var queryUrl = common.parseUrl(conf.restEndpoint + "/graph/config/schema");
+        $http.get(queryUrl)
+            .success(function(response){
+                schema = response;
+                defer.resolve(schema)
+                updateSchemaVertices()
+            })
+            .error(function(err) {
+                defer.reject(err);
+                if (err !== "") {
+                    alert("Unable to load schema: " + err.simpleMessage);
+                    console.log(err);
+                } else {
+                    alert("Unable to load schema. Received no response");
+                }
+        });
+    }
 
-            $http.get(queryUrl)
-                .success(function(response){
+    var loadSchemaFromOperation = function(conf, defer) {
+        try {
+            query.execute(
+                JSON.stringify(operationService.createGetSchemaOperation()),
+                function(response) {
                     schema = response;
                     defer.resolve(schema)
                     updateSchemaVertices()
-                })
-                .error(function(err) {
-                    defer.reject(err);
+                },
+                function(err) {
                     if (err !== "") {
-                        alert("Unable to load schema: " + err.simpleMessage);
                         console.log(err);
                     } else {
                         alert("Unable to load schema. Received no response");
                     }
-            });
+                    loadSchemaFromUrl(conf, defer);
+                }
+            );
+        } catch(e) {
+            loadSchemaFromUrl(conf, defer);
+       }
+    }
+
+    var load = function(defer) {
+        config.get().then(function(conf) {
+            defer = $q.defer();
+            loadSchemaFromOperation(conf, defer),
+            function(err) {
+                defer.reject(err);
+                if (err !== "") {
+                    alert("Unable to load schema: " + err.simpleMessage);
+                    console.log(err);
+                } else {
+                    alert("Unable to load schema. Received no response");
+                }
+            };
         });
     }
 

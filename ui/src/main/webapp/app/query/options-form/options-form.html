@@ -44,6 +44,7 @@
             <div>
                 <md-button class="md-primary"
                            aria-label="add operation option"
+                           ng-disabled="!ctrl.hasMoreOpOptions()"
                            ng-click="ctrl.addOperationOption()">
                     Add Operation Option
                 </md-button>

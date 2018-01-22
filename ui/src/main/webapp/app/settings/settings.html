@@ -17,7 +17,14 @@
 <div layout-padding layout-margin>
     <div class="container">
         <div class="panelHeading">
-            <h3>Settings</h3>
+            <h3>Settings
+                <md-button class="md-primary"
+                           aria-label="update schema"
+                           ng-click="ctrl.updateSchema()">
+                    Update schema
+                </md-button>
+            </h3>
+
         </div>
 
         <div layout="column">
@@ -77,6 +84,7 @@
             <div>
                 <md-button class="md-primary"
                            aria-label="add operation option"
+                           ng-disabled="!ctrl.hasMoreOpOptions()"
                            ng-click="ctrl.addDefaultOperationOption()">
                     Add Operation Option
                 </md-button>

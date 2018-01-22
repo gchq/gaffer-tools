@@ -16,13 +16,14 @@
 
 'use strict';
 
-angular.module('app').factory('settings', ['$q', 'config', function($q, config) {
+angular.module('app').factory('settings', ['$q', 'config', 'events', function($q, config, events) {
     var settings = {};
 
     var resultLimit = 100;
     var defaultOp = "uk.gov.gchq.gaffer.operation.impl.get.GetElements";
     var defaultOpOptions = {};
     var opOptionKeys;
+    var defaultOpOptionsUpdateListeners = [];
 
     settings.getResultLimit = function() {
         return resultLimit;
@@ -46,6 +47,7 @@ angular.module('app').factory('settings', ['$q', 'config', function($q, config) 
 
     settings.setDefaultOpOptions = function(opOptions) {
         defaultOpOptions = opOptions;
+        events.broadcast('defaultOpOptionsUpdated', defaultOpOptions);
     }
 
     settings.getOpOptionKeys = function() {

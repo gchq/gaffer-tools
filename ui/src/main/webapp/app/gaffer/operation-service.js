@@ -150,6 +150,14 @@ angular.module('app').factory('operationService', ['$http', '$q', 'settings', 'c
         })
     }
 
+    operationService.createGetSchemaOperation = function() {
+        return {
+            class: "uk.gov.gchq.gaffer.store.operation.GetSchema",
+            compact: false,
+            options: settings.getDefaultOpOptions()
+        };
+    }
+
     operationService.createLimitOperation = function() {
         return {
             class: "uk.gov.gchq.gaffer.operation.impl.Limit",

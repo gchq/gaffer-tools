@@ -28,7 +28,6 @@ function settingsView() {
 }
 
 function SettingsController(settings, schema, operationService, results) {
-
     var vm = this;
 
     var updateDefaultOpOptionsArray = function() {
@@ -41,7 +40,6 @@ function SettingsController(settings, schema, operationService, results) {
     }
 
     var updateDefaultOpOptions = function() {
-    console.log(vm.defaultOpOptionsArray);
         var newDefaultOpOptions = {};
         for (var i in vm.defaultOpOptionsArray) {
             if(vm.defaultOpOptionsArray[i].key) {
@@ -74,7 +72,6 @@ function SettingsController(settings, schema, operationService, results) {
 
     vm.updateDefaultOpOptions = function() {
         updateDefaultOpOptions();
-        console.log(vm.defaultOpOptions);
     }
 
     vm.addDefaultOperationOption = function() {
@@ -92,11 +89,19 @@ function SettingsController(settings, schema, operationService, results) {
     vm.getOpOptionKeys = function(opOption) {
         var keys = {};
         for(var k in vm.opOptionKeys) {
-            if(k === opOption.key || !(k in vm.defaultOpOptions)) {
+            if(vm.opOptionKeys[k] === opOption.key || !(vm.opOptionKeys[k] in vm.defaultOpOptions)) {
                 keys[k] = vm.opOptionKeys[k];
             }
         }
         return keys;
+    }
+
+    vm.hasMoreOpOptions = function() {
+        return vm.defaultOpOptionsArray.length < Object.keys(vm.opOptionKeys).length;
+    }
+
+    vm.updateSchema = function() {
+        schema.update();
     }
 
     vm.$onInit = function() {
