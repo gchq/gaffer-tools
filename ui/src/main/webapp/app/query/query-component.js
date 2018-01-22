@@ -224,7 +224,7 @@ function QueryController(queryPage, operationService, types, graph, config, sett
                 });
             }
 
-            if (time.getEndDate() !== undefined && time.getEndDate !== null) {
+            if (time.getEndDate() !== undefined && time.getEndDate() !== null) {
                 op.view.globalElements.push({
                     "preAggregationFilterFunctions": [ {
                         "predicate": {
