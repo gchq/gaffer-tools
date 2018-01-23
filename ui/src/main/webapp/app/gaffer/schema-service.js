@@ -94,23 +94,6 @@ angular.module('app').factory('schema', ['$http', 'config', '$q', 'common', func
         return undefined;
     }
 
-
-    schemaService.getVertexTypeFromEntityGroup = function(group) {
-        for(var entityGroup in schema.entities) {
-            if(entityGroup === group) {
-                return schema.entities[entityGroup].vertex;
-            }
-        }
-    }
-
-    schemaService.getVertexTypesFromEdgeGroup = function(group) {
-        for(var edgeGroup in schema.edges) {
-            if(edgeGroup === group) {
-               return [schema.edges[edgeGroup].source, schema.edges[edgeGroup].destination];
-            }
-        }
-    }
-
     schemaService.get();
 
 

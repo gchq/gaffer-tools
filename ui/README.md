@@ -125,9 +125,8 @@ You will be taken directly to the query page. Here is where you can build your q
 ##### Build and execute a query to find all locations within the South West region:
 - click on the 'Get Elements' row
 - in the "Add Seeds" section we will add a seed as the starting point for your query:
-  - Vertex Type: ```region```
   - Value: ```South West```
-  - Click '+'  Don't forget this step!
+  - Click '+' or press 'enter'  Don't forget this step!
 - in the "Configure View" section select 'RegionContainsLocation' to tell Gaffer you only want 'RegionContainsLocation' edges to be returned. If you didn't select any groups then you would just get all groups returned.
 - click the execute query button in the bottom right hand corner
 

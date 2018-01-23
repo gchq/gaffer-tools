@@ -16,7 +16,34 @@
 
 'use strict';
 
-angular.module('app').component('viewBuilder', viewBuilder());
+var app = angular.module('app');
+
+app.filter('schemaGroupFilter', function() {
+    return function(input, search) {
+        if(!input) {
+            return input;
+        }
+        if (!search) {
+            return input;
+        }
+        var lowercaseSearch = ('' + search).toLowerCase();
+        var result = {};
+
+        angular.forEach(input, function(info, group) {
+            var lowercaseGroup = group.toLowerCase();
+            var lowerCaseDescription = info.description.toLowerCase();
+            if (lowercaseGroup.indexOf(lowercaseSearch) !== -1) {
+                result[group] = info;
+            } else if (lowerCaseDescription.indexOf(lowercaseSearch) !== -1) {
+                result[group] = info;
+            }
+        });
+
+        return result;
+    }
+});
+
+app.component('viewBuilder', viewBuilder());
 
 function viewBuilder() {
     return {
@@ -26,102 +53,297 @@ function viewBuilder() {
     }
 }
 
-function ViewBuilderController(queryPage, graph, common, schema, functions, events) {
+function ViewBuilderController(view, graph, common, schema, functions, events, types, $mdDialog) {
     var vm = this;
 
-    vm.relatedEntities = graph.getRelatedEntities();
-    vm.relatedEdges = graph.getRelatedEdges();
-    vm.expandEdges = queryPage.expandEdges;
-    vm.expandEntities = queryPage.expandEntities;
-    vm.expandEdgesContent = queryPage.expandEdgesContent;
-    vm.expandEntitiesContent = queryPage.expandEntitiesContent;
-
-    var setRelatedEntities = function(relatedEntities) {
-        vm.relatedEntities = relatedEntities;
-    }
-
-    var setRelatedEdges = function(relatedEdges) {
-        vm.relatedEdges = relatedEdges;
-    }
+    vm.schemaEntities;
+    vm.schemaEdges;
+    vm.viewEdges = view.getViewEdges();
+    vm.viewEntities = view.getViewEntities();
+    vm.edgeFilters = view.getEdgeFilters();
+    vm.entityFilters = view.getEntityFilters();
 
     vm.$onInit = function() {
-        events.subscribe('relatedEntitiesUpdate', setRelatedEntities);
-        events.subscribe('relatedEdgesUpdate', setRelatedEdges);
-    }
-
-    vm.$onDestroy = function() {
-        events.unsubscribe('relatedEntitiesUpdate', setRelatedEntities);
-        events.unsubscribe('relatedEdgesUpdate', setRelatedEdges);
-    }
-
-
-    vm.getEntityProperties = schema.getEntityProperties;
-    vm.getEdgeProperties = schema.getEdgeProperties;
-    vm.exists = common.arrayContainsValue;
-
-    vm.toggle = function(item, list) {
-        var idx = list.indexOf(item);
-        if(idx > -1) {
-            list.splice(idx, 1);
-        } else {
-            list.push(item);
-        }
-    }
-
-    vm.onSelectedPropertyChange = function(group, filter) {
-        functions.getFunctions(group, filter.property, function(data) {
-            filter.availableFunctions = data;
-        });
-        filter.predicate = '';
-    }
-
-    vm.onSelectedFunctionChange = function(group, filter) {
-        functions.getFunctionParameters(filter.predicate, function(data) {
-            filter.availableFunctionParameters = data;
-        });
-
         schema.get().then(function(gafferSchema) {
-            var elementDef;
-            if (gafferSchema.entities) {
-                elementDef = gafferSchema.entities[group];
+            vm.schemaEdges = gafferSchema.edges;
+            vm.schemaEntities = gafferSchema.entities;
+        });
+
+        angular.element(document).find('.search-box').on('keydown', function(ev) {
+            ev.stopPropagation();
+        });
+    }
+
+    vm.noMore = function(group) {
+        var validEdges = [];
+
+        for (var i in vm.viewEdges) {
+            var edge = vm.viewEdges[i];
+            if (vm.getEdgeProperties(edge)) {
+                validEdges.push(edge);
             }
-            if(!elementDef && gafferSchema.edges) {
-                 elementDef = gafferSchema.edges[group];
+        }
+
+        if (validEdges.indexOf(group) === -1) { // group is an entity
+            if (validEdges.length > 0) {
+                return false;
             }
-            if (gafferSchema.types) {
-                var propertyClass = gafferSchema.types[elementDef.properties[filter.property]].class;
-                if("java.lang.String" !== propertyClass
-                    && "java.lang.Boolean" !== propertyClass
-                    && "java.lang.Integer" !== propertyClass) {
-                    filter.propertyClass = propertyClass;
+            var validEntities = [];
+
+            for (var i in vm.viewEntities) {
+                var entity = vm.viewEntities[i];
+                if (vm.getEntityProperties(entity)) {
+                    validEntities.push(entity);
                 }
             }
 
-            filter.parameters = {};
+            return validEntities.indexOf(group) === validEntities.length - 1;
+        }
+
+        return validEdges.indexOf(group) === validEdges.length - 1;
+    }
+
+
+
+    vm.createViewElementsLabel = function(elements, type) { // type is 'entities' or 'elements'
+        if (!elements || elements.length === 0) {
+            if (!type) {
+                throw 'Cannot create label without either the elements or element type';
+            }
+            return 'Only include these ' + type;
+        } else {
+            return elements.join(', ');
+        }
+    }
+
+    vm.createFilterLabel = function(filter, preAggregation) {
+        var label = filter.selection[0] + ' ';
+        var classParts = filter.predicate.class.split('.');
+        var simpleName = classParts[classParts.length - 1];
+        label += simpleName;
+
+        for (var field in filter.predicate) {
+            if (field === 'class') {
+                continue;
+            }
+            label += (' ' + field + "=" + types.getShortValue(filter.predicate[field]));
+        }
+
+        if (preAggregation) {
+            label += ' before being summarised';
+        } else {
+            label += ' after being summarised';
+        }
+
+        return label;
+
+    }
+
+    vm.editFilter = function(group, elementType, preAggregation, filter, index) {
+        var filterForEdit = {
+            preAggregation: preAggregation,
+            property: filter.selection[0],
+            predicate: filter.predicate.class,
+            parameters: {}
+        }
+        for (var field in filter.predicate) {
+            if (field === 'class') {
+                continue;
+            }
+            filterForEdit.parameters[field] = filter.predicate[field];
+        }
+
+        vm.tmpPreAggregation = preAggregation;
+        vm.tmpIndex = index;
+
+        $mdDialog.show({
+            templateUrl: 'app/query/view-builder/custom-filter-dialog/custom-filter-dialog.html',
+            controller: 'CustomFilterDialogController',
+            locals: {
+                group: group,
+                elementType: elementType,
+                onSubmit: replaceFilterFunction,
+                filterForEdit: filterForEdit
+            },
+            bindToController: true,
+            clickOutsideToClose: false
         });
     }
 
-    vm.addFilterFunction = function(expandElementContent, element, isPreAggregation) {
-        if(!expandElementContent[element]) {
-            expandElementContent[element] = {};
-        }
-
-        if(!expandElementContent[element].filters) {
-            expandElementContent[element].filters = {};
-        }
-
-        if (isPreAggregation) {
-            if (!expandElementContent[element].filters.preAggregation) {
-                expandElementContent[element].filters.preAggregation = [];
+    var getFilterArray = function(group, elementType, preAggregation) {
+        if (elementType === 'edge') {
+            if (preAggregation === true) {
+                return vm.edgeFilters[group].preAggregationFilterFunctions;
+            } else {
+                return vm.edgeFilters[group].postAggregationFilterFunctions;
             }
-            expandElementContent[element].filters.preAggregation.push({});
+        } else {
+            if (preAggregation === true) {
+                return vm.entityFilters[group].preAggregationFilterFunctions;
+            } else {
+                return vm.entityFilters[group].postAggregationFilterFunctions;
+            }
+        }
+    }
+
+    var deleteFilterArray = function(group, elementType, preAggregation) {
+        if (elementType === 'edge') {
+            if (preAggregation === true) {
+                vm.edgeFilters[group].preAggregationFilterFunctions = undefined;
+            } else {
+                vm.edgeFilters[group].postAggregationFilterFunctions = undefined;
+            }
+        } else {
+            if (preAggregation === true) {
+                vm.entityFilters[group].preAggregationFilterFunctions = undefined;
+            } else {
+                vm.entityFilters[group].postAggregationFilterFunctions = undefined;
+            }
+        }
+    }
+
+    vm.deleteFilter = function(group, elementType, preAggregation, index) {
+        var filters = getFilterArray(group, elementType, preAggregation);
+        filters.splice(index, 1);
+        if (filters.length === 0) {
+            deleteFilterArray(group, elementType, preAggregation);
+        }
+    }
+
+
+    vm.addFilters = function(ev, group, elementType) {
+        $mdDialog.show({
+            templateUrl: 'app/query/view-builder/custom-filter-dialog/custom-filter-dialog.html',
+            controller: 'CustomFilterDialogController',
+            locals: {
+                group: group,
+                elementType: elementType,
+                onSubmit: addFilterFunction
+            },
+            bindToController: true,
+            clickOutsideToClose: false,
+            targetEvent: ev
+        });
+    }
+
+    vm.getEntityProperties = function(group) {
+        return schema.getEntityProperties(group);
+    }
+
+    vm.getEdgeProperties =  function(group) {
+        return schema.getEdgeProperties(group);
+    }
+
+    vm.onElementGroupChange = function(elementType) {
+        if(elementType === 'entity') {
+            view.setViewEntities(vm.viewEntities);
+            vm.entitySearchTerm = '';
+        } else if (elementType === 'edge') {
+            view.setViewEdges(vm.viewEdges);
+            vm.edgeSearchTerm = '';
+        }
+    }
+
+    var generateFilterFunction = function(filter) {
+        var functionJson = {
+            "predicate": {
+                class: filter.predicate
+            },
+            "selection": [ filter.property ]
+        }
+
+        for(var i in filter.availableFunctionParameters) {
+            var paramName = filter.availableFunctionParameters[i];
+            if(filter.parameters[paramName] !== undefined) {
+                var param;
+                try {
+                    param = JSON.parse(filter.parameters[paramName]);
+                } catch(e) {
+                    param = filter.parameters[paramName];
+                }
+                functionJson["predicate"][paramName] = param;
+            }
+        }
+
+        return functionJson;
+    }
+
+    var replaceFilterFunction = function(filter, group, elementType) {
+        var filterArray = getFilterArray(group, elementType, vm.tmpPreAggregation);
+
+        if (filter.preAggregation !== vm.tmpPreAggregation) {
+            vm.deleteFilter(group, elementType, vm.tmpPreAggregation, vm.tmpIndex);
+            addFilterFunction(filter, group, elementType);
+            if (filterArray.length === 0) {
+                if (elementType === 'edge') {
+                    if (vm.tmpPreAggregation) {
+                        vm.edgeFilters[group].preAggregationFilterFunctions = undefined;
+                    } else {
+                        vm.edgeFilters[group].postAggregationFilterFunctions = undefined;
+                    }
+                } else {
+                    if (vm.tmpPreAggregation) {
+                        vm.entityFilters[group].preAggregationFilterFunctions = undefined;
+                    } else {
+                        vm.entityFilters[group].postAggregationFilterFunctions = undefined;
+                    }
+                }
+            }
+        } else {
+            filterArray[vm.tmpIndex] = generateFilterFunction(filter)
+        }
+
+        vm.tmpIndex = undefined;
+        vm.tmpPreAggregation = undefined;
+    }
+
+    var addFilterFunction = function(filter, group, elementType) {
+
+        if (!filter.predicate || !filter.property) {
+            return;
+        }
+
+        var functionsToAddTo;
+        if (elementType === 'edge') {
+            if (!vm.edgeFilters[group]) {
+                vm.edgeFilters[group] = {}
+            }
+            if (filter.preAggregation) {
+                if (!vm.edgeFilters[group].preAggregationFilterFunctions) {
+                    vm.edgeFilters[group].preAggregationFilterFunctions = [];
+                }
+
+                functionsToAddTo = vm.edgeFilters[group].preAggregationFilterFunctions;
+            } else {
+                if (!vm.edgeFilters[group].postAggregationFilterFunctions) {
+                    vm.edgeFilters[group].postAggregationFilterFunctions = [];
+                }
+
+                functionsToAddTo = vm.edgeFilters[group].postAggregationFilterFunctions;
+            }
 
         } else {
-            if (!expandElementContent[element].filters.postAggregation) {
-                expandElementContent[element].filters.postAggregation = [];
+            if (!vm.entityFilters[group]) {
+                vm.entityFilters[group] = {}
             }
-            expandElementContent[element].filters.postAggregation.push({});
+            if (filter.preAggregation) {
+                if (!vm.entityFilters[group].preAggregationFilterFunctions) {
+                    vm.entityFilters[group].preAggregationFilterFunctions = [];
+                }
+
+                functionsToAddTo = vm.entityFilters[group].preAggregationFilterFunctions;
+            } else {
+                if (!vm.entityFilters[group].postAggregationFilterFunctions) {
+                    vm.entityFilters[group].postAggregationFilterFunctions = [];
+                }
+
+                functionsToAddTo = vm.entityFilters[group].postAggregationFilterFunctions;
+            }
         }
+
+        var filterFunction = generateFilterFunction(filter);
+
+        functionsToAddTo.push(filterFunction);
     }
 
 }

@@ -16,37 +16,37 @@
 
 'use strict';
 
-angular.module('app').component('inlineSeedBuilder', inlineSeedBuilder());
+angular.module('app').component('seedBuilder', seedBuilder());
 
-function inlineSeedBuilder() {
+function seedBuilder() {
     return {
-        templateUrl: 'app/seed-builder/inline-seed-builder.html',
-        controller: InlineSeedBuilderController,
+        templateUrl: 'app/query/seed-manager/seed-builder/seed-builder.html',
+        controller: SeedBuilderController,
         controllerAs: 'ctrl'
     }
 }
 
-function InlineSeedBuilderController(schema, types, graph) {
+function SeedBuilderController(schema, types, graph) {
     var vm = this;
     vm.seedVertexParts = {};
-    vm.seedVertexType = undefined;
     vm.seedVertices = '';
     vm.multipleSeeds = false;
+    vm.vertexClass;
 
-    vm.schemaTypes = {};
+    vm.$onInit = function() {
+        schema.get().then(function(gafferSchema) {
+            var vertexType = schema.getSchemaVertices()[0];
+            vm.vertexClass = gafferSchema.types[vertexType].class;
+        });
+    }
 
-    schema.get().then(function(gafferSchema) {
-        vm.schemaTypes = gafferSchema.types;
-    });
-
-    vm.getSchemaVertices = schema.getSchemaVertices
 
     vm.inputExists = function() {
         if (vm.multipleSeeds) {
             return (vm.seedVertices !== '');
         }
         for(var part in vm.seedVertexParts) {
-            if (vm.seedVertexParts[part] && vm.seedVertexParts[part] !== "") {
+            if (vm.seedVertexParts[part] !== undefined && vm.seedVertexParts[part] !== "") {
                 return true;
             }
         }
@@ -54,42 +54,32 @@ function InlineSeedBuilderController(schema, types, graph) {
     }
 
     vm.getFields = function() {
-        var schemaType = vm.schemaTypes[vm.seedVertexType];
-        if (!schemaType) {
-            return types.getFields(undefined);
-        }
-        return types.getFields(schemaType.class);
+        return types.getFields(vm.vertexClass);
     }
 
     vm.getCsvHeader = function() {
-        var schemaType = vm.schemaTypes[vm.seedVertexType];
-        if (!schemaType) {
-            return types.getCsvHeader(undefined);
-        }
-        return types.getCsvHeader(schemaType.class);
+        return types.getCsvHeader(vm.vertexClass);
     }
 
     vm.addSeeds = function() {
         if(vm.multipleSeeds) {
             var vertices = vm.seedVertices.trim().split("\n");
             for(var i in vertices) {
-                var vertex = vertices[i];
-                var vertexType = vm.seedVertexType;
-                var typeClass = vm.schemaTypes[vertexType].class;
+                var vertex = vertices[i];;
                 var partValues = vertex.trim().split(",");
-                var fields = types.getFields(typeClass);
+                var fields = types.getFields(vm.vertexClass);
                 if(fields.length != partValues.length) {
-                    alert("Wrong number of parameters for seed: " + vertex + ". " + vertexType + " requires " + fields.length + " parameters");
+                    alert("Wrong number of parameters for seed: " + vertex + ". " + vm.vertexClass + " requires " + fields.length + " parameters");
                     break;
                 }
                 var parts = {};
                 for(var j = 0; j< fields.length; j++) {
                     parts[fields[j].key] = partValues[j];
                 }
-                graph.addSeed(createSeed(vertexType, parts));
+                graph.addSeed(createSeed(parts));
             }
         } else {
-             graph.addSeed(createSeed(vm.seedVertexType, vm.seedVertexParts));
+             graph.addSeed(createSeed(vm.seedVertexParts));
         }
 
         reset();
@@ -102,9 +92,8 @@ function InlineSeedBuilderController(schema, types, graph) {
         vm.seedVertexParts = {};
     }
 
-    var createSeed = function(type, parts) {
-        var typeClass = vm.schemaTypes[type].class;
-        var vertex = types.createJsonValue(typeClass, parts);
-        return {vertexType: type, vertex: vertex};
+    var createSeed = function(parts) {
+        var vertex = types.createJsonValue(vm.vertexClass, parts);
+        return vertex;
     }
 }

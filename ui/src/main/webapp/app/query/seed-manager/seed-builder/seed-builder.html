@@ -1,0 +1,39 @@
+<div layout="column">
+    <ng-form name="ctrl.seedForm">
+        <div layout="row" flex layout-padding>
+            <div layout="column" layout-align="start">
+                <md-switch class="md-primary" md-no-ink aria-label="Multiple Seeds" ng-model="ctrl.multipleSeeds">
+                    Multiple seeds
+                    <md-tooltip md-direction="right">Adding more than one seed at a time?</md-tooltip>
+                </md-switch>
+            </div>
+        </div>
+        <div layout="row" layout-padding flex>
+            <div flex ng-if="!ctrl.multipleSeeds" ng-repeat="field in ctrl.getFields()">
+                <md-input-container id="field.label" flex layout-fill>
+                    <label>{{field.label}}</label>
+                    <input id="seedVertex{{field.key}}"
+                           type="{{field.type}}"
+                           step="{{field.step}}"
+                           ng-model="ctrl.seedVertexParts[field.key]"/>
+                </md-input-container>
+            </div>
+            <md-input-container id="Multiple Seed input" ng-if="ctrl.multipleSeeds" flex layout-fill md-no-float>
+                <textarea id="seedVertices"
+                          rows="5"
+                          md-detect-hidden
+                          ng-model="ctrl.seedVertices"
+                          placeholder="Enter your seeds, each seed on a new line. Then click add.
+                      {{ctrl.getCsvHeader()}}
+                      ">
+                </textarea>
+            </md-input-container>
+            <div layout="column" layout-align="end" layout-margin layout-padding>
+                <md-button class="md-icon-button md-primary" type="submit" ng-click="ctrl.inputExists() && ctrl.addSeeds()" ng-disabled="!ctrl.inputExists()" aria-label="add seeds" id="add-seeds">
+                    <md-icon md-svg-icon="add"></md-icon>
+                    <md-tooltip md-direction="top">Add seeds</md-tooltip>
+                </md-button>
+            </div>
+        </div>
+    </ng-form>
+</div>

@@ -1,0 +1,66 @@
+<md-dialog>
+    <md-toolbar>
+        <div class="md-toolbar-tools">
+            <span>
+                <h2 class="md-headline">Configure Custom Filter</h2>
+            </span>
+        </div>
+    </md-toolbar>
+    <md-dialog-content>
+        <div class="md-dialog-content">
+            <ng-form name="filterForm">
+                <md-input-container layout-fill flex>
+                    <label>Select a property</label>
+                    <md-select required id="property-selector" ng-model="filter.property" ng-change="onSelectedPropertyChange()">
+                        <md-option ng-repeat="(name, type) in getProperties()" ng-value="name">{{name}}</md-option>
+                    </md-select>
+                </md-input-container>
+                    <md-autocomplete
+                        required
+                        ng-disabled="!filter.property"
+                        md-selected-item="filter.predicate"
+                        md-selected-item-change="onSelectedPredicateChange()"
+                        md-search-text="predicateText"
+                        md-min-length="0"
+                        md-items="predicate in search(predicateText)"
+                        md-item-text="createFriendlyName(predicate)"
+                        md-floating-label="Select Filter"
+                        md-require-match
+                        md-select-on-focus
+                        id="predicate-autocomplete"
+                        md-autoselect>
+                    <md-item-template>
+                        <span md-highlight-text="predicateText" md-highlight-flags="^i">{{createFriendlyName(predicate)}}</span>
+                    </md-item-template>
+                    <md-not-found>
+                        No predicates matching {{predicateText}} were found.
+                    </md-not-found>
+                </md-autocomplete>
+                <div layout="row" layout-wrap>
+                    <md-input-container ng-repeat="param in filter.availableFunctionParameters" layout-fill flex="{{getFlexValue()}}">
+                        <label>{{param}}</label>
+                        <input type="text"
+                               id="{{param}}-parameter"
+                               ng-model="filter.parameters[param]">
+                    </md-input-container>
+                    <p ng-show="showWarning()" flex="{{getFlexValue()}}">
+                        If you're entering anything other than an Integer, Boolean or String,
+                        you may need to wrap the object in JSON.
+                        For Example: { "{{propertyClass}}": value }
+                    </p>
+                </div>
+                <p class="md-body-1">Apply filter before or after results are summarised?</p>
+                <md-radio-group layout="row" ng-model="filter.preAggregation">
+                    <md-radio-button ng-value="true" id="before-aggregation" aria-label="before">Before</md-radio-button>
+                    <md-radio-button ng-value="false" id="after-aggregation" aria-label="after">After</md-radio-button>
+                </md-radio-group>
+            </ng-form>
+        </div>
+    </md-dialog-content>
+    <md-dialog-actions layout="row" layout-align="end">
+        <md-button id="cancel" ng-click="cancel()">Cancel</md-button>
+        <md-button id="clear" ng-click="resetForm()">Clear</md-button>
+        <md-button id="add-another" ng-if="!editMode" ng-disabled="filterForm.$invalid" ng-click="addAnother()">Add Another</md-button>
+        <md-button id="submit" ng-disabled="filterForm.$invalid" ng-click="submit()" class="md-primary">Submit</md-button>
+    </md-dialog-actions>
+</md-dialog>
