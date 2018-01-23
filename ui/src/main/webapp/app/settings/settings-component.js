@@ -106,6 +106,7 @@ function SettingsController(settings, schema, operationService, results) {
 
     vm.updateSchema = function() {
         schema.update();
+        operationService.reloadNamedOperations(false);
     }
 
     vm.$onInit = function() {
