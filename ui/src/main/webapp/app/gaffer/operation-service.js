@@ -158,25 +158,34 @@ angular.module('app').factory('operationService', ['$http', '$q', 'settings', 'c
         };
     }
 
-    operationService.createLimitOperation = function() {
+    operationService.createLimitOperation = function(opOptions) {
+        if(!opOptions){
+            opOptions = {};
+        }
         return {
             class: "uk.gov.gchq.gaffer.operation.impl.Limit",
             resultLimit: settings.getResultLimit(),
-            options: settings.getDefaultOpOptions()
+            options: opOptions
         };
     }
 
-    operationService.createDeduplicateOperation = function() {
+    operationService.createDeduplicateOperation = function(opOptions) {
+        if(!opOptions){
+            opOptions = {};
+        }
         return {
             class: "uk.gov.gchq.gaffer.operation.impl.output.ToSet",
-            options: settings.getDefaultOpOptions()
+            options: opOptions
         };
     }
 
-    operationService.createCountOperation = function() {
+    operationService.createCountOperation = function(opOptions) {
+        if(!opOptions){
+            opOptions = {};
+        }
         return {
             class: "uk.gov.gchq.gaffer.operation.impl.Count",
-            options: settings.getDefaultOpOptions()
+            options: opOptions
         };
     }
 

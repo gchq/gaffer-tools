@@ -50,8 +50,8 @@ function QueryController(queryPage, view, operationService, types, graph, config
         loading.load()
         query.execute(JSON.stringify({
             class: "uk.gov.gchq.gaffer.operation.OperationChain",
-            operations: [operation, operationService.createLimitOperation(), operationService.createDeduplicateOperation()],
-            options: settings.getDefaultOpOptions()
+            operations: [operation, operationService.createLimitOperation(operation['options']), operationService.createDeduplicateOperation(operation['options'])],
+            options: operation['options']
         }), function(data) {
             loading.finish()
             if (data.length === settings.getResultLimit()) {

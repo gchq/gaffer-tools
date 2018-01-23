@@ -35,7 +35,7 @@ angular.module('app').factory('schema', ['$http', 'config', '$q', 'common', 'ope
 
     schemaService.update = function() {
         var defer = $q.defer();
-        load(defer);
+        load(defer, loadSchemaFromOperation);
         return defer.promise;
     }
 
@@ -85,10 +85,13 @@ angular.module('app').factory('schema', ['$http', 'config', '$q', 'common', 'ope
        }
     }
 
-    var load = function(defer) {
+    var load = function(defer, loader) {
         config.get().then(function(conf) {
             defer = $q.defer();
-            loadSchemaFromOperation(conf, defer),
+            if(!loader) {
+                loader = loadSchemaFromUrl;
+            }
+            loader(conf, defer),
             function(err) {
                 defer.reject(err);
                 if (err !== "") {
