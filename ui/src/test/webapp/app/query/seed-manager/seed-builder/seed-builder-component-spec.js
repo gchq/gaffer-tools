@@ -89,7 +89,7 @@ describe('The seed builder component', function() {
             });
 
             it('should check the schema vertices', function() {
-                expect(schema.getSchemaVertices).toHaveBeenCalled();
+                expect(schema.getSchemaVertices).toHaveBeenCalledTimes(1);
             });
 
             it('should set the vertex class to that of the first item in the schema vertices array', function() {
@@ -237,6 +237,43 @@ describe('The seed builder component', function() {
                         expect(graph.addSeed).toHaveBeenCalledWith({"some.java.Class": {"type": "meaningOfLife", "value": 42}});
                     });
                 });
+            });
+        });
+    });
+
+    describe('when initialised with an empty schema', function() {
+
+        var schema;
+        var $q;
+
+        beforeEach(inject(function(_schema_, _$q_) {
+            schema = _schema_;
+            $q = _$q_;
+        }));
+
+        beforeEach(function() {
+            spyOn(schema, 'get').and.returnValue($q.when({}));
+            spyOn(schema, 'getSchemaVertices').and.returnValue(undefined);
+        });
+
+        beforeEach(function() {
+            ctrl.$onInit();
+        });
+
+        describe('and when the schema resolves a value', function() {
+
+            var types;
+
+            beforeEach(inject(function(_types_) {
+                types = _types_;
+            }));
+
+            beforeEach(function() {
+                scope.$digest();
+            });
+
+            it('should handle the case when there are no schema vertices', function() {
+                expect(schema.getSchemaVertices).toHaveBeenCalledTimes(1);
             });
         });
     });

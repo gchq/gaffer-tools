@@ -52,7 +52,6 @@ function OptionsFormController(queryPage, settings) {
     vm.opOptionKeys = {};
     vm.opOptions = {};
     vm.opOptionsArray = [];
-    updateOpOptionsArray();
 
     vm.updateOpOptions = function() {
         updateOpOptions();
@@ -88,5 +87,11 @@ function OptionsFormController(queryPage, settings) {
         settings.getOpOptionKeys().then(function(keys) {
             vm.opOptionKeys = keys;
         });
+
+        if(!queryPage.getOpOptions() || Object.keys(queryPage.getOpOptions()).length === 0) {
+            queryPage.setOpOptions(settings.getDefaultOpOptions());
+        }
+
+        updateOpOptionsArray();
     }
 }

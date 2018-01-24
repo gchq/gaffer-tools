@@ -18,13 +18,42 @@ describe('The Options Form Component', function() {
             expect(ctrl).toBeDefined();
         });
 
-        it('should set the options to the values in the queryPage service', function() {
-            spyOn(queryPage, 'getOpOptions').and.returnValue({'key1': "value1"});
+        it('should get operation options from settings when initialised', function() {
+            var opOptions;
+            var defaultOpOptions = {'key1': "value1", 'key2': "value2"};
+            var expectedOpOptionsArray = [
+                {key: 'key1', value: 'value1'},
+                {key: 'key2', value: 'value2'}
+            ];
+
+            spyOn(settings, 'getDefaultOpOptions').and.returnValue(defaultOpOptions);
+            spyOn(queryPage, 'getOpOptions').and.returnValue({});
+            spyOn(queryPage, 'setOpOptions').and.callFake(function(newOpOptions) {
+                opOptions = newOpOptions;
+            });
 
             var ctrl = $componentController('optionsForm');
 
-            expect(queryPage.getOpOptions).toHaveBeenCalledTimes(1);
-            expect(ctrl.opOptions).toEqual({'key1': "value1"});
+            ctrl.$onInit();
+
+            expect(settings.getDefaultOpOptions).toHaveBeenCalledTimes(1);
+            expect(queryPage.setOpOptions).toHaveBeenCalledTimes(1);
+            expect(opOptions).toEqual(defaultOpOptions);
+        });
+
+        it('should not override already populated operation options when initialised', function() {
+            spyOn(settings, 'getDefaultOpOptions').and.returnValue({'key1': "value1", 'key2': "value2"});
+            spyOn(queryPage, 'setOpOptions');
+            spyOn(queryPage, 'getOpOptions').and.returnValue({'key1': "value1"});
+            var ctrl = $componentController('optionsForm');
+
+            ctrl.$onInit();
+
+            var expectedOpOptionsArray = [
+                {key: 'key1', value: 'value1'}
+            ];
+            expect(queryPage.setOpOptions).not.toHaveBeenCalled();
+            expect(ctrl.opOptionsArray).toEqual(expectedOpOptionsArray);
         });
 
         it('should set the queryPage operation options when the options are updated', function() {

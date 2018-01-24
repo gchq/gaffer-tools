@@ -15,81 +15,79 @@
   -->
 
 <div layout-padding layout-margin>
-    <div class="container">
-        <div class="panelHeading">
-            <h3>Settings
-                <md-button class="md-primary"
-                           aria-label="update schema"
-                           ng-click="ctrl.updateSchema()">
-                    Update schema
-                </md-button>
-            </h3>
+    <div class="panelHeading">
+        <h3>Settings
+            <md-button class="md-primary"
+                       aria-label="update schema"
+                       ng-click="ctrl.updateSchema()">
+                Update schema
+            </md-button>
+        </h3>
 
+    </div>
+
+    <div layout="column">
+        <md-input-container>
+            <label>Default result limit</label>
+            <input type="number" step="1" ng-model="ctrl.resultLimit"
+                   id="resultLimit" ng-blur="ctrl.updateResultLimit()">
+        </md-input-container>
+
+        <md-input-container>
+            <label>Default operation</label>
+            <input type="text" ng-blur="ctrl.updateDefaultOp()"
+                   ng-model="ctrl.defaultOp"
+                   id="defaultOp">
+        </md-input-container>
+    </div>
+
+    <div layout="column" ng-show="ctrl.hasOpOptions()">
+        <div class="panelHeading">
+            <h4>Default Operation Options</h4>
         </div>
 
         <div layout="column">
-            <md-input-container>
-                <label>Default result limit</label>
-                <input type="number" step="1" ng-model="ctrl.resultLimit"
-                       id="resultLimit" ng-blur="ctrl.updateResultLimit()">
-            </md-input-container>
-
-            <md-input-container>
-                <label>Default operation</label>
-                <input type="text" ng-blur="ctrl.updateDefaultOp()"
-                       ng-model="ctrl.defaultOp"
-                       id="defaultOp">
-            </md-input-container>
-        </div>
-
-        <div layout="column" ng-show="ctrl.hasOpOptions()">
-            <div class="panelHeading">
-                <h4>Default Operation Options</h4>
-            </div>
-
-            <div layout="column">
-                <div ng-repeat="opOption in ctrl.defaultOpOptionsArray">
-                    <md-input-container style="margin:5px 0">
-                        <label>Key</label>
-                        <md-select name="opOptionKey"
-                                   ng-model="opOption.key"
-                                   required
-                                   aria-label="operation option key picker"
-                                   md-on-close="ctrl.updateDefaultOpOptions()">
-                            <md-option ng-value="value"
-                                       ng-repeat="(key, value) in ctrl.getOpOptionKeys(opOption)"
-                                       aria-label="{{key}}">
-                                <div class="md-body-2">{{key}}</div>
-                            </md-option>
-                        </md-select>
-                        <div class="md-errors-spacer"></div>
-                    </md-input-container>
-                    <md-input-container style="margin:5px 0">
-                        <label>Value</label>
-                        <input type="text"
-                               ng-blur="ctrl.updateDefaultOpOptions()"
+            <div ng-repeat="opOption in ctrl.defaultOpOptionsArray">
+                <md-input-container style="margin:5px 0">
+                    <label>Key</label>
+                    <md-select name="opOptionKey"
+                               ng-model="opOption.key"
                                required
-                               ng-model="opOption.value"
-                               id="defaultOpOptionValue">
-                    </md-input-container>
-                    <md-button class="md-icon-button md-primary"
-                               ng-click="ctrl.deleteOption(opOption)"
-                               aria-label="Delete operation option">
-                        <md-icon class="md-secondary"
-                                 md-svg-icon="delete"
-                                 aria-label="delete operation option">
-                            <md-tooltip>Delete operation option</md-tooltip>
-                        </md-icon>
-                    </md-button>
-                </div>
-                <div>
-                    <md-button class="md-primary"
-                               aria-label="add operation option"
-                               ng-disabled="!ctrl.hasMoreOpOptions()"
-                               ng-click="ctrl.addDefaultOperationOption()">
-                        Add Operation Option
-                    </md-button>
-                </div>
+                               aria-label="operation option key picker"
+                               md-on-close="ctrl.updateDefaultOpOptions()">
+                        <md-option ng-value="value"
+                                   ng-repeat="(key, value) in ctrl.getOpOptionKeys(opOption)"
+                                   aria-label="{{key}}">
+                            <div class="md-body-2">{{key}}</div>
+                        </md-option>
+                    </md-select>
+                    <div class="md-errors-spacer"></div>
+                </md-input-container>
+                <md-input-container style="margin:5px 0">
+                    <label>Value</label>
+                    <input type="text"
+                           ng-blur="ctrl.updateDefaultOpOptions()"
+                           required
+                           ng-model="opOption.value"
+                           id="defaultOpOptionValue">
+                </md-input-container>
+                <md-button class="md-icon-button md-primary"
+                           ng-click="ctrl.deleteOption(opOption)"
+                           aria-label="Delete operation option">
+                    <md-icon class="md-secondary"
+                             md-svg-icon="delete"
+                             aria-label="delete operation option">
+                        <md-tooltip>Delete operation option</md-tooltip>
+                    </md-icon>
+                </md-button>
+            </div>
+            <div>
+                <md-button class="md-primary"
+                           aria-label="add operation option"
+                           ng-disabled="!ctrl.hasMoreOpOptions()"
+                           ng-click="ctrl.addDefaultOperationOption()">
+                    Add Operation Option
+                </md-button>
             </div>
         </div>
     </div>
