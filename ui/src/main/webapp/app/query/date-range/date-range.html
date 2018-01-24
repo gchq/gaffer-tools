@@ -1,25 +1,47 @@
 <md-card>
     <md-card-title>
         <md-card-title-text>
-            <span class="md-headline">In this date range</span>
+            <span class="md-headline">In this date range (inclusive)</span>
         </md-card-title-text>
     </md-card-title>
     <ng-form name="ctrl.dateForm">
-        <div layout="row">
-            <md-input-container>
-                <label>Start Date</label>
-                <md-datepicker ng-model="ctrl.start" name="start" id="start-date" ng-change="ctrl.onStartDateUpdate()"></md-datepicker>
-                <div ng-messages="ctrl.dateForm.start.$error">
-                    <div ng-message="valid">The start date entered is not a date.</div>
+        <div layout-gt-sm="row" layout="column" layout-padding>
+            <div layout="column">
+                <div class="md-subhead">From</div>
+                <div layout="row">
+                    <md-input-container>
+                        <label>Start</label>
+                        <md-datepicker ng-model="ctrl.startDate" name="startDate" id="start-date" ng-change="ctrl.onStartDateUpdate()"></md-datepicker>
+                        <div ng-messages="ctrl.dateForm.startDate.$error">
+                            <div ng-message="valid">The start date entered is valid.</div>
+                        </div>
+                    </md-input-container>
+                    <md-input-container>
+                        <input ng-model="ctrl.startTime" aria-label="start time (hh:mm:ss)" ng-disabled="!ctrl.startDate" type="time" id="start-time" step="1" name="startTime" ng-change="ctrl.onStartDateUpdate()">
+                        <div ng-messages="ctrl.dateForm.startTime.$error">
+                            <div ng-message="time">The start time is invalid. Use format hh:mm:ss</div>
+                        </div>
+                    </md-input-container>
                 </div>
-            </md-input-container>
-            <md-input-container>
-                <label>End Date</label>
-                <md-datepicker ng-model="ctrl.end" name="end" id="end-date" ng-change="ctrl.onEndDateUpdate()"></md-datepicker>
-                <div ng-messages="ctrl.dateForm.end.$error">
-                    <div ng-message="valid">The end date entered is not a date.</div>
+            </div>
+            <div layout="column">
+                <div class="md-subhead">To</div>
+                <div layout="row">
+                    <md-input-container>
+                        <label>End</label>
+                        <md-datepicker ng-model="ctrl.endDate" name="endDate" id="end-date" ng-change="ctrl.onEndDateUpdate()"></md-datepicker>
+                        <div ng-messages="ctrl.dateForm.endDate.$error">
+                            <div ng-message="valid">The end date entered is not vaild.</div>
+                        </div>
+                    </md-input-container>
+                    <md-input-container>
+                        <input ng-model="ctrl.endTime" aria-label="end time (hh:mm:ss)" ng-disabled="!ctrl.endDate" type="time" id="end-time" step="1" name="endTime" ng-change="ctrl.onEndDateUpdate()">
+                        <div ng-messages="ctrl.dateForm.endTime.$error">
+                            <div ng-message="time">The end time is invalid. Use format hh:mm:ss</div>
+                        </div>
+                    </md-input-container>
                 </div>
-            </md-input-container>
+            </div>
         </div>
     </ng-form>
 </md-card>

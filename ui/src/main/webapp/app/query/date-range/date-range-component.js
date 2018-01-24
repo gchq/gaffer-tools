@@ -32,8 +32,10 @@ function dateRange() {
 function DateRangeController(time, common) {
     var vm = this;
 
-    vm.start = null;
-    vm.end = null;
+    vm.startDate = null;
+    vm.endDate = null;
+    vm.startTime=null
+    vm.endTime=null
 
     vm.$onInit = function() {
         if (!vm.conf) {
@@ -63,11 +65,11 @@ function DateRangeController(time, common) {
 
         var start = time.getStartDate();
         if (start) {
-            vm.start = convertNumberToDate(start, vm.conf.start.unit);
+            vm.startDate= convertNumberToDate(start, vm.conf.start.unit);
         }
         var end = time.getEndDate();
         if(end) {
-            vm.end = convertNumberToDate(end, vm.conf.end.unit);
+            vm.endDate = convertNumberToDate(end, vm.conf.end.unit);
         }
     }
 
@@ -90,61 +92,80 @@ function DateRangeController(time, common) {
 
 
     vm.onStartDateUpdate = function() {
-        if (vm.start === undefined || vm.start === null) {
+        if (vm.startDate === undefined || vm.startDate === null) {
             time.setStartDate(undefined);
+            vm.startTime = null
             return;
         }
-        var startTime = new Date(vm.start.getTime());
+        var start = new Date(vm.startDate.getTime());
 
-        // start of the day
+        if (vm.startTime === undefined || vm.startTime === null) {
 
-        startTime.setHours(0);
-        startTime.setMinutes(0);
-        startTime.setSeconds(0);
-        startTime.setMilliseconds(0);
+            // start of the day
 
-        startTime = startTime.getTime();
+            start.setHours(0);
+            start.setMinutes(0);
+            start.setSeconds(0);
+            start.setMilliseconds(0);
+        } else {
+            start.setHours(vm.startTime.getHours());
+            start.setMinutes(vm.startTime.getMinutes());
+            start.setSeconds(vm.startTime.getSeconds());
+            start.setMilliseconds(vm.startTime.getMilliseconds());
+        }
+
+
+        start = start.getTime();
 
         if (!vm.conf.start.unit || angular.lowercase(vm.conf.start.unit) === 'milliseconds') {
-            time.setStartDate(startTime);
+            time.setStartDate(start);
             return;
         }
 
         if (angular.lowercase(vm.conf.start.unit) === 'microseconds') {
-            startTime = startTime * 1000;
+            start = start * 1000;
         } else if (angular.lowercase(vm.conf.start.unit) === 'seconds') {
-            startTime = Math.round(startTime / 1000);
+            start = Math.floor(start / 1000);
         }
 
-        time.setStartDate(startTime);
+        time.setStartDate(start);
     }
 
     vm.onEndDateUpdate = function() {
-        if (vm.end === undefined || vm.end === null) {
+        if (vm.endDate === undefined || vm.endDate === null) {
             time.setEndDate(undefined);
+            vm.endTime = null;
             return;
         }
-        var endTime = new Date(vm.end.getTime());
+        var end = new Date(vm.endDate.getTime());
 
-        // end of the day
+        if (vm.endTime === undefined || vm.endTime === null) {
 
-        endTime.setHours(23);
-        endTime.setMinutes(59);
-        endTime.setSeconds(59);
+            // end of the day
+
+            end.setHours(23);
+            end.setMinutes(59);
+            end.setSeconds(59);
+            end.setMilliseconds(999);
+
+        } else {
+            end.setHours(vm.endTime.getHours());
+            end.setMinutes(vm.endTime.getMinutes());
+            end.setSeconds(vm.endTime.getSeconds());
+            end.setMilliseconds(vm.endTime.getMilliseconds());
+        }
+
+        end = end.getTime();
 
         if (vm.conf.end.unit && angular.lowercase(vm.conf.end.unit) === 'seconds') {
-            endTime.setMilliseconds(0); // for easy rounding to last second of the day
-            endTime = endTime.getTime();
-            endTime = endTime / 1000;
+            end = Math.floor(end / 1000);
         } else {
-            endTime.setMilliseconds(999);
-            endTime = endTime.getTime();
             if (vm.conf.end.unit && angular.lowercase(vm.conf.end.unit) === 'microseconds') {
-                endTime = (endTime * 1000) + 999;
+                end = (end * 1000) + 999;
             }
         }
 
-        time.setEndDate(endTime);
+        time.setEndDate(end);
     }
 
 

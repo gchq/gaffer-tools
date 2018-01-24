@@ -99,38 +99,38 @@ describe('The date range component', function() {
 
             it('should leave the start date as null if the time service returns an undefined value', function() {
                 ctrl.$onInit();
-                expect(ctrl.start).toEqual(null);
+                expect(ctrl.startDate).toEqual(null);
             });
 
             it('should leave the end date as null if the time service returns an undefined value', function() {
                 ctrl.$onInit();
-                expect(ctrl.end).toEqual(null);
+                expect(ctrl.endDate).toEqual(null);
             });
 
             it('should set the initial value of the start date if one exists in the time service', function() {
                 startDate = 123456789;
                 ctrl.$onInit();
-                expect(ctrl.start).toEqual(new Date(123456789));
+                expect(ctrl.startDate).toEqual(new Date(123456789));
             });
 
             it('should set the initial value of the end date if one exists in the time service', function() {
                 endDate = 123456789;
                 ctrl.$onInit();
-                expect(ctrl.end).toEqual(new Date(123456789));
+                expect(ctrl.endDate).toEqual(new Date(123456789));
             });
 
             it('should convert the value if the unit is seconds', function() {
                 startDate = 123456789;
                 ctrl.conf.start.unit = 'seconds';
                 ctrl.$onInit();
-                expect(ctrl.start).toEqual(new Date(123456789000));
+                expect(ctrl.startDate).toEqual(new Date(123456789000));
             });
 
             it('should convert the value if the unit is microseconds', function() {
                 startDate = 123456789999;
                 ctrl.conf.start.unit = 'microseconds';
                 ctrl.$onInit();
-                expect(ctrl.start).toEqual(new Date(123456790));
+                expect(ctrl.startDate).toEqual(new Date(123456790));
             });
         });
     });
@@ -153,7 +153,7 @@ describe('The date range component', function() {
         });
 
         it('should set the time services start date to undefined if vm.start is undefined', function() {
-            ctrl.start = undefined;
+            ctrl.startDate = undefined;
             ctrl.onStartDateUpdate();
             expect(time.setStartDate).toHaveBeenCalledWith(undefined);
             expect(time.setStartDate).toHaveBeenCalledTimes(1);
@@ -161,7 +161,7 @@ describe('The date range component', function() {
         });
 
         it('should set the time services start date to undefined if vm.start is null', function() {
-            ctrl.start = null;
+            ctrl.startDate = null;
             ctrl.onStartDateUpdate();
             expect(time.setStartDate).toHaveBeenCalledWith(undefined);
             expect(time.setStartDate).toHaveBeenCalledTimes(1);
@@ -169,7 +169,7 @@ describe('The date range component', function() {
         });
 
         it('should set the time to be 0', function() {
-            ctrl.start = new Date(1516620668948);
+            ctrl.startDate = new Date(1516620668948);
             ctrl.onStartDateUpdate();
             expect(time.setStartDate).toHaveBeenCalledWith(1516579200000)
             expect(time.setStartDate).toHaveBeenCalledTimes(1);
@@ -177,7 +177,7 @@ describe('The date range component', function() {
         });
 
         it('should divide by 1000 when the time unit is seconds', function() {
-            ctrl.start = new Date(1516579200000);
+            ctrl.startDate = new Date(1516579200000);
             ctrl.conf.start.unit = 'seconds';
             ctrl.onStartDateUpdate();
             expect(time.setStartDate).toHaveBeenCalledWith(1516579200);
@@ -186,7 +186,7 @@ describe('The date range component', function() {
         });
 
         it('should multiply the value by 1000 when the time unit is microseconds', function() {
-            ctrl.start = new Date(96389748);
+            ctrl.startDate = new Date(96389748);
             ctrl.conf.start.unit = 'microseconds';
             ctrl.onStartDateUpdate();
             expect(time.setStartDate).toHaveBeenCalledWith(86400000000);
@@ -195,7 +195,7 @@ describe('The date range component', function() {
         });
 
         it('should work for dates before Jan 1 1970', function() {
-            ctrl.start = new Date(-1);
+            ctrl.startDate = new Date(-1);
             ctrl.onStartDateUpdate();
             expect(time.setStartDate).toHaveBeenCalledWith(-86400000);
             expect(time.setStartDate).toHaveBeenCalledTimes(1);
@@ -203,7 +203,7 @@ describe('The date range component', function() {
         });
 
         it('should work for seconds on dates before Jan 1 1970', function() {
-            ctrl.start = new Date(-1);
+            ctrl.startDate = new Date(-1);
             ctrl.conf.start.unit = 'seconds';
             ctrl.onStartDateUpdate();
             expect(time.setStartDate).toHaveBeenCalledWith(-86400);
@@ -212,7 +212,7 @@ describe('The date range component', function() {
         });
 
         it('should work for microseconds on dates before Jan 1 1970', function() {
-            ctrl.start = new Date(-1);
+            ctrl.startDate = new Date(-1);
             ctrl.conf.start.unit = 'microseconds';
             ctrl.onStartDateUpdate();
             expect(time.setStartDate).toHaveBeenCalledWith(-86400000000);
@@ -221,7 +221,7 @@ describe('The date range component', function() {
         });
 
         it('should work for Jan 1 1970', function() {
-            ctrl.start = new Date(1);
+            ctrl.startDate = new Date(1);
             ctrl.onStartDateUpdate();
             expect(time.setStartDate).toHaveBeenCalledWith(0);
             expect(time.setStartDate).toHaveBeenCalledTimes(1);
@@ -229,7 +229,7 @@ describe('The date range component', function() {
         });
 
         it('should work for Jan 1 1970 if units are in seconds', function() {
-            ctrl.start = new Date(1);
+            ctrl.startDate = new Date(1);
             ctrl.conf.start.unit = 'seconds';
             ctrl.onStartDateUpdate();
             expect(time.setStartDate).toHaveBeenCalledWith(0);
@@ -238,12 +238,36 @@ describe('The date range component', function() {
         });
 
         it('should work for Jan 1 1970 if units are in microseconds', function() {
-            ctrl.start = new Date(1);
+            ctrl.startDate = new Date(1);
             ctrl.conf.start.unit = 'microseconds';
             ctrl.onStartDateUpdate();
             expect(time.setStartDate).toHaveBeenCalledWith(0);
             expect(time.setStartDate).toHaveBeenCalledTimes(1);
             expect(serviceStartDate).toEqual(0);
+        });
+
+        describe('The start time', function() {
+            beforeEach(function() {
+                ctrl.startDate = new Date(1516579200000);
+            });
+
+            it('should not affect the start date if the time is undefined', function() {
+                ctrl.startTime = undefined;
+                ctrl.onStartDateUpdate();
+                expect(serviceStartDate).toEqual(1516579200000);
+            });
+
+            it('should not affect the start date if the time is null', function() {
+                ctrl.startTime = null;
+                ctrl.onStartDateUpdate();
+                expect(serviceStartDate).toEqual(1516579200000);
+            });
+
+            it('should set the time for the start Date if it exists', function() {
+                ctrl.startTime = new Date(37815000)  // 10:30:15
+                ctrl.onStartDateUpdate();
+                expect(serviceStartDate).toEqual(1516617015000) // date + time
+            });
         });
     });
 
@@ -264,16 +288,16 @@ describe('The date range component', function() {
             });
         });
 
-        it('should set the time services end date to undefined if vm.end is undefined', function() {
-            ctrl.end = undefined;
+        it('should set the time services end date to undefined if vm.endDate is undefined', function() {
+            ctrl.endDate = undefined;
             ctrl.onEndDateUpdate();
             expect(time.setEndDate).toHaveBeenCalledWith(undefined);
             expect(time.setEndDate).toHaveBeenCalledTimes(1);
             expect(serviceEndDate).toEqual(undefined);
         });
 
-        it('should set the time services end date to undefined if vm.end is null', function() {
-            ctrl.end = null;
+        it('should set the time services end date to undefined if vm.endDate is null', function() {
+            ctrl.endDate = null;
             ctrl.onEndDateUpdate();
             expect(time.setEndDate).toHaveBeenCalledWith(undefined);
             expect(time.setEndDate).toHaveBeenCalledTimes(1);
@@ -281,7 +305,7 @@ describe('The date range component', function() {
         });
 
         it('should set the time to be 0', function() {
-            ctrl.end = new Date(1516620668948);
+            ctrl.endDate = new Date(1516620668948);
             ctrl.onEndDateUpdate();
             expect(time.setEndDate).toHaveBeenCalledWith(1516665599999)
             expect(time.setEndDate).toHaveBeenCalledTimes(1);
@@ -289,7 +313,7 @@ describe('The date range component', function() {
         });
 
         it('should divide by 1000 when the time unit is seconds', function() {
-            ctrl.end = new Date(1516620668948);
+            ctrl.endDate = new Date(1516620668948);
             ctrl.conf.end.unit = 'seconds';
             ctrl.onEndDateUpdate();
             expect(time.setEndDate).toHaveBeenCalledWith(1516665599);
@@ -298,7 +322,7 @@ describe('The date range component', function() {
         });
 
         it('should multiply the value by 1000 when the time unit is microseconds', function() {
-            ctrl.end = new Date(96389748);
+            ctrl.endDate = new Date(96389748);
             ctrl.conf.end.unit = 'microseconds';
             ctrl.onEndDateUpdate();
             expect(time.setEndDate).toHaveBeenCalledWith(172799999999);
@@ -307,7 +331,7 @@ describe('The date range component', function() {
         });
 
         it('should work for dates before Jan 1 1970', function() {
-            ctrl.end = new Date(-10);
+            ctrl.endDate = new Date(-10);
             ctrl.onEndDateUpdate();
             expect(time.setEndDate).toHaveBeenCalledWith(-1);
             expect(time.setEndDate).toHaveBeenCalledTimes(1);
@@ -315,7 +339,7 @@ describe('The date range component', function() {
         });
 
         it('should work for seconds on dates before Jan 1 1970', function() {
-            ctrl.end = new Date(-10);
+            ctrl.endDate = new Date(-10);
             ctrl.conf.end.unit = 'seconds';
             ctrl.onEndDateUpdate();
             expect(time.setEndDate).toHaveBeenCalledWith(-1);
@@ -324,7 +348,7 @@ describe('The date range component', function() {
         });
 
         it('should work for microseconds on dates before Jan 1 1970', function() {
-            ctrl.end = new Date(-100);
+            ctrl.endDate = new Date(-100);
             ctrl.conf.end.unit = 'microseconds';
             ctrl.onEndDateUpdate();
             expect(time.setEndDate).toHaveBeenCalledWith(-1);
@@ -333,15 +357,15 @@ describe('The date range component', function() {
         });
 
         it('should work for Jan 1 1970', function() {
-            ctrl.end = new Date(1);
+            ctrl.endDate = new Date(1);
             ctrl.onEndDateUpdate();
             expect(time.setEndDate).toHaveBeenCalledWith(86399999);
             expect(time.setEndDate).toHaveBeenCalledTimes(1);
             expect(serviceEndDate).toEqual(86399999);
         });
 
-        it('should work for Jan 1 1970 if units are in seconds', function() {
-            ctrl.end = new Date(1);
+        it('should work for Jan 1 1970 if units are seconds', function() {
+            ctrl.endDate = new Date(1);
             ctrl.conf.end.unit = 'seconds';
             ctrl.onEndDateUpdate();
             expect(time.setEndDate).toHaveBeenCalledWith(86399);
@@ -349,13 +373,37 @@ describe('The date range component', function() {
             expect(serviceEndDate).toEqual(86399);
         });
 
-        it('should work for Jan 1 1970 if units are in microseconds', function() {
-            ctrl.end = new Date(1);
+        it('should work for Jan 1 1970 if units are microseconds', function() {
+            ctrl.endDate = new Date(1);
             ctrl.conf.end.unit = 'microseconds';
             ctrl.onEndDateUpdate();
             expect(time.setEndDate).toHaveBeenCalledWith(86399999999);
             expect(time.setEndDate).toHaveBeenCalledTimes(1);
             expect(serviceEndDate).toEqual(86399999999);
+        });
+
+        describe('The end time', function() {
+            beforeEach(function() {
+                ctrl.endDate = new Date(1516620668948);
+            });
+
+            it('should not affect the end date if the time is undefined', function() {
+                ctrl.endTime = undefined;
+                ctrl.onEndDateUpdate();
+                expect(serviceEndDate).toEqual(1516665599999);
+            });
+
+            it('should not affect the end date if the time is null', function() {
+                ctrl.endTime = null;
+                ctrl.onEndDateUpdate();
+                expect(serviceEndDate).toEqual(1516665599999);
+            });
+
+            it('should set the time for the end Date if it exists', function() {
+                ctrl.endTime = new Date(37815000)  // 10:30:15
+                ctrl.onEndDateUpdate();
+                expect(serviceEndDate).toEqual(1516617015000) // date + time
+            });
         });
     });
 });
