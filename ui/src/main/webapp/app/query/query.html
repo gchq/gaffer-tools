@@ -13,15 +13,24 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-<div layout-padding layout-margin>
-    <form name="ctrl.queryForm">
-        <operation-selector></operation-selector>
-        <seed-manager ng-show="ctrl.getSelectedOp().input"></seed-manager>
-        <parameter-form ng-if="ctrl.getSelectedOp().parameters" parameters="ctrl.getSelectedOp().parameters"></parameter-form>
-        <view-builder ng-show="ctrl.getSelectedOp().view"></view-builder>
-        <directionality-picker ng-show="ctrl.getSelectedOp().inOutFlag"></directionality-picker>
-    </form>
+<div layout="row" layout-padding flex>
+    <md-card flex>
+        <form name="ctrl.queryForm">
+            <div layout="row">
+                <div layout="column" flex="50"> <!-- left column -->
+                    <operation-selector></operation-selector>
+                    <seed-manager ng-show="ctrl.getSelectedOp().input"></seed-manager>
+
+                </div>
+                <div layout="column" flex="50"> <!-- right column -->
+                    <parameter-form ng-if="ctrl.getSelectedOp().parameters" parameters="ctrl.getSelectedOp().parameters"></parameter-form>
+                    <view-builder ng-show="ctrl.getSelectedOp().view"></view-builder>
+                    <directionality-picker ng-show="ctrl.getSelectedOp().inOutFlag"></directionality-picker>
+                </div>
+            </div>
+        </form>
+        <md-card-actions layout="row" layout-align="end center">
+            <md-button ng-click="ctrl.execute()" id="Execute Query" class="md-primary">Execute</md-button>
+        </md-card-actions>
+    </md-card>
 </div>
-<md-button class="md-fab md-fab-bottom-right submit-bottom-right md-accent" ng-disabled="!ctrl.canExecute()" aria-label="Execute Query" id="Execute Query" ng-click="ctrl.execute()">
-    <md-icon md-svg-icon="send"></md-icon>
-</md-button>

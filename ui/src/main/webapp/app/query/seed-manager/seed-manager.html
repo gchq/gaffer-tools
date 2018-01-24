@@ -1,21 +1,15 @@
-<md-card>
-    <md-card-title>
-        <md-card-title-text>
-            <span class="md-headline">Add Seeds
-                <span>
-                    <md-button id="select-all-seeds"
-                               ng-click="ctrl.selectAllSeeds()"
-                               class="md-primary">
-                        Select All
-                        <md-tooltip md-direction="right">Select all seeds in the graph</md-tooltip>
-                    </md-button>
-                </span>
-            </span>
-            <span class="md-subhead">Add or select from the graph, all the seeds to run the query against</span>
-        </md-card-title-text>
-    </md-card-title>
+<div layout-padding>
+    <div layout="row">
+        <h3>Add seeds or select all from the graph</h3>
+        <md-button id="select-all-seeds"
+                   ng-click="ctrl.selectAllSeeds()"
+                   class="md-primary">
+                Select All
+            <md-tooltip md-direction="right">Select all seeds in the graph</md-tooltip>
+        </md-button>
+    </div>
     <seed-builder></seed-builder>
     <div layout-padding>
         <p class="md-subhead">{{ctrl.seedsMessage}}</p>
     </div>
-</md-card>
+</div>
