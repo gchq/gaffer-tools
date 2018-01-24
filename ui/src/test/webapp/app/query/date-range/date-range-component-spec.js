@@ -77,14 +77,14 @@ describe('The date range component', function() {
             expect(ctrl.$onInit).toThrow('Config Error: You must specify the class for the start and end');
         });
 
-        it('should throw an exception if the start date unit is set to anything other than milliseconds, microseconds or seconds', function() {
+        it('should throw an exception if the start date unit is set to anything other than day, hour, minute, second, millisecond or microsecond', function() {
             createController({"start": {"property": "prop1", "class": "aClass", "unit": "unknownUnit"}, "end": {"property": "myPropName", "class": "my.java.class"}});
-            expect(ctrl.$onInit).toThrow('Config Error: Unknown start time unit - unknownUnit. Must be one of seconds, milliseconds or microseconds (defaults to milliseconds)');
+            expect(ctrl.$onInit).toThrow('Config Error: Unknown start time unit - unknownUnit. Must be one of day, hour, minute, second, millisecond or microsecond (defaults to millisecond)');
         });
 
-        it('should throw an exception if the end date unit is set to anything other than milliseconds, microseconds or seconds', function() {
+        it('should throw an exception if the end date unit is set to anything other than day, hour, minute, second, millisecond or microsecond', function() {
             createController({"end": {"property": "prop1", "class": "aClass", "unit": "unknownUnit"}, "start": {"property": "myPropName", "class": "my.java.class"}});
-            expect(ctrl.$onInit).toThrow('Config Error: Unknown end time unit - unknownUnit. Must be one of seconds, milliseconds or microseconds (defaults to milliseconds)');
+            expect(ctrl.$onInit).toThrow('Config Error: Unknown end time unit - unknownUnit. Must be one of day, hour, minute, second, millisecond or microsecond (defaults to millisecond)');
         });
 
         it('should not throw an exception if units are left out of the config', function() {
@@ -119,18 +119,18 @@ describe('The date range component', function() {
                 expect(ctrl.endDate).toEqual(new Date(123456789));
             });
 
-            it('should convert the value if the unit is seconds', function() {
+            it('should convert the value if the unit is second', function() {
                 startDate = 123456789;
-                ctrl.conf.start.unit = 'seconds';
+                ctrl.conf.start.unit = 'second';
                 ctrl.$onInit();
                 expect(ctrl.startDate).toEqual(new Date(123456789000));
             });
 
-            it('should convert the value if the unit is microseconds', function() {
+            it('should convert the value if the unit is microsecond', function() {
                 startDate = 123456789999;
-                ctrl.conf.start.unit = 'microseconds';
+                ctrl.conf.start.unit = 'microsecond';
                 ctrl.$onInit();
-                expect(ctrl.startDate).toEqual(new Date(123456790));
+                expect(ctrl.startDate).toEqual(new Date(123456789));
             });
         });
     });
@@ -176,18 +176,18 @@ describe('The date range component', function() {
             expect(serviceStartDate).toEqual(1516579200000);
         });
 
-        it('should divide by 1000 when the time unit is seconds', function() {
+        it('should divide by 1000 when the time unit is second', function() {
             ctrl.startDate = new Date(1516579200000);
-            ctrl.conf.start.unit = 'seconds';
+            ctrl.conf.start.unit = 'second';
             ctrl.onStartDateUpdate();
             expect(time.setStartDate).toHaveBeenCalledWith(1516579200);
             expect(time.setStartDate).toHaveBeenCalledTimes(1);
             expect(serviceStartDate).toEqual(1516579200);
         });
 
-        it('should multiply the value by 1000 when the time unit is microseconds', function() {
+        it('should multiply the value by 1000 when the time unit is microsecond', function() {
             ctrl.startDate = new Date(96389748);
-            ctrl.conf.start.unit = 'microseconds';
+            ctrl.conf.start.unit = 'microsecond';
             ctrl.onStartDateUpdate();
             expect(time.setStartDate).toHaveBeenCalledWith(86400000000);
             expect(time.setStartDate).toHaveBeenCalledTimes(1);
@@ -204,7 +204,7 @@ describe('The date range component', function() {
 
         it('should work for seconds on dates before Jan 1 1970', function() {
             ctrl.startDate = new Date(-1);
-            ctrl.conf.start.unit = 'seconds';
+            ctrl.conf.start.unit = 'second';
             ctrl.onStartDateUpdate();
             expect(time.setStartDate).toHaveBeenCalledWith(-86400);
             expect(time.setStartDate).toHaveBeenCalledTimes(1);
@@ -213,7 +213,7 @@ describe('The date range component', function() {
 
         it('should work for microseconds on dates before Jan 1 1970', function() {
             ctrl.startDate = new Date(-1);
-            ctrl.conf.start.unit = 'microseconds';
+            ctrl.conf.start.unit = 'microsecond';
             ctrl.onStartDateUpdate();
             expect(time.setStartDate).toHaveBeenCalledWith(-86400000000);
             expect(time.setStartDate).toHaveBeenCalledTimes(1);
@@ -228,18 +228,18 @@ describe('The date range component', function() {
             expect(serviceStartDate).toEqual(0);
         });
 
-        it('should work for Jan 1 1970 if units are in seconds', function() {
+        it('should work for Jan 1 1970 if units are seconds', function() {
             ctrl.startDate = new Date(1);
-            ctrl.conf.start.unit = 'seconds';
+            ctrl.conf.start.unit = 'second';
             ctrl.onStartDateUpdate();
             expect(time.setStartDate).toHaveBeenCalledWith(0);
             expect(time.setStartDate).toHaveBeenCalledTimes(1);
             expect(serviceStartDate).toEqual(0);
         });
 
-        it('should work for Jan 1 1970 if units are in microseconds', function() {
+        it('should work for Jan 1 1970 if units are microseconds', function() {
             ctrl.startDate = new Date(1);
-            ctrl.conf.start.unit = 'microseconds';
+            ctrl.conf.start.unit = 'microsecond';
             ctrl.onStartDateUpdate();
             expect(time.setStartDate).toHaveBeenCalledWith(0);
             expect(time.setStartDate).toHaveBeenCalledTimes(1);
@@ -312,18 +312,18 @@ describe('The date range component', function() {
             expect(serviceEndDate).toEqual(1516665599999);
         });
 
-        it('should divide by 1000 when the time unit is seconds', function() {
+        it('should divide by 1000 when the time unit is second', function() {
             ctrl.endDate = new Date(1516620668948);
-            ctrl.conf.end.unit = 'seconds';
+            ctrl.conf.end.unit = 'second';
             ctrl.onEndDateUpdate();
             expect(time.setEndDate).toHaveBeenCalledWith(1516665599);
             expect(time.setEndDate).toHaveBeenCalledTimes(1);
             expect(serviceEndDate).toEqual(1516665599);
         });
 
-        it('should multiply the value by 1000 when the time unit is microseconds', function() {
+        it('should multiply the value by 1000 when the time unit is microsecond', function() {
             ctrl.endDate = new Date(96389748);
-            ctrl.conf.end.unit = 'microseconds';
+            ctrl.conf.end.unit = 'microsecond';
             ctrl.onEndDateUpdate();
             expect(time.setEndDate).toHaveBeenCalledWith(172799999999);
             expect(time.setEndDate).toHaveBeenCalledTimes(1);
@@ -340,7 +340,7 @@ describe('The date range component', function() {
 
         it('should work for seconds on dates before Jan 1 1970', function() {
             ctrl.endDate = new Date(-10);
-            ctrl.conf.end.unit = 'seconds';
+            ctrl.conf.end.unit = 'second';
             ctrl.onEndDateUpdate();
             expect(time.setEndDate).toHaveBeenCalledWith(-1);
             expect(time.setEndDate).toHaveBeenCalledTimes(1);
@@ -349,7 +349,7 @@ describe('The date range component', function() {
 
         it('should work for microseconds on dates before Jan 1 1970', function() {
             ctrl.endDate = new Date(-100);
-            ctrl.conf.end.unit = 'microseconds';
+            ctrl.conf.end.unit = 'microsecond';
             ctrl.onEndDateUpdate();
             expect(time.setEndDate).toHaveBeenCalledWith(-1);
             expect(time.setEndDate).toHaveBeenCalledTimes(1);
@@ -364,9 +364,9 @@ describe('The date range component', function() {
             expect(serviceEndDate).toEqual(86399999);
         });
 
-        it('should work for Jan 1 1970 if units are seconds', function() {
+        it('should work for Jan 1 1970 if units are second', function() {
             ctrl.endDate = new Date(1);
-            ctrl.conf.end.unit = 'seconds';
+            ctrl.conf.end.unit = 'second';
             ctrl.onEndDateUpdate();
             expect(time.setEndDate).toHaveBeenCalledWith(86399);
             expect(time.setEndDate).toHaveBeenCalledTimes(1);
@@ -375,7 +375,7 @@ describe('The date range component', function() {
 
         it('should work for Jan 1 1970 if units are microseconds', function() {
             ctrl.endDate = new Date(1);
-            ctrl.conf.end.unit = 'microseconds';
+            ctrl.conf.end.unit = 'microsecond';
             ctrl.onEndDateUpdate();
             expect(time.setEndDate).toHaveBeenCalledWith(86399999999);
             expect(time.setEndDate).toHaveBeenCalledTimes(1);

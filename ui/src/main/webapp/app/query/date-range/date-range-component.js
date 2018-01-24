@@ -37,6 +37,15 @@ function DateRangeController(time, common) {
     vm.startTime=null
     vm.endTime=null
 
+    var validUnits = [
+        "days",
+        "hour",
+        "minute",
+        "second",
+        "millisecond",
+        "microsecond"
+    ];
+
     vm.$onInit = function() {
         if (!vm.conf) {
             throw 'Config Error: Date range must be configured';
@@ -52,14 +61,7 @@ function DateRangeController(time, common) {
         }
         if (vm.conf.start.unit) {
             var unit = angular.lowercase(vm.conf.start.unit);
-            var validUnits = [
-                "days",
-                "hour",
-                "minute",
-                "second",
-                "millisecond",
-                "microsecond"
-            ];
+
             var valid = false;
 
             for (var i in validUnits) {
@@ -74,14 +76,6 @@ function DateRangeController(time, common) {
         }
         if (vm.conf.end.unit) {
             var unit = angular.lowercase(vm.conf.end.unit);
-            var validUnits = [
-                "days",
-                "hour",
-                "minute",
-                "second",
-                "millisecond",
-                "microsecond"
-            ];
             var valid = false;
 
             for (var i in validUnits) {
@@ -132,14 +126,46 @@ function DateRangeController(time, common) {
         return new Date(finalValue);
     }
 
+    var convertDateToNumber = function(date, unit) {
+
+        var time = date.getTime();
+
+        if (!unit || angular.lowercase(unit) === 'millisecond') {
+            return time;
+        }
+
+        switch(angular.lowercase(unit)) {
+            case "microsecond":
+                time = time * 1000;
+                break;
+            case "second":
+                time = Math.floor(time / 1000);
+                break;
+            case "minute":
+                time = Math.floor(time / 60000);
+                break;
+            case "hour":
+                time = Math.floor(time / 3600000);
+                break;
+            case "day":
+                time = Math.floor(time / 86400000);
+                break;
+        }
+
+        return time;
+    }
+
 
     vm.onStartDateUpdate = function() {
         if (vm.startDate === undefined || vm.startDate === null) {
             time.setStartDate(undefined);
             vm.startTime = null;
-            vm.dateForm.startTime.$setViewValue(undefined);
-            vm.dateForm.startTime.$setPristine();
-            vm.dateForm.startTime.$setUntouched();
+
+            if (vm.dateForm) {
+                vm.dateForm.startTime.$setViewValue(undefined);
+                vm.dateForm.startTime.$setPristine();
+                vm.dateForm.startTime.$setUntouched();
+            }
             return;
         }
         var start = new Date(vm.startDate.getTime());
@@ -160,39 +186,20 @@ function DateRangeController(time, common) {
         }
 
 
-        start = start.getTime();
-
-        if (!vm.conf.start.unit || angular.lowercase(vm.conf.start.unit) === 'millisecond') {
-            time.setStartDate(start);
-            return;
-        }
-
-        switch(angular.lowercase(vm.conf.start.unit)) {
-            case "microsecond":
-                start = start * 1000;
-                break;
-            case "second":
-                start = Math.floor(start / 1000);
-                break;
-            case "minute":
-                start = Math.floor(start / 60000);
-                break;
-            case "hour":
-                start = Math.floor(start / 3600000);
-            case "day":
-                start = Math.floor(start / 86400000);
-        }
-
-        time.setStartDate(start);
+        var convertedTime = convertDateToNumber(start, vm.conf.start.unit);
+        time.setStartDate(convertedTime);
     }
 
     vm.onEndDateUpdate = function() {
         if (vm.endDate === undefined || vm.endDate === null) {
             time.setEndDate(undefined);
             vm.endTime = null;
-            vm.dateForm.endTime.$setViewValue(undefined);
-            vm.dateForm.endTime.$setPristine();
-            vm.dateForm.endTime.$setUntouched();
+
+            if (vm.dateForm) {
+                vm.dateForm.endTime.$setViewValue(undefined);
+                vm.dateForm.endTime.$setPristine();
+                vm.dateForm.endTime.$setUntouched();
+            }
             return;
         }
         var end = new Date(vm.endDate.getTime());
@@ -213,31 +220,12 @@ function DateRangeController(time, common) {
             end.setMilliseconds(vm.endTime.getMilliseconds());
         }
 
-        end = end.getTime();
-
-        if (!vm.conf.end.unit || angular.lowercase(vm.conf.end.unit)) {
-            time.setEndDate(end);
-            return;
+        var convertedTime = convertDateToNumber(end, vm.conf.end.unit);
+        if (vm.conf.end.unit && angular.lowercase(vm.conf.end.unit) === 'microsecond') {
+            convertedTime += 999;
         }
 
-        switch(angular.lowercase(vm.conf.end.unit)) {
-            case "microsecond":
-                end = (end * 1000) + 999;
-                break;
-            case "second":
-                end = Math.floor(end / 1000);
-                break;
-            case "minute":
-                end = Math.floor(end / 60000);
-                break;
-            case "hour":
-                end = Math.floor(end / 3600000);
-                break
-            case "day":
-                end = Math.floor(end / 86400000);
-        }
-
-        time.setEndDate(end);
+        time.setEndDate(convertedTime);
     }
 
 
