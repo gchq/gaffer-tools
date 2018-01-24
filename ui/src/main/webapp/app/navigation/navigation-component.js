@@ -82,7 +82,7 @@ function NavigationController($rootScope, $mdDialog, navigation, graph, operatio
         try {
             query.execute(JSON.stringify({
                 class: "uk.gov.gchq.gaffer.operation.OperationChain",
-                operations: [ops[opIndex], operationService.createLimitOperation(), operationService.createDeduplicateOperation()]
+                operations: [ops[opIndex], operationService.createLimitOperation(ops[opIndex]['options']), operationService.createDeduplicateOperation(ops[opIndex]['options'])]
             }), function(data) {
                 results.update(data);
                 if((opIndex + 1) < ops.length) {

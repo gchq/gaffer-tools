@@ -225,6 +225,39 @@ In this example we have summarised the vehicle counts by adding them together. G
 
 There are some in-depth examples based around the Java API here: [Getting Started](https://gchq.github.io/gaffer-doc/summaries/getting-started.html).
 
+### Federated Store Demo
+There is also a Federated Store Demo, which can be run using:
+```bash
+./ui/example/federated/scripts/start.sh
+```
+
+After the REST and UI have been started you will need to add some federated graphs. There are some example scripts that will execute the AddGraph operation on the REST api (via curl):
+```bash
+./ui/example/federated/scripts/addAccumuloEntitiesGraph.sh
+./ui/example/federated/scripts/addMapEdgesGraph.sh
+```
+
+You can then get a list of all the graphIds available using the GetAllGraphIds operation. We also have a script for that:
+```bash
+./ui/example/federated/scripts/getAllGraphIds.sh
+```
+
+To test out some queries you will need to add some elements to these graphs. You can use this script:
+```bash
+./ui/example/federated/scripts/addElements.sh
+```
+
+Once you have run these scripts you will have 2 graphs available, accEntities and mapEdges.
+In the UI you can perform queries on these 2 graph simultaneously or you can limit which graph you query.
+When you open the UI, first head to the settings page and add a default operation option:
+'Federated Store - Graph IDs' with the value: accEntities,mapEdges
+This will tell the Gaffer you want to query both Graphs. You will then need to click the 'Update Schema' button, to
+obtain a merged schema for these 2 graphs.
+
+Now, when you compose a query you will see there is an operation option predefined with the 2 graphs.
+If you wish to query just one graph you can modify it just for the single query.
+
+
 ### Testing
 
 The UI contains both End-to-End Selenium tests and Jasmine unit tests. The former testing user interactions, and the

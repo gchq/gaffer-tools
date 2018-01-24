@@ -240,4 +240,41 @@ describe('The seed builder component', function() {
             });
         });
     });
+
+    describe('when initialised with an empty schema', function() {
+
+        var schema;
+        var $q;
+
+        beforeEach(inject(function(_schema_, _$q_) {
+            schema = _schema_;
+            $q = _$q_;
+        }));
+
+        beforeEach(function() {
+            spyOn(schema, 'get').and.returnValue($q.when({}));
+            spyOn(schema, 'getSchemaVertices').and.returnValue(undefined);
+        });
+
+        beforeEach(function() {
+            ctrl.$onInit();
+        });
+
+        describe('and when the schema resolves a value', function() {
+
+            var types;
+
+            beforeEach(inject(function(_types_) {
+                types = _types_;
+            }));
+
+            beforeEach(function() {
+                scope.$digest();
+            });
+
+            it('should handle the case when there are no schema vertices', function() {
+                expect(schema.getSchemaVertices).toHaveBeenCalledTimes(1);
+            });
+        });
+    });
 });
