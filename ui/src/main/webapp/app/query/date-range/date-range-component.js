@@ -52,14 +52,46 @@ function DateRangeController(time, common) {
         }
         if (vm.conf.start.unit) {
             var unit = angular.lowercase(vm.conf.start.unit);
-            if (unit !== 'milliseconds' && unit !== 'microseconds' && unit !== 'seconds') {
-                throw 'Config Error: Unknown start time unit - ' + vm.conf.start.unit + '. Must be one of seconds, milliseconds or microseconds (defaults to milliseconds)';
+            var validUnits = [
+                "days",
+                "hour",
+                "minute",
+                "second",
+                "millisecond",
+                "microsecond"
+            ];
+            var valid = false;
+
+            for (var i in validUnits) {
+                if (unit === validUnits[i]) {
+                    valid = true;
+                    break;
+                }
+            }
+            if (!valid) {
+                throw 'Config Error: Unknown start time unit - ' + vm.conf.start.unit + '. Must be one of day, hour, minute, second, millisecond or microsecond (defaults to millisecond)';
             }
         }
         if (vm.conf.end.unit) {
             var unit = angular.lowercase(vm.conf.end.unit);
-            if (unit !== 'milliseconds' && unit !== 'microseconds' && unit !== 'seconds') {
-                throw 'Config Error: Unknown end time unit - ' + vm.conf.end.unit + '. Must be one of seconds, milliseconds or microseconds (defaults to milliseconds)';
+            var validUnits = [
+                "days",
+                "hour",
+                "minute",
+                "second",
+                "millisecond",
+                "microsecond"
+            ];
+            var valid = false;
+
+            for (var i in validUnits) {
+                if (unit === validUnits[i]) {
+                    valid = true;
+                    break;
+                }
+            }
+            if (!valid) {
+                throw 'Config Error: Unknown end time unit - ' + vm.conf.end.unit + '. Must be one of day, hour, minute, second, millisecond or microsecond (defaults to millisecond)';
             }
         }
 
@@ -75,16 +107,26 @@ function DateRangeController(time, common) {
 
     var convertNumberToDate = function(value, unit) {
 
-        if (!unit || angular.lowercase(unit) === 'milliseconds') {
+        if (!unit || angular.lowercase(unit) === 'millisecond') {
             return new Date(value);
         }
 
         var finalValue = common.clone(value);
 
-        if (angular.lowercase(unit) === 'seconds') {
-            finalValue = finalValue * 1000;
-        } else if (angular.lowercase(unit) === 'microseconds') {
-            finalValue = Math.round(finalValue / 1000);
+        switch(angular.lowercase(vm.conf.start.unit)) {
+            case "microsecond":
+                finalValue = Math.floor(finalValue / 1000);
+                break;
+            case "second":
+                finalValue = finalValue * 1000;
+                break;
+            case "minute":
+                finalValue = finalValue * 60000;
+                break;
+            case "hour":
+                finalValue = finalValue * 3600000;
+            case "day":
+                finalValue = finalValue * 86400000;
         }
 
         return new Date(finalValue);
@@ -94,7 +136,10 @@ function DateRangeController(time, common) {
     vm.onStartDateUpdate = function() {
         if (vm.startDate === undefined || vm.startDate === null) {
             time.setStartDate(undefined);
-            vm.startTime = null
+            vm.startTime = null;
+            vm.dateForm.startTime.$setViewValue(undefined);
+            vm.dateForm.startTime.$setPristine();
+            vm.dateForm.startTime.$setUntouched();
             return;
         }
         var start = new Date(vm.startDate.getTime());
@@ -117,15 +162,25 @@ function DateRangeController(time, common) {
 
         start = start.getTime();
 
-        if (!vm.conf.start.unit || angular.lowercase(vm.conf.start.unit) === 'milliseconds') {
+        if (!vm.conf.start.unit || angular.lowercase(vm.conf.start.unit) === 'millisecond') {
             time.setStartDate(start);
             return;
         }
 
-        if (angular.lowercase(vm.conf.start.unit) === 'microseconds') {
-            start = start * 1000;
-        } else if (angular.lowercase(vm.conf.start.unit) === 'seconds') {
-            start = Math.floor(start / 1000);
+        switch(angular.lowercase(vm.conf.start.unit)) {
+            case "microsecond":
+                start = start * 1000;
+                break;
+            case "second":
+                start = Math.floor(start / 1000);
+                break;
+            case "minute":
+                start = Math.floor(start / 60000);
+                break;
+            case "hour":
+                start = Math.floor(start / 3600000);
+            case "day":
+                start = Math.floor(start / 86400000);
         }
 
         time.setStartDate(start);
@@ -135,6 +190,9 @@ function DateRangeController(time, common) {
         if (vm.endDate === undefined || vm.endDate === null) {
             time.setEndDate(undefined);
             vm.endTime = null;
+            vm.dateForm.endTime.$setViewValue(undefined);
+            vm.dateForm.endTime.$setPristine();
+            vm.dateForm.endTime.$setUntouched();
             return;
         }
         var end = new Date(vm.endDate.getTime());
@@ -157,12 +215,26 @@ function DateRangeController(time, common) {
 
         end = end.getTime();
 
-        if (vm.conf.end.unit && angular.lowercase(vm.conf.end.unit) === 'seconds') {
-            end = Math.floor(end / 1000);
-        } else {
-            if (vm.conf.end.unit && angular.lowercase(vm.conf.end.unit) === 'microseconds') {
+        if (!vm.conf.end.unit || angular.lowercase(vm.conf.end.unit)) {
+            time.setEndDate(end);
+            return;
+        }
+
+        switch(angular.lowercase(vm.conf.end.unit)) {
+            case "microsecond":
                 end = (end * 1000) + 999;
-            }
+                break;
+            case "second":
+                end = Math.floor(end / 1000);
+                break;
+            case "minute":
+                end = Math.floor(end / 60000);
+                break;
+            case "hour":
+                end = Math.floor(end / 3600000);
+                break
+            case "day":
+                end = Math.floor(end / 86400000);
         }
 
         time.setEndDate(end);

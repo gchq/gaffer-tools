@@ -17,9 +17,17 @@
                         </div>
                     </md-input-container>
                     <md-input-container>
-                        <input ng-model="ctrl.startTime" aria-label="start time (hh:mm:ss)" ng-disabled="!ctrl.startDate" type="time" id="start-time" step="1" name="startTime" ng-change="ctrl.onStartDateUpdate()">
+                        <input ng-model="ctrl.startTime"
+                               ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 500,'blur': 0}}"
+                               aria-label="start time (hh:mm:ss.fff)"
+                               ng-disabled="!ctrl.startDate"
+                               type="time"
+                               id="start-time"
+                               step="0.001"
+                               name="startTime"
+                               ng-change="ctrl.onStartDateUpdate()">
                         <div ng-messages="ctrl.dateForm.startTime.$error">
-                            <div ng-message="time">The start time is invalid. Use format hh:mm:ss</div>
+                            <div ng-message="time">The start time is invalid. Use format hh:mm:ss.fff</div>
                         </div>
                     </md-input-container>
                 </div>
@@ -35,9 +43,17 @@
                         </div>
                     </md-input-container>
                     <md-input-container>
-                        <input ng-model="ctrl.endTime" aria-label="end time (hh:mm:ss)" ng-disabled="!ctrl.endDate" type="time" id="end-time" step="1" name="endTime" ng-change="ctrl.onEndDateUpdate()">
+                        <input ng-model="ctrl.endTime"
+                               ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 500,'blur': 0}}"
+                               aria-label="end time (hh:mm:ss.fff)"
+                               ng-disabled="!ctrl.endDate"
+                               type="time"
+                               id="end-time"
+                               step="0.001"
+                               name="endTime"
+                               ng-change="ctrl.onEndDateUpdate()">
                         <div ng-messages="ctrl.dateForm.endTime.$error">
-                            <div ng-message="time">The end time is invalid. Use format hh:mm:ss</div>
+                            <div ng-message="time">The end time is invalid. Use format hh:mm:ss.fff</div>
                         </div>
                     </md-input-container>
                 </div>

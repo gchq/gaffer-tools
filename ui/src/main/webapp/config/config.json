@@ -17,12 +17,12 @@
     "start": {
       "property": "startDate",
       "class": "java.util.Date",
-      "unit": "milliseconds"
+      "unit": "millisecond"
     },
     "end": {
       "property": "endDate",
       "class": "java.util.Date",
-      "unit": "milliseconds"
+      "unit": "millisecond"
     }
 
   },
