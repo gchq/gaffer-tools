@@ -1,5 +1,5 @@
 {
-  "title": "Example title",
+  "title": "Road Traffic Example",
   "operations": {
     "loadNamedOperationsOnStartup": true,
     "defaultAvailable": [
@@ -12,14 +12,6 @@
         "inOutFlag": true,
         "arrayOutput": true
       }
-    ],
-    "whiteList": [
-      "Get Elements",
-      "Safe Named Operation",
-      "Other Named Operation"
-    ],
-    "blackList": [
-      "Dangerous Named Operation"
     ]
   },
   "types": {
@@ -147,8 +139,5 @@
       ],
       "custom": true
     }
-  },
-  "operationOptionKeys": {
-    "Option Name 1": "gaffer.option.key",
   }
 }

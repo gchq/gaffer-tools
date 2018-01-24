@@ -105,7 +105,8 @@ angular.module('app').factory('operationService', ['$http', '$q', 'settings', 'c
         ifOperationSupported(getAllClass, function() {
             query.execute(JSON.stringify(
                 {
-                    class: getAllClass
+                    class: getAllClass,
+                    options: settings.getDefaultOpOptions()
                 }
             ),
             updateNamedOperations,
@@ -123,7 +124,6 @@ angular.module('app').factory('operationService', ['$http', '$q', 'settings', 'c
         });
 
         return defer.promise;
-
     }
 
     var ifOperationSupported = function(operationClass, onSupported, onUnsupported) {
@@ -150,22 +150,42 @@ angular.module('app').factory('operationService', ['$http', '$q', 'settings', 'c
         })
     }
 
-    operationService.createLimitOperation = function() {
+    operationService.createGetSchemaOperation = function() {
+        return {
+            class: "uk.gov.gchq.gaffer.store.operation.GetSchema",
+            compact: false,
+            options: settings.getDefaultOpOptions()
+        };
+    }
+
+    operationService.createLimitOperation = function(opOptions) {
+        if(!opOptions){
+            opOptions = {};
+        }
         return {
             class: "uk.gov.gchq.gaffer.operation.impl.Limit",
-            resultLimit: settings.getResultLimit()
+            resultLimit: settings.getResultLimit(),
+            options: opOptions
         };
     }
 
-    operationService.createDeduplicateOperation = function() {
+    operationService.createDeduplicateOperation = function(opOptions) {
+        if(!opOptions){
+            opOptions = {};
+        }
         return {
             class: "uk.gov.gchq.gaffer.operation.impl.output.ToSet",
+            options: opOptions
         };
     }
 
-    operationService.createCountOperation = function() {
+    operationService.createCountOperation = function(opOptions) {
+        if(!opOptions){
+            opOptions = {};
+        }
         return {
-            class: "uk.gov.gchq.gaffer.operation.impl.Count"
+            class: "uk.gov.gchq.gaffer.operation.impl.Count",
+            options: opOptions
         };
     }
 

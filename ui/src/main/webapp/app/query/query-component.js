@@ -30,6 +30,7 @@ function query() {
 function QueryController(queryPage, view, operationService, types, graph, config, settings, query, functions, schema, common, results, navigation, $mdDialog, loading) {
 
     var vm = this;
+    var opOptionKeys;
 
     vm.getSelectedOp = function() {
         return queryPage.getSelectedOperation();
@@ -39,13 +40,18 @@ function QueryController(queryPage, view, operationService, types, graph, config
         return vm.queryForm.$valid && !loading.isLoading();
     }
 
+    vm.hasOpOptions = function() {
+        return opOptionKeys && Object.keys(opOptionKeys).length > 0;
+    }
+
     vm.execute = function() {
         var operation = createOperation();
         query.addOperation(operation);
         loading.load()
         query.execute(JSON.stringify({
             class: "uk.gov.gchq.gaffer.operation.OperationChain",
-            operations: [operation, operationService.createLimitOperation(), operationService.createDeduplicateOperation()]
+            operations: [operation, operationService.createLimitOperation(operation['options']), operationService.createDeduplicateOperation(operation['options'])],
+            options: operation['options']
         }), function(data) {
             loading.finish()
             if (data.length === settings.getResultLimit()) {
@@ -62,6 +68,12 @@ function QueryController(queryPage, view, operationService, types, graph, config
             } else {
                 alert(errorString);
             }
+        });
+    }
+
+    vm.$onInit = function() {
+        settings.getOpOptionKeys().then(function(keys) {
+            opOptionKeys = keys;
         });
     }
 
@@ -167,6 +179,10 @@ function QueryController(queryPage, view, operationService, types, graph, config
 
         if (selectedOp.inOutFlag) {
             op.includeIncomingOutGoing = queryPage.getInOutFlag();
+        }
+
+        if(queryPage.getOpOptions()) {
+            op.options = queryPage.getOpOptions();
         }
 
         return op;
