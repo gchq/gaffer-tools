@@ -237,9 +237,9 @@ describe('The Query component', function() {
                 it('should add a start date with an IsMoreThan filter', function() {
                     startDate = 1234567890;
                     ctrl.timeConfig = {
-                        start: {
+                        filter: {
                             class: "startDateClass",
-                            property: "startDateProperty"
+                            startProperty: "startDateProperty"
                         }
                     };
 
@@ -266,9 +266,9 @@ describe('The Query component', function() {
                 it('should add an endDate with an IsLessThan filter', function() {
                     endDate = 1234567890;
                     ctrl.timeConfig = {
-                        end: {
+                        filter: {
                             class: "endDateClass",
-                            property: "endDateProperty"
+                            endProperty: "endDateProperty"
                         }
                     };
 

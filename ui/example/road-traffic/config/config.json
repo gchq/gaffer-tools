@@ -152,16 +152,11 @@
     }
   },
   "time": {
-    "start": {
-      "property": "startDate",
+    "filter": {
       "class": "java.util.Date",
-      "unit": "millisecond"
-    },
-    "end": {
-      "property": "endDate",
-      "class": "java.util.Date",
-      "unit": "millisecond"
+      "unit": "millisecond",
+      "startProperty": "startDate",
+      "endProperty": "endDate"
     }
-
   }
 }

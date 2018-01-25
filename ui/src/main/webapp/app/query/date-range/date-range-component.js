@@ -50,17 +50,17 @@ function DateRangeController(time, common) {
         if (!vm.conf) {
             throw 'Config Error: Date range must be configured';
         }
-        if (!vm.conf.start || !vm.conf.end) {
-            throw 'Config Error: You must specify the configuration for the start and end date';
+        if (!vm.conf.filter) {
+            throw 'Config Error: You must specify the configuration for the date filter';
         }
-        if (!vm.conf.start.property || !vm.conf.end.property) {
+        if (!vm.conf.filter.startProperty || !vm.conf.filter.endProperty) {
             throw 'Config Error: You must specify the start and end property';
         }
-        if (!vm.conf.start.class || !vm.conf.end.class) {
+        if (!vm.conf.filter.class) {
             throw 'Config Error: You must specify the class for the start and end';
         }
-        if (vm.conf.start.unit) {
-            var unit = angular.lowercase(vm.conf.start.unit);
+        if (vm.conf.filter.unit) {
+            var unit = angular.lowercase(vm.conf.filter.unit);
 
             var valid = false;
 
@@ -71,31 +71,17 @@ function DateRangeController(time, common) {
                 }
             }
             if (!valid) {
-                throw 'Config Error: Unknown start time unit - ' + vm.conf.start.unit + '. Must be one of day, hour, minute, second, millisecond or microsecond (defaults to millisecond)';
-            }
-        }
-        if (vm.conf.end.unit) {
-            var unit = angular.lowercase(vm.conf.end.unit);
-            var valid = false;
-
-            for (var i in validUnits) {
-                if (unit === validUnits[i]) {
-                    valid = true;
-                    break;
-                }
-            }
-            if (!valid) {
-                throw 'Config Error: Unknown end time unit - ' + vm.conf.end.unit + '. Must be one of day, hour, minute, second, millisecond or microsecond (defaults to millisecond)';
+                throw 'Config Error: Unknown time unit - ' + vm.conf.filter.unit + '. Must be one of: day, hour, minute, second, millisecond or microsecond (defaults to millisecond)';
             }
         }
 
         var start = time.getStartDate();
         if (start) {
-            vm.startDate= convertNumberToDate(start, vm.conf.start.unit);
+            vm.startDate = convertNumberToDate(start, vm.conf.filter.unit);
         }
         var end = time.getEndDate();
         if(end) {
-            vm.endDate = convertNumberToDate(end, vm.conf.end.unit);
+            vm.endDate = convertNumberToDate(end, vm.conf.filter.unit);
         }
     }
 
@@ -107,7 +93,7 @@ function DateRangeController(time, common) {
 
         var finalValue = common.clone(value);
 
-        switch(angular.lowercase(vm.conf.start.unit)) {
+        switch(angular.lowercase(vm.conf.filter.unit)) {
             case "microsecond":
                 finalValue = Math.floor(finalValue / 1000);
                 break;
@@ -188,7 +174,7 @@ function DateRangeController(time, common) {
         }
 
 
-        var convertedTime = convertDateToNumber(start, vm.conf.start.unit);
+        var convertedTime = convertDateToNumber(start, vm.conf.filter.unit);
         time.setStartDate(convertedTime);
     }
 
@@ -222,8 +208,9 @@ function DateRangeController(time, common) {
             end.setMilliseconds(vm.endTime.getMilliseconds());
         }
 
-        var convertedTime = convertDateToNumber(end, vm.conf.end.unit);
-        if (vm.conf.end.unit && angular.lowercase(vm.conf.end.unit) === 'microsecond') {
+        var convertedTime = convertDateToNumber(end, vm.conf.filter.unit);
+
+        if (vm.conf.filter.unit && angular.lowercase(vm.conf.filter.unit) === 'microsecond') {
             convertedTime += 999;
         }
 

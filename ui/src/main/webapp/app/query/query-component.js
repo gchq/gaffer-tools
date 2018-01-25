@@ -189,9 +189,9 @@ function QueryController(queryPage, operationService, types, graph, config, sett
                         "predicate": {
                             "class": "uk.gov.gchq.koryphe.impl.predicate.IsMoreThan",
                             "orEqualTo": true,
-                            "value": types.createJsonValue(vm.timeConfig.start.class, time.getStartDate())
+                            "value": types.createJsonValue(vm.timeConfig.filter.class, time.getStartDate())
                         },
-                        "selection": [ vm.timeConfig.start.property ]
+                        "selection": [ vm.timeConfig.filter.startProperty ]
                     }]
                 });
             }
@@ -202,9 +202,9 @@ function QueryController(queryPage, operationService, types, graph, config, sett
                         "predicate": {
                             "class": "uk.gov.gchq.koryphe.impl.predicate.IsLessThan",
                             "orEqualTo": true,
-                            "value": types.createJsonValue(vm.timeConfig.end.class, time.getEndDate())
+                            "value": types.createJsonValue(vm.timeConfig.filter.class, time.getEndDate())
                         },
-                        "selection": [ vm.timeConfig.end.property ]
+                        "selection": [ vm.timeConfig.filter.endProperty ]
                     }]
                 });
             }
