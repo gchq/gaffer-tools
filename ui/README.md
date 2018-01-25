@@ -254,7 +254,7 @@ Now, when you compose a query you will see there is an operation option predefin
 If you wish to query just one graph you can modify it just for the single query.
 
 
-### Configuration
+## Configuration
 
 Like much of Gaffer, the UI is customisable using a config file. You can find examples of these within the example
 directory:
@@ -265,7 +265,7 @@ directory:
 
 The configuration is made up of different sections and is written in JSON.
 
-#### Operations section
+### Operations section
 
 The operations section allows you to choose whether to load named operations on startup as well
 as what operations should be available by default.
@@ -277,7 +277,7 @@ as what operations should be available by default.
 | whiteList                    | array   | optional list of operations to expose to a user. By default all operations are available
 | blackList                    | array   | optional list of banned operations. Operations on this list will not be allowed. By default no operations are blacklisted
 
-##### Default available operations API
+#### Default available operations API
 
 Default available operations are configured using a list of objects. These objects contain key value pairs which tell
 the UI what options it has for a given operations - whether it uses a view or parameters etc
@@ -293,7 +293,7 @@ the UI what options it has for a given operations - whether it uses a view or pa
 | inOutFlag   | A boolean indicating that the operation returns edges. And the direction can be customised.
 
 
-#### Types section
+### Types section
 
 The types section of the configuration tells the UI how to interpret and show java objects. You will need to figure out
 how you want to visualise certain objects. It is advisable to create a type for every Java object the UI will come
@@ -310,7 +310,7 @@ To create a type, use the full class name as the key and create an object with t
 | wrapInJson  | boolean   | (optional) Should the object be wrapped in JSON. For example Longs, you should wrap but Integers and Strings you shouldn't
 | custom      | boolean   | (optional) indicates whether the object is a custom object. *see below for details*
 
-##### Fields
+#### Fields
 
 Fields are the individual parts which make up an object. They are made up of various sub-fields which describe how the
 field should be created and stored.
@@ -340,7 +340,7 @@ the key is 'hyperLogLogPlus.cardinality' because the cardinality is the only mea
 
 ```
 
-#### Time section
+### Time section
 
 Use the time section if you want to specify a date range filter easily across all elements in your queries.
 In the time section, you will create a filter object which contains all the necessary values needed to create a time
