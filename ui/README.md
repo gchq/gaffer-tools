@@ -123,11 +123,10 @@ You will be taken directly to the query page. Here is where you can build your q
 
 
 ##### Build and execute a query to find all locations within the South West region:
-- select 'Get Elements' from the operation drop down
 - in the "Add Seeds" section we will add a seed as the starting point for your query:
   - Value: ```South West```
   - Click '+' or press 'enter'  Don't forget this step!
-- in the "Configure View" section select 'RegionContainsLocation' to tell Gaffer you only want 'RegionContainsLocation' edges to be returned. If you didn't select any groups then you would just get all groups returned.
+- in the Filters section select 'RegionContainsLocation' from the edges dropdown to tell Gaffer you only want 'RegionContainsLocation' edges to be returned. If you didn't select any groups then you would just get all groups returned.
 - click the execute query button in the bottom right hand corner
 
 Move the graph around by clicking and dragging the cursor.
@@ -136,28 +135,25 @@ Scroll to zoom in/out.
 ##### Build and execute a query to find all roads within Bristol:
 - click on the 'Bristol, City of' vertex
 - navigate to the 'query' page
-- select 'Get Elements' from the operation drop down
 - in the 'Add Seeds' section you can see the 'Bristol, City of' vertex is selected. We do not need to add anymore seeds this time.
-- select 'LocationContainsRoad' on the view card
+- select 'LocationContainsRoad' edges drop down of the filters section
 - click the execute button in the bottom right hand corner
 
 
 #### Build and execute a query to find all junctions on the M32:
 - click on the 'M32' vertex
 - navigate to the 'query' page
-- select 'Get Elements' from the operation drop down
-- select 'RoadHasJunction' on the view card
+- select 'RoadHasJunction' from the edges dropdown in the filter section.
 - click the execute button in the bottom right hand corner
 
 
 #### Build and execute a query to find the road use between junctions M32:1 and M32:M4 between 6AM and 7AM on 5/3/2005:
 - click on the 'M32:1' vertex
 - navigate to the 'query' page
-- select 'Get Elements' from the operation drop down
 - to add the time filter, go to the date card
     - enter or select '05/03/2005' into the start and end date
     - enter 07:00 and 09:00 into the appropriate time boxes
-- to specify the edge type we need to use the view card
+- to specify the edge type we need to use the filters section again
     - select 'RoadUse' from the edges drop down
 - click the execute button in the bottom right hand corner
 
@@ -243,6 +239,115 @@ obtain a merged schema for these 2 graphs.
 
 Now, when you compose a query you will see there is an operation option predefined with the 2 graphs.
 If you wish to query just one graph you can modify it just for the single query.
+
+
+### Configuration
+
+Like much of Gaffer, the UI is customisable using a config file. You can find examples of these within the example
+directory:
+
+- config/config.json - a default
+- road-traffic/config/config.json - The config used for the road traffic demo
+- federated/config/config.json - The config used for the federated store demo
+
+The configuration is made up of different sections and is written in JSON.
+
+#### Operations section
+
+The operations section allows you to choose whether to load named operations on startup as well
+as what operations should be available by default.
+
+| variable                     | type    | description
+|------------------------------|---------|------------------------------------------
+| loadNamedOperationsOnStartup | Boolean | should the UI attempt to load all the named operations and expose them for query
+| defaultAvailable             | array   | List of objects describing the operations that are available by default (without calling the Named Operations endpoint)
+| whiteList                    | array   | optional list of operations to expose to a user. By default all operations are available
+| blackList                    | array   | optional list of banned operations. Operations on this list will not be allowed. By default no operations are blacklisted
+
+##### Default available operations API
+
+Default available operations are configured using a list of objects. These objects contain key value pairs which tell
+the UI what options it has for a given operations - whether it uses a view or parameters etc
+
+| variable    |  description
+|-------------|-----------------------------------------
+| name        | A friendly name for the operation
+| class       | The java class of the operation
+| input       | A boolean which determines whether it takes seeds as input
+| view        | A boolean representing whether the operation takes a view - Always false for named operations currently
+| description | A description of what the operation does
+| arrayOutput | A boolean indicating whether the operation returns an array *(not required)*
+| inOutFlag   | A boolean indicating that the operation returns edges. And the direction can be customised.
+
+
+#### Types section
+
+The types section of the configuration tells the UI how to interpret and show java objects. You will need to figure out
+how you want to visualise certain objects. It is advisable to create a type for every Java object the UI will come
+across with the exception of Maps, Lists and Sets, which are automatically handled.
+
+**Warning** For those using Bitmaps in their graphs, make sure to configure the type. Otherwise, it will be treated like
+any other Map and will probably look completely wrong.
+
+To create a type, use the full class name as the key and create an object with the following fields:
+
+| name        | type      | description
+|-------------|-----------|-------------------------------------------
+| fields      | array     | The fields within the class *see below for creating fields*
+| wrapInJson  | boolean   | (optional) Should the object be wrapped in JSON. For example Longs, you should wrap but Integers and Strings you shouldn't
+| custom      | boolean   | (optional) indicates whether the object is a custom object. *see below for details*
+
+##### Fields
+
+Fields are the individual parts which make up an object. They are made up of various sub-fields which describe how the
+field should be created and stored.
+
+| name        | type      | description
+|-------------|-----------|-------------------------------------------
+| label       | string    | A label to be applied to inputs
+| key         | string    | (optional) a key to store the field against. Omit this field for simple objects that store a value against a class name eg: { "java.lang.Long": 1000000 } as opposed to { "java.lang.Long": { "key": 1000000}}
+| type        | string    | the javascript/html type. This translates to how the value is inputted
+| step        | number    | (number values only) how much to increment a value by if using the up/down arrows
+| class       | string    | The class of this field - this can be another type
+| required    | boolean   | Whether the field is required to make up the object
+
+For complex types like the HyperLogLogPlus, the value can be determined by going a few layers down in the object.
+in order to create a custom object use a '.' in the key to separate the layers. Using the example of the HyperLogLogPlus,
+the key is 'hyperLogLogPlus.cardinality' because the cardinality is the only meaningful part:
+
+```
+{
+    "com.clearspring.analytics.stream.cardinality.HyperLogLogPlus": {
+        "hyperLogLogPlus": {
+            "cardinality": 5, <----------- The useful information
+            "bytes" "/f/a/f/f/32/343/5/6///////"
+        }
+    }
+}
+
+```
+
+#### Time section
+
+Use the time section if you want to specify a date range filter easily across all elements in your queries.
+In the time section, you will create a filter object which contains all the necessary values needed to create a time
+window.
+
+To use the time window feature, some assumptions should be true:
+ - Your start and end date properties must be the same on each element
+ - The units must be the same for the start and end date
+ - The classes of object must be the same for the start and end date
+
+ If all these are true, we can proceed and start creating the filter. It takes the following parameters:
+
+| name          | description
+|---------------|---------------------------------------
+| startProperty | The name of the start date property
+| endProperty   | The name of the end date property
+| unit          | The unit of time. This can be one of: day, hour, minute, second, millisecond, microsecond. This is not case sensitive.
+| class         | The java class of the object - this class should exist in the types section
+
+It's worth noting that if your elements have a single timestamp, just use the same timestamp property in the startProperty and endProperty
 
 
 ### Testing
