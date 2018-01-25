@@ -22,7 +22,7 @@ angular.module('app').config(['$mdDateLocaleProvider', function($mdDateLocalePro
     moment.locale(locale);
 
     $mdDateLocaleProvider.parseDate = function(dateString) {
-        var m = moment(dateString, 'L', false);
+        var m = moment(dateString, 'L', true);
         return m.isValid() ? m.toDate() : new Date(NaN);
     }
 
