@@ -1,6 +1,6 @@
-<div layout="column" layout-padding>
+<div layout="column">
     <h3>Add Filters</h3>
-    <div layout="row">
+    <div layout="row" layout-padding>
         <md-input-container flex>
             <label>Only include these entities</label>
             <md-select id="view-entities" class="no-ellipsis" multiple md-selected-text="ctrl.createViewElementsLabel(ctrl.viewEntities, 'entities')" ng-model="ctrl.viewEntities" md-on-close="ctrl.onElementGroupChange('entity')" data-md-container-class="searchable-select">

@@ -1,6 +1,6 @@
 <div layout="column">
     <ng-form name="ctrl.seedForm">
-        <div layout="row" flex layout-padding>
+        <div layout="row" flex>
             <div layout="column" layout-align="start">
                 <md-switch class="md-primary" md-no-ink aria-label="Multiple Seeds" ng-model="ctrl.multipleSeeds">
                     Multiple seeds
@@ -8,7 +8,7 @@
                 </md-switch>
             </div>
         </div>
-        <div layout="row" layout-padding flex>
+        <div layout="row" layout-wrap layout-padding flex>
             <div flex ng-if="!ctrl.multipleSeeds" ng-repeat="field in ctrl.getFields()">
                 <md-input-container id="field.label" flex layout-fill>
                     <label>{{field.label}}</label>

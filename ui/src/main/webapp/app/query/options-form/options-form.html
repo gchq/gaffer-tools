@@ -1,9 +1,9 @@
 <ng-form name="ctrl.optionsForm">
-    <div layout="column">
+    <div layout="column" layout-margin>
         <h3>Add Options</h3>
 
-        <div ng-repeat="opOption in ctrl.opOptionsArray">
-            <md-input-container style="margin:5px 0">
+        <div ng-repeat="opOption in ctrl.opOptionsArray" layout-padding>
+            <md-input-container>
                 <label>Key</label>
                 <md-select name="opOptionKey"
                            ng-model="opOption.key"
@@ -18,7 +18,7 @@
                 </md-select>
                 <div class="md-errors-spacer"></div>
             </md-input-container>
-            <md-input-container style="margin:5px 0">
+            <md-input-container>
                 <label>Value</label>
                 <input type="text"
                        ng-blur="ctrl.updateOpOptions()"
