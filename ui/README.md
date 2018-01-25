@@ -123,7 +123,7 @@ You will be taken directly to the query page. Here is where you can build your q
 
 
 ##### Build and execute a query to find all locations within the South West region:
-- click on the 'Get Elements' row
+- select 'Get Elements' from the operation drop down
 - in the "Add Seeds" section we will add a seed as the starting point for your query:
   - Value: ```South West```
   - Click '+' or press 'enter'  Don't forget this step!
@@ -136,7 +136,7 @@ Scroll to zoom in/out.
 ##### Build and execute a query to find all roads within Bristol:
 - click on the 'Bristol, City of' vertex
 - navigate to the 'query' page
-- click on the 'Get Elements' row
+- select 'Get Elements' from the operation drop down
 - in the 'Add Seeds' section you can see the 'Bristol, City of' vertex is selected. We do not need to add anymore seeds this time.
 - select 'LocationContainsRoad' on the view card
 - click the execute button in the bottom right hand corner
@@ -145,7 +145,7 @@ Scroll to zoom in/out.
 #### Build and execute a query to find all junctions on the M32:
 - click on the 'M32' vertex
 - navigate to the 'query' page
-- click on the 'Get Elements' row
+- select 'Get Elements' from the operation drop down
 - select 'RoadHasJunction' on the view card
 - click the execute button in the bottom right hand corner
 
@@ -153,17 +153,12 @@ Scroll to zoom in/out.
 #### Build and execute a query to find the road use between junctions M32:1 and M32:M4 between 6AM and 7AM on 5/3/2005:
 - click on the 'M32:1' vertex
 - navigate to the 'query' page
-- click on the 'Get Elements' row
-- select 'RoadUse' on the view card
-- This time we are going to add a filter to the start and end times
-- click 'Add Pre Aggregation filter'
-- Enter the following startDate filter:
-```
-property: startDate
-function: uk.gov.gchq.koryphe.impl.predicate.InDateRange
-start: 2005/05/03 07:00
-end: 2005/05/03 08:00
-```
+- select 'Get Elements' from the operation drop down
+- to add the time filter, go to the date card
+    - enter or select '05/03/2005' into the start and end date
+    - enter 07:00 and 09:00 into the appropriate time boxes
+- to specify the edge type we need to use the view card
+    - select 'RoadUse' from the edges drop down
 - click the execute button in the bottom right hand corner
 
 If you find the 'RoadUse' edge in the graph and click on it, you will see the following information in the pop-up:
@@ -189,17 +184,9 @@ Clicking the 'Raw' tab at the top of the UI displays the Json constructed and ha
 #### Now we will repeat the previous query but with a bigger time window - this time between 6AM and 8AM on 5/3/2005:
 - click on the 'M32:1' vertex
 - navigate to the 'query' page
-- click on the 'Get Elements' row
-- select 'RoadUse' on the view card
-- This time we are going to add a filter to the start and end times with a bigger time window
-- click 'Add Pre Aggregation filter'
-- Enter the following startDate filter:
-```
-property: startDate
-function: uk.gov.gchq.koryphe.impl.predicate.InDateRange
-start: 2005/05/03 07:00
-end: 2005/05/03 09:00
-```
+- select 'Get Elements' from the operation drop down
+- enter '05/03/2005' into the start and end date, but this time enter 06:00 and 08:00 as the start and end time.
+- select 'RoadUse'
 - click the execute button in the bottom right hand corner
 
 Now if you click on the 'RoadUse' edge, or visit the 'Edges' Table view, you'll see that two 'RoadUse' summaries are displayed:
