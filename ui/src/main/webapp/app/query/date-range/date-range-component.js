@@ -38,7 +38,7 @@ function DateRangeController(time, common) {
     vm.endTime=null
 
     var validUnits = [
-        "days",
+        "day",
         "hour",
         "minute",
         "second",
@@ -119,8 +119,10 @@ function DateRangeController(time, common) {
                 break;
             case "hour":
                 finalValue = finalValue * 3600000;
+                break;
             case "day":
                 finalValue = finalValue * 86400000;
+                break;
         }
 
         return new Date(finalValue);

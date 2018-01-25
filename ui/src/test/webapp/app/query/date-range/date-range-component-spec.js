@@ -121,7 +121,7 @@ describe('The date range component', function() {
 
             it('should convert the value if the unit is second', function() {
                 startDate = 123456789;
-                ctrl.conf.start.unit = 'second';
+                ctrl.conf.start.unit = 'SECOND';
                 ctrl.$onInit();
                 expect(ctrl.startDate).toEqual(new Date(123456789000));
             });
@@ -130,7 +130,28 @@ describe('The date range component', function() {
                 startDate = 123456789999;
                 ctrl.conf.start.unit = 'microsecond';
                 ctrl.$onInit();
-                expect(ctrl.startDate).toEqual(new Date(123456789));
+                expect(ctrl.startDate).toEqual(new Date(123456789)); // should round down
+            });
+
+            it('should convert the value if the unit is minute', function() {
+                startDate = 123456
+                ctrl.conf.start.unit = 'MINUTE';
+                ctrl.$onInit();
+                expect(ctrl.startDate).toEqual(new Date(123456 * 60 * 1000));
+            });
+
+            it('should convert the value if the unit is hour', function() {
+                startDate = 123456;
+                ctrl.conf.start.unit = 'hour';
+                ctrl.$onInit();
+                expect(ctrl.startDate).toEqual(new Date(123456 * 60 * 60 * 1000));
+            });
+
+            it('should convert the value if the unit is day', function() {
+                startDate = 123456;
+                ctrl.conf.start.unit = 'DAY';
+                ctrl.$onInit();
+                expect(ctrl.startDate).toEqual(new Date(123456 * 60 * 60 * 1000 * 24));
             });
         });
     });
@@ -183,6 +204,33 @@ describe('The date range component', function() {
             expect(time.setStartDate).toHaveBeenCalledWith(1516579200);
             expect(time.setStartDate).toHaveBeenCalledTimes(1);
             expect(serviceStartDate).toEqual(1516579200);
+        });
+
+        it('should divide by (1000 x 60) when the time unit is minute', function() {
+            ctrl.startDate = new Date(1516579200000);
+            ctrl.conf.start.unit = 'MINUTE';
+            ctrl.onStartDateUpdate();
+            expect(time.setStartDate).toHaveBeenCalledWith((1516579200000 / (60 * 1000)));
+            expect(time.setStartDate).toHaveBeenCalledTimes(1);
+            expect(serviceStartDate).toEqual((1516579200000 / (60 * 1000)));
+        });
+
+        it('should divide by (1000 x 60 x 60) when the time unit is hour', function() {
+            ctrl.startDate = new Date(1516579200000);
+            ctrl.conf.start.unit = 'hour';
+            ctrl.onStartDateUpdate();
+            expect(time.setStartDate).toHaveBeenCalledWith((1516579200000 / (60 * 60 * 1000)));
+            expect(time.setStartDate).toHaveBeenCalledTimes(1);
+            expect(serviceStartDate).toEqual((1516579200000 / (60 * 60 * 1000)));
+        });
+
+        it('should divide by (1000 x 60 x 60 x 24) when the time unit is day', function() {
+            ctrl.startDate = new Date(1516579200000);
+            ctrl.conf.start.unit = 'day';
+            ctrl.onStartDateUpdate();
+            expect(time.setStartDate).toHaveBeenCalledWith((1516579200000 / (60 * 60 * 1000 * 24)));
+            expect(time.setStartDate).toHaveBeenCalledTimes(1);
+            expect(serviceStartDate).toEqual((1516579200000 / (60 * 60 * 24 * 1000)));
         });
 
         it('should multiply the value by 1000 when the time unit is microsecond', function() {
@@ -268,6 +316,13 @@ describe('The date range component', function() {
                 ctrl.onStartDateUpdate();
                 expect(serviceStartDate).toEqual(1516617015000) // date + time
             });
+
+            it('should round down when converting to less precise units', function() {
+                ctrl.startTime = new Date(37815000)  // 10:30:15
+                ctrl.conf.start.unit = 'hour';
+                ctrl.onStartDateUpdate();
+                expect(serviceStartDate).toEqual(Math.floor((1516579200000 + 37815000) / (60 * 60 * 1000))) // 22 Jan 2018 10:00
+            });
         });
     });
 
@@ -319,6 +374,33 @@ describe('The date range component', function() {
             expect(time.setEndDate).toHaveBeenCalledWith(1516665599);
             expect(time.setEndDate).toHaveBeenCalledTimes(1);
             expect(serviceEndDate).toEqual(1516665599);
+        });
+
+        it('should divide by (1000 x 60) and round down when the time unit is minute', function() {
+            ctrl.endDate = new Date(1516620668948);
+            ctrl.conf.end.unit = 'minute';
+            ctrl.onEndDateUpdate();
+            expect(time.setEndDate).toHaveBeenCalledWith(Math.floor(1516665599999 / (1000 * 60)));
+            expect(time.setEndDate).toHaveBeenCalledTimes(1);
+            expect(serviceEndDate).toEqual(Math.floor(1516665599999 / (1000 * 60)));
+        });
+
+        it('should divide by (1000 x 60 x 60) and round down when the time unit is hour', function() {
+            ctrl.endDate = new Date(1516620668948);
+            ctrl.conf.end.unit = 'hour';
+            ctrl.onEndDateUpdate();
+            expect(time.setEndDate).toHaveBeenCalledWith(Math.floor(1516665599999 / (1000 * 60 * 60)));
+            expect(time.setEndDate).toHaveBeenCalledTimes(1);
+            expect(serviceEndDate).toEqual(Math.floor(1516665599999 / (1000 * 60 * 60)));
+        });
+
+        it('should divide by (1000 x 60 x 60 x 24) and round down when the time unit is day', function() {
+            ctrl.endDate = new Date(1516620668948);
+            ctrl.conf.end.unit = 'day';
+            ctrl.onEndDateUpdate();
+            expect(time.setEndDate).toHaveBeenCalledWith(Math.floor(1516665599999 / (1000 * 60 * 60 * 24)));
+            expect(time.setEndDate).toHaveBeenCalledTimes(1);
+            expect(serviceEndDate).toEqual(Math.floor(1516665599999 / (1000 * 60 * 60 * 24)));
         });
 
         it('should multiply the value by 1000 when the time unit is microsecond', function() {
@@ -404,6 +486,13 @@ describe('The date range component', function() {
                 ctrl.onEndDateUpdate();
                 expect(serviceEndDate).toEqual(1516617015000) // date + time
             });
+
+            it('should round down when using a less precise time unit', function() {
+                ctrl.endTime = new Date(37815000)  // 10:30:15
+                ctrl.conf.end.unit = 'day';
+                ctrl.onEndDateUpdate();
+                expect(serviceEndDate).toEqual(Math.floor((1516620668948 + 37815000) / (1000 * 60 * 60 * 24))) // just the date
+            })
         });
     });
 });
