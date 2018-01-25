@@ -13,19 +13,6 @@
       }
     ]
   },
-  "time": {
-    "start": {
-      "property": "startDate",
-      "class": "java.util.Date",
-      "unit": "millisecond"
-    },
-    "end": {
-      "property": "endDate",
-      "class": "java.util.Date",
-      "unit": "millisecond"
-    }
-
-  },
   "types": {
     "java.util.Date": {
       "fields": [

@@ -13,6 +13,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxProfile;
+
 import uk.gov.gchq.gaffer.exception.SerialisationException;
 import uk.gov.gchq.gaffer.graph.Graph;
 import uk.gov.gchq.gaffer.jsonserialisation.JSONSerialiser;
@@ -81,7 +82,8 @@ public class QueryBuilderST {
             "      }\n" +
             "    }\n" +
             "  },\n" +
-            "  \"includeIncomingOutGoing\": \"EITHER\"\n" +
+            "  \"includeIncomingOutGoing\": \"EITHER\",\n" +
+            "  \"options\": {}\n" +
             "}";
     private static final String EXPECTED_RESULTS[] = {
             "\"group\": \"RoadUse\",\n" +
@@ -212,7 +214,7 @@ public class QueryBuilderST {
                 "    \"edges\": {}\n";
 
 
-        assert(getElement("operation-0-json").getText().trim().contains(expectedString));
+        assert (getElement("operation-0-json").getText().trim().contains(expectedString));
 
     }
 

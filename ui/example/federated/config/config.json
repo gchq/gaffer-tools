@@ -1,7 +1,7 @@
 {
-  "title": "Example title",
+  "title": "Federated Example",
   "operations": {
-    "loadNamedOperationsOnStartup": true,
+    "loadNamedOperationsOnStartup": false,
     "defaultAvailable": [
       {
         "name": "Get Elements",
@@ -12,14 +12,6 @@
         "inOutFlag": true,
         "arrayOutput": true
       }
-    ],
-    "whiteList": [
-      "Get Elements",
-      "Safe Named Operation",
-      "Other Named Operation"
-    ],
-    "blackList": [
-      "Dangerous Named Operation"
     ]
   },
   "types": {
@@ -149,6 +141,7 @@
     }
   },
   "operationOptionKeys": {
-    "Option Name 1": "gaffer.option.key",
+    "Federated Store - Graph IDs": "gaffer.federatedstore.operation.graphIds",
+    "Federated Store - Skip Failures": "gaffer.federatedstore.operation.skipFailedFederatedStoreExecute"
   }
 }

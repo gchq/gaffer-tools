@@ -14,13 +14,10 @@
   ~ limitations under the License.
   -->
 
-<div layout-padding layout-margin>
-    <div class="container">
-        <div class="panelHeading">
+<div layout="row" layout-padding>
+    <div flex-offset-gt-sm="20" flex-gt-sm="60" flex="100">
+        <div layout="column" flex>
             <h3>Settings</h3>
-        </div>
-
-        <div layout="column">
             <md-input-container>
                 <label>Default result limit</label>
                 <input type="number" step="1" ng-model="ctrl.resultLimit"
@@ -29,9 +26,72 @@
 
             <md-input-container>
                 <label>Default operation</label>
-                <input type="text" ng-blur="ctrl.updateDefaultOp()" ng-model="ctrl.defaultOp"
+                <input type="text"
+                       ng-blur="ctrl.updateDefaultOp()"
+                       ng-model="ctrl.defaultOp"
                        id="defaultOp">
             </md-input-container>
+
+            <div ng-if="ctrl.hasOpOptions()">
+                <h4>Default Operation Options</h4>
+
+                <div layout="row"
+                     ng-repeat="opOption in ctrl.defaultOpOptionsArray">
+                    <md-input-container flex>
+                        <label>Key</label>
+                        <md-select name="opOptionKey"
+                                   ng-model="opOption.key"
+                                   required
+                                   aria-label="operation option key picker"
+                                   md-on-close="ctrl.updateDefaultOpOptions()">
+                            <md-option ng-value="value"
+                                       ng-repeat="(key, value) in ctrl.getOpOptionKeys(opOption)"
+                                       aria-label="{{key}}">
+                                <div class="md-body-2">{{key}}</div>
+                            </md-option>
+                        </md-select>
+                        <div class="md-errors-spacer"></div>
+                    </md-input-container>
+
+                    <md-input-container flex>
+                        <label>Value</label>
+                        <input type="text"
+                               ng-blur="ctrl.updateDefaultOpOptions()"
+                               required
+                               ng-model="opOption.value"
+                               id="defaultOpOptionValue">
+                    </md-input-container>
+                    <div layout="column" layout-align="center">
+                        <md-button class="md-icon-button md-primary"
+                                   ng-click="ctrl.deleteOption(opOption)"
+                                   aria-label="Delete operation option">
+                            <md-icon class="md-secondary"
+                                     md-svg-icon="delete"
+                                     aria-label="delete operation option">
+                            </md-icon>
+                            <md-tooltip>Delete operation option</md-tooltip>
+                        </md-button>
+
+                    </div>
+                </div>
+
+                <md-button class="md-primary"
+                           aria-label="add operation option"
+                           ng-disabled="!ctrl.hasMoreOpOptions()"
+                           ng-click="ctrl.addDefaultOperationOption()">
+                    Add Operation Option
+                </md-button>
+            </div>
+
+            <h4>Schema</h4>
+
+            <div layout="row">
+                <md-button class="md-primary"
+                           aria-label="update schema"
+                           ng-click="ctrl.updateSchema()">
+                    Update schema
+                </md-button>
+            </div>
         </div>
     </div>
 </div>

@@ -153,6 +153,21 @@
             <build>
                 <plugins>
                     <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-war-plugin</artifactId>
+                        <version>${maven-war-plugin.version}</version>
+                        <configuration>
+                            <webResources>
+                                <resource>
+                                    <directory>dependencies</directory>
+                                </resource>
+                                <resource>
+                                    <directory>example/road-traffic</directory>
+                                </resource>
+                            </webResources>
+                        </configuration>
+                    </plugin>
+                    <plugin>
                         <groupId>org.apache.tomcat.maven</groupId>
                         <artifactId>tomcat7-maven-plugin</artifactId>
                         <version>2.0</version>
@@ -226,6 +241,93 @@
                                     images/logo.png
                                 </gaffer.properties.app.logo.src>
 
+                            </systemProperties>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <id>deploy</id>
+                                <phase>integration-test</phase>
+                                <goals>
+                                    <goal>run-war</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+        <profile>
+            <id>federated</id>
+            <properties>
+                <maven.test.skip>true</maven.test.skip>
+            </properties>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-war-plugin</artifactId>
+                        <version>${maven-war-plugin.version}</version>
+                        <configuration>
+                            <webResources>
+                                <resource>
+                                    <directory>dependencies</directory>
+                                </resource>
+                                <resource>
+                                    <directory>example/federated</directory>
+                                </resource>
+                            </webResources>
+                        </configuration>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.tomcat.maven</groupId>
+                        <artifactId>tomcat7-maven-plugin</artifactId>
+                        <version>2.0</version>
+                        <configuration>
+                            <path>/</path>
+                            <port>${standalone-port}</port>
+                            <webapps>
+                                <webapp>
+                                    <contextPath>/${standalone-ui-path}
+                                    </contextPath>
+                                    <groupId>uk.gov.gchq.gaffer</groupId>
+                                    <artifactId>ui</artifactId>
+                                    <version>${project.parent.version}</version>
+                                    <type>war</type>
+                                    <asWebapp>true</asWebapp>
+                                </webapp>
+                                <webapp>
+                                    <contextPath>/${standalone-rest-path}
+                                    </contextPath>
+                                    <groupId>uk.gov.gchq.gaffer</groupId>
+                                    <artifactId>federated-demo</artifactId>
+                                    <version>${gaffer.version}</version>
+                                    <type>war</type>
+                                    <asWebapp>true</asWebapp>
+                                </webapp>
+                            </webapps>
+                            <systemProperties>
+                                <gaffer.properties.app.title>
+                                    Federated Gaffer Example
+                                </gaffer.properties.app.title>
+                                <gaffer.properties.app.description>
+                                    Example of a Gaffer Federated Store
+                                </gaffer.properties.app.description>
+                                <gaffer.rest-api.basePath>
+                                    ${standalone-rest-path}
+                                </gaffer.rest-api.basePath>
+                                <gaffer.graph.config>
+                                    ${project.basedir}/example/federated/graphConfig.json
+                                </gaffer.graph.config>
+                                <gaffer.storeProperties>
+                                    ${project.basedir}/example/federated/federatedStore.properties
+                                </gaffer.storeProperties>
+                                <gaffer.error-mode.debug>
+                                    false
+                                </gaffer.error-mode.debug>
+                                <gaffer.properties.app.logo.src>
+                                    images/logo.png
+                                </gaffer.properties.app.logo.src>
                             </systemProperties>
                         </configuration>
                         <executions>

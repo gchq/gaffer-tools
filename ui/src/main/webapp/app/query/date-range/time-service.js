@@ -17,7 +17,7 @@
 'use strict';
 
 angular.module('app').factory('time', function() {
-    var service = this;
+    var service = {};
 
     var startDate;
     var endDate;

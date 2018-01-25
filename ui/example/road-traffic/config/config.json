@@ -1,5 +1,5 @@
 {
-  "title": "Example title",
+  "title": "Road Traffic Example",
   "operations": {
     "loadNamedOperationsOnStartup": true,
     "defaultAvailable": [
@@ -12,17 +12,20 @@
         "inOutFlag": true,
         "arrayOutput": true
       }
-    ],
-    "whiteList": [
-      "Get Elements",
-      "Safe Named Operation",
-      "Other Named Operation"
-    ],
-    "blackList": [
-      "Dangerous Named Operation"
     ]
   },
   "types": {
+    "java.util.Date": {
+      "fields": [
+        {
+          "label": "Value",
+          "type": "number",
+          "step": "1",
+          "class": "java.util.Date"
+        }
+      ],
+      "wrapInJson": true
+    },
     "java.lang.Long": {
       "fields": [
         {
@@ -148,7 +151,17 @@
       "custom": true
     }
   },
-  "operationOptionKeys": {
-    "Option Name 1": "gaffer.option.key",
+  "time": {
+    "start": {
+      "property": "startDate",
+      "class": "java.util.Date",
+      "unit": "millisecond"
+    },
+    "end": {
+      "property": "endDate",
+      "class": "java.util.Date",
+      "unit": "millisecond"
+    }
+
   }
 }
