@@ -27,9 +27,20 @@ function query() {
     };
 }
 
-function QueryController(queryPage, view, operationService, types, graph, config, settings, query, functions, schema, common, results, navigation, $mdDialog, loading) {
+function QueryController(queryPage, operationService, types, graph, config, settings, query, functions, results, navigation, $mdDialog, loading, time, view) {
 
     var vm = this;
+    vm.timeConfig;
+
+    vm.$onInit = function() {
+        config.get().then(function(conf) {
+            vm.timeConfig = conf.time;
+        });
+
+        settings.getOpOptionKeys().then(function(keys) {
+            opOptionKeys = keys;
+        });
+    }
     var opOptionKeys;
 
     vm.getSelectedOp = function() {
@@ -71,11 +82,6 @@ function QueryController(queryPage, view, operationService, types, graph, config
         });
     }
 
-    vm.$onInit = function() {
-        settings.getOpOptionKeys().then(function(keys) {
-            opOptionKeys = keys;
-        });
-    }
 
     var prompt = function(data) {
         $mdDialog.show({
@@ -95,6 +101,7 @@ function QueryController(queryPage, view, operationService, types, graph, config
         results.update(data);
         navigation.goTo('graph');
         queryPage.reset();
+        time.resetDateRange();
         view.reset();
     }
 
@@ -174,6 +181,32 @@ function QueryController(queryPage, view, operationService, types, graph, config
                 if (filterFunctions) {
                     op.view.edges[edge] = filterFunctions;
                 }
+            }
+
+            if (time.getStartDate() !== undefined && time.getStartDate() !== null) {
+                op.view.globalElements.push({
+                    "preAggregationFilterFunctions": [ {
+                        "predicate": {
+                            "class": "uk.gov.gchq.koryphe.impl.predicate.IsMoreThan",
+                            "orEqualTo": true,
+                            "value": types.createJsonValue(vm.timeConfig.filter.class, time.getStartDate())
+                        },
+                        "selection": [ vm.timeConfig.filter.startProperty ]
+                    }]
+                });
+            }
+
+            if (time.getEndDate() !== undefined && time.getEndDate() !== null) {
+                op.view.globalElements.push({
+                    "preAggregationFilterFunctions": [ {
+                        "predicate": {
+                            "class": "uk.gov.gchq.koryphe.impl.predicate.IsLessThan",
+                            "orEqualTo": true,
+                            "value": types.createJsonValue(vm.timeConfig.filter.class, time.getEndDate())
+                        },
+                        "selection": [ vm.timeConfig.filter.endProperty ]
+                    }]
+                });
             }
         }
 
