@@ -16,6 +16,19 @@ limitations under the License.
 UI
 ============
 
+1. [Introduction](#introduction)
+2. [Road Traffic example](#road-traffic-example)
+    - [Walkthrough](#walkthrough)
+3. [Federated Store Demo](#federated-store-demo)
+4. [Configuration](#configuration)
+    - [Operations section](#operations-section)
+    - [Types section](#types-section)
+    - [Time section](#time-section)
+5. [Testing](#testing)
+
+
+## Introduction
+
 
 This module contains a Gaffer read only UI prototype that connects to a Gaffer REST API.
 See [gaffer-tools/ui](https://github.com/gchq/gaffer-tools/tree/master/ui).
