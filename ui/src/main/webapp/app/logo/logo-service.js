@@ -16,7 +16,7 @@
 
 'use strict';
 
-angular.module('app').factory('logo', ['properties', '$q', 'config', function(properties, $q, config) {
+angular.module('app').factory('logo', ['properties', '$q', 'config', 'common', function(properties, $q, config, common) {
     var service = {};
 
     var logo;
@@ -38,7 +38,7 @@ angular.module('app').factory('logo', ['properties', '$q', 'config', function(pr
                 if (!props['gaffer.properties.app.logo.src']) {
                     defer.resolve(null);
                 } else {
-                    var srcPrefix = conf.restEndpoint.replace(/\/$/, ''); // remove trailing slash
+                    var srcPrefix = common.parseUrl(conf.restEndpoint).replace(/\/$/, ''); // remove trailing slash
                     srcPrefix = srcPrefix.substring(0, srcPrefix.lastIndexOf('/'));
                     logo = srcPrefix + '/' + props['gaffer.properties.app.logo.src'];
                     defer.resolve(logo);
