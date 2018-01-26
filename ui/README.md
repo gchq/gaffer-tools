@@ -21,6 +21,7 @@ UI
     - [Walkthrough](#walkthrough)
 3. [Federated Store Demo](#federated-store-demo)
 4. [Configuration](#configuration)
+    - [Rest Endpoint](#rest-endpoint)
     - [Operations section](#operations-section)
     - [Types section](#types-section)
     - [Time section](#time-section)
@@ -160,17 +161,17 @@ Scroll to zoom in/out.
 - click the execute button in the bottom right hand corner
 
 
-#### Build and execute a query to find the road use between junctions M32:1 and M32:M4 between 6AM and 7AM on 5/3/2005:
+#### Build and execute a query to find the road use between junctions M32:1 and M32:M4 between 6AM and 7AM on 3/5/2005:
 - click on the 'M32:1' vertex
 - navigate to the 'query' page
 - to add the time filter, go to the date card
-    - enter or select '05/03/2005' into the start and end date
+    - enter or select '03/05/2005' into the start and end date
     - enter 07:00 and 09:00 into the appropriate time boxes
 - to specify the edge type we need to use the filters section again
     - select 'RoadUse' from the edges drop down
 - click the execute button in the bottom right hand corner
 
-If you find the 'RoadUse' edge in the graph and click on it, you will see the following information in the pop-up:
+If you find the 'RoadUse' edge in the graph and click on it, you will see the following information in the selected elements window:
 
 ```
 M32:1 to M32:M4 (19)
@@ -190,11 +191,11 @@ Click the 'Edge' tab and you will see a table listing all of the edges displayed
 Clicking the 'Raw' tab at the top of the UI displays the Json constructed and handed to Gaffer to run the queries.
 
 
-#### Now we will repeat the previous query but with a bigger time window - this time between 6AM and 8AM on 5/3/2005:
+#### Now we will repeat the previous query but with a bigger time window - this time between 6AM and 8AM on 3/5/2005:
 - click on the 'M32:1' vertex
 - navigate to the 'query' page
 - select 'Get Elements' from the operation drop down
-- enter '05/03/2005' into the start and end date, but this time enter 06:00 and 08:00 as the start and end time.
+- enter '03/05/2005' into the start and end date, but this time enter 06:00 and 08:00 as the start and end time.
 - select 'RoadUse'
 - click the execute button in the bottom right hand corner
 
@@ -221,7 +222,7 @@ In this example we have summarised the vehicle counts by adding them together. G
 
 There are some in-depth examples based around the Java API here: [Getting Started](https://gchq.github.io/gaffer-doc/summaries/getting-started.html).
 
-### Federated Store Demo
+## Federated Store Demo
 There is also a Federated Store Demo, which can be run using:
 ```bash
 ./ui/example/federated/scripts/start.sh
@@ -263,7 +264,26 @@ directory:
 - road-traffic/config/config.json - The config used for the road traffic demo
 - federated/config/config.json - The config used for the federated store demo
 
-The configuration is made up of different sections and is written in JSON.
+The configuration is made up of different sections and is written in JSON:
+
+### Rest Endpoint
+
+The rest endpoint that the UI uses can be changed. By default, it assumes that the rest service is running on the same
+machine as the UI, on the same port, at "/rest/latest". You could overwrite this by specifying a value in the
+"restEndpoint" field. This would change where the UI gets the schema from and run operations etc.
+
+An example of a changed rest endpoint:
+
+```
+{
+    "restEndpoint": "http://localhost/mygraphname/rest/latest",
+    "operations": { ... },
+    "types": { ... },
+    "time": { ... }
+}
+
+```
+
 
 ### Operations section
 
@@ -272,7 +292,7 @@ as what operations should be available by default.
 
 | variable                     | type    | description
 |------------------------------|---------|------------------------------------------
-| loadNamedOperationsOnStartup | Boolean | should the UI attempt to load all the named operations and expose them for query
+| loadNamedOperationsOnStartup | boolean | should the UI attempt to load all the named operations and expose them for query
 | defaultAvailable             | array   | List of objects describing the operations that are available by default (without calling the Named Operations endpoint)
 | whiteList                    | array   | optional list of operations to expose to a user. By default all operations are available
 | blackList                    | array   | optional list of banned operations. Operations on this list will not be allowed. By default no operations are blacklisted
@@ -282,15 +302,15 @@ as what operations should be available by default.
 Default available operations are configured using a list of objects. These objects contain key value pairs which tell
 the UI what options it has for a given operations - whether it uses a view or parameters etc
 
-| variable    |  description
-|-------------|-----------------------------------------
-| name        | A friendly name for the operation
-| class       | The java class of the operation
-| input       | A boolean which determines whether it takes seeds as input
-| view        | A boolean representing whether the operation takes a view - Always false for named operations currently
-| description | A description of what the operation does
-| arrayOutput | A boolean indicating whether the operation returns an array *(not required)*
-| inOutFlag   | A boolean indicating that the operation returns edges. And the direction can be customised.
+| variable    | type    |  description
+|-------------|---------|-------------------------------
+| name        | string  | A friendly name for the operation
+| class       | string  | The java class of the operation
+| input       | boolean | A flag which determines whether it takes seeds as input
+| view        | boolean | A flag showing whether the operation takes a view - Always false for named operations currently
+| description | string  | A description of what the operation does
+| arrayOutput | boolean | A flag indicating whether the operation returns an array *(not required)*
+| inOutFlag   | boolean | A flag indicating that the operation returns edges. And the direction can be customised.
 
 
 ### Types section
@@ -304,25 +324,25 @@ any other Map and will probably look completely wrong.
 
 To create a type, use the full class name as the key and create an object with the following fields:
 
-| name        | type      | description
-|-------------|-----------|-------------------------------------------
-| fields      | array     | The fields within the class *see below for creating fields*
-| wrapInJson  | boolean   | (optional) Should the object be wrapped in JSON. For example Longs, you should wrap but Integers and Strings you shouldn't
-| custom      | boolean   | (optional) indicates whether the object is a custom object. *see below for details*
+| name        | type    | description
+|-------------|---------|-------------------------------------------
+| fields      | array   | The fields within the class *see below for creating fields*
+| wrapInJson  | boolean | (optional) Should the object be wrapped in JSON. For example Longs, you should wrap but Integers and Strings you shouldn't
+| custom      | boolean | (optional) indicates whether the object is a custom object. *see below for details*
 
 #### Fields
 
 Fields are the individual parts which make up an object. They are made up of various sub-fields which describe how the
 field should be created and stored.
 
-| name        | type      | description
-|-------------|-----------|-------------------------------------------
-| label       | string    | A label to be applied to inputs
-| key         | string    | (optional) a key to store the field against. Omit this field for simple objects that store a value against a class name eg: { "java.lang.Long": 1000000 } as opposed to { "java.lang.Long": { "key": 1000000}}
-| type        | string    | the javascript/html type. This translates to how the value is inputted
-| step        | number    | (number values only) how much to increment a value by if using the up/down arrows
-| class       | string    | The class of this field - this can be another type
-| required    | boolean   | Whether the field is required to make up the object
+| name        | type    | description
+|-------------|---------|-------------------------------------------
+| label       | string  | A label to be applied to inputs
+| key         | string  | (optional) a key to store the field against. Omit this field for simple objects that store a value against a class name eg: { "java.lang.Long": 1000000 } as opposed to { "java.lang.Long": { "key": 1000000}}
+| type        | string  | the javascript/html type. This translates to how the value is inputted
+| step        | number  | (number values only) how much to increment a value by if using the up/down arrows
+| class       | string  | The class of this field - this can be another type
+| required    | boolean | Whether the field is required to make up the object
 
 For complex types like the HyperLogLogPlus, the value can be determined by going a few layers down in the object.
 in order to create a custom object use a '.' in the key to separate the layers. Using the example of the HyperLogLogPlus,
@@ -353,17 +373,17 @@ To use the time window feature, some assumptions should be true:
 
  If all these are true, we can proceed and start creating the filter. It takes the following parameters:
 
-| name          | description
-|---------------|---------------------------------------
-| startProperty | The name of the start date property
-| endProperty   | The name of the end date property
-| unit          | The unit of time. This can be one of: day, hour, minute, second, millisecond, microsecond. This is not case sensitive.
-| class         | The java class of the object - this class should exist in the types section
+| name          | type    | description
+|---------------|---------|------------------------------------------------
+| startProperty | string  | The name of the start date property
+| endProperty   | string  | The name of the end date property
+| unit          | string  | The unit of time. This can be one of: day, hour, minute, second, millisecond, microsecond. This is not case sensitive.
+| class         | string  | The java class of the object - this class should exist in the types section
 
 It's worth noting that if your elements have a single timestamp, just use the same timestamp property in the startProperty and endProperty
 
 
-### Testing
+## Testing
 
 The UI contains both End-to-End Selenium tests and Jasmine unit tests. The former testing user interactions, and the
 latter testing small units of javascript. New functionality being added to the UI should be fully tested using both
