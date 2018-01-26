@@ -116,4 +116,16 @@ describe('The Logo Service', function() {
 
     });
 
+    it('should append http:// if not present on the url', function(done) {
+        rest = "localhost:8080/rest/latest";
+        imagePath = "images/logo.png";
+
+        logoService.get().then(function(src) {
+            expect(src).toEqual("http://localhost:8080/rest/images/logo.png");
+            done();
+        });
+
+        $rootScope.$digest();
+    })
+
 });
