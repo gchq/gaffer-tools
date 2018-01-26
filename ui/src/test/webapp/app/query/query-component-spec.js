@@ -175,6 +175,124 @@ describe('The Query component', function() {
                 });
             });
 
+            describe('When adding date ranges', function() {
+
+                var time;
+                var startDate, endDate;
+                var ctrl;
+                var types;
+
+                beforeEach(inject(function(_time_, _types_) {
+                    time = _time_;
+                    types = _types_;
+                }));
+
+                beforeEach(function() {
+                    spyOn(queryPage, 'getSelectedOperation').and.returnValue({
+                        class: 'operationClass',
+                        view: true
+                    });
+
+                    spyOn(types, 'createJsonValue').and.callFake(function(valueClass, value) {
+                        var json = {};
+                        json[valueClass] = value;
+
+                        return json;
+                    });
+
+                    spyOn(time, 'getStartDate').and.callFake(function() {
+                        return startDate;
+                    });
+
+                    spyOn(time, 'getEndDate').and.callFake(function() {
+                        return endDate;
+                    });
+
+                    spyOn(query, 'execute');
+                });
+
+                beforeEach(function() {
+                    ctrl = $componentController('query');
+                });
+
+                beforeEach(function() {
+                    startDate = undefined;
+                    endDate = undefined;
+                });
+
+                it('should add no date range if neither start or end date is specified', function() {
+                    ctrl.execute();
+                    expect(query.execute.calls.first().args[0]).not.toContain('startDate');
+                    expect(query.execute.calls.first().args[0]).not.toContain('endDate');
+                });
+
+                it('should add no date filter if the start and end date is null', function() {
+                    startDate = null;
+                    endDate = null;
+                    ctrl.execute();
+                    expect(query.execute.calls.first().args[0]).not.toContain('startDate');
+                    expect(query.execute.calls.first().args[0]).not.toContain('endDate');
+                });
+
+                it('should add a start date with an IsMoreThan filter', function() {
+                    startDate = 1234567890;
+                    ctrl.timeConfig = {
+                        filter: {
+                            class: "startDateClass",
+                            startProperty: "startDateProperty"
+                        }
+                    };
+
+                    ctrl.execute();
+
+                    var expectedFilterFunctions = {
+                        "preAggregationFilterFunctions": [
+                            {
+                                predicate: {
+                                    class: 'uk.gov.gchq.koryphe.impl.predicate.IsMoreThan',
+                                    orEqualTo: true,
+                                    value: { "startDateClass": 1234567890 }
+                                },
+                                selection: [
+                                    'startDateProperty'
+                                ]
+                            }
+                        ]
+                    }
+                    expect(query.execute.calls.first().args[0]).toContain(JSON.stringify(expectedFilterFunctions));
+
+                });
+
+                it('should add an endDate with an IsLessThan filter', function() {
+                    endDate = 1234567890;
+                    ctrl.timeConfig = {
+                        filter: {
+                            class: "endDateClass",
+                            endProperty: "endDateProperty"
+                        }
+                    };
+
+                    ctrl.execute();
+
+                    var expectedFilterFunctions = {
+                        "preAggregationFilterFunctions": [
+                            {
+                                predicate: {
+                                    class: 'uk.gov.gchq.koryphe.impl.predicate.IsLessThan',
+                                    orEqualTo: true,
+                                    value: { "endDateClass": 1234567890 }
+                                },
+                                selection: [
+                                    'endDateProperty'
+                                ]
+                            }
+                        ]
+                    }
+                    expect(query.execute.calls.first().args[0]).toContain(JSON.stringify(expectedFilterFunctions));
+
+                });
+            });
+
             describe('When adding parameters', function() {
 
                 it('should add parameters to named operations', function() {

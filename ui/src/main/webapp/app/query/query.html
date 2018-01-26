@@ -13,10 +13,11 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-<div layout-padding layout-margin>
+<div layout-padding layout-margin ng-cloak>
     <form name="ctrl.queryForm">
         <operation-selector></operation-selector>
         <seed-manager ng-show="ctrl.getSelectedOp().input"></seed-manager>
+        <date-range ng-if="ctrl.timeConfig && ctrl.getSelectedOp().view" conf="ctrl.timeConfig"></date-range>
         <parameter-form ng-if="ctrl.getSelectedOp().parameters" parameters="ctrl.getSelectedOp().parameters"></parameter-form>
         <view-builder ng-show="ctrl.getSelectedOp().view"></view-builder>
         <directionality-picker ng-show="ctrl.getSelectedOp().inOutFlag"></directionality-picker>

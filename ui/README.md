@@ -16,6 +16,20 @@ limitations under the License.
 UI
 ============
 
+1. [Introduction](#introduction)
+2. [Road Traffic example](#road-traffic-example)
+    - [Walkthrough](#walkthrough)
+3. [Federated Store Demo](#federated-store-demo)
+4. [Configuration](#configuration)
+    - [Rest Endpoint](#rest-endpoint)
+    - [Operations section](#operations-section)
+    - [Types section](#types-section)
+    - [Time section](#time-section)
+5. [Testing](#testing)
+
+
+## Introduction
+
 
 This module contains a Gaffer read only UI prototype that connects to a Gaffer REST API.
 See [gaffer-tools/ui](https://github.com/gchq/gaffer-tools/tree/master/ui).
@@ -123,11 +137,10 @@ You will be taken directly to the query page. Here is where you can build your q
 
 
 ##### Build and execute a query to find all locations within the South West region:
-- click on the 'Get Elements' row
 - in the "Add Seeds" section we will add a seed as the starting point for your query:
   - Value: ```South West```
   - Click '+' or press 'enter'  Don't forget this step!
-- in the "Configure View" section select 'RegionContainsLocation' to tell Gaffer you only want 'RegionContainsLocation' edges to be returned. If you didn't select any groups then you would just get all groups returned.
+- in the Filters section select 'RegionContainsLocation' from the edges dropdown to tell Gaffer you only want 'RegionContainsLocation' edges to be returned. If you didn't select any groups then you would just get all groups returned.
 - click the execute query button in the bottom right hand corner
 
 Move the graph around by clicking and dragging the cursor.
@@ -136,37 +149,29 @@ Scroll to zoom in/out.
 ##### Build and execute a query to find all roads within Bristol:
 - click on the 'Bristol, City of' vertex
 - navigate to the 'query' page
-- click on the 'Get Elements' row
 - in the 'Add Seeds' section you can see the 'Bristol, City of' vertex is selected. We do not need to add anymore seeds this time.
-- select 'LocationContainsRoad' on the view card
+- select 'LocationContainsRoad' edges drop down of the filters section
 - click the execute button in the bottom right hand corner
 
 
 #### Build and execute a query to find all junctions on the M32:
 - click on the 'M32' vertex
 - navigate to the 'query' page
-- click on the 'Get Elements' row
-- select 'RoadHasJunction' on the view card
+- select 'RoadHasJunction' from the edges dropdown in the filter section.
 - click the execute button in the bottom right hand corner
 
 
-#### Build and execute a query to find the road use between junctions M32:1 and M32:M4 between 6AM and 7AM on 5/3/2005:
+#### Build and execute a query to find the road use between junctions M32:1 and M32:M4 between 6AM and 7AM on 3/5/2005:
 - click on the 'M32:1' vertex
 - navigate to the 'query' page
-- click on the 'Get Elements' row
-- select 'RoadUse' on the view card
-- This time we are going to add a filter to the start and end times
-- click 'Add Pre Aggregation filter'
-- Enter the following startDate filter:
-```
-property: startDate
-function: uk.gov.gchq.koryphe.impl.predicate.InDateRange
-start: 2005/05/03 07:00
-end: 2005/05/03 08:00
-```
+- to add the time filter, go to the date card
+    - enter or select '03/05/2005' into the start and end date
+    - enter 07:00 and 09:00 into the appropriate time boxes
+- to specify the edge type we need to use the filters section again
+    - select 'RoadUse' from the edges drop down
 - click the execute button in the bottom right hand corner
 
-If you find the 'RoadUse' edge in the graph and click on it, you will see the following information in the pop-up:
+If you find the 'RoadUse' edge in the graph and click on it, you will see the following information in the selected elements window:
 
 ```
 M32:1 to M32:M4 (19)
@@ -186,20 +191,12 @@ Click the 'Edge' tab and you will see a table listing all of the edges displayed
 Clicking the 'Raw' tab at the top of the UI displays the Json constructed and handed to Gaffer to run the queries.
 
 
-#### Now we will repeat the previous query but with a bigger time window - this time between 6AM and 8AM on 5/3/2005:
+#### Now we will repeat the previous query but with a bigger time window - this time between 6AM and 8AM on 3/5/2005:
 - click on the 'M32:1' vertex
 - navigate to the 'query' page
-- click on the 'Get Elements' row
-- select 'RoadUse' on the view card
-- This time we are going to add a filter to the start and end times with a bigger time window
-- click 'Add Pre Aggregation filter'
-- Enter the following startDate filter:
-```
-property: startDate
-function: uk.gov.gchq.koryphe.impl.predicate.InDateRange
-start: 2005/05/03 07:00
-end: 2005/05/03 09:00
-```
+- select 'Get Elements' from the operation drop down
+- enter '03/05/2005' into the start and end date, but this time enter 06:00 and 08:00 as the start and end time.
+- select 'RoadUse'
 - click the execute button in the bottom right hand corner
 
 Now if you click on the 'RoadUse' edge, or visit the 'Edges' Table view, you'll see that two 'RoadUse' summaries are displayed:
@@ -225,7 +222,7 @@ In this example we have summarised the vehicle counts by adding them together. G
 
 There are some in-depth examples based around the Java API here: [Getting Started](https://gchq.github.io/gaffer-doc/summaries/getting-started.html).
 
-### Federated Store Demo
+## Federated Store Demo
 There is also a Federated Store Demo, which can be run using:
 ```bash
 ./ui/example/federated/scripts/start.sh
@@ -258,7 +255,135 @@ Now, when you compose a query you will see there is an operation option predefin
 If you wish to query just one graph you can modify it just for the single query.
 
 
-### Testing
+## Configuration
+
+Like much of Gaffer, the UI is customisable using a config file. You can find examples of these within the example
+directory:
+
+- config/config.json - a default
+- road-traffic/config/config.json - The config used for the road traffic demo
+- federated/config/config.json - The config used for the federated store demo
+
+The configuration is made up of different sections and is written in JSON:
+
+### Rest Endpoint
+
+The rest endpoint that the UI uses can be changed. By default, it assumes that the rest service is running on the same
+machine as the UI, on the same port, at "/rest/latest". You could overwrite this by specifying a value in the
+"restEndpoint" field. This would change where the UI gets the schema from and run operations etc.
+
+An example of a changed rest endpoint:
+
+```
+{
+    "restEndpoint": "http://localhost/mygraphname/rest/latest",
+    "operations": { ... },
+    "types": { ... },
+    "time": { ... }
+}
+
+```
+
+
+### Operations section
+
+The operations section allows you to choose whether to load named operations on startup as well
+as what operations should be available by default.
+
+| variable                     | type    | description
+|------------------------------|---------|------------------------------------------
+| loadNamedOperationsOnStartup | boolean | should the UI attempt to load all the named operations and expose them for query
+| defaultAvailable             | array   | List of objects describing the operations that are available by default (without calling the Named Operations endpoint)
+| whiteList                    | array   | optional list of operations to expose to a user. By default all operations are available
+| blackList                    | array   | optional list of banned operations. Operations on this list will not be allowed. By default no operations are blacklisted
+
+#### Default available operations API
+
+Default available operations are configured using a list of objects. These objects contain key value pairs which tell
+the UI what options it has for a given operations - whether it uses a view or parameters etc
+
+| variable    | type    |  description
+|-------------|---------|-------------------------------
+| name        | string  | A friendly name for the operation
+| class       | string  | The java class of the operation
+| input       | boolean | A flag which determines whether it takes seeds as input
+| view        | boolean | A flag showing whether the operation takes a view - Always false for named operations currently
+| description | string  | A description of what the operation does
+| arrayOutput | boolean | A flag indicating whether the operation returns an array *(not required)*
+| inOutFlag   | boolean | A flag indicating that the operation returns edges. And the direction can be customised.
+
+
+### Types section
+
+The types section of the configuration tells the UI how to interpret and show java objects. You will need to figure out
+how you want to visualise certain objects. It is advisable to create a type for every Java object the UI will come
+across with the exception of Maps, Lists and Sets, which are automatically handled.
+
+**Warning** For those using Bitmaps in their graphs, make sure to configure the type. Otherwise, it will be treated like
+any other Map and will probably look completely wrong.
+
+To create a type, use the full class name as the key and create an object with the following fields:
+
+| name        | type    | description
+|-------------|---------|-------------------------------------------
+| fields      | array   | The fields within the class *see below for creating fields*
+| wrapInJson  | boolean | (optional) Should the object be wrapped in JSON. For example Longs, you should wrap but Integers and Strings you shouldn't
+| custom      | boolean | (optional) indicates whether the object is a custom object. *see below for details*
+
+#### Fields
+
+Fields are the individual parts which make up an object. They are made up of various sub-fields which describe how the
+field should be created and stored.
+
+| name        | type    | description
+|-------------|---------|-------------------------------------------
+| label       | string  | A label to be applied to inputs
+| key         | string  | (optional) a key to store the field against. Omit this field for simple objects that store a value against a class name eg: { "java.lang.Long": 1000000 } as opposed to { "java.lang.Long": { "key": 1000000}}
+| type        | string  | the javascript/html type. This translates to how the value is inputted
+| step        | number  | (number values only) how much to increment a value by if using the up/down arrows
+| class       | string  | The class of this field - this can be another type
+| required    | boolean | Whether the field is required to make up the object
+
+For complex types like the HyperLogLogPlus, the value can be determined by going a few layers down in the object.
+in order to create a custom object use a '.' in the key to separate the layers. Using the example of the HyperLogLogPlus,
+the key is 'hyperLogLogPlus.cardinality' because the cardinality is the only meaningful part:
+
+```
+{
+    "com.clearspring.analytics.stream.cardinality.HyperLogLogPlus": {
+        "hyperLogLogPlus": {
+            "cardinality": 5, <----------- The useful information
+            "bytes" "/f/a/f/f/32/343/5/6///////"
+        }
+    }
+}
+
+```
+
+### Time section
+
+Use the time section if you want to specify a date range filter easily across all elements in your queries.
+In the time section, you will create a filter object which contains all the necessary values needed to create a time
+window.
+
+To use the time window feature, some assumptions should be true:
+ - Your start and end date properties must be the same on each element
+ - The units must be the same for the start and end date
+ - The classes of object must be the same for the start and end date
+
+ If all these are true, we can proceed and start creating the filter. It takes the following parameters:
+
+| name          | type    | description
+|---------------|---------|------------------------------------------------
+| startProperty | string  | The name of the start date property
+| endProperty   | string  | The name of the end date property
+| unit          | string  | The unit of time. This can be one of: day, hour, minute, second, millisecond, microsecond. This is not case sensitive.
+| class         | string  | The java class of the object - this class should exist in the types section
+
+It's worth noting that if your elements have a single timestamp, just use the same timestamp property in the startProperty and endProperty
+
+
+## Testing
 
 The UI contains both End-to-End Selenium tests and Jasmine unit tests. The former testing user interactions, and the
 latter testing small units of javascript. New functionality being added to the UI should be fully tested using both

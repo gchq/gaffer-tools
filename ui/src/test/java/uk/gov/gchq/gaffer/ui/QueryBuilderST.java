@@ -12,6 +12,7 @@ import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.firefox.FirefoxProfile;
 
 import uk.gov.gchq.gaffer.exception.SerialisationException;
 import uk.gov.gchq.gaffer.graph.Graph;
@@ -106,7 +107,11 @@ public class QueryBuilderST {
         assertNotNull("System property " + GECKO_PROPERTY + " has not been set", System.getProperty(GECKO_PROPERTY));
         url = System.getProperty(URL_PROPERTY, DEFAULT_URL);
         slowFactor = Integer.parseInt(System.getProperty(SLOW_FACTOR_PROPERTY, DEFAULT_SLOW_FACTOR));
-        driver = new FirefoxDriver();
+
+        FirefoxProfile profile = new FirefoxProfile();
+        profile.setPreference("intl.accept_languages", "en-GB"); // for dates
+        driver = new FirefoxDriver(profile);
+
 
         // Create a large window to ensure we don't need to scroll
         final Dimension dimension = new Dimension(1200, 1000);
@@ -147,6 +152,24 @@ public class QueryBuilderST {
         click("open-raw");
         assertEquals(EXPECTED_OPERATION_JSON, getElement("operation-0-json").getText().trim());
 
+        clickTab("Results");
+        final String results = getElement("raw-edge-results").getText().trim();
+        for (final String expectedResult : EXPECTED_RESULTS) {
+            assertTrue("Results did not contain: \n" + expectedResult
+                    + "\nActual results: \n" + results, results.contains(expectedResult));
+        }
+    }
+
+    @Test
+    public void shouldFindRoadUseAroundJunctionM5_10WithDatePicker() throws InterruptedException {
+        selectOptionWithAriaLabel("operation-name", "Get Elements");
+        enterText("seedVertex", "M5:10");
+        click("add-seeds");
+        enterIntoDatePicker("start-date", "13/10/2000");
+        selectMultiOption("view-edges", "RoadUse");
+        click("Execute Query");
+
+        click("open-raw");
         clickTab("Results");
         final String results = getElement("raw-edge-results").getText().trim();
         for (final String expectedResult : EXPECTED_RESULTS) {
@@ -229,6 +252,13 @@ public class QueryBuilderST {
         Thread.sleep(slowFactor * 500);
     }
 
+    private void enterIntoDatePicker(final String id, final String date) throws InterruptedException {
+        WebElement element = driver.findElement(By.xpath("//*[@id=\"" + id + "\"]//input"));
+        element.sendKeys((date));
+
+        Thread.sleep(slowFactor * 500);
+    }
+
     private void selectOption(final String id, final String optionValue) throws InterruptedException {
         getElement(id).click();
 
@@ -238,7 +268,7 @@ public class QueryBuilderST {
         Thread.sleep(slowFactor * 500);
     }
 
-    private void selectMultiOption(final String id, final String... values) {
+    private void selectMultiOption(final String id, final String... values) throws InterruptedException {
         getElement(id).click();
         WebElement choice = null;
 
@@ -250,6 +280,8 @@ public class QueryBuilderST {
         assertNotNull("You must provide at least one option", choice);
 
         choice.sendKeys(Keys.ESCAPE);
+
+        Thread.sleep(slowFactor * 500);
     }
 
     private void selectOptionWithAriaLabel(final String id, final String label) throws InterruptedException {
