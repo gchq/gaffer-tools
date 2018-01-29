@@ -31,7 +31,7 @@
             </div>
         </form>
         <md-card-actions layout="row" layout-align="end center">
-            <md-button ng-click="ctrl.execute()" id="Execute Query" class="md-primary">Execute</md-button>
+            <md-button ng-click="ctrl.execute()" id="Execute Query" ng-disabled="!ctrl.canExecute()" class="md-primary">Execute</md-button>
         </md-card-actions>
     </md-card>
 </div>
