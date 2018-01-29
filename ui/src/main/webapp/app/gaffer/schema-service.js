@@ -87,7 +87,9 @@ angular.module('app').factory('schema', ['$http', 'config', '$q', 'common', 'ope
 
     var load = function(defer, loader) {
         config.get().then(function(conf) {
-            defer = $q.defer();
+            if (!defer) {
+                defer = $q.defer();
+            }
             if(!loader) {
                 loader = loadSchemaFromUrl;
             }

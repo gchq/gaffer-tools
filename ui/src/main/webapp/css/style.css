@@ -106,7 +106,3 @@ md-option > div {
     font-size: 14px;
     line-height: 14px;
 }
-
-md-datepicker {
-    display: inline-table;
-}
