@@ -1,82 +1,74 @@
-<md-card>
-    <md-card-title>
-        <md-card-title-text>
-            <span class="md-headline">Add filters</span>
-        </md-card-title-text>
-    </md-card-title>
-
-    <div layout="column" layout-padding>
-        <div layout="row">
-            <md-input-container flex>
-                <label>Only include these entities</label>
-                <md-select id="view-entities" class="no-ellipsis" multiple md-selected-text="ctrl.createViewElementsLabel(ctrl.viewEntities, 'entities')" ng-model="ctrl.viewEntities" md-on-close="ctrl.onElementGroupChange('entity')" data-md-container-class="searchable-select">
-                    <md-select-header class="search-header">
-                        <input
-                            ng-model="ctrl.entitySearchTerm"
+<div layout="column">
+    <h3 class="section-title">Add Filters</h3>
+    <div layout="row" layout-padding>
+        <md-input-container flex>
+            <label>Only include these entities</label>
+            <md-select id="view-entities" class="no-ellipsis" multiple md-selected-text="ctrl.createViewElementsLabel(ctrl.viewEntities, 'entities')" ng-model="ctrl.viewEntities" md-on-close="ctrl.onElementGroupChange('entity')" data-md-container-class="searchable-select">
+                <md-select-header class="search-header">
+                    <input
+                        ng-model="ctrl.entitySearchTerm"
+                        type="search"
+                        class="search-box md-text"
+                        placeholder="Search for an entity group...">
+                </md-select-header>
+                    <md-option ng-value="entity" ng-repeat="(entity, detail) in ctrl.schemaEntities | schemaGroupFilter:ctrl.entitySearchTerm">
+                        <div class="md-subhead">{{entity}}</div>
+                        <div class="md-body-1">{{detail.description}}</div>
+                    </md-option>
+            </md-select>
+        </md-input-container>
+        <md-input-container flex>
+            <label>Only include these edges</label>
+            <md-select id="view-edges" class="no-ellipsis" multiple md-selected-text="ctrl.createViewElementsLabel(ctrl.viewEdges, 'edges')" ng-model="ctrl.viewEdges" md-on-close="ctrl.onElementGroupChange('edge')" data-md-container-class="searchable-select">
+                <md-select-header class="search-header">
+                    <input
+                            ng-model="ctrl.edgeSearchTerm"
                             type="search"
                             class="search-box md-text"
-                            placeholder="Search for an entity group...">
-                    </md-select-header>
-                        <md-option ng-value="entity" ng-repeat="(entity, detail) in ctrl.schemaEntities | schemaGroupFilter:ctrl.entitySearchTerm">
-                            <div class="md-subhead">{{entity}}</div>
-                            <div class="md-body-1">{{detail.description}}</div>
-                        </md-option>
-                </md-select>
-            </md-input-container>
-            <md-input-container flex>
-                <label>Only include these edges</label>
-                <md-select id="view-edges" class="no-ellipsis" multiple md-selected-text="ctrl.createViewElementsLabel(ctrl.viewEdges, 'edges')" ng-model="ctrl.viewEdges" md-on-close="ctrl.onElementGroupChange('edge')" data-md-container-class="searchable-select">
-                    <md-select-header class="search-header">
-                        <input
-                                ng-model="ctrl.edgeSearchTerm"
-                                type="search"
-                                class="search-box md-text"
-                                placeholder="Search for an edge group...">
-                    </md-select-header>
-                        <md-option ng-value="edge" ng-repeat="(edge, detail) in ctrl.schemaEdges | schemaGroupFilter:ctrl.edgeSearchTerm">
-                            <div class="md-subhead">{{edge}}</div>
-                            <div class="md-body-1">{{detail.description}}</div>
-                        </md-option>
-                </md-select>
-            </md-input-container>
-        </div>
-
-        <md-list>
-            <div ng-repeat="entity in ctrl.viewEntities track by entity" ng-if="ctrl.getEntityProperties(entity)">
-                <md-subheader class="transparent md-no-sticky">{{entity}} Filters</md-subheader>
-                <md-list-item class="secondary-button-padding" ng-click="ctrl.editFilter(entity, 'entity', true, filter, $index)" ng-repeat="filter in ctrl.entityFilters[entity].preAggregationFilterFunctions track by $index">
-                    <p> {{ctrl.createFilterLabel(filter, true)}} </p>
-                    <md-icon class="md-secondary" md-svg-icon="delete" id="delete-pre-entity-{{entity}}-filter-{{$index}}" ng-click="ctrl.deleteFilter(entity, 'entity', true, $index)" aria-label="delete filter"></md-icon>
-                </md-list-item>
-                <md-list-item class="secondary-button-padding" ng-click="ctrl.editFilter(entity, 'entity', false, filter, $index)" ng-repeat="filter in ctrl.entityFilters[entity].postAggregationFilterFunctions track by $index">
-                    <p> {{ctrl.createFilterLabel(filter, false)}} </p>
-                    <md-icon class="md-secondary" md-svg-icon="delete" id="delete-post-entity-{{entity}}-filter-{{$index}}" ng-click="ctrl.deleteFilter(entity, 'entity', false, $index)" aria-label="delete filter">
-                        <md-tooltip>Delete filter</md-tooltip>
-                    </md-icon>
-                </md-list-item>
-                <md-button class="no-text-transform" id="add-{{entity}}-filters" ng-click="ctrl.addFilters($event, entity, 'entity')">
-                    Add {{entity}} Filters
-                </md-button>
-                <md-divider ng-hide="ctrl.noMore(entity)"></md-divider>
-            </div>
-            <div ng-repeat="edge in ctrl.viewEdges track by edge" ng-if="ctrl.getEdgeProperties(edge)">
-                <md-subheader class="transparent md-no-sticky">{{edge}} Filters</md-subheader>
-                <md-list-item class="secondary-button-padding" ng-click="ctrl.editFilter(edge, 'edge', true, filter, $index)" ng-repeat="filter in ctrl.edgeFilters[edge].preAggregationFilterFunctions track by $index">
-                    <p> {{ctrl.createFilterLabel(filter, true)}} </p>
-                    <md-icon class="md-secondary" md-svg-icon="delete" id="delete-pre-edge-{{edge}}-filter-{{$index}}" ng-click="ctrl.deleteFilter(edge, 'edge', true, $index)" aria-label="delete filter"></md-icon>
-                </md-list-item>
-                <md-list-item class="secondary-button-padding" ng-click="ctrl.editFilter(edge, 'edge', false, filter, $index)" ng-repeat="filter in ctrl.edgeFilters[edge].postAggregationFilterFunctions track by $index">
-                    <p> {{ctrl.createFilterLabel(filter, false)}} </p>
-                    <md-icon class="md-secondary" md-svg-icon="delete" id="delete-post-edge-{{entity}}-filter-{{$index}}" ng-click="ctrl.deleteFilter(edge, 'edge', false, $index)" aria-label="delete filter">
-                        <md-tooltip>Delete filter</md-tooltip>
-                    </md-icon>
-                </md-list-item>
-                <md-button class="no-text-transform" id="add-{{edge}}-filters" ng-click="ctrl.addFilters($event, edge, 'edge')">
-                    Add {{edge}} Filters
-                </md-button>
-                <md-divider ng-hide="ctrl.noMore(edge)"></md-divider>
-            </div>
-        </md-list>
+                            placeholder="Search for an edge group...">
+                </md-select-header>
+                    <md-option ng-value="edge" ng-repeat="(edge, detail) in ctrl.schemaEdges | schemaGroupFilter:ctrl.edgeSearchTerm">
+                        <div class="md-subhead">{{edge}}</div>
+                        <div class="md-body-1">{{detail.description}}</div>
+                    </md-option>
+            </md-select>
+        </md-input-container>
     </div>
 
-</md-card>
+    <md-list>
+        <div ng-repeat="entity in ctrl.viewEntities track by entity" ng-if="ctrl.getEntityProperties(entity)">
+            <md-subheader class="transparent md-no-sticky">{{entity}} Filters</md-subheader>
+            <md-list-item class="secondary-button-padding" ng-click="ctrl.editFilter(entity, 'entity', true, filter, $index)" ng-repeat="filter in ctrl.entityFilters[entity].preAggregationFilterFunctions track by $index">
+                <p> {{ctrl.createFilterLabel(filter, true)}} </p>
+                <md-icon class="md-secondary" md-svg-icon="delete" id="delete-pre-entity-{{entity}}-filter-{{$index}}" ng-click="ctrl.deleteFilter(entity, 'entity', true, $index)" aria-label="delete filter"></md-icon>
+            </md-list-item>
+            <md-list-item class="secondary-button-padding" ng-click="ctrl.editFilter(entity, 'entity', false, filter, $index)" ng-repeat="filter in ctrl.entityFilters[entity].postAggregationFilterFunctions track by $index">
+                <p> {{ctrl.createFilterLabel(filter, false)}} </p>
+                <md-icon class="md-secondary" md-svg-icon="delete" id="delete-post-entity-{{entity}}-filter-{{$index}}" ng-click="ctrl.deleteFilter(entity, 'entity', false, $index)" aria-label="delete filter">
+                    <md-tooltip>Delete filter</md-tooltip>
+                </md-icon>
+            </md-list-item>
+            <md-button class="no-text-transform" id="add-{{entity}}-filters" ng-click="ctrl.addFilters($event, entity, 'entity')">
+                Add {{entity}} Filters
+            </md-button>
+            <md-divider ng-hide="ctrl.noMore(entity)"></md-divider>
+        </div>
+        <div ng-repeat="edge in ctrl.viewEdges track by edge" ng-if="ctrl.getEdgeProperties(edge)">
+            <md-subheader class="transparent md-no-sticky">{{edge}} Filters</md-subheader>
+            <md-list-item class="secondary-button-padding" ng-click="ctrl.editFilter(edge, 'edge', true, filter, $index)" ng-repeat="filter in ctrl.edgeFilters[edge].preAggregationFilterFunctions track by $index">
+                <p> {{ctrl.createFilterLabel(filter, true)}} </p>
+                <md-icon class="md-secondary" md-svg-icon="delete" id="delete-pre-edge-{{edge}}-filter-{{$index}}" ng-click="ctrl.deleteFilter(edge, 'edge', true, $index)" aria-label="delete filter"></md-icon>
+            </md-list-item>
+            <md-list-item class="secondary-button-padding" ng-click="ctrl.editFilter(edge, 'edge', false, filter, $index)" ng-repeat="filter in ctrl.edgeFilters[edge].postAggregationFilterFunctions track by $index">
+                <p> {{ctrl.createFilterLabel(filter, false)}} </p>
+                <md-icon class="md-secondary" md-svg-icon="delete" id="delete-post-edge-{{entity}}-filter-{{$index}}" ng-click="ctrl.deleteFilter(edge, 'edge', false, $index)" aria-label="delete filter">
+                    <md-tooltip>Delete filter</md-tooltip>
+                </md-icon>
+            </md-list-item>
+            <md-button class="no-text-transform" id="add-{{edge}}-filters" ng-click="ctrl.addFilters($event, edge, 'edge')">
+                Add {{edge}} Filters
+            </md-button>
+            <md-divider ng-hide="ctrl.noMore(edge)"></md-divider>
+        </div>
+    </md-list>
+</div>

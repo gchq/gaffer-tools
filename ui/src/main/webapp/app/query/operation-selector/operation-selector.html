@@ -1,7 +1,8 @@
-<md-card layout-padding>
-    <ng-form name="ctrl.operationForm">
-        <div layout="row">
-            <md-input-container class="layout-fill">
+<ng-form name="ctrl.operationForm">
+    <div layout="column" layout-margin>
+        <h3 class="section-title">Select your operation</h3>
+        <div layout="row" layout-padding>
+            <md-input-container flex>
                 <md-select name="name"
                            id="operation-name"
                            ng-model="ctrl.selectedOp"
@@ -18,10 +19,12 @@
                     <div ng-message="required">Required</div>
                 </div>
             </md-input-container>
-            <md-button class="md-icon-button" ng-click="ctrl.refreshNamedOperations()">
-                <md-tooltip>Refresh named operations</md-tooltip>
-                <md-icon md-svg-icon="refresh"></md-icon>
-            </md-button>
+            <div layout="column" layout-align="center">
+                <md-button class="md-icon-button" ng-click="ctrl.refreshNamedOperations()">
+                    <md-tooltip>Refresh named operations</md-tooltip>
+                    <md-icon md-svg-icon="refresh"></md-icon>
+                </md-button>
+            </div>
         </div>
-    </ng-form>
-</md-card>
+    </div>
+</ng-form>
