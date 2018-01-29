@@ -63,6 +63,17 @@ class GafferFunctionsTest(unittest.TestCase):
         [
             '''
             {
+                "class" : "uk.gov.gchq.koryphe.impl.function.ExtractValue",
+                "key" : "blueKey"
+            }
+            ''',
+            g.ExtractValue(
+                key="blueKey"
+            )
+        ],
+        [
+            '''
+            {
                 "class" : "uk.gov.gchq.koryphe.impl.function.ExtractValues"
             }
             ''',
@@ -126,6 +137,38 @@ class GafferFunctionsTest(unittest.TestCase):
             }
             ''',
             g.ToString()
+        ],
+        [
+            '''
+            {
+                "class" : "uk.gov.gchq.gaffer.operation.function.ToEntityId"
+            }
+            ''',
+            g.ToEntityId()
+        ],
+        [
+            '''
+            {
+                "class" : "uk.gov.gchq.gaffer.operation.function.FromEntityId"
+            }
+            ''',
+            g.FromEntityId()
+        ],
+        [
+            '''
+            {
+                "class" : "uk.gov.gchq.gaffer.operation.function.ToElementId"
+            }
+            ''',
+            g.ToElementId()
+        ],
+        [
+            '''
+            {
+                "class" : "uk.gov.gchq.gaffer.operation.function.FromElementId"
+            }
+            ''',
+            g.FromElementId()
         ],
         [
             '''
@@ -207,6 +250,52 @@ class GafferFunctionsTest(unittest.TestCase):
             g.FunctionMap(
                 function=g.MultiplyBy(by=10)
             )
+        ],
+        [
+            '''
+            {
+                "class" : "uk.gov.gchq.gaffer.data.graph.function.walk.ExtractWalkEdges"
+            }
+            ''',
+            g.ExtractWalkEdges()
+        ],
+        [
+            '''
+            {
+                "class" : "uk.gov.gchq.gaffer.data.graph.function.walk.ExtractWalkEdgesFromHop",
+                "hop" : 2
+            }
+            ''',
+            g.ExtractWalkEdgesFromHop(
+                hop=2
+            )
+        ],
+        [
+            '''
+            {
+                "class" : "uk.gov.gchq.gaffer.data.graph.function.walk.ExtractWalkEntities"
+            }
+            ''',
+            g.ExtractWalkEntities()
+        ],
+        [
+            '''
+            {
+                "class" : "uk.gov.gchq.gaffer.data.graph.function.walk.ExtractWalkEntitiesFromHop",
+                "hop" : 1
+            }
+            ''',
+            g.ExtractWalkEntitiesFromHop(
+                hop=1
+            )
+        ],
+        [
+            '''
+            {
+                "class" : "uk.gov.gchq.gaffer.data.graph.function.walk.ExtractWalkVertex"
+            }
+            ''',
+            g.ExtractWalkVertex()
         ]
     ]
 
