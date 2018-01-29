@@ -141,6 +141,38 @@ class GafferFunctionsTest(unittest.TestCase):
         [
             '''
             {
+                "class" : "uk.gov.gchq.gaffer.operation.function.ToEntityId"
+            }
+            ''',
+            g.ToEntityId()
+        ],
+        [
+            '''
+            {
+                "class" : "uk.gov.gchq.gaffer.operation.function.FromEntityId"
+            }
+            ''',
+            g.FromEntityId()
+        ],
+        [
+            '''
+            {
+                "class" : "uk.gov.gchq.gaffer.operation.function.ToElementId"
+            }
+            ''',
+            g.ToElementId()
+        ],
+        [
+            '''
+            {
+                "class" : "uk.gov.gchq.gaffer.operation.function.FromElementId"
+            }
+            ''',
+            g.FromElementId()
+        ],
+        [
+            '''
+            {
               "class" : "uk.gov.gchq.gaffer.data.generator.MapGenerator",
               "fields" : {
                 "GROUP" : "Group Label",

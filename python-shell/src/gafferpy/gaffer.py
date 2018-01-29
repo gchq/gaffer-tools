@@ -463,6 +463,24 @@ class View(ToJson, ToCodeString):
         return view
 
 
+class NamedView(View):
+    CLASS = 'uk.gov.gchq.gaffer.data.elementdefinition.view.NamedView'
+
+    def __init__(self, name, parameters=None, entities=None, edges=None, global_elements=None,
+                 global_entities=None, global_edges=None):
+        super().__init__(entities, edges, global_elements, global_entities, global_edges)
+        self.name = name
+        self.parameters = parameters
+
+    def to_json(self):
+        view = super().to_json()
+        view['class'] = self.CLASS
+        view['name'] = self.name
+        if self.parameters is not None:
+            view['parameters'] = self.parameters
+        return view
+
+
 class ElementDefinition(ToJson, ToCodeString):
     CLASS = 'uk.gov.gchq.gaffer.data.elementdefinition.view.ViewElementDefinition'
 
@@ -675,16 +693,16 @@ class GlobalElementDefinition(ToJson, ToCodeString):
                     self.transient_properties[propName] = propClass
 
         self.pre_aggregation_filter_functions = JsonConverter.from_json(
-            pre_aggregation_filter_functions, Predicate)
+            pre_aggregation_filter_functions, PredicateContext)
 
         self.post_aggregation_filter_functions = JsonConverter.from_json(
-            post_aggregation_filter_functions, Predicate)
+            post_aggregation_filter_functions, PredicateContext)
 
         self.transform_functions = JsonConverter.from_json(
             transform_functions, FunctionContext)
 
         self.post_transform_filter_functions = JsonConverter.from_json(
-            post_transform_filter_functions, Predicate)
+            post_transform_filter_functions, PredicateContext)
 
         self.group_by = group_by
 
@@ -1746,6 +1764,46 @@ class ToString(AbstractFunction):
         return super().to_json()
 
 
+class ToEntityId(AbstractFunction):
+    CLASS = 'uk.gov.gchq.gaffer.operation.function.ToEntityId'
+
+    def __init__(self):
+        super().__init__(_class_name=self.CLASS)
+
+    def to_json(self):
+        return super().to_json()
+
+
+class FromEntityId(AbstractFunction):
+    CLASS = 'uk.gov.gchq.gaffer.operation.function.FromEntityId'
+
+    def __init__(self):
+        super().__init__(_class_name=self.CLASS)
+
+    def to_json(self):
+        return super().to_json()
+
+
+class ToElementId(AbstractFunction):
+    CLASS = 'uk.gov.gchq.gaffer.operation.function.ToElementId'
+
+    def __init__(self):
+        super().__init__(_class_name=self.CLASS)
+
+    def to_json(self):
+        return super().to_json()
+
+
+class FromElementId(AbstractFunction):
+    CLASS = 'uk.gov.gchq.gaffer.operation.function.FromElementId'
+
+    def __init__(self):
+        super().__init__(_class_name=self.CLASS)
+
+    def to_json(self):
+        return super().to_json()
+
+
 class MapGenerator(AbstractFunction):
     CLASS = 'uk.gov.gchq.gaffer.data.generator.MapGenerator'
 
@@ -1937,6 +1995,40 @@ class NamedOperationParameter(ToJson, ToCodeString):
             "required": self.required
         }
 
+class NamedViewParameter(ToJson, ToCodeString):
+    CLASS = 'gaffer.NamedViewParameter'
+
+    def __init__(self,
+                 name,
+                 value_class,
+                 description=None,
+                 default_value=None,
+                 required=False):
+        self.name = name
+        self.value_class = value_class
+        self.description = description
+        self.default_value = default_value
+        self.required = required
+
+    def get_detail(self):
+        detail = {
+            "valueClass": self.value_class,
+            "required": self.required
+        }
+        if self.description is not None:
+            detail['description'] = self.description
+        if self.default_value is not None:
+            detail['defaultValue'] = self.default_value
+        return detail
+
+    def to_json(self):
+        return {
+            "description": self.description,
+            "defaultValue": self.default_value,
+            "valueClass": self.value_class,
+            "required": self.required
+        }
+
 
 ########################################################
 #                    Operations                        #
@@ -1946,11 +2038,26 @@ class Operation(ToJson, ToCodeString):
     def __init__(self,
                  _class_name,
                  view=None,
-                 options=None):
+                 options=None,
+                 views=None):
         self._class_name = _class_name
-        if isinstance(view, dict):
+
+        if view is not None and isinstance(view, list):
+            views = view
+            view = None
+
+        if view is not None and isinstance(view, dict):
             view = JsonConverter.from_json(view, View)
         self.view = view
+
+        self.views = None
+        if views is not None and isinstance(views, list):
+            self.views = []
+            for view in views:
+                if not isinstance(view, View):
+                    view = JsonConverter.from_json(view, View)
+                self.views.append(view)
+
         self.options = options
 
     def to_json(self):
@@ -1959,6 +2066,10 @@ class Operation(ToJson, ToCodeString):
             operation['options'] = self.options
         if self.view is not None:
             operation['view'] = self.view.to_json()
+        if self.views is not None:
+            operation['views'] = []
+            for view in self.views:
+                operation['views'].append(view.to_json())
 
         return operation
 
@@ -2585,6 +2696,87 @@ class DeleteNamedOperation(Operation):
 
 class GetAllNamedOperations(Operation):
     CLASS = 'uk.gov.gchq.gaffer.named.operation.GetAllNamedOperations'
+
+    def __init__(self, options=None):
+        super().__init__(
+            _class_name=self.CLASS,
+            options=options)
+
+
+class AddNamedView(Operation):
+    CLASS = 'uk.gov.gchq.gaffer.named.view.AddNamedView'
+
+    def __init__(self,
+                 view,
+                 name,
+                 description=None,
+                 overwrite_flag=None,
+                 parameters=None,
+                 options=None):
+        super().__init__(
+            _class_name=self.CLASS,
+            options=options)
+        if not isinstance(view, View):
+            view = JsonConverter.from_json(view, View)
+        self.view = view
+
+        self.name = name
+        self.description = description
+        self.overwrite_flag = overwrite_flag
+
+        self.parameters = None
+        if parameters is not None:
+            self.parameters = []
+            if isinstance(parameters, list):
+                for param in parameters:
+                    if not isinstance(param, NamedViewParameter):
+                        param = JsonConverter.from_json(param,
+                                                        NamedViewParameter)
+                    self.parameters.append(param)
+            else:
+                for name, param in parameters.items():
+                    param = dict(param)
+                    param['name'] = name
+                    param = JsonConverter.from_json(param,
+                                                    NamedViewParameter)
+                    self.parameters.append(param)
+
+    def to_json(self):
+        operation = super().to_json()
+        if isinstance(self.view, View):
+            operation['view'] = self.view.to_json()
+        else:
+            operation['view'] = self.view
+        operation['name'] = self.name
+        if self.overwrite_flag is not None:
+            operation['overwriteFlag'] = self.overwrite_flag
+        if self.description is not None:
+            operation['description'] = self.description
+        if self.parameters is not None:
+            operation['parameters'] = {}
+            for param in self.parameters:
+                operation['parameters'][param.name] = param.get_detail()
+
+        return operation
+
+
+class DeleteNamedView(Operation):
+    CLASS = 'uk.gov.gchq.gaffer.named.view.DeleteNamedView'
+
+    def __init__(self, view_name, options=None):
+        super().__init__(
+            _class_name=self.CLASS,
+            options=options)
+        self.view_name = view_name
+
+    def to_json(self):
+        operation = super().to_json()
+        operation['viewName'] = self.view_name
+        return operation
+
+
+class GetAllNamedViews(Operation):
+    CLASS = 'uk.gov.gchq.gaffer.named.view.GetAllNamedViews'
 
     def __init__(self, options=None):
         super().__init__(

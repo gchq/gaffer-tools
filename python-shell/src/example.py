@@ -52,10 +52,19 @@ def run_with_connector(gc):
     export_to_gaffer_result_cache(gc)
     get_job_details(gc)
     get_all_job_details(gc)
+
     add_named_operation(gc)
     get_all_named_operations(gc)
     named_operation(gc)
     delete_named_operation(gc)
+
+    add_named_view_summarise(gc)
+    add_named_view_date_range(gc)
+    get_all_named_views(gc)
+    named_view_summarise(gc)
+    named_view_date_range(gc)
+    named_views(gc)
+    delete_named_views(gc)
 
     sort_elements(gc)
     max_element(gc)
@@ -575,6 +584,173 @@ def named_operation(gc):
     print()
 
 
+
+def delete_named_views(gc):
+    gc.execute_operation(
+        g.DeleteNamedView(view_name='isCountMoreThan')
+    )
+    print('Deleted named view: isCountMoreThan')
+    gc.execute_operation(
+        g.DeleteNamedView(view_name='dateRange')
+    )
+    print('Deleted named view: dateRange')
+    print()
+
+
+def add_named_view_summarise(gc):
+    gc.execute_operation(
+        g.AddNamedView(
+            view=g.View(
+                global_elements=[
+                    g.GlobalElementDefinition(group_by=[])
+                ]
+            ),
+            name='summarise',
+            description='Summarises all results (overrides the groupBy to an empty array).',
+            overwrite_flag=True
+        )
+    )
+
+    print('Added named view: summarise')
+    print()
+
+
+def add_named_view_date_range(gc):
+    gc.execute_operation(
+        g.AddNamedView(
+            view=g.View(
+                global_elements=g.GlobalElementDefinition(
+                    pre_aggregation_filter_functions=[
+                        g.PredicateContext(
+                            selection=['startDate'],
+                            predicate=g.InDateRange(
+                                start='${start}',
+                                end='${end}'
+                            )
+                        )
+                    ]
+                  )
+            ),
+            name='dateRange',
+            description='Filters results to a provided date range.',
+            overwrite_flag=True,
+            parameters=[
+                g.NamedViewParameter(
+                    name="start",
+                    description="A date string for the start of date range.",
+                    value_class="java.lang.String",
+                    required=False
+                ),
+                g.NamedViewParameter(
+                    name="end",
+                    description="A date string for the end of the date range.",
+                    value_class="java.lang.String",
+                    required=False
+                )
+            ]
+        )
+    )
+
+    print('Added named view: dateRange')
+    print()
+
+
+def get_all_named_views(gc):
+    namedViews = gc.execute_operation(
+        g.GetAllNamedViews()
+    )
+    print('Named views')
+    print(namedViews)
+    print()
+
+
+def named_view_summarise(gc):
+    result = gc.execute_operation(
+        g.GetElements(
+            input=[
+                g.EntitySeed(
+                    vertex='M32:1'
+                )
+            ],
+            view=g.NamedView(
+                name="summarise"
+            )
+        )
+    )
+    print('Execute get elements with summarised named view')
+    print(result)
+    print()
+
+
+def named_view_date_range(gc):
+    result = gc.execute_operation(
+        g.GetElements(
+            input=[
+                g.EntitySeed(
+                    vertex='M32:1'
+                )
+            ],
+            view=g.NamedView(
+                name="dateRange",
+                parameters={
+                    'start': '2000/01/01',
+                    'end': '2001/01/01'
+                }
+            )
+        )
+    )
+    print('Execute get elements with date range named view')
+    print(result)
+    print()
+
+
+def named_views(gc):
+    result = gc.execute_operation(
+        g.GetElements(
+            input=[
+                g.EntitySeed(
+                    vertex='M32:1'
+                )
+            ],
+            view=[
+                g.NamedView(
+                    name="summarise"
+                ),
+                g.NamedView(
+                    name="dateRange",
+                    parameters={
+                        'start': '2000/01/01',
+                        'end': '2001/01/01'
+                    }
+                )
+            ]
+        )
+    )
+
+    g.GetElements(
+          input=[
+              g.EntitySeed(
+                  vertex='M32:1'
+              )
+          ],
+          view=[
+              g.NamedView(
+                  name="summarise"
+              ),
+              g.NamedView(
+                  name="dateRange",
+                  parameters={
+                      'start': '2015/05/03 06:00',
+                      'end': '2015/05/03 09:00'
+                  }
+              )
+          ]
+      ).pretty_print()
+    print('Execute get elements with summarised and date range named views')
+    print(result)
+    print()
+
+
 def sort_elements(gc):
     # Get sorted Elements
     input = gc.execute_operations([
@@ -747,27 +923,13 @@ def complex_op_chain(gc):
                             pre_aggregation_filter_functions=[
                                 g.PredicateContext(
                                     selection=['startDate'],
-                                    predicate=g.IsMoreThan(
-                                        value={'java.util.Date': 946684800000},
-                                        or_equal_to=True
-                                    )
-                                ),
-                                g.PredicateContext(
-                                    selection=['startDate'],
-                                    predicate=g.IsLessThan(
-                                        value={'java.util.Date': 978307200000},
-                                        or_equal_to=False
+                                    predicate=g.InDateRange(
+                                        start='2000/01/01',
+                                        end='2001/01/01'
                                     )
                                 )
                             ],
                             post_aggregation_filter_functions=[
-                                g.PredicateContext(
-                                    selection=['startDate'],
-                                    predicate=g.IsMoreThan(
-                                        value={'java.util.Date': 946684800000},
-                                        or_equal_to=True
-                                    )
-                                ),
                                 g.PredicateContext(
                                     selection=['countByVehicleType'],
                                     predicate=g.PredicateMap(
