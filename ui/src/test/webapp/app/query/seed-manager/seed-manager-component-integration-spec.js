@@ -24,17 +24,17 @@ describe('The Seed Manager Component', function() {
 
         it('should update the seeds message', function() {
             events.broadcast('selectedElementsUpdate', [ { entities: { '"test1"': {}, '"test2"': {} } }]);
-            expect(ctrl.seedsMessage).toEqual("test1, test2");
+            expect(ctrl.seedsMessage).toEqual("Added test1, test2");
         });
 
         it('When more than two entities are returned, should truncate the seeds message', function() {
             events.broadcast('selectedElementsUpdate', [ { entities: { '"test1"': {}, '"test2"': {}, '"test3"': {}} }]);
-            expect(ctrl.seedsMessage).toEqual("test2, test3 and 1 more");
+            expect(ctrl.seedsMessage).toEqual("Added test2, test3 and 1 more");
         });
 
         it('should always display the last two seeds', function() {
             events.broadcast('selectedElementsUpdate', [ { entities: { '"This"': {}, '"is"': {}, '"my"': {}, '"test"': {}} }]);
-            expect(ctrl.seedsMessage).toEqual("my, test and 2 more");
+            expect(ctrl.seedsMessage).toEqual("Added my, test and 2 more");
         });
 
         it('should show a message even if no seeds are selected', function() {

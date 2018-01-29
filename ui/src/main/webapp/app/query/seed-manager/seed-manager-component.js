@@ -68,6 +68,8 @@ function SeedManagerController(graph, queryPage, common, types, events) {
 
         if (!message || message === "") {
             message = "No Seeds added. Type in your seeds and click add."
+        } else {
+            message = "Added " + message;
         }
 
         vm.seedsMessage = message;

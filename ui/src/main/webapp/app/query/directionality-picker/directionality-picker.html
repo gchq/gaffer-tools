@@ -1,6 +1,6 @@
-<md-card layout-padding>
-    <ng-form name="ctrl.edgeDirectionForm">
-        <md-input-container layout-fill>
+<ng-form name="ctrl.edgeDirectionForm">
+    <div layout-padding layout="row">
+        <md-input-container flex>
             <label>Edge Direction</label>
             <md-select required ng-model="ctrl.inOutFlag" md-no-asterisk md-on-close="ctrl.onInOutFlagChange()" name="direction">
                 <md-option value="INCOMING">Towards your seeds</md-option>
@@ -12,5 +12,5 @@
             </div>
             <md-tooltip md-direction="down">Should the edges point towards, or away from your seeds?</md-tooltip>
         </md-input-container>
-    </ng-form>
-</md-card>
+    </div>
+</ng-form>

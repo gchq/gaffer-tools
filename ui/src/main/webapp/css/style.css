@@ -101,3 +101,16 @@ md-option > div {
 .standalone-icon {
     margin: 0px;
 }
+
+.hint {
+    font-size: 14px;
+    line-height: 14px;
+}
+
+.section-title {
+    margin-bottom: 0px;
+}
+
+.no-margin {
+    margin: 0px;
+}
