@@ -58,8 +58,8 @@ function ViewBuilderController(view, graph, common, schema, functions, events, t
 
     vm.schemaEntities;
     vm.schemaEdges;
-    vm.viewEdges = view.getViewEdges();
-    vm.viewEntities = view.getViewEntities();
+    vm.viewEdges = angular.copy(view.getViewEdges());
+    vm.viewEntities = angular.copy(view.getViewEntities());
     vm.edgeFilters = view.getEdgeFilters();
     vm.entityFilters = view.getEntityFilters();
 
