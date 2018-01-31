@@ -584,7 +584,6 @@ def named_operation(gc):
     print()
 
 
-
 def delete_named_views(gc):
     gc.execute_operation(
         g.DeleteNamedView(view_name='isCountMoreThan')
@@ -629,7 +628,7 @@ def add_named_view_date_range(gc):
                             )
                         )
                     ]
-                  )
+                )
             ),
             name='dateRange',
             description='Filters results to a provided date range.',
@@ -693,8 +692,8 @@ def named_view_date_range(gc):
             view=g.NamedView(
                 name="dateRange",
                 parameters={
-                    'start': '2000/01/01',
-                    'end': '2001/01/01'
+                    'start': '2005/05/03 06:00',
+                    'end': '2005/05/03 09:00'
                 }
             )
         )
@@ -719,33 +718,13 @@ def named_views(gc):
                 g.NamedView(
                     name="dateRange",
                     parameters={
-                        'start': '2000/01/01',
-                        'end': '2001/01/01'
+                        'start': '2005/05/03 06:00',
+                        'end': '2005/05/03 09:00'
                     }
                 )
             ]
         )
     )
-
-    g.GetElements(
-          input=[
-              g.EntitySeed(
-                  vertex='M32:1'
-              )
-          ],
-          view=[
-              g.NamedView(
-                  name="summarise"
-              ),
-              g.NamedView(
-                  name="dateRange",
-                  parameters={
-                      'start': '2015/05/03 06:00',
-                      'end': '2015/05/03 09:00'
-                  }
-              )
-          ]
-      ).pretty_print()
     print('Execute get elements with summarised and date range named views')
     print(result)
     print()
