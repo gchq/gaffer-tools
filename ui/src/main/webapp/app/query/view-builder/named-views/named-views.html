@@ -37,6 +37,11 @@
                 <em md-highlight-text="ctrl.namedViewSearchTerm" md-highlight-flags="i" class="md-body-1">{{namedView.description}}</em>
             </span>
         </md-item-template>
+        <md-not-found>
+            <span class="md-body-2">
+                No existing filters matching "{{ctrl.namedViewSearchTerm}}" were found.
+            </span>
+        </md-not-found>
     </md-autocomplete>
 
     <div layout="column" layout-align="center">
