@@ -11,8 +11,12 @@
             <ng-form name="filterForm">
                 <md-input-container layout-fill flex>
                     <label>Select a property</label>
-                    <md-select required id="property-selector" ng-model="filter.property" ng-change="onSelectedPropertyChange()">
-                        <md-option ng-repeat="(name, type) in getProperties()" ng-value="name">{{name}}</md-option>
+                    <md-select required id="property-selector"
+                               ng-model="filter.property"
+                               ng-change="onSelectedPropertyChange()">
+                        <md-option ng-repeat="(name, type) in getProperties()"
+                                   ng-value="name">{{name}}
+                        </md-option>
                     </md-select>
                 </md-input-container>
                 <md-autocomplete
@@ -30,29 +34,44 @@
                         id="predicate-autocomplete"
                         md-autoselect>
                     <md-item-template>
-                        <span md-highlight-text="predicateText" md-highlight-flags="^i">{{createFriendlyName(predicate)}}</span>
+                        <span md-highlight-text="predicateText"
+                              md-highlight-flags="^i">{{createFriendlyName(predicate)}}</span>
                     </md-item-template>
                     <md-not-found>
                         No predicates matching {{predicateText}} were found.
                     </md-not-found>
                 </md-autocomplete>
 
-                <div layout="row" layout-wrap>
-                    <div layout="row" ng-repeat="(param, valueClass) in filter.availableFunctionParameters">
-                        <single-parameter param="filter.parameters[param]"></single-parameter>
-                        <md-input-container layout-fill ng-show="availableTypes(valueClass).length > 1">
+                <div ng-repeat="(param, valueClass) in filter.availableFunctionParameters">
+                    <label>{{param}}</label>
+
+                    <div layout="row">
+                        <single-parameter
+                                param="filter.parameters[param]"
+                                show-label="false"></single-parameter>
+                        <md-input-container layout-fill
+                                            ng-if="hasMultipleTypesAvailable(valueClass)">
                             <label>type</label>
-                            <md-select required id="{{param}}-type-selector" ng-model="filter.parameters[param]['valueClass']">
-                                <md-option ng-repeat="type in availableTypes(valueClass)" ng-value="type">{{type}}</md-option>
+                            <md-select required id="{{param}}-type-selector"
+                                       ng-model="filter.parameters[param]['valueClass']">
+                                <md-option
+                                        ng-repeat="(simpleType, type) in availableTypes(valueClass)"
+                                        ng-value="type">{{simpleType}}
+                                </md-option>
                             </md-select>
                         </md-input-container>
                     </div>
                 </div>
 
-                <p class="md-body-1">Apply filter before or after results are summarised?</p>
+                <p class="md-body-1">Apply filter before or after results are
+                    summarised?</p>
                 <md-radio-group layout="row" ng-model="filter.preAggregation">
-                    <md-radio-button ng-value="true" id="before-aggregation" aria-label="before">Before</md-radio-button>
-                    <md-radio-button ng-value="false" id="after-aggregation" aria-label="after">After</md-radio-button>
+                    <md-radio-button ng-value="true" id="before-aggregation"
+                                     aria-label="before">Before
+                    </md-radio-button>
+                    <md-radio-button ng-value="false" id="after-aggregation"
+                                     aria-label="after">After
+                    </md-radio-button>
                 </md-radio-group>
             </ng-form>
         </div>
@@ -60,7 +79,12 @@
     <md-dialog-actions layout="row" layout-align="end">
         <md-button id="cancel" ng-click="cancel()">Cancel</md-button>
         <md-button id="clear" ng-click="resetForm()">Clear</md-button>
-        <md-button id="add-another" ng-if="!editMode" ng-disabled="filterForm.$invalid" ng-click="addAnother()">Add Another</md-button>
-        <md-button id="submit" ng-disabled="filterForm.$invalid" ng-click="submit()" class="md-primary">Submit</md-button>
+        <md-button id="add-another" ng-if="!editMode"
+                   ng-disabled="filterForm.$invalid" ng-click="addAnother()">Add
+            Another
+        </md-button>
+        <md-button id="submit" ng-disabled="filterForm.$invalid"
+                   ng-click="submit()" class="md-primary">Submit
+        </md-button>
     </md-dialog-actions>
 </md-dialog>

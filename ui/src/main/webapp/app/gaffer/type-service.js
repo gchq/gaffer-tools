@@ -25,10 +25,15 @@ angular.module('app').factory('types', ['config', 'common', function(config, com
     config.get().then(function(myConfig) {
         if(myConfig) {
             types = myConfig.types;
+            var simpleClassNamesLowerCase = [];
             for(var className in types) {
                 var parts = className.split('.');
                 if(parts.length > 1) {
-                    simpleClassNames[className.split('.').pop()] = className;
+                    var simpleClassName = className.split('.').pop();
+                    if(simpleClassNamesLowerCase.indexOf(simpleClassName) === -1) {
+                        simpleClassNamesLowerCase.push(simpleClassName);
+                        simpleClassNames[simpleClassName] = className;
+                    }
                 }
             }
         }
@@ -90,8 +95,8 @@ angular.module('app').factory('types', ['config', 'common', function(config, com
         return false;
     }
 
-    service.getAllSimpleClassNames = function() {
-        return Object.keys(simpleClassNames);
+    service.getSimpleClassNames = function() {
+        return simpleClassNames;
     }
 
     var unknownType =
@@ -151,7 +156,7 @@ angular.module('app').factory('types', ['config', 'common', function(config, com
 
     service.getShortValue = function(value) {
 
-        if (typeof value === 'string' || value instanceof String || typeof value === 'number') {
+        if (value === undefined || value === null || typeof value === 'string' || value instanceof String || typeof value === 'number') {
             return value;
         }
 

@@ -26,6 +26,34 @@
       ],
       "wrapInJson": true
     },
+    "java.lang.Boolean": {
+      "fields": [
+        {
+          "label": "Value",
+          "type": "radio",
+          "values": [
+            "true",
+            "false"
+          ],
+          "class": "java.lang.Boolean",
+          "required": true
+        }
+      ]
+    },
+    "boolean": {
+      "fields": [
+        {
+          "label": "Value",
+          "type": "radio",
+          "values": [
+            "true",
+            "false"
+          ],
+          "class": "java.lang.Boolean",
+          "required": true
+        }
+      ]
+    },
     "java.lang.Long": {
       "fields": [
         {
@@ -150,26 +178,6 @@
           "label": "Value",
           "type": "text",
           "class": "java.lang.String",
-          "required": true
-        }
-      ]
-    },
-    "java.lang.Boolean": {
-      "fields": [
-        {
-          "label": "True/False",
-          "type": "checkbox",
-          "class": "java.lang.Boolean",
-          "required": true
-        }
-      ]
-    },
-    "boolean": {
-      "fields": [
-        {
-          "label": "True/False",
-          "type": "checkbox",
-          "class": "java.lang.Boolean",
           "required": true
         }
       ]

@@ -126,7 +126,10 @@ function ViewBuilderController(view, graph, common, schema, functions, events, t
             if (field === 'class') {
                 continue;
             }
-            label += (' ' + field + "=" + types.getShortValue(filter.predicate[field]));
+            var shortVal = types.getShortValue(filter.predicate[field]);
+            if(shortVal !== undefined) {
+                label += (' ' + field + "=" + types.getShortValue(filter.predicate[field]));
+            }
         }
 
         if (preAggregation) {
@@ -260,7 +263,7 @@ function ViewBuilderController(view, graph, common, schema, functions, events, t
                 } catch(e) {
                     param = filter.parameters[paramName];
                 }
-                functionJson["predicate"][paramName] = param;
+                functionJson["predicate"][paramName] = types.createJsonValue(filter.parameters[paramName].valueClass, filter.parameters[paramName].parts);
             }
         }
 

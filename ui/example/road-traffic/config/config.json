@@ -26,7 +26,47 @@
       ],
       "wrapInJson": true
     },
+    "java.lang.Boolean": {
+      "fields": [
+        {
+          "label": "Value",
+          "type": "radio",
+          "values": [
+            "true",
+            "false"
+          ],
+          "class": "java.lang.Boolean",
+          "required": true
+        }
+      ]
+    },
+    "boolean": {
+      "fields": [
+        {
+          "label": "Value",
+          "type": "radio",
+          "values": [
+            "true",
+            "false"
+          ],
+          "class": "java.lang.Boolean",
+          "required": true
+        }
+      ]
+    },
     "java.lang.Long": {
+      "fields": [
+        {
+          "label": "Value",
+          "type": "number",
+          "step": "1",
+          "class": "java.lang.Long",
+          "required": true
+        }
+      ],
+      "wrapInJson": true
+    },
+    "long": {
       "fields": [
         {
           "label": "Value",
@@ -49,7 +89,30 @@
         }
       ]
     },
+    "integer": {
+      "fields": [
+        {
+          "label": "Value",
+          "type": "number",
+          "step": "1",
+          "class": "java.lang.Integer",
+          "required": true
+        }
+      ]
+    },
     "java.lang.Short": {
+      "fields": [
+        {
+          "label": "Value",
+          "type": "number",
+          "step": "1",
+          "class": "java.lang.Short",
+          "required": true
+        }
+      ],
+      "wrapInJson": true
+    },
+    "short": {
       "fields": [
         {
           "label": "Value",
@@ -73,7 +136,31 @@
       ],
       "wrapInJson": true
     },
+    "double": {
+      "fields": [
+        {
+          "label": "Value",
+          "type": "number",
+          "step": "0.1",
+          "class": "java.lang.Double",
+          "required": true
+        }
+      ],
+      "wrapInJson": true
+    },
     "java.lang.Float": {
+      "fields": [
+        {
+          "label": "Value",
+          "type": "number",
+          "step": "0.1",
+          "class": "java.lang.Float",
+          "required": true
+        }
+      ],
+      "wrapInJson": true
+    },
+    "float": {
       "fields": [
         {
           "label": "Value",

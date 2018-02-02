@@ -92,10 +92,16 @@ angular.module('app').controller('CustomFilterDialogController', ['$scope', '$md
 
     $scope.availableTypes = function(className) {
         if(types.isKnown(className)) {
-            return [className];
+            var rtn = {};
+            rtn[className.split('.').pop()] = className;
+            return rtn;
         }
 
-        return types.getAllSimpleClassNames();
+        return types.getSimpleClassNames();
+    }
+
+    $scope.hasMultipleTypesAvailable = function(className) {
+        return !types.isKnown(className);
     }
 
     $scope.onSelectedPropertyChange = function(editModeInit) {
@@ -124,9 +130,12 @@ angular.module('app').controller('CustomFilterDialogController', ['$scope', '$md
             for(var param in data) {
                 $scope.filter.parameters[param] = {};
                 var availableTypes = $scope.availableTypes(data[param]);
-                if(availableTypes.length == 1) {
-                    $scope.filter.parameters[param]['valueClass'] = availableTypes[0];
+                if(Object.keys(availableTypes).length == 1) {
+                    $scope.filter.parameters[param]['valueClass'] = Object.values(availableTypes)[0];
+                } else {
+                    $scope.filter.parameters[param]['valueClass'] = $scope.propertyClass
                 }
+
             }
         });
 

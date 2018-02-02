@@ -24,7 +24,8 @@ function singleParameter() {
         controller: SingleParameterController,
         controllerAs: 'ctrl',
         bindings: {
-            param: '='
+            param: '=',
+            showLabel: '&'
         }
     }
 }
@@ -35,6 +36,13 @@ function SingleParameterController(types) {
     vm.$onInit = function() {
         if (vm.param === null || vm.param === undefined) {
             console.error('Expected defined, non-null value for parameter. Got ' + vm.param);
+        } else {
+            if(!vm.param['parts']) {
+                vm.param['parts']={};
+            }
+        }
+        if(vm.showLabel === null || vm.showLabel === undefined) {
+            vm.showLabel = true;
         }
     }
 
