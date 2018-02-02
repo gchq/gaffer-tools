@@ -466,9 +466,11 @@ class View(ToJson, ToCodeString):
 class NamedView(View):
     CLASS = 'uk.gov.gchq.gaffer.data.elementdefinition.view.NamedView'
 
-    def __init__(self, name, parameters=None, entities=None, edges=None, global_elements=None,
+    def __init__(self, name, parameters=None, entities=None, edges=None,
+                 global_elements=None,
                  global_entities=None, global_edges=None):
-        super().__init__(entities, edges, global_elements, global_entities, global_edges)
+        super().__init__(entities, edges, global_elements, global_entities,
+                         global_edges)
         self.name = name
         self.parameters = parameters
 
@@ -804,6 +806,7 @@ class Predicate(ToJson, ToCodeString):
 
 class AbstractPredicate(Predicate):
     def __init__(self, _class_name=None):
+        super().__init__()
         self._class_name = _class_name
 
     def to_json(self):
@@ -1469,6 +1472,7 @@ class AbstractFunction(Function):
     CLASS = "java.util.function.Function"
 
     def __init__(self, _class_name=None):
+        super().__init__()
         self._class_name = _class_name
 
     def to_json(self):
@@ -1662,6 +1666,7 @@ class ExtractWalkEntitiesFromHop(AbstractFunction):
             function['hop'] = self.hop
 
         return function
+
 
 class ExtractWalkVertex(AbstractFunction):
     CLASS = 'uk.gov.gchq.gaffer.data.graph.function.walk.ExtractWalkVertex'
@@ -1994,6 +1999,7 @@ class NamedOperationParameter(ToJson, ToCodeString):
             "valueClass": self.value_class,
             "required": self.required
         }
+
 
 class NamedViewParameter(ToJson, ToCodeString):
     CLASS = 'gaffer.NamedViewParameter'
@@ -2587,7 +2593,7 @@ class NamedOperation(GetOperation):
             seed_matching_type=None,
             options=options)
         self.operation_name = operation_name
-        self.parameters = parameters;
+        self.parameters = parameters
 
     def to_json(self):
         operation = super().to_json()
@@ -2763,15 +2769,15 @@ class AddNamedView(Operation):
 class DeleteNamedView(Operation):
     CLASS = 'uk.gov.gchq.gaffer.named.view.DeleteNamedView'
 
-    def __init__(self, view_name, options=None):
+    def __init__(self, name, options=None):
         super().__init__(
             _class_name=self.CLASS,
             options=options)
-        self.view_name = view_name
+        self.name = name
 
     def to_json(self):
         operation = super().to_json()
-        operation['viewName'] = self.view_name
+        operation['name'] = self.name
         return operation
 
 
@@ -2884,7 +2890,7 @@ class ToVertices(Operation):
         super().__init__(
             _class_name=self.CLASS)
         self.edge_vertices = edge_vertices
-        self.use_matched_vertex = use_matched_vertex;
+        self.use_matched_vertex = use_matched_vertex
 
     def to_json(self):
         operation = super().to_json()
@@ -3732,6 +3738,9 @@ class Map(Operation):
 
 
 class GetGraph:
+    def __init__(self, _url=''):
+        self._url = _url
+
     def get_url(self):
         return self._url
 
@@ -3763,42 +3772,42 @@ class GetSchema(Operation, GetGraph):
 
 class GetFilterFunctions(GetGraph):
     def __init__(self):
-        self._url = '/graph/config/filterFunctions'
+        super().__init__('/graph/config/filterFunctions')
 
 
 class GetTransformFunctions(GetGraph):
     def __init__(self):
-        self._url = '/graph/config/transformFunctions'
+        super().__init__('/graph/config/transformFunctions')
 
 
 class GetClassFilterFunctions(GetGraph):
     def __init__(self, class_name=None):
-        self._url = '/graph/config/filterFunctions/' + class_name
+        super().__init__('/graph/config/filterFunctions/' + class_name)
 
 
 class GetElementGenerators(GetGraph):
     def __init__(self):
-        self._url = '/graph/config/elementGenerators'
+        super().__init__('/graph/config/elementGenerators')
 
 
 class GetObjectGenerators(GetGraph):
     def __init__(self):
-        self._url = '/graph/config/objectGenerators'
+        super().__init__('/graph/config/objectGenerators')
 
 
 class GetOperations(GetGraph):
     def __init__(self):
-        self._url = '/graph/operations'
+        super().__init__('/graph/operations')
 
 
 class GetSerialisedFields(GetGraph):
     def __init__(self, class_name=None):
-        self._url = '/graph/config/serialisedFields/' + class_name
+        super().__init__('/graph/config/serialisedFields/' + class_name)
 
 
 class GetStoreTraits(GetGraph):
     def __init__(self):
-        self._url = '/graph/config/storeTraits'
+        super().__init__('/graph/config/storeTraits')
 
 
 class IsOperationSupported:

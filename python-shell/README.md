@@ -22,7 +22,7 @@ To start using the python shell you will need an instance of the REST API runnin
 You can start the Gaffer road-traffic-demo rest server and ui (see ui/README.md) using the command:
 
 ```
-mvn install -Pquick -Proad-traffic-demo -pl ui -am
+./ui/example/road-traffic/scripts/start.sh
 ```
 
 Once this is running you can run the python example by using the command (all commands are run from the root of the python-shell project):
@@ -130,4 +130,18 @@ After installation the shell can be imported into an application as below:
 from gaffer_shell import gaffer as g
 from gaffer_shell import gaffer_connector
 gc = gaffer_connector.GafferConnector("localhost:8080/rest/latest")
+```
+
+## Testing
+We have some unit and integration tests for our python shell. To run
+all of the tests, first deploy the REST API (UI will also be deploy):
+
+```
+./ui/example/road-traffic/scripts/start.sh
+```
+
+then from within the python-shell folder run:
+
+```
+python3 -m unittest discover -s src
 ```
