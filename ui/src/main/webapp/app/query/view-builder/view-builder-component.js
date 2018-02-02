@@ -252,8 +252,7 @@ function ViewBuilderController(view, graph, common, schema, functions, events, t
             "selection": [ filter.property ]
         }
 
-        for(var i in filter.availableFunctionParameters) {
-            var paramName = filter.availableFunctionParameters[i];
+        for(var paramName in filter.availableFunctionParameters) {
             if(filter.parameters[paramName] !== undefined) {
                 var param;
                 try {

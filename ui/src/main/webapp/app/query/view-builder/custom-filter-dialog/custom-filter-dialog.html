@@ -15,7 +15,7 @@
                         <md-option ng-repeat="(name, type) in getProperties()" ng-value="name">{{name}}</md-option>
                     </md-select>
                 </md-input-container>
-                    <md-autocomplete
+                <md-autocomplete
                         required
                         ng-disabled="!filter.property"
                         md-selected-item="filter.predicate"
@@ -36,19 +36,19 @@
                         No predicates matching {{predicateText}} were found.
                     </md-not-found>
                 </md-autocomplete>
+
                 <div layout="row" layout-wrap>
-                    <md-input-container ng-repeat="param in filter.availableFunctionParameters" layout-fill flex="{{getFlexValue()}}">
-                        <label>{{param}}</label>
-                        <input type="text"
-                               id="{{param}}-parameter"
-                               ng-model="filter.parameters[param]">
-                    </md-input-container>
-                    <p ng-show="showWarning()" flex="{{getFlexValue()}}">
-                        If you're entering anything other than an Integer, Boolean or String,
-                        you may need to wrap the object in JSON.
-                        For Example: { "{{propertyClass}}": value }
-                    </p>
+                    <div layout="row" ng-repeat="(param, valueClass) in filter.availableFunctionParameters">
+                        <single-parameter param="filter.parameters[param]"></single-parameter>
+                        <md-input-container layout-fill ng-show="availableTypes(valueClass).length > 1">
+                            <label>type</label>
+                            <md-select required id="{{param}}-type-selector" ng-model="filter.parameters[param]['valueClass']">
+                                <md-option ng-repeat="type in availableTypes(valueClass)" ng-value="type">{{type}}</md-option>
+                            </md-select>
+                        </md-input-container>
+                    </div>
                 </div>
+
                 <p class="md-body-1">Apply filter before or after results are summarised?</p>
                 <md-radio-group layout="row" ng-model="filter.preAggregation">
                     <md-radio-button ng-value="true" id="before-aggregation" aria-label="before">Before</md-radio-button>

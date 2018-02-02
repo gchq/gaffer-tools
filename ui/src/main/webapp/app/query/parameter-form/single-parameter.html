@@ -1,0 +1,16 @@
+<div ng-repeat="field in ctrl.getFields()">
+    <md-input-container ng-if="ctrl.isRequired(field)" layout-fill>
+        <label>{{field.label}}</label>
+        <input required
+               type="{{field.type}}"
+               md-select-on-focus
+               ng-model="param.parts[field.key]">
+    </md-input-container>
+
+    <md-input-container layout-fill ng-if="!ctrl.isRequired(field)">
+        <label>{{field.label}}</label>
+        <input type="{{field.type}}"
+               md-select-on-focus
+               ng-model="param.parts[field.key]">
+    </md-input-container>
+</div>

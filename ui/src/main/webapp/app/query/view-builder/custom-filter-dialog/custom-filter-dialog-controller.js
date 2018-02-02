@@ -16,7 +16,7 @@
 
 'use strict';
 
-angular.module('app').controller('CustomFilterDialogController', ['$scope', '$mdDialog', 'schema', 'functions', function($scope, $mdDialog, schema, functions) {
+angular.module('app').controller('CustomFilterDialogController', ['$scope', '$mdDialog', 'schema', 'functions', 'types', function($scope, $mdDialog, schema, functions, types) {
 
     $scope.filter = { preAggregation: false }
     $scope.availablePredicates;
@@ -79,13 +79,23 @@ angular.module('app').controller('CustomFilterDialogController', ['$scope', '$md
         if (!$scope.filter || !$scope.filter.availableFunctionParameters) {
             return 0;
         }
-        if ($scope.filter.availableFunctionParameters.length === 2) {
+
+        var numParams = Object.keys($scope.filter.availableFunctionParameters).length;
+        if (numParams === 2) {
             return 50;
-        } else if ($scope.filter.availableFunctionParameters.length === 1) {
+        } else if (numParams === 1) {
             return 100;
         }
 
         return 33;
+    }
+
+    $scope.availableTypes = function(className) {
+        if(types.isKnown(className)) {
+            return [className];
+        }
+
+        return types.getAllSimpleClassNames();
     }
 
     $scope.onSelectedPropertyChange = function(editModeInit) {
@@ -101,7 +111,7 @@ angular.module('app').controller('CustomFilterDialogController', ['$scope', '$md
         return $scope.propertyClass &&
             $scope.filter &&
             $scope.filter.availableFunctionParameters &&
-            $scope.filter.availableFunctionParameters.length !== 0;
+            Object.keys($scope.filter.availableFunctionParameters).length !== 0;
     }
 
     $scope.onSelectedPredicateChange = function() {
@@ -110,6 +120,14 @@ angular.module('app').controller('CustomFilterDialogController', ['$scope', '$md
         }
         functions.getFunctionParameters($scope.filter.predicate, function(data) {
             $scope.filter.availableFunctionParameters = data;
+            $scope.filter.parameters = {}
+            for(var param in data) {
+                $scope.filter.parameters[param] = {};
+                var availableTypes = $scope.availableTypes(data[param]);
+                if(availableTypes.length == 1) {
+                    $scope.filter.parameters[param]['valueClass'] = availableTypes[0];
+                }
+            }
         });
 
         schema.get().then(function(gafferSchema) {

@@ -20,10 +20,17 @@ angular.module('app').factory('types', ['config', 'common', function(config, com
 
     var service = {};
     var types = {};
+    var simpleClassNames = {};
 
     config.get().then(function(myConfig) {
         if(myConfig) {
             types = myConfig.types;
+            for(var className in types) {
+                var parts = className.split('.');
+                if(parts.length > 1) {
+                    simpleClassNames[className.split('.').pop()] = className;
+                }
+            }
         }
     });
 
@@ -71,6 +78,20 @@ angular.module('app').factory('types', ['config', 'common', function(config, com
         }
 
         return unknownType.fields;
+    }
+
+    service.isKnown = function(className) {
+        var knownType = types[className];
+
+        if(knownType) {
+            return true;
+        }
+
+        return false;
+    }
+
+    service.getAllSimpleClassNames = function() {
+        return Object.keys(simpleClassNames);
     }
 
     var unknownType =
