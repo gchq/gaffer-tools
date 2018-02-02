@@ -43,31 +43,6 @@ app.filter('schemaGroupFilter', function() {
     }
 });
 
-app.filter('namedViewsFilter', function() {
-    return function(input, search) {
-        if(!input) {
-            return input;
-        }
-        if (!search) {
-            return input;
-        }
-        var lowercaseSearch = ('' + search).toLowerCase();
-        var result = [];
-
-        angular.forEach(input, function(view) {
-            var lowercaseName = view.name.toLowerCase();
-            var lowerCaseDescription = view.description.toLowerCase();
-            if (lowercaseName.indexOf(lowercaseSearch) !== -1) {
-                result.push(view);
-            } else if (lowerCaseDescription.indexOf(lowercaseSearch) !== -1) {
-                result.push(view);
-            }
-        });
-
-        return result;
-    }
-});
-
 
 app.component('viewBuilder', viewBuilder());
 
@@ -88,19 +63,21 @@ function ViewBuilderController(view, graph, common, schema, functions, events, t
     vm.viewEntities = view.getViewEntities();
     vm.edgeFilters = view.getEdgeFilters();
     vm.entityFilters = view.getEntityFilters();
-    vm.availableNamedViews;
-    vm.selectedNamedViews = [];
-    vm.namedViewSearchTerm = '';
 
-    var populateNamedViews = function(availableNamedViews) {
-        vm.availableNamedViews = availableNamedViews
-        var selected = undefined; //queryPage.getSelectedOperation();
-        if (selected)  {
-            vm.selectedOp = selected;
-        } else {
-            vm.selectedOp = vm.availableNamedViews[0];
-            vm.updateModel();
-        }
+    vm.showBuilder = false;
+
+    vm.makeVisible = function() {
+        vm.showBuilder = true;
+    }
+
+    vm.clear = function() {
+        vm.edgeFilters = {};
+        vm.entityFilters = {};
+        vm.viewEdges = [];
+        vm.viewEntities = [];
+        view.setViewEdges(vm.viewEdges);
+        view.setViewEntities(vm.viewEntities);
+        vm.showBuilder = false;
     }
 
     vm.$onInit = function() {
@@ -113,23 +90,7 @@ function ViewBuilderController(view, graph, common, schema, functions, events, t
             ev.stopPropagation();
         });
 
-        view.shouldLoadNamedViewsOnStartup().then(function(yes) {
-            if (yes) {
-                view.reloadNamedViews().then(populateNamedViews);
-            } else {
-                populateNamedViews(view.getAvailableNamedViews())
-            }
-        });
-    }
-
-    vm.refreshNamedViews = function() {
-        view.reloadNamedViews(true).then(function(availableNamedViews) {
-            vm.availableNamedViews = availableNamedViews;
-        });
-    }
-
-    vm.updateModel = function() {
-        view.setNamedViews(vm.selectedNamedViews);
+        vm.showBuilder = (vm.viewEdges.length + vm.viewEntities.length) > 0;
     }
 
     vm.noMore = function(group) {
@@ -159,21 +120,6 @@ function ViewBuilderController(view, graph, common, schema, functions, events, t
         }
 
         return validEdges.indexOf(group) === validEdges.length - 1;
-    }
-
-    vm.createNamedViewsLabel = function(selectedNamedViews) {
-        if (!selectedNamedViews || selectedNamedViews.length === 0) {
-            return 'Select predefined filters';
-        } else {
-            if(selectedNamedViews.length == 1) {
-                return selectedNamedViews[0].name;
-            }
-            return selectedNamedViews.reduce(function(a,b){return a.name + ", " + b.name})
-        }
-    }
-
-    vm.namedViewHasParams = function(namedView) {
-        return namedView && namedView.parameters && Object.keys(namedView.parameters).length > 0;
     }
 
     vm.createViewElementsLabel = function(elements, type) { // type is 'entities' or 'elements'

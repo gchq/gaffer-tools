@@ -1,9 +1,9 @@
 <div layout="column">
-    <ng-form name="ctrl.parameterForm" layout-padding>
+    <ng-form name="ctrl.parameterForm">
         <h3 class="{{ctrl.titleClass}}">{{ctrl.title}}</h3>
-        <div layout="column">
+        <div layout="column" class="parameters-padding">
             <div ng-repeat="(name, param) in ctrl.parameters" layout="row">
-                <div ng-repeat="field in ctrl.getFields(param.valueClass)" layout-fill layout-padding>
+                <div ng-repeat="field in ctrl.getFields(param.valueClass)" layout-fill layout-padding class="no-vertical-padding">
                     <md-input-container ng-if="ctrl.isRequired(field, param)" layout-fill>
                         <label>{{name}} {{field.label}}</label>
                         <input required

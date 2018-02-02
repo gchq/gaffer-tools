@@ -22,7 +22,6 @@ angular.module('app').controller('CustomFilterDialogController', ['$scope', '$md
     $scope.availablePredicates;
     $scope.predicateText;
     $scope.editMode = false;
-
     $scope.elementType = this.elementType;
     $scope.group = this.group;
     $scope.filterForEdit = this.filterForEdit;
