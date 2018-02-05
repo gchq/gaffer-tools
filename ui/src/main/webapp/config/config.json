@@ -1,5 +1,4 @@
 {
-  "title": "Road Traffic Example",
   "operations": {
     "loadNamedOperationsOnStartup": true,
     "defaultAvailable": [
@@ -236,14 +235,6 @@
         }
       ],
       "custom": true
-    }
-  },
-  "time": {
-    "filter": {
-      "class": "java.util.Date",
-      "unit": "millisecond",
-      "startProperty": "startDate",
-      "endProperty": "endDate"
     }
   }
 }
