@@ -153,6 +153,7 @@ function ViewBuilderController(view, graph, common, schema, functions, events, t
             if (field === 'class') {
                 continue;
             }
+
             filterForEdit.parameters[field] = filter.predicate[field];
         }
 

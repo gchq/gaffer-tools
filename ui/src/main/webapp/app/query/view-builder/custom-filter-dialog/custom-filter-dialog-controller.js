@@ -100,6 +100,12 @@ angular.module('app').controller('CustomFilterDialogController', ['$scope', '$md
         return types.getSimpleClassNames();
     }
 
+    $scope.updateType = function(param) {
+        if(param !== undefined) {
+            param['parts'] = {};
+        }
+    }
+
     $scope.hasMultipleTypesAvailable = function(className) {
         return !types.isKnown(className);
     }
@@ -126,16 +132,29 @@ angular.module('app').controller('CustomFilterDialogController', ['$scope', '$md
         }
         functions.getFunctionParameters($scope.filter.predicate, function(data) {
             $scope.filter.availableFunctionParameters = data;
-            $scope.filter.parameters = {}
+            if($scope.filter.parameters === undefined) {
+                $scope.filter.parameters = {}
+            } else {
+                for(var param in $scope.filter.parameters) {
+                    if(!(param in data)){
+                        delete $scope.filter.parameters[param];
+                    }
+                }
+            }
+
             for(var param in data) {
-                $scope.filter.parameters[param] = {};
-                var availableTypes = $scope.availableTypes(data[param]);
-                if(Object.keys(availableTypes).length == 1) {
-                    $scope.filter.parameters[param]['valueClass'] = Object.values(availableTypes)[0];
-                } else {
-                    $scope.filter.parameters[param]['valueClass'] = $scope.propertyClass
+                if(!(param in $scope.filter.parameters && $scope.filter.parameters[param] !== undefined)) {
+                    $scope.filter.parameters[param] = {};
                 }
 
+                if(!("valueClass" in $scope.filter.parameters[param])) {
+                    var availableTypes = $scope.availableTypes(data[param]);
+                    if(Object.keys(availableTypes).length == 1) {
+                        $scope.filter.parameters[param]['valueClass'] = types.getClassName(Object.keys(availableTypes)[0]);
+                    } else {
+                        $scope.filter.parameters[param]['valueClass'] = types.getClassName($scope.propertyClass);
+                    }
+                }
             }
         });
 
@@ -170,10 +189,26 @@ angular.module('app').controller('CustomFilterDialogController', ['$scope', '$md
         $scope.onSelectedPredicateChange();
         for(var name in $scope.filterForEdit.parameters) {
             var param = $scope.filterForEdit.parameters[name];
-            if(typeof param === 'string' || param instanceof String) {
-                $scope.filter.parameters[name] = param;
+            var valueClass;
+            var value;
+            if(param !== undefined && Object.keys(param).length === 1) {
+                valueClass = types.getClassName(Object.keys(param)[0]);
+                value = Object.values(param)[0];
+                if(valueClass === undefined) {
+                    valueClass = "JSON";
+                    value = JSON.stringify(param);
+                }
             } else {
-                $scope.filter.parameters[name] = JSON.stringify(param)
+                valueClass = undefined;
+                value = param;
+            }
+
+            $scope.filter.parameters[name] = {
+                "parts": types.createParts(valueClass, value)
+            };
+
+            if(valueClass !== undefined) {
+                $scope.filter.parameters[name]["valueClass"] = valueClass;
             }
         }
         $scope.editMode = true;

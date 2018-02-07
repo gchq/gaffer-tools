@@ -18,7 +18,6 @@
     "java.util.Date": {
       "fields": [
         {
-          "label": "Value",
           "type": "number",
           "step": "1",
           "class": "java.util.Date"
@@ -29,11 +28,10 @@
     "java.lang.Boolean": {
       "fields": [
         {
-          "label": "Value",
           "type": "radio",
           "values": [
-            "true",
-            "false"
+            true,
+            false
           ],
           "class": "java.lang.Boolean",
           "required": true
@@ -43,11 +41,10 @@
     "boolean": {
       "fields": [
         {
-          "label": "Value",
           "type": "radio",
           "values": [
-            "true",
-            "false"
+            true,
+            false
           ],
           "class": "java.lang.Boolean",
           "required": true
@@ -57,7 +54,6 @@
     "java.lang.Long": {
       "fields": [
         {
-          "label": "Value",
           "type": "number",
           "step": "1",
           "class": "java.lang.Long",
@@ -69,7 +65,6 @@
     "long": {
       "fields": [
         {
-          "label": "Value",
           "type": "number",
           "step": "1",
           "class": "java.lang.Long",
@@ -81,7 +76,6 @@
     "java.lang.Integer": {
       "fields": [
         {
-          "label": "Value",
           "type": "number",
           "step": "1",
           "class": "java.lang.Integer",
@@ -92,7 +86,6 @@
     "integer": {
       "fields": [
         {
-          "label": "Value",
           "type": "number",
           "step": "1",
           "class": "java.lang.Integer",
@@ -103,7 +96,6 @@
     "java.lang.Short": {
       "fields": [
         {
-          "label": "Value",
           "type": "number",
           "step": "1",
           "class": "java.lang.Short",
@@ -115,7 +107,6 @@
     "short": {
       "fields": [
         {
-          "label": "Value",
           "type": "number",
           "step": "1",
           "class": "java.lang.Short",
@@ -127,7 +118,6 @@
     "java.lang.Double": {
       "fields": [
         {
-          "label": "Value",
           "type": "number",
           "step": "0.1",
           "class": "java.lang.Double",
@@ -139,7 +129,6 @@
     "double": {
       "fields": [
         {
-          "label": "Value",
           "type": "number",
           "step": "0.1",
           "class": "java.lang.Double",
@@ -151,7 +140,6 @@
     "java.lang.Float": {
       "fields": [
         {
-          "label": "Value",
           "type": "number",
           "step": "0.1",
           "class": "java.lang.Float",
@@ -163,7 +151,6 @@
     "float": {
       "fields": [
         {
-          "label": "Value",
           "type": "number",
           "step": "0.1",
           "class": "java.lang.Float",
@@ -175,9 +162,17 @@
     "java.lang.String": {
       "fields": [
         {
-          "label": "Value",
           "type": "text",
           "class": "java.lang.String",
+          "required": true
+        }
+      ]
+    },
+    "java.lang.Class": {
+      "fields": [
+        {
+          "type": "text",
+          "class": "java.lang.Class",
           "required": true
         }
       ]
@@ -236,6 +231,16 @@
         }
       ],
       "custom": true
+    },
+    "JSON": {
+      "fields": [
+        {
+          "label": "JSON",
+          "type": "textarea",
+          "class": ""
+        }
+      ],
+      "wrapInJson": false
     }
   },
   "time": {

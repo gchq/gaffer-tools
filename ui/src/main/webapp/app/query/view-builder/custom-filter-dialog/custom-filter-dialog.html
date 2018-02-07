@@ -43,17 +43,16 @@
                 </md-autocomplete>
 
                 <div ng-repeat="(param, valueClass) in filter.availableFunctionParameters">
-                    <label>{{param}}</label>
-
                     <div layout="row">
                         <single-parameter
                                 param="filter.parameters[param]"
-                                show-label="false"></single-parameter>
+                                label="param"></single-parameter>
                         <md-input-container layout-fill
                                             ng-if="hasMultipleTypesAvailable(valueClass)">
                             <label>type</label>
                             <md-select required id="{{param}}-type-selector"
-                                       ng-model="filter.parameters[param]['valueClass']">
+                                       ng-model="filter.parameters[param]['valueClass']"
+                                       md-on-close="updateType(filter.parameters[param])">
                                 <md-option
                                         ng-repeat="(simpleType, type) in availableTypes(valueClass)"
                                         ng-value="type">{{simpleType}}

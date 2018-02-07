@@ -25,7 +25,7 @@ function singleParameter() {
         controllerAs: 'ctrl',
         bindings: {
             param: '=',
-            showLabel: '&'
+            label: '='
         }
     }
 }
@@ -41,8 +41,8 @@ function SingleParameterController(types) {
                 vm.param['parts']={};
             }
         }
-        if(vm.showLabel === null || vm.showLabel === undefined) {
-            vm.showLabel = true;
+        if(vm.label === null || vm.label === undefined) {
+            vm.label = '';
         }
     }
 

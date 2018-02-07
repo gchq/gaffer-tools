@@ -56,6 +56,7 @@ def run_with_connector(gc):
     add_named_operation(gc)
     get_all_named_operations(gc)
     named_operation(gc)
+    delete_named_operation(gc)
 
     add_named_view_summarise(gc)
     add_named_view_date_range(gc)

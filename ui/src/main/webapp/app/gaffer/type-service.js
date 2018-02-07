@@ -29,12 +29,15 @@ angular.module('app').factory('types', ['config', 'common', function(config, com
             for(var className in types) {
                 var parts = className.split('.');
                 if(parts.length > 1) {
-                    var simpleClassName = className.split('.').pop();
+                    var simpleClassName = className.split('.').pop().replace(/<.*>/, "");
                     if(simpleClassNamesLowerCase.indexOf(simpleClassName) === -1) {
                         simpleClassNamesLowerCase.push(simpleClassName);
                         simpleClassNames[simpleClassName] = className;
                     }
                 }
+            }
+            if('JSON' in types) {
+                simpleClassNames['JSON'] = 'JSON';
             }
         }
     });
@@ -47,7 +50,6 @@ angular.module('app').factory('types', ['config', 'common', function(config, com
         return Object.keys(value).map(function(key) {
             return key + ": " + service.getShortValue(value[key]);
         }).join(", ");
-
     }
 
     var listShortValue = function(values) {
@@ -109,16 +111,50 @@ angular.module('app').factory('types', ['config', 'common', function(config, com
             }
         ]
     }
-
+    
     var getType = function(typeClass) {
-        if (types[typeClass]) {
+        if (typeClass !== undefined && types[typeClass]) {
             return types[typeClass];
         }
         return unknownType;
     }
 
+    service.getClassName = function(simpleClassName) {
+        var className;
+        if (simpleClassName !== undefined) {
+            var simpleClassNameLowerCase = simpleClassName.toLowerCase()
+            if(simpleClassName in simpleClassNames) {
+                className = simpleClassNames[simpleClassName];
+            } else if(simpleClassName in simpleClassNames) {
+               className = simpleClassNames[simpleClassNameLowerCase];
+            } else {
+                for(var simpleType in simpleClassNames) {
+                    if(simpleType.toLowerCase() === simpleClassNameLowerCase) {
+                        className = simpleClassNames[simpleType];
+                        break;
+                    }
+                }
+            }
+
+            if(className === undefined) {
+                if(simpleClassName in types) {
+                    className = simpleClassName;
+                } else {
+                    for(var type in types) {
+                        if(type.toLowerCase() === simpleClassNameLowerCase) {
+                            className = type;
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+
+        return className;
+    }
+
     service.createValue = function(typeClass, parts) {
-        if (getType(typeClass).wrapInJson && Object.keys(parts)[0] !== 'undefined' || Object.keys(parts).length > 1) {
+        if ((getType(typeClass).wrapInJson && Object.keys(parts)[0] !== 'undefined') || Object.keys(parts).length > 1) {
             return parts;
         }
         return parts[Object.keys(parts)[0]];
@@ -129,7 +165,7 @@ angular.module('app').factory('types', ['config', 'common', function(config, com
         var type = getType(typeClass);
 
         if(type.wrapInJson || Object.keys(parts).length > 1) {
-            if (Object.keys(parts).length === 1 && Object.keys(parts).indexOf('undefined') !== -1) {
+            if (Object.keys(parts).length === 1 && undefined in parts) {
                 value[typeClass] = parts['undefined'];
             } else {
                 value[typeClass] = parts;
@@ -140,13 +176,27 @@ angular.module('app').factory('types', ['config', 'common', function(config, com
             return value;
         }
 
+        if(typeClass === 'JSON') {
+            try {
+                return JSON.parse(parts[Object.keys(parts)[0]]);
+            } catch(err) {
+               console.log(err);
+               alert('Failed to parse JSON: ' + err.message);
+            }
+        }
+
         return parts[Object.keys(parts)[0]];
 
     }
 
     service.createParts = function(typeClass, value) {
-        if(value[typeClass]) {
+        if(typeClass !== undefined && value[typeClass]) {
             return value[typeClass];
+        }
+
+        var type = getType(typeClass);
+        if(type.key === undefined && type.fields.length > 1) {
+            return value;
         }
 
         var parts = {};
