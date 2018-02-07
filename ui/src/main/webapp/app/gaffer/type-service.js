@@ -216,7 +216,9 @@ angular.module('app').factory('types', ['config', 'common', function(config, com
 
         var typeClass = Object.keys(value)[0];
         var parts = value[typeClass]; // the value without the class prepended
-
+        if(parts === undefined) {
+            return "";
+        }
 
         var type = getType(typeClass);
 
@@ -230,14 +232,18 @@ angular.module('app').factory('types', ['config', 'common', function(config, com
             return listShortValue(parts);
         }
 
-        if (Object.keys(parts).length > 0) {
-            return Object.keys(parts).map(function(key){
-                var val = parts[key];
-                return service.getShortValue(val);
-            }).join("|");
+        if (typeof parts === "object"){
+            if(Object.keys(parts).length > 0) {
+                return Object.keys(parts).map(function(key){
+                    var val = parts[key];
+                    return service.getShortValue(val);
+                }).join("|");
+            } else {
+                return "";
+            }
         }
 
-        return value[typeClass];
+        return parts;
     }
 
     service.getCsvHeader = function(typeClass) {
