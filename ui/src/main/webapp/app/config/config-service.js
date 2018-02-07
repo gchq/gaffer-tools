@@ -38,18 +38,39 @@ angular.module('app').factory('config', ['$http', '$q', 'defaultRestEndpoint', f
     }
 
     var load = function(defer) {
-        $http.get('config/config.json')
+        $http.get('config/defaultConfig.json')
             .success(function(response) {
                 if (!response.restEndpoint) {
                     response.restEndpoint = defaultRestEndpoint.get();
                 }
-                config = response;
-                defer.resolve(config);
+                var mergedConfig = response;
+                $http.get('config/config.json')
+                    .success(function(response) {
+                        if (!response.restEndpoint) {
+                            response.restEndpoint = defaultRestEndpoint.get();
+                        }
+                        if('types' in mergedConfig && 'types' in response) {
+                            Object.assign(mergedConfig['types'], response['types']);
+                            delete response['types'];
+                        }
+                        if('operations' in mergedConfig && 'operations' in response) {
+                            Object.assign(mergedConfig['operations'], response['operations']);
+                            delete response['operations'];
+                        }
+                        Object.assign(mergedConfig, response);
+                        config = mergedConfig;
+                        defer.resolve(config);
+                    })
+                    .error(function(err) {
+                        defer.reject(err);
+                        console.log(err);
+                        alert("Failed to load custom config");
+                });
             })
             .error(function(err) {
                 defer.reject(err);
                 console.log(err);
-                alert("Failed to load config");
+                alert("Failed to load default config");
         });
     }
 
