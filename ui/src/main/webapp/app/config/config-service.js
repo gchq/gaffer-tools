@@ -39,25 +39,28 @@ angular.module('app').factory('config', ['$http', '$q', 'defaultRestEndpoint', f
 
     var load = function(defer) {
         $http.get('config/defaultConfig.json')
-            .success(function(response) {
-                if (!response.restEndpoint) {
-                    response.restEndpoint = defaultRestEndpoint.get();
+            .success(function(defaultConfig) {
+                if(defaultConfig === undefined) {
+                    defaultConfig = {};
                 }
-                var mergedConfig = response;
+                var mergedConfig = defaultConfig;
                 $http.get('config/config.json')
-                    .success(function(response) {
-                        if (!response.restEndpoint) {
-                            response.restEndpoint = defaultRestEndpoint.get();
+                    .success(function(customConfig) {
+                        if(customConfig === undefined) {
+                            customConfig = {};
                         }
-                        if('types' in mergedConfig && 'types' in response) {
-                            Object.assign(mergedConfig['types'], response['types']);
-                            delete response['types'];
+                        if (!mergedConfig.restEndpoint && !customConfig.restEndpoint) {
+                            mergedConfig.restEndpoint = defaultRestEndpoint.get();
                         }
-                        if('operations' in mergedConfig && 'operations' in response) {
-                            Object.assign(mergedConfig['operations'], response['operations']);
-                            delete response['operations'];
+                        if('types' in mergedConfig && 'types' in customConfig) {
+                            angular.merge(mergedConfig['types'], customConfig['types']);
+                            delete customConfig['types'];
                         }
-                        Object.assign(mergedConfig, response);
+                        if('operations' in mergedConfig && 'operations' in customConfig) {
+                            angular.merge(mergedConfig['operations'], customConfig['operations']);
+                            delete customConfig['operations'];
+                        }
+                        angular.merge(mergedConfig, customConfig);
                         config = mergedConfig;
                         defer.resolve(config);
                     })
