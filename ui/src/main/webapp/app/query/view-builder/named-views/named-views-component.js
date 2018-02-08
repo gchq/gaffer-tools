@@ -82,22 +82,11 @@ function NamedViewsController(view) {
         return namedView && (!namedView.parameters || Object.keys(namedView.parameters).length === 0);
     }
 
-    vm.createNamedViewsLabel = function(selectedNamedViews) {
-        if (!selectedNamedViews || selectedNamedViews.length === 0) {
-            return 'Select predefined filters';
-        } else {
-            if(selectedNamedViews.length == 1) {
-                return selectedNamedViews[0].name;
-            }
-            return selectedNamedViews.reduce(function(a,b){return a.name + ", " + b.name})
-        }
-    }
-
     var createFilterFor = function(text) {
         var lowercaseText = angular.lowercase('' + text);
         return function filterFn(namedView) {
-            return  (angular.lowercase(namedView.name).indexOf(lowercaseText) >= 0 ||
-            angular.lowercase(namedView.description).indexOf(lowercaseText) >= 0);
+            return  (angular.lowercase(namedView.name).indexOf(lowercaseText) >= 0 || (namedView.description &&
+            angular.lowercase(namedView.description).indexOf(lowercaseText) >= 0));
         }
     }
 }
