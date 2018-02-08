@@ -2,8 +2,8 @@
     <h3 class="section-title">Add Filters</h3>
 
     <named-views></named-views>
-    <md-button ng-show="!ctrl.showBuilder" ng-click="ctrl.makeVisible()">Create custom filter</md-button>
-    <md-button ng-show="ctrl.showBuilder" ng-click="ctrl.clear()">Clear custom filter</md-button>
+    <md-button ng-show="!ctrl.showBuilder" id="create-custom-filter" ng-click="ctrl.makeVisible()">Create custom filter</md-button>
+    <md-button ng-show="ctrl.showBuilder" id="clear-custom-filter" ng-click="ctrl.clear()">Clear custom filter</md-button>
 
     <div ng-show="ctrl.showBuilder">
         <div layout="row" layout-padding>
