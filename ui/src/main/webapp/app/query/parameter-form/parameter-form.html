@@ -1,10 +1,10 @@
 <div layout="column">
     <ng-form name="ctrl.parameterForm">
         <h3 class="{{ctrl.titleClass}}">{{ctrl.title}}</h3>
-        <div layout="column" class="parameters-padding">
-            <div ng-repeat="(name, param) in ctrl.parameters" layout="row">
-                <div ng-repeat="field in ctrl.getFields(param.valueClass)" layout-fill layout-padding class="no-vertical-padding">
-                    <md-input-container ng-if="ctrl.isRequired(field, param)" layout-fill>
+        <div layout="row" layout-wrap class="parameters-padding">
+            <div ng-repeat="(name, param) in ctrl.parameters" layout="row" layout-wrap>
+                <div ng-repeat="field in ctrl.getFields(param.valueClass)" class="no-vertical-padding">
+                    <md-input-container ng-if="ctrl.isRequired(field, param)">
                         <label>{{name}} {{field.label}}</label>
                         <input required
                                id="{{name}}-{{field.key}}-required"
@@ -17,7 +17,7 @@
                             <div ng-message="required">Required</div>
                         </div>
                     </md-input-container>
-                    <md-input-container layout-fill ng-if="!ctrl.isRequired(field, param)">
+                    <md-input-container ng-if="!ctrl.isRequired(field, param)">
                         <label>{{name}} {{field.label}}</label>
                         <input name="{{name}}-{{field.label}}"
                                id="{{name}}-{{field.key}}"
