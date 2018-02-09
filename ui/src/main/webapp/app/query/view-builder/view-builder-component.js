@@ -26,12 +26,12 @@ app.filter('schemaGroupFilter', function() {
         if (!search) {
             return input;
         }
-        var lowercaseSearch = ('' + search).toLowerCase();
+        var lowercaseSearch = search ? search.toLowerCase() : '';
         var result = {};
 
         angular.forEach(input, function(info, group) {
             var lowercaseGroup = group.toLowerCase();
-            var lowerCaseDescription = info.description.toLowerCase();
+            var lowerCaseDescription = info.description ? info.description.toLowerCase() : '';
             if (lowercaseGroup.indexOf(lowercaseSearch) !== -1) {
                 result[group] = info;
             } else if (lowerCaseDescription.indexOf(lowercaseSearch) !== -1) {
