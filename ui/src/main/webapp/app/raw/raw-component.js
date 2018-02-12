@@ -74,7 +74,7 @@ function RawController(operationService, results, query, error, events) {
                     query.addOperation(JSON.parse(vm.operationsForEdit[i]));
                 }
             } catch(e) {
-                error.handle('Invalid json for operation ' + (+i + 1))
+                error.handle('Invalid json for operation ' + (+i + 1), e);
                 return;
             }
         }
