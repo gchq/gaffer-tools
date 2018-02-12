@@ -24,9 +24,6 @@ angular.module('app').factory('error', ['$mdToast', '$mdDialog', function($mdToa
     }
 
     service.handle = function(message, err) {
-        if (err) {
-            console.log(err);
-        }
 
         var msg;
 
@@ -41,7 +38,8 @@ angular.module('app').factory('error', ['$mdToast', '$mdDialog', function($mdToa
             .position('top right')
             .hideDelay(msg.length * 100);
 
-        if (err) {
+        if (err && err !== '') {
+            console.log(err);
             toast
                 .action('More info')
                 .highlightAction(true)
@@ -55,9 +53,11 @@ angular.module('app').factory('error', ['$mdToast', '$mdDialog', function($mdToa
                     var content;
 
                     if (typeof err === 'string' || err instanceof String) {
-                        content = (err === "") ? "An unknown error occurred. See the console log for details" : err;
+                        content = err;
                     } else if (err.simpleMessage) {
                         content = err.simpleMessage;
+                    } else if (err.message) {
+                        content = err.message;
                     } else {
                         content = "An unknown error occurred. See the console log for details";
                     }
