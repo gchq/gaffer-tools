@@ -16,7 +16,7 @@
 
 'use strict';
 
-angular.module('app').factory('functions', ['$http', 'schema', 'config', 'common', function($http, schemaService, config, common) {
+angular.module('app').factory('functions', ['$http', 'schema', 'config', 'common', 'error', function($http, schemaService, config, common, error) {
 
     var functions = {};
 
@@ -41,14 +41,8 @@ angular.module('app').factory('functions', ['$http', 'schema', 'config', 'common
                     .success(function(response) {
                         onSuccess(response)
                     })
-                    .error(function(err) {
-                        var errorString = 'Error loading functions for group: ' + group + ', property: ' + property + '.\n';
-                        if (err && err !== "") {
-                            alert(errorString + err.simpleMessage);
-                            console.log(err);
-                        } else {
-                            alert(errorString);
-                        }
+                    .error(function(err) {;
+                        error.handle('Could not retrieve filter functions for ' + className, err);
                 });
             });
         });
@@ -64,13 +58,7 @@ angular.module('app').factory('functions', ['$http', 'schema', 'config', 'common
                     onSuccess(response)
                 })
                 .error(function(err) {
-                    var errorString = 'Failed to get serialised fields for ' + functionClassName + '.\n';
-                    if (err && err !== "") {
-                        alert(errorString + err.simpleMessage);
-                        console.log(err);
-                    } else {
-                        alert(errorString);
-                    }
+                    error.handle('Could not get serialised fields for ' + functionClassName, err);
             });
 
         })

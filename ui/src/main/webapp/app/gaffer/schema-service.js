@@ -16,7 +16,7 @@
 
 'use strict';
 
-angular.module('app').factory('schema', ['$http', 'config', '$q', 'common', 'operationService', 'query', function($http, config, $q, common, operationService, query) {
+angular.module('app').factory('schema', ['$http', 'config', '$q', 'common', 'operationService', 'query', 'error', function($http, config, $q, common, operationService, query, error) {
 
     var schemaService = {};
 
@@ -53,12 +53,7 @@ angular.module('app').factory('schema', ['$http', 'config', '$q', 'common', 'ope
             })
             .error(function(err) {
                 defer.reject(err);
-                if (err !== "") {
-                    alert("Unable to load schema: " + err.simpleMessage);
-                    console.log(err);
-                } else {
-                    alert("Unable to load schema. Received no response");
-                }
+                error.handle('Unable to load schema', err);
         });
     }
 
@@ -72,11 +67,7 @@ angular.module('app').factory('schema', ['$http', 'config', '$q', 'common', 'ope
                     updateSchemaVertices()
                 },
                 function(err) {
-                    if (err !== "") {
-                        console.log(err);
-                    } else {
-                        alert("Unable to load schema. Received no response");
-                    }
+                    console.log(err);
                     loadSchemaFromUrl(conf, defer);
                 }
             );
@@ -96,12 +87,7 @@ angular.module('app').factory('schema', ['$http', 'config', '$q', 'common', 'ope
             loader(conf, defer),
             function(err) {
                 defer.reject(err);
-                if (err !== "") {
-                    alert("Unable to load schema: " + err.simpleMessage);
-                    console.log(err);
-                } else {
-                    alert("Unable to load schema. Received no response");
-                }
+                error.handle('Unable to load schema', err);
             };
         });
     }

@@ -27,7 +27,7 @@ function query() {
     };
 }
 
-function QueryController(queryPage, operationService, types, graph, config, settings, query, functions, results, navigation, $mdDialog, loading, time, view) {
+function QueryController(queryPage, operationService, types, graph, config, settings, query, functions, results, navigation, $mdDialog, loading, time, view, error) {
 
     var vm = this;
     vm.timeConfig;
@@ -72,13 +72,7 @@ function QueryController(queryPage, operationService, types, graph, config, sett
             }
         }, function(err) {
             loading.finish();
-            var errorString = 'Error executing operation';
-            if (err && err !== "") {
-                alert(errorString  + ": " + err.simpleMessage);
-                console.log(err);
-            } else {
-                alert(errorString);
-            }
+            error.handle('Error executing operation', err);
         });
     }
 

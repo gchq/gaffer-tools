@@ -27,7 +27,7 @@ function raw() {
     }
 }
 
-function RawController(operationService, results, query, $mdToast, events) {
+function RawController(operationService, results, query, error, events) {
     var vm = this
 
     vm.operationsForEdit = [];
@@ -74,10 +74,7 @@ function RawController(operationService, results, query, $mdToast, events) {
                     query.addOperation(JSON.parse(vm.operationsForEdit[i]));
                 }
             } catch(e) {
-                $mdToast.show($mdToast.simple()
-                    .textContent('Invalid json for operation ' + (+i + 1))
-                    .position('bottom right'))
-                console.log('Invalid json: ' + vm.operationsForEdit[i]);
+                error.handle('Invalid json for operation ' + (+i + 1))
                 return;
             }
         }
