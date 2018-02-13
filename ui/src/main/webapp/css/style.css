@@ -114,3 +114,14 @@ md-option > div {
 .no-margin {
     margin: 0px;
 }
+
+.small-input-container {
+    padding-top: 0px;
+    padding-bottom: 0px;
+    margin-bottom: 0px;
+}
+
+.padding-sides {
+    padding-left: 8px;
+    padding-right: 8px;
+}

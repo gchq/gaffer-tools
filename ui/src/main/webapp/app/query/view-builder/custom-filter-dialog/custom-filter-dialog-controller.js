@@ -28,8 +28,6 @@ angular.module('app').controller('CustomFilterDialogController', ['$scope', '$md
     $scope.filterForEdit = this.filterForEdit;
     $scope.onSubmit = this.onSubmit;
 
-    $scope.propertyClass = undefined;
-
 
     var createFilterFor = function(text) {
         var lowerCaseText = angular.lowercase(text);
@@ -119,17 +117,27 @@ angular.module('app').controller('CustomFilterDialogController', ['$scope', '$md
         }
     }
 
-    $scope.showWarning = function() {
-        return $scope.propertyClass &&
-            $scope.filter &&
-            $scope.filter.availableFunctionParameters &&
-            Object.keys($scope.filter.availableFunctionParameters).length !== 0;
+    var setToPropertyClass = function(parameter) {
+        schema.get().then(function(gafferSchema) {
+            var elementDef;
+            if (gafferSchema.entities) {
+                elementDef = gafferSchema.entities[$scope.group];
+            }
+            if(!elementDef && gafferSchema.edges) {
+                 elementDef = gafferSchema.edges[$scope.group];
+            }
+            if (gafferSchema.types) {
+                var propertyClass = gafferSchema.types[elementDef.properties[$scope.filter.property]].class;
+                $scope.filter.parameters[parameter]['valueClass'] = propertyClass;
+            }
+        });
     }
 
     $scope.onSelectedPredicateChange = function() {
         if ($scope.filter.predicate === undefined || $scope.filter.predicate === '' || $scope.filter.predicate === null) {
             return;
         }
+
         functions.getFunctionParameters($scope.filter.predicate, function(data) {
             $scope.filter.availableFunctionParameters = data;
             if($scope.filter.parameters === undefined) {
@@ -152,33 +160,11 @@ angular.module('app').controller('CustomFilterDialogController', ['$scope', '$md
                     if(Object.keys(availableTypes).length == 1) {
                         $scope.filter.parameters[param]['valueClass'] = types.getClassName(Object.keys(availableTypes)[0]);
                     } else {
-                        $scope.filter.parameters[param]['valueClass'] = types.getClassName($scope.propertyClass);
+                        setToPropertyClass(param);
                     }
                 }
             }
         });
-
-        schema.get().then(function(gafferSchema) {
-            var elementDef;
-            if (gafferSchema.entities) {
-                elementDef = gafferSchema.entities[$scope.group];
-            }
-            if(!elementDef && gafferSchema.edges) {
-                 elementDef = gafferSchema.edges[$scope.group];
-            }
-            if (gafferSchema.types) {
-                var propertyClass = gafferSchema.types[elementDef.properties[$scope.filter.property]].class;
-                if("java.lang.String" !== propertyClass
-                    && "java.lang.Boolean" !== propertyClass
-                    && "java.lang.Integer" !== propertyClass) {
-                    $scope.propertyClass = propertyClass;
-                } else {
-                    $scope.propertyClass = undefined;
-                }
-            }
-        });
-
-        $scope.filter.parameters = {};
     }
 
     if ($scope.filterForEdit) {
@@ -186,7 +172,7 @@ angular.module('app').controller('CustomFilterDialogController', ['$scope', '$md
         $scope.filter.property = $scope.filterForEdit.property;
         $scope.onSelectedPropertyChange(true);
         $scope.filter.predicate = $scope.filterForEdit.predicate;
-        $scope.onSelectedPredicateChange();
+        $scope.filter.parameters = {};
         for(var name in $scope.filterForEdit.parameters) {
             var param = $scope.filterForEdit.parameters[name];
             var valueClass;
@@ -211,6 +197,7 @@ angular.module('app').controller('CustomFilterDialogController', ['$scope', '$md
                 $scope.filter.parameters[name]["valueClass"] = valueClass;
             }
         }
+        $scope.onSelectedPredicateChange();
         $scope.editMode = true;
     }
 

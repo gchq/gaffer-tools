@@ -1,7 +1,7 @@
 <div layout="row" layout-wrap>
     <div ng-repeat="field in ctrl.getFields()">
         <div ng-if="'textarea' === field.type">
-            <md-input-container ng-if="ctrl.isRequired(field)">
+            <md-input-container ng-if="ctrl.isRequired(field)" class="small-input-container">
                 <label>{{ctrl.name}} {{field.label}}</label>
                 <textarea required
                           type="{{field.type}}"
@@ -9,14 +9,14 @@
                           ng-model="ctrl.param.parts[field.key]"></textarea>
             </md-input-container>
 
-            <md-input-container layout-fill ng-if="!ctrl.isRequired(field)">
+            <md-input-container layout-fill ng-if="!ctrl.isRequired(field)" class="small-input-container">
                 <label>{{ctrl.name}} {{field.label}}</label>
                 <textarea type="{{field.type}}"
                           md-select-on-focus
                           ng-model="ctrl.param.parts[field.key]"></textarea>
             </md-input-container>
         </div>
-        <div ng-if="'checkbox' === field.type">
+        <div ng-if="'checkbox' === field.type" layout-margin>
             <md-checkbox ng-if="ctrl.isRequired(field)" ng-model="ctrl.param.parts[field.key]" required>
                 {{ctrl.name}} {{field.label}}
             </md-checkbox>
@@ -25,7 +25,7 @@
             </md-checkbox>
         </div>
         <div ng-if="'checkbox' !== field.type && 'textarea' !== field.type">
-            <md-input-container ng-if="ctrl.isRequired(field)">
+            <md-input-container ng-if="ctrl.isRequired(field)" class="small-input-container">
                 <label>{{ctrl.name}} {{field.label}}</label>
                 <input required
                        type="{{field.type}}"
@@ -33,7 +33,7 @@
                        ng-model="ctrl.param.parts[field.key]">
             </md-input-container>
 
-            <md-input-container ng-if="!ctrl.isRequired(field)">
+            <md-input-container ng-if="!ctrl.isRequired(field)" class="small-input-container">
                 <label>{{ctrl.name}} {{field.label}}</label>
                 <input type="{{field.type}}"
                        md-select-on-focus
