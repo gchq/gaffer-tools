@@ -44,11 +44,7 @@
 
                 <div ng-repeat="(param, valueClass) in filter.availableFunctionParameters">
                     <div layout="row">
-                        <single-parameter
-                                param="filter.parameters[param]"
-                                label="param"></single-parameter>
-                        <md-input-container layout-fill
-                                            ng-if="hasMultipleTypesAvailable(valueClass)">
+                        <md-input-container ng-if="hasMultipleTypesAvailable(valueClass)">
                             <label>type</label>
                             <md-select required id="{{param}}-type-selector"
                                        ng-model="filter.parameters[param]['valueClass']"
@@ -59,6 +55,7 @@
                                 </md-option>
                             </md-select>
                         </md-input-container>
+                        <dynamic-input param="filter.parameters[param]" name="param" flex="grow"></dynamic-input>
                     </div>
                 </div>
 

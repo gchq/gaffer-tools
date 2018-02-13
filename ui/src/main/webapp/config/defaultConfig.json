@@ -27,11 +27,7 @@
     "java.lang.Boolean": {
       "fields": [
         {
-          "type": "radio",
-          "values": [
-            true,
-            false
-          ],
+          "type": "checkbox",
           "class": "java.lang.Boolean",
           "required": true
         }
@@ -40,11 +36,7 @@
     "boolean": {
       "fields": [
         {
-          "type": "radio",
-          "values": [
-            true,
-            false
-          ],
+          "type": "checkbox",
           "class": "java.lang.Boolean",
           "required": true
         }

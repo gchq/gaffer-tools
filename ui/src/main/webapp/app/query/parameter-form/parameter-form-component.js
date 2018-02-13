@@ -33,7 +33,7 @@ function ParameterFormController(types) {
     var vm = this;
     vm.$onInit = function() {
         if (vm.parameters === null || vm.parameters === undefined) {
-            console.error('Expected defined, non-null value for parameters. Got ' + vm.parameters);
+            throw 'Expected defined, non-null value for parameters. Got ' + vm.parameters;
         }
     }
 }

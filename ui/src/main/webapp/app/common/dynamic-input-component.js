@@ -16,33 +16,34 @@
 
 'use strict';
 
-angular.module('app').component('singleParameter', singleParameter());
+angular.module('app').component('dynamicInput', dynamicInput());
 
-function singleParameter() {
+function dynamicInput() {
     return {
-        templateUrl: 'app/query/parameter-form/single-parameter.html',
-        controller: SingleParameterController,
+        templateUrl: 'app/common/dynamic-input.html',
+        controller: DynamicInputController,
         controllerAs: 'ctrl',
         bindings: {
             param: '=',
-            label: '='
+            name: '<'
         }
     }
 }
 
-function SingleParameterController(types) {
+function DynamicInputController(types) {
     var vm = this;
 
     vm.$onInit = function() {
         if (vm.param === null || vm.param === undefined) {
-            console.error('Expected defined, non-null value for parameter. Got ' + vm.param);
-        } else {
-            if(!vm.param['parts']) {
-                vm.param['parts']={};
-            }
+            throw 'Expected defined, non-null value for the type. Got ' + vm.type;
         }
-        if(vm.label === null || vm.label === undefined) {
-            vm.label = '';
+
+        if(!vm.param['parts']) {
+            vm.param['parts']={};
+        }
+
+        if (!vm.name) {
+            vm.name = '';
         }
     }
 
