@@ -47,6 +47,18 @@ function DynamicInputController(types) {
         }
     }
 
+    vm.getFlexValue = function() {
+        var length = types.getFields(vm.param.valueClass).length;
+
+        if (length >= 3) {
+            return 33;
+        } else if (length === 2) {
+            return 50;
+        } else {
+            return 100
+        }
+    }
+
     vm.isRequired = function(field) {
         return vm.param.required === true && field.required === true;
     }

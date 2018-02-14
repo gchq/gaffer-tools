@@ -73,19 +73,12 @@ angular.module('app').controller('CustomFilterDialogController', ['$scope', '$md
         $scope.resetForm();
     }
 
-    $scope.getFlexValue = function() {
-        if (!$scope.filter || !$scope.filter.availableFunctionParameters) {
-            return 0;
-        }
-
-        var numParams = Object.keys($scope.filter.availableFunctionParameters).length;
-        if (numParams === 2) {
-            return 50;
-        } else if (numParams === 1) {
+    $scope.getFlexValue = function(valueClass) {
+        if ($scope.hasMultipleTypesAvailable(valueClass)) {
             return 100;
+        } else {
+            return 50;
         }
-
-        return 33;
     }
 
     $scope.availableTypes = function(className) {
@@ -100,6 +93,15 @@ angular.module('app').controller('CustomFilterDialogController', ['$scope', '$md
 
     $scope.updateType = function(param) {
         if(param !== undefined) {
+            var parts = param['parts'];
+
+            if (parts !== undefined && Object.keys(parts).length === 1 && parts[undefined] !== undefined) {    // if it's simple
+                var oldValue = parts[undefined];
+                var newJSType = types.getFields(param.valueClass)[0].type;
+                if (((newJSType === 'text' || newJSType === 'textarea') && (typeof oldValue === 'string' || oldValue instanceof String)) || (newJSType === 'number' && typeof oldValue === 'number')) {
+                    return;
+                }
+            }
             param['parts'] = {};
         }
     }
@@ -173,6 +175,7 @@ angular.module('app').controller('CustomFilterDialogController', ['$scope', '$md
         $scope.onSelectedPropertyChange(true);
         $scope.filter.predicate = $scope.filterForEdit.predicate;
         $scope.filter.parameters = {};
+        $scope.onSelectedPredicateChange();
         for(var name in $scope.filterForEdit.parameters) {
             var param = $scope.filterForEdit.parameters[name];
             var valueClass;
@@ -197,7 +200,6 @@ angular.module('app').controller('CustomFilterDialogController', ['$scope', '$md
                 $scope.filter.parameters[name]["valueClass"] = valueClass;
             }
         }
-        $scope.onSelectedPredicateChange();
         $scope.editMode = true;
     }
 

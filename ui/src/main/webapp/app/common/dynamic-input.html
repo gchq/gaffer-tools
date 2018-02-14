@@ -1,18 +1,20 @@
-<div layout="row" layout-wrap>
-    <div ng-repeat="field in ctrl.getFields()">
+<div layout="column" layout-gt-md="row" layout-wrap layout-fill>
+    <div ng-repeat="field in ctrl.getFields()" flex="{{ctrl.getFlexValue()}}" class="padding-sides">
         <div ng-if="'textarea' === field.type">
-            <md-input-container ng-if="ctrl.isRequired(field)" class="small-input-container">
+            <md-input-container ng-if="ctrl.isRequired(field)" class="content">
                 <label>{{ctrl.name}} {{field.label}}</label>
                 <textarea required
                           type="{{field.type}}"
                           md-select-on-focus
+                          rows="2"
                           ng-model="ctrl.param.parts[field.key]"></textarea>
             </md-input-container>
 
-            <md-input-container layout-fill ng-if="!ctrl.isRequired(field)" class="small-input-container">
+            <md-input-container ng-if="!ctrl.isRequired(field)" class="content">
                 <label>{{ctrl.name}} {{field.label}}</label>
                 <textarea type="{{field.type}}"
                           md-select-on-focus
+                          rows="2"
                           ng-model="ctrl.param.parts[field.key]"></textarea>
             </md-input-container>
         </div>
@@ -25,7 +27,7 @@
             </md-checkbox>
         </div>
         <div ng-if="'checkbox' !== field.type && 'textarea' !== field.type">
-            <md-input-container ng-if="ctrl.isRequired(field)" class="small-input-container">
+            <md-input-container ng-if="ctrl.isRequired(field)" class="content small-input-container">
                 <label>{{ctrl.name}} {{field.label}}</label>
                 <input required
                        type="{{field.type}}"
@@ -33,7 +35,7 @@
                        ng-model="ctrl.param.parts[field.key]">
             </md-input-container>
 
-            <md-input-container ng-if="!ctrl.isRequired(field)" class="small-input-container">
+            <md-input-container ng-if="!ctrl.isRequired(field)" class="content small-input-container">
                 <label>{{ctrl.name}} {{field.label}}</label>
                 <input type="{{field.type}}"
                        md-select-on-focus

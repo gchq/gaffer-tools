@@ -32,6 +32,7 @@
                         md-require-match
                         md-select-on-focus
                         id="predicate-autocomplete"
+                        md-no-cache
                         class="small-input-container"
                         md-autoselect>
                     <md-item-template>
@@ -42,21 +43,22 @@
                         No predicates matching {{predicateText}} were found.
                     </md-not-found>
                 </md-autocomplete>
-
-                <div ng-repeat="(param, valueClass) in filter.availableFunctionParameters">
-                    <div layout="row" class="padding-sides">
-                        <md-input-container ng-if="hasMultipleTypesAvailable(valueClass)" class="small-input-container">
-                            <label>type</label>
-                            <md-select required id="{{param}}-type-selector"
-                                       ng-model="filter.parameters[param]['valueClass']"
-                                       ng-change="updateType(filter.parameters[param])">
-                                <md-option
-                                        ng-repeat="(simpleType, type) in availableTypes(valueClass)"
-                                        ng-value="type">{{simpleType}}
-                                </md-option>
-                            </md-select>
-                        </md-input-container>
-                        <dynamic-input param="filter.parameters[param]" name="param"></dynamic-input>
+                <div layout="row" layout-wrap>
+                    <div ng-repeat="(param, valueClass) in filter.availableFunctionParameters" flex="{{getFlexValue(valueClass)}}">
+                        <div layout="row">
+                            <md-input-container ng-if="hasMultipleTypesAvailable(valueClass)" flex="30" class="padding sides small-input-container">
+                                <label>{{param}} class</label>
+                                <md-select required id="{{param}}-type-selector"
+                                           ng-model="filter.parameters[param]['valueClass']"
+                                           ng-change="updateType(filter.parameters[param])">
+                                    <md-option
+                                            ng-repeat="(simpleType, type) in availableTypes(valueClass)"
+                                            ng-value="type">{{simpleType}}
+                                    </md-option>
+                                </md-select>
+                            </md-input-container>
+                            <dynamic-input param="filter.parameters[param]" name="param" class="padding-sides" flex></dynamic-input>
+                        </div>
                     </div>
                 </div>
 
