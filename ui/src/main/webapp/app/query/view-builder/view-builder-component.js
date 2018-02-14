@@ -258,13 +258,11 @@ function ViewBuilderController(view, graph, common, schema, functions, events, t
 
         for(var paramName in filter.availableFunctionParameters) {
             if(filter.parameters[paramName] !== undefined) {
-                var param;
-                try {
-                    param = JSON.parse(filter.parameters[paramName]);
-                } catch(e) {
-                    param = filter.parameters[paramName];
+                if (types.isKnown(filter.availableFunctionParameters[paramName])) {
+                    functionJson['predicate'][paramName] = types.createValue(filter.parameters[paramName].valueClass, filter.parameters[paramName].parts);
+                } else {
+                    functionJson["predicate"][paramName] = types.createJsonValue(filter.parameters[paramName].valueClass, filter.parameters[paramName].parts);
                 }
-                functionJson["predicate"][paramName] = types.createJsonValue(filter.parameters[paramName].valueClass, filter.parameters[paramName].parts);
             }
         }
 
