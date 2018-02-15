@@ -147,6 +147,7 @@
           "required": true
         }
       ],
+      "wrapInJson": true,
       "custom": true
     }
   }
