@@ -179,17 +179,20 @@ describe('The type service', function() {
             expect(value).toEqual(expected);
         });
 
-//        it('should create list objects', function() {
-//            // todo later
-//        });
-//
-//        it('should create set objects', function() {
-//            // todo later
-//        });
-//
-//        it('should create map objects', function() {
-//            // todo later
-//        });
+        it('should create list objects without needing to use the config', function() {
+            value = service.createValue('java.util.ArrayList', {undefined: ['this', 'is', 'a', 'test']});
+            expect(value).toEqual(['this', 'is', 'a', 'test']);
+        });
+
+        it('should create set objects without needing to use the config', function() {
+            value = service.createValue('java.util.TreeSet', {undefined: [1, 2, 3, 4]});
+            expect(value).toEqual([1, 2, 3, 4]);
+        });
+
+        it('should create map objects,  without needing to use the config', function() {
+            value = service.createValue('java.util.HashMap', {undefined: {"marco": "polo", "swings": "roundabouts"}});
+            expect(value).toEqual({"marco": "polo", "swings": "roundabouts"});
+        });
     });
 
     describe('types.createJsonValue()', function() {
@@ -241,17 +244,20 @@ describe('The type service', function() {
             expect(value).toEqual(expected);
         });
 
-//        it('should create list objects', function() {
-//            // todo later
-//        });
-//
-//        it('should create set objects', function() {
-//            // todo later
-//        });
-//
-//        it('should create map objects', function() {
-//            // todo later
-//        });
+        it('should create JSON wrapped list objects without adding it to the config', function() {
+            value = service.createJsonValue('java.util.ArrayList', {undefined: ['this', 'is', 'a', 'test']});
+            expect(value).toEqual({'java.util.ArrayList': ['this', 'is', 'a', 'test']});
+        });
+
+        it('should create JSON wrapped set objects without adding it to the config', function() {
+            value = service.createJsonValue('java.util.TreeSet', {undefined: [1, 2, 3, 4]});
+            expect(value).toEqual({'java.util.TreeSet': [1, 2, 3, 4]});
+        });
+
+        it('should create JSON wrapped map objects without adding it to the config', function() {
+            value = service.createJsonValue('java.util.HashMap', {undefined: {"marco": "polo", "swings": "roundabouts"}});
+            expect(value).toEqual({'java.util.HashMap': {"marco": "polo", "swings": "roundabouts"}});
+        });
     });
 
     describe('types.createParts()', function() {
@@ -301,6 +307,46 @@ describe('The type service', function() {
         it('should use the specified keys for json wrapped custom objects', function() {
             var value = service.createParts('com.clearspring.analytics.stream.cardinality.HyperLogLogPlus', {'com.clearspring.analytics.stream.cardinality.HyperLogLogPlus': { "hyperLogLogPlus": { "cardinality": 30 }}})
             var expected = {'hyperLogLogPlus.cardinality': 30};
+
+            expect(value).toEqual(expected);
+        });
+
+        it('should use an undefined key for Lists', function() {
+            var value = service.createParts('java.util.ArrayList', [1, 2, 3]);
+            var expected = {undefined: [1, 2, 3]};
+
+            expect(value).toEqual(expected);
+        });
+
+        it('should use an undefined key for JSON wrapped Lists', function() {
+            var value = service.createParts('java.util.ArrayList', {'java.util.ArrayList': [1, 2, 3]});
+            var expected = {undefined: [1, 2, 3]};
+
+            expect(value).toEqual(expected);
+        });
+
+        it('should use an undefined key for Maps', function() {
+            var value = service.createParts('java.util.HashMap', {1: 'one', 2: 'two', 3: 'three'});
+            var expected = {undefined: {1: 'one', 2: 'two', 3: 'three'}};
+            expect(value).toEqual(expected);
+        });
+
+        it('should use an undefined key for JSON wrapped Maps', function() {
+            var value = service.createParts('java.util.HashMap', {'java.util.HashMap': {1: 'one', 2: 'two', 3: 'three'}});
+            var expected = {undefined: {1: 'one', 2: 'two', 3: 'three'}};
+            expect(value).toEqual(expected);
+        });
+
+        it('should use an undefined key for Sets', function() {
+            var value = service.createParts('java.util.TreeSet', [1, 2, 3]);
+            var expected = {undefined: [1, 2, 3]};
+
+            expect(value).toEqual(expected);
+        });
+
+        it('should use an undefined key for JSON wrapped Sets', function() {
+            var value = service.createParts('java.util.TreeSet', {'java.util.TreeSet': [1, 2, 3]});
+            var expected = {undefined: [1, 2, 3]};
 
             expect(value).toEqual(expected);
         });
@@ -360,6 +406,23 @@ describe('The type service', function() {
         it('should work for arrays', function() {
             var value = service.getShortValue(['hello', 'world']);
             expect(value).toEqual('hello, world');
+        });
+    });
+
+    describe('types.getCsvHeader()', function() {
+        it('should return an empty string if key is undefined', function() {
+            var value = service.getCsvHeader('java.lang.Integer');
+            expect(value).toEqual('');
+        });
+
+        it('should return the key of custom fields', function() {
+            var value = service.getCsvHeader('com.clearspring.analytics.stream.cardinality.HyperLogLogPlus');
+            expect(value).toEqual('hyperLogLogPlus.cardinality');
+        });
+
+        it('should return a comma separated list of field keys when there are multiple fields', function() {
+            var value = service.getCsvHeader('uk.gov.gchq.gaffer.types.TypeSubTypeValue');
+            expect(value).toEqual('type,subType,value');
         });
     });
 

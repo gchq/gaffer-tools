@@ -125,19 +125,21 @@ angular.module('app').factory('types', ['config', 'common', function(config, com
     }
 
     service.createJsonValue = function(typeClass, parts, stringify) {
-        var value = {};
+        var value = service.createValue(typeClass, parts);
+        var jsonValue = {};
         var type = getType(typeClass);
 
-        if(type.wrapInJson) {
-            value[typeClass] = service.createValue(typeClass, parts);
-            if(stringify) {
-                value = JSON.stringify(value);
-            }
-            return value;
+        if(type.wrapInJson || common.endsWith(typeClass, 'Map') || common.endsWith(typeClass, 'Set') || common.endsWith(typeClass, 'List')) {
+            jsonValue[typeClass] = value;
+        } else {
+            jsonValue = value;
         }
 
-        return parts[Object.keys(parts)[0]];
-
+        if (!stringify) {
+            return jsonValue;
+        } else {
+            return JSON.stringify(jsonValue);
+        }
     }
 
     var createCustomParts = function(type, value) {
