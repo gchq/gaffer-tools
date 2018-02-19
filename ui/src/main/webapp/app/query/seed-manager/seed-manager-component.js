@@ -47,7 +47,9 @@ function SeedManagerController(graph, queryPage, common, types, events) {
         events.unsubscribe('selectedElementsUpdate', onSelectedElementsUpdate)
     }
 
-    vm.keyValuePairs = common.keyValuePairs;
+    vm.keyValuePairs = function(obj) {
+        return Object.keys(obj).length;
+    }
 
     vm.selectAllSeeds = function() {
         graph.selectAllNodes();

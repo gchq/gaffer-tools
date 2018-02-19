@@ -16,7 +16,7 @@
 
 'use strict'
 
-angular.module('app').factory('common', [function() {
+angular.module('app').factory('common', function() {
 
     var common = {};
 
@@ -28,19 +28,12 @@ angular.module('app').factory('common', [function() {
         return str.indexOf(prefix) === 0;
     }
 
-    common.clone = function(obj) {
-        return JSON.parse(JSON.stringify(obj));
-    }
-
     common.parseVertex = function(vertex) {
         if(typeof vertex === 'string' || vertex instanceof String) {
             vertex = "\"" + vertex + "\"";
         }
 
-        try {
-            JSON.parse(vertex);
-        } catch(err) {
-            // Try using stringify
+        if (vertex !== null && typeof vertex === 'object') {
             vertex = JSON.stringify(vertex);
         }
 
@@ -81,14 +74,10 @@ angular.module('app').factory('common', [function() {
 
     var indexOfObjectWithValue = function(arr, property, value) {
         for(var i = 0; i < arr.length; i++) {
-            if (arr[i][property] === value) return i;
+            if (arr[i] !== undefined && arr[i] !== null && arr[i][property] === value) return i;
         }
         return -1;
     }
 
-    common.keyValuePairs = function(obj) {
-        return Object.keys(obj).length;
-    }
-
     return common;
-}]);
+});
