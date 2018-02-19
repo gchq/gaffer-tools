@@ -21,15 +21,16 @@ angular.module('app').factory('config', ['$http', '$q', 'defaultRestEndpoint', f
     var configService = {};
 
     var config;
+    var defer;
 
     configService.get = function() {
-        var defer = $q.defer();
-
         if (config) {
-            defer.resolve(config);
-        } else {
-            load(defer)
+            return $q.when(config);
+        } else if (!defer) {
+            defer = $q.defer();
+            load();
         }
+
         return defer.promise;
     }
 
@@ -37,7 +38,7 @@ angular.module('app').factory('config', ['$http', '$q', 'defaultRestEndpoint', f
         config = conf;
     }
 
-    var load = function(defer) {
+    var load = function() {
         $http.get('config/config.json')
             .success(function(response) {
                 if (!response.restEndpoint) {
