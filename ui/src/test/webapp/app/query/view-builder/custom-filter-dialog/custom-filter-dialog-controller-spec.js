@@ -440,7 +440,9 @@ describe('The Custom Filter Dialog Controller', function() {
                             "prop2": "known.type"
                         }
                     }
-                }, "types": {
+                },
+                "entities": {},
+                 "types": {
                     "known.type": {
                         "class": "a.java.Class"
                     }

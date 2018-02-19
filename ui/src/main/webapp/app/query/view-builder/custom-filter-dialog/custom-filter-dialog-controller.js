@@ -97,9 +97,9 @@ angular.module('app').controller('CustomFilterDialogController', ['$scope', '$md
         }
         var type;
         schema.get().then(function(gafferSchema) {
-            if(gafferSchema.entities && gafferSchema.entities[$scope.group]) {
+            if(gafferSchema.entities[$scope.group]) {
                 type = gafferSchema.entities[$scope.group].properties[$scope.filter.property];
-            } else if(gafferSchema.edges && gafferSchema.edges[$scope.group]) {
+            } else if(gafferSchema.edges[$scope.group]) {
                type = gafferSchema.edges[$scope.group].properties[$scope.filter.property];
             } else {
                 console.error('The element group "' + $scope.group + '" does not exist in the schema');
@@ -140,22 +140,17 @@ angular.module('app').controller('CustomFilterDialogController', ['$scope', '$md
         });
 
         schema.get().then(function(gafferSchema) {
-            var elementDef;
-            if (gafferSchema.entities) {
-                elementDef = gafferSchema.entities[$scope.group];
-            }
-            if(!elementDef && gafferSchema.edges) {
+            var elementDef = gafferSchema.entities[$scope.group];
+            if(!elementDef) {
                  elementDef = gafferSchema.edges[$scope.group];
             }
-            if (gafferSchema.types) {
-                var propertyClass = gafferSchema.types[elementDef.properties[$scope.filter.property]].class;
-                if("java.lang.String" !== propertyClass
-                    && "java.lang.Boolean" !== propertyClass
-                    && "java.lang.Integer" !== propertyClass) {
-                    $scope.propertyClass = propertyClass;
-                } else {
-                    $scope.propertyClass = undefined;
-                }
+            var propertyClass = gafferSchema.types[elementDef.properties[$scope.filter.property]].class;
+            if("java.lang.String" !== propertyClass
+                && "java.lang.Boolean" !== propertyClass
+                && "java.lang.Integer" !== propertyClass) {
+                $scope.propertyClass = propertyClass;
+            } else {
+                $scope.propertyClass = undefined;
             }
         });
 
