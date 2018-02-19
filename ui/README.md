@@ -257,10 +257,14 @@ If you wish to query just one graph you can modify it just for the single query.
 
 ## Configuration
 
-Like much of Gaffer, the UI is customisable using a config file. You can find examples of these within the example
-directory:
+Like much of Gaffer, the UI is customisable. This is achieved using a config file. 
+Default config is loaded from config/defaultConfig.json. An additional
+config file config/config.json is then loaded. This allows you to include your
+own configurations or override defaults.
 
-- config/config.json - a default
+You can find examples of these within the example directory:
+
+- config/config.json
 - road-traffic/config/config.json - The config used for the road traffic demo
 - federated/config/config.json - The config used for the federated store demo
 
