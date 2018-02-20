@@ -167,10 +167,15 @@ angular.module('app').factory('operationService', ['$http', '$q', 'settings', 'c
     }
 
     operationService.createGetSchemaOperation = function() {
+        var options = settings.getDefaultOpOptions();
+        if (!options) {
+            options = {};
+        }
+
         return {
             class: "uk.gov.gchq.gaffer.store.operation.GetSchema",
             compact: false,
-            options: settings.getDefaultOpOptions()
+            options: options
         };
     }
 

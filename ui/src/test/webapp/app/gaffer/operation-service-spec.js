@@ -35,6 +35,8 @@ describe('The operation service', function() {
     }));
 
 
+
+
     describe('operationService.getAvailableOperations()', function() {
         var operationsToReturn;
 
@@ -321,7 +323,97 @@ describe('The operation service', function() {
                 });
 
                 $httpBackend.flush();
-            })
-        })
+            });
+        });
+    });
+
+    describe('operationService.createGetSchemaOperation()', function() {
+
+        var options;
+        var settings;
+
+        beforeEach(inject(function(_settings_) {
+            settings = _settings_;
+        }));
+
+        beforeEach(function() {
+            spyOn(settings, 'getDefaultOpOptions').and.callFake(function() {
+                return options;
+            });
+        });
+
+        it('should inject the default operation options', function() {
+            options = 'test';
+
+            var created = service.createGetSchemaOperation();
+
+            expect(created.options).toEqual('test');
+        });
+
+        it('should create an empty object if the default operation options are undefined', function() {
+            options = undefined;
+            var created = service.createGetSchemaOperation();
+            expect(created.options).toEqual({});
+        });
+
+        it('should create an empty object if the default operation options are null', function() {
+            options = null;
+
+            var created = service.createGetSchemaOperation();
+            expect(created.options).toEqual({});
+        });
+    });
+
+    describe('operationService.createLimitOperation()', function() {
+        it('should use the injected options', function() {
+            var created = service.createLimitOperation('test');
+            expect(created.options).toEqual('test');
+        });
+
+        it('should create an empty object if the operation options are undefined', function() {
+            var created = service.createLimitOperation(undefined);
+            expect(created.options).toEqual({});
+        });
+
+        it('should create an empty object if the operation options are null', function() {
+            var created = service.createLimitOperation(null);
+            expect(created.options).toEqual({});
+        });
+    });
+
+    describe('operationService.createDeduplicateOperation()', function() {
+
+        it('should injected operation options', function() {
+            var created = service.createDeduplicateOperation('test');
+            expect(created.options).toEqual('test');
+        });
+
+        it('should create an empty object if the operation options are undefined', function() {
+            var created = service.createDeduplicateOperation(undefined);
+            expect(created.options).toEqual({});
+        });
+
+        it('should create an empty object if the operation options are null', function() {
+            var created = service.createGetSchemaOperation(null);
+            expect(created.options).toEqual({});
+        });
+    });
+
+    describe('operationService.createCountOperation()', function() {
+
+        it('should inject the operation options', function() {
+            var created = service.createCountOperation('test');
+            expect(created.options).toEqual('test');
+        });
+
+        it('should create an empty object if the operation options are undefined', function() {
+            var created = service.createCountOperation(undefined);
+            expect(created.options).toEqual({});
+        });
+
+        it('should create an empty object if the operation options are null', function() {
+            var created = service.createCountOperation(null);
+            expect(created.options).toEqual({});
+        });
     });
 });
