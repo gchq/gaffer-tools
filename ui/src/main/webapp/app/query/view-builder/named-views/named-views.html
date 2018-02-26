@@ -16,8 +16,9 @@
         </div>
     </div>
 </div>
-<div layout="row" layout-padding>
+<div layout="row" layout-margin>
     <md-autocomplete
+            ng-disabled="ctrl.isDisabled()"
             md-selected-item="ctrl.selectedNamedView"
             md-selected-item-change="ctrl.updateModel()"
             md-search-text="ctrl.namedViewSearchTerm"
@@ -25,7 +26,7 @@
             md-min-length="0"
             aria-label="named views picker"
             md-items="namedView in ctrl.search(ctrl.namedViewSearchTerm)"
-            placeholder="Search existing filters"
+            placeholder="{{ctrl.getPlaceholder()}}"
             md-select-on-focus
             md-autoselect
             md-input-id="named-views-autocomplete"

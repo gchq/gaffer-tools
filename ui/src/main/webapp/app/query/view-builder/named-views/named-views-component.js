@@ -39,6 +39,17 @@ function NamedViewsController(view) {
         vm.availableNamedViews = availableNamedViews
     }
 
+    vm.isDisabled = function() {
+        return (!vm.availableNamedViews || vm.availableNamedViews.length == 0);
+    }
+
+    vm.getPlaceholder = function() {
+        if (vm.isDisabled()) {
+            return 'No predefined filters available';
+        }
+        return 'Search predefined filters'
+    }
+
     vm.$onInit = function() {
         view.shouldLoadNamedViewsOnStartup().then(function(yes) {
             if (yes) {

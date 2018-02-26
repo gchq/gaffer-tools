@@ -92,6 +92,49 @@ describe('The named views component', function() {
         });
     });
 
+    describe('ctrl.isDisabled()', function() {
+        it('should return true if the available named views are undefined', function() {
+            ctrl.availableNamedViews = undefined;
+            expect(ctrl.isDisabled()).toBeTruthy();
+        });
+
+        it('should return true if the available named views are null', function() {
+            ctrl.availableNamedViews = null;
+            expect(ctrl.isDisabled()).toBeTruthy();
+        });
+
+        it('should return false if there is more than one available named view', function() {
+            ctrl.availableNamedViews = [ 'test' ];
+            expect(ctrl.isDisabled()).toBeFalsy();
+        });
+
+        it('should return true if the available named views are an empty array', function() {
+            ctrl.availableNamedViews = [];
+            expect(ctrl.isDisabled()).toBeTruthy();
+        });
+    });
+
+    describe('ctrl.getPlaceholder()', function() {
+        var isDisabled;
+
+        beforeEach(function() {
+            spyOn(ctrl, 'isDisabled').and.callFake(function() {
+                return isDisabled;
+            });
+        });
+
+        it('should return a string stating there are no predefined filters available when the named views are disabled', function() {
+            isDisabled = true;
+
+            expect(ctrl.getPlaceholder()).toEqual('No predefined filters available');
+        });
+
+        it('should return a string telling the user to search for the filter they want', function() {
+            isDisabled = false;
+            expect(ctrl.getPlaceholder()).toEqual('Search predefined filters');
+        });
+    });
+
     describe('ctrl.search()', function() {
 
         beforeEach(createController);
