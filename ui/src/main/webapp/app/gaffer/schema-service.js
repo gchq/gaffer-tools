@@ -48,6 +48,15 @@ angular.module('app').factory('schema', ['$http', 'config', '$q', 'common', 'ope
         $http.get(queryUrl)
             .success(function(response){
                 schema = response;
+                if (!schema.entities) {
+                    schema.entities = {};
+                }
+                if (!schema.edges) {
+                    schema.edges = {};
+                }
+                if (!schema.types) {
+                    schema.types = {};
+                }
                 defer.resolve(schema)
                 updateSchemaVertices()
             })
@@ -63,6 +72,16 @@ angular.module('app').factory('schema', ['$http', 'config', '$q', 'common', 'ope
                 JSON.stringify(operationService.createGetSchemaOperation()),
                 function(response) {
                     schema = response;
+                    if (!schema.entities) {
+                        schema.entities = {};
+                    }
+                    if (!schema.edges) {
+                        schema.edges = {};
+                    }
+                    if (!schema.types) {
+                        schema.types = {};
+                    }
+
                     defer.resolve(schema)
                     updateSchemaVertices()
                 },
