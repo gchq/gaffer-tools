@@ -411,48 +411,143 @@ describe('The Custom Filter Dialog Controller', function() {
 
     describe('$scope.onSelectedPropertyChange()', function() {
 
-        var functions;
+        var functions, schema;
+        var gafferSchema;
 
-        beforeEach(inject(function(_functions_, _$q_) {
+        beforeEach(inject(function(_functions_, _schema_) {
             functions = _functions_;
+            schema = _schema_;
         }));
 
         beforeEach(function() {
-            spyOn(functions, 'getFunctions').and.callFake(function(group, property, cb) {
-                cb('somePredicates');
+            spyOn(schema, 'get').and.callFake(function() {
+                return $q.when(gafferSchema);
             })
+
+            spyOn(functions, 'getFunctions').and.callFake(function(clazz, cb) {
+                cb('somePredicates');
+            });
+
+            spyOn(console, 'error').and.stub();
+        });
+
+        beforeEach(function() {
+            gafferSchema = {
+                "edges": {
+                    "testGroup": {
+                        "properties": {
+                            "prop1": "unknown.type",
+                            "prop2": "known.type"
+                        }
+                    }
+                },
+                "entities": {},
+                 "types": {
+                    "known.type": {
+                        "class": "a.java.Class"
+                    }
+                }
+            }
         });
 
         beforeEach(function() {
             createController();
-        })
+        });
+
+        it('should not make service call if the group is null', function() {
+            scope.group = null;
+            scope.filter = { property: "not null"};
+            scope.onSelectedPropertyChange();
+            scope.$digest();
+            expect(functions.getFunctions).not.toHaveBeenCalled();
+        });
+
+        it('should not call onSuccess if the group is undefined', function() {
+            scope.group = undefined;
+            scope.filter = { property: "property"};
+            scope.onSelectedPropertyChange();
+            scope.$digest();
+            expect(functions.getFunctions).not.toHaveBeenCalled();
+        });
+
+        it('should not call onSuccess if the property is null', function() {
+            scope.group = "group";
+            scope.filter = { property: null};
+            scope.onSelectedPropertyChange();
+            scope.$digest();
+            expect(functions.getFunctions).not.toHaveBeenCalled();
+        });
+
+        it('should not call onSuccess if the group is undefined', function() {
+            scope.group = "group";
+            scope.filter = {};
+            scope.onSelectedPropertyChange();
+            scope.$digest();
+            expect(functions.getFunctions).not.toHaveBeenCalled();
+        });
+
+        it('should not make call to service if the type does not exist in the schema', function() {
+            scope.group = 'testGroup';
+            scope.filter = { property: 'prop1'};
+            scope.onSelectedPropertyChange();
+            scope.$digest();
+            expect(functions.getFunctions).not.toHaveBeenCalled();
+            expect(console.error).toHaveBeenCalledWith('No type "unknown.type" was found in the schema');
+        });
+
+        it('should send an error to the console if the group does not exist in the schema', function() {
+            scope.group = 'unknownGroup';
+            scope.filter = { property: 'prop'};
+            scope.onSelectedPropertyChange();
+            scope.$digest();
+            expect(functions.getFunctions).not.toHaveBeenCalled();
+            expect(console.error).toHaveBeenCalledWith('The element group "unknownGroup" does not exist in the schema');
+        });
+
+        it('should send an error to the console if the group does not contain the property', function() {
+            scope.group = 'testGroup';
+            scope.filter = { property: 'unknownProperty'};
+            scope.onSelectedPropertyChange();
+            scope.$digest();
+            expect(functions.getFunctions).not.toHaveBeenCalled();
+            expect(console.error).toHaveBeenCalledWith('The property "unknownProperty" does not exist in the element group "testGroup"');
+        });
+
+        // sunny day tests
 
         it('should make a request to get the valid predicates for that property', function() {
             scope.group = 'testGroup';
-            scope.filter = { property: 'prop' }
+            scope.filter = { property: 'prop2' }
             scope.onSelectedPropertyChange();
+            scope.$digest();
             expect(functions.getFunctions).toHaveBeenCalledTimes(1);
-            expect(functions.getFunctions).toHaveBeenCalledWith('testGroup', 'prop', jasmine.any(Function))
+            expect(functions.getFunctions).toHaveBeenCalledWith('a.java.Class', jasmine.any(Function))
         });
 
         it('should set the value of availablePredicates', function() {
+            scope.group = 'testGroup';
+            scope.filter = { property: 'prop2' };
             scope.onSelectedPropertyChange();
+            scope.$digest();
             expect(scope.availablePredicates).toEqual('somePredicates');
         });
 
         it('should set the predicate value to an empty string if called without a flag', function() {
             scope.onSelectedPropertyChange();
+            scope.$digest();
             expect(scope.filter.predicate).toEqual('');
         });
 
         it('should set the predicate value to an empty string if the editModeInit flag is false', function() {
             scope.onSelectedPropertyChange(false);
+            scope.$digest();
             expect(scope.filter.predicate).toEqual('');
         });
 
         it('should leave the predicate value alone when initialising in edit mode', function() {
             scope.filter.predicate = 'an existing predicate'
             scope.onSelectedPropertyChange(true)
+            scope.$digest();
             expect(scope.filter.predicate).toEqual('an existing predicate');
         });
     });
