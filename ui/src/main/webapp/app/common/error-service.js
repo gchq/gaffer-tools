@@ -16,11 +16,56 @@
 
 'use strict'
 
-angular.module('app').factory('error', ['$mdToast', '$mdDialog', function($mdToast, $mdDialog) {
+angular.module('app').factory('error', ['$mdToast', '$mdDialog', '$q', function($mdToast, $mdDialog, $q) {
     var service = {};
 
-    var addMoreInfo = function(toast, err) {
+    var toastQueue = [];
 
+    var showInOrder = function(toast, err) {
+
+        if (toastQueue.length > 0) {
+            toastQueue[toastQueue.length -1].promise.then(function() {
+                showToast(toast, err);
+            });
+        } else {
+            showToast(toast, err);
+        }
+
+        toastQueue.push($q.defer()); // add this item to the queue
+    }
+
+    var showToast = function(toast, err) {
+        $mdToast.show(toast).then(function(value) {
+
+            if (value === 'ok') { // clicked More info button
+                var title = err.status ? err.status : 'Error';
+                var content;
+
+                if (typeof err === 'string' || err instanceof String) {
+                    content = err;
+                } else if (err.simpleMessage) {
+                    content = err.simpleMessage;
+                } else if (err.message) {
+                    content = err.message;
+                } else {
+                    content = "An unknown error occurred. See the console log for details";
+                }
+                $mdDialog.show(
+                    $mdDialog.alert()
+                        .title(title)
+                        .textContent(content)
+                        .ok('close')
+                        .ariaLabel('Error dialog')
+                        .clickOutsideToClose(true)
+                ).finally(function() {
+                    toastQueue[0].resolve(); // start next toast
+                    toastQueue.splice(0, 1); // remove this item from the queue
+                });
+            } else {
+                toastQueue[0].resolve(); // start next toast
+                toastQueue.splice(0, 1); // remove this item from the queue
+            }
+        });
     }
 
     service.handle = function(message, err) {
@@ -45,32 +90,7 @@ angular.module('app').factory('error', ['$mdToast', '$mdDialog', function($mdToa
                 .highlightAction(true)
                 .highlightClass('md-accent');
         }
-
-        $mdToast.show(toast)
-            .then(function(value) {
-                if (value === 'ok') {
-                    var title = err.status ? err.status : 'Error';
-                    var content;
-
-                    if (typeof err === 'string' || err instanceof String) {
-                        content = err;
-                    } else if (err.simpleMessage) {
-                        content = err.simpleMessage;
-                    } else if (err.message) {
-                        content = err.message;
-                    } else {
-                        content = "An unknown error occurred. See the console log for details";
-                    }
-                    $mdDialog.show(
-                        $mdDialog.alert()
-                            .title(title)
-                            .textContent(content)
-                            .ok('close')
-                            .ariaLabel('Error dialog')
-                            .clickOutsideToClose(true)
-                    );
-                }
-            });
+        showInOrder(toast, err);
     }
 
 

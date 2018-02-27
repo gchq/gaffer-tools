@@ -25,6 +25,12 @@ describe('The error service', function() {
             });
         });
 
+        var fakeToast = {
+            hideDelay: function(delay) { return this; },
+            textContent: function(content) { return this; },
+            position: function(pos) { return this; }
+        }
+
         beforeEach(function() {
             toastArg = undefined;
         });
@@ -51,10 +57,18 @@ describe('The error service', function() {
         });
 
         it('should use the length of the message to determine how long the toast stays up', function() {
+
+            spyOn($mdToast, 'simple').and.callFake(function() {
+                return fakeToast;
+            });
+
+            spyOn(fakeToast, 'hideDelay');
+
             service.handle('This is a really long message that a user will struggle to read in a short amount of time');
-            var longMessageLength = angular.copy(toastArg._options.hideDelay);
             service.handle('short message');
-            expect(longMessageLength).toBeGreaterThan(toastArg._options.hideDelay);
+
+
+            expect(fakeToast.hideDelay.calls.first().args[0]).toBeGreaterThan(fakeToast.hideDelay.calls.argsFor(1)[0])
         });
 
         it('should add a button for examining an error in greater depth', function() {
@@ -84,6 +98,7 @@ describe('The error service', function() {
             beforeEach(function() {
                 spyOn($mdDialog, 'show').and.callFake(function(dialog) {
                     dialogArg = dialog;
+                    return $q.defer().promise;
                 });
             });
 
