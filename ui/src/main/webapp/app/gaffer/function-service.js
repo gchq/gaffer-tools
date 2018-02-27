@@ -31,7 +31,7 @@ angular.module('app').factory('functions', ['$http', 'config', 'common', functio
                     var errorString = 'Error loading functions for class "' + className + '".\n';
                     if (err && err !== "") {
                         alert(errorString + err.simpleMessage);
-                        console.error(err);
+                        console.log(err);
                     } else {
                         alert(errorString);
                     }

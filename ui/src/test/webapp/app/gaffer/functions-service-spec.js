@@ -33,7 +33,64 @@ describe('The functions service', function() {
     }));
 
     describe('functions.getFunctions()', function() {
-        // deferred until #399 is completed
+        var predicates;
+
+        var onSuccess = function(functions) {
+            predicates = functions;
+        }
+
+        afterEach(function() {
+            $httpBackend.resetExpectations();
+        });
+
+        it('should call the functions endpoint with the given class name', function() {
+            $httpBackend.expectGET('http://localhost:8080/rest/latest/graph/config/filterFunctions/a.java.Class').respond(200, ['a', 'b', 'c']);
+            service.getFunctions('a.java.Class', onSuccess);
+            $httpBackend.flush();
+            expect(predicates).toEqual(['a', 'b', 'c']);
+        });
+
+        it('should log the error if something goes wrong with the request', function() {
+            spyOn(console, 'log').and.stub();
+
+            $httpBackend.expectGET('http://localhost:8080/rest/latest/graph/config/filterFunctions/a.java.Class').respond(500, '{"simpleMessage": "something went really wrong"}');
+            service.getFunctions('a.java.Class', onSuccess);
+            $httpBackend.flush();
+            expect(console.log).toHaveBeenCalledWith({"simpleMessage": "something went really wrong"});
+        });
+
+        it('should alert the user if something goes wrong with the request', function() {
+            spyOn(window, 'alert').and.stub();
+
+            $httpBackend.expectGET('http://localhost:8080/rest/latest/graph/config/filterFunctions/a.java.Class').respond(500, '{"simpleMessage": "something went really wrong"}');
+            service.getFunctions('a.java.Class', onSuccess);
+            $httpBackend.flush();
+            expect(window.alert).toHaveBeenCalledWith('Error loading functions for class "a.java.Class".\nsomething went really wrong');
+        });
+
+        it('should alert the user if the error that comes back is an empty string', function() {
+            spyOn(window, 'alert').and.stub();
+            $httpBackend.expectGET('http://localhost:8080/rest/latest/graph/config/filterFunctions/a.java.Class').respond(500, '');
+            service.getFunctions('a.java.Class', onSuccess);
+            $httpBackend.flush();
+            expect(window.alert).toHaveBeenCalledWith('Error loading functions for class "a.java.Class".\n');
+        });
+
+        it('should alert the user if the error that comes back is null', function() {
+            spyOn(window, 'alert').and.stub();
+            $httpBackend.expectGET('http://localhost:8080/rest/latest/graph/config/filterFunctions/a.java.Class').respond(500, null);
+            service.getFunctions('a.java.Class', onSuccess);
+            $httpBackend.flush();
+            expect(window.alert).toHaveBeenCalledWith('Error loading functions for class "a.java.Class".\n');
+        });
+
+        it('should alert the user if the error that comes back is undefined', function() {
+            spyOn(window, 'alert').and.stub();
+            $httpBackend.expectGET('http://localhost:8080/rest/latest/graph/config/filterFunctions/a.java.Class').respond(500, undefined);
+            service.getFunctions('a.java.Class', onSuccess);
+            $httpBackend.flush();
+            expect(window.alert).toHaveBeenCalledWith('Error loading functions for class "a.java.Class".\n');
+        });
     });
 
     describe('functions.getFunctionParameters()', function() {
