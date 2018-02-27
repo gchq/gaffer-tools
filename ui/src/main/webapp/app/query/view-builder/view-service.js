@@ -16,13 +16,20 @@
 
 'use strict';
 
-angular.module('app').factory('view', function() {
+angular.module('app').factory('view', ['operationService', 'config', 'settings', 'query', '$q', function(operationService, config, settings, query, $q) {
     var service = {}
-
     var viewEntities = [];
     var viewEdges = [];
     var entityFilters = {};
     var edgeFilters = {};
+    var namedViews = [];
+    var availableNamedViews;
+    var firstLoad = true;
+    var defer = $q.defer();
+
+    service.getNamedViews = function() {
+        return namedViews;
+    }
 
     service.getViewEntities = function() {
         return viewEntities;
@@ -40,6 +47,10 @@ angular.module('app').factory('view', function() {
         return edgeFilters;
     }
 
+    service.setNamedViews = function(newNamedViews) {
+        namedViews = newNamedViews;
+    }
+
     service.setViewEntities = function(entities) {
         viewEntities = entities;
     }
@@ -53,7 +64,97 @@ angular.module('app').factory('view', function() {
         viewEdges = [];
         entityFilters = {};
         edgeFilters = {};
+        namedViews = [];
+    }
+
+    service.getAvailableNamedViews = function() {
+        return availableNamedViews;
+    }
+
+    var viewAllowed = function(viewName, configuredViews) {
+        var allowed = true;
+        var whiteList = undefined;//configuredViews.whiteList;
+        var blackList = undefined;//configuredViews.blackList;
+
+        if(whiteList) {
+            allowed = whiteList.indexOf(viewName) > -1;
+        }
+        if(allowed && blackList) {
+            allowed = blackList.indexOf(viewName) == -1;
+        }
+        return allowed;
+    }
+
+    var updateNamedViews = function(results) {
+        availableNamedViews = [];
+        config.get().then(function(conf) {
+            if(results) {
+                for (var i in results) {
+                    if(viewAllowed(results[i].name, conf.views)) {
+                        if(results[i].parameters) {
+                            for(var j in results[i].parameters) {
+                                results[i].parameters[j].value = results[i].parameters[j].defaultValue;
+                                if(results[i].parameters[j].defaultValue) {
+                                    var valueClass = results[i].parameters[j].valueClass;
+                                    results[i].parameters[j].parts = types.createParts(valueClass, results[i].parameters[j].defaultValue);
+                                } else {
+                                    results[i].parameters[j].parts = {};
+                                }
+                            }
+                        }
+                        availableNamedViews.push(angular.copy(results[i]));
+                    }
+                }
+
+            }
+            defer.resolve(availableNamedViews);
+        });
+    }
+
+    service.shouldLoadNamedViewsOnStartup = function() {
+        var defer = $q.defer();
+        if (firstLoad) {
+            config.get().then(function(conf) {
+                if (conf.operations.loadNamedViewsOnStartup === false) {
+                    defer.resolve(false);
+                } else {
+                    defer.resolve(true);
+                }
+            })
+            firstLoad = false;
+        } else {
+            defer.resolve(false);
+        }
+
+        return defer.promise;
+    }
+
+    service.reloadNamedViews = function(loud) {
+        defer = $q.defer();
+        var getAllClass = "uk.gov.gchq.gaffer.named.view.GetAllNamedViews";
+        operationService.ifOperationSupported(getAllClass, function() {
+            query.execute(JSON.stringify(
+                {
+                    class: getAllClass,
+                    options: settings.getDefaultOpOptions()
+                }
+            ),
+            updateNamedViews,
+            function(err) {
+                updateNamedViews([]);
+                if (loud) {
+                    console.log(err);
+                    alert('Failed to reload named views: ' + err.simpleMessage);
+                }
+            });
+
+        },
+        function() {
+            updateNamedViews([]);
+        });
+
+        return defer.promise;
     }
 
     return service;
-});
+}]);

@@ -140,6 +140,7 @@ public class QueryBuilderST {
         selectOptionWithAriaLabel("operation-name", "Get Elements");
         enterText("seedVertex", "M5:10");
         click("add-seeds");
+        click("create-custom-filter");
         selectMultiOption("view-edges", "RoadUse");
         click("add-RoadUse-filters");
         selectOption("property-selector", "startDate");
@@ -166,6 +167,7 @@ public class QueryBuilderST {
         enterText("seedVertex", "M5:10");
         click("add-seeds");
         enterIntoDatePicker("start-date", "13/10/2000");
+        click("create-custom-filter");
         selectMultiOption("view-edges", "RoadUse");
         click("Execute Query");
 
@@ -183,6 +185,7 @@ public class QueryBuilderST {
 
         // given
         selectOptionWithAriaLabel("operation-name", "Get Elements");
+        click("create-custom-filter");
         selectMultiOption("view-entities", "Cardinality");
         click("add-Cardinality-filters");
         selectOption("property-selector", "hllp");

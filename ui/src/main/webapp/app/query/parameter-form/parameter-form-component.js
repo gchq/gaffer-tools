@@ -24,6 +24,8 @@ function parameterForm() {
         controller: ParameterFormController,
         controllerAs: 'ctrl',
         bindings: {
+            title: '@',
+            titleClass: '@',
             parameters: '='
         }
     }
@@ -35,6 +37,12 @@ function ParameterFormController(types) {
     vm.$onInit = function() {
         if (vm.parameters === null || vm.parameters === undefined) {
             console.error('Expected defined, non-null value for parameters. Got ' + vm.parameters);
+        }
+        if(!vm.title) {
+            vm.title = 'Parameters';
+        }
+        if(!vm.titleClass) {
+            vm.titleClass = 'section title';
         }
     }
 
