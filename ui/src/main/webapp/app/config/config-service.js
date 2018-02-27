@@ -66,8 +66,7 @@ angular.module('app').factory('config', ['$http', '$q', 'defaultRestEndpoint', '
                     })
                     .error(function(err) {
                         defer.reject(err);
-                        console.log(err);
-                        alert("Failed to load custom config");
+                        error.handle("Failed to load custom config", err);
                 });
             })
             .error(function(err) {
