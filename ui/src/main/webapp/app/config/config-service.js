@@ -38,13 +38,37 @@ angular.module('app').factory('config', ['$http', '$q', 'defaultRestEndpoint', '
     }
 
     var load = function(defer) {
-        $http.get('config/config.json')
-            .success(function(response) {
-                if (!response.restEndpoint) {
-                    response.restEndpoint = defaultRestEndpoint.get();
+        $http.get('config/defaultConfig.json')
+            .success(function(defaultConfig) {
+                if(defaultConfig === undefined) {
+                    defaultConfig = {};
                 }
-                config = response;
-                defer.resolve(config);
+                var mergedConfig = defaultConfig;
+                $http.get('config/config.json')
+                    .success(function(customConfig) {
+                        if(customConfig === undefined) {
+                            customConfig = {};
+                        }
+                        if (!mergedConfig.restEndpoint && !customConfig.restEndpoint) {
+                            mergedConfig.restEndpoint = defaultRestEndpoint.get();
+                        }
+                        if('types' in mergedConfig && 'types' in customConfig) {
+                            angular.merge(mergedConfig['types'], customConfig['types']);
+                            delete customConfig['types'];
+                        }
+                        if('operations' in mergedConfig && 'operations' in customConfig) {
+                            angular.merge(mergedConfig['operations'], customConfig['operations']);
+                            delete customConfig['operations'];
+                        }
+                        angular.merge(mergedConfig, customConfig);
+                        config = mergedConfig;
+                        defer.resolve(config);
+                    })
+                    .error(function(err) {
+                        defer.reject(err);
+                        console.log(err);
+                        alert("Failed to load custom config");
+                });
             })
             .error(function(err) {
                 defer.reject(err);

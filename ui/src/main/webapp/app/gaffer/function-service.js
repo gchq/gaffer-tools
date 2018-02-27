@@ -16,37 +16,22 @@
 
 'use strict';
 
-angular.module('app').factory('functions', ['$http', 'schema', 'config', 'common', 'error', function($http, schemaService, config, common, error) {
+
+angular.module('app').factory('functions', ['$http', 'config', 'common', 'error', function($http, config, common, error) {
 
     var functions = {};
 
-
-    functions.getFunctions = function(group, property, onSuccess) {
-        var type;
-        schemaService.get().then(function(schema) {
-            if(schema.entities[group]) {
-                type = schema.entities[group].properties[property];
-            } else if(schema.edges[group]) {
-               type = schema.edges[group].properties[property];
-            }
-
-            var className = "";
-            if(type) {
-              className = schema.types[type].class;
-            }
-
-            config.get().then(function(conf) {
-                var queryUrl = common.parseUrl(conf.restEndpoint + "/graph/config/filterFunctions/" + className);
-                $http.get(queryUrl)
-                    .success(function(response) {
-                        onSuccess(response)
-                    })
-                    .error(function(err) {;
-                        error.handle('Could not retrieve filter functions for ' + className, err);
-                });
+    functions.getFunctions = function(className, onSuccess) {
+        config.get().then(function(conf) {
+            var queryUrl = common.parseUrl(conf.restEndpoint + "/graph/config/filterFunctions/" + className);
+            $http.get(queryUrl)
+                .success(function(response) {
+                    onSuccess(response)
+                })
+                .error(function(err) {
+                    error.handle('Could not retrieve filter functions for ' + className, err);
             });
         });
-
     }
 
     functions.getFunctionParameters = function(functionClassName, onSuccess) {
