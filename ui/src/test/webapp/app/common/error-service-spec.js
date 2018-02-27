@@ -86,9 +86,21 @@ describe('The error service', function() {
             expect(toastArg._options.action).toBeUndefined();
         });
 
-        it('should not add a button if the error is undefined', function() {
+        it('should not add a button if the error is an empty string', function() {
             service.handle('basic error message', '');
             expect(toastArg._options.action).toBeUndefined();
+        });
+
+        it('should queue concurrent toasts and show them in order', function() {
+            service.handle('hello');
+            service.handle('world');
+
+            expect(toastArg._options.textContent).toEqual('hello'); // world not called yet.
+
+            $rootScope.$digest(); // manually resolve the toast
+
+            expect(toastArg._options.textContent).toEqual('world');
+
         });
 
         describe('When the user clicks the more info button', function() {
