@@ -62,10 +62,6 @@ function SettingsController(settings, schema, operationService, results) {
         settings.setResultLimit(vm.resultLimit);
     }
 
-    vm.updateDefaultOp = function() {
-        settings.setDefaultOp(vm.defaultOp);
-    }
-
     vm.updateDefaultOpOptions = function() {
         settings.setDefaultOpOptions(vm.defaultOpOptions);
     }

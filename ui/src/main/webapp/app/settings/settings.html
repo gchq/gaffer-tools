@@ -24,14 +24,6 @@
                        id="resultLimit" ng-blur="ctrl.updateResultLimit()">
             </md-input-container>
 
-            <md-input-container>
-                <label>Default operation</label>
-                <input type="text"
-                       ng-blur="ctrl.updateDefaultOp()"
-                       ng-model="ctrl.defaultOp"
-                       id="defaultOp">
-            </md-input-container>
-
             <div ng-if="ctrl.hasOpOptions()">
                 <h4>Default Operation Options</h4>
 
