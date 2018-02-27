@@ -102,7 +102,7 @@ angular.module('app').factory('operationService', ['$http', '$q', 'settings', 'c
     operationService.reloadNamedOperations = function(loud) {
         defer = $q.defer();
         var getAllClass = "uk.gov.gchq.gaffer.named.operation.GetAllNamedOperations";
-        ifOperationSupported(getAllClass, function() {
+        operationService.ifOperationSupported(getAllClass, function() {
             query.execute(JSON.stringify(
                 {
                     class: getAllClass,
@@ -125,7 +125,7 @@ angular.module('app').factory('operationService', ['$http', '$q', 'settings', 'c
         return defer.promise;
     }
 
-    var ifOperationSupported = function(operationClass, onSupported, onUnsupported) {
+    operationService.ifOperationSupported = function(operationClass, onSupported, onUnsupported) {
         config.get().then(function(conf) {
             var queryUrl = common.parseUrl(conf.restEndpoint + "/graph/operations");
 

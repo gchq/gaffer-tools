@@ -586,9 +586,9 @@ def named_operation(gc):
 
 def delete_named_views(gc):
     gc.execute_operation(
-        g.DeleteNamedView(name='isCountMoreThan')
+        g.DeleteNamedView(name='summarise')
     )
-    print('Deleted named view: isCountMoreThan')
+    print('Deleted named view: summarise')
     gc.execute_operation(
         g.DeleteNamedView(name='dateRange')
     )
