@@ -175,6 +175,173 @@ describe('The Query component', function() {
                 });
             });
 
+            describe('When adding Named views', function() {
+
+                var view;
+                var ctrl;
+
+                beforeEach(inject(function(_view_) {
+                    view = _view_;
+                }));
+
+                beforeEach(function() {
+                    ctrl = $componentController('query');
+                });
+
+                beforeEach(function() {
+                    spyOn(view, 'getViewEntities').and.returnValue(['elementGroup1','elementGroup2','elementGroup3']);
+                    spyOn(view, 'getViewEdges').and.returnValue(['edge1','edge2']);
+
+                    spyOn(query, 'execute');
+
+                    spyOn(queryPage, 'getSelectedOperation').and.returnValue({
+                        class: 'some.operation.with.View',
+                        view: true
+                    });
+                });
+
+                it('should do nothing if the named views are undefined', function() {
+                    view.setNamedViews(undefined);
+                    ctrl.execute();
+                    expect(query.execute.calls.first().args[0]).not.toContain('views');
+                });
+
+                it('should do nothing if the named views are undefined', function() {
+                    view.setNamedViews(null);
+                    ctrl.execute();
+                    expect(query.execute.calls.first().args[0]).not.toContain('views');
+                });
+
+                it('should do nothing if the named views are an empty array', function() {
+                    view.setNamedViews([]);
+                    ctrl.execute();
+                    expect(query.execute.calls.first().args[0]).not.toContain('views');
+                });
+
+                it('should add the preExisting view to the views array', function() {
+                    view.setNamedViews([{name: "test"}]);
+                    ctrl.execute();
+
+                    var entities =  {
+                        'elementGroup1': {},
+                        'elementGroup2': {},
+                        'elementGroup3': {}
+                    }
+
+                    var edges = {
+                        'edge1': {},
+                        'edge2': {}
+                    }
+
+                    expect(query.execute.calls.argsFor(0)[0]).toContain(JSON.stringify(entities));
+                    expect(query.execute.calls.argsFor(0)[0]).toContain(JSON.stringify(edges));
+
+
+                    expect(query.execute.calls.first().args[0]).toContain('views');
+                    expect(query.execute.calls.first().args[0]).not.toContain('view:');
+                });
+
+                it('should add named views with parameters', function() {
+
+                    view.setNamedViews([{"name": "namedView1", "parameters":{ "testParam": { "parts": { "value": 42}}}}]);
+
+                    ctrl.execute();
+
+
+                    var namedView = JSON.stringify({
+                        "class": "uk.gov.gchq.gaffer.data.elementdefinition.view.NamedView",
+                        "name": "namedView1",
+                        "parameters": {
+                            "testParam": 42
+                        }
+                    });
+
+                    expect(query.execute.calls.first().args[0]).toContain(namedView)
+
+                });
+
+                it('should not add blank parameters in named views left blank if they are not required', function() {
+
+                    view.setNamedViews([{
+                        name: 'test',
+                        parameters: { "testParam": {
+                                valueClass: "java.lang.Long",
+                                required: false,
+                                parts: {
+                                    "value": ""
+                                }
+                            }
+                        }
+                    }]);
+
+                    var unExpected = JSON.stringify({"testParam": "" });
+
+                    ctrl.execute();
+
+                    expect(query.execute.calls.first().args[0]).not.toContain(unExpected);
+                });
+
+                it('should add blank parameters into named views if the parameter is marked required', function() {
+                    view.setNamedViews([{
+                        name: 'test',
+                        parameters: { "testParam": {
+                                valueClass: "java.lang.Long",
+                                required: true,
+                                parts: {
+                                    "value": ""
+                                }
+                            }
+                        }
+                    }]);
+
+                    var expected = JSON.stringify({"testParam": "" });
+
+                    ctrl.execute();
+
+                    expect(query.execute.calls.first().args[0]).toContain(expected);
+                });
+
+                it('should not allow null parameters in named views if they are not required', function() {
+                    view.setNamedViews([{
+                        name: 'test',
+                        parameters: { "testParam": {
+                                valueClass: "java.lang.Long",
+                                required: false,
+                                parts: {
+                                    "value": null
+                                }
+                            }
+                        }
+                    }]);
+
+                    var unExpected = JSON.stringify({"testParam": null });
+
+                    ctrl.execute();
+
+                    expect(query.execute.calls.first().args[0]).not.toContain(unExpected);
+                });
+
+                it('should add null parameters if the parameter is marked required', function() {
+                    view.setNamedViews([{
+                        name: 'test',
+                        parameters: { "testParam": {
+                                valueClass: "java.lang.Long",
+                                required: true,
+                                parts: {
+                                    "value": null
+                                }
+                            }
+                        }
+                    }]);
+
+                    var expected = JSON.stringify({"testParam": null });
+
+                    ctrl.execute();
+
+                    expect(query.execute.calls.first().args[0]).toContain(expected);
+                });
+            });
+
             describe('When adding date ranges', function() {
 
                 var time;
