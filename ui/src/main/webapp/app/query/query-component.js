@@ -28,7 +28,7 @@ function query() {
 }
 
 function QueryController(queryPage, operationService, types, graph, config, settings, query, functions, results, navigation, $mdDialog, loading, time, view) {
-
+    var namedViewClass = "uk.gov.gchq.gaffer.data.elementdefinition.view.NamedView";
     var vm = this;
     vm.timeConfig;
 
@@ -158,6 +158,7 @@ function QueryController(queryPage, operationService, types, graph, config, sett
         }
 
         if (selectedOp.view) {
+            var namedViews = view.getNamedViews();
             var viewEdges = view.getViewEdges();
             var viewEntities = view.getViewEntities();
             var edgeFilters = view.getEdgeFilters();
@@ -216,6 +217,29 @@ function QueryController(queryPage, operationService, types, graph, config, sett
                         "selection": [ vm.timeConfig.filter.endProperty ]
                     }]
                 });
+            }
+        }
+
+        if(namedViews && namedViews.length > 0){
+            op.views = [];
+            for(i in namedViews) {
+                var viewParams = {};
+                for(name in namedViews[i].parameters) {
+                    var valueClass = namedViews[i].parameters[name].valueClass;
+                    var value = types.createValue(valueClass, namedViews[i].parameters[name].parts);
+                    if (namedViews[i].parameters[name].required || (value !== "" && value !== null)) {
+                        viewParams[name] = value;
+                    }
+                }
+                op.views.push({
+                    class: namedViewClass,
+                    name: namedViews[i].name,
+                    parameters: viewParams
+                });
+            }
+            if(op.view) {
+                op.views.push(op.view);
+                delete op['view'];
             }
         }
 

@@ -26,12 +26,12 @@ app.filter('schemaGroupFilter', function() {
         if (!search) {
             return input;
         }
-        var lowercaseSearch = ('' + search).toLowerCase();
+        var lowercaseSearch = search ? search.toLowerCase() : '';
         var result = {};
 
         angular.forEach(input, function(info, group) {
             var lowercaseGroup = group.toLowerCase();
-            var lowerCaseDescription = info.description.toLowerCase();
+            var lowerCaseDescription = info.description ? info.description.toLowerCase() : '';
             if (lowercaseGroup.indexOf(lowercaseSearch) !== -1) {
                 result[group] = info;
             } else if (lowerCaseDescription.indexOf(lowercaseSearch) !== -1) {
@@ -42,6 +42,7 @@ app.filter('schemaGroupFilter', function() {
         return result;
     }
 });
+
 
 app.component('viewBuilder', viewBuilder());
 
@@ -58,10 +59,26 @@ function ViewBuilderController(view, graph, common, schema, functions, events, t
 
     vm.schemaEntities;
     vm.schemaEdges;
-    vm.viewEdges = angular.copy(view.getViewEdges());
-    vm.viewEntities = angular.copy(view.getViewEntities());
+    vm.viewEdges = view.getViewEdges();
+    vm.viewEntities = view.getViewEntities();
     vm.edgeFilters = view.getEdgeFilters();
     vm.entityFilters = view.getEntityFilters();
+
+    vm.showBuilder = false;
+
+    vm.makeVisible = function() {
+        vm.showBuilder = true;
+    }
+
+    vm.clear = function() {
+        vm.edgeFilters = {};
+        vm.entityFilters = {};
+        vm.viewEdges = [];
+        vm.viewEntities = [];
+        view.setViewEdges(vm.viewEdges);
+        view.setViewEntities(vm.viewEntities);
+        vm.showBuilder = false;
+    }
 
     vm.$onInit = function() {
         schema.get().then(function(gafferSchema) {
@@ -72,6 +89,8 @@ function ViewBuilderController(view, graph, common, schema, functions, events, t
         angular.element(document).find('.search-box').on('keydown', function(ev) {
             ev.stopPropagation();
         });
+
+        vm.showBuilder = (vm.viewEdges.length + vm.viewEntities.length) > 0;
     }
 
     vm.noMore = function(group) {
@@ -102,8 +121,6 @@ function ViewBuilderController(view, graph, common, schema, functions, events, t
 
         return validEdges.indexOf(group) === validEdges.length - 1;
     }
-
-
 
     vm.createViewElementsLabel = function(elements, type) { // type is 'entities' or 'elements'
         if (!elements || elements.length === 0) {

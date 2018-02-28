@@ -22,7 +22,6 @@ angular.module('app').controller('CustomFilterDialogController', ['$scope', '$md
     $scope.availablePredicates;
     $scope.predicateText;
     $scope.editMode = false;
-
     $scope.elementType = this.elementType;
     $scope.group = this.group;
     $scope.filterForEdit = this.filterForEdit;
@@ -111,21 +110,45 @@ angular.module('app').controller('CustomFilterDialogController', ['$scope', '$md
     }
 
     $scope.onSelectedPropertyChange = function(editModeInit) {
-        functions.getFunctions($scope.group, $scope.filter.property, function(data) {
-            $scope.availablePredicates = data;
-        });
         if (!editModeInit) {
             $scope.filter.predicate = '';
         }
+        if (!$scope.group || !$scope.filter.property) {
+            return;
+        }
+        var type;
+        schema.get().then(function(gafferSchema) {
+            if(gafferSchema.entities[$scope.group]) {
+                type = gafferSchema.entities[$scope.group].properties[$scope.filter.property];
+            } else if(gafferSchema.edges[$scope.group]) {
+               type = gafferSchema.edges[$scope.group].properties[$scope.filter.property];
+            } else {
+                console.error('The element group "' + $scope.group + '" does not exist in the schema');
+                return;
+            }
+
+            var className = "";
+            if(type) {
+                var schemaType = gafferSchema.types[type];
+                if (!schemaType) {
+                    console.error('No type "' + type + '" was found in the schema');
+                    return;
+                }
+                className = gafferSchema.types[type].class;
+            } else {
+                console.error('The property "' + $scope.filter.property + '" does not exist in the element group "' + $scope.group + '"');
+                return;
+            }
+            functions.getFunctions(className, function(data) {
+                $scope.availablePredicates = data;
+            });
+        });
     }
 
     var setToPropertyClass = function(parameter) {
         schema.get().then(function(gafferSchema) {
-            var elementDef;
-            if (gafferSchema.entities) {
-                elementDef = gafferSchema.entities[$scope.group];
-            }
-            if(!elementDef && gafferSchema.edges) {
+            var elementDef = gafferSchema.entities[$scope.group];
+            if(!elementDef) {
                  elementDef = gafferSchema.edges[$scope.group];
             }
             if (gafferSchema.types) {

@@ -23,7 +23,7 @@
                 </div>
                 <div layout="column" flex="55"> <!-- right column -->
                     <date-range ng-if="ctrl.timeConfig && ctrl.getSelectedOp().view" conf="ctrl.timeConfig"></date-range>
-                    <parameter-form ng-if="ctrl.getSelectedOp().parameters" parameters="ctrl.getSelectedOp().parameters"></parameter-form>
+                    <parameter-form ng-if="ctrl.getSelectedOp().parameters" title-class="layout-padding section-title" parameters="ctrl.getSelectedOp().parameters"></parameter-form>
                     <view-builder ng-show="ctrl.getSelectedOp().view"></view-builder>
                     <directionality-picker ng-show="ctrl.getSelectedOp().inOutFlag"></directionality-picker>
                     <options-form ng-show="ctrl.hasOpOptions()"></options-form>

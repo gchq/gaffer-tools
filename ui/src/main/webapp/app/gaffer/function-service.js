@@ -16,43 +16,27 @@
 
 'use strict';
 
-angular.module('app').factory('functions', ['$http', 'schema', 'config', 'common', function($http, schemaService, config, common) {
+angular.module('app').factory('functions', ['$http', 'config', 'common', function($http, config, common) {
 
     var functions = {};
 
-
-    functions.getFunctions = function(group, property, onSuccess) {
-        var type;
-        schemaService.get().then(function(schema) {
-            if(schema.entities[group]) {
-                type = schema.entities[group].properties[property];
-            } else if(schema.edges[group]) {
-               type = schema.edges[group].properties[property];
-            }
-
-            var className = "";
-            if(type) {
-              className = schema.types[type].class;
-            }
-
-            config.get().then(function(conf) {
-                var queryUrl = common.parseUrl(conf.restEndpoint + "/graph/config/filterFunctions/" + className);
-                $http.get(queryUrl)
-                    .success(function(response) {
-                        onSuccess(response)
-                    })
-                    .error(function(err) {
-                        var errorString = 'Error loading functions for group: ' + group + ', property: ' + property + '.\n';
-                        if (err && err !== "") {
-                            alert(errorString + err.simpleMessage);
-                            console.log(err);
-                        } else {
-                            alert(errorString);
-                        }
-                });
+    functions.getFunctions = function(className, onSuccess) {
+        config.get().then(function(conf) {
+            var queryUrl = common.parseUrl(conf.restEndpoint + "/graph/config/filterFunctions/" + className);
+            $http.get(queryUrl)
+                .success(function(response) {
+                    onSuccess(response)
+                })
+                .error(function(err) {
+                    var errorString = 'Error loading functions for class "' + className + '".\n';
+                    if (err && err !== "") {
+                        alert(errorString + err.simpleMessage);
+                        console.error(err);
+                    } else {
+                        alert(errorString);
+                    }
             });
         });
-
     }
 
     functions.getFunctionParameters = function(functionClassName, onSuccess) {

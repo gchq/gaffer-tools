@@ -109,6 +109,7 @@ md-option > div {
 
 .section-title {
     margin-bottom: 0px;
+    padding-top: 0px;
 }
 
 .no-margin {
@@ -124,4 +125,25 @@ md-option > div {
 .padding-sides {
     padding-left: 8px;
     padding-right: 8px;
+}
+.named-view-template li {
+    border-bottom: 1px solid #ccc;
+    height: auto;
+    line-height: 2px;
+    padding-top: 2px;
+    padding-bottom: 2px;
+    white-space: normal;
+}
+
+.named-view-template li:last-child {
+    border-bottom-width: 0;
+}
+
+.no-vertical-padding {
+    padding-top: 0px;
+    padding-bottom: 0px;
+}
+
+.parameters-padding {
+     padding-top: 6px;
 }
