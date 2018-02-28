@@ -16,7 +16,7 @@
 
 'use strict';
 
-angular.module('app').factory('config', ['$http', '$q', 'defaultRestEndpoint', function($http, $q, defaultRestEndpoint) {
+angular.module('app').factory('config', ['$http', '$q', 'defaultRestEndpoint', 'error', function($http, $q, defaultRestEndpoint, error) {
 
     var configService = {};
 
@@ -66,14 +66,12 @@ angular.module('app').factory('config', ['$http', '$q', 'defaultRestEndpoint', f
                     })
                     .error(function(err) {
                         defer.reject(err);
-                        console.log(err);
-                        alert("Failed to load custom config");
+                        error.handle("Failed to load custom config", err);
                 });
             })
             .error(function(err) {
                 defer.reject(err);
-                console.log(err);
-                alert("Failed to load default config");
+                error.handle("Failed to load config", err);
         });
     }
 

@@ -16,7 +16,7 @@
 
 'use strict';
 
-angular.module('app').factory('properties', ['config', '$q', 'common', '$http', function(config, $q, common, $http) {
+angular.module('app').factory('properties', ['config', '$q', 'common', '$http', 'error', function(config, $q, common, $http, error) {
     var service = {};
 
     var properties;
@@ -32,12 +32,8 @@ angular.module('app').factory('properties', ['config', '$q', 'common', '$http', 
                 })
                 .error(function(err) {
                     defer.reject(err);
-                    if (err !== "") {
-                        alert("Unable to load properties: " + err.simpleMessage);
-                        console.log(err);
-                    } else {
-                        alert("Unable to load properties. Received no response");
-                    }
+                    error.handle("Unable to load graph properties", err);
+
                 });
         })
     }
