@@ -16,7 +16,7 @@
 
 'use strict';
 
-angular.module('app').factory('operationService', ['$http', '$q', 'settings', 'config', 'query', 'types', 'common', function($http, $q, settings, config, query, types, common) {
+angular.module('app').factory('operationService', ['$http', '$q', 'settings', 'config', 'query', 'types', 'common', 'error', function($http, $q, settings, config, query, types, common, error) {
 
     var operationService = {};
 
@@ -113,8 +113,7 @@ angular.module('app').factory('operationService', ['$http', '$q', 'settings', 'c
             function(err) {
                 updateNamedOperations([]);
                 if (loud) {
-                    console.log(err);
-                    alert('Failed to reload named operations: ' + err.simpleMessage);
+                    error.handle('Failed to load named operations', err);
                 }
             });
 
@@ -139,12 +138,7 @@ angular.module('app').factory('operationService', ['$http', '$q', 'settings', 'c
                     onUnsupported();
                 })
                 .error(function(err) {
-                    if (err !== "") {
-                        console.log(err);
-                        alert("Error running /graph/operations: " + err.simpleMessage);
-                    } else {
-                        alert("Error running /graph/operations - received no response");
-                    }
+                    error.handle('Error getting available graph operations', err);
                     onUnsupported();
             });
         })
