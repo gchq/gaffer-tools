@@ -20,33 +20,36 @@ angular.module('app').factory('properties', ['config', '$q', 'common', '$http', 
     var service = {};
 
     var properties;
+    var deferredRequests;
 
-    var load = function(defer) {
+    var load = function() {
         config.get().then(function(conf) {
             var url = common.parseUrl(conf.restEndpoint);
 
             $http.get(url + '/properties')
                 .success(function(props) {
                     properties = props;
-                    defer.resolve(props);
+                    deferredRequests.resolve(props);
                 })
                 .error(function(err) {
-                    defer.reject(err);
+                    deferredRequests.reject(err);
                     error.handle("Unable to load graph properties", err);
-
+                })
+                .finally(function() {
+                    deferredRequests = undefined;
                 });
         })
     }
 
     service.get = function() {
-        var defer = $q.defer()
         if (properties) {
-            defer.resolve(properties);
-        } else {
-            load(defer);
+            return $q.when(properties);
+        } else if (!deferredRequests) {
+            deferredRequests = $q.defer();
+            load();
         }
 
-        return defer.promise;
+        return deferredRequests.promise;
     }
 
     return service;
