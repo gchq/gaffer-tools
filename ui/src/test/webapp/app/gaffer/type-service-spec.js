@@ -195,6 +195,31 @@ describe('The type service', function() {
         });
     });
 
+    describe('types.isKnown()', function() {
+        it('should return true if the given class exists in the types', function() {
+            expect(service.isKnown('java.lang.Long')).toBeTruthy();
+        });
+
+        it('should return false if the given class name does not exist in the schema', function() {
+            expect(service.isKnown('java.util.ArrayList')).toBeFalsy();
+        })
+    });
+
+    describe('types.getSimpleClassNames()', function() {
+        it('should return a map of simple class names to fully qualified class names', function() {
+            var expected = {
+                "Class": "some.java.Class",
+                "Long": "java.lang.Long",
+                "Integer": "java.lang.Integer",
+                "String": "java.lang.String",
+                "TypeSubTypeValue": "uk.gov.gchq.gaffer.types.TypeSubTypeValue",
+                "HyperLogLogPlus": "com.clearspring.analytics.stream.cardinality.HyperLogLogPlus"
+            };
+
+            expect(service.getSimpleClassNames()).toEqual(expected);
+        })
+    })
+
     describe('types.createJsonValue()', function() {
         it('should create a long value with the JSON', function() {
             var value = service.createJsonValue('java.lang.Long', {undefined: 12});

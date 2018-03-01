@@ -209,30 +209,30 @@ angular.module('app').controller('CustomFilterDialogController', ['$scope', '$md
         $scope.filter.predicate = $scope.filterForEdit.predicate;
         $scope.filter.parameters = {};
         $scope.onSelectedPredicateChange();
-        for(var name in $scope.filterForEdit.parameters) {
-            var param = $scope.filterForEdit.parameters[name];
-            var valueClass;
-            var value;
-            if(param !== undefined && Object.keys(param).length === 1) {
-                valueClass = types.getSimpleClassNames()[Object.keys(param)[0]];
-                value = Object.values(param)[0];
-                if(valueClass === undefined) {
-                    valueClass = "JSON";
-                    value = JSON.stringify(param);
-                }
-            } else {
-                valueClass = undefined;
-                value = param;
-            }
-
-            $scope.filter.parameters[name] = {
-                "parts": types.createParts(valueClass, value)
-            };
-
-            if(valueClass !== undefined) {
-                $scope.filter.parameters[name]["valueClass"] = valueClass;
-            }
-        }
+//        for(var name in $scope.filterForEdit.parameters) {
+//            var param = $scope.filterForEdit.parameters[name];
+//            var valueClass;
+//            var value;
+//            if(param !== undefined && Object.keys(param).length === 1) {
+//                valueClass = types.getSimpleClassNames()[Object.keys(param)[0]];
+//                value = Object.values(param)[0];
+//                if(valueClass === undefined) {
+//                    valueClass = "JSON";
+//                    value = JSON.stringify(param);
+//                }
+//            } else {
+//                valueClass = undefined;
+//                value = param;
+//            }
+//
+//            $scope.filter.parameters[name] = {
+//                "parts": types.createParts(valueClass, value)
+//            };
+//
+//            if(valueClass !== undefined) {
+//                $scope.filter.parameters[name]["valueClass"] = valueClass;
+//            }
+//        }
         $scope.editMode = true;
     }
 

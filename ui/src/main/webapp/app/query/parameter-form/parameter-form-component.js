@@ -40,8 +40,5 @@ function ParameterFormController(types) {
         if(!vm.title) {
             vm.title = 'Parameters';
         }
-        if(!vm.titleClass) {
-            vm.titleClass = 'section title';
-        }
     }
 }

@@ -50,7 +50,8 @@ describe('The Custom Filter Dialog Controller', function() {
 
         beforeEach(function() {
             createController();
-        })
+        });
+
         it('should exist', function() {
             expect(ctrl).toBeDefined();
         });
@@ -104,14 +105,6 @@ describe('The Custom Filter Dialog Controller', function() {
             expect(scope.filter.predicate).toEqual('a.koryphe.predicate.Class');
         });
 
-        it('should add all the stringified parameters', function() {
-            var params = scope.filter.parameters;
-            expect(params.value).toEqual('42');
-            expect(params.aStringProperty).toEqual('test');
-            expect(params.anObjectProperty).toEqual('{"java.lang.Long":123}');
-            expect(params.orEqualTo).toEqual('false');
-        });
-
         it('should get the parameters', function() {
             expect(functions.getFunctionParameters).toHaveBeenCalledTimes(1);
             expect(scope.filter.availableFunctionParameters).toEqual(['value', 'orEqualTo']);
@@ -121,605 +114,602 @@ describe('The Custom Filter Dialog Controller', function() {
             expect(scope.editMode).toBeTruthy();
         });
     });
-
-    describe('$scope.search()', function() {
-        beforeEach(function() {
-            scope.availablePredicates = [ 'function1', 'function2', 'predicate', 'anotherPredicate' ];
-        });
-
-        beforeEach(function() {
-            createController();
-        });
-
-        it('should return all the predicates if the input is undefined', function() {
-            expect(scope.search(undefined)).toEqual(scope.availablePredicates);
-        });
-
-        it('should return all the predicates if the input is null', function() {
-            expect(scope.search(null)).toEqual(scope.availablePredicates);
-        });
-
-        it('should return all the predicates if the input is an empty string', function() {
-            expect(scope.search('')).toEqual(scope.availablePredicates);
-        });
-
-        it('should return all values which start with the input when populated', function() {
-            expect(scope.search('func')).toEqual(['function1', 'function2'])
-        });
-
-        it('should return all values which contain the input string', function() {
-            expect(scope.search('edic')).toEqual(['predicate', 'anotherPredicate']);
-        });
-    });
-
-    describe('$scope.createFriendlyName()', function() {
-        beforeEach(function() {
-            createController();
-        });
-
-        it('should shorten a java class down to the class name', function() {
-            expect(scope.createFriendlyName('java.lang.Long')).toEqual('Long');
-        });
-    });
-
-    describe('$scope.getProperties()', function() {
-
-        var schema;
-
-        beforeEach(inject(function(_schema_) {
-            schema = _schema_;
-        }))
-
-        beforeEach(function() {
-            spyOn(schema, 'getEntityProperties').and.returnValue(['prop1', 'prop2']);
-            spyOn(schema, 'getEdgeProperties').and.returnValue(['prop3', 'prop4']);
-        });
-
-        beforeEach(function() {
-            createController();
-        });
-
-        it('should call schema.getEntityProperties() if the elementType is an entity', function() {
-            scope.elementType = 'entity';
-            expect(scope.getProperties()).toEqual(['prop1', 'prop2']);
-            expect(schema.getEntityProperties).toHaveBeenCalledTimes(1);
-        });
-
-        it('should call schema.getEdgeProperties() if the elementType is an edge', function() {
-            scope.elementType = 'edge';
-            expect(scope.getProperties()).toEqual(['prop3', 'prop4']);
-            expect(schema.getEdgeProperties).toHaveBeenCalledTimes(1);
-        });
-
-        it('should throw an exception if the elementType is null', function() {
-            scope.elementType = null;
-            expect(scope.getProperties).toThrow('Element type can be "edge" or "entity" but not null');
-            expect(schema.getEdgeProperties).not.toHaveBeenCalled();
-            expect(schema.getEntityProperties).not.toHaveBeenCalled();
-        });
-
-        it('should throw an exception if the elementType is undefined', function() {
-            scope.elementType = undefined;
-            expect(scope.getProperties).toThrow('Element type can be "edge" or "entity" but not undefined');
-            expect(schema.getEdgeProperties).not.toHaveBeenCalled();
-            expect(schema.getEntityProperties).not.toHaveBeenCalled();
-        });
-
-        it('should throw an exception if the elementType is a string other than "edge" or "entity"', function() {
-            scope.elementType = "An unexpected string";
-            expect(scope.getProperties).toThrow('Element type can be "edge" or "entity" but not "An unexpected string"');
-            expect(schema.getEdgeProperties).not.toHaveBeenCalled();
-            expect(schema.getEntityProperties).not.toHaveBeenCalled();
-        });
-
-        it('should throw an exception if the elementType is an object', function() {
-            scope.elementType = { foo: "bar" };
-            expect(scope.getProperties).toThrow('Element type can be "edge" or "entity" but not {"foo":"bar"}');
-            expect(schema.getEdgeProperties).not.toHaveBeenCalled();
-            expect(schema.getEntityProperties).not.toHaveBeenCalled();
-        });
-    });
-
-    describe('$scope.showWarning()', function() {
-
-        beforeEach(function() {
-            createController();
-        });
-
-        beforeEach(function() {
-            scope.propertyClass = 'java.lang.Object';
-        });
-
-        beforeEach(function() {
-            scope.filter.availableFunctionParameters = ['prop1', 'prop2'];
-        });
-
-        it('should return true when there are function parameters and the property is a complex object', function() {
-            expect(scope.showWarning()).toBeTruthy();
-        });
-
-        it('should return false when the filter is undefined', function() {
-            scope.filter = undefined;
-            expect(scope.showWarning()).toBeFalsy();
-        });
-
-        it('should return false when the filters available function parameters are undefined', function() {
-            scope.filter.availableFunctionParameters = undefined;
-            expect(scope.showWarning()).toBeFalsy();
-        });
-
-        it('should return false when the filters available function parameters are an empty array', function() {
-            scope.filter.availableFunctionParameters = [];
-            expect(scope.showWarning()).toBeFalsy();
-        });
-
-        it('should return false when the propertyClass is undefined', function() {
-            scope.propertyClass = undefined;
-            expect(scope.showWarning()).toBeFalsy();
-        });
-    });
-
-    describe('$scope.resetForm()', function() {
-
-        var formReset = false;
-
-        beforeEach(function() {
-            createController();
-        });
-
-        beforeEach(function() {
-            scope.filterForm = {
-                $setUntouched: function() {
-                    formReset = true;
-                }
-            }
-
-            scope.filter = {
-                property: 'someProperty',
-                predicate: 'uk.gov.gchq.gaffer.SomePredicate',
-                availableFunctionParameters: [ "property1", "property2" ],
-                preAggregation: true,
-                parameters: { "property1": true }
-            }
-        });
-
-        beforeEach(function() {
-            scope.resetForm();
-        });
-
-        it('should reset the form to an untouched state', function() {
-            expect(formReset).toBeTruthy();
-        });
-
-        it('should reset the filter', function() {
-            expect(scope.filter).toEqual({ preAggregation: false });
-        })
-    });
-
-    describe('$scope.cancel()', function() {
-        var $mdDialog;
-
-        beforeEach(inject(function(_$mdDialog_) {
-            $mdDialog = _$mdDialog_;
-        }));
-
-        beforeEach(function() {
-            spyOn($mdDialog, 'cancel');
-        });
-
-        beforeEach(function() {
-            createController();
-        });
-
-        it('should cancel the dialog', function() {
-            scope.cancel();
-            expect($mdDialog.cancel).toHaveBeenCalledTimes(1);
-        });
-    });
-
-    describe('$scope.submit()', function() {
-
-        var $mdDialog;
-
-        beforeEach(inject(function(_$mdDialog_) {
-            $mdDialog = _$mdDialog_;
-        }))
-
-        beforeEach(function() {
-            createControllerWithBindings({filterForEdit: { preAggregation: true, property: 'prop', predicate: 'pred' }, elementType: 'edge', group: 'testGroup', onSubmit: function(filter, group, elementType) {
-                // do nothing
-            }});
-        });
-
-        it('should call the injected onSubmit function', function() {
-            spyOn(scope, 'onSubmit');
-            scope.submit();
-            expect(scope.onSubmit).toHaveBeenCalled();
-            expect(scope.onSubmit).toHaveBeenCalledWith({ preAggregation: true, property: 'prop', predicate: 'pred', parameters: {}}, 'testGroup', 'edge');
-        });
-
-        it('should hide the $mdDialog box', function() {
-            spyOn($mdDialog, 'hide');
-            scope.submit();
-            expect($mdDialog.hide).toHaveBeenCalledTimes(1);
-        });
-    });
-
-    describe('$scope.addAnother()', function() {
-        beforeEach(function() {
-            createControllerWithBindings({filterForEdit: { preAggregation: true, property: 'prop', predicate: 'pred' }, elementType: 'edge', group: 'testGroup', onSubmit: function(filter, group, elementType) {
-                // do nothing
-            }});
-        });
-
-        beforeEach(function() {
-            spyOn(scope, 'resetForm');
-        });
-
-        it('should call the injected onSubmit function', function() {
-            spyOn(scope, 'onSubmit');
-            scope.addAnother();
-            expect(scope.onSubmit).toHaveBeenCalled();
-            expect(scope.onSubmit).toHaveBeenCalledWith({ preAggregation: true, property: 'prop', predicate: 'pred', parameters: {}}, 'testGroup', 'edge');
-        });
-
-        it('should reset the form', function() {
-            scope.addAnother();
-            expect(scope.resetForm).toHaveBeenCalledTimes(1);
-        });
-    });
-
-    describe('$scope.getFlexValue()', function() {
-        beforeEach(function() {
-            createController();
-        });
-
-        it('should return 100 if the availableFunctionParameters length is 1', function() {
-            scope.filter = { availableFunctionParameters: ["test"] };
-            expect(scope.getFlexValue()).toEqual(100);
-        });
-
-        it('should return 50 if the availableFunctionParameters length is 2', function() {
-            scope.filter = { availableFunctionParameters: ['test1', 'test2'] };
-            expect(scope.getFlexValue()).toEqual(50);
-        });
-
-        it('should return 33 if the availableFunctionParameters length is 3', function() {
-            scope.filter = { availableFunctionParameters: ['test1', 'test2', 'test3'] };
-            expect(scope.getFlexValue()).toEqual(33)
-        });
-
-        it('should return 33 if the availableFunctionParameters length is greater than 3', function() {
-            scope.filter = { availableFunctionParameters: ['1', '2', '3'] };
-
-            for(var i = 4; i < 10; i++) {
-                scope.filter.availableFunctionParameters.push(i.toString());
-                expect(scope.getFlexValue()).toEqual(33);
-            }
-        });
-
-        it('should return 0 if the filter is undefined', function() {
-            scope.filter = undefined;
-            expect(scope.getFlexValue()).toEqual(0);
-        });
-
-        it('should return 0 if the filter\' available parameters are undefined', function() {
-            scope.filter = { availableFunctionParameters: undefined };
-            expect(scope.getFlexValue()).toEqual(0);
-        })
-    });
-
-    describe('$scope.onSelectedPropertyChange()', function() {
-
-        var functions, schema;
-        var gafferSchema;
-
-        beforeEach(inject(function(_functions_, _schema_) {
-            functions = _functions_;
-            schema = _schema_;
-        }));
-
-        beforeEach(function() {
-            spyOn(schema, 'get').and.callFake(function() {
-                return $q.when(gafferSchema);
-            })
-
-            spyOn(functions, 'getFunctions').and.callFake(function(clazz, cb) {
-                cb('somePredicates');
-            });
-
-            spyOn(console, 'error').and.stub();
-        });
-
-        beforeEach(function() {
-            gafferSchema = {
-                "edges": {
-                    "testGroup": {
-                        "properties": {
-                            "prop1": "unknown.type",
-                            "prop2": "known.type"
-                        }
-                    }
-                },
-                "entities": {},
-                 "types": {
-                    "known.type": {
-                        "class": "a.java.Class"
-                    }
-                }
-            }
-        });
-
-        beforeEach(function() {
-            createController();
-        });
-
-        it('should not make service call if the group is null', function() {
-            scope.group = null;
-            scope.filter = { property: "not null"};
-            scope.onSelectedPropertyChange();
-            scope.$digest();
-            expect(functions.getFunctions).not.toHaveBeenCalled();
-        });
-
-        it('should not call onSuccess if the group is undefined', function() {
-            scope.group = undefined;
-            scope.filter = { property: "property"};
-            scope.onSelectedPropertyChange();
-            scope.$digest();
-            expect(functions.getFunctions).not.toHaveBeenCalled();
-        });
-
-        it('should not call onSuccess if the property is null', function() {
-            scope.group = "group";
-            scope.filter = { property: null};
-            scope.onSelectedPropertyChange();
-            scope.$digest();
-            expect(functions.getFunctions).not.toHaveBeenCalled();
-        });
-
-        it('should not call onSuccess if the group is undefined', function() {
-            scope.group = "group";
-            scope.filter = {};
-            scope.onSelectedPropertyChange();
-            scope.$digest();
-            expect(functions.getFunctions).not.toHaveBeenCalled();
-        });
-
-        it('should not make call to service if the type does not exist in the schema', function() {
-            scope.group = 'testGroup';
-            scope.filter = { property: 'prop1'};
-            scope.onSelectedPropertyChange();
-            scope.$digest();
-            expect(functions.getFunctions).not.toHaveBeenCalled();
-            expect(console.error).toHaveBeenCalledWith('No type "unknown.type" was found in the schema');
-        });
-
-        it('should send an error to the console if the group does not exist in the schema', function() {
-            scope.group = 'unknownGroup';
-            scope.filter = { property: 'prop'};
-            scope.onSelectedPropertyChange();
-            scope.$digest();
-            expect(functions.getFunctions).not.toHaveBeenCalled();
-            expect(console.error).toHaveBeenCalledWith('The element group "unknownGroup" does not exist in the schema');
-        });
-
-        it('should send an error to the console if the group does not contain the property', function() {
-            scope.group = 'testGroup';
-            scope.filter = { property: 'unknownProperty'};
-            scope.onSelectedPropertyChange();
-            scope.$digest();
-            expect(functions.getFunctions).not.toHaveBeenCalled();
-            expect(console.error).toHaveBeenCalledWith('The property "unknownProperty" does not exist in the element group "testGroup"');
-        });
-
-        // sunny day tests
-
-        it('should make a request to get the valid predicates for that property', function() {
-            scope.group = 'testGroup';
-            scope.filter = { property: 'prop2' }
-            scope.onSelectedPropertyChange();
-            scope.$digest();
-            expect(functions.getFunctions).toHaveBeenCalledTimes(1);
-            expect(functions.getFunctions).toHaveBeenCalledWith('a.java.Class', jasmine.any(Function))
-        });
-
-        it('should set the value of availablePredicates', function() {
-            scope.group = 'testGroup';
-            scope.filter = { property: 'prop2' };
-            scope.onSelectedPropertyChange();
-            scope.$digest();
-            expect(scope.availablePredicates).toEqual('somePredicates');
-        });
-
-        it('should set the predicate value to an empty string if called without a flag', function() {
-            scope.onSelectedPropertyChange();
-            scope.$digest();
-            expect(scope.filter.predicate).toEqual('');
-        });
-
-        it('should set the predicate value to an empty string if the editModeInit flag is false', function() {
-            scope.onSelectedPropertyChange(false);
-            scope.$digest();
-            expect(scope.filter.predicate).toEqual('');
-        });
-
-        it('should leave the predicate value alone when initialising in edit mode', function() {
-            scope.filter.predicate = 'an existing predicate'
-            scope.onSelectedPropertyChange(true)
-            scope.$digest();
-            expect(scope.filter.predicate).toEqual('an existing predicate');
-        });
-    });
-
-    describe('$scope.onSelectedPredicateChange()', function() {
-
-        var schema, functions;
-        var gafferSchema, params;
-        var $q;
-        var originalFilter = {
-            preAggregation: false,
-            property: 'testProp',
-            predicate: 'a.filter.class.Name'
-        };
-
-        beforeEach(inject(function(_functions_, _schema_, _$q_) {
-            functions = _functions_;
-            schema = _schema_
-            $q = _$q_;
-        }));
-
-        beforeEach(function() {
-            originalFilter = {
-                preAggregation: false,
-                property: 'testProp',
-                predicate: 'a.filter.class.Name'
-            };
-        })
-
-        beforeEach(function() {
-            spyOn(schema, 'get').and.callFake(function() {
-                return $q.when(gafferSchema);
-            });
-
-            spyOn(functions, 'getFunctionParameters').and.callFake(function(fn, callback) {
-                callback(params);
-            });
-        });
-
-        beforeEach(function() {
-            createController();
-        });
-
-        it('should do nothing if the predicate is null', function() {
-            originalFilter = {
-                preAggregation: false,
-                property: 'testProp',
-                predicate: null
-            };
-
-            scope.filter = originalFilter;
-            scope.onSelectedPredicateChange();
-
-            scope.$digest();
-            expect(schema.get).not.toHaveBeenCalled();
-            expect(functions.getFunctionParameters).not.toHaveBeenCalled();
-
-            expect(scope.filter).toEqual(originalFilter);
-        });
-
-        it('should do nothing if the predicate is an empty string', function() {
-            originalFilter = {
-                preAggregation: false,
-                property: 'testProp',
-                predicate: ''
-            };
-
-            scope.filter = originalFilter;
-            scope.onSelectedPredicateChange();
-
-            scope.$digest();
-            expect(schema.get).not.toHaveBeenCalled();
-            expect(functions.getFunctionParameters).not.toHaveBeenCalled();
-
-            expect(scope.filter).toEqual(originalFilter);
-        });
-
-        it('should do nothing if the predicate is undefined', function() {
-            originalFilter = {
-                preAggregation: false,
-                property: 'testProp',
-                predicate: undefined
-            };
-
-            scope.filter = originalFilter;
-            scope.onSelectedPredicateChange();
-
-            scope.$digest();
-            expect(schema.get).not.toHaveBeenCalled();
-            expect(functions.getFunctionParameters).not.toHaveBeenCalled();
-
-            expect(scope.filter).toEqual(originalFilter);
-        });
-
-        it('should query the function parameters and set a value on the filter', function() {
-            params = ['param1', 'param2'];
-            scope.filter = originalFilter;
-            scope.onSelectedPredicateChange();
-            expect(functions.getFunctionParameters).toHaveBeenCalled();
-            expect(scope.filter.availableFunctionParameters).toEqual(params);
-        });
-
-        it('should set the filter parameters to an empty object', function() {
-            params = ['this', 'is', 'a', 'test'];
-            scope.filter = originalFilter;
-            scope.onSelectedPredicateChange();
-            expect(scope.filter.parameters).toEqual({});
-        });
-
-        it('should make a call to the schema service', function() {
-            scope.filter = originalFilter;
-            scope.onSelectedPredicateChange();
-            expect(schema.get).toHaveBeenCalled();
-        });
-
-        describe('When the schema is called', function() {
-
-            var resetSchema = function(propClass) {
-                gafferSchema = {
-                    "entities": {
-                        "testGroup": {
-                            "properties": {
-                                "testProp": "testPropThing"
-                            }
-                        }
-                    },
-                    "types": {
-                        "testPropThing": {
-                            "class": propClass
-                        }
-                    }
-                };
-            }
-
-            beforeEach(function() {
-                scope.filter = originalFilter;
-                scope.propertyClass = "an unset predicate class";
-                scope.group = "testGroup";
-            });
-
-            it('should set the property class to undefined when the property is a String', function() {
-                resetSchema("java.lang.String");
-                scope.onSelectedPredicateChange();
-                scope.$digest();
-                expect(scope.propertyClass).toBeUndefined();
-            });
-
-            it('should set the property class to undefined when the property is a Boolean', function() {
-                resetSchema("java.lang.Boolean");
-                scope.onSelectedPredicateChange();
-                scope.$digest();
-                expect(scope.propertyClass).toBeUndefined();
-            });
-
-            it('should set the property class to undefined when the property is a Integer', function() {
-                resetSchema("java.lang.Integer");
-                scope.onSelectedPredicateChange();
-                scope.$digest();
-                expect(scope.propertyClass).toBeUndefined();
-            });
-
-            it('should set the property class to any other object', function() {
-                resetSchema('java.lang.Object');
-                scope.onSelectedPredicateChange();
-                scope.$digest();
-                expect(scope.propertyClass).toEqual('java.lang.Object');
-            });
-        })
-
-    });
-
+//
+//    describe('$scope.search()', function() {
+//        beforeEach(function() {
+//            scope.availablePredicates = [ 'function1', 'function2', 'predicate', 'anotherPredicate' ];
+//        });
+//
+//        beforeEach(function() {
+//            createController();
+//        });
+//
+//        it('should return all the predicates if the input is undefined', function() {
+//            expect(scope.search(undefined)).toEqual(scope.availablePredicates);
+//        });
+//
+//        it('should return all the predicates if the input is null', function() {
+//            expect(scope.search(null)).toEqual(scope.availablePredicates);
+//        });
+//
+//        it('should return all the predicates if the input is an empty string', function() {
+//            expect(scope.search('')).toEqual(scope.availablePredicates);
+//        });
+//
+//        it('should return all values which start with the input when populated', function() {
+//            expect(scope.search('func')).toEqual(['function1', 'function2'])
+//        });
+//
+//        it('should return all values which contain the input string', function() {
+//            expect(scope.search('edic')).toEqual(['predicate', 'anotherPredicate']);
+//        });
+//    });
+//
+//    describe('$scope.createFriendlyName()', function() {
+//        beforeEach(function() {
+//            createController();
+//        });
+//
+//        it('should shorten a java class down to the class name', function() {
+//            expect(scope.createFriendlyName('java.lang.Long')).toEqual('Long');
+//        });
+//    });
+//
+//    describe('$scope.getProperties()', function() {
+//
+//        var schema;
+//
+//        beforeEach(inject(function(_schema_) {
+//            schema = _schema_;
+//        }))
+//
+//        beforeEach(function() {
+//            spyOn(schema, 'getEntityProperties').and.returnValue(['prop1', 'prop2']);
+//            spyOn(schema, 'getEdgeProperties').and.returnValue(['prop3', 'prop4']);
+//        });
+//
+//        beforeEach(function() {
+//            createController();
+//        });
+//
+//        it('should call schema.getEntityProperties() if the elementType is an entity', function() {
+//            scope.elementType = 'entity';
+//            expect(scope.getProperties()).toEqual(['prop1', 'prop2']);
+//            expect(schema.getEntityProperties).toHaveBeenCalledTimes(1);
+//        });
+//
+//        it('should call schema.getEdgeProperties() if the elementType is an edge', function() {
+//            scope.elementType = 'edge';
+//            expect(scope.getProperties()).toEqual(['prop3', 'prop4']);
+//            expect(schema.getEdgeProperties).toHaveBeenCalledTimes(1);
+//        });
+//
+//        it('should throw an exception if the elementType is null', function() {
+//            scope.elementType = null;
+//            expect(scope.getProperties).toThrow('Element type can be "edge" or "entity" but not null');
+//            expect(schema.getEdgeProperties).not.toHaveBeenCalled();
+//            expect(schema.getEntityProperties).not.toHaveBeenCalled();
+//        });
+//
+//        it('should throw an exception if the elementType is undefined', function() {
+//            scope.elementType = undefined;
+//            expect(scope.getProperties).toThrow('Element type can be "edge" or "entity" but not undefined');
+//            expect(schema.getEdgeProperties).not.toHaveBeenCalled();
+//            expect(schema.getEntityProperties).not.toHaveBeenCalled();
+//        });
+//
+//        it('should throw an exception if the elementType is a string other than "edge" or "entity"', function() {
+//            scope.elementType = "An unexpected string";
+//            expect(scope.getProperties).toThrow('Element type can be "edge" or "entity" but not "An unexpected string"');
+//            expect(schema.getEdgeProperties).not.toHaveBeenCalled();
+//            expect(schema.getEntityProperties).not.toHaveBeenCalled();
+//        });
+//
+//        it('should throw an exception if the elementType is an object', function() {
+//            scope.elementType = { foo: "bar" };
+//            expect(scope.getProperties).toThrow('Element type can be "edge" or "entity" but not {"foo":"bar"}');
+//            expect(schema.getEdgeProperties).not.toHaveBeenCalled();
+//            expect(schema.getEntityProperties).not.toHaveBeenCalled();
+//        });
+//    });
+//
+//    describe('$scope.showWarning()', function() {
+//
+//        beforeEach(function() {
+//            createController();
+//        });
+//
+//        beforeEach(function() {
+//            scope.propertyClass = 'java.lang.Object';
+//        });
+//
+//        beforeEach(function() {
+//            scope.filter.availableFunctionParameters = ['prop1', 'prop2'];
+//        });
+//
+//        it('should return true when there are function parameters and the property is a complex object', function() {
+//            expect(scope.showWarning()).toBeTruthy();
+//        });
+//
+//        it('should return false when the filter is undefined', function() {
+//            scope.filter = undefined;
+//            expect(scope.showWarning()).toBeFalsy();
+//        });
+//
+//        it('should return false when the filters available function parameters are undefined', function() {
+//            scope.filter.availableFunctionParameters = undefined;
+//            expect(scope.showWarning()).toBeFalsy();
+//        });
+//
+//        it('should return false when the filters available function parameters are an empty array', function() {
+//            scope.filter.availableFunctionParameters = [];
+//            expect(scope.showWarning()).toBeFalsy();
+//        });
+//
+//        it('should return false when the propertyClass is undefined', function() {
+//            scope.propertyClass = undefined;
+//            expect(scope.showWarning()).toBeFalsy();
+//        });
+//    });
+//
+//    describe('$scope.resetForm()', function() {
+//
+//        var formReset = false;
+//
+//        beforeEach(function() {
+//            createController();
+//        });
+//
+//        beforeEach(function() {
+//            scope.filterForm = {
+//                $setUntouched: function() {
+//                    formReset = true;
+//                }
+//            }
+//
+//            scope.filter = {
+//                property: 'someProperty',
+//                predicate: 'uk.gov.gchq.gaffer.SomePredicate',
+//                availableFunctionParameters: [ "property1", "property2" ],
+//                preAggregation: true,
+//                parameters: { "property1": true }
+//            }
+//        });
+//
+//        beforeEach(function() {
+//            scope.resetForm();
+//        });
+//
+//        it('should reset the form to an untouched state', function() {
+//            expect(formReset).toBeTruthy();
+//        });
+//
+//        it('should reset the filter', function() {
+//            expect(scope.filter).toEqual({ preAggregation: false });
+//        })
+//    });
+//
+//    describe('$scope.cancel()', function() {
+//        var $mdDialog;
+//
+//        beforeEach(inject(function(_$mdDialog_) {
+//            $mdDialog = _$mdDialog_;
+//        }));
+//
+//        beforeEach(function() {
+//            spyOn($mdDialog, 'cancel');
+//        });
+//
+//        beforeEach(function() {
+//            createController();
+//        });
+//
+//        it('should cancel the dialog', function() {
+//            scope.cancel();
+//            expect($mdDialog.cancel).toHaveBeenCalledTimes(1);
+//        });
+//    });
+//
+//    describe('$scope.submit()', function() {
+//
+//        var $mdDialog;
+//
+//        beforeEach(inject(function(_$mdDialog_) {
+//            $mdDialog = _$mdDialog_;
+//        }))
+//
+//        beforeEach(function() {
+//            createControllerWithBindings({filterForEdit: { preAggregation: true, property: 'prop', predicate: 'pred' }, elementType: 'edge', group: 'testGroup', onSubmit: function(filter, group, elementType) {
+//                // do nothing
+//            }});
+//        });
+//
+//        it('should call the injected onSubmit function', function() {
+//            spyOn(scope, 'onSubmit');
+//            scope.submit();
+//            expect(scope.onSubmit).toHaveBeenCalled();
+//            expect(scope.onSubmit).toHaveBeenCalledWith({ preAggregation: true, property: 'prop', predicate: 'pred', parameters: {}}, 'testGroup', 'edge');
+//        });
+//
+//        it('should hide the $mdDialog box', function() {
+//            spyOn($mdDialog, 'hide');
+//            scope.submit();
+//            expect($mdDialog.hide).toHaveBeenCalledTimes(1);
+//        });
+//    });
+//
+//    describe('$scope.addAnother()', function() {
+//        beforeEach(function() {
+//            createControllerWithBindings({filterForEdit: { preAggregation: true, property: 'prop', predicate: 'pred' }, elementType: 'edge', group: 'testGroup', onSubmit: function(filter, group, elementType) {
+//                // do nothing
+//            }});
+//        });
+//
+//        beforeEach(function() {
+//            spyOn(scope, 'resetForm');
+//        });
+//
+//        it('should call the injected onSubmit function', function() {
+//            spyOn(scope, 'onSubmit');
+//            scope.addAnother();
+//            expect(scope.onSubmit).toHaveBeenCalled();
+//            expect(scope.onSubmit).toHaveBeenCalledWith({ preAggregation: true, property: 'prop', predicate: 'pred', parameters: {}}, 'testGroup', 'edge');
+//        });
+//
+//        it('should reset the form', function() {
+//            scope.addAnother();
+//            expect(scope.resetForm).toHaveBeenCalledTimes(1);
+//        });
+//    });
+//
+//    describe('$scope.getFlexValue()', function() {
+//        beforeEach(function() {
+//            createController();
+//        });
+//
+//        it('should return 100 if the availableFunctionParameters length is 1', function() {
+//            scope.filter = { availableFunctionParameters: ["test"] };
+//            expect(scope.getFlexValue()).toEqual(100);
+//        });
+//
+//        it('should return 50 if the availableFunctionParameters length is 2', function() {
+//            scope.filter = { availableFunctionParameters: ['test1', 'test2'] };
+//            expect(scope.getFlexValue()).toEqual(50);
+//        });
+//
+//        it('should return 33 if the availableFunctionParameters length is 3', function() {
+//            scope.filter = { availableFunctionParameters: ['test1', 'test2', 'test3'] };
+//            expect(scope.getFlexValue()).toEqual(33)
+//        });
+//
+//        it('should return 33 if the availableFunctionParameters length is greater than 3', function() {
+//            scope.filter = { availableFunctionParameters: ['1', '2', '3'] };
+//
+//            for(var i = 4; i < 10; i++) {
+//                scope.filter.availableFunctionParameters.push(i.toString());
+//                expect(scope.getFlexValue()).toEqual(33);
+//            }
+//        });
+//
+//        it('should return 0 if the filter is undefined', function() {
+//            scope.filter = undefined;
+//            expect(scope.getFlexValue()).toEqual(0);
+//        });
+//
+//        it('should return 0 if the filter\' available parameters are undefined', function() {
+//            scope.filter = { availableFunctionParameters: undefined };
+//            expect(scope.getFlexValue()).toEqual(0);
+//        })
+//    });
+//
+//    describe('$scope.onSelectedPropertyChange()', function() {
+//
+//        var functions, schema;
+//        var gafferSchema;
+//
+//        beforeEach(inject(function(_functions_, _schema_) {
+//            functions = _functions_;
+//            schema = _schema_;
+//        }));
+//
+//        beforeEach(function() {
+//            spyOn(schema, 'get').and.callFake(function() {
+//                return $q.when(gafferSchema);
+//            })
+//
+//            spyOn(functions, 'getFunctions').and.callFake(function(clazz, cb) {
+//                cb('somePredicates');
+//            });
+//
+//            spyOn(console, 'error').and.stub();
+//        });
+//
+//        beforeEach(function() {
+//            gafferSchema = {
+//                "edges": {
+//                    "testGroup": {
+//                        "properties": {
+//                            "prop1": "unknown.type",
+//                            "prop2": "known.type"
+//                        }
+//                    }
+//                },
+//                "entities": {},
+//                 "types": {
+//                    "known.type": {
+//                        "class": "a.java.Class"
+//                    }
+//                }
+//            }
+//        });
+//
+//        beforeEach(function() {
+//            createController();
+//        });
+//
+//        it('should not make service call if the group is null', function() {
+//            scope.group = null;
+//            scope.filter = { property: "not null"};
+//            scope.onSelectedPropertyChange();
+//            scope.$digest();
+//            expect(functions.getFunctions).not.toHaveBeenCalled();
+//        });
+//
+//        it('should not call onSuccess if the group is undefined', function() {
+//            scope.group = undefined;
+//            scope.filter = { property: "property"};
+//            scope.onSelectedPropertyChange();
+//            scope.$digest();
+//            expect(functions.getFunctions).not.toHaveBeenCalled();
+//        });
+//
+//        it('should not call onSuccess if the property is null', function() {
+//            scope.group = "group";
+//            scope.filter = { property: null};
+//            scope.onSelectedPropertyChange();
+//            scope.$digest();
+//            expect(functions.getFunctions).not.toHaveBeenCalled();
+//        });
+//
+//        it('should not call onSuccess if the group is undefined', function() {
+//            scope.group = "group";
+//            scope.filter = {};
+//            scope.onSelectedPropertyChange();
+//            scope.$digest();
+//            expect(functions.getFunctions).not.toHaveBeenCalled();
+//        });
+//
+//        it('should not make call to service if the type does not exist in the schema', function() {
+//            scope.group = 'testGroup';
+//            scope.filter = { property: 'prop1'};
+//            scope.onSelectedPropertyChange();
+//            scope.$digest();
+//            expect(functions.getFunctions).not.toHaveBeenCalled();
+//            expect(console.error).toHaveBeenCalledWith('No type "unknown.type" was found in the schema');
+//        });
+//
+//        it('should send an error to the console if the group does not exist in the schema', function() {
+//            scope.group = 'unknownGroup';
+//            scope.filter = { property: 'prop'};
+//            scope.onSelectedPropertyChange();
+//            scope.$digest();
+//            expect(functions.getFunctions).not.toHaveBeenCalled();
+//            expect(console.error).toHaveBeenCalledWith('The element group "unknownGroup" does not exist in the schema');
+//        });
+//
+//        it('should send an error to the console if the group does not contain the property', function() {
+//            scope.group = 'testGroup';
+//            scope.filter = { property: 'unknownProperty'};
+//            scope.onSelectedPropertyChange();
+//            scope.$digest();
+//            expect(functions.getFunctions).not.toHaveBeenCalled();
+//            expect(console.error).toHaveBeenCalledWith('The property "unknownProperty" does not exist in the element group "testGroup"');
+//        });
+//
+//        // sunny day tests
+//
+//        it('should make a request to get the valid predicates for that property', function() {
+//            scope.group = 'testGroup';
+//            scope.filter = { property: 'prop2' }
+//            scope.onSelectedPropertyChange();
+//            scope.$digest();
+//            expect(functions.getFunctions).toHaveBeenCalledTimes(1);
+//            expect(functions.getFunctions).toHaveBeenCalledWith('a.java.Class', jasmine.any(Function))
+//        });
+//
+//        it('should set the value of availablePredicates', function() {
+//            scope.group = 'testGroup';
+//            scope.filter = { property: 'prop2' };
+//            scope.onSelectedPropertyChange();
+//            scope.$digest();
+//            expect(scope.availablePredicates).toEqual('somePredicates');
+//        });
+//
+//        it('should set the predicate value to an empty string if called without a flag', function() {
+//            scope.onSelectedPropertyChange();
+//            scope.$digest();
+//            expect(scope.filter.predicate).toEqual('');
+//        });
+//
+//        it('should set the predicate value to an empty string if the editModeInit flag is false', function() {
+//            scope.onSelectedPropertyChange(false);
+//            scope.$digest();
+//            expect(scope.filter.predicate).toEqual('');
+//        });
+//
+//        it('should leave the predicate value alone when initialising in edit mode', function() {
+//            scope.filter.predicate = 'an existing predicate'
+//            scope.onSelectedPropertyChange(true)
+//            scope.$digest();
+//            expect(scope.filter.predicate).toEqual('an existing predicate');
+//        });
+//    });
+//
+//    describe('$scope.onSelectedPredicateChange()', function() {
+//
+//        var schema, functions;
+//        var gafferSchema, params;
+//        var $q;
+//        var originalFilter = {
+//            preAggregation: false,
+//            property: 'testProp',
+//            predicate: 'a.filter.class.Name'
+//        };
+//
+//        beforeEach(inject(function(_functions_, _schema_, _$q_) {
+//            functions = _functions_;
+//            schema = _schema_
+//            $q = _$q_;
+//        }));
+//
+//        beforeEach(function() {
+//            originalFilter = {
+//                preAggregation: false,
+//                property: 'testProp',
+//                predicate: 'a.filter.class.Name'
+//            };
+//        })
+//
+//        beforeEach(function() {
+//            spyOn(schema, 'get').and.callFake(function() {
+//                return $q.when(gafferSchema);
+//            });
+//
+//            spyOn(functions, 'getFunctionParameters').and.callFake(function(fn, callback) {
+//                callback(params);
+//            });
+//        });
+//
+//        beforeEach(function() {
+//            createController();
+//        });
+//
+//        it('should do nothing if the predicate is null', function() {
+//            originalFilter = {
+//                preAggregation: false,
+//                property: 'testProp',
+//                predicate: null
+//            };
+//
+//            scope.filter = originalFilter;
+//            scope.onSelectedPredicateChange();
+//
+//            scope.$digest();
+//            expect(schema.get).not.toHaveBeenCalled();
+//            expect(functions.getFunctionParameters).not.toHaveBeenCalled();
+//
+//            expect(scope.filter).toEqual(originalFilter);
+//        });
+//
+//        it('should do nothing if the predicate is an empty string', function() {
+//            originalFilter = {
+//                preAggregation: false,
+//                property: 'testProp',
+//                predicate: ''
+//            };
+//
+//            scope.filter = originalFilter;
+//            scope.onSelectedPredicateChange();
+//
+//            scope.$digest();
+//            expect(schema.get).not.toHaveBeenCalled();
+//            expect(functions.getFunctionParameters).not.toHaveBeenCalled();
+//
+//            expect(scope.filter).toEqual(originalFilter);
+//        });
+//
+//        it('should do nothing if the predicate is undefined', function() {
+//            originalFilter = {
+//                preAggregation: false,
+//                property: 'testProp',
+//                predicate: undefined
+//            };
+//
+//            scope.filter = originalFilter;
+//            scope.onSelectedPredicateChange();
+//
+//            scope.$digest();
+//            expect(schema.get).not.toHaveBeenCalled();
+//            expect(functions.getFunctionParameters).not.toHaveBeenCalled();
+//
+//            expect(scope.filter).toEqual(originalFilter);
+//        });
+//
+//        it('should query the function parameters and set a value on the filter', function() {
+//            params = ['param1', 'param2'];
+//            scope.filter = originalFilter;
+//            scope.onSelectedPredicateChange();
+//            expect(functions.getFunctionParameters).toHaveBeenCalled();
+//            expect(scope.filter.availableFunctionParameters).toEqual(params);
+//        });
+//
+//        it('should set the filter parameters to an empty object', function() {
+//            params = ['this', 'is', 'a', 'test'];
+//            scope.filter = originalFilter;
+//            scope.onSelectedPredicateChange();
+//            expect(scope.filter.parameters).toEqual({});
+//        });
+//
+//        it('should make a call to the schema service', function() {
+//            scope.filter = originalFilter;
+//            scope.onSelectedPredicateChange();
+//            expect(schema.get).toHaveBeenCalled();
+//        });
+//
+//        describe('When the schema is called', function() {
+//
+//            var resetSchema = function(propClass) {
+//                gafferSchema = {
+//                    "entities": {
+//                        "testGroup": {
+//                            "properties": {
+//                                "testProp": "testPropThing"
+//                            }
+//                        }
+//                    },
+//                    "types": {
+//                        "testPropThing": {
+//                            "class": propClass
+//                        }
+//                    }
+//                };
+//            }
+//
+//            beforeEach(function() {
+//                scope.filter = originalFilter;
+//                scope.propertyClass = "an unset predicate class";
+//                scope.group = "testGroup";
+//            });
+//
+//            it('should set the property class to undefined when the property is a String', function() {
+//                resetSchema("java.lang.String");
+//                scope.onSelectedPredicateChange();
+//                scope.$digest();
+//                expect(scope.propertyClass).toBeUndefined();
+//            });
+//
+//            it('should set the property class to undefined when the property is a Boolean', function() {
+//                resetSchema("java.lang.Boolean");
+//                scope.onSelectedPredicateChange();
+//                scope.$digest();
+//                expect(scope.propertyClass).toBeUndefined();
+//            });
+//
+//            it('should set the property class to undefined when the property is a Integer', function() {
+//                resetSchema("java.lang.Integer");
+//                scope.onSelectedPredicateChange();
+//                scope.$digest();
+//                expect(scope.propertyClass).toBeUndefined();
+//            });
+//
+//            it('should set the property class to any other object', function() {
+//                resetSchema('java.lang.Object');
+//                scope.onSelectedPredicateChange();
+//                scope.$digest();
+//                expect(scope.propertyClass).toEqual('java.lang.Object');
+//            });
+//        })
+//
+//    });
 
 });
-
-
