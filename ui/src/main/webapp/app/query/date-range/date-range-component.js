@@ -29,7 +29,7 @@ function dateRange() {
     }
 }
 
-function DateRangeController(time, common) {
+function DateRangeController(time) {
     var vm = this;
 
     vm.startDate = null;
@@ -91,7 +91,7 @@ function DateRangeController(time, common) {
             return new Date(value);
         }
 
-        var finalValue = common.clone(value);
+        var finalValue = angular.copy(value);
 
         switch(angular.lowercase(vm.conf.filter.unit)) {
             case "microsecond":
