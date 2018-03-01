@@ -25,19 +25,10 @@ angular.module('app').factory('types', ['config', 'common', function(config, com
     config.get().then(function(myConfig) {
         if(myConfig) {
             types = myConfig.types;
-            var simpleClassNamesLowerCase = [];
             for(var className in types) {
                 var parts = className.split('.');
-                if(parts.length > 1) {
-                    var simpleClassName = className.split('.').pop().replace(/<.*>/, "");
-                    if(simpleClassNamesLowerCase.indexOf(simpleClassName) === -1) {
-                        simpleClassNamesLowerCase.push(simpleClassName);
-                        simpleClassNames[simpleClassName] = className;
-                    }
-                }
-            }
-            if('JSON' in types) {
-                simpleClassNames['JSON'] = 'JSON';
+                var simpleClassName = parts.pop().replace(/<.*>/, "");
+                simpleClassNames[simpleClassName] = className;
             }
         }
     });
@@ -117,40 +108,6 @@ angular.module('app').factory('types', ['config', 'common', function(config, com
             return types[typeClass];
         }
         return unknownType;
-    }
-
-    service.getClassName = function(simpleClassName) {
-        var className;
-        if (simpleClassName !== undefined) {
-            var simpleClassNameLowerCase = simpleClassName.toLowerCase()
-            if(simpleClassName in simpleClassNames) {
-                className = simpleClassNames[simpleClassName];
-            } else if(simpleClassName in simpleClassNames) {
-               className = simpleClassNames[simpleClassNameLowerCase];
-            } else {
-                for(var simpleType in simpleClassNames) {
-                    if(simpleType.toLowerCase() === simpleClassNameLowerCase) {
-                        className = simpleClassNames[simpleType];
-                        break;
-                    }
-                }
-            }
-
-            if(className === undefined) {
-                if(simpleClassName in types) {
-                    className = simpleClassName;
-                } else {
-                    for(var type in types) {
-                        if(type.toLowerCase() === simpleClassNameLowerCase) {
-                            className = type;
-                            break;
-                        }
-                    }
-                }
-            }
-        }
-
-        return className;
     }
 
     service.createValue = function(typeClass, parts) {

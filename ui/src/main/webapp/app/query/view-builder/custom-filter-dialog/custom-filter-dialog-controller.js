@@ -87,7 +87,17 @@ angular.module('app').controller('CustomFilterDialogController', ['$scope', '$md
             return rtn;
         }
 
-        return types.getSimpleClassNames();
+        var allTypes = types.getSimpleClassNames();
+
+        var allClasses = {};
+
+        for (var simpleName in allTypes) {
+            if (!(simpleName.toLowerCase() === simpleName)) {
+                allClasses[simpleName] = allTypes[simpleName];
+            }
+        }
+
+        return allClasses;
     }
 
     $scope.updateType = function(param) {
@@ -183,7 +193,7 @@ angular.module('app').controller('CustomFilterDialogController', ['$scope', '$md
                 if(!("valueClass" in $scope.filter.parameters[param])) {
                     var availableTypes = $scope.availableTypes(data[param]);
                     if(Object.keys(availableTypes).length == 1) {
-                        $scope.filter.parameters[param]['valueClass'] = types.getClassName(Object.keys(availableTypes)[0]);
+                        $scope.filter.parameters[param]['valueClass'] = types.getSimpleClassNames()[Object.keys(availableTypes)[0]];
                     } else {
                         setToPropertyClass(param);
                     }
@@ -204,7 +214,7 @@ angular.module('app').controller('CustomFilterDialogController', ['$scope', '$md
             var valueClass;
             var value;
             if(param !== undefined && Object.keys(param).length === 1) {
-                valueClass = types.getClassName(Object.keys(param)[0]);
+                valueClass = types.getSimpleClassNames()[Object.keys(param)[0]];
                 value = Object.values(param)[0];
                 if(valueClass === undefined) {
                     valueClass = "JSON";
