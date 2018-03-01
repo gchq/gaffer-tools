@@ -1,5 +1,5 @@
 describe('The functions service', function() {
-    var service;
+    var service, error;
     var $rootScope, $httpBackend;
 
     beforeEach(module('app'));
@@ -26,11 +26,16 @@ describe('The functions service', function() {
         });
     }));
 
-    beforeEach(inject(function(_functions_, _$rootScope_, _$httpBackend_) {
+    beforeEach(inject(function(_functions_, _$rootScope_, _$httpBackend_, _error_) {
         service = _functions_;
         $rootScope = _$rootScope_;
         $httpBackend = _$httpBackend_;
+        error = _error_
     }));
+
+    beforeEach(function() {
+        spyOn(error, 'handle').and.stub();
+    })
 
     describe('functions.getFunctions()', function() {
         var predicates;
@@ -50,46 +55,11 @@ describe('The functions service', function() {
             expect(predicates).toEqual(['a', 'b', 'c']);
         });
 
-        it('should log the error if something goes wrong with the request', function() {
-            spyOn(console, 'log').and.stub();
-
-            $httpBackend.expectGET('http://localhost:8080/rest/latest/graph/config/filterFunctions/a.java.Class').respond(500, '{"simpleMessage": "something went really wrong"}');
+        it('should make a call to the error message with the context and error', function() {
+            $httpBackend.expectGET('http://localhost:8080/rest/latest/graph/config/filterFunctions/a.java.Class').respond(500, {"simpleMessage": "something went really wrong"});
             service.getFunctions('a.java.Class', onSuccess);
             $httpBackend.flush();
-            expect(console.log).toHaveBeenCalledWith({"simpleMessage": "something went really wrong"});
-        });
-
-        it('should alert the user if something goes wrong with the request', function() {
-            spyOn(window, 'alert').and.stub();
-
-            $httpBackend.expectGET('http://localhost:8080/rest/latest/graph/config/filterFunctions/a.java.Class').respond(500, '{"simpleMessage": "something went really wrong"}');
-            service.getFunctions('a.java.Class', onSuccess);
-            $httpBackend.flush();
-            expect(window.alert).toHaveBeenCalledWith('Error loading functions for class "a.java.Class".\nsomething went really wrong');
-        });
-
-        it('should alert the user if the error that comes back is an empty string', function() {
-            spyOn(window, 'alert').and.stub();
-            $httpBackend.expectGET('http://localhost:8080/rest/latest/graph/config/filterFunctions/a.java.Class').respond(500, '');
-            service.getFunctions('a.java.Class', onSuccess);
-            $httpBackend.flush();
-            expect(window.alert).toHaveBeenCalledWith('Error loading functions for class "a.java.Class".\n');
-        });
-
-        it('should alert the user if the error that comes back is null', function() {
-            spyOn(window, 'alert').and.stub();
-            $httpBackend.expectGET('http://localhost:8080/rest/latest/graph/config/filterFunctions/a.java.Class').respond(500, null);
-            service.getFunctions('a.java.Class', onSuccess);
-            $httpBackend.flush();
-            expect(window.alert).toHaveBeenCalledWith('Error loading functions for class "a.java.Class".\n');
-        });
-
-        it('should alert the user if the error that comes back is undefined', function() {
-            spyOn(window, 'alert').and.stub();
-            $httpBackend.expectGET('http://localhost:8080/rest/latest/graph/config/filterFunctions/a.java.Class').respond(500, undefined);
-            service.getFunctions('a.java.Class', onSuccess);
-            $httpBackend.flush();
-            expect(window.alert).toHaveBeenCalledWith('Error loading functions for class "a.java.Class".\n');
+            expect(error.handle).toHaveBeenCalledWith('Could not retrieve filter functions for a.java.Class', {"simpleMessage": "something went really wrong"});
         });
     });
 
@@ -111,46 +81,11 @@ describe('The functions service', function() {
             expect(fields).toEqual(['a', 'b', 'c']);
         });
 
-        it('should log the error if something goes wrong with the request', function() {
-            spyOn(console, 'log').and.stub();
-
-            $httpBackend.expectGET('http://localhost:8080/rest/latest/graph/config/serialisedFields/a.java.Class').respond(500, '{"simpleMessage": "something went really wrong"}');
+        it('should make a call to the error message with the context and error if the query fails', function() {
+            $httpBackend.expectGET('http://localhost:8080/rest/latest/graph/config/serialisedFields/a.java.Class').respond(500, {"simpleMessage": "something went badly wrong"});
             service.getFunctionParameters('a.java.Class', onSuccess);
             $httpBackend.flush();
-            expect(console.log).toHaveBeenCalledWith({"simpleMessage": "something went really wrong"});
-        });
-
-        it('should alert the user if something goes wrong with the request', function() {
-            spyOn(window, 'alert').and.stub();
-
-            $httpBackend.expectGET('http://localhost:8080/rest/latest/graph/config/serialisedFields/a.java.Class').respond(500, '{"simpleMessage": "something went really wrong"}');
-            service.getFunctionParameters('a.java.Class', onSuccess);
-            $httpBackend.flush();
-            expect(window.alert).toHaveBeenCalledWith('Failed to get serialised fields for a.java.Class.\nsomething went really wrong');
-        });
-
-        it('should alert the user if the error that comes back is an empty string', function() {
-            spyOn(window, 'alert').and.stub();
-            $httpBackend.expectGET('http://localhost:8080/rest/latest/graph/config/serialisedFields/a.java.Class').respond(500, '');
-            service.getFunctionParameters('a.java.Class', onSuccess);
-            $httpBackend.flush();
-            expect(window.alert).toHaveBeenCalledWith('Failed to get serialised fields for a.java.Class.\n');
-        });
-
-        it('should alert the user if the error that comes back is null', function() {
-            spyOn(window, 'alert').and.stub();
-            $httpBackend.expectGET('http://localhost:8080/rest/latest/graph/config/serialisedFields/a.java.Class').respond(500, null);
-            service.getFunctionParameters('a.java.Class', onSuccess);
-            $httpBackend.flush();
-            expect(window.alert).toHaveBeenCalledWith('Failed to get serialised fields for a.java.Class.\n');
-        });
-
-        it('should alert the user if the error that comes back is undefined', function() {
-            spyOn(window, 'alert').and.stub();
-            $httpBackend.expectGET('http://localhost:8080/rest/latest/graph/config/serialisedFields/a.java.Class').respond(500, undefined);
-            service.getFunctionParameters('a.java.Class', onSuccess);
-            $httpBackend.flush();
-            expect(window.alert).toHaveBeenCalledWith('Failed to get serialised fields for a.java.Class.\n');
+            expect(error.handle).toHaveBeenCalledWith('Could not get serialised fields for a.java.Class', {"simpleMessage": "something went badly wrong"});
         });
     });
 });

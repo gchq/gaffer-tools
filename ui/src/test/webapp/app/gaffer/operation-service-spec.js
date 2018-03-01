@@ -249,11 +249,17 @@ describe('The operation service', function() {
 
         describe('When the request to /graph/operations fails', function() {
 
+            var error;
+
+            beforeEach(inject(function(_error_) {
+                error = _error_;
+            }));
+
             beforeEach(function() {
-                spyOn(window, 'alert').and.stub();
+                spyOn(error, 'handle').and.stub();
             });
 
-            it('should alert the user if the a gaffer error comes back', function() {
+            it('should make a call to the error service', function() {
                 $httpBackend.expectGET('http://gaffer/rest/latest/graph/operations').respond(500, { simpleMessage: 'Boom!'});
 
                 service.reloadNamedOperations().then(function(availableOperations) {
@@ -262,57 +268,7 @@ describe('The operation service', function() {
 
                 $httpBackend.flush();
 
-                expect(window.alert).toHaveBeenCalledWith('Error running /graph/operations: Boom!');
-            });
-
-            it('should alert the user if the error that comes back is an empty string', function() {
-                $httpBackend.expectGET('http://gaffer/rest/latest/graph/operations').respond(500, '');
-
-                service.reloadNamedOperations().then(function(availableOperations) {
-                    // don't care for the purpose of this test
-                })
-
-                $httpBackend.flush();
-
-                expect(window.alert).toHaveBeenCalledWith('Error running /graph/operations - received no response');
-            });
-
-            it('should alert the user if the error that comes back is undefined', function() {
-                $httpBackend.expectGET('http://gaffer/rest/latest/graph/operations').respond(500, undefined);
-
-                service.reloadNamedOperations().then(function(availableOperations) {
-                    // don't care for the purpose of this test
-                })
-
-                $httpBackend.flush();
-
-                expect(window.alert).toHaveBeenCalledWith('Error running /graph/operations - received no response');
-            });
-
-            it('should alert the user if the error that comes back is null', function() {
-                $httpBackend.expectGET('http://gaffer/rest/latest/graph/operations').respond(500, null);
-
-                service.reloadNamedOperations().then(function(availableOperations) {
-                    // don't care for the purpose of this test
-                })
-
-                $httpBackend.flush();
-
-                expect(window.alert).toHaveBeenCalledWith('Error running /graph/operations - received no response');
-            });
-
-            it('should log an error to the console', function() {
-                 $httpBackend.expectGET('http://gaffer/rest/latest/graph/operations').respond(500, 'test');
-
-                 spyOn(console, 'log').and.stub();
-
-                 service.reloadNamedOperations().then(function(availableOperations) {
-                     // don't care for the purpose of this test
-                 });
-
-                 $httpBackend.flush();
-
-                 expect(console.log).toHaveBeenCalledWith('test');
+                expect(error.handle).toHaveBeenCalledWith('Error getting available graph operations', { simpleMessage: 'Boom!'});
             });
 
             it('should return the available operations', function() {
