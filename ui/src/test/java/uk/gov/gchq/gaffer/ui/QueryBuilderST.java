@@ -13,7 +13,6 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxProfile;
-
 import uk.gov.gchq.gaffer.exception.SerialisationException;
 import uk.gov.gchq.gaffer.graph.Graph;
 import uk.gov.gchq.gaffer.jsonserialisation.JSONSerialiser;
@@ -159,6 +158,24 @@ public class QueryBuilderST {
             assertTrue("Results did not contain: \n" + expectedResult
                     + "\nActual results: \n" + results, results.contains(expectedResult));
         }
+    }
+
+    @Test
+    public void shouldNotThrowErrorIfPageIsReloadedWithCustomView() throws InterruptedException, SerialisationException {
+        selectOptionWithAriaLabel("operation-name", "Get Elements");
+        enterText("seedVertex", "M5");
+        click("add-seeds");
+        click("create-custom-filter");
+        selectMultiOption("view-entities", "Cardinality");
+        click("open-graph");
+        click("open-query");
+        click("Execute Query");
+        click("open-raw");
+        clickTab("Results");
+        String result = getElement("raw-entity-results").getText().trim();
+        JSONSerialiser json = JSONSerialiser.getInstance();
+        List results = json.deserialise(result, List.class);
+        assertEquals(1, results.size());
     }
 
     @Test
