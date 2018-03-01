@@ -12,7 +12,7 @@
                 <md-select id="view-entities" class="no-ellipsis" multiple
                            md-selected-text="ctrl.createViewElementsLabel(ctrl.viewEntities, 'entities')"
                            ng-model="ctrl.viewEntities"
-                           md-on-close="ctrl.onElementGroupChange('entity')"
+                           ng-change="ctrl.onElementGroupChange('entity')"
                            data-md-container-class="searchable-select">
                     <md-select-header class="search-header">
                         <input
@@ -33,7 +33,7 @@
                 <md-select id="view-edges" class="no-ellipsis" multiple
                            md-selected-text="ctrl.createViewElementsLabel(ctrl.viewEdges, 'edges')"
                            ng-model="ctrl.viewEdges"
-                           md-on-close="ctrl.onElementGroupChange('edge')"
+                           ng-change="ctrl.onElementGroupChange('edge')"
                            data-md-container-class="searchable-select">
                     <md-select-header class="search-header">
                         <input
