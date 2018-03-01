@@ -6,6 +6,16 @@
       "unit": "millisecond",
       "startProperty": "startDate",
       "endProperty": "endDate"
+    },
+    "properties": {
+      "startDate": {
+        "class": "java.lang.Long",
+        "unit": "millisecond"
+      },
+      "endDate": {
+        "class": "java.lang.Long",
+        "unit": "millisecond"
+      }
     }
   }
 }

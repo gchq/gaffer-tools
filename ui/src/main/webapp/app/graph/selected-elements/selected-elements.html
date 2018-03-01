@@ -20,7 +20,7 @@
                     </td>
                     <td md-cell>
                         <p ng-repeat="(key, value) in entity.properties">
-                            {{key}}: {{ctrl.resolve(value)}}
+                            {{key}}: {{ctrl.resolve(key, value)}}
                         </p>
                     </td>
                 </tr>
@@ -37,7 +37,7 @@
                     </td>
                     <td md-cell>
                         <p ng-repeat="(key, value) in edge.properties">
-                            {{key}}: {{ctrl.resolve(value)}}
+                            {{key}}: {{ctrl.resolve(key, value)}}
                         </p>
                     </td>
                 </tr>

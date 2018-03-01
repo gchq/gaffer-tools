@@ -241,5 +241,4 @@ angular.module('app').factory('types', ['config', 'common', function(config, com
     }
 
     return service;
-
 }]);
