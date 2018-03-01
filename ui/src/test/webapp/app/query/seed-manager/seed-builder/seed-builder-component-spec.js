@@ -187,12 +187,19 @@ describe('The seed builder component', function() {
                 })
 
                 describe('via the multi-seed textarea', function() {
+
+                    var error;
+
+                    beforeEach(inject(function(_error_) {
+                        error = _error_;
+                    }));
+
                     beforeEach(function() {
                         spyOn(types, 'getFields').and.returnValue([{"key": "type"}, {"key": "value"}]);
                     });
 
                     beforeEach(function() {
-                        spyOn(window, 'alert');
+                        spyOn(error, 'handle').and.stub();
                     });
 
                     beforeEach(function() {
@@ -204,23 +211,23 @@ describe('The seed builder component', function() {
                         ctrl.seedVertices = 'singleValue';
                         ctrl.addSeeds();
 
-                        expect(window.alert).toHaveBeenCalledTimes(1);
-                        expect(window.alert).toHaveBeenCalledWith("Wrong number of parameters for seed: singleValue. someClass requires 2 parameters")
+                        expect(error.handle).toHaveBeenCalledTimes(1);
+                        expect(error.handle).toHaveBeenCalledWith("Wrong number of parameters for seed: singleValue. someClass requires 2 parameters")
                     });
 
                     it('should alert the user if too many csv fields are present', function() {
                         ctrl.seedVertices = 'value1,value2,value3'
                         ctrl.addSeeds();
 
-                        expect(window.alert).toHaveBeenCalledTimes(1);
-                        expect(window.alert).toHaveBeenCalledWith("Wrong number of parameters for seed: value1,value2,value3. someClass requires 2 parameters")
+                        expect(error.handle).toHaveBeenCalledTimes(1);
+                        expect(error.handle).toHaveBeenCalledWith("Wrong number of parameters for seed: value1,value2,value3. someClass requires 2 parameters")
                     });
 
                     it('should add multiple seeds if the vertices contain the right number of fields', function() {
                         ctrl.seedVertices = "value1,value2\nvalue3,value4";
                         ctrl.addSeeds();
 
-                        expect(window.alert).not.toHaveBeenCalled();
+                        expect(error.handle).not.toHaveBeenCalled();
                         expect(graph.addSeed).toHaveBeenCalledTimes(2);
                         expect(graph.addSeed).toHaveBeenCalledWith({"someClass": {"type": "value1", "value": "value2"}})
                         expect(graph.addSeed).toHaveBeenCalledWith({"someClass": {"type": "value3", "value": "value4"}})

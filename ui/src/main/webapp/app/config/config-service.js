@@ -16,20 +16,21 @@
 
 'use strict';
 
-angular.module('app').factory('config', ['$http', '$q', 'defaultRestEndpoint', function($http, $q, defaultRestEndpoint) {
+angular.module('app').factory('config', ['$http', '$q', 'defaultRestEndpoint', 'error', function($http, $q, defaultRestEndpoint, error) {
 
     var configService = {};
 
     var config;
+    var defer;
 
     configService.get = function() {
-        var defer = $q.defer();
-
         if (config) {
-            defer.resolve(config);
-        } else {
-            load(defer)
+            return $q.when(config);
+        } else if (!defer) {
+            defer = $q.defer();
+            load();
         }
+
         return defer.promise;
     }
 
@@ -37,7 +38,8 @@ angular.module('app').factory('config', ['$http', '$q', 'defaultRestEndpoint', f
         config = conf;
     }
 
-    var load = function(defer) {
+
+    var load = function() {
         $http.get('config/defaultConfig.json')
             .success(function(defaultConfig) {
                 if(defaultConfig === undefined) {
@@ -66,14 +68,12 @@ angular.module('app').factory('config', ['$http', '$q', 'defaultRestEndpoint', f
                     })
                     .error(function(err) {
                         defer.reject(err);
-                        console.log(err);
-                        alert("Failed to load custom config");
+                        error.handle("Failed to load custom config", err);
                 });
             })
             .error(function(err) {
                 defer.reject(err);
-                console.log(err);
-                alert("Failed to load default config");
+                error.handle("Failed to load config", err);
         });
     }
 

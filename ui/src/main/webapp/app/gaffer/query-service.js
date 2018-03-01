@@ -16,7 +16,7 @@
 
 'use strict';
 
-angular.module('app').factory('query', ['$http', 'config', 'events', 'common', function($http, config, events, common) {
+angular.module('app').factory('query', ['$http', 'config', 'events', 'common', 'error', function($http, config, events, common, error) {
 
     var query = {};
 
@@ -41,22 +41,7 @@ angular.module('app').factory('query', ['$http', 'config', 'events', 'common', f
                     if (onFailure) {
                         onFailure(err);
                     } else {
-                        var errorString = 'Error executing operation';
-                        if (err && err !== "") {
-                            console.log(err);
-                            var msg;
-                            if(typeof err === 'string' || err instanceof String) {
-                                msg = err;
-                            } else {
-                                msg = err.simpleMessage;
-                                if(!msg) {
-                                    msg = err.message;
-                                }
-                            }
-                            alert(errorString + ": " + msg);
-                        } else {
-                            alert(errorString);
-                        }
+                        error.handle('Error running operation', err);
                     }
             });
 

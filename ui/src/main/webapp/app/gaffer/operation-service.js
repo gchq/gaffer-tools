@@ -16,34 +16,43 @@
 
 'use strict';
 
-angular.module('app').factory('operationService', ['$http', '$q', 'settings', 'config', 'query', 'types', 'common', function($http, $q, settings, config, query, types, common) {
+angular.module('app').factory('operationService', ['$http', '$q', 'settings', 'config', 'query', 'types', 'common', 'error', function($http, $q, settings, config, query, types, common, error) {
 
     var operationService = {};
 
     var availableOperations;
     var namedOpClass = "uk.gov.gchq.gaffer.named.operation.NamedOperation";
-    var defer = $q.defer();
+    var deferredAvailableOperations;
+    var deferredNamedOperationsQueue = [];
+
 
     operationService.getAvailableOperations = function() {
-        var defer = $q.defer();
         if (availableOperations) {
-            defer.resolve(availableOperations);
-        } else {
+            return $q.when(availableOperations);
+        } else if (!deferredAvailableOperations) {
+
+            deferredAvailableOperations = $q.defer();
             config.get().then(function(conf) {
-                if (conf.operations) {
+                if (conf.operations && conf.operations.defaultAvailable) {
                     availableOperations = conf.operations.defaultAvailable;
-                    defer.resolve(availableOperations);
+                    deferredAvailableOperations.resolve(availableOperations);
                 } else {
-                    defer.reject([]);
+                    deferredAvailableOperations.resolve([]);
                 }
             });
-
         }
-        return defer.promise;
+
+        return deferredAvailableOperations.promise;
     }
 
     var opAllowed = function(opName, configuredOperations) {
+        if (!configuredOperations) {
+            return true; // allow all by default
+        }
+
+
         var allowed = true;
+
         var whiteList = configuredOperations.whiteList;
         var blackList = configuredOperations.blackList;
 
@@ -59,7 +68,7 @@ angular.module('app').factory('operationService', ['$http', '$q', 'settings', 'c
     var updateNamedOperations = function(results) {
         availableOperations = [];
         config.get().then(function(conf) {
-            var defaults = conf.operations.defaultAvailable;
+            var defaults = conf.operations && conf.operations.defaultAvailable ? conf.operations.defaultAvailable : [];
             for(var i in defaults) {
                 if(opAllowed(defaults[i].name, conf.operations)) {
                     availableOperations.push(defaults[i]);
@@ -95,12 +104,19 @@ angular.module('app').factory('operationService', ['$http', '$q', 'settings', 'c
                 }
 
             }
-            defer.resolve(availableOperations);
+            for (var i in deferredNamedOperationsQueue) {
+                deferredNamedOperationsQueue[i].resolve(availableOperations);
+            }
+
+            deferredNamedOperationsQueue = [];
         });
     }
 
     operationService.reloadNamedOperations = function(loud) {
-        defer = $q.defer();
+        var deferred = $q.defer();
+
+        deferredNamedOperationsQueue.push(deferred);
+
         var getAllClass = "uk.gov.gchq.gaffer.named.operation.GetAllNamedOperations";
         operationService.ifOperationSupported(getAllClass, function() {
             query.execute(JSON.stringify(
@@ -113,8 +129,7 @@ angular.module('app').factory('operationService', ['$http', '$q', 'settings', 'c
             function(err) {
                 updateNamedOperations([]);
                 if (loud) {
-                    console.log(err);
-                    alert('Failed to reload named operations: ' + err.simpleMessage);
+                    error.handle('Failed to load named operations', err);
                 }
             });
 
@@ -123,7 +138,7 @@ angular.module('app').factory('operationService', ['$http', '$q', 'settings', 'c
             updateNamedOperations([]);
         });
 
-        return defer.promise;
+        return deferred.promise;
     }
 
     operationService.ifOperationSupported = function(operationClass, onSupported, onUnsupported) {
@@ -139,22 +154,22 @@ angular.module('app').factory('operationService', ['$http', '$q', 'settings', 'c
                     onUnsupported();
                 })
                 .error(function(err) {
-                    if (err !== "") {
-                        console.log(err);
-                        alert("Error running /graph/operations: " + err.simpleMessage);
-                    } else {
-                        alert("Error running /graph/operations - received no response");
-                    }
+                    error.handle('Error getting available graph operations', err);
                     onUnsupported();
             });
         })
     }
 
     operationService.createGetSchemaOperation = function() {
+        var options = settings.getDefaultOpOptions();
+        if (!options) {
+            options = {};
+        }
+
         return {
             class: "uk.gov.gchq.gaffer.store.operation.GetSchema",
             compact: false,
-            options: settings.getDefaultOpOptions()
+            options: options
         };
     }
 

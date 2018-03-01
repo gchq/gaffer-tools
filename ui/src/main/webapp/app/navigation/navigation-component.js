@@ -26,7 +26,7 @@ function navBar() {
     };
 }
 
-function NavigationController($rootScope, $mdDialog, navigation, graph, operationService, results, query, config, loading, events, properties) {
+function NavigationController($rootScope, $mdDialog, navigation, graph, operationService, results, query, config, loading, events, properties, error) {
     var vm = this;
     vm.addMultipleSeeds = false;
     vm.appTitle;
@@ -79,19 +79,17 @@ function NavigationController($rootScope, $mdDialog, navigation, graph, operatio
     }
 
     var recursivelyExecuteOperations = function(opIndex, ops) {
-        try {
-            query.execute(JSON.stringify({
-                class: "uk.gov.gchq.gaffer.operation.OperationChain",
-                operations: [ops[opIndex], operationService.createLimitOperation(ops[opIndex]['options']), operationService.createDeduplicateOperation(ops[opIndex]['options'])]
-            }), function(data) {
-                results.update(data);
-                if((opIndex + 1) < ops.length) {
-                    recursivelyExecuteOperations(opIndex + 1, ops);
-                } else {
-                    loading.finish();
-                }
-            });
-        } catch(e) {
+        query.execute(JSON.stringify({
+            class: "uk.gov.gchq.gaffer.operation.OperationChain",
+            operations: [ops[opIndex], operationService.createLimitOperation(ops[opIndex]['options']), operationService.createDeduplicateOperation(ops[opIndex]['options'])]
+        }), function(data) {
+            results.update(data);
+            if((opIndex + 1) < ops.length) {
+                recursivelyExecuteOperations(opIndex + 1, ops);
+            } else {
+                loading.finish();
+            }
+        }, function(err) {
             // Try without the limit and deduplicate operations
             query.execute(JSON.stringify({
                 class: "uk.gov.gchq.gaffer.operation.OperationChain",
@@ -103,8 +101,11 @@ function NavigationController($rootScope, $mdDialog, navigation, graph, operatio
                 } else {
                     loading.finish();
                 }
+            },  function(err) {
+                loading.finish();
+                error.handle('Error executing operation', err);
             });
-       }
+        });
     }
     vm.executeAll = function() {
         results.clear();

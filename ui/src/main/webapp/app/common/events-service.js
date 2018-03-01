@@ -23,11 +23,16 @@ angular.module('app').factory('events', ['common', function(common) {
     var events = {};
 
     service.subscribe = function(eventName, callback) {
+
+        if (typeof callback !== 'function') {
+            return;
+        }
+
         if (!events[eventName]) {
             events[eventName] = [];
         }
 
-        if (!common.arrayContainsObject(callback)) {
+        if (!common.arrayContainsObject(events[eventName], callback)) {
             events[eventName].push(callback);
         }
     }

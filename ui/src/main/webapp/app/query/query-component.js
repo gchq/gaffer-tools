@@ -27,7 +27,7 @@ function query() {
     };
 }
 
-function QueryController(queryPage, operationService, types, graph, config, settings, query, functions, results, navigation, $mdDialog, loading, time, view) {
+function QueryController(queryPage, operationService, types, graph, config, settings, query, functions, results, navigation, $mdDialog, loading, time, view, error) {
     var namedViewClass = "uk.gov.gchq.gaffer.data.elementdefinition.view.NamedView";
     var vm = this;
     vm.timeConfig;
@@ -72,22 +72,7 @@ function QueryController(queryPage, operationService, types, graph, config, sett
             }
         }, function(err) {
             loading.finish();
-            var errorString = 'Error executing operation';
-            if (err && err !== "") {
-                console.log(err);
-                var msg;
-                if(typeof err === 'string' || err instanceof String) {
-                    msg = err;
-                } else {
-                    msg = err.simpleMessage;
-                    if(!msg) {
-                        msg = err.message;
-                    }
-                }
-                alert(errorString + ": " + msg);
-            } else {
-                alert(errorString);
-            }
+            error.handle('Error executing operation', err);
         });
     }
 

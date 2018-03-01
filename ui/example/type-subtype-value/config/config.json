@@ -1,0 +1,11 @@
+{
+  "title": "TypeSubTypeValue Example",
+  "time": {
+    "filter": {
+      "class": "java.util.Date",
+      "unit": "millisecond",
+      "startProperty": "startDate",
+      "endProperty": "endDate"
+    }
+  }
+}
