@@ -30,6 +30,12 @@ function settingsView() {
 function SettingsController(settings, schema, operationService, results) {
     var vm = this;
 
+    vm.resultLimit = settings.getResultLimit()
+    vm.opOptionKeys = {};
+    vm.defaultOpOptions = {};
+    vm.defaultOpOptionsArray = [];
+
+
     var updateDefaultOpOptionsArray = function() {
         vm.defaultOpOptions = settings.getDefaultOpOptions();
         vm.defaultOpOptionsArray = [];
@@ -50,20 +56,8 @@ function SettingsController(settings, schema, operationService, results) {
         settings.setDefaultOpOptions(vm.defaultOpOptions);
     }
 
-    vm.resultLimit = settings.getResultLimit()
-    vm.defaultOp = settings.getDefaultOp();
-
-    vm.opOptionKeys = {};
-    vm.defaultOpOptions = {};
-    vm.defaultOpOptionsArray = [];
-    updateDefaultOpOptionsArray();
-
     vm.updateResultLimit = function() {
         settings.setResultLimit(vm.resultLimit);
-    }
-
-    vm.updateDefaultOp = function() {
-        settings.setDefaultOp(vm.defaultOp);
     }
 
     vm.updateDefaultOpOptions = function() {
@@ -113,5 +107,7 @@ function SettingsController(settings, schema, operationService, results) {
         settings.getOpOptionKeys().then(function(keys) {
             vm.opOptionKeys = keys;
         });
+
+        updateDefaultOpOptionsArray();
     }
 }

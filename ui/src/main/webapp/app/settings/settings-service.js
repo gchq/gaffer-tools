@@ -20,7 +20,6 @@ angular.module('app').factory('settings', ['$q', 'config', 'events', function($q
     var settings = {};
 
     var resultLimit = 100;
-    var defaultOp = "uk.gov.gchq.gaffer.operation.impl.get.GetElements";
     var defaultOpOptions = {};
     var opOptionKeys;
     var defaultOpOptionsUpdateListeners = [];
@@ -31,14 +30,6 @@ angular.module('app').factory('settings', ['$q', 'config', 'events', function($q
 
     settings.setResultLimit = function(limit) {
         resultLimit = limit;
-    }
-
-    settings.getDefaultOp = function() {
-        return defaultOp;
-    }
-
-    settings.setDefaultOp = function(op) {
-        defaultOp = op;
     }
 
     settings.getDefaultOpOptions = function() {
