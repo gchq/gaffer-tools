@@ -26,7 +26,7 @@ function selectedElements() {
     }
 }
 
-function SelectedElementsController($scope, $timeout, events, graph, types, schema) {
+function SelectedElementsController($scope, $timeout, events, graph, types, schema, time) {
     var vm = this;
 
     vm.selectedEdges = graph.getSelectedEdges();
@@ -53,10 +53,12 @@ function SelectedElementsController($scope, $timeout, events, graph, types, sche
         });
     }
 
-
-
-    vm.resolve = function(value) {
-        return types.getShortValue(value);
+    vm.resolve = function(propName, value) {
+        var shortValue = types.getShortValue(value);
+        if(time.isTimeProperty(propName)) {
+            shortValue = time.getDateString(propName, shortValue);
+        }
+        return shortValue;
     }
 
     vm.resolveVertex = function(value) {

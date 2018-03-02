@@ -16,9 +16,8 @@
 
 'use strict'
 
-angular.module('app').factory('table', ['common', 'events', 'types', function(common, events, types) {
+angular.module('app').factory('table', ['common', 'events', 'types', 'time', function(common, events, types, time) {
     var table = {};
-
     var tableData = {entities: {}, edges: {}, entitySeeds: [], other: []};
 
     table.getData = function() {
@@ -40,7 +39,12 @@ angular.module('app').factory('table', ['common', 'events', 'types', function(co
 
         var props = Object.keys(properties);
         for (var i in props) {
-            summarisedProperties[props[i]] = types.getShortValue(properties[props[i]]);
+            var propName = props[i];
+            var shortValue = types.getShortValue(properties[propName]);
+            if(time.isTimeProperty(propName)) {
+                shortValue = time.getDateString(propName, shortValue);
+            }
+            summarisedProperties[propName] = shortValue;
         }
 
         return summarisedProperties;
