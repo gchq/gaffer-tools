@@ -36,14 +36,19 @@ angular.module('app').factory('time', ['config', function(config) {
     });
 
     service.isValidUnit = function(unit) {
+        var unitLowercase = angular.lowercase(unit);
         var valid = false;
         for (var i in validUnits) {
-            if (unit === validUnits[i]) {
+            if (unitLowercase === validUnits[i]) {
                 valid = true;
                 break;
             }
         }
         return valid;
+    }
+
+    service.getUnitErrorMsg = function(unit) {
+        return 'Unknown time unit - ' + unit + '. Must be one of: day, hour, minute, second, millisecond or microsecond (defaults to millisecond)';
     }
 
     service.isTimeProperty = function(propName) {
@@ -64,14 +69,11 @@ angular.module('app').factory('time', ['config', function(config) {
     }
 
     service.convertNumberToDate = function(value, unit) {
-
         if (!unit || angular.lowercase(unit) === 'millisecond') {
             return new Date(value);
         }
-
         var finalValue = angular.copy(value);
-
-        switch(angular.lowercase(vm.conf.filter.unit)) {
+        switch(angular.lowercase(unit)) {
             case "microsecond":
                 finalValue = Math.floor(finalValue / 1000);
                 break;
@@ -88,17 +90,14 @@ angular.module('app').factory('time', ['config', function(config) {
                 finalValue = finalValue * 86400000;
                 break;
         }
-
         return new Date(finalValue);
     }
 
     service.convertDateToNumber = function(date, unit) {
         var time = date.getTime();
-
         if (!unit || angular.lowercase(unit) === 'millisecond') {
             return time;
         }
-
         switch(angular.lowercase(unit)) {
             case "microsecond":
                 time = time * 1000;
@@ -116,7 +115,6 @@ angular.module('app').factory('time', ['config', function(config) {
                 time = Math.floor(time / 86400000);
                 break;
         }
-
         return time;
     }
 

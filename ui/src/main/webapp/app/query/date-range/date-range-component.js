@@ -52,21 +52,19 @@ function DateRangeController(dateRange, time) {
             throw 'Config Error: You must specify the class for the start and end';
         }
         if (vm.conf.filter.unit) {
-            var unit = angular.lowercase(vm.conf.filter.unit);
-
-            var valid = time.isValidUnit(unit);
+            var valid = time.isValidUnit(vm.conf.filter.unit);
             if (!valid) {
-                throw 'Config Error: Unknown time unit - ' + vm.conf.filter.unit + '. Must be one of: day, hour, minute, second, millisecond or microsecond (defaults to millisecond)';
+                throw 'Config Error: ' + time.getUnitErrorMsg(vm.conf.filter.unit);
             }
         }
 
         var start = dateRange.getStartDate();
         if (start) {
-            vm.startDate = convertNumberToDate(start, vm.conf.filter.unit);
+            vm.startDate = time.convertNumberToDate(start, vm.conf.filter.unit);
         }
         var end = dateRange.getEndDate();
         if(end) {
-            vm.endDate = convertNumberToDate(end, vm.conf.filter.unit);
+            vm.endDate = time.convertNumberToDate(end, vm.conf.filter.unit);
         }
     }
 
