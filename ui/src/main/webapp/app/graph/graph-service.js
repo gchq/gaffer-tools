@@ -198,7 +198,7 @@ angular.module('app').factory('graph', ['schema', 'types', '$q', 'results', 'com
     graph.update = function(results) {
         graphData = { entities: {}, edges: {}, entitySeeds: [] };
         for (var i in results.entities) {
-            var entity = common.clone(results.entities[i]);
+            var entity = angular.copy(results.entities[i]);
             entity.vertex = common.parseVertex(entity.vertex);
             var id = entity.vertex;
             if(id in graphData.entities) {
@@ -211,7 +211,7 @@ angular.module('app').factory('graph', ['schema', 'types', '$q', 'results', 'com
         }
 
         for (var i in results.edges) {
-            var edge = common.clone(results.edges[i]);
+            var edge = angular.copy(results.edges[i]);
             edge.source = common.parseVertex(edge.source);
             edge.destination = common.parseVertex(edge.destination);
             var id = edge.source + "|" + edge.destination + "|" + edge.directed + "|" + edge.group;

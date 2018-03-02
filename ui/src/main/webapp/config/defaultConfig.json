@@ -147,7 +147,8 @@
           "required": true
         }
       ],
-      "custom": true
+      "custom": true,
+      "wrapInJson": true
     }
   }
 }

@@ -30,6 +30,7 @@
         <standalone-port>8080</standalone-port>
         <selenium.version>3.4.0</selenium.version>
         <jasmine.plugin.version>2.2</jasmine.plugin.version>
+        <jasmine.test.paths>**/*-spec.js</jasmine.test.paths>
     </properties>
 
     <dependencies>
@@ -92,8 +93,8 @@
                     </sourceIncludes>
                     <jsTestSrcDir>src/test/webapp/app</jsTestSrcDir>
                     <specIncludes>
-                        <include>**/*-spec.js</include>
                         <include>*-spec.js</include>
+                        <include>${jasmine.test.paths}</include>
                     </specIncludes>
                     <preloadSources>
                         <source>${project.build.directory}/${project.build.finalName}/lib/angular/js/angular.min.js</source>
@@ -213,15 +214,9 @@
                                 <gaffer.rest-api.basePath>
                                     ${standalone-rest-path}
                                 </gaffer.rest-api.basePath>
-                                <gaffer.graph.library.class>
-                                    uk.gov.gchq.gaffer.store.library.FileGraphLibrary
-                                </gaffer.graph.library.class>
-                                <gaffer.graph.library.config>
-                                    ${project.build.outputDirectory}/graphLibrary
-                                </gaffer.graph.library.config>
-                                <gaffer.graph.id>
-                                    roadTraffic
-                                </gaffer.graph.id>
+                                <gaffer.graph.config>
+                                    ${project.basedir}/example/road-traffic/graphConfig.json
+                                </gaffer.graph.config>
                                 <gaffer.schemas>
                                     ${project.basedir}/example/road-traffic/schema
                                 </gaffer.schemas>
@@ -339,6 +334,144 @@
                                 </goals>
                             </execution>
                         </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+        <profile>
+            <id>type-subtype-value</id>
+            <properties>
+                <maven.test.skip>true</maven.test.skip>
+            </properties>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-war-plugin</artifactId>
+                        <version>${maven-war-plugin.version}</version>
+                        <configuration>
+                            <webResources>
+                                <resource>
+                                    <directory>dependencies</directory>
+                                </resource>
+                                <resource>
+                                    <directory>example/type-subtype-value</directory>
+                                </resource>
+                            </webResources>
+                        </configuration>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.tomcat.maven</groupId>
+                        <artifactId>tomcat7-maven-plugin</artifactId>
+                        <version>2.0</version>
+                        <configuration>
+                            <path>/</path>
+                            <port>${standalone-port}</port>
+                            <webapps>
+                                <webapp>
+                                    <contextPath>/${standalone-ui-path}
+                                    </contextPath>
+                                    <groupId>uk.gov.gchq.gaffer</groupId>
+                                    <artifactId>ui</artifactId>
+                                    <version>${project.parent.version}</version>
+                                    <type>war</type>
+                                    <asWebapp>true</asWebapp>
+                                </webapp>
+                                <webapp>
+                                    <contextPath>/${standalone-rest-path}
+                                    </contextPath>
+                                    <groupId>uk.gov.gchq.gaffer</groupId>
+                                    <artifactId>accumulo-rest</artifactId>
+                                    <version>${gaffer.version}</version>
+                                    <type>war</type>
+                                    <asWebapp>true</asWebapp>
+                                </webapp>
+                            </webapps>
+                            <systemProperties>
+                                <gaffer.properties.app.title>
+                                    TypeSubTypeValue Gaffer Example
+                                </gaffer.properties.app.title>
+                                <gaffer.properties.app.description>
+                                    Example of a Gaffer Store with TypeSubTypeValue vertices
+                                </gaffer.properties.app.description>
+                                <gaffer.rest-api.basePath>
+                                    ${standalone-rest-path}
+                                </gaffer.rest-api.basePath>
+                                <gaffer.graph.config>
+                                    ${project.basedir}/example/type-subtype-value/graphConfig.json
+                                </gaffer.graph.config>
+                                <gaffer.schemas>
+                                    ${project.basedir}/example/type-subtype-value/schema
+                                </gaffer.schemas>
+                                <gaffer.storeProperties>
+                                    ${project.basedir}/example/type-subtype-value/accumulo/store.properties
+                                </gaffer.storeProperties>
+                                <gaffer.error-mode.debug>
+                                    true
+                                </gaffer.error-mode.debug>
+                                <gaffer.properties.app.logo.src>
+                                    images/logo.png
+                                </gaffer.properties.app.logo.src>
+                            </systemProperties>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <id>deploy</id>
+                                <phase>integration-test</phase>
+                                <goals>
+                                    <goal>run-war</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+        <profile>
+            <id>continuous-integration</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>com.github.searls</groupId>
+                        <artifactId>jasmine-maven-plugin</artifactId>
+                        <version>${jasmine.plugin.version}</version>
+                        <executions>
+                            <execution>
+                                <phase>integration-test</phase>
+                                <goals>
+                                    <goal>bdd</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                        <configuration>
+                            <jsSrcDir>src/main/webapp/app</jsSrcDir>
+                            <sourceIncludes>
+                                <include>**/*.js</include>
+                                <include>*.js</include>
+                            </sourceIncludes>
+                            <jsTestSrcDir>src/test/webapp/app</jsTestSrcDir>
+                            <specIncludes>
+                                <include>*-spec.js</include>
+                                <include>${jasmine.test.paths}</include>
+                            </specIncludes>
+                            <preloadSources>
+                                <source>dependencies/lib/angular/js/angular.min.js</source>
+                                <source>dependencies/lib/angular/js/angular-messages.min.js</source>
+                                <source>dependencies/lib/angular/js/angular-aria.min.js</source>
+                                <source>dependencies/lib/angular/js/angular-animate.min.js</source>
+                                <source>dependencies/lib/angular/js/angular-messages.min.js</source>
+                                <source>dependencies/lib/angular/js/angular-material.min.js</source>
+                                <source>dependencies/lib/angular/js/angular-route.min.js</source>
+                                <source>dependencies/lib/angular/js/angular-mocks.min.js</source>
+                                <source>dependencies/lib/cytoscape/js/cytoscape.min.js</source>
+                                <source>dependencies/lib/cytoscape/js/cytoscape-ngraph.forcelayout.js</source>
+                                <source>dependencies/lib/jquery/js/jquery.min.js</source>
+                                <source>dependencies/lib/md-data-table/js/md-data-table.min.js</source>
+                                <source>dependencies/lib/moment/moment-with-locales.min.js</source>
+                            </preloadSources>
+                        </configuration>
                     </plugin>
                 </plugins>
             </build>

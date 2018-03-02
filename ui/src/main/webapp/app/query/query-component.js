@@ -27,7 +27,7 @@ function query() {
     };
 }
 
-function QueryController(queryPage, operationService, types, graph, config, settings, query, functions, results, navigation, $mdDialog, loading, time, view, error) {
+function QueryController(queryPage, operationService, types, graph, config, settings, query, functions, results, navigation, $mdDialog, loading, dateRange, view, error) {
     var namedViewClass = "uk.gov.gchq.gaffer.data.elementdefinition.view.NamedView";
     var vm = this;
     vm.timeConfig;
@@ -95,7 +95,7 @@ function QueryController(queryPage, operationService, types, graph, config, sett
         results.update(data);
         navigation.goTo('graph');
         queryPage.reset();
-        time.resetDateRange();
+        dateRange.resetDateRange();
         view.reset();
     }
 
@@ -178,26 +178,26 @@ function QueryController(queryPage, operationService, types, graph, config, sett
                 }
             }
 
-            if (time.getStartDate() !== undefined && time.getStartDate() !== null) {
+            if (dateRange.getStartDate() !== undefined && dateRange.getStartDate() !== null) {
                 op.view.globalElements.push({
                     "preAggregationFilterFunctions": [ {
                         "predicate": {
                             "class": "uk.gov.gchq.koryphe.impl.predicate.IsMoreThan",
                             "orEqualTo": true,
-                            "value": types.createJsonValue(vm.timeConfig.filter.class, time.getStartDate())
+                            "value": types.createJsonValue(vm.timeConfig.filter.class, dateRange.getStartDate())
                         },
                         "selection": [ vm.timeConfig.filter.startProperty ]
                     }]
                 });
             }
 
-            if (time.getEndDate() !== undefined && time.getEndDate() !== null) {
+            if (dateRange.getEndDate() !== undefined && dateRange.getEndDate() !== null) {
                 op.view.globalElements.push({
                     "preAggregationFilterFunctions": [ {
                         "predicate": {
                             "class": "uk.gov.gchq.koryphe.impl.predicate.IsLessThan",
                             "orEqualTo": true,
-                            "value": types.createJsonValue(vm.timeConfig.filter.class, time.getEndDate())
+                            "value": types.createJsonValue(vm.timeConfig.filter.class, dateRange.getEndDate())
                         },
                         "selection": [ vm.timeConfig.filter.endProperty ]
                     }]

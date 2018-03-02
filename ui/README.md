@@ -422,6 +422,18 @@ describe('SomeService', function() {
 ```
 
 you can manually run all the unit tests with the command:
-```
+```bash
 mvn clean integration-test -pl ui
+```
+
+If you wish to just run a single test spec file then this can be done by
+overriding the jasmine.test.paths maven property and setting it to a
+path to your test spec file (relative to the ui/test/webapp/app directory):
+```bash
+mvn clean integration-test -pl ui -Djasmine.test.paths=gaffer/time-service-spec.js
+```
+
+You can also run the jasmine continuous integration tool using this command:
+```bash
+mvn clean install -Pcontinuous-integration
 ```
