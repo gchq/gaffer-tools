@@ -9,11 +9,11 @@
     },
     "properties": {
       "startDate": {
-        "class": "java.lang.Long",
+        "class": "java.util.Date",
         "unit": "millisecond"
       },
       "endDate": {
-        "class": "java.lang.Long",
+        "class": "java.util.Date",
         "unit": "millisecond"
       }
     }
