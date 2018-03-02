@@ -86,6 +86,16 @@ describe('The type service', function() {
                                 ],
                                 "wrapInJson": true,
                                 "custom": true
+                            },
+                            "JSON": {
+                                "fields" : [
+                                    {
+                                        "label": "JSON",
+                                        "type": "textarea",
+                                        "class": ""
+                                    }
+                                ],
+                                "wrapInJson": false
                             }
                         }
                     });
@@ -153,6 +163,11 @@ describe('The type service', function() {
             expect(value).toEqual(200);
         });
 
+        it('should return a json parsed object if the value is JSON', function() {
+            var value = service.createValue('JSON', {undefined: '{"java.lang.Long": 204}'});
+            expect(value).toEqual({"java.lang.Long": 204});
+        });
+
         it('should return the value of an integer', function() {
             var value = service.createValue('java.lang.Integer', {undefined: 42}); // see types.createParts();
             expect(value).toEqual(42);
@@ -213,7 +228,8 @@ describe('The type service', function() {
                 "Integer": "java.lang.Integer",
                 "String": "java.lang.String",
                 "TypeSubTypeValue": "uk.gov.gchq.gaffer.types.TypeSubTypeValue",
-                "HyperLogLogPlus": "com.clearspring.analytics.stream.cardinality.HyperLogLogPlus"
+                "HyperLogLogPlus": "com.clearspring.analytics.stream.cardinality.HyperLogLogPlus",
+                "JSON": "JSON"
             };
 
             expect(service.getSimpleClassNames()).toEqual(expected);
