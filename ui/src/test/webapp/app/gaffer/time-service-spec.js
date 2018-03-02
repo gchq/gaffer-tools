@@ -1,4 +1,4 @@
-describe('The type service', function() {
+describe('The time service', function() {
 
     var $rootScope;
 
