@@ -434,6 +434,6 @@ mvn clean integration-test -pl ui -Djasmine.test.paths=gaffer/time-service-spec.
 ```
 
 You can also run the jasmine continuous integration tool using this command:
-```
+```bash
 mvn clean install -Pcontinuous-integration
 ```
