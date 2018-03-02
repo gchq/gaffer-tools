@@ -713,6 +713,35 @@ describe('The Custom Filter Dialog Controller', function() {
             });
         })
     });
+
+    describe('$scope.getPropertySelectLabel()', function() {
+
+        var schema, functions;
+        var gafferSchema, params;
+        var $q;
+
+        beforeEach(inject(function(_functions_, _schema_, _$q_) {
+            functions = _functions_;
+            schema = _schema_
+            $q = _$q_;
+        }));
+
+        beforeEach(function() {
+            createController();
+        });
+
+        it('should return filter property when it exists', function() {
+            scope.filter = {'property': 'prop1'};
+            var label = scope.getPropertySelectLabel();
+            expect(label).toEqual('prop1');
+        });
+
+        it('should return placeholder when when filter property does not exist', function() {
+            scope.filter = {'property': ''};
+            var label = scope.getPropertySelectLabel();
+            expect(label).toEqual('Select a property');
+        });
+    });
 });
 
 
