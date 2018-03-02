@@ -30,7 +30,7 @@ angular.module('app').controller('CustomFilterDialogController', ['$scope', '$md
     $scope.propertyClass = undefined;
 
 
-    $scope.schema = {};
+    $scope.schema = {entities:{}, edges:{}, types:{}};
 
     schema.get().then(function(gafferSchema) {
         $scope.schema = gafferSchema;
@@ -154,13 +154,15 @@ angular.module('app').controller('CustomFilterDialogController', ['$scope', '$md
         if(!elementDef) {
              elementDef = $scope.schema.edges[$scope.group];
         }
-        var propertyClass = $scope.schema.types[elementDef.properties[$scope.filter.property]].class;
-        if("java.lang.String" !== propertyClass
-            && "java.lang.Boolean" !== propertyClass
-            && "java.lang.Integer" !== propertyClass) {
-            $scope.propertyClass = propertyClass;
-        } else {
-            $scope.propertyClass = undefined;
+
+        $scope.propertyClass = undefined;
+        if(elementDef) {
+            var propertyClass = $scope.schema.types[elementDef.properties[$scope.filter.property]].class;
+            if("java.lang.String" !== propertyClass
+                && "java.lang.Boolean" !== propertyClass
+                && "java.lang.Integer" !== propertyClass) {
+                $scope.propertyClass = propertyClass;
+            }
         }
 
         $scope.filter.parameters = {};

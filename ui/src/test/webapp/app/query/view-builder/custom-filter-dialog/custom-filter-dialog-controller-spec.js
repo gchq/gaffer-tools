@@ -452,6 +452,7 @@ describe('The Custom Filter Dialog Controller', function() {
 
         beforeEach(function() {
             createController();
+            scope.schema = gafferSchema;
         });
 
         it('should not make service call if the group is null', function() {
@@ -602,9 +603,7 @@ describe('The Custom Filter Dialog Controller', function() {
             scope.onSelectedPredicateChange();
 
             scope.$digest();
-            expect(schema.get).not.toHaveBeenCalled();
             expect(functions.getFunctionParameters).not.toHaveBeenCalled();
-
             expect(scope.filter).toEqual(originalFilter);
         });
 
@@ -619,9 +618,7 @@ describe('The Custom Filter Dialog Controller', function() {
             scope.onSelectedPredicateChange();
 
             scope.$digest();
-            expect(schema.get).not.toHaveBeenCalled();
             expect(functions.getFunctionParameters).not.toHaveBeenCalled();
-
             expect(scope.filter).toEqual(originalFilter);
         });
 
@@ -636,9 +633,7 @@ describe('The Custom Filter Dialog Controller', function() {
             scope.onSelectedPredicateChange();
 
             scope.$digest();
-            expect(schema.get).not.toHaveBeenCalled();
             expect(functions.getFunctionParameters).not.toHaveBeenCalled();
-
             expect(scope.filter).toEqual(originalFilter);
         });
 
@@ -680,6 +675,7 @@ describe('The Custom Filter Dialog Controller', function() {
                         }
                     }
                 };
+                scope.schema = gafferSchema;
             }
 
             beforeEach(function() {
@@ -716,10 +712,7 @@ describe('The Custom Filter Dialog Controller', function() {
                 expect(scope.propertyClass).toEqual('java.lang.Object');
             });
         })
-
     });
-
-
 });
 
 
