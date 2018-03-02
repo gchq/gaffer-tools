@@ -116,6 +116,27 @@ function QueryController(queryPage, operationService, types, graph, config, sett
         return opInput;
     }
 
+    var generateFilterFunction = function(filter) {
+        var functionJson = {
+            "predicate": {
+                class: filter.predicate
+            },
+            "selection": [ filter.property ]
+        }
+
+        for(var paramName in filter.availableFunctionParameters) {
+            if(filter.parameters[paramName] !== undefined) {
+                if (types.isKnown(filter.availableFunctionParameters[paramName])) {
+                    functionJson['predicate'][paramName] = types.createValue(filter.parameters[paramName].valueClass, filter.parameters[paramName].parts);
+                } else {
+                    functionJson["predicate"][paramName] = types.createJsonValue(filter.parameters[paramName].valueClass, filter.parameters[paramName].parts);
+                }
+            }
+        }
+
+        return functionJson;
+    }
+
     var createOperation = function() {
         var selectedOp = vm.getSelectedOp()
         var op = {
@@ -159,22 +180,42 @@ function QueryController(queryPage, operationService, types, graph, config, sett
 
 
             for(var i in viewEntities) {
-                var entity = viewEntities[i];
-                op.view.entities[entity] = {};
+                var entityGroup = viewEntities[i];
+                op.view.entities[entityGroup] = {};
 
-                var filterFunctions = entityFilters[entity];
-                if (filterFunctions) {
-                    op.view.entities[entity] = filterFunctions;
+                for (var i in entityFilters[entityGroup]) {
+                    var filter = entityFilters[entityGroup][i];
+                    if (filter.preAggregation) {
+                        if (!op.view.entities[entityGroup].preAggregationFilterFunctions) {
+                            op.view.entities[entityGroup].preAggregationFilterFunctions = [];
+                        }
+                        op.view.entities[entityGroup].preAggregationFilterFunctions.push(generateFilterFunction(filter))
+                    } else {
+                        if (!op.view.entities[entityGroup].postAggregationFilterFunctions) {
+                            op.view.entities[entityGroup].postAggregationFilterFunctions = [];
+                        }
+                        op.view.entities[entityGroup].postAggregationFilterFunctions.push(generateFilterFunction(filter));
+                    }
                 }
             }
 
             for(var i in viewEdges) {
-                var edge = viewEdges[i];
-                op.view.edges[edge] = {};
+                var edgeGroup = viewEdges[i];
+                op.view.edges[edgeGroup] = {};
 
-                var filterFunctions = edgeFilters[edge];
-                if (filterFunctions) {
-                    op.view.edges[edge] = filterFunctions;
+                for (var i in edgeFilters[edgeGroup]) {
+                    var filter = edgeFilters[edgeGroup][i];
+                    if (filter.preAggregation) {
+                        if (!op.view.edges[edgeGroup].preAggregationFilterFunctions) {
+                            op.view.edges[edgeGroup].preAggregationFilterFunctions = [];
+                        }
+                        op.view.edges[edgeGroup].preAggregationFilterFunctions.push(generateFilterFunction(filter))
+                    } else {
+                        if (!op.view.edges[edgeGroup].postAggregationFilterFunctions) {
+                            op.view.edges[edgeGroup].postAggregationFilterFunctions = [];
+                        }
+                        op.view.edges[edgeGroup].postAggregationFilterFunctions.push(generateFilterFunction(filter));
+                    }
                 }
             }
 

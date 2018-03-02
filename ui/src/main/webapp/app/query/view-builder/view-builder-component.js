@@ -133,23 +133,20 @@ function ViewBuilderController(view, graph, common, schema, functions, events, t
         }
     }
 
-    vm.createFilterLabel = function(filter, preAggregation) {
-        var label = filter.selection[0] + ' ';
-        var classParts = filter.predicate.class.split('.');
-        var simpleName = classParts[classParts.length - 1];
+    vm.createFilterLabel = function(filter) {
+        var label = filter.property + ' ';
+        var simpleName = filter.predicate.split('.').pop();
         label += simpleName;
 
-        for (var field in filter.predicate) {
-            if (field === 'class') {
-                continue;
-            }
-            var shortVal = types.getShortValue(filter.predicate[field]);
+        for (var param in filter.parameters) {
+
+            var shortVal = types.getShortValue(types.createValue(filter.parameters[param].valueClass, filter.parameters[param].parts));
             if(shortVal !== undefined) {
-                label += (' ' + field + "=" + types.getShortValue(filter.predicate[field]));
+                label += ' ' + param + "=" + shortVal;
             }
         }
 
-        if (preAggregation) {
+        if (filter.preAggregation) {
             label += ' before being summarised';
         } else {
             label += ' after being summarised';
@@ -159,22 +156,7 @@ function ViewBuilderController(view, graph, common, schema, functions, events, t
 
     }
 
-    vm.editFilter = function(group, elementType, preAggregation, filter, index) {
-        var filterForEdit = {
-            preAggregation: preAggregation,
-            property: filter.selection[0],
-            predicate: filter.predicate.class,
-            parameters: {}
-        }
-        for (var field in filter.predicate) {
-            if (field === 'class') {
-                continue;
-            }
-
-            filterForEdit.parameters[field] = filter.predicate[field];
-        }
-
-        vm.tmpPreAggregation = preAggregation;
+    vm.editFilter = function(group, elementType, filter, index) {
         vm.tmpIndex = index;
 
         $mdDialog.show({
@@ -184,51 +166,34 @@ function ViewBuilderController(view, graph, common, schema, functions, events, t
                 group: group,
                 elementType: elementType,
                 onSubmit: replaceFilterFunction,
-                filterForEdit: filterForEdit
+                filterForEdit: angular.copy(filter)
             },
             bindToController: true,
             clickOutsideToClose: false
         });
     }
 
-    var getFilterArray = function(group, elementType, preAggregation) {
+    var getFilters = function(group, elementType) {
         if (elementType === 'edge') {
-            if (preAggregation === true) {
-                return vm.edgeFilters[group].preAggregationFilterFunctions;
-            } else {
-                return vm.edgeFilters[group].postAggregationFilterFunctions;
+            if (!vm.edgeFilters[group]) {
+                vm.edgeFilters[group] = []
             }
+            return vm.edgeFilters[group];
+        } else if (elementType === 'entity') {
+            if (!vm.entityFilters[group]) {
+                vm.entityFilters[group] = []
+            }
+            return vm.entityFilters[group];
         } else {
-            if (preAggregation === true) {
-                return vm.entityFilters[group].preAggregationFilterFunctions;
-            } else {
-                return vm.entityFilters[group].postAggregationFilterFunctions;
-            }
+            console.error('Unrecognised element type ' + elementType);
+            return [];
         }
+
     }
 
-    var deleteFilterArray = function(group, elementType, preAggregation) {
-        if (elementType === 'edge') {
-            if (preAggregation === true) {
-                vm.edgeFilters[group].preAggregationFilterFunctions = undefined;
-            } else {
-                vm.edgeFilters[group].postAggregationFilterFunctions = undefined;
-            }
-        } else {
-            if (preAggregation === true) {
-                vm.entityFilters[group].preAggregationFilterFunctions = undefined;
-            } else {
-                vm.entityFilters[group].postAggregationFilterFunctions = undefined;
-            }
-        }
-    }
-
-    vm.deleteFilter = function(group, elementType, preAggregation, index) {
-        var filters = getFilterArray(group, elementType, preAggregation);
+    vm.deleteFilter = function(group, elementType, index) {
+        var filters = getFilters(group, elementType)
         filters.splice(index, 1);
-        if (filters.length === 0) {
-            deleteFilterArray(group, elementType, preAggregation);
-        }
     }
 
 
@@ -265,103 +230,14 @@ function ViewBuilderController(view, graph, common, schema, functions, events, t
         }
     }
 
-    var generateFilterFunction = function(filter) {
-        var functionJson = {
-            "predicate": {
-                class: filter.predicate
-            },
-            "selection": [ filter.property ]
-        }
-
-        for(var paramName in filter.availableFunctionParameters) {
-            if(filter.parameters[paramName] !== undefined) {
-                if (types.isKnown(filter.availableFunctionParameters[paramName])) {
-                    functionJson['predicate'][paramName] = types.createValue(filter.parameters[paramName].valueClass, filter.parameters[paramName].parts);
-                } else {
-                    functionJson["predicate"][paramName] = types.createJsonValue(filter.parameters[paramName].valueClass, filter.parameters[paramName].parts);
-                }
-            }
-        }
-
-        return functionJson;
-    }
-
     var replaceFilterFunction = function(filter, group, elementType) {
-        var filterArray = getFilterArray(group, elementType, vm.tmpPreAggregation);
-
-        if (filter.preAggregation !== vm.tmpPreAggregation) {
-            vm.deleteFilter(group, elementType, vm.tmpPreAggregation, vm.tmpIndex);
-            addFilterFunction(filter, group, elementType);
-            if (filterArray.length === 0) {
-                if (elementType === 'edge') {
-                    if (vm.tmpPreAggregation) {
-                        vm.edgeFilters[group].preAggregationFilterFunctions = undefined;
-                    } else {
-                        vm.edgeFilters[group].postAggregationFilterFunctions = undefined;
-                    }
-                } else {
-                    if (vm.tmpPreAggregation) {
-                        vm.entityFilters[group].preAggregationFilterFunctions = undefined;
-                    } else {
-                        vm.entityFilters[group].postAggregationFilterFunctions = undefined;
-                    }
-                }
-            }
-        } else {
-            filterArray[vm.tmpIndex] = generateFilterFunction(filter)
-        }
-
-        vm.tmpIndex = undefined;
-        vm.tmpPreAggregation = undefined;
+        var filters = getFilters(group, elementType);
+        filters.splice(vm.tmpIndex, 1, filter);
     }
 
     var addFilterFunction = function(filter, group, elementType) {
-
-        if (!filter.predicate || !filter.property) {
-            return;
-        }
-
-        var functionsToAddTo;
-        if (elementType === 'edge') {
-            if (!vm.edgeFilters[group]) {
-                vm.edgeFilters[group] = {}
-            }
-            if (filter.preAggregation) {
-                if (!vm.edgeFilters[group].preAggregationFilterFunctions) {
-                    vm.edgeFilters[group].preAggregationFilterFunctions = [];
-                }
-
-                functionsToAddTo = vm.edgeFilters[group].preAggregationFilterFunctions;
-            } else {
-                if (!vm.edgeFilters[group].postAggregationFilterFunctions) {
-                    vm.edgeFilters[group].postAggregationFilterFunctions = [];
-                }
-
-                functionsToAddTo = vm.edgeFilters[group].postAggregationFilterFunctions;
-            }
-
-        } else {
-            if (!vm.entityFilters[group]) {
-                vm.entityFilters[group] = {}
-            }
-            if (filter.preAggregation) {
-                if (!vm.entityFilters[group].preAggregationFilterFunctions) {
-                    vm.entityFilters[group].preAggregationFilterFunctions = [];
-                }
-
-                functionsToAddTo = vm.entityFilters[group].preAggregationFilterFunctions;
-            } else {
-                if (!vm.entityFilters[group].postAggregationFilterFunctions) {
-                    vm.entityFilters[group].postAggregationFilterFunctions = [];
-                }
-
-                functionsToAddTo = vm.entityFilters[group].postAggregationFilterFunctions;
-            }
-        }
-
-        var filterFunction = generateFilterFunction(filter);
-
-        functionsToAddTo.push(filterFunction);
+        var filters = getFilters(group, elementType);
+        filters.push(filter);
     }
 
 }

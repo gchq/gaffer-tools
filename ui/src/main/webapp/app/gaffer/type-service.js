@@ -16,7 +16,7 @@
 
 'use strict';
 
-angular.module('app').factory('types', ['config', 'common', 'error', function(config, common, error) {
+angular.module('app').factory('types', ['config', 'common', function(config, common) {
 
     var service = {};
     var types = {};
@@ -136,20 +136,18 @@ angular.module('app').factory('types', ['config', 'common', 'error', function(co
             return createCustomValue(type, parts);
         }
 
-        if (type.wrapInJson && Object.keys(parts)[0] !== 'undefined' || Object.keys(parts).length > 1) {
+        if (type.wrapInJson && Object.keys(parts)[0] !== undefined || Object.keys(parts).length > 1) {
             return parts;
         }
+
         var value = parts[Object.keys(parts)[0]];
 
-        if (typeClass != 'JSON') {
-            return value;
+        if (typeClass === 'JSON') {
+            return JSON.parse(value)
         }
 
-        try {
-            return JSON.parse(value);
-        } catch(err) {
-            error.handle('Failed to parse json', err);
-        }
+        return value;
+
     }
 
     service.createJsonValue = function(typeClass, parts, stringify) {

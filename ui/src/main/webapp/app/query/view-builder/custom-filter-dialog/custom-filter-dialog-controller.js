@@ -16,7 +16,7 @@
 
 'use strict';
 
-angular.module('app').controller('CustomFilterDialogController', ['$scope', '$mdDialog', 'schema', 'functions', 'types', function($scope, $mdDialog, schema, functions, types) {
+angular.module('app').controller('CustomFilterDialogController', ['$scope', '$mdDialog', 'schema', 'functions', 'types', 'error', function($scope, $mdDialog, schema, functions, types, error) {
 
     $scope.filter = { preAggregation: false }
     $scope.availablePredicates;
@@ -63,6 +63,16 @@ angular.module('app').controller('CustomFilterDialogController', ['$scope', '$md
     }
 
     $scope.submit = function() {
+        for (var param in $scope.filter.parameters) {
+            if ($scope.filter.parameters[param]['valueClass'] === 'JSON') {
+                try {
+                    JSON.parse($scope.filter.parameters[param]['parts'][undefined]);
+                } catch(err) {
+                    error.handle('Failed to parse ' + param + ' as a JSON object');
+                    return;
+                }
+            }
+        }
         $scope.onSubmit($scope.filter, $scope.group, $scope.elementType);
         $mdDialog.hide()
     }
@@ -190,7 +200,7 @@ angular.module('app').controller('CustomFilterDialogController', ['$scope', '$md
                     $scope.filter.parameters[param] = {};
                 }
 
-                if(!("valueClass" in $scope.filter.parameters[param])) {
+                if(!$scope.filter.parameters[param]["valueClass"]) {
                     var availableTypes = $scope.availableTypes(data[param]);
                     if(Object.keys(availableTypes).length == 1) {
                         $scope.filter.parameters[param]['valueClass'] = types.getSimpleClassNames()[Object.keys(availableTypes)[0]];
@@ -207,32 +217,8 @@ angular.module('app').controller('CustomFilterDialogController', ['$scope', '$md
         $scope.filter.property = $scope.filterForEdit.property;
         $scope.onSelectedPropertyChange(true);
         $scope.filter.predicate = $scope.filterForEdit.predicate;
-        $scope.filter.parameters = {};
+        $scope.filter.parameters = $scope.filterForEdit.parameters;
         $scope.onSelectedPredicateChange();
-//        for(var name in $scope.filterForEdit.parameters) {
-//            var param = $scope.filterForEdit.parameters[name];
-//            var valueClass;
-//            var value;
-//            if(param !== undefined && Object.keys(param).length === 1) {
-//                valueClass = types.getSimpleClassNames()[Object.keys(param)[0]];
-//                value = Object.values(param)[0];
-//                if(valueClass === undefined) {
-//                    valueClass = "JSON";
-//                    value = JSON.stringify(param);
-//                }
-//            } else {
-//                valueClass = undefined;
-//                value = param;
-//            }
-//
-//            $scope.filter.parameters[name] = {
-//                "parts": types.createParts(valueClass, value)
-//            };
-//
-//            if(valueClass !== undefined) {
-//                $scope.filter.parameters[name]["valueClass"] = valueClass;
-//            }
-//        }
         $scope.editMode = true;
     }
 
