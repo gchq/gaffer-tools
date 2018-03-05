@@ -2,14 +2,17 @@ describe('The Custom Filter Dialog Controller', function() {
 
     var scope, $controller, $q;
     var ctrl;
-    var edgeProperties, entityProperties, schema;
+    var functions, schema;
+    var functionParams, edgeProperties, entityProperties, gafferSchema;
 
     var createController = function() {
         ctrl = $controller('CustomFilterDialogController', {$scope: scope});
+        scope.$digest();
     }
 
     var createControllerWithBindings = function(bindings) {
         ctrl = $controller('CustomFilterDialogController', {$scope: scope}, bindings);
+        scope.$digest();
     }
 
     beforeEach(module('app'));
@@ -28,7 +31,7 @@ describe('The Custom Filter Dialog Controller', function() {
         $provide.factory('schema', function($q) {
             return {
                 get: function() {
-                    return $q.when(schema);
+                    return $q.when(gafferSchema);
                 },
                 getEdgeProperties: function() {
                     return edgeProperties;
@@ -40,11 +43,21 @@ describe('The Custom Filter Dialog Controller', function() {
         });
     }));
 
-    beforeEach(inject(function(_$rootScope_, _$controller_, _$q_) {
+    beforeEach(inject(function(_$rootScope_, _$controller_, _$q_, _functions_,_schema_) {
         $q = _$q_;
         $controller = _$controller_;
         scope = _$rootScope_.$new();
+        functions = _functions_;
+        gafferSchema = {entities:{}, edges:{}, types:{}};
+        functionParams = ['value', 'orEqualTo'];
+        schema = _schema_;
     }));
+
+    beforeEach(function() {
+        spyOn(functions, 'getFunctionParameters').and.callFake(function(unusedName, callback) {
+            callback(functionParams);
+        });
+    });
 
     describe('on startup', function() {
 
@@ -65,18 +78,6 @@ describe('The Custom Filter Dialog Controller', function() {
     });
 
     describe('When a filter is injected into the scope', function() {
-        var functions;
-
-        beforeEach(inject(function(_functions_) {
-            functions = _functions_;
-        }));
-
-        beforeEach(function() {
-            spyOn(functions, 'getFunctionParameters').and.callFake(function(unusedName, callback) {
-                callback(['value', 'orEqualTo']);
-            });
-        });
-
         beforeEach(function() {
             var filterForEdit = {
                 someUnrelatedField: "notRelevant",
@@ -163,13 +164,6 @@ describe('The Custom Filter Dialog Controller', function() {
     });
 
     describe('$scope.getProperties()', function() {
-
-        var schema;
-
-        beforeEach(inject(function(_schema_) {
-            schema = _schema_;
-        }))
-
         beforeEach(function() {
             spyOn(schema, 'getEntityProperties').and.returnValue(['prop1', 'prop2']);
             spyOn(schema, 'getEdgeProperties').and.returnValue(['prop3', 'prop4']);
@@ -335,7 +329,7 @@ describe('The Custom Filter Dialog Controller', function() {
             spyOn(scope, 'onSubmit');
             scope.submit();
             expect(scope.onSubmit).toHaveBeenCalled();
-            expect(scope.onSubmit).toHaveBeenCalledWith({ preAggregation: true, property: 'prop', predicate: 'pred', parameters: {}}, 'testGroup', 'edge');
+            expect(scope.onSubmit).toHaveBeenCalledWith({ preAggregation: true, property: 'prop', predicate: 'pred', parameters: {}, availableFunctionParameters: functionParams}, 'testGroup', 'edge');
         });
 
         it('should hide the $mdDialog box', function() {
@@ -350,6 +344,7 @@ describe('The Custom Filter Dialog Controller', function() {
             createControllerWithBindings({filterForEdit: { preAggregation: true, property: 'prop', predicate: 'pred' }, elementType: 'edge', group: 'testGroup', onSubmit: function(filter, group, elementType) {
                 // do nothing
             }});
+
         });
 
         beforeEach(function() {
@@ -360,7 +355,7 @@ describe('The Custom Filter Dialog Controller', function() {
             spyOn(scope, 'onSubmit');
             scope.addAnother();
             expect(scope.onSubmit).toHaveBeenCalled();
-            expect(scope.onSubmit).toHaveBeenCalledWith({ preAggregation: true, property: 'prop', predicate: 'pred', parameters: {}}, 'testGroup', 'edge');
+            expect(scope.onSubmit).toHaveBeenCalledWith({ preAggregation: true, property: 'prop', predicate: 'pred', parameters: {},  availableFunctionParameters: functionParams }, 'testGroup', 'edge');
         });
 
         it('should reset the form', function() {
@@ -410,20 +405,7 @@ describe('The Custom Filter Dialog Controller', function() {
     });
 
     describe('$scope.onSelectedPropertyChange()', function() {
-
-        var functions, schema;
-        var gafferSchema;
-
-        beforeEach(inject(function(_functions_, _schema_) {
-            functions = _functions_;
-            schema = _schema_;
-        }));
-
         beforeEach(function() {
-            spyOn(schema, 'get').and.callFake(function() {
-                return $q.when(gafferSchema);
-            })
-
             spyOn(functions, 'getFunctions').and.callFake(function(clazz, cb) {
                 cb('somePredicates');
             });
@@ -555,20 +537,11 @@ describe('The Custom Filter Dialog Controller', function() {
 
     describe('$scope.onSelectedPredicateChange()', function() {
 
-        var schema, functions;
-        var gafferSchema, params;
-        var $q;
         var originalFilter = {
             preAggregation: false,
             property: 'testProp',
             predicate: 'a.filter.class.Name'
         };
-
-        beforeEach(inject(function(_functions_, _schema_, _$q_) {
-            functions = _functions_;
-            schema = _schema_
-            $q = _$q_;
-        }));
 
         beforeEach(function() {
             originalFilter = {
@@ -577,16 +550,6 @@ describe('The Custom Filter Dialog Controller', function() {
                 predicate: 'a.filter.class.Name'
             };
         })
-
-        beforeEach(function() {
-            spyOn(schema, 'get').and.callFake(function() {
-                return $q.when(gafferSchema);
-            });
-
-            spyOn(functions, 'getFunctionParameters').and.callFake(function(fn, callback) {
-                callback(params);
-            });
-        });
 
         beforeEach(function() {
             createController();
@@ -638,28 +601,21 @@ describe('The Custom Filter Dialog Controller', function() {
         });
 
         it('should query the function parameters and set a value on the filter', function() {
-            params = ['param1', 'param2'];
+            functionParams = ['param1', 'param2'];
             scope.filter = originalFilter;
             scope.onSelectedPredicateChange();
             expect(functions.getFunctionParameters).toHaveBeenCalled();
-            expect(scope.filter.availableFunctionParameters).toEqual(params);
+            expect(scope.filter.availableFunctionParameters).toEqual(functionParams);
         });
 
         it('should set the filter parameters to an empty object', function() {
-            params = ['this', 'is', 'a', 'test'];
+            functionParams = ['this', 'is', 'a', 'test'];
             scope.filter = originalFilter;
             scope.onSelectedPredicateChange();
             expect(scope.filter.parameters).toEqual({});
         });
 
-        it('should make a call to the schema service', function() {
-            scope.filter = originalFilter;
-            scope.onSelectedPredicateChange();
-            expect(schema.get).toHaveBeenCalled();
-        });
-
         describe('When the schema is called', function() {
-
             var resetSchema = function(propClass) {
                 gafferSchema = {
                     "entities": {
@@ -715,17 +671,6 @@ describe('The Custom Filter Dialog Controller', function() {
     });
 
     describe('$scope.getPropertySelectLabel()', function() {
-
-        var schema, functions;
-        var gafferSchema, params;
-        var $q;
-
-        beforeEach(inject(function(_functions_, _schema_, _$q_) {
-            functions = _functions_;
-            schema = _schema_
-            $q = _$q_;
-        }));
-
         beforeEach(function() {
             createController();
         });

@@ -34,6 +34,22 @@ angular.module('app').controller('CustomFilterDialogController', ['$scope', '$md
 
     schema.get().then(function(gafferSchema) {
         $scope.schema = gafferSchema;
+        if ($scope.filterForEdit) {
+            $scope.filter.preAggregation = $scope.filterForEdit.preAggregation;
+            $scope.filter.property = $scope.filterForEdit.property;
+            $scope.onSelectedPropertyChange(true);
+            $scope.filter.predicate = $scope.filterForEdit.predicate;
+            $scope.onSelectedPredicateChange();
+            for(var name in $scope.filterForEdit.parameters) {
+                var param = $scope.filterForEdit.parameters[name];
+                if(typeof param === 'string' || param instanceof String) {
+                    $scope.filter.parameters[name] = param;
+                } else {
+                    $scope.filter.parameters[name] = JSON.stringify(param)
+                }
+            }
+            $scope.editMode = true;
+        }
     });
 
     var createFilterFor = function(text) {
@@ -167,22 +183,4 @@ angular.module('app').controller('CustomFilterDialogController', ['$scope', '$md
 
         $scope.filter.parameters = {};
     }
-
-    if ($scope.filterForEdit) {
-        $scope.filter.preAggregation = $scope.filterForEdit.preAggregation;
-        $scope.filter.property = $scope.filterForEdit.property;
-        $scope.onSelectedPropertyChange(true);
-        $scope.filter.predicate = $scope.filterForEdit.predicate;
-        $scope.onSelectedPredicateChange();
-        for(var name in $scope.filterForEdit.parameters) {
-            var param = $scope.filterForEdit.parameters[name];
-            if(typeof param === 'string' || param instanceof String) {
-                $scope.filter.parameters[name] = param;
-            } else {
-                $scope.filter.parameters[name] = JSON.stringify(param)
-            }
-        }
-        $scope.editMode = true;
-    }
-
 }]);
