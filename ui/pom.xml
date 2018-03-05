@@ -446,7 +446,7 @@
                             </execution>
                         </executions>
                         <configuration>
-                            <autoRefreshInterval>5</autoRefreshInterval>
+                            <autoRefreshInterval>30</autoRefreshInterval>
                             <jsSrcDir>src/main/webapp/app</jsSrcDir>
                             <sourceIncludes>
                                 <include>**/*.js</include>

@@ -203,7 +203,7 @@ angular.module('app').controller('CustomFilterDialogController', ['$scope', '$md
                 if(!$scope.filter.parameters[param]["valueClass"]) {
                     var availableTypes = $scope.availableTypes(data[param]);
                     if(Object.keys(availableTypes).length == 1) {
-                        $scope.filter.parameters[param]['valueClass'] = types.getSimpleClassNames()[Object.keys(availableTypes)[0]];
+                        $scope.filter.parameters[param]['valueClass'] = Object.values(availableTypes)[0];
                     } else {
                         setToPropertyClass(param);
                     }
