@@ -10,9 +10,16 @@
         <div class="md-dialog-content">
             <ng-form name="filterForm">
                 <md-input-container layout-fill flex>
-                    <label>Select a property</label>
-                    <md-select required id="property-selector" ng-model="filter.property" ng-change="onSelectedPropertyChange()">
-                        <md-option ng-repeat="(name, type) in getProperties()" ng-value="name">{{name}}</md-option>
+                    <md-select required
+                               id="property-selector"
+                               ng-model="filter.property"
+                               ng-change="onSelectedPropertyChange()"
+                               md-selected-text="getPropertySelectLabel()"
+                               aria-label="filter property picker">
+                        <md-option ng-repeat="(name, type) in getProperties()" ng-value="name" aria-label="{{name}}">
+                            <div class="md-body-2">{{name}}</div>
+                            <em ng-if="schema.types[type].description" class="md-body-1">{{schema.types[type].description}}</em>
+                        </md-option>
                     </md-select>
                 </md-input-container>
                     <md-autocomplete
