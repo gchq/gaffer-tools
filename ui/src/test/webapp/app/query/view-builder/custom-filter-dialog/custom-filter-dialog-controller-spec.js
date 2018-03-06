@@ -385,6 +385,199 @@ describe('The Custom Filter Dialog Controller', function() {
         });
     });
 
+    describe('$scope.availableTypes()', function() {
+        var types;
+        var known;
+
+        var simpleClassNames;
+
+        beforeEach(inject(function(_types_) {
+            types = _types_;
+        }));
+
+        beforeEach(createController)
+
+        beforeEach(function() {
+            known = false;
+            simpleClassNames = {
+                'Long': 'java.lang.Long',
+                'Boolean': 'java.lang.Boolean',
+                'boolean': 'boolean',
+                'integer': 'integer'
+            }
+        })
+
+        beforeEach(function() {
+            spyOn(types, 'isKnown').and.callFake(function() {
+                return known;
+            });
+
+            spyOn(types, 'getSimpleClassNames').and.callFake(function() {
+                return simpleClassNames;
+            });
+        });
+
+        it('should return a single key and value if the class is known', function() {
+            known = true;
+            expect(scope.availableTypes('java.lang.Integer')).toEqual({'Integer': 'java.lang.Integer'});
+        });
+
+        it('should return all the simple class names with primitives removed', function() {
+            known = false;
+            expect(scope.availableTypes('java.lang.Iterable')).toEqual({
+                'Long': 'java.lang.Long',
+                'Boolean': 'java.lang.Boolean'
+            });
+        });
+    });
+
+    describe('$scope.updateType()', function() {
+
+        var fields;
+        var types;
+
+        beforeEach(createController);
+
+        beforeEach(inject(function(_types_) {
+            types = _types_;
+        }));
+
+        beforeEach(function() {
+            spyOn(types, 'getFields').and.callFake(function(clazz) {
+                return fields;
+            })
+        })
+
+        it('should do nothing if the parameter is undefined', function() {
+            var param = undefined;
+            scope.updateType(param);
+
+            expect(param).toBeUndefined();
+        });
+
+        it('should do nothing if the parameters is null', function() {
+            var param = null;
+            scope.updateType(param);
+
+            expect(param).toBeNull();
+        });
+
+        it('should make the parts of the parameter an empty object if it is initially undefined', function() {
+            var param = {};
+            scope.updateType(param);
+            expect(param.parts).toEqual({});
+        });
+
+        it('should make the parts of the parameter an empty object if they were initially a complex object', function() {
+            var param = { parts: {'type': 'foo', 'value': 'bar'}};
+            scope.updateType(param);
+            expect(param.parts).toEqual({});
+        });
+
+        it('should make the parts of the parameter an empty object if they are keyed by anything other than undefined', function() {
+            var param = { parts: {'foo': 'bar'}};
+            scope.updateType(param);
+            expect(param.parts).toEqual({});
+        });
+
+        it('should do nothing if the parts were originally a number indexed by undefined and are still a number indexed by undefined', function() {
+            var param = {parts: {undefined: 42}};
+
+
+            // the new type
+            fields = [
+                {
+                    'type': 'number'
+                }
+            ];
+
+            scope.updateType(param);
+            expect(param.parts).toEqual({undefined: 42});
+        });
+
+        it('should do nothing if the parts were originally a string and the new type is text', function() {
+            var param = {parts: {undefined: 'test'}};
+
+            // the new type
+            fields = [
+                {
+                    'type': 'text'
+                }
+            ];
+
+            scope.updateType(param);
+            expect(param.parts).toEqual({undefined: 'test'});
+        });
+
+        it('should do nothing if the parts were originally a string and the new type is textarea', function() {
+            var param = {parts: {undefined: 'test'}};
+
+            // the new type
+            fields = [
+                {
+                    'type': 'textarea'
+                }
+            ];
+
+            scope.updateType(param);
+            expect(param.parts).toEqual({undefined: 'test'});
+        });
+
+        it('should reset the parts if the parts were originally a string, but the new type is a number', function() {
+            var param = {parts: {undefined: 'test'}};
+
+            // the new type
+            fields = [
+                {
+                    'type': 'number'
+                }
+            ];
+
+            scope.updateType(param);
+            expect(param.parts).toEqual({});
+        });
+
+        it('should reset the parts if the new type has more than one field', function() {
+            var param = {parts: {undefined: 'test'}};
+
+            // the new type
+            fields = [
+                {
+                    'type': 'text'
+                },
+                {
+                    'type': 'text'
+                },
+                {
+                    'type': 'text'
+                }
+            ];
+
+            scope.updateType(param);
+            expect(param.parts).toEqual({});
+        });
+    });
+
+    describe('$scope.hasMultipleTypesAvailable()', function() {
+        var types;
+
+        beforeEach(inject(function(_types_) {
+            types = _types_;
+        }));
+
+        beforeEach(createController)
+
+        it('should return true if the type is not known to the type service', function() {
+            spyOn(types, 'isKnown').and.returnValue(false);
+            expect(scope.hasMultipleTypesAvailable('a.java.Class')).toBeTruthy();
+        });
+
+        it('should return false if the type is known to the type service', function() {
+            spyOn(types, 'isKnown').and.returnValue(true);
+            expect(scope.hasMultipleTypesAvailable('a.java.Class')).toBeFalsy();
+        });
+    });
+
     describe('$scope.onSelectedPropertyChange()', function() {
 
         var functions, schema;

@@ -111,14 +111,17 @@ angular.module('app').controller('CustomFilterDialogController', ['$scope', '$md
     }
 
     $scope.updateType = function(param) {
-        if(param !== undefined) {
+        if(param !== undefined && param !== null) {
             var parts = param['parts'];
 
             if (parts !== undefined && Object.keys(parts).length === 1 && parts[undefined] !== undefined) {    // if it's simple
                 var oldValue = parts[undefined];
-                var newJSType = types.getFields(param.valueClass)[0].type;
-                if (((newJSType === 'text' || newJSType === 'textarea') && (typeof oldValue === 'string' || oldValue instanceof String)) || (newJSType === 'number' && typeof oldValue === 'number')) {
-                    return;
+                var newFields = types.getFields(param.valueClass);
+                if (newFields.length === 1) {
+                    var newJSType = newFields[0].type;
+                    if (((newJSType === 'text' || newJSType === 'textarea') && (typeof oldValue === 'string' || oldValue instanceof String)) || (newJSType === 'number' && typeof oldValue === 'number')) {
+                        return;
+                    }
                 }
             }
             param['parts'] = {};
@@ -203,7 +206,7 @@ angular.module('app').controller('CustomFilterDialogController', ['$scope', '$md
                 if(!$scope.filter.parameters[param]["valueClass"]) {
                     var availableTypes = $scope.availableTypes(data[param]);
                     if(Object.keys(availableTypes).length == 1) {
-                        $scope.filter.parameters[param]['valueClass'] = Object.values(availableTypes)[0];
+                        $scope.filter.parameters[param]['valueClass'] = availableTypes[Object.keys(availableTypes)[0]];
                     } else {
                         setToPropertyClass(param);
                     }
