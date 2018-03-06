@@ -136,6 +136,10 @@ angular.module('app').factory('types', ['config', 'common', function(config, com
             return createCustomValue(type, parts);
         }
 
+        if(typeof parts === 'number') {
+            return parts;
+        }
+
         if (type.wrapInJson && Object.keys(parts)[0] !== 'undefined' || Object.keys(parts).length > 1) {
             return parts;
         }
