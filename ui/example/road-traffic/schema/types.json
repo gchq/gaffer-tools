@@ -100,6 +100,7 @@
       }
     },
     "hllp": {
+      "description": "A sketch containing an estimate of how connected the vertex is.",
       "class": "com.clearspring.analytics.stream.cardinality.HyperLogLogPlus",
       "aggregateFunction": {
         "class": "uk.gov.gchq.gaffer.sketches.clearspring.cardinality.binaryoperator.HyperLogLogPlusAggregator"

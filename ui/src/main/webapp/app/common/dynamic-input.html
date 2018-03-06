@@ -5,6 +5,7 @@
                 <label>{{ctrl.name}} {{field.label}}</label>
                 <textarea required
                           type="{{field.type}}"
+                          id="required-{{ctrl.name}}-{{field.label}}-ta"
                           md-select-on-focus
                           rows="2"
                           ng-model="ctrl.param.parts[field.key]"></textarea>
@@ -14,15 +15,16 @@
                 <label>{{ctrl.name}} {{field.label}}</label>
                 <textarea type="{{field.type}}"
                           md-select-on-focus
+                          id="{{ctrl.name}}-{{field.label}}-ta"
                           rows="2"
                           ng-model="ctrl.param.parts[field.key]"></textarea>
             </md-input-container>
         </div>
         <div ng-if="'checkbox' === field.type" layout-margin>
-            <md-checkbox ng-if="ctrl.isRequired(field)" ng-model="ctrl.param.parts[field.key]" required>
+            <md-checkbox ng-if="ctrl.isRequired(field)" ng-model="ctrl.param.parts[field.key]" id="required-{{ctrl.name}}-{{field.label}}-cb" required>
                 {{ctrl.name}} {{field.label}}
             </md-checkbox>
-            <md-checkbox ng-if="!ctrl.isRequired(field)" ng-model="ctrl.param.parts[field.key]">
+            <md-checkbox ng-if="!ctrl.isRequired(field)" ng-model="ctrl.param.parts[field.key]" id="{{ctrl.name}}-{{field.label}}-cb">
                 {{ctrl.name}} {{field.label}}
             </md-checkbox>
         </div>
@@ -31,6 +33,7 @@
                 <label>{{ctrl.name}} {{field.label}}</label>
                 <input required
                        type="{{field.type}}"
+                       id="required-{{ctrl.name}}-{{field.label}}"
                        md-select-on-focus
                        ng-model="ctrl.param.parts[field.key]">
             </md-input-container>
@@ -38,6 +41,7 @@
             <md-input-container ng-if="!ctrl.isRequired(field)" class="content small-input-container">
                 <label>{{ctrl.name}} {{field.label}}</label>
                 <input type="{{field.type}}"
+                       id="{{ctrl.name}}-{{field.label}}"
                        md-select-on-focus
                        ng-model="ctrl.param.parts[field.key]">
             </md-input-container>

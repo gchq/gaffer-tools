@@ -407,12 +407,12 @@ describe('The Query component', function() {
 
             describe('When adding date ranges', function() {
 
-                var time;
+                var dateRange;
                 var startDate, endDate;
                 var types;
 
-                beforeEach(inject(function(_time_, _types_) {
-                    time = _time_;
+                beforeEach(inject(function(_dateRange_, _types_) {
+                    dateRange = _dateRange_;
                     types = _types_;
                 }));
 
@@ -429,11 +429,11 @@ describe('The Query component', function() {
                         return json;
                     });
 
-                    spyOn(time, 'getStartDate').and.callFake(function() {
+                    spyOn(dateRange, 'getStartDate').and.callFake(function() {
                         return startDate;
                     });
 
-                    spyOn(time, 'getEndDate').and.callFake(function() {
+                    spyOn(dateRange, 'getEndDate').and.callFake(function() {
                         return endDate;
                     });
 

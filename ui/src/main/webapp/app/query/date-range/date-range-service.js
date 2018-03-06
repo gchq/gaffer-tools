@@ -16,7 +16,7 @@
 
 'use strict';
 
-angular.module('app').factory('time', function() {
+angular.module('app').factory('dateRange', function() {
     var service = {};
 
     var startDate;

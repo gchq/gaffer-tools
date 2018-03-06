@@ -17,10 +17,12 @@
                 <tr md-row ng-repeat="entity in entities">
                     <td md-cell>
                         {{entity.group}}
+                        <md-tooltip md-direction="top">{{ctrl.schema.entities[entity.group].description}}</md-tooltip>
                     </td>
                     <td md-cell>
                         <p ng-repeat="(key, value) in entity.properties">
-                            {{key}}: {{ctrl.resolve(value)}}
+                            {{key}}: {{ctrl.resolve(key, value)}}
+                            <md-tooltip md-direction="top">{{ctrl.schema.types[ctrl.schema.entities[entity.group].properties[key]].description}}</md-tooltip>
                         </p>
                     </td>
                 </tr>
@@ -34,10 +36,12 @@
                 <tr md-row ng-repeat="edge in edges">
                     <td md-cell>
                         {{edge.group}}
+                        <md-tooltip md-direction="top">{{ctrl.schema.edges[edge.group].description}}</md-tooltip>
                     </td>
                     <td md-cell>
                         <p ng-repeat="(key, value) in edge.properties">
-                            {{key}}: {{ctrl.resolve(value)}}
+                            {{key}}: {{ctrl.resolve(key, value)}}
+                            <md-tooltip md-direction="top">{{ctrl.schema.types[ctrl.schema.edges[edge.group].properties[key]].description}}</md-tooltip>
                         </p>
                     </td>
                 </tr>

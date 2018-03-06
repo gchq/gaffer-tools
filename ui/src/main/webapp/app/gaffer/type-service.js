@@ -136,7 +136,7 @@ angular.module('app').factory('types', ['config', 'common', function(config, com
             return createCustomValue(type, parts);
         }
 
-        if (type.wrapInJson && ((Object.keys(parts)[0] !== undefined && Object.keys(parts)[0] !== 'undefined') || Object.keys(parts).length > 1)) {
+        if (type.wrapInJson && Object.keys(parts)[0] !== 'undefined' || Object.keys(parts).length > 1) {
             return parts;
         }
 
@@ -273,5 +273,4 @@ angular.module('app').factory('types', ['config', 'common', function(config, com
     }
 
     return service;
-
 }]);

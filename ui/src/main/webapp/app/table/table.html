@@ -26,7 +26,11 @@
 
                 <div ng-repeat="(group, schemaEntity) in ctrl.schema.entities">
                     <div ng-show="ctrl.data.entities[group].length > 0">
-                        <h4><b>{{group}}</b></h4>
+                        <h4>
+                            <b>{{group}}</b>
+                            <md-tooltip md-direction="top">{{schemaEntity.description}}</md-tooltip>
+                        </h4>
+
                         <md-table-container>
                             <table md-table id="entity-{{group}}-table-elements" >
                                 <thead md-head>
@@ -44,6 +48,7 @@
                                     </th>
                                     <th md-column ng-repeat="(name, type) in schemaEntity.properties">
                                         {{name}}
+                                        <md-tooltip md-direction="top">{{ctrl.schema.types[type].description}}</md-tooltip>
                                     </th>
                                 </tr>
                                 </thead>
@@ -73,7 +78,10 @@
 
                 <div ng-repeat="(group, schemaEdge) in ctrl.schema.edges">
                     <div ng-show="ctrl.data.edges[group].length > 0">
-                        <h4><b>{{group}}</b></h4>
+                        <h4>
+                            <b>{{group}}</b>
+                            <md-tooltip md-direction="top">{{schemaEdge.description}}</md-tooltip>
+                        </h4>
                         <md-table-container>
                             <table id="edge-{{group}}-table-elements"
                                    md-table>
@@ -114,6 +122,7 @@
                                     </th>
                                     <th md-column ng-repeat="(name, type) in schemaEdge.properties">
                                         {{name}}
+                                        <md-tooltip md-direction="top">{{ctrl.schema.types[type].description}}</md-tooltip>
                                     </th>
                                 </tr>
                                 </thead>

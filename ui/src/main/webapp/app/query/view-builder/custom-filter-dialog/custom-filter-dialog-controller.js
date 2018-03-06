@@ -28,6 +28,21 @@ angular.module('app').controller('CustomFilterDialogController', ['$scope', '$md
     $scope.onSubmit = this.onSubmit;
 
 
+    $scope.schema = {entities:{}, edges:{}, types:{}};
+
+    schema.get().then(function(gafferSchema) {
+        $scope.schema = gafferSchema;
+        if ($scope.filterForEdit) {
+            $scope.filter.preAggregation = $scope.filterForEdit.preAggregation;
+            $scope.filter.property = $scope.filterForEdit.property;
+            $scope.onSelectedPropertyChange(true);
+            $scope.filter.predicate = $scope.filterForEdit.predicate;
+            $scope.filter.parameters = $scope.filterForEdit.parameters;
+            $scope.onSelectedPredicateChange();
+            $scope.editMode = true;
+        }
+    });
+
     var createFilterFor = function(text) {
         var lowerCaseText = angular.lowercase(text);
         return function filterFn(predicate) {
@@ -51,6 +66,13 @@ angular.module('app').controller('CustomFilterDialogController', ['$scope', '$md
         } else if ($scope.elementType === 'edge') {
             return schema.getEdgeProperties($scope.group);
         } else throw 'Element type can be "edge" or "entity" but not ' + JSON.stringify($scope.elementType)
+    }
+
+    $scope.getPropertySelectLabel = function() {
+        if ($scope.filter.property) {
+            return $scope.filter.property;
+        }
+        return "Select a property";
     }
 
     $scope.resetForm = function() {
@@ -140,45 +162,42 @@ angular.module('app').controller('CustomFilterDialogController', ['$scope', '$md
             return;
         }
         var type;
-        schema.get().then(function(gafferSchema) {
-            if(gafferSchema.entities[$scope.group]) {
-                type = gafferSchema.entities[$scope.group].properties[$scope.filter.property];
-            } else if(gafferSchema.edges[$scope.group]) {
-               type = gafferSchema.edges[$scope.group].properties[$scope.filter.property];
-            } else {
-                console.error('The element group "' + $scope.group + '" does not exist in the schema');
-                return;
-            }
 
-            var className = "";
-            if(type) {
-                var schemaType = gafferSchema.types[type];
-                if (!schemaType) {
-                    console.error('No type "' + type + '" was found in the schema');
-                    return;
-                }
-                className = gafferSchema.types[type].class;
-            } else {
-                console.error('The property "' + $scope.filter.property + '" does not exist in the element group "' + $scope.group + '"');
+        if($scope.schema.entities[$scope.group]) {
+            type = $scope.schema.entities[$scope.group].properties[$scope.filter.property];
+        } else if($scope.schema.edges[$scope.group]) {
+           type = $scope.schema.edges[$scope.group].properties[$scope.filter.property];
+        } else {
+            console.error('The element group "' + $scope.group + '" does not exist in the schema');
+            return;
+        }
+
+        var className = "";
+        if(type) {
+            var schemaType = $scope.schema.types[type];
+            if (!schemaType) {
+                console.error('No type "' + type + '" was found in the schema');
                 return;
             }
-            functions.getFunctions(className, function(data) {
-                $scope.availablePredicates = data;
-            });
+            className = $scope.schema.types[type].class;
+        } else {
+            console.error('The property "' + $scope.filter.property + '" does not exist in the element group "' + $scope.group + '"');
+            return;
+        }
+        functions.getFunctions(className, function(data) {
+            $scope.availablePredicates = data;
         });
     }
 
     var setToPropertyClass = function(parameter) {
-        schema.get().then(function(gafferSchema) {
-            var elementDef = gafferSchema.entities[$scope.group];
-            if(!elementDef) {
-                 elementDef = gafferSchema.edges[$scope.group];
-            }
-            if (gafferSchema.types) {
-                var propertyClass = gafferSchema.types[elementDef.properties[$scope.filter.property]].class;
-                $scope.filter.parameters[parameter]['valueClass'] = propertyClass;
-            }
-        });
+        var elementDef = $scope.schema.entities[$scope.group];
+        if(!elementDef) {
+             elementDef = $scope.schema.edges[$scope.group];
+        }
+        if ($scope.schema.types) {
+            var propertyClass = $scope.schema.types[elementDef.properties[$scope.filter.property]].class;
+            $scope.filter.parameters[parameter]['valueClass'] = propertyClass;
+        }
     }
 
     $scope.onSelectedPredicateChange = function() {
@@ -188,6 +207,7 @@ angular.module('app').controller('CustomFilterDialogController', ['$scope', '$md
 
         functions.getFunctionParameters($scope.filter.predicate, function(data) {
             $scope.filter.availableFunctionParameters = data;
+
             if($scope.filter.parameters === undefined) {
                 $scope.filter.parameters = {}
             } else {
@@ -214,15 +234,4 @@ angular.module('app').controller('CustomFilterDialogController', ['$scope', '$md
             }
         });
     }
-
-    if ($scope.filterForEdit) {
-        $scope.filter.preAggregation = $scope.filterForEdit.preAggregation;
-        $scope.filter.property = $scope.filterForEdit.property;
-        $scope.onSelectedPropertyChange(true);
-        $scope.filter.predicate = $scope.filterForEdit.predicate;
-        $scope.filter.parameters = $scope.filterForEdit.parameters;
-        $scope.onSelectedPredicateChange();
-        $scope.editMode = true;
-    }
-
 }]);
