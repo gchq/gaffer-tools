@@ -1,5 +1,7 @@
 describe('The Query component', function() {
 
+    var ctrl;
+
     beforeEach(module('app'));
 
     beforeEach(module(function($provide) {
@@ -35,28 +37,25 @@ describe('The Query component', function() {
             settings = _settings_;
         }));
 
-        it('should exist', function() {
-            var ctrl = $componentController('query');
-            expect(ctrl).toBeDefined();
+        beforeEach(function() {
+            ctrl = $componentController('query');
         })
+
+        it('should exist', function() {
+            expect(ctrl).toBeDefined();
+        });
 
         it('should expose the getSelectedOperation of the queryPage service', function() {
             spyOn(queryPage, 'getSelectedOperation');
-
-            var ctrl = $componentController('query');
-
             ctrl.getSelectedOp();
-
             expect(queryPage.getSelectedOperation).toHaveBeenCalledTimes(1);
         });
 
         describe('When validating the query', function() {
-            var ctrl;
             var valid;
             var selectedOperation;
 
             beforeEach(function() {
-                ctrl = $componentController('query');
                 ctrl.queryForm = {
                     $valid: valid
                 };
@@ -110,8 +109,6 @@ describe('The Query component', function() {
                 class: 'some.class.Name'
             });
 
-            var ctrl = $componentController('query');
-
             ctrl.execute();
 
             expect(query.execute).toHaveBeenCalledTimes(1);
@@ -123,9 +120,11 @@ describe('The Query component', function() {
             describe('when adding views', function() {
 
                 var view;
+                var types;
 
-                beforeEach(inject(function(_view_) {
+                beforeEach(inject(function(_view_, _types_) {
                     view = _view_;
+                    types = _types_;
                 }));
 
                 it('should create a basic view from the view edges and entities', function() {
@@ -139,8 +138,6 @@ describe('The Query component', function() {
                     });
 
                     spyOn(query, 'execute');
-
-                    var ctrl = $componentController('query');
 
                     ctrl.execute();
 
@@ -160,7 +157,79 @@ describe('The Query component', function() {
 
                 });
 
-                it('should add the group by to the operation', function() {
+                it('should create gaffer filters from the elementFilters', function() {
+
+                    spyOn(queryPage, 'getSelectedOperation').and.returnValue({
+                        class: 'some.operation.with.View',
+                        view: true
+                    });
+
+                    spyOn(types, 'isKnown').and.callFake(function(clazz) {
+                        if (clazz === 'java.lang.Comparable') {
+                            return false;
+                        } else if (clazz === 'boolean') {
+                            return true;
+                        } else {
+                            throw Error('Unexpected class' + clazz);
+                        }
+                    });
+
+                    spyOn(types, 'createJsonValue').and.callFake(function(valueClass, parts) {
+                        var value = {};
+
+                        value[valueClass] = parts[undefined];
+                        return value;
+                    });
+
+
+
+                    spyOn(view, 'getViewEdges').and.returnValue(['a']);
+                    spyOn(view, 'getEdgeFilters').and.returnValue({
+                        'a': [
+                            {
+                                preAggregation: true,
+                                predicate: 'some.koryphe.Predicate',
+                                property: 'b',
+                                parameters: {
+                                    'value': {
+                                        'valueClass': 'java.lang.Long',
+                                        'parts': {
+                                            undefined: 205
+                                        }
+                                    }
+                                },
+                                availableFunctionParameters: {'value': 'java.lang.Comparable', 'orEqualTo': 'boolean'}
+                            }
+                        ]
+                    });
+
+
+                    spyOn(query, 'execute');
+
+                    var expectedView = {
+                        'a': {
+                            preAggregationFilterFunctions: [
+                                {
+                                    'predicate': {
+                                        class: 'some.koryphe.Predicate',
+                                        value: {
+                                            'java.lang.Long': 205
+                                        }
+                                    },
+                                    'selection': [ 'b' ]
+                                }
+                            ]
+                        }
+                    }
+
+                    ctrl.execute();
+
+                    expect(query.execute.calls.argsFor(0)[0]).toContain(JSON.stringify(expectedView));
+
+
+                });
+
+                it('should add the group-by to the operation', function() {
                     spyOn(queryPage, 'getSelectedOperation').and.returnValue({
                         class: 'operation.class.Name',
                         view: true
@@ -168,7 +237,6 @@ describe('The Query component', function() {
 
                     spyOn(query, 'execute');
 
-                    var ctrl = $componentController('query');
                     ctrl.execute();
 
                     expect(query.execute.calls.first().args[0]).toContain('"groupBy":[]');
@@ -178,15 +246,10 @@ describe('The Query component', function() {
             describe('When adding Named views', function() {
 
                 var view;
-                var ctrl;
 
                 beforeEach(inject(function(_view_) {
                     view = _view_;
                 }));
-
-                beforeEach(function() {
-                    ctrl = $componentController('query');
-                });
 
                 beforeEach(function() {
                     spyOn(view, 'getViewEntities').and.returnValue(['elementGroup1','elementGroup2','elementGroup3']);
@@ -346,7 +409,6 @@ describe('The Query component', function() {
 
                 var time;
                 var startDate, endDate;
-                var ctrl;
                 var types;
 
                 beforeEach(inject(function(_time_, _types_) {
@@ -376,10 +438,6 @@ describe('The Query component', function() {
                     });
 
                     spyOn(query, 'execute');
-                });
-
-                beforeEach(function() {
-                    ctrl = $componentController('query');
                 });
 
                 beforeEach(function() {
@@ -478,7 +536,6 @@ describe('The Query component', function() {
 
                     spyOn(query, 'execute');
 
-                    var ctrl = $componentController('query');
                     ctrl.execute();
 
 
@@ -508,7 +565,6 @@ describe('The Query component', function() {
 
                     spyOn(query, 'execute');
 
-                    var ctrl = $componentController('query');
                     ctrl.execute();
 
 
@@ -537,7 +593,6 @@ describe('The Query component', function() {
 
                     spyOn(query, 'execute');
 
-                    var ctrl = $componentController('query');
                     ctrl.execute();
 
 
@@ -565,8 +620,6 @@ describe('The Query component', function() {
                     });
 
                     spyOn(query, 'execute');
-
-                    var ctrl = $componentController('query');
                     ctrl.execute();
 
 
@@ -594,8 +647,6 @@ describe('The Query component', function() {
                     });
 
                     spyOn(query, 'execute');
-
-                    var ctrl = $componentController('query');
                     ctrl.execute();
 
 
@@ -622,8 +673,6 @@ describe('The Query component', function() {
                     });
 
                     spyOn(query, 'execute');
-
-                    var ctrl = $componentController('query');
                     ctrl.execute();
 
                     var expectedInput = JSON.stringify([
@@ -649,7 +698,6 @@ describe('The Query component', function() {
 
                     spyOn(query, 'execute');
 
-                    var ctrl = $componentController('query');
                     ctrl.execute();
 
                     var expectedInput = JSON.stringify([
@@ -686,7 +734,6 @@ describe('The Query component', function() {
 
                     spyOn(query, 'execute');
 
-                    var ctrl = $componentController('query');
                     ctrl.execute();
 
                     var expectedInput = JSON.stringify([
@@ -714,8 +761,6 @@ describe('The Query component', function() {
 
                     spyOn(query, 'execute');
 
-                    var ctrl = $componentController('query');
-
 
                     var flags = [ 'INCOMING', 'OUTGOING', 'EITHER']
 
@@ -737,7 +782,6 @@ describe('The Query component', function() {
 
             spyOn(query, 'addOperation');
 
-            var ctrl = $componentController('query');
             ctrl.execute();
 
             expect(query.addOperation).toHaveBeenCalledTimes(1);
@@ -749,7 +793,6 @@ describe('The Query component', function() {
             var $mdDialog, $q;
 
             var returnValue;
-            var ctrl;
 
             beforeEach(inject(function(_navigation_, _$rootScope_, _$mdDialog_, _$q_, _results_) {
                 navigation = _navigation_;
