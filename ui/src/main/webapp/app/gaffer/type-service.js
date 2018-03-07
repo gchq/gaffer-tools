@@ -136,7 +136,7 @@ angular.module('app').factory('types', ['config', 'common', function(config, com
             return createCustomValue(type, parts);
         }
 
-        if(typeof parts === 'number') {
+        if(typeof parts === 'number' || typeof parts === 'string' || parts instanceof String ) {
             return parts;
         }
 
