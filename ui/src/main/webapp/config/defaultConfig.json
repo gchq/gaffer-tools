@@ -84,6 +84,16 @@
         }
       ]
     },
+    "int": {
+      "fields": [
+        {
+          "type": "number",
+          "step": "1",
+          "class": "java.lang.Integer",
+          "required": true
+        }
+      ]
+    },
     "java.lang.Short": {
       "fields": [
         {
