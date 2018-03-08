@@ -116,6 +116,16 @@ md-option > div {
     margin: 0px;
 }
 
+.small-input-container {
+    padding-top: 0px;
+    padding-bottom: 0px;
+    margin-bottom: 0px;
+}
+
+.padding-sides {
+    padding-left: 8px;
+    padding-right: 8px;
+}
 .named-view-template li {
     border-bottom: 1px solid #ccc;
     height: auto;

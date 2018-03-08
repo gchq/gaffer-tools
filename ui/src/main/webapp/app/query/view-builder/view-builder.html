@@ -57,24 +57,13 @@
                 <md-subheader class="transparent md-no-sticky">{{entity}} Filters
                 </md-subheader>
                 <md-list-item class="secondary-button-padding"
-                              ng-click="ctrl.editFilter(entity, 'entity', true, filter, $index)"
-                              ng-repeat="filter in ctrl.entityFilters[entity].preAggregationFilterFunctions track by $index">
-                    <p> {{ctrl.createFilterLabel(filter, true)}} </p>
+                              ng-click="ctrl.editFilter(entity, 'entity', filter, $index)"
+                              ng-repeat="filter in ctrl.entityFilters[entity] track by $index">
+                    <p> {{ctrl.createFilterLabel(filter)}} </p>
                     <md-icon class="md-secondary" md-svg-icon="delete"
-                             id="delete-pre-entity-{{entity}}-filter-{{$index}}"
-                             ng-click="ctrl.deleteFilter(entity, 'entity', true, $index)"
+                             id="delete-entity-{{entity}}-filter-{{$index}}"
+                             ng-click="ctrl.deleteFilter(entity, 'entity', $index)"
                              aria-label="delete filter"></md-icon>
-                </md-list-item>
-                <md-list-item class="secondary-button-padding"
-                              ng-click="ctrl.editFilter(entity, 'entity', false, filter, $index)"
-                              ng-repeat="filter in ctrl.entityFilters[entity].postAggregationFilterFunctions track by $index">
-                    <p> {{ctrl.createFilterLabel(filter, false)}} </p>
-                    <md-icon class="md-secondary" md-svg-icon="delete"
-                             id="delete-post-entity-{{entity}}-filter-{{$index}}"
-                             ng-click="ctrl.deleteFilter(entity, 'entity', false, $index)"
-                             aria-label="delete filter">
-                        <md-tooltip>Delete filter</md-tooltip>
-                    </md-icon>
                 </md-list-item>
                 <md-button class="no-text-transform" id="add-{{entity}}-filters"
                            ng-click="ctrl.addFilters($event, entity, 'entity')">
@@ -87,24 +76,13 @@
                 <md-subheader class="transparent md-no-sticky">{{edge}} Filters
                 </md-subheader>
                 <md-list-item class="secondary-button-padding"
-                              ng-click="ctrl.editFilter(edge, 'edge', true, filter, $index)"
-                              ng-repeat="filter in ctrl.edgeFilters[edge].preAggregationFilterFunctions track by $index">
-                    <p> {{ctrl.createFilterLabel(filter, true)}} </p>
+                              ng-click="ctrl.editFilter(edge, 'edge', filter, $index)"
+                              ng-repeat="filter in ctrl.edgeFilters[edge] track by $index">
+                    <p> {{ctrl.createFilterLabel(filter)}} </p>
                     <md-icon class="md-secondary" md-svg-icon="delete"
-                             id="delete-pre-edge-{{edge}}-filter-{{$index}}"
-                             ng-click="ctrl.deleteFilter(edge, 'edge', true, $index)"
+                             id="delete-edge-{{edge}}-filter-{{$index}}"
+                             ng-click="ctrl.deleteFilter(edge, 'edge', $index)"
                              aria-label="delete filter"></md-icon>
-                </md-list-item>
-                <md-list-item class="secondary-button-padding"
-                              ng-click="ctrl.editFilter(edge, 'edge', false, filter, $index)"
-                              ng-repeat="filter in ctrl.edgeFilters[edge].postAggregationFilterFunctions track by $index">
-                    <p> {{ctrl.createFilterLabel(filter, false)}} </p>
-                    <md-icon class="md-secondary" md-svg-icon="delete"
-                             id="delete-post-edge-{{entity}}-filter-{{$index}}"
-                             ng-click="ctrl.deleteFilter(edge, 'edge', false, $index)"
-                             aria-label="delete filter">
-                        <md-tooltip>Delete filter</md-tooltip>
-                    </md-icon>
                 </md-list-item>
                 <md-button class="no-text-transform" id="add-{{edge}}-filters"
                            ng-click="ctrl.addFilters($event, edge, 'edge')">
