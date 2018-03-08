@@ -25,11 +25,11 @@ angular.module('app').factory('functions', ['$http', 'config', 'common', 'error'
         config.get().then(function(conf) {
             var queryUrl = common.parseUrl(conf.restEndpoint + "/graph/config/filterFunctions/" + className);
             $http.get(queryUrl)
-                .success(function(response) {
-                    onSuccess(response)
-                })
-                .error(function(err) {
-                    error.handle('Could not retrieve filter functions for ' + className, err);
+                .then(function(response) {
+                    onSuccess(response.data)
+                },
+                function(err) {
+                    error.handle('Could not retrieve filter functions for ' + className, err.data);
             });
         });
     }
@@ -39,11 +39,11 @@ angular.module('app').factory('functions', ['$http', 'config', 'common', 'error'
             var queryUrl = common.parseUrl(conf.restEndpoint + "/graph/config/serialisedFields/" + functionClassName);
 
             $http.get(queryUrl)
-                .success(function(response) {
-                    onSuccess(response)
-                })
-                .error(function(err) {
-                    error.handle('Could not get serialised fields for ' + functionClassName, err);
+                .then(function(response) {
+                    onSuccess(response.data)
+                },
+                function(err) {
+                    error.handle('Could not get serialised fields for ' + functionClassName, err.data);
             });
 
         })

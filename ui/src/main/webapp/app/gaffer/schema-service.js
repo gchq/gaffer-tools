@@ -46,8 +46,8 @@ angular.module('app').factory('schema', ['$http', 'config', '$q', 'common', 'ope
     var loadSchemaFromUrl = function(conf, defer) {
         var queryUrl = common.parseUrl(conf.restEndpoint + "/graph/config/schema");
         $http.get(queryUrl)
-            .success(function(response){
-                schema = response;
+            .then(function(response){
+                schema = response.data;
                 if (!schema.entities) {
                     schema.entities = {};
                 }
@@ -59,10 +59,10 @@ angular.module('app').factory('schema', ['$http', 'config', '$q', 'common', 'ope
                 }
                 defer.resolve(schema)
                 updateSchemaVertices()
-            })
-            .error(function(err) {
-                defer.reject(err);
-                error.handle('Unable to load schema', err);
+            },
+            function(err) {
+                defer.reject(err.data);
+                error.handle('Unable to load schema', err.data);
         });
     }
 
@@ -86,7 +86,7 @@ angular.module('app').factory('schema', ['$http', 'config', '$q', 'common', 'ope
                     updateSchemaVertices()
                 },
                 function(err) {
-                    console.log(err);
+                    console.log(err.data);
                     loadSchemaFromUrl(conf, defer);
                 }
             );
