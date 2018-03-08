@@ -116,6 +116,49 @@ function QueryController(queryPage, operationService, types, graph, config, sett
         return opInput;
     }
 
+    var generateFilterFunction = function(filter) {
+        var functionJson = {
+            "predicate": {
+                class: filter.predicate
+            },
+            "selection": [ filter.property ]
+        }
+
+        for(var paramName in filter.availableFunctionParameters) {
+            if(filter.parameters[paramName] !== undefined) {
+                if (types.isKnown(filter.availableFunctionParameters[paramName])) {
+                    functionJson['predicate'][paramName] = types.createValue(filter.parameters[paramName].valueClass, filter.parameters[paramName].parts);
+                } else {
+                    functionJson["predicate"][paramName] = types.createJsonValue(filter.parameters[paramName].valueClass, filter.parameters[paramName].parts);
+                }
+            }
+        }
+
+        return functionJson;
+    }
+
+    var createElementView = function(groupArray, filters, destination) {
+        for(var i in groupArray) {
+            var group = groupArray[i];
+            destination[group] = {};
+
+            for (var i in filters[group]) {
+                var filter = filters[group][i];
+                if (filter.preAggregation) {
+                    if (!destination[group].preAggregationFilterFunctions) {
+                        destination[group].preAggregationFilterFunctions = [];
+                    }
+                    destination[group].preAggregationFilterFunctions.push(generateFilterFunction(filter))
+                } else {
+                    if (!destination[group].postAggregationFilterFunctions) {
+                        destination[group].postAggregationFilterFunctions = [];
+                    }
+                    destination[group].postAggregationFilterFunctions.push(generateFilterFunction(filter));
+                }
+            }
+        }
+    }
+
     var createOperation = function() {
         var selectedOp = vm.getSelectedOp()
         var op = {
@@ -157,26 +200,8 @@ function QueryController(queryPage, operationService, types, graph, config, sett
                 edges: {}
             };
 
-
-            for(var i in viewEntities) {
-                var entity = viewEntities[i];
-                op.view.entities[entity] = {};
-
-                var filterFunctions = entityFilters[entity];
-                if (filterFunctions) {
-                    op.view.entities[entity] = filterFunctions;
-                }
-            }
-
-            for(var i in viewEdges) {
-                var edge = viewEdges[i];
-                op.view.edges[edge] = {};
-
-                var filterFunctions = edgeFilters[edge];
-                if (filterFunctions) {
-                    op.view.edges[edge] = filterFunctions;
-                }
-            }
+            createElementView(viewEntities, entityFilters, op.view.entities);
+            createElementView(viewEdges, edgeFilters, op.view.edges);
 
             if (dateRange.getStartDate() !== undefined && dateRange.getStartDate() !== null) {
                 op.view.globalElements.push({
@@ -207,7 +232,7 @@ function QueryController(queryPage, operationService, types, graph, config, sett
 
         if(namedViews && namedViews.length > 0){
             op.views = [];
-            for(i in namedViews) {
+            for(var i in namedViews) {
                 var viewParams = {};
                 for(name in namedViews[i].parameters) {
                     var valueClass = namedViews[i].parameters[name].valueClass;

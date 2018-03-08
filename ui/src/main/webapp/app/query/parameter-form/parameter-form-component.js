@@ -33,22 +33,12 @@ function parameterForm() {
 
 function ParameterFormController(types) {
     var vm = this;
-
     vm.$onInit = function() {
         if (vm.parameters === null || vm.parameters === undefined) {
-            console.error('Expected defined, non-null value for parameters. Got ' + vm.parameters);
+            throw 'Expected defined, non-null value for parameters. Got ' + vm.parameters;
         }
         if(!vm.title) {
             vm.title = 'Parameters';
         }
-        if(!vm.titleClass) {
-            vm.titleClass = 'section title';
-        }
     }
-
-    vm.isRequired = function(field, param) {
-        return param.required === true && field.required === true;
-    }
-
-    vm.getFields = types.getFields;
 }

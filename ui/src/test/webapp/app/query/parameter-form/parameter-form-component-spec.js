@@ -22,101 +22,43 @@ describe('The Parameter Form Component', function() {
             expect(ctrl.parameters).toEqual('test');
         });
 
-        it('should log an error to the console if the parameters are null', function() {
-            spyOn(console, 'error');
-            var ctrl = $componentController('parameterForm', null, {parameters: null});
-            ctrl.$onInit();
-            expect(console.error).toHaveBeenCalledTimes(1);
-            expect(console.error).toHaveBeenCalledWith('Expected defined, non-null value for parameters. Got null');
+        it('should take a title binding', function() {
+            var ctrl = $componentController('parameterForm', null, {title: "test"});
+            expect(ctrl.title).toEqual('test');
         });
 
-        it('should log an error to the console if the parameters are undefined', function() {
-            spyOn(console, 'error');
-            var ctrl = $componentController('parameterForm', null, {});
-            ctrl.$onInit();
-            expect(console.error).toHaveBeenCalledTimes(1);
-            expect(console.error).toHaveBeenCalledWith('Expected defined, non-null value for parameters. Got undefined');
+        it('should take a titleClass binding', function() {
+            var ctrl = $componentController('parameterForm', null, {titleClass: "test"});
+            expect(ctrl.titleClass).toEqual('test');
         });
 
-        it('should not log an error the console if the parameters are defined', function() {
-            spyOn(console, 'error');
-            var ctrl = $componentController('parameterForm', null, {parameters: "test"});
-            ctrl.$onInit();
-            expect(console.error).not.toHaveBeenCalled();
+        describe('ctrl.$onInit()', function() {
+            it('should throw an error if the parameters are null', function() {
+                var ctrl = $componentController('parameterForm', null, {parameters: null});
+                expect(ctrl.$onInit).toThrow('Expected defined, non-null value for parameters. Got null')
+            });
+
+            it('should throw an error if the parameters are undefined', function() {
+                var ctrl = $componentController('parameterForm', null, {});
+                expect(ctrl.$onInit).toThrow('Expected defined, non-null value for parameters. Got undefined')
+            });
+
+            describe('When parameters are defined', function() {
+                var ctrl;
+
+                beforeEach(function() {
+                    ctrl = $componentController('parameterForm', null, {parameters: "test"});
+                });
+
+                it('should not throw an error if the parameters are defined', function() {
+                    expect(ctrl.$onInit).not.toThrow()
+                });
+
+                it('should set the title to "Parameters" if it is not set in the bindings', function() {
+                    ctrl.$onInit();
+                    expect(ctrl.title).toEqual('Parameters');
+                });
+            });
         });
-
-        it('should expose the getFields() method of the type service', function() {
-            spyOn(types, 'getFields').and.callFake(function(value) {
-                return "field test"
-            });
-
-            var ctrl = $componentController('parameterForm');
-            expect(ctrl.getFields()).toEqual('field test');
-        });
-
-        describe('When determining whether a parameter field is required', function() {
-            var ctrl;
-
-            beforeEach(function() {
-                ctrl = $componentController('parameterForm');
-            });
-
-            it('should return false if the parameter is required and the field does not have the required flag', function() {
-                var field = {
-                    "class": "some.java.Class",
-                    "type": "string"
-                };
-
-                var parameter = {
-                    required: true
-                }
-
-                expect(ctrl.isRequired(field, parameter)).toBeFalsy();
-            });
-
-            it('should return false if the parameter is required and the field has a required flag set to false', function() {
-                var field = {
-                    "class": "some.java.Class",
-                    "type": "string",
-                    "required": false
-                };
-
-                var parameter = {
-                    required: true
-                }
-
-                expect(ctrl.isRequired(field, parameter)).toBeFalsy();
-            });
-
-            it('should return true if the parameter is required but the required flag is set to true', function() {
-                var field = {
-                    "class": "some.java.Class",
-                    "type": "string",
-                    "required": true
-                };
-
-                var parameter = {
-                    required: true
-                }
-
-                expect(ctrl.isRequired(field, parameter)).toBeTruthy();
-            });
-
-            it('should return false if the required flag on the parameter is set to false', function() {
-                var field = {
-                    "class": "some.java.Class",
-                    "type": "string",
-                    "required": true
-                };
-
-                var parameter = {
-                    required: false
-                }
-
-                expect(ctrl.isRequired(field, parameter)).toBeFalsy();
-            })
-        });
-
-
     })
 });

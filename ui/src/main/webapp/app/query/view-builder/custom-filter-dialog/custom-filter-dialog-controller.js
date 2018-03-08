@@ -16,7 +16,7 @@
 
 'use strict';
 
-angular.module('app').controller('CustomFilterDialogController', ['$scope', '$mdDialog', 'schema', 'functions', function($scope, $mdDialog, schema, functions) {
+angular.module('app').controller('CustomFilterDialogController', ['$scope', '$mdDialog', 'schema', 'functions', 'types', 'error', function($scope, $mdDialog, schema, functions, types, error) {
 
     $scope.filter = { preAggregation: false }
     $scope.availablePredicates;
@@ -26,8 +26,6 @@ angular.module('app').controller('CustomFilterDialogController', ['$scope', '$md
     $scope.group = this.group;
     $scope.filterForEdit = this.filterForEdit;
     $scope.onSubmit = this.onSubmit;
-
-    $scope.propertyClass = undefined;
 
 
     $scope.schema = {entities:{}, edges:{}, types:{}};
@@ -39,15 +37,8 @@ angular.module('app').controller('CustomFilterDialogController', ['$scope', '$md
             $scope.filter.property = $scope.filterForEdit.property;
             $scope.onSelectedPropertyChange(true);
             $scope.filter.predicate = $scope.filterForEdit.predicate;
+            $scope.filter.parameters = $scope.filterForEdit.parameters;
             $scope.onSelectedPredicateChange();
-            for(var name in $scope.filterForEdit.parameters) {
-                var param = $scope.filterForEdit.parameters[name];
-                if(typeof param === 'string' || param instanceof String) {
-                    $scope.filter.parameters[name] = param;
-                } else {
-                    $scope.filter.parameters[name] = JSON.stringify(param)
-                }
-            }
             $scope.editMode = true;
         }
     });
@@ -94,6 +85,16 @@ angular.module('app').controller('CustomFilterDialogController', ['$scope', '$md
     }
 
     $scope.submit = function() {
+        for (var param in $scope.filter.parameters) {
+            if ($scope.filter.parameters[param]['valueClass'] === 'JSON') {
+                try {
+                    JSON.parse($scope.filter.parameters[param]['parts'][undefined]);
+                } catch(err) {
+                    error.handle('Failed to parse ' + param + ' as a JSON object');
+                    return;
+                }
+            }
+        }
         $scope.onSubmit($scope.filter, $scope.group, $scope.elementType);
         $mdDialog.hide()
     }
@@ -103,17 +104,54 @@ angular.module('app').controller('CustomFilterDialogController', ['$scope', '$md
         $scope.resetForm();
     }
 
-    $scope.getFlexValue = function() {
-        if (!$scope.filter || !$scope.filter.availableFunctionParameters) {
-            return 0;
-        }
-        if ($scope.filter.availableFunctionParameters.length === 2) {
-            return 50;
-        } else if ($scope.filter.availableFunctionParameters.length === 1) {
+    $scope.getFlexValue = function(valueClass) {
+        if ($scope.hasMultipleTypesAvailable(valueClass)) {
             return 100;
+        } else {
+            return 50;
+        }
+    }
+
+    $scope.availableTypes = function(className) {
+        if(types.isKnown(className)) {
+            var rtn = {};
+            rtn[className.split('.').pop()] = className;
+            return rtn;
         }
 
-        return 33;
+        var allTypes = types.getSimpleClassNames();
+
+        var allClasses = {};
+
+        for (var simpleName in allTypes) {
+            if (!(simpleName.toLowerCase() === simpleName)) {
+                allClasses[simpleName] = allTypes[simpleName];
+            }
+        }
+
+        return allClasses;
+    }
+
+    $scope.updateType = function(param) {
+        if(param !== undefined && param !== null) {
+            var parts = param['parts'];
+
+            if (parts !== undefined && Object.keys(parts).length === 1 && parts[undefined] !== undefined) {    // if it's simple
+                var oldValue = parts[undefined];
+                var newFields = types.getFields(param.valueClass);
+                if (newFields.length === 1) {
+                    var newJSType = newFields[0].type;
+                    if (((newJSType === 'text' || newJSType === 'textarea') && (typeof oldValue === 'string' || oldValue instanceof String)) || (newJSType === 'number' && typeof oldValue === 'number')) {
+                        return;
+                    }
+                }
+            }
+            param['parts'] = {};
+        }
+    }
+
+    $scope.hasMultipleTypesAvailable = function(className) {
+        return !types.isKnown(className);
     }
 
     $scope.onSelectedPropertyChange = function(editModeInit) {
@@ -151,36 +189,49 @@ angular.module('app').controller('CustomFilterDialogController', ['$scope', '$md
         });
     }
 
-    $scope.showWarning = function() {
-        return $scope.propertyClass &&
-            $scope.filter &&
-            $scope.filter.availableFunctionParameters &&
-            $scope.filter.availableFunctionParameters.length !== 0;
+    var setToPropertyClass = function(parameter) {
+        var elementDef = $scope.schema.entities[$scope.group];
+        if(!elementDef) {
+             elementDef = $scope.schema.edges[$scope.group];
+        }
+        if ($scope.schema.types) {
+            var propertyClass = $scope.schema.types[elementDef.properties[$scope.filter.property]].class;
+            $scope.filter.parameters[parameter]['valueClass'] = propertyClass;
+        }
     }
 
     $scope.onSelectedPredicateChange = function() {
         if ($scope.filter.predicate === undefined || $scope.filter.predicate === '' || $scope.filter.predicate === null) {
             return;
         }
+
         functions.getFunctionParameters($scope.filter.predicate, function(data) {
             $scope.filter.availableFunctionParameters = data;
-        });
 
-        var elementDef = $scope.schema.entities[$scope.group];
-        if(!elementDef) {
-             elementDef = $scope.schema.edges[$scope.group];
-        }
-
-        $scope.propertyClass = undefined;
-        if(elementDef) {
-            var propertyClass = $scope.schema.types[elementDef.properties[$scope.filter.property]].class;
-            if("java.lang.String" !== propertyClass
-                && "java.lang.Boolean" !== propertyClass
-                && "java.lang.Integer" !== propertyClass) {
-                $scope.propertyClass = propertyClass;
+            if($scope.filter.parameters === undefined) {
+                $scope.filter.parameters = {}
+            } else {
+                for(var param in $scope.filter.parameters) {
+                    if(!(param in data)){
+                        delete $scope.filter.parameters[param];
+                    }
+                }
             }
-        }
 
-        $scope.filter.parameters = {};
+            for(var param in data) {
+                if(!(param in $scope.filter.parameters && $scope.filter.parameters[param] !== undefined)) {
+                    $scope.filter.parameters[param] = {};
+                }
+
+                if(!$scope.filter.parameters[param]["valueClass"]) {
+                    var availableTypes = $scope.availableTypes(data[param]);
+                    if(Object.keys(availableTypes).length == 1) {
+                        $scope.filter.parameters[param]['valueClass'] = availableTypes[Object.keys(availableTypes)[0]];
+                    } else {
+                        setToPropertyClass(param);
+                    }
+                }
+            }
+        });
     }
 }]);

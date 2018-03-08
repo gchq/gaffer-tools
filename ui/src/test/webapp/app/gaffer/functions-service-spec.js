@@ -75,14 +75,14 @@ describe('The functions service', function() {
         });
 
         it('should call the get serialised fields endpoint with the class name', function() {
-            $httpBackend.expectGET('http://localhost:8080/rest/latest/graph/config/serialisedFields/a.java.Class').respond(200, '["a", "b", "c"]')
+            $httpBackend.expectGET('http://localhost:8080/rest/latest/graph/config/serialisedFields/a.java.Class/classes').respond(200, {"a": 1, "b": 2, "c": 3})
             service.getFunctionParameters('a.java.Class', onSuccess);
             $httpBackend.flush();
-            expect(fields).toEqual(['a', 'b', 'c']);
+            expect(fields).toEqual({"a": 1, "b": 2, "c": 3});
         });
 
         it('should make a call to the error message with the context and error if the query fails', function() {
-            $httpBackend.expectGET('http://localhost:8080/rest/latest/graph/config/serialisedFields/a.java.Class').respond(500, {"simpleMessage": "something went badly wrong"});
+            $httpBackend.expectGET('http://localhost:8080/rest/latest/graph/config/serialisedFields/a.java.Class/classes').respond(500, {"simpleMessage": "something went badly wrong"});
             service.getFunctionParameters('a.java.Class', onSuccess);
             $httpBackend.flush();
             expect(error.handle).toHaveBeenCalledWith('Could not get serialised fields for a.java.Class', {"simpleMessage": "something went badly wrong"});
