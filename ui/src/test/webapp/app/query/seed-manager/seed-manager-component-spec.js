@@ -3,12 +3,13 @@ describe('The Seed Manager Component', function() {
 
     describe('The Controller', function() {
         var $componentController;
-        var events, graph;
+        var events, graph, input;
 
-        beforeEach(inject(function(_$componentController_, _events_, _graph_) {
+        beforeEach(inject(function(_$componentController_, _events_, _graph_, _input_) {
             $componentController = _$componentController_;
             events = _events_;
             graph = _graph_;
+            input = _input_;
         }));
 
         it('should exist', function() {
@@ -16,24 +17,34 @@ describe('The Seed Manager Component', function() {
             expect(ctrl).toBeDefined();
         });
 
-        describe('on initialisation', function() {
+        describe('ctrl.$onInit()', function() {
+            var ctrl;
 
             beforeEach(function() {
                 spyOn(graph, 'getSelectedEntities').and.returnValue({'"test"': {}});
-            })
+                spyOn(input, 'getInput').and.returnValue(['hello', 'world']);
+                spyOn(events, 'subscribe');
+            });
+
+            beforeEach(function() {
+                ctrl = $componentController('seedManager');
+                ctrl.$onInit();
+            });
 
             it('should set the initial value of the selected seeds to the entities selected on the graph', function() {
-                var ctrl = $componentController('seedManager');
-                ctrl.$onInit();
                 expect(ctrl.selectedEntities).toEqual({'"test"': {}});
             });
 
+            it('should set the initial value of the query input', function() {
+                expect(ctrl.input).toEqual(["hello", "world"]);
+            });
+
             it('should subscribe to the selectedElementsUpdate event', function() {
-                var ctrl = $componentController('seedManager');
-                spyOn(events, 'subscribe');
-                ctrl.$onInit();
-                expect(events.subscribe).toHaveBeenCalledTimes(1);
                 expect(events.subscribe.calls.first().args[0]).toEqual('selectedElementsUpdate')
+            });
+
+            it('should subscribe to the "queryInputUpdate" event', function() {
+                expect(events.subscribe.calls.mostRecent().args[0]).toEqual('queryInputUpdate');
             });
         });
 
@@ -72,8 +83,12 @@ describe('The Seed Manager Component', function() {
                 ctrl.$onDestroy();
             });
 
-            it('should unsubscribe from the events service', function() {
-                expect(events.unsubscribe).toHaveBeenCalledTimes(1);
+            it('should unsubscribe from the selectedElementsUpdate event', function() {
+                expect(events.unsubscribe.calls.first().args[0]).toEqual('selectedElementsUpdate');
+            });
+
+            it('should unsubscribe from the queryInputUpdate Event', function() {
+                expect(events.unsubscribe.calls.mostRecent().args[0]).toEqual('queryInputUpdate');
             });
         });
 

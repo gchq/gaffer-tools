@@ -16,6 +16,9 @@
 
 'use strict';
 
+/**
+ * The Query page component
+ */
 angular.module('app').component('query', query());
 
 function query() {
@@ -26,12 +29,32 @@ function query() {
         controllerAs: 'ctrl'
     };
 }
-
-function QueryController(queryPage, operationService, types, graph, config, settings, query, functions, results, navigation, $mdDialog, loading, dateRange, view, error) {
+/**
+ * The controller for the whole query page. Needs to access all services relating to the query and executes it.
+ * @param {*} queryPage For access to edge directions and operation options
+ * @param {*} operationService For creating operations
+ * @param {*} types For converting between Java and javascript types
+ * @param {*} graph For accessing the currently selected seeds
+ * @param {*} config For getting timeconfig
+ * @param {*} settings For accessing the result limit
+ * @param {*} query For executing and adding operations
+ * @param {*} results For parsing the results
+ * @param {*} navigation For moving to the graph page on successful operation
+ * @param {*} $mdDialog For warning the user when they hit the result limit
+ * @param {*} loading For starting and finishing the loading circle
+ * @param {*} dateRange For adding date ranges to queries
+ * @param {*} view For accessing the view that the user configured
+ * @param {*} error For displaying error messages
+ * @param {*} input For getting access to the operation seeds
+ */
+function QueryController(queryPage, operationService, types, graph, config, settings, query, results, navigation, $mdDialog, loading, dateRange, view, error, input) {
     var namedViewClass = "uk.gov.gchq.gaffer.data.elementdefinition.view.NamedView";
     var vm = this;
     vm.timeConfig;
 
+    /**
+     * initialises the time config and default operation options
+     */
     vm.$onInit = function() {
         config.get().then(function(conf) {
             vm.timeConfig = conf.time;
@@ -43,18 +66,30 @@ function QueryController(queryPage, operationService, types, graph, config, sett
     }
     var opOptionKeys;
 
+    /**
+     * Gets the selected operation that the user chose
+     */
     vm.getSelectedOp = function() {
         return queryPage.getSelectedOperation();
     }
 
+    /**
+     * Checks all subforms are valid and another operation is not in progress
+     */
     vm.canExecute = function() {
         return vm.queryForm.$valid && !loading.isLoading();
     }
 
+    /**
+     * Checks whether there are any operation options.
+     */
     vm.hasOpOptions = function() {
         return opOptionKeys && Object.keys(opOptionKeys).length > 0;
     }
 
+    /**
+     * Executes an operation
+     */
     vm.execute = function() {
         var operation = createOperation();
         query.addOperation(operation);
@@ -77,6 +112,10 @@ function QueryController(queryPage, operationService, types, graph, config, sett
     }
 
 
+    /**
+     * Alerts the user if they hit the result limit
+     * @param {Array} data The data returned by the Gaffer REST service 
+     */
     var prompt = function(data) {
         $mdDialog.show({
             template: '<result-count-warning aria-label="Result Count Warning"></result-count-warning>',
@@ -90,6 +129,10 @@ function QueryController(queryPage, operationService, types, graph, config, sett
         });
     }
 
+    /**
+     * Deselects all elements in the graph, updates the result service and resets all query related services
+     * @param {Array} data the data returned by the rest service 
+     */
     var submitResults = function(data) {
         graph.deselectAll();
         results.update(data);
@@ -97,8 +140,12 @@ function QueryController(queryPage, operationService, types, graph, config, sett
         queryPage.reset();
         dateRange.resetDateRange();
         view.reset();
+        input.reset();
     }
 
+    /**
+     * Uses the selected entities in the graph and seeds uploaded to the input service to build an input array to the query.
+     */
     var createOpInput = function() {
         var opInput = [];
         var jsonVertex;
@@ -113,9 +160,22 @@ function QueryController(queryPage, operationService, types, graph, config, sett
               "vertex": jsonVertex
             });
         }
+
+        var seeds = input.getInput();
+
+        for (var i in seeds) {
+            opInput.push({
+                "class": "uk.gov.gchq.gaffer.operation.data.EntitySeed",
+                "vertex": seeds[i]
+            });
+        }
+
         return opInput;
     }
 
+    /**
+     * Builds an operation using views, inputs and other options
+     */
     var createOperation = function() {
         var selectedOp = vm.getSelectedOp()
         var op = {

@@ -39,7 +39,13 @@ describe('The Seed Manager Component', function() {
 
         it('should show a message even if no seeds are selected', function() {
             events.broadcast('selectedElementsUpdate', [ { entities: {} }]);
-            expect(ctrl.seedsMessage).toEqual("No Seeds added. Type in your seeds and click add.")
+            expect(ctrl.seedsMessage).toEqual("No Seeds added. Type in your seeds and click add.");
+        });
+
+        it('should combine the seeds from the graph and seeds in the input service', function() {
+            events.broadcast('selectedElementsUpdate', [{entities: {'"graphSeed1"': [], '"graphSeed2"': []}}]);
+            events.broadcast('queryInputUpdate', [['inputSeed1']]);
+            expect(ctrl.seedsMessage).toEqual('Added graphSeed2, inputSeed1 and 1 more');
         });
     });
 

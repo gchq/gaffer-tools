@@ -608,22 +608,65 @@ describe('The Query component', function() {
             });
 
             describe('When adding seeds', function() {
+                var input;
+                var ctrl;
 
-                it('should add string seeds from the selected entities to the operation', function() {
+                var selectedSeeds;
+                var seeds;
+
+                beforeEach(inject(function(_input_) {
+                    input = _input_;
+                }));
+
+                beforeEach(function() {
+                    ctrl = $componentController('query');
+                    selectedSeeds = {};
+                    seeds = [];
+                });
+
+                beforeEach(function() {
+                    spyOn(query, 'execute');
+
                     spyOn(queryPage, 'getSelectedOperation').and.returnValue({
                         class: 'operation.class.Name',
                         input: true
                     });
 
-                    spyOn(graph, 'getSelectedEntities').and.returnValue({
+                    spyOn(graph, 'getSelectedEntities').and.callFake(function() {
+                        return selectedSeeds;
+                    });
+
+                    spyOn(input, 'getInput').and.callFake(function() {
+                        return seeds;
+                    });
+
+                });
+
+                it('should add string seeds from the input service to the operation', function() {
+                    seeds = [
+                        'test1',
+                        'test2',
+                        'test3'
+                    ];
+
+                    var expectedInput = JSON.stringify([
+                        { 'class': 'uk.gov.gchq.gaffer.operation.data.EntitySeed', 'vertex': 'test1'},
+                        { 'class': 'uk.gov.gchq.gaffer.operation.data.EntitySeed', 'vertex': 'test2'},
+                        { 'class': 'uk.gov.gchq.gaffer.operation.data.EntitySeed', 'vertex': 'test3'}]);
+
+                    ctrl.execute();
+
+                    expect(query.execute.calls.first().args[0]).toContain(expectedInput);
+                })
+
+                it('should add string seeds from the selected entities to the operation', function() {
+
+                    selectedSeeds = {
                         "vertex1": [],
                         "vertex2": [],
                         "vertex3": []
-                    });
+                    };
 
-                    spyOn(query, 'execute');
-
-                    var ctrl = $componentController('query');
                     ctrl.execute();
 
                     var expectedInput = JSON.stringify([
@@ -635,21 +678,13 @@ describe('The Query component', function() {
 
                 });
 
-                it('should add complex seeds to the operation', function() {
-                    spyOn(queryPage, 'getSelectedOperation').and.returnValue({
-                        class: 'operation.class.Name',
-                        input: true
-                    });
+                it('should add complex seeds from the input service to the operation', function() {
+                    seeds = [
+                        { "my.complex.Type": { "type": "thing1", "value": "myVal1", "someField": "test1"}},
+                        { "my.complex.Type": { "type": "thing2", "value": "myVal2", "someField": "test2"}},
+                        { "my.complex.Type": { "type": "thing3", "value": "myVal3", "someField": "test3"}}
+                    ];
 
-                    spyOn(graph, 'getSelectedEntities').and.returnValue({
-                        '{ "my.complex.Type": { "type": "thing1", "value": "myVal1", "someField": "test1"}}': [],
-                        '{ "my.complex.Type": { "type": "thing2", "value": "myVal2", "someField": "test2"}}': [],
-                        '{ "my.complex.Type": { "type": "thing3", "value": "myVal3", "someField": "test3"}}': []
-                    });
-
-                    spyOn(query, 'execute');
-
-                    var ctrl = $componentController('query');
                     ctrl.execute();
 
                     var expectedInput = JSON.stringify([
@@ -672,21 +707,62 @@ describe('The Query component', function() {
                     expect(query.execute.calls.first().args[0]).toContain(expectedInput);
                 });
 
-                it('should add numerical seeds to the operation', function() {
-                    spyOn(queryPage, 'getSelectedOperation').and.returnValue({
-                        class: 'operation.class.Name',
-                        input: true
-                    });
+                it('should add stringified complex selected seeds to the operation', function() {
 
-                    spyOn(graph, 'getSelectedEntities').and.returnValue({
-                        1: [],
-                        2: [],
-                        3: []
-                    });
+                    selectedSeeds  ={
+                        '{ "my.complex.Type": { "type": "thing1", "value": "myVal1", "someField": "test1"}}': [],
+                        '{ "my.complex.Type": { "type": "thing2", "value": "myVal2", "someField": "test2"}}': [],
+                        '{ "my.complex.Type": { "type": "thing3", "value": "myVal3", "someField": "test3"}}': []
+                    };
 
-                    spyOn(query, 'execute');
+                    ctrl.execute();
 
-                    var ctrl = $componentController('query');
+                    var expectedInput = JSON.stringify([
+                        {
+                            'class': 'uk.gov.gchq.gaffer.operation.data.EntitySeed',
+                            'vertex': { "my.complex.Type": { "type": "thing1", "value": "myVal1", "someField": "test1"}
+                            }
+                        },
+                        {
+                            'class': 'uk.gov.gchq.gaffer.operation.data.EntitySeed',
+                            'vertex': { "my.complex.Type": { "type": "thing2", "value": "myVal2", "someField": "test2"}
+                            }
+                        },
+                        {
+                            'class': 'uk.gov.gchq.gaffer.operation.data.EntitySeed',
+                            'vertex': { "my.complex.Type": { "type": "thing3", "value": "myVal3", "someField": "test3"}
+                            }
+                        }]);
+
+                    expect(query.execute.calls.first().args[0]).toContain(expectedInput);
+                });
+
+                it('should add numerical seeds from the input service to the operation', function() {
+                    seeds = [
+                        1,
+                        2,
+                        3
+                    ];
+
+                    ctrl.execute();
+
+                    var expectedInput = JSON.stringify([
+                        { 'class': 'uk.gov.gchq.gaffer.operation.data.EntitySeed', 'vertex': 1},
+                        { 'class': 'uk.gov.gchq.gaffer.operation.data.EntitySeed', 'vertex': 2},
+                        { 'class': 'uk.gov.gchq.gaffer.operation.data.EntitySeed', 'vertex': 3}])
+
+                    expect(query.execute.calls.first().args[0]).toContain(expectedInput);
+
+                });
+
+                it('should add stringified numerical selected seeds to the operation', function() {
+
+                    selectedSeeds = {
+                        '1': [],
+                        '2': [],
+                        '3': []
+                    };
+
                     ctrl.execute();
 
                     var expectedInput = JSON.stringify([
@@ -745,18 +821,19 @@ describe('The Query component', function() {
 
         describe('when the results returned number the same as the result limit', function() {
             var scope;
-            var navigation, results;
+            var navigation, results, input;
             var $mdDialog, $q;
 
             var returnValue;
             var ctrl;
 
-            beforeEach(inject(function(_navigation_, _$rootScope_, _$mdDialog_, _$q_, _results_) {
+            beforeEach(inject(function(_navigation_, _$rootScope_, _$mdDialog_, _$q_, _results_, _input_) {
                 navigation = _navigation_;
                 scope = _$rootScope_.$new();
                 $mdDialog = _$mdDialog_;
                 $q = _$q_;
                 results = _results_;
+                input = _input_;
             }));
 
             beforeEach(function() {
@@ -773,6 +850,7 @@ describe('The Query component', function() {
 
                 spyOn(graph, 'deselectAll');
                 spyOn(results, 'update');
+                spyOn(input, 'reset');
 
                 spyOn($mdDialog, 'show').and.callFake(function() {
                     return $q.when(returnValue);
@@ -839,6 +917,16 @@ describe('The Query component', function() {
                 ctrl.execute();
                 scope.$digest();
                 expect(graph.deselectAll).not.toHaveBeenCalled();
+            });
+
+            it('should reset the input service if the dialog returns "results"', function() {
+                expect(input.reset).toHaveBeenCalledTimes(1);
+                input.reset.calls.reset();
+
+                returnValue = 'query';
+                ctrl.execute();
+                scope.$digest();
+                expect(input.reset).not.toHaveBeenCalled();
             });
         });
 
