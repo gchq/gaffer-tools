@@ -146,15 +146,16 @@ angular.module('app').factory('operationService', ['$http', '$q', 'settings', 'c
             var queryUrl = common.parseUrl(conf.restEndpoint + "/graph/operations");
 
             $http.get(queryUrl)
-                .success(function(ops) {
+                .then(function(response) {
+                    var ops = response.data;
                     if (ops.indexOf(operationClass) !== -1) {
                         onSupported();
                         return;
                     }
                     onUnsupported();
-                })
-                .error(function(err) {
-                    error.handle('Error getting available graph operations', err);
+                },
+                function(err) {
+                    error.handle('Error getting available graph operations', err.data);
                     onUnsupported();
             });
         })

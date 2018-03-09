@@ -41,13 +41,16 @@ angular.module('app').factory('config', ['$http', '$q', 'defaultRestEndpoint', '
 
     var load = function() {
         $http.get('config/defaultConfig.json')
-            .success(function(defaultConfig) {
+            .then(function(response) {
+                var defaultConfig = response.data;
                 if(defaultConfig === undefined) {
                     defaultConfig = {};
                 }
                 var mergedConfig = defaultConfig;
                 $http.get('config/config.json')
-                    .success(function(customConfig) {
+                    .then(function(response) {
+                        var customConfig = response.data;
+
                         if(customConfig === undefined) {
                             customConfig = {};
                         }
@@ -65,13 +68,13 @@ angular.module('app').factory('config', ['$http', '$q', 'defaultRestEndpoint', '
                         angular.merge(mergedConfig, customConfig);
                         config = mergedConfig;
                         defer.resolve(config);
-                    })
-                    .error(function(err) {
+                    },
+                    function(err) {
                         defer.reject(err);
                         error.handle("Failed to load custom config", err);
                 });
-            })
-            .error(function(err) {
+            },
+            function(err) {
                 defer.reject(err);
                 error.handle("Failed to load config", err);
         });
