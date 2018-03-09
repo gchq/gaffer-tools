@@ -1,8 +1,8 @@
 describe('The Custom Filter Dialog Controller', function() {
 
-    var scope, $controller, $q;
+    var scope, $controller, $q, functions;
     var ctrl;
-    var functions, schema;
+    var functions
     var functionParams, edgeProperties, entityProperties, gafferSchema;
 
     var createController = function() {
@@ -43,6 +43,7 @@ describe('The Custom Filter Dialog Controller', function() {
         });
     }));
 
+
     beforeEach(inject(function(_$rootScope_, _$controller_, _$q_, _functions_,_schema_) {
         $q = _$q_;
         $controller = _$controller_;
@@ -63,7 +64,8 @@ describe('The Custom Filter Dialog Controller', function() {
 
         beforeEach(function() {
             createController();
-        })
+        });
+
         it('should exist', function() {
             expect(ctrl).toBeDefined();
         });
@@ -78,6 +80,30 @@ describe('The Custom Filter Dialog Controller', function() {
     });
 
     describe('When a filter is injected into the scope', function() {
+
+        beforeEach(function() {
+            functionParams = {'value': 'java.lang.Iterable', 'orEqualTo': 'boolean', 'anObjectProperty': 'java.lang.Object'};
+
+            spyOn(functions, 'getFunctions').and.returnValue($q.when(["a.koryphe.predicate.Class"]));
+        });
+
+        beforeEach(function() {
+            spyOn(schema, 'get').and.returnValue($q.when({
+                "entities": {
+                    "test": {
+                        "properties": {
+                            "aProperty": "long"
+                        }
+                    }
+                },
+                "types": {
+                    "long": {
+                        "class": "java.lang.Long"
+                    }
+                }
+            }));
+        });
+
         beforeEach(function() {
             var filterForEdit = {
                 someUnrelatedField: "notRelevant",
@@ -85,14 +111,15 @@ describe('The Custom Filter Dialog Controller', function() {
                 property: "aProperty",
                 predicate: "a.koryphe.predicate.Class",
                 parameters: {
-                    "value": 42,
-                    "orEqualTo": false,
-                    "aStringProperty": "test",
-                    "anObjectProperty": {"java.lang.Long": 123}
+                    "value": { valueClass: 'java.lang.Integer', parts: {undefined: 42}},
+                    "orEqualTo": { valueClass: 'boolean', parts: {undefined: false}},
+                    "aStringProperty": { valueClass: 'java.lang.String', parts: {undefined: "test"}},
+                    "anObjectProperty": { valueClass: 'JSON', parts: {undefined: '{"java.lang.Long": 123}'}}
                 }
             }
 
-            createControllerWithBindings({filterForEdit: filterForEdit});
+            createControllerWithBindings({filterForEdit: filterForEdit, group: "test", elementType: "entity"});
+            scope.$digest();
         });
 
 
@@ -105,17 +132,17 @@ describe('The Custom Filter Dialog Controller', function() {
             expect(scope.filter.predicate).toEqual('a.koryphe.predicate.Class');
         });
 
-        it('should add all the stringified parameters', function() {
-            var params = scope.filter.parameters;
-            expect(params.value).toEqual('42');
-            expect(params.aStringProperty).toEqual('test');
-            expect(params.anObjectProperty).toEqual('{"java.lang.Long":123}');
-            expect(params.orEqualTo).toEqual('false');
+        it('should set the available parameters', function() {
+            expect(functions.getFunctionParameters).toHaveBeenCalledTimes(1);
+            expect(scope.filter.availableFunctionParameters).toEqual({'value': 'java.lang.Iterable', 'orEqualTo': 'boolean', 'anObjectProperty': 'java.lang.Object'});
         });
 
-        it('should get the parameters', function() {
-            expect(functions.getFunctionParameters).toHaveBeenCalledTimes(1);
-            expect(scope.filter.availableFunctionParameters).toEqual(['value', 'orEqualTo']);
+        it('should set the parameters and delete irrelevant ones', function() {
+            scope.$digest();
+            expect(scope.filter.parameters.value).toEqual({ valueClass: 'java.lang.Integer', parts: {undefined: 42}});
+            expect(scope.filter.parameters.orEqualTo).toEqual({ valueClass: 'boolean', parts: {undefined: false}});
+            expect(scope.filter.parameters.anObjectProperty).toEqual({ valueClass: 'JSON', parts: {undefined: '{"java.lang.Long": 123}'}});
+            expect(scope.filter.parameters.aStringProperty).toBeUndefined();
         });
 
         it('should set editMode to true', function() {
@@ -164,6 +191,13 @@ describe('The Custom Filter Dialog Controller', function() {
     });
 
     describe('$scope.getProperties()', function() {
+
+        var schema;
+
+        beforeEach(inject(function(_schema_) {
+            schema = _schema_;
+        }))
+
         beforeEach(function() {
             spyOn(schema, 'getEntityProperties').and.returnValue(['prop1', 'prop2']);
             spyOn(schema, 'getEdgeProperties').and.returnValue(['prop3', 'prop4']);
@@ -211,45 +245,6 @@ describe('The Custom Filter Dialog Controller', function() {
             expect(scope.getProperties).toThrow('Element type can be "edge" or "entity" but not {"foo":"bar"}');
             expect(schema.getEdgeProperties).not.toHaveBeenCalled();
             expect(schema.getEntityProperties).not.toHaveBeenCalled();
-        });
-    });
-
-    describe('$scope.showWarning()', function() {
-
-        beforeEach(function() {
-            createController();
-        });
-
-        beforeEach(function() {
-            scope.propertyClass = 'java.lang.Object';
-        });
-
-        beforeEach(function() {
-            scope.filter.availableFunctionParameters = ['prop1', 'prop2'];
-        });
-
-        it('should return true when there are function parameters and the property is a complex object', function() {
-            expect(scope.showWarning()).toBeTruthy();
-        });
-
-        it('should return false when the filter is undefined', function() {
-            scope.filter = undefined;
-            expect(scope.showWarning()).toBeFalsy();
-        });
-
-        it('should return false when the filters available function parameters are undefined', function() {
-            scope.filter.availableFunctionParameters = undefined;
-            expect(scope.showWarning()).toBeFalsy();
-        });
-
-        it('should return false when the filters available function parameters are an empty array', function() {
-            scope.filter.availableFunctionParameters = [];
-            expect(scope.showWarning()).toBeFalsy();
-        });
-
-        it('should return false when the propertyClass is undefined', function() {
-            scope.propertyClass = undefined;
-            expect(scope.showWarning()).toBeFalsy();
         });
     });
 
@@ -314,10 +309,35 @@ describe('The Custom Filter Dialog Controller', function() {
     describe('$scope.submit()', function() {
 
         var $mdDialog;
+        var types;
 
-        beforeEach(inject(function(_$mdDialog_) {
+        beforeEach(inject(function(_$mdDialog_, _types_) {
             $mdDialog = _$mdDialog_;
-        }))
+            types = _types_;
+        }));
+
+        beforeEach(function() {
+            spyOn(types, 'isKnown').and.returnValue(true);
+            spyOn(functions, 'getFunctions').and.returnValue(['pred']);
+        });
+
+        beforeEach(function() {
+            gafferSchema = {
+                'entities': {
+                    'testGroup': {
+                        'properties':{
+                            'prop': 'propType'
+                        }
+                    }
+                },
+                'types': {
+                    'propType': {
+                        'class': 'java.lang.String'
+                    }
+                }
+            }
+        });
+
 
         beforeEach(function() {
             createControllerWithBindings({filterForEdit: { preAggregation: true, property: 'prop', predicate: 'pred' }, elementType: 'edge', group: 'testGroup', onSubmit: function(filter, group, elementType) {
@@ -329,7 +349,6 @@ describe('The Custom Filter Dialog Controller', function() {
             spyOn(scope, 'onSubmit');
             scope.submit();
             expect(scope.onSubmit).toHaveBeenCalled();
-            expect(scope.onSubmit).toHaveBeenCalledWith({ preAggregation: true, property: 'prop', predicate: 'pred', parameters: {}, availableFunctionParameters: functionParams}, 'testGroup', 'edge');
         });
 
         it('should hide the $mdDialog box', function() {
@@ -340,6 +359,35 @@ describe('The Custom Filter Dialog Controller', function() {
     });
 
     describe('$scope.addAnother()', function() {
+
+        var types;
+
+        beforeEach(inject(function(_types_) {
+            types = _types_;
+        }));
+
+        beforeEach(function() {
+            spyOn(types, 'isKnown').and.returnValue(true);
+            spyOn(functions, 'getFunctions').and.returnValue(['pred']);
+        });
+
+        beforeEach(function() {
+            gafferSchema = {
+                'entities': {
+                    'testGroup': {
+                        'properties':{
+                            'prop': 'propType'
+                        }
+                    }
+                },
+                'types': {
+                    'propType': {
+                        'class': 'java.lang.String'
+                    }
+                }
+            }
+        });
+
         beforeEach(function() {
             createControllerWithBindings({filterForEdit: { preAggregation: true, property: 'prop', predicate: 'pred' }, elementType: 'edge', group: 'testGroup', onSubmit: function(filter, group, elementType) {
                 // do nothing
@@ -355,7 +403,6 @@ describe('The Custom Filter Dialog Controller', function() {
             spyOn(scope, 'onSubmit');
             scope.addAnother();
             expect(scope.onSubmit).toHaveBeenCalled();
-            expect(scope.onSubmit).toHaveBeenCalledWith({ preAggregation: true, property: 'prop', predicate: 'pred', parameters: {},  availableFunctionParameters: functionParams }, 'testGroup', 'edge');
         });
 
         it('should reset the form', function() {
@@ -365,46 +412,240 @@ describe('The Custom Filter Dialog Controller', function() {
     });
 
     describe('$scope.getFlexValue()', function() {
+        var types;
+        var known;
+
+        beforeEach(inject(function(_types_) {
+            types = _types_;
+        }));
+
         beforeEach(function() {
             createController();
         });
 
-        it('should return 100 if the availableFunctionParameters length is 1', function() {
-            scope.filter = { availableFunctionParameters: ["test"] };
-            expect(scope.getFlexValue()).toEqual(100);
-        });
-
-        it('should return 50 if the availableFunctionParameters length is 2', function() {
-            scope.filter = { availableFunctionParameters: ['test1', 'test2'] };
-            expect(scope.getFlexValue()).toEqual(50);
-        });
-
-        it('should return 33 if the availableFunctionParameters length is 3', function() {
-            scope.filter = { availableFunctionParameters: ['test1', 'test2', 'test3'] };
-            expect(scope.getFlexValue()).toEqual(33)
-        });
-
-        it('should return 33 if the availableFunctionParameters length is greater than 3', function() {
-            scope.filter = { availableFunctionParameters: ['1', '2', '3'] };
-
-            for(var i = 4; i < 10; i++) {
-                scope.filter.availableFunctionParameters.push(i.toString());
-                expect(scope.getFlexValue()).toEqual(33);
-            }
-        });
-
-        it('should return 0 if the filter is undefined', function() {
-            scope.filter = undefined;
-            expect(scope.getFlexValue()).toEqual(0);
-        });
-
-        it('should return 0 if the filter\' available parameters are undefined', function() {
-            scope.filter = { availableFunctionParameters: undefined };
-            expect(scope.getFlexValue()).toEqual(0);
+        beforeEach(function() {
+            known = false;
         })
+
+        beforeEach(function() {
+            spyOn(types, 'isKnown').and.callFake(function(valueClass) {
+                return known;
+            })
+        })
+
+        it('should return 50 if the class is known to the type service', function() {
+            known = true;
+            expect(scope.getFlexValue('aKnownClass')).toEqual(50);
+        });
+
+        it('should return 100 if the class is unknown to the type service', function() {
+            known = false;
+            expect(scope.getFlexValue('anUnknownClass')).toEqual(100);
+        });
+    });
+
+    describe('$scope.availableTypes()', function() {
+        var types;
+        var known;
+
+        var simpleClassNames;
+
+        beforeEach(inject(function(_types_) {
+            types = _types_;
+        }));
+
+        beforeEach(createController)
+
+        beforeEach(function() {
+            known = false;
+            simpleClassNames = {
+                'Long': 'java.lang.Long',
+                'Boolean': 'java.lang.Boolean',
+                'boolean': 'boolean',
+                'integer': 'integer'
+            }
+        })
+
+        beforeEach(function() {
+            spyOn(types, 'isKnown').and.callFake(function() {
+                return known;
+            });
+
+            spyOn(types, 'getSimpleClassNames').and.callFake(function() {
+                return simpleClassNames;
+            });
+        });
+
+        it('should return a single key and value if the class is known', function() {
+            known = true;
+            expect(scope.availableTypes('java.lang.Integer')).toEqual({'Integer': 'java.lang.Integer'});
+        });
+
+        it('should return all the simple class names with primitives removed', function() {
+            known = false;
+            expect(scope.availableTypes('java.lang.Iterable')).toEqual({
+                'Long': 'java.lang.Long',
+                'Boolean': 'java.lang.Boolean'
+            });
+        });
+    });
+
+    describe('$scope.updateType()', function() {
+
+        var fields;
+        var types;
+
+        beforeEach(createController);
+
+        beforeEach(inject(function(_types_) {
+            types = _types_;
+        }));
+
+        beforeEach(function() {
+            spyOn(types, 'getFields').and.callFake(function(clazz) {
+                return fields;
+            })
+        })
+
+        it('should do nothing if the parameter is undefined', function() {
+            var param = undefined;
+            scope.updateType(param);
+
+            expect(param).toBeUndefined();
+        });
+
+        it('should do nothing if the parameters is null', function() {
+            var param = null;
+            scope.updateType(param);
+
+            expect(param).toBeNull();
+        });
+
+        it('should make the parts of the parameter an empty object if it is initially undefined', function() {
+            var param = {};
+            scope.updateType(param);
+            expect(param.parts).toEqual({});
+        });
+
+        it('should make the parts of the parameter an empty object if they were initially a complex object', function() {
+            var param = { parts: {'type': 'foo', 'value': 'bar'}};
+            scope.updateType(param);
+            expect(param.parts).toEqual({});
+        });
+
+        it('should make the parts of the parameter an empty object if they are keyed by anything other than undefined', function() {
+            var param = { parts: {'foo': 'bar'}};
+            scope.updateType(param);
+            expect(param.parts).toEqual({});
+        });
+
+        it('should do nothing if the parts were originally a number indexed by undefined and are still a number indexed by undefined', function() {
+            var param = {parts: {undefined: 42}};
+
+
+            // the new type
+            fields = [
+                {
+                    'type': 'number'
+                }
+            ];
+
+            scope.updateType(param);
+            expect(param.parts).toEqual({undefined: 42});
+        });
+
+        it('should do nothing if the parts were originally a string and the new type is text', function() {
+            var param = {parts: {undefined: 'test'}};
+
+            // the new type
+            fields = [
+                {
+                    'type': 'text'
+                }
+            ];
+
+            scope.updateType(param);
+            expect(param.parts).toEqual({undefined: 'test'});
+        });
+
+        it('should do nothing if the parts were originally a string and the new type is textarea', function() {
+            var param = {parts: {undefined: 'test'}};
+
+            // the new type
+            fields = [
+                {
+                    'type': 'textarea'
+                }
+            ];
+
+            scope.updateType(param);
+            expect(param.parts).toEqual({undefined: 'test'});
+        });
+
+        it('should reset the parts if the parts were originally a string, but the new type is a number', function() {
+            var param = {parts: {undefined: 'test'}};
+
+            // the new type
+            fields = [
+                {
+                    'type': 'number'
+                }
+            ];
+
+            scope.updateType(param);
+            expect(param.parts).toEqual({});
+        });
+
+        it('should reset the parts if the new type has more than one field', function() {
+            var param = {parts: {undefined: 'test'}};
+
+            // the new type
+            fields = [
+                {
+                    'type': 'text'
+                },
+                {
+                    'type': 'text'
+                },
+                {
+                    'type': 'text'
+                }
+            ];
+
+            scope.updateType(param);
+            expect(param.parts).toEqual({});
+        });
+    });
+
+    describe('$scope.hasMultipleTypesAvailable()', function() {
+        var types;
+
+        beforeEach(inject(function(_types_) {
+            types = _types_;
+        }));
+
+        beforeEach(createController)
+
+        it('should return true if the type is not known to the type service', function() {
+            spyOn(types, 'isKnown').and.returnValue(false);
+            expect(scope.hasMultipleTypesAvailable('a.java.Class')).toBeTruthy();
+        });
+
+        it('should return false if the type is known to the type service', function() {
+            spyOn(types, 'isKnown').and.returnValue(true);
+            expect(scope.hasMultipleTypesAvailable('a.java.Class')).toBeFalsy();
+        });
     });
 
     describe('$scope.onSelectedPropertyChange()', function() {
+
+        var schema;
+
+        beforeEach(inject(function(_schema_) {
+            schema = _schema_;
+        }));
+
+
         beforeEach(function() {
             spyOn(functions, 'getFunctions').and.callFake(function(clazz, cb) {
                 cb('somePredicates');
@@ -414,7 +655,7 @@ describe('The Custom Filter Dialog Controller', function() {
         });
 
         beforeEach(function() {
-            gafferSchema = {
+            spyOn(schema, 'get').and.returnValue($q.when({
                 "edges": {
                     "testGroup": {
                         "properties": {
@@ -429,39 +670,36 @@ describe('The Custom Filter Dialog Controller', function() {
                         "class": "a.java.Class"
                     }
                 }
-            }
+            }));
         });
 
         beforeEach(function() {
             createController();
-            scope.schema = gafferSchema;
+            scope.$digest();
         });
 
-        it('should not make service call if the group is null', function() {
+        it('should not get the functions if the group is null', function() {
             scope.group = null;
             scope.filter = { property: "not null"};
             scope.onSelectedPropertyChange();
-            scope.$digest();
             expect(functions.getFunctions).not.toHaveBeenCalled();
         });
 
-        it('should not call onSuccess if the group is undefined', function() {
+        it('should not get the functions if the group is undefined', function() {
             scope.group = undefined;
             scope.filter = { property: "property"};
             scope.onSelectedPropertyChange();
-            scope.$digest();
             expect(functions.getFunctions).not.toHaveBeenCalled();
         });
 
-        it('should not call onSuccess if the property is null', function() {
+        it('should not get the functions if the property is null', function() {
             scope.group = "group";
             scope.filter = { property: null};
             scope.onSelectedPropertyChange();
-            scope.$digest();
             expect(functions.getFunctions).not.toHaveBeenCalled();
         });
 
-        it('should not call onSuccess if the group is undefined', function() {
+        it('should not get the functions if the property is undefined', function() {
             scope.group = "group";
             scope.filter = {};
             scope.onSelectedPropertyChange();
@@ -537,11 +775,45 @@ describe('The Custom Filter Dialog Controller', function() {
 
     describe('$scope.onSelectedPredicateChange()', function() {
 
+        var types, schema;
         var originalFilter = {
             preAggregation: false,
             property: 'testProp',
             predicate: 'a.filter.class.Name'
         };
+
+        known = false;
+
+        beforeEach(inject(function(_types_, _schema_) {
+            types = _types_;
+            schema = _schema_;
+        }));
+
+        beforeEach(function() {
+            spyOn(schema, 'get').and.returnValue($q.when({
+                "edges": {
+                    "testGroup": {
+                        "properties": {
+                            "testProp": "known.type"
+                        }
+                    }
+                },
+                "entities": {},
+                 "types": {
+                    "known.type": {
+                        "class": "a.java.Class"
+                    },
+                    "testProp": {
+                        "class": "java.lang.Long"
+                    }
+                }
+            }));
+        });
+
+        beforeEach(function() {
+            createController();
+            scope.$digest();
+        });
 
         beforeEach(function() {
             originalFilter = {
@@ -549,10 +821,16 @@ describe('The Custom Filter Dialog Controller', function() {
                 property: 'testProp',
                 predicate: 'a.filter.class.Name'
             };
-        })
+
+            scope.group = 'testGroup'
+
+            known = false;
+        });
 
         beforeEach(function() {
-            createController();
+            spyOn(types, 'isKnown').and.callFake(function(valueClass) {
+                return known;
+            })
         });
 
         it('should do nothing if the predicate is null', function() {
@@ -601,73 +879,38 @@ describe('The Custom Filter Dialog Controller', function() {
         });
 
         it('should query the function parameters and set a value on the filter', function() {
-            functionParams = ['param1', 'param2'];
+            functionParams= {'param1': 'java.lang.String', 'param2': 'long'};
             scope.filter = originalFilter;
             scope.onSelectedPredicateChange();
             expect(functions.getFunctionParameters).toHaveBeenCalled();
             expect(scope.filter.availableFunctionParameters).toEqual(functionParams);
         });
 
-        it('should set the filter parameters to an empty object', function() {
-            functionParams = ['this', 'is', 'a', 'test'];
+        it('should set the filter parameters to objects with valueClasses', function() {
+            functionParams = {'this': 'boolean', 'is': 'java.lang.String', 'a': 'java.lang.Long', 'test': 'java.lang.Iterable'};
             scope.filter = originalFilter;
             scope.onSelectedPredicateChange();
-            expect(scope.filter.parameters).toEqual({});
+            expect(scope.filter.parameters).toEqual({'this': {'valueClass': 'a.java.Class'}, 'is': {'valueClass': 'a.java.Class'}, 'a': {'valueClass': 'a.java.Class'}, 'test': {'valueClass': 'a.java.Class'}});
         });
 
-        describe('When the schema is called', function() {
-            var resetSchema = function(propClass) {
-                gafferSchema = {
-                    "entities": {
-                        "testGroup": {
-                            "properties": {
-                                "testProp": "testPropThing"
-                            }
-                        }
-                    },
-                    "types": {
-                        "testPropThing": {
-                            "class": propClass
-                        }
-                    }
-                };
-                scope.schema = gafferSchema;
-            }
+        it('should set the parameter valueClass if the class returned by gaffer is known to the type service', function() {
+            scope.filter = originalFilter;
+            functionParams = {'test': 'java.lang.Long'}
+            known = true;
+            scope.onSelectedPredicateChange();
+            expect(scope.filter.parameters['test']['valueClass']).toEqual('java.lang.Long')
+        });
 
-            beforeEach(function() {
-                scope.filter = originalFilter;
-                scope.propertyClass = "an unset predicate class";
-                scope.group = "testGroup";
-            });
+        it('should set the parameter valueClass to the property class if the class returned by gaffer is not known to the type service', function() {
+            scope.filter = originalFilter;
+            scope.group = 'testGroup';
+            functionParams = {'test': 'java.lang.Iterable'};
+            known = false;
 
-            it('should set the property class to undefined when the property is a String', function() {
-                resetSchema("java.lang.String");
-                scope.onSelectedPredicateChange();
-                scope.$digest();
-                expect(scope.propertyClass).toBeUndefined();
-            });
-
-            it('should set the property class to undefined when the property is a Boolean', function() {
-                resetSchema("java.lang.Boolean");
-                scope.onSelectedPredicateChange();
-                scope.$digest();
-                expect(scope.propertyClass).toBeUndefined();
-            });
-
-            it('should set the property class to undefined when the property is a Integer', function() {
-                resetSchema("java.lang.Integer");
-                scope.onSelectedPredicateChange();
-                scope.$digest();
-                expect(scope.propertyClass).toBeUndefined();
-            });
-
-            it('should set the property class to any other object', function() {
-                resetSchema('java.lang.Object');
-                scope.onSelectedPredicateChange();
-                scope.$digest();
-                expect(scope.propertyClass).toEqual('java.lang.Object');
-            });
-        })
+            scope.onSelectedPredicateChange();
+            scope.$digest();
+            expect(scope.filter.parameters['test'].valueClass).toEqual('a.java.Class');
+        });
     });
 
     describe('$scope.getPropertySelectLabel()', function() {
@@ -688,5 +931,3 @@ describe('The Custom Filter Dialog Controller', function() {
         });
     });
 });
-
-

@@ -20,10 +20,16 @@ angular.module('app').factory('types', ['config', 'common', function(config, com
 
     var service = {};
     var types = {};
+    var simpleClassNames = {};
 
     config.get().then(function(myConfig) {
         if(myConfig) {
             types = myConfig.types;
+            for(var className in types) {
+                var parts = className.split('.');
+                var simpleClassName = parts.pop().replace(/<.*>/, "");
+                simpleClassNames[simpleClassName] = className;
+            }
         }
     });
 
@@ -35,7 +41,6 @@ angular.module('app').factory('types', ['config', 'common', function(config, com
         return Object.keys(value).map(function(key) {
             return key + ": " + service.getShortValue(value[key]);
         }).join(", ");
-
     }
 
     var listShortValue = function(values) {
@@ -73,6 +78,20 @@ angular.module('app').factory('types', ['config', 'common', function(config, com
         return unknownType.fields;
     }
 
+    service.isKnown = function(className) {
+        var knownType = types[className];
+
+        if(knownType) {
+            return true;
+        }
+
+        return false;
+    }
+
+    service.getSimpleClassNames = function() {
+        return simpleClassNames;
+    }
+
     var unknownType =
     {
         fields: [
@@ -83,9 +102,9 @@ angular.module('app').factory('types', ['config', 'common', function(config, com
             }
         ]
     }
-
+    
     var getType = function(typeClass) {
-        if (types[typeClass]) {
+        if (typeClass !== undefined && types[typeClass]) {
             return types[typeClass];
         }
         return unknownType;
@@ -110,7 +129,6 @@ angular.module('app').factory('types', ['config', 'common', function(config, com
 
         return val
     }
-
     service.createValue = function(typeClass, parts) {
         var type = getType(typeClass);
 
@@ -118,10 +136,22 @@ angular.module('app').factory('types', ['config', 'common', function(config, com
             return createCustomValue(type, parts);
         }
 
+        if(typeof parts === 'number' || typeof parts === 'string' || parts instanceof String ) {
+            return parts;
+        }
+
         if (type.wrapInJson && Object.keys(parts)[0] !== 'undefined' || Object.keys(parts).length > 1) {
             return parts;
         }
-        return parts[Object.keys(parts)[0]];
+
+        var value = parts[Object.keys(parts)[0]];
+
+        if (typeClass === 'JSON') {
+            return JSON.parse(value)
+        }
+
+        return value;
+
     }
 
     service.createJsonValue = function(typeClass, parts, stringify) {
@@ -160,11 +190,15 @@ angular.module('app').factory('types', ['config', 'common', function(config, com
     }
 
     service.createParts = function(typeClass, value) {
-
         var strippedValue = value;
 
         if(value[typeClass]) {
             strippedValue = value[typeClass];
+        }
+
+        var type = getType(typeClass);
+        if(type.key === undefined && type.fields.length > 1) {
+            return value;
         }
 
         var parts = {};
@@ -197,7 +231,9 @@ angular.module('app').factory('types', ['config', 'common', function(config, com
 
         var typeClass = Object.keys(value)[0];
         var parts = value[typeClass]; // the value without the class prepended
-
+        if(parts === undefined) {
+            return "";
+        }
 
         var type = getType(typeClass);
 

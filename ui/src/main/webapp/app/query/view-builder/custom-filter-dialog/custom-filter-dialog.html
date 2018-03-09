@@ -22,7 +22,7 @@
                         </md-option>
                     </md-select>
                 </md-input-container>
-                    <md-autocomplete
+                <md-autocomplete
                         required
                         ng-disabled="!filter.property"
                         md-selected-item="filter.predicate"
@@ -35,31 +35,45 @@
                         md-require-match
                         md-select-on-focus
                         id="predicate-autocomplete"
+                        md-no-cache
+                        class="small-input-container"
                         md-autoselect>
                     <md-item-template>
-                        <span md-highlight-text="predicateText" md-highlight-flags="^i">{{createFriendlyName(predicate)}}</span>
+                        <span md-highlight-text="predicateText"
+                              md-highlight-flags="^i">{{createFriendlyName(predicate)}}</span>
                     </md-item-template>
                     <md-not-found>
                         No predicates matching {{predicateText}} were found.
                     </md-not-found>
                 </md-autocomplete>
                 <div layout="row" layout-wrap>
-                    <md-input-container ng-repeat="param in filter.availableFunctionParameters" layout-fill flex="{{getFlexValue()}}">
-                        <label>{{param}}</label>
-                        <input type="text"
-                               id="{{param}}-parameter"
-                               ng-model="filter.parameters[param]">
-                    </md-input-container>
-                    <p ng-show="showWarning()" flex="{{getFlexValue()}}">
-                        If you're entering anything other than an Integer, Boolean or String,
-                        you may need to wrap the object in JSON.
-                        For Example: { "{{propertyClass}}": value }
-                    </p>
+                    <div ng-repeat="(param, valueClass) in filter.availableFunctionParameters" flex="{{getFlexValue(valueClass)}}">
+                        <div layout="row">
+                            <md-input-container ng-if="hasMultipleTypesAvailable(valueClass)" flex="30" class="padding sides small-input-container">
+                                <label>{{param}} class</label>
+                                <md-select required id="{{param}}-type-selector"
+                                           ng-model="filter.parameters[param]['valueClass']"
+                                           ng-change="updateType(filter.parameters[param])">
+                                    <md-option
+                                            ng-repeat="(simpleType, type) in availableTypes(valueClass)"
+                                            ng-value="type">{{simpleType}}
+                                    </md-option>
+                                </md-select>
+                            </md-input-container>
+                            <dynamic-input param="filter.parameters[param]" name="param" class="padding-sides" flex></dynamic-input>
+                        </div>
+                    </div>
                 </div>
-                <p class="md-body-1">Apply filter before or after results are summarised?</p>
+
+                <p class="md-body-1">Apply filter before or after results are
+                    summarised?</p>
                 <md-radio-group layout="row" ng-model="filter.preAggregation">
-                    <md-radio-button ng-value="true" id="before-aggregation" aria-label="before">Before</md-radio-button>
-                    <md-radio-button ng-value="false" id="after-aggregation" aria-label="after">After</md-radio-button>
+                    <md-radio-button ng-value="true" id="before-aggregation"
+                                     aria-label="before">Before
+                    </md-radio-button>
+                    <md-radio-button ng-value="false" id="after-aggregation"
+                                     aria-label="after">After
+                    </md-radio-button>
                 </md-radio-group>
             </ng-form>
         </div>
@@ -67,7 +81,12 @@
     <md-dialog-actions layout="row" layout-align="end">
         <md-button id="cancel" ng-click="cancel()">Cancel</md-button>
         <md-button id="clear" ng-click="resetForm()">Clear</md-button>
-        <md-button id="add-another" ng-if="!editMode" ng-disabled="filterForm.$invalid" ng-click="addAnother()">Add Another</md-button>
-        <md-button id="submit" ng-disabled="filterForm.$invalid" ng-click="submit()" class="md-primary">Submit</md-button>
+        <md-button id="add-another" ng-if="!editMode"
+                   ng-disabled="filterForm.$invalid" ng-click="addAnother()">Add
+            Another
+        </md-button>
+        <md-button id="submit" ng-disabled="filterForm.$invalid"
+                   ng-click="submit()" class="md-primary">Submit
+        </md-button>
     </md-dialog-actions>
 </md-dialog>

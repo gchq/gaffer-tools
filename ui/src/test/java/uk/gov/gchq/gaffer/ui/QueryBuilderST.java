@@ -144,7 +144,7 @@ public class QueryBuilderST {
         click("add-RoadUse-filters");
         selectOption("property-selector", "startDate");
         autoComplete("predicate-autocomplete", "ismore");
-        enterText("value-parameter", "{\"java.util.Date\": 971416800000}");
+        enterText("value-", "971416800000");
         click("before-aggregation");
         click("submit");
         click("Execute Query");
@@ -210,13 +210,13 @@ public class QueryBuilderST {
         click("add-another");
         selectOption("property-selector", "hllp");
         autoComplete("predicate-autocomplete", "islessthan");
-        enterText("value-parameter", "20");
+        enterText("value-", "20");
         click("submit");
 
         // when
 
-        click("delete-post-entity-Cardinality-filter-0");
-        click("delete-post-entity-Cardinality-filter-0");
+        click("delete-entity-Cardinality-filter-0");
+        click("delete-entity-Cardinality-filter-0");
         click("Execute Query");
         click("open-raw");
 
