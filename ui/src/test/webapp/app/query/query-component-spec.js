@@ -661,8 +661,7 @@ describe('The Query component', function() {
             describe('When adding seeds', function() {
                 var input;
                 var ctrl;
-
-                var selectedSeeds;
+                
                 var seeds;
 
                 beforeEach(inject(function(_input_) {
@@ -671,7 +670,6 @@ describe('The Query component', function() {
 
                 beforeEach(function() {
                     ctrl = $componentController('query');
-                    selectedSeeds = {};
                     seeds = [];
                 });
 
