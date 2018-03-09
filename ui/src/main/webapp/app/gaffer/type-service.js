@@ -159,7 +159,7 @@ angular.module('app').factory('types', ['config', 'common', function(config, com
         var jsonValue = {};
         var type = getType(typeClass);
 
-        if(type.wrapInJson || common.endsWith(typeClass, 'Map') || common.endsWith(typeClass, 'Set') || common.endsWith(typeClass, 'List')) {
+        if(type.wrapInJson || (typeClass && (common.endsWith(typeClass, 'Map') || common.endsWith(typeClass, 'Set') || common.endsWith(typeClass, 'List')))) {
             jsonValue[typeClass] = value;
         } else {
             jsonValue = value;

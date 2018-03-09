@@ -26,7 +26,7 @@ function operationSelector() {
     }
 }
 
-function OperationSelectorController(operationService, operationSelectorService, queryPage, $mdDialog) {
+function OperationSelectorController(operationService, operationSelectorService, queryPage, $mdDialog, $routeParams) {
     var vm = this;
 
     vm.availableOperations;
@@ -40,6 +40,17 @@ function OperationSelectorController(operationService, operationSelectorService,
         } else {
             vm.selectedOp = vm.availableOperations[0];
             vm.updateModel();
+        }
+
+        if($routeParams.operation) {
+            var opParam = $routeParams.operation.replace(/[\W_]+/g, "").toLowerCase();
+            for(var i in vm.availableOperations) {
+                if(vm.availableOperations[i].name.replace(/[\W_]+/g, "").toLowerCase() === opParam) {
+                    vm.selectedOp = vm.availableOperations[i];
+                    vm.updateModel();
+                    break;
+                }
+            }
         }
     }
 
@@ -69,8 +80,4 @@ function OperationSelectorController(operationService, operationSelectorService,
             vm.availableOperations = availableOps;
         });
     }
-
-
-
-
 }

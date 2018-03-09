@@ -26,7 +26,7 @@ function seedBuilder() {
     }
 }
 
-function SeedBuilderController(schema, types, graph, error) {
+function SeedBuilderController(schema, types, graph, error, $routeParams) {
     var vm = this;
     vm.seedVertexParts = {};
     vm.seedVertices = '';
@@ -40,6 +40,15 @@ function SeedBuilderController(schema, types, graph, error) {
                 vm.vertexClass = gafferSchema.types[vertices[0]].class;
             }
         });
+
+        if($routeParams.input) {
+            console.log($routeParams.input);
+            if(Array.isArray($routeParams.input)) {
+                for(var i in $routeParams.input) {
+                    processSeed($routeParams.input[i]);
+                }
+            }
+        }
     }
 
     vm.inputExists = function() {
@@ -62,29 +71,34 @@ function SeedBuilderController(schema, types, graph, error) {
         return types.getCsvHeader(vm.vertexClass);
     }
 
+    var processSeed = function(vertex) {
+        var partValues = vertex.trim().split(",");
+        var fields = types.getFields(vm.vertexClass);
+        if(fields.length != partValues.length) {
+            error.handle("Wrong number of parameters for seed: " + vertex + ". " + vm.vertexClass + " requires " + fields.length + " parameters");
+            return false;
+        }
+        var parts = {};
+        for(var j = 0; j< fields.length; j++) {
+            parts[fields[j].key] = partValues[j];
+        }
+        graph.addSeed(createSeed(parts));
+        return true;
+    }
+
     vm.addSeeds = function() {
         if(vm.multipleSeeds) {
             var vertices = vm.seedVertices.trim().split("\n");
             for(var i in vertices) {
-                var vertex = vertices[i];;
-                var partValues = vertex.trim().split(",");
-                var fields = types.getFields(vm.vertexClass);
-                if(fields.length != partValues.length) {
-                    error.handle("Wrong number of parameters for seed: " + vertex + ". " + vm.vertexClass + " requires " + fields.length + " parameters");
+                if(!processSeed(vertex)) {
                     break;
                 }
-                var parts = {};
-                for(var j = 0; j< fields.length; j++) {
-                    parts[fields[j].key] = partValues[j];
-                }
-                graph.addSeed(createSeed(parts));
             }
         } else {
              graph.addSeed(createSeed(vm.seedVertexParts));
         }
 
         reset();
-
     }
 
     var reset = function() {
