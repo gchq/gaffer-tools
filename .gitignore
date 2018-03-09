@@ -17,7 +17,9 @@ target/
 *.iml
 */.settings
 */.project
+.project
 */bin
+bin/
 */*.class
 */atlassian-ide*
 */.idea
