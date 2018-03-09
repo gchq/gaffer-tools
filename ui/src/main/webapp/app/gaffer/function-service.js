@@ -36,7 +36,7 @@ angular.module('app').factory('functions', ['$http', 'config', 'common', 'error'
 
     functions.getFunctionParameters = function(functionClassName, onSuccess) {
         config.get().then(function(conf) {
-            var queryUrl = common.parseUrl(conf.restEndpoint + "/graph/config/serialisedFields/" + functionClassName);
+            var queryUrl = common.parseUrl(conf.restEndpoint + "/graph/config/serialisedFields/" + functionClassName + "/classes");
 
             $http.get(queryUrl)
                 .then(function(response) {

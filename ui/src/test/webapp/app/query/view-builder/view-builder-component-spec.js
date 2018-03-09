@@ -100,7 +100,7 @@ describe('The View Builder Component', function() {
                     spyOn(schema, 'get').and.callFake(function() {
                         return $q.when(toReturn);
                     })
-                })
+                });
 
                 it('should make a request to the schema service to ensure the schema is loaded', function() {
                     ctrl.$onInit();
@@ -228,7 +228,6 @@ describe('The View Builder Component', function() {
 
             describe('ctrl.createFilterLabel()', function() {
                 var basicFilter;
-                var preAggregation;
                 var types;
 
                 beforeEach(inject(function(_types_) {
@@ -237,14 +236,24 @@ describe('The View Builder Component', function() {
 
                 beforeEach(function() {
                     basicFilter = {
-                        selection: ['prop1'],
-                        predicate: {
-                            class: 'a.predicate.called.IsMoreThan',
-                            value: { 'java.lang.Long': 10 },
-                            orEqualTo: false
-                        }
+                        property: 'prop1',
+                        predicate: 'a.predicate.called.IsMoreThan',
+                        parameters: {
+                            value: {
+                                valueClass: 'java.lang.Long',
+                                parts: {
+                                    undefined: 10
+                                }
+                            },
+                            orEqualTo: {
+                                valueClass: 'java.lang.Boolean',
+                                parts: {
+                                    undefined: false
+                                }
+                            }
+                        },
+                        preAggregation: true
                     };
-                    preAggregation = true;
                 });
 
                 beforeEach(function() {
@@ -254,24 +263,25 @@ describe('The View Builder Component', function() {
                         }
                         return value;
                     })
-                })
+                });
 
                 it('should start with the property name', function() {
-                    expect(ctrl.createFilterLabel(basicFilter, preAggregation).indexOf('prop1')).toEqual(0);
+                    expect(ctrl.createFilterLabel(basicFilter).indexOf('prop1')).toEqual(0);
                 });
 
                 it('should then state the class name of the predicate', function() {
-                    expect(ctrl.createFilterLabel(basicFilter, preAggregation).indexOf('IsMoreThan')).toEqual(6);
+                    expect(ctrl.createFilterLabel(basicFilter).indexOf('IsMoreThan')).toEqual(6);
                 });
 
                 it('should then summarise the predicate fields', function() {
-                    expect(ctrl.createFilterLabel(basicFilter, preAggregation)).toContain('value=10');
-                    expect(ctrl.createFilterLabel(basicFilter, preAggregation)).toContain('orEqualTo=false');
+                    expect(ctrl.createFilterLabel(basicFilter)).toContain('value=10');
+                    expect(ctrl.createFilterLabel(basicFilter)).toContain('orEqualTo=false');
                 });
 
                 it('should end with a statement indicating when the filter should be applied', function() {
-                    expect(ctrl.createFilterLabel(basicFilter, preAggregation)).toMatch(/.*before being summarised$/);
-                    expect(ctrl.createFilterLabel(basicFilter, false)).toMatch(/.*after being summarised$/);
+                    expect(ctrl.createFilterLabel(basicFilter)).toMatch(/.*before being summarised$/);
+                    basicFilter.preAggregation = false;
+                    expect(ctrl.createFilterLabel(basicFilter)).toMatch(/.*after being summarised$/);
                 });
             });
         });
@@ -280,27 +290,17 @@ describe('The View Builder Component', function() {
 
             beforeEach(function() {
                 ctrl.entityFilters = {
-                    "testGroup": {
-                        "preAggregationFilterFunctions": [
-                            "test1",
-                            "test2"
-                        ]
-                    }
+                    "testGroup": [
+                        "first.filter",
+                        "second.filter"
+                    ]
                 };
             });
 
-
             it('should delete a filter from a list', function() {
-                ctrl.deleteFilter("testGroup", "entity", true, 0);
-                expect(ctrl.entityFilters["testGroup"]["preAggregationFilterFunctions"][0]).toEqual("test2");
-            });
-
-            it('should make the list undefined if there are no more elements left in the list', function() {
-                ctrl.deleteFilter("testGroup", "entity", true, 0); // leaving one
-                ctrl.deleteFilter("testGroup", "entity", true, 0); // leaving none
-                expect(ctrl.entityFilters["testGroup"]["preAggregationFilterFunctions"]).toBeUndefined();
+                ctrl.deleteFilter("testGroup", "entity", 0);
+                expect(ctrl.entityFilters["testGroup"][0]).toEqual("second.filter");
             });
         });
-
     });
 })
