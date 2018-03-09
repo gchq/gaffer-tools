@@ -34,14 +34,14 @@ angular.module('app').factory('query', ['$http', 'config', 'events', 'common', '
             queryUrl = common.parseUrl(queryUrl);
 
             $http.post(queryUrl, operationChain)
-                .success(function(results){
-                    onSuccess(results)
-                })
-                .error(function(err) {
+                .then(function(response){
+                    onSuccess(response.data)
+                },
+                function(err) {
                     if (onFailure) {
-                        onFailure(err);
+                        onFailure(err.data);
                     } else {
-                        error.handle('Error running operation', err);
+                        error.handle('Error running operation', err.data);
                     }
             });
 

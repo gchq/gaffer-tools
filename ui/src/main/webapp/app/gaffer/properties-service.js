@@ -27,13 +27,13 @@ angular.module('app').factory('properties', ['config', '$q', 'common', '$http', 
             var url = common.parseUrl(conf.restEndpoint);
 
             $http.get(url + '/properties')
-                .success(function(props) {
-                    properties = props;
-                    deferredRequests.resolve(props);
-                })
-                .error(function(err) {
-                    deferredRequests.reject(err);
-                    error.handle("Unable to load graph properties", err);
+                .then(function(response) {
+                    properties = response.data;
+                    deferredRequests.resolve(properties);
+                },
+                function(err) {
+                    deferredRequests.reject(err.data);
+                    error.handle("Unable to load graph properties", err.data);
                 })
                 .finally(function() {
                     deferredRequests = undefined;
