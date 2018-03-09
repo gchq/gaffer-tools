@@ -24,3 +24,9 @@ from gafferpy.gaffer_functions import *
 from gafferpy.gaffer_binaryoperators import *
 from gafferpy.gaffer_operations import *
 from gafferpy.gaffer_config import *
+
+import gafferpy.gaffer_predicates as pred
+import gafferpy.gaffer_functions as func
+import gafferpy.gaffer_binaryoperators as bop
+import gafferpy.gaffer_operations as op
+import gafferpy.gaffer_config as conf
