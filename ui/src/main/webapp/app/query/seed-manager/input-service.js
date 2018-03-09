@@ -19,7 +19,7 @@
 /**
  * The Model for the query input.
  */
-angular.module('app').factory('input', ['events', function(events) {
+angular.module('app').factory('input', ['events', 'common', function(events, common) {
     var service = {};
     var updateEventName = 'queryInputUpdate';
 
@@ -37,8 +37,15 @@ angular.module('app').factory('input', ['events', function(events) {
      * @param {*} seed The seed to be added
      */
     service.addInput = function(seed) {
-        input.push(seed);
-        events.broadcast(updateEventName, [input]);
+        if (typeof seed === 'object') {
+            if (!common.arrayContainsObject(input, seed)) {
+                input.push(seed);
+                events.broadcast(updateEventName, [input]);
+            }
+        } else if (!common.arrayContainsValue(input, seed)) {
+            input.push(seed);
+            events.broadcast(updateEventName, [input]);
+        }
     }
 
     /** 
@@ -47,6 +54,18 @@ angular.module('app').factory('input', ['events', function(events) {
     service.reset = function() {
         input = [];
         events.broadcast(updateEventName, [input]);
+    }
+
+    /**
+     * Removes a seed from the input array
+     * @param {*} seed 
+     */
+    service.removeInput = function(seed) {
+        var newInput = input.filter(v => !angular.equals(v, seed));
+        if(newInput.length < input.length) {
+            input = newInput;
+            events.broadcast(updateEventName, [input]);
+        }
     }
 
     return service;

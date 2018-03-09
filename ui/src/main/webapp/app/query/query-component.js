@@ -144,23 +144,12 @@ function QueryController(queryPage, operationService, types, graph, config, sett
     }
 
     /**
-     * Uses the selected entities in the graph and seeds uploaded to the input service to build an input array to the query.
+     * Uses seeds uploaded to the input service to build an input array to the query.
      */
     var createOpInput = function() {
         var opInput = [];
         var jsonVertex;
-        for(var vertex in graph.getSelectedEntities()) {
-            try {
-               jsonVertex = JSON.parse(vertex);
-            } catch(err) {
-               jsonVertex = vertex;
-            }
-            opInput.push({
-              "class": "uk.gov.gchq.gaffer.operation.data.EntitySeed",
-              "vertex": jsonVertex
-            });
-        }
-
+        
         var seeds = input.getInput();
 
         for (var i in seeds) {

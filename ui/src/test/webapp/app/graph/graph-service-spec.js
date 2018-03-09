@@ -58,9 +58,25 @@ describe("The Graph Service", function() {
         });
 
         describe('when adding a seed', function() {
+            
+            var input;
+
+            beforeEach(inject(function(_input_) {
+                input = _input_;
+            }))
+
+            beforeEach(function() {
+                spyOn(input, 'addInput').and.stub();
+            });
+
             it('should also select it', function() {
                 graph.addSeed("mySeed");
                 expect(graph.getSelectedEntities()).toEqual({'"mySeed"': [{vertex: '"mySeed"'}]})
+            });
+
+            it('should add it to the input service', function() {
+                graph.addSeed("test");
+                expect(input.addInput).toHaveBeenCalledWith("test");
             });
 
             it('should broadcast the selectedElementsUpdate event', function() {
@@ -87,7 +103,7 @@ describe("The Graph Service", function() {
                 expect(graph.getSelectedEntities()).toEqual({'"mySeed"': [{vertex: '"mySeed"'}]});
             });
         });
-    })
+    });
 
 
 })

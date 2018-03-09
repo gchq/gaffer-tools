@@ -683,10 +683,6 @@ describe('The Query component', function() {
                         input: true
                     });
 
-                    spyOn(graph, 'getSelectedEntities').and.callFake(function() {
-                        return selectedSeeds;
-                    });
-
                     spyOn(input, 'getInput').and.callFake(function() {
                         return seeds;
                     });
@@ -708,25 +704,6 @@ describe('The Query component', function() {
                     ctrl.execute();
 
                     expect(query.execute.calls.first().args[0]).toContain(expectedInput);
-                })
-
-                it('should add string seeds from the selected entities to the operation', function() {
-
-                    selectedSeeds = {
-                        "vertex1": [],
-                        "vertex2": [],
-                        "vertex3": []
-                    };
-
-                    ctrl.execute();
-
-                    var expectedInput = JSON.stringify([
-                        { 'class': 'uk.gov.gchq.gaffer.operation.data.EntitySeed', 'vertex': 'vertex1'},
-                        { 'class': 'uk.gov.gchq.gaffer.operation.data.EntitySeed', 'vertex': 'vertex2'},
-                        { 'class': 'uk.gov.gchq.gaffer.operation.data.EntitySeed', 'vertex': 'vertex3'}])
-
-                    expect(query.execute.calls.first().args[0]).toContain(expectedInput);
-
                 });
 
                 it('should add complex seeds from the input service to the operation', function() {
@@ -735,36 +712,6 @@ describe('The Query component', function() {
                         { "my.complex.Type": { "type": "thing2", "value": "myVal2", "someField": "test2"}},
                         { "my.complex.Type": { "type": "thing3", "value": "myVal3", "someField": "test3"}}
                     ];
-
-                    ctrl.execute();
-
-                    var expectedInput = JSON.stringify([
-                        {
-                            'class': 'uk.gov.gchq.gaffer.operation.data.EntitySeed',
-                            'vertex': { "my.complex.Type": { "type": "thing1", "value": "myVal1", "someField": "test1"}
-                            }
-                        },
-                        {
-                            'class': 'uk.gov.gchq.gaffer.operation.data.EntitySeed',
-                            'vertex': { "my.complex.Type": { "type": "thing2", "value": "myVal2", "someField": "test2"}
-                            }
-                        },
-                        {
-                            'class': 'uk.gov.gchq.gaffer.operation.data.EntitySeed',
-                            'vertex': { "my.complex.Type": { "type": "thing3", "value": "myVal3", "someField": "test3"}
-                            }
-                        }]);
-
-                    expect(query.execute.calls.first().args[0]).toContain(expectedInput);
-                });
-
-                it('should add stringified complex selected seeds to the operation', function() {
-
-                    selectedSeeds  ={
-                        '{ "my.complex.Type": { "type": "thing1", "value": "myVal1", "someField": "test1"}}': [],
-                        '{ "my.complex.Type": { "type": "thing2", "value": "myVal2", "someField": "test2"}}': [],
-                        '{ "my.complex.Type": { "type": "thing3", "value": "myVal3", "someField": "test3"}}': []
-                    };
 
                     ctrl.execute();
 
@@ -804,24 +751,6 @@ describe('The Query component', function() {
 
                     expect(query.execute.calls.first().args[0]).toContain(expectedInput);
 
-                });
-
-                it('should add stringified numerical selected seeds to the operation', function() {
-
-                    selectedSeeds = {
-                        '1': [],
-                        '2': [],
-                        '3': []
-                    };
-
-                    ctrl.execute();
-
-                    var expectedInput = JSON.stringify([
-                        { 'class': 'uk.gov.gchq.gaffer.operation.data.EntitySeed', 'vertex': 1},
-                        { 'class': 'uk.gov.gchq.gaffer.operation.data.EntitySeed', 'vertex': 2},
-                        { 'class': 'uk.gov.gchq.gaffer.operation.data.EntitySeed', 'vertex': 3}])
-
-                    expect(query.execute.calls.first().args[0]).toContain(expectedInput);
                 });
             });
 

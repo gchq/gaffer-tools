@@ -37,20 +37,9 @@ function seedManager() {
 function SeedManagerController(graph, queryPage, common, types, events, input) {
     var vm = this;
     
-    vm.selectedEntities;
     vm.input;
 
     vm.seedsMessage = "";
-
-    /**
-     * Executed each time an update is triggered on the selected elements in the graph. 
-     * It updates the model and triggers a recalculation of the seeds message
-     * @param {Object} selectedElements Object containing selected edges (ignored) and selected entities 
-     */
-    var onSelectedElementsUpdate = function(selectedElements) {
-        vm.selectedEntities = selectedElements['entities'];
-        recalculateSeedsMessage();
-    }
 
     /**
      * Function triggered by an update to the query input. It updates the model and forces a recalculation of the
@@ -66,9 +55,7 @@ function SeedManagerController(graph, queryPage, common, types, events, input) {
      * Sets the initial value for the query seeds and subscribes to update events. 
     */
     vm.$onInit = function() {
-        events.subscribe('selectedElementsUpdate', onSelectedElementsUpdate);
         events.subscribe('queryInputUpdate', onQueryInputUpdate);
-        vm.selectedEntities = graph.getSelectedEntities();
         vm.input = input.getInput();
         recalculateSeedsMessage();
     }
@@ -77,7 +64,6 @@ function SeedManagerController(graph, queryPage, common, types, events, input) {
      * Unsubscribes from all update events
     */
     vm.$onDestroy = function() {
-        events.unsubscribe('selectedElementsUpdate', onSelectedElementsUpdate);
         events.unsubscribe('queryInputUpdate', onQueryInputUpdate);
     }
 
@@ -97,23 +83,13 @@ function SeedManagerController(graph, queryPage, common, types, events, input) {
     }
 
     /** 
-     * Combines the currently selected seeds on the graph with the seeds added to the input service to display a truncated message
-     * describing the seeds currently added to the query. It displays the last two seeds added to the input service.
+     * Uses the seeds added to the input service to display a truncated message describing the seeds currently added to the query. 
+     * It displays the last two seeds added to the input service.
     */
     var recalculateSeedsMessage = function() {
-        var selectedSeeds = Object.keys(vm.selectedEntities);
-
-        var querySeeds = [];
-
-        // convert from stringified form
-        selectedSeeds.map(function(seed) {
-            querySeeds.push(JSON.parse(seed));
-        });
         
-        // add the seeds from the input service - no conversion needed
-        querySeeds = querySeeds.concat(vm.input);
-        var displaySeeds = querySeeds.slice(-2);
-        var howManyMore = querySeeds.length - 2;
+        var displaySeeds = vm.input.slice(-2);
+        var howManyMore = vm.input.length - 2;
 
         var message = displaySeeds.map(function(seed) {
             return types.getShortValue(seed);

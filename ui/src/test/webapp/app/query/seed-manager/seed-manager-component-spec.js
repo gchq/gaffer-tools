@@ -3,12 +3,11 @@ describe('The Seed Manager Component', function() {
 
     describe('The Controller', function() {
         var $componentController;
-        var events, graph, input;
+        var events, input;
 
-        beforeEach(inject(function(_$componentController_, _events_, _graph_, _input_) {
+        beforeEach(inject(function(_$componentController_, _events_, _input_) {
             $componentController = _$componentController_;
             events = _events_;
-            graph = _graph_;
             input = _input_;
         }));
 
@@ -21,7 +20,6 @@ describe('The Seed Manager Component', function() {
             var ctrl;
 
             beforeEach(function() {
-                spyOn(graph, 'getSelectedEntities').and.returnValue({'"test"': {}});
                 spyOn(input, 'getInput').and.returnValue(['hello', 'world']);
                 spyOn(events, 'subscribe');
             });
@@ -31,16 +29,8 @@ describe('The Seed Manager Component', function() {
                 ctrl.$onInit();
             });
 
-            it('should set the initial value of the selected seeds to the entities selected on the graph', function() {
-                expect(ctrl.selectedEntities).toEqual({'"test"': {}});
-            });
-
             it('should set the initial value of the query input', function() {
                 expect(ctrl.input).toEqual(["hello", "world"]);
-            });
-
-            it('should subscribe to the selectedElementsUpdate event', function() {
-                expect(events.subscribe.calls.first().args[0]).toEqual('selectedElementsUpdate')
             });
 
             it('should subscribe to the "queryInputUpdate" event', function() {
@@ -51,6 +41,11 @@ describe('The Seed Manager Component', function() {
         describe('When a user selects all seeds', function() {
 
             var ctrl;
+            var graph;
+
+            beforeEach(inject(function(_graph_) {
+                graph = _graph_;
+            }));
 
             beforeEach(function() {
                 spyOn(graph, 'selectAllNodes');
@@ -83,15 +78,9 @@ describe('The Seed Manager Component', function() {
                 ctrl.$onDestroy();
             });
 
-            it('should unsubscribe from the selectedElementsUpdate event', function() {
-                expect(events.unsubscribe.calls.first().args[0]).toEqual('selectedElementsUpdate');
-            });
-
             it('should unsubscribe from the queryInputUpdate Event', function() {
                 expect(events.unsubscribe.calls.mostRecent().args[0]).toEqual('queryInputUpdate');
             });
         });
-
-
     });
 })

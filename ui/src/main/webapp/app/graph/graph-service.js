@@ -16,7 +16,10 @@
 
 'use strict';
 
-angular.module('app').factory('graph', ['schema', 'types', '$q', 'results', 'common', 'events', function(schemaService, types, $q, results, common, events) {
+/**
+ * Graph service which handles selected elements and a cytoscape graph
+ */
+angular.module('app').factory('graph', ['schema', 'types', '$q', 'results', 'common', 'events', 'input', function(schemaService, types, $q, results, common, events, input) {
 
     var graphCy;
     var graph = {};
@@ -51,14 +54,24 @@ angular.module('app').factory('graph', ['schema', 'types', '$q', 'results', 'com
         graph.redraw();
     });
 
+    /** 
+     * Returns the currently selected entities in the graph
+    */
     graph.getSelectedEntities = function() {
         return selectedEntities;
     }
 
+    /** 
+     * Returns the currently selected edges in the graph
+    */
     graph.getSelectedEdges = function() {
         return selectedEdges;
     }
 
+    /**
+     * Loads cytoscape graph onto an element containing the "graphCy" id. It also registers the 
+     * handlers for select and deselect events.
+     */
     graph.load = function() {
         var deferred = $q.defer();
         graphCy = cytoscape({
@@ -118,6 +131,11 @@ angular.module('app').factory('graph', ['schema', 'types', '$q', 'results', 'com
         return deferred.promise;
     }
 
+    /**
+     * Defines the behaviour when an element in cytoscape is selected. 
+     * First attempts to select an entity, then edge, then vertex.
+     * @param {Object} element 
+     */
     function select(element) {
         if(selectEntityId(element.id())) {
             return;
@@ -130,55 +148,94 @@ angular.module('app').factory('graph', ['schema', 'types', '$q', 'results', 'com
         selectVertex(element.id());
     }
 
-    function selectEntity(id, entity) {
-        selectedEntities[id] = entity;
+    /**
+     * Appends the element to selected entities, adds the id to the input array, then fires events
+     * @param {String} id The vertex 
+     * @param {Array} entities The elements with the id
+     */
+    function selectEntities(id, entities) {
+        selectedEntities[id] = entities;
+        input.addInput(JSON.parse(id));
         events.broadcast('selectedElementsUpdate', [{"entities": selectedEntities, "edges": selectedEdges}]);
     }
 
+    /**
+     * Selects all elements with the given vertex (entityId)
+     * @param {String} entityId 
+     * @returns true if entities were found in the array with the id
+     * @returns false if no entities were found with the given id
+     */
     function selectEntityId(entityId) {
         for (var id in graphData.entities) {
             if(entityId == id) {
-                selectEntity(id, graphData.entities[id]);
+                selectEntities(id, graphData.entities[id]);
                 return true;
             }
         }
         return false;
     }
 
-    function selectEdge(id, edge) {
-        selectedEdges[id] = edge;
+    /**
+     * Adds the id and edges to the selected elements object, then fires update event.
+     * @param {String} id The ID
+     * @param {Array} edges The array of edges assocated with the id
+     */
+    function selectEdges(id, edges) {
+        selectedEdges[id] = edges;
         events.broadcast('selectedElementsUpdate', [{"entities": selectedEntities, "edges": selectedEdges}]);
     }
 
+    /**
+     * Selects all edges in the graph with the given id
+     * @param {String} edgeId The Edge ID
+     * @returns true if an edge exists in the graph with the given id
+     * @returns false if no edge was found in the graph with the given id
+     */
     function selectEdgeId(edgeId) {
         for (var id in graphData.edges) {
             if(edgeId == id) {
-                selectEdge(id, graphData.edges[id]);
+                selectEdges(id, graphData.edges[id]);
                 return true;
             }
         }
         return false;
     }
 
+    /**
+     * Adds a seed to the selected entities
+     * @param {String} vertexId 
+     */
     function selectVertex(vertexId) {
-        selectEntity(vertexId, [{vertex: vertexId}]);
+        selectEntities(vertexId, [{vertex: vertexId}]);
     }
 
+    /**
+     * Removes an element from the selected elements and input service and fires update events
+     * @param {Object} element The cytoscape element 
+     */
     function unSelect(element) {
-        if(element.id() in selectedEntities) {
-            delete selectedEntities[element.id()];
-        } else if(element.id() in selectedEdges) {
-            delete selectedEdges[element.id()];
+        var id = element.id();
+        if(id in selectedEntities) {
+            input.removeInput(JSON.parse(id));
+            delete selectedEntities[id];
+        } else if(id in selectedEdges) {
+            delete selectedEdges[id];
         }
 
         events.broadcast('selectedElementsUpdate', [{"entities": selectedEntities, "edges": selectedEdges}]);
     }
 
+    /**
+     * Updates the cytoscape graph and redraws it
+     */
     graph.reload = function() {
         updateGraph(graphData);
         graph.redraw();
     }
 
+    /**
+     * Resets the selected elements
+     */
     graph.reset = function() {
         selectedEdges = {};
         selectedEntities = {};
@@ -186,6 +243,10 @@ angular.module('app').factory('graph', ['schema', 'types', '$q', 'results', 'com
         events.broadcast('selectedElementsUpdate'[{"entities": selectedEntities, "edges": selectedEdges}]);
     }
 
+    /**
+     * Stringifies a seed, adds it if it does not exist, selects it and updates the graph
+     * @param {*} seed 
+     */
     graph.addSeed = function(seed) {
         var entitySeed = JSON.stringify(seed);
         if(!common.arrayContainsValue(graphData.entitySeeds, entitySeed)) {
@@ -195,6 +256,10 @@ angular.module('app').factory('graph', ['schema', 'types', '$q', 'results', 'com
         updateGraph(graphData);
     }
 
+    /**
+     * Adds Entities, Edges and seeds to the graph model.
+     * @param {Array} results 
+     */
     graph.update = function(results) {
         graphData = { entities: {}, edges: {}, entitySeeds: [] };
         for (var i in results.entities) {
@@ -234,6 +299,10 @@ angular.module('app').factory('graph', ['schema', 'types', '$q', 'results', 'com
         updateGraph(graphData);
     }
 
+    /**
+     * Updates cytoscape with the graph data
+     * @param {Array} results 
+     */
     var updateGraph = function(results) {
         for (var id in results.entities) {
             var existingNodes = graphCy.getElementById(id);
@@ -350,16 +419,27 @@ angular.module('app').factory('graph', ['schema', 'types', '$q', 'results', 'com
         }
     }
 
+    /**
+     * Removes all elements from the cytoscape graph - does not remove them from the model
+     * This is not actually used anywhere
+     */
     graph.clear = function(){
         while(graphCy.elements().length > 0) {
             graphCy.remove(graphCy.elements()[0]);
         }
     }
 
+    /**
+     * Redraws the cytoscape graph
+     */
     graph.redraw = function() {
         graphCy.layout(layoutConf);
     }
 
+    /**
+     * Helper method to create a label from a vertex
+     * @param {String} vertex 
+     */
     var createLabel = function(vertex) {
         var label;
         var json;
@@ -381,6 +461,10 @@ angular.module('app').factory('graph', ['schema', 'types', '$q', 'results', 'com
         return label;
     }
 
+    /**
+     * Adds a seed to the graph
+     * @param {String} vertex 
+     */
     var addEntitySeed = function(vertex){
         var existingNodes = graphCy.getElementById(vertex);
         var isSelected = common.objectContainsValue(selectedEntities, vertex);
@@ -410,10 +494,16 @@ angular.module('app').factory('graph', ['schema', 'types', '$q', 'results', 'com
         }
     }
 
+    /**
+     * Selects all nodes (entities and entitySeeds)
+     */
     graph.selectAllNodes = function() {
         graphCy.filter('node').select();
     }
 
+    /**
+     * Deselects all elements
+     */
     graph.deselectAll = function() {
         graphCy.elements().unselect();
     }
