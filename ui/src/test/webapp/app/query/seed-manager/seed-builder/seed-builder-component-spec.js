@@ -6,6 +6,7 @@ describe('The seed builder component', function() {
     var graph;
     var types;
     var error;
+    var input;
 
     beforeEach(module('app'));
 
@@ -31,7 +32,7 @@ describe('The seed builder component', function() {
         });
     }));
 
-    beforeEach(inject(function(_$rootScope_, _$componentController_, _$routeParams_, _graph_, _types_, _error_) {
+    beforeEach(inject(function(_$rootScope_, _$componentController_, _$routeParams_, _graph_, _types_, _error_, _input_) {
         scope = _$rootScope_.$new();
         var $componentController = _$componentController_;
         ctrl = $componentController('seedBuilder', {$scope: scope});
@@ -39,6 +40,7 @@ describe('The seed builder component', function() {
         graph = _graph_;
         types = _types_;
         error = _error_;
+        input = _input_;
     }));
 
     it('should exist', function() {
@@ -74,8 +76,8 @@ describe('The seed builder component', function() {
             }));
 
             spyOn(schema, 'getSchemaVertices').and.returnValue(['vertex1', 'vertex2']);
-            spyOn(graph, 'addSeed');
             spyOn(error, 'handle');
+            spyOn(input, 'addInput')
         });
 
         describe('with simple input query params', function() {
@@ -93,8 +95,8 @@ describe('The seed builder component', function() {
                 ctrl.$onInit();
                 scope.$digest();
                 expect(error.handle).not.toHaveBeenCalled();
-                expect(graph.addSeed).toHaveBeenCalledTimes(1);
-                expect(graph.addSeed).toHaveBeenCalledWith("seed1")
+                expect(input.addSeed).toHaveBeenCalledTimes(1);
+                expect(input.addSeed).toHaveBeenCalledWith("seed1")
             });
 
             it('should add multiple single seeds', function() {
@@ -103,9 +105,9 @@ describe('The seed builder component', function() {
                 ctrl.$onInit();
                 scope.$digest();
                 expect(error.handle).not.toHaveBeenCalled();
-                expect(graph.addSeed).toHaveBeenCalledTimes(2);
-                expect(graph.addSeed).toHaveBeenCalledWith("seed1")
-                expect(graph.addSeed).toHaveBeenCalledWith("seed2")
+                expect(input.addSeed).toHaveBeenCalledTimes(2);
+                expect(input.addSeed).toHaveBeenCalledWith("seed1")
+                expect(input.addSeed).toHaveBeenCalledWith("seed2")
             });
         });
 
@@ -120,8 +122,8 @@ describe('The seed builder component', function() {
                 ctrl.$onInit();
                 scope.$digest();
                 expect(error.handle).not.toHaveBeenCalled();
-                expect(graph.addSeed).toHaveBeenCalledTimes(1);
-                expect(graph.addSeed).toHaveBeenCalledWith({"type": "t1", "value": "v1"})
+                expect(input.addSeed).toHaveBeenCalledTimes(1);
+                expect(input.addSeed).toHaveBeenCalledWith({"type": "t1", "value": "v1"})
             });
 
             it('should add multiple single seeds', function() {
@@ -130,9 +132,9 @@ describe('The seed builder component', function() {
                 ctrl.$onInit();
                 scope.$digest();
                 expect(error.handle).not.toHaveBeenCalled();
-                expect(graph.addSeed).toHaveBeenCalledTimes(2);
-                expect(graph.addSeed).toHaveBeenCalledWith({"type": "t1", "value": "v1"})
-                expect(graph.addSeed).toHaveBeenCalledWith({"type": "t2", "value": "v2"})
+                expect(input.addSeed).toHaveBeenCalledTimes(2);
+                expect(input.addSeed).toHaveBeenCalledWith({"type": "t1", "value": "v1"})
+                expect(input.addSeed).toHaveBeenCalledWith({"type": "t2", "value": "v2"})
             });
         });
 
@@ -260,20 +262,20 @@ describe('The seed builder component', function() {
                         ctrl.addSeeds();
 
                         expect(error.handle).not.toHaveBeenCalled();
-                        expect(graph.addSeed).toHaveBeenCalledTimes(2);
-                        expect(graph.addSeed).toHaveBeenCalledWith({"someClass": {"type": "value1", "value": "value2"}})
-                        expect(graph.addSeed).toHaveBeenCalledWith({"someClass": {"type": "value3", "value": "value4"}})
+                        expect(input.addInput).toHaveBeenCalledTimes(2);
+                        expect(input.addInput).toHaveBeenCalledWith({"someClass": {"type": "value1", "value": "value2"}})
+                        expect(input.addInput).toHaveBeenCalledWith({"someClass": {"type": "value3", "value": "value4"}})
                     });
 
                 });
 
                 describe('via the single seed interface', function() {
-                    it('should create a json wrapped object and add it to the graph', function() {
+                    it('should create a json wrapped object and add it via the input service', function() {
                         ctrl.vertexClass = "some.java.Class";
                         ctrl.seedVertexParts = {"type": "meaningOfLife", "value": 42 }
                         ctrl.addSeeds();
-                        expect(graph.addSeed).toHaveBeenCalledTimes(1);
-                        expect(graph.addSeed).toHaveBeenCalledWith({"some.java.Class": {"type": "meaningOfLife", "value": 42}});
+                        expect(input.addInput).toHaveBeenCalledTimes(1);
+                        expect(input.addInput).toHaveBeenCalledWith({"some.java.Class": {"type": "meaningOfLife", "value": 42}});
                     });
                 });
             });

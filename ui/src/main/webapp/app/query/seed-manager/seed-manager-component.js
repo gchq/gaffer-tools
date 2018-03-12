@@ -25,43 +25,74 @@ function seedManager() {
         controllerAs: 'ctrl'
     }
 }
-
-function SeedManagerController(graph, queryPage, common, types, events) {
+/**
+ * Controller for the SeedManager
+ * @param {Object} graph - The Graph service
+ * @param {Object} queryPage - The query page service
+ * @param {Object} common - The common service
+ * @param {Object} types - The types service
+ * @param {Object} events - The events service
+ * @param {Object} input - The input service
+ */
+function SeedManagerController(graph, queryPage, common, types, events, input) {
     var vm = this;
-    vm.selectedEntities;
+    
+    vm.input;
 
     vm.seedsMessage = "";
 
-    var onSelectedElementsUpdate = function(selectedElements) {
-        vm.selectedEntities = selectedElements['entities'];
+    /**
+     * Function triggered by an update to the query input. It updates the model and forces a recalculation of the
+     * seeds message.
+     * @param {Array} newInput - The updated input array.
+     */
+    var onQueryInputUpdate = function(newInput) {
+        vm.input = newInput;
         recalculateSeedsMessage();
-    };
+    }
 
+    /** 
+     * Sets the initial value for the query seeds and subscribes to update events. 
+    */
     vm.$onInit = function() {
-        events.subscribe('selectedElementsUpdate', onSelectedElementsUpdate)
-        vm.selectedEntities = graph.getSelectedEntities();
+        events.subscribe('queryInputUpdate', onQueryInputUpdate);
+        vm.input = input.getInput();
         recalculateSeedsMessage();
     }
 
+    /** 
+     * Unsubscribes from all update events
+    */
     vm.$onDestroy = function() {
-        events.unsubscribe('selectedElementsUpdate', onSelectedElementsUpdate)
+        events.unsubscribe('queryInputUpdate', onQueryInputUpdate);
     }
 
+    /**
+     * Returns the number of key value pairs in this object
+     * @param {Object} obj an Object 
+     */
     vm.keyValuePairs = function(obj) {
         return Object.keys(obj).length;
     }
 
+    /** 
+     * Selects all seeds on the graph which in turn triggers an update event - causing the query input to be updated
+    */
     vm.selectAllSeeds = function() {
         graph.selectAllNodes();
     }
 
+    /** 
+     * Uses the seeds added to the input service to display a truncated message describing the seeds currently added to the query. 
+     * It displays the last two seeds added to the input service.
+    */
     var recalculateSeedsMessage = function() {
-        var selectedSeeds = Object.keys(vm.selectedEntities);
-        var displaySeeds = selectedSeeds.slice(-2);
-        var howManyMore = selectedSeeds.length - 2;
+        
+        var displaySeeds = vm.input.slice(-2);
+        var howManyMore = vm.input.length - 2;
 
         var message = displaySeeds.map(function(seed) {
-            return types.getShortValue(JSON.parse(seed));
+            return types.getShortValue(seed);
         }).join(', ');
 
         if (howManyMore > 0) {

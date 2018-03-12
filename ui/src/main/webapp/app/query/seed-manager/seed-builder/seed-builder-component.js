@@ -26,7 +26,7 @@ function seedBuilder() {
     }
 }
 
-function SeedBuilderController(schema, types, graph, error, $routeParams) {
+function SeedBuilderController(schema, types, input, error, $routeParams) {
     var vm = this;
     vm.seedVertexParts = {};
     vm.seedVertices = '';
@@ -72,30 +72,21 @@ function SeedBuilderController(schema, types, graph, error, $routeParams) {
     }
 
     var addSeed = function(vertex) {
-        var partValues = vertex.trim().split(",");
-        var fields = types.getFields(vm.vertexClass);
-        if(fields.length != partValues.length) {
-            error.handle("Wrong number of parameters for seed: " + vertex + ". " + vm.vertexClass + " requires " + fields.length + " parameters");
-            return false;
-        }
         var parts = {};
         for(var j = 0; j< fields.length; j++) {
             parts[fields[j].key] = partValues[j];
         }
-        graph.addSeed(createSeed(parts));
-        return true;
+        input.addInput(createSeed(parts));
     }
 
     vm.addSeeds = function() {
         if(vm.multipleSeeds) {
             var vertices = vm.seedVertices.trim().split("\n");
             for(var i in vertices) {
-                if(!addSeed(vertices[i])) {
-                    break;
-                }
+                addSeed(vertices[i]);
             }
         } else {
-             graph.addSeed(createSeed(vm.seedVertexParts));
+             input.addInput(createSeed(vm.seedVertexParts));
         }
 
         reset();
