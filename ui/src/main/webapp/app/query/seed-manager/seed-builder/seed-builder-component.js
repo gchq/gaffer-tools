@@ -26,7 +26,7 @@ function seedBuilder() {
     }
 }
 
-function SeedBuilderController(schema, types, graph, error, $routeParams, $location) {
+function SeedBuilderController(schema, types, graph, error, $routeParams) {
     var vm = this;
     vm.seedVertexParts = {};
     vm.seedVertices = '';

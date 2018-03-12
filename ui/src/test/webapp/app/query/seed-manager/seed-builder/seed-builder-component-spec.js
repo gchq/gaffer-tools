@@ -2,6 +2,10 @@ describe('The seed builder component', function() {
 
     var ctrl;
     var scope;
+    var $routeParams;
+    var graph;
+    var types;
+    var error;
 
     beforeEach(module('app'));
 
@@ -27,10 +31,14 @@ describe('The seed builder component', function() {
         });
     }));
 
-    beforeEach(inject(function(_$rootScope_, _$componentController_) {
+    beforeEach(inject(function(_$rootScope_, _$componentController_, _$routeParams_, _graph_, _types_, _error_) {
         scope = _$rootScope_.$new();
         var $componentController = _$componentController_;
         ctrl = $componentController('seedBuilder', {$scope: scope});
+        $routeParams = _$routeParams_;
+        graph = _graph_;
+        types = _types_;
+        error = _error_;
     }));
 
     it('should exist', function() {
@@ -66,23 +74,77 @@ describe('The seed builder component', function() {
             }));
 
             spyOn(schema, 'getSchemaVertices').and.returnValue(['vertex1', 'vertex2']);
+            spyOn(graph, 'addSeed');
+            spyOn(error, 'handle');
         });
 
-        beforeEach(function() {
-            ctrl.$onInit();
+        describe('with simple input query params', function() {
+            beforeEach(function() {
+                spyOn(types, 'getFields').and.returnValue([{
+                     label: "Value",
+                     type: "text",
+                     class: "java.lang.String"
+                }]);
+            });
+
+            it('should add a single seed', function() {
+                $routeParams.input="seed1";
+                spyOn(types, 'createJsonValue').and.returnValue("seed1");
+                ctrl.$onInit();
+                scope.$digest();
+                expect(error.handle).not.toHaveBeenCalled();
+                expect(graph.addSeed).toHaveBeenCalledTimes(1);
+                expect(graph.addSeed).toHaveBeenCalledWith("seed1")
+            });
+
+            it('should add multiple single seeds', function() {
+                $routeParams.input=["seed1", "seed2"];
+                spyOn(types, 'createJsonValue').and.returnValues("seed1", "seed2");
+                ctrl.$onInit();
+                scope.$digest();
+                expect(error.handle).not.toHaveBeenCalled();
+                expect(graph.addSeed).toHaveBeenCalledTimes(2);
+                expect(graph.addSeed).toHaveBeenCalledWith("seed1")
+                expect(graph.addSeed).toHaveBeenCalledWith("seed2")
+            });
         });
 
-        it('should get the schema', function() {
-            expect(schema.get).toHaveBeenCalledTimes(1);
+        describe('with complex input query params', function() {
+            beforeEach(function() {
+                spyOn(types, 'getFields').and.returnValue([{"key": "type"}, {"key": "value"}]);
+            });
+
+            it('should add a single seed', function() {
+                $routeParams.input="t1,v1";
+                spyOn(types, 'createJsonValue').and.returnValue({"type": "t1", "value": "v1"});
+                ctrl.$onInit();
+                scope.$digest();
+                expect(error.handle).not.toHaveBeenCalled();
+                expect(graph.addSeed).toHaveBeenCalledTimes(1);
+                expect(graph.addSeed).toHaveBeenCalledWith({"type": "t1", "value": "v1"})
+            });
+
+            it('should add multiple single seeds', function() {
+                $routeParams.input=["t1,v1", "t2,v2"];
+                spyOn(types, 'createJsonValue').and.returnValues({"type": "t1", "value": "v1"}, {"type": "t2", "value": "v2"});
+                ctrl.$onInit();
+                scope.$digest();
+                expect(error.handle).not.toHaveBeenCalled();
+                expect(graph.addSeed).toHaveBeenCalledTimes(2);
+                expect(graph.addSeed).toHaveBeenCalledWith({"type": "t1", "value": "v1"})
+                expect(graph.addSeed).toHaveBeenCalledWith({"type": "t2", "value": "v2"})
+            });
         });
 
         describe('and when the schema resolves a value', function() {
+            beforeEach(function() {
+                spyOn(types, 'getFields').and.returnValue([{"key": "type"}, {"key": "value"}]);
+                ctrl.$onInit();
+            });
 
-            var types;
-
-            beforeEach(inject(function(_types_) {
-                types = _types_;
-            }));
+            it('should get the schema', function() {
+                expect(schema.get).toHaveBeenCalledTimes(1);
+            });
 
             beforeEach(function() {
                 scope.$digest();
@@ -138,11 +200,6 @@ describe('The seed builder component', function() {
             });
 
             describe('when getting the vertex fields', function() {
-
-                beforeEach(function() {
-                    spyOn(types, 'getFields');
-                });
-
                 it('should use the vertex class', function() {
                     ctrl.vertexClass = "some.java.Class";
 
@@ -168,16 +225,6 @@ describe('The seed builder component', function() {
             });
 
             describe('when adding seeds', function() {
-                var graph;
-
-                beforeEach(inject(function(_graph_) {
-                    graph = _graph_;
-                }));
-
-                beforeEach(function() {
-                    spyOn(graph, 'addSeed')
-                });
-
                 beforeEach(function() {
                     spyOn(types, 'createJsonValue').and.callFake(function(clazz, parts) {
                         var toReturn = {};
@@ -187,21 +234,6 @@ describe('The seed builder component', function() {
                 })
 
                 describe('via the multi-seed textarea', function() {
-
-                    var error;
-
-                    beforeEach(inject(function(_error_) {
-                        error = _error_;
-                    }));
-
-                    beforeEach(function() {
-                        spyOn(types, 'getFields').and.returnValue([{"key": "type"}, {"key": "value"}]);
-                    });
-
-                    beforeEach(function() {
-                        spyOn(error, 'handle').and.stub();
-                    });
-
                     beforeEach(function() {
                         ctrl.multipleSeeds = true;
                         ctrl.vertexClass = 'someClass';
