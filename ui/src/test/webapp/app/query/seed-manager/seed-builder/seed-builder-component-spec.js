@@ -95,8 +95,8 @@ describe('The seed builder component', function() {
                 ctrl.$onInit();
                 scope.$digest();
                 expect(error.handle).not.toHaveBeenCalled();
-                expect(input.addSeed).toHaveBeenCalledTimes(1);
-                expect(input.addSeed).toHaveBeenCalledWith("seed1")
+                expect(input.addInput).toHaveBeenCalledTimes(1);
+                expect(input.addInput).toHaveBeenCalledWith("seed1")
             });
 
             it('should add multiple single seeds', function() {
@@ -105,9 +105,9 @@ describe('The seed builder component', function() {
                 ctrl.$onInit();
                 scope.$digest();
                 expect(error.handle).not.toHaveBeenCalled();
-                expect(input.addSeed).toHaveBeenCalledTimes(2);
-                expect(input.addSeed).toHaveBeenCalledWith("seed1")
-                expect(input.addSeed).toHaveBeenCalledWith("seed2")
+                expect(input.addInput).toHaveBeenCalledTimes(2);
+                expect(input.addInput).toHaveBeenCalledWith("seed1")
+                expect(input.addInput).toHaveBeenCalledWith("seed2")
             });
         });
 
@@ -122,8 +122,8 @@ describe('The seed builder component', function() {
                 ctrl.$onInit();
                 scope.$digest();
                 expect(error.handle).not.toHaveBeenCalled();
-                expect(input.addSeed).toHaveBeenCalledTimes(1);
-                expect(input.addSeed).toHaveBeenCalledWith({"type": "t1", "value": "v1"})
+                expect(input.addInput).toHaveBeenCalledTimes(1);
+                expect(input.addInput).toHaveBeenCalledWith({"type": "t1", "value": "v1"})
             });
 
             it('should add multiple single seeds', function() {
@@ -132,9 +132,9 @@ describe('The seed builder component', function() {
                 ctrl.$onInit();
                 scope.$digest();
                 expect(error.handle).not.toHaveBeenCalled();
-                expect(input.addSeed).toHaveBeenCalledTimes(2);
-                expect(input.addSeed).toHaveBeenCalledWith({"type": "t1", "value": "v1"})
-                expect(input.addSeed).toHaveBeenCalledWith({"type": "t2", "value": "v2"})
+                expect(input.addInput).toHaveBeenCalledTimes(2);
+                expect(input.addInput).toHaveBeenCalledWith({"type": "t1", "value": "v1"})
+                expect(input.addInput).toHaveBeenCalledWith({"type": "t2", "value": "v2"})
             });
         });
 

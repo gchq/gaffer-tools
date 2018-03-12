@@ -72,18 +72,27 @@ function SeedBuilderController(schema, types, input, error, $routeParams) {
     }
 
     var addSeed = function(vertex) {
+        var partValues = vertex.trim().split(",");
+        var fields = types.getFields(vm.vertexClass);
+        if(fields.length != partValues.length) {
+            error.handle("Wrong number of parameters for seed: " + vertex + ". " + vm.vertexClass + " requires " + fields.length + " parameters");
+            return false;
+        }
         var parts = {};
         for(var j = 0; j< fields.length; j++) {
             parts[fields[j].key] = partValues[j];
         }
         input.addInput(createSeed(parts));
+        return true;
     }
 
     vm.addSeeds = function() {
         if(vm.multipleSeeds) {
             var vertices = vm.seedVertices.trim().split("\n");
             for(var i in vertices) {
-                addSeed(vertices[i]);
+                if(!addSeed(vertices[i])) {
+                    break;
+                }
             }
         } else {
              input.addInput(createSeed(vm.seedVertexParts));
