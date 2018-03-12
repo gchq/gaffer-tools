@@ -26,7 +26,7 @@ function seedBuilder() {
     }
 }
 
-function SeedBuilderController(schema, types, graph, error, $routeParams) {
+function SeedBuilderController(schema, types, graph, error, $routeParams, $location) {
     var vm = this;
     vm.seedVertexParts = {};
     vm.seedVertices = '';
@@ -39,16 +39,16 @@ function SeedBuilderController(schema, types, graph, error, $routeParams) {
             if(vertices && vertices.length > 0 && undefined !== vertices[0]) {
                 vm.vertexClass = gafferSchema.types[vertices[0]].class;
             }
-        });
-
-        if($routeParams.input) {
-            console.log($routeParams.input);
-            if(Array.isArray($routeParams.input)) {
-                for(var i in $routeParams.input) {
-                    processSeed($routeParams.input[i]);
+            if($routeParams.input) {
+                if(Array.isArray($routeParams.input)) {
+                    for(var i in $routeParams.input) {
+                        processSeed($routeParams.input[i]);
+                    }
+                } else {
+                    processSeed($routeParams.input);
                 }
             }
-        }
+        });
     }
 
     vm.inputExists = function() {

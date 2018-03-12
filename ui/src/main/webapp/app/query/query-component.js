@@ -27,7 +27,7 @@ function query() {
     };
 }
 
-function QueryController(queryPage, operationService, types, graph, config, settings, query, functions, results, navigation, $mdDialog, loading, dateRange, view, error) {
+function QueryController(queryPage, operationService, types, graph, config, settings, query, functions, results, navigation, $mdDialog, loading, dateRange, view, error, $routeParams, $location) {
     var namedViewClass = "uk.gov.gchq.gaffer.data.elementdefinition.view.NamedView";
     var vm = this;
     vm.timeConfig;
@@ -56,6 +56,8 @@ function QueryController(queryPage, operationService, types, graph, config, sett
     }
 
     vm.execute = function() {
+
+
         var operation = createOperation();
         query.addOperation(operation);
         loading.load()
@@ -97,6 +99,9 @@ function QueryController(queryPage, operationService, types, graph, config, sett
         queryPage.reset();
         dateRange.resetDateRange();
         view.reset();
+        // Remove the input query param
+        delete $routeParams['input'];
+        $location.search('input', null);
     }
 
     var createOpInput = function() {

@@ -42,6 +42,11 @@ function OperationSelectorController(operationService, operationSelectorService,
             vm.updateModel();
         }
 
+        // allow 'op' to be used as a shorthand
+        if($routeParams.op) {
+            $routeParams.operation = $routeParams.op;
+        }
+
         if($routeParams.operation) {
             var opParam = $routeParams.operation.replace(/[\W_]+/g, "").toLowerCase();
             for(var i in vm.availableOperations) {
