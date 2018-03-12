@@ -42,10 +42,10 @@ function SeedBuilderController(schema, types, graph, error, $routeParams, $locat
             if($routeParams.input) {
                 if(Array.isArray($routeParams.input)) {
                     for(var i in $routeParams.input) {
-                        processSeed($routeParams.input[i]);
+                        addSeed($routeParams.input[i]);
                     }
                 } else {
-                    processSeed($routeParams.input);
+                    addSeed($routeParams.input);
                 }
             }
         });
@@ -71,7 +71,7 @@ function SeedBuilderController(schema, types, graph, error, $routeParams, $locat
         return types.getCsvHeader(vm.vertexClass);
     }
 
-    var processSeed = function(vertex) {
+    var addSeed = function(vertex) {
         var partValues = vertex.trim().split(",");
         var fields = types.getFields(vm.vertexClass);
         if(fields.length != partValues.length) {
@@ -90,7 +90,7 @@ function SeedBuilderController(schema, types, graph, error, $routeParams, $locat
         if(vm.multipleSeeds) {
             var vertices = vm.seedVertices.trim().split("\n");
             for(var i in vertices) {
-                if(!processSeed(vertex)) {
+                if(!addSeed(vertices[i])) {
                     break;
                 }
             }
