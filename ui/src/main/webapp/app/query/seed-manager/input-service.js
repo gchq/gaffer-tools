@@ -61,7 +61,9 @@ angular.module('app').factory('input', ['events', 'common', function(events, com
      * @param {*} seed 
      */
     service.removeInput = function(seed) {
-        var newInput = input.filter(v => !angular.equals(v, seed));
+        var newInput = input.filter(function(vertex) {
+            return !angular.equals(seed, vertex);
+        });
         if(newInput.length < input.length) {
             input = newInput;
             events.broadcast(updateEventName, [input]);
