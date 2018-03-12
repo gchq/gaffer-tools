@@ -168,14 +168,14 @@ describe('The seed builder component', function() {
             });
 
             describe('when adding seeds', function() {
-                var graph;
+                var input;
 
-                beforeEach(inject(function(_graph_) {
-                    graph = _graph_;
+                beforeEach(inject(function(_input_) {
+                    input = _input_;
                 }));
 
                 beforeEach(function() {
-                    spyOn(graph, 'addSeed')
+                    spyOn(input, 'addInput')
                 });
 
                 beforeEach(function() {
@@ -228,20 +228,20 @@ describe('The seed builder component', function() {
                         ctrl.addSeeds();
 
                         expect(error.handle).not.toHaveBeenCalled();
-                        expect(graph.addSeed).toHaveBeenCalledTimes(2);
-                        expect(graph.addSeed).toHaveBeenCalledWith({"someClass": {"type": "value1", "value": "value2"}})
-                        expect(graph.addSeed).toHaveBeenCalledWith({"someClass": {"type": "value3", "value": "value4"}})
+                        expect(input.addInput).toHaveBeenCalledTimes(2);
+                        expect(input.addInput).toHaveBeenCalledWith({"someClass": {"type": "value1", "value": "value2"}})
+                        expect(input.addInput).toHaveBeenCalledWith({"someClass": {"type": "value3", "value": "value4"}})
                     });
 
                 });
 
                 describe('via the single seed interface', function() {
-                    it('should create a json wrapped object and add it to the graph', function() {
+                    it('should create a json wrapped object and add it via the input service', function() {
                         ctrl.vertexClass = "some.java.Class";
                         ctrl.seedVertexParts = {"type": "meaningOfLife", "value": 42 }
                         ctrl.addSeeds();
-                        expect(graph.addSeed).toHaveBeenCalledTimes(1);
-                        expect(graph.addSeed).toHaveBeenCalledWith({"some.java.Class": {"type": "meaningOfLife", "value": 42}});
+                        expect(input.addInput).toHaveBeenCalledTimes(1);
+                        expect(input.addInput).toHaveBeenCalledWith({"some.java.Class": {"type": "meaningOfLife", "value": 42}});
                     });
                 });
             });

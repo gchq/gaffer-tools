@@ -17,7 +17,9 @@ target/
 *.iml
 */.settings
 */.project
+.project
 */bin
+bin/
 */*.class
 */atlassian-ide*
 */.idea
@@ -29,3 +31,4 @@ __pycache__
 *.pyc
 .DS_Store
 */.DS_Store
+.vscode/

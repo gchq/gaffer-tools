@@ -26,7 +26,7 @@ function seedBuilder() {
     }
 }
 
-function SeedBuilderController(schema, types, graph, error) {
+function SeedBuilderController(schema, types, input, error) {
     var vm = this;
     vm.seedVertexParts = {};
     vm.seedVertices = '';
@@ -77,10 +77,10 @@ function SeedBuilderController(schema, types, graph, error) {
                 for(var j = 0; j< fields.length; j++) {
                     parts[fields[j].key] = partValues[j];
                 }
-                graph.addSeed(createSeed(parts));
+                input.addInput(createSeed(parts));
             }
         } else {
-             graph.addSeed(createSeed(vm.seedVertexParts));
+             input.addInput(createSeed(vm.seedVertexParts));
         }
 
         reset();
