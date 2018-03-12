@@ -1,5 +1,5 @@
 #
-# Copyright 2016 Crown Copyright
+# Copyright 2016-2018 Crown Copyright
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -15,7 +15,36 @@
 #
 
 """
-This module contains Python copies of Gaffer java classes
+This module imports all the gaffer python classes (not including gaffer_connector).
+
+Importing this gaffer.py file will provide you with all the gaffer components.
+
+These components can then be accessed like:
+
+g.GetElements()
+g.IsMoreThan()
+
+or if you want a specific class from a specific module, for example if there
+is a Operation and Predicate class with the same name, you can use the componets like:
+
+g.op.X()
+g.pred.X()
+
+
+Specifically the imports are done as follows:
+
+from gafferpy.gaffer_core import *
+from gafferpy.gaffer_predicates import *
+from gafferpy.gaffer_functions import *
+from gafferpy.gaffer_binaryoperators import *
+from gafferpy.gaffer_operations import *
+from gafferpy.gaffer_config import *
+
+import gafferpy.gaffer_predicates as pred
+import gafferpy.gaffer_functions as func
+import gafferpy.gaffer_binaryoperators as bop
+import gafferpy.gaffer_operations as op
+import gafferpy.gaffer_config as conf
 """
 
 from gafferpy.gaffer_core import *

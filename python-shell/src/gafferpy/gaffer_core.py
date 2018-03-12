@@ -15,7 +15,7 @@
 #
 
 """
-This module contains Python copies of Gaffer java classes
+This module contains Python copies of Gaffer core java classes
 """
 
 import json
@@ -461,5 +461,6 @@ def load_core_json_map():
         if hasattr(class_obj, 'CLASS'):
             JsonConverter.GENERIC_JSON_CONVERTERS[class_obj.CLASS] = \
                 lambda obj, class_obj=class_obj: class_obj(**obj)
+
 
 load_core_json_map()

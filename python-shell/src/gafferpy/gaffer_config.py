@@ -15,10 +15,11 @@
 #
 
 """
-This module contains Python copies of Gaffer java classes
+This module contains Python copies of Gaffer config java classes
 """
 
-from gafferpy.gaffer_operations import *
+from gafferpy.gaffer_core import *
+import gafferpy.gaffer_operations as gaffer_operations
 
 
 class GetGraph:
@@ -29,7 +30,7 @@ class GetGraph:
         return self._url
 
 
-class GetSchema(Operation, GetGraph):
+class GetSchema(gaffer_operations.Operation, GetGraph):
     CLASS = 'uk.gov.gchq.gaffer.store.operation.GetSchema'
 
     def __init__(self,

@@ -16,11 +16,13 @@
 
 
 """
-This module contains Python copies of Gaffer java classes
+This module contains Python copies of Gaffer operation java classes
 """
 
-from gafferpy.gaffer_functions import *
-from gafferpy.gaffer_predicates import *
+from gafferpy.gaffer_core import *
+import gafferpy.gaffer_predicates as gaffer_predicates
+import gafferpy.gaffer_functions as gaffer_functions
+import gafferpy.gaffer_binaryoperators as gaffer_binaryoperators
 
 
 class NamedOperationParameter(ToJson, ToCodeString):
@@ -272,19 +274,21 @@ class ElementDefinition(ToJson, ToCodeString):
                     self.transient_properties[propName] = propClass
 
         self.pre_aggregation_filter_functions = JsonConverter.from_json(
-            pre_aggregation_filter_functions, PredicateContext)
+            pre_aggregation_filter_functions,
+            gaffer_predicates.PredicateContext)
 
         self.aggregate_functions = JsonConverter.from_json(
-            aggregate_functions, PredicateContext)
+            aggregate_functions, gaffer_predicates.PredicateContext)
 
         self.post_aggregation_filter_functions = JsonConverter.from_json(
-            post_aggregation_filter_functions, PredicateContext)
+            post_aggregation_filter_functions,
+            gaffer_predicates.PredicateContext)
 
         self.transform_functions = JsonConverter.from_json(
-            transform_functions, FunctionContext)
+            transform_functions, gaffer_functions.FunctionContext)
 
         self.post_transform_filter_functions = JsonConverter.from_json(
-            post_transform_filter_functions, PredicateContext)
+            post_transform_filter_functions, gaffer_predicates.PredicateContext)
 
         self.group_by = group_by
         self.properties = properties
@@ -331,7 +335,7 @@ class ElementTransformDefinition(ToJson, ToCodeString):
         super().__init__()
         self.group = group
         self.functions = JsonConverter.from_json(
-            functions, FunctionContext)
+            functions, gaffer_functions.FunctionContext)
 
     def to_json(self):
         element_def = {}
@@ -376,14 +380,14 @@ class ElementAggregateDefinition(ToJson, ToCodeString):
     def __init__(self, operators=None):
         super().__init__()
         self.operators = JsonConverter.from_json(
-            operators, BinaryOperatorContext)
+            operators, gaffer_binaryoperators.BinaryOperatorContext)
 
     def to_json(self):
         element_def = {}
         if self.operators is not None:
             funcs = []
-            for func in self.operators:
-                funcs.append(func.to_json())
+            for function in self.operators:
+                funcs.append(function.to_json())
             element_def['operators'] = funcs
         return element_def
 
@@ -396,14 +400,14 @@ class ElementFilterDefinition(ToJson, ToCodeString):
         super().__init__()
         self.group = group
         self.predicates = JsonConverter.from_json(
-            predicates, PredicateContext)
+            predicates, gaffer_predicates.PredicateContext)
 
     def to_json(self):
         element_def = {}
         if self.predicates is not None:
             funcs = []
-            for func in self.predicates:
-                funcs.append(func.to_json())
+            for function in self.predicates:
+                funcs.append(function.to_json())
             element_def['predicates'] = funcs
         return element_def
 
@@ -414,7 +418,7 @@ class GlobalElementFilterDefinition(ToJson, ToCodeString):
     def __init__(self, predicates=None):
         super().__init__()
         self.predicates = JsonConverter.from_json(
-            predicates, PredicateContext)
+            predicates, gaffer_predicates.PredicateContext)
 
     def to_json(self):
         element_def = {}
@@ -454,16 +458,18 @@ class GlobalElementDefinition(ToJson, ToCodeString):
                     self.transient_properties[propName] = propClass
 
         self.pre_aggregation_filter_functions = JsonConverter.from_json(
-            pre_aggregation_filter_functions, PredicateContext)
+            pre_aggregation_filter_functions,
+            gaffer_predicates.PredicateContext)
 
         self.post_aggregation_filter_functions = JsonConverter.from_json(
-            post_aggregation_filter_functions, PredicateContext)
+            post_aggregation_filter_functions,
+            gaffer_predicates.PredicateContext)
 
         self.transform_functions = JsonConverter.from_json(
-            transform_functions, FunctionContext)
+            transform_functions, gaffer_functions.FunctionContext)
 
         self.post_transform_filter_functions = JsonConverter.from_json(
-            post_transform_filter_functions, PredicateContext)
+            post_transform_filter_functions, gaffer_predicates.PredicateContext)
 
         self.group_by = group_by
 
@@ -636,9 +642,10 @@ class GenerateElements(Operation):
         super().__init__(
             _class_name=self.CLASS,
             options=options)
-        if not isinstance(element_generator, ElementGenerator):
-            element_generator = ElementGenerator(element_generator['class'],
-                                                 element_generator)
+        if not isinstance(element_generator, gaffer_functions.ElementGenerator):
+            element_generator = gaffer_functions.ElementGenerator(
+                element_generator['class'],
+                element_generator)
         self.element_generator = element_generator
         self.input = input
 
@@ -668,9 +675,10 @@ class GenerateObjects(Operation):
         super().__init__(
             _class_name=self.CLASS,
             options=options)
-        if not isinstance(element_generator, ElementGenerator):
-            element_generator = ElementGenerator(element_generator['class'],
-                                                 element_generator)
+        if not isinstance(element_generator, gaffer_functions.ElementGenerator):
+            element_generator = gaffer_functions.ElementGenerator(
+                element_generator['class'],
+                element_generator)
         self.element_generator = element_generator
         self.input = input
 
@@ -1392,9 +1400,9 @@ class ToCsv(Operation):
         super().__init__(
             _class_name=self.CLASS
         )
-        if not isinstance(element_generator, CsvGenerator):
+        if not isinstance(element_generator, gaffer_functions.CsvGenerator):
             element_generator = JsonConverter.from_json(
-                element_generator, CsvGenerator)
+                element_generator, gaffer_functions.CsvGenerator)
         self.element_generator = element_generator
         self.include_header = include_header
 
@@ -1416,9 +1424,9 @@ class ToMap(Operation):
             _class_name=self.CLASS
         )
 
-        if not isinstance(element_generator, MapGenerator):
+        if not isinstance(element_generator, gaffer_functions.MapGenerator):
             element_generator = JsonConverter.from_json(
-                element_generator, MapGenerator)
+                element_generator, gaffer_functions.MapGenerator)
         self.element_generator = element_generator
 
     def to_json(self):
@@ -2197,9 +2205,9 @@ class Map(Operation):
         if functions is not None:
             self.functions = []
             for func in functions:
-                if not isinstance(func, Function):
+                if not isinstance(func, gaffer_functions.Function):
                     func = JsonConverter.from_json(
-                        func, Function)
+                        func, gaffer_functions.Function)
                 self.functions.append(func)
 
     def to_json(self):
@@ -2209,8 +2217,8 @@ class Map(Operation):
 
         if self.functions is not None:
             functions_json = []
-            for func in self.functions:
-                functions_json.append(func.to_json())
+            for function in self.functions:
+                functions_json.append(function.to_json())
             operation['functions'] = functions_json
 
         return operation
@@ -2222,5 +2230,6 @@ def load_operation_json_map():
         if hasattr(class_obj, 'CLASS'):
             JsonConverter.GENERIC_JSON_CONVERTERS[class_obj.CLASS] = \
                 lambda obj, class_obj=class_obj: class_obj(**obj)
+
 
 load_operation_json_map()

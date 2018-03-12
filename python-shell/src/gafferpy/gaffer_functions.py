@@ -16,7 +16,7 @@
 
 
 """
-This module contains Python copies of Gaffer java classes
+This module contains Python copies of Gaffer function java classes
 """
 
 from gafferpy.gaffer_core import *
@@ -484,45 +484,6 @@ class FunctionMap(AbstractFunction):
     def to_json(self):
         function_json = super().to_json()
         function_json['function'] = self.function.to_json()
-        return function_json
-
-
-class BinaryOperatorContext(ToJson, ToCodeString):
-    CLASS = "gaffer.AggregatorContext"
-
-    def __init__(self, selection=None, binary_operator=None):
-        if isinstance(selection, list):
-            self.selection = selection
-        else:
-            self.selection = [selection]
-        self.binary_operator = binary_operator
-
-    def to_json(self):
-        function_json = {}
-        if self.selection is not None:
-            function_json['selection'] = self.selection
-        if self.binary_operator is not None:
-            function_json['binaryOperator'] = self.binary_operator.to_json()
-
-        return function_json
-
-
-class BinaryOperator(ToJson, ToCodeString):
-    CLASS = "java.util.function.BinaryOperator"
-
-    def __init__(self, class_name=None, fields=None):
-        self.class_name = class_name
-        self.fields = fields
-
-    def to_json(self):
-        if self.fields is not None:
-            function_json = dict(self.fields)
-        else:
-            function_json = {}
-
-        if self.class_name is not None:
-            function_json['class'] = self.class_name
-
         return function_json
 
 

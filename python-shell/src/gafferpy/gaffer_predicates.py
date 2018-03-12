@@ -15,7 +15,7 @@
 #
 
 """
-This module contains Python copies of Gaffer java classes
+This module contains Python copies of Gaffer predicate java classes
 """
 
 from gafferpy.gaffer_core import *
@@ -726,5 +726,6 @@ def load_predicate_json_map():
     JsonConverter.CUSTOM_JSON_CONVERTERS[
         PredicateContext.CLASS] = predicate_context_converter
     JsonConverter.CUSTOM_JSON_CONVERTERS[Predicate.CLASS] = predicate_converter
+
 
 load_predicate_json_map()
