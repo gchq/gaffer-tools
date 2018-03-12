@@ -16,7 +16,7 @@
 
 import sys
 
-import gaffer as g
+from gafferpy import gaffer as g
 
 if __name__ == "__main__":
     if len(sys.argv) < 2:
