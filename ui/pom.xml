@@ -431,8 +431,33 @@
 
         <profile>
             <id>continuous-integration</id>
+            <properties>
+                <skipTests>true</skipTests>
+                <skip.surefire.tests>true</skip.surefire.tests>
+                <skip.failsafe.tests>true</skip.failsafe.tests>
+            </properties>
             <build>
                 <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-checkstyle-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>validate</id>
+                                <phase>none</phase>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>findbugs-maven-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>analyze-compile</id>
+                                <phase>none</phase>
+                            </execution>
+                        </executions>
+                    </plugin>
                     <plugin>
                         <groupId>com.github.searls</groupId>
                         <artifactId>jasmine-maven-plugin</artifactId>

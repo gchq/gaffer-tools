@@ -16,29 +16,23 @@
 
 'use strict';
 
-angular.module('app').component('schemaView', schemaViewView());
+angular.module('app').component('schemaView', schemaViewController());
 
-function schemaViewView() {
+function schemaViewController() {
     return {
-        templateUrl: 'app/graph/schema-view.html',
+        templateUrl: 'app/schema/schema-view.html',
         controller: SchemaViewController,
         controllerAs: 'ctrl'
     };
 }
 
-
-function SchemaViewController($timeout, schemaView, schema) {
+function SchemaViewController(schemaView, schema) {
     var vm = this;
-    vm.schema = {edges:{}, entities:{}};
     vm.$onInit = function() {
-
         schema.get().then(function(gafferSchema) {
-            vm.schema = gafferSchema;
-            $timeout(function(evt) {
-                schemaView.load().then(function(cy) {
-                    schemaView.reload(gafferSchema);
-                })
-            });
+            schemaView.load().then(function(cy) {
+                schemaView.reload(gafferSchema);
+            })
         });
     }
 }

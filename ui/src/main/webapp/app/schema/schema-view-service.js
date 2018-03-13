@@ -100,7 +100,7 @@ angular.module('app').factory('schemaView', ['types', '$q', 'common', 'events', 
         });
 
         schemaCy.on('unselect', function(evt){
-            unselect(evt.cyTarget);
+            deselect(evt.cyTarget);
         })
 
         return deferred.promise;
@@ -118,10 +118,10 @@ angular.module('app').factory('schemaView', ['types', '$q', 'common', 'events', 
                 console.log(selectedEdges);
             }
         }
-        events.broadcast('selectedSchemaGroupsUpdate', [{vertices: selectedVertices, edges: selectedEdges}]);
+        events.broadcast('selectedSchemaElementGroupsUpdate', [{vertices: selectedVertices, edges: selectedEdges}]);
     }
 
-    var unselect = function(element) {
+    var deselect = function(element) {
         if("nodes" === element.group()) {
             var index = selectedVertices.indexOf(element.id());
             if (index !== -1) {
@@ -133,7 +133,7 @@ angular.module('app').factory('schemaView', ['types', '$q', 'common', 'events', 
                 selectedEdges.splice(index, 1);
             }
         }
-        events.broadcast('selectedSchemaGroupsUpdate', [{vertices: selectedVertices, edges: selectedEdges}]);
+        events.broadcast('selectedSchemaElementGroupsUpdate', [{vertices: selectedVertices, edges: selectedEdges}]);
     }
 
     /**
@@ -141,20 +141,13 @@ angular.module('app').factory('schemaView', ['types', '$q', 'common', 'events', 
      */
     schemaView.reload = function(schema) {
         updateGraph(schema);
-        schemaView.redraw();
+        redraw();
     }
 
-    /**
-     * Redraws the cytoscape graph
-     */
-    schemaView.redraw = function() {
+    var redraw = function() {
         schemaCy.layout(layoutConf);
     }
 
-    /**
-     * Updates cytoscape with the graph data
-     * @param {Array} results
-     */
     var updateGraph = function(schema) {
         var nodes = [];
 
@@ -173,12 +166,7 @@ angular.module('app').factory('schemaView', ['types', '$q', 'common', 'events', 
                     radius: 60,
                     color: '#337ab7',
                     selectedColor: '#204d74'
-                },
-                position: {
-                    x: 100,
-                    y: 100
-                },
-                selected: false
+                }
             });
         }
 
@@ -194,12 +182,7 @@ angular.module('app').factory('schemaView', ['types', '$q', 'common', 'events', 
                         radius: 20,
                         color: '#888',
                         selectedColor: '#444'
-                    },
-                    position: {
-                        x: 100,
-                        y: 100
-                    },
-                    selected: false
+                    }
                 });
             }
             if(nodes.indexOf(edge.destination) === -1) {
@@ -212,12 +195,7 @@ angular.module('app').factory('schemaView', ['types', '$q', 'common', 'events', 
                         radius: 20,
                         color: '#888',
                         selectedColor: '#444'
-                    },
-                    position: {
-                        x: 100,
-                        y: 100
-                    },
-                    selected: false
+                    }
                 });
             }
 
@@ -229,8 +207,7 @@ angular.module('app').factory('schemaView', ['types', '$q', 'common', 'events', 
                     target: edge.destination,
                     group: group,
                     selectedColor: '#35500F',
-                },
-                selected: false
+                }
             });
         }
     }
