@@ -110,12 +110,10 @@ angular.module('app').factory('schemaView', ['types', '$q', 'common', 'events', 
         if("nodes" === element.group()) {
             if(selectedVertices.indexOf(element.id()) === -1) {
                 selectedVertices.push(element.id());
-                console.log(selectedVertices);
             }
         } else {
             if(selectedEdges.indexOf(element.data().group) === -1) {
                 selectedEdges.push(element.data().group);
-                console.log(selectedEdges);
             }
         }
         events.broadcast('selectedSchemaElementGroupsUpdate', [{vertices: selectedVertices, edges: selectedEdges}]);
