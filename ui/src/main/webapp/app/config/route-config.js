@@ -28,6 +28,10 @@ angular.module('app').config(['$locationProvider', '$routeProvider', function($l
             templateUrl: 'app/graph/graph-page.html',
             title: 'Graph'
         })
+        .when('/schema', {
+            templateUrl: 'app/schema/schema-view-page.html',
+            title: 'Schema'
+        })
         .when('/settings', {
             template: '<settings-view></settings-view>',
             title: 'Settings'
