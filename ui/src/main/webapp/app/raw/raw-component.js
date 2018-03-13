@@ -27,13 +27,20 @@ function raw() {
     }
 }
 
-function RawController(operationService, results, query, error, events) {
+function RawController(operationService, results, query, error, events, schema) {
     var vm = this
 
     vm.operationsForEdit = [];
     vm.editingOperations = false;
     vm.operations = query.getOperations();
     vm.results = results.get();
+
+    vm.schema = {edges:{}, entities:{}};
+    vm.$onInit = function() {
+        schema.get().then(function(gafferSchema) {
+            vm.schema = gafferSchema;
+        });
+    }
 
     var currentTab
 

@@ -33,6 +33,18 @@ function SelectedElementsController($scope, $timeout, events, graph, types, sche
     vm.selectedEntities = graph.getSelectedEntities();
     vm.schema;
 
+    var selectedElementsUpdate = function(selectedElements) {
+         vm.selectedEdges = selectedElements.edges;
+         vm.selectedEntities = selectedElements.entities;
+
+         if(!promise) {
+             promise = $timeout(function() {
+                 $scope.$apply();
+                 promise = null;
+             })
+         }
+    };
+
     var promise;
 
     vm.$onInit = function() {
@@ -40,17 +52,11 @@ function SelectedElementsController($scope, $timeout, events, graph, types, sche
             vm.schema = schema;
         });
 
-        events.subscribe('selectedElementsUpdate', function(selectedElements) {
-            vm.selectedEdges = selectedElements.edges;
-            vm.selectedEntities = selectedElements.entities;
+        events.subscribe('selectedElementsUpdate', selectedElementsUpdate);
+    }
 
-            if(!promise) {
-                promise = $timeout(function() {
-                    $scope.$apply();
-                    promise = null;
-                })
-            }
-        });
+    vm.$onDestroy = function() {
+        events.unsubscribe('selectedElementsUpdate', selectedElementsUpdate);
     }
 
     vm.resolve = function(propName, value) {

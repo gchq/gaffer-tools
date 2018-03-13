@@ -24,6 +24,10 @@ angular.module('app').config(['$locationProvider', '$routeProvider', function($l
             template: '<query></query>',
             title: 'Query'
         })
+        .when('/schema', {
+            templateUrl: 'app/graph/schema-view-page.html',
+            title: 'Schema'
+        })
         .when('/graph', {
             templateUrl: 'app/graph/graph-page.html',
             title: 'Graph'

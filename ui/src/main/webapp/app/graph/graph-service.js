@@ -19,7 +19,7 @@
 /**
  * Graph service which handles selected elements and a cytoscape graph
  */
-angular.module('app').factory('graph', ['schema', 'types', '$q', 'results', 'common', 'events', 'input', function(schemaService, types, $q, results, common, events, input) {
+angular.module('app').factory('graph', ['types', '$q', 'results', 'common', 'events', 'input', function(types, $q, results, common, events, input) {
 
     var graphCy;
     var graph = {};
