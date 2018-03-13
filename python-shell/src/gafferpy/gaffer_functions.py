@@ -119,6 +119,39 @@ class ExtractValues(AbstractFunction):
         return super().to_json()
 
 
+class ExtractId(AbstractFunction):
+    CLASS = 'uk.gov.gchq.gaffer.data.element.function.ExtractId'
+
+    def __init__(self, id=None):
+        super().__init__(_class_name=self.CLASS)
+
+        self.id = id
+
+    def to_json(self):
+        function = super().to_json()
+
+        if self.id is not None:
+            function['id'] = self.id
+
+        return function
+
+
+class ExtractProperty(AbstractFunction):
+    CLASS = 'uk.gov.gchq.gaffer.data.element.function.ExtractProperty'
+
+    def __init__(self, name=None):
+        super().__init__(_class_name=self.CLASS)
+
+        self.name = name
+
+    def to_json(self):
+        function = super().to_json()
+
+        if self.name is not None:
+            function['name'] = self.name
+
+        return function
+
 class IsEmpty(AbstractFunction):
     CLASS = 'uk.gov.gchq.koryphe.impl.function.IsEmpty'
 
@@ -137,6 +170,23 @@ class Size(AbstractFunction):
 
     def to_json(self):
         return super().to_json()
+
+
+class Length(AbstractFunction):
+    CLASS = 'uk.gov.gchq.koryphe.impl.function.Length'
+
+    def __init__(self, max_length=None):
+        super().__init__(_class_name=self.CLASS)
+
+        self.max_length = max_length
+
+    def to_json(self):
+        function = super().to_json()
+
+        if self.max_length is not None:
+            function['maxLength'] = self.max_length
+
+        return function
 
 
 class FirstItem(AbstractFunction):

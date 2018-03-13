@@ -18,6 +18,9 @@ import json
 import unittest
 
 from gafferpy import gaffer as g
+from gafferpy.gaffer_predicates import *
+
+import gafferpy.gaffer_predicates as pred
 
 
 class GafferPredicatesTest(unittest.TestCase):
@@ -468,6 +471,53 @@ class GafferPredicatesTest(unittest.TestCase):
             g.StringContains(
                 value='someValue',
                 ignore_case=False
+            )
+        ],
+        [
+            '''
+            {
+                "class" : "uk.gov.gchq.koryphe.impl.predicate.IsLongerThan",
+                "minLength" : 10,
+                "orEqualTo" : true
+            }
+            ''',
+            g.IsLongerThan(
+                min_length=10,
+                or_equal_to=True
+            )
+        ],
+        [
+            '''
+            {
+                "class" : "uk.gov.gchq.koryphe.impl.predicate.If",
+                "predicate" : {
+                    "class" : "uk.gov.gchq.koryphe.impl.predicate.MapContains",
+                    "key" : "testKey"
+                },
+                "then" : {
+                    "class" : "uk.gov.gchq.koryphe.impl.predicate.IsLongerThan",
+                    "minLength" : 20,
+                    "orEqualTo" : true
+                },
+                "otherwise" : {
+                    "class" : "uk.gov.gchq.gaffer.sketches.clearspring.cardinality.predicate.HyperLogLogPlusIsLessThan",
+                    "value" : 10,
+                    "orEqualTo" : false
+                }
+            }
+            ''',
+            g.pred.If(
+                predicate=g.MapContains(
+                    key='testKey'
+                ),
+                then=g.IsLongerThan(
+                    min_length=20,
+                    or_equal_to=True
+                ),
+                otherwise=g.HyperLogLogPlusIsLessThan(
+                    value=10,
+                    or_equal_to=False
+                )
             )
         ]
     ]

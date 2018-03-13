@@ -2224,6 +2224,92 @@ class Map(Operation):
         return operation
 
 
+class If(Operation):
+    CLASS = 'uk.gov.gchq.gaffer.operation.impl.If'
+
+    def __init__(self, input=None, condition=None, conditional=None,
+                 then=None, otherwise=None, options=None):
+        super().__init__(_class_name=self.CLASS,
+                         options=options)
+
+        self.input = input
+        self.condition = condition
+
+        if conditional is not None:
+            if not isinstance(conditional, Conditional):
+                self.conditional = JsonConverter.from_json(conditional, Conditional)
+            else:
+                self.conditional = conditional
+
+        if then is not None:
+            if not isinstance(then, Operation):
+                self.then = JsonConverter.from_json(then, Operation)
+            else:
+                self.then = then
+
+        if otherwise is not None:
+            if not isinstance(otherwise, Operation):
+                self.otherwise = JsonConverter.from_json(otherwise, Operation)
+            else:
+                self.otherwise = otherwise
+
+
+    def to_json(self):
+        operation = super().to_json()
+
+        if self.input is not None:
+            if isinstance(self.input, list):
+                input_json = []
+                for item in self.input:
+                    if isinstance(item, ToJson):
+                        input_json.append(item.to_json())
+                    else:
+                        input_json.append(item)
+                operation['input'] = input_json
+            elif isinstance(self.input, ToJson):
+                operation['input'] = self.input.to_json()
+            else:
+                operation['input'] = self.input
+
+        if self.condition is not None:
+            operation['condition'] = self.condition
+
+        if self.conditional is not None:
+            operation['conditional'] = self.conditional.to_json()
+
+        if self.then is not None:
+            operation['then'] = self.then.to_json()
+
+        if self.otherwise is not None:
+            operation['otherwise'] = self.otherwise.to_json()
+
+        return operation
+
+
+class Conditional(ToJson, ToCodeString):
+    CLASS = 'uk.gov.gchq.gaffer.operation.util.Conditional'
+
+    def __init__(self, predicate=None, transform=None):
+
+        if predicate is not None:
+            if not isinstance(predicate, gaffer_predicates.Predicate):
+                self.predicate = JsonConverter.from_json(predicate, gaffer_predicates.Predicate)
+            else:
+                self.predicate = predicate
+
+        if transform is not None:
+            if not isinstance(transform, Operation):
+                self.transform = JsonConverter.from_json(transform, Operation)
+            else:
+                self.transform = transform
+
+    def to_json(self):
+        return {
+            "predicate" : self.predicate.to_json(),
+            "transform" : self.transform.to_json()
+        }
+
+
 def load_operation_json_map():
     for name, class_obj in inspect.getmembers(
             sys.modules[__name__], inspect.isclass):

@@ -4485,6 +4485,67 @@ class GafferOperationsTest(unittest.TestCase):
                 num_splits=5,
                 proportion_to_sample=0.1
             )
+        ],
+        [
+            '''
+            {
+                "class" : "uk.gov.gchq.gaffer.operation.impl.If",
+                "input" : {
+                    "class" : "uk.gov.gchq.gaffer.data.element.Entity",
+                    "group" : "entity",
+                    "vertex" : "a1",
+                    "properties" : {
+                        "count" : 5
+                    }
+                },
+                "conditional" : {
+                    "predicate" : {
+                        "class" : "uk.gov.gchq.koryphe.impl.predicate.IsMoreThan",
+                        "value" : 3,
+                        "orEqualTo" : true 
+                    },
+                    "transform" : {
+                        "class" : "uk.gov.gchq.gaffer.operation.impl.Map",
+                        "functions" : [
+                            {
+                                "class" : "uk.gov.gchq.gaffer.data.element.function.ExtractProperty",
+                                "name" : "count"
+                            }
+                        ]
+                    }
+                },
+                "then" : {
+                    "class" : "uk.gov.gchq.gaffer.operation.impl.get.GetAdjacentIds"
+                },
+                "otherwise" : {
+                    "class" : "uk.gov.gchq.gaffer.operation.impl.get.GetAllElements"
+                }
+            }
+            ''',
+            g.If(
+                input=g.Entity(
+                    group='entity',
+                    vertex='a1',
+                    properties={
+                        'count': 5
+                    }
+                ),
+                conditional=g.Conditional(
+                    predicate=g.IsMoreThan(
+                        value=3,
+                        or_equal_to=True
+                    ),
+                    transform=g.Map(
+                        functions=[
+                            g.ExtractProperty(
+                                name='count'
+                            )
+                        ]
+                    )
+                ),
+                then=g.GetAdjacentIds(),
+                otherwise=g.GetAllElements()
+            )
         ]
     ]
 

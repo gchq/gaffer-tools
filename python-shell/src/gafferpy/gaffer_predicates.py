@@ -259,6 +259,32 @@ class HyperLogLogPlusIsLessThan(AbstractPredicate):
         return predicate_json
 
 
+class If(AbstractPredicate):
+    CLASS = "uk.gov.gchq.koryphe.impl.predicate.If"
+
+    def __init__(self, condition=None, predicate=None,
+                 then=None, otherwise=None):
+        super().__init__(_class_name=self.CLASS)
+
+        self.condition = condition
+        self.predicate = predicate_converter(predicate)
+        self.then = predicate_converter(then)
+        self.otherwise = predicate_converter(otherwise)
+
+    def to_json(self):
+        predicate_json = super().to_json()
+        if self.condition is not None:
+            predicate_json['condition'] = self.condition
+        if self.predicate is not None:
+            predicate_json['predicate'] = self.predicate.to_json()
+        if self.then is not None:
+            predicate_json['then'] = self.then.to_json()
+        if self.otherwise is not None:
+            predicate_json['otherwise'] = self.otherwise.to_json()
+
+        return predicate_json
+
+
 class IsA(AbstractPredicate):
     CLASS = "uk.gov.gchq.koryphe.impl.predicate.IsA"
 
@@ -323,6 +349,24 @@ class IsLessThan(AbstractPredicate):
     def to_json(self):
         predicate_json = super().to_json()
         predicate_json['value'] = self.value
+        if self.or_equal_to is not None:
+            predicate_json['orEqualTo'] = self.or_equal_to
+        return predicate_json
+
+
+class IsLongerThan(AbstractPredicate):
+    CLASS = "uk.gov.gchq.koryphe.impl.predicate.IsLongerThan"
+
+    def __init__(self, min_length, or_equal_to=None):
+        super().__init__(_class_name=self.CLASS)
+
+        self.min_length = min_length
+        self.or_equal_to = or_equal_to
+
+    def to_json(self):
+        predicate_json = super().to_json()
+        predicate_json['minLength'] = self.min_length
+
         if self.or_equal_to is not None:
             predicate_json['orEqualTo'] = self.or_equal_to
         return predicate_json

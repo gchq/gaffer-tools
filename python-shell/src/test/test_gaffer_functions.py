@@ -296,6 +296,39 @@ class GafferFunctionsTest(unittest.TestCase):
             }
             ''',
             g.ExtractWalkVertex()
+        ],
+        [
+            '''
+            {
+                "class" : "uk.gov.gchq.koryphe.impl.function.Length",
+                "maxLength" : 100000
+            }
+            ''',
+            g.Length(
+                max_length=100000
+            )
+        ],
+        [
+            '''
+            {
+                "class" : "uk.gov.gchq.gaffer.data.element.function.ExtractId",
+                "id" : "VERTEX"
+            }
+            ''',
+            g.ExtractId(
+                id='VERTEX'
+            )
+        ],
+        [
+            '''
+            {
+                "class" : "uk.gov.gchq.gaffer.data.element.function.ExtractProperty",
+                "name" : "countByVehicleType"
+            }
+            ''',
+            g.ExtractProperty(
+                name="countByVehicleType"
+            )
         ]
     ]
 
