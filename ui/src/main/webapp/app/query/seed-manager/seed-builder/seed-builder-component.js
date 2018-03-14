@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 Crown Copyright
+ * Copyright 2017-2018 Crown Copyright
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,7 +26,7 @@ function seedBuilder() {
     }
 }
 
-function SeedBuilderController(schema, types, input, error) {
+function SeedBuilderController(schema, types, input, error, $routeParams) {
     var vm = this;
     vm.seedVertexParts = {};
     vm.seedVertices = '';
@@ -38,6 +38,15 @@ function SeedBuilderController(schema, types, input, error) {
             var vertices = schema.getSchemaVertices();
             if(vertices && vertices.length > 0 && undefined !== vertices[0]) {
                 vm.vertexClass = gafferSchema.types[vertices[0]].class;
+            }
+            if($routeParams.input) {
+                if(Array.isArray($routeParams.input)) {
+                    for(var i in $routeParams.input) {
+                        addSeed($routeParams.input[i]);
+                    }
+                } else {
+                    addSeed($routeParams.input);
+                }
             }
         });
     }
@@ -62,29 +71,34 @@ function SeedBuilderController(schema, types, input, error) {
         return types.getCsvHeader(vm.vertexClass);
     }
 
+    var addSeed = function(vertex) {
+        var partValues = vertex.trim().split(",");
+        var fields = types.getFields(vm.vertexClass);
+        if(fields.length != partValues.length) {
+            error.handle("Wrong number of parameters for seed: " + vertex + ". " + vm.vertexClass + " requires " + fields.length + " parameters");
+            return false;
+        }
+        var parts = {};
+        for(var j = 0; j< fields.length; j++) {
+            parts[fields[j].key] = partValues[j];
+        }
+        input.addInput(createSeed(parts));
+        return true;
+    }
+
     vm.addSeeds = function() {
         if(vm.multipleSeeds) {
             var vertices = vm.seedVertices.trim().split("\n");
             for(var i in vertices) {
-                var vertex = vertices[i];;
-                var partValues = vertex.trim().split(",");
-                var fields = types.getFields(vm.vertexClass);
-                if(fields.length != partValues.length) {
-                    error.handle("Wrong number of parameters for seed: " + vertex + ". " + vm.vertexClass + " requires " + fields.length + " parameters");
+                if(!addSeed(vertices[i])) {
                     break;
                 }
-                var parts = {};
-                for(var j = 0; j< fields.length; j++) {
-                    parts[fields[j].key] = partValues[j];
-                }
-                input.addInput(createSeed(parts));
             }
         } else {
              input.addInput(createSeed(vm.seedVertexParts));
         }
 
         reset();
-
     }
 
     var reset = function() {

@@ -1,5 +1,5 @@
 <!--
-  ~ Copyright 2017 Crown Copyright
+  ~ Copyright 2017-2018 Crown Copyright
   ~
   ~ Licensed under the Apache License, Version 2.0 (the "License");
   ~ you may not use this file except in compliance with the License.
@@ -29,14 +29,16 @@
                         </md-button>
 
                     </h3>
-                    <div layout="column" ng-show="!ctrl.editingOperations" ng-repeat="(i, operation) in ctrl.operations track by $index">
+                    <div layout="column" ng-show="!ctrl.editingOperations"
+                         ng-repeat="(i, operation) in ctrl.operations track by $index">
                         <md-card>
                             <md-card-content>
                                 <pre id="operation-{{i}}-json">{{ctrl.operations[i] | json}}</pre>
                             </md-card-content>
                         </md-card>
                     </div>
-                    <div layout="column" ng-show="ctrl.editingOperations" ng-repeat="(i, json) in ctrl.operationsForEdit track by $index">
+                    <div layout="column" ng-show="ctrl.editingOperations"
+                         ng-repeat="(i, json) in ctrl.operationsForEdit track by $index">
                         <md-input-container>
                             <textarea id="editing-operation-{{i}}-json"
                                       aria-label="operation {{i + 1}}"
@@ -64,8 +66,10 @@
                         </md-card-title-text>
                     </md-card-title>
                     <md-card-content>
-                        <p ng-show="!ctrl.results.entities.length">No Entities</p>
-                        <pre ng-show="ctrl.results.entities.length" id="raw-entity-results">{{ctrl.results.entities | json}}</pre>
+                        <p ng-show="!ctrl.results.entities.length">No
+                            Entities</p>
+                        <pre ng-show="ctrl.results.entities.length"
+                             id="raw-entity-results">{{ctrl.results.entities | json}}</pre>
                     </md-card-content>
                 </md-card>
 
@@ -78,7 +82,8 @@
                     </md-card-title>
                     <md-card-content>
                         <p ng-show="!ctrl.results.edges.length">No Edges</p>
-                        <pre ng-show="ctrl.results.edges.length" id="raw-edge-results">{{ctrl.results.edges | json}}</pre>
+                        <pre ng-show="ctrl.results.edges.length"
+                             id="raw-edge-results">{{ctrl.results.edges | json}}</pre>
                     </md-card-content>
                 </md-card>
 
@@ -90,8 +95,10 @@
                         </md-card-title-text>
                     </md-card-title>
                     <md-card-content>
-                        <p ng-show="!ctrl.results.entitySeeds.length">No Entity Seeds</p>
-                        <pre ng-show="ctrl.results.entitySeeds.length" id="raw-entity-seed-results">{{ctrl.results.entitySeeds | json}}</pre>
+                        <p ng-show="!ctrl.results.entitySeeds.length">No Entity
+                            Seeds</p>
+                        <pre ng-show="ctrl.results.entitySeeds.length"
+                             id="raw-entity-seed-results">{{ctrl.results.entitySeeds | json}}</pre>
                     </md-card-content>
                 </md-card>
 
@@ -103,10 +110,19 @@
                         </md-card-title-text>
                     </md-card-title>
                     <md-card-content>
-                        <p ng-show="!ctrl.results.other.length">No Other Objects</p>
-                        <pre ng-show="ctrl.results.other.length" id="raw-other-results">{{ctrl.results.other | json}}</pre>
+                        <p ng-show="!ctrl.results.other.length">No Other
+                            Objects</p>
+                        <pre ng-show="ctrl.results.other.length"
+                             id="raw-other-results">{{ctrl.results.other | json}}</pre>
                     </md-card-content>
                 </md-card>
+            </md-tab-body>
+        </md-tab>
+        <md-tab label="Schema" md-on-select="ctrl.setCurrentTab('schema')">
+            <md-tab-body layout-padding>
+                <div layout-padding layout-margin>
+                    <pre>{{ctrl.schema | json}}</pre>
+                </div>
             </md-tab-body>
         </md-tab>
     </md-tabs>

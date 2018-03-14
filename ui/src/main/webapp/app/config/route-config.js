@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 Crown Copyright
+ * Copyright 2017-2018 Crown Copyright
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,6 +27,10 @@ angular.module('app').config(['$locationProvider', '$routeProvider', function($l
         .when('/graph', {
             templateUrl: 'app/graph/graph-page.html',
             title: 'Graph'
+        })
+        .when('/schema', {
+            templateUrl: 'app/schema/schema-view-page.html',
+            title: 'Schema'
         })
         .when('/settings', {
             template: '<settings-view></settings-view>',

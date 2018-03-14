@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 Crown Copyright
+ * Copyright 2017-2018 Crown Copyright
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,7 +19,7 @@
 /**
  * Graph service which handles selected elements and a cytoscape graph
  */
-angular.module('app').factory('graph', ['schema', 'types', '$q', 'results', 'common', 'events', 'input', function(schemaService, types, $q, results, common, events, input) {
+angular.module('app').factory('graph', ['types', '$q', 'results', 'common', 'events', 'input', function(types, $q, results, common, events, input) {
 
     var graphCy;
     var graph = {};

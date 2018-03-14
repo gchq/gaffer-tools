@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 Crown Copyright
+ * Copyright 2017-2018 Crown Copyright
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,6 +33,18 @@ function SelectedElementsController($scope, $timeout, events, graph, types, sche
     vm.selectedEntities = graph.getSelectedEntities();
     vm.schema;
 
+    var selectedElementsUpdate = function(selectedElements) {
+         vm.selectedEdges = selectedElements.edges;
+         vm.selectedEntities = selectedElements.entities;
+
+         if(!promise) {
+             promise = $timeout(function() {
+                 $scope.$apply();
+                 promise = null;
+             })
+         }
+    };
+
     var promise;
 
     vm.$onInit = function() {
@@ -40,17 +52,11 @@ function SelectedElementsController($scope, $timeout, events, graph, types, sche
             vm.schema = schema;
         });
 
-        events.subscribe('selectedElementsUpdate', function(selectedElements) {
-            vm.selectedEdges = selectedElements.edges;
-            vm.selectedEntities = selectedElements.entities;
+        events.subscribe('selectedElementsUpdate', selectedElementsUpdate);
+    }
 
-            if(!promise) {
-                promise = $timeout(function() {
-                    $scope.$apply();
-                    promise = null;
-                })
-            }
-        });
+    vm.$onDestroy = function() {
+        events.unsubscribe('selectedElementsUpdate', selectedElementsUpdate);
     }
 
     vm.resolve = function(propName, value) {
