@@ -74,25 +74,6 @@
 
     <profiles>
         <profile>
-            <id>ossrh-release</id>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.sonatype.plugins</groupId>
-                        <artifactId>nexus-staging-maven-plugin</artifactId>
-                        <version>${nexus.plugin.version}</version>
-                        <extensions>true</extensions>
-                        <configuration>
-                            <serverId>${releases.repository.id}</serverId>
-                            <nexusUrl>https://oss.sonatype.org/</nexusUrl>
-                            <autoReleaseAfterClose>true</autoReleaseAfterClose>
-                            <stagingProfileId>ukgovgchq-3</stagingProfileId>
-                        </configuration>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-        <profile>
             <id>system-test</id>
             <properties>
                 <skip.surefire.tests>true</skip.surefire.tests>
