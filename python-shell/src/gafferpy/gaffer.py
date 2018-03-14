@@ -25,7 +25,7 @@ g.GetElements()
 g.IsMoreThan()
 
 or if you want a specific class from a specific module, for example if there
-is a Operation and Predicate class with the same name, you can use the componets like:
+is an Operation and Predicate class with the same name, you can use the components like:
 
 g.op.X()
 g.pred.X()
