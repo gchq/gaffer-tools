@@ -2237,7 +2237,8 @@ class If(Operation):
 
         if conditional is not None:
             if not isinstance(conditional, Conditional):
-                self.conditional = JsonConverter.from_json(conditional, Conditional)
+                self.conditional = JsonConverter.from_json(conditional,
+                                                           Conditional)
             else:
                 self.conditional = conditional
 
@@ -2252,7 +2253,6 @@ class If(Operation):
                 self.otherwise = JsonConverter.from_json(otherwise, Operation)
             else:
                 self.otherwise = otherwise
-
 
     def to_json(self):
         operation = super().to_json()
@@ -2293,7 +2293,8 @@ class Conditional(ToJson, ToCodeString):
 
         if predicate is not None:
             if not isinstance(predicate, gaffer_predicates.Predicate):
-                self.predicate = JsonConverter.from_json(predicate, gaffer_predicates.Predicate)
+                self.predicate = JsonConverter.from_json(predicate,
+                                                         gaffer_predicates.Predicate)
             else:
                 self.predicate = predicate
 
@@ -2304,10 +2305,14 @@ class Conditional(ToJson, ToCodeString):
                 self.transform = transform
 
     def to_json(self):
-        return {
-            "predicate" : self.predicate.to_json(),
-            "transform" : self.transform.to_json()
-        }
+        conditional_json = {}
+        if self.predicate is not None:
+            conditional_json["predicate"] = self.predicate.to_json()
+
+        if self.transform is not None:
+            conditional_json["transform"] = self.transform.to_json()
+
+        return conditional_json
 
 
 def load_operation_json_map():
