@@ -1205,6 +1205,7 @@ class AddNamedView(Operation):
                  description=None,
                  overwrite_flag=None,
                  parameters=None,
+                 write_access_roles=None,
                  options=None):
         super().__init__(
             _class_name=self.CLASS,
@@ -1216,7 +1217,7 @@ class AddNamedView(Operation):
         self.name = name
         self.description = description
         self.overwrite_flag = overwrite_flag
-
+        self.write_access_roles = write_access_roles
         self.parameters = None
         if parameters is not None:
             self.parameters = []
@@ -1249,7 +1250,8 @@ class AddNamedView(Operation):
             operation['parameters'] = {}
             for param in self.parameters:
                 operation['parameters'][param.name] = param.get_detail()
-
+        if self.write_access_roles is not None:
+            operation['writeAccessRoles'] = self.write_access_roles
         return operation
 
 
@@ -2237,7 +2239,8 @@ class If(Operation):
 
         if conditional is not None:
             if not isinstance(conditional, Conditional):
-                self.conditional = JsonConverter.from_json(conditional, Conditional)
+                self.conditional = JsonConverter.from_json(conditional,
+                                                           Conditional)
             else:
                 self.conditional = conditional
 
@@ -2252,7 +2255,6 @@ class If(Operation):
                 self.otherwise = JsonConverter.from_json(otherwise, Operation)
             else:
                 self.otherwise = otherwise
-
 
     def to_json(self):
         operation = super().to_json()
@@ -2293,7 +2295,8 @@ class Conditional(ToJson, ToCodeString):
 
         if predicate is not None:
             if not isinstance(predicate, gaffer_predicates.Predicate):
-                self.predicate = JsonConverter.from_json(predicate, gaffer_predicates.Predicate)
+                self.predicate = JsonConverter.from_json(predicate,
+                                                         gaffer_predicates.Predicate)
             else:
                 self.predicate = predicate
 
@@ -2304,10 +2307,14 @@ class Conditional(ToJson, ToCodeString):
                 self.transform = transform
 
     def to_json(self):
-        return {
-            "predicate" : self.predicate.to_json(),
-            "transform" : self.transform.to_json()
-        }
+        conditional_json = {}
+        if self.predicate is not None:
+            conditional_json["predicate"] = self.predicate.to_json()
+
+        if self.transform is not None:
+            conditional_json["transform"] = self.transform.to_json()
+
+        return conditional_json
 
 
 def load_operation_json_map():
