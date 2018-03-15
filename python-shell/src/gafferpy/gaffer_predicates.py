@@ -590,7 +590,8 @@ class InTimeRange(AbstractPredicate):
     CLASS = "uk.gov.gchq.koryphe.impl.predicate.range.InTimeRange"
 
     def __init__(self, start=None, start_offset=None, end=None, end_offset=None,
-                 offset_unit=None, start_inclusive=None, end_inclusive=None):
+                 offset_unit=None, start_inclusive=None, end_inclusive=None,
+                 time_unit=None):
         super().__init__(_class_name=self.CLASS)
         self.start = start
         self.start_offset = start_offset
@@ -599,6 +600,7 @@ class InTimeRange(AbstractPredicate):
         self.offset_unit = offset_unit
         self.start_inclusive = start_inclusive
         self.end_inclusive = end_inclusive
+        self.time_unit = time_unit
 
     def to_json(self):
         predicate_json = super().to_json()
@@ -616,6 +618,8 @@ class InTimeRange(AbstractPredicate):
             predicate_json['startInclusive'] = self.start_inclusive
         if self.end_inclusive is not None:
             predicate_json['endInclusive'] = self.end_inclusive
+        if self.time_unit is not None:
+            predicate_json['timeUnit'] = self.time_unit
         return predicate_json
 
 
@@ -623,7 +627,8 @@ class InTimeRangeDual(AbstractPredicate):
     CLASS = "uk.gov.gchq.koryphe.impl.predicate.range.InTimeRangeDual"
 
     def __init__(self, start=None, start_offset=None, end=None, end_offset=None,
-                 offset_unit=None, start_inclusive=None, end_inclusive=None):
+                 offset_unit=None, start_inclusive=None, end_inclusive=None,
+                 time_unit=None):
         super().__init__(_class_name=self.CLASS)
         self.start = start
         self.start_offset = start_offset
@@ -632,6 +637,7 @@ class InTimeRangeDual(AbstractPredicate):
         self.offset_unit = offset_unit
         self.start_inclusive = start_inclusive
         self.end_inclusive = end_inclusive
+        self.time_unit = time_unit
 
     def to_json(self):
         predicate_json = super().to_json()
@@ -649,6 +655,8 @@ class InTimeRangeDual(AbstractPredicate):
             predicate_json['startInclusive'] = self.start_inclusive
         if self.end_inclusive is not None:
             predicate_json['endInclusive'] = self.end_inclusive
+        if self.time_unit is not None:
+            predicate_json['timeUnit'] = self.time_unit
         return predicate_json
 
 
