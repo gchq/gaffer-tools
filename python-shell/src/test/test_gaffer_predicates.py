@@ -17,7 +17,6 @@
 import unittest
 
 from gafferpy import gaffer as g
-from gafferpy.gaffer_predicates import *
 
 
 class GafferPredicatesTest(unittest.TestCase):
@@ -542,7 +541,7 @@ class GafferPredicatesTest(unittest.TestCase):
     def test_examples(self):
         for example in self.examples:
             self.assertEqual(
-                json.loads(example[0]),
+                g.json.loads(example[0]),
                 example[1].to_json(),
                 "json failed: \n" + example[0]
             )
