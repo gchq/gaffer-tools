@@ -1205,6 +1205,7 @@ class AddNamedView(Operation):
                  description=None,
                  overwrite_flag=None,
                  parameters=None,
+                 write_access_roles=None,
                  options=None):
         super().__init__(
             _class_name=self.CLASS,
@@ -1216,7 +1217,7 @@ class AddNamedView(Operation):
         self.name = name
         self.description = description
         self.overwrite_flag = overwrite_flag
-
+        self.write_access_roles = write_access_roles
         self.parameters = None
         if parameters is not None:
             self.parameters = []
@@ -1249,7 +1250,8 @@ class AddNamedView(Operation):
             operation['parameters'] = {}
             for param in self.parameters:
                 operation['parameters'][param.name] = param.get_detail()
-
+        if self.write_access_roles is not None:
+            operation['writeAccessRoles'] = self.write_access_roles
         return operation
 
 

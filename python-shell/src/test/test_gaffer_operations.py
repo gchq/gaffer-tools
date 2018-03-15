@@ -4546,6 +4546,95 @@ class GafferOperationsTest(unittest.TestCase):
                 then=g.GetAdjacentIds(),
                 otherwise=g.GetAllElements()
             )
+        ],
+        [
+            '''
+            {
+              "class" : "uk.gov.gchq.gaffer.named.view.AddNamedView",
+              "name" : "testNamedView",
+              "description" : "example test NamedView",
+              "view" : {
+                "edges" : {
+                  "testEdge" : { }
+                }
+              },
+              "overwriteFlag" : true,
+              "writeAccessRoles" : [ "auth1", "auth2" ]
+            }
+            ''',
+            g.AddNamedView(
+                name='testNamedView',
+                description='example test NamedView',
+                view=g.View(
+                    edges=[
+                        g.ElementDefinition(
+                            group='testEdge'
+                        )]
+                ),
+                overwrite_flag=True,
+                write_access_roles=['auth1', 'auth2']
+            )
+        ],
+        [
+            '''
+            {
+              "class" : "uk.gov.gchq.gaffer.named.view.AddNamedView",
+              "view" : {
+                "edges" : {
+                  "testEdge" : {
+                    "preAggregationFilterFunctions" : [ {
+                      "selection" : [ "count" ],
+                      "predicate" : {
+                        "class" : "uk.gov.gchq.koryphe.impl.predicate.IsMoreThan",
+                        "value" : "${countThreshold}"
+                      }
+                    } ]
+                  }
+                }
+              },
+              "name" : "isMoreThan",
+              "description" : "is more than",
+              "parameters" : {
+                "countThreshold" : {
+                  "valueClass" : "Long",
+                  "required" : false,
+                  "description" : "count threshold",
+                  "defaultValue" : 1
+                }
+              },
+              "overwriteFlag" : true,
+              "writeAccessRoles" : [ "auth1", "auth2" ]
+            }
+            ''',
+            g.AddNamedView(
+                name='isMoreThan',
+                description='is more than',
+                view=g.View(
+                    edges=[
+                        g.ElementDefinition(
+                            group='testEdge',
+                            pre_aggregation_filter_functions=[
+                                g.PredicateContext(
+                                    selection='count',
+                                    predicate=g.IsMoreThan(
+                                        value="${countThreshold}"
+                                    )
+                                )
+                            ]
+                        )]
+                ),
+                parameters=[
+                    g.NamedViewParameter(
+                        name="countThreshold",
+                        description="count threshold",
+                        default_value=1,
+                        value_class="Long",
+                        required=False
+                    )
+                ],
+                overwrite_flag=True,
+                write_access_roles=['auth1', 'auth2']
+            )
         ]
     ]
 
