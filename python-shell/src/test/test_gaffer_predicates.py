@@ -14,13 +14,10 @@
 # limitations under the License.
 #
 
-import json
 import unittest
 
 from gafferpy import gaffer as g
 from gafferpy.gaffer_predicates import *
-
-import gafferpy.gaffer_predicates as pred
 
 
 class GafferPredicatesTest(unittest.TestCase):
@@ -518,6 +515,26 @@ class GafferPredicatesTest(unittest.TestCase):
                     value=10,
                     or_equal_to=False
                 )
+            )
+        ],
+        [
+            '''
+             {"class":"uk.gov.gchq.koryphe.impl.predicate.range.InTimeRangeDual","start":"2017/01/01","end":"2017/02/01","timeUnit":"MICROSECOND"}
+            ''',
+            g.InTimeRangeDual(
+                start='2017/01/01',
+                end='2017/02/01',
+                time_unit='MICROSECOND'
+            )
+        ],
+        [
+            '''
+             {"class":"uk.gov.gchq.koryphe.impl.predicate.range.InTimeRange","start":"2017/01/01","end":"2017/02/01","timeUnit":"MICROSECOND"}
+            ''',
+            g.InTimeRange(
+                start='2017/01/01',
+                end='2017/02/01',
+                time_unit='MICROSECOND'
             )
         ]
     ]
