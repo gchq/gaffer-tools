@@ -11,6 +11,11 @@
                         placeholder="Enter your seeds, each seed on a new line.
                     {{ctrl.getCsvHeader()}}">
             </textarea>
+            <div ng-messages="ctrl.errors">
+                <div ng-message="unescapedQuote">You have unescaped quotes in your input</div>
+                <div ng-message="unclosedQuote">You have unclosed quotes in your input</div>
+                <div ng-message="unexpectedInput">You have invalid csv in your input</div>
+            </div>
         </md-input-container>
     </ng-form>
 </div>

@@ -78,7 +78,7 @@ describe('The Seed Manager Component', function() {
 
         it('should show a message even if no seeds are selected', function() {
             events.broadcast('queryInputUpdate', [ []]);
-            expect(ctrl.seedsMessage).toEqual("No Seeds added. Type in your seeds and click add.");
+            expect(ctrl.seedsMessage).toEqual("No Seeds added. Type in your seeds");
         });
 
         it('should update the seeds message even if the seed is an empty string', function() {

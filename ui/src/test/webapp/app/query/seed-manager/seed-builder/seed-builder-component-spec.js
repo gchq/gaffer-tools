@@ -340,6 +340,14 @@ describe('The seed builder component', function() {
             expect(error.handle).toHaveBeenCalledWith('Unclosed quote for \'"I contain a string with only one quote\'')
         });
 
+        it('should broadcast an error if escaping the end of input', function() {
+            ctrl.vertexClass = 'java.lang.String';
+            ctrl.seedVertices = "\\";
+            ctrl.addSeeds();
+            expect(input.setInput).not.toHaveBeenCalled();
+            expect(error.handle).toHaveBeenCalledWith('Illegal escape character at end of input for line: \'\\\'');
+        })
+
         it('should handle empty inputs', function() {
             ctrl.vertexClass = 'java.lang.String';
             ctrl.seedVertices = '',
