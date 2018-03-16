@@ -192,21 +192,13 @@ def add_elements(gc):
                     group='JunctionUse',
                     vertex='M1:1',
                     properties={
-                        'countByVehicleType': {
-                            "uk.gov.gchq.gaffer.types.FreqMap": {
-                                'BUS': 10,
-                                'CAR': 50
-                            }
-                        },
-                        'endDate': {
-                            'java.util.Date': 1034319600000
-                        },
-                        'count': {
-                            'java.lang.Long': 60
-                        },
-                        'startDate': {
-                            'java.util.Date': 1034316000000
-                        }
+                        'countByVehicleType': g.freq_map({
+                            'BUS': 10,
+                            'CAR': 50
+                        }),
+                        'endDate': g.date(1034319600000),
+                        'count': g.long(60),
+                        'startDate': g.date(1034316000000)
                     }
                 ),
                 g.Edge(
@@ -248,7 +240,7 @@ def get_elements(gc):
                             g.PredicateContext(
                                 selection=['count'],
                                 predicate=g.IsMoreThan(
-                                    value={'java.lang.Long': 1}
+                                    value=g.long(1)
                                 )
                             )
                         ],
