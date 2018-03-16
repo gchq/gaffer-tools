@@ -155,7 +155,7 @@ function QueryController(queryPage, operationService, types, graph, config, sett
         for (var i in seeds) {
             opInput.push({
                 "class": "uk.gov.gchq.gaffer.operation.data.EntitySeed",
-                "vertex": seeds[i]
+                "vertex": types.createJsonValue(seeds[i].valueClass, seeds[i].parts)
             });
         }
 

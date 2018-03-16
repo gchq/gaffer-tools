@@ -25,16 +25,15 @@ function seedManager() {
         controllerAs: 'ctrl'
     }
 }
+
 /**
  * Controller for the SeedManager
- * @param {Object} graph - The Graph service
- * @param {Object} queryPage - The query page service
- * @param {Object} common - The common service
- * @param {Object} types - The types service
- * @param {Object} events - The events service
- * @param {Object} input - The input service
+ * @param {Object} graph - The Graph service for selecting all seeds
+ * @param {Object} types - The types service for creating short values
+ * @param {Object} events - The events service for listening to updates
+ * @param {Object} input - The input service for updating the seeds message
  */
-function SeedManagerController(graph, queryPage, common, types, events, input) {
+function SeedManagerController(graph, types, events, input) {
     var vm = this;
     
     vm.input;
@@ -67,14 +66,6 @@ function SeedManagerController(graph, queryPage, common, types, events, input) {
         events.unsubscribe('queryInputUpdate', onQueryInputUpdate);
     }
 
-    /**
-     * Returns the number of key value pairs in this object
-     * @param {Object} obj an Object 
-     */
-    vm.keyValuePairs = function(obj) {
-        return Object.keys(obj).length;
-    }
-
     /** 
      * Selects all seeds on the graph which in turn triggers an update event - causing the query input to be updated
     */
@@ -92,7 +83,7 @@ function SeedManagerController(graph, queryPage, common, types, events, input) {
         var howManyMore = vm.input.length - 2;
 
         var message = displaySeeds.map(function(seed) {
-            return types.getShortValue(seed);
+            return types.getShortValue(types.createValue(seed.valueClass, seed.parts));
         }).join(', ');
 
         if (howManyMore > 0) {

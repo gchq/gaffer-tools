@@ -20,7 +20,7 @@ describe('The Seed Manager Component', function() {
             var ctrl;
 
             beforeEach(function() {
-                spyOn(input, 'getInput').and.returnValue(['hello', 'world']);
+                spyOn(input, 'getInput').and.returnValue([{ valueClass: 'java.lang.String', parts: {undefined: 'hello'}}, { valueClass: 'java.lang.String', parts: {undefined: 'world'}}]);
                 spyOn(events, 'subscribe');
             });
 
@@ -30,7 +30,7 @@ describe('The Seed Manager Component', function() {
             });
 
             it('should set the initial value of the query input', function() {
-                expect(ctrl.input).toEqual(["hello", "world"]);
+                expect(ctrl.input).toEqual([{ valueClass: 'java.lang.String', parts: {undefined: 'hello'}}, { valueClass: 'java.lang.String', parts: {undefined: 'world'}}]);
             });
 
             it('should subscribe to the "queryInputUpdate" event', function() {
@@ -62,7 +62,7 @@ describe('The Seed Manager Component', function() {
             });
         });
 
-        describe('When destroyed', function() {
+        describe('ctrl.$onDestroy()', function() {
             var ctrl;
 
             beforeEach(function() {
@@ -83,4 +83,4 @@ describe('The Seed Manager Component', function() {
             });
         });
     });
-})
+});

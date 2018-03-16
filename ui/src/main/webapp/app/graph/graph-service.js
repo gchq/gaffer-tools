@@ -149,19 +149,29 @@ angular.module('app').factory('graph', ['schema', 'types', '$q', 'results', 'com
     }
 
     /**
-     * Appends the element to selected entities, adds the id to the input array, then fires events
+     * Appends the element to selected entities, creates an input object from the ID and adds it to the input service, then fires events
      * @param {String} id The vertex 
      * @param {Array} entities The elements with the id
      */
     function selectEntities(id, entities) {
         selectedEntities[id] = entities;
-        input.addInput(JSON.parse(id));
+        schemaService.get().then(function(gafferSchema) {
+            var vertex = JSON.parse(id);
+            var vertices = schemaService.getSchemaVertices();
+            var vertexClass = gafferSchema.types[vertices[0]].class;
+            input.addInput({
+                valueClass: vertexClass,
+                parts: types.createParts(vertexClass, vertex)
+            });
+        });
+        
+        // input.addInput(JSON.parse(id));
         events.broadcast('selectedElementsUpdate', [{"entities": selectedEntities, "edges": selectedEdges}]);
     }
 
     /**
      * Selects all elements with the given vertex (entityId)
-     * @param {String} entityId 
+     * @param {String} entityId a stringified vertex
      * @returns true if entities were found in the array with the id
      * @returns false if no entities were found with the given id
      */
