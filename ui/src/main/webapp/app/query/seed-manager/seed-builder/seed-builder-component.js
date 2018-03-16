@@ -269,21 +269,22 @@ function SeedBuilderController(types, input, error, events, schema, common) {
         var fields = vm.getFields();
 
         var str = '';
-        for (var i in toParse) {
-            var parts = toParse[i];
-            for (var i in fields) {
-                var field = fields[i].key;
-                var part = parts[field];
-                if (part === undefined || part === null) {
-                    str += ',';
-                } else if (typeof part === 'string') {
-                    if (part.indexOf(',') !== -1 || !isNaN(part) || part === 'true' || part === 'false') { // if the part contains a comma or if it's a string value of a number or boolean.
-                        str += ('"' + part + '",');
+        for (var i in toParse) {            // for each value in the inputs
+            var parts = toParse[i]; 
+            for (var i in fields) {         // for each field returned by the type service for the vertex class
+                var field = fields[i].key;      
+                var part = parts[field];                    // extract that field from the value
+                if (part === undefined || part === null) {  // if it doesn't exist
+                    str += ',';                             // then add a single comma
+                } else if (typeof part === 'string') {                                                      // or if it's a string
+                    if (part.indexOf(',') !== -1 || !isNaN(part) || part === 'true' || part === 'false') {  // but looks like a number or boolean.
+                        str += ('"' + part + '",');                                                         // wrap it in quotes
                     } else {
-                        str += (part + ',');
+                        var parsed = part.replace(/\\/g, "\\\\").replace(/"/g, "\\\"")    // otherwise escape backslashes and quotes
+                        str += (parsed + ',');                                          // then add it
                     }
                 } else {
-                    str += (part + ',');
+                    str += (part + ',');    // or if it's not a string, just add it
                 }
             }
 

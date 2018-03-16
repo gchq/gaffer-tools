@@ -183,12 +183,54 @@ describe('The Seed Builder', function() {
         }]);
 
         expect(ctrl.seedVertices).toEqual(',st2,v1');
-    })
+    });
+
+    it('should add commas if the last field is undefined', function() {
+        ctrl.vertexClass = 'uk.gov.gchq.gaffer.types.TypeSubTypeValue';
+        fireEvent([{
+            valueClass: 'uk.gov.gchq.gaffer.types.TypeSubTypeValue',
+            parts: {
+                'type': 'defined',
+                'subType': 'defined',
+                'value': undefined
+            }
+        }]);
+
+        expect(ctrl.seedVertices).toEqual('defined,defined,');
+    });
 
     it('should add an empty string if no string fields are returned', function() {
         ctrl.vertexClass = 'java.lang.String';
         fireEvent([]);
         expect(ctrl.seedVertices).toEqual('');
+    });
+
+    it('should escape quotes in strings', function() {
+        ctrl.vertexClass = 'java.lang.String';
+        fireEvent([
+            {
+                valueClass: 'java.lang.String',
+                parts: {
+                    undefined: 'a string containing "quotes"'
+                }
+            }
+        ]);
+
+        expect(ctrl.seedVertices).toEqual('a string containing \\"quotes\\"');
+    });
+
+    it('should escape backslashes in strings', function() {
+        ctrl.vertexClass = 'java.lang.String';
+        fireEvent([
+            {
+                valueClass: 'java.lang.String',
+                parts: {
+                    undefined: 'a string containing \\backslashes\\'
+                }
+            }
+        ]);
+
+        expect(ctrl.seedVertices).toEqual('a string containing \\\\backslashes\\\\');
     });
 
     it('should add an empty string if no complex fields are returned', function() {
