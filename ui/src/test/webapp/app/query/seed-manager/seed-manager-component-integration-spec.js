@@ -80,6 +80,11 @@ describe('The Seed Manager Component', function() {
             events.broadcast('queryInputUpdate', [ []]);
             expect(ctrl.seedsMessage).toEqual("No Seeds added. Type in your seeds and click add.");
         });
+
+        it('should update the seeds message even if the seed is an empty string', function() {
+            events.broadcast('queryInputUpdate', [ [ {valueClass: "java.lang.String", parts: {undefined: ""}}]]);
+            expect(ctrl.seedsMessage).toEqual('Added ""');
+        })
     });
 
     describe('When the element is destroyed and an update is received', function() {

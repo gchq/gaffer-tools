@@ -83,15 +83,19 @@ function SeedManagerController(graph, types, events, input) {
         var howManyMore = vm.input.length - 2;
 
         var message = displaySeeds.map(function(seed) {
-            return types.getShortValue(types.createValue(seed.valueClass, seed.parts));
+            var value = types.getShortValue(types.createValue(seed.valueClass, seed.parts));
+            if (value === '') {
+                value = '""'
+            }
+            return value;
         }).join(', ');
 
         if (howManyMore > 0) {
             message += " and " + howManyMore + " more";
         }
 
-        if (!message || message === "") {
-            message = "No Seeds added. Type in your seeds and click add."
+        if (displaySeeds.length === 0) {
+            message = "No Seeds added. Type in your seeds"
         } else {
             message = "Added " + message;
         }

@@ -56,6 +56,11 @@ function SeedBuilderController(types, input, error, events, schema, common) {
     }
 
 
+    /**
+     * Goes through all lines from seed input box, removes trailing whitespace,
+     * processes the line (returns if it fails), checks it's not too long, 
+     * adds it to an array, before finally updating the input service
+     */
     vm.addSeeds = function() {
         
         var newInput = []
@@ -248,7 +253,7 @@ function SeedBuilderController(types, input, error, events, schema, common) {
      */
     var isValid = function(line, separated, keys) {
         if (separated.length > keys.length) {
-            var simple = line + 'contains ' + separated.length + ' parts. Only ' + keys.length + ' were expected'
+            var simple = line + ' contains ' + separated.length + ' parts. Only ' + keys.length + ' were expected'
             error.handle(simple, simple + '. Please wrap values containing commas in "quotes"');
             return false;
         }
