@@ -200,7 +200,7 @@ angular.module('app').factory('schemaView', ['types', '$q', 'common', 'events', 
             schemaCy.add({
                 group: 'edges',
                 data: {
-                    id: edge.source + "|" + edge.destination + "|" + edge.directed + "|" + edge.group,
+                    id: edge.source + "|" + edge.destination + "|" + edge.directed + "|" + group,
                     source: edge.source,
                     target: edge.destination,
                     group: group,
