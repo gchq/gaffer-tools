@@ -1,6 +1,6 @@
 <div layout="column">
     <ng-form name="ctrl.seedForm">
-        <md-input-container id="Multiple Seed input" flex layout-fill md-no-float>
+        <md-input-container id="Multiple Seed input" class="md-block" flex md-no-float>
             <textarea id="seedVertices"
                         rows="5"
                         max-rows="10"
@@ -9,13 +9,8 @@
                         ng-model="ctrl.seedVertices"
                         ng-blur="ctrl.addSeeds()"
                         placeholder="Enter your seeds, each seed on a new line.
-                    {{ctrl.getCsvHeader()}}">
+{{ctrl.getCsvHeader()}}">
             </textarea>
-            <div ng-messages="ctrl.errors">
-                <div ng-message="unescapedQuote">You have unescaped quotes in your input</div>
-                <div ng-message="unclosedQuote">You have unclosed quotes in your input</div>
-                <div ng-message="unexpectedInput">You have invalid csv in your input</div>
-            </div>
         </md-input-container>
     </ng-form>
 </div>

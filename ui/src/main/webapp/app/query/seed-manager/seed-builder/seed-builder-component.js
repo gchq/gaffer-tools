@@ -30,20 +30,6 @@ function SeedBuilderController(types, input, error, events, schema, common) {
     var vm = this;
     vm.seedVertices = '';
 
-    vm.errors = {   // the type of errors
-        unescapedQuote: false,
-        unclosedQuote: false,
-        unexpectedInput: false,
-        mismatchedInputType: false
-    }
-
-    vm.badLines = { // the lines responsible for the errors
-        unescapedQuote: [],
-        unclosedQuote: [],
-        unexpectedInput: [],
-        mismatchedInputType: []
-    }
-
     vm.$onInit = function() {
         schema.get().then(function(gafferSchema) {
             var vertices = schema.getSchemaVertices();
@@ -76,7 +62,6 @@ function SeedBuilderController(types, input, error, events, schema, common) {
      * adds it to an array, before finally updating the input service
      */
     vm.addSeeds = function() {
-        resetErrors();
         var newInput = []
         var keys = vm.getFields().map(function(field) {
             return field.key;
@@ -96,33 +81,19 @@ function SeedBuilderController(types, input, error, events, schema, common) {
                 return;
             }
             var parts = {};
-            for (var j in keys) {
+            var fields = vm.getFields();
+            for (var j in fields) {
                 var value = separated[j];
-                
-                parts[keys[j]] = value;
+                if (fields[j].class === 'java.lang.String' && typeof value !== 'string') {
+                    value = JSON.stringify(value);
+                }
+                parts[fields[j].key] = value;
             }
             newInput.push(createSeed(parts));
             
         }
 
         input.setInput(newInput);
-    }
-
-    var resetErrors = function() {
-        vm.errors = {
-            unescapedQuote: false,
-            unclosedQuote: false,
-            unexpectedInput: false,
-            mismatchedInputType: false
-        }
-    
-        vm.badLines = {
-            unescapedQuote: [],
-            unclosedQuote: [],
-            unexpectedInput: [],
-            mismatchedInputType: []
-        }
-
     }
 
     /**
@@ -208,8 +179,6 @@ function SeedBuilderController(types, input, error, events, schema, common) {
 
                         } else if (line[_pointer] === '\0') {                           // Or if we get to the EOL before reaching the terminating quote
                             error.handle('Unclosed quote for \'' + toProcess + '\'');   // broadcast an error
-                            vm.errors.unclosedQuote = true;                             // update errors model
-                            vm.badLines.unclosedQuote.push(toProcess);                  // add this line to the list of culprits
                             return undefined;                                           // Return the failed value of undefined
                         } else {
                             currentString += line[_pointer];    // Otherwise just append the character to the current string regardless of what it is
@@ -235,8 +204,6 @@ function SeedBuilderController(types, input, error, events, schema, common) {
                             break;                          // after which, we exit the loop
                         } else if (line[_pointer] === '"') {                                                                    // We should not see quotes here. They should be escaped
                             error.handle('Unexpected \'"\' character in line \'' + toProcess + '\'. Please escape with \\.');   // If we do, broadcast an error
-                            vm.errors.unescapedQuote = true;                                                                   // update the errors model
-                            vm.badLines.unescapedQuote.push(toProcess)                                                         // add this line to the list of culprits
                             return undefined;                                                                                   // Then return undefined to show the processing failed
                         } else {                                // But if none of these things happen
                             currentString += line[_pointer];    // append to the current string
@@ -254,8 +221,6 @@ function SeedBuilderController(types, input, error, events, schema, common) {
 
                     if (line[_pointer] !== ',' && line[_pointer] !== '\0') {                                                // We should either be at EOL or a comma seperator
                         error.handle('Unexpected \'' + line[_pointer] + '\' character in line \'' + toProcess + '\'.');     // If not we broadcast the error
-                        vm.errors.unexpectedInput = true;                                                                   // update the errors model
-                        vm.badLines.unexpectedInput.push(toProcess);                                                        // add this line to the list of culprits
                         return undefined;                                                                                   // and return undefined to show the processing failed
                     }
 

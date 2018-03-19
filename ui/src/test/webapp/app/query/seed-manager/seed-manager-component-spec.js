@@ -16,29 +16,7 @@ describe('The Seed Manager Component', function() {
             expect(ctrl).toBeDefined();
         });
 
-        describe('ctrl.$onInit()', function() {
-            var ctrl;
-
-            beforeEach(function() {
-                spyOn(input, 'getInput').and.returnValue([{ valueClass: 'java.lang.String', parts: {undefined: 'hello'}}, { valueClass: 'java.lang.String', parts: {undefined: 'world'}}]);
-                spyOn(events, 'subscribe');
-            });
-
-            beforeEach(function() {
-                ctrl = $componentController('seedManager');
-                ctrl.$onInit();
-            });
-
-            it('should set the initial value of the query input', function() {
-                expect(ctrl.input).toEqual([{ valueClass: 'java.lang.String', parts: {undefined: 'hello'}}, { valueClass: 'java.lang.String', parts: {undefined: 'world'}}]);
-            });
-
-            it('should subscribe to the "queryInputUpdate" event', function() {
-                expect(events.subscribe.calls.mostRecent().args[0]).toEqual('queryInputUpdate');
-            });
-        });
-
-        describe('When a user selects all seeds', function() {
+        describe('ctrl.selectAllSeeds()', function() {
 
             var ctrl;
             var graph;
@@ -53,33 +31,11 @@ describe('The Seed Manager Component', function() {
 
             beforeEach(function() {
                 ctrl = $componentController('seedManager');
-                ctrl.$onInit();
                 ctrl.selectAllSeeds()
             });
 
             it('should be able to select all seeds', function() {
                 expect(graph.selectAllNodes).toHaveBeenCalledTimes(1);
-            });
-        });
-
-        describe('ctrl.$onDestroy()', function() {
-            var ctrl;
-
-            beforeEach(function() {
-                spyOn(events, 'unsubscribe');
-            })
-
-            beforeEach(function() {
-                ctrl = $componentController('seedManager');
-                ctrl.$onInit();
-            });
-
-            beforeEach(function() {
-                ctrl.$onDestroy();
-            });
-
-            it('should unsubscribe from the queryInputUpdate Event', function() {
-                expect(events.unsubscribe.calls.mostRecent().args[0]).toEqual('queryInputUpdate');
             });
         });
     });

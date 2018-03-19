@@ -445,17 +445,40 @@ describe('The seed builder component', function() {
             expect(error.handle).toHaveBeenCalledWith('Unexpected \' \' character in line \'"quoted String" unquoted string\'.')
         });
 
+        it('should re-convert numbers which should be strings', function() {
+            fields = [
+                {
+                    class: 'java.lang.String'
+                }
+            ]
+            ctrl.vertexClass = 'java.lang.String';
+            ctrl.seedVertices = '1';
+            ctrl.addSeeds();
+            expect(input.setInput).toHaveBeenCalledWith([
+                {
+                    valueClass: 'java.lang.String',
+                    parts: {
+                        undefined: '1'
+                    }
+                }
+            ]);
+        })
+
         describe('When seeds are complex', function() {
             beforeEach(function() {
                 fields = [
                     {
-                        key: 'type'
+                        key: 'type',
+                        class: 'java.lang.String'
                     },
                     {
-                        key: 'subType'
+                        key: 'subType',
+                        class: 'java.lang.Long'
+
                     },
                     {
-                        key: 'value'
+                        key: 'value',
+                        class: 'java.lang.String'
                     }
                 ];
 
@@ -509,6 +532,22 @@ describe('The seed builder component', function() {
                         'value': undefined
                     }
                 }]);
+            });
+
+            it('should convert only the fields which are not strings', function() {
+                ctrl.seedVertices = '1,2,3';
+                ctrl.addSeeds();
+                expect(error.handle).not.toHaveBeenCalled();
+                expect(input.setInput).toHaveBeenCalledWith([
+                    {
+                        valueClass: 'TypeSubTypeValue',
+                        parts: {
+                            type: '1',
+                            subType: 2,
+                            value: '3'
+                        }
+                    }
+                ]);
             });
         });
 
