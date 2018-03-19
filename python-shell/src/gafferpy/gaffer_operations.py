@@ -2317,6 +2317,131 @@ class Conditional(ToJson, ToCodeString):
         return conditional_json
 
 
+class GetAllGraphIds(Operation):
+    CLASS = 'uk.gov.gchq.gaffer.federatedstore.operation.GetAllGraphIds'
+
+    def __init__(self, options=None):
+        super().__init__(_class_name=self.CLASS, options=options)
+
+
+class RemoveGraph(Operation):
+    CLASS = 'uk.gov.gchq.gaffer.federatedstore.operation.RemoveGraph'
+
+    def __init__(self, graph_id, options=None):
+        super().__init__(_class_name=self.CLASS, options=options)
+        self.graph_id = graph_id
+
+    def to_json(self):
+        operation = super().to_json()
+        operation['graphId'] = self.graph_id
+        return operation
+
+
+class AddGraph(Operation):
+    CLASS = 'uk.gov.gchq.gaffer.federatedstore.operation.AddGraph'
+
+    def __init__(self, graph_id,
+                 store_properties=None,
+                 parent_properties_id=None,
+                 schema=None,
+                 parent_schema_ids=None,
+                 graph_auths=None,
+                 is_public=None,
+                 disabled_by_default=None,
+                 options=None):
+        super().__init__(_class_name=self.CLASS, options=options)
+        self.graph_id = graph_id
+        self.store_properties = store_properties
+        self.parent_properties_id = parent_properties_id
+        self.schema = schema
+        self.parent_properties_id = parent_properties_id
+        self.parent_schema_ids = parent_schema_ids
+        self.graph_auths = graph_auths
+        self.is_public = is_public
+        self.disabled_by_default = disabled_by_default
+
+    def to_json(self):
+        operation = super().to_json()
+        operation['graphId'] = self.graph_id
+        if self.store_properties is not None:
+            operation['storeProperties'] = self.store_properties
+
+        if self.parent_properties_id is not None:
+            operation['parentPropertiesId'] = self.parent_properties_id
+
+        if self.schema is not None:
+            operation['schema'] = self.schema
+
+        if self.parent_schema_ids is not None:
+            operation['parentSchemaIds'] = self.parent_schema_ids
+
+        if self.graph_auths is not None:
+            operation['graphAuths'] = self.graph_auths
+
+        if self.is_public is not None:
+            operation['isPublic'] = self.is_public
+
+        if self.disabled_by_default is not None:
+            operation['disabledByDefault'] = self.disabled_by_default
+
+        return operation
+
+
+class AddGraphWithHooks(Operation):
+    CLASS = 'uk.gov.gchq.gaffer.federatedstore.operation.AddGraphWithHooks'
+
+    def __init__(self, graph_id,
+                 store_properties=None,
+                 parent_properties_id=None,
+                 schema=None,
+                 parent_schema_ids=None,
+                 graph_auths=None,
+                 is_public=None,
+                 disabled_by_default=None,
+                 hooks=None,
+                 options=None):
+        super().__init__(_class_name=self.CLASS, options=options)
+        self.graph_id = graph_id
+        self.store_properties = store_properties
+        self.parent_properties_id = parent_properties_id
+        self.schema = schema
+        self.parent_properties_id = parent_properties_id
+        self.parent_schema_ids = parent_schema_ids
+        self.graph_auths = graph_auths
+        self.is_public = is_public
+        self.disabled_by_default = disabled_by_default
+        self.hooks = hooks
+
+    def to_json(self):
+        operation = super().to_json()
+        operation['graphId'] = self.graph_id
+        if self.store_properties is not None:
+            operation['storeProperties'] = self.store_properties
+
+        if self.parent_properties_id is not None:
+            operation['parentPropertiesId'] = self.parent_properties_id
+
+        if self.schema is not None:
+            operation['schema'] = self.schema
+
+        if self.parent_schema_ids is not None:
+            operation['parentSchemaIds'] = self.parent_schema_ids
+
+        if self.graph_auths is not None:
+            operation['graphAuths'] = self.graph_auths
+
+        if self.is_public is not None:
+            operation['isPublic'] = self.is_public
+
+        if self.disabled_by_default is not None:
+            operation['disabledByDefault'] = self.disabled_by_default
+
+        if self.hooks is not None:
+            operation['hooks'] = self.hooks
+
+        return operation
+
+
 def load_operation_json_map():
     for name, class_obj in inspect.getmembers(
             sys.modules[__name__], inspect.isclass):

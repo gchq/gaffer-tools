@@ -4635,6 +4635,163 @@ class GafferOperationsTest(unittest.TestCase):
                 overwrite_flag=True,
                 write_access_roles=['auth1', 'auth2']
             )
+        ],
+        [
+            '''
+            {
+              "class" : "uk.gov.gchq.gaffer.federatedstore.operation.RemoveGraph",
+              "graphId" : "graph1"
+            }
+            ''',
+            g.RemoveGraph(
+                graph_id="graph1"
+            )
+        ],
+        [
+            '''
+            {
+              "class" : "uk.gov.gchq.gaffer.federatedstore.operation.GetAllGraphIds"
+            }
+            ''',
+            g.GetAllGraphIds()
+        ],
+        [
+            '''
+            {
+              "class" : "uk.gov.gchq.gaffer.federatedstore.operation.AddGraph",
+              "graphId" : "graph1",
+              "isPublic" : false,
+              "schema" : {
+                "edges" : {
+                  "RoadHasJunction" : {
+                    "description" : "A directed edge from each road to all the junctions on that road.",
+                    "source" : "road",
+                    "destination" : "junction",
+                    "directed" : "true",
+                    "properties" : { },
+                    "groupBy" : [ ]
+                  }
+                },
+                "types" : {
+                  "junction" : {
+                    "description" : "A road junction represented by a String.",
+                    "class" : "String"
+                  },
+                  "road" : {
+                    "description" : "A road represented by a String.",
+                    "class" : "String"
+                  }
+                }
+              },
+              "storeProperties" : {
+                "gaffer.store.class" : "uk.gov.gchq.gaffer.mapstore.SingleUseMapStore",
+                "gaffer.cache.service.class" : "uk.gov.gchq.gaffer.cache.impl.HashMapCacheService"
+              }
+            }
+            ''',
+            g.AddGraph(
+                graph_id="graph1",
+                is_public=False,
+                schema={
+                    "edges": {
+                        "RoadHasJunction": {
+                            "description": "A directed edge from each road to all the junctions on that road.",
+                            "source": "road",
+                            "destination": "junction",
+                            "directed": "true",
+                            "properties": {},
+                            "groupBy": []
+                        }
+                    },
+                    "types": {
+                        "junction": {
+                            "description": "A road junction represented by a String.",
+                            "class": "String"
+                        },
+                        "road": {
+                            "description": "A road represented by a String.",
+                            "class": "String"
+                        }
+                    }
+                },
+                store_properties={
+                    "gaffer.store.class": "uk.gov.gchq.gaffer.mapstore.SingleUseMapStore",
+                    "gaffer.cache.service.class": "uk.gov.gchq.gaffer.cache.impl.HashMapCacheService"
+                }
+            )
+        ],
+        [
+            '''
+            {
+              "class" : "uk.gov.gchq.gaffer.federatedstore.operation.AddGraphWithHooks",
+              "graphId" : "graph1",
+              "isPublic" : false,
+              "schema" : {
+                "edges" : {
+                  "RoadHasJunction" : {
+                    "description" : "A directed edge from each road to all the junctions on that road.",
+                    "source" : "road",
+                    "destination" : "junction",
+                    "directed" : "true",
+                    "properties" : { },
+                    "groupBy" : [ ]
+                  }
+                },
+                "types" : {
+                  "junction" : {
+                    "description" : "A road junction represented by a String.",
+                    "class" : "String"
+                  },
+                  "road" : {
+                    "description" : "A road represented by a String.",
+                    "class" : "String"
+                  }
+                }
+              },
+              "storeProperties" : {
+                "gaffer.store.class" : "uk.gov.gchq.gaffer.mapstore.SingleUseMapStore",
+                "gaffer.cache.service.class" : "uk.gov.gchq.gaffer.cache.impl.HashMapCacheService"
+              },
+              "hooks": [
+                {
+                    "class": "uk.gov.gchq.gaffer.graph.hook.Log4jLogger"
+                }
+              ]
+            }
+            ''',
+            g.AddGraphWithHooks(
+                graph_id="graph1",
+                is_public=False,
+                schema={
+                    "edges": {
+                        "RoadHasJunction": {
+                            "description": "A directed edge from each road to all the junctions on that road.",
+                            "source": "road",
+                            "destination": "junction",
+                            "directed": "true",
+                            "properties": {},
+                            "groupBy": []
+                        }
+                    },
+                    "types": {
+                        "junction": {
+                            "description": "A road junction represented by a String.",
+                            "class": "String"
+                        },
+                        "road": {
+                            "description": "A road represented by a String.",
+                            "class": "String"
+                        }
+                    }
+                },
+                store_properties={
+                    "gaffer.store.class": "uk.gov.gchq.gaffer.mapstore.SingleUseMapStore",
+                    "gaffer.cache.service.class": "uk.gov.gchq.gaffer.cache.impl.HashMapCacheService"
+                },
+                hooks=[{
+                    "class": "uk.gov.gchq.gaffer.graph.hook.Log4jLogger"
+                }]
+            )
         ]
     ]
 
