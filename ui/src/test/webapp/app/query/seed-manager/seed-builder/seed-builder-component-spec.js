@@ -576,8 +576,7 @@ describe('The seed builder component', function() {
                     }
                 }
             ]);
-
-        })
+        });
 
         describe('When seeds are complex', function() {
             beforeEach(function() {
