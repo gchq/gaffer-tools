@@ -590,8 +590,9 @@ class OperationChain(Operation):
 class OperationChainDAO(OperationChain):
     CLASS = "uk.gov.gchq.gaffer.operation.OperationChainDAO"
 
-    def __init__(self, operations):
-        super().__init__(operations=operations)
+    def __init__(self, operations,
+                 options=None):
+        super().__init__(operations=operations, options=options)
 
     def to_json(self):
         operation_chain_json = super().to_json()
@@ -703,9 +704,10 @@ class Validate(Operation):
 
     def __init__(self,
                  validate,
-                 skip_invalid_elements=True):
+                 skip_invalid_elements=True,
+                 options=None):
         super().__init__(
-            _class_name=self.CLASS)
+            _class_name=self.CLASS, options=options)
 
         self.validate = validate
         self.skip_invalid_elements = skip_invalid_elements
@@ -1282,17 +1284,17 @@ class GetAllNamedViews(Operation):
 class DiscardOutput(Operation):
     CLASS = 'uk.gov.gchq.gaffer.operation.impl.DiscardOutput'
 
-    def __init__(self):
+    def __init__(self, options=None):
         super().__init__(
-            _class_name=self.CLASS)
+            _class_name=self.CLASS, options=options)
 
 
 class Count(Operation):
     CLASS = 'uk.gov.gchq.gaffer.operation.impl.Count'
 
-    def __init__(self):
+    def __init__(self, options=None):
         super().__init__(
-            _class_name=self.CLASS
+            _class_name=self.CLASS, options=options
         )
 
 
@@ -1318,8 +1320,8 @@ class CountGroups(Operation):
 class Limit(Operation):
     CLASS = 'uk.gov.gchq.gaffer.operation.impl.Limit'
 
-    def __init__(self, result_limit, truncate=None):
-        super().__init__(_class_name=self.CLASS)
+    def __init__(self, result_limit, truncate=None, options=None):
+        super().__init__(_class_name=self.CLASS, options=options)
         self.result_limit = result_limit
         self.truncate = truncate
 
@@ -1335,49 +1337,49 @@ class Limit(Operation):
 class ToSet(Operation):
     CLASS = 'uk.gov.gchq.gaffer.operation.impl.output.ToSet'
 
-    def __init__(self):
+    def __init__(self, options=None):
         super().__init__(
-            _class_name=self.CLASS)
+            _class_name=self.CLASS, options=options)
 
 
 class ToArray(Operation):
     CLASS = 'uk.gov.gchq.gaffer.operation.impl.output.ToArray'
 
-    def __init__(self):
+    def __init__(self, options=None):
         super().__init__(
-            _class_name=self.CLASS)
+            _class_name=self.CLASS, options=options)
 
 
 class ToEntitySeeds(Operation):
     CLASS = 'uk.gov.gchq.gaffer.operation.impl.output.ToEntitySeeds'
 
-    def __init__(self):
+    def __init__(self, options=None):
         super().__init__(
-            _class_name=self.CLASS)
+            _class_name=self.CLASS, options=options)
 
 
 class ToList(Operation):
     CLASS = 'uk.gov.gchq.gaffer.operation.impl.output.ToList'
 
-    def __init__(self):
+    def __init__(self, options=None):
         super().__init__(
-            _class_name=self.CLASS)
+            _class_name=self.CLASS, options=options)
 
 
 class ToStream(Operation):
     CLASS = 'uk.gov.gchq.gaffer.operation.impl.output.ToStream'
 
-    def __init__(self):
+    def __init__(self, options=None):
         super().__init__(
-            _class_name=self.CLASS)
+            _class_name=self.CLASS, options=options)
 
 
 class ToVertices(Operation):
     CLASS = 'uk.gov.gchq.gaffer.operation.impl.output.ToVertices'
 
-    def __init__(self, edge_vertices=None, use_matched_vertex=None):
+    def __init__(self, edge_vertices=None, use_matched_vertex=None, options=None):
         super().__init__(
-            _class_name=self.CLASS)
+            _class_name=self.CLASS, options=options)
         self.edge_vertices = edge_vertices
         self.use_matched_vertex = use_matched_vertex
 
@@ -1398,9 +1400,9 @@ class ToCsv(Operation):
 
     def __init__(self,
                  element_generator,
-                 include_header=True):
+                 include_header=True, options=None):
         super().__init__(
-            _class_name=self.CLASS
+            _class_name=self.CLASS, options=options
         )
         if not isinstance(element_generator, gaffer_functions.CsvGenerator):
             element_generator = JsonConverter.from_json(
@@ -1421,9 +1423,9 @@ class ToMap(Operation):
     CLASS = 'uk.gov.gchq.gaffer.operation.impl.output.ToMap'
 
     def __init__(self,
-                 element_generator):
+                 element_generator, options=None):
         super().__init__(
-            _class_name=self.CLASS
+            _class_name=self.CLASS, options=options
         )
 
         if not isinstance(element_generator, gaffer_functions.MapGenerator):
@@ -1445,9 +1447,9 @@ class Sort(Operation):
     def __init__(self, comparators,
                  input=None,
                  result_limit=None,
-                 deduplicate=None):
+                 deduplicate=None, options=None):
         super().__init__(
-            _class_name=self.CLASS
+            _class_name=self.CLASS, options=options
         )
         self.comparators = comparators
         self.input = input
@@ -1483,9 +1485,9 @@ class Sort(Operation):
 class Max(Operation):
     CLASS = 'uk.gov.gchq.gaffer.operation.impl.compare.Max'
 
-    def __init__(self, comparators, input=None):
+    def __init__(self, comparators, input=None, options=None):
         super().__init__(
-            _class_name=self.CLASS
+            _class_name=self.CLASS, options=options
         )
         self.comparators = comparators
         self.input = input
@@ -1513,9 +1515,9 @@ class Max(Operation):
 class Min(Operation):
     CLASS = 'uk.gov.gchq.gaffer.operation.impl.compare.Min'
 
-    def __init__(self, comparators, input=None):
+    def __init__(self, comparators, input=None, options=None):
         super().__init__(
-            _class_name=self.CLASS
+            _class_name=self.CLASS, options=options
         )
         self.comparators = comparators
         self.input = input
@@ -1545,9 +1547,9 @@ class ExportToOtherGraph(Operation):
 
     def __init__(self, graph_id=None, input=None, parent_schema_ids=None,
                  schema=None, parent_store_properties_id=None,
-                 store_properties=None):
+                 store_properties=None, options=None):
         super().__init__(
-            self.CLASS
+            self.CLASS, options=options
         )
 
         self.graph_id = graph_id
@@ -1589,9 +1591,9 @@ class ExportToOtherAuthorisedGraph(Operation):
     CLASS = 'uk.gov.gchq.gaffer.operation.export.graph.ExportToOtherAuthorisedGraph'
 
     def __init__(self, graph_id=None, input=None, parent_schema_ids=None,
-                 parent_store_properties_id=None):
+                 parent_store_properties_id=None, options=None):
         super().__init__(
-            self.CLASS
+            self.CLASS, options=options
         )
 
         self.graph_id = graph_id
@@ -2315,6 +2317,131 @@ class Conditional(ToJson, ToCodeString):
             conditional_json["transform"] = self.transform.to_json()
 
         return conditional_json
+
+
+class GetAllGraphIds(Operation):
+    CLASS = 'uk.gov.gchq.gaffer.federatedstore.operation.GetAllGraphIds'
+
+    def __init__(self, options=None):
+        super().__init__(_class_name=self.CLASS, options=options)
+
+
+class RemoveGraph(Operation):
+    CLASS = 'uk.gov.gchq.gaffer.federatedstore.operation.RemoveGraph'
+
+    def __init__(self, graph_id, options=None):
+        super().__init__(_class_name=self.CLASS, options=options)
+        self.graph_id = graph_id
+
+    def to_json(self):
+        operation = super().to_json()
+        operation['graphId'] = self.graph_id
+        return operation
+
+
+class AddGraph(Operation):
+    CLASS = 'uk.gov.gchq.gaffer.federatedstore.operation.AddGraph'
+
+    def __init__(self, graph_id,
+                 store_properties=None,
+                 parent_properties_id=None,
+                 schema=None,
+                 parent_schema_ids=None,
+                 graph_auths=None,
+                 is_public=None,
+                 disabled_by_default=None,
+                 options=None):
+        super().__init__(_class_name=self.CLASS, options=options)
+        self.graph_id = graph_id
+        self.store_properties = store_properties
+        self.parent_properties_id = parent_properties_id
+        self.schema = schema
+        self.parent_properties_id = parent_properties_id
+        self.parent_schema_ids = parent_schema_ids
+        self.graph_auths = graph_auths
+        self.is_public = is_public
+        self.disabled_by_default = disabled_by_default
+
+    def to_json(self):
+        operation = super().to_json()
+        operation['graphId'] = self.graph_id
+        if self.store_properties is not None:
+            operation['storeProperties'] = self.store_properties
+
+        if self.parent_properties_id is not None:
+            operation['parentPropertiesId'] = self.parent_properties_id
+
+        if self.schema is not None:
+            operation['schema'] = self.schema
+
+        if self.parent_schema_ids is not None:
+            operation['parentSchemaIds'] = self.parent_schema_ids
+
+        if self.graph_auths is not None:
+            operation['graphAuths'] = self.graph_auths
+
+        if self.is_public is not None:
+            operation['isPublic'] = self.is_public
+
+        if self.disabled_by_default is not None:
+            operation['disabledByDefault'] = self.disabled_by_default
+
+        return operation
+
+
+class AddGraphWithHooks(Operation):
+    CLASS = 'uk.gov.gchq.gaffer.federatedstore.operation.AddGraphWithHooks'
+
+    def __init__(self, graph_id,
+                 store_properties=None,
+                 parent_properties_id=None,
+                 schema=None,
+                 parent_schema_ids=None,
+                 graph_auths=None,
+                 is_public=None,
+                 disabled_by_default=None,
+                 hooks=None,
+                 options=None):
+        super().__init__(_class_name=self.CLASS, options=options)
+        self.graph_id = graph_id
+        self.store_properties = store_properties
+        self.parent_properties_id = parent_properties_id
+        self.schema = schema
+        self.parent_properties_id = parent_properties_id
+        self.parent_schema_ids = parent_schema_ids
+        self.graph_auths = graph_auths
+        self.is_public = is_public
+        self.disabled_by_default = disabled_by_default
+        self.hooks = hooks
+
+    def to_json(self):
+        operation = super().to_json()
+        operation['graphId'] = self.graph_id
+        if self.store_properties is not None:
+            operation['storeProperties'] = self.store_properties
+
+        if self.parent_properties_id is not None:
+            operation['parentPropertiesId'] = self.parent_properties_id
+
+        if self.schema is not None:
+            operation['schema'] = self.schema
+
+        if self.parent_schema_ids is not None:
+            operation['parentSchemaIds'] = self.parent_schema_ids
+
+        if self.graph_auths is not None:
+            operation['graphAuths'] = self.graph_auths
+
+        if self.is_public is not None:
+            operation['isPublic'] = self.is_public
+
+        if self.disabled_by_default is not None:
+            operation['disabledByDefault'] = self.disabled_by_default
+
+        if self.hooks is not None:
+            operation['hooks'] = self.hooks
+
+        return operation
 
 
 def load_operation_json_map():
