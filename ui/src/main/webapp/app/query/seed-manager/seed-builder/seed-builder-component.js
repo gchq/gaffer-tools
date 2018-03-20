@@ -16,6 +16,10 @@
 
 'use strict';
 
+/**
+ * Input component which consists of a textarea which parses and unparses csv input to
+ * create seeds
+ */
 angular.module('app').component('seedBuilder', seedBuilder());
 
 function seedBuilder() {
@@ -26,6 +30,15 @@ function seedBuilder() {
     }
 }
 
+/**
+ * Controller which parses and unparses csv input
+ * @param {*} types The type service
+ * @param {*} input The input service
+ * @param {*} error The error service
+ * @param {*} events The events service
+ * @param {*} schema The schema service
+ * @param {*} common The common service
+ */
 function SeedBuilderController(types, input, error, events, schema, common) {
     var vm = this;
     vm.seedVertices = '';
@@ -43,14 +56,24 @@ function SeedBuilderController(types, input, error, events, schema, common) {
         recalculateSeeds(currentInput);
     }
 
+    /**
+     * At the end of the component's lifecycle, it unsubscribes from the event service to save
+     * time unnecessary function calls
+     */
     vm.$onDestroy = function() {
         events.unsubscribe('queryInputUpdate', recalculateSeeds);
     }
 
+    /**
+     * Gets all the fields available for a given type from the type service
+     */
     vm.getFields = function() {
         return types.getFields(vm.vertexClass);
     }
 
+    /**
+     * Gets the csv header for the vertex class from the type service.
+     */
     vm.getCsvHeader = function() {
         return types.getCsvHeader(vm.vertexClass);
     }
