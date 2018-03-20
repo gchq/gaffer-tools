@@ -20,7 +20,7 @@
                 <p>{{entity.description}}</p>
 
                 <div>Vertex: {{entity.vertex.name}}
-                    <md-tooltip md-direction="top">
+                    <md-tooltip md-direction="top" ng-if="entity.vertex.description">
                         {{entity.vertex.description}}
                     </md-tooltip>
                 </div>
@@ -31,7 +31,7 @@
                     <ul class="no-margin">
                         <li ng-repeat="prop in entity.properties">
                             {{prop.name}}
-                            <md-tooltip md-direction="top">
+                            <md-tooltip md-direction="top" ng-if="prop.description">
                                 {{prop.description}}
                             </md-tooltip>
                         </li>
@@ -52,19 +52,19 @@
                 <p>{{edge.description}}</p>
 
                 <div>Source: {{edge.source.name}}
-                    <md-tooltip md-direction="top">
+                    <md-tooltip md-direction="top" ng-if="edge.source.description">
                         {{edge.source.description}}
                     </md-tooltip>
                 </div>
 
                 <div>Destination: {{edge.destination.name}}
-                    <md-tooltip md-direction="top">
+                    <md-tooltip md-direction="top" ng-if="edge.destination.description">
                         {{edge.destination.description}}
                     </md-tooltip>
                 </div>
 
                 <div>Directed: {{edge.directed.name}}
-                    <md-tooltip md-direction="top">
+                    <md-tooltip md-direction="top" ng-if="edge.directed.description">
                         {{edge.directed.description}}
                     </md-tooltip>
                 </div>
@@ -74,7 +74,7 @@
                     <ul class="no-margin">
                         <li ng-repeat="prop in edge.properties">
                             {{prop.name}}
-                            <md-tooltip md-direction="top">
+                            <md-tooltip md-direction="top" ng-if="prop.description">
                                 {{prop.description}}
                             </md-tooltip>
                         </li>
