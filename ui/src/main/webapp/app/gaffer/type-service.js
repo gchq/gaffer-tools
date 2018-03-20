@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 Crown Copyright
+ * Copyright 2017-2018 Crown Copyright
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -159,7 +159,7 @@ angular.module('app').factory('types', ['config', 'common', function(config, com
         var jsonValue = {};
         var type = getType(typeClass);
 
-        if(type.wrapInJson || common.endsWith(typeClass, 'Map') || common.endsWith(typeClass, 'Set') || common.endsWith(typeClass, 'List')) {
+        if(type.wrapInJson || (typeClass && (common.endsWith(typeClass, 'Map') || common.endsWith(typeClass, 'Set') || common.endsWith(typeClass, 'List')))) {
             jsonValue[typeClass] = value;
         } else {
             jsonValue = value;

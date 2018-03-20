@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 Crown Copyright
+ * Copyright 2017-2018 Crown Copyright
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,6 +29,7 @@ function query() {
         controllerAs: 'ctrl'
     };
 }
+
 /**
  * The controller for the whole query page. Needs to access all services relating to the query and executes it.
  * @param {*} queryPage For access to edge directions and operation options
@@ -46,8 +47,10 @@ function query() {
  * @param {*} view For accessing the view that the user configured
  * @param {*} error For displaying error messages
  * @param {*} input For getting access to the operation seeds
+ * @param {*} $routeParams the url query params
+ * @param {*} $location for deleting url query params when they have been consumed
  */
-function QueryController(queryPage, operationService, types, graph, config, settings, query, results, navigation, $mdDialog, loading, dateRange, view, error, input) {
+function QueryController(queryPage, operationService, types, graph, config, settings, query, results, navigation, $mdDialog, loading, dateRange, view, error, input, $routeParams, $location) {
     var namedViewClass = "uk.gov.gchq.gaffer.data.elementdefinition.view.NamedView";
     var vm = this;
     vm.timeConfig;
@@ -91,6 +94,8 @@ function QueryController(queryPage, operationService, types, graph, config, sett
      * Executes an operation
      */
     vm.execute = function() {
+
+
         var operation = createOperation();
         query.addOperation(operation);
         loading.load()
@@ -141,6 +146,10 @@ function QueryController(queryPage, operationService, types, graph, config, sett
         dateRange.resetDateRange();
         view.reset();
         input.reset();
+
+        // Remove the input query param
+        delete $routeParams['input'];
+        $location.search('input', null);
     }
 
     /**

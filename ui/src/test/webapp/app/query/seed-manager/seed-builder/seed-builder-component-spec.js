@@ -3,6 +3,10 @@ describe('The seed builder component', function() {
     var ctrl;
     var scope;
     var input, types, events;
+    var $routeParams;
+    var types;
+    var error;
+    var input;
 
     beforeEach(module('app'));
 
@@ -28,12 +32,15 @@ describe('The seed builder component', function() {
         });
     }));
 
-    beforeEach(inject(function(_$rootScope_, _$componentController_, _input_, _types_, _events_) {
+
+    beforeEach(inject(function(_$rootScope_, _$componentController_, _$routeParams_, _types_, _error_, _input_, _events_) {
         scope = _$rootScope_.$new();
         var $componentController = _$componentController_;
         ctrl = $componentController('seedBuilder', {$scope: scope});
-        input = _input_;
+        $routeParams = _$routeParams_;
         types = _types_;
+        error = _error_;
+        input = _input_;
         events = _events_;
     }));
 
@@ -71,7 +78,13 @@ describe('The seed builder component', function() {
             }));
 
             spyOn(schema, 'getSchemaVertices').and.returnValue(['vertex1', 'vertex2']);
+            spyOn(error, 'handle');
+            spyOn(input, 'setInput');
         });
+
+        beforeEach(function() {
+            seeds = [];
+        })
 
         beforeEach(function() {
             spyOn(input, 'getInput').and.callFake(function() {
@@ -91,7 +104,6 @@ describe('The seed builder component', function() {
         });
 
         it('should set the seed vertices to an empty string if the input is an empty array', function() {
-            seeds = [];
             ctrl.$onInit();
             expect(ctrl.seedVertices).toEqual('');
         });
@@ -107,6 +119,89 @@ describe('The seed builder component', function() {
             ];
             ctrl.$onInit();
             expect(ctrl.seedVertices).toEqual('test');
+        });
+
+        describe('with simple input query params', function() {
+            beforeEach(function() {
+                spyOn(types, 'getFields').and.returnValue([{
+                     label: "Value",
+                     type: "text",
+                     class: "java.lang.String"
+                }]);
+            });
+
+            it('should add a single seed', function() {
+                $routeParams.input="seed1";
+                ctrl.$onInit();
+                scope.$digest();
+                expect(error.handle).not.toHaveBeenCalled();
+                expect(input.setInput).toHaveBeenCalledTimes(1);
+                expect(input.setInput).toHaveBeenCalledWith([{
+                    valueClass: 'my.vertex.Class',
+                    parts: {
+                        undefined: "seed1"
+                    }
+                }]);
+            });
+
+            it('should add multiple single seeds', function() {
+                $routeParams.input=["seed1", "seed2"];
+                ctrl.$onInit();
+                scope.$digest();
+                expect(error.handle).not.toHaveBeenCalled();
+                expect(input.setInput).toHaveBeenCalledTimes(1);
+                expect(input.setInput).toHaveBeenCalledWith([{
+                        valueClass: 'my.vertex.Class',
+                        parts: {
+                            undefined: "seed1"
+                        }
+                    },
+                    {
+                        valueClass: 'my.vertex.Class',
+                        parts: {
+                            undefined: "seed2"
+                        }
+                    }
+                ]);
+            });
+        });
+
+        describe('with complex input query params', function() {
+            beforeEach(function() {
+                spyOn(types, 'getFields').and.returnValue([{"key": "type"}, {"key": "value"}]);
+            });
+
+            it('should add a single seed', function() {
+                $routeParams.input="t1,v1";
+                ctrl.$onInit();
+                scope.$digest();
+                expect(error.handle).not.toHaveBeenCalled();
+                expect(input.setInput).toHaveBeenCalledTimes(1);
+                expect(input.setInput).toHaveBeenCalledWith([
+                    {
+                        valueClass: 'my.vertex.Class',
+                        parts: {"type": "t1", "value": "v1"}
+                    }
+                ]);
+            });
+
+            it('should add multiple single seeds', function() {
+                $routeParams.input=["t1,v1", "t2,v2"];
+                ctrl.$onInit();
+                scope.$digest();
+                expect(error.handle).not.toHaveBeenCalled();
+                expect(input.setInput).toHaveBeenCalledTimes(1);
+                expect(input.setInput).toHaveBeenCalledWith([
+                    {
+                        valueClass: 'my.vertex.Class',
+                        parts: {"type": "t1", "value": "v1"}
+                    },
+                    {
+                        valueClass: 'my.vertex.Class',
+                        parts: {"type": "t2", "value": "v2"}
+                    }
+                ]);
+            });
         });
 
         it('should add a numerical seed from the input service to the input box', function() {
@@ -550,6 +645,5 @@ describe('The seed builder component', function() {
                 ]);
             });
         });
-
     });
 });

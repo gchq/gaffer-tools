@@ -1,5 +1,5 @@
 #
-# Copyright 2016 Crown Copyright
+# Copyright 2016-2018 Crown Copyright
 #
 # Licensed under the Apache License, Version 2.0 (the 'License');
 # you may not use this file except in compliance with the License.
@@ -296,6 +296,39 @@ class GafferFunctionsTest(unittest.TestCase):
             }
             ''',
             g.ExtractWalkVertex()
+        ],
+        [
+            '''
+            {
+                "class" : "uk.gov.gchq.koryphe.impl.function.Length",
+                "maxLength" : 100000
+            }
+            ''',
+            g.Length(
+                max_length=100000
+            )
+        ],
+        [
+            '''
+            {
+                "class" : "uk.gov.gchq.gaffer.data.element.function.ExtractId",
+                "id" : "VERTEX"
+            }
+            ''',
+            g.ExtractId(
+                id='VERTEX'
+            )
+        ],
+        [
+            '''
+            {
+                "class" : "uk.gov.gchq.gaffer.data.element.function.ExtractProperty",
+                "name" : "countByVehicleType"
+            }
+            ''',
+            g.ExtractProperty(
+                name="countByVehicleType"
+            )
         ]
     ]
 

@@ -25,12 +25,16 @@ describe('Operation Selector Component', function() {
         var $componentController, $q;
         var scope;
         var operationService;
+        var $routeParams;
+        var queryPage;
 
-        beforeEach(inject(function(_$componentController_, _$rootScope_, _$q_, _operationService_) {
+        beforeEach(inject(function(_$componentController_, _$rootScope_, _$q_, _operationService_, _$routeParams_, _queryPage_) {
             $componentController = _$componentController_;
             scope = _$rootScope_.$new();
             $q = _$q_;
             operationService = _operationService_;
+            $routeParams = _$routeParams_;
+            queryPage = _queryPage_;
         }));
 
         beforeEach(function() {
@@ -76,14 +80,90 @@ describe('Operation Selector Component', function() {
                 expect(operationService.reloadNamedOperations).not.toHaveBeenCalled();
             });
 
+            it('should select the operation defined in the query operation parameter', function() {
+                loadNamedOperations = false
+                $routeParams.operation = "operationX";
+                var ctrl = $componentController('operationSelector', { $scope: scope });
+                var availableOperations = [
+                    {
+                        name: "GetElements"
+                    },
+                    {
+                        name: "operationX"
+                    }
+                ]
+                spyOn(operationService, 'getAvailableOperations').and.returnValue($q.when(availableOperations));
+                ctrl.$onInit();
+
+                scope.$digest();
+                expect(ctrl.selectedOp.name).toEqual('operationX');
+                expect(queryPage.getSelectedOperation().name).toEqual("operationX");
+            });
+
+            it('should select the operation defined in the query operation parameter case insensitive and strip symbols', function() {
+                loadNamedOperations = false
+                $routeParams.operation = "operation-x.";
+                var ctrl = $componentController('operationSelector', { $scope: scope });
+                var availableOperations = [
+                    {
+                        name: "GetElements"
+                    },
+                    {
+                        name: "operationX"
+                    }
+                ]
+                spyOn(operationService, 'getAvailableOperations').and.returnValue($q.when(availableOperations));
+                ctrl.$onInit();
+
+                scope.$digest();
+                expect(ctrl.selectedOp.name).toEqual('operationX');
+                expect(queryPage.getSelectedOperation().name).toEqual("operationX");
+            });
+
+            it('should select the operation defined in the query op parameter', function() {
+                loadNamedOperations = false
+                $routeParams.op = "operationX";
+                var ctrl = $componentController('operationSelector', { $scope: scope });
+                var availableOperations = [
+                    {
+                        name: "GetElements"
+                    },
+                    {
+                        name: "operationX"
+                    }
+                ]
+                spyOn(operationService, 'getAvailableOperations').and.returnValue($q.when(availableOperations));
+                ctrl.$onInit();
+
+                scope.$digest();
+                expect(ctrl.selectedOp.name).toEqual('operationX');
+                expect(queryPage.getSelectedOperation().name).toEqual("operationX");
+            });
+
+            it('should not select an operation if the query op is not found', function() {
+                loadNamedOperations = false
+                $routeParams.op = "unknownOp";
+                var ctrl = $componentController('operationSelector', { $scope: scope });
+                ctrl.selectedOp = undefined;
+                var availableOperations = [
+                    {
+                        name: "GetElements"
+                    },
+                    {
+                        name: "operationX"
+                    }
+                ]
+                spyOn(operationService, 'getAvailableOperations').and.returnValue($q.when(availableOperations));
+                ctrl.$onInit();
+
+                scope.$digest();
+                expect(ctrl.selectedOp.name).toEqual("GetElements");
+                expect(queryPage.getSelectedOperation().name).toEqual("GetElements");
+            });
+
             describe('when selecting the default selected operation', function() {
-                var queryPage;
                 var operationToReturn;
                 var ctrl;
-
-                beforeEach(inject(function(_queryPage_) {
-                    queryPage = _queryPage_;
-                }));
 
                 beforeEach(function() {
                     spyOn(queryPage, 'getSelectedOperation').and.callFake(function() {

@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 Crown Copyright
+ * Copyright 2017-2018 Crown Copyright
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,14 +32,15 @@ function seedBuilder() {
 
 /**
  * Controller which parses and unparses csv input
+ * @param {*} schema The schema service
  * @param {*} types The type service
  * @param {*} input The input service
  * @param {*} error The error service
  * @param {*} events The events service
- * @param {*} schema The schema service
  * @param {*} common The common service
+ * @param {*} $routeParams The route params service
  */
-function SeedBuilderController(types, input, error, events, schema, common) {
+function SeedBuilderController(schema, types, input, error, events, common, $routeParams) {
     var vm = this;
     vm.seedVertices = '';
 
@@ -48,6 +49,14 @@ function SeedBuilderController(types, input, error, events, schema, common) {
             var vertices = schema.getSchemaVertices();
             if(vertices && vertices.length > 0 && undefined !== vertices[0]) {
                 vm.vertexClass = gafferSchema.types[vertices[0]].class;
+            }
+            if($routeParams.input) {
+                if(Array.isArray($routeParams.input)) {
+                    vm.seedVertices += '\n' + $routeParams.input.join('\n');
+                } else {
+                    vm.seedVertices += '\n' + $routeParams.input;
+                }
+                vm.addSeeds();
             }
         });
         var currentInput = input.getInput();
@@ -85,7 +94,7 @@ function SeedBuilderController(types, input, error, events, schema, common) {
      * adds it to an array, before finally updating the input service
      */
     vm.addSeeds = function() {
-        var newInput = []
+        var newInput = [];
         var keys = vm.getFields().map(function(field) {
             return field.key;
         });
@@ -111,9 +120,9 @@ function SeedBuilderController(types, input, error, events, schema, common) {
                     value = JSON.stringify(value);
                 }
                 parts[fields[j].key] = value;
+
             }
             newInput.push(createSeed(parts));
-            
         }
 
         input.setInput(newInput);

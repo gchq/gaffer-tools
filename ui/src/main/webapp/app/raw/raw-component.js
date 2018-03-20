@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 Crown Copyright
+ * Copyright 2017-2018 Crown Copyright
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,13 +27,20 @@ function raw() {
     }
 }
 
-function RawController(operationService, results, query, error, events) {
+function RawController(operationService, results, query, error, events, schema) {
     var vm = this
 
     vm.operationsForEdit = [];
     vm.editingOperations = false;
     vm.operations = query.getOperations();
     vm.results = results.get();
+
+    vm.schema = {edges:{}, entities:{}};
+    vm.$onInit = function() {
+        schema.get().then(function(gafferSchema) {
+            vm.schema = gafferSchema;
+        });
+    }
 
     var currentTab
 

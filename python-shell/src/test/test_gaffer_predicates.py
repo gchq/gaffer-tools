@@ -1,5 +1,5 @@
 #
-# Copyright 2016 Crown Copyright
+# Copyright 2016-2018 Crown Copyright
 #
 # Licensed under the Apache License, Version 2.0 (the 'License');
 # you may not use this file except in compliance with the License.
@@ -14,7 +14,6 @@
 # limitations under the License.
 #
 
-import json
 import unittest
 
 from gafferpy import gaffer as g
@@ -469,13 +468,80 @@ class GafferPredicatesTest(unittest.TestCase):
                 value='someValue',
                 ignore_case=False
             )
+        ],
+        [
+            '''
+            {
+                "class" : "uk.gov.gchq.koryphe.impl.predicate.IsLongerThan",
+                "minLength" : 10,
+                "orEqualTo" : true
+            }
+            ''',
+            g.IsLongerThan(
+                min_length=10,
+                or_equal_to=True
+            )
+        ],
+        [
+            '''
+            {
+                "class" : "uk.gov.gchq.koryphe.impl.predicate.If",
+                "predicate" : {
+                    "class" : "uk.gov.gchq.koryphe.impl.predicate.MapContains",
+                    "key" : "testKey"
+                },
+                "then" : {
+                    "class" : "uk.gov.gchq.koryphe.impl.predicate.IsLongerThan",
+                    "minLength" : 20,
+                    "orEqualTo" : true
+                },
+                "otherwise" : {
+                    "class" : "uk.gov.gchq.gaffer.sketches.clearspring.cardinality.predicate.HyperLogLogPlusIsLessThan",
+                    "value" : 10,
+                    "orEqualTo" : false
+                }
+            }
+            ''',
+            g.pred.If(
+                predicate=g.MapContains(
+                    key='testKey'
+                ),
+                then=g.IsLongerThan(
+                    min_length=20,
+                    or_equal_to=True
+                ),
+                otherwise=g.HyperLogLogPlusIsLessThan(
+                    value=10,
+                    or_equal_to=False
+                )
+            )
+        ],
+        [
+            '''
+             {"class":"uk.gov.gchq.koryphe.impl.predicate.range.InTimeRangeDual","start":"2017/01/01","end":"2017/02/01","timeUnit":"MICROSECOND"}
+            ''',
+            g.InTimeRangeDual(
+                start='2017/01/01',
+                end='2017/02/01',
+                time_unit='MICROSECOND'
+            )
+        ],
+        [
+            '''
+             {"class":"uk.gov.gchq.koryphe.impl.predicate.range.InTimeRange","start":"2017/01/01","end":"2017/02/01","timeUnit":"MICROSECOND"}
+            ''',
+            g.InTimeRange(
+                start='2017/01/01',
+                end='2017/02/01',
+                time_unit='MICROSECOND'
+            )
         ]
     ]
 
     def test_examples(self):
         for example in self.examples:
             self.assertEqual(
-                json.loads(example[0]),
+                g.json.loads(example[0]),
                 example[1].to_json(),
                 "json failed: \n" + example[0]
             )

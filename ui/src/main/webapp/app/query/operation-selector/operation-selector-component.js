@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 Crown Copyright
+ * Copyright 2017-2018 Crown Copyright
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,7 +26,7 @@ function operationSelector() {
     }
 }
 
-function OperationSelectorController(operationService, operationSelectorService, queryPage, $mdDialog) {
+function OperationSelectorController(operationService, operationSelectorService, queryPage, $mdDialog, $routeParams) {
     var vm = this;
 
     vm.availableOperations;
@@ -40,6 +40,22 @@ function OperationSelectorController(operationService, operationSelectorService,
         } else {
             vm.selectedOp = vm.availableOperations[0];
             vm.updateModel();
+        }
+
+        // allow 'op' to be used as a shorthand
+        if($routeParams.op) {
+            $routeParams.operation = $routeParams.op;
+        }
+
+        if($routeParams.operation) {
+            var opParam = $routeParams.operation.replace(/[\W_]+/g, "").toLowerCase();
+            for(var i in vm.availableOperations) {
+                if(vm.availableOperations[i].name.replace(/[\W_]+/g, "").toLowerCase() === opParam) {
+                    vm.selectedOp = vm.availableOperations[i];
+                    vm.updateModel();
+                    break;
+                }
+            }
         }
     }
 
@@ -69,8 +85,4 @@ function OperationSelectorController(operationService, operationSelectorService,
             vm.availableOperations = availableOps;
         });
     }
-
-
-
-
 }
