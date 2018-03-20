@@ -125,7 +125,19 @@ function SeedBuilderController(schema, types, input, error, events, common, $rou
             newInput.push(createSeed(parts));
         }
 
-        input.setInput(newInput);
+        // deduplicate the input
+        var deduped = [];
+
+        for (var i in newInput) {
+            var value = newInput[i];
+            if (!common.arrayContainsObject(deduped, value)) {
+                deduped.push(value);
+            } else {
+                error.handle('Duplicate value: ' + types.getShortValue(types.createJsonValue(value.valueClass, value.parts)) + ' was removed')
+            }
+        }
+
+        input.setInput(deduped);
     }
 
     /**

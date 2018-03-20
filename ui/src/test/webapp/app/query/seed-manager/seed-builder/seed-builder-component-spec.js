@@ -557,6 +557,26 @@ describe('The seed builder component', function() {
                     }
                 }
             ]);
+        });
+
+        it('should remove duplicates', function() {
+            fields = [
+                {
+                    class: 'java.lang.String'
+                }
+            ];
+            ctrl.vertexClass = 'java.lang.String';
+            ctrl.seedVertices='test\ntest\ntest';
+            ctrl.addSeeds();
+            expect(input.setInput).toHaveBeenCalledWith([
+                {
+                    valueClass: 'java.lang.String',
+                    parts: {
+                        undefined: 'test'
+                    }
+                }
+            ]);
+
         })
 
         describe('When seeds are complex', function() {
@@ -633,6 +653,22 @@ describe('The seed builder component', function() {
                 ctrl.seedVertices = '1,2,3';
                 ctrl.addSeeds();
                 expect(error.handle).not.toHaveBeenCalled();
+                expect(input.setInput).toHaveBeenCalledWith([
+                    {
+                        valueClass: 'TypeSubTypeValue',
+                        parts: {
+                            type: '1',
+                            subType: 2,
+                            value: '3'
+                        }
+                    }
+                ]);
+            });
+
+            it('should remove duplicates', function() {
+                ctrl.seedVertices='1,2,3\n1,2,3';
+                ctrl.addSeeds();
+                expect(error.handle).toHaveBeenCalled();
                 expect(input.setInput).toHaveBeenCalledWith([
                     {
                         valueClass: 'TypeSubTypeValue',
