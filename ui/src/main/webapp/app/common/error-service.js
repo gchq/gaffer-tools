@@ -65,6 +65,9 @@ angular.module('app').factory('error', ['$mdToast', '$mdDialog', '$q', function(
                 toastQueue[0].resolve(); // start next toast
                 toastQueue.splice(0, 1); // remove this item from the queue
             }
+        }, 
+        function(err) { // when swiped
+            toastQueue = [];
         });
     }
 
@@ -81,14 +84,13 @@ angular.module('app').factory('error', ['$mdToast', '$mdDialog', '$q', function(
         var toast = $mdToast.simple()
             .textContent(msg)
             .position('top right')
-            .hideDelay(msg.length * 100);
+            .hideDelay(msg.length * 70);
 
         if (err && err !== '') {
             console.log(err);
             toast
                 .action('More info')
-                .highlightAction(true)
-                .highlightClass('md-accent');
+                .highlightAction(true);
         }
         showInOrder(toast, err);
     }
