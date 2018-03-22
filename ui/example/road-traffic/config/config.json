@@ -1,5 +1,27 @@
 {
   "title": "Road Traffic Example",
+  "operations": {
+    "defaultAvailable": [
+      {
+        "name": "Get Elements",
+        "class": "uk.gov.gchq.gaffer.operation.impl.get.GetElements",
+        "description": "Given your selected seeds, it gets related Entities and Edges.",
+        "input": true,
+        "view": true,
+        "inOutFlag": true,
+        "arrayOutput": true
+      },
+      {
+        "name": "Get Elements Within Set",
+        "class": "uk.gov.gchq.gaffer.accumulostore.operation.impl.GetElementsWithinSet",
+        "description": "Retrieves edges where both ends are in a given set, or entities where the vertex is in the set",
+        "input": true,
+        "view": true,
+        "inOutFlag": false,
+        "arrayOutput": true
+      }
+    ]
+  },
   "time": {
     "filter": {
       "class": "java.util.Date",
