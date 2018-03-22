@@ -16,7 +16,7 @@
 
 'use strict';
 
-angular.module('app').factory('view', ['operationService', 'config', 'settings', 'query', '$q', function(operationService, config, settings, query, $q) {
+angular.module('app').factory('view', ['operationService', 'config', 'settings', 'query', '$q', 'types', function(operationService, config, settings, query, $q, types) {
     var service = {}
     var viewEntities = [];
     var viewEdges = [];
