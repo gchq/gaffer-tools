@@ -4,17 +4,24 @@ describe('The Seed Builder', function() {
     var types;
     var error;
 
+    var input;
+
     var fakeTypes;
     var queryInputUpdateEvent = 'queryInputUpdate';
 
     beforeEach(module('app'));
 
-    beforeEach(inject(function(_$componentController_, _events_, _types_, _error_) {
+    beforeEach(inject(function(_$componentController_, _events_, _types_, _error_, _input_) {
         events = _events_;
         types = _types_;
         ctrl = _$componentController_('seedBuilder');
         error = _error_;
+        input = _input_;
     }));
+
+    beforeEach(function() {
+        queryInputUpdateEvent = 'queryInputUpdate';
+    });
 
     beforeEach(function() {
         fakeTypes = {
@@ -261,6 +268,29 @@ describe('The Seed Builder', function() {
         expect(ctrl.seedVertices).toEqual('t1,st1,v1\nt2,st2,v2');
         assertNoErrors();
     });
+
+    it('should add the seeds if it receives a "onPreExecute" event', function() {
+        expect(input.getInput()).toEqual([]);
+        ctrl.vertexClass='java.lang.String';
+        ctrl.seedVertices = 'M5\nM32:1';
+        queryInputUpdateEvent = 'onPreExecute';
+        fireEvent([]);
+        expect(input.getInput()).toEqual([
+            {
+                valueClass: 'java.lang.String',
+                parts: {
+                    undefined: 'M5'
+                }
+            },
+            {
+                valueClass: 'java.lang.String',
+                parts: {
+                    undefined: 'M32:1'
+                }
+            }
+        ])
+
+    })
 
 
 })

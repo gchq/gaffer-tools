@@ -257,20 +257,22 @@ describe('The seed builder component', function() {
             expect(ctrl.seedVertices).toEqual('test\ntest2');
         });
 
-        it('should subscribe to query input updates', function() {
+        it('should subscribe to events', function() {
             spyOn(events, 'subscribe').and.stub();
             ctrl.$onInit();
-            expect(events.subscribe).toHaveBeenCalledTimes(1);
+            expect(events.subscribe).toHaveBeenCalledTimes(2);
             expect(events.subscribe).toHaveBeenCalledWith('queryInputUpdate', jasmine.any(Function))
+            expect(events.subscribe).toHaveBeenCalledWith('onPreExecute', jasmine.any(Function))
         });
     });
 
     describe('ctrl.$onDestroy()', function() {
-        it('should unsubscribe from query input updates', function() {
+        it('should unsubscribe from events', function() {
             spyOn(events, 'unsubscribe').and.stub();
             ctrl.$onDestroy();
-            expect(events.unsubscribe).toHaveBeenCalledTimes(1);
+            expect(events.unsubscribe).toHaveBeenCalledTimes(2);
             expect(events.unsubscribe).toHaveBeenCalledWith('queryInputUpdate', jasmine.any(Function))
+            expect(events.unsubscribe).toHaveBeenCalledWith('onPreExecute', jasmine.any(Function))
         })
     })
 

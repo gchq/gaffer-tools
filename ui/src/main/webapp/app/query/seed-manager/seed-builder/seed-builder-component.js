@@ -62,6 +62,7 @@ function SeedBuilderController(schema, types, input, error, events, common, $rou
         var currentInput = input.getInput();
         
         events.subscribe('queryInputUpdate', recalculateSeeds);
+        events.subscribe('onPreExecute', vm.addSeeds);
         recalculateSeeds(currentInput);
     }
 
@@ -71,6 +72,7 @@ function SeedBuilderController(schema, types, input, error, events, common, $rou
      */
     vm.$onDestroy = function() {
         events.unsubscribe('queryInputUpdate', recalculateSeeds);
+        events.unsubscribe('onPreExecute', vm.addSeeds);
     }
 
     /**

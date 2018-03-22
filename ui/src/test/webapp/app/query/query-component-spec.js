@@ -41,6 +41,12 @@ describe('The Query component', function() {
             ctrl = $componentController('query');
         })
 
+        beforeEach(function() {
+            ctrl.queryForm = {
+                $valid : true
+            }
+        })
+
         it('should exist', function() {
             expect(ctrl).toBeDefined();
         });
@@ -660,9 +666,7 @@ describe('The Query component', function() {
 
             describe('When adding seeds', function() {
                 var input;
-                var ctrl;
                 var types;
-                
                 var seeds;
 
                 beforeEach(inject(function(_input_, _types_) {
@@ -671,7 +675,6 @@ describe('The Query component', function() {
                 }));
 
                 beforeEach(function() {
-                    ctrl = $componentController('query');
                     seeds = [];
                 });
 
@@ -762,29 +765,38 @@ describe('The Query component', function() {
 
             describe('when adding Edge directions', function() {
 
-                it('should add the edge direction to the operation', function() {
+                var direction;
 
-                    var direction;
+                beforeEach(function() {
+                    spyOn(queryPage, 'getInOutFlag').and.callFake(function() {
+                        return direction;
+                    });
+
                     spyOn(queryPage, 'getSelectedOperation').and.returnValue({
                         class: 'operation.class.Name',
                         inOutFlag: true
                     });
 
-                    spyOn(queryPage, 'getInOutFlag').and.callFake(function() {
-                        return direction;
-                    });
+                    spyOn(query, 'execute').and.stub();
 
-                    spyOn(query, 'execute');
+                });
 
+                var test = function(flag) {
+                    direction = flag;
+                    ctrl.execute();
+                    expect(query.execute.calls.argsFor(0)[0]).toContain(flag);
+                }
 
-                    var flags = [ 'INCOMING', 'OUTGOING', 'EITHER']
+                it('should add the edge direction when it is incoming', function() {
+                    test('INCOMING');
+                });
 
-                    for (var i in flags) {
-                        var flag = flags[i];
-                        direction = flag;
-                        ctrl.execute();
-                        expect(query.execute.calls.argsFor(i)[0]).toContain(flag);
-                    }
+                it('should add the edge direction when it is outgoing', function() {
+                    test('OUTGOING');
+                });
+
+                it('should add the edge direction when it is either', function() {
+                    test('EITHER');
                 });
             });
         })
@@ -847,6 +859,15 @@ describe('The Query component', function() {
 
             beforeEach(function() {
                 ctrl = $componentController('query', {$scope: scope});
+            })
+
+            beforeEach(function() {
+                ctrl.queryForm = {
+                    $valid : true
+                }
+            });
+
+            beforeEach(function() {
                 ctrl.execute();
                 scope.$digest();
             })
