@@ -302,6 +302,15 @@ describe('The seed builder component', function() {
         }));
 
         beforeEach(function() {
+            var fakeForm = {
+                multiSeedInput: {
+                    $setValidity: jasmine.createSpy('$setValidity')
+                }
+            }
+            ctrl.seedForm = fakeForm;
+        })
+
+        beforeEach(function() {
             spyOn(types, 'getFields').and.callFake(function(clazz) {
                 return fields;
             });
@@ -327,6 +336,7 @@ describe('The seed builder component', function() {
                     }
                 }
             ]);
+            expect(ctrl.seedForm.multiSeedInput.$setValidity).toHaveBeenCalledWith('csv', true);
         });
 
         it('should create numbers from numerical strings', function() {
@@ -341,6 +351,7 @@ describe('The seed builder component', function() {
                     }
                 }
             ]);
+            expect(ctrl.seedForm.multiSeedInput.$setValidity).toHaveBeenCalledWith('csv', true);
         });
 
         it('should create a true boolean value from "true" strings', function() {
@@ -355,6 +366,7 @@ describe('The seed builder component', function() {
                     }
                 }
             ]);
+            expect(ctrl.seedForm.multiSeedInput.$setValidity).toHaveBeenCalledWith('csv', true);
         });
 
         it('should create a false boolean value from "false" strings', function() {
@@ -369,6 +381,7 @@ describe('The seed builder component', function() {
                     }
                 }
             ]);
+            expect(ctrl.seedForm.multiSeedInput.$setValidity).toHaveBeenCalledWith('csv', true);
         });
 
         it('should include fields with commas surrounded by a quotes as one field', function() {
@@ -383,6 +396,7 @@ describe('The seed builder component', function() {
                     }
                 }
             ]);
+            expect(ctrl.seedForm.multiSeedInput.$setValidity).toHaveBeenCalledWith('csv', true);
         });
 
         it('should create string seeds from numbers with quotes around them', function() { 
@@ -396,7 +410,8 @@ describe('The seed builder component', function() {
                         undefined: '12'
                     }
                 }
-            ])
+            ]);
+            expect(ctrl.seedForm.multiSeedInput.$setValidity).toHaveBeenCalledWith('csv', true);
         });
 
         it('should be able to handle escaped quotes', function() {
@@ -410,7 +425,8 @@ describe('The seed builder component', function() {
                         undefined: 'I contain a "quoted string"'
                     }
                 }
-            ])
+            ]);
+            expect(ctrl.seedForm.multiSeedInput.$setValidity).toHaveBeenCalledWith('csv', true);
         });
 
         it('should be able to add escape characters', function() {
@@ -424,7 +440,8 @@ describe('The seed builder component', function() {
                         undefined: 'I contain a \\string with \\ escape characters'
                     }
                 }
-            ])
+            ]);
+            expect(ctrl.seedForm.multiSeedInput.$setValidity).toHaveBeenCalledWith('csv', true);
         });
 
         it('should broadcast an error if the string contains an unclosed quote', function() {
@@ -432,7 +449,14 @@ describe('The seed builder component', function() {
             ctrl.seedVertices = '"I contain a string with only one quote',
             ctrl.addSeeds();
             expect(input.setInput).not.toHaveBeenCalled();
-            expect(error.handle).toHaveBeenCalledWith('Unclosed quote for \'"I contain a string with only one quote\'')
+            expect(error.handle).toHaveBeenCalledWith('Unclosed quote for \'"I contain a string with only one quote\'', undefined)
+        });
+
+        it('should set the validity of the form to false if the string contains an unclosed quote', function() {
+            ctrl.vertexClass = 'java.lang.String';
+            ctrl.seedVertices = '"I contain a string with only one quote',
+            ctrl.addSeeds();
+            expect(ctrl.seedForm.multiSeedInput.$setValidity).toHaveBeenCalledWith('csv', false);
         });
 
         it('should broadcast an error if escaping the end of input', function() {
@@ -440,7 +464,14 @@ describe('The seed builder component', function() {
             ctrl.seedVertices = "\\";
             ctrl.addSeeds();
             expect(input.setInput).not.toHaveBeenCalled();
-            expect(error.handle).toHaveBeenCalledWith('Illegal escape character at end of input for line: \'\\\'');
+            expect(error.handle).toHaveBeenCalledWith('Illegal escape character at end of input for line: \'\\\'', undefined);
+        });
+
+        it('should set the validity of the form to false if the end of input is escaped', function() {
+            ctrl.vertexClass = 'java.lang.String';
+            ctrl.seedVertices = "\\";
+            ctrl.addSeeds();
+            expect(ctrl.seedForm.multiSeedInput.$setValidity).toHaveBeenCalledWith('csv', false);
         })
 
         it('should handle empty inputs', function() {
@@ -462,6 +493,7 @@ describe('The seed builder component', function() {
                     }
                 }
             ]);
+            expect(ctrl.seedForm.multiSeedInput.$setValidity).toHaveBeenCalledWith('csv', true);
         });
 
         it('should handle escaped quotes if the string is unquoted', function() {
@@ -477,6 +509,7 @@ describe('The seed builder component', function() {
                     }
                 }
             ]);
+            expect(ctrl.seedForm.multiSeedInput.$setValidity).toHaveBeenCalledWith('csv', true);
         });
 
         it('should handle double backslashes if unquoted', function() {
@@ -492,6 +525,7 @@ describe('The seed builder component', function() {
                     }
                 }
             ]);
+            expect(ctrl.seedForm.multiSeedInput.$setValidity).toHaveBeenCalledWith('csv', true);
         });
 
         it('should handle double backslashes if quoted', function() {
@@ -507,6 +541,7 @@ describe('The seed builder component', function() {
                     }
                 }
             ]);
+            expect(ctrl.seedForm.multiSeedInput.$setValidity).toHaveBeenCalledWith('csv', true);
         });
 
         it('should handle single backslashes if not quoted', function() {
@@ -522,6 +557,7 @@ describe('The seed builder component', function() {
                     }
                 }
             ]);
+            expect(ctrl.seedForm.multiSeedInput.$setValidity).toHaveBeenCalledWith('csv', true);
         })
 
         it('should broadcast an error if an unquoted string appears before a quoted string with no separation', function() {
@@ -529,15 +565,29 @@ describe('The seed builder component', function() {
             ctrl.seedVertices = 'unquoted string "quoted String"',
             ctrl.addSeeds();
             expect(input.setInput).not.toHaveBeenCalled();
-            expect(error.handle).toHaveBeenCalledWith('Unexpected \'"\' character in line \'unquoted string "quoted String"\'. Please escape with \\.')
+            expect(error.handle).toHaveBeenCalledWith('Unexpected \'"\' character in line \'unquoted string "quoted String"\'. Please escape with \\.', undefined)
         });
+
+        it('should set the validity of the form to false if an unquoted string appears before a quoted string with no separation', function() {
+            ctrl.vertexClass = 'java.lang.String';
+            ctrl.seedVertices = 'unquoted string "quoted String"',
+            ctrl.addSeeds();
+            expect(ctrl.seedForm.multiSeedInput.$setValidity).toHaveBeenCalledWith('csv', false);
+        })
 
         it('should broadcast an error if an quoted string appears before an unquoted string', function() {
             ctrl.vertexClass = 'java.lang.String';
             ctrl.seedVertices = '"quoted String" unquoted string',
             ctrl.addSeeds();
             expect(input.setInput).not.toHaveBeenCalled();
-            expect(error.handle).toHaveBeenCalledWith('Unexpected \' \' character in line \'"quoted String" unquoted string\'.')
+            expect(error.handle).toHaveBeenCalledWith('Unexpected \' \' character in line \'"quoted String" unquoted string\'.', undefined)
+        });
+
+        it('should set the validity of the form to false if a quoted string appears before an unquoted string with no separation', function() {
+            ctrl.vertexClass = 'java.lang.String';
+            ctrl.seedVertices = '"quoted String" unquoted string',
+            ctrl.addSeeds();
+            expect(ctrl.seedForm.multiSeedInput.$setValidity).toHaveBeenCalledWith('csv', false);
         });
 
         it('should re-convert numbers which should be strings', function() {
@@ -557,6 +607,7 @@ describe('The seed builder component', function() {
                     }
                 }
             ]);
+            expect(ctrl.seedForm.multiSeedInput.$setValidity).toHaveBeenCalledWith('csv', true);
         });
 
         it('should remove duplicates', function() {
@@ -576,6 +627,7 @@ describe('The seed builder component', function() {
                     }
                 }
             ]);
+            expect(ctrl.seedForm.multiSeedInput.$setValidity).toHaveBeenCalledWith('csv', true);
         });
 
         describe('When seeds are complex', function() {
@@ -611,6 +663,7 @@ describe('The seed builder component', function() {
                         'value': undefined
                     }
                 }]);
+                expect(ctrl.seedForm.multiSeedInput.$setValidity).toHaveBeenCalledWith('csv', true);
             });
 
             it('should add empty string if parts are empty quoted strings', function() {
@@ -625,6 +678,7 @@ describe('The seed builder component', function() {
                         'value': ""
                     }
                 }]);
+                expect(ctrl.seedForm.multiSeedInput.$setValidity).toHaveBeenCalledWith('csv', true);
             });
 
             it('should not add a seed if the line is empty', function() {
@@ -632,6 +686,7 @@ describe('The seed builder component', function() {
                 ctrl.addSeeds();
                 expect(error.handle).not.toHaveBeenCalled();
                 expect(input.setInput).toHaveBeenCalledWith([]);
+                expect(ctrl.seedForm.multiSeedInput.$setValidity).toHaveBeenCalledWith('csv', true);
             });
 
             it('should populate the first fields if not all fields are created', function() {
@@ -646,6 +701,7 @@ describe('The seed builder component', function() {
                         'value': undefined
                     }
                 }]);
+                expect(ctrl.seedForm.multiSeedInput.$setValidity).toHaveBeenCalledWith('csv', true);
             });
 
             it('should convert only the fields which are not strings', function() {
@@ -662,6 +718,7 @@ describe('The seed builder component', function() {
                         }
                     }
                 ]);
+                expect(ctrl.seedForm.multiSeedInput.$setValidity).toHaveBeenCalledWith('csv', true);
             });
 
             it('should remove duplicates', function() {
@@ -678,6 +735,7 @@ describe('The seed builder component', function() {
                         }
                     }
                 ]);
+                expect(ctrl.seedForm.multiSeedInput.$setValidity).toHaveBeenCalledWith('csv', true);
             });
         });
     });

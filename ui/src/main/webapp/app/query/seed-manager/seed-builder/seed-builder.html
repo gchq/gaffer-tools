@@ -11,6 +11,9 @@
                         placeholder="Enter your seeds, each seed on a new line.
 {{ctrl.getCsvHeader()}}">
             </textarea>
+            <div ng-messages="ctrl.seedForm.multiSeedInput.$error">
+                <div ng-message="csv">Your CSV is invalid</div>
+            </div>
         </md-input-container>
     </ng-form>
 </div>
