@@ -22,15 +22,19 @@ function seedManager() {
     return {
         templateUrl: 'app/query/seed-manager/seed-manager.html',
         controller: SeedManagerController,
-        controllerAs: 'ctrl'
+        controllerAs: 'ctrl',
+        bindings: {
+            secondaryInput: '<'
+        }
     }
 }
 
 /**
  * Controller for the SeedManager
- * @param {Object} graph - The Graph service for selecting all seeds
+ * @param {*} graph The Graph service for selecting all seeds
+ * @param {*} input The input service for injecting getters and setters into child components
  */
-function SeedManagerController(graph) {
+function SeedManagerController(graph, input) {
     var vm = this;
 
     /** 
@@ -39,4 +43,11 @@ function SeedManagerController(graph) {
     vm.selectAllSeeds = function() {
         graph.selectAllNodes();
     }
+
+    vm.primaryEvent = 'queryInputUpdate';
+    vm.secondaryEvent = 'secondaryInputUpdate';
+    vm.getPrimary = input.getInput;
+    vm.setPrimary = input.setInput;
+    vm.getSecondary = input.getInputB;
+    vm.setSecondary = input.setInputB;
 }

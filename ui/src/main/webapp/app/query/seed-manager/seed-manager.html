@@ -8,5 +8,8 @@
             <md-tooltip md-direction="right">Select all seeds in the graph</md-tooltip>
         </md-button>
     </div>
-    <seed-builder></seed-builder>
+    <div layout="row">
+        <seed-builder update-event="ctrl.primaryEvent" setter="ctrl.setPrimary" getter="ctrl.getPrimary" route-param="input" flex="grow"></seed-builder>
+        <seed-builder ng-if="ctrl.secondaryInput" update-event="ctrl.secondaryEvent" setter="ctrl.setSecondary" getter="ctrl.getSecondary" route-param="inputB" flex="grow"></seed-builder>
+    </div>
 </div>

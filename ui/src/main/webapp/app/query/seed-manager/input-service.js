@@ -22,23 +22,41 @@
 angular.module('app').factory('input', ['events', 'common', function(events, common) {
     var service = {};
     var updateEventName = 'queryInputUpdate';
+    var secondaryUpdateEventName = 'secondaryInputUpdate'
 
     var input = [];
+    var inputB = [];
 
     /** 
-     * Gets the current input
+     * Gets the current primary input
     */
     service.getInput = function() {
         return input;
     }
 
     /**
-     * Sets the current input
+     * Gets the secondary input
+     */
+    service.getInputB = function() {
+        return inputB
+    }
+
+    /**
+     * Sets the current primary input
      * @param {Array} newInput 
      */
     service.setInput = function(newInput) {
         input = newInput;
         events.broadcast(updateEventName, [input]);
+    }
+
+    /**
+     * Sets the current secondary input
+     * @param {*} newInput The updated input
+     */
+    service.setInputB = function(newInput) {
+        inputB = newInput;
+        events.broadcast(secondaryUpdateEventName, [inputB]);
     }
 
     /**
@@ -62,11 +80,13 @@ angular.module('app').factory('input', ['events', 'common', function(events, com
     */
     service.reset = function() {
         input = [];
+        inputB = [];
         events.broadcast(updateEventName, [input]);
+        events.broadcast(secondaryUpdateEventName, [inputB]);
     }
 
     /**
-     * Removes a seed from the input array
+     * Removes a seed from the primary input array
      * @param {*} seed 
      */
     service.removeInput = function(seed) {

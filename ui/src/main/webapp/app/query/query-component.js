@@ -161,12 +161,10 @@ function QueryController(queryPage, operationService, types, graph, config, sett
     /**
      * Uses seeds uploaded to the input service to build an input array to the query.
      */
-    var createOpInput = function() {
+    var createOpInput = function(seeds) {
         var opInput = [];
         var jsonVertex;
         
-        var seeds = input.getInput();
-
         for (var i in seeds) {
             opInput.push({
                 "class": "uk.gov.gchq.gaffer.operation.data.EntitySeed",
@@ -244,7 +242,10 @@ function QueryController(queryPage, operationService, types, graph, config, sett
         }
 
         if (selectedOp.input) {
-            op.input = createOpInput();
+            op.input = createOpInput(input.getInput());
+        }
+        if (selectedOp.inputB) {
+            op.inputB = createOpInput(input.getInputB());
         }
 
         if (selectedOp.parameters) {

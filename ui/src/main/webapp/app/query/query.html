@@ -19,7 +19,7 @@
             <div layout="row">
                 <div layout="column" flex="45"> <!-- left column -->
                     <operation-selector></operation-selector>
-                    <seed-manager ng-show="ctrl.getSelectedOp().input"></seed-manager>
+                    <seed-manager ng-show="ctrl.getSelectedOp().input" secondary-input="ctrl.getSelectedOp().inputB"></seed-manager>
                 </div>
                 <div layout="column" flex="55"> <!-- right column -->
                     <date-range ng-if="ctrl.timeConfig && ctrl.getSelectedOp().view" conf="ctrl.timeConfig"></date-range>

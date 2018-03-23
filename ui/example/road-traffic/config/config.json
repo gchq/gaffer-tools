@@ -12,6 +12,16 @@
         "arrayOutput": true
       },
       {
+        "name": "Get Elements Between Sets",
+        "class": "uk.gov.gchq.gaffer.accumulostore.operation.impl.GetElementsBetweenSets",
+        "description": "Gets edges where the source and destination appear in both sets. As well as entities which appear in the first set",
+        "input": true,
+        "inputB": true,
+        "arrayOutput": true,
+        "view": true,
+        "inOutFlag": true
+      },
+      {
         "name": "Get Elements Within Set",
         "class": "uk.gov.gchq.gaffer.accumulostore.operation.impl.GetElementsWithinSet",
         "description": "Retrieves edges where both ends are in a given set, or entities where the vertex is in the set",

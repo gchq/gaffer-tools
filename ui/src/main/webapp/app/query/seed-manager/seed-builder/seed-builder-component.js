@@ -26,7 +26,13 @@ function seedBuilder() {
     return {
         templateUrl: 'app/query/seed-manager/seed-builder/seed-builder.html',
         controller: SeedBuilderController,
-        controllerAs: 'ctrl'
+        controllerAs: 'ctrl',
+        bindings: {
+            updateEvent: '<',
+            setter: '<',
+            getter: '<',
+            routeParam: '@'
+        }
     }
 }
 
@@ -34,13 +40,12 @@ function seedBuilder() {
  * Controller which parses and unparses csv input
  * @param {*} schema The schema service
  * @param {*} types The type service
- * @param {*} input The input service
  * @param {*} error The error service
  * @param {*} events The events service
  * @param {*} common The common service
  * @param {*} $routeParams The route params service
  */
-function SeedBuilderController(schema, types, input, error, events, common, $routeParams) {
+function SeedBuilderController(schema, types, error, events, common, $routeParams) {
     var vm = this;
     vm.seedVertices = '';
 
@@ -50,18 +55,18 @@ function SeedBuilderController(schema, types, input, error, events, common, $rou
             if(vertices && vertices.length > 0 && undefined !== vertices[0]) {
                 vm.vertexClass = gafferSchema.types[vertices[0]].class;
             }
-            if($routeParams.input) {
-                if(Array.isArray($routeParams.input)) {
-                    vm.seedVertices += '\n' + $routeParams.input.join('\n');
+            if($routeParams[vm.routeParam]) {
+                if(Array.isArray($routeParams[vm.routeParam])) {
+                    vm.seedVertices += '\n' + $routeParams[vm.routeParam].join('\n');
                 } else {
-                    vm.seedVertices += '\n' + $routeParams.input;
+                    vm.seedVertices += '\n' + $routeParams[vm.routeParam];
                 }
                 vm.addSeeds();
             }
         });
-        var currentInput = input.getInput();
+        var currentInput = vm.getter();
         
-        events.subscribe('queryInputUpdate', recalculateSeeds);
+        events.subscribe(vm.updateEvent, recalculateSeeds);
         events.subscribe('onPreExecute', vm.addSeeds);
         recalculateSeeds(currentInput);
     }
@@ -71,7 +76,7 @@ function SeedBuilderController(schema, types, input, error, events, common, $rou
      * time unnecessary function calls
      */
     vm.$onDestroy = function() {
-        events.unsubscribe('queryInputUpdate', recalculateSeeds);
+        events.unsubscribe(vm.updateEvent, recalculateSeeds);
         events.unsubscribe('onPreExecute', vm.addSeeds);
     }
 
@@ -142,7 +147,7 @@ function SeedBuilderController(schema, types, input, error, events, common, $rou
         if (vm.seedForm) {
             vm.seedForm.multiSeedInput.$setValidity('csv', true)
         }
-        input.setInput(deduped);
+        vm.setter(deduped);
     }
 
     /**
