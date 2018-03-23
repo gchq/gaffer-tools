@@ -47,7 +47,7 @@ angular.module('app').factory('graph', ['types', '$q', 'results', 'common', 'eve
         animate: false
     };
 
-    var graphData = {entities: {}, edges: {}, entitySeeds: []};
+    var graphData = {entities: {}, edges: {}};
 
     events.subscribe('resultsUpdated', function(results) {
         graph.update(results);
@@ -261,7 +261,7 @@ angular.module('app').factory('graph', ['types', '$q', 'results', 'common', 'eve
      * @param {Array} results 
      */
     graph.update = function(results) {
-        graphData = { entities: {}, edges: {}, entitySeeds: [] };
+        graphData = { entities: {}, edges: {} };
         for (var i in results.entities) {
             var entity = angular.copy(results.entities[i]);
             entity.vertex = common.parseVertex(entity.vertex);
@@ -286,13 +286,6 @@ angular.module('app').factory('graph', ['types', '$q', 'results', 'common', 'eve
                 }
             } else {
                 graphData.edges[id] = [edge];
-            }
-        }
-
-        for (var i in results.entitySeeds) {
-            var id = common.parseVertex(results.entitySeeds[i]);
-            if(!common.arrayContainsValue(graphData.entitySeeds, id)) {
-                graphData.entitySeeds.push(id);
             }
         }
 
@@ -413,10 +406,6 @@ angular.module('app').factory('graph', ['types', '$q', 'results', 'common', 'eve
                 });
             }
         }
-
-        for (var i in results.entitySeeds) {
-            addEntitySeed(results.entitySeeds[i]);
-        }
     }
 
     /**
@@ -495,7 +484,7 @@ angular.module('app').factory('graph', ['types', '$q', 'results', 'common', 'eve
     }
 
     /**
-     * Selects all nodes (entities and entitySeeds)
+     * Selects all nodes (entities)
      */
     graph.selectAllNodes = function() {
         graphCy.filter('node').select();

@@ -19,45 +19,45 @@
 angular.module('app').factory('results', ['events', function(events) {
 
     var resultService = {};
-    var results = {entities: [], edges: [], entitySeeds: [], other: []};
+    var results = {entities: [], edges: [], other: []};
 
     resultService.get = function() {
         return results;
     }
 
     resultService.clear = function() {
-        results = {entities: [], edges: [], entitySeeds: [], other: []};
+        results = {entities: [], edges: [], other: []};
     }
 
     resultService.update = function(newResults) {
-        if(newResults) {
+        if(newResults !== undefined) {
+            if(!Array.isArray(newResults)) {
+                newResults = [newResults];
+            }
             for (var i in newResults) {
                 var result = newResults[i];
+                if(result !== Object(result)) {
+                    var type = typeof result;
+                    if(type === "string") {
+                        type = "String";
+                    } else if(type === "number") {
+                       type = "Integer";
+                    }
+
+                    result = {
+                        class: type,
+                        value: result
+                    };
+                }
 
                 if(result.class === "uk.gov.gchq.gaffer.data.element.Entity") {
                     if(result.vertex !== undefined && result.vertex !== '') {
                         results.entities.push(result);
-                        if(results.entitySeeds.indexOf(result.vertex) == -1) {
-                            results.entitySeeds.push(result.vertex);
-                        }
                     }
-                } else if(result.class === "uk.gov.gchq.gaffer.operation.data.EntitySeed") {
-                   if(result.vertex !== undefined && result.vertex !== '') {
-                       if(results.entitySeeds.indexOf(result.vertex) == -1) {
-                           results.entitySeeds.push(result.vertex);
-                       }
-                   }
                 } else if(result.class === "uk.gov.gchq.gaffer.data.element.Edge") {
                     if(result.source !== undefined && result.source !== ''
                          && result.destination !== undefined && result.destination !== '') {
                        results.edges.push(result);
-
-                       if(results.entitySeeds.indexOf(result.source) == -1) {
-                           results.entitySeeds.push(result.source);
-                       }
-                       if(results.entitySeeds.indexOf(result.destination) == -1) {
-                           results.entitySeeds.push(result.destination);
-                       }
                     }
                 } else {
                     results.other.push(result);

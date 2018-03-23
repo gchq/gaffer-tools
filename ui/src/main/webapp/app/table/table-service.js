@@ -16,102 +16,195 @@
 
 'use strict'
 
-angular.module('app').factory('table', ['common', 'events', 'types', 'time', function(common, events, types, time) {
+angular.module('app').factory('table', ['common', 'types', 'time', 'events', function(common, types, time, events) {
     var table = {};
-    var tableData = {entities: {}, edges: {}, entitySeeds: [], other: []};
+    var tableData = {results:[], columns:[]};
+    var results = {};
 
     table.getData = function() {
         return tableData;
     }
 
-    var parseEntity = function(entity) {
-        var summarised = {};
-
-        summarised.vertex = types.getShortValue(entity.vertex);
-        summarised.group = entity.group;
-        summarised.properties = parseElementProperties(entity.properties);
-
-        return summarised;
+    table.setResults = function(newResults) {
+        results = newResults;
     }
 
-    var parseElementProperties = function(properties) {
-        var summarisedProperties = {};
-
-        var props = Object.keys(properties);
-        for (var i in props) {
-            var propName = props[i];
-            var shortValue = types.getShortValue(properties[propName]);
-            if(time.isTimeProperty(propName)) {
-                shortValue = time.getDateString(propName, shortValue);
-            }
-            summarisedProperties[propName] = shortValue;
-        }
-
-        return summarisedProperties;
-    }
-
-    var parseEdge = function(edge) {
-        var summarised = {};
-        summarised.source = types.getShortValue(edge.source);
-        summarised.destination = types.getShortValue(edge.destination);
-        summarised.group = edge.group;
-        summarised.directed = edge.directed;
-        summarised.properties = parseElementProperties(edge.properties);
-
-        return summarised;
-
-    }
-
-    table.update = function(results) {
-        tableData = { entities: {}, edges: {}, entitySeeds: [], other: [] };
-        for (var i in results.entities) {
-            var entity = results.entities[i];
-            if(!tableData.entities[entity.group]) {
-                tableData.entities[entity.group] = [];
-            }
-            if (tableData.entities[entity.group].indexOf(angular.toJson(entity)) === -1) {
-                tableData.entities[entity.group].push(angular.toJson(entity));
-            }
-        }
-
-        for (var i in results.edges) {
-            var edge = results.edges[i];
-            if(!tableData.edges[edge.group]) {
-                tableData.edges[edge.group] = [];
-            }
-            if (tableData.edges[edge.group].indexOf(angular.toJson(edge)) == -1) {
-                tableData.edges[edge.group].push(angular.toJson(edge));
+    table.processResults = function(schema) {
+        tableData.ids = [];
+        tableData.groupByProperties = [];
+        tableData.properties = [];
+        tableData.resultsByGroup = {};
+        if(results.edges && Object.keys(results.edges).length > 0) {
+            tableData.ids.push("group");
+            tableData.ids.push("source");
+            tableData.ids.push("destination");
+            tableData.ids.push("directed");
+            for(var i in results.edges) {
+                var edge = results.edges[i];
+                if(edge) {
+                    var result = {
+                        group: edge.group,
+                        source: convertValue("source", edge.source),
+                        destination: convertValue("destination", edge.destination),
+                        directed: convertValue("directed", edge.directed)
+                    };
+                    if(edge.properties) {
+                        if(!(edge.group in tableData.resultsByGroup)) {
+                            tableData.resultsByGroup[edge.group] = [];
+                            if(schema.entities[edge.group] && schema.entities[edge.group].groupBy) {
+                                dedupPushAll(schema.entities[edge.group].groupBy, tableData.groupByProperties);
+                            }
+                            if(schema.edges[edge.group] && schema.edges[edge.group].properties) {
+                                 dedupPushAll(Object.keys(schema.edges[edge.group].properties), tableData.properties);
+                            }
+                        }
+                        for(var prop in edge.properties) {
+                            dedupPush(prop, tableData.properties);
+                            result[prop] = convertValue(prop, edge.properties[prop]);
+                        }
+                    }
+                    if(!(edge.group in tableData.resultsByGroup)) {
+                        tableData.resultsByGroup[edge.group] = [];
+                    }
+                    tableData.resultsByGroup[edge.group].push(result);
+                }
             }
         }
-
-        for (var i in results.entitySeeds) {
-            var es = common.parseVertex(results.entitySeeds[i]);
-            if (tableData.entitySeeds.indexOf(es) == -1) {
-                tableData.entitySeeds.push(es);
+        if(results.entities && Object.keys(results.edges).length > 0) {
+            dedupPush("group", tableData.ids);
+            dedupPush("source", tableData.ids);
+            for(var i in results.entities) {
+                var entity = results.entities[i];
+                if(entity) {
+                    if(!(entity.group in tableData.resultsByGroup)) {
+                        tableData.resultsByGroup[entity.group] = [];
+                        if(schema.entities[entity.group] && schema.entities[entity.group].groupBy) {
+                            dedupPushAll(schema.entities[entity.group].groupBy, tableData.groupByProperties);
+                        }
+                        if(schema.entities[entity.group] && schema.entities[entity.group].properties) {
+                             dedupPushAll(Object.keys(schema.entities[entity.group].properties), tableData.properties);
+                        }
+                    }
+                    var result = {
+                        group: entity.group,
+                        source: convertValue("vertex", entity.vertex)
+                    };
+                    if(entity.properties) {
+                        for(var prop in entity.properties) {
+                            dedupPush(prop, tableData.properties);
+                            result[prop] = convertValue(prop, entity.properties[prop]);
+                        }
+                    }
+                    tableData.resultsByGroup[entity.group].push(result);
+                }
             }
         }
 
         for (var i in results.other) {
-            if (tableData.other.indexOf(results.other[i]) === -1) {
-                tableData.other.push(results.other[i]);
+            var item = results.other[i];
+            if(item) {
+                var result = {};
+                for(var key in item) {
+                    if("class" === key) {
+                        result["group"] = item[key].split(".").pop();
+                        dedupPush("group", tableData.ids);
+                    } else if("vertex" === key) {
+                        result["source"] = convertValue("vertex", item[key]);
+                        dedupPush("source", tableData.ids);
+                    } else if("value" === key) {
+                        result[key] = convertValue(key, item[key]);
+                        dedupPush(key, tableData.ids);
+                    } else {
+                        result[key] = convertValue(key, item[key]);
+                        dedupPush(key, tableData.properties);
+                    }
+                }
+                if(!(result.group in tableData.resultsByGroup)) {
+                    tableData.resultsByGroup[result.group] = [];
+                }
+                tableData.resultsByGroup[result.group].push(result);
             }
         }
 
-        convertElements();
+        tableData.allColumns = dedupConcat(dedupConcat(tableData.ids, tableData.groupByProperties), tableData.properties);
+        tableData.columns = angular.copy(tableData.allColumns).splice(0, 8);
+
+        tableData.allGroups = [];
+        for(var group in tableData.resultsByGroup) {
+            tableData.allGroups.push(group);
+        }
+        tableData.groups = angular.copy(tableData.allGroups);
     }
 
-    var convertElements = function() {
-        for (var i in tableData.entities) {
-            for (var a in tableData.entities[i]) {
-                tableData.entities[i][a] = parseEntity(JSON.parse(tableData.entities[i][a]));
-            }
-        }
-        for (var i in tableData.edges) {
-            for (var a in tableData.edges[i]) {
-                tableData.edges[i][a] = parseEdge(JSON.parse(tableData.edges[i][a]));
-            }
+    table.updateResultGroups = function() {
+        tableData.results = [];
+        for(var i in tableData.groups) {
+            tableData.results = tableData.results.concat(tableData.resultsByGroup[tableData.groups[i]]);
         }
 
+        var resultColumns = []
+        for(var i in tableData.results) {
+            dedupPushAll(Object.keys(tableData.results[i]), resultColumns);
+        }
+
+        var newColumns = [];
+        for(var i in tableData.columns) {
+            if(resultColumns.indexOf(tableData.columns[i]) > -1) {
+                newColumns.push(tableData.columns[i]);
+            }
+        }
+        tableData.columns = newColumns.splice(0, 8);
+    }
+
+    var convertValue = function(name, value) {
+        var parsedValue = value;
+        if(parsedValue) {
+            try {
+                parsedValue = JSON.parse(value);
+            } catch(e) {
+                parsedValue = value;
+            }
+            parsedValue = parseValue(name, parsedValue);
+        }
+        return parsedValue;
+    }
+
+    var parseValue = function(name, value) {
+        var shortValue = types.getShortValue(value);
+        if(time.isTimeProperty(name)) {
+            shortValue = time.getDateString(name, shortValue);
+        }
+        return shortValue;
+    }
+
+    var dedupPush = function(item, list) {
+        if(list && list.indexOf(item) === -1) {
+            list.push(item);
+        }
+    }
+
+    var dedupPushAll = function(items, list) {
+        if(list && items) {
+            for(var i in items) {
+                dedupPush(items[i], list);
+            }
+        }
+    }
+
+    var dedupConcat = function(list1, list2) {
+        if(!list1) {
+            return angular.copy(list2);
+        }
+
+        if(!list2) {
+            return angular.copy(list1);
+        }
+
+        var concatList = angular.copy(list1);
+        for(var i in list2) {
+            dedupPush(list2[i], concatList);
+        }
+        return concatList
     }
 
     return table;

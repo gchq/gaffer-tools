@@ -25,5 +25,6 @@ angular.module('app').config(['$mdIconProvider', function($mdIconProvider) {
         .icon('down-arrow', 'app/img/down-arrow.svg')
         .icon('refresh', 'app/img/refresh.svg')
         .icon('add', 'app/img/add.svg')
-        .icon('delete', 'app/img/delete.svg');
+        .icon('delete', 'app/img/delete.svg')
+        .icon('cancel', 'app/img/cancel.svg');
 }]);

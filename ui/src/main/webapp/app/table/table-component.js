@@ -28,19 +28,48 @@ function resultsTable() {
 
 function TableController(schema, results, table, events) {
     var vm = this;
-
-    table.update(results.get());
-    vm.data = table.getData();
+    vm.data = {};
     vm.selectedTab = 0;
     vm.searchTerm = '';
-    vm.schema = {};
+    vm.schema = {edges:{}, entities:{}, types:{}};
+
+    table.setResults(results.get());
+
+    vm.hideColumn = function(column) {
+        var index = vm.data.columns.indexOf(column);
+        if (index > -1) {
+            vm.data.columns.splice(index, 1);
+        }
+    }
+
+    vm.updateSelectedGroups = function() {
+        table.updateResultGroups();
+    }
+
+    vm.selectedGroupsText = function() {
+        if(vm.data.allGroups && vm.data.allGroups.length > vm.data.groups.length) {
+            return "Choose groups (" + (vm.data.allGroups.length - vm.data.groups.length) + " more)";
+        }
+
+        return "Choose groups";
+    }
+
+    vm.selectedColumnsText = function() {
+        if(vm.data.columns && vm.data.allColumns.length > vm.data.columns.length) {
+            return "Choose columns (" + (vm.data.allColumns.length - vm.data.columns.length) + " more)";
+        }
+        return "Choose columns";
+    }
 
     schema.get().then(function(gafferSchema) {
         vm.schema = gafferSchema;
+        table.processResults(vm.schema);
+        vm.data = table.getData();
     });
 
     events.subscribe('resultsUpdated', function(res) {
-        table.update(res);
+        table.setResults(res);
+        table.processResults(vm.schema);
         vm.data = table.getData();
     });
 
