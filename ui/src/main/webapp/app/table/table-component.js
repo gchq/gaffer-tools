@@ -42,22 +42,22 @@ function TableController(schema, results, table, events) {
         }
     }
 
-    vm.updateSelectedGroups = function() {
-        table.updateResultGroups();
+    vm.updateSelectedTypes = function() {
+        table.updateResultTypes();
+    }
+
+    vm.selectedTypesText = function() {
+        return "type";
     }
 
     vm.selectedGroupsText = function() {
-        if(vm.data.allGroups && vm.data.allGroups.length > vm.data.groups.length) {
-            return "Choose groups (" + (vm.data.allGroups.length - vm.data.groups.length) + " more)";
-        }
-
-        return "Choose groups";
+        return "group";
     }
 
     vm.selectedColumnsText = function() {
         if(vm.data.columns && vm.data.allColumns.length > vm.data.columns.length) {
             return "Choose columns (" + (vm.data.allColumns.length - vm.data.columns.length) + " more)";
-        }
+    }
         return "Choose columns";
     }
 
@@ -72,5 +72,4 @@ function TableController(schema, results, table, events) {
         table.processResults(vm.schema);
         vm.data = table.getData();
     });
-
 }

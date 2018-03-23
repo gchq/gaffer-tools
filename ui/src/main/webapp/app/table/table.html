@@ -13,23 +13,11 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-<div ng-cloak layout="column" layout-margin layout-align=" stretch">
+<div ng-cloak layout="column" layout-margin layout-align=" stretch"
+     ng-if="ctrl.data.results.length > 0">
 
     <div layout="row" flex>
         <md-input-container flex="25">
-            <label>Groups</label>
-            <md-select ng-model="ctrl.data.groups" multiple
-                       ng-change="ctrl.updateSelectedGroups()"
-                       md-selected-text="ctrl.selectedGroupsText()">
-                <md-option ng-value="group"
-                           ng-repeat="group in ctrl.data.allGroups">
-                    {{group}}
-                </md-option>
-            </md-select>
-        </md-input-container>
-
-        <md-input-container flex="25">
-            <label>Columns</label>
             <md-select ng-model="ctrl.data.columns" multiple
                        md-selected-text="ctrl.selectedColumnsText()">
                 <md-option ng-value="col"
@@ -39,26 +27,46 @@
             </md-select>
         </md-input-container>
 
-        <md-input-container flex="50">
+        <md-input-container flex="75">
             <label>Search vertices and properties</label>
             <input ng-model="ctrl.searchTerm" type="text">
         </md-input-container>
     </div>
 
     <md-table-container>
-        <table md-table id="results-table">
-            <thead md-head>
+        <table md-table id="results-table" class="compact">
+            <thead md-head md-order="ctrl.sortType">
             <tr md-row>
-                <th md-column ng-repeat="col in ctrl.data.columns">
-                    <a ng-click="ctrl.sortType = col; ctrl.sortReverse = !ctrl.sortReverse">
-                        {{col}}
-                        <span ng-show="ctrl.sortType === col && !ctrl.sortReverse">
-                            <md-icon md-svg-icon="down-arrow"></md-icon>
-                        </span>
-                        <span ng-show="ctrl.sortType === col && ctrl.sortReverse">
-                            <md-icon md-svg-icon="up-arrow"></md-icon>
-                        </span>
-                    </a>
+                <th md-column ng-repeat="col in ctrl.data.columns"
+                    md-order-by="{{col}}">
+                    <md-input-container ng-if="'type' === col">
+                        <md-select
+                                ng-click="$event.stopPropagation();"
+                                ng-model="ctrl.data.types" multiple
+                                ng-change="ctrl.updateSelectedTypes()"
+                                md-selected-text="ctrl.selectedTypesText()">
+                            <md-option ng-value="type"
+                                       ng-repeat="type in ctrl.data.allTypes">
+                                {{type}}
+                            </md-option>
+                        </md-select>
+                    </md-input-container>
+
+                    <md-input-container ng-if="'group' === col">
+                        <md-select
+                                ng-click="$event.stopPropagation();"
+                                ng-model="ctrl.data.groups" multiple
+                                ng-change="ctrl.updateSelectedTypes()"
+                                md-selected-text="ctrl.selectedGroupsText()">
+                            <md-option ng-value="group"
+                                       ng-repeat="group in ctrl.data.allGroups">
+                                {{group}}
+                            </md-option>
+                        </md-select>
+                    </md-input-container>
+
+                    <span ng-if="'type' !== col && 'group' !== col">{{col}}</span>
+
                     <a ng-click="ctrl.hideColumn(col)">
                         <md-icon md-svg-icon="cancel" class="small-icon">
                         </md-icon>
@@ -68,7 +76,7 @@
             </thead>
             <tbody md-body>
             <tr md-row
-                ng-repeat="result in ctrl.data.results | orderBy:ctrl.sortType:ctrl.sortReverse | filter:ctrl.searchTerm">
+                ng-repeat="result in ctrl.data.results | orderBy:ctrl.sortType | filter:ctrl.searchTerm">
                 <td md-cell ng-repeat="col in ctrl.data.columns">
                     {{result[col]}}
                 </td>

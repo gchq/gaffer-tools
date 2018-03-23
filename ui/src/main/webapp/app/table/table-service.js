@@ -33,24 +33,27 @@ angular.module('app').factory('table', ['common', 'types', 'time', 'events', fun
         tableData.ids = [];
         tableData.groupByProperties = [];
         tableData.properties = [];
-        tableData.resultsByGroup = {};
+        tableData.resultsByType = {};
         if(results.edges && Object.keys(results.edges).length > 0) {
+            tableData.resultsByType.Edge = [];
+            tableData.ids.push("type");
             tableData.ids.push("group");
-            tableData.ids.push("source");
+            tableData.ids.push("source/vertex");
             tableData.ids.push("destination");
             tableData.ids.push("directed");
             for(var i in results.edges) {
                 var edge = results.edges[i];
                 if(edge) {
                     var result = {
+                        type: "Edge",
                         group: edge.group,
-                        source: convertValue("source", edge.source),
+                        "source/vertex": convertValue("source", edge.source),
                         destination: convertValue("destination", edge.destination),
                         directed: convertValue("directed", edge.directed)
                     };
                     if(edge.properties) {
-                        if(!(edge.group in tableData.resultsByGroup)) {
-                            tableData.resultsByGroup[edge.group] = [];
+                        if(!(edge.group in tableData.resultsByType.Edge)) {
+                            tableData.resultsByType.Edge[edge.group] = [];
                             if(schema.entities[edge.group] && schema.entities[edge.group].groupBy) {
                                 dedupPushAll(schema.entities[edge.group].groupBy, tableData.groupByProperties);
                             }
@@ -63,21 +66,23 @@ angular.module('app').factory('table', ['common', 'types', 'time', 'events', fun
                             result[prop] = convertValue(prop, edge.properties[prop]);
                         }
                     }
-                    if(!(edge.group in tableData.resultsByGroup)) {
-                        tableData.resultsByGroup[edge.group] = [];
+                    if(!(edge.group in tableData.resultsByType.Edge)) {
+                        tableData.resultsByType.Edge[edge.group] = [];
                     }
-                    tableData.resultsByGroup[edge.group].push(result);
+                    tableData.resultsByType.Edge[edge.group].push(result);
                 }
             }
         }
         if(results.entities && Object.keys(results.edges).length > 0) {
+            tableData.resultsByType.Entity = [];
+            dedupPush("type", tableData.ids);
             dedupPush("group", tableData.ids);
-            dedupPush("source", tableData.ids);
+            dedupPush("source/vertex", tableData.ids);
             for(var i in results.entities) {
                 var entity = results.entities[i];
                 if(entity) {
-                    if(!(entity.group in tableData.resultsByGroup)) {
-                        tableData.resultsByGroup[entity.group] = [];
+                    if(!(entity.group in tableData.resultsByType.Entity)) {
+                        tableData.resultsByType.Entity[entity.group] = [];
                         if(schema.entities[entity.group] && schema.entities[entity.group].groupBy) {
                             dedupPushAll(schema.entities[entity.group].groupBy, tableData.groupByProperties);
                         }
@@ -86,8 +91,9 @@ angular.module('app').factory('table', ['common', 'types', 'time', 'events', fun
                         }
                     }
                     var result = {
+                        type: "Entity",
                         group: entity.group,
-                        source: convertValue("vertex", entity.vertex)
+                        "source/vertex": convertValue("vertex", entity.vertex)
                     };
                     if(entity.properties) {
                         for(var prop in entity.properties) {
@@ -95,7 +101,7 @@ angular.module('app').factory('table', ['common', 'types', 'time', 'events', fun
                             result[prop] = convertValue(prop, entity.properties[prop]);
                         }
                     }
-                    tableData.resultsByGroup[entity.group].push(result);
+                    tableData.resultsByType.Entity[entity.group].push(result);
                 }
             }
         }
@@ -105,41 +111,58 @@ angular.module('app').factory('table', ['common', 'types', 'time', 'events', fun
             if(item) {
                 var result = {};
                 for(var key in item) {
+                    var value = convertValue(key, item[key]);
                     if("class" === key) {
-                        result["group"] = item[key].split(".").pop();
-                        dedupPush("group", tableData.ids);
+                        result["type"] = item[key].split(".").pop();
+                        dedupPush("type", tableData.ids);
                     } else if("vertex" === key) {
-                        result["source"] = convertValue("vertex", item[key]);
-                        dedupPush("source", tableData.ids);
+                        result["source/vertex"] = value;
+                        dedupPush("source/vertex", tableData.ids);
+                    } else if("source" === key) {
+                        result["source/vertex"] = value;
+                        dedupPush("source/vertex", tableData.ids);
                     } else if("value" === key) {
-                        result[key] = convertValue(key, item[key]);
+                        result[key] = value;
                         dedupPush(key, tableData.ids);
                     } else {
-                        result[key] = convertValue(key, item[key]);
+                        result[key] = value;
                         dedupPush(key, tableData.properties);
                     }
                 }
-                if(!(result.group in tableData.resultsByGroup)) {
-                    tableData.resultsByGroup[result.group] = [];
+                if(!(result.type in tableData.resultsByType)) {
+                    tableData.resultsByType[result.type] = [];
                 }
-                tableData.resultsByGroup[result.group].push(result);
+                tableData.resultsByType[result.type].push(result);
             }
         }
 
         tableData.allColumns = dedupConcat(dedupConcat(tableData.ids, tableData.groupByProperties), tableData.properties);
         tableData.columns = angular.copy(tableData.allColumns).splice(0, 8);
 
+        tableData.allTypes = [];
         tableData.allGroups = [];
-        for(var group in tableData.resultsByGroup) {
-            tableData.allGroups.push(group);
+        for(var type in tableData.resultsByType) {
+            tableData.allTypes.push(type);
+            for(var group in tableData.resultsByType[type]) {
+                dedupPush(group, tableData.allGroups);
+            }
         }
+        tableData.types = angular.copy(tableData.allTypes);
         tableData.groups = angular.copy(tableData.allGroups);
+
+        table.updateResultTypes();
     }
 
-    table.updateResultGroups = function() {
+    table.updateResultTypes = function() {
         tableData.results = [];
-        for(var i in tableData.groups) {
-            tableData.results = tableData.results.concat(tableData.resultsByGroup[tableData.groups[i]]);
+        for(var t in tableData.types) {
+            if(tableData.types[t] in tableData.resultsByType) {
+                for(var g in tableData.groups) {
+                    if(tableData.groups[g] in tableData.resultsByType[tableData.types[t]]) {
+                        tableData.results = tableData.results.concat(tableData.resultsByType[tableData.types[t]][tableData.groups[g]]);
+                    }
+                }
+            }
         }
 
         var resultColumns = []
