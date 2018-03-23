@@ -38,7 +38,7 @@ angular.module('app').factory('table', ['common', 'types', 'time', 'events', fun
             tableData.resultsByType.Edge = [];
             tableData.ids.push("type");
             tableData.ids.push("group");
-            tableData.ids.push("source/vertex");
+            tableData.ids.push("source");
             tableData.ids.push("destination");
             tableData.ids.push("directed");
             for(var i in results.edges) {
@@ -47,7 +47,7 @@ angular.module('app').factory('table', ['common', 'types', 'time', 'events', fun
                     var result = {
                         type: "Edge",
                         group: edge.group,
-                        "source/vertex": convertValue("source", edge.source),
+                        "source": convertValue("source", edge.source),
                         destination: convertValue("destination", edge.destination),
                         directed: convertValue("directed", edge.directed)
                     };
@@ -77,7 +77,7 @@ angular.module('app').factory('table', ['common', 'types', 'time', 'events', fun
             tableData.resultsByType.Entity = [];
             dedupPush("type", tableData.ids);
             dedupPush("group", tableData.ids);
-            dedupPush("source/vertex", tableData.ids);
+            dedupPush("source", tableData.ids);
             for(var i in results.entities) {
                 var entity = results.entities[i];
                 if(entity) {
@@ -93,7 +93,7 @@ angular.module('app').factory('table', ['common', 'types', 'time', 'events', fun
                     var result = {
                         type: "Entity",
                         group: entity.group,
-                        "source/vertex": convertValue("vertex", entity.vertex)
+                        "source": convertValue("vertex", entity.vertex)
                     };
                     if(entity.properties) {
                         for(var prop in entity.properties) {
@@ -116,11 +116,11 @@ angular.module('app').factory('table', ['common', 'types', 'time', 'events', fun
                         result["type"] = item[key].split(".").pop();
                         dedupPush("type", tableData.ids);
                     } else if("vertex" === key) {
-                        result["source/vertex"] = value;
-                        dedupPush("source/vertex", tableData.ids);
+                        result["source"] = value;
+                        dedupPush("source", tableData.ids);
                     } else if("source" === key) {
-                        result["source/vertex"] = value;
-                        dedupPush("source/vertex", tableData.ids);
+                        result["source"] = value;
+                        dedupPush("source", tableData.ids);
                     } else if("value" === key) {
                         result[key] = value;
                         dedupPush(key, tableData.ids);

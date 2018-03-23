@@ -67,6 +67,8 @@
 
                     <span ng-if="'type' !== col && 'group' !== col">{{col}}</span>
 
+                    <span ng-if="'source' === col">/ vertex</span>
+
                     <a ng-click="ctrl.hideColumn(col)">
                         <md-icon md-svg-icon="cancel" class="small-icon">
                         </md-icon>
