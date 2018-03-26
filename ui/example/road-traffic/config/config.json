@@ -29,6 +29,15 @@
         "view": true,
         "inOutFlag": false,
         "arrayOutput": true
+      },
+      {
+        "name": "Get Elements In Ranges",
+        "class": "uk.gov.gchq.gaffer.accumulostore.operation.impl.GetElementsInRanges",
+        "description": "Retreives all data between the seeds",
+        "input": "uk.gov.gchq.gaffer.commonutil.pair.Pair",
+        "view": true,
+        "inOutFlag": true,
+        "arrayOutput": true
       }
     ]
   },

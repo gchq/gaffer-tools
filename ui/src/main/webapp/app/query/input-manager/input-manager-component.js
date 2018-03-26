@@ -16,25 +16,26 @@
 
 'use strict';
 
-angular.module('app').component('seedManager', seedManager());
+angular.module('app').component('inputManager', inputManager());
 
-function seedManager() {
+function inputManager() {
     return {
-        templateUrl: 'app/query/seed-manager/seed-manager.html',
-        controller: SeedManagerController,
+        templateUrl: 'app/query/input-manager/input-manager.html',
+        controller: InputManagerController,
         controllerAs: 'ctrl',
         bindings: {
-            secondaryInput: '<'
+            secondaryInput: '<',
+            primaryInput: '<'
         }
     }
 }
 
 /**
- * Controller for the SeedManager
+ * Controller for the Input Manager
  * @param {*} graph The Graph service for selecting all seeds
  * @param {*} input The input service for injecting getters and setters into child components
  */
-function SeedManagerController(graph, input) {
+function InputManagerController(graph, input) {
     var vm = this;
 
     /** 
@@ -44,10 +45,18 @@ function SeedManagerController(graph, input) {
         graph.selectAllNodes();
     }
 
+    // events
     vm.primaryEvent = 'queryInputUpdate';
     vm.secondaryEvent = 'secondaryInputUpdate';
+    vm.pairEvent = 'pairInputUpdate';
+
+    // getters
     vm.getPrimary = input.getInput;
-    vm.setPrimary = input.setInput;
     vm.getSecondary = input.getInputB;
+    vm.getPairs = input.getInputPairs;
+
+    // setters
+    vm.setPrimary = input.setInput;
     vm.setSecondary = input.setInputB;
+    vm.setPairs = input.setInputPairs;
 }

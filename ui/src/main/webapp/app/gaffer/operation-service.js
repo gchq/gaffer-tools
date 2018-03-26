@@ -45,11 +45,22 @@ angular.module('app').factory('operationService', ['$http', '$q', 'settings', 'c
         return deferredAvailableOperations.promise;
     }
 
+    var hasInputB = function(first) {
+        return common.endsWith(first, "GetElementsBetweenSets");
+    }
+
+    var getInputType = function(first) {
+        if (common.endsWith(first, 'GetElementsInRanges')) {
+            return 'uk.gov.gchq.gaffer.commonutil.pair.Pair';
+        } else {
+            return 'uk.gov.gchq.gaffer.data.element.id.ElementId';
+        }
+    }
+
     var opAllowed = function(opName, configuredOperations) {
         if (!configuredOperations) {
             return true; // allow all by default
         }
-
 
         var allowed = true;
 
@@ -89,6 +100,10 @@ angular.module('app').factory('operationService', ['$http', '$q', 'settings', 'c
                                 }
                             }
                         }
+
+                        var opChain = JSON.parse(results[i].operations);
+                        var first = opChain.operations[0].class;
+
                         availableOperations.push({
                             class: namedOpClass,
                             name: results[i].operationName,
@@ -96,7 +111,8 @@ angular.module('app').factory('operationService', ['$http', '$q', 'settings', 'c
                             description: results[i].description,
                             operations: results[i].operations,
                             view: false,
-                            input: true,
+                            input: getInputType(first),
+                            inputB: hasInputB(first),
                             namedOp: true,
                             inOutFlag: false
                         });
