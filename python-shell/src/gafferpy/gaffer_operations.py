@@ -2290,6 +2290,58 @@ class If(Operation):
         return operation
 
 
+class While(Operation):
+    CLASS = 'uk.gov.gchq.gaffer.operation.impl.While'
+
+    def __init__(self, max_repeats=1000, input=None, operation=None,
+                 condition=None, conditional=None, options=None):
+
+        super().__init__(_class_name=self.CLASS,
+                         options=options)
+
+        self.max_repeats = max_repeats
+        self.input = input
+        self.condition = condition
+
+        if operation is not None:
+            if not isinstance(operation, Operation):
+                self.operation = JsonConverter.from_json(operation, Operation)
+            else:
+                self.operation = operation
+
+        if conditional is not None:
+            if not isinstance(conditional, Conditional):
+                self.conditional = JsonConverter.from_json(conditional, Conditional)
+            else:
+                self.conditional = conditional
+
+        def to_json(self):
+            operation = super().to_json()
+
+            operation['maxRepeats'] = self.max_repeats
+
+            if self.input is not None:
+                if isinstance(self.input, list):
+                    input_json = []
+                    for item in self.input:
+                        if isinstance(item, ToJson):
+                            input_json.append(item.to_json())
+                        else:
+                            input_json.append(item)
+                    operation['input'] = input_json
+
+            if self.operation is not None:
+                operation['operation'] = self.operation.to_json()
+
+            if self.condition is not None:
+                operation['condition'] = self.condition
+
+            if self.conditional is not None:
+                operation['conditional'] = self.conditional.to_json()
+
+            return operation
+
+
 class Conditional(ToJson, ToCodeString):
     CLASS = 'uk.gov.gchq.gaffer.operation.util.Conditional'
 

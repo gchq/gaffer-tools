@@ -152,6 +152,17 @@ class ExtractProperty(AbstractFunction):
 
         return function
 
+
+class ExtractGroup(AbstractFunction):
+    CLASS = 'uk.gov.gchq.gaffer.data.element.function.ExtractGroup'
+
+    def __init__(self):
+        super().__init__(_class_name=self.CLASS)
+
+    def to_json(self):
+        return super().to_json()
+
+
 class IsEmpty(AbstractFunction):
     CLASS = 'uk.gov.gchq.koryphe.impl.function.IsEmpty'
 

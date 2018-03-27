@@ -329,6 +329,14 @@ class GafferFunctionsTest(unittest.TestCase):
             g.ExtractProperty(
                 name="countByVehicleType"
             )
+        ],
+        [
+            '''
+            {
+                "class" : "uk.gov.gchq.gaffer.data.element.function.ExtractGroup"
+            }
+            ''',
+            g.ExtractGroup()
         ]
     ]
 
