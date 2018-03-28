@@ -1,20 +1,22 @@
 <div layout-margin ng-show="ctrl.primaryInput" ng-cloak>
-    <div layout="row" layout-align="start center">
-        <h3 class="no-margin">Add seeds or select all from the graph</h3>
-        <md-button id="select-all-seeds"
-                   ng-click="ctrl.selectAllSeeds()"
-                   class="md-primary">
-                Select All
-            <md-tooltip md-direction="right">Select all seeds in the graph</md-tooltip>
-        </md-button>
-    </div>
     <div ng-switch="ctrl.primaryInput">
         <div ng-switch-when="uk.gov.gchq.gaffer.commonutil.pair.Pair">
             <pair-builder getter="ctrl.getPairs" update-event="ctrl.pairEvent" setter="ctrl.setPairs"></pair-builder>
         </div>
-        <div layout="row" ng-switch-default>    <!-- Will match new 'ElementId', or older true value -->
-            <seed-builder update-event="ctrl.primaryEvent" setter="ctrl.setPrimary" getter="ctrl.getPrimary" route-param="input" flex="grow"></seed-builder>
-            <seed-builder ng-if="ctrl.secondaryInput" update-event="ctrl.secondaryEvent" setter="ctrl.setSecondary" getter="ctrl.getSecondary" route-param="inputB" flex="grow"></seed-builder>
+        <div ng-switch-default> <!-- Will match new 'ElementId', or older true value -->
+            <div layout="row" layout-align="start center">
+                <h3 class="no-margin">Add seeds or select all from the graph</h3>
+                <md-button id="select-all-seeds"
+                           ng-click="ctrl.selectAllSeeds()"
+                           class="md-primary">
+                        Select All
+                    <md-tooltip md-direction="right">Select all seeds in the graph</md-tooltip>
+                </md-button>
+            </div>
+            <div layout="row">
+                <seed-builder update-event="ctrl.primaryEvent" setter="ctrl.setPrimary" getter="ctrl.getPrimary" route-param="input" flex="grow"></seed-builder>
+                <seed-builder ng-if="ctrl.secondaryInput" update-event="ctrl.secondaryEvent" setter="ctrl.setSecondary" getter="ctrl.getSecondary" route-param="inputB" flex="grow"></seed-builder>
+            </div>
         </div>
     </div>
 </div>

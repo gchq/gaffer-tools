@@ -56,9 +56,9 @@ function PairBuilderController(schema, csv, types, error, events, common, $route
             }
             if($routeParams['input']) {
                 if(Array.isArray($routeParams['input'])) {
-                    vm.seedVertices += '\n' + $routeParams['input'].join('\n');
+                    vm.pairs += '\n' + $routeParams['input'].join('\n');
                 } else {
-                    vm.seedVertices += '\n' + $routeParams['input'];
+                    vm.pairs += '\n' + $routeParams['input'];
                 }
                 vm.addPairs();
             }

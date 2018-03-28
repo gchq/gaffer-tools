@@ -104,6 +104,18 @@ angular.module('app').factory('operationService', ['$http', '$q', 'settings', 'c
                         var opChain = JSON.parse(results[i].operations);
                         var first = opChain.operations[0].class;
 
+                        if (common.endsWith(first, "GetElementsBetweenSets")) {
+                            if (results[i].parameters['inputB'] === undefined) { // unsupported
+                                console.log('Named operation ' + results[i].operationName + ' starts with a GetElementsBetweenSets operation but does not contain an "inputB" parameter. This is not supported by the UI');
+                                continue;
+                            } else {
+                                delete results[i].parameters['inputB'] // to avoid it coming up in the parameters section
+                                if (Object.keys(results[i].parameters).length === 0) {
+                                    results[i].parameters = undefined;
+                                }
+                            }
+                        }   
+
                         availableOperations.push({
                             class: namedOpClass,
                             name: results[i].operationName,

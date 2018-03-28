@@ -21,7 +21,7 @@ angular.module('app').factory('csv', function() {
     var service = {};
 
     /**
-     * Complex processing algorithm which parses & validates CSV
+     * Complex processing algorithm which parses & validates a single line of CSV
      * It implements the following rules:
      * 
      * 1. Values which contain a comma must be quoted or escaped using a backslash

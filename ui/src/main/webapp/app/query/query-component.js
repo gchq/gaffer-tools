@@ -275,7 +275,7 @@ function QueryController(queryPage, operationService, types, graph, config, sett
         } else if (selectedOp.input) {
             op.input = createOpInput(input.getInput());
         }
-        if (selectedOp.inputB) {
+        if (selectedOp.inputB && !selectedOp.namedOp) {
             op.inputB = createOpInput(input.getInputB());
         }
 
@@ -289,6 +289,13 @@ function QueryController(queryPage, operationService, types, graph, config, sett
                 }
             }
             op.parameters = opParams;
+        }
+
+        if (selectedOp.inputB && selectedOp.namedOp) {
+            if (!op.parameters) {
+                op.parameters = {};
+            }
+            op.parameters['inputB'] = createOpInput(input.getInputB());
         }
 
         if (selectedOp.view) {
