@@ -664,6 +664,113 @@ describe('The Query component', function() {
                 });
             });
 
+            describe('When adding seed pairs', function() {
+                var input;
+                var types;
+                var pairs;
+
+                beforeEach(inject(function(_input_, _types_) {
+                    input = _input_;
+                    types = _types_;
+                }));
+
+                beforeEach(function() {
+                    pairs = [];
+                });
+
+                beforeEach(function() {
+                    spyOn(query, 'execute');
+
+                    spyOn(queryPage, 'getSelectedOperation').and.returnValue({
+                        class: 'operation.class.Name',
+                        input: 'uk.gov.gchq.gaffer.commonutil.pair.Pair'
+                    });
+
+                    spyOn(input, 'getInputPairs').and.callFake(function() {
+                        return pairs;
+                    });
+
+                });
+
+                it('should add string seed pairs from the input service to the operation', function() {
+                    pairs = [
+                        {first: {valueClass: 'java.lang.String', parts: {undefined: 'test1'} }, second: {valueClass: 'java.lang.String', parts: {undefined: 'test2'} }},
+                        {first: {valueClass: 'java.lang.String', parts: {undefined: 'test2'} }, second: {valueClass: 'java.lang.String', parts: {undefined: 'test4'} }}
+                    ];
+
+                    var expectedInput = JSON.stringify([
+                        { "class": "uk.gov.gchq.gaffer.commonutil.pair.Pair", "first": {"uk.gov.gchq.gaffer.operation.data.EntitySeed": {"vertex": "test1"}}, "second": { "uk.gov.gchq.gaffer.operation.data.EntitySeed": {"vertex": "test2"}}},
+                        { "class": "uk.gov.gchq.gaffer.commonutil.pair.Pair", "first": {"uk.gov.gchq.gaffer.operation.data.EntitySeed": {"vertex": "test2"}}, "second": { "uk.gov.gchq.gaffer.operation.data.EntitySeed": {"vertex": "test4"}}}
+                    ]);
+
+                    ctrl.execute();
+
+                    expect(query.execute.calls.first().args[0]).toContain(expectedInput);
+                });
+
+                it('should add complex seed pairs from the input service to the operation', function() {
+                    pairs = [
+                        { first: { valueClass: "my.complex.Type", parts: { "type": "thing1", "value": "myVal1", "someField": "test1"}}, second: { valueClass: "my.complex.Type", parts: { "type": "thing2", "value": "myVal2", "someField": "test2"}}},
+                        { first: { valueClass: "my.complex.Type", parts: { "type": "thing2", "value": "myVal2", "someField": "test2"}}, second: { valueClass: "my.complex.Type", parts: { "type": "thing6", "value": "myVal6", "someField": "test6"}}},
+                    ];
+
+                    spyOn(types, 'createJsonValue').and.callFake(function(clazz, parts) {
+                        var obj = {};
+                        obj[clazz] = parts;
+                        return obj;
+                    });
+
+                    ctrl.execute();
+
+                    var expectedInput = JSON.stringify([
+                        { 
+                            class: "uk.gov.gchq.gaffer.commonutil.pair.Pair",
+                            first: {
+                                'uk.gov.gchq.gaffer.operation.data.EntitySeed': {
+                                    'vertex': { "my.complex.Type": { "type": "thing1", "value": "myVal1", "someField": "test1"}}
+                                }
+                            },
+                            second: {
+                                'uk.gov.gchq.gaffer.operation.data.EntitySeed': {
+                                    'vertex': { "my.complex.Type": { "type": "thing2", "value": "myVal2", "someField": "test2"}}
+                                }
+                            }
+                        },
+                        { 
+                            class: "uk.gov.gchq.gaffer.commonutil.pair.Pair",
+                            first: {
+                                'uk.gov.gchq.gaffer.operation.data.EntitySeed': {
+                                    'vertex': { "my.complex.Type": { "type": "thing2", "value": "myVal2", "someField": "test2"}}
+                                }
+                            },
+                            second: {
+                                'uk.gov.gchq.gaffer.operation.data.EntitySeed': {
+                                    'vertex': { "my.complex.Type": { "type": "thing6", "value": "myVal6", "someField": "test6"}}
+                                }
+                            }
+                        }]);
+
+                    expect(query.execute.calls.first().args[0]).toContain(expectedInput);
+                });
+
+                it('should add numerical seed pairs from the input service to the operation', function() {
+                    pairs = [
+                        {first: {valueClass: 'int', parts: {undefined: 35} }, second: {valueClass: 'int', parts: {undefined: 3} }},
+                        {first: {valueClass: 'int', parts: {undefined: 1} }, second: {valueClass: 'int', parts: {undefined: 42} }}
+                    ];
+
+                    var expectedInput = JSON.stringify([
+                        { "class": "uk.gov.gchq.gaffer.commonutil.pair.Pair", "first": {"uk.gov.gchq.gaffer.operation.data.EntitySeed": {"vertex": 35}}, "second": { "uk.gov.gchq.gaffer.operation.data.EntitySeed": {"vertex": 3}}},
+                        { "class": "uk.gov.gchq.gaffer.commonutil.pair.Pair", "first": {"uk.gov.gchq.gaffer.operation.data.EntitySeed": {"vertex": 1}}, "second": { "uk.gov.gchq.gaffer.operation.data.EntitySeed": {"vertex": 42}}}
+                    ]);
+
+                    ctrl.execute();
+
+                    expect(query.execute.calls.first().args[0]).toContain(expectedInput);
+                });
+
+            });
+
             describe('When adding seeds', function() {
                 var input;
                 var types;

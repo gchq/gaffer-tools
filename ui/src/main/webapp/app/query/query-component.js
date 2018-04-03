@@ -187,13 +187,11 @@ function QueryController(queryPage, operationService, types, graph, config, sett
                 "class": "uk.gov.gchq.gaffer.commonutil.pair.Pair",
                 "first": {
                     "uk.gov.gchq.gaffer.operation.data.EntitySeed": {
-                        "class": "uk.gov.gchq.gaffer.operation.data.EntitySeed",
                         "vertex": types.createJsonValue(pairs[i].first.valueClass, pairs[i].first.parts)
                     }
                 },
                 "second": {
                     "uk.gov.gchq.gaffer.operation.data.EntitySeed": {
-                        "class": "uk.gov.gchq.gaffer.operation.data.EntitySeed",
                         "vertex": types.createJsonValue(pairs[i].second.valueClass, pairs[i].second.parts)
                     }
                 }
