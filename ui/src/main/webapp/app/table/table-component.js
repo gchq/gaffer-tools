@@ -28,12 +28,27 @@ function resultsTable() {
 
 function TableController(schema, results, table, events) {
     var vm = this;
+    vm.searchTerm = undefined;
     vm.data = {};
-    vm.selectedTab = 0;
     vm.searchTerm = '';
+    vm.sortType = undefined;
     vm.schema = {edges:{}, entities:{}, types:{}};
 
-    table.setResults(results.get());
+    vm.$onInit = function() {
+        table.setResults(results.get());
+        events.subscribe('resultsUpdated', onResultsUpdated);
+        schema.get().then(function(gafferSchema) {
+            vm.schema = gafferSchema;
+            table.processResults(vm.schema);
+            vm.data = table.getData();
+            loadFromCache();
+        });
+    }
+
+    vm.$onDestroy = function() {
+        events.unsubscribe('resultsUpdated', onResultsUpdated);
+        cacheValues();
+    }
 
     vm.hideColumn = function(column) {
         var index = vm.data.columns.indexOf(column);
@@ -61,15 +76,46 @@ function TableController(schema, results, table, events) {
         return "Choose columns";
     }
 
-    schema.get().then(function(gafferSchema) {
-        vm.schema = gafferSchema;
-        table.processResults(vm.schema);
-        vm.data = table.getData();
-    });
-
-    events.subscribe('resultsUpdated', function(res) {
+    var onResultsUpdated = function(res) {
+        table.setCachedValues({});
         table.setResults(res);
         table.processResults(vm.schema);
         vm.data = table.getData();
-    });
+    }
+
+    var loadFromCache = function() {
+        var cachedValues = table.getCachedValues();
+        vm.searchTerm = cachedValues.searchTerm;
+        vm.sortType =  cachedValues.sortType;
+        if(cachedValues.columns && cachedValues.columns.length > 0) {
+            vm.data.columns = cachedValues.columns;
+        }
+        if(cachedValues.types && cachedValues.types.length > 0) {
+            vm.data.types = cachedValues.types;
+        }
+        if(cachedValues.groups && cachedValues.groups.length > 0) {
+            vm.data.groups = cachedValues.groups;
+        }
+    }
+
+    var cacheValues = function() {
+        var cachedValues = {
+            searchTerm: vm.searchTerm,
+            sortType: vm.sortType
+        };
+
+        if(vm.data.columns && vm.data.allColumns && vm.data.columns.length < vm.data.allColumns.length) {
+            cachedValues.columns = vm.data.columns;
+        }
+
+        if(vm.data.types && vm.data.allTypes && vm.data.types < vm.data.allTypes.length) {
+            cachedValues.types = vm.data.types;
+        }
+
+        if(vm.data.groups && vm.data.allGroups && vm.data.groups < vm.data.allGroups.length) {
+            cachedValues.groups = vm.data.groups;
+        }
+
+        table.setCachedValues(cachedValues);
+    }
 }

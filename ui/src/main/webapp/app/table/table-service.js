@@ -20,6 +20,7 @@ angular.module('app').factory('table', ['common', 'types', 'time', 'events', fun
     var table = {};
     var tableData = {results:[], columns:[]};
     var results = {};
+    var cachedValues = {};
 
     table.getData = function() {
         return tableData;
@@ -29,114 +30,25 @@ angular.module('app').factory('table', ['common', 'types', 'time', 'events', fun
         results = newResults;
     }
 
+    table.setCachedValues = function(newCachedValues) {
+        cachedValues = newCachedValues;
+    }
+
+    table.getCachedValues = function() {
+        return cachedValues;
+    }
+
     table.processResults = function(schema) {
-        tableData.ids = [];
-        tableData.groupByProperties = [];
-        tableData.properties = [];
+        var ids = [];
+        var groupByProperties = [];
+        var properties = [];
         tableData.resultsByType = {};
-        if(results.edges && Object.keys(results.edges).length > 0) {
-            tableData.resultsByType.Edge = [];
-            tableData.ids.push("type");
-            tableData.ids.push("group");
-            tableData.ids.push("source");
-            tableData.ids.push("destination");
-            tableData.ids.push("directed");
-            for(var i in results.edges) {
-                var edge = results.edges[i];
-                if(edge) {
-                    var result = {
-                        type: "Edge",
-                        group: edge.group,
-                        "source": convertValue("source", edge.source),
-                        destination: convertValue("destination", edge.destination),
-                        directed: convertValue("directed", edge.directed)
-                    };
-                    if(edge.properties) {
-                        if(!(edge.group in tableData.resultsByType.Edge)) {
-                            tableData.resultsByType.Edge[edge.group] = [];
-                            if(schema.entities[edge.group] && schema.entities[edge.group].groupBy) {
-                                dedupPushAll(schema.entities[edge.group].groupBy, tableData.groupByProperties);
-                            }
-                            if(schema.edges[edge.group] && schema.edges[edge.group].properties) {
-                                 dedupPushAll(Object.keys(schema.edges[edge.group].properties), tableData.properties);
-                            }
-                        }
-                        for(var prop in edge.properties) {
-                            dedupPush(prop, tableData.properties);
-                            result[prop] = convertValue(prop, edge.properties[prop]);
-                        }
-                    }
-                    if(!(edge.group in tableData.resultsByType.Edge)) {
-                        tableData.resultsByType.Edge[edge.group] = [];
-                    }
-                    tableData.resultsByType.Edge[edge.group].push(result);
-                }
-            }
-        }
-        if(results.entities && Object.keys(results.edges).length > 0) {
-            tableData.resultsByType.Entity = [];
-            dedupPush("type", tableData.ids);
-            dedupPush("group", tableData.ids);
-            dedupPush("source", tableData.ids);
-            for(var i in results.entities) {
-                var entity = results.entities[i];
-                if(entity) {
-                    if(!(entity.group in tableData.resultsByType.Entity)) {
-                        tableData.resultsByType.Entity[entity.group] = [];
-                        if(schema.entities[entity.group] && schema.entities[entity.group].groupBy) {
-                            dedupPushAll(schema.entities[entity.group].groupBy, tableData.groupByProperties);
-                        }
-                        if(schema.entities[entity.group] && schema.entities[entity.group].properties) {
-                             dedupPushAll(Object.keys(schema.entities[entity.group].properties), tableData.properties);
-                        }
-                    }
-                    var result = {
-                        type: "Entity",
-                        group: entity.group,
-                        "source": convertValue("vertex", entity.vertex)
-                    };
-                    if(entity.properties) {
-                        for(var prop in entity.properties) {
-                            dedupPush(prop, tableData.properties);
-                            result[prop] = convertValue(prop, entity.properties[prop]);
-                        }
-                    }
-                    tableData.resultsByType.Entity[entity.group].push(result);
-                }
-            }
-        }
 
-        for (var i in results.other) {
-            var item = results.other[i];
-            if(item) {
-                var result = {};
-                for(var key in item) {
-                    var value = convertValue(key, item[key]);
-                    if("class" === key) {
-                        result["type"] = item[key].split(".").pop();
-                        dedupPush("type", tableData.ids);
-                    } else if("vertex" === key) {
-                        result["source"] = value;
-                        dedupPush("source", tableData.ids);
-                    } else if("source" === key) {
-                        result["source"] = value;
-                        dedupPush("source", tableData.ids);
-                    } else if("value" === key) {
-                        result[key] = value;
-                        dedupPush(key, tableData.ids);
-                    } else {
-                        result[key] = value;
-                        dedupPush(key, tableData.properties);
-                    }
-                }
-                if(!(result.type in tableData.resultsByType)) {
-                    tableData.resultsByType[result.type] = [];
-                }
-                tableData.resultsByType[result.type].push(result);
-            }
-        }
+        processElements("Edge", "edges", ["type", "group", "source", "destination", "directed"], schema, ids, groupByProperties, properties);
+        processElements("Entity", "entities", ["type", "group", "vertex"], schema, ids, groupByProperties, properties);
+        processOtherTypes(ids, properties);
 
-        tableData.allColumns = dedupConcat(dedupConcat(tableData.ids, tableData.groupByProperties), tableData.properties);
+        tableData.allColumns = dedupConcat(dedupConcat(ids, groupByProperties), properties);
         tableData.columns = angular.copy(tableData.allColumns).splice(0, 8);
 
         tableData.allTypes = [];
@@ -177,6 +89,85 @@ angular.module('app').factory('table', ['common', 'types', 'time', 'events', fun
             }
         }
         tableData.columns = newColumns.splice(0, 8);
+    }
+
+    var processElements = function(type, typePlural, idKeys, schema, ids, groupByProperties, properties) {
+        if(results[typePlural] && Object.keys(results[typePlural]).length > 0) {
+            tableData.resultsByType[type] = [];
+            dedupPushAll(idKeys, ids);
+            for(var i in results[typePlural]) {
+                var element = results[typePlural][i];
+                if(element) {
+                    var result = {};
+                    for(var idIndex in idKeys) {
+                        var id = idKeys[idIndex];
+                        if("vertex" === id) {
+                            result["source"] = element[id];
+                        } else {
+                            result[id] = element[id];
+                        }
+                    }
+                    result.type = type;
+
+                    if(element.properties) {
+                        if(!(element.group in tableData.resultsByType[type])) {
+                            tableData.resultsByType[type][element.group] = [];
+                            if(schema.entities[element.group] && schema.entities[element.group].groupBy) {
+                                dedupPushAll(schema.entities[element.group].groupBy, groupByProperties);
+                            }
+                            if(schema[typePlural][element.group] && schema[typePlural][element.group].properties) {
+                                 dedupPushAll(Object.keys(schema[typePlural][element.group].properties), properties);
+                            }
+                        }
+                        for(var prop in element.properties) {
+                            dedupPush(prop, properties);
+                            result[prop] = convertValue(prop, element.properties[prop]);
+                        }
+                    }
+                    if(!(element.group in tableData.resultsByType[type])) {
+                        tableData.resultsByType[type][element.group] = [];
+                    }
+                    tableData.resultsByType[type][element.group].push(result);
+                }
+            }
+        }
+    }
+
+    var processOtherTypes = function(ids, properties) {
+        for (var i in results.other) {
+            var item = results.other[i];
+            if(item) {
+                var result = {
+                    group: ''
+                };
+                for(var key in item) {
+                    var value = convertValue(key, item[key]);
+                    if("class" === key) {
+                        result["type"] = item[key].split(".").pop();
+                        dedupPush("type", ids);
+                    } else if("vertex" === key) {
+                        result["source"] = value;
+                        dedupPush("source", ids);
+                    } else if("source" === key) {
+                        result["source"] = value;
+                        dedupPush("source", ids);
+                    } else if("value" === key) {
+                        result[key] = value;
+                        dedupPush(key, ids);
+                    } else {
+                        result[key] = value;
+                        dedupPush(key, properties);
+                    }
+                }
+                if(!(result.type in tableData.resultsByType)) {
+                    tableData.resultsByType[result.type] = {};
+                }
+                if(!(result.group in tableData.resultsByType[result.type])) {
+                    tableData.resultsByType[result.type][result.group] = [];
+                }
+                tableData.resultsByType[result.type][result.group].push(result);
+            }
+        }
     }
 
     var convertValue = function(name, value) {
