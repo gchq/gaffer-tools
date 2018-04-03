@@ -1,0 +1,71 @@
+describe('The CSV parser service', function() {
+    var service;
+    var onError = jasmine.createSpy('onError');
+
+    beforeEach(module('app'));
+
+    beforeEach(inject(function(_csv_) {
+        service = _csv_;
+    }));
+
+    describe('csv.parse()', function() {
+        it('should handle empty line and return empty array', function() {
+            expect(service.parse("")).toEqual([]);
+        });
+
+        it('should call error handler if a quote is unclosed', function() {
+            expect(service.parse('"test', onError)).toBeUndefined();
+            expect(onError).toHaveBeenCalledWith('Unclosed quote for \'"test\'')
+        });
+
+        it('should call error handler if line ends with an escape character', function() {
+            expect(service.parse('escape test\\', onError)).toBeUndefined();
+            expect(onError).toHaveBeenCalledWith('Illegal escape character at end of input for line: \'escape test\\\'');
+        });
+
+        it('should call error handler if an unescaped quote appears in the input', function() {
+            expect(service.parse('test with "unexpected quotes"', onError)).toBeUndefined();
+            expect(onError).toHaveBeenCalledWith('Unexpected \'"\' character in line \'test with "unexpected quotes"\'. Please escape with \\.');
+        });
+
+        it('should be able to escape quotes', function() {
+            expect(service.parse('value with \\"escaped quotes\\"')).toEqual(['value with "escaped quotes"']);
+        });
+
+        it('should be able to escape commas', function() {
+            expect(service.parse('value with \\, inside')).toEqual(['value with , inside']);
+        });
+
+        it('should separated values on unescaped commas', function() {
+            expect(service.parse('this,is,a,test')).toEqual(['this', 'is', 'a', 'test']);
+        });
+
+        it('should treat quoted strings as literals', function() {
+            expect(service.parse('this,"is, a",test')).toEqual(['this', 'is, a', 'test']);
+        });
+
+        it('should be able to add unclosed quotes if escaped', function() {
+            expect(service.parse('quote \\" test')).toEqual(['quote " test']);
+        });
+
+        it('should be able to add backslashes by escaping them', function() {
+            expect(service.parse('test \\\\')).toEqual(['test \\']);
+        });
+
+        it('should convert boolean values', function() {
+            expect(service.parse('true')).toEqual([true]);
+        });
+
+        it('should not convert quoted boolean values', function() {
+            expect(service.parse('"true"')).toEqual(["true"]);
+        });
+
+        it('should convert numerical values', function() {
+            expect(service.parse('123')).toEqual([123]);
+        });
+
+        it('should not convert quoted numerical values', function() {
+            expect(service.parse('"123"')).toEqual(["123"]);
+        });
+    })
+})

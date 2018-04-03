@@ -111,7 +111,6 @@ describe('The operation service', function() {
     });
 
     describe('operationService.reloadNamedOperations()', function() {
-        // ToDo test GetElementsInRanges and GetElementsBetweenSets logic
         var $httpBackend;
         var defaultAvailableOperations;
         var namedOperations;
@@ -201,6 +200,78 @@ describe('The operation service', function() {
 
                 expect(returnedResults).toEqual(2);
             });
+
+            it('should not add a GetElementsBetweenSets named operation if it contains no parameters', function() {
+                namedOperations = [
+                    {name: 'namedOp', operations: '{ "operations": [{"class": "GetElementsBetweenSets"}] }'}
+                ];
+
+                service.reloadNamedOperations().then(function(available) {
+                    expect(available).toEqual(defaultAvailableOperations);
+                });
+
+                $httpBackend.flush();
+            });
+
+            it('should not add a GetElementsBetweenSets named operation if it does not contain an inputB parameter', function() {
+                namedOperations = [
+                    {name: 'namedOp', operations: '{ "operations": [{"class": "GetElementsBetweenSets"}] }', parameters: {"notInputB": { "valueClass": "Iterable"}} }
+                ];
+
+                service.reloadNamedOperations().then(function(available) {
+                    expect(available).toEqual(defaultAvailableOperations);
+                });
+
+                $httpBackend.flush();
+            });
+
+            it('should add a GetElementsBetweenSets if it contains an inputB parameter', function() {
+                namedOperations = [
+                    {name: 'namedOp', operations: '{ "operations": [{"class": "GetElementsBetweenSets"}] }', parameters: {"inputB": { "valueClass": "Iterable"}} }
+                ];
+
+                service.reloadNamedOperations().then(function(available) {
+                    expect(available[1].inputB).toBeTruthy();
+                });
+
+                $httpBackend.flush();
+            });
+
+            it('should add a GetElementsBetweenSets if using fully qualified class name', function() {
+                namedOperations = [
+                    {name: 'namedOp', operations: '{ "operations": [{"class": "uk.gov.gchq.gaffer.accumulostore.operation.impl.GetElementsBetweenSets"}] }', parameters: {"inputB": { "valueClass": "Iterable"}} }
+                ];
+
+                service.reloadNamedOperations().then(function(available) {
+                    expect(available[1].inputB).toBeTruthy();
+                });
+
+                $httpBackend.flush();
+            });
+
+            it('should set the input type to Pair if the first named operation is GetElementsInRanges' , function() {
+                namedOperations = [
+                    {name: 'namedOp', operations: '{ "operations": [{"class": "uk.gov.gchq.gaffer.accumulostore.operation.impl.GetElementsInRanges"}] }', parameters: {"inputB": { "valueClass": "Iterable"}} }
+                ];
+
+                service.reloadNamedOperations().then(function(available) {
+                    expect(available[1].input).toEqual('uk.gov.gchq.gaffer.commonutil.pair.Pair');
+                });
+
+                $httpBackend.flush();
+            });
+
+            it('should set the input type to EntityId if the first operation is anything other than GetElementsInRanges', function() {
+                namedOperations = [
+                    {name: 'namedOp', operations: '{ "operations": [{"class": "some.other.Operation"}] }', parameters: {"inputB": { "valueClass": "Iterable"}} }
+                ];
+
+                service.reloadNamedOperations().then(function(available) {
+                    expect(available[1].input).toEqual('uk.gov.gchq.gaffer.data.element.id.ElementId');
+                });
+
+                $httpBackend.flush();
+            })
 
             it('should not cache the result as a reload is being forced', function() {
                 service.reloadNamedOperations().then(function(initialAvailableOperations) {

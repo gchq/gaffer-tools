@@ -105,7 +105,7 @@ angular.module('app').factory('operationService', ['$http', '$q', 'settings', 'c
                         var first = opChain.operations[0].class;
 
                         if (common.endsWith(first, "GetElementsBetweenSets")) {
-                            if (results[i].parameters['inputB'] === undefined) { // unsupported
+                            if ((!results[i].parameters) || results[i].parameters['inputB'] === undefined) { // unsupported
                                 console.log('Named operation ' + results[i].operationName + ' starts with a GetElementsBetweenSets operation but does not contain an "inputB" parameter. This is not supported by the UI');
                                 continue;
                             } else {
