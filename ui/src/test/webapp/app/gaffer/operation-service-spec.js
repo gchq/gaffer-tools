@@ -111,7 +111,7 @@ describe('The operation service', function() {
     });
 
     describe('operationService.reloadNamedOperations()', function() {
-
+        // ToDo test GetElementsInRanges and GetElementsBetweenSets logic
         var $httpBackend;
         var defaultAvailableOperations;
         var namedOperations;
@@ -163,7 +163,7 @@ describe('The operation service', function() {
 
             it('should update the available operations if GetAllNamedOperations is supported', function() {
                 namedOperations = [
-                    {name: 'namedOp', description: 'a test'}
+                    {name: 'namedOp', description: 'a test', operations: '{"operations": [{ "class": "GetAllElements" }]}'}
                 ];
 
                 service.getAvailableOperations().then(function(initial) {
@@ -204,7 +204,7 @@ describe('The operation service', function() {
 
             it('should not cache the result as a reload is being forced', function() {
                 service.reloadNamedOperations().then(function(initialAvailableOperations) {
-                    namedOperations = [ { name: 'test' } ];
+                    namedOperations = [ { name: 'test' , operations: '{"operations": [{ "class": "GetAllElements" }]}'} ];
                     service.reloadNamedOperations().then(function(updatedAvailableOperations) {
                         expect(updatedAvailableOperations).not.toEqual(initialAvailableOperations);
                     });
