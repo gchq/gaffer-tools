@@ -120,21 +120,60 @@ angular.module('app').factory('common', function() {
         return indexOfObjectWithValue(arr, property, value) !== -1;
     }
 
-    common.dedupPush = function(item, list) {
-        if(list && list.indexOf(item) === -1) {
+    /**
+    * Adds the item to the list if it is not already in the list.
+    * @param {*} item the item to add to the list
+    * @param {Array} list
+    */
+    common.dedupPushValue = function(item, list) {
+        if(list && !common.arrayContainsValue(list, item)) {
             list.push(item);
         }
     }
 
-    common.dedupPushAll = function(items, list) {
+    /**
+    * Adds the item to the list if it is not already in the list, uses arrayContainsObject.
+    * @param {*} item the item to add to the list
+    * @param {Array} list
+    */
+    common.dedupPushObject = function(item, list) {
+        if(list && !common.arrayContainsObject(list, item)) {
+            list.push(item);
+        }
+    }
+
+    /**
+    * Adds all the items to the list if they are not already in the list.
+    * @param {Array} items the items to add to the list
+    * @param {Array} list
+    */
+    common.dedupPushAllValues = function(items, list) {
         if(list && items) {
             for(var i in items) {
-                common.dedupPush(items[i], list);
+                common.dedupPushValue(items[i], list);
             }
         }
     }
 
-    common.dedupConcat = function(list1, list2) {
+    /**
+    * Adds all the items to the list if they are not already in the list, uses arrayContainsObject.
+    * @param {Array} items the items to add to the list
+    * @param {Array} list
+    */
+    common.dedupPushAllObjects = function(items, list) {
+        if(list && items) {
+            for(var i in items) {
+                common.dedupPushObject(items[i], list);
+            }
+        }
+    }
+
+    /**
+    * Concatenates to lists together and deduplicates the result list.
+    * @param {Array} list1
+    * @param {Array} list2
+    */
+    common.dedupConcatValues = function(list1, list2) {
         if(!list1) {
             return angular.copy(list2);
         }
@@ -144,9 +183,26 @@ angular.module('app').factory('common', function() {
         }
 
         var concatList = angular.copy(list1);
-        for(var i in list2) {
-            common.dedupPush(list2[i], concatList);
+        common.dedupPushAllValues(list2, concatList);
+        return concatList
+    }
+
+    /**
+    * Concatenates to lists together and deduplicates the result list, uses arrayContainsObject.
+    * @param {Array} list1
+    * @param {Array} list2
+    */
+    common.dedupConcatObjects = function(list1, list2) {
+        if(!list1) {
+            return angular.copy(list2);
         }
+
+        if(!list2) {
+            return angular.copy(list1);
+        }
+
+        var concatList = angular.copy(list1);
+        common.dedupPushAllObjects(list2, concatList);
         return concatList
     }
 

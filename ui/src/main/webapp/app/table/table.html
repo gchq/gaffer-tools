@@ -23,6 +23,7 @@
                 <md-option ng-value="col"
                            ng-repeat="col in ctrl.data.allColumns">
                     {{col}}
+                    <span ng-if="'source' === col">/ vertex</span>
                 </md-option>
             </md-select>
         </md-input-container>
@@ -68,6 +69,11 @@
                     <span ng-if="'type' !== col && 'group' !== col">{{col}}</span>
 
                     <span ng-if="'source' === col">/ vertex</span>
+
+                    <md-tooltip md-direction="top"
+                                ng-if="ctrl.data.tooltips[col]">
+                        {{ctrl.data.tooltips[col]}}
+                    </md-tooltip>
 
                     <a ng-click="ctrl.hideColumn(col)">
                         <md-icon md-svg-icon="cancel" class="small-icon">

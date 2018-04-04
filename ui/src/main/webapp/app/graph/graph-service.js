@@ -249,9 +249,7 @@ angular.module('app').factory('graph', ['types', '$q', 'results', 'common', 'eve
      */
     graph.addSeed = function(seed) {
         var entitySeed = JSON.stringify(seed);
-        if(!common.arrayContainsValue(graphData.entitySeeds, entitySeed)) {
-            graphData.entitySeeds.push(entitySeed);
-        }
+        common.dedupPushValue(entitySeed, graphData.entitySeeds);
         selectVertex(entitySeed);
         updateGraph(graphData);
     }
@@ -267,9 +265,7 @@ angular.module('app').factory('graph', ['types', '$q', 'results', 'common', 'eve
             entity.vertex = common.parseVertex(entity.vertex);
             var id = entity.vertex;
             if(id in graphData.entities) {
-                if(!common.arrayContainsObject(graphData.entities[id], entity)) {
-                    graphData.entities[id].push(entity);
-                }
+                common.dedupPushObject(entity, graphData.entities[id]);
             } else {
                 graphData.entities[id] = [entity];
             }
@@ -281,9 +277,7 @@ angular.module('app').factory('graph', ['types', '$q', 'results', 'common', 'eve
             edge.destination = common.parseVertex(edge.destination);
             var id = edge.source + "|" + edge.destination + "|" + edge.directed + "|" + edge.group;
             if(id in graphData.edges) {
-                if(!common.arrayContainsObject(graphData.edges[id], edge)) {
-                    graphData.edges[id].push(edge);
-                }
+                common.dedupPushObject(edge, graphData.edges[id]);
             } else {
                 graphData.edges[id] = [edge];
             }
