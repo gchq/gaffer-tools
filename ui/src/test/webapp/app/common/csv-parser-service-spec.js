@@ -67,5 +67,17 @@ describe('The CSV parser service', function() {
         it('should not convert quoted numerical values', function() {
             expect(service.parse('"123"')).toEqual(["123"]);
         });
+
+        it('should add extra undefined part if nothing appears after last separator', function() {
+            expect(service.parse('test,')).toEqual(['test', undefined]);
+        });
+
+        it('should not add extra undefined part if last separator was escaped', function() {
+            expect(service.parse('test\\,')).toEqual(['test,']);
+        });
+
+        it('should add extra undefined part if last separator follows quoted string', function() {
+            expect(service.parse('"myTest",')).toEqual(['myTest', undefined])
+        })
     })
 })

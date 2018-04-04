@@ -1,7 +1,7 @@
 <div layout-margin ng-show="ctrl.primaryInput" ng-cloak>
     <div ng-switch="ctrl.primaryInput">
         <div ng-switch-when="uk.gov.gchq.gaffer.commonutil.pair.Pair">
-            <pair-builder getter="ctrl.getPairs" update-event="ctrl.pairEvent" setter="ctrl.setPairs"></pair-builder>
+            <pair-builder></pair-builder>
         </div>
         <div ng-switch-default> <!-- Will match new 'ElementId', or older true value -->
             <div layout="row" layout-align="start center">

@@ -48,15 +48,12 @@ function InputManagerController(graph, input) {
     // events
     vm.primaryEvent = 'queryInputUpdate';
     vm.secondaryEvent = 'secondaryInputUpdate';
-    vm.pairEvent = 'pairInputUpdate';
 
     // getters
     vm.getPrimary = input.getInput;
     vm.getSecondary = input.getInputB;
-    vm.getPairs = input.getInputPairs;
 
     // setters
     vm.setPrimary = input.setInput;
     vm.setSecondary = input.setInputB;
-    vm.setPairs = input.setInputPairs;
 }

@@ -25,12 +25,7 @@ function pairBuilder() {
     return {
         templateUrl: 'app/query/input-manager/pair-builder/pair-builder.html',
         controller: PairBuilderController,
-        controllerAs: 'ctrl',
-        bindings: {
-            updateEvent: '<',
-            setter: '<',
-            getter: '<'
-        }
+        controllerAs: 'ctrl'
     }
 }
 
@@ -43,8 +38,9 @@ function pairBuilder() {
  * @param {*} events The events service
  * @param {*} common The common service
  * @param {*} $routeParams The route params service
+ * @param {*} input The input service
  */
-function PairBuilderController(schema, csv, types, error, events, common, $routeParams) {
+function PairBuilderController(schema, csv, types, error, events, common, $routeParams, input) {
     var vm = this;
     vm.pairs = '';
 
@@ -63,9 +59,9 @@ function PairBuilderController(schema, csv, types, error, events, common, $route
                 vm.addPairs();
             }
         });
-        var currentInput = vm.getter();
+        var currentInput = input.getInputPairs();
         
-        events.subscribe(vm.updateEvent, recalculateSeeds);
+        events.subscribe('pairInputUpdate', recalculateSeeds);
         events.subscribe('onPreExecute', vm.addPairs);
         recalculateSeeds(currentInput);
     }
@@ -75,7 +71,7 @@ function PairBuilderController(schema, csv, types, error, events, common, $route
      * unnecessary function calls
      */
     vm.$onDestroy = function() {
-        events.unsubscribe(vm.updateEvent, recalculateSeeds);
+        events.unsubscribe('pairInputUpdate', recalculateSeeds);
         events.unsubscribe('onPreExecute', vm.addPairs);
     }
 
@@ -153,7 +149,7 @@ function PairBuilderController(schema, csv, types, error, events, common, $route
         if (vm.pairForm) {
             vm.pairForm.seedPairInput.$setValidity('csv', true)
         }
-        vm.setter(deduped);
+        input.setInputPairs(deduped);
     }
 
     /**
@@ -168,7 +164,7 @@ function PairBuilderController(schema, csv, types, error, events, common, $route
      */
     var isValid = function(line, separated, keys) {
         if (separated.length !== (keys.length * 2)) {
-            var simple = line + ' contains ' + separated.length + ' parts. Exactly ' + keys.length * 2 + ' were expected'
+            var simple = 'Expected exactly ' + keys.length * 2 + ' parts but line \'' + line + '\' only contains ' + separated.length
             handleError(simple, simple + '. Please wrap values containing commas in "quotes" and include empty fields');
             return false;
         }

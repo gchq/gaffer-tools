@@ -133,8 +133,4 @@ describe('The Input Service', function() {
             expect(events.broadcast).not.toHaveBeenCalled();
         });
     });
-
-    describe('input.createOperationInput()', function() {
-        
-    });
 });

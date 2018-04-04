@@ -64,6 +64,9 @@ angular.module('app').factory('csv', function() {
                     switch(line[_pointer]) {
                         
                         case '\0':                      // End of input reached
+                            if (line[_pointer - 1] === ',') {   // if character before EOL was a comma
+                                processed.push(undefined)   // undefined value is implied
+                            }
                             _state = states.complete;   // set state to complete to exit the loop
                             break;                      // and break out of the case
 
@@ -71,7 +74,7 @@ angular.module('app').factory('csv', function() {
                             _state = states.quoted;     // set state to quoted
                             break;                      // and break out of the case
 
-                        case ',':                       // ,, implies undefined input
+                        case ',':                       // empty value implies undefined input
                             processed.push(undefined);  // so push undefined to the array
                             break;                      // then break out of the loop
 

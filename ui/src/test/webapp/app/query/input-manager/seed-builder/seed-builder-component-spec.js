@@ -52,11 +52,7 @@ describe('The seed builder component', function() {
     it('should exist', function() {
         expect(ctrl).toBeDefined();
     });
-
-    it('should set the initial value of multiple seeds to false', function() {
-        expect(ctrl.multipleSeeds).toBeFalsy();
-    });
-
+    
     describe('ctrl.$onInit()', function() {
 
         var schema;
