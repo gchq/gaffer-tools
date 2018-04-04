@@ -16,7 +16,7 @@
 
 
 """
-This module contains Python copies of Gaffer function java classes
+This module contains Python copies of common Gaffer java types.
 """
 
 
