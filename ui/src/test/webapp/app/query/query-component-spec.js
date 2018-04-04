@@ -776,6 +776,8 @@ describe('The Query component', function() {
                 var types;
                 var seeds;
 
+                var selectedOperation;
+
                 beforeEach(inject(function(_input_, _types_) {
                     input = _input_;
                     types = _types_;
@@ -783,14 +785,17 @@ describe('The Query component', function() {
 
                 beforeEach(function() {
                     seeds = [];
+                    selectedOperation = {
+                        class: 'operation.class.Name',
+                        input: true
+                    }
                 });
 
                 beforeEach(function() {
-                    spyOn(query, 'execute');
+                    spyOn(query, 'execute').and.stub();
 
-                    spyOn(queryPage, 'getSelectedOperation').and.returnValue({
-                        class: 'operation.class.Name',
-                        input: true
+                    spyOn(queryPage, 'getSelectedOperation').and.callFake(function() {
+                        return selectedOperation;
                     });
 
                     spyOn(input, 'getInput').and.callFake(function() {
@@ -868,6 +873,116 @@ describe('The Query component', function() {
                     expect(query.execute.calls.first().args[0]).toContain(expectedInput);
 
                 });
+
+                describe('When adding a second input', function() {
+                    var inputB;
+                    
+                    beforeEach(function() {
+                        spyOn(input, 'getInputB').and.callFake(function() {
+                            return inputB;
+                        });
+
+                        selectedOperation = {
+                            class: 'operation.class.Name',
+                            input: true,
+                            inputB: true,
+                            namedOp: false
+                        }
+    
+                    });
+
+                    beforeEach(function() {
+                        namedOp = false;
+                    });
+
+                    it('should add a second input if the operation is not a named operation', function() {
+                        inputB = [
+                            { valueClass: "my.complex.Type", parts: { "type": "thing1", "value": "myVal1", "someField": "test1"}},
+                            { valueClass: "my.complex.Type", parts: { "type": "thing2", "value": "myVal2", "someField": "test2"}},
+                            { valueClass: "my.complex.Type", parts: { "type": "thing3", "value": "myVal3", "someField": "test3"}}
+                        ];
+
+                        spyOn(types, 'createJsonValue').and.callFake(function(clazz, parts) {
+                            var obj = {};
+                            obj[clazz] = parts;
+                            return obj;
+                        });
+
+                        var expectedInput = JSON.stringify([
+                            {
+                                'class': 'uk.gov.gchq.gaffer.operation.data.EntitySeed',
+                                'vertex': { "my.complex.Type": { "type": "thing1", "value": "myVal1", "someField": "test1"}
+                                }
+                            },
+                            {
+                                'class': 'uk.gov.gchq.gaffer.operation.data.EntitySeed',
+                                'vertex': { "my.complex.Type": { "type": "thing2", "value": "myVal2", "someField": "test2"}
+                                }
+                            },
+                            {
+                                'class': 'uk.gov.gchq.gaffer.operation.data.EntitySeed',
+                                'vertex': { "my.complex.Type": { "type": "thing3", "value": "myVal3", "someField": "test3"}
+                                }
+                            }
+                        ]);
+
+                        ctrl.execute();
+
+                        var json = JSON.parse(query.execute.calls.first().args[0]);
+
+                        expect(JSON.stringify(json.operations[0].inputB)).toEqual(expectedInput);
+                    });
+
+                    it('should not add a second input if the operation is a named operation', function() {
+                        inputB = [
+                            {valueClass: 'java.lang.String', parts: {undefined: 'test1'} },
+                            {valueClass: 'java.lang.String', parts: {undefined: 'test2'} },
+                            {valueClass: 'java.lang.String', parts: {undefined: 'test3'} }
+                        ];
+
+                        selectedOperation = {
+                            class: 'operation.class.Name',
+                            input: true,
+                            inputB: true,
+                            namedOp: true
+                        }
+
+                        ctrl.execute();
+
+                        var json = JSON.parse(query.execute.calls.first().args[0]);
+
+                        expect(JSON.stringify(json.operations[0].inputB)).toBeUndefined();
+                    });
+
+                    it('should add an inputB parameter if the operation is a named operation', function() {
+                        inputB = [
+                            {valueClass: "int", parts: {undefined: 1}},
+                            {valueClass: "int", parts: {undefined: 2}},
+                            {valueClass: "int", parts: {undefined: 3}}
+                        ];
+    
+                        selectedOperation = {
+                            class: 'operation.class.Name',
+                            input: true,
+                            inputB: true,
+                            namedOp: true
+                        }
+
+                        ctrl.execute();
+    
+                        var expectedInput = JSON.stringify([
+                            { 'class': 'uk.gov.gchq.gaffer.operation.data.EntitySeed', 'vertex': 1},
+                            { 'class': 'uk.gov.gchq.gaffer.operation.data.EntitySeed', 'vertex': 2},
+                            { 'class': 'uk.gov.gchq.gaffer.operation.data.EntitySeed', 'vertex': 3}
+                        ]);
+
+                        var json = JSON.parse(query.execute.calls.first().args[0]);
+
+                        expect(JSON.stringify(json.operations[0].parameters.inputB)).toEqual(expectedInput);
+                    });
+
+                    
+                })
             });
 
             describe('when adding Edge directions', function() {
