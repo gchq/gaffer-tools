@@ -120,6 +120,36 @@ angular.module('app').factory('common', function() {
         return indexOfObjectWithValue(arr, property, value) !== -1;
     }
 
+    common.dedupPush = function(item, list) {
+        if(list && list.indexOf(item) === -1) {
+            list.push(item);
+        }
+    }
+
+    common.dedupPushAll = function(items, list) {
+        if(list && items) {
+            for(var i in items) {
+                common.dedupPush(items[i], list);
+            }
+        }
+    }
+
+    common.dedupConcat = function(list1, list2) {
+        if(!list1) {
+            return angular.copy(list2);
+        }
+
+        if(!list2) {
+            return angular.copy(list1);
+        }
+
+        var concatList = angular.copy(list1);
+        for(var i in list2) {
+            common.dedupPush(list2[i], concatList);
+        }
+        return concatList
+    }
+
     /**
      * Gets the index of an object with a given key value pair in a given array
      * Will return -1 if not found
