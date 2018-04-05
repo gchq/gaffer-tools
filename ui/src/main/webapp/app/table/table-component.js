@@ -29,6 +29,7 @@ function resultsTable() {
 function TableController(schema, results, table, events, common, types, time) {
     var initialNumberOfColumnsToShow = 8;
     var vm = this;
+    var resultsByType = [];
     vm.searchTerm = undefined;
     vm.data = {results:[], columns:[]};
     vm.searchTerm = '';
@@ -36,11 +37,11 @@ function TableController(schema, results, table, events, common, types, time) {
     vm.schema = {edges:{}, entities:{}, types:{}};
 
     vm.$onInit = function() {
-        events.subscribe('resultsUpdated', onResultsUpdated);
         schema.get().then(function(gafferSchema) {
             vm.schema = gafferSchema;
             processResults(results.get());
             loadFromCache();
+            events.subscribe('resultsUpdated', onResultsUpdated);
         });
     }
 
@@ -56,8 +57,8 @@ function TableController(schema, results, table, events, common, types, time) {
         }
     }
 
-    vm.updateSelectedTypes = function() {
-        updateResultTypes();
+    vm.updateFilteredResults = function() {
+        updateFilteredResults();
     }
 
     vm.selectedTypesText = function() {
@@ -84,37 +85,37 @@ function TableController(schema, results, table, events, common, types, time) {
         var ids = [];
         var groupByProperties = [];
         var properties = [];
-        vm.data.resultsByType = {};
+        resultsByType = {};
         vm.data.tooltips = {};
 
         processElements("Edge", "edges", ["type", "group", "source", "destination", "directed"], ids, groupByProperties, properties, resultsData);
-        processElements("Entity", "entities", ["type", "group", "vertex"], ids, groupByProperties, properties, resultsData);
+        processElements("Entity", "entities", ["type", "group", "source"], ids, groupByProperties, properties, resultsData);
         processOtherTypes(ids, properties, resultsData);
 
         vm.data.allColumns = common.dedupConcatValues(common.dedupConcatValues(ids, groupByProperties), properties);
-        vm.data.columns = angular.copy(vm.data.allColumns).splice(0, initialNumberOfColumnsToShow);
+        vm.data.columns = angular.copy(vm.data.allColumns).splice(0, initialNumberOfColumnsToShow + 1);
 
         vm.data.allTypes = [];
         vm.data.allGroups = [];
-        for(var type in vm.data.resultsByType) {
+        for(var type in resultsByType) {
             vm.data.allTypes.push(type);
-            for(var group in vm.data.resultsByType[type]) {
+            for(var group in resultsByType[type]) {
                 common.dedupPushValue(group, vm.data.allGroups);
             }
         }
         vm.data.types = angular.copy(vm.data.allTypes);
         vm.data.groups = angular.copy(vm.data.allGroups);
 
-        updateResultTypes();
+        updateFilteredResults();
     }
 
-    var updateResultTypes = function() {
+    var updateFilteredResults = function() {
         vm.data.results = [];
         for(var t in vm.data.types) {
-            if(vm.data.types[t] in vm.data.resultsByType) {
+            if(vm.data.types[t] in resultsByType) {
                 for(var g in vm.data.groups) {
-                    if(vm.data.groups[g] in vm.data.resultsByType[vm.data.types[t]]) {
-                        vm.data.results = vm.data.results.concat(vm.data.resultsByType[vm.data.types[t]][vm.data.groups[g]]);
+                    if(vm.data.groups[g] in resultsByType[vm.data.types[t]]) {
+                        vm.data.results = vm.data.results.concat(resultsByType[vm.data.types[t]][vm.data.groups[g]]);
                     }
                 }
             }
@@ -125,7 +126,7 @@ function TableController(schema, results, table, events, common, types, time) {
     var updateColumns = function() {
         var resultColumns = []
         for(var i in vm.data.results) {
-            common.dedupPushAllValues(Object.keys(vm.data.results[i]), resultColumns);
+            common.dedupPushValues(Object.keys(vm.data.results[i]), resultColumns);
         }
         var newColumns = [];
         for(var i in vm.data.columns) {
@@ -133,21 +134,21 @@ function TableController(schema, results, table, events, common, types, time) {
                 newColumns.push(vm.data.columns[i]);
             }
         }
-        vm.data.columns = newColumns.splice(0, initialNumberOfColumnsToShow);
+        vm.data.columns = newColumns.splice(0, initialNumberOfColumnsToShow + 1);
     }
 
     var processElements = function(type, typePlural, idKeys, ids, groupByProperties, properties, resultsData) {
         if(resultsData[typePlural] && Object.keys(resultsData[typePlural]).length > 0) {
-            vm.data.resultsByType[type] = [];
-            common.dedupPushAllValues(idKeys, ids);
+            resultsByType[type] = [];
+            common.dedupPushValues(idKeys, ids);
             for(var i in resultsData[typePlural]) {
                 var element = resultsData[typePlural][i];
                 if(element) {
                     var result = {};
                     for(var idIndex in idKeys) {
                         var id = idKeys[idIndex];
-                        if("vertex" === id) {
-                            result["source"] = element[id];
+                        if('source' === id && element.source === undefined) {
+                            result[id] = element.vertex;
                         } else {
                             result[id] = element[id];
                         }
@@ -155,8 +156,8 @@ function TableController(schema, results, table, events, common, types, time) {
                     result.type = type;
 
                     if(element.properties) {
-                        if(!(element.group in vm.data.resultsByType[type])) {
-                            vm.data.resultsByType[type][element.group] = [];
+                        if(!(element.group in resultsByType[type])) {
+                            resultsByType[type][element.group] = [];
 
                             var elementDef = vm.schema[typePlural][element.group];
                             if(elementDef && elementDef.properties) {
@@ -184,10 +185,10 @@ function TableController(schema, results, table, events, common, types, time) {
                             result[prop] = convertValue(prop, element.properties[prop]);
                         }
                     }
-                    if(!(element.group in vm.data.resultsByType[type])) {
-                        vm.data.resultsByType[type][element.group] = [];
+                    if(!(element.group in resultsByType[type])) {
+                        resultsByType[type][element.group] = [];
                     }
-                    vm.data.resultsByType[type][element.group].push(result);
+                    resultsByType[type][element.group].push(result);
                 }
             }
         }
@@ -197,9 +198,7 @@ function TableController(schema, results, table, events, common, types, time) {
         for (var i in resultsData.other) {
             var item = resultsData.other[i];
             if(item) {
-                var result = {
-                    group: ''
-                };
+                var result = {group: ''};
                 for(var key in item) {
                     var value = convertValue(key, item[key]);
                     if("class" === key) {
@@ -219,13 +218,13 @@ function TableController(schema, results, table, events, common, types, time) {
                         common.dedupPushValue(key, properties);
                     }
                 }
-                if(!(result.type in vm.data.resultsByType)) {
-                    vm.data.resultsByType[result.type] = {};
+                if(!(result.type in resultsByType)) {
+                    resultsByType[result.type] = {};
                 }
-                if(!(result.group in vm.data.resultsByType[result.type])) {
-                    vm.data.resultsByType[result.type][result.group] = [];
+                if(!(result.group in resultsByType[result.type])) {
+                    resultsByType[result.type][result.group] = [];
                 }
-                vm.data.resultsByType[result.type][result.group].push(result);
+                resultsByType[result.type][result.group].push(result);
             }
         }
     }

@@ -147,7 +147,7 @@ angular.module('app').factory('common', function() {
     * @param {Array} items the items to add to the list
     * @param {Array} list
     */
-    common.dedupPushAllValues = function(items, list) {
+    common.dedupPushValues = function(items, list) {
         if(list && items) {
             for(var i in items) {
                 common.dedupPushValue(items[i], list);
@@ -160,7 +160,7 @@ angular.module('app').factory('common', function() {
     * @param {Array} items the items to add to the list
     * @param {Array} list
     */
-    common.dedupPushAllObjects = function(items, list) {
+    common.dedupPushObjects = function(items, list) {
         if(list && items) {
             for(var i in items) {
                 common.dedupPushObject(items[i], list);
@@ -183,7 +183,7 @@ angular.module('app').factory('common', function() {
         }
 
         var concatList = angular.copy(list1);
-        common.dedupPushAllValues(list2, concatList);
+        common.dedupPushValues(list2, concatList);
         return concatList
     }
 
@@ -202,7 +202,7 @@ angular.module('app').factory('common', function() {
         }
 
         var concatList = angular.copy(list1);
-        common.dedupPushAllObjects(list2, concatList);
+        common.dedupPushObjects(list2, concatList);
         return concatList
     }
 
