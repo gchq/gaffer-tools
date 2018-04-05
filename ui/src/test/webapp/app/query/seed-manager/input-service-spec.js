@@ -55,6 +55,13 @@ describe('The Input Service', function() {
 
     });
 
+    describe('input.setInput()', function() {
+        it('should set the input', function() {
+            service.setInput('test');
+            expect(service.getInput()).toEqual('test');
+        });
+    });
+
     describe('input.reset()', function() {
         it('should set the input back to an empty array', function() {
             service.addInput('test');

@@ -33,6 +33,15 @@ angular.module('app').factory('input', ['events', 'common', function(events, com
     }
 
     /**
+     * Sets the current input
+     * @param {Array} newInput 
+     */
+    service.setInput = function(newInput) {
+        input = newInput;
+        events.broadcast(updateEventName, [input]);
+    }
+
+    /**
      * Adds a seed to the input array and broadcasts an update event
      * @param {*} seed The seed to be added
      */

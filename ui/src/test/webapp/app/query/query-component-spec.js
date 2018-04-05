@@ -24,7 +24,7 @@ describe('The Query component', function() {
         });
     }));
 
-    describe('The Controller', function() {
+    describe('Controller', function() {
         var $componentController;
         var queryPage, query, loading, graph, settings;
 
@@ -39,6 +39,12 @@ describe('The Query component', function() {
 
         beforeEach(function() {
             ctrl = $componentController('query');
+        })
+
+        beforeEach(function() {
+            ctrl.queryForm = {
+                $valid : true
+            }
         })
 
         it('should exist', function() {
@@ -660,16 +666,15 @@ describe('The Query component', function() {
 
             describe('When adding seeds', function() {
                 var input;
-                var ctrl;
-                
+                var types;
                 var seeds;
 
-                beforeEach(inject(function(_input_) {
+                beforeEach(inject(function(_input_, _types_) {
                     input = _input_;
+                    types = _types_;
                 }));
 
                 beforeEach(function() {
-                    ctrl = $componentController('query');
                     seeds = [];
                 });
 
@@ -689,9 +694,9 @@ describe('The Query component', function() {
 
                 it('should add string seeds from the input service to the operation', function() {
                     seeds = [
-                        'test1',
-                        'test2',
-                        'test3'
+                        {valueClass: 'java.lang.String', parts: {undefined: 'test1'} },
+                        {valueClass: 'java.lang.String', parts: {undefined: 'test2'} },
+                        {valueClass: 'java.lang.String', parts: {undefined: 'test3'} }
                     ];
 
                     var expectedInput = JSON.stringify([
@@ -706,10 +711,16 @@ describe('The Query component', function() {
 
                 it('should add complex seeds from the input service to the operation', function() {
                     seeds = [
-                        { "my.complex.Type": { "type": "thing1", "value": "myVal1", "someField": "test1"}},
-                        { "my.complex.Type": { "type": "thing2", "value": "myVal2", "someField": "test2"}},
-                        { "my.complex.Type": { "type": "thing3", "value": "myVal3", "someField": "test3"}}
+                        { valueClass: "my.complex.Type", parts: { "type": "thing1", "value": "myVal1", "someField": "test1"}},
+                        { valueClass: "my.complex.Type", parts: { "type": "thing2", "value": "myVal2", "someField": "test2"}},
+                        { valueClass: "my.complex.Type", parts: { "type": "thing3", "value": "myVal3", "someField": "test3"}}
                     ];
+
+                    spyOn(types, 'createJsonValue').and.callFake(function(clazz, parts) {
+                        var obj = {};
+                        obj[clazz] = parts;
+                        return obj;
+                    });
 
                     ctrl.execute();
 
@@ -735,9 +746,9 @@ describe('The Query component', function() {
 
                 it('should add numerical seeds from the input service to the operation', function() {
                     seeds = [
-                        1,
-                        2,
-                        3
+                        {valueClass: "int", parts: {undefined: 1}},
+                        {valueClass: "int", parts: {undefined: 2}},
+                        {valueClass: "int", parts: {undefined: 3}}
                     ];
 
                     ctrl.execute();
@@ -754,29 +765,38 @@ describe('The Query component', function() {
 
             describe('when adding Edge directions', function() {
 
-                it('should add the edge direction to the operation', function() {
+                var direction;
 
-                    var direction;
+                beforeEach(function() {
+                    spyOn(queryPage, 'getInOutFlag').and.callFake(function() {
+                        return direction;
+                    });
+
                     spyOn(queryPage, 'getSelectedOperation').and.returnValue({
                         class: 'operation.class.Name',
                         inOutFlag: true
                     });
 
-                    spyOn(queryPage, 'getInOutFlag').and.callFake(function() {
-                        return direction;
-                    });
+                    spyOn(query, 'execute').and.stub();
 
-                    spyOn(query, 'execute');
+                });
 
+                var test = function(flag) {
+                    direction = flag;
+                    ctrl.execute();
+                    expect(query.execute.calls.argsFor(0)[0]).toContain(flag);
+                }
 
-                    var flags = [ 'INCOMING', 'OUTGOING', 'EITHER']
+                it('should add the edge direction when it is incoming', function() {
+                    test('INCOMING');
+                });
 
-                    for (var i in flags) {
-                        var flag = flags[i];
-                        direction = flag;
-                        ctrl.execute();
-                        expect(query.execute.calls.argsFor(i)[0]).toContain(flag);
-                    }
+                it('should add the edge direction when it is outgoing', function() {
+                    test('OUTGOING');
+                });
+
+                it('should add the edge direction when it is either', function() {
+                    test('EITHER');
                 });
             });
         })
@@ -839,6 +859,15 @@ describe('The Query component', function() {
 
             beforeEach(function() {
                 ctrl = $componentController('query', {$scope: scope});
+            })
+
+            beforeEach(function() {
+                ctrl.queryForm = {
+                    $valid : true
+                }
+            });
+
+            beforeEach(function() {
                 ctrl.execute();
                 scope.$digest();
             })

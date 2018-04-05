@@ -49,8 +49,9 @@ function query() {
  * @param {*} input For getting access to the operation seeds
  * @param {*} $routeParams the url query params
  * @param {*} $location for deleting url query params when they have been consumed
+ * @param {*} events for broadcasting pre-execute event
  */
-function QueryController(queryPage, operationService, types, graph, config, settings, query, results, navigation, $mdDialog, loading, dateRange, view, error, input, $routeParams, $location) {
+function QueryController(queryPage, operationService, types, graph, config, settings, query, results, navigation, $mdDialog, loading, dateRange, view, error, input, $routeParams, $location, events) {
     var namedViewClass = "uk.gov.gchq.gaffer.data.elementdefinition.view.NamedView";
     var vm = this;
     vm.timeConfig;
@@ -91,10 +92,15 @@ function QueryController(queryPage, operationService, types, graph, config, sett
     }
 
     /**
-     * Executes an operation
+     * First checks fires an event so that all watchers may do last minute changes.
+     * Once done, it does a final check to make sure the operation can execute. If so
+     * it executes it.
      */
     vm.execute = function() {
-
+        events.broadcast('onPreExecute', []);
+        if (!vm.canExecute()) {
+            return;
+        }
 
         var operation = createOperation();
         query.addOperation(operation);
@@ -164,7 +170,7 @@ function QueryController(queryPage, operationService, types, graph, config, sett
         for (var i in seeds) {
             opInput.push({
                 "class": "uk.gov.gchq.gaffer.operation.data.EntitySeed",
-                "vertex": seeds[i]
+                "vertex": types.createJsonValue(seeds[i].valueClass, seeds[i].parts)
             });
         }
 
