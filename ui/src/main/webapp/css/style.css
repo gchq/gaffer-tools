@@ -90,7 +90,7 @@ md-nav-bar > div > nav {
     text-transform: none !important;
 }
 
-md-input-container > textarea {
+md-input-container > div > textarea {
     border-width: 2px !important;
 }
 

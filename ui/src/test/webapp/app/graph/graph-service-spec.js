@@ -3,6 +3,8 @@ describe("The Graph Service", function() {
     var graph;
     var events;
     var scope;
+    var vertices = [];
+    var gafferSchema = {};
 
     beforeEach(module('app'));
 
@@ -20,7 +22,10 @@ describe("The Graph Service", function() {
         $provide.factory('schema', function($q) {
             return {
                 get: function() {
-                    return $q.when({});
+                    return $q.when(gafferSchema);
+                },
+                getSchemaVertices: function() {
+                    return vertices;
                 }
             }
         });
@@ -60,9 +65,11 @@ describe("The Graph Service", function() {
         describe('when adding a seed', function() {
             
             var input;
+            var types;
 
-            beforeEach(inject(function(_input_) {
+            beforeEach(inject(function(_input_, _types_) {
                 input = _input_;
+                types = _types_;
             }))
 
             beforeEach(function() {
@@ -75,8 +82,22 @@ describe("The Graph Service", function() {
             });
 
             it('should add it to the input service', function() {
+                spyOn(types, 'createParts').and.callFake( function(clazz, value) {
+                    return { undefined: value };
+                });
+                gafferSchema = {
+                    types: {
+                        "vertex": {
+                            "class": "java.lang.String"
+                        }
+                    }
+                }
+
+                vertices = [ 'vertex' ];
+
                 graph.addSeed("test");
-                expect(input.addInput).toHaveBeenCalledWith("test");
+                scope.$digest();
+                expect(input.addInput).toHaveBeenCalledWith({ "valueClass": "java.lang.String", parts: {undefined: "test"} });
             });
 
             it('should broadcast the selectedElementsUpdate event', function() {

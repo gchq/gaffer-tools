@@ -141,8 +141,7 @@ public class QueryBuilderST {
     @Test
     public void shouldFindRoadUseAroundJunctionM5_10() throws InterruptedException {
         selectOptionWithAriaLabel("operation-name", "Get Elements");
-        enterText("seedVertex", "M5:10");
-        click("add-seeds");
+        enterText("seedVertices", "M5:10");
         click("create-custom-filter");
         selectMultiOption("view-edges", "RoadUse");
         click("add-RoadUse-filters");
@@ -167,8 +166,7 @@ public class QueryBuilderST {
     @Test
     public void shouldNotThrowErrorIfPageIsReloadedWithCustomView() throws InterruptedException, SerialisationException {
         selectOptionWithAriaLabel("operation-name", "Get Elements");
-        enterText("seedVertex", "M5");
-        click("add-seeds");
+        enterText("seedVertices", "M5");
         click("create-custom-filter");
         selectMultiOption("view-entities", "Cardinality");
         click("open-graph");
@@ -185,8 +183,7 @@ public class QueryBuilderST {
     @Test
     public void shouldFindRoadUseAroundJunctionM5_10WithDatePicker() throws InterruptedException {
         selectOptionWithAriaLabel("operation-name", "Get Elements");
-        enterText("seedVertex", "M5:10");
-        click("add-seeds");
+        enterText("seedVertices", "M5:10");
         enterIntoDatePicker("start-date", "13/10/2000");
         click("create-custom-filter");
         selectMultiOption("view-edges", "RoadUse");
@@ -243,8 +240,7 @@ public class QueryBuilderST {
     @Test
     public void shouldBeAbleToRunParameterisedQueries() throws InterruptedException, SerialisationException {
         selectOptionWithAriaLabel("operation-name", "Two Hop With Limit");
-        enterText("seedVertex", "M5");
-        click("add-seeds");
+        enterText("seedVertices", "M5");
         enterText("param1-", "2");
         click("Execute Query");
 
