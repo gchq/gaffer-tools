@@ -136,6 +136,13 @@ class ExtractId(AbstractFunction):
         return function
 
 
+class ExtractGroup(AbstractFunction):
+    CLASS = 'uk.gov.gchq.gaffer.data.element.function.ExtractGroup'
+
+    def __init__(self):
+        super().__init__(_class_name=self.CLASS)
+
+
 class ExtractProperty(AbstractFunction):
     CLASS = 'uk.gov.gchq.gaffer.data.element.function.ExtractProperty'
 
@@ -151,6 +158,7 @@ class ExtractProperty(AbstractFunction):
             function['name'] = self.name
 
         return function
+
 
 class IsEmpty(AbstractFunction):
     CLASS = 'uk.gov.gchq.koryphe.impl.function.IsEmpty'
