@@ -74,6 +74,10 @@ function NavigationController($rootScope, $mdDialog, navigation, graph, operatio
         return vm.currentPage === 'graph';
     }
 
+    vm.isRawTab = function() {
+        return vm.currentPage === 'raw';
+    }
+
     vm.redraw = function() {
         graph.redraw();
     }

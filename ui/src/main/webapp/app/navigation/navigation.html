@@ -14,27 +14,23 @@
   ~ limitations under the License.
   -->
 
-<md-nav-bar aria-label="navigation bar" md-selected-nav-item="ctrl.currentPage" ng-cloak>
-    <div layout="row" layout-align="space-around center" layout-fill>
+<md-toolbar aria-label="navigation bar"
+            md-selected-nav-item="ctrl.currentPage"
+            ng-cloak>
 
+    <div class="md-toolbar-tools">
+        <logo></logo>
+        <h1 class="md-headline title">{{::ctrl.appTitle}}</h1>
+        <span flex></span>
 
-        <div layout="row" layout-align="space-around center">
-            <logo></logo>
-            <h1 class="md-headline title">{{::ctrl.appTitle}}</h1>
-        </div>
-
-        <div layout="row">
-            <md-nav-item name="query" id="open-query" md-nav-click="ctrl.goTo('query')">Query</md-nav-item>
-            <md-nav-item name="graph" id="open-graph" md-nav-click="ctrl.goTo('graph')">Graph</md-nav-item>
-            <md-nav-item name="table" id="open-table" md-nav-click="ctrl.goTo('table')">Table</md-nav-item>
-            <md-nav-item name="schema" id="open-schema" md-nav-click="ctrl.goTo('schema')">Schema</md-nav-item>
-            <md-nav-item name="raw" id="open-raw" md-nav-click="ctrl.goTo('raw')">Raw</md-nav-item>
-            <md-nav-item name="settings" id="open-settings" md-nav-click="ctrl.goTo('settings')">Settings</md-nav-item>
-        </div>
-        <div layout="row">
-            <loading-circle></loading-circle>
-            <md-button class="md-raised" id="execute-all" ng-click="ctrl.executeAll()">Execute All</md-button>
-            <md-button class="md-raised" id="redraw" ng-disabled="!ctrl.isGraphInView()" ng-click="ctrl.redraw()">Redraw</md-button>
-        </div>
+        <loading-circle></loading-circle>
+        <md-button ng-if="ctrl.isRawTab()"
+                   class="md-raised" id="execute-all"
+                   ng-click="ctrl.executeAll()">Execute All
+        </md-button>
+        <md-button class="md-raised" id="redraw"
+                   ng-if="ctrl.isGraphInView()"
+                   ng-click="ctrl.redraw()">Redraw
+        </md-button>
     </div>
-</md-nav-bar>
+</md-toolbar>

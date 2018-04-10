@@ -16,6 +16,10 @@
 
 'use strict';
 
-angular.module('app').controller('MainCtrl', ['graph', function(graph) {
+angular.module('app')
+.config(function($mdThemingProvider) {
+   $mdThemingProvider.theme('default')
+     .primaryPalette('blue-grey');
+}).controller('MainCtrl', ['graph', function(graph) {
     graph.load();
-}]);
+}])

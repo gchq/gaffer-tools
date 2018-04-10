@@ -74,6 +74,7 @@
     <script src="app/schema/selected-element-groups/selected-element-groups-component.js"></script>
 
     <script src="app/navigation/navigation-component.js"></script>
+    <script src="app/sidenav/sidenav-component.js"></script>
     <script src="app/raw/raw-component.js"></script>
     <script src="app/query/seed-manager/seed-builder/seed-builder-component.js"></script>
     <script src="app/settings/settings-component.js"></script>
@@ -107,9 +108,12 @@
 <body ng-cloak ng-app="app" ng-controller="MainCtrl">
 <div layout="column" class="content" flex>
     <nav-bar></nav-bar>
-    <md-content class="content" flex>
-        <ng-view class="content" flex></ng-view>
-    </md-content>
+    <section layout="row" flex>
+        <sidenav layout="row"></sidenav>
+        <md-content class="content" flex>
+            <ng-view class="content" flex></ng-view>
+        </md-content>
+    </section>
 </div>
 </body>
 </html>
