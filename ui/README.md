@@ -304,7 +304,7 @@ as what operations should be available by default.
 #### Default available operations API
 
 Default available operations are configured using a list of objects. These objects contain key value pairs which tell
-the UI what options it has for a given operations - whether it uses a view or parameters etc
+the UI what options it has for a given operations - whether it uses a view or parameters etc.
 
 | variable    | type    |  description
 |-------------|---------|-------------------------------
@@ -316,6 +316,11 @@ the UI what options it has for a given operations - whether it uses a view or pa
 | arrayOutput | boolean | A flag indicating whether the operation returns an array *(not required)*
 | inOutFlag   | boolean | A flag indicating that the operation returns edges. And the direction can be customised.
 
+
+If you want to allow Named Operations which use a specific operation that you do not want to expose on it's own. You should
+still include this operation in the Default Available Operations section but then add the operation name to the blacklist.
+This is because the UI uses the Default Available Operations section to determine the input type of a Named Operation. If
+the operation does not exists, it stops the user being able to add input.
 
 ### Types section
 
