@@ -129,9 +129,24 @@ describe('The operation service', function() {
         });
 
         beforeEach(function() {
-            defaultAvailableOperations = [ {
+            defaultAvailableOperations = [ 
+                {
                 name: 'test'
-            }];
+                },
+                {
+                    class: "a.custom.Operation",
+                    input: "uk.gov.gchq.gaffer.data.element.id.EntityId"
+                },
+                {
+                    class: "uk.gov.gchq.gaffer.accumulostore.operation.impl.GetElementsInRanges",
+                    input: "uk.gov.gchq.gaffer.commonutil.pair.Pair"
+                },
+                {
+                    class: "uk.gov.gchq.gaffer.accumulostore.operation.impl.GetElementsBetweenSets",
+                    input: true,
+                    inputB: true
+                }
+            ];
         })
 
         beforeEach(inject(function(_$httpBackend_, _query_) {
@@ -231,7 +246,7 @@ describe('The operation service', function() {
                 ];
 
                 service.reloadNamedOperations().then(function(available) {
-                    expect(available[1].inputB).toBeTruthy();
+                    expect(available[4].inputB).toBeTruthy();
                 });
 
                 $httpBackend.flush();
@@ -243,7 +258,7 @@ describe('The operation service', function() {
                 ];
 
                 service.reloadNamedOperations().then(function(available) {
-                    expect(available[1].inputB).toBeTruthy();
+                    expect(available[4].inputB).toBeTruthy();
                 });
 
                 $httpBackend.flush();
@@ -255,19 +270,31 @@ describe('The operation service', function() {
                 ];
 
                 service.reloadNamedOperations().then(function(available) {
-                    expect(available[1].input).toEqual('uk.gov.gchq.gaffer.commonutil.pair.Pair');
+                    expect(available[4].input).toEqual('uk.gov.gchq.gaffer.commonutil.pair.Pair');
                 });
 
                 $httpBackend.flush();
             });
 
-            it('should set the input type to EntityId if the first operation is anything other than GetElementsInRanges', function() {
+            it('should set the input type to false if the operation is not listed in the config', function() {
                 namedOperations = [
                     {name: 'namedOp', operations: '{ "operations": [{"class": "some.other.Operation"}] }', parameters: {"inputB": { "valueClass": "Iterable"}} }
                 ];
 
                 service.reloadNamedOperations().then(function(available) {
-                    expect(available[1].input).toEqual('uk.gov.gchq.gaffer.data.element.id.ElementId');
+                    expect(available[4].input).toBeFalsy();
+                });
+
+                $httpBackend.flush();
+            });
+
+            it('should take the input type of the operation in the config if it exists', function() {
+                namedOperations = [
+                    {name: 'namedOp', operations: '{ "operations": [{"class": "a.custom.Operation"}] }'}
+                ];
+
+                service.reloadNamedOperations().then(function(available) {
+                    expect(available[4].input).toEqual("uk.gov.gchq.gaffer.data.element.id.EntityId");
                 });
 
                 $httpBackend.flush();

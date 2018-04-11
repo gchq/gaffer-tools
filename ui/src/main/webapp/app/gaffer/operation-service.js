@@ -45,16 +45,25 @@ angular.module('app').factory('operationService', ['$http', '$q', 'settings', 'c
         return deferredAvailableOperations.promise;
     }
 
-    var hasInputB = function(first) {
-        return common.endsWith(first, "GetElementsBetweenSets");
+    var hasInputB = function(first, availableOps) {
+        for (var i in availableOps) {
+            if (availableOps[i].class && common.endsWith(availableOps[i].class, first)) {
+                return availableOps[i].inputB
+            }
+        }
+
+        return false;
     }
 
-    var getInputType = function(first) {
-        if (common.endsWith(first, 'GetElementsInRanges')) {
-            return 'uk.gov.gchq.gaffer.commonutil.pair.Pair';
-        } else {
-            return 'uk.gov.gchq.gaffer.data.element.id.ElementId';
+    var getInputType = function(first, availableOps) {
+
+        for (var i in availableOps) {
+            if (availableOps[i].class && common.endsWith(availableOps[i].class, first)) {
+                return availableOps[i].input;
+            }
         }
+
+        return false;
     }
 
     var opAllowed = function(opName, configuredOperations) {
@@ -104,7 +113,9 @@ angular.module('app').factory('operationService', ['$http', '$q', 'settings', 'c
                         var opChain = JSON.parse(results[i].operations);
                         var first = opChain.operations[0].class;
 
-                        if (common.endsWith(first, "GetElementsBetweenSets")) {
+                        var inputB = hasInputB(first, conf.operations.defaultAvailable);
+
+                        if (inputB) {
                             if ((!results[i].parameters) || results[i].parameters['inputB'] === undefined) { // unsupported
                                 console.log('Named operation ' + results[i].operationName + ' starts with a GetElementsBetweenSets operation but does not contain an "inputB" parameter. This is not supported by the UI');
                                 continue;
@@ -123,8 +134,8 @@ angular.module('app').factory('operationService', ['$http', '$q', 'settings', 'c
                             description: results[i].description,
                             operations: results[i].operations,
                             view: false,
-                            input: getInputType(first),
-                            inputB: hasInputB(first),
+                            input: getInputType(first, conf.operations.defaultAvailable),
+                            inputB: inputB,
                             namedOp: true,
                             inOutFlag: false
                         });

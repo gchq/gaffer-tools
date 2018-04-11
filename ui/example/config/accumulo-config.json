@@ -1,0 +1,55 @@
+{
+    "operations": {
+        "defaultAvailable": [
+            {
+                "name": "Get Elements",
+                "class": "uk.gov.gchq.gaffer.operation.impl.get.GetElements",
+                "description": "Given your selected seeds, it gets related Entities and Edges.",
+                "input": true,
+                "view": true,
+                "inOutFlag": true,
+                "arrayOutput": true
+            },
+            {
+                "name": "Get Elements Between Sets",
+                "class": "uk.gov.gchq.gaffer.accumulostore.operation.impl.GetElementsBetweenSets",
+                "description": "Gets edges where the source and destination appear in both sets. As well as entities which appear in the first set",
+                "input": true,
+                "inputB": true,
+                "arrayOutput": true,
+                "view": true,
+                "inOutFlag": true
+            },
+            {
+                "name": "Get Elements Within Set",
+                "class": "uk.gov.gchq.gaffer.accumulostore.operation.impl.GetElementsWithinSet",
+                "description": "Retrieves edges where both ends are in a given set, or entities where the vertex is in the set",
+                "input": true,
+                "view": true,
+                "inOutFlag": false,
+                "arrayOutput": true
+            },
+            {
+                "name": "Get Elements In Ranges",
+                "class": "uk.gov.gchq.gaffer.accumulostore.operation.impl.GetElementsInRanges",
+                "description": "Retreives all data between the seeds",
+                "input": "uk.gov.gchq.gaffer.commonutil.pair.Pair",
+                "view": true,
+                "inOutFlag": true,
+                "arrayOutput": true
+            }
+        ]
+    },
+    "title": "Example",
+    "time": {
+        "filter": {
+            "class": "java.util.Date",
+            "unit": "millisecond",
+            "startProperty": "startDate",
+            "endProperty": "endDate"
+        }
+    },
+    "operationOptionKeys": {
+        "Option1 ": "gaffer.option.key1"
+    }
+}
