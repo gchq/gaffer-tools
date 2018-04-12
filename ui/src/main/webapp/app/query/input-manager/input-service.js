@@ -22,23 +22,59 @@
 angular.module('app').factory('input', ['events', 'common', function(events, common) {
     var service = {};
     var updateEventName = 'queryInputUpdate';
+    var secondaryUpdateEventName = 'secondaryInputUpdate';
+    var pairUpdateEventName = 'pairInputUpdate';
 
     var input = [];
+    var inputB = [];
+    var inputPairs = [];
 
     /** 
-     * Gets the current input
+     * Gets the current primary input
     */
     service.getInput = function() {
         return input;
     }
 
     /**
-     * Sets the current input
+     * Gets the secondary input
+     */
+    service.getInputB = function() {
+        return inputB;
+    }
+
+    /**
+     * Gets the input Pairs
+     */
+    service.getInputPairs = function() {
+        return inputPairs;
+    }
+
+    /**
+     * Sets the current primary input
      * @param {Array} newInput 
      */
     service.setInput = function(newInput) {
         input = newInput;
         events.broadcast(updateEventName, [input]);
+    }
+
+    /**
+     * Sets the current secondary input
+     * @param {*} newInput The updated input
+     */
+    service.setInputB = function(newInput) {
+        inputB = newInput;
+        events.broadcast(secondaryUpdateEventName, [inputB]);
+    }
+
+    /**
+     * Sets the new input pairs
+     * @param {any[]} newInput 
+     */
+    service.setInputPairs = function(newInput) {
+        inputPairs = newInput;
+        events.broadcast(pairUpdateEventName, [inputPairs]);
     }
 
     /**
@@ -62,11 +98,15 @@ angular.module('app').factory('input', ['events', 'common', function(events, com
     */
     service.reset = function() {
         input = [];
+        inputB = [];
+        inputPairs = [];
         events.broadcast(updateEventName, [input]);
+        events.broadcast(secondaryUpdateEventName, [inputB]);
+        events.broadcast(pairUpdateEventName, [inputPairs]);
     }
 
     /**
-     * Removes a seed from the input array
+     * Removes a seed from the primary input array
      * @param {*} seed 
      */
     service.removeInput = function(seed) {

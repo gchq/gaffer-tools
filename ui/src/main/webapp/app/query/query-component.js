@@ -160,13 +160,11 @@ function QueryController(queryPage, operationService, types, graph, config, sett
 
     /**
      * Uses seeds uploaded to the input service to build an input array to the query.
+     * @param seeds the input array
      */
-    var createOpInput = function() {
+    var createOpInput = function(seeds) {
         var opInput = [];
-        var jsonVertex;
         
-        var seeds = input.getInput();
-
         for (var i in seeds) {
             opInput.push({
                 "class": "uk.gov.gchq.gaffer.operation.data.EntitySeed",
@@ -175,6 +173,33 @@ function QueryController(queryPage, operationService, types, graph, config, sett
         }
 
         return opInput;
+    }
+
+    /**
+     * Create an array of JSON serialisable Pair objects from the values created by the input component
+     * @param {any[]} pairs 
+     */
+    var createPairInput = function(pairs) {
+        var opInput = [];
+
+        for (var i in pairs) {
+            opInput.push({
+                "class": "uk.gov.gchq.gaffer.commonutil.pair.Pair",
+                "first": {
+                    "uk.gov.gchq.gaffer.operation.data.EntitySeed": {
+                        "vertex": types.createJsonValue(pairs[i].first.valueClass, pairs[i].first.parts)
+                    }
+                },
+                "second": {
+                    "uk.gov.gchq.gaffer.operation.data.EntitySeed": {
+                        "vertex": types.createJsonValue(pairs[i].second.valueClass, pairs[i].second.parts)
+                    }
+                }
+            });
+        }
+
+        return opInput;
+
     }
 
     /**
@@ -243,8 +268,13 @@ function QueryController(queryPage, operationService, types, graph, config, sett
             op.operationName = selectedOp.name;
         }
 
-        if (selectedOp.input) {
-            op.input = createOpInput();
+        if (selectedOp.input === "uk.gov.gchq.gaffer.commonutil.pair.Pair") {
+            op.input = createPairInput(input.getInputPairs())
+        } else if (selectedOp.input) {
+            op.input = createOpInput(input.getInput());
+        }
+        if (selectedOp.inputB && !selectedOp.namedOp) {
+            op.inputB = createOpInput(input.getInputB());
         }
 
         if (selectedOp.parameters) {
@@ -257,6 +287,13 @@ function QueryController(queryPage, operationService, types, graph, config, sett
                 }
             }
             op.parameters = opParams;
+        }
+
+        if (selectedOp.inputB && selectedOp.namedOp) {
+            if (!op.parameters) {
+                op.parameters = {};
+            }
+            op.parameters['inputB'] = createOpInput(input.getInputB());
         }
 
         if (selectedOp.view) {
