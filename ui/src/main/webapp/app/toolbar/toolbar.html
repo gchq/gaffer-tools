@@ -13,12 +13,23 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-<div layout-margin>
-    <div class="loading-container">
-        <md-progress-circular ng-show="ctrl.isLoading()"
-                              md-diameter="30"
-                              md-mode="indeterminate"
-                              class="md-accent">
-        </md-progress-circular>
+
+<md-toolbar aria-label="toolbar"
+            ng-cloak>
+
+    <div class="md-toolbar-tools">
+        <logo></logo>
+        <h1 class="md-headline title">{{::ctrl.appTitle}}</h1>
+        <span flex></span>
+
+        <loading-circle></loading-circle>
+        <md-button ng-if="ctrl.isRawTab()"
+                   class="md-raised" id="execute-all"
+                   ng-click="ctrl.executeAll()">Execute All
+        </md-button>
+        <md-button class="md-raised" id="redraw"
+                   ng-if="ctrl.isGraphInView()"
+                   ng-click="ctrl.redraw()">Redraw
+        </md-button>
     </div>
-</div>
+</md-toolbar>
