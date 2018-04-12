@@ -26,6 +26,16 @@ function resultsTable() {
     };
 }
 
+/**
+ * The controller for the table page..
+ * @param {*} schema For looking up information about the different groups and types.
+ * @param {*} results For retrieving the results
+ * @param {*} table For caching user table view preferences
+ * @param {*} events For subscribing to resultsUpdated events
+ * @param {*} common For common methods
+ * @param {*} types For converting objects based on their types
+ * @param {*} time For converting time objects
+ */
 function TableController(schema, results, table, events, common, types, time) {
     var initialNumberOfColumnsToShow = 8;
     var vm = this;
@@ -36,6 +46,11 @@ function TableController(schema, results, table, events, common, types, time) {
     vm.sortType = undefined;
     vm.schema = {edges:{}, entities:{}, types:{}};
 
+    /**
+     * Initialises the controller.
+     * Fetches the schema. Fetches the results and processes them.
+     * Loads any cached table preferences and subscribes to resultsUpdated events.
+     */
     vm.$onInit = function() {
         schema.get().then(function(gafferSchema) {
             vm.schema = gafferSchema;
@@ -45,6 +60,10 @@ function TableController(schema, results, table, events, common, types, time) {
         });
     }
 
+    /**
+     * Cleans up the controller. Unsubscribes from resultsUpdated events and
+     * caches table preferences.
+     */
     vm.$onDestroy = function() {
         events.unsubscribe('resultsUpdated', onResultsUpdated);
         cacheValues();
@@ -58,19 +77,39 @@ function TableController(schema, results, table, events, common, types, time) {
     }
 
     vm.updateFilteredResults = function() {
-        updateFilteredResults();
+        vm.data.results = [];
+        for(var t in vm.data.types) {
+            if(vm.data.types[t] in resultsByType) {
+                for(var g in vm.data.groups) {
+                    if(vm.data.groups[g] in resultsByType[vm.data.types[t]]) {
+                        vm.data.results = vm.data.results.concat(resultsByType[vm.data.types[t]][vm.data.groups[g]]);
+                    }
+                }
+            }
+        }
+        updateColumns();
     }
 
+    /*
+     * Text for the select types component - 'type'
+     */
     vm.selectedTypesText = function() {
         return "type";
     }
 
+    /*
+     * Text for the select groups component - 'group'
+     */
     vm.selectedGroupsText = function() {
         return "group";
     }
 
+    /*
+     * Text for the select columns component.
+     * 'Choose columns' and conditionally shows 'X more' if there are hidden columns.
+     */
     vm.selectedColumnsText = function() {
-        if(vm.data.columns && vm.data.allColumns.length > vm.data.columns.length) {
+        if(vm.data.columns && vm.data.allColumns && vm.data.allColumns.length > vm.data.columns.length) {
             return "Choose columns (" + (vm.data.allColumns.length - vm.data.columns.length) + " more)";
     }
         return "Choose columns";
@@ -92,7 +131,7 @@ function TableController(schema, results, table, events, common, types, time) {
         processElements("Entity", "entities", ["type", "group", "source"], ids, groupByProperties, properties, resultsData);
         processOtherTypes(ids, properties, resultsData);
 
-        vm.data.allColumns = common.dedupConcatValues(common.dedupConcatValues(ids, groupByProperties), properties);
+        vm.data.allColumns = common.concatUniqueValues(common.concatUniqueValues(ids, groupByProperties), properties);
         vm.data.columns = angular.copy(vm.data.allColumns).splice(0, initialNumberOfColumnsToShow + 1);
 
         vm.data.allTypes = [];
@@ -100,33 +139,19 @@ function TableController(schema, results, table, events, common, types, time) {
         for(var type in resultsByType) {
             vm.data.allTypes.push(type);
             for(var group in resultsByType[type]) {
-                common.dedupPushValue(group, vm.data.allGroups);
+                common.pushValueIfUnique(group, vm.data.allGroups);
             }
         }
         vm.data.types = angular.copy(vm.data.allTypes);
         vm.data.groups = angular.copy(vm.data.allGroups);
 
-        updateFilteredResults();
-    }
-
-    var updateFilteredResults = function() {
-        vm.data.results = [];
-        for(var t in vm.data.types) {
-            if(vm.data.types[t] in resultsByType) {
-                for(var g in vm.data.groups) {
-                    if(vm.data.groups[g] in resultsByType[vm.data.types[t]]) {
-                        vm.data.results = vm.data.results.concat(resultsByType[vm.data.types[t]][vm.data.groups[g]]);
-                    }
-                }
-            }
-        }
-        updateColumns();
+        vm.updateFilteredResults();
     }
 
     var updateColumns = function() {
         var resultColumns = []
         for(var i in vm.data.results) {
-            common.dedupPushValues(Object.keys(vm.data.results[i]), resultColumns);
+            common.pushValuesIfUnique(Object.keys(vm.data.results[i]), resultColumns);
         }
         var newColumns = [];
         for(var i in vm.data.columns) {
@@ -140,7 +165,7 @@ function TableController(schema, results, table, events, common, types, time) {
     var processElements = function(type, typePlural, idKeys, ids, groupByProperties, properties, resultsData) {
         if(resultsData[typePlural] && Object.keys(resultsData[typePlural]).length > 0) {
             resultsByType[type] = [];
-            common.dedupPushValues(idKeys, ids);
+            common.pushValuesIfUnique(idKeys, ids);
             for(var i in resultsData[typePlural]) {
                 var element = resultsData[typePlural][i];
                 if(element) {
@@ -168,7 +193,7 @@ function TableController(schema, results, table, events, common, types, time) {
                                         if(typeDef && typeDef.description && !(propName in vm.data.tooltips)) {
                                             vm.data.tooltips[propName] = typeDef.description;
                                         }
-                                        common.dedupPushValue(propName, groupByProperties);
+                                        common.pushValueIfUnique(propName, groupByProperties);
                                      }
                                  }
                                  for(var propName in elementDef.properties) {
@@ -176,12 +201,12 @@ function TableController(schema, results, table, events, common, types, time) {
                                     if(typeDef && typeDef.description && !(propName in vm.data.tooltips)) {
                                         vm.data.tooltips[propName] = typeDef.description;
                                     }
-                                    common.dedupPushValue(propName, properties);
+                                    common.pushValueIfUnique(propName, properties);
                                  }
                             }
                         }
                         for(var prop in element.properties) {
-                            common.dedupPushValue(prop, properties);
+                            common.pushValueIfUnique(prop, properties);
                             result[prop] = convertValue(prop, element.properties[prop]);
                         }
                     }
@@ -203,19 +228,19 @@ function TableController(schema, results, table, events, common, types, time) {
                     var value = convertValue(key, item[key]);
                     if("class" === key) {
                         result["type"] = item[key].split(".").pop();
-                        common.dedupPushValue("type", ids);
+                        common.pushValueIfUnique("type", ids);
                     } else if("vertex" === key) {
                         result["source"] = value;
-                        common.dedupPushValue("source", ids);
+                        common.pushValueIfUnique("source", ids);
                     } else if("source" === key) {
                         result["source"] = value;
-                        common.dedupPushValue("source", ids);
+                        common.pushValueIfUnique("source", ids);
                     } else if("value" === key) {
                         result[key] = value;
-                        common.dedupPushValue(key, ids);
+                        common.pushValueIfUnique(key, ids);
                     } else {
                         result[key] = value;
-                        common.dedupPushValue(key, properties);
+                        common.pushValueIfUnique(key, properties);
                     }
                 }
                 if(!(result.type in resultsByType)) {

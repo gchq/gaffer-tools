@@ -151,75 +151,75 @@ describe('The common service', function() {
         });
     })
 
-    describe('common.dedupPushValue()', function() {
+    describe('common.pushValueIfUnique()', function() {
         it('should add value to array if it does not already exist', function() {
             var arr = ['this', 'is', 'a'];
-            service.dedupPushValue('test', arr);
+            service.pushValueIfUnique('test', arr);
             expect(arr).toEqual(['this', 'is', 'a', 'test']);
         });
 
         it('should not add value to array if it already exists', function() {
             var arr = ['this', 'is', 'a', 'test'];
-            service.dedupPushValue('test', arr);
+            service.pushValueIfUnique('test', arr);
             expect(arr).toEqual(['this', 'is', 'a', 'test']);
         });
 
         it('should not add value to array if the array is undefined', function() {
             var arr = undefined;
-            service.dedupPushValue('test', arr);
+            service.pushValueIfUnique('test', arr);
             expect(arr).toEqual(undefined);
         });
     })
 
-    describe('common.dedupPushValues()', function() {
+    describe('common.pushValuesIfUnique()', function() {
         it('should add values to array if they do not already exist', function() {
             var arr = ['this', 'is', 'a'];
-            service.dedupPushValues(['is', 'a', 'test'], arr);
+            service.pushValuesIfUnique(['is', 'a', 'test'], arr);
             expect(arr).toEqual(['this', 'is', 'a', 'test']);
         });
 
         it('should not add values to array if the array is undefined', function() {
             var arr = undefined;
-            service.dedupPushValues(['test'], arr);
+            service.pushValuesIfUnique(['test'], arr);
             expect(arr).toEqual(undefined);
         });
 
         it('should not add values to array if the values are undefined', function() {
             var arr = ['this', 'is', 'a'];
-            service.dedupPushValues(undefined, arr);
+            service.pushValuesIfUnique(undefined, arr);
             expect(arr).toEqual(['this', 'is', 'a']);
         });
     })
 
-    describe('common.dedupPushObject()', function() {
+    describe('common.pushObjectIfUnique()', function() {
         it('should add object to array if it does not already exist', function() {
             var obj = {'field': { 'level': { 'anotherLevel': true, 'differentField': 12}}}
             var arr = [ {'field': true}, undefined, null];
-            service.dedupPushObject(obj, arr);
+            service.pushObjectIfUnique(obj, arr);
             expect(arr).toEqual([ {'field': true}, undefined, null, obj]);
         });
 
         it('should not add object to array if it already exists', function() {
             var obj = {'field': { 'level': { 'anotherLevel': true, 'differentField': 12}}}
             var arr = [ {'field': true}, obj, undefined, null];
-            service.dedupPushObject(obj, arr);
+            service.pushObjectIfUnique(obj, arr);
             expect(arr).toEqual([ {'field': true}, obj, undefined, null]);
         });
 
         it('should not add object to array if the array is undefined', function() {
             var obj = {'field': { 'level': { 'anotherLevel': true, 'differentField': 12}}}
             var arr = undefined;
-            service.dedupPushObject(obj, arr);
+            service.pushObjectIfUnique(obj, arr);
             expect(arr).toEqual(undefined);
         });
     })
 
-    describe('common.dedupPushObjects()', function() {
+    describe('common.pushObjectsIfUnique()', function() {
         it('should add objects to array if it does not already exist', function() {
             var obj1 = {'field': { 'level': { 'anotherLevel': true, 'differentField': 12}}}
             var obj2 = {'field': { 'level': { 'anotherLevel': true, 'differentField': 13}}}
             var arr = [ {'field': true}, undefined, null];
-            service.dedupPushObjects([obj1, obj2], arr);
+            service.pushObjectsIfUnique([obj1, obj2], arr);
             expect(arr).toEqual([ {'field': true}, undefined, null, obj1, obj2]);
         });
 
@@ -227,33 +227,33 @@ describe('The common service', function() {
             var obj1 = {'field': { 'level': { 'anotherLevel': true, 'differentField': 12}}}
             var obj2 = {'field': { 'level': { 'anotherLevel': true, 'differentField': 13}}}
             var arr = undefined;
-            service.dedupPushObjects([obj1, obj2], arr);
+            service.pushObjectsIfUnique([obj1, obj2], arr);
             expect(arr).toEqual(undefined);
         });
 
         it('should not add objects to array if the objects array is undefined', function() {
             var arr = [ {'field': true}, undefined, null];
-            service.dedupPushObjects(undefined, arr);
+            service.pushObjectsIfUnique(undefined, arr);
             expect(arr).toEqual([ {'field': true}, undefined, null]);
         });
     })
 
-    describe('common.dedupConcatValues()', function() {
+    describe('common.concatUniqueValues()', function() {
         it('should concat 2 arrays and deduplicate the results', function() {
             var arr1 = ['this', 'is', 'a'];
             var arr2 = ['is', 'a', 'test'];
-            var result = service.dedupConcatValues(arr1, arr2);
+            var result = service.concatUniqueValues(arr1, arr2);
             expect(arr1).toEqual(['this', 'is', 'a']);
             expect(arr2).toEqual(['is', 'a', 'test']);
             expect(result).toEqual(['this', 'is', 'a', 'test']);
         });
     })
 
-    describe('common.dedupConcatObjects()', function() {
+    describe('common.concatUniqueObjects()', function() {
         it('should concat 2 arrays and deduplicate the results', function() {
             var arr1 = [{'field': 1},{'field': 2}];
             var arr2 = [{'field': 2}, {'field': 3}];
-            var result = service.dedupConcatObjects(arr1, arr2);
+            var result = service.concatUniqueObjects(arr1, arr2);
             expect(arr1).toEqual([{'field': 1},{'field': 2}]);
             expect(arr2).toEqual([{'field': 2}, {'field': 3}]);
             expect(result).toEqual([{'field': 1}, {'field': 2}, {'field': 3}]);

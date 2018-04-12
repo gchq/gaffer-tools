@@ -13,8 +13,7 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-<div ng-cloak layout="column" layout-margin layout-align=" stretch"
-     ng-if="ctrl.data.results.length > 0">
+<div ng-cloak layout="column" layout-margin layout-align=" stretch">
 
     <div layout="row" flex>
         <md-input-container flex="25">
@@ -32,6 +31,10 @@
             <label>Search vertices and properties</label>
             <input ng-model="ctrl.searchTerm" type="text">
         </md-input-container>
+    </div>
+
+    <div ng-if="ctrl.data.results.length === 0">
+        No results
     </div>
 
     <md-table-container>

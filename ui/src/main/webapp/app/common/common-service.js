@@ -125,7 +125,7 @@ angular.module('app').factory('common', function() {
     * @param {*} item the item to add to the list
     * @param {Array} list
     */
-    common.dedupPushValue = function(item, list) {
+    common.pushValueIfUnique = function(item, list) {
         if(list && !common.arrayContainsValue(list, item)) {
             list.push(item);
         }
@@ -136,7 +136,7 @@ angular.module('app').factory('common', function() {
     * @param {*} item the item to add to the list
     * @param {Array} list
     */
-    common.dedupPushObject = function(item, list) {
+    common.pushObjectIfUnique = function(item, list) {
         if(list && !common.arrayContainsObject(list, item)) {
             list.push(item);
         }
@@ -147,10 +147,10 @@ angular.module('app').factory('common', function() {
     * @param {Array} items the items to add to the list
     * @param {Array} list
     */
-    common.dedupPushValues = function(items, list) {
+    common.pushValuesIfUnique = function(items, list) {
         if(list && items) {
             for(var i in items) {
-                common.dedupPushValue(items[i], list);
+                common.pushValueIfUnique(items[i], list);
             }
         }
     }
@@ -160,10 +160,10 @@ angular.module('app').factory('common', function() {
     * @param {Array} items the items to add to the list
     * @param {Array} list
     */
-    common.dedupPushObjects = function(items, list) {
+    common.pushObjectsIfUnique = function(items, list) {
         if(list && items) {
             for(var i in items) {
-                common.dedupPushObject(items[i], list);
+                common.pushObjectIfUnique(items[i], list);
             }
         }
     }
@@ -173,7 +173,7 @@ angular.module('app').factory('common', function() {
     * @param {Array} list1
     * @param {Array} list2
     */
-    common.dedupConcatValues = function(list1, list2) {
+    common.concatUniqueValues = function(list1, list2) {
         if(!list1) {
             return angular.copy(list2);
         }
@@ -183,7 +183,7 @@ angular.module('app').factory('common', function() {
         }
 
         var concatList = angular.copy(list1);
-        common.dedupPushValues(list2, concatList);
+        common.pushValuesIfUnique(list2, concatList);
         return concatList
     }
 
@@ -192,7 +192,7 @@ angular.module('app').factory('common', function() {
     * @param {Array} list1
     * @param {Array} list2
     */
-    common.dedupConcatObjects = function(list1, list2) {
+    common.concatUniqueObjects = function(list1, list2) {
         if(!list1) {
             return angular.copy(list2);
         }
@@ -202,7 +202,7 @@ angular.module('app').factory('common', function() {
         }
 
         var concatList = angular.copy(list1);
-        common.dedupPushObjects(list2, concatList);
+        common.pushObjectsIfUnique(list2, concatList);
         return concatList
     }
 
