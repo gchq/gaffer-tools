@@ -63,7 +63,7 @@ angular.module('app').factory('operationService', ['$http', '$q', 'settings', 'c
             }
         }
 
-        return false;
+        return true;
     }
 
     var opAllowed = function(opName, configuredOperations) {

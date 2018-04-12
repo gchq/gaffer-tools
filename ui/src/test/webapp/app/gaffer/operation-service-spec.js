@@ -276,13 +276,13 @@ describe('The operation service', function() {
                 $httpBackend.flush();
             });
 
-            it('should set the input type to false if the operation is not listed in the config', function() {
+            it('should set the input type to true if the operation is not listed in the config', function() {
                 namedOperations = [
                     {name: 'namedOp', operations: '{ "operations": [{"class": "some.other.Operation"}] }', parameters: {"inputB": { "valueClass": "Iterable"}} }
                 ];
 
                 service.reloadNamedOperations().then(function(available) {
-                    expect(available[4].input).toBeFalsy();
+                    expect(available[4].input).toBeTruthy();
                 });
 
                 $httpBackend.flush();

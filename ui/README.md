@@ -317,10 +317,7 @@ the UI what options it has for a given operations - whether it uses a view or pa
 | inOutFlag   | boolean | A flag indicating that the operation returns edges. And the direction can be customised.
 
 
-If you want to allow Named Operations which use a specific operation that you do not want to expose on it's own. You should
-still include this operation in the Default Available Operations section but then add the operation name to the blacklist.
-This is because the UI uses the Default Available Operations section to determine the input type of a Named Operation. If
-the operation does not exists, it stops the user being able to add input.
+If you want to allow Named Operations which use an operation which uses takes pairs of inputs, make sure the first operation is added to the default available operations.
 
 ### Types section
 
