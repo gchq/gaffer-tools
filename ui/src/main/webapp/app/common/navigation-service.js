@@ -16,7 +16,7 @@
 
 'use strict';
 
-angular.module('app').factory('navigation', ['$location', 'events', function($location, events) {
+angular.module('app').factory('navigation', ['$location', 'events', 'common', function($location, events, common) {
 
     var navigation = {};
 
@@ -27,7 +27,7 @@ angular.module('app').factory('navigation', ['$location', 'events', function($lo
     }
 
     navigation.goTo = function(pageName) {
-        if(pageName && pageName.startsWith("/")) {
+        if(pageName && common.startsWith(pageName, "/")) {
             pageName = pageName.substr(1);
         }
         currentPage = pageName;

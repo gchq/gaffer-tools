@@ -49,9 +49,7 @@ function ToolbarController($rootScope, $mdDialog, navigation, graph, operationSe
                         return;
                     }
                 }
-
                 vm.appTitle = defaultTitle;
-
             },
             function(err) {
                 vm.appTitle = defaultTitle;
