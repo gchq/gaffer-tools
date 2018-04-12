@@ -25,7 +25,6 @@ function operationOverview() {
         controllerAs: 'ctrl',
         bindings: {
             'name': '<',
-            'index': '<',
             'onDelete': '&'
         }
     }

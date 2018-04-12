@@ -17,7 +17,7 @@
     <div layout="column" flex>
         <md-content layout="row" flex>
             <div ng-repeat="op in ctrl.getChain()">
-                <operation-overview name="op.selectedOperation.name" index="$index" on-delete="ctrl.removeOpFromChain($index)"></operation-overview>
+                <operation-overview name="op.selectedOperation.name" on-delete="ctrl.removeOpFromChain($index)"></operation-overview>
             </div>
         </md-content>
         <md-card>
