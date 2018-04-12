@@ -16,7 +16,7 @@
 <div layout="row" layout-padding flex>
     <div layout="column" flex>
         <md-content layout="row" flex>
-            <div ng-repeat="op in ctrl.getChain()">
+            <div ng-repeat="op in ctrl.getChain()" class="fade">
                 <operation-overview name="op.selectedOperation.name" on-delete="ctrl.removeOpFromChain($index)"></operation-overview>
             </div>
         </md-content>
