@@ -55,13 +55,14 @@ angular.module('app').factory('queryPage', ['settings', 'events', function(setti
     //     chainOperations.splice(index, 1, operation)
     // }
 
-    // /**
-    //  * Removes an operation at the specified index from the operation chain
-    //  * @param {number} index 
-    //  */
-    // service.removeFromChainOperations = function(index) {
-    //     chainOperations.splice(index, 1);
-    // }
+    /**
+     * Removes an operation at the specified index from the operation chain
+     * @param {number} index 
+     */
+    service.removeFromOperationChain = function(index) {
+        chainOperations.splice(index, 1);
+        currentIndex--;
+    }
 
     service.getSelectedOperation = function() {
         return selectedOperation;

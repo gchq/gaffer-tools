@@ -86,6 +86,14 @@ function QueryController(queryPage, operationService, types, graph, config, sett
     }
 
     /**
+     * Index to remove
+     * @param {number} index 
+     */
+    vm.removeOpFromChain = function(index) {
+        queryPage.removeFromOperationChain(index);
+    }
+
+    /**
      * Gets the operation chain being built
      */
     vm.getChain = function() {

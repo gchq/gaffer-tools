@@ -25,10 +25,16 @@ function operationOverview() {
         controllerAs: 'ctrl',
         bindings: {
             'name': '<',
+            'index': '<',
+            'onDelete': '&'
         }
     }
 }
 
 function OperationOverviewController() {
-    // do nothing right now
+    var vm = this;
+
+    vm.delete = function() {
+        vm.onDelete();
+    }
 }
