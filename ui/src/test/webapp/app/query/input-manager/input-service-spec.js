@@ -75,7 +75,10 @@ describe('The Input Service', function() {
             service.addInput('hello');
             service.addInput('world');
             service.reset();
-            expect(events.broadcast.calls.mostRecent().args).toEqual(['queryInputUpdate', [[]]]);
+            expect(events.broadcast).toHaveBeenCalledTimes(5);
+            expect(events.broadcast.calls.argsFor(2)).toEqual(['queryInputUpdate', [[]]])
+            expect(events.broadcast.calls.argsFor(3)).toEqual(['secondaryInputUpdate', [[]]]);
+            expect(events.broadcast.calls.argsFor(4)).toEqual(['pairInputUpdate', [[]]]);
         });
     });
 

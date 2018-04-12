@@ -14,9 +14,13 @@ describe('The Seed Builder', function() {
     beforeEach(inject(function(_$componentController_, _events_, _types_, _error_, _input_) {
         events = _events_;
         types = _types_;
-        ctrl = _$componentController_('seedBuilder');
         error = _error_;
         input = _input_;
+        ctrl = _$componentController_('seedBuilder', null, {
+            getter: input.getInput,
+            setter: input.setInput,
+            updateEvent: queryInputUpdateEvent
+        });
     }));
 
     beforeEach(function() {

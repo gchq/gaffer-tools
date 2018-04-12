@@ -111,7 +111,6 @@ describe('The operation service', function() {
     });
 
     describe('operationService.reloadNamedOperations()', function() {
-
         var $httpBackend;
         var defaultAvailableOperations;
         var namedOperations;
@@ -130,9 +129,24 @@ describe('The operation service', function() {
         });
 
         beforeEach(function() {
-            defaultAvailableOperations = [ {
+            defaultAvailableOperations = [ 
+                {
                 name: 'test'
-            }];
+                },
+                {
+                    class: "a.custom.Operation",
+                    input: "uk.gov.gchq.gaffer.data.element.id.EntityId"
+                },
+                {
+                    class: "uk.gov.gchq.gaffer.accumulostore.operation.impl.GetElementsInRanges",
+                    input: "uk.gov.gchq.gaffer.commonutil.pair.Pair"
+                },
+                {
+                    class: "uk.gov.gchq.gaffer.accumulostore.operation.impl.GetElementsBetweenSets",
+                    input: true,
+                    inputB: true
+                }
+            ];
         })
 
         beforeEach(inject(function(_$httpBackend_, _query_) {
@@ -163,7 +177,7 @@ describe('The operation service', function() {
 
             it('should update the available operations if GetAllNamedOperations is supported', function() {
                 namedOperations = [
-                    {name: 'namedOp', description: 'a test'}
+                    {name: 'namedOp', description: 'a test', operations: '{"operations": [{ "class": "GetAllElements" }]}'}
                 ];
 
                 service.getAvailableOperations().then(function(initial) {
@@ -202,9 +216,93 @@ describe('The operation service', function() {
                 expect(returnedResults).toEqual(2);
             });
 
+            it('should not add a GetElementsBetweenSets named operation if it contains no parameters', function() {
+                namedOperations = [
+                    {name: 'namedOp', operations: '{ "operations": [{"class": "GetElementsBetweenSets"}] }'}
+                ];
+
+                service.reloadNamedOperations().then(function(available) {
+                    expect(available).toEqual(defaultAvailableOperations);
+                });
+
+                $httpBackend.flush();
+            });
+
+            it('should not add a GetElementsBetweenSets named operation if it does not contain an inputB parameter', function() {
+                namedOperations = [
+                    {name: 'namedOp', operations: '{ "operations": [{"class": "GetElementsBetweenSets"}] }', parameters: {"notInputB": { "valueClass": "Iterable"}} }
+                ];
+
+                service.reloadNamedOperations().then(function(available) {
+                    expect(available).toEqual(defaultAvailableOperations);
+                });
+
+                $httpBackend.flush();
+            });
+
+            it('should add a GetElementsBetweenSets if it contains an inputB parameter', function() {
+                namedOperations = [
+                    {name: 'namedOp', operations: '{ "operations": [{"class": "GetElementsBetweenSets"}] }', parameters: {"inputB": { "valueClass": "Iterable"}} }
+                ];
+
+                service.reloadNamedOperations().then(function(available) {
+                    expect(available[4].inputB).toBeTruthy();
+                });
+
+                $httpBackend.flush();
+            });
+
+            it('should add a GetElementsBetweenSets if using fully qualified class name', function() {
+                namedOperations = [
+                    {name: 'namedOp', operations: '{ "operations": [{"class": "uk.gov.gchq.gaffer.accumulostore.operation.impl.GetElementsBetweenSets"}] }', parameters: {"inputB": { "valueClass": "Iterable"}} }
+                ];
+
+                service.reloadNamedOperations().then(function(available) {
+                    expect(available[4].inputB).toBeTruthy();
+                });
+
+                $httpBackend.flush();
+            });
+
+            it('should set the input type to Pair if the first named operation is GetElementsInRanges' , function() {
+                namedOperations = [
+                    {name: 'namedOp', operations: '{ "operations": [{"class": "uk.gov.gchq.gaffer.accumulostore.operation.impl.GetElementsInRanges"}] }', parameters: {"inputB": { "valueClass": "Iterable"}} }
+                ];
+
+                service.reloadNamedOperations().then(function(available) {
+                    expect(available[4].input).toEqual('uk.gov.gchq.gaffer.commonutil.pair.Pair');
+                });
+
+                $httpBackend.flush();
+            });
+
+            it('should set the input type to true if the operation is not listed in the config', function() {
+                namedOperations = [
+                    {name: 'namedOp', operations: '{ "operations": [{"class": "some.other.Operation"}] }', parameters: {"inputB": { "valueClass": "Iterable"}} }
+                ];
+
+                service.reloadNamedOperations().then(function(available) {
+                    expect(available[4].input).toBeTruthy();
+                });
+
+                $httpBackend.flush();
+            });
+
+            it('should take the input type of the operation in the config if it exists', function() {
+                namedOperations = [
+                    {name: 'namedOp', operations: '{ "operations": [{"class": "a.custom.Operation"}] }'}
+                ];
+
+                service.reloadNamedOperations().then(function(available) {
+                    expect(available[4].input).toEqual("uk.gov.gchq.gaffer.data.element.id.EntityId");
+                });
+
+                $httpBackend.flush();
+            })
+
             it('should not cache the result as a reload is being forced', function() {
                 service.reloadNamedOperations().then(function(initialAvailableOperations) {
-                    namedOperations = [ { name: 'test' } ];
+                    namedOperations = [ { name: 'test' , operations: '{"operations": [{ "class": "GetAllElements" }]}'} ];
                     service.reloadNamedOperations().then(function(updatedAvailableOperations) {
                         expect(updatedAvailableOperations).not.toEqual(initialAvailableOperations);
                     });
