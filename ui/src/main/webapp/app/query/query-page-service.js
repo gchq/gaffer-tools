@@ -21,6 +21,47 @@ angular.module('app').factory('queryPage', ['settings', 'events', function(setti
     var selectedOperation;
     var inOutFlag = 'EITHER';
     var opOptions;
+    var chainOperations = []
+    var currentIndex = 0;
+
+    /**
+     * Returns the operations in the current chain
+     */
+    service.getOperationChain = function() {
+        return chainOperations;
+    }
+
+    /**
+     * Adds an operation to the current operation chain
+     */
+    service.addToOperationChain = function(operation) {
+        chainOperations.push(operation);
+        currentIndex++;
+    }
+
+    /**
+     * Gets the current index (ie the index of the current operation in an operation chain)
+     */
+    service.getCurrentIndex = function() {
+        return currentIndex;
+    }
+
+    // /**
+    //  * Updates an operation at the specified index
+    //  * @param {object} operation 
+    //  * @param {number} index 
+    //  */
+    // service.updateOperationInChain = function(operation, index) {
+    //     chainOperations.splice(index, 1, operation)
+    // }
+
+    // /**
+    //  * Removes an operation at the specified index from the operation chain
+    //  * @param {number} index 
+    //  */
+    // service.removeFromChainOperations = function(index) {
+    //     chainOperations.splice(index, 1);
+    // }
 
     service.getSelectedOperation = function() {
         return selectedOperation;
@@ -50,6 +91,8 @@ angular.module('app').factory('queryPage', ['settings', 'events', function(setti
         selectedOperation = undefined;
         inOutFlag = 'EITHER';
         opOptions = angular.copy(settings.getDefaultOpOptions());
+        chainOperations = [];
+        currentIndex = 0;
     }
 
     return service;

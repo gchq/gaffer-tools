@@ -53,6 +53,7 @@ function query() {
  */
 function QueryController(queryPage, operationService, types, graph, config, settings, query, results, navigation, $mdDialog, loading, dateRange, view, error, input, $routeParams, $location, events) {
     var namedViewClass = "uk.gov.gchq.gaffer.data.elementdefinition.view.NamedView";
+    var operationChainClass = "uk.gov.gchq.gaffer.operation.OperationChain"
     var vm = this;
     vm.timeConfig;
 
@@ -75,6 +76,48 @@ function QueryController(queryPage, operationService, types, graph, config, sett
      */
     vm.getSelectedOp = function() {
         return queryPage.getSelectedOperation();
+    }
+
+    /**
+     * Test to see if an operation has already been added to the chain.
+     */
+    vm.isFirst = function() {
+        return queryPage.getCurrentIndex() === 0;
+    }
+
+    /**
+     * Gets the operation chain being built
+     */
+    vm.getChain = function() {
+        return queryPage.getOperationChain();
+    }
+
+    var createOperation = function() {
+        return {
+            selectedOperation: queryPage.getSelectedOperation(),
+            view: {
+                viewEdges: view.getViewEdges(),
+                edgeFilters: view.getEdgeFilters(),
+                viewEntities: view.getViewEntities(),
+                entityFilters: view.getEntityFilters(),
+                namedViews: view.getNamedViews()
+            },
+            input: (vm.isFirst()) ? input.getInput() : undefined,
+            inOutFlag: queryPage.getInOutFlag(),
+            startDate: dateRange.getStartDate(),
+            endDate: dateRange.getEndDate(),
+            opOptions: queryPage.getOpOptions()
+        }
+    }
+
+    /**
+     * Adds the current operation to the op chain
+     */
+    vm.addToOperationChain = function() {
+        queryPage.addToOperationChain(createOperation());
+        dateRange.resetDateRange();
+        view.reset();
+        input.reset();
     }
 
     /**
@@ -101,8 +144,21 @@ function QueryController(queryPage, operationService, types, graph, config, sett
         if (!vm.canExecute()) {
             return;
         }
-
-        var operation = createOperation();
+        var operation;
+        if (queryPage.getOperationChain() === []) {
+            operation = createOperationForQuery(createOperation());
+        } else {
+            operation = {
+                class: operationChainClass,
+                operations: []
+            }
+            var ops = queryPage.getOperationChain();
+            for (var i in ops) {
+                operation.operations.push(createOperationForQuery(ops[i]))
+            }
+            operation.operations.push(createOperationForQuery(createOperation()));
+        }
+        
         query.addOperation(operation);
         loading.load()
         query.execute(JSON.stringify({
@@ -161,11 +217,9 @@ function QueryController(queryPage, operationService, types, graph, config, sett
     /**
      * Uses seeds uploaded to the input service to build an input array to the query.
      */
-    var createOpInput = function() {
+    var createOpInput = function(seeds) {
         var opInput = [];
         var jsonVertex;
-        
-        var seeds = input.getInput();
 
         for (var i in seeds) {
             opInput.push({
@@ -231,10 +285,11 @@ function QueryController(queryPage, operationService, types, graph, config, sett
     }
 
     /**
-     * Builds an operation using views, inputs and other options
+     * Builds a Gaffer operation based on the UI operation given to it
+     * @param {object} operation The UI operation
      */
-    var createOperation = function() {
-        var selectedOp = vm.getSelectedOp()
+    var createOperationForQuery = function(operation) {
+        var selectedOp = operation.selectedOperation;
         var op = {
              class: selectedOp.class
         };
@@ -243,8 +298,8 @@ function QueryController(queryPage, operationService, types, graph, config, sett
             op.operationName = selectedOp.name;
         }
 
-        if (selectedOp.input) {
-            op.input = createOpInput();
+        if (selectedOp.input && operation.input !== undefined) {
+            op.input = createOpInput(operation.input);
         }
 
         if (selectedOp.parameters) {
@@ -260,11 +315,11 @@ function QueryController(queryPage, operationService, types, graph, config, sett
         }
 
         if (selectedOp.view) {
-            var namedViews = view.getNamedViews();
-            var viewEdges = view.getViewEdges();
-            var viewEntities = view.getViewEntities();
-            var edgeFilters = view.getEdgeFilters();
-            var entityFilters = view.getEntityFilters();
+            var namedViews = operation.namedViews;
+            var viewEdges = operation.viewEdges;
+            var viewEntities = operation.viewEntities;
+            var edgeFilters = operation.edgeFilters;
+            var entityFilters = operation.entityFilters;
 
             op.view = {
                 globalElements: [{
@@ -277,26 +332,26 @@ function QueryController(queryPage, operationService, types, graph, config, sett
             createElementView(viewEntities, entityFilters, op.view.entities);
             createElementView(viewEdges, edgeFilters, op.view.edges);
 
-            if (dateRange.getStartDate() !== undefined && dateRange.getStartDate() !== null) {
+            if (operation.startDate !== undefined && operation.startDate !== null) {
                 op.view.globalElements.push({
                     "preAggregationFilterFunctions": [ {
                         "predicate": {
                             "class": "uk.gov.gchq.koryphe.impl.predicate.IsMoreThan",
                             "orEqualTo": true,
-                            "value": types.createJsonValue(vm.timeConfig.filter.class, dateRange.getStartDate())
+                            "value": types.createJsonValue(vm.timeConfig.filter.class, operation.startDate)
                         },
                         "selection": [ vm.timeConfig.filter.startProperty ]
                     }]
                 });
             }
 
-            if (dateRange.getEndDate() !== undefined && dateRange.getEndDate() !== null) {
+            if (operation.endDate !== undefined && operation.endDate !== null) {
                 op.view.globalElements.push({
                     "preAggregationFilterFunctions": [ {
                         "predicate": {
                             "class": "uk.gov.gchq.koryphe.impl.predicate.IsLessThan",
                             "orEqualTo": true,
-                            "value": types.createJsonValue(vm.timeConfig.filter.class, dateRange.getEndDate())
+                            "value": types.createJsonValue(vm.timeConfig.filter.class, operation.endDate)
                         },
                         "selection": [ vm.timeConfig.filter.endProperty ]
                     }]
@@ -328,11 +383,11 @@ function QueryController(queryPage, operationService, types, graph, config, sett
         }
 
         if (selectedOp.inOutFlag) {
-            op.includeIncomingOutGoing = queryPage.getInOutFlag();
+            op.includeIncomingOutGoing = operation.inOutFlag;
         }
 
-        if(queryPage.getOpOptions()) {
-            op.options = queryPage.getOpOptions();
+        if(operation.opOptions) {
+            op.options = operation.opOptions;
         }
 
         return op;
