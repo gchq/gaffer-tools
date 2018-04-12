@@ -13,216 +13,87 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-<div ng-cloak>
-    <md-tabs md-border-bottom
-             md-dynamic-height
-             md-selected="ctrl.selectedTab" >
-        <md-tab label="Entities">
-            <md-content class="md-padding" layout="column">
-                <md-input-container>
-                    <label>Search vertices and properties</label>
-                    <input ng-model="ctrl.searchTerm" type="text">
-                </md-input-container>
+<div ng-cloak layout="column" layout-margin layout-align=" stretch">
 
-                <div ng-repeat="(group, schemaEntity) in ctrl.schema.entities">
-                    <div ng-show="ctrl.data.entities[group].length > 0">
-                        <h4>
-                            <b>{{group}}</b>
-                            <md-tooltip md-direction="top" ng-if="schemaEntity.description">{{schemaEntity.description}}</md-tooltip>
-                        </h4>
+    <div layout="row" flex>
+        <md-input-container flex="25">
+            <md-select ng-model="ctrl.data.columns" multiple
+                       md-selected-text="ctrl.selectedColumnsText()">
+                <md-option ng-value="col"
+                           ng-repeat="col in ctrl.data.allColumns">
+                    {{col}}
+                    <span ng-if="'source' === col">/ vertex</span>
+                </md-option>
+            </md-select>
+        </md-input-container>
 
-                        <md-table-container>
-                            <table md-table id="entity-{{group}}-table-elements" >
-                                <thead md-head>
-                                <tr md-row>
-                                    <th md-column>
-                                        <a ng-click="sortType = 'vertex'; sortReverse = !sortReverse">
-                                            Vertex
-                                                <span ng-show="sortType === 'vertex' && !sortReverse">
-                                                    <md-icon md-svg-icon="down-arrow"></md-icon>
-                                                </span>
-                                                <span ng-show="sortType === 'vertex' && sortReverse">
-                                                    <md-icon md-svg-icon="up-arrow"></md-icon>
-                                                </span>
-                                        </a>
-                                    </th>
-                                    <th md-column ng-repeat="(name, type) in schemaEntity.properties">
-                                        {{name}}
-                                        <md-tooltip md-direction="top" ng-if="ctrl.schema.types[type].description">{{ctrl.schema.types[type].description}}</md-tooltip>
-                                    </th>
-                                </tr>
-                                </thead>
-                                <tbody md-body>
-                                <tr md-row ng-repeat="entity in ctrl.data.entities[group] | orderBy:sortType:sortReverse | filter:ctrl.searchTerm">
-                                    <td md-cell>
-                                        {{entity.vertex}}
-                                    </td>
-                                    <td md-cell ng-repeat="(name, type) in schemaEntity.properties">
-                                        {{entity.properties[name]}}
-                                    </td>
-                                </tr>
-                                </tbody>
-                            </table>
-                        </md-table-container>
-                    </div>
-                </div>
-            </md-content>
-        </md-tab>
+        <md-input-container flex="75">
+            <label>Search vertices and properties</label>
+            <input ng-model="ctrl.searchTerm" type="text">
+        </md-input-container>
+    </div>
 
-        <md-tab label="Edges">
-            <md-content class="md-padding" layout="column">
-                <md-input-container>
-                    <label>Search vertices and properties</label>
-                    <input ng-model="ctrl.searchTerm" type="text">
-                </md-input-container>
+    <div ng-if="ctrl.data.results.length === 0">
+        No results
+    </div>
 
-                <div ng-repeat="(group, schemaEdge) in ctrl.schema.edges">
-                    <div ng-show="ctrl.data.edges[group].length > 0">
-                        <h4>
-                            <b>{{group}}</b>
-                            <md-tooltip md-direction="top" ng-if="schemaEdge.description">{{schemaEdge.description}}</md-tooltip>
-                        </h4>
-                        <md-table-container>
-                            <table id="edge-{{group}}-table-elements"
-                                   md-table>
-                                <thead md-head>
-                                <tr md-row>
-                                    <th md-column>
-                                        <a ng-click="sortType = 'source'; sortReverse = !sortReverse">
-                                            Source
-                                                <span ng-show="sortType === 'source' && !sortReverse">
-                                                    <md-icon md-svg-icon="down-arrow"></md-icon>
-                                                </span>
-                                                <span ng-show="sortType === 'source' && sortReverse">
-                                                    <md-icon md-svg-icon="up-arrow"></md-icon>
-                                                </span>
-                                        </a>
-                                    </th>
-                                    <th md-column>
-                                        <a ng-click="sortType = 'destination'; sortReverse = !sortReverse">
-                                            Destination
-                                                <span ng-show="sortType === 'destination' && !sortReverse">
-                                                    <md-icon md-svg-icon="down-arrow"></md-icon>
-                                                </span>
-                                                <span ng-show="sortType === 'destination' && sortReverse">
-                                                    <md-icon md-svg-icon="up-arrow"></md-icon>
-                                                </span>
-                                        </a>
-                                    </th>
-                                    <th md-column>
-                                        <a ng-click="sortType = 'directed'; sortReverse = !sortReverse">
-                                            Directed
-                                                <span ng-show="sortType === 'directed' && !sortReverse">
-                                                    <md-icon md-svg-icon="down-arrow"></md-icon>
-                                                </span>
-                                                <span ng-show="sortType === 'directed' && sortReverse">
-                                                    <md-icon md-svg-icon="up-arrow"></md-icon>
-                                                </span>
-                                        </a>
-                                    </th>
-                                    <th md-column ng-repeat="(name, type) in schemaEdge.properties">
-                                        {{name}}
-                                        <md-tooltip md-direction="top" ng-if="ctrl.schema.types[type].description">{{ctrl.schema.types[type].description}}</md-tooltip>
-                                    </th>
-                                </tr>
-                                </thead>
-                                <tbody md-body>
-                                <tr md-row ng-repeat="edge in ctrl.data.edges[group] | orderBy:sortType:sortReverse | filter:ctrl.searchTerm">
-                                    <td md-cell>
-                                        {{edge.source}}
-                                    </td>
-                                    <td md-cell>
-                                        {{edge.destination}}
-                                    </td>
-                                    <td md-cell>
-                                        {{edge.directed}}
-                                    </td>
-                                    <td md-cell ng-repeat="(name, type) in schemaEdge.properties">
-                                        {{edge.properties[name]}}
-                                    </td>
-                                </tr>
-                                </tbody>
-                            </table>
-                        </md-table-container>
-                    </div>
-                </div>
-            </md-content>
-        </md-tab>
+    <md-table-container>
+        <table md-table id="results-table" class="compact">
+            <thead md-head md-order="ctrl.sortType">
+            <tr md-row>
+                <th md-column ng-repeat="col in ctrl.data.columns"
+                    md-order-by="{{col}}">
+                    <md-input-container ng-if="'type' === col">
+                        <md-select
+                                ng-click="$event.stopPropagation();"
+                                ng-model="ctrl.data.types" multiple
+                                ng-change="ctrl.updateFilteredResults()"
+                                md-selected-text="ctrl.selectedTypesText()">
+                            <md-option ng-value="type"
+                                       ng-repeat="type in ctrl.data.allTypes">
+                                {{type}}
+                            </md-option>
+                        </md-select>
+                    </md-input-container>
 
-        <md-tab label="Seeds">
-            <md-content class="md-padding" layout="column">
-                <md-input-container>
-                    <label>Search vertices and properties</label>
-                    <input ng-model="ctrl.searchTerm" type="text">
-                </md-input-container>
+                    <md-input-container ng-if="'group' === col">
+                        <md-select
+                                ng-click="$event.stopPropagation();"
+                                ng-model="ctrl.data.groups" multiple
+                                ng-change="ctrl.updateFilteredResults()"
+                                md-selected-text="ctrl.selectedGroupsText()">
+                            <md-option ng-value="group"
+                                       ng-repeat="group in ctrl.data.allGroups">
+                                {{group}}
+                            </md-option>
+                        </md-select>
+                    </md-input-container>
 
-                <h4><b>{{group}}</b></h4>
-                <md-table-container>
-                    <table id="seeds-result-table"
-                           md-table>
-                        <thead md-head>
-                        <tr md-row>
-                            <th md-column>
-                                <a ng-click="sortType = 'vertex'; sortReverse = !sortReverse">
-                                    Vertex
-                                        <span ng-show="sortType === 'vertex' && !sortReverse">
-                                            <md-icon md-svg-icon="down-arrow"></md-icon>
-                                        </span>
-                                        <span ng-show="sortType === 'vertex' && sortReverse">
-                                            <md-icon md-svg-icon="up-arrow"></md-icon>
-                                        </span>
-                                </a>
-                            </th>
-                        </tr>
-                        </thead>
-                        <tbody md-body>
-                        <tr md-row ng-repeat="vertex in ctrl.data.entitySeeds | orderBy:sortType:sortReverse | filter:ctrl.searchTerm">
-                            <td md-cell>
-                                {{vertex}}
-                            </td>
-                        </tr>
-                        </tbody>
-                    </table>
-                </md-table-container>
-            </md-content>
-        </md-tab>
+                    <span ng-if="'type' !== col && 'group' !== col">{{col}}</span>
 
-        <md-tab label="Other">
-            <md-content class="md-padding" layout="column">
-                <md-input-container>
-                    <label>Search vertices and properties</label>
-                    <input ng-model="ctrl.searchTerm" type="text">
-                </md-input-container>
+                    <span ng-if="'source' === col">/ vertex</span>
 
-                <h4><b>{{group}}</b></h4>
-                <md-table-container>
-                    <table id="other-result-table"
-                           md-table>
-                        <thead md-head>
-                        <tr md-row>
-                            <th md-column>
-                                <a ng-click="sortType = 'value'; sortReverse = !sortReverse">
-                                    Value
-                                        <span ng-show="sortType === 'value' && !sortReverse">
-                                            <md-icon md-svg-icon="down-arrow"></md-icon>
-                                        </span>
-                                        <span ng-show="sortType === 'value' && sortReverse">
-                                            <md-icon md-svg-icon="up-arrow"></md-icon>
-                                        </span>
-                                </a>
-                            </th>
-                        </tr>
-                        </thead>
-                        <tbody md-body>
-                        <tr md-row ng-repeat="other in ctrl.data.other | orderBy:sortType:sortReverse | filter:searchTerm">
-                            <td md-cell>
-                                {{other}}
-                            </td>
-                        </tr>
-                        </tbody>
-                    </table>
-                </md-table-container>
-            </md-content>
-        </md-tab>
-    </md-tabs>
+                    <md-tooltip md-direction="top"
+                                ng-if="ctrl.data.tooltips[col]">
+                        {{ctrl.data.tooltips[col]}}
+                    </md-tooltip>
+
+                    <a ng-click="ctrl.hideColumn(col)">
+                        <md-icon md-svg-icon="cancel" class="small-icon">
+                        </md-icon>
+                    </a>
+                </th>
+            </tr>
+            </thead>
+            <tbody md-body>
+            <tr md-row
+                ng-repeat="result in ctrl.data.results | orderBy:ctrl.sortType | filter:ctrl.searchTerm">
+                <td md-cell ng-repeat="col in ctrl.data.columns">
+                    {{result[col]}}
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </md-table-container>
+</div>
 </div>

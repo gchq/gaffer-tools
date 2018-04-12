@@ -1098,7 +1098,7 @@ describe('The Query component', function() {
                 expect($mdDialog.show).toHaveBeenCalledTimes(1);
             });
 
-            it('should navigate to the graph if the dialog returns "results"', function() {
+            it('should navigate to the table if the dialog returns "results"', function() {
                 expect(navigation.goTo).toHaveBeenCalledTimes(1);
                 expect(navigation.goTo).toHaveBeenCalledWith('results');
 
@@ -1119,7 +1119,6 @@ describe('The Query component', function() {
                 ctrl.execute();
                 scope.$digest();
                 expect(results.update).not.toHaveBeenCalled();
-
             });
 
             it('should clear the query page if the dialog returns "results"', function() {

@@ -105,9 +105,16 @@ function QueryController(queryPage, operationService, types, graph, config, sett
         var operation = createOperation();
         query.addOperation(operation);
         loading.load()
+
+        var iterableOutput = vm.getSelectedOp().iterableOutput === undefined || vm.getSelectedOp();
+        var operations = [operation];
+        if(vm.getSelectedOp().iterableOutput === undefined || vm.getSelectedOp().iterableOutput) {
+            operations.push(operationService.createLimitOperation(operation['options']));
+            operations.push(operationService.createDeduplicateOperation(operation['options']));
+        }
         query.execute(JSON.stringify({
             class: "uk.gov.gchq.gaffer.operation.OperationChain",
-            operations: [operation, operationService.createLimitOperation(operation['options']), operationService.createDeduplicateOperation(operation['options'])],
+            operations: operations,
             options: operation['options']
         }), function(data) {
             loading.finish()

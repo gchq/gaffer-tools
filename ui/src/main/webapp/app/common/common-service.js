@@ -121,6 +121,92 @@ angular.module('app').factory('common', function() {
     }
 
     /**
+    * Adds the item to the list if it is not already in the list.
+    * @param {*} item the item to add to the list
+    * @param {Array} list
+    */
+    common.pushValueIfUnique = function(item, list) {
+        if(list && !common.arrayContainsValue(list, item)) {
+            list.push(item);
+        }
+    }
+
+    /**
+    * Adds the item to the list if it is not already in the list, uses arrayContainsObject.
+    * @param {*} item the item to add to the list
+    * @param {Array} list
+    */
+    common.pushObjectIfUnique = function(item, list) {
+        if(list && !common.arrayContainsObject(list, item)) {
+            list.push(item);
+        }
+    }
+
+    /**
+    * Adds all the items to the list if they are not already in the list.
+    * @param {Array} items the items to add to the list
+    * @param {Array} list
+    */
+    common.pushValuesIfUnique = function(items, list) {
+        if(list && items) {
+            for(var i in items) {
+                common.pushValueIfUnique(items[i], list);
+            }
+        }
+    }
+
+    /**
+    * Adds all the items to the list if they are not already in the list, uses arrayContainsObject.
+    * @param {Array} items the items to add to the list
+    * @param {Array} list
+    */
+    common.pushObjectsIfUnique = function(items, list) {
+        if(list && items) {
+            for(var i in items) {
+                common.pushObjectIfUnique(items[i], list);
+            }
+        }
+    }
+
+    /**
+    * Concatenates to lists together and deduplicates the result list.
+    * @param {Array} list1
+    * @param {Array} list2
+    */
+    common.concatUniqueValues = function(list1, list2) {
+        if(!list1) {
+            return angular.copy(list2);
+        }
+
+        if(!list2) {
+            return angular.copy(list1);
+        }
+
+        var concatList = angular.copy(list1);
+        common.pushValuesIfUnique(list2, concatList);
+        return concatList
+    }
+
+    /**
+    * Concatenates to lists together and deduplicates the result list, uses arrayContainsObject.
+    * @param {Array} list1
+    * @param {Array} list2
+    */
+    common.concatUniqueObjects = function(list1, list2) {
+        if(!list1) {
+            return angular.copy(list2);
+        }
+
+        if(!list2) {
+            return angular.copy(list1);
+        }
+
+        var concatList = angular.copy(list1);
+        common.pushObjectsIfUnique(list2, concatList);
+        return concatList
+    }
+
+    /**
      * Gets the index of an object with a given key value pair in a given array
      * Will return -1 if not found
      * @param {Array} arr 
