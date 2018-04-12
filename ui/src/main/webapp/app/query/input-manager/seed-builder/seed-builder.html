@@ -2,10 +2,9 @@
     <ng-form name="ctrl.seedForm">
         <md-input-container id="Multiple Seed input" class="md-block" flex md-no-float>
             <textarea id="seedVertices"
-                        rows="5"
-                        max-rows="10"
+                        rows="6"
                         name="multiSeedInput"
-                        md-detect-hidden
+                        md-no-autogrow
                         ng-model="ctrl.seedVertices"
                         ng-blur="ctrl.addSeeds()"
                         placeholder="Enter your seeds, each seed on a new line.

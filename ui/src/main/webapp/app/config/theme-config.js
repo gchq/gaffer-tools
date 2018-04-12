@@ -17,8 +17,7 @@
 'use strict';
 
 angular.module('app').config(['$mdThemingProvider', function($mdThemingProvider) {
-
     $mdThemingProvider.theme('default')
-        .primaryPalette('teal')
+        .primaryPalette('blue-grey')
         .accentPalette('orange');
 }]);

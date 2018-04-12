@@ -1,4 +1,4 @@
-describe('The Seed Manager Component', function() {
+describe('The Input Manager Component', function() {
     beforeEach(module('app'));
 
     describe('The Controller', function() {
@@ -12,7 +12,7 @@ describe('The Seed Manager Component', function() {
         }));
 
         it('should exist', function() {
-            var ctrl = $componentController('seedManager');
+            var ctrl = $componentController('inputManager');
             expect(ctrl).toBeDefined();
         });
 
@@ -30,7 +30,7 @@ describe('The Seed Manager Component', function() {
             });
 
             beforeEach(function() {
-                ctrl = $componentController('seedManager');
+                ctrl = $componentController('inputManager');
                 ctrl.selectAllSeeds()
             });
 

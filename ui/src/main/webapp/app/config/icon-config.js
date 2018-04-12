@@ -21,10 +21,19 @@ angular.module('app').config(['$mdIconProvider', function($mdIconProvider) {
     $mdIconProvider
         .icon('save', 'app/img/save.svg')
         .icon('info', 'app/img/info.svg')
+        .icon('left-arrow', 'app/img/left-arrow.svg')
         .icon('up-arrow', 'app/img/up-arrow.svg')
+        .icon('right-arrow', 'app/img/right-arrow.svg')
         .icon('down-arrow', 'app/img/down-arrow.svg')
         .icon('refresh', 'app/img/refresh.svg')
         .icon('add', 'app/img/add.svg')
         .icon('delete', 'app/img/delete.svg')
+        .icon('query', 'app/img/query.svg')
+        .icon('table', 'app/img/table.svg')
+        .icon('graph', 'app/img/graph.svg')
+        .icon('schema', 'app/img/schema.svg')
+        .icon('raw', 'app/img/raw.svg')
+        .icon('settings', 'app/img/settings.svg')
+        .icon('sidenav', 'app/img/sidenav.svg')
         .icon('cancel', 'app/img/cancel.svg');
 }]);
