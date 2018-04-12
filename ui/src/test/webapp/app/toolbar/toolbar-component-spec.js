@@ -1,4 +1,4 @@
-describe('The Navigation Component', function() {
+describe('The Toolbar Component', function() {
 
     var configForTesting = {};
     var propertiesForTesting = {};
@@ -112,7 +112,7 @@ describe('The Navigation Component', function() {
             var ctrl = $componentController('toolbar');
             ctrl.$onInit();
 
-            navigation.goTo('settings');
+            ctrl.goTo('settings');
 
             expect(ctrl.currentPage).toEqual('settings');
         });
@@ -121,7 +121,7 @@ describe('The Navigation Component', function() {
             var ctrl = $componentController('toolbar', {$scope: scope});
             ctrl.$onInit();
 
-            navigation.goTo('settings');
+            ctrl.goTo('settings');
             $rootScope.$broadcast('$routeChangeSuccess', { originalPath: '/graph'});
 
             expect(ctrl.currentPage).toEqual('graph');
