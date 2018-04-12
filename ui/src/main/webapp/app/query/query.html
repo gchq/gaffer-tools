@@ -38,6 +38,7 @@
             </form>
             <md-card-actions layout="row" layout-align="end center">
                 <md-button ng-click="ctrl.addToOperationChain()" id="add-to-op-chain" ng-disabled="!ctrl.canExecute()">Add to Operation Chain</md-button>
+                <md-button ng-click="ctrl.execute(true)" id="add-and-execute" ng-disabled="!ctrl.canExecute()" class="md-primary" ng-hide="ctrl.isFirst()">Add and Execute</md-button>
                 <md-button ng-click="ctrl.execute()" id="Execute Query" ng-disabled="!ctrl.canExecute()" class="md-primary">Execute</md-button>
             </md-card-actions>
         </md-card>

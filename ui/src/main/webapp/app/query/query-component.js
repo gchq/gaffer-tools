@@ -138,8 +138,9 @@ function QueryController(queryPage, operationService, types, graph, config, sett
      * First checks fires an event so that all watchers may do last minute changes.
      * Once done, it does a final check to make sure the operation can execute. If so
      * it executes it.
+     * @param {boolean} addCurrent Whether to add current operation to the op chain
      */
-    vm.execute = function() {
+    vm.execute = function(addCurrent) {
         events.broadcast('onPreExecute', []);
         if (!vm.canExecute()) {
             return;
@@ -152,11 +153,13 @@ function QueryController(queryPage, operationService, types, graph, config, sett
                 class: operationChainClass,
                 operations: []
             }
+            if (addCurrent) {
+                queryPage.addToOperationChain(createOperation());
+            }
             var ops = queryPage.getOperationChain();
             for (var i in ops) {
                 operation.operations.push(createOperationForQuery(ops[i]))
             }
-            operation.operations.push(createOperationForQuery(createOperation()));
         }
         
         query.addOperation(operation);
