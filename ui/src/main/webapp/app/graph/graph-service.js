@@ -19,7 +19,7 @@
 /**
  * Graph service which handles selected elements and a cytoscape graph
  */
-angular.module('app').factory('graph', ['types', '$q', 'results', 'common', 'events', 'input', 'schema', function(types, $q, results, common, events, input, schemaService) {
+angular.module('app').factory('graph', ['types', '$q', 'results', 'common', 'config', 'events', 'input', 'schema', function(types, $q, results, common, config, events, input, schemaService) {
 
     var graphCy;
     var graph = {};
@@ -35,9 +35,7 @@ angular.module('app').factory('graph', ['types', '$q', 'results', 'common', 'eve
             waitForStep: true
         },
         physics: {
-            springLength: 30,
-            springCoeff: 0.000001,
-            gravity: -10,
+            springLength: 200,
             dragCoeff: 0,
             stableThreshold: 0.000001,
             fit: true
@@ -48,6 +46,13 @@ angular.module('app').factory('graph', ['types', '$q', 'results', 'common', 'eve
     };
 
     var graphData = {entities: {}, edges: {}};
+
+    config.get().then(function(conf) {
+        if(conf.graph && conf.graph.physics) {
+            angular.merge(layoutConf.physics, conf.graph.physics);
+            graph.redraw();
+        }
+    });
 
     events.subscribe('resultsUpdated', function(results) {
         graph.update(results);
@@ -425,7 +430,9 @@ angular.module('app').factory('graph', ['types', '$q', 'results', 'common', 'eve
      * Redraws the cytoscape graph
      */
     graph.redraw = function() {
-        graphCy.layout(layoutConf);
+        if(graphCy) {
+            graphCy.layout(layoutConf);
+        }
     }
 
     /**
