@@ -90,7 +90,8 @@ angular.module('app').factory('graph', ['types', '$q', 'results', 'common', 'con
                         'background-color': 'data(color)',
                         'font-size': 14,
                         'color': '#fff',
-                        'text-outline-width':1,
+                        'text-outline-color':'data(color)',
+                        'text-outline-width':3,
                         'width': 'data(radius)',
                         'height': 'data(radius)'
                     }
@@ -100,12 +101,13 @@ angular.module('app').factory('graph', ['types', '$q', 'results', 'common', 'con
                     style: {
                         'curve-style': 'bezier',
                         'label': 'data(group)',
-                        'line-color': '#79B623',
-                        'target-arrow-color': '#79B623',
+                        'line-color': '#538212',
+                        'target-arrow-color': '#538212',
                         'target-arrow-shape': 'triangle',
                         'font-size': 14,
                         'color': '#fff',
-                        'text-outline-width':1,
+                        'text-outline-color':'#538212',
+                        'text-outline-width':3,
                         'width': 5
                     }
                 },
