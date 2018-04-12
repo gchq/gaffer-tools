@@ -21,7 +21,7 @@ angular.module('app').component('operationOverview', operationOverview());
 function operationOverview() {
     return {
         templateUrl: 'app/query/operation-overview/operation-overview.html',
-        controller: OperationOverviwController,
+        controller: OperationOverviewController,
         controllerAs: 'ctrl',
         bindings: {
             'name': '<',
@@ -29,6 +29,6 @@ function operationOverview() {
     }
 }
 
-function OperationOverviwController() {
+function OperationOverviewController() {
     // do nothing right now
 }
