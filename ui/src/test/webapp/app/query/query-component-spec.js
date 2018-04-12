@@ -878,7 +878,7 @@ describe('The Query component', function() {
 
             it('should navigate to the graph if the dialog returns "results"', function() {
                 expect(navigation.goTo).toHaveBeenCalledTimes(1);
-                expect(navigation.goTo).toHaveBeenCalledWith('graph');
+                expect(navigation.goTo).toHaveBeenCalledWith('results');
 
                 navigation.goTo.calls.reset();
 

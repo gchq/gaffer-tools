@@ -23,15 +23,16 @@
 
     <md-list flex>
         <md-list-item
-                id="open-{{page.id}}"
-                aria-label="{{page.title}}"
-                ng-click="ctrl.goTo(page.id)"
-                ng-class="{active: page.id===ctrl.getCurrentPage()}"
-                ng-repeat="page in ctrl.pages">
-            <md-icon md-svg-icon="{{page.icon}}"></md-icon>
-            <p ng-if="!ctrl.collapsed">{{page.title}}</p>
+                id="open-{{route.substr(1)}}"
+                aria-label="{{data.title}}"
+                ng-click="ctrl.goTo(route)"
+                ng-class="{active: ctrl.isActive(route)}"
+                ng-if="data.inNav"
+                ng-repeat="(route, data) in ctrl.routes">
+            <md-icon md-svg-icon="{{data.icon}}"></md-icon>
+            <p ng-if="!ctrl.collapsed">{{data.title}}</p>
             <md-tooltip md-direction="right" ng-if="ctrl.collapsed">
-                {{page.title}}
+                {{data.title}}
             </md-tooltip>
         </md-list-item>
 

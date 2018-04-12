@@ -2,45 +2,15 @@ describe('The Navigation Component', function() {
 
     beforeEach(module('app'));
 
-    var configForTesting = {};
-
-    beforeEach(function() {
-        propertiesForTesting = {};
-        configForTesting = {};
-        schemaForTesting = {};
-    });
-
-    beforeEach(module(function($provide) {
-        $provide.factory('config', function($q) {
-            var get = function() {
-                return $q.when(configForTesting);
-            }
-
-            return {
-                get: get
-            }
-        });
-
-        $provide.factory('schema', function($q) {
-            return {
-                get: function() {
-                    return $q.when({});
-                }
-            }
-        });
-    }));
-
     describe('The Controller', function() {
 
         var $componentController;
-        var navigation, config, $rootScope, $q;
+        var navigation, $route;
 
-        beforeEach(inject(function(_$componentController_, _navigation_, _config_, _$rootScope_, _$q_) {
+        beforeEach(inject(function(_$componentController_, _navigation_, _$route_) {
             $componentController = _$componentController_;
             navigation = _navigation_;
-            config = _config_;
-            $rootScope = _$rootScope_;
-            $q = _$q_;
+            $route = _$route_;
         }));
 
         it('should exist', function() {
@@ -48,76 +18,16 @@ describe('The Navigation Component', function() {
             expect(ctrl).toBeDefined();
         });
 
-        describe('ctrl.$onInit', function() {
-            var ctrl;
-            beforeEach(function() {
-                ctrl = $componentController('sidenav');
+        describe('when initialised', function() {
+            it('should load routes', function() {
+                var routesSpy = spyOn($route, 'routes');
+                var ctrl = $componentController('sidenav');
+                expect(ctrl.routes).toEqual(routesSpy);
             });
-
-            it('should load pages from config', function() {
-                configForTesting = {
-                    pages: [
-                        {
-                            id: "page1"
-                        },
-                        {
-                            id: "page2"
-                        }
-                    ]
-                };
-                spyOn(config, 'get').and.callFake(function() {
-                    return $q.when(configForTesting);
-                })
-
-                ctrl.$onInit();
-
-                $rootScope.$digest()
-                expect(ctrl.pages).toEqual(configForTesting.pages);
-            });
-
-            it('should not override pages if there are no pages in config', function() {
-                configForTesting = {
-                    pages: []
-                };
-                spyOn(config, 'get').and.callFake(function() {
-                    return $q.when(configForTesting);
-                })
-
-                ctrl.$onInit();
-
-                $rootScope.$digest()
-                expect(ctrl.pages).toEqual([
-                   {
-                     "id": "query",
-                     "title": "Query",
-                     "icon": "query"
-                   },
-                   {
-                     "id": "table",
-                     "title": "Table",
-                     "icon": "table"
-                   },
-                   {
-                     "id": "graph",
-                     "title": "Graph",
-                     "icon": "graph"
-                   },
-                   {
-                     "id": "schema",
-                     "title": "Schema",
-                     "icon": "schema"
-                   },
-                   {
-                     "id": "raw",
-                     "title": "Raw",
-                     "icon": "raw"
-                   },
-                   {
-                     "id": "settings",
-                     "title": "Settings",
-                     "icon": "settings"
-                   }
-               ]);
+            it('should configure goTo', function() {
+                var goToSpy = spyOn(navigation, 'goTo');
+                var ctrl = $componentController('sidenav');
+                expect(ctrl.goTo).toEqual(goToSpy);
             });
         });
 

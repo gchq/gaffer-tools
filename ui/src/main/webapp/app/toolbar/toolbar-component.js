@@ -16,17 +16,17 @@
 
 'use strict';
 
-angular.module('app').component('navBar', navBar());
+angular.module('app').component('toolbar', toolbar());
 
-function navBar() {
+function toolbar() {
     return {
-        templateUrl: 'app/navigation/navigation.html',
-        controller: NavigationController,
+        templateUrl: 'app/toolbar/toolbar.html',
+        controller: ToolbarController,
         controllerAs: 'ctrl'
     };
 }
 
-function NavigationController($rootScope, $mdDialog, navigation, graph, operationService, results, query, config, loading, events, properties, error) {
+function ToolbarController($rootScope, $mdDialog, navigation, graph, operationService, results, query, config, loading, events, properties, error) {
     var vm = this;
     vm.addMultipleSeeds = false;
     vm.appTitle;

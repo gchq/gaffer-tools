@@ -21,28 +21,43 @@ angular.module('app').config(['$locationProvider', '$routeProvider', function($l
 
     $routeProvider
         .when('/query', {
+            title: 'Query',
             template: '<query></query>',
-            title: 'Query'
-        })
-        .when('/graph', {
-            templateUrl: 'app/graph/graph-page.html',
-            title: 'Graph'
-        })
-        .when('/schema', {
-            templateUrl: 'app/schema/schema-view-page.html',
-            title: 'Schema'
-        })
-        .when('/settings', {
-            template: '<settings-view></settings-view>',
-            title: 'Settings'
-        })
-        .when('/raw', {
-            template: '<raw></raw>',
-            title: 'Raw'
+            icon: 'query',
+            inNav: true
         })
         .when('/table', {
+            title: 'Table',
             template: '<results-table></results-table>',
-            title: 'Table'
+            icon: 'table',
+            inNav: true
+        })
+        .when('/graph', {
+            title: 'Graph',
+            templateUrl: 'app/graph/graph-page.html',
+            icon: 'graph',
+            inNav: true
+        })
+        .when('/schema', {
+            title: 'Schema',
+            templateUrl: 'app/schema/schema-view-page.html',
+            icon: 'schema',
+            inNav: true
+        })
+        .when('/raw', {
+            title: 'Raw',
+            template: '<raw></raw>',
+            icon: 'raw',
+            inNav: true
+        })
+        .when('/settings', {
+            title: 'Settings',
+            template: '<settings-view></settings-view>',
+            icon: 'settings',
+            inNav: true
+        })
+        .when('/results', {
+            redirectTo: '/graph'
         })
         .when('/', {
             redirectTo: '/query'

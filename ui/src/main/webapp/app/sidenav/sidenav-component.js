@@ -26,56 +26,21 @@ function sidenav() {
     };
 }
 
-function SideNavController(navigation, config) {
+function SideNavController(navigation, $route, common) {
     var vm = this;
-
-    vm.pages = [
-        {
-          "id": "query",
-          "title": "Query",
-          "icon": "query"
-        },
-        {
-          "id": "table",
-          "title": "Table",
-          "icon": "table"
-        },
-        {
-          "id": "graph",
-          "title": "Graph",
-          "icon": "graph"
-        },
-        {
-          "id": "schema",
-          "title": "Schema",
-          "icon": "schema"
-        },
-        {
-          "id": "raw",
-          "title": "Raw",
-          "icon": "raw"
-        },
-        {
-          "id": "settings",
-          "title": "Settings",
-          "icon": "settings"
-        }
-    ];
-
-    vm.$onInit = function() {
-         config.get().then(function(conf) {
-            if(conf && conf.pages && conf.pages.length > 0) {
-                vm.pages = angular.copy(conf.pages);
-            }
-        });
-    }
-
+    vm.routes = $route.routes
     vm.goTo = navigation.goTo;
-    vm.getCurrentPage = function() {
-        return navigation.getCurrentPage();
-    }
-
     vm.collapsed = false;
+
+    vm.isActive = function(route) {
+        if(route) {
+            if(route.startsWith("/")) {
+                route = route.substr(1);
+            }
+            return route === navigation.getCurrentPage();
+        }
+        return false;
+    }
 
     vm.collapse = function() {
         vm.collapsed = true;

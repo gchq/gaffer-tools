@@ -27,6 +27,9 @@ angular.module('app').factory('navigation', ['$location', 'events', function($lo
     }
 
     navigation.goTo = function(pageName) {
+        if(pageName.startsWith("/")) {
+            pageName = pageName.substr(1);
+        }
         currentPage = pageName;
         $location.path('/' + pageName);
         events.broadcast('routeChange', [currentPage]);

@@ -147,7 +147,7 @@ function QueryController(queryPage, operationService, types, graph, config, sett
     var submitResults = function(data) {
         graph.deselectAll();
         results.update(data);
-        navigation.goTo('graph');
+        navigation.goTo('results');
         queryPage.reset();
         dateRange.resetDateRange();
         view.reset();
