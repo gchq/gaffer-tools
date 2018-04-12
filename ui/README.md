@@ -310,7 +310,8 @@ the UI what options it has for a given operations - whether it uses a view or pa
 |-------------|---------|-------------------------------
 | name        | string  | A friendly name for the operation
 | class       | string  | The java class of the operation
-| input       | boolean | A flag which determines whether it takes seeds as input
+| input       | boolean/string | A flag which determines whether it takes seeds as input, if taking a pair of inputs it should be set to the fully qualified Pair Class: "uk.gov.gchq.gaffer.commonutil.Pair"
+| inputB      | boolean | A flag stating whether there should be a second input
 | view        | boolean | A flag showing whether the operation takes a view - Always false for named operations currently
 | description | string  | A description of what the operation does
 | arrayOutput | boolean | A flag indicating whether the operation returns an array *(not required)*
