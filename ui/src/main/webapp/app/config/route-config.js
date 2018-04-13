@@ -57,7 +57,7 @@ angular.module('app').config(['$locationProvider', '$routeProvider', function($l
             inNav: true
         })
         .when('/results', {
-            redirectTo: '/table'
+            redirectTo: '/graph'
         })
         .when('/', {
             redirectTo: '/query'

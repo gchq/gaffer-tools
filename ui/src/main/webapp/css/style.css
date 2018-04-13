@@ -21,6 +21,10 @@ ng-view {
     width: 100%;
 }
 
+h4 {
+    font-weight: normal;
+}
+
 pre {
     background: white;
     padding: 5px;
@@ -135,6 +139,10 @@ md-option > div {
     white-space: normal;
 }
 
+.padding-bottom{
+    padding-bottom: 10px
+}
+
 .named-view-template li:last-child {
     border-bottom-width: 0;
 }
@@ -186,4 +194,25 @@ table md-input-container {
 
 md-list-item.active button {
     background-color: rgba(0,0,0,0.2);
+}
+
+md-content md-toolbar {
+    height: 40px;
+    min-height: 40px;
+}
+
+md-content .md-toolbar-tools {
+    height: 40px;
+    min-height: 40px;
+    font-weight: normal;
+    font-size: 18px;
+}
+
+graph-control md-input-container {
+    padding: 0 8px 0 8px !important;
+    margin: 14px 0 0 0;
+}
+
+graph-control md-input-container .md-errors-spacer {
+    display: none;
 }

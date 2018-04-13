@@ -35,5 +35,7 @@ angular.module('app').config(['$mdIconProvider', function($mdIconProvider) {
         .icon('raw', 'app/img/raw.svg')
         .icon('settings', 'app/img/settings.svg')
         .icon('sidenav', 'app/img/sidenav.svg')
-        .icon('cancel', 'app/img/cancel.svg');
+        .icon('cancel', 'app/img/cancel.svg')
+        .icon('reset', 'app/img/reset.svg')
+        .icon('draw', 'app/img/draw.svg');
 }]);

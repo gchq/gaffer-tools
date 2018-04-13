@@ -1,0 +1,51 @@
+<div layout="row" layout-padding
+     style="position: absolute; left: 0; top: 0; width:100%; height: 100%;"
+     flex>
+    <div flex="70" layout="row" layout-align="end start">
+        <md-input-container style="z-index: 100;">
+            <label>Vertex search</label>
+            <input ng-model="ctrl.searchTerm" type="text"
+                   ng-change="ctrl.filter()">
+        </md-input-container>
+    </div>
+    <div flex="30"></div>
+</div>
+
+
+<div layout="row" layout-padding
+     style="position: absolute; left: 0; top: 0; width:100%; height: 100%;"
+     flex>
+    <div flex="70" layout="row" layout-align="end end">
+        <div layout="row" style="z-index: 100;">
+            <md-button class="md-fab md-mini" id="redraw"
+                       ng-click="ctrl.goToQuery()">
+                <md-icon md-svg-icon="query"></md-icon>
+                <md-tooltip md-direction="top">
+                    New query
+                </md-tooltip>
+            </md-button>
+            <md-button class="md-fab md-mini" id="redraw"
+                       ng-click="ctrl.quickHop()">
+                <md-icon md-svg-icon="graph"></md-icon>
+                <md-tooltip md-direction="top">
+                    Quick hop out from the selected vertices
+                </md-tooltip>
+            </md-button>
+            <md-button class="md-fab md-mini" id="redraw"
+                       ng-click="ctrl.redraw()">
+                <md-icon md-svg-icon="draw"></md-icon>
+                <md-tooltip md-direction="top">
+                    Redraw the graph
+                </md-tooltip>
+            </md-button>
+            <md-button class="md-fab md-mini" id="reset"
+                       ng-click="ctrl.reset()">
+                <md-icon md-svg-icon="reset"></md-icon>
+                <md-tooltip md-direction="top">
+                    Reset the graph
+                </md-tooltip>
+            </md-button>
+        </div>
+    </div>
+    <div flex="30"></div>
+</div>

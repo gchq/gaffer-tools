@@ -26,6 +26,10 @@ angular.module('app').factory('query', ['$http', 'config', 'events', 'common', '
         return operations;
     }
 
+    query.quickHop = function(seeds) {
+        query.execute(operationChain);
+    }
+
     query.execute = function(operationChain, onSuccess, onFailure) {
 
         config.get().then(function(conf) {
