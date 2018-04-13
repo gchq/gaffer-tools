@@ -19,8 +19,7 @@
 /**
  * Graph service which handles selected elements and a cytoscape graph
  */
-angular.module('app').factory('graph', ['types', '$q', 'results', 'common', 'events', 'input', 'schema', 'query', 'operationService', 'settings', 'loading', '$mdDialog', 'error', function(types, $q, results, common, events, input, schemaService, query, operationService, settings, loading, $mdDialog, error) {
-
+angular.module('app').factory('graph', ['types', '$q', 'results', 'common', 'config', 'events', 'input', 'schema', 'query', 'operationService', 'settings', 'loading', '$mdDialog', 'error', function(types, $q, results, common, config, events, input, schemaService, query, operationService, settings, loading, $mdDialog, error) {
     var graphCy;
     var graph = {};
 
@@ -37,9 +36,7 @@ angular.module('app').factory('graph', ['types', '$q', 'results', 'common', 'eve
             waitForStep: true
         },
         physics: {
-            springLength: 30,
-            springCoeff: 0.000001,
-            gravity: -10,
+            springLength: 200,
             dragCoeff: 0,
             stableThreshold: 0.000001,
             fit: true
@@ -50,6 +47,13 @@ angular.module('app').factory('graph', ['types', '$q', 'results', 'common', 'eve
     };
 
     var graphData = {entities: {}, edges: {}};
+
+    config.get().then(function(conf) {
+        if(conf.graph && conf.graph.physics) {
+            angular.merge(layoutConf.physics, conf.graph.physics);
+            graph.redraw();
+        }
+    });
 
     events.subscribe('resultsUpdated', function(results) {
         graph.update(results);
@@ -87,7 +91,8 @@ angular.module('app').factory('graph', ['types', '$q', 'results', 'common', 'eve
                         'background-color': 'data(color)',
                         'font-size': 14,
                         'color': '#fff',
-                        'text-outline-width':1,
+                        'text-outline-color':'data(color)',
+                        'text-outline-width':3,
                         'width': 'data(radius)',
                         'height': 'data(radius)',
                     }
@@ -97,19 +102,21 @@ angular.module('app').factory('graph', ['types', '$q', 'results', 'common', 'eve
                     style: {
                         'curve-style': 'bezier',
                         'label': 'data(group)',
-                        'line-color': '#79B623',
-                        'target-arrow-color': '#79B623',
+                        'line-color': '#538212',
+                        'target-arrow-color': '#538212',
                         'target-arrow-shape': 'triangle',
                         'font-size': 14,
                         'color': '#fff',
-                        'text-outline-width':1,
-                        'width': 5,
+                        'text-outline-color':'#538212',
+                        'text-outline-width':3,
+                        'width': 5
                     }
                 },
                 {
                     selector: ':selected',
                     css: {
                         'background-color': 'data(selectedColor)',
+                        'text-outline-color':'data(selectedColor)',
                         'line-color': '#35500F',
                         'target-arrow-color': '#35500F',
                     }
@@ -533,13 +540,15 @@ angular.module('app').factory('graph', ['types', '$q', 'results', 'common', 'eve
      * Redraws the cytoscape graph
      */
     graph.redraw = function() {
-        var nodes = graphCy.nodes();
-        for(var i in nodes) {
-            if(nodes[i] && nodes[i].hasClass && nodes[i].hasClass("filtered")) {
-                nodes[i].remove();
+        if(graphCy) {
+            var nodes = graphCy.nodes();
+            for(var i in nodes) {
+                if(nodes[i] && nodes[i].hasClass && nodes[i].hasClass("filtered")) {
+                    nodes[i].remove();
+                }
             }
+            graphCy.layout(layoutConf);
         }
-        graphCy.layout(layoutConf);
     }
 
     graph.filter = function(searchTerm) {
@@ -555,34 +564,6 @@ angular.module('app').factory('graph', ['types', '$q', 'results', 'common', 'eve
             }
         }
     }
-
-//    graph.filter2 = function(searchTerm) {
-//        searchTerm = searchTerm.toLowerCase();
-//        var newRemovedNodes = [];
-//        var newRemovedEdges = [];
-//        for(var i in removed) {
-//            if(removed[i].data && removed[i].data('id')) {
-//                if(removed[i].data('id').toLowerCase().indexOf(searchTerm) > -1) {
-//                    removed[i].restore();
-//                } else {
-//                    newRemoved.push(removed[i]);
-//                }
-//            }
-//        }
-//        var nodes = graphCy.nodes();
-//        for(var i in nodes) {
-//            if(nodes[i].data && nodes[i].data('id')) {
-//                if(nodes[i].data('id').toLowerCase().indexOf(searchTerm) === -1) {
-//                    console.log('removed: ' + nodes[i].data('id'));
-//                    var justRemoved = nodes[i].remove();
-//                    for(var j in justRemoved) {
-//                        newRemoved.push(justRemoved[j]);
-//                    }
-//                }
-//            }
-//        }
-//        removed = newRemoved;
-//    }
 
     /**
      * Helper method to create a label from a vertex
