@@ -1,0 +1,19 @@
+<md-card layout-fill>
+    <md-toolbar class="md-accent">
+        <div class="md-toolbar-tools">
+            <h3>
+                <span>Operation chain</span>
+            </h3>
+        </div>
+    </md-toolbar>
+    <md-content class="transparent">
+        <md-list>
+            <md-list-item ng-repeat="operation in ctrl.operations" class="fade" ng-click="ctrl.editOperation($index)">
+                <p>{{operation.selectedOperation.name}}</p>
+                <md-icon md-svg-icon="delete" class="md-secondary" aria-label="delete operation" ng-click="ctrl.deleteOperation($index)">
+                    <md-tooltip>Remove this operation</md-tooltip>
+                </md-icon>
+            </md-list-item>
+        </md-list>
+    </md-content>
+</md-card>

@@ -14,35 +14,30 @@
   ~ limitations under the License.
   -->
 <div layout="row" layout-padding flex>
-    <div layout="column" flex>
-        <md-content layout="row" flex>
-            <div ng-repeat="op in ctrl.getChain()" class="fade">
-                <operation-overview name="op.selectedOperation.name" on-delete="ctrl.removeOpFromChain($index)" on-click="ctrl.editOperation($index)"></operation-overview>
-            </div>
-        </md-content>
-        <md-card>
-            <form name="ctrl.queryForm">
-                <div layout="row">
-                    <div layout="column" flex="45"> <!-- left column -->
-                        <operation-selector></operation-selector>
-                        <input-manager ng-show="ctrl.isFirst()" primary-input="ctrl.getSelectedOp().input" secondary-input="ctrl.getSelectedOp().inputB"></input-manager>
-                    </div>
-                    <div layout="column" flex="55"> <!-- right column -->
-                        <date-range ng-if="ctrl.timeConfig && ctrl.getSelectedOp().view" conf="ctrl.timeConfig"></date-range>
-                        <parameter-form ng-if="ctrl.getSelectedOp().parameters" title-class="layout-padding section-title" parameters="ctrl.getSelectedOp().parameters"></parameter-form>
-                        <view-builder ng-show="ctrl.getSelectedOp().view"></view-builder>
-                        <directionality-picker ng-show="ctrl.getSelectedOp().inOutFlag"></directionality-picker>
-                        <options-form ng-show="ctrl.hasOpOptions()"></options-form>
-                    </div>
+    <md-card flex>
+        <form name="ctrl.queryForm">
+            <div layout="row">
+                <div layout="column" flex="45"> <!-- left column -->
+                    <operation-selector></operation-selector>
+                    <input-manager ng-show="ctrl.isFirst()" primary-input="ctrl.getSelectedOp().input" secondary-input="ctrl.getSelectedOp().inputB"></input-manager>
                 </div>
-            </form>
-            <md-card-actions layout="row" layout-align="end center">
-                <md-button ng-click="ctrl.addToOperationChain()" id="add-to-op-chain" ng-disabled="!ctrl.canExecute()" ng-hide="ctrl.isEditing()">Add to Operation Chain</md-button>
-                <md-button ng-click="ctrl.execute(true)" id="add-and-execute" ng-disabled="!ctrl.canExecute()" class="md-primary" ng-hide="ctrl.isFirst() || ctrl.isEditing()">Add and Execute</md-button>
-                <md-button ng-click="ctrl.execute()" id="Execute Query" ng-disabled="!ctrl.canExecute()" class="md-primary">Execute</md-button>
-                <md-button ng-click="ctrl.revert()" id="revert-edit" ng-show="ctrl.isEditing()">Revert changes</md-button>
-                <md-button ng-click="ctrl.save()" id="save-operation" ng-show="ctrl.isEditing()" class="md-primary">Submit changes</md-button>
-            </md-card-actions>
-        </md-card>
-    </div>
+                <div layout="column" flex="55"> <!-- right column -->
+                    <date-range ng-if="ctrl.timeConfig && ctrl.getSelectedOp().view" conf="ctrl.timeConfig"></date-range>
+                    <parameter-form ng-if="ctrl.getSelectedOp().parameters" title-class="layout-padding section-title" parameters="ctrl.getSelectedOp().parameters"></parameter-form>
+                    <view-builder ng-show="ctrl.getSelectedOp().view"></view-builder>
+                    <directionality-picker ng-show="ctrl.getSelectedOp().inOutFlag"></directionality-picker>
+                    <options-form ng-show="ctrl.hasOpOptions()"></options-form>
+                </div>
+            </div>
+        </form>
+        <md-card-actions layout="row" layout-align="end center">
+            <md-button ng-click="ctrl.addToOperationChain()" id="add-to-op-chain" ng-disabled="!ctrl.canExecute()" ng-hide="ctrl.isEditing()">Add to Operation Chain</md-button>
+            <md-button ng-click="ctrl.execute(true)" id="add-and-execute" ng-disabled="!ctrl.canExecute()" class="md-primary" ng-hide="ctrl.isFirst() || ctrl.isEditing()">Add and Execute</md-button>
+            <md-button ng-click="ctrl.execute()" id="Execute Query" ng-disabled="!ctrl.canExecute()" class="md-primary">Execute</md-button>
+            <md-button ng-click="ctrl.revert()" id="revert-edit" ng-show="ctrl.isEditing()">Revert changes</md-button>
+            <md-button ng-click="ctrl.save()" id="save-operation" ng-show="ctrl.isEditing()" class="md-primary">Submit changes</md-button>
+        </md-card-actions>
+    </md-card>
+    <operation-chain flex="20" ng-if="ctrl.getChain().length > 0" operations="ctrl.getChain()" on-click="ctrl.editOperation()" on-delete="ctrl.deleteOperation()"></operation-chain>
+        
 </div>
