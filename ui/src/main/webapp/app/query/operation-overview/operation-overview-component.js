@@ -25,15 +25,12 @@ function operationOverview() {
         controllerAs: 'ctrl',
         bindings: {
             'name': '<',
-            'onDelete': '&'
+            'onDelete': '&',
+            'onClick': '&'
         }
     }
 }
 
 function OperationOverviewController() {
-    var vm = this;
-
-    vm.delete = function() {
-        vm.onDelete();
-    }
+   // does nothing because everything is injected
 }

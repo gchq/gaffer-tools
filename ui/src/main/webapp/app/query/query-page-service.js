@@ -39,6 +39,11 @@ angular.module('app').factory('queryPage', ['settings', 'events', function(setti
         currentIndex++;
     }
 
+    service.getCloneOf = function(index) {
+        currentIndex = index;
+        return angular.copy(chainOperations[index]);
+    } 
+
     /**
      * Gets the current index (ie the index of the current operation in an operation chain)
      */

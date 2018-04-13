@@ -59,6 +59,14 @@ angular.module('app').factory('view', ['operationService', 'config', 'settings',
         viewEdges = edges;
     }
 
+    service.setEdgeFilters = function(filters) {
+        edgeFilters = filters;
+    } 
+
+    service.setEntityFilters = function(filters) {
+        entityFilters = filters;
+    } 
+
     service.reset = function() {
         viewEntities = [];
         viewEdges = [];

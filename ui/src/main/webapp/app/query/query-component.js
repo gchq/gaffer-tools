@@ -94,6 +94,27 @@ function QueryController(queryPage, operationService, types, graph, config, sett
     }
 
     /**
+     * Sets up the services so that we can edit an existing operation
+     * @param {number} index 
+     */
+    vm.editOperation = function(index) {
+        var operation = queryPage.getCloneOf(index);
+        if (operation === undefined) {
+            return;
+        }
+        queryPage.setSelectedOperation(operation.selectedOperation);
+        view.setViewEdges(operation.view.viewEdges);
+        view.setViewEntities(operation.view.viewEntities);
+        view.setEdgeFilters(operation.view.edgeFilters);
+        view.setEntityFilters(operation.view.entityFilters);
+        view.setNamedViews(operation.view.namedViews);
+        queryPage.setInOutFlag(operation.inOutFlag);
+        queryPage.setOpOptions(operation.opOptions);
+        dateRange.setStartDate(operation.startDate);
+        dateRange.setEndDate(operation.endDate);
+    }
+
+    /**
      * Gets the operation chain being built
      */
     vm.getChain = function() {
