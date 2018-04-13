@@ -26,9 +26,23 @@ function directionalityPicker() {
     }
 }
 
-function DirectionalityPickerController(queryPage) {
+function DirectionalityPickerController(queryPage, events) {
     var vm = this;
     vm.inOutFlag = queryPage.getInOutFlag();
+    var eventName = "onOperationUpdate";
+
+    var updateView = function(operation) {
+        vm.inOutFlag = operation.inOutFlag;
+    }
+
+    vm.$onInit = function() {
+        events.subscribe(eventName, updateView);
+    }
+
+    vm.$onDestroy = function() {
+        events.subscribe(eventName, updateView);
+    }
+    
 
     vm.onInOutFlagChange = function() {
         queryPage.setInOutFlag(vm.inOutFlag);

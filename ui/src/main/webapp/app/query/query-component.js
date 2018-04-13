@@ -86,6 +86,13 @@ function QueryController(queryPage, operationService, types, graph, config, sett
     }
 
     /**
+     * checks whether the current index is less than the size of the operations
+     */
+    vm.isEditing = function() {
+        return queryPage.getCurrentIndex() < queryPage.getOperationChain().length;
+    }
+
+    /**
      * Index to remove
      * @param {number} index 
      */
@@ -112,6 +119,8 @@ function QueryController(queryPage, operationService, types, graph, config, sett
         queryPage.setOpOptions(operation.opOptions);
         dateRange.setStartDate(operation.startDate);
         dateRange.setEndDate(operation.endDate);
+
+        events.broadcast("onOperationUpdate", [operation]);
     }
 
     /**
@@ -143,7 +152,7 @@ function QueryController(queryPage, operationService, types, graph, config, sett
             return created;
         }
         if (created.selectedOperation.input === "uk.gov.gchq.gaffer.commonutil.pair.Pair") {
-            created.input = input.getPairInput();
+            created.input = input.getInputPairs();
         } else {
             created.input = input.getInput();
         }
@@ -158,7 +167,28 @@ function QueryController(queryPage, operationService, types, graph, config, sett
         queryPage.addToOperationChain(createOperation());
         dateRange.resetDateRange();
         view.reset();
-        input.reset();
+    }
+
+    /**
+     * Submits the current operation to the service
+     */
+    vm.save = function() {
+        var operation = createOperation();
+        queryPage.updateOperationInChain(operation, queryPage.getCurrentIndex())
+        events.broadcast("onOperationUpdate", [operation])
+    }
+
+    /**
+     * resets the current operation to how it was before beginning editing
+     */
+    vm.revert = function() {
+        vm.editOperation(queryPage.getCurrentIndex())
+        var oldOperation = queryPage.getCloneOf(queryPage.getCurrentIndex());
+        events.broadcast("onOperationUpdate", [oldOperation]);
+        if (oldOperation.input) {
+            input.setInput(oldOperation.input)
+            input.setInputB(oldOperation.inputB)
+        }
     }
 
     /**

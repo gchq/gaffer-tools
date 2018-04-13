@@ -21,7 +21,7 @@ angular.module('app').factory('queryPage', ['settings', 'events', function(setti
     var selectedOperation;
     var inOutFlag = 'EITHER';
     var opOptions;
-    var chainOperations = []
+    var chainOperations = [];
     var currentIndex = 0;
 
     /**
@@ -51,14 +51,14 @@ angular.module('app').factory('queryPage', ['settings', 'events', function(setti
         return currentIndex;
     }
 
-    // /**
-    //  * Updates an operation at the specified index
-    //  * @param {object} operation 
-    //  * @param {number} index 
-    //  */
-    // service.updateOperationInChain = function(operation, index) {
-    //     chainOperations.splice(index, 1, operation)
-    // }
+    /**
+     * Updates an operation at the specified index
+     * @param {object} operation 
+     * @param {number} index 
+     */
+    service.updateOperationInChain = function(operation, index) {
+        chainOperations.splice(index, 1, operation)
+    }
 
     /**
      * Removes an operation at the specified index from the operation chain

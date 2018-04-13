@@ -25,7 +25,7 @@
                 <div layout="row">
                     <div layout="column" flex="45"> <!-- left column -->
                         <operation-selector></operation-selector>
-                        <seed-manager ng-show="ctrl.getSelectedOp().input && ctrl.isFirst()"></seed-manager>
+                        <input-manager ng-show="ctrl.isFirst()" primary-input="ctrl.getSelectedOp().input" secondary-input="ctrl.getSelectedOp().inputB"></input-manager>
                     </div>
                     <div layout="column" flex="55"> <!-- right column -->
                         <date-range ng-if="ctrl.timeConfig && ctrl.getSelectedOp().view" conf="ctrl.timeConfig"></date-range>
@@ -37,9 +37,11 @@
                 </div>
             </form>
             <md-card-actions layout="row" layout-align="end center">
-                <md-button ng-click="ctrl.addToOperationChain()" id="add-to-op-chain" ng-disabled="!ctrl.canExecute()">Add to Operation Chain</md-button>
-                <md-button ng-click="ctrl.execute(true)" id="add-and-execute" ng-disabled="!ctrl.canExecute()" class="md-primary" ng-hide="ctrl.isFirst()">Add and Execute</md-button>
+                <md-button ng-click="ctrl.addToOperationChain()" id="add-to-op-chain" ng-disabled="!ctrl.canExecute()" ng-hide="ctrl.isEditing()">Add to Operation Chain</md-button>
+                <md-button ng-click="ctrl.execute(true)" id="add-and-execute" ng-disabled="!ctrl.canExecute()" class="md-primary" ng-hide="ctrl.isFirst() || ctrl.isEditing()">Add and Execute</md-button>
                 <md-button ng-click="ctrl.execute()" id="Execute Query" ng-disabled="!ctrl.canExecute()" class="md-primary">Execute</md-button>
+                <md-button ng-click="ctrl.revert()" id="revert-edit" ng-show="ctrl.isEditing()">Revert changes</md-button>
+                <md-button ng-click="ctrl.save()" id="save-operation" ng-show="ctrl.isEditing()" class="md-primary">Submit changes</md-button>
             </md-card-actions>
         </md-card>
     </div>

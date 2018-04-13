@@ -26,11 +26,17 @@ function operationSelector() {
     }
 }
 
-function OperationSelectorController(operationService, operationSelectorService, queryPage, $mdDialog, $routeParams) {
+function OperationSelectorController(operationService, operationSelectorService, queryPage, $mdDialog, $routeParams, events) {
     var vm = this;
 
     vm.availableOperations;
     vm.selectedOp;
+
+    var eventName = "onOperationUpdate";
+
+    var updateView = function(op) {
+        vm.selectedOp = op.selectedOperation;
+    }
 
     var populateOperations = function(availableOperations) {
         vm.availableOperations = availableOperations
@@ -74,6 +80,12 @@ function OperationSelectorController(operationService, operationSelectorService,
                 operationService.getAvailableOperations().then(populateOperations);
             }
         });
+
+        events.subscribe(eventName, updateView)
+    }
+
+    vm.$onDestroy = function() {
+        events.unsubscribe(eventName, updateView);
     }
 
     vm.updateModel = function() {
