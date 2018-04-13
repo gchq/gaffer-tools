@@ -89,7 +89,39 @@ function QueryController(queryPage, operationService, types, graph, config, sett
      * checks whether the current index is less than the size of the operations
      */
     vm.isEditing = function() {
-        return queryPage.getCurrentIndex() < queryPage.getOperationChain().length;
+        var chainLength = queryPage.getOperationChain().length;
+        return  chainLength > 0 && queryPage.getCurrentIndex() < chainLength;
+    }
+
+    /**
+     * Index to remove
+     * @param {number} index 
+     */
+    vm.deleteOperation = function(index) {
+        queryPage.removeFromOperationChain(index);
+    }
+
+    /**
+     * Sets up the services so that we can edit an existing operation
+     * @param {number} index 
+     */
+    vm.editOperation = function(index) {
+        var operation = queryPage.getCloneOf(index);
+        if (operation === undefined) {
+            return;
+        }
+        queryPage.setSelectedOperation(operation.selectedOperation);
+        view.setViewEdges(operation.view.viewEdges);
+        view.setViewEntities(operation.view.viewEntities);
+        view.setEdgeFilters(operation.view.edgeFilters);
+        view.setEntityFilters(operation.view.entityFilters);
+        view.setNamedViews(operation.view.namedViews);
+        queryPage.setInOutFlag(operation.inOutFlag);
+        queryPage.setOpOptions(operation.opOptions);
+        dateRange.setStartDate(operation.startDate);
+        dateRange.setEndDate(operation.endDate);
+
+        events.broadcast("onOperationUpdate", [operation]);
     }
 
     /**

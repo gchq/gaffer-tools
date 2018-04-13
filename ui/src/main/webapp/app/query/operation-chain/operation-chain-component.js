@@ -25,41 +25,28 @@ function operationChain() {
         controllerAs: 'ctrl',
         bindings: {
             operations: '<',
+            onDelete: '&',
+            onClick: '&'
         }
     }
 }
 
-function OperationChainController(queryPage, view, dateRange, events) {
+function OperationChainController() {
     var vm = this;
     
     /**
      * Index to remove
      * @param {number} index 
      */
-    vm.deleteOperation = function(index) {
-        queryPage.removeFromOperationChain(index);
+    vm.delete = function(index) {
+        vm.onDelete({id: index});
     }
 
     /**
      * Sets up the services so that we can edit an existing operation
      * @param {number} index 
      */
-    vm.editOperation = function(index) {
-        var operation = queryPage.getCloneOf(index);
-        if (operation === undefined) {
-            return;
-        }
-        queryPage.setSelectedOperation(operation.selectedOperation);
-        view.setViewEdges(operation.view.viewEdges);
-        view.setViewEntities(operation.view.viewEntities);
-        view.setEdgeFilters(operation.view.edgeFilters);
-        view.setEntityFilters(operation.view.entityFilters);
-        view.setNamedViews(operation.view.namedViews);
-        queryPage.setInOutFlag(operation.inOutFlag);
-        queryPage.setOpOptions(operation.opOptions);
-        dateRange.setStartDate(operation.startDate);
-        dateRange.setEndDate(operation.endDate);
-
-        events.broadcast("onOperationUpdate", [operation]);
+    vm.edit = function(index) {
+        vm.onClick({id: index});
     }
 }

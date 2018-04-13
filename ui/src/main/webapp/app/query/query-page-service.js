@@ -66,7 +66,9 @@ angular.module('app').factory('queryPage', ['settings', 'events', function(setti
      */
     service.removeFromOperationChain = function(index) {
         chainOperations.splice(index, 1);
-        currentIndex--;
+        if (currentIndex > 0) {
+            currentIndex--;
+        }
     }
 
     service.getSelectedOperation = function() {
