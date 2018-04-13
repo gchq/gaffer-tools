@@ -565,6 +565,13 @@ angular.module('app').factory('graph', ['types', '$q', 'results', 'common', 'con
         }
     }
 
+    graph.removeSelected = function() {
+        graphCy.filter(":selected").remove();
+        selectedEdges = {};
+        selectedEntities = {};
+        events.broadcast('selectedElementsUpdate', [{"entities": selectedEntities, "edges": selectedEdges}]);
+    }
+
     /**
      * Helper method to create a label from a vertex
      * @param {String} vertex 

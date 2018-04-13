@@ -37,5 +37,6 @@ function GraphControlController($scope, $timeout, events, graph, types, schema, 
     vm.quickHop = graph.quickHop;
     vm.redraw = graph.redraw;
     vm.reset = graph.reset;
+    vm.removeSelected = graph.removeSelected;
     vm.goToQuery = navigation.goToQuery;
 }

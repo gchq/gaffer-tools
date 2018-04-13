@@ -31,6 +31,13 @@
                     Quick hop out from the selected vertices
                 </md-tooltip>
             </md-button>
+            <md-button class="md-fab md-mini" id="reset"
+                       ng-click="ctrl.removeSelected()">
+                <md-icon md-svg-icon="delete"></md-icon>
+                <md-tooltip md-direction="top">
+                    Remove selected elements
+                </md-tooltip>
+            </md-button>
             <md-button class="md-fab md-mini" id="redraw"
                        ng-click="ctrl.redraw()">
                 <md-icon md-svg-icon="draw"></md-icon>
