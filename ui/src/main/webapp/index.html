@@ -40,7 +40,7 @@
     <!-- app -->
     <script src="app/app.js"></script>
     <!-- services -->
-    <script src="app/navigation/navigation-service.js"></script>
+    <script src="app/common/navigation-service.js"></script>
     <script src="app/config/config-service.js"></script>
     <script src="app/common/error-service.js"></script>
     <script src="app/common/events-service.js"></script>
@@ -59,12 +59,13 @@
     <script src="app/table/table-service.js"></script>
     <script src="app/query/view-builder/view-service.js"></script>
     <script src="app/query/query-page-service.js"></script>
-    <script src="app/query/seed-manager/input-service.js"></script>
+    <script src="app/query/input-manager/input-service.js"></script>
     <script src="app/loading/loading-service.js"></script>
     <script src="app/query/operation-selector/operation-selector-service.js"></script>
     <script src="app/config/default-rest-endpoint-service.js"></script>
     <script src="app/logo/logo-service.js"></script>
     <script src="app/query/date-range/date-range-service.js"></script>
+    <script src="app/common/csv-parser-service.js"></script>
     <!-- components -->
     <script src="app/common/dynamic-input-component.js"></script>
     <script src="app/graph/graph-component.js"></script>
@@ -73,13 +74,16 @@
     <script src="app/schema/schema-view-component.js"></script>
     <script src="app/schema/selected-element-groups/selected-element-groups-component.js"></script>
     <script src="app/query/operation-overview/operation-overview-component.js"></script>
-    <script src="app/navigation/navigation-component.js"></script>
+
+    <script src="app/toolbar/toolbar-component.js"></script>
+    <script src="app/sidenav/sidenav-component.js"></script>
     <script src="app/raw/raw-component.js"></script>
-    <script src="app/query/seed-manager/seed-builder/seed-builder-component.js"></script>
+    <script src="app/query/input-manager/seed-builder/seed-builder-component.js"></script>
+    <script src="app/query/input-manager/pair-builder/pair-builder-component.js"></script>
     <script src="app/settings/settings-component.js"></script>
     <script src="app/table/table-component.js"></script>
     <script src="app/query/operation-selector/operation-selector-component.js"></script>
-    <script src="app/query/seed-manager/seed-manager-component.js"></script>
+    <script src="app/query/input-manager/input-manager-component.js"></script>
     <script src="app/query/parameter-form/parameter-form-component.js"></script>
     <script src="app/query/view-builder/view-builder-component.js"></script>
     <script src="app/query/directionality-picker/directionality-picker-component.js"></script>
@@ -106,10 +110,13 @@
 
 <body ng-cloak ng-app="app" ng-controller="MainCtrl">
 <div layout="column" class="content" flex>
-    <nav-bar></nav-bar>
-    <md-content class="content" flex>
-        <ng-view class="content" flex></ng-view>
-    </md-content>
+    <toolbar></toolbar>
+    <section layout="row" flex>
+        <sidenav layout="row"></sidenav>
+        <md-content class="content" flex>
+            <ng-view class="content" flex></ng-view>
+        </md-content>
+    </section>
 </div>
 </body>
 </html>

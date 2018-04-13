@@ -47,7 +47,7 @@ angular.module('app').factory('graph', ['types', '$q', 'results', 'common', 'eve
         animate: false
     };
 
-    var graphData = {entities: {}, edges: {}, entitySeeds: []};
+    var graphData = {entities: {}, edges: {}};
 
     events.subscribe('resultsUpdated', function(results) {
         graph.update(results);
@@ -258,9 +258,7 @@ angular.module('app').factory('graph', ['types', '$q', 'results', 'common', 'eve
      */
     graph.addSeed = function(seed) {
         var entitySeed = JSON.stringify(seed);
-        if(!common.arrayContainsValue(graphData.entitySeeds, entitySeed)) {
-            graphData.entitySeeds.push(entitySeed);
-        }
+        common.pushValueIfUnique(entitySeed, graphData.entitySeeds);
         selectVertex(entitySeed);
         updateGraph(graphData);
     }
@@ -270,15 +268,13 @@ angular.module('app').factory('graph', ['types', '$q', 'results', 'common', 'eve
      * @param {Array} results 
      */
     graph.update = function(results) {
-        graphData = { entities: {}, edges: {}, entitySeeds: [] };
+        graphData = { entities: {}, edges: {} };
         for (var i in results.entities) {
             var entity = angular.copy(results.entities[i]);
             entity.vertex = common.parseVertex(entity.vertex);
             var id = entity.vertex;
             if(id in graphData.entities) {
-                if(!common.arrayContainsObject(graphData.entities[id], entity)) {
-                    graphData.entities[id].push(entity);
-                }
+                common.pushObjectIfUnique(entity, graphData.entities[id]);
             } else {
                 graphData.entities[id] = [entity];
             }
@@ -290,18 +286,9 @@ angular.module('app').factory('graph', ['types', '$q', 'results', 'common', 'eve
             edge.destination = common.parseVertex(edge.destination);
             var id = edge.source + "|" + edge.destination + "|" + edge.directed + "|" + edge.group;
             if(id in graphData.edges) {
-                if(!common.arrayContainsObject(graphData.edges[id], edge)) {
-                    graphData.edges[id].push(edge);
-                }
+                common.pushObjectIfUnique(edge, graphData.edges[id]);
             } else {
                 graphData.edges[id] = [edge];
-            }
-        }
-
-        for (var i in results.entitySeeds) {
-            var id = common.parseVertex(results.entitySeeds[i]);
-            if(!common.arrayContainsValue(graphData.entitySeeds, id)) {
-                graphData.entitySeeds.push(id);
             }
         }
 
@@ -422,10 +409,6 @@ angular.module('app').factory('graph', ['types', '$q', 'results', 'common', 'eve
                 });
             }
         }
-
-        for (var i in results.entitySeeds) {
-            addEntitySeed(results.entitySeeds[i]);
-        }
     }
 
     /**
@@ -504,7 +487,7 @@ angular.module('app').factory('graph', ['types', '$q', 'results', 'common', 'eve
     }
 
     /**
-     * Selects all nodes (entities and entitySeeds)
+     * Selects all nodes (entities)
      */
     graph.selectAllNodes = function() {
         graphCy.filter('node').select();

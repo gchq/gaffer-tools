@@ -122,7 +122,7 @@ function QueryController(queryPage, operationService, types, graph, config, sett
     }
 
     var createOperation = function() {
-        return {
+        var created =  {
             selectedOperation: queryPage.getSelectedOperation(),
             view: {
                 viewEdges: view.getViewEdges(),
@@ -131,12 +131,24 @@ function QueryController(queryPage, operationService, types, graph, config, sett
                 entityFilters: view.getEntityFilters(),
                 namedViews: view.getNamedViews()
             },
-            input: (vm.isFirst()) ? input.getInput() : undefined,
+            input: undefined,
+            inputB: (vm.isFirst() && queryPage.getSelectedOperation().inputB) ? input.getInput() : undefined,
             inOutFlag: queryPage.getInOutFlag(),
             startDate: dateRange.getStartDate(),
             endDate: dateRange.getEndDate(),
             opOptions: queryPage.getOpOptions()
         }
+
+        if (!vm.isFirst()) {
+            return created;
+        }
+        if (created.selectedOperation.input === "uk.gov.gchq.gaffer.commonutil.pair.Pair") {
+            created.input = input.getPairInput();
+        } else {
+            created.input = input.getInput();
+        }
+
+        return created;
     }
 
     /**
@@ -193,9 +205,16 @@ function QueryController(queryPage, operationService, types, graph, config, sett
         
         query.addOperation(operation);
         loading.load()
+
+        var iterableOutput = vm.getSelectedOp().iterableOutput === undefined || vm.getSelectedOp();
+        var operations = [operation];
+        if(vm.getSelectedOp().iterableOutput === undefined || vm.getSelectedOp().iterableOutput) {
+            operations.push(operationService.createLimitOperation(operation['options']));
+            operations.push(operationService.createDeduplicateOperation(operation['options']));
+        }
         query.execute(JSON.stringify({
             class: "uk.gov.gchq.gaffer.operation.OperationChain",
-            operations: [operation, operationService.createLimitOperation(operation['options']), operationService.createDeduplicateOperation(operation['options'])],
+            operations: operations,
             options: operation['options']
         }), function(data) {
             loading.finish()
@@ -235,7 +254,7 @@ function QueryController(queryPage, operationService, types, graph, config, sett
     var submitResults = function(data) {
         graph.deselectAll();
         results.update(data);
-        navigation.goTo('graph');
+        navigation.goTo('results');
         queryPage.reset();
         dateRange.resetDateRange();
         view.reset();
@@ -248,11 +267,11 @@ function QueryController(queryPage, operationService, types, graph, config, sett
 
     /**
      * Uses seeds uploaded to the input service to build an input array to the query.
+     * @param seeds the input array
      */
     var createOpInput = function(seeds) {
         var opInput = [];
-        var jsonVertex;
-
+        
         for (var i in seeds) {
             opInput.push({
                 "class": "uk.gov.gchq.gaffer.operation.data.EntitySeed",
@@ -261,6 +280,33 @@ function QueryController(queryPage, operationService, types, graph, config, sett
         }
 
         return opInput;
+    }
+
+    /**
+     * Create an array of JSON serialisable Pair objects from the values created by the input component
+     * @param {any[]} pairs 
+     */
+    var createPairInput = function(pairs) {
+        var opInput = [];
+
+        for (var i in pairs) {
+            opInput.push({
+                "class": "uk.gov.gchq.gaffer.commonutil.pair.Pair",
+                "first": {
+                    "uk.gov.gchq.gaffer.operation.data.EntitySeed": {
+                        "vertex": types.createJsonValue(pairs[i].first.valueClass, pairs[i].first.parts)
+                    }
+                },
+                "second": {
+                    "uk.gov.gchq.gaffer.operation.data.EntitySeed": {
+                        "vertex": types.createJsonValue(pairs[i].second.valueClass, pairs[i].second.parts)
+                    }
+                }
+            });
+        }
+
+        return opInput;
+
     }
 
     /**
@@ -330,8 +376,15 @@ function QueryController(queryPage, operationService, types, graph, config, sett
             op.operationName = selectedOp.name;
         }
 
-        if (selectedOp.input && operation.input !== undefined) {
-            op.input = createOpInput(operation.input);
+        if (operation.input !== undefined) {
+            if (selectedOp.input === "uk.gov.gchq.gaffer.commonutil.pair.Pair") {
+                op.input = createPairInput(operation.input)
+            } else if (selectedOp.input) {
+                op.input = createOpInput(operation.input);
+            }
+            if (selectedOp.inputB && !selectedOp.namedOp) {
+                op.inputB = createOpInput(operation.inputB);
+            }
         }
 
         if (selectedOp.parameters) {
@@ -344,6 +397,13 @@ function QueryController(queryPage, operationService, types, graph, config, sett
                 }
             }
             op.parameters = opParams;
+        }
+
+        if (selectedOp.inputB && selectedOp.namedOp) {
+            if (!op.parameters) {
+                op.parameters = {};
+            }
+            op.parameters['inputB'] = createOpInput(operation.inputB);
         }
 
         if (selectedOp.view) {
