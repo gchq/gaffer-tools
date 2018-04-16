@@ -26,7 +26,8 @@ function operationChain() {
         bindings: {
             operations: '<',
             onDelete: '&',
-            onClick: '&'
+            onClick: '&',
+            onCreate: '&'
         }
     }
 }
@@ -39,6 +40,14 @@ function OperationChainController(queryPage) {
      */
     vm.isActive = function(index) {
         return index == queryPage.getCurrentIndex();
+    }
+
+    vm.isEditing = function() {
+        return queryPage.getCurrentIndex() !== vm.operations.length
+    }
+
+    vm.createNew = function() {
+        vm.onCreate();
     }
     
     /**

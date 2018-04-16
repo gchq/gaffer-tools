@@ -102,6 +102,11 @@ function QueryController(queryPage, operationService, types, graph, config, sett
         queryPage.removeFromOperationChain(index);
     }
 
+    vm.createNewOperation = function() {
+        save();
+        queryPage.createNew();
+    }
+
     /**
      * Sets up the services so that we can edit an existing operation
      * @param {number} index 

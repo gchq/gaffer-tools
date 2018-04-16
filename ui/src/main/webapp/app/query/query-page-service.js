@@ -51,6 +51,14 @@ angular.module('app').factory('queryPage', ['settings', 'events', function(setti
     }
 
     /**
+     * Sets the current index to the one in front of the final operation 
+     * (ie to where it should be when creating a new operation)
+     */
+    service.createNew = function() {
+        currentIndex = chainOperations.length;
+    }
+
+    /**
      * Updates an operation at the specified index
      * @param {object} operation 
      * @param {number} index 
