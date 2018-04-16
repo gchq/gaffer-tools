@@ -209,8 +209,12 @@ md-content .md-toolbar-tools {
 }
 
 graph-control md-input-container {
-    padding: 0 8px 0 8px !important;
+    padding: 2px 8px 0 28px !important;
     margin: 14px 0 0 0;
+}
+
+graph-control md-input-container.md-icon-left>label {
+    left: 28px;
 }
 
 graph-control md-input-container .md-errors-spacer {
