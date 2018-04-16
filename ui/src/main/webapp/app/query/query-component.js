@@ -50,8 +50,9 @@ function query() {
  * @param {*} $routeParams the url query params
  * @param {*} $location for deleting url query params when they have been consumed
  * @param {*} events for broadcasting pre-execute event
+ * @param {*} edgeDirection for interacting with the edge direction
  */
-function QueryController(queryPage, operationService, types, graph, config, settings, query, results, navigation, $mdDialog, loading, dateRange, view, error, input, $routeParams, $location, events) {
+function QueryController(queryPage, operationService, types, graph, config, settings, query, results, navigation, $mdDialog, loading, dateRange, view, error, input, $routeParams, $location, events, edgeDirection) {
     var namedViewClass = "uk.gov.gchq.gaffer.data.elementdefinition.view.NamedView";
     var operationChainClass = "uk.gov.gchq.gaffer.operation.OperationChain"
     var vm = this;
@@ -106,7 +107,10 @@ function QueryController(queryPage, operationService, types, graph, config, sett
      * @param {number} index 
      */
     vm.editOperation = function(index) {
-        var operation = queryPage.getCloneOf(index);
+        if (vm.isEditing()) {
+            save();
+        }
+        var operation = queryPage.getOperationAt(index);
         if (operation === undefined) {
             return;
         }
@@ -116,7 +120,7 @@ function QueryController(queryPage, operationService, types, graph, config, sett
         view.setEdgeFilters(operation.view.edgeFilters);
         view.setEntityFilters(operation.view.entityFilters);
         view.setNamedViews(operation.view.namedViews);
-        queryPage.setInOutFlag(operation.inOutFlag);
+        edgeDirection.setDirection(operation.inOutFlag);
         queryPage.setOpOptions(operation.opOptions);
         dateRange.setStartDate(operation.startDate);
         dateRange.setEndDate(operation.endDate);
@@ -143,7 +147,7 @@ function QueryController(queryPage, operationService, types, graph, config, sett
             },
             input: undefined,
             inputB: (vm.isFirst() && queryPage.getSelectedOperation().inputB) ? input.getInput() : undefined,
-            inOutFlag: queryPage.getInOutFlag(),
+            inOutFlag: edgeDirection.getDirection(),
             startDate: dateRange.getStartDate(),
             endDate: dateRange.getEndDate(),
             opOptions: queryPage.getOpOptions()
@@ -166,30 +170,15 @@ function QueryController(queryPage, operationService, types, graph, config, sett
      */
     vm.addToOperationChain = function() {
         queryPage.addToOperationChain(createOperation());
-        dateRange.resetDateRange();
-        view.reset();
     }
 
     /**
      * Submits the current operation to the service
      */
-    vm.save = function() {
+    var save = function() {
         var operation = createOperation();
         queryPage.updateOperationInChain(operation, queryPage.getCurrentIndex())
         events.broadcast("onOperationUpdate", [operation])
-    }
-
-    /**
-     * resets the current operation to how it was before beginning editing
-     */
-    vm.revert = function() {
-        vm.editOperation(queryPage.getCurrentIndex())
-        var oldOperation = queryPage.getCloneOf(queryPage.getCurrentIndex());
-        events.broadcast("onOperationUpdate", [oldOperation]);
-        if (oldOperation.input) {
-            input.setInput(oldOperation.input)
-            input.setInputB(oldOperation.inputB)
-        }
     }
 
     /**
@@ -197,6 +186,13 @@ function QueryController(queryPage, operationService, types, graph, config, sett
      */
     vm.canExecute = function() {
         return vm.queryForm.$valid && !loading.isLoading();
+    }
+
+    vm.resetQuery = function() {
+        input.reset();
+        view.reset();
+        dateRange.resetDateRange();
+        edgeDirection.reset();
     }
 
     /**
@@ -218,9 +214,10 @@ function QueryController(queryPage, operationService, types, graph, config, sett
             return;
         }
         var operation;
-        if (queryPage.getOperationChain() === []) {
+        if (queryPage.getOperationChain().length === 0) {
             operation = createOperationForQuery(createOperation());
         } else {
+            save();
             operation = {
                 class: operationChainClass,
                 operations: []
@@ -287,9 +284,7 @@ function QueryController(queryPage, operationService, types, graph, config, sett
         results.update(data);
         navigation.goTo('results');
         queryPage.reset();
-        dateRange.resetDateRange();
-        view.reset();
-        input.reset();
+        vm.resetQuery();
 
         // Remove the input query param
         delete $routeParams['input'];

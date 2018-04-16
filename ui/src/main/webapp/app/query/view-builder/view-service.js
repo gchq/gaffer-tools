@@ -16,7 +16,7 @@
 
 'use strict';
 
-angular.module('app').factory('view', ['operationService', 'config', 'settings', 'query', '$q', 'types', function(operationService, config, settings, query, $q, types) {
+angular.module('app').factory('view', ['operationService', 'config', 'settings', 'query', '$q', 'types', 'events', function(operationService, config, settings, query, $q, types, events) {
     var service = {}
     var viewEntities = [];
     var viewEdges = [];
@@ -49,22 +49,27 @@ angular.module('app').factory('view', ['operationService', 'config', 'settings',
 
     service.setNamedViews = function(newNamedViews) {
         namedViews = newNamedViews;
+        events.broadcast('onViewUpdate', []);
     }
 
     service.setViewEntities = function(entities) {
         viewEntities = entities;
+        events.broadcast('onViewUpdate', []);
     }
 
     service.setViewEdges = function(edges) {
         viewEdges = edges;
+        events.broadcast('onViewUpdate', []);
     }
 
     service.setEdgeFilters = function(filters) {
         edgeFilters = filters;
+        events.broadcast('onViewUpdate', []);
     } 
 
     service.setEntityFilters = function(filters) {
         entityFilters = filters;
+        events.broadcast('onViewUpdate', []);
     } 
 
     service.reset = function() {
@@ -73,6 +78,8 @@ angular.module('app').factory('view', ['operationService', 'config', 'settings',
         entityFilters = {};
         edgeFilters = {};
         namedViews = [];
+
+        events.broadcast('onViewUpdate', []);
     }
 
     service.getAvailableNamedViews = function() {

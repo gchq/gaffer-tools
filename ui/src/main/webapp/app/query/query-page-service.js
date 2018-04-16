@@ -19,7 +19,6 @@
 angular.module('app').factory('queryPage', ['settings', 'events', function(settings, events) {
     var service = {}
     var selectedOperation;
-    var inOutFlag = 'EITHER';
     var opOptions;
     var chainOperations = [];
     var currentIndex = 0;
@@ -39,9 +38,9 @@ angular.module('app').factory('queryPage', ['settings', 'events', function(setti
         currentIndex++;
     }
 
-    service.getCloneOf = function(index) {
+    service.getOperationAt = function(index) {
         currentIndex = index;
-        return angular.copy(chainOperations[index]);
+        return chainOperations[index];
     } 
 
     /**
@@ -79,14 +78,6 @@ angular.module('app').factory('queryPage', ['settings', 'events', function(setti
         selectedOperation = op;
     }
 
-    service.getInOutFlag = function() {
-        return inOutFlag;
-    }
-
-    service.setInOutFlag = function(flag) {
-        inOutFlag = flag;
-    }
-
     service.getOpOptions = function() {
         return opOptions;
     }
@@ -97,7 +88,6 @@ angular.module('app').factory('queryPage', ['settings', 'events', function(setti
 
     service.reset = function() {
         selectedOperation = undefined;
-        inOutFlag = 'EITHER';
         opOptions = angular.copy(settings.getDefaultOpOptions());
         chainOperations = [];
         currentIndex = 0;

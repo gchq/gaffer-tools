@@ -29,13 +29,28 @@ function dateRange() {
     }
 }
 
-function DateRangeController(dateRange, time) {
+function DateRangeController(dateRange, time, events) {
     var vm = this;
 
     vm.startDate = null;
     vm.endDate = null;
     vm.startTime=null
     vm.endTime=null
+
+    var updateView = function(dates) {
+        var start = dates.startDate;
+        if (start) {
+            vm.startDate = time.convertNumberToDate(start, vm.conf.filter.unit);
+        } else {
+            vm.startDate = null;
+        }
+        var end = dates.endDate;
+        if(end) {
+            vm.endDate = time.convertNumberToDate(end, vm.conf.filter.unit);
+        } else {
+            vm.endDate = null;
+        }
+    }
 
 
     vm.$onInit = function() {
@@ -57,15 +72,13 @@ function DateRangeController(dateRange, time) {
                 throw 'Config Error: ' + time.getUnitErrorMsg(vm.conf.filter.unit);
             }
         }
+        events.subscribe('onDateRangeUpdate', updateView);
+        updateView({startDate: dateRange.getStartDate(), endDate: dateRange.getEndDate()});
+        
+    }
 
-        var start = dateRange.getStartDate();
-        if (start) {
-            vm.startDate = time.convertNumberToDate(start, vm.conf.filter.unit);
-        }
-        var end = dateRange.getEndDate();
-        if(end) {
-            vm.endDate = time.convertNumberToDate(end, vm.conf.filter.unit);
-        }
+    vm.$onDestroy = function() {
+        events.unsubscribe('onDateRangeUpdate', updateView);
     }
 
     vm.onStartDateUpdate = function() {
@@ -140,6 +153,4 @@ function DateRangeController(dateRange, time) {
 
         dateRange.setEndDate(convertedTime);
     }
-
-
 }

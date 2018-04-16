@@ -177,21 +177,6 @@ table md-input-container {
     border: none
 }
 
-.fade.ng-enter,
-.fade.ng-leave {
-  -webkit-transition:0.3s linear all;
-  transition:0.3s linear all;
-}
-.fade.ng-enter,
-.fade.ng-leave.ng-leave-active {
-    opacity: 0;
-}
-
-.fade.ng-leave,
-.fade.ng-enter.ng-enter-active {
-    opacity: 1;
-}
-
 .sidenav {
     background-color: #F5F5F5;
     overflow: scroll;

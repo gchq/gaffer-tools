@@ -66,6 +66,15 @@ function ViewBuilderController(view, graph, common, schema, functions, events, t
 
     vm.showBuilder = false;
 
+    var onUpdate = function() {
+        vm.viewEdges = view.getViewEdges();
+        vm.viewEntities = view.getViewEntities();
+        vm.edgeFilters = view.getEdgeFilters();
+        vm.entityFilters = view.getEntityFilters();
+
+        vm.showBuilder = (vm.viewEdges.length + vm.viewEntities.length) > 0;
+    }
+
     vm.makeVisible = function() {
         vm.showBuilder = true;
     }
@@ -91,6 +100,12 @@ function ViewBuilderController(view, graph, common, schema, functions, events, t
         });
 
         vm.showBuilder = (vm.viewEdges.length + vm.viewEntities.length) > 0;
+
+        events.subscribe('onViewUpdate', onUpdate);
+    }
+
+    vm.$onDestroy = function() {
+        events.unsubscribe('onViewUpdate', onUpdate);
     }
 
     vm.noMore = function(group) {

@@ -26,7 +26,7 @@ function namedViews() {
     }
 }
 
-function NamedViewsController(view) {
+function NamedViewsController(view, events) {
     var vm = this;
 
     vm.availableNamedViews;
@@ -34,6 +34,14 @@ function NamedViewsController(view) {
     vm.namedViewSearchTerm = null;
     vm.selectedNamedView;
     vm.label = ""
+
+    var onUpdate = function() {
+        vm.selectedNamedViews = view.getNamedViews();
+    }
+
+    vm.$onDestroy = function() {
+        events.unsubscribe('onViewUpdate', onUpdate);
+    }
 
     var populateNamedViews = function(availableNamedViews) {
         vm.availableNamedViews = availableNamedViews
@@ -58,6 +66,7 @@ function NamedViewsController(view) {
                 populateNamedViews(view.getAvailableNamedViews())
             }
         });
+        events.subscribe('onViewUpdate', onUpdate);
     }
 
     vm.search = function(text) {

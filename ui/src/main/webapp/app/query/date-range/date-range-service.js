@@ -16,7 +16,7 @@
 
 'use strict';
 
-angular.module('app').factory('dateRange', function() {
+angular.module('app').factory('dateRange', function(events) {
     var service = {};
 
     var startDate;
@@ -32,15 +32,18 @@ angular.module('app').factory('dateRange', function() {
 
     service.setStartDate = function(date) {
         startDate = date;
+        events.broadcast('onDateRangeUpdate', [{startDate: startDate, endDate: endDate}]);
     }
 
     service.setEndDate = function(date) {
         endDate = date;
+        events.broadcast('onDateRangeUpdate', [{startDate: startDate, endDate: endDate}]);
     }
 
     service.resetDateRange = function() {
         endDate = undefined;
         startDate = undefined;
+        events.broadcast('onDateRangeUpdate', [{startDate: startDate, endDate: endDate}]);
     }
 
     return service;
