@@ -389,6 +389,24 @@ To use the time window feature, some assumptions should be true:
 
 It's worth noting that if your elements have a single timestamp, just use the same timestamp property in the startProperty and endProperty
 
+### Graph section
+The graph section allows you to configure the graph view. 
+Currently you are limited to configuring the physics used to draw the graph.
+The default graph physics are:
+
+```json
+"graph": {
+    "physics": {
+      "springLength": 200,
+      "dragCoeff": 0,
+      "stableThreshold": 0.000001,
+      "fit": true
+    }
+  }
+```
+
+For more information about the configuration of the graph physics and to 
+see the algorithm, please see: https://github.com/nickolasmv/cytoscape-ngraph.forcelayout
 
 ## Testing
 
