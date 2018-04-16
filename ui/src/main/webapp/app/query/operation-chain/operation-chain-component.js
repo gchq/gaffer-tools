@@ -31,8 +31,15 @@ function operationChain() {
     }
 }
 
-function OperationChainController() {
+function OperationChainController(queryPage) {
     var vm = this;
+
+    /**
+     * checks whether the index is the current index being edited
+     */
+    vm.isActive = function(index) {
+        return index == queryPage.getCurrentIndex();
+    }
     
     /**
      * Index to remove

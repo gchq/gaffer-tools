@@ -187,3 +187,7 @@ table md-input-container {
 md-list-item.active button {
     background-color: rgba(0,0,0,0.2);
 }
+
+md-list-item.active div div button {
+    background-color: inherit;
+}
