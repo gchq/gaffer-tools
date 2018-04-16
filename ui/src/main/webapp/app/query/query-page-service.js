@@ -16,67 +16,10 @@
 
 'use strict';
 
-angular.module('app').factory('queryPage', ['settings', 'events', function(settings, events) {
+angular.module('app').factory('queryPage', ['settings', function(settings) {
     var service = {}
     var selectedOperation;
     var opOptions;
-    var chainOperations = [];
-    var currentIndex = 0;
-
-    /**
-     * Returns the operations in the current chain
-     */
-    service.getOperationChain = function() {
-        return chainOperations;
-    }
-
-    /**
-     * Adds an operation to the current operation chain
-     */
-    service.addToOperationChain = function(operation) {
-        chainOperations.push(operation);
-        currentIndex++;
-    }
-
-    service.getOperationAt = function(index) {
-        currentIndex = index;
-        return chainOperations[index];
-    } 
-
-    /**
-     * Gets the current index (ie the index of the current operation in an operation chain)
-     */
-    service.getCurrentIndex = function() {
-        return currentIndex;
-    }
-
-    /**
-     * Sets the current index to the one in front of the final operation 
-     * (ie to where it should be when creating a new operation)
-     */
-    service.createNew = function() {
-        currentIndex = chainOperations.length;
-    }
-
-    /**
-     * Updates an operation at the specified index
-     * @param {object} operation 
-     * @param {number} index 
-     */
-    service.updateOperationInChain = function(operation, index) {
-        chainOperations.splice(index, 1, operation)
-    }
-
-    /**
-     * Removes an operation at the specified index from the operation chain
-     * @param {number} index 
-     */
-    service.removeFromOperationChain = function(index) {
-        chainOperations.splice(index, 1);
-        if (currentIndex > 0) {
-            currentIndex--;
-        }
-    }
 
     service.getSelectedOperation = function() {
         return selectedOperation;
@@ -97,8 +40,6 @@ angular.module('app').factory('queryPage', ['settings', 'events', function(setti
     service.reset = function() {
         selectedOperation = undefined;
         opOptions = angular.copy(settings.getDefaultOpOptions());
-        chainOperations = [];
-        currentIndex = 0;
     }
 
     return service;

@@ -32,18 +32,18 @@ function operationChain() {
     }
 }
 
-function OperationChainController(queryPage) {
+function OperationChainController(operationChain) {
     var vm = this;
 
     /**
      * checks whether the index is the current index being edited
      */
     vm.isActive = function(index) {
-        return index == queryPage.getCurrentIndex();
+        return index == operationChain.getCurrentIndex();
     }
 
     vm.isEditing = function() {
-        return queryPage.getCurrentIndex() !== vm.operations.length
+        return operationChain.getCurrentIndex() !== vm.operations.length
     }
 
     vm.createNew = function() {

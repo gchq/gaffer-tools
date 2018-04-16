@@ -51,8 +51,9 @@ function query() {
  * @param {*} $location for deleting url query params when they have been consumed
  * @param {*} events for broadcasting pre-execute event
  * @param {*} edgeDirection for interacting with the edge direction
+ * @param {*} operationChain for keeping track of the operation chain
  */
-function QueryController(queryPage, operationService, types, graph, config, settings, query, results, navigation, $mdDialog, loading, dateRange, view, error, input, $routeParams, $location, events, edgeDirection) {
+function QueryController(queryPage, operationService, types, graph, config, settings, query, results, navigation, $mdDialog, loading, dateRange, view, error, input, $routeParams, $location, events, edgeDirection, operationChain) {
     var namedViewClass = "uk.gov.gchq.gaffer.data.elementdefinition.view.NamedView";
     var operationChainClass = "uk.gov.gchq.gaffer.operation.OperationChain"
     var vm = this;
@@ -83,15 +84,15 @@ function QueryController(queryPage, operationService, types, graph, config, sett
      * Test to see if an operation has already been added to the chain.
      */
     vm.isFirst = function() {
-        return queryPage.getCurrentIndex() === 0;
+        return operationChain.getCurrentIndex() === 0;
     }
 
     /**
      * checks whether the current index is less than the size of the operations
      */
     vm.isEditing = function() {
-        var chainLength = queryPage.getOperationChain().length;
-        return  chainLength > 0 && queryPage.getCurrentIndex() < chainLength;
+        var chainLength = operationChain.getOperationChain().length;
+        return  chainLength > 0 && operationChain.getCurrentIndex() < chainLength;
     }
 
     /**
@@ -99,26 +100,43 @@ function QueryController(queryPage, operationService, types, graph, config, sett
      * @param {number} index 
      */
     vm.deleteOperation = function(index) {
-        queryPage.removeFromOperationChain(index);
-    }
-
-    vm.createNewOperation = function() {
-        save();
-        queryPage.createNew();
+        operationChain.remove(index);
     }
 
     /**
-     * Sets up the services so that we can edit an existing operation
+     * Saves progress and if there is a operation being worked on, it loads it.
+     */
+    vm.createNewOperation = function() {
+        save();
+        operationChain.createNewOperation();
+        
+        var cachedOperation = operationChain.getCached();
+        if (cachedOperation) {
+            setUpServices(cachedOperation);
+        }
+
+    }
+
+    /**
+     * Saves progress and sets up services.
      * @param {number} index 
      */
     vm.editOperation = function(index) {
         if (vm.isEditing()) {
             save();
+        } else {
+            operationChain.cache(createOperation());
         }
-        var operation = queryPage.getOperationAt(index);
+        var operation = operationChain.getOperationAt(index);
         if (operation === undefined) {
             return;
         }
+
+        setUpServices(operation);
+        
+    }
+
+    var setUpServices = function(operation) {
         queryPage.setSelectedOperation(operation.selectedOperation);
         view.setViewEdges(operation.view.viewEdges);
         view.setViewEntities(operation.view.viewEntities);
@@ -137,7 +155,7 @@ function QueryController(queryPage, operationService, types, graph, config, sett
      * Gets the operation chain being built
      */
     vm.getChain = function() {
-        return queryPage.getOperationChain();
+        return operationChain.getOperationChain();
     }
 
     var createOperation = function() {
@@ -159,7 +177,7 @@ function QueryController(queryPage, operationService, types, graph, config, sett
         }
 
         if (!vm.isFirst()) {
-            return created;
+            return angular.copy(created);
         }
         if (created.selectedOperation.input === "uk.gov.gchq.gaffer.commonutil.pair.Pair") {
             created.input = input.getInputPairs();
@@ -167,14 +185,14 @@ function QueryController(queryPage, operationService, types, graph, config, sett
             created.input = input.getInput();
         }
 
-        return created;
+        return angular.copy(created);
     }
 
     /**
      * Adds the current operation to the op chain
      */
     vm.addToOperationChain = function() {
-        queryPage.addToOperationChain(createOperation());
+        operationChain.add(createOperation());
     }
 
     /**
@@ -182,7 +200,7 @@ function QueryController(queryPage, operationService, types, graph, config, sett
      */
     var save = function() {
         var operation = createOperation();
-        queryPage.updateOperationInChain(operation, queryPage.getCurrentIndex())
+        operationChain.update(operation, operationChain.getCurrentIndex())
         events.broadcast("onOperationUpdate", [operation])
     }
 
@@ -219,18 +237,20 @@ function QueryController(queryPage, operationService, types, graph, config, sett
             return;
         }
         var operation;
-        if (queryPage.getOperationChain().length === 0) {
+        if (operationChain.getOperationChain().length === 0) {
             operation = createOperationForQuery(createOperation());
         } else {
-            save();
+            if (vm.isEditing()) {
+                save();
+            }
             operation = {
                 class: operationChainClass,
                 operations: []
             }
             if (addCurrent) {
-                queryPage.addToOperationChain(createOperation());
+                operationChain.add(createOperation());
             }
-            var ops = queryPage.getOperationChain();
+            var ops = operationChain.getOperationChain();
             for (var i in ops) {
                 operation.operations.push(createOperationForQuery(ops[i]))
             }
@@ -289,6 +309,7 @@ function QueryController(queryPage, operationService, types, graph, config, sett
         results.update(data);
         navigation.goTo('results');
         queryPage.reset();
+        operationChain.reset();
         vm.resetQuery();
 
         // Remove the input query param
@@ -438,11 +459,11 @@ function QueryController(queryPage, operationService, types, graph, config, sett
         }
 
         if (selectedOp.view) {
-            var namedViews = operation.namedViews;
-            var viewEdges = operation.viewEdges;
-            var viewEntities = operation.viewEntities;
-            var edgeFilters = operation.edgeFilters;
-            var entityFilters = operation.entityFilters;
+            var namedViews = operation.view.namedViews;
+            var viewEdges = operation.view.viewEdges;
+            var viewEntities = operation.view.viewEntities;
+            var edgeFilters = operation.view.edgeFilters;
+            var entityFilters = operation.view.entityFilters;
 
             op.view = {
                 globalElements: [{
