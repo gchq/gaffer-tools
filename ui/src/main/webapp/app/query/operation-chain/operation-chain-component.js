@@ -27,7 +27,8 @@ function operationChain() {
             operations: '<',
             onDelete: '&',
             onClick: '&',
-            onCreate: '&'
+            onCreate: '&',
+            onExecute: '&'
         }
     }
 }
@@ -56,6 +57,13 @@ function OperationChainController(operationChain) {
      */
     vm.delete = function(index) {
         vm.onDelete({id: index});
+    }
+
+    /**
+     * Call handler to execute operation chain
+     */
+    vm.execute = function() {
+        vm.onExecute();
     }
 
     /**

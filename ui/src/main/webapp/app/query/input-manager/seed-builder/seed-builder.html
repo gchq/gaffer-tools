@@ -5,6 +5,7 @@
                         rows="6"
                         name="multiSeedInput"
                         md-no-autogrow
+                        ng-disabled="ctrl.usePrevious"
                         ng-model="ctrl.seedVertices"
                         ng-blur="ctrl.addSeeds()"
                         placeholder="Enter your seeds, each seed on a new line.

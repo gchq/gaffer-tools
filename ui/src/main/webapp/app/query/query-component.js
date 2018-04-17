@@ -96,11 +96,35 @@ function QueryController(queryPage, operationService, types, graph, config, sett
     }
 
     /**
-     * Index to remove
-     * @param {number} index 
+     * Deletes an operation at the given index
+     * @param {number} index Index to remove
      */
     vm.deleteOperation = function(index) {
+        if (index === 0 && operationChain.getCurrentIndex() !== 0) {  // pass input of first operation to second operation if compatable
+            var toDelete = operationChain.getCloneOf(index);
+
+            if (operationChain.getCurrentIndex() === 1) {
+                if (vm.getSelectedOp().input === toDelete.selectedOperation.input && toDelete.selectedOperation.input === "uk.gov.gchq.gaffer.commonutil.pair.Pair") {
+                    if (input.getInputPairs() === undefined) {
+                        input.setInputPairs(toDelete.input);
+                    }
+                } else if (input.getInput() === undefined) {
+                    input.setInput(toDelete.input);
+                }
+            } else {
+                var toUpdate = operationChain.getCloneOf(1);
+                if (toUpdate.selectedOperation.input === toDelete.selectedOperation.input) {
+                    if (toUpdate.input === undefined) {
+                        toUpdate.input = toDelete.input;
+                    }
+                } else if (toUpdate.input === undefined) {
+                    toUpdate.input = [];
+                }
+                operationChain.update(toUpdate, 1);
+            }    
+        }
         operationChain.remove(index);
+        events.broadcast("onOperationUpdate", [createOperation()]);
     }
 
     /**
@@ -147,6 +171,13 @@ function QueryController(queryPage, operationService, types, graph, config, sett
         queryPage.setOpOptions(operation.opOptions);
         dateRange.setStartDate(operation.startDate);
         dateRange.setEndDate(operation.endDate);
+        input.setInputB(operation.inputB);
+
+        if (operation.selectedOperation.input === "uk.gov.gchq.gaffer.commonutil.pair.Pair") {
+            input.setInputPairs(operation.input);
+        } else {
+            input.setInput(operation.input);
+        }
 
         events.broadcast("onOperationUpdate", [operation]);
     }
@@ -169,16 +200,13 @@ function QueryController(queryPage, operationService, types, graph, config, sett
                 namedViews: view.getNamedViews()
             },
             input: undefined,
-            inputB: (vm.isFirst() && queryPage.getSelectedOperation().inputB) ? input.getInput() : undefined,
+            inputB: input.getInputB(),
             inOutFlag: edgeDirection.getDirection(),
             startDate: dateRange.getStartDate(),
             endDate: dateRange.getEndDate(),
             opOptions: queryPage.getOpOptions()
         }
 
-        if (!vm.isFirst()) {
-            return angular.copy(created);
-        }
         if (created.selectedOperation.input === "uk.gov.gchq.gaffer.commonutil.pair.Pair") {
             created.input = input.getInputPairs();
         } else {
@@ -193,10 +221,13 @@ function QueryController(queryPage, operationService, types, graph, config, sett
      */
     vm.addToOperationChain = function() {
         operationChain.add(createOperation());
+        input.setInput(undefined);
+        input.setInputPairs(undefined);
+        events.broadcast("onOperationUpdate", [createOperation()])
     }
 
     /**
-     * Submits the current operation to the service
+     * Submits the current operation to the opChain service
      */
     var save = function() {
         var operation = createOperation();
@@ -226,36 +257,58 @@ function QueryController(queryPage, operationService, types, graph, config, sett
     }
 
     /**
-     * First checks fires an event so that all watchers may do last minute changes.
-     * Once done, it does a final check to make sure the operation can execute. If so
-     * it executes it.
-     * @param {boolean} addCurrent Whether to add current operation to the op chain
+     * Function to execute when executing entire operation chain
      */
-    vm.execute = function(addCurrent) {
+    vm.executeOperationChain = function() {
         events.broadcast('onPreExecute', []);
         if (!vm.canExecute()) {
             return;
         }
-        var operation;
-        if (operationChain.getOperationChain().length === 0) {
-            operation = createOperationForQuery(createOperation());
-        } else {
-            if (vm.isEditing()) {
-                save();
-            }
-            operation = {
-                class: operationChainClass,
-                operations: []
-            }
-            if (addCurrent) {
-                operationChain.add(createOperation());
-            }
-            var ops = operationChain.getOperationChain();
-            for (var i in ops) {
-                operation.operations.push(createOperationForQuery(ops[i]))
-            }
+
+        if (vm.isEditing()) {
+            save();
+        }
+
+        var operation = {
+            class: operationChainClass,
+            operations: []
         }
         
+        var ops = operationChain.getOperationChain();
+        for (var i in ops) {
+            operation.operations.push(createOperationForQuery(ops[i]))
+        }
+
+        if (operation.operations.length === 0) {
+            error.handle('Operation chain must contain at least one operation');
+            return;
+        }
+
+        query.addOperation(operation);
+        loading.load();
+
+        var operations = [operation];
+
+        var lastSelectedOperation = operationChain.getOperationAt(operationChain.getOperationChain().length - 1).selectedOperation;
+        if (lastSelectedOperation.iterableOutput === undefined || lastSelectedOperation.iterableOutput) {
+            operations.push(operationService.createLimitOperation(operation['options']));
+            operations.push(operationService.createDeduplicateOperation(operation['options']));   
+        }
+
+        runQuery(operations, true);
+    }
+
+    /**
+     * First checks fires an event so that all watchers may do last minute changes.
+     * Once done, it does a final check to make sure the operation can execute. If so
+     * it executes it.
+     */
+    vm.execute = function() {
+        events.broadcast('onPreExecute', []);
+        if (!vm.canExecute()) {
+            return;
+        }
+        var operation = createOperationForQuery(createOperation());
         query.addOperation(operation);
         loading.load()
 
@@ -265,16 +318,21 @@ function QueryController(queryPage, operationService, types, graph, config, sett
             operations.push(operationService.createLimitOperation(operation['options']));
             operations.push(operationService.createDeduplicateOperation(operation['options']));
         }
+        runQuery(operations);
+        
+    }
+
+    var runQuery = function(operations, chainFlag) {
         query.execute(JSON.stringify({
             class: "uk.gov.gchq.gaffer.operation.OperationChain",
             operations: operations,
-            options: operation['options']
+            options: operations[0]['options']
         }), function(data) {
             loading.finish()
             if (data.length === settings.getResultLimit()) {
-                prompt(data);
+                prompt(data, chainFlag);
             } else {
-                submitResults(data);
+                submitResults(data, chainFlag);
             }
         }, function(err) {
             loading.finish();
@@ -287,7 +345,7 @@ function QueryController(queryPage, operationService, types, graph, config, sett
      * Alerts the user if they hit the result limit
      * @param {Array} data The data returned by the Gaffer REST service 
      */
-    var prompt = function(data) {
+    var prompt = function(data, chainFlag) {
         $mdDialog.show({
             template: '<result-count-warning aria-label="Result Count Warning"></result-count-warning>',
             parent: angular.element(document.body),
@@ -295,7 +353,7 @@ function QueryController(queryPage, operationService, types, graph, config, sett
         })
         .then(function(command) {
             if(command === 'results') {
-                submitResults(data);
+                submitResults(data, chainFlag);
             }
         });
     }
@@ -304,13 +362,16 @@ function QueryController(queryPage, operationService, types, graph, config, sett
      * Deselects all elements in the graph, updates the result service and resets all query related services
      * @param {Array} data the data returned by the rest service 
      */
-    var submitResults = function(data) {
+    var submitResults = function(data, chainFlag) {
         graph.deselectAll();
         results.update(data);
         navigation.goTo('results');
         queryPage.reset();
-        operationChain.reset();
+        input.reset();
         vm.resetQuery();
+        if (chainFlag) {
+            operationChain.reset();
+        }
 
         // Remove the input query param
         delete $routeParams['input'];
@@ -322,6 +383,9 @@ function QueryController(queryPage, operationService, types, graph, config, sett
      * @param seeds the input array
      */
     var createOpInput = function(seeds) {
+        if (seeds === undefined) {
+            return undefined;
+        }
         var opInput = [];
         
         for (var i in seeds) {
@@ -339,6 +403,9 @@ function QueryController(queryPage, operationService, types, graph, config, sett
      * @param {any[]} pairs 
      */
     var createPairInput = function(pairs) {
+        if (pairs === undefined) {
+            return undefined;
+        }
         var opInput = [];
 
         for (var i in pairs) {
@@ -427,17 +494,16 @@ function QueryController(queryPage, operationService, types, graph, config, sett
         if(selectedOp.namedOp) {
             op.operationName = selectedOp.name;
         }
-
-        if (operation.input !== undefined) {
-            if (selectedOp.input === "uk.gov.gchq.gaffer.commonutil.pair.Pair") {
-                op.input = createPairInput(operation.input)
-            } else if (selectedOp.input) {
-                op.input = createOpInput(operation.input);
-            }
-            if (selectedOp.inputB && !selectedOp.namedOp) {
-                op.inputB = createOpInput(operation.inputB);
-            }
+        
+        if (selectedOp.input === "uk.gov.gchq.gaffer.commonutil.pair.Pair") {
+            op.input = createPairInput(operation.input)
+        } else if (selectedOp.input) {
+            op.input = createOpInput(operation.input);
         }
+        if (selectedOp.inputB && !selectedOp.namedOp) {
+            op.inputB = createOpInput(operation.inputB);
+        }
+        
 
         if (selectedOp.parameters) {
             var opParams = {};

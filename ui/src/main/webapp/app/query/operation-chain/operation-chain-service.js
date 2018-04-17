@@ -58,6 +58,13 @@ angular.module('app').factory('operationChain', function() {
     }
 
     /**
+     * Gets clone of an operation stored at a given vertex. Will not change current index.
+     */
+    service.getCloneOf = function(index) {
+        return angular.copy(operations[index]);
+    }
+
+    /**
      * Gets the operation stored at the given index
      * @param {number} index 
      */
@@ -96,7 +103,7 @@ angular.module('app').factory('operationChain', function() {
      */
     service.remove = function(index) {
         operations.splice(index, 1);
-        if (currentIndex > 0) {
+        if (currentIndex > index) {
             currentIndex--;
         }
     }

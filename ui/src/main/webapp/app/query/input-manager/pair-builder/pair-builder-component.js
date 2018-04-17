@@ -25,7 +25,10 @@ function pairBuilder() {
     return {
         templateUrl: 'app/query/input-manager/pair-builder/pair-builder.html',
         controller: PairBuilderController,
-        controllerAs: 'ctrl'
+        controllerAs: 'ctrl',
+        bindings: {
+            usePrevious: '<'
+        }
     }
 }
 

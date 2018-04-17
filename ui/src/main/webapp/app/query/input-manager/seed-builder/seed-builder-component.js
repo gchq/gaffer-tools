@@ -31,7 +31,8 @@ function seedBuilder() {
             updateEvent: '<',
             setter: '<',
             getter: '<',
-            routeParam: '@'
+            routeParam: '@',
+            usePrevious: '<'
         }
     }
 }
@@ -189,6 +190,10 @@ function SeedBuilderController(schema, csv, types, error, events, common, $route
      * @param {any[]} updated The array of inputs
      */
     var recalculateSeeds = function(updated) {
+        if (updated === undefined) {
+            vm.seedVertices = ''
+            return;
+        }
         var toParse = updated.map(function(input) {
             return input.parts;
         });

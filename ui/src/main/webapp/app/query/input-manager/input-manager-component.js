@@ -35,8 +35,35 @@ function inputManager() {
  * @param {*} graph The Graph service for selecting all seeds
  * @param {*} input The input service for injecting getters and setters into child components
  */
-function InputManagerController(graph, input) {
+function InputManagerController(graph, input, operationChain, events) {
     var vm = this;
+    vm.usePreviousOutput;
+
+    var setInitialFlagPosition = function(newOperation) {
+        vm.usePreviousOutput = newOperation.input === undefined
+    }
+    
+    vm.$onInit = function() {
+        events.subscribe('onOperationUpdate', setInitialFlagPosition);
+    }
+
+    vm.$onDestroy = function() {
+        events.unsubscribe('onOperationUpdate', setInitialFlagPosition);
+    }
+
+    vm.isFirst = function() {
+        return operationChain.getCurrentIndex() === 0;
+    }
+
+    vm.onCheckboxChange = function() {
+        if (vm.usePreviousOutput) {
+            input.setInput(undefined);
+            input.setInputPairs(undefined);
+        } else {
+            input.setInput([]);
+            input.setInputPairs([]);
+        }
+    }
 
     /** 
      * Selects all seeds on the graph which in turn triggers an update event - causing the query input to be updated

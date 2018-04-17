@@ -6,7 +6,7 @@
             </h3>
         </div>
     </md-toolbar>
-    <md-content class="transparent">
+    <md-content class="transparent" flex>
         <md-list>
             <md-list-item ng-repeat="operation in ctrl.operations" ng-class="{active: ctrl.isActive($index)}" ng-click="ctrl.edit($index)">
                 <p>{{operation.selectedOperation.name}}</p>
@@ -17,4 +17,7 @@
             <md-button ng-show="ctrl.isEditing()" ng-click="ctrl.createNew()">Create new operation</md-button>
         </md-list>
     </md-content>
+    <md-card-actions layout="row" layout-align="center center">
+        <md-button class="md-primary" ng-click="ctrl.execute()">Run operation chain</md-button>
+    </md-card-actions>
 </md-card>
