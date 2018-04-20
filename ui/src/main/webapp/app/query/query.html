@@ -18,7 +18,7 @@
         <form name="ctrl.queryForm">
             <div layout="row">
                 <div layout="column" flex="45"> <!-- left column -->
-                    <operation-selector></operation-selector>
+                    <operation-selector model="ctrl.selectedOperationModel"></operation-selector>
                     <input-manager primary-input="ctrl.getSelectedOp().input" secondary-input="ctrl.getSelectedOp().inputB"></input-manager>
                 </div>
                 <div layout="column" flex="55"> <!-- right column -->

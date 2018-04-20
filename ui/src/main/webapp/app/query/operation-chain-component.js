@@ -29,9 +29,12 @@ function operationChainBuilder() {
 function OperationChainBuilderController(operationChain) {
     var vm = this;
     vm.operations = operationChain.getOperationChain();
-    
-}
 
+    vm.$onDestroy = function() {
+        operationChain.reset();
+        for (var i in vm.operations) {
+            operationChain.add(vm.operations[i]);
+        }
+    }
     
-
 }

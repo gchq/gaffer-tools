@@ -68,6 +68,7 @@ function QueryController(queryPage, operationService, types, graph, config, sett
     vm.selectedOperationModel;
     vm.edgeDirectionModel;
     vm.dateRangeModel;
+    vm.optionsModel;
 
     /**
      * initialises the time config and default operation options
@@ -91,10 +92,18 @@ function QueryController(queryPage, operationService, types, graph, config, sett
                 startDate: vm.model.startDate,
                 endDate: vm.model.endDate
             };
-            vm.selectedOperationModel = vm.model.selectedOp;
-            vm.edgeDirectionModel = vm.model.edgeDirection
+            vm.selectedOperationModel = {
+                selectedOperation: vm.model.selectedOp
+            };
+            vm.edgeDirectionModel = {
+                edgeDirection: vm.model.edgeDirection
+            };
+            vm.optionsModel = {
+                options: vm.model.opOptions
+            };
         }
     }
+
     var opOptionKeys;
 
     /**

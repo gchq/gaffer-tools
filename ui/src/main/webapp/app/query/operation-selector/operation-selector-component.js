@@ -22,7 +22,10 @@ function operationSelector() {
     return {
         templateUrl: 'app/query/operation-selector/operation-selector.html',
         controller: OperationSelectorController,
-        controllerAs: 'ctrl'
+        controllerAs: 'ctrl',
+        bindings: {
+            model: '='
+        }
     }
 }
 
@@ -40,7 +43,7 @@ function OperationSelectorController(operationService, operationSelectorService,
 
     var populateOperations = function(availableOperations) {
         vm.availableOperations = availableOperations
-        var selected = queryPage.getSelectedOperation();
+        var selected = vm.model ? vm.model.selectedOperation : queryPage.getSelectedOperation();
         if (selected)  {
             vm.selectedOp = selected;
         } else {
@@ -89,7 +92,7 @@ function OperationSelectorController(operationService, operationSelectorService,
     }
 
     vm.updateModel = function() {
-        queryPage.setSelectedOperation(vm.selectedOp);
+        vm.model ? vm.model.selectedOperation = vm.selectedOp : queryPage.setSelectedOperation(vm.selectedOp);
     }
 
     vm.refreshNamedOperations = function() {
