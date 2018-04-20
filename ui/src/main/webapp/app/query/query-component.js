@@ -26,7 +26,10 @@ function query() {
     return {
         templateUrl: 'app/query/query.html',
         controller: QueryController,
-        controllerAs: 'ctrl'
+        controllerAs: 'ctrl',
+        bindings: {
+            model: '='
+        }
     };
 }
 
@@ -59,6 +62,13 @@ function QueryController(queryPage, operationService, types, graph, config, sett
     var vm = this;
     vm.timeConfig;
 
+    // models for sub component in the event that this operation builder is created with a model
+    vm.viewModel;
+    vm.inputModel;
+    vm.selectedOperationModel;
+    vm.edgeDirectionModel;
+    vm.dateRangeModel;
+
     /**
      * initialises the time config and default operation options
      */
@@ -70,6 +80,20 @@ function QueryController(queryPage, operationService, types, graph, config, sett
         settings.getOpOptionKeys().then(function(keys) {
             opOptionKeys = keys;
         });
+
+        if (vm.model) {
+            vm.viewModel = vm.model.view;
+            vm.inputModel = {
+                input: vm.model.input,
+                inputB: vm.model.inputB
+            };
+            vm.dateRangeModel = {
+                startDate: vm.model.startDate,
+                endDate: vm.model.endDate
+            };
+            vm.selectedOperationModel = vm.model.selectedOp;
+            vm.edgeDirectionModel = vm.model.edgeDirection
+        }
     }
     var opOptionKeys;
 

@@ -1,76 +1,76 @@
-/*
- * Copyright 2017-2018 Crown Copyright
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+// /*
+//  * Copyright 2017-2018 Crown Copyright
+//  *
+//  * Licensed under the Apache License, Version 2.0 (the "License");
+//  * you may not use this file except in compliance with the License.
+//  * You may obtain a copy of the License at
+//  *
+//  *     http://www.apache.org/licenses/LICENSE-2.0
+//  *
+//  * Unless required by applicable law or agreed to in writing, software
+//  * distributed under the License is distributed on an "AS IS" BASIS,
+//  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+//  * See the License for the specific language governing permissions and
+//  * limitations under the License.
+//  */
 
-'use strict';
+// 'use strict';
 
-angular.module('app').component('operationChain', operationChain());
+// angular.module('app').component('operationChain', operationChain());
 
-function operationChain() {
-    return {
-        templateUrl: 'app/query/operation-chain/operation-chain.html',
-        controller: OperationChainController,
-        controllerAs: 'ctrl',
-        bindings: {
-            operations: '<',
-            onDelete: '&',
-            onClick: '&',
-            onCreate: '&',
-            onExecute: '&'
-        }
-    }
-}
+// function operationChain() {
+//     return {
+//         templateUrl: 'app/query/operation-chain/operation-chain.html',
+//         controller: OperationChainController,
+//         controllerAs: 'ctrl',
+//         bindings: {
+//             operations: '<',
+//             onDelete: '&',
+//             onClick: '&',
+//             onCreate: '&',
+//             onExecute: '&'
+//         }
+//     }
+// }
 
-function OperationChainController(operationChain) {
-    var vm = this;
+// function OperationChainController(operationChain) {
+//     var vm = this;
 
-    /**
-     * checks whether the index is the current index being edited
-     */
-    vm.isActive = function(index) {
-        return index == operationChain.getCurrentIndex();
-    }
+//     /**
+//      * checks whether the index is the current index being edited
+//      */
+//     vm.isActive = function(index) {
+//         return index == operationChain.getCurrentIndex();
+//     }
 
-    vm.isEditing = function() {
-        return operationChain.getCurrentIndex() !== vm.operations.length
-    }
+//     vm.isEditing = function() {
+//         return operationChain.getCurrentIndex() !== vm.operations.length
+//     }
 
-    vm.createNew = function() {
-        vm.onCreate();
-    }
+//     vm.createNew = function() {
+//         vm.onCreate();
+//     }
     
-    /**
-     * Index to remove
-     * @param {number} index 
-     */
-    vm.delete = function(index) {
-        vm.onDelete({id: index});
-    }
+//     /**
+//      * Index to remove
+//      * @param {number} index 
+//      */
+//     vm.delete = function(index) {
+//         vm.onDelete({id: index});
+//     }
 
-    /**
-     * Call handler to execute operation chain
-     */
-    vm.execute = function() {
-        vm.onExecute();
-    }
+//     /**
+//      * Call handler to execute operation chain
+//      */
+//     vm.execute = function() {
+//         vm.onExecute();
+//     }
 
-    /**
-     * Sets up the services so that we can edit an existing operation
-     * @param {number} index 
-     */
-    vm.edit = function(index) {
-        vm.onClick({id: index});
-    }
-}
+//     /**
+//      * Sets up the services so that we can edit an existing operation
+//      * @param {number} index 
+//      */
+//     vm.edit = function(index) {
+//         vm.onClick({id: index});
+//     }
+// }

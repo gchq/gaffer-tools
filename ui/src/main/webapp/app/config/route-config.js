@@ -22,7 +22,7 @@ angular.module('app').config(['$locationProvider', '$routeProvider', function($l
     $routeProvider
         .when('/query', {
             title: 'Query',
-            template: '<query></query>',
+            template: '<operation-chain-builder></operation-chain-builder>',
             icon: 'query',
             inNav: true
         })
