@@ -99,6 +99,10 @@ function PairBuilderController(schema, csv, types, error, events, common, $route
      * adds it to an array, before finally updating the input service
      */
     vm.addPairs = function() {
+        if (vm.usePrevious) {
+            input.setInputPairs(undefined);
+            return;
+        }
         var newInput = [];
         var keys = vm.getFields().map(function(field) {
             return field.key;

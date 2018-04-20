@@ -102,6 +102,10 @@ function SeedBuilderController(schema, csv, types, error, events, common, $route
      * adds it to an array, before finally updating the input service
      */
     vm.addSeeds = function() {
+        if (vm.usePrevious) {
+            vm.setter(undefined);
+            return;
+        }
         var newInput = [];
         var keys = vm.getFields().map(function(field) {
             return field.key;

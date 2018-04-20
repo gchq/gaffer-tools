@@ -366,9 +366,6 @@ function QueryController(queryPage, operationService, types, graph, config, sett
         graph.deselectAll();
         results.update(data);
         navigation.goTo('results');
-        queryPage.reset();
-        input.reset();
-        vm.resetQuery();
         if (chainFlag) {
             operationChain.reset();
         }
