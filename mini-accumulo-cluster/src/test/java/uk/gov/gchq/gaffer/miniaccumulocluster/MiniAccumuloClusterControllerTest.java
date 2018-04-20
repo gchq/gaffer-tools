@@ -39,6 +39,7 @@ public class MiniAccumuloClusterControllerTest {
                             .dirName(miniAccumuloClusterName)
                             .instanceName("instance")
                             .password("password")
+                            .heapSize(1024)
                             .build();
                     runner[0].start();
                 } catch (final Exception e) {

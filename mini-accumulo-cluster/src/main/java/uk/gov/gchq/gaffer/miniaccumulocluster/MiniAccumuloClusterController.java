@@ -16,6 +16,7 @@
 
 package uk.gov.gchq.gaffer.miniaccumulocluster;
 
+import org.apache.accumulo.minicluster.MemoryUnit;
 import org.apache.accumulo.minicluster.MiniAccumuloCluster;
 import org.apache.accumulo.minicluster.MiniAccumuloConfig;
 import org.apache.commons.io.FileUtils;
@@ -55,6 +56,7 @@ public final class MiniAccumuloClusterController {
     private final String password;
     private final String instanceName;
     private final boolean shutdownHook;
+    private final int heapSize;
 
     private Path clusterPath;
     private MiniAccumuloCluster cluster;
@@ -65,17 +67,19 @@ public final class MiniAccumuloClusterController {
                                             final boolean isTempDir,
                                             final String password,
                                             final String instanceName,
-                                            final boolean shutdownHook) {
+                                            final boolean shutdownHook,
+                                            final int heapSize) {
         this.dirName = dirName;
         this.isTempDir = isTempDir;
         this.password = password;
         this.instanceName = instanceName;
         this.shutdownHook = shutdownHook;
+        this.heapSize = heapSize;
     }
 
     public static void main(final String[] args) {
-        if (null != args && args.length > 6) {
-            LOGGER.error("Usage: [directory_name] [is_temp_directory] [root_password] [instance_name] [exec_script] [no_shell]");
+        if (null != args && args.length > 7) {
+            LOGGER.error("Usage: [directory_name] [is_temp_directory] [root_password] [instance_name] [exec_script] [no_shell] [heap_memory]");
             throw new IllegalArgumentException("Wrong number of args");
         }
 
@@ -144,6 +148,7 @@ public final class MiniAccumuloClusterController {
     protected void createMiniCluster() {
         try {
             final MiniAccumuloConfig config = new MiniAccumuloConfig(clusterPath.toFile(), password);
+            config.setDefaultMemory(heapSize, MemoryUnit.MEGABYTE);
             config.setInstanceName(instanceName);
             cluster = new MiniAccumuloCluster(config);
             cluster.start();
@@ -267,6 +272,7 @@ public final class MiniAccumuloClusterController {
         private String password = DEFAULT_PASSWORD;
         private String instanceName = DEFAULT_INSTANCE_NAME;
         private boolean shutdownHook = true;
+        private int heapSize = 128;
 
         public Builder dirName(final String dirName) {
             this.dirName = dirName;
@@ -301,8 +307,17 @@ public final class MiniAccumuloClusterController {
             return this;
         }
 
+        public Builder heapSize() {
+            return heapSize(128);
+        }
+
+        public Builder heapSize(final int heapSize) {
+            this.heapSize = heapSize;
+            return this;
+        }
+
         public MiniAccumuloClusterController build() {
-            return new MiniAccumuloClusterController(dirName, isTempDir, password, instanceName, shutdownHook);
+            return new MiniAccumuloClusterController(dirName, isTempDir, password, instanceName, shutdownHook, heapSize);
         }
     }
 }
