@@ -50,13 +50,13 @@ describe('The Graph Component', function() {
             expect(graph.load).toHaveBeenCalledTimes(1);
         });
 
-        it('should reload the graph elements on startup', function() {
+        it('should reset the graph elements on startup', function() {
             spyOn(graph, 'load').and.returnValue($q.when());
             spyOn(graph, 'reload');
             var ctrl = $componentController('graph', {$scope: scope});
             ctrl.$onInit();
             $timeout.flush();
-            expect(graph.reload).toHaveBeenCalledTimes(1);
+            expect(graph.reset).toHaveBeenCalledTimes(1);
         });
     });
 });

@@ -69,7 +69,7 @@ angular.module('app').factory('schema', ['$http', 'config', '$q', 'common', 'ope
     var loadSchemaFromOperation = function(conf, defer) {
         try {
             query.execute(
-                JSON.stringify(operationService.createGetSchemaOperation()),
+                operationService.createGetSchemaOperation(),
                 function(response) {
                     schema = response;
                     if (!schema.entities) {

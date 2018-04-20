@@ -1,38 +1,35 @@
-<div layout="row" layout-padding
-     style="position: absolute; left: 0; top: 0; width:100%; height: 100%;"
-     flex>
+<div layout="row" layout-padding flex class="abs-full-page">
     <div flex="70" layout="row" layout-align="end start">
-        <md-input-container style="z-index: 100;">
-            <label>Vertex search</label>
-            <md-icon md-svg-icon="location-search"></md-icon>
-            <input ng-model="ctrl.searchTerm" type="text"
-                   ng-change="ctrl.filter()">
-        </md-input-container>
+        <md-card class="on-top-of-graph">
+            <md-input-container md-no-float class="no-margin">
+                <input placeholder="Vertex search"
+                       ng-model="ctrl.searchTerm"
+                       type="text"
+                       ng-change="ctrl.filter()"
+                       class="no-border">
+            </md-input-container>
+        </md-card>
     </div>
-    <div flex="30"></div>
 </div>
 
-
-<div layout="row" layout-padding
-     style="position: absolute; left: 0; top: 0; width:100%; height: 100%;"
-     flex>
+<div layout="row" layout-padding flex class="abs-full-page">
     <div flex="70" layout="row" layout-align="end end">
-        <div layout="row" style="z-index: 100;">
-            <md-button class="md-fab md-mini" id="redraw"
+        <div layout="row" class="on-top-of-graph">
+            <md-button class="md-fab md-mini" id="new-query"
                        ng-click="ctrl.goToQuery()">
                 <md-icon md-svg-icon="query"></md-icon>
                 <md-tooltip md-direction="top">
                     New query
                 </md-tooltip>
             </md-button>
-            <md-button class="md-fab md-mini" id="redraw"
+            <md-button class="md-fab md-mini" id="quick-hop"
                        ng-click="ctrl.quickHop()">
                 <md-icon md-svg-icon="expand-out"></md-icon>
                 <md-tooltip md-direction="top">
                     Quick hop out from the selected vertices
                 </md-tooltip>
             </md-button>
-            <md-button class="md-fab md-mini" id="reset"
+            <md-button class="md-fab md-mini" id="remove"
                        ng-click="ctrl.removeSelected()">
                 <md-icon md-svg-icon="delete"></md-icon>
                 <md-tooltip md-direction="top">
@@ -55,5 +52,4 @@
             </md-button>
         </div>
     </div>
-    <div flex="30"></div>
 </div>

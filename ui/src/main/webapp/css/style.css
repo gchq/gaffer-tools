@@ -209,8 +209,7 @@ md-content .md-toolbar-tools {
 }
 
 graph-control md-input-container {
-    padding: 2px 8px 0 28px !important;
-    margin: 14px 0 0 0;
+    padding: 5px !important;
 }
 
 graph-control md-input-container.md-icon-left>label {
@@ -219,4 +218,28 @@ graph-control md-input-container.md-icon-left>label {
 
 graph-control md-input-container .md-errors-spacer {
     display: none;
+}
+
+md-tab-data{
+  opacity: 1;
+  display: table;
+  right: 0;
+  left: initial;
+  z-index: 20;
+}
+
+.no-border {
+    border: none !important;
+}
+
+.on-top-of-graph {
+    z-index: 2;
+}
+
+.abs-full-page {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width:100%;
+    height: 100%;
 }

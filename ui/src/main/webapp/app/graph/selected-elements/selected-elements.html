@@ -10,6 +10,8 @@
         <div ng-repeat="(vertex, entities) in ctrl.selectedEntities">
             <h4>{{ctrl.resolveVertex(vertex)}}</h4>
 
+            <md-divider ng-show="!entities.length || !entities[0].group">
+            </md-divider>
             <p ng-show="!entities.length || !entities[0].group">No entities</p>
             <table md-table
                    ng-show="entities.length && entities[0].group">

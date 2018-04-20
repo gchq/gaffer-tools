@@ -133,21 +133,20 @@ angular.module('app').factory('view', ['operationService', 'config', 'settings',
         defer = $q.defer();
         var getAllClass = "uk.gov.gchq.gaffer.named.view.GetAllNamedViews";
         operationService.ifOperationSupported(getAllClass, function() {
-            query.execute(JSON.stringify(
+            query.execute(
                 {
                     class: getAllClass,
                     options: settings.getDefaultOpOptions()
+                },
+                updateNamedViews,
+                function(err) {
+                    updateNamedViews([]);
+                    if (loud) {
+                        console.log(err);
+                        alert('Failed to reload named views: ' + err.simpleMessage);
+                    }
                 }
-            ),
-            updateNamedViews,
-            function(err) {
-                updateNamedViews([]);
-                if (loud) {
-                    console.log(err);
-                    alert('Failed to reload named views: ' + err.simpleMessage);
-                }
-            });
-
+            );
         },
         function() {
             updateNamedViews([]);

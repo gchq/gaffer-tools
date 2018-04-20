@@ -35,7 +35,7 @@ angular.module('app').factory('schemaView', ['types', '$q', 'common', 'events', 
             waitForStep: true
         },
         physics: {
-            springLength: 150,
+            springLength: 250,
             fit: true
         },
         iterations: 10000,

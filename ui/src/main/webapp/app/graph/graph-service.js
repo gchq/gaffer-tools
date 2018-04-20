@@ -36,9 +36,7 @@ angular.module('app').factory('graph', ['types', '$q', 'results', 'common', 'con
             waitForStep: true
         },
         physics: {
-            springLength: 200,
-            dragCoeff: 0,
-            stableThreshold: 0.000001,
+            springLength: 250,
             fit: true
         },
         iterations: 10000,
@@ -57,7 +55,6 @@ angular.module('app').factory('graph', ['types', '$q', 'results', 'common', 'con
 
     events.subscribe('resultsUpdated', function(results) {
         graph.update(results);
-        graph.redraw();
     });
 
     /** 
@@ -183,65 +180,33 @@ angular.module('app').factory('graph', ['types', '$q', 'results', 'common', 'con
                     ]
                  }
             };
-            var operations = [
-                operation,
-                operationService.createLimitOperation(operation['options']),
-                operationService.createDeduplicateOperation(operation['options'])
-            ];
-            query.execute(JSON.stringify({
-                class: "uk.gov.gchq.gaffer.operation.OperationChain",
-                operations: operations,
-                options: operation['options']
-            }), function(data) {
-                loading.finish()
-                if (data.length === settings.getResultLimit()) {
-                    prompt(data);
-                } else {
-                    submitResults(data);
-                }
-            }, function(err) {
-                loading.finish();
-                error.handle('Error executing operation', err);
-            });
+            query.addOperation(operation);
+            query.executeQuery(
+                {
+                   class: "uk.gov.gchq.gaffer.operation.OperationChain",
+                   operations: [
+                       operation,
+                       operationService.createLimitOperation(operation['options']),
+                       operationService.createDeduplicateOperation(operation['options'])
+                   ],
+                   options: operation['options']
+                },
+                graph.deselectAll()
+            );
         } else {
             error.handle('Please select one or more vertices first');
         }
     }
 
-    /**
-     * Alerts the user if they hit the result limit
-     * @param {Array} data The data returned by the Gaffer REST service
-     */
-    var prompt = function(data) {
-        $mdDialog.show({
-            template: '<result-count-warning aria-label="Result Count Warning"></result-count-warning>',
-            parent: angular.element(document.body),
-            clickOutsideToClose: false
-        })
-        .then(function(command) {
-            if(command === 'results') {
-                submitResults(data);
-            }
-        });
-    }
-
     var createOpInput = function(seeds) {
         var opInput = [];
-
         for (var i in seeds) {
-            // TODO: parse seeds using the seed builder mechanism.
             opInput.push({
                 "class": "uk.gov.gchq.gaffer.operation.data.EntitySeed",
                 "vertex": JSON.parse(seeds[i])
             });
         }
-
         return opInput;
-    }
-
-    var submitResults = function(data) {
-        graph.deselectAll();
-        results.update(data);
     }
 
     /**
@@ -348,24 +313,10 @@ angular.module('app').factory('graph', ['types', '$q', 'results', 'common', 'con
     }
 
     /**
-     * Updates the cytoscape graph and redraws it
-     */
-    graph.reload = function() {
-        updateGraph(graphData);
-        graph.redraw();
-    }
-
-    /**
-     * Resets the selected elements
+     * Resets the graph
      */
     graph.reset = function() {
-        selectedEdges = {};
-        selectedEntities = {};
-        graphCy.elements().unselect();
-        graph.clear();
         graph.update(results.get());
-        events.broadcast('selectedElementsUpdate'[{"entities": selectedEntities, "edges": selectedEdges}]);
-        graph.redraw();
     }
 
     /**
@@ -384,6 +335,7 @@ angular.module('app').factory('graph', ['types', '$q', 'results', 'common', 'con
      * @param {Array} results 
      */
     graph.update = function(results) {
+        graph.clear();
         graphData = { entities: {}, edges: {} };
         for (var i in results.entities) {
             var entity = angular.copy(results.entities[i]);
@@ -525,15 +477,18 @@ angular.module('app').factory('graph', ['types', '$q', 'results', 'common', 'con
                 });
             }
         }
+        graph.redraw();
     }
 
     /**
      * Removes all elements from the cytoscape graph - does not remove them from the model.
      */
     graph.clear = function(){
+        graph.removeSelected();
         while(graphCy.elements().length > 0) {
             graphCy.remove(graphCy.elements()[0]);
         }
+        input.reset();
     }
 
     /**
@@ -566,6 +521,7 @@ angular.module('app').factory('graph', ['types', '$q', 'results', 'common', 'con
     }
 
     graph.removeSelected = function() {
+        graphCy.elements().unselect();
         graphCy.filter(":selected").remove();
         selectedEdges = {};
         selectedEntities = {};

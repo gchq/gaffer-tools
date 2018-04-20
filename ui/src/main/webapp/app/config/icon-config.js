@@ -39,5 +39,8 @@ angular.module('app').config(['$mdIconProvider', function($mdIconProvider) {
         .icon('restore', 'app/img/restore.svg')
         .icon('redraw', 'app/img/redraw.svg')
         .icon('expand-out', 'app/img/expand-out.svg')
-        .icon('location-search', 'app/img/location-search.svg');
+        .icon('location-search', 'app/img/location-search.svg')
+        .icon('clear-results', 'app/img/clear-results.svg')
+        .icon('rerun', 'app/img/rerun.svg')
+        .icon('edit', 'app/img/edit.svg');
 }]);
