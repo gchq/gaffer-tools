@@ -60,6 +60,7 @@ function QueryController(queryPage, operationService, types, graph, config, sett
     var namedViewClass = "uk.gov.gchq.gaffer.data.elementdefinition.view.NamedView";
     var operationChainClass = "uk.gov.gchq.gaffer.operation.OperationChain"
     var vm = this;
+    var opOptionKeys;
     vm.timeConfig;
 
     // models for sub component in the event that this operation builder is created with a model
@@ -92,19 +93,11 @@ function QueryController(queryPage, operationService, types, graph, config, sett
                 startDate: vm.model.startDate,
                 endDate: vm.model.endDate
             };
-            vm.selectedOperationModel = {
-                selectedOperation: vm.model.selectedOp
-            };
-            vm.edgeDirectionModel = {
-                edgeDirection: vm.model.edgeDirection
-            };
-            vm.optionsModel = {
-                options: vm.model.opOptions
-            };
+            vm.selectedOperationModel = vm.model.selectedOp
+            vm.edgeDirectionModel = vm.model.edgeDirection
+            vm.optionsModel = vm.model.opOptions;
         }
     }
-
-    var opOptionKeys;
 
     /**
      * Gets the selected operation that the user chose

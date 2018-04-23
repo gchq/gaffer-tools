@@ -33,7 +33,7 @@ function OperationSelectorController(operationService, operationSelectorService,
     var vm = this;
 
     vm.availableOperations;
-    vm.selectedOp;
+    vm.selectedOp = null;
 
     var eventName = "onOperationUpdate";
 
@@ -43,7 +43,7 @@ function OperationSelectorController(operationService, operationSelectorService,
 
     var populateOperations = function(availableOperations) {
         vm.availableOperations = availableOperations
-        var selected = vm.model ? vm.model.selectedOperation : queryPage.getSelectedOperation();
+        var selected = vm.model !== undefined ? vm.model : queryPage.getSelectedOperation();
         if (selected)  {
             vm.selectedOp = selected;
         } else {
@@ -92,7 +92,7 @@ function OperationSelectorController(operationService, operationSelectorService,
     }
 
     vm.updateModel = function() {
-        vm.model ? vm.model.selectedOperation = vm.selectedOp : queryPage.setSelectedOperation(vm.selectedOp);
+        vm.model !== undefined ? vm.model = vm.selectedOp : queryPage.setSelectedOperation(vm.selectedOp);
     }
 
     vm.refreshNamedOperations = function() {

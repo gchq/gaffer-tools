@@ -18,8 +18,8 @@
 
 angular.module('app').factory('queryPage', ['settings', function(settings) {
     var service = {}
-    var selectedOperation;
-    var opOptions;
+    var selectedOperation = null;
+    var opOptions = null;
 
     service.getSelectedOperation = function() {
         return selectedOperation;
