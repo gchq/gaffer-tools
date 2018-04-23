@@ -24,12 +24,13 @@ function dateRange() {
         controller: DateRangeController,
         controllerAs: 'ctrl',
         bindings: {
-            conf: '<'
+            conf: '<',
+            model: '='
         }
     }
 }
 
-function DateRangeController(dateRange, time, events) {
+function DateRangeController(dateRange, time) {
     var vm = this;
 
     vm.startDate = null;
@@ -72,18 +73,15 @@ function DateRangeController(dateRange, time, events) {
                 throw 'Config Error: ' + time.getUnitErrorMsg(vm.conf.filter.unit);
             }
         }
-        events.subscribe('onDateRangeUpdate', updateView);
-        updateView({startDate: dateRange.getStartDate(), endDate: dateRange.getEndDate()});
-        
-    }
 
-    vm.$onDestroy = function() {
-        events.unsubscribe('onDateRangeUpdate', updateView);
+        var model = vm.model !== undefined ? vm.model : {startDate: dateRange.getStartDate(), endDate: dateRange.getEndDate()}
+        updateView(model);
+        
     }
 
     vm.onStartDateUpdate = function() {
         if (vm.startDate === undefined || vm.startDate === null) {
-            dateRange.setStartDate(undefined);
+            vm.model !== undefined ? vm.model.startDate = undefined : dateRange.setStartDate(undefined);
             vm.startTime = null;
 
             if (vm.dateForm) {
@@ -112,12 +110,12 @@ function DateRangeController(dateRange, time, events) {
 
 
         var convertedTime = time.convertDateToNumber(start, vm.conf.filter.unit);
-        dateRange.setStartDate(convertedTime);
+        vm.model !== undefined ? vm.model.startDate = convertedTime : dateRange.setStartDate(convertedTime);
     }
 
     vm.onEndDateUpdate = function() {
         if (vm.endDate === undefined || vm.endDate === null) {
-            dateRange.setEndDate(undefined);
+            vm.model !== undefined ? vm.model.endDate = undefined : dateRange.setEndDate(undefined);
             vm.endTime = null;
 
             if (vm.dateForm) {
@@ -150,7 +148,6 @@ function DateRangeController(dateRange, time, events) {
         if (vm.conf.filter.unit && angular.lowercase(vm.conf.filter.unit) === 'microsecond') {
             convertedTime += 999;
         }
-
-        dateRange.setEndDate(convertedTime);
+        vm.model !== undefined ? vm.model.startDate = convertedTime : dateRange.setEndDate(convertedTime);
     }
 }
