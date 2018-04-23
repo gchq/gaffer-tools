@@ -591,8 +591,8 @@ def function_converter(obj):
             class_name = function.get('class')
             function.pop('class', None)
             function = Function(
-                _class_name=class_name,
-                _fields=function
+                class_name=class_name,
+                fields=function
             )
 
     return function
