@@ -26,7 +26,7 @@ function toolbar() {
     };
 }
 
-function ToolbarController($rootScope, $mdDialog, graph, operationService, results, query, config, loading, events, properties, error) {
+function ToolbarController($rootScope, $mdDialog, operationService, results, query, config, loading, events, properties, error) {
     var vm = this;
     vm.addMultipleSeeds = false;
     vm.appTitle;

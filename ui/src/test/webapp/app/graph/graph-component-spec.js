@@ -43,7 +43,7 @@ describe('The Graph Component', function() {
 
         it('should load the graph on startup', function() {
             spyOn(graph, 'load').and.returnValue($q.when());
-            spyOn(graph, 'reload');
+            spyOn(graph, 'reset');
             var ctrl = $componentController('graph', {$scope: scope});
             ctrl.$onInit();
             $timeout.flush();
@@ -52,7 +52,7 @@ describe('The Graph Component', function() {
 
         it('should reset the graph elements on startup', function() {
             spyOn(graph, 'load').and.returnValue($q.when());
-            spyOn(graph, 'reload');
+            spyOn(graph, 'reset');
             var ctrl = $componentController('graph', {$scope: scope});
             ctrl.$onInit();
             $timeout.flush();

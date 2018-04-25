@@ -158,8 +158,8 @@ describe('The Query component', function() {
                         'edge2': {}
                     }
 
-                    expect(query.execute.calls.argsFor(0)[0]).toContain(JSON.stringify(entities));
-                    expect(query.execute.calls.argsFor(0)[0]).toContain(JSON.stringify(edges));
+                    expect(JSON.stringify(query.execute.calls.argsFor(0)[0])).toContain(JSON.stringify(entities));
+                    expect(JSON.stringify(query.execute.calls.argsFor(0)[0])).toContain(JSON.stringify(edges));
 
                 });
 
@@ -230,9 +230,7 @@ describe('The Query component', function() {
 
                     ctrl.execute();
 
-                    expect(query.execute.calls.argsFor(0)[0]).toContain(JSON.stringify(expectedView));
-
-
+                    expect(JSON.stringify(query.execute.calls.argsFor(0)[0])).toContain(JSON.stringify(expectedView));
                 });
 
                 it('should add the group-by to the operation', function() {
@@ -245,7 +243,7 @@ describe('The Query component', function() {
 
                     ctrl.execute();
 
-                    expect(query.execute.calls.first().args[0]).toContain('"groupBy":[]');
+                    expect(JSON.stringify(query.execute.calls.first().args[0])).toContain('"groupBy":[]');
                 });
             });
 
@@ -272,19 +270,19 @@ describe('The Query component', function() {
                 it('should do nothing if the named views are undefined', function() {
                     view.setNamedViews(undefined);
                     ctrl.execute();
-                    expect(query.execute.calls.first().args[0]).not.toContain('views');
+                    expect(JSON.stringify(query.execute.calls.first().args[0])).not.toContain('views');
                 });
 
                 it('should do nothing if the named views are undefined', function() {
                     view.setNamedViews(null);
                     ctrl.execute();
-                    expect(query.execute.calls.first().args[0]).not.toContain('views');
+                    expect(JSON.stringify(query.execute.calls.first().args[0])).not.toContain('views');
                 });
 
                 it('should do nothing if the named views are an empty array', function() {
                     view.setNamedViews([]);
                     ctrl.execute();
-                    expect(query.execute.calls.first().args[0]).not.toContain('views');
+                    expect(JSON.stringify(query.execute.calls.first().args[0])).not.toContain('views');
                 });
 
                 it('should add the preExisting view to the views array', function() {
@@ -302,12 +300,12 @@ describe('The Query component', function() {
                         'edge2': {}
                     }
 
-                    expect(query.execute.calls.argsFor(0)[0]).toContain(JSON.stringify(entities));
-                    expect(query.execute.calls.argsFor(0)[0]).toContain(JSON.stringify(edges));
+                    expect(JSON.stringify(query.execute.calls.argsFor(0)[0])).toContain(JSON.stringify(entities));
+                    expect(JSON.stringify(query.execute.calls.argsFor(0)[0])).toContain(JSON.stringify(edges));
 
 
-                    expect(query.execute.calls.first().args[0]).toContain('views');
-                    expect(query.execute.calls.first().args[0]).not.toContain('view:');
+                    expect(JSON.stringify(query.execute.calls.first().args[0])).toContain('views');
+                    expect(JSON.stringify(query.execute.calls.first().args[0])).not.toContain('view:');
                 });
 
                 it('should add named views with parameters', function() {
@@ -325,7 +323,7 @@ describe('The Query component', function() {
                         }
                     });
 
-                    expect(query.execute.calls.first().args[0]).toContain(namedView)
+                    expect(JSON.stringify(query.execute.calls.first().args[0])).toContain(namedView)
 
                 });
 
@@ -347,7 +345,7 @@ describe('The Query component', function() {
 
                     ctrl.execute();
 
-                    expect(query.execute.calls.first().args[0]).not.toContain(unExpected);
+                    expect(JSON.stringify(query.execute.calls.first().args[0])).not.toContain(unExpected);
                 });
 
                 it('should add blank parameters into named views if the parameter is marked required', function() {
@@ -367,7 +365,7 @@ describe('The Query component', function() {
 
                     ctrl.execute();
 
-                    expect(query.execute.calls.first().args[0]).toContain(expected);
+                    expect(JSON.stringify(query.execute.calls.first().args[0])).toContain(expected);
                 });
 
                 it('should not allow null parameters in named views if they are not required', function() {
@@ -387,7 +385,7 @@ describe('The Query component', function() {
 
                     ctrl.execute();
 
-                    expect(query.execute.calls.first().args[0]).not.toContain(unExpected);
+                    expect(JSON.stringify(query.execute.calls.first().args[0])).not.toContain(unExpected);
                 });
 
                 it('should add null parameters if the parameter is marked required', function() {
@@ -407,7 +405,7 @@ describe('The Query component', function() {
 
                     ctrl.execute();
 
-                    expect(query.execute.calls.first().args[0]).toContain(expected);
+                    expect(JSON.stringify(query.execute.calls.first().args[0])).toContain(expected);
                 });
             });
 
@@ -453,16 +451,16 @@ describe('The Query component', function() {
 
                 it('should add no date range if neither start or end date is specified', function() {
                     ctrl.execute();
-                    expect(query.execute.calls.first().args[0]).not.toContain('startDate');
-                    expect(query.execute.calls.first().args[0]).not.toContain('endDate');
+                    expect(JSON.stringify(query.execute.calls.first().args[0])).not.toContain('startDate');
+                    expect(JSON.stringify(query.execute.calls.first().args[0])).not.toContain('endDate');
                 });
 
                 it('should add no date filter if the start and end date is null', function() {
                     startDate = null;
                     endDate = null;
                     ctrl.execute();
-                    expect(query.execute.calls.first().args[0]).not.toContain('startDate');
-                    expect(query.execute.calls.first().args[0]).not.toContain('endDate');
+                    expect(JSON.stringify(query.execute.calls.first().args[0])).not.toContain('startDate');
+                    expect(JSON.stringify(query.execute.calls.first().args[0])).not.toContain('endDate');
                 });
 
                 it('should add a start date with an IsMoreThan filter', function() {
@@ -490,7 +488,7 @@ describe('The Query component', function() {
                             }
                         ]
                     }
-                    expect(query.execute.calls.first().args[0]).toContain(JSON.stringify(expectedFilterFunctions));
+                    expect(JSON.stringify(query.execute.calls.first().args[0])).toContain(JSON.stringify(expectedFilterFunctions));
 
                 });
 
@@ -519,7 +517,7 @@ describe('The Query component', function() {
                             }
                         ]
                     }
-                    expect(query.execute.calls.first().args[0]).toContain(JSON.stringify(expectedFilterFunctions));
+                    expect(JSON.stringify(query.execute.calls.first().args[0])).toContain(JSON.stringify(expectedFilterFunctions));
 
                 });
             });
@@ -550,7 +548,7 @@ describe('The Query component', function() {
                     });
 
 
-                    expect(query.execute.calls.first().args[0]).toContain(expectedParameters)
+                    expect(JSON.stringify(query.execute.calls.first().args[0])).toContain(expectedParameters)
 
                 });
 
@@ -579,7 +577,7 @@ describe('The Query component', function() {
                     });
 
 
-                    expect(query.execute.calls.first().args[0]).not.toContain(expectedParameters)
+                    expect(JSON.stringify(query.execute.calls.first().args[0])).not.toContain(expectedParameters)
                 });
 
                 it('should add blank parameters if the parameter is marked required', function() {
@@ -607,7 +605,7 @@ describe('The Query component', function() {
                     });
 
 
-                    expect(query.execute.calls.first().args[0]).toContain(expectedParameters)
+                    expect(JSON.stringify(query.execute.calls.first().args[0])).toContain(expectedParameters)
                 });
 
                 it('should not allow null parameters if they are not required', function() {
@@ -634,7 +632,7 @@ describe('The Query component', function() {
                     });
 
 
-                    expect(query.execute.calls.first().args[0]).not.toContain(expectedParameters)
+                    expect(JSON.stringify(query.execute.calls.first().args[0])).not.toContain(expectedParameters)
                 });
 
                 it('should add null parameters if the parameter is marked required', function() {
@@ -660,7 +658,7 @@ describe('The Query component', function() {
                         "testParam": null
                     });
 
-                    expect(query.execute.calls.first().args[0]).toContain(expectedParameters)
+                    expect(JSON.stringify(query.execute.calls.first().args[0])).toContain(expectedParameters)
                 });
             });
 
@@ -705,7 +703,7 @@ describe('The Query component', function() {
 
                     ctrl.execute();
 
-                    expect(query.execute.calls.first().args[0]).toContain(expectedInput);
+                    expect(JSON.stringify(query.execute.calls.first().args[0])).toContain(expectedInput);
                 });
 
                 it('should add complex seed pairs from the input service to the operation', function() {
@@ -750,7 +748,7 @@ describe('The Query component', function() {
                             }
                         }]);
 
-                    expect(query.execute.calls.first().args[0]).toContain(expectedInput);
+                    expect(JSON.stringify(query.execute.calls.first().args[0])).toContain(expectedInput);
                 });
 
                 it('should add numerical seed pairs from the input service to the operation', function() {
@@ -766,7 +764,7 @@ describe('The Query component', function() {
 
                     ctrl.execute();
 
-                    expect(query.execute.calls.first().args[0]).toContain(expectedInput);
+                    expect(JSON.stringify(query.execute.calls.first().args[0])).toContain(expectedInput);
                 });
 
             });
@@ -818,7 +816,7 @@ describe('The Query component', function() {
 
                     ctrl.execute();
 
-                    expect(query.execute.calls.first().args[0]).toContain(expectedInput);
+                    expect(JSON.stringify(query.execute.calls.first().args[0])).toContain(expectedInput);
                 });
 
                 it('should add complex seeds from the input service to the operation', function() {
@@ -853,7 +851,7 @@ describe('The Query component', function() {
                             }
                         }]);
 
-                    expect(query.execute.calls.first().args[0]).toContain(expectedInput);
+                    expect(JSON.stringify(query.execute.calls.first().args[0])).toContain(expectedInput);
                 });
 
                 it('should add numerical seeds from the input service to the operation', function() {
@@ -870,7 +868,7 @@ describe('The Query component', function() {
                         { 'class': 'uk.gov.gchq.gaffer.operation.data.EntitySeed', 'vertex': 2},
                         { 'class': 'uk.gov.gchq.gaffer.operation.data.EntitySeed', 'vertex': 3}])
 
-                    expect(query.execute.calls.first().args[0]).toContain(expectedInput);
+                    expect(JSON.stringify(query.execute.calls.first().args[0])).toContain(expectedInput);
 
                 });
 
@@ -928,7 +926,7 @@ describe('The Query component', function() {
 
                         ctrl.execute();
 
-                        var json = JSON.parse(query.execute.calls.first().args[0]);
+                        var json = query.execute.calls.first().args[0];
 
                         expect(JSON.stringify(json.operations[0].inputB)).toEqual(expectedInput);
                     });
@@ -949,7 +947,7 @@ describe('The Query component', function() {
 
                         ctrl.execute();
 
-                        var json = JSON.parse(query.execute.calls.first().args[0]);
+                        var json = query.execute.calls.first().args[0];
 
                         expect(JSON.stringify(json.operations[0].inputB)).toBeUndefined();
                     });
@@ -976,7 +974,7 @@ describe('The Query component', function() {
                             { 'class': 'uk.gov.gchq.gaffer.operation.data.EntitySeed', 'vertex': 3}
                         ]);
 
-                        var json = JSON.parse(query.execute.calls.first().args[0]);
+                        var json = query.execute.calls.first().args[0];
 
                         expect(JSON.stringify(json.operations[0].parameters.inputB)).toEqual(expectedInput);
                     });
@@ -1006,7 +1004,7 @@ describe('The Query component', function() {
                 var test = function(flag) {
                     direction = flag;
                     ctrl.execute();
-                    expect(query.execute.calls.argsFor(0)[0]).toContain(flag);
+                    expect(JSON.stringify(query.execute.calls.argsFor(0)[0])).toContain(flag);
                 }
 
                 it('should add the edge direction when it is incoming', function() {
