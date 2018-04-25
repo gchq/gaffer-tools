@@ -521,8 +521,8 @@ angular.module('app').factory('graph', ['types', '$q', 'results', 'common', 'con
     }
 
     graph.removeSelected = function() {
-        graphCy.elements().unselect();
         graphCy.filter(":selected").remove();
+        graphCy.elements().unselect();
         selectedEdges = {};
         selectedEntities = {};
         events.broadcast('selectedElementsUpdate', [{"entities": selectedEntities, "edges": selectedEdges}]);
