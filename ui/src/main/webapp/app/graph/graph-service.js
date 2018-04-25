@@ -169,7 +169,7 @@ angular.module('app').factory('graph', ['types', '$q', 'results', 'common', 'con
         if(input && input.length > 0) {
             loading.load();
             var operation = {
-                 class: "GetElements",
+                 class: "uk.gov.gchq.gaffer.operation.impl.get.GetElements",
                  input: createOpInput(input),
                  options: settings.getDefaultOpOptions(),
                  view: {
@@ -191,7 +191,7 @@ angular.module('app').factory('graph', ['types', '$q', 'results', 'common', 'con
                    ],
                    options: operation['options']
                 },
-                graph.deselectAll()
+                graph.deselectAll
             );
         } else {
             error.handle('Please select one or more vertices first');
