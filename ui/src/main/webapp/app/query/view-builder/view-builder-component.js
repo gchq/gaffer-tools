@@ -50,29 +50,24 @@ function viewBuilder() {
     return {
         templateUrl: 'app/query/view-builder/view-builder.html',
         controller: ViewBuilderController,
-        controllerAs: 'ctrl'
+        controllerAs: 'ctrl',
+        bindings: {
+            model: '=' // model contains all view elements / filters
+        }
     }
 }
 
-function ViewBuilderController(view, graph, common, schema, functions, events, types, $mdDialog) {
+function ViewBuilderController(graph, common, schema, functions, events, types, $mdDialog) {
     var vm = this;
 
     vm.schemaEntities;
     vm.schemaEdges;
-    vm.viewEdges = view.getViewEdges();
-    vm.viewEntities = view.getViewEntities();
-    vm.edgeFilters = view.getEdgeFilters();
-    vm.entityFilters = view.getEntityFilters();
 
     vm.showBuilder = false;
 
     var onUpdate = function() {
-        vm.viewEdges = view.getViewEdges();
-        vm.viewEntities = view.getViewEntities();
-        vm.edgeFilters = view.getEdgeFilters();
-        vm.entityFilters = view.getEntityFilters();
 
-        vm.showBuilder = (vm.viewEdges.length + vm.viewEntities.length) > 0;
+        vm.showBuilder = (vm.model.viewEdges.length + vm.model.viewEntities.length) > 0;
     }
 
     vm.makeVisible = function() {
@@ -80,12 +75,10 @@ function ViewBuilderController(view, graph, common, schema, functions, events, t
     }
 
     vm.clear = function() {
-        vm.edgeFilters = {};
-        vm.entityFilters = {};
-        vm.viewEdges = [];
-        vm.viewEntities = [];
-        view.setViewEdges(vm.viewEdges);
-        view.setViewEntities(vm.viewEntities);
+        vm.model.edgeFilters = {};
+        vm.model.entityFilters = {};
+        vm.model.viewEdges = [];
+        vm.model.viewEntities = [];
         vm.showBuilder = false;
     }
 
@@ -99,7 +92,7 @@ function ViewBuilderController(view, graph, common, schema, functions, events, t
             ev.stopPropagation();
         });
 
-        vm.showBuilder = (vm.viewEdges.length + vm.viewEntities.length) > 0;
+        vm.showBuilder = (vm.model.viewEdges.length + vm.model.viewEntities.length) > 0;
 
         events.subscribe('onViewUpdate', onUpdate);
     }
@@ -111,8 +104,8 @@ function ViewBuilderController(view, graph, common, schema, functions, events, t
     vm.noMore = function(group) {
         var validEdges = [];
 
-        for (var i in vm.viewEdges) {
-            var edge = vm.viewEdges[i];
+        for (var i in vm.model.viewEdges) {
+            var edge = vm.model.viewEdges[i];
             if (vm.getEdgeProperties(edge)) {
                 validEdges.push(edge);
             }
@@ -124,8 +117,8 @@ function ViewBuilderController(view, graph, common, schema, functions, events, t
             }
             var validEntities = [];
 
-            for (var i in vm.viewEntities) {
-                var entity = vm.viewEntities[i];
+            for (var i in vm.model.viewEntities) {
+                var entity = vm.model.viewEntities[i];
                 if (vm.getEntityProperties(entity)) {
                     validEntities.push(entity);
                 }
@@ -190,15 +183,15 @@ function ViewBuilderController(view, graph, common, schema, functions, events, t
 
     var getFilters = function(group, elementType) {
         if (elementType === 'edge') {
-            if (!vm.edgeFilters[group]) {
-                vm.edgeFilters[group] = []
+            if (!vm.model.edgeFilters[group]) {
+                vm.model.edgeFilters[group] = []
             }
-            return vm.edgeFilters[group];
+            return vm.model.edgeFilters[group];
         } else if (elementType === 'entity') {
-            if (!vm.entityFilters[group]) {
-                vm.entityFilters[group] = []
+            if (!vm.model.entityFilters[group]) {
+                vm.model.entityFilters[group] = []
             }
-            return vm.entityFilters[group];
+            return vm.model.entityFilters[group];
         } else {
             console.error('Unrecognised element type ' + elementType);
             return [];
@@ -233,16 +226,6 @@ function ViewBuilderController(view, graph, common, schema, functions, events, t
 
     vm.getEdgeProperties =  function(group) {
         return schema.getEdgeProperties(group);
-    }
-
-    vm.onElementGroupChange = function(elementType) {
-        if(elementType === 'entity') {
-            view.setViewEntities(vm.viewEntities);
-            vm.entitySearchTerm = '';
-        } else if (elementType === 'edge') {
-            view.setViewEdges(vm.viewEdges);
-            vm.edgeSearchTerm = '';
-        }
     }
 
     var replaceFilterFunction = function(filter, group, elementType) {

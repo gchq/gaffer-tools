@@ -22,26 +22,20 @@ function namedViews() {
     return {
         templateUrl: 'app/query/view-builder/named-views/named-views.html',
         controller: NamedViewsController,
-        controllerAs: 'ctrl'
+        controllerAs: 'ctrl',
+        bindings: {
+            model: '='
+        }
     }
 }
 
-function NamedViewsController(view, events) {
+function NamedViewsController(view) {
     var vm = this;
 
     vm.availableNamedViews;
-    vm.selectedNamedViews = view.getNamedViews();
     vm.namedViewSearchTerm = null;
     vm.selectedNamedView;
     vm.label = ""
-
-    var onUpdate = function() {
-        vm.selectedNamedViews = view.getNamedViews();
-    }
-
-    vm.$onDestroy = function() {
-        events.unsubscribe('onViewUpdate', onUpdate);
-    }
 
     var populateNamedViews = function(availableNamedViews) {
         vm.availableNamedViews = availableNamedViews
@@ -66,7 +60,6 @@ function NamedViewsController(view, events) {
                 populateNamedViews(view.getAvailableNamedViews())
             }
         });
-        events.subscribe('onViewUpdate', onUpdate);
     }
 
     vm.search = function(text) {
@@ -81,14 +74,12 @@ function NamedViewsController(view, events) {
     }
 
     vm.deleteFilter = function(index) {
-        vm.selectedNamedViews.splice(index, 1);
-        view.setNamedViews(vm.selectedNamedViews);
+        vm.model.splice(index, 1);
     }
 
     vm.updateModel = function() {
         if (vm.selectedNamedView) {
-            vm.selectedNamedViews.push(angular.copy(vm.selectedNamedView));
-            view.setNamedViews(vm.selectedNamedViews);
+            vm.model.push(angular.copy(vm.selectedNamedView));
             vm.namedViewSearchTerm = '';
             angular.element(document.querySelector('#named-views-autocomplete')).blur();
         }

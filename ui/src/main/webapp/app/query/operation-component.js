@@ -34,6 +34,7 @@ function operation() {
 
 function OperationController(types, events, query, loading, operationService, settings, error, $mdDialog, navigation, results, $location, $routeParams, graph) {
     var vm = this;
+    const namedViewClass = "uk.gov.gchq.gaffer.data.elementdefinition.view.NamedView";
 
     vm.$onInit = function() {
         if (!vm.model) {
