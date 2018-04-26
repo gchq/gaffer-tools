@@ -159,6 +159,11 @@ angular.module('app').factory('graph', ['types', '$q', 'results', 'common', 'con
         return deferred.promise;
     }
 
+    /**
+     * Performs a quick hop - a GetElements operation with either the clicked
+     * node or the selected nodes.
+     * @param {Object} event an optional mouse click event.
+     */
     graph.quickHop = function(event) {
         var input
         if(event) {

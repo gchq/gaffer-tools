@@ -169,7 +169,7 @@ public class QueryBuilderST {
         enterText("seedVertices", "M5");
         click("create-custom-filter");
         selectMultiOption("view-entities", "Cardinality");
-        click("open-graph");
+        click("open-table");
         click("open-query");
         click("Execute Query");
         click("open-raw");
