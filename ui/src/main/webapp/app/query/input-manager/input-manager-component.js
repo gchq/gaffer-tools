@@ -25,7 +25,9 @@ function inputManager() {
         controllerAs: 'ctrl',
         bindings: {
             secondaryInput: '<',
-            primaryInput: '<'
+            primaryInput: '<',
+            model: '=',
+            first: '<'
         }
     }
 }
@@ -35,33 +37,21 @@ function inputManager() {
  * @param {*} graph The Graph service for selecting all seeds
  * @param {*} input The input service for injecting getters and setters into child components
  */
-function InputManagerController(graph, input, operationChain, events) {
+function InputManagerController(graph, events) {
     var vm = this;
     vm.usePreviousOutput;
-
-    var setInitialFlagPosition = function(newOperation) {
-        vm.usePreviousOutput = newOperation.input === undefined
-    }
     
     vm.$onInit = function() {
-        events.subscribe('onOperationUpdate', setInitialFlagPosition);
-    }
-
-    vm.$onDestroy = function() {
-        events.unsubscribe('onOperationUpdate', setInitialFlagPosition);
-    }
-
-    vm.isFirst = function() {
-        return operationChain.getCurrentIndex() === 0;
+        vm.usePreviousOutput = (vm.model.input === null);
     }
 
     vm.onCheckboxChange = function() {
         if (vm.usePreviousOutput) {
-            input.setInput(undefined);
-            input.setInputPairs(undefined);
+            vm.model.input = null;
+            vm.model.inputPairs = null;
         } else {
-            input.setInput([]);
-            input.setInputPairs([]);
+            vm.model.input = [];
+            vm.model.inputPairs = [];
         }
     }
 
@@ -71,16 +61,4 @@ function InputManagerController(graph, input, operationChain, events) {
     vm.selectAllSeeds = function() {
         graph.selectAllNodes();
     }
-
-    // events
-    vm.primaryEvent = 'queryInputUpdate';
-    vm.secondaryEvent = 'secondaryInputUpdate';
-
-    // getters
-    vm.getPrimary = input.getInput;
-    vm.getSecondary = input.getInputB;
-
-    // setters
-    vm.setPrimary = input.setInput;
-    vm.setSecondary = input.setInputB;
 }

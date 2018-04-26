@@ -19,7 +19,7 @@
 angular.module('app').factory('operationChain', function() {
     var service = {};
 
-    var createBlankOperation = function() {
+    var createBlankOperation = function(inputFlag) {
         return {
             selectedOperation: null,
             view: {
@@ -29,8 +29,11 @@ angular.module('app').factory('operationChain', function() {
                 entityFilters: {},
                 namedViews: []
             },
-            input: null,
-            inputB: [],
+            inputs: {
+                input: inputFlag ? [] : null,
+                inputPairs: inputFlag ? [] : null,
+                inputB: []
+            },
             edgeDirection: "EITHER",
             dates: {
                 startDate: null,
@@ -41,13 +44,7 @@ angular.module('app').factory('operationChain', function() {
     }
 
     // operations in chain
-    var operations = [];
-
-    // tmp operation when creating single operation
-    var tmpOperation = createBlankOperation();
-
-    // index of operation being currently edited
-    var currentIndex = 0;
+    var operations = [createBlankOperation(true)];
 
     /**
      * Returns the operations in the current chain
@@ -56,66 +53,15 @@ angular.module('app').factory('operationChain', function() {
         return operations;
     }
 
-    /**
-     * Adds an operation to the current operation chain
-     */
-    service.add = function(operation) {
-        operations.push(operation);
-        currentIndex++;
+    service.setOperationChain = function(chain) {
+        operations = chain;
     }
 
     /**
-     * Stores an operation in a variable
+     * Adds a new operation to the current operation chain
      */
-    service.cache = function(operation) {
-        tmpOperation = operation;
-    }
-
-    /**
-     * Gets an operation stored in a cache
-     */
-    service.getCached = function() {
-        return tmpOperation
-    }
-
-    /**
-     * Gets clone of an operation stored at a given vertex. Will not change current index.
-     */
-    service.getCloneOf = function(index) {
-        return angular.copy(operations[index]);
-    }
-
-    /**
-     * Gets the operation stored at the given index
-     * @param {number} index 
-     */
-    service.getOperationAt = function(index) {
-        currentIndex = index;
-        return operations[index];
-    } 
-
-    /**
-     * Gets the current index (ie the index of the current operation in an operation chain)
-     */
-    service.getCurrentIndex = function() {
-        return currentIndex;
-    }
-
-    /**
-     * Sets the current index to the one in front of the final operation 
-     * (ie to where it should be when creating a new operation)
-     */
-    service.createNewOperation = function() {
-        currentIndex = operations.length;
-    }
-
-    /**
-     * Updates an operation at the specified index
-     * @param {object} operation 
-     * @param {number} index 
-     */
-    service.update = function(operation, index) {
-        operations.splice(index, 1, operation)
+    service.add = function(inputFlag) {
+        operations.push(createBlankOperation(inputFlag));
     }
 
     /**
@@ -124,17 +70,11 @@ angular.module('app').factory('operationChain', function() {
      */
     service.remove = function(index) {
         operations.splice(index, 1);
-        if (currentIndex > index) {
-            currentIndex--;
-        }
     }
 
     service.reset = function() {
-        operations = [];
-        tmpOperation = createBlankOperation();
-        currentIndex = 0;
+        operations = [createBlankOperation(true)];
     }
-
 
     return service;
 

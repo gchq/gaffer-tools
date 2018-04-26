@@ -1,6 +1,11 @@
 <div>
     <div ng-repeat="operation in ctrl.operations">
-        <operation model="operation" time-config="ctrl.timeConfig"></query>
+        <operation model="operation" first="$index === 0" time-config="ctrl.timeConfig"></query>
     </div>
-    <operation ng-if="ctrl.isEmptyOperationChain()" model="ctrl.singleOperation" standalone="true" time-config="ctrl.timeConfig"></query>
+    <div layout="row" layout-align="center">
+        <md-button class="md-fab md-accent" ng-click="ctrl.addOperation()">
+            <md-icon md-svg-icon="add"></md-icon>
+            <md-tooltip>Add a new operation to the chain</md-tooltip>
+        </md-button>
+    </div>
 </div>

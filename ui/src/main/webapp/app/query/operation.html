@@ -4,7 +4,7 @@
             <div layout="row">
                 <div layout="column" flex="45"> <!-- left column -->
                     <operation-selector model="ctrl.model.selectedOperation"></operation-selector>
-                    <input-manager primary-input="ctrl.model.selectedOperation.input" secondary-input="ctrl.model.selectedOperation.inputB"></input-manager>
+                    <input-manager first="ctrl.first" primary-input="ctrl.model.selectedOperation.input" secondary-input="ctrl.model.selectedOperation.inputB" model="ctrl.model.inputs"></input-manager>
                 </div>
                 <div layout="column" flex="55"> <!-- right column -->
                     <date-range ng-if="ctrl.timeConfig && ctrl.model.selectedOperation.view" model="ctrl.model" conf="ctrl.timeConfig"></date-range>
@@ -17,7 +17,6 @@
         </form>
         <md-card-actions layout="row" layout-align="end center">
             <md-button ng-click="ctrl.resetQuery()" id="reset-query">reset query</md-button>
-            <md-button ng-click="ctrl.addToOperationChain()" id="add-to-op-chain" ng-disabled="!ctrl.canExecute()" ng-if="ctrl.standalone">Add to Operation Chain</md-button>
             <md-button ng-click="ctrl.execute()" id="Execute Query" ng-disabled="!ctrl.canExecute()" class="md-primary">Execute operation</md-button>
         </md-card-actions>
     </md-card>        

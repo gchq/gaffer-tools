@@ -28,9 +28,7 @@ function seedBuilder() {
         controller: SeedBuilderController,
         controllerAs: 'ctrl',
         bindings: {
-            updateEvent: '<',
-            setter: '<',
-            getter: '<',
+            model: '=',
             routeParam: '@',
             usePrevious: '<'
         }
@@ -66,11 +64,9 @@ function SeedBuilderController(schema, csv, types, error, events, common, $route
                 vm.addSeeds();
             }
         });
-        var currentInput = vm.getter();
         
-        events.subscribe(vm.updateEvent, recalculateSeeds);
         events.subscribe('onPreExecute', vm.addSeeds);
-        recalculateSeeds(currentInput);
+        recalculateSeeds(vm.model);
     }
 
     /**
@@ -78,7 +74,6 @@ function SeedBuilderController(schema, csv, types, error, events, common, $route
      * time unnecessary function calls
      */
     vm.$onDestroy = function() {
-        events.unsubscribe(vm.updateEvent, recalculateSeeds);
         events.unsubscribe('onPreExecute', vm.addSeeds);
     }
 
@@ -103,7 +98,7 @@ function SeedBuilderController(schema, csv, types, error, events, common, $route
      */
     vm.addSeeds = function() {
         if (vm.usePrevious) {
-            vm.setter(undefined);
+            vm.model = null;
             return;
         }
         var newInput = [];
@@ -152,7 +147,7 @@ function SeedBuilderController(schema, csv, types, error, events, common, $route
         if (vm.seedForm) {
             vm.seedForm.multiSeedInput.$setValidity('csv', true)
         }
-        vm.setter(deduped);
+        vm.model = deduped;
     }
 
     /**
@@ -194,7 +189,7 @@ function SeedBuilderController(schema, csv, types, error, events, common, $route
      * @param {any[]} updated The array of inputs
      */
     var recalculateSeeds = function(updated) {
-        if (updated === undefined) {
+        if (updated === null) {
             vm.seedVertices = ''
             return;
         }

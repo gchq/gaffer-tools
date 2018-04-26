@@ -29,9 +29,7 @@ function operationChainBuilder() {
 function OperationChainBuilderController(operationChain, config) {
     var vm = this;
     vm.timeConfig;
-
     vm.operations = operationChain.getOperationChain();
-    vm.singleOperation = operationChain.getCached();
 
     /**
      * initialises the time config and default operation options
@@ -42,12 +40,13 @@ function OperationChainBuilderController(operationChain, config) {
         });
     }
 
+    vm.addOperation = function() {
+        var inputFlag = (vm.operations.length === 0)
+        operationChain.add(inputFlag);
+    }
+
     vm.$onDestroy = function() {
-        operationChain.reset();
-        for (var i in vm.operations) {
-            operationChain.add(vm.operations[i]);
-        }
-        operationChain.cache(vm.singleOperation);
+        operationChain.setOperationChain(vm.operations);
     }
 
     vm.isEmptyOperationChain = function() {

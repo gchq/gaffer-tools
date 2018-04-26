@@ -1,10 +1,10 @@
 <div layout-margin ng-show="ctrl.primaryInput" ng-cloak>
-    <md-checkbox ng-if="!ctrl.isFirst()" ng-model="ctrl.usePreviousOutput" ng-change="ctrl.onCheckboxChange()" aria-label="use output from previous operation">
+    <md-checkbox ng-if="!ctrl.first" ng-model="ctrl.usePreviousOutput" ng-change="ctrl.onCheckboxChange()" aria-label="use output from previous operation">
         Use output from previous operation
     </md-checkbox>
     <div ng-switch="ctrl.primaryInput">
         <div ng-switch-when="uk.gov.gchq.gaffer.commonutil.pair.Pair">
-            <pair-builder use-previous="ctrl.usePreviousOutput"></pair-builder>
+            <pair-builder model="ctrl.model.inputPairs" use-previous="ctrl.usePreviousOutput"></pair-builder>
         </div>
         <div ng-switch-default> <!-- Will match new 'ElementId', or older true value -->
             <div layout="row" layout-align="start center">
@@ -18,8 +18,8 @@
                 </md-button>
             </div>
             <div layout="row">
-                <seed-builder update-event="ctrl.primaryEvent" use-previous="ctrl.usePreviousOutput" setter="ctrl.setPrimary" getter="ctrl.getPrimary" route-param="input" flex="grow"></seed-builder>
-                <seed-builder ng-if="ctrl.secondaryInput" update-event="ctrl.secondaryEvent" setter="ctrl.setSecondary" getter="ctrl.getSecondary" route-param="inputB" flex="grow"></seed-builder>
+                <seed-builder model="ctrl.model.input" use-previous="ctrl.usePreviousOutput" route-param="input" flex="grow"></seed-builder>
+                <seed-builder model="ctrl.model.inputB" ng-if="ctrl.secondaryInput"  route-param="inputB" flex="grow"></seed-builder>
             </div>
         </div>
     </div>

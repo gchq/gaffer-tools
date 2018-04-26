@@ -26,7 +26,8 @@ function operation() {
         bindings: {
             model: '=',                 // an operation model
             timeConfig: '<',            // a time config common to each operation
-            standalone: '<'             // a flag stating whether the operation is a standalone (outside a chain)
+            first: '<'                  // a flag stating whether this operation is first in a chain    
+
         }
     }
 }
@@ -39,8 +40,7 @@ function OperationController(types, events, query, loading, operationService, se
             throw 'Operation has been created without a model to bind to'
         }
     }
-
-
+    
     /**
      * Checks all subforms are valid and another operation is not in progress
      */
@@ -246,12 +246,12 @@ function OperationController(types, events, query, loading, operationService, se
         }
         
         if (selectedOp.input === "uk.gov.gchq.gaffer.commonutil.pair.Pair") {
-            op.input = createPairInput(operation.input)
+            op.input = createPairInput(operation.inputs.inputPairs)
         } else if (selectedOp.input) {
-            op.input = createOpInput(operation.input);
+            op.input = createOpInput(operation.inputs.input);
         }
         if (selectedOp.inputB && !selectedOp.namedOp) {
-            op.inputB = createOpInput(operation.inputB);
+            op.inputB = createOpInput(operation.inputs.inputB);
         }
         
 

@@ -27,7 +27,8 @@ function pairBuilder() {
         controller: PairBuilderController,
         controllerAs: 'ctrl',
         bindings: {
-            usePrevious: '<'
+            usePrevious: '<',
+            model: '='
         }
     }
 }
@@ -41,9 +42,8 @@ function pairBuilder() {
  * @param {*} events The events service
  * @param {*} common The common service
  * @param {*} $routeParams The route params service
- * @param {*} input The input service
  */
-function PairBuilderController(schema, csv, types, error, events, common, $routeParams, input) {
+function PairBuilderController(schema, csv, types, error, events, common, $routeParams) {
     var vm = this;
     vm.pairs = '';
 
@@ -62,11 +62,10 @@ function PairBuilderController(schema, csv, types, error, events, common, $route
                 vm.addPairs();
             }
         });
-        var currentInput = input.getInputPairs();
         
         events.subscribe('pairInputUpdate', recalculateSeeds);
         events.subscribe('onPreExecute', vm.addPairs);
-        recalculateSeeds(currentInput);
+        recalculateSeeds(vm.model);
     }
 
     /**
@@ -96,11 +95,11 @@ function PairBuilderController(schema, csv, types, error, events, common, $route
     /**
      * Goes through all lines from seed input box, removes trailing whitespace,
      * processes the line (returns if it fails), checks it's not too long, 
-     * adds it to an array, before finally updating the input service
+     * adds it to an array, before finally updating the model
      */
     vm.addPairs = function() {
         if (vm.usePrevious) {
-            input.setInputPairs(undefined);
+            vm.model = null;
             return;
         }
         var newInput = [];
@@ -156,7 +155,7 @@ function PairBuilderController(schema, csv, types, error, events, common, $route
         if (vm.pairForm) {
             vm.pairForm.seedPairInput.$setValidity('csv', true)
         }
-        input.setInputPairs(deduped);
+        vm.model = deduped;
     }
 
     /**
