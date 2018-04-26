@@ -1,5 +1,5 @@
 <div layout="row" layout-padding flex>
-    <md-card flex>
+    <md-card flex ng-show="ctrl.model.selectedOperation">
         <form name="ctrl.operationForm">
             <div layout="row">
                 <div layout="column" flex="45"> <!-- left column -->
@@ -7,7 +7,7 @@
                     <input-manager first="ctrl.first" primary-input="ctrl.model.selectedOperation.input" secondary-input="ctrl.model.selectedOperation.inputB" model="ctrl.model.inputs"></input-manager>
                 </div>
                 <div layout="column" flex="55"> <!-- right column -->
-                    <date-range ng-if="ctrl.timeConfig && ctrl.model.selectedOperation.view" model="ctrl.model" conf="ctrl.timeConfig"></date-range>
+                    <date-range ng-if="ctrl.timeConfig && ctrl.model.selectedOperation.view" model="ctrl.model.dates" conf="ctrl.timeConfig"></date-range>
                     <parameter-form ng-if="ctrl.model.selectedOperation.parameters" title-class="layout-padding section-title" parameters="ctrl.model.selectedOperation.parameters"></parameter-form>
                     <view-builder ng-show="ctrl.model.selectedOperation.view"></view-builder>
                     <directionality-picker ng-show="ctrl.model.selectedOperation.inOutFlag" model="ctrl.model.edgeDirection"></directionality-picker>

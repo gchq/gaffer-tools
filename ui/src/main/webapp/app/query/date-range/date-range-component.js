@@ -30,7 +30,7 @@ function dateRange() {
     }
 }
 
-function DateRangeController(dateRange, time) {
+function DateRangeController(time) {
     var vm = this;
 
     vm.startDate = null;
@@ -74,14 +74,17 @@ function DateRangeController(dateRange, time) {
             }
         }
 
-        var model = vm.model !== undefined ? vm.model : {startDate: dateRange.getStartDate(), endDate: dateRange.getEndDate()}
-        updateView(model);
+        if (!vm.model) {
+            throw 'Date range component must be initialised with a model'
+        }
+
+        updateView(vm.model);
         
     }
 
     vm.onStartDateUpdate = function() {
         if (vm.startDate === undefined || vm.startDate === null) {
-            vm.model !== undefined ? vm.model.startDate = undefined : dateRange.setStartDate(undefined);
+            vm.model.startDate = null;
             vm.startTime = null;
 
             if (vm.dateForm) {
@@ -110,12 +113,12 @@ function DateRangeController(dateRange, time) {
 
 
         var convertedTime = time.convertDateToNumber(start, vm.conf.filter.unit);
-        vm.model !== undefined ? vm.model.startDate = convertedTime : dateRange.setStartDate(convertedTime);
+        vm.model.startDate = convertedTime
     }
 
     vm.onEndDateUpdate = function() {
         if (vm.endDate === undefined || vm.endDate === null) {
-            vm.model !== undefined ? vm.model.endDate = undefined : dateRange.setEndDate(undefined);
+            vm.model.endDate = null;
             vm.endTime = null;
 
             if (vm.dateForm) {
@@ -128,7 +131,6 @@ function DateRangeController(dateRange, time) {
         var end = new Date(vm.endDate.getTime());
 
         if (vm.endTime === undefined || vm.endTime === null) {
-
             // end of the day
 
             end.setHours(23);
@@ -148,6 +150,6 @@ function DateRangeController(dateRange, time) {
         if (vm.conf.filter.unit && angular.lowercase(vm.conf.filter.unit) === 'microsecond') {
             convertedTime += 999;
         }
-        vm.model !== undefined ? vm.model.startDate = convertedTime : dateRange.setEndDate(convertedTime);
+        vm.model.endDate = convertedTime;
     }
 }
