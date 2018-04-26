@@ -16,7 +16,7 @@
 
 'use strict';
 
-angular.module('app').factory('operationChain', function() {
+angular.module('app').factory('operationChain', function(settings) {
     var service = {};
 
     var createBlankOperation = function(inputFlag) {
@@ -39,7 +39,7 @@ angular.module('app').factory('operationChain', function() {
                 startDate: null,
                 endDate: null
             },
-            opOptions: {}
+            opOptions: settings.getDefaultOpOptions()
         }
     }
 

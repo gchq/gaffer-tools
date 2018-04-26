@@ -35,11 +35,17 @@ function operation() {
 function OperationController(types, events, query, loading, operationService, settings, error, $mdDialog, navigation, results, $location, $routeParams, graph) {
     var vm = this;
     const namedViewClass = "uk.gov.gchq.gaffer.data.elementdefinition.view.NamedView";
+    vm.showOperationOptionsForm;
 
     vm.$onInit = function() {
+        settings.getOpOptionKeys().then(function(keys) {
+            vm.showOperationOptionsForm = (keys && Object.keys(keys).length > 0);
+        });
+
         if (!vm.model) {
             throw 'Operation has been created without a model to bind to'
         }
+        
     }
     
     /**

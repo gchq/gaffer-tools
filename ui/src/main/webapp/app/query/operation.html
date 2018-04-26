@@ -11,7 +11,7 @@
                     <parameter-form ng-if="ctrl.model.selectedOperation.parameters" title-class="layout-padding section-title" parameters="ctrl.model.selectedOperation.parameters"></parameter-form>
                     <view-builder ng-show="ctrl.model.selectedOperation.view" model="ctrl.model.view" ></view-builder>
                     <directionality-picker ng-show="ctrl.model.selectedOperation.inOutFlag" model="ctrl.model.edgeDirection"></directionality-picker>
-                    <!-- <options-form ng-show="ctrl.hasOperationOptions()"></options-form> fix this later -->
+                    <options-form ng-show="ctrl.showOperationOptionsForm" model="ctrl.model.opOptions"></options-form>
                 </div>
             </div>
         </form>
