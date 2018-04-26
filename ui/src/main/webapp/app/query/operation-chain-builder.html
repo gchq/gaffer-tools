@@ -1,6 +1,6 @@
 <div>
     <div ng-repeat="operation in ctrl.operations">
-        <query model="operation"></query>
+        <operation model="operation" time-config="ctrl.timeConfig"></query>
     </div>
-    <query></query>
+    <operation ng-if="ctrl.isEmptyOperationChain()" model="ctrl.singleOperation" standalone="true" time-config="ctrl.timeConfig"></query>
 </div>

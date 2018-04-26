@@ -29,26 +29,21 @@ function operationSelector() {
     }
 }
 
-function OperationSelectorController(operationService, operationSelectorService, queryPage, $mdDialog, $routeParams, events) {
+function OperationSelectorController(operationService, operationSelectorService, $mdDialog, $routeParams, events) {
     var vm = this;
 
     vm.availableOperations;
-    vm.selectedOp = null;
 
     var eventName = "onOperationUpdate";
 
     var updateView = function(op) {
-        vm.selectedOp = op.selectedOperation;
+        vm.model = op.selectedOperation;
     }
 
     var populateOperations = function(availableOperations) {
         vm.availableOperations = availableOperations
-        var selected = vm.model !== undefined ? vm.model : queryPage.getSelectedOperation();
-        if (selected)  {
-            vm.selectedOp = selected;
-        } else {
-            vm.selectedOp = vm.availableOperations[0];
-            vm.updateModel();
+        if (!vm.model)  {
+            vm.model = vm.availableOperations[0];
         }
 
         // allow 'op' to be used as a shorthand
@@ -60,8 +55,7 @@ function OperationSelectorController(operationService, operationSelectorService,
             var opParam = $routeParams.operation.replace(/[\W_]+/g, "").toLowerCase();
             for(var i in vm.availableOperations) {
                 if(vm.availableOperations[i].name.replace(/[\W_]+/g, "").toLowerCase() === opParam) {
-                    vm.selectedOp = vm.availableOperations[i];
-                    vm.updateModel();
+                    vm.model = vm.availableOperations[i];
                     break;
                 }
             }
@@ -69,10 +63,7 @@ function OperationSelectorController(operationService, operationSelectorService,
     }
 
     vm.getLabel = function() {
-        if (vm.selectedOp) {
-            return vm.selectedOp.name;
-        }
-        return "Select an operation";
+        return vm.model ? vm.model.name : "Select an operation"
     }
 
     vm.$onInit = function() {
@@ -89,10 +80,6 @@ function OperationSelectorController(operationService, operationSelectorService,
 
     vm.$onDestroy = function() {
         events.unsubscribe(eventName, updateView);
-    }
-
-    vm.updateModel = function() {
-        vm.model !== undefined ? vm.model = vm.selectedOp : queryPage.setSelectedOperation(vm.selectedOp);
     }
 
     vm.refreshNamedOperations = function() {

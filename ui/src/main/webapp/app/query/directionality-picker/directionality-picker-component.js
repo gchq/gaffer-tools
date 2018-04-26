@@ -22,28 +22,14 @@ function directionalityPicker() {
     return {
         templateUrl: 'app/query/directionality-picker/directionality-picker.html',
         controller: DirectionalityPickerController,
-        controllerAs: 'ctrl'
+        controllerAs: 'ctrl',
+        bindings: {
+            model: '='
+        }
     }
 }
 
-function DirectionalityPickerController(edgeDirection, events) {
+function DirectionalityPickerController() {
     var vm = this;
-    vm.inOutFlag = edgeDirection.getDirection();
-    var eventName = "onEdgeDirectionUpdate";
-
-    var updateView = function(direction) {
-        vm.inOutFlag = direction;
-    }
-
-    vm.$onInit = function() {
-        events.subscribe(eventName, updateView);
-    }
-
-    vm.$onDestroy = function() {
-        events.subscribe(eventName, updateView);
-    }
-
-    vm.onInOutFlagChange = function() {
-        edgeDirection.setDirection(vm.inOutFlag);
-    }
+    
 }

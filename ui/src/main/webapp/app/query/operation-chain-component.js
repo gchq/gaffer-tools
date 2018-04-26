@@ -26,15 +26,32 @@ function operationChainBuilder() {
     }
 }
 
-function OperationChainBuilderController(operationChain) {
+function OperationChainBuilderController(operationChain, config) {
     var vm = this;
+    vm.timeConfig;
+
     vm.operations = operationChain.getOperationChain();
+    vm.singleOperation = operationChain.getCached();
+
+    /**
+     * initialises the time config and default operation options
+     */
+    vm.$onInit = function() {
+        config.get().then(function(conf) {
+            vm.timeConfig = conf.time;
+        });
+    }
 
     vm.$onDestroy = function() {
         operationChain.reset();
         for (var i in vm.operations) {
             operationChain.add(vm.operations[i]);
         }
+        operationChain.cache(vm.singleOperation);
+    }
+
+    vm.isEmptyOperationChain = function() {
+        return vm.operations.length === 0;
     }
     
 }

@@ -19,11 +19,32 @@
 angular.module('app').factory('operationChain', function() {
     var service = {};
 
+    var createBlankOperation = function() {
+        return {
+            selectedOperation: null,
+            view: {
+                viewEdges: [],
+                edgeFilters: {},
+                viewEntities: [],
+                entityFilters: {},
+                namedViews: []
+            },
+            input: null,
+            inputB: [],
+            edgeDirection: "EITHER",
+            dates: {
+                startDate: null,
+                endDate: null
+            },
+            opOptions: {}
+        }
+    }
+
     // operations in chain
     var operations = [];
 
-    // tmp operation when creating new operations
-    var tmpOperation = undefined;
+    // tmp operation when creating single operation
+    var tmpOperation = createBlankOperation();
 
     // index of operation being currently edited
     var currentIndex = 0;
@@ -110,7 +131,7 @@ angular.module('app').factory('operationChain', function() {
 
     service.reset = function() {
         operations = [];
-        tmpOperation = undefined;
+        tmpOperation = createBlankOperation();
         currentIndex = 0;
     }
 
