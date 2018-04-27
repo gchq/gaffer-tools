@@ -17,12 +17,7 @@
 'use strict';
 
 angular.module('app').factory('view', ['operationService', 'config', 'settings', 'query', '$q', 'types', 'events', function(operationService, config, settings, query, $q, types, events) {
-    var service = {}
-    var viewEntities = [];
-    var viewEdges = [];
-    var entityFilters = {};
-    var edgeFilters = {};
-    var namedViews = [];
+    var service = {};
     var availableNamedViews;
     var firstLoad = true;
     var defer = $q.defer();
