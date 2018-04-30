@@ -30,7 +30,7 @@ function dateRange() {
     }
 }
 
-function DateRangeController(time) {
+function DateRangeController(time, events) {
     var vm = this;
 
     vm.startDate = null;
@@ -51,6 +51,10 @@ function DateRangeController(time) {
         } else {
             vm.endDate = null;
         }
+    }
+
+    var onOperationUpdate = function() {
+        updateView(vm.model);
     }
 
 
@@ -79,7 +83,13 @@ function DateRangeController(time) {
         }
 
         updateView(vm.model);
+
+        events.subscribe('onOperationUpdate', onOperationUpdate);
         
+    }
+
+    vm.$onDestroy = function() {
+        events.unsubscribe('onOperationUpdate', onOperationUpdate);
     }
 
     vm.onStartDateUpdate = function() {

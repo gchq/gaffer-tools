@@ -19,9 +19,10 @@
 angular.module('app').factory('operationChain', function(settings) {
     var service = {};
 
-    var createBlankOperation = function(inputFlag) {
+    service.createBlankOperation = function(inputFlag) {
         return {
             selectedOperation: null,
+            expanded: true,
             view: {
                 viewEdges: [],
                 edgeFilters: {},
@@ -44,7 +45,7 @@ angular.module('app').factory('operationChain', function(settings) {
     }
 
     // operations in chain
-    var operations = [createBlankOperation(true)];
+    var operations = [service.createBlankOperation(true)];
 
     /**
      * Returns the operations in the current chain
@@ -61,7 +62,7 @@ angular.module('app').factory('operationChain', function(settings) {
      * Adds a new operation to the current operation chain
      */
     service.add = function(inputFlag) {
-        operations.push(createBlankOperation(inputFlag));
+        operations.push(service.createBlankOperation(inputFlag));
     }
 
     /**
@@ -73,7 +74,7 @@ angular.module('app').factory('operationChain', function(settings) {
     }
 
     service.reset = function() {
-        operations = [createBlankOperation(true)];
+        operations = [service.createBlankOperation(true)];
     }
 
     return service;

@@ -29,12 +29,10 @@ function operationSelector() {
     }
 }
 
-function OperationSelectorController(operationService, operationSelectorService, $mdDialog, $routeParams, events) {
+function OperationSelectorController(operationService, operationSelectorService, $mdDialog, $routeParams) {
     var vm = this;
 
     vm.availableOperations;
-
-    var eventName = "onOperationUpdate";
 
     var updateView = function(op) {
         vm.model = op.selectedOperation;
@@ -75,11 +73,6 @@ function OperationSelectorController(operationService, operationSelectorService,
             }
         });
 
-        events.subscribe(eventName, updateView)
-    }
-
-    vm.$onDestroy = function() {
-        events.unsubscribe(eventName, updateView);
     }
 
     vm.refreshNamedOperations = function() {

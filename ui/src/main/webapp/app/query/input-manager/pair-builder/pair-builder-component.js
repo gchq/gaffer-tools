@@ -63,8 +63,12 @@ function PairBuilderController(schema, csv, types, error, events, common, $route
             }
         });
         
-        events.subscribe('pairInputUpdate', recalculateSeeds);
+        events.subscribe('onOperationUpdate', onOperationUpdate);
         events.subscribe('onPreExecute', vm.addPairs);
+        recalculateSeeds(vm.model);
+    }
+
+    var onOperationUpdate = function() {
         recalculateSeeds(vm.model);
     }
 
@@ -73,7 +77,7 @@ function PairBuilderController(schema, csv, types, error, events, common, $route
      * unnecessary function calls
      */
     vm.$onDestroy = function() {
-        events.unsubscribe('pairInputUpdate', recalculateSeeds);
+        events.unsubscribe('onOperationUpdate', recalculateSeeds);
         events.unsubscribe('onPreExecute', vm.addPairs);
     }
 

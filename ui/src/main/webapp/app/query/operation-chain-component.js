@@ -46,12 +46,28 @@ function OperationChainBuilderController(operationChain, config, loading, query,
     }
 
     vm.addOperation = function() {
+        for (var i in vm.operations) {
+            vm.operations[i].expanded = false; // close all open tabs
+        }
         var inputFlag = (vm.operations.length === 0)
         operationChain.add(inputFlag);
     }
 
     vm.$onDestroy = function() {
         operationChain.setOperationChain(vm.operations);
+    }
+
+    vm.deleteOperation = function(index) {
+        vm.operations.splice(index, 1);
+    }
+
+    vm.resetOperation = function(index) {
+        var inputFlag = index === 0;
+        vm.operations[index] = operationChain.createBlankOperation(inputFlag);
+    }
+
+    vm.swapOperations = function(start, destination) {
+
     }
 
     vm.isEmptyOperationChain = function() {
@@ -109,7 +125,6 @@ function OperationChainBuilderController(operationChain, config, loading, query,
         }
         var operation = createOperationForQuery(op);
         query.addOperation(operation);
-        loading.load()
 
         var iterableOutput = !(op.selectedOperation.iterableOutput === false)
         var operations = [operation];
@@ -122,6 +137,7 @@ function OperationChainBuilderController(operationChain, config, loading, query,
     }
 
     var runQuery = function(operations) {
+        loading.load()
         query.execute(JSON.stringify({
             class: OPERATION_CHAIN_CLASS,
             operations: operations,

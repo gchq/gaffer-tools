@@ -26,13 +26,16 @@ function operation() {
         bindings: {
             model: '=',                 // an operation model
             timeConfig: '<',            // a time config common to each operation
-            first: '<',                 // a flag stating whether this operation is first in a chain
-            onExecute: '&'              // a function to execute when running the query
+            index: '<',                 // postion in the chain
+            onExecute: '&',             // a function to execute when running the query
+            onDelete: '&',              // a function to remove to operation from the chain
+            onReset: '&',               // a function to call which resets the operation
+            chainLength: '<'            // the length of the wider operation chain
         }
     }
 }
 
-function OperationController(types, events, query, loading, operationService, settings, error, $mdDialog, navigation, results, $location, $routeParams, graph) {
+function OperationController(types, loading, operationChain, settings, events) {
     var vm = this;
     vm.showOperationOptionsForm;
 
@@ -54,15 +57,32 @@ function OperationController(types, events, query, loading, operationService, se
         return vm.operationForm.$valid && !loading.isLoading();
     }
 
-    vm.resetQuery = function() {
-        // input.reset();
-        // view.reset();
-        // dateRange.resetDateRange();
-        // edgeDirection.reset();
+    vm.isFirst = function() {
+        return vm.index === 0;
+    }
+
+    vm.isStandalone = function() {
+        return vm.index === 0 && vm.chainLength === 1;
+    }
+
+    vm.isLast = function() {
+        return vm.index === vm.chainLength - 1;
+    }
+
+    vm.toggleExpanded = function() {
+        vm.model.expanded = !vm.model.expanded;
     }
 
     vm.execute = function() {
         vm.onExecute({op: vm.model});
+    }
+
+    vm.reset = function() {
+        vm.onReset({index: vm.index});
+    }
+
+    vm.delete = function() {
+        vm.onDelete({index: vm.index});
     }
     
 }

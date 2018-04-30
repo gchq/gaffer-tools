@@ -46,6 +46,10 @@ md-nav-bar > div > nav {
     margin-left: 8px;
 }
 
+.overlapping-fab {
+    bottom: 40px;
+}
+
 .submit-bottom-right {
     position: fixed !important;
 }

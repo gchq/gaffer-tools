@@ -66,6 +66,12 @@ function SeedBuilderController(schema, csv, types, error, events, common, $route
         });
         
         events.subscribe('onPreExecute', vm.addSeeds);
+        events.subscribe('onOperationUpdate', onOperationUpdate);
+
+        recalculateSeeds(vm.model);
+    }
+
+    var onOperationUpdate = function() {
         recalculateSeeds(vm.model);
     }
 
