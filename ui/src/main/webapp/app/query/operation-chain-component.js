@@ -59,15 +59,20 @@ function OperationChainBuilderController(operationChain, config, loading, query,
 
     vm.deleteOperation = function(index) {
         vm.operations.splice(index, 1);
+        if (index === 0) {
+            if (vm.operations[0].inputs.input === null) {
+                vm.operations[0].inputs.input = [];
+            }
+            if (vm.operations[0].inputs.inputPairs === null) {
+                vm.operations[0].inputs.inputPairs = [];
+            }
+        }
+        events.broadcast('onOperationUpdate', [])
     }
 
     vm.resetOperation = function(index) {
         var inputFlag = index === 0;
         vm.operations[index] = operationChain.createBlankOperation(inputFlag);
-    }
-
-    vm.swapOperations = function(start, destination) {
-
     }
 
     vm.isEmptyOperationChain = function() {

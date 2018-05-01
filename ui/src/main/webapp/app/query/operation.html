@@ -3,11 +3,11 @@
         <h3>{{ctrl.model.selectedOperation.name}}</h3>
         <p>{{ctrl.model.selectedOperation.description}}</p>
     </div>
-    <md-button ng-hide="ctrl.model.expanded" class="md-secondary md-icon-button" ng-click="ctrl.toggleExpanded()">
+    <md-button ng-if="!ctrl.model.expanded" class="md-secondary md-icon-button" ng-click="ctrl.toggleExpanded()">
         <md-icon md-svg-icon="down-arrow"></md-icon>
         <md-tooltip="Show more"></md-tooltip>
     </md-button>
-    <md-button ng-show="ctrl.model.expanded" class="md-secondary md-icon-button" ng-click="ctrl.toggleExpanded()">
+    <md-button ng-if="ctrl.model.expanded" class="md-secondary md-icon-button" ng-click="ctrl.toggleExpanded()">
         <md-icon md-svg-icon="up-arrow"></md-icon>
         <md-tooltip="show less"></md-tooltip>
     </md-button>

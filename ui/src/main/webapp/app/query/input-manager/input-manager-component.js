@@ -40,9 +40,18 @@ function inputManager() {
 function InputManagerController(graph, events) {
     var vm = this;
     vm.usePreviousOutput;
+
+    var updatePreviousOutputFlag = function() {
+        vm.usePreviousOutput = (vm.model.input === null);
+    }
     
     vm.$onInit = function() {
-        vm.usePreviousOutput = (vm.model.input === null);
+        updatePreviousOutputFlag(); // respond to 'onOperationUpdate' event here
+        events.subscribe('onOperationUpdate', updatePreviousOutputFlag);
+    }
+
+    vm.$onDestroy = function() {
+        events.unsubscribe('onOperationUpdate', updatePreviousOutputFlag);
     }
 
     vm.onCheckboxChange = function() {
