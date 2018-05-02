@@ -243,3 +243,7 @@ md-tab-data{
     width:100%;
     height: 100%;
 }
+
+#graphCy {
+    z-index: 1
+}

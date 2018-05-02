@@ -16,9 +16,9 @@
 
 'use strict';
 
-angular.module('app').component('graphControl', selectedElements());
+angular.module('app').component('graphControl', graphControl());
 
-function selectedElements() {
+function graphControl() {
     return {
         templateUrl: 'app/graph/graph-control/graph-control.html',
         controller: GraphControlController,
