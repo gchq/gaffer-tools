@@ -16,6 +16,11 @@ ng-view {
     margin: 0px;
 }
 
+.no-vertical-margin {
+    margin-top: 0px;
+    margin-bottom: 0px;
+}
+
 .content {
     height: 100%;
     width: 100%;

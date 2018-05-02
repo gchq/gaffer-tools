@@ -1,14 +1,13 @@
 <div class="content" layout="column">
     <md-content flex>    
-        <md-card>   
             <form name="ctrl.operationChainForm">
-                <md-list>
-                    <div ng-repeat="operation in ctrl.operations">
-                        <operation model="operation" index="$index" time-config="ctrl.timeConfig" on-delete="ctrl.deleteOperation(index)" on-reset="ctrl.resetOperation(index)" on-execute="ctrl.execute(op)" chain-length="ctrl.operations.length"></query>
+                <div ng-repeat="operation in ctrl.operations">
+                    <operation model="operation" index="$index" time-config="ctrl.timeConfig" on-delete="ctrl.deleteOperation(index)" on-reset="ctrl.resetOperation(index)" on-execute="ctrl.execute(op)" chain-length="ctrl.operations.length"></operation>
+                    <div layout="row" layout-align="center" ng-if="ctrl.isNotLast($index)">
+                        <md-icon md-svg-icon="arrow-downward"></md-icon>
                     </div>
-                </md-list>
+                </div>
             </form>
-        </md-card>
         <div layout="row" layout-align="center">
             <md-button class="md-fab md-accent overlapping-fab" ng-click="ctrl.addOperation()">
                 <md-icon md-svg-icon="add"></md-icon>
@@ -16,8 +15,8 @@
             </md-button>
         </div>
     </md-content>
-    <div ng-hide="ctrl.operations.length === 1" layout="row" layout-align="end">
-        <md-button class="md-raised" ng-click="ctrl.clearChain()">Clear operation chain</md-button>
-        <md-button class="md-primary md-raised" ng-disabled="!ctrl.canExecute()" ng-click="ctrl.executeChain()">Execute operation chain</md-button>
+    <div layout="row" layout-align="stretch">
+        <md-button flex class="md-raised" ng-click="ctrl.clearChain()">Clear operation chain</md-button>
+        <md-button flex class="md-primary md-raised" ng-disabled="!ctrl.canExecute()" ng-click="ctrl.executeChain()">Execute operation chain</md-button>
     </div>
 </div>

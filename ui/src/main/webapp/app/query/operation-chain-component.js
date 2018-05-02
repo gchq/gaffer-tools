@@ -79,6 +79,10 @@ function OperationChainBuilderController(operationChain, config, loading, query,
         return vm.operations.length === 0;
     }
 
+    vm.isNotLast = function(index) {
+        return index !== (vm.operations.length - 1); 
+    }
+
     vm.canExecute = function() {
         return vm.operationChainForm.$valid && !loading.isLoading();
     }
