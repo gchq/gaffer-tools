@@ -16,8 +16,10 @@
 
 'use strict';
 
-angular.module('app').factory('operationChain', function(settings) {
+angular.module('app').factory('operationChain', ['common', 'settings', 'events', function(common, settings, events) {
     var service = {};
+
+    const EVENT_NAME = 'onOperationUpdate';
 
     service.createBlankOperation = function(inputFlag) {
         return {
@@ -58,6 +60,28 @@ angular.module('app').factory('operationChain', function(settings) {
         operations = chain;
     }
 
+    service.addInput = function(seed) {
+        if (typeof seed === 'object') {
+            if (!common.arrayContainsObject(operations[0].inputs.input, seed)) {
+                operations[0].inputs.input.push(seed);
+                events.broadcast(EVENT_NAME, []);
+            }
+        } else if (!common.arrayContainsValue(operations[0].inputs.input, seed)) {
+            operations[0].inputs.input.push(seed);
+            events.broadcast(EVENT_NAME, []);
+        }
+    }
+
+    service.removeInput = function(seed) {
+        var newInput = operations[0].inputs.input.filter(function(vertex) {
+            return !angular.equals(seed, vertex);
+        });
+        if(newInput.length < operations[0].inputs.input.length) {
+            operations[0].inputs.input = newInput;
+            events.broadcast(EVENT_NAME, []);
+        }
+    }
+
     /**
      * Adds a new operation to the current operation chain
      */
@@ -79,4 +103,4 @@ angular.module('app').factory('operationChain', function(settings) {
 
     return service;
 
-});
+}]);

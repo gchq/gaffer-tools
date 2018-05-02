@@ -19,7 +19,7 @@
 /**
  * Graph service which handles selected elements and a cytoscape graph
  */
-angular.module('app').factory('graph', ['types', '$q', 'results', 'common', 'events', 'input', 'schema', function(types, $q, results, common, events, input, schemaService) {
+angular.module('app').factory('graph', ['types', '$q', 'results', 'common', 'events', 'operationChain', 'schema', function(types, $q, results, common, events, operationChain, schemaService) {
 
     var graphCy;
     var graph = {};
@@ -159,7 +159,7 @@ angular.module('app').factory('graph', ['types', '$q', 'results', 'common', 'eve
             var vertex = JSON.parse(id);
             var vertices = schemaService.getSchemaVertices();
             var vertexClass = gafferSchema.types[vertices[0]].class;
-            input.addInput({
+            operationChain.addInput({
                 valueClass: vertexClass,
                 parts: types.createParts(vertexClass, vertex)
             });
@@ -225,7 +225,7 @@ angular.module('app').factory('graph', ['types', '$q', 'results', 'common', 'eve
     function unSelect(element) {
         var id = element.id();
         if(id in selectedEntities) {
-            input.removeInput(JSON.parse(id));
+            operationChain.removeInput(JSON.parse(id));
             delete selectedEntities[id];
         } else if(id in selectedEdges) {
             delete selectedEdges[id];

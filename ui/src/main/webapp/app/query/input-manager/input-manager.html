@@ -8,13 +8,13 @@
         </div>
         <div ng-switch-default> <!-- Will match new 'ElementId', or older true value -->
             <div layout="row" layout-align="start center">
-                <h3 class="no-margin">Add seeds or select all from the graph</h3>
+                <h3 class="no-margin">Add seeds</h3>
                 <md-button id="select-all-seeds"
                            ng-click="ctrl.selectAllSeeds()"
                            ng-disabled="ctrl.usePreviousOutput"
                            class="md-primary">
-                        Select All
-                    <md-tooltip md-direction="right">Select all seeds in the graph</md-tooltip>
+                        Use results 
+                    <md-tooltip md-direction="right">Populate input using your existing results</md-tooltip>
                 </md-button>
             </div>
             <div layout="row">

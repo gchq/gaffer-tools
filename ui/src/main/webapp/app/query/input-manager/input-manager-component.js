@@ -37,8 +37,11 @@ function inputManager() {
  * @param {*} graph The Graph service for selecting all seeds
  * @param {*} input The input service for injecting getters and setters into child components
  */
-function InputManagerController(graph, events) {
+function InputManagerController(events, results, common, types, schema) {
     var vm = this;
+
+    const EVENT_NAME = 'onOperationUpdate';
+    const ENTITY_SEED_CLASS = "uk.gov.gchq.gaffer.operation.data.EntitySeed";
     vm.usePreviousOutput;
 
     var updatePreviousOutputFlag = function() {
@@ -68,6 +71,37 @@ function InputManagerController(graph, events) {
      * Selects all seeds on the graph which in turn triggers an update event - causing the query input to be updated
     */
     vm.selectAllSeeds = function() {
-        graph.selectAllNodes();
+        schema.get().then(function(gafferSchema) {
+            var vertices = schema.getSchemaVertices();
+            var vertexClass;
+            if(vertices && vertices.length > 0 && undefined !== vertices[0]) {
+                vertexClass = gafferSchema.types[vertices[0]].class;
+            }
+
+            var resultsData = results.get();
+            var allSeeds = [];
+
+            for (var i in resultsData.entities) {
+                var vertex = { vertexClass: vertexClass, parts: types.createParts(vertexClass, resultsData.entities[i].vertex) };
+                common.pushObjectIfUnique(vertex, allSeeds);
+            }
+
+            for (var i in resultsData.edges) {
+                var source = { vertexClass: vertexClass, parts: types.createParts(vertexClass, resultsData.edges[i].source) };
+                var destination = { vertexClass: vertexClass, parts: types.createParts(vertexClass, resultsData.edges[i].destination) };
+                common.pushObjectsIfUnique([source, destination], allSeeds);
+            }
+
+            for (var i in resultsData.other) {
+                if (resultsData.other[i].class === ENTITY_SEED_CLASS) {
+                    var vertex = { vertexClass: vertexClass, parts: types.createParts(vertexClass, resultsData.other[i].vertex)}
+                    common.pushObjectIfUnique(vertex, allSeeds);
+                }
+            }
+
+            common.pushObjectsIfUnique(allSeeds, vm.model.input);
+
+            events.broadcast(EVENT_NAME, []);
+        })
     }
 }
