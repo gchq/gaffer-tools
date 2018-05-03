@@ -87,4 +87,9 @@ function RawController(operationService, results, query, error, events, schema) 
         }
         vm.editingOperations = false;
     }
+
+    vm.clearAllOperations = function() {
+        vm.operationsForEdit = [];
+        query.setOperations([]);
+    }
 }

@@ -26,6 +26,10 @@ angular.module('app').factory('navigation', ['$location', 'events', 'common', fu
         return currentPage;
     }
 
+    navigation.goToQuery = function() {
+        navigation.goTo("query");
+    }
+
     navigation.goTo = function(pageName) {
         if(pageName && common.startsWith(pageName, "/")) {
             pageName = pageName.substr(1);

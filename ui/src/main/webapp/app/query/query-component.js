@@ -112,48 +112,22 @@ function QueryController(queryPage, operationService, types, graph, config, sett
             operations.push(operationService.createLimitOperation(operation['options']));
             operations.push(operationService.createDeduplicateOperation(operation['options']));
         }
-        query.execute(JSON.stringify({
-            class: "uk.gov.gchq.gaffer.operation.OperationChain",
-            operations: operations,
-            options: operation['options']
-        }), function(data) {
-            loading.finish()
-            if (data.length === settings.getResultLimit()) {
-                prompt(data);
-            } else {
-                submitResults(data);
-            }
-        }, function(err) {
-            loading.finish();
-            error.handle('Error executing operation', err);
-        });
-    }
-
-
-    /**
-     * Alerts the user if they hit the result limit
-     * @param {Array} data The data returned by the Gaffer REST service 
-     */
-    var prompt = function(data) {
-        $mdDialog.show({
-            template: '<result-count-warning aria-label="Result Count Warning"></result-count-warning>',
-            parent: angular.element(document.body),
-            clickOutsideToClose: false
-        })
-        .then(function(command) {
-            if(command === 'results') {
-                submitResults(data);
-            }
-        });
+        query.executeQuery(
+            {
+                class: "uk.gov.gchq.gaffer.operation.OperationChain",
+                operations: operations,
+                options: operation['options']
+            },
+            submitResults
+        );
     }
 
     /**
-     * Deselects all elements in the graph, updates the result service and resets all query related services
+     * Deselects all elements in the graph and resets all query related services
      * @param {Array} data the data returned by the rest service 
      */
     var submitResults = function(data) {
         graph.deselectAll();
-        results.update(data);
         navigation.goTo('results');
         queryPage.reset();
         dateRange.resetDateRange();
@@ -171,7 +145,6 @@ function QueryController(queryPage, operationService, types, graph, config, sett
      */
     var createOpInput = function(seeds) {
         var opInput = [];
-        
         for (var i in seeds) {
             opInput.push({
                 "class": "uk.gov.gchq.gaffer.operation.data.EntitySeed",
@@ -206,7 +179,6 @@ function QueryController(queryPage, operationService, types, graph, config, sett
         }
 
         return opInput;
-
     }
 
     /**

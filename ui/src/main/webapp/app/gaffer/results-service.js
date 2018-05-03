@@ -25,8 +25,11 @@ angular.module('app').factory('results', ['events', function(events) {
         return results;
     }
 
-    resultService.clear = function() {
+    resultService.clear = function(broadcast) {
         results = {entities: [], edges: [], other: []};
+        if(broadcast === undefined || broadcast) {
+            events.broadcast('resultsUpdated', [results]);
+        }
     }
 
     resultService.update = function(newResults) {
