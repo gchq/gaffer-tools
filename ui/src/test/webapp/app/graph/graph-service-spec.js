@@ -64,16 +64,16 @@ describe("The Graph Service", function() {
 
         describe('when adding a seed', function() {
             
-            var input;
+            var operationChain
             var types;
 
-            beforeEach(inject(function(_input_, _types_) {
-                input = _input_;
+            beforeEach(inject(function(_operationChain_, _types_) {
+                operationChain = _operationChain_;
                 types = _types_;
             }))
 
             beforeEach(function() {
-                spyOn(input, 'addInput').and.stub();
+                spyOn(operationChain, 'addInput').and.stub();
             });
 
             it('should also select it', function() {
@@ -97,7 +97,7 @@ describe("The Graph Service", function() {
 
                 graph.addSeed("test");
                 scope.$digest();
-                expect(input.addInput).toHaveBeenCalledWith({ "valueClass": "java.lang.String", parts: {undefined: "test"} });
+                expect(operationChain.addInput).toHaveBeenCalledWith({ "valueClass": "java.lang.String", parts: {undefined: "test"} });
             });
 
             it('should broadcast the selectedElementsUpdate event', function() {
