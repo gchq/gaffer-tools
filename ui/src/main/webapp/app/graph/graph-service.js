@@ -19,13 +19,14 @@
 /**
  * Graph service which handles selected elements and a cytoscape graph
  */
-angular.module('app').factory('graph', ['types', '$q', 'results', 'common', 'config', 'events', 'input', 'schema', function(types, $q, results, common, config, events, input, schemaService) {
-
+angular.module('app').factory('graph', ['types', '$q', 'results', 'common', 'config', 'events', 'input', 'schema', 'query', 'operationService', 'settings', 'loading', '$mdDialog', 'error', function(types, $q, results, common, config, events, input, schemaService, query, operationService, settings, loading, $mdDialog, error) {
     var graphCy;
     var graph = {};
 
     var selectedEntities = {};
     var selectedEdges = {};
+    var tappedBefore;
+    var tappedTimeout;
 
     var layoutConf = {
         name: 'cytoscape-ngraph.forcelayout',
@@ -35,9 +36,7 @@ angular.module('app').factory('graph', ['types', '$q', 'results', 'common', 'con
             waitForStep: true
         },
         physics: {
-            springLength: 200,
-            dragCoeff: 0,
-            stableThreshold: 0.000001,
+            springLength: 250,
             fit: true
         },
         iterations: 10000,
@@ -56,7 +55,6 @@ angular.module('app').factory('graph', ['types', '$q', 'results', 'common', 'con
 
     events.subscribe('resultsUpdated', function(results) {
         graph.update(results);
-        graph.redraw();
     });
 
     /** 
@@ -93,7 +91,7 @@ angular.module('app').factory('graph', ['types', '$q', 'results', 'common', 'con
                         'text-outline-color':'data(color)',
                         'text-outline-width':3,
                         'width': 'data(radius)',
-                        'height': 'data(radius)'
+                        'height': 'data(radius)',
                     }
                 },
                 {
@@ -115,8 +113,15 @@ angular.module('app').factory('graph', ['types', '$q', 'results', 'common', 'con
                     selector: ':selected',
                     css: {
                         'background-color': 'data(selectedColor)',
+                        'text-outline-color':'data(selectedColor)',
                         'line-color': '#35500F',
-                        'target-arrow-color': '#35500F'
+                        'target-arrow-color': '#35500F',
+                    }
+                },
+                {
+                    selector: '.filtered',
+                    css: {
+                       display: "none"
                     }
                 }
             ],
@@ -135,7 +140,78 @@ angular.module('app').factory('graph', ['types', '$q', 'results', 'common', 'con
             unSelect(evt.cyTarget);
         })
 
+        graphCy.on('tap', function(event) {
+            var tappedNow = event.cyTarget;
+            if (tappedTimeout && tappedBefore) {
+                clearTimeout(tappedTimeout);
+            }
+            if(tappedBefore === tappedNow) {
+                tappedNow.trigger('doubleTap');
+                tappedBefore = null;
+            } else {
+                tappedTimeout = setTimeout(function(){ tappedBefore = null; }, 300);
+                tappedBefore = tappedNow;
+            }
+        });
+
+        graphCy.on('doubleTap', 'node', graph.quickHop);
+
         return deferred.promise;
+    }
+
+    /**
+     * Performs a quick hop - a GetElements operation with either the clicked
+     * node or the selected nodes.
+     * @param {Object} event an optional mouse click event.
+     */
+    graph.quickHop = function(event) {
+        var input
+        if(event) {
+            input = [event.cyTarget.id()];
+        } else {
+            input = Object.keys(graph.getSelectedEntities());
+        }
+        if(input && input.length > 0) {
+            loading.load();
+            var operation = {
+                 class: "uk.gov.gchq.gaffer.operation.impl.get.GetElements",
+                 input: createOpInput(input),
+                 options: settings.getDefaultOpOptions(),
+                 view: {
+                    globalElements: [
+                        {
+                            groupBy: []
+                        }
+                    ]
+                 }
+            };
+            query.addOperation(operation);
+            query.executeQuery(
+                {
+                   class: "uk.gov.gchq.gaffer.operation.OperationChain",
+                   operations: [
+                       operation,
+                       operationService.createLimitOperation(operation['options']),
+                       operationService.createDeduplicateOperation(operation['options'])
+                   ],
+                   options: operation['options']
+                },
+                graph.deselectAll
+            );
+        } else {
+            error.handle('Please select one or more vertices first');
+        }
+    }
+
+    var createOpInput = function(seeds) {
+        var opInput = [];
+        for (var i in seeds) {
+            opInput.push({
+                "class": "uk.gov.gchq.gaffer.operation.data.EntitySeed",
+                "vertex": JSON.parse(seeds[i])
+            });
+        }
+        return opInput;
     }
 
     /**
@@ -242,21 +318,10 @@ angular.module('app').factory('graph', ['types', '$q', 'results', 'common', 'con
     }
 
     /**
-     * Updates the cytoscape graph and redraws it
-     */
-    graph.reload = function() {
-        updateGraph(graphData);
-        graph.redraw();
-    }
-
-    /**
-     * Resets the selected elements
+     * Resets the graph
      */
     graph.reset = function() {
-        selectedEdges = {};
-        selectedEntities = {};
-        graphCy.elements().unselect();
-        events.broadcast('selectedElementsUpdate'[{"entities": selectedEntities, "edges": selectedEdges}]);
+        graph.update(results.get());
     }
 
     /**
@@ -275,6 +340,7 @@ angular.module('app').factory('graph', ['types', '$q', 'results', 'common', 'con
      * @param {Array} results 
      */
     graph.update = function(results) {
+        graph.clear();
         graphData = { entities: {}, edges: {} };
         for (var i in results.entities) {
             var entity = angular.copy(results.entities[i]);
@@ -416,16 +482,18 @@ angular.module('app').factory('graph', ['types', '$q', 'results', 'common', 'con
                 });
             }
         }
+        graph.redraw();
     }
 
     /**
-     * Removes all elements from the cytoscape graph - does not remove them from the model
-     * This is not actually used anywhere
+     * Removes all elements from the cytoscape graph - does not remove them from the model.
      */
     graph.clear = function(){
+        graph.removeSelected();
         while(graphCy.elements().length > 0) {
             graphCy.remove(graphCy.elements()[0]);
         }
+        input.reset();
     }
 
     /**
@@ -433,8 +501,36 @@ angular.module('app').factory('graph', ['types', '$q', 'results', 'common', 'con
      */
     graph.redraw = function() {
         if(graphCy) {
+            var nodes = graphCy.nodes();
+            for(var i in nodes) {
+                if(nodes[i] && nodes[i].hasClass && nodes[i].hasClass("filtered")) {
+                    nodes[i].remove();
+                }
+            }
             graphCy.layout(layoutConf);
         }
+    }
+
+    graph.filter = function(searchTerm) {
+        searchTerm = searchTerm.toLowerCase();
+        var nodes = graphCy.nodes();
+        for(var i in nodes) {
+            if(nodes[i].data && nodes[i].data('id')) {
+                if(nodes[i].data('id').toLowerCase().indexOf(searchTerm) === -1) {
+                    nodes[i].addClass("filtered");
+                } else {
+                    nodes[i].removeClass("filtered");
+                }
+            }
+        }
+    }
+
+    graph.removeSelected = function() {
+        graphCy.filter(":selected").remove();
+        graphCy.elements().unselect();
+        selectedEdges = {};
+        selectedEntities = {};
+        events.broadcast('selectedElementsUpdate', [{"entities": selectedEntities, "edges": selectedEdges}]);
     }
 
     /**

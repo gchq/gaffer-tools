@@ -26,15 +26,12 @@ function toolbar() {
     };
 }
 
-function ToolbarController($rootScope, $mdDialog, navigation, graph, operationService, results, query, config, loading, events, properties, error) {
+function ToolbarController($rootScope, $mdDialog, operationService, results, query, config, loading, events, properties, error) {
     var vm = this;
     vm.addMultipleSeeds = false;
     vm.appTitle;
 
     var defaultTitle = "Gaffer";
-    vm.currentPage = navigation.getCurrentPage();
-    vm.goTo = navigation.goTo;
-
     vm.$onInit = function() {
         config.get().then(function(conf) {
             if (conf.title) {
@@ -55,67 +52,58 @@ function ToolbarController($rootScope, $mdDialog, navigation, graph, operationSe
                 vm.appTitle = defaultTitle;
             });
         });
-
-        events.subscribe('routeChange', function(newCurrentPage) {
-            vm.currentPage = newCurrentPage
-        });
-
-        $rootScope.$on('$routeChangeSuccess', function (event, current) {
-            var newPage = current.originalPath.substr(1);
-            if (newPage !== vm.currentPage) {
-                navigation.goTo(newPage);
-            }
-        });
-    }
-
-    vm.isGraphInView = function() {
-        return vm.currentPage === 'graph';
-    }
-
-    vm.isRawTab = function() {
-        return vm.currentPage === 'raw';
-    }
-
-    vm.redraw = function() {
-        graph.redraw();
     }
 
     var recursivelyExecuteOperations = function(opIndex, ops) {
-        query.execute(JSON.stringify({
-            class: "uk.gov.gchq.gaffer.operation.OperationChain",
-            operations: [ops[opIndex], operationService.createLimitOperation(ops[opIndex]['options']), operationService.createDeduplicateOperation(ops[opIndex]['options'])]
-        }), function(data) {
-            results.update(data);
-            if((opIndex + 1) < ops.length) {
-                recursivelyExecuteOperations(opIndex + 1, ops);
-            } else {
-                loading.finish();
-            }
-        }, function(err) {
-            // Try without the limit and deduplicate operations
-            query.execute(JSON.stringify({
+        query.execute(
+            {
                 class: "uk.gov.gchq.gaffer.operation.OperationChain",
-                operations: [ops[opIndex]]
-            }), function(data) {
+                operations: [
+                    ops[opIndex],
+                    operationService.createLimitOperation(ops[opIndex]['options']),
+                    operationService.createDeduplicateOperation(ops[opIndex]['options'])
+                ]
+            },
+            function(data) {
                 results.update(data);
                 if((opIndex + 1) < ops.length) {
                     recursivelyExecuteOperations(opIndex + 1, ops);
                 } else {
                     loading.finish();
                 }
-            },  function(err) {
-                loading.finish();
-                error.handle('Error executing operation', err);
-            });
-        });
+            },
+            function(err) {
+                // Try without the limit and deduplicate operations
+                query.execute(JSON.stringify({
+                    class: "uk.gov.gchq.gaffer.operation.OperationChain",
+                    operations: [ops[opIndex]]
+                }), function(data) {
+                    results.update(data);
+                    if((opIndex + 1) < ops.length) {
+                        recursivelyExecuteOperations(opIndex + 1, ops);
+                    } else {
+                        loading.finish();
+                    }
+                },  function(err) {
+                    loading.finish();
+                    error.handle('Error executing operation', err);
+                });
+            }
+        );
     }
-    vm.executeAll = function() {
-        results.clear();
-        var ops = query.getOperations();
 
+    vm.executeAll = function() {
+        var ops = query.getOperations();
         if (ops.length > 0) {
+            results.clear(false);
             loading.load();
             recursivelyExecuteOperations(0, ops);
+        } else {
+            results.clear(true);
         }
+    }
+
+    vm.clearResults = function() {
+        results.clear();
     }
 }

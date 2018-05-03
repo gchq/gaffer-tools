@@ -107,34 +107,5 @@ describe('The Toolbar Component', function() {
 
             expect(ctrl.appTitle).toEqual('Gaffer');
         });
-
-        it('should update the current page when an external component updates the route', function() {
-            var ctrl = $componentController('toolbar');
-            ctrl.$onInit();
-
-            ctrl.goTo('settings');
-
-            expect(ctrl.currentPage).toEqual('settings');
-        });
-
-        it('should listen to $rootScope broadcasts for a route change and update the navigation service', function() {
-            var ctrl = $componentController('toolbar', {$scope: scope});
-            ctrl.$onInit();
-
-            ctrl.goTo('settings');
-            $rootScope.$broadcast('$routeChangeSuccess', { originalPath: '/graph'});
-
-            expect(ctrl.currentPage).toEqual('graph');
-            expect(navigation.getCurrentPage()).toEqual('graph');
-        });
-
-        it('should redraw the graph', function() {
-            spyOn(graph, 'redraw');
-            var ctrl = $componentController('toolbar');
-
-            ctrl.redraw();
-
-            expect(graph.redraw).toHaveBeenCalledTimes(1);
-        });
     });
 });

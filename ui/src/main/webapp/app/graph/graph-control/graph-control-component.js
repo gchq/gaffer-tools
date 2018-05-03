@@ -16,26 +16,27 @@
 
 'use strict';
 
-angular.module('app').component('graph', graphView());
+angular.module('app').component('graphControl', graphControl());
 
-function graphView() {
-
+function graphControl() {
     return {
-        templateUrl: 'app/graph/graph.html',
-        controller: GraphController,
+        templateUrl: 'app/graph/graph-control/graph-control.html',
+        controller: GraphControlController,
         controllerAs: 'ctrl'
-    };
+    }
 }
 
-
-function GraphController(graph, $timeout) {
+function GraphControlController($scope, $timeout, events, graph, types, schema, time, navigation) {
     var vm = this;
+    vm.searchTerm = "";
 
-    vm.$onInit = function() {
-        $timeout(function(evt) {
-            graph.load().then(function(cy) {
-                graph.reset();
-            })
-        });
+    vm.filter = function() {
+        graph.filter(vm.searchTerm);
     }
+
+    vm.quickHop = graph.quickHop;
+    vm.redraw = graph.redraw;
+    vm.reset = graph.reset;
+    vm.removeSelected = graph.removeSelected;
+    vm.goToQuery = navigation.goToQuery;
 }

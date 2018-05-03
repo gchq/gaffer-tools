@@ -25,7 +25,6 @@ angular.module('app').factory('operationService', ['$http', '$q', 'settings', 'c
     var deferredAvailableOperations;
     var deferredNamedOperationsQueue = [];
 
-
     operationService.getAvailableOperations = function() {
         if (availableOperations) {
             return $q.when(availableOperations);
@@ -56,7 +55,6 @@ angular.module('app').factory('operationService', ['$http', '$q', 'settings', 'c
     }
 
     var getInputType = function(first, availableOps) {
-
         for (var i in availableOps) {
             if (availableOps[i].class && common.endsWith(availableOps[i].class, first)) {
                 return availableOps[i].input;
@@ -158,20 +156,19 @@ angular.module('app').factory('operationService', ['$http', '$q', 'settings', 'c
 
         var getAllClass = "uk.gov.gchq.gaffer.named.operation.GetAllNamedOperations";
         operationService.ifOperationSupported(getAllClass, function() {
-            query.execute(JSON.stringify(
+            query.execute(
                 {
                     class: getAllClass,
                     options: settings.getDefaultOpOptions()
+                },
+                updateNamedOperations,
+                function(err) {
+                    updateNamedOperations([]);
+                    if (loud) {
+                        error.handle('Failed to load named operations', err);
+                    }
                 }
-            ),
-            updateNamedOperations,
-            function(err) {
-                updateNamedOperations([]);
-                if (loud) {
-                    error.handle('Failed to load named operations', err);
-                }
-            });
-
+            );
         },
         function() {
             updateNamedOperations([]);
