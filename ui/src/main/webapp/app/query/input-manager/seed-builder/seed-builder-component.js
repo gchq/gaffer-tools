@@ -80,6 +80,7 @@ function SeedBuilderController(schema, csv, types, error, events, common, $route
      * time unnecessary function calls
      */
     vm.$onDestroy = function() {
+        events.unsubscribe('onOperationUpdate', vm.addSeeds)
         events.unsubscribe('onPreExecute', vm.addSeeds);
     }
 
