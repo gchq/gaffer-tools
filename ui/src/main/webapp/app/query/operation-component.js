@@ -54,7 +54,7 @@ function OperationController(types, loading, operationChain, settings, events) {
      * Checks all subforms are valid and another operation is not in progress
      */
     vm.canExecute = function() {
-        return vm.operationForm.$valid && !loading.isLoading();
+        return vm.operationForm.$valid && vm.model.inputs.input !== null && !loading.isLoading();
     }
 
     vm.isFirst = function() {

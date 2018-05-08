@@ -49,12 +49,15 @@ function InputManagerController(events, results, common, types, schema) {
     }
     
     vm.$onInit = function() {
+        if (!vm.model) {
+            throw 'Input manager must be initialised with a model.';
+        }
         updatePreviousOutputFlag(); // respond to 'onOperationUpdate' event here
-        events.subscribe('onOperationUpdate', updatePreviousOutputFlag);
+        events.subscribe(EVENT_NAME, updatePreviousOutputFlag);
     }
 
     vm.$onDestroy = function() {
-        events.unsubscribe('onOperationUpdate', updatePreviousOutputFlag);
+        events.unsubscribe(EVENT_NAME, updatePreviousOutputFlag);
     }
 
     vm.onCheckboxChange = function() {
@@ -67,10 +70,10 @@ function InputManagerController(events, results, common, types, schema) {
         }
     }
 
-    /** 
+    /**
      * Selects all seeds on the graph which in turn triggers an update event - causing the query input to be updated
     */
-    vm.selectAllSeeds = function() {
+    vm.useResults = function() {
         schema.get().then(function(gafferSchema) {
             var vertices = schema.getSchemaVertices();
             var vertexClass;
@@ -82,19 +85,19 @@ function InputManagerController(events, results, common, types, schema) {
             var allSeeds = [];
 
             for (var i in resultsData.entities) {
-                var vertex = { vertexClass: vertexClass, parts: types.createParts(vertexClass, resultsData.entities[i].vertex) };
+                var vertex = { valueClass: vertexClass, parts: types.createParts(vertexClass, resultsData.entities[i].vertex) };
                 common.pushObjectIfUnique(vertex, allSeeds);
             }
 
             for (var i in resultsData.edges) {
-                var source = { vertexClass: vertexClass, parts: types.createParts(vertexClass, resultsData.edges[i].source) };
-                var destination = { vertexClass: vertexClass, parts: types.createParts(vertexClass, resultsData.edges[i].destination) };
+                var source = { valueClass: vertexClass, parts: types.createParts(vertexClass, resultsData.edges[i].source) };
+                var destination = { valueClass: vertexClass, parts: types.createParts(vertexClass, resultsData.edges[i].destination) };
                 common.pushObjectsIfUnique([source, destination], allSeeds);
             }
 
             for (var i in resultsData.other) {
                 if (resultsData.other[i].class === ENTITY_SEED_CLASS) {
-                    var vertex = { vertexClass: vertexClass, parts: types.createParts(vertexClass, resultsData.other[i].vertex)}
+                    var vertex = { valueClass: vertexClass, parts: types.createParts(vertexClass, resultsData.other[i].vertex)}
                     common.pushObjectIfUnique(vertex, allSeeds);
                 }
             }
@@ -102,6 +105,6 @@ function InputManagerController(events, results, common, types, schema) {
             common.pushObjectsIfUnique(allSeeds, vm.model.input);
 
             events.broadcast(EVENT_NAME, []);
-        })
+        });
     }
 }
