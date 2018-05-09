@@ -45,7 +45,7 @@ function OperationController(types, loading, operationChain, settings, events) {
         });
 
         if (!vm.model) {
-            throw 'Operation has been created without a model to bind to'
+            throw 'An operation has been created without a model to bind to'
         }
         
     }
@@ -62,7 +62,7 @@ function OperationController(types, loading, operationChain, settings, events) {
     }
 
     vm.isStandalone = function() {
-        return vm.index === 0 && vm.chainLength === 1;
+        return vm.chainLength === 1;
     }
 
     vm.isLast = function() {
