@@ -53,7 +53,7 @@ public final class MiniAccumuloClusterController {
     private String password;
     private String instanceName;
     private boolean shutdownHook;
-    private int heapSize;
+    private Integer heapSize;
 
     private Path clusterPath;
     private MiniAccumuloCluster cluster;
@@ -80,7 +80,7 @@ public final class MiniAccumuloClusterController {
             try (final InputStream accIs = Files.newInputStream(propFileLocation, StandardOpenOption.READ)) {
                 props.load(accIs);
             } catch (final IOException e) {
-                throw new RuntimeException(e);
+                throw new IllegalArgumentException("Unable to find configuration file at path: " + propFileLocation.toString());
             }
         }
 
@@ -95,7 +95,10 @@ public final class MiniAccumuloClusterController {
         if (StringUtils.isNotEmpty(shutdownHookProp)) {
             shutdownHook = Boolean.parseBoolean(shutdownHookProp);
         }
-        heapSize = Integer.parseInt(props.getProperty(MiniAccumuloClusterProps.HEAP_SIZE_KEY));
+        final String heapSizeProp = props.getProperty(MiniAccumuloClusterProps.HEAP_SIZE_KEY);
+        if (StringUtils.isNotEmpty(heapSizeProp)) {
+            heapSize = Integer.parseInt(heapSizeProp);
+        }
 
     }
 
@@ -178,7 +181,9 @@ public final class MiniAccumuloClusterController {
     protected void createMiniCluster() {
         try {
             final MiniAccumuloConfig config = new MiniAccumuloConfig(clusterPath.toFile(), password);
-            config.setDefaultMemory(heapSize, MemoryUnit.MEGABYTE);
+            if (heapSize != null) {
+                config.setDefaultMemory(heapSize, MemoryUnit.MEGABYTE);
+            }
             config.setInstanceName(instanceName);
             cluster = new MiniAccumuloCluster(config);
             cluster.start();

@@ -108,4 +108,18 @@ public class MiniAccumuloClusterControllerTest {
             }
         }
     }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void shouldThrowCorrectExceptionIfPropsFileUnavailable() throws Exception {
+        // Given
+        final String propsFileLocation = "wrongMiniAccumuloCluster.properties";
+        final MiniAccumuloClusterController[] runner = new MiniAccumuloClusterController[1];
+        final Exception[] accumuloException = new Exception[1];
+
+        // When
+        runner[0] = new MiniAccumuloClusterController.Builder()
+            .propertiesFileLocation(propsFileLocation)
+            .buildFromProps();
+        runner[0].start();
+    }
 }
