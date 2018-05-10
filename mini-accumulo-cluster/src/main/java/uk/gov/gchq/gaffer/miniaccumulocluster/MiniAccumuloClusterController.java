@@ -75,14 +75,7 @@ public final class MiniAccumuloClusterController {
     }
 
     protected MiniAccumuloClusterController(final Path propFileLocation) {
-        final Properties props = new Properties();
-        if (null != propFileLocation) {
-            try (final InputStream accIs = Files.newInputStream(propFileLocation, StandardOpenOption.READ)) {
-                props.load(accIs);
-            } catch (final IOException e) {
-                throw new IllegalArgumentException("Unable to find configuration file at path: " + propFileLocation.toString());
-            }
-        }
+        final Properties props = MiniAccumuloClusterProps.loadProperties(propFileLocation);
 
         dirName = props.getProperty(MiniAccumuloClusterProps.DIR_NAME_KEY);
         final String isTempDirProp = props.getProperty(MiniAccumuloClusterProps.IS_TEMP_DIR_KEY);
