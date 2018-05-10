@@ -20,6 +20,7 @@ import org.junit.Test;
 
 import java.io.File;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
@@ -59,6 +60,48 @@ public class MiniAccumuloClusterControllerTest {
             // Then
             assertNull(null != accumuloException[0] ? accumuloException[0].getMessage() : "", accumuloException[0]);
             assertTrue("store.properties was not generated", new File(miniAccumuloClusterName + "/store.properties").exists());
+            assertEquals(1024, runner[0].getHeapSize());
+        } finally {
+            if (null != runner[0]) {
+                runner[0].stop();
+            }
+        }
+    }
+
+    @Test
+    public void shouldStartAndStopClusterFromPropsFile() throws Exception {
+        // Given
+        final String propsFileLocation = "src/test/resources/miniAccumuloCluster.properties";
+        final MiniAccumuloClusterController[] runner = new MiniAccumuloClusterController[1];
+        final Exception[] accumuloException = new Exception[1];
+
+
+        // When
+        try {
+            new Thread(() -> {
+                try {
+                    runner[0] = new MiniAccumuloClusterController.Builder()
+                            .propertiesFileLocation(propsFileLocation)
+                            .buildFromProps();
+                    runner[0].start();
+                } catch (final Exception e) {
+                    accumuloException[0] = e;
+                }
+            }).start();
+
+            // Wait for accumulo to start
+            int maxAttempts = 500;
+            int attempts = 0;
+            while (!new File("miniAccumuloCluster/store.properties").exists() && attempts < maxAttempts && null == accumuloException[0]) {
+                attempts++;
+                Thread.sleep(500);
+            }
+            Thread.sleep(5000);
+
+            // Then
+            assertNull(null != accumuloException[0] ? accumuloException[0].getMessage() : "", accumuloException[0]);
+            assertTrue("store.properties was not generated", new File("miniAccumuloCluster/store.properties").exists());
+            assertEquals(1024, runner[0].getHeapSize());
         } finally {
             if (null != runner[0]) {
                 runner[0].stop();

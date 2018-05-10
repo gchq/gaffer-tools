@@ -19,18 +19,19 @@ package uk.gov.gchq.gaffer.miniaccumulocluster;
 import org.apache.accumulo.minicluster.MemoryUnit;
 import org.apache.accumulo.minicluster.MiniAccumuloCluster;
 import org.apache.accumulo.minicluster.MiniAccumuloConfig;
+import org.apache.commons.configuration.PropertiesConfiguration;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
+import uk.gov.gchq.gaffer.commonutil.PropertiesUtil;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.FileSystems;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.WatchEvent;
-import java.nio.file.WatchKey;
-import java.nio.file.WatchService;
+import java.io.InputStream;
+import java.nio.charset.Charset;
+import java.nio.file.*;
+import java.util.List;
+import java.util.Properties;
 
 import static java.nio.file.StandardWatchEventKinds.ENTRY_CREATE;
 import static java.nio.file.StandardWatchEventKinds.OVERFLOW;
@@ -45,18 +46,14 @@ import static java.nio.file.StandardWatchEventKinds.OVERFLOW;
 public final class MiniAccumuloClusterController {
     private static final Logger LOGGER = Logger.getLogger(MiniAccumuloClusterController.class);
 
-    public static final String DEFAULT_DIR_NAME = "miniAccumuloCluster";
-    public static final String DEFAULT_PASSWORD = "password";
-    public static final String DEFAULT_INSTANCE_NAME = "instance";
-
     private static boolean shutdownHookAdded = false;
 
-    private final String dirName;
-    private final boolean isTempDir;
-    private final String password;
-    private final String instanceName;
-    private final boolean shutdownHook;
-    private final int heapSize;
+    private String dirName;
+    private boolean isTempDir;
+    private String password;
+    private String instanceName;
+    private boolean shutdownHook;
+    private int heapSize;
 
     private Path clusterPath;
     private MiniAccumuloCluster cluster;
@@ -77,20 +74,53 @@ public final class MiniAccumuloClusterController {
         this.heapSize = heapSize;
     }
 
+    protected MiniAccumuloClusterController(final Path propFileLocation) {
+        final Properties props = new Properties();
+        if (null != propFileLocation) {
+            try (final InputStream accIs = Files.newInputStream(propFileLocation, StandardOpenOption.READ)) {
+                props.load(accIs);
+            } catch (final IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        dirName = props.getProperty(MiniAccumuloClusterProps.DIR_NAME_KEY);
+        final String isTempDirProp = props.getProperty(MiniAccumuloClusterProps.IS_TEMP_DIR_KEY);
+        if (StringUtils.isNotEmpty(isTempDirProp)) {
+            isTempDir = Boolean.parseBoolean(isTempDirProp);
+        }
+        password = props.getProperty(MiniAccumuloClusterProps.PASSWORD_KEY);
+        instanceName = props.getProperty(MiniAccumuloClusterProps.INSTANCE_NAME_KEY);
+        final String shutdownHookProp = props.getProperty(MiniAccumuloClusterProps.SHUTDOWN_HOOK_KEY);
+        if (StringUtils.isNotEmpty(shutdownHookProp)) {
+            shutdownHook = Boolean.parseBoolean(shutdownHookProp);
+        }
+        heapSize = Integer.parseInt(props.getProperty(MiniAccumuloClusterProps.HEAP_SIZE_KEY));
+
+    }
+
     public static void main(final String[] args) {
         if (null != args && args.length > 7) {
-            LOGGER.error("Usage: [directory_name] [is_temp_directory] [root_password] [instance_name] [exec_script] [no_shell] [heap_memory]");
+            LOGGER.error("Usage: [properties_file_location] | ([directory_name] [is_temp_directory] [root_password] [instance_name] [exec_script] [no_shell] [heap_memory])");
             throw new IllegalArgumentException("Wrong number of args");
         }
 
-        final MiniAccumuloClusterController runner = new Builder()
-                .dirName(getDirName(args))
-                .tempDir(isTempDir(args))
-                .password(getPassword(args))
-                .instanceName(getInstanceName(args))
-                .shutdownHook(true)
-                .build();
+        final MiniAccumuloClusterController runner;
+        if (args.length == 1) {
+            runner = new Builder()
+                    .propertiesFileLocation(args[0])
+                    .build();
 
+        } else {
+            runner = new Builder()
+                    .dirName(getDirName(args))
+                    .tempDir(isTempDir(args))
+                    .password(getPassword(args))
+                    .instanceName(getInstanceName(args))
+                    .shutdownHook(true)
+                    .build();
+
+        }
         runner.start();
     }
 
@@ -243,7 +273,7 @@ public final class MiniAccumuloClusterController {
     }
 
     private static String getDirName(final String[] args) {
-        return getArgOrDefault(0, DEFAULT_DIR_NAME, args);
+        return getArgOrDefault(0, MiniAccumuloClusterProps.DEFAULT_DIR_NAME, args);
     }
 
     private static boolean isTempDir(final String[] args) {
@@ -251,15 +281,19 @@ public final class MiniAccumuloClusterController {
     }
 
     private static String getPassword(final String[] args) {
-        return getArgOrDefault(2, DEFAULT_PASSWORD, args);
+        return getArgOrDefault(2, MiniAccumuloClusterProps.DEFAULT_PASSWORD, args);
     }
 
     private static String getInstanceName(final String[] args) {
-        return getArgOrDefault(3, DEFAULT_INSTANCE_NAME, args);
+        return getArgOrDefault(3, MiniAccumuloClusterProps.DEFAULT_INSTANCE_NAME, args);
     }
 
     private static String getArgOrDefault(final int index, final String defaultValue, final String[] args) {
         return hasArg(index, args) ? args[index] : defaultValue;
+    }
+
+    int getHeapSize() {
+        return heapSize;
     }
 
     private static boolean hasArg(final int index, final String[] args) {
@@ -267,12 +301,13 @@ public final class MiniAccumuloClusterController {
     }
 
     public static class Builder {
-        private String dirName = DEFAULT_DIR_NAME;
+        private String dirName = MiniAccumuloClusterProps.DEFAULT_DIR_NAME;
         private boolean isTempDir = false;
-        private String password = DEFAULT_PASSWORD;
-        private String instanceName = DEFAULT_INSTANCE_NAME;
+        private String password = MiniAccumuloClusterProps.DEFAULT_PASSWORD;
+        private String instanceName = MiniAccumuloClusterProps.DEFAULT_INSTANCE_NAME;
         private boolean shutdownHook = true;
         private int heapSize = 128;
+        private String propsFileLocation = MiniAccumuloClusterProps.DEFAULT_DIR_NAME + "/miniAccumuloStore.properties";
 
         public Builder dirName(final String dirName) {
             this.dirName = dirName;
@@ -316,8 +351,21 @@ public final class MiniAccumuloClusterController {
             return this;
         }
 
+        public Builder propertiesFileLocation() {
+            return propertiesFileLocation();
+        }
+
+        public Builder propertiesFileLocation(final String propsFileLocation) {
+            this.propsFileLocation = propsFileLocation;
+            return this;
+        }
+
         public MiniAccumuloClusterController build() {
             return new MiniAccumuloClusterController(dirName, isTempDir, password, instanceName, shutdownHook, heapSize);
+        }
+
+        public MiniAccumuloClusterController buildFromProps() {
+            return new MiniAccumuloClusterController(Paths.get(propsFileLocation));
         }
     }
 }
