@@ -22,7 +22,11 @@ import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.util.Properties;
 
-public class MiniAccumuloClusterProps {
+public final class MiniAccumuloClusterProps {
+
+    private MiniAccumuloClusterProps() {
+        // Deliberately private constructor in utility class
+    }
 
     public static final String DEFAULT_DIR_NAME = "miniAccumuloCluster";
     public static final String DEFAULT_PASSWORD = "password";
