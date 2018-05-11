@@ -4806,6 +4806,19 @@ class GafferOperationsTest(unittest.TestCase):
 
             g.JsonConverter.from_json(example[0], validate=True)
 
+    def test_get_elements_should_handle_single_inputs(self):
+        self.assertEquals(
+            {
+                'class': 'uk.gov.gchq.gaffer.operation.impl.get.GetElements',
+                'input': [
+                    {
+                        'class': 'uk.gov.gchq.gaffer.operation.data.EntitySeed',
+                        'vertex': 'value'
+                    }
+                ]
+            },
+            g.GetElements(input="value").to_json())
+
 
 if __name__ == "__main__":
     unittest.main()

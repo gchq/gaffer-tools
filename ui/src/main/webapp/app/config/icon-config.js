@@ -21,9 +21,26 @@ angular.module('app').config(['$mdIconProvider', function($mdIconProvider) {
     $mdIconProvider
         .icon('save', 'app/img/save.svg')
         .icon('info', 'app/img/info.svg')
+        .icon('left-arrow', 'app/img/left-arrow.svg')
         .icon('up-arrow', 'app/img/up-arrow.svg')
+        .icon('right-arrow', 'app/img/right-arrow.svg')
         .icon('down-arrow', 'app/img/down-arrow.svg')
         .icon('refresh', 'app/img/refresh.svg')
         .icon('add', 'app/img/add.svg')
-        .icon('delete', 'app/img/delete.svg');
+        .icon('delete', 'app/img/delete.svg')
+        .icon('query', 'app/img/query.svg')
+        .icon('table', 'app/img/table.svg')
+        .icon('graph', 'app/img/graph.svg')
+        .icon('schema', 'app/img/schema.svg')
+        .icon('raw', 'app/img/raw.svg')
+        .icon('settings', 'app/img/settings.svg')
+        .icon('sidenav', 'app/img/sidenav.svg')
+        .icon('cancel', 'app/img/cancel.svg')
+        .icon('restore', 'app/img/restore.svg')
+        .icon('redraw', 'app/img/redraw.svg')
+        .icon('expand-out', 'app/img/expand-out.svg')
+        .icon('location-search', 'app/img/location-search.svg')
+        .icon('clear-results', 'app/img/clear-results.svg')
+        .icon('rerun', 'app/img/rerun.svg')
+        .icon('edit', 'app/img/edit.svg');
 }]);

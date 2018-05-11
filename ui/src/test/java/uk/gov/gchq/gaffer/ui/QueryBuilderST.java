@@ -13,6 +13,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxProfile;
+
 import uk.gov.gchq.gaffer.exception.SerialisationException;
 import uk.gov.gchq.gaffer.graph.Graph;
 import uk.gov.gchq.gaffer.jsonserialisation.JSONSerialiser;
@@ -20,10 +21,13 @@ import uk.gov.gchq.gaffer.named.operation.AddNamedOperation;
 import uk.gov.gchq.gaffer.named.operation.DeleteNamedOperation;
 import uk.gov.gchq.gaffer.named.operation.ParameterDetail;
 import uk.gov.gchq.gaffer.operation.OperationException;
+import uk.gov.gchq.gaffer.operation.data.EntitySeed;
 import uk.gov.gchq.gaffer.proxystore.ProxyStore;
 import uk.gov.gchq.gaffer.user.User;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -137,8 +141,7 @@ public class QueryBuilderST {
     @Test
     public void shouldFindRoadUseAroundJunctionM5_10() throws InterruptedException {
         selectOptionWithAriaLabel("operation-name", "Get Elements");
-        enterText("seedVertex", "M5:10");
-        click("add-seeds");
+        enterText("seedVertices", "M5:10");
         click("create-custom-filter");
         selectMultiOption("view-edges", "RoadUse");
         click("add-RoadUse-filters");
@@ -163,11 +166,10 @@ public class QueryBuilderST {
     @Test
     public void shouldNotThrowErrorIfPageIsReloadedWithCustomView() throws InterruptedException, SerialisationException {
         selectOptionWithAriaLabel("operation-name", "Get Elements");
-        enterText("seedVertex", "M5");
-        click("add-seeds");
+        enterText("seedVertices", "M5");
         click("create-custom-filter");
         selectMultiOption("view-entities", "Cardinality");
-        click("open-graph");
+        click("open-table");
         click("open-query");
         click("Execute Query");
         click("open-raw");
@@ -181,8 +183,7 @@ public class QueryBuilderST {
     @Test
     public void shouldFindRoadUseAroundJunctionM5_10WithDatePicker() throws InterruptedException {
         selectOptionWithAriaLabel("operation-name", "Get Elements");
-        enterText("seedVertex", "M5:10");
-        click("add-seeds");
+        enterText("seedVertices", "M5:10");
         enterIntoDatePicker("start-date", "13/10/2000");
         click("create-custom-filter");
         selectMultiOption("view-edges", "RoadUse");
@@ -199,7 +200,6 @@ public class QueryBuilderST {
 
     @Test
     public void shouldBeAbleToDeleteFiltersOnceCreated() throws InterruptedException {
-
         // given
         selectOptionWithAriaLabel("operation-name", "Get Elements");
         click("create-custom-filter");
@@ -214,7 +214,6 @@ public class QueryBuilderST {
         click("submit");
 
         // when
-
         click("delete-entity-Cardinality-filter-0");
         click("delete-entity-Cardinality-filter-0");
         click("Execute Query");
@@ -241,23 +240,22 @@ public class QueryBuilderST {
     @Test
     public void shouldBeAbleToRunParameterisedQueries() throws InterruptedException, SerialisationException {
         selectOptionWithAriaLabel("operation-name", "Two Hop With Limit");
-        enterText("seedVertex", "M5");
-        click("add-seeds");
+        enterText("seedVertices", "M5");
         enterText("param1-", "2");
         click("Execute Query");
 
         click("open-raw");
         clickTab("Results");
 
-        final String results = getElement("raw-entity-seed-results").getText().trim();
+        final String results = getElement("raw-other-results").getText().trim();
         final List resultList = JSONSerialiser.deserialise(results.getBytes(), ArrayList.class);
 
-        assertEquals("Parameterised Named Operation returned wrong number of results", 2, resultList.size());
-
-        final String[] expectedResults = {"352952,178032", "M5:18A"};
-        for (final String result : expectedResults) {
-            assertTrue(result + "was not found in results: " + resultList.toString(), resultList.contains(result));
-        }
+        final List<Map<String, Object>> expectedResults = Arrays.asList(new LinkedHashMap<>(), new LinkedHashMap<>());
+        expectedResults.get(0).put("class", EntitySeed.class.getName());
+        expectedResults.get(0).put("vertex", "352952,178032");
+        expectedResults.get(1).put("class", EntitySeed.class.getName());
+        expectedResults.get(1).put("vertex", "M5:18A");
+        assertEquals(expectedResults, resultList);
     }
 
     private void enterText(final String id, final String value) {

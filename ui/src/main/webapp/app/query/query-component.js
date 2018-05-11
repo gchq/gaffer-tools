@@ -49,8 +49,9 @@ function query() {
  * @param {*} input For getting access to the operation seeds
  * @param {*} $routeParams the url query params
  * @param {*} $location for deleting url query params when they have been consumed
+ * @param {*} events for broadcasting pre-execute event
  */
-function QueryController(queryPage, operationService, types, graph, config, settings, query, results, navigation, $mdDialog, loading, dateRange, view, error, input, $routeParams, $location) {
+function QueryController(queryPage, operationService, types, graph, config, settings, query, results, navigation, $mdDialog, loading, dateRange, view, error, input, $routeParams, $location, events) {
     var namedViewClass = "uk.gov.gchq.gaffer.data.elementdefinition.view.NamedView";
     var vm = this;
     vm.timeConfig;
@@ -91,57 +92,43 @@ function QueryController(queryPage, operationService, types, graph, config, sett
     }
 
     /**
-     * Executes an operation
+     * First checks fires an event so that all watchers may do last minute changes.
+     * Once done, it does a final check to make sure the operation can execute. If so
+     * it executes it.
      */
     vm.execute = function() {
-
+        events.broadcast('onPreExecute', []);
+        if (!vm.canExecute()) {
+            return;
+        }
 
         var operation = createOperation();
         query.addOperation(operation);
         loading.load()
-        query.execute(JSON.stringify({
-            class: "uk.gov.gchq.gaffer.operation.OperationChain",
-            operations: [operation, operationService.createLimitOperation(operation['options']), operationService.createDeduplicateOperation(operation['options'])],
-            options: operation['options']
-        }), function(data) {
-            loading.finish()
-            if (data.length === settings.getResultLimit()) {
-                prompt(data);
-            } else {
-                submitResults(data);
-            }
-        }, function(err) {
-            loading.finish();
-            error.handle('Error executing operation', err);
-        });
-    }
 
-
-    /**
-     * Alerts the user if they hit the result limit
-     * @param {Array} data The data returned by the Gaffer REST service 
-     */
-    var prompt = function(data) {
-        $mdDialog.show({
-            template: '<result-count-warning aria-label="Result Count Warning"></result-count-warning>',
-            parent: angular.element(document.body),
-            clickOutsideToClose: false
-        })
-        .then(function(command) {
-            if(command === 'results') {
-                submitResults(data);
-            }
-        });
+        var iterableOutput = vm.getSelectedOp().iterableOutput === undefined || vm.getSelectedOp();
+        var operations = [operation];
+        if(vm.getSelectedOp().iterableOutput === undefined || vm.getSelectedOp().iterableOutput) {
+            operations.push(operationService.createLimitOperation(operation['options']));
+            operations.push(operationService.createDeduplicateOperation(operation['options']));
+        }
+        query.executeQuery(
+            {
+                class: "uk.gov.gchq.gaffer.operation.OperationChain",
+                operations: operations,
+                options: operation['options']
+            },
+            submitResults
+        );
     }
 
     /**
-     * Deselects all elements in the graph, updates the result service and resets all query related services
+     * Deselects all elements in the graph and resets all query related services
      * @param {Array} data the data returned by the rest service 
      */
     var submitResults = function(data) {
         graph.deselectAll();
-        results.update(data);
-        navigation.goTo('graph');
+        navigation.goTo('results');
         queryPage.reset();
         dateRange.resetDateRange();
         view.reset();
@@ -154,17 +141,40 @@ function QueryController(queryPage, operationService, types, graph, config, sett
 
     /**
      * Uses seeds uploaded to the input service to build an input array to the query.
+     * @param seeds the input array
      */
-    var createOpInput = function() {
+    var createOpInput = function(seeds) {
         var opInput = [];
-        var jsonVertex;
-        
-        var seeds = input.getInput();
-
         for (var i in seeds) {
             opInput.push({
                 "class": "uk.gov.gchq.gaffer.operation.data.EntitySeed",
-                "vertex": seeds[i]
+                "vertex": types.createJsonValue(seeds[i].valueClass, seeds[i].parts)
+            });
+        }
+
+        return opInput;
+    }
+
+    /**
+     * Create an array of JSON serialisable Pair objects from the values created by the input component
+     * @param {any[]} pairs 
+     */
+    var createPairInput = function(pairs) {
+        var opInput = [];
+
+        for (var i in pairs) {
+            opInput.push({
+                "class": "uk.gov.gchq.gaffer.commonutil.pair.Pair",
+                "first": {
+                    "uk.gov.gchq.gaffer.operation.data.EntitySeed": {
+                        "vertex": types.createJsonValue(pairs[i].first.valueClass, pairs[i].first.parts)
+                    }
+                },
+                "second": {
+                    "uk.gov.gchq.gaffer.operation.data.EntitySeed": {
+                        "vertex": types.createJsonValue(pairs[i].second.valueClass, pairs[i].second.parts)
+                    }
+                }
             });
         }
 
@@ -237,8 +247,13 @@ function QueryController(queryPage, operationService, types, graph, config, sett
             op.operationName = selectedOp.name;
         }
 
-        if (selectedOp.input) {
-            op.input = createOpInput();
+        if (selectedOp.input === "uk.gov.gchq.gaffer.commonutil.pair.Pair") {
+            op.input = createPairInput(input.getInputPairs())
+        } else if (selectedOp.input) {
+            op.input = createOpInput(input.getInput());
+        }
+        if (selectedOp.inputB && !selectedOp.namedOp) {
+            op.inputB = createOpInput(input.getInputB());
         }
 
         if (selectedOp.parameters) {
@@ -251,6 +266,13 @@ function QueryController(queryPage, operationService, types, graph, config, sett
                 }
             }
             op.parameters = opParams;
+        }
+
+        if (selectedOp.inputB && selectedOp.namedOp) {
+            if (!op.parameters) {
+                op.parameters = {};
+            }
+            op.parameters['inputB'] = createOpInput(input.getInputB());
         }
 
         if (selectedOp.view) {

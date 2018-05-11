@@ -3,6 +3,10 @@ describe("The Graph Service", function() {
     var graph;
     var events;
     var scope;
+    var vertices = [];
+    var gafferSchema = {};
+    var loading;
+    var query;
 
     beforeEach(module('app'));
 
@@ -20,16 +24,21 @@ describe("The Graph Service", function() {
         $provide.factory('schema', function($q) {
             return {
                 get: function() {
-                    return $q.when({});
+                    return $q.when(gafferSchema);
+                },
+                getSchemaVertices: function() {
+                    return vertices;
                 }
             }
         });
     }));
 
-    beforeEach(inject(function(_graph_, _events_, _$rootScope_) {
+    beforeEach(inject(function(_graph_, _events_, _$rootScope_, _loading_, _query_) {
         graph = _graph_;
         events = _events_;
         scope = _$rootScope_.$new();
+        loading = _loading_;
+        query = _query_;
     }));
 
     describe('when loading', function() {
@@ -60,9 +69,11 @@ describe("The Graph Service", function() {
         describe('when adding a seed', function() {
             
             var input;
+            var types;
 
-            beforeEach(inject(function(_input_) {
+            beforeEach(inject(function(_input_, _types_) {
                 input = _input_;
+                types = _types_;
             }))
 
             beforeEach(function() {
@@ -75,8 +86,22 @@ describe("The Graph Service", function() {
             });
 
             it('should add it to the input service', function() {
+                spyOn(types, 'createParts').and.callFake( function(clazz, value) {
+                    return { undefined: value };
+                });
+                gafferSchema = {
+                    types: {
+                        "vertex": {
+                            "class": "java.lang.String"
+                        }
+                    }
+                }
+
+                vertices = [ 'vertex' ];
+
                 graph.addSeed("test");
-                expect(input.addInput).toHaveBeenCalledWith("test");
+                scope.$digest();
+                expect(input.addInput).toHaveBeenCalledWith({ "valueClass": "java.lang.String", parts: {undefined: "test"} });
             });
 
             it('should broadcast the selectedElementsUpdate event', function() {
@@ -101,6 +126,49 @@ describe("The Graph Service", function() {
                 expect(graph.getSelectedEntities()).toEqual({'"mySeed"': [{vertex: '"mySeed"'}]});
                 graph.addSeed("mySeed");
                 expect(graph.getSelectedEntities()).toEqual({'"mySeed"': [{vertex: '"mySeed"'}]});
+            });
+        });
+
+        describe('when quick hop is clicked', function() {
+            it('should execute a GetElements operation with the clicked node', function() {
+                var event = {
+                    cyTarget: {
+                        id: function() {
+                            return "\"vertex1\""
+                        }
+                    }
+                };
+
+                spyOn(loading, 'load');
+                spyOn(query, 'addOperation');
+                spyOn(query, 'executeQuery');
+                graph.quickHop(event);
+
+                expect(loading.load).toHaveBeenCalledTimes(1);
+                expect(query.addOperation).toHaveBeenCalledTimes(1);
+                var expectedOp = {
+                     class: 'uk.gov.gchq.gaffer.operation.impl.get.GetElements',
+                     input: [{ class: 'uk.gov.gchq.gaffer.operation.data.EntitySeed', vertex: 'vertex1' }],
+                     options: {},
+                     view: {
+                        globalElements: [
+                            {
+                                groupBy: []
+                            }
+                        ]
+                     }
+                };
+
+                expect(query.addOperation).toHaveBeenCalledWith(expectedOp);
+                expect(query.executeQuery).toHaveBeenCalledWith({
+                        class: 'uk.gov.gchq.gaffer.operation.OperationChain',
+                        operations: [
+                            expectedOp,
+                            { class: 'uk.gov.gchq.gaffer.operation.impl.Limit', resultLimit: 100, options: {  } },
+                            { class: 'uk.gov.gchq.gaffer.operation.impl.output.ToSet', options: {  } }
+                        ],
+                        options: {  }
+                    }, graph.deselectAll);
             });
         });
     });

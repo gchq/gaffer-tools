@@ -1,15 +1,17 @@
 <md-card layout-fill class="content">
     <md-toolbar>
         <div class="md-toolbar-tools">
-            <h3>
+            <h4>
                 <span>Selected Elements</span>
-            </h3>
+            </h4>
         </div>
     </md-toolbar>
     <md-content layout-padding class="transparent">
         <div ng-repeat="(vertex, entities) in ctrl.selectedEntities">
-            <h3>{{ctrl.resolveVertex(vertex)}}</h3>
+            <h4>{{ctrl.resolveVertex(vertex)}}</h4>
 
+            <md-divider ng-show="!entities.length || !entities[0].group">
+            </md-divider>
             <p ng-show="!entities.length || !entities[0].group">No entities</p>
             <table md-table
                    ng-show="entities.length && entities[0].group">
@@ -17,12 +19,18 @@
                 <tr md-row ng-repeat="entity in entities">
                     <td md-cell>
                         {{entity.group}}
-                        <md-tooltip md-direction="top" ng-if="ctrl.schema.entities[entity.group].description">{{ctrl.schema.entities[entity.group].description}}</md-tooltip>
+                        <md-tooltip md-direction="top"
+                                    ng-if="ctrl.schema.entities[entity.group].description">
+                            {{ctrl.schema.entities[entity.group].description}}
+                        </md-tooltip>
                     </td>
                     <td md-cell>
                         <p ng-repeat="(key, value) in entity.properties">
                             {{key}}: {{ctrl.resolve(key, value)}}
-                            <md-tooltip md-direction="top" ng-if="ctrl.schema.types[ctrl.schema.entities[entity.group].properties[key]].description">{{ctrl.schema.types[ctrl.schema.entities[entity.group].properties[key]].description}}</md-tooltip>
+                            <md-tooltip md-direction="top"
+                                        ng-if="ctrl.schema.types[ctrl.schema.entities[entity.group].properties[key]].description">
+                                {{ctrl.schema.types[ctrl.schema.entities[entity.group].properties[key]].description}}
+                            </md-tooltip>
                         </p>
                     </td>
                 </tr>
@@ -30,18 +38,25 @@
             </table>
         </div>
         <div ng-repeat="(id, edges) in ctrl.selectedEdges">
-            <h3>{{ctrl.resolveVertex(edges[0].source)}} to {{ctrl.resolveVertex(edges[0].destination)}}</h3>
+            <h4>{{ctrl.resolveVertex(edges[0].source)}} to
+                {{ctrl.resolveVertex(edges[0].destination)}}</h4>
             <table md-table>
                 <tbody md-body>
                 <tr md-row ng-repeat="edge in edges">
                     <td md-cell>
                         {{edge.group}}
-                        <md-tooltip md-direction="top" ng-if="ctrl.schema.edges[edge.group].description">{{ctrl.schema.edges[edge.group].description}}</md-tooltip>
+                        <md-tooltip md-direction="top"
+                                    ng-if="ctrl.schema.edges[edge.group].description">
+                            {{ctrl.schema.edges[edge.group].description}}
+                        </md-tooltip>
                     </td>
                     <td md-cell>
                         <p ng-repeat="(key, value) in edge.properties">
                             {{key}}: {{ctrl.resolve(key, value)}}
-                            <md-tooltip md-direction="top" ng-if="ctrl.schema.types[ctrl.schema.edges[edge.group].properties[key]].description">{{ctrl.schema.types[ctrl.schema.edges[edge.group].properties[key]].description}}</md-tooltip>
+                            <md-tooltip md-direction="top"
+                                        ng-if="ctrl.schema.types[ctrl.schema.edges[edge.group].properties[key]].description">
+                                {{ctrl.schema.types[ctrl.schema.edges[edge.group].properties[key]].description}}
+                            </md-tooltip>
                         </p>
                     </td>
                 </tr>

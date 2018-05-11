@@ -993,11 +993,17 @@ class GetOperation(Operation):
 
         if self.input is not None:
             json_seeds = []
-            for seed in self.input:
-                if isinstance(seed, ElementSeed):
-                    json_seeds.append(seed.to_json())
+            if isinstance(self.input, list):
+                for seed in self.input:
+                    if isinstance(seed, ElementSeed):
+                        json_seeds.append(seed.to_json())
+                    else:
+                        json_seeds.append(EntitySeed(seed).to_json())
+            else:
+                if isinstance(self.input, ElementSeed):
+                    json_seeds.append(self.input.to_json())
                 else:
-                    json_seeds.append(EntitySeed(seed).to_json())
+                    json_seeds.append(EntitySeed(self.input).to_json())
             operation['input'] = json_seeds
 
         if self.seed_matching_type is not None:
@@ -1377,7 +1383,8 @@ class ToStream(Operation):
 class ToVertices(Operation):
     CLASS = 'uk.gov.gchq.gaffer.operation.impl.output.ToVertices'
 
-    def __init__(self, edge_vertices=None, use_matched_vertex=None, options=None):
+    def __init__(self, edge_vertices=None, use_matched_vertex=None,
+                 options=None):
         super().__init__(
             _class_name=self.CLASS, options=options)
         self.edge_vertices = edge_vertices

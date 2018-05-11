@@ -40,13 +40,12 @@ angular.module('app').factory('functions', ['$http', 'config', 'common', 'error'
 
             $http.get(queryUrl)
                 .then(function(response) {
-                    onSuccess(response.data)
+                    onSuccess(response.data);
                 },
                 function(err) {
                     error.handle('Could not get serialised fields for ' + functionClassName, err.data);
             });
-
-        })
+        });
     }
 
     return functions;

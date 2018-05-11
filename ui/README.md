@@ -304,18 +304,21 @@ as what operations should be available by default.
 #### Default available operations API
 
 Default available operations are configured using a list of objects. These objects contain key value pairs which tell
-the UI what options it has for a given operations - whether it uses a view or parameters etc
+the UI what options it has for a given operations - whether it uses a view or parameters etc.
 
 | variable    | type    |  description
 |-------------|---------|-------------------------------
 | name        | string  | A friendly name for the operation
 | class       | string  | The java class of the operation
-| input       | boolean | A flag which determines whether it takes seeds as input
+| input       | boolean/string | A flag which determines whether it takes seeds as input, if taking a pair of inputs it should be set to the fully qualified Pair Class: "uk.gov.gchq.gaffer.commonutil.Pair"
+| inputB      | boolean | A flag stating whether there should be a second input
 | view        | boolean | A flag showing whether the operation takes a view - Always false for named operations currently
 | description | string  | A description of what the operation does
 | arrayOutput | boolean | A flag indicating whether the operation returns an array *(not required)*
 | inOutFlag   | boolean | A flag indicating that the operation returns edges. And the direction can be customised.
 
+
+If you want to allow Named Operations which use an operation which uses takes pairs of inputs, make sure the first operation is added to the default available operations.
 
 ### Types section
 
@@ -386,6 +389,24 @@ To use the time window feature, some assumptions should be true:
 
 It's worth noting that if your elements have a single timestamp, just use the same timestamp property in the startProperty and endProperty
 
+### Graph section
+The graph section allows you to configure the graph view. 
+Currently you are limited to configuring the physics used to draw the graph.
+The default graph physics are:
+
+```json
+"graph": {
+    "physics": {
+      "springLength": 200,
+      "dragCoeff": 0,
+      "stableThreshold": 0.000001,
+      "fit": true
+    }
+  }
+```
+
+For more information about the configuration of the graph physics and to 
+see the algorithm, please see: https://github.com/nickolasmv/cytoscape-ngraph.forcelayout
 
 ## Testing
 

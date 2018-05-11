@@ -24,7 +24,7 @@ describe('The Query component', function() {
         });
     }));
 
-    describe('The Controller', function() {
+    describe('Controller', function() {
         var $componentController;
         var queryPage, query, loading, graph, settings;
 
@@ -39,6 +39,12 @@ describe('The Query component', function() {
 
         beforeEach(function() {
             ctrl = $componentController('query');
+        })
+
+        beforeEach(function() {
+            ctrl.queryForm = {
+                $valid : true
+            }
         })
 
         it('should exist', function() {
@@ -152,8 +158,8 @@ describe('The Query component', function() {
                         'edge2': {}
                     }
 
-                    expect(query.execute.calls.argsFor(0)[0]).toContain(JSON.stringify(entities));
-                    expect(query.execute.calls.argsFor(0)[0]).toContain(JSON.stringify(edges));
+                    expect(JSON.stringify(query.execute.calls.argsFor(0)[0])).toContain(JSON.stringify(entities));
+                    expect(JSON.stringify(query.execute.calls.argsFor(0)[0])).toContain(JSON.stringify(edges));
 
                 });
 
@@ -224,9 +230,7 @@ describe('The Query component', function() {
 
                     ctrl.execute();
 
-                    expect(query.execute.calls.argsFor(0)[0]).toContain(JSON.stringify(expectedView));
-
-
+                    expect(JSON.stringify(query.execute.calls.argsFor(0)[0])).toContain(JSON.stringify(expectedView));
                 });
 
                 it('should add the group-by to the operation', function() {
@@ -239,7 +243,7 @@ describe('The Query component', function() {
 
                     ctrl.execute();
 
-                    expect(query.execute.calls.first().args[0]).toContain('"groupBy":[]');
+                    expect(JSON.stringify(query.execute.calls.first().args[0])).toContain('"groupBy":[]');
                 });
             });
 
@@ -266,19 +270,19 @@ describe('The Query component', function() {
                 it('should do nothing if the named views are undefined', function() {
                     view.setNamedViews(undefined);
                     ctrl.execute();
-                    expect(query.execute.calls.first().args[0]).not.toContain('views');
+                    expect(JSON.stringify(query.execute.calls.first().args[0])).not.toContain('views');
                 });
 
                 it('should do nothing if the named views are undefined', function() {
                     view.setNamedViews(null);
                     ctrl.execute();
-                    expect(query.execute.calls.first().args[0]).not.toContain('views');
+                    expect(JSON.stringify(query.execute.calls.first().args[0])).not.toContain('views');
                 });
 
                 it('should do nothing if the named views are an empty array', function() {
                     view.setNamedViews([]);
                     ctrl.execute();
-                    expect(query.execute.calls.first().args[0]).not.toContain('views');
+                    expect(JSON.stringify(query.execute.calls.first().args[0])).not.toContain('views');
                 });
 
                 it('should add the preExisting view to the views array', function() {
@@ -296,12 +300,12 @@ describe('The Query component', function() {
                         'edge2': {}
                     }
 
-                    expect(query.execute.calls.argsFor(0)[0]).toContain(JSON.stringify(entities));
-                    expect(query.execute.calls.argsFor(0)[0]).toContain(JSON.stringify(edges));
+                    expect(JSON.stringify(query.execute.calls.argsFor(0)[0])).toContain(JSON.stringify(entities));
+                    expect(JSON.stringify(query.execute.calls.argsFor(0)[0])).toContain(JSON.stringify(edges));
 
 
-                    expect(query.execute.calls.first().args[0]).toContain('views');
-                    expect(query.execute.calls.first().args[0]).not.toContain('view:');
+                    expect(JSON.stringify(query.execute.calls.first().args[0])).toContain('views');
+                    expect(JSON.stringify(query.execute.calls.first().args[0])).not.toContain('view:');
                 });
 
                 it('should add named views with parameters', function() {
@@ -319,7 +323,7 @@ describe('The Query component', function() {
                         }
                     });
 
-                    expect(query.execute.calls.first().args[0]).toContain(namedView)
+                    expect(JSON.stringify(query.execute.calls.first().args[0])).toContain(namedView)
 
                 });
 
@@ -341,7 +345,7 @@ describe('The Query component', function() {
 
                     ctrl.execute();
 
-                    expect(query.execute.calls.first().args[0]).not.toContain(unExpected);
+                    expect(JSON.stringify(query.execute.calls.first().args[0])).not.toContain(unExpected);
                 });
 
                 it('should add blank parameters into named views if the parameter is marked required', function() {
@@ -361,7 +365,7 @@ describe('The Query component', function() {
 
                     ctrl.execute();
 
-                    expect(query.execute.calls.first().args[0]).toContain(expected);
+                    expect(JSON.stringify(query.execute.calls.first().args[0])).toContain(expected);
                 });
 
                 it('should not allow null parameters in named views if they are not required', function() {
@@ -381,7 +385,7 @@ describe('The Query component', function() {
 
                     ctrl.execute();
 
-                    expect(query.execute.calls.first().args[0]).not.toContain(unExpected);
+                    expect(JSON.stringify(query.execute.calls.first().args[0])).not.toContain(unExpected);
                 });
 
                 it('should add null parameters if the parameter is marked required', function() {
@@ -401,7 +405,7 @@ describe('The Query component', function() {
 
                     ctrl.execute();
 
-                    expect(query.execute.calls.first().args[0]).toContain(expected);
+                    expect(JSON.stringify(query.execute.calls.first().args[0])).toContain(expected);
                 });
             });
 
@@ -447,16 +451,16 @@ describe('The Query component', function() {
 
                 it('should add no date range if neither start or end date is specified', function() {
                     ctrl.execute();
-                    expect(query.execute.calls.first().args[0]).not.toContain('startDate');
-                    expect(query.execute.calls.first().args[0]).not.toContain('endDate');
+                    expect(JSON.stringify(query.execute.calls.first().args[0])).not.toContain('startDate');
+                    expect(JSON.stringify(query.execute.calls.first().args[0])).not.toContain('endDate');
                 });
 
                 it('should add no date filter if the start and end date is null', function() {
                     startDate = null;
                     endDate = null;
                     ctrl.execute();
-                    expect(query.execute.calls.first().args[0]).not.toContain('startDate');
-                    expect(query.execute.calls.first().args[0]).not.toContain('endDate');
+                    expect(JSON.stringify(query.execute.calls.first().args[0])).not.toContain('startDate');
+                    expect(JSON.stringify(query.execute.calls.first().args[0])).not.toContain('endDate');
                 });
 
                 it('should add a start date with an IsMoreThan filter', function() {
@@ -484,7 +488,7 @@ describe('The Query component', function() {
                             }
                         ]
                     }
-                    expect(query.execute.calls.first().args[0]).toContain(JSON.stringify(expectedFilterFunctions));
+                    expect(JSON.stringify(query.execute.calls.first().args[0])).toContain(JSON.stringify(expectedFilterFunctions));
 
                 });
 
@@ -513,7 +517,7 @@ describe('The Query component', function() {
                             }
                         ]
                     }
-                    expect(query.execute.calls.first().args[0]).toContain(JSON.stringify(expectedFilterFunctions));
+                    expect(JSON.stringify(query.execute.calls.first().args[0])).toContain(JSON.stringify(expectedFilterFunctions));
 
                 });
             });
@@ -544,7 +548,7 @@ describe('The Query component', function() {
                     });
 
 
-                    expect(query.execute.calls.first().args[0]).toContain(expectedParameters)
+                    expect(JSON.stringify(query.execute.calls.first().args[0])).toContain(expectedParameters)
 
                 });
 
@@ -573,7 +577,7 @@ describe('The Query component', function() {
                     });
 
 
-                    expect(query.execute.calls.first().args[0]).not.toContain(expectedParameters)
+                    expect(JSON.stringify(query.execute.calls.first().args[0])).not.toContain(expectedParameters)
                 });
 
                 it('should add blank parameters if the parameter is marked required', function() {
@@ -601,7 +605,7 @@ describe('The Query component', function() {
                     });
 
 
-                    expect(query.execute.calls.first().args[0]).toContain(expectedParameters)
+                    expect(JSON.stringify(query.execute.calls.first().args[0])).toContain(expectedParameters)
                 });
 
                 it('should not allow null parameters if they are not required', function() {
@@ -628,7 +632,7 @@ describe('The Query component', function() {
                     });
 
 
-                    expect(query.execute.calls.first().args[0]).not.toContain(expectedParameters)
+                    expect(JSON.stringify(query.execute.calls.first().args[0])).not.toContain(expectedParameters)
                 });
 
                 it('should add null parameters if the parameter is marked required', function() {
@@ -654,23 +658,22 @@ describe('The Query component', function() {
                         "testParam": null
                     });
 
-                    expect(query.execute.calls.first().args[0]).toContain(expectedParameters)
+                    expect(JSON.stringify(query.execute.calls.first().args[0])).toContain(expectedParameters)
                 });
             });
 
-            describe('When adding seeds', function() {
+            describe('When adding seed pairs', function() {
                 var input;
-                var ctrl;
-                
-                var seeds;
+                var types;
+                var pairs;
 
-                beforeEach(inject(function(_input_) {
+                beforeEach(inject(function(_input_, _types_) {
                     input = _input_;
+                    types = _types_;
                 }));
 
                 beforeEach(function() {
-                    ctrl = $componentController('query');
-                    seeds = [];
+                    pairs = [];
                 });
 
                 beforeEach(function() {
@@ -678,7 +681,119 @@ describe('The Query component', function() {
 
                     spyOn(queryPage, 'getSelectedOperation').and.returnValue({
                         class: 'operation.class.Name',
+                        input: 'uk.gov.gchq.gaffer.commonutil.pair.Pair'
+                    });
+
+                    spyOn(input, 'getInputPairs').and.callFake(function() {
+                        return pairs;
+                    });
+
+                });
+
+                it('should add string seed pairs from the input service to the operation', function() {
+                    pairs = [
+                        {first: {valueClass: 'java.lang.String', parts: {undefined: 'test1'} }, second: {valueClass: 'java.lang.String', parts: {undefined: 'test2'} }},
+                        {first: {valueClass: 'java.lang.String', parts: {undefined: 'test2'} }, second: {valueClass: 'java.lang.String', parts: {undefined: 'test4'} }}
+                    ];
+
+                    var expectedInput = JSON.stringify([
+                        { "class": "uk.gov.gchq.gaffer.commonutil.pair.Pair", "first": {"uk.gov.gchq.gaffer.operation.data.EntitySeed": {"vertex": "test1"}}, "second": { "uk.gov.gchq.gaffer.operation.data.EntitySeed": {"vertex": "test2"}}},
+                        { "class": "uk.gov.gchq.gaffer.commonutil.pair.Pair", "first": {"uk.gov.gchq.gaffer.operation.data.EntitySeed": {"vertex": "test2"}}, "second": { "uk.gov.gchq.gaffer.operation.data.EntitySeed": {"vertex": "test4"}}}
+                    ]);
+
+                    ctrl.execute();
+
+                    expect(JSON.stringify(query.execute.calls.first().args[0])).toContain(expectedInput);
+                });
+
+                it('should add complex seed pairs from the input service to the operation', function() {
+                    pairs = [
+                        { first: { valueClass: "my.complex.Type", parts: { "type": "thing1", "value": "myVal1", "someField": "test1"}}, second: { valueClass: "my.complex.Type", parts: { "type": "thing2", "value": "myVal2", "someField": "test2"}}},
+                        { first: { valueClass: "my.complex.Type", parts: { "type": "thing2", "value": "myVal2", "someField": "test2"}}, second: { valueClass: "my.complex.Type", parts: { "type": "thing6", "value": "myVal6", "someField": "test6"}}},
+                    ];
+
+                    spyOn(types, 'createJsonValue').and.callFake(function(clazz, parts) {
+                        var obj = {};
+                        obj[clazz] = parts;
+                        return obj;
+                    });
+
+                    ctrl.execute();
+
+                    var expectedInput = JSON.stringify([
+                        { 
+                            class: "uk.gov.gchq.gaffer.commonutil.pair.Pair",
+                            first: {
+                                'uk.gov.gchq.gaffer.operation.data.EntitySeed': {
+                                    'vertex': { "my.complex.Type": { "type": "thing1", "value": "myVal1", "someField": "test1"}}
+                                }
+                            },
+                            second: {
+                                'uk.gov.gchq.gaffer.operation.data.EntitySeed': {
+                                    'vertex': { "my.complex.Type": { "type": "thing2", "value": "myVal2", "someField": "test2"}}
+                                }
+                            }
+                        },
+                        { 
+                            class: "uk.gov.gchq.gaffer.commonutil.pair.Pair",
+                            first: {
+                                'uk.gov.gchq.gaffer.operation.data.EntitySeed': {
+                                    'vertex': { "my.complex.Type": { "type": "thing2", "value": "myVal2", "someField": "test2"}}
+                                }
+                            },
+                            second: {
+                                'uk.gov.gchq.gaffer.operation.data.EntitySeed': {
+                                    'vertex': { "my.complex.Type": { "type": "thing6", "value": "myVal6", "someField": "test6"}}
+                                }
+                            }
+                        }]);
+
+                    expect(JSON.stringify(query.execute.calls.first().args[0])).toContain(expectedInput);
+                });
+
+                it('should add numerical seed pairs from the input service to the operation', function() {
+                    pairs = [
+                        {first: {valueClass: 'int', parts: {undefined: 35} }, second: {valueClass: 'int', parts: {undefined: 3} }},
+                        {first: {valueClass: 'int', parts: {undefined: 1} }, second: {valueClass: 'int', parts: {undefined: 42} }}
+                    ];
+
+                    var expectedInput = JSON.stringify([
+                        { "class": "uk.gov.gchq.gaffer.commonutil.pair.Pair", "first": {"uk.gov.gchq.gaffer.operation.data.EntitySeed": {"vertex": 35}}, "second": { "uk.gov.gchq.gaffer.operation.data.EntitySeed": {"vertex": 3}}},
+                        { "class": "uk.gov.gchq.gaffer.commonutil.pair.Pair", "first": {"uk.gov.gchq.gaffer.operation.data.EntitySeed": {"vertex": 1}}, "second": { "uk.gov.gchq.gaffer.operation.data.EntitySeed": {"vertex": 42}}}
+                    ]);
+
+                    ctrl.execute();
+
+                    expect(JSON.stringify(query.execute.calls.first().args[0])).toContain(expectedInput);
+                });
+
+            });
+
+            describe('When adding seeds', function() {
+                var input;
+                var types;
+                var seeds;
+
+                var selectedOperation;
+
+                beforeEach(inject(function(_input_, _types_) {
+                    input = _input_;
+                    types = _types_;
+                }));
+
+                beforeEach(function() {
+                    seeds = [];
+                    selectedOperation = {
+                        class: 'operation.class.Name',
                         input: true
+                    }
+                });
+
+                beforeEach(function() {
+                    spyOn(query, 'execute').and.stub();
+
+                    spyOn(queryPage, 'getSelectedOperation').and.callFake(function() {
+                        return selectedOperation;
                     });
 
                     spyOn(input, 'getInput').and.callFake(function() {
@@ -689,9 +804,9 @@ describe('The Query component', function() {
 
                 it('should add string seeds from the input service to the operation', function() {
                     seeds = [
-                        'test1',
-                        'test2',
-                        'test3'
+                        {valueClass: 'java.lang.String', parts: {undefined: 'test1'} },
+                        {valueClass: 'java.lang.String', parts: {undefined: 'test2'} },
+                        {valueClass: 'java.lang.String', parts: {undefined: 'test3'} }
                     ];
 
                     var expectedInput = JSON.stringify([
@@ -701,15 +816,21 @@ describe('The Query component', function() {
 
                     ctrl.execute();
 
-                    expect(query.execute.calls.first().args[0]).toContain(expectedInput);
+                    expect(JSON.stringify(query.execute.calls.first().args[0])).toContain(expectedInput);
                 });
 
                 it('should add complex seeds from the input service to the operation', function() {
                     seeds = [
-                        { "my.complex.Type": { "type": "thing1", "value": "myVal1", "someField": "test1"}},
-                        { "my.complex.Type": { "type": "thing2", "value": "myVal2", "someField": "test2"}},
-                        { "my.complex.Type": { "type": "thing3", "value": "myVal3", "someField": "test3"}}
+                        { valueClass: "my.complex.Type", parts: { "type": "thing1", "value": "myVal1", "someField": "test1"}},
+                        { valueClass: "my.complex.Type", parts: { "type": "thing2", "value": "myVal2", "someField": "test2"}},
+                        { valueClass: "my.complex.Type", parts: { "type": "thing3", "value": "myVal3", "someField": "test3"}}
                     ];
+
+                    spyOn(types, 'createJsonValue').and.callFake(function(clazz, parts) {
+                        var obj = {};
+                        obj[clazz] = parts;
+                        return obj;
+                    });
 
                     ctrl.execute();
 
@@ -730,14 +851,14 @@ describe('The Query component', function() {
                             }
                         }]);
 
-                    expect(query.execute.calls.first().args[0]).toContain(expectedInput);
+                    expect(JSON.stringify(query.execute.calls.first().args[0])).toContain(expectedInput);
                 });
 
                 it('should add numerical seeds from the input service to the operation', function() {
                     seeds = [
-                        1,
-                        2,
-                        3
+                        {valueClass: "int", parts: {undefined: 1}},
+                        {valueClass: "int", parts: {undefined: 2}},
+                        {valueClass: "int", parts: {undefined: 3}}
                     ];
 
                     ctrl.execute();
@@ -747,36 +868,155 @@ describe('The Query component', function() {
                         { 'class': 'uk.gov.gchq.gaffer.operation.data.EntitySeed', 'vertex': 2},
                         { 'class': 'uk.gov.gchq.gaffer.operation.data.EntitySeed', 'vertex': 3}])
 
-                    expect(query.execute.calls.first().args[0]).toContain(expectedInput);
+                    expect(JSON.stringify(query.execute.calls.first().args[0])).toContain(expectedInput);
 
                 });
+
+                describe('When adding a second input', function() {
+                    var inputB;
+                    
+                    beforeEach(function() {
+                        spyOn(input, 'getInputB').and.callFake(function() {
+                            return inputB;
+                        });
+
+                        selectedOperation = {
+                            class: 'operation.class.Name',
+                            input: true,
+                            inputB: true,
+                            namedOp: false
+                        }
+    
+                    });
+
+                    beforeEach(function() {
+                        namedOp = false;
+                    });
+
+                    it('should add a second input if the operation is not a named operation', function() {
+                        inputB = [
+                            { valueClass: "my.complex.Type", parts: { "type": "thing1", "value": "myVal1", "someField": "test1"}},
+                            { valueClass: "my.complex.Type", parts: { "type": "thing2", "value": "myVal2", "someField": "test2"}},
+                            { valueClass: "my.complex.Type", parts: { "type": "thing3", "value": "myVal3", "someField": "test3"}}
+                        ];
+
+                        spyOn(types, 'createJsonValue').and.callFake(function(clazz, parts) {
+                            var obj = {};
+                            obj[clazz] = parts;
+                            return obj;
+                        });
+
+                        var expectedInput = JSON.stringify([
+                            {
+                                'class': 'uk.gov.gchq.gaffer.operation.data.EntitySeed',
+                                'vertex': { "my.complex.Type": { "type": "thing1", "value": "myVal1", "someField": "test1"}
+                                }
+                            },
+                            {
+                                'class': 'uk.gov.gchq.gaffer.operation.data.EntitySeed',
+                                'vertex': { "my.complex.Type": { "type": "thing2", "value": "myVal2", "someField": "test2"}
+                                }
+                            },
+                            {
+                                'class': 'uk.gov.gchq.gaffer.operation.data.EntitySeed',
+                                'vertex': { "my.complex.Type": { "type": "thing3", "value": "myVal3", "someField": "test3"}
+                                }
+                            }
+                        ]);
+
+                        ctrl.execute();
+
+                        var json = query.execute.calls.first().args[0];
+
+                        expect(JSON.stringify(json.operations[0].inputB)).toEqual(expectedInput);
+                    });
+
+                    it('should not add a second input if the operation is a named operation', function() {
+                        inputB = [
+                            {valueClass: 'java.lang.String', parts: {undefined: 'test1'} },
+                            {valueClass: 'java.lang.String', parts: {undefined: 'test2'} },
+                            {valueClass: 'java.lang.String', parts: {undefined: 'test3'} }
+                        ];
+
+                        selectedOperation = {
+                            class: 'operation.class.Name',
+                            input: true,
+                            inputB: true,
+                            namedOp: true
+                        }
+
+                        ctrl.execute();
+
+                        var json = query.execute.calls.first().args[0];
+
+                        expect(JSON.stringify(json.operations[0].inputB)).toBeUndefined();
+                    });
+
+                    it('should add an inputB parameter if the operation is a named operation', function() {
+                        inputB = [
+                            {valueClass: "int", parts: {undefined: 1}},
+                            {valueClass: "int", parts: {undefined: 2}},
+                            {valueClass: "int", parts: {undefined: 3}}
+                        ];
+    
+                        selectedOperation = {
+                            class: 'operation.class.Name',
+                            input: true,
+                            inputB: true,
+                            namedOp: true
+                        }
+
+                        ctrl.execute();
+    
+                        var expectedInput = JSON.stringify([
+                            { 'class': 'uk.gov.gchq.gaffer.operation.data.EntitySeed', 'vertex': 1},
+                            { 'class': 'uk.gov.gchq.gaffer.operation.data.EntitySeed', 'vertex': 2},
+                            { 'class': 'uk.gov.gchq.gaffer.operation.data.EntitySeed', 'vertex': 3}
+                        ]);
+
+                        var json = query.execute.calls.first().args[0];
+
+                        expect(JSON.stringify(json.operations[0].parameters.inputB)).toEqual(expectedInput);
+                    });
+
+                    
+                })
             });
 
             describe('when adding Edge directions', function() {
 
-                it('should add the edge direction to the operation', function() {
+                var direction;
 
-                    var direction;
+                beforeEach(function() {
+                    spyOn(queryPage, 'getInOutFlag').and.callFake(function() {
+                        return direction;
+                    });
+
                     spyOn(queryPage, 'getSelectedOperation').and.returnValue({
                         class: 'operation.class.Name',
                         inOutFlag: true
                     });
 
-                    spyOn(queryPage, 'getInOutFlag').and.callFake(function() {
-                        return direction;
-                    });
+                    spyOn(query, 'execute').and.stub();
 
-                    spyOn(query, 'execute');
+                });
 
+                var test = function(flag) {
+                    direction = flag;
+                    ctrl.execute();
+                    expect(JSON.stringify(query.execute.calls.argsFor(0)[0])).toContain(flag);
+                }
 
-                    var flags = [ 'INCOMING', 'OUTGOING', 'EITHER']
+                it('should add the edge direction when it is incoming', function() {
+                    test('INCOMING');
+                });
 
-                    for (var i in flags) {
-                        var flag = flags[i];
-                        direction = flag;
-                        ctrl.execute();
-                        expect(query.execute.calls.argsFor(i)[0]).toContain(flag);
-                    }
+                it('should add the edge direction when it is outgoing', function() {
+                    test('OUTGOING');
+                });
+
+                it('should add the edge direction when it is either', function() {
+                    test('EITHER');
                 });
             });
         })
@@ -839,6 +1079,15 @@ describe('The Query component', function() {
 
             beforeEach(function() {
                 ctrl = $componentController('query', {$scope: scope});
+            })
+
+            beforeEach(function() {
+                ctrl.queryForm = {
+                    $valid : true
+                }
+            });
+
+            beforeEach(function() {
                 ctrl.execute();
                 scope.$digest();
             })
@@ -847,9 +1096,9 @@ describe('The Query component', function() {
                 expect($mdDialog.show).toHaveBeenCalledTimes(1);
             });
 
-            it('should navigate to the graph if the dialog returns "results"', function() {
+            it('should navigate to the table if the dialog returns "results"', function() {
                 expect(navigation.goTo).toHaveBeenCalledTimes(1);
-                expect(navigation.goTo).toHaveBeenCalledWith('graph');
+                expect(navigation.goTo).toHaveBeenCalledWith('results');
 
                 navigation.goTo.calls.reset();
 
@@ -868,7 +1117,6 @@ describe('The Query component', function() {
                 ctrl.execute();
                 scope.$digest();
                 expect(results.update).not.toHaveBeenCalled();
-
             });
 
             it('should clear the query page if the dialog returns "results"', function() {
