@@ -16,17 +16,17 @@
 
 'use strict';
 
-angular.module('app').component('operationChainBuilder', operationChainBuilder());
+angular.module('app').component('operationChain', operationChainBuilder());
 
 function operationChainBuilder() {
     return {
-        templateUrl: 'app/query/operation-chain-builder.html',
-        controller: OperationChainBuilderController,
+        templateUrl: 'app/query/operation-chain.html',
+        controller: OperationChainController,
         controllerAs: 'ctrl'
     }
 }
 
-function OperationChainBuilderController(operationChain, config, loading, query, error, events, $mdDialog, navigation, $location, $routeParams, operationService, settings, graph, results, types) {
+function OperationChainController(operationChain, config, loading, query, error, events, $mdDialog, navigation, $location, $routeParams, operationService, settings, graph, results, types) {
     var vm = this;
     vm.timeConfig;
     vm.operations = operationChain.getOperationChain();
@@ -49,8 +49,7 @@ function OperationChainBuilderController(operationChain, config, loading, query,
         for (var i in vm.operations) {
             vm.operations[i].expanded = false; // close all open tabs
         }
-        var inputFlag = (vm.operations.length === 0)
-        operationChain.add(inputFlag);
+        operationChain.add(false);
     }
 
     vm.$onDestroy = function() {
@@ -59,13 +58,9 @@ function OperationChainBuilderController(operationChain, config, loading, query,
 
     vm.deleteOperation = function(index) {
         vm.operations.splice(index, 1);
-        if (index === 0) {
-            if (vm.operations[0].inputs.input === null) {
-                vm.operations[0].inputs.input = [];
-            }
-            if (vm.operations[0].inputs.inputPairs === null) {
-                vm.operations[0].inputs.inputPairs = [];
-            }
+        if (index === 0 && vm.operations[0].inputs.input === null) {
+            vm.operations[0].inputs.input = [];
+            vm.operations[0].inputs.inputPairs = [];
         }
         events.broadcast('onOperationUpdate', [])
     }
@@ -73,10 +68,6 @@ function OperationChainBuilderController(operationChain, config, loading, query,
     vm.resetOperation = function(index) {
         var inputFlag = index === 0;
         vm.operations[index] = operationChain.createBlankOperation(inputFlag);
-    }
-
-    vm.isEmptyOperationChain = function() {
-        return vm.operations.length === 0;
     }
 
     vm.isNotLast = function(index) {
@@ -359,7 +350,7 @@ function OperationChainBuilderController(operationChain, config, loading, query,
             createElementView(viewEntities, entityFilters, op.view.entities);
             createElementView(viewEdges, edgeFilters, op.view.edges);
 
-            if (operation.startDate !== undefined && operation.startDate !== null) {
+            if (operation.dates.startDate !== undefined && operation.dates.startDate !== null) {
                 op.view.globalElements.push({
                     "preAggregationFilterFunctions": [ {
                         "predicate": {
@@ -372,7 +363,7 @@ function OperationChainBuilderController(operationChain, config, loading, query,
                 });
             }
 
-            if (operation.endDate !== undefined && operation.endDate !== null) {
+            if (operation.dates.endDate !== undefined && operation.dates.endDate !== null) {
                 op.view.globalElements.push({
                     "preAggregationFilterFunctions": [ {
                         "predicate": {

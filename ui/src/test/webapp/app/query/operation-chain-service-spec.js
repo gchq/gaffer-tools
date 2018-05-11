@@ -14,7 +14,7 @@ describe('The operation chain service', function() {
         spyOn(events, 'broadcast').and.stub();
     })
 
-    describe('.addInput()', function() {
+    describe('service.addInput()', function() {
         it('should add an object to the first operations\'s input array', function() {
             service.addInput('test');
             expect(service.getOperationChain()[0].inputs.input).toEqual(['test']);
@@ -47,7 +47,7 @@ describe('The operation chain service', function() {
         });
     });
 
-    describe('.removeInput', function() {
+    describe('service.removeInput', function() {
         it('should remove a string seed', function() {
             service.addInput('test1');
             service.addInput('test2');
@@ -97,5 +97,19 @@ describe('The operation chain service', function() {
             service.removeInput('not in array');
             expect(events.broadcast).not.toHaveBeenCalled();
         });
-    })
+    });
+
+    describe('service.getOperationChain()', function() {
+        it('should update instances when changes in the service', function() {
+            var instance = service.getOperationChain(); // returns 1
+
+            expect(instance.length).toEqual(1);
+
+            service.add(false); // add an operation via the service
+
+            expect(instance.length).toEqual(2);
+        });
+
+
+    });
 })
