@@ -985,28 +985,14 @@ describe('The operation chain component', function() {
                 });
     
                 describe('When adding a second input', function() {
-                    var inputB;
                     
                     beforeEach(function() {
-                        spyOn(input, 'getInputB').and.callFake(function() {
-                            return inputB;
-                        });
-    
-                        selectedOperation = {
-                            class: 'operation.class.Name',
-                            input: true,
-                            inputB: true,
-                            namedOp: false
-                        }
-    
-                    });
-    
-                    beforeEach(function() {
-                        namedOp = false;
+                        op.selectedOperation.inputB = true;
+                        op.selectedOperation.namedOp = false;
                     });
     
                     it('should add a second input if the operation is not a named operation', function() {
-                        inputB = [
+                        op.inputs.inputB = [
                             { valueClass: "my.complex.Type", parts: { "type": "thing1", "value": "myVal1", "someField": "test1"}},
                             { valueClass: "my.complex.Type", parts: { "type": "thing2", "value": "myVal2", "someField": "test2"}},
                             { valueClass: "my.complex.Type", parts: { "type": "thing3", "value": "myVal3", "someField": "test3"}}
@@ -1036,7 +1022,7 @@ describe('The operation chain component', function() {
                             }
                         ]);
     
-                        ctrl.execute();
+                        ctrl.execute(op);
     
                         var json = JSON.parse(query.execute.calls.first().args[0]);
     
@@ -1044,20 +1030,15 @@ describe('The operation chain component', function() {
                     });
     
                     it('should not add a second input if the operation is a named operation', function() {
-                        inputB = [
+                        op.inputs.inputB = [
                             {valueClass: 'java.lang.String', parts: {undefined: 'test1'} },
                             {valueClass: 'java.lang.String', parts: {undefined: 'test2'} },
                             {valueClass: 'java.lang.String', parts: {undefined: 'test3'} }
                         ];
     
-                        selectedOperation = {
-                            class: 'operation.class.Name',
-                            input: true,
-                            inputB: true,
-                            namedOp: true
-                        }
+                        op.selectedOperation.namedOp = true;
     
-                        ctrl.execute();
+                        ctrl.execute(op);
     
                         var json = JSON.parse(query.execute.calls.first().args[0]);
     
@@ -1065,20 +1046,15 @@ describe('The operation chain component', function() {
                     });
     
                     it('should add an inputB parameter if the operation is a named operation', function() {
-                        inputB = [
+                        op.inputs.inputB = [
                             {valueClass: "int", parts: {undefined: 1}},
                             {valueClass: "int", parts: {undefined: 2}},
                             {valueClass: "int", parts: {undefined: 3}}
                         ];
     
-                        selectedOperation = {
-                            class: 'operation.class.Name',
-                            input: true,
-                            inputB: true,
-                            namedOp: true
-                        }
+                        op.selectedOperation.namedOp = true;
     
-                        ctrl.execute();
+                        ctrl.execute(op);
     
                         var expectedInput = JSON.stringify([
                             { 'class': 'uk.gov.gchq.gaffer.operation.data.EntitySeed', 'vertex': 1},
@@ -1096,26 +1072,16 @@ describe('The operation chain component', function() {
             });
     
             describe('when adding Edge directions', function() {
-    
-                var direction;
-    
-                beforeEach(function() {
-                    spyOn(queryPage, 'getInOutFlag').and.callFake(function() {
-                        return direction;
-                    });
-    
-                    spyOn(queryPage, 'getSelectedOperation').and.returnValue({
-                        class: 'operation.class.Name',
+
+                var op = {
+                    selectedOperation: {
                         inOutFlag: true
-                    });
-    
-                    spyOn(query, 'execute').and.stub();
-    
-                });
+                    }
+                }
     
                 var test = function(flag) {
-                    direction = flag;
-                    ctrl.execute();
+                    op.edgeDirection = flag;
+                    ctrl.execute(op);
                     expect(query.execute.calls.argsFor(0)[0]).toContain(flag);
                 }
     
@@ -1131,52 +1097,54 @@ describe('The operation chain component', function() {
                     test('EITHER');
                 });
             });
-        })
+        });
     
     
         it('should add the selected operation to the list of operations', function() {
-            spyOn(queryPage, 'getSelectedOperation').and.returnValue({
-                class: 'operation.class.Name'
-            });
+            var op = {
+                selectedOperation: {}
+            }
     
             spyOn(query, 'addOperation');
     
-            ctrl.execute();
+            ctrl.execute(op);
     
             expect(query.addOperation).toHaveBeenCalledTimes(1);
         });
     
         describe('when the results returned number the same as the result limit', function() {
             var scope;
-            var navigation, results, input;
+            var navigation, results, settings, graph;
             var $mdDialog, $q;
     
             var returnValue;
+
+            var op;
     
-            beforeEach(inject(function(_navigation_, _$rootScope_, _$mdDialog_, _$q_, _results_, _input_) {
+            beforeEach(inject(function(_navigation_, _$rootScope_, _$mdDialog_, _$q_, _results_, _settings_, _graph_) {
                 navigation = _navigation_;
                 scope = _$rootScope_.$new();
                 $mdDialog = _$mdDialog_;
                 $q = _$q_;
                 results = _results_;
-                input = _input_;
+                settings = _settings_;
+                graph = _graph_;
             }));
     
             beforeEach(function() {
-                spyOn(queryPage, 'getSelectedOperation').and.returnValue({
-                    class: 'operation.class.Name'
-                });
-    
-                spyOn(queryPage, 'reset');
-    
+                op = {
+                    selectedOperation: {}
+                }
+                
                 spyOn(settings, 'getResultLimit').and.returnValue(2);
-                spyOn(query, 'execute').and.callFake(function(opChain, callback) {
-                    callback([1, 2]);
+                query.execute.and.callFake(function(opChain, callback) {
+                    if (callback) {
+                        callback([1, 2]);
+                    }
                 });
     
                 spyOn(graph, 'deselectAll');
                 spyOn(results, 'update');
-                spyOn(input, 'reset');
     
                 spyOn($mdDialog, 'show').and.callFake(function() {
                     return $q.when(returnValue);
@@ -1187,11 +1155,7 @@ describe('The operation chain component', function() {
     
             beforeEach(function() {
                 returnValue = 'results';
-            })
-    
-            beforeEach(function() {
-                ctrl = $componentController('query', {$scope: scope});
-            })
+            });
     
             beforeEach(function() {
                 ctrl.queryForm = {
@@ -1200,7 +1164,7 @@ describe('The operation chain component', function() {
             });
     
             beforeEach(function() {
-                ctrl.execute();
+                ctrl.execute(op);
                 scope.$digest();
             })
     
@@ -1215,7 +1179,7 @@ describe('The operation chain component', function() {
                 navigation.goTo.calls.reset();
     
                 returnValue = 'not results';
-                ctrl.execute();
+                ctrl.execute(op);
                 expect(navigation.goTo).not.toHaveBeenCalled();
             });
     
@@ -1226,20 +1190,9 @@ describe('The operation chain component', function() {
                 results.update.calls.reset();
     
                 returnValue = 'query';
-                ctrl.execute();
+                ctrl.execute(op);
                 scope.$digest();
                 expect(results.update).not.toHaveBeenCalled();
-            });
-    
-            it('should clear the query page if the dialog returns "results"', function() {
-                expect(queryPage.reset).toHaveBeenCalledTimes(1);
-    
-                queryPage.reset.calls.reset();
-    
-                returnValue = 'A value which is not results';
-                ctrl.execute();
-                scope.$digest();
-                expect(queryPage.reset).not.toHaveBeenCalled();
             });
     
             it('should deselect all elements if the dialog returns "results"', function() {
@@ -1248,19 +1201,9 @@ describe('The operation chain component', function() {
                 graph.deselectAll.calls.reset();
     
                 returnValue = 'query';
-                ctrl.execute();
+                ctrl.execute(op);
                 scope.$digest();
                 expect(graph.deselectAll).not.toHaveBeenCalled();
-            });
-    
-            it('should reset the input service if the dialog returns "results"', function() {
-                expect(input.reset).toHaveBeenCalledTimes(1);
-                input.reset.calls.reset();
-    
-                returnValue = 'query';
-                ctrl.execute();
-                scope.$digest();
-                expect(input.reset).not.toHaveBeenCalled();
             });
         });
     });

@@ -329,7 +329,7 @@ function OperationChainController(operationChain, config, loading, query, error,
             if (!op.parameters) {
                 op.parameters = {};
             }
-            op.parameters['inputB'] = createOpInput(operation.inputB);
+            op.parameters['inputB'] = createOpInput(operation.inputs.inputB);
         }
 
         if (selectedOp.view) {
