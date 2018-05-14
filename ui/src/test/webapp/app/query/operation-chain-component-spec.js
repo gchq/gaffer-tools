@@ -1425,4 +1425,26 @@ describe('The operation chain component', function() {
             expect(query.execute).toHaveBeenCalled();
         });
     });
+
+    describe('ctrl.clearChain()', function() {
+        it('should reset the operation chain service', function() {
+            spyOn(operationChain, 'reset').and.stub();
+            ctrl.clearChain();
+            expect(operationChain.reset).toHaveBeenCalled();
+        });
+
+        it('should reset the local model', function() {
+            var operations = [ 1, 2, 3];
+            spyOn(operationChain, 'reset').and.callFake(function() {
+                operations = [1];
+            });
+            spyOn(operationChain, 'getOperationChain').and.callFake(function() {
+                return operations;
+            });
+
+            ctrl.clearChain();
+
+            expect(ctrl.operations).toEqual([1]);
+        });
+    });
 });
