@@ -101,8 +101,8 @@ function OperationChainController(operationChain, config, loading, query, error,
 
         var finalOperation = vm.operations[vm.operations.length - 1];
         if (finalOperation.selectedOperation.iterableOutput !== false) {
-            chain.operations.push(operationService.createLimitOperation(finalOperation['options']));
-            chain.operations.push(operationService.createDeduplicateOperation(finalOperation['options']));
+            chain.operations.push(operationService.createLimitOperation(finalOperation['opOptions']));
+            chain.operations.push(operationService.createDeduplicateOperation(finalOperation['opOptions']));
         }
 
         runQuery(chain.operations);

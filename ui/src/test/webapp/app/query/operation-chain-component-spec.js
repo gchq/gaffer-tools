@@ -1208,6 +1208,221 @@ describe('The operation chain component', function() {
         });
     });
 
+    describe('ctrl.executeChain()', function() {
+
+        var events, query, operationService, error;
+
+        var valid;
+
+        beforeEach(inject(function(_events_, _query_, _operationService_, _error_) {
+            events = _events_;
+            query = _query_;
+            operationService = _operationService_;
+            error = _error_;
+        }));
+
+        beforeEach(function() {
+            valid = true;
+
+            spyOn(ctrl, 'canExecute').and.callFake(function() {
+                return valid;
+            });
+        });
+
+        beforeEach(function() {
+            spyOn(query, 'execute').and.stub();
+            spyOn(error, 'handle').and.stub();
+        })
+
+        beforeEach(function() {
+            ctrl.operations = [];
+        })
+
+        it('should broadcast an onPreExecute event', function() {
+            spyOn(events, 'broadcast').and.stub();
+            ctrl.executeChain();
+            expect(events.broadcast).toHaveBeenCalled();
+        });
+
+        it('should not add an operation if canExecute() returns false', function() {
+            valid = false;
+
+            spyOn(query, 'addOperation').and.stub();
+
+            ctrl.executeChain();
+
+            expect(query.addOperation).not.toHaveBeenCalled();
+        });
+
+        it('should not execute an operation if canExecute() returns false', function() {
+            valid = false;
+
+            ctrl.executeChain();
+
+            expect(query.execute).not.toHaveBeenCalled();
+        });
+
+        it('should broadcast an error if the length of the chain is 0', function() {
+            ctrl.executeChain();
+            expect(error.handle).toHaveBeenCalledWith("Unable to run operation chain with no operations");
+        });
+
+        it('should not execute the chain if the length of the chain is 0', function() {
+            ctrl.executeChain();
+            expect(query.execute).not.toHaveBeenCalled();
+        })
+
+        it('should set the class of the operation to operation chain', function() {
+            ctrl.operations = [
+                {
+                    selectedOperation: {
+                        class: 'test'
+                    }
+                }
+            ]
+            ctrl.executeChain();
+            expect(query.execute).toHaveBeenCalled();
+            var json = query.execute.calls.first().args[0];
+
+            expect(JSON.parse(json).class).toEqual("uk.gov.gchq.gaffer.operation.OperationChain");
+        });
+
+        it('should add the options of the first operation on the operation chain', function() {
+            ctrl.operations = [
+                {
+                    selectedOperation: {
+                        class: 'test'
+                    },
+                    opOptions: {
+                        'option1': 'value1'
+                    }
+                }
+            ]
+            ctrl.executeChain();
+            expect(query.execute).toHaveBeenCalled();
+            var operation = JSON.parse(query.execute.calls.first().args[0]);
+
+            expect(operation.options).toEqual({'option1': 'value1'});
+        });
+
+        it('should create operations from the operations field and add them to the chain', function() {
+            ctrl.operations = [
+                {
+                    selectedOperation: {
+                        class: 'test'
+                    }
+                }
+            ]
+            ctrl.executeChain();
+            expect(query.execute).toHaveBeenCalled();
+            var operation = JSON.parse(query.execute.calls.first().args[0]);
+
+            var expectedOperation = {
+                class: 'test'
+            }
+
+            expect(operation.operations[0]).toEqual(expectedOperation);
+        });
+
+        it('should add the operation to the query service', function() {
+            ctrl.operations = [
+                {
+                    selectedOperation: {
+                        class: 'test'
+                    }
+                }
+            ]
+            spyOn(query, 'addOperation').and.stub();
+            ctrl.executeChain();
+
+            expect(query.addOperation).toHaveBeenCalled();
+
+            var expectedOperation = {
+                class: "uk.gov.gchq.gaffer.operation.OperationChain",
+                operations: [
+                    {
+                        class: 'test'
+                    }
+                ]
+            }
+
+            expect(query.addOperation).toHaveBeenCalledWith(expectedOperation);
+        });
+
+        it('should add limits and deduplicate operations to the chain', function() {
+            ctrl.operations = [
+                {
+                    selectedOperation: {
+                        class: 'test'
+                    }
+                }
+            ]
+
+            var limit = {
+                class: 'limit class'
+            }
+
+            var dedupe = {
+                class: 'deduplicate class'
+            }
+
+            spyOn(operationService, 'createLimitOperation').and.returnValue(limit);
+            spyOn(operationService, 'createDeduplicateOperation').and.returnValue(dedupe);
 
 
+            ctrl.executeChain();
+            expect(query.execute).toHaveBeenCalled();
+            var operation = JSON.parse(query.execute.calls.first().args[0]);
+            
+            expect(operation.operations[1]).toEqual(limit);
+            expect(operation.operations[2]).toEqual(dedupe);
+
+        });
+
+        it('should add the final operation options to the limit and dedupe operations', function() {
+            ctrl.operations = [
+                {
+                    selectedOperation: {
+                        class: 'test'
+                    },
+                    opOptions: {
+                        'option1': 'value1'
+                    }
+                },
+                {
+                    selectedOperation: {
+                        class: 'test'
+                    },
+                    opOptions: {
+                        'option2': 'value2'
+                    }
+                }
+            ]
+
+            ctrl.executeChain();
+
+            expect(query.execute).toHaveBeenCalled();
+            var operation = JSON.parse(query.execute.calls.first().args[0]);
+
+            expect(operation.operations[2].options).toEqual({'option2': 'value2'});
+            expect(operation.operations[3].options).toEqual({'option2': 'value2'});
+            
+        });
+
+        it('should run the query', function() {
+            ctrl.operations = [
+                {
+                    selectedOperation: {
+                        class: 'test'
+                    },
+                    opOptions: {
+                        'option1': 'value1'
+                    }
+                }
+            ];
+
+            ctrl.executeChain();
+            expect(query.execute).toHaveBeenCalled();
+        });
+    });
 });
