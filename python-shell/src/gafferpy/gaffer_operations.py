@@ -2252,18 +2252,24 @@ class If(Operation):
                                                            Conditional)
             else:
                 self.conditional = conditional
+        else:
+            self.conditional = None
 
         if then is not None:
             if not isinstance(then, Operation):
                 self.then = JsonConverter.from_json(then, Operation)
             else:
                 self.then = then
+        else:
+            self.then = None
 
         if otherwise is not None:
             if not isinstance(otherwise, Operation):
                 self.otherwise = JsonConverter.from_json(otherwise, Operation)
             else:
                 self.otherwise = otherwise
+        else:
+            self.otherwise = None
 
     def to_json(self):
         operation = super().to_json()
