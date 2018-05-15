@@ -600,6 +600,24 @@ class OperationChainDAO(OperationChain):
         return operation_chain_json
 
 
+class GetTraits(Operation):
+    CLASS = 'uk.gov.gchq.gaffer.store.operation.GetTraits'
+
+    def __init__(self,
+                 current_traits,
+                 options=None):
+        super().__init__(
+            _class_name=self.CLASS, options=options)
+
+        self.current_traits = current_traits
+
+    def to_json(self):
+        operation = super().to_json()
+
+        operation['currentTraits'] = self.current_traits
+        return operation
+
+
 class AddElements(Operation):
     """
     This class defines a Gaffer Add Operation.
@@ -2269,18 +2287,19 @@ class If(Operation):
         operation = super().to_json()
 
         if self.input is not None:
+            json_seeds = []
             if isinstance(self.input, list):
-                input_json = []
-                for item in self.input:
-                    if isinstance(item, ToJson):
-                        input_json.append(item.to_json())
+                for seed in self.input:
+                    if isinstance(seed, ToJson):
+                        json_seeds.append(seed.to_json())
                     else:
-                        input_json.append(item)
-                operation['input'] = input_json
-            elif isinstance(self.input, ToJson):
-                operation['input'] = self.input.to_json()
+                        json_seeds.append(seed)
             else:
-                operation['input'] = self.input
+                if isinstance(self.input, ToJson):
+                    json_seeds.append(self.input.to_json())
+                else:
+                    json_seeds.append(self.input.to_json())
+            operation['input'] = json_seeds
 
         if self.condition is not None:
             operation['condition'] = self.condition
@@ -2293,6 +2312,66 @@ class If(Operation):
 
         if self.otherwise is not None:
             operation['otherwise'] = self.otherwise.to_json()
+
+        return operation
+
+
+class While(Operation):
+    CLASS = 'uk.gov.gchq.gaffer.operation.impl.While'
+
+    def __init__(self, max_repeats=1000, input=None, operation=None,
+                 condition=None, conditional=None, options=None):
+
+        super().__init__(_class_name=self.CLASS,
+                         options=options)
+
+        self.max_repeats = max_repeats
+        self.input = input
+        self.condition = condition
+
+        if operation is not None:
+            if not isinstance(operation, Operation):
+                self.operation = JsonConverter.from_json(operation, Operation)
+            else:
+                self.operation = operation
+
+        if conditional is not None:
+            if not isinstance(conditional, Conditional):
+                self.conditional = JsonConverter.from_json(conditional,
+                                                           Conditional)
+            else:
+                self.conditional = conditional
+        else:
+            self.conditional = conditional
+
+    def to_json(self):
+        operation = super().to_json()
+
+        operation['maxRepeats'] = self.max_repeats
+
+        if self.input is not None:
+            json_seeds = []
+            if isinstance(self.input, list):
+                for seed in self.input:
+                    if isinstance(seed, ToJson):
+                        json_seeds.append(seed.to_json())
+                    else:
+                        json_seeds.append(seed)
+            else:
+                if isinstance(self.input, ToJson):
+                    json_seeds.append(self.input.to_json())
+                else:
+                    json_seeds.append(self.input.to_json())
+            operation['input'] = json_seeds
+
+        if self.operation is not None:
+            operation['operation'] = self.operation.to_json()
+
+        if self.condition is not None:
+            operation['condition'] = self.condition
+
+        if self.conditional is not None:
+            operation['conditional'] = self.conditional.to_json()
 
         return operation
 
