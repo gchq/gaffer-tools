@@ -574,12 +574,16 @@ class InRangeDual(AbstractPredicate):
     CLASS = "uk.gov.gchq.koryphe.impl.predicate.range.InRangeDual"
 
     def __init__(self, start=None, end=None, start_inclusive=None,
-                 end_inclusive=None):
+                 end_inclusive=None,
+                 start_fully_contained=None,
+                 end_fully_contained=None):
         super().__init__(_class_name=self.CLASS)
         self.start = start
         self.end = end
         self.start_inclusive = start_inclusive
         self.end_inclusive = end_inclusive
+        self.start_fully_contained = start_fully_contained
+        self.end_fully_contained = end_fully_contained
 
     def to_json(self):
         predicate_json = super().to_json()
@@ -591,6 +595,11 @@ class InRangeDual(AbstractPredicate):
             predicate_json['startInclusive'] = self.start_inclusive
         if self.end_inclusive is not None:
             predicate_json['endInclusive'] = self.end_inclusive
+        if self.start_fully_contained is not None:
+            predicate_json['startFullyContained'] = self.start_fully_contained
+        if self.end_fully_contained is not None:
+            predicate_json['endFullyContained'] = self.end_fully_contained
+
         return predicate_json
 
 
@@ -644,7 +653,9 @@ class InTimeRangeDual(AbstractPredicate):
 
     def __init__(self, start=None, start_offset=None, end=None, end_offset=None,
                  offset_unit=None, start_inclusive=None, end_inclusive=None,
-                 time_unit=None):
+                 time_unit=None,
+                 start_fully_contained=None,
+                 end_fully_contained=None):
         super().__init__(_class_name=self.CLASS)
         self.start = start
         self.start_offset = start_offset
@@ -654,6 +665,8 @@ class InTimeRangeDual(AbstractPredicate):
         self.start_inclusive = start_inclusive
         self.end_inclusive = end_inclusive
         self.time_unit = time_unit
+        self.start_fully_contained = start_fully_contained
+        self.end_fully_contained = end_fully_contained
 
     def to_json(self):
         predicate_json = super().to_json()
@@ -673,6 +686,11 @@ class InTimeRangeDual(AbstractPredicate):
             predicate_json['endInclusive'] = self.end_inclusive
         if self.time_unit is not None:
             predicate_json['timeUnit'] = self.time_unit
+        if self.start_fully_contained is not None:
+            predicate_json['startFullyContained'] = self.start_fully_contained
+        if self.end_fully_contained is not None:
+            predicate_json['endFullyContained'] = self.end_fully_contained
+
         return predicate_json
 
 
@@ -713,7 +731,9 @@ class InDateRangeDual(AbstractPredicate):
     CLASS = "uk.gov.gchq.koryphe.impl.predicate.range.InDateRangeDual"
 
     def __init__(self, start=None, start_offset=None, end=None, end_offset=None,
-                 offset_unit=None, start_inclusive=None, end_inclusive=None):
+                 offset_unit=None, start_inclusive=None, end_inclusive=None,
+                 start_fully_contained=None,
+                 end_fully_contained=None):
         super().__init__(_class_name=self.CLASS)
         self.start = start
         self.start_offset = start_offset
@@ -722,6 +742,8 @@ class InDateRangeDual(AbstractPredicate):
         self.offset_unit = offset_unit
         self.start_inclusive = start_inclusive
         self.end_inclusive = end_inclusive
+        self.start_fully_contained = start_fully_contained
+        self.end_fully_contained = end_fully_contained
 
     def to_json(self):
         predicate_json = super().to_json()
@@ -739,6 +761,10 @@ class InDateRangeDual(AbstractPredicate):
             predicate_json['startInclusive'] = self.start_inclusive
         if self.end_inclusive is not None:
             predicate_json['endInclusive'] = self.end_inclusive
+        if self.start_fully_contained is not None:
+            predicate_json['startFullyContained'] = self.start_fully_contained
+        if self.end_fully_contained is not None:
+            predicate_json['endFullyContained'] = self.end_fully_contained
         return predicate_json
 
 
