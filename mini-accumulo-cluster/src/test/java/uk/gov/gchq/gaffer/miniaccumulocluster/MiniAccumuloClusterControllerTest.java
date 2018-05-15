@@ -20,6 +20,7 @@ import org.junit.Test;
 
 import java.io.File;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
@@ -39,6 +40,7 @@ public class MiniAccumuloClusterControllerTest {
                             .dirName(miniAccumuloClusterName)
                             .instanceName("instance")
                             .password("password")
+                            .heapSize(1024)
                             .build();
                     runner[0].start();
                 } catch (final Exception e) {
@@ -58,6 +60,7 @@ public class MiniAccumuloClusterControllerTest {
             // Then
             assertNull(null != accumuloException[0] ? accumuloException[0].getMessage() : "", accumuloException[0]);
             assertTrue("store.properties was not generated", new File(miniAccumuloClusterName + "/store.properties").exists());
+            assertEquals(1024, runner[0].getHeapSize());
         } finally {
             if (null != runner[0]) {
                 runner[0].stop();
