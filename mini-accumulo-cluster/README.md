@@ -30,7 +30,7 @@ or
 
 Can be built using 'mvn package' and run from the command line using:
 ```bash
-java -cp target/mini-accumulo-cluster-[version]-jar-with-dependencies.jar uk.gov.gchq.gaffer.miniaccumulocluster.MiniAccumuloClusterWithShellController
+java -cp target/mini-accumulo-cluster-*-jar-with-dependencies.jar uk.gov.gchq.gaffer.miniaccumulocluster.MiniAccumuloClusterWithShellController
 ```
 
 When starting up it will print out something similar to:
@@ -53,12 +53,12 @@ This requires the same arguments as the cluster-with-shell, but it will not open
 To run from command line, for example
 
 ```bash
-java -cp target/mini-accumulo-cluster-[version]-jar-with-dependencies.jar uk.gov.gchq.gaffer.miniaccumulocluster.MiniAccumuloClusterController ~/miniAccumuloCluster false password instance
+java -cp target/mini-accumulo-cluster-*-jar-with-dependencies.jar uk.gov.gchq.gaffer.miniaccumulocluster.MiniAccumuloClusterController ~/miniAccumuloCluster false password instance
 ```
 
 It may be necessary to add other libraries to the accumulo classpath, to allow things like Gaffer to work. In this case you can use the following command to add libraries to the classpath.
 ```bash
-java -cp target/mini-accumulo-cluster-[version]-jar-with-dependencies.jar:otherFile1.jar:otherFile2.jar uk.gov.gchq.gaffer.miniaccumulocluster.MiniAccumuloClusterController ~/miniAccumuloCluster false password instance
+java -cp target/mini-accumulo-cluster-*-jar-with-dependencies.jar:otherFile1.jar:otherFile2.jar uk.gov.gchq.gaffer.miniaccumulocluster.MiniAccumuloClusterController ~/miniAccumuloCluster false password instance
 ```
 
 shell
@@ -72,7 +72,7 @@ This can be run in one of two ways
 In either case, the first argument must be the store.properties filename created by the cluster. In the second case, add another argument that points to the file containing the commands to run.
 
 ```bash
-java -cp target/mini-accumulo-cluster-[version]-jar-with-dependencies.jar uk.gov.gchq.gaffer.miniaccumulocluster.MiniAccumuloShellController ~/miniAccumuloCluster/store.properties
+java -cp target/mini-accumulo-cluster-*-jar-with-dependencies.jar uk.gov.gchq.gaffer.miniaccumulocluster.MiniAccumuloShellController ~/miniAccumuloCluster/store.properties
 ```
 
 
