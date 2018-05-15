@@ -56,7 +56,7 @@ function PairBuilderController(schema, csv, types, error, events, common, $route
                 } else {
                     vm.pairs += '\n' + $routeParams['input'];
                 }
-                vm.addPairs();
+                vm.addPairs(true);
             }
         });
         var currentInput = input.getInputPairs();
@@ -94,8 +94,10 @@ function PairBuilderController(schema, csv, types, error, events, common, $route
      * Goes through all lines from seed input box, removes trailing whitespace,
      * processes the line (returns if it fails), checks it's not too long, 
      * adds it to an array, before finally updating the input service
+     * 
+     * @param {boolean} suppressDuplicateError
      */
-    vm.addPairs = function() {
+    vm.addPairs = function(suppressDuplicateError) {
         var newInput = [];
         var keys = vm.getFields().map(function(field) {
             return field.key;
@@ -141,7 +143,7 @@ function PairBuilderController(schema, csv, types, error, events, common, $route
             var value = newInput[i];
             if (!common.arrayContainsObject(deduped, value)) {
                 deduped.push(value);
-            } else {
+            } else if (!suppressDuplicateError) {
                 error.handle('Duplicate value was removed') // not invalid
             }
         }
