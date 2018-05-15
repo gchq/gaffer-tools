@@ -22,61 +22,6 @@ angular.module('app').factory('view', ['operationService', 'config', 'settings',
     var firstLoad = true;
     var defer = $q.defer();
 
-    service.getNamedViews = function() {
-        return namedViews;
-    }
-
-    service.getViewEntities = function() {
-        return viewEntities;
-    }
-
-    service.getViewEdges = function() {
-        return viewEdges;
-    }
-
-    service.getEntityFilters = function() {
-        return entityFilters;
-    }
-
-    service.getEdgeFilters = function() {
-        return edgeFilters;
-    }
-
-    service.setNamedViews = function(newNamedViews) {
-        namedViews = newNamedViews;
-        events.broadcast('onViewUpdate', []);
-    }
-
-    service.setViewEntities = function(entities) {
-        viewEntities = entities;
-        events.broadcast('onViewUpdate', []);
-    }
-
-    service.setViewEdges = function(edges) {
-        viewEdges = edges;
-        events.broadcast('onViewUpdate', []);
-    }
-
-    service.setEdgeFilters = function(filters) {
-        edgeFilters = filters;
-        events.broadcast('onViewUpdate', []);
-    } 
-
-    service.setEntityFilters = function(filters) {
-        entityFilters = filters;
-        events.broadcast('onViewUpdate', []);
-    } 
-
-    service.reset = function() {
-        viewEntities = [];
-        viewEdges = [];
-        entityFilters = {};
-        edgeFilters = {};
-        namedViews = [];
-
-        events.broadcast('onViewUpdate', []);
-    }
-
     service.getAvailableNamedViews = function() {
         return availableNamedViews;
     }
