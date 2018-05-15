@@ -19,7 +19,7 @@
 /**
  * Graph service which handles selected elements and a cytoscape graph
  */
-angular.module('app').factory('graph', ['types', '$q', 'results', 'common', 'events', 'operationChain', 'schema', function(types, $q, results, common, events, operationChain, schemaService) {
+angular.module('app').factory('graph', ['types', '$q', 'results', 'common', 'events', 'operationChain', 'schema', 'config', 'loading', 'query', 'error', 'settings', 'operationService', function(types, $q, results, common, events, operationChain, schemaService, config, loading, query, error, settings, operationService) {
 
     var graphCy;
     var graph = {};
@@ -233,7 +233,8 @@ angular.module('app').factory('graph', ['types', '$q', 'results', 'common', 'eve
     }
 
     /**
-     * Appends the element to selected entities, creates an input object from the ID and adds it to the input service, then fires events
+     * Appends the element to selected entities, creates an input object from the ID and adds it to the 
+     * operation chain's first operation, then fires events
      * @param {String} id The vertex 
      * @param {Array} entities The elements with the id
      */
@@ -494,7 +495,6 @@ angular.module('app').factory('graph', ['types', '$q', 'results', 'common', 'eve
         while(graphCy.elements().length > 0) {
             graphCy.remove(graphCy.elements()[0]);
         }
-        input.reset();
     }
 
     /**

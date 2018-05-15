@@ -105,7 +105,7 @@ function OperationChainController(operationChain, config, loading, query, error,
             chain.operations.push(operationService.createDeduplicateOperation(finalOperation['opOptions']));
         }
 
-        runQuery(chain.operations);
+        runQuery(chain.operations, true);
     }
 
     vm.clearChain = function() {
@@ -132,11 +132,11 @@ function OperationChainController(operationChain, config, loading, query, error,
             operations.push(operationService.createLimitOperation(operation['options']));
             operations.push(operationService.createDeduplicateOperation(operation['options']));
         }
-        runQuery(operations);
+        runQuery(operations, false);
         
     }
 
-    var runQuery = function(operations) {
+    var runQuery = function(operations, chainFlag) {
         loading.load()
         query.executeQuery(
             {
@@ -144,7 +144,9 @@ function OperationChainController(operationChain, config, loading, query, error,
                 operations: operations,
                 options: operations[0]['options']
             },
-            submitResults
+            function(data) {
+                submitResults(data, chainFlag);
+            }
         );
     }
 
@@ -152,9 +154,12 @@ function OperationChainController(operationChain, config, loading, query, error,
      * Deselects all elements in the graph and resets all query related services
      * @param {Array} data the data returned by the rest service 
      */
-    var submitResults = function(data) {
+    var submitResults = function(data, chainFlag) {
         graph.deselectAll();
         navigation.goTo('results');
+        if (chainFlag) {
+            vm.clearChain();
+        }
 
         // Remove the input query param
         delete $routeParams['input'];
