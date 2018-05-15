@@ -157,6 +157,19 @@ class GafferPredicatesTest(unittest.TestCase):
         [
             '''
             {
+              "class" : "uk.gov.gchq.gaffer.sketches.datasketches.cardinality.predicate.HllSketchIsLessThan",
+              "orEqualTo" : false,
+              "value" : 2
+            }
+            ''',
+            g.HllSketchIsLessThan(
+                value=2,
+                or_equal_to=False
+            )
+        ],
+        [
+            '''
+            {
               "class" : "uk.gov.gchq.koryphe.impl.predicate.IsA",
               "type" : "java.lang.String"
             }

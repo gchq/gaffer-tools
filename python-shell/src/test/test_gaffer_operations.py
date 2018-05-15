@@ -4490,14 +4490,14 @@ class GafferOperationsTest(unittest.TestCase):
             '''
             {
                 "class" : "uk.gov.gchq.gaffer.operation.impl.If",
-                "input" : {
+                "input" : [{
                     "class" : "uk.gov.gchq.gaffer.data.element.Entity",
                     "group" : "entity",
                     "vertex" : "a1",
                     "properties" : {
                         "count" : 5
                     }
-                },
+                }],
                 "conditional" : {
                     "predicate" : {
                         "class" : "uk.gov.gchq.koryphe.impl.predicate.IsMoreThan",
@@ -4792,10 +4792,110 @@ class GafferOperationsTest(unittest.TestCase):
                     "class": "uk.gov.gchq.gaffer.graph.hook.Log4jLogger"
                 }]
             )
-        ]
+        ],
+        [
+            '''
+            {
+                "class" : "uk.gov.gchq.gaffer.operation.impl.While",
+                "maxRepeats" : 5,
+                "input" : [
+                    {
+                        "class" : "uk.gov.gchq.gaffer.operation.data.EntitySeed",
+                        "vertex" : 2
+                    }
+                ],
+                "condition" : true,
+                "operation" : {
+                    "class" : "uk.gov.gchq.gaffer.operation.impl.get.GetAdjacentIds"
+                }
+            }
+            ''',
+            g.While(
+                max_repeats=5,
+                input=[
+                    g.EntitySeed(
+                        vertex=2
+                    )
+                ],
+                condition=True,
+                operation=g.GetAdjacentIds()
+            )
+        ],
+        [
+            '''
+            {
+                "class" : "uk.gov.gchq.gaffer.operation.impl.While",
+                "maxRepeats" : 10,
+                "input" : [{
+                    "class" : "uk.gov.gchq.gaffer.data.element.Edge",
+                    "group" : "testEdge",
+                    "source" : "src",
+                    "destination" : "dest",
+                    "directed" : true,
+                    "properties" : {
+                        "count" : 3
+                    }
+                }],
+                "conditional" : {
+                    "predicate" : {
+                        "class" : "uk.gov.gchq.koryphe.impl.predicate.IsMoreThan",
+                        "value" : 2
+                    },
+                    "transform" : {
+                        "class" : "uk.gov.gchq.gaffer.operation.impl.Map",
+                        "functions" : [{
+                                "class" : "uk.gov.gchq.gaffer.data.element.function.ExtractProperty",
+                                "name" : "count"
+                            }
+                        ]
+                    }
+                },
+                "operation" : {"class": "uk.gov.gchq.gaffer.operation.impl.get.GetElements"}
+            }
+            ''',
+            g.While(
+                max_repeats=10,
+                input=[
+                    g.Edge(
+                        group="testEdge",
+                        source="src",
+                        destination="dest",
+                        directed=True,
+                        properties={
+                            "count": 3
+                        }
+                    )
+                ],
+                conditional=g.Conditional(
+                    predicate=g.IsMoreThan(
+                        value=2
+                    ),
+                    transform=g.Map(
+                        functions=[
+                            g.ExtractProperty(
+                                name="count"
+                            )
+                        ]
+                    )
+                ),
+                operation=g.GetElements()
+            )
+        ],
+        [
+            '''
+            {
+                "class" : "uk.gov.gchq.gaffer.store.operation.GetTraits",
+                "currentTraits" : true
+            }
+            ''',
+            g.GetTraits(
+                current_traits=True
+            )
+        ],
     ]
 
     def test_operations(self):
+        self.maxDiff = None
         for example in self.examples:
             self.assertEqual(
                 json.loads(example[0]),
@@ -4805,6 +4905,19 @@ class GafferOperationsTest(unittest.TestCase):
             )
 
             g.JsonConverter.from_json(example[0], validate=True)
+
+    def test_get_elements_should_handle_single_inputs(self):
+        self.assertEqual(
+            {
+                'class': 'uk.gov.gchq.gaffer.operation.impl.get.GetElements',
+                'input': [
+                    {
+                        'class': 'uk.gov.gchq.gaffer.operation.data.EntitySeed',
+                        'vertex': 'value'
+                    }
+                ]
+            },
+            g.GetElements(input="value").to_json())
 
 
 if __name__ == "__main__":

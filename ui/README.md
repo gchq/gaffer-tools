@@ -230,18 +230,18 @@ There is also a Federated Store Demo, which can be run using:
 
 After the REST and UI have been started you will need to add some federated graphs. There are some example scripts that will execute the AddGraph operation on the REST api (via curl):
 ```bash
-./ui/example/federated/scripts/addAccumuloEntitiesGraph.sh
-./ui/example/federated/scripts/addMapEdgesGraph.sh
+./ui/example/federated/basic/scripts/addAccumuloEntitiesGraph.sh
+./ui/example/federated/basic/scripts/addMapEdgesGraph.sh
 ```
 
 You can then get a list of all the graphIds available using the GetAllGraphIds operation. We also have a script for that:
 ```bash
-./ui/example/federated/scripts/getAllGraphIds.sh
+./ui/example/federated/basic/scripts/getAllGraphIds.sh
 ```
 
 To test out some queries you will need to add some elements to these graphs. You can use this script:
 ```bash
-./ui/example/federated/scripts/addElements.sh
+./ui/example/federated/basic/scripts/addElements.sh
 ```
 
 Once you have run these scripts you will have 2 graphs available, accEntities and mapEdges.
@@ -389,6 +389,24 @@ To use the time window feature, some assumptions should be true:
 
 It's worth noting that if your elements have a single timestamp, just use the same timestamp property in the startProperty and endProperty
 
+### Graph section
+The graph section allows you to configure the graph view. 
+Currently you are limited to configuring the physics used to draw the graph.
+The default graph physics are:
+
+```json
+"graph": {
+    "physics": {
+      "springLength": 200,
+      "dragCoeff": 0,
+      "stableThreshold": 0.000001,
+      "fit": true
+    }
+  }
+```
+
+For more information about the configuration of the graph physics and to 
+see the algorithm, please see: https://github.com/nickolasmv/cytoscape-ngraph.forcelayout
 
 ## Testing
 

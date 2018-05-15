@@ -35,7 +35,7 @@ angular.module('app').factory('schemaView', ['types', '$q', 'common', 'events', 
             waitForStep: true
         },
         physics: {
-            springLength: 150,
+            springLength: 250,
             fit: true
         },
         iterations: 10000,
@@ -60,7 +60,8 @@ angular.module('app').factory('schemaView', ['types', '$q', 'common', 'events', 
                         'background-color': 'data(color)',
                         'font-size': 14,
                         'color': '#fff',
-                        'text-outline-width':1,
+                        'text-outline-color':'data(color)',
+                        'text-outline-width':3,
                         'width': 'data(radius)',
                         'height': 'data(radius)'
                     }
@@ -70,12 +71,13 @@ angular.module('app').factory('schemaView', ['types', '$q', 'common', 'events', 
                     style: {
                         'curve-style': 'bezier',
                         'label': 'data(group)',
-                        'line-color': '#79B623',
-                        'target-arrow-color': '#79B623',
+                        'line-color': '#538212',
+                        'target-arrow-color': '#538212',
                         'target-arrow-shape': 'triangle',
                         'font-size': 14,
                         'color': '#fff',
-                        'text-outline-width':1,
+                        'text-outline-color':'#538212',
+                        'text-outline-width':3,
                         'width': 5
                     }
                 },

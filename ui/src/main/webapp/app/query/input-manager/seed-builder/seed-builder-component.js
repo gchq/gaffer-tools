@@ -61,7 +61,7 @@ function SeedBuilderController(schema, csv, types, error, events, common, $route
                 } else {
                     vm.seedVertices += '\n' + $routeParams[vm.routeParam];
                 }
-                vm.addSeeds();
+                vm.addSeeds(true);
             }
         });
         
@@ -102,8 +102,10 @@ function SeedBuilderController(schema, csv, types, error, events, common, $route
      * Goes through all lines from seed input box, removes trailing whitespace,
      * processes the line (returns if it fails), checks it's not too long, 
      * adds it to an array, before finally updating the input service
+     * 
+     * @param {boolean} suppressDuplicateError 
      */
-    vm.addSeeds = function() {
+    vm.addSeeds = function(suppressDuplicateError) {
         if (vm.usePrevious) {
             vm.model = null;
             return;
@@ -146,7 +148,7 @@ function SeedBuilderController(schema, csv, types, error, events, common, $route
             var value = newInput[i];
             if (!common.arrayContainsObject(deduped, value)) {
                 deduped.push(value);
-            } else {
+            } else if (!suppressDuplicateError) {
                 error.handle('Duplicate value: ' + types.getShortValue(types.createJsonValue(value.valueClass, value.parts)) + ' was removed') // not invalid
             }
         }

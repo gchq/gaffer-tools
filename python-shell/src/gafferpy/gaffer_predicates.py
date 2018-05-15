@@ -259,6 +259,22 @@ class HyperLogLogPlusIsLessThan(AbstractPredicate):
         return predicate_json
 
 
+class HllSketchIsLessThan(AbstractPredicate):
+    CLASS = "uk.gov.gchq.gaffer.sketches.datasketches.cardinality.predicate.HllSketchIsLessThan"
+
+    def __init__(self, value, or_equal_to=None):
+        super().__init__(_class_name=self.CLASS)
+        self.value = value
+        self.or_equal_to = or_equal_to
+
+    def to_json(self):
+        predicate_json = super().to_json()
+        predicate_json['value'] = self.value
+        if self.or_equal_to is not None:
+            predicate_json['orEqualTo'] = self.or_equal_to
+        return predicate_json
+
+
 class If(AbstractPredicate):
     CLASS = "uk.gov.gchq.koryphe.impl.predicate.If"
 

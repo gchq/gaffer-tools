@@ -179,6 +179,13 @@ describe('The pair builder component', function() {
                     }
                 ]);
             });
+            
+            it('should not error if adding duplicate seeds', function() {
+                ctrl.seedVertices = 'seed1,seed2';
+                $routeParams.input = 'seed1,seed2';
+                ctrl.$onInit();
+                expect(error.handle).not.toHaveBeenCalled();
+            });
         });
 
         describe('with complex input query params', function() {

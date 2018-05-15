@@ -160,6 +160,13 @@ class ExtractProperty(AbstractFunction):
         return function
 
 
+class UnwrapEntityId(AbstractFunction):
+    CLASS = 'uk.gov.gchq.gaffer.data.element.function.UnwrapEntityId'
+
+    def __init__(self):
+        super().__init__(_class_name=self.CLASS)
+
+
 class IsEmpty(AbstractFunction):
     CLASS = 'uk.gov.gchq.koryphe.impl.function.IsEmpty'
 
@@ -554,6 +561,19 @@ class ElementGenerator(Function):
         super().__init__(class_name=class_name, fields=fields)
 
 
+class CallMethod(AbstractFunction):
+    CLASS = 'uk.gov.gchq.koryphe.impl.function.CallMethod'
+
+    def __init__(self, method):
+        super().__init__(_class_name=self.CLASS)
+        self.method = method
+
+    def to_json(self):
+        function_json = super().to_json()
+        function_json['method'] = self.method
+        return function_json
+
+
 def function_context_converter(obj):
     if 'class' in obj:
         function = dict(obj)
@@ -591,8 +611,8 @@ def function_converter(obj):
             class_name = function.get('class')
             function.pop('class', None)
             function = Function(
-                _class_name=class_name,
-                _fields=function
+                class_name=class_name,
+                fields=function
             )
 
     return function

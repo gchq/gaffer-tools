@@ -138,47 +138,22 @@ function OperationChainController(operationChain, config, loading, query, error,
 
     var runQuery = function(operations) {
         loading.load()
-        query.execute(JSON.stringify({
-            class: OPERATION_CHAIN_CLASS,
-            operations: operations,
-            options: operations[0]['options']
-        }), function(data) {
-            loading.finish()
-            if (data.length === settings.getResultLimit()) {
-                prompt(data);
-            } else {
-                submitResults(data);
-            }
-        }, function(err) {
-            loading.finish();
-            error.handle('Error executing operation', err);
-        });
+        query.executeQuery(
+            {
+                class: OPERATION_CHAIN_CLASS,
+                operations: operations,
+                options: operations[0]['options']
+            },
+            submitResults
+        );
     }
 
     /**
-     * Alerts the user if they hit the result limit
-     * @param {Array} data The data returned by the Gaffer REST service 
-     */
-    var prompt = function(data) {
-        $mdDialog.show({
-            template: '<result-count-warning aria-label="Result Count Warning"></result-count-warning>',
-            parent: angular.element(document.body),
-            clickOutsideToClose: false
-        })
-        .then(function(command) {
-            if(command === 'results') {
-                submitResults(data);
-            }
-        });
-    }
-
-    /**
-     * Deselects all elements in the graph, updates the result service and resets all query related services
+     * Deselects all elements in the graph and resets all query related services
      * @param {Array} data the data returned by the rest service 
      */
     var submitResults = function(data) {
         graph.deselectAll();
-        results.update(data);
         navigation.goTo('results');
 
         // Remove the input query param
@@ -195,7 +170,6 @@ function OperationChainController(operationChain, config, loading, query, error,
             return undefined;
         }
         var opInput = [];
-        
         for (var i in seeds) {
             opInput.push({
                 "class": ENTITY_SEED_CLASS,
@@ -233,7 +207,6 @@ function OperationChainController(operationChain, config, loading, query, error,
         }
 
         return opInput;
-
     }
 
     /**

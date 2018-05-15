@@ -59,7 +59,7 @@ function PairBuilderController(schema, csv, types, error, events, common, $route
                 } else {
                     vm.pairs += '\n' + $routeParams['input'];
                 }
-                vm.addPairs();
+                vm.addPairs(true);
             }
         });
         
@@ -101,7 +101,7 @@ function PairBuilderController(schema, csv, types, error, events, common, $route
      * processes the line (returns if it fails), checks it's not too long, 
      * adds it to an array, before finally updating the model
      */
-    vm.addPairs = function() {
+    vm.addPairs = function(suppressDuplicateError) {
         if (vm.usePrevious) {
             vm.model = null;
             return;
@@ -151,7 +151,7 @@ function PairBuilderController(schema, csv, types, error, events, common, $route
             var value = newInput[i];
             if (!common.arrayContainsObject(deduped, value)) {
                 deduped.push(value);
-            } else {
+            } else if (!suppressDuplicateError) {
                 error.handle('Duplicate value was removed') // not invalid
             }
         }
