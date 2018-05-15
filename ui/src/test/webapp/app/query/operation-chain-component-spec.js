@@ -650,7 +650,6 @@ describe('The operation chain component', function() {
                             }
                         ]
                     }
-                    expect(query.execute.calls.first().args[0]).toContain(JSON.stringify(expectedFilterFunctions));
     
                     expect(JSON.stringify(query.execute.calls.first().args[0])).toContain(JSON.stringify(expectedFilterFunctions));
 
@@ -1270,7 +1269,7 @@ describe('The operation chain component', function() {
             expect(query.execute).toHaveBeenCalled();
             var json = query.execute.calls.first().args[0];
 
-            expect(JSON.parse(json).class).toEqual("uk.gov.gchq.gaffer.operation.OperationChain");
+            expect(json.class).toEqual("uk.gov.gchq.gaffer.operation.OperationChain");
         });
 
         it('should add the options of the first operation on the operation chain', function() {
@@ -1286,7 +1285,7 @@ describe('The operation chain component', function() {
             ]
             ctrl.executeChain();
             expect(query.execute).toHaveBeenCalled();
-            var operation = JSON.parse(query.execute.calls.first().args[0]);
+            var operation = query.execute.calls.first().args[0];
 
             expect(operation.options).toEqual({'option1': 'value1'});
         });
@@ -1301,7 +1300,7 @@ describe('The operation chain component', function() {
             ]
             ctrl.executeChain();
             expect(query.execute).toHaveBeenCalled();
-            var operation = JSON.parse(query.execute.calls.first().args[0]);
+            var operation = query.execute.calls.first().args[0];
 
             var expectedOperation = {
                 class: 'test'
@@ -1358,7 +1357,7 @@ describe('The operation chain component', function() {
 
             ctrl.executeChain();
             expect(query.execute).toHaveBeenCalled();
-            var operation = JSON.parse(query.execute.calls.first().args[0]);
+            var operation = query.execute.calls.first().args[0];
             
             expect(operation.operations[1]).toEqual(limit);
             expect(operation.operations[2]).toEqual(dedupe);
@@ -1388,7 +1387,7 @@ describe('The operation chain component', function() {
             ctrl.executeChain();
 
             expect(query.execute).toHaveBeenCalled();
-            var operation = JSON.parse(query.execute.calls.first().args[0]);
+            var operation = query.execute.calls.first().args[0];
 
             expect(operation.operations[2].options).toEqual({'option2': 'value2'});
             expect(operation.operations[3].options).toEqual({'option2': 'value2'});
