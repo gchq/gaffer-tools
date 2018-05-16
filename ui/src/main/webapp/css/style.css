@@ -244,6 +244,14 @@ md-tab-data{
     height: 100%;
 }
 
+.absolute {
+    position: absolute;
+}
+
 #graphCy {
     z-index: 1
+}
+
+.overflow-auto {
+    overflow: auto;
 }
