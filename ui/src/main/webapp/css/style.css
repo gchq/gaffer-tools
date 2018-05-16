@@ -187,7 +187,7 @@ table md-input-container {
 
 .sidenav {
     background-color: #F5F5F5;
-    overflow: scroll;
+    overflow: auto;
     color: #444;
     border: none;
 }
@@ -242,6 +242,10 @@ md-tab-data{
     top: 0;
     width:100%;
     height: 100%;
+}
+
+.absolute {
+    position: absolute;
 }
 
 #graphCy {
