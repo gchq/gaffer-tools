@@ -493,7 +493,6 @@ angular.module('app').factory('graph', ['types', '$q', 'results', 'common', 'con
         while(graphCy.elements().length > 0) {
             graphCy.remove(graphCy.elements()[0]);
         }
-        input.reset();
     }
 
     /**
