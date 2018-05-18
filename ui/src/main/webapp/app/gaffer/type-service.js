@@ -219,7 +219,7 @@ angular.module('app').factory('types', ['config', 'common', function(config, com
 
     service.getShortValue = function(value) {
 
-        if (typeof value === 'string' || value instanceof String || typeof value === 'number' || value === null || value === undefined) {
+        if (typeof value === 'string' || value instanceof String || typeof value === 'number' || typeof value === 'boolean' || value === null || value === undefined) {
             return value;
         }
 

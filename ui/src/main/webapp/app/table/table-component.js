@@ -173,9 +173,9 @@ function TableController(schema, results, table, events, common, types, time) {
                     for(var idIndex in idKeys) {
                         var id = idKeys[idIndex];
                         if('source' === id && element.source === undefined) {
-                            result[id] = element.vertex;
+                            result[id] = convertValue(id, element.vertex);
                         } else {
-                            result[id] = element[id];
+                            result[id] = convertValue(id, element[id]);
                         }
                     }
                     result.type = type;
