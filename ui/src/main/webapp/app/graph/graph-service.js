@@ -489,11 +489,9 @@ angular.module('app').factory('graph', ['types', '$q', 'results', 'common', 'con
      * Removes all elements from the cytoscape graph - does not remove them from the model.
      */
     graph.clear = function(){
-        graph.removeSelected();
         while(graphCy.elements().length > 0) {
             graphCy.remove(graphCy.elements()[0]);
         }
-        input.reset();
     }
 
     /**
