@@ -33,6 +33,9 @@ angular.module('app').factory('results', ['events', function(events) {
     }
 
     resultService.update = function(newResults) {
+        var incomingResults = {
+            entities: [], edges: [], other: []
+        }
         if(newResults !== undefined) {
             if(!Array.isArray(newResults)) {
                 newResults = [newResults];
@@ -55,17 +58,21 @@ angular.module('app').factory('results', ['events', function(events) {
 
                 if(result.class === "uk.gov.gchq.gaffer.data.element.Entity") {
                     if(result.vertex !== undefined && result.vertex !== '') {
+                        incomingResults.entities.push(result);
                         results.entities.push(result);
                     }
                 } else if(result.class === "uk.gov.gchq.gaffer.data.element.Edge") {
                     if(result.source !== undefined && result.source !== ''
-                         && result.destination !== undefined && result.destination !== '') {
-                       results.edges.push(result);
+                    && result.destination !== undefined && result.destination !== '') {
+                        incomingResults.edges.push(result);
+                        results.edges.push(result);
                     }
                 } else {
+                    incomingResults.other.push(result)
                     results.other.push(result);
                 }
             }
+            events.broadcast('incomingResults', [incomingResults]);
             events.broadcast('resultsUpdated', [results]);
         }
     }
