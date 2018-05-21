@@ -53,7 +53,7 @@ angular.module('app').factory('graph', ['types', '$q', 'results', 'common', 'con
         }
     });
 
-    events.subscribe('resultsUpdated', function(results) {
+    events.subscribe('incomingResults', function(results) {
         graph.update(results);
     });
 
@@ -154,9 +154,19 @@ angular.module('app').factory('graph', ['types', '$q', 'results', 'common', 'con
             }
         });
 
+        graphCy.on('remove', function(evt) {
+            removeFromGraphData(evt.cyTarget);
+        });
+
         graphCy.on('doubleTap', 'node', graph.quickHop);
 
         return deferred.promise;
+    }
+
+    var removeFromGraphData = function(element) {
+        var id = element.id();
+        delete graphData.edges[id]
+        delete graphData.entities[id];
     }
 
     /**
@@ -321,6 +331,7 @@ angular.module('app').factory('graph', ['types', '$q', 'results', 'common', 'con
      * Resets the graph
      */
     graph.reset = function() {
+        graph.clear();
         graph.update(results.get());
     }
 
@@ -340,8 +351,6 @@ angular.module('app').factory('graph', ['types', '$q', 'results', 'common', 'con
      * @param {Array} results 
      */
     graph.update = function(results) {
-        graph.clear();
-        graphData = { entities: {}, edges: {} };
         for (var i in results.entities) {
             var entity = angular.copy(results.entities[i]);
             entity.vertex = common.parseVertex(entity.vertex);
