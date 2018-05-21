@@ -602,6 +602,7 @@ angular.module('app').factory('graph', ['types', '$q', 'results', 'common', 'con
      * Selects all nodes (entities)
      */
     graph.selectAllNodes = function() {
+        graph.deselectAll();
         graphCy.filter('node').select();
     }
 
