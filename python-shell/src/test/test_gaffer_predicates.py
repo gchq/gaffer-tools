@@ -531,12 +531,14 @@ class GafferPredicatesTest(unittest.TestCase):
         ],
         [
             '''
-             {"class":"uk.gov.gchq.koryphe.impl.predicate.range.InTimeRangeDual","start":"2017/01/01","end":"2017/02/01","timeUnit":"MICROSECOND"}
+             {"class":"uk.gov.gchq.koryphe.impl.predicate.range.InTimeRangeDual","start":"2017/01/01","end":"2017/02/01","timeUnit":"MICROSECOND","startFullyContained":true,"endFullyContained":true}
             ''',
             g.InTimeRangeDual(
                 start='2017/01/01',
                 end='2017/02/01',
-                time_unit='MICROSECOND'
+                time_unit='MICROSECOND',
+                start_fully_contained=True,
+                end_fully_contained=True
             )
         ],
         [
