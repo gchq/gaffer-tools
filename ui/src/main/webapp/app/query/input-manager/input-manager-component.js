@@ -40,8 +40,8 @@ function inputManager() {
 function InputManagerController(events, results, common, types, schema) {
     var vm = this;
 
-    const EVENT_NAME = 'onOperationUpdate';
-    const ENTITY_SEED_CLASS = "uk.gov.gchq.gaffer.operation.data.EntitySeed";
+    var EVENT_NAME = 'onOperationUpdate';
+    var ENTITY_SEED_CLASS = "uk.gov.gchq.gaffer.operation.data.EntitySeed";
     vm.usePreviousOutput;
 
     var updatePreviousOutputFlag = function() {

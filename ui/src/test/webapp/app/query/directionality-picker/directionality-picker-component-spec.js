@@ -5,7 +5,7 @@ describe('The Directionality Picker Component', function() {
 
         var $componentController;
 
-        beforeEach(inject(function(_$componentController_, ) {
+        beforeEach(inject(function(_$componentController_) {
             $componentController = _$componentController_;
         }));
 

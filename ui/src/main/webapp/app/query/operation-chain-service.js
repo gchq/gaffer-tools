@@ -19,7 +19,7 @@
 angular.module('app').factory('operationChain', ['common', 'settings', 'events', function(common, settings, events) {
     var service = {};
 
-    const EVENT_NAME = 'onOperationUpdate';
+    var EVENT_NAME = 'onOperationUpdate';
 
     service.createBlankOperation = function(inputFlag) {
         return {

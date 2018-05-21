@@ -5,7 +5,7 @@ describe('The Seed Builder', function() {
     var error;
 
     var fakeTypes;
-    const OPERATION_UPDATE_EVENT = 'onOperationUpdate';
+    var OPERATION_UPDATE_EVENT = 'onOperationUpdate';
 
     beforeEach(module('app'));
 

@@ -31,10 +31,10 @@ function OperationChainController(operationChain, config, loading, query, error,
     vm.timeConfig;
     vm.operations = operationChain.getOperationChain();
 
-    const NAMED_VIEW_CLASS = "uk.gov.gchq.gaffer.data.elementdefinition.view.NamedView";
-    const OPERATION_CHAIN_CLASS = "uk.gov.gchq.gaffer.operation.OperationChain";
-    const ENTITY_SEED_CLASS = "uk.gov.gchq.gaffer.operation.data.EntitySeed";
-    const PAIR_CLASS = "uk.gov.gchq.gaffer.commonutil.pair.Pair";
+    var NAMED_VIEW_CLASS = "uk.gov.gchq.gaffer.data.elementdefinition.view.NamedView";
+    var OPERATION_CHAIN_CLASS = "uk.gov.gchq.gaffer.operation.OperationChain";
+    var ENTITY_SEED_CLASS = "uk.gov.gchq.gaffer.operation.data.EntitySeed";
+    var PAIR_CLASS = "uk.gov.gchq.gaffer.commonutil.pair.Pair";
 
     /**
      * initialises the time config and default operation options
