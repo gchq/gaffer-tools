@@ -39,7 +39,7 @@ describe('The Graph Service', function() {
         });
 
         beforeEach(function() {
-            events.broadcast('resultsUpdated', [ results ]);
+            events.broadcast('incomingResults', [ results ]);
         });
 
         it('should update the model automatically', function() {
