@@ -318,7 +318,15 @@ angular.module('app').factory('graph', ['types', '$q', 'results', 'common', 'con
     function unSelect(element) {
         var id = element.id();
         if(id in selectedEntities) {
-            input.removeInput(JSON.parse(id));
+            schemaService.get().then(function(gafferSchema) {
+                var vertex = JSON.parse(id);
+                var vertices = schemaService.getSchemaVertices();
+                var vertexClass = gafferSchema.types[vertices[0]].class;
+                input.removeInput({
+                    valueClass: vertexClass,
+                    parts: types.createParts(vertexClass, vertex)
+                });
+            });
             delete selectedEntities[id];
         } else if(id in selectedEdges) {
             delete selectedEdges[id];
