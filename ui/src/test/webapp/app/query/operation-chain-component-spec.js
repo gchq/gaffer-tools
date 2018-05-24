@@ -1411,25 +1411,73 @@ describe('The operation chain component', function() {
         });
     });
 
-    describe('ctrl.clearChain()', function() {
-        it('should reset the operation chain service', function() {
-            spyOn(operationChain, 'reset').and.stub();
-            ctrl.clearChain();
-            expect(operationChain.reset).toHaveBeenCalled();
+    describe('ctrl.resetChain()', function() {
+
+        var $mdDialog, $q;
+
+        beforeEach(inject(function(_$mdDialog_, _$q_) {
+            $mdDialog = _$mdDialog_;
+            $q = _$q_;
+        }));
+
+        describe('When the user confirms they want to reset', function() {
+            beforeEach(function() {
+                spyOn($mdDialog, 'show').and.returnValue($q.when());
+            });
+            
+            it('should reset the operation chain service', function() {
+                spyOn(operationChain, 'reset').and.stub();
+                ctrl.resetChain();
+                scope.$digest();
+                expect(operationChain.reset).toHaveBeenCalled();
+            });
+    
+            it('should reset the local model', function() {
+                var operations = [ 1, 2, 3];
+                spyOn(operationChain, 'reset').and.callFake(function() {
+                    operations = [1];
+                });
+                spyOn(operationChain, 'getOperationChain').and.callFake(function() {
+                    return operations;
+                });
+    
+                ctrl.resetChain();
+                scope.$digest();
+                expect(ctrl.operations).toEqual([1]);
+            });
         });
 
-        it('should reset the local model', function() {
-            var operations = [ 1, 2, 3];
-            spyOn(operationChain, 'reset').and.callFake(function() {
-                operations = [1];
-            });
-            spyOn(operationChain, 'getOperationChain').and.callFake(function() {
-                return operations;
+        describe('when the user reverses their decision to reset the chain', function() {
+            beforeEach(function() {
+                spyOn($mdDialog, 'show').and.callFake(function() {
+                    var defer = $q.defer();
+                    defer.reject(); // simulating the cancel option.
+                    return defer.promise;
+                });
             });
 
-            ctrl.clearChain();
+            it('should not reset the operation chain service', function() {
+                spyOn(operationChain, 'reset').and.stub();
+                ctrl.resetChain();
+                scope.$digest();
+                expect(operationChain.reset).not.toHaveBeenCalled();
+            });
+    
+            it('should not reset the local model', function() {
+                ctrl.operations = [ 1, 2, 3];
+                spyOn(operationChain, 'reset').and.callFake(function() {
+                    operations = [1];
+                });
+                spyOn(operationChain, 'getOperationChain').and.callFake(function() {
+                    return operations;
+                });
+    
+                ctrl.resetChain();
+                scope.$digest();
+    
+                expect(ctrl.operations).toEqual([1, 2 , 3]);
+            });
 
-            expect(ctrl.operations).toEqual([1]);
-        });
+        })
     });
 });
