@@ -264,3 +264,47 @@ md-tab-data{
 #graphCy {
     z-index: 1
 }
+
+.operation-content.ng-hide-add, .operation.ng-leave {
+    transition: 0.4s ease-in-out all;
+    max-height: 3000px;
+    opacity: 1;
+}
+
+.operation-content.ng-hide-add-active, .operation.ng-leave-active {
+    max-height: 0px;
+    opacity: 0;
+}
+
+.operation-content.ng-hide-remove, .operation.ng-enter {
+    max-height: 0px;
+    transition: 0.4s ease-in-out all;
+    opacity: 0;
+}
+
+.operation-content.ng-hide-remove-active, .operation.ng-enter-active {
+    max-height: 3000px;
+    opacity: 1;
+}
+
+md-card.closed-remove {
+    margin-left: 50px;
+    margin-right: 50px;
+    transition: 0.2s ease-in-out all;
+}
+
+md-card.closed-remove-active {
+    margin-left: 8px;
+    margin-right: 8px;
+}
+
+md-card.closed-add {
+    margin-left: 8px;
+    margin-right: 8px;
+    transition: 0.2s ease-in-out all;
+}
+
+md-card.closed-add-active, md-card.closed {
+    margin-left: 50px;
+    margin-right: 50px;
+}
