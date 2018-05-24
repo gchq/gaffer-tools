@@ -54,7 +54,7 @@ angular.module('app').factory('graph', ['types', '$q', 'results', 'common', 'eve
         }
     });
 
-    events.subscribe('resultsUpdated', function(results) {
+    events.subscribe('incomingResults', function(results) {
         graph.update(results);
     });
 
@@ -155,9 +155,19 @@ angular.module('app').factory('graph', ['types', '$q', 'results', 'common', 'eve
             }
         });
 
+        graphCy.on('remove', function(evt) {
+            removeFromGraphData(evt.cyTarget);
+        });
+
         graphCy.on('doubleTap', 'node', graph.quickHop);
 
         return deferred.promise;
+    }
+
+    var removeFromGraphData = function(element) {
+        var id = element.id();
+        delete graphData.edges[id]
+        delete graphData.entities[id];
     }
 
     /**
@@ -310,7 +320,15 @@ angular.module('app').factory('graph', ['types', '$q', 'results', 'common', 'eve
     function unSelect(element) {
         var id = element.id();
         if(id in selectedEntities) {
-            operationChain.removeInput(JSON.parse(id));
+            schemaService.get().then(function(gafferSchema) {
+                var vertex = JSON.parse(id);
+                var vertices = schemaService.getSchemaVertices();
+                var vertexClass = gafferSchema.types[vertices[0]].class;
+                operationChain.removeInput({
+                    valueClass: vertexClass,
+                    parts: types.createParts(vertexClass, vertex)
+                });
+            });
             delete selectedEntities[id];
         } else if(id in selectedEdges) {
             delete selectedEdges[id];
@@ -323,6 +341,7 @@ angular.module('app').factory('graph', ['types', '$q', 'results', 'common', 'eve
      * Resets the graph
      */
     graph.reset = function() {
+        graph.clear();
         graph.update(results.get());
     }
 
@@ -342,8 +361,6 @@ angular.module('app').factory('graph', ['types', '$q', 'results', 'common', 'eve
      * @param {Array} results 
      */
     graph.update = function(results) {
-        graph.clear();
-        graphData = { entities: {}, edges: {} };
         for (var i in results.entities) {
             var entity = angular.copy(results.entities[i]);
             entity.vertex = common.parseVertex(entity.vertex);
@@ -491,7 +508,6 @@ angular.module('app').factory('graph', ['types', '$q', 'results', 'common', 'eve
      * Removes all elements from the cytoscape graph - does not remove them from the model.
      */
     graph.clear = function(){
-        graph.removeSelected();
         while(graphCy.elements().length > 0) {
             graphCy.remove(graphCy.elements()[0]);
         }
@@ -596,6 +612,7 @@ angular.module('app').factory('graph', ['types', '$q', 'results', 'common', 'eve
      * Selects all nodes (entities)
      */
     graph.selectAllNodes = function() {
+        graph.deselectAll();
         graphCy.filter('node').select();
     }
 

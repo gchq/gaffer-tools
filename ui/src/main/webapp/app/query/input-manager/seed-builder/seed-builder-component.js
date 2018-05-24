@@ -55,6 +55,7 @@ function SeedBuilderController(schema, csv, types, error, events, common, $route
             if(vertices && vertices.length > 0 && undefined !== vertices[0]) {
                 vm.vertexClass = gafferSchema.types[vertices[0]].class;
             }
+            recalculateSeeds(vm.model);
             if($routeParams[vm.routeParam]) {
                 if(Array.isArray($routeParams[vm.routeParam])) {
                     vm.seedVertices += '\n' + $routeParams[vm.routeParam].join('\n');
@@ -68,7 +69,7 @@ function SeedBuilderController(schema, csv, types, error, events, common, $route
         events.subscribe('onPreExecute', vm.addSeeds);
         events.subscribe('onOperationUpdate', onOperationUpdate);
 
-        recalculateSeeds(vm.model);
+
     }
 
     var onOperationUpdate = function() {
@@ -80,7 +81,7 @@ function SeedBuilderController(schema, csv, types, error, events, common, $route
      * time unnecessary function calls
      */
     vm.$onDestroy = function() {
-        events.unsubscribe('onOperationUpdate', vm.addSeeds)
+        events.unsubscribe('onOperationUpdate', onOperationUpdate)
         events.unsubscribe('onPreExecute', vm.addSeeds);
     }
 

@@ -86,6 +86,7 @@ describe('The seed builder component', function() {
 
         it('should use the class of the first vertex in the schema', function() {
             ctrl.$onInit();
+            spyOn(types, 'getFields').and.returnValue([]);      // stubbed for the purpose of this test
             scope.$digest();
             expect(ctrl.vertexClass).toEqual('my.vertex.Class');
         });
@@ -96,7 +97,18 @@ describe('The seed builder component', function() {
         });
 
         it('should add a string seed from the input service to the input box', function() {
+<<<<<<< HEAD
             ctrl.model = [
+=======
+            spyOn(types, 'getFields').and.returnValue([
+                {
+                    "type": "text",
+                    "class": "java.lang.String",
+                    "required": true
+                }
+            ]);
+            seeds = [
+>>>>>>> origin/develop
                 {
                     valueClass: 'java.lang.String',
                     parts: {
@@ -105,6 +117,7 @@ describe('The seed builder component', function() {
                 }
             ];
             ctrl.$onInit();
+            scope.$digest();
             expect(ctrl.seedVertices).toEqual('test');
         });
 
@@ -204,6 +217,7 @@ describe('The seed builder component', function() {
                 }
             ];
             ctrl.$onInit();
+            scope.$digest();
             expect(ctrl.seedVertices).toEqual('3');
         });
 
@@ -224,6 +238,7 @@ describe('The seed builder component', function() {
                 }
             ];
             ctrl.$onInit();
+            scope.$digest();
             expect(ctrl.seedVertices).toEqual('t,st,v');
         });
 
@@ -244,6 +259,7 @@ describe('The seed builder component', function() {
             ];
 
             ctrl.$onInit();
+            scope.$digest();
             expect(ctrl.seedVertices).toEqual('test\ntest2');
         });
 
