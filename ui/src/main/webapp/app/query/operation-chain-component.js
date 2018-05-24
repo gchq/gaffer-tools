@@ -108,9 +108,23 @@ function OperationChainController(operationChain, config, loading, query, error,
         runQuery(chain.operations, true);
     }
 
-    vm.clearChain = function() {
-        operationChain.reset();
-        vm.operations = operationChain.getOperationChain();
+    vm.resetChain = function(ev) {
+        var confirm = $mdDialog.confirm()
+            .title('Are your sure you want to reset the chain?')
+            .textContent('Once you reset the chain, all your progress will be lost')
+            .ariaLabel('clear operations')
+            .targetEvent(ev)
+            .ok('Reset chain')
+            .cancel('Cancel');
+
+        $mdDialog.show(confirm).then(function() {
+            operationChain.reset();
+            vm.operations = operationChain.getOperationChain();
+        }, function() {
+            // do nothing if they don't want to reset
+        });
+
+
     }
 
     /**
