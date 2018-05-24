@@ -97,9 +97,6 @@ describe('The seed builder component', function() {
         });
 
         it('should add a string seed from the input service to the input box', function() {
-<<<<<<< HEAD
-            ctrl.model = [
-=======
             spyOn(types, 'getFields').and.returnValue([
                 {
                     "type": "text",
@@ -107,8 +104,8 @@ describe('The seed builder component', function() {
                     "required": true
                 }
             ]);
-            seeds = [
->>>>>>> origin/develop
+
+            ctrl.model = [
                 {
                     valueClass: 'java.lang.String',
                     parts: {
@@ -208,6 +205,14 @@ describe('The seed builder component', function() {
         });
 
         it('should add a numerical seed from the model to the input box', function() {
+
+            spyOn(types, 'getFields').and.returnValue([
+                {
+                    'label': 'value',
+                    'type': 'number',
+                    'required': true
+                }
+            ])
             ctrl.model = [
                 {
                     valueClass: 'java.lang.Integer',
@@ -243,6 +248,13 @@ describe('The seed builder component', function() {
         });
 
         it('should add multiple seeds seperated by a newline', function() {
+            spyOn(types, 'getFields').and.returnValue([
+                {
+                    'type': 'text',
+                    'class': 'java.lang.String',
+                    'label': ''
+                }
+            ]);
             ctrl.model = [
                 {
                     valueClass: 'java.lang.String',
