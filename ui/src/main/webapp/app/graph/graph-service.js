@@ -28,6 +28,8 @@ angular.module('app').factory('graph', ['types', '$q', 'results', 'common', 'con
     var tappedBefore;
     var tappedTimeout;
 
+    var configLoaded;
+
     var layoutConf = {
         name: 'cytoscape-ngraph.forcelayout',
         async: {
@@ -43,6 +45,8 @@ angular.module('app').factory('graph', ['types', '$q', 'results', 'common', 'con
         fit: true,
         animate: false
     };
+
+    var styling;
 
     var graphData = {entities: {}, edges: {}};
 
@@ -127,8 +131,24 @@ angular.module('app').factory('graph', ['types', '$q', 'results', 'common', 'con
             ],
             layout: layoutConf,
             elements: [],
-            ready: function(){
-                deferred.resolve( this );
+            ready: function() {
+                deferred.resolve( graphCy );
+                if (!configLoaded) {
+                    config.get().then(function(conf) {
+                        configLoaded = true;
+                        
+                        if (!conf.graph) {
+                            return;
+                        }
+                        if(conf.graph.physics) {
+                            angular.merge(layoutConf.physics, conf.graph.physics);
+                        }
+                        if (conf.graph.style) {
+                            styling = conf.graph.style;
+                        }
+
+                    });
+                }
             }
         });
 
@@ -229,6 +249,14 @@ angular.module('app').factory('graph', ['types', '$q', 'results', 'common', 'con
         }
 
         selectVertex(element.id());
+    }
+
+    var getEdgeStyling = function(group) {
+        return styling && styling.edges && styling.edges[group] ? styling.edges[group] : null;
+    }
+
+    var getNodeStyling = function(group, id) {
+        // not yet implemented
     }
 
     /**
@@ -469,7 +497,8 @@ angular.module('app').factory('graph', ['types', '$q', 'results', 'common', 'con
                    existingEdges.unselect();
                 }
             } else {
-                graphCy.add({
+                var style = getEdgeStyling(edge.group);
+                var elements = graphCy.add({
                     group: 'edges',
                     data: {
                         id: id,
@@ -480,6 +509,10 @@ angular.module('app').factory('graph', ['types', '$q', 'results', 'common', 'con
                     },
                     selected: isSelected
                 });
+
+                if (style) {
+                    elements.css(style);
+                }
             }
         }
         graph.redraw();
