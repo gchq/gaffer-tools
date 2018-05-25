@@ -197,12 +197,12 @@ angular.module('app').factory('types', ['config', 'common', function(config, com
         }
 
         var type = getType(typeClass);
-        if(type.key === undefined && type.fields.length > 1) {
-            return value;
+        
+        if(type === undefined) {
+            return strippedValue;
         }
 
         var parts = {};
-        var type = getType(typeClass);
 
         if (type.custom) {
             return createCustomParts(type, strippedValue);

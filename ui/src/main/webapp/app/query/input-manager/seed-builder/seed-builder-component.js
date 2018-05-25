@@ -49,13 +49,15 @@ function seedBuilder() {
 function SeedBuilderController(schema, csv, types, error, events, common, $routeParams) {
     var vm = this;
     vm.seedVertices = '';
-
+    
     vm.$onInit = function() {
         schema.get().then(function(gafferSchema) {
             var vertices = schema.getSchemaVertices();
             if(vertices && vertices.length > 0 && undefined !== vertices[0]) {
                 vm.vertexClass = gafferSchema.types[vertices[0]].class;
             }
+            var currentInput = vm.getter();
+            recalculateSeeds(currentInput);     
             if($routeParams[vm.routeParam]) {
                 if(Array.isArray($routeParams[vm.routeParam])) {
                     vm.seedVertices += '\n' + $routeParams[vm.routeParam].join('\n');
@@ -65,11 +67,9 @@ function SeedBuilderController(schema, csv, types, error, events, common, $route
                 vm.addSeeds(true);
             }
         });
-        var currentInput = vm.getter();
         
         events.subscribe(vm.updateEvent, recalculateSeeds);
         events.subscribe('onPreExecute', vm.addSeeds);
-        recalculateSeeds(currentInput);
     }
 
     /**
