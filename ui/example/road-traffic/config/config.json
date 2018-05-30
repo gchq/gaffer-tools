@@ -69,6 +69,38 @@
           "target-arrow-color": "#795548",
           "text-outline-color": "#795548"
         }
+      },
+      "vertexTypes": {
+        "junction": {
+          "background-image": "app/img/material-icons/call_split.svg",
+          "height": "24px",
+          "width": "24px"
+        },
+        "road": {
+          "background-image": "app/img/material-icons/directions_car.svg",
+          "height": "24px",
+          "width": "24px"
+        },
+        "location": {
+          "background-image": "app/img/material-icons/pin_drop.svg",
+          "height": "24px",
+          "width": "24px"
+        },
+        "region": {
+          "background-image": "app/img/material-icons/location_search.svg",
+          "height": "24px",
+          "width": "24px"
+        },
+        "coordinates": {
+          "background-image": "app/img/material-icons/my_location.svg",
+          "height": "24px",
+          "width": "24px"
+        }
+      },
+      "entityWrapper": {
+        "height": "36px",
+        "width": "36px"
+        
       }
     }
   },
