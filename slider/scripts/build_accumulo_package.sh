@@ -28,7 +28,7 @@ ACCUMULO_VERSION=$2
 DESTINATION=$3
 BUILD_NATIVE=false
 
-ACCUMULO_1_8_PATCH="diff --git a/app-packages/accumulo/pom.xml b/app-packages/accumulo/pom.xml
+ACCUMULO_PATCH="diff --git a/app-packages/accumulo/pom.xml b/app-packages/accumulo/pom.xml
 index 494dd4b3..c5e3b204 100644
 --- a/app-packages/accumulo/pom.xml
 +++ b/app-packages/accumulo/pom.xml
@@ -60,6 +60,20 @@ index 494dd4b3..c5e3b204 100644
        <groupId>org.apache.accumulo</groupId>
        <artifactId>accumulo-test</artifactId>
        <scope>test</scope>
+diff --git a/app-packages/accumulo/src/main/java/org/apache/slider/accumulo/CustomAuthenticator.java b/app-packages/accumulo/src/main/java/org/apache/slider/accumulo/CustomAuthenticator.java
+index 0f508380..586870b4 100644
+--- a/app-packages/accumulo/src/main/java/org/apache/slider/accumulo/CustomAuthenticator.java
++++ b/app-packages/accumulo/src/main/java/org/apache/slider/accumulo/CustomAuthenticator.java
+@@ -50,8 +50,7 @@ public final class CustomAuthenticator implements Authenticator {
+   public void initializeSecurity(TCredentials credentials, String principal,
+       byte[] token) throws AccumuloSecurityException {
+     String pass = null;
+-    SiteConfiguration siteconf = SiteConfiguration.getInstance(
+-        DefaultConfiguration.getInstance());
++    SiteConfiguration siteconf = SiteConfiguration.getInstance();
+     String jksFile = siteconf.get(
+         Property.GENERAL_SECURITY_CREDENTIAL_PROVIDER_PATHS);
+
 diff --git a/app-packages/accumulo/src/test/groovy/org/apache/slider/funtest/accumulo/AccumuloProxyIT.groovy b/app-packages/accumulo/src/test/groovy/org/apache/slider/funtest/accumulo/AccumuloProxyIT.groovy
 index d25811f4..a9b4c8dc 100644
 --- a/app-packages/accumulo/src/test/groovy/org/apache/slider/funtest/accumulo/AccumuloProxyIT.groovy
@@ -112,10 +126,10 @@ fi
 
 # The Accumulo application package in the Slider repo currently fails to build for Accumulo 1.8.0+
 # Applying a patch to fix this until SLIDER-1249 has been resolved.
-if [[ "$ACCUMULO_VERSION" == 1.8.* ]]; then
+if [[ "$ACCUMULO_VERSION" == 1.8.* || "$ACCUMULO_VERSION" == 1.9.* ]]; then
 	echo "Applying patch for Accumulo 1.8.0+..."
 	cd $TEMP_DIR
-	git apply - <<<"$ACCUMULO_1_8_PATCH"
+	git apply - <<<"$ACCUMULO_PATCH"
 fi
 
 cd $TEMP_DIR/app-packages/accumulo
