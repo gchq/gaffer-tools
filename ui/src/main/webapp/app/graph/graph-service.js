@@ -265,8 +265,36 @@ angular.module('app').factory('graph', ['types', '$q', 'results', 'common', 'con
         return styling && styling.edges && styling.edges[group] ? styling.edges[group] : null;
     }
 
-    var getNodeStyling = function(group, id) {
-        // not yet implemented
+    var getNodeStyling = function(vertexType, id, entityFlag) {
+        var style = null;
+
+        if (!styling) {
+            return null;
+        }
+
+        if (styling.vertexTypes) {
+            style = styling[vertexType];
+        }
+
+        if (styling.fieldOverrides) {
+            var vetexClass = Object.values(vetexType)[0].class;
+            var vertexParts = types.createParts(vertexClass, JSON.parse(id));
+            for (var fieldName in styling.fieldOverrides) {
+                if (vertexParts[fieldName]) {
+                    if (common.objectContainsValue(styling.fieldOverrides[fieldName], vertexParts[fieldName])) {
+                        style = styling.fieldOverrides[fieldName][vertexParts[fieldName]]; 
+                    }
+                }
+            }
+        }
+
+        if (styling.entityWrapper && entityFlag) {
+            if (style) {
+                angular.merge(style, styling.entityWrapper)
+            }
+        }
+
+        return style;
     }
 
     /**
@@ -421,19 +449,24 @@ angular.module('app').factory('graph', ['types', '$q', 'results', 'common', 'con
         for (var id in results.entities) {
             var existingNodes = graphCy.getElementById(id);
             var isSelected = common.objectContainsValue(selectedEntities, id);
+            var style = getNodeStyling(schemaService.getVertexTypeFromEntityGroup(results.entities[id][0].group), id, true);
             if(existingNodes.length > 0) {
-                if(existingNodes.data().radius < 60) {
-                    existingNodes.data('radius', 60);
-                    existingNodes.data('color', '#337ab7');
-                    existingNodes.data('selectedColor', '#204d74');
-                }
+                 
+                existingNodes.data('radius', 60);
+                existingNodes.data('color', '#337ab7');
+                existingNodes.data('selectedColor', '#204d74');
+                
                 if(isSelected) {
                    existingNodes.select();
                 } else {
                    existingNodes.unselect();
                 }
+
+                if (style) {
+                    existingNodes.css(style)
+                }
             } else {
-                graphCy.add({
+                var elements = graphCy.add({
                     group: 'nodes',
                     data: {
                         id: id,
@@ -448,6 +481,9 @@ angular.module('app').factory('graph', ['types', '$q', 'results', 'common', 'con
                     },
                     selected: isSelected
                 });
+                if (style) {
+                    elements.css(style);
+                }
             }
         }
 
@@ -455,6 +491,7 @@ angular.module('app').factory('graph', ['types', '$q', 'results', 'common', 'con
             var edge = results.edges[id][0];
             var existingNodes = graphCy.getElementById(edge.source);
             var isSelected = common.objectContainsValue(selectedEntities, edge.source);
+            var style = getNodeStyling(schema.getVertexTypesFromEdgeGroup(edge.group).source, edge.source, false);
             if(existingNodes.length > 0) {
                 if(isSelected) {
                    existingNodes.select();
@@ -462,7 +499,7 @@ angular.module('app').factory('graph', ['types', '$q', 'results', 'common', 'con
                    existingNodes.unselect();
                 }
             } else {
-                graphCy.add({
+                var elements = graphCy.add({
                     group: 'nodes',
                     data: {
                         id: edge.source,
@@ -477,10 +514,15 @@ angular.module('app').factory('graph', ['types', '$q', 'results', 'common', 'con
                     },
                     selected:isSelected
                 });
+
+                if (style) {
+                    elements.css(style);
+                }
             }
 
             existingNodes = graphCy.getElementById(edge.destination);
             isSelected = common.objectContainsValue(selectedEntities, edge.destination);
+            style = getNodeStyling(schema.getVertexTypesFromEdgeGroup(edge.group).destination, edge.source, false);
             if(existingNodes.length > 0) {
                 if(isSelected) {
                    existingNodes.select();
@@ -488,7 +530,7 @@ angular.module('app').factory('graph', ['types', '$q', 'results', 'common', 'con
                    existingNodes.unselect();
                 }
             } else {
-                graphCy.add({
+                var elements = graphCy.add({
                     group: 'nodes',
                     data: {
                         id: edge.destination,
@@ -503,6 +545,10 @@ angular.module('app').factory('graph', ['types', '$q', 'results', 'common', 'con
                     },
                     selected: isSelected
                 });
+
+                if (style) {
+                    elements.css(style);
+                }
             }
 
             var existingEdges = graphCy.getElementById(id);
@@ -604,39 +650,6 @@ angular.module('app').factory('graph', ['types', '$q', 'results', 'common', 'con
         }
 
         return label;
-    }
-
-    /**
-     * Adds a seed to the graph
-     * @param {String} vertex 
-     */
-    var addEntitySeed = function(vertex){
-        var existingNodes = graphCy.getElementById(vertex);
-        var isSelected = common.objectContainsValue(selectedEntities, vertex);
-        if(existingNodes.length > 0) {
-            if(isSelected) {
-               existingNodes.select();
-            } else {
-               existingNodes.unselect();
-            }
-        } else {
-            graphCy.add({
-                group: 'nodes',
-                data: {
-                    id: vertex,
-                    label: createLabel(vertex),
-                    vertex: vertex,
-                    color: '#888',
-                    selectedColor: '#444',
-                    radius: 20
-                },
-                position: {
-                    x: 100,
-                    y: 100
-                },
-                selected: isSelected
-            });
-        }
     }
 
     /**

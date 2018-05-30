@@ -132,6 +132,35 @@ angular.module('app').factory('schema', ['$http', 'config', '$q', 'common', 'ope
         schemaVertices = vertices;
     }
 
+    schemaService.getVertexTypesFromEdgeGroup = function(group) {
+        if (!schema) {
+            return null;
+        }
+        var vertexTypes = {
+            source: {},
+            destination: {}
+        };
+        
+        var elementDef = schema.edges[group];
+        vertexTypes['source'][ elementDef['source'] ] = schema.types[elementDef['source']];
+        vertexTypes['destination'][ elementDef['destination'] ] = schema.types[elementDef['destination']];
+
+        return vertexTypes;
+    }
+
+    schemaService.getVertexTypeFromEntityGroup = function(group) {
+        if (!schema) {
+            return null;
+        }
+        var vertexType = {};
+        
+        var elementDef = schema.entities[group];
+        
+        vertexType[ elementDef['vertex'] ] = schema.types[elementDef['vertex']];
+
+        return vertexType;
+    }
+
     schemaService.getEntityProperties = function(entity) {
         if(Object.keys(schema.entities[entity].properties).length) {
             return schema.entities[entity].properties;
