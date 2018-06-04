@@ -79,8 +79,8 @@ describe('The Table component', function() {
            {
                type: 'Edge',
                group: 'BasicEdge1',
-               source: "source1",
-               destination: 'destination1',
+               SOURCE: "source1",
+               DESTINATION: 'destination1',
                directed: true,
                count: 1,
                prop1: 'value1'
@@ -88,8 +88,8 @@ describe('The Table component', function() {
            {
                type: 'Edge',
                group: 'BasicEdge1',
-               source: "source2",
-               destination: 'destination2',
+               SOURCE: "source2",
+               DESTINATION: 'destination2',
                directed: true,
                count: 2,
                prop1: 'value2'
@@ -97,8 +97,8 @@ describe('The Table component', function() {
            {
                type: 'Edge',
                group: 'BasicEdge2',
-               source: "source1",
-               destination: 'destination1',
+               SOURCE: "source1",
+               DESTINATION: 'destination1',
                directed: true,
                count: 1,
                prop2: 'value1'
@@ -106,21 +106,21 @@ describe('The Table component', function() {
            {
                type: 'Entity',
                group: 'BasicEntity1',
-               source: 'vertex1',
+               SOURCE: 'vertex1',
                count: 1,
                prop1: 'value1'
            },
            {
                type: 'Entity',
                group: 'BasicEntity1',
-               source: 'vertex2',
+               SOURCE: 'vertex2',
                count: 2,
                prop1: 'value2'
            },
            {
                type: 'Entity',
                group: 'BasicEntity2',
-               source: 'vertex1',
+               SOURCE: 'vertex1',
                count: 1,
                prop2: 'value1'
            },
@@ -140,8 +140,8 @@ describe('The Table component', function() {
                source: 'vertex1'
            }
        ],
-       columns: [ 'type', 'group', 'source', 'destination', 'directed', 'value', 'count', 'prop1', 'prop2' ],
-       allColumns: [ 'type', 'group', 'source', 'destination', 'directed', 'value', 'count', 'prop1', 'prop2' ],
+       columns: [ 'type', 'group', 'SOURCE', 'DESTINATION', 'directed', 'value', 'count', 'prop1', 'prop2' ],
+       allColumns: [ 'type', 'group', 'SOURCE', 'DESTINATION', 'directed', 'value', 'count', 'prop1', 'prop2' ],
        groups: [ 'BasicEdge1', 'BasicEdge2', 'BasicEntity1', 'BasicEntity2', '' ],
        allGroups: [ 'BasicEdge1', 'BasicEdge2', 'BasicEntity1', 'BasicEntity2', '' ],
        types: [ 'Edge', 'Entity', 'String', 'Integer', 'EntitySeed' ],
@@ -358,9 +358,9 @@ describe('The Table component', function() {
                 ctrl.data.types = ["Edge", "String"];
                 ctrl.updateFilteredResults();
                 expect(ctrl.data.results).toEqual([
-                    { type: 'Edge', group: 'BasicEdge1', source: 'source1', destination: 'destination1', directed: true, count: 1, prop1: 'value1' },
-                    { type: 'Edge', group: 'BasicEdge1', source: 'source2', destination: 'destination2', directed: true, count: 2, prop1: 'value2' },
-                    { type: 'Edge', group: 'BasicEdge2', source: 'source1', destination: 'destination1', directed: true, count: 1, prop2: 'value1' },
+                    { type: 'Edge', group: 'BasicEdge1', SOURCE: 'source1', DESTINATION: 'destination1', directed: true, count: 1, prop1: 'value1' },
+                    { type: 'Edge', group: 'BasicEdge1', SOURCE: 'source2', DESTINATION: 'destination2', directed: true, count: 2, prop1: 'value2' },
+                    { type: 'Edge', group: 'BasicEdge2', SOURCE: 'source1', DESTINATION: 'destination1', directed: true, count: 1, prop2: 'value1' },
                     { group: '', type: 'String', value: 'value1' }
                 ]);
             });
@@ -376,21 +376,21 @@ describe('The Table component', function() {
                 ctrl.data.types = ["Edge", "String"];
                 ctrl.updateFilteredResults();
                 expect(ctrl.data.results).toEqual([
-                    { type: 'Edge', group: 'BasicEdge1', source: 'source1', destination: 'destination1', directed: true, count: 1, prop1: 'value1' },
-                    { type: 'Edge', group: 'BasicEdge1', source: 'source2', destination: 'destination2', directed: true, count: 2, prop1: 'value2' },
-                    { type: 'Edge', group: 'BasicEdge2', source: 'source1', destination: 'destination1', directed: true, count: 1, prop2: 'value1' },
+                    { type: 'Edge', group: 'BasicEdge1', SOURCE: 'source1', DESTINATION: 'destination1', directed: true, count: 1, prop1: 'value1' },
+                    { type: 'Edge', group: 'BasicEdge1', SOURCE: 'source2', DESTINATION: 'destination2', directed: true, count: 2, prop1: 'value2' },
+                    { type: 'Edge', group: 'BasicEdge2', SOURCE: 'source1', DESTINATION: 'destination1', directed: true, count: 1, prop2: 'value1' },
                     { group: '', type: 'String', value: 'value1' }
                 ]);
-                expect(ctrl.data.columns).toEqual(['type', 'group', 'source', 'destination', 'directed', 'value', 'count', 'prop1', 'prop2']);
+                expect(ctrl.data.columns).toEqual(['type', 'group', 'SOURCE', 'DESTINATION', 'directed', 'value', 'count', 'prop1', 'prop2']);
 
                 ctrl.data.types = ["Entity"];
                 ctrl.updateFilteredResults();
                 expect(ctrl.data.results).toEqual([
-                    { type: 'Entity', group: 'BasicEntity1', source: 'vertex1', count: 1, prop1: 'value1' },
-                    { type: 'Entity', group: 'BasicEntity1', source: 'vertex2', count: 2, prop1: 'value2' },
-                    { type: 'Entity', group: 'BasicEntity2', source: 'vertex1', count: 1, prop2: 'value1' }
+                    { type: 'Entity', group: 'BasicEntity1', SOURCE: 'vertex1', count: 1, prop1: 'value1' },
+                    { type: 'Entity', group: 'BasicEntity1', SOURCE: 'vertex2', count: 2, prop1: 'value2' },
+                    { type: 'Entity', group: 'BasicEntity2', SOURCE: 'vertex1', count: 1, prop2: 'value1' }
                 ]);
-                expect(ctrl.data.columns).toEqual(['type', 'group', 'source', 'count', 'prop1', 'prop2']);
+                expect(ctrl.data.columns).toEqual(['type', 'group', 'SOURCE', 'count', 'prop1', 'prop2']);
 
                 ctrl.data.types = ["String"];
                 ctrl.updateFilteredResults();

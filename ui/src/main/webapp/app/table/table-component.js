@@ -127,8 +127,8 @@ function TableController(schema, results, table, events, common, types, time) {
         resultsByType = {};
         vm.data.tooltips = {};
 
-        processElements("Edge", "edges", ["type", "group", "source", "destination", "directed"], ids, groupByProperties, properties, resultsData);
-        processElements("Entity", "entities", ["type", "group", "source"], ids, groupByProperties, properties, resultsData);
+        processElements("Edge", "edges", ["type", "group", "SOURCE", "DESTINATION", "directed"], ids, groupByProperties, properties, resultsData);
+        processElements("Entity", "entities", ["type", "group", "SOURCE"], ids, groupByProperties, properties, resultsData);
         processOtherTypes(ids, properties, resultsData);
 
         vm.data.allColumns = common.concatUniqueValues(common.concatUniqueValues(ids, groupByProperties), properties);
@@ -172,10 +172,10 @@ function TableController(schema, results, table, events, common, types, time) {
                     var result = {};
                     for(var idIndex in idKeys) {
                         var id = idKeys[idIndex];
-                        if('source' === id && element.source === undefined) {
+                        if('SOURCE' === id && element.source === undefined) {
                             result[id] = convertValue(id, element.vertex);
                         } else {
-                            result[id] = convertValue(id, element[id]);
+                            result[id] = convertValue(id, element[id.toLowerCase()]);
                         }
                     }
                     result.type = type;
@@ -231,10 +231,10 @@ function TableController(schema, results, table, events, common, types, time) {
                         common.pushValueIfUnique("type", ids);
                     } else if("vertex" === key) {
                         result["source"] = value;
-                        common.pushValueIfUnique("source", ids);
+                        common.pushValueIfUnique("SOURCE", ids);
                     } else if("source" === key) {
-                        result["source"] = value;
-                        common.pushValueIfUnique("source", ids);
+                        result["SOURCE"] = value;
+                        common.pushValueIfUnique("SOURCE", ids);
                     } else if("value" === key) {
                         result[key] = value;
                         common.pushValueIfUnique(key, ids);
