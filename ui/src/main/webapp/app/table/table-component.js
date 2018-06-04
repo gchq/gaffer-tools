@@ -159,7 +159,7 @@ function TableController(schema, results, table, events, common, types, time) {
                 newColumns.push(vm.data.columns[i]);
             }
         }
-        vm.data.columns = newColumns.splice(0, initialNumberOfColumnsToShow + 1);
+        vm.data.columns = newColumns.splice(0, initialNumberOfColumnsToShow);
     }
 
     var processElements = function(type, typePlural, idKeys, ids, groupByProperties, properties, resultsData) {

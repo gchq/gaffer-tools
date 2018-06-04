@@ -140,7 +140,7 @@ describe('The Table component', function() {
                source: 'vertex1'
            }
        ],
-       columns: [ 'type', 'group', 'SOURCE', 'DESTINATION', 'directed', 'value', 'count', 'prop1', 'prop2' ],
+       columns: [ 'type', 'group', 'SOURCE', 'DESTINATION', 'directed', 'value', 'count', 'prop1'],
        allColumns: [ 'type', 'group', 'SOURCE', 'DESTINATION', 'directed', 'value', 'count', 'prop1', 'prop2' ],
        groups: [ 'BasicEdge1', 'BasicEdge2', 'BasicEntity1', 'BasicEntity2', '' ],
        allGroups: [ 'BasicEdge1', 'BasicEdge2', 'BasicEntity1', 'BasicEntity2', '' ],
@@ -381,7 +381,7 @@ describe('The Table component', function() {
                     { type: 'Edge', group: 'BasicEdge2', SOURCE: 'source1', DESTINATION: 'destination1', directed: true, count: 1, prop2: 'value1' },
                     { group: '', type: 'String', value: 'value1' }
                 ]);
-                expect(ctrl.data.columns).toEqual(['type', 'group', 'SOURCE', 'DESTINATION', 'directed', 'value', 'count', 'prop1', 'prop2']);
+                expect(ctrl.data.columns).toEqual(['type', 'group', 'SOURCE', 'DESTINATION', 'directed', 'value', 'count', 'prop1']);
 
                 ctrl.data.types = ["Entity"];
                 ctrl.updateFilteredResults();
@@ -390,7 +390,7 @@ describe('The Table component', function() {
                     { type: 'Entity', group: 'BasicEntity1', SOURCE: 'vertex2', count: 2, prop1: 'value2' },
                     { type: 'Entity', group: 'BasicEntity2', SOURCE: 'vertex1', count: 1, prop2: 'value1' }
                 ]);
-                expect(ctrl.data.columns).toEqual(['type', 'group', 'SOURCE', 'count', 'prop1', 'prop2']);
+                expect(ctrl.data.columns).toEqual(['type', 'group', 'SOURCE', 'count', 'prop1']);
 
                 ctrl.data.types = ["String"];
                 ctrl.updateFilteredResults();
@@ -398,6 +398,39 @@ describe('The Table component', function() {
                     { type: 'String', group: '', value: 'value1' },
                 ]);
                 expect(ctrl.data.columns).toEqual(['type', 'group']);
+            });
+
+            it('should handle property name clashes with "source" and "destination"', function() {
+                resultsData = {
+                    edges: [
+                        {
+                            group: 'BasicEdge1',
+                            source: 'source1',
+                            destination: 'destination1',
+                            directed: true,
+                            properties: {
+                                source: 'abc',
+                                destination: 'dest4',
+                                count: 1,
+                                prop1: 'value1'
+                            }
+                        }
+                    ]
+                }
+
+                spyOn(results, 'get').and.returnValue(resultsData);
+                spyOn(events, 'subscribe');
+                spyOn(table, 'getCachedValues').and.returnValue(cachedValues);
+                ctrl.$onInit();
+                scope.$digest();
+                ctrl.data.types = ["Edge"];
+                ctrl.updateFilteredResults();
+
+                expect(ctrl.data.results).toEqual([
+                    { type: 'Edge', group: 'BasicEdge1', SOURCE: 'source1', DESTINATION: 'destination1', directed: true, count: 1, prop1: 'value1', source: 'abc', destination: 'dest4' }
+                ]);
+                expect(ctrl.data.columns).toEqual(['type', 'group', 'SOURCE', 'DESTINATION', 'directed', 'count', 'source', 'destination']);
+
             });
         });
     });
