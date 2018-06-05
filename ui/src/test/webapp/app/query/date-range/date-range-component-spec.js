@@ -1,5 +1,5 @@
-// testing of the Date range component will be resumed once time zone is made configurable
-// and the date format is made standard across the UI
+// testing of the Date range component will be resumed once time zone is made configurable (gh-519)
+// and the date format is made standard across the UI (gh-506)
 
 // describe('The date range component', function() {
 //     var ctrl;
