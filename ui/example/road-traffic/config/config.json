@@ -47,36 +47,31 @@
         "RoadUse": {
           "line-color": "#9C27B0",
           "target-arrow-color": "#9C27B0",
-          "color": "#FFFFFF",
-          "text-outline-width": 1,
+          "target-arrow-shape": "triangle",
           "text-outline-color": "#9C27B0"
         },
         "JunctionLocatedAt": { 
           "line-color": "#F44336",
           "target-arrow-color": "#F44336",
-          "color": "#FFFFFF",
-          "text-outline-width": 1,
+          "target-arrow-shape": "triangle",
           "text-outline-color": "#F44336"
         },
         "RoadHasJunction": {
           "line-color": "#009688",
           "target-arrow-color": "#009688",
-          "color": "#FFFFFF",
-          "text-outline-width": 1,
+          "target-arrow-shape": "triangle",
           "text-outline-color": "#009688"
         },
         "RegionContainsLocation": {
           "line-color": "#FF9800",
           "target-arrow-color": "#FF9800",
-          "color": "#FFFFFF",
-          "text-outline-width": 1,
+          "target-arrow-shape": "triangle",
           "text-outline-color": "#FF9800"
         },
         "LocationContainsRoad": {
           "line-color": "#795548",
           "target-arrow-color": "#795548",
-          "color": "#FFFFFF",
-          "text-outline-width": 1,
+          "target-arrow-shape": "triangle",
           "text-outline-color": "#795548"
         }
       },
@@ -84,47 +79,31 @@
         "junction": {
           "background-image": "app/img/material-icons/call_split.svg",
           "background-color": "#FFFFFF",
-          "text-valign": "top",
-          "text-outline-color": "#fff",
-          "height": 24,
-          "width": 24
+          "text-valign": "top"
         },
         "road": {
           "background-image": "app/img/material-icons/directions_car.svg",
           "background-color": "#FFFFFF",
-          "text-valign": "top",
-          "text-outline-color": "#fff",
-          "height": 24,
-          "width": 24
+          "text-valign": "top"
         },
         "location": {
           "background-image": "app/img/material-icons/pin_drop.svg",
           "background-color": "#FFFFFF",
-          "text-valign": "top",
-          "text-outline-color": "#fff",
-          "height": 24,
-          "width": 24
+          "text-valign": "top"
         },
         "region": {
           "background-image": "app/img/material-icons/location_searching.svg",
           "background-color": "#FFFFFF",
-          "text-valign": "top",
-          "text-outline-color": "#fff",
-          "height": 24,
-          "width": 24
+          "text-valign": "top"
         },
         "coordinates": {
           "background-image": "app/img/material-icons/my_location.svg",
           "background-color": "#FFFFFF",
-          "text-valign": "top",
-          "text-outline-color": "#fff",
-          "height": 24,
-          "width": 24
+          "text-valign": "top"
         }
       },
       "entityWrapper": {
-        "height": 60,
-        "width": 60,
+        "background-color": "#FFFFFF",
         "border-color": "#55555",
         "border-width": 2
       }

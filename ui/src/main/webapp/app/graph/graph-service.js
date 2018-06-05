@@ -48,6 +48,33 @@ angular.module('app').factory('graph', ['types', '$q', 'results', 'common', 'con
 
     var styling;
 
+    var defaultStyling = {
+        edges: {
+            'curve-style': 'bezier',
+            'min-zoomed-font-size': 30,
+            'text-outline-color': '#538212',
+            'text-outline-width': 3,
+            'line-color': '#538212',
+            'font-size': 14,
+            'color': '#FFFFFF',
+            'width': 5
+        },
+        nodes: {
+            'height': 24,
+            'width': 24,
+            'min-zoomed-font-size': 20,
+            'font-size': 14,
+            'text-outline-color': '#FFFFFF',
+            'background-color': '#888888',
+            'text-outline-width': 3
+        },
+        entityWrapper: {
+            'height': 60,
+            'width': 60,
+            'background-color': '#337ab7'
+        }
+    }
+
     var graphData = {entities: {}, edges: {}};
 
     config.get().then(function(conf) {
@@ -98,8 +125,10 @@ angular.module('app').factory('graph', ['types', '$q', 'results', 'common', 'con
                 },
                 {
                     selector: ':selected',
-                    css: {
-                        'background-blacken': 0.2
+                    style: {
+                        'overlay-color': "#000000",
+                        'overlay-opacity': 0.3,
+                        'overlay-padding': 0
                     }
                 },
                 {
@@ -242,18 +271,30 @@ angular.module('app').factory('graph', ['types', '$q', 'results', 'common', 'con
     }
 
     var getEdgeStyling = function(group) {
-        return styling && styling.edges && styling.edges[group] ? styling.edges[group] : null;
+        if (!styling || !styling.edges || !styling.edges[group]) {
+            return defaultStyling.edges;
+        } 
+
+        var copy = angular.copy(defaultStyling.edges);
+        angular.merge(copy, styling.edges[group]);
+        
+        return copy;
     }
 
     var getNodeStyling = function(vertexType, id) {
-        var style = null;
+        var style = angular.copy(defaultStyling.nodes);
 
-        if (!styling) {
-            return null;
+        if (common.objectContainsValue(graphData.entities, id)) {
+            angular.merge(style, defaultStyling.entityWrapper);
         }
 
-        if (styling.vertexTypes) {
-            style = styling.vertexTypes[Object.keys(vertexType)[0]];
+        if (!styling) {
+            return style;
+        }
+
+        var customVertexStyling = styling.vertexTypes ? styling.vertexTypes[Object.keys(vertexType)[0]] : null;
+        if (customVertexStyling) {
+            angular.merge(style, customVertexStyling);
         }
 
         if (styling.fieldOverrides) {
@@ -262,19 +303,14 @@ angular.module('app').factory('graph', ['types', '$q', 'results', 'common', 'con
             for (var fieldName in styling.fieldOverrides) {
                 if (vertexParts[fieldName]) {
                     if (common.objectContainsValue(styling.fieldOverrides[fieldName], vertexParts[fieldName])) {
-                        style = styling.fieldOverrides[fieldName][vertexParts[fieldName]]; 
+                        angular.merge(style, styling.fieldOverrides[fieldName][vertexParts[fieldName]]); 
                     }
                 }
             }
         }
 
         if (styling.entityWrapper && common.objectContainsValue(graphData.entities, id)) {
-            if (style) {
-                style = angular.copy(style); // avoid mutating original value
                 angular.merge(style, styling.entityWrapper)
-            } else {
-                style = styling.entityWrapper;
-            }
         }
 
         return style;
