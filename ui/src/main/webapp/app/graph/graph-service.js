@@ -57,6 +57,8 @@ angular.module('app').factory('graph', ['types', '$q', 'results', 'common', 'con
             'text-outline-color': '#538212',
             'text-outline-width': 3,
             'line-color': '#538212',
+            'target-arrow-color': '#538212',
+            'target-arrow-shape': 'triangle',
             'font-size': 14,
             'color': '#FFFFFF',
             'width': 5
@@ -66,13 +68,16 @@ angular.module('app').factory('graph', ['types', '$q', 'results', 'common', 'con
             'width': 24,
             'min-zoomed-font-size': 20,
             'font-size': 14,
-            'text-outline-color': '#FFFFFF',
+            'text-valign': 'center',
+            'color': '#FFFFFF',
+            'text-outline-color': '#888888',
             'background-color': '#888888',
             'text-outline-width': 3
         },
         entityWrapper: {
             'height': 60,
             'width': 60,
+            'text-outline-color': '#337ab7',
             'background-color': '#337ab7'
         }
     }
