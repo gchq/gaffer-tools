@@ -129,8 +129,8 @@ angular.module('app').factory('graph', ['types', '$q', 'results', 'common', 'con
                     selector: ':selected',
                     style: {
                         'overlay-color': "#000000",
-                        'overlay-opacity': 0.5,
-                        'overlay-padding': 0
+                        'overlay-opacity': 0.3,
+                        'overlay-padding': 10
                     }
                 },
                 {
