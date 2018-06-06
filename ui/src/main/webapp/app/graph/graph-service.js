@@ -39,6 +39,8 @@ angular.module('app').factory('graph', ['types', '$q', 'results', 'common', 'con
         },
         physics: {
             springLength: 250,
+            gravity: -6,
+            theta: 0.95,
             fit: true
         },
         iterations: 10000,
@@ -127,7 +129,7 @@ angular.module('app').factory('graph', ['types', '$q', 'results', 'common', 'con
                     selector: ':selected',
                     style: {
                         'overlay-color': "#000000",
-                        'overlay-opacity': 0.3,
+                        'overlay-opacity': 0.5,
                         'overlay-padding': 0
                     }
                 },
