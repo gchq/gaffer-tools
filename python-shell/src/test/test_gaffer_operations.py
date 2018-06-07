@@ -1107,7 +1107,8 @@ class GafferOperationsTest(unittest.TestCase):
                 "directedType" : "EITHER",
                 "matchedVertex" : "SOURCE",
                 "class" : "uk.gov.gchq.gaffer.operation.data.EdgeSeed"
-              } ]
+              } ],
+              "seedMatching": "EQUAL"
             }
             ''',
             g.GetElements(
@@ -1121,7 +1122,8 @@ class GafferOperationsTest(unittest.TestCase):
                         destination=3,
                         matched_vertex="SOURCE"
                     )
-                ]
+                ],
+                seed_matching=g.SeedMatchingType.EQUAL
             )
         ],
         [
