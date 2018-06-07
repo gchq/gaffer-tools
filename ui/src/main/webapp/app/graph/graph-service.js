@@ -64,8 +64,8 @@ angular.module('app').factory('graph', ['types', '$q', 'results', 'common', 'con
             'width': 5
         },
         nodes: {
-            'height': 24,
-            'width': 24,
+            'height': 30,
+            'width': 30,
             'min-zoomed-font-size': 20,
             'font-size': 14,
             'text-valign': 'top',

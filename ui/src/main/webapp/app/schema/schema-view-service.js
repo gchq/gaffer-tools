@@ -59,8 +59,8 @@ angular.module('app').factory('schemaView', ['types', '$q', 'common', 'events', 
             'width': 5
         },
         nodes: {
-            'height': 24,
-            'width': 24,
+            'height': 30,
+            'width': 30,
             'font-size': 14,
             'text-valign': 'top',
             'color': '#333333',
