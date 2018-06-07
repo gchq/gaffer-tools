@@ -68,17 +68,17 @@ angular.module('app').factory('graph', ['types', '$q', 'results', 'common', 'con
             'width': 24,
             'min-zoomed-font-size': 20,
             'font-size': 14,
-            'text-valign': 'center',
-            'color': '#FFFFFF',
-            'text-outline-color': '#888888',
-            'background-color': '#888888',
+            'text-valign': 'top',
+            'color': '#333333',
+            'text-outline-color': '#FFFFFF',
+            'background-color': '#FFFFFF',
             'text-outline-width': 3
         },
         entityWrapper: {
             'height': 60,
             'width': 60,
-            'text-outline-color': '#337ab7',
-            'background-color': '#337ab7'
+            'border-width': 2,
+            "border-color": "#55555"
         }
     }
 
@@ -305,7 +305,7 @@ angular.module('app').factory('graph', ['types', '$q', 'results', 'common', 'con
         }
 
         if (styling.fieldOverrides) {
-            var vetexClass = Object.values(vetexType)[0].class;
+            var vertexClass = Object.values(vertexType)[0].class;
             var vertexParts = types.createParts(vertexClass, JSON.parse(id));
             for (var fieldName in styling.fieldOverrides) {
                 if (vertexParts[fieldName]) {

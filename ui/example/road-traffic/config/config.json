@@ -72,40 +72,20 @@
       },
       "vertexTypes": {
         "junction": {
-          "background-image": "app/img/material-icons/call_split.svg",
-          "background-color": "#FFFFFF",
-          "text-outline-width": 0,
-          "text-valign": "top"
+          "background-image": "app/img/material-icons/call_split.svg"
         },
         "road": {
-          "background-image": "app/img/material-icons/directions_car.svg",
-          "background-color": "#FFFFFF",
-          "text-outline-width": 0,
-          "text-valign": "top"
+          "background-image": "app/img/material-icons/directions_car.svg"
         },
         "location": {
-          "background-image": "app/img/material-icons/pin_drop.svg",
-          "background-color": "#FFFFFF",
-          "text-outline-width": 0,
-          "text-valign": "top"
+          "background-image": "app/img/material-icons/pin_drop.svg"
         },
         "region": {
-          "background-image": "app/img/material-icons/location_searching.svg",
-          "background-color": "#FFFFFF",
-          "text-outline-width": 0,
-          "text-valign": "top"
+          "background-image": "app/img/material-icons/location_searching.svg"
         },
         "coordinates": {
-          "background-image": "app/img/material-icons/my_location.svg",
-          "background-color": "#FFFFFF",
-          "text-outline-width": 0,
-          "text-valign": "top"
+          "background-image": "app/img/material-icons/my_location.svg"
         }
-      },
-      "entityWrapper": {
-        "background-color": "#FFFFFF",
-        "border-color": "#55555",
-        "border-width": 2
       }
     }
   },
