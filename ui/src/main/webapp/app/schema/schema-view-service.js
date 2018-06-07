@@ -43,6 +43,41 @@ angular.module('app').factory('schemaView', ['types', '$q', 'common', 'events', 
         animate: false
     };
 
+    var configLoaded;
+    var styling;
+
+    var defaultStyling = {
+        edges: {
+            'curve-style': 'bezier',
+            'min-zoomed-font-size': 30,
+            'text-outline-color': '#538212',
+            'text-outline-width': 3,
+            'line-color': '#538212',
+            'target-arrow-color': '#538212',
+            'target-arrow-shape': 'triangle',
+            'font-size': 14,
+            'color': '#FFFFFF',
+            'width': 5
+        },
+        nodes: {
+            'height': 24,
+            'width': 24,
+            'min-zoomed-font-size': 20,
+            'font-size': 14,
+            'text-valign': 'center',
+            'color': '#FFFFFF',
+            'text-outline-color': '#888888',
+            'background-color': '#888888',
+            'text-outline-width': 3
+        },
+        entityWrapper: {
+            'height': 60,
+            'width': 60,
+            'text-outline-color': '#337ab7',
+            'background-color': '#337ab7'
+        }
+    }
+
     /**
      * Loads cytoscape schemaView onto an element containing the "schemaCy" id. It also registers the 
      * handlers for select and deselect events.
@@ -55,38 +90,21 @@ angular.module('app').factory('schemaView', ['types', '$q', 'common', 'events', 
                 {
                     selector: 'node',
                     style: {
-                        'content': 'data(label)',
-                        'text-valign': 'center',
-                        'background-color': 'data(color)',
-                        'font-size': 14,
-                        'color': '#fff',
-                        'text-outline-color':'data(color)',
-                        'text-outline-width':3,
-                        'width': 'data(radius)',
-                        'height': 'data(radius)'
+                        'content': 'data(label)'
                     }
                 },
                 {
                     selector: 'edge',
                     style: {
-                        'curve-style': 'bezier',
-                        'label': 'data(group)',
-                        'line-color': '#538212',
-                        'target-arrow-color': '#538212',
-                        'target-arrow-shape': 'triangle',
-                        'font-size': 14,
-                        'color': '#fff',
-                        'text-outline-color':'#538212',
-                        'text-outline-width':3,
-                        'width': 5
+                        'label': 'data(group)'
                     }
                 },
                 {
                     selector: ':selected',
-                    css: {
-                        'background-color': 'data(selectedColor)',
-                        'line-color': '#35500F',
-                        'target-arrow-color': '#35500F'
+                    style: {
+                        'overlay-color': "#000000",
+                        'overlay-opacity': 0.3,
+                        'overlay-padding': 10
                     }
                 }
             ],
@@ -94,6 +112,22 @@ angular.module('app').factory('schemaView', ['types', '$q', 'common', 'events', 
             elements: [],
             ready: function(){
                 deferred.resolve( this );
+                if (!configLoaded) {
+                    config.get().then(function(conf) {
+                        configLoaded = true;
+                        
+                        if (!conf.graph) {
+                            return;
+                        }
+                        if(conf.graph.physics) {
+                            angular.merge(layoutConf.physics, conf.graph.physics);
+                        }
+                        if (conf.graph.style) {
+                            styling = conf.graph.style;
+                        }
+
+                    });
+                }
             }
         });
 
