@@ -44,7 +44,7 @@
             <tr md-row>
                 <th md-column ng-repeat="col in ctrl.data.columns"
                     md-order-by="{{col}}">
-                    <md-input-container ng-if="'type' === col">
+                    <md-input-container ng-if="'result type' === col">
                         <md-select
                                 ng-click="$event.stopPropagation();"
                                 ng-model="ctrl.data.types" multiple
@@ -58,7 +58,7 @@
                         </md-select>
                     </md-input-container>
 
-                    <md-input-container ng-if="'group' === col">
+                    <md-input-container ng-if="'GROUP' === col">
                         <md-select
                                 ng-click="$event.stopPropagation();"
                                 ng-model="ctrl.data.groups" multiple
@@ -72,7 +72,7 @@
                         </md-select>
                     </md-input-container>
 
-                    <span ng-if="'type' !== col && 'group' !== col">{{col}}</span>
+                    <span ng-if="'result type' !== col && 'GROUP' !== col">{{col}}</span>
 
                     <span ng-if="'SOURCE' === col">/ VERTEX</span>
 

@@ -127,12 +127,12 @@ function TableController(schema, results, table, events, common, types, time) {
         resultsByType = {};
         vm.data.tooltips = {};
 
-        processElements("Edge", "edges", ["type", "group", "SOURCE", "DESTINATION", "directed"], ids, groupByProperties, properties, resultsData);
-        processElements("Entity", "entities", ["type", "group", "SOURCE"], ids, groupByProperties, properties, resultsData);
+        processElements("Edge", "edges", ["result type", "GROUP", "SOURCE", "DESTINATION", "DIRECTED"], ids, groupByProperties, properties, resultsData);
+        processElements("Entity", "entities", ["result type", "GROUP", "SOURCE"], ids, groupByProperties, properties, resultsData);
         processOtherTypes(ids, properties, resultsData);
 
         vm.data.allColumns = common.concatUniqueValues(common.concatUniqueValues(ids, groupByProperties), properties);
-        vm.data.columns = angular.copy(vm.data.allColumns).splice(0, initialNumberOfColumnsToShow + 1);
+        vm.data.columns = angular.copy(vm.data.allColumns).splice(0, initialNumberOfColumnsToShow);
 
         vm.data.allTypes = [];
         vm.data.allGroups = [];
@@ -178,7 +178,7 @@ function TableController(schema, results, table, events, common, types, time) {
                             result[id] = convertValue(id, element[id.toLowerCase()]);
                         }
                     }
-                    result.type = type;
+                    result['result type'] = type;
 
                     if(element.properties) {
                         if(!(element.group in resultsByType[type])) {
@@ -223,18 +223,19 @@ function TableController(schema, results, table, events, common, types, time) {
         for (var i in resultsData.other) {
             var item = resultsData.other[i];
             if(item) {
-                var result = {group: ''};
+                var result = {GROUP: ''};
                 for(var key in item) {
                     var value = convertValue(key, item[key]);
                     if("class" === key) {
-                        result["type"] = item[key].split(".").pop();
-                        common.pushValueIfUnique("type", ids);
+                        result["result type"] = item[key].split(".").pop();
+                        common.pushValueIfUnique("result type", ids);
                     } else if("vertex" === key) {
-                        result["source"] = value;
-                        common.pushValueIfUnique("SOURCE", ids);
-                    } else if("source" === key) {
                         result["SOURCE"] = value;
                         common.pushValueIfUnique("SOURCE", ids);
+                    } else if("source" === key || 'destination' === key || 'directed' === key || 'group' === key) {
+                        var parsedKey = key.toUpperCase();
+                        result[parsedKey] = value;
+                        common.pushValueIfUnique(parsedKey, ids);
                     } else if("value" === key) {
                         result[key] = value;
                         common.pushValueIfUnique(key, ids);
@@ -243,13 +244,13 @@ function TableController(schema, results, table, events, common, types, time) {
                         common.pushValueIfUnique(key, properties);
                     }
                 }
-                if(!(result.type in resultsByType)) {
-                    resultsByType[result.type] = {};
+                if(!(result['result type'] in resultsByType)) {
+                    resultsByType[result['result type']] = {};
                 }
-                if(!(result.group in resultsByType[result.type])) {
-                    resultsByType[result.type][result.group] = [];
+                if(!(result.GROUP in resultsByType[result['result type']])) {
+                    resultsByType[result['result type']][result.GROUP] = [];
                 }
-                resultsByType[result.type][result.group].push(result);
+                resultsByType[result['result type']][result.GROUP].push(result);
             }
         }
     }
