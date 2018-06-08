@@ -414,6 +414,29 @@ describe('The Table component', function() {
                 expect(ctrl.data.columns).toEqual(['result type', 'GROUP']);
             });
 
+            it('should convert string properties which are numbers into their numerical value', function() {
+                resultsData = {
+                    entities: [
+                            {
+                            group: 'aGroup',
+                            vertex: 'a',
+                            properties: {
+                                numberProp: '123'
+                            }
+                        }
+                    ]
+                }
+
+                spyOn(results, 'get').and.returnValue(resultsData);
+                spyOn(table, 'getCachedValues').and.returnValue(cachedValues);
+                ctrl.$onInit();
+                scope.$digest();
+                ctrl.data.types = ["Entity"];
+                ctrl.updateFilteredResults();
+
+                expect(ctrl.data.results[0]['numberProp']).toEqual(123);
+            });
+
             it('should handle property name clashes with "source" and "destination"', function() {
                 resultsData = {
                     edges: [
@@ -446,5 +469,20 @@ describe('The Table component', function() {
 
             });
         });
+
+        describe('ctrl.getValue()', function() {
+            beforeEach(function() {
+                ctrl.sortType = 'a property with spaces';
+            });
+
+            it('should wrap the sort property with quotes', function() {
+                expect(ctrl.getValue()).toEqual('"a property with spaces"');
+            });
+
+            it('should wrap a property with a minus sign after the minus', function() {
+                ctrl.sortType = '-' + ctrl.sortType;
+                expect(ctrl.getValue()).toEqual('-"a property with spaces"');
+            });
+        })
     });
 });

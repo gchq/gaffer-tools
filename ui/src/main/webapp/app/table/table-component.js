@@ -267,8 +267,24 @@ function TableController(schema, results, table, events, common, types, time) {
             if(time.isTimeProperty(name)) {
                 parsedValue = time.getDateString(name, parsedValue);
             }
+
+            if (typeof parsedValue === 'string' && !isNaN(parsedValue)) {
+                parsedValue = +parsedValue;
+            }
         }
         return parsedValue;
+    }
+
+    vm.getValue = function() {
+        if (!vm.sortType) {
+            return "";
+        }
+
+        if (common.startsWith(vm.sortType, '-')) {
+            return '-"' + vm.sortType.substring(1) + '"'
+        }
+
+        return '"' + vm.sortType + '"';
     }
 
     var loadFromCache = function() {
