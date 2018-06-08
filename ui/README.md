@@ -441,7 +441,7 @@ To add styling, update your config file like this:
 }
 ```
 
-For all the examples of what you can customise check out [cytoscape.js](http://js.cytoscape.org/#style)
+For all the examples of what you can customise check out [Cytoscape.js](http://js.cytoscape.org/#style)
 We have all the material design icons [here](https://github.com/gchq/gaffer-tools/blob/master/ui/src/main/webapp/app/img/material-icons) which you can use as background images. There are examples of how to do this in the [road traffic](https://github.com/gchq/gaffer-tools/blob/master/ui/example/road-traffic/config/config.json) and [type-subtype-value](https://github.com/gchq/gaffer-tools/blob/master/ui/example/type-subtype-value/config/config.json) config files.
 
 If you're using a simple string or number as your vertex, use "undefined" as your key. Otherwise you'll need to use the field
