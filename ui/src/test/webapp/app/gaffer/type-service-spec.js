@@ -348,6 +348,17 @@ describe('The type service', function() {
             expect(value).toEqual(expected);
         });
 
+        it('should use the keys present in incomplete POJOs', function() {
+            var value = service.createParts('uk.gov.gchq.gaffer.types.TypeSubTypeValue', {'uk.gov.gchq.gaffer.types.TypeSubTypeValue': {'value': 'v'}})
+            var expected = {
+                'type': undefined,
+                'subType': undefined,
+                'value': 'v'
+            }
+
+            expect(value).toEqual(expected);
+        });
+
         it('should use the specified keys for custom objects', function() {
             var value = service.createParts('com.clearspring.analytics.stream.cardinality.HyperLogLogPlus', { "hyperLogLogPlus": { "cardinality": 30 }})
             var expected = {'hyperLogLogPlus.cardinality': 30};
