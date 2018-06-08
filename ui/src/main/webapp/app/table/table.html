@@ -50,7 +50,7 @@
                                 ng-model="ctrl.data.types" multiple
                                 ng-change="ctrl.updateFilteredResults()"
                                 aria-label="data type"
-                                md-selected-text="ctrl.selectedTypesText()">
+                                md-selected-text="ctrl.typeColumnName">
                             <md-option ng-value="type"
                                        ng-repeat="type in ctrl.data.allTypes">
                                 {{type}}
@@ -64,7 +64,7 @@
                                 ng-model="ctrl.data.groups" multiple
                                 ng-change="ctrl.updateFilteredResults()"
                                 aria-label="element type"
-                                md-selected-text="ctrl.selectedGroupsText()">
+                                md-selected-text="ctrl.groupColumnName">
                             <md-option ng-value="group"
                                        ng-repeat="group in ctrl.data.allGroups">
                                 {{group}}

@@ -46,6 +46,9 @@ function TableController(schema, results, table, events, common, types, time) {
     vm.sortType = undefined;
     vm.schema = {edges:{}, entities:{}, types:{}};
 
+    vm.groupColumnName = 'GROUP';
+    vm.typeColumnName = 'result type';
+
     /**
      * Initialises the controller.
      * Fetches the schema. Fetches the results and processes them.
@@ -88,20 +91,6 @@ function TableController(schema, results, table, events, common, types, time) {
             }
         }
         updateColumns();
-    }
-
-    /*
-     * Text for the select types component - 'type'
-     */
-    vm.selectedTypesText = function() {
-        return "type";
-    }
-
-    /*
-     * Text for the select groups component - 'group'
-     */
-    vm.selectedGroupsText = function() {
-        return "group";
     }
 
     /*
