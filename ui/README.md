@@ -22,9 +22,10 @@ UI
 3. [Federated Store Demo](#federated-store-demo)
 4. [Configuration](#configuration)
     - [Rest Endpoint](#rest-endpoint)
-    - [Operations section](#operations-section)
-    - [Types section](#types-section)
-    - [Time section](#time-section)
+    - [Operations](#operations)
+    - [Types](#types)
+    - [Time](#time)
+    - [Graph](#graph)
 5. [Testing](#testing)
 
 
@@ -289,7 +290,7 @@ An example of a changed rest endpoint:
 ```
 
 
-### Operations section
+### Operations
 
 The operations section allows you to choose whether to load named operations on startup as well
 as what operations should be available by default.
@@ -320,7 +321,7 @@ the UI what options it has for a given operations - whether it uses a view or pa
 
 If you want to allow Named Operations which use an operation which uses takes pairs of inputs, make sure the first operation is added to the default available operations.
 
-### Types section
+### Types
 
 The types section of the configuration tells the UI how to interpret and show java objects. You will need to figure out
 how you want to visualise certain objects. It is advisable to create a type for every Java object the UI will come
@@ -367,7 +368,7 @@ the key is 'hyperLogLogPlus.cardinality' because the cardinality is the only mea
 
 ```
 
-### Time section
+### Time
 
 Use the time section if you want to specify a date range filter easily across all elements in your queries.
 In the time section, you will create a filter object which contains all the necessary values needed to create a time
@@ -389,9 +390,10 @@ To use the time window feature, some assumptions should be true:
 
 It's worth noting that if your elements have a single timestamp, just use the same timestamp property in the startProperty and endProperty
 
-### Graph section
+### Graph
+
 The graph section allows you to configure the graph view. 
-Currently you are limited to configuring the physics used to draw the graph.
+An admin can customise the physics which guide the graph, as well as provide styling for the nodes and edges.
 The default graph physics are:
 
 ```json
@@ -407,6 +409,43 @@ The default graph physics are:
 
 For more information about the configuration of the graph physics and to 
 see the algorithm, please see: https://github.com/nickolasmv/cytoscape-ngraph.forcelayout
+
+As well as the physics, an admin can determine the styling of nodes and edges of their graph based on things like edge type,
+vertex fields and vertex type.
+
+To add styling, update your config file like this:
+
+```json
+{
+    "graph": {
+        "styling": {
+            "edges": {
+                "exampleEdgeGroup": {
+                    "line-color": "#000000"
+                }
+            },
+            "nodes": {
+                "exampleVertexType": {
+                    "background-color": "#00ffff"
+                }
+            },
+            "fieldOverrides": {
+                "fieldName": {
+                    "fieldValue": {
+                        "background-image": "path/to/icon.svg"
+                    }
+                }
+            }
+        }
+    }
+}
+```
+
+For all the examples of what you can customise check out [cytoscape.js](http://js.cytoscape.org/#style)
+We have all the material design icons [here](https://github.com/gchq/gaffer-tools/blob/master/ui/src/main/webapp/app/img/material-icons) which you can use as background images. There are examples of how to do this in the [road traffic](https://github.com/gchq/gaffer-tools/blob/master/ui/example/road-traffic/config/config.json) and [type-subtype-value](https://github.com/gchq/gaffer-tools/blob/master/ui/example/type-subtype-value/config/config.json) config files.
+
+If you're using a simple string or number as your vertex, use "undefined" as your key. Otherwise you'll need to use the field
+name specified in the [types section](#types).
 
 ## Testing
 
