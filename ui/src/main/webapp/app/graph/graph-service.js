@@ -68,7 +68,7 @@ angular.module('app').factory('graph', ['types', '$q', 'results', 'common', 'con
             'width': 30,
             'min-zoomed-font-size': 20,
             'font-size': 14,
-            'text-valign': 'top',
+            'text-valign': 'center',
             'color': '#333333',
             'text-outline-color': '#FFFFFF',
             'background-color': '#FFFFFF',

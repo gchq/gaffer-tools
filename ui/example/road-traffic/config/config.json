@@ -72,19 +72,24 @@
       },
       "vertexTypes": {
         "junction": {
-          "background-image": "app/img/material-icons/call_split.svg"
+          "background-image": "app/img/material-icons/call_split.svg",
+          "text-valign": "top"
         },
         "road": {
-          "background-image": "app/img/material-icons/directions_car.svg"
+          "background-image": "app/img/material-icons/directions_car.svg",
+          "text-valign": "top"
         },
         "location": {
-          "background-image": "app/img/material-icons/pin_drop.svg"
+          "background-image": "app/img/material-icons/pin_drop.svg",
+          "text-valign": "top"
         },
         "region": {
-          "background-image": "app/img/material-icons/location_searching.svg"
+          "background-image": "app/img/material-icons/location_searching.svg",
+          "text-valign": "top"
         },
         "coordinates": {
-          "background-image": "app/img/material-icons/my_location.svg"
+          "background-image": "app/img/material-icons/my_location.svg",
+          "text-valign": "top"
         }
       }
     }

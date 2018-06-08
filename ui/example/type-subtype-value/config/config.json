@@ -19,7 +19,8 @@
       },
       "vertexTypes": {
         "vertex": {
-          "background-image": "app/img/material-icons/filter.svg"
+          "background-image": "app/img/material-icons/filter.svg",
+          "text-valign": "top"
         }
       },
       "fieldOverrides": {
