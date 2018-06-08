@@ -63,6 +63,11 @@ md-nav-bar > div > nav {
     position: fixed !important;
 }
 
+#seedVertices[disabled], #pairs-input[disabled] {
+    opacity: 0.8;
+    border-style: dotted
+}
+
 .loading-container {
     height: 30px;
     width: 30px;

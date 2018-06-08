@@ -73,6 +73,13 @@ function PairBuilderController(schema, csv, types, error, events, common, $route
     }
 
     /**
+     * Creates the placeholder for the pair input
+     */
+    vm.getPlaceHolder = function() {
+        return vm.usePrevious ? "Input is provided by the output of the previous operation" : "Enter your pairs of seeds, each pair on a new line.\n" + vm.createExample();
+    }
+
+    /**
      * At the end of the component's lifecycle, it unsubscribes from the event service to reduce
      * unnecessary function calls
      */

@@ -304,6 +304,18 @@ describe('The seed builder component', function() {
         });
     });
 
+    describe('ctrl.getPlaceHolder()', function() {
+        it('should tell the user to enter their seeds', function() {
+            spyOn(ctrl, 'getCsvHeader').and.returnValue('type,value');
+            expect(ctrl.getPlaceHolder()).toEqual('Enter your seeds, each seed on a new line\ntype,value');
+        });
+
+        it('should tell the user that the input is being provided by the output of the previous operation', function() {
+            ctrl.usePrevious = true;
+            expect(ctrl.getPlaceHolder()).toEqual('Input is provided by the output of the previous operation');
+        });
+    });
+
     describe('ctrl.getCsvHeader()', function() {
         it('should call types.getCsvHeader() with the vertex class as the argument', function() {
             spyOn(types, 'getCsvHeader').and.stub();
