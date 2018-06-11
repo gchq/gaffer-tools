@@ -46,6 +46,9 @@ function TableController(schema, results, table, events, common, types, time) {
     vm.sortType = undefined;
     vm.schema = {edges:{}, entities:{}, types:{}};
 
+    vm.groupColumnName = 'GROUP';
+    vm.typeColumnName = 'result type';
+
     /**
      * Initialises the controller.
      * Fetches the schema. Fetches the results and processes them.
@@ -91,20 +94,6 @@ function TableController(schema, results, table, events, common, types, time) {
     }
 
     /*
-     * Text for the select types component - 'type'
-     */
-    vm.selectedTypesText = function() {
-        return "type";
-    }
-
-    /*
-     * Text for the select groups component - 'group'
-     */
-    vm.selectedGroupsText = function() {
-        return "group";
-    }
-
-    /*
      * Text for the select columns component.
      * 'Choose columns' and conditionally shows 'X more' if there are hidden columns.
      */
@@ -127,12 +116,12 @@ function TableController(schema, results, table, events, common, types, time) {
         resultsByType = {};
         vm.data.tooltips = {};
 
-        processElements("Edge", "edges", ["type", "group", "source", "destination", "directed"], ids, groupByProperties, properties, resultsData);
-        processElements("Entity", "entities", ["type", "group", "source"], ids, groupByProperties, properties, resultsData);
+        processElements("Edge", "edges", ["result type", "GROUP", "SOURCE", "DESTINATION", "DIRECTED"], ids, groupByProperties, properties, resultsData);
+        processElements("Entity", "entities", ["result type", "GROUP", "SOURCE"], ids, groupByProperties, properties, resultsData);
         processOtherTypes(ids, properties, resultsData);
 
         vm.data.allColumns = common.concatUniqueValues(common.concatUniqueValues(ids, groupByProperties), properties);
-        vm.data.columns = angular.copy(vm.data.allColumns).splice(0, initialNumberOfColumnsToShow + 1);
+        vm.data.columns = angular.copy(vm.data.allColumns).splice(0, initialNumberOfColumnsToShow);
 
         vm.data.allTypes = [];
         vm.data.allGroups = [];
@@ -159,7 +148,7 @@ function TableController(schema, results, table, events, common, types, time) {
                 newColumns.push(vm.data.columns[i]);
             }
         }
-        vm.data.columns = newColumns.splice(0, initialNumberOfColumnsToShow + 1);
+        vm.data.columns = newColumns.splice(0, initialNumberOfColumnsToShow);
     }
 
     var processElements = function(type, typePlural, idKeys, ids, groupByProperties, properties, resultsData) {
@@ -172,13 +161,13 @@ function TableController(schema, results, table, events, common, types, time) {
                     var result = {};
                     for(var idIndex in idKeys) {
                         var id = idKeys[idIndex];
-                        if('source' === id && element.source === undefined) {
+                        if('SOURCE' === id && element.source === undefined) {
                             result[id] = convertValue(id, element.vertex);
                         } else {
-                            result[id] = convertValue(id, element[id]);
+                            result[id] = convertValue(id, element[id.toLowerCase()]);
                         }
                     }
-                    result.type = type;
+                    result['result type'] = type;
 
                     if(element.properties) {
                         if(!(element.group in resultsByType[type])) {
@@ -223,18 +212,19 @@ function TableController(schema, results, table, events, common, types, time) {
         for (var i in resultsData.other) {
             var item = resultsData.other[i];
             if(item) {
-                var result = {group: ''};
+                var result = {GROUP: ''};
                 for(var key in item) {
                     var value = convertValue(key, item[key]);
                     if("class" === key) {
-                        result["type"] = item[key].split(".").pop();
-                        common.pushValueIfUnique("type", ids);
+                        result["result type"] = item[key].split(".").pop();
+                        common.pushValueIfUnique("result type", ids);
                     } else if("vertex" === key) {
-                        result["source"] = value;
-                        common.pushValueIfUnique("source", ids);
-                    } else if("source" === key) {
-                        result["source"] = value;
-                        common.pushValueIfUnique("source", ids);
+                        result["SOURCE"] = value;
+                        common.pushValueIfUnique("SOURCE", ids);
+                    } else if("source" === key || 'destination' === key || 'directed' === key || 'group' === key) {
+                        var parsedKey = key.toUpperCase();
+                        result[parsedKey] = value;
+                        common.pushValueIfUnique(parsedKey, ids);
                     } else if("value" === key) {
                         result[key] = value;
                         common.pushValueIfUnique(key, ids);
@@ -243,13 +233,13 @@ function TableController(schema, results, table, events, common, types, time) {
                         common.pushValueIfUnique(key, properties);
                     }
                 }
-                if(!(result.type in resultsByType)) {
-                    resultsByType[result.type] = {};
+                if(!(result['result type'] in resultsByType)) {
+                    resultsByType[result['result type']] = {};
                 }
-                if(!(result.group in resultsByType[result.type])) {
-                    resultsByType[result.type][result.group] = [];
+                if(!(result.GROUP in resultsByType[result['result type']])) {
+                    resultsByType[result['result type']][result.GROUP] = [];
                 }
-                resultsByType[result.type][result.group].push(result);
+                resultsByType[result['result type']][result.GROUP].push(result);
             }
         }
     }
@@ -266,8 +256,24 @@ function TableController(schema, results, table, events, common, types, time) {
             if(time.isTimeProperty(name)) {
                 parsedValue = time.getDateString(name, parsedValue);
             }
+
+            if (typeof parsedValue === 'string' && !isNaN(parsedValue)) {
+                parsedValue = +parsedValue;
+            }
         }
         return parsedValue;
+    }
+
+    vm.getValue = function() {
+        if (!vm.sortType) {
+            return "";
+        }
+
+        if (common.startsWith(vm.sortType, '-')) {
+            return '-"' + vm.sortType.substring(1) + '"'
+        }
+
+        return '"' + vm.sortType + '"';
     }
 
     var loadFromCache = function() {
