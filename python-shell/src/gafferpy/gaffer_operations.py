@@ -990,7 +990,9 @@ class GetOperation(Operation):
                  view=None,
                  directed_type=None,
                  include_incoming_out_going=None,
+                 # deprecated, use seed_matching instead
                  seed_matching_type=None,
+                 seed_matching=None,
                  options=None):
         super().__init__(
             _class_name=_class_name,
@@ -1004,7 +1006,9 @@ class GetOperation(Operation):
         self.input = input
         self.directed_type = directed_type
         self.include_incoming_out_going = include_incoming_out_going
-        self.seed_matching_type = seed_matching_type
+        self.seed_matching = seed_matching_type
+        if seed_matching is not None:
+            self.seed_matching = seed_matching
 
     def to_json(self):
         operation = super().to_json()
@@ -1024,8 +1028,8 @@ class GetOperation(Operation):
                     json_seeds.append(EntitySeed(self.input).to_json())
             operation['input'] = json_seeds
 
-        if self.seed_matching_type is not None:
-            operation['seedMatching'] = self.seed_matching_type
+        if self.seed_matching is not None:
+            operation['seedMatching'] = self.seed_matching
         if self.include_incoming_out_going is not None:
             if self.directed_type is not None:
                 operation['directedType'] = self.directed_type
@@ -1043,6 +1047,8 @@ class GetElements(GetOperation):
                  directed_type=None,
                  include_incoming_out_going=None,
                  seed_matching_type=None,
+                 # deprecated, use seed_matching instead
+                 seed_matching=None,
                  options=None):
         super().__init__(
             _class_name=self.CLASS,
@@ -1051,6 +1057,7 @@ class GetElements(GetOperation):
             directed_type=directed_type,
             include_incoming_out_going=include_incoming_out_going,
             seed_matching_type=seed_matching_type,
+            seed_matching=seed_matching,
             options=options)
 
 
@@ -1069,6 +1076,7 @@ class GetAdjacentIds(GetOperation):
             directed_type=None,
             include_incoming_out_going=include_incoming_out_going,
             seed_matching_type=None,
+            seed_matching=None,
             options=options)
 
 
@@ -1104,6 +1112,7 @@ class NamedOperation(GetOperation):
             directed_type=None,
             include_incoming_out_going=None,
             seed_matching_type=None,
+            seed_matching=None,
             options=options)
         self.operation_name = operation_name
         self.parameters = parameters
@@ -1793,7 +1802,9 @@ class GetElementsBetweenSets(GetOperation):
                  view=None,
                  directed_type=None,
                  include_incoming_out_going=None,
+                 # deprecated, use seed_matching instead
                  seed_matching_type=None,
+                 seed_matching=None,
                  options=None):
         super().__init__(
             _class_name=self.CLASS,
@@ -1802,6 +1813,7 @@ class GetElementsBetweenSets(GetOperation):
             directed_type=directed_type,
             include_incoming_out_going=include_incoming_out_going,
             seed_matching_type=seed_matching_type,
+            seed_matching=seed_matching,
             options=options)
         self.input_b = input_b
 
@@ -1847,7 +1859,9 @@ class GetElementsInRanges(GetOperation):
                  view=None,
                  directed_type=None,
                  include_incoming_out_going=None,
+                 # deprecated, use seed_matching instead
                  seed_matching_type=None,
+                 seed_matching=None,
                  options=None):
         super().__init__(
             _class_name=self.CLASS,
@@ -1856,6 +1870,7 @@ class GetElementsInRanges(GetOperation):
             directed_type=directed_type,
             include_incoming_out_going=include_incoming_out_going,
             seed_matching_type=seed_matching_type,
+            seed_matching=seed_matching,
             options=options)
         self.input = input
 

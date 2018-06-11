@@ -211,7 +211,7 @@ angular.module('app').factory('types', ['config', 'common', function(config, com
         for(var i in type.fields) {
             var key = type.fields[i].key;
 
-            parts[key] = strippedValue[key] ? strippedValue[key] : strippedValue;
+            parts[key] = key ? strippedValue[key] : strippedValue;
         }
 
         return parts;
