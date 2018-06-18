@@ -44,13 +44,13 @@
             <tr md-row>
                 <th md-column ng-repeat="col in ctrl.data.columns"
                     md-order-by="{{col}}">
-                    <md-input-container ng-if="'type' === col">
+                    <md-input-container ng-if="'result type' === col">
                         <md-select
                                 ng-click="$event.stopPropagation();"
                                 ng-model="ctrl.data.types" multiple
                                 ng-change="ctrl.updateFilteredResults()"
                                 aria-label="data type"
-                                md-selected-text="ctrl.selectedTypesText()">
+                                md-selected-text="ctrl.typeColumnName">
                             <md-option ng-value="type"
                                        ng-repeat="type in ctrl.data.allTypes">
                                 {{type}}
@@ -58,13 +58,13 @@
                         </md-select>
                     </md-input-container>
 
-                    <md-input-container ng-if="'group' === col">
+                    <md-input-container ng-if="'GROUP' === col">
                         <md-select
                                 ng-click="$event.stopPropagation();"
                                 ng-model="ctrl.data.groups" multiple
                                 ng-change="ctrl.updateFilteredResults()"
                                 aria-label="element type"
-                                md-selected-text="ctrl.selectedGroupsText()">
+                                md-selected-text="ctrl.groupColumnName">
                             <md-option ng-value="group"
                                        ng-repeat="group in ctrl.data.allGroups">
                                 {{group}}
@@ -72,9 +72,9 @@
                         </md-select>
                     </md-input-container>
 
-                    <span ng-if="'type' !== col && 'group' !== col">{{col}}</span>
+                    <span ng-if="'result type' !== col && 'GROUP' !== col">{{col}}</span>
 
-                    <span ng-if="'source' === col">/ vertex</span>
+                    <span ng-if="'SOURCE' === col">/ VERTEX</span>
 
                     <md-tooltip md-direction="top"
                                 ng-if="ctrl.data.tooltips[col]">
@@ -90,7 +90,7 @@
             </thead>
             <tbody md-body>
             <tr md-row
-                ng-repeat="result in ctrl.data.results | orderBy:ctrl.sortType | filter:ctrl.searchTerm">
+                ng-repeat="result in ctrl.data.results | orderBy:ctrl.getValue() | filter:ctrl.searchTerm">
                 <td md-cell ng-repeat="col in ctrl.data.columns">
                     {{result[col]}}
                 </td>
