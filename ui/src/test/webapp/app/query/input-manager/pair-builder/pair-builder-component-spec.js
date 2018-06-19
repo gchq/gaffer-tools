@@ -343,8 +343,8 @@ describe('The pair builder component', function() {
 
     describe('ctrl.getPlaceHolder()', function() {
         it('should tell the user to enter their pairs of seeds', function() {
-            spyOn(ctrl, 'getCsvHeader').and.returnValue('type,value');
-            expect(ctrl.getPlaceHolder()).toEqual('Enter your pairs of seeds, each pair on a new line\ntype,value,type,value');
+            spyOn(types, 'getCsvHeader').and.returnValue('type,value');
+            expect(ctrl.getPlaceHolder()).toEqual('Enter your pairs of seeds, each pair on a new line.\ntype,value,type,value');
         });
 
         it('should tell the user that the input is being provided by the output of the previous operation', function() {
