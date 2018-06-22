@@ -37,6 +37,18 @@ function DateRangeController(dateRange, time) {
     vm.startTime=null
     vm.endTime=null
 
+    vm.localeProviderOverride = {
+        parseDate:  function(dateString) {
+            var m = moment(dateString, ['YYYY-MM-DD', 'YYYY/MM/DD', 'YYYY.MM.DD'], true);
+            return m.isValid() ? m.toDate() : new Date(NaN);
+        },
+
+        formatDate: function(date) {
+            var m = moment(date);
+            return m.isValid() ? m.format('YYYY-MM-DD') : '';
+        }
+    }
+
 
     vm.$onInit = function() {
         if (!vm.conf) {
