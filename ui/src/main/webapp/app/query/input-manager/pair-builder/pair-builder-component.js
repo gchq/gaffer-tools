@@ -43,7 +43,7 @@ function pairBuilder() {
  * @param {*} common The common service
  * @param {*} $routeParams The route params service
  */
-function PairBuilderController(schema, csv, types, error, events, common, $routeParams) {
+function PairBuilderController(schema, csv, types, error, events, common, $routeParams, $location) {
     var vm = this;
     vm.pairs = '';
 
@@ -60,6 +60,7 @@ function PairBuilderController(schema, csv, types, error, events, common, $route
                     vm.pairs += '\n' + $routeParams['input'];
                 }
                 vm.addPairs(true);
+                $location.search('input', null);
             }
         });
         

@@ -45,7 +45,7 @@ function seedBuilder() {
  * @param {*} common The common service
  * @param {*} $routeParams The route params service
  */
-function SeedBuilderController(schema, csv, types, error, events, common, $routeParams) {
+function SeedBuilderController(schema, csv, types, error, events, common, $routeParams, $location) {
     var vm = this;
     vm.seedVertices = '';
 
@@ -63,7 +63,9 @@ function SeedBuilderController(schema, csv, types, error, events, common, $route
                     vm.seedVertices += '\n' + $routeParams[vm.routeParam];
                 }
                 vm.addSeeds(true);
+                $location.search(vm.routeParam, null);
             }
+            
         });
         
         events.subscribe('onPreExecute', vm.addSeeds);
