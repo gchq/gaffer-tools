@@ -133,7 +133,7 @@ angular.module('app').factory('schema', ['$http', 'config', '$q', 'common', 'ope
     }
 
     schemaService.getVertexTypesFromEdgeGroup = function(group) {
-        if (!schema) {
+        if (!schema || !schema.edges[group]) {
             return {source: null, destination: null};
         }
         var vertexTypes = {
@@ -149,7 +149,7 @@ angular.module('app').factory('schema', ['$http', 'config', '$q', 'common', 'ope
     }
 
     schemaService.getVertexTypeFromEntityGroup = function(group) {
-        if (!schema) {
+        if (!schema || !schema.entities[group]) {
             return null;
         }
         var vertexType = {};
