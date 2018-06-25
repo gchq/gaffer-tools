@@ -16,6 +16,11 @@ ng-view {
     margin: 0px;
 }
 
+.no-vertical-margin {
+    margin-top: 0px;
+    margin-bottom: 0px;
+}
+
 .content {
     height: 100%;
     width: 100%;
@@ -50,8 +55,17 @@ md-nav-bar > div > nav {
     margin-left: 8px;
 }
 
+.overlapping-fab {
+    bottom: 40px;
+}
+
 .submit-bottom-right {
     position: fixed !important;
+}
+
+#seedVertices[disabled], #pairs-input[disabled] {
+    opacity: 0.8;
+    border-style: dotted
 }
 
 .loading-container {
@@ -196,6 +210,10 @@ md-list-item.active button {
     background-color: rgba(0,0,0,0.2);
 }
 
+md-list-item.active div div button {
+    background-color: inherit;
+}
+
 md-content md-toolbar {
     height: 40px;
     min-height: 40px;
@@ -250,4 +268,48 @@ md-tab-data{
 
 #graphCy {
     z-index: 1
+}
+
+.operation-content.ng-hide-add, .operation.ng-leave {
+    transition: 0.4s ease-in-out all;
+    max-height: 3000px;
+    opacity: 1;
+}
+
+.operation-content.ng-hide-add-active, .operation.ng-leave-active {
+    max-height: 0px;
+    opacity: 0;
+}
+
+.operation-content.ng-hide-remove, .operation.ng-enter {
+    max-height: 0px;
+    transition: 0.4s ease-in-out all;
+    opacity: 0;
+}
+
+.operation-content.ng-hide-remove-active, .operation.ng-enter-active {
+    max-height: 3000px;
+    opacity: 1;
+}
+
+md-card.closed-remove {
+    margin-left: 50px;
+    margin-right: 50px;
+    transition: 0.2s ease-in-out all;
+}
+
+md-card.closed-remove-active {
+    margin-left: 8px;
+    margin-right: 8px;
+}
+
+md-card.closed-add {
+    margin-left: 8px;
+    margin-right: 8px;
+    transition: 0.2s ease-in-out all;
+}
+
+md-card.closed-add-active, md-card.closed {
+    margin-left: 50px;
+    margin-right: 50px;
 }

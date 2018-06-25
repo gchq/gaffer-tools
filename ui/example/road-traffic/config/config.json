@@ -12,6 +12,15 @@
         "arrayOutput": true
       },
       {
+        "name": "Get Adjacent IDs",
+        "class": "uk.gov.gchq.gaffer.operation.impl.get.GetAdjacentIds",
+        "description": "Given your selected seeds, it gets vertices at the other end of connected edges.",
+        "input": true,
+        "view": true,
+        "inOutFlag": true,
+        "arrayOutput": true
+      },
+      {
         "name": "Get Elements Between Sets",
         "class": "uk.gov.gchq.gaffer.accumulostore.operation.impl.GetElementsBetweenSets",
         "description": "Gets edges where the source and destination appear in both sets. As well as entities which appear in the first set",

@@ -25,7 +25,11 @@ function pairBuilder() {
     return {
         templateUrl: 'app/query/input-manager/pair-builder/pair-builder.html',
         controller: PairBuilderController,
-        controllerAs: 'ctrl'
+        controllerAs: 'ctrl',
+        bindings: {
+            usePrevious: '<',
+            model: '='
+        }
     }
 }
 
@@ -38,9 +42,8 @@ function pairBuilder() {
  * @param {*} events The events service
  * @param {*} common The common service
  * @param {*} $routeParams The route params service
- * @param {*} input The input service
  */
-function PairBuilderController(schema, csv, types, error, events, common, $routeParams, input) {
+function PairBuilderController(schema, csv, types, error, events, common, $routeParams, $location) {
     var vm = this;
     vm.pairs = '';
 
@@ -57,13 +60,24 @@ function PairBuilderController(schema, csv, types, error, events, common, $route
                     vm.pairs += '\n' + $routeParams['input'];
                 }
                 vm.addPairs(true);
+                $location.search('input', null);
             }
         });
-        var currentInput = input.getInputPairs();
         
-        events.subscribe('pairInputUpdate', recalculateSeeds);
+        events.subscribe('onOperationUpdate', onOperationUpdate);
         events.subscribe('onPreExecute', vm.addPairs);
-        recalculateSeeds(currentInput);
+        recalculateSeeds(vm.model);
+    }
+
+    var onOperationUpdate = function() {
+        recalculateSeeds(vm.model);
+    }
+
+    /**
+     * Creates the placeholder for the pair input
+     */
+    vm.getPlaceHolder = function() {
+        return vm.usePrevious ? "Input is provided by the output of the previous operation" : "Enter your pairs of seeds, each pair on a new line.\n" + vm.createExample();
     }
 
     /**
@@ -71,7 +85,7 @@ function PairBuilderController(schema, csv, types, error, events, common, $route
      * unnecessary function calls
      */
     vm.$onDestroy = function() {
-        events.unsubscribe('pairInputUpdate', recalculateSeeds);
+        events.unsubscribe('onOperationUpdate', recalculateSeeds);
         events.unsubscribe('onPreExecute', vm.addPairs);
     }
 
@@ -93,11 +107,13 @@ function PairBuilderController(schema, csv, types, error, events, common, $route
     /**
      * Goes through all lines from seed input box, removes trailing whitespace,
      * processes the line (returns if it fails), checks it's not too long, 
-     * adds it to an array, before finally updating the input service
-     * 
-     * @param {boolean} suppressDuplicateError
+     * adds it to an array, before finally updating the model
      */
     vm.addPairs = function(suppressDuplicateError) {
+        if (vm.usePrevious) {
+            vm.model = null;
+            return;
+        }
         var newInput = [];
         var keys = vm.getFields().map(function(field) {
             return field.key;
@@ -151,7 +167,7 @@ function PairBuilderController(schema, csv, types, error, events, common, $route
         if (vm.pairForm) {
             vm.pairForm.seedPairInput.$setValidity('csv', true)
         }
-        input.setInputPairs(deduped);
+        vm.model = deduped;
     }
 
     /**

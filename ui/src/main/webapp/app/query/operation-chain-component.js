@@ -16,45 +16,25 @@
 
 'use strict';
 
-/**
- * The Query page component
- */
-angular.module('app').component('query', query());
+angular.module('app').component('operationChain', operationChainBuilder());
 
-function query() {
-
+function operationChainBuilder() {
     return {
-        templateUrl: 'app/query/query.html',
-        controller: QueryController,
+        templateUrl: 'app/query/operation-chain.html',
+        controller: OperationChainController,
         controllerAs: 'ctrl'
-    };
+    }
 }
 
-/**
- * The controller for the whole query page. Needs to access all services relating to the query and executes it.
- * @param {*} queryPage For access to edge directions and operation options
- * @param {*} operationService For creating operations
- * @param {*} types For converting between Java and javascript types
- * @param {*} graph For accessing the currently selected seeds
- * @param {*} config For getting timeconfig
- * @param {*} settings For accessing the result limit
- * @param {*} query For executing and adding operations
- * @param {*} results For parsing the results
- * @param {*} navigation For moving to the graph page on successful operation
- * @param {*} $mdDialog For warning the user when they hit the result limit
- * @param {*} loading For starting and finishing the loading circle
- * @param {*} dateRange For adding date ranges to queries
- * @param {*} view For accessing the view that the user configured
- * @param {*} error For displaying error messages
- * @param {*} input For getting access to the operation seeds
- * @param {*} $routeParams the url query params
- * @param {*} $location for deleting url query params when they have been consumed
- * @param {*} events for broadcasting pre-execute event
- */
-function QueryController(queryPage, operationService, types, graph, config, settings, query, results, navigation, $mdDialog, loading, dateRange, view, error, input, $routeParams, $location, events) {
-    var namedViewClass = "uk.gov.gchq.gaffer.data.elementdefinition.view.NamedView";
+function OperationChainController(operationChain, config, loading, query, error, events, $mdDialog, navigation, $location, $routeParams, operationService, settings, graph, results, types) {
     var vm = this;
     vm.timeConfig;
+    vm.operations = operationChain.getOperationChain();
+
+    var NAMED_VIEW_CLASS = "uk.gov.gchq.gaffer.data.elementdefinition.view.NamedView";
+    var OPERATION_CHAIN_CLASS = "uk.gov.gchq.gaffer.operation.OperationChain";
+    var ENTITY_SEED_CLASS = "uk.gov.gchq.gaffer.operation.data.EntitySeed";
+    var PAIR_CLASS = "uk.gov.gchq.gaffer.commonutil.pair.Pair";
 
     /**
      * initialises the time config and default operation options
@@ -63,32 +43,88 @@ function QueryController(queryPage, operationService, types, graph, config, sett
         config.get().then(function(conf) {
             vm.timeConfig = conf.time;
         });
-
-        settings.getOpOptionKeys().then(function(keys) {
-            opOptionKeys = keys;
-        });
-    }
-    var opOptionKeys;
-
-    /**
-     * Gets the selected operation that the user chose
-     */
-    vm.getSelectedOp = function() {
-        return queryPage.getSelectedOperation();
     }
 
-    /**
-     * Checks all subforms are valid and another operation is not in progress
-     */
+    vm.addOperation = function() {
+        for (var i in vm.operations) {
+            vm.operations[i].expanded = false; // close all open tabs
+        }
+        operationChain.add(false);
+    }
+
+    vm.$onDestroy = function() {
+        operationChain.setOperationChain(vm.operations);
+    }
+
+    vm.deleteOperation = function(index) {
+        vm.operations.splice(index, 1);
+        if (index === 0 && vm.operations[0].inputs.input === null) {
+            vm.operations[0].inputs.input = [];
+            vm.operations[0].inputs.inputPairs = [];
+        }
+        events.broadcast('onOperationUpdate', [])
+    }
+
+    vm.resetOperation = function(index) {
+        var inputFlag = index === 0;
+        vm.operations[index] = operationChain.createBlankOperation(inputFlag);
+    }
+
+    vm.isNotLast = function(index) {
+        return index !== (vm.operations.length - 1); 
+    }
+
     vm.canExecute = function() {
-        return vm.queryForm.$valid && !loading.isLoading();
+        return vm.operationChainForm.$valid && !loading.isLoading();
     }
 
-    /**
-     * Checks whether there are any operation options.
-     */
-    vm.hasOpOptions = function() {
-        return opOptionKeys && Object.keys(opOptionKeys).length > 0;
+    vm.executeChain = function() {
+        events.broadcast('onPreExecute', []);
+        if (!vm.canExecute()) {
+            return;
+        }
+
+        if (vm.operations.length === 0) {
+            error.handle("Unable to run operation chain with no operations");
+            return;
+        }
+
+        var chain = {
+            class: OPERATION_CHAIN_CLASS,
+            operations: []
+        }
+        for (var i in vm.operations) {
+            chain.operations.push(createOperationForQuery(vm.operations[i]))
+        }
+
+        query.addOperation(angular.copy(chain));
+
+        var finalOperation = vm.operations[vm.operations.length - 1];
+        if (finalOperation.selectedOperation.iterableOutput !== false) {
+            chain.operations.push(operationService.createLimitOperation(finalOperation['opOptions']));
+            chain.operations.push(operationService.createDeduplicateOperation(finalOperation['opOptions']));
+        }
+
+        runQuery(chain.operations, true);
+    }
+
+    vm.resetChain = function(ev) {
+        var confirm = $mdDialog.confirm()
+            .title('Are your sure you want to reset the chain?')
+            .textContent('Once you reset the chain, all your progress will be lost')
+            .ariaLabel('clear operations')
+            .targetEvent(ev)
+            .ok('Reset chain')
+            .cancel('Cancel');
+
+        $mdDialog.show(confirm).then(function() {
+            operationChain.reset();
+            vm.operations = operationChain.getOperationChain();
+        }, function() {
+            // do nothing if they don't want to reset
+        });
+
+
     }
 
     /**
@@ -96,29 +132,35 @@ function QueryController(queryPage, operationService, types, graph, config, sett
      * Once done, it does a final check to make sure the operation can execute. If so
      * it executes it.
      */
-    vm.execute = function() {
+    vm.execute = function(op) {
         events.broadcast('onPreExecute', []);
         if (!vm.canExecute()) {
             return;
         }
-
-        var operation = createOperation();
+        var operation = createOperationForQuery(op);
         query.addOperation(operation);
-        loading.load()
 
-        var iterableOutput = vm.getSelectedOp().iterableOutput === undefined || vm.getSelectedOp();
+        var iterableOutput = !(op.selectedOperation.iterableOutput === false)
         var operations = [operation];
-        if(vm.getSelectedOp().iterableOutput === undefined || vm.getSelectedOp().iterableOutput) {
+        if(iterableOutput) {
             operations.push(operationService.createLimitOperation(operation['options']));
             operations.push(operationService.createDeduplicateOperation(operation['options']));
         }
+        runQuery(operations, false);
+        
+    }
+
+    var runQuery = function(operations, chainFlag) {
+        loading.load()
         query.executeQuery(
             {
-                class: "uk.gov.gchq.gaffer.operation.OperationChain",
+                class: OPERATION_CHAIN_CLASS,
                 operations: operations,
-                options: operation['options']
+                options: operations[0]['options']
             },
-            submitResults
+            function(data) {
+                submitResults(data, chainFlag);
+            }
         );
     }
 
@@ -126,13 +168,12 @@ function QueryController(queryPage, operationService, types, graph, config, sett
      * Deselects all elements in the graph and resets all query related services
      * @param {Array} data the data returned by the rest service 
      */
-    var submitResults = function(data) {
+    var submitResults = function(data, chainFlag) {
         graph.deselectAll();
         navigation.goTo('results');
-        queryPage.reset();
-        dateRange.resetDateRange();
-        view.reset();
-        input.reset();
+        if (chainFlag) {
+            vm.clearChain();
+        }
 
         // Remove the input query param
         delete $routeParams['input'];
@@ -144,10 +185,13 @@ function QueryController(queryPage, operationService, types, graph, config, sett
      * @param seeds the input array
      */
     var createOpInput = function(seeds) {
+        if (seeds === null || seeds === undefined) {
+            return undefined;
+        }
         var opInput = [];
         for (var i in seeds) {
             opInput.push({
-                "class": "uk.gov.gchq.gaffer.operation.data.EntitySeed",
+                "class": ENTITY_SEED_CLASS,
                 "vertex": types.createJsonValue(seeds[i].valueClass, seeds[i].parts)
             });
         }
@@ -160,11 +204,14 @@ function QueryController(queryPage, operationService, types, graph, config, sett
      * @param {any[]} pairs 
      */
     var createPairInput = function(pairs) {
+        if (pairs === null || pairs === undefined) {
+            return undefined;
+        }
         var opInput = [];
 
         for (var i in pairs) {
             opInput.push({
-                "class": "uk.gov.gchq.gaffer.commonutil.pair.Pair",
+                "class": PAIR_CLASS,
                 "first": {
                     "uk.gov.gchq.gaffer.operation.data.EntitySeed": {
                         "vertex": types.createJsonValue(pairs[i].first.valueClass, pairs[i].first.parts)
@@ -235,10 +282,11 @@ function QueryController(queryPage, operationService, types, graph, config, sett
     }
 
     /**
-     * Builds an operation using views, inputs and other options
+     * Builds a Gaffer operation based on the UI operation given to it
+     * @param {object} operation The UI operation
      */
-    var createOperation = function() {
-        var selectedOp = vm.getSelectedOp()
+    var createOperationForQuery = function(operation) {
+        var selectedOp = operation.selectedOperation;
         var op = {
              class: selectedOp.class
         };
@@ -246,15 +294,16 @@ function QueryController(queryPage, operationService, types, graph, config, sett
         if(selectedOp.namedOp) {
             op.operationName = selectedOp.name;
         }
-
-        if (selectedOp.input === "uk.gov.gchq.gaffer.commonutil.pair.Pair") {
-            op.input = createPairInput(input.getInputPairs())
+        
+        if (selectedOp.input === PAIR_CLASS) {
+            op.input = createPairInput(operation.inputs.inputPairs)
         } else if (selectedOp.input) {
-            op.input = createOpInput(input.getInput());
+            op.input = createOpInput(operation.inputs.input);
         }
         if (selectedOp.inputB && !selectedOp.namedOp) {
-            op.inputB = createOpInput(input.getInputB());
+            op.inputB = createOpInput(operation.inputs.inputB);
         }
+        
 
         if (selectedOp.parameters) {
             var opParams = {};
@@ -272,15 +321,15 @@ function QueryController(queryPage, operationService, types, graph, config, sett
             if (!op.parameters) {
                 op.parameters = {};
             }
-            op.parameters['inputB'] = createOpInput(input.getInputB());
+            op.parameters['inputB'] = createOpInput(operation.inputs.inputB);
         }
 
         if (selectedOp.view) {
-            var namedViews = view.getNamedViews();
-            var viewEdges = view.getViewEdges();
-            var viewEntities = view.getViewEntities();
-            var edgeFilters = view.getEdgeFilters();
-            var entityFilters = view.getEntityFilters();
+            var namedViews = operation.view.namedViews;
+            var viewEdges = operation.view.viewEdges;
+            var viewEntities = operation.view.viewEntities;
+            var edgeFilters = operation.view.edgeFilters;
+            var entityFilters = operation.view.entityFilters;
 
             op.view = {
                 globalElements: [{
@@ -293,26 +342,26 @@ function QueryController(queryPage, operationService, types, graph, config, sett
             createElementView(viewEntities, entityFilters, op.view.entities);
             createElementView(viewEdges, edgeFilters, op.view.edges);
 
-            if (dateRange.getStartDate() !== undefined && dateRange.getStartDate() !== null) {
+            if (operation.dates.startDate !== undefined && operation.dates.startDate !== null) {
                 op.view.globalElements.push({
                     "preAggregationFilterFunctions": [ {
                         "predicate": {
                             "class": "uk.gov.gchq.koryphe.impl.predicate.IsMoreThan",
                             "orEqualTo": true,
-                            "value": types.createJsonValue(vm.timeConfig.filter.class, dateRange.getStartDate())
+                            "value": types.createJsonValue(vm.timeConfig.filter.class, operation.dates.startDate)
                         },
                         "selection": [ vm.timeConfig.filter.startProperty ]
                     }]
                 });
             }
 
-            if (dateRange.getEndDate() !== undefined && dateRange.getEndDate() !== null) {
+            if (operation.dates.endDate !== undefined && operation.dates.endDate !== null) {
                 op.view.globalElements.push({
                     "preAggregationFilterFunctions": [ {
                         "predicate": {
                             "class": "uk.gov.gchq.koryphe.impl.predicate.IsLessThan",
                             "orEqualTo": true,
-                            "value": types.createJsonValue(vm.timeConfig.filter.class, dateRange.getEndDate())
+                            "value": types.createJsonValue(vm.timeConfig.filter.class, operation.dates.endDate)
                         },
                         "selection": [ vm.timeConfig.filter.endProperty ]
                     }]
@@ -332,7 +381,7 @@ function QueryController(queryPage, operationService, types, graph, config, sett
                     }
                 }
                 op.views.push({
-                    class: namedViewClass,
+                    class: NAMED_VIEW_CLASS,
                     name: namedViews[i].name,
                     parameters: viewParams
                 });
@@ -344,13 +393,15 @@ function QueryController(queryPage, operationService, types, graph, config, sett
         }
 
         if (selectedOp.inOutFlag) {
-            op.includeIncomingOutGoing = queryPage.getInOutFlag();
+            op.includeIncomingOutGoing = operation.edgeDirection;
         }
 
-        if(queryPage.getOpOptions()) {
-            op.options = queryPage.getOpOptions();
+        if(operation.opOptions) {
+            op.options = operation.opOptions;
         }
 
         return op;
     }
+
+    
 }
