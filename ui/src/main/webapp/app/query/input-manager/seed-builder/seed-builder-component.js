@@ -28,10 +28,9 @@ function seedBuilder() {
         controller: SeedBuilderController,
         controllerAs: 'ctrl',
         bindings: {
-            updateEvent: '<',
-            setter: '<',
-            getter: '<',
-            routeParam: '@'
+            model: '=',
+            routeParam: '@',
+            usePrevious: '<'
         }
     }
 }
@@ -46,18 +45,17 @@ function seedBuilder() {
  * @param {*} common The common service
  * @param {*} $routeParams The route params service
  */
-function SeedBuilderController(schema, csv, types, error, events, common, $routeParams) {
+function SeedBuilderController(schema, csv, types, error, events, common, $routeParams, $location) {
     var vm = this;
     vm.seedVertices = '';
-    
+
     vm.$onInit = function() {
         schema.get().then(function(gafferSchema) {
             var vertices = schema.getSchemaVertices();
             if(vertices && vertices.length > 0 && undefined !== vertices[0]) {
                 vm.vertexClass = gafferSchema.types[vertices[0]].class;
             }
-            var currentInput = vm.getter();
-            recalculateSeeds(currentInput);     
+            recalculateSeeds(vm.model);
             if($routeParams[vm.routeParam]) {
                 if(Array.isArray($routeParams[vm.routeParam])) {
                     vm.seedVertices += '\n' + $routeParams[vm.routeParam].join('\n');
@@ -65,11 +63,26 @@ function SeedBuilderController(schema, csv, types, error, events, common, $route
                     vm.seedVertices += '\n' + $routeParams[vm.routeParam];
                 }
                 vm.addSeeds(true);
+                $location.search(vm.routeParam, null);
             }
+            
         });
         
-        events.subscribe(vm.updateEvent, recalculateSeeds);
         events.subscribe('onPreExecute', vm.addSeeds);
+        events.subscribe('onOperationUpdate', onOperationUpdate);
+
+
+    }
+
+    var onOperationUpdate = function() {
+        recalculateSeeds(vm.model);
+    }
+
+    /**
+     * Creates the placeholder for the seed input
+     */
+    vm.getPlaceHolder = function() {
+        return vm.usePrevious ? "Input is provided by the output of the previous operation" : "Enter your seeds, each seed on a new line\n" + vm.getCsvHeader()
     }
 
     /**
@@ -77,7 +90,7 @@ function SeedBuilderController(schema, csv, types, error, events, common, $route
      * time unnecessary function calls
      */
     vm.$onDestroy = function() {
-        events.unsubscribe(vm.updateEvent, recalculateSeeds);
+        events.unsubscribe('onOperationUpdate', onOperationUpdate)
         events.unsubscribe('onPreExecute', vm.addSeeds);
     }
 
@@ -103,6 +116,10 @@ function SeedBuilderController(schema, csv, types, error, events, common, $route
      * @param {boolean} suppressDuplicateError 
      */
     vm.addSeeds = function(suppressDuplicateError) {
+        if (vm.usePrevious) {
+            vm.model = null;
+            return;
+        }
         var newInput = [];
         var keys = vm.getFields().map(function(field) {
             return field.key;
@@ -149,7 +166,7 @@ function SeedBuilderController(schema, csv, types, error, events, common, $route
         if (vm.seedForm) {
             vm.seedForm.multiSeedInput.$setValidity('csv', true)
         }
-        vm.setter(deduped);
+        vm.model = deduped;
     }
 
     /**
@@ -191,6 +208,10 @@ function SeedBuilderController(schema, csv, types, error, events, common, $route
      * @param {any[]} updated The array of inputs
      */
     var recalculateSeeds = function(updated) {
+        if (updated === null) {
+            vm.seedVertices = ''
+            return;
+        }
         var toParse = updated.map(function(input) {
             return input.parts;
         });

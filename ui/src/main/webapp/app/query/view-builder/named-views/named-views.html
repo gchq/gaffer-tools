@@ -1,4 +1,4 @@
-<div ng-repeat="namedView in ctrl.selectedNamedViews track by $index">
+<div ng-repeat="namedView in ctrl.model track by $index">
     <div layout="row">
         <div ng-if="ctrl.namedViewHasParams(namedView)" flex="80">
             <parameter-form title="{{namedView.name}} parameters"

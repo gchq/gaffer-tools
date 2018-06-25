@@ -53,40 +53,45 @@ public class QueryBuilderST {
     private static final String DEFAULT_SLOW_FACTOR = "5";
 
     private static final String EXPECTED_OPERATION_JSON = "{\n" +
-            "  \"class\": \"uk.gov.gchq.gaffer.operation.impl.get.GetElements\",\n" +
-            "  \"input\": [\n" +
+            "  \"class\": \"uk.gov.gchq.gaffer.operation.OperationChain\",\n" +
+            "  \"operations\": [\n" +
             "    {\n" +
-            "      \"class\": \"uk.gov.gchq.gaffer.operation.data.EntitySeed\",\n" +
-            "      \"vertex\": \"M5:10\"\n" +
-            "    }\n" +
-            "  ],\n" +
-            "  \"view\": {\n" +
-            "    \"globalElements\": [\n" +
-            "      {\n" +
-            "        \"groupBy\": []\n" +
-            "      }\n" +
-            "    ],\n" +
-            "    \"entities\": {},\n" +
-            "    \"edges\": {\n" +
-            "      \"RoadUse\": {\n" +
-            "        \"preAggregationFilterFunctions\": [\n" +
+            "      \"class\": \"uk.gov.gchq.gaffer.operation.impl.get.GetElements\",\n" +
+            "      \"input\": [\n" +
+            "        {\n" +
+            "          \"class\": \"uk.gov.gchq.gaffer.operation.data.EntitySeed\",\n" +
+            "          \"vertex\": \"M5:10\"\n" +
+            "        }\n" +
+            "      ],\n" +
+            "      \"view\": {\n" +
+            "        \"globalElements\": [\n" +
             "          {\n" +
-            "            \"predicate\": {\n" +
-            "              \"class\": \"uk.gov.gchq.koryphe.impl.predicate.IsMoreThan\",\n" +
-            "              \"value\": {\n" +
-            "                \"java.util.Date\": 971416800000\n" +
+            "            \"groupBy\": []\n" +
+            "          }\n" +
+            "        ],\n" +
+            "        \"entities\": {},\n" +
+            "        \"edges\": {\n" +
+            "          \"RoadUse\": {\n" +
+            "            \"preAggregationFilterFunctions\": [\n" +
+            "              {\n" +
+            "                \"predicate\": {\n" +
+            "                  \"class\": \"uk.gov.gchq.koryphe.impl.predicate.IsMoreThan\",\n" +
+            "                  \"value\": {\n" +
+            "                    \"java.util.Date\": 971416800000\n" +
+            "                  }\n" +
+            "                },\n" +
+            "                \"selection\": [\n" +
+            "                  \"startDate\"\n" +
+            "                ]\n" +
             "              }\n" +
-            "            },\n" +
-            "            \"selection\": [\n" +
-            "              \"startDate\"\n" +
             "            ]\n" +
             "          }\n" +
-            "        ]\n" +
-            "      }\n" +
+            "        }\n" +
+            "      },\n" +
+            "      \"includeIncomingOutGoing\": \"EITHER\",\n" +
+            "      \"options\": {}\n" +
             "    }\n" +
-            "  },\n" +
-            "  \"includeIncomingOutGoing\": \"EITHER\",\n" +
-            "  \"options\": {}\n" +
+            "  ]\n" +
             "}";
     private static final String EXPECTED_RESULTS[] = {
             "\"group\": \"RoadUse\",\n" +
@@ -150,7 +155,7 @@ public class QueryBuilderST {
         enterText("value-", "971416800000");
         click("before-aggregation");
         click("submit");
-        click("Execute Query");
+        click("execute-chain");
 
         click("open-raw");
         assertEquals(EXPECTED_OPERATION_JSON, getElement("operation-0-json").getText().trim());
@@ -171,7 +176,7 @@ public class QueryBuilderST {
         selectMultiOption("view-entities", "Cardinality");
         click("open-table");
         click("open-query");
-        click("Execute Query");
+        click("execute-chain");
         click("open-raw");
         clickTab("Results");
         String result = getElement("raw-entity-results").getText().trim();
@@ -187,7 +192,7 @@ public class QueryBuilderST {
         enterIntoDatePicker("start-date", "13/10/2000");
         click("create-custom-filter");
         selectMultiOption("view-edges", "RoadUse");
-        click("Execute Query");
+        click("execute-chain");
 
         click("open-raw");
         clickTab("Results");
@@ -216,21 +221,21 @@ public class QueryBuilderST {
         // when
         click("delete-entity-Cardinality-filter-0");
         click("delete-entity-Cardinality-filter-0");
-        click("Execute Query");
+        click("execute-chain");
         click("open-raw");
 
         // then
         String expectedString = "" +
-                "  \"view\": {\n" +
-                "    \"globalElements\": [\n" +
-                "      {\n" +
-                "        \"groupBy\": []\n" +
-                "      }\n" +
-                "    ],\n" +
-                "    \"entities\": {\n" +
-                "      \"Cardinality\": {}\n" +
-                "    },\n" +
-                "    \"edges\": {}\n";
+                "      \"view\": {\n" +
+                "        \"globalElements\": [\n" +
+                "          {\n" +
+                "            \"groupBy\": []\n" +
+                "          }\n" +
+                "        ],\n" +
+                "        \"entities\": {\n" +
+                "          \"Cardinality\": {}\n" +
+                "        },\n" +
+                "        \"edges\": {}\n";
 
 
         assert (getElement("operation-0-json").getText().trim().contains(expectedString));
@@ -241,8 +246,9 @@ public class QueryBuilderST {
     public void shouldBeAbleToRunParameterisedQueries() throws InterruptedException, SerialisationException {
         selectOptionWithAriaLabel("operation-name", "Two Hop With Limit");
         enterText("seedVertices", "M5");
+        click("param1-");
         enterText("param1-", "2");
-        click("Execute Query");
+        click("execute-chain");
 
         click("open-raw");
         clickTab("Results");
