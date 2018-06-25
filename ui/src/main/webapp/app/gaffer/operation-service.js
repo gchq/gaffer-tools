@@ -29,9 +29,9 @@ angular.module('app').factory('operationService', ['$http', '$q', 'settings', 'c
         if (availableOperations) {
             return $q.when(availableOperations);
         } else if (!deferredAvailableOperations) {
-
             deferredAvailableOperations = $q.defer();
             config.get().then(function(conf) {
+                operationService.reloadOperations();
                 if (conf.operations && conf.operations.defaultAvailable) {
                     availableOperations = conf.operations.defaultAvailable;
                     deferredAvailableOperations.resolve(availableOperations);
@@ -82,17 +82,51 @@ angular.module('app').factory('operationService', ['$http', '$q', 'settings', 'c
         }
         return allowed;
     }
+    var hasField = function(field, op){
+        return op.fields.filter(function(f) { return f.name === field; }).length > 0;
+    }
 
-    var updateNamedOperations = function(results) {
-        availableOperations = [];
-        config.get().then(function(conf) {
-            var defaults = conf.operations && conf.operations.defaultAvailable ? conf.operations.defaultAvailable : [];
-            for(var i in defaults) {
-                if(opAllowed(defaults[i].name, conf.operations)) {
-                    availableOperations.push(defaults[i]);
+    var getFieldValue = function(defaultValue, field, key, op){
+        var fields = op.fields.filter(function(f) { return f.name === field; });
+        if(fields && fields.length > 0 && fields[0][key]) {
+            return fields[0][key];
+        }
+
+        return defaultValue;
+    }
+
+    var toTitle = function(className) {
+        return className.split(".").pop()
+            .replace(/([A-Z])/g, ' $1')
+            .replace(/^./, function(str){ return str.toUpperCase(); });
+    }
+
+    var addOperations = function(operations, conf) {
+        if(operations) {
+            for (var i in operations) {
+                var op = operations[i];
+
+                if(opAllowed(op.operationName, conf.operations)) {
+                    var availableOp = {
+                          class: op.name,
+                          name: toTitle(op.name),
+                          description: op.summary,
+                          view: hasField("view", op),
+                          input: getFieldValue(false, "input", "className", op),
+                          inputB: getFieldValue(false, "inputB", "className", op),
+                          namedOp: false,
+                          inOutFlag: hasField("includeIncomingOutGoing", op)
+                    };
+
+                    availableOperations.push(availableOp);
                 }
             }
+        }
+    }
 
+    var addNamedOperations = function(results) {
+        availableOperations = [];
+        config.get().then(function(conf) {
             if(results) {
                 for (var i in results) {
                     if(opAllowed(results[i].operationName, conf.operations)) {
@@ -123,7 +157,7 @@ angular.module('app').factory('operationService', ['$http', '$q', 'settings', 'c
                                     results[i].parameters = undefined;
                                 }
                             }
-                        }   
+                        }
 
                         availableOperations.push({
                             class: namedOpClass,
@@ -147,6 +181,44 @@ angular.module('app').factory('operationService', ['$http', '$q', 'settings', 'c
 
             deferredNamedOperationsQueue = [];
         });
+    }
+
+    operationService.reloadOperations = function(loud) {
+        var deferred = $q.defer();
+
+        config.get().then(function(conf) {
+            var queryUrl = common.parseUrl(conf.restEndpoint + "/graph/operations/details");
+            $http.get(queryUrl)
+                .then(function(response){
+                    availableOperations = [];
+                    addOperations(response.data, conf);
+                    var getAllClass = "uk.gov.gchq.gaffer.named.operation.GetAllNamedOperations";
+                    operationService.ifOperationSupported(getAllClass, function() {
+                        query.execute(
+                            {
+                                class: getAllClass,
+                                options: settings.getDefaultOpOptions()
+                            },
+                            function(result) {
+                                addOperations(result, conf);
+                                deferred.resolve(availableOperations);
+                            },
+                            function(err) {
+                                if (loud) {
+                                    error.handle('Failed to load named operations', err);
+                                    deferred.reject(err);
+                                }
+                            }
+                        );
+                    });
+                },
+                function(err) {
+                    error.handle('Unable to load operations', err.data);
+                    deferred.reject(err);
+                });
+        });
+
+        return deferred.promise;
     }
 
     operationService.reloadNamedOperations = function(loud) {

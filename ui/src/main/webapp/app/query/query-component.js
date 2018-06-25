@@ -124,7 +124,7 @@ function QueryController(queryPage, operationService, types, graph, config, sett
 
     /**
      * Deselects all elements in the graph and resets all query related services
-     * @param {Array} data the data returned by the rest service 
+     * @param {Array} data the data returned by the rest service
      */
     var submitResults = function(data) {
         graph.deselectAll();
@@ -146,10 +146,7 @@ function QueryController(queryPage, operationService, types, graph, config, sett
     var createOpInput = function(seeds) {
         var opInput = [];
         for (var i in seeds) {
-            opInput.push({
-                "class": "uk.gov.gchq.gaffer.operation.data.EntitySeed",
-                "vertex": types.createJsonValue(seeds[i].valueClass, seeds[i].parts)
-            });
+            opInput.push(types.createJsonValue(seeds[i].valueClass, seeds[i].parts));
         }
 
         return opInput;
@@ -157,7 +154,7 @@ function QueryController(queryPage, operationService, types, graph, config, sett
 
     /**
      * Create an array of JSON serialisable Pair objects from the values created by the input component
-     * @param {any[]} pairs 
+     * @param {any[]} pairs
      */
     var createPairInput = function(pairs) {
         var opInput = [];
@@ -165,16 +162,8 @@ function QueryController(queryPage, operationService, types, graph, config, sett
         for (var i in pairs) {
             opInput.push({
                 "class": "uk.gov.gchq.gaffer.commonutil.pair.Pair",
-                "first": {
-                    "uk.gov.gchq.gaffer.operation.data.EntitySeed": {
-                        "vertex": types.createJsonValue(pairs[i].first.valueClass, pairs[i].first.parts)
-                    }
-                },
-                "second": {
-                    "uk.gov.gchq.gaffer.operation.data.EntitySeed": {
-                        "vertex": types.createJsonValue(pairs[i].second.valueClass, pairs[i].second.parts)
-                    }
-                }
+                "first": types.createJsonValue(pairs[i].first.valueClass, pairs[i].first.parts),
+                "second": types.createJsonValue(pairs[i].second.valueClass, pairs[i].second.parts)
             });
         }
 
@@ -208,7 +197,7 @@ function QueryController(queryPage, operationService, types, graph, config, sett
 
     /**
      * Builds part of a gaffer view with an array of element groups to include, along with the filters to apply
-     * @param {Array} groupArray The array of groups for a given element, included in the view 
+     * @param {Array} groupArray The array of groups for a given element, included in the view
      * @param {Object} filters A key value list of group -> array of filters
      * @param {Object} destination Where to add the filters
      */

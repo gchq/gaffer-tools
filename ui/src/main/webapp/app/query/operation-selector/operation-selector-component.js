@@ -69,7 +69,7 @@ function OperationSelectorController(operationService, operationSelectorService,
     vm.$onInit = function() {
         operationSelectorService.shouldLoadNamedOperationsOnStartup().then(function(yes) {
             if (yes) {
-                operationService.reloadNamedOperations().then(populateOperations);
+                operationService.reloadOperations().then(populateOperations);
             } else {
                 operationService.getAvailableOperations().then(populateOperations);
             }
