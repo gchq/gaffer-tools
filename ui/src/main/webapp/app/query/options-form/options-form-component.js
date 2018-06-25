@@ -22,39 +22,34 @@ function optionsForm() {
     return {
         templateUrl: 'app/query/options-form/options-form.html',
         controller: OptionsFormController,
-        controllerAs: 'ctrl'
+        controllerAs: 'ctrl',
+        bindings: {
+            model: '='  // a model to bind to
+        }
     }
 }
 
-function OptionsFormController(queryPage, settings) {
+function OptionsFormController(settings) {
     var vm = this;
+    vm.opOptionKeys = {};
+    vm.opOptionsArray = [];
 
     var updateOpOptionsArray = function() {
-        vm.opOptions = queryPage.getOpOptions();
         vm.opOptionsArray = [];
-        for (var k in vm.opOptions) {
-            var kv = {"key":k, "value":vm.opOptions[k]};
+        for (var k in vm.model) {
+            var kv = {"key":k, "value":vm.model[k]};
             vm.opOptionsArray.push(kv);
         }
     }
 
-    var updateOpOptions = function() {
+    vm.updateOpOptions = function() {
         var newOpOptions = {};
         for (var i in vm.opOptionsArray) {
             if(vm.opOptionsArray[i].key) {
                 newOpOptions[vm.opOptionsArray[i].key] = vm.opOptionsArray[i].value;
             }
         }
-        vm.opOptions = newOpOptions
-        queryPage.setOpOptions(vm.opOptions);
-    }
-
-    vm.opOptionKeys = {};
-    vm.opOptions = {};
-    vm.opOptionsArray = [];
-
-    vm.updateOpOptions = function() {
-        updateOpOptions();
+        vm.model = newOpOptions
     }
 
     vm.addOperationOption = function() {
@@ -62,7 +57,7 @@ function OptionsFormController(queryPage, settings) {
     }
 
     vm.deleteOption = function(opOption) {
-        delete vm.opOptions[opOption.key];
+        delete vm.model[opOption.key];
         var i = vm.opOptionsArray.indexOf(opOption);
         if(i > -1) {
             vm.opOptionsArray.splice(i, 1);
@@ -72,7 +67,7 @@ function OptionsFormController(queryPage, settings) {
     vm.getOpOptionKeys = function(opOption) {
         var keys = {};
         for(var k in vm.opOptionKeys) {
-            if(vm.opOptionKeys[k] === opOption.key || !(vm.opOptionKeys[k] in vm.opOptions)) {
+            if(vm.opOptionKeys[k] === opOption.key || !(vm.opOptionKeys[k] in vm.model)) {
                 keys[k] = vm.opOptionKeys[k];
             }
         }
@@ -87,10 +82,6 @@ function OptionsFormController(queryPage, settings) {
         settings.getOpOptionKeys().then(function(keys) {
             vm.opOptionKeys = keys;
         });
-
-        if(!queryPage.getOpOptions() || Object.keys(queryPage.getOpOptions()).length === 0) {
-            queryPage.setOpOptions(settings.getDefaultOpOptions());
-        }
 
         updateOpOptionsArray();
     }

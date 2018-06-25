@@ -25,7 +25,9 @@ function inputManager() {
         controllerAs: 'ctrl',
         bindings: {
             secondaryInput: '<',
-            primaryInput: '<'
+            primaryInput: '<',
+            model: '=',
+            first: '<'
         }
     }
 }
@@ -35,25 +37,74 @@ function inputManager() {
  * @param {*} graph The Graph service for selecting all seeds
  * @param {*} input The input service for injecting getters and setters into child components
  */
-function InputManagerController(graph, input) {
+function InputManagerController(events, results, common, types, schema) {
     var vm = this;
 
-    /** 
-     * Selects all seeds on the graph which in turn triggers an update event - causing the query input to be updated
-    */
-    vm.selectAllSeeds = function() {
-        graph.selectAllNodes();
+    var EVENT_NAME = 'onOperationUpdate';
+    var ENTITY_SEED_CLASS = "uk.gov.gchq.gaffer.operation.data.EntitySeed";
+    vm.usePreviousOutput;
+
+    var updatePreviousOutputFlag = function() {
+        vm.usePreviousOutput = (vm.model.input === null);
+    }
+    
+    vm.$onInit = function() {
+        if (!vm.model) {
+            throw 'Input manager must be initialised with a model.';
+        }
+        updatePreviousOutputFlag(); // respond to 'onOperationUpdate' event here
+        events.subscribe(EVENT_NAME, updatePreviousOutputFlag);
     }
 
-    // events
-    vm.primaryEvent = 'queryInputUpdate';
-    vm.secondaryEvent = 'secondaryInputUpdate';
+    vm.$onDestroy = function() {
+        events.unsubscribe(EVENT_NAME, updatePreviousOutputFlag);
+    }
 
-    // getters
-    vm.getPrimary = input.getInput;
-    vm.getSecondary = input.getInputB;
+    vm.onCheckboxChange = function() {
+        if (vm.usePreviousOutput) {
+            vm.model.input = null;
+            vm.model.inputPairs = null;
+        } else {
+            vm.model.input = [];
+            vm.model.inputPairs = [];
+        }
+    }
 
-    // setters
-    vm.setPrimary = input.setInput;
-    vm.setSecondary = input.setInputB;
+    /**
+     * Selects all seeds on the graph which in turn triggers an update event - causing the query input to be updated
+    */
+    vm.useResults = function() {
+        schema.get().then(function(gafferSchema) {
+            var vertices = schema.getSchemaVertices();
+            var vertexClass;
+            if(vertices && vertices.length > 0 && undefined !== vertices[0]) {
+                vertexClass = gafferSchema.types[vertices[0]].class;
+            }
+
+            var resultsData = results.get();
+            var allSeeds = [];
+
+            for (var i in resultsData.entities) {
+                var vertex = { valueClass: vertexClass, parts: types.createParts(vertexClass, resultsData.entities[i].vertex) };
+                common.pushObjectIfUnique(vertex, allSeeds);
+            }
+
+            for (var i in resultsData.edges) {
+                var source = { valueClass: vertexClass, parts: types.createParts(vertexClass, resultsData.edges[i].source) };
+                var destination = { valueClass: vertexClass, parts: types.createParts(vertexClass, resultsData.edges[i].destination) };
+                common.pushObjectsIfUnique([source, destination], allSeeds);
+            }
+
+            for (var i in resultsData.other) {
+                if (resultsData.other[i].class === ENTITY_SEED_CLASS) {
+                    var vertex = { valueClass: vertexClass, parts: types.createParts(vertexClass, resultsData.other[i].vertex)}
+                    common.pushObjectIfUnique(vertex, allSeeds);
+                }
+            }
+
+            common.pushObjectsIfUnique(allSeeds, vm.model.input);
+
+            events.broadcast(EVENT_NAME, []);
+        });
+    }
 }

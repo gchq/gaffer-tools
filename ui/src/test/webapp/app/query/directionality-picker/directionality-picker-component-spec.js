@@ -4,11 +4,9 @@ describe('The Directionality Picker Component', function() {
     describe('The Controller', function() {
 
         var $componentController;
-        var queryPage;
 
-        beforeEach(inject(function(_$componentController_, _queryPage_) {
+        beforeEach(inject(function(_$componentController_) {
             $componentController = _$componentController_;
-            queryPage = _queryPage_;
         }));
 
         it('should exist', function() {
@@ -16,29 +14,22 @@ describe('The Directionality Picker Component', function() {
             expect(ctrl).toBeDefined();
         });
 
-        it('should set the flag to the value in the queryPage service', function() {
-            spyOn(queryPage, 'getInOutFlag').and.returnValue('test');
-
-            var ctrl = $componentController('directionalityPicker');
-
-            expect(queryPage.getInOutFlag).toHaveBeenCalledTimes(1);
-            expect(ctrl.inOutFlag).toEqual('test');
-        });
-
-        it('should set the queryPage.inOutFlag when the direction is updated', function() {
-            var ctrl = $componentController('directionalityPicker');
-            var flag;
-            spyOn(queryPage, 'setInOutFlag').and.callFake(function(newFlag) {
-                flag = newFlag;
+        describe('ctrl.$onInit()', function() {
+            it('should throw an error if the model is undefined', function() {
+                var ctrl = $componentController('directionalityPicker', null, {model: undefined});
+                expect(ctrl.$onInit).toThrow('Directionality picker must be initialised with a model');
             });
 
-            ctrl.inOutFlag = 'flag value';
-            ctrl.onInOutFlagChange();
+            it('should set the model to EITHER if the model is null', function() {
+                var ctrl = $componentController('directionalityPicker', null, {model: null});
+                ctrl.$onInit();
+                expect(ctrl.model).toEqual('EITHER');
+            });
 
-            expect(queryPage.setInOutFlag).toHaveBeenCalledTimes(1);
-            expect(queryPage.setInOutFlag).toHaveBeenCalledWith('flag value')
-            expect(flag).toEqual('flag value');
-
-        });
+            it('should throw an error if the model is anything other than "EITHER", "OUTGOING" or "INCOMING"', function() {
+                var ctrl = $componentController('directionalityPicker', null, {model: "invalid"});
+                expect(ctrl.$onInit).toThrow('Model must be one of: "EITHER", "OUTGOING", "INCOMING" or null but was: "invalid"');
+            });
+        })
     });
 });

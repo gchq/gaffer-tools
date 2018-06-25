@@ -24,12 +24,13 @@ function dateRange() {
         controller: DateRangeController,
         controllerAs: 'ctrl',
         bindings: {
-            conf: '<'
+            conf: '<',
+            model: '='
         }
     }
 }
 
-function DateRangeController(dateRange, time) {
+function DateRangeController(time, events) {
     var vm = this;
 
     vm.startDate = null;
@@ -49,6 +50,24 @@ function DateRangeController(dateRange, time) {
         }
     }
 
+    var updateView = function(dates) {
+        var start = dates.startDate;
+        if (start) {
+            vm.startDate = time.convertNumberToDate(start, vm.conf.filter.unit);
+        } else {
+            vm.startDate = null;
+        }
+        var end = dates.endDate;
+        if(end) {
+            vm.endDate = time.convertNumberToDate(end, vm.conf.filter.unit);
+        } else {
+            vm.endDate = null;
+        }
+    }
+
+    var onOperationUpdate = function() {
+        updateView(vm.model);
+    }
 
     vm.$onInit = function() {
         if (!vm.conf) {
@@ -70,19 +89,23 @@ function DateRangeController(dateRange, time) {
             }
         }
 
-        var start = dateRange.getStartDate();
-        if (start) {
-            vm.startDate = time.convertNumberToDate(start, vm.conf.filter.unit);
+        if (!vm.model) {
+            throw 'Date range component must be initialised with a model'
         }
-        var end = dateRange.getEndDate();
-        if(end) {
-            vm.endDate = time.convertNumberToDate(end, vm.conf.filter.unit);
-        }
+
+        updateView(vm.model);
+
+        events.subscribe('onOperationUpdate', onOperationUpdate);
+        
+    }
+
+    vm.$onDestroy = function() {
+        events.unsubscribe('onOperationUpdate', onOperationUpdate);
     }
 
     vm.onStartDateUpdate = function() {
         if (vm.startDate === undefined || vm.startDate === null) {
-            dateRange.setStartDate(undefined);
+            vm.model.startDate = null;
             vm.startTime = null;
 
             if (vm.dateForm) {
@@ -111,12 +134,12 @@ function DateRangeController(dateRange, time) {
 
 
         var convertedTime = time.convertDateToNumber(start, vm.conf.filter.unit);
-        dateRange.setStartDate(convertedTime);
+        vm.model.startDate = convertedTime
     }
 
     vm.onEndDateUpdate = function() {
         if (vm.endDate === undefined || vm.endDate === null) {
-            dateRange.setEndDate(undefined);
+            vm.model.endDate = null;
             vm.endTime = null;
 
             if (vm.dateForm) {
@@ -129,7 +152,6 @@ function DateRangeController(dateRange, time) {
         var end = new Date(vm.endDate.getTime());
 
         if (vm.endTime === undefined || vm.endTime === null) {
-
             // end of the day
 
             end.setHours(23);
@@ -149,9 +171,6 @@ function DateRangeController(dateRange, time) {
         if (vm.conf.filter.unit && angular.lowercase(vm.conf.filter.unit) === 'microsecond') {
             convertedTime += 999;
         }
-
-        dateRange.setEndDate(convertedTime);
+        vm.model.endDate = convertedTime;
     }
-
-
 }
