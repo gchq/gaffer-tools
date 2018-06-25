@@ -36,6 +36,8 @@ angular.module('app').config(['$mdIconProvider', function($mdIconProvider) {
         .icon('settings', 'app/img/settings.svg')
         .icon('sidenav', 'app/img/sidenav.svg')
         .icon('cancel', 'app/img/cancel.svg')
+        .icon('arrow-downward', 'app/img/arrow-downward.svg')
+        .icon('more-vert', 'app/img/more-vert.svg')
         .icon('restore', 'app/img/restore.svg')
         .icon('redraw', 'app/img/redraw.svg')
         .icon('expand-out', 'app/img/expand-out.svg')

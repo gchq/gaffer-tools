@@ -19,7 +19,8 @@
 /**
  * Graph service which handles selected elements and a cytoscape graph
  */
-angular.module('app').factory('graph', ['types', '$q', 'results', 'common', 'config', 'events', 'input', 'schema', 'query', 'operationService', 'settings', 'loading', '$mdDialog', 'error', function(types, $q, results, common, config, events, input, schemaService, query, operationService, settings, loading, $mdDialog, error) {
+angular.module('app').factory('graph', ['types', '$q', 'results', 'common', 'events', 'operationChain', 'schema', 'config', 'loading', 'query', 'error', 'settings', 'operationService', function(types, $q, results, common, events, operationChain, schemaService, config, loading, query, error, settings, operationService) {
+
     var graphCy;
     var graph = {};
 
@@ -242,7 +243,8 @@ angular.module('app').factory('graph', ['types', '$q', 'results', 'common', 'con
     }
 
     /**
-     * Appends the element to selected entities, creates an input object from the ID and adds it to the input service, then fires events
+     * Appends the element to selected entities, creates an input object from the ID and adds it to the 
+     * operation chain's first operation, then fires events
      * @param {String} id The vertex 
      * @param {Array} entities The elements with the id
      */
@@ -252,7 +254,7 @@ angular.module('app').factory('graph', ['types', '$q', 'results', 'common', 'con
             var vertex = JSON.parse(id);
             var vertices = schemaService.getSchemaVertices();
             var vertexClass = gafferSchema.types[vertices[0]].class;
-            input.addInput({
+            operationChain.addInput({
                 valueClass: vertexClass,
                 parts: types.createParts(vertexClass, vertex)
             });
@@ -322,7 +324,7 @@ angular.module('app').factory('graph', ['types', '$q', 'results', 'common', 'con
                 var vertex = JSON.parse(id);
                 var vertices = schemaService.getSchemaVertices();
                 var vertexClass = gafferSchema.types[vertices[0]].class;
-                input.removeInput({
+                operationChain.removeInput({
                     valueClass: vertexClass,
                     parts: types.createParts(vertexClass, vertex)
                 });

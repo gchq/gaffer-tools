@@ -22,15 +22,33 @@ function directionalityPicker() {
     return {
         templateUrl: 'app/query/directionality-picker/directionality-picker.html',
         controller: DirectionalityPickerController,
-        controllerAs: 'ctrl'
+        controllerAs: 'ctrl',
+        bindings: {
+            model: '='
+        }
     }
 }
 
-function DirectionalityPickerController(queryPage) {
+function DirectionalityPickerController() {
     var vm = this;
-    vm.inOutFlag = queryPage.getInOutFlag();
 
-    vm.onInOutFlagChange = function() {
-        queryPage.setInOutFlag(vm.inOutFlag);
+    var allowedValues = ["INCOMING", "OUTGOING", "EITHER"];
+    
+    vm.$onInit = function() {
+        if (vm.model === undefined) {
+            throw 'Directionality picker must be initialised with a model';
+        }
+
+        if (vm.model === null) {
+            vm.model = "EITHER";
+        }
+
+        for (var i in allowedValues) {
+            if (vm.model === allowedValues[i]) {
+                return;
+            }
+        }
+
+        throw 'Model must be one of: "EITHER", "OUTGOING", "INCOMING" or null but was: ' + JSON.stringify(vm.model);
     }
 }
