@@ -172,7 +172,8 @@ function OperationChainController(operationChain, config, loading, query, error,
         graph.deselectAll();
         navigation.goTo('results');
         if (chainFlag) {
-            vm.clearChain();
+            operationChain.reset();
+            vm.operations = operationChain.getOperationChain();
         }
 
         // Remove the input query param
