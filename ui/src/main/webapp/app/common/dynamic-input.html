@@ -1,5 +1,6 @@
 <div layout="column" layout-gt-md="row" layout-wrap layout-fill>
-    <div ng-repeat="field in ctrl.getFields()" flex="{{ctrl.getFlexValue()}}" class="padding-sides">
+    <div ng-repeat="field in ctrl.getFields()" flex="{{ctrl.getFlexValue()}}"
+         class="padding-sides">
         <div ng-if="'textarea' === field.type">
             <md-input-container class="content">
                 <label>{{ctrl.name}} {{field.label}}</label>
@@ -12,14 +13,31 @@
             </md-input-container>
         </div>
         <div ng-if="'checkbox' === field.type" layout-margin>
-            <md-checkbox ng-if="ctrl.isRequired(field)" ng-model="ctrl.param.parts[field.key]" id="required-{{ctrl.name}}-{{field.label}}-cb" required>
+            <md-checkbox ng-if="ctrl.isRequired(field)"
+                         ng-model="ctrl.param.parts[field.key]"
+                         id="required-{{ctrl.name}}-{{field.label}}-cb"
+                         required>
                 {{ctrl.name}} {{field.label}}
             </md-checkbox>
-            <md-checkbox ng-if="!ctrl.isRequired(field)" ng-model="ctrl.param.parts[field.key]" id="{{ctrl.name}}-{{field.label}}-cb">
+            <md-checkbox ng-if="!ctrl.isRequired(field)"
+                         ng-model="ctrl.param.parts[field.key]"
+                         id="{{ctrl.name}}-{{field.label}}-cb">
                 {{ctrl.name}} {{field.label}}
             </md-checkbox>
         </div>
-        <div ng-if="'checkbox' !== field.type && 'textarea' !== field.type">
+        <div ng-if="ctrl.options">
+            <md-input-container class="content small-input-container">
+                <label>{{ctrl.name}} {{field.label}}</label>
+                <md-select class="no-ellipsis"
+                           ng-model="ctrl.param.parts[field.key]">
+                    <md-option ng-value="option"
+                               ng-repeat="option in ctrl.options">
+                        {{option}}
+                    </md-option>
+                </md-select>
+            </md-input-container>
+        </div>
+        <div ng-if="!ctrl.options && 'checkbox' !== field.type && 'textarea' !== field.type">
             <md-input-container class="content small-input-container">
                 <label>{{ctrl.name}} {{field.label}}</label>
                 <input ng-required="ctrl.isRequired(field)"

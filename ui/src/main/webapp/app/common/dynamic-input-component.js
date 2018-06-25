@@ -25,7 +25,8 @@ function dynamicInput() {
         controllerAs: 'ctrl',
         bindings: {
             param: '=',
-            name: '<'
+            name: '<',
+            options: '<'
         }
     }
 }

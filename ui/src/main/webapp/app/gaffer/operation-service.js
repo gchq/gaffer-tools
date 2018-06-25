@@ -95,12 +95,6 @@ angular.module('app').factory('operationService', ['$http', '$q', 'settings', 'c
         return defaultValue;
     }
 
-    var toTitle = function(className) {
-        return className.split(".").pop()
-            .replace(/([A-Z])/g, ' $1')
-            .replace(/^./, function(str){ return str.toUpperCase(); });
-    }
-
     var addOperations = function(operations, conf) {
         if(operations) {
             for (var i in operations) {
@@ -109,13 +103,9 @@ angular.module('app').factory('operationService', ['$http', '$q', 'settings', 'c
                 if(opAllowed(op.operationName, conf.operations)) {
                     var availableOp = {
                           class: op.name,
-                          name: toTitle(op.name),
+                          name: common.toTitle(op.name),
                           description: op.summary,
-                          view: hasField("view", op),
-                          input: getFieldValue(false, "input", "className", op),
-                          inputB: getFieldValue(false, "inputB", "className", op),
-                          namedOp: false,
-                          inOutFlag: hasField("includeIncomingOutGoing", op)
+                          fields: op.fields
                     };
 
                     availableOperations.push(availableOp);

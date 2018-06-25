@@ -5,11 +5,10 @@
             <md-input-container flex>
                 <md-select name="name"
                            id="operation-name"
-                           ng-model="ctrl.selectedOp"
+                           ng-model="ctrl.model"
                            md-selected-text="ctrl.getLabel()"
                            required
-                           aria-label="operation picker"
-                           md-on-close="ctrl.updateModel()">
+                           aria-label="operation picker">
                     <md-option ng-value="op" ng-repeat="op in ctrl.availableOperations" aria-label="{{op.name}}">
                         <div class="md-body-2">{{op.name}}</div>
                         <em class="md-body-1">{{op.description}}</em>
@@ -20,7 +19,7 @@
                 </div>
             </md-input-container>
             <div layout="column" layout-align="center">
-                <md-button class="md-icon-button" ng-click="ctrl.refreshNamedOperations()">
+                <md-button class="md-icon-button" ng-click="ctrl.reloadOperations()">
                     <md-tooltip>Refresh named operations</md-tooltip>
                     <md-icon md-svg-icon="refresh"></md-icon>
                 </md-button>
