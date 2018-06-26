@@ -41,13 +41,15 @@ function DateRangeController(time, events) {
     var updateView = function(dates) {
         var start = dates.startDate;
         if (start) {
-            vm.startDate = time.convertNumberToDate(start, vm.conf.filter.unit);
+            var utcDate = time.convertNumberToDate(start, vm.conf.filter.unit);
+            vm.startDate = moment(utcDate).add(new Date().getTimezoneOffset(), 'minutes').toDate()
         } else {
             vm.startDate = null;
         }
         var end = dates.endDate;
         if(end) {
-            vm.endDate = time.convertNumberToDate(end, vm.conf.filter.unit);
+            var utcDate = time.convertNumberToDate(end, vm.conf.filter.unit);
+            vm.endDate = moment(utcDate).add(new Date().getTimezoneOffset(), 'minutes').toDate()
         } else {
             vm.endDate = null;
         }
@@ -107,13 +109,9 @@ function DateRangeController(time, events) {
         var start = new Date(vm.startDate.getTime());
 
         if (vm.startTime === undefined || vm.startTime === null) {
-
             // start of the day
+            start.setMinutes(start.getTimezoneOffset() * -1);
 
-            start.setHours(0);
-            start.setMinutes(0);
-            start.setSeconds(0);
-            start.setMilliseconds(0);
         } else {
             start.setHours(vm.startTime.getHours());
             start.setMinutes(vm.startTime.getMinutes());
@@ -144,11 +142,11 @@ function DateRangeController(time, events) {
             // end of the day
 
             end.setHours(23);
-            end.setMinutes(59);
+            end.setMinutes(59 + (end.getTimezoneOffset() * -1));
             end.setSeconds(59);
             end.setMilliseconds(999);
 
-        } else {
+        } else {    // this value is already set in UTC
             end.setHours(vm.endTime.getHours());
             end.setMinutes(vm.endTime.getMinutes());
             end.setSeconds(vm.endTime.getSeconds());

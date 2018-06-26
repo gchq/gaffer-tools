@@ -18,17 +18,14 @@
 
 angular.module('app').config(['$mdDateLocaleProvider', function($mdDateLocaleProvider) {
 
-    var locale = window.navigator.userLanguage || window.navigator.language;
-    moment.locale(locale);
-
     $mdDateLocaleProvider.parseDate = function(dateString) {
-        var m = moment(dateString, 'L', true);
+        var m = moment(dateString, ['YYYY/MM/DD', 'YYYY-MM-DD', 'YYYY.MM.DD'], true);
         return m.isValid() ? m.toDate() : new Date(NaN);
     }
 
     $mdDateLocaleProvider.formatDate = function(date) {
         var m = moment(date);
-        return m.isValid() ? m.format('L') : '';
+        return m.isValid() ? m.format('YYYY-MM-DD') : '';
     }
 
 }]);
