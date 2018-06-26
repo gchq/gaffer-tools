@@ -4,9 +4,9 @@
         <div layout="row">
             <md-input-container>
                 <label>Start Date</label>
-                <md-datepicker ng-model="ctrl.startDate" name="startDate" id="start-date" ng-change="ctrl.onStartDateUpdate()"></md-datepicker>
+                <md-datepicker ng-model="ctrl.startDate" name="startDate" id="start-date" ng-change="ctrl.onStartDateUpdate()" md-date-locale="ctrl.localeProviderOverride"></md-datepicker>
                 <div ng-messages="ctrl.dateForm.startDate.$error">
-                    <div ng-message="valid">The start date entered is invalid.</div>
+                    <div ng-message="valid">The start date entered is invalid. Use YYYY-MM-DD format</div>
                 </div>
             </md-input-container>
             <md-input-container>
@@ -27,9 +27,9 @@
         <div layout="row">
             <md-input-container>
                 <label>End Date</label>
-                <md-datepicker ng-model="ctrl.endDate" name="endDate" id="end-date" ng-change="ctrl.onEndDateUpdate()"></md-datepicker>
+                <md-datepicker ng-model="ctrl.endDate" name="endDate" id="end-date" ng-change="ctrl.onEndDateUpdate()" md-date-locale="ctrl.localeProviderOverride"></md-datepicker>
                 <div ng-messages="ctrl.dateForm.endDate.$error">
-                    <div ng-message="valid">The end date entered is invalid.</div>
+                    <div ng-message="valid">The end date entered is invalid. Use YYYY-MM-DD format</div>
                 </div>
             </md-input-container>
             <md-input-container>

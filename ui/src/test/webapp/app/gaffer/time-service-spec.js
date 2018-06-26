@@ -86,11 +86,12 @@ describe('The time service', function() {
         var expectedDateString = 'date string';
         var expectedTimeString = 'time string';
         beforeEach(function() {
-            spyOn(Date.prototype, 'toLocaleDateString').and.callFake(function() {
-                return expectedDateString;
-            });
-            spyOn(Date.prototype, 'toLocaleTimeString').and.callFake(function() {
-                return expectedTimeString;
+            spyOn(window, 'moment').and.callFake(function() {
+                return {
+                    format: function(str) {
+                        return expectedDateString + ' ' + expectedTimeString
+                    }
+                }
             });
         });
 
