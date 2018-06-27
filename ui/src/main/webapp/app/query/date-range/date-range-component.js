@@ -54,14 +54,14 @@ function DateRangeController(time, events) {
         var start = dates.startDate;
         if (start) {
             var utcDate = time.convertNumberToDate(start, vm.conf.filter.unit);
-            vm.startDate = moment(utcDate).add(new Date().getTimezoneOffset(), 'minutes').toDate()
+            vm.startDate = moment(utcDate).add(utcDate.getTimezoneOffset(), 'minutes').toDate()
         } else {
             vm.startDate = null;
         }
         var end = dates.endDate;
         if(end) {
             var utcDate = time.convertNumberToDate(end, vm.conf.filter.unit);
-            vm.endDate = moment(utcDate).add(new Date().getTimezoneOffset(), 'minutes').toDate()
+            vm.endDate = moment(utcDate).add(utcDate.getTimezoneOffset(), 'minutes').toDate()
         } else {
             vm.endDate = null;
         }
@@ -124,8 +124,8 @@ function DateRangeController(time, events) {
             start.setMinutes(start.getTimezoneOffset() * -1);
 
         } else {
-            start.setHours(vm.startTime.getHours());
-            start.setMinutes(vm.startTime.getMinutes());
+            start.setHours(vm.startTime.getUTCHours());
+            start.setMinutes(vm.startTime.getUTCMinutes() - start.getTimezoneOffset());
             start.setSeconds(vm.startTime.getSeconds());
             start.setMilliseconds(vm.startTime.getMilliseconds());
         }
@@ -153,13 +153,13 @@ function DateRangeController(time, events) {
             // end of the day
 
             end.setHours(23);
-            end.setMinutes(59 + (end.getTimezoneOffset() * -1));
+            end.setMinutes(59 - end.getTimezoneOffset());
             end.setSeconds(59);
             end.setMilliseconds(999);
 
-        } else {    // this value is already set in UTC
-            end.setHours(vm.endTime.getHours());
-            end.setMinutes(vm.endTime.getMinutes());
+        } else {    
+            end.setHours(vm.endTime.getUTCHours());
+            end.setMinutes(vm.endTime.getUTCMinutes() - end.getTimezoneOffset());
             end.setSeconds(vm.endTime.getSeconds());
             end.setMilliseconds(vm.endTime.getMilliseconds());
         }
