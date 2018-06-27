@@ -33,10 +33,15 @@ function operationField() {
 function OperationFieldComponent(types, common) {
     var vm = this;
 
-    vm.$onInit = function() {
-        console.log(vm.details);
-        console.log(vm.model);
+    var handledClasses = [
+        "java.lang.String",
+        "java.lang.Integer",
+        "java.lang.Long",
+        "java.lang.Boolean",
+        "uk.gov.gchq.gaffer.data.elementdefinition.view.View"
+    ];
 
+    vm.$onInit = function() {
         if (vm.details === null || vm.details === undefined) {
             throw 'Expected details binding';
         }
@@ -50,8 +55,6 @@ function OperationFieldComponent(types, common) {
             vm.name = '';
         }
         vm.title = common.toTitle(vm.name);
-        console.log(vm.title);
-
 
         vm.param = {};
         vm.param.parts={};
@@ -65,5 +68,19 @@ function OperationFieldComponent(types, common) {
         if(vm.name === "directedType") {
             vm.details.options=["EITHER", "DIRECTED", "UNDIRECTED"];
         }
+
+        if(vm.name === "includeIncomingOutGoing") {
+            vm.details.options=["EITHER", "INCOMING", "OUTGOING"];
+        }
+
+        if(vm.name === "useMatchedVertex") {
+            vm.details.options=["OPPOSITE", "IGNORE", "EQUAL"];
+        }
+
+        if(vm.name === "edgeVertices") {
+            vm.details.options=["NONE", "SOURCE", "DESTINATION", "BOTH"];
+        }
+
+        vm.canHandle = handledClasses.indexOf(vm.details.className) > -1;
     }
 }

@@ -1,25 +1,38 @@
 <ng-form name="ctrl.operationForm">
     <div layout="column" layout-margin>
         <h3 class="section-title">Select your operation</h3>
+
         <div layout="row">
             <md-input-container flex>
-                <md-select name="name"
-                           id="operation-name"
+                <label></label>
+                <md-select id="operation-name"
+                           class="no-ellipsis"
+                           md-selected-text="ctrl.selectedText()"
                            ng-model="ctrl.model"
-                           md-selected-text="ctrl.getLabel()"
-                           required
-                           aria-label="operation picker">
-                    <md-option ng-value="op" ng-repeat="op in ctrl.availableOperations" aria-label="{{op.name}}">
+                           aria-label="operation picker"
+                           data-md-container-class="searchable-select"
+                           md-on-close="ctrl.clearSearchTerm()">
+                    <md-select-header class="search-header">
+                        <input ng-model="ctrl.searchTerm"
+                               type="search"
+                               class="search-box md-text"
+                               placeholder="Search for an operation...">
+                    </md-select-header>
+                    <md-option ng-value="op"
+                               ng-repeat="op in ctrl.availableOperations | operationFilter:ctrl.searchTerm"
+                               aria-label="{{op.name}}">
                         <div class="md-body-2">{{op.name}}</div>
                         <em class="md-body-1">{{op.description}}</em>
                     </md-option>
                 </md-select>
-                <div class="errors" ng-messages="ctrl.operationForm.name.$error">
+                <div class="errors"
+                     ng-messages="ctrl.operationForm.name.$error">
                     <div ng-message="required">Required</div>
                 </div>
             </md-input-container>
             <div layout="column" layout-align="center">
-                <md-button class="md-icon-button" ng-click="ctrl.reloadOperations()">
+                <md-button class="md-icon-button"
+                           ng-click="ctrl.reloadOperations()">
                     <md-tooltip>Refresh named operations</md-tooltip>
                     <md-icon md-svg-icon="refresh"></md-icon>
                 </md-button>

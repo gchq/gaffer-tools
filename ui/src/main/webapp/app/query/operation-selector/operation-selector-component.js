@@ -16,7 +16,31 @@
 
 'use strict';
 
-angular.module('app').component('operationSelector', operationSelector());
+var app = angular.module('app');
+
+app.filter('operationFilter', function() {
+    return function(input, search) {
+        if(!input) {
+            return input;
+        }
+        if (!search) {
+            return input;
+        }
+        var formattedSearch = search ? search.toLowerCase().replace(/\s+/g, '') : '';
+        var result = [];
+
+        angular.forEach(input, function(operation) {
+            if((operation.formattedName.indexOf(formattedSearch) > -1)
+             || (operation.formattedDescription.indexOf(formattedSearch) > -1)) {
+                result.push(operation);
+            }
+        });
+
+        return result;
+    }
+});
+
+app.component('operationSelector', operationSelector());
 
 function operationSelector() {
     return {
@@ -24,7 +48,8 @@ function operationSelector() {
         controller: OperationSelectorController,
         controllerAs: 'ctrl',
         bindings: {
-            model: '='
+            model: '=',
+            allowed: '<'
         }
     }
 }
@@ -32,14 +57,52 @@ function operationSelector() {
 function OperationSelectorController(operationService, operationSelectorService, $mdDialog, $routeParams) {
     var vm = this;
 
+    var defaultOperation = "uk.gov.gchq.gaffer.operation.impl.get.GetElements";
     vm.availableOperations;
+    vm.searchTerm = '';
+
+    angular.element(document).find('.search-box').on('keydown', function(ev) {
+        ev.stopPropagation();
+    });
 
     var updateView = function(op) {
         vm.model = op.selectedOperation;
     }
 
     var populateOperations = function(availableOperations) {
-        vm.availableOperations = availableOperations
+        vm.availableOperations = [];
+
+        for(var i in availableOperations) {
+            var operation = availableOperations[i];
+            if(!vm.allowed || vm.allowed.indexOf(operation.class) > -1) {
+                operation.formattedName = operation.name !== undefined ? operation.name.toLowerCase().replace(/\s+/g, '') : '';
+                operation.formattedDescription = operation.description !== undefined ? operation.description.toLowerCase().replace(/\s+/g, '') : '';
+                vm.availableOperations.push(operation);
+
+                if (!vm.model)  {
+                    if(operation.class === defaultOperation) {
+                        vm.model = operation;
+                    }
+                }
+            }
+        }
+
+        vm.availableOperations.sort(function(a,b) {
+            if(a.formattedName > b.formattedName) {
+                return 1;
+            }
+            if(a.formattedName < b.formattedName) {
+                return -1;
+            }
+            if(a.formattedDescription > b.formattedDescription) {
+                return 1;
+            }
+            if(a.formattedDescription < b.formattedDescription) {
+                return -1;
+            }
+            return 0
+        });
+
         if (!vm.model)  {
             vm.model = vm.availableOperations[0];
         }
@@ -60,10 +123,6 @@ function OperationSelectorController(operationService, operationSelectorService,
         }
     }
 
-    vm.getLabel = function() {
-        return vm.model ? vm.model.name : "Select an operation"
-    }
-
     vm.$onInit = function() {
         operationSelectorService.shouldLoadNamedOperationsOnStartup().then(function(yes) {
             if (yes) {
@@ -72,12 +131,22 @@ function OperationSelectorController(operationService, operationSelectorService,
                 operationService.getAvailableOperations().then(populateOperations);
             }
         });
-
     }
+
+    vm.clearSearchTerm = function() {
+        vm.searchTerm = '';
+    };
 
     vm.refreshNamedOperations = function() {
         operationService.reloadNamedOperations(true).then(function(availableOps) {
             vm.availableOperations = availableOps;
         });
+    }
+
+    vm.selectedText = function() {
+        if(vm.model) {
+            return vm.model.name;
+        }
+        return "Select operation...";
     }
 }

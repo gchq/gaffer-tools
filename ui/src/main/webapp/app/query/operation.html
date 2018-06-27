@@ -45,45 +45,43 @@
         <form name="ctrl.operationForm">
             <md-divider></md-divider>
             <div layout="row">
-                <div layout="row" flex>
+                <div layout="row" flex style="margin-bottom: 30px;">
+
+
                     <div layout="column" flex="45">
                         <operation-selector
-                                model="ctrl.model.selectedOperation"></operation-selector>
+                                model="ctrl.model.selectedOperation"
+                                allowed="ctrl.model.allowedOps">
+                        </operation-selector>
                         <input-manager first="ctrl.isFirst()"
                                        primary-input="ctrl.model.selectedOperation.fields.input"
                                        secondary-input="ctrl.model.selectedOperation.fields.inputB"
-                                       model="ctrl.model.fields"></input-manager>
+                                       model="ctrl.model.fields">
+                        </input-manager>
                     </div>
+
+
                     <div layout="column" flex="55">
                         <date-range
-                                ng-if="ctrl.timeConfig && ctrl.model.selectedOperation.view"
+                                ng-if="ctrl.timeConfig && ctrl.model.selectedOperation.fields.view"
                                 model="ctrl.model.dates"
                                 conf="ctrl.timeConfig">
                         </date-range>
 
-                        <div ng-repeat="field in ctrl.model.selectedOperation.fields">
-                            <div ng-if="field.name !== 'input' && field.name !== 'inputB'">
+                        <div ng-repeat="(name, field) in ctrl.model.selectedOperation.fields">
+                            <div ng-if="name !== 'input' && name !== 'inputB'">
                                 <operation-field model="ctrl.model"
                                                  details="field">
                                 </operation-field>
-
-                                <!--<date-range-->
-                                <!--ng-if="ctrl.timeConfig && ctrl.model.selectedOperation.view"-->
-                                <!--model="ctrl.model.dates"-->
-                                <!--conf="ctrl.timeConfig"></date-range>-->
-                                <!--<parameter-form-->
-                                <!--ng-if="ctrl.model.selectedOperation.parameters"-->
-                                <!--title-class="layout-padding section-title"-->
-                                <!--parameters="ctrl.model.selectedOperation.parameters"></parameter-form>-->
-                                <!--<view-builder-->
-                                <!--ng-show="ctrl.model.selectedOperation.view"-->
-                                <!--model="ctrl.model.view"></view-builder>-->
-                                <!--<directionality-picker-->
-                                <!--ng-show="ctrl.model.selectedOperation.inOutFlag"-->
-                                <!--model="ctrl.model.edgeDirection"></directionality-picker>-->
-                                <!--<options-form ng-show="ctrl.showOperationOptionsForm"-->
-                                <!--model="ctrl.model.opOptions"></options-form>-->
                             </div>
+                        </div>
+
+                        <div ng-if="ctrl.model.selectedOperation.fields.view"
+                             layout-margin>
+                            <md-checkbox
+                                    ng-model="ctrl.model.fields.view.summarise">
+                                Summarise
+                            </md-checkbox>
                         </div>
                     </div>
                 </div>

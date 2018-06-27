@@ -58,9 +58,9 @@ function OperationChainController(operationChain, config, loading, query, error,
 
     vm.deleteOperation = function(index) {
         vm.operations.splice(index, 1);
-        if (index === 0 && vm.operations[0].inputs.input === null) {
-            vm.operations[0].inputs.input = [];
-            vm.operations[0].inputs.inputPairs = [];
+        if (index === 0 && vm.operations[0].fields.input === null) {
+            vm.operations[0].fields.input = [];
+            vm.operations[0].fields.inputPairs = [];
         }
         events.broadcast('onOperationUpdate', [])
     }
@@ -123,8 +123,6 @@ function OperationChainController(operationChain, config, loading, query, error,
         }, function() {
             // do nothing if they don't want to reset
         });
-
-
     }
 
     /**
@@ -172,7 +170,8 @@ function OperationChainController(operationChain, config, loading, query, error,
         graph.deselectAll();
         navigation.goTo('results');
         if (chainFlag) {
-            vm.clearChain();
+            operationChain.reset();
+            vm.operations = operationChain.getOperationChain();
         }
 
         // Remove the input query param
@@ -284,15 +283,21 @@ function OperationChainController(operationChain, config, loading, query, error,
             op.operationName = selectedOp.name;
         }
 
-        if (selectedOp.input === PAIR_CLASS) {
-            op.input = createPairInput(operation.inputs.inputPairs)
-        } else if (selectedOp.input) {
-            op.input = createOpInput(operation.inputs.input);
-        }
-        if (selectedOp.inputB && !selectedOp.namedOp) {
-            op.inputB = createOpInput(operation.inputs.inputB);
+        for(var name in selectedOp.fields) {
+           var field = operation.fields[name];
+           if(field && field.parts && Object.keys(field.parts).length > 0) {
+               op[name] = types.createJsonValue(field.valueClass, field.parts);
+           }
         }
 
+        if (selectedOp.fields.input === PAIR_CLASS) {
+            op.input = createPairInput(operation.fields.inputPairs)
+        } else if (selectedOp.fields.input) {
+            op.input = createOpInput(operation.fields.input);
+        }
+        if (selectedOp.fields.inputB && !selectedOp.namedOp) {
+            op.inputB = createOpInput(operation.fields.inputB);
+        }
 
         if (selectedOp.parameters) {
             var opParams = {};
@@ -306,27 +311,30 @@ function OperationChainController(operationChain, config, loading, query, error,
             op.parameters = opParams;
         }
 
-        if (selectedOp.inputB && selectedOp.namedOp) {
+        if (selectedOp.fields.inputB && selectedOp.namedOp) {
             if (!op.parameters) {
                 op.parameters = {};
             }
-            op.parameters['inputB'] = createOpInput(operation.inputs.inputB);
+            op.parameters['inputB'] = createOpInput(operation.inputB);
         }
 
-        if (selectedOp.view) {
-            var namedViews = operation.view.namedViews;
-            var viewEdges = operation.view.viewEdges;
-            var viewEntities = operation.view.viewEntities;
-            var edgeFilters = operation.view.edgeFilters;
-            var entityFilters = operation.view.entityFilters;
+        if (selectedOp.fields.view) {
+            var namedViews = operation.fields.view.namedViews;
+            var viewEdges = operation.fields.view.viewEdges;
+            var viewEntities = operation.fields.view.viewEntities;
+            var edgeFilters = operation.fields.view.edgeFilters;
+            var entityFilters = operation.fields.view.entityFilters;
 
             op.view = {
-                globalElements: [{
-                    groupBy: []
-                }],
                 entities: {},
                 edges: {}
             };
+
+            if(operation.fields.view.summarise) {
+                op.view.globalElements = [{
+                    groupBy: []
+                }];
+            }
 
             createElementView(viewEntities, entityFilters, op.view.entities);
             createElementView(viewEdges, edgeFilters, op.view.edges);
@@ -381,16 +389,10 @@ function OperationChainController(operationChain, config, loading, query, error,
             }
         }
 
-        if (selectedOp.inOutFlag) {
-            op.includeIncomingOutGoing = operation.edgeDirection;
-        }
-
-        if(operation.opOptions) {
-            op.options = operation.opOptions;
+        if(operation.fields.options && Object.keys(operation.fields.options).length > 0) {
+            op.options = operation.fields.options;
         }
 
         return op;
     }
-
-
 }

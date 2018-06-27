@@ -21,7 +21,7 @@ angular.module('app').factory('operationChain', ['common', 'settings', 'events',
 
     var EVENT_NAME = 'onOperationUpdate';
 
-    service.createBlankOperation = function(inputFlag) {
+    service.createBlankOperation = function(inputFlag, allowedOps) {
         return {
             selectedOperation: null,
             expanded: true,
@@ -31,20 +31,20 @@ angular.module('app').factory('operationChain', ['common', 'settings', 'events',
                     edgeFilters: {},
                     viewEntities: [],
                     entityFilters: {},
-                    namedViews: []
+                    namedViews: [],
+                    summarise: true
                 },
-                inputs: {
-                    input: inputFlag ? [] : null,
-                    inputPairs: inputFlag ? [] : null,
-                    inputB: []
-                },
+                input: inputFlag ? [] : null,
+                inputPairs: inputFlag ? [] : null,
+                inputB: [],
                 edgeDirection: "EITHER",
-                opOptions: settings.getDefaultOpOptions()
+                options: settings.getDefaultOpOptions()
             },
             dates: {
                 startDate: null,
                 endDate: null
             },
+            allowedOps: allowedOps
         }
     }
 
@@ -64,22 +64,22 @@ angular.module('app').factory('operationChain', ['common', 'settings', 'events',
 
     service.addInput = function(seed) {
         if (typeof seed === 'object') {
-            if (!common.arrayContainsObject(operations[0].inputs.input, seed)) {
-                operations[0].inputs.input.push(seed);
+            if (!common.arrayContainsObject(operations[0].input, seed)) {
+                operations[0].input.push(seed);
                 events.broadcast(EVENT_NAME, []);
             }
-        } else if (!common.arrayContainsValue(operations[0].inputs.input, seed)) {
-            operations[0].inputs.input.push(seed);
+        } else if (!common.arrayContainsValue(operations[0].input, seed)) {
+            operations[0].input.push(seed);
             events.broadcast(EVENT_NAME, []);
         }
     }
 
     service.removeInput = function(seed) {
-        var newInput = operations[0].inputs.input.filter(function(vertex) {
+        var newInput = operations[0].input.filter(function(vertex) {
             return !angular.equals(seed, vertex);
         });
-        if(newInput.length < operations[0].inputs.input.length) {
-            operations[0].inputs.input = newInput;
+        if(newInput.length < operations[0].input.length) {
+            operations[0].input = newInput;
             events.broadcast(EVENT_NAME, []);
         }
     }
@@ -88,7 +88,9 @@ angular.module('app').factory('operationChain', ['common', 'settings', 'events',
      * Adds a new operation to the current operation chain
      */
     service.add = function(inputFlag) {
-        operations.push(service.createBlankOperation(inputFlag));
+        var lastOp = operations[operations.length -1];
+        var allowedOps = lastOp && lastOp.selectedOperation ? lastOp.selectedOperation.next : null;
+        operations.push(service.createBlankOperation(inputFlag, allowedOps));
     }
 
     /**

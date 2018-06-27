@@ -63,7 +63,7 @@ function OperationController(types, loading, operationChain, settings, events) {
      * Checks all subforms are valid and another operation is not in progress
      */
     vm.canExecute = function() {
-        return vm.operationForm.$valid && vm.model.fields.inputs.input !== null && !loading.isLoading();
+        return vm.operationForm.$valid && vm.model.fields.input !== null && !loading.isLoading();
     }
 
     vm.isFirst = function() {
@@ -93,5 +93,4 @@ function OperationController(types, loading, operationChain, settings, events) {
     vm.delete = function() {
         vm.onDelete({index: vm.index});
     }
-
 }

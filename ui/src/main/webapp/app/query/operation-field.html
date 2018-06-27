@@ -1,22 +1,17 @@
-<div>
+<div ng-if="ctrl.canHandle">
     <parameter-form
             ng-if="ctrl.model.selectedOperation.parameters"
             title-class="layout-padding section-title"
             parameters="ctrl.model.selectedOperation.parameters">
     </parameter-form>
 
-
     <view-builder
             ng-if="ctrl.name === 'view'"
             model="ctrl.model.fields.view">
     </view-builder>
 
-    <directionality-picker
-            ng-if="ctrl.name === 'includeIncomingOutGoing'"
-            model="ctrl.model.fields.edgeDirection"></directionality-picker>
-
     <dynamic-input
-            ng-if="ctrl.name !== 'options' && ctrl.name !== 'seedMatching' && ctrl.name !== 'view' && ctrl.name !== 'views' && ctrl.name !== 'includeIncomingOutGoing'"
+            ng-if="ctrl.name !== 'options' && ctrl.name !== 'seedMatching' && ctrl.name !== 'view' && ctrl.name !== 'views'"
             name="ctrl.title"
             param="ctrl.param"
             options="ctrl.details.options">

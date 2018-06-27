@@ -101,11 +101,16 @@ angular.module('app').factory('operationService', ['$http', '$q', 'settings', 'c
                 var op = operations[i];
 
                 if(opAllowed(op.operationName, conf.operations)) {
+                    var fields = {};
+                    for(var j in op.fields) {
+                        fields[op.fields[j].name] = op.fields[j];
+                    }
                     var availableOp = {
                           class: op.name,
                           name: common.toTitle(op.name),
                           description: op.summary,
-                          fields: op.fields
+                          fields: fields,
+                          next: op.next
                     };
 
                     availableOperations.push(availableOp);
