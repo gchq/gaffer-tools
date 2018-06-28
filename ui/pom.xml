@@ -109,7 +109,7 @@
                         <source>${project.build.directory}/${project.build.finalName}/lib/cytoscape/js/cytoscape-ngraph.forcelayout.js</source>
                         <source>${project.build.directory}/${project.build.finalName}/lib/jquery/js/jquery.min.js</source>
                         <source>${project.build.directory}/${project.build.finalName}/lib/md-data-table/js/md-data-table.min.js</source>
-                        <source>${project.build.directory}/${project.build.finalName}/lib/moment/moment-with-locales.min.js</source>
+                        <source>${project.build.directory}/${project.build.finalName}/lib/moment/moment.min.js</source>
                     </preloadSources>
                 </configuration>
             </plugin>
@@ -494,7 +494,7 @@
                                 <source>dependencies/lib/cytoscape/js/cytoscape-ngraph.forcelayout.js</source>
                                 <source>dependencies/lib/jquery/js/jquery.min.js</source>
                                 <source>dependencies/lib/md-data-table/js/md-data-table.min.js</source>
-                                <source>dependencies/lib/moment/moment-with-locales.min.js</source>
+                                <source>dependencies/lib/moment/moment.min.js</source>
                             </preloadSources>
                         </configuration>
                     </plugin>
