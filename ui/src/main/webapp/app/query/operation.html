@@ -1,8 +1,11 @@
 <md-card ng-class="{closed: !ctrl.model.expanded}">
-    <md-list-item class="md-2-line" flex ng-click="ctrl.toggleExpanded()"
-                  ng-show="ctrl.model.selectedOperation">
+    <md-list-item class="md-2-line" flex ng-click="ctrl.toggleExpanded()">
         <div class="md-list-item-text">
             <h3>{{ctrl.model.selectedOperation.name}}</h3>
+
+            <h3 ng-show="!ctrl.model.selectedOperation.name">
+                Operation
+            </h3>
 
             <p>{{ctrl.model.selectedOperation.description}}</p>
         </div>
@@ -44,14 +47,13 @@
     <div class="operation-content" ng-show="ctrl.model.expanded">
         <form name="ctrl.operationForm">
             <md-divider></md-divider>
-            <div layout="row">
+            <div layout="row" layout-padding>
                 <div layout="row" flex style="margin-bottom: 30px;">
-
 
                     <div layout="column" flex="45">
                         <operation-selector
                                 model="ctrl.model.selectedOperation"
-                                allowed="ctrl.model.allowedOps">
+                                previous="ctrl.model.previous">
                         </operation-selector>
                         <input-manager first="ctrl.isFirst()"
                                        primary-input="ctrl.model.selectedOperation.fields.input"
@@ -59,7 +61,6 @@
                                        model="ctrl.model.fields">
                         </input-manager>
                     </div>
-
 
                     <div layout="column" flex="55">
                         <date-range

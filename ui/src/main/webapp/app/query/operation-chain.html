@@ -1,5 +1,5 @@
 <div class="content" layout="column">
-    <md-content flex>    
+    <md-content flex>
             <form name="ctrl.operationChainForm">
                 <div ng-repeat="operation in ctrl.operations" class="operation">
                     <operation model="operation" index="$index" time-config="ctrl.timeConfig" on-delete="ctrl.deleteOperation(index)" on-reset="ctrl.resetOperation(index)" on-execute="ctrl.execute(op)" chain-length="ctrl.operations.length"></operation>
@@ -8,7 +8,7 @@
                     </div>
                 </div>
             </form>
-        <div layout="row" layout-align="center">
+        <div layout="row" layout-align="center" ng-show="ctrl.canAddOperation()">
             <md-button class="md-fab md-accent overlapping-fab" ng-click="ctrl.addOperation()">
                 <md-icon md-svg-icon="add"></md-icon>
                 <md-tooltip>Add a new operation to the chain</md-tooltip>

@@ -25,6 +25,33 @@ angular.module('app').factory('operationService', ['$http', '$q', 'settings', 'c
     var deferredAvailableOperations;
     var deferredNamedOperationsQueue = [];
 
+    var handledFields = [
+        "input",
+        "inputB",
+        "options",
+        "view",
+        "views"
+    ];
+
+    var handledFieldClasses = [
+        "uk.gov.gchq.gaffer.data.elementdefinition.view.View"
+    ];
+
+    operationService.canHandleField = function(field) {
+        return types.isKnown(field.className)
+            || handledFieldClasses.indexOf(field.className) > -1
+            || handledFields.indexOf(field.name) > -1;
+    }
+
+    operationService.canHandleOperation = function(operation) {
+        for(var i in operation.fields) {
+            if(!operationService.canHandleField(operation.fields[i])) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     operationService.getAvailableOperations = function() {
         if (availableOperations) {
             return $q.when(availableOperations);
@@ -100,7 +127,7 @@ angular.module('app').factory('operationService', ['$http', '$q', 'settings', 'c
             for (var i in operations) {
                 var op = operations[i];
 
-                if(opAllowed(op.operationName, conf.operations)) {
+                if(opAllowed(op.operationName, conf.operations) && operationService.canHandleOperation(op)) {
                     var fields = {};
                     for(var j in op.fields) {
                         fields[op.fields[j].name] = op.fields[j];

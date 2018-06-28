@@ -21,7 +21,7 @@ angular.module('app').factory('operationChain', ['common', 'settings', 'events',
 
     var EVENT_NAME = 'onOperationUpdate';
 
-    service.createBlankOperation = function(inputFlag, allowedOps) {
+    service.createBlankOperation = function(inputFlag, previous) {
         return {
             selectedOperation: null,
             expanded: true,
@@ -44,7 +44,7 @@ angular.module('app').factory('operationChain', ['common', 'settings', 'events',
                 startDate: null,
                 endDate: null
             },
-            allowedOps: allowedOps
+            previous: previous
         }
     }
 
@@ -64,22 +64,22 @@ angular.module('app').factory('operationChain', ['common', 'settings', 'events',
 
     service.addInput = function(seed) {
         if (typeof seed === 'object') {
-            if (!common.arrayContainsObject(operations[0].input, seed)) {
-                operations[0].input.push(seed);
+            if (!common.arrayContainsObject(operations[0].fields.input, seed)) {
+                operations[0].fields.input.push(seed);
                 events.broadcast(EVENT_NAME, []);
             }
-        } else if (!common.arrayContainsValue(operations[0].input, seed)) {
-            operations[0].input.push(seed);
+        } else if (!common.arrayContainsValue(operations[0].fields.input, seed)) {
+            operations[0].fields.input.push(seed);
             events.broadcast(EVENT_NAME, []);
         }
     }
 
     service.removeInput = function(seed) {
-        var newInput = operations[0].input.filter(function(vertex) {
+        var newInput = operations[0].fields.input.filter(function(vertex) {
             return !angular.equals(seed, vertex);
         });
-        if(newInput.length < operations[0].input.length) {
-            operations[0].input = newInput;
+        if(newInput.length < operations[0].fields.input.length) {
+            operations[0].fields.input = newInput;
             events.broadcast(EVENT_NAME, []);
         }
     }
@@ -89,8 +89,7 @@ angular.module('app').factory('operationChain', ['common', 'settings', 'events',
      */
     service.add = function(inputFlag) {
         var lastOp = operations[operations.length -1];
-        var allowedOps = lastOp && lastOp.selectedOperation ? lastOp.selectedOperation.next : null;
-        operations.push(service.createBlankOperation(inputFlag, allowedOps));
+        operations.push(service.createBlankOperation(inputFlag, lastOp));
     }
 
     /**

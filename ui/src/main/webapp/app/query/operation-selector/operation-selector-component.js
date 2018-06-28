@@ -49,7 +49,7 @@ function operationSelector() {
         controllerAs: 'ctrl',
         bindings: {
             model: '=',
-            allowed: '<'
+            previous: '<'
         }
     }
 }
@@ -58,8 +58,10 @@ function OperationSelectorController(operationService, operationSelectorService,
     var vm = this;
 
     var defaultOperation = "uk.gov.gchq.gaffer.operation.impl.get.GetElements";
+    vm.availableNamedOperations;
     vm.availableOperations;
     vm.searchTerm = '';
+    vm.showCustomOp = false;
 
     angular.element(document).find('.search-box').on('keydown', function(ev) {
         ev.stopPropagation();
@@ -74,20 +76,21 @@ function OperationSelectorController(operationService, operationSelectorService,
 
         for(var i in availableOperations) {
             var operation = availableOperations[i];
-            if(!vm.allowed || vm.allowed.indexOf(operation.class) > -1) {
-                operation.formattedName = operation.name !== undefined ? operation.name.toLowerCase().replace(/\s+/g, '') : '';
+
+            if(!vm.previous || !vm.previous.selectedOperation || !vm.previous.selectedOperation.next || vm.previous.selectedOperation.next.indexOf(operation.class) > -1) {
+                operation.formattedName = operation.name !== undefined ? operation.name.toLowerCase().replace(/[\W_]+/g, '') : '';
                 operation.formattedDescription = operation.description !== undefined ? operation.description.toLowerCase().replace(/\s+/g, '') : '';
                 vm.availableOperations.push(operation);
-
-                if (!vm.model)  {
-                    if(operation.class === defaultOperation) {
-                        vm.model = operation;
-                    }
-                }
             }
         }
 
         vm.availableOperations.sort(function(a,b) {
+            if(a.namedOp && !b.nameOp) {
+                return 1;
+            }
+            if(!a.namedOp && b.nameOp) {
+                return -1;
+            }
             if(a.formattedName > b.formattedName) {
                 return 1;
             }
@@ -103,10 +106,6 @@ function OperationSelectorController(operationService, operationSelectorService,
             return 0
         });
 
-        if (!vm.model)  {
-            vm.model = vm.availableOperations[0];
-        }
-
         // allow 'op' to be used as a shorthand
         if($routeParams.op) {
             $routeParams.operation = $routeParams.op;
@@ -121,12 +120,24 @@ function OperationSelectorController(operationService, operationSelectorService,
                 }
             }
         }
+
+        //TODO: should we pick a default?
+//        if(!vm.model) {
+        //        for(var i in vm.availableOperations) {
+        //            if(vm.availableOperations[i].class === defaultOperation) {
+        //                vm.model = vm.availableOperations[i];
+        //                return;
+        //            }
+        //        }
+        //        vm.model = vm.availableOperations[0];
+//        }
     }
 
     vm.$onInit = function() {
+        vm.model = undefined;
         operationSelectorService.shouldLoadNamedOperationsOnStartup().then(function(yes) {
             if (yes) {
-                operationService.reloadOperations().then(populateOperations);
+                vm.reloadOperations();
             } else {
                 operationService.getAvailableOperations().then(populateOperations);
             }
@@ -137,10 +148,12 @@ function OperationSelectorController(operationService, operationSelectorService,
         vm.searchTerm = '';
     };
 
-    vm.refreshNamedOperations = function() {
-        operationService.reloadNamedOperations(true).then(function(availableOps) {
-            vm.availableOperations = availableOps;
-        });
+    vm.reloadOperations = function() {
+        operationService.reloadOperations(true).then(populateOperations);
+    }
+
+    vm.namedOpsDisabled = function() {
+        return true;
     }
 
     vm.selectedText = function() {

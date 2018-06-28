@@ -100,7 +100,7 @@ function OperationChainController(operationChain, config, loading, query, error,
         query.addOperation(angular.copy(chain));
 
         var finalOperation = vm.operations[vm.operations.length - 1];
-        if (finalOperation.selectedOperation.iterableOutput !== false) {
+        if (finalOperation.selectedOperation.iterableOutput) {
             chain.operations.push(operationService.createLimitOperation(finalOperation['opOptions']));
             chain.operations.push(operationService.createDeduplicateOperation(finalOperation['opOptions']));
         }
@@ -138,14 +138,20 @@ function OperationChainController(operationChain, config, loading, query, error,
         var operation = createOperationForQuery(op);
         query.addOperation(operation);
 
-        var iterableOutput = !(op.selectedOperation.iterableOutput === false)
         var operations = [operation];
-        if(iterableOutput) {
+        if(op.selectedOperation.iterableOutput) {
             operations.push(operationService.createLimitOperation(operation['options']));
             operations.push(operationService.createDeduplicateOperation(operation['options']));
         }
         runQuery(operations, false);
+    }
 
+    vm.canAddOperation = function() {
+        if(vm.operations.length == 0) {
+            return true;
+        }
+
+        return vm.operations[vm.operations.length -1].selectedOperation !== undefined;
     }
 
     var runQuery = function(operations, chainFlag) {

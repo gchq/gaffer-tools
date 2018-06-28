@@ -92,6 +92,10 @@ angular.module('app').factory('types', ['config', 'common', function(config, com
         return simpleClassNames;
     }
 
+    service.isKnown = function(typeClass) {
+        return typeClass !== undefined && types[typeClass]
+    }
+
     var unknownType =
     {
         fields: [
@@ -102,7 +106,7 @@ angular.module('app').factory('types', ['config', 'common', function(config, com
             }
         ]
     }
-    
+
     var getType = function(typeClass) {
         if (typeClass !== undefined && types[typeClass]) {
             return types[typeClass];
@@ -197,7 +201,7 @@ angular.module('app').factory('types', ['config', 'common', function(config, com
         }
 
         var type = getType(typeClass);
-        
+
         if(type === undefined) {
             return strippedValue;
         }

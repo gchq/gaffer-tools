@@ -1,9 +1,7 @@
 <ng-form name="ctrl.operationForm">
-    <div layout="column" layout-margin>
-        <h3 class="section-title">Select your operation</h3>
-
+    <div layout="column">
         <div layout="row">
-            <md-input-container flex>
+            <md-input-container class="no-bottom-margin" flex>
                 <label></label>
                 <md-select id="operation-name"
                            class="no-ellipsis"
@@ -11,7 +9,9 @@
                            ng-model="ctrl.model"
                            aria-label="operation picker"
                            data-md-container-class="searchable-select"
-                           md-on-close="ctrl.clearSearchTerm()">
+                           md-on-close="ctrl.clearSearchTerm()"
+                           required
+                           md-no-asterisk>
                     <md-select-header class="search-header">
                         <input ng-model="ctrl.searchTerm"
                                type="search"
@@ -33,7 +33,7 @@
             <div layout="column" layout-align="center">
                 <md-button class="md-icon-button"
                            ng-click="ctrl.reloadOperations()">
-                    <md-tooltip>Refresh named operations</md-tooltip>
+                    <md-tooltip>Reload operations</md-tooltip>
                     <md-icon md-svg-icon="refresh"></md-icon>
                 </md-button>
             </div>

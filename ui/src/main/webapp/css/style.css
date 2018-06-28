@@ -134,6 +134,10 @@ md-option > div {
     margin: 0px;
 }
 
+.no-bottom-margin {
+    margin-bottom: 0;
+}
+
 .small-input-container {
     padding-top: 0px;
     padding-bottom: 0px;
