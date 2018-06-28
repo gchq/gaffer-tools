@@ -1,7 +1,4 @@
 {
-  "operations": {
-    "default": "Get Elements"
-  },
   "title": "Example",
   "time": {
     "filter": {
