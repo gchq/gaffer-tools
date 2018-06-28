@@ -33,14 +33,6 @@ function operationField() {
 function OperationFieldComponent(types, common) {
     var vm = this;
 
-    var handledClasses = [
-        "java.lang.String",
-        "java.lang.Integer",
-        "java.lang.Long",
-        "java.lang.Boolean",
-        "uk.gov.gchq.gaffer.data.elementdefinition.view.View"
-    ];
-
     vm.$onInit = function() {
         if (vm.details === null || vm.details === undefined) {
             throw 'Expected details binding';
@@ -65,6 +57,8 @@ function OperationFieldComponent(types, common) {
             vm.model.fields[vm.name] = vm.param;
         }
 
+        // TODO: these should be removed when the REST API has been updated to return them.
+
         if(vm.name === "directedType") {
             vm.details.options=["EITHER", "DIRECTED", "UNDIRECTED"];
         }
@@ -80,7 +74,5 @@ function OperationFieldComponent(types, common) {
         if(vm.name === "edgeVertices") {
             vm.details.options=["NONE", "SOURCE", "DESTINATION", "BOTH"];
         }
-
-        vm.canHandle = handledClasses.indexOf(vm.details.className) > -1;
     }
 }

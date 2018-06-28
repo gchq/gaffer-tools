@@ -1,24 +1,22 @@
-<div ng-if="ctrl.canHandle">
-    <parameter-form
-            ng-if="ctrl.model.selectedOperation.parameters"
-            title-class="layout-padding section-title"
-            parameters="ctrl.model.selectedOperation.parameters">
-    </parameter-form>
+<parameter-form
+        ng-if="ctrl.model.selectedOperation.parameters"
+        title-class="layout-padding section-title"
+        parameters="ctrl.model.selectedOperation.parameters">
+</parameter-form>
 
-    <view-builder
-            ng-if="ctrl.name === 'view'"
-            model="ctrl.model.fields.view">
-    </view-builder>
+<view-builder
+        ng-if="ctrl.name === 'view'"
+        model="ctrl.model.fields.view">
+</view-builder>
 
-    <dynamic-input
-            ng-if="ctrl.name !== 'options' && ctrl.name !== 'seedMatching' && ctrl.name !== 'view' && ctrl.name !== 'views'"
-            name="ctrl.title"
-            param="ctrl.param"
-            options="ctrl.details.options">
-    </dynamic-input>
+<dynamic-input
+        ng-if="ctrl.name !== 'options' && ctrl.name !== 'seedMatching' && ctrl.name !== 'view' && ctrl.name !== 'views'"
+        name="ctrl.title"
+        param="ctrl.param"
+        options="ctrl.details.options">
+</dynamic-input>
 
-    <options-form ng-if="ctrl.name === 'options'"
-                  model="ctrl.model.fields[options]">
-    </options-form>
-</div>
+<options-form ng-if="ctrl.name === 'options'"
+              model="ctrl.model.fields[options]">
+</options-form>
 

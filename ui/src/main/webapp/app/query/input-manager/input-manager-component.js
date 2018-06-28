@@ -45,7 +45,7 @@ function InputManagerController(events, results, common, types, schema) {
     vm.usePreviousOutput;
 
     var updatePreviousOutputFlag = function() {
-        vm.usePreviousOutput = vm.model.input === null;
+        vm.usePreviousOutput = (vm.model.input === null);
     }
 
     vm.$onInit = function() {

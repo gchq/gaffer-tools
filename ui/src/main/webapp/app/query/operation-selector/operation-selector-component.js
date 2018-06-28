@@ -120,17 +120,6 @@ function OperationSelectorController(operationService, operationSelectorService,
                 }
             }
         }
-
-        //TODO: should we pick a default?
-//        if(!vm.model) {
-        //        for(var i in vm.availableOperations) {
-        //            if(vm.availableOperations[i].class === defaultOperation) {
-        //                vm.model = vm.availableOperations[i];
-        //                return;
-        //            }
-        //        }
-        //        vm.model = vm.availableOperations[0];
-//        }
     }
 
     vm.$onInit = function() {
