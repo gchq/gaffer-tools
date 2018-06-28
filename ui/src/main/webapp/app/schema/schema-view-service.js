@@ -58,7 +58,7 @@ angular.module('app').factory('schemaView', ['types', '$q', 'common', 'events', 
             'color': '#FFFFFF',
             'width': 5
         },
-        nodes: {
+        vertices: {
             'height': 30,
             'width': 30,
             'font-size': 14,
@@ -122,6 +122,9 @@ angular.module('app').factory('schemaView', ['types', '$q', 'common', 'events', 
                         if (conf.graph.style) {
                             styling = conf.graph.style;
                         }
+                        if (conf.graph.defaultStyle) {
+                            angular.merge(defaultStyling, conf.graph.defaultStyle);
+                        }
                         deferred.resolve( schemaCy );
 
                     });
@@ -182,7 +185,7 @@ angular.module('app').factory('schemaView', ['types', '$q', 'common', 'events', 
     }
 
     var getNodeStyling = function(vertexType, entities) {
-        var style = angular.copy(defaultStyling.nodes);
+        var style = angular.copy(defaultStyling.vertices);
         var isEntity = false;
 
         for (var schemaDefinition in entities) {
@@ -192,21 +195,23 @@ angular.module('app').factory('schemaView', ['types', '$q', 'common', 'events', 
             }
         }
 
-        if (isEntity) {
-            angular.merge(style, defaultStyling.entityWrapper);
-        }
-
         if (!styling) {
+            
+            if (isEntity) {
+                angular.merge(style, defaultStyling.entityWrapper);
+            }
+
             return style;
         }
 
         var customVertexStyling = styling.vertexTypes ? styling.vertexTypes[vertexType] : null;
+        
         if (customVertexStyling) {
-            angular.merge(style, customVertexStyling);
+            angular.merge(style, customVertexStyling.style);
         }
 
-        if (styling.entityWrapper && isEntity) {
-                angular.merge(style, styling.entityWrapper)
+        if (isEntity) {
+            angular.merge(style, defaultStyling.entityWrapper);
         }
 
         return style;

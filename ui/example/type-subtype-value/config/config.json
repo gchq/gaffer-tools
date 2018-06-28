@@ -19,17 +19,19 @@
       },
       "vertexTypes": {
         "vertex": {
-          "background-image": "app/img/material-icons/filter.svg",
-          "text-valign": "top"
-        }
-      },
-      "fieldOverrides": {
-        "type": {
-          "t1": {
-            "background-image": "app/img/material-icons/filter_1.svg"
+          "style": {
+            "background-image": "app/img/material-icons/filter.svg",
+            "text-valign": "top"
           },
-          "t2": {
-            "background-image": "app/img/material-icons/filter_2.svg"
+          "fieldOverrides": {
+            "type": {
+              "t1": {
+                "background-image": "app/img/material-icons/filter_1.svg"
+              },
+              "t2": {
+                "background-image": "app/img/material-icons/filter_2.svg"
+              }
+            }
           }
         }
       }

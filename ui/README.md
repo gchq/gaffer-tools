@@ -411,28 +411,44 @@ For more information about the configuration of the graph physics and to
 see the algorithm, please see: https://github.com/nickolasmv/cytoscape-ngraph.forcelayout
 
 As well as the physics, an admin can determine the styling of nodes and edges of their graph based on things like edge type,
-vertex fields and vertex type.
+vertex fields and vertex type. They can add an entity wrapper, which is further styling applied when the vertex is an entity.
+This helps distinguish them from standalone vertices. By default the graph adds some styling like changing the size and adding a border of entities. This default styling can also be configured.
 
 To add styling, update your config file like this:
 
 ```json
 {
     "graph": {
-        "styling": {
+        "defaultStyle": {
+            "edges": {
+                "arrow-shape": "triangle"
+            },
+            "vertices": {
+                "background-color": "#444444"
+            },
+            "entityWrapper": {
+                "height": 100,
+                "width": 100,
+                "border-width": 3
+            }
+        },
+        "style": {
             "edges": {
                 "exampleEdgeGroup": {
                     "line-color": "#000000"
                 }
             },
-            "nodes": {
+            "vertexTypes": {
                 "exampleVertexType": {
-                    "background-color": "#00ffff"
-                }
-            },
-            "fieldOverrides": {
-                "fieldName": {
-                    "fieldValue": {
-                        "background-image": "path/to/icon.svg"
+                    "style": {
+                        "background-color": "#00ffff"
+                    },
+                    "fieldOverrides": {
+                        "fieldName": {
+                            "fieldValue": {
+                                "background-image": "path/to/icon.svg"
+                            }
+                        }
                     }
                 }
             }

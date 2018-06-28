@@ -64,7 +64,7 @@ angular.module('app').factory('graph', ['types', '$q', 'results', 'common', 'eve
             'color': '#FFFFFF',
             'width': 5
         },
-        nodes: {
+        vertices: {
             'height': 30,
             'width': 30,
             'min-zoomed-font-size': 20,
@@ -163,7 +163,9 @@ angular.module('app').factory('graph', ['types', '$q', 'results', 'common', 'eve
                         if (conf.graph.style) {
                             styling = conf.graph.style;
                         }
-
+                        if (conf.graph.defaultStyle) {
+                            angular.merge(defaultStyling, conf.graph.defaultStyle);
+                        }
                     });
                 }
             }
@@ -290,35 +292,34 @@ angular.module('app').factory('graph', ['types', '$q', 'results', 'common', 'eve
     }
 
     var getNodeStyling = function(vertexType, id) {
-        var style = angular.copy(defaultStyling.nodes);
-
-        if (common.objectContainsValue(graphData.entities, id)) {
-            angular.merge(style, defaultStyling.entityWrapper);
-        }
+        var style = angular.copy(defaultStyling.vertices);
 
         if (!styling) {
+            if (common.objectContainsValue(graphData.entities, id)) {
+                angular.merge(style, defaultStyling.entityWrapper);
+            }
             return style;
         }
 
         var customVertexStyling = styling.vertexTypes ? styling.vertexTypes[Object.keys(vertexType)[0]] : null;
         if (customVertexStyling) {
-            angular.merge(style, customVertexStyling);
-        }
+            angular.merge(style, customVertexStyling.style);
 
-        if (styling.fieldOverrides) {
-            var vertexClass = Object.values(vertexType)[0].class;
-            var vertexParts = types.createParts(vertexClass, JSON.parse(id));
-            for (var fieldName in styling.fieldOverrides) {
-                if (vertexParts[fieldName]) {
-                    if (common.objectContainsValue(styling.fieldOverrides[fieldName], vertexParts[fieldName])) {
-                        angular.merge(style, styling.fieldOverrides[fieldName][vertexParts[fieldName]]); 
+            if (customVertexStyling.fieldOverrides) {
+                var vertexClass = Object.values(vertexType)[0].class;
+                var vertexParts = types.createParts(vertexClass, JSON.parse(id));
+                for (var fieldName in customVertexStyling.fieldOverrides) {
+                    if (vertexParts[fieldName]) {
+                        if (common.objectContainsValue(customVertexStyling.fieldOverrides[fieldName], vertexParts[fieldName])) {
+                            angular.merge(style, customVertexStyling.fieldOverrides[fieldName][vertexParts[fieldName]]); 
+                        }
                     }
                 }
             }
         }
 
-        if (styling.entityWrapper && common.objectContainsValue(graphData.entities, id)) {
-                angular.merge(style, styling.entityWrapper)
+        if (common.objectContainsValue(graphData.entities, id)) {
+            angular.merge(style, defaultStyling.entityWrapper);
         }
 
         return style;
