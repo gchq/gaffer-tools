@@ -189,7 +189,7 @@ public class QueryBuilderST {
     public void shouldFindRoadUseAroundJunctionM5_10WithDatePicker() throws InterruptedException {
         selectOptionWithAriaLabel("operation-name", "Get Elements");
         enterText("seedVertices", "M5:10");
-        enterIntoDatePicker("start-date", "13/10/2000");
+        enterIntoDatePicker("start-date", "2000-10-13");
         click("create-custom-filter");
         selectMultiOption("view-edges", "RoadUse");
         click("execute-chain");
