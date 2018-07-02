@@ -16,7 +16,7 @@
 
 'use strict'
 
-angular.module('app').factory('csv', function() {
+angular.module('app').factory('csv', ['error', function(error) {
 
     var service = {};
 
@@ -237,4 +237,4 @@ angular.module('app').factory('csv', function() {
     }
 
     return service;
-});
+}]);

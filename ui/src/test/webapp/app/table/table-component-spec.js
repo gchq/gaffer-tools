@@ -483,6 +483,77 @@ describe('The Table component', function() {
                 ctrl.sortType = '-' + ctrl.sortType;
                 expect(ctrl.getValue()).toEqual('-"a property with spaces"');
             });
-        })
+        });
+
+        describe('ctrl.download()', function() {
+
+            var csvPrefix = 'data:text/csv;charset=utf-8,';
+            var $filter;
+
+            beforeEach(function() {
+                spyOn(window, 'open').and.stub();
+            });
+
+            beforeEach(function() {
+                ctrl.data = {
+                    results: [
+                        {
+                            'col1': 1,
+                            'col2': 'test'
+                        }, 
+                        { 
+                            'col1': true,
+                            'col2': null,
+                            'col3': 'comma test',
+                        }, 
+                        {
+                            'col1': 'hello',
+                        }
+                    ],
+                    columns: ['col1', 'col2']
+                };
+            });
+
+            beforeEach(inject(function(_$filter_) {
+                $filter = _$filter_;
+            }));
+
+            it('should prefix the url with data:text/csv;charset=utf8,', function() {
+                ctrl.download();
+                expect(window.open.calls.first().args[0].indexOf(csvPrefix)).toEqual(0);
+            });
+
+
+            it('should use the columns selected by the user', function() {
+
+                ctrl.filteredResults = ctrl.data.results;
+
+                var expectedOutput = 
+                'col1,col2\r\n' +
+                '1,test\r\n' +
+                'true,\r\n' +
+                'hello,\r\n';
+
+                var encodedOutput = encodeURI(csvPrefix  + expectedOutput);
+
+                ctrl.download();
+                expect(window.open.calls.first().args[0]).toEqual(encodedOutput);
+
+            });
+
+            it('should take into account filters entered by the user', function() {
+                ctrl.filteredResults = $filter('filter')(ctrl.data.results, 'test');     // mimicking if the user entered 'test' into search box
+                var expectedOutput =
+                'col1,col2\r\n' +
+                '1,test\r\n' +
+                'true,\r\n';
+
+                var encodedOutput = encodeURI(csvPrefix + expectedOutput);
+
+                ctrl.download();
+                expect(window.open.calls.first().args[0]).toEqual(encodedOutput);
+
+            });
+        });
     });
 });

@@ -78,6 +78,67 @@ describe('The CSV parser service', function() {
 
         it('should add extra undefined part if last separator follows quoted string', function() {
             expect(service.parse('"myTest",')).toEqual(['myTest', undefined])
-        })
-    })
+        });
+    });
+
+    describe('csv.generate()', function() {
+        var error;
+
+        beforeEach(inject(function(_error_) {
+            error = _error_;
+        }));
+
+        it('should split lines with carriage return and newline', function() {
+            var header = ['test'];
+            var input = [{'test': 'a'}, {'test': 'b'}];
+
+            var output = service.generate(input, header);
+
+            expect(output).toEqual('test\r\na\r\nb\r\n');
+
+        });
+
+        it('should wrap strings containing commas with quotes', function() {
+            var header = ['test'];
+            var input = [{'test': 'value, with a comma'}];
+
+            var output = service.generate(input, header);
+            expect(output.indexOf('"value, with a comma"')).not.toEqual(-1);
+        });
+
+        it('should throw an error if no headers are supplied', function() {
+            spyOn(error, 'handle').and.stub();
+
+            service.generate([], null);
+            expect(error.handle).toHaveBeenCalledTimes(1);
+            service.generate([]);
+            expect(error.handle).toHaveBeenCalledTimes(2)
+        });
+
+        it('should add a comma for null fields', function() {
+            var headers = ['a', 'b'];
+            var input = [{'a': false, 'b': null}, {'a': null, 'b': 'test'}];
+
+            var output = service.generate(input, headers);
+
+            var expected = 'a,b\r\n' +
+            'false,\r\n' +
+            ',test\r\n';
+
+            expect(output).toEqual(expected);
+        });
+
+        it('should add a comma for undefined fields', function() {
+            var headers = ['a', 'b'];
+            var input = [{'a': false, 'b': undefined}, {'a': undefined, 'b': 'test'}];
+
+            var output = service.generate(input, headers);
+
+            var expected = 'a,b\r\n' +
+            'false,\r\n' +
+            ',test\r\n';
+
+            expect(output).toEqual(expected);
+        });
+    });
 })
