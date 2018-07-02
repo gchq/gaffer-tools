@@ -92,7 +92,7 @@
                 </thead>
                 <tbody md-body>
                 <tr md-row
-                    ng-repeat="result in ctrl.data.results | orderBy:ctrl.getValue() | filter:ctrl.searchTerm">
+                    ng-repeat="result in (ctrl.filteredResults = (ctrl.data.results | orderBy:ctrl.getValue() | filter:ctrl.searchTerm))">
                     <td md-cell ng-repeat="col in ctrl.data.columns">
                         {{result[col]}}
                     </td>

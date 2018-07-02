@@ -40,7 +40,7 @@ function TableController(schema, results, table, events, common, types, time, cs
     var initialNumberOfColumnsToShow = 8;
     var vm = this;
     var resultsByType = [];
-    vm.searchTerm = undefined;
+    vm.filteredResults = [];
     vm.data = {results:[], columns:[]};
     vm.searchTerm = '';
     vm.sortType = undefined;
@@ -265,7 +265,7 @@ function TableController(schema, results, table, events, common, types, time, cs
     }
 
     vm.download = function() {
-        var csvString = 'data:text/csv;charset=utf-8,' + csv.generate(vm.data.results, vm.data.columns);
+        var csvString = 'data:text/csv;charset=utf-8,' + csv.generate(vm.filteredResults, vm.data.columns);
         var encodedURI = encodeURI(csvString);
 
         window.open(encodedURI)
