@@ -157,6 +157,7 @@ angular.module('app').factory('graph', ['types', '$q', 'results', 'common', 'eve
 
         graphCy.on('remove', function(evt) {
             removeFromGraphData(evt.cyTarget);
+            unSelect(evt.cyTarget);
         });
 
         graphCy.on('doubleTap', 'node', graph.quickHop);
@@ -543,6 +544,7 @@ angular.module('app').factory('graph', ['types', '$q', 'results', 'common', 'eve
     }
 
     graph.removeSelected = function() {
+
         graphCy.filter(":selected").remove();
         graphCy.elements().unselect();
         selectedEdges = {};
