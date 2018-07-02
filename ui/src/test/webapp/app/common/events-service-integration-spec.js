@@ -63,6 +63,12 @@ describe('The events service', function() {
             expect(calls).toEqual(1);
 
         });
+
+        it('should fail silently when unsubscribe is called on an event which has not yet been subscribed to', function() {
+            expect(function() {
+                service.unsubscribe('not yet subscribed', function() {})
+            }).not.toThrow(jasmine.anything());
+        })
     });
 
     describe('events.broadcast()', function() {
