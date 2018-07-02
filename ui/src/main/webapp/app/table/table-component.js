@@ -36,7 +36,7 @@ function resultsTable() {
  * @param {*} types For converting objects based on their types
  * @param {*} time For converting time objects
  */
-function TableController(schema, results, table, events, common, types, time) {
+function TableController(schema, results, table, events, common, types, time, csv) {
     var initialNumberOfColumnsToShow = 8;
     var vm = this;
     var resultsByType = [];
@@ -262,6 +262,13 @@ function TableController(schema, results, table, events, common, types, time) {
             }
         }
         return parsedValue;
+    }
+
+    vm.download = function() {
+        var csvString = 'data:text/csv;charset=utf-8,' + csv.generate(vm.data.results, vm.data.columns);
+        var encodedURI = encodeURI(csvString);
+
+        window.open(encodedURI)
     }
 
     vm.getValue = function() {
