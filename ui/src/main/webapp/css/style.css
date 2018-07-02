@@ -81,6 +81,10 @@ md-nav-bar > div > nav {
     white-space: normal;
 }
 
+.searchable-select md-select-menu {
+    padding-top: 3em;
+}
+
 .searchable-select .search-box {
     border: none;
     outline: none;
@@ -94,10 +98,12 @@ md-nav-bar > div > nav {
     padding-left: 10.667px;
     height: 48px;
     cursor: pointer;
-    position: relative;
     display: flex;
     align-items: center;
-    width: auto;
+    position: fixed;
+    top: 0px;
+    z-index: 2;
+    width: 100%;
 }
 
 .searchable-select md-content._md {

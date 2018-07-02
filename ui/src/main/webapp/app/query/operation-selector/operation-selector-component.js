@@ -54,7 +54,7 @@ function operationSelector() {
     }
 }
 
-function OperationSelectorController(operationService, operationSelectorService, $mdDialog, $routeParams) {
+function OperationSelectorController(operationService, operationSelectorService, $mdDialog, $routeParams, $window, $timeout) {
     var vm = this;
 
     var defaultOperation = "uk.gov.gchq.gaffer.operation.impl.get.GetElements";

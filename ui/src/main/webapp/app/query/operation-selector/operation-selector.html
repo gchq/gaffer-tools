@@ -4,7 +4,7 @@
             <md-input-container class="no-bottom-margin" flex>
                 <label></label>
                 <md-select id="operation-name"
-                           class="no-ellipsis"
+                           class="with-search-header no-ellipsis"
                            md-selected-text="ctrl.selectedText()"
                            ng-model="ctrl.model"
                            aria-label="operation picker"
@@ -12,8 +12,10 @@
                            md-on-close="ctrl.clearSearchTerm()"
                            required
                            md-no-asterisk>
-                    <md-select-header class="search-header">
-                        <input ng-model="ctrl.searchTerm"
+                    <md-select-header id="operation-select-search-container"
+                                      class="search-header">
+                        <input id="operation-select-search"
+                               ng-model="ctrl.searchTerm"
                                type="search"
                                class="search-box md-text"
                                placeholder="Search for an operation...">
