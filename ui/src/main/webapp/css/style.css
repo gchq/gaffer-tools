@@ -59,6 +59,10 @@ md-nav-bar > div > nav {
     bottom: 40px;
 }
 
+.overlapping {
+    bottom: 55px;
+}
+
 .submit-bottom-right {
     position: fixed !important;
 }
