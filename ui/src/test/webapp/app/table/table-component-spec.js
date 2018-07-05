@@ -499,15 +499,18 @@ describe('The Table component', function() {
                     results: [
                         {
                             'col1': 1,
-                            'col2': 'test'
+                            'col2': 'test',
+                            'col4': 'def'
                         }, 
                         { 
                             'col1': true,
                             'col2': null,
                             'col3': 'comma test',
+                            'col4': 'ghi'
                         }, 
                         {
                             'col1': 'hello',
+                            'col4': 'abc'
                         }
                     ],
                     columns: ['col1', 'col2']
@@ -553,6 +556,23 @@ describe('The Table component', function() {
                 ctrl.download();
                 expect(window.open.calls.first().args[0]).toEqual(encodedOutput);
 
+            });
+            
+            it('should take into account the order specified by the user', function() {
+                ctrl.data.columns = ['col1', 'col4'];
+                ctrl.sortType = 'col4';
+                ctrl.filteredResults = $filter('orderBy')(ctrl.data.results, ctrl.getValue());  // mimicking the order by functionality in the table
+                
+                var expectedOutput = 
+                "col1,col4\r\n" +
+                "hello,abc\r\n" +
+                "1,def\r\n" +
+                "true,ghi\r\n";
+                
+                var encodedOutput = encodeURI(expectedOutput);
+
+                ctrl.download();
+                expect(window.open.calls.first().args[0]).toEqual(csvPrefix + encodedOutput);
             });
         });
     });
