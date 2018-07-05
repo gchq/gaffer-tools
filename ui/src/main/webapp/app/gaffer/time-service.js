@@ -60,7 +60,7 @@ angular.module('app').factory('time', ['config', function(config) {
         var timeProp = timeProperties[propName];
         if(timeProp) {
             var dateValue =  service.convertNumberToDate(value, timeProp.unit)
-            dateString = dateValue.toLocaleDateString() + " " + dateValue.toLocaleTimeString();
+            dateString = moment.utc(dateValue).format('YYYY-MM-DD HH:mm:ss');
         } else {
             // just return the original value
             dateString = value;

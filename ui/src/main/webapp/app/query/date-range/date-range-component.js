@@ -38,16 +38,30 @@ function DateRangeController(time, events) {
     vm.startTime=null
     vm.endTime=null
 
+    vm.localeProviderOverride = {
+        parseDate:  function(dateString) {
+            var m = moment(dateString, ['YYYY-MM-DD', 'YYYY/MM/DD', 'YYYY.MM.DD'], true);
+            return m.isValid() ? m.toDate() : new Date(NaN);
+        },
+
+        formatDate: function(date) {
+            var m = moment(date);
+            return m.isValid() ? m.format('YYYY-MM-DD') : '';
+        }
+    }
+
     var updateView = function(dates) {
         var start = dates.startDate;
         if (start) {
-            vm.startDate = time.convertNumberToDate(start, vm.conf.filter.unit);
+            var utcDate = time.convertNumberToDate(start, vm.conf.filter.unit);
+            vm.startDate = moment(utcDate).add(utcDate.getTimezoneOffset(), 'minutes').toDate()
         } else {
             vm.startDate = null;
         }
         var end = dates.endDate;
         if(end) {
-            vm.endDate = time.convertNumberToDate(end, vm.conf.filter.unit);
+            var utcDate = time.convertNumberToDate(end, vm.conf.filter.unit);
+            vm.endDate = moment(utcDate).add(utcDate.getTimezoneOffset(), 'minutes').toDate()
         } else {
             vm.endDate = null;
         }
@@ -56,7 +70,6 @@ function DateRangeController(time, events) {
     var onOperationUpdate = function() {
         updateView(vm.model);
     }
-
 
     vm.$onInit = function() {
         if (!vm.conf) {
@@ -107,16 +120,12 @@ function DateRangeController(time, events) {
         var start = new Date(vm.startDate.getTime());
 
         if (vm.startTime === undefined || vm.startTime === null) {
-
             // start of the day
+            start.setMinutes(start.getTimezoneOffset() * -1);
 
-            start.setHours(0);
-            start.setMinutes(0);
-            start.setSeconds(0);
-            start.setMilliseconds(0);
         } else {
-            start.setHours(vm.startTime.getHours());
-            start.setMinutes(vm.startTime.getMinutes());
+            start.setHours(vm.startTime.getUTCHours());
+            start.setMinutes(vm.startTime.getUTCMinutes() - start.getTimezoneOffset());
             start.setSeconds(vm.startTime.getSeconds());
             start.setMilliseconds(vm.startTime.getMilliseconds());
         }
@@ -144,13 +153,13 @@ function DateRangeController(time, events) {
             // end of the day
 
             end.setHours(23);
-            end.setMinutes(59);
+            end.setMinutes(59 - end.getTimezoneOffset());
             end.setSeconds(59);
             end.setMilliseconds(999);
 
-        } else {
-            end.setHours(vm.endTime.getHours());
-            end.setMinutes(vm.endTime.getMinutes());
+        } else {    
+            end.setHours(vm.endTime.getUTCHours());
+            end.setMinutes(vm.endTime.getUTCMinutes() - end.getTimezoneOffset());
             end.setSeconds(vm.endTime.getSeconds());
             end.setMilliseconds(vm.endTime.getMilliseconds());
         }

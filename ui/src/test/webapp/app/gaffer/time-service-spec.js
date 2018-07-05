@@ -86,24 +86,25 @@ describe('The time service', function() {
         var expectedDateString = 'date string';
         var expectedTimeString = 'time string';
         beforeEach(function() {
-            spyOn(Date.prototype, 'toLocaleDateString').and.callFake(function() {
-                return expectedDateString;
-            });
-            spyOn(Date.prototype, 'toLocaleTimeString').and.callFake(function() {
-                return expectedTimeString;
+            spyOn(window, 'moment').and.callFake(function() {
+                return {
+                    format: function(str) {
+                        return expectedDateString + ' ' + expectedTimeString
+                    }
+                }
             });
         });
 
         it('should return a date string for a time property in milliseconds', function() {
             var dateString = service.getDateString('dateInMilliseconds', 1519986711199);
-            // the result depends on what your local date settings are set to
-            expect(dateString).toEqual(expectedDateString + " " + expectedTimeString);
+            // the result is in UTC
+            expect(dateString).toEqual('2018-03-02 10:31:51');
         });
 
         it('should return a date string for a time property in seconds', function() {
             var dateString = service.getDateString('dateInSeconds', 1519986711);
             // the result depends on what your local date settings are set to
-            expect(dateString).toEqual(expectedDateString + " " + expectedTimeString);
+            expect(dateString).toEqual('2018-03-02 10:31:51');
         });
 
         it('should return a provided value for a non time property', function() {
