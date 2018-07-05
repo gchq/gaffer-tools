@@ -1,5 +1,5 @@
 <ng-form name="ctrl.dateForm">
-    <h3 class="section-title">In this time range (inclusive)</h3>
+    <h3 class="section-title">Inclusive time range (UTC)</h3>
     <div layout-gt-lg="row" layout="column">
         <div layout="row">
             <md-input-container>
@@ -11,7 +11,7 @@
             </md-input-container>
             <md-input-container>
                 <input ng-model="ctrl.startTime"
-                       ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 500,'blur': 0}}"
+                       ng-model-options="{ timezone: 'UTC', updateOn: 'default blur', debounce: { 'default': 500,'blur': 0}}"
                        aria-label="start time (hh:mm:ss.SSS)"
                        ng-disabled="!ctrl.startDate"
                        type="time"
@@ -34,7 +34,7 @@
             </md-input-container>
             <md-input-container>
                 <input ng-model="ctrl.endTime"
-                       ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 500,'blur': 0}}"
+                       ng-model-options="{ timezone: 'UTC', updateOn: 'default blur', debounce: { 'default': 500,'blur': 0}}"
                        aria-label="end time (hh:mm:ss.SSS)"
                        ng-disabled="!ctrl.endDate"
                        type="time"
