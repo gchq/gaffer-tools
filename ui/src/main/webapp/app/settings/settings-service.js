@@ -23,7 +23,7 @@ angular.module('app').factory('settings', ['$q', 'config', 'events', function($q
     var defaultOpOptions = {};
     var opOptionKeys;
     var defaultOpOptionsUpdateListeners = [];
-    
+
     settings.getResultLimit = function() {
         return resultLimit;
     }
