@@ -127,7 +127,7 @@ angular.module('app').factory('operationService', ['$http', '$q', 'settings', 'c
             for (var i in operations) {
                 var op = operations[i];
 
-                if(opAllowed(op.operationName, conf.operations) && operationService.canHandleOperation(op)) {
+                if(opAllowed(op.name, conf.operations) && operationService.canHandleOperation(op)) {
                     var fields = {};
                     for(var j in op.fields) {
                         fields[op.fields[j].name] = op.fields[j];
@@ -222,7 +222,7 @@ angular.module('app').factory('operationService', ['$http', '$q', 'settings', 'c
                                 options: settings.getDefaultOpOptions()
                             },
                             function(result) {
-                                addOperations(result, conf);
+                                // addNamedOperations(result, conf); // not yet handled correctly
                                 deferred.resolve(availableOperations);
                             },
                             function(err) {
@@ -232,7 +232,7 @@ angular.module('app').factory('operationService', ['$http', '$q', 'settings', 'c
                                 }
                             }
                         );
-                    });
+                    }); // need to add handling here for when named operations are not supported
                 },
                 function(err) {
                     error.handle('Unable to load operations', err.data);

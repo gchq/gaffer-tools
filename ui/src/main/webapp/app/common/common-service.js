@@ -226,7 +226,8 @@ angular.module('app').factory('common', function() {
         }
         return text.split(".").pop()
             .replace(/([A-Z])/g, ' $1')
-            .replace(/^./, function(str){ return str.toUpperCase(); });
+            .replace(/^./, function(str){ return str.toUpperCase(); })
+            .trim();
     }
 
     return common;

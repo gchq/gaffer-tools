@@ -1,37 +1,32 @@
 <ng-form name="ctrl.operationForm">
     <div layout="column">
         <div layout="row">
-            <md-input-container class="no-bottom-margin" flex>
-                <label></label>
-                <md-select id="operation-name"
-                           class="with-search-header no-ellipsis"
-                           md-selected-text="ctrl.selectedText()"
-                           ng-model="ctrl.model"
-                           aria-label="operation picker"
-                           data-md-container-class="searchable-select"
-                           md-on-close="ctrl.clearSearchTerm()"
-                           required
-                           md-no-asterisk>
-                    <md-select-header id="operation-select-search-container"
-                                      class="search-header">
-                        <input id="operation-select-search"
-                               ng-model="ctrl.searchTerm"
-                               type="search"
-                               class="search-box md-text"
-                               placeholder="Search for an operation...">
-                    </md-select-header>
-                    <md-option ng-value="op"
-                               ng-repeat="op in ctrl.availableOperations | operationFilter:ctrl.searchTerm"
-                               aria-label="{{op.name}}">
-                        <div class="md-body-2">{{op.name}}</div>
-                        <em class="md-body-1">{{op.description}}</em>
-                    </md-option>
-                </md-select>
-                <div class="errors"
-                     ng-messages="ctrl.operationForm.name.$error">
-                    <div ng-message="required">Required</div>
+            <md-autocomplete
+            flex
+            ng-required
+            md-min-length="0"
+            md-input-name="autocomplete"
+            md-no-cache
+            md-autoselect
+            md-select-on-match
+            md-match-case-insensitive
+            md-input-id="operation-name"
+            md-floating-label="Pick an operation"
+            md-search-text="ctrl.searchTerm"
+            md-require-match
+            md-selected-item="ctrl.model"
+            md-items="op in ctrl.availableOperations | operationFilter:ctrl.searchTerm"
+            md-item-text="op.name"
+            md-menu-class="named-view-template">
+                <md-item-template>
+                    <div class="md-body-2" md-highlight-flags="i">{{op.name}}</div>
+                    <em class="md-body-1" md-highlight-flags="i">{{op.description}}</em>
+                </md-item-template>
+                <div ng-messages="ctrl.operationForm.autocomplete.$error">
+                    <div ng-message="required">You must select an operation</div>
+                    <div ng-message="md-require-match">You must select an existing operation</div>
                 </div>
-            </md-input-container>
+            </md-autocomplete>
             <div layout="column" layout-align="center">
                 <md-button class="md-icon-button"
                            ng-click="ctrl.reloadOperations()">
