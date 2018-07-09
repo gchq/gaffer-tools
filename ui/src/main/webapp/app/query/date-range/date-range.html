@@ -1,12 +1,23 @@
 <ng-form name="ctrl.dateForm">
-    <h3 class="section-title">Inclusive time range (UTC)</h3>
-    <div layout-gt-lg="row" layout="column">
+    <h3 class="section-title" style="display: table">
+        Time range
+        <md-tooltip md-direction="top">
+            Inclusive time range in UTC
+        </md-tooltip>
+    </h3>
+
+    <div layout-gt-md="row" layout="column">
         <div layout="row">
             <md-input-container>
                 <label>Start Date</label>
-                <md-datepicker ng-model="ctrl.startDate" name="startDate" id="start-date" ng-change="ctrl.onStartDateUpdate()" md-date-locale="ctrl.localeProviderOverride"></md-datepicker>
+                <md-datepicker ng-model="ctrl.startDate" name="startDate"
+                               id="start-date"
+                               ng-change="ctrl.onStartDateUpdate()"
+                               md-date-locale="ctrl.localeProviderOverride"></md-datepicker>
                 <div ng-messages="ctrl.dateForm.startDate.$error">
-                    <div ng-message="valid">The start date entered is invalid. Use YYYY-MM-DD format</div>
+                    <div ng-message="valid">The start date entered is invalid.
+                        Use YYYY-MM-DD format
+                    </div>
                 </div>
             </md-input-container>
             <md-input-container>
@@ -19,17 +30,24 @@
                        step="0.001"
                        name="startTime"
                        ng-change="ctrl.onStartDateUpdate()">
+
                 <div ng-messages="ctrl.dateForm.startTime.$error">
-                    <div ng-message="time">The start time is invalid. Use format hh:mm:ss.SSS</div>
+                    <div ng-message="time">The start time is invalid. Use format
+                        hh:mm:ss.SSS
+                    </div>
                 </div>
             </md-input-container>
         </div>
         <div layout="row">
             <md-input-container>
                 <label>End Date</label>
-                <md-datepicker ng-model="ctrl.endDate" name="endDate" id="end-date" ng-change="ctrl.onEndDateUpdate()" md-date-locale="ctrl.localeProviderOverride"></md-datepicker>
+                <md-datepicker ng-model="ctrl.endDate" name="endDate"
+                               id="end-date" ng-change="ctrl.onEndDateUpdate()"
+                               md-date-locale="ctrl.localeProviderOverride"></md-datepicker>
                 <div ng-messages="ctrl.dateForm.endDate.$error">
-                    <div ng-message="valid">The end date entered is invalid. Use YYYY-MM-DD format</div>
+                    <div ng-message="valid">The end date entered is invalid. Use
+                        YYYY-MM-DD format
+                    </div>
                 </div>
             </md-input-container>
             <md-input-container>
@@ -42,8 +60,11 @@
                        step="0.001"
                        name="endTime"
                        ng-change="ctrl.onEndDateUpdate()">
+
                 <div ng-messages="ctrl.dateForm.endTime.$error">
-                    <div ng-message="time">The end time is invalid. Use format hh:mm:ss.SSS</div>
+                    <div ng-message="time">The end time is invalid. Use format
+                        hh:mm:ss.SSS
+                    </div>
                 </div>
             </md-input-container>
         </div>

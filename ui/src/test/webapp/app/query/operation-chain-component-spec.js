@@ -117,7 +117,7 @@ describe('The operation chain component', function() {
                     selectedOperation: {
                         name: 'test1'
                     },
-                    inputs: {
+                    fields: {
                         input: [],
                         inputPairs: []
                     }
@@ -126,7 +126,7 @@ describe('The operation chain component', function() {
                     selectedOperation: {
                         name: 'test2'
                     },
-                    inputs: {
+                    fields: {
                         input: null,
                         inputPairs: null
                     }
@@ -135,7 +135,7 @@ describe('The operation chain component', function() {
                     selectedOperation: {
                         name: 'test3'
                     },
-                    inputs: {
+                    fields: {
                         input: null,
                         inputPairs: null
                     }
@@ -162,7 +162,7 @@ describe('The operation chain component', function() {
                 selectedOperation: {
                     name: 'test2'
                 },
-                inputs: {
+                fields: {
                     input: [],
                     inputPairs: []
                 }
@@ -171,7 +171,7 @@ describe('The operation chain component', function() {
 
         it('should leave the inputs as they are if the input is not null', function() {
             ctrl.operations.splice(1, 0, {
-                inputs: {
+                fields: {
                     input: [ 1, 2 ],
                     inputB: []
                 }
@@ -801,7 +801,7 @@ describe('The operation chain component', function() {
                         selectedOperation: {
                             input: 'uk.gov.gchq.gaffer.commonutil.pair.Pair'
                         },
-                        inputs: {
+                        fields: {
                             input: [],
                             inputPairs: []
                         }
@@ -895,7 +895,7 @@ describe('The operation chain component', function() {
                         selectedOperation: {
                             input: true
                         },
-                        inputs: {
+                        fields: {
                             input: [],
                             inputPairs: []
                         }
@@ -974,7 +974,7 @@ describe('The operation chain component', function() {
                 describe('When adding a second input', function() {
 
                     beforeEach(function() {
-                        op.selectedOperation.inputB = true;
+                        op.selectedOperation.fields.inputB = true;
                         op.selectedOperation.namedOp = false;
                     });
 
@@ -1054,33 +1054,6 @@ describe('The operation chain component', function() {
 
 
                 })
-            });
-
-            describe('when adding Edge directions', function() {
-
-                var op = {
-                    selectedOperation: {
-                        inOutFlag: true
-                    }
-                }
-
-                var test = function(flag) {
-                    op.edgeDirection = flag;
-                    ctrl.execute(op);
-                    expect(JSON.stringify(query.execute.calls.argsFor(0)[0])).toContain(flag);
-                }
-
-                it('should add the edge direction when it is incoming', function() {
-                    test('INCOMING');
-                });
-
-                it('should add the edge direction when it is outgoing', function() {
-                    test('OUTGOING');
-                });
-
-                it('should add the edge direction when it is either', function() {
-                    test('EITHER');
-                });
             });
         });
 

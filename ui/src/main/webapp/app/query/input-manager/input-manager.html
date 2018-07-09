@@ -1,10 +1,10 @@
-<div layout-margin ng-show="ctrl.primaryInput" ng-cloak>
+<div ng-show="ctrl.primaryInput" ng-cloak>
     <md-checkbox ng-if="!ctrl.first" ng-model="ctrl.usePreviousOutput"
                  ng-change="ctrl.onCheckboxChange()"
                  aria-label="use output from previous operation">
         Use output from previous operation
     </md-checkbox>
-    <div ng-switch="ctrl.primaryInput">
+    <div ng-switch="ctrl.primaryInput" ng-show="!ctrl.usePreviousOutput">
         <div ng-switch-when="uk.gov.gchq.gaffer.commonutil.pair.Pair[]">
             <pair-builder model="ctrl.model.inputPairs"
                           use-previous="ctrl.usePreviousOutput"></pair-builder>
@@ -23,7 +23,7 @@
                     </md-tooltip>
                 </md-button>
             </div>
-            <div layout="row">
+            <div layout="row" class="horizontal-margin">
                 <seed-builder model="ctrl.model.input"
                               use-previous="ctrl.usePreviousOutput"
                               route-param="input" flex="grow"></seed-builder>

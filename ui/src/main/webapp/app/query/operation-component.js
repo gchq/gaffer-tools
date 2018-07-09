@@ -37,6 +37,8 @@ function operation() {
 
 function OperationController(types, loading, operationChain, settings, events) {
     var vm = this;
+    var coreFields = ["view", "views", "input", "inputB"];
+
     vm.showOperationOptionsForm;
 
     vm.$onInit = function() {
@@ -47,6 +49,21 @@ function OperationController(types, loading, operationChain, settings, events) {
         if (!vm.model) {
             throw 'An operation has been created without a model to bind to'
         }
+    }
+
+    vm.hasOtherConfig = function() {
+        var hasOtherConfig = false;
+        if(vm.model.selectedOperation && vm.model.selectedOperation.fields) {
+            var reqLength = 0;
+            var fieldNames = Object.keys(vm.model.selectedOperation.fields);
+            for(var i in coreFields) {
+               if(fieldNames.indexOf(coreFields[i])) {
+                   reqLength = reqLength + 1;
+               }
+            }
+            hasOtherConfig = fieldNames.length > reqLength;
+        }
+        return hasOtherConfig;
 
     }
 

@@ -4,11 +4,6 @@
         parameters="ctrl.model.selectedOperation.parameters">
 </parameter-form>
 
-<view-builder
-        ng-if="ctrl.name === 'view'"
-        model="ctrl.model.fields.view">
-</view-builder>
-
 <dynamic-input
         ng-if="ctrl.name !== 'options' && ctrl.name !== 'seedMatching' && ctrl.name !== 'view' && ctrl.name !== 'views'"
         name="ctrl.title"

@@ -2,29 +2,33 @@
     <div layout="column">
         <div layout="row">
             <md-autocomplete
-            flex
-            ng-required
-            md-min-length="0"
-            md-input-name="autocomplete"
-            md-no-cache
-            md-autoselect
-            md-select-on-match
-            md-match-case-insensitive
-            md-input-id="operation-name"
-            md-floating-label="Pick an operation"
-            md-search-text="ctrl.searchTerm"
-            md-require-match
-            md-selected-item="ctrl.model"
-            md-items="op in ctrl.availableOperations | operationFilter:ctrl.searchTerm"
-            md-item-text="op.name"
-            md-menu-class="named-view-template">
+                    flex
+                    ng-required
+                    md-min-length="0"
+                    md-input-name="autocomplete"
+                    md-no-cache
+                    md-autoselect
+                    md-select-on-match
+                    md-match-case-insensitive
+                    md-input-id="operation-name"
+                    md-floating-label="{{ctrl.placeholder}}"
+                    md-search-text="ctrl.searchTerm"
+                    md-require-match
+                    md-selected-item="ctrl.model"
+                    md-items="op in ctrl.availableOperations | operationFilter:ctrl.searchTerm"
+                    md-item-text="op.name"
+                    md-menu-class="named-view-template">
                 <md-item-template>
-                    <div class="md-body-2" md-highlight-flags="i">{{op.name}}</div>
+                    <div class="md-body-2" md-highlight-flags="i">{{op.name}}
+                    </div>
                     <em class="md-body-1" md-highlight-flags="i">{{op.description}}</em>
                 </md-item-template>
                 <div ng-messages="ctrl.operationForm.autocomplete.$error">
-                    <div ng-message="required">You must select an operation</div>
-                    <div ng-message="md-require-match">You must select an existing operation</div>
+                    <div ng-message="required">You must select an operation
+                    </div>
+                    <div ng-message="md-require-match">You must select an
+                        existing operation
+                    </div>
                 </div>
             </md-autocomplete>
             <div layout="column" layout-align="center">

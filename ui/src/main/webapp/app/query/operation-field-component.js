@@ -48,13 +48,15 @@ function OperationFieldComponent(types, common) {
         }
         vm.title = common.toTitle(vm.name);
 
-        vm.param = {};
-        vm.param.parts={};
-        vm.param.valueClass = vm.details.className;
-        vm.param.required = vm.details.required;
-
         if(vm.model.fields[vm.name] === null || vm.model.fields[vm.name] === undefined) {
+            vm.param = {
+                parts: {},
+                valueClass: vm.details.className,
+                required: vm.details.required
+            };
             vm.model.fields[vm.name] = vm.param;
+        } else {
+            vm.param = vm.model.fields[vm.name];
         }
 
         // TODO: these should be removed when the REST API has been updated to return them.

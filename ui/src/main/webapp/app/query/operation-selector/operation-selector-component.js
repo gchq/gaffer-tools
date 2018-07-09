@@ -19,24 +19,45 @@
 var app = angular.module('app');
 
 app.filter('operationFilter', function() {
-    return function(input, search) {
-        if(!input) {
-            return input;
+    return function(operations, search) {
+        if(!operations) {
+            return operations;
         }
         if (!search) {
-            return input;
+            return operations;
         }
-        var formattedSearch = search ? search.toLowerCase().replace(/\s+/g, '') : '';
-        var result = [];
 
-        angular.forEach(input, function(operation) {
+        var formattedSearch = search ? search.toLowerCase().replace(/\s+/g, '') : '';
+        var searchWords = search.toLowerCase().split(" ");
+
+        // Return the matches that have the words in the same order as the search query first.
+        var results = [];
+        var otherResults = [];
+
+        angular.forEach(operations, function(operation) {
             if((operation.formattedName.indexOf(formattedSearch) > -1)
              || (operation.formattedDescription.indexOf(formattedSearch) > -1)) {
-                result.push(operation);
+                results.push(operation);
+            } else {
+                var hasAllWords = true;
+                angular.forEach(searchWords, function(word) {
+                     if((operation.formattedName.indexOf(word) == -1)
+                        && (operation.formattedDescription.indexOf(word) == -1)) {
+                         hasAllWords = false;
+                         return;
+                     }
+                });
+                if(hasAllWords) {
+                   otherResults.push(operation);
+                }
             }
         });
 
-        return result;
+        angular.forEach(otherResults, function(result) {
+            results.push(result);
+        });
+
+        return results;
     }
 });
 
@@ -62,6 +83,7 @@ function OperationSelectorController(operationService, operationSelectorService,
     vm.availableOperations;
     vm.searchTerm = '';
     vm.showCustomOp = false;
+    vm.placeholder = "Select an operation";
 
     angular.element(document).find('.search-box').on('keydown', function(ev) {
         ev.stopPropagation();
@@ -80,6 +102,10 @@ function OperationSelectorController(operationService, operationSelectorService,
             if(!vm.previous || !vm.previous.selectedOperation || !vm.previous.selectedOperation.next || vm.previous.selectedOperation.next.indexOf(operation.class) > -1) {
                 operation.formattedName = operation.name !== undefined ? operation.name.toLowerCase().replace(/[\W_]+/g, '') : '';
                 operation.formattedDescription = operation.description !== undefined ? operation.description.toLowerCase().replace(/\s+/g, '') : '';
+
+                if(operation.formattedName === "getelements") {
+                    vm.placeholder = "Select an operation (e.g Get Elements)";
+                }
                 vm.availableOperations.push(operation);
             }
         }
@@ -123,7 +149,6 @@ function OperationSelectorController(operationService, operationSelectorService,
     }
 
     vm.$onInit = function() {
-        vm.model = undefined;
         operationSelectorService.shouldLoadNamedOperationsOnStartup().then(function(yes) {
             if (yes) {
                 vm.reloadOperations();

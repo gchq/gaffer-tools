@@ -48,26 +48,37 @@
         <form name="ctrl.operationForm">
             <md-divider></md-divider>
             <div layout="row" layout-padding>
-                <div layout="row" flex style="margin-bottom: 30px;">
+                <div layout="column" flex style="margin-bottom: 30px;">
 
-                    <div layout="column" flex="45">
-                        <operation-selector
-                                model="ctrl.model.selectedOperation"
-                                previous="ctrl.model.previous">
-                        </operation-selector>
-                        <input-manager first="ctrl.isFirst()"
-                                       primary-input="ctrl.model.selectedOperation.fields.input"
-                                       secondary-input="ctrl.model.selectedOperation.fields.inputB"
-                                       model="ctrl.model.fields">
-                        </input-manager>
+                    <operation-selector
+                            model="ctrl.model.selectedOperation"
+                            previous="ctrl.model.previous">
+                    </operation-selector>
+                    <input-manager first="ctrl.isFirst()"
+                                   primary-input="ctrl.model.selectedOperation.fields.input"
+                                   secondary-input="ctrl.model.selectedOperation.fields.inputB"
+                                   model="ctrl.model.fields">
+                    </input-manager>
+
+                    <date-range
+                            ng-if="ctrl.timeConfig && ctrl.model.selectedOperation.fields.view"
+                            model="ctrl.model.dates"
+                            conf="ctrl.timeConfig">
+                    </date-range>
+
+                    <div ng-if="ctrl.model.selectedOperation.fields.view">
+                        <view-builder model="ctrl.model.fields.view">
+                        </view-builder>
+                        <md-checkbox
+                                ng-model="ctrl.model.fields.view.summarise">
+                            Summarise
+                        </md-checkbox>
                     </div>
 
-                    <div layout="column" flex="55">
-                        <date-range
-                                ng-if="ctrl.timeConfig && ctrl.model.selectedOperation.fields.view"
-                                model="ctrl.model.dates"
-                                conf="ctrl.timeConfig">
-                        </date-range>
+                    <div ng-if="ctrl.hasOtherConfig()">
+                        <h3 class="section-title">
+                            Configuration
+                        </h3>
 
                         <div ng-repeat="(name, field) in ctrl.model.selectedOperation.fields">
                             <div ng-if="name !== 'input' && name !== 'inputB'">
@@ -75,14 +86,6 @@
                                                  details="field">
                                 </operation-field>
                             </div>
-                        </div>
-
-                        <div ng-if="ctrl.model.selectedOperation.fields.view"
-                             layout-margin>
-                            <md-checkbox
-                                    ng-model="ctrl.model.fields.view.summarise">
-                                Summarise
-                            </md-checkbox>
                         </div>
                     </div>
                 </div>
