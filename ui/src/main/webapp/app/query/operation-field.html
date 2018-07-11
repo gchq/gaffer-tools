@@ -1,11 +1,5 @@
-<parameter-form
-        ng-if="ctrl.model.selectedOperation.parameters"
-        title-class="layout-padding section-title"
-        parameters="ctrl.model.selectedOperation.parameters">
-</parameter-form>
-
 <dynamic-input
-        ng-if="ctrl.name !== 'options' && ctrl.name !== 'seedMatching' && ctrl.name !== 'view' && ctrl.name !== 'views'"
+        ng-if="ctrl.name !== 'options'"
         name="ctrl.title"
         param="ctrl.param"
         options="ctrl.details.options">

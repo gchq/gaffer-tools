@@ -115,7 +115,8 @@ describe('The operation chain component', function() {
             ctrl.operations = [
                 {
                     selectedOperation: {
-                        name: 'test1'
+                        name: 'test1',
+                        fields: {}
                     },
                     fields: {
                         input: [],
@@ -124,7 +125,8 @@ describe('The operation chain component', function() {
                 },
                 {
                     selectedOperation: {
-                        name: 'test2'
+                        name: 'test2',
+                        fields: {}
                     },
                     fields: {
                         input: null,
@@ -133,7 +135,8 @@ describe('The operation chain component', function() {
                 },
                 {
                     selectedOperation: {
-                        name: 'test3'
+                        name: 'test3',
+                        fields: {}
                     },
                     fields: {
                         input: null,
@@ -160,7 +163,8 @@ describe('The operation chain component', function() {
             ctrl.deleteOperation(0);
             expect(ctrl.operations[0]).toEqual({
                 selectedOperation: {
-                    name: 'test2'
+                    name: 'test2',
+                    fields: {}
                 },
                 fields: {
                     input: [],
@@ -288,19 +292,23 @@ describe('The operation chain component', function() {
 
                 var selectedOperation = {
                     name: 'test',
-                    view: true
+                    fields: {
+                        view: {}
+                    }
                 }
 
                 it('should create a basic view from the view edges and entities', function() {
 
                     var op = {
                         selectedOperation: selectedOperation,
-                        view: {
-                            viewEntities: ['elementGroup1','elementGroup2','elementGroup3'],
-                            viewEdges: ['edge1','edge2'],
-                            entityFilters: {},
-                            edgeFilters: {}
-                        },
+                        fields: {
+                            view: {
+                                viewEntities: ['elementGroup1','elementGroup2','elementGroup3'],
+                                viewEdges: ['edge1','edge2'],
+                                entityFilters: {},
+                                edgeFilters: {}
+                            }
+                        }
                         dates: {}
                     }
 
@@ -343,25 +351,27 @@ describe('The operation chain component', function() {
 
                     var op = {
                         selectedOperation: selectedOperation,
-                        view: {
-                            viewEdges: ['a'],
-                            edgeFilters: {
-                                'a': [
-                                    {
-                                        preAggregation: true,
-                                        predicate: 'some.koryphe.Predicate',
-                                        property: 'b',
-                                        parameters: {
-                                            'value': {
-                                                'valueClass': 'java.lang.Long',
-                                                'parts': {
-                                                    undefined: 205
+                        fields: {
+                            view: {
+                                viewEdges: ['a'],
+                                edgeFilters: {
+                                    'a': [
+                                        {
+                                            preAggregation: true,
+                                            predicate: 'some.koryphe.Predicate',
+                                            property: 'b',
+                                            parameters: {
+                                                'value': {
+                                                    'valueClass': 'java.lang.Long',
+                                                    'parts': {
+                                                        undefined: 205
+                                                    }
                                                 }
-                                            }
-                                        },
-                                        availableFunctionParameters: {'value': 'java.lang.Comparable', 'orEqualTo': 'boolean'}
-                                    }
-                                ]
+                                            },
+                                            availableFunctionParameters: {'value': 'java.lang.Comparable', 'orEqualTo': 'boolean'}
+                                        }
+                                    ]
+                                }
                             }
                         },
                         dates: {}
@@ -390,7 +400,9 @@ describe('The operation chain component', function() {
                 it('should add the group-by to the operation', function() {
                     var op = {
                         selectedOperation: selectedOperation,
-                        view: {},
+                        fields: {
+                            view: {}
+                        },
                         dates: {}
                     }
 
@@ -407,13 +419,17 @@ describe('The operation chain component', function() {
                     op = {
                         selectedOperation: {
                             class: 'some.operation.with.View',
-                            view: true
+                            fields: {
+                                view: {}
+                            }
                         },
-                        view: {
-                            viewEntities: ['elementGroup1','elementGroup2','elementGroup3'],
-                            viewEdges: ['edge1','edge2'],
-                            entityFilters: {},
-                            edgeFilters: {}
+                        fields: {
+                            view: {
+                                viewEntities: ['elementGroup1','elementGroup2','elementGroup3'],
+                                viewEdges: ['edge1','edge2'],
+                                entityFilters: {},
+                                edgeFilters: {}
+                            }
                         },
                         dates: {}
                     }
@@ -565,9 +581,11 @@ describe('The operation chain component', function() {
                     op = {
                         selectedOperation: {
                             name: 'an.operation.Name',
-                            view: true
+                            fields: { view: {} }
                         },
-                        view: {},
+                        fields: {
+                            view: {}
+                        },
                         dates: {}
                     }
                 });
@@ -663,7 +681,7 @@ describe('The operation chain component', function() {
                 beforeEach(function() {
                     op = {
                         selectedOperation: null,
-                        view: {},
+                        fields: { view: {} },
                         dates: {}
                     }
                 });
@@ -674,6 +692,7 @@ describe('The operation chain component', function() {
                         class: 'named.operation.class.Name',
                         name: 'test',
                         namedOp: true,
+                        fields: {},
                         parameters: { "testParam": {
                                 valueClass: "java.lang.Long",
                                 parts: {
@@ -698,6 +717,7 @@ describe('The operation chain component', function() {
                         class: 'named.operation.class.Name',
                         name: 'test',
                         namedOp: true,
+                        fields: {},
                         parameters: { "testParam": {
                                 valueClass: "java.lang.Long",
                                 required: false,
@@ -723,6 +743,7 @@ describe('The operation chain component', function() {
                         class: 'named.operation.class.Name',
                         name: 'test',
                         namedOp: true,
+                        fields: {},
                         parameters: { "testParam": {
                                 valueClass: "java.lang.Long",
                                 required: true,
@@ -748,6 +769,7 @@ describe('The operation chain component', function() {
                         class: 'named.operation.class.Name',
                         name: 'test',
                         namedOp: true,
+                        fields: {},
                         parameters: { "testParam": {
                                 valueClass: "java.lang.Long",
                                 required: false,
@@ -772,6 +794,7 @@ describe('The operation chain component', function() {
                         class: 'named.operation.class.Name',
                         name: 'test',
                         namedOp: true,
+                        fields: {},
                         parameters: { "testParam": {
                                 valueClass: "java.lang.Long",
                                 required: true,
@@ -799,7 +822,9 @@ describe('The operation chain component', function() {
                 beforeEach(function() {
                     op = {
                         selectedOperation: {
-                            input: 'uk.gov.gchq.gaffer.commonutil.pair.Pair'
+                            fields: {
+                                input: 'uk.gov.gchq.gaffer.commonutil.pair.Pair[]'
+                            }
                         },
                         fields: {
                             input: [],
@@ -893,7 +918,9 @@ describe('The operation chain component', function() {
                 beforeEach(function() {
                     op = {
                         selectedOperation: {
-                            input: true
+                            fields: {
+                                input: {}
+                            }
                         },
                         fields: {
                             input: [],
@@ -974,7 +1001,7 @@ describe('The operation chain component', function() {
                 describe('When adding a second input', function() {
 
                     beforeEach(function() {
-                        op.selectedOperation.fields.inputB = true;
+                        op.selectedOperation.fields.inputB = {};
                         op.selectedOperation.namedOp = false;
                     });
 
@@ -1060,7 +1087,9 @@ describe('The operation chain component', function() {
 
         it('should add the selected operation to the list of operations', function() {
             var op = {
-                selectedOperation: {}
+                selectedOperation: {
+                    fields: {}
+                }
             }
 
             spyOn(query, 'addOperation');
@@ -1091,7 +1120,9 @@ describe('The operation chain component', function() {
 
             beforeEach(function() {
                 op = {
-                    selectedOperation: {}
+                    selectedOperation: {
+                        fields: {}
+                    }
                 }
 
                 spyOn(settings, 'getResultLimit').and.returnValue(2);
@@ -1234,7 +1265,8 @@ describe('The operation chain component', function() {
             ctrl.operations = [
                 {
                     selectedOperation: {
-                        class: 'test'
+                        class: 'test',
+                        fields: {}
                     }
                 }
             ]
@@ -1249,7 +1281,8 @@ describe('The operation chain component', function() {
             ctrl.operations = [
                 {
                     selectedOperation: {
-                        class: 'test'
+                        class: 'test',
+                        fields: {}
                     },
                     opOptions: {
                         'option1': 'value1'
@@ -1267,7 +1300,8 @@ describe('The operation chain component', function() {
             ctrl.operations = [
                 {
                     selectedOperation: {
-                        class: 'test'
+                        class: 'test',
+                        fields: {}
                     }
                 }
             ]
@@ -1286,7 +1320,8 @@ describe('The operation chain component', function() {
             ctrl.operations = [
                 {
                     selectedOperation: {
-                        class: 'test'
+                        class: 'test',
+                        fields: {}
                     }
                 }
             ]
@@ -1311,7 +1346,8 @@ describe('The operation chain component', function() {
             ctrl.operations = [
                 {
                     selectedOperation: {
-                        class: 'test'
+                        class: 'test',
+                        fields: {}
                     }
                 }
             ]
@@ -1341,7 +1377,8 @@ describe('The operation chain component', function() {
             ctrl.operations = [
                 {
                     selectedOperation: {
-                        class: 'test'
+                        class: 'test',
+                        fields: {}
                     },
                     opOptions: {
                         'option1': 'value1'
@@ -1349,7 +1386,8 @@ describe('The operation chain component', function() {
                 },
                 {
                     selectedOperation: {
-                        class: 'test'
+                        class: 'test',
+                        fields: {}
                     },
                     opOptions: {
                         'option2': 'value2'
@@ -1371,7 +1409,8 @@ describe('The operation chain component', function() {
             ctrl.operations = [
                 {
                     selectedOperation: {
-                        class: 'test'
+                        class: 'test',
+                        fields: {}
                     },
                     opOptions: {
                         'option1': 'value1'

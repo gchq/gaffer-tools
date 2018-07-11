@@ -51,20 +51,21 @@ function OperationController(types, loading, operationChain, settings, events) {
         }
     }
 
-    vm.hasOtherConfig = function() {
-        var hasOtherConfig = false;
-        if(vm.model.selectedOperation && vm.model.selectedOperation.fields) {
-            var reqLength = 0;
-            var fieldNames = Object.keys(vm.model.selectedOperation.fields);
-            for(var i in coreFields) {
-               if(fieldNames.indexOf(coreFields[i])) {
-                   reqLength = reqLength + 1;
-               }
+    vm.getConfigFields = function() {
+        var configFields = {};
+        if(vm.model.selectedOperation) {
+            var fields = vm.model.selectedOperation.fields
+            for(var name in fields) {
+                if(coreFields.indexOf(name) === -1) {
+                    configFields[name] = fields[name];
+                }
             }
-            hasOtherConfig = fieldNames.length > reqLength;
         }
-        return hasOtherConfig;
+        return configFields;
+    }
 
+    vm.hasOtherConfig = function() {
+        return Object.keys(vm.getConfigFields()).length > 0;
     }
 
     vm.getField = function(fieldName) {

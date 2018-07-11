@@ -34,83 +34,7 @@ describe('The operation service', function() {
         config = _config_;
     }));
 
-
-
-
-    describe('operationService.getAvailableOperations()', function() {
-        var operationsToReturn;
-
-        beforeEach(function() {
-            operationsToReturn = { defaultAvailable: 'test' };
-        })
-
-        beforeEach(function() {
-            spyOn(config, 'get').and.callFake(function() {
-                return $q.when({
-                    operations: operationsToReturn
-                });
-            })
-        });
-
-
-        it('should return the available operations in the config', function() {
-
-            service.getAvailableOperations().then(function(ops) {
-                expect(ops).toEqual('test');
-            })
-
-            $rootScope.$digest();
-        });
-
-        it('should return the available operations once resolved without making second call to config service', function() {
-            service.getAvailableOperations().then(function(ops) { // do nothing
-            });
-            $rootScope.$digest(); // resolve the promise
-
-            service.getAvailableOperations().then(function(ops) {
-                expect(config.get).toHaveBeenCalledTimes(1);
-            });
-
-            $rootScope.$digest();
-        });
-
-        it('should not make a second call to the config service while the first call is being resolved', function() {
-            service.getAvailableOperations().then(function(ops) { // do nothing
-            });
-
-            service.getAvailableOperations().then(function(ops) {
-                expect(config.get).toHaveBeenCalledTimes(1);
-            });
-
-            $rootScope.$digest();
-        });
-
-        it('should resolve an empty array if the available operations are undefined', function() {
-            operationsToReturn = {};
-
-            service.getAvailableOperations().then(function(ops) {
-                expect(ops).toEqual([])
-            }, function(err) {
-                fail('promise should not have been rejected')
-            });
-
-            $rootScope.$digest();
-        });
-
-        it('should resolve an empty array if the operations section of the config is undefined', function() {
-            operationsToReturn = undefined;
-
-            service.getAvailableOperations().then(function(ops) {
-                expect(ops).toEqual([])
-            }, function(err) {
-                fail('promise should not have been rejected')
-            });
-
-            $rootScope.$digest();
-        });
-    });
-
-    describe('operationService.reloadNamedOperations()', function() {
+    describe('operationService.reloadOperations()', function() {
         var $httpBackend;
         var defaultAvailableOperations;
         var namedOperations;
@@ -122,32 +46,10 @@ describe('The operation service', function() {
                 return $q.when({
                     restEndpoint: 'http://gaffer/rest/latest',
                     operations: {
-                        defaultAvailable: defaultAvailableOperations
                     }
                 });
             });
         });
-
-        beforeEach(function() {
-            defaultAvailableOperations = [ 
-                {
-                name: 'test'
-                },
-                {
-                    class: "a.custom.Operation",
-                    input: "uk.gov.gchq.gaffer.data.element.id.EntityId"
-                },
-                {
-                    class: "uk.gov.gchq.gaffer.accumulostore.operation.impl.GetElementsInRanges",
-                    input: "uk.gov.gchq.gaffer.commonutil.pair.Pair"
-                },
-                {
-                    class: "uk.gov.gchq.gaffer.accumulostore.operation.impl.GetElementsBetweenSets",
-                    input: true,
-                    inputB: true
-                }
-            ];
-        })
 
         beforeEach(inject(function(_$httpBackend_, _query_) {
             $httpBackend = _$httpBackend_;
@@ -167,7 +69,10 @@ describe('The operation service', function() {
         describe('When the named operations are supported', function() {
 
             beforeEach(function() {
-                $httpBackend.whenGET('http://gaffer/rest/latest/graph/operations').respond(200, ['uk.gov.gchq.gaffer.named.operation.GetAllNamedOperations']);
+                $httpBackend.whenGET('http://gaffer/rest/latest/graph/operations/details').respond(200, [
+                    {"name": 'uk.gov.gchq.gaffer.named.operation.GetAllNamedOperations'},
+                    {"name": 'uk.gov.gchq.gaffer.operation.impl.get.GetElements'}
+                ]);
             });
 
             beforeEach(function() {
@@ -176,12 +81,13 @@ describe('The operation service', function() {
             });
 
             it('should update the available operations if GetAllNamedOperations is supported', function() {
-                namedOperations = [
-                    {name: 'namedOp', description: 'a test', operations: '{"operations": [{ "class": "GetAllElements" }]}'}
-                ];
+                namedOperations = [];
 
                 service.getAvailableOperations().then(function(initial) {
-                    service.reloadNamedOperations().then(function(unused) {
+                    namedOperations = [
+                        {name: 'namedOp', description: 'a test', operations: '{"operations": [{ "class": "GetAllElements" }]}'}
+                    ];
+                    service.reloadOperations().then(function(unused) {
                         service.getAvailableOperations().then(function(newAvailableOperations) {
                             expect(newAvailableOperations).not.toEqual(initial);
                         });
@@ -193,7 +99,7 @@ describe('The operation service', function() {
             });
 
             it('should return the available operations when the GetAllNamedOperations is supported', function() {
-                service.reloadNamedOperations().then(function(returnedOperations) {
+                service.reloadOperations().then(function(returnedOperations) {
                     service.getAvailableOperations().then(function(newAvailableOperations) {
                         expect(returnedOperations).toEqual(newAvailableOperations);
                     });
@@ -204,10 +110,10 @@ describe('The operation service', function() {
 
             it('should resolve two concurrent calls independently of each other', function() {
                 returnedResults = 0;
-                service.reloadNamedOperations().then(function(firstNamedOperations) {
+                service.reloadOperations().then(function(firstNamedOperations) {
                     returnedResults ++;
                 });
-                service.reloadNamedOperations().then(function(secondNamedOperations) {
+                service.reloadOperations().then(function(secondNamedOperations) {
                     returnedResults ++;
                 });
 
@@ -221,7 +127,7 @@ describe('The operation service', function() {
                     {name: 'namedOp', operations: '{ "operations": [{"class": "GetElementsBetweenSets"}] }'}
                 ];
 
-                service.reloadNamedOperations().then(function(available) {
+                service.reloadOperations().then(function(available) {
                     expect(available).toEqual(defaultAvailableOperations);
                 });
 
@@ -233,7 +139,7 @@ describe('The operation service', function() {
                     {name: 'namedOp', operations: '{ "operations": [{"class": "GetElementsBetweenSets"}] }', parameters: {"notInputB": { "valueClass": "Iterable"}} }
                 ];
 
-                service.reloadNamedOperations().then(function(available) {
+                service.reloadOperations().then(function(available) {
                     expect(available).toEqual(defaultAvailableOperations);
                 });
 
@@ -245,7 +151,7 @@ describe('The operation service', function() {
                     {name: 'namedOp', operations: '{ "operations": [{"class": "GetElementsBetweenSets"}] }', parameters: {"inputB": { "valueClass": "Iterable"}} }
                 ];
 
-                service.reloadNamedOperations().then(function(available) {
+                service.reloadOperations().then(function(available) {
                     expect(available[4].inputB).toBeTruthy();
                 });
 
@@ -257,7 +163,7 @@ describe('The operation service', function() {
                     {name: 'namedOp', operations: '{ "operations": [{"class": "uk.gov.gchq.gaffer.accumulostore.operation.impl.GetElementsBetweenSets"}] }', parameters: {"inputB": { "valueClass": "Iterable"}} }
                 ];
 
-                service.reloadNamedOperations().then(function(available) {
+                service.reloadOperations().then(function(available) {
                     expect(available[4].inputB).toBeTruthy();
                 });
 
@@ -269,7 +175,7 @@ describe('The operation service', function() {
                     {name: 'namedOp', operations: '{ "operations": [{"class": "uk.gov.gchq.gaffer.accumulostore.operation.impl.GetElementsInRanges"}] }', parameters: {"inputB": { "valueClass": "Iterable"}} }
                 ];
 
-                service.reloadNamedOperations().then(function(available) {
+                service.reloadOperations().then(function(available) {
                     expect(available[4].input).toEqual('uk.gov.gchq.gaffer.commonutil.pair.Pair');
                 });
 
@@ -281,7 +187,7 @@ describe('The operation service', function() {
                     {name: 'namedOp', operations: '{ "operations": [{"class": "some.other.Operation"}] }', parameters: {"inputB": { "valueClass": "Iterable"}} }
                 ];
 
-                service.reloadNamedOperations().then(function(available) {
+                service.reloadOperations().then(function(available) {
                     expect(available[4].input).toBeTruthy();
                 });
 
@@ -293,7 +199,7 @@ describe('The operation service', function() {
                     {name: 'namedOp', operations: '{ "operations": [{"class": "a.custom.Operation"}] }'}
                 ];
 
-                service.reloadNamedOperations().then(function(available) {
+                service.reloadOperations().then(function(available) {
                     expect(available[4].input).toEqual("uk.gov.gchq.gaffer.data.element.id.EntityId");
                 });
 
@@ -301,9 +207,9 @@ describe('The operation service', function() {
             })
 
             it('should not cache the result as a reload is being forced', function() {
-                service.reloadNamedOperations().then(function(initialAvailableOperations) {
+                service.reloadOperations().then(function(initialAvailableOperations) {
                     namedOperations = [ { name: 'test' , operations: '{"operations": [{ "class": "GetAllElements" }]}'} ];
-                    service.reloadNamedOperations().then(function(updatedAvailableOperations) {
+                    service.reloadOperations().then(function(updatedAvailableOperations) {
                         expect(updatedAvailableOperations).not.toEqual(initialAvailableOperations);
                     });
                 });
@@ -314,7 +220,7 @@ describe('The operation service', function() {
             it('should return the available operations if the GetAllNamedOperations query fails', function() {
                 error = true;
 
-                service.reloadNamedOperations().then(function(availableOperations) {
+                service.reloadOperations().then(function(availableOperations) {
                     expect(availableOperations).toEqual(defaultAvailableOperations);
                 });
 
@@ -329,7 +235,7 @@ describe('The operation service', function() {
             });
 
             it('should return available operations when the GetAllNamedOperations is not supported', function() {
-                service.reloadNamedOperations().then(function(availableOps) {
+                service.reloadOperations().then(function(availableOps) {
                     expect(availableOps).toEqual(defaultAvailableOperations);
                 });
 
@@ -337,7 +243,7 @@ describe('The operation service', function() {
             });
 
             it('should not make query the API if GetAllNamedOperations is not supported', function() {
-                service.reloadNamedOperations().then(function(availableOps) {
+                service.reloadOperations().then(function(availableOps) {
                     expect(query.execute).not.toHaveBeenCalled();
                 });
 
@@ -360,7 +266,7 @@ describe('The operation service', function() {
             it('should make a call to the error service', function() {
                 $httpBackend.expectGET('http://gaffer/rest/latest/graph/operations').respond(500, { simpleMessage: 'Boom!'});
 
-                service.reloadNamedOperations().then(function(availableOperations) {
+                service.reloadOperations().then(function(availableOperations) {
                     // don't care for the purpose of this test
                 })
 
@@ -372,7 +278,7 @@ describe('The operation service', function() {
             it('should return the available operations', function() {
                 $httpBackend.expectGET('http://gaffer/rest/latest/graph/operations').respond(500, 'test');
 
-                service.reloadNamedOperations().then(function(availableOperations) {
+                service.reloadOperations().then(function(availableOperations) {
                     expect(availableOperations).toEqual(defaultAvailableOperations);
                 });
 

@@ -105,7 +105,7 @@ describe('The operation component', function() {
             };
 
             ctrl.model = {
-                inputs: {
+                fields: {
                     input: [],
                 }
             };

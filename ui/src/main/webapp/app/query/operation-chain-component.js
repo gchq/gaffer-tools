@@ -94,7 +94,7 @@ function OperationChainController(operationChain, config, loading, query, error,
             operations: []
         }
         for (var i in vm.operations) {
-            chain.operations.push(createOperationForQuery(vm.operations[i]))
+            chain.operations.push(createOperationForQuery(vm.operations[i]));
         }
 
         query.addOperation(angular.copy(chain));
@@ -189,13 +189,49 @@ function OperationChainController(operationChain, config, loading, query, error,
      * Uses seeds uploaded to the input service to build an input array to the query.
      * @param seeds the input array
      */
-    var createOpInput = function(seeds) {
-        if (seeds === null || seeds === undefined) {
+    var createOpInput = function(seeds, inputType) {
+        if (seeds === null || seeds === undefined || !inputType) {
             return undefined;
         }
-        var opInput = [];
-        for (var i in seeds) {
-            opInput.push(types.createJsonValue(seeds[i].valueClass, seeds[i].parts));
+
+        var inputTypeName;
+        if(typeof(inputType) === "object" && "className" in inputType) {
+            inputTypeName = inputType.className;
+        } else {
+            inputTypeName = "java.lang.Object[]";
+        }
+        var isArray = inputTypeName.endsWith("[]");
+        var opInput;
+        if(isArray) {
+            opInput = [];
+            var inputItemType = inputTypeName.substring(0, inputTypeName.length - 2);
+
+            // Assume the input type is EntityId if it is just Object or unknown.
+            if(inputItemType === "" || inputItemType === "java.lang.Object") {
+                inputItemType = "uk.gov.gchq.gaffer.data.element.id.EntityId";
+            }
+
+            var seedToJson = function(seed) {
+                return types.createJsonValue(seed.valueClass, seeds[i].parts);
+            };
+            var formatSeed;
+            if(inputItemType === "uk.gov.gchq.gaffer.data.element.id.EntityId") {
+                formatSeed = function(seed) {
+                    return {
+                        "class": ENTITY_SEED_CLASS,
+                        "vertex": seedToJson(seed)
+                    };
+                }
+            } else {
+                formatSeed = function(seed) {
+                    return seedToJson(seed);
+                }
+            }
+            for (var i in seeds) {
+                opInput.push(formatSeed(seeds[i]));
+            }
+        } else {
+            opInput = seeds;
         }
 
         return opInput;
@@ -214,8 +250,16 @@ function OperationChainController(operationChain, config, loading, query, error,
         for (var i in pairs) {
             opInput.push({
                 "class": PAIR_CLASS,
-                "first": types.createJsonValue(pairs[i].first.valueClass, pairs[i].first.parts),
-                "second": types.createJsonValue(pairs[i].second.valueClass, pairs[i].second.parts)
+                "first": {
+                    "uk.gov.gchq.gaffer.operation.data.EntitySeed": {
+                        "vertex": types.createJsonValue(pairs[i].first.valueClass, pairs[i].first.parts)
+                    }
+                },
+                "second": {
+                    "uk.gov.gchq.gaffer.operation.data.EntitySeed": {
+                        "vertex": types.createJsonValue(pairs[i].second.valueClass, pairs[i].second.parts)
+                    }
+                }
             });
         }
 
@@ -297,12 +341,12 @@ function OperationChainController(operationChain, config, loading, query, error,
         }
 
         if (selectedOp.fields.input === PAIR_CLASS) {
-            op.input = createPairInput(operation.fields.inputPairs)
+            op.input = createPairInput(operation.fields.inputPairs, selectedOp.fields.inputPairs)
         } else if (selectedOp.fields.input) {
-            op.input = createOpInput(operation.fields.input);
+            op.input = createOpInput(operation.fields.input, selectedOp.fields.input);
         }
         if (selectedOp.fields.inputB && !selectedOp.namedOp) {
-            op.inputB = createOpInput(operation.fields.inputB);
+            op.inputB = createOpInput(operation.fields.inputB, selectedOp.fields.inputB);
         }
 
         if (selectedOp.parameters) {

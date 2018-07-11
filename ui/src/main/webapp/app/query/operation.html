@@ -75,17 +75,20 @@
                         </md-checkbox>
                     </div>
 
+                    <parameter-form
+                            ng-if="ctrl.model.selectedOperation.parameters"
+                            title-class="layout-padding section-title"
+                            parameters="ctrl.model.selectedOperation.parameters">
+                    </parameter-form>
+
                     <div ng-if="ctrl.hasOtherConfig()">
                         <h3 class="section-title">
                             Configuration
                         </h3>
 
-                        <div ng-repeat="(name, field) in ctrl.model.selectedOperation.fields">
-                            <div ng-if="name !== 'input' && name !== 'inputB'">
-                                <operation-field model="ctrl.model"
-                                                 details="field">
-                                </operation-field>
-                            </div>
+                        <div ng-repeat="(name, field) in ctrl.getConfigFields()">
+                            <operation-field model="ctrl.model" details="field">
+                            </operation-field>
                         </div>
                     </div>
                 </div>

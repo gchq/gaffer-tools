@@ -70,8 +70,6 @@ function SeedBuilderController(schema, csv, types, error, events, common, $route
 
         events.subscribe('onPreExecute', vm.addSeeds);
         events.subscribe('onOperationUpdate', onOperationUpdate);
-
-
     }
 
     var onOperationUpdate = function() {

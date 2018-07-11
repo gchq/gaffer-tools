@@ -75,11 +75,9 @@ function operationSelector() {
     }
 }
 
-function OperationSelectorController(operationService, operationSelectorService, $mdDialog, $routeParams, $window, $timeout) {
+function OperationSelectorController(operationService, $mdDialog, $routeParams, $window, $timeout) {
     var vm = this;
 
-    var defaultOperation = "uk.gov.gchq.gaffer.operation.impl.get.GetElements";
-    vm.availableNamedOperations;
     vm.availableOperations;
     vm.searchTerm = '';
     vm.showCustomOp = false;
@@ -100,7 +98,7 @@ function OperationSelectorController(operationService, operationSelectorService,
             var operation = availableOperations[i];
 
             if(!vm.previous || !vm.previous.selectedOperation || !vm.previous.selectedOperation.next || vm.previous.selectedOperation.next.indexOf(operation.class) > -1) {
-                operation.formattedName = operation.name !== undefined ? operation.name.toLowerCase().replace(/[\W_]+/g, '') : '';
+                operation.formattedName = operation.name !== undefined ? operation.name.toLowerCase().replace(/\s+/g, '') : '';
                 operation.formattedDescription = operation.description !== undefined ? operation.description.toLowerCase().replace(/\s+/g, '') : '';
 
                 if(operation.formattedName === "getelements") {
@@ -149,13 +147,7 @@ function OperationSelectorController(operationService, operationSelectorService,
     }
 
     vm.$onInit = function() {
-        operationSelectorService.shouldLoadNamedOperationsOnStartup().then(function(yes) {
-            if (yes) {
-                vm.reloadOperations();
-            } else {
-                operationService.getAvailableOperations().then(populateOperations);
-            }
-        });
+        operationService.getAvailableOperations(true).then(populateOperations);
     }
 
     vm.clearSearchTerm = function() {
@@ -164,10 +156,6 @@ function OperationSelectorController(operationService, operationSelectorService,
 
     vm.reloadOperations = function() {
         operationService.reloadOperations(true).then(populateOperations);
-    }
-
-    vm.namedOpsDisabled = function() {
-        return true;
     }
 
     vm.selectedText = function() {

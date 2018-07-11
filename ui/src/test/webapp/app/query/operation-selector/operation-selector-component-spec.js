@@ -36,8 +36,12 @@ describe('Operation Selector Component', function() {
         }));
 
         beforeEach(function() {
-            spyOn(operationService, 'reloadNamedOperations').and.callFake(function() {
-                return $q.when([1, 2, 3]);
+            spyOn(operationService, 'reloadOperations').and.callFake(function() {
+                return $q.when([
+                    {name: "op Name 1", description: "OP description 1"},
+                    {name: "op Name 2", description: "OP description 2"},
+                    {name: "op Name 3", description: "OP description 3"}
+                ]);
             });
         })
 
@@ -47,35 +51,15 @@ describe('Operation Selector Component', function() {
         });
 
         describe('on startup', function() {
-            var operationSelectorService;
             var loadNamedOperations = true;
 
-            beforeEach(inject(function(_operationSelectorService_) {
-                operationSelectorService = _operationSelectorService_;
-            }))
-
-            beforeEach(function() {
-                spyOn(operationSelectorService, 'shouldLoadNamedOperationsOnStartup').and.callFake(function() {
-                    return $q.when(loadNamedOperations);
-                });
-            })
-
-            it('should load the named operations if the service returns true', function() {
+            it('should load the operations', function() {
                 loadNamedOperations = true
                 var ctrl = $componentController('operationSelector', { $scope: scope });
                 ctrl.$onInit();
 
                 scope.$digest();
-                expect(operationService.reloadNamedOperations).toHaveBeenCalledTimes(1);
-            });
-
-            it('should not load the named operations if the service returns false', function() {
-                loadNamedOperations = false
-                var ctrl = $componentController('operationSelector', { $scope: scope });
-                ctrl.$onInit();
-
-                scope.$digest();
-                expect(operationService.reloadNamedOperations).not.toHaveBeenCalled();
+                expect(operationService.reloadOperations).toHaveBeenCalledTimes(1);
             });
 
             it('should select the operation defined in the query operation parameter', function() {
@@ -135,7 +119,7 @@ describe('Operation Selector Component', function() {
                 expect(ctrl.model.name).toEqual('operationX');
             });
 
-            it('should not select an operation if the query op is not found', function() {
+            it('should not select an operation', function() {
                 loadNamedOperations = false
                 $routeParams.op = "unknownOp";
                 var ctrl = $componentController('operationSelector', { $scope: scope });
@@ -152,41 +136,7 @@ describe('Operation Selector Component', function() {
                 ctrl.$onInit();
 
                 scope.$digest();
-                expect(ctrl.model.name).toEqual("GetElements");
-            });
-
-            describe('when selecting the default selected operation', function() {
-                var ctrl;
-
-                beforeEach(function() {
-                    ctrl = $componentController('operationSelector', {$scope: scope});
-                });
-
-                it('should set it to the selected operation in the model, if defined', function() {
-                    loadNamedOperations = true;
-                    ctrl.model = 'test';
-                    ctrl.$onInit();
-                    scope.$digest();
-
-                    expect(ctrl.model).toEqual('test');
-                });
-
-                it('should set it to the first operation in the array if not defined in the queryPage service', function() {
-                    loadNamedOperations = true;
-                    ctrl.$onInit();
-                    scope.$digest();
-
-                    expect(ctrl.model).toEqual(1);
-                });
-
-                it('should set it to undefined if no operations are returned in the available operations array or queryPage service', function() {
-                    spyOn(operationService, 'getAvailableOperations').and.returnValue($q.when([]));
-                    loadNamedOperations = false;
-                    ctrl.$onInit();
-                    scope.$digest();
-
-                    expect(ctrl.model).not.toBeDefined();
-                });
+                expect(ctrl.model).not.toBeDefined();
             });
         });
 
@@ -195,16 +145,20 @@ describe('Operation Selector Component', function() {
 
             beforeEach(function() {
                 ctrl = $componentController('operationSelector', {$scope: scope});
-                ctrl.refreshNamedOperations();
+                ctrl.reloadOperations();
             });
 
-            it('should refresh the named operations', function() {
-                expect(operationService.reloadNamedOperations).toHaveBeenCalled();
+            it('should refresh the operations', function() {
+                expect(operationService.reloadOperations).toHaveBeenCalled();
             });
 
             it('should update the list of available operations with the results', function() {
                 scope.$digest();
-                expect(ctrl.availableOperations).toEqual([1, 2, 3]);
+                expect(ctrl.availableOperations).toEqual([
+                    {name: "op Name 1", description: "OP description 1", formattedName: "opname1", formattedDescription: "opdescription1"},
+                    {name: "op Name 2", description: "OP description 2", formattedName: "opname2", formattedDescription: "opdescription2"},
+                    {name: "op Name 3", description: "OP description 3", formattedName: "opname3", formattedDescription: "opdescription3"}
+                ]);
             });
         });
     });
