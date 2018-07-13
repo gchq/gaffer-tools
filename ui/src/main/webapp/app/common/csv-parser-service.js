@@ -195,10 +195,11 @@ angular.module('app').factory('csv', ['error', function(error) {
         }
 
         for (var i in headers) {
-            if (headers[i].indexOf(',') !== -1) {
-                csvString += '"' + headers[i] + '",';
+            var header = headers[i].replace(/"/g, '""');
+            if (header.indexOf(',') !== -1 || header.indexOf('"') !== -1) {
+                csvString += '"' + header + '",';
             } else {
-                csvString += headers[i] + ',';
+                csvString += header + ',';
             }
         }
 
@@ -218,11 +219,14 @@ angular.module('app').factory('csv', ['error', function(error) {
                     continue;
                 }
 
-                if (typeof field === 'string' && field.indexOf(',') !== -1) {
-                    csvString += '"' + field + '",';
-                } else {
-                    csvString += field + ','
+                if (typeof field === 'string') {
+                    field = field.replace(/"/g, '""');
+                    if (field.indexOf(',') !== -1 || field.indexOf('"') !== -1) {
+                        field = '"' + field + '"';
+                    }
                 }
+
+                csvString += field + ','
             }
 
             csvString = csvString.substr(0, csvString.length - 1);

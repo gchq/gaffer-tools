@@ -106,6 +106,30 @@ describe('The CSV parser service', function() {
             expect(output.indexOf('"value, with a comma"')).not.toEqual(-1);
         });
 
+        it('should add an extra quote to escape quotes in values', function() {
+            var header = ['test'];
+            var input = [{'test': 'value containing " a quote'}];
+
+            var output = service.generate(input, header);
+            expect(output.indexOf('"value containing "" a quote"\r\n')).not.toEqual(-1);
+        });
+
+        it('should escape multiple quotes within the value', function() {
+            var header = ['test'];
+            var input = [{'test': 'value "containing " quotes'}];
+
+            var output = service.generate(input, header);
+            expect(output.indexOf('"value ""containing "" quotes"\r\n')).not.toEqual(-1);
+        });
+
+        it('should handle quotes immediately before a comma', function() {
+            var header = ['test'];
+            var input = [{'test': 'value containing ", a quote and comma'}];
+
+            var output = service.generate(input, header);
+            expect(output.indexOf('"value containing "", a quote and comma"\r\n')).not.toEqual(-1);
+        });
+
         it('should throw an error if no headers are supplied', function() {
             spyOn(error, 'handle').and.stub();
 
