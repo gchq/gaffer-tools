@@ -140,7 +140,7 @@ describe('The Table component', function() {
                 SOURCE: 'vertex1'
             }
         ],
-        columns: [ 'result type', 'GROUP', 'SOURCE', 'DESTINATION', 'DIRECTED', 'value', 'count', 'prop1'],
+        columns: [ 'result type', 'GROUP', 'SOURCE', 'DESTINATION', 'DIRECTED', 'value', 'count', 'prop1', 'prop2'],
         allColumns: [ 'result type', 'GROUP', 'SOURCE', 'DESTINATION', 'DIRECTED', 'value', 'count', 'prop1', 'prop2' ],
         groups: [ 'BasicEdge1', 'BasicEdge2', 'BasicEntity1', 'BasicEntity2', '' ],
         allGroups: [ 'BasicEdge1', 'BasicEdge2', 'BasicEntity1', 'BasicEntity2', '' ],
@@ -379,7 +379,7 @@ describe('The Table component', function() {
                 ]);
             });
 
-            it('should update filtered results multiple times and update columns', function() {
+            it('should update filtered results multiple times', function() {
                 resultsData = fullResultsData;
                 spyOn(results, 'get').and.returnValue(resultsData);
                 spyOn(events, 'subscribe');
@@ -395,7 +395,7 @@ describe('The Table component', function() {
                     { 'result type': 'Edge', GROUP: 'BasicEdge2', SOURCE: 'source1', DESTINATION: 'destination1', DIRECTED: true, count: 1, prop2: 'value1' },
                     { GROUP: '', 'result type': 'String', value: 'value1' }
                 ]);
-                expect(ctrl.data.columns).toEqual(['result type', 'GROUP', 'SOURCE', 'DESTINATION', 'DIRECTED', 'value', 'count', 'prop1']);
+                expect(ctrl.data.columns).toEqual(['result type', 'GROUP', 'SOURCE', 'DESTINATION', 'DIRECTED', 'value', 'count', 'prop1', 'prop2']);
 
                 ctrl.data.types = ["Entity"];
                 ctrl.updateFilteredResults();
@@ -404,14 +404,14 @@ describe('The Table component', function() {
                     { 'result type': 'Entity', GROUP: 'BasicEntity1', SOURCE: 'vertex2', count: 2, prop1: 'value2' },
                     { 'result type': 'Entity', GROUP: 'BasicEntity2', SOURCE: 'vertex1', count: 1, prop2: 'value1' }
                 ]);
-                expect(ctrl.data.columns).toEqual(['result type', 'GROUP', 'SOURCE', 'count', 'prop1']);
+                expect(ctrl.data.columns).toEqual(['result type', 'GROUP', 'SOURCE', 'DESTINATION', 'DIRECTED', 'value', 'count', 'prop1', 'prop2']);
 
                 ctrl.data.types = ["String"];
                 ctrl.updateFilteredResults();
                 expect(ctrl.data.results).toEqual([
                     { 'result type': 'String', GROUP: '', value: 'value1' },
                 ]);
-                expect(ctrl.data.columns).toEqual(['result type', 'GROUP']);
+                expect(ctrl.data.columns).toEqual(['result type', 'GROUP', 'SOURCE', 'DESTINATION', 'DIRECTED', 'value', 'count', 'prop1', 'prop2']);
             });
 
             it('should convert string properties which are numbers into their numerical value', function() {
@@ -465,7 +465,7 @@ describe('The Table component', function() {
                 expect(ctrl.data.results).toEqual([
                     { 'result type': 'Edge', GROUP: 'BasicEdge1', SOURCE: 'source1', DESTINATION: 'destination1', DIRECTED: true, count: 1, prop1: 'value1', source: 'abc', destination: 'dest4' }
                 ]);
-                expect(ctrl.data.columns).toEqual(['result type', 'GROUP', 'SOURCE', 'DESTINATION', 'DIRECTED', 'count', 'source', 'destination']);
+                expect(ctrl.data.columns).toEqual(['result type', 'GROUP', 'SOURCE', 'DESTINATION', 'DIRECTED', 'count', 'source', 'destination', 'prop1']);
 
             });
         });
