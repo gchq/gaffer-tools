@@ -78,11 +78,11 @@ angular.module('app').factory('operationService', ['$http', '$q', 'settings', 'c
     var getInputType = function(first, availableOps) {
         for (var i in availableOps) {
             if (availableOps[i].class && common.endsWith(availableOps[i].class, first)) {
-                return availableOps[i].fields['input'] ? availableOps[i].fields['input'].className : undefined;
+                return availableOps[i].fields['input'];
             }
         }
 
-        return true;
+        return undefined;
     }
 
     var opAllowed = function(opName, configuredOperations) {
@@ -205,7 +205,7 @@ angular.module('app').factory('operationService', ['$http', '$q', 'settings', 'c
                     availableOperations = [];
                     addOperations(response.data, conf);
                     var getAllClass = "uk.gov.gchq.gaffer.named.operation.GetAllNamedOperations";
-                    if(common.arrayContainsObjectWithValue, "name", getAllClass) {
+                    if(common.arrayContainsObjectWithValue(availableOperations, "class", getAllClass)) {
                         query.execute(
                             {
                                 class: getAllClass,
@@ -220,13 +220,16 @@ angular.module('app').factory('operationService', ['$http', '$q', 'settings', 'c
                                     error.handle('Failed to load named operations', err);
                                     deferred.reject(err);
                                 }
+                                deferred.resolve(availableOperations);
                             }
                         );
+                    } else {
+                        deferred.resolve(availableOperations);
                     }
                 },
                 function(err) {
                     error.handle('Unable to load operations', err.data);
-                    deferred.reject(err);
+                    deferred.resolve([]);
                 });
         });
 
