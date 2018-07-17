@@ -1,7 +1,7 @@
 describe('The operation service', function() {
 
     var service, config;
-    var $q
+    var $q, $httpBackend;
 
     beforeEach(module('app'));
 
@@ -27,32 +27,30 @@ describe('The operation service', function() {
         });
     }));
 
-    beforeEach(inject(function(_operationService_, _$q_, _config_) {
+    beforeEach(inject(function(_operationService_, _$q_, _config_, _$httpBackend_) {
         service = _operationService_;
         $q = _$q_;
         config = _config_;
+        $httpBackend = _$httpBackend_;
     }));
 
+    beforeEach(function() {
+        spyOn(config, 'get').and.callFake(function() {
+            return $q.when({
+                restEndpoint: 'http://gaffer/rest/latest',
+                operations: {
+                }
+            });
+        });
+    });
+
     describe('reloadOperations()', function() {
-        var $httpBackend;
-        var defaultAvailableOperations;
         var namedOperations;
         var error = false;
         var query;
         var types;
 
-        beforeEach(function() {
-            spyOn(config, 'get').and.callFake(function() {
-                return $q.when({
-                    restEndpoint: 'http://gaffer/rest/latest',
-                    operations: {
-                    }
-                });
-            });
-        });
-
-        beforeEach(inject(function(_$httpBackend_, _query_, _types_) {
-            $httpBackend = _$httpBackend_;
+        beforeEach(inject(function(_query_, _types_) {
             query = _query_;
             types = _types_;
         }));
@@ -289,7 +287,7 @@ describe('The operation service', function() {
         });
     });
 
-    describe('operationService.createGetSchemaOperation()', function() {
+    describe('createGetSchemaOperation()', function() {
 
         var options;
         var settings;
@@ -326,7 +324,7 @@ describe('The operation service', function() {
         });
     });
 
-    describe('operationService.createLimitOperation()', function() {
+    describe('createLimitOperation()', function() {
         it('should use the injected options', function() {
             var created = service.createLimitOperation('test');
             expect(created.options).toEqual('test');
@@ -343,7 +341,7 @@ describe('The operation service', function() {
         });
     });
 
-    describe('operationService.createDeduplicateOperation()', function() {
+    describe('createDeduplicateOperation()', function() {
 
         it('should injected operation options', function() {
             var created = service.createDeduplicateOperation('test');
@@ -361,7 +359,7 @@ describe('The operation service', function() {
         });
     });
 
-    describe('operationService.createCountOperation()', function() {
+    describe('createCountOperation()', function() {
 
         it('should inject the operation options', function() {
             var created = service.createCountOperation('test');
@@ -376,6 +374,62 @@ describe('The operation service', function() {
         it('should create an empty object if the operation options are null', function() {
             var created = service.createCountOperation(null);
             expect(created.options).toEqual({});
+        });
+    });
+
+    describe('ifOperationSupported()', function() {
+
+        var error;
+
+        beforeEach(inject(function(_error_) {
+            error = _error_;
+        }));
+
+        var successCallback = jasmine.createSpy("success");
+
+        var failureCallback  = jasmine.createSpy("failure");
+
+        var testOperation = "test";
+
+
+        it('should run the success callback if the operation is supported', function() {
+            $httpBackend.whenGET('http://gaffer/rest/latest/graph/operations').respond(200, [ 'test' ])
+            service.ifOperationSupported(testOperation, successCallback, failureCallback);
+
+
+            $httpBackend.flush();
+
+            expect(successCallback).toHaveBeenCalled();
+        });
+
+        it('should run the failure callback if the operation is not supported', function() {
+            $httpBackend.whenGET('http://gaffer/rest/latest/graph/operations').respond(200, [ 'notTest' ])
+            service.ifOperationSupported(testOperation, successCallback, failureCallback);
+
+            $httpBackend.flush();
+
+            expect(failureCallback).toHaveBeenCalled();
+        });
+
+        it('should run the failure callback if the call to the rest service fails', function() {
+            $httpBackend.whenGET('http://gaffer/rest/latest/graph/operations').respond(500)
+            service.ifOperationSupported(testOperation, successCallback, failureCallback);
+
+            $httpBackend.flush();
+
+            expect(failureCallback).toHaveBeenCalled();
+        });
+
+        it('should make a call to the error service is the operation is not supported', function() {
+
+            spyOn(error, 'handle').and.stub();
+
+            $httpBackend.whenGET('http://gaffer/rest/latest/graph/operations').respond(500, {message: "ouch"})
+            service.ifOperationSupported(testOperation, successCallback, failureCallback);
+
+            $httpBackend.flush();
+
+            expect(error.handle).toHaveBeenCalledWith("Error getting available graph operations", {message: "ouch"});
         });
     });
 });
