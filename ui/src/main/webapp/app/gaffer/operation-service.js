@@ -68,7 +68,7 @@ angular.module('app').factory('operationService', ['$http', '$q', 'settings', 'c
     var hasInputB = function(first, availableOps) {
         for (var i in availableOps) {
             if (availableOps[i].class && common.endsWith(availableOps[i].class, first)) {
-                return availableOps[i].inputB
+                return availableOps[i].fields['inputB'];
             }
         }
 
@@ -78,7 +78,7 @@ angular.module('app').factory('operationService', ['$http', '$q', 'settings', 'c
     var getInputType = function(first, availableOps) {
         for (var i in availableOps) {
             if (availableOps[i].class && common.endsWith(availableOps[i].class, first)) {
-                return availableOps[i].input;
+                return availableOps[i].fields['input'] ? availableOps[i].fields['input'].className : undefined;
             }
         }
 
@@ -160,17 +160,18 @@ angular.module('app').factory('operationService', ['$http', '$q', 'settings', 'c
                         var opChain = JSON.parse(op.operations);
                         var first = opChain.operations[0].class;
 
-                        var inputB = hasInputB(first, conf.operations.defaultAvailable);
+                        var inputB = hasInputB(first, availableOperations);
 
                         if (inputB) {
-                            if ((!op.parameters) || op.parameters['inputB'] === undefined) { // unsupported
-                                console.log('Named operation ' + op.operationName + ' starts with a GetElementsBetweenSets operation but does not contain an "inputB" parameter. This is not supported by the UI');
-                                continue;
-                            } else {
-                                delete op.parameters['inputB'] // to avoid it coming up in the parameters section
+                            if (op.parameters && op.parameters['inputB'] ) {
+                                delete op.parameters['inputB']
+                                 // to avoid it coming up in the parameters section
                                 if (Object.keys(op.parameters).length === 0) {
                                     op.parameters = undefined;
                                 }
+                            } else {
+                                console.log('Named operation ' + op.operationName + ' starts with a GetElementsBetweenSets operation but does not contain an "inputB" parameter. This is not supported by the UI');
+                                continue;
                             }
                         }
 
@@ -181,7 +182,7 @@ angular.module('app').factory('operationService', ['$http', '$q', 'settings', 'c
                               description: op.description,
                               operations: op.operations,
                               fields: {
-                                  input: getInputType(first, conf.operations.defaultAvailable),
+                                  input: getInputType(first, availableOperations),
                                   inputB: inputB,
                               },
                               namedOp: true

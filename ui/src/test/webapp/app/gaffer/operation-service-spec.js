@@ -1,7 +1,7 @@
 describe('The operation service', function() {
 
     var service, config;
-    var $q, $rootScope;
+    var $q
 
     beforeEach(module('app'));
 
@@ -27,19 +27,19 @@ describe('The operation service', function() {
         });
     }));
 
-    beforeEach(inject(function(_operationService_, _$q_, _$rootScope_, _config_) {
+    beforeEach(inject(function(_operationService_, _$q_, _config_) {
         service = _operationService_;
         $q = _$q_;
-        $rootScope = _$rootScope_;
         config = _config_;
     }));
 
-    describe('operationService.reloadOperations()', function() {
+    describe('reloadOperations()', function() {
         var $httpBackend;
         var defaultAvailableOperations;
         var namedOperations;
         var error = false;
         var query;
+        var types;
 
         beforeEach(function() {
             spyOn(config, 'get').and.callFake(function() {
@@ -51,9 +51,10 @@ describe('The operation service', function() {
             });
         });
 
-        beforeEach(inject(function(_$httpBackend_, _query_) {
+        beforeEach(inject(function(_$httpBackend_, _query_, _types_) {
             $httpBackend = _$httpBackend_;
             query = _query_;
+            types = _types_;
         }));
 
         beforeEach(function() {
@@ -71,9 +72,14 @@ describe('The operation service', function() {
             beforeEach(function() {
                 $httpBackend.whenGET('http://gaffer/rest/latest/graph/operations/details').respond(200, [
                     {"name": 'uk.gov.gchq.gaffer.named.operation.GetAllNamedOperations'},
-                    {"name": 'uk.gov.gchq.gaffer.operation.impl.get.GetElements'}
+                    {"name": 'uk.gov.gchq.gaffer.operation.impl.get.GetElements'},
+                    { "name": "uk.gov.gchq.gaffer.accumulostore.operation.impl.GetElementsBetweenSets", "fields": [ { name: "inputB", className: "java.lang.Object[]" } ] }
                 ]);
             });
+
+            beforeEach(function() {
+                spyOn(types, 'isKnown').and.returnValue(false);
+            })
 
             beforeEach(function() {
                 namedOperations = [];
@@ -128,7 +134,7 @@ describe('The operation service', function() {
                 ];
 
                 service.reloadOperations().then(function(available) {
-                    expect(available).toEqual(defaultAvailableOperations);
+                    expect(available.length).toEqual(3);
                 });
 
                 $httpBackend.flush();
@@ -140,7 +146,7 @@ describe('The operation service', function() {
                 ];
 
                 service.reloadOperations().then(function(available) {
-                    expect(available).toEqual(defaultAvailableOperations);
+                    expect(available.length).toEqual(3);
                 });
 
                 $httpBackend.flush();
@@ -152,7 +158,7 @@ describe('The operation service', function() {
                 ];
 
                 service.reloadOperations().then(function(available) {
-                    expect(available[4].inputB).toBeTruthy();
+                    expect(available[3]['fields'].inputB).toBeTruthy();
                 });
 
                 $httpBackend.flush();
@@ -164,7 +170,7 @@ describe('The operation service', function() {
                 ];
 
                 service.reloadOperations().then(function(available) {
-                    expect(available[4].inputB).toBeTruthy();
+                    expect(available[3]['fields'].inputB).toBeTruthy();
                 });
 
                 $httpBackend.flush();
@@ -176,7 +182,7 @@ describe('The operation service', function() {
                 ];
 
                 service.reloadOperations().then(function(available) {
-                    expect(available[4].input).toEqual('uk.gov.gchq.gaffer.commonutil.pair.Pair');
+                    expect(available[3].input).toEqual('uk.gov.gchq.gaffer.commonutil.pair.Pair');
                 });
 
                 $httpBackend.flush();
@@ -184,7 +190,7 @@ describe('The operation service', function() {
 
             it('should set the input type to true if the operation is not listed in the config', function() {
                 namedOperations = [
-                    {name: 'namedOp', operations: '{ "operations": [{"class": "some.other.Operation"}] }', parameters: {"inputB": { "valueClass": "Iterable"}} }
+                    {operationName: 'namedOp', operations: '{ "operations": [{"class": "some.other.Operation"}] }', parameters: {"inputB": { "valueClass": "Iterable"}} }
                 ];
 
                 service.reloadOperations().then(function(available) {

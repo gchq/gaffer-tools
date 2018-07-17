@@ -308,7 +308,7 @@ describe('The operation chain component', function() {
                                 entityFilters: {},
                                 edgeFilters: {}
                             }
-                        }
+                        },
                         dates: {}
                     }
 
