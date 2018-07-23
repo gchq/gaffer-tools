@@ -96,14 +96,18 @@ angular.module('app').factory('graph', ['types', '$q', 'results', 'common', 'eve
         graph.update(results);
     });
 
-    /** 
+    events.subscribe('resultsCleared', function(results) {
+        graph.reset();
+    });
+
+    /**
      * Returns the currently selected entities in the graph
     */
     graph.getSelectedEntities = function() {
         return selectedEntities;
     }
 
-    /** 
+    /**
      * Returns the currently selected edges in the graph
     */
     graph.getSelectedEdges = function() {
@@ -111,7 +115,7 @@ angular.module('app').factory('graph', ['types', '$q', 'results', 'common', 'eve
     }
 
     /**
-     * Loads cytoscape graph onto an element containing the "graphCy" id. It also registers the 
+     * Loads cytoscape graph onto an element containing the "graphCy" id. It also registers the
      * handlers for select and deselect events.
      */
     graph.load = function() {
@@ -153,7 +157,7 @@ angular.module('app').factory('graph', ['types', '$q', 'results', 'common', 'eve
                 if (!configLoaded) {
                     config.get().then(function(conf) {
                         configLoaded = true;
-                        
+
                         if (!conf.graph) {
                             return;
                         }
@@ -265,9 +269,9 @@ angular.module('app').factory('graph', ['types', '$q', 'results', 'common', 'eve
     }
 
     /**
-     * Defines the behaviour when an element in cytoscape is selected. 
+     * Defines the behaviour when an element in cytoscape is selected.
      * First attempts to select an entity, then edge, then vertex.
-     * @param {Object} element 
+     * @param {Object} element
      */
     function select(element) {
         if(selectEntityId(element.id())) {
@@ -284,11 +288,11 @@ angular.module('app').factory('graph', ['types', '$q', 'results', 'common', 'eve
     var getEdgeStyling = function(group) {
         if (!styling || !styling.edges || !styling.edges[group]) {
             return defaultStyling.edges;
-        } 
+        }
 
         var copy = angular.copy(defaultStyling.edges);
         angular.merge(copy, styling.edges[group]);
-        
+
         return copy;
     }
 
@@ -312,7 +316,7 @@ angular.module('app').factory('graph', ['types', '$q', 'results', 'common', 'eve
                 for (var fieldName in customVertexStyling.fieldOverrides) {
                     if (vertexParts[fieldName]) {
                         if (common.objectContainsValue(customVertexStyling.fieldOverrides[fieldName], vertexParts[fieldName])) {
-                            angular.merge(style, customVertexStyling.fieldOverrides[fieldName][vertexParts[fieldName]]); 
+                            angular.merge(style, customVertexStyling.fieldOverrides[fieldName][vertexParts[fieldName]]);
                         }
                     }
                 }
@@ -327,9 +331,9 @@ angular.module('app').factory('graph', ['types', '$q', 'results', 'common', 'eve
     }
 
     /**
-     * Appends the element to selected entities, creates an input object from the ID and adds it to the 
+     * Appends the element to selected entities, creates an input object from the ID and adds it to the
      * operation chain's first operation, then fires events
-     * @param {String} id The vertex 
+     * @param {String} id The vertex
      * @param {Array} entities The elements with the id
      */
     function selectEntities(id, entities) {
@@ -343,7 +347,7 @@ angular.module('app').factory('graph', ['types', '$q', 'results', 'common', 'eve
                 parts: types.createParts(vertexClass, vertex)
             });
         });
-        
+
         events.broadcast('selectedElementsUpdate', [{"entities": selectedEntities, "edges": selectedEdges}]);
     }
 
@@ -391,7 +395,7 @@ angular.module('app').factory('graph', ['types', '$q', 'results', 'common', 'eve
 
     /**
      * Adds a seed to the selected entities
-     * @param {String} vertexId 
+     * @param {String} vertexId
      */
     function selectVertex(vertexId) {
         selectEntities(vertexId, [{vertex: vertexId}]);
@@ -399,7 +403,7 @@ angular.module('app').factory('graph', ['types', '$q', 'results', 'common', 'eve
 
     /**
      * Removes an element from the selected elements and input service and fires update events
-     * @param {Object} element The cytoscape element 
+     * @param {Object} element The cytoscape element
      */
     function unSelect(element) {
         var id = element.id();
@@ -431,7 +435,7 @@ angular.module('app').factory('graph', ['types', '$q', 'results', 'common', 'eve
 
     /**
      * Stringifies a seed, adds it if it does not exist, selects it and updates the graph
-     * @param {*} seed 
+     * @param {*} seed
      */
     graph.addSeed = function(seed) {
         var entitySeed = JSON.stringify(seed);
@@ -442,7 +446,7 @@ angular.module('app').factory('graph', ['types', '$q', 'results', 'common', 'eve
 
     /**
      * Adds Entities, Edges and seeds to the graph model.
-     * @param {Array} results 
+     * @param {Array} results
      */
     graph.update = function(results) {
         for (var i in results.entities) {
@@ -473,7 +477,7 @@ angular.module('app').factory('graph', ['types', '$q', 'results', 'common', 'eve
 
     /**
      * Updates cytoscape with the graph data
-     * @param {Array} results 
+     * @param {Array} results
      */
     var updateGraph = function(results) {
         for (var id in results.entities) {
@@ -481,7 +485,7 @@ angular.module('app').factory('graph', ['types', '$q', 'results', 'common', 'eve
             var isSelected = common.objectContainsValue(selectedEntities, id);
             var style = getNodeStyling(schemaService.getVertexTypeFromEntityGroup(results.entities[id][0].group), id);
             if(existingNodes.length > 0) {
-                
+
                 if(isSelected) {
                    existingNodes.select();
                 } else {
@@ -651,7 +655,7 @@ angular.module('app').factory('graph', ['types', '$q', 'results', 'common', 'eve
 
     /**
      * Helper method to create a label from a vertex
-     * @param {String} vertex 
+     * @param {String} vertex
      */
     var createLabel = function(vertex) {
         var label;
