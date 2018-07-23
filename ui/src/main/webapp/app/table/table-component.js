@@ -37,7 +37,6 @@ function resultsTable() {
  * @param {*} time For converting time objects
  */
 function TableController(schema, results, table, events, common, types, time, csv) {
-    var initialNumberOfColumnsToShow = 8;
     var vm = this;
     var resultsByType = [];
     vm.filteredResults = [];
@@ -57,8 +56,8 @@ function TableController(schema, results, table, events, common, types, time, cs
     vm.$onInit = function() {
         schema.get().then(function(gafferSchema) {
             vm.schema = gafferSchema;
-            processResults(results.get());
             loadFromCache();
+            processResults(results.get());
             events.subscribe('resultsUpdated', onResultsUpdated);
         });
     }
@@ -90,7 +89,6 @@ function TableController(schema, results, table, events, common, types, time, cs
                 }
             }
         }
-        updateColumns();
     }
 
     /*
@@ -99,7 +97,7 @@ function TableController(schema, results, table, events, common, types, time, cs
      */
     vm.selectedColumnsText = function() {
         if(vm.data.columns && vm.data.allColumns && vm.data.allColumns.length > vm.data.columns.length) {
-            return "Choose columns (" + (vm.data.allColumns.length - vm.data.columns.length) + " more)";
+            return "Choose columns (" + (vm.data.allColumns.length - vm.data.columns.length) + " hidden)";
     }
         return "Choose columns";
     }
@@ -121,8 +119,10 @@ function TableController(schema, results, table, events, common, types, time, cs
         processOtherTypes(ids, properties, resultsData);
 
         vm.data.allColumns = common.concatUniqueValues(common.concatUniqueValues(ids, groupByProperties), properties);
-        vm.data.columns = angular.copy(vm.data.allColumns).splice(0, initialNumberOfColumnsToShow);
-
+        
+        if (!vm.data.columns || vm.data.columns.length === 0) {
+            vm.data.columns = angular.copy(vm.data.allColumns);
+        }
         vm.data.allTypes = [];
         vm.data.allGroups = [];
         for(var type in resultsByType) {
@@ -131,24 +131,15 @@ function TableController(schema, results, table, events, common, types, time, cs
                 common.pushValueIfUnique(group, vm.data.allGroups);
             }
         }
-        vm.data.types = angular.copy(vm.data.allTypes);
-        vm.data.groups = angular.copy(vm.data.allGroups);
+
+        if (!vm.data.types || vm.data.columns.length === 0) {
+            vm.data.types = angular.copy(vm.data.allTypes);
+        }
+        if (!vm.data.groups || vm.data.groups.length === 0) {
+            vm.data.groups = angular.copy(vm.data.allGroups);
+        }
 
         vm.updateFilteredResults();
-    }
-
-    var updateColumns = function() {
-        var resultColumns = []
-        for(var i in vm.data.results) {
-            common.pushValuesIfUnique(Object.keys(vm.data.results[i]), resultColumns);
-        }
-        var newColumns = [];
-        for(var i in vm.data.columns) {
-            if(resultColumns.indexOf(vm.data.columns[i]) > -1) {
-                newColumns.push(vm.data.columns[i]);
-            }
-        }
-        vm.data.columns = newColumns.splice(0, initialNumberOfColumnsToShow);
     }
 
     var processElements = function(type, typePlural, idKeys, ids, groupByProperties, properties, resultsData) {
@@ -308,11 +299,11 @@ function TableController(schema, results, table, events, common, types, time, cs
             cachedValues.columns = vm.data.columns;
         }
 
-        if(vm.data.types && vm.data.allTypes && vm.data.types < vm.data.allTypes.length) {
+        if(vm.data.types && vm.data.allTypes && vm.data.types.length < vm.data.allTypes.length) {
             cachedValues.types = vm.data.types;
         }
 
-        if(vm.data.groups && vm.data.allGroups && vm.data.groups < vm.data.allGroups.length) {
+        if(vm.data.groups && vm.data.allGroups && vm.data.groups.length < vm.data.allGroups.length) {
             cachedValues.groups = vm.data.groups;
         }
 
