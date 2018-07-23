@@ -616,7 +616,7 @@ class InTimeRange(AbstractPredicate):
 
     def __init__(self, start=None, start_offset=None, end=None, end_offset=None,
                  offset_unit=None, start_inclusive=None, end_inclusive=None,
-                 time_unit=None):
+                 time_unit=None, time_zone=None):
         super().__init__(_class_name=self.CLASS)
         self.start = start
         self.start_offset = start_offset
@@ -626,6 +626,7 @@ class InTimeRange(AbstractPredicate):
         self.start_inclusive = start_inclusive
         self.end_inclusive = end_inclusive
         self.time_unit = time_unit
+        self.time_zone = time_zone
 
     def to_json(self):
         predicate_json = super().to_json()
@@ -645,6 +646,8 @@ class InTimeRange(AbstractPredicate):
             predicate_json['endInclusive'] = self.end_inclusive
         if self.time_unit is not None:
             predicate_json['timeUnit'] = self.time_unit
+        if self.time_zone is not None:
+            predicate_json['timeZone'] = self.time_zone
         return predicate_json
 
 
@@ -655,7 +658,8 @@ class InTimeRangeDual(AbstractPredicate):
                  offset_unit=None, start_inclusive=None, end_inclusive=None,
                  time_unit=None,
                  start_fully_contained=None,
-                 end_fully_contained=None):
+                 end_fully_contained=None,
+                 time_zone=None):
         super().__init__(_class_name=self.CLASS)
         self.start = start
         self.start_offset = start_offset
@@ -667,6 +671,7 @@ class InTimeRangeDual(AbstractPredicate):
         self.time_unit = time_unit
         self.start_fully_contained = start_fully_contained
         self.end_fully_contained = end_fully_contained
+        self.time_zone = time_zone
 
     def to_json(self):
         predicate_json = super().to_json()
@@ -690,6 +695,8 @@ class InTimeRangeDual(AbstractPredicate):
             predicate_json['startFullyContained'] = self.start_fully_contained
         if self.end_fully_contained is not None:
             predicate_json['endFullyContained'] = self.end_fully_contained
+        if self.time_zone is not None:
+            predicate_json['timeZone'] = self.time_zone
 
         return predicate_json
 
@@ -698,7 +705,8 @@ class InDateRange(AbstractPredicate):
     CLASS = "uk.gov.gchq.koryphe.impl.predicate.range.InDateRange"
 
     def __init__(self, start=None, start_offset=None, end=None, end_offset=None,
-                 offset_unit=None, start_inclusive=None, end_inclusive=None):
+                 offset_unit=None, start_inclusive=None, end_inclusive=None,
+                 time_zone=None):
         super().__init__(_class_name=self.CLASS)
         self.start = start
         self.start_offset = start_offset
@@ -707,6 +715,7 @@ class InDateRange(AbstractPredicate):
         self.offset_unit = offset_unit
         self.start_inclusive = start_inclusive
         self.end_inclusive = end_inclusive
+        self.time_zone = time_zone
 
     def to_json(self):
         predicate_json = super().to_json()
@@ -724,6 +733,8 @@ class InDateRange(AbstractPredicate):
             predicate_json['startInclusive'] = self.start_inclusive
         if self.end_inclusive is not None:
             predicate_json['endInclusive'] = self.end_inclusive
+        if self.time_zone is not None:
+            predicate_json['timeZone'] = self.time_zone
         return predicate_json
 
 
@@ -733,7 +744,8 @@ class InDateRangeDual(AbstractPredicate):
     def __init__(self, start=None, start_offset=None, end=None, end_offset=None,
                  offset_unit=None, start_inclusive=None, end_inclusive=None,
                  start_fully_contained=None,
-                 end_fully_contained=None):
+                 end_fully_contained=None,
+                 time_zone=None):
         super().__init__(_class_name=self.CLASS)
         self.start = start
         self.start_offset = start_offset
@@ -744,6 +756,7 @@ class InDateRangeDual(AbstractPredicate):
         self.end_inclusive = end_inclusive
         self.start_fully_contained = start_fully_contained
         self.end_fully_contained = end_fully_contained
+        self.time_zone = time_zone
 
     def to_json(self):
         predicate_json = super().to_json()
@@ -765,6 +778,8 @@ class InDateRangeDual(AbstractPredicate):
             predicate_json['startFullyContained'] = self.start_fully_contained
         if self.end_fully_contained is not None:
             predicate_json['endFullyContained'] = self.end_fully_contained
+        if self.time_zone is not None:
+            predicate_json['timeZone'] = self.time_zone
         return predicate_json
 
 
