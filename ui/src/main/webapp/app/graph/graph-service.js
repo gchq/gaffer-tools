@@ -96,6 +96,10 @@ angular.module('app').factory('graph', ['types', '$q', 'results', 'common', 'eve
         graph.update(results);
     });
 
+    events.subscribe('resultsCleared', function(results) {
+        graph.reset();
+    });
+
     /**
      * Returns the currently selected entities in the graph
     */
