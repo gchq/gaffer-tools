@@ -26,7 +26,7 @@ function operationChainBuilder() {
     }
 }
 
-function OperationChainController(operationChain, config, loading, query, error, events, $mdDialog, navigation, $location, $routeParams, operationService, settings, graph, results, types) {
+function OperationChainController(operationChain, config, loading, query, error, events, $mdDialog, navigation, $location, $routeParams, operationService, common, graph, types) {
     var vm = this;
     vm.timeConfig;
     vm.operations = operationChain.getOperationChain();
@@ -34,6 +34,7 @@ function OperationChainController(operationChain, config, loading, query, error,
     var NAMED_VIEW_CLASS = "uk.gov.gchq.gaffer.data.elementdefinition.view.NamedView";
     var OPERATION_CHAIN_CLASS = "uk.gov.gchq.gaffer.operation.OperationChain";
     var ENTITY_SEED_CLASS = "uk.gov.gchq.gaffer.operation.data.EntitySeed";
+    var PAIR_ARRAY_CLASS = "uk.gov.gchq.gaffer.commonutil.pair.Pair<uk.gov.gchq.gaffer.data.element.id.ElementId,uk.gov.gchq.gaffer.data.element.id.ElementId>[]";
     var PAIR_CLASS = "uk.gov.gchq.gaffer.commonutil.pair.Pair";
 
     /**
@@ -100,9 +101,10 @@ function OperationChainController(operationChain, config, loading, query, error,
         query.addOperation(angular.copy(chain));
 
         var finalOperation = vm.operations[vm.operations.length - 1];
-        if (finalOperation.selectedOperation.iterableOutput) {
-            chain.operations.push(operationService.createLimitOperation(finalOperation['opOptions']));
-            chain.operations.push(operationService.createDeduplicateOperation(finalOperation['opOptions']));
+        if (common.arrayContainsValue(finalOperation.selectedOperation.next, 'uk.gov.gchq.gaffer.operation.impl.Limit')) {
+            var options = finalOperation.fields ? finalOperation.fields.options : undefined;
+            chain.operations.push(operationService.createLimitOperation(options));
+            chain.operations.push(operationService.createDeduplicateOperation(options));
         }
 
         runQuery(chain.operations, true);
@@ -340,11 +342,14 @@ function OperationChainController(operationChain, config, loading, query, error,
            }
         }
 
-        if (selectedOp.fields.input === PAIR_CLASS) {
-            op.input = createPairInput(operation.fields.inputPairs, selectedOp.fields.inputPairs)
-        } else if (selectedOp.fields.input) {
-            op.input = createOpInput(operation.fields.input, selectedOp.fields.input);
+        if (selectedOp.fields.input) {
+            if (selectedOp.fields.input.className === PAIR_ARRAY_CLASS) {
+                op.input = createPairInput(operation.fields.inputPairs)
+            } else {
+                op.input = createOpInput(operation.fields.input, selectedOp.fields.input);
+            }
         }
+        
         if (selectedOp.fields.inputB && !selectedOp.namedOp) {
             op.inputB = createOpInput(operation.fields.inputB, selectedOp.fields.inputB);
         }
@@ -365,7 +370,7 @@ function OperationChainController(operationChain, config, loading, query, error,
             if (!op.parameters) {
                 op.parameters = {};
             }
-            op.parameters['inputB'] = createOpInput(operation.inputB);
+            op.parameters['inputB'] = createOpInput(operation.fields.inputB, selectedOp.fields.inputB);
         }
 
         if (selectedOp.fields.view) {
@@ -377,13 +382,14 @@ function OperationChainController(operationChain, config, loading, query, error,
 
             op.view = {
                 entities: {},
-                edges: {}
+                edges: {},
+                globalElements: []
             };
 
             if(operation.fields.view.summarise) {
-                op.view.globalElements = [{
+                op.view.globalElements.push({
                     groupBy: []
-                }];
+                });
             }
 
             createElementView(viewEntities, entityFilters, op.view.entities);
@@ -439,7 +445,7 @@ function OperationChainController(operationChain, config, loading, query, error,
             }
         }
 
-        if(operation.fields.options && Object.keys(operation.fields.options).length > 0) {
+        if(operation.fields && operation.fields.options && Object.keys(operation.fields.options).length > 0) {
             op.options = operation.fields.options;
         }
 

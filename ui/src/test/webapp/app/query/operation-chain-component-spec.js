@@ -397,11 +397,13 @@ describe('The operation chain component', function() {
                     expect(JSON.stringify(query.execute.calls.argsFor(0)[0])).toContain(JSON.stringify(expectedView));
                 });
 
-                it('should add the group-by to the operation', function() {
+                it('should add the group-by to the operation if summarise is set to true', function() {
                     var op = {
                         selectedOperation: selectedOperation,
                         fields: {
-                            view: {}
+                            view: {
+                                summarise: true
+                            }
                         },
                         dates: {}
                     }
@@ -409,7 +411,22 @@ describe('The operation chain component', function() {
                     ctrl.execute(op);
                     expect(JSON.stringify(query.execute.calls.first().args[0])).toContain('"groupBy":[]');
                 });
+                it('should not add the group-by to the operation if summarise is set to false', function() {
+                    var op = {
+                        selectedOperation: selectedOperation,
+                        fields: {
+                            view: {
+                                summarise: false
+                            }
+                        },
+                        dates: {}
+                    }
+    
+                    ctrl.execute(op);
+                    expect(JSON.stringify(query.execute.calls.first().args[0])).not.toContain('"groupBy":[]');
+                });
             });
+
 
             describe('When adding Named views', function() {
 
@@ -436,25 +453,25 @@ describe('The operation chain component', function() {
                 });
 
                 it('should do nothing if the named views are undefined', function() {
-                    op.view.namedViews = undefined;
+                    op.fields.view.namedViews = undefined;
                     ctrl.execute(op);
                     expect(JSON.stringify(query.execute.calls.first().args[0])).not.toContain('views');
                 });
 
                 it('should do nothing if the named views are undefined', function() {
-                    op.view.namedViews = null;
+                    op.fields.view.namedViews = null;
                     ctrl.execute(op);
                     expect(JSON.stringify(query.execute.calls.first().args[0])).not.toContain('views');
                 });
 
                 it('should do nothing if the named views are an empty array', function() {
-                    op.view.namedViews = [];
+                    op.fields.view.namedViews = [];
                     ctrl.execute(op);
                     expect(JSON.stringify(query.execute.calls.first().args[0])).not.toContain('views');
                 });
 
                 it('should add the preExisting view to the views array', function() {
-                    op.view.namedViews = [{name: "test"}];
+                    op.fields.view.namedViews = [{name: "test"}];
                     ctrl.execute(op);
 
                     var entities =  {
@@ -478,7 +495,7 @@ describe('The operation chain component', function() {
 
                 it('should add named views with parameters', function() {
 
-                    op.view.namedViews = [{"name": "namedView1", "parameters":{ "testParam": { "parts": { "value": 42}}}}];
+                    op.fields.view.namedViews = [{"name": "namedView1", "parameters":{ "testParam": { "parts": { "value": 42}}}}];
 
                     ctrl.execute(op);
 
@@ -497,7 +514,7 @@ describe('The operation chain component', function() {
 
                 it('should not add blank parameters in named views left blank if they are not required', function() {
 
-                    op.view.namedViews = [{
+                    op.fields.view.namedViews = [{
                         name: 'test',
                         parameters: { "testParam": {
                                 valueClass: "java.lang.Long",
@@ -516,7 +533,7 @@ describe('The operation chain component', function() {
                 });
 
                 it('should add blank parameters into named views if the parameter is marked required', function() {
-                    op.view.namedViews = [{
+                    op.fields.view.namedViews = [{
                         name: 'test',
                         parameters: { "testParam": {
                                 valueClass: "java.lang.Long",
@@ -535,7 +552,7 @@ describe('The operation chain component', function() {
                 });
 
                 it('should not allow null parameters in named views if they are not required', function() {
-                    op.view.namedViews = [{
+                    op.fields.view.namedViews = [{
                         name: 'test',
                         parameters: { "testParam": {
                                 valueClass: "java.lang.Long",
@@ -554,7 +571,7 @@ describe('The operation chain component', function() {
                 });
 
                 it('should add null parameters if the parameter is marked required', function() {
-                    op.view.namedViews = [{
+                    op.fields.view.namedViews = [{
                         name: 'test',
                         parameters: { "testParam": {
                                 valueClass: "java.lang.Long",
@@ -823,7 +840,7 @@ describe('The operation chain component', function() {
                     op = {
                         selectedOperation: {
                             fields: {
-                                input: 'uk.gov.gchq.gaffer.commonutil.pair.Pair[]'
+                                input: {className: 'uk.gov.gchq.gaffer.commonutil.pair.Pair<uk.gov.gchq.gaffer.data.element.id.ElementId,uk.gov.gchq.gaffer.data.element.id.ElementId>[]'}
                             }
                         },
                         fields: {
@@ -1089,7 +1106,8 @@ describe('The operation chain component', function() {
             var op = {
                 selectedOperation: {
                     fields: {}
-                }
+                },
+                fields: {}
             }
 
             spyOn(query, 'addOperation');
@@ -1122,7 +1140,8 @@ describe('The operation chain component', function() {
                 op = {
                     selectedOperation: {
                         fields: {}
-                    }
+                    },
+                    fields: {}
                 }
 
                 spyOn(settings, 'getResultLimit').and.returnValue(2);
@@ -1282,13 +1301,16 @@ describe('The operation chain component', function() {
                 {
                     selectedOperation: {
                         class: 'test',
-                        fields: {}
+                        fields: {
+                        }
                     },
-                    opOptions: {
-                        'option1': 'value1'
+                    fields: {
+                        options: {
+                            'option1': 'value1'
+                        }
                     }
                 }
-            ]
+            ];
             ctrl.executeChain();
             expect(query.execute).toHaveBeenCalled();
             var operation = query.execute.calls.first().args[0];
@@ -1342,11 +1364,12 @@ describe('The operation chain component', function() {
             expect(query.addOperation).toHaveBeenCalledWith(expectedOperation);
         });
 
-        it('should add limits and deduplicate operations to the chain', function() {
+        it('should add limits and deduplicate operations to the chain if the limit operation appears in the next available operations', function() {
             ctrl.operations = [
                 {
                     selectedOperation: {
                         class: 'test',
+                        next: ['uk.gov.gchq.gaffer.operation.impl.Limit'],
                         fields: {}
                     }
                 }
@@ -1373,24 +1396,53 @@ describe('The operation chain component', function() {
 
         });
 
-        it('should add the final operation options to the limit and dedupe operations', function() {
+        it('should not add the deduplicate and limit operations if the limit operation does not appear in the list of next available operations', function() {
             ctrl.operations = [
                 {
                     selectedOperation: {
                         class: 'test',
-                        fields: {}
+                        fields: {},
                     },
-                    opOptions: {
-                        'option1': 'value1'
+                    fields: {
+                        options: {
+                            'option1': 'value1'
+                        }
+                    }
+                }
+            ];
+
+            ctrl.executeChain();
+
+            expect(query.execute).toHaveBeenCalled();
+            var chain = query.execute.calls.first().args[0];
+
+            expect(chain.operations.length).toEqual(1);
+
+        })
+
+        it('should add the final operation options to the limit and dedupe operations if the limit operation appears in the next available operations', function() {
+            ctrl.operations = [
+                {
+                    selectedOperation: {
+                        class: 'test',
+                        fields: {},
+                    },
+                    fields: {
+                        options: {
+                            'option1': 'value1'
+                        }
                     }
                 },
                 {
                     selectedOperation: {
                         class: 'test',
+                        next: ['uk.gov.gchq.gaffer.operation.impl.Limit'],
                         fields: {}
                     },
-                    opOptions: {
-                        'option2': 'value2'
+                    fields: {
+                        options: {
+                            'option2': 'value2'
+                        }
                     }
                 }
             ]

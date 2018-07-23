@@ -4,13 +4,12 @@
                  aria-label="use output from previous operation">
         Use output from previous operation
     </md-checkbox>
-    <div ng-switch="ctrl.primaryInput" ng-show="!ctrl.usePreviousOutput">
-        <div ng-switch-when="uk.gov.gchq.gaffer.commonutil.pair.Pair[]">
+    <div ng-switch="ctrl.primaryInput.className" ng-show="!ctrl.usePreviousOutput">
+        <div ng-switch-when="uk.gov.gchq.gaffer.commonutil.pair.Pair<uk.gov.gchq.gaffer.data.element.id.ElementId,uk.gov.gchq.gaffer.data.element.id.ElementId>[]">
             <pair-builder model="ctrl.model.inputPairs"
                           use-previous="ctrl.usePreviousOutput"></pair-builder>
         </div>
         <div ng-switch-default>
-            <!-- Will match new 'ElementId', or older true value -->
             <div layout="row" layout-align="start center">
                 <h3 class="no-margin">Add seeds</h3>
                 <md-button id="use-results"
