@@ -29,6 +29,7 @@ angular.module('app').factory('results', ['events', function(events) {
         results = {entities: [], edges: [], other: []};
         if(broadcast === undefined || broadcast) {
             events.broadcast('resultsUpdated', [results]);
+            events.broadcast('resultsCleared');
         }
     }
 

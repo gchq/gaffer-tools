@@ -36,10 +36,10 @@ function resultsTable() {
  * @param {*} types For converting objects based on their types
  * @param {*} time For converting time objects
  */
-function TableController(schema, results, table, events, common, types, time) {
+function TableController(schema, results, table, events, common, types, time, csv) {
     var vm = this;
     var resultsByType = [];
-    vm.searchTerm = undefined;
+    vm.filteredResults = [];
     vm.data = {results:[], columns:[]};
     vm.searchTerm = '';
     vm.sortType = undefined;
@@ -131,8 +131,13 @@ function TableController(schema, results, table, events, common, types, time) {
                 common.pushValueIfUnique(group, vm.data.allGroups);
             }
         }
-        vm.data.types = angular.copy(vm.data.allTypes);
-        vm.data.groups = angular.copy(vm.data.allGroups);
+
+        if (!vm.data.types || vm.data.columns.length === 0) {
+            vm.data.types = angular.copy(vm.data.allTypes);
+        }
+        if (!vm.data.groups || vm.data.groups.length === 0) {
+            vm.data.groups = angular.copy(vm.data.allGroups);
+        }
 
         vm.updateFilteredResults();
     }
@@ -250,6 +255,13 @@ function TableController(schema, results, table, events, common, types, time) {
         return parsedValue;
     }
 
+    vm.download = function() {
+        var csvString = 'data:text/csv;charset=utf-8,' + csv.generate(vm.filteredResults, vm.data.columns);
+        var encodedURI = encodeURI(csvString);
+
+        window.open(encodedURI)
+    }
+
     vm.getValue = function() {
         if (!vm.sortType) {
             return "";
@@ -283,15 +295,15 @@ function TableController(schema, results, table, events, common, types, time) {
             sortType: vm.sortType
         };
 
-        if(vm.data.columns && vm.data.allColumns && vm.data.types < vm.data.allTypes.length) {
+        if(vm.data.columns && vm.data.allColumns && vm.data.columns.length < vm.data.allColumns.length) {
             cachedValues.columns = vm.data.columns;
         }
 
-        if(vm.data.types && vm.data.allTypes && vm.data.types < vm.data.allTypes.length) {
+        if(vm.data.types && vm.data.allTypes && vm.data.types.length < vm.data.allTypes.length) {
             cachedValues.types = vm.data.types;
         }
 
-        if(vm.data.groups && vm.data.allGroups && vm.data.groups < vm.data.allGroups.length) {
+        if(vm.data.groups && vm.data.allGroups && vm.data.groups.length < vm.data.allGroups.length) {
             cachedValues.groups = vm.data.groups;
         }
 

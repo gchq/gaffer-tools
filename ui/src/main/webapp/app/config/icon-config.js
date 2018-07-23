@@ -44,5 +44,6 @@ angular.module('app').config(['$mdIconProvider', function($mdIconProvider) {
         .icon('location-search', 'app/img/location-search.svg')
         .icon('clear-results', 'app/img/clear-results.svg')
         .icon('rerun', 'app/img/rerun.svg')
+        .icon('download', 'app/img/material-icons/get_app.svg')
         .icon('edit', 'app/img/edit.svg');
 }]);

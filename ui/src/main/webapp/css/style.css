@@ -218,12 +218,12 @@ md-list-item.active div div button {
     background-color: inherit;
 }
 
-md-content md-toolbar {
+.short-toolbar {
     height: 40px;
     min-height: 40px;
 }
 
-md-content .md-toolbar-tools {
+.short-toolbar .md-toolbar-tools {
     height: 40px;
     min-height: 40px;
     font-weight: normal;
