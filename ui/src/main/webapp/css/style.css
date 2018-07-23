@@ -111,6 +111,7 @@ md-nav-bar > div > nav {
     align-items: center;
     position: fixed;
     top: 0px;
+    background-color: #FFF;
     z-index: 2;
     width: 100%;
 }
