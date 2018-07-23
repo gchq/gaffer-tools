@@ -531,7 +531,7 @@ class GafferPredicatesTest(unittest.TestCase):
         ],
         [
             '''
-             {"class":"uk.gov.gchq.koryphe.impl.predicate.range.InTimeRangeDual","start":"2017/01/01","end":"2017/02/01","timeUnit":"MICROSECOND","startFullyContained":true,"endFullyContained":true,"time_zone"="Etc/GMT+0"}
+             {"class":"uk.gov.gchq.koryphe.impl.predicate.range.InTimeRangeDual","start":"2017/01/01","end":"2017/02/01","timeUnit":"MICROSECOND","startFullyContained":true,"endFullyContained":true,"timeZone":"Etc/GMT+0"}
             ''',
             g.InTimeRangeDual(
                 start='2017/01/01',
@@ -544,7 +544,7 @@ class GafferPredicatesTest(unittest.TestCase):
         ],
         [
             '''
-             {"class":"uk.gov.gchq.koryphe.impl.predicate.range.InTimeRange","start":"2017/01/01","end":"2017/02/01","timeUnit":"MICROSECOND","time_zone"="Etc/GMT+0"}
+             {"class":"uk.gov.gchq.koryphe.impl.predicate.range.InTimeRange","start":"2017/01/01","end":"2017/02/01","timeUnit":"MICROSECOND","timeZone":"Etc/GMT+0"}
             ''',
             g.InTimeRange(
                 start='2017/01/01',
