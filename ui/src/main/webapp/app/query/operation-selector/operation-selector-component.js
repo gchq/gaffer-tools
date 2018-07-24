@@ -75,21 +75,13 @@ function operationSelector() {
     }
 }
 
-function OperationSelectorController(operationService, $mdDialog, $routeParams, $window, $timeout) {
+function OperationSelectorController(operationService, $routeParams) {
     var vm = this;
 
     vm.availableOperations;
     vm.searchTerm = '';
     vm.showCustomOp = false;
-    vm.placeholder = "Select an operation";
-
-    angular.element(document).find('.search-box').on('keydown', function(ev) {
-        ev.stopPropagation();
-    });
-
-    var updateView = function(op) {
-        vm.model = op.selectedOperation;
-    }
+    vm.placeholder = "Search for an operation";
 
     var populateOperations = function(availableOperations) {
         vm.availableOperations = [];
@@ -102,7 +94,7 @@ function OperationSelectorController(operationService, $mdDialog, $routeParams, 
                 operation.formattedDescription = operation.description !== undefined ? operation.description.toLowerCase().replace(/\s+/g, '') : '';
 
                 if(operation.formattedName === "getelements") {
-                    vm.placeholder = "Select an operation (e.g Get Elements)";
+                    vm.placeholder = "Search for an operation (e.g Get Elements)";
                 }
                 vm.availableOperations.push(operation);
             }
@@ -162,6 +154,6 @@ function OperationSelectorController(operationService, $mdDialog, $routeParams, 
         if(vm.model) {
             return vm.model.name;
         }
-        return "Select operation...";
+        return "Search for an operation...";
     }
 }
