@@ -6,7 +6,7 @@
         </md-tooltip>
     </h3>
 
-    <div layout-gt-md="row" layout="column">
+    <div layout-gt-lg="row" layout="column">
         <div layout="row">
             <md-input-container>
                 <label>Start Date</label>
@@ -27,7 +27,7 @@
                        ng-disabled="!ctrl.startDate"
                        type="time"
                        id="start-time"
-                       step="0.001"
+                       step="1"
                        name="startTime"
                        ng-change="ctrl.onStartDateUpdate()">
 
@@ -57,7 +57,7 @@
                        ng-disabled="!ctrl.endDate"
                        type="time"
                        id="end-time"
-                       step="0.001"
+                       step="1"
                        name="endTime"
                        ng-change="ctrl.onEndDateUpdate()">
 
