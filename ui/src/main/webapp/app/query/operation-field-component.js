@@ -30,7 +30,7 @@ function operationField() {
     }
 }
 
-function OperationFieldComponent(types, common) {
+function OperationFieldComponent(common) {
     var vm = this;
 
     vm.$onInit = function() {
@@ -52,29 +52,12 @@ function OperationFieldComponent(types, common) {
             vm.param = {
                 parts: {},
                 valueClass: vm.details.className,
-                required: vm.details.required
+                required: vm.details.required,
+                description: vm.details.summary
             };
             vm.model.fields[vm.name] = vm.param;
         } else {
             vm.param = vm.model.fields[vm.name];
-        }
-
-        // TODO: these should be removed when the REST API has been updated to return them.
-
-        if(vm.name === "directedType") {
-            vm.details.options=["EITHER", "DIRECTED", "UNDIRECTED"];
-        }
-
-        if(vm.name === "includeIncomingOutGoing") {
-            vm.details.options=["EITHER", "INCOMING", "OUTGOING"];
-        }
-
-        if(vm.name === "useMatchedVertex") {
-            vm.details.options=["OPPOSITE", "IGNORE", "EQUAL"];
-        }
-
-        if(vm.name === "edgeVertices") {
-            vm.details.options=["NONE", "SOURCE", "DESTINATION", "BOTH"];
         }
     }
 }

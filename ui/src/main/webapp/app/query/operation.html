@@ -70,7 +70,8 @@
                         <view-builder model="ctrl.model.fields.view">
                         </view-builder>
                         <md-checkbox
-                                ng-model="ctrl.model.fields.view.summarise">
+                                ng-model="ctrl.model.fields.view.summarise"
+                                layout-padding>
                             Summarise
                         </md-checkbox>
                     </div>
@@ -80,7 +81,6 @@
                             title-class="layout-padding section-title"
                             parameters="ctrl.model.selectedOperation.parameters">
                     </parameter-form>
-
                     <div ng-if="ctrl.hasOtherConfig()">
                         <h3 class="section-title">
                             Configuration
