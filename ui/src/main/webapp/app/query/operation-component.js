@@ -37,7 +37,7 @@ function operation() {
 
 function OperationController(types, loading, operationChain, settings, events) {
     var vm = this;
-    var coreFields = ["view", "views", "input", "inputB"];
+    var coreFields = ["view", "views", "input", "inputB", "options"];
 
     vm.showOperationOptionsForm;
 

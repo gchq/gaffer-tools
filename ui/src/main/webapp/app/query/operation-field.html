@@ -1,10 +1,6 @@
 <dynamic-input
-        ng-if="ctrl.name !== 'options'"
         name="ctrl.title"
         param="ctrl.param"
         options="ctrl.details.options">
 </dynamic-input>
 
-<options-form ng-if="ctrl.name === 'options'"
-              model="ctrl.model.fields[options]">
-</options-form>
