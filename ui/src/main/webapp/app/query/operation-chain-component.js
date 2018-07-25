@@ -202,7 +202,7 @@ function OperationChainController(operationChain, config, loading, query, error,
         } else {
             inputTypeName = "java.lang.Object[]";
         }
-        var isArray = inputTypeName.endsWith("[]");
+        var isArray = common.endsWith(inputTypeName, "[]");
         var opInput;
         if(isArray) {
             opInput = [];
