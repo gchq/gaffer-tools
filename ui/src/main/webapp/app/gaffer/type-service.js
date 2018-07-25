@@ -266,10 +266,13 @@ angular.module('app').factory('types', ['config', 'common', function(config, com
 
         var partKeys = [];
         for(var i in type.fields) {
-            if(type.fields[i].key === undefined) {
-                partKeys.push("");
+            var field = type.fields[i];
+            if (field.label !== undefined) {
+                partKeys.push(field.label);
+            } else if (field.key !== undefined) {
+                partKeys.push(field.key);
             } else {
-                partKeys.push(type.fields[i].key);
+                partKeys.push("");
             }
         }
 
