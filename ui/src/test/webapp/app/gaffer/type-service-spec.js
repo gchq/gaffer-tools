@@ -218,6 +218,11 @@ describe('The type service', function() {
             value = service.createValue('java.util.HashMap', {undefined: {"marco": "polo", "swings": "roundabouts"}});
             expect(value).toEqual({"marco": "polo", "swings": "roundabouts"});
         });
+
+        it('should return undefined if the parts have not been set', function() {
+            var value = service.createValue('java.lang.Long', {});
+            expect(value).toBeUndefined();
+        });
     });
 
     describe('types.isKnown()', function() {
