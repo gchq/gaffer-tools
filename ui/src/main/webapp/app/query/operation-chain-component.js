@@ -107,7 +107,7 @@ function OperationChainController(operationChain, config, loading, query, error,
             chain.operations.push(operationService.createDeduplicateOperation(options));
         }
 
-        runQuery(chain.operations, true);
+        runQuery(chain.operations);
     }
 
     vm.resetChain = function(ev) {
@@ -145,7 +145,7 @@ function OperationChainController(operationChain, config, loading, query, error,
             operations.push(operationService.createLimitOperation(operation['options']));
             operations.push(operationService.createDeduplicateOperation(operation['options']));
         }
-        runQuery(operations, false);
+        runQuery(operations);
     }
 
     vm.canAddOperation = function() {
@@ -156,7 +156,7 @@ function OperationChainController(operationChain, config, loading, query, error,
         return vm.operations[vm.operations.length -1].selectedOperation !== undefined;
     }
 
-    var runQuery = function(operations, chainFlag) {
+    var runQuery = function(operations) {
         loading.load()
         query.executeQuery(
             {
@@ -165,7 +165,7 @@ function OperationChainController(operationChain, config, loading, query, error,
                 options: operations[0]['options']
             },
             function(data) {
-                submitResults(data, chainFlag);
+                submitResults(data);
             }
         );
     }
@@ -174,14 +174,10 @@ function OperationChainController(operationChain, config, loading, query, error,
      * Deselects all elements in the graph and resets all query related services
      * @param {Array} data the data returned by the rest service
      */
-    var submitResults = function(data, chainFlag) {
+    var submitResults = function(data) {
         graph.deselectAll();
         navigation.goTo('results');
-        if (chainFlag) {
-            operationChain.reset();
-            vm.operations = operationChain.getOperationChain();
-        }
-
+        
         // Remove the input query param
         delete $routeParams['input'];
         $location.search('input', null);
