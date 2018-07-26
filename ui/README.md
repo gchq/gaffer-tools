@@ -320,7 +320,7 @@ the ones in the standard Gaffer UI. To make changes to the UI, you will have to 
 This is where you specify graph layout and styling, blacklisted / whitelisted operations or any specific objects that the UI
 needs to handle. These will all be documented individually under [Configuration](#configuration).
 
-## app/config/route-config.js
+### app/config/route-config.js
 
 This file defines the routes of the app - including which views to render. 
 
@@ -612,7 +612,7 @@ describe('SomeService', function() {
     });
 
     // now test a specific part of the service
-    describe('add function', function() {
+    describe('add()', function() {
         it('should add two positive numbers together', function() {
             expect(someService.add(1, 4)).toEqual(5)
         });
