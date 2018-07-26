@@ -23,7 +23,6 @@ angular.module('app').factory('operationService', ['$http', '$q', 'settings', 'c
     var availableOperations;
     var namedOpClass = "uk.gov.gchq.gaffer.named.operation.NamedOperation";
     var deferredAvailableOperations;
-    var deferredOperationsQueue = [];
 
     var handledFields = [
         "input",
@@ -102,18 +101,6 @@ angular.module('app').factory('operationService', ['$http', '$q', 'settings', 'c
             allowed = blackList.indexOf(opName) == -1;
         }
         return allowed;
-    }
-    var hasField = function(field, op){
-        return op.fields.filter(function(f) { return f.name === field; }).length > 0;
-    }
-
-    var getFieldValue = function(defaultValue, field, key, op){
-        var fields = op.fields.filter(function(f) { return f.name === field; });
-        if(fields && fields.length > 0 && fields[0][key]) {
-            return fields[0][key];
-        }
-
-        return defaultValue;
     }
 
     var addOperations = function(operations, conf) {

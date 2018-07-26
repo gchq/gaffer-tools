@@ -101,11 +101,11 @@ function OperationSelectorController(operationService, $routeParams) {
         }
 
         vm.availableOperations.sort(function(a,b) {
-            if(a.namedOp && !b.nameOp) {
-                return 1;
-            }
-            if(!a.namedOp && b.nameOp) {
+            if(a.namedOp && !b.namedOp) {
                 return -1;
+            }
+            if(!a.namedOp && b.namedOp) {
+                return 1;
             }
             if(a.formattedName > b.formattedName) {
                 return 1;
