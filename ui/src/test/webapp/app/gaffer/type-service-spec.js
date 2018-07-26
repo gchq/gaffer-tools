@@ -13,13 +13,22 @@ describe('The type service', function() {
                 get: function() {
                     return $q.when({
                         "types": {
+                            'a.custom.Class': {
+                                fields: [
+                                    {
+                                        key: 'test1'
+                                    },
+                                    {
+                                        key: 'test2'
+                                    }
+                                ]
+                            },
                             'some.java.Class': {
                                 fields: 'test'
                             },
                             "java.lang.Long": {
                                 "fields": [
                                     {
-                                        "label": "Value",
                                         "type": "number",
                                         "step": "1",
                                         "class": "java.lang.Long",
@@ -31,7 +40,6 @@ describe('The type service', function() {
                             "java.lang.Integer": {
                                 "fields": [
                                     {
-                                        "label": "Value",
                                         "type": "number",
                                         "step": "1",
                                         "class": "java.lang.Integer",
@@ -42,7 +50,6 @@ describe('The type service', function() {
                             "java.lang.String": {
                                 "fields": [
                                     {
-                                        "label": "Value",
                                         "type": "text",
                                         "class": "java.lang.String",
                                         "required": true
@@ -217,6 +224,11 @@ describe('The type service', function() {
         it('should create map objects,  without needing to use the config', function() {
             value = service.createValue('java.util.HashMap', {undefined: {"marco": "polo", "swings": "roundabouts"}});
             expect(value).toEqual({"marco": "polo", "swings": "roundabouts"});
+        });
+
+        it('should return undefined if the parts have not been set', function() {
+            var value = service.createValue('java.lang.Long', {});
+            expect(value).toBeUndefined();
         });
     });
 
@@ -472,20 +484,26 @@ describe('The type service', function() {
     });
 
     describe('types.getCsvHeader()', function() {
-        it('should return an empty string if key is undefined', function() {
+        it('should return an empty string if the label and key is undefined', function() {
             var value = service.getCsvHeader('java.lang.Integer');
             expect(value).toEqual('');
         });
 
-        it('should return the key of custom fields', function() {
+        it('should return the label of custom fields', function() {
             var value = service.getCsvHeader('com.clearspring.analytics.stream.cardinality.HyperLogLogPlus');
-            expect(value).toEqual('hyperLogLogPlus.cardinality');
+            expect(value).toEqual('cardinality');
         });
 
-        it('should return a comma separated list of field keys when there are multiple fields', function() {
+        it('should return a comma separated list of field labels when there are multiple fields', function() {
             var value = service.getCsvHeader('uk.gov.gchq.gaffer.types.TypeSubTypeValue');
-            expect(value).toEqual('type,subType,value');
+            expect(value).toEqual('Type,Sub Type,Value');
         });
+
+        it('should return a defined key if the label is undefined', function() {
+            var value = service.getCsvHeader('a.custom.Class');
+            expect(value).toEqual('test1,test2');
+        });
+
     });
 
 

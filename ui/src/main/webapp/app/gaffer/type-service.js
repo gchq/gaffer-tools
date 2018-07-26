@@ -133,6 +133,7 @@ angular.module('app').factory('types', ['config', 'common', function(config, com
 
         return val
     }
+
     service.createValue = function(typeClass, parts) {
         var type = getType(typeClass);
 
@@ -144,7 +145,7 @@ angular.module('app').factory('types', ['config', 'common', function(config, com
             return parts;
         }
 
-        if (type.wrapInJson && Object.keys(parts)[0] !== 'undefined' || Object.keys(parts).length > 1) {
+        if ((type.wrapInJson && Object.keys(parts)[0] !== 'undefined' && Object.keys(parts).length > 0) || Object.keys(parts).length > 1) {
             return parts;
         }
 
@@ -155,7 +156,6 @@ angular.module('app').factory('types', ['config', 'common', function(config, com
         }
 
         return value;
-
     }
 
     service.createJsonValue = function(typeClass, parts, stringify) {
@@ -266,10 +266,13 @@ angular.module('app').factory('types', ['config', 'common', function(config, com
 
         var partKeys = [];
         for(var i in type.fields) {
-            if(type.fields[i].key === undefined) {
-                partKeys.push("");
+            var field = type.fields[i];
+            if (field.label !== undefined) {
+                partKeys.push(field.label);
+            } else if (field.key !== undefined) {
+                partKeys.push(field.key);
             } else {
-                partKeys.push(type.fields[i].key);
+                partKeys.push("");
             }
         }
 
