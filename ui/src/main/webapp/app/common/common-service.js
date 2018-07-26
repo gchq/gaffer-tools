@@ -44,7 +44,7 @@ angular.module('app').factory('common', function() {
 
     /**
      * Converts a vertex into a string.
-     * @param {*} vertex 
+     * @param {*} vertex
      */
     common.parseVertex = function(vertex) {
         if(typeof vertex === 'string' || vertex instanceof String) {
@@ -59,9 +59,9 @@ angular.module('app').factory('common', function() {
     }
 
     /**
-     * Appends http:// to a url if not specified. This will not 
+     * Appends http:// to a url if not specified. This will not
      * overwrite if a user specifies they want to use https
-     * @param {String} url 
+     * @param {String} url
      */
     common.parseUrl = function(url) {
         if(!common.startsWith(url, "http")) {
@@ -73,8 +73,8 @@ angular.module('app').factory('common', function() {
 
     /**
      * Checks whether an object contains a value as a key
-     * @param {Object} obj 
-     * @param {String or Number} value 
+     * @param {Object} obj
+     * @param {String or Number} value
      */
     common.objectContainsValue = function(obj, value) {
         return obj && value in obj;
@@ -83,8 +83,8 @@ angular.module('app').factory('common', function() {
     /**
      * Checks whether a string or number is contained within array
      * This will not work if the value is an object
-     * @param {Array} arr 
-     * @param {String or Number} value 
+     * @param {Array} arr
+     * @param {String or Number} value
      */
     common.arrayContainsValue = function(arr, value) {
         return arr && arr.indexOf(value) !== -1;
@@ -92,11 +92,11 @@ angular.module('app').factory('common', function() {
 
     /**
      * Checks whether an object is contained within an array.
-     * This is not fast and if possible, use the arrayContainsObjectWithValue or 
+     * This is not fast and if possible, use the arrayContainsObjectWithValue or
      * arrayContainsValue if you know a property that can be used as a key
      * or if the value is not an object
-     * @param {Array} arr 
-     * @param {Object} obj 
+     * @param {Array} arr
+     * @param {Object} obj
      */
     common.arrayContainsObject = function(arr, obj) {
         if (!arr || !obj) {
@@ -112,9 +112,9 @@ angular.module('app').factory('common', function() {
 
     /**
      * Checks whether an array contains an object with a given key, value pair
-     * @param {Array} arr 
-     * @param {String} property 
-     * @param {*} value 
+     * @param {Array} arr
+     * @param {String} property
+     * @param {*} value
      */
     common.arrayContainsObjectWithValue = function(arr, property, value) {
         return indexOfObjectWithValue(arr, property, value) !== -1;
@@ -209,15 +209,25 @@ angular.module('app').factory('common', function() {
     /**
      * Gets the index of an object with a given key value pair in a given array
      * Will return -1 if not found
-     * @param {Array} arr 
-     * @param {String} property 
-     * @param {*} value 
+     * @param {Array} arr
+     * @param {String} property
+     * @param {*} value
      */
     var indexOfObjectWithValue = function(arr, property, value) {
         for(var i = 0; i < arr.length; i++) {
             if (arr[i] !== undefined && arr[i] !== null && arr[i][property] === value) return i;
         }
         return -1;
+    }
+
+    common.toTitle = function(text) {
+        if(text === null || text === undefined) {
+            return null;
+        }
+        return text.split(".").pop()
+            .replace(/([A-Z])/g, ' $1')
+            .replace(/^./, function(str){ return str.toUpperCase(); })
+            .trim();
     }
 
     return common;

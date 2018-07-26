@@ -1,4 +1,18 @@
 describe('Operation Selector Component', function() {
+    
+    var ctrl;
+
+    var $componentController, $q;
+    var scope;
+    var operationService;
+    var $routeParams;
+
+    var availableOperations = [
+        {name: "op Name 1", description: "OP description 1"},
+        {name: "op Name 2", description: "OP description 2"},
+        {name: "op Name 3", description: "OP description 3"}
+    ];
+    
     beforeEach(module('app'));
 
     beforeEach(module(function($provide) {
@@ -20,191 +34,212 @@ describe('Operation Selector Component', function() {
             }
         });
     }));
+        
 
-    describe('The Controller', function() {
-        var $componentController, $q;
-        var scope;
-        var operationService;
-        var $routeParams;
+    beforeEach(inject(function(_$componentController_, _$rootScope_, _$q_, _operationService_, _$routeParams_) {
+        $componentController = _$componentController_;
+        scope = _$rootScope_.$new();
+        $q = _$q_;
+        operationService = _operationService_;
+        $routeParams = _$routeParams_;
+    }));
 
-        beforeEach(inject(function(_$componentController_, _$rootScope_, _$q_, _operationService_, _$routeParams_) {
-            $componentController = _$componentController_;
-            scope = _$rootScope_.$new();
-            $q = _$q_;
-            operationService = _operationService_;
-            $routeParams = _$routeParams_;
-        }));
+    beforeEach(function() {
+        ctrl = $componentController('operationSelector', {$scope: scope});
+    });
+
+    beforeEach(function() {
+        spyOn(operationService, 'reloadOperations').and.callFake(function() {
+            return $q.when(availableOperations);
+        });
+    })
+
+    it('should exist', function() {
+        expect(ctrl).toBeDefined();
+    });
+
+    describe('ctrl.$onInit()', function() {
+        var loadNamedOperations = true;
+
+        it('should load the operations', function() {
+            loadNamedOperations = true
+            var ctrl = $componentController('operationSelector', { $scope: scope });
+            ctrl.$onInit();
+
+            scope.$digest();
+            expect(operationService.reloadOperations).toHaveBeenCalledTimes(1);
+        });
+
+        it('should select the operation defined in the query operation parameter', function() {
+            loadNamedOperations = false
+            $routeParams.operation = "operationX";
+            var ctrl = $componentController('operationSelector', { $scope: scope });
+            var availableOperations = [
+                {
+                    name: "GetElements"
+                },
+                {
+                    name: "operationX"
+                }
+            ]
+            spyOn(operationService, 'getAvailableOperations').and.returnValue($q.when(availableOperations));
+            ctrl.$onInit();
+
+            scope.$digest();
+            expect(ctrl.model.name).toEqual('operationX');
+        });
+
+        it('should select the operation defined in the query operation parameter case insensitive and strip symbols', function() {
+            loadNamedOperations = false
+            $routeParams.operation = "operation-x.";
+            var ctrl = $componentController('operationSelector', { $scope: scope });
+            var availableOperations = [
+                {
+                    name: "GetElements"
+                },
+                {
+                    name: "operationX"
+                }
+            ]
+            spyOn(operationService, 'getAvailableOperations').and.returnValue($q.when(availableOperations));
+            ctrl.$onInit();
+
+            scope.$digest();
+            expect(ctrl.model.name).toEqual('operationX');
+        });
+
+        it('should select the operation defined in the query op parameter', function() {
+            loadNamedOperations = false
+            $routeParams.op = "operationX";
+            var ctrl = $componentController('operationSelector', { $scope: scope });
+            var availableOperations = [
+                {
+                    name: "GetElements"
+                },
+                {
+                    name: "operationX"
+                }
+            ]
+            spyOn(operationService, 'getAvailableOperations').and.returnValue($q.when(availableOperations));
+            ctrl.$onInit();
+
+            scope.$digest();
+            expect(ctrl.model.name).toEqual('operationX');
+        });
+
+        it('should not select an operation', function() {
+            loadNamedOperations = false
+            $routeParams.op = "unknownOp";
+            var ctrl = $componentController('operationSelector', { $scope: scope });
+            ctrl.selectedOp = undefined;
+            var availableOperations = [
+                {
+                    name: "GetElements"
+                },
+                {
+                    name: "operationX"
+                }
+            ]
+            spyOn(operationService, 'getAvailableOperations').and.returnValue($q.when(availableOperations));
+            ctrl.$onInit();
+
+            scope.$digest();
+            expect(ctrl.model).not.toBeDefined();
+        });
+    });
+
+    describe('ctrl.reloadOperations()', function() {
 
         beforeEach(function() {
-            spyOn(operationService, 'reloadNamedOperations').and.callFake(function() {
-                return $q.when([1, 2, 3]);
-            });
-        })
-
-        it('should exist', function() {
-            var ctrl = $componentController('operationSelector');
-            expect(ctrl).toBeDefined();
+            ctrl.reloadOperations();
         });
 
-        describe('on startup', function() {
-            var operationSelectorService;
-            var loadNamedOperations = true;
-
-            beforeEach(inject(function(_operationSelectorService_) {
-                operationSelectorService = _operationSelectorService_;
-            }))
-
-            beforeEach(function() {
-                spyOn(operationSelectorService, 'shouldLoadNamedOperationsOnStartup').and.callFake(function() {
-                    return $q.when(loadNamedOperations);
-                });
-            })
-
-            it('should load the named operations if the service returns true', function() {
-                loadNamedOperations = true
-                var ctrl = $componentController('operationSelector', { $scope: scope });
-                ctrl.$onInit();
-
-                scope.$digest();
-                expect(operationService.reloadNamedOperations).toHaveBeenCalledTimes(1);
-            });
-
-            it('should not load the named operations if the service returns false', function() {
-                loadNamedOperations = false
-                var ctrl = $componentController('operationSelector', { $scope: scope });
-                ctrl.$onInit();
-
-                scope.$digest();
-                expect(operationService.reloadNamedOperations).not.toHaveBeenCalled();
-            });
-
-            it('should select the operation defined in the query operation parameter', function() {
-                loadNamedOperations = false
-                $routeParams.operation = "operationX";
-                var ctrl = $componentController('operationSelector', { $scope: scope });
-                var availableOperations = [
-                    {
-                        name: "GetElements"
-                    },
-                    {
-                        name: "operationX"
-                    }
-                ]
-                spyOn(operationService, 'getAvailableOperations').and.returnValue($q.when(availableOperations));
-                ctrl.$onInit();
-
-                scope.$digest();
-                expect(ctrl.model.name).toEqual('operationX');
-            });
-
-            it('should select the operation defined in the query operation parameter case insensitive and strip symbols', function() {
-                loadNamedOperations = false
-                $routeParams.operation = "operation-x.";
-                var ctrl = $componentController('operationSelector', { $scope: scope });
-                var availableOperations = [
-                    {
-                        name: "GetElements"
-                    },
-                    {
-                        name: "operationX"
-                    }
-                ]
-                spyOn(operationService, 'getAvailableOperations').and.returnValue($q.when(availableOperations));
-                ctrl.$onInit();
-
-                scope.$digest();
-                expect(ctrl.model.name).toEqual('operationX');
-            });
-
-            it('should select the operation defined in the query op parameter', function() {
-                loadNamedOperations = false
-                $routeParams.op = "operationX";
-                var ctrl = $componentController('operationSelector', { $scope: scope });
-                var availableOperations = [
-                    {
-                        name: "GetElements"
-                    },
-                    {
-                        name: "operationX"
-                    }
-                ]
-                spyOn(operationService, 'getAvailableOperations').and.returnValue($q.when(availableOperations));
-                ctrl.$onInit();
-
-                scope.$digest();
-                expect(ctrl.model.name).toEqual('operationX');
-            });
-
-            it('should not select an operation if the query op is not found', function() {
-                loadNamedOperations = false
-                $routeParams.op = "unknownOp";
-                var ctrl = $componentController('operationSelector', { $scope: scope });
-                ctrl.selectedOp = undefined;
-                var availableOperations = [
-                    {
-                        name: "GetElements"
-                    },
-                    {
-                        name: "operationX"
-                    }
-                ]
-                spyOn(operationService, 'getAvailableOperations').and.returnValue($q.when(availableOperations));
-                ctrl.$onInit();
-
-                scope.$digest();
-                expect(ctrl.model.name).toEqual("GetElements");
-            });
-
-            describe('when selecting the default selected operation', function() {
-                var ctrl;
-
-                beforeEach(function() {
-                    ctrl = $componentController('operationSelector', {$scope: scope});
-                });
-
-                it('should set it to the selected operation in the model, if defined', function() {
-                    loadNamedOperations = true;
-                    ctrl.model = 'test';
-                    ctrl.$onInit();
-                    scope.$digest();
-
-                    expect(ctrl.model).toEqual('test');
-                });
-
-                it('should set it to the first operation in the array if not defined in the queryPage service', function() {
-                    loadNamedOperations = true;
-                    ctrl.$onInit();
-                    scope.$digest();
-
-                    expect(ctrl.model).toEqual(1);
-                });
-
-                it('should set it to undefined if no operations are returned in the available operations array or queryPage service', function() {
-                    spyOn(operationService, 'getAvailableOperations').and.returnValue($q.when([]));
-                    loadNamedOperations = false;
-                    ctrl.$onInit();
-                    scope.$digest();
-
-                    expect(ctrl.model).not.toBeDefined();
-                });
-            });
+        it('should refresh the operations', function() {
+            expect(operationService.reloadOperations).toHaveBeenCalled();
         });
 
-        describe('when the user clicks the refresh button', function() {
-            var ctrl;
+        it('should update the list of available operations with the results', function() {
+            scope.$digest();
+            expect(ctrl.availableOperations).toEqual([
+                {name: "op Name 1", description: "OP description 1", formattedName: "opname1", formattedDescription: "opdescription1"},
+                {name: "op Name 2", description: "OP description 2", formattedName: "opname2", formattedDescription: "opdescription2"},
+                {name: "op Name 3", description: "OP description 3", formattedName: "opname3", formattedDescription: "opdescription3"}
+            ]);
+        });
 
-            beforeEach(function() {
-                ctrl = $componentController('operationSelector', {$scope: scope});
-                ctrl.refreshNamedOperations();
-            });
+        describe('should order by', function() {
+            it('named operation first', function() {
+                availableOperations = [
+                    {
+                        name: 'abc',
+                        description: 'abc'
+                    },
+                    {
+                        name: 'xyz',
+                        description: 'xyz',
+                        namedOp: true
+                    }
+                ];
 
-            it('should refresh the named operations', function() {
-                expect(operationService.reloadNamedOperations).toHaveBeenCalled();
-            });
-
-            it('should update the list of available operations with the results', function() {
+                ctrl.reloadOperations();
                 scope.$digest();
-                expect(ctrl.availableOperations).toEqual([1, 2, 3]);
+
+                expect(ctrl.availableOperations[0].name).toEqual('xyz');
+            });
+
+            it('operation name second', function() {
+                availableOperations = [
+                    {
+                        name: 'abc',
+                        description: 'xyz'
+                    },
+                    {
+                        name: 'xyz',
+                        description: 'abc'
+                    }
+                ];
+
+                ctrl.reloadOperations();
+                scope.$digest();
+
+                expect(ctrl.availableOperations[0].name).toEqual('abc');
+            });
+
+            it('operation description third', function() {
+                availableOperations = [
+                    {
+                        name: 'abc',
+                        description: 'xyz'
+                    },
+                    {
+                        name: 'abc',
+                        description: 'abc'
+                    }
+                ];
+
+                ctrl.reloadOperations();
+                scope.$digest();
+
+                expect(ctrl.availableOperations[0].description).toEqual('abc');
+            });
+
+            it('the order it came in if all the above are the equal', function() {
+                availableOperations = [
+                    {
+                        name: 'abc',
+                        description: 'abc',
+                        passed: true
+                    },
+                    {
+                        name: 'abc',
+                        description: 'abc'
+                    }
+                ];
+
+                ctrl.reloadOperations();
+                scope.$digest();
+
+                expect(ctrl.availableOperations[0].passed).toBeTruthy();
             });
         });
     });

@@ -47,7 +47,7 @@ function InputManagerController(events, results, common, types, schema) {
     var updatePreviousOutputFlag = function() {
         vm.usePreviousOutput = (vm.model.input === null);
     }
-    
+
     vm.$onInit = function() {
         if (!vm.model) {
             throw 'Input manager must be initialised with a model.';

@@ -26,7 +26,7 @@ function graphControl() {
     }
 }
 
-function GraphControlController($scope, $timeout, events, graph, types, schema, time, navigation) {
+function GraphControlController($scope, events, graph, types, schema, time, navigation) {
     var vm = this;
     vm.searchTerm = "";
 

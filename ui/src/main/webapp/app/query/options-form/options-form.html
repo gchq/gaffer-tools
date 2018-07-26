@@ -1,8 +1,8 @@
-<ng-form name="ctrl.optionsForm">
-    <div layout="column" layout-margin>
+<ng-form ng-if="ctrl.hasOpOptions()" name="ctrl.optionsForm">
+    <div layout="column">
         <h3 class="section-title">Add Options</h3>
 
-        <div ng-repeat="opOption in ctrl.opOptionsArray" layout-padding>
+        <div ng-repeat="opOption in ctrl.opOptionsArray">
             <md-input-container>
                 <label>Key</label>
                 <md-select name="opOptionKey"

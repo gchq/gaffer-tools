@@ -1,26 +1,6 @@
 {
   "operations": {
-    "loadNamedOperationsOnStartup": true,
-    "defaultAvailable": [
-      {
-        "name": "Get Elements",
-        "class": "uk.gov.gchq.gaffer.operation.impl.get.GetElements",
-        "description": "Given your selected seeds, it gets related entities and edges.",
-        "input": true,
-        "view": true,
-        "inOutFlag": true,
-        "arrayOutput": true
-      },
-      {
-        "name": "Get Adjacent IDs",
-        "class": "uk.gov.gchq.gaffer.operation.impl.get.GetAdjacentIds",
-        "description": "Given your selected seeds, it gets vertices at the other end of connected edges.",
-        "input": true,
-        "view": true,
-        "inOutFlag": true,
-        "arrayOutput": true
-      }
-    ]
+    "loadNamedOperationsOnStartup": true
   },
   "types": {
     "java.util.Date": {

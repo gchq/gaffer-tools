@@ -16,6 +16,11 @@ ng-view {
     margin: 0px;
 }
 
+.horizontal-margin {
+    margin-left: 8px;
+    margin-right: 8px;
+}
+
 .no-vertical-margin {
     margin-top: 0px;
     margin-bottom: 0px;
@@ -56,7 +61,7 @@ md-nav-bar > div > nav {
 }
 
 .overlapping-fab {
-    bottom: 40px;
+    bottom: 32px;
 }
 
 .overlapping {
@@ -85,6 +90,10 @@ md-nav-bar > div > nav {
     white-space: normal;
 }
 
+.searchable-select md-select-menu {
+    padding-top: 3em;
+}
+
 .searchable-select .search-box {
     border: none;
     outline: none;
@@ -98,10 +107,13 @@ md-nav-bar > div > nav {
     padding-left: 10.667px;
     height: 48px;
     cursor: pointer;
-    position: relative;
     display: flex;
     align-items: center;
-    width: auto;
+    position: fixed;
+    top: 0px;
+    background-color: #FFF;
+    z-index: 2;
+    width: 100%;
 }
 
 .searchable-select md-content._md {
@@ -136,6 +148,10 @@ md-option > div {
 
 .no-margin {
     margin: 0px;
+}
+
+.no-bottom-margin {
+    margin-bottom: 0;
 }
 
 .small-input-container {

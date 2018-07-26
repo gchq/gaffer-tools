@@ -16,7 +16,52 @@
 
 'use strict';
 
-angular.module('app').component('operationSelector', operationSelector());
+var app = angular.module('app');
+
+app.filter('operationFilter', function() {
+    return function(operations, search) {
+        if(!operations) {
+            return operations;
+        }
+        if (!search) {
+            return operations;
+        }
+
+        var formattedSearch = search ? search.toLowerCase().replace(/\s+/g, '') : '';
+        var searchWords = search.toLowerCase().split(" ");
+
+        // Return the matches that have the words in the same order as the search query first.
+        var results = [];
+        var otherResults = [];
+
+        angular.forEach(operations, function(operation) {
+            if((operation.formattedName.indexOf(formattedSearch) > -1)
+             || (operation.formattedDescription.indexOf(formattedSearch) > -1)) {
+                results.push(operation);
+            } else {
+                var hasAllWords = true;
+                angular.forEach(searchWords, function(word) {
+                     if((operation.formattedName.indexOf(word) == -1)
+                        && (operation.formattedDescription.indexOf(word) == -1)) {
+                         hasAllWords = false;
+                         return;
+                     }
+                });
+                if(hasAllWords) {
+                   otherResults.push(operation);
+                }
+            }
+        });
+
+        angular.forEach(otherResults, function(result) {
+            results.push(result);
+        });
+
+        return results;
+    }
+});
+
+app.component('operationSelector', operationSelector());
 
 function operationSelector() {
     return {
@@ -24,25 +69,58 @@ function operationSelector() {
         controller: OperationSelectorController,
         controllerAs: 'ctrl',
         bindings: {
-            model: '='
+            model: '=',
+            previous: '<'
         }
     }
 }
 
-function OperationSelectorController(operationService, operationSelectorService, $mdDialog, $routeParams) {
+function OperationSelectorController(operationService, $routeParams) {
     var vm = this;
 
     vm.availableOperations;
-
-    var updateView = function(op) {
-        vm.model = op.selectedOperation;
-    }
+    vm.searchTerm = '';
+    vm.showCustomOp = false;
+    vm.placeholder = "Search for an operation";
 
     var populateOperations = function(availableOperations) {
-        vm.availableOperations = availableOperations
-        if (!vm.model)  {
-            vm.model = vm.availableOperations[0];
+        vm.availableOperations = [];
+
+        for(var i in availableOperations) {
+            var operation = availableOperations[i];
+
+            if(!vm.previous || !vm.previous.selectedOperation || !vm.previous.selectedOperation.next || vm.previous.selectedOperation.next.indexOf(operation.class) > -1) {
+                operation.formattedName = operation.name !== undefined ? operation.name.toLowerCase().replace(/\s+/g, '') : '';
+                operation.formattedDescription = operation.description !== undefined ? operation.description.toLowerCase().replace(/\s+/g, '') : '';
+
+                if(operation.formattedName === "getelements") {
+                    vm.placeholder = "Search for an operation (e.g Get Elements)";
+                }
+                vm.availableOperations.push(operation);
+            }
         }
+
+        vm.availableOperations.sort(function(a,b) {
+            if(a.namedOp && !b.namedOp) {
+                return -1;
+            }
+            if(!a.namedOp && b.namedOp) {
+                return 1;
+            }
+            if(a.formattedName > b.formattedName) {
+                return 1;
+            }
+            if(a.formattedName < b.formattedName) {
+                return -1;
+            }
+            if(a.formattedDescription > b.formattedDescription) {
+                return 1;
+            }
+            if(a.formattedDescription < b.formattedDescription) {
+                return -1;
+            }
+            return 0
+        });
 
         // allow 'op' to be used as a shorthand
         if($routeParams.op) {
@@ -60,24 +138,22 @@ function OperationSelectorController(operationService, operationSelectorService,
         }
     }
 
-    vm.getLabel = function() {
-        return vm.model ? vm.model.name : "Select an operation"
-    }
-
     vm.$onInit = function() {
-        operationSelectorService.shouldLoadNamedOperationsOnStartup().then(function(yes) {
-            if (yes) {
-                operationService.reloadNamedOperations().then(populateOperations);
-            } else {
-                operationService.getAvailableOperations().then(populateOperations);
-            }
-        });
-
+        operationService.getAvailableOperations(true).then(populateOperations);
     }
 
-    vm.refreshNamedOperations = function() {
-        operationService.reloadNamedOperations(true).then(function(availableOps) {
-            vm.availableOperations = availableOps;
-        });
+    vm.clearSearchTerm = function() {
+        vm.searchTerm = '';
+    };
+
+    vm.reloadOperations = function() {
+        operationService.reloadOperations(true).then(populateOperations);
+    }
+
+    vm.selectedText = function() {
+        if(vm.model) {
+            return vm.model.name;
+        }
+        return "Search for an operation...";
     }
 }

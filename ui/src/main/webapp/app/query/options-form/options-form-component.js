@@ -78,6 +78,10 @@ function OptionsFormController(settings) {
         return vm.opOptionsArray.length < Object.keys(vm.opOptionKeys).length;
     }
 
+    vm.hasOpOptions = function() {
+        return Object.keys(vm.opOptionKeys).length > 0;
+    }
+
     vm.$onInit = function() {
         settings.getOpOptionKeys().then(function(keys) {
             vm.opOptionKeys = keys;

@@ -54,7 +54,7 @@ angular.module('app').factory('graph', ['types', '$q', 'results', 'common', 'eve
     var defaultStyling = {
         edges: {
             'curve-style': 'bezier',
-            'min-zoomed-font-size': 30,
+            'min-zoomed-font-size': 35,
             'text-outline-color': '#538212',
             'text-outline-width': 3,
             'line-color': '#538212',

@@ -7,13 +7,11 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Dimension;
-import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxProfile;
-
 import uk.gov.gchq.gaffer.exception.SerialisationException;
 import uk.gov.gchq.gaffer.graph.Graph;
 import uk.gov.gchq.gaffer.jsonserialisation.JSONSerialiser;
@@ -64,11 +62,6 @@ public class QueryBuilderST {
             "        }\n" +
             "      ],\n" +
             "      \"view\": {\n" +
-            "        \"globalElements\": [\n" +
-            "          {\n" +
-            "            \"groupBy\": []\n" +
-            "          }\n" +
-            "        ],\n" +
             "        \"entities\": {},\n" +
             "        \"edges\": {\n" +
             "          \"RoadUse\": {\n" +
@@ -86,10 +79,13 @@ public class QueryBuilderST {
             "              }\n" +
             "            ]\n" +
             "          }\n" +
-            "        }\n" +
-            "      },\n" +
-            "      \"includeIncomingOutGoing\": \"EITHER\",\n" +
-            "      \"options\": {}\n" +
+            "        },\n" +
+            "        \"globalElements\": [\n" +
+            "          {\n" +
+            "            \"groupBy\": []\n" +
+            "          }\n" +
+            "        ]\n" +
+            "      }\n" +
             "    }\n" +
             "  ]\n" +
             "}";
@@ -145,7 +141,7 @@ public class QueryBuilderST {
 
     @Test
     public void shouldFindRoadUseAroundJunctionM5_10() throws InterruptedException {
-        selectOptionWithAriaLabel("operation-name", "Get Elements");
+        autoComplete("operation-name", "Get Elements");
         enterText("seedVertices", "M5:10");
         click("create-custom-filter");
         selectMultiOption("view-edges", "RoadUse");
@@ -170,7 +166,7 @@ public class QueryBuilderST {
 
     @Test
     public void shouldNotThrowErrorIfPageIsReloadedWithCustomView() throws InterruptedException, SerialisationException {
-        selectOptionWithAriaLabel("operation-name", "Get Elements");
+        autoComplete("operation-name", "Get Elements");
         enterText("seedVertices", "M5");
         click("create-custom-filter");
         selectMultiOption("view-entities", "Cardinality");
@@ -187,7 +183,7 @@ public class QueryBuilderST {
 
     @Test
     public void shouldFindRoadUseAroundJunctionM5_10WithDatePicker() throws InterruptedException {
-        selectOptionWithAriaLabel("operation-name", "Get Elements");
+        autoComplete("operation-name", "Get Elements");
         enterText("seedVertices", "M5:10");
         enterIntoDatePicker("start-date", "2000-10-13");
         click("create-custom-filter");
@@ -206,7 +202,7 @@ public class QueryBuilderST {
     @Test
     public void shouldBeAbleToDeleteFiltersOnceCreated() throws InterruptedException {
         // given
-        selectOptionWithAriaLabel("operation-name", "Get Elements");
+        autoComplete("operation-name", "Get Elements");
         click("create-custom-filter");
         selectMultiOption("view-entities", "Cardinality");
         click("add-Cardinality-filters");
@@ -227,15 +223,15 @@ public class QueryBuilderST {
         // then
         String expectedString = "" +
                 "      \"view\": {\n" +
+                "        \"entities\": {\n" +
+                "          \"Cardinality\": {}\n" +
+                "        },\n" +
+                "        \"edges\": {},\n" +
                 "        \"globalElements\": [\n" +
                 "          {\n" +
                 "            \"groupBy\": []\n" +
                 "          }\n" +
-                "        ],\n" +
-                "        \"entities\": {\n" +
-                "          \"Cardinality\": {}\n" +
-                "        },\n" +
-                "        \"edges\": {}\n";
+                "        ]\n";
 
 
         assert (getElement("operation-0-json").getText().trim().contains(expectedString));
@@ -244,12 +240,11 @@ public class QueryBuilderST {
 
     @Test
     public void shouldBeAbleToRunParameterisedQueries() throws InterruptedException, SerialisationException {
-        selectOptionWithAriaLabel("operation-name", "Two Hop With Limit");
+        autoComplete("operation-name", "Two Hop With Limit");
         enterText("seedVertices", "M5");
         click("param1-");
         enterText("param1-", "2");
         click("execute-chain");
-
         click("open-raw");
         clickTab("Results");
 
@@ -269,7 +264,7 @@ public class QueryBuilderST {
     }
 
     private void autoComplete(final String id, final String input) throws InterruptedException {
-        WebElement ac = driver.findElement(By.cssSelector("#" + id + " md-autocomplete-wrap md-input-container input"));
+        WebElement ac = getElement(id);
         ac.sendKeys(input);
         ac.sendKeys(Keys.ENTER);
 
@@ -322,12 +317,9 @@ public class QueryBuilderST {
         Thread.sleep(slowFactor * 500);
     }
 
-    private void clickTab(final String tabTitle) {
+    private void clickTab(final String tabTitle) throws InterruptedException {
         driver.findElement(By.xpath("//md-tab-item[contains(text(), '" + tabTitle + "')]")).click();
-    }
-
-    private void execute(final String script) {
-        ((JavascriptExecutor) driver).executeScript(script);
+        Thread.sleep(slowFactor * 500);
     }
 
     private WebElement getElement(final String id) {

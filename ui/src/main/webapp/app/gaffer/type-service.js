@@ -92,6 +92,10 @@ angular.module('app').factory('types', ['config', 'common', function(config, com
         return simpleClassNames;
     }
 
+    service.isKnown = function(typeClass) {
+        return typeClass !== undefined && types[typeClass]
+    }
+
     var unknownType =
     {
         fields: [
@@ -102,7 +106,7 @@ angular.module('app').factory('types', ['config', 'common', function(config, com
             }
         ]
     }
-    
+
     var getType = function(typeClass) {
         if (typeClass !== undefined && types[typeClass]) {
             return types[typeClass];
@@ -129,6 +133,7 @@ angular.module('app').factory('types', ['config', 'common', function(config, com
 
         return val
     }
+
     service.createValue = function(typeClass, parts) {
         var type = getType(typeClass);
 
@@ -140,7 +145,7 @@ angular.module('app').factory('types', ['config', 'common', function(config, com
             return parts;
         }
 
-        if (type.wrapInJson && Object.keys(parts)[0] !== 'undefined' || Object.keys(parts).length > 1) {
+        if ((type.wrapInJson && Object.keys(parts)[0] !== 'undefined' && Object.keys(parts).length > 0) || Object.keys(parts).length > 1) {
             return parts;
         }
 
@@ -151,7 +156,6 @@ angular.module('app').factory('types', ['config', 'common', function(config, com
         }
 
         return value;
-
     }
 
     service.createJsonValue = function(typeClass, parts, stringify) {
@@ -197,7 +201,7 @@ angular.module('app').factory('types', ['config', 'common', function(config, com
         }
 
         var type = getType(typeClass);
-        
+
         if(type === undefined) {
             return strippedValue;
         }

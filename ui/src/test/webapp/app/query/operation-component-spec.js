@@ -105,7 +105,7 @@ describe('The operation component', function() {
             };
 
             ctrl.model = {
-                inputs: {
+                fields: {
                     input: [],
                 }
             };
@@ -126,7 +126,7 @@ describe('The operation component', function() {
         });
 
         it('should return false if the input is null', function() {
-            ctrl.model.inputs.input = null;
+            ctrl.model.fields.input = null;
             expect(ctrl.canExecute()).toBeFalsy();
         });
 

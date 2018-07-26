@@ -1,55 +1,5 @@
 {
   "title": "Road Traffic Example",
-  "operations": {
-    "defaultAvailable": [
-      {
-        "name": "Get Elements",
-        "class": "uk.gov.gchq.gaffer.operation.impl.get.GetElements",
-        "description": "Given your selected seeds, it gets related Entities and Edges.",
-        "input": true,
-        "view": true,
-        "inOutFlag": true,
-        "arrayOutput": true
-      },
-      {
-        "name": "Get Adjacent IDs",
-        "class": "uk.gov.gchq.gaffer.operation.impl.get.GetAdjacentIds",
-        "description": "Given your selected seeds, it gets vertices at the other end of connected edges.",
-        "input": true,
-        "view": true,
-        "inOutFlag": true,
-        "arrayOutput": true
-      },
-      {
-        "name": "Get Elements Between Sets",
-        "class": "uk.gov.gchq.gaffer.accumulostore.operation.impl.GetElementsBetweenSets",
-        "description": "Gets edges where the source and destination appear in both sets. As well as entities which appear in the first set",
-        "input": true,
-        "inputB": true,
-        "arrayOutput": true,
-        "view": true,
-        "inOutFlag": true
-      },
-      {
-        "name": "Get Elements Within Set",
-        "class": "uk.gov.gchq.gaffer.accumulostore.operation.impl.GetElementsWithinSet",
-        "description": "Retrieves edges where both ends are in a given set, or entities where the vertex is in the set",
-        "input": true,
-        "view": true,
-        "inOutFlag": false,
-        "arrayOutput": true
-      },
-      {
-        "name": "Get Elements In Ranges",
-        "class": "uk.gov.gchq.gaffer.accumulostore.operation.impl.GetElementsInRanges",
-        "description": "Retreives all data between the seeds",
-        "input": "uk.gov.gchq.gaffer.commonutil.pair.Pair",
-        "view": true,
-        "inOutFlag": true,
-        "arrayOutput": true
-      }
-    ]
-  },
   "graph": {
     "style": {
       "edges": {
@@ -58,7 +8,7 @@
           "target-arrow-color": "#9C27B0",
           "text-outline-color": "#9C27B0"
         },
-        "JunctionLocatedAt": { 
+        "JunctionLocatedAt": {
           "line-color": "#F44336",
           "target-arrow-color": "#F44336",
           "text-outline-color": "#F44336"

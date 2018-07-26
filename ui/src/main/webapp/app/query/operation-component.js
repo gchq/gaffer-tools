@@ -37,6 +37,8 @@ function operation() {
 
 function OperationController(types, loading, operationChain, settings, events) {
     var vm = this;
+    var coreFields = ["view", "views", "input", "inputB", "options"];
+
     vm.showOperationOptionsForm;
 
     vm.$onInit = function() {
@@ -47,14 +49,39 @@ function OperationController(types, loading, operationChain, settings, events) {
         if (!vm.model) {
             throw 'An operation has been created without a model to bind to'
         }
-        
     }
-    
+
+    vm.getConfigFields = function() {
+        var configFields = {};
+        if(vm.model.selectedOperation) {
+            var fields = vm.model.selectedOperation.fields
+            for(var name in fields) {
+                if(coreFields.indexOf(name) === -1) {
+                    configFields[name] = fields[name];
+                }
+            }
+        }
+        return configFields;
+    }
+
+    vm.hasOtherConfig = function() {
+        return Object.keys(vm.getConfigFields()).length > 0;
+    }
+
+    vm.getField = function(fieldName) {
+        var field = vm.model.fields[fieldName];
+        if(field === undefined) {
+            field = {};
+            vm.model.fields[fieldName] = field;
+        }
+        return field;
+    }
+
     /**
      * Checks all subforms are valid and another operation is not in progress
      */
     vm.canExecute = function() {
-        return vm.operationForm.$valid && vm.model.inputs.input !== null && !loading.isLoading();
+        return vm.operationForm.$valid && vm.model.fields.input !== null && !loading.isLoading();
     }
 
     vm.isFirst = function() {
@@ -84,5 +111,4 @@ function OperationController(types, loading, operationChain, settings, events) {
     vm.delete = function() {
         vm.onDelete({index: vm.index});
     }
-    
 }

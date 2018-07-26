@@ -37,7 +37,7 @@ angular.module('app').factory('results', ['events', function(events) {
         var incomingResults = {
             entities: [], edges: [], other: []
         }
-        if(newResults !== undefined) {
+        if(newResults !== undefined && newResults !== null && newResults !== "") {
             if(!Array.isArray(newResults)) {
                 newResults = [newResults];
             }

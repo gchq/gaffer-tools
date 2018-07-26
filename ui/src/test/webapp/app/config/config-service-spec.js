@@ -32,13 +32,6 @@ describe('The config service', function() {
                 }
             },
             operations: {
-                "loadNamedOperationsOnStartup": true,
-                "defaultAvailable": [
-                  {
-                    "name": "1",
-                    "name": "2"
-                  }
-                ]
             }
         };
 
@@ -54,12 +47,6 @@ describe('The config service', function() {
                 }
             },
             operations: {
-                "loadNamedOperationsOnStartup": false,
-                "defaultAvailable": [
-                    {
-                        "name": "3"
-                    }
-                ]
             }
         };
     })
@@ -160,13 +147,7 @@ describe('The config service', function() {
                         }
                     },
                     operations: {
-                      "loadNamedOperationsOnStartup": false,
-                      "defaultAvailable": [
-                        {
-                          "name": "3"
-                        }
-                      ]
-                     }
+                    }
                 });
             });
 
@@ -183,9 +164,6 @@ describe('The config service', function() {
                     "test.class3": {
                         "value": 2
                     }
-                },
-                operations: {
-                    "loadNamedOperationsOnStartup": false
                 }
             }
 
@@ -208,13 +186,6 @@ describe('The config service', function() {
                         }
                     },
                     operations: {
-                        "loadNamedOperationsOnStartup": false,
-                        "defaultAvailable": [
-                            {
-                              "name": "1",
-                              "name": "2"
-                            }
-                       ]
                     }
                 });
             });

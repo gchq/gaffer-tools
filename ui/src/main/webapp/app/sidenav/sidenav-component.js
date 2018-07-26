@@ -26,7 +26,7 @@ function sidenav() {
     };
 }
 
-function SideNavController(navigation, $route, common) {
+function SideNavController(navigation, $route) {
     var vm = this;
     vm.routes = $route.routes
     vm.goTo = navigation.goTo;

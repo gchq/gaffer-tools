@@ -26,7 +26,7 @@ function operationChainBuilder() {
     }
 }
 
-function OperationChainController(operationChain, config, loading, query, error, events, $mdDialog, navigation, $location, $routeParams, operationService, settings, graph, results, types) {
+function OperationChainController(operationChain, config, loading, query, error, events, $mdDialog, navigation, $location, $routeParams, operationService, common, graph, types) {
     var vm = this;
     vm.timeConfig;
     vm.operations = operationChain.getOperationChain();
@@ -34,6 +34,7 @@ function OperationChainController(operationChain, config, loading, query, error,
     var NAMED_VIEW_CLASS = "uk.gov.gchq.gaffer.data.elementdefinition.view.NamedView";
     var OPERATION_CHAIN_CLASS = "uk.gov.gchq.gaffer.operation.OperationChain";
     var ENTITY_SEED_CLASS = "uk.gov.gchq.gaffer.operation.data.EntitySeed";
+    var PAIR_ARRAY_CLASS = "uk.gov.gchq.gaffer.commonutil.pair.Pair<uk.gov.gchq.gaffer.data.element.id.ElementId,uk.gov.gchq.gaffer.data.element.id.ElementId>[]";
     var PAIR_CLASS = "uk.gov.gchq.gaffer.commonutil.pair.Pair";
 
     /**
@@ -58,9 +59,9 @@ function OperationChainController(operationChain, config, loading, query, error,
 
     vm.deleteOperation = function(index) {
         vm.operations.splice(index, 1);
-        if (index === 0 && vm.operations[0].inputs.input === null) {
-            vm.operations[0].inputs.input = [];
-            vm.operations[0].inputs.inputPairs = [];
+        if (index === 0 && vm.operations[0].fields.input === null) {
+            vm.operations[0].fields.input = [];
+            vm.operations[0].fields.inputPairs = [];
         }
         events.broadcast('onOperationUpdate', [])
     }
@@ -71,7 +72,7 @@ function OperationChainController(operationChain, config, loading, query, error,
     }
 
     vm.isNotLast = function(index) {
-        return index !== (vm.operations.length - 1); 
+        return index !== (vm.operations.length - 1);
     }
 
     vm.canExecute = function() {
@@ -94,15 +95,16 @@ function OperationChainController(operationChain, config, loading, query, error,
             operations: []
         }
         for (var i in vm.operations) {
-            chain.operations.push(createOperationForQuery(vm.operations[i]))
+            chain.operations.push(createOperationForQuery(vm.operations[i]));
         }
 
         query.addOperation(angular.copy(chain));
 
         var finalOperation = vm.operations[vm.operations.length - 1];
-        if (finalOperation.selectedOperation.iterableOutput !== false) {
-            chain.operations.push(operationService.createLimitOperation(finalOperation['opOptions']));
-            chain.operations.push(operationService.createDeduplicateOperation(finalOperation['opOptions']));
+        if (common.arrayContainsValue(finalOperation.selectedOperation.next, 'uk.gov.gchq.gaffer.operation.impl.Limit')) {
+            var options = finalOperation.fields ? finalOperation.fields.options : undefined;
+            chain.operations.push(operationService.createLimitOperation(options));
+            chain.operations.push(operationService.createDeduplicateOperation(options));
         }
 
         runQuery(chain.operations, true);
@@ -123,8 +125,6 @@ function OperationChainController(operationChain, config, loading, query, error,
         }, function() {
             // do nothing if they don't want to reset
         });
-
-
     }
 
     /**
@@ -140,14 +140,20 @@ function OperationChainController(operationChain, config, loading, query, error,
         var operation = createOperationForQuery(op);
         query.addOperation(operation);
 
-        var iterableOutput = !(op.selectedOperation.iterableOutput === false)
         var operations = [operation];
-        if(iterableOutput) {
+        if(op.selectedOperation.iterableOutput) {
             operations.push(operationService.createLimitOperation(operation['options']));
             operations.push(operationService.createDeduplicateOperation(operation['options']));
         }
         runQuery(operations, false);
-        
+    }
+
+    vm.canAddOperation = function() {
+        if(vm.operations.length == 0) {
+            return true;
+        }
+
+        return vm.operations[vm.operations.length -1].selectedOperation !== undefined;
     }
 
     var runQuery = function(operations, chainFlag) {
@@ -166,7 +172,7 @@ function OperationChainController(operationChain, config, loading, query, error,
 
     /**
      * Deselects all elements in the graph and resets all query related services
-     * @param {Array} data the data returned by the rest service 
+     * @param {Array} data the data returned by the rest service
      */
     var submitResults = function(data, chainFlag) {
         graph.deselectAll();
@@ -185,16 +191,49 @@ function OperationChainController(operationChain, config, loading, query, error,
      * Uses seeds uploaded to the input service to build an input array to the query.
      * @param seeds the input array
      */
-    var createOpInput = function(seeds) {
-        if (seeds === null || seeds === undefined) {
+    var createOpInput = function(seeds, inputType) {
+        if (seeds === null || seeds === undefined || !inputType) {
             return undefined;
         }
-        var opInput = [];
-        for (var i in seeds) {
-            opInput.push({
-                "class": ENTITY_SEED_CLASS,
-                "vertex": types.createJsonValue(seeds[i].valueClass, seeds[i].parts)
-            });
+
+        var inputTypeName;
+        if(typeof(inputType) === "object" && "className" in inputType) {
+            inputTypeName = inputType.className;
+        } else {
+            inputTypeName = "java.lang.Object[]";
+        }
+        var isArray = common.endsWith(inputTypeName, "[]");
+        var opInput;
+        if(isArray) {
+            opInput = [];
+            var inputItemType = inputTypeName.substring(0, inputTypeName.length - 2);
+
+            // Assume the input type is EntityId if it is just Object or unknown.
+            if(inputItemType === "" || inputItemType === "java.lang.Object") {
+                inputItemType = "uk.gov.gchq.gaffer.data.element.id.EntityId";
+            }
+
+            var seedToJson = function(seed) {
+                return types.createJsonValue(seed.valueClass, seeds[i].parts);
+            };
+            var formatSeed;
+            if(inputItemType === "uk.gov.gchq.gaffer.data.element.id.EntityId") {
+                formatSeed = function(seed) {
+                    return {
+                        "class": ENTITY_SEED_CLASS,
+                        "vertex": seedToJson(seed)
+                    };
+                }
+            } else {
+                formatSeed = function(seed) {
+                    return seedToJson(seed);
+                }
+            }
+            for (var i in seeds) {
+                opInput.push(formatSeed(seeds[i]));
+            }
+        } else {
+            opInput = seeds;
         }
 
         return opInput;
@@ -202,7 +241,7 @@ function OperationChainController(operationChain, config, loading, query, error,
 
     /**
      * Create an array of JSON serialisable Pair objects from the values created by the input component
-     * @param {any[]} pairs 
+     * @param {any[]} pairs
      */
     var createPairInput = function(pairs) {
         if (pairs === null || pairs === undefined) {
@@ -256,7 +295,7 @@ function OperationChainController(operationChain, config, loading, query, error,
 
     /**
      * Builds part of a gaffer view with an array of element groups to include, along with the filters to apply
-     * @param {Array} groupArray The array of groups for a given element, included in the view 
+     * @param {Array} groupArray The array of groups for a given element, included in the view
      * @param {Object} filters A key value list of group -> array of filters
      * @param {Object} destination Where to add the filters
      */
@@ -295,16 +334,25 @@ function OperationChainController(operationChain, config, loading, query, error,
         if(selectedOp.namedOp) {
             op.operationName = selectedOp.name;
         }
-        
-        if (selectedOp.input === PAIR_CLASS) {
-            op.input = createPairInput(operation.inputs.inputPairs)
-        } else if (selectedOp.input) {
-            op.input = createOpInput(operation.inputs.input);
+
+        for(var name in selectedOp.fields) {
+           var field = operation.fields[name];
+           if(field && field.parts && Object.keys(field.parts).length > 0) {
+               op[name] = types.createJsonValue(field.valueClass, field.parts);
+           }
         }
-        if (selectedOp.inputB && !selectedOp.namedOp) {
-            op.inputB = createOpInput(operation.inputs.inputB);
+
+        if (selectedOp.fields.input) {
+            if (selectedOp.fields.input.className === PAIR_ARRAY_CLASS) {
+                op.input = createPairInput(operation.fields.inputPairs)
+            } else {
+                op.input = createOpInput(operation.fields.input, selectedOp.fields.input);
+            }
         }
         
+        if (selectedOp.fields.inputB && !selectedOp.namedOp) {
+            op.inputB = createOpInput(operation.fields.inputB, selectedOp.fields.inputB);
+        }
 
         if (selectedOp.parameters) {
             var opParams = {};
@@ -318,27 +366,31 @@ function OperationChainController(operationChain, config, loading, query, error,
             op.parameters = opParams;
         }
 
-        if (selectedOp.inputB && selectedOp.namedOp) {
+        if (selectedOp.fields.inputB && selectedOp.namedOp) {
             if (!op.parameters) {
                 op.parameters = {};
             }
-            op.parameters['inputB'] = createOpInput(operation.inputs.inputB);
+            op.parameters['inputB'] = createOpInput(operation.fields.inputB, selectedOp.fields.inputB);
         }
 
-        if (selectedOp.view) {
-            var namedViews = operation.view.namedViews;
-            var viewEdges = operation.view.viewEdges;
-            var viewEntities = operation.view.viewEntities;
-            var edgeFilters = operation.view.edgeFilters;
-            var entityFilters = operation.view.entityFilters;
+        if (selectedOp.fields.view) {
+            var namedViews = operation.fields.view.namedViews;
+            var viewEdges = operation.fields.view.viewEdges;
+            var viewEntities = operation.fields.view.viewEntities;
+            var edgeFilters = operation.fields.view.edgeFilters;
+            var entityFilters = operation.fields.view.entityFilters;
 
             op.view = {
-                globalElements: [{
-                    groupBy: []
-                }],
                 entities: {},
-                edges: {}
+                edges: {},
+                globalElements: []
             };
+
+            if(operation.fields.view.summarise) {
+                op.view.globalElements.push({
+                    groupBy: []
+                });
+            }
 
             createElementView(viewEntities, entityFilters, op.view.entities);
             createElementView(viewEdges, edgeFilters, op.view.edges);
@@ -393,16 +445,10 @@ function OperationChainController(operationChain, config, loading, query, error,
             }
         }
 
-        if (selectedOp.inOutFlag) {
-            op.includeIncomingOutGoing = operation.edgeDirection;
-        }
-
-        if(operation.opOptions) {
-            op.options = operation.opOptions;
+        if(operation.fields && operation.fields.options && Object.keys(operation.fields.options).length > 0) {
+            op.options = operation.fields.options;
         }
 
         return op;
     }
-
-    
 }
