@@ -20,13 +20,14 @@ UI
 2. [Road Traffic example](#road-traffic-example)
     - [Walkthrough](#walkthrough)
 3. [Federated Store Demo](#federated-store-demo)
-4. [Configuration](#configuration)
+4. [Deployment](#deployment)
+5. [Configuration](#configuration)
     - [Rest Endpoint](#rest-endpoint)
     - [Operations](#operations)
     - [Types](#types)
     - [Time](#time)
     - [Graph](#graph)
-5. [Testing](#testing)
+6. [Testing](#testing)
 
 
 ## Introduction
@@ -255,6 +256,147 @@ obtain a merged schema for these 2 graphs.
 Now, when you compose a query you will see there is an operation option predefined with the 2 graphs.
 If you wish to query just one graph you can modify it just for the single query.
 
+## Deployment
+
+Building the Gaffer UI using maven creates a WAR file which can be deployed alongside the REST API. This can be done as-is 
+but should you wish to make changes to the UI such as: 
+
+- Adding your own config
+- Changing the theme
+- Altering the routes
+
+You will need to unpack and repackage the WAR - much the same as if you were to make changes to the REST API.
+
+To do this, you'll need to add the following plugin to your pom.xml:
+
+```xml
+<build>
+    <plugins>
+        <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-dependency-plugin</artifactId>
+            <version>2.10</version>
+            <dependencies>
+                <dependency>
+                    <groupId>uk.gov.gchq.gaffer</groupId>
+                    <artifactId>ui</artifactId>
+                    <version>${gaffer.version}</version>
+                    <type>war</type>
+                </dependency>
+            </dependencies>
+            <executions>
+                <execution>
+                    <id>unpack</id>
+                    <phase>compile</phase>
+                    <goals>
+                        <goal>unpack</goal>
+                    </goals>
+                    <configuration>
+                        <artifactItems>
+                            <artifactItem>
+                                <groupId>uk.gov.gchq.gaffer</groupId>
+                                <artifactId>ui</artifactId>
+                                <version>${gaffer.version}</version>
+                                <type>war</type>
+                                <overWrite>false</overWrite>
+                                <outputDirectory>
+                                    ${project.build.directory}/${project.artifactId}-${project.version}
+                                </outputDirectory>
+                            </artifactItem>
+                        </artifactItems>
+                    </configuration>
+                </execution>
+            </executions>
+        </plugin>
+    </plugins>
+</build>
+```
+
+This will add all the javascript and html files when you build the project. This means that any files you add will overwrite
+the ones in the standard Gaffer UI. To make changes to the UI, you will have to add files to the src/main/webapp directory. You could add or edit any of the files to make the UI truly unique but here are a couple of common examples to get you going:
+
+### config/config.json
+
+This is where you specify graph layout and styling, blacklisted / whitelisted operations or any specific objects that the UI
+needs to handle. These will all be documented individually under [Configuration](#configuration).
+
+## app/config/route-config.js
+
+This file defines the routes of the app - including which views to render. 
+
+One of the values: '/results' redirects to '/table'. Editing this value changes where UI navigates when a query is
+complete.
+
+Changing these values will have a knock-on effect to the sidebar in the UI.
+
+Here is the default example:
+
+```javascript
+angular.module('app').config(['$locationProvider', '$routeProvider', function($locationProvider, $routeProvider) {
+    $locationProvider.html5Mode(false)
+
+    $routeProvider
+        .when('/query', {
+            title: 'Query',
+            template: '<operation-chain></operation-chain>',
+            icon: 'query',
+            inNav: true
+        })
+        .when('/table', {
+            title: 'Table',
+            template: '<results-table></results-table>',
+            icon: 'table',
+            inNav: true
+        })
+        .when('/graph', {
+            title: 'Graph',
+            templateUrl: 'app/graph/graph-page.html',
+            icon: 'graph',
+            inNav: true
+        })
+        .when('/schema', {
+            title: 'Schema',
+            templateUrl: 'app/schema/schema-view-page.html',
+            icon: 'schema',
+            inNav: true
+        })
+        .when('/raw', {
+            title: 'Raw',
+            template: '<raw></raw>',
+            icon: 'raw',
+            inNav: true
+        })
+        .when('/settings', {
+            title: 'Settings',
+            template: '<settings-view></settings-view>',
+            icon: 'settings',
+            inNav: true
+        })
+        .when('/results', {
+            redirectTo: '/table'
+        })
+        .when('/', {
+            redirectTo: '/query'
+        });
+}]);
+```
+
+### app/config/theme-config.js
+
+This file contains the configuration for theming within the UI. Changes to this file will result in changes to the colour of
+many components throughout the UI.
+
+Here is the default:
+
+```javascript
+angular.module('app').config(['$mdThemingProvider', function($mdThemingProvider) {
+    $mdThemingProvider.theme('default')
+        .primaryPalette('blue-grey')
+        .accentPalette('orange');
+}]);
+```
+
+Once you've built the WAR with maven, just add it to the deployments alongside your REST API.
 
 ## Configuration
 
