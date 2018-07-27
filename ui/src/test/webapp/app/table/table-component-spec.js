@@ -566,7 +566,7 @@ describe('The Table component', function() {
 
                     reader.readAsArrayBuffer(obj);
 
-                    return 'irrelavent';
+                    return 'irrelevant';
                 });
 
                 ctrl.download();
@@ -595,7 +595,7 @@ describe('The Table component', function() {
 
                     reader.readAsArrayBuffer(obj);
 
-                    return 'irrelavent';
+                    return 'irrelevant';
                 });
 
 
@@ -622,7 +622,7 @@ describe('The Table component', function() {
 
                     reader.readAsArrayBuffer(obj);
 
-                    return 'irrelavent';
+                    return 'irrelevant';
                 });
 
                 ctrl.download();
@@ -650,7 +650,7 @@ describe('The Table component', function() {
 
                     reader.readAsArrayBuffer(obj);
 
-                    return 'irrelavent';
+                    return 'irrelevant';
                 });
 
                 ctrl.download();
