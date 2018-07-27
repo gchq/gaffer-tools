@@ -655,6 +655,14 @@ describe('The Table component', function() {
 
                 ctrl.download();
             });
+
+            it('should release the Object url once clicked', function() {
+                spyOn(URL, 'revokeObjectURL');
+
+                ctrl.download();
+
+                expect(URL.revokeObjectURL).toHaveBeenCalledWith(fakeElement.href);
+            });
         });
     });
 });

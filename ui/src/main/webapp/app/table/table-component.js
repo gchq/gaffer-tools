@@ -266,6 +266,7 @@ function TableController(schema, results, table, events, common, types, time, cs
         document.body.appendChild(downloadLink);
         downloadLink.click();
         document.body.removeChild(downloadLink);
+        URL.revokeObjectURL(downloadLink.href);
     }
 
     vm.getValue = function() {
