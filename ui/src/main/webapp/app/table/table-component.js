@@ -36,7 +36,7 @@ function resultsTable() {
  * @param {*} types For converting objects based on their types
  * @param {*} time For converting time objects
  */
-function TableController(schema, results, table, events, common, types, time, csv) {
+function TableController(schema, results, table, events, common, types, time, csv, $q) {
     var vm = this;
     var resultsByType = [];
     vm.filteredResults = [];
