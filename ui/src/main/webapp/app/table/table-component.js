@@ -256,10 +256,16 @@ function TableController(schema, results, table, events, common, types, time, cs
     }
 
     vm.download = function() {
-        var csvString = 'data:text/csv;charset=utf-8,' + csv.generate(vm.filteredResults, vm.data.columns);
-        var encodedURI = encodeURI(csvString);
+        var mimeType = 'data:text/csv;charset=utf-8';
+        var data = csv.generate(vm.filteredResults, vm.data.columns);
+        var fileName = 'gaffer_results_' + Date.now() + '.csv'
 
-        window.open(encodedURI)
+        var downloadLink = document.createElement('a');
+        downloadLink.href = URL.createObjectURL(new Blob([data], {type: mimeType}));
+        downloadLink.download = fileName;
+        document.body.appendChild(downloadLink);
+        downloadLink.click();
+        document.body.removeChild(downloadLink);
     }
 
     vm.getValue = function() {
