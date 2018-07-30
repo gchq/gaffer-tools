@@ -119,7 +119,7 @@ function TableController(schema, results, table, events, common, types, time, cs
         processOtherTypes(ids, properties, resultsData);
 
         vm.data.allColumns = common.concatUniqueValues(common.concatUniqueValues(ids, groupByProperties), properties);
-        
+
         if (!vm.data.columns || vm.data.columns.length === 0) {
             vm.data.columns = angular.copy(vm.data.allColumns);
         }
@@ -259,7 +259,10 @@ function TableController(schema, results, table, events, common, types, time, cs
         var mimeType = 'data:text/csv;charset=utf-8';
         var data = csv.generate(vm.filteredResults, vm.data.columns);
         var fileName = 'gaffer_results_' + Date.now() + '.csv'
+        downloadData(fileName, data, mimeType);
+    }
 
+    var downloadData = function(fileName, data, mimeType) {
         var downloadLink = document.createElement('a');
         downloadLink.href = URL.createObjectURL(new Blob([data], {type: mimeType}));
         downloadLink.download = fileName;
