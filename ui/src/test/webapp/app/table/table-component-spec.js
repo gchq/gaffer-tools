@@ -487,11 +487,21 @@ describe('The Table component', function() {
 
         describe('ctrl.download()', function() {
 
-            var csvPrefix = 'data:text/csv;charset=utf-8,';
-            var $filter;
+            var fakeElement;
+
+            var expectedData;
 
             beforeEach(function() {
-                spyOn(window, 'open').and.stub();
+                fakeElement = {
+                    click: jasmine.createSpy('click')
+                }
+            });
+
+            beforeEach(function() {
+                spyOn(document, 'createElement').and.returnValue(fakeElement);
+                spyOn(document.body, 'appendChild');
+                spyOn(document.body, 'removeChild');
+                
             });
 
             beforeEach(function() {
@@ -521,44 +531,105 @@ describe('The Table component', function() {
                 $filter = _$filter_;
             }));
 
-            it('should prefix the url with data:text/csv;charset=utf8,', function() {
+            it('should create an element', function() {
                 ctrl.download();
-                expect(window.open.calls.first().args[0].indexOf(csvPrefix)).toEqual(0);
+                expect(document.body.appendChild).toHaveBeenCalledWith(fakeElement);
             });
 
+            it('should set the default file name to gaffer_results_ plus the current time', function() {
+                spyOn(Date, 'now').and.returnValue('current-time');
+                ctrl.download();
+                expect(fakeElement.download).toEqual('gaffer_results_current-time.csv');
+            });
 
-            it('should use the columns selected by the user', function() {
+            it('should remove the element', function() {
+                ctrl.download();
+                expect(document.body.removeChild).toHaveBeenCalledWith(fakeElement);
+            });
+
+            it('should use an object url based on the text from the CSV', function(done) {
 
                 ctrl.filteredResults = ctrl.data.results;
 
-                var expectedOutput = 
-                'col1,col2\r\n' +
+                var expectedOutput = 'col1,col2\r\n' +
                 '1,test\r\n' +
                 'true,\r\n' +
                 'hello,\r\n';
 
-                var encodedOutput = encodeURI(csvPrefix  + expectedOutput);
+                spyOn(URL, 'createObjectURL').and.callFake(function(obj) {
+                    var reader = new FileReader();
+                    reader.addEventListener('loadend', function() {
+                        var rawString = String.fromCharCode.apply(null, new Uint8Array(reader.result));
+                        expect(rawString).toEqual(expectedOutput);
+                        done();
+                    });
+
+                    reader.readAsArrayBuffer(obj);
+
+                    return 'irrelevant';
+                });
 
                 ctrl.download();
-                expect(window.open.calls.first().args[0]).toEqual(encodedOutput);
+                
 
             });
 
-            it('should take into account filters entered by the user', function() {
+            it('should use the columns selected by the user', function(done) {
+
+                ctrl.filteredResults = ctrl.data.results;
+                
+                ctrl.data.columns = ['col1']
+
+                var expectedOutput = 'col1\r\n' +
+                '1\r\n' +
+                'true\r\n' +
+                'hello\r\n';
+
+                spyOn(URL, 'createObjectURL').and.callFake(function(obj) {
+                    var reader = new FileReader();
+                    reader.addEventListener('loadend', function() {
+                        var rawString = String.fromCharCode.apply(null, new Uint8Array(reader.result));
+                        expect(rawString).toEqual(expectedOutput);
+                        done();
+                    });
+
+                    reader.readAsArrayBuffer(obj);
+
+                    return 'irrelevant';
+                });
+
+
+                ctrl.download();
+
+            });
+
+            it('should take into account filters entered by the user', function(done) {
                 ctrl.filteredResults = $filter('filter')(ctrl.data.results, 'test');     // mimicking if the user entered 'test' into search box
+                
                 var expectedOutput =
                 'col1,col2\r\n' +
                 '1,test\r\n' +
                 'true,\r\n';
 
-                var encodedOutput = encodeURI(csvPrefix + expectedOutput);
+
+                spyOn(URL, 'createObjectURL').and.callFake(function(obj) {
+                    var reader = new FileReader();
+                    reader.addEventListener('loadend', function() {
+                        var rawString = String.fromCharCode.apply(null, new Uint8Array(reader.result));
+                        expect(rawString).toEqual(expectedOutput);
+                        done();
+                    });
+
+                    reader.readAsArrayBuffer(obj);
+
+                    return 'irrelevant';
+                });
 
                 ctrl.download();
-                expect(window.open.calls.first().args[0]).toEqual(encodedOutput);
 
             });
             
-            it('should take into account the order specified by the user', function() {
+            it('should take into account the order specified by the user', function(done) {
                 ctrl.data.columns = ['col1', 'col4'];
                 ctrl.sortType = 'col4';
                 ctrl.filteredResults = $filter('orderBy')(ctrl.data.results, ctrl.getValue());  // mimicking the order by functionality in the table
@@ -569,10 +640,28 @@ describe('The Table component', function() {
                 "1,def\r\n" +
                 "true,ghi\r\n";
                 
-                var encodedOutput = encodeURI(expectedOutput);
+                spyOn(URL, 'createObjectURL').and.callFake(function(obj) {
+                    var reader = new FileReader();
+                    reader.addEventListener('loadend', function() {
+                        var rawString = String.fromCharCode.apply(null, new Uint8Array(reader.result));
+                        expect(rawString).toEqual(expectedOutput);
+                        done();
+                    });
+
+                    reader.readAsArrayBuffer(obj);
+
+                    return 'irrelevant';
+                });
 
                 ctrl.download();
-                expect(window.open.calls.first().args[0]).toEqual(csvPrefix + encodedOutput);
+            });
+
+            it('should release the Object url once clicked', function() {
+                spyOn(URL, 'revokeObjectURL');
+
+                ctrl.download();
+
+                expect(URL.revokeObjectURL).toHaveBeenCalledWith(fakeElement.href);
             });
         });
     });
