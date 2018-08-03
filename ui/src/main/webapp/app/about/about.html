@@ -1,0 +1,22 @@
+<div layout="row" layout-padding>
+    <div flex-offset-gt-sm="20" flex-gt-sm="60" flex="100">
+        <md-card>
+            <md-card-header>
+                <md-card-avatar>
+                    <md-icon md-svg-icon="info"></md-icon>
+                </md-card-avatar>
+                <md-card-header-text layout-align="center- start">
+                    <div class="md-title">About</div>
+                </md-card-header-text>
+            </md-card-header>
+            <md-card-content>
+                <p ng-bind-html="ctrl.renderDescription(ctrl.description)"></p>
+                <p ng-if="ctrl.restApi">Take a look at the <a ng-href="{{ctrl.restApi}}">REST API</a></p>
+                <p ng-if="ctrl.docs">For more information, check out our <a ng-href="{{ctrl.docs}}">documentation</a></p>
+            </md-card-content>
+            <md-card-actions layout="row" layout-align"end" ng-if="ctrl.emailRecipients">
+                <md-button class="md-primary md-raised" ng-click="ctrl.sendFeedback()">Send feedback</md-button>
+            </md-card-actions>
+        </md-card>
+    </div>
+</div>

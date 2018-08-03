@@ -27,6 +27,7 @@ UI
     - [Types](#types)
     - [Time](#time)
     - [Graph](#graph)
+    - [Feedback](#feedback)
 6. [Testing](#testing)
 
 
@@ -585,6 +586,17 @@ We have all the material design icons [here](https://github.com/gchq/gaffer-tool
 
 If you're using a simple string or number as your vertex, use "undefined" as your key. Otherwise you'll need to use the field
 name specified in the [types section](#types).
+
+
+### Feedback
+
+An optional feedback section can be added which the UI uses to send feedback to developers using email. If this section is
+left blank, no feedback button will be rendered. You can specify a list of email addresses and the subject of the email.
+
+| field        | type                | description
+|--------------|---------------------|--------------------------------------------------------------------------
+|    subject   |       String        | An optional (defaults to "Gaffer feedback") subject header of the email
+|  recipients  | array&lt;string&gt; | A list of email addresses who receive the emails.
 
 ## Testing
 
