@@ -9,10 +9,13 @@
                     <div class="md-title">About</div>
                 </md-card-header-text>
             </md-card-header>
+            <div layout="row" ng-hide="ctrl.propertiesLoaded" layout-align="center center">
+                <md-progress-circular md-mode="indeterminate" class="md-primary" md-diameter="40"></md-progress-circular>
+            </div>
             <md-card-content>
-                <p ng-bind-html="ctrl.renderDescription(ctrl.description)"></p>
-                <p ng-if="ctrl.restApi">Take a look at the <a ng-href="{{ctrl.restApi}}">REST API</a></p>
-                <p ng-if="ctrl.docs">For more information, check out our <a ng-href="{{ctrl.docs}}">documentation</a></p>
+                <p ng-bind-html="ctrl.description"></p>
+                <p ng-show="ctrl.restApi">Take a look at the <a id="about-rest-api" target="_blank" ng-href="{{ctrl.restApi}}">REST API</a></p>
+                <p ng-show="ctrl.docs">For more information, check out our <a id="about-docs" target="_blank" ng-href="{{ctrl.docs}}">documentation</a></p>
             </md-card-content>
             <md-card-actions layout="row" layout-align"end" ng-if="ctrl.emailRecipients">
                 <md-button class="md-primary md-raised" ng-click="ctrl.sendFeedback()">Send feedback</md-button>

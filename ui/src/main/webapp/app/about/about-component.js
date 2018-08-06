@@ -26,7 +26,7 @@ function about() {
     }
 }
 
-function AboutController(properties, config, $sce) {
+function AboutController(properties, config) {
     var vm = this;
 
     var DESCRIPTION_PROPERTY = 'gaffer.properties.app.description';
@@ -36,6 +36,8 @@ function AboutController(properties, config, $sce) {
     vm.docs;
     vm.restApi;
 
+    vm.propertiesLoaded;
+
     vm.emailRecipients;
     vm.emailSubject;
 
@@ -43,6 +45,7 @@ function AboutController(properties, config, $sce) {
         properties.get().then(function(props) {
             vm.docs = props[DOCS_PROPERTY];
             vm.description = props[DESCRIPTION_PROPERTY] || 'no description provided';
+            vm.propertiesLoaded = true
         });
 
         config.get().then(function(conf) {
@@ -56,11 +59,5 @@ function AboutController(properties, config, $sce) {
 
     vm.sendFeedback = function() {
         window.open('mailto:' + vm.emailRecipients.join('; ') + ';?subject=' + vm.emailSubject);
-    }
-
-    vm.renderDescription = function(descriptionHtml) {
-        return $sce.trustAsHtml(descriptionHtml);
-    }
-
-    
+    }    
 }
