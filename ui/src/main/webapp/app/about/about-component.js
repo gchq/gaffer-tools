@@ -26,7 +26,7 @@ function about() {
     }
 }
 
-function AboutController(properties, config) {
+function AboutController(properties, config, error) {
     var vm = this;
 
     var DESCRIPTION_PROPERTY = 'gaffer.properties.app.description';
@@ -36,7 +36,7 @@ function AboutController(properties, config) {
     vm.docs;
     vm.restApi;
 
-    vm.propertiesLoaded;
+    vm.propertiesLoaded = false;
 
     vm.emailRecipients;
     vm.emailSubject;
@@ -49,7 +49,9 @@ function AboutController(properties, config) {
         });
 
         config.get().then(function(conf) {
-            vm.restApi = conf.restEndpoint.substring(0, conf.restEndpoint.lastIndexOf('/'));
+            var endpoint = conf.restEndpoint.replace(/\/$/, "");
+
+            vm.restApi = endpoint.substring(0, endpoint.lastIndexOf('/'));
             if (conf.feedback) {
                 vm.emailRecipients = conf.feedback.recipients;
                 vm.emailSubject = conf.feedback.subject || "Gaffer feedback";
@@ -58,6 +60,14 @@ function AboutController(properties, config) {
     }
 
     vm.sendFeedback = function() {
+        if (!vm.emailRecipients || vm.emailRecipients.length === 0) {
+            error.handle('UI is misconfigured', 'The UI config should contain email recipients to receive feedback from users. No recipients were specified');
+            return;
+        } else if (!(vm.emailRecipients instanceof Array)) {
+            var type = typeof vm.emailRecipients;
+            error.handle('UI is misconfigured', 'The UI configuration property "feedback.recipients" should contain an array, not a ' + type);
+            return;
+        }
         window.open('mailto:' + vm.emailRecipients.join('; ') + ';?subject=' + vm.emailSubject);
     }    
 }

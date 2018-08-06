@@ -88,8 +88,8 @@
                 <configuration>
                     <jsSrcDir>${project.build.directory}/${project.build.finalName}/app</jsSrcDir>
                     <sourceIncludes>
-                        <include>**/*.js</include>
                         <include>*.js</include>
+                        <include>**/*.js</include>
                     </sourceIncludes>
                     <jsTestSrcDir>src/test/webapp/app</jsTestSrcDir>
                     <specIncludes>
@@ -474,8 +474,8 @@
                         <configuration>
                             <jsSrcDir>src/main/webapp/app</jsSrcDir>
                             <sourceIncludes>
-                                <include>**/*.js</include>
                                 <include>*.js</include>
+                                <include>**/*.js</include>
                             </sourceIncludes>
                             <jsTestSrcDir>src/test/webapp/app</jsTestSrcDir>
                             <specIncludes>
