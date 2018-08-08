@@ -55,13 +55,21 @@ function DateRangeController(time, events) {
         if (start) {
             var utcDate = time.convertNumberToDate(start, vm.conf.filter.unit);
             vm.startDate = moment(utcDate).add(utcDate.getTimezoneOffset(), 'minutes').toDate()
+            vm.startTime = new Date(0);
+            vm.startTime.setUTCHours(utcDate.getUTCHours())
+            vm.startTime.setUTCMinutes(utcDate.getUTCMinutes());
+            vm.startTime.setUTCSeconds(utcDate.getUTCSeconds());
         } else {
             vm.startDate = null;
         }
         var end = dates.endDate;
         if(end) {
             var utcDate = time.convertNumberToDate(end, vm.conf.filter.unit);
-            vm.endDate = moment(utcDate).add(utcDate.getTimezoneOffset(), 'minutes').toDate()
+            vm.endDate = moment(utcDate).add(utcDate.getTimezoneOffset(), 'minutes').toDate();
+            vm.endTime = new Date(0);
+            vm.endTime.setUTCHours(utcDate.getUTCHours())
+            vm.endTime.setUTCMinutes(utcDate.getUTCMinutes());
+            vm.endTime.setUTCSeconds(utcDate.getUTCSeconds());
         } else {
             vm.endDate = null;
         }
@@ -127,7 +135,7 @@ function DateRangeController(time, events) {
             start.setHours(vm.startTime.getUTCHours());
             start.setMinutes(vm.startTime.getUTCMinutes() - start.getTimezoneOffset());
             start.setSeconds(vm.startTime.getSeconds());
-            start.setMilliseconds(vm.startTime.getMilliseconds());
+            start.setMilliseconds(0);
         }
 
 
@@ -161,7 +169,7 @@ function DateRangeController(time, events) {
             end.setHours(vm.endTime.getUTCHours());
             end.setMinutes(vm.endTime.getUTCMinutes() - end.getTimezoneOffset());
             end.setSeconds(vm.endTime.getSeconds());
-            end.setMilliseconds(vm.endTime.getMilliseconds());
+            end.setMilliseconds(999);
         }
 
         var convertedTime = time.convertDateToNumber(end, vm.conf.filter.unit);
