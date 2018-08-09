@@ -31,7 +31,7 @@ function parameterForm() {
     }
 }
 
-function ParameterFormController(types) {
+function ParameterFormController(time) {
     var vm = this;
     vm.$onInit = function() {
         if (vm.parameters === null || vm.parameters === undefined) {
@@ -40,5 +40,9 @@ function ParameterFormController(types) {
         if(!vm.title) {
             vm.title = 'Parameters';
         }
+    }
+
+    vm.getDateMetaData = function(parameterName) {
+        return time.getTimeMetaData(parameterName);
     }
 }

@@ -1,0 +1,16 @@
+<div layout="row" flex>
+    <md-input-container>
+        <label>{{ctrl.name}}</label>
+        <md-datepicker ng-model="ctrl.date" ng-change="ctrl.onUpdate()" md-date-locale="ctrl.localeProviderOverride"></md-datepicker>
+    </md-input-container>
+    <md-input-container>
+        <md-select ng-hide="ctrl.showTime" ng-model="ctrl.selectedTime" ng-change="ctrl.onUpdate()" placeholder="At what time?" required md-no-asterisk>
+            <md-option ng-repeat="time in ctrl.availableTimes" ng-value="time">{{time}}</md-option>
+        </md-select>
+    </md-input-container>
+    <md-input-container ng-if="ctrl.showTime">
+        <md-icon md-svg-icon="schedule"></md-icon>
+        <input ng-model="ctrl.time" ng-model-options="{ timezone: 'UTC', updateOn: 'blur' }" step="1" type="time" ng-change="ctrl.onUpdate()"/>
+    </md-input-container>
+    <!-- local vs UTC stuff (nice to have) <md-select></md-select> -->
+</div>

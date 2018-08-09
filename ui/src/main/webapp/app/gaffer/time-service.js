@@ -55,6 +55,10 @@ angular.module('app').factory('time', ['config', function(config) {
         return propName in timeProperties;
     }
 
+    service.getTimeMetaData = function(propName) {
+        return timeProperties[propName];
+    }
+
     service.getDateString = function(propName, value) {
         var dateString;
         var timeProp = timeProperties[propName];
