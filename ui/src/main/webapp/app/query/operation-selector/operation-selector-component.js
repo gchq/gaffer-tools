@@ -138,8 +138,11 @@ function OperationSelectorController(operationService, $routeParams) {
         }
     }
 
-    vm.$onInit = function() {
-        operationService.getAvailableOperations(true).then(populateOperations);
+    vm.getOperations = function() {
+        return operationService.getAvailableOperations(true).then(function(ops) {
+            populateOperations(ops)
+            return vm.availableOperations;
+        });
     }
 
     vm.clearSearchTerm = function() {

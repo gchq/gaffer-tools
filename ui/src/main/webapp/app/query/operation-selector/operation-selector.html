@@ -16,7 +16,7 @@
                     md-search-text="ctrl.searchTerm"
                     md-require-match
                     md-selected-item="ctrl.model"
-                    md-items="op in ctrl.availableOperations | operationFilter:ctrl.searchTerm"
+                    md-items="op in ctrl.getOperations() | operationFilter:ctrl.searchTerm"
                     md-item-text="op.name"
                     md-menu-class="named-view-template">
                 <md-item-template>
