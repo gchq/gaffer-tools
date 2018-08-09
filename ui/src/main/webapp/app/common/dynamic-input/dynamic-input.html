@@ -1,4 +1,4 @@
-<div ng-if="!(ctrl.useDatepicker && ctrl.dateMetaData && ctrl.canUseDatePicker())" layout="column" layout-gt-md="row" layout-wrap layout-fill>
+<div ng-if="!(ctrl.useDatepicker && ctrl.dateUnit && ctrl.canUseDatePicker())" layout="column" layout-gt-md="row" layout-wrap layout-fill>
     <div ng-repeat="field in ctrl.getFields()" flex="{{ctrl.getFlexValue()}}"
          class="padding-sides">
         <div ng-if="'textarea' === field.type">
@@ -53,5 +53,5 @@
     </div>
 </div>
 <div ng-if="ctrl.useDatepicker && ctrl.dateMetaData && ctrl.canUseDatePicker()">
-    <dynamic-date-picker meta="ctrl.dateMetaData" param="ctrl.param" name="ctrl.name"></dynamic-date-picker>
+    <dynamic-date-picker unit="ctrl.dateUnit" param="ctrl.param" name="ctrl.name"></dynamic-date-picker>
 </div>

@@ -20,12 +20,12 @@ angular.module('app').component('dynamicDatePicker', dynamicDatePicker());
 
 function dynamicDatePicker() {
      return {
-        templateUrl: 'app/common/dynamic-date-picker.html',
+        templateUrl: 'app/common/dynamic-input/dynamic-date-picker.html',
         controller: DynamicDatePickerController,
         controllerAs: 'ctrl',
         bindings: {
             param: '=',
-            meta: '<',
+            unit: '<',
             name: '<'
         }
     }
@@ -65,10 +65,25 @@ function DynamicDatePickerController(types, time, common) {
     vm.$onInit = function() {
         // do some validation here
         
+        if (!vm.param) {
+            throw 'Unable to create dynamic date picker as there is no model present';
+        }
         // calculate output type
         // assumption is made here about the parameter passed in - Simple object (either text or number).
         var fields = types.getFields(vm.param.valueClass);
+
+        if (fields.length !== 1) {
+            throw 'Unsupported date class detected. Must be a number or string';
+        }
         outputType = fields[0].type;
+
+        if (outputType == 'number' && !vm.unit) {
+            throw 'Unable to create dynamic date picker as no unit was supplied'
+        }
+
+        if (!(outputType === 'number' || outputType === 'text')) {
+            throw 'Unable to create dynamic date picker. Expected model to be of type "text" or "number". However it was "' + outputType + '"'
+        }
 
         // update view
 
@@ -83,9 +98,9 @@ function DynamicDatePickerController(types, time, common) {
         date.setSeconds(vm.time.getSeconds());
         date.setMilliseconds(vm.time.getMilliseconds());
 
-        var converted = time.convertDateToNumber(date, vm.meta.unit);
+        var converted = time.convertDateToNumber(date, vm.unit);
 
-        if (vm.selectedTime == 'end of day' && vm.meta.unit === 'microsecond') {
+        if (vm.selectedTime == 'end of day' && vm.unit === 'microsecond') {
             converted += 999
         }
 
@@ -138,7 +153,7 @@ function DynamicDatePickerController(types, time, common) {
     }
 
     var updateViewUsingNumberModel = function(newModel) {
-        var utcDate = time.convertNumberToDate(newModel, vm.meta.unit);
+        var utcDate = time.convertNumberToDate(newModel, vm.unit);
         vm.date = moment(utcDate).add(utcDate.getTimezoneOffset(), 'minutes').toDate();
 
         vm.time = new Date(0);

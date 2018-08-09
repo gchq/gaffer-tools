@@ -20,14 +20,14 @@ angular.module('app').component('dynamicInput', dynamicInput());
 
 function dynamicInput() {
     return {
-        templateUrl: 'app/common/dynamic-input.html',
+        templateUrl: 'app/common/dynamic-input/dynamic-input.html',
         controller: DynamicInputController,
         controllerAs: 'ctrl',
         bindings: {
             param: '=',
             name: '<',
             options: '<',
-            dateMetaData: '<'
+            dateUnit: '<'
         }
     }
 }

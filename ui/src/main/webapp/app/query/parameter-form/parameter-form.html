@@ -3,7 +3,7 @@
         <h3 class="{{ctrl.titleClass}}">{{ctrl.title}}</h3>
         <div layout-wrap layout="row">
             <div ng-repeat="(name, param) in ctrl.parameters" flex="noshrink">
-                <dynamic-input name="name" param="param" date-meta-data="ctrl.getDateMetaData(name)">
+                <dynamic-input name="name" param="param" date-unit="ctrl.getTimeUnit(name)">
                 </dynamic-input>
             </div>
         </div>

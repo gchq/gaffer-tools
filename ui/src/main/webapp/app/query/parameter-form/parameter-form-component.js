@@ -42,7 +42,8 @@ function ParameterFormController(time) {
         }
     }
 
-    vm.getDateMetaData = function(parameterName) {
-        return time.getTimeMetaData(parameterName);
+    vm.getTimeUnit = function(parameterName) {
+        var metaData = time.getTimeMetaData(parameterName)
+        return metaData ? metaData.unit : undefined;
     }
 }
