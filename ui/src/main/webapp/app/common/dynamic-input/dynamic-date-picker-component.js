@@ -77,7 +77,7 @@ function DynamicDatePickerController(types, time, common) {
         }
         outputType = fields[0].type;
 
-        if (outputType == 'number' && !vm.unit) {
+        if (outputType === 'number' && !vm.unit) {
             throw 'Unable to create dynamic date picker as no unit was supplied'
         }
 
@@ -90,15 +90,21 @@ function DynamicDatePickerController(types, time, common) {
         vm.updateView();
     }
 
-    var updateNumberModel = function() {
-        var date = new Date(vm.date.getTime());
+    var mergeDates = function(localDate, localTime, toUTC) {
+        var date = new Date(localDate.getTime());
         
-        date.setHours(vm.time.getUTCHours());
-        date.setMinutes(vm.time.getUTCMinutes() - date.getTimezoneOffset())
-        date.setSeconds(vm.time.getSeconds());
-        date.setMilliseconds(vm.time.getMilliseconds());
+        date.setHours(localTime.getUTCHours());
+        date.setMinutes(localTime.getUTCMinutes() - ( toUTC ? date.getTimezoneOffset() : 0));
+        date.setSeconds(localTime.getSeconds());
+        date.setMilliseconds(localTime.getMilliseconds());
 
-        var converted = time.convertDateToNumber(date, vm.unit);
+        return date;
+    }
+
+    var updateNumberModel = function() {
+        var utcDate = mergeDates(vm.date, vm.time, true);
+
+        var converted = time.convertDateToNumber(utcDate, vm.unit);
 
         if (vm.selectedTime == 'end of day' && vm.unit === 'microsecond') {
             converted += 999
@@ -108,18 +114,27 @@ function DynamicDatePickerController(types, time, common) {
     }
 
     var updateTextModel = function() {
-        vm.param.parts[Object.keys(vm.param.parts)[0]] = vm.date.getFullYear() + '-' + vm.date.getMonth() + 1 + '-' + vm.date.getDay() + ' ' + vm.time.getUTCHours() + ':' + vm.time.getUTCMinutes() + ':' + vm.time.getUTCSeconds();
+        var localDate = mergeDates(vm.date, vm.time, false);
+
+        vm.param.parts[Object.keys(vm.param.parts)[0]] = moment(localDate).format('YYYY-MM-DD HH:mm:ss');
     }
 
     vm.onUpdate = function() {  // whenever date/time is updated
         if (!vm.showTime) { // either date or md-select updated 
             if (vm.selectedTime === 'choose') {
                 vm.showTime = true;
+                vm.time = new Date();
+            } else {
+                vm.time = vm.timeOptions[vm.selectedTime];  // create time
             }
-            vm.time = vm.timeOptions[vm.selectedTime];  // create time
         } else if (!vm.time) {    
             vm.showTime = false;
             vm.selectedTime = undefined;
+            if (vm.dateForm) {
+                vm.dateForm.timeSelect.$setViewValue(undefined);
+                vm.dateForm.timeSelect.$setPristine();
+                vm.dateForm.timeSelect.$setUntouched();
+            }
         }
         // update model
         if (vm.date && vm.time) {

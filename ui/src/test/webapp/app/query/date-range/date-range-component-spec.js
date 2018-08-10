@@ -299,10 +299,6 @@ describe('The date range component', function() {
             createValidController();
         });
 
-        // beforeEach(function() {
-        //     spyOn(Date.prototype, 'getTimezoneOffset').and.returnValue(0);  // assume it's utc time
-        // });
-
         it('should set the date range services end date to null if vm.endDate is undefined', function() {
             ctrl.endDate = undefined;
             ctrl.onEndDateUpdate();
