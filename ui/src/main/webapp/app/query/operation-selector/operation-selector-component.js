@@ -75,7 +75,7 @@ function operationSelector() {
     }
 }
 
-function OperationSelectorController(operationService, $routeParams) {
+function OperationSelectorController(operationService, $routeParams, $filter) {
     var vm = this;
 
     vm.availableOperations;
@@ -141,7 +141,7 @@ function OperationSelectorController(operationService, $routeParams) {
     vm.getOperations = function() {
         return operationService.getAvailableOperations(true).then(function(ops) {
             populateOperations(ops)
-            return vm.availableOperations;
+            return $filter('operationFilter')(vm.availableOperations, vm.searchTerm);
         });
     }
 
