@@ -265,6 +265,7 @@ public class QueryBuilderST {
 
     private void autoComplete(final String id, final String input) throws InterruptedException {
         WebElement ac = getElement(id);
+        ac.click();
         ac.sendKeys(input);
         ac.sendKeys(Keys.ENTER);
 
