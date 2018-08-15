@@ -58,20 +58,17 @@ describe('Operation Selector Component', function() {
         expect(ctrl).toBeDefined();
     });
 
-    describe('ctrl.$onInit()', function() {
-        var loadNamedOperations = true;
+    describe('ctrl.getOperations()', function() {
 
         it('should load the operations', function() {
-            loadNamedOperations = true
             var ctrl = $componentController('operationSelector', { $scope: scope });
-            ctrl.$onInit();
+            ctrl.getOperations();
 
             scope.$digest();
             expect(operationService.reloadOperations).toHaveBeenCalledTimes(1);
         });
 
         it('should select the operation defined in the query operation parameter', function() {
-            loadNamedOperations = false
             $routeParams.operation = "operationX";
             var ctrl = $componentController('operationSelector', { $scope: scope });
             var availableOperations = [
@@ -83,14 +80,13 @@ describe('Operation Selector Component', function() {
                 }
             ]
             spyOn(operationService, 'getAvailableOperations').and.returnValue($q.when(availableOperations));
-            ctrl.$onInit();
+            ctrl.getOperations();
 
             scope.$digest();
             expect(ctrl.model.name).toEqual('operationX');
         });
 
         it('should select the operation defined in the query operation parameter case insensitive and strip symbols', function() {
-            loadNamedOperations = false
             $routeParams.operation = "operation-x.";
             var ctrl = $componentController('operationSelector', { $scope: scope });
             var availableOperations = [
@@ -102,14 +98,13 @@ describe('Operation Selector Component', function() {
                 }
             ]
             spyOn(operationService, 'getAvailableOperations').and.returnValue($q.when(availableOperations));
-            ctrl.$onInit();
+            ctrl.getOperations();
 
             scope.$digest();
             expect(ctrl.model.name).toEqual('operationX');
         });
 
         it('should select the operation defined in the query op parameter', function() {
-            loadNamedOperations = false
             $routeParams.op = "operationX";
             var ctrl = $componentController('operationSelector', { $scope: scope });
             var availableOperations = [
@@ -121,14 +116,13 @@ describe('Operation Selector Component', function() {
                 }
             ]
             spyOn(operationService, 'getAvailableOperations').and.returnValue($q.when(availableOperations));
-            ctrl.$onInit();
+            ctrl.getOperations();
 
             scope.$digest();
             expect(ctrl.model.name).toEqual('operationX');
         });
 
         it('should not select an operation', function() {
-            loadNamedOperations = false
             $routeParams.op = "unknownOp";
             var ctrl = $componentController('operationSelector', { $scope: scope });
             ctrl.selectedOp = undefined;
@@ -141,7 +135,7 @@ describe('Operation Selector Component', function() {
                 }
             ]
             spyOn(operationService, 'getAvailableOperations').and.returnValue($q.when(availableOperations));
-            ctrl.$onInit();
+            ctrl.getOperations();
 
             scope.$digest();
             expect(ctrl.model).not.toBeDefined();
