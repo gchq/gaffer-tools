@@ -47,6 +47,22 @@ describe('The type service', function() {
                                     }
                                 ]
                             },
+                            "a.class.which.ends.in.Set": {
+                                "fields": [
+                                    {
+                                        "type": "number",
+                                        "step": 1,
+                                        "class": "java.lang.Long",
+                                        "key": "fieldA",
+                                        "required": true
+                                    },
+                                    {
+                                        "type": "text",
+                                        "class": "java.lang.String",
+                                        "key": "fieldB"
+                                    }
+                                ]
+                            },
                             "java.lang.String": {
                                 "fields": [
                                     {
@@ -248,6 +264,7 @@ describe('The type service', function() {
                 "Class": "some.java.Class",
                 "Long": "java.lang.Long",
                 "Integer": "java.lang.Integer",
+                "Set": "a.class.which.ends.in.Set",
                 "String": "java.lang.String",
                 "TypeSubTypeValue": "uk.gov.gchq.gaffer.types.TypeSubTypeValue",
                 "HyperLogLogPlus": "com.clearspring.analytics.stream.cardinality.HyperLogLogPlus",
@@ -456,6 +473,15 @@ describe('The type service', function() {
             var value = service.getShortValue({'uk.gov.gchq.gaffer.types.TypeSubTypeValue': {'type': 't', 'subType': 'st', 'value': 'v'}})
             expect(value).toEqual('t|st|v');
         });
+
+        it('should return a pipe delimited representation of POJOs which end with the word "Set"', function() {
+            var value = service.getShortValue({"a.class.which.ends.in.Set": {
+                "fieldA": {"java.lang.Long": 200},
+                "fieldB": "foo"
+            }});
+
+            expect(value).toEqual("200|foo");
+        })
 
         it('should create a custom short value for custom types', function() {
             var value = service.getShortValue({'com.clearspring.analytics.stream.cardinality.HyperLogLogPlus': { "hyperLogLogPlus": { "cardinality": 30 }}})
