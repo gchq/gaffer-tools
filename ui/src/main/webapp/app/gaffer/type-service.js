@@ -245,10 +245,12 @@ angular.module('app').factory('types', ['config', 'common', function(config, com
             return customShortValue(type.fields, parts)
         }
 
-        if (common.endsWith(typeClass, 'Map')) {
-            return mapShortValue(parts);
-        } else if (common.endsWith(typeClass, 'List') || common.endsWith(typeClass, 'Set')) {
-            return listShortValue(parts);
+        if (!service.isKnown(typeClass)) {
+            if (common.endsWith(typeClass, 'Map')) {
+                return mapShortValue(parts);
+            } else if (common.endsWith(typeClass, 'List') || common.endsWith(typeClass, 'Set')) {
+                return listShortValue(parts);
+            }
         }
 
         if (typeof parts === 'object') {

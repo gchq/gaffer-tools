@@ -75,7 +75,7 @@ function operationSelector() {
     }
 }
 
-function OperationSelectorController(operationService, $routeParams) {
+function OperationSelectorController(operationService, $routeParams, $filter) {
     var vm = this;
 
     vm.availableOperations;
@@ -138,8 +138,11 @@ function OperationSelectorController(operationService, $routeParams) {
         }
     }
 
-    vm.$onInit = function() {
-        operationService.getAvailableOperations(true).then(populateOperations);
+    vm.getOperations = function() {
+        return operationService.getAvailableOperations(true).then(function(ops) {
+            populateOperations(ops)
+            return $filter('operationFilter')(vm.availableOperations, vm.searchTerm);
+        });
     }
 
     vm.clearSearchTerm = function() {
