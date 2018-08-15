@@ -354,6 +354,30 @@ class GafferFunctionsTest(unittest.TestCase):
             }
             ''',
             g.UnwrapEntityId()
+        ],
+        [
+            '''
+            {
+                "class": "uk.gov.gchq.koryphe.impl.function.SetValue",
+                "value": "value2"
+            }
+            ''',
+            g.SetValue(value="value2")
+        ],
+        [
+            '''
+            {
+                "class":"uk.gov.gchq.koryphe.impl.function.If",
+                "predicate":{"class":"uk.gov.gchq.koryphe.impl.predicate.IsA","type":"java.lang.Integer"},
+                "then":{"class":"uk.gov.gchq.koryphe.impl.function.SetValue","value":"value2"},
+                "otherwise":{"class":"uk.gov.gchq.koryphe.impl.function.SetValue","value":"value3"}
+            }
+            ''',
+            g.func.If(
+                predicate=g.IsA(type="java.lang.Integer"),
+                then=g.SetValue(value="value2"),
+                otherwise=g.SetValue(value="value3")
+            )
         ]
     ]
 
