@@ -107,15 +107,13 @@ describe('The Dynamic Date picker component', function() {
             expect(ctrl.showTime).toBeTruthy();
         });
 
-        it('should set time to the current time if the user selects "choose"', function() {
-            jasmine.clock().install();
-            var now = new Date(2018, 7, 10, 12, 30, 45, 123);
-            jasmine.clock().mockDate(now);
+        it('should set time to the start of the day if the user selects "choose"', function() {
             ctrl.selectedTime = 'choose';
             ctrl.onUpdate();
 
-            expect(ctrl.time).toEqual(now);
-            jasmine.clock().uninstall()
+            var startOfDay = moment.utc([1970, 0, 1, 0, 0, 0]).toDate();
+
+            expect(ctrl.time).toEqual(startOfDay);
         });
 
         it('should set time to the start of the day in UTC if the user selects "start of day"', function() {
@@ -230,8 +228,8 @@ describe('The Dynamic Date picker component', function() {
                 ctrl.param = { parts : { 'undefined': undefined }};
 
                 ctrl.updateView();
-                expect(ctrl.date).toBeUndefined();
-                expect(ctrl.time).toBeUndefined();
+                expect(ctrl.date).toBeNull();
+                expect(ctrl.time).toBeNull();
             });
 
             it('should reset the view if the model is null', function() {
@@ -240,8 +238,8 @@ describe('The Dynamic Date picker component', function() {
                 ctrl.param = { parts : { 'undefined': null }};
 
                 ctrl.updateView();
-                expect(ctrl.date).toBeUndefined()
-                expect(ctrl.time).toBeUndefined()
+                expect(ctrl.date).toBeNull()
+                expect(ctrl.time).toBeNull()
             });
 
             it('should update the time and date models', function() {
@@ -311,8 +309,8 @@ describe('The Dynamic Date picker component', function() {
                 ctrl.param = { parts : { 'undefined': undefined }};
 
                 ctrl.updateView();
-                expect(ctrl.date).toBeUndefined();
-                expect(ctrl.time).toBeUndefined();
+                expect(ctrl.date).toBeNull();
+                expect(ctrl.time).toBeNull();
             });
 
             it('should reset the view when the view is null', function() {
@@ -321,8 +319,8 @@ describe('The Dynamic Date picker component', function() {
                 ctrl.param = { parts : { 'undefined': null }};
 
                 ctrl.updateView();
-                expect(ctrl.date).toBeUndefined();
-                expect(ctrl.time).toBeUndefined();
+                expect(ctrl.date).toBeNull();
+                expect(ctrl.time).toBeNull();
             });
 
             it('should offset the date according to the local timezone', function() {
@@ -392,6 +390,15 @@ describe('The Dynamic Date picker component', function() {
 
                 expect(ctrl.selectedTime).toEqual('end of day');
             });
+
+            it('should set showTime to true if the epoch is neither the start or end of the day', function() {
+                ctrl.param = { parts : { 'undefined': 1534410375000 }}; // Thu, 16 Aug 2018 09:06:15 GMT
+
+                ctrl.updateView();
+
+                expect(ctrl.showTime).toBeTruthy()
+  
+            })
         });
     });
 });

@@ -46,8 +46,8 @@ function DynamicDatePickerController(types, time) {
         }
     }
 
-    vm.date;
-    vm.time;
+    vm.date = null;
+    vm.time = null;
 
     vm.showTime = false;
 
@@ -56,7 +56,7 @@ function DynamicDatePickerController(types, time) {
     vm.timeOptions = {
         'start of day': new Date(0),
         'end of day': new Date(86399999),
-        'choose': undefined
+        'choose': new Date(0)
     }
 
     vm.availableTimes = Object.keys(vm.timeOptions);
@@ -123,18 +123,13 @@ function DynamicDatePickerController(types, time) {
         if (!vm.showTime) { // either date or md-select updated 
             if (vm.selectedTime === 'choose') {
                 vm.showTime = true;
-                vm.time = new Date();
-            } else {
-                vm.time = vm.timeOptions[vm.selectedTime];  // create time
-            }
+            } 
+            vm.time = vm.timeOptions[vm.selectedTime];  // create time
+            
         } else if (!vm.time) {    
             vm.showTime = false;
-            vm.selectedTime = undefined;
-            if (vm.dateForm) {
-                vm.dateForm.timeSelect.$setViewValue(undefined);
-                vm.dateForm.timeSelect.$setPristine();
-                vm.dateForm.timeSelect.$setUntouched();
-            }
+            vm.selectedTime = 'start of day';
+            vm.time = vm.timeOptions[vm.selectedTime];  // create time
         }
         // update model
         if (vm.date && vm.time) {
@@ -170,7 +165,6 @@ function DynamicDatePickerController(types, time) {
     var updateViewUsingNumberModel = function(newModel) {
         var utcDate = time.convertNumberToDate(newModel, vm.unit);
         vm.date = moment(utcDate).add(utcDate.getTimezoneOffset(), 'minutes').toDate();
-
         vm.time = new Date(0);
         vm.time.setUTCHours(utcDate.getUTCHours())
         vm.time.setUTCMinutes(utcDate.getUTCMinutes());
@@ -184,14 +178,16 @@ function DynamicDatePickerController(types, time) {
             vm.selectedTime = 'end of day';
             vm.time = vm.timeOptions[vm.selectedTime];
             vm.showTime = false;
+        } else {
+            vm.showTime = true;
         }
     }
 
     vm.updateView = function() {
         var newModel = vm.param.parts[Object.keys(vm.param.parts)[0]];
         if (newModel == undefined) { // reset
-            vm.date = undefined;
-            vm.time = undefined;
+            vm.date = null;
+            vm.time = null;
             vm.selectedTime = undefined;
             vm.showTime = false;
             return;
