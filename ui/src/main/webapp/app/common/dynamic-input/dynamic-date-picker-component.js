@@ -31,7 +31,7 @@ function dynamicDatePicker() {
     }
 }
 
-function DynamicDatePickerController(types, time, common) {
+function DynamicDatePickerController(types, time) {
     var vm = this;
 
     vm.localeProviderOverride = {
@@ -148,21 +148,21 @@ function DynamicDatePickerController(types, time, common) {
 
     var updateViewUsingTextModel = function(newModel) {
         var newDate = moment(newModel).toDate();
-        vm.date = new Date(newDate.getFullYear(), newDate.getMonth(), newDate.getDay());
+        vm.date = new Date(newDate.getFullYear(), newDate.getMonth(), newDate.getDate());
 
-        if (common.endsWith(newModel, '23:59:59')) {
+        if (newDate.getHours() === 23 && newDate.getMinutes() === 59 && newDate.getSeconds() === 59) {
             vm.selectedTime = 'end of day';
             vm.time = vm.timeOptions[vm.selectedTime];
             vm.showTime = false;
-        } else if (common.endsWith(newModel, '00:00:00')) {
+        } else if (newDate.getHours() === 0 && newDate.getMinutes() === 0 && newDate.getSeconds() === 0) {
             vm.selectedTime = 'start of day';
             vm.time = vm.timeOptions[vm.selectedTime];
             vm.showTime = false;
         } else {
             vm.time = new Date(0);
-            vm.time.setUTCHours(vm.date.getHours());
-            vm.time.setUTCMinutes(vm.date.getMinutes());
-            vm.time.setUTCSeconds(vm.date.getSeconds());
+            vm.time.setUTCHours(newDate.getHours());
+            vm.time.setUTCMinutes(newDate.getMinutes());
+            vm.time.setUTCSeconds(newDate.getSeconds());
         }
         
     }

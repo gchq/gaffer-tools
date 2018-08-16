@@ -212,6 +212,186 @@ describe('The Dynamic Date picker component', function() {
     });
 
     describe('ctrl.updateView()', function() {
-        
+        describe('When using a string model', function() {
+            beforeEach(function() {
+                fakeTypeFields = [
+                    {
+                        type: 'text'
+                    }
+                ];
+
+                createController('test', {parts: {}}, 'milliseconds');
+                ctrl.$onInit();
+            });
+
+            it('should reset the view if the model value is undefined', function() {
+                ctrl.date = new Date();
+                ctrl.time = new Date(0);
+                ctrl.param = { parts : { 'undefined': undefined }};
+
+                ctrl.updateView();
+                expect(ctrl.date).toBeUndefined();
+                expect(ctrl.time).toBeUndefined();
+            });
+
+            it('should reset the view if the model is null', function() {
+                ctrl.date = new Date();
+                ctrl.time = new Date(0);
+                ctrl.param = { parts : { 'undefined': null }};
+
+                ctrl.updateView();
+                expect(ctrl.date).toBeUndefined()
+                expect(ctrl.time).toBeUndefined()
+            });
+
+            it('should update the time and date models', function() {
+                ctrl.param = {parts: {undefined: '2008-11-20 18:23:20'}}
+                ctrl.updateView();
+                expect(ctrl.date).toEqual(new Date(2008, 10, 20));
+
+                expect(ctrl.time.getUTCHours()).toEqual(18);
+                expect(ctrl.time.getUTCMinutes()).toEqual(23);
+                expect(ctrl.time.getUTCSeconds()).toEqual(20);
+            });
+
+            it('should update the set the time to start of day if not otherwise specified', function() {
+                ctrl.time = new Date();
+                ctrl.param = {parts: {undefined: '2008-06-20'}}
+                ctrl.updateView();
+
+                expect(ctrl.date).toEqual(new Date(2008, 5, 20));
+                expect(ctrl.time.getUTCHours()).toEqual(0);
+                expect(ctrl.time.getUTCMinutes()).toEqual(0);
+                expect(ctrl.time.getUTCSeconds()).toEqual(0);                
+            });
+
+            it('should default the time to "start of day" if no time is supplied', function() {
+                ctrl.time = new Date();
+                ctrl.param = {parts: {undefined: '2008-06-20'}}
+                ctrl.updateView();
+
+                expect(ctrl.showTime).toBeFalsy();
+                expect(ctrl.selectedTime).toEqual('start of day');
+            });
+
+            it('should update showTime variable to false if the time is 00:00:00 ', function() {
+                ctrl.time = new Date();
+                ctrl.param = {parts: {undefined: '2008-06-20 00:00:00'}}
+                ctrl.updateView();
+
+                expect(ctrl.showTime).toBeFalsy();
+                expect(ctrl.selectedTime).toEqual('start of day');
+            });
+
+            it('should update showTime variable to false if the time is 23:59:59', function() {
+                ctrl.time = new Date();
+                ctrl.param = {parts: {undefined: '2008-06-20 23:59:59'}}
+                ctrl.updateView();
+
+                expect(ctrl.showTime).toBeFalsy();
+                expect(ctrl.selectedTime).toEqual('end of day');
+            });
+        });
+
+        describe('When using a numerical model', function() {
+            beforeEach(function() {
+                fakeTypeFields = [
+                    {
+                        type: 'number'
+                    }
+                ];
+
+                createController('test', {parts: {}}, 'milliseconds');
+                ctrl.$onInit();
+            });
+
+            it('should reset the view when the model is undefined', function() {
+                ctrl.date = new Date();
+                ctrl.time = new Date(0);
+                ctrl.param = { parts : { 'undefined': undefined }};
+
+                ctrl.updateView();
+                expect(ctrl.date).toBeUndefined();
+                expect(ctrl.time).toBeUndefined();
+            });
+
+            it('should reset the view when the view is null', function() {
+                ctrl.date = new Date();
+                ctrl.time = new Date(0);
+                ctrl.param = { parts : { 'undefined': null }};
+
+                ctrl.updateView();
+                expect(ctrl.date).toBeUndefined();
+                expect(ctrl.time).toBeUndefined();
+            });
+
+            it('should offset the date according to the local timezone', function() {
+                ctrl.param = { parts : { 'undefined': 1534410375000 }}; // Thu, 16 Aug 2018 09:06:15 GMT
+
+                ctrl.updateView();
+
+                var expectedDate = moment([2018, 7, 16, 9, 6, 15]).toDate()   // 1am on the day specified (adjusted)
+                var expectedTime = moment.utc([1970, 0, 1, 9, 6, 15]).toDate()  // time is never adjusted
+
+                expect(ctrl.date).toEqual(expectedDate);
+                expect(ctrl.time).toEqual(expectedTime);
+            });
+
+            it('should take the units into account when calculating the dates', function() {
+                ctrl.unit = 'second';
+                ctrl.param = { parts : { 'undefined': 1534410375 }}; // Thu, 16 Aug 2018 09:06:15 GMT
+
+                ctrl.updateView();
+
+                var expectedDate = moment([2018, 7, 16, 9, 6, 15]).toDate()   // 1am on the day specified (adjusted)
+                var expectedTime = moment.utc([1970, 0, 1, 9, 6, 15]).toDate()  // time is never adjusted
+
+                expect(ctrl.date).toEqual(expectedDate);
+                expect(ctrl.time).toEqual(expectedTime);
+            });
+
+            it('should set the selected time to "start of day" if the UTC time is 00:00:00', function() {
+                ctrl.param = { parts: { undefined: 1534377600000 }}
+                
+                ctrl.updateView();
+
+                var expectedDate = moment([2018, 7, 16, 0, 0, 0]).toDate(); // local date 
+                var expectedTime = moment.utc([1970, 0, 1, 0, 0, 0]).toDate();  // utc time
+
+                expect(ctrl.date).toEqual(expectedDate);
+                expect(ctrl.time).toEqual(expectedTime);
+
+                expect(ctrl.selectedTime).toEqual('start of day');
+
+            });
+
+            it('should set the select "end of day" if the UTC time is 23:59:59', function() {
+                ctrl.param = { parts: { undefined: 1534463999999 }};
+
+                ctrl.updateView();
+                var expectedDate = moment([2018, 7, 16, 23, 59, 59, 999]).toDate(); // local date 
+                var expectedTime = moment.utc([1970, 0, 1, 23, 59, 59, 999]).toDate();  // utc time
+
+                expect(ctrl.date).toEqual(expectedDate);
+                expect(ctrl.time).toEqual(expectedTime);
+
+                expect(ctrl.selectedTime).toEqual('end of day');
+
+            });
+
+            it('should convert the "end of day" epoch correctly when given in microseconds', function() {
+                ctrl.unit = 'microsecond'
+                ctrl.param = { parts: { undefined: 1534463999999999 }};
+
+                ctrl.updateView();
+                var expectedDate = moment([2018, 7, 16, 23, 59, 59, 999]).toDate(); // local date 
+                var expectedTime = moment.utc([1970, 0, 1, 23, 59, 59, 999]).toDate();  // utc time
+
+                expect(ctrl.date).toEqual(expectedDate);
+                expect(ctrl.time).toEqual(expectedTime);
+
+                expect(ctrl.selectedTime).toEqual('end of day');
+            });
+        });
     });
 });
