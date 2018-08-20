@@ -1,0 +1,12 @@
+<md-card>
+    <div layout="row">
+        <form>
+            <input placeholder="{{ctrl.placeholder}}" ng-model="ctrl.searchText" class="quick-query-search" flex type="search"/>
+            <md-button type="submit" class="md-icon-button" ng-click="ctrl.search()" ng-disabled="!ctrl.query">
+                <md-icon class="search-icon" md-svg-icon="query"></md-icon>
+                <md-tooltip>{{ctrl.description}}</md-tooltip>
+            </md-button>
+        </form>
+    </div>
+</md-card>
+    
