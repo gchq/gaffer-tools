@@ -23,7 +23,7 @@
             <md-input-container>
                 <input ng-model="ctrl.startTime"
                        ng-model-options="{ timezone: 'UTC', updateOn: 'default blur', debounce: { 'default': 500,'blur': 0}}"
-                       aria-label="start time (hh:mm:ss.SSS)"
+                       aria-label="start time (hh:mm:ss)"
                        ng-disabled="!ctrl.startDate"
                        type="time"
                        id="start-time"
@@ -53,7 +53,7 @@
             <md-input-container>
                 <input ng-model="ctrl.endTime"
                        ng-model-options="{ timezone: 'UTC', updateOn: 'default blur', debounce: { 'default': 500,'blur': 0}}"
-                       aria-label="end time (hh:mm:ss.SSS)"
+                       aria-label="end time (hh:mm:ss)"
                        ng-disabled="!ctrl.endDate"
                        type="time"
                        id="end-time"
