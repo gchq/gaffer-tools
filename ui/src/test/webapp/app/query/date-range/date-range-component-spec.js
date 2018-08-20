@@ -105,10 +105,24 @@ describe('The date range component', function() {
                 expect(ctrl.startDate).toEqual(new Date(123456789));
             });
 
+            it('should set the initial value of the start time if one exists in the model', function() {
+                model.startDate = 1530627916000    // 03/07/2018 @ 14:25:16 (UTC)
+                ctrl.$onInit()
+                var expectedDate = moment.utc([1970, 0, 1, 14, 25, 16]).toDate();
+                expect(ctrl.startTime).toEqual(expectedDate)
+            });
+
             it('should set the initial value of the end date if one exists in the model', function() {
                 model.endDate = 123456789;
                 ctrl.$onInit();
                 expect(ctrl.endDate).toEqual(new Date(123456789));
+            });
+
+            it('should set the initial value of the end time if one exists in the model', function() {
+                model.endDate = 1530627916000    // 03/07/2018 @ 14:25:16 (UTC)
+                ctrl.$onInit()
+                var expectedDate = moment.utc([1970, 0, 1, 14, 25, 16]).toDate();
+                expect(ctrl.endTime).toEqual(expectedDate)
             });
 
             it('should convert the value if the unit is second', function() {
@@ -420,7 +434,7 @@ describe('The date range component', function() {
             it('should set the time for the end Date if it exists', function() {
                 ctrl.endTime = moment.utc([1970, 0, 1, 10, 30, 15]).toDate();  // 10:30:15
                 ctrl.onEndDateUpdate();
-                expect(model.endDate).toEqual(1516617015000) // date + time
+                expect(model.endDate).toEqual(1516617015999) // date + time + 999 ms
             });
 
             it('should round down when using a less precise time unit', function() {
