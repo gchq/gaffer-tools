@@ -26,10 +26,11 @@ function quickQuery() {
     }
 } 
 
-function QuickQueryController(config, schema, csv, error, types, query, navigation) {
+function QuickQueryController(config, schema, csv, error, types, query, operationService, settings) {
     var vm = this;
 
     var ENTITY_SEED_CLASS = "uk.gov.gchq.gaffer.operation.data.EntitySeed";
+    var OPERATION_CHAIN_CLASS = "uk.gov.gchq.gaffer.operation.OperationChain";
 
     var defaultQuery = JSON.stringify({
         "class": "uk.gov.gchq.gaffer.operation.impl.get.GetElements",
@@ -44,12 +45,16 @@ function QuickQueryController(config, schema, csv, error, types, query, navigati
             ]
         }
     });
-    
-    vm.searchText = "";
-    vm.placeholder = "Quick query"
-    vm.description = "Get all related Elements";
-    vm.query = null;
     vm.vertexClass = null;
+    vm.searchText = "";
+    
+    // default configuration values
+    vm.placeholder = "Quick query"
+    vm.description = "Get related Elements";
+    vm.query = null;
+    vm.dedupe = true;
+    vm.limit = true;
+    vm.options = false;
 
     vm.$onInit = function() {
 
@@ -58,9 +63,16 @@ function QuickQueryController(config, schema, csv, error, types, query, navigati
                 vm.query = defaultQuery;
                 return;
             }
-            vm.placeholder = conf.quickQuery.placeholder ;
-            vm.description = conf.quickQuery.description;
+            vm.placeholder = conf.quickQuery.placeholder ? conf.quickQuery.placeholder : vm.placeholder;
+            vm.description = conf.quickQuery.description ? conf.quickQuery.description : vm.description;
+            vm.dedupe = conf.quickQuery.deduplicate !== undefined ? conf.quickQuery.deduplicate : vm.dedupe;
+            vm.options = conf.quickQuery.useDefaultOperationOptions !== undefined ? conf.quickQuery.useDefaultOperationOptions : vm.options;
+            vm.limit = conf.quickQuery.limit !== undefined ? conf.quickQuery.limit : vm.limit;
             vm.query = conf.quickQuery.operation ? JSON.stringify(conf.quickQuery.operation) : defaultQuery;
+
+            if (vm.query.indexOf('"${input}"') === -1) {
+                throw Error('Quick query operation configuration is invalid. Operation must contain the string "${input}" (with quotes)');
+            }
         });
 
         schema.get().then(function(gafferSchema) {
@@ -84,11 +96,39 @@ function QuickQueryController(config, schema, csv, error, types, query, navigati
         var operation = vm.query.replace("\"${input}\"", stringifiedInput);
 
         operation = JSON.parse(operation);
-        query.addOperation(operation);
 
-        query.executeQuery(operation, function() {
+        var chain;
+
+        if (operation.class === OPERATION_CHAIN_CLASS) {
+            chain = operation;
+        } else {
+            chain = {
+                class: OPERATION_CHAIN_CLASS,
+                operations: [
+                    operation
+                ]
+            }
+        }
+
+        if (vm.dedupe) {
+            chain.operations.push(operationService.createDeduplicateOperation());
+        }
+
+        if (vm.limit) {
+            chain.operations.push(operationService.createLimitOperation());
+        }
+
+        if (vm.options && !chain.options) {
+            var currentOptions = settings.getDefaultOpOptions();
+            if (Object.keys(currentOptions).length > 0) {
+                chain.options = currentOptions;
+            }
+        }
+
+        query.addOperation(chain);
+
+        query.executeQuery(chain, function() {
             vm.searchText = "";
-            navigation.goTo('results');
         });
 
     }
