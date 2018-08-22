@@ -26,6 +26,7 @@ UI
     - [Operations](#operations)
     - [Types](#types)
     - [Time](#time)
+    - [Quick Query](#quick-query)
     - [Graph](#graph)
 6. [Testing](#testing)
 
@@ -512,6 +513,53 @@ To use the time window feature, some assumptions should be true:
 | class         | string  | The java class of the object - this class should exist in the types section
 
 It's worth noting that if your elements have a single timestamp, just use the same timestamp property in the startProperty and endProperty
+
+### Quick Query
+
+You can edit the behaviour of the quick query component in the Gaffer UI using the following properties.
+
+| name                        |  type           | description                            
+|-----------------------------|-----------------|---------------------------------------------------------
+| placeholder                 | string          | The string placeholder on the search box. Defaults to "Quick Query"
+| description                 | string          | A breif description of what the query does. Defaults to "Get related elements" 
+| operation                   | gaffer operation| An operation or operation chain you wish to execute when the user runs the query. Make sure to substitue "${input}" (with quotes) for where the input should be. The quick query component will generate an entity seed and replace the "${input}" string with the entity seed. Defaults to a GetElements operation.
+| useDefaultOperationOptions  | boolean         | A flag representing whether the UI should add the default operation options specified in the settings page (if they are specified). Defaults to false
+| deduplicate                 | boolean         | A flag representing whether a ToSet operation is added to the chain to remove duplicate values. Defaults to true.
+| limit                       | boolean         | A flag representing whether a Limit operation is added to the chain. The operation will use the result limit specified in the settings page. If disabled and the query returns more than the result limit, the results will be truncated anyway. Therefore the limit operation is there to save query time. Defaults to true.
+
+#### Example
+
+```json
+{
+    "quickQuery": {
+        "placeholder": "Enter a seed",
+        "description": "2 hop query",
+        "useDefaultOperationOptions": true,
+        "deduplicate": true,
+        "limit": false,
+        "operation": {
+            "class": "OperationChain",
+            "operations": [
+                {
+                    "class": "GetAdjacentIds",
+                    "input": [ "${input}" ]
+                },
+                {
+                    "class": "GetElements",
+                    "view": {
+                        "globalElements": [
+                            {
+                                "groupBy": []
+                            }
+                        ]
+                    }
+                }
+            ]
+        }
+    }
+}
+```
+
 
 ### Graph
 
