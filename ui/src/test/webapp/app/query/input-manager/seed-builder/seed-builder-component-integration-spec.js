@@ -91,7 +91,7 @@ describe('The Seed Builder', function() {
         expect(error.handle).not.toHaveBeenCalled();
     }
 
-    it('should reset a text box when it recieves a single string as input', function() {
+    it('should reset a text box when it receives a single string as input', function() {
         ctrl.vertexClass = 'java.lang.String';
         fireEvent([{
             valueClass: 'java.lang.String',
@@ -104,7 +104,7 @@ describe('The Seed Builder', function() {
         assertNoErrors();
     });
 
-    it('should reset the text box when it recieves a single number as input', function() {
+    it('should reset the text box when it receives a single number as input', function() {
         ctrl.vertexClass = 'java.lang.Long';
         fireEvent([{
             valueClass: 'java.lang.Long',
@@ -117,7 +117,7 @@ describe('The Seed Builder', function() {
         assertNoErrors();
     });
 
-    it('should reset the text box when it recieves a complex object as input', function() {
+    it('should reset the text box when it receives a complex object as input', function() {
         ctrl.vertexClass = 'uk.gov.gchq.gaffer.types.TypeSubTypeValue';
         fireEvent([{
             valueClass: 'uk.gov.gchq.gaffer.types.TypeSubTypeValue',
