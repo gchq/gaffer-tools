@@ -344,7 +344,15 @@ md-card.closed-add-active, md-card.closed {
     outline: none;
 }
 
+.no-errors .md-errors-spacer {
+    display: none;
+}
+
 .search-icon {
     fill: #777 !important
+}
+
+quick-query {
+    min-width: 200px;
 }
 
