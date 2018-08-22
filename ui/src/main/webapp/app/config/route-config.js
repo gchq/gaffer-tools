@@ -56,6 +56,12 @@ angular.module('app').config(['$locationProvider', '$routeProvider', function($l
             icon: 'settings',
             inNav: true
         })
+        .when('/about', {
+            title: 'About',
+            template: '<about></about>',
+            icon: 'info',
+            inNav: true
+        })
         .when('/results', {
             redirectTo: '/table'
         })

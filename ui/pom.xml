@@ -88,8 +88,8 @@
                 <configuration>
                     <jsSrcDir>${project.build.directory}/${project.build.finalName}/app</jsSrcDir>
                     <sourceIncludes>
-                        <include>**/*.js</include>
                         <include>*.js</include>
+                        <include>**/*.js</include>
                     </sourceIncludes>
                     <jsTestSrcDir>src/test/webapp/app</jsTestSrcDir>
                     <specIncludes>
@@ -105,6 +105,7 @@
                         <source>${project.build.directory}/${project.build.finalName}/lib/angular/js/angular-material.min.js</source>
                         <source>${project.build.directory}/${project.build.finalName}/lib/angular/js/angular-route.min.js</source>
                         <source>${project.build.directory}/${project.build.finalName}/lib/angular/js/angular-mocks.min.js</source>
+                        <source>${project.build.directory}/${project.build.finalName}/lib/angular/js/angular-sanitize.min.js</source>
                         <source>${project.build.directory}/${project.build.finalName}/lib/cytoscape/js/cytoscape.min.js</source>
                         <source>${project.build.directory}/${project.build.finalName}/lib/cytoscape/js/cytoscape-ngraph.forcelayout.js</source>
                         <source>${project.build.directory}/${project.build.finalName}/lib/jquery/js/jquery.min.js</source>
@@ -473,8 +474,8 @@
                         <configuration>
                             <jsSrcDir>src/main/webapp/app</jsSrcDir>
                             <sourceIncludes>
-                                <include>**/*.js</include>
                                 <include>*.js</include>
+                                <include>**/*.js</include>
                             </sourceIncludes>
                             <jsTestSrcDir>src/test/webapp/app</jsTestSrcDir>
                             <specIncludes>
@@ -490,6 +491,7 @@
                                 <source>dependencies/lib/angular/js/angular-material.min.js</source>
                                 <source>dependencies/lib/angular/js/angular-route.min.js</source>
                                 <source>dependencies/lib/angular/js/angular-mocks.min.js</source>
+                                <source>dependencies/lib/angular/js/angular-sanitize.min.js</source>
                                 <source>dependencies/lib/cytoscape/js/cytoscape.min.js</source>
                                 <source>dependencies/lib/cytoscape/js/cytoscape-ngraph.forcelayout.js</source>
                                 <source>dependencies/lib/jquery/js/jquery.min.js</source>
