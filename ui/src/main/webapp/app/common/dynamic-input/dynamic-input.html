@@ -1,4 +1,4 @@
-<div layout="column" layout-gt-md="row" layout-wrap layout-fill>
+<div ng-if="!(ctrl.useDatepicker && ctrl.dateUnit && ctrl.canUseDatePicker())" layout="column" layout-gt-md="row" layout-wrap layout-fill>
     <div ng-repeat="field in ctrl.getFields()" flex="{{ctrl.getFlexValue()}}"
          class="padding-sides">
         <div ng-if="'textarea' === field.type">
@@ -51,4 +51,7 @@
             {{ctrl.param.description}}
         </md-tooltip>
     </div>
+</div>
+<div ng-if="ctrl.useDatepicker && ctrl.dateUnit && ctrl.canUseDatePicker()">
+    <dynamic-date-picker unit="ctrl.dateUnit" param="ctrl.param" name="ctrl.name"></dynamic-date-picker>
 </div>
