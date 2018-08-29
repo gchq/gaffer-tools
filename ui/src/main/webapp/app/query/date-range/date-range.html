@@ -1,10 +1,20 @@
 <ng-form name="ctrl.dateForm">
-    <h3 class="section-title" style="display: table">
-        Time range
-        <md-tooltip md-direction="top">
-            Inclusive time range in UTC
-        </md-tooltip>
-    </h3>
+    <div layout="row" layout-align="start center">
+        <h3 class="no-margin">Inclusive time range (UTC)</h3>
+        <md-menu ng-if="ctrl.presets">
+            <md-button class="md-icon-button" ng-click="$mdMenu.open($event)"  >
+                <md-icon md-menu-origin md-svg-icon="list"></md-icon>
+                <md-tooltip>use presets</md-tooltip>
+            </md-button>
+            <md-menu-content width="4">
+                <md-menu-item ng-repeat="(name, value) in ctrl.presets">
+                    <md-button ng-click="ctrl.updateValues(value)">
+                        {{ name }}
+                    </md-button>
+                </md-menu-item>
+            </md-menu-content>
+        </md-menu>
+    </div>
 
     <div layout-gt-lg="row" layout="column">
         <div layout="row">

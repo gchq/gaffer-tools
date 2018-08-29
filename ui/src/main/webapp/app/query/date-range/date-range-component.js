@@ -38,6 +38,8 @@ function DateRangeController(time, events) {
     vm.startTime=null
     vm.endTime=null
 
+    vm.presets;
+
     vm.localeProviderOverride = {
         parseDate:  function(dateString) {
             var m = moment(dateString, ['YYYY-MM-DD', 'YYYY/MM/DD', 'YYYY.MM.DD'], true);
@@ -48,6 +50,11 @@ function DateRangeController(time, events) {
             var m = moment(date);
             return m.isValid() ? m.format('YYYY-MM-DD') : '';
         }
+    }
+
+    vm.updateValues = function(values) {
+        // use offsets to calculate new values. For now, just log them
+        console.log(values);
     }
 
     var updateView = function(dates) {
@@ -98,6 +105,8 @@ function DateRangeController(time, events) {
                 throw 'Config Error: ' + time.getUnitErrorMsg(vm.conf.filter.unit);
             }
         }
+
+        vm.presets = vm.conf.filter.presets;
 
         if (!vm.model) {
             throw 'Date range component must be initialised with a model'
