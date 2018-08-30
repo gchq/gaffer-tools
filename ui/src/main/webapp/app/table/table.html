@@ -17,24 +17,22 @@
     <md-card>
         <md-toolbar class="md-table-toolbar md-default">
             <div class="md-toolbar-tools" layout-align="start start">
-                <div layout="row" flex>
-                    <md-input-container flex="25">
-                        <md-select ng-model="ctrl.data.columns" multiple
-                            aria-label="table column headers"
-                                    ng-disabled="ctrl.data.results.length === 0"
-                            md-selected-text="ctrl.selectedColumnsText()">
-                            <md-option ng-value="col"
-                                    ng-repeat="col in ctrl.data.allColumns">
-                                {{col}}
-                                <span ng-if="'SOURCE' === col">/ VERTEX</span>
-                            </md-option>
-                        </md-select>
-                    </md-input-container>
-    
-                    <md-input-container flex="75" md-no-float>
-                        <input ng-model="ctrl.searchTerm" type="search" placeholder="Search vertices and properties">
-                    </md-input-container>
-                </div>
+                <md-input-container flex="25">
+                    <md-select ng-model="ctrl.data.columns" multiple
+                        aria-label="table column headers"
+                                ng-disabled="ctrl.data.results.length === 0"
+                        md-selected-text="ctrl.selectedColumnsText()">
+                        <md-option ng-value="col"
+                                ng-repeat="col in ctrl.data.allColumns">
+                            {{col}}
+                            <span ng-if="'SOURCE' === col">/ VERTEX</span>
+                        </md-option>
+                    </md-select>
+                </md-input-container>
+
+                <md-input-container flex="75" md-no-float>
+                    <input ng-model="ctrl.searchTerm" type="search" placeholder="Search vertices and properties">
+                </md-input-container>
                 <div layout="column" layout-align="center" class="fill-height">
                     <md-button ng-if="ctrl.data.results.length > 0" class="md-accent md-raised"
                         aria-label="download table to csv"
