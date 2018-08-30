@@ -15,10 +15,10 @@
   -->
 <div ng-cloak layout="column" layout-align=" stretch">
     <md-card>
-        <md-toolbar class="md-table-toolbar md-default">
+        <md-toolbar class="table-toolbar">
             <div class="md-toolbar-tools" layout-align="start start">
                 <div layout="row" flex>
-                    <md-input-container flex="25">
+                    <md-input-container flex="35">
                         <md-select ng-model="ctrl.data.columns" multiple
                             aria-label="table column headers"
                                     ng-disabled="ctrl.data.results.length === 0"
@@ -31,15 +31,20 @@
                         </md-select>
                     </md-input-container>
     
-                    <md-input-container flex="75" md-no-float>
+                    <md-input-container flex="65" md-no-float>
                         <input ng-model="ctrl.searchTerm" type="search" placeholder="Search vertices and properties">
                     </md-input-container>
                 </div>
                 <div layout="column" layout-align="center" class="fill-height">
-                    <md-button ng-if="ctrl.data.results.length > 0" class="md-accent md-raised"
-                        aria-label="download table to csv"
-                        ng-click="ctrl.download()">Download as CSV
-                    </md-button>
+                    <div layout="row">
+                        <md-button ng-if="ctrl.data.results.length > 0" class="md-primary md-raised" aria-label="create chart visualisation">
+                            Create visualisation
+                        </md-button>
+                        <md-button ng-if="ctrl.data.results.length > 0" class="md-accent md-raised"
+                            aria-label="download table to csv"
+                            ng-click="ctrl.download()">Download as CSV
+                        </md-button>
+                    </div>
                 </div>
             </div>
         </md-toolbar>
