@@ -310,7 +310,7 @@ angular.module('app').controller('VisualisationDialogController', ['$scope', 'co
     
             $scope.options = extractChartOptions(chartSettings);
         } catch(e) {
-            error.handle('Unable to create chart with parameters specified', e);
+            error.handle('Unable to create chart with parameters specified');
             return;
         }
 
