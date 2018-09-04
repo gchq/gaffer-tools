@@ -91,43 +91,6 @@ angular.module('app').controller('VisualisationDialogController', ['$scope', 'co
                 }
             }
         },
-        "radar": {
-            "type": "radar",
-            "fields": {
-                "radarProperties": {
-                    "label": "properties",
-                    "required": true,
-                    "multiple": true
-                },
-                "series": {
-                    "label": "chart series property"
-                }
-            }
-        },
-        "bubble": {
-            "type": "bubble",
-            "fields": {
-                "bubbleX": {
-                    "axis": "x",
-                    "label": "x axis property",
-                    "required": true
-                },
-                "bubbleY": {
-                    "axis": "y",
-                    "label": "y axis property",
-                    "required": true
-                },
-                "bubbleR": {
-                    "axis": "r",
-                    "label": "radius property",
-                    "required": true
-                },
-                "series": {
-                    "label": "chart series property",
-                    "required": false
-                }
-            }
-        },
         "polar area": {
             "type": "polarArea",
             "fields": {
@@ -168,14 +131,6 @@ angular.module('app').controller('VisualisationDialogController', ['$scope', 'co
             }
         }
     };
-
-    var extractRadarChartValues = function(chartSettings) {
-        // todo
-    }
-
-    var extractBubbleChartValues = function(chartSettings) {
-        // todo
-    }
 
     var extractFrequencyMapChartValues = function(chartSettings) {
         // work out aggregation
@@ -346,11 +301,7 @@ angular.module('app').controller('VisualisationDialogController', ['$scope', 'co
     $scope.preview = function() {
         var chartSettings = angular.copy($scope.selectedChart);
 
-        if (chartSettings.type === 'radar') {
-            extractRadarChartValues(chartSettings);
-        } else if (chartSettings.type === 'bubble') {
-            extractBubbleChartValues(chartSettings);
-        } else if (chartSettings.fields.frequencyMapProperty) {
+        if (chartSettings.fields.frequencyMapProperty) {
             extractFrequencyMapChartValues(chartSettings);
         } else {
             extractDefaultChartValues(chartSettings);

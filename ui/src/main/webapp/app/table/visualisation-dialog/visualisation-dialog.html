@@ -14,10 +14,7 @@
             </md-input-container>
             <md-input-container ng-repeat="(key, field) in selectedChart.fields">
                 <label>{{ field.label }}</label>
-                <md-select ng-if="field.multiple" ng-model="field.value" ng-required="field.required" multiple>
-                    <md-option ng-repeat="option in columns" ng-value="option">{{ option }}</md-option>
-                </md-select>
-                <md-select ng-if="!field.multiple" ng-model="field.value" ng-required="field.required">
+                <md-select ng-model="field.value" ng-required="field.required">
                     <md-option ng-repeat="option in columns" ng-value="option">{{ option }}</md-option>
                 </md-select>
             </md-input-container>
