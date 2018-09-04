@@ -16,7 +16,7 @@
 
  'use strict';
 
-angular.module('app').controller('VisualisationDialogController', ['$scope', 'common', '$mdDialog', function($scope, common, $mdDialog) {
+angular.module('app').controller('VisualisationDialogController', ['$scope', 'common', '$mdDialog', 'time', function($scope, common, $mdDialog, time) {
     $scope.title = "Create Visualisation"
 
     $scope.columns = this.columns;
@@ -29,10 +29,12 @@ angular.module('app').controller('VisualisationDialogController', ['$scope', 'co
             "type": "line",
             "fields": {
                 "labels": {
+                    "axis": "x",
                     "label": "x axis property",
                     "required": true
                 },
                 "data": {
+                    "axis": "y",
                     "label": "y axis property",
                     "required": true
                 },
@@ -45,10 +47,12 @@ angular.module('app').controller('VisualisationDialogController', ['$scope', 'co
             "type": "bar",
             "fields": {
                 "labels": {
+                    "axis": "x",
                     "label": "x axis property",
                     "required": true
                 },
                 "data": {
+                    "axis": "y",
                     "label": "y axis property",
                     "required": true
                 },
@@ -61,10 +65,12 @@ angular.module('app').controller('VisualisationDialogController', ['$scope', 'co
             "type": "horizontalBar",
             "fields": {
                 "data": {
+                    "axis": "x",
                     "label": "x axis property",
                     "required": true
                 },
                 "labels": {
+                    "axis": "y",
                     "label": "y axis property",
                     "required": true
                 },
@@ -90,14 +96,17 @@ angular.module('app').controller('VisualisationDialogController', ['$scope', 'co
             "type": "bubble",
             "fields": {
                 "bubbleX": {
+                    "axis": "x",
                     "label": "x axis property",
                     "required": true
                 },
                 "bubbleY": {
+                    "axis": "y",
                     "label": "y axis property",
                     "required": true
                 },
                 "bubbleR": {
+                    "axis": "r",
                     "label": "radius property",
                     "required": true
                 },
@@ -213,6 +222,31 @@ angular.module('app').controller('VisualisationDialogController', ['$scope', 'co
         
     }
 
+    var extractChartOptions = function(chartSettings) {
+        var options = {};
+
+        var axisToOptionName = {
+            "x": "xAxes",
+            "y": "yAxes"
+        }
+
+        for (var field in chartSettings.fields) {
+            var fieldData = chartSettings.fields[field];
+            if (fieldData.axis) {
+                if (time.isTimeProperty(fieldData.value)) {
+                    if (!options.scales) {
+                        options.scales = {};
+                    }
+                    options.scales[axisToOptionName[fieldData.axis]] = [{
+                        type: "time"
+                    }];
+                }
+            }
+        }
+        
+        return options;
+    }
+
     $scope.preview = function() {
         var chartSettings = angular.copy($scope.selectedChart);
 
@@ -223,6 +257,8 @@ angular.module('app').controller('VisualisationDialogController', ['$scope', 'co
         } else {
             extractDefaultChartValues(chartSettings);
         }
+
+        $scope.options = extractChartOptions(chartSettings);
 
         $scope.showPreview = true;
     }
@@ -236,7 +272,8 @@ angular.module('app').controller('VisualisationDialogController', ['$scope', 'co
             type: $scope.selectedChart.type,
             labels: $scope.labels,
             data: $scope.chartData,
-            series: $scope.series
+            series: $scope.series,
+            options: $scope.options
         }
 
         $mdDialog.hide(toReturn);
