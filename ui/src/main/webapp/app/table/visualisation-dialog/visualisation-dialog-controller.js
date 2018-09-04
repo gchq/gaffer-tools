@@ -43,6 +43,18 @@ angular.module('app').controller('VisualisationDialogController', ['$scope', 'co
                 }
             }
         },
+        "bar chart from frequency map": {
+            "type": "bar",
+            "fields": {
+                "frequencyMapProperty": {
+                    "label": "frequency map property",
+                    "required": true
+                },
+                "series": {
+                    "label": "chart series"
+                }
+            }
+        },
         "bar": {
             "type": "bar",
             "fields": {
@@ -158,10 +170,94 @@ angular.module('app').controller('VisualisationDialogController', ['$scope', 'co
     };
 
     var extractRadarChartValues = function(chartSettings) {
-        
+        // todo
     }
 
     var extractBubbleChartValues = function(chartSettings) {
+        // todo
+    }
+
+    var extractFrequencyMapChartValues = function(chartSettings) {
+        // work out aggregation
+        var seriesProperty = chartSettings.fields.series ? chartSettings.fields.series.value : undefined;
+        var frequencyMapProperty = chartSettings.fields.frequencyMapProperty.value;
+
+        // build up big frequency map for each series or aggregate it all together.
+
+        if (seriesProperty === undefined || seriesProperty === null) {
+            var aggregatedFrequencyMap = {};
+
+            $scope.data.forEach(row => {
+                var stringFrequencyMap = row[frequencyMapProperty];
+                if (stringFrequencyMap) {    // skip empty rows
+                    var keyValues = stringFrequencyMap.split(', ');   // creates a list of key value pairs eg. key1: 5
+                    keyValues.forEach(keyValue => {
+                        var kv = keyValue.split(': ') // creates [key, value] array
+                        if (aggregatedFrequencyMap[kv[0]]) {
+                            aggregatedFrequencyMap[kv[0]] += Number(kv[1]); // add to current value if it exists
+                        } else {
+                            aggregatedFrequencyMap[kv[0]] = Number(kv[1]);  // else set the value
+                        }
+                    })
+                }
+            });
+
+            $scope.labels = Object.keys(aggregatedFrequencyMap);
+            $scope.chartData = Object.values(aggregatedFrequencyMap);
+            $scope.series = undefined;
+        } else {
+            // iterate through data
+            var groupedFrequencyMaps = {};
+            $scope.data.forEach(row => {
+                var stringFrequencyMap = row[frequencyMapProperty];
+                var series = row[seriesProperty];
+
+                if (stringFrequencyMap) {    // skip empty values
+                    if (!groupedFrequencyMaps[series]) { // if no frequency exists for this series, create one
+                        groupedFrequencyMaps[series] = {};
+                    }
+                    var keyValues = stringFrequencyMap.split(', ');    // iterate through frequency map
+                    keyValues.forEach(keyValue => {
+                        var kv = keyValue.split(': ') // creates [key, value] array
+                        // either create new values or add to existing values
+                        if (groupedFrequencyMaps[series][kv[0]]) {
+                            groupedFrequencyMaps[series][kv[0]] += Number(kv[1]); // add to current value if it exists
+                        } else {
+                            groupedFrequencyMaps[series][kv[0]] = Number(kv[1]);  // else set the value
+                        }
+                    });
+                }
+            })
+
+            // series are then given by Object.keys 
+            $scope.series = Object.keys(groupedFrequencyMaps);
+            var uniqueLabels = [];
+
+            // calculate unique set of labels
+            for (var series in groupedFrequencyMaps) {
+                common.pushValuesIfUnique(Object.keys(groupedFrequencyMaps[series]), uniqueLabels);
+            }
+
+            $scope.labels = uniqueLabels;
+
+            var data = [];
+
+            // for each frequency map calculate the data values based on this unique list
+            for (var series in groupedFrequencyMaps) {
+                var freqMap = groupedFrequencyMaps[series];
+                var flatMapValues = [];
+
+                for (var i in uniqueLabels) {
+                    var label = uniqueLabels[i];
+                    flatMapValues[i] = freqMap[label];
+                }
+
+                data.push(flatMapValues);
+            }
+            
+            // set the data values
+            $scope.chartData = data;
+        }
 
     }
 
@@ -254,6 +350,8 @@ angular.module('app').controller('VisualisationDialogController', ['$scope', 'co
             extractRadarChartValues(chartSettings);
         } else if (chartSettings.type === 'bubble') {
             extractBubbleChartValues(chartSettings);
+        } else if (chartSettings.fields.frequencyMapProperty) {
+            extractFrequencyMapChartValues(chartSettings);
         } else {
             extractDefaultChartValues(chartSettings);
         }
