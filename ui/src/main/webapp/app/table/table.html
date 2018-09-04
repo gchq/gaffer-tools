@@ -14,6 +14,18 @@
   ~ limitations under the License.
   -->
 <div ng-cloak layout="column" layout-align=" stretch">
+    <md-card ng-show="ctrl.showVisualisation">
+        <canvas 
+            class="chart-base" 
+            chart-type="ctrl.chart.type" 
+            chart-labels="ctrl.chart.labels" 
+            chart-series="ctrl.chart.series" 
+            chart-data="ctrl.chart.data">
+        </canvas>
+        <md-card-actions layout="row" layout-align="start center">
+            <md-button ng-click="ctrl.hideVisualisation()">hide</md-button>
+        </md-card-actions>
+    </md-card>
     <md-card>
         <md-toolbar class="table-toolbar">
             <div class="md-toolbar-tools" layout-align="start start">
@@ -36,7 +48,7 @@
                 
                 <div layout="column" layout-align="center" class="fill-height">
                     <div layout="row">
-                        <md-button ng-if="ctrl.data.results.length > 0" class="md-primary md-raised" aria-label="create chart visualisation">
+                        <md-button ng-if="ctrl.data.results.length > 0" class="md-primary md-raised" aria-label="create chart visualisation" ng-click="ctrl.createVisualisation($event)">
                             Create visualisation
                         </md-button>
                         <md-button ng-if="ctrl.data.results.length > 0" class="md-accent md-raised"
