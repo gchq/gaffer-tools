@@ -16,7 +16,7 @@
 
  'use strict';
 
-angular.module('app').controller('VisualisationDialogController', ['$scope', 'common', '$mdDialog', 'time', function($scope, common, $mdDialog, time) {
+angular.module('app').controller('VisualisationDialogController', ['$scope', 'common', '$mdDialog', 'time', 'error', function($scope, common, $mdDialog, time, error) {
     $scope.title = "Create Visualisation"
 
     $scope.columns = this.columns;
@@ -301,13 +301,18 @@ angular.module('app').controller('VisualisationDialogController', ['$scope', 'co
     $scope.preview = function() {
         var chartSettings = angular.copy($scope.selectedChart);
 
-        if (chartSettings.fields.frequencyMapProperty) {
-            extractFrequencyMapChartValues(chartSettings);
-        } else {
-            extractDefaultChartValues(chartSettings);
+        try {
+            if (chartSettings.fields.frequencyMapProperty) {
+                extractFrequencyMapChartValues(chartSettings);
+            } else {
+                extractDefaultChartValues(chartSettings);
+            }
+    
+            $scope.options = extractChartOptions(chartSettings);
+        } catch(e) {
+            error.handle('Unable to create chart with parameters specified', e);
+            return;
         }
-
-        $scope.options = extractChartOptions(chartSettings);
 
         $scope.showPreview = true;
     }
