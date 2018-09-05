@@ -2,6 +2,25 @@
   "operations": {
     "loadNamedOperationsOnStartup": true
   },
+  "quickQuery": {
+    "operation": {
+      "class": "uk.gov.gchq.gaffer.operation.impl.get.GetElements",
+      "input": [
+          "${input}"
+      ],
+      "view": {
+          "globalElements": [
+              {
+                  "groupBy": []
+              }
+          ]
+      }
+    },
+    "deduplicate": true,
+    "limit": true,
+    "description": "Get related Elements",
+    "useDefaultOperationOptions": false
+  },
   "types": {
     "java.util.Date": {
       "fields": [

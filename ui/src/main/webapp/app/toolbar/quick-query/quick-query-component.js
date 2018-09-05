@@ -32,59 +32,47 @@ function QuickQueryController(config, schema, csv, error, types, query, operatio
     var ENTITY_SEED_CLASS = "uk.gov.gchq.gaffer.operation.data.EntitySeed";
     var OPERATION_CHAIN_CLASS = "uk.gov.gchq.gaffer.operation.OperationChain";
 
-    var defaultQuery = JSON.stringify({
-        "class": "uk.gov.gchq.gaffer.operation.impl.get.GetElements",
-        "input": [
-            "${input}"
-        ],
-        "view": {
-            "globalElements": [
-                {
-                    "groupBy": []
-                }
-            ]
-        }
-    });
-    vm.vertexClass = null;
     vm.searchText = "";
+    vm.placeholder = "Quick Query"
     
-    // default configuration values
-    vm.placeholder = "Quick query"
-    vm.description = "Get related Elements";
-    vm.query = null;
-    vm.dedupe = true;
-    vm.limit = true;
-    vm.options = false;
 
+    /**
+     * Initialisation function. Disables feature if specified by the user. Otherwise it
+     * Sets up all the values dictated by the configuration file. To calculate the vertex class,
+     * it uses the first vertex it finds in the schema.
+     */
     vm.$onInit = function() {
 
         config.get().then(function(conf) {
             if (!conf.quickQuery) {
-                vm.query = defaultQuery;
+                vm.disableFeature = true;   // remove component
                 return;
             }
-            vm.placeholder = conf.quickQuery.placeholder ? conf.quickQuery.placeholder : vm.placeholder;
-            vm.description = conf.quickQuery.description ? conf.quickQuery.description : vm.description;
-            vm.dedupe = conf.quickQuery.deduplicate !== undefined ? conf.quickQuery.deduplicate : vm.dedupe;
-            vm.options = conf.quickQuery.useDefaultOperationOptions !== undefined ? conf.quickQuery.useDefaultOperationOptions : vm.options;
-            vm.limit = conf.quickQuery.limit !== undefined ? conf.quickQuery.limit : vm.limit;
-            vm.query = conf.quickQuery.operation ? JSON.stringify(conf.quickQuery.operation) : defaultQuery;
+
+            schema.get().then(function(gafferSchema) {
+                var vertices = schema.getSchemaVertices();
+                if (vertices && vertices.length > 0 && undefined !== vertices[0]) {
+                    vm.vertexClass = gafferSchema.types[vertices[0]].class;
+                    var csvHeader = types.getCsvHeader(vm.vertexClass);
+                    vm.placeholder = conf.quickQuery.placeholder ? conf.quickQuery.placeholder : ('Quick Query' + (csvHeader === "" ? "" : ' eg. ' + csvHeader));
+                }
+            });
+            vm.description = conf.quickQuery.description;
+            vm.dedupe = conf.quickQuery.deduplicate;
+            vm.options = conf.quickQuery.useDefaultOperationOptions;
+            vm.limit = conf.quickQuery.limit;
+            vm.query = JSON.stringify(conf.quickQuery.operation);
 
             if (vm.query.indexOf('"${input}"') === -1) {
                 throw Error('Quick query operation configuration is invalid. Operation must contain the string "${input}" (with quotes)');
             }
         });
-
-        schema.get().then(function(gafferSchema) {
-            var vertices = schema.getSchemaVertices();
-            if (vertices && vertices.length > 0 && undefined !== vertices[0]) {
-                vm.vertexClass = gafferSchema.types[vertices[0]].class;
-            }
-        });
-
     }
 
-    
+    /**
+     * Uses configuration to create a gaffer operation from a string input. 
+     * Runs the operation against the REST service.
+     */
     vm.search = function() {
         var seed = createSeed();    // creates vertex (not wrapped in EntitySeed Class)
         var jsonSeed = types.createJsonValue(seed.valueClass, seed.parts);
@@ -152,10 +140,18 @@ function QuickQueryController(config, schema, csv, error, types, query, operatio
         return true;
     }
 
+    /**
+     * Error handling. Sends error to the error service
+     * @param {String} message the simple message
+     * @param {*} err The underlying error
+     */
     var onError = function(message, err) {
         error.handle(message, err);
     }
 
+    /**
+     * Generates a seed from the text entered into the search box
+     */
     var createSeed = function() {
         var separated = csv.parse(vm.searchText, onError);
         if (!separated) {
