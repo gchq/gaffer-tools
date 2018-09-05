@@ -1,19 +1,10 @@
 describe('The Quick Query Component', function() {
     var ctrl;
-    var $componentController;
+    var $componentController, $httpBackend;
 
     beforeEach(module('app'));
 
     beforeEach(module(function($provide) {
-        $provide.factory('config', function($q) {
-            var get = function() {
-                return $q.when({});
-            }
-
-            return {
-                get: get
-            }
-        });
         $provide.factory('schema', function($q) {
             return {
                 get: function() {
@@ -26,49 +17,69 @@ describe('The Quick Query Component', function() {
         });
     }));
 
-    beforeEach(inject(function(_$componentController_) {
+    beforeEach(inject(function(_$componentController_, _$httpBackend_) {
         $componentController = _$componentController_;
+        $httpBackend = _$httpBackend_;
     }));
+
+    beforeEach(function() {
+        $httpBackend.whenGET('config/defaultConfig.json').respond(200, {
+            "quickQuery": {
+              "defaultOperation": {
+                "class": "uk.gov.gchq.gaffer.operation.impl.get.GetElements",
+                "input": [
+                  "${input}"
+                ],
+                "view": {
+                  "globalElements": [
+                    {
+                      "groupBy": []
+                    }
+                  ]
+                }
+              },
+              "deduplicate": true,
+              "limit": true,
+              "description": "Get related Elements",
+              "useDefaultOperationOptions": false
+            },
+        })
+    })
 
     beforeEach(function() {
         ctrl = $componentController('quickQuery');
     });
 
     describe('ctrl.$onInit()', function() {
-        var config;
         var scope;
         var $q;
-        var configToReturn = {};
+        var types;
         var schemaToReturn = {}
 
-        beforeEach(inject(function(_$rootScope_, _config_, _$q_, _schema_) {
+        beforeEach(inject(function(_$rootScope_, _$q_, _schema_, _types_) {
             var $rootScope = _$rootScope_;
             scope = $rootScope.$new();
             ctrl = $componentController('quickQuery', { $scope: scope});
-            config = _config_;
             schema = _schema_;
             $q = _$q_;
+            types = _types_
         }));
 
         beforeEach(function() {
-            spyOn(config, 'get').and.callFake(function() {
-                return $q.when(configToReturn);
-            });
-
             spyOn(schema, 'get').and.callFake(function() {
                 return $q.when(schemaToReturn);
             });
         });
 
+        describe('When not configured', function() {
+
         beforeEach(function() {
-            configToReturn = {};
+                $httpBackend.whenGET('config/config.json').respond(200, {});
         });
 
-        describe('When not configured', function() {
-           
             beforeEach(function() {
                 ctrl.$onInit();
-                scope.$digest();
+                $httpBackend.flush();
             })
 
             it('should use a default description' , function() {
@@ -76,7 +87,7 @@ describe('The Quick Query Component', function() {
             });
 
             it('should use a default placeholder', function() {
-                expect(ctrl.placeholder).toEqual('Quick query');
+                expect(ctrl.placeholder).toEqual('Quick Query');
             });
 
             it('should use a default operation', function() {
@@ -85,83 +96,130 @@ describe('The Quick Query Component', function() {
         });
 
         it('should use a placeholder if configured', function() {
-            configToReturn = {
+            $httpBackend.whenGET('config/config.json').respond(200, {
                 "quickQuery": {
                     "placeholder": "test"
                 }
+            });
+
+            schemaToReturn = {
+                "types": {
+                    "vertex": {
+                        "class": "vertexClass"
+                    }
+                }
             }
 
+            spyOn(types, 'getCsvHeader').and.returnValue("placeholder should not contain csv header");
+
+            spyOn(schema, 'getSchemaVertices').and.returnValue(['vertex'])
+
             ctrl.$onInit();
-            scope.$digest();
+            $httpBackend.flush();
 
             expect(ctrl.placeholder).toEqual('test');
         });
 
-        it('should not overwrite the default placeholder', function() {
-            configToReturn = {
+        it('should use the phrase "Quick Query" if not defined in the config and no csv header exists', function() {
+            $httpBackend.whenGET('config/config.json').respond(200, {
                 "quickQuery": {}
+            });
+
+            schemaToReturn = {
+                "types": {
+                    "vertex": {
+                        "class": "vertexClass"
+                    }
+                }
             }
 
-            ctrl.$onInit();
-            scope.$digest();
+            spyOn(types, 'getCsvHeader').and.returnValue("");
+            spyOn(schema, 'getSchemaVertices').and.returnValue(['vertex'])
 
-            expect(ctrl.placeholder).toEqual('Quick query');
+            ctrl.$onInit();
+            $httpBackend.flush();
+
+            expect(ctrl.placeholder).toEqual('Quick Query');
+        });
+
+        it('should use the phrase "Quick Query" followed by an csv header if one exists', function() {
+            $httpBackend.whenGET('config/config.json').respond(200, {
+                "quickQuery": {}
+            });
+
+            schemaToReturn = {
+                "types": {
+                    "vertex": {
+                        "class": "vertexClass"
+                    }
+                }
+            }
+
+            spyOn(types, 'getCsvHeader').and.returnValue("insert csv header here");
+            spyOn(schema, 'getSchemaVertices').and.returnValue(['vertex'])
+
+            ctrl.$onInit();
+            $httpBackend.flush();
+
+            expect(ctrl.placeholder).toEqual('Quick Query eg. insert csv header here');
         });
 
         it('should use a configured description if defined', function() {
-            configToReturn = {
+            $httpBackend.whenGET('config/config.json').respond(200, {
                 'quickQuery': {
                     'description': 'test'
                 }
-            };
+            });
 
             ctrl.$onInit();
-            scope.$digest();
+            $httpBackend.flush();
 
             expect(ctrl.description).toEqual('test');
         });
 
         it('should use the default description if not defined', function() {
-            configToReturn = {
+            $httpBackend.whenGET('config/config.json').respond(200, {
                 'quickQuery': {}
-            };
+            });
 
             ctrl.$onInit();
-            scope.$digest();
+            $httpBackend.flush();
 
             expect(ctrl.description).toEqual('Get related Elements');
         });
 
         it('should use a configured operation if defined', function() {
-            configToReturn = {
-                'quickQuery': {
-                    'operation': {
-                        'class': 'GetAdjacentIds',
-                        'input': [ "${input}" ],
-                        'view': {
-                            'globalElements': [
-                                {
-                                    'groupBy': []
-                                }
-                            ]
+            var userDefinedOperation = {
+                'class': 'GetAdjacentIds',
+                'input': [ "${input}" ],
+                'view': {
+                    'globalElements': [
+                        {
+                            'groupBy': []
                         }
-                    }
+                    ]
                 }
             };
 
-            ctrl.$onInit();
-            scope.$digest();
+            $httpBackend.whenGET('config/config.json').respond(200, {
+                'quickQuery': {
+                    'operation': userDefinedOperation
+                }
+            });
 
-            expect(ctrl.query).toEqual(JSON.stringify(configToReturn.quickQuery.operation));
+            ctrl.$onInit();
+            $httpBackend.flush();
+
+            expect(ctrl.query).toEqual(JSON.stringify(userDefinedOperation));
         });
 
         it('should use the default operation if not defined', function() {
-            configToReturn = {
+            $httpBackend.whenGET('config/config.json').respond(200, {
                 'quickQuery': {}
-            };
+            });
 
             ctrl.$onInit();
-            scope.$digest();
+            $httpBackend.flush();
 
             var defaultQuery = JSON.stringify({
                 "class": "uk.gov.gchq.gaffer.operation.impl.get.GetElements",
@@ -181,93 +239,94 @@ describe('The Quick Query Component', function() {
         });
 
         it('should throw an error if the configured operation does not contain the string "${input}"', function() {
-            configToReturn = {
+            $httpBackend.whenGET('config/config.json').respond(200, {
                 'quickQuery' : {
                     'operation': {
                         'class': 'GetAllElements'
                     }
                 }
-            };
+            });
 
             expect(function() {
                 ctrl.$onInit();
-                scope.$digest();
+                $httpBackend.flush();
             }).toThrowError('Quick query operation configuration is invalid. Operation must contain the string "${input}" (with quotes)');
         });
 
         it('should set dedupe to true if not specified in the config', function() {
-            configToReturn = {
+            $httpBackend.whenGET('config/config.json').respond(200, {
                 'quickQuery': {}
-            };
+            });
 
             ctrl.$onInit();
-            scope.$digest();
+            $httpBackend.flush();
 
             expect(ctrl.dedupe).toBeTruthy();
         });
 
         it('should set dedupe to false if specified in the config', function() {
-            configToReturn = {
+            $httpBackend.whenGET('config/config.json').respond(200, {
                 'quickQuery': {
                     'deduplicate': false
                 }
-            };
+            });
 
             ctrl.$onInit();
-            scope.$digest();
+            $httpBackend.flush();
 
             expect(ctrl.dedupe).toBeFalsy()
         });
 
         it('should set options flag to false if useDefaultOperationOptions is not specified in the config', function() {
-            configToReturn = {
+            $httpBackend.whenGET('config/config.json').respond(200, {
                 'quickQuery': {}
-            }
+            });
 
             ctrl.$onInit();
-            scope.$digest();
+            $httpBackend.flush();
 
             expect(ctrl.options).toBeFalsy();
         });
 
         it('should set the options flag according to the useDefaultOperationOptions if specified', function() {
-            configToReturn = {
+            $httpBackend.whenGET('config/config.json').respond(200, {
                 'quickQuery': {
                     'useDefaultOperationOptions': true
                 }
-            }
+            });
 
             ctrl.$onInit();
-            scope.$digest();
+            $httpBackend.flush();
 
             expect(ctrl.options).toBeTruthy();
         });
 
         it('should set limit to true if not specified in the config', function() {
-            configToReturn = {
+            $httpBackend.whenGET('config/config.json').respond(200, {
                 'quickQuery': {}
-            };
+            });
 
             ctrl.$onInit();
-            scope.$digest();
+            $httpBackend.flush();
 
             expect(ctrl.limit).toBeTruthy();
         });
 
         it('should set limit to false if specified in the config', function() {
-            configToReturn = {
+            $httpBackend.whenGET('config/config.json').respond(200, {
                 'quickQuery': {
                     'limit': false
                 }
-            };
+            });
 
             ctrl.$onInit();
-            scope.$digest();
+            $httpBackend.flush();
 
             expect(ctrl.limit).toBeFalsy();
         });
 
         it('should use the schema to get the vertex class', function() {
+            $httpBackend.whenGET('config/config.json').respond(200, {});
             schemaToReturn = {
                 types: {
                     'vertexType1': {
@@ -279,10 +338,11 @@ describe('The Quick Query Component', function() {
                 }
             };
 
+            spyOn(types, 'getCsvHeader').and.returnValue("");
             spyOn(schema, 'getSchemaVertices').and.returnValue(['vertexType1', 'vertexType2']);
 
             ctrl.$onInit();
-            scope.$digest();
+            $httpBackend.flush();
 
             expect(ctrl.vertexClass).toEqual('my.vertex.Class');
         });

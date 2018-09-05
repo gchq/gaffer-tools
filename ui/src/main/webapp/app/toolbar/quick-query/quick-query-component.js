@@ -61,7 +61,7 @@ function QuickQueryController(config, schema, csv, error, types, query, operatio
             vm.dedupe = conf.quickQuery.deduplicate;
             vm.options = conf.quickQuery.useDefaultOperationOptions;
             vm.limit = conf.quickQuery.limit;
-            vm.query = JSON.stringify(conf.quickQuery.operation);
+            vm.query = conf.quickQuery.operation ? JSON.stringify(conf.quickQuery.operation) : JSON.stringify(conf.quickQuery.defaultOperation);
 
             if (vm.query.indexOf('"${input}"') === -1) {
                 throw Error('Quick query operation configuration is invalid. Operation must contain the string "${input}" (with quotes)');
