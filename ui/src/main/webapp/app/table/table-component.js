@@ -42,7 +42,7 @@ function TableController(schema, results, table, events, common, types, time, cs
     vm.filteredResults = [];
     vm.data = {results:[], columns:[]};
     vm.searchTerm = '';
-    vm.pagination = {limit: 100, page: 1};
+    vm.pagination = {limit: 50, page: 1};
     vm.sortType = undefined;
     vm.schema = {edges:{}, entities:{}, types:{}};
 
