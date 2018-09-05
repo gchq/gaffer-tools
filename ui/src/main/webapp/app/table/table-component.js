@@ -42,6 +42,7 @@ function TableController(schema, results, table, events, common, types, time, cs
     vm.filteredResults = [];
     vm.data = {results:[], columns:[]};
     vm.searchTerm = '';
+    vm.pagination = {limit: 50, page: 1};
     vm.sortType = undefined;
     vm.schema = {edges:{}, entities:{}, types:{}};
 
@@ -288,6 +289,10 @@ function TableController(schema, results, table, events, common, types, time, cs
         var cachedValues = table.getCachedValues();
         vm.searchTerm = cachedValues.searchTerm;
         vm.sortType =  cachedValues.sortType;
+
+        if (cachedValues.pagination) {
+            vm.pagination = cachedValues.pagination;
+        }
         if(cachedValues.columns && cachedValues.columns.length > 0) {
             vm.data.columns = cachedValues.columns;
         }
@@ -302,7 +307,8 @@ function TableController(schema, results, table, events, common, types, time, cs
     var cacheValues = function() {
         var cachedValues = {
             searchTerm: vm.searchTerm,
-            sortType: vm.sortType
+            sortType: vm.sortType,
+            pagination: vm.pagination
         };
 
         if(vm.data.columns && vm.data.allColumns && vm.data.columns.length < vm.data.allColumns.length) {
