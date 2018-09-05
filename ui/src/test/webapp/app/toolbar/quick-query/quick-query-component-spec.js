@@ -1,6 +1,7 @@
 describe('The Quick Query Component', function() {
     var ctrl;
-    var $componentController, $httpBackend;
+    var scope;
+    var $componentController, $httpBackend, $q;
 
     beforeEach(module('app'));
 
@@ -17,10 +18,15 @@ describe('The Quick Query Component', function() {
         });
     }));
 
-    beforeEach(inject(function(_$componentController_, _$httpBackend_) {
+    beforeEach(inject(function(_$componentController_, _$httpBackend_, _$q_, _$rootScope_) {
         $componentController = _$componentController_;
         $httpBackend = _$httpBackend_;
+        $q = _$q_;
+        var $rootScope = _$rootScope_;
+        scope = $rootScope.$new();
     }));
+
+
 
     beforeEach(function() {
         $httpBackend.whenGET('config/defaultConfig.json').respond(200, {
@@ -47,21 +53,15 @@ describe('The Quick Query Component', function() {
     })
 
     beforeEach(function() {
-        ctrl = $componentController('quickQuery');
+        ctrl = $componentController('quickQuery', {$scope: scope});
     });
 
     describe('ctrl.$onInit()', function() {
-        var scope;
-        var $q;
         var types;
         var schemaToReturn = {}
 
-        beforeEach(inject(function(_$rootScope_, _$q_, _schema_, _types_) {
-            var $rootScope = _$rootScope_;
-            scope = $rootScope.$new();
-            ctrl = $componentController('quickQuery', { $scope: scope});
+        beforeEach(inject(function(_$rootScope_, _schema_, _types_) {
             schema = _schema_;
-            $q = _$q_;
             types = _types_
         }));
 
@@ -349,19 +349,23 @@ describe('The Quick Query Component', function() {
     });
 
     describe('ctrl.search()', function() {
-
+        var $mdToast;
         var fields, limit;
         var types, query, settings;
+        var results = [];
+        var navigation;
 
         beforeEach(function() {
             ctrl.dedupe = false;
             ctrl.limit = false;
         });
 
-        beforeEach(inject(function(_types_, _query_, _settings_) {
+        beforeEach(inject(function(_types_, _query_, _settings_, _$mdToast_, _navigation_) {
             types = _types_;
             query = _query_;
             settings = _settings_;
+            $mdToast = _$mdToast_;
+            navigation = _navigation_;
         }));
 
         beforeEach(function() {
@@ -369,7 +373,9 @@ describe('The Quick Query Component', function() {
                 return fields;
             });
 
-            spyOn(query, 'executeQuery').and.stub();
+            spyOn(query, 'executeQuery').and.callFake(function(ops, onComplete) {
+                onComplete(results);
+            });
 
             spyOn(settings, 'getResultLimit').and.callFake(function() {
                 return limit;
@@ -641,6 +647,84 @@ describe('The Quick Query Component', function() {
             ctrl.search();
 
             expect(query.executeQuery.calls.argsFor(0)[0].options).toBeUndefined();
+        });
+
+        it('should reset the input string when results are returned', function() {
+            ctrl.searchText = "test";
+
+            fields = [
+                {
+                    type: 'text',
+                    class: 'java.lang.String',
+                    required: true
+                }
+            ];
+
+            ctrl.search();
+
+            expect(ctrl.searchText).toEqual("");
+        });
+
+        it('should show a toast to the user informing them of the number of results returned', function() {
+            spyOn($mdToast, 'show').and.returnValue($q.when(null));
+
+            ctrl.searchText = "test";
+
+            results = ['a', 'b', 'c'];
+
+            fields = [
+                {
+                    type: 'text',
+                    class: 'java.lang.String',
+                    required: true
+                }
+            ];
+
+            ctrl.search();
+
+            expect($mdToast.show.calls.first().args[0]._options.textContent).toEqual('3 results returned')
+
+        });
+
+        it('should show a toast to the user informing them results have been returned if the results don\'t come back in an array', function() {
+            spyOn($mdToast, 'show').and.returnValue($q.when(null));
+
+            ctrl.searchText = "test";
+
+            results = 42;
+
+            fields = [
+                {
+                    type: 'text',
+                    class: 'java.lang.String',
+                    required: true
+                }
+            ];
+
+            ctrl.search();
+
+            expect($mdToast.show.calls.first().args[0]._options.textContent).toEqual('results returned')
+        });
+
+        it('should navigate to the results page if the user clicks "view results"', function() {
+            spyOn($mdToast, 'show').and.returnValue($q.when('ok'));
+            spyOn(navigation, 'goTo');
+            ctrl.searchText = "test";
+
+            results = ['a', 'b', 'c'];
+
+            fields = [
+                {
+                    type: 'text',
+                    class: 'java.lang.String',
+                    required: true
+                }
+            ];
+
+            ctrl.search();
+            scope.$digest();
+
+            expect(navigation.goTo).toHaveBeenCalledWith('results')
         });
     });
 });
