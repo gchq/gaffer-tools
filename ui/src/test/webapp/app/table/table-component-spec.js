@@ -232,8 +232,8 @@ describe('The Table component', function() {
             expect(ctrl).toBeDefined();
         });
 
-        it('should use a pagination limit of 100 by default', function() {
-            expect(ctrl.pagination.limit).toEqual(100);
+        it('should use a pagination limit of 50 by default', function() {
+            expect(ctrl.pagination.limit).toEqual(50);
         });
 
         it('should set the page to 1 by default', function() {
@@ -285,17 +285,17 @@ describe('The Table component', function() {
                 ctrl.$onInit();
                 scope.$digest();
                 expect(table.getCachedValues).toHaveBeenCalledTimes(1);
-                expect(ctrl.pagination).toEqual({page: 1, limit: 100});
+                expect(ctrl.pagination).toEqual({page: 1, limit: 50});
             });
 
             it('should load pagination values if they are defined', function() {
                 cachedValues = {
-                    pagination: { page: 2, limit: 50 }
+                    pagination: { page: 2, limit: 100 }
                 }
                 ctrl.$onInit();
                 scope.$digest();
                 expect(table.getCachedValues).toHaveBeenCalledTimes(1);
-                expect(ctrl.pagination).toEqual({page: 2, limit: 50});
+                expect(ctrl.pagination).toEqual({page: 2, limit: 100});
             });
 
             it('should subscribe to results updated events', function() {
@@ -374,7 +374,7 @@ describe('The Table component', function() {
                     searchTerm: "search value1",
                     sortType: "destination",
                     pagination: {
-                        limit: 100,
+                        limit: 50,
                         page: 1
                     }
                 });
