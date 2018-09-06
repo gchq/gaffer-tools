@@ -28,14 +28,14 @@ angular.module('app').controller('VisualisationDialogController', ['$scope', 'co
         "line": {
             "type": "line",
             "fields": {
-                "labels": {
-                    "axis": "x",
-                    "label": "x axis property",
-                    "required": true
-                },
                 "data": {
                     "axis": "y",
                     "label": "y axis property",
+                    "required": true
+                },
+                "labels": {
+                    "axis": "x",
+                    "label": "x axis property",
                     "required": true
                 },
                 "series": {
@@ -58,14 +58,14 @@ angular.module('app').controller('VisualisationDialogController', ['$scope', 'co
         "bar": {
             "type": "bar",
             "fields": {
-                "labels": {
-                    "axis": "x",
-                    "label": "x axis property",
-                    "required": true
-                },
                 "data": {
                     "axis": "y",
                     "label": "y axis property",
+                    "required": true
+                },
+                "labels": {
+                    "axis": "x",
+                    "label": "x axis property",
                     "required": true
                 },
                 "series": {
@@ -216,6 +216,31 @@ angular.module('app').controller('VisualisationDialogController', ['$scope', 'co
 
     }
 
+    var comparator = function(first, second) {  // compares strings, numbers and booleans
+        if (typeof first === 'string') {
+            var uppercaseFirst = first.toUpperCase();
+            var uppercaseSecond = second.toUpperCase();
+
+            if (uppercaseFirst < uppercaseSecond) {
+                return -1;
+            } else if (uppercaseFirst > uppercaseSecond) {
+                return 1
+            } else {
+                return 0
+            }
+        } else if (typeof first === 'number') {
+            return first - second;
+        } else {
+            if (first === true && second === false) {
+                return -1
+            } else if (first === false && second === true) {
+                return 1;
+            } else {
+                return 0;
+            }
+        }
+    }
+
     var extractDefaultChartValues = function(chartSettings) {
         var seriesProperty = chartSettings.fields.series ? chartSettings.fields.series.value : undefined;
         var dataProperty = chartSettings.fields.data.value;
@@ -233,6 +258,8 @@ angular.module('app').controller('VisualisationDialogController', ['$scope', 'co
                 }
             }
         });
+
+        uniqueLabels.sort(comparator);
 
         if  (seriesProperty === undefined || seriesProperty === null) {
             Array.apply(data, Array(uniqueLabels.length)).map(function() {}); // creates empty array with values all set to undefined

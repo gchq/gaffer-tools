@@ -78,11 +78,120 @@ describe('Visualisation Dialog Controller', function() {
             expect(scope.chartData).toEqual([2]);
         });
 
-        it('should be able to create line charts with no series defined', function() {
+        it('should sort string labels', function() {
+            scope.data = [
+                {'a': 'jkl', 'b': 1},
+                {'a': 'ghi', 'b': 2},
+                {'a': 'def', 'b': 3},
+                {'a': 'abc', 'b': 4}
+            ];
 
+            scope.preview();
+
+            expect(scope.labels).toEqual(['abc', 'def', 'ghi', 'jkl']);
+            expect(scope.chartData).toEqual([4, 3, 2, 1])
+        });
+
+        it('should sort numeric labels', function() {
+            scope.data = [
+                {'b': 'ghi', 'a': 2},
+                {'b': 'jkl', 'a': 1},
+                {'b': 'def', 'a': 3},
+                {'b': 'abc', 'a': 14}
+            ];
+
+            scope.preview();
+
+            expect(scope.chartData).toEqual(['jkl', 'ghi', 'def', 'abc']);
+            expect(scope.labels).toEqual([1, 2, 3, 14]);
+        });
+
+        it('should sort boolean values', function() {
+            scope.data = [
+                {'a': false, 'b': 1},
+                {'a': true, 'b': 2}
+            ];
+
+            scope.preview();
+
+            expect(scope.labels).toEqual([true, false]);
+            expect(scope.chartData).toEqual([2, 1])
+        });
+
+        it('should aggregate numeric data together by adding values together', function() {
+            scope.data = [
+                {'a': 'abc', 'b': 11},
+                {'a': 'def', 'b': 2},
+                {'a': 'def', 'b': 33},
+                {'a': 'abc', 'b': 4}
+            ];
+
+            scope.preview();
+
+            expect(scope.labels).toEqual(['abc', 'def']);
+            expect(scope.chartData).toEqual([15, 35])
+        })
+
+        it('should be able to create line charts with no series defined', function() {
+            scope.selectedChart = scope.charts['line'];
+            scope.selectedChart.fields['labels'].value = 'a';
+            scope.selectedChart.fields['data'].value = 'b';
+
+            scope.data = [
+                {
+                    'a': 3,
+                    'b': 20
+                },
+                {
+                    'a': 0,
+                    'b': 25
+                },
+                {
+                    'a': 100,
+                    'b': -2
+                }
+            ];
+
+            scope.preview();
+
+            expect(scope.labels).toEqual([0, 3, 100]);
+            expect(scope.chartData).toEqual([25, 20, -2]);
         });
 
         it('should be able to create line charts with a series defined', function() {
+            scope.selectedChart = scope.charts['line'];
+            scope.selectedChart.fields['labels'].value = 'a';
+            scope.selectedChart.fields['data'].value = 'b';
+            scope.selectedChart.fields['series'].value = 'c';
+
+            scope.data = [
+                {
+                    'a': 3,
+                    'b': 20,
+                    'c': 'test'
+                },
+                {
+                    'a': 0,
+                    'b': 25,
+                    'c': 'test'
+                },
+                {
+                    'a': 100,
+                    'b': -2,
+                    'c': 'not test'
+                }
+            ];
+
+            scope.preview();
+
+            expect(scope.series).toEqual(['test', 'not test']);
+            expect(scope.labels).toEqual([0, 3, 100]);
+            expect(scope.chartData[0]).toEqual([25, 20]);
+            expect(scope.chartData[1].length).toEqual(3);
+            expect(scope.chartData[1][0]).toBeUndefined();
+            expect(scope.chartData[1][1]).toBeUndefined();
+            expect(scope.chartData[1][2]).toEqual(-2);
+
 
         });
 
@@ -125,12 +234,14 @@ describe('Visualisation Dialog Controller', function() {
     });
 
     describe('goBack()', function() {
-        it('should set showPreview to false')
+        it('should set showPreview to false', function() {
+
+        })
     });
 
     describe('confirm()', function() {
         it('should close the dialog using the chart parameters', function() {
-            
+
         })
     })
 });
