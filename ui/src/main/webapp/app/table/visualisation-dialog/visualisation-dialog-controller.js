@@ -226,8 +226,11 @@ angular.module('app').controller('VisualisationDialogController', ['$scope', 'co
 
         $scope.data.forEach(row => {
             var propertyValue = row[labelsProperty];
-            if (propertyValue !== undefined && propertyValue !== null) {
-                common.pushValueIfUnique(propertyValue, uniqueLabels);
+            var dataValue = row[dataProperty];
+            if (propertyValue !== undefined && propertyValue !== null && dataValue !== undefined && dataValue !== null) {
+                if (!seriesProperty || (row[seriesProperty] !== null && row[seriesProperty] !== undefined)) {
+                    common.pushValueIfUnique(propertyValue, uniqueLabels);
+                }
             }
         });
 
