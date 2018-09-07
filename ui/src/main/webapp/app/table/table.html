@@ -33,6 +33,12 @@
                 <md-input-container flex="75" md-no-float>
                     <input ng-model="ctrl.searchTerm" type="search" placeholder="Search vertices and properties">
                 </md-input-container>
+                <div layout="column" layout-align="center" class="fill-height">
+                    <md-button ng-if="ctrl.data.results.length > 0" class="md-accent md-raised"
+                        aria-label="download table to csv"
+                        ng-click="ctrl.download()">Download as CSV
+                    </md-button>
+                </div>
             </div>
         </md-toolbar>
 
@@ -92,7 +98,7 @@
                 </thead>
                 <tbody md-body>
                 <tr md-row
-                    ng-repeat="result in (ctrl.filteredResults = (ctrl.data.results | orderBy:ctrl.getValue() | filter:ctrl.searchTerm))">
+                    ng-repeat="result in (ctrl.filteredResults = (ctrl.data.results | orderBy:ctrl.getValue() | filter:ctrl.searchTerm)) | limitTo: ctrl.pagination.limit: (ctrl.pagination.page - 1) * ctrl.pagination.limit">
                     <td md-cell ng-repeat="col in ctrl.data.columns">
                         {{result[col]}}
                     </td>
@@ -100,11 +106,6 @@
                 </tbody>
             </table>
         </md-table-container>
+        <md-table-pagination md-limit="ctrl.pagination.limit" md-limit-options="[50, 100, 200]" md-page="ctrl.pagination.page" md-total="{{ctrl.filteredResults.length}}" md-page-select md-boundary-links></md-table-pagination>
     </md-card>
 </div>
-<md-button ng-if="ctrl.data.results.length > 0" class="md-accent md-fab md-fab-bottom-right submit-bottom-right"
-               aria-label="download table to csv"
-               ng-click="ctrl.download()">
-        <md-icon md-svg-icon="download"></md-icon>
-        <md-tooltip md-direction="top">Download CSV</md-tooltip>
-</md-button>

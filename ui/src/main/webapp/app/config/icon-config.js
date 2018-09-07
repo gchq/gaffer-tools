@@ -34,6 +34,7 @@ angular.module('app').config(['$mdIconProvider', function($mdIconProvider) {
         .icon('schema', 'app/img/schema.svg')
         .icon('raw', 'app/img/raw.svg')
         .icon('settings', 'app/img/settings.svg')
+        .icon('schedule', 'app/img/material-icons/schedule.svg')
         .icon('sidenav', 'app/img/sidenav.svg')
         .icon('cancel', 'app/img/cancel.svg')
         .icon('arrow-downward', 'app/img/arrow-downward.svg')

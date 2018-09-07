@@ -246,6 +246,10 @@ md-list-item.active div div button {
     font-size: 18px;
 }
 
+.fill-height {
+    height: 100%
+}
+
 graph-control md-input-container {
     padding: 5px !important;
 }
