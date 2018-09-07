@@ -167,7 +167,7 @@ angular.module('app').controller('VisualisationDialogController', ['$scope', 'co
                 var stringFrequencyMap = row[frequencyMapProperty];
                 var series = row[seriesProperty];
 
-                if (stringFrequencyMap) {    // skip empty values
+                if (stringFrequencyMap && series !== null && series !== undefined) {    // skip empty frequency maps and series
                     if (!groupedFrequencyMaps[series]) { // if no frequency exists for this series, create one
                         groupedFrequencyMaps[series] = {};
                     }
