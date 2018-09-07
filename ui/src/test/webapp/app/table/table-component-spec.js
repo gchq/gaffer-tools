@@ -373,6 +373,8 @@ describe('The Table component', function() {
                 expect(table.setCachedValues).toHaveBeenCalledWith({
                     searchTerm: "search value1",
                     sortType: "destination",
+                    chart: undefined,
+                    showVisualisation: undefined,
                     pagination: {
                         limit: 50,
                         page: 1

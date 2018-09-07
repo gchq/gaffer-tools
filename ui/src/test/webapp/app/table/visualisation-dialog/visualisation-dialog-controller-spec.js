@@ -186,7 +186,7 @@ describe('Visualisation Dialog Controller', function() {
 
             expect(scope.series).toEqual(['test', 'not test']);
             expect(scope.labels).toEqual([0, 3, 100]);
-            expect(scope.chartData[0]).toEqual([25, 20]);
+            expect(scope.chartData[0]).toEqual([25, 20, undefined]);
             expect(scope.chartData[1].length).toEqual(3);
             expect(scope.chartData[1][0]).toBeUndefined();
             expect(scope.chartData[1][1]).toBeUndefined();
@@ -247,7 +247,7 @@ describe('Visualisation Dialog Controller', function() {
 
             expect(scope.series).toEqual(['test', 'not test']);
             expect(scope.labels).toEqual([0, 3, 100]);
-            expect(scope.chartData[0]).toEqual([25, 20]);
+            expect(scope.chartData[0]).toEqual([25, 20, undefined]);
             expect(scope.chartData[1].length).toEqual(3);
             expect(scope.chartData[1][0]).toBeUndefined();
             expect(scope.chartData[1][1]).toBeUndefined();

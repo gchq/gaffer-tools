@@ -273,25 +273,24 @@ angular.module('app').controller('VisualisationDialogController', ['$scope', 'co
         } else {
             var uniqueSeries = [];
             $scope.data.forEach(row => {
-                var propertyValue = row[seriesProperty];
-                if (propertyValue !== undefined && propertyValue !== null) {
-                    common.pushValueIfUnique(propertyValue, uniqueSeries);
-
-                    // if no value exists in the ouput already for this key
-                    var seriesIndex = uniqueSeries.indexOf(propertyValue)
-                    if (data.indexOf(seriesIndex) !== -1) {
-                        // create one with undefined values for each of the labels
-                        Array.apply(data[seriesIndex], Array(uniqueLabels.length)).map(function() {}); // creates empty array with undefined values
-                    }
-                    // check the label property index
-                    var labelIndex = uniqueLabels.indexOf(row[labelsProperty])
-                    if (labelIndex !== -1) {
-                        // insert the measured data property at the correct index
-                        if (!data[seriesIndex]) {
-                            data[seriesIndex] = [];
+                var series = row[seriesProperty];
+                var label = row[labelsProperty];
+                var value = row[dataProperty];
+                if (series !== undefined && series !== null && label !== undefined && label !== null && value !== undefined && value !== null) {
+                    common.pushValueIfUnique(series, uniqueSeries);
+                    var seriesIndex = uniqueSeries.indexOf(series);
+                    var propertyIndex = uniqueLabels.indexOf(label);
+                    if (data[seriesIndex]) {   // if series already exists
+                        data[seriesIndex][propertyIndex] = data[seriesIndex][propertyIndex] === undefined ? value : data[seriesIndex][propertyIndex] + value;
+                    } else {
+                        data[seriesIndex] = [];
+                        for (var i in uniqueLabels) {
+                            data[seriesIndex][i] = undefined;
                         }
-                        data[seriesIndex][labelIndex] = data[seriesIndex] === undefined || data[seriesIndex][labelIndex] === undefined ? row[dataProperty] : data[seriesIndex][labelIndex] + row[dataProperty];
+                        data[seriesIndex][propertyIndex] = value;
                     }
+                    
+                    
                 }
             });
         }

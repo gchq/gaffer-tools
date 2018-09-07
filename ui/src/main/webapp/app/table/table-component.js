@@ -312,6 +312,8 @@ function TableController(schema, results, table, events, common, types, time, cs
         var cachedValues = table.getCachedValues();
         vm.searchTerm = cachedValues.searchTerm;
         vm.sortType =  cachedValues.sortType;
+        vm.chart = cachedValues.chart;
+        vm.showVisualisation = cachedValues.showVisualisation;
 
         if (cachedValues.pagination) {
             vm.pagination = cachedValues.pagination;
@@ -331,7 +333,9 @@ function TableController(schema, results, table, events, common, types, time, cs
         var cachedValues = {
             searchTerm: vm.searchTerm,
             sortType: vm.sortType,
-            pagination: vm.pagination
+            pagination: vm.pagination,
+            chart: vm.chart,
+            showVisualisation: vm.showVisualisation
         };
 
         if(vm.data.columns && vm.data.allColumns && vm.data.columns.length < vm.data.allColumns.length) {
