@@ -25,8 +25,9 @@ angular.module('app').controller('VisualisationDialogController', ['$scope', 'co
     $scope.showPreview = false;
 
     $scope.charts = {
-        "line": {
+        "Line graph": {
             "type": "line",
+            "description": "Great for showing the relationship between two sets of continuous data. Data is aggregated together if no series property is specified",
             "fields": {
                 "data": {
                     "axis": "y",
@@ -39,24 +40,26 @@ angular.module('app').controller('VisualisationDialogController', ['$scope', 'co
                     "required": true
                 },
                 "series": {
-                    "label": "chart series property"
+                    "label": "how to group the data (series property)"
                 }
             }
         },
-        "bar chart from frequency map": {
+        "Bar chart from frequency map": {
             "type": "bar",
+            "description": "Allows you to visually explore frequency maps in your data. Select the property containing your frequency map. Then use the series property to split your data (optional).",
             "fields": {
                 "frequencyMapProperty": {
                     "label": "frequency map property",
                     "required": true
                 },
                 "series": {
-                    "label": "chart series"
+                    "label": "how to split the data (series property)"
                 }
             }
         },
-        "bar": {
+        "Bar chart": {
             "type": "bar",
+            "description": "A Bar chart. Useful for comparing continuous data on the y axis with categoric data on the x axis. Optionally you can split up the bars using the series property",
             "fields": {
                 "data": {
                     "axis": "y",
@@ -69,12 +72,13 @@ angular.module('app').controller('VisualisationDialogController', ['$scope', 'co
                     "required": true
                 },
                 "series": {
-                    "label": "chart series property"
+                    "label": "How to split up the bars (series property)"
                 }
             }
         },
-        "horizontal bar": {
+        "Horizontal bar chart": {
             "type": "horizontalBar",
+            "description": "A bar chart - but turned on it's side. Be careful not to get your x's and y's muddled up.",
             "fields": {
                 "data": {
                     "axis": "x",
@@ -91,41 +95,44 @@ angular.module('app').controller('VisualisationDialogController', ['$scope', 'co
                 }
             }
         },
-        "polar area": {
+        "Polar area chart": {
             "type": "polarArea",
+            "description": "Similar to a pie chart but better at comparing the scale of values. Select the property you want to measure and how to group the data",
             "fields": {
                 "data": {
                     "label": "property to measure",
                     "required": true
                 },
                 "labels": {
-                    "label": "chart series property",
+                    "label": "how to group the data",
                     "required": true
                 }
             }
         },
-        "pie": {
+        "Pie chart": {
             "type": "pie",
+            "description": "For showing proportion of values against each other. Select what you want to measure and how you want the data to be grouped",
             "fields": {
                 "data": {
                     "label": "property to measure",
                     "required": true
                 },
                 "labels": {
-                    "label": "chart series property",
+                    "label": "how to group the data",
                     "required": true
                 }
             },
         },
-        "doughnut": {
+        "Doughnut chart": {
             "type": "doughnut",
+            "description": "Essentially a funky pie chart. Select the property you want to measure and how to group the data",
             "fields": {
                 "data": {
                     "label": "property to measure",
                     "required": true
                 },
                 "labels": {
-                    "label": "chart series property",
+                    "label": "how to group the data",
                     "required": true
                 }
             }

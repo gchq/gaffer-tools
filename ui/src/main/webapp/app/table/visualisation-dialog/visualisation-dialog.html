@@ -1,4 +1,4 @@
-<md-dialog>
+<md-dialog class="dialog-500">
     <md-toolbar>
         <div class="md-toolbar-tools">
             <h2 class="md-headline">{{ title }}</h2>
@@ -6,16 +6,16 @@
     </md-toolbar>
     <md-dialog-content layout-padding>
         <form name="visualisationForm" layout="column" ng-show="!showPreview">
-            <md-input-container>
+            <md-input-container flex>
                 <label>Select a chart type</label>
                 <md-select required ng-model="selectedChart">
                     <md-option ng-repeat="(chart, fields) in charts" ng-value="fields">{{ chart }}</md-option>
                 </md-select>
             </md-input-container>
-            <md-input-container ng-repeat="(key, field) in selectedChart.fields">
-                <label>{{ field.label }}</label>
-                <md-select ng-model="field.value" ng-required="field.required">
-                    <md-option ng-repeat="option in columns" ng-value="option">{{ option }}</md-option>
+            <p class="md-body-1">{{ selectedChart.description }}</p>
+            <md-input-container  ng-repeat="(key, field) in selectedChart.fields">
+                <md-select placeholder="{{ field.label }}" ng-model="field.value" ng-required="field.required">
+                    <md-option ng-repeat="option in columns" ng-value="option">{{ option }} <span ng-if="option === 'SOURCE'">/ VERTEX</span></md-option>
                 </md-select>
             </md-input-container>
         </form>
