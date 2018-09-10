@@ -18,6 +18,7 @@
                     <md-option ng-repeat="option in columns" ng-value="option">{{ option }} <span ng-if="option === 'SOURCE'">/ VERTEX</span></md-option>
                 </md-select>
             </md-input-container>
+            <md-checkbox ng-model="showLegend" aria-label="display legend in chart">Display Legend</md-checkbox>
         </form>
         <canvas ng-show="showPreview" class="chart-base" chart-type="selectedChart.type"
         chart-data="chartData" chart-labels="labels" chart-series="series" chart-options="options">

@@ -59,7 +59,7 @@ angular.module('app').controller('VisualisationDialogController', ['$scope', 'co
         },
         "Bar chart": {
             "type": "bar",
-            "description": "A Bar chart. Useful for comparing continuous data on the y axis with categoric data on the x axis. Optionally you can split up the bars using the series property",
+            "description": "Useful for comparing continuous data on the y axis with categoric data on the x axis. Optionally you can split up the bars using the series property",
             "fields": {
                 "data": {
                     "axis": "y",
@@ -315,6 +315,31 @@ angular.module('app').controller('VisualisationDialogController', ['$scope', 'co
         var axisToOptionName = {
             "x": "xAxes",
             "y": "yAxes"
+        }
+
+        options.legend = {
+            display: $scope.showLegend
+        }
+
+        options.title = {
+            display: true 
+        }
+
+        var chartFields = Object.keys(chartSettings.fields);
+
+        switch(chartSettings.type) {
+            case 'bar'  :
+                if (chartFields.length === 2) {
+                    options.title.text = chartSettings.fields[chartFields[0]].value;
+                    break
+                }
+            case 'line' :
+            case 'horizontalBar':  
+                options.title.text = chartSettings.fields[chartFields[0]].value  + ' vs ' + chartSettings.fields[chartFields[1]].value;
+                break;
+            default: 
+                options.title.text = chartSettings.fields[chartFields[0]].value + ' per ' + chartSettings.fields[chartFields[1]].value;
+        
         }
 
         for (var field in chartSettings.fields) {
