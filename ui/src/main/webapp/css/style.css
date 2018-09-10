@@ -337,3 +337,26 @@ md-card.closed-add-active, md-card.closed {
     margin-left: 50px;
     margin-right: 50px;
 }
+
+.quick-query-search {
+    background-color: transparent;
+    border: none;
+    padding: 5px;
+}
+
+.quick-query-search:focus {
+    outline: none;
+}
+
+.no-errors .md-errors-spacer {
+    display: none;
+}
+
+.search-icon {
+    fill: #777 !important
+}
+
+quick-query {
+    min-width: 200px;
+}
+
