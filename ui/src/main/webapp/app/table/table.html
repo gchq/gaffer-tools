@@ -33,7 +33,7 @@
                 <md-input-container flex="25">
                     <md-select ng-model="ctrl.data.columns" multiple
                         aria-label="table column headers"
-                                ng-disabled="ctrl.data.results.length === 0"
+                        ng-disabled="ctrl.data.results.length === 0"
                         md-selected-text="ctrl.selectedColumnsText()">
                         <md-option ng-value="col"
                                 ng-repeat="col in ctrl.data.allColumns">
@@ -73,11 +73,12 @@
                         md-order-by="{{col}}">
                         <md-input-container ng-if="'result type' === col">
                             <md-select
-                                    ng-click="$event.stopPropagation();"
-                                    ng-model="ctrl.data.types" multiple
-                                    ng-change="ctrl.updateFilteredResults()"
-                                    aria-label="data type"
-                                    md-selected-text="ctrl.typeColumnName">
+                                class="md-no-underline"
+                                ng-click="$event.stopPropagation();"
+                                ng-model="ctrl.data.types" multiple
+                                ng-change="ctrl.updateFilteredResults()"
+                                aria-label="data type"
+                                md-selected-text="ctrl.typeColumnName">
                                 <md-option ng-value="type"
                                         ng-repeat="type in ctrl.data.allTypes">
                                     {{type}}
@@ -87,11 +88,12 @@
 
                         <md-input-container ng-if="'GROUP' === col">
                             <md-select
-                                    ng-click="$event.stopPropagation();"
-                                    ng-model="ctrl.data.groups" multiple
-                                    ng-change="ctrl.updateFilteredResults()"
-                                    aria-label="element type"
-                                    md-selected-text="ctrl.groupColumnName">
+                                class="md-no-underline"
+                                ng-click="$event.stopPropagation();"
+                                ng-model="ctrl.data.groups" multiple
+                                ng-change="ctrl.updateFilteredResults()"
+                                aria-label="element type"
+                                md-selected-text="ctrl.groupColumnName">
                                 <md-option ng-value="group"
                                         ng-repeat="group in ctrl.data.allGroups">
                                     {{group}}

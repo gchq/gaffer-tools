@@ -127,7 +127,9 @@ function TableController(schema, results, table, events, common, types, time, cs
     }
 
     var onResultsUpdated = function(res) {
-        table.setCachedValues({});
+        // forcing a cache reload ensures columns are recalculated if they need to be
+        cacheValues();
+        loadFromCache();
         processResults(res);
     }
 
@@ -156,7 +158,7 @@ function TableController(schema, results, table, events, common, types, time, cs
             }
         }
 
-        if (!vm.data.types || vm.data.columns.length === 0) {
+        if (!vm.data.types || vm.data.types.length === 0) {
             vm.data.types = angular.copy(vm.data.allTypes);
         }
         if (!vm.data.groups || vm.data.groups.length === 0) {
@@ -314,19 +316,14 @@ function TableController(schema, results, table, events, common, types, time, cs
         vm.sortType =  cachedValues.sortType;
         vm.chart = cachedValues.chart;
         vm.showVisualisation = cachedValues.showVisualisation;
+        vm.data.columns = cachedValues.columns;
+        vm.data.types = cachedValues.types;
+        vm.data.groups = cachedValues.groups;
 
         if (cachedValues.pagination) {
             vm.pagination = cachedValues.pagination;
         }
-        if(cachedValues.columns && cachedValues.columns.length > 0) {
-            vm.data.columns = cachedValues.columns;
-        }
-        if(cachedValues.types && cachedValues.types.length > 0) {
-            vm.data.types = cachedValues.types;
-        }
-        if(cachedValues.groups && cachedValues.groups.length > 0) {
-            vm.data.groups = cachedValues.groups;
-        }
+        
     }
 
     var cacheValues = function() {
