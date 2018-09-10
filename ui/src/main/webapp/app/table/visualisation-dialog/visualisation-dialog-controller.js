@@ -320,13 +320,17 @@ angular.module('app').controller('VisualisationDialogController', ['$scope', 'co
         for (var field in chartSettings.fields) {
             var fieldData = chartSettings.fields[field];
             if (fieldData.axis) {
-                if (time.isTimeProperty(fieldData.value)) {
-                    if (!options.scales) {
-                        options.scales = {};
+                if (!options.scales) {
+                    options.scales = {};
+                }
+                options.scales[axisToOptionName[fieldData.axis]] = [{
+                    scaleLabel: {
+                        display: true,
+                        labelString: fieldData.value
                     }
-                    options.scales[axisToOptionName[fieldData.axis]] = [{
-                        type: "time"
-                    }];
+                }]
+                if (time.isTimeProperty(fieldData.value)) {
+                    options.scales[axisToOptionName[fieldData.axis]][0]['type'] = 'time';
                 }
             }
         }
