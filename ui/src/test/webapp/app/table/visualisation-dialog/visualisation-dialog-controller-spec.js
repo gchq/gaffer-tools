@@ -133,7 +133,7 @@ describe('Visualisation Dialog Controller', function() {
         })
 
         it('should be able to create line charts with no series defined', function() {
-            scope.selectedChart = scope.charts['line'];
+            scope.selectedChart = scope.charts['Line graph'];
             scope.selectedChart.fields['labels'].value = 'a';
             scope.selectedChart.fields['data'].value = 'b';
 
@@ -159,7 +159,7 @@ describe('Visualisation Dialog Controller', function() {
         });
 
         it('should be able to create line charts with a series defined', function() {
-            scope.selectedChart = scope.charts['line'];
+            scope.selectedChart = scope.charts['Line graph'];
             scope.selectedChart.fields['labels'].value = 'a';
             scope.selectedChart.fields['data'].value = 'b';
             scope.selectedChart.fields['series'].value = 'c';
@@ -194,7 +194,7 @@ describe('Visualisation Dialog Controller', function() {
         });
 
         it('should be able to create bar charts with no series defined', function() {
-            scope.selectedChart = scope.charts['bar'];
+            scope.selectedChart = scope.charts['Bar chart'];
             scope.selectedChart.fields['labels'].value = 'a';
             scope.selectedChart.fields['data'].value = 'b';
 
@@ -220,7 +220,7 @@ describe('Visualisation Dialog Controller', function() {
         });
 
         it('should be able to create bar charts with a series defined', function() {
-            scope.selectedChart = scope.charts['bar'];
+            scope.selectedChart = scope.charts['Bar chart'];
             scope.selectedChart.fields['labels'].value = 'a';
             scope.selectedChart.fields['data'].value = 'b';
             scope.selectedChart.fields['series'].value = 'c';
@@ -255,7 +255,7 @@ describe('Visualisation Dialog Controller', function() {
         });
 
         it('should be able to create bar charts from frequency maps with no series defined', function() {
-            scope.selectedChart = scope.charts['bar chart from frequency map'];
+            scope.selectedChart = scope.charts['Bar chart from frequency map'];
             scope.selectedChart.fields['frequencyMapProperty'].value = 'a';
 
             scope.data = [
@@ -278,7 +278,7 @@ describe('Visualisation Dialog Controller', function() {
         });
 
         it('should be able to create bar charts from frequency maps with a series defined', function() {
-            scope.selectedChart = scope.charts['bar chart from frequency map'];
+            scope.selectedChart = scope.charts['Bar chart from frequency map'];
             scope.selectedChart.fields['frequencyMapProperty'].value = 'a';
             scope.selectedChart.fields['series'].value = 'b';
 
@@ -319,7 +319,7 @@ describe('Visualisation Dialog Controller', function() {
         });
 
         it('should be able to create a polar area chart', function() {
-            scope.selectedChart = scope.charts['polar area'];
+            scope.selectedChart = scope.charts['Polar area chart'];
             scope.selectedChart.fields['labels'].value = 'a';
             scope.selectedChart.fields['data'].value = 'b';
             
@@ -345,7 +345,7 @@ describe('Visualisation Dialog Controller', function() {
         });
 
         it('should be able to create a doughnut chart', function() {
-            scope.selectedChart = scope.charts['doughnut'];
+            scope.selectedChart = scope.charts['Doughnut chart'];
             scope.selectedChart.fields['labels'].value = 'a';
             scope.selectedChart.fields['data'].value = 'b';
             
@@ -371,7 +371,7 @@ describe('Visualisation Dialog Controller', function() {
         });
 
         it('should be able to create a pie chart', function() {
-            scope.selectedChart = scope.charts['pie'];
+            scope.selectedChart = scope.charts['Pie chart'];
             scope.selectedChart.fields['labels'].value = 'a';
             scope.selectedChart.fields['data'].value = 'b';
             
