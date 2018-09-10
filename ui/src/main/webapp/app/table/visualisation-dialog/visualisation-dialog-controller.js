@@ -149,11 +149,11 @@ angular.module('app').controller('VisualisationDialogController', ['$scope', 'co
         if (seriesProperty === undefined || seriesProperty === null) {
             var aggregatedFrequencyMap = {};
 
-            $scope.data.forEach(row => {
+            $scope.data.forEach(function(row) {
                 var stringFrequencyMap = row[frequencyMapProperty];
                 if (stringFrequencyMap) {    // skip empty rows
                     var keyValues = stringFrequencyMap.split(', ');   // creates a list of key value pairs eg. key1: 5
-                    keyValues.forEach(keyValue => {
+                    keyValues.forEach(function(keyValue) {
                         var kv = keyValue.split(': ') // creates [key, value] array
                         if (aggregatedFrequencyMap[kv[0]]) {
                             aggregatedFrequencyMap[kv[0]] += Number(kv[1]); // add to current value if it exists
@@ -164,13 +164,21 @@ angular.module('app').controller('VisualisationDialogController', ['$scope', 'co
                 }
             });
 
-            $scope.labels = Object.keys(aggregatedFrequencyMap);
-            $scope.chartData = Object.values(aggregatedFrequencyMap);
+            var labels = [];
+            var values = [];
+
+            for (var key in aggregatedFrequencyMap) {
+                labels.push(key);
+                values.push(aggregatedFrequencyMap[key]);
+            }
+            
+            $scope.labels = labels;
+            $scope.chartData = values;
             $scope.series = undefined;
         } else {
             // iterate through data
             var groupedFrequencyMaps = {};
-            $scope.data.forEach(row => {
+            $scope.data.forEach(function(row) {
                 var stringFrequencyMap = row[frequencyMapProperty];
                 var series = row[seriesProperty];
 
@@ -179,7 +187,7 @@ angular.module('app').controller('VisualisationDialogController', ['$scope', 'co
                         groupedFrequencyMaps[series] = {};
                     }
                     var keyValues = stringFrequencyMap.split(', ');    // iterate through frequency map
-                    keyValues.forEach(keyValue => {
+                    keyValues.forEach(function(keyValue) {
                         var kv = keyValue.split(': ') // creates [key, value] array
                         // either create new values or add to existing values
                         if (groupedFrequencyMaps[series][kv[0]]) {
@@ -256,7 +264,7 @@ angular.module('app').controller('VisualisationDialogController', ['$scope', 'co
         var uniqueLabels = [];
         var data = [];
 
-        $scope.data.forEach(row => {
+        $scope.data.forEach(function(row) {
             var propertyValue = row[labelsProperty];
             var dataValue = row[dataProperty];
             if (propertyValue !== undefined && propertyValue !== null && dataValue !== undefined && dataValue !== null) {
@@ -271,7 +279,7 @@ angular.module('app').controller('VisualisationDialogController', ['$scope', 'co
         if  (seriesProperty === undefined || seriesProperty === null) {
             Array.apply(data, Array(uniqueLabels.length)).map(function() {}); // creates empty array with values all set to undefined
             
-            $scope.data.forEach(row => {
+            $scope.data.forEach(function(row) {
                 var labelIndex = uniqueLabels.indexOf(row[labelsProperty]);
                 if (labelIndex !== -1) {
                     data[labelIndex] = data[labelIndex] === undefined ? row[dataProperty] : data[labelIndex] + row[dataProperty];
@@ -279,7 +287,7 @@ angular.module('app').controller('VisualisationDialogController', ['$scope', 'co
             });
         } else {
             var uniqueSeries = [];
-            $scope.data.forEach(row => {
+            $scope.data.forEach(function(row) {
                 var series = row[seriesProperty];
                 var label = row[labelsProperty];
                 var value = row[dataProperty];
@@ -397,4 +405,4 @@ angular.module('app').controller('VisualisationDialogController', ['$scope', 'co
 
         $mdDialog.hide(toReturn);
     }
-}])
+}]);

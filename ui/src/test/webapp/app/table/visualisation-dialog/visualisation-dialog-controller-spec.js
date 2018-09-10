@@ -257,7 +257,7 @@ describe('Visualisation Dialog Controller', function() {
         it('should be able to create bar charts from frequency maps with no series defined', function() {
             scope.selectedChart = scope.charts['Bar chart from frequency map'];
             scope.selectedChart.fields['frequencyMapProperty'].value = 'a';
-
+            scope.selectedChart.fields['series'] = undefined; 
             scope.data = [
                 {
                     'a': 'foo: 23, bar: 50'
