@@ -373,6 +373,8 @@ describe('The Table component', function() {
                 expect(table.setCachedValues).toHaveBeenCalledWith({
                     searchTerm: "search value1",
                     sortType: "destination",
+                    chart: undefined,
+                    showVisualisation: undefined,
                     pagination: {
                         limit: 50,
                         page: 1
@@ -700,6 +702,61 @@ describe('The Table component', function() {
 
                 expect(URL.revokeObjectURL).toHaveBeenCalledWith(fakeElement.href);
             });
+        });
+
+        describe('ctrl.createVisualisation()', function() {
+            var $mdDialog;
+
+            beforeEach(inject(function(_$mdDialog_) {
+                $mdDialog = _$mdDialog_;
+            }));
+
+
+
+            it('should set the controllers chart to the return value' ,function() {
+                spyOn($mdDialog, 'show').and.returnValue($q.when('test'));
+
+                ctrl.createVisualisation();
+
+                // not resolved yet
+
+                expect(ctrl.chart).toBeUndefined();
+
+                scope.$digest();
+
+                expect(ctrl.chart).toEqual('test');
+            });
+
+            it('should set the showVisualisation flag to true if resolved', function() {
+                spyOn($mdDialog, 'show').and.returnValue($q.when('test'));
+                ctrl.createVisualisation();
+
+                // not resolved yet
+
+                expect(ctrl.showVisualisation).toBeUndefined();
+
+                scope.$digest();
+
+                expect(ctrl.showVisualisation).toBeTruthy();
+            });
+
+            it('should do nothing if the promise is rejected', function() {
+                var deferred = $q.defer();
+
+                spyOn($mdDialog, 'show').and.returnValue(deferred.promise);
+                ctrl.createVisualisation();
+
+                deferred.reject();
+
+                expect(function() {
+                    scope.$digest();
+                }).not.toThrow();
+
+                expect(ctrl.showVisualisation).toBeFalsy();
+                expect(ctrl.chart).toBeUndefined();
+            });
+
+
         });
     });
 });

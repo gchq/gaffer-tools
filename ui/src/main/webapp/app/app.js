@@ -16,4 +16,4 @@
 
  'use strict';
 
-angular.module('app', ['ngMaterial', 'ngRoute', 'md.data.table', 'ngMessages', 'ngAnimate', 'ngSanitize']);
+angular.module('app', ['ngMaterial', 'ngRoute', 'md.data.table', 'ngMessages', 'ngAnimate', 'ngSanitize', 'chart.js']);
