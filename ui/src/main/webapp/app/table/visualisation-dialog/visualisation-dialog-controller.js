@@ -27,7 +27,7 @@ angular.module('app').controller('VisualisationDialogController', ['$scope', 'co
     $scope.charts = {
         "Line graph": {
             "type": "line",
-            "description": "Great for showing the relationship between two sets of continuous data. Data is aggregated together if no series property is specified",
+            "description": "Great for showing the relationship between two sets of continuous data. Data is aggregated together if no series property is specified. If correlating time, put the time property on the x axis.",
             "fields": {
                 "data": {
                     "axis": "y",
@@ -59,7 +59,7 @@ angular.module('app').controller('VisualisationDialogController', ['$scope', 'co
         },
         "Bar chart": {
             "type": "bar",
-            "description": "Useful for comparing continuous data on the y axis with categoric data on the x axis. Optionally you can split up the bars using the series property",
+            "description": "Useful for comparing continuous data on the y axis with categoric data on the x axis. Optionally you can split up the bars using the series property.",
             "fields": {
                 "data": {
                     "axis": "y",
@@ -97,7 +97,7 @@ angular.module('app').controller('VisualisationDialogController', ['$scope', 'co
         },
         "Polar area chart": {
             "type": "polarArea",
-            "description": "Similar to a pie chart but better at comparing the scale of values. Select the property you want to measure and how to group the data",
+            "description": "Similar to a pie chart but better at comparing the scale of values. Select the property you want to measure and how to group the data.",
             "fields": {
                 "data": {
                     "label": "property to measure",
@@ -111,7 +111,7 @@ angular.module('app').controller('VisualisationDialogController', ['$scope', 'co
         },
         "Pie chart": {
             "type": "pie",
-            "description": "For showing proportion of values against each other. Select what you want to measure and how you want the data to be grouped",
+            "description": "For showing proportion of values against each other. Select what you want to measure and how you want the data to be grouped.",
             "fields": {
                 "data": {
                     "label": "property to measure",
@@ -125,7 +125,7 @@ angular.module('app').controller('VisualisationDialogController', ['$scope', 'co
         },
         "Doughnut chart": {
             "type": "doughnut",
-            "description": "Essentially a funky pie chart. Select the property you want to measure and how to group the data",
+            "description": "Essentially a funky pie chart. Select the property you want to measure and how to group the data.",
             "fields": {
                 "data": {
                     "label": "property to measure",
