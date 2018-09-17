@@ -12,7 +12,7 @@
                 </md-button>
                 <md-menu-content width="4">
                     <md-menu-item ng-repeat="(name, value) in ctrl.presets">
-                        <md-button ng-click="ctrl.updateValues(value)">
+                        <md-button ng-click="ctrl.updateStartDate(value)">
                             {{ name }}
                         </md-button>
                     </md-menu-item>
@@ -56,7 +56,7 @@
                         </md-button>
                         <md-menu-content width="4">
                             <md-menu-item ng-repeat="(name, value) in ctrl.presets">
-                                <md-button ng-click="ctrl.updateValues(value)">
+                                <md-button ng-click="ctrl.updateEndDate(value)">
                                     {{ name }}
                                 </md-button>
                             </md-menu-item>

@@ -159,6 +159,22 @@ describe('The date range component', function() {
                 ctrl.$onInit();
                 expect(ctrl.startDate).toEqual(new Date(123456 * 60 * 60 * 1000 * 24));
             });
+
+            it('should set the preset values if specified', function() {
+                createController({"filter": {"endProperty": "prop1", "class": "aClass", "startProperty": "myPropName", "presets": {"today": {
+                    "offset": 0
+                }}}});
+
+                ctrl.$onInit();
+
+                expect(ctrl.presets).toEqual({'today': { 'offset': 0}});
+            });
+
+            it('should set the preset values to undefined if not specified', function() {
+                createValidController();
+                ctrl.$onInit();
+                expect(ctrl.presets).toBeUndefined();
+            });
         });
 
         describe('When there is a UTC offset locally', function() {
@@ -177,6 +193,115 @@ describe('The date range component', function() {
             });
         });
     });
+
+    describe('ctrl.updateStartDate()', function() {
+
+        beforeEach(function() {
+            createValidController();
+        });
+
+        beforeEach(function() {
+            spyOn(ctrl, 'onStartDateUpdate').and.stub();
+        })
+
+        it('should set the the start date when using an offset and unit of days', function() {
+            var threeDaysAgo = new moment().subtract(3, 'days').startOf('day').toDate();
+
+            ctrl.updateStartDate({'offset': -3, 'unit': 'day'});
+
+            expect(ctrl.startDate).toEqual(threeDaysAgo);
+            expect(ctrl.onStartDateUpdate).toHaveBeenCalled();
+        });
+
+        it('should set the start date when using an offset and unit of weeks', function() {
+            var fiveWeeksAgo = new moment().subtract(5, 'weeks').startOf('day').toDate();
+
+            ctrl.updateStartDate({'offset': -5, 'unit': 'weeks'});
+
+            expect(ctrl.startDate).toEqual(fiveWeeksAgo);
+            expect(ctrl.onStartDateUpdate).toHaveBeenCalled();
+        });
+
+        it('should set the start date when using an offset and unit of months', function() {
+            var sixMonthsAgo = new moment().subtract(6, 'months').startOf('day').toDate();
+
+            ctrl.updateStartDate({'offset': -6, 'unit': 'month'});
+
+            expect(ctrl.startDate).toEqual(sixMonthsAgo);
+            expect(ctrl.onStartDateUpdate).toHaveBeenCalled();
+        });
+
+        it('should set the start date when using an offset and unit of years', function() {
+            var oneYearAgo = new moment().subtract(1, 'year').startOf('day').toDate();
+
+            ctrl.updateStartDate({'offset': -1, 'unit': 'year'});
+
+            expect(ctrl.startDate).toEqual(oneYearAgo);
+            expect(ctrl.onStartDateUpdate).toHaveBeenCalled();
+        });
+
+        it('should set the start date when using an exact date', function() {
+            var twoThousandAndTwo = new Date(2002, 0, 1, 0, 0, 0);
+            ctrl.updateStartDate({'date': '2002-01-01'});
+
+            expect(ctrl.startDate).toEqual(twoThousandAndTwo);
+            expect(ctrl.onStartDateUpdate).toHaveBeenCalled();
+        });
+    });
+
+    describe('ctrl.updateEndDate()', function() {
+        beforeEach(function() {
+            createValidController();
+        });
+
+        beforeEach(function() {
+            spyOn(ctrl, 'onEndDateUpdate').and.stub();
+        })
+        
+        it('should set the the end date when using an offset and unit of days', function() {
+            var threeDaysAgo = new moment().subtract(3, 'days').startOf('day').toDate();
+
+            ctrl.updateEndDate({'offset': -3, 'unit': 'day'});
+
+            expect(ctrl.endDate).toEqual(threeDaysAgo);
+            expect(ctrl.onEndDateUpdate).toHaveBeenCalled();
+        });
+
+        it('should set the end date when using an offset and unit of weeks', function() {
+            var fiveWeeksAgo = new moment().subtract(5, 'weeks').startOf('day').toDate();
+
+            ctrl.updateEndDate({'offset': -5, 'unit': 'weeks'});
+
+            expect(ctrl.endDate).toEqual(fiveWeeksAgo);
+            expect(ctrl.onEndDateUpdate).toHaveBeenCalled();
+        });
+
+        it('should set the end date when using an offset and unit of months', function() {
+            var sixMonthsAgo = new moment().subtract(6, 'months').startOf('day').toDate();
+
+            ctrl.updateEndDate({'offset': -6, 'unit': 'month'});
+
+            expect(ctrl.endDate).toEqual(sixMonthsAgo);
+            expect(ctrl.onEndDateUpdate).toHaveBeenCalled();
+        });
+
+        it('should set the end date when using an offset and unit of years', function() {
+            var oneYearAgo = new moment().subtract(1, 'year').startOf('day').toDate();
+
+            ctrl.updateEndDate({'offset': -1, 'unit': 'year'});
+
+            expect(ctrl.endDate).toEqual(oneYearAgo);
+            expect(ctrl.onEndDateUpdate).toHaveBeenCalled();
+        });
+
+        it('should set the end date when using an exact date', function() {
+            var twoThousandAndTwo = new Date(2002, 0, 2, 0, 0, 0);
+            ctrl.updateEndDate({'date': '2002-01-02'});
+
+            expect(ctrl.endDate).toEqual(twoThousandAndTwo);
+            expect(ctrl.onEndDateUpdate).toHaveBeenCalled();
+        });
+    })
 
     describe('ctrl.onStartDateUpdate()', function() {
 

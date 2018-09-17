@@ -71,19 +71,22 @@
       "endProperty": "endDate",
       "presets": {
         "Today": {
-          "startOffset": 1,
-          "unit": "day",
-          "endOffset": 0
+          "offset": 0,
+          "unit": "day"
         },
         "Last week": {
-          "startOffset": 7,
-          "unit": "day",
-          "endOffset": 0
+          "offset": -1,
+          "unit": "week"
         },
         "Last month": {
-          "startOffset": 1,
-          "unit": "month",
-          "endOffset": 0
+          "offset": -1,
+          "unit": "month"
+        },
+        "2002": {
+          "date": "2002-01-01"
+        },
+        "2001": {
+          "date": "2001-01-01"
         }
       }
     },

@@ -30,7 +30,7 @@ function dateRange() {
     }
 }
 
-function DateRangeController(time, events) {
+function DateRangeController(time, events, common) {
     var vm = this;
 
     vm.startDate = null;
@@ -120,6 +120,30 @@ function DateRangeController(time, events) {
 
     vm.$onDestroy = function() {
         events.unsubscribe('onOperationUpdate', onOperationUpdate);
+    }
+
+    var calculateDate = function(presetParameters, callback) {
+        if (presetParameters.date) {
+            var date = moment(presetParameters.date).toDate();
+            callback(date);
+        } else if (presetParameters.offset !== undefined && presetParameters.unit) {
+            var date = moment().add(presetParameters.offset, presetParameters.unit).startOf('day').toDate();
+            callback(date);
+        }
+    }
+
+    vm.updateStartDate = function(presetParameters) {
+        calculateDate(presetParameters, function(date) {
+            vm.startDate = date;
+            vm.onStartDateUpdate();
+        });
+    }
+
+    vm.updateEndDate = function(presetParameters) {
+        calculateDate(presetParameters, function(date) {
+            vm.endDate = date;
+            vm.onEndDateUpdate();
+        });
     }
 
     vm.onStartDateUpdate = function() {
