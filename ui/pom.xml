@@ -111,6 +111,8 @@
                         <source>${project.build.directory}/${project.build.finalName}/lib/jquery/js/jquery.min.js</source>
                         <source>${project.build.directory}/${project.build.finalName}/lib/md-data-table/js/md-data-table.min.js</source>
                         <source>${project.build.directory}/${project.build.finalName}/lib/moment/moment.min.js</source>
+                        <source>${project.build.directory}/${project.build.finalName}/lib/chart/js/chart.min.js</source>
+                        <source>${project.build.directory}/${project.build.finalName}/lib/angular-chart/js/angular-chart.min.js</source>
                     </preloadSources>
                 </configuration>
             </plugin>
@@ -497,6 +499,8 @@
                                 <source>dependencies/lib/jquery/js/jquery.min.js</source>
                                 <source>dependencies/lib/md-data-table/js/md-data-table.min.js</source>
                                 <source>dependencies/lib/moment/moment.min.js</source>
+                                <source>dependencies/lib/chart/js/chart.min.js</source>
+                                <source>dependencies/lib/angular-chart/js/angular-chart.min.js</source>
                             </preloadSources>
                         </configuration>
                     </plugin>

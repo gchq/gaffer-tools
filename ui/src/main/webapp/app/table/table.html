@@ -13,9 +13,22 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-  <div ng-cloak layout="column" layout-align=" stretch">
+<div ng-cloak layout="column" layout-align=" stretch">
+    <md-card ng-show="ctrl.showVisualisation">
+        <canvas 
+            class="chart-base" 
+            chart-type="ctrl.chart.type" 
+            chart-labels="ctrl.chart.labels" 
+            chart-series="ctrl.chart.series" 
+            chart-data="ctrl.chart.data"
+            chart-options="ctrl.chart.options">
+        </canvas>
+        <md-card-actions layout="row" layout-align="start center">
+            <md-button ng-click="ctrl.hideVisualisation()">hide</md-button>
+        </md-card-actions>
+    </md-card>
     <md-card>
-        <md-toolbar class="md-table-toolbar md-default">
+        <md-toolbar class="table-toolbar">
             <div class="md-toolbar-tools" layout-align="start start">
                 <md-input-container flex="25">
                     <md-select ng-model="ctrl.data.columns" multiple
@@ -33,11 +46,17 @@
                 <md-input-container flex="75" md-no-float>
                     <input ng-model="ctrl.searchTerm" type="search" placeholder="Search vertices and properties">
                 </md-input-container>
+                
                 <div layout="column" layout-align="center" class="fill-height">
-                    <md-button ng-if="ctrl.data.results.length > 0" class="md-accent md-raised"
-                        aria-label="download table to csv"
-                        ng-click="ctrl.download()">Download as CSV
-                    </md-button>
+                    <div layout="row">
+                        <md-button ng-if="ctrl.data.results.length > 0" class="md-primary md-raised" aria-label="create chart visualisation" ng-click="ctrl.createVisualisation($event)">
+                            Create visualisation
+                        </md-button>
+                        <md-button ng-if="ctrl.data.results.length > 0" class="md-accent md-raised"
+                            aria-label="download table to csv"
+                            ng-click="ctrl.download()">Download as CSV
+                        </md-button>
+                    </div>
                 </div>
             </div>
         </md-toolbar>

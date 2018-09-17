@@ -36,12 +36,13 @@ function resultsTable() {
  * @param {*} types For converting objects based on their types
  * @param {*} time For converting time objects
  */
-function TableController(schema, results, table, events, common, types, time, csv) {
+function TableController(schema, results, table, events, common, types, time, csv, $mdDialog) {
     var vm = this;
     var resultsByType = [];
     vm.filteredResults = [];
     vm.data = {results:[], columns:[]};
     vm.searchTerm = '';
+    
     vm.pagination = {limit: 50, page: 1};
     vm.sortType = undefined;
     vm.schema = {edges:{}, entities:{}, types:{}};
@@ -70,6 +71,28 @@ function TableController(schema, results, table, events, common, types, time, cs
     vm.$onDestroy = function() {
         events.unsubscribe('resultsUpdated', onResultsUpdated);
         cacheValues();
+    }
+
+    vm.createVisualisation = function(ev) {
+        $mdDialog.show({
+            controller: 'VisualisationDialogController',
+            templateUrl: 'app/table/visualisation-dialog/visualisation-dialog.html',
+            targetEvent: ev,
+            clickOutsideToClose: true,
+            parent: angular.element(document.body),
+            locals: {
+                columns: vm.data.columns,
+                data: vm.filteredResults
+            },
+            bindToController: true,
+        }).then(function(chart) {
+            vm.chart = chart;
+            vm.showVisualisation = true;
+        }, function() {});
+    }
+
+    vm.hideVisualisation = function() {
+        vm.showVisualisation = false;
     }
 
     vm.hideColumn = function(column) {
@@ -291,6 +314,8 @@ function TableController(schema, results, table, events, common, types, time, cs
         var cachedValues = table.getCachedValues();
         vm.searchTerm = cachedValues.searchTerm;
         vm.sortType =  cachedValues.sortType;
+        vm.chart = cachedValues.chart;
+        vm.showVisualisation = cachedValues.showVisualisation;
         vm.data.columns = cachedValues.columns;
         vm.data.types = cachedValues.types;
         vm.data.groups = cachedValues.groups;
@@ -305,7 +330,9 @@ function TableController(schema, results, table, events, common, types, time, cs
         var cachedValues = {
             searchTerm: vm.searchTerm,
             sortType: vm.sortType,
-            pagination: vm.pagination
+            pagination: vm.pagination,
+            chart: vm.chart,
+            showVisualisation: vm.showVisualisation
         };
 
         if(vm.data.columns && vm.data.allColumns && vm.data.columns.length < vm.data.allColumns.length) {
