@@ -2413,8 +2413,8 @@ class ForEach(Operation):
             else:
                 self.operation = operation
 
-        def to_json(self):
-            operation = super().to_json()
+    def to_json(self):
+        operation = super().to_json()
 
         if self.input is not None:
             json_seeds = []
