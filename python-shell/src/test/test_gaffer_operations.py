@@ -4894,6 +4894,43 @@ class GafferOperationsTest(unittest.TestCase):
                 current_traits=True
             )
         ],
+        [
+            '''
+            {
+                "class" : "uk.gov.gchq.gaffer.operation.impl.Reduce",
+                "input" : [{
+                    "class" : "uk.gov.gchq.gaffer.data.element.Edge",
+                    "group" : "testEdge",
+                    "source" : "src",
+                    "destination" : "dest",
+                    "directed" : true,
+                    "properties" : {
+                        "count" : 3
+                    }
+                }],
+                "aggregateFunction: {
+                        "class" : "uk.gov.gchq.gaffer.operation.impl.compare.Max",
+                },
+                "identity": 10
+            }
+            ''',
+            g.Reduce(
+                input=[
+                    g.Edge(
+                        group="testEdge",
+                        source="src",
+                        destination="dest",
+                        directed=True,
+                        properties={
+                            "count": 3
+                        }
+                    )
+                ],
+                aggregate_function=g.Max(),
+                identity=10
+
+            )
+        ]
     ]
 
     def test_operations(self):
