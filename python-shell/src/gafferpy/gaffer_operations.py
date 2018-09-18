@@ -2396,11 +2396,12 @@ class While(Operation):
 
         return operation
 
-    class Reduce(Operation):
-        CLASS = 'uk.gov.gchq.gaffer.operation.impl.Reduce'
 
-        def __init__(self, input=None, identity=None,
-                     aggregate_function=None, options=None):
+class Reduce(Operation):
+    CLASS = 'uk.gov.gchq.gaffer.operation.impl.Reduce'
+
+    def __init__(self, input=None, identity=None,
+                 aggregate_function=None, options=None):
 
         super().__init__(_class_name=self.CLASS,
                          options=options)
@@ -2409,32 +2410,31 @@ class While(Operation):
         self.identity = identity
         self.aggregate_function = aggregate_function
 
-        def to_json(self):
+    def to_json(self):
+        operation = super().to_json()
 
-    operation = super().to_json()
-
-    if self.input is not None:
-        json_seeds = []
-        if isinstance(self.input, list):
-            for seed in self.input:
-                if isinstance(seed, ToJson):
-                    json_seeds.append(seed.to_json())
-                else:
-                    json_seeds.append(seed)
-        else:
-            if isinstance(self.input, ToJson):
-                json_seeds.append(self.input.to_json())
+        if self.input is not None:
+            json_seeds = []
+            if isinstance(self.input, list):
+                for seed in self.input:
+                    if isinstance(seed, ToJson):
+                        json_seeds.append(seed.to_json())
+                    else:
+                        json_seeds.append(seed)
             else:
-                json_seeds.append(self.input.to_json())
-        operation['input'] = json_seeds
+                if isinstance(self.input, ToJson):
+                    json_seeds.append(self.input.to_json())
+                else:
+                    json_seeds.append(self.input.to_json())
+            operation['input'] = json_seeds
 
-    if self.aggregateFunction is not None:
-        operation['aggregateFunction'] = self.aggregate_function
+        if self.aggregateFunction is not None:
+            operation['aggregateFunction'] = self.aggregate_function
 
-    if self.conditional is not None:
-        operation['identity'] = self.identity.to_json()
+        if self.conditional is not None:
+            operation['identity'] = self.identity.to_json()
 
-    return operation
+        return operation
 
 
 class Conditional(ToJson, ToCodeString):
