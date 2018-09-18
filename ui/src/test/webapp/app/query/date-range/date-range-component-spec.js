@@ -196,12 +196,19 @@ describe('The date range component', function() {
 
     describe('ctrl.updateStartDate()', function() {
 
+        var error;
+
         beforeEach(function() {
             createValidController();
         });
 
+        beforeEach(inject(function(_error_) {
+            error = _error_;
+        }))
+
         beforeEach(function() {
             spyOn(ctrl, 'onStartDateUpdate').and.stub();
+            spyOn(error, 'handle').and.stub();
         })
 
         it('should set the the start date when using an offset and unit of days', function() {
@@ -247,16 +254,38 @@ describe('The date range component', function() {
             expect(ctrl.startDate).toEqual(twoThousandAndTwo);
             expect(ctrl.onStartDateUpdate).toHaveBeenCalled();
         });
+
+        it('should error if given a null value', function() {
+            ctrl.updateStartDate(null);
+            expect(error.handle).toHaveBeenCalled();
+        });
+
+        it('should error if given an offset without a unit', function() {
+            ctrl.updateStartDate({ 'offset': 20});
+            expect(error.handle).toHaveBeenCalled();
+        });
+
+        it('should error if given a unit without an offset', function() {
+            ctrl.updateStartDate({ 'unit': 'days'});
+            expect(error.handle).toHaveBeenCalled();
+        });
     });
 
     describe('ctrl.updateEndDate()', function() {
+        var error;
+
         beforeEach(function() {
             createValidController();
         });
 
+        beforeEach(inject(function(_error_) {
+            error = _error_;
+        }));
+
         beforeEach(function() {
             spyOn(ctrl, 'onEndDateUpdate').and.stub();
-        })
+            spyOn(error, 'handle').and.stub();
+        });
         
         it('should set the the end date when using an offset and unit of days', function() {
             var threeDaysAgo = new moment().subtract(3, 'days').startOf('day').toDate();
@@ -300,6 +329,21 @@ describe('The date range component', function() {
 
             expect(ctrl.endDate).toEqual(twoThousandAndTwo);
             expect(ctrl.onEndDateUpdate).toHaveBeenCalled();
+        });
+
+        it('should error if given a null value', function() {
+            ctrl.updateStartDate(null);
+            expect(error.handle).toHaveBeenCalled();
+        });
+
+        it('should error if given an offset without a unit', function() {
+            ctrl.updateStartDate({ 'offset': 20});
+            expect(error.handle).toHaveBeenCalled();
+        });
+
+        it('should error if given a unit without an offset', function() {
+            ctrl.updateStartDate({ 'unit': 'days'});
+            expect(error.handle).toHaveBeenCalled();
         });
     })
 

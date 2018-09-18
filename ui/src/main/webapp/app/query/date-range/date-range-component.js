@@ -30,7 +30,7 @@ function dateRange() {
     }
 }
 
-function DateRangeController(time, events, common) {
+function DateRangeController(time, events, error) {
     var vm = this;
 
     vm.startDate = null;
@@ -123,12 +123,19 @@ function DateRangeController(time, events, common) {
     }
 
     var calculateDate = function(presetParameters, callback) {
+        if (!presetParameters) {
+            error.handle('This date range preset has been misconfigured');
+            return;
+        }
         if (presetParameters.date) {
             var date = moment(presetParameters.date).toDate();
             callback(date);
         } else if (presetParameters.offset !== undefined && presetParameters.unit) {
             var date = moment().add(presetParameters.offset, presetParameters.unit).startOf('day').toDate();
             callback(date);
+        } else {
+            error.handle('This date range preset is misconfigured.', 'Invalid configuration: \n' + JSON.stringify(presetParameters));
+            return;
         }
     }
 
