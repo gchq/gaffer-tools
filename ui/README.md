@@ -35,14 +35,8 @@ UI
 ## Introduction
 
 
-This module contains a Gaffer read only UI prototype that connects to a Gaffer REST API.
+This module contains a Gaffer UI that connects to a Gaffer REST API.
 See [gaffer-tools/ui](https://github.com/gchq/gaffer-tools/tree/master/ui).
-
-Limitations:
-- There are currently no error messages.
-- There is no validation.
-- Read only - no data can be added via the UI.
-
 
 If you wish to deploy the war file to a container of your choice, then use this option.
 
@@ -444,8 +438,6 @@ The operations section allows you to choose what operations should be available 
 | blackList                    | array   | optional list of banned operations. Operations on this list will not be allowed. By default no operations are blacklisted
 
 
-If you want to allow Named Operations which use an operation which uses takes pairs of inputs, make sure the first operation is added to the default available operations.
-
 ### Types
 
 The types section of the configuration tells the UI how to interpret and show java objects. You will need to figure out
@@ -581,7 +573,7 @@ To configure time properties, you need to provide an object which is keyed by th
 
 ### Quick Query
 
-You can edit the behaviour of the quick query component in the Gaffer UI using the following properties.
+You can edit the behaviour of the quick query component in the Gaffer UI using the following properties. If you want to disable this feature, set quickQuery to null in the config. There is an example of this in the [Federated UI config](https://github.com/gchq/gaffer-tools/blob/master/ui/example/federated/config/config.json).
 
 | name                        |  type           | description                            
 |-----------------------------|-----------------|---------------------------------------------------------
@@ -709,6 +701,20 @@ left blank, no feedback button will be rendered. You can specify a list of email
 |--------------|---------------------|--------------------------------------------------------------------------
 |    subject   |       String        | An optional (defaults to "Gaffer feedback") subject header of the email
 |  recipients  | array&lt;string&gt; | A list of email addresses who receive the emails.
+
+#### Example
+
+```json
+{
+    "feedback": {
+        "subject": "feedback for <your system here>",
+        "recipients": [
+            "adminperson@organisation.com",
+            "someoneElse@theSameOrganisation.com"
+        ]
+    }
+}
+```
 
 ## Testing
 
