@@ -2397,6 +2397,46 @@ class While(Operation):
         return operation
 
 
+class ForEach(Operation):
+    CLASS = 'uk.gov.gchq.gaffer.operation.impl.While'
+
+    def __init__(self, input=None, operation=None, options=None):
+
+        super().__init__(_class_name=self.CLASS,
+                         options=options)
+
+        self.input = input
+
+        if operation is not None:
+            if not isinstance(operation, Operation):
+                self.operation = JsonConverter.from_json(operation, Operation)
+            else:
+                self.operation = operation
+
+        def to_json(self):
+            operation = super().to_json()
+
+        if self.input is not None:
+            json_seeds = []
+            if isinstance(self.input, list):
+                for seed in self.input:
+                    if isinstance(seed, ToJson):
+                        json_seeds.append(seed.to_json())
+                    else:
+                        json_seeds.append(seed)
+            else:
+                if isinstance(self.input, ToJson):
+                    json_seeds.append(self.input.to_json())
+                else:
+                    json_seeds.append(self.input.to_json())
+            operation['input'] = json_seeds
+
+        if self.operation is not None:
+            operation['operation'] = self.operation.to_json()
+
+        return operation
+
+
 class Conditional(ToJson, ToCodeString):
     CLASS = 'uk.gov.gchq.gaffer.operation.util.Conditional'
 
