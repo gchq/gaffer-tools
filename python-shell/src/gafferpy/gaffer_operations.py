@@ -2398,7 +2398,7 @@ class While(Operation):
 
 
 class ForEach(Operation):
-    CLASS = 'uk.gov.gchq.gaffer.operation.impl.While'
+    CLASS = 'uk.gov.gchq.gaffer.operation.impl.ForEach'
 
     def __init__(self, input=None, operation=None, options=None):
 
