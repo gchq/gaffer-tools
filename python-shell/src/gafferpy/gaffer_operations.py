@@ -2485,6 +2485,37 @@ class ForEach(Operation):
         return operation
 
 
+class ToSingletonList(Operation):
+    CLASS = 'uk.gov.gchq.gaffer.operation.impl.ToSingletonList'
+
+    def __init__(self, input=None, options=None):
+
+        super().__init__(_class_name=self.CLASS,
+                         options=options)
+
+        self.input = input
+
+    def to_json(self):
+        operation = super().to_json()
+
+        if self.input is not None:
+            json_seeds = []
+            if isinstance(self.input, list):
+                for seed in self.input:
+                    if isinstance(seed, ToJson):
+                        json_seeds.append(seed.to_json())
+                    else:
+                        json_seeds.append(seed)
+            else:
+                if isinstance(self.input, ToJson):
+                    json_seeds.append(self.input.to_json())
+                else:
+                    json_seeds.append(self.input.to_json())
+            operation['input'] = json_seeds
+
+        return operation
+
+
 class Conditional(ToJson, ToCodeString):
     CLASS = 'uk.gov.gchq.gaffer.operation.util.Conditional'
 

@@ -4964,6 +4964,36 @@ class GafferOperationsTest(unittest.TestCase):
                 ],
                 operation=g.GetElements()
             )
+        ],
+        [
+            '''
+            {
+                "class" : "uk.gov.gchq.gaffer.operation.impl.ToSingletonList",
+                "input" : [{
+                    "class" : "uk.gov.gchq.gaffer.data.element.Edge",
+                    "group" : "testEdge",
+                    "source" : "src",
+                    "destination" : "dest",
+                    "directed" : true,
+                    "properties" : {
+                        "count" : 3
+                    }
+                }]
+            }
+            ''',
+            g.ToSingletonList(
+                input=[
+                    g.Edge(
+                        group="testEdge",
+                        source="src",
+                        destination="dest",
+                        directed=True,
+                        properties={
+                            "count": 3
+                        }
+                    )
+                ]
+            )
         ]
     ]
 
