@@ -4908,7 +4908,7 @@ class GafferOperationsTest(unittest.TestCase):
                         "count" : 3
                     }
                 }],
-                "aggregateFunction": {
+                "aggregationFunction": {
                     "class": "uk.gov.gchq.koryphe.impl.binaryoperator.Max"
                 },
                 "identity": 10
@@ -4926,7 +4926,9 @@ class GafferOperationsTest(unittest.TestCase):
                         }
                     )
                 ],
-                aggregate_function=g.BinaryOperator(class_name="uk.gov.gchq.koryphe.impl.binaryoperator.Max"),
+                aggregation_function=g.BinaryOperator(
+                    class_name="uk.gov.gchq.koryphe.impl.binaryoperator.Max"
+                ),
                 identity=10
 
             )
