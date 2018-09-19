@@ -4934,6 +4934,38 @@ class GafferOperationsTest(unittest.TestCase):
                 identity=10
 
             )
+        ],
+        [
+            '''
+            {
+                "class" : "uk.gov.gchq.gaffer.operation.impl.ForEach",
+                "input" : [{
+                    "class" : "uk.gov.gchq.gaffer.data.element.Edge",
+                    "group" : "testEdge",
+                    "source" : "src",
+                    "destination" : "dest",
+                    "directed" : true,
+                    "properties" : {
+                        "count" : 3
+                    }
+                }],
+                "operation": {"class": "uk.gov.gchq.gaffer.operation.impl.get.GetElements"}
+            }
+            ''',
+            g.ForEach(
+                input=[
+                    g.Edge(
+                        group="testEdge",
+                        source="src",
+                        destination="dest",
+                        directed=True,
+                        properties={
+                            "count": 3
+                        }
+                    )
+                ],
+                operation=g.GetElements()
+            )
         ]
     ]
 
