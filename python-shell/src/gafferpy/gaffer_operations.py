@@ -2467,7 +2467,7 @@ class Reduce(Operation):
                     json_seeds.append(self.input.to_json())
             operation['input'] = json_seeds
 
-        if self.aggregateFunction is not None:
+        if self.aggregate_function is not None:
             operation['aggregateFunction'] = self.aggregate_function
 
         if self.conditional is not None:
