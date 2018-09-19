@@ -19,10 +19,10 @@
 This module contains Python copies of Gaffer operation java classes
 """
 
-from gafferpy.gaffer_core import *
-import gafferpy.gaffer_predicates as gaffer_predicates
-import gafferpy.gaffer_functions as gaffer_functions
 import gafferpy.gaffer_binaryoperators as gaffer_binaryoperators
+import gafferpy.gaffer_functions as gaffer_functions
+import gafferpy.gaffer_predicates as gaffer_predicates
+from gafferpy.gaffer_core import *
 
 
 class NamedOperationParameter(ToJson, ToCodeString):
@@ -2436,6 +2436,7 @@ class ForEach(Operation):
 
         return operation
 
+
 class ToSingletonList(Operation):
     CLASS = 'uk.gov.gchq.gaffer.operation.impl.ToSingletonList'
 
@@ -2446,8 +2447,8 @@ class ToSingletonList(Operation):
 
         self.input = input
 
-        def to_json(self):
-            operation = super().to_json()
+    def to_json(self):
+        operation = super().to_json()
 
         if self.input is not None:
             json_seeds = []
