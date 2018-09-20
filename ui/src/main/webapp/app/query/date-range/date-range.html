@@ -1,13 +1,23 @@
 <ng-form name="ctrl.dateForm">
-    <h3 class="section-title" style="display: table">
-        Time range
-        <md-tooltip md-direction="top">
-            Inclusive time range in UTC
-        </md-tooltip>
-    </h3>
-
+    <div layout="row" layout-align="start center">
+        <h3 class="no-margin">Inclusive time range (UTC)</h3>
+    </div>
+    
     <div layout-gt-lg="row" layout="column">
         <div layout="row">
+            <md-menu ng-if="ctrl.presets" class="menu-inline-with-datepicker">
+                <md-button class="md-icon-button no-side-margin" ng-click="$mdMenu.open($event)"  >
+                    <md-icon md-menu-origin md-svg-icon="list"></md-icon>
+                    <md-tooltip>Use presets for start date</md-tooltip>
+                </md-button>
+                <md-menu-content width="4">
+                    <md-menu-item ng-repeat="(name, value) in ctrl.presets">
+                        <md-button ng-click="ctrl.updateStartDate(value)">
+                            {{ name }}
+                        </md-button>
+                    </md-menu-item>
+                </md-menu-content>
+            </md-menu>
             <md-input-container>
                 <label>Start Date</label>
                 <md-datepicker ng-model="ctrl.startDate" name="startDate"
@@ -33,12 +43,25 @@
 
                 <div ng-messages="ctrl.dateForm.startTime.$error">
                     <div ng-message="time">The start time is invalid. Use format
-                        hh:mm:ss.SSS
+                        hh:mm:ss
                     </div>
                 </div>
             </md-input-container>
         </div>
         <div layout="row">
+            <md-menu ng-if="ctrl.presets" class="menu-inline-with-datepicker">
+                <md-button class="md-icon-button no-side-margin" ng-click="$mdMenu.open($event)"  >
+                    <md-icon md-menu-origin md-svg-icon="list"></md-icon>
+                    <md-tooltip>Use presets for end date</md-tooltip>
+                </md-button>
+                <md-menu-content width="4">
+                    <md-menu-item ng-repeat="(name, value) in ctrl.presets">
+                        <md-button ng-click="ctrl.updateEndDate(value)">
+                            {{ name }}
+                        </md-button>
+                    </md-menu-item>
+                </md-menu-content>
+            </md-menu>
             <md-input-container>
                 <label>End Date</label>
                 <md-datepicker ng-model="ctrl.endDate" name="endDate"
@@ -63,7 +86,7 @@
 
                 <div ng-messages="ctrl.dateForm.endTime.$error">
                     <div ng-message="time">The end time is invalid. Use format
-                        hh:mm:ss.SSS
+                        hh:mm:ss
                     </div>
                 </div>
             </md-input-container>

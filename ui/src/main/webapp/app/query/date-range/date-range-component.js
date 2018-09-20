@@ -30,13 +30,15 @@ function dateRange() {
     }
 }
 
-function DateRangeController(time, events) {
+function DateRangeController(time, events, error) {
     var vm = this;
 
     vm.startDate = null;
     vm.endDate = null;
     vm.startTime=null
     vm.endTime=null
+
+    vm.presets;
 
     vm.localeProviderOverride = {
         parseDate:  function(dateString) {
@@ -99,6 +101,8 @@ function DateRangeController(time, events) {
             }
         }
 
+        vm.presets = vm.conf.filter.presets;
+
         if (!vm.model) {
             throw 'Date range component must be initialised with a model'
         }
@@ -111,6 +115,37 @@ function DateRangeController(time, events) {
 
     vm.$onDestroy = function() {
         events.unsubscribe('onOperationUpdate', onOperationUpdate);
+    }
+
+    var calculateDate = function(presetParameters, callback) {
+        if (!presetParameters) {
+            error.handle('This date range preset has been misconfigured');
+            return;
+        }
+        if (presetParameters.date) {
+            var date = moment(presetParameters.date).toDate();
+            callback(date);
+        } else if (presetParameters.offset !== undefined && presetParameters.unit) {
+            var date = moment().add(presetParameters.offset, presetParameters.unit).startOf('day').toDate();
+            callback(date);
+        } else {
+            error.handle('This date range preset is misconfigured.', 'Invalid configuration: \n' + JSON.stringify(presetParameters));
+            return;
+        }
+    }
+
+    vm.updateStartDate = function(presetParameters) {
+        calculateDate(presetParameters, function(date) {
+            vm.startDate = date;
+            vm.onStartDateUpdate();
+        });
+    }
+
+    vm.updateEndDate = function(presetParameters) {
+        calculateDate(presetParameters, function(date) {
+            vm.endDate = date;
+            vm.onEndDateUpdate();
+        });
     }
 
     vm.onStartDateUpdate = function() {

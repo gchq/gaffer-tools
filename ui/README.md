@@ -487,8 +487,11 @@ the key is 'hyperLogLogPlus.cardinality' because the cardinality is the only mea
 
 ### Time
 
-Use the time section if you want to specify a date range filter easily across all elements in your queries.
-In the time section, you will create a filter object which contains all the necessary values needed to create a time
+Use the time section if you want to specify date ranges easily in your queries and view trends over time in the charts.
+
+#### Filter
+
+You can create a filter object which contains all the necessary values needed to create a time
 window.
 
 To use the time window feature, some assumptions should be true:
@@ -504,8 +507,69 @@ To use the time window feature, some assumptions should be true:
 | endProperty   | string  | The name of the end date property
 | unit          | string  | The unit of time. This can be one of: day, hour, minute, second, millisecond, microsecond. This is not case sensitive.
 | class         | string  | The java class of the object - this class should exist in the types section
+| presets       | object  | An object specifying the preset suggestions. (see below for details)
 
 It's worth noting that if your elements have a single timestamp, just use the same timestamp property in the startProperty and endProperty
+
+##### Presets
+
+You can add preset suggestions which, if configured, will result in a menu being added to the ui containing preset dates.
+This can be useful when there are common date ranges used by your users.
+
+The presets object can be as long as you like but be cautious about overwhelming your users with options. You can either use
+offsets to create a relative range, or specify dates statically. Offsets must include a unit which can either be 'day', 'week', 'month' or 'year'. Dates are expected to be read in the YYYY-MM-DD date format.
+
+#### Time properties
+
+Telling the UI which properties relate to time is good practice as it helps the UI convert numerical values in the table to strings and improves the way charts display your dates. Furthermore if you're named operations contain date parameters, adding the name of these parameters will allow users to enter their dates in a datepicker.
+
+To configure time properties, you need to provide an object which is keyed by the name of the properties. Each property should contain the class of the class associated with the property and the unit. This unit should be one of:
+
+* Microsecond
+* Millisecond
+* Second
+* Minute
+* Hour
+* Day
+
+#### Example
+
+```json
+{
+  "time": {
+    "filter": {
+      "class": "java.util.Date",
+      "unit": "millisecond",
+      "startProperty": "startDate",
+      "endProperty": "endDate",
+      "presets": {
+        "Today": {
+          "offset": 0,
+          "unit": "day"
+        },
+        "Last week": {
+          "offset": -1,
+          "unit": "week"
+        },
+        "2002": {
+          "date": "2002-01-01"
+        }
+      }
+    },
+    "properties": {
+      "startDate": {
+        "class": "java.util.Date",
+        "unit": "millisecond"
+      },
+      "endDate": {
+        "class": "java.util.Date",
+        "unit": "millisecond"
+      }
+    }
+  }
+}
+```
+
 
 ### Quick Query
 

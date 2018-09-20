@@ -68,7 +68,27 @@
       "class": "java.util.Date",
       "unit": "millisecond",
       "startProperty": "startDate",
-      "endProperty": "endDate"
+      "endProperty": "endDate",
+      "presets": {
+        "Today": {
+          "offset": 0,
+          "unit": "day"
+        },
+        "Last week": {
+          "offset": -1,
+          "unit": "week"
+        },
+        "Last month": {
+          "offset": -1,
+          "unit": "month"
+        },
+        "2002": {
+          "date": "2002-01-01"
+        },
+        "2001": {
+          "date": "2001-01-01"
+        }
+      }
     },
     "properties": {
       "startDate": {
