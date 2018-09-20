@@ -19,5 +19,17 @@
         <module>distribution</module>
     </modules>
 
+    <properties>
+        <gaffer.version>${project.parent.version}</gaffer.version>
+        <compiler.plugin.version>2.3.2</compiler.plugin.version>
+        <assembly.plugin.version>2.5.3</assembly.plugin.version>
+        <java.version>1.8</java.version>
+        <junit.version>4.12</junit.version>
+        <dependency.plugin.version>2.10</dependency.plugin.version>
+        <surefire.plugin.version>2.19.1</surefire.plugin.version>
+        <exec.plugin.version>1.6.0</exec.plugin.version>
+        <clean.plugin.version>3.0.0</clean.plugin.version>
+    </properties>
+
 
 </project>

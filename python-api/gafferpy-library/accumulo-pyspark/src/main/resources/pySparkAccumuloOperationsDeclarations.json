@@ -1,0 +1,10 @@
+{
+  "operations": [
+    {
+      "operation": "uk.gov.gchq.gaffer.python.pyspark.operation.GetPythonRDDConfiguration",
+      "handler": {
+        "class": "uk.gov.gchq.gaffer.python.pyspark.accumulo.handler.GetPythonRDDConfigurationHandler"
+      }
+    }
+  ]
+}
