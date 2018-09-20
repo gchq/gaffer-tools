@@ -487,7 +487,7 @@ the key is 'hyperLogLogPlus.cardinality' because the cardinality is the only mea
 
 ### Time
 
-Use the time section if you want to specify a date ranges easily in your queries and view trends over time in the charts.
+Use the time section if you want to specify date ranges easily in your queries and view trends over time in the charts.
 
 #### Filter
 
