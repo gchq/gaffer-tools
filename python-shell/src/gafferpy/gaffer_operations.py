@@ -2486,7 +2486,7 @@ class ForEach(Operation):
 
 
 class ToSingletonList(Operation):
-    CLASS = 'uk.gov.gchq.gaffer.operation.impl.ToSingletonList'
+    CLASS = 'uk.gov.gchq.gaffer.operation.impl.output.ToSingletonList'
 
     def __init__(self, input=None, options=None):
         super().__init__(_class_name=self.CLASS, options=options)
