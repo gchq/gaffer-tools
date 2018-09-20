@@ -4897,6 +4897,45 @@ class GafferOperationsTest(unittest.TestCase):
         [
             '''
             {
+                "class" : "uk.gov.gchq.gaffer.operation.impl.Reduce",
+                "input" : [{
+                    "class" : "uk.gov.gchq.gaffer.data.element.Edge",
+                    "group" : "testEdge",
+                    "source" : "src",
+                    "destination" : "dest",
+                    "directed" : true,
+                    "properties" : {
+                        "count" : 3
+                    }
+                }],
+                "aggregationFunction": {
+                    "class": "uk.gov.gchq.koryphe.impl.binaryoperator.Max"
+                },
+                "identity": 10
+            }
+            ''',
+            g.Reduce(
+                input=[
+                    g.Edge(
+                        group="testEdge",
+                        source="src",
+                        destination="dest",
+                        directed=True,
+                        properties={
+                            "count": 3
+                        }
+                    )
+                ],
+                aggregation_function=g.BinaryOperator(
+                    class_name="uk.gov.gchq.koryphe.impl.binaryoperator.Max"
+                ),
+                identity=10
+
+            )
+        ],
+        [
+            '''
+            {
                 "class" : "uk.gov.gchq.gaffer.operation.impl.ForEach",
                 "input" : [{
                     "class" : "uk.gov.gchq.gaffer.data.element.Edge",
@@ -4924,6 +4963,36 @@ class GafferOperationsTest(unittest.TestCase):
                     )
                 ],
                 operation=g.GetElements()
+            )
+        ],
+        [
+            '''
+            {
+                "class" : "uk.gov.gchq.gaffer.operation.impl.ToSingletonList",
+                "input" : [{
+                    "class" : "uk.gov.gchq.gaffer.data.element.Edge",
+                    "group" : "testEdge",
+                    "source" : "src",
+                    "destination" : "dest",
+                    "directed" : true,
+                    "properties" : {
+                        "count" : 3
+                    }
+                }]
+            }
+            ''',
+            g.ToSingletonList(
+                input=[
+                    g.Edge(
+                        group="testEdge",
+                        source="src",
+                        destination="dest",
+                        directed=True,
+                        properties={
+                            "count": 3
+                        }
+                    )
+                ]
             )
         ]
     ]
