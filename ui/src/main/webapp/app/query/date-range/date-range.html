@@ -5,7 +5,7 @@
     
     <div layout-gt-lg="row" layout="column">
         <div layout="row">
-            <md-menu ng-if="ctrl.presets" class="margin-top">
+            <md-menu ng-if="ctrl.presets" class="menu-inline-with-datepicker">
                 <md-button class="md-icon-button no-side-margin" ng-click="$mdMenu.open($event)"  >
                     <md-icon md-menu-origin md-svg-icon="list"></md-icon>
                     <md-tooltip>Use presets for start date</md-tooltip>
@@ -49,19 +49,19 @@
             </md-input-container>
         </div>
         <div layout="row">
-                <md-menu ng-if="ctrl.presets" class="margin-top">
-                        <md-button class="md-icon-button no-side-margin" ng-click="$mdMenu.open($event)"  >
-                            <md-icon md-menu-origin md-svg-icon="list"></md-icon>
-                            <md-tooltip>Use presets for end date</md-tooltip>
+            <md-menu ng-if="ctrl.presets" class="menu-inline-with-datepicker">
+                <md-button class="md-icon-button no-side-margin" ng-click="$mdMenu.open($event)"  >
+                    <md-icon md-menu-origin md-svg-icon="list"></md-icon>
+                    <md-tooltip>Use presets for end date</md-tooltip>
+                </md-button>
+                <md-menu-content width="4">
+                    <md-menu-item ng-repeat="(name, value) in ctrl.presets">
+                        <md-button ng-click="ctrl.updateEndDate(value)">
+                            {{ name }}
                         </md-button>
-                        <md-menu-content width="4">
-                            <md-menu-item ng-repeat="(name, value) in ctrl.presets">
-                                <md-button ng-click="ctrl.updateEndDate(value)">
-                                    {{ name }}
-                                </md-button>
-                            </md-menu-item>
-                        </md-menu-content>
-                    </md-menu>
+                    </md-menu-item>
+                </md-menu-content>
+            </md-menu>
             <md-input-container>
                 <label>End Date</label>
                 <md-datepicker ng-model="ctrl.endDate" name="endDate"

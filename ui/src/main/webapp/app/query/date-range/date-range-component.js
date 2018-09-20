@@ -52,11 +52,6 @@ function DateRangeController(time, events, error) {
         }
     }
 
-    vm.updateValues = function(values) {
-        // use offsets to calculate new values. For now, just log them
-        console.log(values);
-    }
-
     var updateView = function(dates) {
         var start = dates.startDate;
         if (start) {
