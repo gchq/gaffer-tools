@@ -2397,6 +2397,54 @@ class While(Operation):
         return operation
 
 
+class Reduce(Operation):
+    CLASS = 'uk.gov.gchq.gaffer.operation.impl.Reduce'
+
+    def __init__(self, input=None, identity=None,
+                 aggregation_function=None, options=None):
+
+        super().__init__(_class_name=self.CLASS,
+                         options=options)
+
+        self.input = input
+        self.identity = identity
+
+        if aggregation_function is None:
+            raise ValueError('aggregation_function is required')
+        if isinstance(aggregation_function, dict):
+            aggregation_function = JsonConverter.from_json(
+                aggregation_function, gaffer_binaryoperators.BinaryOperator)
+        self.aggregation_function = aggregation_function
+
+    def to_json(self):
+        operation = super().to_json()
+
+        if self.input is not None:
+            json_seeds = []
+            if isinstance(self.input, list):
+                for seed in self.input:
+                    if isinstance(seed, ToJson):
+                        json_seeds.append(seed.to_json())
+                    else:
+                        json_seeds.append(seed)
+            else:
+                if isinstance(self.input, ToJson):
+                    json_seeds.append(self.input.to_json())
+                else:
+                    json_seeds.append(self.input.to_json())
+            operation['input'] = json_seeds
+
+        operation['aggregationFunction'] = self.aggregation_function.to_json()
+
+        if self.identity is not None:
+            if isinstance(self.identity, ToJson):
+                operation['identity'] = self.identity.to_json()
+            else:
+                operation['identity'] = self.identity
+
+        return operation
+
+
 class ForEach(Operation):
     CLASS = 'uk.gov.gchq.gaffer.operation.impl.ForEach'
 
