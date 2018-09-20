@@ -35,3 +35,14 @@ __pycache__
 */.DS_Store
 .vscode/
 .ipynb_checkpoints
+.gaffer/
+parquet_data/
+*/graphLibrary/
+graphLibrary/
+bin
+.ipynb_checkpoints
+metastore_db
+derby.log
+spark-warehouse
+*build*
+
