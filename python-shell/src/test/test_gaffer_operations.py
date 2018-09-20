@@ -4894,6 +4894,167 @@ class GafferOperationsTest(unittest.TestCase):
                 current_traits=True
             )
         ],
+        [
+            '''
+            {
+                "class" : "uk.gov.gchq.gaffer.operation.impl.Reduce",
+                "input" : [{
+                    "class" : "uk.gov.gchq.gaffer.data.element.Edge",
+                    "group" : "testEdge",
+                    "source" : "src",
+                    "destination" : "dest",
+                    "directed" : true,
+                    "properties" : {
+                        "count" : 3
+                    }
+                }],
+                "aggregationFunction": {
+                    "class": "uk.gov.gchq.koryphe.impl.binaryoperator.Max"
+                },
+                "identity": 10
+            }
+            ''',
+            g.Reduce(
+                input=[
+                    g.Edge(
+                        group="testEdge",
+                        source="src",
+                        destination="dest",
+                        directed=True,
+                        properties={
+                            "count": 3
+                        }
+                    )
+                ],
+                aggregation_function=g.BinaryOperator(
+                    class_name="uk.gov.gchq.koryphe.impl.binaryoperator.Max"
+                ),
+                identity=10
+
+            )
+        ],
+        [
+            '''
+            {
+                "class" : "uk.gov.gchq.gaffer.operation.impl.ForEach",
+                "input" : [{
+                    "class" : "uk.gov.gchq.gaffer.data.element.Edge",
+                    "group" : "testEdge",
+                    "source" : "src",
+                    "destination" : "dest",
+                    "directed" : true,
+                    "properties" : {
+                        "count" : 3
+                    }
+                }],
+                "operation": {"class": "uk.gov.gchq.gaffer.operation.impl.get.GetElements"}
+            }
+            ''',
+            g.ForEach(
+                input=[
+                    g.Edge(
+                        group="testEdge",
+                        source="src",
+                        destination="dest",
+                        directed=True,
+                        properties={
+                            "count": 3
+                        }
+                    )
+                ],
+                operation=g.GetElements()
+            )
+        ],
+        [
+            '''
+            {
+                "class" : "uk.gov.gchq.gaffer.operation.impl.ToSingletonList",
+                "input" : [{
+                    "class" : "uk.gov.gchq.gaffer.data.element.Edge",
+                    "group" : "testEdge",
+                    "source" : "src",
+                    "destination" : "dest",
+                    "directed" : true,
+                    "properties" : {
+                        "count" : 3
+                    }
+                }]
+            }
+            ''',
+            g.ToSingletonList(
+                input=[
+                    g.Edge(
+                        group="testEdge",
+                        source="src",
+                        destination="dest",
+                        directed=True,
+                        properties={
+                            "count": 3
+                        }
+                    )
+                ]
+            )
+        ],
+        [
+            '''
+            {
+              "class" : "uk.gov.gchq.gaffer.operation.impl.ValidateOperationChain",
+              "operationChain" : {
+                "class" : "uk.gov.gchq.gaffer.operation.OperationChain",
+                "operations" : [ {
+                  "class" : "uk.gov.gchq.gaffer.operation.impl.add.AddElements"
+                }, {
+                  "class" : "uk.gov.gchq.gaffer.operation.impl.get.GetElements"
+                } ]
+              },
+              "options" : {
+                "key" : "value"
+              }
+            }
+            ''',
+            g.ValidateOperationChain(
+                operation_chain=g.OperationChain(
+                    operations=[
+                        g.AddElements(),
+                        g.GetElements()
+                    ]
+                ),
+                options={
+                    "key": "value"
+                }
+            )
+        ],
+        [
+            '''
+            {
+              "class" : "uk.gov.gchq.gaffer.operation.impl.ValidateOperationChain",
+              "operationChain" : {
+                "class" : "uk.gov.gchq.gaffer.operation.OperationChain",
+                "operations" : [ {
+                  "class" : "uk.gov.gchq.gaffer.operation.impl.add.AddElements"
+                }, {
+                  "class" : "uk.gov.gchq.gaffer.operation.impl.get.GetElements"
+                } ]
+              },
+              "options" : {
+                "key" : "value"
+              }
+            }
+            ''',
+            g.ValidateOperationChain(
+                operation_chain={
+                    "class": "uk.gov.gchq.gaffer.operation.OperationChain",
+                    "operations": [{
+                        "class": "uk.gov.gchq.gaffer.operation.impl.add.AddElements"
+                    }, {
+                        "class": "uk.gov.gchq.gaffer.operation.impl.get.GetElements"
+                    }]
+                },
+                options={
+                    "key": "value"
+                }
+            )
+        ]
     ]
 
     def test_operations(self):
