@@ -4994,6 +4994,66 @@ class GafferOperationsTest(unittest.TestCase):
                     )
                 ]
             )
+        ],
+        [
+            '''
+            {
+              "class" : "uk.gov.gchq.gaffer.operation.impl.ValidateOperationChain",
+              "operationChain" : {
+                "class" : "uk.gov.gchq.gaffer.operation.OperationChain",
+                "operations" : [ {
+                  "class" : "uk.gov.gchq.gaffer.operation.impl.add.AddElements"
+                }, {
+                  "class" : "uk.gov.gchq.gaffer.operation.impl.get.GetElements"
+                } ]
+              },
+              "options" : {
+                "key" : "value"
+              }
+            }
+            ''',
+            g.ValidateOperationChain(
+                operation_chain=g.OperationChain(
+                    operations=[
+                        g.AddElements(),
+                        g.GetElements()
+                    ]
+                ),
+                options={
+                    "key": "value"
+                }
+            )
+        ],
+        [
+            '''
+            {
+              "class" : "uk.gov.gchq.gaffer.operation.impl.ValidateOperationChain",
+              "operationChain" : {
+                "class" : "uk.gov.gchq.gaffer.operation.OperationChain",
+                "operations" : [ {
+                  "class" : "uk.gov.gchq.gaffer.operation.impl.add.AddElements"
+                }, {
+                  "class" : "uk.gov.gchq.gaffer.operation.impl.get.GetElements"
+                } ]
+              },
+              "options" : {
+                "key" : "value"
+              }
+            }
+            ''',
+            g.ValidateOperationChain(
+                operation_chain={
+                    "class": "uk.gov.gchq.gaffer.operation.OperationChain",
+                    "operations": [{
+                        "class": "uk.gov.gchq.gaffer.operation.impl.add.AddElements"
+                    }, {
+                        "class": "uk.gov.gchq.gaffer.operation.impl.get.GetElements"
+                    }]
+                },
+                options={
+                    "key": "value"
+                }
+            )
         ]
     ]
 

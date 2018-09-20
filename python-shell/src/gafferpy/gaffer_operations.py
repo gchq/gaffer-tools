@@ -2489,10 +2489,7 @@ class ToSingletonList(Operation):
     CLASS = 'uk.gov.gchq.gaffer.operation.impl.ToSingletonList'
 
     def __init__(self, input=None, options=None):
-
-        super().__init__(_class_name=self.CLASS,
-                         options=options)
-
+        super().__init__(_class_name=self.CLASS, options=options)
         self.input = input
 
     def to_json(self):
@@ -2514,6 +2511,26 @@ class ToSingletonList(Operation):
             operation['input'] = json_seeds
 
         return operation
+
+
+class ValidateOperationChain(Operation):
+    CLASS = 'uk.gov.gchq.gaffer.operation.impl.ValidateOperationChain'
+
+    def __init__(self, operation_chain=None, options=None):
+        super().__init__(_class_name=self.CLASS, options=options)
+        if operation_chain is None:
+            raise ValueError('operation_chain is required')
+
+        if not isinstance(operation_chain, OperationChain):
+            self.operation_chain = JsonConverter.from_json(
+                operation_chain, OperationChain)
+        else:
+            self.operation_chain = operation_chain
+
+    def to_json(self):
+        operation_json = super().to_json()
+        operation_json['operationChain'] = self.operation_chain.to_json()
+        return operation_json
 
 
 class Conditional(ToJson, ToCodeString):
