@@ -7,7 +7,7 @@ fi
 
 git reset --hard
 git clean -fd
-# git checkout develop
+git checkout develop
 git pull
 
 newVersion=$1
