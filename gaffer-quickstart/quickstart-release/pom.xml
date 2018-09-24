@@ -19,7 +19,7 @@
                 <configuration>
                     <appendAssemblyId>false</appendAssemblyId>
                     <descriptors>
-                        <descriptor>release/assembly/release-assembly.xml</descriptor>
+                        <descriptor>assembly/release-assembly.xml</descriptor>
                     </descriptors>
                     <outputDirectory>../gaffer-quickstart-release-${project.version}</outputDirectory>
                     <finalName>gaffer-quickstart-${project.parent.version}</finalName>

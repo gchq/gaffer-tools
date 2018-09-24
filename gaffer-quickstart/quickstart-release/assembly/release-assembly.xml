@@ -1,5 +1,5 @@
 <assembly>
-    <id>release</id>
+    <id>quickstart-release</id>
     <formats>
         <format>tar.gz</format>
     </formats>
@@ -12,7 +12,7 @@
     </dependencySets>
     <fileSets>
         <fileSet>
-            <directory>../core/src/bin</directory>
+            <directory>../quickstart-core/src/bin</directory>
             <outputDirectory>bin</outputDirectory>
             <includes>
                 <include>*.sh</include>
@@ -20,68 +20,51 @@
             <fileMode>755</fileMode>
         </fileSet>
         <fileSet>
-            <directory>../core/src/conf/</directory>
+            <directory>../quickstart-core/src/conf/</directory>
             <outputDirectory>conf</outputDirectory>
             <includes>
                 <include>*.json</include>
             </includes>
         </fileSet>
         <fileSet>
-            <directory>../core/src/example/</directory>
+            <directory>../quickstart-core/src/example/</directory>
             <outputDirectory>example</outputDirectory>
         </fileSet>
         <fileSet>
-            <directory>../core/src/python/</directory>
+            <directory>../quickstart-core/src/example/</directory>
+            <outputDirectory>example</outputDirectory>
+        </fileSet>
+        <fileSet>
+            <directory>../quickstart-core/src/python/</directory>
             <outputDirectory>python</outputDirectory>
         </fileSet>
         <fileSet>
-            <directory>../ui/target/</directory>
+            <directory>../quickstart-ui/target/</directory>
             <outputDirectory>lib</outputDirectory>
             <includes>
                 <include>*.war</include>
             </includes>
         </fileSet>
         <fileSet>
-            <directory>../rest/target/</directory>
+            <directory>../quickstart-rest/target/</directory>
             <outputDirectory>lib</outputDirectory>
             <includes>
                 <include>*.war</include>
             </includes>
         </fileSet>
         <fileSet>
-            <directory>../core/target/gaffer-quickstart-core-${project.parent.version}/gaffer-quickstart-core-${project.parent.version}/lib/</directory>
+            <directory>../quickstart-core/target/quickstart-core-${project.parent.version}/quickstart-core-${project.parent.version}/lib/</directory>
             <outputDirectory>lib</outputDirectory>
             <includes>
                 <include>*.jar</include>
             </includes>
         </fileSet>
         <fileSet>
-            <directory>../model/target/gaffer-quickstart-model-${project.parent.version}/gaffer-quickstart-model-${project.parent.version}/lib/</directory>
+            <directory>../quickstart-core/target/</directory>
             <outputDirectory>lib</outputDirectory>
             <includes>
                 <include>*.jar</include>
             </includes>
-        </fileSet>
-        <fileSet>
-            <directory>../core/target/</directory>
-            <outputDirectory>lib</outputDirectory>
-            <includes>
-                <include>*.jar</include>
-            </includes>
-        </fileSet>
-        <fileSet>
-            <directory>../model/target/</directory>
-            <outputDirectory>lib</outputDirectory>
-            <includes>
-                <include>*.jar</include>
-            </includes>
-        </fileSet>
-        <fileSet>
-            <directory>../release/target/</directory>
-            <outputDirectory>lib</outputDirectory>
-            <excludes>
-                <exclude>*.jar</exclude>
-            </excludes>
         </fileSet>
     </fileSets>
 </assembly>
