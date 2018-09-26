@@ -164,7 +164,7 @@ describe("The Graph Service", function() {
                         class: 'uk.gov.gchq.gaffer.operation.OperationChain',
                         operations: [
                             expectedOp,
-                            { class: 'uk.gov.gchq.gaffer.operation.impl.Limit', resultLimit: 100, options: {  } },
+                            { class: 'uk.gov.gchq.gaffer.operation.impl.Limit', resultLimit: 1000, options: {  } },
                             { class: 'uk.gov.gchq.gaffer.operation.impl.output.ToSet', options: {  } }
                         ],
                         options: {  }
