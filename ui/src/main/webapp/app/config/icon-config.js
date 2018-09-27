@@ -20,7 +20,7 @@ angular.module('app').config(['$mdIconProvider', function($mdIconProvider) {
 
     $mdIconProvider
         .icon('save', 'app/img/material-icons/save.svg')
-        .icon('info', 'app/img/material-icons/info.svg')
+        .icon('info', 'app/img/material-icons/info_outline.svg')
         .icon('left-arrow', 'app/img/left-arrow.svg')
         .icon('up-arrow', 'app/img/up-arrow.svg')
         .icon('right-arrow', 'app/img/right-arrow.svg')
