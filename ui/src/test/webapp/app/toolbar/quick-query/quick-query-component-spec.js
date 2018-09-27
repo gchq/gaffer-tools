@@ -591,7 +591,7 @@ describe('The Quick Query Component', function() {
             expect(query.executeQuery.calls.argsFor(0)[0].operations[2].resultLimit).toEqual(3000)
         });
 
-        it('should use the default operation options on the operation chain if the options flag is set to true and options have been set', function() {
+        it('should not overwrite predefined operation options', function() {
             ctrl.options = true;
             spyOn(settings, 'getDefaultOpOptions').and.returnValue({'foo': 'bar'});
 
@@ -605,28 +605,16 @@ describe('The Quick Query Component', function() {
 
             ctrl.searchText = "test";
 
-            ctrl.search();
+            var operation = JSON.parse(ctrl.query);
+            operation.options = {
+                'preset': 'value'
+            }
 
-            expect(query.executeQuery.calls.argsFor(0)[0].options).toEqual({'foo': 'bar'})
-        });
-
-        it('should not use the default operation options if no options have been defined', function() {
-            ctrl.options = true;
-            spyOn(settings, 'getDefaultOpOptions').and.returnValue({});
-
-            fields = [
-                {
-                    type: 'text',
-                    class: 'java.lang.String',
-                    required: true
-                }
-            ];
-
-            ctrl.searchText = "test";
+            ctrl.query = JSON.stringify(operation);
 
             ctrl.search();
 
-            expect(query.executeQuery.calls.argsFor(0)[0].options).toBeUndefined();
+            expect(query.executeQuery.calls.argsFor(0)[0].operations[0].options).toEqual({'preset': 'value'});
         
         });
 
@@ -646,7 +634,32 @@ describe('The Quick Query Component', function() {
 
             ctrl.search();
 
-            expect(query.executeQuery.calls.argsFor(0)[0].options).toBeUndefined();
+            expect(query.executeQuery.calls.argsFor(0)[0].operations[0].options).toBeUndefined();
+        });
+
+        it('should add the operations to every operation in the chain if configured', function() {
+            ctrl.options = true;
+            ctrl.dedupe = true;
+            ctrl.limit = true;
+            spyOn(settings, 'getDefaultOpOptions').and.returnValue({'foo': 'bar'});
+
+            fields = [
+                {
+                    type: 'text',
+                    class: 'java.lang.String',
+                    required: true
+                }
+            ];
+
+            ctrl.searchText = "test";
+
+            ctrl.search();
+
+            var operationArray = query.executeQuery.calls.argsFor(0)[0].operations;
+            for (var i in operationArray) {
+                var op = operationArray[i];
+                expect(op.options).toEqual({'foo': 'bar'})
+            }
         });
 
         it('should reset the input string when results are returned', function() {

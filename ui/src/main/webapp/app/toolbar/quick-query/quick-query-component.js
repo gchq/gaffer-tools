@@ -98,18 +98,21 @@ function QuickQueryController(config, schema, csv, error, types, query, operatio
             }
         }
 
+        var operationOptions = vm.options ? settings.getDefaultOpOptions() : {};
+
         if (vm.dedupe) {
-            chain.operations.push(operationService.createDeduplicateOperation());
+            chain.operations.push(operationService.createDeduplicateOperation(operationOptions));
         }
 
         if (vm.limit) {
-            chain.operations.push(operationService.createLimitOperation());
+            chain.operations.push(operationService.createLimitOperation(operationOptions));
         }
 
-        if (vm.options && !chain.options) {
-            var currentOptions = settings.getDefaultOpOptions();
-            if (Object.keys(currentOptions).length > 0) {
-                chain.options = currentOptions;
+        if (vm.options) {
+            for (var i in chain.operations) {
+                if (!chain.operations[i].options) {
+                    chain.operations[i].options = operationOptions;
+                }
             }
         }
 
