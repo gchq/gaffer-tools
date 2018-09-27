@@ -1,6 +1,26 @@
 describe('The Options Form Component', function() {
     beforeEach(module('app'));
 
+    beforeEach(module(function($provide) {
+        $provide.factory('config', function($q) {
+            var get = function() {
+                return $q.when({});
+            }
+
+            return {
+                get: get
+            }
+        });
+
+        $provide.factory('schema', function($q) {
+            return {
+                get: function() {
+                    return $q.when({});
+                }
+            }
+        });
+    }));
+
     describe('The Controller', function() {
 
         var $componentController;
@@ -120,6 +140,57 @@ describe('The Options Form Component', function() {
                 {key: '', value: ''}
             ];
             expect(ctrl.opOptionsArray).toEqual(expectedOpOptionsArray);
+        });
+
+        describe('.$onInit()', function() {
+            var ctrl;
+            var defaultOptions;
+            var scope;
+
+            beforeEach(inject(function(_$rootScope_) {
+                var $rootScope = _$rootScope_;
+                scope = $rootScope.$new();
+            }))
+
+            beforeEach(function() {
+                ctrl = $componentController('optionsForm', {$scope: scope});
+            });
+
+            beforeEach(function() {
+                spyOn(settings, 'getDefaultOpOptions').and.callFake(function() {
+                    return defaultOptions;
+                });
+            });
+
+            it('should not update a null model if the default operation options is an empty object', function() {
+                ctrl.model = null;
+                defaultOptions = {};
+
+                ctrl.$onInit();
+                scope.$digest();
+
+                expect(ctrl.model).toBeNull();
+            });
+
+            it('should not update a non-null model', function() {
+                ctrl.model = {'key': 'value'};
+                defaultOptions = {'foo': 'bar'};
+
+                ctrl.$onInit();
+                scope.$digest();
+
+                expect(ctrl.model).toEqual({'key': 'value'});
+            });
+
+            it('should update a null model if the default operation options have been populated', function() {
+                ctrl.model = null;
+                defaultOptions = {'foo': 'bar'};
+
+                ctrl.$onInit();
+                scope.$digest();
+
+                expect(ctrl.model).toEqual({'foo': 'bar'});
+            });
         });
     });
 });
