@@ -264,18 +264,9 @@ function TableController(schema, results, table, events, common, types, time, cs
     var convertValue = function(name, value) {
         var parsedValue = value;
         if(parsedValue) {
-            try {
-                parsedValue = JSON.parse(value);
-            } catch(e) {
-                parsedValue = value;
-            }
             parsedValue = types.getShortValue(parsedValue);
             if(time.isTimeProperty(name)) {
                 parsedValue = time.getDateString(name, parsedValue);
-            }
-
-            if (typeof parsedValue === 'string' && !isNaN(parsedValue)) {
-                parsedValue = +parsedValue;
             }
         }
         return parsedValue;
