@@ -461,6 +461,26 @@ describe('The Quick Query Component', function() {
 
         });
 
+        it('should insert a string seed into the query even if it is a number', function() {
+            fields = [
+                {
+                    type: 'text',
+                    class: 'java.lang.String',
+                    required: true
+                }
+            ];
+
+            ctrl.searchText = '42';
+
+            ctrl.search();
+
+            ctrl.vertexClass = 'java.lang.String';
+            var expectedOperation = createOperationChain('42');
+            ctrl.search();
+
+            expect(query.executeQuery).toHaveBeenCalledWith(expectedOperation, jasmine.any(Function));
+        });
+
         it('should insert a numerical seed into the query and execute it', function() {
             fields = [
                 {
