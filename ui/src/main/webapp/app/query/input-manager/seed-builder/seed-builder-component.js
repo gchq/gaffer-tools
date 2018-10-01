@@ -140,8 +140,12 @@ function SeedBuilderController(schema, csv, types, error, events, common, $route
             var fields = vm.getFields();
             for (var j in fields) {
                 var value = separated[j];
-                if (fields[j].class === 'java.lang.String' && typeof value !== 'string') {
-                    value = JSON.stringify(value);
+                if (fields[j].class !== 'java.lang.String' && fields[j].type !== 'text') {
+                    try {
+                        value = JSON.parse(value);
+                    } catch (e) {
+                        console.log("possible failure parsing " + fields[j].type + " from string: " + value + " for class: " + fields[j].class, e); // Don't broadcast to UI.
+                    }
                 }
                 parts[fields[j].key] = value;
 

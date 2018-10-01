@@ -424,6 +424,12 @@ describe('The pair builder component', function() {
         it('should create string pairs from strings', function() {
             ctrl.vertexClass = 'java.lang.String';
             ctrl.pairs = 'test,pair';
+            fields = [
+                {
+                    class: 'java.lang.String',
+                    type: 'text'
+                }
+            ]
             ctrl.addPairs();
             expect(ctrl.model).toEqual([
                 {
@@ -447,6 +453,12 @@ describe('The pair builder component', function() {
         it('should create numbers from numerical strings', function() {
             ctrl.vertexClass = 'java.lang.Long';
             ctrl.pairs = '123,456';
+            fields = [
+                {
+                    class: 'java.lang.Long',
+                    type: 'number'
+                }
+            ]
             ctrl.addPairs();
             expect(ctrl.model).toEqual([
                 {
@@ -471,6 +483,12 @@ describe('The pair builder component', function() {
         it('should create true boolean values from boolean strings', function() {
             ctrl.vertexClass = 'java.lang.Boolean';
             ctrl.pairs = 'true,false';
+            fields = [
+                {
+                    class: 'java.lang.Boolean',
+                    type: 'checkbox'
+                }
+            ]
             ctrl.addPairs();
             expect(ctrl.model).toEqual([
                 {
@@ -494,6 +512,12 @@ describe('The pair builder component', function() {
         it('should include fields with commas surrounded by a quotes as one field', function() {
             ctrl.vertexClass = 'java.lang.String';
             ctrl.pairs = '"comma,test",seed';
+            fields = [
+                {
+                    class: 'java.lang.String',
+                    type: 'text'
+                }
+            ]
             ctrl.addPairs();
             expect(ctrl.model).toEqual([
                 {
@@ -517,6 +541,12 @@ describe('The pair builder component', function() {
         it('should create string seeds from numbers with quotes around them', function() { 
             ctrl.vertexClass = 'java.lang.String';
             ctrl.pairs = '"12","180"';
+            fields = [
+                {
+                    class: 'java.lang.String',
+                    type: 'text'
+                }
+            ]
             ctrl.addPairs();
             expect(ctrl.model).toEqual([
                 {
@@ -542,6 +572,12 @@ describe('The pair builder component', function() {
         it('should be able to handle escaped quotes', function() {
             ctrl.vertexClass = 'java.lang.String';
             ctrl.pairs = '"I contain a \\"quoted string\\"",seed',
+            fields = [
+                {
+                    class: 'java.lang.String',
+                    type: 'text'
+                }
+            ]
             ctrl.addPairs();
             expect(ctrl.model).toEqual([
                 {
@@ -566,6 +602,12 @@ describe('The pair builder component', function() {
         it('should be able to add escape characters', function() {
             ctrl.vertexClass = 'java.lang.String';
             ctrl.pairs = '"I contain a \\\\string with \\\\ escape characters",test',
+            fields = [
+                {
+                    class: 'java.lang.String',
+                    type: 'text'
+                }
+            ]
             ctrl.addPairs();
             expect(ctrl.model).toEqual([
                 {
@@ -589,12 +631,24 @@ describe('The pair builder component', function() {
         it('should broadcast an error if the string contains an unclosed quote', function() {
             ctrl.vertexClass = 'java.lang.String';
             ctrl.pairs = '"I contain a string with only one quote,test',
+            fields = [
+                {
+                    class: 'java.lang.String',
+                    type: 'text'
+                }
+            ]
             ctrl.addPairs();
             expect(error.handle).toHaveBeenCalledWith('Unclosed quote for \'"I contain a string with only one quote,test\'', undefined)
         });
 
         it('should set the validity of the form to false if the string contains an unclosed quote', function() {
             ctrl.vertexClass = 'java.lang.String';
+            fields = [
+                {
+                    class: 'java.lang.String',
+                    type: 'text'
+                }
+            ]
             ctrl.pairs = '"I contain a string with only one quote,test',
             ctrl.addPairs();
             expect(ctrl.pairForm.seedPairInput.$setValidity).toHaveBeenCalledWith('csv', false);
@@ -602,6 +656,12 @@ describe('The pair builder component', function() {
 
         it('should broadcast an error if escaping the end of input', function() {
             ctrl.vertexClass = 'java.lang.String';
+            fields = [
+                {
+                    class: 'java.lang.String',
+                    type: 'text'
+                }
+            ]
             ctrl.pairs = "test,\\";
             ctrl.addPairs();
             expect(error.handle).toHaveBeenCalledWith('Illegal escape character at end of input for line: \'test,\\\'', undefined);
@@ -609,6 +669,12 @@ describe('The pair builder component', function() {
 
         it('should set the validity of the form to false if the end of input is escaped', function() {
             ctrl.vertexClass = 'java.lang.String';
+            fields = [
+                {
+                    class: 'java.lang.String',
+                    type: 'text'
+                }
+            ]
             ctrl.pairs = "test,\\";
             ctrl.addPairs();
             expect(ctrl.pairForm.seedPairInput.$setValidity).toHaveBeenCalledWith('csv', false);
@@ -616,6 +682,12 @@ describe('The pair builder component', function() {
 
         it('should handle empty inputs', function() {
             ctrl.vertexClass = 'java.lang.String';
+            fields = [
+                {
+                    class: 'java.lang.String',
+                    type: 'text'
+                }
+            ]
             ctrl.pairs = '',
             ctrl.addPairs();
             expect(ctrl.model).toEqual([]);
@@ -623,6 +695,12 @@ describe('The pair builder component', function() {
 
         it('should add empty strings', function() {
             ctrl.vertexClass = 'java.lang.String';
+            fields = [
+                {
+                    class: 'java.lang.String',
+                    type: 'text'
+                }
+            ]
             ctrl.pairs = '"",""',
             ctrl.addPairs();
             expect(ctrl.model).toEqual([
@@ -648,6 +726,12 @@ describe('The pair builder component', function() {
         it('should handle escaped quotes if the string is unquoted', function() {
             ctrl.vertexClass = 'java.lang.String';
             ctrl.pairs = 'This is a \\"test\\",seed';
+            fields = [
+                {
+                    class: 'java.lang.String',
+                    type: 'text'
+                }
+            ]
             ctrl.addPairs();
 
             expect(ctrl.model).toEqual([
@@ -673,6 +757,12 @@ describe('The pair builder component', function() {
         it('should handle double backslashes if unquoted', function() {
             ctrl.vertexClass = 'java.lang.String';
             ctrl.pairs = 'test,This is a \\\\test\\\\';
+            fields = [
+                {
+                    class: 'java.lang.String',
+                    type: 'text'
+                }
+            ]
             ctrl.addPairs();
 
             expect(ctrl.model).toEqual([
@@ -698,6 +788,12 @@ describe('The pair builder component', function() {
         it('should handle double backslashes if quoted', function() {
             ctrl.vertexClass = 'java.lang.String';
             ctrl.pairs = '"This is a \\\\test",case';
+            fields = [
+                {
+                    class: 'java.lang.String',
+                    type: 'text'
+                }
+            ]
             ctrl.addPairs();
 
             expect(ctrl.model).toEqual([
@@ -723,6 +819,12 @@ describe('The pair builder component', function() {
         it('should handle single backslashes if not quoted', function() {
             ctrl.vertexClass = 'java.lang.String';
             ctrl.pairs = 'This is a \\test,case';
+            fields = [
+                {
+                    class: 'java.lang.String',
+                    type: 'text'
+                }
+            ]
             ctrl.addPairs();
 
             expect(ctrl.model).toEqual([
@@ -748,6 +850,12 @@ describe('The pair builder component', function() {
         it('should broadcast an error if an unquoted string appears before a quoted string with no separation', function() {
             ctrl.vertexClass = 'java.lang.String';
             ctrl.pairs = 'unquoted string "quoted String",test',
+            fields = [
+                {
+                    class: 'java.lang.String',
+                    type: 'text'
+                }
+            ]
             ctrl.addPairs();
             expect(error.handle).toHaveBeenCalledWith('Unexpected \'"\' character in line \'unquoted string "quoted String",test\'. Please escape with \\.', undefined)
         });
@@ -755,6 +863,12 @@ describe('The pair builder component', function() {
         it('should set the validity of the form to false if an unquoted string appears before a quoted string with no separation', function() {
             ctrl.vertexClass = 'java.lang.String';
             ctrl.pairs = 'unquoted string "quoted String",test',
+            fields = [
+                {
+                    class: 'java.lang.String',
+                    type: 'text'
+                }
+            ]
             ctrl.addPairs();
             expect(ctrl.pairForm.seedPairInput.$setValidity).toHaveBeenCalledWith('csv', false);
         })
@@ -762,6 +876,12 @@ describe('The pair builder component', function() {
         it('should broadcast an error if an quoted string appears before an unquoted string', function() {
             ctrl.vertexClass = 'java.lang.String';
             ctrl.pairs = '"quoted String" unquoted string,test',
+            fields = [
+                {
+                    class: 'java.lang.String',
+                    type: 'text'
+                }
+            ]
             ctrl.addPairs();
             expect(error.handle).toHaveBeenCalledWith('Unexpected \' \' character in line \'"quoted String" unquoted string,test\'.', undefined)
         });
@@ -769,6 +889,12 @@ describe('The pair builder component', function() {
         it('should set the validity of the form to false if a quoted string appears before an unquoted string with no separation', function() {
             ctrl.vertexClass = 'java.lang.String';
             ctrl.pairs = '"quoted String" unquoted string,test',
+            fields = [
+                {
+                    class: 'java.lang.String',
+                    type: 'text'
+                }
+            ]
             ctrl.addPairs();
             expect(ctrl.pairForm.seedPairInput.$setValidity).toHaveBeenCalledWith('csv', false);
         });

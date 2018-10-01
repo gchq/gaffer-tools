@@ -37,7 +37,7 @@ angular.module('app').factory('operationChain', ['common', 'settings', 'events',
                 input: inputFlag ? [] : null,
                 inputPairs: inputFlag ? [] : null,
                 inputB: [],
-                options: settings.getDefaultOpOptions()
+                options: null
             },
             dates: {
                 startDate: null,

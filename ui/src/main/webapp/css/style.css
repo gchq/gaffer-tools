@@ -173,7 +173,7 @@ md-option > div {
     white-space: normal;
 }
 
-.padding-bottom{
+.padding-bottom {
     padding-bottom: 10px
 }
 
@@ -371,3 +371,11 @@ quick-query {
     width: 500px;
 }
 
+.menu-inline-with-datepicker {
+    margin-top: 18px;
+}
+
+.no-side-margin {
+    margin-left: 0px !important;
+    margin-right: 0px !important;
+}

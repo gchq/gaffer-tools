@@ -2401,7 +2401,7 @@ class Reduce(Operation):
     CLASS = 'uk.gov.gchq.gaffer.operation.impl.Reduce'
 
     def __init__(self, input=None, identity=None,
-                 aggregation_function=None, options=None):
+                 aggregate_function=None, options=None):
 
         super().__init__(_class_name=self.CLASS,
                          options=options)
@@ -2409,12 +2409,12 @@ class Reduce(Operation):
         self.input = input
         self.identity = identity
 
-        if aggregation_function is None:
-            raise ValueError('aggregation_function is required')
-        if isinstance(aggregation_function, dict):
-            aggregation_function = JsonConverter.from_json(
-                aggregation_function, gaffer_binaryoperators.BinaryOperator)
-        self.aggregation_function = aggregation_function
+        if aggregate_function is None:
+            raise ValueError('aggregate_function is required')
+        if isinstance(aggregate_function, dict):
+            aggregate_function = JsonConverter.from_json(
+                aggregate_function, gaffer_binaryoperators.BinaryOperator)
+        self.aggregate_function = aggregate_function
 
     def to_json(self):
         operation = super().to_json()
@@ -2434,7 +2434,7 @@ class Reduce(Operation):
                     json_seeds.append(self.input.to_json())
             operation['input'] = json_seeds
 
-        operation['aggregationFunction'] = self.aggregation_function.to_json()
+        operation['aggregateFunction'] = self.aggregate_function.to_json()
 
         if self.identity is not None:
             if isinstance(self.identity, ToJson):
@@ -2486,7 +2486,7 @@ class ForEach(Operation):
 
 
 class ToSingletonList(Operation):
-    CLASS = 'uk.gov.gchq.gaffer.operation.impl.ToSingletonList'
+    CLASS = 'uk.gov.gchq.gaffer.operation.impl.output.ToSingletonList'
 
     def __init__(self, input=None, options=None):
         super().__init__(_class_name=self.CLASS, options=options)

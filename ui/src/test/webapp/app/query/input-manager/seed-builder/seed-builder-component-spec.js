@@ -357,6 +357,13 @@ describe('The seed builder component', function() {
         it('should create string seeds from strings', function() {
             ctrl.vertexClass = 'java.lang.String';
             ctrl.seedVertices = 'test';
+
+            fields = [
+                {
+                    type: 'text',
+                    class: 'java.lang.String'
+                }
+            ]
             ctrl.addSeeds();
             expect(ctrl.model).toEqual([
                 {
@@ -372,6 +379,13 @@ describe('The seed builder component', function() {
         it('should create numbers from numerical strings', function() {
             ctrl.vertexClass = 'java.lang.Long';
             ctrl.seedVertices = '123';
+
+            fields = [
+                {
+                    type: 'number',
+                    class: 'java.lang.Long'
+                }
+            ]
             ctrl.addSeeds();
             expect(ctrl.model).toEqual([
                 {
@@ -387,6 +401,11 @@ describe('The seed builder component', function() {
         it('should create a true boolean value from "true" strings', function() {
             ctrl.vertexClass = 'java.lang.Boolean';
             ctrl.seedVertices = 'true';
+
+            fields = [{
+                type: 'checkbox',
+                class: 'java.lang.Boolean'
+            }];
             ctrl.addSeeds();
             expect(ctrl.model).toEqual([
                 {
@@ -402,6 +421,11 @@ describe('The seed builder component', function() {
         it('should create a false boolean value from "false" strings', function() {
             ctrl.vertexClass = 'java.lang.Boolean';
             ctrl.seedVertices = 'false';
+            fields = [{
+                type: 'checkbox',
+                class: 'java.lang.Boolean'
+            }];
+
             ctrl.addSeeds();
             expect(ctrl.model).toEqual([
                 {
@@ -429,9 +453,13 @@ describe('The seed builder component', function() {
             expect(ctrl.seedForm.multiSeedInput.$setValidity).toHaveBeenCalledWith('csv', true);
         });
 
-        it('should create string seeds from numbers with quotes around them', function() { 
+        it('should create string seeds from numbers if field class is string', function() { 
             ctrl.vertexClass = 'java.lang.String';
-            ctrl.seedVertices = '"12"';
+            ctrl.seedVertices = '12';
+            fields = [{
+                type: 'number', // just to confuse things
+                class: 'java.lang.String'
+            }];
             ctrl.addSeeds();
             expect(ctrl.model).toEqual([
                 {
@@ -443,6 +471,30 @@ describe('The seed builder component', function() {
             ]);
             expect(ctrl.seedForm.multiSeedInput.$setValidity).toHaveBeenCalledWith('csv', true);
         });
+
+        it('should create string seeds from numbers if the field class is text', function() {
+            ctrl.vertexClass = 'customClass';
+            ctrl.seedVertices = '12345678901234567890'; // this would round if converted to a number
+            fields = [
+                {
+                    class: 'java.lang.Byte[]',
+                    type: 'text'
+                }
+            ];
+
+            ctrl.addSeeds();
+
+            expect(ctrl.model).toEqual([
+                {
+                    valueClass: 'customClass',
+                    parts: {
+                        undefined: '12345678901234567890'
+                    }
+                }
+            ]);
+            expect(ctrl.seedForm.multiSeedInput.$setValidity).toHaveBeenCalledWith('csv', true);
+            
+        })
 
         it('should be able to handle escaped quotes', function() {
             ctrl.vertexClass = 'java.lang.String';
