@@ -1,6 +1,0 @@
-{
-  "serialisers" : {
-    "uk.gov.gchq.gaffer.data.element.Element" : "uk.gov.gchq.gaffer.python.pyspark.serialiser.impl.PysparkElementMapSerialiser",
-    "uk.gov.gchq.gaffer.operation.data.ElementSeed" : "uk.gov.gchq.gaffer.python.pyspark.serialiser.impl.PysparkElementSeedMapSerialiser"
-  }
-}

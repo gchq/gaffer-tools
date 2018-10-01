@@ -5,7 +5,7 @@
     <parent>
         <artifactId>python-api</artifactId>
         <groupId>uk.gov.gchq.gaffer</groupId>
-        <version>1.6.1-SNAPSHOT</version>
+        <version>1.7.0-RC5-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -24,12 +24,17 @@
         </dependency>
         <dependency>
             <groupId>uk.gov.gchq.gaffer</groupId>
+            <artifactId>gafferpy-serialisers</artifactId>
+            <version>${project.parent.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>uk.gov.gchq.gaffer</groupId>
             <artifactId>accumulo-pyspark</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>uk.gov.gchq.gaffer</groupId>
-            <artifactId>serialisers</artifactId>
+            <artifactId>gafferpy-serialisers</artifactId>
             <version>${project.version}</version>
         </dependency>
     </dependencies>
