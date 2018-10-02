@@ -75,6 +75,11 @@ class Graph(gs.Graph):
 
     """
 
+    _python_serialisers = {
+        'uk.gov.gchq.gaffer.data.element.Element' : 'uk.gov.gchq.gaffer.python.pyspark.serialiser.impl.PysparkElementMapSerialiser',
+        'uk.gov.gchq.gaffer.operation.data.ElementSeed' : 'uk.gov.gchq.gaffer.python.pyspark.serialiser.impl.PysparkElementSeedMapSerialiser'
+    }
+
     def __init__(self):
         super(gs.Graph,self)
 
@@ -99,11 +104,15 @@ class Graph(gs.Graph):
                 logger.info(msg)
                 return None
             if operation.pythonSerialiserClass == None:
-                if self._python_serialisers == None:
-                    keyConverterClass = "uk.gov.gchq.gaffer.python.pyspark.serialiser.impl.PysparkElementMapSerialiser"
-                elif "uk.gov.gchq.gaffer.data.element.Element" in self._python_serialisers:
+                #if self._python_serialisers == None:
+                #    keyConverterClass = "uk.gov.gchq.gaffer.python.pyspark.serialiser.impl.PysparkElementMapSerialiser"
+                if "uk.gov.gchq.gaffer.data.element.Element" in self._python_serialisers:
                     serialiser_class_name = self._python_serialisers.get("uk.gov.gchq.gaffer.data.element.Element")
                     keyConverterClass = serialiser_class_name
+                else:
+                    msg = "No serialiser for Element"
+                    logger.info(msg)
+                    raise ValueError(msg)
             else:
                 keyConverterClass = operation.pythonSerialiserClass
             hadoop_conf = self._get_hadoop_conf(operation, user)
@@ -117,11 +126,16 @@ class Graph(gs.Graph):
                 logger.info(msg)
                 return None
             if operation.pythonSerialiserClass == None:
-                if self._python_serialisers == None:
-                    keyConverterClass = "uk.gov.gchq.gaffer.python.pyspark.serialiser.PysparkDataframeSerialiser"
-                elif "uk.gov.gchq.gaffer.data.element.Element" in self._python_serialisers:
+                #if self._python_serialisers == None:
+                #    logger.info("python serialisers = None")
+                #    keyConverterClass = "uk.gov.gchq.gaffer.python.pyspark.serialiser.PysparkDataframeSerialiser"
+                if "uk.gov.gchq.gaffer.data.element.Element" in self._python_serialisers:
                     serialiser_class_name = self._python_serialisers.get("uk.gov.gchq.gaffer.data.element.Element")
                     keyConverterClass = serialiser_class_name
+                else:
+                    msg = "No serialiser for Element"
+                    logger.info(msg)
+                    raise ValueError(msg)
             else:
                 keyConverterClass = operation.pythonSerialiserClass
             df_conf = self._get_hadoop_conf(operation, user)

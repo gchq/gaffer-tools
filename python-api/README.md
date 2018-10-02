@@ -8,3 +8,4 @@ The Gafferpy API allows access to Gaffer graphs in 3 ways:
  - In a native python environment running on the same machine/cluster as Gaffer using a `GafferPythonSession`
  - In [PySpark](https://spark.apache.org/docs/0.9.0/python-programming-guide.html), giving access to RDDs and DataFrames of Elements in the graph and using a spark session via a `GafferPysparkSession`
  
+

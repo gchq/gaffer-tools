@@ -41,7 +41,9 @@ import uk.gov.gchq.gaffer.user.User;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 
 /**
  * An entry point for python to interact with a java Gaffer graph object through wrapper methods
@@ -185,8 +187,29 @@ public class PythonGraph {
             return pythonSerialisers.getSerialiser(o.getClass());
         }
         return null;
-
     }
+
+    public void setPythonSerialisers(Map<String, String> serialisers){
+        for(String classNameToSerialise : serialisers.keySet()){
+            setPythonSerialiser(classNameToSerialise, serialisers.get(classNameToSerialise));
+        }
+    }
+
+    public void setPythonSerialiser(String classNameToSerialise, String serialiser){
+        Class classToSerialise = null;
+        Class serialiserClass = null;
+        try {
+            classToSerialise = Class.forName(classNameToSerialise);
+            serialiserClass = Class.forName(serialiser);
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        if(serialiserClass !=null && serialiserClass != null){
+            pythonSerialisers.addSerialiser(classToSerialise, serialiserClass);
+        }
+    }
+
+
 
     private Store getStore(){
         return Store.createStore(graph.getGraphId(), graph.getSchema(), graph.getStoreProperties());

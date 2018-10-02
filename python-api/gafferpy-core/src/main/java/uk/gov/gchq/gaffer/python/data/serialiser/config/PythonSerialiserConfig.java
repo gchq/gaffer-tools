@@ -32,14 +32,14 @@ import java.util.Map;
 
 public class PythonSerialiserConfig implements Serializable{
 
-    private final Class defaultElementSerialiser = PythonElementMapSerialiser.class;
-    private final Class defaultElementSeedSerialiser = PythonElementSeedMapSerialiser.class;
+//    private final Class defaultElementSerialiser = PythonElementMapSerialiser.class;
+//    private final Class defaultElementSeedSerialiser = PythonElementSeedMapSerialiser.class;
     private Map<Class, Class> serialisers;
 
     public PythonSerialiserConfig() {
         this.serialisers = new HashMap<>();
-        this.addSerialiser(Element.class, this.defaultElementSerialiser);
-        this.addSerialiser(ElementSeed.class, this.defaultElementSeedSerialiser);
+//        this.addSerialiser(Element.class, this.defaultElementSerialiser);
+//        this.addSerialiser(ElementSeed.class, this.defaultElementSeedSerialiser);
     }
 
     public PythonSerialiserConfig(FileInputStream fis){
@@ -96,16 +96,16 @@ public class PythonSerialiserConfig implements Serializable{
     }
 
     public void setSerialisers(Map<Class, Class> serialisers) {
-        for(Class c : serialisers.keySet()){
-            if(serialisers.get(c).equals(this.defaultElementSerialiser)){
-                this.serialisers.put(c, serialisers.get(c));
-                serialisers.remove(c);
-            }
-            if(serialisers.get(c).equals(this.defaultElementSeedSerialiser)){
-                this.serialisers.put(c, serialisers.get(c));
-                serialisers.remove(c);
-            }
-        }
+//        for(Class c : serialisers.keySet()){
+//            if(serialisers.get(c).equals(this.defaultElementSerialiser)){
+//                this.serialisers.put(c, serialisers.get(c));
+//                serialisers.remove(c);
+//            }
+//            if(serialisers.get(c).equals(this.defaultElementSeedSerialiser)){
+//                this.serialisers.put(c, serialisers.get(c));
+//                serialisers.remove(c);
+//            }
+//        }
         this.serialisers.putAll(serialisers);
     }
 }

@@ -181,7 +181,10 @@ class Graph():
 
     _java_python_graph = None
     _gaffer_session = None
-    _python_serialisers=None
+    _python_serialisers={
+        'uk.gov.gchq.gaffer.data.element.Element' : 'uk.gov.gchq.gaffer.python.data.serialiser.PythonElementMapSerialiser',
+        'uk.gov.gchq.gaffer.operation.data.ElementSeed' : 'uk.gov.gchq.gaffer.python.data.serialiser.PythonElementSeedMapSerialiser'
+    }
 
     def _setSchema(self, schemaPath):
         self.schemaPath = schemaPath
@@ -200,7 +203,6 @@ class Graph():
             msg = "No gaffer session"
             logger.error(msg)
             raise ValueError(msg)
-
 
         self._java_python_graph = self._gaffer_session._java_gaffer_session.getPythonGraph(self.schemaPath, self.graphConfigPath, self.storePropertiesPath)
         self._set_element_serialisers(store_properties_path=self.storePropertiesPath)
@@ -223,6 +225,9 @@ class Graph():
     def getKeyPackageClassName(self):
         return self._java_python_graph.getKeyPackageClassName()
 
+    def setPythonSerialisers(self, serialisers):
+        self._java_python_graph.setPythonSerialisers(serialisers)
+
     def _set_element_serialisers(self, store_properties_path):
         props = open(store_properties_path, "r")
         f = props.readlines()
@@ -239,6 +244,8 @@ class Graph():
             data = json.load(data_file)
             data_file.close()
             self._python_serialisers = data["serialisers"]
+        else:
+            self.setPythonSerialisers(self._python_serialisers)
 
     def execute(self, operation, user):
 
