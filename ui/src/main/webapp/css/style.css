@@ -371,8 +371,8 @@ quick-query {
     width: 500px;
 }
 
-.menu-inline-with-datepicker {
-    margin-top: 18px;
+.icon-inline-with-input {
+    margin-top: 18px !important;
 }
 
 .no-side-margin {

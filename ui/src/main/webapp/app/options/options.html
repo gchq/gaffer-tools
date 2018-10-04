@@ -1,0 +1,23 @@
+<div ng-if="ctrl.model" layout="column" flex>
+
+    <h3 class="md-headline"><span ng-if="ctrl.master">Default Operation </span>Options</h3>
+
+    <div ng-repeat="option in ctrl.model.visible">
+        <div layout="row">
+            <md-input-container flex>
+                <label>{{option.label}}</label>
+                <input ng-model="option.value" type="text">
+            </md-input-container>
+            <md-button class="md-icon-button icon-inline-with-input" ng-click="ctrl.clearValue($index)">
+                <md-icon md-svg-icon="clear"></md-icon>
+                <md-tooltip>clear value</md-tooltip>
+            </md-button>
+            <md-button class="md-icon-button icon-inline-with-input" ng-click="ctrl.hideOption($index, option)">
+                <md-icon md-svg-icon="hide"></md-icon>
+                <md-tooltip>hide option</md-tooltip>
+            </md-button>
+        </div>
+    </div>
+
+
+</div>

@@ -47,5 +47,7 @@ angular.module('app').config(['$mdIconProvider', function($mdIconProvider) {
         .icon('rerun', 'app/img/rerun.svg')
         .icon('download', 'app/img/material-icons/get_app.svg')
         .icon('list', 'app/img/material-icons/list.svg')
-        .icon('edit', 'app/img/material-icons/edit.svg');
+        .icon('edit', 'app/img/material-icons/edit.svg')
+        .icon('hide', 'app/img/material-icons/visibility_off.svg')
+        .icon('clear', 'app/img/material-icons/clear.svg');
 }]);
