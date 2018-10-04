@@ -18,7 +18,7 @@ package uk.gov.gchq.gaffer.python.data.serialiser;
 
 import uk.gov.gchq.gaffer.python.data.serialiser.config.PythonSerialiserConfig;
 
-public abstract class PythonElementSerialiser<Input, Output> implements PythonSerialiser<Input, Output>{
+public abstract class PythonElementSerialiser<Input, Output> implements PythonSerialiser<Input, Output> {
 
     protected PythonSerialiserConfig serialiserConfig;
 
@@ -26,6 +26,7 @@ public abstract class PythonElementSerialiser<Input, Output> implements PythonSe
         setSerialiserConfig();
     }
 
-    public void setSerialiserConfig(){};
+    public void setSerialiserConfig() {
+    };
 
 }

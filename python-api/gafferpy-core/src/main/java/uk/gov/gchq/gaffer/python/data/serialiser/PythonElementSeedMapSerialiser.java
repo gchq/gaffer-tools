@@ -31,22 +31,22 @@ public class PythonElementSeedMapSerialiser implements PythonSerialiser<ElementS
     PythonSerialiserConfig serialiserConfig;
 
     @Override
-    public Map<String, Object> serialise(ElementSeed input) {
+    public Map<String, Object> serialise(final ElementSeed input) {
 
         map = new HashMap<>();
 
-        if(input instanceof EntitySeed){
+        if (input instanceof EntitySeed) {
             map.put(Constants.TYPE, Constants.ENTITY_SEED);
             EntitySeed seed = (EntitySeed) input;
             elementMapSerialisedInsert(Constants.VERTEX, seed.getVertex());
-        }else if(input instanceof EdgeSeed){
+        } else if (input instanceof EdgeSeed) {
             map.put(Constants.TYPE, Constants.EDGE_SEED);
             EdgeSeed seed = (EdgeSeed) input;
             elementMapSerialisedInsert(Constants.SOURCE, seed.getSource());
-            elementMapSerialisedInsert(Constants.DESTINATION,seed.getDestination());
+            elementMapSerialisedInsert(Constants.DESTINATION, seed.getDestination());
             elementMapSerialisedInsert(Constants.DIRECTED, seed.getDirectedType());
             elementMapSerialisedInsert(Constants.MATCHED_VERTEX, seed.getMatchedVertex());
-        }else{
+        } else {
             throw new IllegalArgumentException("not an EdgeSeed or EntitySeed, is a " + input.getClass().getCanonicalName());
         }
 
@@ -54,23 +54,24 @@ public class PythonElementSeedMapSerialiser implements PythonSerialiser<ElementS
     }
 
     @Override
-    public boolean canHandle(Class clazz) {
+    public boolean canHandle(final Class clazz) {
         return ElementSeed.class.isAssignableFrom(clazz);
     }
 
-    private void elementMapSerialisedInsert(String key, Object value){
-        if(serialiserConfig == null){
+    private void elementMapSerialisedInsert(final String key, final Object value) {
+        if (serialiserConfig == null) {
             map.put(key, value);
-        }
-        else if(serialiserConfig.getSerialisers().containsKey(value.getClass())){
+        } else if (serialiserConfig.getSerialisers().containsKey(value.getClass())) {
             PythonSerialiser serialiser = serialiserConfig.getSerialiser(value.getClass());
             Object result = serialiser.serialise(value);
             map.put(key, result);
-        }else{
+        } else {
             map.put(key, value);
         }
     }
 
-    public void setSerialiserConfig(){}//extend and add your own custom python serialisers here
+    public void setSerialiserConfig() {
+        //extend and add your own custom python serialisers here
+    }
 
 }

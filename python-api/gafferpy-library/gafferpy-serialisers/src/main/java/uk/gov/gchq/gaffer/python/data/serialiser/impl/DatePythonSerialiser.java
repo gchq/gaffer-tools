@@ -23,11 +23,11 @@ import java.util.Date;
 public class DatePythonSerialiser implements PythonSerialiser<Date, Long> {
 
 
-    public Long serialise(Date date) {
+    public Long serialise(final Date date) {
         return date.getTime();
     }
 
-    public boolean canHandle(Class clazz) {
+    public boolean canHandle(final Class clazz) {
         return Date.class.equals(clazz);
     }
 

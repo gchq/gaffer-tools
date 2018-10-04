@@ -24,7 +24,7 @@ import java.util.Map;
 
 public class PysparkElementSeedMapSerialiser extends PythonElementSeedMapSerialiser implements PySparkSerialiser<ElementSeed, Map<String, Object>> {
     @Override
-    public Map<String, Object> convert(ElementSeed elementSeed) {
+    public Map<String, Object> convert(final ElementSeed elementSeed) {
         return this.serialise(elementSeed);
     }
 }

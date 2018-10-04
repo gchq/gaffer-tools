@@ -32,7 +32,7 @@ import java.util.Map;
  * constructed easily
  */
 
-public class PythonElementMapSerialiser extends PythonElementSerialiser<Element,Map<String,Object>> {
+public class PythonElementMapSerialiser extends PythonElementSerialiser<Element, Map<String, Object>> {
 
     private Map<String, Object> elementMap;
     private Map<String, Object> propertiesMap;
@@ -44,29 +44,29 @@ public class PythonElementMapSerialiser extends PythonElementSerialiser<Element,
     }
 
     @Override
-    public Map<String, Object> serialise(Element element) {
+    public Map<String, Object> serialise(final Element element) {
 
         elementMap = new HashMap<>();
         propertiesMap = new HashMap<>();
 
-        if(element instanceof Entity){
+        if (element instanceof Entity) {
             elementMap.put(Constants.TYPE, Constants.ENTITY);
             Object vertex = ((Entity) element).getVertex();
-            mapSerialisedInsert(elementMap,Constants.VERTEX, vertex);
-        }else if(element instanceof Edge){
-            if(((Edge) element).getMatchedVertex() != null){
+            mapSerialisedInsert(elementMap, Constants.VERTEX, vertex);
+        } else if (element instanceof Edge) {
+            if (((Edge) element).getMatchedVertex() != null) {
                 elementMap.put(Constants.MATCHED_VERTEX, ((Edge) element).getMatchedVertex().name());
             }
             elementMap.put(Constants.TYPE, Constants.EDGE);
-            mapSerialisedInsert(elementMap,Constants.SOURCE, ((Edge) element).getSource());
-            mapSerialisedInsert(elementMap,Constants.DESTINATION, ((Edge) element).getDestination());
-            mapSerialisedInsert(elementMap,Constants.DIRECTED, ((Edge) element).getDirectedType());
+            mapSerialisedInsert(elementMap, Constants.SOURCE, ((Edge) element).getSource());
+            mapSerialisedInsert(elementMap, Constants.DESTINATION, ((Edge) element).getDestination());
+            mapSerialisedInsert(elementMap, Constants.DIRECTED, ((Edge) element).getDirectedType());
         }
         elementMap.put(Constants.GROUP, element.getGroup());
 
         Properties properties = element.getProperties();
 
-        for(String propertyName : properties.keySet()){
+        for (final String propertyName : properties.keySet()) {
             Object propertyValue = properties.get(propertyName);
             mapSerialisedInsert(propertiesMap, propertyName, propertyValue);
         }
@@ -75,22 +75,21 @@ public class PythonElementMapSerialiser extends PythonElementSerialiser<Element,
         return elementMap;
     }
 
-    private void mapSerialisedInsert(Map map, String key, Object value){
+    private void mapSerialisedInsert(final Map map, final String key, final Object value) {
 
-        if(serialiserConfig == null){
+        if (serialiserConfig == null) {
             map.put(key, value);
-        }
-        else if(serialiserConfig.getSerialisers().containsKey(value.getClass())){
+        } else if (serialiserConfig.getSerialisers().containsKey(value.getClass())) {
             PythonSerialiser serialiser = serialiserConfig.getSerialiser(value.getClass());
             Object result = serialiser.serialise(value);
             map.put(key, result);
-        }else{
+        } else {
             map.put(key, value);
         }
     }
 
     @Override
-    public boolean canHandle(Class clazz) {
+    public boolean canHandle(final Class clazz) {
         return Element.class.equals(clazz);
     }
 

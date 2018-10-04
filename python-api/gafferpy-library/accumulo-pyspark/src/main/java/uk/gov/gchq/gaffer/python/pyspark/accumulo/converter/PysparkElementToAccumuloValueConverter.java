@@ -18,12 +18,9 @@ package uk.gov.gchq.gaffer.python.pyspark.accumulo.converter;
 
 import org.apache.accumulo.core.data.Value;
 import org.apache.spark.api.python.Converter;
+
 import uk.gov.gchq.gaffer.accumulostore.key.AccumuloKeyPackage;
-import uk.gov.gchq.gaffer.accumulostore.key.core.impl.byteEntity.ByteEntityKeyPackage;
-import uk.gov.gchq.gaffer.accumulostore.key.core.impl.classic.ClassicKeyPackage;
-import uk.gov.gchq.gaffer.data.element.Edge;
 import uk.gov.gchq.gaffer.data.element.Element;
-import uk.gov.gchq.gaffer.data.element.Entity;
 import uk.gov.gchq.gaffer.exception.SerialisationException;
 import uk.gov.gchq.gaffer.jsonserialisation.JSONSerialiser;
 import uk.gov.gchq.gaffer.store.schema.Schema;
@@ -31,7 +28,7 @@ import uk.gov.gchq.gaffer.store.schema.Schema;
 public class PysparkElementToAccumuloValueConverter implements Converter<String, Value> {
 
     @Override
-    public Value convert(String input) {
+    public Value convert(final String input) {
 
         String[] t = input.split(";");
 
@@ -42,7 +39,7 @@ public class PysparkElementToAccumuloValueConverter implements Converter<String,
         Element element = null;
         try {
             element = JSONSerialiser.deserialise(elementstring, Element.class);
-        } catch (SerialisationException e) {
+        } catch (final SerialisationException e) {
             e.printStackTrace();
         }
 
@@ -51,7 +48,7 @@ public class PysparkElementToAccumuloValueConverter implements Converter<String,
         AccumuloKeyPackage keyPackage = null;
         try {
             keyPackage = (AccumuloKeyPackage) Class.forName(keyPackageClassName).newInstance();
-        } catch (InstantiationException | IllegalAccessException | ClassNotFoundException e) {
+        } catch (final InstantiationException | IllegalAccessException | ClassNotFoundException e) {
             e.printStackTrace();
         }
 

@@ -18,6 +18,7 @@ package uk.gov.gchq.gaffer.python.data.serialiser.custom.pyspark;
 
 import com.clearspring.analytics.stream.cardinality.HyperLogLogPlus;
 import org.junit.Test;
+
 import uk.gov.gchq.gaffer.commonutil.CommonTimeUtil;
 import uk.gov.gchq.gaffer.data.element.Edge;
 import uk.gov.gchq.gaffer.time.RBMBackedTimestampSet;
@@ -27,7 +28,7 @@ import java.time.Instant;
 public class CustomPysparkElementMapSerialiserTest {
 
     @Test
-    public void testSerialiser(){
+    public void testSerialiser() {
 
         HyperLogLogPlus hllp = new HyperLogLogPlus(10,10);
         hllp.offer("a");

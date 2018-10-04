@@ -17,15 +17,16 @@
 package uk.gov.gchq.gaffer.python.data.serialiser.impl;
 
 import com.clearspring.analytics.stream.cardinality.HyperLogLogPlus;
+
 import uk.gov.gchq.gaffer.python.data.serialiser.PythonSerialiser;
 
 public class HyperLogLogPlusPythonSerialiser implements PythonSerialiser<HyperLogLogPlus, Long> {
 
-    public Long serialise(HyperLogLogPlus hllp) {
+    public Long serialise(final HyperLogLogPlus hllp) {
         return hllp.cardinality();
     }
 
-    public boolean canHandle(Class clazz) {
+    public boolean canHandle(final Class clazz) {
         return HyperLogLogPlus.class.equals(clazz);
     }
 }

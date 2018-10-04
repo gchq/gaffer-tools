@@ -19,7 +19,9 @@ package uk.gov.gchq.gaffer.python.graph;
 import org.apache.hadoop.conf.Configuration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import uk.gov.gchq.gaffer.accumulostore.AccumuloStore;
+
 import uk.gov.gchq.gaffer.data.elementdefinition.exception.SchemaException;
 import uk.gov.gchq.gaffer.exception.SerialisationException;
 import uk.gov.gchq.gaffer.graph.Graph;
@@ -41,7 +43,6 @@ import uk.gov.gchq.gaffer.user.User;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -49,17 +50,17 @@ import java.util.Map;
  * An entry point for python to interact with a java Gaffer graph object through wrapper methods
  */
 
-public class PythonGraph {
+public final class PythonGraph {
 
     private Graph graph = null;
     private static final Logger LOGGER = LoggerFactory.getLogger(PythonGraph.class);
     private PythonSerialiserConfig pythonSerialisers = null;
 
-    public PythonGraph(Schema schema, GraphConfig graphConfig, StoreProperties storeProperties){
+    public PythonGraph(final Schema schema, final GraphConfig graphConfig, final StoreProperties storeProperties) {
         buildGraph(schema, graphConfig, storeProperties);
     }
 
-    public PythonGraph(String schemaPath, String configPath, String storePropertiesPath){
+    public PythonGraph(final String schemaPath, final String configPath, final String storePropertiesPath) {
 
         Schema schema = null;
         GraphConfig config = null;
@@ -71,15 +72,15 @@ public class PythonGraph {
                     .json(new FileInputStream(new File(configPath)))
                     .build();
             storeProperties = StoreProperties.loadStoreProperties(new FileInputStream(new File(storePropertiesPath)));
-        } catch (FileNotFoundException | SchemaException e) {
+        } catch (final FileNotFoundException | SchemaException e) {
             e.printStackTrace();
         }
         buildGraph(schema, config, storeProperties);
     }
 
-    private void buildGraph(Schema schema, GraphConfig graphConfig, StoreProperties storeProperties){
+    private void buildGraph(final Schema schema, final GraphConfig graphConfig, final StoreProperties storeProperties) {
 
-        if(schema == null | graphConfig == null | storeProperties == null){
+        if (schema == null | graphConfig == null | storeProperties == null) {
             throw new IllegalStateException("schema, config or storeproperties hasn't worked");
         }
 
@@ -94,15 +95,15 @@ public class PythonGraph {
 
     }
 
-    public Graph getGraph(){
+    public Graph getGraph() {
         return graph;
     }
 
 
-    public Object execute(String opJson, String userJson){
+    public Object execute(final String opJson, final String userJson) {
 
-        LOGGER.debug("received operation : {}",opJson);
-        LOGGER.debug("received user : {}",userJson);
+        LOGGER.debug("received operation : {}", opJson);
+        LOGGER.debug("received user : {}", userJson);
 
         Operation operation = null;
         User user = null;
@@ -110,35 +111,35 @@ public class PythonGraph {
         try {
             operation = JSONSerialiser.deserialise(opJson, Operation.class);
             user = JSONSerialiser.deserialise(userJson, User.class);
-        } catch (SerialisationException e) {
+        } catch (final SerialisationException e) {
             e.printStackTrace();
         }
 
         Object result = null;
 
-        if(operation instanceof Output){
+        if (operation instanceof Output) {
 
                 LOGGER.debug("executing Output operation");
             try {
                 result = graph.execute((Output) operation, user);
-            } catch (OperationException e) {
+            } catch (final OperationException e) {
                 e.printStackTrace();
             }
 
-        }else if(operation instanceof Input){
+        } else if (operation instanceof Input) {
             try {
                 LOGGER.debug("executing Input operation");
                 graph.execute((Input) operation, user);
-            } catch (OperationException e) {
+            } catch (final OperationException e) {
                 LOGGER.debug("Input operation failed : {}", e.getMessage());
                 return new Integer(1);
             }
             result = new Integer(0);
-        }else{
+        } else {
             try {
                 LOGGER.debug("executing operation " + operation.getClass().getCanonicalName());
                 graph.execute(operation, user);
-            } catch (OperationException e) {
+            } catch (final OperationException e) {
                 LOGGER.debug("operation " + operation.getClass().getCanonicalName() + "failed : " + e.getMessage());
                 e.printStackTrace();
                 return new Integer(1);
@@ -146,11 +147,11 @@ public class PythonGraph {
             return new Integer(0);
         }
 
-        if(result != null){
-            if(result instanceof Configuration){
+        if (result != null) {
+            if (result instanceof Configuration) {
                 return result;
             }
-            if(result instanceof Iterable){
+            if (result instanceof Iterable) {
                 Iterator it = ((Iterable) result).iterator();
                 //((Output) operation).getOutputTypeReference()
                 Object first = it.next();
@@ -164,58 +165,58 @@ public class PythonGraph {
 
     }
 
-    private void setPythonSerialisers(StoreProperties storeProperties){
-        if(storeProperties.get(Constants.SERIALISATION_DECLARATIONS_PROPERTY_NAME) != null){
+    private void setPythonSerialisers(final StoreProperties storeProperties) {
+        if (storeProperties.get(Constants.SERIALISATION_DECLARATIONS_PROPERTY_NAME) != null) {
             String filePath = storeProperties.get(Constants.SERIALISATION_DECLARATIONS_PROPERTY_NAME);
             try {
                 this.pythonSerialisers = new PythonSerialiserConfig(new FileInputStream(new File(filePath)));
-            } catch (FileNotFoundException e) {
+            } catch (final FileNotFoundException e) {
                 e.printStackTrace();
             }
-        }else if(storeProperties.get(Constants.SERIALISATION_DECLARATIONS_PROPERTY_NAME) == null){
+        } else if (storeProperties.get(Constants.SERIALISATION_DECLARATIONS_PROPERTY_NAME) == null) {
             pythonSerialisers = new PythonSerialiserConfig();
         }
     }
 
-    public PythonSerialiserConfig getPythonSerialisers(){
+    public PythonSerialiserConfig getPythonSerialisers() {
         return this.pythonSerialisers;
     }
 
-    private PythonSerialiser getSerialiser(Object o){
+    private PythonSerialiser getSerialiser(final Object o) {
 
-        if(pythonSerialisers != null) {
+        if (pythonSerialisers != null) {
             return pythonSerialisers.getSerialiser(o.getClass());
         }
         return null;
     }
 
-    public void setPythonSerialisers(Map<String, String> serialisers){
-        for(String classNameToSerialise : serialisers.keySet()){
+    public void setPythonSerialisers(final Map<String, String> serialisers) {
+        for (final String classNameToSerialise : serialisers.keySet()) {
             setPythonSerialiser(classNameToSerialise, serialisers.get(classNameToSerialise));
         }
     }
 
-    public void setPythonSerialiser(String classNameToSerialise, String serialiser){
+    public void setPythonSerialiser(final String classNameToSerialise, final String serialiser) {
         Class classToSerialise = null;
         Class serialiserClass = null;
         try {
             classToSerialise = Class.forName(classNameToSerialise);
             serialiserClass = Class.forName(serialiser);
-        } catch (ClassNotFoundException e) {
+        } catch (final ClassNotFoundException e) {
             e.printStackTrace();
         }
-        if(serialiserClass !=null && serialiserClass != null){
+        if (serialiserClass != null && serialiserClass != null) {
             pythonSerialisers.addSerialiser(classToSerialise, serialiserClass);
         }
     }
 
 
 
-    private Store getStore(){
+    private Store getStore() {
         return Store.createStore(graph.getGraphId(), graph.getSchema(), graph.getStoreProperties());
     }
 
-    public String getVertexSerialiserClassName(){
+    public String getVertexSerialiserClassName() {
 
         String vertexSerialiserClass = null;
 
@@ -226,15 +227,15 @@ public class PythonGraph {
         return vertexSerialiserClass;
     }
 
-    public String getKeyPackageClassName(){
+    public String getKeyPackageClassName() {
 
         String keyPackageClassName = null;
 
         Store store = getStore();
 
-        try{
+        try {
             keyPackageClassName = ((AccumuloStore) store).getKeyPackage().getClass().getCanonicalName();
-        }catch(ClassCastException e){
+        } catch (final ClassCastException e) {
             throw new IllegalStateException("this isn't an accumulo store and therefore doesn't have a keyPackage");
         }
 

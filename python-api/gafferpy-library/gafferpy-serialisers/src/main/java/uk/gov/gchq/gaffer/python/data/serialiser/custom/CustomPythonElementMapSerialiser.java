@@ -17,12 +17,14 @@
 package uk.gov.gchq.gaffer.python.data.serialiser.custom;
 
 import com.clearspring.analytics.stream.cardinality.HyperLogLogPlus;
+import org.roaringbitmap.RoaringBitmap;
+
+import uk.gov.gchq.gaffer.python.data.serialiser.PythonElementMapSerialiser;
+import uk.gov.gchq.gaffer.python.data.serialiser.config.PythonSerialiserConfig;
 import uk.gov.gchq.gaffer.python.data.serialiser.impl.HyperLogLogPlusPythonSerialiser;
 import uk.gov.gchq.gaffer.python.data.serialiser.impl.RBMBackedTimestampSetPythonSerialiser;
 import uk.gov.gchq.gaffer.python.data.serialiser.impl.RoaringBitmapPythonSerialiser;
-import org.roaringbitmap.RoaringBitmap;
-import uk.gov.gchq.gaffer.python.data.serialiser.PythonElementMapSerialiser;
-import uk.gov.gchq.gaffer.python.data.serialiser.config.PythonSerialiserConfig;
+
 import uk.gov.gchq.gaffer.time.RBMBackedTimestampSet;
 
 public class CustomPythonElementMapSerialiser extends PythonElementMapSerialiser {

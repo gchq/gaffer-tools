@@ -33,16 +33,16 @@ public class PythonElementJsonSerialiser extends PythonElementSerialiser<Element
     }
 
     @Override
-    public boolean canHandle(Class clazz) {
+    public boolean canHandle(final Class clazz) {
         return Element.class.equals(clazz);
     }
 
     @Override
-    public Map<String, Object> serialise(Element element) {
+    public Map<String, Object> serialise(final Element element) {
         map = new HashMap<>();
         try {
             map.put(Constants.JSON, new String(JSONSerialiser.serialise(element)));
-        } catch (SerialisationException e) {
+        } catch (final SerialisationException e) {
 
         }
         return map;

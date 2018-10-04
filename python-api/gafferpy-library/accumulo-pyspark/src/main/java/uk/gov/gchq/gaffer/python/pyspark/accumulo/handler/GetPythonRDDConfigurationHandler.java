@@ -16,10 +16,11 @@
 
 package uk.gov.gchq.gaffer.python.pyspark.accumulo.handler;
 
-import org.apache.accumulo.core.client.mapreduce.AccumuloInputFormat;
+import org.apache.accumulo.core.client.mapred.AccumuloInputFormat;
 import org.apache.accumulo.core.client.mapreduce.lib.impl.InputConfigurator;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.spark.sql.SparkSession;
+
 import uk.gov.gchq.gaffer.accumulostore.AccumuloStore;
 import uk.gov.gchq.gaffer.operation.OperationException;
 import uk.gov.gchq.gaffer.python.pyspark.operation.GetPythonRDDConfiguration;
@@ -36,7 +37,7 @@ import uk.gov.gchq.gaffer.store.Store;
 public class GetPythonRDDConfigurationHandler extends AbstractGetRDDHandler<GetPythonRDDConfiguration, Configuration> {
 
 
-    public Configuration doOperation(GetPythonRDDConfiguration operation, Context context, Store store) throws OperationException {
+    public Configuration doOperation(final GetPythonRDDConfiguration operation, final Context context, final Store store) throws OperationException {
         return doOperation(operation, context, (AccumuloStore) store);
     }
 
@@ -64,7 +65,7 @@ public class GetPythonRDDConfigurationHandler extends AbstractGetRDDHandler<GetP
         if (Boolean.parseBoolean(useBatchScannerRDD)) {
             InputConfigurator.setBatchScan(AccumuloInputFormat.class, conf, true);
         }
-        if(conf.get("instance.zookeeper.host") == null){
+        if (conf.get("instance.zookeeper.host") == null) {
             conf.set("instance.zookeeper.host", accumuloStore.getProperties().get("accumulo.zookeepers").replace("\\n", ""));
         }
 

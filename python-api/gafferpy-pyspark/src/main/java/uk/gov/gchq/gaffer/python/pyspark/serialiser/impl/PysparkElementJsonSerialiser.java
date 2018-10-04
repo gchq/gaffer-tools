@@ -26,7 +26,7 @@ public class PysparkElementJsonSerialiser extends PythonElementJsonSerialiser im
 
 
     @Override
-    public Map<String, Object> convert(Element element) {
+    public Map<String, Object> convert(final Element element) {
         return this.serialise(element);
     }
 }

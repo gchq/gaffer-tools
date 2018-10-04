@@ -18,6 +18,7 @@ package uk.gov.gchq.gaffer.python.pyspark.serialiser;
 
 import org.apache.spark.api.python.Converter;
 import org.apache.spark.sql.types.DataType;
+
 import uk.gov.gchq.gaffer.data.element.Element;
 
 import java.util.Map;
@@ -26,7 +27,7 @@ public class PysparkDataframeSerialiser implements Converter<Element, Map<String
 
 
     @Override
-    public Map<String, DataType> convert(Element element) {
+    public Map<String, DataType> convert(final Element element) {
         return null;
     }
 }

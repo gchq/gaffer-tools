@@ -18,7 +18,9 @@ package uk.gov.gchq.gaffer.python.pyspark.operation;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import org.apache.hadoop.conf.Configuration;
+
 import uk.gov.gchq.gaffer.data.element.id.DirectedType;
+
 import uk.gov.gchq.gaffer.data.elementdefinition.view.View;
 import uk.gov.gchq.gaffer.operation.Operation;
 import uk.gov.gchq.gaffer.operation.graph.GraphFilters;
@@ -38,7 +40,8 @@ public class GetPythonRDDConfiguration implements Output<Configuration>, GraphFi
     private View view;
     private DirectedType directedType;
 
-    public GetPythonRDDConfiguration(){}
+    public GetPythonRDDConfiguration() {
+    }
 
     @Override
     public Map<String, String> getOptions() {

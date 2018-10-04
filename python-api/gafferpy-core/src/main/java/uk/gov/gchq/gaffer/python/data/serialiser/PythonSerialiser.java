@@ -20,8 +20,8 @@ import java.io.Serializable;
 
 public interface PythonSerialiser<Input, Output> extends Serializable {
 
-    public Output serialise(Input input);
+    Output serialise(Input input);
 
-    public boolean canHandle(Class clazz);
+    boolean canHandle(Class clazz);
 
 }

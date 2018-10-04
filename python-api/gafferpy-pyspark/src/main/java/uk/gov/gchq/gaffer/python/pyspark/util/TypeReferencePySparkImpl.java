@@ -21,10 +21,10 @@ import org.apache.hadoop.conf.Configuration;
 
 public final class TypeReferencePySparkImpl {
 
-    public static class HadoopConfiguration extends TypeReference<Configuration>{
+    public static class HadoopConfiguration extends TypeReference<Configuration> {
     }
 
-    private TypeReferencePySparkImpl(){
+    private TypeReferencePySparkImpl() {
         // Private constructor to prevent instantiation.
     }
 

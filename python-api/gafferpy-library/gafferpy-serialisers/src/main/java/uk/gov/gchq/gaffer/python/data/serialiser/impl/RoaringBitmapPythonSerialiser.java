@@ -17,6 +17,7 @@
 package uk.gov.gchq.gaffer.python.data.serialiser.impl;
 
 import org.roaringbitmap.RoaringBitmap;
+
 import uk.gov.gchq.gaffer.python.data.serialiser.PythonSerialiser;
 
 import java.util.ArrayList;
@@ -26,17 +27,17 @@ import java.util.List;
 public class RoaringBitmapPythonSerialiser implements PythonSerialiser<RoaringBitmap, List<Integer>> {
 
     @Override
-    public List<Integer> serialise(RoaringBitmap rbm) {
+    public List<Integer> serialise(final RoaringBitmap rbm) {
         List<Integer> result = new ArrayList<>(rbm.getCardinality());
         Iterator<Integer> iterator = rbm.iterator();
-        while(iterator.hasNext()){
+        while (iterator.hasNext()) {
             result.add(iterator.next());
         }
         return result;
     }
 
     @Override
-    public boolean canHandle(Class clazz) {
-        return RoaringBitmap.class.equals(clazz) ;
+    public boolean canHandle(final Class clazz) {
+        return RoaringBitmap.class.equals(clazz);
     }
 }

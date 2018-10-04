@@ -16,12 +16,8 @@
 
 package uk.gov.gchq.gaffer.python.data.serialiser.config;
 
-import uk.gov.gchq.gaffer.data.element.Element;
 import uk.gov.gchq.gaffer.exception.SerialisationException;
 import uk.gov.gchq.gaffer.jsonserialisation.JSONSerialiser;
-import uk.gov.gchq.gaffer.operation.data.ElementSeed;
-import uk.gov.gchq.gaffer.python.data.serialiser.PythonElementMapSerialiser;
-import uk.gov.gchq.gaffer.python.data.serialiser.PythonElementSeedMapSerialiser;
 import uk.gov.gchq.gaffer.python.data.serialiser.PythonSerialiser;
 
 import java.io.FileInputStream;
@@ -30,46 +26,42 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
-public class PythonSerialiserConfig implements Serializable{
+public class PythonSerialiserConfig implements Serializable {
 
-//    private final Class defaultElementSerialiser = PythonElementMapSerialiser.class;
-//    private final Class defaultElementSeedSerialiser = PythonElementSeedMapSerialiser.class;
     private Map<Class, Class> serialisers;
 
     public PythonSerialiserConfig() {
         this.serialisers = new HashMap<>();
-//        this.addSerialiser(Element.class, this.defaultElementSerialiser);
-//        this.addSerialiser(ElementSeed.class, this.defaultElementSeedSerialiser);
     }
 
-    public PythonSerialiserConfig(FileInputStream fis){
+    public PythonSerialiserConfig(final FileInputStream fis) {
         byte[] bytes = null;
         try {
             bytes = null != fis ? sun.misc.IOUtils.readFully(fis, fis.available(), true) : null;
-        } catch (IOException e) {
+        } catch (final IOException e) {
             e.printStackTrace();
         }
         this.serialisers = new PythonSerialiserConfig(bytes).getSerialisers();
     }
 
-    public PythonSerialiserConfig(byte[] bytes){
+    public PythonSerialiserConfig(final byte[] bytes) {
             try {
                 this.serialisers = JSONSerialiser.deserialise(bytes, PythonSerialiserConfig.class).getSerialisers();
-            } catch (SerialisationException e) {
+            } catch (final SerialisationException e) {
                 e.printStackTrace();
             }
     }
 
-    public void addSerialiser(Class clazz, Class<? extends PythonSerialiser> serialiserClass){
+    public void addSerialiser(final Class clazz, final Class<? extends PythonSerialiser> serialiserClass) {
         serialisers.put(clazz, serialiserClass);
     }
 
-    public PythonSerialiser getSerialiser(Class clazz){
-        for(Class c : serialisers.keySet()){
-            if(c.isAssignableFrom(clazz)){
+    public PythonSerialiser getSerialiser(final Class clazz) {
+        for (final Class c : serialisers.keySet()) {
+            if (c.isAssignableFrom(clazz)) {
                 try {
                     return (PythonSerialiser) serialisers.get(c).newInstance();
-                } catch (InstantiationException | IllegalAccessException e) {
+                } catch (final InstantiationException | IllegalAccessException e) {
                     e.printStackTrace();
                 }
             }
@@ -77,15 +69,15 @@ public class PythonSerialiserConfig implements Serializable{
         return null;
     }
 
-    public boolean hasSerialiser(Class clazz){
+    public boolean hasSerialiser(final Class clazz) {
         return serialisers.containsKey(clazz.getCanonicalName());
     }
 
     @Override
-    public String toString(){
+    public String toString() {
         try {
             return new String(JSONSerialiser.serialise(this, true));
-        } catch (SerialisationException e) {
+        } catch (final SerialisationException e) {
             e.printStackTrace();
         }
         return null;
@@ -95,17 +87,7 @@ public class PythonSerialiserConfig implements Serializable{
         return serialisers;
     }
 
-    public void setSerialisers(Map<Class, Class> serialisers) {
-//        for(Class c : serialisers.keySet()){
-//            if(serialisers.get(c).equals(this.defaultElementSerialiser)){
-//                this.serialisers.put(c, serialisers.get(c));
-//                serialisers.remove(c);
-//            }
-//            if(serialisers.get(c).equals(this.defaultElementSeedSerialiser)){
-//                this.serialisers.put(c, serialisers.get(c));
-//                serialisers.remove(c);
-//            }
-//        }
+    public void setSerialisers(final Map<Class, Class> serialisers) {
         this.serialisers.putAll(serialisers);
     }
 }

@@ -17,7 +17,6 @@
 package uk.gov.gchq.gaffer.python.pyspark.serialiser;
 
 import org.apache.spark.api.python.Converter;
-import uk.gov.gchq.gaffer.python.data.serialiser.PythonSerialiser;
 
 public interface PySparkSerialiser<Input, Output> extends Converter<Input, Output> {
 

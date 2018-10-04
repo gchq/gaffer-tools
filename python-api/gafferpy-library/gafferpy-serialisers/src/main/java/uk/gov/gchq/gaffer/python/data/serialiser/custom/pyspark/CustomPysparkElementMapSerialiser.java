@@ -25,7 +25,7 @@ import java.util.Map;
 public class CustomPysparkElementMapSerialiser extends CustomPythonElementMapSerialiser implements PySparkSerialiser<Element, Map<String, Object>> {
 
     @Override
-    public Map<String, Object> convert(Element element) {
+    public Map<String, Object> convert(final Element element) {
         return this.serialise(element);
     }
 }

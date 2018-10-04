@@ -30,7 +30,7 @@ public class PythonIterator implements Iterator {
     Iterator iterator;
     PythonSerialiser serialiser;
 
-    public PythonIterator(Iterator iterator, PythonSerialiser serialiser){
+    public PythonIterator(final Iterator iterator, final PythonSerialiser serialiser) {
         this.iterator = iterator;
         this.serialiser = serialiser;
     }
@@ -45,7 +45,7 @@ public class PythonIterator implements Iterator {
         return serialiser.serialise(iterator.next());
     }
 
-    public PythonSerialiser getSerialiser(){
+    public PythonSerialiser getSerialiser() {
         return this.serialiser;
     }
 }

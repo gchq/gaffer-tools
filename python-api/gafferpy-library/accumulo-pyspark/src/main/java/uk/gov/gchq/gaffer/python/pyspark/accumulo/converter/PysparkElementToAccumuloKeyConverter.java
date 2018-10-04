@@ -17,35 +17,18 @@
 package uk.gov.gchq.gaffer.python.pyspark.accumulo.converter;
 
 import org.apache.accumulo.core.data.Key;
-import org.apache.hadoop.conf.Configuration;
-import org.apache.spark.SparkConf;
-import org.apache.spark.SparkContext;
-import org.apache.spark.api.java.JavaSparkContext;
 import org.apache.spark.api.python.Converter;
-import org.apache.spark.broadcast.Broadcast;
-import org.apache.spark.sql.RuntimeConfig;
-import org.apache.spark.sql.SparkSession;
-import scala.Tuple2;
+
 import uk.gov.gchq.gaffer.accumulostore.key.AccumuloKeyPackage;
-import uk.gov.gchq.gaffer.accumulostore.key.core.impl.byteEntity.ByteEntityKeyPackage;
-import uk.gov.gchq.gaffer.accumulostore.key.core.impl.classic.ClassicKeyPackage;
-import uk.gov.gchq.gaffer.commonutil.pair.Pair;
-import uk.gov.gchq.gaffer.data.element.Edge;
 import uk.gov.gchq.gaffer.data.element.Element;
-import uk.gov.gchq.gaffer.data.element.Entity;
 import uk.gov.gchq.gaffer.exception.SerialisationException;
 import uk.gov.gchq.gaffer.jsonserialisation.JSONSerialiser;
-import uk.gov.gchq.gaffer.serialisation.Serialiser;
 import uk.gov.gchq.gaffer.store.schema.Schema;
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 
 public class PysparkElementToAccumuloKeyConverter implements Converter<String, Key> {
 
     @Override
-    public Key convert(String input) {
+    public Key convert(final String input) {
 
         String[] t = input.split(";");
 
@@ -56,7 +39,7 @@ public class PysparkElementToAccumuloKeyConverter implements Converter<String, K
         Element element = null;
         try {
             element = JSONSerialiser.deserialise(elementstring, Element.class);
-        } catch (SerialisationException e) {
+        } catch (final SerialisationException e) {
             e.printStackTrace();
         }
 
@@ -65,7 +48,7 @@ public class PysparkElementToAccumuloKeyConverter implements Converter<String, K
         AccumuloKeyPackage keyPackage = null;
         try {
             keyPackage = (AccumuloKeyPackage) Class.forName(keyPackageClassName).newInstance();
-        } catch (InstantiationException | IllegalAccessException | ClassNotFoundException e) {
+        } catch (final InstantiationException | IllegalAccessException | ClassNotFoundException e) {
             e.printStackTrace();
         }
 

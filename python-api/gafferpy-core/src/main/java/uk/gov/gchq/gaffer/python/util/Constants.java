@@ -16,10 +16,12 @@
 
 package uk.gov.gchq.gaffer.python.util;
 
-public class Constants {
+public final class Constants {
 
 
-    private Constants(){}
+    private Constants() {
+
+    }
 
     public static final String JSON = "json";
 

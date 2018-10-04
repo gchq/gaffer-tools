@@ -17,16 +17,23 @@
 package uk.gov.gchq.gaffer.python.data.serialiser.impl;
 
 import org.roaringbitmap.RoaringBitmap;
+
 import uk.gov.gchq.gaffer.python.data.serialiser.PythonSerialiser;
 import uk.gov.gchq.gaffer.python.util.Constants;
+
 import uk.gov.gchq.gaffer.time.RBMBackedTimestampSet;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
 
 public class RBMBackedTimestampSetPythonSerialiser implements PythonSerialiser<RBMBackedTimestampSet, Map<String, Object>> {
 
     @Override
-    public Map<String, Object> serialise(RBMBackedTimestampSet rbmBackedTimestampSet) {
+    public Map<String, Object> serialise(final RBMBackedTimestampSet rbmBackedTimestampSet) {
 
         Map<String, Object> timestampMap = new HashMap<>();
 
@@ -37,7 +44,7 @@ public class RBMBackedTimestampSetPythonSerialiser implements PythonSerialiser<R
         List<Integer> timestamps = new ArrayList<>(rbm.getCardinality());
 
         Iterator<Integer> iterator = rbm.iterator();
-        while(iterator.hasNext()){
+        while (iterator.hasNext()) {
             timestamps.add(iterator.next());
         }
 
@@ -47,7 +54,7 @@ public class RBMBackedTimestampSetPythonSerialiser implements PythonSerialiser<R
     }
 
     @Override
-    public boolean canHandle(Class aClass) {
+    public boolean canHandle(final Class aClass) {
         return RBMBackedTimestampSet.class.equals(aClass);
     }
 }
