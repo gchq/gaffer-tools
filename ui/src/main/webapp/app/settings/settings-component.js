@@ -39,6 +39,6 @@ function SettingsController(settings, schema, operationService, events) {
     vm.updateSchema = function() {
         events.broadcast('onPreExecute', []);
         schema.update();
-        operationService.reloadOperations(false);
+        operationService.reloadOperations(true);
     }
 }
