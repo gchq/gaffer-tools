@@ -17,7 +17,7 @@
 <div layout="row" layout-padding>
     <div flex-offset-gt-sm="20" flex-gt-sm="60" flex="100">
         <div layout="column" flex>
-            <h3>Settings</h3>
+            <h3 class="md-headline">Settings</h3>
             <md-input-container>
                 <label>Default result limit</label>
                 <input type="number" step="1" ng-model="ctrl.resultLimit"
@@ -77,12 +77,11 @@
                 </md-button>
             </div>
 
-            <h4>Schema</h4>
-
+            <h4 class="md-title">Schema</h4>
             <div layout="row">
-                <md-button class="md-primary"
-                           aria-label="update schema"
-                           ng-click="ctrl.updateSchema()">
+                <md-button class="md-primary md-raised no-side-margin"
+                            aria-label="update schema"
+                            ng-click="ctrl.updateSchema()">
                     Update schema
                 </md-button>
             </div>
