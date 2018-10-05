@@ -42,9 +42,9 @@ function OperationController(types, loading, operationChain, settings, events) {
     vm.showOperationOptionsForm;
 
     vm.$onInit = function() {
-        settings.getOpOptionKeys().then(function(keys) {
-            vm.showOperationOptionsForm = (keys && Object.keys(keys).length > 0);
-        });
+        // settings.getOpOptionKeys().then(function(keys) {
+        //     vm.showOperationOptionsForm = (keys && Object.keys(keys).length > 0);
+        // });
 
         if (!vm.model) {
             throw 'An operation has been created without a model to bind to'

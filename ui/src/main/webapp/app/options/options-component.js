@@ -47,7 +47,7 @@ function OptionsController(operationOptions, config) {
             }
             // If the component is the master, or the defaults are not yet set by the user, the component looks to the config to get the default operation options 
             config.get().then(function(conf) {
-                vm.model = conf.defaultOperationOptions;
+                vm.model = angular.copy(conf.defaultOperationOptions);
                 if (vm.model.hidden === undefined) {
                     vm.model.hidden = [];
                 }

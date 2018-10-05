@@ -26,7 +26,7 @@ function operationChainBuilder() {
     }
 }
 
-function OperationChainController(operationChain, config, loading, query, error, events, $mdDialog, navigation, $location, $routeParams, operationService, common, graph, types) {
+function OperationChainController(operationChain, config, loading, query, error, events, $mdDialog, navigation, $location, $routeParams, operationService, common, graph, types, operationOptions) {
     var vm = this;
     vm.timeConfig;
     vm.operations = operationChain.getOperationChain();
@@ -441,9 +441,12 @@ function OperationChainController(operationChain, config, loading, query, error,
             }
         }
 
-        if(operation.fields && operation.fields.options && Object.keys(operation.fields.options).length > 0) {
-            op.options = operation.fields.options;
+        if (operation.fields && operation.fields.options) {
+            op.options = operationOptions.extractOperationOptions(operation.fields.options);
         }
+        // if(operation.fields && operation.fields.options && Object.keys(operation.fields.options).length > 0) {
+        //     op.options = operation.fields.options;
+        // }
 
         return op;
     }
