@@ -19,7 +19,7 @@
 /**
  * Graph service which handles selected elements and a cytoscape graph
  */
-angular.module('app').factory('graph', ['types', '$q', 'results', 'common', 'events', 'operationChain', 'schema', 'config', 'loading', 'query', 'error', 'settings', 'operationService', function(types, $q, results, common, events, operationChain, schemaService, config, loading, query, error, settings, operationService) {
+angular.module('app').factory('graph', ['types', '$q', 'results', 'common', 'events', 'operationChain', 'schema', 'config', 'loading', 'query', 'error', 'operationOptions', 'operationService', function(types, $q, results, common, events, operationChain, schemaService, config, loading, query, error, operationOptions, operationService) {
 
     var graphCy;
     var graph = {};
@@ -230,7 +230,7 @@ angular.module('app').factory('graph', ['types', '$q', 'results', 'common', 'eve
             var operation = {
                  class: "uk.gov.gchq.gaffer.operation.impl.get.GetElements",
                  input: createOpInput(input),
-                 options: settings.getDefaultOpOptions(),
+                 options: operationOptions.getDefaultOperationOptions(),
                  view: {
                     globalElements: [
                         {

@@ -30,22 +30,21 @@ function options() {
     }
 }
 
-function OptionsController(operationOptions, config) {
+function OptionsController(operationOptions, config, events) {
     var vm = this;
 
     vm.$onInit = function() {
+        events.subscribe('onPreExecute', saveToService);
         if (!vm.model) {    // If the model is not yet defined, it must get the default from somewhere.
-            if (!vm.master) { // If the component is not the master, it should look to the service first to check whether there is a default
-                var currentDefaults = operationOptions.getDefaultConfiguration();
-                if (currentDefaults) {
-                    vm.model = currentDefaults;
-                    if (vm.model.hidden === undefined) {
-                        vm.model.hidden = [];
-                    }
-                    return;
+            var currentDefaults = operationOptions.getDefaultConfiguration();
+            if (currentDefaults) {
+                vm.model = currentDefaults;
+                if (vm.model.hidden === undefined) {
+                    vm.model.hidden = [];
                 }
+                return;
             }
-            // If the component is the master, or the defaults are not yet set by the user, the component looks to the config to get the default operation options 
+            // If the defaults are not yet set by the user, the component looks to the config to get the default operation options 
             config.get().then(function(conf) {
                 vm.model = angular.copy(conf.defaultOperationOptions);
                 if (vm.model.hidden === undefined) {
@@ -56,6 +55,11 @@ function OptionsController(operationOptions, config) {
     }
 
     vm.$onDestroy = function() {
+        events.unsubscribe('onPreExecute', saveToService);
+        saveToService()
+    }
+
+    var saveToService = function() {
         if (vm.master) {        // If master is being destroyed, for example when the user navigates away, the service is updated
             operationOptions.updateDefaultConfiguration(vm.model);
         }

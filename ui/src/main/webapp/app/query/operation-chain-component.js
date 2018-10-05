@@ -102,7 +102,7 @@ function OperationChainController(operationChain, config, loading, query, error,
 
         var finalOperation = vm.operations[vm.operations.length - 1];
         if (common.arrayContainsValue(finalOperation.selectedOperation.next, 'uk.gov.gchq.gaffer.operation.impl.Limit')) {
-            var options = finalOperation.fields ? finalOperation.fields.options : undefined;
+            var options = finalOperation.fields ? operationOptions.extractOperationOptions(finalOperation.fields.options) : undefined;
             chain.operations.push(operationService.createLimitOperation(options));
             chain.operations.push(operationService.createDeduplicateOperation(options));
         }
@@ -444,9 +444,6 @@ function OperationChainController(operationChain, config, loading, query, error,
         if (operation.fields && operation.fields.options) {
             op.options = operationOptions.extractOperationOptions(operation.fields.options);
         }
-        // if(operation.fields && operation.fields.options && Object.keys(operation.fields.options).length > 0) {
-        //     op.options = operation.fields.options;
-        // }
 
         return op;
     }

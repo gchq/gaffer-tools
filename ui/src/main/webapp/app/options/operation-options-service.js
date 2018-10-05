@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2018 Crown Copyright
+ * Copyright 2018 Crown Copyright
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -43,7 +43,7 @@ angular.module('app').factory('operationOptions', function() { // This simple se
      * from the default operation options configuration
      */
     service.getDefaultOperationOptions = function() {
-        return extractOperationOptions(defaultOperationOptionsConfiguration)
+        return service.extractOperationOptions(defaultOperationOptionsConfiguration)
     }
 
     /**
@@ -60,7 +60,7 @@ angular.module('app').factory('operationOptions', function() { // This simple se
             var option = operationOptionsConfiguration.visible[i];
 
             if (option.value !== undefined) {
-                options[options.key] = options[value]
+                options[option.key] = option.value
             }
         }
 

@@ -16,7 +16,7 @@
 
 'use strict';
 
-angular.module('app').factory('view', ['operationService', 'config', 'settings', 'query', '$q', 'types', 'events', function(operationService, config, settings, query, $q, types, events) {
+angular.module('app').factory('view', ['operationService', 'config', 'operationOptions', 'query', '$q', 'types', 'events', function(operationService, config, operationOptions, query, $q, types, events) {
     var service = {};
     var availableNamedViews;
     var firstLoad = true;
@@ -91,7 +91,7 @@ angular.module('app').factory('view', ['operationService', 'config', 'settings',
             query.execute(
                 {
                     class: getAllClass,
-                    options: settings.getDefaultOpOptions()
+                    options: operationOptions.getDefaultOperationOptions()
                 },
                 updateNamedViews,
                 function(err) {
