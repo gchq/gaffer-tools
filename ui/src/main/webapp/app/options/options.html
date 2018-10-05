@@ -2,22 +2,37 @@
 
     <h3 class="md-headline"><span ng-if="ctrl.master">Default Operation </span>Options</h3>
 
-    <div ng-repeat="option in ctrl.model.visible">
+    <div ng-repeat="option in ctrl.model.visible track by option.key">
         <div layout="row">
             <md-input-container flex>
                 <label>{{option.label}}</label>
                 <input ng-model="option.value" type="text">
             </md-input-container>
-            <md-button class="md-icon-button icon-inline-with-input" ng-click="ctrl.clearValue($index)">
+            <md-button ng-show="option.value !== undefined" class="md-icon-button icon-inline-with-input" ng-click="ctrl.clearValue($index)">
                 <md-icon md-svg-icon="clear"></md-icon>
                 <md-tooltip>clear value</md-tooltip>
             </md-button>
-            <md-button class="md-icon-button icon-inline-with-input" ng-click="ctrl.hideOption($index, option)">
+            <md-button ng-show="option.value === undefined" class="md-icon-button icon-inline-with-input" ng-click="ctrl.hideOption($index, option)">
                 <md-icon md-svg-icon="hide"></md-icon>
                 <md-tooltip>hide option</md-tooltip>
             </md-button>
         </div>
     </div>
+    <md-autocomplete
+        ng-show="ctrl.model.hidden.length > 0"
+        md-search-text="ctrl.search"
+        md-selected-item="ctrl.selectedOption"
+        md-min-length="0"
+        md-require-match
+        md-no-cache
+        md-item-text="option.label"
+        md-selected-item-change="ctrl.addOption()"
+        md-items="option in ctrl.model.hidden | filter:ctrl.search"
+        placeholder="Add an operation option">
+        <md-item-template>
+            <span md-highlight-text="ctrl.search" md-highlight-flags="^i">{{option.label}}</span>
+        </md-item-template>
+    </md-autocomplete>
 
 
 </div>

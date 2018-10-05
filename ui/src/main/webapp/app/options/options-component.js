@@ -39,12 +39,18 @@ function OptionsController(operationOptions, config) {
                 var currentDefaults = operationOptions.getDefaultConfiguration();
                 if (currentDefaults) {
                     vm.model = currentDefaults;
+                    if (vm.model.hidden === undefined) {
+                        vm.model.hidden = [];
+                    }
                     return;
                 }
             }
             // If the component is the master, or the defaults are not yet set by the user, the component looks to the config to get the default operation options 
             config.get().then(function(conf) {
                 vm.model = conf.defaultOperationOptions;
+                if (vm.model.hidden === undefined) {
+                    vm.model.hidden = [];
+                }
             });
         }
     }
@@ -66,4 +72,25 @@ function OptionsController(operationOptions, config) {
         vm.model.hidden.push(option);
         vm.model.visible.splice(index, 1);
     }
+
+    vm.addOption = function() {
+        if (vm.selectedOption === undefined || vm.selectedOption === null) {
+            return;
+        }
+        if (!vm.model.visible) {
+            vm.model.visible = [];
+        }
+
+        vm.model.visible.push(angular.copy(vm.selectedOption));
+
+        vm.model.hidden = vm.model.hidden.filter(function(hiddenOption) {
+            if (hiddenOption.key !== vm.selectedOption.key) {
+                return hiddenOption;
+            }
+        });
+
+        vm.selectedOption = undefined;
+        vm.search = "";
+    }
+
 }
