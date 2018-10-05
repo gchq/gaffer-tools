@@ -161,8 +161,7 @@ function OperationChainController(operationChain, config, loading, query, error,
         query.executeQuery(
             {
                 class: OPERATION_CHAIN_CLASS,
-                operations: operations,
-                options: operations[0]['options']
+                operations: operations
             },
             function(data) {
                 submitResults(data);

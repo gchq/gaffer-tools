@@ -37,54 +37,6 @@ describe('The operation component', function() {
 
     describe('ctrl.$onInit()', function() {
 
-        var settings;
-        var keys;
-
-        beforeEach(inject(function(_settings_) {
-            settings = _settings_;
-        }))
-
-        beforeEach(function() {
-            ctrl.model = {}; // to avoid exceptions
-        });
-
-        beforeEach(function() {
-            spyOn(settings, 'getOpOptionKeys').and.callFake(function() {
-                return $q.when(keys);
-            })
-        });
-
-        it('should show the operation options form if there is one or more option keys', function() {
-            keys = {
-                "key1": "name1"
-            };
-
-            ctrl.$onInit();
-            scope.$digest();
-            expect(ctrl.showOperationOptionsForm).toBeTruthy();
-        });
-
-        it('should not show the operations options form if the keys are undefined', function() {
-            keys = undefined;
-            ctrl.$onInit();
-            scope.$digest();
-            expect(ctrl.showOperationOptionsForm).toBeFalsy();
-        });
-
-        it('should not show the operations options from if the keys are null', function() {
-            keys = null;
-            ctrl.$onInit();
-            scope.$digest();
-            expect(ctrl.showOperationOptionsForm).toBeFalsy();
-        });
-
-        it('should not show the operations options from if the keys are an empty object', function() {
-            keys = {};
-            ctrl.$onInit();
-            scope.$digest();
-            expect(ctrl.showOperationOptionsForm).toBeFalsy();
-        });
-
         it('should throw an error if the model is undefined', function() {
             var ctrl = $componentController('operation');
             expect(ctrl.$onInit).toThrow('An operation has been created without a model to bind to');
