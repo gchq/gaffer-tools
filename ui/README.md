@@ -579,8 +579,6 @@ you can specify which graphId you wish to run an operation against.
 The UI allows you configure which of these options you make available to the user. In the past, this feature has been 
 available but was not formally documented.
 
-The old configuration for this looked a little like this:
-
 #### Old configuration
 ```json
 {
@@ -590,7 +588,7 @@ The old configuration for this looked a little like this:
 }
 ```
 
-Now you can specify default values and whether to hide the option by default. The new configuration looks more like this:
+Now you can specify default values and whether to hide the option by default.
 
 #### New configuration
 ```json
