@@ -581,10 +581,9 @@ available but was not formally documented.
 
 The old configuration for this looked a little like this:
 
+#### Old configuration
 ```json
 {
-    // old configuration
-
     "operationOptionKeys": {
         "key.to.be.sent.to.Gaffer": "UI label"
     }
@@ -593,10 +592,9 @@ The old configuration for this looked a little like this:
 
 Now you can specify default values and whether to hide the option by default. The new configuration looks more like this:
 
+#### New configuration
 ```json
 {
-    // new configuration
-
     "operationOptions": {
         "visible": [
             {
