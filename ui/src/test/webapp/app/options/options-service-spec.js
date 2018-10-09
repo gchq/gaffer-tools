@@ -5,7 +5,7 @@ describe('The operation options service', function() {
         service = _options_;
     }));
 
-    describe('operationOptions.updateDefaultConfiguration()', function() {
+    describe('operationOptions.setDefaultConfiguration()', function() {
 
     });
 

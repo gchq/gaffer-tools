@@ -37,18 +37,20 @@ function OptionsController(operationOptions, config, events) {
         events.subscribe('onPreExecute', saveToService);
         if (!vm.model) {    // If the model is not yet defined, it must get the default from somewhere.
             var currentDefaults = operationOptions.getDefaultConfiguration();
-            if (currentDefaults) {
+            if (currentDefaults !== null) { // null implies not set.
                 vm.model = currentDefaults;
-                if (vm.model.hidden === undefined) {
-                    vm.model.hidden = [];
-                }
                 return;
             }
             // If the defaults are not yet set by the user, the component looks to the config to get the default operation options 
             config.get().then(function(conf) {
                 vm.model = angular.copy(conf.defaultOperationOptions);
-                if (vm.model.hidden === undefined) {
-                    vm.model.hidden = [];
+                if (vm.model) {
+                    if (vm.model.visible === undefined) {
+                        vm.model.visible = [];
+                    } 
+                    if (vm.model.hidden === undefined) {
+                        vm.model.hidden = [];
+                    }
                 }
             });
         }
@@ -61,7 +63,7 @@ function OptionsController(operationOptions, config, events) {
 
     var saveToService = function() {
         if (vm.master) {        // If master is being destroyed, for example when the user navigates away, the service is updated
-            operationOptions.updateDefaultConfiguration(vm.model);
+            operationOptions.setDefaultConfiguration(vm.model);
         }
     }
 
@@ -69,11 +71,9 @@ function OptionsController(operationOptions, config, events) {
         vm.model.visible[index].value = undefined;
     }
 
-    vm.hideOption = function(index, option) {
-        if (!vm.model.hidden) {
-            vm.model.hidden = [];
-        }
-        vm.model.hidden.push(option);
+    vm.hideOption = function(index) {
+        var optionCopy = angular.copy(vm.model.visible[index]);
+        vm.model.hidden.push(optionCopy);
         vm.model.visible.splice(index, 1);
     }
 

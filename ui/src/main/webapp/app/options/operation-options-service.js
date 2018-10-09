@@ -27,7 +27,7 @@ angular.module('app').factory('operationOptions', function() { // This simple se
      * Updates the default configuration for options components
      * @param {Object} newDefaults 
      */
-    service.updateDefaultConfiguration = function(newDefaults) {
+    service.setDefaultConfiguration = function(newDefaults) {
         defaultOperationOptionsConfiguration = angular.copy(newDefaults);   
     }
 
