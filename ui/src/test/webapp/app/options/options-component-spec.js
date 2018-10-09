@@ -19,7 +19,7 @@ describe('The options component', function() {
         });
     }));
 
-    beforeEach(inject(function(_$rootScope_, _$componentController_, _$httpBackend_, _operationOptions_,) {
+    beforeEach(inject(function(_$rootScope_, _$componentController_, _$httpBackend_, _operationOptions_) {
         scope = _$rootScope_.$new();
         $componentController = _$componentController_;
         $httpBackend = _$httpBackend_;
