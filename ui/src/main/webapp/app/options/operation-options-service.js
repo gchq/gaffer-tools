@@ -51,8 +51,12 @@ angular.module('app').factory('operationOptions', function() { // This simple se
      * @param {Object} operationOptionsConfiguration 
      */
     service.extractOperationOptions = function(operationOptionsConfiguration) {
+        if (operationOptionsConfiguration === undefined) {  // undefined configuration implies explicitly that no options were configured
+            return undefined;
+        }
+
         var options = {};
-        if (!operationOptionsConfiguration) {
+        if (operationOptionsConfiguration === null) {   // null configuration implies that the configuration has not been fetched yet
             return options;
         }
 
