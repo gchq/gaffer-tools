@@ -110,6 +110,49 @@ describe('The options component', function() {
 
         });
 
+        it('should use the old config layout to create a model', function() {
+            var conf = {
+                "operationOptionKeys": {
+                    "opKey": "opLabel"
+                }
+            };
+
+            $httpBackend.whenGET('config/config.json').respond(200, conf);
+
+            ctrl.$onInit();
+            $httpBackend.flush();
+
+            var expectedModel = {
+                visible: [
+                    {
+                        key: 'opKey',
+                        label: 'opLabel'
+                    }
+                ],
+                hidden: []
+            }
+
+            expect(ctrl.model).toEqual(expectedModel);
+
+        });
+
+        it('should log a warning to the console informing the admin that the old configuration is deprecated', function() {
+            var conf = {
+                "operationOptionKeys": {
+                    "opKey": "opLabel"
+                }
+            };
+
+            $httpBackend.whenGET('config/config.json').respond(200, conf);
+
+            spyOn(console, 'warn');
+
+            ctrl.$onInit();
+            $httpBackend.flush();
+
+            expect(console.warn).toHaveBeenCalledWith('UI "operationOptionKeys" config is deprecated. See the docs for the new options configuration.')
+        });
+
         it('should pass an undefined operation options configuration to the model', function() {
             $httpBackend.whenGET('config/config.json').respond(200, {});
 

@@ -51,6 +51,22 @@ function OptionsController(operationOptions, config, events) {
                     if (vm.model.hidden === undefined) {
                         vm.model.hidden = [];
                     }
+                } else if (conf.operationOptionKeys) {
+                    console.warn('UI "operationOptionKeys" config is deprecated. See the docs for the new options configuration.');
+
+                    vm.model = {
+                        visible: [],
+                        hidden: []
+                    };
+
+                    for (var key in conf.operationOptionKeys) {
+                        var option = {
+                            'key': key,
+                            'label': conf.operationOptionKeys[key]
+                        };
+
+                        vm.model.visible.push(option);
+                    }
                 }
             });
         }
