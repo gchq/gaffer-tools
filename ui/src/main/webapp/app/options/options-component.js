@@ -33,6 +33,11 @@ function options() {
 function OptionsController(operationOptions, config, events) {
     var vm = this;
 
+    /**
+     * Initialisation method. Subscribes to the "onPreExecute" event so that the master can update operation options before
+     * an operation is executed. Then if no model is defined, it retrieves the default from the operationOptions service.
+     * If not yet defined, it looks to the UI config to determine the defaults.
+     */
     vm.$onInit = function() {
         events.subscribe('onPreExecute', saveToService);
         if (!vm.model) {    // If the model is not yet defined, it must get the default from somewhere.
@@ -72,6 +77,9 @@ function OptionsController(operationOptions, config, events) {
         }
     }
 
+    /**
+     * Unsubscribes from the event service to avoid too many event subscriptions.
+     */
     vm.$onDestroy = function() {
         events.unsubscribe('onPreExecute', saveToService);
         saveToService()
@@ -83,16 +91,27 @@ function OptionsController(operationOptions, config, events) {
         }
     }
 
+    /**
+     * Sets the value of an operation option to undefined
+     * @param {Number} index The index of the option in the visible array
+     */
     vm.clearValue = function(index) {
         vm.model.visible[index].value = undefined;
     }
 
+    /**
+     * Moves the operation option to the hidden array.
+     * @param {Number} index The index of the option in the visible array
+     */
     vm.hideOption = function(index) {
         var optionCopy = angular.copy(vm.model.visible[index]);
         vm.model.hidden.push(optionCopy);
         vm.model.visible.splice(index, 1);
     }
 
+    /**
+     * Moves the selected operation (created by the md-autocomplete component) from the hidden array to the visible array.
+     */
     vm.addOption = function() {
         if (vm.selectedOption === undefined || vm.selectedOption === null) {
             return;
