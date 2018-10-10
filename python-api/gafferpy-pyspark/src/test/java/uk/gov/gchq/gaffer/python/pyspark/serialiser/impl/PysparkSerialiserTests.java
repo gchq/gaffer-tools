@@ -21,14 +21,9 @@ import uk.gov.gchq.gaffer.data.element.Edge;
 import uk.gov.gchq.gaffer.data.element.Entity;
 import uk.gov.gchq.gaffer.data.element.id.DirectedType;
 import uk.gov.gchq.gaffer.exception.SerialisationException;
-import uk.gov.gchq.gaffer.graph.Graph;
 import uk.gov.gchq.gaffer.jsonserialisation.JSONSerialiser;
 import uk.gov.gchq.gaffer.python.util.Constants;
-import uk.gov.gchq.gaffer.store.schema.Schema;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -128,70 +123,5 @@ public class PysparkSerialiserTests {
         assertEquals(edgeResult, serialiser.convert(edge));
         assertEquals(entityResult, serialiser.convert(entity));
     }
-
-    @Test
-    public void ffs(){
-
-        String schemaString = "{\n" +
-                "  \"edges\": {\n" +
-                "    \"BasicEdge\": {\n" +
-                "      \"source\": \"vertex\",\n" +
-                "      \"destination\": \"vertex\",\n" +
-                "      \"directed\": \"true\",\n" +
-                "      \"properties\": {\n" +
-                "        \"count\": \"count\"\n" +
-                "      }\n" +
-                "    }\n" +
-                "  },\n" +
-                "  \"entities\": {\n" +
-                "    \"BasicEntity\": {\n" +
-                "      \"vertex\": \"vertex\",\n" +
-                "      \"properties\": {\n" +
-                "        \"count\": \"count\"\n" +
-                "      }\n" +
-                "    }\n" +
-                "  },\n" +
-                "  \"types\": {\n" +
-                "    \"vertex\": {\n" +
-                "      \"class\": \"java.lang.String\"\n" +
-                "    },\n" +
-                "    \"count\": {\n" +
-                "      \"class\": \"java.lang.Long\",\n" +
-                "      \"aggregateFunction\": {\n" +
-                "        \"class\": \"uk.gov.gchq.koryphe.impl.binaryoperator.Sum\"\n" +
-                "      }\n" +
-                "    },\n" +
-                "    \"true\": {\n" +
-                "      \"description\": \"A simple boolean that must always be true.\",\n" +
-                "      \"class\": \"java.lang.Boolean\",\n" +
-                "      \"validateFunctions\": [\n" +
-                "        {\n" +
-                "          \"class\": \"uk.gov.gchq.koryphe.impl.predicate.IsTrue\"\n" +
-                "        }\n" +
-                "      ]\n" +
-                "    }\n" +
-                "  }\n" +
-                "}\n";
-
-        Schema schema = Schema.fromJson(schemaString.getBytes());
-
-        String storePropertiesPath = "src/main/resources/gaffer-configs/mock-accumulo-store.properties";
-        String graphConfigPath = "src/main/resources/gaffer-configs/graphconfig.json";
-
-        Graph graph = null;
-
-        try {
-            graph = new Graph.Builder()
-                    .addSchema(schema)
-                    .storeProperties(new FileInputStream(new File(storePropertiesPath)))
-                    .config(new FileInputStream(new File(graphConfigPath)))
-                    .build();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-
-        System.out.println(graph.getSchema().getVertexSerialiser());
-    }
-
 
 }

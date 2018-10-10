@@ -102,6 +102,11 @@ public final class PythonGraph {
 
     public Object execute(final String opJson, final String userJson) {
 
+        /*
+        TODO
+        fix this so that it's more like a registry of handlers and has more flexibility and extensibility
+        there's a dependency here on hadoop configuration which is only really needed for the pyspark stuff
+         */
         LOGGER.debug("received operation : {}", opJson);
         LOGGER.debug("received user : {}", userJson);
 
