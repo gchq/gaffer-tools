@@ -24,6 +24,11 @@ import uk.gov.gchq.gaffer.python.util.Constants;
 import java.util.HashMap;
 import java.util.Map;
 
+/*
+Converts a Gaffer Element to/from Json for passing between Java and Python
+ */
+
+
 public class PythonElementJsonSerialiser extends PythonElementSerialiser<Element, Map<String, Object>> {
 
     Map<String, Object> map;

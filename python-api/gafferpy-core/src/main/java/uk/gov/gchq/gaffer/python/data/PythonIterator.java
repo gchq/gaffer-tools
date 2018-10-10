@@ -20,9 +20,9 @@ import uk.gov.gchq.gaffer.python.data.serialiser.PythonSerialiser;
 
 import java.util.Iterator;
 
-/**
- * A class for taking an Iterable of results from Gaffer and providing an iterator that returns
- * the results serialised so that the relevant python object can be constructed easily.
+/*
+ * A class for taking an Iterable of results from Gaffer and providing an iterator, callable from python, that returns
+ * the results one-by-one and serialised so that the relevant python object can be constructed easily.
  */
 
 public class PythonIterator implements Iterator {

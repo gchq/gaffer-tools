@@ -25,6 +25,10 @@ import uk.gov.gchq.gaffer.python.util.Constants;
 import java.util.HashMap;
 import java.util.Map;
 
+/*
+Converts a Gaffer ElementSeed to/from a Map so it can be passed between java and python
+ */
+
 public class PythonElementSeedMapSerialiser implements PythonSerialiser<ElementSeed, Map<String, Object>> {
 
     Map<String, Object> map;

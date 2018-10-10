@@ -22,6 +22,10 @@ import py4j.GatewayServer;
 
 import uk.gov.gchq.gaffer.python.graph.PythonGraph;
 
+/*
+ * A GafferSession starts a Py4j gateway server process and has methods for constructing Gaffer graphs that can be called from Python
+ */
+
 public final class GafferSession {
 
     private static boolean running = false;

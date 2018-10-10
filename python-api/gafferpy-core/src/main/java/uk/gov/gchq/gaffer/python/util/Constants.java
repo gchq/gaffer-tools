@@ -18,9 +18,8 @@ package uk.gov.gchq.gaffer.python.util;
 
 public final class Constants {
 
-
     private Constants() {
-
+        //please don't construct me!
     }
 
     public static final String JSON = "json";

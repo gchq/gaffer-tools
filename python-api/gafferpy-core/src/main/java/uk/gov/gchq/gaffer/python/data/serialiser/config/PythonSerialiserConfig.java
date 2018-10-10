@@ -26,6 +26,12 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
+/*
+A registry of PythonSerialisers that can be used on a Gaffer Session or Pyhton graph object.
+Allows serialisers to be set for converting between Java and Python objects.
+Has utility methods for setting serialisers from json files
+ */
+
 public class PythonSerialiserConfig implements Serializable {
 
     private Map<Class, Class> serialisers;
@@ -45,11 +51,21 @@ public class PythonSerialiserConfig implements Serializable {
     }
 
     public PythonSerialiserConfig(final byte[] bytes) {
-            try {
-                this.serialisers = JSONSerialiser.deserialise(bytes, PythonSerialiserConfig.class).getSerialisers();
+        Map<String, String> map = null;
+        this.serialisers = new HashMap<>();
+        try {
+                map = JSONSerialiser.deserialise(bytes, Map.class);
             } catch (final SerialisationException e) {
                 e.printStackTrace();
             }
+
+        for (final String s : map.keySet()) {
+            try {
+                this.serialisers.put(Class.forName(s), Class.forName(map.get(s)));
+            } catch (final ClassNotFoundException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     public void addSerialiser(final Class clazz, final Class<? extends PythonSerialiser> serialiserClass) {

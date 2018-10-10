@@ -16,7 +16,7 @@
         <module>gafferpy-pyspark</module>
         <module>gafferpy-rest</module>
         <module>gafferpy-library</module>
-        <module>distribution</module>
+        <module>gafferpy-build</module>
     </modules>
 
     <properties>
