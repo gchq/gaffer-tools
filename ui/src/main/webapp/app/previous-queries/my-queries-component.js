@@ -26,7 +26,7 @@ function myQueries() {
     }   
 }
 
-function MyQueriesController(previousQueries) {
+function MyQueriesController(previousQueries, navigation, operationChain) {
 
     var vm = this;
     vm.queries = [];
@@ -39,7 +39,8 @@ function MyQueriesController(previousQueries) {
         previousQueries.setQueries(vm.queries);
     }
 
-    vm.onDelete = function(index) {
-        vm.queries.splice(index, 1);
+    vm.createNew = function() {
+        operationChain.reset();
+        navigation.goToQuery();
     }
 }

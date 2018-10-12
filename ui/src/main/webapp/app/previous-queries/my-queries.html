@@ -2,10 +2,22 @@
     <div flex-offset-gt-sm="20" flex-gt-sm="60" flex="100">
         <div layout="column" flex>
             <div ng-if="ctrl.queries.length == 0">
-                <p>Placeholder for message saying the user hasn't run any queries yet</p>
+                <md-card flex>
+                    <md-card-title>
+                        <md-card-title-text>
+                            <span class="md-headline">No queries found</span>
+                        </md-card-title-text>
+                    </md-card-title>
+                    <md-card-content>
+                        Doesn't look like you've run any operation chains yet. Why not create one?
+                    </md-card-content>
+                    <md-card-actions layout="row" layout-align="end center">
+                        <md-button class="md-primary md-raised" ng-click="ctrl.createNew()">create a new operation chain</md-button>
+                    </md-card-actions>
+                </md-card>
             </div>
             <div ng-repeat="query in ctrl.queries">
-                <my-query model="query" index="$index" on-delete="ctrl.onDelete($index)" flex></my-query>
+                <my-query model="query" flex></my-query>
             </div>
         </div>
     </div>
