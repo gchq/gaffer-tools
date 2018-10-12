@@ -9,7 +9,7 @@
         </md-card-header-text>
         <md-button class="md-primary md-icon-button" ng-click="ctrl.load()">
             <md-icon md-svg-icon="open-in-new"></md-icon>
-            <md-tooltip>Load into operation chain</md-tooltip>
+            <md-tooltip>Load into operation chain builder</md-tooltip>
         </md-button>
     </md-card-header>
     <md-list>
@@ -17,7 +17,7 @@
         <md-list-item class="md-2-line" ng-repeat="operation in ctrl.model.operations">
             <div class="md-list-item-text">
                 <h3>{{operation.selectedOperation.name}}</h3>
-                <p>Placeholder for more in-depth meta data</p>
+                <p>{{operation.selectedOperation.description}}</p>
             </div>
         </md-list-item>
     </md-list>
