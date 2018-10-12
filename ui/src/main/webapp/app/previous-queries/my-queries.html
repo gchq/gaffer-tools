@@ -1,0 +1,12 @@
+<div layout="row" layout-padding>
+    <div flex-offset-gt-sm="20" flex-gt-sm="60" flex="100">
+        <div layout="column" flex>
+            <div ng-if="ctrl.queries.length == 0">
+                <p>Placeholder for message saying the user hasn't run any queries yet</p>
+            </div>
+            <div ng-repeat="query in ctrl.queries">
+                <my-query model="query" index="$index" on-delete="ctrl.onDelete($index)" flex></my-query>
+            </div>
+        </div>
+    </div>
+</div>
