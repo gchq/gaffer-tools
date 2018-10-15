@@ -34,11 +34,7 @@ function MyQueriesController(previousQueries, navigation, operationChain) {
     vm.$onInit = function() {
         vm.queries = previousQueries.getQueries();
     }
-
-    vm.$onDestroy = function() {
-        previousQueries.setQueries(vm.queries);
-    }
-
+    
     vm.createNew = function() {
         operationChain.reset();
         navigation.goToQuery();
