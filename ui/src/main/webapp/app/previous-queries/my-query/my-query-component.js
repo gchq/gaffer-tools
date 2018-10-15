@@ -32,6 +32,9 @@ function myQuery() {
 function MyQueryController(operationChain, navigation) {
     var vm = this;
 
+    /**
+     * Loads the operation into the operation chain builder
+     */
     vm.load = function() {
         operationChain.setOperationChain(vm.model.operations);
         navigation.goToQuery();

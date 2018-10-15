@@ -31,10 +31,16 @@ function MyQueriesController(previousQueries, navigation, operationChain) {
     var vm = this;
     vm.queries = [];
 
+    /**
+     * Sets the previously run queries on initialisation
+     */
     vm.$onInit = function() {
         vm.queries = previousQueries.getQueries();
     }
-    
+
+    /**
+     * Resets the operation chain builder and navigates to it
+     */
     vm.createNew = function() {
         operationChain.reset();
         navigation.goToQuery();
