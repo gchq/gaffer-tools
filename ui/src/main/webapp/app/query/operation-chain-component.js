@@ -110,7 +110,7 @@ function OperationChainController(operationChain, config, loading, query, error,
         
         previousQueries.addQuery({
             name: "Operation Chain",
-            lastRan: moment().format('HH:mm'),
+            lastRun: moment().format('HH:mm'),
             operations: vm.operations
         });
 
