@@ -1,4 +1,12 @@
-describe('The Graph Component', function() {
+describe("The Graph Component", function() {
+
+    var graph;
+    var events;
+    var scope;
+    var vertices = [];
+    var gafferSchema = {};
+    var loading;
+    var query;
 
     beforeEach(module('app'));
 
@@ -16,47 +24,201 @@ describe('The Graph Component', function() {
         $provide.factory('schema', function($q) {
             return {
                 get: function() {
-                    return $q.when({});
+                    return $q.when(gafferSchema);
+                },
+                getSchemaVertices: function() {
+                    return vertices;
                 }
             }
         });
     }));
 
-    describe('The Controller', function() {
-        var $componentController, $timeout, $q;
-        var graph, scope;
+    beforeEach(inject(function(_graph_, _events_, _$rootScope_, _loading_, _query_) {
+        graph = _graph_;
+        events = _events_;
+        scope = _$rootScope_.$new();
+        loading = _loading_;
+        query = _query_;
+    }));
 
+    describe('ctrl.$onInit()', function() {
+        it('should not make a call to the config if configuration is stored in the graph service', function() {
 
-        beforeEach(inject(function(_$componentController_, _graph_, _$rootScope_, _$timeout_, _$q_) {
-            $componentController = _$componentController_;
-            graph = _graph_;
-            var $rootScope = _$rootScope_;
-            scope = $rootScope.$new();
-            $timeout = _$timeout_;
-            $q = _$q_;
-        }));
-
-        it('should exist', function() {
-            var ctrl = $componentController('graph');
-            expect(ctrl).toBeDefined();
         });
 
-        it('should load the graph on startup', function() {
-            spyOn(graph, 'load').and.returnValue($q.when());
-            spyOn(graph, 'reset');
-            var ctrl = $componentController('graph', {$scope: scope});
-            ctrl.$onInit();
-            $timeout.flush();
-            expect(graph.load).toHaveBeenCalledTimes(1);
+        it('should make a call to the config if the configuration in the graph service is null', function() {
+
         });
 
-        it('should reset the graph elements on startup', function() {
-            spyOn(graph, 'load').and.returnValue($q.when());
-            spyOn(graph, 'reset');
-            var ctrl = $componentController('graph', {$scope: scope});
-            ctrl.$onInit();
-            $timeout.flush();
-            expect(graph.reset).toHaveBeenCalledTimes(1);
+        it('should merge the configured graph physics with the default graph physics', function() {
+
+        });
+
+        it('should merge the configured style with the component\'s default', function() {
+
+        });
+
+        it('should just use the default if no graph configuration is specified', function() {
+
+        });
+
+        it('should load cytoscape', function() {
+
+        });
+
+        it('should set loading graph to false when completed', function() {
+
+        });
+
+        it('should run the filter once loaded if the service holds a filter', function() {
+
         });
     });
+
+    describe('ctrl.quickHop()', function() {
+
+    });
+
+    describe('ctrl.removeSelected', function() {
+
+    });
+
+    describe('ctrl.reset()', function() {
+
+    });
+
+    describe('ctrl.redraw()', function() {
+
+    });
+
+    describe('cytoscape graph events', function() {
+        describe('on edge selection', function() {
+    
+        });
+    
+        describe('on entity selection', function() {
+    
+        });
+    
+        describe('on vertex selection', function() {
+    
+        });
+
+        describe('on double click', function() {
+
+        });       
+    });
+
+
+    // describe('after loading', function() {
+    //     beforeEach(function() {
+    //         graph.load(); // simulating the call performed when MainCtrl starts
+    //     });
+
+    //     describe('when adding a seed', function() {
+            
+    //         var operationChain
+    //         var types;
+
+    //         beforeEach(inject(function(_operationChain_, _types_) {
+    //             operationChain = _operationChain_;
+    //             types = _types_;
+    //         }))
+
+    //         beforeEach(function() {
+    //             spyOn(operationChain, 'addInput').and.stub();
+    //         });
+
+    //         it('should also select it', function() {
+    //             graph.addSeed("mySeed");
+    //             expect(graph.getSelectedEntities()).toEqual({'"mySeed"': [{vertex: '"mySeed"'}]})
+    //         });
+
+    //         it('should add it to the input service', function() {
+    //             spyOn(types, 'createParts').and.callFake( function(clazz, value) {
+    //                 return { undefined: value };
+    //             });
+    //             gafferSchema = {
+    //                 types: {
+    //                     "vertex": {
+    //                         "class": "java.lang.String"
+    //                     }
+    //                 }
+    //             }
+
+    //             vertices = [ 'vertex' ];
+
+    //             graph.addSeed("test");
+    //             scope.$digest();
+    //             expect(operationChain.addInput).toHaveBeenCalledWith({ "valueClass": "java.lang.String", parts: {undefined: "test"} });
+    //         });
+
+    //         it('should broadcast the selectedElementsUpdate event', function() {
+    //             spyOn(events, 'broadcast');
+    //             graph.addSeed('mySeed');
+    //             expect(events.broadcast).toHaveBeenCalledTimes(1);
+    //             expect(events.broadcast.calls.first().args[1]).toEqual([{entities: { '"mySeed"': [{vertex: '"mySeed"'}]}, edges: {}}]);
+    //         });
+
+    //         it('should select it if already added', function() {
+    //             // add it the first time
+    //             graph.addSeed("mySeed");
+    //             // deselect it
+    //             graph.reset();
+
+    //             graph.addSeed("mySeed");
+    //             expect(graph.getSelectedEntities()).toEqual({'"mySeed"': [{vertex: '"mySeed"'}]})
+    //         });
+
+    //         it('should do nothing if already added and selected', function() {
+    //             graph.addSeed("mySeed");
+    //             expect(graph.getSelectedEntities()).toEqual({'"mySeed"': [{vertex: '"mySeed"'}]});
+    //             graph.addSeed("mySeed");
+    //             expect(graph.getSelectedEntities()).toEqual({'"mySeed"': [{vertex: '"mySeed"'}]});
+    //         });
+    //     });
+
+    //     describe('when quick hop is clicked', function() {
+    //         it('should execute a GetElements operation with the clicked node', function() {
+    //             var event = {
+    //                 cyTarget: {
+    //                     id: function() {
+    //                         return "\"vertex1\""
+    //                     }
+    //                 }
+    //             };
+
+    //             spyOn(loading, 'load');
+    //             spyOn(query, 'addOperation');
+    //             spyOn(query, 'executeQuery');
+    //             graph.quickHop(event);
+
+    //             expect(loading.load).toHaveBeenCalledTimes(1);
+    //             expect(query.addOperation).toHaveBeenCalledTimes(1);
+    //             var expectedOp = {
+    //                  class: 'uk.gov.gchq.gaffer.operation.impl.get.GetElements',
+    //                  input: [{ class: 'uk.gov.gchq.gaffer.operation.data.EntitySeed', vertex: 'vertex1' }],
+    //                  options: {},
+    //                  view: {
+    //                     globalElements: [
+    //                         {
+    //                             groupBy: []
+    //                         }
+    //                     ]
+    //                  }
+    //             };
+
+    //             expect(query.addOperation).toHaveBeenCalledWith(expectedOp);
+    //             expect(query.executeQuery).toHaveBeenCalledWith({
+    //                     class: 'uk.gov.gchq.gaffer.operation.OperationChain',
+    //                     operations: [
+    //                         expectedOp,
+    //                         { class: 'uk.gov.gchq.gaffer.operation.impl.Limit', resultLimit: 1000, options: {  } },
+    //                         { class: 'uk.gov.gchq.gaffer.operation.impl.output.ToSet', options: {  } }
+    //                     ],
+    //                     options: {  }
+    //                 }, graph.deselectAll);
+    //         });
+    //     });
+    // });
 });

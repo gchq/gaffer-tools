@@ -31,7 +31,7 @@ function graphView() {
 }
 
 
-function GraphController($q, graph, config, error, loading, query, settings, types, schema, results, common, operationChain, operationService, events) {
+function GraphController($q, graph, config, error, loading, query, settings, types, schema, results, common, operationChain, operationService, events, $scope) {
     var vm = this;
     vm.graphLoading = true;    // used for the loading spinner
 
@@ -40,8 +40,6 @@ function GraphController($q, graph, config, error, loading, query, settings, typ
     var cytoscapeGraph;    // Internal graph model which gets reloaded every time graph page is loaded.
 
     var graphData = {entities: {}, edges: {}};  // Some in between model filling the gap between results and cytoscape models - could now be redundent
-
-    // TODO change default graph physics
 
     var configuration = {
         name: 'cytoscape-ngraph.forcelayout',
@@ -396,6 +394,7 @@ function GraphController($q, graph, config, error, loading, query, settings, typ
      */
     function selectEdges(id, edges) {
         vm.selectedElements.edges[id] = edges;
+        $scope.$apply();
     }
 
     /**
