@@ -34,7 +34,7 @@ angular.module('app').config(['$locationProvider', '$routeProvider', function($l
         })
         .when('/graph', {
             title: 'Graph',
-            templateUrl: 'app/graph/graph-page.html',
+            template: '<graph-page></graph-page>',
             icon: 'graph',
             inNav: true
         })

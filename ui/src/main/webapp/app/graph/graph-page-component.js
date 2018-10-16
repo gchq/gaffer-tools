@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2018 Crown Copyright
+ * Copyright 2018 Crown Copyright
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,24 @@
 
 'use strict';
 
-angular.module('app').controller('MainCtrl', ['graph', function(graph) {
-    graph.load();
-}]);
+angular.module('app').component('graphPage', graphPage());
+
+function graphPage() {
+    return {
+        templateUrl: 'app/graph/graph-page.html',
+        controller: GraphPageController,
+        controllerAs: 'ctrl'
+    }
+}
+
+function GraphPageController(graph) {
+    var vm = this;
+
+    vm.$onInit = function() {
+        vm.selectedElements = graph.getSelectedElements();
+    }
+
+    vm.$onDestroy = function() {
+        graph.setSelectedElements(vm.selectedElements);
+    }
+}

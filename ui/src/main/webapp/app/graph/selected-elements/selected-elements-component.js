@@ -22,41 +22,26 @@ function selectedElements() {
     return {
         templateUrl: 'app/graph/selected-elements/selected-elements.html',
         controller: SelectedElementsController,
-        controllerAs: 'ctrl'
+        controllerAs: 'ctrl',
+        bindings: {
+            model: '='
+        }
     }
 }
 
-function SelectedElementsController($scope, $timeout, events, graph, types, schema, time) {
+function SelectedElementsController(schema, types, time) {
     var vm = this;
-
-    vm.selectedEdges = graph.getSelectedEdges();
-    vm.selectedEntities = graph.getSelectedEntities();
-    vm.schema;
-
-    var selectedElementsUpdate = function(selectedElements) {
-         vm.selectedEdges = selectedElements.edges;
-         vm.selectedEntities = selectedElements.entities;
-
-         if(!promise) {
-             promise = $timeout(function() {
-                 $scope.$apply();
-                 promise = null;
-             })
-         }
-    };
-
-    var promise;
+    
+    vm.gafferSchema;
 
     vm.$onInit = function() {
-        schema.get().then(function(schema) {
-            vm.schema = schema;
+        if (!vm.model) {
+            throw "Selected elements must be injected via the model binding"
+        }
+
+        schema.get().then(function(gafferSchema) {
+            vm.gafferSchema = gafferSchema;
         });
-
-        events.subscribe('selectedElementsUpdate', selectedElementsUpdate);
-    }
-
-    vm.$onDestroy = function() {
-        events.unsubscribe('selectedElementsUpdate', selectedElementsUpdate);
     }
 
     vm.resolve = function(propName, value) {
