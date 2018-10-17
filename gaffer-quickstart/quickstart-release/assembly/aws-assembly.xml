@@ -13,6 +13,13 @@
             <outputDirectory>example</outputDirectory>
         </fileSet>
         <fileSet>
+            <directory>../quickstart-core/src/conf/</directory>
+            <outputDirectory>lib</outputDirectory>
+            <includes>
+                <include>ui-config.json</include>
+            </includes>
+        </fileSet>
+        <fileSet>
             <directory>../quickstart-aws/src/conf</directory>
             <outputDirectory>example</outputDirectory>
         </fileSet>

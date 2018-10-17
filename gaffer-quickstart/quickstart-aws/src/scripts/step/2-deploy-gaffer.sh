@@ -43,11 +43,11 @@ sudo sed -ie 's/\"gaffer.deploy.hdfs.jars\": \"hdfs:\/\/\/user\/${USER}\/gaffer-
 #set up store properties
 zookeeper=`hostname`
 echo "doing more unspeakable things with sed... adding the zookeepers to the storeproperties file"
-sed -ie 's/zookeepers=/zookeepers='$zookeeper'/g' $storePropertiesFile
-sed -ie 's/zookeepers=/zookeepers='$zookeeper'/g' $restStorePropertiesFile
+sed -ie 's/zookeepers=/zookeepers='$zookeeper'/g' $GAFFER_STOREPROPERTIES
+sed -ie 's/zookeepers=/zookeepers='$zookeeper'/g' $GAFFER_REST_STOREPROPERTIES
 password=`cat slider-$INSTANCE_NAME/root.password`
 echo "doing unspeakable things with sed yet again... adding the accumulo password to the storeproperties file"
-sed -ie 's/accumulo.password=//g' $STORE_PROPERTIES_FILE
-echo "accumulo.password=$password" >> $STORE_PROPERTIES_FILE
-sed -ie 's/accumulo.password=//g' $REST_STORE_PROPERTIES_FILE
-echo "accumulo.password=$password" >> $REST_STORE_PROPERTIES_FILE
+sed -ie 's/accumulo.password=//g' $GAFFER_STOREPROPERTIES
+echo "accumulo.password=$password" >> $GAFFER_STOREPROPERTIES
+sed -ie 's/accumulo.password=//g' $GAFFER_REST_STOREPROPERTIES
+echo "accumulo.password=$password" >> $GAFFER_REST_STOREPROPERTIES

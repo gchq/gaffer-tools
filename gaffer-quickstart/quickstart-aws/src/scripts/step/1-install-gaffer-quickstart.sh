@@ -1,6 +1,6 @@
 #!/bin/bash -e
 
-QUICKSTART_VERSION="1.7.0-RC3-SNAPSHOT"
+QUICKSTART_VERSION="1.7.0"
 GAFFER_VERSION=$QUICKSTART_VERSION
 
 S3_BUCKET=
@@ -54,6 +54,9 @@ SCHEMA_PATH=$S3_BUCKET/gaffer-quickstart-${QUICKSTART_VERSION}/example/schema.js
 GRAPHCONFIG_PATH=$S3_BUCKET/gaffer-quickstart-${QUICKSTART_VERSION}/example/graphconfig.json
 STORE_PROPERTIES_PATH=$S3_BUCKET/gaffer-quickstart-${QUICKSTART_VERSION}/example/accumulo-store.properties
 REST_STORE_PROPERTIES_PATH=$S3_BUCKET/gaffer-quickstart-${QUICKSTART_VERSION}/example/rest-store.properties
+REST_WAR_PATH=$S3_BUCKET/gaffer-quickstart-${QUICKSTART_VERSION}/lib/quickstart-rest-${QUICKSTART_VERSION}.war
+UI_WAR_PATH=$S3_BUCKET/gaffer-quickstart-${QUICKSTART_VERSION}/lib/quickstart-ui-${QUICKSTART_VERSION}.war
+UI_CONFIG_PATH=$S3_BUCKET/gaffer-quickstart-${QUICKSTART_VERSION}/lib/ui-config.json
 
 cd $HOME
 
@@ -100,5 +103,19 @@ aws s3 cp $REST_STORE_PROPERTIES_PATH $GAFFER_CONFIG_DIR
 REST_STORE_PROPERTIES_FILE=$GAFFER_CONFIG_DIR${REST_STORE_PROPERTIES_PATH##*/}
 echo -e "GAFFER_REST_STOREPROPERTIES=${REST_STORE_PROPERTIES_FILE}" >> $ENV_FILE
 
+echo -e "copying rest war file"
+aws s3 cp $REST_WAR_PATH .
+REST_WAR=$HOME/${REST_WAR_PATH##*/}
+echo -e "REST_WAR=${REST_WAR}" >> $ENV_FILE
+
+echo -e "copying ui war file"
+aws s3 cp $UI_WAR_PATH .
+UI_WAR=$HOME/${UI_WAR_PATH##*/}
+echo -e "UI_WAR=${UI_WAR}" >> $ENV_FILE
+
+echo -e "copying ui config"
+aws s3 cp $UI_CONFIG_PATH .
+UI_CONFIG=$HOME/${UI_CONFIG_PATH##*/}
+echo -e "UI_CONFIG=${UI_CONFIG}" >> $ENV_FILE
 
 
