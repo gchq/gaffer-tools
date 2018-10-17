@@ -15,12 +15,14 @@
         <module>quickstart-core</module>
         <module>quickstart-rest</module>
         <module>quickstart-ui</module>
+        <module>quickstart-aws</module>
         <module>quickstart-release</module>
     </modules>
 
     <properties>
         <compiler.plugin.version>2.3.2</compiler.plugin.version>
         <clean.plugin.version>3.0.0</clean.plugin.version>
+        <assembly.plugin.version>2.5.3</assembly.plugin.version>
     </properties>
 
     <build>
