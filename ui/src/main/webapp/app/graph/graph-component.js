@@ -133,6 +133,10 @@ function GraphController($q, graph, config, error, loading, query, settings, typ
     vm.$onDestroy = function() {
         events.unsubscribe('incomingResults', vm.update);
         events.unsubscribe('resultsCleared', vm.reset);
+
+        if (cytoscapeGraph) {
+            cytoscapeGraph.destroy();
+        }
     }
 
     /**
@@ -614,6 +618,7 @@ function GraphController($q, graph, config, error, loading, query, settings, typ
      * Removes all elements from the cytoscape graph - does not remove them from the model.
      */
     vm.clear = function(){
+        // Make this faster
         while(cytoscapeGraph.elements().length > 0) {
             cytoscapeGraph.remove(cytoscapeGraph.elements()[0]);
         }
