@@ -91,7 +91,7 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <outputDirectory>gafferpy-core-build-${version}</outputDirectory>
+                    <outputDirectory>gafferpy-core-release-${version}</outputDirectory>
                 </configuration>
             </plugin>
             <plugin>
@@ -100,7 +100,7 @@
                 <configuration>
                     <filesets>
                         <fileset>
-                            <directory>gafferpy-core-build-${version}</directory>
+                            <directory>gafferpy-core-release-${version}</directory>
                         </fileset>
                     </filesets>
                 </configuration>

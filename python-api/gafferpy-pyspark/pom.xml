@@ -71,7 +71,7 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <outputDirectory>gafferpy-pyspark-build-${version}</outputDirectory>
+                    <outputDirectory>gafferpy-pyspark-release-${version}</outputDirectory>
                 </configuration>
             </plugin>
             <plugin>
@@ -80,7 +80,7 @@
                 <configuration>
                     <filesets>
                         <fileset>
-                            <directory>gafferpy-pyspark-build-${version}</directory>
+                            <directory>gafferpy-pyspark-release-${version}</directory>
                         </fileset>
                     </filesets>
                 </configuration>

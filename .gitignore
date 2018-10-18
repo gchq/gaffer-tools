@@ -44,5 +44,5 @@ bin
 metastore_db
 derby.log
 spark-warehouse
-*build*
+*release*
 

@@ -92,7 +92,7 @@
                     <descriptorRefs>
                         <descriptorRef>jar-with-dependencies</descriptorRef>
                     </descriptorRefs>
-                    <outputDirectory>gafferpy-pyspark-serialisers-build-${version}</outputDirectory>
+                    <outputDirectory>gafferpy-pyspark-serialisers-release-${version}</outputDirectory>
                 </configuration>
             </plugin>
             <plugin>
@@ -101,7 +101,7 @@
                 <configuration>
                     <filesets>
                         <fileset>
-                            <directory>gafferpy-pyspark-serialisers-build-${version}</directory>
+                            <directory>gafferpy-pyspark-serialisers-release-${version}</directory>
                         </fileset>
                     </filesets>
                 </configuration>

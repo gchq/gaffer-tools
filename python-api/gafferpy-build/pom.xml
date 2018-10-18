@@ -9,7 +9,30 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>gafferpy-rest</artifactId>
+    <artifactId>gafferpy-build</artifactId>
+
+    <dependencies>
+        <dependency>
+            <groupId>uk.gov.gchq.gaffer</groupId>
+            <artifactId>gafferpy-core</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>uk.gov.gchq.gaffer</groupId>
+            <artifactId>gafferpy-pyspark</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>uk.gov.gchq.gaffer</groupId>
+            <artifactId>accumulo-pyspark</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>uk.gov.gchq.gaffer</groupId>
+            <artifactId>gafferpy-serialisers</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+    </dependencies>
 
     <build>
         <plugins>
@@ -40,14 +63,14 @@
                         <configuration>
                             <descriptorId>jar-with-dependencies</descriptorId>
                             <descriptors>
-                                <descriptor>src/assembly/python-assembly.xml</descriptor>
+                                <descriptor>assembly/gafferpy-assembly.xml</descriptor>
                             </descriptors>
                             <tarLongFileMode>posix</tarLongFileMode>
                         </configuration>
                     </execution>
                 </executions>
                 <configuration>
-                    <outputDirectory>gafferpy-rest-release-${version}</outputDirectory>
+                    <outputDirectory>../gafferpy-release-${version}</outputDirectory>
                 </configuration>
             </plugin>
             <plugin>
@@ -56,7 +79,7 @@
                 <configuration>
                     <filesets>
                         <fileset>
-                            <directory>gafferpy-rest-release-${version}</directory>
+                            <directory>../gafferpy-release-${version}</directory>
                         </fileset>
                     </filesets>
                 </configuration>

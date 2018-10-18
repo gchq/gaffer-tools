@@ -63,7 +63,7 @@
                     <descriptorRefs>
                         <descriptorRef>jar-with-dependencies</descriptorRef>
                     </descriptorRefs>
-                    <outputDirectory>gafferpy-pyspark-accumulo-build-${version}</outputDirectory>
+                    <outputDirectory>gafferpy-pyspark-accumulo-release-${version}</outputDirectory>
                 </configuration>
             </plugin>
             <plugin>
@@ -72,7 +72,7 @@
                 <configuration>
                     <filesets>
                         <fileset>
-                            <directory>gafferpy-pyspark-accumulo-build-${version}</directory>
+                            <directory>gafferpy-pyspark-accumulo-release-${version}</directory>
                         </fileset>
                     </filesets>
                 </configuration>
