@@ -27,6 +27,12 @@ describe("The Graph Component", function() {
                 },
                 getSchemaVertices: function() {
                     return vertices;
+                },
+                getVertexTypeFromEntityGroup: function() {
+                    return 'vertex';
+                },
+                getVertexTypesFromEdgeGroup: function() {
+                    return { 'source': 'vertex', 'destination': 'vertex' };
                 }
             }
         });
@@ -459,156 +465,469 @@ describe("The Graph Component", function() {
 
     describe('ctrl.quickHop()', function() {
 
+        var settings, query, error;
+
+        var event;
+
+        beforeEach(inject(function(_settings_, _query_, _error_) {
+            settings = _settings_;
+            query = _query_;
+            error = _error_;
+        }));
+
+        beforeEach(function() {
+            spyOn(query, 'executeQuery');
+        });
+
+        beforeEach(function() {
+            event = {
+                cyTarget: {
+                    id: function() {
+                        return "\"vertex1\""
+                    }
+                }
+            };
+        })
+
+        it('should broadcast an error if no event is supplied or selected elements created', function() {
+            spyOn(error, 'handle').and.stub();
+
+            ctrl.quickHop();
+
+            expect(error.handle).toHaveBeenCalled();
+        });
+
+        it('should add the query to the list of queries', function() {
+            spyOn(query, 'addOperation').and.stub();
+            ctrl.quickHop(event);
+            expect(query.addOperation).toHaveBeenCalled();
+        });
+
+        it('should use an event to generate the input for the Get Elements query', function() {
+            ctrl.quickHop(event);
+            expect(query.executeQuery.calls.argsFor(0)[0].operations[0].input[0].vertex).toEqual("vertex1");
+        });
+        
+        
+        it('should limit the query using the default result limit', function() {
+            ctrl.quickHop(event);
+            expect(query.executeQuery.calls.argsFor(0)[0].operations[1].class).toEqual("uk.gov.gchq.gaffer.operation.impl.Limit");
+        });
+
+        it('should deduplicate the results', function() {
+            ctrl.quickHop(event);
+            expect(query.executeQuery.calls.argsFor(0)[0].operations[2].class).toEqual("uk.gov.gchq.gaffer.operation.impl.output.ToSet");
+        });
+
+        it('should add operation options to the operations', function() {
+            spyOn(settings, 'getDefaultOpOptions').and.returnValue({'foo': 'bar'})
+
+            ctrl.quickHop(event);
+            var operations = query.executeQuery.calls.argsFor(0)[0].operations;
+
+            for (var i in operations) {
+                expect(operations[i].options).toEqual({'foo': 'bar'});
+            }
+        });
+
+        it('should use the selected elements if not event is supplied', function() {
+            ctrl.selectedElements.entities = {
+                '"id1"': [ {}, {}],
+                '"id2"': [ {} ]
+            }
+
+            ctrl.quickHop();
+
+            var input = query.executeQuery.calls.argsFor(0)[0].operations[0].input;
+
+            expect(input).toEqual([{
+                    class: "uk.gov.gchq.gaffer.operation.data.EntitySeed",
+                    vertex: "id1"
+                },
+                {
+                    class: "uk.gov.gchq.gaffer.operation.data.EntitySeed",
+                    vertex: "id2"
+                }
+            ]);
+        });
     });
 
-    describe('ctrl.removeSelected', function() {
+    describe('ctrl.removeSelected()', function() {
+        var removeSpy = jasmine.createSpy('removeSpy');
+        var unselectSpy = jasmine.createSpy('unselectSpy');
 
+        beforeEach(function() {
+            jasmine.clock().install();
+        });
+
+        beforeEach(function() {
+            spyOn(window, 'cytoscape').and.callFake(function(obj) {
+                setTimeout(function() {
+                    obj.ready();
+                }, 100)
+                return {
+                    on: function(evt, cb) {},
+                    filter: function() {
+                        return {
+                            remove: removeSpy
+                        }
+                    },
+                    elements: function() { return {
+                            unselect: unselectSpy
+                        } 
+                    }
+                }
+            });
+        });
+
+        beforeEach(function() {
+            spyOn(ctrl, 'update').and.stub();
+            $httpBackend.whenGET('config/config.json').respond(200, {});
+            ctrl.$onInit();
+            $httpBackend.flush();
+            jasmine.clock().tick(101);
+            scope.$digest();
+        });
+
+        afterEach(function() {
+            jasmine.clock().uninstall()
+        });
+
+        it('should remove the selected elements', function() {
+            ctrl.removeSelected();
+            expect(removeSpy).toHaveBeenCalled();
+        });
+
+        it('should unselect all the elements', function() {
+            ctrl.removeSelected();
+            expect(unselectSpy).toHaveBeenCalled();
+        });
+
+        it('should reset the selected elements', function() {
+            ctrl.selectedElements = {
+                entities: {
+                    'a': [ {} ]
+                },
+                edges: {
+                    'a|b|true|eg': [ {} ]
+                }
+            };
+
+            ctrl.removeSelected();
+
+            expect(ctrl.selectedElements).toEqual({
+                entities: {},
+                edges: {}
+            });
+        });
     });
+
+    describe('ctrl.update()', function() {
+
+
+        var injectableCytoscape;
+        var elements;
+        
+        beforeEach(function() {
+            injectableCytoscape = cytoscape({})
+        });
+
+        beforeEach(function() {
+            jasmine.clock().install();
+        });
+
+        beforeEach(function() {
+            spyOn(window, 'cytoscape').and.callFake(function(obj) {
+                setTimeout(function() {
+                    obj.ready();
+                }, 100)
+                return injectableCytoscape
+            });
+        });
+
+        beforeEach(function() {
+            $httpBackend.whenGET('config/config.json').respond(200, {});
+            ctrl.$onInit();
+            $httpBackend.flush();
+            jasmine.clock().tick(101);
+            scope.$digest();
+        });
+
+        beforeEach(function() {
+            elements = {
+                entities: [
+                    {
+                        class: 'Entity',
+                        vertex: 'foo',
+                        group: 'fooEntity',
+                        properties: {}
+                    }
+                ],
+                edges: [
+                    {
+                        class: 'Edge',
+                        source: 'foo',
+                        directed: true,
+                        destination: 'bar',
+                        group: 'foobarEdge',
+                        properties: {
+                            count: 42
+                        }
+                    }
+                ]
+            }
+        })
+
+        afterEach(function() {
+            jasmine.clock().uninstall();
+        });
+
+        it('should add elements from the results to the graph', function() {
+            ctrl.update(elements);
+            expect(injectableCytoscape.elements().size()).toEqual(3);
+        });
+
+        it('should use quoted strings as vertex ids for string seeds', function() {
+            ctrl.update(elements);
+            var ids = [];
+            var nodes = injectableCytoscape.nodes();
+
+            nodes.forEach(function(node) {
+                ids.push(node.id())
+            });
+
+            expect(ids).toContain('"foo"');
+            expect(ids).toContain('"bar"');
+        });
+
+        it('should use stringified numbers as ids for numerical seeds', function() {
+            elements.entities[0].vertex = 1;
+            elements.edges[0].source = 1;
+            elements.edges[0].destination = 2;
+
+            ctrl.update(elements);
+            var ids = [];
+            var nodes = injectableCytoscape.nodes();
+
+            nodes.forEach(function(node) {
+                ids.push(node.id())
+            });
+
+            expect(ids).toContain('1');
+            expect(ids).toContain('2');
+        });
+
+        it('should use the stringified vertex for object seeds', inject(function(_types_) {
+
+            var types = _types_;
+
+            spyOn(types, 'getShortValue').and.callFake(function(val) {
+                var value = val[Object.keys(val)[0]];
+                return Object.values(value).join('|');
+            });
+
+            elements.entities[0].vertex = {
+                complexObject: {
+                    type: 't1',
+                    value: 'v1'
+                }
+            };
+            elements.edges[0].source = {
+                complexObject: {
+                    type: 't1',
+                    value: 'v1'
+                }
+            };
+            elements.edges[0].destination = {
+                complexObject: {
+                    type: 't2',
+                    value: 'v2'
+                }
+            };
+
+            ctrl.update(elements);
+            var ids = [];
+            var nodes = injectableCytoscape.nodes();
+
+            nodes.forEach(function(node) {
+                ids.push(node.id())
+            });
+
+            expect(ids).toContain(JSON.stringify(elements.entities[0].vertex));
+            expect(ids).toContain(JSON.stringify(elements.edges[0].destination));
+        }));
+
+        it('should use a combination of source, destination, directed and group for edge ids', function() {
+            ctrl.update(elements);
+            var edges = injectableCytoscape.edges();
+
+            expect(edges.size()).toEqual(1);
+
+            edges.forEach(function(edge) {
+                expect(edge.id()).toEqual('"foo"|"bar"|true|foobarEdge')
+            });
+        });
+    })
 
     describe('ctrl.reset()', function() {
+        var injectableCytoscape;
+        
+        beforeEach(function() {
+            injectableCytoscape = cytoscape({})
+        });
 
+        beforeEach(function() {
+            jasmine.clock().install();
+        });
+
+        beforeEach(function() {
+            spyOn(window, 'cytoscape').and.callFake(function(obj) {
+                setTimeout(function() {
+                    obj.ready();
+                }, 100)
+                return injectableCytoscape
+            });
+        });
+
+        beforeEach(function() {
+            $httpBackend.whenGET('config/config.json').respond(200, {});
+            ctrl.$onInit();
+            $httpBackend.flush();
+            jasmine.clock().tick(101);
+            scope.$digest();
+        });
+
+        beforeEach(function() {
+            var elements = {
+                entities: [
+                    {
+                        class: 'Entity',
+                        vertex: 'foo',
+                        group: 'fooEntity',
+                        properties: {}
+                    }
+                ],
+                edges: [
+                    {
+                        class: 'Edge',
+                        source: 'foo',
+                        directed: true,
+                        destination: 'bar',
+                        group: 'foobarEdge',
+                        properties: {
+                            count: 42
+                        }
+                    }
+                ]
+            }
+
+            ctrl.update(elements);
+        });
+
+        afterEach(function() {
+            jasmine.clock().uninstall();
+        });
+
+        it('should clear the graph', function() {
+            ctrl.reset();
+            expect(injectableCytoscape.elements().size()).toEqual(0);
+        });
+
+        it('should update the graph with elements from the results service', inject(function(_results_) {
+            var results = _results_;
+
+            var fakeResults = {
+                entities: [
+                    {
+                        class: 'Entity',
+                        vertex: 'test',
+                        group: 'testEntity',
+                        properties: {}
+                    }
+                ],
+                edges: [],
+                other: []
+            }
+
+            spyOn(results, 'get').and.returnValue(fakeResults);
+
+
+            spyOn(ctrl, 'update').and.stub();
+
+            ctrl.reset();
+            expect(ctrl.update).toHaveBeenCalledWith(fakeResults);
+        }));
     });
 
     describe('ctrl.redraw()', function() {
+        it('should remove all filtered elements from the graph', function() {
 
+        });
+
+        it('should re-run the layout', function() {
+
+        });
     });
 
     describe('on "incomingResults" event', function() {
+        it('should update the graph with the new results', function() {
 
+        });
     });
 
     describe('on "resultsCleared" event', function() {
+        it('should reset the graph', function() {
 
+        })
     });
 
     describe('cytoscape graph events', function() {
         describe('on edge selection', function() {
-    
+            it('should update the selected edges', function() {
+
+            });
+
+            it('should run $scope.$apply() to force a render in the selected elements', function() {
+
+            });
         });
     
         describe('on entity selection', function() {
-    
+            it('should update the selected entities', function() {
+
+            });
+
+            it('should update add the input to the operation chain', function() {
+
+            });
+
+            it('should run $scope.digest() to force a render', function() {
+
+            });
         });
     
         describe('on vertex selection', function() {
-    
+            it('should update the selected entities', function() {
+
+            });
+
+            it('should update add the input to the operation chain', function() {
+
+            });
+
+            it('should run $scope.digest() to force a render', function() {
+
+            });
         });
 
         describe('on double click', function() {
+            it('it should pass the event to the quickHop operation if the time between clicks was less than 300ms', function() {
 
+            });
+
+            it('should not call the quickHop method if the time between clicks was less than 300ms', function() {
+
+            });
         });       
     });
-
-
-    // describe('after loading', function() {
-    //     beforeEach(function() {
-    //         graph.load(); // simulating the call performed when MainCtrl starts
-    //     });
-
-    //     describe('when adding a seed', function() {
-            
-    //         var operationChain
-    //         var types;
-
-    //         beforeEach(inject(function(_operationChain_, _types_) {
-    //             operationChain = _operationChain_;
-    //             types = _types_;
-    //         }))
-
-    //         beforeEach(function() {
-    //             spyOn(operationChain, 'addInput').and.stub();
-    //         });
-
-    //         it('should also select it', function() {
-    //             graph.addSeed("mySeed");
-    //             expect(graph.getSelectedEntities()).toEqual({'"mySeed"': [{vertex: '"mySeed"'}]})
-    //         });
-
-    //         it('should add it to the input service', function() {
-    //             spyOn(types, 'createParts').and.callFake( function(clazz, value) {
-    //                 return { undefined: value };
-    //             });
-    //             gafferSchema = {
-    //                 types: {
-    //                     "vertex": {
-    //                         "class": "java.lang.String"
-    //                     }
-    //                 }
-    //             }
-
-    //             vertices = [ 'vertex' ];
-
-    //             graph.addSeed("test");
-    //             scope.$digest();
-    //             expect(operationChain.addInput).toHaveBeenCalledWith({ "valueClass": "java.lang.String", parts: {undefined: "test"} });
-    //         });
-
-    //         it('should broadcast the selectedElementsUpdate event', function() {
-    //             spyOn(events, 'broadcast');
-    //             graph.addSeed('mySeed');
-    //             expect(events.broadcast).toHaveBeenCalledTimes(1);
-    //             expect(events.broadcast.calls.first().args[1]).toEqual([{entities: { '"mySeed"': [{vertex: '"mySeed"'}]}, edges: {}}]);
-    //         });
-
-    //         it('should select it if already added', function() {
-    //             // add it the first time
-    //             graph.addSeed("mySeed");
-    //             // deselect it
-    //             graph.reset();
-
-    //             graph.addSeed("mySeed");
-    //             expect(graph.getSelectedEntities()).toEqual({'"mySeed"': [{vertex: '"mySeed"'}]})
-    //         });
-
-    //         it('should do nothing if already added and selected', function() {
-    //             graph.addSeed("mySeed");
-    //             expect(graph.getSelectedEntities()).toEqual({'"mySeed"': [{vertex: '"mySeed"'}]});
-    //             graph.addSeed("mySeed");
-    //             expect(graph.getSelectedEntities()).toEqual({'"mySeed"': [{vertex: '"mySeed"'}]});
-    //         });
-    //     });
-
-    //     describe('when quick hop is clicked', function() {
-    //         it('should execute a GetElements operation with the clicked node', function() {
-    //             var event = {
-    //                 cyTarget: {
-    //                     id: function() {
-    //                         return "\"vertex1\""
-    //                     }
-    //                 }
-    //             };
-
-    //             spyOn(loading, 'load');
-    //             spyOn(query, 'addOperation');
-    //             spyOn(query, 'executeQuery');
-    //             graph.quickHop(event);
-
-    //             expect(loading.load).toHaveBeenCalledTimes(1);
-    //             expect(query.addOperation).toHaveBeenCalledTimes(1);
-    //             var expectedOp = {
-    //                  class: 'uk.gov.gchq.gaffer.operation.impl.get.GetElements',
-    //                  input: [{ class: 'uk.gov.gchq.gaffer.operation.data.EntitySeed', vertex: 'vertex1' }],
-    //                  options: {},
-    //                  view: {
-    //                     globalElements: [
-    //                         {
-    //                             groupBy: []
-    //                         }
-    //                     ]
-    //                  }
-    //             };
-
-    //             expect(query.addOperation).toHaveBeenCalledWith(expectedOp);
-    //             expect(query.executeQuery).toHaveBeenCalledWith({
-    //                     class: 'uk.gov.gchq.gaffer.operation.OperationChain',
-    //                     operations: [
-    //                         expectedOp,
-    //                         { class: 'uk.gov.gchq.gaffer.operation.impl.Limit', resultLimit: 1000, options: {  } },
-    //                         { class: 'uk.gov.gchq.gaffer.operation.impl.output.ToSet', options: {  } }
-    //                     ],
-    //                     options: {  }
-    //                 }, graph.deselectAll);
-    //         });
-    //     });
-    // });
 });

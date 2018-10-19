@@ -145,7 +145,7 @@ function GraphController($q, graph, config, error, loading, query, settings, typ
      */
     var createCytoscapeGraph = function() {
         var deferred = $q.defer();
-        // cytoscape initialisation goes here
+        // Consider whether elements could be persisted in the service - thereby reducing overall load time (Take into account how to deal with reset calls)
 
         var cytoscapeGraph = cytoscape({
             container: $('#graphCy')[0],
@@ -234,61 +234,6 @@ function GraphController($q, graph, config, error, loading, query, settings, typ
         var id = element.id();
         delete graphData.edges[id]
         delete graphData.entities[id];
-    }
-
-    /**
-     * Performs a quick hop - a GetElements operation with either the clicked
-     * node or the selected nodes.
-     * @param {Object} event an optional mouse click event.
-     */
-    vm.quickHop = function(event) {
-        var input
-        if(event) {
-            input = [event.cyTarget.id()];
-        } else {
-            input = Object.keys(vm.selectedElements.entities);
-        }
-        if(input && input.length > 0) {
-            loading.load();
-            var operation = {
-                 class: "uk.gov.gchq.gaffer.operation.impl.get.GetElements",
-                 input: createOpInput(input),
-                 options: settings.getDefaultOpOptions(),
-                 view: {
-                    globalElements: [
-                        {
-                            groupBy: []
-                        }
-                    ]
-                 }
-            };
-            query.addOperation(operation);
-            query.executeQuery(
-                {
-                   class: "uk.gov.gchq.gaffer.operation.OperationChain",
-                   operations: [
-                       operation,
-                       operationService.createLimitOperation(operation['options']),
-                       operationService.createDeduplicateOperation(operation['options'])
-                   ],
-                   options: operation['options']
-                },
-                vm.deselectAll
-            );
-        } else {
-            error.handle('Please select one or more vertices first');
-        }
-    }
-
-    var createOpInput = function(seeds) {
-        var opInput = [];
-        for (var i in seeds) {
-            opInput.push({
-                "class": "uk.gov.gchq.gaffer.operation.data.EntitySeed",
-                "vertex": JSON.parse(seeds[i])
-            });
-        }
-        return opInput;
     }
 
     /**
@@ -457,6 +402,7 @@ function GraphController($q, graph, config, error, loading, query, settings, typ
     vm.update = function(results) {
         for (var i in results.entities) {
             var entity = angular.copy(results.entities[i]);
+            // Is parseVertex() necessary - it seeems expensive.
             entity.vertex = common.parseVertex(entity.vertex);
             var id = entity.vertex;
             if(id in graphData.entities) {
@@ -611,6 +557,61 @@ function GraphController($q, graph, config, error, loading, query, settings, typ
             }
         }
         vm.redraw();
+    }
+
+    /**
+     * Performs a quick hop - a GetElements operation with either the clicked
+     * node or the selected nodes.
+     * @param {Object} event an optional mouse click event.
+     */
+    vm.quickHop = function(event) {
+        var input
+        if(event) {
+            input = [event.cyTarget.id()];
+        } else {
+            input = Object.keys(vm.selectedElements.entities);
+        }
+        if(input && input.length > 0) {
+            loading.load();
+            var operation = {
+                 class: "uk.gov.gchq.gaffer.operation.impl.get.GetElements",
+                 input: createOpInput(input),
+                 options: settings.getDefaultOpOptions(),
+                 view: {
+                    globalElements: [
+                        {
+                            groupBy: []
+                        }
+                    ]
+                 }
+            };
+            query.addOperation(operation);
+            query.executeQuery(
+                {
+                   class: "uk.gov.gchq.gaffer.operation.OperationChain",
+                   operations: [
+                       operation,
+                       operationService.createLimitOperation(operation['options']),
+                       operationService.createDeduplicateOperation(operation['options'])
+                   ],
+                   options: operation['options']
+                },
+                vm.deselectAll
+            );
+        } else {
+            error.handle('Please select one or more vertices first');
+        }
+    }
+
+    var createOpInput = function(seeds) {
+        var opInput = [];
+        for (var i in seeds) {
+            opInput.push({
+                "class": "uk.gov.gchq.gaffer.operation.data.EntitySeed",
+                "vertex": JSON.parse(seeds[i])
+            });
+        }
+        return opInput;
     }
 
 
