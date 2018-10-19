@@ -623,8 +623,6 @@ describe("The Graph Component", function() {
     });
 
     describe('ctrl.update()', function() {
-
-
         var injectableCytoscape;
         var elements;
         
@@ -859,25 +857,242 @@ describe("The Graph Component", function() {
         }));
     });
 
-    describe('ctrl.redraw()', function() {
-        it('should remove all filtered elements from the graph', function() {
+    describe('ctrl.filter()', function() {
+        var injectableCytoscape;
+        var elements;
+        
+        beforeEach(function() {
+            injectableCytoscape = cytoscape({})
+        });
 
+        beforeEach(function() {
+            jasmine.clock().install();
+        });
+
+        beforeEach(function() {
+            spyOn(window, 'cytoscape').and.callFake(function(obj) {
+                setTimeout(function() {
+                    obj.ready();
+                }, 100)
+                return injectableCytoscape
+            });
+        });
+
+        beforeEach(function() {
+            $httpBackend.whenGET('config/config.json').respond(200, {});
+            ctrl.$onInit();
+            $httpBackend.flush();
+            jasmine.clock().tick(101);
+            scope.$digest();
+        });
+
+        beforeEach(function() {
+            elements = {
+                entities: [
+                    {
+                        class: 'Entity',
+                        vertex: 'foo',
+                        group: 'fooEntity',
+                        properties: {}
+                    }
+                ],
+                edges: [
+                    {
+                        class: 'Edge',
+                        source: 'foo',
+                        directed: true,
+                        destination: 'bar',
+                        group: 'foobarEdge',
+                        properties: {
+                            count: 42
+                        }
+                    }
+                ]
+            }
+
+            ctrl.update(elements);
+        });
+
+        afterEach(function() {
+            jasmine.clock().uninstall();
+        });
+
+        it('should hide any vertices which don\'t match the filter', function() {
+            ctrl.filter('ba');
+
+            var nodes = injectableCytoscape.nodes();
+
+            expect(nodes.size()).toEqual(2);
+
+            var fooNode = injectableCytoscape.getElementById('"foo"');
+            var barNode = injectableCytoscape.getElementById('"bar"');
+
+            expect(fooNode.hasClass('filtered')).toBeTruthy();
+            expect(barNode.hasClass('filtered')).toBeFalsy();
+        });
+    });
+
+    describe('ctrl.redraw()', function() {
+        var injectableCytoscape;
+        var elements;
+        
+        beforeEach(function() {
+            injectableCytoscape = cytoscape({})
+        });
+
+        beforeEach(function() {
+            jasmine.clock().install();
+        });
+
+        beforeEach(function() {
+            spyOn(window, 'cytoscape').and.callFake(function(obj) {
+                setTimeout(function() {
+                    obj.ready();
+                }, 100)
+                return injectableCytoscape
+            });
+        });
+
+        beforeEach(function() {
+            $httpBackend.whenGET('config/config.json').respond(200, {});
+            ctrl.$onInit();
+            $httpBackend.flush();
+            jasmine.clock().tick(101);
+            scope.$digest();
+        });
+
+        beforeEach(function() {
+            elements = {
+                entities: [
+                    {
+                        class: 'Entity',
+                        vertex: 'foo',
+                        group: 'fooEntity',
+                        properties: {}
+                    }
+                ],
+                edges: [
+                    {
+                        class: 'Edge',
+                        source: 'foo',
+                        directed: true,
+                        destination: 'bar',
+                        group: 'foobarEdge',
+                        properties: {
+                            count: 42
+                        }
+                    }
+                ]
+            }
+
+            ctrl.update(elements);
+        });
+
+        beforeEach(function() {
+            ctrl.filter('ba');
+        });
+
+        afterEach(function() {
+            jasmine.clock().uninstall();
+        });
+
+        it('should remove all filtered elements from the graph', function() {
+            ctrl.redraw();
+
+            expect(injectableCytoscape.elements().size()).toEqual(1);
         });
 
         it('should re-run the layout', function() {
+            spyOn(injectableCytoscape, 'layout');
 
+            ctrl.redraw();
+
+            expect(injectableCytoscape.layout).toHaveBeenCalled();
         });
     });
 
     describe('on "incomingResults" event', function() {
-        it('should update the graph with the new results', function() {
+        var injectableCytoscape;
+        
+        beforeEach(function() {
+            injectableCytoscape = cytoscape({})
+        });
 
+        beforeEach(function() {
+            jasmine.clock().install();
+        });
+
+        beforeEach(function() {
+            spyOn(window, 'cytoscape').and.callFake(function(obj) {
+                setTimeout(function() {
+                    obj.ready();
+                }, 100)
+                return injectableCytoscape
+            });
+        });
+
+        beforeEach(function() {
+            spyOn(ctrl, 'update').and.stub();
+        });
+
+        beforeEach(function() {
+            $httpBackend.whenGET('config/config.json').respond(200, {});
+            ctrl.$onInit();
+            $httpBackend.flush();
+            jasmine.clock().tick(101);
+            scope.$digest();
+        });
+
+        afterEach(function() {
+            jasmine.clock().uninstall();
+        });
+
+        it('should update the graph with the new results', function() {
+            events.broadcast("incomingResults", ['test']);
+            expect(ctrl.update).toHaveBeenCalledWith('test');
         });
     });
 
     describe('on "resultsCleared" event', function() {
-        it('should reset the graph', function() {
+        var injectableCytoscape;
+        
+        beforeEach(function() {
+            injectableCytoscape = cytoscape({})
+        });
 
+        beforeEach(function() {
+            jasmine.clock().install();
+        });
+
+        beforeEach(function() {
+            spyOn(window, 'cytoscape').and.callFake(function(obj) {
+                setTimeout(function() {
+                    obj.ready();
+                }, 100)
+                return injectableCytoscape
+            });
+        });
+
+        beforeEach(function() {
+            spyOn(ctrl, 'reset').and.stub();
+        });
+
+        beforeEach(function() {
+            $httpBackend.whenGET('config/config.json').respond(200, {});
+            ctrl.$onInit();
+            $httpBackend.flush();
+            jasmine.clock().tick(101);
+            scope.$digest();
+        });
+
+        afterEach(function() {
+            jasmine.clock().uninstall();
+        });
+       
+        it('should reset the graph', function() {
+            events.broadcast('resultsCleared', []);
+
+            expect(ctrl.reset).toHaveBeenCalled();
         })
     });
 
