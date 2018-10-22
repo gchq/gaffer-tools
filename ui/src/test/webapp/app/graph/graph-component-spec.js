@@ -812,56 +812,5 @@ describe("The Graph Component", function() {
                 expect(ctrl.reset).toHaveBeenCalled();
             })
         });
-    
-        describe('cytoscape graph events', function() {
-            describe('on edge selection', function() {
-                it('should update the selected edges', function() {
-    
-                });
-    
-                it('should run $scope.$apply() to force a render in the selected elements', function() {
-    
-                });
-            });
-        
-            describe('on entity selection', function() {
-                it('should update the selected entities', function() {
-    
-                });
-    
-                it('should update add the input to the operation chain', function() {
-    
-                });
-    
-                it('should run $scope.digest() to force a render', function() {
-    
-                });
-            });
-        
-            describe('on vertex selection', function() {
-                it('should update the selected entities', function() {
-    
-                });
-    
-                it('should update add the input to the operation chain', function() {
-    
-                });
-    
-                it('should run $scope.digest() to force a render', function() {
-    
-                });
-            });
-    
-            describe('on double click', function() {
-                it('it should pass the event to the quickHop operation if the time between clicks was less than 300ms', function() {
-    
-                });
-    
-                it('should not call the quickHop method if the time between clicks was less than 300ms', function() {
-    
-                });
-            });       
-        });
-    })
-
+    });
 });
