@@ -3,8 +3,17 @@
   "quickQuery": {
     "useDefaultOperationOptions": true
   },
-  "operationOptionKeys": {
-    "Federated Store - Graph IDs": "gaffer.federatedstore.operation.graphIds",
-    "Federated Store - Skip Failures": "gaffer.federatedstore.operation.skipFailedFederatedStoreExecute"
+  "defaultOperationOptions": {
+    "visible": [
+      {
+        "key": "gaffer.federatedstore.operation.graphIds",
+        "label": "Graph IDs"
+      },
+      {
+        "key": "gaffer.federatedstore.operation.skipFailedFederatedStoreExecute",
+        "value": "true",
+        "label": "Skip failures"
+      }
+    ]
   }
 }
