@@ -290,14 +290,14 @@ describe('The operation service', function() {
     describe('createGetSchemaOperation()', function() {
 
         var options;
-        var settings;
+        var operationOptions;
 
-        beforeEach(inject(function(_settings_) {
-            settings = _settings_;
+        beforeEach(inject(function(_operationOptions_) {
+            operationOptions = _operationOptions_;
         }));
 
         beforeEach(function() {
-            spyOn(settings, 'getDefaultOpOptions').and.callFake(function() {
+            spyOn(operationOptions, 'getDefaultOperationOptions').and.callFake(function() {
                 return options;
             });
         });

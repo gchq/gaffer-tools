@@ -26,7 +26,8 @@ function operationChainBuilder() {
     }
 }
 
-function OperationChainController(operationChain, config, loading, query, error, events, $mdDialog, navigation, $location, $routeParams, operationService, common, graph, types, previousQueries) {
+
+function OperationChainController(operationChain, config, loading, query, error, events, $mdDialog, navigation, $location, $routeParams, operationService, common, graph, types, previousQueries, operationOptions) {
     var vm = this;
     vm.timeConfig;
     vm.operations = operationChain.getOperationChain();
@@ -102,7 +103,7 @@ function OperationChainController(operationChain, config, loading, query, error,
 
         var finalOperation = vm.operations[vm.operations.length - 1];
         if (common.arrayContainsValue(finalOperation.selectedOperation.next, 'uk.gov.gchq.gaffer.operation.impl.Limit')) {
-            var options = finalOperation.fields ? finalOperation.fields.options : undefined;
+            var options = finalOperation.fields ? operationOptions.extractOperationOptions(finalOperation.fields.options) : undefined;
             chain.operations.push(operationService.createLimitOperation(options));
             chain.operations.push(operationService.createDeduplicateOperation(options));
         }
@@ -168,8 +169,7 @@ function OperationChainController(operationChain, config, loading, query, error,
         query.executeQuery(
             {
                 class: OPERATION_CHAIN_CLASS,
-                operations: operations,
-                options: operations[0]['options']
+                operations: operations
             },
             function(data) {
                 submitResults(data);
@@ -448,8 +448,8 @@ function OperationChainController(operationChain, config, loading, query, error,
             }
         }
 
-        if(operation.fields && operation.fields.options && Object.keys(operation.fields.options).length > 0) {
-            op.options = operation.fields.options;
+        if (operation.fields && operation.fields.options) {
+            op.options = operationOptions.extractOperationOptions(operation.fields.options);
         }
 
         return op;

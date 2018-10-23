@@ -109,6 +109,7 @@ angular.module('app').factory('schemaView', ['types', '$q', 'common', 'events', 
             layout: layoutConf,
             elements: [],
             ready: function(){
+                deferred.resolve( schemaCy );
                 if (!configLoaded) {
                     config.get().then(function(conf) {
                         configLoaded = true;
@@ -125,11 +126,7 @@ angular.module('app').factory('schemaView', ['types', '$q', 'common', 'events', 
                         if (conf.graph.defaultStyle) {
                             angular.merge(defaultStyling, conf.graph.defaultStyle);
                         }
-                        deferred.resolve( schemaCy );
-
                     });
-                } else {
-                    deferred.resolve( schemaCy );
                 }
             }
         });

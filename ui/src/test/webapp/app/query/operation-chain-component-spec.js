@@ -1298,7 +1298,7 @@ describe('The operation chain component', function() {
             expect(json.class).toEqual("uk.gov.gchq.gaffer.operation.OperationChain");
         });
 
-        it('should add the options of the first operation on the operation chain', function() {
+        it('should not add the options to the operation chain', function() {
             ctrl.operations = [
                 {
                     selectedOperation: {
@@ -1308,7 +1308,29 @@ describe('The operation chain component', function() {
                     },
                     fields: {
                         options: {
-                            'option1': 'value1'
+                            'visible': [
+                                {
+                                    'key': 'option1',
+                                    'value': 'value1'
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    selectedOperation: {
+                        class: 'test',
+                        fields: {
+                        }
+                    },
+                    fields: {
+                        options: {
+                            'visible': [
+                                {
+                                    'key': 'option1',
+                                    'value': 'value2'
+                                }
+                            ]
                         }
                     }
                 }
@@ -1317,7 +1339,7 @@ describe('The operation chain component', function() {
             expect(query.execute).toHaveBeenCalled();
             var operation = query.execute.calls.first().args[0];
 
-            expect(operation.options).toEqual({'option1': 'value1'});
+            expect(operation.options).toBeUndefined();
         });
 
         it('should create operations from the operations field and add them to the chain', function() {
@@ -1443,7 +1465,12 @@ describe('The operation chain component', function() {
                     },
                     fields: {
                         options: {
-                            'option2': 'value2'
+                            visible: [
+                                {
+                                    key: 'option2',
+                                    value: 'value2'
+                                }
+                            ]
                         }
                     }
                 }
