@@ -675,7 +675,9 @@ describe("The Graph Component", function() {
     
                 spyOn(types, 'getShortValue').and.callFake(function(val) {
                     var value = val[Object.keys(val)[0]];
-                    return Object.values(value).join('|');
+                    return Object.keys(value).map(function(key){
+                        return value[key]
+                    }).join("|");
                 });
     
                 elements.entities[0].vertex = {
