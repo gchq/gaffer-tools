@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2018 Crown Copyright
+ * Copyright 2018 Crown Copyright
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,29 +16,27 @@
 
 'use strict';
 
-angular.module('app').component('settingsView', settingsView())
+angular.module('app').component('myQuery', myQuery())
 
-function settingsView() {
-
+function myQuery() {
     return {
-        templateUrl: 'app/settings/settings.html',
-        controller: SettingsController,
-        controllerAs: 'ctrl'
+        templateUrl: 'app/previous-queries/my-query/my-query.html',
+        controller: MyQueryController,
+        controllerAs: 'ctrl',
+        bindings: {
+            model: '='
+        }
     }
 }
 
-function SettingsController(settings, schema, operationService, events) {
+function MyQueryController(operationChain, navigation) {
     var vm = this;
 
-    vm.resultLimit = settings.getResultLimit()
-
-    vm.updateResultLimit = function() {
-        settings.setResultLimit(vm.resultLimit);
-    }
-
-    vm.updateSchema = function() {
-        events.broadcast('onPreExecute', []);
-        schema.update();
-        operationService.reloadOperations(true);
+    /**
+     * Loads the operation into the operation chain builder
+     */
+    vm.load = function() {
+        operationChain.setOperationChain(vm.model.operations);
+        navigation.goToQuery();
     }
 }

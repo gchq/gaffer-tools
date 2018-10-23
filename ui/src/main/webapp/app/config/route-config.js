@@ -26,6 +26,12 @@ angular.module('app').config(['$locationProvider', '$routeProvider', function($l
             icon: 'query',
             inNav: true
         })
+        .when('/my-queries', {
+            title: 'My Queries',
+            template: '<my-queries></my-queries>',
+            icon: 'rerun',
+            inNav: true
+        })
         .when('/table', {
             title: 'Table',
             template: '<results-table></results-table>',

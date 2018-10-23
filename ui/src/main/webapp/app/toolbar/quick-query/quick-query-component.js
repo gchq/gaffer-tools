@@ -26,7 +26,7 @@ function quickQuery() {
     }
 } 
 
-function QuickQueryController(config, schema, csv, error, types, query, operationService, settings, $mdToast, navigation) {
+function QuickQueryController(config, schema, csv, error, types, query, operationService, operationOptions, $mdToast, navigation) {
     var vm = this;
 
     var ENTITY_SEED_CLASS = "uk.gov.gchq.gaffer.operation.data.EntitySeed";
@@ -98,20 +98,20 @@ function QuickQueryController(config, schema, csv, error, types, query, operatio
             }
         }
 
-        var operationOptions = vm.options ? settings.getDefaultOpOptions() : {};
+        var options = vm.options ? operationOptions.getDefaultOperationOptions() : {};
 
         if (vm.dedupe) {
-            chain.operations.push(operationService.createDeduplicateOperation(operationOptions));
+            chain.operations.push(operationService.createDeduplicateOperation(options));
         }
 
         if (vm.limit) {
-            chain.operations.push(operationService.createLimitOperation(operationOptions));
+            chain.operations.push(operationService.createLimitOperation(options));
         }
 
         if (vm.options) {
             for (var i in chain.operations) {
                 if (!chain.operations[i].options) {
-                    chain.operations[i].options = operationOptions;
+                    chain.operations[i].options = options;
                 }
             }
         }

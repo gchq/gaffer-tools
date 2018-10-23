@@ -16,7 +16,7 @@
 
 'use strict';
 
-angular.module('app').factory('operationService', ['$http', '$q', 'settings', 'config', 'query', 'types', 'common', 'error', function($http, $q, settings, config, query, types, common, error) {
+angular.module('app').factory('operationService', ['$http', '$q', 'settings', 'config', 'query', 'types', 'common', 'error', 'operationOptions', function($http, $q, settings, config, query, types, common, error, operationOptions) {
 
     var operationService = {};
 
@@ -196,7 +196,7 @@ angular.module('app').factory('operationService', ['$http', '$q', 'settings', 'c
                         query.execute(
                             {
                                 class: getAllClass,
-                                options: settings.getDefaultOpOptions()
+                                options: operationOptions.getDefaultOperationOptions()
                             },
                             function(result) {
                                 addNamedOperations(result, conf);
@@ -244,7 +244,7 @@ angular.module('app').factory('operationService', ['$http', '$q', 'settings', 'c
     }
 
     operationService.createGetSchemaOperation = function() {
-        var options = settings.getDefaultOpOptions();
+        var options = operationOptions.getDefaultOperationOptions();
         if (!options) {
             options = {};
         }

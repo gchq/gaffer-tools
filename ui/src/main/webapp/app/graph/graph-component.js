@@ -31,7 +31,7 @@ function graphView() {
 }
 
 
-function GraphController($q, graph, config, error, loading, query, settings, types, schema, results, common, operationChain, operationService, events, $scope) {
+function GraphController($q, graph, config, error, loading, query, operationOptions, types, schema, results, common, operationChain, operationService, events, $scope) {
     var vm = this;
     vm.graphLoading = true;    // used for the loading spinner
 
@@ -576,7 +576,7 @@ function GraphController($q, graph, config, error, loading, query, settings, typ
             var operation = {
                  class: "uk.gov.gchq.gaffer.operation.impl.get.GetElements",
                  input: createOpInput(input),
-                 options: settings.getDefaultOpOptions(),
+                 options: operationOptions.getDefaultOperationOptions(),
                  view: {
                     globalElements: [
                         {

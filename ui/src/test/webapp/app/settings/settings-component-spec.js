@@ -3,15 +3,10 @@ describe('The Settings Component', function() {
 
     describe('The Controller', function() {
 
-        var $componentController, $q;
-        var settings;
-        var schema;
-        var operationService;
-        var results;
-
+        var $componentController
         var scope;
-
         var ctrl;
+        var schema, operationService;
 
         beforeEach(module(function($provide) {
             $provide.factory('config', function($q) {
@@ -28,154 +23,74 @@ describe('The Settings Component', function() {
                 return {
                     get: function() {
                         return $q.when({});
+                    },
+                    update: function() {
+                        return $q.when({});
                     }
                 }
             });
         }));
 
-        beforeEach(inject(function(_$componentController_, _settings_, _schema_, _operationService_, _results_, _$rootScope_, _$q_) {
+        beforeEach(inject(function(_$componentController_, _$rootScope_, _schema_, _operationService_) {
             $componentController = _$componentController_;
-            settings = _settings_;
+            scope = _$rootScope_.$new();
             schema = _schema_;
             operationService = _operationService_;
-            results = _results_;
-            scope = _$rootScope_.$new();
-            $q = _$q_;
         }));
 
         beforeEach(function() {
             ctrl = $componentController('settingsView', {$scope: scope});
-        })
+        });
 
 
         it('should exist', function() {
             expect(ctrl).toBeDefined();
         });
 
-        describe('ctrl.$onInit()', function() {
-            it('should set the options to the values in the settings service', function() {
-                spyOn(settings, 'getDefaultOpOptions').and.returnValue({'key1': "value1"});
 
-                ctrl.$onInit();
-                scope.$digest();
+        describe('ctrl.updateSchema()', function() {
 
-                expect(settings.getDefaultOpOptions).toHaveBeenCalledTimes(1);
-                expect(ctrl.defaultOpOptions).toEqual({'key1': "value1"});
+            it('should first broadcast an "onPreExecute" event', inject(function(_events_) {
+                var events = _events_;
+
+                spyOn(schema, 'update').and.stub();
+
+
+                spyOn(events, 'broadcast').and.callFake(function(eventArg) {
+                    expect(eventArg).toEqual('onPreExecute');
+                    expect(schema.update).not.toHaveBeenCalled(); // because event.Broadcast was called first
+                });
+
+                ctrl.updateSchema();
+
+                expect(schema.update).toHaveBeenCalled();
+
+            }));
+
+            it('should call schema.update()', function() {
+                spyOn(schema, 'update');
+
+                ctrl.updateSchema();
+
+                expect(schema.update).toHaveBeenCalled();
             });
 
-            it('should get the operation option keys from the settings service', function() {
-                spyOn(settings, 'getOpOptionKeys').and.returnValue($q.when('test'));
+            it('should update the available operations', function() {
+                spyOn(operationService, 'reloadOperations').and.stub();
 
-                ctrl.$onInit();
-                scope.$digest();
+                ctrl.updateSchema();
 
-                expect(ctrl.opOptionKeys).toEqual('test');
-            });
-        });
-
-
-        it('should set the settings operation options when the options are updated', function() {
-            var opOptions;
-            spyOn(settings, 'setDefaultOpOptions').and.callFake(function(newOpOptions) {
-                opOptions = newOpOptions;
+                expect(operationService.reloadOperations).toHaveBeenCalled();
             });
 
-            ctrl.defaultOpOptionsArray = [
-                {key: 'key1', value: 'value1'},
-                {key: 'key2', value: 'value2'}
-            ];
-            ctrl.updateDefaultOpOptions();
+            it('should set the loud flag to true in the call to the operation service to broadcast any errors to the user', function() {
+                spyOn(operationService, 'reloadOperations').and.stub();
 
-            var expectedOptions = {
-                'key1': 'value1',
-                'key2': 'value2'
-            };
+                ctrl.updateSchema();
 
-            expect(settings.setDefaultOpOptions).toHaveBeenCalledTimes(1);
-            expect(settings.setDefaultOpOptions).toHaveBeenCalledWith(expectedOptions);
-            expect(opOptions).toEqual(expectedOptions);
+                expect(operationService.reloadOperations).toHaveBeenCalledWith(true);
+            });
         });
-
-        it('should update the operation options when an option is deleted', function() {
-            ctrl.defaultOpOptions = {
-               'key1': 'value1',
-               'key2': 'value2'
-            };
-
-            ctrl.defaultOpOptionsArray = [
-                {key: 'key1', value: 'value1'},
-                {key: 'key2', value: 'value2'}
-            ];
-
-            ctrl.deleteOption({key: 'key1', value: 'value1'});
-
-            var expectedOptions = {
-                'key2': 'value2'
-            };
-            expect(ctrl.defaultOpOptions).toEqual(expectedOptions);
-        });
-
-        it('should return the available operation option keys, including the current operation option key', function() {
-            ctrl.defaultOpOptions = {
-               'key1': 'value1',
-               'key2': 'value2'
-            };
-            ctrl.opOptionKeys = {
-               'name1': 'key1',
-               'name2': 'key2',
-               'name3': 'key3'
-            };
-
-            var keys = ctrl.getOpOptionKeys({key: 'key1', value: 'value1'});
-
-            var expectedKeys = {
-                'name1': 'key1',
-                'name3': 'key3'
-            };
-            expect(keys).toEqual(expectedKeys);
-        });
-
-        it('should return false when no more available option keys', function() {
-             ctrl.defaultOpOptionsArray = [
-                {key: 'key1', value: 'value1'},
-                {key: 'key2', value: 'value2'}
-            ];
-            ctrl.opOptionKeys = {
-               'name1': 'key1',
-               'name2': 'key2'
-            };
-
-            var hasMore = ctrl.hasMoreOpOptions();
-
-            expect(hasMore).toBeFalsy();
-        });
-
-        it('should return true when more available option keys', function() {
-            ctrl.defaultOpOptionsArray = [
-                {key: 'key1', value: 'value1'},
-            ];
-            ctrl.opOptionKeys = {
-               'name1': 'key1',
-               'name2': 'key2'
-            };
-
-            var hasMore = ctrl.hasMoreOpOptions();
-
-            expect(hasMore).toBeTruthy();
-        });
-
-        it('should add new operation option', function() {
-            ctrl.defaultOpOptionsArray = [
-                {key: 'key1', value: 'value1'},
-            ];
-
-            ctrl.addDefaultOperationOption();
-
-            var expectedOpOptionsArray = [
-                {key: 'key1', value: 'value1'},
-                {key: '', value: ''}
-            ];
-            expect(ctrl.defaultOpOptionsArray).toEqual(expectedOpOptionsArray);
-        });
+       
     });
 });
