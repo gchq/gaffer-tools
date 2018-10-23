@@ -1,6 +1,7 @@
 #!/bin/bash -e
 
-QUICKSTART_VERSION="1.7.0"
+QUICKSTART_VERSION="1.7.0-RC3-SNAPSHOT"
+GAFFER_SLIDER_VERSION="1.7.0"
 GAFFER_VERSION=$QUICKSTART_VERSION
 
 S3_BUCKET=
@@ -66,14 +67,13 @@ ENV_FILE=$HOME/0-env.sh
 
 echo -e "QUICKSTART_VERSION=${QUICKSTART_VERSION}" >> $ENV_FILE
 echo -e "GAFFER_VERSION=${GAFFER_VERSION}" >> $ENV_FILE
+echo -e "GAFFER_SLIDER_VERSION=${GAFFER_SLIDER_VERSION}" >> $ENV_FILE
 
 source $ENV_FILE
 
 aws s3 cp $S3_BUCKET/gaffer-quickstart-${QUICKSTART_VERSION}/lib/quickstart-aws-${QUICKSTART_VERSION}-jar-with-dependencies.jar .
 echo -e "JAR_FILE_PATH=${HOME}/quickstart-aws-${QUICKSTART_VERSION}-jar-with-dependencies.jar" >> $ENV_FILE
 
-GAFFER_LIBS_HDFS=gaffer-libs/
-echo -e "GAFFER_LIBS_HDFS=${GAFFER_LIBS_HDFS}" >> $ENV_FILE
 hadoop fs -mkdir gaffer-libs
 hadoop fs -put $HOME/quickstart-aws-${QUICKSTART_VERSION}-jar-with-dependencies.jar $GAFFER_LIBS_HDFS
 echo -e "JAR_FILE_PATH_HDFS=${GAFFER_LIBS_HDFS}/quickstart-aws-${QUICKSTART_VERSION}-jar-with-dependencies.jar" >> $ENV_FILE
@@ -81,7 +81,6 @@ echo -e "JAR_FILE_PATH_HDFS=${GAFFER_LIBS_HDFS}/quickstart-aws-${QUICKSTART_VERS
 GAFFER_CONFIG_DIR=$HOME/gaffer-config/
 
 mkdir $GAFFER_CONFIG_DIR
-
 
 echo -e "adding $SCHEMA_PATH to $GAFFER_CONFIG_DIR"
 aws s3 cp $SCHEMA_PATH $GAFFER_CONFIG_DIR
@@ -117,5 +116,7 @@ echo -e "copying ui config"
 aws s3 cp $UI_CONFIG_PATH .
 UI_CONFIG=$HOME/${UI_CONFIG_PATH##*/}
 echo -e "UI_CONFIG=${UI_CONFIG}" >> $ENV_FILE
+
+aws s3 cp $S3_BUCKET/gaffer-quickstart-${QUICKSTART_VERSION}/example $HOME --recursive
 
 

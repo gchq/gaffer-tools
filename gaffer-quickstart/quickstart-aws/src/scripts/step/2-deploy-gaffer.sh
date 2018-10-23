@@ -35,10 +35,10 @@ cd $homeDir
 
 #change slider appConfig to point at the right dir in hdfs for external gaffer libs
 echo "doing unspeakable things with sed... pointing gaffer slider at the special gaffer libs in hdfs"
-sudo sed -ie 's/\"gaffer.deploy.hdfs.jars\": \"hdfs:\/\/\/user\/${USER}\/gaffer-jars-${CLUSTER_NAME}\/\",/\"gaffer.deploy.hdfs.jars\" : \"hdfs:\/\/\/user\/hadoop\/${GAFFER_LIBS_HDFS}\/\",/g' /opt/gaffer/${GAFFER_VERSION}/appConfig-default.json
+sudo sed -ie 's/\"gaffer.deploy.hdfs.jars\": \"hdfs:\/\/\/user\/${USER}\/gaffer-jars-${CLUSTER_NAME}\/\",/\"gaffer.deploy.hdfs.jars\" : \"hdfs:\/\/\/user\/hadoop\/gaffer-libs\/\",/g' /opt/gaffer/${GAFFER_SLIDER_VERSION}/appConfig-default.json
 
 #install gaffer
-/opt/gaffer/${GAFFER_VERSION}/deploy-gaffer-instance.sh -g $GAFFER_VERSION -a $ACCUMULO_VERSION -u $CLUSTER_USAGE $INSTANCE_NAME
+/opt/gaffer/${GAFFER_SLIDER_VERSION}/deploy-gaffer-instance.sh -g $GAFFER_SLIDER_VERSION -a $ACCUMULO_VERSION -u $CLUSTER_USAGE $INSTANCE_NAME
 
 #set up store properties
 zookeeper=`hostname`
