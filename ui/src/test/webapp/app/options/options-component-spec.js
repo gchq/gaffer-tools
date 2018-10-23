@@ -113,7 +113,7 @@ describe('The options component', function() {
         it('should use the old config layout to create a model', function() {
             var conf = {
                 "operationOptionKeys": {
-                    "opKey": "opLabel"
+                    "opLabel": "opKey"
                 }
             };
 
@@ -139,7 +139,7 @@ describe('The options component', function() {
         it('should log a warning to the console informing the admin that the old configuration is deprecated', function() {
             var conf = {
                 "operationOptionKeys": {
-                    "opKey": "opLabel"
+                    "opLabel": "opKey"
                 }
             };
 

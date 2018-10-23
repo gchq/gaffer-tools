@@ -583,7 +583,7 @@ available but was not formally documented.
 ```json
 {
     "operationOptionKeys": {
-        "key.to.be.sent.to.Gaffer": "UI label"
+        "UI label": "key.to.be.sent.to.Gaffer"
     }
 }
 ```

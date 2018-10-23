@@ -64,10 +64,10 @@ function OptionsController(operationOptions, config, events) {
                         hidden: []
                     };
 
-                    for (var key in conf.operationOptionKeys) {
+                    for (var label in conf.operationOptionKeys) {
                         var option = {
-                            'key': key,
-                            'label': conf.operationOptionKeys[key]
+                            'key': conf.operationOptionKeys[label],
+                            'label': label
                         };
 
                         vm.model.visible.push(option);
