@@ -29,11 +29,20 @@ function selectedElements() {
     }
 }
 
+/**
+ * The selected elements component shows the user which elements they have selected in the graph.
+ * @param {*} schema The schema service
+ * @param {*} types The types service
+ * @param {*} time The time service
+ */
 function SelectedElementsController(schema, types, time) {
     var vm = this;
     
     vm.gafferSchema;
 
+    /**
+     * Initialisation method which checks a model is injected into the component and retrieves a copy of the schema.
+     */
     vm.$onInit = function() {
         if (!vm.model) {
             throw "Selected elements must be injected via the model binding"
@@ -44,6 +53,12 @@ function SelectedElementsController(schema, types, time) {
         });
     }
 
+    /**
+     * Method which resolves a value including dates.
+     * 
+     * @param {string} propName The property name
+     * @param {*} value the property value
+     */
     vm.resolve = function(propName, value) {
         var shortValue = types.getShortValue(value);
         if(time.isTimeProperty(propName)) {
@@ -52,6 +67,10 @@ function SelectedElementsController(schema, types, time) {
         return shortValue;
     }
 
+    /**
+     * Resolves a stringified vertex.
+     * @param {*} value 
+     */
     vm.resolveVertex = function(value) {
         return types.getShortValue(JSON.parse(value));
     }
