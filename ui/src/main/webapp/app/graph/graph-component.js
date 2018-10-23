@@ -39,7 +39,7 @@ function GraphController($q, graph, config, error, loading, query, operationOpti
     var tappedTimeout;
     var cytoscapeGraph;    // Internal graph model which gets reloaded every time graph page is loaded.
 
-    var graphData = {entities: {}, edges: {}};  // Some in between model filling the gap between results and cytoscape models - could now be redundent
+    var graphData = {entities: {}, edges: {}};
 
     var configuration = {
         name: 'cytoscape-ngraph.forcelayout',
@@ -92,6 +92,10 @@ function GraphController($q, graph, config, error, loading, query, operationOpti
         }
     };
 
+    /**
+     * Initialisation method. Asserts that a selected elements model is injected into it. Gets the configuration,
+     * then loads Cytoscape. Subscribes to results updates so the graph can dynamically update.
+     */
     vm.$onInit = function() {
         // First check selected elements is injected. Throw an error if not.
         if (!vm.selectedElements) {
@@ -130,6 +134,9 @@ function GraphController($q, graph, config, error, loading, query, operationOpti
         events.subscribe('resultsCleared', vm.reset);
     }
 
+    /**
+     * Unsubscribes from results events and destroys the cytoscape instance.
+     */
     vm.$onDestroy = function() {
         events.unsubscribe('incomingResults', vm.update);
         events.unsubscribe('resultsCleared', vm.reset);
@@ -145,7 +152,6 @@ function GraphController($q, graph, config, error, loading, query, operationOpti
      */
     var createCytoscapeGraph = function() {
         var deferred = $q.defer();
-        // Consider whether elements could be persisted in the service - thereby reducing overall load time (Take into account how to deal with reset calls)
 
         var cytoscapeGraph = cytoscape({
             container: $('#graphCy')[0],
@@ -216,6 +222,9 @@ function GraphController($q, graph, config, error, loading, query, operationOpti
         return deferred.promise;
     }
 
+    /**
+     * Loads cytoscape, stops the loading indicator and runs a filter if one exists.
+     */
     var load = function() {
         createCytoscapeGraph().then(function(cy) {
             cytoscapeGraph = cy;
@@ -230,6 +239,10 @@ function GraphController($q, graph, config, error, loading, query, operationOpti
     }
 
 
+    /**
+     * Removes an element from the graphData model.
+     * @param {Cytoscape element} element an element from cytoscape
+     */
     var removeFromGraphData = function(element) {
         var id = element.id();
         delete graphData.edges[id]
@@ -242,7 +255,6 @@ function GraphController($q, graph, config, error, loading, query, operationOpti
      * @param {Object} element
      */
     function select(element) {
-        // Not in the scope of this issue but this could be made more efficient
         if(selectEntityId(element.id())) {
             return;
         }
@@ -254,6 +266,10 @@ function GraphController($q, graph, config, error, loading, query, operationOpti
         selectVertex(element.id());
     }
 
+    /**
+     * Builds up a style using the configuration and supplied edge group.
+     * @param {string} group the edge group
+     */
     var getEdgeStyling = function(group) {
         if (!configuration.style || !configuration.style.edges || !configuration.style.edges[group]) {
             return configuration.defaultStyle.edges;
@@ -265,6 +281,11 @@ function GraphController($q, graph, config, error, loading, query, operationOpti
         return copy;
     }
 
+    /**
+     * Builds up a style using the config and the supplied id and vertexType
+     * @param {string} vertexType the gaffer vertexType 
+     * @param {*} id The vertex
+     */
     var getNodeStyling = function(vertexType, id) {
         var style = angular.copy(configuration.defaultStyle.vertices);
 
@@ -326,7 +347,6 @@ function GraphController($q, graph, config, error, loading, query, operationOpti
      * @returns false if no entities were found with the given id
      */
     function selectEntityId(entityId) {
-        // this seems very inefficient
         for (var id in graphData.entities) {
             if(entityId == id) {
                 selectEntities(id, graphData.entities[id]);
@@ -353,7 +373,6 @@ function GraphController($q, graph, config, error, loading, query, operationOpti
      * @returns false if no edge was found in the graph with the given id
      */
     function selectEdgeId(edgeId) {
-        // make this more efficient in later issue
         for (var id in graphData.edges) {
             if (edgeId == id) {
                 selectEdges(id, graphData.edges[id]);
@@ -396,13 +415,11 @@ function GraphController($q, graph, config, error, loading, query, operationOpti
     /**
      * Adds Entities, Edges and seeds to the graph model.
      * 
-     * IN NEED OF REFACTORING IN LATER ISSUE
      * @param {Array} results
      */
     vm.update = function(results) {
         for (var i in results.entities) {
             var entity = angular.copy(results.entities[i]);
-            // Is parseVertex() necessary - it seeems expensive.
             entity.vertex = common.parseVertex(entity.vertex);
             var id = entity.vertex;
             if(id in graphData.entities) {
@@ -432,7 +449,6 @@ function GraphController($q, graph, config, error, loading, query, operationOpti
      * @param {Array} results
      */
     var updateGraph = function(results) {
-        // IN NEED OF REFACTORING IN LATER ISSUE
         for (var id in results.entities) {
             var existingNodes = cytoscapeGraph.getElementById(id);
             var isSelected = common.objectContainsValue(vm.selectedElements.entities, id);
@@ -619,7 +635,6 @@ function GraphController($q, graph, config, error, loading, query, operationOpti
      * Removes all elements from the cytoscape graph - does not remove them from the model.
      */
     vm.clear = function(){
-        // Make this faster
         while(cytoscapeGraph.elements().length > 0) {
             cytoscapeGraph.remove(cytoscapeGraph.elements()[0]);
         }
@@ -648,6 +663,11 @@ function GraphController($q, graph, config, error, loading, query, operationOpti
         vm.update(results.get());
     }
 
+    /**
+     * Adds a filtered class (which hides them by setting display to none) 
+     * to each node which doesn't match the search term
+     * @param {string} searchTerm 
+     */
     vm.filter = function(searchTerm) {
         searchTerm = searchTerm.toLowerCase();
         var nodes = cytoscapeGraph.nodes();
@@ -662,6 +682,9 @@ function GraphController($q, graph, config, error, loading, query, operationOpti
         }
     }
 
+    /**
+     * Removes every selected element in the graph.
+     */
     vm.removeSelected = function() {
         cytoscapeGraph.filter(":selected").remove();
         cytoscapeGraph.elements().unselect();
@@ -674,8 +697,6 @@ function GraphController($q, graph, config, error, loading, query, operationOpti
      * @param {String} vertex
      */
     var createLabel = function(vertex) {
-
-        // just use types.getShortValue() in next refactor
         var label;
         var json;
         try {

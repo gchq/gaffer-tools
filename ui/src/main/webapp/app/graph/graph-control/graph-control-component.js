@@ -33,22 +33,41 @@ function graphControl() {
     }
 }
 
+/**
+ * The graph controls component comprises of a search bar and a series of buttons 
+ * which allow a user to interact with the graph.
+ * 
+ * @param {*} graph The graph service
+ * @param {*} navigation The navigation service
+ */
 function GraphControlController(graph, navigation) {
     var vm = this;
     vm.searchTerm;
 
+    /**
+     * Sets the initial search term
+     */
     vm.$onInit = function() {
         vm.searchTerm = graph.getSearchTerm();
     }
 
+    /**
+     * Use the injected filter function
+     */
     vm.search = function() {
         vm.filter({searchTerm: vm.searchTerm})
     }
 
+    /**
+     * Updates the service value on destruction
+     */
     vm.$onDestroy = function() {
         graph.setSearchTerm(vm.searchTerm)
     }
    
+    /**
+     * navigate to the query page.
+     */
     vm.goToQuery = function() {
         navigation.goToQuery() 
     }

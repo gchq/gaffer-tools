@@ -16,6 +16,9 @@
 
 'use strict';
 
+/**
+ * Simple service for storing variables and configuration relevant to the graph.
+ */
 angular.module('app').factory('graph', function() {
     var service = {};
 
@@ -28,31 +31,54 @@ angular.module('app').factory('graph', function() {
 
     var searchTerm = null;
 
-    
+    /**
+     * Gets the graph configuration
+     */
     service.getGraphConfiguration = function() {
         return angular.copy(graphConfiguration);
     }
 
+    /**
+     * Sets the graph configuration
+     * @param {Object} graphConfig 
+     */
     service.setGraphConfiguration = function(graphConfig) {
         graphConfiguration = angular.copy(graphConfig);
     }
 
+    /**
+     * Gets the selected elements
+     */
     service.getSelectedElements = function() {
         return angular.copy(selectedElements);
     }
 
+    /**
+     * Sets the selected elements
+     * @param {Object} newSelectedElements 
+     */
     service.setSelectedElements = function(newSelectedElements) {
         selectedElements = angular.copy(newSelectedElements);
     }
 
+    /**
+     * Gets the search term
+     */
     service.getSearchTerm = function() {
         return angular.copy(searchTerm);
     }
 
+    /**
+     * Sets the search term
+     * @param {string} search 
+     */
     service.setSearchTerm = function(search) {
         searchTerm = angular.copy(search);
     }
 
+    /**
+     * Resets the value of the selected elements
+     */
     service.deselectAll = function() {
         selectedElements = {
             entities: {},

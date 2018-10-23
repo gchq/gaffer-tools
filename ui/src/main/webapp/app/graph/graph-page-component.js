@@ -26,13 +26,25 @@ function graphPage() {
     }
 }
 
+/**
+ * Component containing the graph and selected elements. It is responsible for getting selected elements model and 
+ * sharing it between the two components.
+ * 
+ * @param {*} graph The graph service
+ */
 function GraphPageController(graph) {
     var vm = this;
 
+    /**
+     * Initialisation method gets the selected elements from the graph service
+     */
     vm.$onInit = function() {
         vm.selectedElements = graph.getSelectedElements();
     }
 
+    /**
+     * Destruction method which persists the selected elements in the graph service.
+     */
     vm.$onDestroy = function() {
         graph.setSelectedElements(vm.selectedElements);
     }
