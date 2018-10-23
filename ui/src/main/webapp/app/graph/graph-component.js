@@ -219,8 +219,8 @@ function GraphController($q, graph, config, error, loading, query, operationOpti
     var load = function() {
         createCytoscapeGraph().then(function(cy) {
             cytoscapeGraph = cy;
-            vm.graphLoading = false;
             vm.reset()
+            vm.graphLoading = false;
             var searchTerm = graph.getSearchTerm();
             
             if (searchTerm !== null && searchTerm !== undefined && searchTerm !== "") {
