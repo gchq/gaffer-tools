@@ -1218,15 +1218,16 @@ describe('The operation chain component', function() {
 
     describe('ctrl.executeChain()', function() {
 
-        var events, query, operationService, error;
+        var events, query, operationService, error, previousQueries;
 
         var valid;
 
-        beforeEach(inject(function(_events_, _query_, _operationService_, _error_) {
+        beforeEach(inject(function(_events_, _query_, _operationService_, _error_, _previousQueries_) {
             events = _events_;
             query = _query_;
             operationService = _operationService_;
             error = _error_;
+            previousQueries = _previousQueries_;
         }));
 
         beforeEach(function() {
@@ -1240,7 +1241,8 @@ describe('The operation chain component', function() {
         beforeEach(function() {
             spyOn(query, 'execute').and.stub();
             spyOn(error, 'handle').and.stub();
-        })
+            spyOn(previousQueries, 'addQuery').and.stub();
+        });
 
         beforeEach(function() {
             ctrl.operations = [];
@@ -1455,6 +1457,105 @@ describe('The operation chain component', function() {
             expect(operation.operations[2].options).toEqual({'option2': 'value2'});
             expect(operation.operations[3].options).toEqual({'option2': 'value2'});
 
+        });
+
+        it('should add the operation chain to the previous Query service', function() {
+            ctrl.operations = [
+                {
+                    selectedOperation: {
+                        class: 'test',
+                        fields: {},
+                    },
+                    fields: {
+                        options: {
+                            'option1': 'value1'
+                        }
+                    }
+                },
+                {
+                    selectedOperation: {
+                        class: 'test',
+                        next: ['uk.gov.gchq.gaffer.operation.impl.Limit'],
+                        fields: {}
+                    },
+                    fields: {
+                        options: {
+                            'option2': 'value2'
+                        }
+                    }
+                }
+            ];
+
+            ctrl.executeChain();
+
+            expect(previousQueries.addQuery.calls.argsFor(0)[0].operations).toEqual(ctrl.operations);
+        });
+
+        it('should add the current time to the previous Query service', function() {
+            var now = moment('2018-10-15 14:30:23').toDate();
+            jasmine.clock().mockDate(now);
+
+            ctrl.operations = [
+                {
+                    selectedOperation: {
+                        class: 'test',
+                        fields: {},
+                    },
+                    fields: {
+                        options: {
+                            'option1': 'value1'
+                        }
+                    }
+                },
+                {
+                    selectedOperation: {
+                        class: 'test',
+                        next: ['uk.gov.gchq.gaffer.operation.impl.Limit'],
+                        fields: {}
+                    },
+                    fields: {
+                        options: {
+                            'option2': 'value2'
+                        }
+                    }
+                }
+            ];
+
+            ctrl.executeChain();
+
+            expect(previousQueries.addQuery.calls.argsFor(0)[0].lastRun).toEqual("14:30");
+        });
+
+        it('should set the name of the query to "Operation chain" when sending it to the query service', function() {
+            ctrl.operations = [
+                {
+                    selectedOperation: {
+                        class: 'test',
+                        fields: {},
+                    },
+                    fields: {
+                        options: {
+                            'option1': 'value1'
+                        }
+                    }
+                },
+                {
+                    selectedOperation: {
+                        class: 'test',
+                        next: ['uk.gov.gchq.gaffer.operation.impl.Limit'],
+                        fields: {}
+                    },
+                    fields: {
+                        options: {
+                            'option2': 'value2'
+                        }
+                    }
+                }
+            ];
+
+            ctrl.executeChain();
+
+            expect(previousQueries.addQuery.calls.argsFor(0)[0].name).toEqual('Operation Chain');
         });
 
         it('should run the query', function() {

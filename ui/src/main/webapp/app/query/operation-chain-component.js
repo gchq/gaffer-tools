@@ -26,7 +26,7 @@ function operationChainBuilder() {
     }
 }
 
-function OperationChainController(operationChain, config, loading, query, error, events, $mdDialog, navigation, $location, $routeParams, operationService, common, graph, types) {
+function OperationChainController(operationChain, config, loading, query, error, events, $mdDialog, navigation, $location, $routeParams, operationService, common, graph, types, previousQueries) {
     var vm = this;
     vm.timeConfig;
     vm.operations = operationChain.getOperationChain();
@@ -106,6 +106,13 @@ function OperationChainController(operationChain, config, loading, query, error,
             chain.operations.push(operationService.createLimitOperation(options));
             chain.operations.push(operationService.createDeduplicateOperation(options));
         }
+
+        
+        previousQueries.addQuery({
+            name: "Operation Chain",
+            lastRun: moment().format('HH:mm'),
+            operations: vm.operations
+        });
 
         runQuery(chain.operations);
     }
