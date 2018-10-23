@@ -505,12 +505,12 @@ describe("The Graph Component", function() {
     
         describe('ctrl.quickHop()', function() {
     
-            var settings, query, error;
+            var operationOptions, query, error;
     
             var event;
     
-            beforeEach(inject(function(_settings_, _query_, _error_) {
-                settings = _settings_;
+            beforeEach(inject(function(_operationOptions_, _query_, _error_) {
+                operationOptions = _operationOptions_;
                 query = _query_;
                 error = _error_;
             }));
@@ -548,7 +548,6 @@ describe("The Graph Component", function() {
                 expect(query.executeQuery.calls.argsFor(0)[0].operations[0].input[0].vertex).toEqual("vertex1");
             });
             
-            
             it('should limit the query using the default result limit', function() {
                 ctrl.quickHop(event);
                 expect(query.executeQuery.calls.argsFor(0)[0].operations[1].class).toEqual("uk.gov.gchq.gaffer.operation.impl.Limit");
@@ -560,7 +559,7 @@ describe("The Graph Component", function() {
             });
     
             it('should add operation options to the operations', function() {
-                spyOn(settings, 'getDefaultOpOptions').and.returnValue({'foo': 'bar'})
+                spyOn(operationOptions, 'getDefaultOperationOptions').and.returnValue({'foo': 'bar'})
     
                 ctrl.quickHop(event);
                 var operations = query.executeQuery.calls.argsFor(0)[0].operations;
