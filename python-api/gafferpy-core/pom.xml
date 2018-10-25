@@ -10,6 +10,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>gafferpy-core</artifactId>
+    <version>${project.parent.version}</version>
     <packaging>jar</packaging>
     <dependencies>
         <dependency><!-- https://mvnrepository.com/artifact/net.sf.py4j/py4j -->

@@ -20,7 +20,6 @@
     </modules>
 
     <properties>
-        <gaffer.version>${project.parent.version}</gaffer.version>
         <compiler.plugin.version>2.3.2</compiler.plugin.version>
         <assembly.plugin.version>2.5.3</assembly.plugin.version>
         <java.version>1.8</java.version>

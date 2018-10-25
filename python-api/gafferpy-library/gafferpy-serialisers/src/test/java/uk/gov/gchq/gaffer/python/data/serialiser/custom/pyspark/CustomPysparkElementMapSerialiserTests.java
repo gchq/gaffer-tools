@@ -21,7 +21,10 @@ import org.junit.Before;
 import org.junit.Test;
 import uk.gov.gchq.gaffer.commonutil.CommonTimeUtil;
 import uk.gov.gchq.gaffer.data.element.Edge;
+import uk.gov.gchq.gaffer.data.element.Entity;
 import uk.gov.gchq.gaffer.data.element.id.DirectedType;
+import uk.gov.gchq.gaffer.exception.SerialisationException;
+import uk.gov.gchq.gaffer.jsonserialisation.JSONSerialiser;
 import uk.gov.gchq.gaffer.python.data.serialiser.custom.CustomPythonElementMapSerialiser;
 import uk.gov.gchq.gaffer.python.data.serialiser.impl.HyperLogLogPlusPythonSerialiser;
 import uk.gov.gchq.gaffer.python.data.serialiser.impl.RBMBackedTimestampSetPythonSerialiser;
@@ -88,6 +91,12 @@ public class CustomPysparkElementMapSerialiserTests {
 
         RBMBackedTimestampSetPythonSerialiser timestampSetPythonSerialiser = new RBMBackedTimestampSetPythonSerialiser();
         propertiesMap.put("timestamps", timestampSetPythonSerialiser.serialise(timestamps));
+
+        try {
+            System.out.println(JSONSerialiser.serialise(timestamps, true));
+        } catch (SerialisationException e) {
+            e.printStackTrace();
+        }
 
         elementMap.put(Constants.PROPERTIES, propertiesMap);
         elementMap.put(Constants.GROUP, edgeGroup);

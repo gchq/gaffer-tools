@@ -39,7 +39,7 @@
     </modules>
 
     <properties>
-        <gaffer.version>1.7.0-RC4</gaffer.version>
+        <gaffer.version>1.7.0-RC3-SNAPSHOT</gaffer.version>
         <scm.url>
             https://github.com/gchq/gaffer-tools
         </scm.url>

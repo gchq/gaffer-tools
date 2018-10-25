@@ -37,11 +37,11 @@ public class RBMBackedTimestampSetPythonSerialiser implements PythonSerialiser<R
 
         Map<String, Object> timestampMap = new HashMap<>();
 
-        timestampMap.put(Constants.TIMEBUCKET_KEY_NAME, rbmBackedTimestampSet.getTimeBucket());
+        timestampMap.put(Constants.TIMEBUCKET_KEY_NAME, rbmBackedTimestampSet.getTimeBucket().toString());
 
         RoaringBitmap rbm = rbmBackedTimestampSet.getRbm();
 
-        List<Integer> timestamps = new ArrayList<>(rbm.getCardinality());
+        ArrayList<Integer> timestamps = new ArrayList<>(rbm.getCardinality());
 
         Iterator<Integer> iterator = rbm.iterator();
         while (iterator.hasNext()) {

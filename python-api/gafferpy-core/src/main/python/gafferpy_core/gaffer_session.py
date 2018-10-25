@@ -227,6 +227,7 @@ class Graph():
 
     def setPythonSerialisers(self, serialisers):
         self._java_python_graph.setPythonSerialisers(serialisers)
+        self._python_serialisers = serialisers
 
     def _set_element_serialisers(self, store_properties_path):
         props = open(store_properties_path, "r")

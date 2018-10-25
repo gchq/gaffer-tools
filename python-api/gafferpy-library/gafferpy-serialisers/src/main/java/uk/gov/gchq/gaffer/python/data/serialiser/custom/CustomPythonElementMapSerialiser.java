@@ -19,12 +19,14 @@ package uk.gov.gchq.gaffer.python.data.serialiser.custom;
 import com.clearspring.analytics.stream.cardinality.HyperLogLogPlus;
 import org.roaringbitmap.RoaringBitmap;
 
+import uk.gov.gchq.gaffer.commonutil.CommonTimeUtil;
 import uk.gov.gchq.gaffer.python.data.serialiser.PythonElementMapSerialiser;
 import uk.gov.gchq.gaffer.python.data.serialiser.config.PythonSerialiserConfig;
 import uk.gov.gchq.gaffer.python.data.serialiser.impl.HyperLogLogPlusPythonSerialiser;
 import uk.gov.gchq.gaffer.python.data.serialiser.impl.RBMBackedTimestampSetPythonSerialiser;
 import uk.gov.gchq.gaffer.python.data.serialiser.impl.RoaringBitmapPythonSerialiser;
 
+import uk.gov.gchq.gaffer.python.data.serialiser.impl.TimeBucketPythonSerialiser;
 import uk.gov.gchq.gaffer.time.RBMBackedTimestampSet;
 
 public class CustomPythonElementMapSerialiser extends PythonElementMapSerialiser {
@@ -40,5 +42,6 @@ public class CustomPythonElementMapSerialiser extends PythonElementMapSerialiser
         this.serialiserConfig.addSerialiser(RBMBackedTimestampSet.class, RBMBackedTimestampSetPythonSerialiser.class);
         this.serialiserConfig.addSerialiser(HyperLogLogPlus.class, HyperLogLogPlusPythonSerialiser.class);
         this.serialiserConfig.addSerialiser(RoaringBitmap.class, RoaringBitmapPythonSerialiser.class);
+        this.serialiserConfig.addSerialiser(CommonTimeUtil.TimeBucket.class, TimeBucketPythonSerialiser.class);
     }
 }
