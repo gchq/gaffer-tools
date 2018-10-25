@@ -175,7 +175,7 @@ angular.module('app').factory('schema', ['$http', 'config', '$q', 'common', 'ope
         return undefined;
     }
 
-    schemaService.get();
+    schemaService.update();
 
 
     return schemaService;
