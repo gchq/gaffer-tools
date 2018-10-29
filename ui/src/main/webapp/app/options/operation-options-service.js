@@ -16,7 +16,10 @@
 
 'use strict';
 
-angular.module('app').factory('operationOptions', function() { // This simple service stores and serves to the default operation options
+/**
+ * This simple service stores and serves to the default operation options
+ */ 
+angular.module('app').factory('operationOptions', [ '$q', 'config', function($q, config) { 
     
     var service = {};
     
@@ -46,6 +49,28 @@ angular.module('app').factory('operationOptions', function() { // This simple se
         return service.extractOperationOptions(defaultOperationOptionsConfiguration)
     }
 
+
+    /**
+     * Asynchronous method which guarentees that correct default operation options, 
+     * even if they have not yet been loaded. If they have already been set, it returns an
+     * Asychrounous wrapper for the current options. If not, it gets the default from the 
+     * configuration service.
+     */
+    service.getDefaultOperationOptionsAsync = function() {
+        if (defaultOperationOptionsConfiguration != null) {
+            return $q.when(service.getDefaultOperationOptions);
+        }
+
+        var deferred = $q.defer();
+
+        config.get().then(function(conf) {
+            var defaultConfiguration = conf.operationOptions;
+            deferred.resolve(service.extractOperationOptions(defaultConfiguration));
+        });
+
+        return deferred.promise;
+    }
+
     /**
      * Derives the operation options from any operation options configuration;
      * @param {Object} operationOptionsConfiguration 
@@ -72,4 +97,4 @@ angular.module('app').factory('operationOptions', function() { // This simple se
     }
 
     return service;
-});
+}]);

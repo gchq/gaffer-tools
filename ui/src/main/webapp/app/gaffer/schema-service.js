@@ -16,60 +16,41 @@
 
 'use strict';
 
-angular.module('app').factory('schema', ['$http', 'config', '$q', 'common', 'operationService', 'query', 'error', function($http, config, $q, common, operationService, query, error) {
+angular.module('app').factory('schema', ['$http', 'config', '$q', 'common', 'operationService', 'query', 'error', 'operationOptions', function($http, config, $q, common, operationService, query, error, operationOptions) {
 
-    var schemaService = {};
+    var service = {};
 
+    var deferred;
     var schema;
     var schemaVertices = {};
+    
 
-    schemaService.get = function() {
-        var defer = $q.defer();
+    service.get = function() {
         if (schema) {
-            defer.resolve(schema);
-        } else {
-            load(defer);
+            return $q.when(schema);
+        } else if (!deferred) {
+            deferred = $q.defer();
+            getSchema();
         }
-        return defer.promise;
+        return deferred.promise;
     }
 
-    schemaService.update = function() {
-        var defer = $q.defer();
-        load(defer, loadSchemaFromOperation);
-        return defer.promise;
+    var getSchema = function(loud) {
+        var getSchemaOperation = operationService.createGetSchemaOperation();
+        if (getSchemaOperation.options == {}) {
+            operationOptions.getDefaultOperationOptionsAsync().then(function(options) {
+                getSchemaOperation.options = options;
+                getSchemaWithOperation(getSchemaOperation, loud)
+            });
+        } else {
+            getSchemaWithOperation(getSchemaOperation, loud);
+        }
     }
 
-    schemaService.getSchemaVertices = function() {
-        return schemaVertices;
-    }
-
-    var loadSchemaFromUrl = function(conf, defer) {
-        var queryUrl = common.parseUrl(conf.restEndpoint + "/graph/config/schema");
-        $http.get(queryUrl)
-            .then(function(response){
-                schema = response.data;
-                if (!schema.entities) {
-                    schema.entities = {};
-                }
-                if (!schema.edges) {
-                    schema.edges = {};
-                }
-                if (!schema.types) {
-                    schema.types = {};
-                }
-                defer.resolve(schema)
-                updateSchemaVertices()
-            },
-            function(err) {
-                defer.reject(err.data);
-                error.handle('Unable to load schema', err.data);
-        });
-    }
-
-    var loadSchemaFromOperation = function(conf, defer) {
+    var getSchemaWithOperation = function(operation, loud) {
         try {
             query.execute(
-                operationService.createGetSchemaOperation(),
+                operation,
                 function(response) {
                     schema = response;
                     if (!schema.entities) {
@@ -82,33 +63,38 @@ angular.module('app').factory('schema', ['$http', 'config', '$q', 'common', 'ope
                         schema.types = {};
                     }
 
-                    defer.resolve(schema)
-                    updateSchemaVertices()
+                    updateSchemaVertices();
+                    deferred.resolve(schema)
+                    deferred = undefined;
                 },
                 function(err) {
-                    console.log(err.data);
-                    loadSchemaFromUrl(conf, defer);
+                    deferred.reject(err);
+                    if (loud) {
+                        error.handle("Failed to load schema", err);
+                    }
+                    deferred = undefined;
                 }
             );
         } catch(e) {
-            loadSchemaFromUrl(conf, defer);
-       }
+            deferred.reject(e);
+            if (loud) {
+                error.handle("Failed to load schema", e);
+            }
+            deferred = undefined;
+        }
     }
 
-    var load = function(defer, loader) {
-        config.get().then(function(conf) {
-            if (!defer) {
-                defer = $q.defer();
-            }
-            if(!loader) {
-                loader = loadSchemaFromUrl;
-            }
-            loader(conf, defer),
-            function(err) {
-                defer.reject(err);
-                error.handle('Unable to load schema', err);
-            };
-        });
+    service.update = function() {
+        if (deferred) {
+            deferred.reject('Reloading the schema');
+        }
+        deferred = $q.defer();
+        getSchema(true);
+        return deferred.promise;
+    }
+
+    service.getSchemaVertices = function() {
+        return schemaVertices;
     }
 
     var updateSchemaVertices = function() {
@@ -132,7 +118,7 @@ angular.module('app').factory('schema', ['$http', 'config', '$q', 'common', 'ope
         schemaVertices = vertices;
     }
 
-    schemaService.getVertexTypesFromEdgeGroup = function(group) {
+    service.getVertexTypesFromEdgeGroup = function(group) {
         if (!schema || !schema.edges[group]) {
             return {source: null, destination: null};
         }
@@ -148,7 +134,7 @@ angular.module('app').factory('schema', ['$http', 'config', '$q', 'common', 'ope
         return vertexTypes;
     }
 
-    schemaService.getVertexTypeFromEntityGroup = function(group) {
+    service.getVertexTypeFromEntityGroup = function(group) {
         if (!schema || !schema.entities[group]) {
             return null;
         }
@@ -161,23 +147,23 @@ angular.module('app').factory('schema', ['$http', 'config', '$q', 'common', 'ope
         return vertexType;
     }
 
-    schemaService.getEntityProperties = function(entity) {
+    service.getEntityProperties = function(entity) {
         if(Object.keys(schema.entities[entity].properties).length) {
             return schema.entities[entity].properties;
         }
         return undefined;
     }
 
-    schemaService.getEdgeProperties = function(edge) {
+    service.getEdgeProperties = function(edge) {
         if(Object.keys(schema.edges[edge].properties).length) {
             return schema.edges[edge].properties;
         }
         return undefined;
     }
 
-    schemaService.update();
 
+    service.update();
 
-    return schemaService;
+    return service;
 
 }]);

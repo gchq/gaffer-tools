@@ -33,6 +33,9 @@ function SchemaViewController(schemaView, schema) {
             schemaView.load().then(function(cy) {
                 schemaView.reload(gafferSchema);
             })
+        },
+        function(err) {
+            schemaView.load();
         });
     }
 }
