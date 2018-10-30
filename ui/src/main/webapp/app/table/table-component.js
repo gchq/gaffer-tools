@@ -60,8 +60,14 @@ function TableController(schema, results, table, events, common, types, time, cs
             vm.schema = gafferSchema;
             loadFromCache();
             processResults(results.get());
-            events.subscribe('resultsUpdated', onResultsUpdated);
+            
+        }, function(err) {
+            vm.schema = {types: {}, edges: {}, entities: {}};
+            loadFromCache();
+            processResults(results.get());
         });
+
+        events.subscribe('resultsUpdated', onResultsUpdated);
     }
 
     /**

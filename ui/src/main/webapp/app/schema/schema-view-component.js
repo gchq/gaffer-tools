@@ -32,7 +32,7 @@ function SchemaViewController(schemaView, schema) {
         schema.get().then(function(gafferSchema) {
             schemaView.load().then(function(cy) {
                 schemaView.reload(gafferSchema);
-            })
+            });
         },
         function(err) {
             schemaView.load();
