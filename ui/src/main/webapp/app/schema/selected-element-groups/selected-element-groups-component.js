@@ -37,6 +37,9 @@ function SelectedElementGroupsController($scope, $timeout, events, schema) {
     vm.$onInit = function() {
         schema.get().then(function(newSchema) {
             gafferSchema = newSchema;
+        },
+        function() {
+            gafferSchema = {edges:{}, entities:{}, types:{}};
         });
         events.subscribe('selectedSchemaElementGroupsUpdate', selectedSchemaElementGroupsUpdate);
     }
