@@ -53,7 +53,7 @@ angular.module('app').factory('operationOptions', [ '$q', 'config', function($q,
     /**
      * Asynchronous method which guarentees that correct default operation options, 
      * even if they have not yet been loaded. If they have already been set, it returns an
-     * Asychrounous wrapper for the current options. If not, it gets the default from the 
+     * asychrounous wrapper for the current options. If not, it gets the default from the 
      * configuration service.
      */
     service.getDefaultOperationOptionsAsync = function() {

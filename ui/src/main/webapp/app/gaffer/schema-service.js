@@ -37,7 +37,7 @@ angular.module('app').factory('schema', ['$http', 'config', '$q', 'common', 'ope
 
     var getSchema = function(loud) {
         var getSchemaOperation = operationService.createGetSchemaOperation();
-        if (getSchemaOperation.options == {}) {
+        if (Object.keys(getSchemaOperation.options).length === 0) {
             operationOptions.getDefaultOperationOptionsAsync().then(function(options) {
                 getSchemaOperation.options = options;
                 getSchemaWithOperation(getSchemaOperation, loud)
@@ -162,7 +162,7 @@ angular.module('app').factory('schema', ['$http', 'config', '$q', 'common', 'ope
     }
 
 
-    service.update();
+    service.update().then(function() {}, function() {});
 
     return service;
 
