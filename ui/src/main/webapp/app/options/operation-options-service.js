@@ -57,8 +57,8 @@ angular.module('app').factory('operationOptions', [ '$q', 'config', function($q,
      * configuration service.
      */
     service.getDefaultOperationOptionsAsync = function() {
-        if (defaultOperationOptionsConfiguration != null) {
-            return $q.when(service.getDefaultOperationOptions);
+        if (defaultOperationOptionsConfiguration !== null) {
+            return $q.when(service.getDefaultOperationOptions());
         }
 
         var deferred = $q.defer();
