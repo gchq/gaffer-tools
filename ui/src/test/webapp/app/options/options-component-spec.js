@@ -88,9 +88,9 @@ describe('The options component', function() {
             expect(ctrl.model).toEqual(defaultConfiguration);
         });
 
-        it('should otherwise look to the UI configuration for the defaultOperationOptions value', function() {
+        it('should otherwise look to the UI configuration for the operationOptions value', function() {
             var conf = {
-                defaultOperationOptions: {
+                operationOptions: {
                     visible: [
                         {
                             label: 'test',
@@ -164,7 +164,7 @@ describe('The options component', function() {
 
         it('should set the visible value to an empty array if not defined', function() {
             var conf = {
-                defaultOperationOptions: {
+                operationOptions: {
                     hidden: []
                 }
             }
@@ -179,7 +179,7 @@ describe('The options component', function() {
 
         it('should set the hidden value to an empty array if not defined', function() {
             var conf = {
-                defaultOperationOptions: {
+                operationOptions: {
                     visible: []
                 }
             }

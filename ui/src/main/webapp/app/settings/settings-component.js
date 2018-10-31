@@ -27,13 +27,22 @@ function settingsView() {
     }
 }
 
-function SettingsController(settings, schema, operationService, events) {
+function SettingsController(settings, schema, operationService, events, config) {
     var vm = this;
 
     vm.resultLimit = settings.getResultLimit()
+    vm.showOptions = false;
+
+    vm.$onInit = function() {
+        config.get().then(function(conf) {
+            vm.showOptions = (conf.operationOptions !== undefined || conf.operationOptionKeys !== undefined)
+        });
+    }
 
     vm.updateResultLimit = function() {
-        settings.setResultLimit(vm.resultLimit);
+        if (!vm.querySettingsForm.resultLimit.$error) {
+            settings.setResultLimit(vm.resultLimit);
+        }
     }
 
     vm.updateSchema = function() {

@@ -18,12 +18,34 @@
     <div flex-offset-gt-sm="20" flex-gt-sm="60" flex="100">
         <div layout="column" flex>
             <h3 class="md-headline">Settings</h3>
-            <md-input-container>
-                <label>Default result limit</label>
-                <input type="number" step="1" ng-model="ctrl.resultLimit"
-                       id="resultLimit" ng-blur="ctrl.updateResultLimit()">
-            </md-input-container>
 
+            <section>
+                <md-subheader>Queries</md-subheader>
+                <md-card>
+                    <form name="ctrl.querySettingsForm">
+                        <md-list>
+                            <md-list-item class="md-2-line">
+                                <div class="md-list-item-text" flex="60">
+                                    <h3>Result count limit</h3>
+                                    <p>The maximum number of results that can be returned</p>
+                                </div>
+                                <div flex></div>
+                                <div layout="column" layout-align="center">
+                                    <md-input-container>
+                                        <input type="number" min="0" name="resultLimit" required step="1" ng-model="ctrl.resultLimit"
+                                               id="resultLimit" aria-label="result count limit" ng-blur="ctrl.updateResultLimit()">
+                                        <div ng-messages="ctrl.querySettingsForm.resultLimit.$error">
+                                            <div ng-message="required">You must set a limit</div>
+                                            <div ng-message="min">The limit must be a positive number</div>
+                                        </div>
+                                    </md-input-container>
+                                </div>
+                            </md-list-item>
+                        </md-list>
+                    </form>
+                </md-card>
+            </section>
+            
             <options master="true"></options>
 
             <h4 class="md-title">Schema</h4>
