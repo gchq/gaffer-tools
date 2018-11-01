@@ -31,11 +31,14 @@
                                 </div>
                                 <div flex></div>
                                 <md-input-container class="md-secondary">
-                                    <input type="number" min="0" name="resultLimit" required step="1" ng-model="ctrl.resultLimit"
+                                    <input type="number" min="0" max="2147483647" name="resultLimit" required step="1" ng-model="ctrl.resultLimit"
                                             id="resultLimit" aria-label="result count limit" ng-blur="ctrl.updateResultLimit()">
                                     <div ng-messages="ctrl.querySettingsForm.resultLimit.$error">
                                         <div ng-message="required">You must set a limit</div>
                                         <div ng-message="min">The limit must be a positive number</div>
+                                        <div ng-message="max">The limit must be less than Integer.MAX_VALUE</div>
+                                        <div ng-message="step">The limit must be a whole number</div>
+                                        <div ng-message="number">The limit must be a valid number</div>
                                     </div>
                                 </md-input-container>
                             </md-list-item>

@@ -40,7 +40,7 @@ function SettingsController(settings, schema, operationService, events, config) 
     }
 
     vm.updateResultLimit = function() {
-        if (!vm.querySettingsForm.resultLimit.$error) {
+        if (vm.querySettingsForm.resultLimit.$valid) {
             settings.setResultLimit(vm.resultLimit);
         }
     }
