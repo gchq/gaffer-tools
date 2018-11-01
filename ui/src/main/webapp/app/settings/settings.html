@@ -30,16 +30,14 @@
                                     <p>The maximum number of results that can be returned</p>
                                 </div>
                                 <div flex></div>
-                                <div layout="column" layout-align="center">
-                                    <md-input-container>
-                                        <input type="number" min="0" name="resultLimit" required step="1" ng-model="ctrl.resultLimit"
-                                               id="resultLimit" aria-label="result count limit" ng-blur="ctrl.updateResultLimit()">
-                                        <div ng-messages="ctrl.querySettingsForm.resultLimit.$error">
-                                            <div ng-message="required">You must set a limit</div>
-                                            <div ng-message="min">The limit must be a positive number</div>
-                                        </div>
-                                    </md-input-container>
-                                </div>
+                                <md-input-container class="md-secondary">
+                                    <input type="number" min="0" name="resultLimit" required step="1" ng-model="ctrl.resultLimit"
+                                            id="resultLimit" aria-label="result count limit" ng-blur="ctrl.updateResultLimit()">
+                                    <div ng-messages="ctrl.querySettingsForm.resultLimit.$error">
+                                        <div ng-message="required">You must set a limit</div>
+                                        <div ng-message="min">The limit must be a positive number</div>
+                                    </div>
+                                </md-input-container>
                             </md-list-item>
                         </md-list>
                     </form>
@@ -48,14 +46,23 @@
             
             <options master="true"></options>
 
-            <h4 class="md-title">Schema</h4>
-            <div layout="row">
-                <md-button class="md-primary md-raised no-side-margin"
-                            aria-label="update schema"
+            <md-subheader>Schema</md-subheader>
+            <md-card>
+                <md-list class="no-vertical-padding">
+                    <md-list-item class="md-2-line" ng-click="ctrl.updateSchema()">
+                        <div class="md-list-item-text">
+                            <h3>Reload schema</h3>
+                            <p>Reloads the schema using the default operation options</p>
+                        </div>
+                        <span flex></span>
+                        <md-button class="md-primary md-raised md-secondary"
+                            aria-label="reload schema"
                             ng-click="ctrl.updateSchema()">
-                    Update schema and operations
-                </md-button>
-            </div>
+                                Reload Schema
+                        </md-button>
+                    </md-list-item>
+                </md-list>
+            </md-card>
         </div>
     </div>
 </div>

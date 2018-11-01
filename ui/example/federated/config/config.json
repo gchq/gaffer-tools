@@ -8,7 +8,7 @@
       {
         "key": "gaffer.federatedstore.operation.graphIds",
         "label": "Graph IDs",
-        "description": "Which (comma seperated) graphs do you want to run operations against?"
+        "description": "Restrict operations and schema reloads to these comma separated graphs"
       },
       {
         "key": "gaffer.federatedstore.operation.skipFailedFederatedStoreExecute",

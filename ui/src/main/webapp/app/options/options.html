@@ -31,9 +31,9 @@
                         <h3>{{option.label}}</h3>
                         <p>{{option.description}}</p>
                     </div>
-                    <div layout="row" flex> 
+                    <div layout="row" class="padding-sides" flex> 
                         <md-input-container flex>
-                            <input ng-model="option.value" type="text">
+                            <input aria-label="{{ option.label }}" ng-model="option.value" type="text">
                         </md-input-container>
                         <md-button ng-show="option.value !== undefined" class="md-icon-button icon-inline-with-input" ng-click="ctrl.clearValue($index)">
                             <md-icon md-svg-icon="clear"></md-icon>
