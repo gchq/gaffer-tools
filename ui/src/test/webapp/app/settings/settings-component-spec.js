@@ -85,7 +85,7 @@ describe('The Settings Component', function() {
             it('should update the resultLimit if the querySettings form is valid', function() {
                 ctrl.querySettingsForm = {
                     resultLimit: {
-                        $invalid: false
+                        $valid: true
                     }
                 };
                 ctrl.resultLimit = 20
@@ -97,7 +97,7 @@ describe('The Settings Component', function() {
             it('should not update the result limit if the querySettings form is invalid', function() {
                 ctrl.querySettingsForm = {
                     resultLimit: {
-                        $invalid: true
+                        $valid: false
                     }
                 };
                 ctrl.resultLimit = 20
