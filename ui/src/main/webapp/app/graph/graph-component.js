@@ -635,11 +635,11 @@ function GraphController($q, graph, config, error, loading, query, operationOpti
 
 
     /**
-     * Removes all elements from the cytoscape graph - does not remove them from the model.
+     * Removes all elements from the cytoscape graph
      */
-    vm.clear = function(){
-        while(cytoscapeGraph.elements().length > 0) {
-            cytoscapeGraph.remove(cytoscapeGraph.elements()[0]);
+    vm.clear = function() {
+        if (cytoscapeGraph) {
+            cytoscapeGraph.elements().remove()
         }
     }
 
@@ -648,12 +648,7 @@ function GraphController($q, graph, config, error, loading, query, operationOpti
      */
     vm.redraw = function() {
         if(cytoscapeGraph) {
-            var nodes = cytoscapeGraph.nodes();
-            for(var i in nodes) {
-                if(nodes[i] && nodes[i].hasClass && nodes[i].hasClass("filtered")) {
-                    nodes[i].remove();
-                }
-            }
+            cytoscapeGraph.filter(":filtered").remove();
             cytoscapeGraph.layout(configuration);
         }
     }
@@ -691,7 +686,7 @@ function GraphController($q, graph, config, error, loading, query, operationOpti
     vm.removeSelected = function() {
         cytoscapeGraph.filter(":selected").remove();
         cytoscapeGraph.elements().unselect();
-        vm.selectedElements.entities = {};
-        vm.selectedElements.edges = {};
+        vm.selectedElements.entities = [];
+        vm.selectedElements.edges = [];
     }
 }
