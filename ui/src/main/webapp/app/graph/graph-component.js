@@ -207,15 +207,23 @@ function GraphController($q, graph, config, error, loading, query, operationOpti
             }
         });
 
-        cytoscapeGraph.on('select', function(evt){
-            select(evt.cyTarget);
+        cytoscapeGraph.on('select', 'node', function(evt){
+            selectNode(evt.cyTarget);
         });
 
-        cytoscapeGraph.on('unselect', function(evt){
-            unSelect(evt.cyTarget);
-        })
+        cytoscapeGraph.on('select', 'edge', function(evt){
+            selectEdge(evt.cyTarget);
+        });
 
-        cytoscapeGraph.on('tap', function(event) {
+        cytoscapeGraph.on('unselect', 'node', function(evt){
+            deselectNode(evt.cyTarget);
+        });
+
+        cytoscapeGraph.on('unselect', 'edge', function(evt){
+            deselectEdge(evt.cyTarget);
+        });
+
+        cytoscapeGraph.on('tap', 'node', function(event) {
             var tappedNow = event.cyTarget;
             if (tappedTimeout && tappedBefore) {
                 clearTimeout(tappedTimeout);
@@ -230,8 +238,7 @@ function GraphController($q, graph, config, error, loading, query, operationOpti
         });
 
         cytoscapeGraph.on('remove', function(evt) {
-            removeFromGraphData(evt.cyTarget);
-            unSelect(evt.cyTarget);
+            deselect(evt.cyTarget);
         });
 
         cytoscapeGraph.on('doubleTap', 'node', vm.quickHop);
@@ -320,124 +327,50 @@ function GraphController($q, graph, config, error, loading, query, operationOpti
         return styles;
     }
 
-
-
-    /**
-     * Removes an element from the graphData model.
-     * @param {Cytoscape element} element an element from cytoscape
-     */
-    var removeFromGraphData = function(element) {
+    var selectNode = function(element) {
         var id = element.id();
-        delete graphData.edges[id]
-        delete graphData.entities[id];
-    }
+        common.pushValueIfUnique(id, vm.selectedElements.entities);
 
-    /**
-     * Defines the behaviour when an element in cytoscape is selected.
-     * First attempts to select an entity, then edge, then vertex.
-     * @param {Object} element
-     */
-    function select(element) {
-        if(selectEntityId(element.id())) {
-            return;
-        }
 
-        if(selectEdgeId(element.id())) {
-            return;
-        }
-
-        selectVertex(element.id());
-    }
-
-    /**
-     * Appends the element to selected entities, creates an input object from the ID and adds it to the
-     * operation chain's first operation.
-     * @param {String} id The vertex
-     * @param {Array} entities The elements with the id
-     */
-    function selectEntities(id, entities) {
-        vm.selectedElements.entities[id] = entities;
         schema.get().then(function(gafferSchema) {
-            var vertex = JSON.parse(id);
+            if (typeof id === 'string') {
+                id = JSON.parse(id);
+            }
             var vertices = schema.getSchemaVertices();
             var vertexClass = gafferSchema.types[vertices[0]].class;
             operationChain.addInput({
                 valueClass: vertexClass,
-                parts: types.createParts(vertexClass, vertex)
+                parts: types.createParts(vertexClass, id)
             });
         });
     }
 
-    /**
-     * Selects all elements with the given vertex (entityId)
-     * @param {String} entityId a stringified vertex
-     * @returns true if entities were found in the array with the id
-     * @returns false if no entities were found with the given id
-     */
-    function selectEntityId(entityId) {
-        for (var id in graphData.entities) {
-            if(entityId == id) {
-                selectEntities(id, graphData.entities[id]);
-                return true;
-            }
-        }
-        return false;
-    }
-
-    /**
-     * Adds the id and edges to the selected elements object.
-     * @param {String} id The ID
-     * @param {Array} edges The array of edges assocated with the id
-     */
-    function selectEdges(id, edges) {
-        vm.selectedElements.edges[id] = edges;
+    var selectEdge = function(element) {
+        common.pushValueIfUnique(element.id(), vm.selectedElements.edges);
         $scope.$apply();
     }
 
-    /**
-     * Selects all edges in the graph with the given id
-     * @param {String} edgeId The Edge ID
-     * @returns true if an edge exists in the graph with the given id
-     * @returns false if no edge was found in the graph with the given id
-     */
-    function selectEdgeId(edgeId) {
-        for (var id in graphData.edges) {
-            if (edgeId == id) {
-                selectEdges(id, graphData.edges[id]);
-                return true;
-            }
-        }
-        return false;
-    }
-
-    /**
-     * Adds a seed to the selected entities
-     * @param {String} vertexId
-     */
-    function selectVertex(vertexId) {
-        selectEntities(vertexId, [{vertex: vertexId}]);
-    }
-
-    /**
-     * Removes an element from the selected elements and input service and fires update events
-     * @param {Object} element The cytoscape element
-     */
-    function unSelect(element) {
+    var deselectNode = function(element) {
         var id = element.id();
-        if (vm.selectedElements.entities[id]) {
-            schema.get().then(function(gafferSchema) {
-                var vertex = JSON.parse(id);
-                var vertices = schema.getSchemaVertices();
-                var vertexClass = gafferSchema.types[vertices[0]].class;
-                operationChain.removeInput({
-                    valueClass: vertexClass,
-                    parts: types.createParts(vertexClass, vertex)
-                });
+        vm.selectedElements.entities.splice(vm.selectedElements.entities.indexOf(id), 1);
+
+        schema.get().then(function(gafferSchema) {
+            if (typeof id === 'string') {
+                id = JSON.parse(id);
+            }
+            var vertices = schema.getSchemaVertices();
+            var vertexClass = gafferSchema.types[vertices[0]].class;
+            operationChain.removeInput({
+                valueClass: vertexClass,
+                parts: types.createParts(vertexClass, id)
             });
-            delete vm.selectedElements.entities[id];
-        } else if(vm.selectedElements.edges[id]) {
-            delete vm.selectedElements.edges[id];
-        }
+        });        
+    }
+
+    var deselectEdge = function(element) {
+        var id = element.id();
+        vm.selectedElements.edges.splice(vm.selectedElements.edges.indexOf(id), 1);
+        $scope.$apply();
     }
 
     /**
@@ -648,7 +581,7 @@ function GraphController($q, graph, config, error, loading, query, operationOpti
      */
     vm.redraw = function() {
         if(cytoscapeGraph) {
-            cytoscapeGraph.filter(":filtered").remove();
+            cytoscapeGraph.filter(".filtered").remove();
             cytoscapeGraph.layout(configuration);
         }
     }
