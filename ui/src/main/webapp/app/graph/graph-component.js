@@ -492,6 +492,7 @@ function GraphController($q, graph, config, error, loading, query, operationOpti
             }
             
         }
+        
         cytoscapeGraph.batch(function() {
             cytoscapeGraph.add(elementsToAdd);
             for (var id in elementsToMergeClasses) {
