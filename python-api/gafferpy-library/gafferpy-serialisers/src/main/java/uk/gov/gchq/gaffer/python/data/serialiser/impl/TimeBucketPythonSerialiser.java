@@ -21,12 +21,12 @@ import uk.gov.gchq.gaffer.python.data.serialiser.PythonSerialiser;
 
 public class TimeBucketPythonSerialiser implements PythonSerialiser<CommonTimeUtil.TimeBucket, String> {
     @Override
-    public String serialise(CommonTimeUtil.TimeBucket bucket) {
+    public String serialise(final CommonTimeUtil.TimeBucket bucket) {
         return bucket.toString();
     }
 
     @Override
-    public boolean canHandle(Class clazz) {
+    public boolean canHandle(final Class clazz) {
         return CommonTimeUtil.TimeBucket.class.equals(clazz);
     }
 }
