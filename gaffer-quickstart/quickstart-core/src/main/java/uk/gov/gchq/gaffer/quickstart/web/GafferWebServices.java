@@ -31,9 +31,9 @@ public class GafferWebServices {
     private String uiWarPath;
 
 
-    public static void main(String[] args) throws ServletException, LifecycleException {
+    public static void main(final String[] args) throws ServletException, LifecycleException {
 
-        if(args.length != 5){
+        if (args.length != 5) {
             throw new IllegalArgumentException("I need a schemaPath, graphConfigPath, storePropertiesPath, restWarPath and uiWarPath");
         }
 
@@ -49,7 +49,7 @@ public class GafferWebServices {
 
     }
 
-    public boolean serverRunning(){
+    public boolean serverRunning() {
         return running;
     }
 
@@ -80,12 +80,14 @@ public class GafferWebServices {
         tomcat.start();
         tomcat.getServer().await();
         running = true;
-        while(running){}
+        while (running) {
+
+        }
 
         System.exit(0);
     }
 
-    private class ServerShutDownHook extends Thread{
+    private class ServerShutDownHook extends Thread {
         @Override
         public void run() {
 
@@ -98,7 +100,7 @@ public class GafferWebServices {
         return schemaPath;
     }
 
-    public void setSchemaPath(String schemaPath) {
+    public void setSchemaPath(final String schemaPath) {
         this.schemaPath = schemaPath;
     }
 
@@ -106,7 +108,7 @@ public class GafferWebServices {
         return storePropertiesPath;
     }
 
-    public void setStorePropertiesPath(String storePropertiesPath) {
+    public void setStorePropertiesPath(final String storePropertiesPath) {
         this.storePropertiesPath = storePropertiesPath;
     }
 
@@ -114,7 +116,7 @@ public class GafferWebServices {
         return graphConfigPath;
     }
 
-    public void setGraphConfigPath(String graphConfigPath) {
+    public void setGraphConfigPath(final String graphConfigPath) {
         this.graphConfigPath = graphConfigPath;
     }
 
@@ -122,7 +124,7 @@ public class GafferWebServices {
         return restWarPath;
     }
 
-    public void setRestWarPath(String restWarPath) {
+    public void setRestWarPath(final String restWarPath) {
         this.restWarPath = restWarPath;
     }
 
@@ -130,7 +132,7 @@ public class GafferWebServices {
         return uiWarPath;
     }
 
-    public void setUiWarPath(String uiWarPath) {
+    public void setUiWarPath(final String uiWarPath) {
         this.uiWarPath = uiWarPath;
     }
 }
