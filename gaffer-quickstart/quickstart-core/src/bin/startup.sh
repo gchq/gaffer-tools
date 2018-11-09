@@ -39,7 +39,7 @@ $GAFFER_HOME/bin/_start_miniaccumulo.sh
 
 $GAFFER_HOME/bin/_start_web_services.sh -schema $SCHEMA -config $GRAPHCONFIG -store $STOREPROPERTIES
 
-#$GAFFER_HOME/bin/_configure_pyspark.sh
+$GAFFER_HOME/bin/_configure_pyspark.sh
 
 echo -e "Gaffer UI available at http://localhost:8080/ui"
 echo -e "Gaffer REST service available at http://localhost:8080/rest"

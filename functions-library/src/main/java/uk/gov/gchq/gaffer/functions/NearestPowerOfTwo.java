@@ -23,30 +23,30 @@ public class NearestPowerOfTwo extends KorypheFunction<Long, Long> {
     public Long apply(final Long aLong) {
         long bits = aLong;
         long log = 0;
-        if(bits == 9223372036854775807l){
+        if (bits == 9223372036854775807L) {
             bits >>>= 64;
             log = 64;
         }
-        if(bits >= 4294967296l){
+        if (bits >= 4294967296L) {
             bits >>>= 32;
             log += 32;
         }
-        if(bits >= 65536){
+        if (bits >= 65536) {
             bits >>>= 16;
             log += 16;
         }
-        if(bits >= 256){
+        if (bits >= 256) {
             bits >>>= 8;
             log += 8;
         }
-        if(bits >= 16){
+        if (bits >= 16) {
             bits >>>= 4;
             log += 4;
         }
-        if(bits >= 4){
+        if (bits >= 4) {
             bits >>>= 2;
             log += 2;
         }
-        return log + ( bits >>> 1 );
+        return log + (bits >>> 1);
     }
 }
