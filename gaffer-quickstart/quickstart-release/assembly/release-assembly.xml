@@ -23,7 +23,7 @@
             <directory>../quickstart-core/src/conf/</directory>
             <outputDirectory>conf</outputDirectory>
             <includes>
-                <include>*.json</include>
+                <include>*</include>
             </includes>
         </fileSet>
         <fileSet>

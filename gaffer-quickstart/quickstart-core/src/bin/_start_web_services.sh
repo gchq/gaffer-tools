@@ -88,3 +88,4 @@ done
 echo -e "\n"
 
 cp $GAFFER_HOME/conf/ui-config.json $GAFFER_HOME/gaffer_web_services_working/ui/config/config.json
+cp $GAFFER_HOME/conf/icons/* $GAFFER_HOME/gaffer_web_services_working/ui/app/img/

@@ -8,20 +8,36 @@ then
     exit 0
 fi
 
+SCHEMA=$GAFFER_HOME/example/schema.json
+GRAPHCONFIG=$GAFFER_HOME/example/graphconfig.json
+STOREPROPERTIES=$GAFFER_HOME/miniaccumulo/store.properties
+
+while [[ $# -gt 0 ]]; do
+	key="$1"
+
+	case $key in
+		-schema)
+			SCHEMA=$2
+			shift
+			;;
+		-graphconfig)
+			GRAPHCONFIG=$2
+			shift
+			;;
+		-storeproperties)
+			STOREPROPERTIES=$2
+			shift
+			;;
+	esac
+	shift
+done
+
 echo "GAFFER_HOME is set to $GAFFER_HOME"
 source $GAFFER_HOME/bin/_version.sh
 
-
-if [ -n "$GAFFER_HOME/conf/schema.json" ]; then
-    SCHEMAS_DIR=$GAFFER_HOME/example
-    echo "loading example graph schemas from $SCHEMAS_DIR"
-else
-    SCHEMAS_DIR=$GAFFER_HOME/conf
-fi
-
 $GAFFER_HOME/bin/_start_miniaccumulo.sh
 
-$GAFFER_HOME/bin/_start_web_services.sh -schema $SCHEMAS_DIR/schema.json -config $SCHEMAS_DIR/graphconfig.json -store $GAFFER_HOME/miniaccumulo/store.properties
+$GAFFER_HOME/bin/_start_web_services.sh -schema $SCHEMA -config $GRAPHCONFIG -store $STOREPROPERTIES
 
 #$GAFFER_HOME/bin/_configure_pyspark.sh
 

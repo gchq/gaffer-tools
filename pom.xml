@@ -36,6 +36,7 @@
         <module>schema-builder</module>
         <module>slider</module>
         <module>gaffer-quickstart</module>
+        <module>functions-library</module>
     </modules>
 
     <properties>
