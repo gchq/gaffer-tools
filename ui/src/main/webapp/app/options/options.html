@@ -1,39 +1,72 @@
 <div ng-if="ctrl.model" layout="column" flex>
 
-    <h4 class="md-title"><span ng-if="ctrl.master">Default Operation </span>Options</h4>
-
-    <div ng-repeat="option in ctrl.model.visible track by option.key">
-        <div layout="row">
-            <md-input-container flex class="no-vertical-margin">
-                <label>{{option.label}}</label>
-                <input ng-model="option.value" type="text">
-            </md-input-container>
-            <md-button ng-show="option.value !== undefined" class="md-icon-button" ng-click="ctrl.clearValue($index)">
-                <md-icon md-svg-icon="clear"></md-icon>
-                <md-tooltip>clear value</md-tooltip>
-            </md-button>
-            <md-button ng-show="option.value === undefined" class="md-icon-button" ng-click="ctrl.hideOption($index)">
-                <md-icon md-svg-icon="hide"></md-icon>
-                <md-tooltip>hide option</md-tooltip>
-            </md-button>
+    <div ng-if="!ctrl.master">
+        
+        <h4 class="md-title">Options</h4>
+    
+        <div ng-repeat="option in ctrl.model.visible track by option.key">
+            <div layout="row">
+                <md-input-container flex class="no-vertical-margin">
+                    <label>{{option.label}}</label>
+                    <input ng-model="option.value" type="text">
+                </md-input-container>
+                <md-button ng-show="option.value !== undefined" class="md-icon-button" ng-click="ctrl.clearValue($index)">
+                    <md-icon md-svg-icon="clear"></md-icon>
+                    <md-tooltip>clear value</md-tooltip>
+                </md-button>
+                <md-button ng-show="option.value === undefined" class="md-icon-button" ng-click="ctrl.hideOption($index)">
+                    <md-icon md-svg-icon="hide"></md-icon>
+                    <md-tooltip>hide option</md-tooltip>
+                </md-button>
+            </div>
         </div>
     </div>
-    <md-autocomplete
-        ng-show="ctrl.model.hidden.length > 0"
-        md-search-text="ctrl.search"
-        md-selected-item="ctrl.selectedOption"
-        md-min-length="0"
-        md-require-match
-        md-autoselect
-        md-no-cache
-        md-item-text="option.label"
-        md-selected-item-change="ctrl.addOption()"
-        md-items="option in ctrl.model.hidden | filter:ctrl.search"
-        placeholder="Add an operation option">
-        <md-item-template>
-            <span md-highlight-text="ctrl.search" md-highlight-flags="^i">{{option.label}}</span>
-        </md-item-template>
-    </md-autocomplete>
+
+    <div ng-if="ctrl.master">
+        <md-subheader>Default operation options added to every operation chain</md-subheader>
+        <md-card>
+            <md-list>
+                <md-list-item class="md-2-line" ng-repeat="option in ctrl.model.visible track by option.key">
+                    <div class="md-list-item-text" flex="40">
+                        <h3>{{option.label}}</h3>
+                        <p>{{option.description}}</p>
+                    </div>
+                    <div layout="row" class="padding-sides" flex> 
+                        <md-input-container flex>
+                            <input aria-label="{{ option.label }}" ng-model="option.value" type="text">
+                        </md-input-container>
+                        <md-button ng-show="option.value !== undefined" class="md-icon-button icon-inline-with-input" ng-click="ctrl.clearValue($index)">
+                            <md-icon md-svg-icon="clear"></md-icon>
+                            <md-tooltip>clear value</md-tooltip>
+                        </md-button>
+                        <md-button ng-show="option.value === undefined" class="md-icon-button icon-inline-with-input" ng-click="ctrl.hideOption($index)">
+                            <md-icon md-svg-icon="hide"></md-icon>
+                            <md-tooltip>hide option</md-tooltip>
+                        </md-button>
+                    </div>
+                </md-list-item>
+            </md-list>
+        </md-card>
+    </div>
+
+    <div ng-class="{'padding-sides': ctrl.master}">
+        <md-autocomplete
+            ng-show="ctrl.model.hidden.length > 0"
+            md-search-text="ctrl.search"
+            md-selected-item="ctrl.selectedOption"
+            md-min-length="0"
+            md-require-match
+            md-autoselect
+            md-no-cache
+            md-item-text="option.label"
+            md-selected-item-change="ctrl.addOption()"
+            md-items="option in ctrl.model.hidden | filter:ctrl.search"
+            placeholder="Add an operation option">
+            <md-item-template>
+                <span md-highlight-text="ctrl.search" md-highlight-flags="^i">{{option.label}}</span>
+            </md-item-template>
+        </md-autocomplete>
+    </div>
 
 
 </div>

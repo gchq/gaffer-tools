@@ -3,16 +3,18 @@
   "quickQuery": {
     "useDefaultOperationOptions": true
   },
-  "defaultOperationOptions": {
+  "operationOptions": {
     "visible": [
       {
         "key": "gaffer.federatedstore.operation.graphIds",
-        "label": "Graph IDs"
+        "label": "Graph IDs",
+        "description": "Restrict operations and schema reloads to these comma separated graphs"
       },
       {
         "key": "gaffer.federatedstore.operation.skipFailedFederatedStoreExecute",
         "value": "true",
-        "label": "Skip failures"
+        "label": "Skip failures",
+        "description": "Ignore operation exceptions"
       }
     ]
   }
