@@ -33,7 +33,7 @@ function graphView() {
 
 function GraphController($q, graph, config, error, loading, query, operationOptions, types, schema, results, common, operationChain, operationService, events, $scope) {
     var vm = this;
-    vm.graphLoading = true;    // used for the loading spinner
+    vm.graphLoading = true;    // used for the loading indicator
 
     var tappedBefore;
     var tappedTimeout;
