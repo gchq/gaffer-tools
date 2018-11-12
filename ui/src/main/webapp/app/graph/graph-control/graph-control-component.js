@@ -22,21 +22,53 @@ function graphControl() {
     return {
         templateUrl: 'app/graph/graph-control/graph-control.html',
         controller: GraphControlController,
-        controllerAs: 'ctrl'
+        controllerAs: 'ctrl',
+        bindings: {
+            'quickHop': '&',
+            'redraw': '&',
+            'reset': '&',
+            'remove': '&',
+            'filter': '&'
+        }
     }
 }
 
-function GraphControlController($scope, events, graph, types, schema, time, navigation) {
+/**
+ * The graph controls component comprises of a search bar and a series of buttons 
+ * which allow a user to interact with the graph.
+ * 
+ * @param {*} graph The graph service
+ * @param {*} navigation The navigation service
+ */
+function GraphControlController(graph, navigation) {
     var vm = this;
-    vm.searchTerm = "";
+    vm.searchTerm;
 
-    vm.filter = function() {
-        graph.filter(vm.searchTerm);
+    /**
+     * Sets the initial search term
+     */
+    vm.$onInit = function() {
+        vm.searchTerm = graph.getSearchTerm();
     }
 
-    vm.quickHop = graph.quickHop;
-    vm.redraw = graph.redraw;
-    vm.reset = graph.reset;
-    vm.removeSelected = graph.removeSelected;
-    vm.goToQuery = navigation.goToQuery;
+    /**
+     * Use the injected filter function
+     */
+    vm.search = function() {
+        vm.filter({searchTerm: vm.searchTerm})
+    }
+
+    /**
+     * Updates the service value on destruction
+     */
+    vm.$onDestroy = function() {
+        graph.setSearchTerm(vm.searchTerm)
+    }
+   
+    /**
+     * navigate to the query page.
+     */
+    vm.goToQuery = function() {
+        navigation.goToQuery() 
+    }
 }
