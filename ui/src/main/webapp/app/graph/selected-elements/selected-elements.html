@@ -7,7 +7,7 @@
         </div>
     </md-toolbar>
     <md-content layout-padding class="transparent">
-        <div ng-repeat="(vertex, entities) in ctrl.selectedEntities">
+        <div ng-repeat="(vertex, entities) in ctrl.model.entities">
             <h4>{{ctrl.resolveVertex(vertex)}}</h4>
 
             <md-divider ng-show="!entities.length || !entities[0].group">
@@ -37,7 +37,7 @@
                 </tbody>
             </table>
         </div>
-        <div ng-repeat="(id, edges) in ctrl.selectedEdges">
+        <div ng-repeat="(id, edges) in ctrl.model.edges">
             <h4>{{ctrl.resolveVertex(edges[0].source)}} to
                 {{ctrl.resolveVertex(edges[0].destination)}}</h4>
             <table md-table>

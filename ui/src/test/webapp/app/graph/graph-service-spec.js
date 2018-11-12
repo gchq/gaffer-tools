@@ -1,177 +1,119 @@
-describe("The Graph Service", function() {
+describe('The Graph service', function() {
 
-    var graph;
-    var events;
-    var scope;
-    var vertices = [];
-    var gafferSchema = {};
-    var loading;
-    var query;
+    var service;
 
     beforeEach(module('app'));
 
-    beforeEach(module(function($provide) {
-        $provide.factory('config', function($q) {
-            var get = function() {
-                return $q.when({});
-            }
 
-            return {
-                get: get
-            }
-        });
-
-        $provide.factory('schema', function($q) {
-            return {
-                get: function() {
-                    return $q.when(gafferSchema);
-                },
-                getSchemaVertices: function() {
-                    return vertices;
-                }
-            }
-        });
+    beforeEach(inject(function(_graph_) {
+        service = _graph_;
     }));
 
-    beforeEach(inject(function(_graph_, _events_, _$rootScope_, _loading_, _query_) {
-        graph = _graph_;
-        events = _events_;
-        scope = _$rootScope_.$new();
-        loading = _loading_;
-        query = _query_;
-    }));
+    describe('graph.getGraphConfiguration()', function() {
+        it('should pass the value of the configuration so that mutation of the service value cannot occur outside the service', function() {
+            service.setGraphConfiguration({ 'test': true });
+            var conf = service.getGraphConfiguration();
+            conf['foo'] = 'bar';
 
-    describe('when loading', function() {
+            expect(service.getGraphConfiguration().foo).toBeUndefined();
+        })
+    });
 
-        var resolvedValue;
+    describe('graph.setGraphConfiguration()', function() {
+        it('should pass a value to the service object ensuring that the service configuration cannot be mutated outside the service', function() {
+            var test = {
+                'foo': 'bar'
+            }
 
-        beforeEach(function(done) {
-            graph.load().then(function(graphObject) {
-                resolvedValue = graphObject;
-                done();
+            service.setGraphConfiguration(test);
+
+            test.isPassed = true;
+
+            expect(service.getGraphConfiguration()).toEqual({
+                'foo': 'bar'
             });
-
-            setTimeout(function() {
-                scope.$apply();
-            }, 1000)
-        });
-
-        it('should load cytoscape and return the cytoscape graph object', function() {
-            expect(resolvedValue).toBeDefined();
         });
     });
 
-    describe('after loading', function() {
+    describe('graph.getSelectedElements()', function() {
+        it('should pass the value of the selected elements so that mutation of the service value cannot occur outside the service', function() {
+            service.setSelectedElements({ 'test': true });
+            var conf = service.getSelectedElements();
+            conf['foo'] = 'bar';
+
+            expect(service.getSelectedElements().foo).toBeUndefined();
+        })
+    });
+
+    describe('graph.setSelectedElements()', function() {
+        it('should pass a value to the service object ensuring that the selected elements in the service cannot be mutated outside the service', function() {
+            var test = {
+                'foo': 'bar'
+            }
+
+            service.setSelectedElements(test);
+
+            test.isPassed = true;
+
+            expect(service.getSelectedElements()).toEqual({
+                'foo': 'bar'
+            });
+        });
+    });
+
+    describe('graph.getSearchTerm()', function() {
+        it('should pass the value of the search term so that mutation of the service value cannot occur outside the service', function() {
+            service.setSearchTerm('test');
+            var st = service.getSearchTerm();
+            st += 'case';
+
+            expect(service.getSearchTerm()).toEqual('test');
+        })
+    });
+
+    describe('graph.setSearchTerm()', function() {
+        it('should pass a value to the service object ensuring that the service configuration cannot be mutated outside the service', function() {
+            var test = 'test'
+
+            service.setSearchTerm(test);
+
+            test = 'new test';
+
+            expect(service.getSearchTerm()).toEqual('test');
+        });
+    });
+
+    describe('graph.deselectAll()', function() {
+
         beforeEach(function() {
-            graph.load(); // simulating the call performed when MainCtrl starts
-        });
-
-        describe('when adding a seed', function() {
-            
-            var operationChain
-            var types;
-
-            beforeEach(inject(function(_operationChain_, _types_) {
-                operationChain = _operationChain_;
-                types = _types_;
-            }))
-
-            beforeEach(function() {
-                spyOn(operationChain, 'addInput').and.stub();
-            });
-
-            it('should also select it', function() {
-                graph.addSeed("mySeed");
-                expect(graph.getSelectedEntities()).toEqual({'"mySeed"': [{vertex: '"mySeed"'}]})
-            });
-
-            it('should add it to the input service', function() {
-                spyOn(types, 'createParts').and.callFake( function(clazz, value) {
-                    return { undefined: value };
-                });
-                gafferSchema = {
-                    types: {
-                        "vertex": {
-                            "class": "java.lang.String"
-                        }
-                    }
+            service.setSelectedElements({
+                entities: {
+                    'test': [],
+                    'test2': [ {
+                        group: 'g',
+                        properties: {}
+                    }]
+                },
+                edges: {
+                    'myEdgeid': [{
+                        source: 's',
+                        destination: 'd',
+                        directed: false,
+                        properties: {}
+                    }]
                 }
-
-                vertices = [ 'vertex' ];
-
-                graph.addSeed("test");
-                scope.$digest();
-                expect(operationChain.addInput).toHaveBeenCalledWith({ "valueClass": "java.lang.String", parts: {undefined: "test"} });
-            });
-
-            it('should broadcast the selectedElementsUpdate event', function() {
-                spyOn(events, 'broadcast');
-                graph.addSeed('mySeed');
-                expect(events.broadcast).toHaveBeenCalledTimes(1);
-                expect(events.broadcast.calls.first().args[1]).toEqual([{entities: { '"mySeed"': [{vertex: '"mySeed"'}]}, edges: {}}]);
-            });
-
-            it('should select it if already added', function() {
-                // add it the first time
-                graph.addSeed("mySeed");
-                // deselect it
-                graph.reset();
-
-                graph.addSeed("mySeed");
-                expect(graph.getSelectedEntities()).toEqual({'"mySeed"': [{vertex: '"mySeed"'}]})
-            });
-
-            it('should do nothing if already added and selected', function() {
-                graph.addSeed("mySeed");
-                expect(graph.getSelectedEntities()).toEqual({'"mySeed"': [{vertex: '"mySeed"'}]});
-                graph.addSeed("mySeed");
-                expect(graph.getSelectedEntities()).toEqual({'"mySeed"': [{vertex: '"mySeed"'}]});
             });
         });
 
-        describe('when quick hop is clicked', function() {
-            it('should execute a GetElements operation with the clicked node', function() {
-                var event = {
-                    cyTarget: {
-                        id: function() {
-                            return "\"vertex1\""
-                        }
-                    }
-                };
+        it('should reset the selected Entities and Edges to empty objects', function() {
+            service.deselectAll();
 
-                spyOn(loading, 'load');
-                spyOn(query, 'addOperation');
-                spyOn(query, 'executeQuery');
-                graph.quickHop(event);
+            var expected = {
+                entities: {},
+                edges: {}
+            }
 
-                expect(loading.load).toHaveBeenCalledTimes(1);
-                expect(query.addOperation).toHaveBeenCalledTimes(1);
-                var expectedOp = {
-                     class: 'uk.gov.gchq.gaffer.operation.impl.get.GetElements',
-                     input: [{ class: 'uk.gov.gchq.gaffer.operation.data.EntitySeed', vertex: 'vertex1' }],
-                     options: {},
-                     view: {
-                        globalElements: [
-                            {
-                                groupBy: []
-                            }
-                        ]
-                     }
-                };
-
-                expect(query.addOperation).toHaveBeenCalledWith(expectedOp);
-                expect(query.executeQuery).toHaveBeenCalledWith({
-                        class: 'uk.gov.gchq.gaffer.operation.OperationChain',
-                        operations: [
-                            expectedOp,
-                            { class: 'uk.gov.gchq.gaffer.operation.impl.Limit', resultLimit: 1000, options: {  } },
-                            { class: 'uk.gov.gchq.gaffer.operation.impl.output.ToSet', options: {  } }
-                        ],
-                        options: {  }
-                    }, graph.deselectAll);
-            });
+            expect(service.getSelectedElements()).toEqual(expected);
         });
     });
-
-
-})
+});

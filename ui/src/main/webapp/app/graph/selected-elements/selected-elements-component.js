@@ -22,43 +22,43 @@ function selectedElements() {
     return {
         templateUrl: 'app/graph/selected-elements/selected-elements.html',
         controller: SelectedElementsController,
-        controllerAs: 'ctrl'
+        controllerAs: 'ctrl',
+        bindings: {
+            model: '='
+        }
     }
 }
 
-function SelectedElementsController($scope, $timeout, events, graph, types, schema, time) {
+/**
+ * The selected elements component shows the user which elements they have selected in the graph.
+ * @param {*} schema The schema service
+ * @param {*} types The types service
+ * @param {*} time The time service
+ */
+function SelectedElementsController(schema, types, time) {
     var vm = this;
+    
+    vm.gafferSchema;
 
-    vm.selectedEdges = graph.getSelectedEdges();
-    vm.selectedEntities = graph.getSelectedEntities();
-    vm.schema;
-
-    var selectedElementsUpdate = function(selectedElements) {
-         vm.selectedEdges = selectedElements.edges;
-         vm.selectedEntities = selectedElements.entities;
-
-         if(!promise) {
-             promise = $timeout(function() {
-                 $scope.$apply();
-                 promise = null;
-             })
-         }
-    };
-
-    var promise;
-
+    /**
+     * Initialisation method which checks a model is injected into the component and retrieves a copy of the schema.
+     */
     vm.$onInit = function() {
-        schema.get().then(function(schema) {
-            vm.schema = schema;
+        if (!vm.model) {
+            throw "Selected elements must be injected via the model binding"
+        }
+
+        schema.get().then(function(gafferSchema) {
+            vm.gafferSchema = gafferSchema;
         });
-
-        events.subscribe('selectedElementsUpdate', selectedElementsUpdate);
     }
 
-    vm.$onDestroy = function() {
-        events.unsubscribe('selectedElementsUpdate', selectedElementsUpdate);
-    }
-
+    /**
+     * Method which resolves a value including dates.
+     * 
+     * @param {string} propName The property name
+     * @param {*} value the property value
+     */
     vm.resolve = function(propName, value) {
         var shortValue = types.getShortValue(value);
         if(time.isTimeProperty(propName)) {
@@ -67,6 +67,10 @@ function SelectedElementsController($scope, $timeout, events, graph, types, sche
         return shortValue;
     }
 
+    /**
+     * Resolves a stringified vertex.
+     * @param {*} value 
+     */
     vm.resolveVertex = function(value) {
         return types.getShortValue(JSON.parse(value));
     }
