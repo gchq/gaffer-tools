@@ -10,12 +10,13 @@ describe("The Graph Component", function() {
     var $q;
 
     var selectedElementsModel = {
-        edges: {},
-        entities: {}
+        edges: [],
+        entities: []
     }
 
     var $httpBackend;
     var ctrl;
+    var injectableCytoscape;
 
     beforeEach(module('app'));
 
@@ -56,6 +57,29 @@ describe("The Graph Component", function() {
         ctrl = $componentController('graph', {$scope: scope}, {selectedElements: selectedElementsModel});
     });
 
+    beforeEach(function() {
+        injectableCytoscape = cytoscape({
+            styleEnabled: true
+        });
+    });
+
+    beforeEach(function() {
+        jasmine.clock().install();
+    });
+
+    beforeEach(function() {
+        spyOn(window, 'cytoscape').and.callFake(function(obj) {
+            setTimeout(function() {
+                obj.ready();
+            }, 100)
+            return injectableCytoscape
+        });
+    });
+
+    afterEach(function() {
+        jasmine.clock().uninstall();
+    });
+
     describe('ctrl.$onInit()', function() {
         var config;
         var graphConf;
@@ -78,14 +102,6 @@ describe("The Graph Component", function() {
 
         beforeEach(function() {
             graphConf = null;
-        });
-
-        beforeEach(function() {
-            jasmine.clock().install();
-        });
-
-        afterEach(function() {
-            jasmine.clock().uninstall();
         });
 
         it('should throw an error if no selected elements model is injected', function() {
@@ -255,7 +271,6 @@ describe("The Graph Component", function() {
         });
 
         it('should load cytoscape', function() {
-            spyOn(window, 'cytoscape').and.callThrough();
             $httpBackend.whenGET('config/config.json').respond(200, {});
             ctrl.$onInit();
 
@@ -266,23 +281,10 @@ describe("The Graph Component", function() {
 
         it('should load the graph from the results', function() {
             spyOn(ctrl, 'update').and.stub();
-
-            spyOn(window, 'cytoscape').and.callFake(function(obj) {
-                
-                setTimeout(function() {
-                    obj.ready();
-                }, 100)
-                return {
-                    on: function(evt, cb) {},
-                    elements: function() { return [] }
-                }
-            });
-            
             $httpBackend.whenGET('config/config.json').respond(200, {});
             ctrl.$onInit();
 
             $httpBackend.flush();
-
             jasmine.clock().tick(101);
 
             scope.$digest();
@@ -295,16 +297,6 @@ describe("The Graph Component", function() {
             spyOn(ctrl, 'update').and.stub();
             spyOn(graph, 'getSearchTerm').and.returnValue('test');
             
-            spyOn(window, 'cytoscape').and.callFake(function(obj) {
-                
-                setTimeout(function() {
-                    obj.ready();
-                }, 100)
-                return {
-                    on: function(evt, cb) {},
-                    elements: function() { return []; }
-                }
-            });
             
             $httpBackend.whenGET('config/config.json').respond(200, {});
             ctrl.$onInit();
@@ -323,17 +315,6 @@ describe("The Graph Component", function() {
             spyOn(ctrl, 'update').and.stub();
             spyOn(graph, 'getSearchTerm').and.returnValue(undefined);
             
-            spyOn(window, 'cytoscape').and.callFake(function(obj) {
-                
-                setTimeout(function() {
-                    obj.ready();
-                }, 100)
-                return {
-                    on: function(evt, cb) {},
-                    elements: function() { return []; }
-                }
-            });
-            
             $httpBackend.whenGET('config/config.json').respond(200, {});
             ctrl.$onInit();
 
@@ -351,17 +332,6 @@ describe("The Graph Component", function() {
             spyOn(ctrl, 'update').and.stub();
             spyOn(graph, 'getSearchTerm').and.returnValue("");
             
-            spyOn(window, 'cytoscape').and.callFake(function(obj) {
-                
-                setTimeout(function() {
-                    obj.ready();
-                }, 100)
-                return {
-                    on: function(evt, cb) {},
-                    elements: function() { return []; }
-                }
-            });
-            
             $httpBackend.whenGET('config/config.json').respond(200, {});
             ctrl.$onInit();
 
@@ -378,17 +348,6 @@ describe("The Graph Component", function() {
             spyOn(ctrl, 'filter').and.stub();
             spyOn(ctrl, 'update').and.stub();
             spyOn(graph, 'getSearchTerm').and.returnValue(null);
-            
-            spyOn(window, 'cytoscape').and.callFake(function(obj) {
-                
-                setTimeout(function() {
-                    obj.ready();
-                }, 100)
-                return {
-                    on: function(evt, cb) {},
-                    elements: function() { return []; }
-                }
-            });
             
             $httpBackend.whenGET('config/config.json').respond(200, {});
             ctrl.$onInit();
@@ -418,25 +377,7 @@ describe("The Graph Component", function() {
     });
 
     describe('post initialisation', function() {
-        var injectableCytoscape;
         var elements;
-        
-        beforeEach(function() {
-            injectableCytoscape = cytoscape({})
-        });
-
-        beforeEach(function() {
-            jasmine.clock().install();
-        });
-
-        beforeEach(function() {
-            spyOn(window, 'cytoscape').and.callFake(function(obj) {
-                setTimeout(function() {
-                    obj.ready();
-                }, 100)
-                return injectableCytoscape
-            });
-        });
 
         beforeEach(function() {
             spyOn(ctrl, 'update').and.callThrough();
@@ -474,10 +415,6 @@ describe("The Graph Component", function() {
                     }
                 ]
             }
-        });
-
-        afterEach(function() {
-            jasmine.clock().uninstall();
         });
 
         describe('ctrl.$onDestroy()', function() {
@@ -570,10 +507,10 @@ describe("The Graph Component", function() {
             });
     
             it('should use the selected elements if not event is supplied', function() {
-                ctrl.selectedElements.entities = {
-                    '"id1"': [ {}, {}],
-                    '"id2"': [ {} ]
-                }
+                ctrl.selectedElements.entities = [
+                    '"id1"',
+                    '"id2"'
+                ]
     
                 ctrl.quickHop();
     
@@ -595,7 +532,6 @@ describe("The Graph Component", function() {
 
             beforeEach(function() {
                 ctrl.update(elements);
-
                 injectableCytoscape.getElementById('"foo"').select();
             });
            
@@ -615,19 +551,15 @@ describe("The Graph Component", function() {
     
             it('should reset the selected elements', function() {
                 ctrl.selectedElements = {
-                    entities: {
-                        'a': [ {} ]
-                    },
-                    edges: {
-                        'a|b|true|eg': [ {} ]
-                    }
+                    entities: [ 'a' ],
+                    edges: [ 'a|b|true|eg' ] 
                 };
     
                 ctrl.removeSelected();
     
                 expect(ctrl.selectedElements).toEqual({
-                    entities: {},
-                    edges: {}
+                    entities: [],
+                    edges: []
                 });
             });
         });
@@ -711,14 +643,14 @@ describe("The Graph Component", function() {
                 expect(ids).toContain(JSON.stringify(elements.edges[0].destination));
             }));
     
-            it('should use a combination of source, destination, directed and group for edge ids', function() {
+            it('should use a combination of source, destination, directed and group for edge ids seperated by null characters', function() {
                 ctrl.update(elements);
                 var edges = injectableCytoscape.edges();
     
                 expect(edges.size()).toEqual(1);
     
                 edges.forEach(function(edge) {
-                    expect(edge.id()).toEqual('"foo"|"bar"|true|foobarEdge')
+                    expect(edge.id()).toEqual('"foo"\0"bar"\0true\0foobarEdge')
                 });
             });
         })

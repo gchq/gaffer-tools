@@ -39,8 +39,6 @@ function GraphController($q, graph, config, error, loading, query, operationOpti
     var tappedTimeout;
     var cytoscapeGraph;    // Internal graph model which gets reloaded every time graph page is loaded.
 
-    var graphData = {entities: {}, edges: {}};
-
     var configuration = {
         name: 'cytoscape-ngraph.forcelayout',
         async: {
@@ -235,10 +233,6 @@ function GraphController($q, graph, config, error, loading, query, operationOpti
                 tappedTimeout = setTimeout(function(){ tappedBefore = null; }, 300);
                 tappedBefore = tappedNow;
             }
-        });
-
-        cytoscapeGraph.on('remove', function(evt) {
-            deselect(evt.cyTarget);
         });
 
         cytoscapeGraph.on('doubleTap', 'node', vm.quickHop);
@@ -521,9 +515,9 @@ function GraphController($q, graph, config, error, loading, query, operationOpti
         if(event) {
             input = [event.cyTarget.id()];
         } else {
-            input = Object.keys(vm.selectedElements.entities);
+            input = vm.selectedElements.entities;
         }
-        if(input && input.length > 0) {
+        if (input && input.length > 0) {
             loading.load();
             var operation = {
                  class: "uk.gov.gchq.gaffer.operation.impl.get.GetElements",

@@ -47,8 +47,8 @@ describe('The common service', function() {
             expect(service.parseVertex(vertex)).toEqual(expected);
         });
 
-        it('should return Numbers as themselves', function() {
-            expect(service.parseVertex(1)).toEqual(1);
+        it('should wrap numbers in strings', function() {
+            expect(service.parseVertex(1)).toEqual('1');
         });
 
         it('should return null as null', function() {
