@@ -653,7 +653,7 @@ describe("The Graph Component", function() {
                     expect(edge.id()).toEqual('"foo"\0"bar"\0true\0foobarEdge')
                 });
             });
-        })
+        });
     
         describe('ctrl.reset()', function() {
     
