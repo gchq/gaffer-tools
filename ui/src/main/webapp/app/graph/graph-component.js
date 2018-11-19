@@ -592,16 +592,18 @@ function GraphController($q, graph, config, error, loading, query, operationOpti
      */
     vm.filter = function(searchTerm) {
         searchTerm = searchTerm.toLowerCase();
-        var nodes = cytoscapeGraph.nodes();
-        for(var i in nodes) {
-            if(nodes[i].data && nodes[i].data('id')) {
-                if(nodes[i].data('id').toLowerCase().indexOf(searchTerm) === -1) {
-                    nodes[i].addClass("filtered");
-                } else {
-                    nodes[i].removeClass("filtered");
+        cytoscapeGraph.batch(function() {
+            var nodes = cytoscapeGraph.nodes();
+            for(var i in nodes) {
+                if(nodes[i].data && nodes[i].data('id')) {
+                    if(nodes[i].data('id').toLowerCase().indexOf(searchTerm) === -1) {
+                        nodes[i].addClass("filtered");
+                    } else {
+                        nodes[i].removeClass("filtered");
+                    }
                 }
             }
-        }
+        });
     }
 
     /**
