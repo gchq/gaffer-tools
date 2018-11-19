@@ -36,7 +36,7 @@ function selectedElements() {
  */
 function SelectedElementsController(results, types, time, common, events) {
     var vm = this;
-
+    
     vm.processedResults = {
         entities: {},
         edges: {}

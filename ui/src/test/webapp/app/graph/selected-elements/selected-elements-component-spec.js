@@ -105,9 +105,10 @@ describe('The Selected Elements Component', function() {
                     }
                 }
             ]);
-        })
+        });
 
-        it('should convert numerical object properties', function() {
+        it('should return the short value if the value is not a time property', function() {
+
             spyOn(results, 'get').and.returnValue({
                 entities: [],
                 edges: [
@@ -320,7 +321,6 @@ describe('The Selected Elements Component', function() {
             expect(time.getDateString).toHaveBeenCalledWith("dateProp", 1234567890)
             expect(ctrl.processedResults.entities['"test"'][0].properties.dateProp).toEqual("25/12/2018");
         }));
-
     });
 
     describe('ctrl.resolveEdge()', function() {

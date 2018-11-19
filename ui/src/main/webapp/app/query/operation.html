@@ -82,11 +82,8 @@
                             title-class="layout-padding md-title section-title"
                             parameters="ctrl.model.selectedOperation.parameters">
                     </parameter-form>
-
+                    
                     <options ng-if="ctrl.model.selectedOperation.fields.options" model="ctrl.model.fields.options"></options>
-                    <!-- <options-form ng-if="ctrl.showOperationOptionsForm && ctrl.model.selectedOperation.fields.options"
-                                  model="ctrl.model.fields.options">
-                    </options-form> -->
 
                     <div ng-if="ctrl.hasOtherConfig()">
                         <h3 class="section-title md-title">
