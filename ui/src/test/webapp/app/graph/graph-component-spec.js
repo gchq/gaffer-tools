@@ -2,6 +2,7 @@ describe("The Graph Component", function() {
 
     var graph;
     var events;
+    var types;
     var scope;
     var vertices = [];
     var gafferSchema = {};
@@ -30,23 +31,24 @@ describe("The Graph Component", function() {
                     return vertices;
                 },
                 getVertexTypeFromEntityGroup: function() {
-                    return 'vertex';
+                    return {'vertex': { "class": "java.lang.String"}};
                 },
                 getVertexTypesFromEdgeGroup: function() {
-                    return { 'source': 'vertex', 'destination': 'vertex' };
+                    return { 'source': {'src': { "class": "java.lang.String"}}, 'destination': {'dest': { "class": "java.lang.String"}} };
                 }
             }
         });
     }));
 
     
-    beforeEach(inject(function(_graph_, _events_, _$rootScope_, _$componentController_, _$q_, _$httpBackend_) {
+    beforeEach(inject(function(_graph_, _events_, _$rootScope_, _$componentController_, _$q_, _$httpBackend_, _types_) {
         graph = _graph_;
         events = _events_;
         scope = _$rootScope_.$new();
         $componentController = _$componentController_;
         $q = _$q_;
         $httpBackend = _$httpBackend_;
+        types = _types_;
     }));
     
     beforeEach(function() {
@@ -75,6 +77,16 @@ describe("The Graph Component", function() {
             return injectableCytoscape
         });
     });
+
+    beforeEach(function() {
+        spyOn(types, 'createParts').and.callFake(function(clazz, value) {
+            if (clazz === 'java.lang.String') {
+                return {
+                    undefined: value
+                }
+            }
+        })
+    })
 
     afterEach(function() {
         jasmine.clock().uninstall();
