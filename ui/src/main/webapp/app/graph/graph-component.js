@@ -248,15 +248,15 @@ function GraphController($q, graph, config, error, loading, query, operationOpti
         var oldStyleSheet = cytoscapeGraph.style().json();
         var newStyleSheet = [
             {
-                selector: '.defaultEdge',
+                selector: 'edge',
                 style: configuration.defaultStyle.edges
             },
             {
-                selector: '.defaultVertex',
+                selector: 'node',
                 style: configuration.defaultStyle.vertices
             },
             {
-                selector: '.entity',
+                selector: 'node[entity]',
                 style: configuration.defaultStyle.entityWrapper
             }
         ]
@@ -289,7 +289,7 @@ function GraphController($q, graph, config, error, loading, query, operationOpti
 
             if (standardStyle) {
                 styles.push({
-                    selector: '.vertex_' + vertexType,
+                    selector: 'node[' + vertexType + ']',
                     style: standardStyle
                 });
             }
@@ -298,7 +298,7 @@ function GraphController($q, graph, config, error, loading, query, operationOpti
             for (var field in fieldOverrides) {
                 for (var fieldValue in fieldOverrides[field]) {
                     styles.push({
-                        selector: '.vertex_' + vertexType + '_' + field + '_' + fieldValue,
+                        selector: 'node[' + vertexType + '][' + field + '="' + fieldValue + '"]',
                         style: fieldOverrides[field][fieldValue]
                     });
                 }
@@ -313,7 +313,7 @@ function GraphController($q, graph, config, error, loading, query, operationOpti
 
         for (var edgeGroup in configuration.style.edges) {
             styles.push({
-                selector: '.edge_' + edgeGroup,
+                selector: 'edge[group="' + edgeGroup + '"]',
                 style: configuration.style.edges[edgeGroup]
             });
         }
@@ -375,55 +375,39 @@ function GraphController($q, graph, config, error, loading, query, operationOpti
     vm.update = function(results) {
         // Array of cytoscape elements to add
         var elementsToAdd = [];
-        // A key value list of cytoscape id's to new css classes (in array form)
-        var elementsToMergeClasses = {};
+        // A key value list of cytoscape id's to new Data (in object form)
+        var elementsToMergeData = {};
 
         for (var i in results.entities) {
 
-            // create classes
+            // create data
             var entity = angular.copy(results.entities[i]);
-            var classes = createEntityClasses(entity);
-            // create id to use for cytoscape indexing
-            var id = common.parseVertex(entity.vertex);
-            addVertices(elementsToAdd, elementsToMergeClasses, entity.vertex, id, classes);     
+            var data = createEntityData(entity);
+            addVertices(elementsToAdd, elementsToMergeData, data);     
         }
 
         for (var i in results.edges) {
 
             var edge = angular.copy(results.edges[i]);
-            var edgeClasses = createEdgeClasses(edge);
+            var edgeData = createEdgeData(edge);
 
-            // create the ends of the edge
-            var source = common.parseVertex(edge.source);
-            var destination = common.parseVertex(edge.destination);
-
-            // Create the Id
-            var id = source + "\0" + destination + "\0" + edge.directed + "\0" + edge.group;
-
-            addVertices(elementsToAdd, elementsToMergeClasses, edge.source, source, edgeClasses.source);
-            addVertices(elementsToAdd, elementsToMergeClasses, edge.destination, destination, edgeClasses.destination);
+            addVertices(elementsToAdd, elementsToMergeData, edgeData.source);
+            addVertices(elementsToAdd, elementsToMergeData, edgeData.destination);
             
             // if it does not exist in the graph, add it.
-            if (cytoscapeGraph.getElementById(id).length == 0) {
+            if (cytoscapeGraph.getElementById(edgeData.edge.id).length == 0) {
                 elementsToAdd.push({
                     group: 'edges',
-                    data: {
-                        id: id,
-                        source: source,
-                        target: destination,
-                        group: edge.group
-                    },
-                    classes: edgeClasses.edge.join(' '),
-                    selected: common.arrayContainsValue(vm.selectedElements.edges, id)
+                    data: edgeData.edge,
+                    selected: common.arrayContainsValue(vm.selectedElements.edges, edgeData.edge.id)
                 });
             }
-            
         }
         
         cytoscapeGraph.batch(function() {
             cytoscapeGraph.add(elementsToAdd);
-            for (var id in elementsToMergeClasses) {
-                cytoscapeGraph.getElementById(id).addClass(elementsToMergeClasses[id].join(' '));
+            for (var id in elementsToMergeData) {
+                cytoscapeGraph.getElementById(id).data(elementsToMergeData[id]);
             }
 
             vm.redraw();
@@ -431,31 +415,28 @@ function GraphController($q, graph, config, error, loading, query, operationOpti
 
     }
 
-    var addVertices = function(elementsToAdd, elementsToMergeClasses, vertex, id, classes) {
+    var addVertices = function(elementsToAdd, elementsToMergeData, data) {
+        var id = data.id;
+        var existingIndex = indexOfElementWithId(elementsToAdd, id);
         // if it already exists in the graph, add it to the queue of classes to be merged
-        var existingElementIndex = indexOfElementWithId(elementsToAdd, id);
         if (cytoscapeGraph.getElementById(id).length > 0) {
-            if (elementsToMergeClasses[id]) {
-                elementsToMergeClasses[id] = common.concatUniqueValues(elementsToMergeClasses[id], classes);
+            if (elementsToMergeData[id]) {
+                elementsToMergeData[id] = angular.merge(elementsToMergeData[id], data);
             } else {
-                elementsToMergeClasses[id] = classes;
+                elementsToMergeData[id] = data;
             }
-        } else if (existingElementIndex !== -1) {
-            // if it already exists in the elements to add, merge the classes
-            elementsToAdd[existingElementIndex].classes = common.concatUniqueValues(elementsToAdd[existingElementIndex].classes.split(' '), classes).join(' ');
+        } else if (existingIndex !== -1) {
+            // if it already exists in the elements to add, merge the data
+            elementsToAdd[existingIndex].data = angular.merge(elementsToAdd[existingIndex].data, data);
         } else {
             // Otherwise add it
             elementsToAdd.push({
                 group: 'nodes',
-                data: {
-                    id: id,
-                    label: types.getShortValue(vertex)
-                },
+                data: data,
                 position: {
                     x: 100,
                     y: 100
                 },
-                classes: classes.join(' '),
                 selected: common.arrayContainsValue(vm.selectedElements.entities, id)
             });
         }
@@ -471,37 +452,53 @@ function GraphController($q, graph, config, error, loading, query, operationOpti
         return -1
     }
 
-    var createEntityClasses = function(entity) {
+    var createEntityData = function(entity) {
         var vertexType = schema.getVertexTypeFromEntityGroup(entity.group);
-        return createVertexClasses(entity.vertex, vertexType, true);
+        return createVertexData(entity.vertex, vertexType, true);
     }
 
-    var createVertexClasses = function(vertex, vertexTypeDefinition, isEntity) {
+    var createVertexData = function(vertex, vertexTypeDefinition, isEntity) {
 
         var vertexType = Object.keys(vertexTypeDefinition)[0];
 
-        var cssClasses = [ "defaultVertex", "vertex_" + vertexType ];
+        var data = {
+            entity: isEntity,
+            id: common.parseVertex(vertex),
+            label: types.getShortValue(vertex)
+        }
+
+        data[vertexType] = true;
+
         var vertexClass = vertexTypeDefinition[vertexType].class;
         var parts = types.createParts(vertexClass, vertex);
         
         for (var key in parts) {
-            cssClasses.push("vertex_" + vertexType + "_" + key + "_" + parts[key]);
+            data[key] = parts[key];
         }
 
-        if (isEntity) {
-            cssClasses.push("entity");
-        }
 
-        return cssClasses;
+        return data;
     }
 
-    var createEdgeClasses = function(edge) {
+    var createEdgeData = function(edge) {
         var vertexTypes = schema.getVertexTypesFromEdgeGroup(edge.group);
 
+        // create the ends of the edge
+        var source = common.parseVertex(edge.source);
+        var destination = common.parseVertex(edge.destination);
+
+        // Create the Id
+        var id = source + "\0" + destination + "\0" + edge.directed + "\0" + edge.group;
+
         return {
-            source: createVertexClasses(edge.source, vertexTypes.source),
-            destination: createVertexClasses(edge.destination, vertexTypes.destination),
-            edge: [ 'defaultEdge', 'edge_' + edge.group ]
+            source: createVertexData(edge.source, vertexTypes.source),
+            destination: createVertexData(edge.destination, vertexTypes.destination),
+            edge: {
+                id: id,
+                source: source,
+                target: destination,
+                group: edge.group
+            }
         };
     }
 
