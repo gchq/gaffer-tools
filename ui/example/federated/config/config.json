@@ -8,13 +8,26 @@
       {
         "key": "gaffer.federatedstore.operation.graphIds",
         "label": "Graph IDs",
-        "description": "Restrict operations and schema reloads to these comma separated graphs"
+        "value": [],
+        "description": "Restrict operations and schema reloads to these comma separated graphs",
+        "autocomplete": {
+          "multiple": true,
+          "asyncOptions": {
+            "class": "uk.gov.gchq.gaffer.federatedstore.operation.GetAllGraphIds"
+          }
+        }
       },
       {
         "key": "gaffer.federatedstore.operation.skipFailedFederatedStoreExecute",
         "value": "true",
         "label": "Skip failures",
-        "description": "Ignore operation exceptions"
+        "description": "Ignore operation exceptions",
+        "autocomplete": {
+          "options": [
+            "true",
+            "false"
+          ]
+        }
       }
     ]
   }
