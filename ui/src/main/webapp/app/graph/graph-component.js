@@ -39,8 +39,6 @@ function GraphController($q, graph, config, error, loading, query, operationOpti
     var tappedTimeout;
     var cytoscapeGraph;    // Internal graph model which gets reloaded every time graph page is loaded.
 
-    var graphData = {entities: {}, edges: {}};
-
     var configuration = {
         name: 'cytoscape-ngraph.forcelayout',
         async: {
@@ -147,6 +145,23 @@ function GraphController($q, graph, config, error, loading, query, operationOpti
     }
 
     /**
+     * Loads cytoscape, stops the loading indicator and runs a filter if one exists.
+     */
+    var load = function() {
+        createCytoscapeGraph().then(function(cy) {
+            cytoscapeGraph = cy;
+            generateStylesheets();
+            vm.reset()
+            vm.graphLoading = false;
+            var searchTerm = graph.getSearchTerm();
+            
+            if (searchTerm !== null && searchTerm !== undefined && searchTerm !== "") {
+                vm.filter(searchTerm)
+            }
+        });
+    }
+    
+    /**
      * Loads cytoscape graph onto an element containing the "graphCy" id. It also registers the
      * handlers for select and deselect events.
      */
@@ -190,15 +205,23 @@ function GraphController($q, graph, config, error, loading, query, operationOpti
             }
         });
 
-        cytoscapeGraph.on('select', function(evt){
-            select(evt.cyTarget);
+        cytoscapeGraph.on('select', 'node', function(evt){
+            selectNode(evt.cyTarget);
         });
 
-        cytoscapeGraph.on('unselect', function(evt){
-            unSelect(evt.cyTarget);
-        })
+        cytoscapeGraph.on('select', 'edge', function(evt){
+            selectEdge(evt.cyTarget);
+        });
 
-        cytoscapeGraph.on('tap', function(event) {
+        cytoscapeGraph.on('unselect', 'node', function(evt){
+            deselectNode(evt.cyTarget);
+        });
+
+        cytoscapeGraph.on('unselect', 'edge', function(evt){
+            deselectEdge(evt.cyTarget);
+        });
+
+        cytoscapeGraph.on('tap', 'node', function(event) {
             var tappedNow = event.cyTarget;
             if (tappedTimeout && tappedBefore) {
                 clearTimeout(tappedTimeout);
@@ -212,204 +235,136 @@ function GraphController($q, graph, config, error, loading, query, operationOpti
             }
         });
 
-        cytoscapeGraph.on('remove', function(evt) {
-            removeFromGraphData(evt.cyTarget);
-            unSelect(evt.cyTarget);
-        });
-
         cytoscapeGraph.on('doubleTap', 'node', vm.quickHop);
 
         return deferred.promise;
     }
 
     /**
-     * Loads cytoscape, stops the loading indicator and runs a filter if one exists.
+     * Creates Stylesheets from the graph configuration
+     * and loads the them into cytoscape.
      */
-    var load = function() {
-        createCytoscapeGraph().then(function(cy) {
-            cytoscapeGraph = cy;
-            vm.reset()
-            vm.graphLoading = false;
-            var searchTerm = graph.getSearchTerm();
-            
-            if (searchTerm !== null && searchTerm !== undefined && searchTerm !== "") {
-                vm.filter(searchTerm)
+    var generateStylesheets = function() {
+        var oldStyleSheet = cytoscapeGraph.style().json();
+        var newStyleSheet = [
+            {
+                selector: 'edge',
+                style: configuration.defaultStyle.edges
+            },
+            {
+                selector: 'node',
+                style: configuration.defaultStyle.vertices
+            },
+            {
+                selector: 'node[entity]',
+                style: configuration.defaultStyle.entityWrapper
             }
-        });
-    }
-
-
-    /**
-     * Removes an element from the graphData model.
-     * @param {Cytoscape element} element an element from cytoscape
-     */
-    var removeFromGraphData = function(element) {
-        var id = element.id();
-        delete graphData.edges[id]
-        delete graphData.entities[id];
-    }
-
-    /**
-     * Defines the behaviour when an element in cytoscape is selected.
-     * First attempts to select an entity, then edge, then vertex.
-     * @param {Object} element
-     */
-    function select(element) {
-        if(selectEntityId(element.id())) {
-            return;
-        }
-
-        if(selectEdgeId(element.id())) {
-            return;
-        }
-
-        selectVertex(element.id());
-    }
-
-    /**
-     * Builds up a style using the configuration and supplied edge group.
-     * @param {string} group the edge group
-     */
-    var getEdgeStyling = function(group) {
-        if (!configuration.style || !configuration.style.edges || !configuration.style.edges[group]) {
-            return configuration.defaultStyle.edges;
-        }
-
-        var copy = angular.copy(configuration.defaultStyle.edges);
-        angular.merge(copy, configuration.style.edges[group]);
-
-        return copy;
-    }
-
-    /**
-     * Builds up a style using the config and the supplied id and vertexType
-     * @param {string} vertexType the gaffer vertexType 
-     * @param {*} id The vertex
-     */
-    var getNodeStyling = function(vertexType, id) {
-        var style = angular.copy(configuration.defaultStyle.vertices);
+        ]
 
         if (!configuration.style) {
-            if (common.objectContainsValue(graphData.entities, id)) {
-                angular.merge(style, configuration.defaultStyle.entityWrapper);
-            }
-            return style;
+            cytoscapeGraph.style().fromJson(common.concatUniqueObjects(oldStyleSheet, newStyleSheet)).update();
+            return;
         }
 
-        var customVertexStyling = configuration.style.vertexTypes ? configuration.style.vertexTypes[Object.keys(vertexType)[0]] : null;
-        if (customVertexStyling) {
-            angular.merge(style, customVertexStyling.style);
+        var nodeSpecificStyles = generateNodeSpecificStyles();
 
-            if (customVertexStyling.fieldOverrides) {
-                var vertexClass = Object.values(vertexType)[0].class;
-                var vertexParts = types.createParts(vertexClass, JSON.parse(id));
-                for (var fieldName in customVertexStyling.fieldOverrides) {
-                    if (vertexParts[fieldName]) {
-                        if (common.objectContainsValue(customVertexStyling.fieldOverrides[fieldName], vertexParts[fieldName])) {
-                            angular.merge(style, customVertexStyling.fieldOverrides[fieldName][vertexParts[fieldName]]);
-                        }
-                    }
+        for (var i in nodeSpecificStyles) {
+            newStyleSheet.push(nodeSpecificStyles[i]);
+        }
+
+        var edgeSpecificStyles = generateEdgeSpecificStyles();
+
+        for (var i in edgeSpecificStyles) {
+            newStyleSheet.push(edgeSpecificStyles[i]);
+        }
+        
+        cytoscapeGraph.style().fromJson(common.concatUniqueObjects(oldStyleSheet, newStyleSheet)).update()
+    }
+
+    var generateNodeSpecificStyles = function() {
+        var styles = [];
+
+        for (var vertexType in configuration.style.vertexTypes) {
+            var standardStyle = configuration.style.vertexTypes[vertexType].style;
+
+            if (standardStyle) {
+                styles.push({
+                    selector: 'node[' + vertexType + ']',
+                    style: standardStyle
+                });
+            }
+
+            var fieldOverrides = configuration.style.vertexTypes[vertexType].fieldOverrides;
+            for (var field in fieldOverrides) {
+                for (var fieldValue in fieldOverrides[field]) {
+                    styles.push({
+                        selector: 'node[' + vertexType + '][' + field + '="' + fieldValue + '"]',
+                        style: fieldOverrides[field][fieldValue]
+                    });
                 }
             }
         }
 
-        if (common.objectContainsValue(graphData.entities, id)) {
-            angular.merge(style, configuration.defaultStyle.entityWrapper);
-        }
-
-        return style;
+        return styles;
     }
 
+    var generateEdgeSpecificStyles = function() {
+        var styles = [];
 
-    /**
-     * Appends the element to selected entities, creates an input object from the ID and adds it to the
-     * operation chain's first operation.
-     * @param {String} id The vertex
-     * @param {Array} entities The elements with the id
-     */
-    function selectEntities(id, entities) {
-        vm.selectedElements.entities[id] = entities;
+        for (var edgeGroup in configuration.style.edges) {
+            styles.push({
+                selector: 'edge[group="' + edgeGroup + '"]',
+                style: configuration.style.edges[edgeGroup]
+            });
+        }
+
+        return styles;
+    }
+
+    var selectNode = function(element) {
+        var id = element.id();
+        common.pushValueIfUnique(id, vm.selectedElements.entities);
+
+
         schema.get().then(function(gafferSchema) {
-            var vertex = JSON.parse(id);
+            if (typeof id === 'string') {
+                id = JSON.parse(id);
+            }
             var vertices = schema.getSchemaVertices();
             var vertexClass = gafferSchema.types[vertices[0]].class;
             operationChain.addInput({
                 valueClass: vertexClass,
-                parts: types.createParts(vertexClass, vertex)
+                parts: types.createParts(vertexClass, id)
             });
         });
     }
 
-    /**
-     * Selects all elements with the given vertex (entityId)
-     * @param {String} entityId a stringified vertex
-     * @returns true if entities were found in the array with the id
-     * @returns false if no entities were found with the given id
-     */
-    function selectEntityId(entityId) {
-        for (var id in graphData.entities) {
-            if(entityId == id) {
-                selectEntities(id, graphData.entities[id]);
-                return true;
-            }
-        }
-        return false;
-    }
-
-    /**
-     * Adds the id and edges to the selected elements object.
-     * @param {String} id The ID
-     * @param {Array} edges The array of edges assocated with the id
-     */
-    function selectEdges(id, edges) {
-        vm.selectedElements.edges[id] = edges;
+    var selectEdge = function(element) {
+        common.pushValueIfUnique(element.id(), vm.selectedElements.edges);
         $scope.$apply();
     }
 
-    /**
-     * Selects all edges in the graph with the given id
-     * @param {String} edgeId The Edge ID
-     * @returns true if an edge exists in the graph with the given id
-     * @returns false if no edge was found in the graph with the given id
-     */
-    function selectEdgeId(edgeId) {
-        for (var id in graphData.edges) {
-            if (edgeId == id) {
-                selectEdges(id, graphData.edges[id]);
-                return true;
-            }
-        }
-        return false;
-    }
-
-    /**
-     * Adds a seed to the selected entities
-     * @param {String} vertexId
-     */
-    function selectVertex(vertexId) {
-        selectEntities(vertexId, [{vertex: vertexId}]);
-    }
-
-    /**
-     * Removes an element from the selected elements and input service and fires update events
-     * @param {Object} element The cytoscape element
-     */
-    function unSelect(element) {
+    var deselectNode = function(element) {
         var id = element.id();
-        if (vm.selectedElements.entities[id]) {
-            schema.get().then(function(gafferSchema) {
-                var vertex = JSON.parse(id);
-                var vertices = schema.getSchemaVertices();
-                var vertexClass = gafferSchema.types[vertices[0]].class;
-                operationChain.removeInput({
-                    valueClass: vertexClass,
-                    parts: types.createParts(vertexClass, vertex)
-                });
+        vm.selectedElements.entities.splice(vm.selectedElements.entities.indexOf(id), 1);
+
+        schema.get().then(function(gafferSchema) {
+            if (typeof id === 'string') {
+                id = JSON.parse(id);
+            }
+            var vertices = schema.getSchemaVertices();
+            var vertexClass = gafferSchema.types[vertices[0]].class;
+            operationChain.removeInput({
+                valueClass: vertexClass,
+                parts: types.createParts(vertexClass, id)
             });
-            delete vm.selectedElements.entities[id];
-        } else if(vm.selectedElements.edges[id]) {
-            delete vm.selectedElements.edges[id];
-        }
+        });        
+    }
+
+    var deselectEdge = function(element) {
+        var id = element.id();
+        vm.selectedElements.edges.splice(vm.selectedElements.edges.indexOf(id), 1);
+        $scope.$apply();
     }
 
     /**
@@ -418,161 +373,133 @@ function GraphController($q, graph, config, error, loading, query, operationOpti
      * @param {Array} results
      */
     vm.update = function(results) {
+        // Array of cytoscape elements to add
+        var elementsToAdd = [];
+        // A key value list of cytoscape id's to new Data (in object form)
+        var elementsToMergeData = {};
+
         for (var i in results.entities) {
+
+            // create data
             var entity = angular.copy(results.entities[i]);
-            entity.vertex = common.parseVertex(entity.vertex);
-            var id = entity.vertex;
-            if(id in graphData.entities) {
-                common.pushObjectIfUnique(entity, graphData.entities[id]);
-            } else {
-                graphData.entities[id] = [entity];
-            }
+            var data = createEntityData(entity);
+            addVertices(elementsToAdd, elementsToMergeData, data);     
         }
 
         for (var i in results.edges) {
+
             var edge = angular.copy(results.edges[i]);
-            edge.source = common.parseVertex(edge.source);
-            edge.destination = common.parseVertex(edge.destination);
-            var id = edge.source + "|" + edge.destination + "|" + edge.directed + "|" + edge.group;
-            if(id in graphData.edges) {
-                common.pushObjectIfUnique(edge, graphData.edges[id]);
-            } else {
-                graphData.edges[id] = [edge];
+            var edgeData = createEdgeData(edge);
+
+            addVertices(elementsToAdd, elementsToMergeData, edgeData.source);
+            addVertices(elementsToAdd, elementsToMergeData, edgeData.destination);
+            
+            // if it does not exist in the graph, add it.
+            if (cytoscapeGraph.getElementById(edgeData.edge.id).length == 0) {
+                elementsToAdd.push({
+                    group: 'edges',
+                    data: edgeData.edge,
+                    selected: common.arrayContainsValue(vm.selectedElements.edges, edgeData.edge.id)
+                });
             }
         }
+        
+        cytoscapeGraph.batch(function() {
+            cytoscapeGraph.add(elementsToAdd);
+            for (var id in elementsToMergeData) {
+                cytoscapeGraph.getElementById(id).data(elementsToMergeData[id]);
+            }
 
-        updateGraph(graphData);
+            vm.redraw();
+        });
+
     }
 
-    /**
-     * Updates cytoscape with the graph data
-     * @param {Array} results
-     */
-    var updateGraph = function(results) {
-        for (var id in results.entities) {
-            var existingNodes = cytoscapeGraph.getElementById(id);
-            var isSelected = common.objectContainsValue(vm.selectedElements.entities, id);
-            var style = getNodeStyling(schema.getVertexTypeFromEntityGroup(results.entities[id][0].group), id);
-            if(existingNodes.length > 0) {
-
-                if(isSelected) {
-                   existingNodes.select();
-                } else {
-                   existingNodes.unselect();
-                }
-                if (style) {
-                    existingNodes.css(style)
-                }
+    var addVertices = function(elementsToAdd, elementsToMergeData, data) {
+        var id = data.id;
+        var existingIndex = indexOfElementWithId(elementsToAdd, id);
+        // if it already exists in the graph, add it to the queue of classes to be merged
+        if (cytoscapeGraph.getElementById(id).length > 0) {
+            if (elementsToMergeData[id]) {
+                elementsToMergeData[id] = angular.merge(elementsToMergeData[id], data);
             } else {
-                var elements = cytoscapeGraph.add({
-                    group: 'nodes',
-                    data: {
-                        id: id,
-                        label: createLabel(id)
-                    },
-                    position: {
-                        x: 100,
-                        y: 100
-                    },
-                    selected: isSelected
-                });
-                if (style) {
-                    elements.css(style);
-                }
+                elementsToMergeData[id] = data;
+            }
+        } else if (existingIndex !== -1) {
+            // if it already exists in the elements to add, merge the data
+            elementsToAdd[existingIndex].data = angular.merge(elementsToAdd[existingIndex].data, data);
+        } else {
+            // Otherwise add it
+            elementsToAdd.push({
+                group: 'nodes',
+                data: data,
+                position: {
+                    x: 100,
+                    y: 100
+                },
+                selected: common.arrayContainsValue(vm.selectedElements.entities, id)
+            });
+        }
+    }
+
+    var indexOfElementWithId = function(list, id) {
+        for (var i in list) {
+            if (list[i].data.id === id) {
+                return i;
             }
         }
 
-        for (var id in results.edges) {
-            var edge = results.edges[id][0];
-            var existingNodes = cytoscapeGraph.getElementById(edge.source);
-            var isSelected = common.objectContainsValue(vm.selectedElements.entities, edge.source);
-            var style = getNodeStyling(schema.getVertexTypesFromEdgeGroup(edge.group).source, edge.source);
-            if(existingNodes.length > 0) {
-                if(isSelected) {
-                   existingNodes.select();
-                } else {
-                   existingNodes.unselect();
-                }
-                if (style) {
-                    existingNodes.css(style);
-                }
-            } else {
-                var elements = cytoscapeGraph.add({
-                    group: 'nodes',
-                    data: {
-                        id: edge.source,
-                        label: createLabel(edge.source),
-                    },
-                    position: {
-                        x: 100,
-                        y: 100
-                    },
-                    selected:isSelected
-                });
+        return -1
+    }
 
-                if (style) {
-                    elements.css(style);
-                }
-            }
+    var createEntityData = function(entity) {
+        var vertexType = schema.getVertexTypeFromEntityGroup(entity.group);
+        return createVertexData(entity.vertex, vertexType, true);
+    }
 
-            existingNodes = cytoscapeGraph.getElementById(edge.destination);
-            isSelected = common.objectContainsValue(vm.selectedElements.entities, edge.destination);
-            style = getNodeStyling(schema.getVertexTypesFromEdgeGroup(edge.group).destination, edge.destination);
-            if(existingNodes.length > 0) {
-                if(isSelected) {
-                   existingNodes.select();
-                } else {
-                   existingNodes.unselect();
-                }
-                if (style) {
-                    existingNodes.css(style);
-                }
-            } else {
-                var elements = cytoscapeGraph.add({
-                    group: 'nodes',
-                    data: {
-                        id: edge.destination,
-                        label: createLabel(edge.destination)
-                    },
-                    position: {
-                        x: 100,
-                        y: 100
-                    },
-                    selected: isSelected
-                });
+    var createVertexData = function(vertex, vertexTypeDefinition, isEntity) {
 
-                if (style) {
-                    elements.css(style);
-                }
-            }
+        var vertexType = Object.keys(vertexTypeDefinition)[0];
 
-            var existingEdges = cytoscapeGraph.getElementById(id);
-            isSelected = common.objectContainsValue(vm.selectedElements.edges, id);
-            if(existingEdges.length > 0) {
-                if(isSelected) {
-                   existingEdges.select();
-                } else {
-                   existingEdges.unselect();
-                }
-            } else {
-                var style = getEdgeStyling(edge.group);
-                var elements = cytoscapeGraph.add({
-                    group: 'edges',
-                    data: {
-                        id: id,
-                        source: edge.source,
-                        target: edge.destination,
-                        group: edge.group,
-                    },
-                    selected: isSelected
-                });
-
-                if (style) {
-                    elements.css(style);
-                }
-            }
+        var data = {
+            entity: isEntity,
+            id: common.parseVertex(vertex),
+            label: types.getShortValue(vertex)
         }
-        vm.redraw();
+
+        data[vertexType] = true;
+
+        var vertexClass = vertexTypeDefinition[vertexType].class;
+        var parts = types.createParts(vertexClass, vertex);
+        
+        for (var key in parts) {
+            data[key] = parts[key];
+        }
+
+
+        return data;
+    }
+
+    var createEdgeData = function(edge) {
+        var vertexTypes = schema.getVertexTypesFromEdgeGroup(edge.group);
+
+        // create the ends of the edge
+        var source = common.parseVertex(edge.source);
+        var destination = common.parseVertex(edge.destination);
+
+        // Create the Id
+        var id = source + "\0" + destination + "\0" + edge.directed + "\0" + edge.group;
+
+        return {
+            source: createVertexData(edge.source, vertexTypes.source),
+            destination: createVertexData(edge.destination, vertexTypes.destination),
+            edge: {
+                id: id,
+                source: source,
+                target: destination,
+                group: edge.group
+            }
+        };
     }
 
     /**
@@ -585,9 +512,9 @@ function GraphController($q, graph, config, error, loading, query, operationOpti
         if(event) {
             input = [event.cyTarget.id()];
         } else {
-            input = Object.keys(vm.selectedElements.entities);
+            input = vm.selectedElements.entities;
         }
-        if(input && input.length > 0) {
+        if (input && input.length > 0) {
             loading.load();
             var operation = {
                  class: "uk.gov.gchq.gaffer.operation.impl.get.GetElements",
@@ -632,11 +559,11 @@ function GraphController($q, graph, config, error, loading, query, operationOpti
 
 
     /**
-     * Removes all elements from the cytoscape graph - does not remove them from the model.
+     * Removes all elements from the cytoscape graph
      */
-    vm.clear = function(){
-        while(cytoscapeGraph.elements().length > 0) {
-            cytoscapeGraph.remove(cytoscapeGraph.elements()[0]);
+    vm.clear = function() {
+        if (cytoscapeGraph) {
+            cytoscapeGraph.elements().remove()
         }
     }
 
@@ -645,12 +572,7 @@ function GraphController($q, graph, config, error, loading, query, operationOpti
      */
     vm.redraw = function() {
         if(cytoscapeGraph) {
-            var nodes = cytoscapeGraph.nodes();
-            for(var i in nodes) {
-                if(nodes[i] && nodes[i].hasClass && nodes[i].hasClass("filtered")) {
-                    nodes[i].remove();
-                }
-            }
+            cytoscapeGraph.filter(".filtered").remove();
             cytoscapeGraph.layout(configuration);
         }
     }
@@ -670,16 +592,18 @@ function GraphController($q, graph, config, error, loading, query, operationOpti
      */
     vm.filter = function(searchTerm) {
         searchTerm = searchTerm.toLowerCase();
-        var nodes = cytoscapeGraph.nodes();
-        for(var i in nodes) {
-            if(nodes[i].data && nodes[i].data('id')) {
-                if(nodes[i].data('id').toLowerCase().indexOf(searchTerm) === -1) {
-                    nodes[i].addClass("filtered");
-                } else {
-                    nodes[i].removeClass("filtered");
+        cytoscapeGraph.batch(function() {
+            var nodes = cytoscapeGraph.nodes();
+            for(var i in nodes) {
+                if(nodes[i].data && nodes[i].data('id')) {
+                    if(nodes[i].data('id').toLowerCase().indexOf(searchTerm) === -1) {
+                        nodes[i].addClass("filtered");
+                    } else {
+                        nodes[i].removeClass("filtered");
+                    }
                 }
             }
-        }
+        });
     }
 
     /**
@@ -688,32 +612,7 @@ function GraphController($q, graph, config, error, loading, query, operationOpti
     vm.removeSelected = function() {
         cytoscapeGraph.filter(":selected").remove();
         cytoscapeGraph.elements().unselect();
-        vm.selectedElements.entities = {};
-        vm.selectedElements.edges = {};
-    }
-
-    /**
-     * Helper method to create a label from a vertex
-     * @param {String} vertex
-     */
-    var createLabel = function(vertex) {
-        var label;
-        var json;
-        try {
-            json = JSON.parse(vertex);
-        } catch (e) {
-            json = vertex;
-        }
-        if(typeof json === 'string'
-            || json instanceof String
-            || typeof json === 'number') {
-            label = vertex;
-        } else if(Object.keys(json).length == 1) {
-            label = types.getShortValue(json);
-        } else {
-            label = vertex;
-        }
-
-        return label;
+        vm.selectedElements.entities = [];
+        vm.selectedElements.edges = [];
     }
 }
