@@ -171,11 +171,37 @@ describe('The operation options service', function() {
         });
 
         it('should create a comma delimted list from arrays', function() {
+            var conf = {
+                visible: [
+                    {
+                        key: 'test',
+                        value: ['foo', 'bar'],
+                        label: 'Foo bar'
+                    }
+                ]
+            };
 
+            var expectedOptions = {
+                'test': 'foo,bar'
+            }
+
+            expect(service.extractOperationOptions(conf)).toEqual(expectedOptions);
         });
 
         it('should ignore empty arrays', function() {
-            
+            var conf = {
+                visible: [
+                    {
+                        key: 'test',
+                        value: [],
+                        label: 'Foo bar'
+                    }
+                ]
+            };
+
+            var expectedOptions = {}
+
+            expect(service.extractOperationOptions(conf)).toEqual(expectedOptions);
         });
     });
 });
