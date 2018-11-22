@@ -121,7 +121,7 @@ function OptionsController(operationOptions, config, events, $q, query) {
      */
     vm.clearValue = function(index) {
         var currentValue = vm.model.visible[index].value
-        vm.model.visible[index].value = typeof currentValue === "object" ? [] : undefined;
+        vm.model.visible[index].value = Array.isArray(currentValue) ? [] : undefined;
     }
 
     /**
@@ -213,6 +213,13 @@ function OptionsController(operationOptions, config, events, $q, query) {
         });
 
         return deferred.promise;
+    }
+
+    /**
+     * Returns true if value is null, undefined or is an empty array.
+     */
+    vm.isEmpty = function(value) {
+        return (value == undefined || ((Array.isArray(value) && !value.length)))
     }
 
 }
