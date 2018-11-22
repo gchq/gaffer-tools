@@ -169,5 +169,13 @@ describe('The operation options service', function() {
 
             expect(service.extractOperationOptions(conf)).toEqual(expectedOptions);
         });
+
+        it('should create a comma delimted list from arrays', function() {
+
+        });
+
+        it('should ignore empty arrays', function() {
+            
+        });
     });
 });

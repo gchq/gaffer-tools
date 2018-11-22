@@ -191,6 +191,18 @@ describe('The options component', function() {
 
             expect(ctrl.model.hidden).toEqual([]);
         });
+
+        it('should set the default value to an empty array if option is multiple but value is undefined', function() {
+
+        });
+
+        it('should temporarily set the autocomplete options to an array containing the value if defined', function() {
+
+        });
+
+        it('should leave the array of autocomplete options undefined if the value is undefined', function() {
+
+        });
     });
 
     describe('ctrl.$onDestroy', function() {
@@ -446,6 +458,44 @@ describe('The options component', function() {
             ]
 
             expect(ctrl.model.hidden).toEqual(expectedHidden);
+        });
+    });
+
+    describe('ctrl.getValues()', function() {
+        describe('When using options from a server', function() {
+            it('should return a promise', function() {
+
+            });
+
+            it('should execute the operation', function() {
+
+            });
+
+            it('should reject the promise if the operation fails', function() {
+
+            });
+
+            it('should call out to the error service to explain went wrong if the operation fails', function() {
+
+            });
+
+            it('should resolve the promise with filtered results if a search term is specified', function() {
+
+            });
+
+            it('should resolve the promise with all the results if no search term is specified', function() {
+
+            });
+        });
+
+        describe('When using a static array of options', function() {
+            it('should return the autocomplete options array if no search term is specified', function() {
+
+            });
+
+            it('should return a filtered array if a search term is specified', function() {
+
+            });
         });
     });
 
