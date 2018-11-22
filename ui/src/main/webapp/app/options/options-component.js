@@ -116,11 +116,12 @@ function OptionsController(operationOptions, config, events, $q, query) {
     }
 
     /**
-     * Sets the value of an operation option to undefined
+     * Sets the value of an operation option to undefined if it is a string or empty array if already an array.
      * @param {Number} index The index of the option in the visible array
      */
     vm.clearValue = function(index) {
-        vm.model.visible[index].value = undefined;
+        var currentValue = vm.model.visible[index].value
+        vm.model.visible[index].value = typeof currentValue === "object" ? [] : undefined;
     }
 
     /**

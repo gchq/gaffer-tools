@@ -23,28 +23,30 @@
                             <span md-highlight-text="ctrl.searchTerms[option.key]">{{ value }}</span>
                         </md-autocomplete>
                     </md-chips>
-                    <!-- Synchronous single options -->
-                    <md-select 
-                        flex
-                        ng-if="option.autocomplete && !option.autocomplete.multiple && option.autocomplete.options"
-                        placeholder="{{ option.label }}"
-                        ng-model="option.value">
-                        <md-option ng-value="value" ng-repeat="value in ctrl.getValues(option)">{{ value }}</md-option>
-                    </md-select>
-                    <!-- Asynchronous single options -->
-                    <md-select 
-                        flex
-                        ng-if="option.autocomplete && !option.autocomplete.multiple && !option.autocomplete.options"
-                        md-on-open="ctrl.loadValues(option)"
-                        placeholder="{{ option.label }}"
-                        ng-model="option.value">
-                        <md-option ng-value="value" ng-repeat="value in (ctrl.presets[option.key] || ctrl.createTemporaryList(option.value))">{{ value }}</md-option>
-                    </md-select>
-                    <md-button ng-show="option.value !== undefined" class="md-icon-button" ng-click="ctrl.clearValue($index)">
+                    <!-- single options -->
+                    <md-input-container flex ng-if="option.autocomplete && !option.autocomplete.multiple">
+                        <label>{{ option.label }}</label>
+                        <!-- Synchronous -->
+                        <md-select 
+                            flex
+                            ng-if="option.autocomplete.options"
+                            ng-model="option.value">
+                            <md-option ng-value="value" ng-repeat="value in ctrl.getValues(option)">{{ value }}</md-option>
+                        </md-select>
+                        <!-- Asynchronous -->
+                        <md-select 
+                            flex
+                            ng-if="!option.autocomplete.options"
+                            md-on-open="ctrl.loadValues(option)"
+                            ng-model="option.value">
+                            <md-option ng-value="value" ng-repeat="value in (ctrl.presets[option.key] || ctrl.createTemporaryList(option.value))">{{ value }}</md-option>
+                        </md-select>
+                    </md-input-container>
+                    <md-button ng-show="option.value !== undefined" ng-class="{ 'icon-inline-with-input': !(option.autocomplete && option.autocomplete.multiple)}" class="md-icon-button" ng-click="ctrl.clearValue($index)">
                         <md-icon md-svg-icon="clear"></md-icon>
                         <md-tooltip>clear value</md-tooltip>
                     </md-button>
-                    <md-button ng-show="option.value === undefined" class="md-icon-button" ng-click="ctrl.hideOption($index)">
+                    <md-button ng-show="option.value === undefined" ng-class="{ 'icon-inline-with-input': !(option.autocomplete && option.autocomplete.multiple)}" class="md-icon-button" ng-click="ctrl.hideOption($index)">
                         <md-icon md-svg-icon="hide"></md-icon>
                         <md-tooltip>hide option</md-tooltip>
                     </md-button>
@@ -95,11 +97,11 @@
                                 flex>
                                 <md-option ng-value="value" ng-repeat="value in (ctrl.presets[option.key] || ctrl.createTemporaryList(option.value))">{{ value }}</md-option>
                             </md-select>
-                            <md-button ng-show="option.value !== undefined" class="md-icon-button icon-inline-with-input" ng-click="ctrl.clearValue($index)">
+                            <md-button ng-show="option.value !== undefined" ng-class="{ 'icon-inline-with-input': !(option.autocomplete && option.autocomplete.multiple)}" class="md-icon-button" ng-click="ctrl.clearValue($index)">
                                 <md-icon md-svg-icon="clear"></md-icon>
                                 <md-tooltip>clear value</md-tooltip>
                             </md-button>
-                            <md-button ng-show="option.value === undefined" class="md-icon-button icon-inline-with-input" ng-click="ctrl.hideOption($index)">
+                            <md-button ng-show="option.value === undefined" ng-class="{ 'icon-inline-with-input': !(option.autocomplete && option.autocomplete.multiple)}" class="md-icon-button" ng-click="ctrl.hideOption($index)">
                                 <md-icon md-svg-icon="hide"></md-icon>
                                 <md-tooltip>hide option</md-tooltip>
                             </md-button>
