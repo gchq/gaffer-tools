@@ -17,11 +17,37 @@
 
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
+    <dependencies>
+        <dependency>
+            <groupId>uk.gov.gchq.gaffer</groupId>
+            <artifactId>core-rest</artifactId>
+            <version>1.4.2-SNAPSHOT-SAND</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>uk.gov.gchq.gaffer</groupId>
+            <artifactId>core-rest</artifactId>
+            <version>1.4.2-SNAPSHOT-SAND</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>uk.gov.gchq.gaffer</groupId>
+            <artifactId>core-rest</artifactId>
+            <version>1.4.2-SNAPSHOT-SAND</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>uk.gov.gchq.gaffer</groupId>
+            <artifactId>common-util</artifactId>
+            <version>1.6.0-RC2-SNAPSHOT</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
 
     <parent>
         <groupId>uk.gov.gchq.gaffer</groupId>
         <artifactId>gaffer2</artifactId>
-        <version>1.7.0</version>
+        <version>1.7.1-SNAPSHOT</version>
     </parent>
 
     <artifactId>gaffer-tools</artifactId>
@@ -35,6 +61,7 @@
         <module>random-element-generation</module>
         <module>schema-builder</module>
         <module>slider</module>
+        <module>service-portal</module>
     </modules>
 
     <properties>
