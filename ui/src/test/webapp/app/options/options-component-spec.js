@@ -193,7 +193,32 @@ describe('The options component', function() {
         });
 
         it('should set the default value to an empty array if option is multiple but value is undefined', function() {
+            var conf = {
+                operationOptions: {
+                    visible: [
+                        {
+                            "autocomplete": {
+                                "multiple": true,
+                            }
+                        }
+                    ],
+                    hidden: [
+                        {
+                            "autocomplete": {
+                                "multiple": true
+                            }
+                        }
+                    ]
+                }
+            }
 
+            $httpBackend.whenGET('config/config.json').respond(200, conf);
+
+            ctrl.$onInit();
+            $httpBackend.flush();
+
+            expect(ctrl.model.visible[0].value).toEqual([]);
+            expect(ctrl.model.hidden[0].value).toEqual([]);
         });
 
         it('should temporarily set the autocomplete options to an array containing the value if defined', function() {

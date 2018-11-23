@@ -68,6 +68,15 @@ function OptionsController(operationOptions, config, events, $q, query) {
                     if (vm.model.hidden === undefined) {
                         vm.model.hidden = [];
                     }
+
+                    for (var visibleOrHidden in vm.model) {
+                        for (var i in vm.model[visibleOrHidden]) {
+                            var option = vm.model[visibleOrHidden][i];
+                            if (!option.value && (option.autocomplete && option.autocomplete.multiple)) {
+                                option.value = [];
+                            }
+                        }
+                    }
                 } else if (conf.operationOptionKeys) {
                     console.warn('UI "operationOptionKeys" config is deprecated. See the docs for the new options configuration.');
 
