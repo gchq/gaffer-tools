@@ -197,16 +197,12 @@ describe('The options component', function() {
                 operationOptions: {
                     visible: [
                         {
-                            "autocomplete": {
-                                "multiple": true,
-                            }
+                            "multiple": true
                         }
                     ],
                     hidden: [
                         {
-                            "autocomplete": {
-                                "multiple": true
-                            }
+                            "multiple": true
                         }
                     ]
                 }
@@ -228,9 +224,7 @@ describe('The options component', function() {
                     visible: [
                         {
                             "value": "test",
-                            "autocomplete": {
-                                "multiple": true,
-                            }
+                            "multiple": true
                         }
                     ]
                 }
@@ -245,15 +239,16 @@ describe('The options component', function() {
             expect(ctrl.model.visible[0].value).toEqual([ 'test' ]);
         })
 
-        it('should temporarily set the autocomplete presets to an array containing the value if defined and is not an array', function() {
+        it('should temporarily set the autocomplete presets to an array containing the value if defined but is not an array', function() {
             var conf = {
                 operationOptions: {
                     visible: [
                         {
                             "key": "testKey",
                             "value": "test",
+                            "multiple": true,
                             "autocomplete": {
-                                "multiple": true,
+                                "optionsAsync": {}
                             }
                         }
                     ]
@@ -275,8 +270,9 @@ describe('The options component', function() {
                         {
                             "key": "testKey",
                             "value": [ "test" ],
+                            "multiple": true,
                             "autocomplete": {
-                                "multiple": true,
+                                "optionsAsync": {}
                             }
                         }
                     ]
@@ -297,8 +293,9 @@ describe('The options component', function() {
                     visible: [
                         {
                             "key": "testKey",
+                            "multiple": true,
                             "autocomplete": {
-                                "multiple": true,
+                                "optionsAsync": {}
                             }
                         }
                     ]
@@ -310,7 +307,47 @@ describe('The options component', function() {
             ctrl.$onInit();
             $httpBackend.flush();
 
-            expect(ctrl.presets["testKey"]).toBeUndefined();;
+            expect(ctrl.presets["testKey"]).toBeUndefined();
+        });
+
+        it('should not mutate the value if multiple is set to false', function() {
+            var conf = {
+                operationOptions: {
+                    visible: [
+                        {
+                            "key": "testKey",
+                            "value": "test",
+                            "multiple": false
+                        }
+                    ]
+                }
+            }
+
+            $httpBackend.whenGET('config/config.json').respond(200, conf);
+
+            ctrl.$onInit();
+            $httpBackend.flush();
+
+            expect(ctrl.model.visible[0].value).toEqual("test");
+        });
+
+        it('should not manipulate the value if multiple is undefined', function() {
+            var conf = {
+                operationOptions: {
+                    visible: [
+                        {
+                            "key": "testKey"
+                        }
+                    ]
+                }
+            }
+
+            $httpBackend.whenGET('config/config.json').respond(200, conf);
+
+            ctrl.$onInit();
+            $httpBackend.flush();
+
+            expect(ctrl.model.visible[0].value).toEqual(undefined);
         });
     });
 

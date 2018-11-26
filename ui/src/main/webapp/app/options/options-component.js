@@ -73,13 +73,11 @@ function OptionsController(operationOptions, config, events, $q, query, error) {
                         for (var i in vm.model[visibleOrHidden]) {
                             var option = vm.model[visibleOrHidden][i];
                             if (option.value) {
-                                if (Array.isArray(option.value)) {
-                                    vm.presets[option.key] = option.value;
-                                } else {
+                                if (option.multiple && !Array.isArray(option.value)) {
                                     option.value = [ option.value ]
-                                    vm.presets[option.key] = option.value;
                                 }
-                            } else if (option.autocomplete && option.autocomplete.multiple) {
+                                vm.presets[option.key] = option.value;
+                            } else if (option.multiple) {
                                 option.value = [];
                             }
                         }

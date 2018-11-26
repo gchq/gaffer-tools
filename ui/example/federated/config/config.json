@@ -10,8 +10,8 @@
         "label": "Graph IDs",
         "value": [],
         "description": "Restrict operations and schema reloads to these comma separated graphs",
+        "multiple": true,
         "autocomplete": {
-          "multiple": true,
           "asyncOptions": {
             "class": "uk.gov.gchq.gaffer.federatedstore.operation.GetAllGraphIds"
           }
