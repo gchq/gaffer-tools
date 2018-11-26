@@ -30,7 +30,7 @@ function options() {
     }
 }
 
-function OptionsController(operationOptions, config, events, $q, query) {
+function OptionsController(operationOptions, config, events, $q, query, error) {
     var vm = this;
 
     /**
@@ -72,7 +72,14 @@ function OptionsController(operationOptions, config, events, $q, query) {
                     for (var visibleOrHidden in vm.model) {
                         for (var i in vm.model[visibleOrHidden]) {
                             var option = vm.model[visibleOrHidden][i];
-                            if (!option.value && (option.autocomplete && option.autocomplete.multiple)) {
+                            if (option.value) {
+                                if (Array.isArray(option.value)) {
+                                    vm.presets[option.key] = option.value;
+                                } else {
+                                    option.value = [ option.value ]
+                                    vm.presets[option.key] = option.value;
+                                }
+                            } else if (option.autocomplete && option.autocomplete.multiple) {
                                 option.value = [];
                             }
                         }
@@ -110,18 +117,6 @@ function OptionsController(operationOptions, config, events, $q, query) {
         if (vm.master) {        // If master is being destroyed, for example when the user navigates away, the service is updated
             operationOptions.setDefaultConfiguration(vm.model);
         }
-    }
-
-    /**
-     * Creates a temporary list to be used when the options have not yet been set.
-     * @param {*} option 
-     */
-    vm.createTemporaryList = function(value) {
-        if (value == undefined) {
-            return value
-        }
-
-        return [ value ];
     }
 
     /**
@@ -173,14 +168,14 @@ function OptionsController(operationOptions, config, events, $q, query) {
      * The values may be filtered using the searchTerm model.
      */
     vm.getValues = function(option) {
-        var searchTerm = vm.searchTerms[option.key];
+        var searchTerm = vm.searchTerms[option.key] ? vm.searchTerms[option.key].toLowerCase() : vm.searchTerms[option.key];
 
         if (option.autocomplete.options) {
             if (!searchTerm || searchTerm === "") {
                 return option.autocomplete.options;
             } else {
                 return option.autocomplete.options.filter(function(option) {
-                    if (option.indexOf(searchTerm) !== -1) {
+                    if (option.toLowerCase().indexOf(searchTerm) !== -1) {
                         return option;
                     }
                 })
@@ -195,14 +190,14 @@ function OptionsController(operationOptions, config, events, $q, query) {
                     return;
                 }
                 var filteredValues = values.filter(function(value) {
-                    if (value.indexOf(searchTerm) !== -1) {
+                    if (value.toLowerCase().indexOf(searchTerm) !== -1) {
                         return value;
                     }
                 });
                 deferredValues.resolve(filteredValues);
             }, function(err) {
-                error.handle("Failed to retrieve pre-populated options", err);
-                deferredValues.reject(err);
+                error.handle("Failed to retrieve prepopulated options", err);
+                deferredValues.resolve([]);
             });
 
             return  deferredValues.promise;

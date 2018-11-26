@@ -217,16 +217,100 @@ describe('The options component', function() {
             ctrl.$onInit();
             $httpBackend.flush();
 
+
             expect(ctrl.model.visible[0].value).toEqual([]);
             expect(ctrl.model.hidden[0].value).toEqual([]);
         });
 
-        it('should temporarily set the autocomplete options to an array containing the value if defined', function() {
+        it('should wrap a non array value in an array if the option takes multiple values', function() {
+            var conf = {
+                operationOptions: {
+                    visible: [
+                        {
+                            "value": "test",
+                            "autocomplete": {
+                                "multiple": true,
+                            }
+                        }
+                    ]
+                }
+            }
 
+            $httpBackend.whenGET('config/config.json').respond(200, conf);
+
+            ctrl.$onInit();
+            $httpBackend.flush();
+
+
+            expect(ctrl.model.visible[0].value).toEqual([ 'test' ]);
+        })
+
+        it('should temporarily set the autocomplete presets to an array containing the value if defined and is not an array', function() {
+            var conf = {
+                operationOptions: {
+                    visible: [
+                        {
+                            "key": "testKey",
+                            "value": "test",
+                            "autocomplete": {
+                                "multiple": true,
+                            }
+                        }
+                    ]
+                }
+            }
+
+            $httpBackend.whenGET('config/config.json').respond(200, conf);
+
+            ctrl.$onInit();
+            $httpBackend.flush();
+
+            expect(ctrl.presets["testKey"]).toEqual([ "test" ]);
         });
 
-        it('should leave the array of autocomplete options undefined if the value is undefined', function() {
+        it('should set the autocomplete presets to the value if options are not defined but value is defined as an array', function() {
+            var conf = {
+                operationOptions: {
+                    visible: [
+                        {
+                            "key": "testKey",
+                            "value": [ "test" ],
+                            "autocomplete": {
+                                "multiple": true,
+                            }
+                        }
+                    ]
+                }
+            }
 
+            $httpBackend.whenGET('config/config.json').respond(200, conf);
+
+            ctrl.$onInit();
+            $httpBackend.flush();
+
+            expect(ctrl.presets["testKey"]).toEqual([ "test" ]);
+        })
+
+        it('should leave the array of autocomplete options undefined if the value is undefined', function() {
+            var conf = {
+                operationOptions: {
+                    visible: [
+                        {
+                            "key": "testKey",
+                            "autocomplete": {
+                                "multiple": true,
+                            }
+                        }
+                    ]
+                }
+            }
+
+            $httpBackend.whenGET('config/config.json').respond(200, conf);
+
+            ctrl.$onInit();
+            $httpBackend.flush();
+
+            expect(ctrl.presets["testKey"]).toBeUndefined();;
         });
     });
 
@@ -487,38 +571,138 @@ describe('The options component', function() {
     });
 
     describe('ctrl.getValues()', function() {
-        describe('When using options from a server', function() {
-            it('should return a promise', function() {
+        var option;
 
+        describe('When using options from a server', function() {
+            
+            var query;
+
+            beforeEach(inject(function(_query_) {
+                query = _query_;
+            }))
+
+            beforeEach(function() {
+                var config = {
+                    "restEndpoint": "http://gaffer:8080/rest"
+                }
+
+                $httpBackend.whenGET('config/config.json').respond(200, config);
+                $httpBackend.whenGET('config/defaultConfig.json').respond(200, {});
+            });
+        
+            beforeEach(function() {
+                option = {
+                    "key": "testKey",
+                    "autocomplete": {
+                        "asyncOptions": {
+                            "class": "uk.gov.gchq.gaffer.some.Operation"
+                        }
+                    }
+                }
+            });
+
+            it('should return a promise', function() {
+                expect(ctrl.getValues(option).then).toEqual(jasmine.any(Function));
             });
 
             it('should execute the operation', function() {
+                spyOn(query, 'execute');
 
+                ctrl.getValues(option);
+                expect(query.execute).toHaveBeenCalledWith({ "class": "uk.gov.gchq.gaffer.some.Operation"}, jasmine.any(Function), jasmine.any(Function));
             });
 
-            it('should reject the promise if the operation fails', function() {
+            it('should resolve the promise with no values if the operation fails', function() {
 
+                $httpBackend.whenPOST("http://gaffer:8080/rest/graph/operations/execute").respond(500, "something bad happened")
+                
+                ctrl.getValues(option).then(function(values) {
+                    expect(values).toEqual([]);
+                });
+
+                $httpBackend.flush();
             });
 
-            it('should call out to the error service to explain went wrong if the operation fails', function() {
+            it('should call out to the error service to explain went wrong if the operation fails', inject(function(error) {
+                spyOn(error, 'handle');
 
-            });
+                $httpBackend.whenPOST("http://gaffer:8080/rest/graph/operations/execute").respond(500, "something bad happened")
+                
+                ctrl.getValues(option);
+
+                $httpBackend.flush();
+
+                expect(error.handle).toHaveBeenCalledWith("Failed to retrieve prepopulated options", "something bad happened");
+
+            }));
 
             it('should resolve the promise with filtered results if a search term is specified', function() {
+                ctrl.searchTerms = {
+                    "testKey": "test"
+                };
+
+                $httpBackend.whenPOST("http://gaffer:8080/rest/graph/operations/execute").respond(200, [ "containsTestCaseInsensite", "test", "banana"])
+                
+                ctrl.getValues(option).then(function(values) {
+                    expect(values).toEqual([
+                        "containsTestCaseInsensite",
+                        "test"
+                    ]);
+                });
+
+                $httpBackend.flush();
 
             });
 
             it('should resolve the promise with all the results if no search term is specified', function() {
+                $httpBackend.whenPOST("http://gaffer:8080/rest/graph/operations/execute").respond(200, [ "containsTestCaseInsensite", "test", "banana"])
+                
+                ctrl.getValues(option).then(function(values) {
+                    expect(values).toEqual([
+                        "containsTestCaseInsensite",
+                        "test",
+                        "banana"
+                    ]);
+                });
 
+                $httpBackend.flush();
             });
         });
 
         describe('When using a static array of options', function() {
-            it('should return the autocomplete options array if no search term is specified', function() {
+            
+            beforeEach(function() {
+                option = {
+                    "key": "testKey",
+                    "autocomplete": {
+                        "options": [
+                            "test",
+                            "true",
+                            "FALSE",
+                            "Falsy"
+                        ]
+                    }
+                }
+            });
 
+            it('should return the autocomplete options array if no search term is specified', function() {
+                expect(ctrl.getValues(option)).toEqual([
+                    "test",
+                    "true",
+                    "FALSE",
+                    "Falsy"
+                ]);
             });
 
             it('should return a filtered array if a search term is specified', function() {
+                ctrl.searchTerms = {
+                    "testKey": "ls"
+                }
+
+                expect(ctrl.getValues(option)).toEqual([
+                    "FALSE",
+                    "Falsy"
+                ]);
 
             });
         });

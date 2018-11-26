@@ -32,7 +32,7 @@
                             flex
                             ng-if="option.autocomplete.options"
                             ng-model="option.value">
-                            <md-option ng-value="value" ng-repeat="value in ctrl.getValues(option)">{{ value }}</md-option>
+                            <md-option ng-value="value" ng-repeat="value in option.autocomplete.options">{{ value }}</md-option>
                         </md-select>
                         <!-- Asynchronous -->
                         <md-select 
@@ -40,7 +40,7 @@
                             ng-if="!option.autocomplete.options"
                             md-on-open="ctrl.loadValues(option)"
                             ng-model="option.value">
-                            <md-option ng-value="value" ng-repeat="value in (ctrl.presets[option.key] || ctrl.createTemporaryList(option.value))">{{ value }}</md-option>
+                            <md-option ng-value="value" ng-repeat="value in ctrl.presets[option.key]">{{ value }}</md-option>
                         </md-select>
                     </md-input-container>
                     <md-button ng-show="!ctrl.isEmpty(option.value)" ng-class="{ 'icon-inline-with-input': !(option.autocomplete && option.autocomplete.multiple)}" class="md-icon-button" ng-click="ctrl.clearValue($index)">
@@ -88,7 +88,7 @@
                                 ng-model="option.value"
                                 aria-label="{{ option.label }}"
                                 flex>
-                                <md-option ng-value="value" ng-repeat="value in ctrl.getValues(option)">{{ value }}</md-option>
+                                <md-option ng-value="value" ng-repeat="value in option.autocomplete.options">{{ value }}</md-option>
                             </md-select>
                             <!-- Asynchronous single options -->
                             <md-select 
@@ -97,7 +97,7 @@
                                 aria-label="{{ option.label }}"
                                 md-on-open="ctrl.loadValues(option)"
                                 flex>
-                                <md-option ng-value="value" ng-repeat="value in (ctrl.presets[option.key] || ctrl.createTemporaryList(option.value))">{{ value }}</md-option>
+                                <md-option ng-value="value" ng-repeat="value in ctrl.presets[option.key]">{{ value }}</md-option>
                             </md-select>
                             <md-button ng-show="!ctrl.isEmpty(option.value)" ng-class="{ 'icon-inline-with-input': !(option.autocomplete && option.autocomplete.multiple)}" class="md-icon-button" ng-click="ctrl.clearValue($index)">
                                 <md-icon md-svg-icon="clear"></md-icon>
