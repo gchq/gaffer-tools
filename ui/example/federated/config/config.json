@@ -9,7 +9,7 @@
         "key": "gaffer.federatedstore.operation.graphIds",
         "label": "Graph IDs",
         "value": [],
-        "description": "Restrict operations and schema reloads to these comma separated graphs",
+        "description": "Restrict operations and schema reloads to these graphs",
         "multiple": true,
         "autocomplete": {
           "asyncOptions": {
