@@ -665,6 +665,13 @@ describe("The Graph Component", function() {
                     expect(edge.id()).toEqual('"foo"\0"bar"\0true\0foobarEdge')
                 });
             });
+
+            it('should produce nodes with an entity property of true if updated with edges and entities containing the same id', function() {
+                ctrl.update(elements);
+                var node = injectableCytoscape.getElementById('"foo"');
+
+                expect(node.data().entity).toBeTruthy();
+            })
         });
     
         describe('ctrl.reset()', function() {
