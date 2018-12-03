@@ -462,9 +462,13 @@ function GraphController($q, graph, config, error, loading, query, operationOpti
         var vertexType = Object.keys(vertexTypeDefinition)[0];
 
         var data = {
-            entity: isEntity,
             id: common.parseVertex(vertex),
             label: types.getShortValue(vertex)
+        }
+
+        // Don't set entity value to undefined or false to avoid overwriting 'true' values (which we want to keep)
+        if (isEntity) {
+            data.entity = true;
         }
 
         data[vertexType] = true;
