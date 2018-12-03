@@ -87,21 +87,13 @@ describe('The Graph service', function() {
 
         beforeEach(function() {
             service.setSelectedElements({
-                entities: {
-                    'test': [],
-                    'test2': [ {
-                        group: 'g',
-                        properties: {}
-                    }]
-                },
-                edges: {
-                    'myEdgeid': [{
-                        source: 's',
-                        destination: 'd',
-                        directed: false,
-                        properties: {}
-                    }]
-                }
+                entities: [
+                    'test',
+                    'test2'
+                ],
+                edges: [
+                    'myEdgeid'
+                ]
             });
         });
 
@@ -109,8 +101,8 @@ describe('The Graph service', function() {
             service.deselectAll();
 
             var expected = {
-                entities: {},
-                edges: {}
+                entities: [],
+                edges: []
             }
 
             expect(service.getSelectedElements()).toEqual(expected);

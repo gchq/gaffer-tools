@@ -25,8 +25,8 @@ angular.module('app').factory('graph', function() {
     var graphConfiguration = null;
 
     var selectedElements = {
-        entities: {},
-        edges: {}
+        entities: [],
+        edges: []
     }
 
     var searchTerm = null;
@@ -81,8 +81,8 @@ angular.module('app').factory('graph', function() {
      */
     service.deselectAll = function() {
         selectedElements = {
-            entities: {},
-            edges: {}
+            entities: [],
+            edges: []
         }
     }
 

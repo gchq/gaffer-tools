@@ -48,11 +48,11 @@ angular.module('app').factory('common', function() {
      */
     common.parseVertex = function(vertex) {
         if(typeof vertex === 'string' || vertex instanceof String) {
-            vertex = "\"" + vertex + "\"";
+            return "\"" + vertex + "\"";
         }
 
-        if (vertex !== null && typeof vertex === 'object') {
-            vertex = JSON.stringify(vertex);
+        if (vertex != null) {
+            return JSON.stringify(vertex);
         }
 
         return vertex;
