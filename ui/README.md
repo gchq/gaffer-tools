@@ -20,25 +20,24 @@ UI
 2. [Road Traffic example](#road-traffic-example)
     - [Walkthrough](#walkthrough)
 3. [Federated Store Demo](#federated-store-demo)
-4. [Configuration](#configuration)
+4. [Deployment](#deployment)
+5. [Configuration](#configuration)
     - [Rest Endpoint](#rest-endpoint)
-    - [Operations section](#operations-section)
-    - [Types section](#types-section)
-    - [Time section](#time-section)
-5. [Testing](#testing)
+    - [Operations](#operations)
+    - [Types](#types)
+    - [Time](#time)
+    - [Operation options](#operation-options)
+    - [Quick Query](#quick-query)
+    - [Graph](#graph)
+    - [Feedback](#feedback)
+6. [Testing](#testing)
 
 
 ## Introduction
 
 
-This module contains a Gaffer read only UI prototype that connects to a Gaffer REST API.
+This module contains a Gaffer UI that connects to a Gaffer REST API.
 See [gaffer-tools/ui](https://github.com/gchq/gaffer-tools/tree/master/ui).
-
-Limitations:
-- There are currently no error messages.
-- There is no validation.
-- Read only - no data can be added via the UI.
-
 
 If you wish to deploy the war file to a container of your choice, then use this option.
 
@@ -254,6 +253,147 @@ obtain a merged schema for these 2 graphs.
 Now, when you compose a query you will see there is an operation option predefined with the 2 graphs.
 If you wish to query just one graph you can modify it just for the single query.
 
+## Deployment
+
+Building the Gaffer UI using maven creates a WAR file which can be deployed alongside the REST API. This can be done as-is 
+but should you wish to make changes to the UI such as: 
+
+- Adding your own config
+- Changing the theme
+- Altering the routes
+
+You will need to unpack and repackage the WAR - much the same as if you were to make changes to the REST API.
+
+To do this, you'll need to add the following plugin to your pom.xml:
+
+```xml
+<build>
+    <plugins>
+        <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-dependency-plugin</artifactId>
+            <version>2.10</version>
+            <dependencies>
+                <dependency>
+                    <groupId>uk.gov.gchq.gaffer</groupId>
+                    <artifactId>ui</artifactId>
+                    <version>${gaffer.version}</version>
+                    <type>war</type>
+                </dependency>
+            </dependencies>
+            <executions>
+                <execution>
+                    <id>unpack</id>
+                    <phase>compile</phase>
+                    <goals>
+                        <goal>unpack</goal>
+                    </goals>
+                    <configuration>
+                        <artifactItems>
+                            <artifactItem>
+                                <groupId>uk.gov.gchq.gaffer</groupId>
+                                <artifactId>ui</artifactId>
+                                <version>${gaffer.version}</version>
+                                <type>war</type>
+                                <overWrite>false</overWrite>
+                                <outputDirectory>
+                                    ${project.build.directory}/${project.artifactId}-${project.version}
+                                </outputDirectory>
+                            </artifactItem>
+                        </artifactItems>
+                    </configuration>
+                </execution>
+            </executions>
+        </plugin>
+    </plugins>
+</build>
+```
+
+This will add all the javascript and html files when you build the project. This means that any files you add will overwrite
+the ones in the standard Gaffer UI. To make changes to the UI, you will have to add files to the src/main/webapp directory. You could add or edit any of the files to make the UI truly unique but here are a couple of common examples to get you going:
+
+### config/config.json
+
+This is where you specify graph layout and styling, blacklisted / whitelisted operations or any specific objects that the UI
+needs to handle. These will all be documented individually under [Configuration](#configuration).
+
+### app/config/route-config.js
+
+This file defines the routes of the app - including which views to render. 
+
+One of the values: '/results' redirects to '/table'. Editing this value changes where UI navigates when a query is
+complete.
+
+Changing these values will have a knock-on effect to the sidebar in the UI.
+
+Here is the default example:
+
+```javascript
+angular.module('app').config(['$locationProvider', '$routeProvider', function($locationProvider, $routeProvider) {
+    $locationProvider.html5Mode(false)
+
+    $routeProvider
+        .when('/query', {
+            title: 'Query',
+            template: '<operation-chain></operation-chain>',
+            icon: 'query',
+            inNav: true
+        })
+        .when('/table', {
+            title: 'Table',
+            template: '<results-table></results-table>',
+            icon: 'table',
+            inNav: true
+        })
+        .when('/graph', {
+            title: 'Graph',
+            templateUrl: 'app/graph/graph-page.html',
+            icon: 'graph',
+            inNav: true
+        })
+        .when('/schema', {
+            title: 'Schema',
+            templateUrl: 'app/schema/schema-view-page.html',
+            icon: 'schema',
+            inNav: true
+        })
+        .when('/raw', {
+            title: 'Raw',
+            template: '<raw></raw>',
+            icon: 'raw',
+            inNav: true
+        })
+        .when('/settings', {
+            title: 'Settings',
+            template: '<settings-view></settings-view>',
+            icon: 'settings',
+            inNav: true
+        })
+        .when('/results', {
+            redirectTo: '/table'
+        })
+        .when('/', {
+            redirectTo: '/query'
+        });
+}]);
+```
+
+### app/config/theme-config.js
+
+This file contains the configuration for theming within the UI. Changes to this file will result in changes to the colour of
+many components throughout the UI.
+
+Here is the default:
+
+```javascript
+angular.module('app').config(['$mdThemingProvider', function($mdThemingProvider) {
+    $mdThemingProvider.theme('default')
+        .primaryPalette('blue-grey')
+        .accentPalette('orange');
+}]);
+```
+
+Once you've built the WAR with maven, just add it to the deployments alongside your REST API.
 
 ## Configuration
 
@@ -289,38 +429,17 @@ An example of a changed rest endpoint:
 ```
 
 
-### Operations section
+### Operations
 
-The operations section allows you to choose whether to load named operations on startup as well
-as what operations should be available by default.
+The operations section allows you to choose what operations should be available by default.
 
 | variable                     | type    | description
 |------------------------------|---------|------------------------------------------
-| loadNamedOperationsOnStartup | boolean | should the UI attempt to load all the named operations and expose them for query
-| defaultAvailable             | array   | List of objects describing the operations that are available by default (without calling the Named Operations endpoint)
 | whiteList                    | array   | optional list of operations to expose to a user. By default all operations are available
 | blackList                    | array   | optional list of banned operations. Operations on this list will not be allowed. By default no operations are blacklisted
 
-#### Default available operations API
 
-Default available operations are configured using a list of objects. These objects contain key value pairs which tell
-the UI what options it has for a given operations - whether it uses a view or parameters etc.
-
-| variable    | type    |  description
-|-------------|---------|-------------------------------
-| name        | string  | A friendly name for the operation
-| class       | string  | The java class of the operation
-| input       | boolean/string | A flag which determines whether it takes seeds as input, if taking a pair of inputs it should be set to the fully qualified Pair Class: "uk.gov.gchq.gaffer.commonutil.Pair"
-| inputB      | boolean | A flag stating whether there should be a second input
-| view        | boolean | A flag showing whether the operation takes a view - Always false for named operations currently
-| description | string  | A description of what the operation does
-| arrayOutput | boolean | A flag indicating whether the operation returns an array *(not required)*
-| inOutFlag   | boolean | A flag indicating that the operation returns edges. And the direction can be customised.
-
-
-If you want to allow Named Operations which use an operation which uses takes pairs of inputs, make sure the first operation is added to the default available operations.
-
-### Types section
+### Types
 
 The types section of the configuration tells the UI how to interpret and show java objects. You will need to figure out
 how you want to visualise certain objects. It is advisable to create a type for every Java object the UI will come
@@ -367,10 +486,13 @@ the key is 'hyperLogLogPlus.cardinality' because the cardinality is the only mea
 
 ```
 
-### Time section
+### Time
 
-Use the time section if you want to specify a date range filter easily across all elements in your queries.
-In the time section, you will create a filter object which contains all the necessary values needed to create a time
+Use the time section if you want to specify date ranges easily in your queries and view trends over time in the charts.
+
+#### Filter
+
+You can create a filter object which contains all the necessary values needed to create a time
 window.
 
 To use the time window feature, some assumptions should be true:
@@ -386,12 +508,187 @@ To use the time window feature, some assumptions should be true:
 | endProperty   | string  | The name of the end date property
 | unit          | string  | The unit of time. This can be one of: day, hour, minute, second, millisecond, microsecond. This is not case sensitive.
 | class         | string  | The java class of the object - this class should exist in the types section
+| presets       | object  | An object specifying the preset suggestions. (see below for details)
 
 It's worth noting that if your elements have a single timestamp, just use the same timestamp property in the startProperty and endProperty
 
-### Graph section
+##### Presets
+
+You can add preset suggestions which, if configured, will result in a menu being added to the ui containing preset dates.
+This can be useful when there are common date ranges used by your users.
+
+The presets object can be as long as you like but be cautious about overwhelming your users with options. You can either use
+offsets to create a relative range, or specify dates statically. Offsets must include a unit which can either be 'day', 'week', 'month' or 'year'. Dates are expected to be read in the YYYY-MM-DD date format.
+
+#### Time properties
+
+Telling the UI which properties relate to time is good practice as it helps the UI convert numerical values in the table to strings and improves the way charts display your dates. Furthermore if you're named operations contain date parameters, adding the name of these parameters will allow users to enter their dates in a datepicker.
+
+To configure time properties, you need to provide an object which is keyed by the name of the properties. Each property should contain the class of the class associated with the property and the unit. This unit should be one of:
+
+* Microsecond
+* Millisecond
+* Second
+* Minute
+* Hour
+* Day
+
+#### Example
+
+```json
+{
+  "time": {
+    "filter": {
+      "class": "java.util.Date",
+      "unit": "millisecond",
+      "startProperty": "startDate",
+      "endProperty": "endDate",
+      "presets": {
+        "Today": {
+          "offset": 0,
+          "unit": "day"
+        },
+        "Last week": {
+          "offset": -1,
+          "unit": "week"
+        },
+        "2002": {
+          "date": "2002-01-01"
+        }
+      }
+    },
+    "properties": {
+      "startDate": {
+        "class": "java.util.Date",
+        "unit": "millisecond"
+      },
+      "endDate": {
+        "class": "java.util.Date",
+        "unit": "millisecond"
+      }
+    }
+  }
+}
+```
+
+### Operation options
+
+Operations can contain options which can affect how the operation is handled. For example, when using a federated store,
+you can specify which graphId you wish to run an operation against.
+
+The UI allows you configure which of these options you make available to the user. In the past, this feature has been 
+available but was not formally documented.
+
+#### Old configuration
+```json
+{
+    "operationOptionKeys": {
+        "UI label": "key.to.be.sent.to.Gaffer"
+    }
+}
+```
+
+Now you can specify default values and whether to hide the option by default.
+
+#### New configuration
+```json
+{
+    "operationOptions": {
+        "visible": [
+            {
+                "key": "key.to.be.sent.to.Gaffer",
+                "label": "UI label",
+                "value": "The default value (optional)",
+                "multiple": false,
+                "autocomplete": {
+                    "options": [ "true", "false" ]
+                }
+            }
+        ],
+        "hidden": [
+            {
+                "key": "hidden.key",
+                "label": "hidden label"
+            }
+        ]
+    }
+}
+```
+
+If you add more options to the visible array, the options will be shown by default. If you add them to the hidden array, a 
+user will have to add it manually. Only the visible operation options will be added to the operation.
+
+The options themselves are objects with the following fields:
+
+| field name                 | type             | description
+|----------------------------|------------------|----------------------------------------------------------
+| key                        | string           | The operation option key which will be sent to the rest service
+| label                      | string           | The label which will summarise what the option is
+| multiple                   | boolean          | (optional) uses chips to create comma delimited strings - defaults to false
+| value                      | string or array  | (optional) The default value of this option. Use arrays when multiple is set to true
+| autocomplete               | object           | (optional) Configuration for autocompleting values - see below
+| autocomplete.options       | array            | Static array of string to use for autocompleting
+| autocomplete.asyncOptions  | operation        | operation to be executed to get the autocomplete values. Operation must return an iterable of strings
+
+
+
+### Quick Query
+
+You can edit the behaviour of the quick query component in the Gaffer UI using the following properties. If you want to disable this feature, set quickQuery to null in the config. For example:
+
+```json
+{
+    "quickQuery": null
+}
+```
+
+| name                        |  type           | description                            
+|-----------------------------|-----------------|---------------------------------------------------------
+| placeholder                 | string          | The string placeholder on the search box. Defaults to "Quick Query"
+| description                 | string          | A breif description of what the query does. Defaults to "Get related elements" 
+| operation                   | gaffer operation| An operation or operation chain you wish to execute when the user runs the query. Make sure to substitue "${input}" (with quotes) for where the input should be. The quick query component will generate an entity seed and replace the "${input}" string with the entity seed. Defaults to a GetElements operation.
+| useDefaultOperationOptions  | boolean         | A flag representing whether the UI should add the default operation options specified in the settings page (if they are specified). Defaults to false
+| deduplicate                 | boolean         | A flag representing whether a ToSet operation is added to the chain to remove duplicate values. Defaults to true.
+| limit                       | boolean         | A flag representing whether a Limit operation is added to the chain. The operation will use the result limit specified in the settings page. If disabled and the query returns more than the result limit, the results will be truncated anyway. Therefore the limit operation is there to save query time. Defaults to true.
+
+#### Example
+
+```json
+{
+    "quickQuery": {
+        "placeholder": "Enter a seed",
+        "description": "2 hop query",
+        "useDefaultOperationOptions": true,
+        "deduplicate": true,
+        "limit": false,
+        "operation": {
+            "class": "OperationChain",
+            "operations": [
+                {
+                    "class": "GetAdjacentIds",
+                    "input": [ "${input}" ]
+                },
+                {
+                    "class": "GetElements",
+                    "view": {
+                        "globalElements": [
+                            {
+                                "groupBy": []
+                            }
+                        ]
+                    }
+                }
+            ]
+        }
+    }
+}
+```
+
+
+### Graph
+
 The graph section allows you to configure the graph view. 
-Currently you are limited to configuring the physics used to draw the graph.
+An admin can customise the physics which guide the graph, as well as provide styling for the nodes and edges.
 The default graph physics are:
 
 ```json
@@ -407,6 +704,84 @@ The default graph physics are:
 
 For more information about the configuration of the graph physics and to 
 see the algorithm, please see: https://github.com/nickolasmv/cytoscape-ngraph.forcelayout
+
+As well as the physics, an admin can determine the styling of nodes and edges of their graph based on things like edge type,
+vertex fields and vertex type. They can add an entity wrapper, which is further styling applied when the vertex is an entity.
+This helps distinguish them from standalone vertices. By default the graph adds some styling like changing the size and adding a border of entities. This default styling can also be configured.
+
+To add styling, update your config file like this:
+
+```json
+{
+    "graph": {
+        "defaultStyle": {
+            "edges": {
+                "arrow-shape": "triangle"
+            },
+            "vertices": {
+                "background-color": "#444444"
+            },
+            "entityWrapper": {
+                "height": 100,
+                "width": 100,
+                "border-width": 3
+            }
+        },
+        "style": {
+            "edges": {
+                "exampleEdgeGroup": {
+                    "line-color": "#000000"
+                }
+            },
+            "vertexTypes": {
+                "exampleVertexType": {
+                    "style": {
+                        "background-color": "#00ffff"
+                    },
+                    "fieldOverrides": {
+                        "fieldName": {
+                            "fieldValue": {
+                                "background-image": "path/to/icon.svg"
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+```
+
+For all the examples of what you can customise check out [Cytoscape.js](http://js.cytoscape.org/#style)
+We have all the material design icons [here](https://github.com/gchq/gaffer-tools/blob/master/ui/src/main/webapp/app/img/material-icons) which you can use as background images. There are examples of how to do this in the [road traffic](https://github.com/gchq/gaffer-tools/blob/master/ui/example/road-traffic/config/config.json) and [type-subtype-value](https://github.com/gchq/gaffer-tools/blob/master/ui/example/type-subtype-value/config/config.json) config files.
+
+If you're using a simple string or number as your vertex, use "undefined" as your key. Otherwise you'll need to use the field
+name specified in the [types section](#types).
+
+
+### Feedback
+
+An optional feedback section can be added which the UI uses to send feedback to developers using email. If this section is
+left blank, no feedback button will be rendered. You can specify a list of email addresses and the subject of the email.
+
+| field        | type                | description
+|--------------|---------------------|--------------------------------------------------------------------------
+|    subject   |       String        | An optional (defaults to "Gaffer feedback") subject header of the email
+|  recipients  | array&lt;string&gt; | A list of email addresses who receive the emails.
+
+#### Example
+
+```json
+{
+    "feedback": {
+        "subject": "feedback for <your system here>",
+        "recipients": [
+            "adminperson@organisation.com",
+            "someoneElse@theSameOrganisation.com"
+        ]
+    }
+}
+```
 
 ## Testing
 
@@ -434,7 +809,7 @@ describe('SomeService', function() {
     });
 
     // now test a specific part of the service
-    describe('add function', function() {
+    describe('add()', function() {
         it('should add two positive numbers together', function() {
             expect(someService.add(1, 4)).toEqual(5)
         });

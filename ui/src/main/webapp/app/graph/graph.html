@@ -1,4 +1,5 @@
 <md-card class="content" layout-fill>
-    <div id="graphCy" layout-fill></div>
+    <md-progress-linear md-mode="indeterminate" ng-disabled="!ctrl.graphLoading"></md-progress-linear>
+    <div id="graphCy" flex></div>
 </md-card>
-<graph-control></graph-control>
+<graph-control filter="ctrl.filter(searchTerm)" remove="ctrl.removeSelected()" redraw="ctrl.redraw()" quick-hop="ctrl.quickHop()" reset="ctrl.reset()"></graph-control>

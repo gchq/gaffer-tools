@@ -32,32 +32,15 @@ describe('The named views component', function() {
         });
     }));
 
-    beforeEach(inject(function(_$componentController_, _$rootScope_) {
+    beforeEach(inject(function(_$componentController_, _$rootScope_, _view_) {
         $componentController = _$componentController_;
         scope = _$rootScope_.$new();
-    }));
-
-    beforeEach(inject(function(_view_) {
         view = _view_;
     }));
 
-    var createController = function() {
-        ctrl = $componentController('namedViews', {$scope: scope});
+    var createController = function(initialModel) {
+        ctrl = $componentController('namedViews', {$scope: scope}, {model: initialModel});
     }
-
-    describe('on startup', function() {
-
-        beforeEach(function() {
-            spyOn(view, 'getNamedViews').and.returnValue("test");
-        });
-
-        beforeEach(createController);
-
-        it('should get the named views from the service', function() {
-            expect(view.getNamedViews).toHaveBeenCalledTimes(1);
-            expect(ctrl.selectedNamedViews).toEqual("test");
-        });
-    });
 
     describe('ctrl.$onInit()', function() {
         var $q;
@@ -67,7 +50,9 @@ describe('The named views component', function() {
             $q = _$q_;
         }));
 
-        beforeEach(createController);
+        beforeEach(function() {
+            createController([]);
+        });
 
         beforeEach(function() {
             spyOn(view, 'shouldLoadNamedViewsOnStartup').and.callFake(function() {
@@ -137,7 +122,9 @@ describe('The named views component', function() {
 
     describe('ctrl.search()', function() {
 
-        beforeEach(createController);
+        beforeEach(function() {
+            createController([])
+        });
 
         beforeEach(function() {
             ctrl.availableNamedViews = [ {name: 'view1', description: 'A description'}, {name: 'view2'}, {name: 'myNamedView', description: 'A cool Filter'}, {name: '$SuperFilter'} ];
@@ -177,7 +164,9 @@ describe('The named views component', function() {
             $q = _$q_;
         }));
 
-        beforeEach(createController);
+        beforeEach(function() {
+            createController([]);
+        });
 
         beforeEach(function() {
             spyOn(view, 'reloadNamedViews').and.callFake(function(arg) {
@@ -203,51 +192,41 @@ describe('The named views component', function() {
 
     describe('ctrl.deleteFilter()', function() {
 
-        beforeEach(createController);
+        beforeEach(function() {
+            createController([]);
+        });
 
         beforeEach(function() {
-            ctrl.selectedNamedViews = ["view1", "view2", "view", "anotherView", "view"];
+            ctrl.model = ["view1", "view2", "view", "anotherView", "view"];
         });
 
         it('should remove a named view based on the index', function() {
             ctrl.deleteFilter(1);
-            expect(ctrl.selectedNamedViews).toEqual(["view1", "view", "anotherView", "view"])
+            expect(ctrl.model).toEqual(["view1", "view", "anotherView", "view"])
         });
 
         it('should only remove the view with the given index, rather than all views that match it', function() {
             ctrl.deleteFilter(2)
-            expect(ctrl.selectedNamedViews).toEqual(["view1", "view2", "anotherView", "view"])
+            expect(ctrl.model).toEqual(["view1", "view2", "anotherView", "view"])
         });
 
-        it('should update the model', function() {
-            ctrl.deleteFilter(3);
-            expect(view.getNamedViews()).toEqual(["view1", "view2", "view", "view"])
-        });
     });
 
     describe('ctrl.updateModel()', function() {
-        beforeEach(createController);
-
         beforeEach(function() {
-            ctrl.selectedNamedViews = [1, 2, 3];
-        });
-
-        beforeEach(function() {
-            spyOn(view, 'setNamedViews');
+            createController([1, 2, 3]);
         });
 
         it('should do nothing if selected named view is null', function() {
             ctrl.selectedNamedView = null;
             ctrl.updateModel();
-            expect(view.setNamedViews).not.toHaveBeenCalled();
-            expect(ctrl.selectedNamedViews).toEqual([1, 2, 3]);
+            expect(ctrl.model).toEqual([1, 2, 3]);
         });
 
         it('should do nothing if selected named view is undefined', function() {
             ctrl.selectedNamedView = undefined;
             ctrl.updateModel();
-            expect(view.setNamedViews).not.toHaveBeenCalled();
-            expect(ctrl.selectedNamedViews).toEqual([1, 2, 3]);
+            expect(ctrl.model).toEqual([1, 2, 3]);
         });
 
         it('should add the selected Named View to the controllers array', function() {
@@ -255,8 +234,7 @@ describe('The named views component', function() {
             ctrl.updateModel();
 
             var expected = [ 1, 2, 3, "test"]
-            expect(view.setNamedViews).toHaveBeenCalledWith(expected);
-            expect(ctrl.selectedNamedViews).toEqual(expected);
+            expect(ctrl.model).toEqual(expected);
         });
 
         it('should reset the search term', function() {
@@ -275,14 +253,15 @@ describe('The named views component', function() {
             ctrl.updateModel();
 
             var expected = [ 1, 2, 3, "test", "test"]
-            expect(view.setNamedViews).toHaveBeenCalledWith(expected);
-            expect(ctrl.selectedNamedViews).toEqual(expected);
+            expect(ctrl.model).toEqual(expected);
         });
     });
 
     describe('ctrl.namedViewHasParams()', function() {
 
-        beforeEach(createController);
+        beforeEach(function() {
+            createController([]);
+        });
 
         it('should return false if named view is null', function() {
             expect(ctrl.namedViewHasParams(null)).toBeFalsy();
@@ -307,7 +286,9 @@ describe('The named views component', function() {
 
     describe('ctrl.namedViewHasNoParams()', function() {
 
-        beforeEach(createController);
+        beforeEach(function() {
+            createController();
+        });
 
         it('should return false if named view is null', function() {
             expect(ctrl.namedViewHasNoParams(null)).toBeFalsy();

@@ -56,8 +56,8 @@ angular.module('app').factory('query', ['$http', 'config', 'events', 'common', '
             operation,
             function(data) {
                 loading.finish()
-                if (data.length === settings.getResultLimit()) {
-                  showTooManyResultsPrompt(data, onSuccess);
+                if (data.length >= settings.getResultLimit()) {
+                    showTooManyResultsPrompt(data.slice(0, settings.getResultLimit()), onSuccess);
                 } else {
                    results.update(data);
                    if(onSuccess) {

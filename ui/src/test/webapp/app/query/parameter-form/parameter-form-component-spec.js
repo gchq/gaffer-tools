@@ -3,11 +3,10 @@ describe('The Parameter Form Component', function() {
 
     describe('The Controller', function() {
         var $componentController;
-        var queryPage, types
+        var types
 
-        beforeEach(inject(function(_$componentController_, _queryPage_, _types_) {
+        beforeEach(inject(function(_$componentController_, _types_) {
             $componentController = _$componentController_;
-            queryPage = _queryPage_;
             types = _types_;
         }));
 

@@ -29,6 +29,7 @@ angular.module('app').factory('results', ['events', function(events) {
         results = {entities: [], edges: [], other: []};
         if(broadcast === undefined || broadcast) {
             events.broadcast('resultsUpdated', [results]);
+            events.broadcast('resultsCleared');
         }
     }
 
@@ -36,7 +37,7 @@ angular.module('app').factory('results', ['events', function(events) {
         var incomingResults = {
             entities: [], edges: [], other: []
         }
-        if(newResults !== undefined) {
+        if(newResults !== undefined && newResults !== null && newResults !== "") {
             if(!Array.isArray(newResults)) {
                 newResults = [newResults];
             }

@@ -20,7 +20,7 @@ This module contains Python copies of Gaffer function java classes
 """
 
 from gafferpy.gaffer_core import *
-
+import gafferpy.gaffer_predicates as pred
 
 class FunctionContext(ToJson, ToCodeString):
     CLASS = "gaffer.FunctionContext"
@@ -463,6 +463,82 @@ class ToElementId(AbstractFunction):
         return super().to_json()
 
 
+class ToUpperCase(AbstractFunction):
+    CLASS = 'uk.gov.gchq.koryphe.impl.function.ToUpperCase'
+
+    def __init__(self):
+        super().__init__(_class_name=self.CLASS)
+
+    def to_json(self):
+        return super().to_json()
+
+
+class ToLowerCase(AbstractFunction):
+    CLASS = 'uk.gov.gchq.koryphe.impl.function.ToLowerCase'
+
+    def __init__(self):
+        super().__init__(_class_name=self.CLASS)
+
+    def to_json(self):
+        return super().to_json()
+
+
+class ToNull(AbstractFunction):
+    CLASS = 'uk.gov.gchq.koryphe.impl.function.ToNull'
+
+    def __init__(self):
+        super().__init__(_class_name=self.CLASS)
+
+    def to_json(self):
+        return super().to_json()
+
+
+class ToLong(AbstractFunction):
+    CLASS = 'uk.gov.gchq.koryphe.impl.function.ToLong'
+
+    def __init__(self):
+        super().__init__(_class_name=self.CLASS)
+
+    def to_json(self):
+        return super().to_json()
+
+
+class ToInteger(AbstractFunction):
+    CLASS = 'uk.gov.gchq.koryphe.impl.function.ToInteger'
+
+    def __init__(self):
+        super().__init__(_class_name=self.CLASS)
+
+    def to_json(self):
+        return super().to_json()
+
+
+class Cast(AbstractFunction):
+    CLASS = 'uk.gov.gchq.koryphe.impl.function.Cast'
+
+    def __init__(self, output_class):
+        super().__init__(_class_name=self.CLASS)
+        self.output_class = output_class
+
+    def to_json(self):
+        json = super().to_json()
+        json['outputClass'] = self.output_class
+        return json
+
+
+class SetValue(AbstractFunction):
+    CLASS = 'uk.gov.gchq.koryphe.impl.function.SetValue'
+
+    def __init__(self, value):
+        super().__init__(_class_name=self.CLASS)
+        self.value = value
+
+    def to_json(self):
+        json = super().to_json()
+        json['value'] = self.value
+        return json
+
+
 class FromElementId(AbstractFunction):
     CLASS = 'uk.gov.gchq.gaffer.operation.function.FromElementId'
 
@@ -572,6 +648,32 @@ class CallMethod(AbstractFunction):
         function_json = super().to_json()
         function_json['method'] = self.method
         return function_json
+
+
+class If(AbstractFunction):
+    CLASS = "uk.gov.gchq.koryphe.impl.function.If"
+
+    def __init__(self, condition=None, predicate=None,
+                 then=None, otherwise=None):
+        super().__init__(_class_name=self.CLASS)
+
+        self.condition = condition
+        self.predicate = pred.predicate_converter(predicate)
+        self.then = function_converter(then)
+        self.otherwise = function_converter(otherwise)
+
+    def to_json(self):
+        predicate_json = super().to_json()
+        if self.condition is not None:
+            predicate_json['condition'] = self.condition
+        if self.predicate is not None:
+            predicate_json['predicate'] = self.predicate.to_json()
+        if self.then is not None:
+            predicate_json['then'] = self.then.to_json()
+        if self.otherwise is not None:
+            predicate_json['otherwise'] = self.otherwise.to_json()
+
+        return predicate_json
 
 
 def function_context_converter(obj):

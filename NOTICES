@@ -20,7 +20,7 @@ Gaffer tools is built using maven. This process will automatically pull in depen
  projects below.
 
 
-Gaffer (uk.gov.gchq.gaffer:gaffer2:1.5.2):
+Gaffer (uk.gov.gchq.gaffer:gaffer2:1.7.0):
 
 - Apache License, Version 2.0
 
@@ -60,7 +60,7 @@ Jasmine Maven Plugin (com.github.searls:jasmine-maven-plugin:2.2)
 
 The UI contains the following javascript dependencies
 
-Moment.js (moment-with-locales.min.js:2.20.1)
+Moment.js (moment.min.js:2.20.1)
 
 - MIT Licence
 
@@ -115,5 +115,13 @@ Google Material Design Icons (material.io)
 - Apache License, Version 2.0
 
 daniel-nagy/md-data-table (md-data-table)
+
+- MIT Licence
+
+jtblin/angular-chart.js (angular-chart.js)
+
+- BSD License
+
+chart.js/Chartjs (Chart.js)
 
 - MIT Licence

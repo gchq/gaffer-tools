@@ -140,7 +140,7 @@ describe('The Table component', function() {
                 SOURCE: 'vertex1'
             }
         ],
-        columns: [ 'result type', 'GROUP', 'SOURCE', 'DESTINATION', 'DIRECTED', 'value', 'count', 'prop1'],
+        columns: [ 'result type', 'GROUP', 'SOURCE', 'DESTINATION', 'DIRECTED', 'value', 'count', 'prop1', 'prop2'],
         allColumns: [ 'result type', 'GROUP', 'SOURCE', 'DESTINATION', 'DIRECTED', 'value', 'count', 'prop1', 'prop2' ],
         groups: [ 'BasicEdge1', 'BasicEdge2', 'BasicEntity1', 'BasicEntity2', '' ],
         allGroups: [ 'BasicEdge1', 'BasicEdge2', 'BasicEntity1', 'BasicEntity2', '' ],
@@ -232,20 +232,32 @@ describe('The Table component', function() {
             expect(ctrl).toBeDefined();
         });
 
+        it('should use a pagination limit of 50 by default', function() {
+            expect(ctrl.pagination.limit).toEqual(50);
+        });
+
+        it('should set the page to 1 by default', function() {
+            expect(ctrl.pagination.page).toEqual(1);
+        });
+
         describe('ctrl.$onInit()', function() {
             beforeEach(function() {
                 spyOn(results, 'get').and.returnValue(resultsData);
                 spyOn(events, 'subscribe');
-                spyOn(table, 'getCachedValues').and.returnValue(cachedValues);
-                ctrl.$onInit();
-                scope.$digest();
+                spyOn(table, 'getCachedValues').and.callFake(function() {
+                    return cachedValues
+                });
             });
 
             it('should fetch schema', function() {
+                ctrl.$onInit();
+                scope.$digest();
                 expect(schema.get).toHaveBeenCalledTimes(1);
             });
 
             it('should process empty results', function() {
+                ctrl.$onInit();
+                scope.$digest();
                 expect(results.get).toHaveBeenCalledTimes(1);
                 expect(ctrl.data).toEqual(
                     {
@@ -262,12 +274,33 @@ describe('The Table component', function() {
             });
 
             it('should load empty cached values from table service', function() {
+                ctrl.$onInit();
+                scope.$digest();
                 expect(table.getCachedValues).toHaveBeenCalledTimes(1);
                 expect(ctrl.sortType).toEqual(undefined);
                 expect(ctrl.searchTerm).toEqual(undefined);
             });
 
+            it('should not load empty pagination values from the table service', function() {
+                ctrl.$onInit();
+                scope.$digest();
+                expect(table.getCachedValues).toHaveBeenCalledTimes(1);
+                expect(ctrl.pagination).toEqual({page: 1, limit: 50});
+            });
+
+            it('should load pagination values if they are defined', function() {
+                cachedValues = {
+                    pagination: { page: 2, limit: 100 }
+                }
+                ctrl.$onInit();
+                scope.$digest();
+                expect(table.getCachedValues).toHaveBeenCalledTimes(1);
+                expect(ctrl.pagination).toEqual({page: 2, limit: 100});
+            });
+
             it('should subscribe to results updated events', function() {
+                ctrl.$onInit();
+                scope.$digest();
                 expect(events.subscribe).toHaveBeenCalledTimes(1);
                 expect(events.subscribe).toHaveBeenCalledWith('resultsUpdated', jasmine.any(Function));
             });
@@ -339,7 +372,13 @@ describe('The Table component', function() {
                 expect(table.setCachedValues).toHaveBeenCalledTimes(1);
                 expect(table.setCachedValues).toHaveBeenCalledWith({
                     searchTerm: "search value1",
-                    sortType: "destination"
+                    sortType: "destination",
+                    chart: undefined,
+                    showVisualisation: undefined,
+                    pagination: {
+                        limit: 50,
+                        page: 1
+                    }
                 });
             });
 
@@ -379,7 +418,7 @@ describe('The Table component', function() {
                 ]);
             });
 
-            it('should update filtered results multiple times and update columns', function() {
+            it('should update filtered results multiple times', function() {
                 resultsData = fullResultsData;
                 spyOn(results, 'get').and.returnValue(resultsData);
                 spyOn(events, 'subscribe');
@@ -395,7 +434,7 @@ describe('The Table component', function() {
                     { 'result type': 'Edge', GROUP: 'BasicEdge2', SOURCE: 'source1', DESTINATION: 'destination1', DIRECTED: true, count: 1, prop2: 'value1' },
                     { GROUP: '', 'result type': 'String', value: 'value1' }
                 ]);
-                expect(ctrl.data.columns).toEqual(['result type', 'GROUP', 'SOURCE', 'DESTINATION', 'DIRECTED', 'value', 'count', 'prop1']);
+                expect(ctrl.data.columns).toEqual(['result type', 'GROUP', 'SOURCE', 'DESTINATION', 'DIRECTED', 'value', 'count', 'prop1', 'prop2']);
 
                 ctrl.data.types = ["Entity"];
                 ctrl.updateFilteredResults();
@@ -404,17 +443,17 @@ describe('The Table component', function() {
                     { 'result type': 'Entity', GROUP: 'BasicEntity1', SOURCE: 'vertex2', count: 2, prop1: 'value2' },
                     { 'result type': 'Entity', GROUP: 'BasicEntity2', SOURCE: 'vertex1', count: 1, prop2: 'value1' }
                 ]);
-                expect(ctrl.data.columns).toEqual(['result type', 'GROUP', 'SOURCE', 'count', 'prop1']);
+                expect(ctrl.data.columns).toEqual(['result type', 'GROUP', 'SOURCE', 'DESTINATION', 'DIRECTED', 'value', 'count', 'prop1', 'prop2']);
 
                 ctrl.data.types = ["String"];
                 ctrl.updateFilteredResults();
                 expect(ctrl.data.results).toEqual([
                     { 'result type': 'String', GROUP: '', value: 'value1' },
                 ]);
-                expect(ctrl.data.columns).toEqual(['result type', 'GROUP']);
+                expect(ctrl.data.columns).toEqual(['result type', 'GROUP', 'SOURCE', 'DESTINATION', 'DIRECTED', 'value', 'count', 'prop1', 'prop2']);
             });
 
-            it('should convert string properties which are numbers into their numerical value', function() {
+            it('should not convert string properties which are numbers into their numerical value', function() {
                 resultsData = {
                     entities: [
                             {
@@ -434,7 +473,7 @@ describe('The Table component', function() {
                 ctrl.data.types = ["Entity"];
                 ctrl.updateFilteredResults();
 
-                expect(ctrl.data.results[0]['numberProp']).toEqual(123);
+                expect(ctrl.data.results[0]['numberProp']).toEqual('123');
             });
 
             it('should handle property name clashes with "source" and "destination"', function() {
@@ -465,7 +504,7 @@ describe('The Table component', function() {
                 expect(ctrl.data.results).toEqual([
                     { 'result type': 'Edge', GROUP: 'BasicEdge1', SOURCE: 'source1', DESTINATION: 'destination1', DIRECTED: true, count: 1, prop1: 'value1', source: 'abc', destination: 'dest4' }
                 ]);
-                expect(ctrl.data.columns).toEqual(['result type', 'GROUP', 'SOURCE', 'DESTINATION', 'DIRECTED', 'count', 'source', 'destination']);
+                expect(ctrl.data.columns).toEqual(['result type', 'GROUP', 'SOURCE', 'DESTINATION', 'DIRECTED', 'count', 'source', 'destination', 'prop1']);
 
             });
         });
@@ -483,6 +522,241 @@ describe('The Table component', function() {
                 ctrl.sortType = '-' + ctrl.sortType;
                 expect(ctrl.getValue()).toEqual('-"a property with spaces"');
             });
-        })
+        });
+
+        describe('ctrl.download()', function() {
+
+            var fakeElement;
+
+            var expectedData;
+
+            beforeEach(function() {
+                fakeElement = {
+                    click: jasmine.createSpy('click')
+                }
+            });
+
+            beforeEach(function() {
+                spyOn(document, 'createElement').and.returnValue(fakeElement);
+                spyOn(document.body, 'appendChild');
+                spyOn(document.body, 'removeChild');
+                
+            });
+
+            beforeEach(function() {
+                ctrl.data = {
+                    results: [
+                        {
+                            'col1': 1,
+                            'col2': 'test',
+                            'col4': 'def'
+                        }, 
+                        { 
+                            'col1': true,
+                            'col2': null,
+                            'col3': 'comma test',
+                            'col4': 'ghi'
+                        }, 
+                        {
+                            'col1': 'hello',
+                            'col4': 'abc'
+                        }
+                    ],
+                    columns: ['col1', 'col2']
+                };
+            });
+
+            beforeEach(inject(function(_$filter_) {
+                $filter = _$filter_;
+            }));
+
+            it('should create an element', function() {
+                ctrl.download();
+                expect(document.body.appendChild).toHaveBeenCalledWith(fakeElement);
+            });
+
+            it('should set the default file name to gaffer_results_ plus the current time', function() {
+                spyOn(Date, 'now').and.returnValue('current-time');
+                ctrl.download();
+                expect(fakeElement.download).toEqual('gaffer_results_current-time.csv');
+            });
+
+            it('should remove the element', function() {
+                ctrl.download();
+                expect(document.body.removeChild).toHaveBeenCalledWith(fakeElement);
+            });
+
+            it('should use an object url based on the text from the CSV', function(done) {
+
+                ctrl.filteredResults = ctrl.data.results;
+
+                var expectedOutput = 'col1,col2\r\n' +
+                '1,test\r\n' +
+                'true,\r\n' +
+                'hello,\r\n';
+
+                spyOn(URL, 'createObjectURL').and.callFake(function(obj) {
+                    var reader = new FileReader();
+                    reader.addEventListener('loadend', function() {
+                        var rawString = String.fromCharCode.apply(null, new Uint8Array(reader.result));
+                        expect(rawString).toEqual(expectedOutput);
+                        done();
+                    });
+
+                    reader.readAsArrayBuffer(obj);
+
+                    return 'irrelevant';
+                });
+
+                ctrl.download();
+                
+
+            });
+
+            it('should use the columns selected by the user', function(done) {
+
+                ctrl.filteredResults = ctrl.data.results;
+                
+                ctrl.data.columns = ['col1']
+
+                var expectedOutput = 'col1\r\n' +
+                '1\r\n' +
+                'true\r\n' +
+                'hello\r\n';
+
+                spyOn(URL, 'createObjectURL').and.callFake(function(obj) {
+                    var reader = new FileReader();
+                    reader.addEventListener('loadend', function() {
+                        var rawString = String.fromCharCode.apply(null, new Uint8Array(reader.result));
+                        expect(rawString).toEqual(expectedOutput);
+                        done();
+                    });
+
+                    reader.readAsArrayBuffer(obj);
+
+                    return 'irrelevant';
+                });
+
+
+                ctrl.download();
+
+            });
+
+            it('should take into account filters entered by the user', function(done) {
+                ctrl.filteredResults = $filter('filter')(ctrl.data.results, 'test');     // mimicking if the user entered 'test' into search box
+                
+                var expectedOutput =
+                'col1,col2\r\n' +
+                '1,test\r\n' +
+                'true,\r\n';
+
+
+                spyOn(URL, 'createObjectURL').and.callFake(function(obj) {
+                    var reader = new FileReader();
+                    reader.addEventListener('loadend', function() {
+                        var rawString = String.fromCharCode.apply(null, new Uint8Array(reader.result));
+                        expect(rawString).toEqual(expectedOutput);
+                        done();
+                    });
+
+                    reader.readAsArrayBuffer(obj);
+
+                    return 'irrelevant';
+                });
+
+                ctrl.download();
+
+            });
+            
+            it('should take into account the order specified by the user', function(done) {
+                ctrl.data.columns = ['col1', 'col4'];
+                ctrl.sortType = 'col4';
+                ctrl.filteredResults = $filter('orderBy')(ctrl.data.results, ctrl.getValue());  // mimicking the order by functionality in the table
+                
+                var expectedOutput = 
+                "col1,col4\r\n" +
+                "hello,abc\r\n" +
+                "1,def\r\n" +
+                "true,ghi\r\n";
+                
+                spyOn(URL, 'createObjectURL').and.callFake(function(obj) {
+                    var reader = new FileReader();
+                    reader.addEventListener('loadend', function() {
+                        var rawString = String.fromCharCode.apply(null, new Uint8Array(reader.result));
+                        expect(rawString).toEqual(expectedOutput);
+                        done();
+                    });
+
+                    reader.readAsArrayBuffer(obj);
+
+                    return 'irrelevant';
+                });
+
+                ctrl.download();
+            });
+
+            it('should release the Object url once clicked', function() {
+                spyOn(URL, 'revokeObjectURL');
+
+                ctrl.download();
+
+                expect(URL.revokeObjectURL).toHaveBeenCalledWith(fakeElement.href);
+            });
+        });
+
+        describe('ctrl.createVisualisation()', function() {
+            var $mdDialog;
+
+            beforeEach(inject(function(_$mdDialog_) {
+                $mdDialog = _$mdDialog_;
+            }));
+
+
+
+            it('should set the controllers chart to the return value' ,function() {
+                spyOn($mdDialog, 'show').and.returnValue($q.when('test'));
+
+                ctrl.createVisualisation();
+
+                // not resolved yet
+
+                expect(ctrl.chart).toBeUndefined();
+
+                scope.$digest();
+
+                expect(ctrl.chart).toEqual('test');
+            });
+
+            it('should set the showVisualisation flag to true if resolved', function() {
+                spyOn($mdDialog, 'show').and.returnValue($q.when('test'));
+                ctrl.createVisualisation();
+
+                // not resolved yet
+
+                expect(ctrl.showVisualisation).toBeUndefined();
+
+                scope.$digest();
+
+                expect(ctrl.showVisualisation).toBeTruthy();
+            });
+
+            it('should do nothing if the promise is rejected', function() {
+                var deferred = $q.defer();
+
+                spyOn($mdDialog, 'show').and.returnValue(deferred.promise);
+                ctrl.createVisualisation();
+
+                deferred.reject();
+
+                expect(function() {
+                    scope.$digest();
+                }).not.toThrow();
+
+                expect(ctrl.showVisualisation).toBeFalsy();
+                expect(ctrl.chart).toBeUndefined();
+            });
+
+
+        });
     });
 });

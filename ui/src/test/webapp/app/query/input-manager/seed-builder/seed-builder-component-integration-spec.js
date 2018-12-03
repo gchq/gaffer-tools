@@ -4,28 +4,19 @@ describe('The Seed Builder', function() {
     var types;
     var error;
 
-    var input;
-
     var fakeTypes;
-    var queryInputUpdateEvent = 'queryInputUpdate';
+    var OPERATION_UPDATE_EVENT = 'onOperationUpdate';
 
     beforeEach(module('app'));
 
-    beforeEach(inject(function(_$componentController_, _events_, _types_, _error_, _input_) {
+    beforeEach(inject(function(_$componentController_, _events_, _types_, _error_) {
         events = _events_;
         types = _types_;
         error = _error_;
-        input = _input_;
         ctrl = _$componentController_('seedBuilder', null, {
-            getter: input.getInput,
-            setter: input.setInput,
-            updateEvent: queryInputUpdateEvent
+            model: [],
         });
     }));
-
-    beforeEach(function() {
-        queryInputUpdateEvent = 'queryInputUpdate';
-    });
 
     beforeEach(function() {
         fakeTypes = {
@@ -92,14 +83,15 @@ describe('The Seed Builder', function() {
 
     
     var fireEvent = function(newInput) {
-        events.broadcast(queryInputUpdateEvent, [newInput]);
+        ctrl.model = newInput;
+        events.broadcast(OPERATION_UPDATE_EVENT, []);
     }
 
     var assertNoErrors = function() {
         expect(error.handle).not.toHaveBeenCalled();
     }
 
-    it('should reset a text box when it recieves a single string as input', function() {
+    it('should reset a text box when it receives a single string as input', function() {
         ctrl.vertexClass = 'java.lang.String';
         fireEvent([{
             valueClass: 'java.lang.String',
@@ -112,7 +104,7 @@ describe('The Seed Builder', function() {
         assertNoErrors();
     });
 
-    it('should reset the text box when it recieves a single number as input', function() {
+    it('should reset the text box when it receives a single number as input', function() {
         ctrl.vertexClass = 'java.lang.Long';
         fireEvent([{
             valueClass: 'java.lang.Long',
@@ -125,7 +117,7 @@ describe('The Seed Builder', function() {
         assertNoErrors();
     });
 
-    it('should reset the text box when it recieves a complex object as input', function() {
+    it('should reset the text box when it receives a complex object as input', function() {
         ctrl.vertexClass = 'uk.gov.gchq.gaffer.types.TypeSubTypeValue';
         fireEvent([{
             valueClass: 'uk.gov.gchq.gaffer.types.TypeSubTypeValue',
@@ -274,12 +266,11 @@ describe('The Seed Builder', function() {
     });
 
     it('should add the seeds if it receives a "onPreExecute" event', function() {
-        expect(input.getInput()).toEqual([]);
+        expect(ctrl.model).toEqual([]);
         ctrl.vertexClass='java.lang.String';
         ctrl.seedVertices = 'M5\nM32:1';
-        queryInputUpdateEvent = 'onPreExecute';
-        fireEvent([]);
-        expect(input.getInput()).toEqual([
+        events.broadcast('onPreExecute', []);
+        expect(ctrl.model).toEqual([
             {
                 valueClass: 'java.lang.String',
                 parts: {

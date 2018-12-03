@@ -1,5 +1,5 @@
 <md-card layout-fill class="content">
-    <md-toolbar>
+    <md-toolbar class="short-toolbar">
         <div class="md-toolbar-tools">
             <h4>
                 <span>Selected Elements</span>
@@ -7,59 +7,42 @@
         </div>
     </md-toolbar>
     <md-content layout-padding class="transparent">
-        <div ng-repeat="(vertex, entities) in ctrl.selectedEntities">
-            <h4>{{ctrl.resolveVertex(vertex)}}</h4>
+        <div ng-repeat="vertex in ctrl.model.entities">
+            <h4>{{ ::ctrl.resolveVertex(vertex) }}</h4>
 
-            <md-divider ng-show="!entities.length || !entities[0].group">
+            <md-divider ng-show="!ctrl.processedResults.entities[vertex]">
             </md-divider>
-            <p ng-show="!entities.length || !entities[0].group">No entities</p>
+            <p ng-show="!ctrl.processedResults.entities[vertex]">No entities</p>
             <table md-table
-                   ng-show="entities.length && entities[0].group">
+                   ng-show="ctrl.processedResults.entities[vertex]">
                 <tbody md-body>
-                <tr md-row ng-repeat="entity in entities">
-                    <td md-cell>
-                        {{entity.group}}
-                        <md-tooltip md-direction="top"
-                                    ng-if="ctrl.schema.entities[entity.group].description">
-                            {{ctrl.schema.entities[entity.group].description}}
-                        </md-tooltip>
-                    </td>
-                    <td md-cell>
-                        <p ng-repeat="(key, value) in entity.properties">
-                            {{key}}: {{ctrl.resolve(key, value)}}
-                            <md-tooltip md-direction="top"
-                                        ng-if="ctrl.schema.types[ctrl.schema.entities[entity.group].properties[key]].description">
-                                {{ctrl.schema.types[ctrl.schema.entities[entity.group].properties[key]].description}}
-                            </md-tooltip>
-                        </p>
-                    </td>
-                </tr>
+                    <tr md-row ng-repeat="entity in ctrl.processedResults.entities[vertex]">
+                        <td md-cell>
+                            {{ entity.group }}
+                        </td>
+                        <td md-cell>
+                            <p ng-repeat="(key, value) in entity.properties">
+                                {{key}}: {{ value }}
+                            </p>
+                        </td>
+                    </tr>
                 </tbody>
             </table>
         </div>
-        <div ng-repeat="(id, edges) in ctrl.selectedEdges">
-            <h4>{{ctrl.resolveVertex(edges[0].source)}} to
-                {{ctrl.resolveVertex(edges[0].destination)}}</h4>
+        <div ng-repeat="selectedEdge in ctrl.model.edges">
+            <h4>{{ ::ctrl.resolveEdge(selectedEdge) }}</h4>
             <table md-table>
                 <tbody md-body>
-                <tr md-row ng-repeat="edge in edges">
-                    <td md-cell>
-                        {{edge.group}}
-                        <md-tooltip md-direction="top"
-                                    ng-if="ctrl.schema.edges[edge.group].description">
-                            {{ctrl.schema.edges[edge.group].description}}
-                        </md-tooltip>
-                    </td>
-                    <td md-cell>
-                        <p ng-repeat="(key, value) in edge.properties">
-                            {{key}}: {{ctrl.resolve(key, value)}}
-                            <md-tooltip md-direction="top"
-                                        ng-if="ctrl.schema.types[ctrl.schema.edges[edge.group].properties[key]].description">
-                                {{ctrl.schema.types[ctrl.schema.edges[edge.group].properties[key]].description}}
-                            </md-tooltip>
-                        </p>
-                    </td>
-                </tr>
+                    <tr md-row ng-repeat="edge in ctrl.processedResults.edges[selectedEdge]">
+                        <td md-cell>
+                            {{ edge.group }}
+                        </td>
+                        <td md-cell>
+                            <p ng-repeat="(key, value) in edge.properties">
+                                {{ key }}: {{ value }}
+                            </p>
+                        </td>
+                    </tr>
                 </tbody>
             </table>
         </div>

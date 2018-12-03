@@ -22,8 +22,14 @@ angular.module('app').config(['$locationProvider', '$routeProvider', function($l
     $routeProvider
         .when('/query', {
             title: 'Query',
-            template: '<query></query>',
+            template: '<operation-chain></operation-chain>',
             icon: 'query',
+            inNav: true
+        })
+        .when('/my-queries', {
+            title: 'My Queries',
+            template: '<my-queries></my-queries>',
+            icon: 'rerun',
             inNav: true
         })
         .when('/table', {
@@ -34,7 +40,7 @@ angular.module('app').config(['$locationProvider', '$routeProvider', function($l
         })
         .when('/graph', {
             title: 'Graph',
-            templateUrl: 'app/graph/graph-page.html',
+            template: '<graph-page></graph-page>',
             icon: 'graph',
             inNav: true
         })
@@ -54,6 +60,12 @@ angular.module('app').config(['$locationProvider', '$routeProvider', function($l
             title: 'Settings',
             template: '<settings-view></settings-view>',
             icon: 'settings',
+            inNav: true
+        })
+        .when('/about', {
+            title: 'About',
+            template: '<about></about>',
+            icon: 'info',
             inNav: true
         })
         .when('/results', {

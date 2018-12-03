@@ -16,28 +16,48 @@
 
 'use strict';
 
-angular.module('app').factory('operationService', ['$http', '$q', 'settings', 'config', 'query', 'types', 'common', 'error', function($http, $q, settings, config, query, types, common, error) {
+angular.module('app').factory('operationService', ['$http', '$q', 'settings', 'config', 'query', 'types', 'common', 'error', 'operationOptions', function($http, $q, settings, config, query, types, common, error, operationOptions) {
 
     var operationService = {};
 
     var availableOperations;
     var namedOpClass = "uk.gov.gchq.gaffer.named.operation.NamedOperation";
     var deferredAvailableOperations;
-    var deferredNamedOperationsQueue = [];
+
+    var handledFields = [
+        "input",
+        "inputB",
+        "options",
+        "view",
+        "views"
+    ];
+
+    var handledFieldClasses = [
+        "uk.gov.gchq.gaffer.data.elementdefinition.view.View"
+    ];
+
+    operationService.canHandleField = function(field) {
+        return types.isKnown(field.className)
+            || handledFieldClasses.indexOf(field.className) > -1
+            || handledFields.indexOf(field.name) > -1;
+    }
+
+    operationService.canHandleOperation = function(operation) {
+        for(var i in operation.fields) {
+            if(!operationService.canHandleField(operation.fields[i])) {
+                return false;
+            }
+        }
+        return true;
+    }
 
     operationService.getAvailableOperations = function() {
         if (availableOperations) {
             return $q.when(availableOperations);
         } else if (!deferredAvailableOperations) {
-
             deferredAvailableOperations = $q.defer();
-            config.get().then(function(conf) {
-                if (conf.operations && conf.operations.defaultAvailable) {
-                    availableOperations = conf.operations.defaultAvailable;
-                    deferredAvailableOperations.resolve(availableOperations);
-                } else {
-                    deferredAvailableOperations.resolve([]);
-                }
+            operationService.reloadOperations(false).then(function() {
+                deferredAvailableOperations.resolve(availableOperations);
             });
         }
 
@@ -47,7 +67,7 @@ angular.module('app').factory('operationService', ['$http', '$q', 'settings', 'c
     var hasInputB = function(first, availableOps) {
         for (var i in availableOps) {
             if (availableOps[i].class && common.endsWith(availableOps[i].class, first)) {
-                return availableOps[i].inputB
+                return availableOps[i].fields['inputB'];
             }
         }
 
@@ -57,11 +77,11 @@ angular.module('app').factory('operationService', ['$http', '$q', 'settings', 'c
     var getInputType = function(first, availableOps) {
         for (var i in availableOps) {
             if (availableOps[i].class && common.endsWith(availableOps[i].class, first)) {
-                return availableOps[i].input;
+                return availableOps[i].fields['input'];
             }
         }
 
-        return true;
+        return undefined;
     }
 
     var opAllowed = function(opName, configuredOperations) {
@@ -83,95 +103,121 @@ angular.module('app').factory('operationService', ['$http', '$q', 'settings', 'c
         return allowed;
     }
 
-    var updateNamedOperations = function(results) {
-        availableOperations = [];
-        config.get().then(function(conf) {
-            var defaults = conf.operations && conf.operations.defaultAvailable ? conf.operations.defaultAvailable : [];
-            for(var i in defaults) {
-                if(opAllowed(defaults[i].name, conf.operations)) {
-                    availableOperations.push(defaults[i]);
+    var addOperations = function(operations, conf) {
+        if(operations) {
+            for (var i in operations) {
+                var op = operations[i];
+
+                if(opAllowed(op.name, conf.operations) && operationService.canHandleOperation(op)) {
+                    var fields = {};
+                    for(var j in op.fields) {
+                        fields[op.fields[j].name] = op.fields[j];
+                    }
+                    var availableOp = {
+                          class: op.name,
+                          name: common.toTitle(op.name),
+                          description: op.summary,
+                          fields: fields,
+                          next: op.next
+                    };
+                    availableOperations.push(availableOp);
                 }
             }
+        }
+    }
 
-            if(results) {
-                for (var i in results) {
-                    if(opAllowed(results[i].operationName, conf.operations)) {
-                        if(results[i].parameters) {
-                            for(var j in results[i].parameters) {
-                                results[i].parameters[j].value = results[i].parameters[j].defaultValue;
-                                if(results[i].parameters[j].defaultValue) {
-                                    var valueClass = results[i].parameters[j].valueClass;
-                                    results[i].parameters[j].parts = types.createParts(valueClass, results[i].parameters[j].defaultValue);
+    var addNamedOperations = function(operations) {
+        config.get().then(function(conf) {
+            if(operations) {
+                for (var i in operations) {
+                    var op = operations[i];
+                    if(opAllowed(op.operationName, conf.operations)) {
+                        if(op.parameters) {
+                            for(var j in op.parameters) {
+                                op.parameters[j].value = op.parameters[j].defaultValue;
+                                if(op.parameters[j].defaultValue) {
+                                    var valueClass = op.parameters[j].valueClass;
+                                    op.parameters[j].parts = types.createParts(valueClass, op.parameters[j].defaultValue);
                                 } else {
-                                    results[i].parameters[j].parts = {};
+                                    op.parameters[j].parts = {};
                                 }
                             }
                         }
 
-                        var opChain = JSON.parse(results[i].operations);
+                        var opChain = JSON.parse(op.operations);
                         var first = opChain.operations[0].class;
 
-                        var inputB = hasInputB(first, conf.operations.defaultAvailable);
+                        var inputB = hasInputB(first, availableOperations);
 
                         if (inputB) {
-                            if ((!results[i].parameters) || results[i].parameters['inputB'] === undefined) { // unsupported
-                                console.log('Named operation ' + results[i].operationName + ' starts with a GetElementsBetweenSets operation but does not contain an "inputB" parameter. This is not supported by the UI');
-                                continue;
-                            } else {
-                                delete results[i].parameters['inputB'] // to avoid it coming up in the parameters section
-                                if (Object.keys(results[i].parameters).length === 0) {
-                                    results[i].parameters = undefined;
+                            if (op.parameters && op.parameters['inputB'] ) {
+                                delete op.parameters['inputB']
+                                 // to avoid it coming up in the parameters section
+                                if (Object.keys(op.parameters).length === 0) {
+                                    op.parameters = undefined;
                                 }
+                            } else {
+                                console.log('Named operation ' + op.operationName + ' starts with a GetElementsBetweenSets operation but does not contain an "inputB" parameter. This is not supported by the UI');
+                                continue;
                             }
-                        }   
+                        }
 
-                        availableOperations.push({
-                            class: namedOpClass,
-                            name: results[i].operationName,
-                            parameters: results[i].parameters,
-                            description: results[i].description,
-                            operations: results[i].operations,
-                            view: false,
-                            input: getInputType(first, conf.operations.defaultAvailable),
-                            inputB: inputB,
-                            namedOp: true,
-                            inOutFlag: false
-                        });
+                        var availableOp = {
+                              class: namedOpClass,
+                              name: op.operationName,
+                              parameters: op.parameters,
+                              description: op.description,
+                              operations: op.operations,
+                              fields: {
+                                  input: getInputType(first, availableOperations),
+                                  inputB: inputB,
+                              },
+                              namedOp: true
+                        };
+                        availableOperations.push(availableOp);
                     }
                 }
-
             }
-            for (var i in deferredNamedOperationsQueue) {
-                deferredNamedOperationsQueue[i].resolve(availableOperations);
-            }
-
-            deferredNamedOperationsQueue = [];
         });
     }
 
-    operationService.reloadNamedOperations = function(loud) {
+    operationService.reloadOperations = function(loud) {
         var deferred = $q.defer();
 
-        deferredNamedOperationsQueue.push(deferred);
 
-        var getAllClass = "uk.gov.gchq.gaffer.named.operation.GetAllNamedOperations";
-        operationService.ifOperationSupported(getAllClass, function() {
-            query.execute(
-                {
-                    class: getAllClass,
-                    options: settings.getDefaultOpOptions()
-                },
-                updateNamedOperations,
-                function(err) {
-                    updateNamedOperations([]);
-                    if (loud) {
-                        error.handle('Failed to load named operations', err);
+        config.get().then(function(conf) {
+            var queryUrl = common.parseUrl(conf.restEndpoint + "/graph/operations/details");
+            $http.get(queryUrl)
+                .then(function(response){
+                    availableOperations = [];
+                    addOperations(response.data, conf);
+                    var getAllClass = "uk.gov.gchq.gaffer.named.operation.GetAllNamedOperations";
+                    if(common.arrayContainsObjectWithValue(availableOperations, "class", getAllClass)) {
+                        query.execute(
+                            {
+                                class: getAllClass,
+                                options: operationOptions.getDefaultOperationOptions()
+                            },
+                            function(result) {
+                                addNamedOperations(result, conf);
+                                deferred.resolve(availableOperations);
+                            },
+                            function(err) {
+                                if (loud) {
+                                    error.handle('Failed to load named operations', err);
+                                    deferred.reject(err);
+                                }
+                                deferred.resolve(availableOperations);
+                            }
+                        );
+                    } else {
+                        deferred.resolve(availableOperations);
                     }
-                }
-            );
-        },
-        function() {
-            updateNamedOperations([]);
+                },
+                function(err) {
+                    error.handle('Unable to load operations', err.data);
+                    deferred.resolve([]);
+                });
         });
 
         return deferred.promise;
@@ -198,7 +244,7 @@ angular.module('app').factory('operationService', ['$http', '$q', 'settings', 'c
     }
 
     operationService.createGetSchemaOperation = function() {
-        var options = settings.getDefaultOpOptions();
+        var options = operationOptions.getDefaultOperationOptions();
         if (!options) {
             options = {};
         }

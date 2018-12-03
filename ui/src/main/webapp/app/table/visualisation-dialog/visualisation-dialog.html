@@ -1,0 +1,32 @@
+<md-dialog class="dialog-500">
+    <md-toolbar>
+        <div class="md-toolbar-tools">
+            <h2 class="md-headline">{{ title }}</h2>
+        </div>
+    </md-toolbar>
+    <md-dialog-content layout-padding>
+        <form name="visualisationForm" layout="column" ng-show="!showPreview">
+            <md-input-container flex>
+                <label>Select a chart type</label>
+                <md-select required ng-model="selectedChart">
+                    <md-option ng-repeat="(chart, fields) in charts" ng-value="fields">{{ chart }}</md-option>
+                </md-select>
+            </md-input-container>
+            <p class="md-body-1">{{ selectedChart.description }}</p>
+            <md-input-container  ng-repeat="(key, field) in selectedChart.fields">
+                <md-select placeholder="{{ field.label }}" ng-model="field.value" ng-required="field.required">
+                    <md-option ng-repeat="option in columns" ng-value="option">{{ option }} <span ng-if="option === 'SOURCE'">/ VERTEX</span></md-option>
+                </md-select>
+            </md-input-container>
+            <md-checkbox ng-model="showLegend" aria-label="display legend in chart">Display Legend</md-checkbox>
+        </form>
+        <canvas ng-show="showPreview" class="chart-base" chart-type="selectedChart.type"
+        chart-data="chartData" chart-labels="labels" chart-series="series" chart-options="options">
+      </canvas> 
+    </md-dialog-content>
+    <md-dialog-actions layout="row" layout-align="end center">
+        <md-button ng-show="showPreview" class="md-raised" ng-click="goBack()">edit</md-button>
+        <md-button ng-show="showPreview" class="md-raised md-primary" ng-click="confirm()">confirm</md-button>
+        <md-button ng-show="!showPreview" ng-disabled="visualisationForm.$invalid" class="md-primary md-raised" ng-click="preview()">See preview</md-button>
+    </md-dialog-actions>
+</md-dialog>

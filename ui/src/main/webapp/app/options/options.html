@@ -1,0 +1,153 @@
+<div ng-if="ctrl.model" layout="column" flex>
+
+        <div ng-if="!ctrl.master">
+            
+            <h4 class="md-title">Options</h4>
+        
+            <div ng-repeat="option in ctrl.model.visible track by option.key">
+                <div layout="row">
+                    <!-- simple strings -->
+                    <md-input-container ng-if="!option.multiple && !option.autocomplete" flex class="no-vertical-margin">
+                        <label>{{option.label}}</label>
+                        <input ng-model="option.value" type="text">
+                    </md-input-container>
+                    <!-- Multiple with autocompleted synchronous or asynchronous options -->
+                    <md-chips 
+                        ng-if="option.multiple && option.autocomplete"
+                        ng-model="option.value"
+                        md-add-on-blur
+                        flex>
+                        <md-autocomplete
+                            ng-if="option.autocomplete"
+                            placeholder="{{ option.label }}"
+                            md-search-text="ctrl.searchTerms[option.key]"
+                            md-items="value in ctrl.getValues(option)">
+                            <span md-highlight-text="ctrl.searchTerms[option.key]">{{ value }}</span>
+                        </md-autocomplete>
+                    </md-chips>
+                    <!-- Multiple with no autocompletion -->
+                    <md-chips
+                        ng-if="option.multiple && !option.autocomplete"
+                        ng-model="option.value"
+                        md-add-on-blur
+                        flex>
+                        <input type="text" ng-if="!option.autocomplete" placeholder="{{ option.label }}">
+                    </md-chips>
+                    <!-- single options with autocompletion -->
+                    <md-input-container flex ng-if="option.autocomplete && !option.multiple">
+                        <label>{{ option.label }}</label>
+                        <!-- Synchronous -->
+                        <md-select 
+                            flex
+                            ng-if="option.autocomplete.options"
+                            ng-model="option.value">
+                            <md-option ng-value="value" ng-repeat="value in option.autocomplete.options">{{ value }}</md-option>
+                        </md-select>
+                        <!-- Asynchronous -->
+                        <md-select 
+                            flex
+                            ng-if="!option.autocomplete.options"
+                            md-on-open="ctrl.loadValues(option)"
+                            ng-model="option.value">
+                            <md-option ng-value="value" ng-repeat="value in ctrl.presets[option.key]">{{ value }}</md-option>
+                        </md-select>
+                    </md-input-container>
+                    <md-button ng-show="!ctrl.isEmpty(option.value)" ng-class="{ 'icon-inline-with-input': !option.multiple}" class="md-icon-button" ng-click="ctrl.clearValue($index)">
+                        <md-icon md-svg-icon="clear"></md-icon>
+                        <md-tooltip>clear value</md-tooltip>
+                    </md-button>
+                    <md-button ng-show="ctrl.isEmpty(option.value)" ng-class="{ 'icon-inline-with-input': !option.multiple}" class="md-icon-button" ng-click="ctrl.hideOption($index)">
+                        <md-icon md-svg-icon="hide"></md-icon>
+                        <md-tooltip>hide option</md-tooltip>
+                    </md-button>
+                </div>
+            </div>
+        </div>
+    
+        <div ng-if="ctrl.master">
+            <md-subheader class="md-no-sticky">Default operation options added to every operation chain</md-subheader>
+            <md-card>
+                <md-list>
+                    <md-list-item class="md-2-line" ng-repeat="option in ctrl.model.visible track by option.key">
+                        <div class="md-list-item-text" flex="40">
+                            <h3>{{option.label}}</h3>
+                            <p>{{option.description}}</p>
+                        </div>
+                        <div layout="row" class="padding-sides" flex> 
+                            <!-- simple strings -->
+                            <md-input-container ng-if="!option.autocomplete && !option.multiple" flex>
+                                <input aria-label="{{ option.label }}" ng-model="option.value" type="text">
+                            </md-input-container>
+                            <!-- Multiple with autocompleted synchronous or asynchronous options -->
+                            <md-chips 
+                                ng-if="option.multiple && option.autocomplete"
+                                ng-model="option.value"
+                                md-add-on-blur
+                                flex>
+                                <md-autocomplete
+                                    aria-label="{{ option.label }}"
+                                    md-search-text="ctrl.searchTerms[option.key]"
+                                    md-items="value in ctrl.getValues(option)">
+                                    <span md-highlight-text="ctrl.searchTerms[option.key]">{{ value }}</span>
+                                </md-autocomplete>
+                            </md-chips>
+                            <!-- Multiple with no autocompletion -->
+                            <md-chips
+                                ng-if="option.multiple && !option.autocomplete"
+                                ng-model="option.value"
+                                md-add-on-blur
+                                flex>
+                                <input type="text" aria-label="{{ option.label }}">
+                            </md-chips>
+                            <!-- Synchronous single options -->
+                            <md-select
+                                ng-if="option.autocomplete && !option.multiple && option.autocomplete.options"
+                                ng-model="option.value"
+                                aria-label="{{ option.label }}"
+                                flex>
+                                <md-option ng-value="value" ng-repeat="value in option.autocomplete.options">{{ value }}</md-option>
+                            </md-select>
+                            <!-- Asynchronous single options -->
+                            <md-select 
+                                ng-if="option.autocomplete && !option.multiple && !option.autocomplete.options"
+                                ng-model="option.value"
+                                aria-label="{{ option.label }}"
+                                md-on-open="ctrl.loadValues(option)"
+                                flex>
+                                <md-option ng-value="value" ng-repeat="value in ctrl.presets[option.key]">{{ value }}</md-option>
+                            </md-select>
+                            <md-button ng-show="!ctrl.isEmpty(option.value)" ng-class="{ 'icon-inline-with-input': !option.multiple}" class="md-icon-button" ng-click="ctrl.clearValue($index)">
+                                <md-icon md-svg-icon="clear"></md-icon>
+                                <md-tooltip>clear value</md-tooltip>
+                            </md-button>
+                            <md-button ng-show="ctrl.isEmpty(option.value)" ng-class="{ 'icon-inline-with-input': !option.multiple}" class="md-icon-button" ng-click="ctrl.hideOption($index)">
+                                <md-icon md-svg-icon="hide"></md-icon>
+                                <md-tooltip>hide option</md-tooltip>
+                            </md-button>
+                        </div>
+                    </md-list-item>
+                </md-list>
+            </md-card>
+        </div>
+    
+        <div ng-class="{'padding-sides card-above-subheader': ctrl.master}">
+            <md-autocomplete
+                ng-show="ctrl.model.hidden.length > 0"
+                md-search-text="ctrl.search"
+                md-selected-item="ctrl.selectedOption"
+                md-min-length="0"
+                md-require-match
+                md-autoselect
+                md-no-cache
+                md-item-text="option.label"
+                md-selected-item-change="ctrl.addOption()"
+                md-items="option in ctrl.model.hidden | filter:ctrl.search"
+                placeholder="Add an operation option">
+                <md-item-template>
+                    <span md-highlight-text="ctrl.search" md-highlight-flags="^i">{{option.label}}</span>
+                </md-item-template>
+            </md-autocomplete>
+        </div>
+    
+    
+    </div>

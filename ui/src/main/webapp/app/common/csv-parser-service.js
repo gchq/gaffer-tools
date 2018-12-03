@@ -16,7 +16,7 @@
 
 'use strict'
 
-angular.module('app').factory('csv', function() {
+angular.module('app').factory('csv', ['error', function(error) {
 
     var service = {};
 
@@ -160,12 +160,6 @@ angular.module('app').factory('csv', function() {
                         return undefined;                                                                                   // and return undefined to show the processing failed
                     }
 
-                    if (_previousState === states.unQuoted) {                                                       // If the string is not in quotes, it may be a number or boolean
-                        if ((!isNaN(currentString)) || currentString === 'true' || currentString === 'false') {     // Test if it is
-                            currentString = JSON.parse(currentString);                                              // and if so, convert it
-                        }
-                    }
-
                     processed.push(currentString);      // Push the current string, number or boolean onto the array
                     currentString = '';                 // the reset the current string to an empty string
 
@@ -183,5 +177,62 @@ angular.module('app').factory('csv', function() {
         return processed;   // once parsed, we can return the parts.
     }
 
+    /**
+     * Generates CSV based on a an array of objects, and a header array.
+     */
+    service.generate = function(rows, headers) {
+
+        var csvString = "";
+
+        if (!headers) { 
+            error.handle('Unable to parse CSV with no headers');
+        }
+
+        for (var i in headers) {
+            var header = headers[i].replace(/"/g, '""');
+            if (header.indexOf(',') !== -1 || header.indexOf('"') !== -1) {
+                csvString += '"' + header + '",';
+            } else {
+                csvString += header + ',';
+            }
+        }
+
+        csvString = csvString.substr(0, csvString.length - 1);
+        csvString += '\r\n';
+        
+
+        for (var i in rows) {
+            var row = rows[i];
+
+
+            for (var j in headers) {
+                var field = row[headers[j]];
+                
+                if (field === null || field === undefined) {
+                    csvString += ',';
+                    continue;
+                }
+
+                if (typeof field === 'string') {
+                    field = field.replace(/"/g, '""');
+                    if (field.indexOf(',') !== -1 || field.indexOf('"') !== -1) {
+                        field = '"' + field + '"';
+                    }
+                }
+
+                csvString += field + ','
+            }
+
+            csvString = csvString.substr(0, csvString.length - 1);
+            csvString += '\r\n';
+            
+        }
+
+        csvString.trim();
+
+        return csvString;
+
+    }
+
     return service;
-});
+}]);

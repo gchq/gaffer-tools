@@ -16,56 +16,11 @@
 
 'use strict';
 
-angular.module('app').factory('view', ['operationService', 'config', 'settings', 'query', '$q', 'types', function(operationService, config, settings, query, $q, types) {
-    var service = {}
-    var viewEntities = [];
-    var viewEdges = [];
-    var entityFilters = {};
-    var edgeFilters = {};
-    var namedViews = [];
+angular.module('app').factory('view', ['operationService', 'config', 'operationOptions', 'query', '$q', 'types', 'events', function(operationService, config, operationOptions, query, $q, types, events) {
+    var service = {};
     var availableNamedViews;
     var firstLoad = true;
     var defer = $q.defer();
-
-    service.getNamedViews = function() {
-        return namedViews;
-    }
-
-    service.getViewEntities = function() {
-        return viewEntities;
-    }
-
-    service.getViewEdges = function() {
-        return viewEdges;
-    }
-
-    service.getEntityFilters = function() {
-        return entityFilters;
-    }
-
-    service.getEdgeFilters = function() {
-        return edgeFilters;
-    }
-
-    service.setNamedViews = function(newNamedViews) {
-        namedViews = newNamedViews;
-    }
-
-    service.setViewEntities = function(entities) {
-        viewEntities = entities;
-    }
-
-    service.setViewEdges = function(edges) {
-        viewEdges = edges;
-    }
-
-    service.reset = function() {
-        viewEntities = [];
-        viewEdges = [];
-        entityFilters = {};
-        edgeFilters = {};
-        namedViews = [];
-    }
 
     service.getAvailableNamedViews = function() {
         return availableNamedViews;
@@ -136,7 +91,7 @@ angular.module('app').factory('view', ['operationService', 'config', 'settings',
             query.execute(
                 {
                     class: getAllClass,
-                    options: settings.getDefaultOpOptions()
+                    options: operationOptions.getDefaultOperationOptions()
                 },
                 updateNamedViews,
                 function(err) {

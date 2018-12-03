@@ -49,6 +49,10 @@ angular.module('app').factory('events', ['common', function(common) {
 
 
     service.unsubscribe = function(eventName, callback) {
+        if (!events[eventName]) {
+            return;
+        }
+
         events[eventName] = events[eventName].filter(function(fn) {
             if (fn !== callback) {
                 return fn;

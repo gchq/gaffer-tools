@@ -28,10 +28,9 @@ function seedBuilder() {
         controller: SeedBuilderController,
         controllerAs: 'ctrl',
         bindings: {
-            updateEvent: '<',
-            setter: '<',
-            getter: '<',
-            routeParam: '@'
+            model: '=',
+            routeParam: '@',
+            usePrevious: '<'
         }
     }
 }
@@ -46,18 +45,17 @@ function seedBuilder() {
  * @param {*} common The common service
  * @param {*} $routeParams The route params service
  */
-function SeedBuilderController(schema, csv, types, error, events, common, $routeParams) {
+function SeedBuilderController(schema, csv, types, error, events, common, $routeParams, $location) {
     var vm = this;
     vm.seedVertices = '';
-    
+
     vm.$onInit = function() {
         schema.get().then(function(gafferSchema) {
             var vertices = schema.getSchemaVertices();
             if(vertices && vertices.length > 0 && undefined !== vertices[0]) {
                 vm.vertexClass = gafferSchema.types[vertices[0]].class;
             }
-            var currentInput = vm.getter();
-            recalculateSeeds(currentInput);     
+            recalculateSeeds(vm.model);
             if($routeParams[vm.routeParam]) {
                 if(Array.isArray($routeParams[vm.routeParam])) {
                     vm.seedVertices += '\n' + $routeParams[vm.routeParam].join('\n');
@@ -65,11 +63,24 @@ function SeedBuilderController(schema, csv, types, error, events, common, $route
                     vm.seedVertices += '\n' + $routeParams[vm.routeParam];
                 }
                 vm.addSeeds(true);
+                $location.search(vm.routeParam, null);
             }
+
         });
-        
-        events.subscribe(vm.updateEvent, recalculateSeeds);
+
         events.subscribe('onPreExecute', vm.addSeeds);
+        events.subscribe('onOperationUpdate', onOperationUpdate);
+    }
+
+    var onOperationUpdate = function() {
+        recalculateSeeds(vm.model);
+    }
+
+    /**
+     * Creates the placeholder for the seed input
+     */
+    vm.getPlaceHolder = function() {
+        return vm.usePrevious ? "Input is provided by the output of the previous operation" : "Enter your seeds, each seed on a new line\n" + vm.getCsvHeader()
     }
 
     /**
@@ -77,7 +88,7 @@ function SeedBuilderController(schema, csv, types, error, events, common, $route
      * time unnecessary function calls
      */
     vm.$onDestroy = function() {
-        events.unsubscribe(vm.updateEvent, recalculateSeeds);
+        events.unsubscribe('onOperationUpdate', onOperationUpdate)
         events.unsubscribe('onPreExecute', vm.addSeeds);
     }
 
@@ -97,12 +108,16 @@ function SeedBuilderController(schema, csv, types, error, events, common, $route
 
     /**
      * Goes through all lines from seed input box, removes trailing whitespace,
-     * processes the line (returns if it fails), checks it's not too long, 
+     * processes the line (returns if it fails), checks it's not too long,
      * adds it to an array, before finally updating the input service
-     * 
-     * @param {boolean} suppressDuplicateError 
+     *
+     * @param {boolean} suppressDuplicateError
      */
     vm.addSeeds = function(suppressDuplicateError) {
+        if (vm.usePrevious) {
+            vm.model = null;
+            return;
+        }
         var newInput = [];
         var keys = vm.getFields().map(function(field) {
             return field.key;
@@ -125,8 +140,12 @@ function SeedBuilderController(schema, csv, types, error, events, common, $route
             var fields = vm.getFields();
             for (var j in fields) {
                 var value = separated[j];
-                if (fields[j].class === 'java.lang.String' && typeof value !== 'string') {
-                    value = JSON.stringify(value);
+                if (fields[j].class !== 'java.lang.String' && fields[j].type !== 'text') {
+                    try {
+                        value = JSON.parse(value);
+                    } catch (e) {
+                        console.log("possible failure parsing " + fields[j].type + " from string: " + value + " for class: " + fields[j].class, e); // Don't broadcast to UI.
+                    }
                 }
                 parts[fields[j].key] = value;
 
@@ -149,17 +168,17 @@ function SeedBuilderController(schema, csv, types, error, events, common, $route
         if (vm.seedForm) {
             vm.seedForm.multiSeedInput.$setValidity('csv', true)
         }
-        vm.setter(deduped);
+        vm.model = deduped;
     }
 
     /**
      * Checks the length of the values returned is not greater than the number of keys.
      * If it is it broadcasts an error.
-     * 
+     *
      * @param {string} line The line of csv
      * @param {any[]} separated The processed values
-     * @param {string[]} keys The keys associated with the fields of the vertex class 
-     * 
+     * @param {string[]} keys The keys associated with the fields of the vertex class
+     *
      * @returns true if the line is valid, false if invalid
      */
     var isValid = function(line, separated, keys) {
@@ -191,6 +210,10 @@ function SeedBuilderController(schema, csv, types, error, events, common, $route
      * @param {any[]} updated The array of inputs
      */
     var recalculateSeeds = function(updated) {
+        if (updated === undefined || updated === null) {
+            vm.seedVertices = ''
+            return;
+        }
         var toParse = updated.map(function(input) {
             return input.parts;
         });
@@ -199,9 +222,9 @@ function SeedBuilderController(schema, csv, types, error, events, common, $route
 
         var str = '';
         for (var i in toParse) {            // for each value in the inputs
-            var parts = toParse[i]; 
+            var parts = toParse[i];
             for (var i in fields) {         // for each field returned by the type service for the vertex class
-                var field = fields[i].key;      
+                var field = fields[i].key;
                 var part = parts[field];                    // extract that field from the value
                 if (part === undefined || part === null) {  // if it doesn't exist
                     str += ',';                             // then add a single comma

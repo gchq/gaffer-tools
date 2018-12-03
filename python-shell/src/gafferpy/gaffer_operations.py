@@ -19,10 +19,10 @@
 This module contains Python copies of Gaffer operation java classes
 """
 
-from gafferpy.gaffer_core import *
-import gafferpy.gaffer_predicates as gaffer_predicates
-import gafferpy.gaffer_functions as gaffer_functions
 import gafferpy.gaffer_binaryoperators as gaffer_binaryoperators
+import gafferpy.gaffer_functions as gaffer_functions
+import gafferpy.gaffer_predicates as gaffer_predicates
+from gafferpy.gaffer_core import *
 
 
 class NamedOperationParameter(ToJson, ToCodeString):
@@ -2403,6 +2403,142 @@ class While(Operation):
             operation['conditional'] = self.conditional.to_json()
 
         return operation
+
+
+class Reduce(Operation):
+    CLASS = 'uk.gov.gchq.gaffer.operation.impl.Reduce'
+
+    def __init__(self, input=None, identity=None,
+                 aggregate_function=None, options=None):
+
+        super().__init__(_class_name=self.CLASS,
+                         options=options)
+
+        self.input = input
+        self.identity = identity
+
+        if aggregate_function is None:
+            raise ValueError('aggregate_function is required')
+        if isinstance(aggregate_function, dict):
+            aggregate_function = JsonConverter.from_json(
+                aggregate_function, gaffer_binaryoperators.BinaryOperator)
+        self.aggregate_function = aggregate_function
+
+    def to_json(self):
+        operation = super().to_json()
+
+        if self.input is not None:
+            json_seeds = []
+            if isinstance(self.input, list):
+                for seed in self.input:
+                    if isinstance(seed, ToJson):
+                        json_seeds.append(seed.to_json())
+                    else:
+                        json_seeds.append(seed)
+            else:
+                if isinstance(self.input, ToJson):
+                    json_seeds.append(self.input.to_json())
+                else:
+                    json_seeds.append(self.input.to_json())
+            operation['input'] = json_seeds
+
+        operation['aggregateFunction'] = self.aggregate_function.to_json()
+
+        if self.identity is not None:
+            if isinstance(self.identity, ToJson):
+                operation['identity'] = self.identity.to_json()
+            else:
+                operation['identity'] = self.identity
+
+        return operation
+
+
+class ForEach(Operation):
+    CLASS = 'uk.gov.gchq.gaffer.operation.impl.ForEach'
+
+    def __init__(self, input=None, operation=None, options=None):
+
+        super().__init__(_class_name=self.CLASS,
+                         options=options)
+
+        self.input = input
+
+        if operation is not None:
+            if not isinstance(operation, Operation):
+                self.operation = JsonConverter.from_json(operation, Operation)
+            else:
+                self.operation = operation
+
+    def to_json(self):
+        operation = super().to_json()
+
+        if self.input is not None:
+            json_seeds = []
+            if isinstance(self.input, list):
+                for seed in self.input:
+                    if isinstance(seed, ToJson):
+                        json_seeds.append(seed.to_json())
+                    else:
+                        json_seeds.append(seed)
+            else:
+                if isinstance(self.input, ToJson):
+                    json_seeds.append(self.input.to_json())
+                else:
+                    json_seeds.append(self.input.to_json())
+            operation['input'] = json_seeds
+
+        if self.operation is not None:
+            operation['operation'] = self.operation.to_json()
+
+        return operation
+
+
+class ToSingletonList(Operation):
+    CLASS = 'uk.gov.gchq.gaffer.operation.impl.output.ToSingletonList'
+
+    def __init__(self, input=None, options=None):
+        super().__init__(_class_name=self.CLASS, options=options)
+        self.input = input
+
+    def to_json(self):
+        operation = super().to_json()
+
+        if self.input is not None:
+            json_seeds = []
+            if isinstance(self.input, list):
+                for seed in self.input:
+                    if isinstance(seed, ToJson):
+                        json_seeds.append(seed.to_json())
+                    else:
+                        json_seeds.append(seed)
+            else:
+                if isinstance(self.input, ToJson):
+                    json_seeds.append(self.input.to_json())
+                else:
+                    json_seeds.append(self.input.to_json())
+            operation['input'] = json_seeds
+
+        return operation
+
+
+class ValidateOperationChain(Operation):
+    CLASS = 'uk.gov.gchq.gaffer.operation.impl.ValidateOperationChain'
+
+    def __init__(self, operation_chain=None, options=None):
+        super().__init__(_class_name=self.CLASS, options=options)
+        if operation_chain is None:
+            raise ValueError('operation_chain is required')
+
+        if not isinstance(operation_chain, OperationChain):
+            self.operation_chain = JsonConverter.from_json(
+                operation_chain, OperationChain)
+        else:
+            self.operation_chain = operation_chain
+
+    def to_json(self):
+        operation_json = super().to_json()
+        operation_json['operationChain'] = self.operation_chain.to_json()
+        return operation_json
 
 
 class Conditional(ToJson, ToCodeString):

@@ -7,13 +7,11 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Dimension;
-import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxProfile;
-
 import uk.gov.gchq.gaffer.exception.SerialisationException;
 import uk.gov.gchq.gaffer.graph.Graph;
 import uk.gov.gchq.gaffer.jsonserialisation.JSONSerialiser;
@@ -53,40 +51,43 @@ public class QueryBuilderST {
     private static final String DEFAULT_SLOW_FACTOR = "5";
 
     private static final String EXPECTED_OPERATION_JSON = "{\n" +
-            "  \"class\": \"uk.gov.gchq.gaffer.operation.impl.get.GetElements\",\n" +
-            "  \"input\": [\n" +
+            "  \"class\": \"uk.gov.gchq.gaffer.operation.OperationChain\",\n" +
+            "  \"operations\": [\n" +
             "    {\n" +
-            "      \"class\": \"uk.gov.gchq.gaffer.operation.data.EntitySeed\",\n" +
-            "      \"vertex\": \"M5:10\"\n" +
-            "    }\n" +
-            "  ],\n" +
-            "  \"view\": {\n" +
-            "    \"globalElements\": [\n" +
-            "      {\n" +
-            "        \"groupBy\": []\n" +
-            "      }\n" +
-            "    ],\n" +
-            "    \"entities\": {},\n" +
-            "    \"edges\": {\n" +
-            "      \"RoadUse\": {\n" +
-            "        \"preAggregationFilterFunctions\": [\n" +
-            "          {\n" +
-            "            \"predicate\": {\n" +
-            "              \"class\": \"uk.gov.gchq.koryphe.impl.predicate.IsMoreThan\",\n" +
-            "              \"value\": {\n" +
-            "                \"java.util.Date\": 971416800000\n" +
+            "      \"class\": \"uk.gov.gchq.gaffer.operation.impl.get.GetElements\",\n" +
+            "      \"input\": [\n" +
+            "        {\n" +
+            "          \"class\": \"uk.gov.gchq.gaffer.operation.data.EntitySeed\",\n" +
+            "          \"vertex\": \"M5:10\"\n" +
+            "        }\n" +
+            "      ],\n" +
+            "      \"view\": {\n" +
+            "        \"entities\": {},\n" +
+            "        \"edges\": {\n" +
+            "          \"RoadUse\": {\n" +
+            "            \"preAggregationFilterFunctions\": [\n" +
+            "              {\n" +
+            "                \"predicate\": {\n" +
+            "                  \"class\": \"uk.gov.gchq.koryphe.impl.predicate.IsMoreThan\",\n" +
+            "                  \"value\": {\n" +
+            "                    \"java.util.Date\": 971416800000\n" +
+            "                  }\n" +
+            "                },\n" +
+            "                \"selection\": [\n" +
+            "                  \"startDate\"\n" +
+            "                ]\n" +
             "              }\n" +
-            "            },\n" +
-            "            \"selection\": [\n" +
-            "              \"startDate\"\n" +
             "            ]\n" +
+            "          }\n" +
+            "        },\n" +
+            "        \"globalElements\": [\n" +
+            "          {\n" +
+            "            \"groupBy\": []\n" +
             "          }\n" +
             "        ]\n" +
             "      }\n" +
             "    }\n" +
-            "  },\n" +
-            "  \"includeIncomingOutGoing\": \"EITHER\",\n" +
-            "  \"options\": {}\n" +
+            "  ]\n" +
             "}";
     private static final String EXPECTED_RESULTS[] = {
             "\"group\": \"RoadUse\",\n" +
@@ -140,7 +141,7 @@ public class QueryBuilderST {
 
     @Test
     public void shouldFindRoadUseAroundJunctionM5_10() throws InterruptedException {
-        selectOptionWithAriaLabel("operation-name", "Get Elements");
+        autoComplete("operation-name", "Get Elements");
         enterText("seedVertices", "M5:10");
         click("create-custom-filter");
         selectMultiOption("view-edges", "RoadUse");
@@ -150,7 +151,7 @@ public class QueryBuilderST {
         enterText("value-", "971416800000");
         click("before-aggregation");
         click("submit");
-        click("Execute Query");
+        click("execute-chain");
 
         click("open-raw");
         assertEquals(EXPECTED_OPERATION_JSON, getElement("operation-0-json").getText().trim());
@@ -165,13 +166,13 @@ public class QueryBuilderST {
 
     @Test
     public void shouldNotThrowErrorIfPageIsReloadedWithCustomView() throws InterruptedException, SerialisationException {
-        selectOptionWithAriaLabel("operation-name", "Get Elements");
+        autoComplete("operation-name", "Get Elements");
         enterText("seedVertices", "M5");
         click("create-custom-filter");
         selectMultiOption("view-entities", "Cardinality");
         click("open-table");
         click("open-query");
-        click("Execute Query");
+        click("execute-chain");
         click("open-raw");
         clickTab("Results");
         String result = getElement("raw-entity-results").getText().trim();
@@ -182,12 +183,12 @@ public class QueryBuilderST {
 
     @Test
     public void shouldFindRoadUseAroundJunctionM5_10WithDatePicker() throws InterruptedException {
-        selectOptionWithAriaLabel("operation-name", "Get Elements");
+        autoComplete("operation-name", "Get Elements");
         enterText("seedVertices", "M5:10");
-        enterIntoDatePicker("start-date", "13/10/2000");
+        enterIntoDatePicker("start-date", "2000-10-13");
         click("create-custom-filter");
         selectMultiOption("view-edges", "RoadUse");
-        click("Execute Query");
+        click("execute-chain");
 
         click("open-raw");
         clickTab("Results");
@@ -201,7 +202,7 @@ public class QueryBuilderST {
     @Test
     public void shouldBeAbleToDeleteFiltersOnceCreated() throws InterruptedException {
         // given
-        selectOptionWithAriaLabel("operation-name", "Get Elements");
+        autoComplete("operation-name", "Get Elements");
         click("create-custom-filter");
         selectMultiOption("view-entities", "Cardinality");
         click("add-Cardinality-filters");
@@ -216,21 +217,21 @@ public class QueryBuilderST {
         // when
         click("delete-entity-Cardinality-filter-0");
         click("delete-entity-Cardinality-filter-0");
-        click("Execute Query");
+        click("execute-chain");
         click("open-raw");
 
         // then
         String expectedString = "" +
-                "  \"view\": {\n" +
-                "    \"globalElements\": [\n" +
-                "      {\n" +
-                "        \"groupBy\": []\n" +
-                "      }\n" +
-                "    ],\n" +
-                "    \"entities\": {\n" +
-                "      \"Cardinality\": {}\n" +
-                "    },\n" +
-                "    \"edges\": {}\n";
+                "      \"view\": {\n" +
+                "        \"entities\": {\n" +
+                "          \"Cardinality\": {}\n" +
+                "        },\n" +
+                "        \"edges\": {},\n" +
+                "        \"globalElements\": [\n" +
+                "          {\n" +
+                "            \"groupBy\": []\n" +
+                "          }\n" +
+                "        ]\n";
 
 
         assert (getElement("operation-0-json").getText().trim().contains(expectedString));
@@ -239,11 +240,11 @@ public class QueryBuilderST {
 
     @Test
     public void shouldBeAbleToRunParameterisedQueries() throws InterruptedException, SerialisationException {
-        selectOptionWithAriaLabel("operation-name", "Two Hop With Limit");
+        autoComplete("operation-name", "Two Hop With Limit");
         enterText("seedVertices", "M5");
+        click("param1-");
         enterText("param1-", "2");
-        click("Execute Query");
-
+        click("execute-chain");
         click("open-raw");
         clickTab("Results");
 
@@ -263,7 +264,8 @@ public class QueryBuilderST {
     }
 
     private void autoComplete(final String id, final String input) throws InterruptedException {
-        WebElement ac = driver.findElement(By.cssSelector("#" + id + " md-autocomplete-wrap md-input-container input"));
+        WebElement ac = getElement(id);
+        ac.click();
         ac.sendKeys(input);
         ac.sendKeys(Keys.ENTER);
 
@@ -316,12 +318,9 @@ public class QueryBuilderST {
         Thread.sleep(slowFactor * 500);
     }
 
-    private void clickTab(final String tabTitle) {
+    private void clickTab(final String tabTitle) throws InterruptedException {
         driver.findElement(By.xpath("//md-tab-item[contains(text(), '" + tabTitle + "')]")).click();
-    }
-
-    private void execute(final String script) {
-        ((JavascriptExecutor) driver).executeScript(script);
+        Thread.sleep(slowFactor * 500);
     }
 
     private WebElement getElement(final String id) {

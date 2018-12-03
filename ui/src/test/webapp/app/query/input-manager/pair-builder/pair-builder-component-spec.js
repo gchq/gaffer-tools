@@ -2,11 +2,10 @@ describe('The pair builder component', function() {
 
     var ctrl;
     var scope;
-    var input, types, events;
+    var types, events;
     var $routeParams;
     var types;
     var error;
-    var input;
 
     beforeEach(module('app'));
 
@@ -33,13 +32,12 @@ describe('The pair builder component', function() {
     }));
 
 
-    beforeEach(inject(function(_$rootScope_, _$componentController_, _$routeParams_, _types_, _error_, _input_, _events_) {
+    beforeEach(inject(function(_$rootScope_, _$componentController_, _$routeParams_, _types_, _error_, _events_) {
         scope = _$rootScope_.$new();
         var $componentController = _$componentController_;
         $routeParams = _$routeParams_;
         types = _types_;
         error = _error_;
-        input = _input_;
         events = _events_;
         ctrl = $componentController('pairBuilder', {$scope: scope});
     }));
@@ -75,17 +73,6 @@ describe('The pair builder component', function() {
 
             spyOn(schema, 'getSchemaVertices').and.returnValue(['vertex1', 'vertex2']);
             spyOn(error, 'handle');
-            spyOn(input, 'setInputPairs').and.stub();
-        });
-
-        beforeEach(function() {
-            pairs = [];
-        })
-
-        beforeEach(function() {
-            spyOn(input, 'getInputPairs').and.callFake(function() {
-                return pairs;
-            });
         });
 
         it('should get the schema', function() {
@@ -99,13 +86,14 @@ describe('The pair builder component', function() {
             expect(ctrl.vertexClass).toEqual('my.vertex.Class');
         });
 
-        it('should set the pairs to an empty string if the input is an empty array', function() {
+        it('should set the pairs to an empty string if the model is an empty array', function() {
+            ctrl.model = [];
             ctrl.$onInit();
             expect(ctrl.pairs).toEqual('');
         });
 
-        it('should add a string seed from the input service to the input box', function() {
-            pairs = [
+        it('should add a string seed from the model to the input box', function() {
+            ctrl.model = [
                 {
                     "first": {
                         valueClass: 'java.lang.String',
@@ -139,8 +127,7 @@ describe('The pair builder component', function() {
                 ctrl.$onInit();
                 scope.$digest();
                 expect(error.handle).not.toHaveBeenCalled();
-                expect(input.setInputPairs).toHaveBeenCalledTimes(1);
-                expect(input.setInputPairs).toHaveBeenCalledWith([{
+                expect(ctrl.model).toEqual([{
                     first: {
                         valueClass: 'my.vertex.Class',
                         parts: {
@@ -161,8 +148,7 @@ describe('The pair builder component', function() {
                 ctrl.$onInit();
                 scope.$digest();
                 expect(error.handle).not.toHaveBeenCalled();
-                expect(input.setInputPairs).toHaveBeenCalledTimes(1);
-                expect(input.setInputPairs).toHaveBeenCalledWith([
+                expect(ctrl.model).toEqual([
                     {
                         first: {
                             valueClass: 'my.vertex.Class',
@@ -212,8 +198,7 @@ describe('The pair builder component', function() {
                 ctrl.$onInit();
                 scope.$digest();
                 expect(error.handle).not.toHaveBeenCalled();
-                expect(input.setInputPairs).toHaveBeenCalledTimes(1);
-                expect(input.setInputPairs).toHaveBeenCalledWith([
+                expect(ctrl.model).toEqual([
                     {
                         first: {
                             valueClass: 'my.vertex.Class',
@@ -233,8 +218,7 @@ describe('The pair builder component', function() {
                 ctrl.$onInit();
                 scope.$digest();
                 expect(error.handle).not.toHaveBeenCalled();
-                expect(input.setInputPairs).toHaveBeenCalledTimes(1);
-                expect(input.setInputPairs).toHaveBeenCalledWith([
+                expect(ctrl.model).toEqual([
                     {
                         first: {
                             valueClass: 'my.vertex.Class',
@@ -261,7 +245,7 @@ describe('The pair builder component', function() {
         });
 
         it('should add a numerical seed pair from the input service to the input box', function() {
-            pairs = [
+            ctrl.model = [
                 {
                     first: {
                         valueClass: 'java.lang.Integer',
@@ -287,7 +271,7 @@ describe('The pair builder component', function() {
                 { key: 'subType' },
                 { key: 'value' }
             ])
-            pairs = [
+            ctrl.model = [
                 {
                     first: {
                         valueClass: 'uk.gov.gchq.gaffer.types.TypeSubTypeValue',
@@ -313,7 +297,7 @@ describe('The pair builder component', function() {
         });
 
         it('should add multiple seed pairs seperated by a newline', function() {
-            pairs = [
+            ctrl.model = [
                 {
                     first: {
                         valueClass: 'java.lang.String',
@@ -352,8 +336,20 @@ describe('The pair builder component', function() {
             spyOn(events, 'subscribe').and.stub();
             ctrl.$onInit();
             expect(events.subscribe).toHaveBeenCalledTimes(2);
-            expect(events.subscribe).toHaveBeenCalledWith('pairInputUpdate', jasmine.any(Function))
+            expect(events.subscribe).toHaveBeenCalledWith('onOperationUpdate', jasmine.any(Function))
             expect(events.subscribe).toHaveBeenCalledWith('onPreExecute', jasmine.any(Function))
+        });
+    });
+
+    describe('ctrl.getPlaceHolder()', function() {
+        it('should tell the user to enter their pairs of seeds', function() {
+            spyOn(types, 'getCsvHeader').and.returnValue('type,value');
+            expect(ctrl.getPlaceHolder()).toEqual('Enter your pairs of seeds, each pair on a new line.\ntype,value,type,value');
+        });
+
+        it('should tell the user that the input is being provided by the output of the previous operation', function() {
+            ctrl.usePrevious = true;
+            expect(ctrl.getPlaceHolder()).toEqual('Input is provided by the output of the previous operation');
         });
     });
 
@@ -362,7 +358,7 @@ describe('The pair builder component', function() {
             spyOn(events, 'unsubscribe').and.stub();
             ctrl.$onDestroy();
             expect(events.unsubscribe).toHaveBeenCalledTimes(2);
-            expect(events.unsubscribe).toHaveBeenCalledWith('pairInputUpdate', jasmine.any(Function))
+            expect(events.unsubscribe).toHaveBeenCalledWith('onOperationUpdate', jasmine.any(Function))
             expect(events.unsubscribe).toHaveBeenCalledWith('onPreExecute', jasmine.any(Function))
         })
     })
@@ -418,8 +414,6 @@ describe('The pair builder component', function() {
                 return fields;
             });
 
-            spyOn(input, 'setInputPairs').and.stub();
-
             spyOn(error, 'handle').and.stub();
         });
 
@@ -430,8 +424,14 @@ describe('The pair builder component', function() {
         it('should create string pairs from strings', function() {
             ctrl.vertexClass = 'java.lang.String';
             ctrl.pairs = 'test,pair';
+            fields = [
+                {
+                    class: 'java.lang.String',
+                    type: 'text'
+                }
+            ]
             ctrl.addPairs();
-            expect(input.setInputPairs).toHaveBeenCalledWith([
+            expect(ctrl.model).toEqual([
                 {
                     first: {
                         valueClass: 'java.lang.String',
@@ -453,8 +453,14 @@ describe('The pair builder component', function() {
         it('should create numbers from numerical strings', function() {
             ctrl.vertexClass = 'java.lang.Long';
             ctrl.pairs = '123,456';
+            fields = [
+                {
+                    class: 'java.lang.Long',
+                    type: 'number'
+                }
+            ]
             ctrl.addPairs();
-            expect(input.setInputPairs).toHaveBeenCalledWith([
+            expect(ctrl.model).toEqual([
                 {
                     first: {
                         valueClass: 'java.lang.Long',
@@ -477,8 +483,14 @@ describe('The pair builder component', function() {
         it('should create true boolean values from boolean strings', function() {
             ctrl.vertexClass = 'java.lang.Boolean';
             ctrl.pairs = 'true,false';
+            fields = [
+                {
+                    class: 'java.lang.Boolean',
+                    type: 'checkbox'
+                }
+            ]
             ctrl.addPairs();
-            expect(input.setInputPairs).toHaveBeenCalledWith([
+            expect(ctrl.model).toEqual([
                 {
                     first: {
                         valueClass: 'java.lang.Boolean',
@@ -500,8 +512,14 @@ describe('The pair builder component', function() {
         it('should include fields with commas surrounded by a quotes as one field', function() {
             ctrl.vertexClass = 'java.lang.String';
             ctrl.pairs = '"comma,test",seed';
+            fields = [
+                {
+                    class: 'java.lang.String',
+                    type: 'text'
+                }
+            ]
             ctrl.addPairs();
-            expect(input.setInputPairs).toHaveBeenCalledWith([
+            expect(ctrl.model).toEqual([
                 {
                     first: {
                         valueClass: 'java.lang.String',
@@ -523,8 +541,14 @@ describe('The pair builder component', function() {
         it('should create string seeds from numbers with quotes around them', function() { 
             ctrl.vertexClass = 'java.lang.String';
             ctrl.pairs = '"12","180"';
+            fields = [
+                {
+                    class: 'java.lang.String',
+                    type: 'text'
+                }
+            ]
             ctrl.addPairs();
-            expect(input.setInputPairs).toHaveBeenCalledWith([
+            expect(ctrl.model).toEqual([
                 {
                     first: {
                         valueClass: 'java.lang.String',
@@ -548,8 +572,14 @@ describe('The pair builder component', function() {
         it('should be able to handle escaped quotes', function() {
             ctrl.vertexClass = 'java.lang.String';
             ctrl.pairs = '"I contain a \\"quoted string\\"",seed',
+            fields = [
+                {
+                    class: 'java.lang.String',
+                    type: 'text'
+                }
+            ]
             ctrl.addPairs();
-            expect(input.setInputPairs).toHaveBeenCalledWith([
+            expect(ctrl.model).toEqual([
                 {
                     first: {
                         valueClass: 'java.lang.String',
@@ -572,8 +602,14 @@ describe('The pair builder component', function() {
         it('should be able to add escape characters', function() {
             ctrl.vertexClass = 'java.lang.String';
             ctrl.pairs = '"I contain a \\\\string with \\\\ escape characters",test',
+            fields = [
+                {
+                    class: 'java.lang.String',
+                    type: 'text'
+                }
+            ]
             ctrl.addPairs();
-            expect(input.setInputPairs).toHaveBeenCalledWith([
+            expect(ctrl.model).toEqual([
                 {
                     first: {
                         valueClass: 'java.lang.String',
@@ -595,13 +631,24 @@ describe('The pair builder component', function() {
         it('should broadcast an error if the string contains an unclosed quote', function() {
             ctrl.vertexClass = 'java.lang.String';
             ctrl.pairs = '"I contain a string with only one quote,test',
+            fields = [
+                {
+                    class: 'java.lang.String',
+                    type: 'text'
+                }
+            ]
             ctrl.addPairs();
-            expect(input.setInputPairs).not.toHaveBeenCalled();
             expect(error.handle).toHaveBeenCalledWith('Unclosed quote for \'"I contain a string with only one quote,test\'', undefined)
         });
 
         it('should set the validity of the form to false if the string contains an unclosed quote', function() {
             ctrl.vertexClass = 'java.lang.String';
+            fields = [
+                {
+                    class: 'java.lang.String',
+                    type: 'text'
+                }
+            ]
             ctrl.pairs = '"I contain a string with only one quote,test',
             ctrl.addPairs();
             expect(ctrl.pairForm.seedPairInput.$setValidity).toHaveBeenCalledWith('csv', false);
@@ -609,14 +656,25 @@ describe('The pair builder component', function() {
 
         it('should broadcast an error if escaping the end of input', function() {
             ctrl.vertexClass = 'java.lang.String';
+            fields = [
+                {
+                    class: 'java.lang.String',
+                    type: 'text'
+                }
+            ]
             ctrl.pairs = "test,\\";
             ctrl.addPairs();
-            expect(input.setInputPairs).not.toHaveBeenCalled();
             expect(error.handle).toHaveBeenCalledWith('Illegal escape character at end of input for line: \'test,\\\'', undefined);
         });
 
         it('should set the validity of the form to false if the end of input is escaped', function() {
             ctrl.vertexClass = 'java.lang.String';
+            fields = [
+                {
+                    class: 'java.lang.String',
+                    type: 'text'
+                }
+            ]
             ctrl.pairs = "test,\\";
             ctrl.addPairs();
             expect(ctrl.pairForm.seedPairInput.$setValidity).toHaveBeenCalledWith('csv', false);
@@ -624,16 +682,28 @@ describe('The pair builder component', function() {
 
         it('should handle empty inputs', function() {
             ctrl.vertexClass = 'java.lang.String';
+            fields = [
+                {
+                    class: 'java.lang.String',
+                    type: 'text'
+                }
+            ]
             ctrl.pairs = '',
             ctrl.addPairs();
-            expect(input.setInputPairs).toHaveBeenCalledWith([]);
+            expect(ctrl.model).toEqual([]);
         });
 
         it('should add empty strings', function() {
             ctrl.vertexClass = 'java.lang.String';
+            fields = [
+                {
+                    class: 'java.lang.String',
+                    type: 'text'
+                }
+            ]
             ctrl.pairs = '"",""',
             ctrl.addPairs();
-            expect(input.setInputPairs).toHaveBeenCalledWith([
+            expect(ctrl.model).toEqual([
                 {
                     first: {
                         valueClass: 'java.lang.String',
@@ -656,9 +726,15 @@ describe('The pair builder component', function() {
         it('should handle escaped quotes if the string is unquoted', function() {
             ctrl.vertexClass = 'java.lang.String';
             ctrl.pairs = 'This is a \\"test\\",seed';
+            fields = [
+                {
+                    class: 'java.lang.String',
+                    type: 'text'
+                }
+            ]
             ctrl.addPairs();
 
-            expect(input.setInputPairs).toHaveBeenCalledWith([
+            expect(ctrl.model).toEqual([
                 {
                     first: {
                         valueClass: 'java.lang.String',
@@ -681,9 +757,15 @@ describe('The pair builder component', function() {
         it('should handle double backslashes if unquoted', function() {
             ctrl.vertexClass = 'java.lang.String';
             ctrl.pairs = 'test,This is a \\\\test\\\\';
+            fields = [
+                {
+                    class: 'java.lang.String',
+                    type: 'text'
+                }
+            ]
             ctrl.addPairs();
 
-            expect(input.setInputPairs).toHaveBeenCalledWith([
+            expect(ctrl.model).toEqual([
                 {
                     first: {
                         valueClass: 'java.lang.String',
@@ -706,9 +788,15 @@ describe('The pair builder component', function() {
         it('should handle double backslashes if quoted', function() {
             ctrl.vertexClass = 'java.lang.String';
             ctrl.pairs = '"This is a \\\\test",case';
+            fields = [
+                {
+                    class: 'java.lang.String',
+                    type: 'text'
+                }
+            ]
             ctrl.addPairs();
 
-            expect(input.setInputPairs).toHaveBeenCalledWith([
+            expect(ctrl.model).toEqual([
                 {
                     first: {
                         valueClass: 'java.lang.String',
@@ -731,9 +819,15 @@ describe('The pair builder component', function() {
         it('should handle single backslashes if not quoted', function() {
             ctrl.vertexClass = 'java.lang.String';
             ctrl.pairs = 'This is a \\test,case';
+            fields = [
+                {
+                    class: 'java.lang.String',
+                    type: 'text'
+                }
+            ]
             ctrl.addPairs();
 
-            expect(input.setInputPairs).toHaveBeenCalledWith([
+            expect(ctrl.model).toEqual([
                 {
                     first: {
                         valueClass: 'java.lang.String',
@@ -756,14 +850,25 @@ describe('The pair builder component', function() {
         it('should broadcast an error if an unquoted string appears before a quoted string with no separation', function() {
             ctrl.vertexClass = 'java.lang.String';
             ctrl.pairs = 'unquoted string "quoted String",test',
+            fields = [
+                {
+                    class: 'java.lang.String',
+                    type: 'text'
+                }
+            ]
             ctrl.addPairs();
-            expect(input.setInputPairs).not.toHaveBeenCalled();
             expect(error.handle).toHaveBeenCalledWith('Unexpected \'"\' character in line \'unquoted string "quoted String",test\'. Please escape with \\.', undefined)
         });
 
         it('should set the validity of the form to false if an unquoted string appears before a quoted string with no separation', function() {
             ctrl.vertexClass = 'java.lang.String';
             ctrl.pairs = 'unquoted string "quoted String",test',
+            fields = [
+                {
+                    class: 'java.lang.String',
+                    type: 'text'
+                }
+            ]
             ctrl.addPairs();
             expect(ctrl.pairForm.seedPairInput.$setValidity).toHaveBeenCalledWith('csv', false);
         })
@@ -771,14 +876,25 @@ describe('The pair builder component', function() {
         it('should broadcast an error if an quoted string appears before an unquoted string', function() {
             ctrl.vertexClass = 'java.lang.String';
             ctrl.pairs = '"quoted String" unquoted string,test',
+            fields = [
+                {
+                    class: 'java.lang.String',
+                    type: 'text'
+                }
+            ]
             ctrl.addPairs();
-            expect(input.setInputPairs).not.toHaveBeenCalled();
             expect(error.handle).toHaveBeenCalledWith('Unexpected \' \' character in line \'"quoted String" unquoted string,test\'.', undefined)
         });
 
         it('should set the validity of the form to false if a quoted string appears before an unquoted string with no separation', function() {
             ctrl.vertexClass = 'java.lang.String';
             ctrl.pairs = '"quoted String" unquoted string,test',
+            fields = [
+                {
+                    class: 'java.lang.String',
+                    type: 'text'
+                }
+            ]
             ctrl.addPairs();
             expect(ctrl.pairForm.seedPairInput.$setValidity).toHaveBeenCalledWith('csv', false);
         });
@@ -792,7 +908,7 @@ describe('The pair builder component', function() {
             ctrl.vertexClass = 'java.lang.String';
             ctrl.pairs = '1,2';
             ctrl.addPairs();
-            expect(input.setInputPairs).toHaveBeenCalledWith([
+            expect(ctrl.model).toEqual([
                 {
                     first: {
                         valueClass: 'java.lang.String',
@@ -821,7 +937,7 @@ describe('The pair builder component', function() {
             ctrl.vertexClass = 'java.lang.String';
             ctrl.pairs='test,case\ntest,case\ntest,case';
             ctrl.addPairs();
-            expect(input.setInputPairs).toHaveBeenCalledWith([
+            expect(ctrl.model).toEqual([
                 {
                     first: {
                         valueClass: 'java.lang.String',
@@ -866,7 +982,7 @@ describe('The pair builder component', function() {
                 ctrl.pairs = 'T,,,,,';
                 ctrl.addPairs();
                 expect(error.handle).not.toHaveBeenCalled();
-                expect(input.setInputPairs).toHaveBeenCalledWith([
+                expect(ctrl.model).toEqual([
                     {
                         first: {
                             valueClass: 'TypeSubTypeValue',
@@ -893,7 +1009,7 @@ describe('The pair builder component', function() {
                 ctrl.pairs = '"My type",,"",t,st,v';
                 ctrl.addPairs();
                 expect(error.handle).not.toHaveBeenCalled();
-                expect(input.setInputPairs).toHaveBeenCalledWith([
+                expect(ctrl.model).toEqual([
                     {
                         first: {
                             valueClass: 'TypeSubTypeValue',
@@ -921,7 +1037,7 @@ describe('The pair builder component', function() {
                 ctrl.pairs = '';
                 ctrl.addPairs();
                 expect(error.handle).not.toHaveBeenCalled();
-                expect(input.setInputPairs).toHaveBeenCalledWith([]);
+                expect(ctrl.model).toEqual([]);
                 expect(ctrl.pairForm.seedPairInput.$setValidity).toHaveBeenCalledWith('csv', true);
             });
 
@@ -929,7 +1045,6 @@ describe('The pair builder component', function() {
                 ctrl.pairs = 'T';
                 ctrl.addPairs();
                 expect(error.handle).toHaveBeenCalledWith("Expected exactly 6 parts but line \'T\' only contains 1", 'Expected exactly 6 parts but line \'T\' only contains 1. Please wrap values containing commas in "quotes" and include empty fields');
-                expect(input.setInputPairs).not.toHaveBeenCalled();
                 expect(ctrl.pairForm.seedPairInput.$setValidity).toHaveBeenCalledWith('csv', false);
             });
 
@@ -937,7 +1052,7 @@ describe('The pair builder component', function() {
                 ctrl.pairs = '1,2,3,4,5,6';
                 ctrl.addPairs();
                 expect(error.handle).not.toHaveBeenCalled();
-                expect(input.setInputPairs).toHaveBeenCalledWith([
+                expect(ctrl.model).toEqual([
                     {
                         first: {
                             valueClass: 'TypeSubTypeValue',
@@ -965,7 +1080,7 @@ describe('The pair builder component', function() {
                 ctrl.pairs='1,2,3,1,2,3\n1,2,3,1,2,3';
                 ctrl.addPairs();
                 expect(error.handle).toHaveBeenCalled();
-                expect(input.setInputPairs).toHaveBeenCalledWith([
+                expect(ctrl.model).toEqual([
                     {
                         first: {
                             valueClass: 'TypeSubTypeValue',

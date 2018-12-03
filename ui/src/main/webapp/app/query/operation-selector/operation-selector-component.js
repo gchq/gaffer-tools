@@ -16,31 +16,111 @@
 
 'use strict';
 
-angular.module('app').component('operationSelector', operationSelector());
+var app = angular.module('app');
+
+app.filter('operationFilter', function() {
+    return function(operations, search) {
+        if(!operations) {
+            return operations;
+        }
+        if (!search) {
+            return operations;
+        }
+
+        var formattedSearch = search ? search.toLowerCase().replace(/\s+/g, '') : '';
+        var searchWords = search.toLowerCase().split(" ");
+
+        // Return the matches that have the words in the same order as the search query first.
+        var results = [];
+        var otherResults = [];
+
+        angular.forEach(operations, function(operation) {
+            if((operation.formattedName.indexOf(formattedSearch) > -1)
+             || (operation.formattedDescription.indexOf(formattedSearch) > -1)) {
+                results.push(operation);
+            } else {
+                var hasAllWords = true;
+                angular.forEach(searchWords, function(word) {
+                     if((operation.formattedName.indexOf(word) == -1)
+                        && (operation.formattedDescription.indexOf(word) == -1)) {
+                         hasAllWords = false;
+                         return;
+                     }
+                });
+                if(hasAllWords) {
+                   otherResults.push(operation);
+                }
+            }
+        });
+
+        angular.forEach(otherResults, function(result) {
+            results.push(result);
+        });
+
+        return results;
+    }
+});
+
+app.component('operationSelector', operationSelector());
 
 function operationSelector() {
     return {
         templateUrl: 'app/query/operation-selector/operation-selector.html',
         controller: OperationSelectorController,
-        controllerAs: 'ctrl'
+        controllerAs: 'ctrl',
+        bindings: {
+            model: '=',
+            previous: '<'
+        }
     }
 }
 
-function OperationSelectorController(operationService, operationSelectorService, queryPage, $mdDialog, $routeParams) {
+function OperationSelectorController(operationService, $routeParams, $filter) {
     var vm = this;
 
     vm.availableOperations;
-    vm.selectedOp;
+    vm.searchTerm = '';
+    vm.showCustomOp = false;
+    vm.placeholder = "Search for an operation";
 
     var populateOperations = function(availableOperations) {
-        vm.availableOperations = availableOperations
-        var selected = queryPage.getSelectedOperation();
-        if (selected)  {
-            vm.selectedOp = selected;
-        } else {
-            vm.selectedOp = vm.availableOperations[0];
-            vm.updateModel();
+        vm.availableOperations = [];
+
+        for(var i in availableOperations) {
+            var operation = availableOperations[i];
+
+            if(!vm.previous || !vm.previous.selectedOperation || !vm.previous.selectedOperation.next || vm.previous.selectedOperation.next.indexOf(operation.class) > -1) {
+                operation.formattedName = operation.name !== undefined ? operation.name.toLowerCase().replace(/\s+/g, '') : '';
+                operation.formattedDescription = operation.description !== undefined ? operation.description.toLowerCase().replace(/\s+/g, '') : '';
+
+                if(operation.formattedName === "getelements") {
+                    vm.placeholder = "Search for an operation (e.g Get Elements)";
+                }
+                vm.availableOperations.push(operation);
+            }
         }
+
+        vm.availableOperations.sort(function(a,b) {
+            if(a.namedOp && !b.namedOp) {
+                return -1;
+            }
+            if(!a.namedOp && b.namedOp) {
+                return 1;
+            }
+            if(a.formattedName > b.formattedName) {
+                return 1;
+            }
+            if(a.formattedName < b.formattedName) {
+                return -1;
+            }
+            if(a.formattedDescription > b.formattedDescription) {
+                return 1;
+            }
+            if(a.formattedDescription < b.formattedDescription) {
+                return -1;
+            }
+            return 0
+        });
 
         // allow 'op' to be used as a shorthand
         if($routeParams.op) {
@@ -51,38 +131,32 @@ function OperationSelectorController(operationService, operationSelectorService,
             var opParam = $routeParams.operation.replace(/[\W_]+/g, "").toLowerCase();
             for(var i in vm.availableOperations) {
                 if(vm.availableOperations[i].name.replace(/[\W_]+/g, "").toLowerCase() === opParam) {
-                    vm.selectedOp = vm.availableOperations[i];
-                    vm.updateModel();
+                    vm.model = vm.availableOperations[i];
                     break;
                 }
             }
         }
     }
 
-    vm.getLabel = function() {
-        if (vm.selectedOp) {
-            return vm.selectedOp.name;
+    vm.getOperations = function() {
+        return operationService.getAvailableOperations(true).then(function(ops) {
+            populateOperations(ops)
+            return $filter('operationFilter')(vm.availableOperations, vm.searchTerm);
+        });
+    }
+
+    vm.clearSearchTerm = function() {
+        vm.searchTerm = '';
+    };
+
+    vm.reloadOperations = function() {
+        operationService.reloadOperations(true).then(populateOperations);
+    }
+
+    vm.selectedText = function() {
+        if(vm.model) {
+            return vm.model.name;
         }
-        return "Select an operation";
-    }
-
-    vm.$onInit = function() {
-        operationSelectorService.shouldLoadNamedOperationsOnStartup().then(function(yes) {
-            if (yes) {
-                operationService.reloadNamedOperations().then(populateOperations);
-            } else {
-                operationService.getAvailableOperations().then(populateOperations);
-            }
-        });
-    }
-
-    vm.updateModel = function() {
-        queryPage.setSelectedOperation(vm.selectedOp);
-    }
-
-    vm.refreshNamedOperations = function() {
-        operationService.reloadNamedOperations(true).then(function(availableOps) {
-            vm.availableOperations = availableOps;
-        });
+        return "Search for an operation...";
     }
 }

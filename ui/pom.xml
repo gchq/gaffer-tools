@@ -19,7 +19,7 @@
     <parent>
         <groupId>uk.gov.gchq.gaffer</groupId>
         <artifactId>gaffer-tools</artifactId>
-        <version>1.5.2</version>
+        <version>1.7.1-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>ui</artifactId>
@@ -88,8 +88,8 @@
                 <configuration>
                     <jsSrcDir>${project.build.directory}/${project.build.finalName}/app</jsSrcDir>
                     <sourceIncludes>
-                        <include>**/*.js</include>
                         <include>*.js</include>
+                        <include>**/*.js</include>
                     </sourceIncludes>
                     <jsTestSrcDir>src/test/webapp/app</jsTestSrcDir>
                     <specIncludes>
@@ -105,11 +105,14 @@
                         <source>${project.build.directory}/${project.build.finalName}/lib/angular/js/angular-material.min.js</source>
                         <source>${project.build.directory}/${project.build.finalName}/lib/angular/js/angular-route.min.js</source>
                         <source>${project.build.directory}/${project.build.finalName}/lib/angular/js/angular-mocks.min.js</source>
+                        <source>${project.build.directory}/${project.build.finalName}/lib/angular/js/angular-sanitize.min.js</source>
                         <source>${project.build.directory}/${project.build.finalName}/lib/cytoscape/js/cytoscape.min.js</source>
                         <source>${project.build.directory}/${project.build.finalName}/lib/cytoscape/js/cytoscape-ngraph.forcelayout.js</source>
                         <source>${project.build.directory}/${project.build.finalName}/lib/jquery/js/jquery.min.js</source>
                         <source>${project.build.directory}/${project.build.finalName}/lib/md-data-table/js/md-data-table.min.js</source>
-                        <source>${project.build.directory}/${project.build.finalName}/lib/moment/moment-with-locales.min.js</source>
+                        <source>${project.build.directory}/${project.build.finalName}/lib/moment/moment.min.js</source>
+                        <source>${project.build.directory}/${project.build.finalName}/lib/chart/js/chart.min.js</source>
+                        <source>${project.build.directory}/${project.build.finalName}/lib/angular-chart/js/angular-chart.min.js</source>
                     </preloadSources>
                 </configuration>
             </plugin>
@@ -473,8 +476,8 @@
                         <configuration>
                             <jsSrcDir>src/main/webapp/app</jsSrcDir>
                             <sourceIncludes>
-                                <include>**/*.js</include>
                                 <include>*.js</include>
+                                <include>**/*.js</include>
                             </sourceIncludes>
                             <jsTestSrcDir>src/test/webapp/app</jsTestSrcDir>
                             <specIncludes>
@@ -490,11 +493,14 @@
                                 <source>dependencies/lib/angular/js/angular-material.min.js</source>
                                 <source>dependencies/lib/angular/js/angular-route.min.js</source>
                                 <source>dependencies/lib/angular/js/angular-mocks.min.js</source>
+                                <source>dependencies/lib/angular/js/angular-sanitize.min.js</source>
                                 <source>dependencies/lib/cytoscape/js/cytoscape.min.js</source>
                                 <source>dependencies/lib/cytoscape/js/cytoscape-ngraph.forcelayout.js</source>
                                 <source>dependencies/lib/jquery/js/jquery.min.js</source>
                                 <source>dependencies/lib/md-data-table/js/md-data-table.min.js</source>
-                                <source>dependencies/lib/moment/moment-with-locales.min.js</source>
+                                <source>dependencies/lib/moment/moment.min.js</source>
+                                <source>dependencies/lib/chart/js/chart.min.js</source>
+                                <source>dependencies/lib/angular-chart/js/angular-chart.min.js</source>
                             </preloadSources>
                         </configuration>
                     </plugin>

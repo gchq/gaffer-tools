@@ -1,7 +1,7 @@
 <div layout="column">
-    <h3 class="section-title">Add Filters</h3>
+    <h3 class="md-title section-title">Add Filters</h3>
 
-    <named-views></named-views>
+    <named-views model="ctrl.model.namedViews"></named-views>
     <md-button ng-show="!ctrl.showBuilder" id="create-custom-filter" ng-click="ctrl.makeVisible()">Create custom filter</md-button>
     <md-button ng-show="ctrl.showBuilder" id="clear-custom-filter" ng-click="ctrl.clear()">Clear custom filter</md-button>
 
@@ -10,8 +10,8 @@
             <md-input-container flex>
                 <label>Only include these entities</label>
                 <md-select id="view-entities" class="no-ellipsis" multiple
-                           md-selected-text="ctrl.createViewElementsLabel(ctrl.viewEntities, 'entities')"
-                           ng-model="ctrl.viewEntities"
+                           md-selected-text="ctrl.createViewElementsLabel(ctrl.model.viewEntities, 'entities')"
+                           ng-model="ctrl.model.viewEntities"
                            ng-change="ctrl.onElementGroupChange('entity')"
                            data-md-container-class="searchable-select">
                     <md-select-header class="search-header">
@@ -31,8 +31,8 @@
             <md-input-container flex>
                 <label>Only include these edges</label>
                 <md-select id="view-edges" class="no-ellipsis" multiple
-                           md-selected-text="ctrl.createViewElementsLabel(ctrl.viewEdges, 'edges')"
-                           ng-model="ctrl.viewEdges"
+                           md-selected-text="ctrl.createViewElementsLabel(ctrl.model.viewEdges, 'edges')"
+                           ng-model="ctrl.model.viewEdges"
                            ng-change="ctrl.onElementGroupChange('edge')"
                            data-md-container-class="searchable-select">
                     <md-select-header class="search-header">
@@ -52,13 +52,13 @@
         </div>
 
         <md-list>
-            <div ng-repeat="entity in ctrl.viewEntities track by entity"
+            <div ng-repeat="entity in ctrl.model.viewEntities track by entity"
                  ng-if="ctrl.getEntityProperties(entity)">
                 <md-subheader class="transparent md-no-sticky">{{entity}} Filters
                 </md-subheader>
                 <md-list-item class="secondary-button-padding"
                               ng-click="ctrl.editFilter(entity, 'entity', filter, $index)"
-                              ng-repeat="filter in ctrl.entityFilters[entity] track by $index">
+                              ng-repeat="filter in ctrl.model.entityFilters[entity] track by $index">
                     <p> {{ctrl.createFilterLabel(filter)}} </p>
                     <md-icon class="md-secondary" md-svg-icon="delete"
                              id="delete-entity-{{entity}}-filter-{{$index}}"
@@ -71,13 +71,13 @@
                 </md-button>
                 <md-divider ng-hide="ctrl.noMore(entity)"></md-divider>
             </div>
-            <div ng-repeat="edge in ctrl.viewEdges track by edge"
+            <div ng-repeat="edge in ctrl.model.viewEdges track by edge"
                  ng-if="ctrl.getEdgeProperties(edge)">
                 <md-subheader class="transparent md-no-sticky">{{edge}} Filters
                 </md-subheader>
                 <md-list-item class="secondary-button-padding"
                               ng-click="ctrl.editFilter(edge, 'edge', filter, $index)"
-                              ng-repeat="filter in ctrl.edgeFilters[edge] track by $index">
+                              ng-repeat="filter in ctrl.model.edgeFilters[edge] track by $index">
                     <p> {{ctrl.createFilterLabel(filter)}} </p>
                     <md-icon class="md-secondary" md-svg-icon="delete"
                              id="delete-edge-{{edge}}-filter-{{$index}}"

@@ -16,13 +16,10 @@
 
 'use strict';
 
-angular.module('app').factory('settings', ['$q', 'config', 'events', function($q, config, events) {
+angular.module('app').factory('settings', function() {
     var settings = {};
 
-    var resultLimit = 100;
-    var defaultOpOptions = {};
-    var opOptionKeys;
-    var defaultOpOptionsUpdateListeners = [];
+    var resultLimit = 1000;
 
     settings.getResultLimit = function() {
         return resultLimit;
@@ -32,31 +29,5 @@ angular.module('app').factory('settings', ['$q', 'config', 'events', function($q
         resultLimit = limit;
     }
 
-    settings.getDefaultOpOptions = function() {
-        return defaultOpOptions;
-    }
-
-    settings.setDefaultOpOptions = function(opOptions) {
-        defaultOpOptions = opOptions;
-    }
-
-    settings.getOpOptionKeys = function() {
-        var defer = $q.defer();
-        if (opOptionKeys) {
-            defer.resolve(opOptionKeys);
-        } else {
-            config.get().then(function(conf) {
-                if (conf.operationOptionKeys) {
-                    opOptionKeys = conf.operationOptionKeys;
-                } else {
-                    opOptionKeys = {};
-                }
-                defer.resolve(opOptionKeys);
-            });
-
-        }
-        return defer.promise;
-    }
-
     return settings;
-}]);
+});

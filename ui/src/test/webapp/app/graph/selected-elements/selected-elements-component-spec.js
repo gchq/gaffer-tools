@@ -1,110 +1,340 @@
 describe('The Selected Elements Component', function() {
 
-    var testSelectedEdges = [];
-    var testSelectedEntities = [];
-
     beforeEach(module('app'));
 
-    describe('The Controller', function() {
-        var $componentController;
-        var events, graph
+    var $componentController
+    var ctrl;
 
-        beforeEach(function() {
-            testSelectedEdges = [];
-            testSelectedEntities = [];
+    var results;
+
+    var testModel;
+
+    beforeEach(function() {
+        testModel = {
+            edges: [],
+            entities: []
+        }
+    });
+
+    beforeEach(inject(function(_$componentController_, _results_) {
+        $componentController = _$componentController_;
+        results = _results_;
+    }));
+
+    beforeEach(function() {
+        ctrl = $componentController('selectedElements', null, {model: testModel})
+    });
+
+    it('should exist', function() {
+        var ctrl = $componentController('selectedElements');
+        expect(ctrl).toBeDefined()
+    });
+
+    describe('ctrl.$onInit()', function() {
+
+        it('should error if no model is injected into the component', function() {
+            var ctrl = $componentController('selectedElements');
+            expect(ctrl.$onInit).toThrow();
         });
 
-        beforeEach(inject(function(_$componentController_, _events_, _graph_) {
-            $componentController = _$componentController_;
-            events = _events_;
-            graph = _graph_;
+        it('should subscribe to incoming results', inject(function(events) {
+            spyOn(events, 'subscribe');
+
+            ctrl.$onInit();
+
+            expect(events.subscribe).toHaveBeenCalledWith('incomingResults', jasmine.any(Function));
         }));
 
-        beforeEach(function() {
-            spyOn(graph, 'getSelectedEntities').and.callFake(function() {
-                return testSelectedEntities;
-            });
-
-            spyOn(graph, 'getSelectedEdges').and.callFake(function() {
-                return testSelectedEdges;
-            });
-        });
-
-        it('should exist', function() {
-            var ctrl = $componentController('selectedElements');
-            expect(ctrl).toBeDefined()
-        });
-
-        describe('When created', function() {
-            it('should expose empty array when no elements are selected on startup', function() {
-                var ctrl = $componentController('selectedElements');
-
-                expect(graph.getSelectedEntities).toHaveBeenCalledTimes(1);
-                expect(graph.getSelectedEdges).toHaveBeenCalledTimes(1);
-                expect(ctrl.selectedEntities).toEqual([]);
-                expect(ctrl.selectedEdges).toEqual([]);
-            });
-
-            it('should expose array of selected elements when populated on startup', function() {
-                testSelectedEdges = [
+        it('should process the results', function() {
+            spyOn(results, 'get').and.returnValue({
+                entities: [
                     {
-                        source: {
-                            vertex: 1,
-                            properties: {
-                                count: 3
-                            }
-                        },
-                        destination: {
-                            vertex: 5,
-                            properties: {
-                                count: 1
+                        "vertex": "foo",
+                        "properties": {
+                            "bar": true
+                        }
+                    }
+                ],
+                edges: []
+            });
+
+            ctrl.$onInit();
+
+            expect(ctrl.processedResults.entities).toEqual({
+                '"foo"': [
+                    {
+                        "vertex": "foo",
+                        "properties": {
+                            "bar": true
+                        }
+                    } 
+                ]
+            
+            });
+        });
+
+        it('should create EdgeIds from edges', function() {
+            spyOn(results, 'get').and.returnValue({
+                entities: [],
+                edges: [
+                    {
+                        source: "foo",
+                        destination: "bar",
+                        group: 'myEdge',
+                        directed: true,
+                        properties: {
+                            "test": true
+                        }
+                    }
+                ]
+            });
+
+            ctrl.$onInit();
+
+
+            var expectedEdgeId ='"foo"\0"bar"\0true\0myEdge';
+
+            expect(ctrl.processedResults.edges[expectedEdgeId]).toEqual([
+                {
+                    source: "foo",
+                    destination: "bar",
+                    group: 'myEdge',
+                    directed: true,
+                    properties: {
+                        "test": true
+                    }
+                }
+            ]);
+        });
+
+        it('should return the short value if the value is not a time property', function() {
+
+            spyOn(results, 'get').and.returnValue({
+                entities: [],
+                edges: [
+                    {
+                        source: "foo",
+                        destination: "bar",
+                        directed: false,
+                        group: "test",
+                        properties: {
+                            "intProp": 4,
+                            "longProp": { "java.lang.Long": 32 }
+                        }
+                    }
+                ]
+            });
+
+            ctrl.$onInit();
+
+            expect(ctrl.processedResults.edges['"foo"\0"bar"\0false\0test']).toEqual([
+                {
+                    source: "foo",
+                    destination: "bar",
+                    directed: false,
+                    group: "test",
+                    properties: {
+                        "intProp": 4,
+                        "longProp": 32
+                    }
+                }
+            ]);
+        });
+
+        it('should convert date properties', inject(function(time) {
+
+            spyOn(time, 'getDateString').and.returnValue('25/12/2018');
+            spyOn(time, 'isTimeProperty').and.returnValue(true);
+
+            spyOn(results, 'get').and.returnValue({
+                entities: [
+                    {
+                        vertex: "test",
+                        group: "test",
+                        properties: {
+                            dateProp: {
+                                "java.lang.Long": 1234567890
                             }
                         }
                     }
-                ];
-
-                testSelectedEntities = [
-                    {
-                        vertex: 1,
-                        properties: {}
-                    },
-                    {
-                        vertex: 2,
-                        properties: {}
-                    },
-                    {
-                        vertex: 5,
-                        properties: {}
-                    },
-                    {
-                        vertex: 42,
-                        properties: {}
-                    }
-                ]
-
-                var ctrl = $componentController('selectedElements');
-
-                expect(graph.getSelectedEntities).toHaveBeenCalledTimes(1);
-                expect(graph.getSelectedEdges).toHaveBeenCalledTimes(1);
-                expect(ctrl.selectedEntities).toEqual(testSelectedEntities);
-                expect(ctrl.selectedEdges).toEqual(testSelectedEdges);
-
+                
+                ],
+                edges: []
             });
 
-            describe('when initialised', function() {
-                it('should subscribe to event service to get updates to selected Elements', function() {
-                    spyOn(events, 'subscribe');
-                    var ctrl = $componentController('selectedElements');
-                    ctrl.$onInit();
+            ctrl.$onInit();
 
-
-                    expect(events.subscribe.calls.mostRecent().args[0]).toEqual('selectedElementsUpdate');
-
-                });
-            });
-        });
+            expect(time.getDateString).toHaveBeenCalledWith("dateProp", 1234567890)
+            expect(ctrl.processedResults.entities['"test"'][0].properties.dateProp).toEqual("25/12/2018");
+        }));
 
     });
 
+    describe('ctrl.resolveVertex()', function() {
 
+        var types;
+
+        beforeEach(inject(function(_types_) {
+            types = _types_;
+        }));
+
+        beforeEach(function() {
+            spyOn(types, 'getShortValue').and.stub();
+        });
+
+        it('should call types.getShortValue() with the parsed string', function() {
+            ctrl.resolveVertex('"test"');
+            expect(types.getShortValue).toHaveBeenCalledWith("test");
+        });
+
+        it('should call types.getShortValue with a parsed number', function() {
+            ctrl.resolveVertex("2");
+            expect(types.getShortValue).toHaveBeenCalledWith(2);
+        });
+
+        it('should call types.getShortValue() with an object', function() {
+            ctrl.resolveVertex('{"test": true}');
+            expect(types.getShortValue).toHaveBeenCalledWith({test: true});
+        });
+    });
+
+    describe('after "incomingResults" event', function() {
+        var events;
+
+        beforeEach(inject(function(_events_) {
+            events = _events_;
+        }));
+
+        beforeEach(function() {
+            ctrl.$onInit();
+        });
+
+        it('should process the results', function() {
+            events.broadcast("incomingResults", [{
+                entities: [
+                    {
+                        "vertex": "foo",
+                        "properties": {
+                            "bar": true
+                        }
+                    }
+                ],
+                edges: []
+            }]);
+
+            expect(ctrl.processedResults.entities).toEqual({
+                '"foo"': [
+                    {
+                        "vertex": "foo",
+                        "properties": {
+                            "bar": true
+                        }
+                    } 
+                ]
+            
+            });
+        });
+
+        it('should create EdgeIds from edges', function() {
+            events.broadcast("incomingResults", [{
+                entities: [],
+                edges: [
+                    {
+                        source: "foo",
+                        destination: "bar",
+                        group: 'myEdge',
+                        directed: true,
+                        properties: {
+                            "test": true
+                        }
+                    }
+                ]
+            }]);
+
+            var expectedEdgeId ='"foo"\0"bar"\0true\0myEdge';
+
+            expect(ctrl.processedResults.edges[expectedEdgeId]).toEqual([
+                {
+                    source: "foo",
+                    destination: "bar",
+                    group: 'myEdge',
+                    directed: true,
+                    properties: {
+                        "test": true
+                    }
+                }
+            ]);
+        })
+
+        it('should convert numerical object properties', function() {
+            events.broadcast("incomingResults", [{
+                entities: [],
+                edges: [
+                    {
+                        source: "foo",
+                        destination: "bar",
+                        directed: false,
+                        group: "test",
+                        properties: {
+                            "intProp": 4,
+                            "longProp": { "java.lang.Long": 32 }
+                        }
+                    }
+                ]
+            }]);
+
+            expect(ctrl.processedResults.edges['"foo"\0"bar"\0false\0test']).toEqual([
+                {
+                    source: "foo",
+                    destination: "bar",
+                    directed: false,
+                    group: "test",
+                    properties: {
+                        "intProp": 4,
+                        "longProp": 32
+                    }
+                }
+            ]);
+        });
+
+        it('should convert date properties', inject(function(time) {
+
+            spyOn(time, 'getDateString').and.returnValue('25/12/2018');
+            spyOn(time, 'isTimeProperty').and.returnValue(true);
+
+            events.broadcast("incomingResults", [{
+                entities: [
+                    {
+                        vertex: "test",
+                        group: "test",
+                        properties: {
+                            dateProp: {
+                                "java.lang.Long": 1234567890
+                            }
+                        }
+                    }
+                
+                ],
+                edges: []
+            }]);
+
+            expect(time.getDateString).toHaveBeenCalledWith("dateProp", 1234567890)
+            expect(ctrl.processedResults.entities['"test"'][0].properties.dateProp).toEqual("25/12/2018");
+        }));
+    });
+
+    describe('ctrl.resolveEdge()', function() {
+        it('should extract a string source and destination from an edge id', function() {
+            expect(ctrl.resolveEdge('"source"\0"dest"\0true\0myEdgeGroup')).toEqual("source to dest");
+        });
+
+        it('should extract a number source and destination from an edge id', function() {
+            expect(ctrl.resolveEdge('1\0' + 2 + '\0true\0myEdgeGroup')).toEqual("1 to 2");
+        });
+
+        it('should extract an object source and destination from an edge id', function() {
+            var edgeId = '{ "TypeSubTypeValue": {"type": "t1", "subType": "st1", "value": "v1"}}\0{ "TypeSubTypeValue": {"type": "t2", "subType": "st2", "value": "v2"}}\0true\0unusedEdgeGroup';
+            expect(ctrl.resolveEdge(edgeId)).toEqual("t1|st1|v1 to t2|st2|v2");
+        });
+    });
 });
