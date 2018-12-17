@@ -30,8 +30,20 @@ function options() {
     }
 }
 
-function OptionsController(operationOptions, config, events) {
+function OptionsController(operationOptions, config, events, $q, query, error) {
     var vm = this;
+
+    /**
+     * A key value map containing operation option keys and searchterms used in the event that an admin want's to use
+     * the autocomplete functionality.
+     */
+    vm.searchTerms = {};
+
+    /**
+     * A key value map containing operation option keys and associated preset options. Used by the md-select
+     * component when using remote options.
+     */
+    vm.presets = {};
 
     /**
      * Initialisation method. Subscribes to the "onPreExecute" event so that the master can update operation options before
@@ -48,13 +60,27 @@ function OptionsController(operationOptions, config, events) {
             }
             // If the defaults are not yet set by the user, the component looks to the config to get the default operation options 
             config.get().then(function(conf) {
-                vm.model = angular.copy(conf.defaultOperationOptions);
+                vm.model = angular.copy(conf.operationOptions);
                 if (vm.model) {
                     if (vm.model.visible === undefined) {
                         vm.model.visible = [];
                     } 
                     if (vm.model.hidden === undefined) {
                         vm.model.hidden = [];
+                    }
+
+                    for (var visibleOrHidden in vm.model) {
+                        for (var i in vm.model[visibleOrHidden]) {
+                            var option = vm.model[visibleOrHidden][i];
+                            if (option.value) {
+                                if (option.multiple && !Array.isArray(option.value)) {
+                                    option.value = [ option.value ]
+                                }
+                                vm.presets[option.key] = option.value;
+                            } else if (option.multiple) {
+                                option.value = [];
+                            }
+                        }
                     }
                 } else if (conf.operationOptionKeys) {
                     console.warn('UI "operationOptionKeys" config is deprecated. See the docs for the new options configuration.');
@@ -92,11 +118,12 @@ function OptionsController(operationOptions, config, events) {
     }
 
     /**
-     * Sets the value of an operation option to undefined
+     * Sets the value of an operation option to undefined if it is a string or empty array if already an array.
      * @param {Number} index The index of the option in the visible array
      */
     vm.clearValue = function(index) {
-        vm.model.visible[index].value = undefined;
+        var currentValue = vm.model.visible[index].value
+        vm.model.visible[index].value = Array.isArray(currentValue) ? [] : undefined;
     }
 
     /**
@@ -130,6 +157,71 @@ function OptionsController(operationOptions, config, events) {
 
         vm.selectedOption = undefined;
         vm.search = "";
+    }
+
+    /**
+     * Gets the available operation options. Used when operation options have preset values. It returns either a
+     * promise of an array or an actual array (if they are static values set in the config).
+     * 
+     * The values may be filtered using the searchTerm model.
+     */
+    vm.getValues = function(option) {
+        var searchTerm = vm.searchTerms[option.key] ? vm.searchTerms[option.key].toLowerCase() : vm.searchTerms[option.key];
+
+        if (option.autocomplete.options) {
+            if (!searchTerm || searchTerm === "") {
+                return option.autocomplete.options;
+            } else {
+                return option.autocomplete.options.filter(function(option) {
+                    if (option.toLowerCase().indexOf(searchTerm) !== -1) {
+                        return option;
+                    }
+                })
+            }
+        } else if (option.autocomplete.asyncOptions) {
+            var operation = option.autocomplete.asyncOptions;
+            var deferredValues = $q.defer()
+
+            query.execute(operation, function(values) {
+                if (!searchTerm || searchTerm == "") {
+                    deferredValues.resolve(values);
+                    return;
+                }
+                var filteredValues = values.filter(function(value) {
+                    if (value.toLowerCase().indexOf(searchTerm) !== -1) {
+                        return value;
+                    }
+                });
+                deferredValues.resolve(filteredValues);
+            }, function(err) {
+                error.handle("Failed to retrieve prepopulated options", err);
+                deferredValues.resolve([]);
+            });
+
+            return  deferredValues.promise;
+
+        } else {
+            throw "Invalid operation options configuration. " + 
+            "Preset options must contain either static options or an operation to retrieve them";
+        }
+    }
+
+    vm.loadValues = function(option) { 
+        var deferred = $q.defer();
+
+        vm.getValues(option).then(function(resolvedValues) {
+            vm.presets[option.key] = resolvedValues;
+            deferred.resolve();
+        });
+
+        return deferred.promise;
+    }
+
+    /**
+     * Returns true if value is null, undefined or is an empty array.
+     */
+    vm.isEmpty = function(value) {
+        return (value == undefined || ((Array.isArray(value) && !value.length)))
     }
 
 }

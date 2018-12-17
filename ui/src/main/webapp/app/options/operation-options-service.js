@@ -89,7 +89,13 @@ angular.module('app').factory('operationOptions', [ '$q', 'config', function($q,
             var option = operationOptionsConfiguration.visible[i];
 
             if (option.value !== undefined) {
-                options[option.key] = option.value
+                if (Array.isArray(option.value)) {
+                    if (option.value.length) {
+                        options[option.key] = option.value.join(',');
+                    }
+                } else {
+                    options[option.key] = option.value
+                }
             }
         }
 

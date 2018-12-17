@@ -598,7 +598,11 @@ Now you can specify default values and whether to hide the option by default.
             {
                 "key": "key.to.be.sent.to.Gaffer",
                 "label": "UI label",
-                "value": "The default value (optional)"
+                "value": "The default value (optional)",
+                "multiple": false,
+                "autocomplete": {
+                    "options": [ "true", "false" ]
+                }
             }
         ],
         "hidden": [
@@ -620,7 +624,11 @@ The options themselves are objects with the following fields:
 |----------------------------|------------------|----------------------------------------------------------
 | key                        | string           | The operation option key which will be sent to the rest service
 | label                      | string           | The label which will summarise what the option is
-| value                      | string           | (optional) The default value of this option.
+| multiple                   | boolean          | (optional) uses chips to create comma delimited strings - defaults to false
+| value                      | string or array  | (optional) The default value of this option. Use arrays when multiple is set to true
+| autocomplete               | object           | (optional) Configuration for autocompleting values - see below
+| autocomplete.options       | array            | Static array of string to use for autocompleting
+| autocomplete.asyncOptions  | operation        | operation to be executed to get the autocomplete values. Operation must return an iterable of strings
 
 
 
