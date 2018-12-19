@@ -27,87 +27,27 @@ function settingsView() {
     }
 }
 
-function SettingsController(settings, schema, operationService, results) {
+function SettingsController(settings, schema, operationService, events, config) {
     var vm = this;
 
     vm.resultLimit = settings.getResultLimit()
-    vm.opOptionKeys = {};
-    vm.defaultOpOptions = {};
-    vm.defaultOpOptionsArray = [];
+    vm.showOptions = false;
 
-
-    var updateDefaultOpOptionsArray = function() {
-        vm.defaultOpOptions = settings.getDefaultOpOptions();
-        vm.defaultOpOptionsArray = [];
-        for (var k in vm.defaultOpOptions) {
-            var kv = {"key":k, "value":vm.defaultOpOptions[k]};
-            vm.defaultOpOptionsArray.push(kv);
-        }
-    }
-
-    var updateDefaultOpOptions = function() {
-        var newDefaultOpOptions = {};
-        for (var i in vm.defaultOpOptionsArray) {
-            if(vm.defaultOpOptionsArray[i].key) {
-                newDefaultOpOptions[vm.defaultOpOptionsArray[i].key] = vm.defaultOpOptionsArray[i].value;
-            }
-        }
-        vm.defaultOpOptions = newDefaultOpOptions
-        settings.setDefaultOpOptions(vm.defaultOpOptions);
+    vm.$onInit = function() {
+        config.get().then(function(conf) {
+            vm.showOptions = (conf.operationOptions !== undefined || conf.operationOptionKeys !== undefined)
+        });
     }
 
     vm.updateResultLimit = function() {
-        settings.setResultLimit(vm.resultLimit);
-    }
-
-    vm.updateDefaultOpOptions = function() {
-        settings.setDefaultOpOptions(vm.defaultOpOptions);
-    }
-
-    vm.updateDefaultOpOptions = function() {
-        updateDefaultOpOptions();
-    }
-
-    vm.addDefaultOperationOption = function() {
-        vm.defaultOpOptionsArray.push({'key': '', 'value': ''});
-    }
-
-    vm.deleteOption = function(opOption) {
-        delete vm.defaultOpOptions[opOption.key];
-        var i = vm.defaultOpOptionsArray.indexOf(opOption);
-        if(i > -1) {
-            vm.defaultOpOptionsArray.splice(i, 1);
+        if (vm.querySettingsForm.resultLimit.$valid) {
+            settings.setResultLimit(vm.resultLimit);
         }
-    }
-
-    vm.getOpOptionKeys = function(opOption) {
-        var keys = {};
-        for(var k in vm.opOptionKeys) {
-            if(vm.opOptionKeys[k] === opOption.key || !(vm.opOptionKeys[k] in vm.defaultOpOptions)) {
-                keys[k] = vm.opOptionKeys[k];
-            }
-        }
-        return keys;
-    }
-
-    vm.hasOpOptions = function() {
-        return vm.opOptionKeys && Object.keys(vm.opOptionKeys).length > 0;
-    }
-
-    vm.hasMoreOpOptions = function() {
-        return vm.defaultOpOptionsArray.length < Object.keys(vm.opOptionKeys).length;
     }
 
     vm.updateSchema = function() {
+        events.broadcast('onPreExecute', []);
         schema.update();
-        operationService.reloadOperations(false);
-    }
-
-    vm.$onInit = function() {
-        settings.getOpOptionKeys().then(function(keys) {
-            vm.opOptionKeys = keys;
-        });
-
-        updateDefaultOpOptionsArray();
+        operationService.reloadOperations(true);
     }
 }

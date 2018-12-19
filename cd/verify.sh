@@ -22,8 +22,8 @@ if [ "$RELEASE" != 'true' ] && [ "$TRAVIS_PULL_REQUEST" != 'false' ]; then
       sudo apt-get -qq update
       sudo apt-get install -y dbus
       sudo bash -c "dbus-uuidgen > /etc/machine-id"
-      curl -OL https://github.com/mozilla/geckodriver/releases/download/v0.17.0/geckodriver-v0.17.0-linux64.tar.gz
-      tar -xf geckodriver-v0.17.0-linux64.tar.gz
+      curl -OL https://github.com/mozilla/geckodriver/releases/download/v0.23.0/geckodriver-v0.23.0-linux64.tar.gz
+      tar -xf geckodriver-v0.23.0-linux64.tar.gz
       mv geckodriver ui/
       sleep 1m
       mvn verify -P travis,system-test -Dwebdriver.gecko.driver=geckodriver -pl ui

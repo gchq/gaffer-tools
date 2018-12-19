@@ -174,7 +174,11 @@ md-option > div {
 }
 
 .padding-bottom {
-    padding-bottom: 10px
+    padding-bottom: 10px;
+}
+
+.card-above-subheader {
+    padding-bottom: 2px;
 }
 
 .named-view-template li:last-child {
@@ -371,8 +375,8 @@ quick-query {
     width: 500px;
 }
 
-.menu-inline-with-datepicker {
-    margin-top: 18px;
+.icon-inline-with-input {
+    margin-top: 18px !important;
 }
 
 .no-side-margin {
