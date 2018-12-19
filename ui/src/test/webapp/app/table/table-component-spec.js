@@ -453,7 +453,7 @@ describe('The Table component', function() {
                 expect(ctrl.data.columns).toEqual(['result type', 'GROUP', 'SOURCE', 'DESTINATION', 'DIRECTED', 'value', 'count', 'prop1', 'prop2']);
             });
 
-            it('should convert string properties which are numbers into their numerical value', function() {
+            it('should not convert string properties which are numbers into their numerical value', function() {
                 resultsData = {
                     entities: [
                             {
@@ -473,7 +473,7 @@ describe('The Table component', function() {
                 ctrl.data.types = ["Entity"];
                 ctrl.updateFilteredResults();
 
-                expect(ctrl.data.results[0]['numberProp']).toEqual(123);
+                expect(ctrl.data.results[0]['numberProp']).toEqual('123');
             });
 
             it('should handle property name clashes with "source" and "destination"', function() {

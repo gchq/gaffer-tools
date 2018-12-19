@@ -87,6 +87,13 @@ function OptionsFormController(settings) {
             vm.opOptionKeys = keys;
         });
 
+        if (vm.model === null) {
+            var defaultOperationOptions = angular.copy(settings.getDefaultOpOptions())
+            if (Object.keys(defaultOperationOptions).length !== 0) {
+                vm.model = defaultOperationOptions;
+            }
+        }
+
         updateOpOptionsArray();
     }
 }

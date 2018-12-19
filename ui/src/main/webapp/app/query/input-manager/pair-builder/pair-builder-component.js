@@ -138,14 +138,22 @@ function PairBuilderController(schema, csv, types, error, events, common, $route
 
             for (var j in fields) {
                 var startValue = separated[j];
-                if (fields[j].class === 'java.lang.String' && typeof startValue !== 'string') {
-                    startValue = JSON.stringify(startValue);
+                if (fields[j].class !== 'java.lang.String' && fields[j].type !== 'text') {
+                    try {
+                        startValue = JSON.parse(startValue);
+                    } catch (e) {
+                        console.log("possible failure parsing " + fields[j].type + " from string: " + startValue + " for class: " + fields[j].class, e); // Don't broadcast to UI.
+                    }
                 }
                 start[fields[j].key] = startValue;
                 
                 var endValue = separated[+j + fields.length];
-                if (fields[j].class === 'java.lang.String' && typeof endValue !== 'string') {
-                    endValue = JSON.stringify(endValue);
+                if (fields[j].class !== 'java.lang.String' && fields[j].type !== 'text') {
+                    try {
+                        endValue = JSON.parse(endValue);
+                    } catch (e) {
+                        console.log("possible failure parsing " + fields[j].type + " from string: " + endValue + " for class: " + fields[j].class, e); // Don't broadcast to UI.
+                    }
                 }
                 end[fields[j].key] = endValue
             }

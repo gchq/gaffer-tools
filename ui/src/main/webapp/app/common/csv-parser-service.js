@@ -160,12 +160,6 @@ angular.module('app').factory('csv', ['error', function(error) {
                         return undefined;                                                                                   // and return undefined to show the processing failed
                     }
 
-                    if (_previousState === states.unQuoted) {                                                       // If the string is not in quotes, it may be a number or boolean
-                        if ((!isNaN(currentString)) || currentString === 'true' || currentString === 'false') {     // Test if it is
-                            currentString = JSON.parse(currentString);                                              // and if so, convert it
-                        }
-                    }
-
                     processed.push(currentString);      // Push the current string, number or boolean onto the array
                     currentString = '';                 // the reset the current string to an empty string
 

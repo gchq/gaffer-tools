@@ -52,16 +52,16 @@ describe('The CSV parser service', function() {
             expect(service.parse('test \\\\')).toEqual(['test \\']);
         });
 
-        it('should convert boolean values', function() {
-            expect(service.parse('true')).toEqual([true]);
+        it('should not convert boolean values', function() {
+            expect(service.parse('true')).toEqual(['true']);
         });
 
         it('should not convert quoted boolean values', function() {
             expect(service.parse('"true"')).toEqual(["true"]);
         });
 
-        it('should convert numerical values', function() {
-            expect(service.parse('123')).toEqual([123]);
+        it('should not convert numerical values', function() {
+            expect(service.parse('123')).toEqual(['123']);
         });
 
         it('should not convert quoted numerical values', function() {

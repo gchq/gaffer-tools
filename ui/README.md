@@ -573,7 +573,13 @@ To configure time properties, you need to provide an object which is keyed by th
 
 ### Quick Query
 
-You can edit the behaviour of the quick query component in the Gaffer UI using the following properties. If you want to disable this feature, set quickQuery to null in the config. There is an example of this in the [Federated UI config](https://github.com/gchq/gaffer-tools/blob/master/ui/example/federated/config/config.json).
+You can edit the behaviour of the quick query component in the Gaffer UI using the following properties. If you want to disable this feature, set quickQuery to null in the config. For example:
+
+```json
+{
+    "quickQuery": null
+}
+```
 
 | name                        |  type           | description                            
 |-----------------------------|-----------------|---------------------------------------------------------
