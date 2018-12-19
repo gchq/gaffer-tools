@@ -1,6 +1,6 @@
 #!/bin/bash -e
 
-ENV_FILE=$HOME/0-env.sh
+ENV_FILE=$HOME/env.sh
 
 source $ENV_FILE
 
@@ -31,6 +31,11 @@ echo "gaffer.schemas=${schemaFile}" >> $CATALINA_HOME/conf/catalina.properties
 echo "gaffer.storeProperties=${restStorePropertiesFile}" >> $CATALINA_HOME/conf/catalina.properties
 echo "gaffer.graph.config=${graphconfig}" >> $CATALINA_HOME/conf/catalina.properties
 
+operationDeclarations="\ngaffer.store.operation.declarations=${REST_OPERATION_DECLARATIONS}\n"
+echo -e $operationDeclarations >> $GAFFER_REST_STOREPROPERTIES
+
+
+
 #ship the war files for the ui and rest
 cp $UI_WAR $CATALINA_HOME/webapps/ui.war
 cp $REST_WAR $CATALINA_HOME/webapps/rest.war
@@ -50,6 +55,6 @@ cd $CATALINA_HOME/bin
 sleep 7
 
 #set the ui layout configs
-cp $UI_CONFIG $CATALINA_HOME/webapps/ui/config/config.json
+cp $$UI_CONFIG $CATALINA_HOME/webapps/ui/config/config.json
 
 cd $homeDir

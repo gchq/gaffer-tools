@@ -29,6 +29,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
@@ -49,6 +50,7 @@ import static java.nio.file.StandardWatchEventKinds.OVERFLOW;
  * @see uk.gov.gchq.gaffer.miniaccumulocluster.MiniAccumuloClusterController.Builder
  */
 public class MiniAccumuloClusterController {
+
     public static final String DEFAULT_DIR_NAME = "miniAccumuloCluster";
     public static final String DEFAULT_PASSWORD = "password";
     public static final String DEFAULT_INSTANCE_NAME = "instance";
@@ -64,6 +66,8 @@ public class MiniAccumuloClusterController {
     protected String instanceName;
     protected boolean shutdownHook;
     protected Integer heapSize;
+    protected String storePropertiesTemplatePath = "/store.properties.template";
+    protected boolean defaultTemplateSet = true;
 
     protected Path clusterPath;
     protected MiniAccumuloCluster cluster;
@@ -79,6 +83,7 @@ public class MiniAccumuloClusterController {
         options.addOption("n", "instanceName", true, "instance name");
         options.addOption("t", "useTempDir", false, "use a temporary directory");
         options.addOption("s", "heapSize", true, "heap size");
+        options.addOption("f", "storePropertiesTemplate", true, "Path to a Store Properties Template");
 
         final CommandLineParser parser = new BasicParser();
         try {
@@ -94,6 +99,12 @@ public class MiniAccumuloClusterController {
                 isTempDir = cmd.hasOption("t") || DEFAULT_IS_TEMP_DIR;
                 password = cmd.getOptionValue("p", DEFAULT_PASSWORD);
                 instanceName = cmd.getOptionValue("i", DEFAULT_INSTANCE_NAME);
+                if(cmd.hasOption("f")){
+                    storePropertiesTemplatePath = cmd.getOptionValue("f");
+                    defaultTemplateSet = false;
+                    LOGGER.info("\tStore Properties Template Path set to: " + storePropertiesTemplatePath);
+
+                }
                 final String heapSizeStr = cmd.getOptionValue("s");
                 if (null != heapSizeStr) {
                     heapSize = Integer.parseInt(heapSizeStr);
@@ -203,11 +214,16 @@ public class MiniAccumuloClusterController {
         LOGGER.info("\tLocation - " + cluster.getConfig().getDir().getAbsolutePath());
         LOGGER.info("\tZookeepers - " + cluster.getZooKeepers());
         LOGGER.info("\tInstance name - " + cluster.getInstanceName());
+        LOGGER.info("\tStore Properties Template Path : " + storePropertiesTemplatePath);
 
         try {
             final File propsFile = new File(clusterPath + "/store.properties");
-            FileUtils.copyInputStreamToFile(getClass().getResourceAsStream("/store.properties.template"), propsFile);
-            FileUtils.write(propsFile, "accumulo.zookeepers=" + cluster.getZooKeepers(), true);
+            if(defaultTemplateSet){
+                FileUtils.copyInputStreamToFile(getClass().getResourceAsStream(storePropertiesTemplatePath), propsFile);
+            }else{
+                FileUtils.copyInputStreamToFile(new FileInputStream(new File(storePropertiesTemplatePath)), propsFile);
+            }
+            FileUtils.write(propsFile, "\naccumulo.zookeepers=" + cluster.getZooKeepers(), true);
         } catch (final IOException e) {
             LOGGER.error("Failed to write properties file", e);
         }

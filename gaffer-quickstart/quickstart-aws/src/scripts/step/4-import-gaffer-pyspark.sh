@@ -1,7 +1,7 @@
 #!/bin/bash -e
 
 S3_BUCKET=
-ENV_FILE=$HOME/0-env.sh
+ENV_FILE=$HOME/env.sh
 
 source $ENV_FILE
 
@@ -36,9 +36,7 @@ cd $HOME
 
 echo "working in "$HOME
 
-aws s3 cp $S3_BUCKET/gafferpy-release-${GAFFERPY_VERSION} ./ --recursive
-
-aws s3 cp $S3_BUCKET/gafferpy.ipynb ./
+aws s3 cp $S3_BUCKET/ ${HOME} --recursive
 
 echo -e "alias gafferpy=\"pyspark --jars ${HOME}/gafferpy-build-${GAFFERPY_VERSION}-jar-with-dependencies.jar --py-files ${HOME}/gafferpy-build-${GAFFERPY_VERSION}-python-modules.zip --packages graphframes:graphframes:0.6.0-spark2.3-s_2.11\"" >> .bashrc
 

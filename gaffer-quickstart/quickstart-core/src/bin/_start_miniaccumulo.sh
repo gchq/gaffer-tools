@@ -1,5 +1,5 @@
 #!/bin/bash -e
-  
+
 HERE=$(pwd)
 
 if [[ -z "${GAFFER_HOME}" ]];
@@ -11,7 +11,7 @@ else
     source $GAFFER_HOME/bin/_version.sh
 fi
 
-java -cp "$GAFFER_HOME/lib/gaffer-quickstart-${VERSION}.jar:$GAFFER_HOME/lib/*" uk.gov.gchq.gaffer.miniaccumulocluster.MiniAccumuloClusterController $GAFFER_HOME/miniaccumulo false password instance >> $GAFFER_HOME/gaffer.log 2>&1 &
+java -cp "$GAFFER_HOME/lib/gaffer-quickstart-${VERSION}.jar:$GAFFER_HOME/lib/*" uk.gov.gchq.gaffer.miniaccumulocluster.MiniAccumuloClusterController -d $GAFFER_HOME/miniaccumulo >> $GAFFER_HOME/gaffer.log 2>&1 &
 
 echo -e "waiting for store.properties" >> $GAFFER_HOME/gaffer.log
 
@@ -23,7 +23,7 @@ do
     sleep 0.5
 done
 
-#operationDeclarations="\ngaffer.store.operation.declarations=${GAFFER_HOME}/conf/operationDeclarations.json"
-#echo -e $operationDeclarations >> $GAFFER_HOME/miniaccumulo/store.properties
+operationDeclarations="\ngaffer.store.operation.declarations=sparkAccumuloOperationsDeclarations.json"
+echo -e $operationDeclarations >> $GAFFER_HOME/miniaccumulo/store.properties
 
 echo -e "\nminiaccumulo started"

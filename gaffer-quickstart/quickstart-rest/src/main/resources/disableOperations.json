@@ -1,0 +1,68 @@
+{
+  "operations": [
+    {
+      "operation": "uk.gov.gchq.gaffer.operation.impl.SplitStore",
+      "handler": null
+    },
+    {
+      "operation": "uk.gov.gchq.gaffer.hdfs.operation.SampleDataForSplitPoints",
+      "handler": null
+    },
+    {
+      "operation": "uk.gov.gchq.gaffer.accumulostore.operation.hdfs.operation.ImportAccumuloKeyValueFiles",
+      "handler": null
+    },
+    {
+      "operation": "uk.gov.gchq.gaffer.spark.operation.javardd.GetJavaRDDOfElements",
+      "handler": null
+    },
+    {
+      "operation": "uk.gov.gchq.gaffer.spark.operation.scalardd.GetRDDOfElements",
+      "handler": null
+    },
+    {
+      "operation": "uk.gov.gchq.gaffer.spark.operation.scalardd.GetRDDOfAllElements",
+      "handler": null
+    },
+    {
+      "operation": "uk.gov.gchq.gaffer.spark.operation.javardd.GetJavaRDDOfAllElements",
+      "handler": null
+    },
+    {
+      "operation": "uk.gov.gchq.gaffer.spark.operation.dataframe.GetDataFrameOfElements",
+      "handler": null
+    },
+    {
+      "operation": "uk.gov.gchq.gaffer.sparkaccumulo.operation.javardd.ImportKeyValueJavaPairRDDToAccumulo",
+      "handler": null
+    },
+    {
+      "operation": "uk.gov.gchq.gaffer.spark.operation.javardd.ImportJavaRDDOfElements",
+      "handler": null
+    },
+    {
+      "operation": "uk.gov.gchq.gaffer.sparkaccumulo.operation.scalardd.ImportKeyValuePairRDDToAccumulo",
+      "handler": null
+    },
+    {
+      "operation": "uk.gov.gchq.gaffer.spark.operation.scalardd.ImportRDDOfElements",
+      "handler": null
+    },
+    {
+      "operation": "uk.gov.gchq.gaffer.spark.operation.graphframe.GetGraphFrameOfElements",
+      "handler": null
+    },
+    {
+      "operation": "uk.gov.gchq.gaffer.sparkaccumulo.operation.javardd.GetJavaRDDOfElementsInRanges",
+      "handler": null
+    },
+    {
+      "operation": "uk.gov.gchq.gaffer.sparkaccumulo.operation.scalardd.GetRDDOfElementsInRanges",
+      "handler": null
+    },
+    {
+      "operation": "uk.gov.gchq.gaffer.spark.operation.hadoop.GetHadoopConfiguration",
+      "handler": null
+    }
+  ]
+}

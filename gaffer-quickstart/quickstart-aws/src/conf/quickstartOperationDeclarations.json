@@ -1,0 +1,10 @@
+{
+  "operations": [
+    {
+      "operation": "java.uk.gov.gchq.gaffer.quickstart.operation.AddElementsFromHdfsQuickstart",
+      "handler": {
+        "class": "java.uk.gov.gchq.gaffer.quickstart.operation.handler.AddElementsFromHdfsQuickstartHandler"
+      }
+    }
+  ]
+}

@@ -23,7 +23,7 @@
                             <descriptor>assembly/aws-assembly.xml</descriptor>
                         </descriptors>
                         <outputDirectory>../gaffer-quickstart-release-${project.version}</outputDirectory>
-                        <finalName>gaffer-quickstart-${project.parent.version}</finalName>
+                        <finalName>gaffer-quickstart</finalName>
                     </configuration>
                 <executions>
                     <execution>

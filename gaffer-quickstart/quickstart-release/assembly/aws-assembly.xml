@@ -5,6 +5,13 @@
     </formats>
     <fileSets>
         <fileSet>
+            <directory>../quickstart-aws/src/env</directory>
+            <includes>
+                <include>env.sh</include>
+            </includes>
+            <outputDirectory>env</outputDirectory>
+        </fileSet>
+        <fileSet>
             <directory>../quickstart-aws/src/scripts</directory>
             <outputDirectory>scripts</outputDirectory>
         </fileSet>
@@ -27,7 +34,7 @@
             <directory>../quickstart-aws/target</directory>
             <outputDirectory>lib</outputDirectory>
             <includes>
-                <include>quickstart-aws-${project.parent.version}-jar-with-dependencies.jar</include>
+                <include>gaffer-quickstart-jar-with-dependencies.jar</include>
             </includes>
         </fileSet>
         <fileSet>

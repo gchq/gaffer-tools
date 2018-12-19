@@ -1,6 +1,6 @@
 #!/bin/bash -e
 
-ENV_FILE=$HOME/0-env.sh
+ENV_FILE=$HOME/env.sh
 
 source $ENV_FILE
 
@@ -36,6 +36,21 @@ cd $homeDir
 #change slider appConfig to point at the right dir in hdfs for external gaffer libs
 echo "doing unspeakable things with sed... pointing gaffer slider at the special gaffer libs in hdfs"
 sudo sed -ie 's/\"gaffer.deploy.hdfs.jars\": \"hdfs:\/\/\/user\/${USER}\/gaffer-jars-${CLUSTER_NAME}\/\",/\"gaffer.deploy.hdfs.jars\" : \"hdfs:\/\/\/user\/hadoop\/gaffer-libs\/\",/g' /opt/gaffer/${GAFFER_SLIDER_VERSION}/appConfig-default.json
+
+#add operations declarations to store properties
+operationDeclarations="\ngaffer.store.operation.declarations=${STORE_OPERATION_DECLARATIONS}\n"
+echo -e $operationDeclarations >> $$GAFFER_STOREPROPERTIES
+
+#add spark configs
+sparkMaster="\nspark.master=${SPARK_MASTER}\n"
+echo -e $sparkMaster >> $$GAFFER_STOREPROPERTIES
+
+sparkLoaderJar="\nspark.loader.jar=${SPARK_LOADER_JAR}\n"
+echo -e $sparkLoaderJar >> $$GAFFER_STOREPROPERTIES
+
+sparkHome="\nspark.home=${SPARK_HOME}\n"
+echo -e $sparkHome >> $$GAFFER_STOREPROPERTIES
+
 
 #install gaffer
 /opt/gaffer/${GAFFER_SLIDER_VERSION}/deploy-gaffer-instance.sh -g $GAFFER_SLIDER_VERSION -a $ACCUMULO_VERSION -u $CLUSTER_USAGE $INSTANCE_NAME

@@ -74,6 +74,7 @@
                         <configuration>
                             <descriptorId>jar-with-dependencies</descriptorId>
                             <tarLongFileMode>posix</tarLongFileMode>
+                            <finalName>gaffer-quickstart</finalName>
                         </configuration>
                     </execution>
                 </executions>

@@ -1,12 +1,13 @@
 #!/bin/bash -e
 
-QUICKSTART_VERSION="1.7.0-RC3-SNAPSHOT"
-GAFFER_SLIDER_VERSION="1.7.0"
-GAFFER_VERSION=$QUICKSTART_VERSION
-
 S3_BUCKET=
+SCHEMA_PATH=
+GRAPHCONFIG_PATH=
+STORE_PROPERTIES_PATH=
+REST_STORE_PROPERTIES_PATH=
+UI_CONFIG=
 
-usage="usage: -s3, -schema, -graphconfig, -storeproperties, -restproperties"
+usage="usage: -s3, -schema, -graphconfig, -storeproperties, -restproperties, -ui-config"
 
 
 if [[ $# -lt 2 ]]; then
@@ -25,19 +26,23 @@ case $key in
     shift # past argument
     ;;
     -schema)
-    $SCHEMA_PATH="$2"
+    SCHEMA_PATH="$2"
     shift # past argument
     ;;
     -graphconfig)
-    $GRAPHCONFIG_PATH="$2"
+    GRAPHCONFIG_PATH="$2"
     shift # past argument
     ;;
     -storeproperties)
-    $STORE_PROPERTIES_PATH="$2"
+    STORE_PROPERTIES_PATH="$2"
     shift # past argument
     ;;
     -restproperties)
-    $REST_STORE_PROPERTIES_PATH="$2"
+    REST_STORE_PROPERTIES_PATH="$2"
+    shift # past argument
+    ;;
+    -ui-config)
+    UI_CONFIG_PATH="$2"
     shift # past argument
     ;;
     *)
@@ -51,36 +56,55 @@ done
 
 echo "working in "$HOME
 
-SCHEMA_PATH=$S3_BUCKET/gaffer-quickstart-${QUICKSTART_VERSION}/example/schema.json
-GRAPHCONFIG_PATH=$S3_BUCKET/gaffer-quickstart-${QUICKSTART_VERSION}/example/graphconfig.json
-STORE_PROPERTIES_PATH=$S3_BUCKET/gaffer-quickstart-${QUICKSTART_VERSION}/example/accumulo-store.properties
-REST_STORE_PROPERTIES_PATH=$S3_BUCKET/gaffer-quickstart-${QUICKSTART_VERSION}/example/rest-store.properties
-REST_WAR_PATH=$S3_BUCKET/gaffer-quickstart-${QUICKSTART_VERSION}/lib/quickstart-rest-${QUICKSTART_VERSION}.war
-UI_WAR_PATH=$S3_BUCKET/gaffer-quickstart-${QUICKSTART_VERSION}/lib/quickstart-ui-${QUICKSTART_VERSION}.war
-UI_CONFIG_PATH=$S3_BUCKET/gaffer-quickstart-${QUICKSTART_VERSION}/lib/ui-config.json
+ENV_FILE_LOCATION_S3=$S3_BUCKET/gaffer-quickstart/env/env.sh
+
+ENV_FILE=${HOME}/env.sh
+
+
 
 cd $HOME
 
-aws s3 cp $S3_BUCKET/gaffer-quickstart-${QUICKSTART_VERSION}/scripts/0-env.sh .
-
-ENV_FILE=$HOME/0-env.sh
-
-echo -e "QUICKSTART_VERSION=${QUICKSTART_VERSION}" >> $ENV_FILE
-echo -e "GAFFER_VERSION=${GAFFER_VERSION}" >> $ENV_FILE
-echo -e "GAFFER_SLIDER_VERSION=${GAFFER_SLIDER_VERSION}" >> $ENV_FILE
+aws s3 cp $ENV_FILE_LOCATION_S3 $ENV_FILE
 
 source $ENV_FILE
 
-aws s3 cp $S3_BUCKET/gaffer-quickstart-${QUICKSTART_VERSION}/lib/quickstart-aws-${QUICKSTART_VERSION}-jar-with-dependencies.jar .
-echo -e "JAR_FILE_PATH=${HOME}/quickstart-aws-${QUICKSTART_VERSION}-jar-with-dependencies.jar" >> $ENV_FILE
+mkdir $GAFFER_CONFIG_DIR
+
+if [[ -z "${SCHEMA_PATH}" ]];
+then
+    SCHEMA_PATH=$S3_BUCKET/gaffer-quickstart/example/schema.json
+fi
+
+if [[ -z "${GRAPHCONFIG_PATH}" ]];
+then
+    GRAPHCONFIG_PATH=$S3_BUCKET/gaffer-quickstart/example/graphconfig.json
+fi
+
+if [[ -z "${STORE_PROPERTIES_PATH}" ]];
+then
+    STORE_PROPERTIES_PATH=$S3_BUCKET/gaffer-quickstart/example/accumulo-store.properties
+fi
+
+
+if [[ -z "${REST_STORE_PROPERTIES_PATH}" ]];
+then
+    REST_STORE_PROPERTIES_PATH=$S3_BUCKET/gaffer-quickstart/example/rest-store.properties
+fi
+
+if [[ -z "${UI_CONFIG_PATH}" ]];
+then
+    UI_CONFIG_PATH=$S3_BUCKET/gaffer-quickstart/lib/ui-config.json
+fi
+
+aws s3 cp $S3_BUCKET/gaffer-quickstart/lib/gaffer-quickstart-jar-with-dependencies.jar .
+echo -e "JAR_FILE_PATH=${HOME}/gaffer-quickstart-jar-with-dependencies.jar" >> $ENV_FILE
 
 hadoop fs -mkdir gaffer-libs
-hadoop fs -put $HOME/quickstart-aws-${QUICKSTART_VERSION}-jar-with-dependencies.jar $GAFFER_LIBS_HDFS
-echo -e "JAR_FILE_PATH_HDFS=${GAFFER_LIBS_HDFS}/quickstart-aws-${QUICKSTART_VERSION}-jar-with-dependencies.jar" >> $ENV_FILE
+hadoop fs -put $HOME/gaffer-quickstart-jar-with-dependencies.jar $GAFFER_LIBS_HDFS
+echo -e "JAR_FILE_PATH_HDFS=${GAFFER_LIBS_HDFS}/gaffer-quickstart-jar-with-dependencies.jar" >> $ENV_FILE
 
-GAFFER_CONFIG_DIR=$HOME/gaffer-config/
-
-mkdir $GAFFER_CONFIG_DIR
+REST_WAR_PATH=$S3_BUCKET/gaffer-quickstart/lib/quickstart-rest-${QUICKSTART_VERSION}.war
+UI_WAR_PATH=$S3_BUCKET/gaffer-quickstart/lib/quickstart-ui-${QUICKSTART_VERSION}.war
 
 echo -e "adding $SCHEMA_PATH to $GAFFER_CONFIG_DIR"
 aws s3 cp $SCHEMA_PATH $GAFFER_CONFIG_DIR
@@ -103,20 +127,21 @@ REST_STORE_PROPERTIES_FILE=$GAFFER_CONFIG_DIR${REST_STORE_PROPERTIES_PATH##*/}
 echo -e "GAFFER_REST_STOREPROPERTIES=${REST_STORE_PROPERTIES_FILE}" >> $ENV_FILE
 
 echo -e "copying rest war file"
-aws s3 cp $REST_WAR_PATH .
+aws s3 cp $REST_WAR_PATH ${HOME}
 REST_WAR=$HOME/${REST_WAR_PATH##*/}
 echo -e "REST_WAR=${REST_WAR}" >> $ENV_FILE
 
 echo -e "copying ui war file"
-aws s3 cp $UI_WAR_PATH .
+aws s3 cp $UI_WAR_PATH ${HOME}
 UI_WAR=$HOME/${UI_WAR_PATH##*/}
 echo -e "UI_WAR=${UI_WAR}" >> $ENV_FILE
 
 echo -e "copying ui config"
-aws s3 cp $UI_CONFIG_PATH .
-UI_CONFIG=$HOME/${UI_CONFIG_PATH##*/}
+aws s3 cp $UI_CONFIG_PATH ${GAFFER_CONFIG_DIR}
+UI_CONFIG=$GAFFER_CONFIG_DIR${UI_CONFIG_PATH##*/}
 echo -e "UI_CONFIG=${UI_CONFIG}" >> $ENV_FILE
 
-aws s3 cp $S3_BUCKET/gaffer-quickstart-${QUICKSTART_VERSION}/example $HOME --recursive
+mkdir ${HOME}/example
+aws s3 cp $S3_BUCKET/gaffer-quickstart/example/ $HOME/example/ --recursive
 
 
