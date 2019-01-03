@@ -378,6 +378,28 @@ class GafferFunctionsTest(unittest.TestCase):
                 then=g.SetValue(value="value2"),
                 otherwise=g.SetValue(value="value3")
             )
+        ],
+        [
+            '''
+            {
+                "class": "uk.gov.gchq.gaffer.types.function.ToFreqMap",
+                "value": "value1"
+            }
+            ''',
+            g.func.ToFreqMap(
+                value="value1"
+            )
+        ],
+        [
+            '''
+            {
+                "class": "uk.gov.gchq.gaffer.types.function.ToFreqMap",
+                "value": { "java.lang.Long": 32}
+            }
+            ''',
+            g.func.ToFreqMap(
+                value=g.Long(32)
+            )
         ]
     ]
 
