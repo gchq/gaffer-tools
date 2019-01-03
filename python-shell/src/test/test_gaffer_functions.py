@@ -398,7 +398,7 @@ class GafferFunctionsTest(unittest.TestCase):
             }
             ''',
             g.func.ToFreqMap(
-                value=g.Long(32)
+                value=g.long(32)
             )
         ]
     ]
