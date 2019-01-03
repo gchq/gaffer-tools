@@ -382,7 +382,7 @@ class GafferFunctionsTest(unittest.TestCase):
         [
             '''
             {
-                "class": "uk.gov.gchq.gaffer.types.function.ToFreqMap",
+                "class": "uk.gov.gchq.gaffer.types.function.ToFreqMap"
             }
             ''',
             g.func.ToFreqMap()
