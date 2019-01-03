@@ -678,16 +678,11 @@ class If(AbstractFunction):
 class ToFreqMap(AbstractFunction):
     CLASS = 'uk.gov.gchq.gaffer.types.function.ToFreqMap'
 
-    def __init__(self, value):
+    def __init__(self):
         super().__init__(_class_name=self.CLASS)
-        self.value = value
 
     def to_json():
-        function_json = super().to_json()
-        if self.value is not None:
-            function_json['value'] = self.value
-        
-        return function_json
+        return super().to_json()
 
 def function_context_converter(obj):
     if 'class' in obj:
