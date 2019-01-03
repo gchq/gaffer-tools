@@ -679,6 +679,7 @@ class ToFreqMap(AbstractFunction):
     CLASS = 'uk.gov.gchq.gaffer.types.function.ToFreqMap'
 
     def __init__(self, value):
+        super().__init__(_class_name=self.CLASS)
         self.value = value
 
     def to_json():

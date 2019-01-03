@@ -394,7 +394,7 @@ class GafferFunctionsTest(unittest.TestCase):
             '''
             {
                 "class": "uk.gov.gchq.gaffer.types.function.ToFreqMap",
-                "value": { "java.lang.Long": 32}
+                "value": { "java.lang.Long": 32 }
             }
             ''',
             g.func.ToFreqMap(
