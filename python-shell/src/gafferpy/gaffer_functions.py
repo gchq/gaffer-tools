@@ -682,7 +682,7 @@ class ToFreqMap(AbstractFunction):
         self.value = value
 
     def to_json():
-        function_json = super.to_json()
+        function_json = super().to_json()
         if self.value is not None:
             function_json['value'] = self.value
         
