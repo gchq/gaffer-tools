@@ -681,7 +681,7 @@ class ToFreqMap(AbstractFunction):
     def __init__(self):
         super().__init__(_class_name=self.CLASS)
 
-    def to_json():
+    def to_json(self):
         return super().to_json()
 
 def function_context_converter(obj):
