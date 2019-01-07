@@ -552,6 +552,23 @@ class GafferPredicatesTest(unittest.TestCase):
                 time_unit='MICROSECOND',
                 time_zone='Etc/GMT+0'
             )
+        ],
+        [
+            '''
+            {
+                "class": "uk.gov.gchq.gaffer.data.element.comparison.ElementJoinComparator"
+            }
+            ''',
+            g.ElementJoinComparator()
+        ],
+        [
+            '''
+            {
+                "class": "uk.gov.gchq.gaffer.data.element.comparison.ElementJoinComparator",
+                "groupByProperties": [ "test1", "test2" ]
+            }
+            ''',
+            g.ElementJoinComparator(group_by_properties=["test1", "test2"])
         ]
     ]
 
