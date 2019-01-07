@@ -106,8 +106,8 @@ class View(ToJson, ToCodeString):
         self.global_elements = None
         self.global_entities = None
         self.global_edges = None
-        self.all_edges = False
-        self.all_entities = False
+        self.all_edges = all_edges
+        self.all_entities = all_entities
 
         if entities is not None:
             self.entities = []
