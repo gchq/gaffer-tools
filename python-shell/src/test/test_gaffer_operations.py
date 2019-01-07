@@ -1156,6 +1156,55 @@ class GafferOperationsTest(unittest.TestCase):
             '''
             {
               "class" : "uk.gov.gchq.gaffer.operation.impl.get.GetElements",
+              "input" : [ {
+                "vertex" : 2,
+                "class" : "uk.gov.gchq.gaffer.operation.data.EntitySeed"
+              }],
+              "view": {
+                  "allEdges": true
+              }
+            }
+            ''',
+            g.GetElements(
+                input=[
+                    g.EntitySeed(
+                        vertex=2
+                    )
+                ],
+                view=g.View(
+                    all_edges=True,
+                    all_entities=False
+                )
+            )
+        ],
+        [
+            '''
+            {
+              "class" : "uk.gov.gchq.gaffer.operation.impl.get.GetElements",
+              "input" : [ {
+                "vertex" : 2,
+                "class" : "uk.gov.gchq.gaffer.operation.data.EntitySeed"
+              }],
+              "view": {
+                  "allEntities": true
+              }
+            }
+            ''',
+            g.GetElements(
+                input=[
+                    g.EntitySeed(
+                        vertex=2
+                    )
+                ],
+                view=g.View(
+                    all_entities=True
+                )
+            )
+        ],
+        [
+            '''
+            {
+              "class" : "uk.gov.gchq.gaffer.operation.impl.get.GetElements",
               "view" : {
                 "edges" : {
                   "edge" : {
