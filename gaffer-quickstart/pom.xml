@@ -5,7 +5,7 @@
     <parent>
         <artifactId>gaffer-tools</artifactId>
         <groupId>uk.gov.gchq.gaffer</groupId>
-        <version>1.7.0</version>
+        <version>1.7.1-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -13,6 +13,7 @@
     <packaging>pom</packaging>
     <modules>
         <module>quickstart-core</module>
+        <module>quickstart-web</module>
         <module>quickstart-rest</module>
         <module>quickstart-ui</module>
         <module>quickstart-aws</module>

@@ -23,7 +23,4 @@ do
     sleep 0.5
 done
 
-operationDeclarations="\ngaffer.store.operation.declarations=sparkAccumuloOperationsDeclarations.json"
-echo -e $operationDeclarations >> $GAFFER_HOME/miniaccumulo/store.properties
-
 echo -e "\nminiaccumulo started"

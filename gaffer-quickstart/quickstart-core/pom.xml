@@ -5,11 +5,15 @@
     <parent>
         <artifactId>gaffer-quickstart</artifactId>
         <groupId>uk.gov.gchq.gaffer</groupId>
-        <version>1.7.0-RC3-SNAPSHOT</version>
+        <version>1.7.1-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>quickstart-core</artifactId>
+
+    <properties>
+        <commons-csv.version>1.4</commons-csv.version>
+    </properties>
 
     <dependencies>
         <dependency>
@@ -30,18 +34,18 @@
         <dependency>
             <groupId>uk.gov.gchq.gaffer</groupId>
             <artifactId>functions-library</artifactId>
-            <version>${gaffer.version}</version>
+            <version>${project.parent.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-csv</artifactId>
+            <version>${commons-csv.version}</version>
         </dependency>
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>${junit.version}</version>
             <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.tomcat.embed</groupId>
-            <artifactId>tomcat-embed-core</artifactId>
-            <version>8.5.29</version>
         </dependency>
     </dependencies>
 

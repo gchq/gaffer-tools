@@ -9,22 +9,27 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>quickstart-release</artifactId>
+    <artifactId>quickstart-web</artifactId>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.apache.tomcat.embed</groupId>
+            <artifactId>tomcat-embed-core</artifactId>
+            <version>8.5.29</version>
+        </dependency>
+    </dependencies>
 
     <build>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-assembly-plugin</artifactId>
-                    <configuration>
-                        <appendAssemblyId>false</appendAssemblyId>
-                        <descriptors>
-                            <descriptor>assembly/release-assembly.xml</descriptor>
-                            <descriptor>assembly/aws-assembly.xml</descriptor>
-                        </descriptors>
-                        <outputDirectory>../gaffer-quickstart-release-${project.version}</outputDirectory>
-                        <finalName>gaffer-quickstart</finalName>
-                    </configuration>
+                <configuration>
+                    <appendAssemblyId>false</appendAssemblyId>
+                    <descriptors>
+                        <descriptor>src/assembly/web-assembly.xml</descriptor>
+                    </descriptors>
+                </configuration>
                 <executions>
                     <execution>
                         <phase>package</phase>

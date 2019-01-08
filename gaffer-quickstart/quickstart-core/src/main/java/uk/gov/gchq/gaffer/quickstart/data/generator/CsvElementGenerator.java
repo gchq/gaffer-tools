@@ -27,10 +27,10 @@ import uk.gov.gchq.gaffer.commonutil.iterable.*;
 import uk.gov.gchq.gaffer.data.element.*;
 import uk.gov.gchq.gaffer.data.element.Properties;
 import uk.gov.gchq.gaffer.data.element.function.ElementFilter;
-import uk.gov.gchq.gaffer.data.element.function.PropertiesFilter;
-import uk.gov.gchq.gaffer.data.element.function.PropertiesTransformer;
 import uk.gov.gchq.gaffer.data.generator.ElementGenerator;
 import uk.gov.gchq.gaffer.data.generator.OneToManyElementGenerator;
+import uk.gov.gchq.gaffer.quickstart.data.element.function.PropertiesFilter;
+import uk.gov.gchq.gaffer.quickstart.data.element.function.PropertiesTransformer;
 import uk.gov.gchq.koryphe.Since;
 import uk.gov.gchq.koryphe.Summary;
 import uk.gov.gchq.koryphe.ValidationResult;
@@ -106,6 +106,7 @@ public class CsvElementGenerator implements OneToManyElementGenerator<String>, S
     }
 
     private StreamIterable<Element> generateElements(final String csv) {
+
         return new StreamIterable<>(() -> {
             final CSVRecord csvRecord = parseCsv(csv);
             final Properties properties = extractProperties(csvRecord);

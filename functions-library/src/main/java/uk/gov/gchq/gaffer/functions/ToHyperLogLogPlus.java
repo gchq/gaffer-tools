@@ -25,6 +25,7 @@ import uk.gov.gchq.koryphe.function.KorypheFunction;
  */
 @JsonInclude(JsonInclude.Include.NON_DEFAULT)
 public class ToHyperLogLogPlus extends KorypheFunction<Object, HyperLogLogPlus> {
+
     private int p = 5;
     private int sp = 5;
 

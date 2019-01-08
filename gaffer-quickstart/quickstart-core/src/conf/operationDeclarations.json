@@ -1,0 +1,10 @@
+{
+  "operations": [
+    {
+      "operation": "uk.gov.gchq.gaffer.quickstart.operation.AddElementsFromCsv",
+      "handler": {
+        "class": "uk.gov.gchq.gaffer.quickstart.operation.handler.AddElementsFromCsvHandler"
+      }
+    }
+  ]
+}

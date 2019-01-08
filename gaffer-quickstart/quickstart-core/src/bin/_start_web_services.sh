@@ -69,7 +69,7 @@ else
     echo "using graph config at $GRAPH_CONFIG"
 fi
 
-echo -e "\ngaffer.store.operation.declarations=sparkAccumuloOperationsDeclarations.json,${GAFFER_HOME}/conf/operationDeclarations.json\n" >> $STORE_PROPERTIES
+echo -e "\ngaffer.store.operation.declarations=${GAFFER_HOME}/conf/operationDeclarations.json\n" >> $STORE_PROPERTIES
 
 
 java -cp "$GAFFER_HOME/lib/quickstart-core-${VERSION}.jar:$GAFFER_HOME/lib/*" uk.gov.gchq.gaffer.quickstart.web.GafferWebServices $SCHEMA $GRAPH_CONFIG $STORE_PROPERTIES $REST_WAR $UI_WAR >> $GAFFER_HOME/gaffer.log 2>&1 &
