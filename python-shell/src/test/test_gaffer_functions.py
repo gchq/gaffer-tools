@@ -173,6 +173,22 @@ class GafferFunctionsTest(unittest.TestCase):
         [
             '''
             {
+                "class": "uk.gov.gchq.gaffer.types.function.ToTypeValue"
+            }
+            ''',
+            g.ToTypeValue()
+        ],
+        [
+            '''
+            {
+                "class": "uk.gov.gchq.gaffer.types.function.ToTypeSubTypeValue"
+            }
+            ''',
+            g.ToTypeSubTypeValue()
+        ],
+        [
+            '''
+            {
               "class" : "uk.gov.gchq.gaffer.data.generator.MapGenerator",
               "fields" : {
                 "GROUP" : "Group Label",
