@@ -513,6 +513,15 @@ class ToInteger(AbstractFunction):
         return super().to_json()
 
 
+class ToTypeValue(AbstractFunction):
+    CLASS = 'uk.gov.gchq.gaffer.types.function.ToTypeValue'
+
+    def __init__(self):
+        super().__init__(_class_name=self.CLASS)
+
+    def to_json(self):
+        return super().to_json()
+
 class Cast(AbstractFunction):
     CLASS = 'uk.gov.gchq.koryphe.impl.function.Cast'
 
