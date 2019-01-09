@@ -5177,7 +5177,6 @@ class GafferOperationsTest(unittest.TestCase):
             }
             ''',
             g.GetVariables(
-                input="testVal",
                 variable_names=["testVarName", "testVarName2"],
                 options={
                     "key": "value"

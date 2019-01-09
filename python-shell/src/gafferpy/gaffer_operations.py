@@ -2722,7 +2722,7 @@ class GetVariables(Operation):
     def to_json(self):
         operation = super().to_json()
 
-        if self.variable_name is not None:
+        if self.variable_names is not None:
             operation['variableNames'] = self.variable_names
 
         return operation
