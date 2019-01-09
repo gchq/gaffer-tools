@@ -2550,11 +2550,10 @@ class AddGraphWithHooks(Operation):
 
         return operation
 
-class AddElementsFromLocalCsv(Operation):
-    CLASS = 'uk.gov.gchq.gaffer.simplified.operation.AddElementsFromLocalCsv'
+class AddElementsFromCsv(Operation):
+    CLASS = 'uk.gov.gchq.gaffer.operation.impl.add.AddElementsFromCsv'
 
     def __init__(self, filename=None, mappingsFile=None,
-                 delimiter=None, ignoreQuotes=None, quoteChar=None,
                  validate=None, skip_invalid_elements=None,
                  options=None):
         super().__init__(
@@ -2564,9 +2563,6 @@ class AddElementsFromLocalCsv(Operation):
 
         self.filename = filename
         self.mappingsFile = mappingsFile
-        self.delimiter = delimiter
-        self.ignoreQuotes = ignoreQuotes
-        self.quoteChar = quoteChar
         self.validate = validate
         self.skip_invalid_elements = skip_invalid_elements
 
@@ -2579,14 +2575,53 @@ class AddElementsFromLocalCsv(Operation):
         if self.mappingsFile is not None:
             operation['mappingsFile'] = self.mappingsFile
 
-        if self.delimiter is not None:
-            operation['delimiter'] = self.delimiter
+        if self.validate is not None:
+            operation['validate'] = self.validate
 
-        if self.ignoreQuotes is not None:
-            operation['ignoreQuotes'] = self.ignoreQuotes
+        if self.skip_invalid_elements is not None:
+            operation['skipInvalidElements'] = self.skip_invalid_elements
 
-        if self.quoteChar is not None:
-            operation['quoteChar'] = self.quoteChar
+        return operation
+
+
+
+
+
+
+
+class AddElementsFromHdfsQuickstart(Operation):
+    CLASS = 'uk.gov.gchq.gaffer.hdfs.operation.AddElementsFromHdfsQuickstart'
+
+    def __init__(self, dataPath=None, elementGeneratorConfig=None,
+                 outputPath=None, failurePath=None,
+                 validate=None, skip_invalid_elements=None,
+                 options=None):
+        super().__init__(
+            self.CLASS,
+            options=options
+        )
+
+        self.dataPath = dataPath
+        self.elementGeneratorConfig = elementGeneratorConfig
+        self.outputPath = outputPath
+        self.failurePath = failurePath
+        self.validate = validate
+        self.skip_invalid_elements = skip_invalid_elements
+
+    def to_json(self):
+        operation = super().to_json()
+
+        if self.dataPath is not None:
+            operation['dataPath'] = self.dataPath
+
+        if self.elementGeneratorConfig is not None:
+            operation['elementGeneratorConfig'] = self.elementGeneratorConfig
+
+        if self.outputPath is not None:
+            operation['outputPath'] = self.outputPath
+
+        if self.failurePath is not None:
+            operation['failurePath'] = self.failurePath
 
         if self.validate is not None:
             operation['validate'] = self.validate
@@ -2595,6 +2630,12 @@ class AddElementsFromLocalCsv(Operation):
             operation['skipInvalidElements'] = self.skip_invalid_elements
 
         return operation
+
+
+
+
+
+
 
 
 
