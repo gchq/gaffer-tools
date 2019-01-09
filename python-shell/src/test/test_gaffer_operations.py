@@ -1707,6 +1707,20 @@ class GafferOperationsTest(unittest.TestCase):
         [
             '''
             {
+                "class": "uk.gov.gchq.gaffer.operation.impl.get.GetAsElementsFromEndpoint",
+                "endpoint": "http://mydata.io",
+                "elementGenerator": {
+                    "class": "uk.gov.gchq.gaffer.data.generator.CsvGenerator"
+                }
+            }
+            ''',
+            g.GetAsElementsFromEndpoint(endpoint="http://mydata.io",
+                element_generator=g.CsvGenerator()
+            )
+        ],
+        [
+            '''
+            {
               "class" : "uk.gov.gchq.gaffer.operation.OperationChain",
               "operations" : [ {
                 "class" : "uk.gov.gchq.gaffer.operation.impl.get.GetAllElements"
