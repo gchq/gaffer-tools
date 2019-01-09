@@ -2570,6 +2570,11 @@ class Conditional(ToJson, ToCodeString):
         return conditional_json
 
 
+class Join(Operation):
+    CLASS = 'uk.gov.gchq.gaffer.operation.impl.join.Join'
+
+    def __init(self, input=None, operation=None, options=None)
+
 class GetAllGraphIds(Operation):
     CLASS = 'uk.gov.gchq.gaffer.federatedstore.operation.GetAllGraphIds'
 
