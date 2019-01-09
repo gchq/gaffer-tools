@@ -27,7 +27,7 @@ function raw() {
     }
 }
 
-function RawController(operationService, results, query, error, events, schema) {
+function RawController(results, query, error, events, schema) {
     var vm = this
 
     vm.operationsForEdit = [];
@@ -35,10 +35,13 @@ function RawController(operationService, results, query, error, events, schema) 
     vm.operations = query.getOperations();
     vm.results = results.get();
 
-    vm.schema = {edges:{}, entities:{}};
+    vm.schema = {edges:{}, entities:{}, types: {}};
     vm.$onInit = function() {
         schema.get().then(function(gafferSchema) {
             vm.schema = gafferSchema;
+        },
+        function(err) {
+            vm.schema = {edges: {}, entities: {}, types: {}};
         });
     }
 
