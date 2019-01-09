@@ -573,6 +573,61 @@ class Operation(ToJson, ToCodeString):
 
         return operation
 
+class Match(ToJson, ToCodeString):
+    def __init__(self, _class_name):
+        self._class_name = _class_name
+
+    def to_json(self):
+        return {
+            'class': self._class_name
+        }
+
+class ElementMatch(Match):
+
+    CLASS = "uk.gov.gchq.gaffer.store.operation.handler.join.match.ElementMatch"
+
+    def __init__(self, group_by_properties=None):
+        super().__init__(_class_name=self.CLASS)
+        self.group_by_properties = group_by_properties
+
+    def to_json(self):
+        match_json = super().to_json()
+        if (self.group_by_properties is not None):
+            match_json['groupByProperties'] = self.group_by_properties
+        
+        return match_json
+
+
+class Merge(ToJson, ToCodeString):
+    CLASS = "uk.gov.gchq.gaffer.operation.impl.join.merge.Merge"
+
+    def __init__(self, _class_name):
+        self._class_name = _class_name
+
+    def to_json(self):
+        return {
+            'class': self._class_name
+        }
+    
+class ElementMerge(Merge):
+    CLASS = "uk.gov.gchq.gaffer.store.operation.handler.join.merge.ElementMerge"
+
+    def __init__(self, results_wanted=None, merge_type=None, schema=None):
+        super().__init__(_class_name=self.CLASS)
+        self.results_wanted = results_wanted
+        self.merge_type = merge_type
+        self.schema = schema
+
+    def to_json(self):
+        merge_json = super().to_json()
+        if self.results_wanted is not None:
+            merge_json['resultsWanted'] = self.results_wanted
+        if self.merge_type is not None:
+            merge_json['mergeType'] = self.merge_type
+        if self.schema is not None:
+            merge_json['schema'] = self.schema
+        
+        return merge_json
 
 class OperationChain(Operation):
     CLASS = "uk.gov.gchq.gaffer.operation.OperationChain"
@@ -2569,6 +2624,66 @@ class Conditional(ToJson, ToCodeString):
             conditional_json["transform"] = self.transform.to_json()
 
         return conditional_json
+
+
+class Join(Operation):
+    
+    CLASS = 'uk.gov.gchq.gaffer.operation.impl.join.Join'
+
+    def __init__(self, input=None, operation=None, match_method=None, match_key=None, merge_method=None, join_type=None, collection_limit=None, options=None):
+        super().__init__(_class_name=self.CLASS, options=options)
+        
+        
+        if operation is not None:
+            if not isinstance(operation, Operation):
+                self.operation = JsonConverter.from_json(operation)
+            else:
+                self.operation = operation
+
+        if match_method is not None:
+            if not isinstance(match_method, Match):
+                self.match_method = JsonConverter.from_json(match_method)
+            else:
+                self.match_method = match_method
+
+
+        if merge_method is not None:
+            if not isinstance(merge_method, Merge):
+                self.merge_method = JsonConverter.from_json(merge_method)
+            else:
+                self.merge_method = merge_method
+
+        self.input = input
+        self.match_key = match_key
+        self.collection_limit = collection_limit
+        self.join_type = join_type
+
+    def to_json(self):
+        operation_json = super().to_json()
+
+        if self.input is not None:
+            json_input = []
+            for input in self.input:
+                if isinstance(input, ToJson):
+                    json_input.append(input.to_json())
+                else:
+                    json_input.append(input)
+                
+            operation_json['input'] = json_input
+        if self.operation is not None:
+            operation_json['operation'] = self.operation.to_json()
+        if self.match_method is not None:
+            operation_json['matchMethod'] = self.match_method.to_json()
+        if self.match_key is not None:
+            operation_json['matchKey'] = self.match_key
+        if self.merge_method is not None:
+            operation_json['mergeMethod'] = self.merge_method.to_json()
+        if self.join_type is not None:
+            operation_json['joinType'] = self.join_type
+        if self.collection_limit is not None:
+            operation_json['collectionLimit'] = self.collection_limit
+
+        return operation_json
 
 
 class GetAllGraphIds(Operation):

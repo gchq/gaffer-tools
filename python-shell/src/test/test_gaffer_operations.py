@@ -5167,7 +5167,7 @@ class GafferOperationsTest(unittest.TestCase):
             )
         ],
         [
-            '''
+          '''
             {
                 "class" : "uk.gov.gchq.gaffer.operation.impl.GetVariables",
                 "variableNames" : ["testVarName", "testVarName2"],
@@ -5182,6 +5182,38 @@ class GafferOperationsTest(unittest.TestCase):
                     "key": "value"
                 }
             )
+        ],
+        [
+            '''
+                "class": "uk.gov.gchq.gaffer.operation.impl.join.Join",
+                "input": [ "test2" ],
+                "operation": {
+                    "class": "uk.gov.gchq.gaffer.operation.impl.get.GetElements",
+                    "input": [
+                        {
+                            "class": "uk.gov.gchq.gaffer.operation.data.EntitySeed",
+                            "vertex": "test"
+                        }
+                    ]
+                },
+                "matchMethod": {
+                    "class": "uk.gov.gchq.gaffer.store.operation.handler.join.match.ElementMatch"
+                },
+                "mergeMethod": {
+                    "class": "uk.gov.gchq.gaffer.store.operation.handler.join.merge.ElementMerge",
+                    "resultsWanted": "KEY_ONLY"
+                },
+                "joinType": "FULL_INNER",
+                "collectionLimit": 10
+            }
+            ''',
+            g.Join(
+                input=['test2'], 
+                operation=g.GetElements(input=[g.EntitySeed('test')]), 
+                match_method=g.ElementMatch(),
+                merge_method=g.ElementMerge(results_wanted=g.ResultsWanted.KEY_ONLY),
+                join_type=g.JoinType.FULL_INNER,
+                collection_limit=10)
         ]
     ]
 

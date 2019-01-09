@@ -148,6 +148,27 @@ class UseMatchedVertex:
     OPPOSITE = 'OPPOSITE'
 
 
+class MatchKey:
+    LEFT = 'LEFT'
+    RIGHT = 'RIGHT'
+
+class ResultsWanted:
+    KEY_ONLY = 'KEY_ONLY'
+    RELATED_ONLY = 'RELATED_ONLY'
+    BOTH = 'BOTH'
+
+class MergeType:
+    NONE = 'NONE'
+    RELATED_ONLY = 'RELATED_ONLY'
+    BOTH = 'BOTH'
+
+class JoinType:
+    FULL = 'FULL'
+    FULL_INNER = 'FULL_INNER'
+    FULL_OUTER = 'FULL_OUTER'
+    OUTER = 'OUTER'
+    INNER = 'INNER'
+
 class ElementSeed(ToJson, ToCodeString):
     def __repr__(self):
         return json.dumps(self.to_json())
