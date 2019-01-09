@@ -247,6 +247,14 @@ class GafferFunctionsTest(unittest.TestCase):
         [
             '''
             {
+                "class": "uk.gov.gchq.gaffer.data.generator.JsonToElementGenerator"
+            }
+            ''',
+            g.JsonToElementGenerator()
+        ],
+        [
+            '''
+            {
               "class" : "uk.gov.gchq.gaffer.types.function.FreqMapExtractor",
               "key" : "key1"
             }
