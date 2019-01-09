@@ -455,6 +455,9 @@ describe("The Graph Component", function() {
         describe('ctrl.quickHop()', function() {
     
             var operationOptions, query, error;
+            var failureFlag = false;
+
+            var elementsToReturn;
     
             var event;
     
@@ -465,7 +468,14 @@ describe("The Graph Component", function() {
             }));
     
             beforeEach(function() {
-                spyOn(query, 'executeQuery');
+                spyOn(query, 'executeQuery').and.callFake(function(op, onSuccess, onFailure) {
+                    if (failureFlag) {
+                        onFailure('error test')
+                    } else {
+                        events.broadcast('incomingResults', [elementsToReturn]);
+                        onSuccess(elementsToReturn);
+                    }
+                });
             });
     
             beforeEach(function() {
@@ -476,8 +486,14 @@ describe("The Graph Component", function() {
                         }
                     }
                 };
-            })
-    
+
+                elementsToReturn = {};
+            });
+
+            beforeEach(function() {
+                ctrl.update(elements);
+            });
+
             it('should broadcast an error if no event is supplied or selected elements created', function() {
                 spyOn(error, 'handle').and.stub();
     
@@ -537,6 +553,83 @@ describe("The Graph Component", function() {
                         vertex: "id2"
                     }
                 ]);
+            });
+
+            it('should not move the existing elements after the new elements are returned', function() {
+                injectableCytoscape.layout({ 'name': 'random'});
+                var oldElementPositions = injectableCytoscape.nodes().map(function(element) {
+                    return {
+                        key: element.id(),
+                        position: element.position()
+                    }
+                });
+
+                elementsToReturn = {
+                    edges: [
+                        {
+                            class: 'Edge',
+                            source: 'foo',
+                            directed: true,
+                            destination: 'bar2',
+                            group: 'foobarEdge',
+                            properties: {
+                                count: 42
+                            }
+                        }
+                    ]
+                }
+
+                ctrl.quickHop(event);
+
+                var newElementPositions = injectableCytoscape.nodes().map(function(element) {
+                    return {
+                        key: element.id(),
+                        position: element.position()
+                    };
+                });
+
+                expect(oldElementPositions.length).toEqual(2)
+                expect(newElementPositions.length).toEqual(3)
+
+                for (var i in oldElementPositions) {
+                    expect(newElementPositions[i].key).toEqual(oldElementPositions[i].key);
+                    expect(newElementPositions[i].position).toEqual(oldElementPositions[i].position);
+                }
+    
+            });
+
+            it('should release the lock on elements after the graph has been drawn', function() {
+                elementsToReturn = {
+                    edges: [
+                        {
+                            class: 'Edge',
+                            source: 'foo',
+                            directed: true,
+                            destination: 'bar2',
+                            group: 'foobarEdge',
+                            properties: {
+                                count: 42
+                            }
+                        }
+                    ]
+                }
+
+                ctrl.quickHop(event);
+
+                injectableCytoscape.elements().map(function(element) {
+                    expect(element.locked()).toBeFalsy()
+                });
+            });
+
+            it('should unlock the elements if the request fails', function() {
+                failureFlag = true;
+
+                ctrl.quickHop(event);
+
+                injectableCytoscape.elements().map(function(element) {
+                    expect(element.locked()).toBeFalsy()
+                });
+
             });
         });
     
