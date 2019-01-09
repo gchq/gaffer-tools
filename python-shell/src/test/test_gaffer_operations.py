@@ -5133,6 +5133,59 @@ class GafferOperationsTest(unittest.TestCase):
         [
             '''
             {
+                "class" : "uk.gov.gchq.gaffer.operation.impl.SetVariable",
+                "input" : "testVal",
+                "variableName" : "testVarName",
+                "options" : {
+                    "key" : "value"
+                }
+            }
+            ''',
+            g.SetVariable(
+                input="testVal",
+                variable_name="testVarName",
+                options={
+                    "key": "value"
+                }
+            )
+        ],
+        [
+            '''
+            {
+                "class" : "uk.gov.gchq.gaffer.operation.impl.GetVariable",
+                "variableName" : "testVarName",
+                "options" : {
+                    "key" : "value"
+                }
+            }
+            ''',
+            g.GetVariable(
+                variable_name="testVarName",
+                options={
+                    "key": "value"
+                }
+            )
+        ],
+        [
+          '''
+            {
+                "class" : "uk.gov.gchq.gaffer.operation.impl.GetVariables",
+                "variableNames" : ["testVarName", "testVarName2"],
+                "options" : {
+                    "key" : "value"
+                }
+            }
+            ''',
+            g.GetVariables(
+                variable_names=["testVarName", "testVarName2"],
+                options={
+                    "key": "value"
+                }
+            )
+        ],
+        [
+            '''
+            {
                 "class": "uk.gov.gchq.gaffer.operation.impl.join.Join",
                 "input": [ "test2" ],
                 "operation": {
