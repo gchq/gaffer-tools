@@ -99,13 +99,15 @@ class View(ToJson, ToCodeString):
     CLASS = 'uk.gov.gchq.gaffer.data.elementdefinition.view.View'
 
     def __init__(self, entities=None, edges=None, global_elements=None,
-                 global_entities=None, global_edges=None):
+                 global_entities=None, global_edges=None, all_edges=False, all_entities=False):
         super().__init__()
         self.entities = None
         self.edges = None
         self.global_elements = None
         self.global_entities = None
         self.global_edges = None
+        self.all_edges = all_edges
+        self.all_entities = all_entities
 
         if entities is not None:
             self.entities = []
@@ -220,6 +222,12 @@ class View(ToJson, ToCodeString):
             for el_def in self.global_edges:
                 el_defs.append(el_def.to_json())
             view['globalEdges'] = el_defs
+
+        if self.all_edges is True:
+            view['allEdges'] = True
+
+        if self.all_entities is True:
+            view['allEntities'] = True
 
         return view
 
