@@ -520,6 +520,7 @@ function GraphController($q, graph, config, error, loading, query, operationOpti
         }
         if (input && input.length > 0) {
             loading.load();
+            cytoscapeGraph.elements().lock();
             var operation = {
                  class: "uk.gov.gchq.gaffer.operation.impl.get.GetElements",
                  input: createOpInput(input),
@@ -543,7 +544,12 @@ function GraphController($q, graph, config, error, loading, query, operationOpti
                    ],
                    options: operation['options']
                 },
-                vm.deselectAll
+                function() {
+                    cytoscapeGraph.elements().unlock();
+                },
+                function() {
+                    cytoscapeGraph.elements().unlock();
+                }
             );
         } else {
             error.handle('Please select one or more vertices first');
@@ -577,7 +583,7 @@ function GraphController($q, graph, config, error, loading, query, operationOpti
     vm.redraw = function() {
         if(cytoscapeGraph) {
             cytoscapeGraph.filter(".filtered").remove();
-            cytoscapeGraph.layout(configuration);
+            cytoscapeGraph.filter(":unlocked").layout(configuration);
         }
     }
 
@@ -608,6 +614,10 @@ function GraphController($q, graph, config, error, loading, query, operationOpti
                 }
             }
         });
+    }
+
+    var deselectAll = function() {
+        cytoscapeGraph.elements().unselect();
     }
 
     /**
