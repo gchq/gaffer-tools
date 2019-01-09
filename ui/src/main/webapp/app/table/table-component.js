@@ -27,7 +27,7 @@ function resultsTable() {
 }
 
 /**
- * The controller for the table page..
+ * The controller for the table page.
  * @param {*} schema For looking up information about the different groups and types.
  * @param {*} results For retrieving the results
  * @param {*} table For caching user table view preferences
@@ -35,6 +35,8 @@ function resultsTable() {
  * @param {*} common For common methods
  * @param {*} types For converting objects based on their types
  * @param {*} time For converting time objects
+ * @param {*} csv For downloading results
+ * @param {*} $mdDialog For creating chart visualisations
  */
 function TableController(schema, results, table, events, common, types, time, csv, $mdDialog) {
     var vm = this;
@@ -60,8 +62,14 @@ function TableController(schema, results, table, events, common, types, time, cs
             vm.schema = gafferSchema;
             loadFromCache();
             processResults(results.get());
-            events.subscribe('resultsUpdated', onResultsUpdated);
+            
+        }, function(err) {
+            vm.schema = {types: {}, edges: {}, entities: {}};
+            loadFromCache();
+            processResults(results.get());
         });
+
+        events.subscribe('resultsUpdated', onResultsUpdated);
     }
 
     /**
