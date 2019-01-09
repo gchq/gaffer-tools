@@ -693,6 +693,14 @@ class If(AbstractFunction):
 
         return predicate_json
 
+class ToFreqMap(AbstractFunction):
+    CLASS = 'uk.gov.gchq.gaffer.types.function.ToFreqMap'
+
+    def __init__(self):
+        super().__init__(_class_name=self.CLASS)
+
+    def to_json(self):
+        return super().to_json()
 
 def function_context_converter(obj):
     if 'class' in obj:
