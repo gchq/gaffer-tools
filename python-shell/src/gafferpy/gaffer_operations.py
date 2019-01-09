@@ -99,7 +99,8 @@ class View(ToJson, ToCodeString):
     CLASS = 'uk.gov.gchq.gaffer.data.elementdefinition.view.View'
 
     def __init__(self, entities=None, edges=None, global_elements=None,
-                 global_entities=None, global_edges=None, all_edges=False, all_entities=False):
+                 global_entities=None, global_edges=None, all_edges=False,
+                 all_entities=False):
         super().__init__()
         self.entities = None
         self.edges = None
@@ -2691,6 +2692,58 @@ class AddGraphWithHooks(Operation):
 
         if self.hooks is not None:
             operation['hooks'] = self.hooks
+
+        return operation
+
+
+class GetVariable(Operation):
+    CLASS = 'uk.gov.gchq.gaffer.operation.impl.GetVariable'
+
+    def __init__(self, variable_name=None, options=None):
+        super().__init__(_class_name=self.CLASS, options=options)
+        self.variable_name = variable_name
+
+    def to_json(self):
+        operation = super().to_json()
+
+        if self.variable_name is not None:
+            operation['variableName'] = self.variable_name
+
+        return operation
+
+
+class GetVariables(Operation):
+    CLASS = 'uk.gov.gchq.gaffer.operation.impl.GetVariables'
+
+    def __init__(self, variable_names=None, options=None):
+        super().__init__(_class_name=self.CLASS, options=options)
+        self.variable_names = variable_names
+
+    def to_json(self):
+        operation = super().to_json()
+
+        if self.variable_name is not None:
+            operation['variableNames'] = self.variable_names
+
+        return operation
+
+
+class SetVariable(Operation):
+    CLASS = 'uk.gov.gchq.gaffer.operation.impl.SetVariable'
+
+    def __init__(self, input=None, variable_name=None, options=None):
+        super().__init__(_class_name=self.CLASS, options=options)
+        self.input = input
+        self.variable_name = variable_name
+
+    def to_json(self):
+        operation = super().to_json()
+
+        if self.variable_name is not None:
+            operation['variableName'] = self.variable_name
+
+        if self.input is not None:
+            operation['input'] = self.input
 
         return operation
 
