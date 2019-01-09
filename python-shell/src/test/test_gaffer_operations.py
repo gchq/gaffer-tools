@@ -5185,6 +5185,7 @@ class GafferOperationsTest(unittest.TestCase):
         ],
         [
             '''
+            {
                 "class": "uk.gov.gchq.gaffer.operation.impl.join.Join",
                 "input": [ "test2" ],
                 "operation": {
