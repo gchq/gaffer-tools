@@ -5143,7 +5143,7 @@ class GafferOperationsTest(unittest.TestCase):
             ''',
             g.SetVariable(
                 input="testVal",
-                variableName="testVarName",
+                variable_name="testVarName",
                 options={
                     "key": "value"
                 }
@@ -5160,7 +5160,7 @@ class GafferOperationsTest(unittest.TestCase):
             }
             ''',
             g.GetVariable(
-                variableName="testVarName",
+                variable_name="testVarName",
                 options={
                     "key": "value"
                 }
@@ -5178,7 +5178,7 @@ class GafferOperationsTest(unittest.TestCase):
             ''',
             g.GetVariables(
                 input="testVal",
-                variableNames=["testVarName", "testVarName2"],
+                variable_names=["testVarName", "testVarName2"],
                 options={
                     "key": "value"
                 }
