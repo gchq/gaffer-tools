@@ -709,6 +709,25 @@ class ToFreqMap(AbstractFunction):
     def to_json(self):
         return super().to_json()
 
+
+class FreqMapPredicator(AbstractFunction):
+    CLASS = "uk.gov.gchq.gaffer.types.function.FreqMapPredicator"
+
+    def __init__(self, predicate=None):
+        super().__init__(_class_name=self.CLASS)
+
+        if not isinstance(predicate, pred.Predicate):
+            self.predicate = JsonConverter.from_json(predicate, pred.Predicate)
+        else:
+            self.predicate = predicate
+    
+    def to_json(self):
+        predicate_json = super().to_json()
+        if self.predicate is not None:
+            predicate_json['predicate'] = self.predicate.to_json()
+
+        return predicate_json
+
 def function_context_converter(obj):
     if 'class' in obj:
         function = dict(obj)
@@ -733,6 +752,7 @@ def function_context_converter(obj):
         projection=obj.get('projection')
     )
 
+        
 
 def function_converter(obj):
     if isinstance(obj, dict):
