@@ -247,6 +247,14 @@ class GafferFunctionsTest(unittest.TestCase):
         [
             '''
             {
+                "class": "uk.gov.gchq.gaffer.data.generator.JsonToElementGenerator"
+            }
+            ''',
+            g.JsonToElementGenerator()
+        ],
+        [
+            '''
+            {
               "class" : "uk.gov.gchq.gaffer.types.function.FreqMapExtractor",
               "key" : "key1"
             }
@@ -402,6 +410,22 @@ class GafferFunctionsTest(unittest.TestCase):
             }
             ''',
             g.func.ToFreqMap()
+        ],
+        [
+            '''
+            {
+                "class": "uk.gov.gchq.gaffer.types.function.FreqMapPredicator",
+                "predicate": {
+                    "class": "uk.gov.gchq.koryphe.impl.predicate.IsA",
+                    "type": "java.lang.String"
+                }
+            }
+            ''',
+            g.FreqMapPredicator(
+                predicate=g.IsA(
+                    type="java.lang.String"
+                )
+            )
         ]
     ]
 
