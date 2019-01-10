@@ -617,7 +617,6 @@ class CsvGenerator(AbstractFunction):
 
         return function
 
-
 class FreqMapExtractor(AbstractFunction):
     CLASS = 'uk.gov.gchq.gaffer.types.function.FreqMapExtractor'
 
@@ -655,6 +654,13 @@ class ElementGenerator(Function):
         super().__init__(class_name=class_name, fields=fields)
 
 
+class JsonToElementGenerator(ElementGenerator):
+    CLASS = "uk.gov.gchq.gaffer.data.generator.JsonToElementGenerator"
+
+    def __init__(self):
+        super().__init__(class_name=self.CLASS)
+    
+
 class CallMethod(AbstractFunction):
     CLASS = 'uk.gov.gchq.koryphe.impl.function.CallMethod'
 
@@ -666,6 +672,7 @@ class CallMethod(AbstractFunction):
         function_json = super().to_json()
         function_json['method'] = self.method
         return function_json
+
 
 
 class If(AbstractFunction):
