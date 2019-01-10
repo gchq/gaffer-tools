@@ -419,6 +419,7 @@ class GafferFunctionsTest(unittest.TestCase):
                 )
             )
         ]
+    ]
 
     def test_examples(self):
         for example in self.examples:
