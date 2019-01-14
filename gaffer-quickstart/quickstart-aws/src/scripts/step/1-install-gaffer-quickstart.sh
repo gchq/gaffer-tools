@@ -144,4 +144,6 @@ echo -e "UI_CONFIG=${UI_CONFIG}" >> $ENV_FILE
 mkdir ${HOME}/example
 aws s3 cp $S3_BUCKET/gaffer-quickstart/example/ $HOME/example/ --recursive
 
+hadoop fs -put /home/hadoop/example/data.csv example_data.csv
+
 

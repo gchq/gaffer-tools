@@ -34,6 +34,15 @@ echo "gaffer.graph.config=${graphconfig}" >> $CATALINA_HOME/conf/catalina.proper
 operationDeclarations="\ngaffer.store.operation.declarations=${REST_OPERATION_DECLARATIONS}\n"
 echo -e $operationDeclarations >> $GAFFER_REST_STOREPROPERTIES
 
+#add spark configs
+sparkMaster="\nspark.master=${SPARK_MASTER}\n"
+echo -e $sparkMaster >> $GAFFER_REST_STOREPROPERTIES
+
+sparkLoaderJar="\nspark.loader.jar=${SPARK_LOADER_JAR}\n"
+echo -e $sparkLoaderJar >> $GAFFER_REST_STOREPROPERTIES
+
+sparkHome="\nspark.home=${SPARK_HOME}\n"
+echo -e $sparkHome >> $GAFFER_REST_STOREPROPERTIES
 
 
 #ship the war files for the ui and rest
@@ -55,6 +64,6 @@ cd $CATALINA_HOME/bin
 sleep 7
 
 #set the ui layout configs
-cp $$UI_CONFIG $CATALINA_HOME/webapps/ui/config/config.json
+cp $UI_CONFIG $CATALINA_HOME/webapps/ui/config/config.json
 
 cd $homeDir

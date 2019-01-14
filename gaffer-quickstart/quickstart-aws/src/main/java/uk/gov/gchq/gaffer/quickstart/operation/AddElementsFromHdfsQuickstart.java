@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package java.uk.gov.gchq.gaffer.quickstart.operation;
+package uk.gov.gchq.gaffer.quickstart.operation;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.apache.commons.lang3.exception.CloneFailedException;

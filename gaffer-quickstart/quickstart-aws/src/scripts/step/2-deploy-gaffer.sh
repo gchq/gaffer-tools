@@ -39,17 +39,17 @@ sudo sed -ie 's/\"gaffer.deploy.hdfs.jars\": \"hdfs:\/\/\/user\/${USER}\/gaffer-
 
 #add operations declarations to store properties
 operationDeclarations="\ngaffer.store.operation.declarations=${STORE_OPERATION_DECLARATIONS}\n"
-echo -e $operationDeclarations >> $$GAFFER_STOREPROPERTIES
+echo -e $operationDeclarations >> $GAFFER_STOREPROPERTIES
 
 #add spark configs
 sparkMaster="\nspark.master=${SPARK_MASTER}\n"
-echo -e $sparkMaster >> $$GAFFER_STOREPROPERTIES
+echo -e $sparkMaster >> $GAFFER_STOREPROPERTIES
 
 sparkLoaderJar="\nspark.loader.jar=${SPARK_LOADER_JAR}\n"
-echo -e $sparkLoaderJar >> $$GAFFER_STOREPROPERTIES
+echo -e $sparkLoaderJar >> $GAFFER_STOREPROPERTIES
 
 sparkHome="\nspark.home=${SPARK_HOME}\n"
-echo -e $sparkHome >> $$GAFFER_STOREPROPERTIES
+echo -e $sparkHome >> $GAFFER_STOREPROPERTIES
 
 
 #install gaffer

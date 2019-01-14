@@ -1,9 +1,15 @@
 {
   "operations": [
     {
-      "operation": "java.uk.gov.gchq.gaffer.quickstart.operation.AddElementsFromHdfsQuickstart",
+      "operation": "uk.gov.gchq.gaffer.quickstart.operation.AddElementsFromHdfsQuickstart",
       "handler": {
-        "class": "java.uk.gov.gchq.gaffer.quickstart.operation.handler.AddElementsFromHdfsQuickstartHandler"
+        "class": "uk.gov.gchq.gaffer.quickstart.operation.handler.AddElementsFromHdfsQuickstartHandler"
+      }
+    },
+    {
+      "operation": "uk.gov.gchq.gaffer.quickstart.operation.AddElementsFromCsv",
+      "handler": {
+        "class": "uk.gov.gchq.gaffer.quickstart.operation.handler.AddElementsFromCsvHandler"
       }
     }
   ]

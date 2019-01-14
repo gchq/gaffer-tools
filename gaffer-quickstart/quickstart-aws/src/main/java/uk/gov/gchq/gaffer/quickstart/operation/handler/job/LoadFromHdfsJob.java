@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package java.uk.gov.gchq.gaffer.quickstart.operation.handler.job;
+package uk.gov.gchq.gaffer.quickstart.operation.handler.job;
 
 import uk.gov.gchq.gaffer.graph.Graph;
 import uk.gov.gchq.gaffer.operation.OperationException;
@@ -23,7 +23,7 @@ import uk.gov.gchq.gaffer.user.User;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.uk.gov.gchq.gaffer.quickstart.operation.AddElementsFromHdfsQuickstart;
+import uk.gov.gchq.gaffer.quickstart.operation.AddElementsFromHdfsQuickstart;
 
 public class LoadFromHdfsJob {
 

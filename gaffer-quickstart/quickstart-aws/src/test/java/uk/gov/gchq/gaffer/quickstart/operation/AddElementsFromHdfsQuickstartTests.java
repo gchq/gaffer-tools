@@ -27,7 +27,6 @@ import uk.gov.gchq.gaffer.user.User;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.uk.gov.gchq.gaffer.quickstart.operation.AddElementsFromHdfsQuickstart;
 
 public class AddElementsFromHdfsQuickstartTests {
 

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package java.uk.gov.gchq.gaffer.quickstart.operation.handler;
+package uk.gov.gchq.gaffer.quickstart.operation.handler;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.spark.launcher.SparkLauncher;
@@ -22,14 +22,14 @@ import uk.gov.gchq.gaffer.accumulostore.AccumuloStore;
 import uk.gov.gchq.gaffer.exception.SerialisationException;
 import uk.gov.gchq.gaffer.jsonserialisation.JSONSerialiser;
 import uk.gov.gchq.gaffer.operation.OperationException;
+import uk.gov.gchq.gaffer.quickstart.operation.AddElementsFromHdfsQuickstart;
+import uk.gov.gchq.gaffer.quickstart.operation.handler.job.AddElementsFromQuickstartHandlerJob;
 import uk.gov.gchq.gaffer.store.Context;
 import uk.gov.gchq.gaffer.store.Store;
 import uk.gov.gchq.gaffer.store.operation.handler.OperationHandler;
 
 import java.io.IOException;
 import java.io.StringWriter;
-import java.uk.gov.gchq.gaffer.quickstart.operation.AddElementsFromHdfsQuickstart;
-import java.uk.gov.gchq.gaffer.quickstart.operation.handler.job.AddElementsFromQuickstartHandlerJob;
 import java.util.HashMap;
 import java.util.Map;
 

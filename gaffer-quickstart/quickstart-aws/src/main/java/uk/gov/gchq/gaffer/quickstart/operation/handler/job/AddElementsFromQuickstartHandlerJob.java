@@ -14,12 +14,10 @@
  * limitations under the License.
  */
 
-package java.uk.gov.gchq.gaffer.quickstart.operation.handler.job;
+package uk.gov.gchq.gaffer.quickstart.operation.handler.job;
 
 
 import org.apache.commons.io.FileUtils;
-import org.apache.hadoop.mapreduce.Job;
-import org.apache.hadoop.mapreduce.lib.input.TextInputFormat;
 import org.apache.log4j.Logger;
 import org.apache.spark.api.java.JavaRDD;
 import org.apache.spark.api.java.JavaSparkContext;
@@ -84,6 +82,16 @@ public class AddElementsFromQuickstartHandlerJob {
         AccumuloProperties properties = JSONSerialiser.deserialise(storePropertiesString, AccumuloProperties.class);
 
         AccumuloStore accumuloStore = new AccumuloStore();
+
+        if(properties.containsKey("gaffer.store.operation.declarations")){
+            String operationDeclarationPaths = properties.getOperationDeclarationPaths();
+            System.out.println(operationDeclarationPaths);
+            String newPath = operationDeclarationPaths.replace(",disableOperations.json", "");
+            System.out.println(newPath);
+            properties.set("gaffer.store.operation.declarations", newPath);
+        }
+
+        System.out.println(new String(JSONSerialiser.serialise(properties)));
 
         try {
             accumuloStore.initialise(graphId, schema, properties);
