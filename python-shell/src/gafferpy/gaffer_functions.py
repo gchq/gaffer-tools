@@ -728,6 +728,34 @@ class FreqMapPredicator(AbstractFunction):
 
         return predicate_json
 
+
+class ToList(AbstractFunction):
+    CLASS = 'uk.gov.gchq.gaffer.types.function.ToList'
+
+    def __init__(self):
+        super().__init__(_class_name=self.CLASS)
+
+    def to_json(self):
+        return super().to_json()
+
+class ToSet(AbstractFunction):
+    CLASS = 'uk.gov.gchq.gaffer.types.function.ToSet'
+
+    def __init__(self):
+        super().__init__(_class_name=self.CLASS)
+
+    def to_json(self):
+        return super().to_json()
+
+class ToArray(AbstractFunction):
+    CLASS = 'uk.gov.gchq.gaffer.types.function.ToArray'
+
+    def __init__(self):
+        super().__init__(_class_name=self.CLASS)
+
+    def to_json(self):
+        return super().to_json()
+
 def function_context_converter(obj):
     if 'class' in obj:
         function = dict(obj)
