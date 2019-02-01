@@ -728,6 +728,29 @@ class FreqMapPredicator(AbstractFunction):
 
         return predicate_json
 
+class MapFilter(AbstractFunction):
+    CLASS = "uk.gov.gchq.koryphe.impl.function.MapFilter"    
+
+    def __init__(self, key_predicate=None, value_predicate=None, key_value_predicate=None):
+        super().__init__(_class_name=self.CLASS)
+        self.key_predicate = pred.predicate_converter(key_predicate) if key_predicate is not None else None 
+        self.value_predicate = pred.predicate_converter(value_predicate) if value_predicate is not None else None
+        self.key_value_predicate = pred.predicate_converter(key_value_predicate) if key_value_predicate is not None else None
+
+    def to_json(self):
+        predicate_json = super().to_json()
+
+        if self.key_predicate is not None:
+            predicate_json["keyPredicate"] = self.key_predicate.to_json()
+        if self.value_predicate is not None:
+            predicate_json["valuePredicate"] = self.value_predicate.to_json()
+        if self.key_value_predicate is not None:
+            predicate_json["keyValuePredicate"] = self.key_value_predicate.to_json()
+
+        return predicate_json
+        
+
+
 def function_context_converter(obj):
     if 'class' in obj:
         function = dict(obj)
