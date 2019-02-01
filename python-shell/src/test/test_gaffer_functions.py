@@ -463,6 +463,7 @@ class GafferFunctionsTest(unittest.TestCase):
             ''',
             g.func.IterableFilter(
                 predicate=g.IsA(type="java.lang.String")
+            )
         ],
         [
             '''
