@@ -727,7 +727,8 @@ class FreqMapPredicator(AbstractFunction):
             predicate_json['predicate'] = self.predicate.to_json()
 
         return predicate_json
-
+      
+      
 class MapFilter(AbstractFunction):
     CLASS = "uk.gov.gchq.koryphe.impl.function.MapFilter"    
 
@@ -748,9 +749,38 @@ class MapFilter(AbstractFunction):
             predicate_json["keyValuePredicate"] = self.key_value_predicate.to_json()
 
         return predicate_json
-        
 
+      
+class ToList(AbstractFunction):
+    CLASS = 'uk.gov.gchq.gaffer.types.function.ToList'
 
+    def __init__(self):
+        super().__init__(_class_name=self.CLASS)
+
+    def to_json(self):
+        return super().to_json()
+
+      
+class ToSet(AbstractFunction):
+    CLASS = 'uk.gov.gchq.gaffer.types.function.ToSet'
+
+    def __init__(self):
+        super().__init__(_class_name=self.CLASS)
+
+    def to_json(self):
+        return super().to_json()
+
+      
+class ToArray(AbstractFunction):
+    CLASS = 'uk.gov.gchq.gaffer.types.function.ToArray'
+
+    def __init__(self):
+        super().__init__(_class_name=self.CLASS)
+
+    def to_json(self):
+        return super().to_json()
+
+      
 def function_context_converter(obj):
     if 'class' in obj:
         function = dict(obj)
@@ -774,7 +804,6 @@ def function_context_converter(obj):
         function=function,
         projection=obj.get('projection')
     )
-
         
 
 def function_converter(obj):
