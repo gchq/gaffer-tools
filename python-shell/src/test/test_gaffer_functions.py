@@ -426,7 +426,22 @@ class GafferFunctionsTest(unittest.TestCase):
                     type="java.lang.String"
                 )
             )
+        ],
+        [
+            '''
+            {
+                "class": "uk.gov.gchq.koryphe.impl.function.IterableFilter",
+                "predicate": {
+                    "class": "uk.gov.gchq.koryphe.impl.predicate.IsA",
+                    "type": "java.lang.String"
+                }
+            }
+            ''',
+            g.func.IterableFilter(
+                predicate=g.IsA(type="java.lang.String")
+            )
         ]
+
     ]
 
     def test_examples(self):
