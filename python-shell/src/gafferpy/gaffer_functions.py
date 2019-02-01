@@ -727,7 +727,29 @@ class FreqMapPredicator(AbstractFunction):
             predicate_json['predicate'] = self.predicate.to_json()
 
         return predicate_json
+      
+      
+class MapFilter(AbstractFunction):
+    CLASS = "uk.gov.gchq.koryphe.impl.function.MapFilter"    
 
+    def __init__(self, key_predicate=None, value_predicate=None, key_value_predicate=None):
+        super().__init__(_class_name=self.CLASS)
+        self.key_predicate = pred.predicate_converter(key_predicate) if key_predicate is not None else None 
+        self.value_predicate = pred.predicate_converter(value_predicate) if value_predicate is not None else None
+        self.key_value_predicate = pred.predicate_converter(key_value_predicate) if key_value_predicate is not None else None
+
+    def to_json(self):
+        predicate_json = super().to_json()
+        if self.key_predicate is not None:
+            predicate_json["keyPredicate"] = self.key_predicate.to_json()
+        if self.value_predicate is not None:
+            predicate_json["valuePredicate"] = self.value_predicate.to_json()
+        if self.key_value_predicate is not None:
+            predicate_json["keyValuePredicate"] = self.key_value_predicate.to_json()
+            
+        return predicate_json
+
+      
 class IterableFilter(AbstractFunction):
     CLASS = "uk.gov.gchq.koryphe.impl.function.IterableFilter"
 
@@ -747,7 +769,7 @@ class IterableFilter(AbstractFunction):
 
         return predicate_json
 
-
+      
 class ToList(AbstractFunction):
     CLASS = 'uk.gov.gchq.gaffer.types.function.ToList'
 
@@ -758,6 +780,7 @@ class ToList(AbstractFunction):
         return super().to_json()
       
 
+      
 class ToSet(AbstractFunction):
     CLASS = 'uk.gov.gchq.gaffer.types.function.ToSet'
 
@@ -778,6 +801,7 @@ class ToArray(AbstractFunction):
         return super().to_json()
       
 
+      
 def function_context_converter(obj):
     if 'class' in obj:
         function = dict(obj)
@@ -801,7 +825,6 @@ def function_context_converter(obj):
         function=function,
         projection=obj.get('projection')
     )
-
         
 
 def function_converter(obj):

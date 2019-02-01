@@ -463,6 +463,71 @@ class GafferFunctionsTest(unittest.TestCase):
             ''',
             g.func.IterableFilter(
                 predicate=g.IsA(type="java.lang.String")
+        ],
+        [
+            '''
+            {
+                "class": "uk.gov.gchq.koryphe.impl.function.MapFilter"
+            }
+            ''',
+            g.func.MapFilter()
+        ],
+        [
+            '''
+            {
+                "class": "uk.gov.gchq.koryphe.impl.function.MapFilter",
+                "keyPredicate": {
+                    "class":"uk.gov.gchq.koryphe.impl.predicate.StringContains",
+                    "value":"someValue",
+                    "ignoreCase":false
+                }
+            }
+            ''',
+            g.func.MapFilter(
+                key_predicate=g.pred.StringContains(
+                    value="someValue",
+                    ignore_case=False
+                )
+            )
+        ],
+        [
+            '''
+            {
+                "class": "uk.gov.gchq.koryphe.impl.function.MapFilter",
+                "keyPredicate": {
+                    "class":"uk.gov.gchq.koryphe.impl.predicate.StringContains",
+                    "value":"someValue",
+                    "ignoreCase":false
+                },
+                "valuePredicate": {
+                    "class" : "uk.gov.gchq.koryphe.impl.predicate.IsMoreThan",
+                    "orEqualTo" : false,
+                    "value" : 0
+                }
+            }
+            ''',
+            g.func.MapFilter(
+                key_predicate=g.pred.StringContains(
+                    value="someValue",
+                    ignore_case=False
+                ),
+                value_predicate=g.pred.IsMoreThan(
+                    value=0,
+                    or_equal_to=False
+                )
+            )
+        ],
+        [
+            '''
+            {
+                "class": "uk.gov.gchq.koryphe.impl.function.MapFilter",
+                "keyValuePredicate": {
+                    "class": "uk.gov.gchq.koryphe.impl.predicate.AreEqual"
+                }
+            }
+            ''',
+            g.func.MapFilter(
+                key_value_predicate=g.pred.AreEqual()
             )
         ]
 
