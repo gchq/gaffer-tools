@@ -406,6 +406,30 @@ class GafferFunctionsTest(unittest.TestCase):
         [
             '''
             {
+                "class": "uk.gov.gchq.gaffer.types.function.ToArray"
+            }
+            ''',
+            g.func.ToArray()
+        ],
+        [
+            '''
+            {
+                "class": "uk.gov.gchq.gaffer.types.function.ToList"
+            }
+            ''',
+            g.func.ToList()
+        ],
+        [
+            '''
+            {
+                "class": "uk.gov.gchq.gaffer.types.function.ToSet"
+            }
+            ''',
+            g.func.ToSet()
+        ],
+        [
+            '''
+            {
                 "class": "uk.gov.gchq.gaffer.types.function.ToFreqMap"
             }
             ''',
