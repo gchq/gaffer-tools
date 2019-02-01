@@ -740,13 +740,32 @@ class MapFilter(AbstractFunction):
 
     def to_json(self):
         predicate_json = super().to_json()
-
         if self.key_predicate is not None:
             predicate_json["keyPredicate"] = self.key_predicate.to_json()
         if self.value_predicate is not None:
             predicate_json["valuePredicate"] = self.value_predicate.to_json()
         if self.key_value_predicate is not None:
             predicate_json["keyValuePredicate"] = self.key_value_predicate.to_json()
+            
+        return predicate_json
+
+      
+class IterableFilter(AbstractFunction):
+    CLASS = "uk.gov.gchq.koryphe.impl.function.IterableFilter"
+
+    def __init__(self, predicate=None):
+        super().__init__(_class_name=self.CLASS)
+        
+        if not isinstance(predicate, pred.Predicate):
+            self.predicate = JsonConverter.from_json(predicate, pred.Predicate)
+        else:
+            self.predicate = predicate
+
+    def to_json(self):
+        predicate_json = super().to_json()
+
+        if self.predicate is not None:
+            predicate_json['predicate'] = self.predicate.to_json()
 
         return predicate_json
 
@@ -759,6 +778,7 @@ class ToList(AbstractFunction):
 
     def to_json(self):
         return super().to_json()
+      
 
       
 class ToSet(AbstractFunction):
@@ -779,6 +799,7 @@ class ToArray(AbstractFunction):
 
     def to_json(self):
         return super().to_json()
+      
 
       
 def function_context_converter(obj):
