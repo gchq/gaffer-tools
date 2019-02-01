@@ -771,7 +771,7 @@ class IterableFilter(AbstractFunction):
 
       
 class ToList(AbstractFunction):
-    CLASS = 'uk.gov.gchq.gaffer.types.function.ToList'
+    CLASS = 'uk.gov.gchq.koryphe.impl.function.ToList'
 
     def __init__(self):
         super().__init__(_class_name=self.CLASS)
@@ -782,7 +782,7 @@ class ToList(AbstractFunction):
 
       
 class ToSet(AbstractFunction):
-    CLASS = 'uk.gov.gchq.gaffer.types.function.ToSet'
+    CLASS = 'uk.gov.gchq.koryphe.impl.function.ToSet'
 
     def __init__(self):
         super().__init__(_class_name=self.CLASS)
@@ -792,7 +792,7 @@ class ToSet(AbstractFunction):
 
       
 class ToArray(AbstractFunction):
-    CLASS = 'uk.gov.gchq.gaffer.types.function.ToArray'
+    CLASS = 'uk.gov.gchq.koryphe.impl.function.ToArray'
 
     def __init__(self):
         super().__init__(_class_name=self.CLASS)

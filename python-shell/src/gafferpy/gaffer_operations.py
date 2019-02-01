@@ -1124,8 +1124,8 @@ class GetElements(GetOperation):
             seed_matching=seed_matching,
             options=options)
 
-class GetAsElementsFromEndpoint(Operation):
-    CLASS = "uk.gov.gchq.gaffer.operation.impl.get.GetAsElementsFromEndpoint"
+class GetFromEndpoint(Operation):
+    CLASS = "uk.gov.gchq.gaffer.operation.impl.get.GetFromEndpoint"
 
     def __init__(self, endpoint, element_generator, options=None):
         super().__init__(_class_name=self.CLASS, options=options)

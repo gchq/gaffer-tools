@@ -406,7 +406,7 @@ class GafferFunctionsTest(unittest.TestCase):
         [
             '''
             {
-                "class": "uk.gov.gchq.gaffer.types.function.ToArray"
+                "class": "uk.gov.gchq.koryphe.impl.function.ToArray"
             }
             ''',
             g.func.ToArray()
@@ -414,7 +414,7 @@ class GafferFunctionsTest(unittest.TestCase):
         [
             '''
             {
-                "class": "uk.gov.gchq.gaffer.types.function.ToList"
+                "class": "uk.gov.gchq.koryphe.impl.function.ToList"
             }
             ''',
             g.func.ToList()
@@ -422,7 +422,7 @@ class GafferFunctionsTest(unittest.TestCase):
         [
             '''
             {
-                "class": "uk.gov.gchq.gaffer.types.function.ToSet"
+                "class": "uk.gov.gchq.koryphe.impl.function.ToSet"
             }
             ''',
             g.func.ToSet()
