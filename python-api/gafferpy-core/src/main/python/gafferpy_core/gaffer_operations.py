@@ -2551,7 +2551,7 @@ class AddGraphWithHooks(Operation):
         return operation
 
 class AddElementsFromCsv(Operation):
-    CLASS = 'uk.gov.gchq.gaffer.operation.impl.add.AddElementsFromCsv'
+    CLASS = 'uk.gov.gchq.gaffer.quickstart.operation.AddElementsFromCsv'
 
     def __init__(self, filename=None, mappingsFile=None,
                  validate=None, skip_invalid_elements=None,
