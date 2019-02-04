@@ -60,7 +60,7 @@ public class GafferWebServices {
         Tomcat tomcat = new Tomcat();
         String gafferHome = System.getenv("GAFFER_HOME");
         tomcat.setBaseDir(gafferHome + "/gaffer_web_services_working");
-        tomcat.setPort(8080);
+        tomcat.setPort(8085);
 
         String restContextPath = "/rest";
         String restWarFilePath = restWarPath;

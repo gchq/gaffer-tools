@@ -57,6 +57,7 @@ public class AddElementsFromQuickstartHandlerJob {
     private String graphId;
 
     public static void main(String[] args) throws SerialisationException, OperationException {
+
         if(args.length != numArgs){
             throw new IllegalArgumentException("wrong number of args. I need " + numArgs + ", I got " + args.length);
         }
@@ -103,9 +104,9 @@ public class AddElementsFromQuickstartHandlerJob {
 
         SparkSession sparkSession = SparkContextUtil.getSparkSession(context, accumuloStore.getProperties())
                 .builder()
-                .config("spark.serializer", "org.apache.spark.serializer.KryoSerializer")
-                .config("spark.kryo.registrator", "uk.gov.gchq.gaffer.sparkaccumulo.operation.handler.CustomRegistrator")
-                .config("spark.driver.allowMultipleContexts", "true")
+//                .config("spark.serializer", "org.apache.spark.serializer.KryoSerializer")
+//                .config("spark.kryo.registrator", "uk.gov.gchq.gaffer.sparkaccumulo.operation.handler.CustomRegistrator")
+//                .config("spark.driver.allowMultipleContexts", "true")
                 .getOrCreate();
 
         JavaSparkContext sc = JavaSparkContext.fromSparkContext(sparkSession.sparkContext());

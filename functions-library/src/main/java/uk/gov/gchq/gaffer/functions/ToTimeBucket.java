@@ -21,7 +21,8 @@ import uk.gov.gchq.koryphe.function.KorypheFunction;
 
 public class ToTimeBucket extends KorypheFunction<Long, Long> {
 
-    private String bucket = "HOUR";
+    private String bucket = null;
+    private Long millisCorrection = 1L;
 
     public String getBucket() {
         return bucket;
@@ -31,8 +32,16 @@ public class ToTimeBucket extends KorypheFunction<Long, Long> {
         this.bucket = bucket;
     }
 
+    public Long getMillisCorrection() {
+        return millisCorrection;
+    }
+
+    public void setMillisCorrection(Long millisCorrection) {
+        this.millisCorrection = millisCorrection;
+    }
+
     @Override
     public Long apply(Long time) {
-        return CommonTimeUtil.timeToBucket(time, CommonTimeUtil.TimeBucket.valueOf(bucket));
+        return CommonTimeUtil.timeToBucket(time*millisCorrection, CommonTimeUtil.TimeBucket.valueOf(bucket));
     }
 }

@@ -24,6 +24,8 @@ import uk.gov.gchq.gaffer.jsonserialisation.JSONSerialiser;
 import uk.gov.gchq.gaffer.operation.OperationException;
 import uk.gov.gchq.gaffer.quickstart.operation.AddElementsFromHdfsQuickstart;
 import uk.gov.gchq.gaffer.quickstart.operation.handler.job.AddElementsFromQuickstartHandlerJob;
+import uk.gov.gchq.gaffer.quickstart.operation.handler.job.JobRunner;
+import uk.gov.gchq.gaffer.quickstart.operation.handler.job.LoadFromHdfsJob;
 import uk.gov.gchq.gaffer.store.Context;
 import uk.gov.gchq.gaffer.store.Store;
 import uk.gov.gchq.gaffer.store.operation.handler.OperationHandler;
@@ -47,6 +49,11 @@ public class AddElementsFromHdfsQuickstartHandler implements OperationHandler<Ad
     }
 
     private void doOperation(AddElementsFromHdfsQuickstart operation, Context context, AccumuloStore accumuloStore) throws OperationException {
+
+
+//        System.out.println("using hardcoded version");
+//
+//        JobRunner.main(new String[]{});
 
         String schemaString = null;
         String userString = null;
@@ -84,19 +91,21 @@ public class AddElementsFromHdfsQuickstartHandler implements OperationHandler<Ad
             Process sparkLauncherProcess = new SparkLauncher(env)
                     .setAppName(APP_NAME)
                     .setMaster(sparkMaster)
-                    .setMainClass(AddElementsFromQuickstartHandlerJob.class.getCanonicalName())
+//                    .setMainClass(AddElementsFromQuickstartHandlerJob.class.getCanonicalName())
+                    .setMainClass(LoadFromHdfsJob.class.getCanonicalName())
                     .setAppResource(jarPath)
                     .setSparkHome(sparkHome)
                     .addAppArgs(
                             operation.getDataPath(),
                             operation.getElementGeneratorConfig(),
                             operation.getFailurePath(),
-                            operation.getOutputPath(),
-                            schemaString,
-                            userString,
-                            storePropertiesString,
-                            graphId
-                    ).launch();
+                            operation.getOutputPath()
+//                            schemaString,
+//                            userString,
+//                            storePropertiesString,
+//                            graphId
+                    )
+                    .launch();
 
             StringWriter inputStreamWriter = new StringWriter();
             StringWriter errorStreamWriter = new StringWriter();
@@ -107,9 +116,6 @@ public class AddElementsFromHdfsQuickstartHandler implements OperationHandler<Ad
 
             System.out.println(inputStream);
             System.out.println(errorStream);
-
-
-
 
         } catch (IOException e) {
             throw new OperationException("cannot launch job " + jobMainClass + " from " + jarPath);
