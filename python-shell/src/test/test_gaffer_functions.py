@@ -1,5 +1,5 @@
 #
-# Copyright 2016-2018 Crown Copyright
+# Copyright 2016-2019 Crown Copyright
 #
 # Licensed under the Apache License, Version 2.0 (the 'License');
 # you may not use this file except in compliance with the License.
@@ -406,6 +406,30 @@ class GafferFunctionsTest(unittest.TestCase):
         [
             '''
             {
+                "class": "uk.gov.gchq.koryphe.impl.function.ToArray"
+            }
+            ''',
+            g.func.ToArray()
+        ],
+        [
+            '''
+            {
+                "class": "uk.gov.gchq.koryphe.impl.function.ToList"
+            }
+            ''',
+            g.func.ToList()
+        ],
+        [
+            '''
+            {
+                "class": "uk.gov.gchq.koryphe.impl.function.ToSet"
+            }
+            ''',
+            g.func.ToSet()
+        ],
+        [
+            '''
+            {
                 "class": "uk.gov.gchq.gaffer.types.function.ToFreqMap"
             }
             ''',
@@ -426,7 +450,88 @@ class GafferFunctionsTest(unittest.TestCase):
                     type="java.lang.String"
                 )
             )
+        ],
+        [
+            '''
+            {
+                "class": "uk.gov.gchq.koryphe.impl.function.IterableFilter",
+                "predicate": {
+                    "class": "uk.gov.gchq.koryphe.impl.predicate.IsA",
+                    "type": "java.lang.String"
+                }
+            }
+            ''',
+            g.func.IterableFilter(
+                predicate=g.IsA(type="java.lang.String")
+            )
+        ],
+        [
+            '''
+            {
+                "class": "uk.gov.gchq.koryphe.impl.function.MapFilter"
+            }
+            ''',
+            g.func.MapFilter()
+        ],
+        [
+            '''
+            {
+                "class": "uk.gov.gchq.koryphe.impl.function.MapFilter",
+                "keyPredicate": {
+                    "class":"uk.gov.gchq.koryphe.impl.predicate.StringContains",
+                    "value":"someValue",
+                    "ignoreCase":false
+                }
+            }
+            ''',
+            g.func.MapFilter(
+                key_predicate=g.pred.StringContains(
+                    value="someValue",
+                    ignore_case=False
+                )
+            )
+        ],
+        [
+            '''
+            {
+                "class": "uk.gov.gchq.koryphe.impl.function.MapFilter",
+                "keyPredicate": {
+                    "class":"uk.gov.gchq.koryphe.impl.predicate.StringContains",
+                    "value":"someValue",
+                    "ignoreCase":false
+                },
+                "valuePredicate": {
+                    "class" : "uk.gov.gchq.koryphe.impl.predicate.IsMoreThan",
+                    "orEqualTo" : false,
+                    "value" : 0
+                }
+            }
+            ''',
+            g.func.MapFilter(
+                key_predicate=g.pred.StringContains(
+                    value="someValue",
+                    ignore_case=False
+                ),
+                value_predicate=g.pred.IsMoreThan(
+                    value=0,
+                    or_equal_to=False
+                )
+            )
+        ],
+        [
+            '''
+            {
+                "class": "uk.gov.gchq.koryphe.impl.function.MapFilter",
+                "keyValuePredicate": {
+                    "class": "uk.gov.gchq.koryphe.impl.predicate.AreEqual"
+                }
+            }
+            ''',
+            g.func.MapFilter(
+                key_value_predicate=g.pred.AreEqual()
+            )
         ]
+
     ]
 
     def test_examples(self):
