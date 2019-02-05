@@ -530,6 +530,26 @@ class GafferPredicatesTest(unittest.TestCase):
             )
         ],
         [
+                    '''
+                    {
+                        "class" : "uk.gov.gchq.koryphe.impl.predicate.If",
+                        "condition" : true,
+                        "then" : {
+                            "class" : "uk.gov.gchq.koryphe.impl.predicate.IsLongerThan",
+                            "minLength" : 20,
+                            "orEqualTo" : true
+                        }
+                    }
+                    ''',
+                    g.pred.If(
+                        condition=True,
+                        then=g.IsLongerThan(
+                            min_length=20,
+                            or_equal_to=True
+                        )
+                    )
+        ],
+        [
             '''
              {"class":"uk.gov.gchq.koryphe.impl.predicate.range.InTimeRangeDual","start":"2017/01/01","end":"2017/02/01","timeUnit":"MICROSECOND","startFullyContained":true,"endFullyContained":true,"timeZone":"Etc/GMT+0"}
             ''',
