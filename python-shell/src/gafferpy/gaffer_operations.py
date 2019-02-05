@@ -1127,21 +1127,14 @@ class GetElements(GetOperation):
 class GetFromEndpoint(Operation):
     CLASS = "uk.gov.gchq.gaffer.operation.impl.get.GetFromEndpoint"
 
-    def __init__(self, endpoint, element_generator, options=None):
+    def __init__(self, endpoint, options=None):
         super().__init__(_class_name=self.CLASS, options=options)
         self.endpoint = endpoint
-        if element_generator is not None:
-            if not isinstance(element_generator, gaffer_functions.Function):
-                self.element_generator = JsonConverter.from_json(element_generator)
-            else:
-                self.element_generator = element_generator
 
     def to_json(self):
         operation_json = super().to_json()
         if self.endpoint is not None:
             operation_json['endpoint'] = self.endpoint
-        if self.element_generator is not None:
-            operation_json['elementGenerator'] = self.element_generator.to_json()
 
         return operation_json
 
