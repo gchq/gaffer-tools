@@ -800,6 +800,9 @@ class ElementJoinComparator(AbstractPredicate):
 
         
 def predicate_context_converter(obj):
+    if obj is None:
+        return None
+
     if 'class' in obj:
         predicate = dict(obj)
     else:
@@ -824,6 +827,9 @@ def predicate_context_converter(obj):
 
 
 def predicate_converter(obj):
+    if obj is None:
+        return None
+
     if isinstance(obj, dict):
         predicate = dict(obj)
     else:
