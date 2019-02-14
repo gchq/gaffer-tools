@@ -135,6 +135,57 @@ function OperationChainController(operationChain, config, loading, query, error,
         });
     }
 
+    vm.saveChain = function(ev) {
+        events.broadcast('onPreExecute', []);
+        if (!vm.canExecute()) {
+            return;
+        }
+
+        if (vm.operations.length === 0) {
+            error.handle("Unable to save operation chain with no operations");
+            return;
+        }
+
+        var chain = {
+            class: OPERATION_CHAIN_CLASS,
+            operations: []
+        }
+        for (var i in vm.operations) {
+            chain.operations.push(createOperationForQuery(vm.operations[i]));
+        }
+
+        var confirm = $mdDialog.confirm()
+            .title('Operation chain saved as named operation!')
+            .textContent('You can now see your saved operation in the list of operations')
+            .targetEvent(ev)
+            .ok('Ok')
+            .cancel('Cancel');
+
+        $mdDialog.show(confirm).then(function() {
+        }, function() {
+            // do nothing if they don't want to reset
+        });
+
+
+
+        // query.addOperation(angular.copy(chain));
+
+        // var finalOperation = vm.operations[vm.operations.length - 1];
+        // if (common.arrayContainsValue(finalOperation.selectedOperation.next, 'uk.gov.gchq.gaffer.operation.impl.Limit')) {
+        //     var options = finalOperation.fields ? operationOptions.extractOperationOptions(finalOperation.fields.options) : undefined;
+        //     chain.operations.push(operationService.createLimitOperation(options));
+        //     chain.operations.push(operationService.createDeduplicateOperation(options));
+        // }
+
+        // previousQueries.addQuery({
+        //     name: "Operation Chain",
+        //     lastRun: moment().format('HH:mm'),
+        //     operations: vm.operations
+        // });
+
+        // runQuery(chain.operations);
+    }
+
     /**
      * First checks fires an event so that all watchers may do last minute changes.
      * Once done, it does a final check to make sure the operation can execute. If so
