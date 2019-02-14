@@ -7,7 +7,6 @@
                 <textarea ng-required="ctrl.isRequired(field)"
                           type="{{field.type}}"
                           id="{{ctrl.name}}-{{field.label}}-ta"
-                          md-select-on-focus
                           rows="2"
                           ng-model="ctrl.param.parts[field.key]"></textarea>
             </md-input-container>
@@ -43,7 +42,6 @@
                 <input ng-required="ctrl.isRequired(field)"
                        type="{{field.type}}"
                        id="{{ctrl.name}}-{{field.label}}"
-                       md-select-on-focus
                        ng-model="ctrl.param.parts[field.key]">
             </md-input-container>
         </div>
