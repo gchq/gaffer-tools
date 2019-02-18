@@ -33,6 +33,7 @@ function OperationChainController(operationChain, config, loading, query, error,
     vm.operations = operationChain.getOperationChain();
 
     var NAMED_VIEW_CLASS = "uk.gov.gchq.gaffer.data.elementdefinition.view.NamedView";
+    var NAMED_OPERATION_CLASS = "uk.gov.gchq.gaffer.named.NamedOperation";
     var OPERATION_CHAIN_CLASS = "uk.gov.gchq.gaffer.operation.OperationChain";
     var ENTITY_SEED_CLASS = "uk.gov.gchq.gaffer.operation.data.EntitySeed";
     var PAIR_ARRAY_CLASS = "uk.gov.gchq.gaffer.commonutil.pair.Pair<uk.gov.gchq.gaffer.data.element.id.ElementId,uk.gov.gchq.gaffer.data.element.id.ElementId>[]";
@@ -108,7 +109,6 @@ function OperationChainController(operationChain, config, loading, query, error,
             chain.operations.push(operationService.createDeduplicateOperation(options));
         }
 
-        
         previousQueries.addQuery({
             name: "Operation Chain",
             lastRun: moment().format('HH:mm'),
@@ -146,13 +146,66 @@ function OperationChainController(operationChain, config, loading, query, error,
             return;
         }
 
-        var chain = {
-            class: OPERATION_CHAIN_CLASS,
-            operations: []
+        // var chain = {
+        //     class: OPERATION_CHAIN_CLASS,
+        //     operations: []
+        // }
+        // for (var i in vm.operations) {
+        //     chain.operations.push(createOperationForQuery(vm.operations[i]));
+        // }
+
+        var operations = [];
+
+        // var obj = {
+        //     name: "test",
+        //     desc: "Some description",
+        //     rel: []
+        // }
+        
+        // Offices.push(obj);
+
+        // Offices[0].rel.push(anotherObj)
+
+        // var namedOperation = {
+        //     class: NAMED_OPERATION_CLASS,
+        //     operationName: "test named operation",
+        //     operations: vm.operations,
+        //     description: 'test description',
+        //     namedOp: true,
+        //     parameters: [],
+        // }
+
+        addNamedOperationOperation = {
+            operationName: "test named operation",
+            operations: vm.operations,
+            description: 'test description',
+            parameters: [],
+            options: [],
+            score: 2
         }
-        for (var i in vm.operations) {
-            chain.operations.push(createOperationForQuery(vm.operations[i]));
+
+        var parameter1 = {
+            value: 50,
+            defaultValue: 30,
+            valueClass: "Integer",
+            parts: {},
         }
+
+        addNamedOperationOperation.parameters.push(parameter1)
+
+        operations.push(addNamedOperationOperation)
+             
+        //operationService.executeQuery(namedOperations)
+
+        query.executeQuery(
+            {
+                class: OPERATION_CHAIN_CLASS,
+                operations: operations
+            },
+            function(data) {
+                submitResults(data);
+            }
+        );
 
         var confirm = $mdDialog.confirm()
             .title('Operation chain saved as named operation!')
@@ -166,24 +219,6 @@ function OperationChainController(operationChain, config, loading, query, error,
             // do nothing if they don't want to reset
         });
 
-
-
-        // query.addOperation(angular.copy(chain));
-
-        // var finalOperation = vm.operations[vm.operations.length - 1];
-        // if (common.arrayContainsValue(finalOperation.selectedOperation.next, 'uk.gov.gchq.gaffer.operation.impl.Limit')) {
-        //     var options = finalOperation.fields ? operationOptions.extractOperationOptions(finalOperation.fields.options) : undefined;
-        //     chain.operations.push(operationService.createLimitOperation(options));
-        //     chain.operations.push(operationService.createDeduplicateOperation(options));
-        // }
-
-        // previousQueries.addQuery({
-        //     name: "Operation Chain",
-        //     lastRun: moment().format('HH:mm'),
-        //     operations: vm.operations
-        // });
-
-        // runQuery(chain.operations);
     }
 
     /**
