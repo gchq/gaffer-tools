@@ -146,34 +146,7 @@ function OperationChainController(operationChain, config, loading, query, error,
             return;
         }
 
-        // var chain = {
-        //     class: OPERATION_CHAIN_CLASS,
-        //     operations: []
-        // }
-        // for (var i in vm.operations) {
-        //     chain.operations.push(createOperationForQuery(vm.operations[i]));
-        // }
-
         var operations = [];
-
-        // var obj = {
-        //     name: "test",
-        //     desc: "Some description",
-        //     rel: []
-        // }
-        
-        // Offices.push(obj);
-
-        // Offices[0].rel.push(anotherObj)
-
-        // var namedOperation = {
-        //     class: NAMED_OPERATION_CLASS,
-        //     operationName: "test named operation",
-        //     operations: vm.operations,
-        //     description: 'test description',
-        //     namedOp: true,
-        //     parameters: [],
-        // }
 
         addNamedOperationOperation = {
             operationName: "test named operation",
@@ -195,8 +168,6 @@ function OperationChainController(operationChain, config, loading, query, error,
 
         operations.push(addNamedOperationOperation)
              
-        //operationService.executeQuery(namedOperations)
-
         query.executeQuery(
             {
                 class: OPERATION_CHAIN_CLASS,
