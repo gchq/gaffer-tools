@@ -20,7 +20,25 @@
         "width": 100,
         "border-width": 3
       }
+    },
+  "style": {
+    "edges": {
+      "Event": {
+        "line-color": "#b70707",
+        "target-arrow-color": "#b70707",
+        "text-outline-color": "#b70707"
+      }
+    },
+    "vertexTypes": {
+      "emitter": {
+        "style": {
+          "background-color": "#ffffff",
+          "background-image": "app/img/material-icons/settings_input_antenna.svg",
+          "text-valign": "bottom"
+        }
+      }
     }
+  }
 },
   "types" : {
     "uk.gov.gchq.gaffer.time.RBMBackedTimestampSet" : {

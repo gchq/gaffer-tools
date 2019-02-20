@@ -14,6 +14,7 @@ fi
 SCHEMA=
 GRAPH_CONFIG=
 STORE_PROPERTIES=
+UICONFIG=
 UI_WAR=$GAFFER_HOME/lib/quickstart-ui-${VERSION}.war
 REST_WAR=$GAFFER_HOME/lib/quickstart-rest-${VERSION}.war
 
@@ -34,6 +35,10 @@ case $key in
     ;;
     -store)
     STORE_PROPERTIES="$2"
+    shift # past argument
+    ;;
+    -uiconfig)
+    UICONFIG="$2"
     shift # past argument
     ;;
     *)
@@ -90,5 +95,7 @@ done
 
 echo -e "\n"
 
-cp $GAFFER_HOME/conf/ui-config.json $GAFFER_HOME/gaffer_web_services_working/ui/config/config.json
+echo -e "setting ui config to ${UICONFIG}"
+
+cp $UICONFIG $GAFFER_HOME/gaffer_web_services_working/ui/config/config.json
 cp $GAFFER_HOME/conf/icons/* $GAFFER_HOME/gaffer_web_services_working/ui/app/img/

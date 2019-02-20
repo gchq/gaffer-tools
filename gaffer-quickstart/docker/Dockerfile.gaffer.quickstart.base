@@ -1,0 +1,28 @@
+FROM centos:7
+
+RUN yum update -y && \
+yum install -y wget && \
+yum install -y java-1.8.0-openjdk java-1.8.0-openjdk-devel && \
+yum clean all
+
+ENV HOME /root
+
+WORKDIR /root
+
+CMD ["bash"]
+
+WORKDIR /usr/gaffer
+
+COPY gaffer-quickstart.tar.gz gaffer-quickstart.tar.gz
+
+RUN tar -xvf gaffer-quickstart.tar.gz
+
+ENV GAFFER_HOME="/usr/gaffer/gaffer-quickstart/"
+
+#hack for weird classpathness
+RUN rm -rf $GAFFER_HOME/lib/servlet-api-2.5.jar
+
+ENV SCHEMA=$GAFFER_HOME/example/schema.json
+ENV STOREPROPERTIES=$GAFFER_HOME/miniaccumulo/store.properties
+ENV GRAPHCONFIG=$GAFFER_HOME/example/graphconfig.json
+ENV UICONFIG=$GAFFER_HOME/example/ui-config.json

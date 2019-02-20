@@ -171,7 +171,7 @@ angular.module('app').controller('VisualisationDialogController', ['$scope', 'co
                 labels.push(key);
                 values.push(aggregatedFrequencyMap[key]);
             }
-            
+
             $scope.labels = labels;
             $scope.chartData = values;
             $scope.series = undefined;
@@ -199,7 +199,7 @@ angular.module('app').controller('VisualisationDialogController', ['$scope', 'co
                 }
             })
 
-            // series are then given by Object.keys 
+            // series are then given by Object.keys
             $scope.series = Object.keys(groupedFrequencyMaps);
             var uniqueLabels = [];
 
@@ -224,7 +224,7 @@ angular.module('app').controller('VisualisationDialogController', ['$scope', 'co
 
                 data.push(flatMapValues);
             }
-            
+
             // set the data values
             $scope.chartData = data;
         }
@@ -278,7 +278,7 @@ angular.module('app').controller('VisualisationDialogController', ['$scope', 'co
 
         if  (seriesProperty === undefined || seriesProperty === null) {
             Array.apply(data, Array(uniqueLabels.length)).map(function() {}); // creates empty array with values all set to undefined
-            
+
             $scope.data.forEach(function(row) {
                 var labelIndex = uniqueLabels.indexOf(row[labelsProperty]);
                 if (labelIndex !== -1) {
@@ -304,8 +304,8 @@ angular.module('app').controller('VisualisationDialogController', ['$scope', 'co
                         }
                         data[seriesIndex][propertyIndex] = value;
                     }
-                    
-                    
+
+
                 }
             });
         }
@@ -314,7 +314,7 @@ angular.module('app').controller('VisualisationDialogController', ['$scope', 'co
         $scope.series = uniqueSeries;
         $scope.chartData = data;
 
-        
+
     }
 
     var extractChartOptions = function(chartSettings) {
@@ -330,7 +330,7 @@ angular.module('app').controller('VisualisationDialogController', ['$scope', 'co
         }
 
         options.title = {
-            display: true 
+            display: true
         }
 
         var chartFields = Object.keys(chartSettings.fields);
@@ -342,12 +342,12 @@ angular.module('app').controller('VisualisationDialogController', ['$scope', 'co
                     break
                 }
             case 'line' :
-            case 'horizontalBar':  
+            case 'horizontalBar':
                 options.title.text = chartSettings.fields[chartFields[0]].value  + ' vs ' + chartSettings.fields[chartFields[1]].value;
                 break;
-            default: 
+            default:
                 options.title.text = chartSettings.fields[chartFields[0]].value + ' per ' + chartSettings.fields[chartFields[1]].value;
-        
+
         }
 
         for (var field in chartSettings.fields) {
@@ -367,7 +367,7 @@ angular.module('app').controller('VisualisationDialogController', ['$scope', 'co
                 }
             }
         }
-        
+
         return options;
     }
 
@@ -380,7 +380,7 @@ angular.module('app').controller('VisualisationDialogController', ['$scope', 'co
             } else {
                 extractDefaultChartValues(chartSettings);
             }
-    
+
             $scope.options = extractChartOptions(chartSettings);
         } catch(e) {
             error.handle('Unable to create chart with parameters specified');
