@@ -148,7 +148,7 @@ function TableController(schema, results, table, events, common, types, time, cs
         resultsByType = {};
         vm.data.tooltips = {};
 
-        processElements("Edge", "edges", ["result type", "GROUP", "SOURCE", "DESTINATION", "DIRECTED"], ids, groupByProperties, properties, resultsData);
+        processElements("Edge", "edges", ["result type", "GROUP", "SOURCE", "DESTINATION", "DIRECTED", "matchedVertex"], ids, groupByProperties, properties, resultsData);
         processElements("Entity", "entities", ["result type", "GROUP", "SOURCE"], ids, groupByProperties, properties, resultsData);
         processOtherTypes(ids, properties, resultsData);
 
@@ -193,6 +193,7 @@ function TableController(schema, results, table, events, common, types, time, cs
                         }
                     }
                     result['result type'] = type;
+                    result['matchedVertex'] = element.matchedVertex;
 
                     if(element.properties) {
                         if(!(element.group in resultsByType[type])) {
