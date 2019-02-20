@@ -40,9 +40,6 @@ public class GetPythonRDDConfiguration implements Output<Configuration>, GraphFi
     private View view;
     private DirectedType directedType;
 
-    public GetPythonRDDConfiguration() {
-    }
-
     @Override
     public Map<String, String> getOptions() {
         return options;

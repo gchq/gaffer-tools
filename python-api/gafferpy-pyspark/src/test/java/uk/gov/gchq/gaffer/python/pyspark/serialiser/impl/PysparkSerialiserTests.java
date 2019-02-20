@@ -16,7 +16,6 @@
 
 package uk.gov.gchq.gaffer.python.pyspark.serialiser.impl;
 
-import org.apache.commons.io.FileUtils;
 import org.junit.Test;
 import uk.gov.gchq.gaffer.data.element.Edge;
 import uk.gov.gchq.gaffer.data.element.Entity;
@@ -25,11 +24,7 @@ import uk.gov.gchq.gaffer.exception.SerialisationException;
 import uk.gov.gchq.gaffer.jsonserialisation.JSONSerialiser;
 import uk.gov.gchq.gaffer.python.util.Constants;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
@@ -62,25 +57,26 @@ public class PysparkSerialiserTests {
                 .build();
 
         Map<String, Object> edgeResult = new HashMap<>();
-        edgeResult.put(Constants.SOURCE, source);
-        edgeResult.put(Constants.DESTINATION, dest);
-        edgeResult.put(Constants.DIRECTED, directed);
-        edgeResult.put(Constants.GROUP, edgeGroup);
-        edgeResult.put(Constants.TYPE, "edge");
+        edgeResult.put(Constants.SOURCE.getValue(), source);
+        edgeResult.put(Constants.DESTINATION.getValue(), dest);
+        edgeResult.put(Constants.DIRECTED.getValue(), directed);
+        edgeResult.put(Constants.GROUP.getValue(), edgeGroup);
+        edgeResult.put(Constants.TYPE.getValue(), "EDGE");
         Map<String, Object> properties = new HashMap<>();
         properties.put(propertyName, propertyValue);
-        edgeResult.put(Constants.PROPERTIES, properties);
+        edgeResult.put(Constants.PROPERTIES.getValue(), properties);
 
         Map<String, Object> entityResult = new HashMap<>();
-        entityResult.put(Constants.TYPE, "entity");
-        entityResult.put(Constants.VERTEX, source);
-        entityResult.put(Constants.GROUP, entityGroup);
-        entityResult.put(Constants.PROPERTIES, properties);
+        entityResult.put(Constants.TYPE.getValue(), "ENTITY");
+        entityResult.put(Constants.VERTEX.getValue(), source);
+        entityResult.put(Constants.GROUP.getValue(), entityGroup);
+        entityResult.put(Constants.PROPERTIES.getValue(), properties);
 
         PysparkElementMapSerialiser serialiser = new PysparkElementMapSerialiser();
 
-        assertEquals(edgeResult, serialiser.convert(edge));
-        assertEquals(entityResult, serialiser.convert(entity));
+
+        assertEquals(edgeResult.toString(), serialiser.convert(edge).toString());
+        assertEquals(entityResult.toString(), serialiser.convert(entity).toString());
 
     }
 
@@ -111,14 +107,14 @@ public class PysparkSerialiserTests {
 
         Map<String, Object> edgeResult = new HashMap<>();
         try {
-            edgeResult.put(Constants.JSON, new String(JSONSerialiser.serialise(edge)));
+            edgeResult.put(Constants.JSON.getValue(), new String(JSONSerialiser.serialise(edge)));
         } catch (SerialisationException e) {
             e.printStackTrace();
         }
 
         Map<String, Object> entityResult = new HashMap<>();
         try {
-            entityResult.put(Constants.JSON, new String(JSONSerialiser.serialise(entity)));
+            entityResult.put(Constants.JSON.getValue(), new String(JSONSerialiser.serialise(entity)));
         } catch (SerialisationException e) {
             e.printStackTrace();
         }

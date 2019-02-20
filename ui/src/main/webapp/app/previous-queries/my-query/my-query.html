@@ -1,0 +1,24 @@
+<md-card flex>
+    <md-card-header>
+        <md-card-avatar>
+            <md-icon md-svg-icon="query"></md-icon>
+        </md-card-avatar>
+        <md-card-header-text>
+            <span class="md-title">{{ctrl.model.name}}</span>
+            <span class="md-subhead">Last ran at: {{ctrl.model.lastRun}}</span>
+        </md-card-header-text>
+        <md-button class="md-primary md-icon-button" ng-click="ctrl.load()">
+            <md-icon md-svg-icon="open-in-new"></md-icon>
+            <md-tooltip>Load into operation chain builder</md-tooltip>
+        </md-button>
+    </md-card-header>
+    <md-list>
+        <md-subheader class="md-no-sticky">Operations</md-subheader>
+        <md-list-item class="md-2-line" ng-repeat="operation in ctrl.model.operations">
+            <div class="md-list-item-text">
+                <h3>{{operation.selectedOperation.name}}</h3>
+                <p>{{operation.selectedOperation.description}}</p>
+            </div>
+        </md-list-item>
+    </md-list>
+</md-card>

@@ -31,13 +31,11 @@ import static org.junit.Assert.assertEquals;
 
 public class PythonElementMapSerialiserTests {
 
-    String source = "source";
-    String dest = "dest";
-    String group = "Test";
-    boolean directed = true;
-    DirectedType directedType = DirectedType.DIRECTED;
-    Integer count = 1;
-    FreqMap map = new FreqMap();
+    private String source = "source";
+    private String group = "Test";
+    private DirectedType directedType = DirectedType.DIRECTED;
+    private Integer count = 1;
+    private FreqMap map = new FreqMap();
 
     @Before
     public void initialiseFreqMap(){
@@ -51,8 +49,8 @@ public class PythonElementMapSerialiserTests {
         Edge edge = new Edge.Builder()
                 .group("Test")
                 .source(source)
-                .dest(dest)
-                .directed(directed)
+                .dest("dest")
+                .directed(true)
                 .property("count", count)
                 .property("map", map)
                 .build();
@@ -61,12 +59,12 @@ public class PythonElementMapSerialiserTests {
         Map<String, Object> propertiesMap = new HashMap<>();
         propertiesMap.put("count", count);
         propertiesMap.put("map", map);
-        edgeMap.put(Constants.TYPE, Constants.EDGE);
-        edgeMap.put(Constants.GROUP, group);
-        edgeMap.put(Constants.SOURCE, source);
-        edgeMap.put(Constants.DESTINATION, dest);
-        edgeMap.put(Constants.DIRECTED, directedType);
-        edgeMap.put(Constants.PROPERTIES, propertiesMap);
+        edgeMap.put(Constants.TYPE.getValue(), Constants.EDGE);
+        edgeMap.put(Constants.GROUP.getValue(), group);
+        edgeMap.put(Constants.SOURCE.getValue(), source);
+        edgeMap.put(Constants.DESTINATION.getValue(), "dest");
+        edgeMap.put(Constants.DIRECTED.getValue(), directedType);
+        edgeMap.put(Constants.PROPERTIES.getValue(), propertiesMap);
 
         PythonElementMapSerialiser serialiser = new PythonElementMapSerialiser();
 
@@ -88,10 +86,10 @@ public class PythonElementMapSerialiserTests {
         Map<String, Object> propertiesMap = new HashMap<>();
         propertiesMap.put("count", count);
         propertiesMap.put("map", map);
-        entityMap.put(Constants.TYPE, Constants.ENTITY);
-        entityMap.put(Constants.GROUP, group);
-        entityMap.put(Constants.VERTEX, source);
-        entityMap.put(Constants.PROPERTIES, propertiesMap);
+        entityMap.put(Constants.TYPE.getValue(), Constants.ENTITY);
+        entityMap.put(Constants.GROUP.getValue(), group);
+        entityMap.put(Constants.VERTEX.getValue(), source);
+        entityMap.put(Constants.PROPERTIES.getValue(), propertiesMap);
 
         PythonElementMapSerialiser serialiser = new PythonElementMapSerialiser();
 

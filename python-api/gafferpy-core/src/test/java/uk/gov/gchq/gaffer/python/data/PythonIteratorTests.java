@@ -30,7 +30,7 @@ import static org.junit.Assert.assertEquals;
 
 public class PythonIteratorTests {
 
-    List<Edge> edgesList = null;
+    private List<Edge> edgesList = null;
 
     @Before
     public void getEdges(){

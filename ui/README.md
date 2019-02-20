@@ -26,6 +26,7 @@ UI
     - [Operations](#operations)
     - [Types](#types)
     - [Time](#time)
+    - [Operation options](#operation-options)
     - [Quick Query](#quick-query)
     - [Graph](#graph)
     - [Feedback](#feedback)
@@ -44,8 +45,6 @@ To build the war file along with all its dependencies then run the following com
 ' mvn clean install -Pquick'
 
 To deploy it to a server of your choice, take target/ui-[version].war and deploy as per the usual deployment process for your server.
-
-There is a settings page in the ui where you can temporarily change the REST API URL, alternatively you will need to edit the settings.js file to set the URL permanently.
 
 Alternatively there is a maven profile "standalone-ui" that you can use to start the UI in a standalone tomcat server.
 Note that in order to use the UI it will need to be connected separately to a Gaffer REST API.
@@ -569,6 +568,66 @@ To configure time properties, you need to provide an object which is keyed by th
   }
 }
 ```
+
+### Operation options
+
+Operations can contain options which can affect how the operation is handled. For example, when using a federated store,
+you can specify which graphId you wish to run an operation against.
+
+The UI allows you configure which of these options you make available to the user. In the past, this feature has been 
+available but was not formally documented.
+
+#### Old configuration
+```json
+{
+    "operationOptionKeys": {
+        "UI label": "key.to.be.sent.to.Gaffer"
+    }
+}
+```
+
+Now you can specify default values and whether to hide the option by default.
+
+#### New configuration
+```json
+{
+    "operationOptions": {
+        "visible": [
+            {
+                "key": "key.to.be.sent.to.Gaffer",
+                "label": "UI label",
+                "value": "The default value (optional)",
+                "multiple": false,
+                "autocomplete": {
+                    "options": [ "true", "false" ]
+                }
+            }
+        ],
+        "hidden": [
+            {
+                "key": "hidden.key",
+                "label": "hidden label"
+            }
+        ]
+    }
+}
+```
+
+If you add more options to the visible array, the options will be shown by default. If you add them to the hidden array, a 
+user will have to add it manually. Only the visible operation options will be added to the operation.
+
+The options themselves are objects with the following fields:
+
+| field name                 | type             | description
+|----------------------------|------------------|----------------------------------------------------------
+| key                        | string           | The operation option key which will be sent to the rest service
+| label                      | string           | The label which will summarise what the option is
+| multiple                   | boolean          | (optional) uses chips to create comma delimited strings - defaults to false
+| value                      | string or array  | (optional) The default value of this option. Use arrays when multiple is set to true
+| autocomplete               | object           | (optional) Configuration for autocompleting values - see below
+| autocomplete.options       | array            | Static array of string to use for autocompleting
+| autocomplete.asyncOptions  | operation        | operation to be executed to get the autocomplete values. Operation must return an iterable of strings
+
 
 
 ### Quick Query

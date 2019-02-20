@@ -1,5 +1,5 @@
 #
-# Copyright 2016-2018 Crown Copyright
+# Copyright 2016-2019 Crown Copyright
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -147,6 +147,27 @@ class UseMatchedVertex:
     EQUAL = 'EQUAL'
     OPPOSITE = 'OPPOSITE'
 
+
+class MatchKey:
+    LEFT = 'LEFT'
+    RIGHT = 'RIGHT'
+
+class ResultsWanted:
+    KEY_ONLY = 'KEY_ONLY'
+    RELATED_ONLY = 'RELATED_ONLY'
+    BOTH = 'BOTH'
+
+class MergeType:
+    NONE = 'NONE'
+    RELATED_ONLY = 'RELATED_ONLY'
+    BOTH = 'BOTH'
+
+class JoinType:
+    FULL = 'FULL'
+    FULL_INNER = 'FULL_INNER'
+    FULL_OUTER = 'FULL_OUTER'
+    OUTER = 'OUTER'
+    INNER = 'INNER'
 
 class ElementSeed(ToJson, ToCodeString):
     def __repr__(self):

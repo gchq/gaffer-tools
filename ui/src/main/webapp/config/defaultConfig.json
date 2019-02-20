@@ -3,7 +3,7 @@
     "loadNamedOperationsOnStartup": true
   },
   "quickQuery": {
-    "operation": {
+    "defaultOperation": {
       "class": "uk.gov.gchq.gaffer.operation.impl.get.GetElements",
       "input": [
           "${input}"

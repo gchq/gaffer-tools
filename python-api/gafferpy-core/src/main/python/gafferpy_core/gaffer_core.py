@@ -60,9 +60,9 @@ class ToJson:
 
 class ToCodeString:
     """
-   Enables implementations to return a string of the code used to construct the
-   python object.
-   """
+    Enables implementations to return a string of the code used to construct the
+    python object.
+    """
 
     @staticmethod
     def obj_to_code_string(obj, indent=''):

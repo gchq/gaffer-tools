@@ -20,11 +20,9 @@ import com.clearspring.analytics.stream.cardinality.HyperLogLogPlus;
 import org.junit.Before;
 import org.junit.Test;
 
-import scala.tools.nsc.backend.icode.analysis.CopyPropagation;
 import uk.gov.gchq.gaffer.commonutil.CommonTimeUtil;
 import uk.gov.gchq.gaffer.data.element.Edge;
 import uk.gov.gchq.gaffer.data.element.id.DirectedType;
-import uk.gov.gchq.gaffer.python.data.serialiser.custom.CustomPythonElementMapSerialiser;
 import uk.gov.gchq.gaffer.python.data.serialiser.impl.HyperLogLogPlusPythonSerialiser;
 import uk.gov.gchq.gaffer.python.data.serialiser.impl.RBMBackedTimestampSetPythonSerialiser;
 import uk.gov.gchq.gaffer.python.util.Constants;
@@ -38,14 +36,9 @@ import static org.junit.Assert.assertEquals;
 
 public class CustomPythonElementMapSerialiserTest {
 
-    String source = "A";
-    String dest = "B";
-    String edgeGroup = "Edge";
-    DirectedType directed = DirectedType.DIRECTED;
-    Integer count = 1;
-    HyperLogLogPlus hllp;
-    RBMBackedTimestampSet timestamps;
-    Long time;
+    private DirectedType directed = DirectedType.DIRECTED;
+    private HyperLogLogPlus hllp;
+    private RBMBackedTimestampSet timestamps;
 
     @Before
     public void setHllp(){
@@ -64,13 +57,17 @@ public class CustomPythonElementMapSerialiserTest {
 
     @Before
     public void setTimestamps(){
-        time = System.currentTimeMillis();
+        long time = System.currentTimeMillis();
         timestamps = new RBMBackedTimestampSet(CommonTimeUtil.TimeBucket.SECOND, Instant.ofEpochMilli(time));
     }
 
     @Test
     public void testSerialiser() {
 
+        String source = "A";
+        String dest = "B";
+        Integer count = 1;
+        String edgeGroup = "Edge";
         Edge edge = new Edge.Builder()
                 .source(source)
                 .dest(dest)
@@ -91,12 +88,12 @@ public class CustomPythonElementMapSerialiserTest {
         RBMBackedTimestampSetPythonSerialiser timestampSetPythonSerialiser = new RBMBackedTimestampSetPythonSerialiser();
         propertiesMap.put("timestamps", timestampSetPythonSerialiser.serialise(timestamps));
 
-        elementMap.put(Constants.PROPERTIES, propertiesMap);
-        elementMap.put(Constants.GROUP, edgeGroup);
-        elementMap.put(Constants.TYPE, Constants.EDGE);
-        elementMap.put(Constants.SOURCE, source);
-        elementMap.put(Constants.DESTINATION, dest);
-        elementMap.put(Constants.DIRECTED, directed);
+        elementMap.put(Constants.PROPERTIES.getValue(), propertiesMap);
+        elementMap.put(Constants.GROUP.getValue(), edgeGroup);
+        elementMap.put(Constants.TYPE.getValue(), Constants.EDGE);
+        elementMap.put(Constants.SOURCE.getValue(), source);
+        elementMap.put(Constants.DESTINATION.getValue(), dest);
+        elementMap.put(Constants.DIRECTED.getValue(), directed);
 
         CustomPythonElementMapSerialiser serialiser = new CustomPythonElementMapSerialiser();
 

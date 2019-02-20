@@ -1,7 +1,5 @@
 import pyspark.sql as sql
 
-
-
 def flattenElementDict(inputt, schema=None):
     elementDict = inputt[0]
     if schema == None:
@@ -16,17 +14,12 @@ def flattenElementDict(inputt, schema=None):
                 res[propName] = elementDict['properties'][propName]
     return res
 
-
-
-
 def mergeRowSchemasAsDict(rowSchemas):
     merged = {}
     for key in rowSchemas.keys():
         for entry in rowSchemas[key]:
             merged[entry] = None
     return merged
-
-
 
 def toRow(element,rowSchemas):
     mergedSchemasDict = mergeRowSchemasAsDict(rowSchemas)

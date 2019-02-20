@@ -52,7 +52,7 @@ import java.util.Map;
 
 public final class PythonGraph {
 
-    private Graph graph = null;
+    private Graph graph;
     private static final Logger LOGGER = LoggerFactory.getLogger(PythonGraph.class);
     private PythonSerialiserConfig pythonSerialisers = null;
 
@@ -73,25 +73,25 @@ public final class PythonGraph {
                     .build();
             storeProperties = StoreProperties.loadStoreProperties(new FileInputStream(new File(storePropertiesPath)));
         } catch (final FileNotFoundException | SchemaException e) {
-            e.printStackTrace();
+            LOGGER.debug(e.getMessage());
         }
         buildGraph(schema, config, storeProperties);
     }
 
     private void buildGraph(final Schema schema, final GraphConfig graphConfig, final StoreProperties storeProperties) {
 
-        if (schema == null | graphConfig == null | storeProperties == null) {
+        if (schema == null || graphConfig == null || storeProperties == null) {
             throw new IllegalStateException("schema, config or storeproperties hasn't worked");
         }
 
-        Graph graph = new Graph.Builder()
+        Graph mGraph = new Graph.Builder()
                 .addSchema(schema)
                 .config(graphConfig)
                 .storeProperties(storeProperties)
                 .build();
 
         setPythonSerialisers(storeProperties);
-        this.graph = graph;
+        this.setGraph(mGraph);
 
     }
 
@@ -99,16 +99,20 @@ public final class PythonGraph {
         return graph;
     }
 
+    private void setGraph(final Graph graph) {
+        this.graph = graph;
+    }
+
 
     public Object execute(final String opJson, final String userJson) {
 
         /*
-        TODO
+        TODO:
         fix this so that it's more like a registry of handlers and has more flexibility and extensibility
         there's a dependency here on hadoop configuration which is only really needed for the pyspark stuff
          */
-        LOGGER.debug("received operation : {}", opJson);
-        LOGGER.debug("received user : {}", userJson);
+        LOGGER.info("received operation : {}", opJson);
+        LOGGER.info("received user : {}", userJson);
 
         Operation operation = null;
         User user = null;
@@ -117,39 +121,38 @@ public final class PythonGraph {
             operation = JSONSerialiser.deserialise(opJson, Operation.class);
             user = JSONSerialiser.deserialise(userJson, User.class);
         } catch (final SerialisationException e) {
-            e.printStackTrace();
+            LOGGER.error(e.getMessage());
         }
 
         Object result = null;
 
         if (operation instanceof Output) {
 
-                LOGGER.debug("executing Output operation");
+            LOGGER.info("executing Output operation");
             try {
                 result = graph.execute((Output) operation, user);
             } catch (final OperationException e) {
-                e.printStackTrace();
+                LOGGER.error(e.getMessage());
             }
 
         } else if (operation instanceof Input) {
             try {
-                LOGGER.debug("executing Input operation");
-                graph.execute((Input) operation, user);
-            } catch (final OperationException e) {
-                LOGGER.debug("Input operation failed : {}", e.getMessage());
-                return new Integer(1);
-            }
-            result = new Integer(0);
-        } else {
-            try {
-                LOGGER.debug("executing operation " + operation.getClass().getCanonicalName());
+                LOGGER.info("executing Input operation");
                 graph.execute(operation, user);
             } catch (final OperationException e) {
-                LOGGER.debug("operation " + operation.getClass().getCanonicalName() + "failed : " + e.getMessage());
-                e.printStackTrace();
-                return new Integer(1);
+                LOGGER.error("Input operation failed : {}", e.getMessage());
+                return 1;
             }
-            return new Integer(0);
+            result = 0;
+        } else {
+            try {
+                LOGGER.info("executing operation {}", operation.getClass().getCanonicalName());
+                graph.execute(operation, user);
+            } catch (final OperationException e) {
+                LOGGER.error(String.format("operation %s failed: %s", operation.getClass().getCanonicalName(), e.getMessage()));
+                return 1;
+            }
+            return 0;
         }
 
         if (result != null) {
@@ -171,14 +174,14 @@ public final class PythonGraph {
     }
 
     private void setPythonSerialisers(final StoreProperties storeProperties) {
-        if (storeProperties.get(Constants.SERIALISATION_DECLARATIONS_PROPERTY_NAME) != null) {
-            String filePath = storeProperties.get(Constants.SERIALISATION_DECLARATIONS_PROPERTY_NAME);
+        if (storeProperties.get(Constants.SERIALISATION_DECLARATIONS_PROPERTY_NAME.getValue()) != null) {
+            String filePath = storeProperties.get(Constants.SERIALISATION_DECLARATIONS_PROPERTY_NAME.getValue());
             try {
                 this.pythonSerialisers = new PythonSerialiserConfig(new FileInputStream(new File(filePath)));
             } catch (final FileNotFoundException e) {
-                e.printStackTrace();
+                LOGGER.error(e.getMessage());
             }
-        } else if (storeProperties.get(Constants.SERIALISATION_DECLARATIONS_PROPERTY_NAME) == null) {
+        } else if (storeProperties.get(Constants.SERIALISATION_DECLARATIONS_PROPERTY_NAME.getValue()) == null) {
             pythonSerialisers = new PythonSerialiserConfig();
         }
     }
@@ -208,9 +211,9 @@ public final class PythonGraph {
             classToSerialise = Class.forName(classNameToSerialise);
             serialiserClass = Class.forName(serialiser);
         } catch (final ClassNotFoundException e) {
-            e.printStackTrace();
+            LOGGER.error(e.getMessage());
         }
-        if (serialiserClass != null && serialiserClass != null) {
+        if (serialiserClass != null) {
             pythonSerialisers.addSerialiser(classToSerialise, serialiserClass);
         }
     }

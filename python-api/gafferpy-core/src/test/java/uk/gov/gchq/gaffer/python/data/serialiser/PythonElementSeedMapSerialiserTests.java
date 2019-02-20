@@ -16,7 +16,6 @@
 
 package uk.gov.gchq.gaffer.python.data.serialiser;
 
-import org.junit.Before;
 import org.junit.Test;
 import uk.gov.gchq.gaffer.data.element.id.DirectedType;
 import uk.gov.gchq.gaffer.data.element.id.EdgeId;
@@ -31,24 +30,22 @@ import static org.junit.Assert.assertEquals;
 
 public class PythonElementSeedMapSerialiserTests {
 
-    String source = "source";
-    String dest = "dest";
-    String group = "Test";
-    DirectedType directedType = DirectedType.DIRECTED;
+    private String source = "source";
+    private DirectedType directedType = DirectedType.DIRECTED;
 
     @Test
     public void testCanDefaultSerialiseEdgeSeed(){
 
         EdgeSeed edgeSeed = new EdgeSeed();
-        edgeSeed.setIdentifiers(source, dest, directedType);
+        edgeSeed.setIdentifiers(source, "dest", directedType);
 
         Map<String, Object> edgeSeedMap = new HashMap<>();
 
-        edgeSeedMap.put(Constants.TYPE, Constants.EDGE_SEED);
-        edgeSeedMap.put(Constants.SOURCE, source);
-        edgeSeedMap.put(Constants.DESTINATION, dest);
-        edgeSeedMap.put(Constants.DIRECTED, directedType);
-        edgeSeedMap.put(Constants.MATCHED_VERTEX, EdgeId.MatchedVertex.SOURCE);
+        edgeSeedMap.put(Constants.TYPE.getValue(), Constants.EDGE_SEED);
+        edgeSeedMap.put(Constants.SOURCE.getValue(), source);
+        edgeSeedMap.put(Constants.DESTINATION.getValue(), "dest");
+        edgeSeedMap.put(Constants.DIRECTED.getValue(), directedType);
+        edgeSeedMap.put(Constants.MATCHED_VERTEX.getValue(), EdgeId.MatchedVertex.SOURCE);
 
         PythonElementSeedMapSerialiser serialiser = new PythonElementSeedMapSerialiser();
 
@@ -64,8 +61,8 @@ public class PythonElementSeedMapSerialiserTests {
 
         Map<String, Object> entitySeedMap = new HashMap<>();
 
-        entitySeedMap.put(Constants.TYPE, Constants.ENTITY_SEED);
-        entitySeedMap.put(Constants.VERTEX, source);
+        entitySeedMap.put(Constants.TYPE.getValue(), Constants.ENTITY_SEED);
+        entitySeedMap.put(Constants.VERTEX.getValue(), source);
 
         PythonElementSeedMapSerialiser serialiser = new PythonElementSeedMapSerialiser();
 

@@ -18,8 +18,8 @@ package uk.gov.gchq.gaffer.python.data.serialiser;
 
 import java.io.Serializable;
 
-/*
-PythonSerialisers are used to translate Gaffer objects between Java and Python
+/**
+* PythonSerialisers are used to translate Gaffer objects between Java and Python
  */
 
 public interface PythonSerialiser<Input, Output> extends Serializable {

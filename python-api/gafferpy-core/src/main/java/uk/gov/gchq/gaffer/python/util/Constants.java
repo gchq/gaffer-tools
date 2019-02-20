@@ -16,31 +16,36 @@
 
 package uk.gov.gchq.gaffer.python.util;
 
-public final class Constants {
+public enum  Constants {
 
-    private Constants() {
-        //please don't construct me!
+    JSON("json"),
+
+    VERTEX("vertex"),
+    SOURCE("source"),
+    DESTINATION("destination"),
+    DIRECTED ("directed"),
+    GROUP ("group"),
+    PROPERTIES ("properties"),
+    IDENTIFIER ("identifier"),
+    MATCHED_VERTEX ("matched_vertex"),
+    TYPE ("type"),
+    EDGE ("edge"),
+    ENTITY ("entity"),
+    EDGE_SEED("edge_seed"),
+    ENTITY_SEED("entity_seed"),
+
+    SERIALISATION_DECLARATIONS_PROPERTY_NAME("pythonserialiser.declarations"),
+
+    TIMEBUCKET_KEY_NAME("timebucket"),
+    TIMESTAMPS_KEY_NAME ("timestamps");
+
+    private final String constantValue;
+
+    public String getValue() {
+        return constantValue;
     }
 
-    public static final String JSON = "json";
-
-    public static final String VERTEX = "vertex";
-    public static final String SOURCE = "source";
-    public static final String DESTINATION = "destination";
-    public static final String DIRECTED = "directed";
-    public static final String GROUP = "group";
-    public static final String PROPERTIES = "properties";
-    public static final String IDENTIFIER = "identifier";
-    public static final String MATCHED_VERTEX = "matched_vertex";
-    public static final String TYPE = "type";
-    public static final String EDGE = "edge";
-    public static final String ENTITY = "entity";
-    public static final String EDGE_SEED = "edge_seed";
-    public static final String ENTITY_SEED = "entity_seed";
-
-    public static final String SERIALISATION_DECLARATIONS_PROPERTY_NAME = "pythonserialiser.declarations";
-
-    public static final String TIMEBUCKET_KEY_NAME = "timebucket";
-    public static final String TIMESTAMPS_KEY_NAME = "timestamps";
-
+    Constants(final String constantValue) {
+        this.constantValue = constantValue;
+    }
 }

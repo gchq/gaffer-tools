@@ -20,12 +20,10 @@ import org.roaringbitmap.RoaringBitmap;
 
 import uk.gov.gchq.gaffer.python.data.serialiser.PythonSerialiser;
 import uk.gov.gchq.gaffer.python.util.Constants;
-
 import uk.gov.gchq.gaffer.time.RBMBackedTimestampSet;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 
 
@@ -36,18 +34,17 @@ public class RBMBackedTimestampSetPythonSerialiser implements PythonSerialiser<R
 
         Map<String, Object> timestampMap = new HashMap<>();
 
-        timestampMap.put(Constants.TIMEBUCKET_KEY_NAME, rbmBackedTimestampSet.getTimeBucket().toString());
+        timestampMap.put(Constants.TIMEBUCKET_KEY_NAME.getValue(), rbmBackedTimestampSet.getTimeBucket().toString());
 
         RoaringBitmap rbm = rbmBackedTimestampSet.getRbm();
 
         ArrayList<Integer> timestamps = new ArrayList<>(rbm.getCardinality());
 
-        Iterator<Integer> iterator = rbm.iterator();
-        while (iterator.hasNext()) {
-            timestamps.add(iterator.next());
+        for (final Integer integer : rbm) {
+            timestamps.add(integer);
         }
 
-        timestampMap.put(Constants.TIMESTAMPS_KEY_NAME, timestamps);
+        timestampMap.put(Constants.TIMESTAMPS_KEY_NAME.getValue(), timestamps);
 
         return timestampMap;
     }

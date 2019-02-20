@@ -25,14 +25,13 @@ import uk.gov.gchq.gaffer.python.util.Constants;
 import java.util.HashMap;
 import java.util.Map;
 
-/*
-Converts a Gaffer ElementSeed to/from a Map so it can be passed between java and python
+/**
+* Converts a Gaffer ElementSeed to/from a Map so it can be passed between java and python
  */
-
 public class PythonElementSeedMapSerialiser implements PythonSerialiser<ElementSeed, Map<String, Object>> {
 
-    Map<String, Object> map;
-    PythonSerialiserConfig serialiserConfig;
+    private Map<String, Object> map;
+    private PythonSerialiserConfig serialiserConfig;
 
     @Override
     public Map<String, Object> serialise(final ElementSeed input) {
@@ -40,16 +39,16 @@ public class PythonElementSeedMapSerialiser implements PythonSerialiser<ElementS
         map = new HashMap<>();
 
         if (input instanceof EntitySeed) {
-            map.put(Constants.TYPE, Constants.ENTITY_SEED);
+            map.put(Constants.TYPE.getValue(), Constants.ENTITY_SEED);
             EntitySeed seed = (EntitySeed) input;
-            elementMapSerialisedInsert(Constants.VERTEX, seed.getVertex());
+            elementMapSerialisedInsert(Constants.VERTEX.getValue(), seed.getVertex());
         } else if (input instanceof EdgeSeed) {
-            map.put(Constants.TYPE, Constants.EDGE_SEED);
+            map.put(Constants.TYPE.getValue(), Constants.EDGE_SEED);
             EdgeSeed seed = (EdgeSeed) input;
-            elementMapSerialisedInsert(Constants.SOURCE, seed.getSource());
-            elementMapSerialisedInsert(Constants.DESTINATION, seed.getDestination());
-            elementMapSerialisedInsert(Constants.DIRECTED, seed.getDirectedType());
-            elementMapSerialisedInsert(Constants.MATCHED_VERTEX, seed.getMatchedVertex());
+            elementMapSerialisedInsert(Constants.SOURCE.getValue(), seed.getSource());
+            elementMapSerialisedInsert(Constants.DESTINATION.getValue(), seed.getDestination());
+            elementMapSerialisedInsert(Constants.DIRECTED.getValue(), seed.getDirectedType());
+            elementMapSerialisedInsert(Constants.MATCHED_VERTEX.getValue(), seed.getMatchedVertex());
         } else {
             throw new IllegalArgumentException("not an EdgeSeed or EntitySeed, is a " + input.getClass().getCanonicalName());
         }
@@ -72,10 +71,6 @@ public class PythonElementSeedMapSerialiser implements PythonSerialiser<ElementS
         } else {
             map.put(key, value);
         }
-    }
-
-    public void setSerialiserConfig() {
-        //extend and add your own custom python serialisers here
     }
 
 }

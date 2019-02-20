@@ -54,7 +54,7 @@ class GafferPythonSession():
     _java_gaffer_session = None
     _java_gateway = None
     _java_server_process = None
-    _java_gaffer_session_class = "uk.gov.gchq.gaffer.python.session.GafferSession"
+    _java_gaffer_session_class = "uk.gov.gchq.gaffer.python.Application"
 
     #python things
     _jar = None
@@ -176,7 +176,9 @@ class GafferPythonSession():
 class Graph():
 
     """
-
+    A class that wraps the Java class uk.gov.gchq.gaffer.python.graph.PythonGraph
+    Enables users in python to able to access all of the functionality of the 
+    Graph, with simple interfaces like the Builder() and execute() functions
     """
 
     _java_python_graph = None
@@ -196,20 +198,18 @@ class Graph():
         self.storePropertiesPath = storePropertiesPath
 
     def _getGraph(self):
-
         if "gaffer_session" in globals():
             self._gaffer_session = globals().get("gaffer_session")
         else:
             msg = "No gaffer session"
             logger.error(msg)
             raise ValueError(msg)
-
         self._java_python_graph = self._gaffer_session._java_gaffer_session.getPythonGraph(self.schemaPath, self.graphConfigPath, self.storePropertiesPath)
         self._set_element_serialisers(store_properties_path=self.storePropertiesPath)
         return self
 
     def getPythonSerialisers(self):
-        serialisers = self._java_python_graph.getPythonSerialisers().getSerialisers();
+        serialisers = self._java_python_graph.getPythonSerialisers().getSerialisers()
         python_serialisers = {}
         for serialiser in serialisers:
             class_name = serialiser.getCanonicalName()
@@ -249,7 +249,6 @@ class Graph():
             self.setPythonSerialisers(self._python_serialisers)
 
     def execute(self, operation, user):
-
             result = self._java_python_graph.execute(self._encode(operation), self._encode(user))
             if isinstance(result, int):
                 return result

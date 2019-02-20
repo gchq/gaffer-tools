@@ -38,7 +38,7 @@ public class HyperLogLogPlusPythonSerialiserTests {
         hllp.offer("e");
         hllp.offer("f");
 
-        assertEquals((Long) 6L, (Long) new HyperLogLogPlusPythonSerialiser().serialise(hllp));
+        assertEquals((Long) 6L, new HyperLogLogPlusPythonSerialiser().serialise(hllp));
 
     }
 
@@ -46,7 +46,7 @@ public class HyperLogLogPlusPythonSerialiserTests {
     public void testCanSerialiseEmptySketch(){
         HyperLogLogPlus hllp = new HyperLogLogPlus(10,10);
 
-        assertEquals((Long) 0L, (Long) new HyperLogLogPlusPythonSerialiser().serialise(hllp));
+        assertEquals((Long) 0L, new HyperLogLogPlusPythonSerialiser().serialise(hllp));
 
     }
 

@@ -26,7 +26,6 @@ public abstract class PythonElementSerialiser<Input, Output> implements PythonSe
         setSerialiserConfig();
     }
 
-    public void setSerialiserConfig() {
-    };
+    public abstract void setSerialiserConfig();
 
 }

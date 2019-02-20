@@ -27,7 +27,7 @@ public class DatePythonSerialiserTest {
     @Test
     public void testDatePythonSerialiser(){
 
-        Long time = System.currentTimeMillis();
+        long time = System.currentTimeMillis();
 
         Date date = new Date();
         date.setTime(time);

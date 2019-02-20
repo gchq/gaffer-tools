@@ -22,35 +22,26 @@ import uk.gov.gchq.gaffer.exception.SerialisationException;
 import uk.gov.gchq.gaffer.jsonserialisation.JSONSerialiser;
 import uk.gov.gchq.gaffer.operation.impl.add.AddElements;
 import uk.gov.gchq.gaffer.operation.impl.get.GetAllElements;
-import uk.gov.gchq.gaffer.operation.impl.get.GetElements;
 import uk.gov.gchq.gaffer.python.data.PythonIterator;
 import uk.gov.gchq.gaffer.python.data.serialiser.PythonElementMapSerialiser;
 import uk.gov.gchq.gaffer.python.graph.PythonGraph;
-import uk.gov.gchq.gaffer.store.schema.Schema;
 import uk.gov.gchq.gaffer.user.User;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 public class PythonGraphTests {
 
-    String schemaPath = "src/test/resources/simple-schema.json";
-    String graphConfigPath = "src/test/resources/graphconfig.json";
-    String storePropertiesPath = "src/test/resources/mock-accumulo.properties";
+    private final String schemaPath = "src/test/resources/simple-schema.json";
+    private final String graphConfigPath = "src/test/resources/graphconfig.json";
+    private final String storePropertiesPath = "src/test/resources/mock-accumulo.properties";
 
     @Test
     public void testCanConstructGraph(){
 
         PythonGraph pythonGraph = new PythonGraph(schemaPath, graphConfigPath, storePropertiesPath);
 
-        if(pythonGraph.getGraph().getSchema() != null){
-            assert(true);
-        }
-
+        assertNotNull(pythonGraph.getGraph().getSchema());
     }
 
     @Test

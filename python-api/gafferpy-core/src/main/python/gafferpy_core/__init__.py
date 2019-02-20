@@ -8,4 +8,4 @@ __doc__ = __description__ + " <" + __uri__ + ">"
 __author__ = "GCHQ"
 
 __license__ = "Apache 2.0"
-__copyright__ = "Crown Copyright (c) 2016-2017"
+__copyright__ = "Crown Copyright (c) 2016-2019"

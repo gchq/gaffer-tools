@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2018 Crown Copyright
+ * Copyright 2017-2019 Crown Copyright
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,16 +35,11 @@ function operation() {
     }
 }
 
-function OperationController(types, loading, operationChain, settings, events) {
+function OperationController(loading) {
     var vm = this;
     var coreFields = ["view", "views", "input", "inputB", "options"];
 
-    vm.showOperationOptionsForm;
-
     vm.$onInit = function() {
-        settings.getOpOptionKeys().then(function(keys) {
-            vm.showOperationOptionsForm = (keys && Object.keys(keys).length > 0);
-        });
 
         if (!vm.model) {
             throw 'An operation has been created without a model to bind to'

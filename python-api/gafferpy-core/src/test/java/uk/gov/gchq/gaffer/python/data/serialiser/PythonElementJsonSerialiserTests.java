@@ -30,16 +30,15 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 public class PythonElementJsonSerialiserTests {
 
-    String source = "source";
-    String dest = "dest";
-    String group = "Test";
-    boolean directed = true;
-    DirectedType directedType = DirectedType.DIRECTED;
-    Integer count = 1;
-    FreqMap map = new FreqMap();
+    private String source = "source";
+    private String group = "Test";
+    private DirectedType directedType = DirectedType.DIRECTED;
+    private Integer count = 1;
+    private FreqMap map = new FreqMap();
 
     @Before
     public void initialiseFreqMap(){
@@ -51,10 +50,10 @@ public class PythonElementJsonSerialiserTests {
     public void testCanDefaultSerialiseEdge(){
 
         Edge edge = new Edge.Builder()
-                .group("Test")
+                .group(group)
                 .source(source)
-                .dest(dest)
-                .directed(directed)
+                .dest("dest")
+                .directed(true)
                 .property("count", count)
                 .property("map", map)
                 .build();
@@ -69,12 +68,10 @@ public class PythonElementJsonSerialiserTests {
 
         PythonElementJsonSerialiser serialiser = new PythonElementJsonSerialiser();
 
-        if(json == null){
-            assert false;
-        }
+        assertNotNull(json);
 
         Map<String, Object> serialised = new HashMap<>();
-        serialised.put(Constants.JSON, json);
+        serialised.put(Constants.JSON.getValue(), json);
 
         assertEquals(serialised, serialiser.serialise(edge));
 
@@ -100,12 +97,10 @@ public class PythonElementJsonSerialiserTests {
 
         PythonElementJsonSerialiser serialiser = new PythonElementJsonSerialiser();
 
-        if(json == null){
-            assert false;
-        }
+        assertNotNull(json);
 
         Map<String, Object> serialised = new HashMap<>();
-        serialised.put(Constants.JSON, json);
+        serialised.put(Constants.JSON.getValue(), json);
 
         assertEquals(serialised, serialiser.serialise(entity));
 

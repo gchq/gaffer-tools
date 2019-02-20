@@ -1,5 +1,30 @@
 {
   "title": "Road Traffic Example",
+  "quickQuery": {
+    "description": "Run a 2 hop query",
+    "placeholder": "Enter a seed",
+    "operation": {
+      "class": "uk.gov.gchq.gaffer.operation.OperationChain",
+      "operations": [
+        {
+          "class": "uk.gov.gchq.gaffer.operation.impl.get.GetAdjacentIds",
+          "input": [
+            "${input}"
+          ]
+        },
+        {
+          "class": "uk.gov.gchq.gaffer.operation.impl.get.GetElements",
+          "view": {
+            "globalElements": [
+              {
+                "groupBy": []
+              }
+            ]
+          }
+        }
+      ]
+    }
+  },
   "graph": {
     "style": {
       "edges": {

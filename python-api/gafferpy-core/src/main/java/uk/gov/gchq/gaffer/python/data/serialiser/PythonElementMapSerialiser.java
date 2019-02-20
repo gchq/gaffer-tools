@@ -20,7 +20,6 @@ import uk.gov.gchq.gaffer.data.element.Edge;
 import uk.gov.gchq.gaffer.data.element.Element;
 import uk.gov.gchq.gaffer.data.element.Entity;
 import uk.gov.gchq.gaffer.data.element.Properties;
-import uk.gov.gchq.gaffer.python.data.serialiser.config.PythonSerialiserConfig;
 import uk.gov.gchq.gaffer.python.util.Constants;
 
 import java.util.HashMap;
@@ -34,43 +33,44 @@ import java.util.Map;
 
 public class PythonElementMapSerialiser extends PythonElementSerialiser<Element, Map<String, Object>> {
 
-    private Map<String, Object> elementMap;
-    private Map<String, Object> propertiesMap;
-
-    protected PythonSerialiserConfig serialiserConfig;
-
     public PythonElementMapSerialiser() {
         super();
     }
 
     @Override
+    public void setSerialiserConfig() {
+
+    }
+
+    @Override
     public Map<String, Object> serialise(final Element element) {
 
-        elementMap = new HashMap<>();
-        propertiesMap = new HashMap<>();
+        Map<String, Object> elementMap = new HashMap<>();
+        Map<String, Object> propertiesMap = new HashMap<>();
 
         if (element instanceof Entity) {
-            elementMap.put(Constants.TYPE, Constants.ENTITY);
+            elementMap.put(Constants.TYPE.getValue(), Constants.ENTITY);
             Object vertex = ((Entity) element).getVertex();
-            mapSerialisedInsert(elementMap, Constants.VERTEX, vertex);
+            mapSerialisedInsert(elementMap, Constants.VERTEX.getValue(), vertex);
         } else if (element instanceof Edge) {
             if (((Edge) element).getMatchedVertex() != null) {
-                elementMap.put(Constants.MATCHED_VERTEX, ((Edge) element).getMatchedVertex().name());
+                elementMap.put(Constants.MATCHED_VERTEX.getValue(), ((Edge) element).getMatchedVertex().name());
             }
-            elementMap.put(Constants.TYPE, Constants.EDGE);
-            mapSerialisedInsert(elementMap, Constants.SOURCE, ((Edge) element).getSource());
-            mapSerialisedInsert(elementMap, Constants.DESTINATION, ((Edge) element).getDestination());
-            mapSerialisedInsert(elementMap, Constants.DIRECTED, ((Edge) element).getDirectedType());
+            elementMap.put(Constants.TYPE.getValue(), Constants.EDGE);
+            mapSerialisedInsert(elementMap, Constants.SOURCE.getValue(), ((Edge) element).getSource());
+            mapSerialisedInsert(elementMap, Constants.DESTINATION.getValue(), ((Edge) element).getDestination());
+            mapSerialisedInsert(elementMap, Constants.DIRECTED.getValue(), ((Edge) element).getDirectedType());
         }
-        elementMap.put(Constants.GROUP, element.getGroup());
+        elementMap.put(Constants.GROUP.getValue(), element.getGroup());
 
         Properties properties = element.getProperties();
 
-        for (final String propertyName : properties.keySet()) {
+        properties.keySet().forEach(propertyName -> {
             Object propertyValue = properties.get(propertyName);
             mapSerialisedInsert(propertiesMap, propertyName, propertyValue);
-        }
-        elementMap.put(Constants.PROPERTIES, propertiesMap);
+        });
+
+        elementMap.put(Constants.PROPERTIES.getValue(), propertiesMap);
 
         return elementMap;
     }

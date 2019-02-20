@@ -16,6 +16,9 @@
 
 package uk.gov.gchq.gaffer.python.data.serialiser.config;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import uk.gov.gchq.gaffer.exception.SerialisationException;
 import uk.gov.gchq.gaffer.jsonserialisation.JSONSerialiser;
 import uk.gov.gchq.gaffer.python.data.serialiser.PythonSerialiser;
@@ -26,13 +29,15 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
-/*
+/**
 A registry of PythonSerialisers that can be used on a Gaffer Session or Pyhton graph object.
 Allows serialisers to be set for converting between Java and Python objects.
 Has utility methods for setting serialisers from json files
  */
 
 public class PythonSerialiserConfig implements Serializable {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(PythonSerialiserConfig.class);
 
     private Map<Class, Class> serialisers;
 
@@ -45,25 +50,25 @@ public class PythonSerialiserConfig implements Serializable {
         try {
             bytes = null != fis ? sun.misc.IOUtils.readFully(fis, fis.available(), true) : null;
         } catch (final IOException e) {
-            e.printStackTrace();
+            LOGGER.error(e.getMessage());
         }
         this.serialisers = new PythonSerialiserConfig(bytes).getSerialisers();
     }
 
-    public PythonSerialiserConfig(final byte[] bytes) {
+    private PythonSerialiserConfig(final byte[] bytes) {
         Map<String, String> map = null;
         this.serialisers = new HashMap<>();
         try {
                 map = JSONSerialiser.deserialise(bytes, Map.class);
             } catch (final SerialisationException e) {
-                e.printStackTrace();
+                LOGGER.error(e.getMessage());
             }
 
         for (final String s : map.keySet()) {
             try {
                 this.serialisers.put(Class.forName(s), Class.forName(map.get(s)));
             } catch (final ClassNotFoundException e) {
-                e.printStackTrace();
+                LOGGER.error(e.getMessage());
             }
         }
     }
@@ -78,7 +83,7 @@ public class PythonSerialiserConfig implements Serializable {
                 try {
                     return (PythonSerialiser) serialisers.get(c).newInstance();
                 } catch (final InstantiationException | IllegalAccessException e) {
-                    e.printStackTrace();
+                    LOGGER.error(e.getMessage());
                 }
             }
         }
@@ -94,9 +99,9 @@ public class PythonSerialiserConfig implements Serializable {
         try {
             return new String(JSONSerialiser.serialise(this, true));
         } catch (final SerialisationException e) {
-            e.printStackTrace();
+            LOGGER.error(e.getMessage());
         }
-        return null;
+        return "";
     }
 
     public Map<Class, Class> getSerialisers() {

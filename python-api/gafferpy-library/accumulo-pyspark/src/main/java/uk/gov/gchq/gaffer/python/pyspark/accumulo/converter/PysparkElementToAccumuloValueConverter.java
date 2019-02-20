@@ -19,6 +19,8 @@ package uk.gov.gchq.gaffer.python.pyspark.accumulo.converter;
 import org.apache.accumulo.core.data.Value;
 import org.apache.spark.api.python.Converter;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import uk.gov.gchq.gaffer.accumulostore.key.AccumuloKeyPackage;
 import uk.gov.gchq.gaffer.data.element.Element;
 import uk.gov.gchq.gaffer.exception.SerialisationException;
@@ -26,6 +28,8 @@ import uk.gov.gchq.gaffer.jsonserialisation.JSONSerialiser;
 import uk.gov.gchq.gaffer.store.schema.Schema;
 
 public class PysparkElementToAccumuloValueConverter implements Converter<String, Value> {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(PysparkElementToAccumuloValueConverter.class);
 
     @Override
     public Value convert(final String input) {
@@ -40,7 +44,7 @@ public class PysparkElementToAccumuloValueConverter implements Converter<String,
         try {
             element = JSONSerialiser.deserialise(elementstring, Element.class);
         } catch (final SerialisationException e) {
-            e.printStackTrace();
+            LOGGER.error(e.getMessage());
         }
 
         Schema schema = Schema.fromJson(schemaAsJson.getBytes());
@@ -49,7 +53,7 @@ public class PysparkElementToAccumuloValueConverter implements Converter<String,
         try {
             keyPackage = (AccumuloKeyPackage) Class.forName(keyPackageClassName).newInstance();
         } catch (final InstantiationException | IllegalAccessException | ClassNotFoundException e) {
-            e.printStackTrace();
+            LOGGER.error(e.getMessage());
         }
 
         keyPackage.setSchema(schema);

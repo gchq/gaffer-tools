@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2018 Crown Copyright
+ * Copyright 2019 Crown Copyright
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,8 +14,19 @@
  * limitations under the License.
  */
 
-'use strict';
+package uk.gov.gchq.gaffer.python;
 
-angular.module('app').controller('MainCtrl', ['graph', function(graph) {
-    graph.load();
-}]);
+import uk.gov.gchq.gaffer.python.session.GafferSession;
+
+/**
+ *  Entry point for sessions. Starts a {@link GafferSession}
+ */
+public final class Application {
+
+    private Application() { /* CheckStyle: Utility classes should not have a public or default constructor */ }
+
+    public static void main(final String[] args) {
+        GafferSession.getInstance().startServer();
+    }
+
+}

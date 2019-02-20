@@ -22,71 +22,71 @@ import py4j.GatewayServer;
 
 import uk.gov.gchq.gaffer.python.graph.PythonGraph;
 
-/*
+/**
  * A GafferSession starts a Py4j gateway server process and has methods for constructing Gaffer graphs that can be called from Python
  */
 
 public final class GafferSession {
 
-    private static boolean running = false;
-    private int serverUp = 0;
     private static final Logger LOGGER = LoggerFactory.getLogger(GafferSession.class);
 
-    private static GafferSession thisInstance = null;
+    private static GafferSession instance = null;
 
-    public static GafferSession getInstance() {
-        if (thisInstance == null) {
-            thisInstance = new GafferSession();
-        }
-        thisInstance.serverUp = 1;
-        return thisInstance;
-    }
+    private int statusCode = 0;
 
     private GafferSession() {
+        // Singleton pattern stops multiple creations
+    }
+
+    public static synchronized GafferSession getInstance() {
+        if (instance == null) {
+            instance = new GafferSession();
+        }
+        return instance;
     }
 
 
+    public int getStatusCode() {
+        return this.statusCode;
+    }
+
+    public void setStatusCode(final int statusCode) {
+        this.statusCode = statusCode;
+    }
+
+    /**
+     * @param schemaPath path to graph schema
+     * @param configPath path to graph config
+     * @param storePropertiesPath path to store properties
+     * @return PythonGraph reference back to python
+     */
     public PythonGraph getPythonGraph(final String schemaPath, final String configPath, final String storePropertiesPath) {
         return new PythonGraph(schemaPath, configPath, storePropertiesPath);
     }
 
-    public static void main(final String[] args) {
-        GafferSession.getInstance().startServer();
-    }
-
-    public int serverUp() {
-        return this.serverUp;
-    }
-
-    public boolean serverRunning() {
-        return running;
-    }
-
-    private void startServer() {
-
+    public void startServer() {
         Runtime.getRuntime().addShutdownHook(new ServerShutDownHook());
         GatewayServer gatewayServer = new GatewayServer(GafferSession.getInstance());
         gatewayServer.start();
+
+        GafferSession.getInstance().setStatusCode(1);
 
         LOGGER.info("Gaffer Python Server Started");
         LOGGER.info("Gaffer Python Server address = {}", gatewayServer.getAddress());
         LOGGER.info("Gaffer Python Server listening on port = {}", gatewayServer.getListeningPort());
 
-        running = true;
-        while (running) {
+        while (GafferSession.getInstance().getStatusCode() == 1) {
+            // runs server
         }
-
         System.exit(0);
     }
 
-    private class ServerShutDownHook extends Thread {
+    private class ServerShutDownHook extends Thread { // killing the thread also handles shutdown
         @Override
         public void run() {
-
-            LOGGER.info("Gaffer Python Server shutting down");
-
-            GafferSession.running = false;
-
+            GafferSession.getInstance().setStatusCode(-1);
+            LOGGER.info("Gaffer Python Server interrupted");
+            LOGGER.info("Gaffer Python Server shutting down - Code: {}", GafferSession.getInstance().getStatusCode());
         }
     }
 }

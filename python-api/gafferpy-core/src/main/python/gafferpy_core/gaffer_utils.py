@@ -50,11 +50,9 @@ def convertElement(input):
     if isinstance(input, tuple):
     #pyspark rdd returns a 2-tuple where the first entry is a Gaffer element and the second is a Nullwritable
         map = input[0]
-
         if "json" in map:
             result = g.JsonConverter.from_json(map.get("json"))
             return result
-
         if (map.get("type") == "entity" or map.get("type") == "edge"):
             properties = map.get("properties")
     else:
@@ -63,7 +61,6 @@ def convertElement(input):
         if "json" in map:
             result = g.JsonConverter.from_json(map.get("json"))
             return result
-
         if (map.get("type") == "entity" or map.get("type") == "edge"):
             java_properties = map.get("properties")
             properties = {}
@@ -73,7 +70,6 @@ def convertElement(input):
     if map.get("type") == "entity":
         entity = g.Entity(map.get("group"), map.get("vertex"), properties=properties)
         return entity
-
     elif map.get("type") == "edge":
         directed = True
         if map.get("directed") == 0:
@@ -83,11 +79,9 @@ def convertElement(input):
         else:
             edge = g.Edge(map.get("group"), map.get("source"), map.get("destination"), directed, properties)
         return edge
-
     elif map.get("type") == "entity_seed":
         seed = g.EntitySeed(vertex=input.get("vertex"))
         return seed
-
     elif map.get("type") == "edge_seed":
         seed = g.EdgeSeed(source="source", destination="destination",directed_type="directed", matched_vertex="matched_vertex")
         return seed
@@ -99,7 +93,7 @@ class User(g.ToJson):
 
     def __init__(self, user_id=None):
         self._class_name=self.CLASS,
-        self.user_id=user_id;
+        self.user_id=user_id
 
     def to_json(self):
         return {'userId': self.user_id}

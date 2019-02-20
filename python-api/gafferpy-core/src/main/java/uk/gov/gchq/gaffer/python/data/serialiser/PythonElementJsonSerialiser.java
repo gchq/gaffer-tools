@@ -16,6 +16,9 @@
 
 package uk.gov.gchq.gaffer.python.data.serialiser;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import uk.gov.gchq.gaffer.data.element.Element;
 import uk.gov.gchq.gaffer.exception.SerialisationException;
 import uk.gov.gchq.gaffer.jsonserialisation.JSONSerialiser;
@@ -24,17 +27,21 @@ import uk.gov.gchq.gaffer.python.util.Constants;
 import java.util.HashMap;
 import java.util.Map;
 
-/*
-Converts a Gaffer Element to/from Json for passing between Java and Python
- */
-
-
+/**
+* Converts a Gaffer Element to/from Json for passing between Java and Python
+*/
 public class PythonElementJsonSerialiser extends PythonElementSerialiser<Element, Map<String, Object>> {
 
-    Map<String, Object> map;
+    private static final Logger LOGGER = LoggerFactory.getLogger(PythonElementJsonSerialiser.class);
+    private Map<String, Object> map;
 
     public PythonElementJsonSerialiser() {
         super();
+    }
+
+    @Override
+    public void setSerialiserConfig() {
+
     }
 
     @Override
@@ -46,9 +53,9 @@ public class PythonElementJsonSerialiser extends PythonElementSerialiser<Element
     public Map<String, Object> serialise(final Element element) {
         map = new HashMap<>();
         try {
-            map.put(Constants.JSON, new String(JSONSerialiser.serialise(element)));
+            map.put(Constants.JSON.getValue(), new String(JSONSerialiser.serialise(element)));
         } catch (final SerialisationException e) {
-
+            LOGGER.error(e.getMessage());
         }
         return map;
     }

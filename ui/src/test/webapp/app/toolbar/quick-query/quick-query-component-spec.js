@@ -351,7 +351,7 @@ describe('The Quick Query Component', function() {
     describe('ctrl.search()', function() {
         var $mdToast;
         var fields, limit;
-        var types, query, settings;
+        var types, query, settings, operationOptions;
         var results = [];
         var navigation;
 
@@ -360,12 +360,13 @@ describe('The Quick Query Component', function() {
             ctrl.limit = false;
         });
 
-        beforeEach(inject(function(_types_, _query_, _settings_, _$mdToast_, _navigation_) {
+        beforeEach(inject(function(_types_, _query_, _settings_, _$mdToast_, _navigation_, _operationOptions_) {
             types = _types_;
             query = _query_;
             settings = _settings_;
             $mdToast = _$mdToast_;
             navigation = _navigation_;
+            operationOptions = _operationOptions_;
         }));
 
         beforeEach(function() {
@@ -613,7 +614,7 @@ describe('The Quick Query Component', function() {
 
         it('should not overwrite predefined operation options', function() {
             ctrl.options = true;
-            spyOn(settings, 'getDefaultOpOptions').and.returnValue({'foo': 'bar'});
+            spyOn(operationOptions, 'getDefaultOperationOptions').and.returnValue({'foo': 'bar'});
 
             fields = [
                 {
@@ -640,7 +641,7 @@ describe('The Quick Query Component', function() {
 
         it('should not add the default operation options if the options flag is set to false', function() {
             ctrl.options = false;
-            spyOn(settings, 'getDefaultOpOptions').and.returnValue({'foo': 'bar'});
+            spyOn(operationOptions, 'getDefaultOperationOptions').and.returnValue({'foo': 'bar'});
 
             fields = [
                 {
@@ -661,7 +662,7 @@ describe('The Quick Query Component', function() {
             ctrl.options = true;
             ctrl.dedupe = true;
             ctrl.limit = true;
-            spyOn(settings, 'getDefaultOpOptions').and.returnValue({'foo': 'bar'});
+            spyOn(operationOptions, 'getDefaultOperationOptions').and.returnValue({'foo': 'bar'});
 
             fields = [
                 {
