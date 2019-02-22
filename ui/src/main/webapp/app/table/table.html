@@ -119,9 +119,21 @@
                 </thead>
                 <tbody md-body>
                 <tr md-row
-                    ng-repeat="result in (ctrl.filteredResults = (ctrl.data.results | orderBy:ctrl.getValue() | filter:ctrl.searchTerm)) | limitTo: ctrl.pagination.limit: (ctrl.pagination.page - 1) * ctrl.pagination.limit">
+                    ng-repeat="result in (ctrl.filteredResults = (ctrl.data.results | orderBy:ctrl.getValue() | filter:ctrl.searchTerm)) | limitTo: ctrl.pagination.limit: (ctrl.pagination.page - 1) * ctrl.pagination.limit" ng-init="rowIndex = $index">
                     <td md-cell ng-repeat="col in ctrl.data.columns">
-                        {{result[col]}}
+                        <span ng-if="col=='operationName' && result[col].length>0">
+                            <span ng-init="ctrl.setListParameters(rowIndex,true)">
+                            </span>
+                        </span>
+                        <span ng-if="col != 'parameters'">
+                            {{result[col]}}
+                        </span>
+                        <span ng-if="col=='parameters' && ctrl.showParametersAsList[rowIndex]">
+                            Show parameters as list
+                        </span>
+                        <span ng-if="col=='parameters' && !ctrl.showParametersAsList[rowIndex]">
+                            Show parameters normally
+                        </span>
                     </td>
                 </tr>
                 </tbody>
@@ -130,3 +142,9 @@
         <md-table-pagination md-limit="ctrl.pagination.limit" md-limit-options="[50, 100, 200]" md-page="ctrl.pagination.page" md-total="{{ctrl.filteredResults.length}}" md-page-select md-boundary-links></md-table-pagination>
     </md-card>
 </div>
+
+
+
+
+
+

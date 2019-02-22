@@ -44,6 +44,7 @@ function TableController(schema, results, table, events, common, types, time, cs
     vm.filteredResults = [];
     vm.data = {results:[], columns:[]};
     vm.searchTerm = '';
+    vm.showParametersAsList = [false,false,false];
     
     vm.pagination = {limit: 50, page: 1};
     vm.sortType = undefined;
@@ -79,6 +80,10 @@ function TableController(schema, results, table, events, common, types, time, cs
     vm.$onDestroy = function() {
         events.unsubscribe('resultsUpdated', onResultsUpdated);
         cacheValues();
+    }
+
+    vm.setListParameters = function(i,x) {
+    	vm.showParametersAsList[i] = x;
     }
 
     vm.createVisualisation = function(ev) {
