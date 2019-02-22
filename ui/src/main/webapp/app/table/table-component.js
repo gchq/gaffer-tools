@@ -61,8 +61,7 @@ function TableController(schema, results, table, events, common, types, time, cs
         schema.get().then(function(gafferSchema) {
             vm.schema = gafferSchema;
             loadFromCache();
-            processResults(results.get());
-            
+            processResults(results.get());          
         }, function(err) {
             vm.schema = {types: {}, edges: {}, entities: {}};
             loadFromCache();
@@ -126,7 +125,6 @@ function TableController(schema, results, table, events, common, types, time, cs
                             if (toAdd)
                                 vm.data.results.push(element);
                         });
-                        //vm.data.results = vm.data.results.concat(resultsByType[vm.data.types[t]][vm.data.groups[g]]);
                     }
                 }
             }
@@ -333,7 +331,6 @@ function TableController(schema, results, table, events, common, types, time, cs
         if (cachedValues.pagination) {
             vm.pagination = cachedValues.pagination;
         }
-        vm.updateFilteredResults();
     }
 
     var cacheValues = function() {

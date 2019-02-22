@@ -60,17 +60,38 @@ angular.module('app').factory('results', ['events', function(events) {
                 if(result.class === "uk.gov.gchq.gaffer.data.element.Entity") {
                     if(result.vertex !== undefined && result.vertex !== '') {
                         incomingResults.entities.push(result);
-                        results.entities.push(result);
+                        var toAdd = true;
+                        results.entities.forEach(element => {
+                            if(JSON.stringify(element) === JSON.stringify(result)) {
+                                toAdd = false;
+                            }
+                        });
+                        if (toAdd)
+                            results.entities.push(result);
                     }
                 } else if(result.class === "uk.gov.gchq.gaffer.data.element.Edge") {
                     if(result.source !== undefined && result.source !== ''
                     && result.destination !== undefined && result.destination !== '') {
                         incomingResults.edges.push(result);
-                        results.edges.push(result);
+                        var toAdd = true;
+                        results.edges.forEach(element => {
+                            if(JSON.stringify(element) === JSON.stringify(result)) {
+                                toAdd = false;
+                            }
+                        });
+                        if (toAdd)
+                            results.edges.push(result);
                     }
                 } else {
                     incomingResults.other.push(result)
-                    results.other.push(result);
+                    var toAdd = true;
+                        results.other.forEach(element => {
+                            if(JSON.stringify(element) === JSON.stringify(result)) {
+                                toAdd = false;
+                            }
+                        });
+                        if (toAdd)
+                            results.other.push(result);
                 }
             }
             events.broadcast('incomingResults', [incomingResults]);
