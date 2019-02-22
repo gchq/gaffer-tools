@@ -120,6 +120,8 @@
                 <tbody md-body>
                 <tr md-row
                     ng-repeat="result in (ctrl.filteredResults = (ctrl.data.results | orderBy:ctrl.getValue() | filter:ctrl.searchTerm)) | limitTo: ctrl.pagination.limit: (ctrl.pagination.page - 1) * ctrl.pagination.limit" ng-init="rowIndex = $index">
+                    <span ng-init="ctrl.setListParameters(rowIndex,false)">
+                    </span>
                     <td md-cell ng-repeat="col in ctrl.data.columns">
                         <span ng-if="col=='operationName' && result[col].length>0">
                             <span ng-init="ctrl.setListParameters(rowIndex,true)">
@@ -129,10 +131,12 @@
                             {{result[col]}}
                         </span>
                         <span ng-if="col=='parameters' && ctrl.showParametersAsList[rowIndex]">
-                            Show parameters as list
+                            <span ng-repeat="item in result[col].split('|')">
+                                {{item}} <br>
+                            </span>
                         </span>
                         <span ng-if="col=='parameters' && !ctrl.showParametersAsList[rowIndex]">
-                            Show parameters normally
+                            {{result[col]}}
                         </span>
                     </td>
                 </tr>

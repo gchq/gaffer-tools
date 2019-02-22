@@ -44,7 +44,7 @@ function TableController(schema, results, table, events, common, types, time, cs
     vm.filteredResults = [];
     vm.data = {results:[], columns:[]};
     vm.searchTerm = '';
-    vm.showParametersAsList = [false,false,false];
+    vm.showParametersAsList = [];
     
     vm.pagination = {limit: 50, page: 1};
     vm.sortType = undefined;
