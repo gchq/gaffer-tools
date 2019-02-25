@@ -20,7 +20,6 @@ import org.apache.spark.api.python.Converter;
 import org.apache.spark.sql.Row;
 
 import uk.gov.gchq.gaffer.data.element.Element;
-import uk.gov.gchq.gaffer.spark.operation.dataframe.ConvertElementToRow;
 
 public class ElementToRowConverter implements Converter<Element, Row> {
 

@@ -6,7 +6,7 @@ class gaffer_functions_test(unittest.TestCase):
 
     def testFunctionContext(self):
         print("test")
-        self.assertTrue(True)
+        self.assertTrue(False)
 
 
 if __name__ == "__main__":
