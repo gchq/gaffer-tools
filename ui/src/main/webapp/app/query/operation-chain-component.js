@@ -26,7 +26,6 @@ function operationChainBuilder() {
     }
 }
 
-
 function OperationChainController(operationChain, config, loading, query, error, events, $mdDialog, navigation, $location, $routeParams, operationService, common, graph, types, previousQueries, operationOptions) {
     var vm = this;
     vm.timeConfig;
@@ -116,9 +115,22 @@ function OperationChainController(operationChain, config, loading, query, error,
         });
 
         runQuery(chain.operations);
+
+        if (vm.clearChainAfterExecution == true) {
+            vm.resetChain()
+        }
     }
 
-    vm.resetChain = function(ev) {
+    vm.toggleClearChain = function() {
+        vm.clearChainAfterExecution = !vm.clearChainAfterExecution;
+    }
+
+    vm.resetChain = function() {
+        operationChain.reset();
+        vm.operations = operationChain.getOperationChain();
+    }
+
+    vm.resetChainWithDialog = function(ev) {
         var confirm = $mdDialog.confirm()
             .title('Are your sure you want to reset the chain?')
             .textContent('Once you reset the chain, all your progress will be lost')
@@ -128,8 +140,7 @@ function OperationChainController(operationChain, config, loading, query, error,
             .cancel('Cancel');
 
         $mdDialog.show(confirm).then(function() {
-            operationChain.reset();
-            vm.operations = operationChain.getOperationChain();
+            resetChain()
         }, function() {
             // do nothing if they don't want to reset
         });
