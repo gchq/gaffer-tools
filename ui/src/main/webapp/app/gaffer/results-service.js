@@ -61,7 +61,7 @@ angular.module('app').factory('results', ['events', function(events) {
                     if(result.vertex !== undefined && result.vertex !== '') {
                         incomingResults.entities.push(result);
                         var toAdd = true;
-                        results.entities.forEach(element => {
+                        results.entities.forEach(function(element) {
                             if(JSON.stringify(element) === JSON.stringify(result)) {
                                 toAdd = false;
                             }
@@ -74,7 +74,7 @@ angular.module('app').factory('results', ['events', function(events) {
                     && result.destination !== undefined && result.destination !== '') {
                         incomingResults.edges.push(result);
                         var toAdd = true;
-                        results.edges.forEach(element => {
+                        results.edges.forEach(function(element) {
                             if(JSON.stringify(element) === JSON.stringify(result)) {
                                 toAdd = false;
                             }
@@ -85,7 +85,7 @@ angular.module('app').factory('results', ['events', function(events) {
                 } else {
                     incomingResults.other.push(result)
                     var toAdd = true;
-                        results.other.forEach(element => {
+                        results.other.forEach(function(element) {
                             if(JSON.stringify(element) === JSON.stringify(result)) {
                                 toAdd = false;
                             }

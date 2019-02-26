@@ -115,16 +115,7 @@ function TableController(schema, results, table, events, common, types, time, cs
             if(vm.data.types[t] in resultsByType) {
                 for(var g in vm.data.groups) {
                     if(vm.data.groups[g] in resultsByType[vm.data.types[t]]) {
-                        resultsByType[vm.data.types[t]][vm.data.groups[g]].forEach(element => {
-                            var toAdd = true;
-                            vm.data.results.forEach(element2 => {
-                                if(JSON.stringify(element) === JSON.stringify(element2)) {
-                                    toAdd = false;
-                                }
-                            });
-                            if (toAdd)
-                                vm.data.results.push(element);
-                        });
+                        vm.data.results = vm.data.results.concat(resultsByType[vm.data.types[t]][vm.data.groups[g]]);
                     }
                 }
             }
@@ -156,7 +147,7 @@ function TableController(schema, results, table, events, common, types, time, cs
         resultsByType = {};
         vm.data.tooltips = {};
 
-        processElements("Edge", "edges", ["result type", "GROUP", "SOURCE", "DESTINATION", "DIRECTED", "matchedVertex"], ids, groupByProperties, properties, resultsData);
+        processElements("Edge", "edges", ["result type", "GROUP", "SOURCE", "DESTINATION", "DIRECTED"], ids, groupByProperties, properties, resultsData);
         processElements("Entity", "entities", ["result type", "GROUP", "SOURCE"], ids, groupByProperties, properties, resultsData);
         processOtherTypes(ids, properties, resultsData);
 
@@ -201,7 +192,6 @@ function TableController(schema, results, table, events, common, types, time, cs
                         }
                     }
                     result['result type'] = type;
-                    result['matchedVertex'] = element.matchedVertex;
 
                     if(element.properties) {
                         if(!(element.group in resultsByType[type])) {
