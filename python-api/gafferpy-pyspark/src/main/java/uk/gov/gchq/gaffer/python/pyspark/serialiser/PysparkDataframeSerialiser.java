@@ -25,7 +25,6 @@ import java.util.Map;
 
 public class PysparkDataframeSerialiser implements Converter<Element, Map<String, DataType>> {
 
-
     @Override
     public Map<String, DataType> convert(final Element element) {
         return null;
