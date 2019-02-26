@@ -41,10 +41,14 @@ public final class GafferSession {
     public static synchronized GafferSession getInstance() {
         if (instance == null) {
             instance = new GafferSession();
+            instance.setStatusCode(1);
         }
         return instance;
     }
 
+    public static void main(final String[] args) {
+        GafferSession.getInstance().startServer();
+    }
 
     public int getStatusCode() {
         return this.statusCode;
@@ -68,8 +72,6 @@ public final class GafferSession {
         Runtime.getRuntime().addShutdownHook(new ServerShutDownHook());
         GatewayServer gatewayServer = new GatewayServer(GafferSession.getInstance());
         gatewayServer.start();
-
-        GafferSession.getInstance().setStatusCode(1);
 
         LOGGER.info("Gaffer Python Server Started");
         LOGGER.info("Gaffer Python Server address = {}", gatewayServer.getAddress());

@@ -54,7 +54,7 @@ class GafferPythonSession():
     _java_gaffer_session = None
     _java_gateway = None
     _java_server_process = None
-    _java_gaffer_session_class = "uk.gov.gchq.gaffer.python.Application"
+    _java_gaffer_session_class = "uk.gov.gchq.gaffer.python.session.GafferSession"
 
     #python things
     _jar = None
@@ -95,7 +95,6 @@ class GafferPythonSession():
         logger.info("starting gaffer session : {} \n".format(start_command))
         logger.info("starting python gateway\n")
         logger.info("waiting for gateway...\n")
-        time.sleep(5)
         gateway = JavaGateway()
         java_session = JavaGateway().entry_point
         if java_session.serverRunning():
@@ -124,8 +123,6 @@ class GafferPythonSession():
 
     def get_session_pid(self):
         return self._this_session_pid
-
-
 
 
     def _check_running_processes(self, kill):

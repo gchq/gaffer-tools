@@ -60,10 +60,6 @@ class GafferPysparkSession():
         self._java_gaffer_session = self._spark_context._jvm.uk.gov.gchq.gaffer.python.session.GafferSession.getInstance()
         if self._java_gaffer_session.getStatusCode() == 1:
             logger.info("In a pyspark environment. Using SparkSession as the Gaffer Session")
-        elif self._java_gaffer_session.getStatusCode() == 0:
-            logger.info("Attempting to Connect to SparkSession")
-            self._java_gaffer_session.setStatusCode(1)
-            logger.info("Connected to SparkSession. Using SparkSession as the Gaffer Session")
         else:
             msg = "failed to create gaffer session from a pyspark context"
             logger.error(msg)
