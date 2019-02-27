@@ -246,3 +246,25 @@ h1, h2, h3, h4 {
   /* Support for IE. */
   font-feature-settings: 'liga';
 }
+
+*{box-sizing:border-box; -webkit-box-sizing:border-box;}
+html, body{height:100%; margin:0; font:16px/20px sans-serif;}
+
+.box {
+  overflow-x: auto;
+  overflow-y: hidden;
+  width: 500px;
+  margin:60px;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;  
+  -moz-user-select: none;   
+  -ms-user-select: none;     
+  user-select: none; 
+}
+table {
+  width: 100%;
+}
+table td,
+table th {
+  padding: 5px;
+}
