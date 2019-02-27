@@ -9,12 +9,12 @@
 <div layout="row" layout-align="center">
     <md-button class="md-fab md-mini overlapping-fab" ng-click="ctrl.addOperation()">
         <md-icon md-svg-icon="add"></md-icon>
-        <md-tooltip>Add a new operation operation to the chain</md-tooltip>
+        <md-tooltip>Add a new operation to the chain</md-tooltip>
     </md-button>
 </div>
 <div>
     <div layout="row" layout-align="start">
-            <md-checkbox aria-label="Finished?" ng-model="ctrl.clearChainAfterExecution" autocomplete="on">
+            <md-checkbox ng-model="ctrl.clearChainAfterExecution" ng-checked="ctrl.clearChainAfterExecution" on-change="ctrl.saveClearChainCheckState()">
                     Clear Chain After Execution
             </md-checkbox>
     </div>
