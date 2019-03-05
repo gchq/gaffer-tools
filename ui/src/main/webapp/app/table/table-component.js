@@ -147,7 +147,7 @@ function TableController(schema, results, table, events, common, types, time, cs
         var properties = [];
         resultsByType = {};
         vm.data.tooltips = {};
-
+        console.log(resultsData);
         processElements("Edge", "edges", ["result type", "GROUP", "SOURCE", "DESTINATION", "DIRECTED"], ids, groupByProperties, properties, resultsData);
         processElements("Entity", "entities", ["result type", "GROUP", "SOURCE"], ids, groupByProperties, properties, resultsData);
         processOtherTypes(ids, properties, resultsData);
@@ -271,7 +271,12 @@ function TableController(schema, results, table, events, common, types, time, cs
 
     var convertValue = function(name, value) {
         var parsedValue = value;
+        console.log(parsedValue);
         if(parsedValue) {
+            var hllpCheck = 'com.clearspring.analytics.stream.cardinality.HyperLogLogPlus'
+            if (parsedValue[hllpCheck] && parsedValue[hllpCheck].hyperLogLogPlus && parsedValue[hllpCheck].hyperLogLogPlus.cardinality) {
+                return parsedValue[hllpCheck].hyperLogLogPlus.cardinality;
+            }
             parsedValue = types.getShortValue(parsedValue);
             if(time.isTimeProperty(name)) {
                 parsedValue = time.getDateString(name, parsedValue);
