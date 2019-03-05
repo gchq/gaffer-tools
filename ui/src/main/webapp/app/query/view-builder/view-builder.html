@@ -15,7 +15,7 @@
                     <md-select-header class="search-header">
                         <input ng-model="ctrl.entitySearchTerm" type="search" class="search-box md-text" placeholder="Search for an entity group...">
                     </md-select-header>
-                    <md-option ng-value="entities" ng-repeat="(entity, detail) in ctrl.schemaEntities | schemaGroupFilter:ctrl.entitySearchTerm">
+                    <md-option ng-value="entities" ng-repeat="(entities, detail) in ctrl.schemaEntities | schemaGroupFilter:ctrl.entitySearchTerm">
                         <div class="md-subhead">{{entity}}</div>
                         <div class="md-body-1">{{detail.description}}</div>
                     </md-option>
