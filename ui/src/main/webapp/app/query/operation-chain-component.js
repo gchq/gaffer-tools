@@ -33,7 +33,7 @@ function OperationChainController(operationChain, config, loading, query, error,
     vm.operations = operationChain.getOperationChain();
 
     var NAMED_VIEW_CLASS = "uk.gov.gchq.gaffer.data.elementdefinition.view.NamedView";
-    var NAMED_OPERATION_CLASS = "uk.gov.gchq.gaffer.named.NamedOperation";
+    var ADD_NAMED_OPERATION_CLASS = "uk.gov.gchq.gaffer.named.operation.AddNamedOperation";
     var OPERATION_CHAIN_CLASS = "uk.gov.gchq.gaffer.operation.OperationChain";
     var ENTITY_SEED_CLASS = "uk.gov.gchq.gaffer.operation.data.EntitySeed";
     var PAIR_ARRAY_CLASS = "uk.gov.gchq.gaffer.commonutil.pair.Pair<uk.gov.gchq.gaffer.data.element.id.ElementId,uk.gov.gchq.gaffer.data.element.id.ElementId>[]";
@@ -146,32 +146,29 @@ function OperationChainController(operationChain, config, loading, query, error,
             return;
         }
 
-        var operations = [];
-
-        addNamedOperationOperation = {
-            operationName: "test named operation",
-            operations: vm.operations,
-            description: 'test description',
-            parameters: [],
-            options: [],
-            score: 2
+        var chain = {
+            class: OPERATION_CHAIN_CLASS,
+            operations: []
         }
-
-        var parameter1 = {
-            value: 50,
-            defaultValue: 30,
-            valueClass: "Integer",
-            parts: {},
+        for (var i in vm.operations) {
+            chain.operations.push(createOperationForQuery(vm.operations[i]));
         }
-
-        addNamedOperationOperation.parameters.push(parameter1)
-
-        operations.push(addNamedOperationOperation)
              
         query.executeQuery(
             {
-                class: OPERATION_CHAIN_CLASS,
-                operations: operations
+                class: ADD_NAMED_OPERATION_CLASS,
+                operationName: "test named operation2",
+                operationChain: chain,
+                description: 'test description',
+                options: {},
+                score: 2,
+                overwriteFlag: true,
+                // parameters : {
+                //     value: 50,
+                //     defaultValue: 30,
+                //     valueClass: "Integer",
+                //     parts: {},
+                // }
             },
             function(data) {
                 submitResults(data);
