@@ -86,7 +86,7 @@ describe('The View Builder Component', function () {
 
             it('should set the schema entities in the controller', function () {
                 toReturn = {
-                    "entity types": "my entity values"
+                    "entities": "my entity values"
                 };
                 ctrl.$onInit();
                 scope.$digest();
