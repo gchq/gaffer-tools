@@ -14,7 +14,7 @@
 </div>
 <div>
     <div layout="row" layout-align="start">
-            <md-checkbox ng-model="ctrl.clearChainAfterExecution" ng-checked="ctrl.clearChainAfterExecution" on-change="ctrl.saveClearChainCheckState()">
+            <md-checkbox ng-click="ctrl.saveClearChainCheckbox()" ng-checked="ctrl.clearChainCheckbox">
                     Clear Chain After Execution
             </md-checkbox>
     </div>

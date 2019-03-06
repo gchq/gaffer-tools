@@ -30,8 +30,6 @@ function OperationChainController(operationChain, config, loading, query, error,
     var vm = this;
     vm.timeConfig;
     vm.operations = operationChain.getOperationChain();
-    console.log(vm.clearChainAfterExecution);
-    vm.clearChainAfterExecution = JSON.parse(localStorage.isClearChainChecked);
 
     var NAMED_VIEW_CLASS = "uk.gov.gchq.gaffer.data.elementdefinition.view.NamedView";
     var OPERATION_CHAIN_CLASS = "uk.gov.gchq.gaffer.operation.OperationChain";
@@ -47,6 +45,17 @@ function OperationChainController(operationChain, config, loading, query, error,
             vm.timeConfig = conf.time;
         });
     }
+
+    vm.saveClearChainCheckbox = function() {
+        localStorage.setItem('clearChainCheckbox', !vm.clearChainCheckbox);
+        vm.clearChainCheckbox = !vm.clearChainCheckbox;
+    }
+    
+    vm.loadClearChainCheckbox = function () {    
+        vm.clearChainCheckbox = JSON.parse(localStorage.getItem('clearChainCheckbox'));
+    }
+
+    vm.loadClearChainCheckbox()
 
     vm.addOperation = function() {
         for (var i in vm.operations) {
@@ -120,11 +129,6 @@ function OperationChainController(operationChain, config, loading, query, error,
         if (vm.clearChainAfterExecution == true) {
             vm.resetChain()
         }
-    }
-
-    vm.saveClearChainCheckState = function() {
-        localStorage.setItem("isClearChainChecked", JSON.stringify(vm.clearChainAfterExecution));
-        console.log(vm.clearChainAfterExecution);
     }
 
     vm.resetChain = function() {
