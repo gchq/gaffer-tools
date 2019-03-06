@@ -157,15 +157,8 @@ class ResultsWanted:
     RELATED_ONLY = 'RELATED_ONLY'
     BOTH = 'BOTH'
 
-class MergeType:
-    NONE = 'NONE'
-    RELATED_ONLY = 'RELATED_ONLY'
-    BOTH = 'BOTH'
-
 class JoinType:
     FULL = 'FULL'
-    FULL_INNER = 'FULL_INNER'
-    FULL_OUTER = 'FULL_OUTER'
     OUTER = 'OUTER'
     INNER = 'INNER'
 

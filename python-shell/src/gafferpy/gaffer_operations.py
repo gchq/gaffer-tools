@@ -597,37 +597,30 @@ class ElementMatch(Match):
         
         return match_json
 
+class KeyFunctionMatch(Match):
+    CLASS = "uk.gov.gchq.gaffer.store.operation.handler.join.match.KeyFunctionMatch"
 
-class Merge(ToJson, ToCodeString):
-    CLASS = "uk.gov.gchq.gaffer.operation.impl.join.merge.Merge"
-
-    def __init__(self, _class_name):
-        self._class_name = _class_name
-
-    def to_json(self):
-        return {
-            'class': self._class_name
-        }
-    
-class ElementMerge(Merge):
-    CLASS = "uk.gov.gchq.gaffer.store.operation.handler.join.merge.ElementMerge"
-
-    def __init__(self, results_wanted=None, merge_type=None, schema=None):
+    def __init__(self, firstKeyFunction=None, secondKeyFunction=None):
         super().__init__(_class_name=self.CLASS)
-        self.results_wanted = results_wanted
-        self.merge_type = merge_type
-        self.schema = schema
+        if firstKeyFunction is not None:
+            if not isinstance(firstKeyFunction, gaffer_functions.Function):
+                self.firstKeyFunction = JsonConverter.from_json(firstKeyFunction, class_obj=gaffer_functions.Function)
+            else:
+                self.firstKeyFunction = firstKeyFunction
+        if secondKeyFunction is not None:
+            if not isinstance(secondKeyFunction, gaffer_functions.Function):
+                self.secondKeyFunction = JsonConverter.from_json(secondKeyFunction, class_obj=gaffer_functions.Function)
+            else:
+                self.secondKeyFunction = secondKeyFunction
 
     def to_json(self):
-        merge_json = super().to_json()
-        if self.results_wanted is not None:
-            merge_json['resultsWanted'] = self.results_wanted
-        if self.merge_type is not None:
-            merge_json['mergeType'] = self.merge_type
-        if self.schema is not None:
-            merge_json['schema'] = self.schema
-        
-        return merge_json
+        match_json = super().to_json()
+        if self.firstKeyFunction is not None:
+            match_json['firstKeyFunction'] = self.firstKeyFunction.to_json()
+        if self.secondKeyFunction is not None:
+            match_json['secondKeyFuntion'] = self.secondKeyFunction.to_json()
+
+        return match_json
 
 class OperationChain(Operation):
     CLASS = "uk.gov.gchq.gaffer.operation.OperationChain"
@@ -2644,7 +2637,7 @@ class Join(Operation):
     
     CLASS = 'uk.gov.gchq.gaffer.operation.impl.join.Join'
 
-    def __init__(self, input=None, operation=None, match_method=None, match_key=None, merge_method=None, join_type=None, collection_limit=None, options=None):
+    def __init__(self, input=None, operation=None, match_method=None, match_key=None, flatten=None, join_type=None, collection_limit=None, options=None):
         super().__init__(_class_name=self.CLASS, options=options)
         
         
@@ -2660,14 +2653,8 @@ class Join(Operation):
             else:
                 self.match_method = match_method
 
-
-        if merge_method is not None:
-            if not isinstance(merge_method, Merge):
-                self.merge_method = JsonConverter.from_json(merge_method)
-            else:
-                self.merge_method = merge_method
-
         self.input = input
+        self.flatten = flatten
         self.match_key = match_key
         self.collection_limit = collection_limit
         self.join_type = join_type
@@ -2690,8 +2677,8 @@ class Join(Operation):
             operation_json['matchMethod'] = self.match_method.to_json()
         if self.match_key is not None:
             operation_json['matchKey'] = self.match_key
-        if self.merge_method is not None:
-            operation_json['mergeMethod'] = self.merge_method.to_json()
+        if self.flatten is not None:
+            operation_json['flatten'] = "true" if self.flatten else "false"
         if self.join_type is not None:
             operation_json['joinType'] = self.join_type
         if self.collection_limit is not None:
