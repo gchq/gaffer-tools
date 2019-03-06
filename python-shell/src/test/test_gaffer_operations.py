@@ -1,5 +1,5 @@
 #
-# Copyright 2016-2018 Crown Copyright
+# Copyright 2016-2019 Crown Copyright
 #
 # Licensed under the Apache License, Version 2.0 (the 'License');
 # you may not use this file except in compliance with the License.
@@ -1707,16 +1707,11 @@ class GafferOperationsTest(unittest.TestCase):
         [
             '''
             {
-                "class": "uk.gov.gchq.gaffer.operation.impl.get.GetAsElementsFromEndpoint",
-                "endpoint": "http://mydata.io",
-                "elementGenerator": {
-                    "class": "uk.gov.gchq.gaffer.data.generator.CsvGenerator"
-                }
+                "class": "uk.gov.gchq.gaffer.operation.impl.get.GetFromEndpoint",
+                "endpoint": "http://mydata.io"
             }
             ''',
-            g.GetAsElementsFromEndpoint(endpoint="http://mydata.io",
-                element_generator=g.CsvGenerator()
-            )
+            g.GetFromEndpoint(endpoint="http://mydata.io")
         ],
         [
             '''

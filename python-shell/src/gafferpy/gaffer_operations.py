@@ -1,5 +1,5 @@
 #
-# Copyright 2016-2018 Crown Copyright
+# Copyright 2016-2019 Crown Copyright
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -1124,24 +1124,17 @@ class GetElements(GetOperation):
             seed_matching=seed_matching,
             options=options)
 
-class GetAsElementsFromEndpoint(Operation):
-    CLASS = "uk.gov.gchq.gaffer.operation.impl.get.GetAsElementsFromEndpoint"
+class GetFromEndpoint(Operation):
+    CLASS = "uk.gov.gchq.gaffer.operation.impl.get.GetFromEndpoint"
 
-    def __init__(self, endpoint, element_generator, options=None):
+    def __init__(self, endpoint, options=None):
         super().__init__(_class_name=self.CLASS, options=options)
         self.endpoint = endpoint
-        if element_generator is not None:
-            if not isinstance(element_generator, gaffer_functions.Function):
-                self.element_generator = JsonConverter.from_json(element_generator)
-            else:
-                self.element_generator = element_generator
 
     def to_json(self):
         operation_json = super().to_json()
         if self.endpoint is not None:
             operation_json['endpoint'] = self.endpoint
-        if self.element_generator is not None:
-            operation_json['elementGenerator'] = self.element_generator.to_json()
 
         return operation_json
 
