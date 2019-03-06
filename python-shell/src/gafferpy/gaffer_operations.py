@@ -600,25 +600,25 @@ class ElementMatch(Match):
 class KeyFunctionMatch(Match):
     CLASS = "uk.gov.gchq.gaffer.store.operation.handler.join.match.KeyFunctionMatch"
 
-    def __init__(self, firstKeyFunction=None, secondKeyFunction=None):
+    def __init__(self, first_key_function=None, second_key_function=None):
         super().__init__(_class_name=self.CLASS)
-        if firstKeyFunction is not None:
-            if not isinstance(firstKeyFunction, gaffer_functions.Function):
-                self.firstKeyFunction = JsonConverter.from_json(firstKeyFunction, class_obj=gaffer_functions.Function)
-            else:
-                self.firstKeyFunction = firstKeyFunction
-        if secondKeyFunction is not None:
-            if not isinstance(secondKeyFunction, gaffer_functions.Function):
-                self.secondKeyFunction = JsonConverter.from_json(secondKeyFunction, class_obj=gaffer_functions.Function)
-            else:
-                self.secondKeyFunction = secondKeyFunction
+        
+        if not isinstance(first_key_function, gaffer_functions.Function):
+            self.first_key_function = JsonConverter.from_json(first_key_function, class_obj=gaffer_functions.Function)
+        else:
+            self.first_key_function = first_key_function
+
+        if not isinstance(second_key_function, gaffer_functions.Function):
+            self.second_key_function = JsonConverter.from_json(second_key_function, class_obj=gaffer_functions.Function)
+        else:
+            self.second_key_function = second_key_function
 
     def to_json(self):
         match_json = super().to_json()
-        if self.firstKeyFunction is not None:
-            match_json['firstKeyFunction'] = self.firstKeyFunction.to_json()
-        if self.secondKeyFunction is not None:
-            match_json['secondKeyFuntion'] = self.secondKeyFunction.to_json()
+        if self.first_key_function is not None:
+            match_json['firstKeyFunction'] = self.first_key_function.to_json()
+        if self.second_key_function is not None:
+            match_json['secondKeyFunction'] = self.second_key_function.to_json()
 
         return match_json
 
@@ -2640,7 +2640,6 @@ class Join(Operation):
     def __init__(self, input=None, operation=None, match_method=None, match_key=None, flatten=None, join_type=None, collection_limit=None, options=None):
         super().__init__(_class_name=self.CLASS, options=options)
         
-        
         if operation is not None:
             if not isinstance(operation, Operation):
                 self.operation = JsonConverter.from_json(operation)
@@ -2678,7 +2677,7 @@ class Join(Operation):
         if self.match_key is not None:
             operation_json['matchKey'] = self.match_key
         if self.flatten is not None:
-            operation_json['flatten'] = "true" if self.flatten else "false"
+            operation_json['flatten'] = self.flatten
         if self.join_type is not None:
             operation_json['joinType'] = self.join_type
         if self.collection_limit is not None:
