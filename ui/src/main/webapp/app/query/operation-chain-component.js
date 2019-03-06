@@ -153,39 +153,51 @@ function OperationChainController(operationChain, config, loading, query, error,
         for (var i in vm.operations) {
             chain.operations.push(createOperationForQuery(vm.operations[i]));
         }
-             
-        query.executeQuery(
-            {
-                class: ADD_NAMED_OPERATION_CLASS,
-                operationName: "test named operation2",
-                operationChain: chain,
-                description: 'test description',
-                options: {},
-                score: 2,
-                overwriteFlag: true,
-                // parameters : {
-                //     value: 50,
-                //     defaultValue: 30,
-                //     valueClass: "Integer",
-                //     parts: {},
-                // }
-            },
-            function(data) {
-                submitResults(data);
-            }
-        );
 
         var confirm = $mdDialog.confirm()
-            .title('Operation chain saved as named operation!')
-            .textContent('You can now see your saved operation in the list of operations')
-            .targetEvent(ev)
-            .ok('Ok')
-            .cancel('Cancel');
+        .title('Operation chain saved as named operation!')
+        .textContent('You can now see your saved operation in the list of operations')
+        .targetEvent(ev)
+        .ok('Ok')
 
-        $mdDialog.show(confirm).then(function() {
-        }, function() {
-            // do nothing if they don't want to reset
-        });
+        var invalidName = $mdDialog.confirm()
+        .title('Operation chain name is invalid!')
+        .textContent('The operation chain cannot be empty')
+        .targetEvent(ev)
+        .ok('Ok')
+
+        var operationName = window.prompt("Please enter a name for you operation chain", "Test Operation");
+
+        if (operationName != null) {
+            query.executeQuery(
+                {
+                    class: ADD_NAMED_OPERATION_CLASS,
+                    operationName: operationName,
+                    operationChain: chain,
+                    description: 'test description',
+                    options: {},
+                    score: 2,
+                    overwriteFlag: true,
+                    // parameters : {
+                    //     value: 50,
+                    //     defaultValue: 30,
+                    //     valueClass: "Integer",
+                    //     parts: {},
+                    // }
+                },
+                function(data) {
+                    // On success of saving operation chain
+                    submitResults(data);
+                    $mdDialog.show(confirm).then(function() {
+                    }, function() {
+                    });
+                }
+            );
+        } else {
+            $mdDialog.show(invalidName).then(function() {
+            }, function() {
+            });
+        }
 
     }
 
