@@ -188,9 +188,11 @@ function OperationChainController(operationChain, config, loading, query, error,
                 function(data) {
                     // On success of saving operation chain
                     submitResults(data);
+                    navigation.goTo('query');
                     $mdDialog.show(confirm).then(function() {
                     }, function() {
                     });
+                    operationService.reloadOperations()
                 }
             );
         } else {
