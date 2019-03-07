@@ -126,7 +126,7 @@ function OperationChainController(operationChain, config, loading, query, error,
 
         runQuery(chain.operations);
 
-        if (vm.clearChainAfterExecution == true) {
+        if (vm.clearChainCheckbox == true) {
             vm.resetChain()
         }
     }
