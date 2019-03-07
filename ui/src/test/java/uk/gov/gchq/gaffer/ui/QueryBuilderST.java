@@ -267,7 +267,7 @@ public class QueryBuilderST {
     private void backspace(final String id) {
         WebElement bs = getElement(id);
         bs.click();
-        bs.sendKeys(Keys.BACKSPACE);
+        bs.sendKeys(Keys.BACK_SPACE);
     }
 
     private void autoComplete(final String id, final String input) throws InterruptedException {
