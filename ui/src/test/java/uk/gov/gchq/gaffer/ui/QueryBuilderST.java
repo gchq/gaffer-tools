@@ -244,7 +244,7 @@ public class QueryBuilderST {
         enterText("seedVertices", "M5");
         click("param1-");
         backspace("param1-");
-        enterText("param1-", "2");
+        enterText("param1-", "\u0008" "2");
         click("execute-chain");
         click("open-raw");
         clickTab("Results");
@@ -265,7 +265,7 @@ public class QueryBuilderST {
     }
 
     private void backspace (final String id) {
-        getElement(id).sendKeys(backspace);
+        getElement(id).sendKeys(Keys.backspace);
     }
 
     private void autoComplete(final String id, final String input) throws InterruptedException {
