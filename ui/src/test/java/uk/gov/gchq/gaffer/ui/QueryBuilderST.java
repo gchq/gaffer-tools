@@ -265,7 +265,7 @@ public class QueryBuilderST {
     }
 
     private void backspace(final String id) {
-        getElement(id).sendKeys(Keys.backspace);
+        getElement(id).sendKeys(Keys.delete);
     }
 
     private void autoComplete(final String id, final String input) throws InterruptedException {
