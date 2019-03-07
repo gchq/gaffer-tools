@@ -13,6 +13,7 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
 <div ng-cloak layout="column" layout-align=" stretch">
     <md-card ng-show="ctrl.showVisualisation">
         <canvas 
@@ -65,9 +66,8 @@
             No results
         </md-card-content>
 
-        <div class="box drag">
         <md-table-container>
-        <div class="box drag">
+            <div id="scrollDragable">
             <table md-table id="results-table" class="compact">
                 <thead md-head md-order="ctrl.sortType">
                 <tr md-row>
@@ -128,7 +128,7 @@
                 </tr>
                 </tbody>
             </table>
-        </div>
+            </div>
         </md-table-container>
         <md-table-pagination md-limit="ctrl.pagination.limit" md-limit-options="[50, 100, 200]" md-page="ctrl.pagination.page" md-total="{{ctrl.filteredResults.length}}" md-page-select md-boundary-links></md-table-pagination>
     </md-card>

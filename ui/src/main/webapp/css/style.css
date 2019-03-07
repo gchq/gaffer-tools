@@ -383,3 +383,11 @@ quick-query {
     margin-left: 0px !important;
     margin-right: 0px !important;
 }
+
+#scrollDragable {
+    width: auto;
+    height: 600px;
+    border: 1px solid #ccc;
+    overflow-x: scroll;
+    overflow-y: scroll;
+  }
