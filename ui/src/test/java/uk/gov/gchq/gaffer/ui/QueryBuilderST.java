@@ -243,7 +243,8 @@ public class QueryBuilderST {
         autoComplete("operation-name", "Two Hop With Limit");
         enterText("seedVertices", "M5");
         click("param1-");
-        enterText("param1-", Keys.BACKSPACE, "2");
+        enterText("param1-", Keys.BACKSPACE);
+        enterText("param1-", "2");
         click("execute-chain");
         click("open-raw");
         clickTab("Results");
