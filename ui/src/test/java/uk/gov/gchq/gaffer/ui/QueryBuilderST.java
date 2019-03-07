@@ -243,7 +243,7 @@ public class QueryBuilderST {
         autoComplete("operation-name", "Two Hop With Limit");
         enterText("seedVertices", "M5");
         click("param1-");
-        backspace("param1-");
+        backSpace("param1-");
         enterText("param1-", "2");
         click("execute-chain");
         click("open-raw");
@@ -264,8 +264,8 @@ public class QueryBuilderST {
         getElement(id).sendKeys(value);
     }
 
-    private void backspace(final String id) {
-        getElement(id).sendKeys(Keys.delete);
+    private void backSpace(final String id) {
+        getElement(id).sendKeys(Keys.BACKSPACE);
     }
 
     private void autoComplete(final String id, final String input) throws InterruptedException {
