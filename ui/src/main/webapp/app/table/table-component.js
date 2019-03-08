@@ -272,6 +272,10 @@ function TableController(schema, results, table, events, common, types, time, cs
     var convertValue = function(name, value) {
         var parsedValue = value;
         if(parsedValue) {
+            var hllpCheck = 'com.clearspring.analytics.stream.cardinality.HyperLogLogPlus'
+            if (parsedValue[hllpCheck] && parsedValue[hllpCheck].hyperLogLogPlus && parsedValue[hllpCheck].hyperLogLogPlus.cardinality) {
+                return parsedValue[hllpCheck].hyperLogLogPlus.cardinality;
+            }
             parsedValue = types.getShortValue(parsedValue);
             if(time.isTimeProperty(name)) {
                 parsedValue = time.getDateString(name, parsedValue);
