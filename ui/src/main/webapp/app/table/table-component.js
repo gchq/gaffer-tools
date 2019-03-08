@@ -147,7 +147,7 @@ function TableController(schema, results, table, events, common, types, time, cs
         var properties = [];
         resultsByType = {};
         vm.data.tooltips = {};
-        console.log(resultsData);
+
         processElements("Edge", "edges", ["result type", "GROUP", "SOURCE", "DESTINATION", "DIRECTED"], ids, groupByProperties, properties, resultsData);
         processElements("Entity", "entities", ["result type", "GROUP", "SOURCE"], ids, groupByProperties, properties, resultsData);
         processOtherTypes(ids, properties, resultsData);
