@@ -391,3 +391,11 @@ quick-query {
     overflow-x: scroll;
     overflow-y: scroll;
   }
+
+#scrollDragableHeader {
+    width: auto;
+    height: auto;
+    border: 1px solid #ccc;
+    overflow-x: hidden;
+    overflow-y: hidden;
+}

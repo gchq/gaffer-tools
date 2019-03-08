@@ -73,11 +73,13 @@ function TableController(schema, results, table, events, common, types, time, cs
     }
 
     var container = document.getElementById('scrollDragable');
+    var headerTable = document.getElementById('scrollDragableHeader');
     vm.curDown = false;
 
     container.addEventListener('mousemove', function(e){ 
         if(vm.curDown === true) {
             container.scrollLeft = vm.oldScrollLeft + (vm.curXPos - e.pageX);
+            headerTable.scrollLeft = vm.oldScrollLeft + (vm.curXPos - e.pageX);
             container.scrollTop = vm.oldScrollTop + (vm.curYPos - e.pageY);
         }
     });
