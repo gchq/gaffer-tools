@@ -76,6 +76,10 @@ function TableController(schema, results, table, events, common, types, time, cs
     var headerTable = document.getElementById('scrollDragableHeader');
     vm.curDown = false;
 
+    container.addEventListener("scroll", function(e) {
+        headerTable.scrollLeft = container.scrollLeft;
+    });
+
     container.addEventListener('mousemove', function(e){ 
         if(vm.curDown === true) {
             container.scrollLeft = vm.oldScrollLeft + (vm.curXPos - e.pageX);

@@ -397,5 +397,5 @@ quick-query {
     height: auto;
     border: 1px solid #ccc;
     overflow-x: hidden;
-    overflow-y: hidden;
+    overflow-y: scroll;
 }
