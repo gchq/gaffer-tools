@@ -33,10 +33,16 @@ function SettingsController(settings, schema, operationService, events, config) 
     vm.resultLimit = settings.getResultLimit()
     vm.showOptions = false;
 
+    vm.saveClearChainCheckbox = function() {
+        settings.setClearChainCheckbox(!vm.clearChainCheckbox);
+        vm.clearChainCheckbox = !vm.clearChainCheckbox;
+    }
+
     vm.$onInit = function() {
         config.get().then(function(conf) {
             vm.showOptions = (conf.operationOptions !== undefined || conf.operationOptionKeys !== undefined)
         });
+        vm.clearChainCheckbox = settings.getClearChainCheckbox()
     }
 
     vm.updateResultLimit = function() {

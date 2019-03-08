@@ -26,7 +26,7 @@ function operationChainBuilder() {
     }
 }
 
-function OperationChainController(operationChain, config, loading, query, error, events, $mdDialog, navigation, $location, $routeParams, operationService, common, graph, types, previousQueries, operationOptions) {
+function OperationChainController(operationChain, settings, config, loading, query, error, events, $mdDialog, navigation, $location, $routeParams, operationService, common, graph, types, previousQueries, operationOptions) {
     var vm = this;
     vm.timeConfig;
     vm.operations = operationChain.getOperationChain();
@@ -45,17 +45,6 @@ function OperationChainController(operationChain, config, loading, query, error,
             vm.timeConfig = conf.time;
         });
     }
-
-    vm.saveClearChainCheckbox = function() {
-        localStorage.setItem('clearChainCheckbox', !vm.clearChainCheckbox);
-        vm.clearChainCheckbox = !vm.clearChainCheckbox;
-    }
-    
-    vm.loadClearChainCheckbox = function () {    
-        vm.clearChainCheckbox = JSON.parse(localStorage.getItem('clearChainCheckbox'));
-    }
-
-    vm.loadClearChainCheckbox()
 
     vm.addOperation = function() {
         for (var i in vm.operations) {
@@ -126,7 +115,8 @@ function OperationChainController(operationChain, config, loading, query, error,
 
         runQuery(chain.operations);
 
-        if (vm.clearChainCheckbox == true) {
+        var clearChainCheckboxState = settings.getClearChainCheckbox();
+        if (clearChainCheckboxState == true) {
             vm.resetChain()
         }
     }
