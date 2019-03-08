@@ -51,21 +51,38 @@ angular.module('app').factory('types', ['config', 'common', function(config, com
 
     var customShortValue = function(fields, parts) {
         var showWithLabel = (fields.length !== 1)
+        if (fields.length > 1) {
+            return fields.map(function(field) {
+                var layers = field.key.split('.');
+                var customValue = parts;
+                for (var i in layers) {
+                    customValue = customValue[layers[i]];
+                }
 
-        return fields.map(function(field) {
-            var layers = field.key.split('.');
-            var customValue = parts;
-            for (var i in layers) {
-                customValue = customValue[layers[i]];
-            }
+                customValue = service.getShortValue(customValue);
 
-            customValue = service.getShortValue(customValue);
+                if (showWithLabel) {
+                    return field.label + ': ' + customValue;
+                }
+                return customValue;
+            }).join(', ');
+        }
+        else {
+            return fields.map(function(field) {
+                var layers = field.key.split('.');
+                var customValue = parts;
+                for (var i in layers) {
+                    customValue = customValue[layers[i]];
+                }
 
-            if (showWithLabel) {
-                return field.label + ': ' + customValue;
-            }
-            return customValue;
-        }).join(', ');
+                customValue = service.getShortValue(customValue);
+
+                if (showWithLabel) {
+                    return field.label + ': ' + customValue;
+                }
+                return customValue;
+            })[0];
+        }
     }
 
     service.getFields = function(className) {
