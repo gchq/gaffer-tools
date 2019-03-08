@@ -152,11 +152,6 @@ class MatchKey:
     LEFT = 'LEFT'
     RIGHT = 'RIGHT'
 
-class ResultsWanted:
-    KEY_ONLY = 'KEY_ONLY'
-    RELATED_ONLY = 'RELATED_ONLY'
-    BOTH = 'BOTH'
-
 class JoinType:
     FULL = 'FULL'
     OUTER = 'OUTER'
