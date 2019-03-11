@@ -117,16 +117,16 @@ function OperationChainController(operationChain, settings, config, loading, que
 
         var clearChainCheckboxState = settings.getClearChainCheckbox();
         if (clearChainCheckboxState == true) {
-            vm.resetChain()
+            vm.resetChainWithoutDialog()
         }
     }
 
-    vm.resetChain = function() {
+    vm.resetChainWithoutDialog = function() {
         operationChain.reset();
         vm.operations = operationChain.getOperationChain();
     }
 
-    vm.resetChainWithDialog = function(ev) {
+    vm.resetChain = function(ev) {
         var confirm = $mdDialog.confirm()
             .title('Are your sure you want to reset the chain?')
             .textContent('Once you reset the chain, all your progress will be lost')
@@ -136,7 +136,7 @@ function OperationChainController(operationChain, settings, config, loading, que
             .cancel('Cancel');
 
         $mdDialog.show(confirm).then(function() {
-            resetChain()
+            vm.resetChainWithoutDialog();
         }, function() {
             // do nothing if they don't want to reset
         });
