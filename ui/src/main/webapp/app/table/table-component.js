@@ -70,12 +70,15 @@ function TableController(schema, results, table, events, common, types, time, cs
         });
 
         events.subscribe('resultsUpdated', onResultsUpdated);
+        
+    }
 
-        /* Add drag and scroll to results table */
-        var tableBody = document.getElementById('scrollDragableBody');
-        var tableHeader = document.getElementById('scrollDragableHeader');
-        vm.curDown = false;
+    /* Add drag and scroll to results table once its created */
+    var tableBody = document.getElementById('scrollDragableBody');
+    var tableHeader = document.getElementById('scrollDragableHeader');
+    vm.curDown = false;
 
+    if ((tableBody != null) && (tableHeader != null)) {
         tableBody.addEventListener("scroll", function(e) {
             tableHeader.scrollLeft = tableBody.scrollLeft;
         });
