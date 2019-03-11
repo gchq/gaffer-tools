@@ -2717,11 +2717,11 @@ class GetAllGraphIds(Operation):
 class FederatedOperationChain(Operation):
     CLASS: 'uk.gov.gchq.gaffer.federatedstore.operation.FederatedOperationChain'
 
-    def __init__(self,operation_chain,options=None)
+    def __init__(self,operation_chain=None,options=None)
         super().__init__(_class_name=self.CLASS, options=options)
 
         if operation_chain is None:
-            raise ValueError('An operation chain is required')
+            raise ValueError('operation_chain is required')
 
         if operation_chain is not None:
             if isinstance(operation_chain,OperationChain):

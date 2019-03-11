@@ -5229,6 +5229,37 @@ class GafferOperationsTest(unittest.TestCase):
                 merge_method=g.ElementMerge(results_wanted=g.ResultsWanted.KEY_ONLY),
                 join_type=g.JoinType.FULL_INNER,
                 collection_limit=10)
+        ],
+        [
+            '''
+            {
+              "class" : "uk.gov.gchq.gaffer.federatedstore.operation.FederatedOperationChain",
+              "operationChain" : {
+                "class" : "uk.gov.gchq.gaffer.operation.OperationChain",
+                "operations" : [ {
+                  "class" : "uk.gov.gchq.gaffer.operation.impl.add.AddElements"
+                }, {
+                  "class" : "uk.gov.gchq.gaffer.operation.impl.get.GetElements"
+                } ]
+              },
+              "options" : {
+                "key" : "value"
+              }
+            }
+            ''',
+            g.FederatedOperationChain(
+                operation_chain={
+                    "class": "uk.gov.gchq.gaffer.operation.OperationChain",
+                    "operations": [{
+                        "class": "uk.gov.gchq.gaffer.operation.impl.add.AddElements"
+                    }, {
+                        "class": "uk.gov.gchq.gaffer.operation.impl.get.GetElements"
+                    }]
+                },
+                options={
+                    "key": "value"
+                }
+            )
         ]
     ]
 
