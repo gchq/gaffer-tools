@@ -42,6 +42,12 @@
                                     </div>
                                 </md-input-container>
                             </md-list-item>
+                            <md-list-item class="md-2-line">
+                                    <md-checkbox ng-click="ctrl.saveClearChainCheckbox()" ng-checked="ctrl.clearChainCheckbox"></md-checkbox>
+                                    <div class="md-list-item-text">
+                                            <h3>Clear Chain After Execution</h3>
+                                    </div>
+                            </md-list-item>
                         </md-list>
                     </form>
                 </md-card>
@@ -66,12 +72,6 @@
                     </md-list-item>
                 </md-list>
             </md-card>
-
-            <div layout="row" layout-align="start">
-                    <md-checkbox ng-click="ctrl.saveClearChainCheckbox()" ng-checked="ctrl.clearChainCheckbox">
-                            Clear Chain After Execution
-                    </md-checkbox>
-            </div>
         </div>
     </div>
 </div>
