@@ -70,35 +70,36 @@ function TableController(schema, results, table, events, common, types, time, cs
         });
 
         events.subscribe('resultsUpdated', onResultsUpdated);
+
+        /* Add drag and scroll to results table */
+        var tableBody = document.getElementById('scrollDragableBody');
+        var tableHeader = document.getElementById('scrollDragableHeader');
+        vm.curDown = false;
+
+        tableBody.addEventListener("scroll", function(e) {
+            tableHeader.scrollLeft = tableBody.scrollLeft;
+        });
+    
+        tableBody.addEventListener('mousemove', function(e){ 
+            if(vm.curDown === true) {
+                tableBody.scrollLeft = vm.oldScrollLeft + (vm.curXPos - e.pageX);
+                tableHeader.scrollLeft = vm.oldScrollLeft + (vm.curXPos - e.pageX);
+                tableBody.scrollTop = vm.oldScrollTop + (vm.curYPos - e.pageY);
+            }
+        });
+    
+        tableBody.addEventListener('mousedown', function(e){ 
+            vm.curDown = true; 
+            vm.curYPos = e.pageY; 
+            vm.curXPos = e.pageX; 
+            vm.oldScrollLeft = tableBody.scrollLeft;
+            vm.oldScrollTop = tableBody.scrollTop;
+        });
+    
+        tableBody.addEventListener('mouseup', function(e){ 
+            vm.curDown = false; 
+        }); 
     }
-
-    var container = document.getElementById('scrollDragable');
-    var headerTable = document.getElementById('scrollDragableHeader');
-    vm.curDown = false;
-
-    container.addEventListener("scroll", function(e) {
-        headerTable.scrollLeft = container.scrollLeft;
-    });
-
-    container.addEventListener('mousemove', function(e){ 
-        if(vm.curDown === true) {
-            container.scrollLeft = vm.oldScrollLeft + (vm.curXPos - e.pageX);
-            headerTable.scrollLeft = vm.oldScrollLeft + (vm.curXPos - e.pageX);
-            container.scrollTop = vm.oldScrollTop + (vm.curYPos - e.pageY);
-        }
-    });
-
-    container.addEventListener('mousedown', function(e){ 
-        vm.curDown = true; 
-        vm.curYPos = e.pageY; 
-        vm.curXPos = e.pageX; 
-        vm.oldScrollLeft = container.scrollLeft;
-        vm.oldScrollTop = container.scrollTop;
-    });
-
-    container.addEventListener('mouseup', function(e){ 
-        vm.curDown = false; 
-    }); 
 
     /**
      * Cleans up the controller. Unsubscribes from resultsUpdated events and

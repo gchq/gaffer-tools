@@ -384,7 +384,7 @@ quick-query {
     margin-right: 0px !important;
 }
 
-#scrollDragable {
+#scrollDragableBody {
     width: auto;
     height: 600px;
     border: 1px solid #ccc;
