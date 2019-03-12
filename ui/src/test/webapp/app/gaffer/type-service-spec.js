@@ -485,7 +485,7 @@ describe('The type service', function() {
 
         it('should create a custom short value for custom types', function() {
             var value = service.getShortValue({'com.clearspring.analytics.stream.cardinality.HyperLogLogPlus': { "hyperLogLogPlus": { "cardinality": 30 }}})
-            expect(value).toEqual('30');
+            expect(value).toEqual(30);
         });
 
         it('should work for ArrayLists without having to add to the types config', function() {
@@ -506,6 +506,11 @@ describe('The type service', function() {
         it('should work for arrays', function() {
             var value = service.getShortValue(['hello', 'world']);
             expect(value).toEqual('hello, world');
+        });
+
+        it('should return singular values from objects containing only one value', function() {
+            var value = service.getShortValue({'com.clearspring.analytics.stream.cardinality.HyperLogLogPlus': { "hyperLogLogPlus": { "cardinality": 30 }}});
+            expect(value).toEqual(30);
         });
     });
 
