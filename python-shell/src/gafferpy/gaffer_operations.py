@@ -2715,9 +2715,9 @@ class GetAllGraphIds(Operation):
 
 
 class FederatedOperationChain(Operation):
-    CLASS: 'uk.gov.gchq.gaffer.federatedstore.operation.FederatedOperationChain'
+    CLASS = 'uk.gov.gchq.gaffer.federatedstore.operation.FederatedOperationChain'
 
-    def __init__(self,operation_chain=None,options=None)
+    def __init__(self,operation_chain=None,options=None):
         super().__init__(_class_name=self.CLASS, options=options)
 
         if operation_chain is None:
