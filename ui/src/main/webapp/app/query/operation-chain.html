@@ -16,7 +16,7 @@
     <md-button class="md-raised" ng-click="ctrl.resetChain($event)">Reset operation chain</md-button>
     <md-button class="md-primary md-raised" ng-disabled="!ctrl.canExecute()" id="execute-chain" ng-click="ctrl.executeChain()">Execute operation chain</md-button>
     <input type="text" name="operationName" ng-model="ctrl.operationName" placeholder="Operation Name"
-    id="operationName" aria-label="Operation Name" ng-blur="ctrl.updateResultLimit()">
+    id="operationName" aria-label="Operation Name">
     <md-button class="md-primary md-raised" ng-disabled="!ctrl.canExecute()" id="save-chain" ng-click="ctrl.saveChain()">Save operation chain</md-button>
 </div>
 
