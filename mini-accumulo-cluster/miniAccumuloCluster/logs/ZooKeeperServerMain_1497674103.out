@@ -1,0 +1,10 @@
+zookeeper.server.NIOServerCnxn WARN  - caught end of stream exception
+EndOfStreamException: Unable to read additional data from client sessionid 0x16972bc22fe0000, likely client has closed socket
+	at org.apache.zookeeper.server.NIOServerCnxn.doIO(NIOServerCnxn.java:228)
+	at org.apache.zookeeper.server.NIOServerCnxnFactory.run(NIOServerCnxnFactory.java:208)
+	at java.lang.Thread.run(Thread.java:748)
+zookeeper.server.NIOServerCnxn WARN  - caught end of stream exception
+EndOfStreamException: Unable to read additional data from client sessionid 0x16972bc22fe0001, likely client has closed socket
+	at org.apache.zookeeper.server.NIOServerCnxn.doIO(NIOServerCnxn.java:228)
+	at org.apache.zookeeper.server.NIOServerCnxnFactory.run(NIOServerCnxnFactory.java:208)
+	at java.lang.Thread.run(Thread.java:748)

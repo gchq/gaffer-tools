@@ -1,0 +1,1 @@
+core.conf.ConfigSanityCheck WARN  - Use of instance.dfs.uri and instance.dfs.dir are deprecated. Consider using instance.volumes instead.
