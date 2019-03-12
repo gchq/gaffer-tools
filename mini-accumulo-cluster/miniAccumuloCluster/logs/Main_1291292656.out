@@ -1,2 +1,0 @@
-core.conf.ConfigSanityCheck WARN  - Use of instance.dfs.uri and instance.dfs.dir are deprecated. Consider using instance.volumes instead.
-hadoop.util.NativeCodeLoader WARN  - Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
