@@ -166,24 +166,16 @@ function OperationChainController(operationChain, config, loading, query, error,
         .targetEvent(ev)
         .ok('Ok')
 
-        var operationName = window.prompt("Please enter a name for you operation chain", "Test Operation");
-
-        if (operationName != null) {
+        if (vm.operationName != null) {
             query.executeQuery(
                 {
                     class: ADD_NAMED_OPERATION_CLASS,
-                    operationName: operationName,
+                    operationName: vm.operationName,
                     operationChain: chain,
                     description: 'test description',
                     options: {},
                     score: 2,
                     overwriteFlag: true,
-                    // parameters : {
-                    //     value: 50,
-                    //     defaultValue: 30,
-                    //     valueClass: "Integer",
-                    //     parts: {},
-                    // }
                 },
                 function(data) {
                     // On success of saving operation chain
