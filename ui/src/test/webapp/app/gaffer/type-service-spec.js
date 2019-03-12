@@ -484,7 +484,7 @@ describe('The type service', function() {
         })
 
         it('should create a custom short value for custom types', function() {
-            var value = service.getShortValue({'com.clearspring.analytics.stream.cardinality.HyperLogLogPlus': { "hyperLogLogPlus": { "cardinality": 30 }}})
+            var value = service.getShortValue({'com.clearspring.analytics.stream.cardinality.HyperLogLogPlus': { "hyperLogLogPlus": { "cardinality": '30' }}})
             expect(value).toEqual('30');
         });
 
@@ -509,7 +509,7 @@ describe('The type service', function() {
         });
 
         it('should return singular value from objects containing only one value', function() {
-            var value = service.getShortValue({'com.clearspring.analytics.stream.cardinality.HyperLogLogPlus': { "hyperLogLogPlus": { "cardinality": '30' }}});
+            var value = service.getShortValue({'com.clearspring.analytics.stream.cardinality.HyperLogLogPlus': { "hyperLogLogPlus": { "cardinality": 30 }}});
             expect(value).toEqual(30);
         });
     });
