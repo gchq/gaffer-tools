@@ -5209,11 +5209,8 @@ class GafferOperationsTest(unittest.TestCase):
                 "matchMethod": {
                     "class": "uk.gov.gchq.gaffer.store.operation.handler.join.match.ElementMatch"
                 },
-                "mergeMethod": {
-                    "class": "uk.gov.gchq.gaffer.store.operation.handler.join.merge.ElementMerge",
-                    "resultsWanted": "KEY_ONLY"
-                },
-                "joinType": "FULL_INNER",
+                "flatten": false,
+                "joinType": "INNER",
                 "collectionLimit": 10
             }
             ''',
@@ -5221,9 +5218,43 @@ class GafferOperationsTest(unittest.TestCase):
                 input=['test2'], 
                 operation=g.GetElements(input=[g.EntitySeed('test')]), 
                 match_method=g.ElementMatch(),
-                merge_method=g.ElementMerge(results_wanted=g.ResultsWanted.KEY_ONLY),
-                join_type=g.JoinType.FULL_INNER,
+                flatten=False,
+                join_type=g.JoinType.INNER,
                 collection_limit=10)
+        ],
+        [
+            '''
+            {
+                "class": "uk.gov.gchq.gaffer.operation.impl.join.Join",
+                "input": [ "test2" ],
+                "operation": {
+                    "class": "uk.gov.gchq.gaffer.operation.impl.get.GetElements",
+                    "input": [
+                        {
+                            "class": "uk.gov.gchq.gaffer.operation.data.EntitySeed",
+                            "vertex": "test"
+                        }
+                    ]
+                },
+                "matchMethod": {
+                    "class": "uk.gov.gchq.gaffer.store.operation.handler.join.match.KeyFunctionMatch",
+                    "firstKeyFunction": {
+                        "class": "uk.gov.gchq.gaffer.data.element.function.ExtractId",
+                        "id": "DESTINATION"
+                    }
+                },
+                "matchKey": "RIGHT",
+                "flatten": false,
+                "joinType": "OUTER"
+            }
+            ''',
+            g.Join(
+                input=['test2'], 
+                operation=g.GetElements(input=[g.EntitySeed('test')]), 
+                match_method=g.KeyFunctionMatch(first_key_function=g.ExtractId("DESTINATION")),
+                match_key=g.MatchKey.RIGHT,
+                flatten=False,
+                join_type=g.JoinType.OUTER)
         ]
     ]
 
