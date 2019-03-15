@@ -32,7 +32,7 @@ function analytics() {
 function AnalyticsController(navigation) {
 
     var vm = this;
-    vm.analytics = ["awdawd","awdawdawd","okrokowjd"];
+    vm.analytics = ["Get Adjacent Ids","Get All Elements"];
 
     /**
      * Sets the previously run queries on initialisation

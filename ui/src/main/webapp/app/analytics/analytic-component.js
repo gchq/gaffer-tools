@@ -29,14 +29,15 @@ function analytic() {
     }   
 }
 
-function AnalyticController(navigation) {
+function AnalyticController(navigation, operationChain) {
 
     var vm = this;
 
     vm.$onInit = function() {
     }
 
-    vm.execute = function() {
+    vm.execute = function(analyticOption) {
         navigation.goTo('parameters');
+        operationChain.setAnalytic(analyticOption)
     }
 }

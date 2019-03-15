@@ -18,6 +18,7 @@
 
 angular.module('app').factory('operationChain', ['common', 'settings', 'events', function(common, settings, events) {
     var service = {};
+    var analyticChosen = '';
 
     var EVENT_NAME = 'onOperationUpdate';
 
@@ -59,6 +60,14 @@ angular.module('app').factory('operationChain', ['common', 'settings', 'events',
 
     service.setOperationChain = function(chain) {
         operations = chain;
+    }
+
+    service.setAnalytic = function(analytic) {
+        analyticChosen = analytic;
+    }
+
+    service.getAnalytic = function() {
+        return analyticChosen;
     }
 
     service.addInput = function(seed) {
