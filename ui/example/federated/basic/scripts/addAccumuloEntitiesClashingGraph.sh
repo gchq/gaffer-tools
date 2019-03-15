@@ -8,7 +8,7 @@ curl -X POST --header 'Content-Type: application/json' --header 'Accept: applica
          "accumulo.user":"user01",
          "accumulo.password":"password"
     },
-    "disabledByDefault": true,
+    "disabledByDefault": false,
     "schema": {
        "entities": {
          "BasicEntity": {

@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2018 Crown Copyright
+ * Copyright 2017-2019 Crown Copyright
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,7 +27,7 @@ function raw() {
     }
 }
 
-function RawController(operationService, results, query, error, events, schema) {
+function RawController(results, query, error, events, schema) {
     var vm = this
 
     vm.operationsForEdit = [];
@@ -35,10 +35,13 @@ function RawController(operationService, results, query, error, events, schema) 
     vm.operations = query.getOperations();
     vm.results = results.get();
 
-    vm.schema = {edges:{}, entities:{}};
+    vm.schema = {edges:{}, entities:{}, types: {}};
     vm.$onInit = function() {
         schema.get().then(function(gafferSchema) {
             vm.schema = gafferSchema;
+        },
+        function(err) {
+            vm.schema = {edges: {}, entities: {}, types: {}};
         });
     }
 

@@ -3,6 +3,17 @@ describe('The operation options service', function() {
 
     beforeEach(module('app'));
 
+    beforeEach(module(function($provide) {
+
+        $provide.factory('schema', function($q) {
+            return {
+                get: function() {
+                    return $q.when({});
+                }
+            }
+        });
+    }));
+
     beforeEach(inject(function(_operationOptions_) {
         service = _operationOptions_;
     }));
@@ -39,6 +50,78 @@ describe('The operation options service', function() {
             localValue = 'bar';
 
             expect(service.getDefaultConfiguration()).toEqual('foo');
+        });
+    });
+
+    describe('operationOptions.getDefaultOperationOptionsAsync()', function() {
+        var $rootScope, $httpBackend;
+
+        beforeEach(inject(function(_$rootScope_, _$httpBackend_) {
+            $rootScope = _$rootScope_;
+            $httpBackend = _$httpBackend_;
+        }));
+        
+        beforeEach(function() {
+            spyOn(service, 'extractOperationOptions').and.callThrough();
+        });
+
+
+        it('should wrap the operation options in an asynchronous wrapper', function() {
+            var existingDefault = {
+                visible: [
+                    {
+                        key: 'key',
+                        label: 'label',
+                        value: 'value'
+                    }
+                ]
+            }
+
+            service.setDefaultConfiguration(existingDefault);
+
+            service.getDefaultOperationOptionsAsync().then(function(defaultOptions) {
+                expect(defaultOptions).toEqual({'key': 'value'});
+            });
+
+            $rootScope.$digest();
+
+        });
+
+        it('should return a wrapped undefined value', function() {
+
+            service.setDefaultConfiguration(undefined);
+
+            service.getDefaultOperationOptionsAsync().then(function(defaultOptions) {
+                expect(defaultOptions).toEqual(undefined);
+            });
+
+            $rootScope.$digest();
+
+        });
+
+        it('should get the configuration and use the operation options if it is set to null', function() {
+            $httpBackend.whenGET('config/defaultConfig.json').respond(200, {});
+            $httpBackend.whenGET('config/config.json').respond(200, {
+                operationOptions: {
+                    visible: [
+                        {
+                            key: 'store.testoption',
+                            label: 'test option',
+                            value: 'test'
+                        }
+                    ]    
+                }
+            });
+
+            service.setDefaultConfiguration(null);
+
+            service.getDefaultOperationOptionsAsync().then(function(defaultOptions) {
+                expect(defaultOptions).toEqual({
+                    'store.testoption': 'test'
+                });
+            });
+
+            $httpBackend.flush();
         });
     });
 
