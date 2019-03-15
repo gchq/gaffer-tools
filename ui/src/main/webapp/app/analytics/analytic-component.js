@@ -23,6 +23,9 @@ function analytic() {
         templateUrl: 'app/analytics/analytic.html',
         controller: AnalyticController,
         controllerAs: 'ctrl',
+        bindings: {
+            model: '=',
+        }
     }   
 }
 
