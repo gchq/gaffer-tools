@@ -219,17 +219,6 @@ table md-input-container {
     margin: 0;
 }
 
-.sidenav .md-nav-bar {
-    border: none
-}
-
-.sidenav {
-    background-color: #F5F5F5;
-    overflow: auto;
-    color: #444;
-    border: none;
-}
-
 md-list-item.active button {
     background-color: rgba(0,0,0,0.2);
 }

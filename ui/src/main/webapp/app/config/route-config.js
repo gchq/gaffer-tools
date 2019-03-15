@@ -20,56 +20,23 @@ angular.module('app').config(['$locationProvider', '$routeProvider', function($l
     $locationProvider.html5Mode(false)
 
     $routeProvider
-        .when('/query', {
-            title: 'Query',
-            template: '<operation-chain></operation-chain>',
-            icon: 'query',
-            inNav: true
-        })
-        .when('/my-queries', {
-            title: 'My Queries',
+        .when('/start', {
+            title: 'Start',
             template: '<my-queries></my-queries>',
             icon: 'rerun',
             inNav: true
         })
-        .when('/table', {
-            title: 'Table',
-            template: '<results-table></results-table>',
-            icon: 'table',
-            inNav: true
-        })
-        .when('/graph', {
-            title: 'Graph',
-            template: '<graph-page></graph-page>',
-            icon: 'graph',
-            inNav: true
-        })
-        .when('/schema', {
-            title: 'Schema',
-            templateUrl: 'app/schema/schema-view-page.html',
-            icon: 'schema',
-            inNav: true
-        })
-        .when('/raw', {
-            title: 'Raw',
-            template: '<raw></raw>',
-            icon: 'raw',
-            inNav: true
-        })
-        .when('/settings', {
-            title: 'Settings',
-            template: '<settings-view></settings-view>',
-            icon: 'settings',
-            inNav: true
-        })
-        .when('/about', {
-            title: 'About',
-            template: '<about></about>',
-            icon: 'info',
+        .when('/input', {
+            title: 'Input',
+            template: '<operation-chain></operation-chain>',
+            icon: 'query',
             inNav: true
         })
         .when('/results', {
-            redirectTo: '/table'
+            title: 'Results',
+            template: '<results-table></results-table>',
+            icon: 'table',
+            inNav: true
         })
         .when('/', {
             redirectTo: '/query'
