@@ -1,5 +1,5 @@
 #
-# Copyright 2016-2018 Crown Copyright
+# Copyright 2016-2019 Crown Copyright
 #
 # Licensed under the Apache License, Version 2.0 (the 'License');
 # you may not use this file except in compliance with the License.
@@ -530,6 +530,26 @@ class GafferPredicatesTest(unittest.TestCase):
             )
         ],
         [
+                    '''
+                    {
+                        "class" : "uk.gov.gchq.koryphe.impl.predicate.If",
+                        "condition" : true,
+                        "then" : {
+                            "class" : "uk.gov.gchq.koryphe.impl.predicate.IsLongerThan",
+                            "minLength" : 20,
+                            "orEqualTo" : true
+                        }
+                    }
+                    ''',
+                    g.pred.If(
+                        condition=True,
+                        then=g.IsLongerThan(
+                            min_length=20,
+                            or_equal_to=True
+                        )
+                    )
+        ],
+        [
             '''
              {"class":"uk.gov.gchq.koryphe.impl.predicate.range.InTimeRangeDual","start":"2017/01/01","end":"2017/02/01","timeUnit":"MICROSECOND","startFullyContained":true,"endFullyContained":true,"timeZone":"Etc/GMT+0"}
             ''',
@@ -552,6 +572,23 @@ class GafferPredicatesTest(unittest.TestCase):
                 time_unit='MICROSECOND',
                 time_zone='Etc/GMT+0'
             )
+        ],
+        [
+            '''
+            {
+                "class": "uk.gov.gchq.gaffer.data.element.comparison.ElementJoinComparator"
+            }
+            ''',
+            g.ElementJoinComparator()
+        ],
+        [
+            '''
+            {
+                "class": "uk.gov.gchq.gaffer.data.element.comparison.ElementJoinComparator",
+                "groupByProperties": [ "test1", "test2" ]
+            }
+            ''',
+            g.ElementJoinComparator(group_by_properties=["test1", "test2"])
         ]
     ]
 

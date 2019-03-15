@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2018 Crown Copyright
+ * Copyright 2017-2019 Crown Copyright
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -57,7 +57,7 @@ function viewBuilder() {
     }
 }
 
-function ViewBuilderController(graph, common, schema, functions, events, types, $mdDialog) {
+function ViewBuilderController(schema, events, types, $mdDialog) {
     var vm = this;
 
     vm.schemaEntities;
@@ -86,6 +86,10 @@ function ViewBuilderController(graph, common, schema, functions, events, types, 
         schema.get().then(function(gafferSchema) {
             vm.schemaEdges = gafferSchema.edges;
             vm.schemaEntities = gafferSchema.entities;
+        },
+        function(err) {
+            vm.schemaEdges = {};
+            vm.schemaEntities = {};
         });
 
         angular.element(document).find('.search-box').on('keydown', function(ev) {

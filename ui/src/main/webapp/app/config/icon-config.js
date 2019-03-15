@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2018 Crown Copyright
+ * Copyright 2017-2019 Crown Copyright
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -44,8 +44,11 @@ angular.module('app').config(['$mdIconProvider', function($mdIconProvider) {
         .icon('expand-out', 'app/img/expand-out.svg')
         .icon('location-search', 'app/img/location-search.svg')
         .icon('clear-results', 'app/img/clear-results.svg')
-        .icon('rerun', 'app/img/rerun.svg')
+        .icon('rerun', 'app/img/material-icons/history.svg')
+        .icon('open-in-new', 'app/img/material-icons/open_in_new.svg')
         .icon('download', 'app/img/material-icons/get_app.svg')
         .icon('list', 'app/img/material-icons/list.svg')
-        .icon('edit', 'app/img/material-icons/edit.svg');
+        .icon('edit', 'app/img/material-icons/edit.svg')
+        .icon('hide', 'app/img/material-icons/visibility_off.svg')
+        .icon('clear', 'app/img/material-icons/clear.svg');
 }]);

@@ -1,5 +1,5 @@
 #
-# Copyright 2016-2018 Crown Copyright
+# Copyright 2016-2019 Crown Copyright
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -512,7 +512,25 @@ class ToInteger(AbstractFunction):
     def to_json(self):
         return super().to_json()
 
+class ToTypeSubTypeValue(AbstractFunction):
+    CLASS = "uk.gov.gchq.gaffer.types.function.ToTypeSubTypeValue"
+    
+    def __init__(self):
+        super().__init__(_class_name=self.CLASS)
 
+    def to_json(self):
+        return super().to_json()
+
+
+class ToTypeValue(AbstractFunction):
+    CLASS = 'uk.gov.gchq.gaffer.types.function.ToTypeValue'
+
+    def __init__(self):
+        super().__init__(_class_name=self.CLASS)
+
+    def to_json(self):
+        return super().to_json()
+      
 class Cast(AbstractFunction):
     CLASS = 'uk.gov.gchq.koryphe.impl.function.Cast'
 
@@ -599,7 +617,6 @@ class CsvGenerator(AbstractFunction):
 
         return function
 
-
 class FreqMapExtractor(AbstractFunction):
     CLASS = 'uk.gov.gchq.gaffer.types.function.FreqMapExtractor'
 
@@ -637,6 +654,13 @@ class ElementGenerator(Function):
         super().__init__(class_name=class_name, fields=fields)
 
 
+class JsonToElementGenerator(ElementGenerator):
+    CLASS = "uk.gov.gchq.gaffer.data.generator.JsonToElementGenerator"
+
+    def __init__(self):
+        super().__init__(class_name=self.CLASS)
+    
+
 class CallMethod(AbstractFunction):
     CLASS = 'uk.gov.gchq.koryphe.impl.function.CallMethod'
 
@@ -648,6 +672,7 @@ class CallMethod(AbstractFunction):
         function_json = super().to_json()
         function_json['method'] = self.method
         return function_json
+
 
 
 class If(AbstractFunction):
@@ -675,7 +700,108 @@ class If(AbstractFunction):
 
         return predicate_json
 
+class ToFreqMap(AbstractFunction):
+    CLASS = 'uk.gov.gchq.gaffer.types.function.ToFreqMap'
 
+    def __init__(self):
+        super().__init__(_class_name=self.CLASS)
+
+    def to_json(self):
+        return super().to_json()
+
+
+class FreqMapPredicator(AbstractFunction):
+    CLASS = "uk.gov.gchq.gaffer.types.function.FreqMapPredicator"
+
+    def __init__(self, predicate=None):
+        super().__init__(_class_name=self.CLASS)
+
+        if not isinstance(predicate, pred.Predicate):
+            self.predicate = JsonConverter.from_json(predicate, pred.Predicate)
+        else:
+            self.predicate = predicate
+    
+    def to_json(self):
+        predicate_json = super().to_json()
+        if self.predicate is not None:
+            predicate_json['predicate'] = self.predicate.to_json()
+
+        return predicate_json
+      
+      
+class MapFilter(AbstractFunction):
+    CLASS = "uk.gov.gchq.koryphe.impl.function.MapFilter"    
+
+    def __init__(self, key_predicate=None, value_predicate=None, key_value_predicate=None):
+        super().__init__(_class_name=self.CLASS)
+        self.key_predicate = pred.predicate_converter(key_predicate) if key_predicate is not None else None 
+        self.value_predicate = pred.predicate_converter(value_predicate) if value_predicate is not None else None
+        self.key_value_predicate = pred.predicate_converter(key_value_predicate) if key_value_predicate is not None else None
+
+    def to_json(self):
+        predicate_json = super().to_json()
+        if self.key_predicate is not None:
+            predicate_json["keyPredicate"] = self.key_predicate.to_json()
+        if self.value_predicate is not None:
+            predicate_json["valuePredicate"] = self.value_predicate.to_json()
+        if self.key_value_predicate is not None:
+            predicate_json["keyValuePredicate"] = self.key_value_predicate.to_json()
+            
+        return predicate_json
+
+      
+class IterableFilter(AbstractFunction):
+    CLASS = "uk.gov.gchq.koryphe.impl.function.IterableFilter"
+
+    def __init__(self, predicate=None):
+        super().__init__(_class_name=self.CLASS)
+        
+        if not isinstance(predicate, pred.Predicate):
+            self.predicate = JsonConverter.from_json(predicate, pred.Predicate)
+        else:
+            self.predicate = predicate
+
+    def to_json(self):
+        predicate_json = super().to_json()
+
+        if self.predicate is not None:
+            predicate_json['predicate'] = self.predicate.to_json()
+
+        return predicate_json
+
+      
+class ToList(AbstractFunction):
+    CLASS = 'uk.gov.gchq.koryphe.impl.function.ToList'
+
+    def __init__(self):
+        super().__init__(_class_name=self.CLASS)
+
+    def to_json(self):
+        return super().to_json()
+      
+
+      
+class ToSet(AbstractFunction):
+    CLASS = 'uk.gov.gchq.koryphe.impl.function.ToSet'
+
+    def __init__(self):
+        super().__init__(_class_name=self.CLASS)
+
+    def to_json(self):
+        return super().to_json()
+
+      
+class ToArray(AbstractFunction):
+    CLASS = 'uk.gov.gchq.koryphe.impl.function.ToArray'
+
+    def __init__(self):
+        super().__init__(_class_name=self.CLASS)
+
+    def to_json(self):
+        return super().to_json()
+      
+
+      
 def function_context_converter(obj):
     if 'class' in obj:
         function = dict(obj)
@@ -699,7 +825,7 @@ def function_context_converter(obj):
         function=function,
         projection=obj.get('projection')
     )
-
+        
 
 def function_converter(obj):
     if isinstance(obj, dict):
