@@ -27,6 +27,13 @@
             </includes>
         </fileSet>
         <fileSet>
+            <directory>../quickstart-core/src/federated/</directory>
+            <outputDirectory>federated</outputDirectory>
+            <includes>
+                <include>*</include>
+            </includes>
+        </fileSet>
+        <fileSet>
             <directory>../quickstart-core/src/example/</directory>
             <outputDirectory>example</outputDirectory>
         </fileSet>

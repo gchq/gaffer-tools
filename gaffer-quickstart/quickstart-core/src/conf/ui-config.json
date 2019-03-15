@@ -10,10 +10,15 @@
     },
     "defaultStyle": {
       "edges": {
-        "arrow-shape": "triangle"
+        "arrow-shape": "triangle",
+        "line-color": "#b70707",
+        "target-arrow-color": "#b70707",
+        "text-outline-color": "#b70707"
       },
       "vertices": {
-        "background-color": "#607d8b"
+        "background-color": "#ffffff",
+        "background-image": "app/img/material-icons/donut_large.svg",
+        "text-valign": "bottom"
       },
       "entityWrapper": {
         "height": 100,
@@ -21,7 +26,7 @@
         "border-width": 3
       }
     }
-},
+  },
   "types" : {
     "uk.gov.gchq.gaffer.time.RBMBackedTimestampSet" : {
       "fields" : [

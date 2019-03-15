@@ -8,7 +8,7 @@ else
     echo "GAFFER_HOME is $GAFFER_HOME"
 fi
 
-operationDeclarations="\ngaffer.store.operation.declarations=sparkAccumuloOperationsDeclarations.json,pySparkAccumuloOperationsDeclarations.json"
+operationDeclarations="\ngaffer.store.operation.declarations=sparkAccumuloOperationsDeclarations.json,pySparkAccumuloOperationsDeclarations.json,${GAFFER_HOME}/conf/operationDeclarations.json"
 pythonSerialisers="\npythonserialiser.declarations=${GAFFER_HOME}/conf/customPysparkSerialisers.json"
 
 HERE=$(pwd)
@@ -19,8 +19,6 @@ do
     echo -n "."
     sleep 0.5
 done
-
-#echo -e "\ngaffer.store.operation.declarations=${GAFFER_HOME}/conf/operationDeclarations.json" >> $GAFFER_HOME/miniaccumulo/store.properties
 
 echo -e "creating gaffer pyspark properties file at $GAFFER_HOME/miniaccumulo/pyspark.store.properties" >> $GAFFER_HOME/gaffer.log
 

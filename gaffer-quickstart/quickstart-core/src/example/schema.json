@@ -48,7 +48,7 @@
     "community": {
       "class" : "java.lang.String",
       "aggregateFunction": {
-        "class": "uk.gov.gchq.koryphe.impl.binaryoperator.Max"
+        "class": "uk.gov.gchq.koryphe.impl.binaryoperator.StringConcat"
       }
     },
     "count": {

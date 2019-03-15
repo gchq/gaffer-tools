@@ -12,6 +12,7 @@ SCHEMA=$GAFFER_HOME/example/schema.json
 GRAPHCONFIG=$GAFFER_HOME/example/graphconfig.json
 STOREPROPERTIES=$GAFFER_HOME/miniaccumulo/store.properties
 UICONFIG=$GAFFER_HOME/example/ui-config.json
+RESTCONFIG=$GAFFER_HOME/conf/restOptions.properties
 
 while [[ $# -gt 0 ]]; do
 	key="$1"
@@ -33,6 +34,10 @@ while [[ $# -gt 0 ]]; do
 			UICONFIG=$2
 			shift
 			;;
+		--rest-config|-u)
+			RESTCONFIG=$2
+			shift
+			;;
 	esac
 	shift
 done
@@ -42,7 +47,7 @@ source $GAFFER_HOME/bin/_version.sh
 
 $GAFFER_HOME/bin/_start_miniaccumulo.sh
 
-$GAFFER_HOME/bin/_start_web_services.sh -schema $SCHEMA -config $GRAPHCONFIG -store $STOREPROPERTIES -uiconfig $UICONFIG
+$GAFFER_HOME/bin/_start_web_services.sh -schema $SCHEMA -config $GRAPHCONFIG -store $STOREPROPERTIES -uiconfig $UICONFIG -restconfig $RESTCONFIG
 
 $GAFFER_HOME/bin/_configure_pyspark.sh
 

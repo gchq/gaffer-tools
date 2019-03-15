@@ -15,6 +15,7 @@ SCHEMA=
 GRAPH_CONFIG=
 STORE_PROPERTIES=
 UICONFIG=
+RESTCONFIG=
 UI_WAR=$GAFFER_HOME/lib/quickstart-ui-${VERSION}.war
 REST_WAR=$GAFFER_HOME/lib/quickstart-rest-${VERSION}.war
 
@@ -39,6 +40,10 @@ case $key in
     ;;
     -uiconfig)
     UICONFIG="$2"
+    shift # past argument
+    ;;
+    -restconfig)
+    RESTCONFIG="$2"
     shift # past argument
     ;;
     *)
@@ -74,28 +79,25 @@ else
     echo "using graph config at $GRAPH_CONFIG"
 fi
 
+
 echo -e "\ngaffer.store.operation.declarations=${GAFFER_HOME}/conf/operationDeclarations.json\n" >> $STORE_PROPERTIES
+echo -e "\ngaffer.serialisation.json.modules=uk.gov.gchq.gaffer.sketches.serialisation.json.SketchesJsonModules\n" >> $STORE_PROPERTIES
 
-
-java -cp "$GAFFER_HOME/lib/quickstart-core-${VERSION}.jar:$GAFFER_HOME/lib/*" uk.gov.gchq.gaffer.quickstart.web.GafferWebServices $SCHEMA $GRAPH_CONFIG $STORE_PROPERTIES $REST_WAR $UI_WAR >> $GAFFER_HOME/gaffer.log 2>&1 &
+java -cp "$GAFFER_HOME/lib/quickstart-core-${VERSION}.jar:$GAFFER_HOME/lib/*" uk.gov.gchq.gaffer.quickstart.web.GafferWebServices $SCHEMA $GRAPH_CONFIG $STORE_PROPERTIES $REST_WAR $UI_WAR $RESTCONFIG>> $GAFFER_HOME/gaffer.log 2>&1 &
 
 pid=`ps -ef | grep GafferWebServices | head -n 1 | awk '{print $2}'`
 
 echo $pid > $GAFFER_HOME/gafferwebservices.pid
 
 echo -e "Starting gaffer web services"
-
-counter=0
-while [ $counter -le 10 ]
-do
-    echo -n "."
-    sleep 0.5
-    ((counter++))
-done
-
-echo -e "\n"
-
 echo -e "setting ui config to ${UICONFIG}"
+
+until [ -f $GAFFER_HOME/gaffer_web_services_working/ui/config/config.json ]
+do
+     echo -n "."
+     sleep 0.5
+done
+echo -e "\n"
 
 cp $UICONFIG $GAFFER_HOME/gaffer_web_services_working/ui/config/config.json
 cp $GAFFER_HOME/conf/icons/* $GAFFER_HOME/gaffer_web_services_working/ui/app/img/

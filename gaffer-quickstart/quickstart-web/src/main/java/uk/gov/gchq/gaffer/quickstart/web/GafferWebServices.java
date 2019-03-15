@@ -18,8 +18,14 @@ package uk.gov.gchq.gaffer.quickstart.web;
 
 import org.apache.catalina.LifecycleException;
 import org.apache.catalina.startup.Tomcat;
+import org.apache.commons.io.FileUtils;
 
 import javax.servlet.ServletException;
+import java.io.File;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class GafferWebServices {
 
@@ -29,11 +35,14 @@ public class GafferWebServices {
     private String graphConfigPath;
     private String restWarPath;
     private String uiWarPath;
+    private String restOptionsPath;
+
+    private Map<String, String> restOptions;
 
 
     public static void main(final String[] args) throws ServletException, LifecycleException {
 
-        if (args.length != 5) {
+        if (args.length != 6) {
             throw new IllegalArgumentException("I need a schemaPath, graphConfigPath, storePropertiesPath, restWarPath and uiWarPath");
         }
 
@@ -44,6 +53,7 @@ public class GafferWebServices {
         gafferWebServices.setStorePropertiesPath(args[2]);
         gafferWebServices.setRestWarPath(args[3]);
         gafferWebServices.setUiWarPath(args[4]);
+        gafferWebServices.setRestOptionsPath(args[5]);
 
         gafferWebServices.startServer();
 
@@ -56,6 +66,8 @@ public class GafferWebServices {
     private void startServer() throws ServletException, LifecycleException {
 
         Runtime.getRuntime().addShutdownHook(new ServerShutDownHook());
+
+        restOptions = getRestOptions(restOptionsPath);
 
         Tomcat tomcat = new Tomcat();
         String gafferHome = System.getenv("GAFFER_HOME");
@@ -76,6 +88,11 @@ public class GafferWebServices {
         System.setProperty("gaffer.schemas", schemaPath);
         System.setProperty("gaffer.storeProperties", storePropertiesPath);
         System.setProperty("gaffer.graph.config", graphConfigPath);
+        System.setProperty("gaffer.serialiser.json.modules", "uk.gov.gchq.gaffer.sketches.serialisation.json.SketchesJsonModules");
+
+        for(String key : restOptions.keySet()){
+            System.setProperty(key, restOptions.get(key));
+        }
 
         tomcat.start();
         tomcat.getServer().await();
@@ -85,6 +102,22 @@ public class GafferWebServices {
         }
 
         System.exit(0);
+    }
+
+    private Map<String, String> getRestOptions(String restOptionsPath){
+        Map<String, String> result = new HashMap<>();
+        List<String> lines = null;
+        try {
+            lines = FileUtils.readLines(new File(restOptionsPath));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        for(String s : lines){
+            String[] t = s.split("=");
+            result.put(t[0], t[1]);
+        }
+        return result;
     }
 
     private class ServerShutDownHook extends Thread {
@@ -134,5 +167,13 @@ public class GafferWebServices {
 
     public void setUiWarPath(final String uiWarPath) {
         this.uiWarPath = uiWarPath;
+    }
+
+    public String getRestOptionsPath() {
+        return restOptionsPath;
+    }
+
+    public void setRestOptionsPath(String restOptionsPath) {
+        this.restOptionsPath = restOptionsPath;
     }
 }
