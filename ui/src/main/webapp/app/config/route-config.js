@@ -20,9 +20,9 @@ angular.module('app').config(['$locationProvider', '$routeProvider', function($l
     $locationProvider.html5Mode(false)
 
     $routeProvider
-        .when('/start', {
-            title: 'Start',
-            template: '<my-queries></my-queries>',
+        .when('/analytics', {
+            title: 'Analytics',
+            template: '<analytics></analytics>',
             icon: 'rerun',
             inNav: true
         })
