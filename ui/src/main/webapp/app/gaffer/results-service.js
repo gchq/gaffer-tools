@@ -33,6 +33,16 @@ angular.module('app').factory('results', ['events', function(events) {
         }
     }
 
+    var elementExistsInArray = function(array, element) {
+        return array && array.some(ele => JSON.stringify(element) === JSON.stringify(ele));
+    }
+
+    var addUniqueResult = function(results, newResult) {
+        if (results && !elementExistsInArray(results, newResult)) {
+            results.push(newResult);
+        }
+    }
+
     resultService.update = function(newResults) {
         var incomingResults = {
             entities: [], edges: [], other: []
@@ -60,38 +70,18 @@ angular.module('app').factory('results', ['events', function(events) {
                 if(result.class === "uk.gov.gchq.gaffer.data.element.Entity") {
                     if(result.vertex !== undefined && result.vertex !== '') {
                         incomingResults.entities.push(result);
-                        var toAdd = true;
-                        results.entities.forEach(function(element) {
-                            if(JSON.stringify(element) === JSON.stringify(result)) {
-                                toAdd = false;
-                            }
-                        });
-                        if (toAdd)
-                            results.entities.push(result);
+                        addUniqueResult(results.entities, result);
                     }
                 } else if(result.class === "uk.gov.gchq.gaffer.data.element.Edge") {
                     if(result.source !== undefined && result.source !== ''
                     && result.destination !== undefined && result.destination !== '') {
                         incomingResults.edges.push(result);
-                        var toAdd = true;
-                        results.edges.forEach(function(element) {
-                            if(JSON.stringify(element) === JSON.stringify(result)) {
-                                toAdd = false;
-                            }
-                        });
-                        if (toAdd)
-                            results.edges.push(result);
+                        addUniqueResult(results.edges, result);
                     }
                 } else {
                     incomingResults.other.push(result)
                     var toAdd = true;
-                        results.other.forEach(function(element) {
-                            if(JSON.stringify(element) === JSON.stringify(result)) {
-                                toAdd = false;
-                            }
-                        });
-                        if (toAdd)
-                            results.other.push(result);
+                    addUniqueResult(results.other, result);
                 }
             }
             events.broadcast('incomingResults', [incomingResults]);
