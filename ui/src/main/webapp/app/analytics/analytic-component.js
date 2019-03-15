@@ -16,32 +16,24 @@
 
 'use strict';
 
-angular.module('app').component('analytics', analytics())
+angular.module('app').component('analytic', analytic())
 
-function analytics() {
+function analytic() {
     return {
-        templateUrl: 'app/analytics/analytics.html',
-        controller: AnalyticsController,
+        templateUrl: 'app/analytics/analytic.html',
+        controller: AnalyticController,
         controllerAs: 'ctrl',
-        bindings: {
-            model: '=',
-        }
     }   
 }
 
-function AnalyticsController(navigation) {
+function AnalyticController(navigation) {
 
     var vm = this;
-    vm.analytics = ["awdawd","awdawdawd","okrokowjd"];
 
-    /**
-     * Sets the previously run queries on initialisation
-     */
     vm.$onInit = function() {
-        //vm.analytics = analytics.getAnalytics();
     }
 
-    /**
-     * Resets the operation chain builder and navigates to it
-     */
+    vm.execute = function() {
+        navigation.goToQuery();
+    }
 }
