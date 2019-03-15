@@ -1,8 +1,0 @@
-version: "3"
-
-services:
-    gaffer-quickstart:
-        image: "gaffer-quickstart-pyspark"
-        ports:
-          - "8085:8085"
-          - "8888:8888"
