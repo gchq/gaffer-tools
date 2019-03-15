@@ -34,7 +34,9 @@ angular.module('app').factory('results', ['events', function(events) {
     }
 
     var elementExistsInArray = function(array, element) {
-        return array && array.some(ele => JSON.stringify(element) === JSON.stringify(ele));
+        return array && array.some(function(ele) { 
+            JSON.stringify(element) === JSON.stringify(ele);
+        });
     }
 
     var addUniqueResult = function(results, newResult) {
