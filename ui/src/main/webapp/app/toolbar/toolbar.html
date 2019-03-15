@@ -21,25 +21,6 @@
         <logo></logo>
         <h1 class="md-headline title">{{::ctrl.appTitle}}</h1>
         <span flex></span>
-        <quick-query flex></quick-query>
         <loading-circle></loading-circle>
-        <md-button class="md-icon-button md-primary"
-                   id="rerun"
-                   aria-label="Rerun operations"
-                   ng-click="ctrl.executeAll()">
-            <md-icon md-svg-icon="rerun"></md-icon>
-            <md-tooltip md-direction="bottom">
-                Rerun operations
-            </md-tooltip>
-        </md-button>
-        <md-button class="md-icon-button md-primary"
-                   id="clear-results"
-                   aria-label="Clear results"
-                   ng-click="ctrl.clearResults()">
-            <md-icon md-svg-icon="clear-results"></md-icon>
-            <md-tooltip md-direction="bottom">
-                Clear results
-            </md-tooltip>
-        </md-button>
     </div>
 </md-toolbar>
