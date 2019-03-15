@@ -1,0 +1,26 @@
+<ng-form name="ctrl.dateForm">
+    <div layout="row" flex>
+        <md-input-container>
+            <label>{{ctrl.name}}</label>
+            <md-datepicker ng-required="ctrl.param.required" aria-label="date" name="date" ng-model="ctrl.date" ng-change="ctrl.onUpdate()" md-date-locale="ctrl.localeProviderOverride"></md-datepicker>
+            <div ng-messages="ctrl.dateForm.date.$error">
+                <div ng-message="required">Please select a date</div>
+            </div>
+        </md-input-container>
+        <md-input-container>
+            <md-select ng-required="ctrl.param.required && !ctrl.showTime" name="timeSelect" ng-hide="ctrl.showTime" ng-model="ctrl.selectedTime" ng-change="ctrl.onUpdate()" placeholder="At what time?">
+                <md-option ng-repeat="time in ctrl.availableTimes" ng-value="time">{{time}}</md-option>
+            </md-select>
+            <div ng-messages="ctrl.dateForm.timeSelect.$error">
+                <div ng-message="required">Please select a time</div>
+            </div>
+        </md-input-container>
+        <md-input-container ng-required="ctrl.param.required" ng-if="ctrl.showTime">
+            <md-icon md-svg-icon="schedule"></md-icon>
+            <input aria-label="time" name="time" ng-model="ctrl.time" ng-model-options="{ timezone: 'UTC', updateOn: 'blur' }" step="1" type="time" ng-change="ctrl.onUpdate()"/>
+            <div ng-messages="ctrl.dateForm.time.$error">
+                <div ng-message="required">Please choose a time</div>
+            </div>
+        </md-input-container>
+    </div>
+</ng-form>

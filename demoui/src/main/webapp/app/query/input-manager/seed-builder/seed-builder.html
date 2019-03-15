@@ -1,0 +1,18 @@
+<div layout="column">
+    <ng-form name="ctrl.seedForm">
+        <md-input-container id="Multiple Seed input" class="md-block" flex md-no-float>
+            <textarea id="seedVertices"
+                        rows="6"
+                        name="multiSeedInput"
+                        md-no-autogrow
+                        ng-disabled="ctrl.usePrevious"
+                        ng-model="ctrl.seedVertices"
+                        ng-blur="ctrl.addSeeds()"
+                        placeholder="{{ctrl.getPlaceHolder()}}">
+            </textarea>
+            <div ng-messages="ctrl.seedForm.multiSeedInput.$error">
+                <div ng-message="csv">Your CSV is invalid</div>
+            </div>
+        </md-input-container>
+    </ng-form>
+</div>

@@ -1,0 +1,55 @@
+<div layout="row" layout-padding flex class="abs-full-page">
+    <div flex="70" layout="row" layout-align="end start">
+        <md-card class="on-top-of-graph">
+            <md-input-container md-no-float class="no-margin">
+                <input placeholder="Vertex search"
+                       ng-model="ctrl.searchTerm"
+                       type="text"
+                       ng-change="ctrl.search()"
+                       class="no-border">
+            </md-input-container>
+        </md-card>
+    </div>
+</div>
+
+<div layout="row" layout-padding flex class="abs-full-page">
+    <div flex="70" layout="row" layout-align="end end">
+        <div layout="row" class="on-top-of-graph">
+            <md-button class="md-fab md-mini" id="new-query"
+                       ng-click="ctrl.goToQuery()">
+                <md-icon md-svg-icon="query"></md-icon>
+                <md-tooltip md-direction="top">
+                    New query
+                </md-tooltip>
+            </md-button>
+            <md-button class="md-fab md-mini" id="quick-hop"
+                       ng-click="ctrl.quickHop()">
+                <md-icon md-svg-icon="expand-out"></md-icon>
+                <md-tooltip md-direction="top">
+                    Quick hop out from the selected vertices
+                </md-tooltip>
+            </md-button>
+            <md-button class="md-fab md-mini" id="remove"
+                       ng-click="ctrl.remove()">
+                <md-icon md-svg-icon="delete"></md-icon>
+                <md-tooltip md-direction="top">
+                    Remove selected elements
+                </md-tooltip>
+            </md-button>
+            <md-button class="md-fab md-mini" id="redraw"
+                       ng-click="ctrl.redraw()">
+                <md-icon md-svg-icon="redraw"></md-icon>
+                <md-tooltip md-direction="top">
+                    Redraw the graph
+                </md-tooltip>
+            </md-button>
+            <md-button class="md-fab md-mini" id="reset"
+                       ng-click="ctrl.reset()">
+                <md-icon md-svg-icon="restore"></md-icon>
+                <md-tooltip md-direction="top">
+                    Reset the graph
+                </md-tooltip>
+            </md-button>
+        </div>
+    </div>
+</div>

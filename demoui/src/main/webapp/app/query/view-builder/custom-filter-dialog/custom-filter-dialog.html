@@ -1,0 +1,92 @@
+<md-dialog>
+    <md-toolbar>
+        <div class="md-toolbar-tools">
+            <span>
+                <h2 class="md-headline">Configure Custom Filter</h2>
+            </span>
+        </div>
+    </md-toolbar>
+    <md-dialog-content>
+        <div class="md-dialog-content">
+            <ng-form name="filterForm">
+                <md-input-container layout-fill flex>
+                    <md-select required
+                               id="property-selector"
+                               ng-model="filter.property"
+                               ng-change="onSelectedPropertyChange()"
+                               md-selected-text="getPropertySelectLabel()"
+                               aria-label="filter property picker">
+                        <md-option ng-repeat="(name, type) in getProperties()" ng-value="name" aria-label="{{name}}">
+                            <div class="md-body-2">{{name}}</div>
+                            <em ng-if="schema.types[type].description" class="md-body-1">{{schema.types[type].description}}</em>
+                        </md-option>
+                    </md-select>
+                </md-input-container>
+                <md-autocomplete
+                        required
+                        ng-disabled="!filter.property"
+                        md-selected-item="filter.predicate"
+                        md-selected-item-change="onSelectedPredicateChange()"
+                        md-search-text="predicateText"
+                        md-min-length="0"
+                        md-items="predicate in search(predicateText)"
+                        md-item-text="createFriendlyName(predicate)"
+                        md-floating-label="Select Filter"
+                        md-require-match
+                        md-select-on-focus
+                        md-input-id="predicate-autocomplete"
+                        md-no-cache
+                        class="small-input-container"
+                        md-autoselect>
+                    <md-item-template>
+                        <span md-highlight-text="predicateText"
+                              md-highlight-flags="^i">{{createFriendlyName(predicate)}}</span>
+                    </md-item-template>
+                    <md-not-found>
+                        No predicates matching {{predicateText}} were found.
+                    </md-not-found>
+                </md-autocomplete>
+                <div layout="row" layout-wrap>
+                    <div ng-repeat="(param, valueClass) in filter.availableFunctionParameters" flex="{{getFlexValue(valueClass)}}">
+                        <div layout="row">
+                            <md-input-container ng-if="hasMultipleTypesAvailable(valueClass)" flex="30" class="padding sides small-input-container">
+                                <label>{{param}} class</label>
+                                <md-select required id="{{param}}-type-selector"
+                                           ng-model="filter.parameters[param]['valueClass']"
+                                           ng-change="updateType(filter.parameters[param])">
+                                    <md-option
+                                            ng-repeat="(simpleType, type) in availableTypes(valueClass)"
+                                            ng-value="type">{{simpleType}}
+                                    </md-option>
+                                </md-select>
+                            </md-input-container>
+                            <dynamic-input param="filter.parameters[param]" name="param" class="padding-sides" flex></dynamic-input>
+                        </div>
+                    </div>
+                </div>
+
+                <p class="md-body-1">Apply filter before or after results are
+                    summarised?</p>
+                <md-radio-group layout="row" ng-model="filter.preAggregation">
+                    <md-radio-button ng-value="true" id="before-aggregation"
+                                     aria-label="before">Before
+                    </md-radio-button>
+                    <md-radio-button ng-value="false" id="after-aggregation"
+                                     aria-label="after">After
+                    </md-radio-button>
+                </md-radio-group>
+            </ng-form>
+        </div>
+    </md-dialog-content>
+    <md-dialog-actions layout="row" layout-align="end">
+        <md-button id="cancel" ng-click="cancel()">Cancel</md-button>
+        <md-button id="clear" ng-click="resetForm()">Clear</md-button>
+        <md-button id="add-another" ng-if="!editMode"
+                   ng-disabled="filterForm.$invalid" ng-click="addAnother()">Add
+            Another
+        </md-button>
+        <md-button id="submit" ng-disabled="filterForm.$invalid"
+                   ng-click="submit()" class="md-primary">Submit
+        </md-button>
+    </md-dialog-actions>
+</md-dialog>

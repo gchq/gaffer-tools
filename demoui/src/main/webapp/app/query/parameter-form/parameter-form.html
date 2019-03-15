@@ -1,0 +1,21 @@
+<div layout="column" layout-margin>
+    <ng-form name="ctrl.parameterForm" layout-margin>
+        <h3 class="{{ctrl.titleClass}}">{{ctrl.title}}</h3>
+        <div ng-if="ctrl.title == 'Parameters'">
+            <div layout="column">
+                <div ng-repeat="(name, param) in ctrl.parameters" flex="noshrink">
+                    <dynamic-input name="name" param="param" date-unit="ctrl.getTimeUnit(name)">
+                    </dynamic-input>
+                </div>
+            </div>
+        </div>
+        <div ng-if="ctrl.title != 'Parameters'">
+            <div layout-wrap layout="row">
+                <div ng-repeat="(name, param) in ctrl.parameters" flex="noshrink">
+                    <dynamic-input name="name" param="param" date-unit="ctrl.getTimeUnit(name)">
+                    </dynamic-input>
+                </div>
+            </div>
+        </div>
+    </ng-form>
+</div>

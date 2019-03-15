@@ -1,0 +1,130 @@
+<!--
+  ~ Copyright 2017-2019 Crown Copyright
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+<div ng-cloak>
+
+    <md-tabs md-max-height md-dynamic-height md-border-bottom>
+        <md-tab label="Query" md-on-select="ctrl.setCurrentTab('query')">
+            <md-tab-body>
+                <div layout-padding layout-margin>
+                    <h3>
+                        Operations
+
+                        <md-button class="md-icon-button md-primary"
+                                   ng-show="!ctrl.editingOperations"
+                                   aria-label="edit operations"
+                                   ng-click="ctrl.editOperations()">
+                            <md-icon md-svg-icon="edit"></md-icon>
+                            <md-tooltip md-direction="top">
+                                Edit operations
+                            </md-tooltip>
+                        </md-button>
+                        <md-button class="md-icon-button md-primary"
+                                   id="clear-all"
+                                   ng-click="ctrl.clearAllOperations()">
+                            <md-icon md-svg-icon="delete"></md-icon>
+                            <md-tooltip md-direction="top">
+                                Clear all operations
+                            </md-tooltip>
+                        </md-button>
+
+                    </h3>
+                    <div layout="column" ng-show="!ctrl.editingOperations"
+                         ng-repeat="(i, operation) in ctrl.operations track by $index">
+                        <md-card>
+                            <md-card-content>
+                                <pre id="operation-{{i}}-json">{{ctrl.operations[i] | json}}</pre>
+                            </md-card-content>
+                        </md-card>
+                    </div>
+                    <div layout="column" ng-show="ctrl.editingOperations"
+                         ng-repeat="(i, json) in ctrl.operationsForEdit track by $index">
+                        <md-input-container>
+                            <textarea id="editing-operation-{{i}}-json"
+                                      aria-label="operation {{i + 1}}"
+                                      md-detect-hidden
+                                      rows="5"
+                                      ng-model="ctrl.operationsForEdit[i]">
+                            </textarea>
+                        </md-input-container>
+                    </div>
+                    <md-button class="md-primary"
+                               ng-show="ctrl.editingOperations"
+                               aria-label="add operation"
+                               ng-click="ctrl.addOperation()">
+                        Add Operation
+                    </md-button>
+                </div>
+            </md-tab-body>
+        </md-tab>
+        <md-tab label="Results" md-on-select="ctrl.setCurrentTab('results')">
+            <md-tab-body layout-padding>
+                <md-card>
+                    <md-card-title>
+                        <md-card-title-text>
+                            <span class="md-headline">Entities</span>
+                        </md-card-title-text>
+                    </md-card-title>
+                    <md-card-content>
+                        <p ng-show="!ctrl.results.entities.length">No
+                            Entities</p>
+                        <pre ng-show="ctrl.results.entities.length"
+                             id="raw-entity-results">{{ctrl.results.entities | json}}</pre>
+                    </md-card-content>
+                </md-card>
+
+                <md-card>
+                    <md-card-title>
+                        <md-card-title-text>
+                            <span class="md-headline">Edges</span>
+                        </md-card-title-text>
+                    </md-card-title>
+                    <md-card-content>
+                        <p ng-show="!ctrl.results.edges.length">No Edges</p>
+                        <pre ng-show="ctrl.results.edges.length"
+                             id="raw-edge-results">{{ctrl.results.edges | json}}</pre>
+                    </md-card-content>
+                </md-card>
+
+                <md-card>
+                    <md-card-title>
+                        <md-card-title-text>
+                            <span class="md-headline">Other</span>
+                        </md-card-title-text>
+                    </md-card-title>
+                    <md-card-content>
+                        <p ng-show="!ctrl.results.other.length">No Other
+                            Objects</p>
+                        <pre ng-show="ctrl.results.other.length"
+                             id="raw-other-results">{{ctrl.results.other | json}}</pre>
+                    </md-card-content>
+                </md-card>
+            </md-tab-body>
+        </md-tab>
+        <md-tab label="Schema" md-on-select="ctrl.setCurrentTab('schema')">
+            <md-tab-body layout-padding>
+                <div layout-padding layout-margin>
+                    <pre>{{ctrl.schema | json}}</pre>
+                </div>
+            </md-tab-body>
+        </md-tab>
+    </md-tabs>
+    <md-button class="md-accent md-fab md-fab-bottom-right submit-bottom-right"
+               ng-show="ctrl.isEditingOperations()"
+               aria-label="save operations"
+               ng-click="ctrl.saveOperations()">
+        <md-icon md-svg-icon="save"></md-icon>
+    </md-button>
+</div>

@@ -1,0 +1,55 @@
+<!--
+  ~ Copyright 2017-2019 Crown Copyright
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<md-nav-bar
+        aria-label="side navigation"
+        class="md-sidenav-left sidenav"
+        md-component-id="left"
+        ng-style="ctrl.collapsed && {width:'64px'} || {width:'12em'}"
+        ng-cloak>
+
+    <md-list flex>
+        <md-list-item
+                id="open-{{route.substr(1)}}"
+                aria-label="{{data.title}}"
+                ng-click="ctrl.goTo(route)"
+                ng-class="{active: ctrl.isActive(route)}"
+                ng-if="data.inNav"
+                ng-repeat="(route, data) in ctrl.routes">
+            <md-icon md-svg-icon="{{data.icon}}"></md-icon>
+            <p ng-if="!ctrl.collapsed">{{data.title}}</p>
+            <md-tooltip md-direction="right" ng-if="ctrl.collapsed">
+                {{data.title}}
+            </md-tooltip>
+        </md-list-item>
+
+        <md-divider></md-divider>
+        <md-list-item
+                ng-if="!ctrl.collapsed"
+                aria-label="Collapse"
+                ng-click="ctrl.collapse()">
+            <md-icon md-svg-icon="left-arrow"></md-icon>
+            <p>Collapse</p>
+        </md-list-item>
+        <md-list-item
+                ng-if="ctrl.collapsed"
+                aria-label="Collapse"
+                ng-click="ctrl.expand()">
+            <md-icon md-svg-icon="right-arrow"></md-icon>
+            <md-tooltip>Expand</md-tooltip>
+        </md-list-item>
+    </md-list>
+</md-nav-bar>

@@ -1,0 +1,57 @@
+<div ng-repeat="namedView in ctrl.model track by $index">
+    <div layout="row">
+        <div ng-if="ctrl.namedViewHasParams(namedView)" flex="80">
+            <parameter-form title="{{namedView.name}} parameters"
+                            title-class="transparent md-no-sticky md-subheader layout-padding"
+                            parameters="namedView.parameters"></parameter-form>
+        </div>
+        <div ng-if="ctrl.namedViewHasNoParams(namedView)" flex="80">
+            <h4 class="md-subhead">{{namedView.name}} requires no user input</h4>
+        </div>
+        <div layout="column" layout-align="center center" flex>
+            <md-button class="md-icon-button" aria-label="Delete filter" ng-click="ctrl.deleteFilter($index)">
+                <md-icon md-svg-icon="delete"></md-icon>
+                <md-tooltip md-direction="bottom">Remove Filter</md-tooltip>
+            </md-button>
+        </div>
+    </div>
+</div>
+<div layout="row" layout-margin>
+    <md-autocomplete
+            ng-disabled="ctrl.isDisabled()"
+            md-selected-item="ctrl.selectedNamedView"
+            md-selected-item-change="ctrl.updateModel()"
+            md-search-text="ctrl.namedViewSearchTerm"
+            md-item-text="namedView.name"
+            md-min-length="0"
+            aria-label="named views picker"
+            md-items="namedView in ctrl.search(ctrl.namedViewSearchTerm)"
+            placeholder="{{ctrl.getPlaceholder()}}"
+            md-select-on-focus
+            md-autoselect
+            md-no-cache
+            md-input-id="named-views-autocomplete"
+            md-menu-class="named-view-template"
+            flex>
+        <md-item-template>
+            <span>
+                <div md-highlight-text="ctrl.namedViewSearchTerm" md-highlight-flags="i" class="md-body-2">{{namedView.name}}</div>
+                <em md-highlight-text="ctrl.namedViewSearchTerm" md-highlight-flags="i" class="md-body-1">{{namedView.description}}</em>
+            </span>
+        </md-item-template>
+        <md-not-found>
+            <span class="md-body-2">
+                No existing filters matching "{{ctrl.namedViewSearchTerm}}" were found.
+            </span>
+        </md-not-found>
+    </md-autocomplete>
+
+    <div layout="column" layout-align="center">
+        <md-button class="md-icon-button"
+                   ng-click="ctrl.refreshNamedViews()">
+            <md-tooltip>Refresh named views</md-tooltip>
+            <md-icon md-svg-icon="refresh"></md-icon>
+        </md-button>
+    </div>
+</div>
+

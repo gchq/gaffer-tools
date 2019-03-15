@@ -1,0 +1,14 @@
+<md-card ng-if="!ctrl.disableFeature">
+    <form>
+        <div layout="row">
+            <md-input-container flex class="no-errors no-margin" md-no-float>
+                <input class="no-border" placeholder="{{ctrl.placeholder}}" ng-model="ctrl.searchText" class="quick-query-search" flex type="search"/>
+            </md-input-container>
+            <md-button type="submit" class="md-icon-button" ng-click="ctrl.search()" ng-disabled="!ctrl.query">
+                <md-icon class="search-icon" md-svg-icon="query"></md-icon>
+                <md-tooltip>{{ctrl.description}}</md-tooltip>
+            </md-button>
+        </div>
+    </form>
+</md-card>
+        

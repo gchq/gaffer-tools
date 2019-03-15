@@ -1,0 +1,95 @@
+<ng-form name="ctrl.dateForm">
+    <div layout="row" layout-align="start center">
+        <h3 class="md-title no-margin">Inclusive time range (UTC)</h3>
+    </div>
+    
+    <div layout-gt-lg="row" layout="column">
+        <div layout="row">
+            <md-menu ng-if="ctrl.presets" class="icon-inline-with-input">
+                <md-button class="md-icon-button no-side-margin" ng-click="$mdMenu.open($event)"  >
+                    <md-icon md-menu-origin md-svg-icon="list"></md-icon>
+                    <md-tooltip>Use presets for start date</md-tooltip>
+                </md-button>
+                <md-menu-content width="4">
+                    <md-menu-item ng-repeat="(name, value) in ctrl.presets">
+                        <md-button ng-click="ctrl.updateStartDate(value)">
+                            {{ name }}
+                        </md-button>
+                    </md-menu-item>
+                </md-menu-content>
+            </md-menu>
+            <md-input-container>
+                <label>Start Date</label>
+                <md-datepicker ng-model="ctrl.startDate" name="startDate"
+                               id="start-date"
+                               ng-change="ctrl.onStartDateUpdate()"
+                               md-date-locale="ctrl.localeProviderOverride"></md-datepicker>
+                <div ng-messages="ctrl.dateForm.startDate.$error">
+                    <div ng-message="valid">The start date entered is invalid.
+                        Use YYYY-MM-DD format
+                    </div>
+                </div>
+            </md-input-container>
+            <md-input-container>
+                <input ng-model="ctrl.startTime"
+                       ng-model-options="{ timezone: 'UTC', updateOn: 'default blur', debounce: { 'default': 500,'blur': 0}}"
+                       aria-label="start time (hh:mm:ss)"
+                       ng-disabled="!ctrl.startDate"
+                       type="time"
+                       id="start-time"
+                       step="1"
+                       name="startTime"
+                       ng-change="ctrl.onStartDateUpdate()">
+
+                <div ng-messages="ctrl.dateForm.startTime.$error">
+                    <div ng-message="time">The start time is invalid. Use format
+                        hh:mm:ss
+                    </div>
+                </div>
+            </md-input-container>
+        </div>
+        <div layout="row">
+            <md-menu ng-if="ctrl.presets" class="icon-inline-with-input">
+                <md-button class="md-icon-button no-side-margin" ng-click="$mdMenu.open($event)"  >
+                    <md-icon md-menu-origin md-svg-icon="list"></md-icon>
+                    <md-tooltip>Use presets for end date</md-tooltip>
+                </md-button>
+                <md-menu-content width="4">
+                    <md-menu-item ng-repeat="(name, value) in ctrl.presets">
+                        <md-button ng-click="ctrl.updateEndDate(value)">
+                            {{ name }}
+                        </md-button>
+                    </md-menu-item>
+                </md-menu-content>
+            </md-menu>
+            <md-input-container>
+                <label>End Date</label>
+                <md-datepicker ng-model="ctrl.endDate" name="endDate"
+                               id="end-date" ng-change="ctrl.onEndDateUpdate()"
+                               md-date-locale="ctrl.localeProviderOverride"></md-datepicker>
+                <div ng-messages="ctrl.dateForm.endDate.$error">
+                    <div ng-message="valid">The end date entered is invalid. Use
+                        YYYY-MM-DD format
+                    </div>
+                </div>
+            </md-input-container>
+            <md-input-container>
+                <input ng-model="ctrl.endTime"
+                       ng-model-options="{ timezone: 'UTC', updateOn: 'default blur', debounce: { 'default': 500,'blur': 0}}"
+                       aria-label="end time (hh:mm:ss)"
+                       ng-disabled="!ctrl.endDate"
+                       type="time"
+                       id="end-time"
+                       step="1"
+                       name="endTime"
+                       ng-change="ctrl.onEndDateUpdate()">
+
+                <div ng-messages="ctrl.dateForm.endTime.$error">
+                    <div ng-message="time">The end time is invalid. Use format
+                        hh:mm:ss
+                    </div>
+                </div>
+            </md-input-container>
+        </div>
+    </div>
+</ng-form>

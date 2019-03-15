@@ -1,0 +1,90 @@
+<md-card layout-fill class="content">
+    <md-toolbar>
+        <div class="md-toolbar-tools">
+            <h3>
+                <span>Selected Element Groups</span>
+            </h3>
+        </div>
+    </md-toolbar>
+
+    <!--selectedGroups: {{ctrl.selectedGroups}}-->
+    <md-content layout-padding class="transparent">
+        <p ng-if="ctrl.selectedEntities.length === 0 && ctrl.selectedEdges.length === 0">
+            No element groups
+        </p>
+
+        <div ng-if="ctrl.selectedEntities.length > 0">
+            <div ng-repeat="entity in ctrl.selectedEntities">
+                <h3>{{entity.group}}</h3>
+
+                <p>{{entity.description}}</p>
+
+                <div>Vertex: {{entity.vertex.name}}
+                    <md-tooltip md-direction="top" ng-if="entity.vertex.description">
+                        {{entity.vertex.description}}
+                    </md-tooltip>
+                </div>
+
+
+                <div ng-if="entity.properties.length > 0">
+                    Properties:
+                    <ul class="no-margin">
+                        <li ng-repeat="prop in entity.properties">
+                            {{prop.name}}
+                            <md-tooltip md-direction="top" ng-if="prop.description">
+                                {{prop.description}}
+                            </md-tooltip>
+                        </li>
+                    </ul>
+                </div>
+
+                <div ng-if="entity.groupBy">
+                    Group by properties: {{entity.groupBy}}
+                </div>
+            </div>
+        </div>
+
+
+        <div ng-if="ctrl.selectedEdges.length > 0">
+            <div ng-repeat="edge in ctrl.selectedEdges">
+                <h3>{{edge.group}}</h3>
+
+                <p>{{edge.description}}</p>
+
+                <div>Source: {{edge.source.name}}
+                    <md-tooltip md-direction="top" ng-if="edge.source.description">
+                        {{edge.source.description}}
+                    </md-tooltip>
+                </div>
+
+                <div>Destination: {{edge.destination.name}}
+                    <md-tooltip md-direction="top" ng-if="edge.destination.description">
+                        {{edge.destination.description}}
+                    </md-tooltip>
+                </div>
+
+                <div>Directed: {{edge.directed.name}}
+                    <md-tooltip md-direction="top" ng-if="edge.directed.description">
+                        {{edge.directed.description}}
+                    </md-tooltip>
+                </div>
+
+                <div ng-if="edge.properties.length > 0">
+                    Properties:
+                    <ul class="no-margin">
+                        <li ng-repeat="prop in edge.properties">
+                            {{prop.name}}
+                            <md-tooltip md-direction="top" ng-if="prop.description">
+                                {{prop.description}}
+                            </md-tooltip>
+                        </li>
+                    </ul>
+                </div>
+
+                <div ng-if="edge.groupBy">
+                    Group by properties: {{edge.groupBy}}
+                </div>
+            </div>
+        </div>
+    </md-content>
+</md-card>

@@ -1,0 +1,18 @@
+<div layout="column">
+    <ng-form name="ctrl.pairForm">
+        <md-input-container id="Multiple Seed input" class="md-block" flex md-no-float>
+            <textarea id="pairs-input"
+                        rows="6"
+                        name="seedPairInput"
+                        md-no-autogrow
+                        ng-disabled="ctrl.usePrevious"
+                        ng-model="ctrl.pairs"
+                        ng-blur="ctrl.addPairs()"
+                        placeholder="{{ctrl.getPlaceHolder()}}">
+            </textarea>
+            <div ng-messages="ctrl.pairForm.seedPairInput.$error">
+                <div ng-message="csv">Your CSV is invalid</div>
+            </div>
+        </md-input-container>
+    </ng-form>
+</div>
