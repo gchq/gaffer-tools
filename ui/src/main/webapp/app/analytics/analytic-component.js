@@ -37,6 +37,6 @@ function AnalyticController(navigation) {
     }
 
     vm.execute = function() {
-        navigation.goTo('input');
+        navigation.goTo('parameters');
     }
 }

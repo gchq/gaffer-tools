@@ -26,9 +26,9 @@ angular.module('app').config(['$locationProvider', '$routeProvider', function($l
             icon: 'rerun',
             inNav: true
         })
-        .when('/input', {
-            title: 'Input',
-            template: '<operation-chain></operation-chain>',
+        .when('/parameters', {
+            title: 'Parameters',
+            template: '<parameter-input></parameter-input>',
             icon: 'query',
             inNav: true
         })

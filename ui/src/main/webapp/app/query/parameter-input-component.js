@@ -16,11 +16,11 @@
 
 'use strict';
 
-angular.module('app').component('operationChain', operationChainBuilder());
+angular.module('app').component('parameterInput', operationChainBuilder());
 
 function operationChainBuilder() {
     return {
-        templateUrl: 'app/query/operation-chain.html',
+        templateUrl: 'app/query/parameter-input.html',
         controller: OperationChainController,
         controllerAs: 'ctrl'
     }
