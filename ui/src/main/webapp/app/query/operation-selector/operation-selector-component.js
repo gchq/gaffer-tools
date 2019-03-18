@@ -83,6 +83,10 @@ function OperationSelectorController(operationService, $routeParams, $filter) {
     vm.showCustomOp = false;
     vm.placeholder = "Search for an operation";
 
+    vm.$onInit = function() {
+        vm.reloadOperations();
+    }
+
     var populateOperations = function(availableOperations) {
         vm.availableOperations = [];
 
@@ -121,6 +125,14 @@ function OperationSelectorController(operationService, $routeParams, $filter) {
             }
             return 0
         });
+
+        // Find the chosen named operation and display it
+        for(var i in vm.availableOperations) {
+            if(vm.availableOperations[i].name.toLowerCase() === vm.model.toLowerCase()) {
+                vm.model = vm.availableOperations[i];
+                break;
+            }
+        }
 
         // allow 'op' to be used as a shorthand
         if($routeParams.op) {
