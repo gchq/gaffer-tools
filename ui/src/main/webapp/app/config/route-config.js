@@ -16,7 +16,7 @@
 
 'use strict';
 
-angular.module('app').config(['$locationProvider', '$routeProvider', function($locationProvider, $routeProvider) {
+angular.module('app').config(['$locationProvider', '$routeProvider', function ($locationProvider, $routeProvider) {
     $locationProvider.html5Mode(false)
 
     $routeProvider
@@ -39,7 +39,6 @@ angular.module('app').config(['$locationProvider', '$routeProvider', function($l
             inNav: true
         })
         .when('/', {
-            redirectTo: '/query'
+            redirectTo: '/analytics'
         });
 }]);
-
