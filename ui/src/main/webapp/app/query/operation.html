@@ -4,10 +4,10 @@
         <div layout="row" layout-padding>
             <!-- first column -->
             <div layout="column" flex="auto">
-                <operation-selector
-                    model="ctrl.model.selectedOperation"
-                    previous="ctrl.model.previous">
-                </operation-selector>
+                <div class="md-list-item-text">
+                        <h3>{{ctrl.model.selectedOperation.name}}</h3>
+                        <p>{{ctrl.model.selectedOperation.description}}</p>
+                </div>
                 <input-manager first="ctrl.isFirst()"
                     primary-input="ctrl.model.selectedOperation.fields.input"
                     secondary-input="ctrl.model.selectedOperation.fields.inputB"
