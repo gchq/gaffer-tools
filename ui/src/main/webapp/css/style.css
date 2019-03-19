@@ -372,3 +372,31 @@ quick-query {
     margin-left: 0px !important;
     margin-right: 0px !important;
 }
+
+.grid-container {
+    display: grid;
+    grid-template-columns: auto auto auto auto;
+    background-color: #FFFFFF;
+    padding: 10px;
+  }
+  
+.grid-item {
+    background-color: rgba(255, 255, 255, 0.8);
+    border: 1px solid rgba(0, 0, 0, 1.0);
+    padding: 10px;
+    font-size: 50px;
+    text-align: center;
+}
+
+.grid-item:hover { 
+    background-color: rgba(200, 200, 200, 1);
+}
+
+.grid-button:not([disabled]):hover {
+    background-color: rgba(200, 200, 200, 1);
+}
+
+.grid-button {
+    width: 100%;
+    height: 100%;
+}
