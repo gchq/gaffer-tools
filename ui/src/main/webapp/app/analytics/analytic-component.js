@@ -37,7 +37,7 @@ function AnalyticController(navigation, operationChain) {
     }
 
     vm.execute = function(analyticOption) {
+        operationChain.setAnalytic(analyticOption);
         navigation.goTo('parameters');
-        operationChain.setAnalytic(analyticOption)
     }
 }
