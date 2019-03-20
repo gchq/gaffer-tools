@@ -110,6 +110,20 @@ describe('The type service', function() {
                                 "wrapInJson": true,
                                 "custom": true
                             },
+                            "this.is.a.custom.object": {
+                                "fields": [
+                                    {
+                                        "label": "isItATest",
+                                        "type": "boolean",
+                                        "key": "customObject.isItATest",
+                                        "class": "java.lang.Boolean",
+                                        "step": 1,
+                                        "required": true
+                                    }
+                                ],
+                                "wrapInJson": true,
+                                "custom": true
+                            },
                             "JSON": {
                                 "fields" : [
                                     {
@@ -268,6 +282,7 @@ describe('The type service', function() {
                 "String": "java.lang.String",
                 "TypeSubTypeValue": "uk.gov.gchq.gaffer.types.TypeSubTypeValue",
                 "HyperLogLogPlus": "com.clearspring.analytics.stream.cardinality.HyperLogLogPlus",
+                "object": 'this.is.a.custom.object',
                 "JSON": "JSON"
             };
 
@@ -484,8 +499,8 @@ describe('The type service', function() {
         })
 
         it('should create a custom short value for custom types', function() {
-            var value = service.getShortValue({'com.clearspring.analytics.stream.cardinality.HyperLogLogPlus': { "hyperLogLogPlus": { "cardinality": '30' }}})
-            expect(value).toEqual('30');
+            var value = service.getShortValue({'com.clearspring.analytics.stream.cardinality.HyperLogLogPlus': { "hyperLogLogPlus": { "cardinality": 30 }}})
+            expect(value).toEqual(30);
         });
 
         it('should work for ArrayLists without having to add to the types config', function() {
@@ -509,8 +524,8 @@ describe('The type service', function() {
         });
 
         it('should return singular value from objects containing only one value', function() {
-            var value = service.getShortValue({'com.clearspring.analytics.stream.cardinality.HyperLogLogPlus': { "hyperLogLogPlus": { "cardinality": 30 }}});
-            expect(value).toEqual(30);
+            var value = service.getShortValue({'this.is.a.custom.object': { "customObject": { "isItATest": true }}});
+            expect(value).toEqual(true);
         });
     });
 
