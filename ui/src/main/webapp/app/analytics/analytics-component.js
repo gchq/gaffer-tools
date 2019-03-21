@@ -34,9 +34,10 @@ function AnalyticsController(operationService) {
     var vm = this;
     //vm.analytics = ["Get Adjacent Ids","Get All Elements","frequent-vehicles-in-region"];
     vm.availableOperations;
+    vm.analytics = [[],[]];
 
     vm.$onInit = function() {
-        //vm.analytics = analytics.getAnalytics();
+        //vm.analytics = analytics.reloadAnalytics();
         vm.reloadOperations();
     }
 
@@ -79,7 +80,18 @@ function AnalyticsController(operationService) {
             return 0
         });
 
-        vm.analytics = vm.availableOperations;
+        // Hard code the other data I assume we will get when we load up the analytic
+        var icons = ["query","location-search"]; //some names of icons from img folder
+        var analyticNames = ["Frequent Vehicles In Region","Frequent Vehicles In Region 2"];
+        var outputTypes = ["Table","Table"];
+
+        // Create the analytics from this hard coded data
+        for (i = 0; i < 2; i++) {
+            vm.analytics[i].operation = availableOperations[i];
+            vm.analytics[i].icon = icons[i];
+            vm.analytics[i].name = analyticNames[i];
+            vm.analytics[i].outputType = outputTypes[i];
+        }
     }
 
     vm.getOperations = function() {
