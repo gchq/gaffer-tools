@@ -24,7 +24,7 @@ function analytic() {
         controller: AnalyticController,
         controllerAs: 'ctrl',
         bindings: {
-            model: '=',
+            model: '<',
         }
     }   
 }

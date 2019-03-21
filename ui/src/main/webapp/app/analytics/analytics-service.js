@@ -21,39 +21,6 @@
  */
 angular.module('app').factory('analytics', function() {
     var service = {};
-    
-    var queries = [];
-
-    /**
-     * Adds an object to the start of the previous queries. 
-     * This is to give the impression that they are sorted by newest first.
-     * 
-     * The objects should come with 3 fields: 
-     * - name: This may be made editable in future
-     * - lastRun: The (hh:mm formatted) time that the query was run at. This should be local (not UTC) time.
-     * - operation The operation chain model which was used to generate the query. 
-     *  
-     * @param {Object} query 
-     */
-    service.addQuery = function(query) {
-        var newQuery = angular.copy(query);
-        queries.unshift(newQuery);
-    }
-
-    /**
-     * Returns all the queries currently held by the service.
-     */
-    service.getQueries = function() {
-        return angular.copy(queries);
-    }
-
-    /**
-     * Sets the model to the operations provided.
-     * @param {Array} operations the new model
-     */
-    service.setQueries = function(operations) {
-        queries = angular.copy(operations);
-    }
 
     return service;
 });

@@ -1,3 +1,4 @@
-<md-button ng-click="ctrl.execute(ctrl.model)" class="grid-button" md-ink-ripple>
+<md-button ng-click="ctrl.execute(ctrl.model.operation)" class="grid-button" md-ink-ripple>
         {{ctrl.model.name}}
+        <md-icon md-svg-icon={{ctrl.model.icon}}></md-icon>
 </md-button>
