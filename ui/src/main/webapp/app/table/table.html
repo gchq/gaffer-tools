@@ -13,7 +13,7 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-<div ng-cloak layout="column" layout-align=" stretch">
+<div ng-cloak layout="column" layout-fill>
     <md-card ng-show="ctrl.showVisualisation">
         <canvas 
             class="chart-base" 
@@ -65,7 +65,7 @@
             No results
         </md-card-content>
 
-        <md-table-container>
+        <md-table-container layout-fill style="overflow-y:hidden;">
             <div id="scrollDragableHeader">
             <table md-table id="results-table" class="compact">
                 <thead md-head md-order="ctrl.sortType">
