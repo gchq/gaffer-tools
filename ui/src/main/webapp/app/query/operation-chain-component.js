@@ -115,13 +115,12 @@ function OperationChainController(operationChain, settings, config, loading, que
 
         runQuery(chain.operations);
 
-        var clearChainCheckboxState = settings.getClearChainCheckbox();
-        if (clearChainCheckboxState == true) {
-            vm.resetChainWithoutDialog()
+        if (settings.getClearChainCheckbox() == true) {
+            resetChainWithoutDialog();
         }
     }
 
-    vm.resetChainWithoutDialog = function() {
+    var resetChainWithoutDialog = function() {
         operationChain.reset();
         vm.operations = operationChain.getOperationChain();
     }
@@ -136,7 +135,7 @@ function OperationChainController(operationChain, settings, config, loading, que
             .cancel('Cancel');
 
         $mdDialog.show(confirm).then(function() {
-            vm.resetChainWithoutDialog();
+            resetChainWithoutDialog();
         }, function() {
             // do nothing if they don't want to reset
         });
