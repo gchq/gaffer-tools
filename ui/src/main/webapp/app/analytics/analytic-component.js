@@ -36,6 +36,7 @@ function AnalyticController(navigation, operationChain) {
     vm.$onInit = function() {
     }
 
+    // Save the chosen analytic in the operationChain service (should change to use analyticsService)
     vm.execute = function(analyticOption) {
         operationChain.setAnalytic(analyticOption);
         navigation.goTo('parameters');

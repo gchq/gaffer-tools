@@ -21,6 +21,5 @@
  */
 angular.module('app').factory('analytics', function() {
     var service = {};
-
     return service;
 });
