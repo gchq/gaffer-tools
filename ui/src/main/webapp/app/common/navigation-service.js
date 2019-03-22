@@ -26,6 +26,7 @@ angular.module('app').factory('navigation', ['$location', 'events', 'common', fu
         return currentPage;
     }
 
+    //Navigate to a particular page
     navigation.goTo = function(pageName) {
         if(pageName && common.startsWith(pageName, "/")) {
             pageName = pageName.substr(1);

@@ -38,9 +38,10 @@ function AnalyticsController(operationService) {
 
     vm.$onInit = function() {
         //vm.analytics = analytics.reloadAnalytics();
-        vm.reloadOperations();
+        vm.reloadOperations(); // Load the operations
     }
 
+    //delete most of this left over from operation chain
     var populateOperations = function(availableOperations) {
         vm.availableOperations = [];
 
@@ -96,6 +97,7 @@ function AnalyticsController(operationService) {
         }
     }
 
+    // Delete this?
     vm.getOperations = function() {
         return operationService.getAvailableOperations(true).then(function(ops) {
             populateOperations(ops)
@@ -103,6 +105,7 @@ function AnalyticsController(operationService) {
         });
     }
 
+    // load the operations
     vm.reloadOperations = function() {
         operationService.reloadOperations(true).then(populateOperations);
     }

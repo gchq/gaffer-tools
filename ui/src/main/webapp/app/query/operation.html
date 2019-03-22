@@ -3,6 +3,7 @@
         <md-divider></md-divider>
         <div layout="row" layout-padding>
             <!-- first column -->
+            <!-- Display the name of the operation and seed input box -->
             <div layout="column" flex="auto">
                 <div class="md-list-item-text">
                         <h3>{{ctrl.model.selectedOperation.name}}</h3>
@@ -24,6 +25,7 @@
                 </div>
             </div>
             <!-- second column -->
+            <!-- Display the different inputs based on the operation -->
             <div layout="column" flex="50">
                 <date-range
                         ng-if="ctrl.timeConfig && ctrl.model.selectedOperation.fields.view"

@@ -17,8 +17,10 @@
 'use strict';
 
 /**
- * Service for storing the previous operation chains.
+ * Service for storing the chosen analytic
  */
+
+ //should use this to store the chosen analytic rather than operationChain service
 angular.module('app').factory('analytics', function() {
     var service = {};
     return service;

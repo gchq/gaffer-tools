@@ -44,6 +44,7 @@ function OperationController(loading, operationChain) {
         if (!vm.model) {
             throw 'An operation has been created without a model to bind to'
         }
+        // Get the user's chosen operation
         vm.model.selectedOperation = operationChain.getAnalytic();
     }
 

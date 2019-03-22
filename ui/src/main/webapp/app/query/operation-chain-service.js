@@ -62,10 +62,12 @@ angular.module('app').factory('operationChain', ['common', 'settings', 'events',
         operations = chain;
     }
 
+    // Store the user's chosen analytic
     service.setAnalytic = function(analytic) {
         analyticChosen = analytic;
     }
 
+    // Get the user's chosen analytic
     service.getAnalytic = function() {
         return analyticChosen;
     }

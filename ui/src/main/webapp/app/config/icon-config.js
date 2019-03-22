@@ -16,6 +16,7 @@
 
 'use strict';
 
+//Register the icons in the img folder
 angular.module('app').config(['$mdIconProvider', function($mdIconProvider) {
 
     $mdIconProvider

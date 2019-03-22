@@ -22,7 +22,7 @@ angular.module('app').config(['$locationProvider', '$routeProvider', function ($
     $routeProvider
         .when('/analytics', {
             title: 'Analytics',
-            template: '<analytics></analytics>',
+            template: '<analytics></analytics>', //The element that displays in the content section of each page
             icon: 'rerun',
             inNav: true
         })
@@ -39,6 +39,6 @@ angular.module('app').config(['$locationProvider', '$routeProvider', function ($
             inNav: true
         })
         .when('/', {
-            redirectTo: '/analytics'
+            redirectTo: '/analytics' //If no page specified then automatically navigate to first page
         });
 }]);
