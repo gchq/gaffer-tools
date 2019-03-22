@@ -37,8 +37,8 @@ function AnalyticController(navigation, operationChain) {
     }
 
     // Save the chosen analytic in the operationChain service (should change to use analyticsService)
-    vm.execute = function(analyticOption) {
-        operationChain.setAnalytic(analyticOption);
+    vm.execute = function(operation) {
+        operationChain.setOperation(operation);
         navigation.goTo('parameters');
     }
 }
