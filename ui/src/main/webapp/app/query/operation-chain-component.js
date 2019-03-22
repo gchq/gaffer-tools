@@ -180,7 +180,6 @@ function OperationChainController(operationChain, config, loading, query, error,
                 function(data) {
                     // On success of saving operation chain
                     submitResults(data);
-                    navigation.goTo('query');
                     $mdDialog.show(confirm).then(function() {
                     }, function() {
                     });
@@ -233,6 +232,7 @@ function OperationChainController(operationChain, config, loading, query, error,
             },
             function(data) {
                 submitResults(data);
+                navigation.goTo('results');
             }
         );
     }
@@ -243,8 +243,7 @@ function OperationChainController(operationChain, config, loading, query, error,
      */
     var submitResults = function(data) {
         graph.deselectAll();
-        navigation.goTo('results');
-        
+
         // Remove the input query param
         delete $routeParams['input'];
         $location.search('input', null);
