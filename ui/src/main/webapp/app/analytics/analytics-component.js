@@ -84,6 +84,7 @@ function AnalyticsController(operationService) {
         var icons = ["query","location-search"]; //some names of icons from img folder
         var analyticNames = ["Frequent Vehicles In Region","Frequent Vehicles In Region 2"];
         var outputTypes = ["Table","Table"];
+        var backgroundColors = ["Lime","Cyan","Red","Magenta","Yellow"];
 
         // Create the analytics from this hard coded data
         for (i = 0; i < 2; i++) {
@@ -91,6 +92,7 @@ function AnalyticsController(operationService) {
             vm.analytics[i].icon = icons[i];
             vm.analytics[i].name = analyticNames[i];
             vm.analytics[i].outputType = outputTypes[i];
+            vm.analytics[i].backgroundColor = backgroundColors[i];
         }
     }
 
