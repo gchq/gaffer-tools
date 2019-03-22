@@ -43,10 +43,14 @@
                                 </md-input-container>
                             </md-list-item>
                             <md-list-item class="md-2-line">
+                                <div class="md-list-item-text" flex="60">
+                                    <h3>Clear Operation Chain</h3>
+                                    <p>Clear the operation chain after each execution</p>
+                                </div>
+                                <div flex></div>
+                                <md-input-container class="md-secondary">
                                     <md-checkbox ng-click="ctrl.saveClearChainCheckbox()" ng-checked="ctrl.clearChainCheckbox"></md-checkbox>
-                                    <div class="md-list-item-text">
-                                            <h3>Clear Chain After Execution</h3>
-                                    </div>
+                                </md-input-container>
                             </md-list-item>
                         </md-list>
                     </form>
