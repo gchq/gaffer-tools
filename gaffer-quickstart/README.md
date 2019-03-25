@@ -25,7 +25,7 @@ Also in the example folder you'll find a Gaffer schema, graph config and element
 
 Run `$GAFFER_HOME/bin/startup.sh`. 
 
-This will start Gaffer with the rest service and UI running. After a few seconds, the UI will be on http://localhost:8080/ui and the rest service will be on http://localhost:8080/rest
+This will start Gaffer with the rest service and UI running. After a few seconds, the UI will be on http://localhost:8085/ui and the rest service will be on http://localhost:8085/rest
 
 Logging for Gaffer will be in `$GAFFER_HOME/gaffer.log`
 
@@ -38,7 +38,7 @@ curl -X POST --header 'Content-Type: application/json' --header 'Accept: applica
        "class": "uk.gov.gchq.gaffer.operation.impl.add.AddElementsFromCsv", 
        "filename": "GAFFER_HOME/example/data.csv",
        "mappingsFile": "GAFFER_HOME/example/element-generator.json" 
-     }' 'http://localhost:8080/rest/v2/graph/operations/execute'
+     }' 'http://localhost:8085/rest/v2/graph/operations/execute'
 ```
 
 The mappings file tells Gaffer how to convert the csv data into graph edges and entities (more details to come)
@@ -56,7 +56,7 @@ curl -X POST --header 'Content-Type: application/json' --header 'Accept: applica
            "vertex": "4"
          } 
        ] 
-     }' 'http://localhost:8080/rest/v2/graph/operations/execute'
+     }' 'http://localhost:8085/rest/v2/graph/operations/execute'
 ```
 
 and you should see output that starts something like this
