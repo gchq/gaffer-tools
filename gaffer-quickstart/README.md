@@ -107,7 +107,7 @@ For example: `ssh -i $pem -L 8080:$host:8085 -D 8157 hadoop@$host`
 
 where `$pem` is your pem file for accessing the cluster and `$host` is the cluster's master public dns name.
 
-Then the UI will be on `http://localhost:8080/ui` and the REST service on `http://localhost:8080/rest`
+Then the UI will be on `http://localhost:8085/ui` and the REST service on `http://localhost:8085/rest`
 
 You can add the example data over rest using the AddElementsFromCsv operation
  
@@ -116,7 +116,7 @@ curl -X POST --header 'Content-Type: application/json' --header 'Accept: applica
        "class": "uk.gov.gchq.gaffer.operation.impl.add.AddElementsFromCsv", 
        "filename": "/home/hadoop/data.csv",
        "mappingsFile": "/home/hadoop/element-generator.json" 
-     }' 'http://localhost:8080/rest/v2/graph/operations/execute'
+     }' 'http://localhost:8085/rest/v2/graph/operations/execute'
 ```
 
 And check that it's in the graph
@@ -130,5 +130,5 @@ curl -X POST --header 'Content-Type: application/json' --header 'Accept: applica
            "vertex": "4"
          } 
        ] 
-     }' 'http://localhost:8080/rest/v2/graph/operations/execute'
+     }' 'http://localhost:8085/rest/v2/graph/operations/execute'
 ```
