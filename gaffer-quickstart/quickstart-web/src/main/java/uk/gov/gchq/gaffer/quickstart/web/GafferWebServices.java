@@ -26,6 +26,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.*;
 
 public class GafferWebServices {
 
@@ -40,7 +41,7 @@ public class GafferWebServices {
     private Map<String, String> restOptions;
 
 
-    public static void main(final String[] args) throws ServletException, LifecycleException {
+    public static void main(final String[] args) throws ServletException, LifecycleException, IOException {
 
         if (args.length != 6) {
             throw new IllegalArgumentException("I need a schemaPath, graphConfigPath, storePropertiesPath, restWarPath and uiWarPath");
@@ -63,7 +64,7 @@ public class GafferWebServices {
         return running;
     }
 
-    private void startServer() throws ServletException, LifecycleException {
+    private void startServer() throws ServletException, LifecycleException, IOException {
 
         Runtime.getRuntime().addShutdownHook(new ServerShutDownHook());
 

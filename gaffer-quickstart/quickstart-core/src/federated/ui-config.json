@@ -1,0 +1,57 @@
+{
+  "title": "aquarium",
+  "operationOptions" : {
+    "visible" : [
+      {
+        "key": "gaffer.federatedstore.operation.graphIds",
+        "label" : "Graph Ids",
+        "mupltiple" : true,
+        "autcomplete" : {
+          "asyncOptions" : {
+            "class" : "uk.gov.gchq.gaffer.federatedstore.operation.GetAllGraphIds"
+          }
+        }
+      }
+    ]
+  },
+  "graph": {
+    "physics": {
+      "springLength": 30,
+      "springCoeff": 0.000001,
+      "gravity": -3,
+      "dragCoeff": 0.005,
+      "stableThreshold": 0.000001,
+      "fit": true
+    },
+    "defaultStyle": {
+      "edges": {
+        "arrow-shape": "triangle",
+        "line-color": "#b70707",
+        "target-arrow-color": "#b70707",
+        "text-outline-color": "#b70707"
+      },
+      "vertices": {
+        "background-color": "#ffffff",
+        "background-image": "app/img/material-icons/donut_large.svg",
+        "text-valign": "bottom"
+      },
+      "entityWrapper": {
+        "height": 100,
+        "width": 100,
+        "border-width": 3
+      }
+    }
+  },
+  "types" : {
+    "uk.gov.gchq.gaffer.time.RBMBackedTimestampSet" : {
+      "fields" : [
+        {
+          "key" : "timestamps",
+          "value" : "java.util.ArrayList",
+          "label" : "timestamps"
+        }
+      ],
+      "custom" : true
+    }
+  }
+}

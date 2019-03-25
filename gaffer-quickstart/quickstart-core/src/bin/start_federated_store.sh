@@ -22,7 +22,7 @@ ACCUMULO_STORE_PROPERTIES=$GAFFER_HOME/miniaccumulo/store.properties
 AQUARIUM_ACCUMULO_PROPERTIES=$GAFFER_HOME/graphlibrary/fishtankProps.properties
 PYSPARK_STORE_PROPERTIES=$GAFFER_HOME/miniaccumulo/pyspark.store.properties
 
-UICONFIG=$GAFFER_HOME/conf/ui-config.json
+UICONFIG=$GAFFER_HOME/federated/ui-config.json
 UI_WAR=$GAFFER_HOME/lib/quickstart-ui-${VERSION}.war
 REST_WAR=$GAFFER_HOME/lib/quickstart-rest-${VERSION}.war
 RESTCONFIG=$GAFFER_HOME/conf/restOptions.properties
