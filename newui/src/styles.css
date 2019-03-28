@@ -1,10 +1,57 @@
-[ng-click] {
-  cursor: pointer;
+@import 'https://fonts.googleapis.com/icon?family=Material+Icons';
+@import '~@angular/material/prebuilt-themes/indigo-pink.css';
+
+h1 {
+  color: #597e8c;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 250%;
 }
 
-html body {
+h2 {
+  color: #8c6759;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 150%;
+}
+
+h3 {
+  color: #7e8c59;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 125%;
+}
+
+h4 {
+  color: #67598c;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 125%;
+  font-weight: normal;
+}
+
+body {
+  margin: 0;
+  font-family: Arial, Helvetica, sans-serif;
   height: 100%;
   width: 100%;
+}
+
+mat-card {
+  max-width: 80%;
+  margin: 2em auto;
+  text-align: center;
+}
+
+mat-toolbar-row {
+  justify-content: space-between;
+}
+
+.done {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  color: white;
+}
+
+[ng-click] {
+  cursor: pointer;
 }
 
 ng-view {
@@ -41,7 +88,7 @@ pre {
   font-family: Roboto, Helvetica Neue, sans-serif;
 }
 
-md-icon svg {
+mat-icon svg {
   fill: inherit;
 }
 
@@ -51,11 +98,11 @@ md-icon svg {
   width: 36px;
 }
 
-md-nav-bar>div {
+mat-nav-bar>div {
   height: 100% !important;
 }
 
-md-nav-bar>div>nav {
+mat-nav-bar>div>nav {
   margin-right: 8px;
   margin-left: 8px;
 }
@@ -87,11 +134,11 @@ md-nav-bar>div>nav {
   background-color: transparent;
 }
 
-.no-ellipsis .md-select-value>span:not(.md-select-icon) {
+.no-ellipsis .mat-select-value>span:not(.mat-select-icon) {
   white-space: normal;
 }
 
-.searchable-select md-select-menu {
+.searchable-select mat-select-menu {
   padding-top: 3em;
 }
 
@@ -117,7 +164,7 @@ md-nav-bar>div>nav {
   width: 100%;
 }
 
-.searchable-select md-content._md {
+.searchable-select mat-content._mat {
   max-height: 240px;
 }
 
@@ -125,11 +172,11 @@ md-nav-bar>div>nav {
   text-transform: none !important;
 }
 
-md-input-container>div>textarea {
+mat-input-container>div>textarea {
   border-width: 2px !important;
 }
 
-md-option>div {
+mat-option>div {
   flex: 1;
 }
 
@@ -217,15 +264,15 @@ table.compact tr {
   height: 34px !important;
 }
 
-table md-input-container {
+table mat-input-container {
   margin: 0;
 }
 
-md-list-item.active button {
+mat-list-item.active button {
   background-color: rgba(0, 0, 0, 0.2);
 }
 
-md-list-item.active div div button {
+mat-list-item.active div div button {
   background-color: inherit;
 }
 
@@ -234,30 +281,35 @@ md-list-item.active div div button {
   min-height: 40px;
 }
 
-.short-toolbar .md-toolbar-tools {
+.short-toolbar .mat-toolbar-tools {
   height: 40px;
   min-height: 40px;
   font-weight: normal;
   font-size: 18px;
 }
 
+.mat-toolbar.mat-primary {
+  background: #67598c;
+  color: #fff;
+}
+
 .fill-height {
   height: 100%
 }
 
-graph-control md-input-container {
+graph-control mat-input-container {
   padding: 5px !important;
 }
 
-graph-control md-input-container.md-icon-left>label {
+graph-control mat-input-container.mat-icon-left>label {
   left: 28px;
 }
 
-graph-control md-input-container .md-errors-spacer {
+graph-control mat-input-container .mat-errors-spacer {
   display: none;
 }
 
-md-tab-data {
+mat-tab-data {
   opacity: 1;
   display: table;
   right: 0;
@@ -315,25 +367,25 @@ md-tab-data {
   opacity: 1;
 }
 
-md-card.closed-remove {
+mat-card.closed-remove {
   margin-left: 50px;
   margin-right: 50px;
   transition: 0.2s ease-in-out all;
 }
 
-md-card.closed-remove-active {
+mat-card.closed-remove-active {
   margin-left: 8px;
   margin-right: 8px;
 }
 
-md-card.closed-add {
+mat-card.closed-add {
   margin-left: 8px;
   margin-right: 8px;
   transition: 0.2s ease-in-out all;
 }
 
-md-card.closed-add-active,
-md-card.closed {
+mat-card.closed-add-active,
+mat-card.closed {
   margin-left: 50px;
   margin-right: 50px;
 }
@@ -342,7 +394,7 @@ md-card.closed {
   background-color: white !important;
 }
 
-.table-toolbar md-select {
+.table-toolbar mat-select {
   color: rgba(0, 0, 0, .54);
 }
 
@@ -356,7 +408,7 @@ md-card.closed {
   outline: none;
 }
 
-.no-errors .md-errors-spacer {
+.no-errors .mat-errors-spacer {
   display: none;
 }
 
@@ -435,4 +487,14 @@ quick-query {
 .tooltip:hover .tooltiptext {
   visibility: visible;
   opacity: 1;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
 }

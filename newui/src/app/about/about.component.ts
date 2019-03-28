@@ -22,70 +22,67 @@ import { Component, OnInit } from "@angular/core";
   styleUrls: ["./about.component.css"]
 })
 export class AboutComponent implements OnInit {
-  constructor() {}
+  title = "About";
+  constructor() {
+    function AboutController(properties, config, error) {
+      var vm = this;
+
+      var DESCRIPTION_PROPERTY = "gaffer.properties.app.description";
+      var DOCS_PROPERTY = "gaffer.properties.app.doc.url";
+
+      vm.description;
+      vm.docs;
+      vm.restApi;
+
+      vm.propertiesLoaded = false;
+
+      vm.emailRecipients;
+      vm.emailSubject;
+
+      vm.$onInit = function() {
+        properties.get().then(function(props) {
+          vm.docs = props[DOCS_PROPERTY];
+          vm.description =
+            props[DESCRIPTION_PROPERTY] || "no description provided";
+          vm.propertiesLoaded = true;
+        });
+
+        config.get().then(function(conf) {
+          var endpoint = conf.restEndpoint.replace(/\/$/, "");
+
+          vm.restApi = endpoint.substring(0, endpoint.lastIndexOf("/"));
+          if (conf.feedback) {
+            vm.emailRecipients = conf.feedback.recipients;
+            vm.emailSubject = conf.feedback.subject || "Gaffer feedback";
+          }
+        });
+      };
+
+      vm.sendFeedback = function() {
+        if (!vm.emailRecipients || vm.emailRecipients.length === 0) {
+          error.handle(
+            "UI is misconfigured",
+            "The UI config should contain email recipients to receive feedback from users. No recipients were specified"
+          );
+          return;
+        } else if (!(vm.emailRecipients instanceof Array)) {
+          var type = typeof vm.emailRecipients;
+          error.handle(
+            "UI is misconfigured",
+            'The UI configuration property "feedback.recipients" should contain an array, not a ' +
+              type
+          );
+          return;
+        }
+        window.open(
+          "mailto:" +
+            vm.emailRecipients.join("; ") +
+            ";?subject=" +
+            vm.emailSubject
+        );
+      };
+    }
+  }
 
   ngOnInit() {}
-}
-
-function about() {
-  return {
-    templateUrl: "app/about/about.html",
-    controller: AboutController,
-    controllerAs: "ctrl"
-  };
-}
-
-function AboutController(properties, config, error) {
-  var vm = this;
-
-  var DESCRIPTION_PROPERTY = "gaffer.properties.app.description";
-  var DOCS_PROPERTY = "gaffer.properties.app.doc.url";
-
-  vm.description;
-  vm.docs;
-  vm.restApi;
-
-  vm.propertiesLoaded = false;
-
-  vm.emailRecipients;
-  vm.emailSubject;
-
-  vm.$onInit = function() {
-    properties.get().then(function(props) {
-      vm.docs = props[DOCS_PROPERTY];
-      vm.description = props[DESCRIPTION_PROPERTY] || "no description provided";
-      vm.propertiesLoaded = true;
-    });
-
-    config.get().then(function(conf) {
-      var endpoint = conf.restEndpoint.replace(/\/$/, "");
-
-      vm.restApi = endpoint.substring(0, endpoint.lastIndexOf("/"));
-      if (conf.feedback) {
-        vm.emailRecipients = conf.feedback.recipients;
-        vm.emailSubject = conf.feedback.subject || "Gaffer feedback";
-      }
-    });
-  };
-
-  vm.sendFeedback = function() {
-    if (!vm.emailRecipients || vm.emailRecipients.length === 0) {
-      error.handle(
-        "UI is misconfigured",
-        "The UI config should contain email recipients to receive feedback from users. No recipients were specified"
-      );
-      return;
-    } else if (!(vm.emailRecipients instanceof Array)) {
-      var type = typeof vm.emailRecipients;
-      error.handle(
-        "UI is misconfigured",
-        'The UI configuration property "feedback.recipients" should contain an array, not a ' +
-          type
-      );
-      return;
-    }
-    window.open(
-      "mailto:" + vm.emailRecipients.join("; ") + ";?subject=" + vm.emailSubject
-    );
-  };
 }
