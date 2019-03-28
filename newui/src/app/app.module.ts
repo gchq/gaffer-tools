@@ -2,6 +2,7 @@ import { BrowserModule } from "@angular/platform-browser";
 import { FormsModule } from "@angular/forms"; // <-- NgModel lives here
 import { NgModule } from "@angular/core";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
+import { UpgradeModule } from "@angular/upgrade/static";
 
 import { AppComponent } from "./app.component";
 import { AboutComponent } from "./about/about.component";
@@ -23,6 +24,7 @@ import { MaterialModule } from "./material.module";
   ],
   imports: [
     BrowserModule,
+    UpgradeModule,
     FormsModule,
     AppRoutingModule,
     BrowserAnimationsModule,
@@ -32,4 +34,9 @@ import { MaterialModule } from "./material.module";
   providers: [],
   bootstrap: [AppComponent]
 })
-export class AppModule {}
+export class AppModule {
+  constructor(private upgrade: UpgradeModule) {}
+  ngDoBootstrap() {
+    this.upgrade.bootstrap(document.body, ["myApp"], { strictDi: true });
+  }
+}

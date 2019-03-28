@@ -1,13 +1,24 @@
 <div style="flex-direction: row">
   <div style="flex:100" flex-offset-gt-sm="20" flex-gt-sm="60">
-    <h1 title="About">About</h1>
-    <div style="flex-direction: row" style="align-content: center" ng-hide="ctrl.propertiesLoaded">
-      <p ng-bind-html="ctrl.description"></p>
-      <p ng-show="ctrl.restAPI"><a id="about-rest-api" target="_blank" href="ctrl.restAPI">Take a look at the REST
-          API</a>
-      </p>
-      <p ng-show="ctrl.docs"><a id="about-docs" target="_blank" href="ctrl.docs">Take a look at the documentation</a>
-      </p>
+    <div layout="row" layout-padding></div>
+    <div flex-offset-gt-sm="20" flex-gt-sm="60" flex="100">
+      <mat-card>
+        <mat-card-header>
+          <h1 layout-align="center- start">
+            About
+          </h1>
+        </mat-card-header>
+        <div layout="row" ng-hide="ctrl.propertiesLoaded" layout-align="center center">
+        </div>
+        <mat-card-content>
+          <p ng-bind-html="ctrl.description"></p>
+          <p ng-show="ctrl.restAPI"><a id="about-rest-api" target="_blank" href="ctrl.restAPI">Take a look at the REST
+              API</a>
+          </p>
+          <p ng-show="ctrl.docs"><a id="about-docs" target="_blank" href="ctrl.docs">Take a look at the
+              documentation</a>
+        </mat-card-content>
+      </mat-card>
     </div>
   </div>
 </div>
