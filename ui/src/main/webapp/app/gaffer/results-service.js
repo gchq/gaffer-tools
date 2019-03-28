@@ -34,8 +34,9 @@ angular.module('app').factory('results', ['events', function(events) {
     }
 
     var elementExistsInArray = function(array, element) {
+        console.log(JSON.stringify(element));
         return array && array.some(function(ele) { 
-            JSON.stringify(element) === JSON.stringify(ele);
+            JSON.stringify(element) === JSON.stringify(ele) || element.value === ele.value;
         });
     }
 
@@ -46,6 +47,7 @@ angular.module('app').factory('results', ['events', function(events) {
     }
 
     resultService.update = function(newResults) {
+        console.log(newResults);
         var incomingResults = {
             entities: [], edges: [], other: []
         }
@@ -81,8 +83,7 @@ angular.module('app').factory('results', ['events', function(events) {
                         addUniqueResult(results.edges, result);
                     }
                 } else {
-                    incomingResults.other.push(result)
-                    var toAdd = true;
+                    incomingResults.other.push(result);
                     addUniqueResult(results.other, result);
                 }
             }
