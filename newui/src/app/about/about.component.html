@@ -1,0 +1,13 @@
+<div style="flex-direction: row">
+  <div style="flex:100" flex-offset-gt-sm="20" flex-gt-sm="60">
+    <div class="md-title">About</div>
+    <div style="flex-direction: row" style="align-content: center" ng-hide="ctrl.propertiesLoaded">
+      <p ng-bind-html="ctrl.description"></p>
+      <p ng-show="ctrl.restAPI"><a id="about-rest-api" target="_blank" href="ctrl.restAPI">Take a look at the REST
+          API</a>
+      </p>
+      <p ng-show="ctrl.docs"><a id="about-docs" target="_blank" href="ctrl.docs">Take a look at the documentation</a>
+      </p>
+    </div>
+  </div>
+</div>
