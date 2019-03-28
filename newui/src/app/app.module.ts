@@ -8,8 +8,8 @@ import { AboutComponent } from "./about/about.component";
 import { AppRoutingModule } from "./app-routing.module";
 import { AnalyticsComponent } from "./analytics/analytics.component";
 import { QueryComponent } from "./query/query.component";
-import { TableComponent } from "./table/table.component";
 import { AnalyticComponent } from "./analytic/analytic.component";
+// import { TableComponent } from "./table/table.component";
 import { MaterialModule } from "./material.module";
 
 @NgModule({
@@ -18,8 +18,8 @@ import { MaterialModule } from "./material.module";
     AboutComponent,
     AnalyticsComponent,
     QueryComponent,
-    TableComponent,
     AnalyticComponent
+    // TableComponent
   ],
   imports: [
     BrowserModule,
@@ -27,6 +27,7 @@ import { MaterialModule } from "./material.module";
     AppRoutingModule,
     BrowserAnimationsModule,
     MaterialModule
+    // TableComponent
   ],
   providers: [],
   bootstrap: [AppComponent]
