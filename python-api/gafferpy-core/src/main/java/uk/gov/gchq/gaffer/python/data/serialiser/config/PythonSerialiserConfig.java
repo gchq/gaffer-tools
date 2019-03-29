@@ -51,17 +51,18 @@ public class PythonSerialiserConfig implements Serializable {
     }
 
     public PythonSerialiserConfig(final byte[] bytes) {
-        Map<String, String> map = null;
+        Map<String, Object> map = null;
+        Map<String, String> serialisersMap = null;
         this.serialisers = new HashMap<>();
         try {
                 map = JSONSerialiser.deserialise(bytes, Map.class);
-            } catch (final SerialisationException e) {
-                e.printStackTrace();
-            }
-
-        for (final String s : map.keySet()) {
+                serialisersMap = (Map<String, String>) map.get("serialisers");
+        } catch (final SerialisationException e) {
+            e.printStackTrace();
+        }
+        for (final String s : serialisersMap.keySet()) {
             try {
-                this.serialisers.put(Class.forName(s), Class.forName(map.get(s)));
+                this.serialisers.put(Class.forName(s), Class.forName(serialisersMap.get(s)));
             } catch (final ClassNotFoundException e) {
                 e.printStackTrace();
             }
