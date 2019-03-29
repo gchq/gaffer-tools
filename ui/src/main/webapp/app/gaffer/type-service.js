@@ -50,38 +50,28 @@ angular.module('app').factory('types', ['config', 'common', function(config, com
     }
 
     var customShortValue = function(fields, parts) {
-        var showWithLabel = (fields.length !== 1)
-        if (fields.length > 1) {
-            return fields.map(function(field) {
-                var layers = field.key.split('.');
-                var customValue = parts;
-                for (var i in layers) {
-                    customValue = customValue[layers[i]];
-                }
-    
-                customValue = service.getShortValue(customValue);
-    
-                if (showWithLabel) {
-                    return field.label + ': ' + customValue;
-                }
-                return customValue;
-            }).join(', ');
-        }
-        else {
-            return fields.map(function(field) {
-                var layers = field.key.split('.');
-                var customValue = parts;
-                for (var i in layers) {
-                    customValue = customValue[layers[i]];
-                }
-    
-                customValue = service.getShortValue(customValue);
-    
-                if (showWithLabel) {
-                    return field.label + ': ' + customValue;
-                }
-                return customValue;
-            })[0];
+        var showWithLabel = (fields.length > 1);
+        var parsedFields = fields.map(function(field) {
+            var layers = field.key.split('.');
+            var customValue = parts;
+            for (var i in layers) {
+                customValue = customValue[layers[i]];
+            }
+
+            customValue = service.getShortValue(customValue);
+
+            if (showWithLabel) {
+                return field.label + ': ' + customValue;
+            }
+            return customValue;
+        });
+
+        if (showWithLabel) {
+            return parsedFields.join(", ");
+        } else if (parsedFields.length === 1) {
+            return parsedFields[0];
+        } else {
+            throw 'Expected fields in custom object, received empty!';
         }
         
     }
