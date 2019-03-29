@@ -9,12 +9,13 @@
 
 </script>
 <div id={{ctrl.model.name}} ng-click="ctrl.execute(ctrl.model.operation)" class="grid-button" md-ink-ripple>
-  <div layout="column">
-    <p>{{ctrl.model.name}}</p>
-    <div layout="row" layout-align="start end">
-      <p class="tooltip">Description
-        <span class="tooltiptext">{{ctrl.model.operation.description}}</span>
-      </p>
-    </div>
-  </div>
+  <mat-card>
+    <mat-card-header>
+      <p class="tooltip">Description</p>
+      <h1 layout-align="center- start" class="tooltiptext">
+        {{ctrl.model.operation.description}}
+      </h1>
+
+    </mat-card-header>
+  </mat-card>
 </div>

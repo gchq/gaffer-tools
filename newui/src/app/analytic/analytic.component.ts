@@ -9,7 +9,6 @@ export class AnalyticComponent implements OnInit {
   constructor() {
     function analytic() {
       return {
-        templateUrl: "app/analytics/analytic.html",
         controller: AnalyticController,
         controllerAs: "ctrl",
         bindings: {
