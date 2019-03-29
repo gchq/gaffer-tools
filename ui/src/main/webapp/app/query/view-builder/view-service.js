@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2018 Crown Copyright
+ * Copyright 2017-2019 Crown Copyright
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,7 @@
 
 'use strict';
 
-angular.module('app').factory('view', ['operationService', 'config', 'settings', 'query', '$q', 'types', 'events', function(operationService, config, settings, query, $q, types, events) {
+angular.module('app').factory('view', ['operationService', 'config', 'operationOptions', 'query', '$q', 'types', 'events', function(operationService, config, operationOptions, query, $q, types, events) {
     var service = {};
     var availableNamedViews;
     var firstLoad = true;
@@ -91,7 +91,7 @@ angular.module('app').factory('view', ['operationService', 'config', 'settings',
             query.execute(
                 {
                     class: getAllClass,
-                    options: settings.getDefaultOpOptions()
+                    options: operationOptions.getDefaultOperationOptions()
                 },
                 updateNamedViews,
                 function(err) {

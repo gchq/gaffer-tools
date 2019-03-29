@@ -3,8 +3,32 @@
   "quickQuery": {
     "useDefaultOperationOptions": true
   },
-  "operationOptionKeys": {
-    "Federated Store - Graph IDs": "gaffer.federatedstore.operation.graphIds",
-    "Federated Store - Skip Failures": "gaffer.federatedstore.operation.skipFailedFederatedStoreExecute"
+  "operationOptions": {
+    "visible": [
+      {
+        "key": "gaffer.federatedstore.operation.graphIds",
+        "label": "Graph IDs",
+        "value": [],
+        "description": "Restrict operations and schema reloads to these graphs",
+        "multiple": true,
+        "autocomplete": {
+          "asyncOptions": {
+            "class": "uk.gov.gchq.gaffer.federatedstore.operation.GetAllGraphIds"
+          }
+        }
+      },
+      {
+        "key": "gaffer.federatedstore.operation.skipFailedFederatedStoreExecute",
+        "value": "true",
+        "label": "Skip failures",
+        "description": "Ignore operation exceptions",
+        "autocomplete": {
+          "options": [
+            "true",
+            "false"
+          ]
+        }
+      }
+    ]
   }
 }

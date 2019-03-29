@@ -1,5 +1,5 @@
 <!--
-  ~ Copyright 2017-2018 Crown Copyright
+  ~ Copyright 2017-2019 Crown Copyright
   ~
   ~ Licensed under the Apache License, Version 2.0 (the "License");
   ~ you may not use this file except in compliance with the License.
@@ -17,73 +17,55 @@
 <div layout="row" layout-padding>
     <div flex-offset-gt-sm="20" flex-gt-sm="60" flex="100">
         <div layout="column" flex>
-            <h3>Settings</h3>
-            <md-input-container>
-                <label>Default result limit</label>
-                <input type="number" step="1" ng-model="ctrl.resultLimit"
-                       id="resultLimit" ng-blur="ctrl.updateResultLimit()">
-            </md-input-container>
+            <h3 class="md-headline">Settings</h3>
 
-            <div ng-if="ctrl.hasOpOptions()">
-                <h4>Default Operation Options</h4>
+            <section>
+                <md-subheader class="md-no-sticky">Queries</md-subheader>
+                <md-card>
+                    <form name="ctrl.querySettingsForm">
+                        <md-list>
+                            <md-list-item class="md-2-line">
+                                <div class="md-list-item-text" flex="60">
+                                    <h3>Result count limit</h3>
+                                    <p>The maximum number of results that can be returned</p>
+                                </div>
+                                <div flex></div>
+                                <md-input-container class="md-secondary">
+                                    <input type="number" min="0" max="2147483647" name="resultLimit" required step="1" ng-model="ctrl.resultLimit"
+                                            id="resultLimit" aria-label="result count limit" ng-blur="ctrl.updateResultLimit()">
+                                    <div ng-messages="ctrl.querySettingsForm.resultLimit.$error">
+                                        <div ng-message="required">You must set a limit</div>
+                                        <div ng-message="min">The limit must be a positive number</div>
+                                        <div ng-message="max">The limit must be less than Integer.MAX_VALUE</div>
+                                        <div ng-message="step">The limit must be a whole number</div>
+                                        <div ng-message="number">The limit must be a valid number</div>
+                                    </div>
+                                </md-input-container>
+                            </md-list-item>
+                        </md-list>
+                    </form>
+                </md-card>
+            </section>
+            
+            <options master="true"></options>
 
-                <div layout="row"
-                     ng-repeat="opOption in ctrl.defaultOpOptionsArray">
-                    <md-input-container flex>
-                        <label>Key</label>
-                        <md-select name="opOptionKey"
-                                   ng-model="opOption.key"
-                                   required
-                                   aria-label="operation option key picker"
-                                   md-on-close="ctrl.updateDefaultOpOptions()">
-                            <md-option ng-value="value"
-                                       ng-repeat="(key, value) in ctrl.getOpOptionKeys(opOption)"
-                                       aria-label="{{key}}">
-                                <div class="md-body-2">{{key}}</div>
-                            </md-option>
-                        </md-select>
-                        <div class="md-errors-spacer"></div>
-                    </md-input-container>
-
-                    <md-input-container flex>
-                        <label>Value</label>
-                        <input type="text"
-                               ng-blur="ctrl.updateDefaultOpOptions()"
-                               required
-                               ng-model="opOption.value"
-                               id="defaultOpOptionValue">
-                    </md-input-container>
-                    <div layout="column" layout-align="center">
-                        <md-button class="md-icon-button md-primary"
-                                   ng-click="ctrl.deleteOption(opOption)"
-                                   aria-label="Delete operation option">
-                            <md-icon class="md-secondary"
-                                     md-svg-icon="delete"
-                                     aria-label="delete operation option">
-                            </md-icon>
-                            <md-tooltip>Delete operation option</md-tooltip>
+            <md-subheader class="md-no-sticky">Schema</md-subheader>
+            <md-card>
+                <md-list class="no-vertical-padding">
+                    <md-list-item class="md-2-line" ng-click="ctrl.updateSchema()">
+                        <div class="md-list-item-text">
+                            <h3>Reload schema</h3>
+                            <p>Reloads the schema using the default operation options</p>
+                        </div>
+                        <span flex></span>
+                        <md-button class="md-primary md-raised md-secondary"
+                            aria-label="reload schema"
+                            ng-click="ctrl.updateSchema()">
+                                Reload Schema
                         </md-button>
-
-                    </div>
-                </div>
-
-                <md-button class="md-primary"
-                           aria-label="add operation option"
-                           ng-disabled="!ctrl.hasMoreOpOptions()"
-                           ng-click="ctrl.addDefaultOperationOption()">
-                    Add Operation Option
-                </md-button>
-            </div>
-
-            <h4>Schema</h4>
-
-            <div layout="row">
-                <md-button class="md-primary"
-                           aria-label="update schema"
-                           ng-click="ctrl.updateSchema()">
-                    Update schema
-                </md-button>
-            </div>
+                    </md-list-item>
+                </md-list>
+            </md-card>
         </div>
     </div>
 </div>

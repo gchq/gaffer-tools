@@ -1,5 +1,5 @@
 #
-# Copyright 2016-2018 Crown Copyright
+# Copyright 2016-2019 Crown Copyright
 #
 # Licensed under the Apache License, Version 2.0 (the 'License');
 # you may not use this file except in compliance with the License.
@@ -1130,6 +1130,81 @@ class GafferOperationsTest(unittest.TestCase):
             '''
             {
               "class" : "uk.gov.gchq.gaffer.operation.impl.get.GetElements",
+              "input" : [ {
+                "vertex" : 2,
+                "class" : "uk.gov.gchq.gaffer.operation.data.EntitySeed"
+              }],
+              "view": {
+                  "allEdges": true,
+                  "allEntities": true
+              }
+            }
+            ''',
+            g.GetElements(
+                input=[
+                    g.EntitySeed(
+                        vertex=2
+                    )
+                ],
+                view=g.View(
+                    all_edges=True,
+                    all_entities=True
+                )
+            )
+        ],
+        [
+            '''
+            {
+              "class" : "uk.gov.gchq.gaffer.operation.impl.get.GetElements",
+              "input" : [ {
+                "vertex" : 2,
+                "class" : "uk.gov.gchq.gaffer.operation.data.EntitySeed"
+              }],
+              "view": {
+                  "allEdges": true
+              }
+            }
+            ''',
+            g.GetElements(
+                input=[
+                    g.EntitySeed(
+                        vertex=2
+                    )
+                ],
+                view=g.View(
+                    all_edges=True,
+                    all_entities=False
+                )
+            )
+        ],
+        [
+            '''
+            {
+              "class" : "uk.gov.gchq.gaffer.operation.impl.get.GetElements",
+              "input" : [ {
+                "vertex" : 2,
+                "class" : "uk.gov.gchq.gaffer.operation.data.EntitySeed"
+              }],
+              "view": {
+                  "allEntities": true
+              }
+            }
+            ''',
+            g.GetElements(
+                input=[
+                    g.EntitySeed(
+                        vertex=2
+                    )
+                ],
+                view=g.View(
+                    all_entities=True
+                )
+            )
+        ],
+        [
+            '''
+            {
+              "class" : "uk.gov.gchq.gaffer.operation.impl.get.GetElements",
               "view" : {
                 "edges" : {
                   "edge" : {
@@ -1628,6 +1703,15 @@ class GafferOperationsTest(unittest.TestCase):
                     )
                 ]
             )
+        ],
+        [
+            '''
+            {
+                "class": "uk.gov.gchq.gaffer.operation.impl.get.GetFromEndpoint",
+                "endpoint": "http://mydata.io"
+            }
+            ''',
+            g.GetFromEndpoint(endpoint="http://mydata.io")
         ],
         [
             '''
@@ -5054,6 +5138,123 @@ class GafferOperationsTest(unittest.TestCase):
                     "key": "value"
                 }
             )
+        ],
+        [
+            '''
+            {
+                "class" : "uk.gov.gchq.gaffer.operation.impl.SetVariable",
+                "input" : "testVal",
+                "variableName" : "testVarName",
+                "options" : {
+                    "key" : "value"
+                }
+            }
+            ''',
+            g.SetVariable(
+                input="testVal",
+                variable_name="testVarName",
+                options={
+                    "key": "value"
+                }
+            )
+        ],
+        [
+            '''
+            {
+                "class" : "uk.gov.gchq.gaffer.operation.impl.GetVariable",
+                "variableName" : "testVarName",
+                "options" : {
+                    "key" : "value"
+                }
+            }
+            ''',
+            g.GetVariable(
+                variable_name="testVarName",
+                options={
+                    "key": "value"
+                }
+            )
+        ],
+        [
+          '''
+            {
+                "class" : "uk.gov.gchq.gaffer.operation.impl.GetVariables",
+                "variableNames" : ["testVarName", "testVarName2"],
+                "options" : {
+                    "key" : "value"
+                }
+            }
+            ''',
+            g.GetVariables(
+                variable_names=["testVarName", "testVarName2"],
+                options={
+                    "key": "value"
+                }
+            )
+        ],
+        [
+            '''
+            {
+                "class": "uk.gov.gchq.gaffer.operation.impl.join.Join",
+                "input": [ "test2" ],
+                "operation": {
+                    "class": "uk.gov.gchq.gaffer.operation.impl.get.GetElements",
+                    "input": [
+                        {
+                            "class": "uk.gov.gchq.gaffer.operation.data.EntitySeed",
+                            "vertex": "test"
+                        }
+                    ]
+                },
+                "matchMethod": {
+                    "class": "uk.gov.gchq.gaffer.store.operation.handler.join.match.ElementMatch"
+                },
+                "flatten": false,
+                "joinType": "INNER",
+                "collectionLimit": 10
+            }
+            ''',
+            g.Join(
+                input=['test2'], 
+                operation=g.GetElements(input=[g.EntitySeed('test')]), 
+                match_method=g.ElementMatch(),
+                flatten=False,
+                join_type=g.JoinType.INNER,
+                collection_limit=10)
+        ],
+        [
+            '''
+            {
+                "class": "uk.gov.gchq.gaffer.operation.impl.join.Join",
+                "input": [ "test2" ],
+                "operation": {
+                    "class": "uk.gov.gchq.gaffer.operation.impl.get.GetElements",
+                    "input": [
+                        {
+                            "class": "uk.gov.gchq.gaffer.operation.data.EntitySeed",
+                            "vertex": "test"
+                        }
+                    ]
+                },
+                "matchMethod": {
+                    "class": "uk.gov.gchq.gaffer.store.operation.handler.join.match.KeyFunctionMatch",
+                    "firstKeyFunction": {
+                        "class": "uk.gov.gchq.gaffer.data.element.function.ExtractId",
+                        "id": "DESTINATION"
+                    }
+                },
+                "matchKey": "RIGHT",
+                "flatten": false,
+                "joinType": "OUTER"
+            }
+            ''',
+            g.Join(
+                input=['test2'], 
+                operation=g.GetElements(input=[g.EntitySeed('test')]), 
+                match_method=g.KeyFunctionMatch(first_key_function=g.ExtractId("DESTINATION")),
+                match_key=g.MatchKey.RIGHT,
+                flatten=False,
+                join_type=g.JoinType.OUTER)
         ]
     ]
 

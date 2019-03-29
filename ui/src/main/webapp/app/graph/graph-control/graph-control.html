@@ -5,7 +5,7 @@
                 <input placeholder="Vertex search"
                        ng-model="ctrl.searchTerm"
                        type="text"
-                       ng-change="ctrl.filter()"
+                       ng-change="ctrl.search()"
                        class="no-border">
             </md-input-container>
         </md-card>
@@ -30,7 +30,7 @@
                 </md-tooltip>
             </md-button>
             <md-button class="md-fab md-mini" id="remove"
-                       ng-click="ctrl.removeSelected()">
+                       ng-click="ctrl.remove()">
                 <md-icon md-svg-icon="delete"></md-icon>
                 <md-tooltip md-direction="top">
                     Remove selected elements

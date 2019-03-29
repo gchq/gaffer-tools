@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2018 Crown Copyright
+ * Copyright 2017-2019 Crown Copyright
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -37,6 +37,9 @@ function SelectedElementGroupsController($scope, $timeout, events, schema) {
     vm.$onInit = function() {
         schema.get().then(function(newSchema) {
             gafferSchema = newSchema;
+        },
+        function() {
+            gafferSchema = {edges:{}, entities:{}, types:{}};
         });
         events.subscribe('selectedSchemaElementGroupsUpdate', selectedSchemaElementGroupsUpdate);
     }

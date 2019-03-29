@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2018 Crown Copyright
+ * Copyright 2017-2019 Crown Copyright
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -51,7 +51,7 @@ angular.module('app').factory('query', ['$http', 'config', 'events', 'common', '
      * query. On success, the result service is called to update the results.
      * @param {Object} The operation chain to execute. It can either be an object or a json string.
      */
-    query.executeQuery = function(operation, onSuccess) {
+    query.executeQuery = function(operation, onSuccess, onFailure) {
         query.execute(
             operation,
             function(data) {
@@ -68,6 +68,9 @@ angular.module('app').factory('query', ['$http', 'config', 'events', 'common', '
             function(err) {
                 loading.finish();
                 error.handle('Error executing operation', err);
+                if (onFailure) {
+                    onFailure(err);
+                }
             }
         );
     }

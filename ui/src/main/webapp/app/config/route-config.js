@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2018 Crown Copyright
+ * Copyright 2017-2019 Crown Copyright
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,6 +26,12 @@ angular.module('app').config(['$locationProvider', '$routeProvider', function($l
             icon: 'query',
             inNav: true
         })
+        .when('/my-queries', {
+            title: 'My Queries',
+            template: '<my-queries></my-queries>',
+            icon: 'rerun',
+            inNav: true
+        })
         .when('/table', {
             title: 'Table',
             template: '<results-table></results-table>',
@@ -34,7 +40,7 @@ angular.module('app').config(['$locationProvider', '$routeProvider', function($l
         })
         .when('/graph', {
             title: 'Graph',
-            templateUrl: 'app/graph/graph-page.html',
+            template: '<graph-page></graph-page>',
             icon: 'graph',
             inNav: true
         })

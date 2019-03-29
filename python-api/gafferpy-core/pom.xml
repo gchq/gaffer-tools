@@ -5,7 +5,7 @@
     <parent>
         <artifactId>python-api</artifactId>
         <groupId>uk.gov.gchq.gaffer</groupId>
-        <version>1.7.1-SNAPSHOT</version>
+        <version>1.8.4-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -72,7 +72,7 @@
                     <maxmem>1024m</maxmem>
                 </configuration>
             </plugin>
-            <plugin>
+            <!--plugin>
                 <artifactId>maven-assembly-plugin</artifactId>
                 <version>${assembly.plugin.version}</version>
                 <executions>
@@ -94,7 +94,7 @@
                 <configuration>
                     <outputDirectory>gafferpy-core-release-${version}</outputDirectory>
                 </configuration>
-            </plugin>
+            </plugin-->
             <plugin>
                 <artifactId>maven-clean-plugin</artifactId>
                 <version>${clean.plugin.version}</version>
