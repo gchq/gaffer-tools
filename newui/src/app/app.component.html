@@ -1,28 +1,9 @@
 <!--The content below is only a placeholder and can be replaced.-->
 
-<mat-toolbar color="primary">
-  <span>
-    <!-- <mat-icon></mat-icon> -->
-  </span>
-
-  <button mat-icon-button (click)="sidenav.toggle()">
-    <mat-icon>menu</mat-icon>
-  </button>
-
-  <span>{{title}}</span>
-
-</mat-toolbar>
-
-<mat-sidenav-container>
-  <mat-sidenav #sidenav mode="side">
-    <mat-sidenav-content>
-      <h4>Use the URL bar to visit other pages, e.g. /analytics</h4>
-    </mat-sidenav-content>
-  </mat-sidenav>
-</mat-sidenav-container>
-
-<div style="text-align:center">
-  <div layout="column" class="content" flex>
-    <router-outlet></router-outlet>
+<app-nav>
+  <div style="text-align:center">
+    <div layout="column" class="content" flex>
+      <!-- <router-outlet></router-outlet> -->
+    </div>
   </div>
-</div>
+</app-nav>

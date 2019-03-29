@@ -9,14 +9,24 @@ import { AboutComponent } from "./about/about.component";
 import { AppRoutingModule } from "./app-routing.module";
 import { AnalyticsComponent } from "./analytics/analytics.component";
 import { AnalyticComponent } from "./analytic/analytic.component";
+import { NavComponent } from "./nav/nav.component";
 import { MaterialModule } from "./material.module";
+import { LayoutModule } from "@angular/cdk/layout";
+import {
+  MatToolbarModule,
+  MatButtonModule,
+  MatSidenavModule,
+  MatIconModule,
+  MatListModule
+} from "@angular/material";
 
 @NgModule({
   declarations: [
     AppComponent,
     AboutComponent,
     AnalyticsComponent,
-    AnalyticComponent
+    AnalyticComponent,
+    NavComponent
   ],
   imports: [
     BrowserModule,
@@ -24,7 +34,13 @@ import { MaterialModule } from "./material.module";
     FormsModule,
     AppRoutingModule,
     BrowserAnimationsModule,
-    MaterialModule
+    MaterialModule,
+    LayoutModule,
+    MatToolbarModule,
+    MatButtonModule,
+    MatSidenavModule,
+    MatIconModule,
+    MatListModule
   ],
   providers: [],
   bootstrap: [AppComponent]
