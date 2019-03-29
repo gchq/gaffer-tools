@@ -36,7 +36,7 @@ angular.module('app').factory('results', ['events', function(events) {
     var elementExistsInArray = function(array, element) {
         console.log(JSON.stringify(element));
         return array && array.some(function(ele) { 
-            JSON.stringify(element) === JSON.stringify(ele) || element.value === ele.value;
+            return JSON.stringify(element) === JSON.stringify(ele);
         });
     }
 
