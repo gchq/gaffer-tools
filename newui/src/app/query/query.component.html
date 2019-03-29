@@ -1,3 +1,51 @@
-<p>
-  query works!
-</p>
+<div class="operation-content">
+  <h2>
+    Parameters
+  </h2>
+  <form name="ctrl.operationForm">
+    <mat-divider></mat-divider>
+    <div layout="row" layout-padding>
+      <!-- first column -->
+      <!-- Display the name of the operation and seed input box -->
+      <div layout="column" flex="auto">
+        <div class="mat-list-item-text">
+          <h3>{{ctrl.model.selectedOperation.name}}</h3>
+          <p>{{ctrl.model.selectedOperation.description}}</p>
+        </div>
+        <!-- <input-manager first="ctrl.isFirst()" primary-input="ctrl.model.selectedOperation.fields.input"
+          secondary-input="ctrl.model.selectedOperation.fields.inputB" model="ctrl.model.fields">
+        </input-manager> -->
+        <div ng-if="ctrl.model.selectedOperation.fields.view">
+          <!-- <view-builder model="ctrl.model.fields.view">
+          </view-builder> -->
+          <mat-checkbox ng-model="ctrl.model.fields.view.summarise" layout-padding>
+            Summarise
+          </mat-checkbox>
+        </div>
+      </div>
+      <!-- second column -->
+      <!-- Display the different inputs based on the operation -->
+      <div layout="column" flex="50">
+        <!-- <date-range ng-if="ctrl.timeConfig && ctrl.model.selectedOperation.fields.view" model="ctrl.model.dates"
+          conf="ctrl.timeConfig">
+        </date-range> -->
+        <!-- <parameter-form ng-if="ctrl.model.selectedOperation.parameters"
+          title-class="layout-padding mat-title section-title" parameters="ctrl.model.selectedOperation.parameters">
+        </parameter-form> -->
+
+        <!-- <options ng-if="ctrl.model.selectedOperation.fields.options" model="ctrl.model.fields.options"></options> -->
+
+        <div ng-if="ctrl.hasOtherConfig()">
+          <h3 class="section-title mat-title">
+            Configuration
+          </h3>
+
+          <div ng-repeat="(name, field) in ctrl.getConfigFields()">
+            <!-- <operation-field model="ctrl.model" details="field">
+            </operation-field> -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>

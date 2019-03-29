@@ -6,6 +6,7 @@ import { UpgradeModule } from "@angular/upgrade/static";
 
 import { AppComponent } from "./app.component";
 import { AboutComponent } from "./about/about.component";
+import { QueryComponent } from "./query/query.component";
 import { TableComponent } from "./table/table.component";
 
 import { AppRoutingModule } from "./app-routing.module";
@@ -28,6 +29,7 @@ import {
     AboutComponent,
     AnalyticsComponent,
     AnalyticComponent,
+    QueryComponent,
     NavComponent,
     TableComponent
   ],
