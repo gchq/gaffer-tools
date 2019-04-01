@@ -50,9 +50,8 @@ angular.module('app').factory('types', ['config', 'common', function(config, com
     }
 
     var customShortValue = function(fields, parts) {
-        var showWithLabel = (fields.length !== 1)
-
-        return fields.map(function(field) {
+        var showWithLabel = (fields.length > 1);
+        var parsedFields = fields.map(function(field) {
             var layers = field.key.split('.');
             var customValue = parts;
             for (var i in layers) {
@@ -65,7 +64,16 @@ angular.module('app').factory('types', ['config', 'common', function(config, com
                 return field.label + ': ' + customValue;
             }
             return customValue;
-        }).join(', ');
+        });
+
+        if (showWithLabel) {
+            return parsedFields.join(", ");
+        } else if (parsedFields.length === 1) {
+            return parsedFields[0];
+        } else {
+            throw 'Expected fields in custom object, received empty!';
+        }
+        
     }
 
     service.getFields = function(className) {

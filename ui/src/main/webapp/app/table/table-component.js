@@ -61,8 +61,7 @@ function TableController(schema, results, table, events, common, types, time, cs
         schema.get().then(function(gafferSchema) {
             vm.schema = gafferSchema;
             loadFromCache();
-            processResults(results.get());
-            
+            processResults(results.get());          
         }, function(err) {
             vm.schema = {types: {}, edges: {}, entities: {}};
             loadFromCache();
@@ -322,7 +321,6 @@ function TableController(schema, results, table, events, common, types, time, cs
         if (cachedValues.pagination) {
             vm.pagination = cachedValues.pagination;
         }
-        
     }
 
     var cacheValues = function() {
