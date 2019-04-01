@@ -3,7 +3,7 @@
 </h2>
 
 <div ng-cloak layout="column" layout-align=" stretch">
-  <table id="results-table" class="compact">
+  <ng-container id="results-table" class="compact">
     <thead>
       <tr>
         <th ng-repeat="col in ctrl.data.columns">
@@ -13,11 +13,11 @@
     </thead>
     <tbody>
       <tr
-        ng-repeat="result in (ctrl.filteredResults = (ctrl.data.results | orderBy:ctrl.getValue() | filter:ctrl.searchTerm)) | limitTo: ctrl.pagination.limit: (ctrl.pagination.page - 1) * ctrl.pagination.limit">
+        ng-repeat="result in (ctrl.filteredResults = (ctrl.data.results | filter:ctrl.searchTerm)) | limitTo: ctrl.pagination.limit: (ctrl.pagination.page - 1) * ctrl.pagination.limit">
         <td ng-repeat="col in ctrl.data.columns">
           {{result[col]}}
         </td>
       </tr>
     </tbody>
-  </table>
+  </ng-container>
 </div>
