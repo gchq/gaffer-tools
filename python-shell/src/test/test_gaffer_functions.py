@@ -63,6 +63,19 @@ class GafferFunctionsTest(unittest.TestCase):
         [
             '''
             {
+                "class": "uk.gov.gchq.koryphe.impl.function.DictionaryLookup",
+                "dictionary": {
+                    "One": 1,
+                    "Two": 2,
+                    "Three": 3
+                }
+            }
+            ''',
+            g.DictionaryLookup(dictionary=dict(One=1, Two=2, Three=3))
+        ],
+        [
+            '''
+            {
                 "class" : "uk.gov.gchq.koryphe.impl.function.ExtractValue",
                 "key" : "blueKey"
             }
