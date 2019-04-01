@@ -7,7 +7,7 @@ import { UpgradeModule } from "@angular/upgrade/static";
 import { AppComponent } from "./app.component";
 import { AboutComponent } from "./about/about.component";
 import { QueryComponent } from "./query/query.component";
-import { TableComponent } from "./table/table.component";
+// import { TableComponent } from "./table/table.component";
 
 import { AppRoutingModule } from "./app-routing.module";
 import { AnalyticsComponent } from "./analytics/analytics.component";
@@ -30,8 +30,8 @@ import {
     AnalyticsComponent,
     AnalyticComponent,
     QueryComponent,
-    NavComponent,
-    TableComponent
+    NavComponent
+    // TableComponent
   ],
   imports: [
     BrowserModule,

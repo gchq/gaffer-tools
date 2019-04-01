@@ -4,7 +4,7 @@
   </h2>
   <form name="ctrl.operationForm">
     <mat-divider></mat-divider>
-    <div layout="row" layout-padding>
+    <mat-card layout="row">
       <!-- first column -->
       <!-- Display the name of the operation and seed input box -->
       <div layout="column" flex="auto">
@@ -12,12 +12,66 @@
           <h3>{{ctrl.model.selectedOperation.name}}</h3>
           <p>{{ctrl.model.selectedOperation.description}}</p>
         </div>
+
+        <div ng-show="ctrl.primaryInput" ng-cloak>
+          <mat-checkbox ng-if="!ctrl.first" ng-model="ctrl.usePreviousOutput" ng-change="ctrl.onCheckboxChange()"
+            aria-label="use output from previous operation">
+            Use output from previous operation
+          </mat-checkbox>
+          <div ng-switch="ctrl.primaryInput.className" ng-show="!ctrl.usePreviousOutput || ctrl.secondaryInput">
+            <div
+              ng-switch-when="uk.gov.gchq.gaffer.commonutil.pair.Pair<uk.gov.gchq.gaffer.data.element.id.ElementId,uk.gov.gchq.gaffer.data.element.id.ElementId>[]">
+
+              <div layout="column">
+                <ng-form name="ctrl.pairForm">
+                  <mat-form-field id="Multiple Seed input" class="md-block" flex md-no-float>
+                    <textarea id="pairs-input" rows="6" name="seedPairInput" md-no-autogrow
+                      ng-disabled="ctrl.usePrevious" ng-model="ctrl.pairs" ng-blur="ctrl.addPairs()"
+                      placeholder="{{ctrl.getPlaceHolder()}}">
+                              </textarea>
+                    <div ng-messages="ctrl.pairForm.seedPairInput.$error">
+                      <div ng-message="csv">Your CSV is invalid</div>
+                    </div>
+                  </mat-form-field>
+                </ng-form>
+              </div>
+
+
+            </div>
+            <div ng-switch-default>
+              <div layout="row" layout-align="start center" ng-show="!ctrl.usePreviousOutput">
+                <h3 class="md-title no-margin">Add seeds</h3>
+                <button id="use-results" ng-click="ctrl.useResults()" ng-disabled="ctrl.usePreviousOutput"
+                  class="md-primary">
+                  Populate input using your
+                  existing results
+                </button>
+              </div>
+              <div layout="row" class="horizontal-margin">
+                <div layout="column">
+                  <ng-form name="ctrl.seedForm">
+                    <mat-form-field id="Multiple Seed input" class="md-block" flex md-no-float>
+                      <textarea id="seedVertices" rows="6" name="multiSeedInput" md-no-autogrow
+                        ng-disabled="ctrl.usePrevious" ng-model="ctrl.seedVertices" ng-blur="ctrl.addSeeds()"
+                        placeholder="{{ctrl.getPlaceHolder()}}">
+                              </textarea>
+                      <div ng-messages="ctrl.seedForm.multiSeedInput.$error">
+                        <div ng-message="csv">Your CSV is invalid</div>
+                      </div>
+                    </mat-form-field>
+                  </ng-form>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+
         <!-- <input-manager first="ctrl.isFirst()" primary-input="ctrl.model.selectedOperation.fields.input"
           secondary-input="ctrl.model.selectedOperation.fields.inputB" model="ctrl.model.fields">
         </input-manager> -->
+
         <div ng-if="ctrl.model.selectedOperation.fields.view">
-          <!-- <view-builder model="ctrl.model.fields.view">
-          </view-builder> -->
           <mat-checkbox ng-model="ctrl.model.fields.view.summarise" layout-padding>
             Summarise
           </mat-checkbox>
@@ -26,12 +80,112 @@
       <!-- second column -->
       <!-- Display the different inputs based on the operation -->
       <div layout="column" flex="50">
-        <!-- <date-range ng-if="ctrl.timeConfig && ctrl.model.selectedOperation.fields.view" model="ctrl.model.dates"
-          conf="ctrl.timeConfig">
-        </date-range> -->
-        <!-- <parameter-form ng-if="ctrl.model.selectedOperation.parameters"
-          title-class="layout-padding mat-title section-title" parameters="ctrl.model.selectedOperation.parameters">
-        </parameter-form> -->
+        <ng-form name="ctrl.dateForm">
+          <div layout="row" layout-align="start center">
+            <h3 class="mat-title no-margin">Inclusive time range (UTC)</h3>
+          </div>
+
+          <div layout-gt-lg="row" layout="column">
+            <div layout="row">
+
+              <mat-form-field>
+                <mat-label>Use presets for start date</mat-label>
+                <button class="mat-icon-button no-side-margin" ng-click="$matMenu.open($event)">
+                  <mat-icon mat-menu-origin mat-svg-icon="list"></mat-icon>
+                  <p>Use presets for start date</p>
+                </button>
+                <mat-select width="4" [(value)]="presetDates" placeholder="Preset Dates" ng-if="ctrl.presets"
+                  class="icon-inline-with-input">
+                  <mat-option ng-repeat="(name, value) in ctrl.presets"><button ng-click="ctrl.updateEndDate(value)">
+                      {{ name }}
+                    </button></mat-option>
+                </mat-select>
+              </mat-form-field>
+
+              <mat-form-field>
+                <mat-label>Start Date</mat-label>
+                <input matInput [value]="date.value" matInput [matDatepicker]="startPicker" placeholder="YYYY-MM-DD">
+                <mat-datepicker-toggle matSuffix [for]="startPicker"></mat-datepicker-toggle>
+                <mat-datepicker #startPicker ng-model="ctrl.startDate" name="startDate" id="start-date"
+                  ng-change="ctrl.onStartDateUpdate()" mat-date-locale="ctrl.localeProviderOverride"></mat-datepicker>
+                <div ng-messages="ctrl.dateForm.startDate.$error">
+                  <div ng-message="valid">The start date entered is invalid.
+                    Use YYYY-MM-DD format
+                  </div>
+                </div>
+              </mat-form-field>
+
+              <input ng-model="ctrl.startTime"
+                ng-model-options="{ timezone: 'UTC', updateOn: 'default blur', debounce: { 'default': 500,'blur': 0}}"
+                aria-label="start time (hh:mm:ss)" ng-disabled="!ctrl.startDate" type="time" id="start-time" step="1"
+                name="startTime" ng-change="ctrl.onStartDateUpdate()">
+
+              <div ng-messages="ctrl.dateForm.startTime.$error">
+                <div ng-message="time">The start time is invalid. Use format
+                  hh:mm:ss
+                </div>
+              </div>
+            </div>
+            <div layout="row">
+
+              <mat-form-field>
+                <mat-label>Use presets for end date</mat-label>
+                <button class="mat-icon-button no-side-margin" ng-click="$matMenu.open($event)">
+                  <mat-icon mat-menu-origin mat-svg-icon="list"></mat-icon>
+                  <p>Use presets for end date</p>
+                </button>
+                <mat-select width="4" [(value)]="presetDates" placeholder="Preset Dates" ng-if="ctrl.presets"
+                  class="icon-inline-with-input">
+                  <mat-option ng-repeat="(name, value) in ctrl.presets"><button ng-click="ctrl.updateEndDate(value)">
+                      {{ name }}
+                    </button></mat-option>
+                </mat-select>
+              </mat-form-field>
+
+              <mat-form-field>
+                <mat-label>Start Date</mat-label>
+                <input matInput [value]="date.value" matInput [matDatepicker]="endPicker" placeholder="YYYY-MM-DD">
+                <mat-datepicker-toggle matSuffix [for]="endPicker"></mat-datepicker-toggle>
+                <mat-datepicker ng-model="ctrl.endDate" name="endDate" id="end-date" ng-change="ctrl.onEndDateUpdate()"
+                  mat-date-locale="ctrl.localeProviderOverride"></mat-datepicker>
+                <div ng-messages="ctrl.dateForm.endDate.$error">
+                  <div ng-message="valid">The end date entered is invalid.
+                    Use YYYY-MM-DD format
+                  </div>
+                </div>
+              </mat-form-field>
+              <input ng-model="ctrl.endTime"
+                ng-model-options="{ timezone: 'UTC', updateOn: 'default blur', debounce: { 'default': 500,'blur': 0}}"
+                aria-label="end time (hh:mm:ss)" ng-disabled="!ctrl.endDate" type="time" id="end-time" step="1"
+                name="endTime" ng-change="ctrl.onEndDateUpdate()">
+
+              <div ng-messages="ctrl.dateForm.endTime.$error">
+                <div ng-message="time">The end time is invalid. Use format
+                  hh:mm:ss
+                </div>
+              </div>
+            </div>
+          </div>
+        </ng-form>
+        <div layout="column" layout-margin>
+          <ng-form name="ctrl.parameterForm" layout-margin>
+            <h3 class="{{ctrl.titleClass}}">{{ctrl.title}}</h3>
+            <div ng-if="ctrl.title == 'Parameters'">
+              <div layout="column">
+                <div ng-repeat="(name, param) in ctrl.parameters" flex="noshrink">
+                  <input name="name" param="param" date-unit="ctrl.getTimeUnit(name)">
+                </div>
+              </div>
+            </div>
+            <div ng-if="ctrl.title != 'Parameters'">
+              <div layout-wrap layout="row">
+                <div ng-repeat="(name, param) in ctrl.parameters" flex="noshrink">
+                  <input name="name" param="param" date-unit="ctrl.getTimeUnit(name)">
+                </div>
+              </div>
+            </div>
+          </ng-form>
+        </div>
 
         <!-- <options ng-if="ctrl.model.selectedOperation.fields.options" model="ctrl.model.fields.options"></options> -->
 
@@ -39,13 +193,11 @@
           <h3 class="section-title mat-title">
             Configuration
           </h3>
-
           <div ng-repeat="(name, field) in ctrl.getConfigFields()">
-            <!-- <operation-field model="ctrl.model" details="field">
-            </operation-field> -->
+            <input name="ctrl.title" param="ctrl.param" options="ctrl.details.options">
           </div>
         </div>
       </div>
-    </div>
+    </mat-card>
   </form>
 </div>
