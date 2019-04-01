@@ -110,6 +110,42 @@ describe('The type service', function() {
                                 "wrapInJson": true,
                                 "custom": true
                             },
+                            "this.is.a.custom.object": {
+                                "fields": [
+                                    {
+                                        "label": "isItATest",
+                                        "type": "boolean",
+                                        "key": "customObject.isItATest",
+                                        "class": "java.lang.Boolean",
+                                        "step": 1,
+                                        "required": true
+                                    }
+                                ],
+                                "wrapInJson": true,
+                                "custom": true
+                            },
+                            "this.is.a.custom.object2": {
+                                "fields": [
+                                    {
+                                        "label": "field1",
+                                        "type": "boolean",
+                                        "key": "customObject.field1",
+                                        "class": "java.lang.Boolean",
+                                        "step": 1,
+                                        "required": true
+                                    },
+                                    {
+                                        "label": "field2",
+                                        "type": "text",
+                                        "key": "customObject.field2",
+                                        "class": "java.lang.String",
+                                        "step": 1,
+                                        "required": true
+                                    }
+                                ],
+                                "wrapInJson": true,
+                                "custom": true
+                            },
                             "JSON": {
                                 "fields" : [
                                     {
@@ -268,6 +304,8 @@ describe('The type service', function() {
                 "String": "java.lang.String",
                 "TypeSubTypeValue": "uk.gov.gchq.gaffer.types.TypeSubTypeValue",
                 "HyperLogLogPlus": "com.clearspring.analytics.stream.cardinality.HyperLogLogPlus",
+                "object": 'this.is.a.custom.object',
+                "object2": 'this.is.a.custom.object2',
                 "JSON": "JSON"
             };
 
@@ -485,7 +523,7 @@ describe('The type service', function() {
 
         it('should create a custom short value for custom types', function() {
             var value = service.getShortValue({'com.clearspring.analytics.stream.cardinality.HyperLogLogPlus': { "hyperLogLogPlus": { "cardinality": 30 }}})
-            expect(value).toEqual('30');
+            expect(value).toEqual(30);
         });
 
         it('should work for ArrayLists without having to add to the types config', function() {
@@ -506,6 +544,16 @@ describe('The type service', function() {
         it('should work for arrays', function() {
             var value = service.getShortValue(['hello', 'world']);
             expect(value).toEqual('hello, world');
+        });
+
+        it('should return singular value from objects containing only one value', function() {
+            var value = service.getShortValue({'this.is.a.custom.object': { "customObject": { "isItATest": true }}});
+            expect(value).toEqual(true);
+        });
+
+        it('should return values in a string from objects containing two or more values', function() {
+            var value = service.getShortValue({'this.is.a.custom.object2': { "customObject": { "field1": true, "field2": "foo" }}});
+            expect(value).toEqual("field1: true, field2: foo");
         });
     });
 
