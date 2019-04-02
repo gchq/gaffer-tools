@@ -63,6 +63,19 @@ class GafferFunctionsTest(unittest.TestCase):
         [
             '''
             {
+                "class": "uk.gov.gchq.koryphe.impl.function.DictionaryLookup",
+                "dictionary": {
+                    "One": 1,
+                    "Two": 2,
+                    "Three": 3
+                }
+            }
+            ''',
+            g.DictionaryLookup(dictionary=dict(One=1, Two=2, Three=3))
+        ],
+        [
+            '''
+            {
                 "class" : "uk.gov.gchq.koryphe.impl.function.ExtractValue",
                 "key" : "blueKey"
             }
@@ -534,6 +547,17 @@ class GafferFunctionsTest(unittest.TestCase):
         [
             '''
             {
+                "class" : "uk.gov.gchq.koryphe.impl.function.CreateObject",
+                "objectClass" : "java.lang.Long"
+            }
+            ''',
+            g.func.CreateObject(
+                object_class="java.lang.Long"
+            )
+        ],     
+        [
+            '''
+            {
                 "class": "uk.gov.gchq.gaffer.time.function.MaskTimestampSetByTimeRange",
                 "timeRangeStartEpochMilli": {
                     "java.lang.Long": 15300000000000
@@ -548,7 +572,6 @@ class GafferFunctionsTest(unittest.TestCase):
                 time_range_end_epoch_milli=g.long(15400000000000)
             )
         ]
-
     ]
 
     def test_examples(self):
