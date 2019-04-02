@@ -1,5 +1,5 @@
 #
-# Copyright 2016-2018 Crown Copyright
+# Copyright 2016-2019 Crown Copyright
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -67,6 +67,5 @@ import gafferpy_core.gaffer_binaryoperators as bop
 import gafferpy_core.gaffer_operations as op
 import gafferpy_core.gaffer_config as conf
 import gafferpy_core.gaffer_types as t
-#if the line below is not commented out, the rdd operation doesn't work. i haven't got to the bottom of it yet...
-#import gafferpy_core.gaffer_utils as utils
+import gafferpy_core.gaffer_utils as utils
 import gafferpy_core.gaffer_session as session

@@ -21,7 +21,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import uk.gov.gchq.gaffer.accumulostore.AccumuloStore;
-
 import uk.gov.gchq.gaffer.data.elementdefinition.exception.SchemaException;
 import uk.gov.gchq.gaffer.exception.SerialisationException;
 import uk.gov.gchq.gaffer.graph.Graph;
@@ -43,6 +42,7 @@ import uk.gov.gchq.gaffer.user.User;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -60,6 +60,28 @@ public final class PythonGraph {
         buildGraph(schema, graphConfig, storeProperties);
     }
 
+    public PythonGraph(final InputStream schemaConfig, final InputStream graphConfig, final InputStream storeProperties) {
+
+        Schema schema = null;
+        GraphConfig config = null;
+        StoreProperties properties = null;
+
+        try {
+            schema = new Schema.Builder()
+                    .json(schemaConfig)
+                    .build();
+            config = new GraphConfig.Builder()
+                    .json(graphConfig)
+                    .build();
+            properties = StoreProperties.loadStoreProperties(storeProperties);
+        } catch (final SchemaException e) {
+            LOGGER.debug(e.getMessage());
+        }
+
+        buildGraph(schema, config, properties);
+    }
+
+    @Deprecated
     public PythonGraph(final String schemaPath, final String configPath, final String storePropertiesPath) {
 
         Schema schema = null;

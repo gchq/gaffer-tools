@@ -1,7 +1,7 @@
-__version__ = "1.5.2"
+__version__ = "1.8.0"
 
 __title__ = "gafferpy"
-__description__ = "Gaffer Python Shell"
+__description__ = "Gaffer Python API"
 __uri__ = "https://github.com/gchq/gafferpy-tools"
 __doc__ = __description__ + " <" + __uri__ + ">"
 

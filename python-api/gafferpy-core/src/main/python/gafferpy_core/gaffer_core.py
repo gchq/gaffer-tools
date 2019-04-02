@@ -25,7 +25,7 @@ import inspect
 import sys
 
 
-class ToJson:
+class ToJson: # TODO: Remove to just use the standard JSON library
     """
     Enables implementations to be converted to json via a to_json method
     """
@@ -364,7 +364,7 @@ class Edge(Element):
         return edge
 
 
-class JsonConverter:
+class JsonConverter:  # TODO: Remove and use the standard JSON library
     GENERIC_JSON_CONVERTERS = {}
     CUSTOM_JSON_CONVERTERS = {}
 

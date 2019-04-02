@@ -56,7 +56,7 @@ class GafferPysparkSession():
         """
 
         from pyspark.context import SparkContext
-        self._spark_context = SparkContext.getOrCreate()
+        self._spark_context = SparkContext.getOrCreate()#.set('spark.executor.cores','1') # fix collect issue
         self._java_gaffer_session = self._spark_context._jvm.uk.gov.gchq.gaffer.python.session.GafferSession.getInstance()
         if self._java_gaffer_session.getStatusCode() == 1:
             logger.info("In a pyspark environment. Using SparkSession as the Gaffer Session")

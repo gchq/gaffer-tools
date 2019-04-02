@@ -18,12 +18,16 @@
 
 """
 
-
+import configparser
+import getpass 
+import json
 import logging
 from py4j.java_gateway import JavaGateway, CallbackServerParameters, GatewayParameters
+import requests
 import subprocess as sp
 import signal
 import time
+
 from gafferpy_core import gaffer_utils as u
 
 logger = logging.getLogger(__name__)
@@ -54,7 +58,7 @@ class GafferPythonSession():
     _java_gaffer_session = None
     _java_gateway = None
     _java_server_process = None
-    _java_gaffer_session_class = "uk.gov.gchq.gaffer.python.session.GafferSession"
+    _java_gaffer_session_class = "uk.gov.gchq.gaffer.python.Application"
 
     #python things
     _jar = None
@@ -77,6 +81,7 @@ class GafferPythonSession():
             self._check_running_processes(kill_existing_sessions)
             self._start_session()
             gaffer_session = self
+        return gaffer_session
 
     def _start_session(self):
 
@@ -106,7 +111,57 @@ class GafferPythonSession():
             logger.error(msg)
             raise RuntimeError(msg)
 
+    def connect_to_session(self, address="127.0.0.1", port=25333):
 
+        """
+        Public method for just connecting to a running gaffer session
+        """
+        print("""
+             _<^```\                                                                          
+           __>'- ~--^^~            .                                                          
+           _>  / '     \             o                           .                            
+          _> ,/ .  @_^`^)                      O                         O                       
+         -   |.   /_,__ )     o                                                               
+         _> | /   '  (.       ________        _____  __O__       o      _______             .        
+          >_(/ _    (_ \     /  _____/_____ _/ ____\/ ____\___________  \__  _ \__o_.__.   
+            /.'    (  `.\   /   \  ___\__  \\\\   __\\\\   __\/ __ \_  ___\   |  __/\_  |  |  
+              (   (         \    \_\  \/ __ \|  |   |  | \  ___/|  |      |  |    \__  |      
+               (   (         \________/(____/|__|   |__|  \_____|__|      |__|    / ___|  
+                `( `l./^^>               __                                       \/      
+                  `l.  /                /  \                                                      
+                    l |                 \__/   _                                              
+                     l(                       (_)                                           
+        """)
+
+        # config = configparser.ConfigParser()
+
+
+        # if(config['required']['SLL-Enabled']): 
+        s = requests.Session()
+        s.verify = False # this where config file would come in
+
+        username = input("Please enter your username: ")
+        password = getpass.getpass(prompt='Please enter your password: ', stream=None) 
+        data = {'username': username, 'password': password}
+        s.post(url="https://localhost:8443/login", data=data)
+
+        sessionResponse = s.get("https://localhost:8443/create_session")
+        response = json.loads(sessionResponse.text)
+        address = response['address'].split('/')
+        print(address[1])
+        print(response['address'])
+
+        try:
+            gaffer_session = JavaGateway(gateway_parameters=GatewayParameters(address=address[1], 
+                port=response['portNumber'], 
+                auth_token=response['token']
+                ))
+            self._java_gateway = gaffer_session
+            self._java_gaffer_session = gaffer_session.entry_point
+            logger.info("Connected to Gaffer Session")
+            return gaffer_session.entry_point
+        except:
+            logger.error("Issue connecting to Gaffer Session")
 
     def stop_session(self):
         if(self._java_gateway == None):
@@ -185,6 +240,12 @@ class Graph():
         'uk.gov.gchq.gaffer.operation.data.ElementSeed' : 'uk.gov.gchq.gaffer.python.data.serialiser.PythonElementSeedMapSerialiser'
     }
 
+    def _convertFileToBytes(self, file):
+        with open(file, "rb") as f:
+            ba = f.read()
+            c = bytearray(ba)
+            return c
+
     def _setSchema(self, schemaPath):
         self.schemaPath = schemaPath
 
@@ -201,7 +262,7 @@ class Graph():
             msg = "No gaffer session"
             logger.error(msg)
             raise ValueError(msg)
-        self._java_python_graph = self._gaffer_session._java_gaffer_session.getPythonGraph(self.schemaPath, self.graphConfigPath, self.storePropertiesPath)
+        self._java_python_graph = self._gaffer_session._java_gaffer_session.getPythonGraph(self._convertFileToBytes(self.schemaPath), self._convertFileToBytes(self.graphConfigPath), self._convertFileToBytes(self.storePropertiesPath))
         self._set_element_serialisers(store_properties_path=self.storePropertiesPath)
         return self
 
@@ -257,8 +318,6 @@ class Graph():
 
     def _encode(self, input):
         return str(input.to_json()).replace("'", '"').replace("True", "true")
-
-
 
     class Builder():
         """
