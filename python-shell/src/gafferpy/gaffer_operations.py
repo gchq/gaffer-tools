@@ -980,6 +980,20 @@ class GetJobResults(Operation):
         return operation
 
 
+class CancelScheduledJob(Operation):
+    CLASS = "uk.gov.gchq.gaffer.operation.impl.job.CancelScheduledJob"
+
+    def __init__(self, job_id):
+        super().__init__(_class_name=self.CLASS)
+        self.job_id = job_id
+
+    def to_json(self):
+        operation_json = super().to_json()
+        if self.job_id is not None:
+            operation_json['jobId'] = self.job_id
+        return operation_json
+
+
 class SplitStoreFromFile(Operation):
     CLASS = 'uk.gov.gchq.gaffer.operation.impl.SplitStoreFromFile'
 
