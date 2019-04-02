@@ -5255,6 +5255,15 @@ class GafferOperationsTest(unittest.TestCase):
                 match_key=g.MatchKey.RIGHT,
                 flatten=False,
                 join_type=g.JoinType.OUTER)
+        ],
+        [
+            '''
+            {
+                "class": "uk.gov.gchq.gaffer.operation.impl.job.CancelScheduledJob",
+                "jobId": "238492-2ad-fadf034-324-2a"
+            }
+            ''',
+            g.CancelScheduledJob(job_id="238492-2ad-fadf034-324-2a")
         ]
     ]
 
