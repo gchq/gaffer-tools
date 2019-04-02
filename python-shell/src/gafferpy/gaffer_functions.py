@@ -91,6 +91,18 @@ class ExtractKeys(AbstractFunction):
     def to_json(self):
         return super().to_json()
 
+class DictionaryLookup(AbstractFunction):
+    CLASS = 'uk.gov.gchq.koryphe.impl.function.DictionaryLookup'
+
+    def __init__(self, dictionary):
+        super().__init__(_class_name=self.CLASS)
+        self.dictionary = dictionary
+    
+    def to_json(self):
+        function_json = super().to_json()
+        function_json["dictionary"] = self.dictionary
+
+        return function_json
 
 class ExtractValue(AbstractFunction):
     CLASS = 'uk.gov.gchq.koryphe.impl.function.ExtractValue'
