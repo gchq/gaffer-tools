@@ -31,24 +31,7 @@ export class AboutComponent implements OnInit {
   emailRecipients;
   emailSubject;
 
-  constructor(properties, config) {
-    properties.get().then(function(props) {
-      this.docs = props[this.DOCS_PROPERTY];
-      this.description =
-        props[this.DESCRIPTION_PROPERTY] || "no description provided";
-      this.propertiesLoaded = true;
-    });
-
-    config.get().then(function(conf) {
-      var endpoint = conf.restEndpoint.replace(/\/$/, "");
-
-      this.restApi = endpoint.substring(0, endpoint.lastIndexOf("/"));
-      if (conf.feedback) {
-        this.emailRecipients = conf.feedback.recipients;
-        this.emailSubject = conf.feedback.subject || "Gaffer feedback";
-      }
-    });
-  }
+  constructor() {}
 
   sendFeedback = function() {
     if (!this.emailRecipients || this.emailRecipients.length === 0) {
@@ -71,6 +54,25 @@ export class AboutComponent implements OnInit {
         this.emailSubject
     );
   };
+
+  OnInit(properties, config) {
+    properties.get().then(function(props) {
+      this.docs = props[this.DOCS_PROPERTY];
+      this.description =
+        props[this.DESCRIPTION_PROPERTY] || "no description provided";
+      this.propertiesLoaded = true;
+    });
+
+    config.get().then(function(conf) {
+      var endpoint = conf.restEndpoint.replace(/\/$/, "");
+
+      this.restApi = endpoint.substring(0, endpoint.lastIndexOf("/"));
+      if (conf.feedback) {
+        this.emailRecipients = conf.feedback.recipients;
+        this.emailSubject = conf.feedback.subject || "Gaffer feedback";
+      }
+    });
+  }
 
   ngOnInit() {}
 }
