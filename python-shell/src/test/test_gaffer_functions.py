@@ -543,8 +543,18 @@ class GafferFunctionsTest(unittest.TestCase):
             g.func.MapFilter(
                 key_value_predicate=g.pred.AreEqual()
             )
+        ],
+        [
+            '''
+            {
+                "class" : "uk.gov.gchq.koryphe.impl.function.CreateObject",
+                "objectClass" : "java.lang.Long"
+            }
+            ''',
+            g.func.CreateObject(
+                object_class="java.lang.Long"
+            )
         ]
-
     ]
 
     def test_examples(self):
