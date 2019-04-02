@@ -1,24 +1,29 @@
 <div style="flex-direction: row">
   <div style="flex:100" flex-offset-gt-sm="20" flex-gt-sm="60">
-    <div layout="row" layout-padding></div>
-    <div flex-offset-gt-sm="20" flex-gt-sm="60" flex="100">
-      <mat-card>
-        <mat-card-header>
-          <h1 layout-align="center- start">
-            About
-          </h1>
-        </mat-card-header>
-        <div layout="row" ng-hide="ctrl.propertiesLoaded" layout-align="center center">
-        </div>
-        <mat-card-content>
-          <p ng-bind-html="ctrl.description"></p>
-          <p ng-show="ctrl.restAPI"><a id="about-rest-api" target="_blank" href="ctrl.restAPI">Take a look at the REST
-              API</a>
-          </p>
-          <p ng-show="ctrl.docs"><a id="about-docs" target="_blank" href="ctrl.docs">Take a look at the
-              documentation</a>
-        </mat-card-content>
-      </mat-card>
-    </div>
+    <mat-card>
+      <mat-card-header style="flex-direction: row">
+        <mat-icon>info</mat-icon>
+        <h1 layout-align="center- start">
+          About
+        </h1>
+      </mat-card-header>
+      <div layout="row" ng-hide="ctrl.propertiesLoaded" layout-align="center center">
+        <mat-progress-spinner md-mode="indeterminate" class="md-primary" md-diameter="40">
+        </mat-progress-spinner>
+      </div>
+      <div layout="row" ng-hide="ctrl.propertiesLoaded" layout-align="center center">
+      </div>
+      <mat-card-content>
+        <p ng-bind-html="ctrl.description"></p>
+        <p ng-show="ctrl.restAPI"><a id="about-rest-api" target="_blank" href="{{ctrl.restAPI}}">Take a look at the REST
+            API</a>
+        </p>
+        <p ng-show="ctrl.docs"><a id="about-docs" target="_blank" href="{{ctrl.docs}}">Take a look at the
+            documentation</a></p>
+      </mat-card-content>
+      <mat-divider></mat-divider>
+      <button class="mat-primary mat-raised" ng-click="sendFeedback()">Send feedback</button>
+      <!-- <mat-raised-button class="mat-primary mat-raised" ng-click="sendFeedback()">Send feedback</mat-raised-button> -->
+    </mat-card>
   </div>
 </div>
