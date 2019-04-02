@@ -781,7 +781,21 @@ class IterableFilter(AbstractFunction):
 
         return predicate_json
 
-      
+class MaskTimestampSetByTimeRange(AbstractFunction):
+    CLASS = "uk.gov.gchq.gaffer.time.function.MaskTimestampSetByTimeRange"
+
+    def __init__(self, time_range_start_epoch_milli, time_range_end_epoch_milli):
+        super().__init__(_class_name=self.CLASS)
+        self.time_range_start_epoch_milli = time_range_start_epoch_milli
+        self.time_range_end_epoch_milli = time_range_end_epoch_milli
+
+    def to_json(self):
+        function_json = super().to_json()
+        function_json['timeRangeStartEpochMilli'] = self.time_range_start_epoch_milli
+        function_json['timeRangeEndEpochMilli'] = self.time_range_end_epoch_milli
+
+        return function_json
+
 class ToList(AbstractFunction):
     CLASS = 'uk.gov.gchq.koryphe.impl.function.ToList'
 

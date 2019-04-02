@@ -554,6 +554,23 @@ class GafferFunctionsTest(unittest.TestCase):
             g.func.CreateObject(
                 object_class="java.lang.Long"
             )
+        ],     
+        [
+            '''
+            {
+                "class": "uk.gov.gchq.gaffer.time.function.MaskTimestampSetByTimeRange",
+                "timeRangeStartEpochMilli": {
+                    "java.lang.Long": 15300000000000
+                },
+                "timeRangeEndEpochMilli": {
+                    "java.lang.Long": 15400000000000
+                }
+            }
+            ''',
+            g.func.MaskTimestampSetByTimeRange(
+                time_range_start_epoch_milli=g.long(15300000000000),
+                time_range_end_epoch_milli=g.long(15400000000000)
+            )
         ]
     ]
 
