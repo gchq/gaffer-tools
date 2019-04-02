@@ -800,6 +800,21 @@ class ToArray(AbstractFunction):
     def to_json(self):
         return super().to_json()
       
+class CreateObject(AbstractFunction):
+    CLASS = "uk.gov.gchq.koryphe.impl.function.CreateObject"
+
+    def __init__(self, object_class=None):
+        super().__init__(self.CLASS)
+
+        self.object_class = object_class
+
+    def to_json(self):
+        function_json = super().to_json()
+
+        if self.object_class is not None:
+            function_json['objectClass'] = self.object_class
+
+        return function_json
 
       
 def function_context_converter(obj):
