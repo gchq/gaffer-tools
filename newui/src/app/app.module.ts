@@ -22,6 +22,9 @@ import {
   MatIconModule,
   MatListModule
 } from "@angular/material";
+import { DateRangeComponent } from "./date-range/date-range.component";
+import { InputManagerComponent } from "./input-manager/input-manager.component";
+import { ParameterFormComponent } from "./parameter-form/parameter-form.component";
 
 @NgModule({
   declarations: [
@@ -31,7 +34,10 @@ import {
     AnalyticComponent,
     QueryComponent,
     NavComponent,
-    TableComponent
+    TableComponent,
+    DateRangeComponent,
+    InputManagerComponent,
+    ParameterFormComponent
   ],
   imports: [
     BrowserModule,
