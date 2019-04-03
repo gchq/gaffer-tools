@@ -33,6 +33,13 @@ body {
   width: 100%;
 }
 
+div {
+  margin: 10;
+  padding: 5;
+  margin-right: 10px;
+  margin-left: 10px;
+}
+
 mat-card {
   max-width: 80%;
   margin: 2em auto;
