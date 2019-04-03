@@ -1,0 +1,15 @@
+<form name="ctrl.operationChainForm">
+  <div ng-repeat="operation in ctrl.operations" class="operation">
+    <app-query model="operation" index="$index" time-config="ctrl.timeConfig" on-delete="ctrl.deleteOperation(index)"
+      on-reset="ctrl.resetOperation(index)" on-execute="ctrl.execute(op)" chain-length="ctrl.operations.length">
+    </app-query>
+    <div layout="row" layout-align="center" ng-if="ctrl.isNotLast($index)">
+      <mat-icon>arrow-downward</mat-icon>
+    </div>
+  </div>
+</form>
+<div layout="row" layout-align="end">
+  <button mat-button class="md-raised overlapping" ng-click="ctrl.resetChain($event)">Reset operation chain</button>
+  <button mat-button class="md-primary md-raised overlapping" ng-disabled="!ctrl.canExecute()" id="execute-chain"
+    ng-click="ctrl.executeChain()">Execute operation chain</button>
+</div>
