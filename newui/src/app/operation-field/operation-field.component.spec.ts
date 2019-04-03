@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { QueryComponent } from './query.component';
+import { OperationFieldComponent } from './operation-field.component';
 
-describe('QueryComponent', () => {
-  let component: QueryComponent;
-  let fixture: ComponentFixture<QueryComponent>;
+describe('OperationFieldComponent', () => {
+  let component: OperationFieldComponent;
+  let fixture: ComponentFixture<OperationFieldComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ QueryComponent ]
+      declarations: [ OperationFieldComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(QueryComponent);
+    fixture = TestBed.createComponent(OperationFieldComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

@@ -6,7 +6,7 @@ import { UpgradeModule } from "@angular/upgrade/static";
 
 import { AppComponent } from "./app.component";
 import { AboutComponent } from "./about/about.component";
-import { QueryComponent } from "./query/query.component";
+import { OperationComponent } from "./operation/operation.component";
 import { TableComponent } from "./table/table.component";
 
 import { AppRoutingModule } from "./app-routing.module";
@@ -25,8 +25,9 @@ import {
 import { DateRangeComponent } from "./date-range/date-range.component";
 import { InputManagerComponent } from "./input-manager/input-manager.component";
 import { ParameterFormComponent } from "./parameter-form/parameter-form.component";
-import { PairBuilderComponent } from './pair-builder/pair-builder.component';
-import { SeedBuilderComponent } from './seed-builder/seed-builder.component';
+import { PairBuilderComponent } from "./pair-builder/pair-builder.component";
+import { SeedBuilderComponent } from "./seed-builder/seed-builder.component";
+import { OperationFieldComponent } from './operation-field/operation-field.component';
 
 @NgModule({
   declarations: [
@@ -34,14 +35,15 @@ import { SeedBuilderComponent } from './seed-builder/seed-builder.component';
     AboutComponent,
     AnalyticsComponent,
     AnalyticComponent,
-    QueryComponent,
+    OperationComponent,
     NavComponent,
     TableComponent,
     DateRangeComponent,
     InputManagerComponent,
     ParameterFormComponent,
     PairBuilderComponent,
-    SeedBuilderComponent
+    SeedBuilderComponent,
+    OperationFieldComponent
   ],
   imports: [
     BrowserModule,
