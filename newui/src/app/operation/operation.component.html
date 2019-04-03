@@ -1,54 +1,52 @@
 <div class="operation-content">
   <h1>Results</h1>
-  <form name="ctrl.operationForm">
-    <mat-divider></mat-divider>
-    <mat-card>
-      <div layout="row" layout-padding flex>
-        <!-- first column -->
-        <!-- Display the name of the operation and seed input box -->
-        <div layout="column" flex="auto">
-          <div class="md-list-item-text">
-            <h3>{{ctrl.model.selectedOperation.name}}</h3>
-            <p>{{ctrl.model.selectedOperation.description}}</p>
-          </div>
-          <app-input-manager first="ctrl.isFirst()" primary-input="ctrl.model.selectedOperation.fields.input"
-            secondary-input="ctrl.model.selectedOperation.fields.inputB" model="ctrl.model.fields">
-          </app-input-manager>
-          <div ng-if="ctrl.model.selectedOperation.fields.view">
-            <!-- <view-builder model="ctrl.model.fields.view">
-                    </view-builder> -->
-            <mat-checkbox ng-model="ctrl.model.fields.view.summarise" layout-padding>
-              Summarise
-            </mat-checkbox>
-          </div>
+</div>
+<form name="ctrl.operationForm">
+  <mat-card>
+    <div fxLayout="row" fxLayout.xs="column">
+      <!-- first column -->
+      <!-- Display the name of the operation and seed input box -->
+      <div fxFlex="50%">
+        <div class="md-list-item-text">
+          <h3>{{ctrl.model.selectedOperation.name}}</h3>
+          <p>{{ctrl.model.selectedOperation.description}}</p>
         </div>
-        <!-- second column -->
-        <!-- Display the different inputs based on the operation -->
-        <div layout="column" flex="50">
-          <app-date-range ng-if="ctrl.timeConfig && ctrl.model.selectedOperation.fields.view" model="ctrl.model.dates"
-            conf="ctrl.timeConfig">
-          </app-date-range>
+        <app-input-manager first="ctrl.isFirst()" primary-input="ctrl.model.selectedOperation.fields.input"
+          secondary-input="ctrl.model.selectedOperation.fields.inputB" model="ctrl.model.fields">
+        </app-input-manager>
+        <div ng-if="ctrl.model.selectedOperation.fields.view">
+          <!-- <view-builder model="ctrl.model.fields.view">
+                    </view-builder> -->
+          <mat-checkbox ng-model="ctrl.model.fields.view.summarise" layout-padding>
+            Summarise
+          </mat-checkbox>
+        </div>
+      </div>
 
-          <!-- <parameter-form
-                        ng-if="ctrl.model.selectedOperation.parameters"
-                        title-class="layout-padding md-title section-title"
-                        parameters="ctrl.model.selectedOperation.parameters">
-                </parameter-form> -->
+      <!-- second column -->
+      <!-- Display the different inputs based on the operation -->
+      <div fxFlex="50%">
+        <app-date-range ng-if="ctrl.timeConfig && ctrl.model.selectedOperation.fields.view" model="ctrl.model.dates"
+          conf="ctrl.timeConfig">
+        </app-date-range>
 
-          <!-- <options ng-if="ctrl.model.selectedOperation.fields.options" model="ctrl.model.fields.options"></options> -->
+        <app-parameter-form ng-if="ctrl.model.selectedOperation.parameters"
+          title-class="layout-padding md-title section-title" parameters="ctrl.model.selectedOperation.parameters">
+        </app-parameter-form>
 
-          <div ng-if="ctrl.hasOtherConfig()">
-            <h3 class="section-title md-title">
-              Configuration
-            </h3>
+        <!-- <options ng-if="ctrl.model.selectedOperation.fields.options" model="ctrl.model.fields.options"></options> -->
 
-            <div ng-repeat="(name, field) in ctrl.getConfigFields()">
-              <app-operation-field model="ctrl.model" details="field">
-              </app-operation-field>
-            </div>
+        <div ng-if="ctrl.hasOtherConfig()">
+          <h3 class="section-title md-title">
+            Configuration
+          </h3>
+
+          <div ng-repeat="(name, field) in ctrl.getConfigFields()">
+            <app-operation-field model="ctrl.model" details="field">
+            </app-operation-field>
           </div>
         </div>
       </div>
-    </mat-card>
-  </form>
-</div>
+    </div>
+  </mat-card>
+</form>

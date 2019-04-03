@@ -9,7 +9,8 @@
   </div>
 </form>
 <div layout="row" layout-align="end">
-  <button mat-button class="md-raised overlapping" ng-click="ctrl.resetChain($event)">Reset operation chain</button>
-  <button mat-button class="md-primary md-raised overlapping" ng-disabled="!ctrl.canExecute()" id="execute-chain"
+  <button mat-button-raised class="md-raised overlapping" ng-click="ctrl.resetChain($event)">Reset operation
+    chain</button>
+  <button mat-button-raised class="md-primary md-raised overlapping" ng-disabled="!ctrl.canExecute()" id="execute-chain"
     ng-click="ctrl.executeChain()">Execute operation chain</button>
 </div>

@@ -15,6 +15,7 @@ import { AnalyticComponent } from "./analytic/analytic.component";
 import { NavComponent } from "./nav/nav.component";
 import { MaterialModule } from "./material.module";
 import { LayoutModule } from "@angular/cdk/layout";
+import { FlexLayoutModule } from "@angular/flex-layout";
 import {
   MatToolbarModule,
   MatButtonModule,
@@ -27,8 +28,8 @@ import { InputManagerComponent } from "./input-manager/input-manager.component";
 import { ParameterFormComponent } from "./parameter-form/parameter-form.component";
 import { PairBuilderComponent } from "./pair-builder/pair-builder.component";
 import { SeedBuilderComponent } from "./seed-builder/seed-builder.component";
-import { OperationFieldComponent } from './operation-field/operation-field.component';
-import { ParameterInputComponent } from './parameter-input/parameter-input.component';
+import { OperationFieldComponent } from "./operation-field/operation-field.component";
+import { ParameterInputComponent } from "./parameter-input/parameter-input.component";
 
 @NgModule({
   declarations: [
@@ -55,6 +56,7 @@ import { ParameterInputComponent } from './parameter-input/parameter-input.compo
     BrowserAnimationsModule,
     MaterialModule,
     LayoutModule,
+    FlexLayoutModule,
     MatToolbarModule,
     MatButtonModule,
     MatSidenavModule,
