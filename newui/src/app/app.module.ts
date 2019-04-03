@@ -25,6 +25,8 @@ import {
 import { DateRangeComponent } from "./date-range/date-range.component";
 import { InputManagerComponent } from "./input-manager/input-manager.component";
 import { ParameterFormComponent } from "./parameter-form/parameter-form.component";
+import { PairBuilderComponent } from './pair-builder/pair-builder.component';
+import { SeedBuilderComponent } from './seed-builder/seed-builder.component';
 
 @NgModule({
   declarations: [
@@ -37,7 +39,9 @@ import { ParameterFormComponent } from "./parameter-form/parameter-form.componen
     TableComponent,
     DateRangeComponent,
     InputManagerComponent,
-    ParameterFormComponent
+    ParameterFormComponent,
+    PairBuilderComponent,
+    SeedBuilderComponent
   ],
   imports: [
     BrowserModule,
