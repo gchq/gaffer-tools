@@ -46,7 +46,7 @@ public class PropertiesServiceTest {
         assertEquals("AllProps=[single-service=false,insecure=false,use-ssl=true," +
                 "optional=[auth-service-url=https://localhost:8080/create_session,ssl-password=placeholder," +
                 "keystore-type=JKS," +
-                "keystore-location=/Users/P41669/Documents/gaffer-tools/python-api/gafferpy-core/src/test/resources/example.jks," +
+                "keystore-location=src/test/resources/example.jks," +
                 "protocol=TLSv1.2,keymanager-type=JKS]" +
                 "]", test4.toString());
     }

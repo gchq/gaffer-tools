@@ -77,12 +77,12 @@ public class PropertiesService {
             }
 
             if (getSingleService().equalsIgnoreCase(FALSE) && getInsecure().equalsIgnoreCase(FALSE)) {
-                LOGGER.debug("Using Secure Gaffer Sessions: Adding configuration settings");
+                LOGGER.info("Using Secure Gaffer Sessions: Adding configuration settings");
                 setAuthServiceUrl(prop.getProperty("auth-service-url"));
             }
 
             if (isSsl().equalsIgnoreCase(TRUE)) {
-                LOGGER.debug("Using SSL: Adding configuration settings");
+                LOGGER.info("Using SSL: Adding configuration settings");
                 setSslPassword(prop.getProperty("ssl-password"));
                 setKeystoreType(prop.getProperty("keystore-type"));
                 setKeystoreLocation(prop.getProperty("keystore-location"));

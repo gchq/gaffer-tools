@@ -51,7 +51,7 @@ public final class SecureSessionAuth implements Runnable {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SessionManager.class);
 
-    private static final int DEFAULT_PORT = 8085;
+    private static final int DEFAULT_PORT = 8080;
 
     private static final String INDEX_HTML = "index.html";
 

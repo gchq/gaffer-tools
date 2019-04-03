@@ -22,6 +22,7 @@ import configparser
 import getpass 
 import json
 import logging
+import os
 from py4j.java_gateway import JavaGateway, CallbackServerParameters, GatewayParameters
 import requests
 import subprocess as sp
@@ -133,29 +134,49 @@ class GafferPythonSession():
                      l(                       (_)                                           
         """)
 
-        # config = configparser.ConfigParser()
+        config = configparser.ConfigParser()
+        config.read(os.path.join(os.path.dirname(__file__), 'application.config'))
 
+        if(config['required'].getboolean('SSL-Enabled')):
+            s = requests.Session()
+            try:
+                s.verify = config.get('ssl','Cert-Path')
+                pass
+            except ValueError as identifier:
+                logger.error(identifier)
+                print("Ignoring certification verification")
+                pass
+            except OSError as identifier:
+                logger.error(identifier)
+                print("Ignoring certification verification")
+                pass
+            finally:
+                s.verify = False
+                
+            username = input("Please enter your username: ")
+            password = getpass.getpass(prompt='Please enter your password: ', stream=None)
+            s.post(url=config.get('ssl', 'Auth-URL'), data={'username': username, 'password': password})
 
-        # if(config['required']['SLL-Enabled']): 
-        s = requests.Session()
-        s.verify = False # this where config file would come in
+            sessionResponse = s.get(config.get('ssl', 'Session-Create-URL'))
 
-        username = input("Please enter your username: ")
-        password = getpass.getpass(prompt='Please enter your password: ', stream=None) 
-        data = {'username': username, 'password': password}
-        s.post(url="https://localhost:8443/login", data=data)
-
-        sessionResponse = s.get("https://localhost:8443/create_session")
-        response = json.loads(sessionResponse.text)
-        address = response['address'].split('/')
-        print(address[1])
-        print(response['address'])
+            if(sessionResponse.status_code == 200):
+                response = json.loads(sessionResponse.text)
+                addres = response['address'].split('/')
+                address = addres[1]
+                port = response['portNumber']
+                token = response['token']
+            else:
+                logger.error(sessionResponse.text)
+                raise sessionResponse.text
 
         try:
-            gaffer_session = JavaGateway(gateway_parameters=GatewayParameters(address=address[1], 
-                port=response['portNumber'], 
-                auth_token=response['token']
-                ))
+            if(config['required'].getboolean('SSL-Enabled')):
+                gaffer_session = JavaGateway(gateway_parameters=GatewayParameters(address=address, 
+                    port=port, 
+                    auth_token=token
+                    ))
+            else:
+                gaffer_session = JavaGateway(gateway_parameters=GatewayParameters(address=address, port=port))
             self._java_gateway = gaffer_session
             self._java_gaffer_session = gaffer_session.entry_point
             logger.info("Connected to Gaffer Session")

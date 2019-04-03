@@ -2,7 +2,7 @@ import unittest
 
 import gafferpy_core
 
-from . __init__ import __version__ as TestVersion
+from __init__ import __version__ as TestVersion
 
 class gaffer_core_test(unittest.TestCase):
 

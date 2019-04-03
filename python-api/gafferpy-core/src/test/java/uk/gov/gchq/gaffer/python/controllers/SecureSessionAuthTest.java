@@ -26,11 +26,11 @@ public class SecureSessionAuthTest {
 
     private static final String USER_AGENT = "Mozilla/5.0";
 
-    private static final String GET_HOME = "http://localhost:8085/api/1.0";
-    private static final String SECURE_GET_HOME = "https://localhost:8085/api/1.0";
-    private static final String GET_METRICS = "http://localhost:8085/api/1.0/metrics";
-    private static final String POST_REQUEST = "http://localhost:8085/api/1.0/create";
-    private static final String NONE_EXISTING_PAGE = "http://localhost:8085/api/1.0/lol";
+    private static final String GET_HOME = "http://localhost:8080/api/1.0";
+    private static final String SECURE_GET_HOME = "https://localhost:8080/api/1.0";
+    private static final String GET_METRICS = "http://localhost:8080/api/1.0/metrics";
+    private static final String POST_REQUEST = "http://localhost:8080/api/1.0/create";
+    private static final String NONE_EXISTING_PAGE = "http://localhost:8080/api/1.0/lol";
 
     private static SecureSessionAuth auth = SecureSessionAuth.getInstance();
 
