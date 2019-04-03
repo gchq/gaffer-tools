@@ -1,7 +1,10 @@
-<h1>Analytics</h1>
-<mat-divider></mat-divider>
-<div class="grid-container">
-  <div class="grid-item" ng-repeat="analytic in ctrl.analytics">
-    <app-analytic model="analytic"></app-analytic>
-  </div>
+<div>
+  <h1>Analytics</h1>
 </div>
+<mat-card>
+  <div class="grid-container">
+    <div class="grid-item" ng-repeat="analytic in ctrl.analytics">
+      <app-analytic model="analytic"></app-analytic>
+    </div>
+  </div>
+</mat-card>

@@ -1,23 +1,26 @@
-<h1>
-  Table
-</h1>
-<mat-divider></mat-divider>
-<div ng-cloak layout="column" layout-align=" stretch">
-  <table id="results-table" class="compact">
-    <thead>
-      <tr>
-        <th ng-repeat="col in ctrl.data.columns">
-          {{col}}
-        </th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr
-        ng-repeat="result in (ctrl.filteredResults = (ctrl.data.results | orderBy:ctrl.getValue() | filter:ctrl.searchTerm)) | limitTo: ctrl.pagination.limit: (ctrl.pagination.page - 1) * ctrl.pagination.limit">
-        <td ng-repeat="col in ctrl.data.columns">
-          {{result[col]}}
-        </td>
-      </tr>
-    </tbody>
-  </table>
+<div>
+  <h1>
+    Table
+  </h1>
 </div>
+<mat-card>
+  <div ng-cloak layout="column" layout-align=" stretch">
+    <table id="results-table" class="compact">
+      <thead>
+        <tr>
+          <th ng-repeat="col in ctrl.data.columns">
+            {{col}}
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr
+          ng-repeat="result in (ctrl.filteredResults = (ctrl.data.results | orderBy:ctrl.getValue() | filter:ctrl.searchTerm)) | limitTo: ctrl.pagination.limit: (ctrl.pagination.page - 1) * ctrl.pagination.limit">
+          <td ng-repeat="col in ctrl.data.columns">
+            {{result[col]}}
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</mat-card>
