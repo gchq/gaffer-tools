@@ -1,12 +1,15 @@
+<div>
+  <h1>Results</h1>
+</div>
 <form name="ctrl.operationChainForm">
-  <div ng-repeat="operation in ctrl.operations" class="operation">
+  <div fxLayout="column" ng-repeat="operation in ctrl.operations" class="operation">
     <app-query model="operation" index="$index" time-config="ctrl.timeConfig" on-delete="ctrl.deleteOperation(index)"
       on-reset="ctrl.resetOperation(index)" on-execute="ctrl.execute(op)" chain-length="ctrl.operations.length">
     </app-query>
-    <div layout="row" layout-align="center" ng-if="ctrl.isNotLast($index)">
-      <mat-icon>expand_more</mat-icon>
-    </div>
   </div>
+  <mat-card fxFlexAlign="centre">
+    <mat-icon>expand_more</mat-icon>
+  </mat-card>
 </form>
 <div layout="row" layout-align="end">
   <button mat-button-raised class="md-raised overlapping" ng-click="ctrl.resetChain($event)">Reset operation
