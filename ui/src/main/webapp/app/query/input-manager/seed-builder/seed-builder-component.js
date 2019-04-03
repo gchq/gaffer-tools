@@ -80,7 +80,7 @@ function SeedBuilderController(schema, csv, types, error, events, common, $route
      * Creates the placeholder for the seed input
      */
     vm.getPlaceHolder = function() {
-        return vm.usePrevious ? "Input is provided by the output of the previous operation" : "Enter your seeds, each seed on a new line: \n" + vm.getCsvHeader()
+        return vm.usePrevious ? "Input is provided by the output of the previous operation" : "Enter your seeds, each seed on a new line \n" + vm.getCsvHeader()
     }
 
     /**
