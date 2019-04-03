@@ -264,7 +264,7 @@ angular.module('app').factory('types', ['config', 'common', function(config, com
         if (typeof parts === 'object') {
             if(type && type["fields"] && type["fields"].length > 0) {
                 return type["fields"].map(function(field){
-                    var val = parts[key];
+                    var val = parts[field.key];
                     return service.getShortValue(val);
                 }).join(",");
             }
