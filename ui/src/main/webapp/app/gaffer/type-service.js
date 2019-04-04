@@ -262,10 +262,26 @@ angular.module('app').factory('types', ['config', 'common', function(config, com
         }
 
         if (typeof parts === 'object') {
+            if(type && type["fields"] && type["fields"].length > 0) {
+                var allHaveKeys = true;
+                for(var i in type["fields"]) {
+                    if(type["fields"][i]["key"] === undefined || type["fields"][i]["key"] == '') {
+                        allHaveKeys = false;
+                        break;
+                    }
+                }
+                if(allHaveKeys) {
+                    return type["fields"].map(function(field){
+                        var val = parts[field.key];
+                        return service.getShortValue(val);
+                    }).join(",");
+                }
+            }
+
             return Object.keys(parts).map(function(key){
                 var val = parts[key];
                 return service.getShortValue(val);
-            }).join("|");
+            }).join(",");
         }
 
         return parts;

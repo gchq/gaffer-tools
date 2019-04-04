@@ -75,6 +75,13 @@ describe('The type service', function() {
                             "uk.gov.gchq.gaffer.types.TypeSubTypeValue": {
                                 "fields": [
                                     {
+                                        "label": "Value",
+                                        "type": "text",
+                                        "key": "value",
+                                        "class": "java.lang.String",
+                                        "required": true
+                                    },
+                                    {
                                         "label": "Type",
                                         "type": "text",
                                         "key": "type",
@@ -85,13 +92,6 @@ describe('The type service', function() {
                                         "type": "text",
                                         "key": "subType",
                                         "class": "java.lang.String"
-                                    },
-                                    {
-                                        "label": "Value",
-                                        "type": "text",
-                                        "key": "value",
-                                        "class": "java.lang.String",
-                                        "required": true
                                     }
                                 ],
                                 "wrapInJson": true
@@ -507,18 +507,18 @@ describe('The type service', function() {
             expect(value).toEqual(42);
         });
 
-        it('should return a Pipe delimited representation of POJOs', function() {
+        it('should return a comma delimited representation of POJOs', function() {
             var value = service.getShortValue({'uk.gov.gchq.gaffer.types.TypeSubTypeValue': {'type': 't', 'subType': 'st', 'value': 'v'}})
-            expect(value).toEqual('t|st|v');
+            expect(value).toEqual('v,t,st');
         });
 
-        it('should return a pipe delimited representation of POJOs which end with the word "Set"', function() {
+        it('should return a comma delimited representation of POJOs which end with the word "Set"', function() {
             var value = service.getShortValue({"a.class.which.ends.in.Set": {
                 "fieldA": {"java.lang.Long": 200},
                 "fieldB": "foo"
             }});
 
-            expect(value).toEqual("200|foo");
+            expect(value).toEqual("200,foo");
         })
 
         it('should create a custom short value for custom types', function() {
@@ -570,7 +570,7 @@ describe('The type service', function() {
 
         it('should return a comma separated list of field labels when there are multiple fields', function() {
             var value = service.getCsvHeader('uk.gov.gchq.gaffer.types.TypeSubTypeValue');
-            expect(value).toEqual('Type,Sub Type,Value');
+            expect(value).toEqual('Value,Type,Sub Type');
         });
 
         it('should return a defined key if the label is undefined', function() {
