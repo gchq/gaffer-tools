@@ -1,3 +1,3 @@
 FROM gaffer-quickstart-pyspark-base
 
-CMD $GAFFER_HOME/bin/startup.sh --schema $SCHEMA --graphconfig $GRAPHCONFIG --storeproperties $STOREPROPERTIES --ui-config $UICONFIG --rest-config $RESTCONFIG; pyspark --jars $LIBS --py-files gafferpy-build-1.8.4-SNAPSHOT-python-modules.zip --packages graphframes:graphframes:0.6.0-spark2.3-s_2.11
+CMD $GAFFER_HOME/bin/startup.sh --schema $SCHEMA --graphconfig $GRAPHCONFIG --storeproperties $STOREPROPERTIES --ui-config $UICONFIG --rest-config $RESTCONFIG --customops-dir $CUSTOMOPSDIR; pyspark --jars $LIBS --py-files gafferpy-build-1.8.4-SNAPSHOT-python-modules.zip --packages graphframes:graphframes:0.6.0-spark2.3-s_2.11
