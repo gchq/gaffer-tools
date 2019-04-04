@@ -18,6 +18,7 @@ UICONFIG=
 RESTCONFIG=
 UI_WAR=$GAFFER_HOME/lib/quickstart-ui-${VERSION}.war
 REST_WAR=$GAFFER_HOME/lib/quickstart-rest-${VERSION}.war
+CUSTOM_OPS_DIR=
 
 usage="-schema schema file, -config graphconfig file, -store storeProperties file"
 
@@ -46,6 +47,10 @@ case $key in
     RESTCONFIG="$2"
     shift # past argument
     ;;
+    --customops-dir|-c)
+		CUSTOM_OPS_DIR=$2
+		shift
+		;;
     *)
             echo $usage
             echo "unknown args, exiting..."
@@ -79,8 +84,15 @@ else
     echo "using graph config at $GRAPH_CONFIG"
 fi
 
+if [ -z $CUSTOM_OPS_DIR ]
+then
+    echo -e "\ngaffer.store.operation.declarations=${GAFFER_HOME}/conf/operationDeclarations.json\n" >> $STORE_PROPERTIES
+else
+    $GAFFER_HOME/bin/_repackage_war.sh $CUSTOM_OPS_DIR >> $GAFFER_HOME/gaffer.log 2>&1
+    customOpDecs=$(ls -m $CUSTOM_OPS_DIR/*.json)
+    echo -e "\ngaffer.store.operation.declarations=${GAFFER_HOME}/conf/operationDeclarations.json,${customOpDecs}\n" >> $STORE_PROPERTIES
+fi
 
-echo -e "\ngaffer.store.operation.declarations=${GAFFER_HOME}/conf/operationDeclarations.json\n" >> $STORE_PROPERTIES
 echo -e "\ngaffer.serialisation.json.modules=uk.gov.gchq.gaffer.sketches.serialisation.json.SketchesJsonModules\n" >> $STORE_PROPERTIES
 
 java -cp "$GAFFER_HOME/lib/quickstart-core-${VERSION}.jar:$GAFFER_HOME/lib/*" uk.gov.gchq.gaffer.quickstart.web.GafferWebServices $SCHEMA $GRAPH_CONFIG $STORE_PROPERTIES $REST_WAR $UI_WAR $RESTCONFIG>> $GAFFER_HOME/gaffer.log 2>&1 &

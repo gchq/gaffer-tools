@@ -13,6 +13,7 @@ GRAPHCONFIG=$GAFFER_HOME/example/graphconfig.json
 STOREPROPERTIES=$GAFFER_HOME/miniaccumulo/store.properties
 UICONFIG=$GAFFER_HOME/example/ui-config.json
 RESTCONFIG=$GAFFER_HOME/conf/restOptions.properties
+CUSTOM_OPS_DIR=
 
 while [[ $# -gt 0 ]]; do
 	key="$1"
@@ -34,8 +35,12 @@ while [[ $# -gt 0 ]]; do
 			UICONFIG=$2
 			shift
 			;;
-		--rest-config|-u)
+		--rest-config|-r)
 			RESTCONFIG=$2
+			shift
+			;;
+		--customops-dir|-c)
+			CUSTOM_OPS_DIR=$2
 			shift
 			;;
 	esac
@@ -45,9 +50,14 @@ done
 echo "GAFFER_HOME is set to $GAFFER_HOME"
 source $GAFFER_HOME/bin/_version.sh
 
-$GAFFER_HOME/bin/_start_miniaccumulo.sh
+if [ -z $CUSTOM_OPS_DIR ]
+then
+    $GAFFER_HOME/bin/_start_miniaccumulo.sh
+else
+    $GAFFER_HOME/bin/_start_miniaccumulo.sh --customops-dir $CUSTOM_OPS_DIR
+fi
 
-$GAFFER_HOME/bin/_start_web_services.sh -schema $SCHEMA -config $GRAPHCONFIG -store $STOREPROPERTIES -uiconfig $UICONFIG -restconfig $RESTCONFIG
+$GAFFER_HOME/bin/_start_web_services.sh -schema $SCHEMA -config $GRAPHCONFIG -store $STOREPROPERTIES -uiconfig $UICONFIG -restconfig $RESTCONFIG --customops-dir $CUSTOM_OPS_DIR
 
 $GAFFER_HOME/bin/_configure_pyspark.sh
 

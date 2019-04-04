@@ -27,3 +27,4 @@ ENV STOREPROPERTIES=$GAFFER_HOME/miniaccumulo/store.properties
 ENV GRAPHCONFIG=$GAFFER_HOME/example/graphconfig.json
 ENV UICONFIG=$GAFFER_HOME/example/ui-config.json
 ENV RESTCONFIG=$GAFFER_HOME/conf/restOptions.properties
+ENV CUSTOMOPSDIR=

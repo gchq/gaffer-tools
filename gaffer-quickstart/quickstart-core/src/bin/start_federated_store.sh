@@ -26,6 +26,7 @@ UICONFIG=$GAFFER_HOME/federated/ui-config.json
 UI_WAR=$GAFFER_HOME/lib/quickstart-ui-${VERSION}.war
 REST_WAR=$GAFFER_HOME/lib/quickstart-rest-${VERSION}.war
 RESTCONFIG=$GAFFER_HOME/conf/restOptions.properties
+CUSTOM_OPS_DIR=
 
 federated_graph_config="{\n\\t\"graphId\" : \"aquarium\",\n\t\"library\" : {\n\t\t\"class\" : \"uk.gov.gchq.gaffer.store.library.FileGraphLibrary\",\n\t\t\"path\" : \"${GAFFER_HOME}/graphlibrary\"\n\t},\n\t\"hooks\" : [ ]\n}"
 
@@ -59,6 +60,10 @@ case $key in
     RESTCONFIG="$2"
     shift # past argument
     ;;
+    --customops-dir|-c)
+		CUSTOM_OPS_DIR=$2
+		shift
+		;;
     *)
             echo $usage
             echo "unknown args, exiting..."
@@ -92,15 +97,22 @@ else
     echo "using graph config at $FEDERATED_GRAPH_CONFIG"
 fi
 
-########################################
+if [ -z $CUSTOM_OPS_DIR ]
+then
+    $GAFFER_HOME/bin/_start_miniaccumulo.sh
 
-$GAFFER_HOME/bin/_start_miniaccumulo.sh
+    echo -e "\ngaffer.store.operation.declarations=${GAFFER_HOME}/conf/operationDeclarations.json,${GAFFER_HOME}/federated/federatedOperationsDeclarations.json\n" >> $FEDERATED_STORE_PROPERTIES
+    java -cp "$GAFFER_HOME/lib/quickstart-core-${VERSION}.jar:$GAFFER_HOME/lib/*" uk.gov.gchq.gaffer.quickstart.web.GafferWebServices $SCHEMA $FEDERATED_GRAPH_CONFIG $FEDERATED_STORE_PROPERTIES $REST_WAR $UI_WAR $RESTCONFIG>> $GAFFER_HOME/gaffer.log 2>&1 &
+else
+    $GAFFER_HOME/bin/_start_miniaccumulo.sh --customops-dir $CUSTOM_OPS_DIR
 
-########################################
+    $GAFFER_HOME/bin/_repackage_war.sh $CUSTOM_OPS_DIR >> $GAFFER_HOME/gaffer.log 2>&1
+    customOpDecs=$(ls -m $CUSTOM_OPS_DIR/*.json)
+    echo -e "\ngaffer.store.operation.declarations=${GAFFER_HOME}/conf/operationDeclarations.json,${GAFFER_HOME}/federated/federatedOperationsDeclarations.json,${customOpDecs}\n" >> $FEDERATED_STORE_PROPERTIES
+    java -cp "$GAFFER_HOME/lib/quickstart-core-${VERSION}.jar:$GAFFER_HOME/lib/*:$CUSTOM_OPS_DIR/*" uk.gov.gchq.gaffer.quickstart.web.GafferWebServices $SCHEMA $FEDERATED_GRAPH_CONFIG $FEDERATED_STORE_PROPERTIES $REST_WAR $UI_WAR $RESTCONFIG>> $GAFFER_HOME/gaffer.log 2>&1 &
+fi
 
-echo -e "\ngaffer.store.operation.declarations=${GAFFER_HOME}/conf/operationDeclarations.json,${GAFFER_HOME}/federated/federatedOperationsDeclarations.json\n" >> $FEDERATED_STORE_PROPERTIES
-
-java -cp "$GAFFER_HOME/lib/quickstart-core-${VERSION}.jar:$GAFFER_HOME/lib/*" uk.gov.gchq.gaffer.quickstart.web.GafferWebServices $SCHEMA $FEDERATED_GRAPH_CONFIG $FEDERATED_STORE_PROPERTIES $REST_WAR $UI_WAR $RESTCONFIG>> $GAFFER_HOME/gaffer.log 2>&1 &
+echo -e "\ngaffer.serialisation.json.modules=uk.gov.gchq.gaffer.sketches.serialisation.json.SketchesJsonModules\n" >> $FEDERATED_STORE_PROPERTIES
 
 pid=`ps -ef | grep GafferWebServices | head -n 1 | awk '{print $2}'`
 

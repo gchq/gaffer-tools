@@ -2,6 +2,20 @@
 
 HERE=$(pwd)
 
+CUSTOM_OPS_DIR=
+
+while [[ $# -gt 0 ]]; do
+	key="$1"
+
+	case $key in
+		--customops-dir|-c)
+			CUSTOM_OPS_DIR=$2
+			shift
+			;;
+	esac
+	shift
+done
+
 if [[ -z "${GAFFER_HOME}" ]];
 then
     echo "GAFFER_HOME environment variable not set"
@@ -13,7 +27,13 @@ fi
 
 echo -e "starting accumulo" >> $GAFFER_HOME/gaffer.log
 
-java -cp "$GAFFER_HOME/lib/gaffer-quickstart-${VERSION}.jar:$GAFFER_HOME/lib/*" uk.gov.gchq.gaffer.miniaccumulocluster.MiniAccumuloClusterController -d $GAFFER_HOME/miniaccumulo >> $GAFFER_HOME/gaffer.log 2>&1 &
+if [ -z $CUSTOM_OPS_DIR ]
+then
+    java -cp "$GAFFER_HOME/lib/gaffer-quickstart-${VERSION}.jar:$GAFFER_HOME/lib/*" uk.gov.gchq.gaffer.miniaccumulocluster.MiniAccumuloClusterController -d $GAFFER_HOME/miniaccumulo >> $GAFFER_HOME/gaffer.log 2>&1 &
+else
+    java -cp "$GAFFER_HOME/lib/gaffer-quickstart-${VERSION}.jar:$GAFFER_HOME/lib/*:$CUSTOM_OPS_DIR/*" uk.gov.gchq.gaffer.miniaccumulocluster.MiniAccumuloClusterController -d $GAFFER_HOME/miniaccumulo >> $GAFFER_HOME/gaffer.log 2>&1 &
+
+fi
 
 echo -e "waiting for store.properties" >> $GAFFER_HOME/gaffer.log
 

@@ -6,4 +6,4 @@ ENV STOREPROPERTIES=$GAFFER_HOME/federated/aquariumFederated.properties
 ENV UICONFIG=$GAFFER_HOME/conf/ui-config.json
 ENV RESTCONFIG=$GAFFER_HOME/conf/restOptions.properties
 
-CMD $GAFFER_HOME/bin/start_federated_store.sh --schema $SCHEMA --config $GRAPHCONFIG --store $STOREPROPERTIES --ui-config $UICONFIG --rest-config $RESTCONFIG; sleep infinity
+CMD $GAFFER_HOME/bin/start_federated_store.sh --schema $SCHEMA --config $GRAPHCONFIG --store $STOREPROPERTIES --ui-config $UICONFIG --rest-config $RESTCONFIG --customops-dir $CUSTOMOPSDIR; sleep infinity

@@ -1,3 +1,3 @@
 FROM gaffer-quickstart-base
 
-CMD $GAFFER_HOME/bin/startup.sh --schema $SCHEMA --graphconfig $GRAPHCONFIG --storeproperties $STOREPROPERTIES --ui-config $UICONFIG --rest-config $RESTCONFIG ; sleep infinity
+CMD $GAFFER_HOME/bin/startup.sh --schema $SCHEMA --graphconfig $GRAPHCONFIG --storeproperties $STOREPROPERTIES --ui-config $UICONFIG --rest-config $RESTCONFIG --customops-dir $CUSTOMOPSDIR; sleep infinity
