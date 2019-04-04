@@ -27,7 +27,7 @@ function operationChainBuilder() {
 }
 
 
-function OperationChainController(operationChain, config, loading, query, error, events, $mdDialog, navigation, $location, $routeParams, operationService, common, graph, types, previousQueries, operationOptions) {
+function OperationChainController(operationChain, config, loading, query, error, events, $mdDialog, $mdSidenav, navigation, $location, $routeParams, operationService, common, graph, types, previousQueries, operationOptions) {
     var vm = this;
     vm.timeConfig;
     vm.operations = operationChain.getOperationChain();
@@ -213,6 +213,10 @@ function OperationChainController(operationChain, config, loading, query, error,
             operations.push(operationService.createDeduplicateOperation(operation['options']));
         }
         runQuery(operations);
+    }
+
+    vm.toggleSideNav = function () {
+        operationChain.toggleSideNav();
     }
 
     vm.canAddOperation = function() {
