@@ -121,13 +121,46 @@ rdd_op = gp.GetPySparkRDDOfAllElements(view=view)
 rdd = graph.execute(rdd_op, user)
 ```
 
-USe pyspark to calculate the distribution of counts
+Use pyspark to calculate the distribution of counts
 
 ```
 def getCount(edge):
     return (edge.properties.get("count"),1)
     
 count_distribution = rdd.map(getCount).reduceByKey(lambda a, b: a + b).collect()
+```
+
+Use pyspark to create a GraphFrame
+
+```
+from gafferpy_pyspark import gaffer_pyspark as gp
+from graphframes import *
+
+edge=g.ElementDefinition(group="YOUR_EDGE_GROUP",group_by=[])
+entity=g.ElementDefinition(group="YOUR_ENTITY_GROUP",group_by=[])
+entityView=g.View(
+    entities=[entity]
+)
+edgeView=g.View(
+    edges=[edge]
+)
+
+df_entity_op = gp.GetPysparkDataFrameOfElements(entityView, sampleRatio=0.1)
+df_edge_op = gp.GetPysparkDataFrameOfElements(edgeView, sampleRatio=0.1)
+df_entity = graph.execute(df_entity_op, user)
+df_edge = graph.execute(df_edge_op, user)
+
+edges = df_edge.withColumnRenamed("destination", "dst").withColumnRenamed("source", "src")
+entities = df_entity.withColumnRenamed("vertex", "id")
+
+gf = GraphFrame(entities, edges)
+```
+
+Use pyspark to run Page Rank on a GraphFrame
+
+```
+results = gf.pageRank(resetProbability=0.15, maxIter=10)
+results.vertices.show()
 ```
 
 ### Use with larger graphs ###

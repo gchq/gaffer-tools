@@ -97,9 +97,15 @@ def convertElement(input):
 class User(g.ToJson):
     CLASS='uk.gov.gchq.gaffer.user.User'
 
-    def __init__(self, user_id=None):
+    def __init__(self, user_id=None, data_auths=None):
         self._class_name=self.CLASS,
         self.user_id=user_id;
+        self.data_auths=data_auths;
 
     def to_json(self):
-        return {'userId': self.user_id}
+        json = {}
+        if self.user_id is not None:
+            json['userId'] = self.user_id
+        if self.data_auths is not None:
+            json['dataAuths'] = self.data_auths
+        return json
