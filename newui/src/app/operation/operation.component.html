@@ -1,13 +1,13 @@
-<form name="ctrl.operationForm">
-  <mat-card>
+<mat-card>
+  <form name="ctrl.operationForm">
+    <div class="md-list-item-text">
+      <h3>{{ctrl.model.selectedOperation.name}}</h3>
+      <p>{{ctrl.model.selectedOperation.description}}</p>
+    </div>
     <div fxLayout="row" fxLayout.xs="column">
       <!-- first column -->
       <!-- Display the name of the operation and seed input box -->
       <div fxFlex="50%">
-        <div class="md-list-item-text">
-          <h3>{{ctrl.model.selectedOperation.name}}</h3>
-          <p>{{ctrl.model.selectedOperation.description}}</p>
-        </div>
         <app-input-manager first="ctrl.isFirst()" primary-input="ctrl.model.selectedOperation.fields.input"
           secondary-input="ctrl.model.selectedOperation.fields.inputB" model="ctrl.model.fields">
         </app-input-manager>
@@ -45,5 +45,5 @@
         </div>
       </div>
     </div>
-  </mat-card>
-</form>
+  </form>
+</mat-card>

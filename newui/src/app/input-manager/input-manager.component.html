@@ -9,18 +9,18 @@
       <app-pair-builder model="ctrl.model.inputPairs" use-previous="ctrl.usePreviousOutput"></app-pair-builder>
     </div>
     <div ng-switch-default>
-      <div layout="row" layout-align="start center" ng-show="!ctrl.usePreviousOutput">
+      <div fxLayout="row" layout-align="start center" ng-show="!ctrl.usePreviousOutput">
         <h3 class="md-title no-margin">Add seeds</h3>
-        <button mat-button id="use-results" ng-click="ctrl.useResults()" ng-disabled="ctrl.usePreviousOutput"
-          class="md-primary" matTooltip="Populate input using your
-        existing results">
+        <button mat-button-raised id="use-results" ng-click="ctrl.useResults()" ng-disabled="ctrl.usePreviousOutput"
+          matTooltip="Populate input using your existing results">
           Use results
         </button>
       </div>
-      <div layout="row" class="horizontal-margin">
-        <app-seed-builder model="ctrl.model.input" use-previous="ctrl.usePreviousOutput" route-param="input"
-          flex="grow"></app-seed-builder>
-        <app-seed-builder model="ctrl.model.inputB" ng-if="ctrl.secondaryInput" route-param="inputB" flex="grow">
+      <div fxLayout="row">
+        <app-seed-builder fxFlex="50%" model="ctrl.model.input" use-previous="ctrl.usePreviousOutput"
+          route-param="input" flex="grow"></app-seed-builder>
+        <app-seed-builder fxFlex="50%" model="ctrl.model.inputB" ng-if="ctrl.secondaryInput" route-param="inputB"
+          flex="grow">
         </app-seed-builder>
       </div>
     </div>
