@@ -4,14 +4,14 @@
     <div ng-if="ctrl.title == 'Parameters'">
       <div layout="column">
         <div ng-repeat="(name, param) in ctrl.parameters" flex="noshrink">
-          <input name="name" param="param" date-unit="ctrl.getTimeUnit(name)">
+          <input matInput name="name" param="param" date-unit="ctrl.getTimeUnit(name)">
         </div>
       </div>
     </div>
     <div ng-if="ctrl.title != 'Parameters'">
       <div layout-wrap layout="row">
         <div ng-repeat="(name, param) in ctrl.parameters" flex="noshrink">
-          <input name="name" param="param" date-unit="ctrl.getTimeUnit(name)">
+          <input matInput name="name" param="param" date-unit="ctrl.getTimeUnit(name)">
         </div>
       </div>
     </div>
