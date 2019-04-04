@@ -784,15 +784,19 @@ class IterableFilter(AbstractFunction):
 class MaskTimestampSetByTimeRange(AbstractFunction):
     CLASS = "uk.gov.gchq.gaffer.time.function.MaskTimestampSetByTimeRange"
 
-    def __init__(self, time_range_start_epoch_milli, time_range_end_epoch_milli):
+    def __init__(self, start_time=None, end_time=None, time_unit=None):
         super().__init__(_class_name=self.CLASS)
-        self.time_range_start_epoch_milli = time_range_start_epoch_milli
-        self.time_range_end_epoch_milli = time_range_end_epoch_milli
+        self.start_time = start_time
+        self.end_time = end_time
+        self.time_unit = time_unit
 
     def to_json(self):
         function_json = super().to_json()
-        function_json['timeRangeStartEpochMilli'] = self.time_range_start_epoch_milli
-        function_json['timeRangeEndEpochMilli'] = self.time_range_end_epoch_milli
+        function_json['startTime'] = self.start_time
+        function_json['endTime'] = self.end_time
+
+        if (self.time_unit is not None):
+            function_json["timeUnit"] = self.time_unit
 
         return function_json
 
