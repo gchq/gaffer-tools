@@ -8,6 +8,7 @@
   window.onload = setBackgroundColor;
 
 </script>
+<a [routerLink]="['/parameters']">
 <mat-card id={{model.operationName}} (click)="execute(model.operations)" class="grid-button" md-ink-ripple>
   <div layout="column">
     <h2>{{model.operationName}}</h2>
@@ -20,3 +21,4 @@
     </div>
   </div>
 </mat-card>
+</a>
