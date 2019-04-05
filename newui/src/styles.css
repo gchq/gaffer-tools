@@ -34,10 +34,7 @@ body {
 }
 
 div {
-  margin: 10;
   padding: 5;
-  margin-right: 10px;
-  margin-left: 10px;
 }
 
 mat-card {
