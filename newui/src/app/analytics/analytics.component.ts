@@ -81,7 +81,7 @@ export class AnalyticsComponent implements OnInit {
     var operations = ["operation1","operation2"];
     var parameters = ["to csv, to csv"];
     var outputTypes = ["table", "table"];
-    var icons = ["query", "location-search"]; //some names of icons from img folder
+    var icons = ["star", "directions_bus"]; //some names of icons from img folder
 
     // Create the analytics from this hard coded data
     var _i = 0;
