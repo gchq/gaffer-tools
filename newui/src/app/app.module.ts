@@ -16,13 +16,6 @@ import { NavComponent } from "./nav/nav.component";
 import { MaterialModule } from "./material.module";
 import { LayoutModule } from "@angular/cdk/layout";
 import { FlexLayoutModule } from "@angular/flex-layout";
-import {
-  MatToolbarModule,
-  MatButtonModule,
-  MatSidenavModule,
-  MatIconModule,
-  MatListModule
-} from "@angular/material";
 import { DateRangeComponent } from "./date-range/date-range.component";
 import { InputManagerComponent } from "./input-manager/input-manager.component";
 import { ParameterFormComponent } from "./parameter-form/parameter-form.component";
@@ -56,12 +49,7 @@ import { ParameterInputComponent } from "./parameter-input/parameter-input.compo
     BrowserAnimationsModule,
     MaterialModule,
     LayoutModule,
-    FlexLayoutModule,
-    MatToolbarModule,
-    MatButtonModule,
-    MatSidenavModule,
-    MatIconModule,
-    MatListModule
+    FlexLayoutModule
   ],
   providers: [],
   bootstrap: [AppComponent]
