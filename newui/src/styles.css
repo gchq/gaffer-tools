@@ -507,3 +507,7 @@ body {
 a {
   text-decoration: none;
 }
+
+.page {
+  text-align: center;
+}
