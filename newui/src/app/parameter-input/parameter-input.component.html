@@ -6,15 +6,17 @@
     <app-query model="operation" index="$index" time-config="ctrl.timeConfig" on-delete="ctrl.deleteOperation(index)"
       on-reset="ctrl.resetOperation(index)" on-execute="ctrl.execute(op)" chain-length="ctrl.operations.length">
     </app-query>
+    <mat-divider></mat-divider>
+    <div>
+      <mat-icon>expand_more</mat-icon>
+    </div>
   </mat-card>
-  <mat-card fxFlexAlign="centre">
-    <mat-icon>expand_more</mat-icon>
-  </mat-card>
+  <div fxLayout="row">
+    <button mat-raised-button color="primary" ng-click="ctrl.resetChain($event)">Reset
+      operation
+      chain</button>
+    <button mat-raised-button color="primary" ng-disabled="!ctrl.canExecute()" id="execute-chain"
+      ng-click="ctrl.executeChain()">Execute operation
+      chain</button>
+  </div>
 </form>
-<div fxLayout="row">
-  <button mat-raised-button color="warn" class="md-raised overlapping" ng-click="ctrl.resetChain($event)">Reset
-    operation
-    chain</button>
-  <button mat-raised-button color="primary" class="md-primary md-raised overlapping" ng-disabled="!ctrl.canExecute()"
-    id="execute-chain" ng-click="ctrl.executeChain()">Execute operation chain</button>
-</div>
