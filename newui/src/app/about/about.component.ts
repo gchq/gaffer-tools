@@ -34,6 +34,7 @@ export class AboutComponent implements OnInit {
   constructor() {}
 
   sendFeedback = function() {
+    console.log("Email Feedback Pressed");
     if (!this.emailRecipients || this.emailRecipients.length === 0) {
       throw new Error(
         "The UI config should contain email recipients to receive feedback from users. No recipients were specified"

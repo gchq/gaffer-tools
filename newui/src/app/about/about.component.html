@@ -1,13 +1,13 @@
 <div style="flex-direction: row">
   <div style="flex:100" flex-offset-gt-sm="20" flex-gt-sm="60">
     <h1 layout-align="center- start">
-          About
+      About
     </h1>
     <mat-card>
       <mat-card-title>
         <mat-icon>info</mat-icon>
       </mat-card-title>
-        <!-- <mat-spinner class="md-primary" diameter="40">
+      <!-- <mat-spinner class="md-primary" diameter="40">
         </mat-spinner> -->
       <mat-card-content>
         <p ng-bind-html="ctrl.description"></p>
@@ -19,7 +19,7 @@
       </mat-card-content>
       <mat-divider></mat-divider>
       <div>
-        <button mat-raised-button ng-click="ctrl.sendFeedback()">Send feedback</button>
+        <button mat-raised-button (click)='sendFeedback()'>Send feedback</button>
       </div>
     </mat-card>
   </div>
