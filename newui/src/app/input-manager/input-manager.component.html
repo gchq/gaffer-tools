@@ -11,8 +11,8 @@
     <div ng-switch-default>
       <div fxLayout="row" layout-align="start center" ng-show="!ctrl.usePreviousOutput">
         <h3 class="md-title no-margin">Add seeds</h3>
-        <button mat-button-raised id="use-results" ng-click="ctrl.useResults()" ng-disabled="ctrl.usePreviousOutput"
-          matTooltip="Populate input using your existing results">
+        <button mat-raised-button color="warn" id="use-results" ng-click="ctrl.useResults()"
+          ng-disabled="ctrl.usePreviousOutput" matTooltip="Populate input using your existing results">
           Use results
         </button>
       </div>
