@@ -503,3 +503,7 @@ body {
 .material-icons {
   transform: scale(2);
 }
+
+a {
+  text-decoration: none;
+}
