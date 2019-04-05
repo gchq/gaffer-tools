@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, Input } from "@angular/core";
 
 @Component({
   selector: "app-analytic",
@@ -8,6 +8,7 @@ import { Component, OnInit } from "@angular/core";
 export class AnalyticComponent implements OnInit {
   navigation;
   operationChain;
+  @Input('model') model;
 
   // Save the chosen analytic in the operationChain service (should change to use analyticsService)
   execute(operation) {
@@ -17,5 +18,7 @@ export class AnalyticComponent implements OnInit {
 
   constructor() {}
 
-  ngOnInit() {}
+  ngOnInit() {
+    console.log(this.model);
+  }
 }

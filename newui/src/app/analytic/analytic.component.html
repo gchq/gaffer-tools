@@ -8,14 +8,14 @@
   window.onload = setBackgroundColor;
 
 </script>
-<mat-card id={{ctrl.model.name}} ng-click="ctrl.execute(ctrl.model.operation)" class="grid-button" md-ink-ripple>
+<mat-card id={{model.operationName}} (click)="execute(model.operations)" class="grid-button" md-ink-ripple>
   <div layout="column">
-    <h2>{{ctrl.model.name}}</h2>
-    <h2>ANALYTIC</h2>
-    <mat-icon>{{ctrl.model.icon}}</mat-icon>
+    <h2>{{model.operationName}}</h2>
+    <mat-icon>{{model.header.iconURL}}</mat-icon>
     <div layout="row" layout-align="start end">
       <p class="tooltip">Description
-        <span class="tooltiptext">{{ctrl.model.operation.description}}</span>
+        <span class="tooltiptext">{{model.description}}</span>
+        <!-- <span class="tooltiptext">{{model.operation.description}}</span> -->
       </p>
     </div>
   </div>

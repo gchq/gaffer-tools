@@ -3,8 +3,8 @@
 </div>
 <mat-card>
   <div class="grid-container">
-    <div class="grid-item" ng-repeat="analytic in ctrl.analytics">
-      <app-analytic model="analytic"></app-analytic>
+    <div class="grid-item" *ngFor="let analytic of analytics">
+      <app-analytic [model]="analytic"></app-analytic>
     </div>
   </div>
 </mat-card>
