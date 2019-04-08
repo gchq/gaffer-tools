@@ -19,12 +19,8 @@ package uk.gov.gchq.gaffer.quickstart.operation.handler;
 import org.apache.commons.io.IOUtils;
 import org.apache.spark.launcher.SparkLauncher;
 import uk.gov.gchq.gaffer.accumulostore.AccumuloStore;
-import uk.gov.gchq.gaffer.exception.SerialisationException;
-import uk.gov.gchq.gaffer.jsonserialisation.JSONSerialiser;
 import uk.gov.gchq.gaffer.operation.OperationException;
 import uk.gov.gchq.gaffer.quickstart.operation.AddElementsFromHdfsQuickstart;
-import uk.gov.gchq.gaffer.quickstart.operation.handler.job.AddElementsFromQuickstartHandlerJob;
-import uk.gov.gchq.gaffer.quickstart.operation.handler.job.JobRunner;
 import uk.gov.gchq.gaffer.quickstart.operation.handler.job.LoadFromHdfsJob;
 import uk.gov.gchq.gaffer.store.Context;
 import uk.gov.gchq.gaffer.store.Store;
@@ -50,36 +46,7 @@ public class AddElementsFromHdfsQuickstartHandler implements OperationHandler<Ad
 
     private void doOperation(AddElementsFromHdfsQuickstart operation, Context context, AccumuloStore accumuloStore) throws OperationException {
 
-
-//        System.out.println("using hardcoded version");
-//
-//        JobRunner.main(new String[]{});
-
-        String schemaString = null;
-        String userString = null;
-        String storePropertiesString = null;
-
-        try {
-            schemaString = new String(JSONSerialiser.serialise(accumuloStore.getSchema()));
-        } catch (SerialisationException e) {
-            throw new OperationException("Couldn't serialise schema");
-        }
-
-        try {
-            userString = new String(JSONSerialiser.serialise(context.getUser()));
-        } catch (SerialisationException e) {
-            throw new OperationException("Couldn't serialise context");
-        }
-
-        try {
-            storePropertiesString = new String(JSONSerialiser.serialise(accumuloStore.getProperties()));
-        } catch (SerialisationException e) {
-            throw new OperationException("Couldn't serialise store-properties");
-        }
-
-        String graphId = accumuloStore.getGraphId();
-
-        String jobMainClass = AddElementsFromQuickstartHandlerJob.class.getCanonicalName();
+        String jobMainClass = LoadFromHdfsJob.class.getCanonicalName();
         String sparkMaster = accumuloStore.getProperties().get(SPARK_MASTER_KEY);
         String jarPath = accumuloStore.getProperties().get(JOB_JAR_PATH_KEY);
         String sparkHome = accumuloStore.getProperties().get(SPARK_HOME_KEY);
@@ -91,8 +58,7 @@ public class AddElementsFromHdfsQuickstartHandler implements OperationHandler<Ad
             Process sparkLauncherProcess = new SparkLauncher(env)
                     .setAppName(APP_NAME)
                     .setMaster(sparkMaster)
-//                    .setMainClass(AddElementsFromQuickstartHandlerJob.class.getCanonicalName())
-                    .setMainClass(LoadFromHdfsJob.class.getCanonicalName())
+                    .setMainClass(jobMainClass)
                     .setAppResource(jarPath)
                     .setSparkHome(sparkHome)
                     .addAppArgs(
@@ -100,10 +66,6 @@ public class AddElementsFromHdfsQuickstartHandler implements OperationHandler<Ad
                             operation.getElementGeneratorConfig(),
                             operation.getFailurePath(),
                             operation.getOutputPath()
-//                            schemaString,
-//                            userString,
-//                            storePropertiesString,
-//                            graphId
                     )
                     .launch();
 

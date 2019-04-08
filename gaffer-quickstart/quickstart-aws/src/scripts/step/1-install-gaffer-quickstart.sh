@@ -93,7 +93,7 @@ fi
 
 if [[ -z "${UI_CONFIG_PATH}" ]];
 then
-    UI_CONFIG_PATH=$S3_BUCKET/gaffer-quickstart/lib/ui-config.json
+    UI_CONFIG_PATH=$S3_BUCKET/gaffer-quickstart/example/ui-config.json
 fi
 
 aws s3 cp $S3_BUCKET/gaffer-quickstart/lib/gaffer-quickstart-jar-with-dependencies.jar .
@@ -107,13 +107,15 @@ REST_WAR_PATH=$S3_BUCKET/gaffer-quickstart/lib/quickstart-rest-${QUICKSTART_VERS
 UI_WAR_PATH=$S3_BUCKET/gaffer-quickstart/lib/quickstart-ui-${QUICKSTART_VERSION}.war
 
 echo -e "adding $SCHEMA_PATH to $GAFFER_CONFIG_DIR"
-aws s3 cp $SCHEMA_PATH $GAFFER_CONFIG_DIR
-SCHEMA_FILE=$GAFFER_CONFIG_DIR${SCHEMA_PATH##*/}
+aws s3 cp $SCHEMA_PATH "$GAFFER_CONFIG_DIR/schema.json"
+SCHEMA_FILE="$GAFFER_CONFIG_DIR/schema.json"
+#SCHEMA_FILE=$GAFFER_CONFIG_DIR${SCHEMA_PATH##*/}
 echo -e "GAFFER_SCHEMA=${SCHEMA_FILE}" >> $ENV_FILE
 
 echo -e "adding $GRAPHCONFIG_PATH to $GAFFER_CONFIG_DIR"
-aws s3 cp $GRAPHCONFIG_PATH $GAFFER_CONFIG_DIR
-GRAPHCONFIG_FILE=$GAFFER_CONFIG_DIR${GRAPHCONFIG_PATH##*/}
+aws s3 cp $GRAPHCONFIG_PATH "$GAFFER_CONFIG_DIR/graphconfig.json"
+GRAPHCONFIG_FILE="$GAFFER_CONFIG_DIR/graphconfig.json"
+#GRAPHCONFIG_FILE=$GAFFER_CONFIG_DIR${GRAPHCONFIG_PATH##*/}
 echo -e "GAFFER_GRAPHCONFIG=${GRAPHCONFIG_FILE}" >> $ENV_FILE
 
 echo -e "adding $STORE_PROPERTIES_PATH to $GAFFER_CONFIG_DIR"
@@ -137,8 +139,9 @@ UI_WAR=$HOME/${UI_WAR_PATH##*/}
 echo -e "UI_WAR=${UI_WAR}" >> $ENV_FILE
 
 echo -e "copying ui config"
-aws s3 cp $UI_CONFIG_PATH ${GAFFER_CONFIG_DIR}
-UI_CONFIG=$GAFFER_CONFIG_DIR${UI_CONFIG_PATH##*/}
+aws s3 cp $UI_CONFIG_PATH "${GAFFER_CONFIG_DIR}/ui-config.json"
+UI_CONFIG="${GAFFER_CONFIG_DIR}/ui-config.json"
+#UI_CONFIG=$GAFFER_CONFIG_DIR${UI_CONFIG_PATH##*/}
 echo -e "UI_CONFIG=${UI_CONFIG}" >> $ENV_FILE
 
 mkdir ${HOME}/example

@@ -43,12 +43,6 @@ public class LoadFromHdfsJob {
 
     private static final int numArgs = 4;
 
-//    private String dataPath = "/user/hadoop/test.csv";
-//    private String generatorPath = "/home/hadoop/example/element-generator.json";
-//    private String outputPath = "/user/hadoop/output";
-//    private String failurePath = "/user/hadoop/failure";
-
-
     private String dataPath;
     private String generatorPath;
     private String outputPath;
@@ -78,10 +72,6 @@ public class LoadFromHdfsJob {
         this.generatorPath = args[1];
         this.outputPath = args[2];
         this.failurePath = args[3];
-//
-//        this.schemaPath = args[4];
-//        this.graphConfigPath = args[5];
-//        this.storePropertiesPath = args[6];
 
         Graph graph = null;
 
@@ -103,9 +93,6 @@ public class LoadFromHdfsJob {
 
         SparkSession sparkSession = SparkContextUtil.getSparkSession(context, graph.getStoreProperties())
                 .builder()
-//                .config("spark.serializer", "org.apache.spark.serializer.KryoSerializer")
-//                .config("spark.kryo.registrator", "uk.gov.gchq.gaffer.sparkaccumulo.operation.handler.CustomRegistrator")
-//                .config("spark.driver.allowMultipleContexts", "true")
                 .getOrCreate();
 
         JavaSparkContext sc = JavaSparkContext.fromSparkContext(sparkSession.sparkContext());
@@ -140,25 +127,6 @@ public class LoadFromHdfsJob {
         } catch (OperationException e) {
             e.printStackTrace();
         }
-
-
-//        AddElementsFromHdfsQuickstart addOp = new AddElementsFromHdfsQuickstart.Builder()
-//                .dataPath(dataPath)
-//                .elementGeneratorConfig(generatorPath)
-//                .outputPath(outputPath)
-//                .failurePath(failurePath)
-//                .build();
-//
-//        User user = new User.Builder()
-//                .userId("user")
-//                .build();
-//
-//        try {
-//            graph.execute(addOp, user);
-//        } catch (OperationException e) {
-//            e.printStackTrace();
-//        }
-
     }
 
 }

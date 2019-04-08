@@ -61,7 +61,10 @@ cd $CATALINA_HOME/bin
 
 ./startup.sh
 
-sleep 7
+until [ -f $CATALINA_HOME/webapps/ui/config/config.json ]
+do
+     sleep 0.5
+done
 
 #set the ui layout configs
 cp $UI_CONFIG $CATALINA_HOME/webapps/ui/config/config.json
