@@ -1,4 +1,4 @@
-<ng-form name="ctrl.dateForm">
+<ng-form name="dateForm">
   <div fxLayout="row" layout-align="start center">
     <h3 class="mat-title no-margin">Inclusive time range (UTC)</h3>
   </div>
@@ -11,8 +11,8 @@
         matTooltip="Use presets for start date" [matMenuTriggerFor]="menu">
         <mat-icon>list</mat-icon>
       </button>
-      <mat-menu #menu="matMenu" ng-if="ctrl.presets" class="icon-inline-with-input">
-        <button mat-button ng-click="ctrl.updateStartDate(value)" ng-repeat="(name, value) in ctrl.presets">
+      <mat-menu #menu="matMenu" ng-if="presets" class="icon-inline-with-input">
+        <button mat-button ng-click="updateStartDate(value)" ng-repeat="(name, value) in presets">
           {{ name }}
         </button>
       </mat-menu>
@@ -21,22 +21,22 @@
       <mat-datepicker-toggle matSuffix [for]="startPicker">
         <mat-icon matDatepickerToggleIcon>date_range</mat-icon>
       </mat-datepicker-toggle>
-      <mat-datepicker #startPicker ng-model="ctrl.startDate" name="startDate" id="start-date"
-        ng-change="ctrl.onStartDateUpdate()" mat-date-locale="ctrl.localeProviderOverride"></mat-datepicker>
-      <div ng-messages="ctrl.dateForm.startDate.$error">
-        <div *ngIf="ctrl.dateForm.startDate.$error">
+      <mat-datepicker #startPicker ng-model="startDate" name="startDate" id="start-date"
+        ng-change="onStartDateUpdate()" mat-date-locale="localeProviderOverride"></mat-datepicker>
+      <div ng-messages="dateForm.startDate.$error">
+        <div *ngIf="dateForm.startDate.$error">
           The start date entered is invalid.
           Use YYYY-MM-DD format
         </div>
       </div>
 
-      <input matInput ng-model="ctrl.startTime"
+      <input matInput ng-model="startTime"
         ng-model-options="{ timezone: 'UTC', updateOn: 'default blur', debounce: { 'default': 500,'blur': 0}}"
-        aria-label="start time (hh:mm:ss)" ng-disabled="!ctrl.startDate" type="time" id="start-time" step="1"
-        name="startTime" ng-change="ctrl.onStartDateUpdate()">
+        aria-label="start time (hh:mm:ss)" ng-disabled="!startDate" type="time" id="start-time" step="1"
+        name="startTime" ng-change="onStartDateUpdate()">
 
-      <div ng-messages="ctrl.dateForm.startTime.$error">
-        <div *ngIf="ctrl.dateForm.startTime.$error">
+      <div ng-messages="dateForm.startTime.$error">
+        <div *ngIf="dateForm.startTime.$error">
           The start time is invalid. Use format
           hh:mm:ss
         </div>
@@ -49,8 +49,8 @@
         matTooltip="Use presets for end date" [matMenuTriggerFor]="menu">
         <mat-icon>list</mat-icon>
       </button>
-      <mat-menu #menu="matMenu" ng-if="ctrl.presets" class="icon-inline-with-input">
-        <button mat-button ng-click="ctrl.updateEndDate(value)" ng-repeat="(name, value) in ctrl.presets">
+      <mat-menu #menu="matMenu" ng-if="presets" class="icon-inline-with-input">
+        <button mat-button ng-click="updateEndDate(value)" ng-repeat="(name, value) in presets">
           {{ name }}
         </button>
       </mat-menu>
@@ -59,21 +59,21 @@
       <mat-datepicker-toggle matSuffix [for]="startPicker">
         <mat-icon matDatepickerToggleIcon>date_range</mat-icon>
       </mat-datepicker-toggle>
-      <mat-datepicker #startPicker ng-model="ctrl.endDate" name="endDate" id="end-date"
-        ng-change="ctrl.onEndDateUpdate()" mat-date-locale="ctrl.localeProviderOverride"></mat-datepicker>
-      <div ng-messages="ctrl.dateForm.endDate.$error">
-        <div *ngIf="ctrl.dateForm.endDate.$error">
+      <mat-datepicker #startPicker ng-model="endDate" name="endDate" id="end-date"
+        ng-change="onEndDateUpdate()" mat-date-locale="localeProviderOverride"></mat-datepicker>
+      <div ng-messages="dateForm.endDate.$error">
+        <div *ngIf="dateForm.endDate.$error">
           The end date entered is invalid.
           Use YYYY-MM-DD format
         </div>
       </div>
 
-      <input matInput ng-model="ctrl.endTime"
+      <input matInput ng-model="endTime"
         ng-model-options="{ timezone: 'UTC', updateOn: 'default blur', debounce: { 'default': 500,'blur': 0}}"
-        aria-label="end time (hh:mm:ss)" ng-disabled="!ctrl.endDate" type="time" id="end-time" step="1" name="endTime"
-        ng-change="ctrl.onEndDateUpdate()">
-      <div ng-messages="ctrl.dateForm.endTime.$error">
-        <div *ngIf="ctrl.dateForm.endTime.$error">
+        aria-label="end time (hh:mm:ss)" ng-disabled="!endDate" type="time" id="end-time" step="1" name="endTime"
+        ng-change="onEndDateUpdate()">
+      <div ng-messages="dateForm.endTime.$error">
+        <div *ngIf="dateForm.endTime.$error">
           The end time is invalid. Use format
           hh:mm:ss
         </div>

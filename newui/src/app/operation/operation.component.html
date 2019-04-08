@@ -1,5 +1,5 @@
 <mat-card>
-  <form name="ctrl.operationForm">
+  <form name="operationForm">
     <div class="md-list-item-text">
       <h3>{{model.operationName}}</h3>
       <p>{{model.description}}</p>
@@ -8,13 +8,13 @@
       <!-- first column -->
       <!-- Display the name of the operation and seed input box -->
       <div fxFlex="50%">
-        <!-- <app-input-manager first="ctrl.isFirst()" primary-input="ctrl.model.operations.fields.input"
-          secondary-input="ctrl.model.operations.fields.inputB" [model]="model.fields">
+        <!-- <app-input-manager first="isFirst()" primary-input="model.operations.fields.input"
+          secondary-input="model.operations.fields.inputB" [model]="model.operations.fields">
         </app-input-manager> -->
-        <div ng-if="ctrl.model.selectedOperation.fields.view">
-          <!-- <view-builder model="ctrl.model.fields.view">
+        <div ng-if="model.selectedOperation.fields.view">
+          <!-- <view-builder model="model.fields.view">
                     </view-builder> -->
-          <mat-checkbox ng-model="ctrl.model.fields.view.summarise" layout-padding>
+          <mat-checkbox ng-model="model.fields.view.summarise" layout-padding>
             Summarise
           </mat-checkbox>
         </div>
@@ -23,23 +23,23 @@
       <!-- second column -->
       <!-- Display the different inputs based on the operation -->
       <div fxFlex="50%">
-        <app-date-range ng-if="ctrl.timeConfig && ctrl.model.selectedOperation.fields.view" model="ctrl.model.dates"
-          conf="ctrl.timeConfig">
+        <app-date-range ng-if="timeConfig && model.selectedOperation.fields.view" model="model.dates"
+          conf="timeConfig">
         </app-date-range>
 
-        <app-parameter-form ng-if="ctrl.model.selectedOperation.parameters"
-          title-class="layout-padding md-title section-title" parameters="ctrl.model.selectedOperation.parameters">
+        <app-parameter-form ng-if="model.selectedOperation.parameters"
+          title-class="layout-padding md-title section-title" parameters="model.selectedOperation.parameters">
         </app-parameter-form>
 
-        <!-- <options ng-if="ctrl.model.selectedOperation.fields.options" model="ctrl.model.fields.options"></options> -->
+        <!-- <options ng-if="model.selectedOperation.fields.options" model="model.fields.options"></options> -->
 
-        <div ng-if="ctrl.hasOtherConfig()">
+        <div ng-if="hasOtherConfig()">
           <h3 class="section-title md-title">
             Configuration
           </h3>
 
-          <div ng-repeat="(name, field) in ctrl.getConfigFields()">
-            <app-operation-field model="ctrl.model" details="field">
+          <div ng-repeat="(name, field) in getConfigFields()">
+            <app-operation-field model="model" details="field">
             </app-operation-field>
           </div>
         </div>

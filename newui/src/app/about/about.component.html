@@ -10,16 +10,16 @@
         <!-- <mat-spinner class="md-primary" diameter="40">
         </mat-spinner> -->
       <mat-card-content>
-        <p ng-bind-html="ctrl.description"></p>
-        <p ng-show="ctrl.restAPI"><a id="about-rest-api" target="_blank" href="{{ctrl.restAPI}}">Take a look at the REST
+        <p ng-bind-html="description"></p>
+        <p ng-show="restAPI"><a id="about-rest-api" target="_blank" href="{{restAPI}}">Take a look at the REST
             API</a>
         </p>
-        <p ng-show="ctrl.docs"><a id="about-docs" target="_blank" href="{{ctrl.docs}}">Take a look at the
+        <p ng-show="docs"><a id="about-docs" target="_blank" href="{{docs}}">Take a look at the
             documentation</a></p>
       </mat-card-content>
       <mat-divider></mat-divider>
       <div>
-        <button mat-raised-button ng-click="ctrl.sendFeedback()">Send feedback</button>
+        <button mat-raised-button ng-click="sendFeedback()">Send feedback</button>
       </div>
     </mat-card>
   </div>
