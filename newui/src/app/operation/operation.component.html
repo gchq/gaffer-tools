@@ -1,0 +1,49 @@
+<mat-card>
+  <form name="ctrl.operationForm">
+    <div class="md-list-item-text">
+      <h3>{{ctrl.model.selectedOperation.name}}</h3>
+      <p>{{ctrl.model.selectedOperation.description}}</p>
+    </div>
+    <div fxLayout="row" fxLayout.xs="column">
+      <!-- first column -->
+      <!-- Display the name of the operation and seed input box -->
+      <div fxFlex="50%">
+        <app-input-manager first="ctrl.isFirst()" primary-input="ctrl.model.selectedOperation.fields.input"
+          secondary-input="ctrl.model.selectedOperation.fields.inputB" model="ctrl.model.fields">
+        </app-input-manager>
+        <div ng-if="ctrl.model.selectedOperation.fields.view">
+          <!-- <view-builder model="ctrl.model.fields.view">
+                    </view-builder> -->
+          <mat-checkbox ng-model="ctrl.model.fields.view.summarise" layout-padding>
+            Summarise
+          </mat-checkbox>
+        </div>
+      </div>
+
+      <!-- second column -->
+      <!-- Display the different inputs based on the operation -->
+      <div fxFlex="50%">
+        <app-date-range ng-if="ctrl.timeConfig && ctrl.model.selectedOperation.fields.view" model="ctrl.model.dates"
+          conf="ctrl.timeConfig">
+        </app-date-range>
+
+        <app-parameter-form ng-if="ctrl.model.selectedOperation.parameters"
+          title-class="layout-padding md-title section-title" parameters="ctrl.model.selectedOperation.parameters">
+        </app-parameter-form>
+
+        <!-- <options ng-if="ctrl.model.selectedOperation.fields.options" model="ctrl.model.fields.options"></options> -->
+
+        <div ng-if="ctrl.hasOtherConfig()">
+          <h3 class="section-title md-title">
+            Configuration
+          </h3>
+
+          <div ng-repeat="(name, field) in ctrl.getConfigFields()">
+            <app-operation-field model="ctrl.model" details="field">
+            </app-operation-field>
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+</mat-card>
