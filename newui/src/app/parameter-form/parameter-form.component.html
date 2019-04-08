@@ -1,19 +1,19 @@
 <div layout="column" layout-margin>
-  <ng-form name="ctrl.parameterForm" layout-margin>
-    <h3 class="{{ctrl.titleClass}}">{{ctrl.title}}</h3>
-    <div ng-if="ctrl.title == 'Parameters'">
+  <form name="parameterForm" layout-margin>
+    <h3 class="{{titleClass}}">{{title}}</h3>
+    <div ng-if="title == 'Parameters'">
       <div layout="column">
-        <div ng-repeat="(name, param) in ctrl.parameters" flex="noshrink">
-          <input matInput name="name" param="param" date-unit="ctrl.getTimeUnit(name)">
+        <div ng-repeat="(name, param) in parameters" flex="noshrink">
+          <input matInput name="name" param="param" date-unit="getTimeUnit(name)">
         </div>
       </div>
     </div>
-    <div ng-if="ctrl.title != 'Parameters'">
+    <div ng-if="title != 'Parameters'">
       <div layout-wrap layout="row">
-        <div ng-repeat="(name, param) in ctrl.parameters" flex="noshrink">
-          <input matInput name="name" param="param" date-unit="ctrl.getTimeUnit(name)">
+        <div ng-repeat="(name, param) in parameters" flex="noshrink">
+          <input matInput name="name" param="param" date-unit="getTimeUnit(name)">
         </div>
       </div>
     </div>
-  </ng-form>
+  </form>
 </div>

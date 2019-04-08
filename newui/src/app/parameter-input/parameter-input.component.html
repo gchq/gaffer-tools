@@ -1,10 +1,10 @@
 <div>
   <h1>Parameters</h1>
 </div>
-<form name="ctrl.operationChainForm">
+<form name="operationChainForm">
   <mat-card>
-    <app-query model="operation" index="$index" time-config="ctrl.timeConfig" on-delete="ctrl.deleteOperation(index)"
-      on-reset="ctrl.resetOperation(index)" on-execute="ctrl.execute(op)" chain-length="ctrl.operations.length">
+    <app-query model="operation" index="$index" time-config="timeConfig" on-delete="deleteOperation(index)"
+      on-reset="resetOperation(index)" on-execute="execute(op)" chain-length="operations.length">
     </app-query>
     <mat-divider></mat-divider>
     <div>
@@ -12,11 +12,11 @@
     </div>
   </mat-card>
   <div fxLayout="row">
-    <button mat-raised-button color="primary" ng-click="ctrl.resetChain($event)">Reset
+    <button mat-raised-button color="primary" ng-click="resetChain($event)">Reset
       operation
       chain</button>
-    <button mat-raised-button color="primary" ng-disabled="!ctrl.canExecute()" id="execute-chain"
-      ng-click="ctrl.executeChain()">Execute operation
+    <button mat-raised-button color="primary" ng-disabled="!canExecute()" id="execute-chain"
+      ng-click="executeChain()">Execute operation
       chain</button>
   </div>
 </form>

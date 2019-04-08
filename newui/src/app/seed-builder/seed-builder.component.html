@@ -1,12 +1,10 @@
-<div layout="column">
-  <mat-form-field class="example-full-width" name="ctrl.seedForm" appearance="fill">
-    <mat-label>Seed</mat-label>
-    <textarea matInput id="seedVertices" rows="6" name="multiSeedInput" floatPlaceholder="never" md-no-autogrow
-      ng-disabled="ctrl.usePrevious" ng-model="ctrl.seedVertices" ng-blur="ctrl.addSeeds()"
-      placeholder="{{ctrl.getPlaceHolder()}}">
-  </textarea>
-    <div *ngIf="ctrl.seedForm.multiSeedInput.$error">
+<form>
+  <mat-form-field class="example-full-width" name="seedForm" appearance="fill">
+    <input matInput placeholder="Seed" id="seedVertices" rows="6" name="multiSeedInput" floatPlaceholder="never"
+      md-no-autogrow ng-disabled="usePrevious" ng-model="seedVertices" ng-blur="addSeeds()"
+      placeholder="{{getPlaceHolder()}}">
+    <div *ngIf="seedForm.multiSeedInput.$error">
       Your CSV is invalid
     </div>
   </mat-form-field>
-</div>
+</form>
