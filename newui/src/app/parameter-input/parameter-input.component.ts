@@ -1,6 +1,7 @@
 import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute } from '@angular/router';
 import { AnalyticComponent } from '../analytic/analytic.component';
+import { AnalyticsService } from '../analytics.service';
 
 @Component({
   selector: "app-parameter-input",
@@ -8,42 +9,15 @@ import { AnalyticComponent } from '../analytic/analytic.component';
   styleUrls: ["./parameter-input.component.css"]
 })
 export class ParameterInputComponent implements OnInit {
-  // analytic = {
-  //   operationName: '',
-  //   description: '',
-  //   operations: '',
-  //   parameters: '',
-  //   outputType: '',
-  //   header: '',
-  // };
-
   analytic;
-
   
-  constructor(private route: ActivatedRoute) {}
+  constructor(private route: ActivatedRoute, private analyticsService: AnalyticsService) {}
 
   ngOnInit() {
-    //Get the operation from url
-    this.analytic = this.route.snapshot.queryParams;
+    //Get the analytic from the analyticsService
+    this.analytic = this.analyticsService.getAnalytic();
     console.log(this.analytic);
-    console.log(this.analytic.operationName);
-
-    // let operationName = this.route.snapshot.params['operationName'];
-    // let description = this.route.snapshot.params['description'];
-    // let operations = this.route.snapshot.params['operations'];
-    // let parameters = this.route.snapshot.params['parameters'];
-    // let outputType = this.route.snapshot.params['outputType'];
-    // let header = this.route.snapshot.params['header'];
-
-    // this.analytic.operationName = operationName;
-    // this.analytic.description = description
-
-    // config.get().then(function(conf) {
-    //   this.timeConfig = conf.time;
-    // });
   }
-
-  // operations = operationChain.getOperationChain();
 
   NAMED_VIEW_CLASS = "uk.gov.gchq.gaffer.data.elementdefinition.view.NamedView";
   OPERATION_CHAIN_CLASS = "uk.gov.gchq.gaffer.operation.OperationChain";

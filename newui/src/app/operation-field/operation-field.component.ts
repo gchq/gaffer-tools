@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, Input } from "@angular/core";
 
 @Component({
   selector: "app-operation-field",
@@ -6,8 +6,8 @@ import { Component, OnInit } from "@angular/core";
   styleUrls: ["./operation-field.component.css"]
 })
 export class OperationFieldComponent implements OnInit {
+  @Input('model') model;
   details;
-  model;
   name;
   param;
   title;

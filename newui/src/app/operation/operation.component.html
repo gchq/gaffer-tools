@@ -8,13 +8,13 @@
       <!-- first column -->
       <!-- Display the name of the operation and seed input box -->
       <div fxFlex="50%">
-        <!-- <app-input-manager first="isFirst()" primary-input="model.operations.fields.input"
+        <app-input-manager first="isFirst()" primary-input="model.operations.fields.input"
           secondary-input="model.operations.fields.inputB" [model]="model.operations.fields">
-        </app-input-manager> -->
-        <div ng-if="model.selectedOperation.fields.view">
+        </app-input-manager>
+        <div *ngIf="model.operations.fields.view">
           <!-- <view-builder model="model.fields.view">
                     </view-builder> -->
-          <mat-checkbox ng-model="model.fields.view.summarise" layout-padding>
+          <mat-checkbox ng-model="model.operations.fields.view.summarise" layout-padding>
             Summarise
           </mat-checkbox>
         </div>
@@ -23,25 +23,25 @@
       <!-- second column -->
       <!-- Display the different inputs based on the operation -->
       <div fxFlex="50%">
-        <app-date-range ng-if="timeConfig && model.selectedOperation.fields.view" model="model.dates"
+        <app-date-range *ngIf="timeConfig && model.operations.fields.view" [model]="model.dates"
           conf="timeConfig">
         </app-date-range>
 
-        <app-parameter-form ng-if="model.selectedOperation.parameters"
-          title-class="layout-padding md-title section-title" parameters="model.selectedOperation.parameters">
+        <app-parameter-form *ngIf="model.parameters"
+          title-class="layout-padding md-title section-title" parameters="model.parameters">
         </app-parameter-form>
 
-        <!-- <options ng-if="model.selectedOperation.fields.options" model="model.fields.options"></options> -->
+        <!-- <options *ngIf="model.operations.fields.options" model="model.operations.fields.options"></options> -->
 
-        <div ng-if="hasOtherConfig()">
+        <div *ngIf="hasOtherConfig()">
           <h3 class="section-title md-title">
             Configuration
           </h3>
 
-          <div ng-repeat="(name, field) in getConfigFields()">
-            <app-operation-field model="model" details="field">
+          <!-- <div *ngFor="(name, field) of getConfigFields()">
+            <app-operation-field [model]="model" details="field">
             </app-operation-field>
-          </div>
+          </div> -->
         </div>
       </div>
     </div>

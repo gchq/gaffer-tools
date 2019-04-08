@@ -22,7 +22,7 @@ export class InputManagerComponent implements OnInit {
       throw "Input manager must be initialised with a model.";
     }
     this.updatePreviousOutputFlag(); // respond to 'onOperationUpdate' event here
-    this.events.subscribe(this.EVENT_NAME, this.updatePreviousOutputFlag);
+    //this.events.subscribe(this.EVENT_NAME, this.updatePreviousOutputFlag);
   }
 
   /**

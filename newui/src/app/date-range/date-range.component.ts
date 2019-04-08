@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, Input } from "@angular/core";
 
 @Component({
   selector: "app-date-range",
@@ -22,6 +22,8 @@ import { Component, OnInit } from "@angular/core";
   styleUrls: ["./date-range.component.css"]
 })
 export class DateRangeComponent implements OnInit {
+  @Input('model') model;
+
   constructor() {}
 
   ngOnInit() {

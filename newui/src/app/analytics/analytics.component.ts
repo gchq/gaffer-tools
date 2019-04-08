@@ -78,8 +78,20 @@ export class AnalyticsComponent implements OnInit {
 
     var operationNames = ["Frequent Vehicles In Region","Frequent Vehicles In Region 2"];
     var descriptions = ["First description","Second description"];
-    var operations = ["operation1","operation2"];
-    var parameters = ["to csv, to csv"];
+    var operation1 = { 
+      fields: 'some field'
+    }
+    var operation2 = { 
+      fields: {
+        input: 'some input',
+        inputB: 'some other input'
+      }
+    }
+    var operations = [
+      operation1,
+      operation2,
+    ];
+    var parameters = ["to csv", "to csv"];
     var outputTypes = ["table", "table"];
     var icons = ["star", "directions_bus"]; //some names of icons from img folder
 
