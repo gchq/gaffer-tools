@@ -7,22 +7,22 @@
 
     <div fxLayout="row">
 
-      <button mat-button-raised class="mat-icon-button no-side-margin" ng-click="$matMenu.open($event)"
+      <button mat-icon-button class="mat-icon-button no-side-margin" (click)="$matMenu.open($event)"
         matTooltip="Use presets for start date" [matMenuTriggerFor]="menu">
         <mat-icon>list</mat-icon>
       </button>
       <mat-menu #menu="matMenu" ng-if="ctrl.presets" class="icon-inline-with-input">
-        <button mat-button ng-click="ctrl.updateStartDate(value)" ng-repeat="(name, value) in ctrl.presets">
+        <button mat-icon-button (click)="updateStartDate(value)" ng-repeat="(name, value) in ctrl.presets">
           {{ name }}
         </button>
       </mat-menu>
-
-      <input matInput [matDatepicker]="startPicker" placeholder="Choose a start date - YYYY-MM-DD">
-      <mat-datepicker-toggle matSuffix [for]="startPicker">
-        <mat-icon matDatepickerToggleIcon>date_range</mat-icon>
-      </mat-datepicker-toggle>
-      <mat-datepicker #startPicker ng-model="ctrl.startDate" name="startDate" id="start-date"
-        ng-change="ctrl.onStartDateUpdate()" mat-date-locale="ctrl.localeProviderOverride"></mat-datepicker>
+      <mat-form-field>
+        <input matInput [matDatepicker]="startPicker" placeholder="Choose a start date - YYYY-MM-DD">
+        <mat-datepicker-toggle matSuffix [for]="startPicker"></mat-datepicker-toggle>
+        <mat-datepicker #startPicker startView="year" [startAt]="startDate" ng-model="ctrl.startDate" name="startDate"
+          id="start-date" ng-change="onStartDateUpdate()" mat-date-locale="ctrl.localeProviderOverride">
+        </mat-datepicker>
+      </mat-form-field>
       <div ng-messages="ctrl.dateForm.startDate.$error">
         <div *ngIf="ctrl.dateForm.startDate.$error">
           The start date entered is invalid.
@@ -45,22 +45,23 @@
 
     <div fxLayout="row">
 
-      <button mat-button class="mat-icon-button no-side-margin" ng-click="$matMenu.open($event)"
-        matTooltip="Use presets for end date" [matMenuTriggerFor]="menu">
+      <button type="button" aria-label="open end date presets" mat-icon-button class="mat-icon-button no-side-margin"
+        (click)="$matMenu.open($event)" matTooltip="Use presets for end date" [matMenuTriggerFor]="menu">
         <mat-icon>list</mat-icon>
       </button>
       <mat-menu #menu="matMenu" ng-if="ctrl.presets" class="icon-inline-with-input">
-        <button mat-button ng-click="ctrl.updateEndDate(value)" ng-repeat="(name, value) in ctrl.presets">
+        <button mat-icon-button (click)="updateEndDate(value)" ng-repeat="(name, value) in ctrl.presets">
           {{ name }}
         </button>
       </mat-menu>
 
-      <input matInput [matDatepicker]="endPicker" placeholder="Choose a end date - YYYY-MM-DD">
-      <mat-datepicker-toggle matSuffix [for]="startPicker">
-        <mat-icon matDatepickerToggleIcon>date_range</mat-icon>
-      </mat-datepicker-toggle>
-      <mat-datepicker #startPicker ng-model="ctrl.endDate" name="endDate" id="end-date"
-        ng-change="ctrl.onEndDateUpdate()" mat-date-locale="ctrl.localeProviderOverride"></mat-datepicker>
+      <mat-form-field>
+        <input matInput [matDatepicker]="endPicker" placeholder="Choose a end date - YYYY-MM-DD">
+        <mat-datepicker-toggle matSuffix [for]="startPicker"></mat-datepicker-toggle>
+        <mat-datepicker #endPicker startView="year" [startAt]="endDate" ng-model="endDate" name="endDate" id="end-date"
+          ng-change="onEndDateUpdate()" mat-date-locale="localeProviderOverride()">
+        </mat-datepicker>
+      </mat-form-field>
       <div ng-messages="ctrl.dateForm.endDate.$error">
         <div *ngIf="ctrl.dateForm.endDate.$error">
           The end date entered is invalid.
