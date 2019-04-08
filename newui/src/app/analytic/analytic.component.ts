@@ -15,9 +15,9 @@ export class AnalyticComponent implements OnInit {
 
   // Save the chosen analytic in the operationChain service (should change to use analyticsService)
   execute(operation) {
-    this.operationChain.setOperation(operation);
+    //this.operationChain.setOperation(operation);
     // this.navigation.goTo("parameters");
-    this.router.navigate(['/servers']);
+    this.router.navigate(['/parameters']);
   }
 
   ngOnInit() {
