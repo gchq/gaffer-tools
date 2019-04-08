@@ -1,26 +1,24 @@
-<div style="flex-direction: row">
-  <div style="flex:100" flex-offset-gt-sm="20" flex-gt-sm="60">
-    <h1 layout-align="center- start">
-      About
-    </h1>
-    <mat-card>
-      <mat-card-title>
-        <mat-icon>info</mat-icon>
-      </mat-card-title>
-      <!-- <mat-spinner class="md-primary" diameter="40">
+<div style="margin-left:110px">
+  <h1 style="margin-left:110px">
+    About
+  </h1>
+  <mat-card>
+    <mat-card-title>
+      <mat-icon>info</mat-icon>
+    </mat-card-title>
+    <!-- <mat-spinner class="md-primary" diameter="40">
         </mat-spinner> -->
-      <mat-card-content>
-        <p ng-bind-html="description"></p>
-        <p ng-show="restAPI"><a id="about-rest-api" target="_blank" href="{{restAPI}}">Take a look at the REST
-            API</a>
-        </p>
-        <p ng-show="docs"><a id="about-docs" target="_blank" href="{{docs}}">Take a look at the
-            documentation</a></p>
-      </mat-card-content>
-      <mat-divider></mat-divider>
-      <div>
-        <button mat-raised-button (click)='sendFeedback()'>Send feedback</button>
-      </div>
-    </mat-card>
-  </div>
+    <mat-card-content>
+      <p ng-bind-html="description"></p>
+      <p ng-show="restAPI"><a id="about-rest-api" target="_blank" href="{{restAPI}}">Take a look at the REST
+          API</a>
+      </p>
+      <p ng-show="docs"><a id="about-docs" target="_blank" href="{{docs}}">Take a look at the
+          documentation</a></p>
+    </mat-card-content>
+    <mat-divider></mat-divider>
+    <div>
+      <button mat-raised-button (click)='sendFeedback()'>Send feedback</button>
+    </div>
+  </mat-card>
 </div>
