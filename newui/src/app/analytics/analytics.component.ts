@@ -6,20 +6,15 @@ import { Component, OnInit } from "@angular/core";
   styleUrls: ["./analytics.component.css"]
 })
 export class AnalyticsComponent implements OnInit {
+  availableOperations;
+  analytics = [[], []];
+
   constructor() {}
 
   ngOnInit() {
     //this.analytics = analytics.reloadAnalytics();
     this.reloadOperations(); // Load the operations
   }
-
-  analytics = [
-    "Get Adjacent Ids",
-    "Get All Elements",
-    "frequent-vehicles-in-region"
-  ];
-  availableOperations;
-  analytics2 = [[], []];
 
   //delete most of this left over from operation chain
   populateOperations = function(availableOperations) {
@@ -73,23 +68,29 @@ export class AnalyticsComponent implements OnInit {
     });
 
     // Hard code the other data I assume we will get when we load up the analytic
-    var icons = ["query", "location-search"]; //some names of icons from img folder
-    var analyticNames = [
+    var operationNames = [
       "Frequent Vehicles In Region",
       "Frequent Vehicles In Region 2"
     ];
-    var outputTypes = ["Table", "Table"];
-    var backgroundColors = ["Lime", "Cyan", "Red", "Magenta", "Yellow"];
+    var descriptions = ["First description", "Second description"];
+    var operations = ["operation1", "operation2"];
+    var parameters = ["to csv", "to csv"];
+    var outputTypes = ["table", "table"];
+    var icons = ["star", "directions_bus"]; //some names of icons from img folder
 
     // Create the analytics from this hard coded data
     var _i = 0;
     for (_i = 0; _i < 2; _i++) {
-      this.analytics[i].operation = availableOperations[i];
-      this.analytics[i].icon = icons[i];
-      this.analytics[i].name = analyticNames[i];
-      this.analytics[i].outputType = outputTypes[i];
-      this.analytics[i].backgroundColor = backgroundColors[i];
+      this.analytics[_i].operationName = operationNames[_i];
+      this.analytics[_i].description = descriptions[_i];
+      this.analytics[_i].operations = operations[_i];
+      this.analytics[_i].parameters = parameters[_i];
+      this.analytics[_i].outputType = [];
+      this.analytics[_i].outputType.output = outputTypes[_i];
+      this.analytics[_i].header = [];
+      this.analytics[_i].header.iconURL = icons[_i];
     }
+    console.log(this.analytics);
   };
 
   // Delete this?
@@ -104,6 +105,7 @@ export class AnalyticsComponent implements OnInit {
 
   // load the operations
   reloadOperations = function() {
-    this.operationService.reloadOperations(true).then(this.populateOperations);
+    // this.operationService.reloadOperations(true).then
+    this.populateOperations();
   };
 }
