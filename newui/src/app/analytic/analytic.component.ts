@@ -14,10 +14,10 @@ export class AnalyticComponent implements OnInit {
   constructor(private router: Router) {};
 
   // Save the chosen analytic in the operationChain service (should change to use analyticsService)
-  execute(operation) {
+  execute(analytic) {
     //this.operationChain.setOperation(operation);
-    // this.navigation.goTo("parameters");
-    this.router.navigate(['/parameters']);
+    // this.navigation.goTo("parameters");s
+    this.router.navigate(['/parameters'], {queryParams: analytic});
   }
 
   ngOnInit() {

@@ -3,8 +3,9 @@
     <h1>Parameters</h1>
   </div>
   <form name="ctrl.operationChainForm">
+    <div><p>The operation is {{ operation }}</p></div>
     <div fxLayout="column" ng-repeat="operation in ctrl.operations" class="operation">
-      <app-query model="operation" index="$index" time-config="ctrl.timeConfig" on-delete="ctrl.deleteOperation(index)"
+      <app-query [model]="analytic" index="$index" time-config="ctrl.timeConfig" on-delete="ctrl.deleteOperation(index)"
         on-reset="ctrl.resetOperation(index)" on-execute="ctrl.execute(op)" chain-length="ctrl.operations.length">
       </app-query>
     </div>

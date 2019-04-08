@@ -1,4 +1,6 @@
 import { Component, OnInit } from "@angular/core";
+import { ActivatedRoute } from '@angular/router';
+import { AnalyticComponent } from '../analytic/analytic.component';
 
 @Component({
   selector: "app-parameter-input",
@@ -6,9 +8,36 @@ import { Component, OnInit } from "@angular/core";
   styleUrls: ["./parameter-input.component.css"]
 })
 export class ParameterInputComponent implements OnInit {
-  constructor() {}
+  // analytic = {
+  //   operationName: '',
+  //   description: '',
+  //   operations: '',
+  //   parameters: '',
+  //   outputType: '',
+  //   header: '',
+  // };
+
+  analytic;
+
+  
+  constructor(private route: ActivatedRoute) {}
 
   ngOnInit() {
+    //Get the operation from url
+    this.analytic = this.route.snapshot.queryParams;
+    console.log(this.analytic);
+    console.log(this.analytic.operationName);
+
+    // let operationName = this.route.snapshot.params['operationName'];
+    // let description = this.route.snapshot.params['description'];
+    // let operations = this.route.snapshot.params['operations'];
+    // let parameters = this.route.snapshot.params['parameters'];
+    // let outputType = this.route.snapshot.params['outputType'];
+    // let header = this.route.snapshot.params['header'];
+
+    // this.analytic.operationName = operationName;
+    // this.analytic.description = description
+
     // config.get().then(function(conf) {
     //   this.timeConfig = conf.time;
     // });
