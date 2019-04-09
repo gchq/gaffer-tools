@@ -17,6 +17,7 @@
 import { Injectable } from '@angular/core';
 import { Observable, Observer, of } from 'rxjs';
 import { OperationService } from './operation.service';
+import { OperationOptionsService } from '../options/operation-options.service';
 
 @Injectable()
 
@@ -25,7 +26,12 @@ export class SchemaService {
     schema;
     schemaVertices = {};
 
-    constructor(private operationService: OperationService) { 
+    constructor(
+        private operationService: OperationService,
+        private operationOptions: OperationOptionsService
+        ) 
+        
+        { 
         this.update().then(function() {}, function() {});
     }
     

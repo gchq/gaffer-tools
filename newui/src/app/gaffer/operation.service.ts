@@ -13,7 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { Injectable } from '@angular/core';
+import { OperationOptionsService } from '../options/operation-options.service';
+
+@Injectable()
+
 export class OperationService {
+
+    constructor(private operationOptions: OperationOptionsService) {}
 
     availableOperations;
     namedOpClass = "uk.gov.gchq.gaffer.named.operation.NamedOperation";

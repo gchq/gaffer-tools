@@ -33,6 +33,7 @@ import { ParameterInputComponent } from "./parameter-input/parameter-input.compo
 import { AnalyticsService } from './analytics.service';
 import { OperationService } from './gaffer/operation.service';
 import { SchemaService } from './gaffer/schema.service';
+import { OperationOptionsService } from './options/operation-options.service';
 
 @NgModule({
   declarations: [
@@ -69,7 +70,8 @@ import { SchemaService } from './gaffer/schema.service';
   providers: [
     AnalyticsService,
     OperationService,
-    SchemaService
+    SchemaService,
+    OperationOptionsService
   ],
   bootstrap: [AppComponent]
 })
