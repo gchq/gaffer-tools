@@ -31,6 +31,8 @@ import { SeedBuilderComponent } from "./seed-builder/seed-builder.component";
 import { OperationFieldComponent } from "./operation-field/operation-field.component";
 import { ParameterInputComponent } from "./parameter-input/parameter-input.component";
 import { AnalyticsService } from './analytics.service';
+import { OperationService } from './gaffer/operation.service';
+import { SchemaService } from './gaffer/schema.service';
 
 @NgModule({
   declarations: [
@@ -64,7 +66,11 @@ import { AnalyticsService } from './analytics.service';
     MatIconModule,
     MatListModule
   ],
-  providers: [AnalyticsService],
+  providers: [
+    AnalyticsService,
+    OperationService,
+    SchemaService
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule {

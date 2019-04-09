@@ -16,19 +16,16 @@
 
 import { Injectable } from '@angular/core';
 import { Observable, Observer, of } from 'rxjs';
+import { OperationService } from './operation.service';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Injectable()
 
-//Used to store and get the selected analytic
 export class SchemaService {
-    selectedAnalytic;
     deffered; //Used to be $q.defer(), now the observable
     schema;
     schemaVertices = {};
 
-    constructor() { 
+    constructor(private operationService: OperationService) { 
         this.update().then(function() {}, function() {});
     }
     
