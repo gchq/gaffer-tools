@@ -12,7 +12,7 @@ export class OperationComponent implements OnInit {
 
   ngOnInit() {
     console.log(this.model);
-    console.log(this.model.parameters)
+    console.log(this.model.parameters);
   }
 
   getConfigFields = function() {
