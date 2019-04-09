@@ -30,6 +30,7 @@ import { PairBuilderComponent } from "./pair-builder/pair-builder.component";
 import { SeedBuilderComponent } from "./seed-builder/seed-builder.component";
 import { OperationFieldComponent } from "./operation-field/operation-field.component";
 import { ParameterInputComponent } from "./parameter-input/parameter-input.component";
+import { AnalyticsService } from './analytics.service';
 
 @NgModule({
   declarations: [
@@ -63,7 +64,7 @@ import { ParameterInputComponent } from "./parameter-input/parameter-input.compo
     MatIconModule,
     MatListModule
   ],
-  providers: [],
+  providers: [AnalyticsService],
   bootstrap: [AppComponent]
 })
 export class AppModule {

@@ -1,9 +1,3 @@
-import { Injectable } from '@angular/core';
-
-@Injectable({
-  providedIn: 'root',
-})
-
 //Used to store and get the selected analytic
 export class AnalyticsService {
   selectedAnalytic;
