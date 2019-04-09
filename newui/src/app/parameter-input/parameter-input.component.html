@@ -7,7 +7,7 @@
       on-reset="resetOperation(index)" on-execute="execute(op)" chain-length="operations.length">
     </app-query>
     <mat-divider></mat-divider>
-    <div>
+    <div style="margin-top:10px">
       <mat-icon>expand_more</mat-icon>
     </div>
   </mat-card>
@@ -15,8 +15,8 @@
     <button mat-raised-button color="primary" ng-click="resetChain($event)">Reset
       operation
       chain</button>
-    <button mat-raised-button color="primary" ng-disabled="!canExecute()" id="execute-chain"
-      ng-click="executeChain()">Execute operation
+    <button mat-raised-button color="primary" ng-disabled="!canExecute()" id="execute-chain" (click)="results()">Execute
+      operation
       chain</button>
   </div>
 </form>

@@ -1,6 +1,6 @@
 import { AnalyticComponent } from "./../analytic/analytic.component";
-import { ActivatedRoute } from "@angular/router";
-import { Component, OnInit } from "@angular/core";
+import { ActivatedRoute, Router } from "@angular/router";
+import { Component, OnInit, Input } from "@angular/core";
 
 @Component({
   selector: "app-parameter-input",
@@ -17,9 +17,18 @@ export class ParameterInputComponent implements OnInit {
   // header: '',
   // };
 
+  @Input("model") model;
+
+  // Save the chosen analytic in the operationChain service (should change to use analyticsService)
+  results() {
+    // this.operationChain.setOperation(operation);
+    // this.navigation.goTo("parameters");
+    this.router.navigate(["/results"]);
+  }
+
   analytic;
 
-  constructor(private route: ActivatedRoute) {}
+  constructor(private route: ActivatedRoute, private router: Router) {}
 
   ngOnInit() {
     this.analytic = this.route.snapshot.queryParams;
