@@ -101,7 +101,7 @@ h4 {
 pre {
   background: white;
   padding: 5px;
-  font-family: Roboto, Helvetica Neue, sans-serif;
+  font-family: Arial, Helvetica, sans-serif;
 }
 
 mat-icon svg {
@@ -506,5 +506,5 @@ body {
 
 body {
   margin: 0;
-  font-family: Roboto, "Helvetica Neue", sans-serif;
+  font-family: Arial, Helvetica, sans-serif;
 }
