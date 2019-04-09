@@ -1,3 +1,5 @@
+import { AnalyticComponent } from "./../analytic/analytic.component";
+import { ActivatedRoute } from "@angular/router";
 import { Component, OnInit } from "@angular/core";
 
 @Component({
@@ -6,15 +8,37 @@ import { Component, OnInit } from "@angular/core";
   styleUrls: ["./parameter-input.component.css"]
 })
 export class ParameterInputComponent implements OnInit {
-  constructor() {}
+  // analytic = {
+  // operationName: '',
+  // description: '',
+  // operations: '',
+  // parameters: '',
+  // outputType: '',
+  // header: '',
+  // };
+
+  analytic;
+
+  constructor(private route: ActivatedRoute) {}
 
   ngOnInit() {
+    this.analytic = this.route.snapshot.queryParams;
+    console.log(this.analytic);
+    console.log(this.analytic.operationName);
+
+    // let operationName = this.route.snapshot.params['operationName'];
+    // let description = this.route.snapshot.params['description'];
+    // let operations = this.route.snapshot.params['operations'];
+    // let parameters = this.route.snapshot.params['parameters'];
+    // let outputType = this.route.snapshot.params['header'];
+
+    // this.analytic.operationName = operationName;
+    // this.analytic.description = description
+
     // config.get().then(function(conf) {
     //   this.timeConfig = conf.time;
     // });
   }
-
-  // operations = operationChain.getOperationChain();
 
   NAMED_VIEW_CLASS = "uk.gov.gchq.gaffer.data.elementdefinition.view.NamedView";
   OPERATION_CHAIN_CLASS = "uk.gov.gchq.gaffer.operation.OperationChain";

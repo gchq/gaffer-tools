@@ -1,15 +1,15 @@
   <form name="operationForm">
     <div class="md-list-item-text">
-      <h3>{{model.selectedOperation.name}}</h3>
-      <p>{{model.selectedOperation.description}}</p>
+      <h3>{{model.operationName}}</h3>
+      <p>{{model.description}}</p>
     </div>
     <div fxLayout="row" fxLayout.xs="column">
       <!-- first column -->
       <!-- Display the name of the operation and seed input box -->
       <div fxFlex="50%">
-        <app-input-manager first="isFirst()" primary-input="model.selectedOperation.fields.input"
+        <!-- <app-input-manager first="isFirst()" primary-input="model.selectedOperation.fields.input"
           secondary-input="model.selectedOperation.fields.inputB" model="model.fields">
-        </app-input-manager>
+        </app-input-manager> -->
         <div ng-if="model.selectedOperation.fields.view">
           <!-- <view-builder model="model.fields.view">
                     </view-builder> -->

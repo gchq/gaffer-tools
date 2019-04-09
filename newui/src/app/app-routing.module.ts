@@ -9,6 +9,7 @@ const routes: Routes = [
   { path: "about", component: AboutComponent },
   { path: "analytics", component: AnalyticsComponent },
   { path: "parameters", component: ParameterInputComponent },
+  { path: "parameters/:operation", component: ParameterInputComponent },
   { path: "results", component: TableComponent }
 ];
 

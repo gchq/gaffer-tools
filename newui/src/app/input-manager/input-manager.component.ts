@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, Input } from "@angular/core";
 
 @Component({
   selector: "app-input-manager",
@@ -6,7 +6,7 @@ import { Component, OnInit } from "@angular/core";
   styleUrls: ["./input-manager.component.css"]
 })
 export class InputManagerComponent implements OnInit {
-  model;
+  @Input("model") model;
   events;
   results;
   common;

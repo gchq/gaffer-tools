@@ -16,6 +16,12 @@ export class AnalyticsComponent implements OnInit {
     this.reloadOperations(); // Load the operations
   }
 
+  // analytics = [
+  //   "Get Adjacent Ids",
+  //   "Get All Elements",
+  //   "frequent-vehicles-in-region"
+  // ];
+
   //delete most of this left over from operation chain
   populateOperations = function(availableOperations) {
     this.availableOperations = [];
@@ -73,6 +79,15 @@ export class AnalyticsComponent implements OnInit {
       "Frequent Vehicles In Region 2"
     ];
     var descriptions = ["First description", "Second description"];
+    var operation1 = {
+      fields: "some field"
+    };
+    var operation2 = {
+      fields: {
+        input: "some input",
+        inputB: "some other input"
+      }
+    };
     var operations = ["operation1", "operation2"];
     var parameters = ["to csv", "to csv"];
     var outputTypes = ["table", "table"];
@@ -81,6 +96,8 @@ export class AnalyticsComponent implements OnInit {
     // Create the analytics from this hard coded data
     var _i = 0;
     for (_i = 0; _i < 2; _i++) {
+      //this.analytics[i].operation = availableOperations[i];
+
       this.analytics[_i].operationName = operationNames[_i];
       this.analytics[_i].description = descriptions[_i];
       this.analytics[_i].operations = operations[_i];
