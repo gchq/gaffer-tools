@@ -7,19 +7,21 @@
     <div fxLayout="row">
       <button mat-icon-button class="mat-icon-button no-side-margin" (click)="$matMenu.open($event)"
         matTooltip="Use presets for start date" [matMenuTriggerFor]="menu">
-        <mat-icon>list</mat-icon>
+        <i class="material-icons">list</i>
+        <!-- <mat-icon>list</mat-icon> -->
       </button>
       <mat-menu #menu="matMenu" ng-if="presets" class="icon-inline-with-input">
-        <button mat-icon-button (click)="updateStartDate(value)" ng-repeat="(name, value) in presets">
+        <button mat-button (click)="updateStartDate(value)" ng-repeat="(name, value) in presets">
           {{ name }}
         </button>
       </mat-menu>
       <mat-form-field>
-        <input matInput [matDatepicker]="picker" placeholder="Start date - YYYY-MM-DD">
-        <mat-datepicker-toggle matSuffix [for]="picker">
-          <mat-icon matDatepickerToggleIcon>expand_more</mat-icon>
+        <input matInput [matDatepicker]="startPicker" placeholder="Start date - YYYY-MM-DD">
+        <mat-datepicker-toggle matSuffix [for]="startPicker">
+          <!-- <mat-icon matDatepickerToggleIcon>calendar_today</mat-icon> -->
+          <i class="material-icons">calendar_today</i>
         </mat-datepicker-toggle>
-        <mat-datepicker #picker startView="year" [startAt]="startDate" ng-model="startDate" name="startDate"
+        <mat-datepicker #startPicker startView="year" [startAt]="startDate" ng-model="startDate" name="startDate"
           id="start-date" ng-change="onStartDateUpdate()" mat-date-locale="localeProviderOverride">
         </mat-datepicker>
       </mat-form-field>
@@ -47,7 +49,8 @@
 
       <button type="button" aria-label="open end date presets" mat-icon-button class="mat-icon-button no-side-margin"
         (click)="$matMenu.open($event)" matTooltip="Use presets for end date" [matMenuTriggerFor]="menu">
-        <mat-icon>list</mat-icon>
+        <i class="material-icons">list</i>
+        <!-- <mat-icon>list</mat-icon> -->
       </button>
       <mat-menu #menu="matMenu" ng-if="presets" class="icon-inline-with-input">
         <button mat-icon-button (click)="updateEndDate(value)" ng-repeat="(name, value) in presets">
@@ -57,7 +60,10 @@
 
       <mat-form-field>
         <input matInput [matDatepicker]="endPicker" placeholder="End date - YYYY-MM-DD">
-        <mat-datepicker-toggle matSuffix [for]="startPicker"></mat-datepicker-toggle>
+        <mat-datepicker-toggle matSuffix [for]="endPicker">
+          <!-- <mat-icon matDatepickerToggleIcon>calendar_today</mat-icon> -->
+          <i class="material-icons">calendar_today</i>
+        </mat-datepicker-toggle>
         <mat-datepicker #endPicker startView="year" [startAt]="endDate" ng-model="endDate" name="endDate" id="end-date"
           ng-change="onEndDateUpdate()" mat-date-locale="localeProviderOverride()">
         </mat-datepicker>
