@@ -11,8 +11,7 @@ import { ErrorService } from '../dynamic-input/error.service';
 })
 @Injectable()
 export class PairBuilderComponent implements OnInit {
-  pairForm = {};
-  
+
   constructor(private schema: SchemaService,
               private events: EventsService,
               private types: TypesService,

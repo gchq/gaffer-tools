@@ -12,7 +12,7 @@
       (blur)="addPairs()"
       placeholder="{{getPlaceHolder()}}">
     </textarea>
-    <div *ngIf="pairForm.seedPairInput.$error">
+    <div *ngIf="pairForm?.seedPairInput.$error">
       Your CSV is invalid
     </div>
   </mat-form-field>
