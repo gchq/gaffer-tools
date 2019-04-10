@@ -1,5 +1,6 @@
 import { Component, OnInit, Injectable } from "@angular/core";
 import { SchemaService } from '../gaffer/schema.service';
+import { EventsService } from '../dynamic-input/events.service';
 
 @Component({
   selector: "app-pair-builder",
@@ -8,7 +9,8 @@ import { SchemaService } from '../gaffer/schema.service';
 })
 @Injectable()
 export class PairBuilderComponent implements OnInit {
-  constructor(private schema: SchemaService) {}
+  constructor(private schema: SchemaService,
+              private events: EventsService) {}
 
   ngOnInit() {
     this.schema.get().subscribe(function(gafferSchema) {
@@ -45,7 +47,6 @@ export class PairBuilderComponent implements OnInit {
   csv;
   types;
   error;
-  events;
   common;
   $routeParams;
   $location;

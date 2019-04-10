@@ -36,6 +36,7 @@ import { OperationService } from './gaffer/operation.service';
 import { SchemaService } from './gaffer/schema.service';
 import { OperationOptionsService } from './options/operation-options.service';
 import { ConfigService } from './config/config.service';
+import { EventsService } from './dynamic-input/events.service';
 
 @NgModule({
   declarations: [
@@ -75,7 +76,8 @@ import { ConfigService } from './config/config.service';
     OperationService,
     SchemaService,
     OperationOptionsService,
-    ConfigService
+    ConfigService,
+    EventsService
   ],
   bootstrap: [AppComponent]
 })
