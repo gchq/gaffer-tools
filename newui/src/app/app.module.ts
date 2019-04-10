@@ -32,6 +32,7 @@ import { ConfigService } from "./config/config.service";
 import { EventsService } from "./dynamic-input/events.service";
 import { CommonService } from "./dynamic-input/common.service";
 import { ErrorService } from "./dynamic-input/error.service";
+import { TypesService } from "./gaffer/type.service";
 
 @NgModule({
   declarations: [
@@ -69,6 +70,7 @@ import { ErrorService } from "./dynamic-input/error.service";
     ConfigService,
     EventsService,
     CommonService,
+    TypesService,
     ErrorService
   ],
   bootstrap: [AppComponent]

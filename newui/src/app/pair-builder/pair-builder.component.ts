@@ -2,6 +2,7 @@ import { Component, OnInit, Injectable } from "@angular/core";
 import { SchemaService } from "../gaffer/schema.service";
 import { EventsService } from "../dynamic-input/events.service";
 import { ErrorService } from "../dynamic-input/error.service";
+import { TypesService } from "../gaffer/type.service";
 
 @Component({
   selector: "app-pair-builder",
@@ -15,6 +16,7 @@ export class PairBuilderComponent implements OnInit {
   constructor(
     private schema: SchemaService,
     private events: EventsService,
+    private types: TypesService,
     private error: ErrorService
   ) {}
 
@@ -51,7 +53,6 @@ export class PairBuilderComponent implements OnInit {
    * @param {*} $routeParams The route params service
    */
   csv;
-  types;
   common;
   $routeParams;
   $location;
