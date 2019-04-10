@@ -5,7 +5,7 @@
       ng-disabled="usePrevious" ng-model="seedVertices" ng-blur="addSeeds()"
       placeholder="{{getPlaceHolder()}}">
   </textarea>
-    <div *ngIf="seedForm.multiSeedInput.$error">
+    <div *ngIf="seedForm?.multiSeedInput.$error">
       Your CSV is invalid
     </div>
   </mat-form-field>
