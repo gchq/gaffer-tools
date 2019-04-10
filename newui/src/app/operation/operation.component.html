@@ -8,12 +8,12 @@
       <!-- Display the name of the operation and seed input box -->
       <div fxFlex="50%">
         <app-input-manager first="isFirst()" primary-input="model.selectedOperation.fields.input"
-          secondary-input="model.selectedOperation.fields.inputB" model="model.fields">
+          secondary-input="model.selectedOperation.fields.inputB" [(ngModel)]="model.fields">
         </app-input-manager>
-        <div ng-if="model.selectedOperation.fields.view">
+        <div *ngIf="model.selectedOperation.fields.view">
           <!-- <view-builder model="model.fields.view">
                     </view-builder> -->
-          <mat-checkbox ng-model="model.fields.view.summarise" layout-padding>
+          <mat-checkbox [(ngModel)]="model.fields.view.summarise" layout-padding>
             Summarise
           </mat-checkbox>
         </div>
@@ -22,22 +22,23 @@
       <!-- second column -->
       <!-- Display the different inputs based on the operation -->
       <div fxFlex="50%">
-        <app-date-range ng-if="timeConfig && model.selectedOperation.fields.view" model="model.dates" conf="timeConfig">
+        <app-date-range *ngIf="timeConfig && model.selectedOperation.fields.view" [(ngModel)]="model.dates"
+          conf="timeConfig">
         </app-date-range>
 
-        <app-parameter-form ng-if="model.selectedOperation.parameters"
+        <app-parameter-form *ngIf="model.selectedOperation.parameters"
           title-class="layout-padding md-title section-title" parameters="model.selectedOperation.parameters">
         </app-parameter-form>
 
         <!-- <options ng-if="model.selectedOperation.fields.options" model="model.fields.options"></options> -->
 
-        <div ng-if="hasOtherConfig()">
+        <div *ngIf="hasOtherConfig()">
           <h3 class="section-title md-title">
             Configuration
           </h3>
 
           <div ng-repeat="(name, field) in getConfigFields()">
-            <app-operation-field model="model" details="field">
+            <app-operation-field [(ngModel)]="model" details="field">
             </app-operation-field>
           </div>
         </div>

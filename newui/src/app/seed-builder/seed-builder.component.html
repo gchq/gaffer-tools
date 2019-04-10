@@ -1,8 +1,8 @@
 <form>
   <mat-form-field class="example-full-width" name="seedForm" appearance="fill">
     <textarea matInput placeholder="Seed" id="seedVertices" matTextareaAutosize matAutosizeMinRows=1
-      matAutosizeMaxRows=5 name="multiSeedInput" floatPlaceholder="never" ng-disabled="usePrevious"
-      ng-model="seedVertices" ng-blur="addSeeds()" placeholder="{{getPlaceHolder()}}"></textarea>
+      matAutosizeMaxRows=5 name="multiSeedInput" floatPlaceholder="never" [disabled]="usePrevious"
+      [(ngModel)]="seedVertices" (blur)="addSeeds()" placeholder="{{getPlaceHolder()}}"></textarea>
     <div *ngIf="seedForm.multiSeedInput.$error">
       Your CSV is invalid
     </div>
