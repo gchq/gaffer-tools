@@ -34,6 +34,7 @@ import { AnalyticsService } from './analytics.service';
 import { OperationService } from './gaffer/operation.service';
 import { SchemaService } from './gaffer/schema.service';
 import { OperationOptionsService } from './options/operation-options.service';
+import { ConfigService } from './config/config.service';
 
 @NgModule({
   declarations: [
@@ -71,7 +72,8 @@ import { OperationOptionsService } from './options/operation-options.service';
     AnalyticsService,
     OperationService,
     SchemaService,
-    OperationOptionsService
+    OperationOptionsService,
+    ConfigService
   ],
   bootstrap: [AppComponent]
 })

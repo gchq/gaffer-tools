@@ -15,6 +15,11 @@
  */
 
 import { of, Observable, Observer } from 'rxjs';
+import { Injectable } from '@angular/core';
+
+import { ConfigService } from '../config/config.service';
+
+@Injectable()
 
 /**
  * This simple service stores and serves to the default operation options
@@ -22,6 +27,8 @@ import { of, Observable, Observer } from 'rxjs';
 export class OperationOptionsService {
     
     defaultOperationOptionsConfiguration = null;
+
+    constructor(private config: ConfigService) {}
 
     /**
      * Updates the default configuration for options components
