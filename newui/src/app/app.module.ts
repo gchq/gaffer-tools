@@ -3,6 +3,7 @@ import { FormsModule } from "@angular/forms"; // <-- NgModel lives here
 import { NgModule } from "@angular/core";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { UpgradeModule } from "@angular/upgrade/static";
+import { HttpClientModule } from '@angular/common/http';
 
 import { AppComponent } from "./app.component";
 import { AboutComponent } from "./about/about.component";
@@ -57,6 +58,7 @@ import { ConfigService } from './config/config.service';
     BrowserModule,
     UpgradeModule,
     FormsModule,
+    HttpClientModule,
     AppRoutingModule,
     BrowserAnimationsModule,
     MaterialModule,

@@ -16,10 +16,16 @@
 
 import { Observable, Observer, of } from 'rxjs';
 
+import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+
+@Injectable()
 export class ConfigService {
 
     config;
     defer;
+
+    constructor(private http: HttpClient) {}
 
     get = function() {
         if (this.config) {
@@ -38,15 +44,15 @@ export class ConfigService {
 
 
     private load = function() {
-        this.$http.get('config/defaultConfig.json')
-            .then(function(response) {
+        this.http.get('config/defaultConfig.json')
+            .subscribe(function(response) {
                 var defaultConfig = response.data;
                 if(defaultConfig === undefined) {
                     defaultConfig = {};
                 }
                 var mergedConfig = defaultConfig;
-                this.$http.get('config/config.json')
-                    .then(function(response) {
+                this.http.get('config/config.json')
+                    .subscribe(function(response) {
                         var customConfig = response.data;
 
                         if(customConfig === undefined) {
