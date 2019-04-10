@@ -2,6 +2,7 @@ import { Component, OnInit, Injectable } from "@angular/core";
 import { SchemaService } from '../gaffer/schema.service';
 import { EventsService } from '../dynamic-input/events.service';
 import { TypesService } from '../gaffer/type.service';
+import { ErrorService } from '../dynamic-input/error.service';
 
 @Component({
   selector: "app-pair-builder",
@@ -10,9 +11,12 @@ import { TypesService } from '../gaffer/type.service';
 })
 @Injectable()
 export class PairBuilderComponent implements OnInit {
+  pairForm = {};
+  
   constructor(private schema: SchemaService,
               private events: EventsService,
-              private types: TypesService) {}
+              private types: TypesService,
+              private error: ErrorService) {}
 
   ngOnInit() {
     this.schema.get().subscribe(function(gafferSchema) {
@@ -47,7 +51,6 @@ export class PairBuilderComponent implements OnInit {
    * @param {*} $routeParams The route params service
    */
   csv;
-  error;
   common;
   $routeParams;
   $location;
@@ -225,6 +228,7 @@ export class PairBuilderComponent implements OnInit {
    * @param {*} err The error (optional)
    */
   handleError = function(message, err) {
+    this.error.handle(message, err);
     if (this.pairForm) {
       this.pairForm.seedPairInput.$setValidity("csv", false);
     }

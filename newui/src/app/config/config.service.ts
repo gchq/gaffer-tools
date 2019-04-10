@@ -15,6 +15,7 @@
  */
 
 import { Observable, Observer, of } from 'rxjs';
+import { merge } from 'lodash';
 
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
@@ -42,7 +43,6 @@ export class ConfigService {
         this.config = conf;
     }
 
-
     private load = function() {
         this.http.get('config/defaultConfig.json')
             .subscribe(function(response) {
@@ -62,14 +62,14 @@ export class ConfigService {
                             mergedConfig.restEndpoint = this.defaultRestEndpoint.get();
                         }
                         if('types' in mergedConfig && 'types' in customConfig) {
-                            angular.merge(mergedConfig['types'], customConfig['types']);
+                            merge(mergedConfig['types'], customConfig['types']);
                             delete customConfig['types'];
                         }
                         if('operations' in mergedConfig && 'operations' in customConfig) {
-                            angular.merge(mergedConfig['operations'], customConfig['operations']);
+                            merge(mergedConfig['operations'], customConfig['operations']);
                             delete customConfig['operations'];
                         }
-                        angular.merge(mergedConfig, customConfig);
+                        merge(mergedConfig, customConfig);
                         this.config = mergedConfig;
                         this.defer.resolve(this.config);
                     },
