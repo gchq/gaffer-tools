@@ -47,18 +47,17 @@
 
     <div fxLayout="row">
 
-      <button type="button" aria-label="open end date presets" mat-icon-button class="mat-icon-button no-side-margin"
-        (click)="$matMenu.open($event)" matTooltip="Use presets for end date" [matMenuTriggerFor]="menu">
-        <i class="material-icons">list</i>
-        <!-- <mat-icon>list</mat-icon> -->
-      </button>
-      <mat-menu #menu="matMenu" ng-if="presets" class="icon-inline-with-input">
-        <button mat-icon-button (click)="updateEndDate(value)" ng-repeat="(name, value) in presets">
-          {{ name }}
-        </button>
-      </mat-menu>
-
       <mat-form-field>
+        <button type="button" aria-label="open end date presets" mat-icon-button class="mat-icon-button no-side-margin"
+          (click)="$matMenu.open($event)" matTooltip="Use presets for end date" [matMenuTriggerFor]="menu">
+          <i class="material-icons">list</i>
+          <!-- <mat-icon>list</mat-icon> -->
+        </button>
+        <mat-menu #menu="matMenu" ng-if="presets" class="icon-inline-with-input">
+          <button mat-icon-button (click)="updateEndDate(value)" ng-repeat="(name, value) in presets">
+            {{ name }}
+          </button>
+        </mat-menu>
         <input matInput [matDatepicker]="endPicker" placeholder="End date - YYYY-MM-DD">
         <mat-datepicker-toggle matSuffix [for]="endPicker">
           <!-- <mat-icon matDatepickerToggleIcon>calendar_today</mat-icon> -->

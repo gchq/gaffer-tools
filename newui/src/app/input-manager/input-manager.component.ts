@@ -1,4 +1,5 @@
 import { Component, OnInit, Input } from "@angular/core";
+import { SchemaService } from "../gaffer/schema.service";
 
 @Component({
   selector: "app-input-manager",
@@ -11,11 +12,11 @@ export class InputManagerComponent implements OnInit {
   results;
   common;
   types;
-  schema;
   EVENT_NAME = "onOperationUpdate";
   ENTITY_SEED_CLASS = "uk.gov.gchq.gaffer.operation.data.EntitySeed";
   usePreviousOutput;
-  constructor() {}
+
+  constructor(private schema: SchemaService) {}
 
   ngOnInit() {
     if (!this.model) {

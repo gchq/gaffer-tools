@@ -1,15 +1,25 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, Injectable } from "@angular/core";
+import { SchemaService } from "../gaffer/schema.service";
+import { EventsService } from "../dynamic-input/events.service";
+import { ErrorService } from "../dynamic-input/error.service";
 
 @Component({
   selector: "app-pair-builder",
   templateUrl: "./pair-builder.component.html",
   styleUrls: ["./pair-builder.component.css"]
 })
+@Injectable()
 export class PairBuilderComponent implements OnInit {
-  constructor() {}
+  pairForm = {};
+
+  constructor(
+    private schema: SchemaService,
+    private events: EventsService,
+    private error: ErrorService
+  ) {}
 
   ngOnInit() {
-    this.schema.get().then(function(gafferSchema) {
+    this.schema.get().subscribe(function(gafferSchema) {
       var vertices = this.schema.getSchemaVertices();
       if (vertices && vertices.length > 0 && undefined !== vertices[0]) {
         this.vertexClass = gafferSchema.types[vertices[0]].class;
@@ -40,11 +50,8 @@ export class PairBuilderComponent implements OnInit {
    * @param {*} common The common service
    * @param {*} $routeParams The route params service
    */
-  schema;
   csv;
   types;
-  error;
-  events;
   common;
   $routeParams;
   $location;
@@ -222,6 +229,7 @@ export class PairBuilderComponent implements OnInit {
    * @param {*} err The error (optional)
    */
   handleError = function(message, err) {
+    this.error.handle(message, err);
     if (this.pairForm) {
       this.pairForm.seedPairInput.$setValidity("csv", false);
     }
