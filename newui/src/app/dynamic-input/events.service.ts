@@ -14,13 +14,14 @@
  * limitations under the License.
  */
 import { Injectable } from '@angular/core';
+import { CommonService } from './common.service';
 
 @Injectable()
 export class EventsService {
 
     events = {};
 
-    constructor() {}
+    constructor(private common: CommonService) {}
 
     subscribe = function(eventName, callback) {
 
