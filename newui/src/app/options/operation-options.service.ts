@@ -67,7 +67,7 @@ export class OperationOptionsService {
 
         var deferred = Observable.create((observer: Observer<String>) => {});
 
-        this.config.get().then(function(conf) {
+        this.config.get().subscribe(function(conf) {
             var defaultConfiguration = conf.operationOptions;
             deferred.resolve(this.extractOperationOptions(defaultConfiguration));
         });

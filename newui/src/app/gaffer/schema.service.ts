@@ -30,9 +30,9 @@ export class SchemaService {
         private operationService: OperationService,
         private operationOptions: OperationOptionsService
         ) 
-        
+
         { 
-        this.update().then(function() {}, function() {});
+        this.update().subscribe(function() {}, function() {});
     }
     
     /**
@@ -69,9 +69,9 @@ export class SchemaService {
     private getSchema = function(loud) {
         var getSchemaOperation = this.operationService.createGetSchemaOperation();
         if (Object.keys(getSchemaOperation.options).length === 0) {
-            this.operationOptions.getDefaultOperationOptionsAsync().then(function(options) {
+            this.operationOptions.getDefaultOperationOptionsAsync().subscribe(function(options) {
                 getSchemaOperation.options = options;
-                this.getSchemaWithOperation(getSchemaOperation, loud)
+                this.getSchemaWithOperation(getSchemaOperation, loud);
             });
         } else {
             this.getSchemaWithOperation(getSchemaOperation, loud);

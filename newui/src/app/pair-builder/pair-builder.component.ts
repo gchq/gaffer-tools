@@ -1,15 +1,17 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, Injectable } from "@angular/core";
+import { SchemaService } from '../gaffer/schema.service';
 
 @Component({
   selector: "app-pair-builder",
   templateUrl: "./pair-builder.component.html",
   styleUrls: ["./pair-builder.component.css"]
 })
+@Injectable()
 export class PairBuilderComponent implements OnInit {
-  constructor() {}
+  constructor(private schema: SchemaService) {}
 
   ngOnInit() {
-    this.schema.get().then(function(gafferSchema) {
+    this.schema.get().subscribe(function(gafferSchema) {
       var vertices = this.schema.getSchemaVertices();
       if (vertices && vertices.length > 0 && undefined !== vertices[0]) {
         this.vertexClass = gafferSchema.types[vertices[0]].class;
@@ -40,7 +42,6 @@ export class PairBuilderComponent implements OnInit {
    * @param {*} common The common service
    * @param {*} $routeParams The route params service
    */
-  schema;
   csv;
   types;
   error;
