@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+import { isEqual, cloneDeep } from 'lodash';
+
 /**
  * Library of common code - used for compatability with certain browsers and to reduce
  * code duplication.
@@ -99,7 +101,7 @@ export class CommonService {
             return false;
         }
         for (var i in arr) {
-            if (angular.equals(arr[i], obj)) {
+            if (isEqual(arr[i], obj)) {
                 return true;
             }
         }
@@ -171,14 +173,14 @@ export class CommonService {
     */
     concatUniqueValues = function(list1, list2) {
         if(!list1) {
-            return angular.copy(list2);
+            return cloneDeep(list2);
         }
 
         if(!list2) {
-            return angular.copy(list1);
+            return cloneDeep(list1);
         }
 
-        var concatList = angular.copy(list1);
+        var concatList = cloneDeep(list1);
         this.pushValuesIfUnique(list2, concatList);
         return concatList
     }
@@ -190,14 +192,14 @@ export class CommonService {
     */
     concatUniqueObjects = function(list1, list2) {
         if(!list1) {
-            return angular.copy(list2);
+            return cloneDeep(list2);
         }
 
         if(!list2) {
-            return angular.copy(list1);
+            return cloneDeep(list1);
         }
 
-        var concatList = angular.copy(list1);
+        var concatList = cloneDeep(list1);
         this.pushObjectsIfUnique(list2, concatList);
         return concatList
     }
