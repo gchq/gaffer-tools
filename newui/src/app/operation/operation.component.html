@@ -31,15 +31,15 @@
           title-class="layout-padding md-title section-title" [parameters]="model.parameters">
         </app-parameter-form>
 
-        <options *ngIf="model.operations.fields.options" model="model.operations.fields.options"></options>
+        <app-options *ngIf="model.operations.fields.options" [model]="model.operations.fields.options"></app-options>
 
         <div *ngIf="hasOtherConfig()">
           <h3 class="section-title md-title">
             Configuration
           </h3>
 
-          <div *ngFor="(name, field) of getConfigFields()">
-            <app-operation-field [model]="model" details="field">
+          <div *ngFor="let nameAndField of getConfigFields()">
+            <app-operation-field [model]="model" details="nameAndField.field">
             </app-operation-field>
           </div>
         </div>
