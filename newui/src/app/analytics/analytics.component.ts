@@ -74,22 +74,10 @@ export class AnalyticsComponent implements OnInit {
     });
 
     // Hard code the other data I assume we will get when we load up the analytic
-    var operationNames = [
-      "Frequent Vehicles In Region",
-      "Frequent Vehicles In Region 2"
-    ];
-    var descriptions = ["First description", "Second description"];
-    var operation1 = {
-      fields: "some field"
-    };
-    var operation2 = {
-      fields: {
-        input: "some input",
-        inputB: "some other input"
-      }
-    };
-    var operations = ["operation1", "operation2"];
-    var parameters = ["to csv", "to csv"];
+    var operationNames = ["Frequent Vehicles In Region","Frequent Vehicles In Region 2"];
+    var descriptions = ["First description","Second description"];
+    var operations = ["operation1","operation2"];
+    var parameters = ["to csv, to csv"];
     var outputTypes = ["table", "table"];
     var icons = ["star", "directions_bus"]; //some names of icons from img folder
 
@@ -122,7 +110,7 @@ export class AnalyticsComponent implements OnInit {
 
   // load the operations
   reloadOperations = function() {
-    // this.operationService.reloadOperations(true).then
-    this.populateOperations();
+    // this.operationService.reloadOperations(true).then(this.populateOperations);
+    this.populateOperations()
   };
 }

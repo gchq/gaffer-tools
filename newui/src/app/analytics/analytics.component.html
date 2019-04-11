@@ -7,4 +7,11 @@
       <app-analytic [model]="analytic"></app-analytic>
     </div>
   </div>
-</mat-card>
+  <mat-card>
+    <div class="grid-container">
+      <div class="grid-item" *ngFor="let analytic of analytics">
+        <app-analytic [model]="analytic"></app-analytic>
+      </div>
+    </div>
+  </mat-card>
+</div>

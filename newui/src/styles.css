@@ -508,3 +508,19 @@ body {
   margin: 0;
   font-family: Arial, Helvetica, sans-serif;
 }
+
+.material-icons {
+  transform: scale(2);
+}
+
+a {
+  text-decoration: none;
+}
+
+.page {
+  text-align: center;
+}
+
+.routeActive {
+  font-weight: bold;
+}
