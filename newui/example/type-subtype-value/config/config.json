@@ -1,0 +1,40 @@
+{
+  "title": "TypeSubTypeValue Example",
+  "time": {
+    "filter": {
+      "class": "java.util.Date",
+      "unit": "millisecond",
+      "startProperty": "startDate",
+      "endProperty": "endDate"
+    }
+  },
+  "graph": {
+    "style": {
+      "edges": {
+        "BasicEdge": {
+          "line-color": "#00a8ff",
+          "target-arrow-color": "#00a8ff",
+          "text-outline-color": "#00a8ff"
+        }
+      },
+      "vertexTypes": {
+        "vertex": {
+          "style": {
+            "background-image": "app/img/material-icons/filter.svg",
+            "text-valign": "top"
+          },
+          "fieldOverrides": {
+            "type": {
+              "t1": {
+                "background-image": "app/img/material-icons/filter_1.svg"
+              },
+              "t2": {
+                "background-image": "app/img/material-icons/filter_2.svg"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

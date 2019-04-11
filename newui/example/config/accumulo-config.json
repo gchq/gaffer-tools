@@ -1,0 +1,14 @@
+{
+  "title": "Example",
+  "time": {
+    "filter": {
+      "class": "java.util.Date",
+      "unit": "millisecond",
+      "startProperty": "startDate",
+      "endProperty": "endDate"
+    }
+  },
+  "operationOptionKeys": {
+    "Option1 ": "gaffer.option.key1"
+  }
+}

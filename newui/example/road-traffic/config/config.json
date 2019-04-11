@@ -1,0 +1,129 @@
+{
+  "title": "Road Traffic Example",
+  "quickQuery": {
+    "description": "Run a 2 hop query",
+    "placeholder": "Enter a seed",
+    "operation": {
+      "class": "uk.gov.gchq.gaffer.operation.OperationChain",
+      "operations": [
+        {
+          "class": "uk.gov.gchq.gaffer.operation.impl.get.GetAdjacentIds",
+          "input": [
+            "${input}"
+          ]
+        },
+        {
+          "class": "uk.gov.gchq.gaffer.operation.impl.get.GetElements",
+          "view": {
+            "globalElements": [
+              {
+                "groupBy": []
+              }
+            ]
+          }
+        }
+      ]
+    }
+  },
+  "graph": {
+    "style": {
+      "edges": {
+        "RoadUse": {
+          "line-color": "#9C27B0",
+          "target-arrow-color": "#9C27B0",
+          "text-outline-color": "#9C27B0"
+        },
+        "JunctionLocatedAt": {
+          "line-color": "#F44336",
+          "target-arrow-color": "#F44336",
+          "text-outline-color": "#F44336"
+        },
+        "RoadHasJunction": {
+          "line-color": "#009688",
+          "target-arrow-color": "#009688",
+          "text-outline-color": "#009688"
+        },
+        "RegionContainsLocation": {
+          "line-color": "#FF9800",
+          "target-arrow-color": "#FF9800",
+          "text-outline-color": "#FF9800"
+        },
+        "LocationContainsRoad": {
+          "line-color": "#795548",
+          "target-arrow-color": "#795548",
+          "text-outline-color": "#795548"
+        }
+      },
+      "vertexTypes": {
+        "junction": {
+          "style": {
+            "background-image": "app/img/material-icons/call_split.svg",
+            "text-valign": "top"
+          }
+        },
+        "road": {
+          "style": {
+            "background-image": "app/img/material-icons/directions_car.svg",
+            "text-valign": "top"
+          }
+        },
+        "location": {
+          "style": {
+            "background-image": "app/img/material-icons/pin_drop.svg",
+            "text-valign": "top"
+          }
+        },
+        "region": {
+          "style": {
+            "background-image": "app/img/material-icons/location_searching.svg",
+            "text-valign": "top"
+          }
+        },
+        "coordinates": {
+          "style": {
+            "background-image": "app/img/material-icons/my_location.svg",
+            "text-valign": "top"
+          }
+        }
+      }
+    }
+  },
+  "time": {
+    "filter": {
+      "class": "java.util.Date",
+      "unit": "millisecond",
+      "startProperty": "startDate",
+      "endProperty": "endDate",
+      "presets": {
+        "Today": {
+          "offset": 0,
+          "unit": "day"
+        },
+        "Last week": {
+          "offset": -1,
+          "unit": "week"
+        },
+        "Last month": {
+          "offset": -1,
+          "unit": "month"
+        },
+        "2002": {
+          "date": "2002-01-01"
+        },
+        "2001": {
+          "date": "2001-01-01"
+        }
+      }
+    },
+    "properties": {
+      "startDate": {
+        "class": "java.util.Date",
+        "unit": "millisecond"
+      },
+      "endDate": {
+        "class": "java.util.Date",
+        "unit": "millisecond"
+      }
+    }
+  }
+}
