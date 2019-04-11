@@ -22,7 +22,7 @@ export class ParameterInputComponent implements OnInit {
     this.analytic = this.analyticsService.getAnalytic();
     console.log(this.analytic);
 
-    this.config.get().then(function(conf) {
+    this.config.get().subscribe(function(conf) {
       this.timeConfig = conf.time;
     });
   }
