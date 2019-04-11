@@ -11,8 +11,6 @@ import { TypesService } from "../gaffer/type.service";
 })
 @Injectable()
 export class PairBuilderComponent implements OnInit {
-  pairForm = {};
-
   constructor(
     private schema: SchemaService,
     private events: EventsService,

@@ -30,7 +30,7 @@
           title-class="layout-padding md-title section-title" parameters="model.selectedOperation.parameters">
         </app-parameter-form>
 
-        <!-- <options ng-if="model.selectedOperation.fields.options" model="model.fields.options"></options> -->
+        <app-options *ngIf="model.selectedOperation.fields.options" model="model.fields.options"></app-options>
 
         <div *ngIf="hasOtherConfig()">
           <h3 class="section-title md-title">

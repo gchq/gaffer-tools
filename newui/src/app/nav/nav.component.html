@@ -1,5 +1,5 @@
 <mat-sidenav-container class="sidenav-container">
-  <mat-sidenav #drawer class="sidenav" fixedInViewport="true"
+  <!-- <mat-sidenav #drawer class="sidenav" fixedInViewport="true"
     [attr.role]="(isHandset$ | async) ? 'dialog' : 'navigation'" [mode]="(isHandset$ | async) ? 'over' : 'side'"
     [opened]="!(isHandset$ | async)">
     <mat-toolbar>Menu</mat-toolbar>
@@ -9,15 +9,41 @@
       <a mat-list-item routerLinkActive="routeActive" routerLink="/results">Results</a>
       <a mat-list-item routerLinkActive="routeActive" routerLink="/about">About</a>
     </mat-nav-list>
-  </mat-sidenav>
+  </mat-sidenav> -->
   <mat-sidenav-content>
     <mat-toolbar color="primary">
+      <mat-toolbar-row>
 
-      <!-- <button type="button" aria-label="Toggle sidenav" mat-icon-button (click)="sidenav.toggle()">
+        <!-- <button type="button" aria-label="Toggle sidenav" mat-icon-button (click)="sidenav.toggle()">
         <mat-icon aria-label="Side nav toggle icon">menu</mat-icon>
       </button> -->
 
-      <span>Analytic UI</span>
+        <span>Analytic UI</span>
+      </mat-toolbar-row>
+
+      <mat-toolbar-row>
+
+        <!-- <mat-tab-group>
+          <mat-tab label="ANALYITCS" routerLinkActive="routeActive" routerLink="/analytics"></mat-tab>
+          <mat-tab label="PARAMETERS" routerLinkActive="routeActive" routerLink="/parameters"></mat-tab>
+          <mat-tab label="RESULTS" routerLinkActive="routeActive" routerLink="/results"></mat-tab>
+          <mat-tab label="ABOUT" routerLinkActive="routeActive" routerLink="/about"></mat-tab>
+        </mat-tab-group> -->
+
+        <!-- <mat-nav-list fxLayout="row">
+          <a mat-list-item routerLinkActive="routeActive" routerLink="/analytics">Analytics</a>
+          <a mat-list-item routerLinkActive="routeActive" routerLink="/parameters">Parameters</a>
+          <a mat-list-item routerLinkActive="routeActive" routerLink="/results">Results</a>
+          <a mat-list-item routerLinkActive="routeActive" routerLink="/about">About</a>
+        </mat-nav-list> -->
+
+        <nav mat-tab-nav-bar>
+          <a mat-tab-link style="color: white" *ngFor="let link of navLinks" [routerLink]="link.path" routerLinkActive
+            #rla="routerLinkActive" [active]="rla.isActive">
+            {{link.label}}
+          </a>
+        </nav>
+      </mat-toolbar-row>
 
     </mat-toolbar>
     <router-outlet></router-outlet>

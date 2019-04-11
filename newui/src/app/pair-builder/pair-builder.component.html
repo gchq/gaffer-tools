@@ -3,7 +3,7 @@
     <textarea matInput placeholder="Seed Pair" id="pairs-input" matTextareaAutosize matAutosizeMinRows=1
       matAutosizeMaxRows=5 name="seedPairInput" floatPlaceholder="never" [disabled]="usePrevious" [(ngModel)]="pairs"
       (blur)="addPairs()" placeholder="{{getPlaceHolder()}}"></textarea>
-    <div *ngIf="pairForm.seedPairInput.$error">
+    <div *ngIf="pairForm?.seedPairInput.$error">
       Your CSV is invalid
     </div>
   </mat-form-field>

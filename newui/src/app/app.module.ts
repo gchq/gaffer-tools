@@ -23,6 +23,7 @@ import { PairBuilderComponent } from "./pair-builder/pair-builder.component";
 import { SeedBuilderComponent } from "./seed-builder/seed-builder.component";
 import { OperationFieldComponent } from "./operation-field/operation-field.component";
 import { ParameterInputComponent } from "./parameter-input/parameter-input.component";
+import { OptionsComponent } from "./options/options.component";
 
 import { AnalyticsService } from "./analytics/analytics.service";
 import { OperationService } from "./gaffer/operation.service";
@@ -49,7 +50,8 @@ import { TypesService } from "./gaffer/type.service";
     PairBuilderComponent,
     SeedBuilderComponent,
     OperationFieldComponent,
-    ParameterInputComponent
+    ParameterInputComponent,
+    OptionsComponent
   ],
   imports: [
     BrowserModule,

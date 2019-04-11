@@ -3,7 +3,7 @@
     <textarea matInput placeholder="Seed" id="seedVertices" matTextareaAutosize matAutosizeMinRows=1
       matAutosizeMaxRows=5 name="multiSeedInput" floatPlaceholder="never" [disabled]="usePrevious"
       [(ngModel)]="seedVertices" (blur)="addSeeds()" placeholder="{{getPlaceHolder()}}"></textarea>
-    <div *ngIf="seedForm.multiSeedInput.$error">
+    <div *ngIf="seedForm?.multiSeedInput.$error">
       Your CSV is invalid
     </div>
   </mat-form-field>

@@ -1,0 +1,116 @@
+<div *ngIf="model" fxLayout="column">
+  <form>
+    <div *ngIf="!master">
+
+      <h4>Options</h4>
+
+
+      <div ng-repeat="option in model.visible track by key">
+        <div fxLayout="row">
+          <!-- simple strings -->
+          <mat-form-field *ngIf="!multiple && !autocomplete" flex class="no-vertical-margin">
+            <label>{{label}}</label>
+            <input [(ngModel)]="value">
+          </mat-form-field>
+          <!-- Multiple with autocompleted synchronous or asynchronous options -->
+          <!-- <mat-chips *ngIf="multiple && autocomplete" [(ngModel)]="value" mat-add-on-blur flex> -->
+          <!-- <mat-autocomplete *ngIf="autocomplete" placeholder="{{ label }}" mat-search-text="searchTerms[key]"
+              mat-items="value in getValues(option)">
+              <span mat-highlight-text="searchTerms[key]">{{ value }}</span>
+            </mat-autocomplete> -->
+          <!-- </mat-chips> -->
+          <!-- Multiple with no autocompletion -->
+          <!-- <mat-chips *ngIf="multiple && !autocomplete" [(ngModel)]="value" mat-add-on-blur flex>
+            <input type="text" *ngIf="!autocomplete" placeholder="{{ label }}">
+          </mat-chips> -->
+          <!-- single options with autocompletion -->
+          <mat-form-field flex *ngIf="autocomplete && !multiple">
+            <label>{{ label }}</label>
+            <!-- Synchronous -->
+            <mat-select flex *ngIf="autocomplete.options" [(ngModel)]="value">
+              <mat-option ng-value="value" ng-repeat="value in autocomplete.options">{{ value }}</mat-option>
+            </mat-select>
+            <!-- Asynchronous -->
+            <mat-select flex *ngIf="!autocomplete.options" mat-on-open="loadValues(option)" [(ngModel)]="value">
+              <mat-option ng-value="value" ng-repeat="value in presets[key]">{{ value }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+          <button mat-button ng-show="!isEmpty(value)" ng-class="{ 'icon-inline-with-input': !multiple}"
+            class="mat-icon-button" (click)="clearValue($index)">
+            <mat-icon>clear</mat-icon>
+            <!-- <mat-tooltip>clear value</mat-tooltip> -->
+          </button>
+          <button mat-button ng-show="isEmpty(value)" ng-class="{ 'icon-inline-with-input': !multiple}"
+            class="mat-icon-button" (click)="hideOption($index)">
+            <mat-icon>hide</mat-icon>
+            <!-- <mat-tooltip>hide option</mat-tooltip> -->
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div *ngIf="master">
+      <!-- <mat-subheader class="mat-no-sticky">Default operation options added to every operation chain</mat-subheader> -->
+      <mat-card>
+        <mat-list>
+          <mat-list-item class="mat-2-line" ng-repeat="option in model.visible track by key">
+            <div class="mat-list-item-text" flex="40">
+              <h3>{{label}}</h3>
+              <p>{{description}}</p>
+            </div>
+            <div fxLayout="row" class="padding-sides" flex>
+              <!-- simple strings -->
+              <mat-form-field *ngIf="!autocomplete && !multiple" flex>
+                <!-- aria-label="{{ label }}"  -->
+                <input [(ngModel)]="value" type="text">
+              </mat-form-field>
+              <!-- Multiple with autocompleted synchronous or asynchronous options -->
+              <!-- <mat-chips *ngIf="multiple && autocomplete" [(ngModel)]="value" mat-add-on-blur flex> -->
+              <!-- <mat-autocomplete aria-label="{{ label }}" mat-search-text="searchTerms[key]"
+                  mat-items="value in getValues(option)">
+                  <span mat-highlight-text="searchTerms[key]">{{ value }}</span>
+                </mat-autocomplete> -->
+              <!-- </mat-chips> -->
+              <!-- Multiple with no autocompletion -->
+              <!-- <mat-chips *ngIf="multiple && !autocomplete" [(ngModel)]="value" mat-add-on-blur flex>
+                <input type="text" aria-label="{{ label }}">
+              </mat-chips> -->
+              <!-- Synchronous single options -->
+              <mat-select *ngIf="autocomplete && !multiple && autocomplete.options" [(ngModel)]="value"
+                aria-label="{{ label }}" flex>
+                <mat-option ng-value="value" ng-repeat="value in autocomplete.options">{{ value }}</mat-option>
+              </mat-select>
+              <!-- Asynchronous single options -->
+              <mat-select *ngIf="autocomplete && !multiple && !autocomplete.options" [(ngModel)]="value"
+                aria-label="{{ label }}" mat-on-open="loadValues(option)" flex>
+                <mat-option ng-value="value" ng-repeat="value in presets[key]">{{ value }}</mat-option>
+              </mat-select>
+              <button mat-button ng-show="!isEmpty(value)" ng-class="{ 'icon-inline-with-input': !multiple}"
+                class="mat-icon-button" (click)="clearValue($index)">
+                <mat-icon>clear</mat-icon>
+                <!-- <mat-tooltip>clear value</mat-tooltip> -->
+              </button>
+              <button button mat-button ng-show="isEmpty(value)" ng-class="{ 'icon-inline-with-input': !multiple}"
+                class="mat-icon-button" (click)="hideOption($index)">
+                <mat-icon>hide</mat-icon>
+                <!-- <mat-tooltip>hide option</mat-tooltip> -->
+              </button>
+            </div>
+          </mat-list-item>
+        </mat-list>
+      </mat-card>
+    </div>
+
+    <div ng-class="{'padding-sides card-above-subheader': master}">
+      <!-- <mat-autocomplete ng-show="model.hidden.length > 0" mat-search-text="search" mat-selected-item="selectedOption"
+        mat-min-length="0" mat-require-match mat-autoselect mat-no-cache mat-item-text="label"
+        mat-selected-item-change="addOption()" mat-items="option in model.hidden | filter:search"
+        placeholder="Add an operation option">
+        <mat-item-template>
+          <span mat-highlight-text="search" mat-highlight-flags="^i">{{label}}</span>
+        </mat-item-template>
+      </mat-autocomplete> -->
+    </div>
+  </form>
+
+</div>

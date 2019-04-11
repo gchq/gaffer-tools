@@ -1,6 +1,7 @@
 import { Component, OnInit, Injectable } from "@angular/core";
 import { SchemaService } from "../gaffer/schema.service";
 import { EventsService } from "../dynamic-input/events.service";
+import { TypesService } from "../gaffer/type.service";
 @Component({
   selector: "app-seed-builder",
   templateUrl: "./seed-builder.component.html",
@@ -8,7 +9,11 @@ import { EventsService } from "../dynamic-input/events.service";
 })
 @Injectable()
 export class SeedBuilderComponent implements OnInit {
-  constructor(private schema: SchemaService, private events: EventsService) {}
+  constructor(
+    private schema: SchemaService,
+    private events: EventsService,
+    private types: TypesService
+  ) {}
 
   ngOnInit() {
     this.schema.get().subscribe(function(gafferSchema) {
@@ -44,7 +49,6 @@ export class SeedBuilderComponent implements OnInit {
    * @param {*} $routeParams The route params service
    */
   csv;
-  types;
   error;
   common;
   $routeParams;
