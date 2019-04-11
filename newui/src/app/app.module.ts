@@ -75,17 +75,6 @@ import { TypesService } from "./gaffer/type.service";
     TypesService,
     ErrorService
   ],
-  providers: [
-    AnalyticsService,
-    OperationService,
-    SchemaService,
-    OperationOptionsService,
-    ConfigService,
-    EventsService,
-    CommonService,
-    TypesService,
-    ErrorService
-  ],
   bootstrap: [AppComponent]
 })
 export class AppModule {

@@ -1,4 +1,5 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, Injectable } from "@angular/core";
+import { SchemaService } from '../gaffer/schema.service';
 
 export interface PeriodicElement {
   name: string;
@@ -21,10 +22,11 @@ const ELEMENT_DATA: PeriodicElement[] = [
   selector: "app-table",
   templateUrl: "./table.component.html"
 })
+@Injectable()
 export class TableComponent implements OnInit {
   displayedColumns: string[] = ["position", "name", "country", "population"];
   dataSource = ELEMENT_DATA;
-  constructor() {}
+  constructor(private schema: SchemaService) {}
 
   /**
    * Initialises the controller.
@@ -70,7 +72,6 @@ export class TableComponent implements OnInit {
 
   pagination = { limit: 50, page: 1 };
   sortType = undefined;
-  schema;
 
   groupColumnName = "GROUP";
   typeColumnName = "result type";

@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from "@angular/core";
+import { Component, OnInit, Input, Injectable } from "@angular/core";
 import { Router } from '@angular/router';
 import { AnalyticsService } from '../analytics.service';
 
@@ -7,12 +7,14 @@ import { AnalyticsService } from '../analytics.service';
   templateUrl: "./analytic.component.html",
   styleUrls: ["./analytic.component.css"]
 })
+@Injectable()
 export class AnalyticComponent implements OnInit {
   navigation;
   operationChain;
   @Input("model") model;
 
-  constructor(private router: Router, private analyticsService: AnalyticsService) {};
+  constructor(private router: Router,
+              private analyticsService: AnalyticsService) {};
 
   // Save the chosen analytic in the analytics service
   execute(analytic) {

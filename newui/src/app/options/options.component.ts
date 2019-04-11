@@ -1,5 +1,3 @@
-import { Component, OnInit } from "@angular/core";
-
 /*
  * Copyright 2018-2019 Crown Copyright
  *
