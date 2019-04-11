@@ -4,10 +4,9 @@
     [opened]="!(isHandset$ | async)">
     <mat-toolbar>Menu</mat-toolbar>
     <mat-nav-list>
-      <a mat-list-item routerLinkActive="routeActive" routerLink="/analytics">Analytics</a>
-      <a mat-list-item routerLinkActive="routeActive" routerLink="/parameters">Parameters</a>
-      <a mat-list-item routerLinkActive="routeActive" routerLink="/results">Results</a>
-      <a mat-list-item routerLinkActive="routeActive" routerLink="/about">About</a>
+      <a mat-list-item *ngFor="let link of navLinks" [routerLink]="link.path" routerLinkActive #rla="routerLinkActive">
+        {{link.label}}
+      </a>
     </mat-nav-list>
   </mat-sidenav> -->
   <mat-sidenav-content>
