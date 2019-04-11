@@ -16,14 +16,14 @@
 
 import { of, Observable, Observer } from 'rxjs';
 import { Injectable } from '@angular/core';
+import { cloneDeep } from 'lodash';
 
 import { ConfigService } from '../config/config.service';
-
-@Injectable()
 
 /**
  * This simple service stores and serves to the default operation options
  */ 
+@Injectable()
 export class OperationOptionsService {
     
     defaultOperationOptionsConfiguration = null;
@@ -35,14 +35,14 @@ export class OperationOptionsService {
      * @param {Object} newDefaults 
      */
     setDefaultConfiguration = function(newDefaults) {
-        this.defaultOperationOptionsConfiguration = angular.copy(newDefaults);   
+        this.defaultOperationOptionsConfiguration = cloneDeep(newDefaults);   
     }
 
     /**
      * Gets the default configuration for options components
      */
     getDefaultConfiguration = function() {
-        return angular.copy(this.defaultOperationOptionsConfiguration);
+        return cloneDeep(this.defaultOperationOptionsConfiguration);
     }
 
     /**

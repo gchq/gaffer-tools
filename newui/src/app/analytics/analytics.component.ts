@@ -84,7 +84,8 @@ export class AnalyticsComponent implements OnInit {
     var operation2 = { 
       fields: {
         input: 'some input',
-        inputB: 'some other input'
+        inputB: 'some other input',
+        view: 'some view'
       }
     }
     var operations = [

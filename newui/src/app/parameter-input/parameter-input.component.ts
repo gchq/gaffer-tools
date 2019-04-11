@@ -2,6 +2,7 @@ import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute } from '@angular/router';
 import { AnalyticComponent } from '../analytic/analytic.component';
 import { AnalyticsService } from '../analytics.service';
+import { ConfigService } from '../config/config.service';
 
 @Component({
   selector: "app-parameter-input",
@@ -10,13 +11,20 @@ import { AnalyticsService } from '../analytics.service';
 })
 export class ParameterInputComponent implements OnInit {
   analytic;
+  timeConfig;
   
-  constructor(private route: ActivatedRoute, private analyticsService: AnalyticsService) {}
+  constructor(private route: ActivatedRoute,
+              private analyticsService: AnalyticsService,
+              private config: ConfigService) {}
 
   ngOnInit() {
     //Get the analytic from the analyticsService
     this.analytic = this.analyticsService.getAnalytic();
     console.log(this.analytic);
+
+    this.config.get().then(function(conf) {
+      this.timeConfig = conf.time;
+    });
   }
 
   NAMED_VIEW_CLASS = "uk.gov.gchq.gaffer.data.elementdefinition.view.NamedView";
@@ -48,8 +56,7 @@ export class ParameterInputComponent implements OnInit {
 
   resetOperation = function(index) {
     var inputFlag = index === 0;
-    this.operations[index] = this.operationChain.createBlankOperation(
-      inputFlag
+    this.operations[index] = this.operationChain.createBlankOperation(inputFlag
     );
   };
 

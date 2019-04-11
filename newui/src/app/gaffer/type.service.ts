@@ -50,7 +50,7 @@ export class TypesService {
     }
 
     private defaultShortValue = function(value) {
-        return angular.toJson(value);
+        return JSON.stringify(value);
     }
 
     private mapShortValue = function(value) {

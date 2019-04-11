@@ -5,7 +5,7 @@
   <form name="operationChainForm">
     <div><p>The operation is {{ operation }}</p></div>
     <div fxLayout="column" ng-repeat="operation in operations" class="operation">
-      <app-query [model]="analytic" index="$index" time-config="timeConfig" on-delete="deleteOperation(index)"
+      <app-query [model]="analytic" index="$index" [timeConfig]="timeConfig" on-delete="deleteOperation(index)"
         on-reset="resetOperation(index)" on-execute="execute(op)" chain-length="operations.length">
       </app-query>
     </div>
