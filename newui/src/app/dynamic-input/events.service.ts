@@ -13,49 +13,47 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Injectable } from '@angular/core';
-import { CommonService } from './common.service';
+import { Injectable } from "@angular/core";
+import { CommonService } from "./common.service";
 
 @Injectable()
 export class EventsService {
+  events = {};
 
-    events = {};
+  constructor(private common: CommonService) {}
 
-    constructor(private common: CommonService) {}
-
-    subscribe = function(eventName, callback) {
-
-        if (typeof callback !== 'function') {
-            return;
-        }
-
-        if (!this.events[eventName]) {
-            this.events[eventName] = [];
-        }
-
-        if (!this.common.arrayContainsObject(this.events[eventName], callback)) {
-            this.events[eventName].push(callback);
-        }
+  subscribe = function(eventName, callback) {
+    if (typeof callback !== "function") {
+      return;
     }
 
-    broadcast = function(eventName, args) {
-        var listeners = this.events[eventName];
-        var fn;
-        for(var i in listeners) {
-            fn = listeners[i];
-            fn.apply(fn, args);
-        }
+    if (!this.events[eventName]) {
+      this.events[eventName] = [];
     }
 
-    unsubscribe = function(eventName, callback) {
-        if (!this.events[eventName]) {
-            return;
-        }
-
-        this.events[eventName] = this.events[eventName].filter(function(fn) {
-            if (fn !== callback) {
-                return fn;
-            }
-        })
+    if (!this.common.arrayContainsObject(this.events[eventName], callback)) {
+      this.events[eventName].push(callback);
     }
-};
+  };
+
+  broadcast = function(eventName, args) {
+    var listeners = this.events[eventName];
+    var fn;
+    for (var i in listeners) {
+      fn = listeners[i];
+      fn.apply(fn, args);
+    }
+  };
+
+  unsubscribe = function(eventName, callback) {
+    if (!this.events[eventName]) {
+      return;
+    }
+
+    this.events[eventName] = this.events[eventName].filter(function(fn) {
+      if (fn !== callback) {
+        return fn;
+      }
+    });
+  };
+}

@@ -28,30 +28,26 @@ export class AboutComponent implements OnInit {
   docs;
   restApi;
   properitesLoaded = false;
-  emailRecipients;
-  emailSubject;
 
   constructor() {}
 
-  sendFeedback = function() {
-    if (!this.emailRecipients || this.emailRecipients.length === 0) {
-      throw new Error(
-        "The UI config should contain email recipients to receive feedback from users. No recipients were specified"
-      );
-      return;
-    } else if (!(this.emailRecipients instanceof Array)) {
-      var type = typeof this.emailRecipients;
-      throw new Error(
-        'The UI configuration property "feedback.recipients" should contain an array, not a ' +
-          type
-      );
-      return;
-    }
+  sendFeedback = function(emailId, subject, message) {
+    // if (!emailId || emailId.length === 0) {
+    //   throw new Error(
+    //     "The UI config should contain email recipients to receive feedback from users. No recipients were specified"
+    //   );
+    //   return;
+    // } else if (!(emailId instanceof Array)) {
+    //   var type = typeof emailId;
+    //   throw new Error(
+    //     'The UI configuration property "feedback.recipients" should contain an array, not a ' +
+    //       type
+    //   );
+    //   return;
+    // }
     window.open(
-      "mailto:" +
-        this.emailRecipients.join("; ") +
-        ";?subject=" +
-        this.emailSubject
+      "mailto:" + emailId + "?subject=" + subject + "&body=" + message,
+      "_self"
     );
   };
 

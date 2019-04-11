@@ -1,0 +1,34 @@
+{
+  "edges": {
+    "BasicEdge": {
+      "description": "A basic edge with TypeSubTypeValue vertices",
+      "source": "vertex",
+      "destination": "vertex",
+      "directed": "true",
+      "properties": {
+        "startDate": "date.earliest",
+        "endDate": "date.latest",
+        "count": "count.long"
+      },
+      "groupBy": [
+        "startDate",
+        "endDate"
+      ]
+    }
+  },
+  "entities": {
+    "BasicEntity": {
+      "description": "A basic entity with a TypeSubTypeValue vertex",
+      "vertex": "vertex",
+      "properties": {
+        "startDate": "date.earliest",
+        "endDate": "date.latest",
+        "count": "count.long"
+      },
+      "groupBy": [
+        "startDate",
+        "endDate"
+      ]
+    }
+  }
+}

@@ -22,7 +22,6 @@ export class AnalyticsComponent implements OnInit {
   //   "frequent-vehicles-in-region"
   // ];
 
-
   //delete most of this left over from operation chain
   populateOperations = function(availableOperations) {
     this.availableOperations = [];
@@ -75,7 +74,6 @@ export class AnalyticsComponent implements OnInit {
     });
 
     // Hard code the other data I assume we will get when we load up the analytic
-
     var operationNames = ["Frequent Vehicles In Region","Frequent Vehicles In Region 2"];
     var descriptions = ["First description","Second description"];
     var operation1 = { 
@@ -100,7 +98,7 @@ export class AnalyticsComponent implements OnInit {
     var _i = 0;
     for (_i = 0; _i < 2; _i++) {
       //this.analytics[i].operation = availableOperations[i];
-      
+
       this.analytics[_i].operationName = operationNames[_i];
       this.analytics[_i].description = descriptions[_i];
       this.analytics[_i].operations = operations[_i];

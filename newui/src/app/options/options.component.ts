@@ -1,3 +1,5 @@
+import { Component, OnInit } from "@angular/core";
+
 /*
  * Copyright 2018-2019 Crown Copyright
  *
@@ -58,13 +60,13 @@ export class OptionsComponent implements OnInit {
                 this.model = currentDefaults;
                 return;
             }
-            // If the defaults are not yet set by the user, the component looks to the config to get the default operation options 
+            // If the defaults are not yet set by the user, the component looks to the config to get the default operation options
             this.config.get().then(function(conf) {
                 this.model = cloneDeep(conf.operationOptions);
                 if (this.model) {
                     if (this.model.visible === undefined) {
                         this.model.visible = [];
-                    } 
+                    }
                     if (this.model.hidden === undefined) {
                         this.model.hidden = [];
                     }
@@ -101,7 +103,7 @@ export class OptionsComponent implements OnInit {
                     }
                 }
             });
-        }        
+        }
     }
 
     /**
@@ -163,7 +165,7 @@ export class OptionsComponent implements OnInit {
     /**
      * Gets the available operation options. Used when operation options have preset values. It returns either a
      * promise of an array or an actual array (if they are static values set in the config).
-     * 
+     *
      * The values may be filtered using the searchTerm model.
      */
     getValues = function(option) {
@@ -202,12 +204,12 @@ export class OptionsComponent implements OnInit {
             return  deferredValues.promise;
 
         } else {
-            throw "Invalid operation options configuration. " + 
+            throw "Invalid operation options configuration. " +
             "Preset options must contain either static options or an operation to retrieve them";
         }
     }
 
-    loadValues = function(option) { 
+    loadValues = function(option) {
         var deferred = this.$q.defer();
 
         this.getValues(option).then(function(resolvedValues) {

@@ -1,5 +1,5 @@
 import { Component, OnInit, Input } from "@angular/core";
-import { SchemaService } from '../gaffer/schema.service';
+import { SchemaService } from "../gaffer/schema.service";
 
 @Component({
   selector: "app-input-manager",
@@ -7,7 +7,7 @@ import { SchemaService } from '../gaffer/schema.service';
   styleUrls: ["./input-manager.component.css"]
 })
 export class InputManagerComponent implements OnInit {
-  @Input('model') model;
+  @Input("model") model;
   events;
   results;
   common;

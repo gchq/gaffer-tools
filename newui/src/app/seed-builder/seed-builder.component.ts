@@ -1,8 +1,7 @@
 import { Component, OnInit, Injectable } from "@angular/core";
-import { SchemaService } from '../gaffer/schema.service';
-import { EventsService } from '../dynamic-input/events.service';
-import { TypesService } from '../gaffer/type.service';
-
+import { SchemaService } from "../gaffer/schema.service";
+import { EventsService } from "../dynamic-input/events.service";
+import { TypesService } from "../gaffer/type.service";
 @Component({
   selector: "app-seed-builder",
   templateUrl: "./seed-builder.component.html",

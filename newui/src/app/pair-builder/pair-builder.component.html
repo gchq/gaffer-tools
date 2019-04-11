@@ -1,13 +1,13 @@
 <div>
   <mat-form-field class="example-full-width" appearance="fill">
     <mat-label>Seed Pair</mat-label>
-    <textarea matInput 
-      id="pairs-input" 
-      rows="6" 
-      name="seedPairInput" 
-      floatPlaceholder="never" 
+    <textarea matInput
+      id="pairs-input"
+      rows="6"
+      name="seedPairInput"
+      floatPlaceholder="never"
       md-no-autogrow
-      [disabled]="usePrevious" 
+      [disabled]="usePrevious"
       [(ngModel)]="pairs"
       (blur)="addPairs()"
       placeholder="{{getPlaceHolder()}}">

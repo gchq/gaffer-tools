@@ -8,17 +8,35 @@
 
 </mat-toolbar>
 <mat-sidenav-container class="sidenav-container">
-  <mat-sidenav #drawer class="sidenav" [(opened)]="opened"
-    [attr.role]="(isHandset$ | async) ? 'dialog' : 'navigation'" [mode]="'over'">
+  <!-- <mat-sidenav #drawer class="sidenav" fixedInViewport="true"
+    [attr.role]="(isHandset$ | async) ? 'dialog' : 'navigation'" [mode]="(isHandset$ | async) ? 'over' : 'side'"
+    [opened]="!(isHandset$ | async)">
     <mat-toolbar>Menu</mat-toolbar>
     <mat-nav-list>
-      <a mat-list-item routerLinkActive="routeActive" routerLink="/analytics">Analytics</a>
-      <a mat-list-item routerLinkActive="routeActive" routerLink="/parameters">Parameters</a>
-      <a mat-list-item routerLinkActive="routeActive" routerLink="/results">Results</a>
-      <a mat-list-item routerLinkActive="routeActive" routerLink="/about">About</a>
+      <a mat-list-item *ngFor="let link of navLinks" [routerLink]="link.path" routerLinkActive #rla="routerLinkActive">
+        {{link.label}}
+      </a>
     </mat-nav-list>
-  </mat-sidenav>
+  </mat-sidenav> -->
   <mat-sidenav-content>
+    <mat-toolbar color="primary">
+      <mat-toolbar-row>
+        <!-- <button type="button" aria-label="Toggle sidenav" mat-icon-button (click)="sidenav.toggle()">
+        <mat-icon aria-label="Side nav toggle icon">menu</mat-icon>
+      </button> -->
+        <span>Analytic UI</span>
+      </mat-toolbar-row>
+
+      <mat-toolbar-row>
+        <nav mat-tab-nav-bar>
+          <a mat-tab-link style="color: white" *ngFor="let link of navLinks" [routerLink]="link.path" routerLinkActive
+            #rla="routerLinkActive" [active]="rla.isActive">
+            {{link.label}}
+          </a>
+        </nav>
+      </mat-toolbar-row>
+
+    </mat-toolbar>
     <router-outlet></router-outlet>
   </mat-sidenav-content>
 </mat-sidenav-container>

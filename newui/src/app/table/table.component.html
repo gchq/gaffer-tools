@@ -1,28 +1,64 @@
-<div class="page">
-  <div>
-    <h1>
-      Table
-    </h1>
-  </div>
-  <mat-card>
-    <div ng-cloak layout="column" layout-align=" stretch">
-      <table id="results-table" class="compact">
-        <thead>
-          <tr>
-            <th ng-repeat="col in data.columns">
-              {{col}}
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr
-            ng-repeat="result in (filteredResults = (data.results | orderBy:getValue() | filter:searchTerm)) | limitTo: pagination.limit: (pagination.page - 1) * pagination.limit">
-            <td ng-repeat="col in data.columns">
-              {{result[col]}}
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-  </mat-card>
+<div style="margin-left:110px">
+  <h1>Table</h1>
 </div>
+
+<mat-card>
+  <mat-table [dataSource]="dataSource">
+    <!-- Position Column -->
+    <ng-container matColumnDef="position">
+      <mat-header-cell *matHeaderCellDef>
+        <h3>No.</h3>
+      </mat-header-cell>
+      <mat-cell *matCellDef="let element"> {{element.position}} </mat-cell>
+    </ng-container>
+
+    <!-- Name Column -->
+    <ng-container matColumnDef="name">
+      <mat-header-cell *matHeaderCellDef>
+        <h3>Name</h3>
+      </mat-header-cell>
+      <mat-cell *matCellDef="let element"> {{element.name}} </mat-cell>
+    </ng-container>
+
+    <!-- Weight Column -->
+    <ng-container matColumnDef="population">
+      <mat-header-cell *matHeaderCellDef>
+        <h3>Population</h3>
+      </mat-header-cell>
+      <mat-cell *matCellDef="let element"> {{element.population}} </mat-cell>
+    </ng-container>
+
+    <!-- Symbol Column -->
+    <ng-container matColumnDef="country">
+      <mat-header-cell *matHeaderCellDef>
+        <h3>Country</h3>
+      </mat-header-cell>
+      <mat-cell *matCellDef="let element"> {{element.country}} </mat-cell>
+    </ng-container>
+
+    <mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></mat-header-row>
+    <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+  </mat-table>
+  <!-- <div ng-cloak layout="column" layout-align=" stretch">
+    <table id="results-table" class="compact">
+      <thead>
+        <tr>
+          <th ng-repeat="col in data.columns">
+            {{col}}
+          </th>
+          <th>
+            Header
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr
+          ng-repeat="result in (filteredResults = (data.results | orderBy:getValue() | filter:searchTerm)) | limitTo: pagination.limit: (pagination.page - 1) * pagination.limit">
+          <td ng-repeat="col in data.columns">
+            {{result[col]}}
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div> -->
+</mat-card>

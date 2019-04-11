@@ -1,5 +1,5 @@
-import { Component, OnInit } from "@angular/core";
-import { ActivatedRoute } from '@angular/router';
+import { Component, OnInit, Input } from "@angular/core";
+import { ActivatedRoute, Router } from '@angular/router';
 import { AnalyticComponent } from '../analytic/analytic.component';
 import { AnalyticsService } from '../analytics.service';
 import { ConfigService } from '../config/config.service';
@@ -12,7 +12,7 @@ import { ConfigService } from '../config/config.service';
 export class ParameterInputComponent implements OnInit {
   analytic;
   timeConfig;
-  
+
   constructor(private route: ActivatedRoute,
               private analyticsService: AnalyticsService,
               private config: ConfigService) {}

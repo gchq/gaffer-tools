@@ -14,73 +14,74 @@
  * limitations under the License.
  */
 
-import { Observable, Observer, of } from 'rxjs';
-import { merge } from 'lodash';
+import { Observable, Observer, of } from "rxjs";
+import { merge } from "lodash";
 
-import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { Injectable } from "@angular/core";
+import { HttpClient } from "@angular/common/http";
 
 @Injectable()
 export class ConfigService {
+  config;
+  defer = new Observable();
 
-    config;
-    defer = new Observable();
+  constructor(private http: HttpClient) {}
 
-    constructor(private http: HttpClient) {}
+  get = function() {
+    if (this.config) {
+      return of(this.config);
+    } else if (!this.defer) {
+      this.defer = Observable.create((observer: Observer<String>) => {});
+      this.load();
+    }
 
-    get = function() {
-        if (this.config) {
-            return of(this.config);
-        } else if (!this.defer) {
-            this.defer = Observable.create((observer: Observer<String>) => {});
-            this.load();
+    return this.defer;
+  };
+
+  set = function(conf) {
+    this.config = conf;
+  };
+
+  private load = function() {
+    this.http.get("config/defaultConfig.json").subscribe(
+      function(response) {
+        var defaultConfig = response.data;
+        if (defaultConfig === undefined) {
+          defaultConfig = {};
         }
+        var mergedConfig = defaultConfig;
+        this.http.get("config/config.json").subscribe(
+          function(response) {
+            var customConfig = response.data;
 
-        return this.defer;
-    }
-
-    set = function(conf) {
-        this.config = conf;
-    }
-
-    private load = function() {
-        this.http.get('config/defaultConfig.json')
-            .subscribe(function(response) {
-                var defaultConfig = response.data;
-                if(defaultConfig === undefined) {
-                    defaultConfig = {};
-                }
-                var mergedConfig = defaultConfig;
-                this.http.get('config/config.json')
-                    .subscribe(function(response) {
-                        var customConfig = response.data;
-
-                        if(customConfig === undefined) {
-                            customConfig = {};
-                        }
-                        if (!mergedConfig.restEndpoint && !customConfig.restEndpoint) {
-                            mergedConfig.restEndpoint = this.defaultRestEndpoint.get();
-                        }
-                        if('types' in mergedConfig && 'types' in customConfig) {
-                            merge(mergedConfig['types'], customConfig['types']);
-                            delete customConfig['types'];
-                        }
-                        if('operations' in mergedConfig && 'operations' in customConfig) {
-                            merge(mergedConfig['operations'], customConfig['operations']);
-                            delete customConfig['operations'];
-                        }
-                        merge(mergedConfig, customConfig);
-                        this.config = mergedConfig;
-                        this.defer.resolve(this.config);
-                    },
-                    function(err) {
-                        this.defer.throw(err);
-                        this.error.handle("Failed to load custom config", err);
-                });
-            },
-            function(err) {
-                this.defer.throw(err);
-                this.error.handle("Failed to load config", err);
-        });
-    }
+            if (customConfig === undefined) {
+              customConfig = {};
+            }
+            if (!mergedConfig.restEndpoint && !customConfig.restEndpoint) {
+              mergedConfig.restEndpoint = this.defaultRestEndpoint.get();
+            }
+            if ("types" in mergedConfig && "types" in customConfig) {
+              merge(mergedConfig["types"], customConfig["types"]);
+              delete customConfig["types"];
+            }
+            if ("operations" in mergedConfig && "operations" in customConfig) {
+              merge(mergedConfig["operations"], customConfig["operations"]);
+              delete customConfig["operations"];
+            }
+            merge(mergedConfig, customConfig);
+            this.config = mergedConfig;
+            this.defer.resolve(this.config);
+          },
+          function(err) {
+            this.defer.throw(err);
+            this.error.handle("Failed to load custom config", err);
+          }
+        );
+      },
+      function(err) {
+        this.defer.throw(err);
+        this.error.handle("Failed to load config", err);
+      }
+    );
+  };
 }

@@ -1,25 +1,24 @@
-<div ng-show="primaryInput" ng-cloak>
-  <mat-checkbox ng-if="!first" ng-model="usePreviousOutput" ng-change="onCheckboxChange()"
+<div [hidden]="primaryInput">
+  <mat-checkbox *ngIf="!first" [(ngModel)]="usePreviousOutput" (change)="onCheckboxChange()"
     aria-label="use output from previous operation">
     Use output from previous operation
   </mat-checkbox>
-  <div ng-switch="primaryInput.className" ng-show="!usePreviousOutput || secondaryInput">
-    <div
-      ng-switch-when="uk.gov.gchq.gaffer.commonutil.pair.Pair<uk.gov.gchq.gaffer.data.element.id.ElementId,uk.gov.gchq.gaffer.data.element.id.ElementId>[]">
-      <app-pair-builder model="model.inputPairs" use-previous="usePreviousOutput"></app-pair-builder>
+  <div [ngSwitch]="primaryInput.className" [hidden]="!usePreviousOutput || secondaryInput">
+    <div *ngSwitchCase="uk.gov.gchq.gaffer.commonutil.pair.Pair">
+      <app-pair-builder [(ngModel)]="[(ngModel)].inputPairs" use-previous="usePreviousOutput"></app-pair-builder>
     </div>
-    <div ng-switch-default>
-      <div fxLayout="row" layout-align="start center" ng-show="!usePreviousOutput">
+    <div *ngSwitchDefault>
+      <div fxLayout="row" fxLayoutAlign="start center" [hidden]="!usePreviousOutput">
         <h3 class="md-title no-margin">Add seeds</h3>
-        <button mat-button-raised id="use-results" ng-click="useResults()" ng-disabled="usePreviousOutput"
+        <button mat-raised-button color="warn" id="use-results" (click)="useResults()" [disabled]="usePreviousOutput"
           matTooltip="Populate input using your existing results">
           Use results
         </button>
       </div>
       <div fxLayout="row">
-        <app-seed-builder fxFlex="50%" model="model.input" use-previous="usePreviousOutput"
+        <app-seed-builder fxFlex="50%" [(ngModel)]="[(ngModel)].input" use-previous="usePreviousOutput"
           route-param="input" flex="grow"></app-seed-builder>
-        <app-seed-builder fxFlex="50%" model="model.inputB" ng-if="secondaryInput" route-param="inputB"
+        <app-seed-builder fxFlex="50%" [(ngModel)]="[(ngModel)].inputB" *ngIf="secondaryInput" route-param="inputB"
           flex="grow">
         </app-seed-builder>
       </div>

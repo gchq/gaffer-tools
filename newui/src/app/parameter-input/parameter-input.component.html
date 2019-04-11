@@ -1,22 +1,22 @@
-<div class="page">
-  <div>
-    <h1>Parameters</h1>
-  </div>
-  <form name="operationChainForm">
-    <div><p>The operation is {{ operation }}</p></div>
-    <div fxLayout="column" ng-repeat="operation in operations" class="operation">
-      <app-query [model]="analytic" index="$index" [timeConfig]="timeConfig" on-delete="deleteOperation(index)"
-        on-reset="resetOperation(index)" on-execute="execute(op)" chain-length="operations.length">
-      </app-query>
-    </div>
-    <mat-card fxFlexAlign="centre">
-      <mat-icon>expand_more</mat-icon>
-    </mat-card>
-  </form>
-  <div layout="row" layout-align="end">
-    <button mat-button-raised class="md-raised overlapping" ng-click="resetChain($event)">Reset operation
-      chain</button>
-    <button mat-button-raised class="md-primary md-raised overlapping" ng-disabled="!canExecute()" id="execute-chain"
-      ng-click="executeChain()">Execute operation chain</button>
-  </div>
+<div style="margin-left:110px">
+  <h1>Parameters for {{ operation }}</h1>
 </div>
+<form name="operationChainForm">
+  <mat-card>
+    <app-query [(ngModel)]="analytic" index="$index" time-config="timeConfig" on-delete="deleteOperation(index)"
+      on-reset="resetOperation(index)" on-execute="execute(op)" chain-length="operations.length">
+    </app-query>
+    <mat-divider></mat-divider>
+    <div style="margin-top:10px">
+      <mat-icon>expand_more</mat-icon>
+    </div>
+  </mat-card>
+  <div style="margin-right:110px" fxLayout="row" fxLayoutAlign="end none">
+    <button mat-raised-button color="primary" (click)="resetChain($event)">Reset
+      operation
+      chain</button>
+    <button mat-raised-button color="primary" [disabled]="!canExecute()" id="execute-chain" (click)="results()">Execute
+      operation
+      chain</button>
+  </div>
+</form>

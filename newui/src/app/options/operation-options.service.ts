@@ -22,20 +22,20 @@ import { ConfigService } from '../config/config.service';
 
 /**
  * This simple service stores and serves to the default operation options
- */ 
+ */
 @Injectable()
 export class OperationOptionsService {
-    
+
     defaultOperationOptionsConfiguration = null;
 
     constructor(private config: ConfigService) {}
 
     /**
      * Updates the default configuration for options components
-     * @param {Object} newDefaults 
+     * @param {Object} newDefaults
      */
     setDefaultConfiguration = function(newDefaults) {
-        this.defaultOperationOptionsConfiguration = cloneDeep(newDefaults);   
+        this.defaultOperationOptionsConfiguration = cloneDeep(newDefaults);
     }
 
     /**
@@ -46,7 +46,7 @@ export class OperationOptionsService {
     }
 
     /**
-     * Derives the operation options to be inserted into a query 
+     * Derives the operation options to be inserted into a query
      * from the default operation options configuration
      */
     getDefaultOperationOptions = function() {
@@ -55,9 +55,9 @@ export class OperationOptionsService {
 
 
     /**
-     * Asynchronous method which guarentees that correct default operation options, 
+     * Asynchronous method which guarentees that correct default operation options,
      * even if they have not yet been loaded. If they have already been set, it returns an
-     * asychrounous wrapper for the current options. If not, it gets the default from the 
+     * asychrounous wrapper for the current options. If not, it gets the default from the
      * configuration service.
      */
     getDefaultOperationOptionsAsync = function() {
@@ -77,7 +77,7 @@ export class OperationOptionsService {
 
     /**
      * Derives the operation options from any operation options configuration;
-     * @param {Object} operationOptionsConfiguration 
+     * @param {Object} operationOptionsConfiguration
      */
     extractOperationOptions = function(operationOptionsConfiguration) {
         if (operationOptionsConfiguration === undefined) {  // undefined configuration implies explicitly that no options were configured

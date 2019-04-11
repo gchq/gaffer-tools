@@ -1,12 +1,10 @@
-<div class="page">
-  <div>
-    <h1>Analytics</h1>
-  </div>
-  <mat-card>
-    <div class="grid-container">
-      <div class="grid-item" *ngFor="let analytic of analytics">
-        <app-analytic [model]="analytic"></app-analytic>
-      </div>
-    </div>
-  </mat-card>
+<div style="margin-left:110px">
+  <h1>Analytics</h1>
 </div>
+<mat-card>
+  <div class="grid-container">
+    <div class="grid-item" *ngFor="let analytic of analytics">
+      <app-analytic [model]="analytic"></app-analytic>
+    </div>
+  </div>
+</mat-card>

@@ -10,7 +10,7 @@ import { AnalyticsService } from '../analytics.service';
 export class AnalyticComponent implements OnInit {
   navigation;
   operationChain;
-  @Input('model') model;
+  @Input("model") model;
 
   constructor(private router: Router, private analyticsService: AnalyticsService) {};
 
