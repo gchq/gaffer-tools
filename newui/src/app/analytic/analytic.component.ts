@@ -1,5 +1,5 @@
 import { Component, OnInit, Input } from "@angular/core";
-import { Router } from '@angular/router';
+import { Router } from "@angular/router";
 
 @Component({
   selector: "app-analytic",
@@ -9,14 +9,14 @@ import { Router } from '@angular/router';
 export class AnalyticComponent implements OnInit {
   navigation;
   operationChain;
-  @Input('model') model;
+  @Input("model") model;
 
-  constructor(private router: Router) {};
+  constructor(private router: Router) {}
 
   // Save the chosen analytic in the operationChain service (should change to use analyticsService)
   execute(analytic) {
-    this.analyticService.setAnalytic(analytic);
-    this.router.navigate(['/parameters']);
+    // this.analyticService.setAnalytic(analytic);
+    this.router.navigate(["/parameters"]);
   }
 
   ngOnInit() {
