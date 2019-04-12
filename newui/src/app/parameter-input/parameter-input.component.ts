@@ -1,6 +1,6 @@
 import { Component, OnInit, Injectable } from "@angular/core";
 import { ActivatedRoute} from '@angular/router';
-import { AnalyticsService } from '../analytics.service';
+import { AnalyticsService } from '../analytics/analytics.service';
 import { ConfigService } from '../config/config.service';
 
 @Component({

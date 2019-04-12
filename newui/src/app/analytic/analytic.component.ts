@@ -1,6 +1,6 @@
 import { Component, OnInit, Input, Injectable } from "@angular/core";
 import { Router } from '@angular/router';
-import { AnalyticsService } from '../analytics.service';
+import { AnalyticsService } from '../analytics/analytics.service';
 
 @Component({
   selector: "app-analytic",
