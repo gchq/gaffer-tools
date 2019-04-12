@@ -8,6 +8,7 @@ import { SchemaService } from "../gaffer/schema.service";
 })
 export class InputManagerComponent implements OnInit {
   @Input("model") model;
+  @Input('primaryInput') primaryInput;
   events;
   results;
   common;

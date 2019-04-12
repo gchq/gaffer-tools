@@ -7,7 +7,7 @@
       <!-- first column -->
       <!-- Display the name of the operation and seed input box -->
       <div fxFlex="50%">
-        <app-input-manager first="isFirst()" primary-input="model.operations.fields.input"
+        <app-input-manager first="isFirst()" [primaryInput]="model.operations.fields.input"
           secondary-input="model.operations.fields.inputB" [model]="model.operations.fields">
         </app-input-manager>
         <div *ngIf="model.operations.fields.view">
