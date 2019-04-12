@@ -1,5 +1,6 @@
 import { Component, OnInit, Injectable } from "@angular/core";
 import { SchemaService } from '../gaffer/schema.service';
+import { EventsService } from '../dynamic-input/events.service';
 
 export interface PeriodicElement {
   name: string;
@@ -26,7 +27,8 @@ const ELEMENT_DATA: PeriodicElement[] = [
 export class TableComponent implements OnInit {
   displayedColumns: string[] = ["position", "name", "country", "population"];
   dataSource = ELEMENT_DATA;
-  constructor(private schema: SchemaService) {}
+  constructor(private schema: SchemaService,
+              private events: EventsService) {}
 
   /**
    * Initialises the controller.
@@ -62,8 +64,6 @@ export class TableComponent implements OnInit {
    * @param {*} csv For downloading results
    * @param {*} $mdDialog For creating chart visualisations
    */
-
-  events;
 
   resultsByType = [];
   filteredResults = [];
