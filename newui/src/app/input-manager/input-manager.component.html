@@ -4,7 +4,7 @@
     Use output from previous operation
   </mat-checkbox>
   <div [ngSwitch]="primaryInput.className" [hidden]="!usePreviousOutput || secondaryInput">
-    <div *ngSwitchCase="uk.gov.gchq.gaffer.commonutil.pair.Pair">
+    <div *ngSwitchCase="'uk.gov.gchq.gaffer.commonutil.pair.Pair<uk.gov.gchq.gaffer.data.element.id.ElementId,uk.gov.gchq.gaffer.data.element.id.ElementId>[]'">
       <app-pair-builder [(ngModel)]="[(ngModel)].inputPairs" use-previous="usePreviousOutput"></app-pair-builder>
     </div>
     <div *ngSwitchDefault>
