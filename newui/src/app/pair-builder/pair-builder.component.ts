@@ -56,7 +56,6 @@ export class PairBuilderComponent implements OnInit {
   $routeParams;
   $location;
   pairs = "";
-  model;
 
   onOperationUpdate = function() {
     this.recalculateSeeds(this.model);

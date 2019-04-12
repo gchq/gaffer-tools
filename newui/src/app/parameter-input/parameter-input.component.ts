@@ -16,7 +16,8 @@ export class ParameterInputComponent implements OnInit {
 
   constructor(private route: ActivatedRoute,
               private analyticsService: AnalyticsService,
-              private config: ConfigService) {}
+              private config: ConfigService,
+              ) {}
 
   ngOnInit() {
     //Get the analytic from the analyticsService
