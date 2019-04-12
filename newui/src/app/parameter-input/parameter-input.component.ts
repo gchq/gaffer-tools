@@ -1,4 +1,4 @@
-import { Component, OnInit, Injectable } from "@angular/core";
+import { Component, OnInit, Injectable, ViewChild } from "@angular/core";
 import { ActivatedRoute} from '@angular/router';
 import { AnalyticsService } from '../analytics/analytics.service';
 import { ConfigService } from '../config/config.service';
@@ -12,6 +12,7 @@ import { ConfigService } from '../config/config.service';
 export class ParameterInputComponent implements OnInit {
   analytic;
   timeConfig;
+  @ViewChild('operationChainForm') operationChainForm;
 
   constructor(private route: ActivatedRoute,
               private analyticsService: AnalyticsService,
