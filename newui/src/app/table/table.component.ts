@@ -34,7 +34,7 @@ export class TableComponent implements OnInit {
    * Loads any cached table preferences and subscribes to resultsUpdated events.
    */
   ngOnInit() {
-    this.schema.get().then(
+    this.schema.get().subscribe(
       function(gafferSchema) {
         this.schema = gafferSchema;
         this.loadFromCache();
