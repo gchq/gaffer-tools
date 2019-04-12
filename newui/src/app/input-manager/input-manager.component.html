@@ -4,8 +4,8 @@
     Use output from previous operation
   </mat-checkbox>
   <div [ngSwitch]="primaryInput.className" [hidden]="!usePreviousOutput || secondaryInput">
-    <div *ngSwitchCase="uk.gov.gchq.gaffer.commonutil.pair.Pair">
-      <app-pair-builder [(ngModel)]="[(ngModel)].inputPairs" use-previous="usePreviousOutput"></app-pair-builder>
+    <div *ngSwitchCase="'uk.gov.gchq.gaffer.commonutil.pair.Pair<uk.gov.gchq.gaffer.data.element.id.ElementId,uk.gov.gchq.gaffer.data.element.id.ElementId>[]'">
+      <app-pair-builder [model]="model.inputPairs" use-previous="usePreviousOutput"></app-pair-builder>
     </div>
     <div *ngSwitchDefault>
       <div fxLayout="row" fxLayoutAlign="start center" [hidden]="!usePreviousOutput">
@@ -16,9 +16,9 @@
         </button>
       </div>
       <div fxLayout="row">
-        <app-seed-builder fxFlex="50%" [(ngModel)]="[(ngModel)].input" use-previous="usePreviousOutput"
+        <app-seed-builder fxFlex="50%" [model]="model.input" use-previous="usePreviousOutput"
           route-param="input" flex="grow"></app-seed-builder>
-        <app-seed-builder fxFlex="50%" [(ngModel)]="[(ngModel)].inputB" *ngIf="secondaryInput" route-param="inputB"
+        <app-seed-builder fxFlex="50%" [model]="model.inputB" *ngIf="secondaryInput" route-param="inputB"
           flex="grow">
         </app-seed-builder>
       </div>

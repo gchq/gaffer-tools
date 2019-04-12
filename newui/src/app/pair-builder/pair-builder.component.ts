@@ -1,4 +1,4 @@
-import { Component, OnInit, Injectable } from "@angular/core";
+import { Component, OnInit, Injectable, Input } from "@angular/core";
 import { SchemaService } from '../gaffer/schema.service';
 import { EventsService } from '../dynamic-input/events.service';
 import { TypesService } from '../gaffer/type.service';
@@ -11,6 +11,8 @@ import { ErrorService } from '../dynamic-input/error.service';
 })
 @Injectable()
 export class PairBuilderComponent implements OnInit {
+
+  @Input('model') model;
 
   constructor(private schema: SchemaService,
               private events: EventsService,
