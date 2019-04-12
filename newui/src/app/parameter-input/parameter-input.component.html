@@ -3,7 +3,7 @@
 </div>
 <form name="operationChainForm">
   <mat-card>
-    <app-query [(ngModel)]="analytic" index="$index" time-config="timeConfig" on-delete="deleteOperation(index)"
+    <app-query [model]="analytic" index="$index" time-config="timeConfig" on-delete="deleteOperation(index)"
       on-reset="resetOperation(index)" on-execute="execute(op)" chain-length="operations.length">
     </app-query>
     <mat-divider></mat-divider>
