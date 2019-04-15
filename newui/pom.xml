@@ -27,7 +27,7 @@
     <properties>
         <standalone-ui-path>ui</standalone-ui-path>
         <standalone-rest-path>rest</standalone-rest-path>
-        <standalone-port>4200</standalone-port>
+        <standalone-port>8080</standalone-port>
         <selenium.version>3.4.0</selenium.version>
         <jasmine.plugin.version>2.2</jasmine.plugin.version>
         <jasmine.test.paths>**/*-spec.js</jasmine.test.paths>
