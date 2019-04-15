@@ -179,7 +179,7 @@
                             <path>/</path>
                             <port>${standalone-port}</port>
                             <webapps>
-                                <webapp>
+                                <!-- <webapp>
                                     <contextPath>/${standalone-ui-path}
                                     </contextPath>
                                     <groupId>uk.gov.gchq.gaffer</groupId>
@@ -187,7 +187,7 @@
                                     <version>${project.parent.version}</version>
                                     <type>war</type>
                                     <asWebapp>true</asWebapp>
-                                </webapp>
+                                </webapp> -->
                                 <webapp>
                                     <contextPath>/${standalone-rest-path}
                                     </contextPath>
