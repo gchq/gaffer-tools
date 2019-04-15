@@ -62,7 +62,7 @@ import { TypesService } from "./gaffer/type.service";
     BrowserAnimationsModule,
     MaterialModule,
     LayoutModule,
-    FlexLayoutModule
+    FlexLayoutModule,
   ],
   providers: [
     AnalyticsService,
