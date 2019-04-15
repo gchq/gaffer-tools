@@ -1,4 +1,5 @@
 import { Component, OnInit } from "@angular/core";
+import { OperationService } from '../gaffer/operation.service';
 
 @Component({
   selector: "app-analytics",
@@ -9,7 +10,7 @@ export class AnalyticsComponent implements OnInit {
   availableOperations;
   analytics = [[], []];
 
-  constructor() {}
+  constructor(private operationService: OperationService) {}
 
   ngOnInit() {
     //this.analytics = analytics.reloadAnalytics();
@@ -123,7 +124,7 @@ export class AnalyticsComponent implements OnInit {
 
   // load the operations
   reloadOperations = function() {
-    // this.operationService.reloadOperations(true).then(this.populateOperations);
-    this.populateOperations()
+    this.operationService.reloadOperations(true).subscribe(this.populateOperations);
+    //this.populateOperations()
   };
 }

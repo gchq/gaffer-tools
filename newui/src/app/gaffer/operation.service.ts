@@ -14,11 +14,16 @@
  * limitations under the License.
  */
 import { Injectable } from "@angular/core";
+import { HttpClient } from "@angular/common/http";
 import { OperationOptionsService } from "../options/operation-options.service";
+import { Observable, Observer } from 'rxjs';
+import { ConfigService } from '../config/config.service';
 
 @Injectable()
 export class OperationService {
-  constructor(private operationOptions: OperationOptionsService) {}
+  constructor(private operationOptions: OperationOptionsService,
+              private http: HttpClient,
+              private config: ConfigService) {}
 
   availableOperations;
   namedOpClass = "uk.gov.gchq.gaffer.named.operation.NamedOperation";
@@ -192,13 +197,13 @@ export class OperationService {
   };
 
   reloadOperations = function(loud) {
-    var deferred = this.$q.defer();
+    var deferred = Observable.create((observer: Observer<String>) => {});
 
-    this.config.get().then(function(conf) {
+    this.config.get().subscribe(function(conf) {
       var queryUrl = this.common.parseUrl(
         conf.restEndpoint + "/graph/operations/details"
       );
-      this.$http.get(queryUrl).then(
+      this.http.get(queryUrl).subscribe(
         function(response) {
           this.availableOperations = [];
           this.addOperations(response.data, conf);
@@ -223,7 +228,7 @@ export class OperationService {
               function(err) {
                 if (loud) {
                   this.error.handle("Failed to load named operations", err);
-                  deferred.reject(err);
+                  deferred.throw(err);
                 }
                 deferred.resolve(this.availableOperations);
               }
@@ -239,7 +244,7 @@ export class OperationService {
       );
     });
 
-    return deferred.promise;
+    return deferred;
   };
 
   ifOperationSupported = function(operationClass, onSupported, onUnsupported) {
@@ -248,7 +253,7 @@ export class OperationService {
         conf.restEndpoint + "/graph/operations"
       );
 
-      this.$http.get(queryUrl).then(
+      this.http.get(queryUrl).then(
         function(response) {
           var ops = response.data;
           if (ops.indexOf(operationClass) !== -1) {

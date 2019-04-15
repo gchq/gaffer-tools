@@ -23,7 +23,7 @@ import { HttpClient } from "@angular/common/http";
 @Injectable()
 export class ConfigService {
   config;
-  defer = new Observable();
+  defer = null;
 
   constructor(private http: HttpClient) {}
 
