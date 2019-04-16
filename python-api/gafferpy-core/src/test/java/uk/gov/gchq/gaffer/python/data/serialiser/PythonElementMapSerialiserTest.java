@@ -21,8 +21,6 @@ import org.junit.Test;
 import uk.gov.gchq.gaffer.data.element.Edge;
 import uk.gov.gchq.gaffer.data.element.Entity;
 import uk.gov.gchq.gaffer.data.element.id.DirectedType;
-import uk.gov.gchq.gaffer.exception.SerialisationException;
-import uk.gov.gchq.gaffer.jsonserialisation.JSONSerialiser;
 import uk.gov.gchq.gaffer.python.util.Constants;
 import uk.gov.gchq.gaffer.types.FreqMap;
 
@@ -30,9 +28,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 
-public class PythonElementJsonSerialiserTests {
+public class PythonElementMapSerialiserTest {
 
     private String source = "source";
     private String group = "Test";
@@ -50,7 +47,7 @@ public class PythonElementJsonSerialiserTests {
     public void testCanDefaultSerialiseEdge(){
 
         Edge edge = new Edge.Builder()
-                .group(group)
+                .group("Test")
                 .source(source)
                 .dest("dest")
                 .directed(true)
@@ -58,22 +55,20 @@ public class PythonElementJsonSerialiserTests {
                 .property("map", map)
                 .build();
 
-        String json = null;
+        Map<String, Object> edgeMap = new HashMap<>();
+        Map<String, Object> propertiesMap = new HashMap<>();
+        propertiesMap.put("count", count);
+        propertiesMap.put("map", map);
+        edgeMap.put(Constants.TYPE.getValue(), Constants.EDGE);
+        edgeMap.put(Constants.GROUP.getValue(), group);
+        edgeMap.put(Constants.SOURCE.getValue(), source);
+        edgeMap.put(Constants.DESTINATION.getValue(), "dest");
+        edgeMap.put(Constants.DIRECTED.getValue(), directedType);
+        edgeMap.put(Constants.PROPERTIES.getValue(), propertiesMap);
 
-        try {
-            json = new String(JSONSerialiser.serialise(edge));
-        } catch (SerialisationException e) {
-            e.printStackTrace();
-        }
+        PythonElementMapSerialiser serialiser = new PythonElementMapSerialiser();
 
-        PythonElementJsonSerialiser serialiser = new PythonElementJsonSerialiser();
-
-        assertNotNull(json);
-
-        Map<String, Object> serialised = new HashMap<>();
-        serialised.put(Constants.JSON.getValue(), json);
-
-        assertEquals(serialised, serialiser.serialise(edge));
+        assertEquals(edgeMap, serialiser.serialise(edge));
 
     }
 
@@ -87,22 +82,18 @@ public class PythonElementJsonSerialiserTests {
                 .property("map", map)
                 .build();
 
-        String json = null;
+        Map<String, Object> entityMap = new HashMap<>();
+        Map<String, Object> propertiesMap = new HashMap<>();
+        propertiesMap.put("count", count);
+        propertiesMap.put("map", map);
+        entityMap.put(Constants.TYPE.getValue(), Constants.ENTITY);
+        entityMap.put(Constants.GROUP.getValue(), group);
+        entityMap.put(Constants.VERTEX.getValue(), source);
+        entityMap.put(Constants.PROPERTIES.getValue(), propertiesMap);
 
-        try {
-            json = new String(JSONSerialiser.serialise(entity));
-        } catch (SerialisationException e) {
-            e.printStackTrace();
-        }
+        PythonElementMapSerialiser serialiser = new PythonElementMapSerialiser();
 
-        PythonElementJsonSerialiser serialiser = new PythonElementJsonSerialiser();
-
-        assertNotNull(json);
-
-        Map<String, Object> serialised = new HashMap<>();
-        serialised.put(Constants.JSON.getValue(), json);
-
-        assertEquals(serialised, serialiser.serialise(entity));
+        assertEquals(entityMap, serialiser.serialise(entity));
 
     }
 }

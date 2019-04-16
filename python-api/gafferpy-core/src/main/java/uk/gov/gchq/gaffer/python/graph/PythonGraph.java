@@ -34,15 +34,19 @@ import uk.gov.gchq.gaffer.python.data.PythonIterator;
 import uk.gov.gchq.gaffer.python.data.serialiser.PythonSerialiser;
 import uk.gov.gchq.gaffer.python.data.serialiser.config.PythonSerialiserConfig;
 import uk.gov.gchq.gaffer.python.util.Constants;
+import uk.gov.gchq.gaffer.python.util.UtilFunctions;
 import uk.gov.gchq.gaffer.store.Store;
 import uk.gov.gchq.gaffer.store.StoreProperties;
 import uk.gov.gchq.gaffer.store.schema.Schema;
 import uk.gov.gchq.gaffer.user.User;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Files;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -52,96 +56,82 @@ import java.util.Map;
 
 public final class PythonGraph {
 
-    private Graph graph;
+
     private static final Logger LOGGER = LoggerFactory.getLogger(PythonGraph.class);
+
     private PythonSerialiserConfig pythonSerialisers = null;
+    private Graph graph;
+    private User user;
+    private Schema schema;
+    private GraphConfig graphConfig;
+    private StoreProperties storeProperties;
 
-    public PythonGraph(final Schema schema, final GraphConfig graphConfig, final StoreProperties storeProperties) {
-        buildGraph(schema, graphConfig, storeProperties);
-    }
-
-    public PythonGraph(final InputStream schemaConfig, final InputStream graphConfig, final InputStream storeProperties) {
-
-        Schema schema = null;
-        GraphConfig config = null;
-        StoreProperties properties = null;
-
+    /**
+     * @param user created user object inorder to run queries against a prebuilt graph
+     * @param schemaConfig passes in the schema configuration file
+     * @param graphConfig passes in the graph configuration file
+     * @param storeProperties passes in the store properties
+     */
+    private PythonGraph(final User user, final InputStream schemaConfig, final InputStream graphConfig, final InputStream storeProperties) {
+        this.user = user;
         try {
-            schema = new Schema.Builder()
+            this.schema = new Schema.Builder()
                     .json(schemaConfig)
                     .build();
-            config = new GraphConfig.Builder()
+
+            this.graphConfig = new GraphConfig.Builder()
                     .json(graphConfig)
                     .build();
-            properties = StoreProperties.loadStoreProperties(storeProperties);
+
+            this.storeProperties = StoreProperties.loadStoreProperties(storeProperties);
         } catch (final SchemaException e) {
             LOGGER.debug(e.getMessage());
         }
-
-        buildGraph(schema, config, properties);
+        buildGraph();
     }
 
-    @Deprecated
-    public PythonGraph(final String schemaPath, final String configPath, final String storePropertiesPath) {
-
-        Schema schema = null;
-        GraphConfig config = null;
-        StoreProperties storeProperties = null;
-
-        try {
-            schema = Schema.fromJson(new FileInputStream(new File(schemaPath)));
-            config = new GraphConfig.Builder()
-                    .json(new FileInputStream(new File(configPath)))
-                    .build();
-            storeProperties = StoreProperties.loadStoreProperties(new FileInputStream(new File(storePropertiesPath)));
-        } catch (final FileNotFoundException | SchemaException e) {
-            LOGGER.debug(e.getMessage());
-        }
-        buildGraph(schema, config, storeProperties);
-    }
-
-    private void buildGraph(final Schema schema, final GraphConfig graphConfig, final StoreProperties storeProperties) {
-
-        if (schema == null || graphConfig == null || storeProperties == null) {
-            throw new IllegalStateException("schema, config or storeproperties hasn't worked");
+    private void buildGraph() {
+        if (this.getSchema() == null || this.getGraphConfig() == null || this.getStoreProperties() == null) {
+            throw new IllegalStateException("Schema, Graph Config or Store Properties hasn't or couldn't be found");
         }
 
-        Graph mGraph = new Graph.Builder()
-                .addSchema(schema)
-                .config(graphConfig)
-                .storeProperties(storeProperties)
+        setPythonSerialisers(this.getStoreProperties());
+        this.graph = new Graph.Builder()
+                .addSchema(this.getSchema())
+                .config(this.getGraphConfig())
+                .storeProperties(this.getStoreProperties())
                 .build();
-
-        setPythonSerialisers(storeProperties);
-        this.setGraph(mGraph);
-
     }
 
     public Graph getGraph() {
         return graph;
     }
 
-    private void setGraph(final Graph graph) {
-        this.graph = graph;
+    private User getUser() {
+        return user;
     }
 
+    private Schema getSchema() {
+        return schema;
+    }
 
-    public Object execute(final String opJson, final String userJson) {
+    private GraphConfig getGraphConfig() {
+        return graphConfig;
+    }
 
-        /*
-        TODO:
-        fix this so that it's more like a registry of handlers and has more flexibility and extensibility
-        there's a dependency here on hadoop configuration which is only really needed for the pyspark stuff
-         */
+    private StoreProperties getStoreProperties() {
+        return storeProperties;
+    }
+
+    public Object execute(final String opJson) {
+
         LOGGER.info("received operation : {}", opJson);
-        LOGGER.info("received user : {}", userJson);
+        LOGGER.info("received user : {}", this.getUser().getUserId());
 
         Operation operation = null;
-        User user = null;
 
         try {
             operation = JSONSerialiser.deserialise(opJson, Operation.class);
-            user = JSONSerialiser.deserialise(userJson, User.class);
         } catch (final SerialisationException e) {
             LOGGER.error(e.getMessage());
         }
@@ -152,7 +142,7 @@ public final class PythonGraph {
 
             LOGGER.info("executing Output operation");
             try {
-                result = graph.execute((Output) operation, user);
+                result = graph.execute((Output) operation, this.getUser());
             } catch (final OperationException e) {
                 LOGGER.error(e.getMessage());
             }
@@ -192,7 +182,6 @@ public final class PythonGraph {
         }
 
         return result;
-
     }
 
     private void setPythonSerialisers(final StoreProperties storeProperties) {
@@ -240,8 +229,6 @@ public final class PythonGraph {
         }
     }
 
-
-
     private Store getStore() {
         return Store.createStore(graph.getGraphId(), graph.getSchema(), graph.getStoreProperties());
     }
@@ -272,7 +259,63 @@ public final class PythonGraph {
         return keyPackageClassName;
     }
 
+    public static class Builder {
 
+        private User user;
 
+        private InputStream graphConfig;
+        private InputStream schemaConfig;
+        private InputStream storeProperties;
 
+        public PythonGraph build() {
+            return new PythonGraph(
+                    this.user, this.schemaConfig, this.graphConfig, this.storeProperties
+            );
+        }
+
+        public Builder graphConfig(final byte[] graphConfig) {
+            this.graphConfig = new ByteArrayInputStream(graphConfig);
+            return this;
+        }
+
+        public Builder schemaConfig(final byte[] schemaConfig) {
+            this.schemaConfig = new ByteArrayInputStream(schemaConfig);
+            return this;
+        }
+
+        public Builder storeProperties(final byte[] storeProperties) {
+            this.storeProperties = new ByteArrayInputStream(storeProperties);
+            return this;
+        }
+
+        public Builder graphConfig(final String graphConfigPath) {
+            this.graphConfig = new ByteArrayInputStream(fileToBytes(graphConfigPath));
+            return this;
+        }
+
+        public Builder schemaConfig(final String schemaConfigPath) {
+            this.schemaConfig = new ByteArrayInputStream(fileToBytes(schemaConfigPath));
+            return this;
+        }
+
+        public Builder storeProperties(final String storePropertiesPath) {
+            this.storeProperties = new ByteArrayInputStream(fileToBytes(storePropertiesPath));
+            return this;
+        }
+
+        public Builder user(final User user) {
+            this.user = user;
+            return this;
+        }
+
+        private byte[] fileToBytes(final String filePath) {
+            byte[] bytes = null;
+            try {
+                bytes = Files.readAllBytes(new File(new UtilFunctions().loadFile(filePath)).toPath());
+            } catch (final IOException e) {
+                LOGGER.error(e.getMessage());
+            }
+            return bytes;
+        }
+    }
 }

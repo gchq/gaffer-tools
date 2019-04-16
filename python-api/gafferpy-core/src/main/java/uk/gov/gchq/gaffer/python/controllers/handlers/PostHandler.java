@@ -23,24 +23,31 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import uk.gov.gchq.gaffer.python.controllers.SessionManager;
+import uk.gov.gchq.gaffer.python.controllers.entities.SecureUser;
+import uk.gov.gchq.gaffer.python.controllers.services.PropertiesService;
 import uk.gov.gchq.gaffer.python.session.GafferSession;
 import uk.gov.gchq.gaffer.python.util.exceptions.NoPortsAvailableException;
-import uk.gov.gchq.gaffer.python.util.exceptions.ServerNullException;
+import uk.gov.gchq.gaffer.user.User;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.InetAddress;
-import java.net.UnknownHostException;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
+import java.util.List;
 
 public class PostHandler implements HttpHandler {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SessionManager.class);
 
-    private String user;
-    private String roles;
+    private static final PropertiesService PROPERTIES_SERVICE = new PropertiesService();
+
+    private String username;
+    private List<String> dataRoles;
+    private List<String> opRoles;
     private String token;
 
     @Override
@@ -68,36 +75,48 @@ public class PostHandler implements HttpHandler {
                     setUser(lines[1]);
                     object.addProperty("user", getUser());
                     break;
-                case "roles":
-                    setRoles(lines[1]);
-                    object.addProperty("roles", getRoles());
+                case "opAuths":
+                    setOpRoles(toArray(lines[1]));
+                    object.addProperty("opAuths", getOpRoles().toString());
+                    break;
+                case "dataAuths":
+                    setDataRoles(toArray(lines[1]));
+                    object.addProperty("dataAuths", getDataRoles().toString());
                     break;
                 case "token":
                     setToken(lines[1]);
                     object.addProperty("token", getToken());
                     break;
                 default:
-                    LOGGER.debug("WARNING: Additional parameters found: {}", lines[1]);
+                    LOGGER.debug("WARNING: Additional parameters found {} with values: {}", lines[0], lines[1]);
             }
         }
 
-        GafferSession session = null;
-
         try {
-            session = createSecureSession(getToken());
+            User user;
+            GafferSession session;
+
+            if (PROPERTIES_SERVICE.isSsl().equalsIgnoreCase("true")) {
+                user = new SecureUser(this.getUser(), this.getOpRoles(), this.getDataRoles(), this.getToken());
+                session = SessionManager.getInstance().sessionFactory(InetAddress.getLocalHost(), ((SecureUser) user).getToken(), user);
+            } else {
+                user = new User.Builder()
+                        .dataAuths(this.getDataRoles())
+                        .userId(this.getUser())
+                        .opAuths(this.getOpRoles())
+                        .build();
+
+                session = SessionManager.getInstance().sessionFactory(InetAddress.getLocalHost(), user);
+            }
+
             session.run();
             if (session.getStatusCode() == 1) {
                 object.addProperty("address", session.getAddress().toString());
                 object.addProperty("portNumber", session.getPortNumber());
-            } else {
-                throw new ServerNullException("Couldn't start server");
             }
-        } catch (final ServerNullException e) {
-            LOGGER.error(e.getMessage());
         } catch (final NoPortsAvailableException e) {
             LOGGER.error(e.getMessage());
         }
-
 
 
         String payload = object.toString();
@@ -111,19 +130,19 @@ public class PostHandler implements HttpHandler {
     }
 
     private String getUser() {
-        return user;
+        return username;
     }
 
     private void setUser(final String user) {
-        this.user = user;
+        this.username = user;
     }
 
-    private String getRoles() {
-        return roles;
+    private List<String> getOpRoles() {
+        return opRoles;
     }
 
-    private void setRoles(final String roles) {
-        this.roles = roles;
+    private void setOpRoles(final List<String> roles) {
+        this.opRoles = roles;
     }
 
     private String getToken() {
@@ -134,12 +153,19 @@ public class PostHandler implements HttpHandler {
         this.token = token;
     }
 
-    private GafferSession createSecureSession(final String auth) throws UnknownHostException, NoPortsAvailableException {
-        return SessionManager.getInstance().sessionFactory(InetAddress.getLocalHost(), auth);
+    private List<String> getDataRoles() {
+        return dataRoles;
     }
 
-    private GafferSession createUnSecureSession() throws UnknownHostException, NoPortsAvailableException {
-        return SessionManager.getInstance().sessionFactory(InetAddress.getLocalHost());
+    private void setDataRoles(final List<String> dataRoles) {
+        this.dataRoles = dataRoles;
     }
 
+
+    private List<String> toArray(final String list) {
+        String[] roles  = list.split(",");
+        List<String> temp = new ArrayList<>();
+        Collections.addAll(temp, roles);
+        return temp;
+    }
 }

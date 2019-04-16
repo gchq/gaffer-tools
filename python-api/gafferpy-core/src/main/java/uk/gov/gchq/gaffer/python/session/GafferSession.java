@@ -20,12 +20,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import py4j.GatewayServer;
 
+import uk.gov.gchq.gaffer.python.controllers.services.PropertiesService;
 import uk.gov.gchq.gaffer.python.graph.PythonGraph;
 import uk.gov.gchq.gaffer.python.util.SessionCounter;
 import uk.gov.gchq.gaffer.python.util.exceptions.ServerNullException;
+import uk.gov.gchq.gaffer.user.User;
 
-import java.io.ByteArrayInputStream;
 import java.net.InetAddress;
+import java.util.HashMap;
 
 /**
  * A GafferSession starts a Py4j gateway server process and has methods for constructing Gaffer graphs that can be called from Python
@@ -34,39 +36,29 @@ public final class GafferSession implements Runnable {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(GafferSession.class);
 
+    private static PropertiesService service = new PropertiesService();
+
     private InetAddress address;
     private int portNumber;
     private GatewayServer server;
     private int statusCode = 0;
     private String authToken;
+    private User user;
 
-    /**
-     * @param address Custom address for network
-     * @param portNumber custom port number for multiple access on network
-     * this is designed to be unsecured access point to the JVM
-     */
-    public GafferSession(final InetAddress address, final int portNumber) {
-        this.setAddress(address);
-        this.setPortNumber(portNumber);
-
-        this.server = new GatewayServer.GatewayServerBuilder()
-                .entryPoint(this)
-                .javaAddress(this.getAddress())
-                .javaPort(this.getPortNumber())
-                .callbackClient(this.portNumber + 1, this.getAddress())
-                .build();
-    }
+    private HashMap<String, PythonGraph> allGraphs = new HashMap<>();
 
     /**
      * @param address custom address on network
      * @param portNumber custom port number for multiple access on network
      * @param authToken for authentication on to the JVM
+     * @param user provides a user to the graph so that operations can be executed with user mascaraing as someone else
      * this is designed to be the secure access for the JVM
      */
-    public GafferSession(final InetAddress address, final int portNumber, final String authToken) {
-        this.setAddress(address);
-        this.setPortNumber(portNumber);
-        this.setAuthToken(authToken);
+    private GafferSession(final InetAddress address, final int portNumber, final String authToken, final User user) {
+        this.address = address;
+        this.portNumber = portNumber;
+        this.authToken = authToken;
+        this.user = user;
 
         this.server = new GatewayServer.GatewayServerBuilder()
                 .entryPoint(this)
@@ -81,32 +73,16 @@ public final class GafferSession implements Runnable {
         return this.statusCode;
     }
 
-    private void setStatusCode(final int statusCode) {
-        this.statusCode = statusCode;
-    }
-
     public InetAddress getAddress() {
         return address;
-    }
-
-    private void setAddress(final InetAddress address) {
-        this.address = address;
     }
 
     public int getPortNumber() {
         return portNumber;
     }
 
-    private void setPortNumber(final int portNumber) {
-        this.portNumber = portNumber;
-    }
-
     public String getAuthToken() {
         return authToken;
-    }
-
-    private void setAuthToken(final String authToken) {
-        this.authToken = authToken;
     }
 
     private GatewayServer getServer() throws ServerNullException {
@@ -117,10 +93,6 @@ public final class GafferSession implements Runnable {
         }
     }
 
-    public void setServer(final GatewayServer server) {
-        this.server = server;
-    }
-
     /**
      * @param schemaPath path to graph schema
      * @param configPath path to graph config
@@ -128,9 +100,35 @@ public final class GafferSession implements Runnable {
      * @return PythonGraph reference back to python
      */
     public PythonGraph getPythonGraph(final byte[] schemaPath, final byte[] configPath, final byte[] storePropertiesPath) {
-        return new PythonGraph(new ByteArrayInputStream(schemaPath),
-                new ByteArrayInputStream(configPath),
-                new ByteArrayInputStream(storePropertiesPath));
+        return new PythonGraph.Builder()
+                .storeProperties(storePropertiesPath)
+                .schemaConfig(schemaPath)
+                .graphConfig(configPath)
+                .build();
+    }
+
+    public HashMap<String, PythonGraph> getAllPythonGraphs() {
+        return allGraphs;
+    }
+
+    public PythonGraph getGraphById(final String id) {
+
+        PythonGraph graph = this.allGraphs.get(id);
+
+        if (graph != null) {
+            return graph;
+        }
+
+        graph = new PythonGraph.Builder()
+                .user(this.user)
+                .graphConfig(service.getGraphConfig())
+                .schemaConfig(service.getSchemaPath())
+                .storeProperties(service.getStoreProperties())
+                .build();
+
+        this.allGraphs.put(id, graph);
+
+        return graph;
     }
 
     /**
@@ -141,7 +139,7 @@ public final class GafferSession implements Runnable {
         try {
             Runtime.getRuntime().addShutdownHook(new ServerShutDownHook());
             this.getServer().start();
-            this.setStatusCode(1);
+            this.statusCode = 1;
             SessionCounter.getInstance().increment();
             LOGGER.info("Gaffer Session Started");
             LOGGER.info("Gaffer Session address = {}", this.getServer().getAddress());
@@ -156,13 +154,16 @@ public final class GafferSession implements Runnable {
      * Stops the server gracefully
      */
     public void stop() throws ServerNullException {
-        setStatusCode(-1);
+        this.statusCode = -1;
         this.getServer().shutdown();
         SessionCounter.getInstance().decrement();
         LOGGER.info("Gaffer Session interrupted");
         LOGGER.info("Gaffer Session shutting down - Code: {}", getStatusCode());
     }
 
+    public User getUser() {
+        return user;
+    }
 
     private class ServerShutDownHook extends Thread { // killing the thread also handles shutdown
         @Override
@@ -172,6 +173,38 @@ public final class GafferSession implements Runnable {
             } catch (final ServerNullException e) {
                 GafferSession.LOGGER.error(e.getMessage());
             }
+        }
+    }
+
+    public static class Builder {
+
+        private InetAddress address;
+        private int portNumber;
+        private String authToken;
+        private User user;
+
+        public GafferSession build() {
+            return new GafferSession(address, portNumber, authToken, user);
+        }
+
+        public Builder address(final InetAddress address) {
+            this.address = address;
+            return this;
+        }
+
+        public Builder portNumber(final int portNumber) {
+            this.portNumber = portNumber;
+            return this;
+        }
+
+        public Builder authToken(final String authToken) {
+            this.authToken = authToken;
+            return this;
+        }
+
+        public Builder user(final User user) {
+            this.user = user;
+            return this;
         }
     }
 }

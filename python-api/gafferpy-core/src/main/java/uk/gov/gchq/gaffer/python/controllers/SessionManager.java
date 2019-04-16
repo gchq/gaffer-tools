@@ -24,8 +24,10 @@ import uk.gov.gchq.gaffer.python.util.exceptions.NoPortsAvailableException;
 import uk.gov.gchq.gaffer.python.util.exceptions.PortInUseException;
 import uk.gov.gchq.gaffer.python.util.exceptions.PortNotInRangeException;
 import uk.gov.gchq.gaffer.python.util.exceptions.ServerNullException;
+import uk.gov.gchq.gaffer.user.User;
 
 import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -34,9 +36,17 @@ public final class SessionManager {
 
     private static final int DEFAULT_PORT = 25333;
 
-    private static final InetAddress DEFAULT_ADDRESS = InetAddress.getLoopbackAddress();
-
     private static final Logger LOGGER = LoggerFactory.getLogger(SessionManager.class);
+
+    private static InetAddress defaultAddress;
+
+    static {
+        try {
+            defaultAddress = InetAddress.getByName(InetAddress.getLocalHost().getHostAddress());
+        } catch (final UnknownHostException e) {
+            LOGGER.error(e.getLocalizedMessage());
+        }
+    }
 
     private static SessionManager session = null;
 
@@ -60,13 +70,22 @@ public final class SessionManager {
             throw new PortInUseException("Cannot use this port as it currently being used by another session");
         }
 
-        GafferSession built = new GafferSession(DEFAULT_ADDRESS, DEFAULT_PORT);
+        GafferSession built = new GafferSession.Builder()
+                .address(defaultAddress)
+                .portNumber(DEFAULT_PORT)
+                .build();
+
         this.addSession(built);
         return built;
     }
 
     public GafferSession sessionFactory(final InetAddress address) throws NoPortsAvailableException {
-        GafferSession built = new GafferSession(address, generatePortNumber());
+
+        GafferSession built = new GafferSession.Builder()
+                .address(address)
+                .portNumber(generatePortNumber())
+                .build();
+
         this.addSession(built);
         return built;
     }
@@ -81,7 +100,11 @@ public final class SessionManager {
             throw new PortNotInRangeException("Cannot use this port as it is out of range");
         }
 
-        GafferSession built = new GafferSession(address, portNumber);
+        GafferSession built = new GafferSession.Builder()
+                .address(address)
+                .portNumber(portNumber)
+                .build();
+
         this.addSession(built);
         return built;
     }
@@ -96,17 +119,48 @@ public final class SessionManager {
             throw new PortNotInRangeException("Cannot use this port as it is out of range");
         }
 
-        GafferSession built = new GafferSession(address, portNumber, auth);
+        GafferSession built = new GafferSession.Builder()
+                .address(address)
+                .portNumber(portNumber)
+                .authToken(auth)
+                .build();
+
         this.addSession(built);
         return built;
     }
 
     public GafferSession sessionFactory(final InetAddress address, final String auth) throws NoPortsAvailableException {
-        GafferSession built = new GafferSession(address, generatePortNumber(), auth);
+        GafferSession built = new GafferSession.Builder()
+                .authToken(auth)
+                .address(address)
+                .build();
+
         this.addSession(built);
         return built;
     }
 
+    public GafferSession sessionFactory(final InetAddress address, final User user) throws NoPortsAvailableException {
+        GafferSession built = new GafferSession.Builder()
+                .address(address)
+                .portNumber(generatePortNumber())
+                .user(user)
+                .build();
+
+        this.addSession(built);
+        return built;
+    }
+
+    public GafferSession sessionFactory(final InetAddress address, final String auth, final User user) throws NoPortsAvailableException {
+        GafferSession built = new GafferSession.Builder()
+                .authToken(auth)
+                .address(address)
+                .portNumber(generatePortNumber())
+                .user(user)
+                .build();
+
+        this.addSession(built);
+        return built;
+    }
 
     public boolean removeSession(final GafferSession session) {
         List<GafferSession> allSessions = getAllSessions();

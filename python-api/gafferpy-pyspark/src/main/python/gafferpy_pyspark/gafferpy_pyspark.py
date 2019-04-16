@@ -13,21 +13,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-# This is an Example Application Properties, please replace these with your own values
 
-# Must haves
-single-service=false
-insecure=false
-use-ssl=true
+from gafferpy_pyspark.gafferpy_pyspark_core import *
+from gafferpy_pyspark.gafferpy_pyspark_graph import *
+from gafferpy_pyspark.gafferpy_pyspark_session import * 
+from gafferpy_pyspark.pyspark_utils import *
 
-# optional for secure sessions but if enabled must have
-auth-service-url=https://localhost:8443/create_session
-
-# optional for SSL Related Stuff but if enabled must have
-ssl-password=placeholder
-keystore-type=JKS
-keystore-location=/Users/P41669/Documents/gaffer-tools/python-api/gafferpy-core/src/test/resources/example.jks
-keymanager-type=JKS
-protocol=TLSv1.2
-
-
+import gafferpy_pyspark.gafferpy_pyspark_core as gps_core
+import gafferpy_pyspark.gafferpy_pyspark_graph as gps_graph
+import gafferpy_pyspark.pyspark_utils as gps_utils
+import gafferpy_pyspark.gafferpy_pyspark_session as gps_session

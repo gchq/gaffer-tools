@@ -28,7 +28,7 @@ import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 
-public class PythonIteratorTests {
+public class PythonIteratorTest {
 
     private List<Edge> edgesList = null;
 

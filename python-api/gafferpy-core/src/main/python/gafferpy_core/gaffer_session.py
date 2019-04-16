@@ -1,5 +1,5 @@
 #
-# Copyright 2016-2018 Crown Copyright
+# Copyright 2016-2019 Crown Copyright
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -18,8 +18,7 @@
 
 """
 
-import configparser
-import getpass 
+import getpass
 import json
 import logging
 import os
@@ -38,36 +37,37 @@ ch.setLevel(logging.DEBUG)
 logger.addHandler(ch)
 
 
-def singleton(cls):
-    instances = {}
-    def getinstance(*args,**kwargs):
-        if cls not in instances:
-            instances[cls] = cls(*args,**kwargs)
-        return instances[cls]
-    return getinstance
+class Singleton(type):
+    _instances = {}
+
+    def __call__(cls, *args, **kwargs):
+        if cls not in cls._instances:
+            cls._instances[cls] = super(
+                Singleton, cls).__call__(*args, **kwargs)
+        return cls._instances[cls]
 
 
-
-@singleton
-class GafferPythonSession():
-
-    """
+class GafferPythonSession(metaclass=Singleton):
 
     """
+    Creates a Python Session and instanticates User Object plus others
+    """
 
-    #general things
+    # general things
     _java_gaffer_session = None
     _java_gateway = None
     _java_server_process = None
     _java_gaffer_session_class = "uk.gov.gchq.gaffer.python.Application"
 
-    #python things
+    # python things
     _jar = None
     _lib_jars = None
     _this_session_pid = None
 
-    def create_session(self,jar=None, lib_jars=None, kill_existing_sessions=False):
+    # Internal stuff
+    __user = None
 
+    def create_session(self, jar=None, lib_jars=None, kill_existing_sessions=False):
         """
         A public method for creating a python gaffer session.
         """
@@ -85,7 +85,6 @@ class GafferPythonSession():
         return gaffer_session
 
     def _start_session(self):
-
         """
         A private method used for instantiating a java Gaffer session
         """
@@ -93,9 +92,10 @@ class GafferPythonSession():
         if self._lib_jars == None:
             libs = ""
         else:
-            libs = self._lib_jars.replace(",",":")
+            libs = self._lib_jars.replace(",", ":")
             libs = ":" + libs
-        start_command = "java -cp " + self._jar + libs + " " + self._java_gaffer_session_class
+        start_command = "java -cp " + self._jar + \
+            libs + " " + self._java_gaffer_session_class
         self._java_server_process = self._run_shell_command(start_command)
         self._this_session_pid = self._java_server_process.pid
         logger.info("starting gaffer session : {} \n".format(start_command))
@@ -113,7 +113,6 @@ class GafferPythonSession():
             raise RuntimeError(msg)
 
     def connect_to_session(self, address="127.0.0.1", port=25333):
-
         """
         Public method for just connecting to a running gaffer session
         """
@@ -134,13 +133,14 @@ class GafferPythonSession():
                      l(                       (_)                                           
         """)
 
-        config = configparser.ConfigParser()
-        config.read(os.path.join(os.path.dirname(__file__), 'application.config'))
+        global gaffer_session
+        if 'gaffer_session' in globals():
+            return globals().get('gaffer_session')
 
-        if(config['required'].getboolean('SSL-Enabled')):
+        if(os.environ.get('SSL-Enabled') == "True"):
             s = requests.Session()
             try:
-                s.verify = config.get('ssl','Cert-Path')
+                s.verify = os.environ.get('Cert-Path')
                 pass
             except ValueError as identifier:
                 logger.error(identifier)
@@ -152,12 +152,14 @@ class GafferPythonSession():
                 pass
             finally:
                 s.verify = False
-                
-            username = input("Please enter your username: ")
-            password = getpass.getpass(prompt='Please enter your password: ', stream=None)
-            s.post(url=config.get('ssl', 'Auth-URL'), data={'username': username, 'password': password})
 
-            sessionResponse = s.get(config.get('ssl', 'Session-Create-URL'))
+            username = input("Please enter your username: ")
+            password = getpass.getpass(
+                prompt='Please enter your password: ', stream=None)
+            s.post(url=os.environ.get('Auth-URL'),
+                   data={'username': username, 'password': password})
+
+            sessionResponse = s.get(os.environ.get('Session-Create-URL'))
 
             if(sessionResponse.status_code == 200):
                 response = json.loads(sessionResponse.text)
@@ -165,22 +167,25 @@ class GafferPythonSession():
                 address = addres[1]
                 port = response['portNumber']
                 token = response['token']
+                self.__user = u.User(user_id=username)
             else:
                 logger.error(sessionResponse.text)
                 raise sessionResponse.text
 
         try:
-            if(config['required'].getboolean('SSL-Enabled')):
-                gaffer_session = JavaGateway(gateway_parameters=GatewayParameters(address=address, 
-                    port=port, 
-                    auth_token=token
-                    ))
+            session = None
+            if(os.environ.get('SSL-Enabled') == "True"):
+                session = JavaGateway(gateway_parameters=GatewayParameters(address=address,
+                                                                           port=port,
+                                                                           auth_token=token
+                                                                           ))
             else:
-                gaffer_session = JavaGateway(gateway_parameters=GatewayParameters(address=address, port=port))
-            self._java_gateway = gaffer_session
-            self._java_gaffer_session = gaffer_session.entry_point
+                session = JavaGateway(
+                    gateway_parameters=GatewayParameters(address=address, port=port))
+            self._java_gateway = session
+            self._java_gaffer_session = session.entry_point
             logger.info("Connected to Gaffer Session")
-            return gaffer_session.entry_point
+            gaffer_session = self
         except:
             logger.error("Issue connecting to Gaffer Session")
 
@@ -193,16 +198,13 @@ class GafferPythonSession():
             logger.info("stopping gaffer session")
             self._java_server_process.send_signal(signal.SIGTERM)
             self._java_gateway = None
-            globals().pop('gaffer_session',None)
+            globals().pop('gaffer_session', None)
             logger.info("session stopped")
-
 
     def get_session_pid(self):
         return self._this_session_pid
 
-
     def _check_running_processes(self, kill):
-
         """
         Checks to see if there are any java gaffer sessions already running.
         If there are:
@@ -222,7 +224,8 @@ class GafferPythonSession():
                 t = str(line).split()
                 pid = t[2]
                 pids.append(pid)
-                logger.debug("found existing session with pid " + pid + ", will terminate it")
+                logger.debug("found existing session with pid " +
+                             pid + ", will terminate it")
         if len(pids) == 0:
             fail = False
         elif kill:
@@ -230,12 +233,12 @@ class GafferPythonSession():
                 self._kill_process(pid)
             fail = False
         if fail:
-            msg = "found gaffer session already running that I didn't start on pids " + str(pids)
+            msg = "found gaffer session already running that I didn't start on pids " + \
+                str(pids)
             logger.error(msg)
             raise ValueError(msg)
 
-
-    def _run_shell_command(self,command):
+    def _run_shell_command(self, command):
         return sp.Popen(command, shell=True,
                         stderr=sp.PIPE,
                         stdout=sp.PIPE)
@@ -245,121 +248,5 @@ class GafferPythonSession():
         res = self._run_shell_command(kill_command)
         logger.info("killed process " + pid)
 
-
-class Graph():
-
-    """
-    A class that wraps the Java class uk.gov.gchq.gaffer.python.graph.PythonGraph
-    Enables users in python to able to access all of the functionality of the 
-    Graph, with simple interfaces like the Builder() and execute() functions
-    """
-
-    _java_python_graph = None
-    _gaffer_session = None
-    _python_serialisers={
-        'uk.gov.gchq.gaffer.data.element.Element' : 'uk.gov.gchq.gaffer.python.data.serialiser.PythonElementMapSerialiser',
-        'uk.gov.gchq.gaffer.operation.data.ElementSeed' : 'uk.gov.gchq.gaffer.python.data.serialiser.PythonElementSeedMapSerialiser'
-    }
-
-    def _convertFileToBytes(self, file):
-        with open(file, "rb") as f:
-            ba = f.read()
-            c = bytearray(ba)
-            return c
-
-    def _setSchema(self, schemaPath):
-        self.schemaPath = schemaPath
-
-    def _setConfig(self, graphConfigPath):
-        self.graphConfigPath = graphConfigPath
-
-    def _setStoreProperties(self, storePropertiesPath):
-        self.storePropertiesPath = storePropertiesPath
-
-    def _getGraph(self):
-        if "gaffer_session" in globals():
-            self._gaffer_session = globals().get("gaffer_session")
-        else:
-            msg = "No gaffer session"
-            logger.error(msg)
-            raise ValueError(msg)
-        self._java_python_graph = self._gaffer_session._java_gaffer_session.getPythonGraph(self._convertFileToBytes(self.schemaPath), self._convertFileToBytes(self.graphConfigPath), self._convertFileToBytes(self.storePropertiesPath))
-        self._set_element_serialisers(store_properties_path=self.storePropertiesPath)
-        return self
-
-    def getPythonSerialisers(self):
-        serialisers = self._java_python_graph.getPythonSerialisers().getSerialisers()
-        python_serialisers = {}
-        for serialiser in serialisers:
-            class_name = serialiser.getCanonicalName()
-            python_serialisers[class_name] = serialisers.get(serialiser).getCanonicalName()
-        return python_serialisers
-
-    def getSchema(self):
-        return self._java_python_graph.getGraph().getSchema()
-
-    def getVertexSerialiserClass(self):
-        return self._java_python_graph.getVertexSerialiserClassName()
-
-    def getKeyPackageClassName(self):
-        return self._java_python_graph.getKeyPackageClassName()
-
-    def setPythonSerialisers(self, serialisers):
-        self._java_python_graph.setPythonSerialisers(serialisers)
-        self._python_serialisers = serialisers
-
-    def _set_element_serialisers(self, store_properties_path):
-        props = open(store_properties_path, "r")
-        f = props.readlines()
-        filepath = None
-        for line in f:
-            t = line.split("=")
-            if(t[0] == "pythonserialiser.declarations"):
-                filepath = t[1]
-        props.close()
-        if filepath != None:
-            path = filepath.strip('\n')
-            import json
-            data_file = open(path, "r")
-            data = json.load(data_file)
-            data_file.close()
-            self._python_serialisers = data["serialisers"]
-        else:
-            self.setPythonSerialisers(self._python_serialisers)
-
-    def execute(self, operation, user):
-            result = self._java_python_graph.execute(self._encode(operation), self._encode(user))
-            if isinstance(result, int):
-                return result
-            resultClass = result.getClass().getCanonicalName()
-            if resultClass == "uk.gov.gchq.gaffer.python.data.PythonIterator":
-                iterator = u.ElementIterator(result)
-                return iterator
-            return result
-
-    def _encode(self, input):
-        return str(input.to_json()).replace("'", '"').replace("True", "true")
-
-    class Builder():
-        """
-        implements a builder pattern on the graph object to give it more of a Gaffer feel
-        """
-
-        def __init__(self):
-            self.graph = Graph()
-
-        def schema(self, schemaPath):
-            self.graph._setSchema(schemaPath)
-            return self
-
-        def config(self, graphConfigPath):
-            self.graph._setConfig(graphConfigPath)
-            return self
-
-        def storeProperties(self, storePropertiesPath):
-            self.graph._setStoreProperties(storePropertiesPath)
-            return self
-
-        def build(self):
-            return self.graph._getGraph()
-
+    def getUser(self):
+        return self.__user

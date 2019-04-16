@@ -28,7 +28,7 @@ import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
 
-public class PythonElementSeedMapSerialiserTests {
+public class PythonElementSeedMapSerialiserTest {
 
     private String source = "source";
     private DirectedType directedType = DirectedType.DIRECTED;

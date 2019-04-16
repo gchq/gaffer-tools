@@ -43,6 +43,10 @@ public class PropertiesService {
     private String keymanagerType = "";
     private String protocol = "";
 
+    private String schemaPath = "";
+    private String graphConfig = "";
+    private String storeProperties = "";
+
     public PropertiesService() {
         init("application.properties");
     }
@@ -57,6 +61,10 @@ public class PropertiesService {
 
             Properties prop = new Properties();
             prop.load(new FileInputStream(fileName));
+
+            setStoreProperties(prop.getProperty("store-properties-path"));
+            setSchemaPath(prop.getProperty("schema-path"));
+            setGraphConfig(prop.getProperty("graph-config-path"));
 
             setSingleService(prop.getProperty("single-service"));
 
@@ -167,6 +175,30 @@ public class PropertiesService {
 
     private void setProtocol(final String protocol) {
         this.protocol = protocol;
+    }
+
+    public String getSchemaPath() {
+        return schemaPath;
+    }
+
+    private void setSchemaPath(final String schemaPath) {
+        this.schemaPath = schemaPath;
+    }
+
+    public String getGraphConfig() {
+        return graphConfig;
+    }
+
+    private void setGraphConfig(final String graphConfig) {
+        this.graphConfig = graphConfig;
+    }
+
+    public String getStoreProperties() {
+        return storeProperties;
+    }
+
+    private void setStoreProperties(final String storeProperties) {
+        this.storeProperties = storeProperties;
     }
 
     @Override

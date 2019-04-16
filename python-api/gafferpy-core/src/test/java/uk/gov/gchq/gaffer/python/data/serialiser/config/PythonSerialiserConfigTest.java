@@ -28,7 +28,7 @@ import java.io.FileNotFoundException;
 
 import static org.junit.Assert.assertEquals;
 
-public class PythonSerialiserConfigTests {
+public class PythonSerialiserConfigTest {
 
     @Test
     public void testDefaultSerialisersNotSet() {

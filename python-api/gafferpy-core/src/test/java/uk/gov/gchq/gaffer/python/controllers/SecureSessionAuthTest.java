@@ -46,7 +46,6 @@ public class SecureSessionAuthTest {
 
     @Test
     public void sessionAuth_ReturnsMetrics() throws IOException {
-
         PropertiesService service = new PropertiesService(new UtilFunctions().loadFile("test1.properties"));
 
         auth.setPropertiesService(service);
@@ -75,7 +74,7 @@ public class SecureSessionAuthTest {
         connection.setRequestProperty("User-Agent", USER_AGENT);
         connection.setRequestProperty("Accept-Language", "en-US,en");
 
-        String urlParameters = "token=C02G8416DRJM&user=example&roles=caller";
+        String urlParameters = "token=C02G8416DRJM&user=example&dataAuths=caller&opAuths=1,2,3";
 
         // Send post request
         connection.setDoOutput(true);

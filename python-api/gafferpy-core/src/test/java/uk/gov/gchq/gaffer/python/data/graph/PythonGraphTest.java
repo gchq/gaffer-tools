@@ -30,16 +30,25 @@ import uk.gov.gchq.gaffer.user.User;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-public class PythonGraphTests {
+public class PythonGraphTest {
 
-    private final String schemaPath = "src/test/resources/simple-schema.json";
-    private final String graphConfigPath = "src/test/resources/graphconfig.json";
-    private final String storePropertiesPath = "src/test/resources/mock-accumulo.properties";
+    private final String schemaPath = "simple-schema.json";
+    private final String graphConfigPath = "graphconfig.json";
+    private final String storePropertiesPath = "mock-accumulo.properties";
 
     @Test
     public void testCanConstructGraph(){
 
-        PythonGraph pythonGraph = new PythonGraph(schemaPath, graphConfigPath, storePropertiesPath);
+        PythonGraph pythonGraph = new PythonGraph.Builder()
+                .user(
+                    new User.Builder()
+                            .userId("user")
+                            .build()
+                )
+                .graphConfig(graphConfigPath)
+                .schemaConfig(schemaPath)
+                .storeProperties(storePropertiesPath)
+                .build();
 
         assertNotNull(pythonGraph.getGraph().getSchema());
     }
@@ -55,19 +64,13 @@ public class PythonGraphTests {
                 .property("count", 1L)
                 .build();
 
-        PythonGraph pythonGraph = new PythonGraph(schemaPath, graphConfigPath, storePropertiesPath);
-
-        User user = new User.Builder()
+        PythonGraph pythonGraph = new PythonGraph.Builder().user(new User.Builder()
                 .userId("user")
+                .build())
+                .graphConfig(graphConfigPath)
+                .schemaConfig(schemaPath)
+                .storeProperties(storePropertiesPath)
                 .build();
-
-        String userJson = null;
-
-        try {
-            userJson = new String(JSONSerialiser.serialise(user));
-        } catch (SerialisationException e) {
-            e.printStackTrace();
-        }
 
         AddElements addElements = new AddElements.Builder()
                 .input(edge)
@@ -82,7 +85,7 @@ public class PythonGraphTests {
             e.printStackTrace();
         }
 
-        assertEquals(0, pythonGraph.execute(addOpJson, userJson));
+        assertEquals(0, pythonGraph.execute(addOpJson));
     }
 
     @Test
@@ -95,19 +98,17 @@ public class PythonGraphTests {
                 .property("count", 1L)
                 .build();
 
-        PythonGraph pythonGraph = new PythonGraph(schemaPath, graphConfigPath, storePropertiesPath);
-
-        User user = new User.Builder()
-                .userId("user")
+        PythonGraph pythonGraph = new PythonGraph.Builder()
+                .user(
+                    new User.Builder()
+                            .userId("user")
+                            .build()
+                )
+                .storeProperties(storePropertiesPath)
+                .schemaConfig(schemaPath)
+                .graphConfig(graphConfigPath)
                 .build();
 
-        String userJson = null;
-
-        try {
-            userJson = new String(JSONSerialiser.serialise(user));
-        } catch (SerialisationException e) {
-            e.printStackTrace();
-        }
 
         AddElements addElements = new AddElements.Builder()
                 .input(edge)
@@ -121,7 +122,7 @@ public class PythonGraphTests {
             e.printStackTrace();
         }
 
-        pythonGraph.execute(addOpJson, userJson);
+        pythonGraph.execute(addOpJson);
 
         GetAllElements getAllElements = new GetAllElements.Builder()
                 .build();
@@ -137,7 +138,7 @@ public class PythonGraphTests {
 
         pythonGraph.setPythonSerialiser(Edge.class.getCanonicalName(), serialiser.getClass().getCanonicalName());
 
-        PythonIterator iterator = (PythonIterator) pythonGraph.execute(getAllElementsJson, userJson);
+        PythonIterator iterator = (PythonIterator) pythonGraph.execute(getAllElementsJson);
 
         while(iterator.hasNext()){
             assertEquals(serialiser.serialise(edge), iterator.next());

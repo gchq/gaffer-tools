@@ -60,6 +60,7 @@ from gafferpy_core.gaffer_config import *
 from gafferpy_core.gaffer_types import *
 from gafferpy_core.gaffer_utils import *
 from gafferpy_core.gaffer_session import *
+from gafferpy_core.gaffer_graph import *
 
 import gafferpy_core.gaffer_predicates as pred
 import gafferpy_core.gaffer_functions as func
@@ -69,3 +70,4 @@ import gafferpy_core.gaffer_config as conf
 import gafferpy_core.gaffer_types as t
 import gafferpy_core.gaffer_utils as utils
 import gafferpy_core.gaffer_session as session
+import gafferpy_core.gaffer_graph as graph
