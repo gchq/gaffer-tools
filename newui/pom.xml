@@ -133,7 +133,7 @@
                         <version>2.0</version>
                         <configuration>
                             <path>/${standalone-ui-path}</path>
-                            <port>${standalone-port}</port>
+                            <port>4200</port>
                         </configuration>
                         <executions>
                             <execution>
@@ -179,15 +179,15 @@
                             <path>/</path>
                             <port>${standalone-port}</port>
                             <webapps>
-                                <!-- <webapp>
+                                <webapp>
                                     <contextPath>/${standalone-ui-path}
                                     </contextPath>
                                     <groupId>uk.gov.gchq.gaffer</groupId>
-                                    <artifactId>ui</artifactId>
+                                    <artifactId>newui</artifactId>
                                     <version>${project.parent.version}</version>
                                     <type>war</type>
                                     <asWebapp>true</asWebapp>
-                                </webapp> -->
+                                </webapp>
                                 <webapp>
                                     <contextPath>/${standalone-rest-path}
                                     </contextPath>

@@ -18,7 +18,7 @@ import { Observable, Observer, of } from "rxjs";
 import { merge } from "lodash";
 
 import { Injectable } from "@angular/core";
-import { HttpClient } from "@angular/common/http";
+import { HttpClient, HttpHeaders } from "@angular/common/http";
 
 @Injectable()
 export class ConfigService {
@@ -42,8 +42,15 @@ export class ConfigService {
     this.config = conf;
   };
 
+
+
   private load = function() {
-    this.http.get("config/defaultConfig.json").subscribe(
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Access-Control-Allow-Origin':'*'
+      })
+    };
+    this.http.get("http://localhost:8080/config/defaultConfig.json",httpOptions).subscribe(
       function(response) {
         var defaultConfig = response.data;
         if (defaultConfig === undefined) {
