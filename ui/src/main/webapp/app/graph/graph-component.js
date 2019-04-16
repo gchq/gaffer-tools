@@ -390,12 +390,16 @@ function GraphController($q, graph, config, error, loading, query, operationOpti
 
             var edge = angular.copy(results.edges[i]);
             var edgeData = createEdgeData(edge);
+            var tempSource = edge.source;
+            edge.source = edge.destination;
+            edge.destination = tempSource;
+            var edgeDataReverse = createEdgeData(edge);
 
             addVertices(elementsToAdd, elementsToMergeData, edgeData.source);
             addVertices(elementsToAdd, elementsToMergeData, edgeData.destination);
             
             // if it does not exist in the graph, add it.
-            if (cytoscapeGraph.getElementById(edgeData.edge.id).length == 0) {
+            if (cytoscapeGraph.getElementById(edgeData.edge.id).length == 0 && cytoscapeGraph.getElementById(edgeDataReverse.edge.id).length == 0) {
                 elementsToAdd.push({
                     group: 'edges',
                     data: edgeData.edge,
