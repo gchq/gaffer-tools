@@ -179,7 +179,7 @@
                             <path>/</path>
                             <port>${standalone-port}</port>
                             <webapps>
-                                <webapp>
+                                <!-- <webapp>
                                     <contextPath>/${standalone-ui-path}
                                     </contextPath>
                                     <groupId>uk.gov.gchq.gaffer</groupId>
@@ -187,7 +187,7 @@
                                     <version>${project.parent.version}</version>
                                     <type>war</type>
                                     <asWebapp>true</asWebapp>
-                                </webapp>
+                                </webapp> -->
                                 <webapp>
                                     <contextPath>/${standalone-rest-path}
                                     </contextPath>
@@ -247,6 +247,42 @@
                                 <phase>integration-test</phase>
                                 <goals>
                                     <goal>run-war</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>exec-maven-plugin</artifactId>
+                        <version>1.5.0</version>
+                        <executions>
+                            <execution>
+                                <id>exec-npm-install</id>
+                                <phase>generate-sources</phase>
+                                <configuration>
+                                    <workingDirectory>${project.basedir}/src/main/app</workingDirectory>
+                                    <executable>npm</executable>
+                                    <arguments>
+                                        <argument>install</argument>
+                                    </arguments>
+                                </configuration>
+                                <goals>
+                                    <goal>exec</goal>
+                                </goals>
+                            </execution>
+                            <execution>
+                                <id>exec-npm-ng-serve</id>
+                                <phase>generate-sources</phase>
+                                <configuration>
+                                    <workingDirectory>${project.basedir}/src/main/app</workingDirectory>
+                                    <executable>ng</executable>
+                                    <arguments>
+                                        <argument>serve</argument>
+                                        <argument>--base-href=/ngfirst/ng/</argument>
+                                    </arguments>
+                                </configuration>
+                                <goals>
+                                    <goal>exec</goal>
                                 </goals>
                             </execution>
                         </executions>
