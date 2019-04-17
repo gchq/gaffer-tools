@@ -1,9 +1,9 @@
 <div fxLayout="column" layout-margin>
   <form name="parameterForm" layout-margin>
-    <h3 class="{{titleClass}}">{{title}}</h3>
+    <!-- <h3 class="{{titleClass}}">{{title}}</h3> -->
     <div *ngIf="title == 'Parameters'">
       <div fxLayout="column">
-        <div ng-repeat="(name, param) in parameters" flex="noshrink">
+        <div *ngFor="let params of parameters" flex="noshrink">
           <mat-form-field class="example-full-width" appearance="fill">
             <mat-label>Label</mat-label>
             <textarea matInput id="id" name="name" param="param"></textarea>
@@ -13,7 +13,7 @@
     </div>
     <div *ngIf="title != 'Parameters'">
       <div layout-wrap fxLayout="row">
-        <div ng-repeat="(name, param) in parameters" flex="noshrink">
+        <div *ngFor="let params of parameters" flex="noshrink">
           <input matInput name="name" param="param" date-unit="getTimeUnit(name)">
         </div>
       </div>

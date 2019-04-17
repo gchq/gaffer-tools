@@ -82,7 +82,7 @@ export class AnalyticsComponent implements OnInit {
     var operation1 = {
       class: "uk.gov.gchq.gaffer.named.operation.NamedOperation",
       fields: "some field",
-      parameters: [["result-limit: 2", "to-csv: false", "vehicle:BUS"]],
+      parameters: ["result-limit", "to-csv", "vehicle"],
       operationName: "frequent-vehicles-in-region"
     };
     var operation2 = {
@@ -95,10 +95,7 @@ export class AnalyticsComponent implements OnInit {
     var readAccessRoles = ["User", "User"];
     var writeAccessRoles = ["User", "User"];
     var operations = [operation1, operation2];
-    var parameters = [
-      ["result-limit: 2", "to-csv: false", "vehicle:BUS"],
-      "to csv"
-    ];
+    var parameters = [["result-limit", "to-csv", "vehicle"], "to csv"];
     var outputTypes = ["table", "table"];
     var score = [2, 3];
     var icons = ["star", "directions_bus"]; //some names of icons from img folder
@@ -116,6 +113,7 @@ export class AnalyticsComponent implements OnInit {
       this.analytics[_i].parameters = parameters[_i];
       this.analytics[_i].outputType = [];
       this.analytics[_i].outputType.output = outputTypes[_i];
+      this.analytics[_i].score = score[_i];
       this.analytics[_i].header = [];
       this.analytics[_i].header.iconURL = icons[_i];
     }
