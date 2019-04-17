@@ -2,10 +2,10 @@ import { Component, OnInit, Injectable } from "@angular/core";
 import { SchemaService } from "../gaffer/schema.service";
 import { EventsService } from "../dynamic-input/events.service";
 
-export interface PeriodicElement {
+export interface Element {
   junction: string;
   position: number;
-  freq: number;
+  frequency: number;
   vehicle: string;
 }
 // [
@@ -31,9 +31,9 @@ export interface PeriodicElement {
 //   }
 // ]
 
-const ELEMENT_DATA: PeriodicElement[] = [
-  { position: 1, junction: "M4:LA Boundary", freq: 1958, vehicle: "BUS" },
-  { position: 2, junction: "M32:2", freq: 1411, vehicle: "BUS" }
+const ELEMENT_DATA: Element[] = [
+  { position: 1, junction: "M4:LA Boundary", frequency: 1958, vehicle: "BUS" },
+  { position: 2, junction: "M32:2", frequency: 1411, vehicle: "BUS" }
 ];
 
 @Component({
@@ -42,9 +42,36 @@ const ELEMENT_DATA: PeriodicElement[] = [
 })
 @Injectable()
 export class TableComponent implements OnInit {
-  displayedColumns: string[] = ["junction", "vehicle", "freq"];
-  dataSource = ELEMENT_DATA;
+  displayedColumns: string[] = ["junction", "vehicle", "frequency"];
+  columnsToDisplay: string[] = this.displayedColumns.slice();
+  data: Element[] = ELEMENT_DATA;
   constructor(private schema: SchemaService, private events: EventsService) {}
+
+  addColumn() {
+    const randomColumn = Math.floor(
+      Math.random() * this.displayedColumns.length
+    );
+    this.columnsToDisplay.push(this.displayedColumns[randomColumn]);
+  }
+
+  removeColumn() {
+    if (this.columnsToDisplay.length) {
+      this.columnsToDisplay.pop();
+    }
+  }
+
+  shuffle() {
+    let currentIndex = this.columnsToDisplay.length;
+    while (0 !== currentIndex) {
+      let randomIndex = Math.floor(Math.random() * currentIndex);
+      currentIndex -= 1;
+
+      // Swap
+      let temp = this.columnsToDisplay[currentIndex];
+      this.columnsToDisplay[currentIndex] = this.columnsToDisplay[randomIndex];
+      this.columnsToDisplay[randomIndex] = temp;
+    }
+  }
 
   /**
    * Initialises the controller.
@@ -83,7 +110,6 @@ export class TableComponent implements OnInit {
 
   resultsByType = [];
   filteredResults = [];
-  data = { results: [], columns: [] };
   searchTerm = "";
 
   pagination = { limit: 50, page: 1 };
