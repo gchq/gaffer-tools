@@ -29,7 +29,7 @@ import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
 
-public class PysparkSerialiserTests {
+public class PysparkSerialiserTest {
 
     @Test
     public void testPysparkElementMapSerialiser(){
