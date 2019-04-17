@@ -8,17 +8,6 @@ export interface PeriodicElement {
   freq: number;
   vehicle: string;
 }
-
-// const ELEMENT_DATA: PeriodicElement[] = [
-//   { position: 1, name: "Bristol", population: 1.0079, country: "UK" },
-//   { position: 2, name: "Brighton", population: 4.0026, country: "UK" },
-//   { position: 3, name: "Birmingham", population: 6.941, country: "UK" },
-//   { position: 4, name: "Berlin", population: 9.0122, country: "DE" },
-//   { position: 5, name: "Bruges", population: 10.811, country: "BE" },
-//   { position: 6, name: "Beijing", population: 12.0107, country: "CH" },
-//   { position: 7, name: "Winchester", population: 14.0067, country: "UK" }
-// ];
-
 // [
 //   {
 //     "class": "uk.gov.gchq.gaffer.data.element.Entity",
