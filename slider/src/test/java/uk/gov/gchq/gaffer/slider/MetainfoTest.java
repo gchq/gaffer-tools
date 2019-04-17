@@ -30,18 +30,18 @@ import java.io.InputStream;
  */
 public class MetainfoTest {
 
-	private static final String METAINFO_FILE = "/metainfo.xml";
+    private static final String METAINFO_FILE = "/metainfo.xml";
 
-	@Test
-	public void checkMetainfoIsValid () throws IOException, SliderException {
-		InputStream metainfoStream = this.getClass().getResourceAsStream(METAINFO_FILE);
-		Assert.assertNotNull("Unable to load metainfo file for testing: " + METAINFO_FILE, metainfoStream);
+    @Test
+    public void checkMetainfoIsValid() throws IOException, SliderException {
+        InputStream metainfoStream = this.getClass().getResourceAsStream(METAINFO_FILE);
+        Assert.assertNotNull("Unable to load metainfo file for testing: " + METAINFO_FILE, metainfoStream);
 
-		AddonPackageMetainfoParser parser = new AddonPackageMetainfoParser();
-		Metainfo metainfo = parser.fromXmlStream(metainfoStream);
-		Assert.assertNotNull("Parsing of " + METAINFO_FILE + " failed!", metainfo);
+        AddonPackageMetainfoParser parser = new AddonPackageMetainfoParser();
+        Metainfo metainfo = parser.fromXmlStream(metainfoStream);
+        Assert.assertNotNull("Parsing of " + METAINFO_FILE + " failed!", metainfo);
 
-		metainfo.validate();
-	}
+        metainfo.validate();
+    }
 
 }
