@@ -74,24 +74,33 @@ export class AnalyticsComponent implements OnInit {
     });
 
     // Hard code the other data I assume we will get when we load up the analytic
-    var operationNames = ["Frequent Vehicles In Region","Frequent Vehicles In Region 2"];
-    var descriptions = ["First description","Second description"];
-    var operation1 = { 
-      fields: 'some field'
-    }
-    var operation2 = { 
-      fields: {
-        input: 'some input',
-        inputB: 'some other input',
-        view: 'some view'
-      }
-    }
-    var operations = [
-      operation1,
-      operation2,
+    var operationNames = ["Frequent Vehicles In Region", "Another Analytic"];
+    var descriptions = [
+      "Displays frequent vehicles in region as a table of results.",
+      "Another description"
     ];
-    var parameters = ["to csv", "to csv"];
+    var operation1 = {
+      class: "uk.gov.gchq.gaffer.named.operation.NamedOperation",
+      fields: "some field",
+      parameters: [["result-limit: 2", "to-csv: false", "vehicle:BUS"]],
+      operationName: "frequent-vehicles-in-region"
+    };
+    var operation2 = {
+      fields: {
+        input: "some input",
+        inputB: "some other input",
+        view: "some view"
+      }
+    };
+    var readAccessRoles = ["User", "User"];
+    var writeAccessRoles = ["User", "User"];
+    var operations = [operation1, operation2];
+    var parameters = [
+      ["result-limit: 2", "to-csv: false", "vehicle:BUS"],
+      "to csv"
+    ];
     var outputTypes = ["table", "table"];
+    var score = [2, 3];
     var icons = ["star", "directions_bus"]; //some names of icons from img folder
 
     // Create the analytics from this hard coded data
@@ -102,6 +111,8 @@ export class AnalyticsComponent implements OnInit {
       this.analytics[_i].operationName = operationNames[_i];
       this.analytics[_i].description = descriptions[_i];
       this.analytics[_i].operations = operations[_i];
+      this.analytics[_i].readAccessRoles = readAccessRoles[_i];
+      this.analytics[_i].writeAccessRoles = writeAccessRoles[_i];
       this.analytics[_i].parameters = parameters[_i];
       this.analytics[_i].outputType = [];
       this.analytics[_i].outputType.output = outputTypes[_i];
@@ -124,6 +135,6 @@ export class AnalyticsComponent implements OnInit {
   // load the operations
   reloadOperations = function() {
     // this.operationService.reloadOperations(true).then(this.populateOperations);
-    this.populateOperations()
+    this.populateOperations();
   };
 }

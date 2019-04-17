@@ -22,12 +22,11 @@
       <!-- second column -->
       <!-- Display the different inputs based on the operation -->
       <div fxFlex="50%">
-        <app-date-range *ngIf="timeConfig && model.operations.fields.view" [model]="model.dates"
-          conf="timeConfig">
+        <app-date-range *ngIf="timeConfig && model.operations.fields.view" [model]="model.dates" conf="timeConfig">
         </app-date-range>
 
-        <app-parameter-form *ngIf="model.parameters"
-          title-class="layout-padding md-title section-title" [parameters]="model.parameters">
+        <app-parameter-form *ngIf="model.parameters" title-class="layout-padding md-title section-title"
+          [parameters]="model.parameters">
         </app-parameter-form>
 
         <!-- <app-options *ngIf="model.operations.fields.options" [model]="model.operations.fields.options"></app-options> -->

@@ -5,35 +5,35 @@
 <mat-card>
   <mat-table [dataSource]="dataSource">
     <!-- Position Column -->
-    <ng-container matColumnDef="position">
+    <!-- <ng-container matColumnDef="position">
       <mat-header-cell *matHeaderCellDef>
         <h3>No.</h3>
       </mat-header-cell>
       <mat-cell *matCellDef="let element"> {{element.position}} </mat-cell>
-    </ng-container>
+    </ng-container> -->
 
     <!-- Name Column -->
-    <ng-container matColumnDef="name">
+    <ng-container matColumnDef="junction">
       <mat-header-cell *matHeaderCellDef>
-        <h3>Name</h3>
+        <h3>Junction</h3>
       </mat-header-cell>
-      <mat-cell *matCellDef="let element"> {{element.name}} </mat-cell>
+      <mat-cell *matCellDef="let element"> {{element.junction}} </mat-cell>
     </ng-container>
 
     <!-- Weight Column -->
-    <ng-container matColumnDef="population">
+    <ng-container matColumnDef="freq">
       <mat-header-cell *matHeaderCellDef>
-        <h3>Population</h3>
+        <h3>Frequency</h3>
       </mat-header-cell>
-      <mat-cell *matCellDef="let element"> {{element.population}} </mat-cell>
+      <mat-cell *matCellDef="let element"> {{element.freq}} </mat-cell>
     </ng-container>
 
     <!-- Symbol Column -->
-    <ng-container matColumnDef="country">
+    <ng-container matColumnDef="vehicle">
       <mat-header-cell *matHeaderCellDef>
-        <h3>Country</h3>
+        <h3>Vehicle Type</h3>
       </mat-header-cell>
-      <mat-cell *matCellDef="let element"> {{element.country}} </mat-cell>
+      <mat-cell *matCellDef="let element"> {{element.vehicle}} </mat-cell>
     </ng-container>
 
     <mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></mat-header-row>

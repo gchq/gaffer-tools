@@ -4,7 +4,10 @@
     <div *ngIf="title == 'Parameters'">
       <div fxLayout="column">
         <div ng-repeat="(name, param) in parameters" flex="noshrink">
-          <input matInput name="name" param="param" date-unit="getTimeUnit(name)">
+          <mat-form-field class="example-full-width" appearance="fill">
+            <mat-label>Label</mat-label>
+            <textarea matInput id="id" name="name" param="param"></textarea>
+          </mat-form-field>
         </div>
       </div>
     </div>

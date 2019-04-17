@@ -1,7 +1,7 @@
 <div style="margin-left:110px">
   <h1>Parameters for {{ operation }}</h1>
 </div>
-<form name="operationChainForm" #operationChainForm="ngForm" >
+<form name="operationChainForm" #operationChainForm="ngForm">
   <mat-card>
     <app-query [model]="analytic" index="$index" time-config="timeConfig" on-delete="deleteOperation(index)"
       on-reset="resetOperation(index)" on-execute="execute(op)" chain-length="operations.length">
@@ -15,8 +15,8 @@
     <!-- <button mat-raised-button color="primary" (click)="resetChain($event)">Reset
       operation
       chain</button> -->
-    <button mat-raised-button color="primary" [disabled]="!canExecute()" id="execute-chain" (click)="results()">Execute
-      operation
-      chain</button>
+    <button mat-raised-button color="primary" id="execute-chain" (click)="submitResults()">EXECUTE
+      <!-- [disabled]="!canExecute()" -->
+    </button>
   </div>
 </form>

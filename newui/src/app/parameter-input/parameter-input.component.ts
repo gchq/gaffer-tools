@@ -1,7 +1,8 @@
 import { Component, OnInit, Injectable, ViewChild } from "@angular/core";
-import { ActivatedRoute} from '@angular/router';
-import { AnalyticsService } from '../analytics/analytics.service';
-import { ConfigService } from '../config/config.service';
+import { ActivatedRoute } from "@angular/router";
+import { Router } from "@angular/router";
+import { AnalyticsService } from "../analytics/analytics.service";
+import { ConfigService } from "../config/config.service";
 
 @Component({
   selector: "app-parameter-input",
@@ -12,12 +13,14 @@ import { ConfigService } from '../config/config.service';
 export class ParameterInputComponent implements OnInit {
   analytic;
   timeConfig;
-  @ViewChild('operationChainForm') operationChainForm;
+  @ViewChild("operationChainForm") operationChainForm;
 
-  constructor(private route: ActivatedRoute,
-              private analyticsService: AnalyticsService,
-              private config: ConfigService,
-              ) {}
+  constructor(
+    private router: Router,
+    private route: ActivatedRoute,
+    private analyticsService: AnalyticsService,
+    private config: ConfigService
+  ) {}
 
   ngOnInit() {
     //Get the analytic from the analyticsService
@@ -58,7 +61,8 @@ export class ParameterInputComponent implements OnInit {
 
   resetOperation = function(index) {
     var inputFlag = index === 0;
-    this.operations[index] = this.operationChain.createBlankOperation(inputFlag
+    this.operations[index] = this.operationChain.createBlankOperation(
+      inputFlag
     );
   };
 
@@ -194,14 +198,14 @@ export class ParameterInputComponent implements OnInit {
    * Deselects all elements in the graph and resets all query related services
    * @param {Array} data the data returned by the rest service
    */
-  submitResults = function(data) {
-    this.graph.deselectAll();
-    this.navigation.goTo("results");
+  submitResults(data) {
+    // this.graph.deselectAll();
+    this.router.navigate(["/results"]);
 
     // Remove the input query param
-    delete this.$routeParams["input"];
-    this.$location.search("input", null);
-  };
+    // delete this.$routeParams["input"];
+    // this.$location.search("input", null);
+  }
 
   /**
    * Uses seeds uploaded to the input service to build an input array to the query.
