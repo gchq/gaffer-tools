@@ -16,7 +16,7 @@
 
 'use strict';
 
-angular.module('app').factory('query', ['$http', 'config', 'events', 'common', 'error', 'loading', 'settings', 'results', '$mdDialog', function($http, config, events, common, error, loading, settings, results, $mdDialog) {
+angular.module('app').factory('query', ['$http', 'config', 'events', 'common', 'error', 'loading', 'settings', 'results', '$mdDialog', '$routeParams', '$location', function($http, config, events, common, error, loading, settings, results, $mdDialog, $routeParams, $location) {
 
     var query = {};
     var operations = [];
@@ -111,6 +111,15 @@ angular.module('app').factory('query', ['$http', 'config', 'events', 'common', '
     query.setOperations = function(ops) {
         operations = ops;
         events.broadcast('operationsUpdated', [operations]);
+    }
+
+    if($routeParams.preQuery) {
+        var operation = JSON.parse($routeParams.preQuery);
+        query.addOperation(operation);
+        query.executeQuery(
+            operation
+        );
+        $location.search("preQuery", null);
     }
 
     return query;
