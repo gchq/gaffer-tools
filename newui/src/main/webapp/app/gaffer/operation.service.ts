@@ -18,12 +18,16 @@ import { HttpClient } from "@angular/common/http";
 import { OperationOptionsService } from "../options/operation-options.service";
 import { Observable, Observer } from 'rxjs';
 import { ConfigService } from '../config/config.service';
+import { CommonService } from '../dynamic-input/common.service';
+import { ErrorService } from '../dynamic-input/error.service';
 
 @Injectable()
 export class OperationService {
   constructor(private operationOptions: OperationOptionsService,
               private http: HttpClient,
-              private config: ConfigService) {}
+              private config: ConfigService,
+              private common: CommonService,
+              private error: ErrorService) {}
 
   availableOperations;
   namedOpClass = "uk.gov.gchq.gaffer.named.operation.NamedOperation";
@@ -199,12 +203,12 @@ export class OperationService {
   reloadOperations = function(loud) {
     var deferred = Observable.create((observer: Observer<String>) => {});
 
-    this.config.get().subscribe(function(conf) {
+    this.config.get().subscribe((conf) => {
       var queryUrl = this.common.parseUrl(
         conf.restEndpoint + "/graph/operations/details"
       );
       this.http.get(queryUrl).subscribe(
-        function(response) {
+        (response) => {
           this.availableOperations = [];
           this.addOperations(response.data, conf);
           var getAllClass =
@@ -237,7 +241,7 @@ export class OperationService {
             deferred.resolve(this.availableOperations);
           }
         },
-        function(err) {
+        (err) => {
           this.error.handle("Unable to load operations", err.data);
           deferred.resolve([]);
         }
