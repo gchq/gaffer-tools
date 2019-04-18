@@ -34,6 +34,7 @@ import { EventsService } from "./dynamic-input/events.service";
 import { CommonService } from "./dynamic-input/common.service";
 import { ErrorService } from "./dynamic-input/error.service";
 import { TypesService } from "./gaffer/type.service";
+import { DefaultRestEndpointService } from './config/default-rest-endpoint-service';
 
 @NgModule({
   declarations: [
@@ -73,7 +74,8 @@ import { TypesService } from "./gaffer/type.service";
     EventsService,
     CommonService,
     TypesService,
-    ErrorService
+    ErrorService,
+    DefaultRestEndpointService,
   ],
   bootstrap: [AppComponent]
 })

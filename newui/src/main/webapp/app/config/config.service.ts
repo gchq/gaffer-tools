@@ -17,15 +17,17 @@
 import { Observable, Observer, of } from "rxjs";
 import { merge } from "lodash";
 
-import { Injectable, Inject } from "@angular/core";
+import { Injectable} from "@angular/core";
 import { HttpClient, HttpHeaders } from "@angular/common/http";
+import { DefaultRestEndpointService } from './default-rest-endpoint-service';
 
 @Injectable()
 export class ConfigService {
   config;
   defer = null;
 
-  constructor(@Inject(HttpClient) private http: HttpClient) {
+  constructor(private http: HttpClient,
+              private defaultRestEndpoint: DefaultRestEndpointService) {
     //this.authService = this.injector.get(AuthService);
   }
 
