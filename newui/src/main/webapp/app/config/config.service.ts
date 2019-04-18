@@ -35,8 +35,7 @@ export class ConfigService {
     if (this.config) {
       return of(this.config);
     } else if (!this.defer) {
-      this.defer = Observable.create((observer: Observer<String>) => {});
-      this.load();
+      this.defer = Observable.create((observer: Observer<String>) => {this.load(observer);});
     }
 
     return this.defer;
@@ -46,7 +45,7 @@ export class ConfigService {
     this.config = conf;
   };
 
-  private load = function() {
+  private load = function(observer) {
     // const httpOptions = {
     //   headers: new HttpHeaders({
     //     'Access-Control-Allow-Origin':'http://localhost:4200'
@@ -80,16 +79,16 @@ export class ConfigService {
             }
             merge(mergedConfig, customConfig);
             this.config = mergedConfig;
-            this.defer.resolve(this.config);
+            observer.next(this.config);
           },
           (err) => {
-            this.defer.throw(err);
+            observer.error(err);
             this.error.handle("Failed to load custom config", err);
           }
         );
       },
       (err) => {
-        this.defer.throw(err);
+        observer.error(err);
         this.error.handle("Failed to load config", err);
       }
     );
