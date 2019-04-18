@@ -17,7 +17,7 @@
 import { Observable, Observer, of } from "rxjs";
 import { merge } from "lodash";
 
-import { Injectable } from "@angular/core";
+import { Injectable, Inject } from "@angular/core";
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 
 @Injectable()
@@ -25,7 +25,9 @@ export class ConfigService {
   config;
   defer = null;
 
-  constructor(private http: HttpClient) {}
+  constructor(@Inject(HttpClient) private http: HttpClient) {
+    //this.authService = this.injector.get(AuthService);
+  }
 
   get = function() {
     if (this.config) {
@@ -42,8 +44,6 @@ export class ConfigService {
     this.config = conf;
   };
 
-
-
   private load = function() {
     // const httpOptions = {
     //   headers: new HttpHeaders({
@@ -52,14 +52,14 @@ export class ConfigService {
     // };
     this.http.get("http://localhost:8080/config/defaultConfig.json").subscribe(
       // this.http.get("https://envp2odsfkg7g.x.pipedream.net").subscribe(
-      function(response) {
+      (response) => {
         var defaultConfig = response.data;
         if (defaultConfig === undefined) {
           defaultConfig = {};
         }
         var mergedConfig = defaultConfig;
-        this.http.get("config/config.json").subscribe(
-          function(response) {
+        this.http.get("http://localhost:8080/config/config.json").subscribe(
+          (response) => {
             var customConfig = response.data;
 
             if (customConfig === undefined) {
@@ -80,13 +80,13 @@ export class ConfigService {
             this.config = mergedConfig;
             this.defer.resolve(this.config);
           },
-          function(err) {
+          (err) => {
             this.defer.throw(err);
             this.error.handle("Failed to load custom config", err);
           }
         );
       },
-      function(err) {
+      (err) => {
         this.defer.throw(err);
         this.error.handle("Failed to load config", err);
       }
