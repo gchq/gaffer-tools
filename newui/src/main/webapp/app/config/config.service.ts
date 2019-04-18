@@ -45,12 +45,13 @@ export class ConfigService {
 
 
   private load = function() {
-    const httpOptions = {
-      headers: new HttpHeaders({
-        'Access-Control-Allow-Origin':'*'
-      })
-    };
-    this.http.get("http://localhost:8080/config/defaultConfig.json",httpOptions).subscribe(
+    // const httpOptions = {
+    //   headers: new HttpHeaders({
+    //     'Access-Control-Allow-Origin':'http://localhost:4200'
+    //   })
+    // };
+    this.http.get("http://localhost:8080/config/defaultConfig.json").subscribe(
+      // this.http.get("https://envp2odsfkg7g.x.pipedream.net").subscribe(
       function(response) {
         var defaultConfig = response.data;
         if (defaultConfig === undefined) {
