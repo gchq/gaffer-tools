@@ -21,6 +21,28 @@ angular.module('app').factory('query', ['$http', 'config', 'events', 'common', '
     var query = {};
     var operations = [];
 
+    query.executeOperationJson = function(operationJson) {
+        if(operationJson) {
+            var operationJsonArray;
+            if(Array.isArray(operationJson)) {
+                operationJsonArray = operationJson;
+            } else {
+                operationJsonArray = [operationJson];
+            }
+            for (var i in operationJsonArray) {
+                try {
+                    var operation = JSON.parse(operationJsonArray[i]);
+                    query.addOperation(operation);
+                    query.executeQuery(
+                        operation
+                    );
+                } catch {
+                    error.handle('Error executing operation. Is it a valid json operation string?');
+                }
+            }
+        }
+    }
+
     /**
      * Alerts the user if they hit the result limit
      * @param {Array} data The data returned by the Gaffer REST service
@@ -113,12 +135,9 @@ angular.module('app').factory('query', ['$http', 'config', 'events', 'common', '
         events.broadcast('operationsUpdated', [operations]);
     }
 
+
     if($routeParams.preQuery) {
-        var operation = JSON.parse($routeParams.preQuery);
-        query.addOperation(operation);
-        query.executeQuery(
-            operation
-        );
+        query.executeOperationJson($routeParams.preQuery);
         $location.search("preQuery", null);
     }
 
