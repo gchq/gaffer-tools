@@ -67,6 +67,7 @@ angular.module('app').factory('config', ['$http', '$q', 'defaultRestEndpoint', '
                         }
                         angular.merge(mergedConfig, customConfig);
                         config = mergedConfig;
+                        document.title = config.title || 'Gaffer';
                         defer.resolve(config);
                     },
                     function(err) {
