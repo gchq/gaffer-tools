@@ -98,6 +98,7 @@ export class AnalyticsComponent implements OnInit {
     var parameters = [["Result Limit", "To CSV", "Vehicle Type"], "to csv"];
     var outputTypes = ["table", "table"];
     var score = [2, 3];
+    var color = ["red", "yellow"];
     var icons = ["star", "directions_bus"]; //some names of icons from img folder
 
     // Create the analytics from this hard coded data
@@ -114,6 +115,7 @@ export class AnalyticsComponent implements OnInit {
       this.analytics[_i].outputType = [];
       this.analytics[_i].outputType.output = outputTypes[_i];
       this.analytics[_i].score = score[_i];
+      this.analytics[_i].color = color[_i];
       this.analytics[_i].header = [];
       this.analytics[_i].header.iconURL = icons[_i];
     }
