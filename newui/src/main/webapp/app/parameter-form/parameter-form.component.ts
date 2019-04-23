@@ -12,7 +12,11 @@ export class ParameterFormComponent implements OnInit {
   constructor() {}
 
   ngOnInit() {
-    console.log(this.parameters);
+    //Convert the key value map of parameters into an iterable array
+    let object = this.parameters;
+    this.parameters = Object.keys(object).map(function(key) {
+      return [key, object[key]];
+    });
     if (this.parameters === null || this.parameters === undefined) {
       throw "Expected defined, non-null value for parameters. Got " +
         this.parameters;

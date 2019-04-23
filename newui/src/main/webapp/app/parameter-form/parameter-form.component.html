@@ -5,8 +5,8 @@
       <div fxLayout="column">
         <div *ngFor="let params of parameters" flex="noshrink">
           <mat-form-field class="example-full-width" appearance="fill">
-            <mat-label>{{params}}</mat-label>
-            <input matInput id="id" name="name" param="param">
+            <mat-label>{{params[0]}}</mat-label>
+            <input matInput id="id" name="name" param="params[1]">
           </mat-form-field>
         </div>
       </div>

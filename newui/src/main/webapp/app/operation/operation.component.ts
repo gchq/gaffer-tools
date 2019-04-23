@@ -16,7 +16,7 @@ export class OperationComponent implements OnInit {
     console.log(this.model);
     console.log(this.model.parameters);
     console.log(this.model.operations.fields);
-    console.log(this.model.operations.fields.view);
+    //console.log(this.model.operations.fields.view);
   }
 
   getConfigFields = function() {
