@@ -74,6 +74,8 @@ export class AnalyticsComponent implements OnInit {
       return 0;
     });
 
+    console.log(this.availableOperations);
+
     // Hard code the other data I assume we will get when we load up the analytic
     var operationNames = ["Frequent Vehicles In Region","Frequent Vehicles In Region 2"];
     var descriptions = ["First description","Second description"];

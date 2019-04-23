@@ -15,7 +15,8 @@
  */
 export class DefaultRestEndpointService {
 
-    defaultRestEndpoint = window.location.origin + "/rest/latest";
+    //defaultRestEndpoint = window.location.origin + "/rest/latest";
+    defaultRestEndpoint = "http://localhost:8080" + "/rest/latest";
 
     get = function() {
         return this.defaultRestEndpoint;

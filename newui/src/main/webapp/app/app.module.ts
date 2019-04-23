@@ -8,6 +8,7 @@ import { LayoutModule } from "@angular/cdk/layout";
 import { FlexLayoutModule } from "@angular/flex-layout";
 import { AppRoutingModule } from "./app-routing.module";
 import { HttpClientModule } from "@angular/common/http";
+import { ToastrModule, ToastrService } from 'ngx-toastr';
 
 import { AppComponent } from "./app.component";
 import { AboutComponent } from "./about/about.component";
@@ -64,6 +65,7 @@ import { DefaultRestEndpointService } from './config/default-rest-endpoint-servi
     MaterialModule,
     LayoutModule,
     FlexLayoutModule,
+    ToastrModule.forRoot()
   ],
   providers: [
     AnalyticsService,

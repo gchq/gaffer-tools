@@ -201,54 +201,54 @@ export class OperationService {
   };
 
   reloadOperations = function(loud) {
-    var deferred = Observable.create((observer: Observer<String>) => {});
-
-    this.config.get().subscribe((conf) => {
-      var queryUrl = this.common.parseUrl(
-        conf.restEndpoint + "/graph/operations/details"
-      );
-      this.http.get(queryUrl).subscribe(
-        (response) => {
-          this.availableOperations = [];
-          this.addOperations(response.data, conf);
-          var getAllClass =
-            "uk.gov.gchq.gaffer.named.operation.GetAllNamedOperations";
-          if (
-            this.common.arrayContainsObjectWithValue(
-              this.availableOperations,
-              "class",
-              getAllClass
-            )
-          ) {
-            this.query.execute(
-              {
-                class: getAllClass,
-                options: this.operationOptions.getDefaultOperationOptions()
-              },
-              function(result) {
-                this.addNamedOperations(result, conf);
-                deferred.resolve(this.availableOperations);
-              },
-              function(err) {
-                if (loud) {
-                  this.error.handle("Failed to load named operations", err);
-                  deferred.throw(err);
+    var observable = Observable.create((observer: Observer<String>) => {
+      this.config.get().subscribe((conf) => {
+        var queryUrl = this.common.parseUrl(
+          conf.restEndpoint + "/graph/operations/details"
+        );
+        this.http.get(queryUrl).subscribe(
+          (response) => {
+            this.availableOperations = [];
+            this.addOperations(response.data, conf);
+            var getAllClass =
+              "uk.gov.gchq.gaffer.named.operation.GetAllNamedOperations";
+            if (
+              this.common.arrayContainsObjectWithValue(
+                this.availableOperations,
+                "class",
+                getAllClass
+              )
+            ) {
+              this.query.execute(
+                {
+                  class: getAllClass,
+                  options: this.operationOptions.getDefaultOperationOptions()
+                },
+                function(result) {
+                  this.addNamedOperations(result, conf);
+                  observer.next(this.availableOperations);
+                },
+                function(err) {
+                  if (loud) {
+                    this.error.handle("Failed to load named operations", err);
+                    observer.error(err);
+                  }
+                  observer.next(this.availableOperations);
                 }
-                deferred.resolve(this.availableOperations);
-              }
-            );
-          } else {
-            deferred.resolve(this.availableOperations);
+              );
+            } else {
+              observer.next(this.availableOperations);
+            }
+          },
+          (err) => {
+            this.error.handle("Unable to load operations", err.data);
+            observer.next(null); // []
           }
-        },
-        (err) => {
-          this.error.handle("Unable to load operations", err.data);
-          deferred.resolve([]);
-        }
-      );
+        );
+      });
     });
 
-    return deferred;
+    return observable;
   };
 
   ifOperationSupported = function(operationClass, onSupported, onUnsupported) {
