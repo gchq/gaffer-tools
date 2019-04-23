@@ -207,9 +207,9 @@ export class OperationService {
           conf.restEndpoint + "/graph/operations/details"
         );
         this.http.get(queryUrl).subscribe(
-          (response) => {
+          (data) => {
             this.availableOperations = [];
-            this.addOperations(response.data, conf);
+            this.addOperations(data, conf);
             var getAllClass =
               "uk.gov.gchq.gaffer.named.operation.GetAllNamedOperations";
             if (
