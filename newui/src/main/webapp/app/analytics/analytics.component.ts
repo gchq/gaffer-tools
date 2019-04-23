@@ -99,9 +99,10 @@ export class AnalyticsComponent implements OnInit {
 
     // Create the analytics from this hard coded data
     var _i = 0;
+    //this.analytics = [[], []];
     for (_i = 0; _i < 2; _i++) {
       //this.analytics[i].operation = availableOperations[i];
-
+      //console.log(this.analytics);
       this.analytics[_i].operationName = operationNames[_i];
       this.analytics[_i].description = descriptions[_i];
       this.analytics[_i].operations = operations[_i];
@@ -126,7 +127,10 @@ export class AnalyticsComponent implements OnInit {
 
   // load the operations
   reloadOperations = function() {
-    this.operationService.reloadOperations(true).subscribe(this.populateOperations);
+    this.operationService.reloadOperations(true).subscribe(
+      availableOperations => this.populateOperations(availableOperations),
+      err => console.log(err));
     //this.populateOperations()
+    //use error service to handle error
   };
 }
