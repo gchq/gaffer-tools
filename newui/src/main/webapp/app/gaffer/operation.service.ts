@@ -20,6 +20,8 @@ import { Observable, Observer } from 'rxjs';
 import { ConfigService } from '../config/config.service';
 import { CommonService } from '../dynamic-input/common.service';
 import { ErrorService } from '../dynamic-input/error.service';
+import { TypesService } from './type.service';
+import { QueryService } from './query.service';
 
 @Injectable()
 export class OperationService {
@@ -27,7 +29,9 @@ export class OperationService {
               private http: HttpClient,
               private config: ConfigService,
               private common: CommonService,
-              private error: ErrorService) {}
+              private error: ErrorService,
+              private types: TypesService,
+              private query: QueryService) {}
 
   availableOperations;
   namedOpClass = "uk.gov.gchq.gaffer.named.operation.NamedOperation";

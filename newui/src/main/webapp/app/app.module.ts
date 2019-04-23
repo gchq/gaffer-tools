@@ -36,6 +36,7 @@ import { CommonService } from "./dynamic-input/common.service";
 import { ErrorService } from "./dynamic-input/error.service";
 import { TypesService } from "./gaffer/type.service";
 import { DefaultRestEndpointService } from './config/default-rest-endpoint-service';
+import { QueryService } from './gaffer/query.service';
 
 @NgModule({
   declarations: [
@@ -78,6 +79,7 @@ import { DefaultRestEndpointService } from './config/default-rest-endpoint-servi
     TypesService,
     ErrorService,
     DefaultRestEndpointService,
+    QueryService
   ],
   bootstrap: [AppComponent]
 })
