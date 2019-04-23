@@ -1,7 +1,7 @@
 import { enableProdMode } from "@angular/core";
 import { platformBrowserDynamic } from "@angular/platform-browser-dynamic";
 
-import { AppModule } from "./app/app.module";
+import { AppModule } from "./main/webapp/app/app.module";
 import { environment } from "./environments/environment";
 
 if (environment.production) {
@@ -14,7 +14,7 @@ platformBrowserDynamic()
 
 declare const require: any;
 
-const context = require.context("./app", true, /\.js$/);
+const context = require.context("./main/webapp/app", true, /\.js$/);
 
 context.keys().forEach((file: any) => {
   try {
