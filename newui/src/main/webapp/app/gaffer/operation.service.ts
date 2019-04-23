@@ -14,11 +14,24 @@
  * limitations under the License.
  */
 import { Injectable } from "@angular/core";
+import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { OperationOptionsService } from "../options/operation-options.service";
+import { Observable, Observer } from 'rxjs';
+import { ConfigService } from '../config/config.service';
+import { CommonService } from '../dynamic-input/common.service';
+import { ErrorService } from '../dynamic-input/error.service';
+import { TypesService } from './type.service';
+import { QueryService } from './query.service';
 
 @Injectable()
 export class OperationService {
-  constructor(private operationOptions: OperationOptionsService) {}
+  constructor(private operationOptions: OperationOptionsService,
+              private http: HttpClient,
+              private config: ConfigService,
+              private common: CommonService,
+              private error: ErrorService,
+              private types: TypesService,
+              private query: QueryService) {}
 
   availableOperations;
   namedOpClass = "uk.gov.gchq.gaffer.named.operation.NamedOperation";
@@ -130,7 +143,7 @@ export class OperationService {
   };
 
   private addNamedOperations = function(operations) {
-    this.config.get().then(function(conf) {
+    this.config.get().subscribe((conf) => {
       if (operations) {
         for (var i in operations) {
           var op = operations[i];
@@ -191,56 +204,84 @@ export class OperationService {
     });
   };
 
+  // reloadOperations = function(loud) {
+  //   var observable = Observable.create((observer: Observer<String>) => {
+  //     this.config.get().subscribe((conf) => {
+  //       var queryUrl = this.common.parseUrl(
+  //         conf.restEndpoint + "/graph/operations/details"
+  //       );
+  //       this.http.get(queryUrl).subscribe(
+  //         (data) => {
+  //           this.availableOperations = [];
+  //           this.addOperations(data, conf);
+  //           var getAllClass =
+  //             "uk.gov.gchq.gaffer.named.operation.GetAllNamedOperations";
+  //           if (
+  //             this.common.arrayContainsObjectWithValue(
+  //               this.availableOperations,
+  //               "class",
+  //               getAllClass
+  //             )
+  //           ) {
+  //             this.query.execute(
+  //               {
+  //                 class: getAllClass,
+  //                 options: this.operationOptions.getDefaultOperationOptions()
+  //               },
+  //               (result) => {
+  //                 this.addNamedOperations(result, conf);
+  //                 observer.next(this.availableOperations);
+  //               },
+  //               (err) => {
+  //                 if (loud) {
+  //                   this.error.handle("Failed to load named operations", err);
+  //                   observer.error(err);
+  //                 }
+  //                 observer.next(this.availableOperations);
+  //               }
+  //             );
+  //           } else {
+  //             observer.next(this.availableOperations);
+  //           }
+  //         },
+  //         (err) => {
+  //           this.error.handle("Unable to load operations", err.data);
+  //           observer.next(null); // []
+  //         }
+  //       );
+  //     });
+  //   });
+
+  //   return observable;
+  // };
+
   reloadOperations = function(loud) {
-    var deferred = this.$q.defer();
-
-    this.config.get().then(function(conf) {
-      var queryUrl = this.common.parseUrl(
-        conf.restEndpoint + "/graph/operations/details"
-      );
-      this.$http.get(queryUrl).then(
-        function(response) {
-          this.availableOperations = [];
-          this.addOperations(response.data, conf);
-          var getAllClass =
-            "uk.gov.gchq.gaffer.named.operation.GetAllNamedOperations";
-          if (
-            this.common.arrayContainsObjectWithValue(
-              this.availableOperations,
-              "class",
-              getAllClass
-            )
-          ) {
-            this.query.execute(
-              {
-                class: getAllClass,
-                options: this.operationOptions.getDefaultOperationOptions()
-              },
-              function(result) {
-                this.addNamedOperations(result, conf);
-                deferred.resolve(this.availableOperations);
-              },
-              function(err) {
-                if (loud) {
-                  this.error.handle("Failed to load named operations", err);
-                  deferred.reject(err);
-                }
-                deferred.resolve(this.availableOperations);
+    var observable = Observable.create((observer: Observer<String>) => {
+      var operation = {
+        "class": "uk.gov.gchq.gaffer.operation.analytic.GetAllAnalyticOperations"
+      }
+      let headers = new HttpHeaders();
+      headers = headers.set('Content-Type', 'application/json; charset=utf-8');
+      this.config.get().subscribe((conf) => {
+          var queryUrl = this.common.parseUrl(conf.restEndpoint + "/graph/operations/execute");
+          this.http.post(queryUrl, operation, { headers: headers} ).subscribe(
+            (data) => {
+              observer.next(data)
+            },
+            (err) => {
+              if (loud) {
+              this.error.handle("Failed to load analytics", err);
+              observer.error(err);
+              } else {
+                observer.next(err)
               }
-            );
-          } else {
-            deferred.resolve(this.availableOperations);
-          }
-        },
-        function(err) {
-          this.error.handle("Unable to load operations", err.data);
-          deferred.resolve([]);
-        }
-      );
-    });
+            }
+          )
+      })
+    })
 
-    return deferred.promise;
-  };
+    return observable;
+  }
 
   ifOperationSupported = function(operationClass, onSupported, onUnsupported) {
     this.config.get().then(function(conf) {
@@ -248,7 +289,7 @@ export class OperationService {
         conf.restEndpoint + "/graph/operations"
       );
 
-      this.$http.get(queryUrl).then(
+      this.http.get(queryUrl).then(
         function(response) {
           var ops = response.data;
           if (ops.indexOf(operationClass) !== -1) {

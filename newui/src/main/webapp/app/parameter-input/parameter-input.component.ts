@@ -61,8 +61,8 @@ export class ParameterInputComponent implements OnInit {
 
   resetOperation = function(index) {
     var inputFlag = index === 0;
-    this.operations[index] = this.operationChain.createBlankOperation(
-      inputFlag
+    this.operations[index] = this.operationChain.createBlankOperation(inputFlag
+
     );
   };
 

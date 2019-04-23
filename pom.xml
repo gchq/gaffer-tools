@@ -38,8 +38,8 @@
     </modules>
 
     <properties>
-        <gaffer.version>1.8.3</gaffer.version>
-        <scm.url>
+        <gaffer.version>2.0.0</gaffer.version>
+        <!-- <scm.url>
             https://github.com/gchq/gaffer-tools
         </scm.url>
         <scm.connection>
@@ -47,7 +47,7 @@
         </scm.connection>
         <scm.developer.connection>
             scm:git:https://github.com/gchq/gaffer-tools.git
-        </scm.developer.connection>
+        </scm.developer.connection> -->
     </properties>
 
     <developers>

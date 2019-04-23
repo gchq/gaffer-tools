@@ -13,9 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { Injectable } from '@angular/core';
+import { ToastrService } from 'ngx-toastr';
+
+@Injectable()
 export class ErrorService {
   toastQueue = [];
 
+  constructor(private mdToast: ToastrService) {
+  }
+  
   private showInOrder = function(toast, err) {
     if (this.toastQueue.length > 0) {
       this.toastQueue[this.toastQueue.length - 1].promise.then(function() {
@@ -29,7 +36,8 @@ export class ErrorService {
   };
 
   private showToast = function(toast, err) {
-    this.$mdToast.show(toast).then(
+    this.mdToast.show(toast).then(
+      
       function(value) {
         if (value === "ok") {
           // clicked More info button
@@ -81,16 +89,15 @@ export class ErrorService {
       msg = message;
     }
 
-    var toast = this.$mdToast
-      .simple()
-      .textContent(msg)
-      .position("top right")
-      .hideDelay(msg.length * 70);
+    // var toast = this.mdToast
+    //   .success(msg)
+    //   .position("top right")
+    //   .hideDelay(msg.length * 70);
 
-    if (err && err !== "") {
-      console.log(err);
-      toast.action("More info").highlightAction(true);
-    }
-    this.showInOrder(toast, err);
+    // if (err && err !== "") {
+    //   console.log(err);
+    //   toast.action("More info").highlightAction(true);
+    // }
+    // this.showInOrder(toast, err);
   };
 }
