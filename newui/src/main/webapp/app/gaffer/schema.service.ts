@@ -46,8 +46,10 @@ export class SchemaService {
       return of(this.schema);
     } else if (!this.deferred) {
       //this.deferred = new Observable();
-      this.deferred = Observable.create((observer: Observer<String>) => {});
-      this.getSchema();
+      this.deferred = Observable.create((observer: Observer<String>) => {
+        this.getSchema(null,observer);
+      });
+      
     }
     return this.deferred;
   };
@@ -66,17 +68,17 @@ export class SchemaService {
    * Creates the get schema operation using the default operation options.
    * @param {Boolean} loud Flag passed down to indicate whether to broadcast errors
    */
-  private getSchema = function(loud) {
+  private getSchema = function(loud, observer) {
     var getSchemaOperation = this.operationService.createGetSchemaOperation();
     if (Object.keys(getSchemaOperation.options).length === 0) {
       this.operationOptions
         .getDefaultOperationOptionsAsync()
-        .subscribe(function(options) {
+        .subscribe((options) => {
           getSchemaOperation.options = options;
-          this.getSchemaWithOperation(getSchemaOperation, loud);
+          this.getSchemaWithOperation(getSchemaOperation, loud, observer);
         });
     } else {
-      this.getSchemaWithOperation(getSchemaOperation, loud);
+      this.getSchemaWithOperation(getSchemaOperation, loud, observer);
     }
   };
 
@@ -86,11 +88,12 @@ export class SchemaService {
    * @param {Operation} operation The GetSchema operation
    * @param {*} loud A flag indicating whether to broadcast errors
    */
-  private getSchemaWithOperation = function(operation, loud) {
+  private getSchemaWithOperation = function(operation, loud, observer) {
+    console.log(observer);
     try {
       this.query.execute(
         operation,
-        function(response) {
+        (response) => {
           this.schema = response;
           if (!this.schema.entities) {
             this.schema.entities = {};
@@ -103,23 +106,23 @@ export class SchemaService {
           }
 
           this.updateSchemaVertices();
-          this.deferred.resolve(this.schema);
-          this.deferred = undefined;
+          observer.next(this.schema);
+          observer.complete(undefined);
         },
-        function(err) {
-          this.deferred.throw(err);
+        (err) => {
+          observer.error(err);
           if (loud) {
             this.error.handle("Failed to load schema", err);
           }
-          this.deferred = undefined;
+          observer.complete(undefined);
         }
       );
     } catch (e) {
-      this.deferred.throw(e);
+      observer.error(e);
       if (loud) {
         this.error.handle("Failed to load schema", e);
       }
-      this.deferred = undefined;
+      observer.complete(undefined);
     }
   };
 
