@@ -35,19 +35,19 @@ export class QueryService {
      * @param {Array} data The data returned by the Gaffer REST service
      */
     private showTooManyResultsPrompt = function(data, onSuccess) {
-        this.$mdDialog.show({
-            template: '<result-count-warning aria-label="Result Count Warning"></result-count-warning>',
-            parent: angular.element(document.body),
-            clickOutsideToClose: false
-        })
-        .then(function(command) {
-            if(command === 'results') {
-                this.results.update(data);
-                if(onSuccess) {
-                    onSuccess(data);
-                }
-            }
-        });
+        // this.$mdDialog.show({
+        //     template: '<result-count-warning aria-label="Result Count Warning"></result-count-warning>',
+        //     parent: angular.element(document.body),
+        //     clickOutsideToClose: false
+        // })
+        // .then(function(command) {
+        //     if(command === 'results') {
+        //         this.results.update(data);
+        //         if(onSuccess) {
+        //             onSuccess(data);
+        //         }
+        //     }
+        // });
     }
 
     getOperations = function() {
@@ -66,7 +66,7 @@ export class QueryService {
             function(data) {
                 this.loading.finish()
                 if (data.length >= this.settings.getResultLimit()) {
-                    this.showTooManyResultsPrompt(data.slice(0, settings.getResultLimit()), onSuccess);
+                    this.showTooManyResultsPrompt(data.slice(0, this.settings.getResultLimit()), onSuccess);
                 } else {
                    this.results.update(data);
                    if(onSuccess) {
@@ -116,11 +116,11 @@ export class QueryService {
 
     addOperation = function(operation) {
         this.operations.push(operation);
-        this.events.broadcast('operationsUpdated', [operations])
+        this.events.broadcast('operationsUpdated', [this.operations])
     }
 
     setOperations = function(ops) {
         this.operations = ops;
-        this.events.broadcast('operationsUpdated', [operations]);
+        this.events.broadcast('operationsUpdated', [this.operations]);
     }
 };

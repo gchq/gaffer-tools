@@ -84,7 +84,6 @@ export class TableComponent implements OnInit {
 
   resultsByType = [];
   filteredResults = [];
-  data = { results: [], columns: [] };
   searchTerm = "";
 
   pagination = { limit: 50, page: 1 };
