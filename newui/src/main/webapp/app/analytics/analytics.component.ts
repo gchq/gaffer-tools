@@ -113,7 +113,7 @@ export class AnalyticsComponent implements OnInit {
       this.analytics[_i].header.iconURL = icons[_i];
     }
     console.log(this.analytics);
-    //this.analytics = this.availableOperations;
+    this.analytics = this.availableOperations;
   };
 
   // Delete this?
@@ -129,7 +129,9 @@ export class AnalyticsComponent implements OnInit {
   // load the operations
   reloadOperations = function() {
     this.operationService.reloadOperations(true).subscribe(
-      availableOperations => this.populateOperations(availableOperations),
+      availableOperations => {
+        console.log(availableOperations)
+        this.populateOperations(availableOperations)},
       err => console.log(err));
     //this.populateOperations()
     //use error service to handle error

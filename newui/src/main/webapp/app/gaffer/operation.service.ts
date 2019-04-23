@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import { Injectable } from "@angular/core";
-import { HttpClient } from "@angular/common/http";
+import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { OperationOptionsService } from "../options/operation-options.service";
 import { Observable, Observer } from 'rxjs';
 import { ConfigService } from '../config/config.service';
@@ -204,56 +204,84 @@ export class OperationService {
     });
   };
 
+  // reloadOperations = function(loud) {
+  //   var observable = Observable.create((observer: Observer<String>) => {
+  //     this.config.get().subscribe((conf) => {
+  //       var queryUrl = this.common.parseUrl(
+  //         conf.restEndpoint + "/graph/operations/details"
+  //       );
+  //       this.http.get(queryUrl).subscribe(
+  //         (data) => {
+  //           this.availableOperations = [];
+  //           this.addOperations(data, conf);
+  //           var getAllClass =
+  //             "uk.gov.gchq.gaffer.named.operation.GetAllNamedOperations";
+  //           if (
+  //             this.common.arrayContainsObjectWithValue(
+  //               this.availableOperations,
+  //               "class",
+  //               getAllClass
+  //             )
+  //           ) {
+  //             this.query.execute(
+  //               {
+  //                 class: getAllClass,
+  //                 options: this.operationOptions.getDefaultOperationOptions()
+  //               },
+  //               (result) => {
+  //                 this.addNamedOperations(result, conf);
+  //                 observer.next(this.availableOperations);
+  //               },
+  //               (err) => {
+  //                 if (loud) {
+  //                   this.error.handle("Failed to load named operations", err);
+  //                   observer.error(err);
+  //                 }
+  //                 observer.next(this.availableOperations);
+  //               }
+  //             );
+  //           } else {
+  //             observer.next(this.availableOperations);
+  //           }
+  //         },
+  //         (err) => {
+  //           this.error.handle("Unable to load operations", err.data);
+  //           observer.next(null); // []
+  //         }
+  //       );
+  //     });
+  //   });
+
+  //   return observable;
+  // };
+
   reloadOperations = function(loud) {
     var observable = Observable.create((observer: Observer<String>) => {
+      var operation = {
+        "class": "uk.gov.gchq.gaffer.operation.analytic.GetAllAnalyticOperations"
+      }
+      let headers = new HttpHeaders();
+      headers = headers.set('Content-Type', 'application/json; charset=utf-8');
       this.config.get().subscribe((conf) => {
-        var queryUrl = this.common.parseUrl(
-          conf.restEndpoint + "/graph/operations/details"
-        );
-        this.http.get(queryUrl).subscribe(
-          (data) => {
-            this.availableOperations = [];
-            this.addOperations(data, conf);
-            var getAllClass =
-              "uk.gov.gchq.gaffer.named.operation.GetAllNamedOperations";
-            if (
-              this.common.arrayContainsObjectWithValue(
-                this.availableOperations,
-                "class",
-                getAllClass
-              )
-            ) {
-              this.query.execute(
-                {
-                  class: getAllClass,
-                  options: this.operationOptions.getDefaultOperationOptions()
-                },
-                (result) => {
-                  this.addNamedOperations(result, conf);
-                  observer.next(this.availableOperations);
-                },
-                (err) => {
-                  if (loud) {
-                    this.error.handle("Failed to load named operations", err);
-                    observer.error(err);
-                  }
-                  observer.next(this.availableOperations);
-                }
-              );
-            } else {
-              observer.next(this.availableOperations);
+          var queryUrl = this.common.parseUrl(conf.restEndpoint + "/graph/operations/execute");
+          this.http.post(queryUrl, operation, { headers: headers} ).subscribe(
+            (data) => {
+              observer.next(data)
+            },
+            (err) => {
+              if (loud) {
+              this.error.handle("Failed to load analytics", err);
+              observer.error(err);
+              } else {
+                observer.next(err)
+              }
             }
-          },
-          (err) => {
-            this.error.handle("Unable to load operations", err.data);
-            observer.next(null); // []
-          }
-        );
-      });
-    });
+          )
+      })
+    })
 
     return observable;
-  };
+  }
 
   ifOperationSupported = function(operationClass, onSupported, onUnsupported) {
     this.config.get().then(function(conf) {
