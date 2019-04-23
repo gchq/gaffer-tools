@@ -228,11 +228,11 @@ export class OperationService {
                   class: getAllClass,
                   options: this.operationOptions.getDefaultOperationOptions()
                 },
-                function(result) {
+                (result) => {
                   this.addNamedOperations(result, conf);
                   observer.next(this.availableOperations);
                 },
-                function(err) {
+                (err) => {
                   if (loud) {
                     this.error.handle("Failed to load named operations", err);
                     observer.error(err);

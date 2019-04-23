@@ -13,11 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { Injectable } from '@angular/core';
+import { HttpClient } from "@angular/common/http";
+import { ConfigService } from '../config/config.service';
+import { CommonService } from '../dynamic-input/common.service';
+import { ErrorService } from '../dynamic-input/error.service';
 
+@Injectable()
 export class QueryService {
 
     query = {};
     operations = [];
+
+    constructor(private config: ConfigService,
+                private common: CommonService,
+                private error: ErrorService,
+                private http: HttpClient) {}
 
     /**
      * Alerts the user if they hit the result limit
@@ -81,20 +92,20 @@ export class QueryService {
         if(typeof operation !== 'string' && !(operation instanceof String)) {
             operation = JSON.stringify(operation);
         }
-        this.config.get().then(function(conf) {
+        this.config.get().subscribe((conf) => {
             var queryUrl = this.common.parseUrl(conf.restEndpoint + "/graph/operations/execute");
-            this.$http.post(queryUrl, operation)
-                .then(
-                    function(response){
+            this.http.post(queryUrl, operation)
+                .subscribe(
+                    (data) => {
                         if(onSuccess) {
-                            onSuccess(response.data)
+                            onSuccess(data)
                         }
                     },
-                    function(err) {
+                    (err) => {
                         if (onFailure) {
-                            onFailure(err.data);
+                            onFailure(err);
                         } else {
-                            this.error.handle('Error running operation', err.data);
+                            this.error.handle('Error running operation', err);
                         }
                     }
                 );
