@@ -1,10 +1,11 @@
 <div [hidden]="primaryInput">
-  <mat-checkbox *ngIf="!first" [(ngModel)]="usePreviousOutput" (change)="onCheckboxChange()"
+  <!-- <mat-checkbox *ngIf="!first" [(ngModel)]="usePreviousOutput" (change)="onCheckboxChange()"
     aria-label="use output from previous operation">
     Use output from previous operation
-  </mat-checkbox>
+  </mat-checkbox> -->
   <div [ngSwitch]="primaryInput.className" [hidden]="!usePreviousOutput || secondaryInput">
-    <div *ngSwitchCase="'uk.gov.gchq.gaffer.commonutil.pair.Pair<uk.gov.gchq.gaffer.data.element.id.ElementId,uk.gov.gchq.gaffer.data.element.id.ElementId>[]'">
+    <div
+      *ngSwitchCase="'uk.gov.gchq.gaffer.commonutil.pair.Pair<uk.gov.gchq.gaffer.data.element.id.ElementId,uk.gov.gchq.gaffer.data.element.id.ElementId>[]'">
       <app-pair-builder [model]="model.inputPairs" use-previous="usePreviousOutput"></app-pair-builder>
     </div>
     <div *ngSwitchDefault>
@@ -16,10 +17,9 @@
         </button>
       </div>
       <div fxLayout="row">
-        <app-seed-builder fxFlex="50%" [model]="model.input" use-previous="usePreviousOutput"
-          route-param="input" flex="grow"></app-seed-builder>
-        <app-seed-builder fxFlex="50%" [model]="model.inputB" *ngIf="secondaryInput" route-param="inputB"
-          flex="grow">
+        <app-seed-builder fxFlex="50%" [model]="model.input" use-previous="usePreviousOutput" route-param="input"
+          flex="grow"></app-seed-builder>
+        <app-seed-builder fxFlex="50%" [model]="model.inputB" *ngIf="secondaryInput" route-param="inputB" flex="grow">
         </app-seed-builder>
       </div>
     </div>

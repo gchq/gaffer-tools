@@ -1,22 +1,39 @@
 import { Component, OnInit, Injectable } from "@angular/core";
-import { SchemaService } from '../gaffer/schema.service';
-import { EventsService } from '../dynamic-input/events.service';
+import { SchemaService } from "../gaffer/schema.service";
+import { EventsService } from "../dynamic-input/events.service";
 
-export interface PeriodicElement {
-  name: string;
+export interface Element {
+  junction: string;
   position: number;
-  population: number;
-  country: string;
+  frequency: number;
+  vehicle: string;
 }
+// [
+//   {
+//     "class": "uk.gov.gchq.gaffer.data.element.Entity",
+//     "group": "JunctionUse",
+//     "vertex": "M4:LA Boundary",
+//     "properties": {
+//       "BUS": {
+//         "java.lang.Long": 1958
+//       }
+//     }
+//   },
+//   {
+//     "class": "uk.gov.gchq.gaffer.data.element.Entity",
+//     "group": "JunctionUse",
+//     "vertex": "M32:2",
+//     "properties": {
+//       "BUS": {
+//         "java.lang.Long": 1411
+//       }
+//     }
+//   }
+// ]
 
-const ELEMENT_DATA: PeriodicElement[] = [
-  { position: 1, name: "Bristol", population: 1.0079, country: "UK" },
-  { position: 2, name: "Brighton", population: 4.0026, country: "UK" },
-  { position: 3, name: "Birmingham", population: 6.941, country: "UK" },
-  { position: 4, name: "Berlin", population: 9.0122, country: "DE" },
-  { position: 5, name: "Bruges", population: 10.811, country: "BE" },
-  { position: 6, name: "Beijing", population: 12.0107, country: "CH" },
-  { position: 7, name: "Winchester", population: 14.0067, country: "UK" }
+const ELEMENT_DATA: Element[] = [
+  { position: 1, junction: "M4:LA Boundary", frequency: 1958, vehicle: "BUS" },
+  { position: 2, junction: "M32:2", frequency: 1411, vehicle: "BUS" }
 ];
 
 @Component({
@@ -25,10 +42,10 @@ const ELEMENT_DATA: PeriodicElement[] = [
 })
 @Injectable()
 export class TableComponent implements OnInit {
-  displayedColumns: string[] = ["position", "name", "country", "population"];
-  dataSource = ELEMENT_DATA;
-  constructor(private schema: SchemaService,
-              private events: EventsService) {}
+  displayedColumns: string[] = ["junction", "vehicle", "frequency"];
+  columnsToDisplay: string[] = this.displayedColumns.slice();
+  data: Element[] = ELEMENT_DATA;
+  constructor(private schema: SchemaService, private events: EventsService) {}
 
   /**
    * Initialises the controller.

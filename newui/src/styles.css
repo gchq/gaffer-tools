@@ -454,14 +454,6 @@ quick-query {
   grid-template-columns: auto auto auto auto;
 }
 
-.grid-item {
-  text-align: center;
-}
-
-.grid-item:hover {
-  background-color: rgba(200, 200, 200, 1);
-}
-
 .grid-button:not([disabled]):hover {
   background-color: rgba(200, 200, 200, 1);
 }

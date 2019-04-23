@@ -6,12 +6,13 @@ import { Component, OnInit, Input } from "@angular/core";
   styleUrls: ["./parameter-form.component.css"]
 })
 export class ParameterFormComponent implements OnInit {
-  @Input('parameters') parameters;
+  @Input("parameters") parameters;
   title;
 
   constructor() {}
 
   ngOnInit() {
+    console.log(this.parameters);
     if (this.parameters === null || this.parameters === undefined) {
       throw "Expected defined, non-null value for parameters. Got " +
         this.parameters;

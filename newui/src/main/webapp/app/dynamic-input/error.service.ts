@@ -22,7 +22,7 @@ export class ErrorService {
 
   constructor(private mdToast: ToastrService) {
   }
-
+  
   private showInOrder = function(toast, err) {
     if (this.toastQueue.length > 0) {
       this.toastQueue[this.toastQueue.length - 1].promise.then(function() {
@@ -37,6 +37,7 @@ export class ErrorService {
 
   private showToast = function(toast, err) {
     this.mdToast.show(toast).then(
+      
       function(value) {
         if (value === "ok") {
           // clicked More info button

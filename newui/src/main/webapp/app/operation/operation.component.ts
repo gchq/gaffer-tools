@@ -7,8 +7,8 @@ import { modelGroupProvider } from "@angular/forms/src/directives/ng_model_group
   styleUrls: ["./operation.component.css"]
 })
 export class OperationComponent implements OnInit {
-  @Input('model') model;
-  @Input('timeConfig') timeConfig;
+  @Input("model") model;
+  @Input("timeConfig") timeConfig;
 
   constructor() {}
 
