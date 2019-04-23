@@ -49,10 +49,23 @@ a {
   transform: scale(1.4);
 }
 
+.work {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  flex-wrap: wrap;
+}
+
+mat-card-content {
+  flex: 1;
+  padding: 0.25em 0.3em 0;
+}
+
 mat-card {
   max-width: 80%;
   margin: 2em auto;
   text-align: center;
+  display: flex;
 }
 
 mat-toolbar-row {

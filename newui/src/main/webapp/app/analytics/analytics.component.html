@@ -2,9 +2,11 @@
   <h1>Analytics</h1>
 </div>
 <mat-card>
-  <div class="grid-container">
-    <div *ngFor="let analytic of analytics">
+  <mat-grid-list cols="4">
+    <mat-grid-tile *ngFor="let analytic of analytics">
+
       <app-analytic [model]="analytic"></app-analytic>
-    </div>
-  </div>
+
+    </mat-grid-tile>
+  </mat-grid-list>
 </mat-card>
