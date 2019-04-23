@@ -88,16 +88,15 @@ export class ErrorService {
       msg = message;
     }
 
-    var toast = this.$mdToast
-      .simple()
-      .textContent(msg)
-      .position("top right")
-      .hideDelay(msg.length * 70);
+    // var toast = this.mdToast
+    //   .success(msg)
+    //   .position("top right")
+    //   .hideDelay(msg.length * 70);
 
-    if (err && err !== "") {
-      console.log(err);
-      toast.action("More info").highlightAction(true);
-    }
-    this.showInOrder(toast, err);
+    // if (err && err !== "") {
+    //   console.log(err);
+    //   toast.action("More info").highlightAction(true);
+    // }
+    // this.showInOrder(toast, err);
   };
 }

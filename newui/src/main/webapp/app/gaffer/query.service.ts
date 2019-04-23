@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import { Injectable } from '@angular/core';
-import { HttpClient } from "@angular/common/http";
+import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { ConfigService } from '../config/config.service';
 import { CommonService } from '../dynamic-input/common.service';
 import { ErrorService } from '../dynamic-input/error.service';
@@ -92,9 +92,11 @@ export class QueryService {
         if(typeof operation !== 'string' && !(operation instanceof String)) {
             operation = JSON.stringify(operation);
         }
+        let headers = new HttpHeaders();
+        headers = headers.set('Content-Type', 'application/json; charset=utf-8');
         this.config.get().subscribe((conf) => {
             var queryUrl = this.common.parseUrl(conf.restEndpoint + "/graph/operations/execute");
-            this.http.post(queryUrl, operation)
+            this.http.post(queryUrl, operation, { headers: headers} )
                 .subscribe(
                     (data) => {
                         if(onSuccess) {
