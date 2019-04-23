@@ -113,6 +113,7 @@ export class AnalyticsComponent implements OnInit {
       this.analytics[_i].header.iconURL = icons[_i];
     }
     console.log(this.analytics);
+    //this.analytics = this.availableOperations;
   };
 
   // Delete this?

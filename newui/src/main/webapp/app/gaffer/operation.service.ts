@@ -143,7 +143,7 @@ export class OperationService {
   };
 
   private addNamedOperations = function(operations) {
-    this.config.get().then(function(conf) {
+    this.config.get().subscribe((conf) => {
       if (operations) {
         for (var i in operations) {
           var op = operations[i];
