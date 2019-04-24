@@ -13,6 +13,7 @@ import { QueryService } from '../gaffer/query.service';
 @Injectable()
 export class ParameterInputComponent implements OnInit {
   analytic;
+  analyticOperation;
   timeConfig;
   @ViewChild("operationChainForm") operationChainForm;
 
@@ -77,6 +78,17 @@ export class ParameterInputComponent implements OnInit {
     return this.operationChainForm.$valid && !this.loading.isLoading();
   };
 
+  //Update the analytic operation on change of parameters
+  updateAnalytic = function() {
+
+  }
+
+  //Initialise the analyic operation with default parameters
+  createAnalytic = function() {
+
+  }
+
+  //Execute the analytic operation
   executeAnalytic = function() {
     // this.events.broadcast("onPreExecute", []);
     // if (!this.canExecute()) {
