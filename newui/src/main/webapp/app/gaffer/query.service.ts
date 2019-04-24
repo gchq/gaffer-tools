@@ -22,7 +22,6 @@ import { ErrorService } from '../dynamic-input/error.service';
 @Injectable()
 export class QueryService {
 
-    query = {};
     operations = [];
 
     constructor(private config: ConfigService,
@@ -63,7 +62,7 @@ export class QueryService {
     executeQuery = function(operation, onSuccess, onFailure) {
         this.execute(
             operation,
-            function(data) {
+            (data) => {
                 this.loading.finish()
                 if (data.length >= this.settings.getResultLimit()) {
                     this.showTooManyResultsPrompt(data.slice(0, this.settings.getResultLimit()), onSuccess);
@@ -74,7 +73,7 @@ export class QueryService {
                    }
                 }
             },
-            function(err) {
+            (err) => {
                 this.loading.finish();
                 this.error.handle('Error executing operation', err);
                 if (onFailure) {

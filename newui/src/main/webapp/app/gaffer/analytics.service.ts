@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { QueryService } from '../gaffer/query.service';
+import { QueryService } from './query.service';
 
 //Used to store and get the selected analytic
 @Injectable()
@@ -23,8 +23,8 @@ export class AnalyticsService {
   }
 
   //Update the analytic operation on change of parameters
-  updateAnalytic = function() {
-    
+  updateAnalytic = function(parameters) {
+    this.analyticOperation.parameters = {parameters}
   }
 
   //Create and initialise the analytic operation with default parameters

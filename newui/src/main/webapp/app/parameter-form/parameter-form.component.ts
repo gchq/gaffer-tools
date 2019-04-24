@@ -1,4 +1,5 @@
 import { Component, OnInit, Input } from "@angular/core";
+import { AnalyticsService } from '../gaffer/analytics.service';
 
 @Component({
   selector: "app-parameter-form",
@@ -9,7 +10,7 @@ export class ParameterFormComponent implements OnInit {
   @Input("parameters") parameters;
   title;
 
-  constructor() {}
+  constructor(private analyticsService: AnalyticsService) {}
 
   ngOnInit() {
     //Convert the key value map of parameters into an iterable array
@@ -30,4 +31,9 @@ export class ParameterFormComponent implements OnInit {
     var metaData = this.time.getTimeMetaData(parameterName);
     return metaData ? metaData.unit : undefined;
   };
+
+  //Update the analytic operation whenever a parameter changes
+  onChange = function() {
+    this.analyticsService.updateAnalytic(this.parameters)
+  }
 }

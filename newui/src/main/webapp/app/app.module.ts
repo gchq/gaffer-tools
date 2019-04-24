@@ -27,7 +27,7 @@ import { OperationFieldComponent } from "./operation-field/operation-field.compo
 import { ParameterInputComponent } from "./parameter-input/parameter-input.component";
 import { OptionsComponent } from "./options/options.component";
 
-import { AnalyticsService } from "./analytics/analytics.service";
+import { AnalyticsService } from "./gaffer/analytics.service";
 import { OperationService } from "./gaffer/operation.service";
 import { SchemaService } from "./gaffer/schema.service";
 import { OperationOptionsService } from "./options/operation-options.service";
