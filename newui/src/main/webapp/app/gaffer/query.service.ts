@@ -61,7 +61,7 @@ export class QueryService {
      * @param {Object} The operation chain to execute. It can either be an object or a json string.
      */
     executeQuery = function(operation, onSuccess, onFailure) {
-        this.query.execute(
+        this.execute(
             operation,
             function(data) {
                 this.loading.finish()

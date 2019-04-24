@@ -91,7 +91,7 @@ export class ParameterInputComponent implements OnInit {
     //Create the analytic operation to be executed
     var analyticOperation = {
       class: this.ANALYTIC_CLASS,
-      operationName: this.analytic.name,
+      operationName: this.analytic.operationName,
       parameters: {}
     };
 
