@@ -3,6 +3,7 @@ import { ActivatedRoute } from "@angular/router";
 import { Router } from "@angular/router";
 import { AnalyticsService } from "../analytics/analytics.service";
 import { ConfigService } from "../config/config.service";
+import { QueryService } from '../gaffer/query.service';
 
 @Component({
   selector: "app-parameter-input",
@@ -19,7 +20,8 @@ export class ParameterInputComponent implements OnInit {
     private router: Router,
     private route: ActivatedRoute,
     private analyticsService: AnalyticsService,
-    private config: ConfigService
+    private config: ConfigService,
+    private query: QueryService
   ) {}
 
   ngOnInit() {
@@ -34,6 +36,7 @@ export class ParameterInputComponent implements OnInit {
 
   NAMED_VIEW_CLASS = "uk.gov.gchq.gaffer.data.elementdefinition.view.NamedView";
   OPERATION_CHAIN_CLASS = "uk.gov.gchq.gaffer.operation.OperationChain";
+  ANALYTIC_CLASS = 'uk.gov.gchq.gaffer.operation.analytic.AnalyticOperation'
   ENTITY_SEED_CLASS = "uk.gov.gchq.gaffer.operation.data.EntitySeed";
   PAIR_ARRAY_CLASS =
     "uk.gov.gchq.gaffer.commonutil.pair.Pair<uk.gov.gchq.gaffer.data.element.id.ElementId,uk.gov.gchq.gaffer.data.element.id.ElementId>[]";
@@ -74,54 +77,57 @@ export class ParameterInputComponent implements OnInit {
     return this.operationChainForm.$valid && !this.loading.isLoading();
   };
 
-  executeChain = function() {
-    this.events.broadcast("onPreExecute", []);
-    if (!this.canExecute()) {
-      return;
-    }
+  executeAnalytic = function() {
+    // this.events.broadcast("onPreExecute", []);
+    // if (!this.canExecute()) {
+    //   return;
+    // }
 
-    if (this.operations.length === 0) {
-      this.error.handle("Unable to run operation chain with no operations");
-      return;
-    }
+    // if (this.operations.length === 0) {
+    //   this.error.handle("Unable to run operation chain with no operations");
+    //   return;
+    // }
 
-    var chain = {
-      class: this.OPERATION_CHAIN_CLASS,
-      operations: []
+    //Create the analytic operation to be executed
+    var analyticOperation = {
+      class: this.ANALYTIC_CLASS,
+      operationName: this.analytic.name,
+      parameters: {}
     };
-    for (var i in this.operations) {
-      chain.operations.push(this.createOperationForQuery(this.operations[i]));
-    }
 
-    this.query.addOperation(this.angular.copy(chain));
+    // for (var i in this.operations) {
+    //   chain.operations.push(this.createOperationForQuery(this.operations[i]));
+    // }
 
-    var finalOperation = this.operations[this.operations.length - 1];
-    if (
-      this.common.arrayContainsValue(
-        finalOperation.selectedOperation.next,
-        "uk.gov.gchq.gaffer.operation.impl.Limit"
-      )
-    ) {
-      var options = finalOperation.fields
-        ? this.operationOptions.extractOperationOptions(
-            finalOperation.fields.options
-          )
-        : undefined;
-      chain.operations.push(
-        this.operationService.createLimitOperation(options)
-      );
-      chain.operations.push(
-        this.operationService.createDeduplicateOperation(options)
-      );
-    }
+    //this.query.addOperation(this.angular.copy(chain));
 
-    this.previousQueries.addQuery({
-      name: "Operation Chain",
-      lastRun: this.moment().format("HH:mm"),
-      operations: this.operations
-    });
+    //var finalOperation = this.operations[this.operations.length - 1];
+    // if (
+    //   this.common.arrayContainsValue(
+    //     finalOperation.selectedOperation.next,
+    //     "uk.gov.gchq.gaffer.operation.impl.Limit"
+    //   )
+    // ) {
+    //   var options = finalOperation.fields
+    //     ? this.operationOptions.extractOperationOptions(
+    //         finalOperation.fields.options
+    //       )
+    //     : undefined;
+    //   chain.operations.push(
+    //     this.operationService.createLimitOperation(options)
+    //   );
+    //   chain.operations.push(
+    //     this.operationService.createDeduplicateOperation(options)
+    //   );
+    // }
 
-    this.runQuery(chain.operations);
+    // this.previousQueries.addQuery({
+    //   name: "Operation Chain",
+    //   lastRun: this.moment().format("HH:mm"),
+    //   operations: this.operations
+    // });
+
+    this.query.executeQuery(analyticOperation);
   };
 
   resetChain = function(ev) {
