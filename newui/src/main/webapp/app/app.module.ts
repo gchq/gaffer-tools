@@ -38,6 +38,7 @@ import { ErrorService } from "./dynamic-input/error.service";
 import { TypesService } from "./gaffer/type.service";
 import { DefaultRestEndpointService } from './config/default-rest-endpoint-service';
 import { QueryService } from './gaffer/query.service';
+import { LoadingService } from './loading/loading.service';
 
 
 @NgModule({
@@ -81,7 +82,8 @@ import { QueryService } from './gaffer/query.service';
     TypesService,
     ErrorService,
     DefaultRestEndpointService,
-    QueryService
+    QueryService,
+    LoadingService
   ],
   bootstrap: [AppComponent]
 })

@@ -18,6 +18,7 @@ import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { ConfigService } from '../config/config.service';
 import { CommonService } from '../dynamic-input/common.service';
 import { ErrorService } from '../dynamic-input/error.service';
+import { LoadingService } from '../loading/loading.service';
 
 @Injectable()
 export class QueryService {
@@ -27,7 +28,8 @@ export class QueryService {
     constructor(private config: ConfigService,
                 private common: CommonService,
                 private error: ErrorService,
-                private http: HttpClient) {}
+                private http: HttpClient,
+                private loading: LoadingService) {}
 
     /**
      * Alerts the user if they hit the result limit

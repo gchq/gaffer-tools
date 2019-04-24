@@ -7,6 +7,8 @@ export class AnalyticsService {
   selectedAnalytic; //The selected analytic
   analyticOperation; //The analytic Operation to execute
 
+  ANALYTIC_CLASS = 'uk.gov.gchq.gaffer.operation.analytic.AnalyticOperation'
+
   constructor(private query: QueryService) {}
 
   //Set the chosen analytic
@@ -24,7 +26,12 @@ export class AnalyticsService {
 
   //Update the analytic operation on change of parameters
   updateAnalytic = function(parameters) {
-    this.analyticOperation.parameters = {parameters}
+    //Convert parameters from an array to a key value map
+    let parametersMap = {};
+    for (let parameter of parameters) {
+      parametersMap[parameter[0]] = parameter[1];
+    }
+    this.analyticOperation.parameters = parametersMap;
   }
 
   //Create and initialise the analytic operation with default parameters

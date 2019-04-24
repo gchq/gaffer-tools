@@ -40,7 +40,6 @@ export class ParameterInputComponent implements OnInit {
 
   NAMED_VIEW_CLASS = "uk.gov.gchq.gaffer.data.elementdefinition.view.NamedView";
   OPERATION_CHAIN_CLASS = "uk.gov.gchq.gaffer.operation.OperationChain";
-  ANALYTIC_CLASS = 'uk.gov.gchq.gaffer.operation.analytic.AnalyticOperation'
   ENTITY_SEED_CLASS = "uk.gov.gchq.gaffer.operation.data.EntitySeed";
   PAIR_ARRAY_CLASS =
     "uk.gov.gchq.gaffer.commonutil.pair.Pair<uk.gov.gchq.gaffer.data.element.id.ElementId,uk.gov.gchq.gaffer.data.element.id.ElementId>[]";
