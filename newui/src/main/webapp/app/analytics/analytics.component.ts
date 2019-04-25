@@ -15,6 +15,7 @@ export class AnalyticsComponent implements OnInit {
 
   ngOnInit() {
     this.reloadOperations();
+    this.error.handle(null,null);
   }
   
   // load the analytics
