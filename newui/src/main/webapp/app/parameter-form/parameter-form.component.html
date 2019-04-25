@@ -3,10 +3,10 @@
     <!-- <h3 class="{{titleClass}}">{{title}}</h3> -->
     <div *ngIf="title == 'Parameters'">
       <div fxLayout="column">
-        <div *ngFor="let params of parameters" flex="noshrink">
+        <div *ngFor="let param of parameters; let i = index" flex="noshrink">
           <mat-form-field class="example-full-width" appearance="fill">
-            <mat-label>{{params}}</mat-label>
-            <input matInput id="id" name="name" param="param">
+            <mat-label>{{parameters[i][0]}}</mat-label>
+            <input matInput id="id" name="name" param="param" [(value)]="parameters[i][1]" (change)="onChange($event.target.value, parameters[i][0])">
           </mat-form-field>
         </div>
       </div>

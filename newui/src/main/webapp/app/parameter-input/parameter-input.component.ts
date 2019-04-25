@@ -1,8 +1,9 @@
 import { Component, OnInit, Injectable, ViewChild } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { Router } from "@angular/router";
-import { AnalyticsService } from "../analytics/analytics.service";
+import { AnalyticsService } from "../gaffer/analytics.service";
 import { ConfigService } from "../config/config.service";
+import { QueryService } from '../gaffer/query.service';
 
 @Component({
   selector: "app-parameter-input",
@@ -11,7 +12,8 @@ import { ConfigService } from "../config/config.service";
 })
 @Injectable()
 export class ParameterInputComponent implements OnInit {
-  analytic;
+  analytic; //The chosen analytic
+  analyticOperation; //The analytic operation to execute
   timeConfig;
   @ViewChild("operationChainForm") operationChainForm;
 
@@ -19,13 +21,17 @@ export class ParameterInputComponent implements OnInit {
     private router: Router,
     private route: ActivatedRoute,
     private analyticsService: AnalyticsService,
-    private config: ConfigService
+    private config: ConfigService,
+    private query: QueryService
   ) {}
 
   ngOnInit() {
     //Get the analytic from the analyticsService
     this.analytic = this.analyticsService.getAnalytic();
     console.log(this.analytic);
+
+    //Create the analytic operation
+    this.analyticsService.createAnalytic();
 
     this.config.get().subscribe(function(conf) {
       this.timeConfig = conf.time;
@@ -61,8 +67,8 @@ export class ParameterInputComponent implements OnInit {
 
   resetOperation = function(index) {
     var inputFlag = index === 0;
-    this.operations[index] = this.operationChain.createBlankOperation(
-      inputFlag
+    this.operations[index] = this.operationChain.createBlankOperation(inputFlag
+
     );
   };
 
@@ -72,56 +78,6 @@ export class ParameterInputComponent implements OnInit {
 
   canExecute = function() {
     return this.operationChainForm.$valid && !this.loading.isLoading();
-  };
-
-  executeChain = function() {
-    this.events.broadcast("onPreExecute", []);
-    if (!this.canExecute()) {
-      return;
-    }
-
-    if (this.operations.length === 0) {
-      this.error.handle("Unable to run operation chain with no operations");
-      return;
-    }
-
-    var chain = {
-      class: this.OPERATION_CHAIN_CLASS,
-      operations: []
-    };
-    for (var i in this.operations) {
-      chain.operations.push(this.createOperationForQuery(this.operations[i]));
-    }
-
-    this.query.addOperation(this.angular.copy(chain));
-
-    var finalOperation = this.operations[this.operations.length - 1];
-    if (
-      this.common.arrayContainsValue(
-        finalOperation.selectedOperation.next,
-        "uk.gov.gchq.gaffer.operation.impl.Limit"
-      )
-    ) {
-      var options = finalOperation.fields
-        ? this.operationOptions.extractOperationOptions(
-            finalOperation.fields.options
-          )
-        : undefined;
-      chain.operations.push(
-        this.operationService.createLimitOperation(options)
-      );
-      chain.operations.push(
-        this.operationService.createDeduplicateOperation(options)
-      );
-    }
-
-    this.previousQueries.addQuery({
-      name: "Operation Chain",
-      lastRun: this.moment().format("HH:mm"),
-      operations: this.operations
-    });
-
-    this.runQuery(chain.operations);
   };
 
   resetChain = function(ev) {
@@ -530,4 +486,8 @@ export class ParameterInputComponent implements OnInit {
 
     return op;
   };
+
+  executeAnalytic = function() {
+    this.analyticsService.executeAnalytic()
+  }
 }

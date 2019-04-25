@@ -65,14 +65,14 @@ export class OperationOptionsService {
             return of(this.getDefaultOperationOptions());
         }
 
-        var deferred = Observable.create((observer: Observer<String>) => {});
-
-        this.config.get().subscribe(function(conf) {
-            var defaultConfiguration = conf.operationOptions;
-            deferred.resolve(this.extractOperationOptions(defaultConfiguration));
+        var observable = Observable.create((observer: Observer<String>) => {
+            this.config.get().subscribe((conf) => {
+                var defaultConfiguration = conf.operationOptions;
+                observer.next(this.extractOperationOptions(defaultConfiguration));
+            });
         });
 
-        return deferred;
+        return observable;
     }
 
     /**

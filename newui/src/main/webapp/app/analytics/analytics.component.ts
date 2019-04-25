@@ -1,4 +1,5 @@
 import { Component, OnInit } from "@angular/core";
+import { OperationService } from '../gaffer/operation.service';
 
 @Component({
   selector: "app-analytics",
@@ -9,7 +10,7 @@ export class AnalyticsComponent implements OnInit {
   availableOperations;
   analytics = [[], []];
 
-  constructor() {}
+  constructor(private operationService: OperationService) {}
 
   ngOnInit() {
     //this.analytics = analytics.reloadAnalytics();
@@ -132,6 +133,7 @@ export class AnalyticsComponent implements OnInit {
       this.analytics[_i].header.iconURL = icons[_i];
     }
     console.log(this.analytics);
+    this.analytics = this.availableOperations;
   };
 
   // Delete this?
@@ -146,7 +148,12 @@ export class AnalyticsComponent implements OnInit {
 
   // load the operations
   reloadOperations = function() {
-    // this.operationService.reloadOperations(true).then(this.populateOperations);
-    this.populateOperations();
+    this.operationService.reloadOperations(true).subscribe(
+      availableOperations => {
+        console.log(availableOperations)
+        this.populateOperations(availableOperations)},
+      err => console.log(err));
+    //this.populateOperations()
+    //use error service to handle error
   };
 }

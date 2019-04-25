@@ -8,6 +8,8 @@ import { LayoutModule } from "@angular/cdk/layout";
 import { FlexLayoutModule } from "@angular/flex-layout";
 import { AppRoutingModule } from "./app-routing.module";
 import { HttpClientModule } from "@angular/common/http";
+import { ToastrModule, ToastrService } from 'ngx-toastr';
+
 
 import { AppComponent } from "./app.component";
 import { AboutComponent } from "./about/about.component";
@@ -25,7 +27,7 @@ import { OperationFieldComponent } from "./operation-field/operation-field.compo
 import { ParameterInputComponent } from "./parameter-input/parameter-input.component";
 import { OptionsComponent } from "./options/options.component";
 
-import { AnalyticsService } from "./analytics/analytics.service";
+import { AnalyticsService } from "./gaffer/analytics.service";
 import { OperationService } from "./gaffer/operation.service";
 import { SchemaService } from "./gaffer/schema.service";
 import { OperationOptionsService } from "./options/operation-options.service";
@@ -34,6 +36,10 @@ import { EventsService } from "./dynamic-input/events.service";
 import { CommonService } from "./dynamic-input/common.service";
 import { ErrorService } from "./dynamic-input/error.service";
 import { TypesService } from "./gaffer/type.service";
+import { DefaultRestEndpointService } from './config/default-rest-endpoint-service';
+import { QueryService } from './gaffer/query.service';
+import { LoadingService } from './loading/loading.service';
+
 
 @NgModule({
   declarations: [
@@ -63,6 +69,7 @@ import { TypesService } from "./gaffer/type.service";
     MaterialModule,
     LayoutModule,
     FlexLayoutModule,
+    ToastrModule.forRoot()
   ],
   providers: [
     AnalyticsService,
@@ -73,7 +80,10 @@ import { TypesService } from "./gaffer/type.service";
     EventsService,
     CommonService,
     TypesService,
-    ErrorService
+    ErrorService,
+    DefaultRestEndpointService,
+    QueryService,
+    LoadingService
   ],
   bootstrap: [AppComponent]
 })

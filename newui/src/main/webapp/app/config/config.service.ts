@@ -17,22 +17,25 @@
 import { Observable, Observer, of } from "rxjs";
 import { merge } from "lodash";
 
-import { Injectable } from "@angular/core";
-import { HttpClient } from "@angular/common/http";
+import { Injectable} from "@angular/core";
+import { HttpClient, HttpHeaders } from "@angular/common/http";
+import { DefaultRestEndpointService } from './default-rest-endpoint-service';
 
 @Injectable()
 export class ConfigService {
   config;
-  defer = new Observable();
+  defer = null;
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient,
+              private defaultRestEndpoint: DefaultRestEndpointService) {
+    //this.authService = this.injector.get(AuthService);
+  }
 
   get = function() {
     if (this.config) {
       return of(this.config);
     } else if (!this.defer) {
-      this.defer = Observable.create((observer: Observer<String>) => {});
-      this.load();
+      this.defer = Observable.create((observer: Observer<String>) => {this.load(observer);});
     }
 
     return this.defer;
@@ -42,16 +45,22 @@ export class ConfigService {
     this.config = conf;
   };
 
-  private load = function() {
-    this.http.get("config/defaultConfig.json").subscribe(
-      function(response) {
+  private load = function(observer) {
+    // const httpOptions = {
+    //   headers: new HttpHeaders({
+    //     'Access-Control-Allow-Origin':'http://localhost:4200'
+    //   })
+    // };
+    this.http.get("http://localhost:8080/config/defaultConfig.json").subscribe(
+      // this.http.get("https://envp2odsfkg7g.x.pipedream.net").subscribe(
+      (response) => {
         var defaultConfig = response.data;
         if (defaultConfig === undefined) {
           defaultConfig = {};
         }
         var mergedConfig = defaultConfig;
-        this.http.get("config/config.json").subscribe(
-          function(response) {
+        this.http.get("http://localhost:8080/config/config.json").subscribe(
+          (response) => {
             var customConfig = response.data;
 
             if (customConfig === undefined) {
@@ -70,16 +79,16 @@ export class ConfigService {
             }
             merge(mergedConfig, customConfig);
             this.config = mergedConfig;
-            this.defer.resolve(this.config);
+            observer.next(this.config);
           },
-          function(err) {
-            this.defer.throw(err);
+          (err) => {
+            observer.error(err);
             this.error.handle("Failed to load custom config", err);
           }
         );
       },
-      function(err) {
-        this.defer.throw(err);
+      (err) => {
+        observer.error(err);
         this.error.handle("Failed to load config", err);
       }
     );
