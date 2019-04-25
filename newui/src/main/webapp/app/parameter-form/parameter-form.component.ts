@@ -18,6 +18,10 @@ export class ParameterFormComponent implements OnInit {
     this.parameters = Object.keys(object).map(function(key) {
       return [key, object[key]];
     });
+
+    //Create the analytic operation
+    this.analyticsService.createAnalytic(this.parameters);
+
     if (this.parameters === null || this.parameters === undefined) {
       throw "Expected defined, non-null value for parameters. Got " +
         this.parameters;
@@ -33,7 +37,7 @@ export class ParameterFormComponent implements OnInit {
   };
 
   //Update the analytic operation whenever a parameter changes
-  onChange = function() {
-    this.analyticsService.updateAnalytic(this.parameters)
+  onChange = function(parameter, parameterName) {
+    this.analyticsService.updateAnalytic(this.parameters, parameter, parameterName);
   }
 }

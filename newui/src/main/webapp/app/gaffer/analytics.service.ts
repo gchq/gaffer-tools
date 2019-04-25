@@ -25,26 +25,36 @@ export class AnalyticsService {
   }
 
   //Update the analytic operation on change of parameters
-  updateAnalytic = function(parameters) {
-    //Convert parameters from an array to a key value map
-    let parametersMap = {};
-    for (let parameter of parameters) {
-      parametersMap[parameter[0]] = parameter[1];
+  updateAnalytic = function(parameters, parameter, parameterName) {
+    parameter = parseInt(parameter);
+    for (let i = 0; i < parameters.length; i++) {
+      let parameterPair = parameters[i];
+      if (parameterPair[0] === parameterName) {
+        this.analyticOperation.parameters[i][1] = parameter;
+        return;
+      }
     }
-    this.analyticOperation.parameters = parametersMap;
+    return;
   }
 
   //Create and initialise the analytic operation with default parameters
-  createAnalytic = function() {
+  createAnalytic = function(parameters) {
       this.analyticOperation = {
         class: this.ANALYTIC_CLASS,
         operationName: this.selectedAnalytic.operationName,
-        parameters: {}
+        parameters: parameters
       };
   }
 
   //Execute the analytic operation
   executeAnalytic = function() {
+    //Convert parameters from an array to a key value map
+    let parametersMap = {};
+    for (let param of this.analyticOperation.parameters) {
+      parametersMap[param[0]] = param[1];
+    }
+    this.analyticOperation.parameters = parametersMap
+
     // this.events.broadcast("onPreExecute", []);
     // if (!this.canExecute()) {
     //   return;

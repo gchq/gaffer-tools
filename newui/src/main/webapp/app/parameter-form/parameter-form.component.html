@@ -6,7 +6,7 @@
         <div *ngFor="let params of parameters" flex="noshrink">
           <mat-form-field class="example-full-width" appearance="fill">
             <mat-label>{{params[0]}}</mat-label>
-            <input matInput id="id" name="name" param="param" (change)="onChange()">
+            <input matInput id="id" name="name" param="param" (change)="onChange($event.target.value, params[0])">
           </mat-form-field>
         </div>
       </div>
