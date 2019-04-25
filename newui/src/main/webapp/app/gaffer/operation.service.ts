@@ -270,7 +270,7 @@ export class OperationService {
             },
             (err) => {
               if (loud) {
-              this.error.handle("Failed to load analytics", err);
+              this.error.handle("Failed to load analytics", null, err);
               observer.error(err);
               } else {
                 observer.next(err)
@@ -301,6 +301,7 @@ export class OperationService {
         function(err) {
           this.error.handle(
             "Error getting available graph operations",
+            null,
             err.data
           );
           onUnsupported();

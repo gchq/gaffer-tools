@@ -15,7 +15,7 @@ export class AnalyticsComponent implements OnInit {
 
   ngOnInit() {
     this.reloadOperations();
-    this.error.handle(null,null);
+    this.error.handle(null,null,null);
   }
   
   // load the analytics
@@ -25,7 +25,7 @@ export class AnalyticsComponent implements OnInit {
         this.analytics = availableAnalytics;
       },
       (err) => {
-        this.error.handle(err);
+        this.error.handle('Error loading operations, see the console for details',null,err);
         console.log(err);
       });
   };

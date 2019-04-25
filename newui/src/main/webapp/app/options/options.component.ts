@@ -195,7 +195,7 @@ export class OptionsComponent implements OnInit {
                 });
                 deferredValues.resolve(filteredValues);
             }, function(err) {
-                this.error.handle("Failed to retrieve prepopulated options", err);
+                this.error.handle("Failed to retrieve prepopulated options", null, err);
                 deferredValues.resolve([]);
             });
 

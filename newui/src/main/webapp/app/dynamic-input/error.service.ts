@@ -127,7 +127,8 @@ export class ErrorService {
       msg = message;
     }
 
-    this.showInOrder(msg, title, err);
-    this.showInOrder(msg, title, err);
+    this.showToast(msg, title, err);
+    //this.showInOrder(msg, title, err);
+    //this.showInOrder(msg, title, err);
   };
 }
