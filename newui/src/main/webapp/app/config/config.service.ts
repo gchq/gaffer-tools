@@ -83,13 +83,13 @@ export class ConfigService {
           },
           (err) => {
             observer.error(err);
-            this.error.handle("Failed to load custom config", err);
+            this.error.handle("Failed to load custom config", null, err);
           }
         );
       },
       (err) => {
         observer.error(err);
-        this.error.handle("Failed to load config", err);
+        this.error.handle("Failed to load config", null, err);
       }
     );
   };

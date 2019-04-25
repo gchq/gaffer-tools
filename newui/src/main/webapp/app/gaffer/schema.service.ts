@@ -112,7 +112,7 @@ export class SchemaService {
         (err) => {
           observer.error(err);
           if (loud) {
-            this.error.handle("Failed to load schema", err);
+            this.error.handle("Failed to load schema", null, err);
           }
           observer.complete(undefined);
         }
@@ -120,7 +120,7 @@ export class SchemaService {
     } catch (e) {
       observer.error(e);
       if (loud) {
-        this.error.handle("Failed to load schema", e);
+        this.error.handle("Failed to load schema", null, e);
       }
       observer.complete(undefined);
     }

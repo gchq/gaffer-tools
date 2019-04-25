@@ -228,7 +228,7 @@ export class PairBuilderComponent implements OnInit {
    * @param {*} err The error (optional)
    */
   handleError = function(message, err) {
-    this.error.handle(message, err);
+    this.error.handle(message, null, err);
     if (this.pairForm) {
       this.pairForm.seedPairInput.$setValidity("csv", false);
     }

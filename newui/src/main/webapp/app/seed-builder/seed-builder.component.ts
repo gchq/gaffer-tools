@@ -208,7 +208,7 @@ export class SeedBuilderComponent implements OnInit {
    * @param {*} err The error (optional)
    */
   handleError = function(message, err) {
-    this.error.handle(message, err);
+    this.error.handle(message, null, err);
     if (this.seedForm) {
       this.seedForm.multiSeedInput.$setValidity("csv", false);
     }

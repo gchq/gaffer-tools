@@ -77,7 +77,7 @@ export class QueryService {
             },
             (err) => {
                 this.loading.finish();
-                this.error.handle('Error executing operation', err);
+                this.error.handle('Error executing operation', null, err);
                 if (onFailure) {
                     onFailure(err);
                 }
@@ -108,7 +108,7 @@ export class QueryService {
                         if (onFailure) {
                             onFailure(err);
                         } else {
-                            this.error.handle('Error running operation', err);
+                            this.error.handle('Error running operation', null, err);
                         }
                     }
                 );
