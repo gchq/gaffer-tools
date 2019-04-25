@@ -34,7 +34,6 @@ angular.module('app').factory('results', ['events', function(events) {
     }
 
     var elementExistsInArray = function(array, element) {
-        console.log(JSON.stringify(element));
         return array && array.some(function(ele) { 
             return JSON.stringify(element) === JSON.stringify(ele);
         });
@@ -47,7 +46,6 @@ angular.module('app').factory('results', ['events', function(events) {
     }
 
     resultService.update = function(newResults) {
-        console.log(newResults);
         var incomingResults = {
             entities: [], edges: [], other: []
         }
