@@ -1,26 +1,8 @@
-<script>
-  // Trying to make all of the background colors different
-  function setBackgroundColor() {
-    id = model.name;
-    var elem = document.getElementById(id);
-    elem.style.backgroundColor = model.backgroundColor;
-  }
-  window.onload = setBackgroundColor;
-
-</script>
-
-<!-- style="background-color:red" -->
+<!-- <style background-color="{{model.color}}"></style> -->
 <mat-card id="{{model.operationName}}" (click)="execute(model)" class="grid-button" md-ink-ripple
-  matTooltip="{{model.description}}">
+  matTooltip="{{model.description}}" [style.background]="model.color">
   <div fxLayout="column">
-    <h2>{{model.operationName}}</h2>
-    <!-- <mat-icon>{{model.header.iconURL}}</mat-icon> -->
-    <i class="material-icons">{{model.metaData.iconURL}}</i>
-    <!-- <div fxLayout="row" fxLayoutAlign="start end">
-      <p class="tooltip">Description
-        <span class="tooltiptext">{{model.description}}</span>
-        <span class="tooltiptext">{{model.operation.description}}</span>
-      </p>
-    </div> -->
+    <h2> {{model.operationName}}</h2>
+    <i class=" material-icons"> {{model.metaData.iconURL}}</i>
   </div>
 </mat-card>
