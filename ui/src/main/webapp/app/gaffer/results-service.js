@@ -19,6 +19,8 @@
 angular.module('app').factory('results', ['events', function(events) {
 
     var resultService = {};
+    // cache of unique stringified results
+    var uniqueResults = [];
     var results = {entities: [], edges: [], other: []};
 
     resultService.get = function() {
@@ -33,15 +35,11 @@ angular.module('app').factory('results', ['events', function(events) {
         }
     }
 
-    var elementExistsInArray = function(array, element) {
-        return array && array.some(function(ele) { 
-            return JSON.stringify(element) === JSON.stringify(ele);
-        });
-    }
-
     var addUniqueResult = function(results, newResult) {
-        if (results && !elementExistsInArray(results, newResult)) {
-            results.push(newResult);
+        var stringified = JSON.stringify(newResult)
+        if (uniqueResults.indexOf(stringified) === -1) {
+            uniqueResults.push(stringified)
+            results.push(newResult)
         }
     }
 
