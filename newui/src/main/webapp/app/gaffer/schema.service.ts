@@ -31,7 +31,6 @@ export class SchemaService {
   schemaVertices = {};
 
   constructor(
-    private operationService: OperationService,
     private operationOptions: OperationOptionsService,
     private error: ErrorService,
     private query: QueryService

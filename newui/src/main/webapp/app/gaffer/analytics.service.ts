@@ -1,5 +1,10 @@
 import { Injectable } from '@angular/core';
 import { QueryService } from './query.service';
+import { Observable, Observer } from 'rxjs';
+import { HttpClient, HttpHeaders } from "@angular/common/http";
+import { ConfigService } from '../config/config.service';
+import { ErrorService } from '../dynamic-input/error.service';
+import { CommonService } from '../dynamic-input/common.service';
 
 //Used to store and get the selected analytic
 @Injectable()
@@ -9,7 +14,11 @@ export class AnalyticsService {
 
   ANALYTIC_CLASS = 'uk.gov.gchq.gaffer.operation.analytic.AnalyticOperation'
 
-  constructor(private query: QueryService) {}
+  constructor(private query: QueryService,
+              private config: ConfigService,
+              private error: ErrorService,
+              private common: CommonService,
+              private http: HttpClient) {}
 
   /** Set the chosen analytic */
   setAnalytic(analytic) {
@@ -56,5 +65,32 @@ export class AnalyticsService {
     this.analyticOperation.parameters = parametersMap
 
     this.query.executeQuery(this.analyticOperation);
+  };
+
+  reloadAnalytics = function(loud) {
+    var observable = Observable.create((observer: Observer<String>) => {
+      var operation = {
+        "class": "uk.gov.gchq.gaffer.operation.analytic.GetAllAnalyticOperations"
+      }
+      let headers = new HttpHeaders();
+      headers = headers.set('Content-Type', 'application/json; charset=utf-8');
+      this.config.get().subscribe((conf) => {
+          var queryUrl = this.common.parseUrl(conf.restEndpoint + "/graph/operations/execute");
+          this.http.post(queryUrl, operation, { headers: headers} ).subscribe(
+            (data) => {
+              observer.next(data)
+            },
+            (err) => {
+              if (loud) {
+              this.error.handle("Failed to load analytics", null, err);
+              observer.error(err);
+              } else {
+                observer.next(err)
+              }
+            }
+          )
+      })
+    })
+    return observable;
   };
 }

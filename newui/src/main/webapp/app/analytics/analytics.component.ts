@@ -1,6 +1,6 @@
 import { Component, OnInit, Injectable } from "@angular/core";
-import { OperationService } from '../gaffer/operation.service';
 import { ErrorService } from '../dynamic-input/error.service';
+import { AnalyticsService } from '../gaffer/analytics.service';
 
 @Component({
   selector: "app-analytics",
@@ -10,16 +10,16 @@ import { ErrorService } from '../dynamic-input/error.service';
 @Injectable()
 export class AnalyticsComponent implements OnInit {
 
-  constructor(private operationService: OperationService,
+  constructor(private analyticsService: AnalyticsService,
               private error: ErrorService) {}
 
   ngOnInit() {
-    this.reloadOperations();
+    this.reloadAnalytics();
   }
   
   /** load the analytics */
-  reloadOperations = function() {
-    this.operationService.reloadOperations(true).subscribe(
+  reloadAnalytics = function() {
+    this.analyticsService.reloadAnalytics(true).subscribe(
       (availableAnalytics) => {
         this.analytics = availableAnalytics;
       },
