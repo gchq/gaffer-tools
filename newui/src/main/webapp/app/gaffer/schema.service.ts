@@ -16,7 +16,6 @@
 
 import { Injectable } from "@angular/core";
 import { Observable, Observer, of } from "rxjs";
-import { OperationService } from "./operation.service";
 import { OperationOptionsService } from "../options/operation-options.service";
 import { ErrorService } from '../dynamic-input/error.service';
 import { QueryService } from './query.service';
@@ -30,11 +29,11 @@ export class SchemaService {
   schema;
   schemaVertices = {};
 
-  constructor(
-    private operationOptions: OperationOptionsService,
-    private error: ErrorService,
-    private query: QueryService
-  ) {
+  constructor(private operationOptions: OperationOptionsService,
+              private error: ErrorService,
+              private query: QueryService) 
+              
+  {
     this.update().subscribe(function() {}, function() {});
   }
 
@@ -164,85 +163,5 @@ export class SchemaService {
     }
 
     this.schemaVertices = vertices;
-  };
-
-  /**
-   * Returns an object representing the source and destination of the edge group. The object returned holds the
-   * vertex types and schema definition for those vertex types. It looks something like this:
-   *
-   *  {
-   *      "source": {
-   *          "sourceVertexType": {
-   *              "class": "sourceVertexClass",
-   *              "serialiser": "vertexSerialiserClass"
-   *              ...
-   *          }
-   *      },
-   *      "destination": {
-   *          "destinationVertexType": {
-   *              "class": "destinationVertexClass"
-   *              ...
-   *          }
-   *      }
-   *  }
-   */
-  getVertexTypesFromEdgeGroup = function(group) {
-    if (!this.schema || !this.schema.edges[group]) {
-      return { source: null, destination: null };
-    }
-    var vertexTypes = {
-      source: {},
-      destination: {}
-    };
-
-    var elementDef = this.schema.edges[group];
-    vertexTypes["source"][elementDef["source"]] = this.schema.types[
-      elementDef["source"]
-    ];
-    vertexTypes["destination"][elementDef["destination"]] = this.schema.types[
-      elementDef["destination"]
-    ];
-
-    return vertexTypes;
-  };
-
-  /**
-   * Returns an object which holds a key (the vertex type) and value
-   * (the schema type definition for the vertex type). It returns null if the schema doesn't exist or
-   * The Entity group does not exist in the schema.
-   */
-  getVertexTypeFromEntityGroup = function(group) {
-    if (!this.schema || !this.schema.entities[group]) {
-      return null;
-    }
-    var vertexType = {};
-
-    var elementDef = this.schema.entities[group];
-
-    vertexType[elementDef["vertex"]] = this.schema.types[elementDef["vertex"]];
-
-    return vertexType;
-  };
-
-  /**
-   * Gets the property object for a given entity group. Returns undefined if
-   * the entity group contains no properties.
-   */
-  getEntityProperties = function(entity) {
-    if (Object.keys(this.schema.entities[entity].properties).length) {
-      return this.schema.entities[entity].properties;
-    }
-    return undefined;
-  };
-
-  /**
-   * Gets the property object for a given edge group. Returns undefined if the
-   * edge group contains no properties.
-   */
-  getEdgeProperties = function(edge) {
-    if (Object.keys(this.schema.edges[edge].properties).length) {
-      return this.schema.edges[edge].properties;
-    }
-    return undefined;
   };
 }
