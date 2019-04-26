@@ -17,7 +17,7 @@ export class AnalyticsComponent implements OnInit {
     this.reloadAnalytics();
   }
   
-  /** load the analytics */
+  /** Load the analytics */
   reloadAnalytics = function() {
     this.analyticsService.reloadAnalytics(true).subscribe(
       (availableAnalytics) => {

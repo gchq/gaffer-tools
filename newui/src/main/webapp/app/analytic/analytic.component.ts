@@ -21,6 +21,4 @@ export class AnalyticComponent implements OnInit {
     this.analyticsService.setAnalytic(analytic);
     this.router.navigate(['/parameters']);
   }
-
-
 }
