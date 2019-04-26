@@ -3,7 +3,7 @@ import { ActivatedRoute } from "@angular/router";
 import { Router } from "@angular/router";
 import { AnalyticsService } from "../gaffer/analytics.service";
 import { ConfigService } from "../config/config.service";
-import { QueryService } from '../gaffer/query.service';
+import { QueryService } from "../gaffer/query.service";
 
 @Component({
   selector: "app-parameter-input",
@@ -67,8 +67,8 @@ export class ParameterInputComponent implements OnInit {
 
   resetOperation = function(index) {
     var inputFlag = index === 0;
-    this.operations[index] = this.operationChain.createBlankOperation(inputFlag
-
+    this.operations[index] = this.operationChain.createBlankOperation(
+      inputFlag
     );
   };
 
@@ -488,6 +488,6 @@ export class ParameterInputComponent implements OnInit {
   };
 
   executeAnalytic = function() {
-    this.analyticsService.executeAnalytic()
-  }
+    this.analyticsService.executeAnalytic();
+  };
 }

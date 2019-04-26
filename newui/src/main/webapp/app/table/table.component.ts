@@ -1,6 +1,7 @@
-import { Component, OnInit, Injectable } from "@angular/core";
+import { Component, OnInit, Injectable, ViewChild } from "@angular/core";
 import { SchemaService } from "../gaffer/schema.service";
 import { EventsService } from "../dynamic-input/events.service";
+import { MatSort, MatTableDataSource } from "@angular/material";
 
 export interface Element {
   junction: string;
@@ -44,8 +45,9 @@ const ELEMENT_DATA: Element[] = [
 export class TableComponent implements OnInit {
   displayedColumns: string[] = ["junction", "vehicle", "frequency"];
   columnsToDisplay: string[] = this.displayedColumns.slice();
-  data: Element[] = ELEMENT_DATA;
+  data: MatTableDataSource<any> = new MatTableDataSource(ELEMENT_DATA);
   constructor(private schema: SchemaService, private events: EventsService) {}
+  @ViewChild(MatSort) sort: MatSort;
 
   /**
    * Initialises the controller.
@@ -67,6 +69,10 @@ export class TableComponent implements OnInit {
     );
 
     this.events.subscribe("resultsUpdated", this.onResultsUpdated);
+  }
+
+  ngAfterViewInit() {
+    this.data.sort = this.sort;
   }
 
   /**
