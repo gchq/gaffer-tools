@@ -35,25 +35,4 @@ export class EventsService {
       this.events[eventName].push(callback);
     }
   };
-
-  broadcast = function(eventName, args) {
-    var listeners = this.events[eventName];
-    var fn;
-    for (var i in listeners) {
-      fn = listeners[i];
-      fn.apply(fn, args);
-    }
-  };
-
-  unsubscribe = function(eventName, callback) {
-    if (!this.events[eventName]) {
-      return;
-    }
-
-    this.events[eventName] = this.events[eventName].filter(function(fn) {
-      if (fn !== callback) {
-        return fn;
-      }
-    });
-  };
 }

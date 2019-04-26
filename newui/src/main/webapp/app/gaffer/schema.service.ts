@@ -19,6 +19,7 @@ import { Observable, Observer, of } from "rxjs";
 import { OperationService } from "./operation.service";
 import { OperationOptionsService } from "../options/operation-options.service";
 import { ErrorService } from '../dynamic-input/error.service';
+import { QueryService } from './query.service';
 
 @Injectable()
 
@@ -32,7 +33,8 @@ export class SchemaService {
   constructor(
     private operationService: OperationService,
     private operationOptions: OperationOptionsService,
-    private error: ErrorService
+    private error: ErrorService,
+    private query: QueryService
   ) {
     this.update().subscribe(function() {}, function() {});
   }
@@ -103,6 +105,7 @@ export class SchemaService {
           observer.error(err);
           if (loud) {
             this.error.handle("Failed to load schema", null, err);
+            console.error(err);
           }
           observer.complete(undefined);
         }
@@ -111,6 +114,7 @@ export class SchemaService {
       observer.error(e);
       if (loud) {
         this.error.handle("Failed to load schema", null, e);
+        console.error(e);
       }
       observer.complete(undefined);
     }

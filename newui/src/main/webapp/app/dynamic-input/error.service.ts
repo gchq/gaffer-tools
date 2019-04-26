@@ -69,12 +69,15 @@ export class ErrorService {
   /** Show an error notification */
   private showToast = function(msg, title, err) {
 
-    this.toastr.error(msg, title, {
-      timeOut : 7000,
-      progressBar: true,
-      positionClass: 'toast-top-right',
-      extendedTimeOut: 2000
+    setTimeout(() => {
+      this.toastr.error(msg, title, {
+        timeOut : 7000,
+        progressBar: true,
+        positionClass: 'toast-top-right',
+        extendedTimeOut: 2000
+      });
     });
+
   };
 
   /** Create a notification from an error */
