@@ -9,13 +9,12 @@ import { AnalyticsService } from '../gaffer/analytics.service';
 })
 @Injectable()
 export class AnalyticComponent implements OnInit {
-  navigation;
-  operationChain;
   @Input("model") model;
 
   constructor(private router: Router,
-              private analyticsService: AnalyticsService) {
-              };
+              private analyticsService: AnalyticsService) {};
+
+  ngOnInit() {}
 
   // Save the chosen analytic in the analytics service
   execute(analytic) {
@@ -23,6 +22,5 @@ export class AnalyticComponent implements OnInit {
     this.router.navigate(['/parameters']);
   }
 
-  ngOnInit() {
-  }
+
 }
