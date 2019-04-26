@@ -23,7 +23,7 @@ export class ErrorService {
 
   constructor(private toastr: ToastrService) {}
   
-  //Add the toast to queue and show on completion of previous toast
+  /** Add the toast to queue and show on completion of previous toast */
   private showInOrder = function(msg, title, err) {
     // If there is already a notification in queue, 
     // show this notification after the last notification in queue
@@ -66,6 +66,7 @@ export class ErrorService {
     );
   };
 
+  /** Show an error notification */
   private showToast = function(msg, title, err) {
 
     this.toastr.error(msg,title,{
@@ -118,6 +119,7 @@ export class ErrorService {
   //   );
   // };
 
+  /** Create a notification from an error */
   handle = function(message, title, err) {
     let msg;
 

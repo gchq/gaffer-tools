@@ -15,10 +15,9 @@ export class AnalyticsComponent implements OnInit {
 
   ngOnInit() {
     this.reloadOperations();
-    this.error.handle(null,null,null);
   }
   
-  // load the analytics
+  /** load the analytics */
   reloadOperations = function() {
     this.operationService.reloadOperations(true).subscribe(
       (availableAnalytics) => {
