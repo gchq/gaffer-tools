@@ -39,6 +39,8 @@ import { TypesService } from "./gaffer/type.service";
 import { DefaultRestEndpointService } from './config/default-rest-endpoint-service';
 import { QueryService } from './gaffer/query.service';
 import { LoadingService } from './loading/loading.service';
+import { ResultsService } from './gaffer/results.service';
+import { TableService } from './table/table.service';
 
 
 @NgModule({
@@ -83,7 +85,9 @@ import { LoadingService } from './loading/loading.service';
     ErrorService,
     DefaultRestEndpointService,
     QueryService,
-    LoadingService
+    LoadingService,
+    ResultsService,
+    TableService
   ],
   bootstrap: [AppComponent]
 })

@@ -1,6 +1,9 @@
 import { Component, OnInit, Injectable } from "@angular/core";
 import { SchemaService } from "../gaffer/schema.service";
 import { EventsService } from "../dynamic-input/events.service";
+import { ResultsService } from '../gaffer/results.service';
+import { TableService } from './table.service';
+import { CommonService } from '../dynamic-input/common.service';
 
 export interface Element {
   junction: string;
@@ -8,28 +11,6 @@ export interface Element {
   frequency: number;
   vehicle: string;
 }
-// [
-//   {
-//     "class": "uk.gov.gchq.gaffer.data.element.Entity",
-//     "group": "JunctionUse",
-//     "vertex": "M4:LA Boundary",
-//     "properties": {
-//       "BUS": {
-//         "java.lang.Long": 1958
-//       }
-//     }
-//   },
-//   {
-//     "class": "uk.gov.gchq.gaffer.data.element.Entity",
-//     "group": "JunctionUse",
-//     "vertex": "M32:2",
-//     "properties": {
-//       "BUS": {
-//         "java.lang.Long": 1411
-//       }
-//     }
-//   }
-// ]
 
 const ELEMENT_DATA: Element[] = [
   { position: 1, junction: "M4:LA Boundary", frequency: 1958, vehicle: "BUS" },
@@ -45,7 +26,13 @@ export class TableComponent implements OnInit {
   displayedColumns: string[] = ["junction", "vehicle", "frequency"];
   columnsToDisplay: string[] = this.displayedColumns.slice();
   data: Element[] = ELEMENT_DATA;
-  constructor(private schema: SchemaService, private events: EventsService) {}
+  schema;
+
+  constructor(private schemaService: SchemaService, 
+              private events: EventsService,
+              private results: ResultsService,
+              private table: TableService,
+              private common: CommonService) {}
 
   /**
    * Initialises the controller.
@@ -53,13 +40,13 @@ export class TableComponent implements OnInit {
    * Loads any cached table preferences and subscribes to resultsUpdated events.
    */
   ngOnInit() {
-    this.schema.get().subscribe(
-      function(gafferSchema) {
+    this.schemaService.get().subscribe(
+      (gafferSchema) => {
         this.schema = gafferSchema;
         this.loadFromCache();
         this.processResults(this.results.get());
       },
-      function(err) {
+      (err) => {
         this.schema = { types: {}, edges: {}, entities: {} };
         this.loadFromCache();
         this.processResults(this.results.get());

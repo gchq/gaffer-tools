@@ -18,19 +18,21 @@ import { Injectable } from "@angular/core";
 import { Observable, Observer, of } from "rxjs";
 import { OperationService } from "./operation.service";
 import { OperationOptionsService } from "../options/operation-options.service";
+import { ErrorService } from '../dynamic-input/error.service';
 
 @Injectable()
 
 //Used to store and get the selected analytic
 export class SchemaService {
   selectedAnalytic;
-  deffered; //Used to be $q.defer(), now the observable
+  schemaObservable; 
   schema;
   schemaVertices = {};
 
   constructor(
     private operationService: OperationService,
-    private operationOptions: OperationOptionsService
+    private operationOptions: OperationOptionsService,
+    private error: ErrorService
   ) {
     this.update().subscribe(function() {}, function() {});
   }
@@ -44,25 +46,14 @@ export class SchemaService {
   get = function() {
     if (this.schema) {
       return of(this.schema);
-    } else if (!this.deferred) {
-      //this.deferred = new Observable();
-      this.deferred = Observable.create((observer: Observer<String>) => {
-        this.getSchema(null,observer);
+    } else if (!this.schemaObservable) {
+      this.schemaObservable = Observable.create((observer: Observer<String>) => {
+        this.getSchema(null, observer);
       });
       
     }
-    return this.deferred;
+    return this.schemaObservable;
   };
-
-  // get = function() {
-  //     if (this.schema) {
-  //         return this.$q.when(this.schema);
-  //     } else if (!this.deferred) {
-  //         this.deferred = this.$q.defer();
-  //         this.getSchema();
-  //     }
-  //     return this.deferred.promise;
-  // }
 
   /**
    * Creates the get schema operation using the default operation options.
@@ -89,7 +80,6 @@ export class SchemaService {
    * @param {*} loud A flag indicating whether to broadcast errors
    */
   private getSchemaWithOperation = function(operation, loud, observer) {
-    console.log(observer);
     try {
       this.query.execute(
         operation,
@@ -132,12 +122,14 @@ export class SchemaService {
    * Once finished, the schema or error is returned.
    */
   update = function() {
-    if (this.deferred) {
-      this.deferred.throw("Reloading the schema");
+    if (this.schemaObservable) {
+      this.schemaObservable.throw("Reloading the schema");
     }
-    this.deferred = Observable.create((observer: Observer<String>) => {});
-    this.getSchema(true);
-    return this.deferred;
+    this.schemaObservable = Observable.create(
+      (observer: Observer<String>) => {this.getSchema(true, observer);
+    });
+
+    return this.schemaObservable;
   };
 
   /**
