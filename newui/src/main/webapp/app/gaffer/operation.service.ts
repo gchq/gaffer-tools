@@ -16,7 +16,10 @@
 
 import { Observable, of, Observer } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
+import { OperationOptionsService } from '../options/operation-options.service';
+import { Injectable } from '@angular/core';
 
+@Injectable()
 export class OperationService {
 
     availableOperations;
@@ -35,7 +38,7 @@ export class OperationService {
         "uk.gov.gchq.gaffer.data.elementdefinition.view.View"
     ];
 
-    constructor() {}
+    constructor(private operationOptions: OperationOptionsService) {}
 
     canHandleField = function(field) {
         return this.types.isKnown(field.className)

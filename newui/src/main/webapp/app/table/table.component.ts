@@ -29,7 +29,9 @@ const ELEMENT_DATA: Element[] = [
 })
 @Injectable()
 export class TableComponent implements OnInit {
-  displayedColumns: string[] = ["junction", "vehicle", "frequency"];
+  groupColumnName = "GROUP";
+  typeColumnName = "result type";
+  displayedColumns: string[] = [this.groupColumnName,this.typeColumnName, "SOURCE"];
   columnsToDisplay: string[] = this.displayedColumns.slice();
   data: MatTableDataSource<any> = new MatTableDataSource(ELEMENT_DATA);
   @ViewChild(MatSort) sort: MatSort;
@@ -90,9 +92,6 @@ export class TableComponent implements OnInit {
 
   pagination = { limit: 50, page: 1 };
   sortType = undefined;
-
-  groupColumnName = "GROUP";
-  typeColumnName = "result type";
 
   /**
    * Cleans up the controller. Unsubscribes from resultsUpdated events and
