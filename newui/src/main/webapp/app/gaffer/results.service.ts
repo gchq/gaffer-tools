@@ -14,18 +14,21 @@
  * limitations under the License.
  */
 import { Injectable } from '@angular/core';
+import { EventsService } from '../dynamic-input/events.service';
 
 @Injectable()
 export class ResultsService {
 
     results = {entities: [], edges: [], other: []};
 
-    constructor() {}
+    constructor(private events: EventsService) {}
 
+    /** Get the table results */
     get = function() {
         return this.results;
     }
 
+    /** Clear the table results */
     clear = function(broadcast) {
         this.results = {entities: [], edges: [], other: []};
         if(broadcast === undefined || broadcast) {
@@ -34,6 +37,7 @@ export class ResultsService {
         }
     }
 
+    /** Update the table */
     update = function(newResults) {
         var incomingResults = {
             entities: [], edges: [], other: []

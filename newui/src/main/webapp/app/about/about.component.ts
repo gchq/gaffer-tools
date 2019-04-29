@@ -20,6 +20,7 @@ import { Component, OnInit } from "@angular/core";
   selector: "app-about",
   templateUrl: "./about.component.html"
 })
+/** The about page, where the user can get more help and information through links to documentation and can send an email to give feedback */
 export class AboutComponent implements OnInit {
   title = "About";
   DESCRIPTION_PROPERTY = "gaffer.properties.app.description";
@@ -31,6 +32,7 @@ export class AboutComponent implements OnInit {
 
   constructor() {}
 
+  /** Opens the users default email client so they can send feedback by email */
   sendFeedback = function(emailId, subject, message) {
     // if (!emailId || emailId.length === 0) {
     //   throw new Error(

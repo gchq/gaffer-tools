@@ -13,12 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 import { Observable, Observer, of } from "rxjs";
 import { merge } from "lodash";
 
 import { Injectable} from "@angular/core";
-import { HttpClient, HttpHeaders } from "@angular/common/http";
+import { HttpClient} from "@angular/common/http";
 import { DefaultRestEndpointService } from './default-rest-endpoint-service';
 
 @Injectable()
@@ -27,18 +26,18 @@ export class ConfigService {
   defer = null;
 
   constructor(private http: HttpClient,
-              private defaultRestEndpoint: DefaultRestEndpointService) {
-    //this.authService = this.injector.get(AuthService);
-  }
+              private defaultRestEndpoint: DefaultRestEndpointService) {}
 
   get = function() {
     if (this.config) {
       return of(this.config);
-    } else if (!this.defer) {
-      this.defer = Observable.create((observer: Observer<String>) => {this.load(observer);});
+    } else if (!this.configObservable) {
+      this.configObservable = Observable.create(
+        (observer: Observer<String>) => {this.load(observer);}
+      );
     }
 
-    return this.defer;
+    return this.configObservable;
   };
 
   set = function(conf) {

@@ -19,6 +19,8 @@ import { ConfigService } from '../config/config.service';
 import { CommonService } from '../dynamic-input/common.service';
 import { ErrorService } from '../dynamic-input/error.service';
 import { LoadingService } from '../loading/loading.service';
+import { SettingsService } from '../settings/settings.service';
+import { ResultsService } from './results.service';
 
 @Injectable()
 export class QueryService {
@@ -29,30 +31,16 @@ export class QueryService {
                 private common: CommonService,
                 private error: ErrorService,
                 private http: HttpClient,
-                private loading: LoadingService) {}
+                private loading: LoadingService,
+                private settings: SettingsService,
+                private results: ResultsService) {}
 
     /**
      * Alerts the user if they hit the result limit
      * @param {Array} data The data returned by the Gaffer REST service
      */
     private showTooManyResultsPrompt = function(data, onSuccess) {
-        // this.$mdDialog.show({
-        //     template: '<result-count-warning aria-label="Result Count Warning"></result-count-warning>',
-        //     parent: angular.element(document.body),
-        //     clickOutsideToClose: false
-        // })
-        // .then(function(command) {
-        //     if(command === 'results') {
-        //         this.results.update(data);
-        //         if(onSuccess) {
-        //             onSuccess(data);
-        //         }
-        //     }
-        // });
-    }
-
-    getOperations = function() {
-        return this.operations;
+        this.error.handle('Too many results to show',null,null)
     }
 
     /**
@@ -113,15 +101,5 @@ export class QueryService {
                     }
                 );
         });
-    }
-
-    addOperation = function(operation) {
-        this.operations.push(operation);
-        this.events.broadcast('operationsUpdated', [this.operations])
-    }
-
-    setOperations = function(ops) {
-        this.operations = ops;
-        this.events.broadcast('operationsUpdated', [this.operations]);
     }
 };

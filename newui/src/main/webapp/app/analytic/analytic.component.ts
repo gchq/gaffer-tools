@@ -16,11 +16,9 @@ export class AnalyticComponent implements OnInit {
 
   ngOnInit() {}
 
-  // Save the chosen analytic in the analytics service
+  /** Save the chosen analytic in the analytics service */
   execute(analytic) {
     this.analyticsService.setAnalytic(analytic);
     this.router.navigate(['/parameters']);
   }
-
-
 }

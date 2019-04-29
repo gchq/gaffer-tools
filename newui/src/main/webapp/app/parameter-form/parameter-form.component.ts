@@ -13,14 +13,6 @@ export class ParameterFormComponent implements OnInit {
   constructor(private analyticsService: AnalyticsService) {}
 
   ngOnInit() {
-    //Convert the key value map of parameters into an iterable array
-    let object = this.parameters;
-    this.parameters = Object.keys(object).map(function(key) {
-      return [key, object[key]];
-    });
-
-    //Create the analytic operation
-    this.analyticsService.createAnalytic(this.parameters);
 
     if (this.parameters === null || this.parameters === undefined) {
       throw "Expected defined, non-null value for parameters. Got " +

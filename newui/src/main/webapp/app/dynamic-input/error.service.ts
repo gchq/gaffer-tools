@@ -23,101 +23,64 @@ export class ErrorService {
 
   constructor(private toastr: ToastrService) {}
   
-  //Add the toast to queue and show on completion of previous toast
+  /** Add the toast to queue and show on completion of previous toast */
   private showInOrder = function(msg, title, err) {
-    // If there is already a notification in queue, 
-    // show this notification after the last notification in queue
-    let toastObservable;
-    if (this.toastQueue.length > 0) {
-      // Immediately create the toast observable
-      toastObservable = Observable.create((observer: Observer<String>) => {
-        //After completion of the previous notification, show the next notification and start timer
-        this.toastQueue[this.toastQueue.length - 1].subscribe(
-          () => {
-            console.log('This is a notification');
-            this.showToast(msg, title, err);
-            setTimeout(() => {
-              observer.next(null);
-            }, 7000);
-          }
-        );
-      });
-    }
-    // Show the notification now 
-    else {
-      // Create an observable that fires after 7 seconds
-      toastObservable = Observable.create((observer: Observer<String>) => {
-        console.log('This is a notification');
-        this.showToast(msg, title, err);
-        setTimeout(() => {
-          observer.next(null);
-        }, 7000);
-      });
-    }
-
-    // add this item to the queue
-    this.toastQueue.push(toastObservable); 
-
-    // Remove the observable from queue after notification has ended
-    let observableSubscription = toastObservable.subscribe(
-      () => {
-        console.log('Notification Ended');
-      }
-    );
-  };
-
-  private showToast = function(msg, title, err) {
-
-    this.toastr.error(msg,title,{
-      timeOut : 7000,
-      progressBar: true,
-      positionClass: 'toast-top-right',
-      extendedTimeOut: 2000
-    });
-
-    // let toast = 
-      
-    // if (value === "ok") {
-    //   // clicked More info button
-    //   var title = err.status ? err.status : "Error";
-    //   var content;
-
-    //   if (typeof err === "string" || err instanceof String) {
-    //     content = err;
-    //   } else if (err.simpleMessage) {
-    //     content = err.simpleMessage;
-    //   } else if (err.message) {
-    //     content = err.message;
-    //   } else {
-    //     content =
-    //       "An unknown error occurred. See the console log for details";
-    //   }
-
-    //   this.toastr.error(content,title,{
-    //     timeOut : 7000,
-    //     progressBar: true,
-    //     positionClass: 'toast-top-right',
-    //     extendedTimeOut: 2000
+    // // If there is already a notification in queue, 
+    // // show this notification after the last notification in queue
+    // let toastObservable;
+    // if (this.toastQueue.length > 0) {
+    //   // Immediately create the toast observable
+    //   toastObservable = Observable.create((observer: Observer<String>) => {
+    //     //After completion of the previous notification, show the next notification and start timer
+    //     this.toastQueue[this.toastQueue.length - 1].subscribe(
+    //       () => {
+    //         console.log('This is a notification');
+    //         this.showToast(msg, title, err);
+    //         setTimeout(() => {
+    //           observer.next(null);
+    //         }, 7000);
+    //       }
+    //     );
     //   });
     // }
+    // // Show the notification now 
+    // else {
+    //   // Create an observable that fires after 7 seconds
+    //   toastObservable = Observable.create((observer: Observer<String>) => {
+    //     console.log('This is a notification');
+    //     this.showToast(msg, title, err);
+    //     setTimeout(() => {
+    //       observer.next(null);
+    //     }, 7000);
+    //   });
+    // }
+
+    // // add this item to the queue
+    // this.toastQueue.push(toastObservable); 
+
+    // // Remove the observable from queue after notification has ended
+    // let observableSubscription = toastObservable.subscribe(
+    //   () => {
+    //     console.log('Notification Ended');
+    //   }
+    // );
   };
 
-        //     .finally(function() {
-        //       this.toastQueue[0].resolve(); // start next toast
-        //       this.toastQueue.splice(0, 1); // remove this item from the queue
-        //     });
-        // } else {
-        //   this.toastQueue[0].resolve(); // start next toast
-        //   this.toastQueue.splice(0, 1); // remove this item from the queue
-        // }
-  //     },
-  //     function(err) {
-  //       // when swiped
-  //       this.toastQueue = [];
-  //     }
-  //   );
-  // };
+  /** Show an error notification */
+  private showToast = function(msg, title, err) {
 
+    setTimeout(() => {
+      this.toastr.error(msg, title, {
+        timeOut : 7000,
+        progressBar: true,
+        positionClass: 'toast-top-right',
+        extendedTimeOut: 2000
+      });
+    });
+
+  };
+
+  /** Create a notification from an error */
   handle = function(message, title, err) {
     let msg;
 

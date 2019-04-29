@@ -1,5 +1,11 @@
 import { Injectable } from '@angular/core';
 import { QueryService } from './query.service';
+import { Observable, Observer } from 'rxjs';
+import { HttpClient, HttpHeaders } from "@angular/common/http";
+import { ConfigService } from '../config/config.service';
+import { ErrorService } from '../dynamic-input/error.service';
+import { CommonService } from '../dynamic-input/common.service';
+import { Router } from '@angular/router';
 
 //Used to store and get the selected analytic
 @Injectable()
@@ -9,22 +15,27 @@ export class AnalyticsService {
 
   ANALYTIC_CLASS = 'uk.gov.gchq.gaffer.operation.analytic.AnalyticOperation'
 
-  constructor(private query: QueryService) {}
+  constructor(private query: QueryService,
+              private config: ConfigService,
+              private error: ErrorService,
+              private common: CommonService,
+              private http: HttpClient,
+              private router: Router) {}
 
-  //Set the chosen analytic
+  /** Set the chosen analytic */
   setAnalytic(analytic) {
     console.log("setting analytic:", analytic);
     this.selectedAnalytic = analytic;
     console.log("set analytic:", this.selectedAnalytic);
   }
 
-  //Get the chosen analytic
+  /** Get the chosen analytic */
   getAnalytic() {
     console.log("getting analytic:", this.selectedAnalytic);
     return this.selectedAnalytic;
   }
 
-  //Update the analytic operation on change of parameters
+  /** Update the analytic operation on change of parameters */
   updateAnalytic = function(parameters, parameter, parameterName) {
     parameter = parseInt(parameter);
     for (let i = 0; i < parameters.length; i++) {
@@ -37,7 +48,7 @@ export class AnalyticsService {
     return;
   }
 
-  //Create and initialise the analytic operation with default parameters
+  /** Create and initialise the analytic operation with default parameters */
   createAnalytic = function(parameters) {
       this.analyticOperation = {
         class: this.ANALYTIC_CLASS,
@@ -46,57 +57,45 @@ export class AnalyticsService {
       };
   }
 
-  //Execute the analytic operation
+  /** Execute the analytic operation */
   executeAnalytic = function() {
     //Convert parameters from an array to a key value map
-    let parametersMap = {};
-    for (let param of this.analyticOperation.parameters) {
-      parametersMap[param[0]] = param[1];
+    if (this.analyticOperation.parameters != null) {
+      let parametersMap = {};
+      for (let param of this.analyticOperation.parameters) {
+        parametersMap[param[0]] = param[1];
+      }
+      this.analyticOperation.parameters = parametersMap
     }
-    this.analyticOperation.parameters = parametersMap
-
-    // this.events.broadcast("onPreExecute", []);
-    // if (!this.canExecute()) {
-    //   return;
-    // }
-
-    // if (this.operations.length === 0) {
-    //   this.error.handle("Unable to run operation chain with no operations");
-    //   return;
-    // }
-
-    // for (var i in this.operations) {
-    //   chain.operations.push(this.createOperationForQuery(this.operations[i]));
-    // }
-
-    //this.query.addOperation(this.angular.copy(chain));
-
-    //var finalOperation = this.operations[this.operations.length - 1];
-    // if (
-    //   this.common.arrayContainsValue(
-    //     finalOperation.selectedOperation.next,
-    //     "uk.gov.gchq.gaffer.operation.impl.Limit"
-    //   )
-    // ) {
-    //   var options = finalOperation.fields
-    //     ? this.operationOptions.extractOperationOptions(
-    //         finalOperation.fields.options
-    //       )
-    //     : undefined;
-    //   chain.operations.push(
-    //     this.operationService.createLimitOperation(options)
-    //   );
-    //   chain.operations.push(
-    //     this.operationService.createDeduplicateOperation(options)
-    //   );
-    // }
-
-    // this.previousQueries.addQuery({
-    //   name: "Operation Chain",
-    //   lastRun: this.moment().format("HH:mm"),
-    //   operations: this.operations
-    // });
 
     this.query.executeQuery(this.analyticOperation);
+    this.router.navigate(['/results']);
+  };
+
+  reloadAnalytics = function(loud) {
+    var observable = Observable.create((observer: Observer<String>) => {
+      var operation = {
+        "class": "uk.gov.gchq.gaffer.operation.analytic.GetAllAnalyticOperations"
+      }
+      let headers = new HttpHeaders();
+      headers = headers.set('Content-Type', 'application/json; charset=utf-8');
+      this.config.get().subscribe((conf) => {
+          var queryUrl = this.common.parseUrl(conf.restEndpoint + "/graph/operations/execute");
+          this.http.post(queryUrl, operation, { headers: headers} ).subscribe(
+            (data) => {
+              observer.next(data)
+            },
+            (err) => {
+              if (loud) {
+              this.error.handle("Failed to load analytics", null, err);
+              observer.error(err);
+              } else {
+                observer.next(err)
+              }
+            }
+          )
+      })
+    })
+    return observable;
   };
 }

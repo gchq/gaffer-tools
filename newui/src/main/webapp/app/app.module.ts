@@ -28,7 +28,6 @@ import { ParameterInputComponent } from "./parameter-input/parameter-input.compo
 import { OptionsComponent } from "./options/options.component";
 
 import { AnalyticsService } from "./gaffer/analytics.service";
-import { OperationService } from "./gaffer/operation.service";
 import { SchemaService } from "./gaffer/schema.service";
 import { OperationOptionsService } from "./options/operation-options.service";
 import { ConfigService } from "./config/config.service";
@@ -39,6 +38,9 @@ import { TypesService } from "./gaffer/type.service";
 import { DefaultRestEndpointService } from './config/default-rest-endpoint-service';
 import { QueryService } from './gaffer/query.service';
 import { LoadingService } from './loading/loading.service';
+import { ResultsService } from './gaffer/results.service';
+import { TableService } from './table/table.service';
+import { SettingsService } from './settings/settings.service';
 
 
 @NgModule({
@@ -73,7 +75,6 @@ import { LoadingService } from './loading/loading.service';
   ],
   providers: [
     AnalyticsService,
-    OperationService,
     SchemaService,
     OperationOptionsService,
     ConfigService,
@@ -83,7 +84,10 @@ import { LoadingService } from './loading/loading.service';
     ErrorService,
     DefaultRestEndpointService,
     QueryService,
-    LoadingService
+    LoadingService,
+    ResultsService,
+    TableService,
+    SettingsService
   ],
   bootstrap: [AppComponent]
 })
