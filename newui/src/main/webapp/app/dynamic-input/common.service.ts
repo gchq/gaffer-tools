@@ -77,6 +77,17 @@ export class CommonService {
   };
 
   /**
+  * Adds the item to the list if it is not already in the list.
+  * @param {*} item the item to add to the list
+  * @param {Array} list
+  */
+  pushValueIfUnique = function(item, list) {
+    if(list && !this.arrayContainsValue(list, item)) {
+        list.push(item);
+    }
+  }
+
+  /**
    * Concatenates to lists together and deduplicates the result list.
    * @param {Array} list1
    * @param {Array} list2
@@ -94,4 +105,14 @@ export class CommonService {
     this.pushValuesIfUnique(list2, concatList);
     return concatList;
   };
+
+  /**
+   * Checks whether a string or number is contained within array
+   * This will not work if the value is an object
+   * @param {Array} arr
+   * @param {String or Number} value
+   */
+  arrayContainsValue = function(arr, value) {
+    return arr && arr.indexOf(value) !== -1;
+  }
 }

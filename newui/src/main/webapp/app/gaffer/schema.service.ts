@@ -31,7 +31,8 @@ export class SchemaService {
 
   constructor(private operationOptions: OperationOptionsService,
               private error: ErrorService,
-              private query: QueryService) 
+              private query: QueryService,
+              private operationService: OperationServi) 
               
   {
     this.update().subscribe(function() {}, function() {});

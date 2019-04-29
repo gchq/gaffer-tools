@@ -1,11 +1,15 @@
 import { Component, OnInit, Injectable, ViewChild } from "@angular/core";
 import { MatSort, MatTableDataSource } from "@angular/material";
+import { cloneDeep } from "lodash";
+
 import { SchemaService } from "../gaffer/schema.service";
 import { EventsService } from "../dynamic-input/events.service";
 import { ResultsService } from '../gaffer/results.service';
 import { TableService } from './table.service';
 import { CommonService } from '../dynamic-input/common.service';
 import { TypesService } from '../gaffer/type.service';
+import { TimeService } from '../gaffer/time.service';
+import { analyzeAndValidateNgModules } from '@angular/compiler';
 
 export interface Element {
   junction: string;
@@ -36,7 +40,8 @@ export class TableComponent implements OnInit {
               private results: ResultsService,
               private table: TableService,
               private common: CommonService,
-              private types: TypesService) {}
+              private types: TypesService,
+              private time: TimeService) {}
 
   /**
    * Initialises the controller.
@@ -56,6 +61,8 @@ export class TableComponent implements OnInit {
         this.processResults(this.results.get());
       }
     );
+
+    //this.data = new MatTableDataSource(ELEMENT_DATA)
 
     this.events.subscribe("resultsUpdated", () => this.onResultsUpdated);
   }
@@ -139,6 +146,7 @@ export class TableComponent implements OnInit {
             this.data.results = this.data.results.concat(
               this.resultsByType[this.data.types[t]][this.data.groups[g]]
             );
+
           }
         }
       }
@@ -204,7 +212,7 @@ export class TableComponent implements OnInit {
     );
 
     if (!this.data.columns || this.data.columns.length === 0) {
-      //  this.data.columns = angular.copy(this.data.allColumns);
+      this.data.columns = cloneDeep(this.data.allColumns);
     }
     this.data.allTypes = [];
     this.data.allGroups = [];
@@ -216,10 +224,10 @@ export class TableComponent implements OnInit {
     }
 
     if (!this.data.types || this.data.types.length === 0) {
-      //  this.data.types = angular.copy(this.data.allTypes);
+       this.data.types = cloneDeep(this.data.allTypes);
     }
     if (!this.data.groups || this.data.groups.length === 0) {
-      //  this.data.groups = angular.copy(this.data.allGroups);
+       this.data.groups = cloneDeep(this.data.allGroups);
     }
 
     this.updateFilteredResults();
@@ -276,18 +284,18 @@ export class TableComponent implements OnInit {
                     this.common.pushValueIfUnique(propName, groupByProperties);
                   }
                 }
-                // for (var propName in elementDef.properties) {
-                //   var typeDef =
-                //     this.schema.types[elementDef.properties[propName]];
-                //   if (
-                //     typeDef &&
-                //     typeDef.description &&
-                //     !(propName in this.data.tooltips)
-                //   ) {
-                //     this.data.tooltips[propName] = typeDef.description;
-                //   }
-                //   common.pushValueIfUnique(propName, properties);
-                // }
+                for (var propertyName in elementDef.properties) {
+                  var typeDef =
+                    this.schema.types[elementDef.properties[propertyName]];
+                  if (
+                    typeDef &&
+                    typeDef.description &&
+                    !(propertyName in this.data.tooltips)
+                  ) {
+                    this.data.tooltips[propertyName] = typeDef.description;
+                  }
+                  this.common.pushValueIfUnique(propertyName, properties);
+                }
               }
             }
             for (var prop in element.properties) {
@@ -408,7 +416,10 @@ export class TableComponent implements OnInit {
       sortType: this.sortType,
       pagination: this.pagination,
       chart: this.chart,
-      showVisualisation: this.showVisualisation
+      showVisualisation: this.showVisualisation,
+      columns : null,
+      types: null,
+      groups: null,
     };
 
     if (
@@ -416,7 +427,7 @@ export class TableComponent implements OnInit {
       this.data.allColumns &&
       this.data.columns.length < this.data.allColumns.length
     ) {
-      //  cachedValues.columns = this.data.columns;
+      cachedValues.columns = this.data.columns;
     }
 
     if (
@@ -424,7 +435,7 @@ export class TableComponent implements OnInit {
       this.data.allTypes &&
       this.data.types.length < this.data.allTypes.length
     ) {
-      //  cachedValues.types = this.data.types;
+      cachedValues.types = this.data.types;
     }
 
     if (
@@ -432,7 +443,7 @@ export class TableComponent implements OnInit {
       this.data.allGroups &&
       this.data.groups.length < this.data.allGroups.length
     ) {
-      //  cachedValues.groups = this.data.groups;
+      cachedValues.groups = this.data.groups;
     }
 
     this.table.setCachedValues(cachedValues);

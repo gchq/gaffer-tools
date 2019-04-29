@@ -15,7 +15,7 @@
  */
 import { ConfigService } from '../config/config.service';
 import { Injectable } from '@angular/core';
-import { merge, lowerCase, cloneDeep } from "lodash";
+import { lowerCase, cloneDeep } from "lodash";
 import * as moment from 'moment';
 
 @Injectable()
@@ -33,11 +33,13 @@ export class TimeService {
     timeProperties = {};
 
     constructor(private config: ConfigService) {
-        this.config.get().then(function(myConfig) {
-            if(myConfig && myConfig.time && myConfig.time.properties) {
-                this.timeProperties = myConfig.time.properties;
+        this.config.get().subscribe(
+            (myConfig) => {
+                if(myConfig && myConfig.time && myConfig.time.properties) {
+                    this.timeProperties = myConfig.time.properties;
+                }
             }
-        });
+        );
     }
 
     isValidUnit = function(unit) {
