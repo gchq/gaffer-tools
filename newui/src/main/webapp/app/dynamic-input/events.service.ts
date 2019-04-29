@@ -35,4 +35,13 @@ export class EventsService {
       this.events[eventName].push(callback);
     }
   };
-}
+
+  broadcast = function(eventName, args) {
+    var listeners = this.events[eventName];
+    var fn;
+    for(var i in listeners) {
+        fn = listeners[i];
+        fn.apply(fn, args);
+    }
+  };
+};
