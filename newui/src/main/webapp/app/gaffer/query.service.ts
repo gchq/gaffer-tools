@@ -19,6 +19,7 @@ import { ConfigService } from '../config/config.service';
 import { CommonService } from '../dynamic-input/common.service';
 import { ErrorService } from '../dynamic-input/error.service';
 import { LoadingService } from '../loading/loading.service';
+import { SettingsService } from '../settings/settings.service';
 
 @Injectable()
 export class QueryService {
@@ -29,7 +30,8 @@ export class QueryService {
                 private common: CommonService,
                 private error: ErrorService,
                 private http: HttpClient,
-                private loading: LoadingService) {}
+                private loading: LoadingService,
+                private settings: SettingsService) {}
 
     /**
      * Alerts the user if they hit the result limit

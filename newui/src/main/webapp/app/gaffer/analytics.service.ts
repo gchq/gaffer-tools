@@ -58,11 +58,13 @@ export class AnalyticsService {
   /** Execute the analytic operation */
   executeAnalytic = function() {
     //Convert parameters from an array to a key value map
-    let parametersMap = {};
-    for (let param of this.analyticOperation.parameters) {
-      parametersMap[param[0]] = param[1];
+    if (this.analyticOperation.parameters != null) {
+      let parametersMap = {};
+      for (let param of this.analyticOperation.parameters) {
+        parametersMap[param[0]] = param[1];
+      }
+      this.analyticOperation.parameters = parametersMap
     }
-    this.analyticOperation.parameters = parametersMap
 
     this.query.executeQuery(this.analyticOperation);
   };

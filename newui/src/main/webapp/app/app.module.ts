@@ -40,6 +40,7 @@ import { QueryService } from './gaffer/query.service';
 import { LoadingService } from './loading/loading.service';
 import { ResultsService } from './gaffer/results.service';
 import { TableService } from './table/table.service';
+import { SettingsService } from './settings/settings.service';
 
 
 @NgModule({
@@ -85,7 +86,8 @@ import { TableService } from './table/table.service';
     QueryService,
     LoadingService,
     ResultsService,
-    TableService
+    TableService,
+    SettingsService
   ],
   bootstrap: [AppComponent]
 })

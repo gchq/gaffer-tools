@@ -33,6 +33,20 @@ export class ParameterInputComponent implements OnInit {
     this.config.get().subscribe(function(conf) {
       this.timeConfig = conf.time;
     });
+
+    //Convert the key value map of parameters into an iterable array
+    if (this.analytic.parameters != null) {
+      let object = this.analytic.parameters;
+      this.analytic.parameters = Object.keys(object).map(function(key) {
+        return [key, object[key]];
+      });
+    } 
+    // else {
+    //   this.analytic.parameters = [];
+    // }
+
+    //Initialise the analytic operation
+    this.analyticsService.createAnalytic(this.analytic.parameters);
   }
 
   NAMED_VIEW_CLASS = "uk.gov.gchq.gaffer.data.elementdefinition.view.NamedView";
