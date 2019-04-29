@@ -44,4 +44,16 @@ export class EventsService {
         fn.apply(fn, args);
     }
   };
+
+  unsubscribe = function(eventName, callback) {
+    if (!this.events[eventName]) {
+        return;
+    }
+
+    this.events[eventName] = this.events[eventName].filter(function(fn) {
+        if (fn !== callback) {
+            return fn;
+        }
+    })
+  }
 };

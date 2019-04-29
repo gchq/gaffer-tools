@@ -5,6 +5,7 @@ import { EventsService } from "../dynamic-input/events.service";
 import { ResultsService } from '../gaffer/results.service';
 import { TableService } from './table.service';
 import { CommonService } from '../dynamic-input/common.service';
+import { TypesService } from '../gaffer/type.service';
 
 export interface Element {
   junction: string;
@@ -34,7 +35,8 @@ export class TableComponent implements OnInit {
               private events: EventsService,
               private results: ResultsService,
               private table: TableService,
-              private common: CommonService) {}
+              private common: CommonService,
+              private types: TypesService) {}
 
   /**
    * Initialises the controller.
@@ -55,7 +57,7 @@ export class TableComponent implements OnInit {
       }
     );
 
-    this.events.subscribe("resultsUpdated", this.onResultsUpdated);
+    this.events.subscribe("resultsUpdated", () => this.onResultsUpdated);
   }
 
   ngAfterViewInit() {

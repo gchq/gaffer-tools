@@ -41,6 +41,7 @@ import { LoadingService } from './loading/loading.service';
 import { ResultsService } from './gaffer/results.service';
 import { TableService } from './table/table.service';
 import { SettingsService } from './settings/settings.service';
+import { TimeService } from './gaffer/time.service';
 
 
 @NgModule({
@@ -87,7 +88,8 @@ import { SettingsService } from './settings/settings.service';
     LoadingService,
     ResultsService,
     TableService,
-    SettingsService
+    SettingsService,
+    TimeService
   ],
   bootstrap: [AppComponent]
 })
