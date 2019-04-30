@@ -68,8 +68,7 @@ export class AnalyticsService {
       this.analyticOperation.parameters = parametersMap
     }
 
-    this.query.executeQuery(this.analyticOperation);
-    this.router.navigate(['/results']);
+    this.query.executeQuery(this.analyticOperation, () => {this.router.navigate(['/results'])});
   };
 
   reloadAnalytics = function(loud) {

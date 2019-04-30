@@ -9,7 +9,6 @@ import { TableService } from './table.service';
 import { CommonService } from '../dynamic-input/common.service';
 import { TypesService } from '../gaffer/type.service';
 import { TimeService } from '../gaffer/time.service';
-import { analyzeAndValidateNgModules } from '@angular/compiler';
 
 export interface Element {
   junction: string;
