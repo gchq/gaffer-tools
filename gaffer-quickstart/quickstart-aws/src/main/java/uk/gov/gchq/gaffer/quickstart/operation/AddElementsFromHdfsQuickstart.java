@@ -29,11 +29,17 @@ public class AddElementsFromHdfsQuickstart implements Operation, Validatable {
     @Required
     private String dataPath;
     @Required
-    private String outputPath;
-    @Required
-    private String failurePath;
-    @Required
     private String elementGeneratorConfig;
+//    @Required
+//    private String schemaPath;
+//    @Required
+//    private String graphconfigPath;
+//    @Required
+//    private String storePropertiesPath;
+
+    private String outputPath;
+    private String failurePath;
+    private int numPartitions = 1;
 
     private boolean validate = true;
 
@@ -61,6 +67,14 @@ public class AddElementsFromHdfsQuickstart implements Operation, Validatable {
         this.elementGeneratorConfig = elementGeneratorConfigPath;
     }
 
+    public int getNumPartitions() {
+        return numPartitions;
+    }
+
+    public void setNumPartitions(int numPartitions) {
+        this.numPartitions = numPartitions;
+    }
+
     public String getDataPath(){
         return dataPath;
     }
@@ -69,6 +83,30 @@ public class AddElementsFromHdfsQuickstart implements Operation, Validatable {
         return this.elementGeneratorConfig;
     }
 
+//    public String getSchemaPath() {
+//        return schemaPath;
+//    }
+//
+//    public void setSchemaPath(String schemaPath) {
+//        this.schemaPath = schemaPath;
+//    }
+//
+//    public String getGraphconfigPath() {
+//        return graphconfigPath;
+//    }
+//
+//    public void setGraphconfigPath(String graphconfigPath) {
+//        this.graphconfigPath = graphconfigPath;
+//    }
+//
+//    public String getStorePropertiesPath() {
+//        return storePropertiesPath;
+//    }
+//
+//    public void setStorePropertiesPath(String storePropertiesPath) {
+//        this.storePropertiesPath = storePropertiesPath;
+//    }
+
     @Override
     public Operation shallowClone() throws CloneFailedException {
         return new Builder()
@@ -76,7 +114,11 @@ public class AddElementsFromHdfsQuickstart implements Operation, Validatable {
                 .outputPath(outputPath)
                 .failurePath(failurePath)
                 .elementGeneratorConfig(elementGeneratorConfig)
+//                .storePropertiesPath(storePropertiesPath)
+//                .graphConfigPath(graphconfigPath)
+//                .schemaPath(schemaPath)
                 .validate(validate)
+                .numPartitions(numPartitions)
                 .build();
     }
 
@@ -136,6 +178,26 @@ public class AddElementsFromHdfsQuickstart implements Operation, Validatable {
             _getOp().setValidate(validate);
             return _self();
         }
+
+        public Builder numPartitions(final int numPartitions){
+            _getOp().setNumPartitions(numPartitions);
+            return _self();
+        }
+
+//        public Builder schemaPath(final String schemaPath){
+//            _getOp().setSchemaPath(schemaPath);
+//            return _self();
+//        }
+//
+//        public Builder graphConfigPath(final String graphConfigPath){
+//            _getOp().setGraphconfigPath(graphConfigPath);
+//            return _self();
+//        }
+//
+//        public Builder storePropertiesPath(final String storePropertiesPath){
+//            _getOp().setStorePropertiesPath(storePropertiesPath);
+//            return _self();
+//        }
 
         public Builder elementGeneratorConfig(final String elementGeneratorConfigPath){
                 _getOp().setElementGeneratorConfig(elementGeneratorConfigPath);

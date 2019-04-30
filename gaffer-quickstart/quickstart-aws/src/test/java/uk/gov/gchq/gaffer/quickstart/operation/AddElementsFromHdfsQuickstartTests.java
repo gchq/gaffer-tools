@@ -21,12 +21,14 @@ import uk.gov.gchq.gaffer.data.element.Element;
 import uk.gov.gchq.gaffer.graph.Graph;
 import uk.gov.gchq.gaffer.operation.OperationException;
 import uk.gov.gchq.gaffer.operation.data.EntitySeed;
+import uk.gov.gchq.gaffer.operation.impl.get.GetAllElements;
 import uk.gov.gchq.gaffer.operation.impl.get.GetElements;
 import uk.gov.gchq.gaffer.user.User;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.util.UUID;
 
 public class AddElementsFromHdfsQuickstartTests {
 
@@ -34,12 +36,18 @@ public class AddElementsFromHdfsQuickstartTests {
     public void loadDataTest(){
 
         Graph graph = null;
+        String schemaPath = "/Users/P41794/workspace/gaffer-tools/gaffer-quickstart/gaffer-tools/gaffer-quickstart/quickstart-core/src/example/schema.json";
+        String graphconfigPath = "/Users/P41794/workspace/gaffer-tools/gaffer-quickstart/gaffer-tools/gaffer-quickstart/quickstart-core/src/example/graphconfig.json";
+        String storePropertiesPath = "/Users/P41794/workspace/gaffer-tools/gaffer-quickstart/gaffer-tools/gaffer-quickstart/quickstart-aws/src/test/resources/mock.accumulo.store.properties";
+
+        String dataPath = "/Users/P41794/workspace/gaffer-tools/gaffer-quickstart/gaffer-tools/gaffer-quickstart/quickstart-core/src/example/data.csv";
+        String generatorPath = "/Users/P41794/workspace/gaffer-tools/gaffer-quickstart/gaffer-tools/gaffer-quickstart/quickstart-core/src/example/element-generator.json";
 
         try {
             graph = new Graph.Builder()
-                    .addSchema(new FileInputStream(new File("/Users/58265/workspace/gaffer-tools/gaffer-quickstart/gaffer-tools/gaffer-quickstart/quickstart-aws/src/test/resources/schema.json")))
-                    .config(new FileInputStream(new File("/Users/58265/workspace/gaffer-tools/gaffer-quickstart/gaffer-tools/gaffer-quickstart/quickstart-aws/src/test/resources/graphconfig.json")))
-                    .storeProperties(new FileInputStream(new File("/Users/58265/workspace/gaffer-tools/gaffer-quickstart/gaffer-tools/gaffer-quickstart/quickstart-aws/src/test/resources/mock.accumulo.store.properties")))
+                    .addSchema(new FileInputStream(new File(schemaPath)))
+                    .config(new FileInputStream(new File(graphconfigPath)))
+                    .storeProperties(new FileInputStream(new File(storePropertiesPath)))
                     .build();
         } catch (FileNotFoundException e) {
             e.printStackTrace();
@@ -50,10 +58,11 @@ public class AddElementsFromHdfsQuickstartTests {
                 .build();
 
         AddElementsFromHdfsQuickstart addElementsFromHdfsQuickstart = new AddElementsFromHdfsQuickstart.Builder()
-                .dataPath("/Users/58265/workspace/gaffer-tools/gaffer-quickstart/gaffer-tools/gaffer-quickstart/quickstart-aws/src/test/resources/data.csv")
-                .elementGeneratorConfig("/Users/58265/workspace/gaffer-tools/gaffer-quickstart/gaffer-tools/gaffer-quickstart/quickstart-aws/src/test/resources/element-generator.json")
-                .outputPath("/Users/58265/workspace/gaffer-tools/gaffer-quickstart/gaffer-tools/gaffer-quickstart/quickstart-aws/src/test/resources/output")
-                .failurePath("/Users/58265/workspace/gaffer-tools/gaffer-quickstart/gaffer-tools/gaffer-quickstart/quickstart-aws/src/test/resources/failure")
+                .dataPath(dataPath)
+                .elementGeneratorConfig(generatorPath)
+//                .schemaPath(schemaPath)
+//                .graphConfigPath(graphconfigPath)
+//                .storePropertiesPath(storePropertiesPath)
                 .build();
 
         try {
@@ -66,8 +75,14 @@ public class AddElementsFromHdfsQuickstartTests {
                 .input(new EntitySeed("1"))
                 .build();
 
+        GetAllElements getAllElements = new GetAllElements.Builder()
+                .build();
+
+        System.out.println("trying to fetch data from the graph");
+
         try {
-            for(Element e : graph.execute(getElements, user)){
+//            for(Element e : graph.execute(getElements, user)){
+            for(Element e : graph.execute(getAllElements, user)){
                 System.out.println(e);
             }
         } catch (OperationException e) {
@@ -75,4 +90,5 @@ public class AddElementsFromHdfsQuickstartTests {
         }
 
     }
+
 }

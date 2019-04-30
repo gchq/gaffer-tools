@@ -19,6 +19,7 @@ RESTCONFIG=
 UI_WAR=$GAFFER_HOME/lib/quickstart-ui-${VERSION}.war
 REST_WAR=$GAFFER_HOME/lib/quickstart-rest-${VERSION}.war
 CUSTOM_OPS_DIR=
+PORT=
 
 usage="-schema schema file, -config graphconfig file, -store storeProperties file"
 
@@ -47,10 +48,16 @@ case $key in
     RESTCONFIG="$2"
     shift # past argument
     ;;
-    --customops-dir|-c)
-		CUSTOM_OPS_DIR=$2
-		shift
-		;;
+    -customops-dir)
+	CUSTOM_OPS_DIR="$2"
+	shift
+	;;
+	-port)
+	echo "setting port"
+	PORT="$2"
+	echo -e "port set to $PORT"
+	shift
+	;;
     *)
             echo $usage
             echo "unknown args, exiting..."
@@ -95,7 +102,7 @@ fi
 
 echo -e "\ngaffer.serialisation.json.modules=uk.gov.gchq.gaffer.sketches.serialisation.json.SketchesJsonModules\n" >> $STORE_PROPERTIES
 
-java -cp "$GAFFER_HOME/lib/quickstart-core-${VERSION}.jar:$GAFFER_HOME/lib/*" uk.gov.gchq.gaffer.quickstart.web.GafferWebServices $SCHEMA $GRAPH_CONFIG $STORE_PROPERTIES $REST_WAR $UI_WAR $RESTCONFIG>> $GAFFER_HOME/gaffer.log 2>&1 &
+java -cp "$GAFFER_HOME/lib/quickstart-core-${VERSION}.jar:$GAFFER_HOME/lib/*" uk.gov.gchq.gaffer.quickstart.web.GafferWebServices $SCHEMA $GRAPH_CONFIG $STORE_PROPERTIES $REST_WAR $UI_WAR $RESTCONFIG $PORT>> $GAFFER_HOME/gaffer.log 2>&1 &
 
 pid=`ps -ef | grep GafferWebServices | head -n 1 | awk '{print $2}'`
 

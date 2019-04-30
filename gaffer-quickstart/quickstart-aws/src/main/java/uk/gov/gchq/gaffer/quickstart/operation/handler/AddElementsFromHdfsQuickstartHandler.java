@@ -18,18 +18,24 @@ package uk.gov.gchq.gaffer.quickstart.operation.handler;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.spark.launcher.SparkLauncher;
+import uk.gov.gchq.gaffer.accumulostore.AccumuloProperties;
 import uk.gov.gchq.gaffer.accumulostore.AccumuloStore;
+import uk.gov.gchq.gaffer.exception.SerialisationException;
+import uk.gov.gchq.gaffer.jsonserialisation.JSONSerialiser;
 import uk.gov.gchq.gaffer.operation.OperationException;
 import uk.gov.gchq.gaffer.quickstart.operation.AddElementsFromHdfsQuickstart;
 import uk.gov.gchq.gaffer.quickstart.operation.handler.job.LoadFromHdfsJob;
 import uk.gov.gchq.gaffer.store.Context;
 import uk.gov.gchq.gaffer.store.Store;
 import uk.gov.gchq.gaffer.store.operation.handler.OperationHandler;
+import uk.gov.gchq.gaffer.store.schema.Schema;
 
 import java.io.IOException;
 import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Properties;
+import java.util.UUID;
 
 public class AddElementsFromHdfsQuickstartHandler implements OperationHandler<AddElementsFromHdfsQuickstart> {
 
@@ -46,17 +52,48 @@ public class AddElementsFromHdfsQuickstartHandler implements OperationHandler<Ad
 
     private void doOperation(AddElementsFromHdfsQuickstart operation, Context context, AccumuloStore accumuloStore) throws OperationException {
 
+        AccumuloProperties properties = accumuloStore.getProperties();
+        String accumuloPropertiesJson  = null;
+        try {
+            accumuloPropertiesJson = new String(JSONSerialiser.serialise(properties));
+        } catch (SerialisationException e) {
+            e.printStackTrace();
+        }
+
+        Schema schema = accumuloStore.getSchema();
+        String schemaJson = new String(schema.toCompactJson());
+
+        String tableName = accumuloStore.getTableName();
+
+        UUID uuid = UUID.randomUUID();
+        String failurePath;
+        String outputPath;
+        String jobname = APP_NAME + "_" + uuid;
+
+        if(null == operation.getFailurePath()){
+            failurePath = "failure_" + uuid;
+        }else{
+            failurePath = operation.getFailurePath();
+        }
+
+        if(null == operation.getOutputPath()){
+            outputPath = "output_" + uuid;
+        }else{
+            outputPath = operation.getOutputPath();
+        }
+
         String jobMainClass = LoadFromHdfsJob.class.getCanonicalName();
         String sparkMaster = accumuloStore.getProperties().get(SPARK_MASTER_KEY);
         String jarPath = accumuloStore.getProperties().get(JOB_JAR_PATH_KEY);
         String sparkHome = accumuloStore.getProperties().get(SPARK_HOME_KEY);
+        String numPartitions = String.valueOf(operation.getNumPartitions());
 
         Map<String, String> env = new HashMap<>();
         env.put("SPARK_PRINT_LAUNCH_COMMAND", "1");
 
         try {
             Process sparkLauncherProcess = new SparkLauncher(env)
-                    .setAppName(APP_NAME)
+                    .setAppName(jobname)
                     .setMaster(sparkMaster)
                     .setMainClass(jobMainClass)
                     .setAppResource(jarPath)
@@ -64,8 +101,12 @@ public class AddElementsFromHdfsQuickstartHandler implements OperationHandler<Ad
                     .addAppArgs(
                             operation.getDataPath(),
                             operation.getElementGeneratorConfig(),
-                            operation.getFailurePath(),
-                            operation.getOutputPath()
+                            outputPath,
+                            failurePath,
+                            numPartitions,
+                            schemaJson,
+                            tableName,
+                            accumuloPropertiesJson
                     )
                     .launch();
 

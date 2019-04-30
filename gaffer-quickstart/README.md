@@ -8,6 +8,8 @@ It can be deployed either locally using mini-accumulo or distributed on AWS-EMR.
 
 This will run a Gaffer-accumulo instance on your local machine with a small example graph set up and some data you can load and query.
 
+NOTE: _this is not intended for large amounts of data or for operational use. It's recommended for demonstration purposes only_
+
 ### Build and install ###
 
  1. `mvn clean install`. This will create a tarball in the `gaffer-quickstart-release-VERSION` directory in the gaffer-quickstart module.
@@ -25,13 +27,17 @@ Also in the example folder you'll find a Gaffer schema, graph config and element
 
 Run `$GAFFER_HOME/bin/startup.sh`. 
 
-This will start Gaffer with the rest service and UI running. After a few seconds, the UI will be on http://localhost:8085/ui and the rest service will be on http://localhost:8085/rest
+This will start Gaffer with the rest service and UI running on the default port 8085. After a few seconds, the UI will be on http://localhost:8085/ui and the rest service will be on http://localhost:8085/rest
 
 Logging for Gaffer will be in `$GAFFER_HOME/gaffer.log`
 
+To run on a different port, e.g. 8157 use `$GAFFER_HOME/bin/startup.sh --port 8157`.
+
+To start on a random available port, use `$GAFFER_HOME/bin/startup.sh --port 0`
+
 ### Load the example data ###
 
-Run the following command in a terminal, replacing GAFFER_HOME with whatever your `$GAFFER_HOME` environment variable is set to (e.g. `/home/me/gaffer`)
+Run the following command in a terminal, replacing GAFFER_HOME with whatever your `$GAFFER_HOME` environment variable is set to (e.g. `/home/me/gaffer`) and the port number if you're not using the default 8085.
 
 ```
 curl -X POST --header 'Content-Type: application/json' --header 'Accept: application/json' -d '{ 
@@ -45,7 +51,7 @@ The mappings file tells Gaffer how to convert the csv data into graph edges and 
 
 ##### Check the data is there #####
 
-Run this command in a terminal
+Run this command in a terminal (change the port number if you're not running on the default 8085)
 
 ```
 curl -X POST --header 'Content-Type: application/json' --header 'Accept: application/json' -d '{
@@ -68,6 +74,32 @@ and you should see output that starts something like this
 ### Shutting down ###
 
 Run `$GAFFER_HOME/bin/shutdown.sh`
+
+### Start Gaffer in local mode with your own data and schema ###
+
+Run `$GAFFER_HOME/bin/startup.sh --schema <PATH_TO_YOUR_SCHEMA_FILE>` to start Gaffer with your custom schema.
+
+### Extra customisations ###
+
+Gaffer is very customisable. You can easily add your own extras using quickstart.
+
+#### Custom UI config ####
+
+If you've created [your own ui configuration file](https://github.com/gchq/gaffer-tools/tree/master/ui#configuration) (also see the example at `$GAFFER_HOME/example/ui-config.json`) you can load this when gaffer starts by using the `--ui-config` flag, e.g. `$GAFFER_HOME/bin/startup.sh --ui-config <PATH_TO_YOUR_UI_CONFIG_FILE>`
+
+#### Custom rest-service config ####
+
+If you have some [additional rest service configuration options](https://github.com/gchq/Gaffer/blob/master/rest-api/README.md) (also see the example at `$GAFFER_HOME/conf/restOptions.properties`) you can load these at startup by using the `--rest-config` flag, e.g. `$GAFFER_HOME/bin/startup.sh --rest-config <PATH_TO_YOUR_REST_CONFIG_FILE>`
+
+#### Custom operations ####
+
+You can add your own custom gaffer operations using gaffer quickstart.
+
+You'll need to create a directory that contains:
+ - an `operation-declarations.json` file (see the example at `$GAFFER_HOME/conf/operationDeclarations.json`). the file can have any name but must have the `.json` extension.
+ - a jar file containing the operation and operation handler classes.
+ 
+These can be loaded on startup by using the `--customops-dir` flag, e.g. `$GAFFER_HOME/bin/startup.sh --customops-dir <PATH_TO_YOUR_CUSTOM_OPS_DIRECTORY>`
 
 ## Deploy a Gaffer-Accumulo instance on AWS with the REST service and UI running ##
 

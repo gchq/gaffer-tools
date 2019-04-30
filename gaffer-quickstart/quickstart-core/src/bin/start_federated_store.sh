@@ -27,6 +27,7 @@ UI_WAR=$GAFFER_HOME/lib/quickstart-ui-${VERSION}.war
 REST_WAR=$GAFFER_HOME/lib/quickstart-rest-${VERSION}.war
 RESTCONFIG=$GAFFER_HOME/conf/restOptions.properties
 CUSTOM_OPS_DIR=
+PORT=8085
 
 federated_graph_config="{\n\\t\"graphId\" : \"aquarium\",\n\t\"library\" : {\n\t\t\"class\" : \"uk.gov.gchq.gaffer.store.library.FileGraphLibrary\",\n\t\t\"path\" : \"${GAFFER_HOME}/graphlibrary\"\n\t},\n\t\"hooks\" : [ ]\n}"
 
@@ -64,6 +65,10 @@ case $key in
 		CUSTOM_OPS_DIR=$2
 		shift
 		;;
+	--port|-p)
+		PORT=$2
+		shift
+		;;
     *)
             echo $usage
             echo "unknown args, exiting..."
@@ -97,19 +102,58 @@ else
     echo "using graph config at $FEDERATED_GRAPH_CONFIG"
 fi
 
+function random_free_tcp_port {
+  local ports="${1:-1}" interim="${2:-2048}" spacing=32
+  local free_ports=( )
+  local taken_ports=( $( netstat -aln | egrep ^tcp | fgrep LISTEN |
+                         awk '{print $4}' | egrep -o '[0-9]+$' |
+                         sort -n | uniq ) )
+  interim=$(( interim + (RANDOM % spacing) ))
+
+  for taken in "${taken_ports[@]}" 65535
+  do
+    while [[ $interim -lt $taken && ${#free_ports[@]} -lt $ports ]]
+    do
+      free_ports+=( $interim )
+      interim=$(( interim + spacing + (RANDOM % spacing) ))
+    done
+    interim=$(( interim > taken + spacing
+                ? interim
+                : taken + spacing + (RANDOM % spacing) ))
+  done
+
+  [[ ${#free_ports[@]} -ge $ports ]] || return 2
+
+  printf '%d\n' "${free_ports[@]}"
+  port=${free_ports[0]}
+  echo $port
+}
+
+
+if [ $PORT -eq 0 ]
+then
+    echo -e "choosing random free port"
+    random_free_tcp_port
+    PORT=$port
+    echo -e $PORT
+fi
+
+echo -e "starting web services on port $PORT"
+
+
 if [ -z $CUSTOM_OPS_DIR ]
 then
     $GAFFER_HOME/bin/_start_miniaccumulo.sh
 
     echo -e "\ngaffer.store.operation.declarations=${GAFFER_HOME}/conf/operationDeclarations.json,${GAFFER_HOME}/federated/federatedOperationsDeclarations.json\n" >> $FEDERATED_STORE_PROPERTIES
-    java -cp "$GAFFER_HOME/lib/quickstart-core-${VERSION}.jar:$GAFFER_HOME/lib/*" uk.gov.gchq.gaffer.quickstart.web.GafferWebServices $SCHEMA $FEDERATED_GRAPH_CONFIG $FEDERATED_STORE_PROPERTIES $REST_WAR $UI_WAR $RESTCONFIG>> $GAFFER_HOME/gaffer.log 2>&1 &
+    java -cp "$GAFFER_HOME/lib/quickstart-core-${VERSION}.jar:$GAFFER_HOME/lib/*" uk.gov.gchq.gaffer.quickstart.web.GafferWebServices $SCHEMA $FEDERATED_GRAPH_CONFIG $FEDERATED_STORE_PROPERTIES $REST_WAR $UI_WAR $RESTCONFIG $PORT>> $GAFFER_HOME/gaffer.log 2>&1 &
 else
     $GAFFER_HOME/bin/_start_miniaccumulo.sh --customops-dir $CUSTOM_OPS_DIR
 
     $GAFFER_HOME/bin/_repackage_war.sh $CUSTOM_OPS_DIR >> $GAFFER_HOME/gaffer.log 2>&1
     customOpDecs=$(ls -m $CUSTOM_OPS_DIR/*.json)
     echo -e "\ngaffer.store.operation.declarations=${GAFFER_HOME}/conf/operationDeclarations.json,${GAFFER_HOME}/federated/federatedOperationsDeclarations.json,${customOpDecs}\n" >> $FEDERATED_STORE_PROPERTIES
-    java -cp "$GAFFER_HOME/lib/quickstart-core-${VERSION}.jar:$GAFFER_HOME/lib/*:$CUSTOM_OPS_DIR/*" uk.gov.gchq.gaffer.quickstart.web.GafferWebServices $SCHEMA $FEDERATED_GRAPH_CONFIG $FEDERATED_STORE_PROPERTIES $REST_WAR $UI_WAR $RESTCONFIG>> $GAFFER_HOME/gaffer.log 2>&1 &
+    java -cp "$GAFFER_HOME/lib/quickstart-core-${VERSION}.jar:$GAFFER_HOME/lib/*:$CUSTOM_OPS_DIR/*" uk.gov.gchq.gaffer.quickstart.web.GafferWebServices $SCHEMA $FEDERATED_GRAPH_CONFIG $FEDERATED_STORE_PROPERTIES $REST_WAR $UI_WAR $RESTCONFIG $PORT>> $GAFFER_HOME/gaffer.log 2>&1 &
 fi
 
 echo -e "\ngaffer.serialisation.json.modules=uk.gov.gchq.gaffer.sketches.serialisation.json.SketchesJsonModules\n" >> $FEDERATED_STORE_PROPERTIES
@@ -146,4 +190,5 @@ pythonSerialisers="\npythonserialiser.declarations=${GAFFER_HOME}/conf/customPys
 echo -e $operationDeclarations >> $PYSPARK_STORE_PROPERTIES
 echo -e $pythonSerialisers >> $PYSPARK_STORE_PROPERTIES
 
-
+echo -e "Gaffer UI available at http://localhost:"$PORT"/ui"
+echo -e "Gaffer REST service available at http://localhost:"$PORT"/rest"

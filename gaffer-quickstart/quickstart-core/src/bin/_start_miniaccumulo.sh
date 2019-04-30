@@ -27,6 +27,16 @@ fi
 
 echo -e "starting accumulo" >> $GAFFER_HOME/gaffer.log
 
+MINI_ACCUMULO_DIR=$GAFFER_HOME/miniaccumulo
+
+if [[ -d "${MINI_ACCUMULO_DIR}" ]];
+then
+    echo -e "$MINI_ACCUMULO_DIR already exists - can't start miniaccumulo"
+    echo -e "try running $GAFFER_HOME/bin/shutdown to kill any existing sessions"
+    echo -e "if there are no existing sessions - delete $MINI_ACCUMULO_DIR"
+    exit 0
+fi
+
 if [ -z $CUSTOM_OPS_DIR ]
 then
     java -cp "$GAFFER_HOME/lib/gaffer-quickstart-${VERSION}.jar:$GAFFER_HOME/lib/*" uk.gov.gchq.gaffer.miniaccumulocluster.MiniAccumuloClusterController -d $GAFFER_HOME/miniaccumulo >> $GAFFER_HOME/gaffer.log 2>&1 &

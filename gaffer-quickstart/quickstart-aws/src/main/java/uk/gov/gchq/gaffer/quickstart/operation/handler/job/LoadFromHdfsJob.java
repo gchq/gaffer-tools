@@ -21,15 +21,20 @@ import org.apache.spark.api.java.JavaRDD;
 import org.apache.spark.api.java.JavaSparkContext;
 import org.apache.spark.broadcast.Broadcast;
 import org.apache.spark.sql.SparkSession;
+import org.mortbay.util.ajax.JSON;
+import uk.gov.gchq.gaffer.accumulostore.AccumuloProperties;
 import uk.gov.gchq.gaffer.data.element.Element;
+import uk.gov.gchq.gaffer.exception.SerialisationException;
 import uk.gov.gchq.gaffer.graph.Graph;
+import uk.gov.gchq.gaffer.graph.GraphConfig;
 import uk.gov.gchq.gaffer.jsonserialisation.JSONSerialiser;
 import uk.gov.gchq.gaffer.operation.OperationException;
 import uk.gov.gchq.gaffer.quickstart.data.generator.CsvElementGenerator;
 import uk.gov.gchq.gaffer.spark.SparkContextUtil;
 import uk.gov.gchq.gaffer.spark.operation.javardd.ImportJavaRDDOfElements;
 import uk.gov.gchq.gaffer.store.Context;
-import uk.gov.gchq.gaffer.store.StoreException;
+import uk.gov.gchq.gaffer.store.library.NoGraphLibrary;
+import uk.gov.gchq.gaffer.store.schema.Schema;
 import uk.gov.gchq.gaffer.user.User;
 
 import java.io.File;
@@ -37,20 +42,19 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
-import uk.gov.gchq.gaffer.quickstart.operation.AddElementsFromHdfsQuickstart;
-
 public class LoadFromHdfsJob {
 
-    private static final int numArgs = 4;
+    private static final int numArgs = 8;
 
     private String dataPath;
     private String generatorPath;
     private String outputPath;
     private String failurePath;
+    private String numPartitions;
 
-    private String schemaPath = "/home/hadoop/gaffer-config/schema.json";
-    private String graphConfigPath = "/home/hadoop/gaffer-config/graphconfig.json";
-    private String storePropertiesPath = "/home/hadoop/gaffer-config/accumulo-store.properties";
+    private String schemaJson;
+    private String tableName;
+    private String accumuloStorePropertiesJson;
 
     public static void main(String[] args){
 
@@ -72,18 +76,39 @@ public class LoadFromHdfsJob {
         this.generatorPath = args[1];
         this.outputPath = args[2];
         this.failurePath = args[3];
+        this.numPartitions = args[4];
+        this.schemaJson = args[5];
+        this.tableName = args[6];
+        this.accumuloStorePropertiesJson = args[7];
 
-        Graph graph = null;
+        AccumuloProperties accumuloProperties = null;
+
+        System.out.println(accumuloStorePropertiesJson);
 
         try {
-            graph = new Graph.Builder()
-                    .addSchema(new FileInputStream(new File(schemaPath)))
-                    .config(new FileInputStream(new File(graphConfigPath)))
-                    .storeProperties(new FileInputStream(new File(storePropertiesPath)))
-                    .build();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
+            accumuloProperties = JSONSerialiser.deserialise(accumuloStorePropertiesJson, AccumuloProperties.class);
+        } catch (SerialisationException e) {
+            throw new OperationException(e.getMessage());
         }
+
+        Schema schema = null;
+
+        try {
+            schema = JSONSerialiser.deserialise(schemaJson, Schema.class);
+        } catch (SerialisationException e) {
+            throw new OperationException(e.getMessage());
+        }
+
+        GraphConfig graphConfig = new GraphConfig.Builder()
+                .graphId(tableName)
+                .library(new NoGraphLibrary())
+                .build();
+
+        Graph graph = new Graph.Builder()
+                .addSchema(schema)
+                .config(graphConfig)
+                .storeProperties(accumuloProperties)
+                .build();
 
         User user = new User.Builder()
                 .userId("user")
@@ -111,9 +136,7 @@ public class LoadFromHdfsJob {
 
         Broadcast<CsvElementGenerator> generatorBroadcast = sc.broadcast(csvElementGenerator);
 
-        int numPartitions = 1;
-
-        JavaRDD<Element> rdd = sc.textFile(dataPath, numPartitions)
+        JavaRDD<Element> rdd = sc.textFile(dataPath, Integer.parseInt(numPartitions))
                 .flatMap(s -> generatorBroadcast.getValue()._apply(s).iterator());
 
         ImportJavaRDDOfElements importRDDOfElements = new ImportJavaRDDOfElements.Builder()

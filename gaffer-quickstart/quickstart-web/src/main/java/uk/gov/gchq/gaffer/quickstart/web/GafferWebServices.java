@@ -37,13 +37,14 @@ public class GafferWebServices {
     private String restWarPath;
     private String uiWarPath;
     private String restOptionsPath;
+    private int port;
 
     private Map<String, String> restOptions;
 
 
     public static void main(final String[] args) throws ServletException, LifecycleException, IOException {
 
-        if (args.length != 6) {
+        if (args.length != 7) {
             throw new IllegalArgumentException("I need a schemaPath, graphConfigPath, storePropertiesPath, restWarPath and uiWarPath");
         }
 
@@ -55,6 +56,7 @@ public class GafferWebServices {
         gafferWebServices.setRestWarPath(args[3]);
         gafferWebServices.setUiWarPath(args[4]);
         gafferWebServices.setRestOptionsPath(args[5]);
+        gafferWebServices.setPort(Integer.valueOf(args[6]));
 
         gafferWebServices.startServer();
 
@@ -73,7 +75,7 @@ public class GafferWebServices {
         Tomcat tomcat = new Tomcat();
         String gafferHome = System.getenv("GAFFER_HOME");
         tomcat.setBaseDir(gafferHome + "/gaffer_web_services_working");
-        tomcat.setPort(8085);
+        tomcat.setPort(port);
 
         String restContextPath = "/rest";
         String restWarFilePath = restWarPath;
@@ -176,5 +178,13 @@ public class GafferWebServices {
 
     public void setRestOptionsPath(String restOptionsPath) {
         this.restOptionsPath = restOptionsPath;
+    }
+
+    public int getPort() {
+        return port;
+    }
+
+    public void setPort(int port) {
+        this.port = port;
     }
 }

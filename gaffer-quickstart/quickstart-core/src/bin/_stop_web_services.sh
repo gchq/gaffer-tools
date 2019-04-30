@@ -2,6 +2,8 @@
 
 HERE=$(pwd)
 
+echo -e "stopping gaffer web services"
+
 pidfile="$GAFFER_HOME/gafferwebservices.pid"
 
 while read -r line
@@ -12,7 +14,10 @@ done < "$pidfile"
 
 kill -9 $pid
 
-rm -rf $pidfile
+rm -f $pidfile
 
-rm -rf $GAFFER_HOME/gaffer_web_services_working
+echo -e "cleaning up"
 
+rm -r $GAFFER_HOME/gaffer_web_services_working
+
+echo -e "done"
