@@ -10,12 +10,14 @@ import { CommonService } from '../dynamic-input/common.service';
 import { TypesService } from '../gaffer/type.service';
 import { TimeService } from '../gaffer/time.service';
 
-export interface Element {
-  junction: string;
-  position: number;
-  frequency: number;
-  vehicle: string;
-}
+// export interface Element {
+//   junction: string;
+//   position: number;
+//   frequency: number;
+//   vehicle: string;
+//   SOURCE: string;
+//   //RESULT TYPE: string;
+// }
 
 @Component({
   selector: "app-table",
@@ -23,11 +25,13 @@ export interface Element {
 })
 @Injectable()
 export class TableComponent implements OnInit {
-  groupColumnName = "GROUP";
-  typeColumnName = "result type";
-  displayedColumns: string[] = [this.groupColumnName,this.typeColumnName, "SOURCE"];
-  columnsToDisplay: string[] = this.displayedColumns.slice();
-  data: MatTableDataSource<any> = new MatTableDataSource();
+  //groupColumnName = "GROUP";
+  //typeColumnName = "result type";
+  //displayedColumns: string[] = [this.groupColumnName,this.typeColumnName, "SOURCE"];
+  data = {
+    results : new MatTableDataSource()
+  };
+  
   @ViewChild(MatSort) sort: MatSort;
   schema;
 
@@ -62,25 +66,7 @@ export class TableComponent implements OnInit {
 
     //this.data = new MatTableDataSource(ELEMENT_DATA)
 
-
   }
-
-  ngAfterViewInit() {
-    this.data.sort = this.sort;
-  }
-
-  /**
-   * The controller for the table page.
-   * @param {*} schema For looking up information about the different groups and types.
-   * @param {*} results For retrieving the results
-   * @param {*} table For caching user table view preferences
-   * @param {*} events For subscribing to resultsUpdated events
-   * @param {*} common For common methods
-   * @param {*} types For converting objects based on their types
-   * @param {*} time For converting time objects
-   * @param {*} csv For downloading results
-   * @param {*} $mdDialog For creating chart visualisations
-   */
 
   resultsByType = [];
   filteredResults = [];
@@ -98,40 +84,6 @@ export class TableComponent implements OnInit {
     this.cacheValues();
   };
 
-  createVisualisation = function(ev) {
-    this.$mdDialog
-      .show({
-        controller: "VisualisationDialogController",
-        templateUrl: "app/table/visualisation-dialog/visualisation-dialog.html",
-        targetEvent: ev,
-        clickOutsideToClose: true,
-        // parent: angular.element(document.body),
-        locals: {
-          columns: this.data.columns,
-          data: this.filteredResults
-        },
-        bindToController: true
-      })
-      .then(
-        function(chart) {
-          this.chart = chart;
-          this.showVisualisation = true;
-        },
-        function() {}
-      );
-  };
-
-  hideVisualisation = function() {
-    this.showVisualisation = false;
-  };
-
-  hideColumn = function(column) {
-    var index = this.data.columns.indexOf(column);
-    if (index > -1) {
-      this.data.columns.splice(index, 1);
-    }
-  };
-
   updateFilteredResults = function() {
     this.data.results = [];
     for (var t in this.data.types) {
@@ -141,91 +93,101 @@ export class TableComponent implements OnInit {
             this.data.results = this.data.results.concat(
               this.resultsByType[this.data.types[t]][this.data.groups[g]]
             );
-
+            this.data.results.sort = this.sort;
           }
         }
       }
     }
   };
 
-  /*
-   * Text for the select columns component.
-   * 'Choose columns' and conditionally shows 'X more' if there are hidden columns.
-   */
-  selectedColumnsText = function() {
-    if (
-      this.data.columns &&
-      this.data.allColumns &&
-      this.data.allColumns.length > this.data.columns.length
-    ) {
-      return (
-        "Choose columns (" +
-        (this.data.allColumns.length - this.data.columns.length) +
-        " hidden)"
-      );
-    }
-    return "Choose columns";
-  };
-
   onResultsUpdated = function(res) {
     // forcing a cache reload ensures columns are recalculated if they need to be
-    this.cacheValues();
-    this.loadFromCache();
+    //this.cacheValues();
+    //this.loadFromCache();
     this.processResults(res);
   };
 
   processResults = function(resultsData) {
-    var ids = [];
-    var groupByProperties = [];
-    var properties = [];
-    //   resultsByType = {};
-    this.data.tooltips = {};
-
-    this.processElements(
-      "Edge",
-      "edges",
-      ["result type", "GROUP", "SOURCE", "DESTINATION", "DIRECTED"],
-      ids,
-      groupByProperties,
-      properties,
-      resultsData
-    );
-    this.processElements(
-      "Entity",
-      "entities",
-      ["result type", "GROUP", "SOURCE"],
-      ids,
-      groupByProperties,
-      properties,
-      resultsData
-    );
-    this.processOtherTypes(ids, properties, resultsData);
-
-    this.data.allColumns = this.common.concatUniqueValues(
-      this.common.concatUniqueValues(ids, groupByProperties),
-      properties
-    );
-
-    if (!this.data.columns || this.data.columns.length === 0) {
-      this.data.columns = cloneDeep(this.data.allColumns);
-    }
-    this.data.allTypes = [];
-    this.data.allGroups = [];
-    for (var type in this.resultsByType) {
-      this.data.allTypes.push(type);
-      for (var group in this.resultsByType[type]) {
-        this.common.pushValueIfUnique(group, this.data.allGroups);
+    console.log(resultsData);
+    //Combine all the data into one array
+    let results = [];
+    results = results.concat(resultsData.edges);
+    results = results.concat(resultsData.entities);
+    results = results.concat(resultsData.other);
+    this.data.results = results;
+    
+    //Get all the different columns
+    this.displayedColumns = new Set();
+    this.data.results.forEach((item, index) => {
+      let keys = Object.keys(item);
+      for (let key of keys) {
+        this.displayedColumns.add(key);
       }
-    }
+    })
+    this.columnsToDisplay = this.displayedColumns;
 
-    if (!this.data.types || this.data.types.length === 0) {
-       this.data.types = cloneDeep(this.data.allTypes);
-    }
-    if (!this.data.groups || this.data.groups.length === 0) {
-       this.data.groups = cloneDeep(this.data.allGroups);
-    }
 
-    this.updateFilteredResults();
+    // for (let result of this.data.results) {
+    //   dictionaries.push(result)
+    // }
+    //let dictionaries = Object.values(this.data.results);
+    // this.displayedColumns = Object.keys(dictionaries);
+    // for (let object of this.data.results) {
+    //   object.forEach((item, index) => {
+    //     this.displayedColumns.add(Object.keys(object)[index]);
+    //   });
+    // }
+    // var ids = [];
+    // var groupByProperties = [];
+    // var properties = [];
+    // //   resultsByType = {};
+    // this.data.tooltips = {};
+
+    // this.processElements(
+    //   "Edge",
+    //   "edges",
+    //   ["result type", "GROUP", "SOURCE", "DESTINATION", "DIRECTED"],
+    //   ids,
+    //   groupByProperties,
+    //   properties,
+    //   resultsData
+    // );
+    // this.processElements(
+    //   "Entity",
+    //   "entities",
+    //   ["result type", "GROUP", "SOURCE"],
+    //   ids,
+    //   groupByProperties,
+    //   properties,
+    //   resultsData
+    // );
+    // this.processOtherTypes(ids, properties, resultsData);
+
+    // this.data.allColumns = this.common.concatUniqueValues(
+    //   this.common.concatUniqueValues(ids, groupByProperties),
+    //   properties
+    // );
+
+    // if (!this.data.columns || this.data.columns.length === 0) {
+    //   this.data.columns = cloneDeep(this.data.allColumns);
+    // }
+    // this.data.allTypes = [];
+    // this.data.allGroups = [];
+    // for (var type in this.resultsByType) {
+    //   this.data.allTypes.push(type);
+    //   for (var group in this.resultsByType[type]) {
+    //     this.common.pushValueIfUnique(group, this.data.allGroups);
+    //   }
+    // }
+
+    // if (!this.data.types || this.data.types.length === 0) {
+    //    this.data.types = cloneDeep(this.data.allTypes);
+    // }
+    // if (!this.data.groups || this.data.groups.length === 0) {
+    //    this.data.groups = cloneDeep(this.data.allGroups);
+    // }
+
+    // this.updateFilteredResults();
   };
 
   processElements = function(
