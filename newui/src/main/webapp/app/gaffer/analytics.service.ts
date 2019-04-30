@@ -6,6 +6,7 @@ import { ConfigService } from '../config/config.service';
 import { ErrorService } from '../dynamic-input/error.service';
 import { CommonService } from '../dynamic-input/common.service';
 import { Router } from '@angular/router';
+import { ResultsService } from './results.service';
 
 //Used to store and get the selected analytic
 @Injectable()
@@ -20,7 +21,8 @@ export class AnalyticsService {
               private error: ErrorService,
               private common: CommonService,
               private http: HttpClient,
-              private router: Router) {}
+              private router: Router,
+              private results: ResultsService) {}
 
   /** Set the chosen analytic */
   setAnalytic(analytic) {
@@ -68,7 +70,12 @@ export class AnalyticsService {
       this.analyticOperation.parameters = parametersMap
     }
 
-    this.query.executeQuery(this.analyticOperation, () => {this.router.navigate(['/results'])});
+    //Clear the current results
+    this.results.clear();
+
+    //Execute the analytic and then navigate when finished loading
+    this.query.executeQuery(this.analyticOperation, () => {
+      this.router.navigate(['/results'])});
   };
 
   reloadAnalytics = function(loud) {
