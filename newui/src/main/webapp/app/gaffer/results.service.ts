@@ -23,12 +23,12 @@ export class ResultsService {
 
     constructor(private events: EventsService) {}
 
-    /** Get the table results */
+    /** Get the results */
     get = function() {
         return this.results;
     }
 
-    /** Clear the table results */
+    /** Clear the results */
     clear = function(broadcast) {
         this.results = {entities: [], edges: [], other: []};
         if(broadcast === undefined || broadcast) {
@@ -37,7 +37,7 @@ export class ResultsService {
         }
     }
 
-    /** Update the table */
+    /** Update the results */
     update = function(newResults) {
         var incomingResults = {
             entities: [], edges: [], other: []

@@ -18,11 +18,6 @@ export interface Element {
   vehicle: string;
 }
 
-const ELEMENT_DATA: Element[] = [
-  { position: 1, junction: "M4:LA Boundary", frequency: 1958, vehicle: "BUS" },
-  { position: 2, junction: "M32:2", frequency: 1411, vehicle: "BUS" }
-];
-
 @Component({
   selector: "app-table",
   templateUrl: "./table.component.html"
@@ -33,7 +28,7 @@ export class TableComponent implements OnInit {
   typeColumnName = "result type";
   displayedColumns: string[] = [this.groupColumnName,this.typeColumnName, "SOURCE"];
   columnsToDisplay: string[] = this.displayedColumns.slice();
-  data: MatTableDataSource<any> = new MatTableDataSource(ELEMENT_DATA);
+  data: MatTableDataSource<any> = new MatTableDataSource();
   @ViewChild(MatSort) sort: MatSort;
   schema;
 
@@ -51,6 +46,8 @@ export class TableComponent implements OnInit {
    * Loads any cached table preferences and subscribes to resultsUpdated events.
    */
   ngOnInit() {
+    this.events.subscribe("resultsUpdated", this.onResultsUpdated);
+
     this.schemaService.get().subscribe(
       (gafferSchema) => {
         this.schema = gafferSchema;
@@ -66,7 +63,7 @@ export class TableComponent implements OnInit {
 
     //this.data = new MatTableDataSource(ELEMENT_DATA)
 
-    this.events.subscribe("resultsUpdated", () => this.onResultsUpdated);
+
   }
 
   ngAfterViewInit() {
