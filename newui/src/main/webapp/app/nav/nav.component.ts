@@ -14,8 +14,4 @@ export class NavComponent {
   ];
   activeLink = this.navLinks[0];
   background = "";
-
-  toggleBackground() {
-    this.background = this.background ? "" : "primary";
-  }
 }
