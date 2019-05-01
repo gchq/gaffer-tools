@@ -18,7 +18,6 @@ import { AnalyticsComponent } from "./analytics/analytics.component";
 import { AnalyticComponent } from "./analytic/analytic.component";
 import { NavComponent } from "./nav/nav.component";
 import { ParameterFormComponent } from "./parameter-form/parameter-form.component";
-import { OperationFieldComponent } from "./operation-field/operation-field.component";
 import { ParameterInputComponent } from "./parameter-input/parameter-input.component";
 import { OptionsComponent } from "./options/options.component";
 
@@ -43,7 +42,6 @@ import { SettingsService } from './settings/settings.service';
     NavComponent,
     TableComponent,
     ParameterFormComponent,
-    OperationFieldComponent,
     ParameterInputComponent,
     OptionsComponent
   ],

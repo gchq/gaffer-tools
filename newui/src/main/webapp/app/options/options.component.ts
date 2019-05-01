@@ -37,6 +37,7 @@ export class OptionsComponent implements OnInit {
    * component when using remote options.
    */
   presets = {};
+  operationOptions;
 
   constructor(
     private events: EventsService,

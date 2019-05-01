@@ -1,4 +1,5 @@
 import { Component, OnInit, Input } from "@angular/core";
+import { AnalyticsService } from '../gaffer/analytics.service';
 
 @Component({
   selector: "app-parameter-form",
@@ -8,7 +9,7 @@ export class ParameterFormComponent implements OnInit {
   @Input("parameters") parameters;
   title;
 
-  constructor() {}
+  constructor(private analyticsService: AnalyticsService) {}
 
   ngOnInit() {
     if (this.parameters === null || this.parameters === undefined) {
