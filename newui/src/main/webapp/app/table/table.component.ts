@@ -4,7 +4,6 @@ import { cloneDeep } from "lodash";
 
 import { EventsService } from "../dynamic-input/events.service";
 import { ResultsService } from '../gaffer/results.service';
-import { TableService } from './table.service';
 import { CommonService } from '../dynamic-input/common.service';
 
 // export interface Element {
@@ -34,7 +33,6 @@ export class TableComponent implements OnInit {
 
   constructor(private events: EventsService,
               private results: ResultsService,
-              private table: TableService,
               private common: CommonService
               ) {}
 

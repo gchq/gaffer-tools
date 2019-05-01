@@ -36,7 +36,6 @@ import { DefaultRestEndpointService } from './config/default-rest-endpoint-servi
 import { QueryService } from './gaffer/query.service';
 import { LoadingService } from './loading/loading.service';
 import { ResultsService } from './gaffer/results.service';
-import { TableService } from './table/table.service';
 import { SettingsService } from './settings/settings.service';
 
 @NgModule({
@@ -79,7 +78,6 @@ import { SettingsService } from './settings/settings.service';
     QueryService,
     LoadingService,
     ResultsService,
-    TableService,
     SettingsService,
   ],
   bootstrap: [AppComponent]
