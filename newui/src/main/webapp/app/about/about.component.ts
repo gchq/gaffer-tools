@@ -15,6 +15,7 @@
  */
 
 import { Component, OnInit } from "@angular/core";
+import { ConfigService } from "../config/config.service";
 
 @Component({
   selector: "app-about",
@@ -29,8 +30,9 @@ export class AboutComponent implements OnInit {
   docs;
   restApi;
   properitesLoaded = false;
+  properties;
 
-  constructor() {}
+  constructor(private config: ConfigService) {}
 
   /** Opens the users default email client so they can send feedback by email */
   sendFeedback = function(emailId, subject, message) {
@@ -40,15 +42,15 @@ export class AboutComponent implements OnInit {
     );
   };
 
-  OnInit(properties, config) {
-    properties.get().then(function(props) {
+  ngOnInit() {
+    this.properties.get().subscribe(function(props) {
       this.docs = props[this.DOCS_PROPERTY];
       this.description =
         props[this.DESCRIPTION_PROPERTY] || "no description provided";
       this.propertiesLoaded = true;
     });
 
-    config.get().then(function(conf) {
+    this.config.get().subscribe(function(conf) {
       var endpoint = conf.restEndpoint.replace(/\/$/, "");
 
       this.restApi = endpoint.substring(0, endpoint.lastIndexOf("/"));
@@ -58,6 +60,4 @@ export class AboutComponent implements OnInit {
       }
     });
   }
-
-  ngOnInit() {}
 }
