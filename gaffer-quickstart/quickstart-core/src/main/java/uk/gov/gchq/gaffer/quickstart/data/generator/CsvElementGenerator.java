@@ -149,6 +149,7 @@ public class CsvElementGenerator implements OneToManyElementGenerator<String>, S
             throw new RuntimeException(e);
         }
 
+
         if (csvRecord.size() != header.size()) {
             throw new IllegalArgumentException(
                     "CSV has " + csvRecord.size()
@@ -164,7 +165,7 @@ public class CsvElementGenerator implements OneToManyElementGenerator<String>, S
         if (quoted) {
             format = format.withQuote(quoteChar);
         }
-        format.withDelimiter(delimiter);
+        format = format.newFormat(delimiter);
         return format;
     }
 

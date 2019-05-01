@@ -37,7 +37,7 @@ public class AddElementsFromCsvHandler implements OperationHandler<AddElementsFr
                             final Context context,
                             final Store store) throws OperationException {
 
-        final CsvElementGenerator csvElementGenerator;
+        CsvElementGenerator csvElementGenerator;
         try {
             csvElementGenerator = JSONSerialiser.deserialise(
                     FileUtils.openInputStream(new File(operation.getMappingsFile())),
@@ -46,6 +46,14 @@ public class AddElementsFromCsvHandler implements OperationHandler<AddElementsFr
         } catch (final IOException e) {
             throw new OperationException("Cannot create fieldMappings from file " + operation.getMappingsFile() + " " + e.getMessage());
         }
+
+        char delimiter = operation.getDelimiter().charAt(0);
+        boolean quoted = operation.isQuoted();
+        char quoteChar = operation.getQuoteChar().charAt(0);
+
+        csvElementGenerator.setDelimiter(delimiter);
+        csvElementGenerator.setQuoted(quoted);
+        csvElementGenerator.setQuoteChar(quoteChar);
 
         final Iterable<String> data = () -> {
             try {

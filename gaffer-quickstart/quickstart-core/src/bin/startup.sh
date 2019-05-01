@@ -63,6 +63,11 @@ else
     $GAFFER_HOME/bin/_start_miniaccumulo.sh --customops-dir $CUSTOM_OPS_DIR
 fi
 
+if [ $? -eq 1 ]
+then
+    exit 1
+fi
+
 function random_free_tcp_port {
   local ports="${1:-1}" interim="${2:-2048}" spacing=32
   local free_ports=( )

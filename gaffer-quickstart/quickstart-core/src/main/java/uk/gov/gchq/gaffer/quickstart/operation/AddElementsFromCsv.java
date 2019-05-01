@@ -43,6 +43,10 @@ public class AddElementsFromCsv implements
     @Required
     private String mappingsFile;
 
+    private String delimiter = ",";
+    private boolean quoted = false;
+    private String quoteChar = "\"";
+
     private boolean validate = true;
     private boolean skipInvalidElements;
     private Map<String, String> options;
@@ -87,6 +91,30 @@ public class AddElementsFromCsv implements
         this.skipInvalidElements = skipInvalidElements;
     }
 
+    public String getDelimiter() {
+        return delimiter;
+    }
+
+    public void setDelimiter(String delimiter) {
+        this.delimiter = delimiter;
+    }
+
+    public boolean isQuoted() {
+        return quoted;
+    }
+
+    public void setQuoted(boolean quoted) {
+        this.quoted = quoted;
+    }
+
+    public String getQuoteChar() {
+        return quoteChar;
+    }
+
+    public void setQuoteChar(String quoteChar) {
+        this.quoteChar = quoteChar;
+    }
+
     @Override
     public boolean isValidate() {
         return validate;
@@ -105,6 +133,9 @@ public class AddElementsFromCsv implements
                 .validate(validate)
                 .skipInvalidElements(skipInvalidElements)
                 .options(options)
+                .delimiter(delimiter)
+                .quoted(quoted)
+                .quoteChar(quoteChar)
                 .build();
     }
 
@@ -121,6 +152,21 @@ public class AddElementsFromCsv implements
 
         public Builder mappingsFile(final String mappingsFile) {
             _getOp().setMappingsFile(mappingsFile);
+            return _self();
+        }
+
+        public Builder delimiter(final String delimiter) {
+            _getOp().setDelimiter(delimiter);
+            return _self();
+        }
+
+        public Builder quoted(final boolean quoted) {
+            _getOp().setQuoted(quoted);
+            return _self();
+        }
+
+        public Builder quoteChar(final String quoteChar) {
+            _getOp().setQuoteChar(quoteChar);
             return _self();
         }
     }
