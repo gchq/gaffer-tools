@@ -33,7 +33,6 @@ import { ConfigService } from "./config/config.service";
 import { EventsService } from "./dynamic-input/events.service";
 import { CommonService } from "./dynamic-input/common.service";
 import { ErrorService } from "./dynamic-input/error.service";
-import { TypesService } from "./gaffer/type.service";
 import { DefaultRestEndpointService } from './config/default-rest-endpoint-service';
 import { QueryService } from './gaffer/query.service';
 import { LoadingService } from './loading/loading.service';
@@ -77,7 +76,6 @@ import { SettingsService } from './settings/settings.service';
     ConfigService,
     EventsService,
     CommonService,
-    TypesService,
     ErrorService,
     DefaultRestEndpointService,
     QueryService,
