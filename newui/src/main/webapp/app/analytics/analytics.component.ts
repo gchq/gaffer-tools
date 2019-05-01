@@ -20,16 +20,16 @@ export class AnalyticsComponent implements OnInit {
   /** Load the analytics */
   reloadAnalytics = function() {
     this.analyticsService.reloadAnalytics(true).subscribe(
-      availableAnalytics => {
+      (availableAnalytics) => {
         this.analytics = availableAnalytics;
       },
-      err => {
+      (err) => {
         this.error.handle(
           "Error loading operations, see the console for details",
           null,
           err
         );
-        console.log(err);
+        console.error(err);
       }
     );
   };

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { isEqual, cloneDeep } from "lodash";
+import { isEqual } from "lodash";
 
 /**
  * Library of common code - used for compatability with certain browsers and to reduce
@@ -62,57 +62,4 @@ export class CommonService {
     }
     return false;
   };
-
-  /**
-   * Adds all the items to the list if they are not already in the list.
-   * @param {Array} items the items to add to the list
-   * @param {Array} list
-   */
-  pushValuesIfUnique = function(items, list) {
-    if (list && items) {
-      for (var i in items) {
-        this.pushValueIfUnique(items[i], list);
-      }
-    }
-  };
-
-  /**
-  * Adds the item to the list if it is not already in the list.
-  * @param {*} item the item to add to the list
-  * @param {Array} list
-  */
-  pushValueIfUnique = function(item, list) {
-    if(list && !this.arrayContainsValue(list, item)) {
-        list.push(item);
-    }
-  }
-
-  /**
-   * Concatenates to lists together and deduplicates the result list.
-   * @param {Array} list1
-   * @param {Array} list2
-   */
-  concatUniqueValues = function(list1, list2) {
-    if (!list1) {
-      return cloneDeep(list2);
-    }
-
-    if (!list2) {
-      return cloneDeep(list1);
-    }
-
-    var concatList = cloneDeep(list1);
-    this.pushValuesIfUnique(list2, concatList);
-    return concatList;
-  };
-
-  /**
-   * Checks whether a string or number is contained within array
-   * This will not work if the value is an object
-   * @param {Array} arr
-   * @param {String or Number} value
-   */
-  arrayContainsValue = function(arr, value) {
-    return arr && arr.indexOf(value) !== -1;
-  }
 }

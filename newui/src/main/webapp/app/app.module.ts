@@ -23,21 +23,15 @@ import { ParameterInputComponent } from "./parameter-input/parameter-input.compo
 import { OptionsComponent } from "./options/options.component";
 
 import { AnalyticsService } from "./gaffer/analytics.service";
-import { SchemaService } from "./gaffer/schema.service";
-import { OperationOptionsService } from "./options/operation-options.service";
 import { ConfigService } from "./config/config.service";
 import { EventsService } from "./dynamic-input/events.service";
 import { CommonService } from "./dynamic-input/common.service";
 import { ErrorService } from "./dynamic-input/error.service";
-import { TypesService } from "./gaffer/type.service";
-import { DefaultRestEndpointService } from "./config/default-rest-endpoint-service";
-import { QueryService } from "./gaffer/query.service";
-import { LoadingService } from "./loading/loading.service";
-import { ResultsService } from "./gaffer/results.service";
-import { TableService } from "./table/table.service";
-import { SettingsService } from "./settings/settings.service";
-import { TimeService } from "./gaffer/time.service";
-import { OperationService } from "./gaffer/operation.service";
+import { DefaultRestEndpointService } from './config/default-rest-endpoint-service';
+import { QueryService } from './gaffer/query.service';
+import { LoadingService } from './loading/loading.service';
+import { ResultsService } from './gaffer/results.service';
+import { SettingsService } from './settings/settings.service';
 
 @NgModule({
   declarations: [
@@ -67,21 +61,15 @@ import { OperationService } from "./gaffer/operation.service";
   ],
   providers: [
     AnalyticsService,
-    SchemaService,
-    OperationOptionsService,
     ConfigService,
     EventsService,
     CommonService,
-    TypesService,
     ErrorService,
     DefaultRestEndpointService,
     QueryService,
     LoadingService,
     ResultsService,
-    TableService,
     SettingsService,
-    TimeService,
-    OperationService
   ],
   bootstrap: [AppComponent]
 })

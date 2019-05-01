@@ -16,9 +16,8 @@
 import { Component, OnInit, Injectable, Input } from "@angular/core";
 import { isEqual, cloneDeep } from "lodash";
 
-import { EventsService } from "../dynamic-input/events.service";
-import { OperationOptionsService } from "./operation-options.service";
-import { ConfigService } from "../config/config.service";
+import { EventsService } from '../dynamic-input/events.service';
+import { ConfigService } from '../config/config.service';
 
 @Component({
   selector: "app-options",
@@ -41,7 +40,6 @@ export class OptionsComponent implements OnInit {
 
   constructor(
     private events: EventsService,
-    private operationOptions: OperationOptionsService,
     private config: ConfigService
   ) {}
 
@@ -207,11 +205,8 @@ export class OptionsComponent implements OnInit {
           deferredValues.resolve(filteredValues);
         },
         function(err) {
-          this.error.handle(
-            "Failed to retrieve prepopulated options",
-            null,
-            err
-          );
+          this.error.handle("Failed to retrieve prepopulated options, see the console for details", null, err);
+          console.error(err);
           deferredValues.resolve([]);
         }
       );
