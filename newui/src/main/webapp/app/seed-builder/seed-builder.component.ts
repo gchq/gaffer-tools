@@ -1,5 +1,4 @@
 import { Component, OnInit, Injectable, Input } from "@angular/core";
-import { SchemaService } from "../gaffer/schema.service";
 import { EventsService } from "../dynamic-input/events.service";
 import { TypesService } from "../gaffer/type.service";
 @Component({
@@ -11,8 +10,7 @@ import { TypesService } from "../gaffer/type.service";
 export class SeedBuilderComponent implements OnInit {
   @Input('model') model;
   
-  constructor(private schema: SchemaService,
-              private events: EventsService,
+  constructor(private events: EventsService,
               private types: TypesService) {}
 
   ngOnInit() {

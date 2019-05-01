@@ -2,7 +2,6 @@ import { Component, OnInit, Injectable, ViewChild } from "@angular/core";
 import { MatSort, MatTableDataSource } from "@angular/material";
 import { cloneDeep } from "lodash";
 
-import { SchemaService } from "../gaffer/schema.service";
 import { EventsService } from "../dynamic-input/events.service";
 import { ResultsService } from '../gaffer/results.service';
 import { TableService } from './table.service';
@@ -35,8 +34,7 @@ export class TableComponent implements OnInit {
   @ViewChild(MatSort) sort: MatSort;
   schema;
 
-  constructor(private schemaService: SchemaService, 
-              private events: EventsService,
+  constructor(private events: EventsService,
               private results: ResultsService,
               private table: TableService,
               private common: CommonService,
@@ -44,28 +42,11 @@ export class TableComponent implements OnInit {
               private time: TimeService) {}
 
   /**
-   * Initialises the controller.
-   * Fetches the schema. Fetches the results and processes them.
-   * Loads any cached table preferences and subscribes to resultsUpdated events.
+   * Fetches the results and subscribes to resultsUpdated events.
    */
   ngOnInit() {
     this.events.subscribe("resultsUpdated", () => this.onResultsUpdated);
-
-    this.schemaService.get().subscribe(
-      (gafferSchema) => {
-        this.schema = gafferSchema;
-        this.loadFromCache();
-        this.processResults(this.results.get());
-      },
-      (err) => {
-        this.schema = { types: {}, edges: {}, entities: {} };
-        this.loadFromCache();
-        this.processResults(this.results.get());
-      }
-    );
-
-    //this.data = new MatTableDataSource(ELEMENT_DATA)
-
+    this.processResults(this.results.get());
   }
 
   resultsByType = [];

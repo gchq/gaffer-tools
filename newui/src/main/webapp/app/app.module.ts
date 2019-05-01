@@ -28,7 +28,6 @@ import { ParameterInputComponent } from "./parameter-input/parameter-input.compo
 import { OptionsComponent } from "./options/options.component";
 
 import { AnalyticsService } from "./gaffer/analytics.service";
-import { SchemaService } from "./gaffer/schema.service";
 import { OperationOptionsService } from "./options/operation-options.service";
 import { ConfigService } from "./config/config.service";
 import { EventsService } from "./dynamic-input/events.service";
@@ -75,7 +74,6 @@ import { TimeService } from './gaffer/time.service';
   ],
   providers: [
     AnalyticsService,
-    SchemaService,
     OperationOptionsService,
     ConfigService,
     EventsService,
