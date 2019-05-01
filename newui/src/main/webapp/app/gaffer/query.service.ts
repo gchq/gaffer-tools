@@ -40,7 +40,9 @@ export class QueryService {
      * @param {Array} data The data returned by the Gaffer REST service
      */
     private showTooManyResultsPrompt = function(data, onSuccess) {
-        this.error.handle('Too many results to show',null,null)
+        onSuccess(data);
+        let resultLimit = this.settings.getResultLimit();
+        this.error.handle('Too many results to show, showing only the first ' + resultLimit + ' rows',null,null);
     }
 
     /**
@@ -52,17 +54,21 @@ export class QueryService {
     executeQuery = function(operation, onSuccess, onFailure) {
         this.execute(
             operation,
+            //On success
             (data) => {
                 this.loading.finish()
+                //If there are too many results tell the user and only show a slice of the data
                 if (data.length >= this.settings.getResultLimit()) {
                     this.showTooManyResultsPrompt(data.slice(0, this.settings.getResultLimit()), onSuccess);
                 } else {
+                   //Store these results and show them
                    this.results.update(data);
                    if(onSuccess) {
                        onSuccess(data);
                    }
                 }
             },
+            //On error
             (err) => {
                 this.loading.finish();
                 this.error.handle('Error executing operation', null, err);
@@ -78,28 +84,43 @@ export class QueryService {
      * @param {Object} The operation chain to execute. It can either be an object or a json string.
      */
     execute = function(operation, onSuccess, onFailure) {
+        //Convert the operation to a json string
         if(typeof operation !== 'string' && !(operation instanceof String)) {
             operation = JSON.stringify(operation);
         }
+        //Configure the http headers
         let headers = new HttpHeaders();
         headers = headers.set('Content-Type', 'application/json; charset=utf-8');
-        this.config.get().subscribe((conf) => {
-            var queryUrl = this.common.parseUrl(conf.restEndpoint + "/graph/operations/execute");
-            this.http.post(queryUrl, operation, { headers: headers} )
-                .subscribe(
-                    (data) => {
-                        if(onSuccess) {
-                            onSuccess(data)
+        //Get the config
+        this.config.get().subscribe(
+            //On success
+            (conf) => {
+                //Post the request to the server
+                var queryUrl = this.common.parseUrl(conf.restEndpoint + "/graph/operations/execute");
+                this.http.post(queryUrl, operation, { headers: headers} )
+                    .subscribe(
+                        //On success
+                        (data) => {
+                            if(onSuccess) {
+                                onSuccess(data)
+                            }
+                        },
+                        //On error
+                        (err) => {
+                            if (onFailure) {
+                                onFailure(err);
+                            } else {
+                                this.error.handle('Error running operation, see the log for details', null, err);
+                                console.error(err);
+                            }
                         }
-                    },
-                    (err) => {
-                        if (onFailure) {
-                            onFailure(err);
-                        } else {
-                            this.error.handle('Error running operation', null, err);
-                        }
-                    }
-                );
-        });
-    }
+                    );
+            },
+            //On error
+            (err) => {
+                this.error.handle('Unable to load config, see the log for details', null, err);
+                console.error(err);
+            }
+        );
+    };
 };
