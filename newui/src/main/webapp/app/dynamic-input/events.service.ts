@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 import { Injectable } from "@angular/core";
+
 import { CommonService } from "./common.service";
 
 @Injectable()
@@ -22,6 +23,7 @@ export class EventsService {
 
   constructor(private common: CommonService) {}
 
+  //Add a listener to an event
   subscribe = function(eventName, callback) {
     if (typeof callback !== "function") {
       return;
@@ -36,6 +38,7 @@ export class EventsService {
     }
   };
 
+  //Fire an event and execute all the functions provided by listeners
   broadcast = function(eventName, args) {
     var listeners = this.events[eventName];
     var fn;
@@ -45,6 +48,7 @@ export class EventsService {
     }
   };
 
+  //Stop listening to the given event
   unsubscribe = function(eventName, callback) {
     if (!this.events[eventName]) {
         return;

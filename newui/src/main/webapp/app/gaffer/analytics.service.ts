@@ -1,11 +1,12 @@
 import { Injectable } from '@angular/core';
-import { QueryService } from './query.service';
 import { Observable, Observer } from 'rxjs';
 import { HttpClient, HttpHeaders } from "@angular/common/http";
+import { Router } from '@angular/router';
+
+import { QueryService } from './query.service';
 import { ConfigService } from '../config/config.service';
 import { ErrorService } from '../dynamic-input/error.service';
 import { CommonService } from '../dynamic-input/common.service';
-import { Router } from '@angular/router';
 import { ResultsService } from './results.service';
 
 //Used to store and get the selected analytic

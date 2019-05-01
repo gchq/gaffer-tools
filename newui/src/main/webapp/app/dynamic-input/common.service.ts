@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { isEqual, cloneDeep } from "lodash";
+import { isEqual } from "lodash";
 
 /**
  * Library of common code - used for compatability with certain browsers and to reduce

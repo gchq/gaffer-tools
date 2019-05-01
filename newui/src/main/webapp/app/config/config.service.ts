@@ -23,15 +23,19 @@ import { DefaultRestEndpointService } from './default-rest-endpoint-service';
 @Injectable()
 export class ConfigService {
   config;
+  configObservable;
   defer = null;
 
   constructor(private http: HttpClient,
               private defaultRestEndpoint: DefaultRestEndpointService) {}
 
+  /** Get the config */
   get = function() {
+    //If a config is loaded already, return it
     if (this.config) {
       return of(this.config);
     } else if (!this.configObservable) {
+      //Load the config
       this.configObservable = Observable.create(
         (observer: Observer<String>) => {this.load(observer);}
       );
@@ -40,22 +44,29 @@ export class ConfigService {
     return this.configObservable;
   };
 
+  //** Set the config */
   set = function(conf) {
     this.config = conf;
   };
 
+  //** Load the config */
   private load = function(observer) {
+    //Get the default config
     this.http.get("http://localhost:8080/config/defaultConfig.json").subscribe(
+      //On success
       (response) => {
         var defaultConfig = response.data;
         if (defaultConfig === undefined) {
           defaultConfig = {};
         }
         var mergedConfig = defaultConfig;
+        //Get the config
         this.http.get("http://localhost:8080/config/config.json").subscribe(
+          //On success
           (response) => {
+            //Merge the configs
             var customConfig = response.data;
-
+            
             if (customConfig === undefined) {
               customConfig = {};
             }
@@ -74,15 +85,19 @@ export class ConfigService {
             this.config = mergedConfig;
             observer.next(this.config);
           },
+          //On error
           (err) => {
             observer.error(err);
-            this.error.handle("Failed to load custom config", null, err);
+            this.error.handle("Failed to load custom config, see the log for details", null, err);
+            console.error(err);
           }
         );
       },
+      //On error
       (err) => {
         observer.error(err);
-        this.error.handle("Failed to load config", null, err);
+        this.error.handle("Failed to load default config, see the log for details", null, err);
+        console.error(err);
       }
     );
   };
