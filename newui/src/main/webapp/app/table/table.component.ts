@@ -108,15 +108,9 @@ export class TableComponent implements OnInit {
   };
 
   processResults = function(resultsData) {
-    console.log(resultsData);
-    //Combine all the data into one array
-    let results = [];
-    results = results.concat(resultsData.edges);
-    results = results.concat(resultsData.entities);
-    results = results.concat(resultsData.other);
-    this.data.results = results;
+    this.data.results = resultsData;
     
-    //Get all the different columns
+    //Get all the different column names
     this.displayedColumns = new Set();
     this.data.results.forEach((item, index) => {
       let keys = Object.keys(item);

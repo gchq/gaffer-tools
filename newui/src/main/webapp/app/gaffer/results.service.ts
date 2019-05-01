@@ -19,7 +19,7 @@ import { EventsService } from '../dynamic-input/events.service';
 @Injectable()
 export class ResultsService {
 
-    results = {entities: [], edges: [], other: []};
+    results = [];
 
     constructor(private events: EventsService) {}
 
@@ -29,57 +29,19 @@ export class ResultsService {
     }
 
     /** Clear the results */
-    clear = function(broadcast) {
-        this.results = {entities: [], edges: [], other: []};
-        if(broadcast === undefined || broadcast) {
-            this.events.broadcast('resultsUpdated', [this.results]);
-            this.events.broadcast('resultsCleared');
-        }
+    clear = function() {
+        this.results = [];
+        this.events.broadcast('resultsUpdated', [this.results]);
     }
 
     /** Update the results */
     update = function(newResults) {
-        var incomingResults = {
-            entities: [], edges: [], other: []
-        }
         if(newResults !== undefined && newResults !== null && newResults !== "") {
+            //Convert it to an array if theres only one result
             if(!Array.isArray(newResults)) {
                 newResults = [newResults];
             }
-            for (var i in newResults) {
-                var result = newResults[i];
-                if(result !== Object(result)) {
-                    var type = typeof result;
-                    let finalType;
-                    if(type === "string") {
-                        finalType = "String";
-                    } else if(type === "number") {
-                       finalType = "Integer";
-                    }
-
-                    result = {
-                        class: finalType,
-                        value: result
-                    };
-                }
-
-                if(result.class === "uk.gov.gchq.gaffer.data.element.Entity") {
-                    if(result.vertex !== undefined && result.vertex !== '') {
-                        incomingResults.entities.push(result);
-                        this.results.entities.push(result);
-                    }
-                } else if(result.class === "uk.gov.gchq.gaffer.data.element.Edge") {
-                    if(result.source !== undefined && result.source !== ''
-                    && result.destination !== undefined && result.destination !== '') {
-                        incomingResults.edges.push(result);
-                        this.results.edges.push(result);
-                    }
-                } else {
-                    incomingResults.other.push(result)
-                    this.results.other.push(result);
-                }
-            }
-            this.events.broadcast('incomingResults', [incomingResults]);
+            this.results = newResults;
             this.events.broadcast('resultsUpdated', [this.results]);
         }
     }

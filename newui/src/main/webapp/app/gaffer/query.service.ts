@@ -25,8 +25,6 @@ import { ResultsService } from './results.service';
 @Injectable()
 export class QueryService {
 
-    operations = [];
-
     constructor(private config: ConfigService,
                 private common: CommonService,
                 private error: ErrorService,
