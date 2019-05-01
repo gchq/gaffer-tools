@@ -14,11 +14,8 @@
   ~ limitations under the License.
   -->
 <div layout-margin>
-    <div class="loading-container">
-        <md-progress-circular ng-show="ctrl.isLoading()"
-                              md-diameter="30"
-                              md-mode="indeterminate"
-                              class="md-accent">
-        </md-progress-circular>
-    </div>
+  <div class="loading-container">
+    <mat-progress-spinner [hidden]="isLoading()" [mode]="indeterminate" [color]="accent">
+    </mat-progress-spinner>
+  </div>
 </div>
