@@ -1,23 +1,13 @@
 import { Component, OnInit, Injectable, ViewChild } from "@angular/core";
 import { MatSort, MatTableDataSource } from "@angular/material";
-import { cloneDeep } from "lodash";
 
 import { SchemaService } from "../gaffer/schema.service";
 import { EventsService } from "../dynamic-input/events.service";
-import { ResultsService } from '../gaffer/results.service';
-import { TableService } from './table.service';
-import { CommonService } from '../dynamic-input/common.service';
-import { TypesService } from '../gaffer/type.service';
-import { TimeService } from '../gaffer/time.service';
-
-// export interface Element {
-//   junction: string;
-//   position: number;
-//   frequency: number;
-//   vehicle: string;
-//   SOURCE: string;
-//   //RESULT TYPE: string;
-// }
+import { ResultsService } from "../gaffer/results.service";
+import { TableService } from "./table.service";
+import { CommonService } from "../dynamic-input/common.service";
+import { TypesService } from "../gaffer/type.service";
+import { TimeService } from "../gaffer/time.service";
 
 @Component({
   selector: "app-table",
@@ -25,23 +15,22 @@ import { TimeService } from '../gaffer/time.service';
 })
 @Injectable()
 export class TableComponent implements OnInit {
-  //groupColumnName = "GROUP";
-  //typeColumnName = "result type";
-  //displayedColumns: string[] = [this.groupColumnName,this.typeColumnName, "SOURCE"];
   data = {
-    results : new MatTableDataSource()
+    results: new MatTableDataSource()
   };
-  
+
   @ViewChild(MatSort) sort: MatSort;
   schema;
 
-  constructor(private schemaService: SchemaService, 
-              private events: EventsService,
-              private results: ResultsService,
-              private table: TableService,
-              private common: CommonService,
-              private types: TypesService,
-              private time: TimeService) {}
+  constructor(
+    private schemaService: SchemaService,
+    private events: EventsService,
+    private results: ResultsService,
+    private table: TableService,
+    private common: CommonService,
+    private types: TypesService,
+    private time: TimeService
+  ) {}
 
   /**
    * Initialises the controller.
@@ -52,20 +41,17 @@ export class TableComponent implements OnInit {
     this.events.subscribe("resultsUpdated", () => this.onResultsUpdated);
 
     this.schemaService.get().subscribe(
-      (gafferSchema) => {
+      gafferSchema => {
         this.schema = gafferSchema;
         this.loadFromCache();
         this.processResults(this.results.get());
       },
-      (err) => {
+      err => {
         this.schema = { types: {}, edges: {}, entities: {} };
         this.loadFromCache();
         this.processResults(this.results.get());
       }
     );
-
-    //this.data = new MatTableDataSource(ELEMENT_DATA)
-
   }
 
   resultsByType = [];
@@ -101,9 +87,6 @@ export class TableComponent implements OnInit {
   };
 
   onResultsUpdated = function(res) {
-    // forcing a cache reload ensures columns are recalculated if they need to be
-    //this.cacheValues();
-    //this.loadFromCache();
     this.processResults(res);
   };
 
@@ -115,7 +98,7 @@ export class TableComponent implements OnInit {
     results = results.concat(resultsData.entities);
     results = results.concat(resultsData.other);
     this.data.results = results;
-    
+
     //Get all the different columns
     this.displayedColumns = new Set();
     this.data.results.forEach((item, index) => {
@@ -123,71 +106,8 @@ export class TableComponent implements OnInit {
       for (let key of keys) {
         this.displayedColumns.add(key);
       }
-    })
+    });
     this.columnsToDisplay = this.displayedColumns;
-
-
-    // for (let result of this.data.results) {
-    //   dictionaries.push(result)
-    // }
-    //let dictionaries = Object.values(this.data.results);
-    // this.displayedColumns = Object.keys(dictionaries);
-    // for (let object of this.data.results) {
-    //   object.forEach((item, index) => {
-    //     this.displayedColumns.add(Object.keys(object)[index]);
-    //   });
-    // }
-    // var ids = [];
-    // var groupByProperties = [];
-    // var properties = [];
-    // //   resultsByType = {};
-    // this.data.tooltips = {};
-
-    // this.processElements(
-    //   "Edge",
-    //   "edges",
-    //   ["result type", "GROUP", "SOURCE", "DESTINATION", "DIRECTED"],
-    //   ids,
-    //   groupByProperties,
-    //   properties,
-    //   resultsData
-    // );
-    // this.processElements(
-    //   "Entity",
-    //   "entities",
-    //   ["result type", "GROUP", "SOURCE"],
-    //   ids,
-    //   groupByProperties,
-    //   properties,
-    //   resultsData
-    // );
-    // this.processOtherTypes(ids, properties, resultsData);
-
-    // this.data.allColumns = this.common.concatUniqueValues(
-    //   this.common.concatUniqueValues(ids, groupByProperties),
-    //   properties
-    // );
-
-    // if (!this.data.columns || this.data.columns.length === 0) {
-    //   this.data.columns = cloneDeep(this.data.allColumns);
-    // }
-    // this.data.allTypes = [];
-    // this.data.allGroups = [];
-    // for (var type in this.resultsByType) {
-    //   this.data.allTypes.push(type);
-    //   for (var group in this.resultsByType[type]) {
-    //     this.common.pushValueIfUnique(group, this.data.allGroups);
-    //   }
-    // }
-
-    // if (!this.data.types || this.data.types.length === 0) {
-    //    this.data.types = cloneDeep(this.data.allTypes);
-    // }
-    // if (!this.data.groups || this.data.groups.length === 0) {
-    //    this.data.groups = cloneDeep(this.data.allGroups);
-    // }
-
-    // this.updateFilteredResults();
   };
 
   processElements = function(
@@ -242,8 +162,9 @@ export class TableComponent implements OnInit {
                   }
                 }
                 for (var propertyName in elementDef.properties) {
-                  var typeDef =
-                    this.schema.types[elementDef.properties[propertyName]];
+                  var typeDef = this.schema.types[
+                    elementDef.properties[propertyName]
+                  ];
                   if (
                     typeDef &&
                     typeDef.description &&
@@ -374,9 +295,9 @@ export class TableComponent implements OnInit {
       pagination: this.pagination,
       chart: this.chart,
       showVisualisation: this.showVisualisation,
-      columns : null,
+      columns: null,
       types: null,
-      groups: null,
+      groups: null
     };
 
     if (

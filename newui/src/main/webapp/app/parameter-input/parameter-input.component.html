@@ -1,6 +1,5 @@
 <div style="margin-left:110px">
   <h1>Parameters for {{analytic.operationName}}</h1>
-  <!-- <h1>Parameters</h1> -->
 </div>
 <form name="operationChainForm" #operationChainForm="ngForm">
   <mat-card>
@@ -13,11 +12,7 @@
     </div>
   </mat-card>
   <div style="margin-right:110px" fxLayout="row" fxLayoutAlign="end none">
-    <!-- <button mat-raised-button color="primary" (click)="resetChain($event)">Reset
-      operation
-      chain</button> -->
     <button mat-raised-button color="primary" id="execute-chain" (click)="executeAnalytic()">EXECUTE
-      <!-- [disabled]="!canExecute()" -->
     </button>
   </div>
 </form>

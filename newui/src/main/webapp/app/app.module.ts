@@ -8,8 +8,7 @@ import { LayoutModule } from "@angular/cdk/layout";
 import { FlexLayoutModule } from "@angular/flex-layout";
 import { AppRoutingModule } from "./app-routing.module";
 import { HttpClientModule } from "@angular/common/http";
-import { ToastrModule, ToastrService } from 'ngx-toastr';
-
+import { ToastrModule, ToastrService } from "ngx-toastr";
 
 import { AppComponent } from "./app.component";
 import { AboutComponent } from "./about/about.component";
@@ -18,11 +17,7 @@ import { TableComponent } from "./table/table.component";
 import { AnalyticsComponent } from "./analytics/analytics.component";
 import { AnalyticComponent } from "./analytic/analytic.component";
 import { NavComponent } from "./nav/nav.component";
-import { DateRangeComponent } from "./date-range/date-range.component";
-import { InputManagerComponent } from "./input-manager/input-manager.component";
 import { ParameterFormComponent } from "./parameter-form/parameter-form.component";
-import { PairBuilderComponent } from "./pair-builder/pair-builder.component";
-import { SeedBuilderComponent } from "./seed-builder/seed-builder.component";
 import { OperationFieldComponent } from "./operation-field/operation-field.component";
 import { ParameterInputComponent } from "./parameter-input/parameter-input.component";
 import { OptionsComponent } from "./options/options.component";
@@ -35,15 +30,14 @@ import { EventsService } from "./dynamic-input/events.service";
 import { CommonService } from "./dynamic-input/common.service";
 import { ErrorService } from "./dynamic-input/error.service";
 import { TypesService } from "./gaffer/type.service";
-import { DefaultRestEndpointService } from './config/default-rest-endpoint-service';
-import { QueryService } from './gaffer/query.service';
-import { LoadingService } from './loading/loading.service';
-import { ResultsService } from './gaffer/results.service';
-import { TableService } from './table/table.service';
-import { SettingsService } from './settings/settings.service';
-import { TimeService } from './gaffer/time.service';
-import { OperationService } from './gaffer/operation.service';
-
+import { DefaultRestEndpointService } from "./config/default-rest-endpoint-service";
+import { QueryService } from "./gaffer/query.service";
+import { LoadingService } from "./loading/loading.service";
+import { ResultsService } from "./gaffer/results.service";
+import { TableService } from "./table/table.service";
+import { SettingsService } from "./settings/settings.service";
+import { TimeService } from "./gaffer/time.service";
+import { OperationService } from "./gaffer/operation.service";
 
 @NgModule({
   declarations: [
@@ -54,11 +48,7 @@ import { OperationService } from './gaffer/operation.service';
     OperationComponent,
     NavComponent,
     TableComponent,
-    DateRangeComponent,
-    InputManagerComponent,
     ParameterFormComponent,
-    PairBuilderComponent,
-    SeedBuilderComponent,
     OperationFieldComponent,
     ParameterInputComponent,
     OptionsComponent
