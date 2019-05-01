@@ -7,7 +7,6 @@ import { ResultsService } from '../gaffer/results.service';
 import { TableService } from './table.service';
 import { CommonService } from '../dynamic-input/common.service';
 import { TypesService } from '../gaffer/type.service';
-import { TimeService } from '../gaffer/time.service';
 
 // export interface Element {
 //   junction: string;
@@ -38,8 +37,8 @@ export class TableComponent implements OnInit {
               private results: ResultsService,
               private table: TableService,
               private common: CommonService,
-              private types: TypesService,
-              private time: TimeService) {}
+              private types: TypesService
+              ) {}
 
   /**
    * Fetches the results and subscribes to resultsUpdated events.
@@ -285,16 +284,16 @@ export class TableComponent implements OnInit {
     }
   };
 
-  convertValue = function(name, value) {
-    var parsedValue = value;
-    if (parsedValue) {
-      parsedValue = this.types.getShortValue(parsedValue);
-      if (this.time.isTimeProperty(name)) {
-        parsedValue = this.time.getDateString(name, parsedValue);
-      }
-    }
-    return parsedValue;
-  };
+  // convertValue = function(name, value) {
+  //   var parsedValue = value;
+  //   if (parsedValue) {
+  //     parsedValue = this.types.getShortValue(parsedValue);
+  //     if (this.time.isTimeProperty(name)) {
+  //       parsedValue = this.time.getDateString(name, parsedValue);
+  //     }
+  //   }
+  //   return parsedValue;
+  // };
 
   download = function() {
     var mimeType = "data:text/csv;charset=utf-8";

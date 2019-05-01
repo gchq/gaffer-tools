@@ -14,26 +14,26 @@ export class SeedBuilderComponent implements OnInit {
               private types: TypesService) {}
 
   ngOnInit() {
-    this.schema.get().subscribe(function(gafferSchema) {
-      var vertices = this.schema.getSchemaVertices();
-      if (vertices && vertices.length > 0 && undefined !== vertices[0]) {
-        this.vertexClass = gafferSchema.types[vertices[0]].class;
-      }
-      this.recalculateSeeds(this.model);
-      if (this.$routeParams[this.routeParam]) {
-        if (Array.isArray(this.$routeParams[this.routeParam])) {
-          this.seedVertices +=
-            "\n" + this.$routeParams[this.routeParam].join("\n");
-        } else {
-          this.seedVertices += "\n" + this.$routeParams[this.routeParam];
-        }
-        this.addSeeds(true);
-        this.$location.search(this.routeParam, null);
-      }
-    });
+    // this.schema.get().subscribe(function(gafferSchema) {
+    //   var vertices = this.schema.getSchemaVertices();
+    //   if (vertices && vertices.length > 0 && undefined !== vertices[0]) {
+    //     this.vertexClass = gafferSchema.types[vertices[0]].class;
+    //   }
+    //   this.recalculateSeeds(this.model);
+    //   if (this.$routeParams[this.routeParam]) {
+    //     if (Array.isArray(this.$routeParams[this.routeParam])) {
+    //       this.seedVertices +=
+    //         "\n" + this.$routeParams[this.routeParam].join("\n");
+    //     } else {
+    //       this.seedVertices += "\n" + this.$routeParams[this.routeParam];
+    //     }
+    //     this.addSeeds(true);
+    //     this.$location.search(this.routeParam, null);
+    //   }
+    // });
 
-    this.events.subscribe("onPreExecute", this.addSeeds);
-    this.events.subscribe("onOperationUpdate", this.onOperationUpdate);
+    // this.events.subscribe("onPreExecute", this.addSeeds);
+    // this.events.subscribe("onOperationUpdate", this.onOperationUpdate);
   }
 
   /**

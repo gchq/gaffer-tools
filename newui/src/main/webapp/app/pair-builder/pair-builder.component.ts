@@ -18,25 +18,25 @@ export class PairBuilderComponent implements OnInit {
               private error: ErrorService) {}
 
   ngOnInit() {
-    this.schema.get().subscribe(function(gafferSchema) {
-      var vertices = this.schema.getSchemaVertices();
-      if (vertices && vertices.length > 0 && undefined !== vertices[0]) {
-        this.vertexClass = gafferSchema.types[vertices[0]].class;
-      }
-      if (this.$routeParams["input"]) {
-        if (Array.isArray(this.$routeParams["input"])) {
-          this.pairs += "\n" + this.$routeParams["input"].join("\n");
-        } else {
-          this.pairs += "\n" + this.$routeParams["input"];
-        }
-        this.addPairs(true);
-        this.$location.search("input", null);
-      }
-    });
+    // this.schema.get().subscribe(function(gafferSchema) {
+    //   var vertices = this.schema.getSchemaVertices();
+    //   if (vertices && vertices.length > 0 && undefined !== vertices[0]) {
+    //     this.vertexClass = gafferSchema.types[vertices[0]].class;
+    //   }
+    //   if (this.$routeParams["input"]) {
+    //     if (Array.isArray(this.$routeParams["input"])) {
+    //       this.pairs += "\n" + this.$routeParams["input"].join("\n");
+    //     } else {
+    //       this.pairs += "\n" + this.$routeParams["input"];
+    //     }
+    //     this.addPairs(true);
+    //     this.$location.search("input", null);
+    //   }
+    // });
 
-    this.events.subscribe("onOperationUpdate", this.onOperationUpdate);
-    this.events.subscribe("onPreExecute", this.addPairs);
-    this.recalculateSeeds(this.model);
+    // this.events.subscribe("onOperationUpdate", this.onOperationUpdate);
+    // this.events.subscribe("onPreExecute", this.addPairs);
+    // this.recalculateSeeds(this.model);
   }
 
   /**
