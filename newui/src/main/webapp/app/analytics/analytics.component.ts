@@ -24,8 +24,8 @@ export class AnalyticsComponent implements OnInit {
         this.analytics = availableAnalytics;
       },
       (err) => {
-        this.error.handle('Error loading operations, see the console for details',null,err);
-        console.log(err);
+        this.error.handle('Error loading operations, see the console for details', null, err);
+        console.error(err);
       });
   };
 }

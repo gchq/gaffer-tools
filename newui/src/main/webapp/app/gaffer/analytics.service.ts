@@ -109,7 +109,8 @@ export class AnalyticsService {
                 //On error
                 (err) => {
                   if (loud) {
-                  this.error.handle("Failed to load analytics", null, err);
+                  this.error.handle("Failed to load analytics, see the console for details", null, err);
+                  console.error(err);
                   observer.error(err);
                   } else {
                     observer.next(err)
@@ -120,7 +121,8 @@ export class AnalyticsService {
           //On error
           (err) => {
             if (loud) {
-            this.error.handle("Failed to load config", null, err);
+            this.error.handle("Failed to load config, see the console for details", null, err);
+            console.error(err);
             observer.error(err);
             } else {
               observer.next(err)

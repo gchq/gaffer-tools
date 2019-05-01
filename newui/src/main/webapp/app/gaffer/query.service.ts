@@ -41,7 +41,7 @@ export class QueryService {
     private showTooManyResultsPrompt = function(data, onSuccess) {
         onSuccess(data);
         let resultLimit = this.settings.getResultLimit();
-        this.error.handle('Too many results to show, showing only the first ' + resultLimit + ' rows',null,null);
+        this.error.handle('Too many results to show, showing only the first ' + resultLimit + ' rows', null, null);
     }
 
     /**
@@ -70,7 +70,8 @@ export class QueryService {
             //On error
             (err) => {
                 this.loading.finish();
-                this.error.handle('Error executing operation', null, err);
+                this.error.handle('Error executing operation, see the console for details', null, err);
+                console.error(err);
                 if (onFailure) {
                     onFailure(err);
                 }
@@ -109,7 +110,7 @@ export class QueryService {
                             if (onFailure) {
                                 onFailure(err);
                             } else {
-                                this.error.handle('Error running operation, see the log for details', null, err);
+                                this.error.handle('Error running operation, see the console for details', null, err);
                                 console.error(err);
                             }
                         }
@@ -117,7 +118,7 @@ export class QueryService {
             },
             //On error
             (err) => {
-                this.error.handle('Unable to load config, see the log for details', null, err);
+                this.error.handle('Unable to load config, see the console for details', null, err);
                 console.error(err);
             }
         );

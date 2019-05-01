@@ -88,7 +88,7 @@ export class ConfigService {
           //On error
           (err) => {
             observer.error(err);
-            this.error.handle("Failed to load custom config, see the log for details", null, err);
+            this.error.handle("Failed to load custom config, see the console for details", null, err);
             console.error(err);
           }
         );
@@ -96,7 +96,7 @@ export class ConfigService {
       //On error
       (err) => {
         observer.error(err);
-        this.error.handle("Failed to load default config, see the log for details", null, err);
+        this.error.handle("Failed to load default config, see the console for details", null, err);
         console.error(err);
       }
     );
