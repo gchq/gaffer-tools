@@ -37,43 +37,4 @@ export class OperationComponent implements OnInit {
     }
     return field;
   };
-
-  /**
-   * Checks all subforms are valid and another operation is not in progress
-   */
-  canExecute = function() {
-    return (
-      this.operationForm.$valid &&
-      this.model.fields.input !== null &&
-      !this.loading.isLoading()
-    );
-  };
-
-  isFirst = function() {
-    return this.index === 0;
-  };
-
-  isStandalone = function() {
-    return this.chainLength === 1;
-  };
-
-  isLast = function() {
-    return this.index === this.chainLength - 1;
-  };
-
-  toggleExpanded = function() {
-    this.model.expanded = !this.model.expanded;
-  };
-
-  execute = function() {
-    this.onExecute({ op: this.model });
-  };
-
-  reset = function() {
-    this.onReset({ index: this.index });
-  };
-
-  delete = function() {
-    this.onDelete({ index: this.index });
-  };
 }
