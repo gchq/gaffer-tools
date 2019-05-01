@@ -20,11 +20,6 @@ export class ParameterFormComponent implements OnInit {
     }
   }
 
-  getTimeUnit = function(parameterName) {
-    var metaData = this.time.getTimeMetaData(parameterName);
-    return metaData ? metaData.unit : undefined;
-  };
-
   //Update the analytic operation whenever a parameter changes
   onChange = function(parameter, parameterName) {
     this.analyticsService.updateAnalytic(

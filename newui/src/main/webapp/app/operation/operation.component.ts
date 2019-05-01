@@ -1,5 +1,4 @@
 import { Component, OnInit, Input } from "@angular/core";
-import { modelGroupProvider } from "@angular/forms/src/directives/ng_model_group";
 
 @Component({
   selector: "app-query",
@@ -11,12 +10,7 @@ export class OperationComponent implements OnInit {
 
   constructor() {}
 
-  ngOnInit() {
-    console.log(this.model);
-    console.log(this.model.parameters);
-    console.log(this.model.operations.fields);
-    //console.log(this.model.operations.fields.view);
-  }
+  ngOnInit() {}
 
   getConfigFields = function() {
     var configFields = {};
