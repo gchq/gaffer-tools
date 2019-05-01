@@ -24,22 +24,21 @@ export class AnalyticsService {
               private router: Router,
               private results: ResultsService) {}
 
-  /** Set the chosen analytic */
+  /** Store the chosen analytic */
   setAnalytic(analytic) {
-    console.log("setting analytic:", analytic);
     this.selectedAnalytic = analytic;
-    console.log("set analytic:", this.selectedAnalytic);
   }
 
-  /** Get the chosen analytic */
+  /** Get the chosen analytic on load of parameters page */
   getAnalytic() {
-    console.log("getting analytic:", this.selectedAnalytic);
     return this.selectedAnalytic;
   }
 
   /** Update the analytic operation on change of parameters */
   updateAnalytic = function(parameters, newValue, parameterName) {
+    //Convert to an integer
     newValue = parseInt(newValue);
+    //Look for the parameter in the list of parameters and set the new current value
     for (let i = 0; i < parameters.length; i++) {
       let parameterPair = parameters[i];
       if (parameterPair[0] === parameterName) {
@@ -68,7 +67,8 @@ export class AnalyticsService {
 
   /** Execute the analytic operation */
   executeAnalytic = function() {
-    //Convert parameters from an array to a key value map
+    //Convert parameters from an array to a key value map 
+    //so the parameters are in the correct form when they reach the server
     if (this.analyticOperation.parameters != null) {
       let parametersMap = {};
       for (let param of this.analyticOperation.parameters) {
@@ -85,30 +85,48 @@ export class AnalyticsService {
       this.router.navigate(['/results'])});
   };
 
+  /** Get the analytics from the server */
   reloadAnalytics = function(loud) {
     var observable = Observable.create((observer: Observer<String>) => {
       var operation = {
         "class": "uk.gov.gchq.gaffer.operation.analytic.GetAllAnalyticOperations"
       }
+      //Configure the http headers
       let headers = new HttpHeaders();
       headers = headers.set('Content-Type', 'application/json; charset=utf-8');
-      this.config.get().subscribe((conf) => {
-          var queryUrl = this.common.parseUrl(conf.restEndpoint + "/graph/operations/execute");
-          this.http.post(queryUrl, operation, { headers: headers} ).subscribe(
-            (data) => {
-              observer.next(data)
-            },
-            (err) => {
-              if (loud) {
-              this.error.handle("Failed to load analytics", null, err);
-              observer.error(err);
-              } else {
-                observer.next(err)
-              }
+      //Get the config
+      this.config.get().subscribe(
+          //On success
+          (conf) => {
+            //Make the http request
+            var queryUrl = this.common.parseUrl(conf.restEndpoint + "/graph/operations/execute");
+            this.http.post(queryUrl, operation, { headers: headers} ).subscribe(
+                //On success
+                (data) => {
+                  observer.next(data)
+                },
+                //On error
+                (err) => {
+                  if (loud) {
+                  this.error.handle("Failed to load analytics", null, err);
+                  observer.error(err);
+                  } else {
+                    observer.next(err)
+                  }
+                }
+            )
+          },
+          //On error
+          (err) => {
+            if (loud) {
+            this.error.handle("Failed to load config", null, err);
+            observer.error(err);
+            } else {
+              observer.next(err)
             }
-          )
-      })
+          }
+      )
     })
-    return observable;
-  };
+  return observable;
+  }
 }
