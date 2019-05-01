@@ -53,9 +53,12 @@ export class AnalyticsService {
   /** Create and initialise the analytic operation with default parameters */
   createAnalytic = function(parameters) {
       //Add a new key and value in parameters to store the current value of that parameter
-      for (let i = 0; i < parameters.length; i++) {
-        parameters[i][1].currentValue = parameters[i][1].defaultValue;
+      if (parameters) {
+        for (let i = 0; i < parameters.length; i++) {
+          parameters[i][1].currentValue = parameters[i][1].defaultValue;
+        }
       }
+      //Create the analytic operation from these parameters if any
       this.analyticOperation = {
         class: this.ANALYTIC_CLASS,
         operationName: this.selectedAnalytic.operationName,

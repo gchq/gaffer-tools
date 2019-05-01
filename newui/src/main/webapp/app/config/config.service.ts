@@ -45,13 +45,7 @@ export class ConfigService {
   };
 
   private load = function(observer) {
-    // const httpOptions = {
-    //   headers: new HttpHeaders({
-    //     'Access-Control-Allow-Origin':'http://localhost:4200'
-    //   })
-    // };
     this.http.get("http://localhost:8080/config/defaultConfig.json").subscribe(
-      // this.http.get("https://envp2odsfkg7g.x.pipedream.net").subscribe(
       (response) => {
         var defaultConfig = response.data;
         if (defaultConfig === undefined) {
