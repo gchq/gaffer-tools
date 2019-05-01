@@ -17,7 +17,6 @@ import { Component, OnInit, Injectable, Input } from "@angular/core";
 import { isEqual, cloneDeep } from 'lodash';
 
 import { EventsService } from '../dynamic-input/events.service';
-import { OperationOptionsService } from './operation-options.service';
 import { ConfigService } from '../config/config.service';
 
 @Component({
@@ -34,6 +33,7 @@ export class OptionsComponent implements OnInit {
      * the autocomplete functionality.
      */
     searchTerms = {};
+    operationOptions;
 
     /**
      * A key value map containing operation option keys and associated preset options. Used by the md-select
@@ -42,7 +42,6 @@ export class OptionsComponent implements OnInit {
     presets = {};
 
     constructor(private events: EventsService,
-                private operationOptions: OperationOptionsService,
                 private config: ConfigService) {}
 
     /**
