@@ -38,12 +38,12 @@ export class AnalyticsService {
   }
 
   /** Update the analytic operation on change of parameters */
-  updateAnalytic = function(parameters, parameter, parameterName) {
-    parameter = parseInt(parameter);
+  updateAnalytic = function(parameters, newValue, parameterName) {
+    newValue = parseInt(newValue);
     for (let i = 0; i < parameters.length; i++) {
       let parameterPair = parameters[i];
       if (parameterPair[0] === parameterName) {
-        this.analyticOperation.parameters[i][1] = parameter;
+        this.analyticOperation.parameters[i][1].currentValue = newValue;
         return;
       }
     }
@@ -52,6 +52,10 @@ export class AnalyticsService {
 
   /** Create and initialise the analytic operation with default parameters */
   createAnalytic = function(parameters) {
+      //Add a new key and value in parameters to store the current value of that parameter
+      for (let i = 0; i < parameters.length; i++) {
+        parameters[i][1].currentValue = parameters[i][1].defaultValue;
+      }
       this.analyticOperation = {
         class: this.ANALYTIC_CLASS,
         operationName: this.selectedAnalytic.operationName,
@@ -65,7 +69,7 @@ export class AnalyticsService {
     if (this.analyticOperation.parameters != null) {
       let parametersMap = {};
       for (let param of this.analyticOperation.parameters) {
-        parametersMap[param[0]] = param[1];
+        parametersMap[param[0]] = param[1].currentValue;
       }
       this.analyticOperation.parameters = parametersMap
     }
