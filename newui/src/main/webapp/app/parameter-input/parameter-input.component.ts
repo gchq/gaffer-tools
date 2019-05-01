@@ -7,8 +7,7 @@ import { QueryService } from "../gaffer/query.service";
 
 @Component({
   selector: "app-parameter-input",
-  templateUrl: "./parameter-input.component.html",
-  styleUrls: ["./parameter-input.component.css"]
+  templateUrl: "./parameter-input.component.html"
 })
 @Injectable()
 export class ParameterInputComponent implements OnInit {

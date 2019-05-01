@@ -2,8 +2,7 @@ import { Component, OnInit, Input } from "@angular/core";
 
 @Component({
   selector: "app-parameter-form",
-  templateUrl: "./parameter-form.component.html",
-  styleUrls: ["./parameter-form.component.css"]
+  templateUrl: "./parameter-form.component.html"
 })
 export class ParameterFormComponent implements OnInit {
   @Input("parameters") parameters;
