@@ -34,19 +34,6 @@ export class AboutComponent implements OnInit {
 
   /** Opens the users default email client so they can send feedback by email */
   sendFeedback = function(emailId, subject, message) {
-    // if (!emailId || emailId.length === 0) {
-    //   throw new Error(
-    //     "The UI config should contain email recipients to receive feedback from users. No recipients were specified"
-    //   );
-    //   return;
-    // } else if (!(emailId instanceof Array)) {
-    //   var type = typeof emailId;
-    //   throw new Error(
-    //     'The UI configuration property "feedback.recipients" should contain an array, not a ' +
-    //       type
-    //   );
-    //   return;
-    // }
     window.open(
       "mailto:" + emailId + "?subject=" + subject + "&body=" + message,
       "_self"

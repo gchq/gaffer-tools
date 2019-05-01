@@ -1,5 +1,4 @@
 import { Component, OnInit, Input } from "@angular/core";
-import { AnalyticsService } from '../gaffer/analytics.service';
 
 @Component({
   selector: "app-parameter-form",
@@ -10,10 +9,9 @@ export class ParameterFormComponent implements OnInit {
   @Input("parameters") parameters;
   title;
 
-  constructor(private analyticsService: AnalyticsService) {}
+  constructor() {}
 
   ngOnInit() {
-
     if (this.parameters === null || this.parameters === undefined) {
       throw "Expected defined, non-null value for parameters. Got " +
         this.parameters;
@@ -30,6 +28,10 @@ export class ParameterFormComponent implements OnInit {
 
   //Update the analytic operation whenever a parameter changes
   onChange = function(parameter, parameterName) {
-    this.analyticsService.updateAnalytic(this.parameters, parameter, parameterName);
-  }
+    this.analyticsService.updateAnalytic(
+      this.parameters,
+      parameter,
+      parameterName
+    );
+  };
 }

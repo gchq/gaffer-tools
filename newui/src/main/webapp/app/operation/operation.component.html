@@ -1,37 +1,14 @@
   <form name="operationForm">
     <div class="md-list-item-text">
-      <!-- <h3>{{model.operationName}}</h3> -->
       <p>{{model.description}}</p>
     </div>
-    <!-- first column -->
-    <!-- Display the name of the operation and seed input box -->
-    <!-- <app-input-manager first="isFirst()" [primaryInput]="model.operations.fields.input"
-      secondary-input="model.operations.fields.inputB" [model]="model.operations.fields">
-    </app-input-manager> -->
-    <!-- <div *ngIf="model.operations.fields.view"> -->
-      <!-- <view-builder model="model.fields.view">
-                    </view-builder> -->
-      <!-- <mat-checkbox ng-model="model.operations.fields.view.summarise" layout-padding>
-        Summarise
-      </mat-checkbox>
-    </div> -->
-
-    <!-- second column -->
-    <!-- Display the different inputs based on the operation -->
-    <app-date-range *ngIf="timeConfig && model.operations.fields.view" [model]="model.dates" conf="timeConfig">
-    </app-date-range>
-
     <app-parameter-form *ngIf="model.parameters" title-class="layout-padding md-title section-title"
       [parameters]="model.parameters">
     </app-parameter-form>
-
-    <!-- <app-options *ngIf="model.operations.fields.options" [model]="model.operations.fields.options"></app-options> -->
-
     <div *ngIf="hasOtherConfig()">
       <h3 class="section-title md-title">
         Configuration
       </h3>
-
       <div *ngFor="let nameAndField of getConfigFields()">
         <app-operation-field [model]="model" details="nameAndField.field">
         </app-operation-field>

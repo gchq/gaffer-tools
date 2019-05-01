@@ -1,8 +1,4 @@
 <div [hidden]="primaryInput">
-  <!-- <mat-checkbox *ngIf="!first" [(ngModel)]="usePreviousOutput" (change)="onCheckboxChange()"
-    aria-label="use output from previous operation">
-    Use output from previous operation
-  </mat-checkbox> -->
   <div [ngSwitch]="primaryInput.className" [hidden]="!usePreviousOutput || secondaryInput">
     <div
       *ngSwitchCase="'uk.gov.gchq.gaffer.commonutil.pair.Pair<uk.gov.gchq.gaffer.data.element.id.ElementId,uk.gov.gchq.gaffer.data.element.id.ElementId>[]'">

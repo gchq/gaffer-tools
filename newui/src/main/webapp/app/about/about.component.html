@@ -6,20 +6,17 @@
     <mat-card-title>
       <mat-icon>info</mat-icon>
     </mat-card-title>
-    <!-- <mat-spinner class="md-primary" diameter="40">
-        </mat-spinner> -->
     <mat-card-content>
       <p ng-bind-html="description"></p>
-      <p ng-show="restAPI"><a id="about-rest-api" target="_blank" href="/rest">Take a look at the REST
+      <p><a id="about-rest-api" href="/rest">Take a look at the REST
           API</a>
       </p>
-      <p ng-show="docs"><a id="about-docs" target="_blank" href="https://gchq.github.io/gaffer-doc/">Take a look at the
+      <p><a id="about-docs" href="https://gchq.github.io/gaffer-doc/">Take a look at the
           documentation</a></p>
     </mat-card-content>
     <mat-divider></mat-divider>
     <div style="margin-top:30px">
-      <button mat-raised-button
-        (click)='sendFeedback("g609bmsma@protonmail.com", "Angular UI feedback", "Type your email here")'>Send
+      <button mat-raised-button (click)='sendFeedback("example@", "Angular UI feedback", "Type your email here")'>Send
         feedback</button>
     </div>
   </mat-card>
