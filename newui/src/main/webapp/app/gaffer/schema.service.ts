@@ -19,7 +19,6 @@ import { Observable, Observer, of } from "rxjs";
 import { OperationOptionsService } from "../options/operation-options.service";
 import { ErrorService } from '../dynamic-input/error.service';
 import { QueryService } from './query.service';
-import { OperationService } from './operation.service';
 
 @Injectable()
 
@@ -33,7 +32,7 @@ export class SchemaService {
   constructor(private operationOptions: OperationOptionsService,
               private error: ErrorService,
               private query: QueryService,
-              private operationService: OperationService) 
+              ) 
               
   {
     this.update().subscribe(function() {}, function() {});
