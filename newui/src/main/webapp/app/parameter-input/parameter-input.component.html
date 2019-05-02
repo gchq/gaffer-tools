@@ -6,10 +6,6 @@
     <app-query [model]="analytic" index="$index" time-config="timeConfig" on-delete="deleteOperation(index)"
       on-reset="resetOperation(index)" on-execute="execute(op)" chain-length="operations.length">
     </app-query>
-    <mat-divider></mat-divider>
-    <div style="margin-top:10px">
-      <mat-icon>expand_more</mat-icon>
-    </div>
   </mat-card>
   <div style="margin-right:110px" fxLayout="row" fxLayoutAlign="end none">
     <mat-progress-spinner *ngIf="loading" class="example-margin" style="margin-right:10px" [color]="color" [mode]="mode"
