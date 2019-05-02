@@ -19,6 +19,7 @@ import { merge } from "lodash";
 import { Injectable} from "@angular/core";
 import { HttpClient} from "@angular/common/http";
 import { DefaultRestEndpointService } from './default-rest-endpoint-service';
+import { ErrorService } from '../dynamic-input/error.service';
 
 @Injectable()
 export class ConfigService {
@@ -27,7 +28,8 @@ export class ConfigService {
   defer = null;
 
   constructor(private http: HttpClient,
-              private defaultRestEndpoint: DefaultRestEndpointService) {}
+              private defaultRestEndpoint: DefaultRestEndpointService,
+              private error: ErrorService) {}
 
   /** Get the config */
   get = function() {

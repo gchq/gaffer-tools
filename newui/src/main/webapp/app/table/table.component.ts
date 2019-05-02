@@ -73,8 +73,17 @@ export class TableComponent implements OnInit {
     //Get all the different column names
     this.displayedColumns = new Set();
     this.data.results.forEach((item, index) => {
+      
       let keys = Object.keys(item);
-      for (let key of keys) {
+      for (let i in keys) {
+
+        //If the key is class then strip the class name to the last part after the full stop
+        let key = keys[i];
+        if (key === 'class') {
+          this.data.results[index][key] = this.data.results[index][key].split('.').pop();
+        }
+
+        //Get a set of all the different keys to show as columns
         this.displayedColumns.add(key);
       }
     });
