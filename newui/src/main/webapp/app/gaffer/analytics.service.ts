@@ -1,7 +1,7 @@
-import { Injectable } from '@angular/core';
-import { Observable, Observer } from 'rxjs';
+import { Injectable } from "@angular/core";
+import { Observable, Observer } from "rxjs";
 import { HttpClient, HttpHeaders } from "@angular/common/http";
-import { Router } from '@angular/router';
+import { Router } from "@angular/router";
 
 import { QueryService } from './query.service';
 import { ConfigService } from '../config/config.service';
@@ -15,15 +15,17 @@ import { cloneDeep } from 'lodash';
 export class AnalyticsService {
   arrayAnalytic; //The analytic with array parameters
 
-  ANALYTIC_CLASS = 'uk.gov.gchq.gaffer.operation.analytic.AnalyticOperation'
+  ANALYTIC_CLASS = "uk.gov.gchq.gaffer.operation.analytic.AnalyticOperation";
 
-  constructor(private query: QueryService,
-              private config: ConfigService,
-              private error: ErrorService,
-              private common: CommonService,
-              private http: HttpClient,
-              private router: Router,
-              private results: ResultsService) {}
+  constructor(
+    private query: QueryService,
+    private config: ConfigService,
+    private error: ErrorService,
+    private common: CommonService,
+    private http: HttpClient,
+    private router: Router,
+    private results: ResultsService
+  ) {}
 
   /** Get the chosen analytic on load of parameters page */
   getAnalytic() {
@@ -43,7 +45,7 @@ export class AnalyticsService {
       }
     }
     return;
-  }
+  };
 
   /** Create an analytic with array parameters that can be iterated over */
   createArrayAnalytic = function(analytic) {
@@ -95,48 +97,58 @@ export class AnalyticsService {
 
   /** Get the analytics from the server */
   reloadAnalytics = function(loud) {
-    var observable = Observable.create((observer: Observer<String>) => {
-      var operation = {
-        "class": "uk.gov.gchq.gaffer.operation.analytic.GetAllAnalyticOperations"
-      }
+    let observable = Observable.create((observer: Observer<String>) => {
+      let operation = {
+        class: "uk.gov.gchq.gaffer.operation.analytic.GetAllAnalyticOperations"
+      };
       //Configure the http headers
       let headers = new HttpHeaders();
-      headers = headers.set('Content-Type', 'application/json; charset=utf-8');
+      headers = headers.set("Content-Type", "application/json; charset=utf-8");
       //Get the config
       this.config.get().subscribe(
-          //On success
-          (conf) => {
-            //Make the http request
-            var queryUrl = this.common.parseUrl(conf.restEndpoint + "/graph/operations/execute");
-            this.http.post(queryUrl, operation, { headers: headers} ).subscribe(
-                //On success
-                (data) => {
-                  observer.next(data)
-                },
-                //On error
-                (err) => {
-                  if (loud) {
-                  this.error.handle("Failed to load analytics, see the console for details", null, err);
-                  console.error(err);
-                  observer.error(err);
-                  } else {
-                    observer.next(err)
-                  }
-                }
-            )
-          },
-          //On error
-          (err) => {
-            if (loud) {
-            this.error.handle("Failed to load config, see the console for details", null, err);
+        //On success
+        conf => {
+          //Make the http request
+          let queryUrl = this.common.parseUrl(
+            conf.restEndpoint + "/graph/operations/execute"
+          );
+          this.http.post(queryUrl, operation, { headers: headers }).subscribe(
+            //On success
+            data => {
+              observer.next(data);
+            },
+            //On error
+            err => {
+              if (loud) {
+                this.error.handle(
+                  "Failed to load analytics, see the console for details",
+                  null,
+                  err
+                );
+                console.error(err);
+                observer.error(err);
+              } else {
+                observer.next(err);
+              }
+            }
+          );
+        },
+        //On error
+        err => {
+          if (loud) {
+            this.error.handle(
+              "Failed to load config, see the console for details",
+              null,
+              err
+            );
             console.error(err);
             observer.error(err);
-            } else {
-              observer.next(err)
-            }
+          } else {
+            observer.next(err);
           }
-      )
-    })
-  return observable;
-  }
+        }
+      );
+    });
+    return observable;
+  };
 }

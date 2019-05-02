@@ -55,7 +55,7 @@ export class CommonService {
     if (!arr || !obj) {
       return false;
     }
-    for (var i in arr) {
+    for (let i in arr) {
       if (isEqual(arr[i], obj)) {
         return true;
       }

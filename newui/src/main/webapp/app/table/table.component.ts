@@ -18,10 +18,11 @@ export class TableComponent implements OnInit {
   @ViewChild(MatSort) sort: MatSort;
   schema;
 
-  constructor(private events: EventsService,
-              private results: ResultsService,
-              private common: CommonService
-              ) {}
+  constructor(
+    private events: EventsService,
+    private results: ResultsService,
+    private common: CommonService
+  ) {}
 
   /**
    * Fetches the results and subscribes to resultsUpdated events.
@@ -49,9 +50,9 @@ export class TableComponent implements OnInit {
 
   // updateFilteredResults = function() {
   //   this.data.results = [];
-  //   for (var t in this.data.types) {
+  //   for (let t in this.data.types) {
   //     if (this.data.types[t] in this.resultsByType) {
-  //       for (var g in this.data.groups) {
+  //       for (let g in this.data.groups) {
   //         if (this.data.groups[g] in this.resultsByType[this.data.types[t]]) {
   //           this.data.results = this.data.results.concat(
   //             this.resultsByType[this.data.types[t]][this.data.groups[g]]
@@ -105,12 +106,12 @@ export class TableComponent implements OnInit {
   //   ) {
   //     this.resultsByType[type] = [];
   //     this.common.pushValuesIfUnique(idKeys, ids);
-  //     for (var i in resultsData[typePlural]) {
-  //       var element = resultsData[typePlural][i];
+  //     for (let i in resultsData[typePlural]) {
+  //       let element = resultsData[typePlural][i];
   //       if (element) {
-  //         var result = {};
-  //         for (var idIndex in idKeys) {
-  //           var id = idKeys[idIndex];
+  //         let result = {};
+  //         for (let idIndex in idKeys) {
+  //           let id = idKeys[idIndex];
   //           if ("SOURCE" === id && element.source === undefined) {
   //             result[id] = this.convertValue(id, element.vertex);
   //           } else {
@@ -123,12 +124,12 @@ export class TableComponent implements OnInit {
   //           if (!(element.group in this.resultsByType[type])) {
   //             this.resultsByType[type][element.group] = [];
 
-  //             var elementDef = this.schema[typePlural][element.group];
+  //             let elementDef = this.schema[typePlural][element.group];
   //             if (elementDef && elementDef.properties) {
   //               if (elementDef.groupBy) {
-  //                 for (var j in elementDef.groupBy) {
-  //                   var propName = elementDef.groupBy[j];
-  //                   var typeDef = this.schema.types[
+  //                 for (let j in elementDef.groupBy) {
+  //                   let propName = elementDef.groupBy[j];
+  //                   let typeDef = this.schema.types[
   //                     elementDef.properties[propName]
   //                   ];
   //                   if (
@@ -141,8 +142,8 @@ export class TableComponent implements OnInit {
   //                   this.common.pushValueIfUnique(propName, groupByProperties);
   //                 }
   //               }
-  //               for (var propertyName in elementDef.properties) {
-  //                 var typeDef =
+  //               for (let propertyName in elementDef.properties) {
+  //                 let typeDef =
   //                   this.schema.types[elementDef.properties[propertyName]];
   //                 if (
   //                   typeDef &&
@@ -155,7 +156,7 @@ export class TableComponent implements OnInit {
   //               }
   //             }
   //           }
-  //           for (var prop in element.properties) {
+  //           for (let prop in element.properties) {
   //             this.common.pushValueIfUnique(prop, properties);
   //             result[prop] = this.convertValue(prop, element.properties[prop]);
   //           }
@@ -170,12 +171,12 @@ export class TableComponent implements OnInit {
   // };
 
   // processOtherTypes = function(ids, properties, resultsData) {
-  //   for (var i in resultsData.other) {
-  //     var item = resultsData.other[i];
+  //   for (let i in resultsData.other) {
+  //     let item = resultsData.other[i];
   //     if (item) {
-  //       var result = { GROUP: "" };
-  //       for (var key in item) {
-  //         var value = this.convertValue(key, item[key]);
+  //       let result = { GROUP: "" };
+  //       for (let key in item) {
+  //         let value = this.convertValue(key, item[key]);
   //         if ("class" === key) {
   //           result["result type"] = item[key].split(".").pop();
   //           this.common.pushValueIfUnique("result type", ids);
@@ -188,7 +189,7 @@ export class TableComponent implements OnInit {
   //           "directed" === key ||
   //           "group" === key
   //         ) {
-  //           var parsedKey = key.toUpperCase();
+  //           let parsedKey = key.toUpperCase();
   //           result[parsedKey] = value;
   //           this.common.pushValueIfUnique(parsedKey, ids);
   //         } else if ("value" === key) {
@@ -211,7 +212,7 @@ export class TableComponent implements OnInit {
   // };
 
   // convertValue = function(name, value) {
-  //   var parsedValue = value;
+  //   let parsedValue = value;
   //   if (parsedValue) {
   //     parsedValue = this.types.getShortValue(parsedValue);
   //     if (this.time.isTimeProperty(name)) {
@@ -222,14 +223,14 @@ export class TableComponent implements OnInit {
   // };
 
   // download = function() {
-  //   var mimeType = "data:text/csv;charset=utf-8";
-  //   var data = this.csv.generate(this.filteredResults, this.data.columns);
-  //   var fileName = "gaffer_results_" + Date.now() + ".csv";
+  //   let mimeType = "data:text/csv;charset=utf-8";
+  //   let data = this.csv.generate(this.filteredResults, this.data.columns);
+  //   let fileName = "gaffer_results_" + Date.now() + ".csv";
   //   this.downloadData(fileName, data, mimeType);
   // };
 
   // downloadData = function(fileName, data, mimeType) {
-  //   var downloadLink = document.createElement("a");
+  //   let downloadLink = document.createElement("a");
   //   downloadLink.href = URL.createObjectURL(
   //     new Blob([data], { type: mimeType })
   //   );
@@ -253,7 +254,7 @@ export class TableComponent implements OnInit {
   // };
 
   // loadFromCache = function() {
-  //   var cachedValues = this.table.getCachedValues();
+  //   let cachedValues = this.table.getCachedValues();
   //   this.searchTerm = cachedValues.searchTerm;
   //   this.sortType = cachedValues.sortType;
   //   this.chart = cachedValues.chart;
@@ -268,7 +269,7 @@ export class TableComponent implements OnInit {
   // };
 
   // cacheValues = function() {
-  //   var cachedValues = {
+  //   let cachedValues = {
   //     searchTerm: this.searchTerm,
   //     sortType: this.sortType,
   //     pagination: this.pagination,

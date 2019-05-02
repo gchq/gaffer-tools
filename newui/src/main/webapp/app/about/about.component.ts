@@ -51,7 +51,7 @@ export class AboutComponent implements OnInit {
     });
 
     this.config.get().subscribe(function(conf) {
-      var endpoint = conf.restEndpoint.replace(/\/$/, "");
+      let endpoint = conf.restEndpoint.replace(/\/$/, "");
 
       this.restApi = endpoint.substring(0, endpoint.lastIndexOf("/"));
       if (conf.feedback) {
