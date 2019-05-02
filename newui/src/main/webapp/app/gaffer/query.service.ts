@@ -19,7 +19,6 @@ import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { ConfigService } from "../config/config.service";
 import { CommonService } from "../dynamic-input/common.service";
 import { ErrorService } from "../dynamic-input/error.service";
-import { LoadingService } from "../loading/loading.service";
 import { SettingsService } from "../settings/settings.service";
 import { ResultsService } from "./results.service";
 
@@ -30,7 +29,6 @@ export class QueryService {
     private common: CommonService,
     private error: ErrorService,
     private http: HttpClient,
-    private loading: LoadingService,
     private settings: SettingsService,
     private results: ResultsService
   ) {}
@@ -62,7 +60,6 @@ export class QueryService {
       operation,
       //On success
       data => {
-        this.loading.finish();
         //If there are too many results tell the user and only show a slice of the data
         if (data.length >= this.settings.getResultLimit()) {
           this.showTooManyResultsPrompt(
@@ -79,7 +76,6 @@ export class QueryService {
       },
       //On error
       err => {
-        this.loading.finish();
         this.error.handle(
           "Error executing operation, see the console for details",
           null,

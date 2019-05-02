@@ -28,7 +28,6 @@ import { CommonService } from "./dynamic-input/common.service";
 import { ErrorService } from "./dynamic-input/error.service";
 import { DefaultRestEndpointService } from './config/default-rest-endpoint-service';
 import { QueryService } from './gaffer/query.service';
-import { LoadingService } from './loading/loading.service';
 import { ResultsService } from './gaffer/results.service';
 import { SettingsService } from './settings/settings.service';
 
@@ -65,7 +64,6 @@ import { SettingsService } from './settings/settings.service';
     ErrorService,
     DefaultRestEndpointService,
     QueryService,
-    LoadingService,
     ResultsService,
     SettingsService,
   ],
