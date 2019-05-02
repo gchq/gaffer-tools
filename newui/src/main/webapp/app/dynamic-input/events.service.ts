@@ -42,22 +42,22 @@ export class EventsService {
   broadcast = function(eventName, args) {
     let listeners = this.events[eventName];
     let fn;
-    for(let i in listeners) {
-        fn = listeners[i];
-        fn.apply(fn, args);
+    for (let i in listeners) {
+      fn = listeners[i];
+      fn.apply(fn, args);
     }
   };
 
   //Stop listening to the given event
   unsubscribe = function(eventName, callback) {
     if (!this.events[eventName]) {
-        return;
+      return;
     }
 
     this.events[eventName] = this.events[eventName].filter(function(fn) {
-        if (fn !== callback) {
-            return fn;
-        }
-    })
-  }
-};
+      if (fn !== callback) {
+        return fn;
+      }
+    });
+  };
+}

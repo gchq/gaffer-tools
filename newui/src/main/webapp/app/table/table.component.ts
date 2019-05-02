@@ -18,10 +18,11 @@ export class TableComponent implements OnInit {
   @ViewChild(MatSort) sort: MatSort;
   schema;
 
-  constructor(private events: EventsService,
-              private results: ResultsService,
-              private common: CommonService
-              ) {}
+  constructor(
+    private events: EventsService,
+    private results: ResultsService,
+    private common: CommonService
+  ) {}
 
   /**
    * Fetches the results and subscribes to resultsUpdated events.

@@ -16,9 +16,9 @@
 import { Observable, Observer, of } from "rxjs";
 import { merge } from "lodash";
 
-import { Injectable} from "@angular/core";
-import { HttpClient} from "@angular/common/http";
-import { DefaultRestEndpointService } from './default-rest-endpoint-service';
+import { Injectable } from "@angular/core";
+import { HttpClient } from "@angular/common/http";
+import { DefaultRestEndpointService } from "./default-rest-endpoint-service";
 
 @Injectable()
 export class ConfigService {
@@ -26,8 +26,10 @@ export class ConfigService {
   configObservable;
   defer = null;
 
-  constructor(private http: HttpClient,
-              private defaultRestEndpoint: DefaultRestEndpointService) {}
+  constructor(
+    private http: HttpClient,
+    private defaultRestEndpoint: DefaultRestEndpointService
+  ) {}
 
   /** Get the config */
   get = function() {
@@ -37,7 +39,9 @@ export class ConfigService {
     } else if (!this.configObservable) {
       //Load the config
       this.configObservable = Observable.create(
-        (observer: Observer<String>) => {this.load(observer);}
+        (observer: Observer<String>) => {
+          this.load(observer);
+        }
       );
     }
 
@@ -54,7 +58,7 @@ export class ConfigService {
     //Get the default config
     this.http.get("http://localhost:8080/config/defaultConfig.json").subscribe(
       //On success
-      (response) => {
+      response => {
         let defaultConfig = response.data;
         if (defaultConfig === undefined) {
           defaultConfig = {};
@@ -63,10 +67,10 @@ export class ConfigService {
         //Get the config
         this.http.get("http://localhost:8080/config/config.json").subscribe(
           //On success
-          (response) => {
+          response => {
             //Merge the configs
             let customConfig = response.data;
-            
+
             if (customConfig === undefined) {
               customConfig = {};
             }
@@ -86,17 +90,25 @@ export class ConfigService {
             observer.next(this.config);
           },
           //On error
-          (err) => {
+          err => {
             observer.error(err);
-            this.error.handle("Failed to load custom config, see the console for details", null, err);
+            this.error.handle(
+              "Failed to load custom config, see the console for details",
+              null,
+              err
+            );
             console.error(err);
           }
         );
       },
       //On error
-      (err) => {
+      err => {
         observer.error(err);
-        this.error.handle("Failed to load default config, see the console for details", null, err);
+        this.error.handle(
+          "Failed to load default config, see the console for details",
+          null,
+          err
+        );
         console.error(err);
       }
     );

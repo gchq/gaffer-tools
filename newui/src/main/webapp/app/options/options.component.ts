@@ -16,8 +16,8 @@
 import { Component, OnInit, Injectable, Input } from "@angular/core";
 import { isEqual, cloneDeep } from "lodash";
 
-import { EventsService } from '../dynamic-input/events.service';
-import { ConfigService } from '../config/config.service';
+import { EventsService } from "../dynamic-input/events.service";
+import { ConfigService } from "../config/config.service";
 
 @Component({
   selector: "app-options",
@@ -39,10 +39,7 @@ export class OptionsComponent implements OnInit {
   presets = {};
   operationOptions;
 
-  constructor(
-    private events: EventsService,
-    private config: ConfigService
-  ) {}
+  constructor(private events: EventsService, private config: ConfigService) {}
 
   /**
    * Initialisation method. Subscribes to the "onPreExecute" event so that the master can update operation options before
@@ -206,7 +203,11 @@ export class OptionsComponent implements OnInit {
           deferredValues.resolve(filteredValues);
         },
         function(err) {
-          this.error.handle("Failed to retrieve prepopulated options, see the console for details", null, err);
+          this.error.handle(
+            "Failed to retrieve prepopulated options, see the console for details",
+            null,
+            err
+          );
           console.error(err);
           deferredValues.resolve([]);
         }
