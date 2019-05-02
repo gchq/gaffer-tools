@@ -8,12 +8,12 @@ import { ConfigService } from '../config/config.service';
 import { ErrorService } from '../dynamic-input/error.service';
 import { CommonService } from '../dynamic-input/common.service';
 import { ResultsService } from './results.service';
+import { cloneDeep } from 'lodash';
 
 //Used to store and get the selected analytic
 @Injectable()
 export class AnalyticsService {
-  selectedAnalytic; //The selected analytic
-  analyticOperation; //The analytic Operation to execute
+  arrayAnalytic; //The analytic with array parameters
 
   ANALYTIC_CLASS = 'uk.gov.gchq.gaffer.operation.analytic.AnalyticOperation'
 
@@ -25,14 +25,9 @@ export class AnalyticsService {
               private router: Router,
               private results: ResultsService) {}
 
-  /** Store the chosen analytic */
-  setAnalytic(analytic) {
-    this.selectedAnalytic = analytic;
-  }
-
   /** Get the chosen analytic on load of parameters page */
   getAnalytic() {
-    return this.selectedAnalytic;
+    return this.arrayAnalytic;
   }
 
   /** Update the analytic operation on change of parameters */
@@ -43,46 +38,58 @@ export class AnalyticsService {
     for (let i = 0; i < parameters.length; i++) {
       let parameterPair = parameters[i];
       if (parameterPair[0] === parameterName) {
-        this.analyticOperation.parameters[i][1].currentValue = newValue;
+        this.arrayAnalytic.parameters[i][1].currentValue = newValue;
         return;
       }
     }
     return;
   }
 
-  /** Create and initialise the analytic operation with default parameters */
-  createAnalytic = function(parameters) {
-      //Add a new key and value in parameters to store the current value of that parameter
-      if (parameters) {
-        for (let i = 0; i < parameters.length; i++) {
-          parameters[i][1].currentValue = parameters[i][1].defaultValue;
+  /** Create an analytic with array parameters that can be iterated over */
+  createArrayAnalytic = function(analytic) {
+
+      //Convert the key value map of parameters into an iterable array
+      let arrayParams = analytic.parameters;
+      if (arrayParams != null || arrayParams != undefined) {
+        arrayParams = Object.keys(analytic.parameters).map(function(key) {
+          return [key, analytic.parameters[key]];
+        });
+
+        //Add a new key and value in parameters to store the current value of that parameter
+        for (let i = 0; i < arrayParams.length; i++) {
+          arrayParams[i][1].currentValue = arrayParams[i][1].defaultValue;
         }
+      } else {
+        arrayParams = null;
       }
+
       //Create the analytic operation from these parameters if any
-      this.analyticOperation = {
+      this.arrayAnalytic = {
         class: this.ANALYTIC_CLASS,
-        operationName: this.selectedAnalytic.operationName,
-        parameters: parameters
+        operationName: analytic.operationName,
+        parameters: arrayParams
       };
   }
 
   /** Execute the analytic operation */
   executeAnalytic = function() {
+    let operation = cloneDeep(this.arrayAnalytic);
+
     //Convert parameters from an array to a key value map 
     //so the parameters are in the correct form when they reach the server
-    if (this.analyticOperation.parameters != null) {
+    if (this.arrayAnalytic.parameters != null) {
       let parametersMap = {};
-      for (let param of this.analyticOperation.parameters) {
+      for (let param of this.arrayAnalytic.parameters) {
         parametersMap[param[0]] = param[1].currentValue;
       }
-      this.analyticOperation.parameters = parametersMap
+      operation.parameters = parametersMap;
     }
 
     //Clear the current results
     this.results.clear();
 
     //Execute the analytic and then navigate when finished loading
-    this.query.executeQuery(this.analyticOperation, () => {
+    this.query.executeQuery(operation, () => {
       this.router.navigate(['/results'])});
   };
 
