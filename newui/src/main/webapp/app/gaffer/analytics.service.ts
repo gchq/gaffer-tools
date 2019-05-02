@@ -88,8 +88,8 @@ export class AnalyticsService {
 
   /** Get the analytics from the server */
   reloadAnalytics = function(loud) {
-    var observable = Observable.create((observer: Observer<String>) => {
-      var operation = {
+    let observable = Observable.create((observer: Observer<String>) => {
+      let operation = {
         "class": "uk.gov.gchq.gaffer.operation.analytic.GetAllAnalyticOperations"
       }
       //Configure the http headers
@@ -100,7 +100,7 @@ export class AnalyticsService {
           //On success
           (conf) => {
             //Make the http request
-            var queryUrl = this.common.parseUrl(conf.restEndpoint + "/graph/operations/execute");
+            let queryUrl = this.common.parseUrl(conf.restEndpoint + "/graph/operations/execute");
             this.http.post(queryUrl, operation, { headers: headers} ).subscribe(
                 //On success
                 (data) => {

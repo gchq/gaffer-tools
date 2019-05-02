@@ -55,17 +55,17 @@ export class ConfigService {
     this.http.get("http://localhost:8080/config/defaultConfig.json").subscribe(
       //On success
       (response) => {
-        var defaultConfig = response.data;
+        let defaultConfig = response.data;
         if (defaultConfig === undefined) {
           defaultConfig = {};
         }
-        var mergedConfig = defaultConfig;
+        let mergedConfig = defaultConfig;
         //Get the config
         this.http.get("http://localhost:8080/config/config.json").subscribe(
           //On success
           (response) => {
             //Merge the configs
-            var customConfig = response.data;
+            let customConfig = response.data;
             
             if (customConfig === undefined) {
               customConfig = {};

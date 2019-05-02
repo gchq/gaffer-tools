@@ -96,7 +96,7 @@ export class QueryService {
             //On success
             (conf) => {
                 //Post the request to the server
-                var queryUrl = this.common.parseUrl(conf.restEndpoint + "/graph/operations/execute");
+                let queryUrl = this.common.parseUrl(conf.restEndpoint + "/graph/operations/execute");
                 this.http.post(queryUrl, operation, { headers: headers} )
                     .subscribe(
                         //On success

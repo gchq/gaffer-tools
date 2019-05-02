@@ -13,10 +13,10 @@ export class OperationComponent implements OnInit {
   ngOnInit() {}
 
   getConfigFields = function() {
-    var configFields = {};
+    let configFields = {};
     if (this.model.selectedOperation) {
-      var fields = this.model.selectedOperation.fields;
-      for (var name in fields) {
+      let fields = this.model.selectedOperation.fields;
+      for (let name in fields) {
         if (this.coreFields.indexOf(name) === -1) {
           configFields[name] = fields[name];
         }
@@ -30,7 +30,7 @@ export class OperationComponent implements OnInit {
   };
 
   getField = function(fieldName) {
-    var field = this.model.fields[fieldName];
+    let field = this.model.fields[fieldName];
     if (field === undefined) {
       field = {};
       this.model.fields[fieldName] = field;

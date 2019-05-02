@@ -53,7 +53,7 @@ export class OptionsComponent implements OnInit {
     this.events.subscribe("onPreExecute", this.saveToService);
     if (!this.model) {
       // If the model is not yet defined, it must get the default from somewhere.
-      var currentDefaults = this.operationOptions.getDefaultConfiguration();
+      let currentDefaults = this.operationOptions.getDefaultConfiguration();
       if (currentDefaults !== null) {
         // null implies not set.
         this.model = currentDefaults;
@@ -70,9 +70,9 @@ export class OptionsComponent implements OnInit {
             this.model.hidden = [];
           }
 
-          for (var visibleOrHidden in this.model) {
-            for (var i in this.model[visibleOrHidden]) {
-              var option = this.model[visibleOrHidden][i];
+          for (let visibleOrHidden in this.model) {
+            for (let i in this.model[visibleOrHidden]) {
+              let option = this.model[visibleOrHidden][i];
               if (option.value) {
                 if (option.multiple && !Array.isArray(option.value)) {
                   option.value = [option.value];
@@ -93,8 +93,8 @@ export class OptionsComponent implements OnInit {
             hidden: []
           };
 
-          for (var label in conf.operationOptionKeys) {
-            var option: any;
+          for (let label in conf.operationOptionKeys) {
+            let option: any;
             option = {
               key: conf.operationOptionKeys[label],
               label: label
@@ -127,7 +127,7 @@ export class OptionsComponent implements OnInit {
    * @param {Number} index The index of the option in the visible array
    */
   clearValue = function(index) {
-    var currentValue = this.model.visible[index].value;
+    let currentValue = this.model.visible[index].value;
     this.model.visible[index].value = Array.isArray(currentValue)
       ? []
       : undefined;
@@ -138,7 +138,7 @@ export class OptionsComponent implements OnInit {
    * @param {Number} index The index of the option in the visible array
    */
   hideOption = function(index) {
-    var optionCopy = cloneDeep(this.model.visible[index]);
+    let optionCopy = cloneDeep(this.model.visible[index]);
     this.model.hidden.push(optionCopy);
     this.model.visible.splice(index, 1);
   };
@@ -173,7 +173,7 @@ export class OptionsComponent implements OnInit {
    * The values may be filtered using the searchTerm model.
    */
   getValues = function(option) {
-    var searchTerm = this.searchTerms[option.key]
+    let searchTerm = this.searchTerms[option.key]
       ? this.searchTerms[option.key].toLowerCase()
       : this.searchTerms[option.key];
 
@@ -188,8 +188,8 @@ export class OptionsComponent implements OnInit {
         });
       }
     } else if (option.autocomplete.asyncOptions) {
-      var operation = option.autocomplete.asyncOptions;
-      var deferredValues = this.$q.defer();
+      let operation = option.autocomplete.asyncOptions;
+      let deferredValues = this.$q.defer();
 
       this.query.execute(
         operation,
@@ -198,7 +198,7 @@ export class OptionsComponent implements OnInit {
             deferredValues.resolve(values);
             return;
           }
-          var filteredValues = values.filter(function(value) {
+          let filteredValues = values.filter(function(value) {
             if (value.toLowerCase().indexOf(searchTerm) !== -1) {
               return value;
             }
@@ -220,7 +220,7 @@ export class OptionsComponent implements OnInit {
   };
 
   loadValues = function(option) {
-    var deferred = this.$q.defer();
+    let deferred = this.$q.defer();
 
     this.getValues(option).then(function(resolvedValues) {
       this.presets[option.key] = resolvedValues;
