@@ -49,64 +49,64 @@ import java.util.Set;
  */
 public class GafferSliderTestSuite extends Suite {
 
-	private final GafferSliderDeployer gafferDeployer;
-	private final TestClass gafferDeployerClass;
+    private final GafferSliderDeployer gafferDeployer;
+    private final TestClass gafferDeployerClass;
 
-	public GafferSliderTestSuite (final Class<?> clazz, final RunnerBuilder builder) throws Exception {
-		super(builder, clazz, getTestClasses());
-		this.gafferDeployer = new GafferSliderDeployer();
-		this.gafferDeployerClass = new TestClass(GafferSliderDeployer.class);
-	}
+    public GafferSliderTestSuite(final Class<?> clazz, final RunnerBuilder builder) throws Exception {
+        super(builder, clazz, getTestClasses());
+        this.gafferDeployer = new GafferSliderDeployer();
+        this.gafferDeployerClass = new TestClass(GafferSliderDeployer.class);
+    }
 
-	public void setupAbstractStoreITs () {
-		AbstractStoreIT.setStoreProperties(this.gafferDeployer.getGafferStoreProperties());
-		AbstractStoreIT.setSkipTests(new HashMap<>());
-	}
+    public void setupAbstractStoreITs() {
+        AbstractStoreIT.setStoreProperties(this.gafferDeployer.getGafferStoreProperties());
+        AbstractStoreIT.setSkipTests(new HashMap<>());
+    }
 
-	private static Class[] getTestClasses () throws IllegalAccessException, InstantiationException {
-		// Abstract Store ITs
-		final Set<Class<? extends AbstractStoreIT>> classes = new Reflections(AbstractStoreIT.class.getPackage().getName()).getSubTypesOf(AbstractStoreIT.class);
-		keepPublicConcreteClasses(classes);
+    private static Class[] getTestClasses() throws IllegalAccessException, InstantiationException {
+        // Abstract Store ITs
+        final Set<Class<? extends AbstractStoreIT>> classes = new Reflections(AbstractStoreIT.class.getPackage().getName()).getSubTypesOf(AbstractStoreIT.class);
+        keepPublicConcreteClasses(classes);
 
-		// TODO: Do something similar to identify Accumulo Store ITs to run
+        // TODO: Do something similar to identify Accumulo Store ITs to run
 
-		return classes.toArray(new Class[classes.size()]);
-	}
+        return classes.toArray(new Class[classes.size()]);
+    }
 
-	private static void keepPublicConcreteClasses (final Set<Class<? extends AbstractStoreIT>> classes) {
-		if (null != classes) {
-			final Iterator<Class<? extends AbstractStoreIT>> itr = classes.iterator();
-			for (Class clazz = null; itr.hasNext(); clazz = itr.next()) {
-				if (null != clazz) {
-					final int modifiers = clazz.getModifiers();
-					if (Modifier.isAbstract(modifiers) || Modifier.isInterface(modifiers) || Modifier.isPrivate(modifiers) || Modifier.isProtected(modifiers)) {
-						itr.remove();
-					}
-				}
-			}
-		}
-	}
+    private static void keepPublicConcreteClasses(final Set<Class<? extends AbstractStoreIT>> classes) {
+        if (null != classes) {
+            final Iterator<Class<? extends AbstractStoreIT>> itr = classes.iterator();
+            for (Class clazz = null; itr.hasNext(); clazz = itr.next()) {
+                if (null != clazz) {
+                    final int modifiers = clazz.getModifiers();
+                    if (Modifier.isAbstract(modifiers) || Modifier.isInterface(modifiers) || Modifier.isPrivate(modifiers) || Modifier.isProtected(modifiers)) {
+                        itr.remove();
+                    }
+                }
+            }
+        }
+    }
 
-	@Override
-	protected Statement classBlock (final RunNotifier notifier) {
-		Method setupAbstractStoreITs;
-		try {
-			setupAbstractStoreITs = this.getClass().getMethod("setupAbstractStoreITs");
-		} catch (final NoSuchMethodException e) {
-			return new Fail(e);
-		}
+    @Override
+    protected Statement classBlock(final RunNotifier notifier) {
+        Method setupAbstractStoreITs;
+        try {
+            setupAbstractStoreITs = this.getClass().getMethod("setupAbstractStoreITs");
+        } catch (final NoSuchMethodException e) {
+            return new Fail(e);
+        }
 
-		// Be careful with the ordering of the following statements!
-		// We want to run the normal JUnit test process for all of the ITs that have been identified...
-		Statement statement = super.classBlock(notifier);
-		// ...but we want to wrap them with processing that will set up and tear down a gaffer-slider instance:
-		statement = new RunBefores(statement, Collections.singletonList(new FrameworkMethod(setupAbstractStoreITs)), this);
-		statement = new RunAfters(statement, this.gafferDeployerClass.getAnnotatedMethods(After.class), this.gafferDeployer);
-		statement = new RunAfters(statement, this.gafferDeployerClass.getAnnotatedMethods(AfterClass.class), null);
-		statement = new RunBefores(statement, this.gafferDeployerClass.getAnnotatedMethods(Before.class), this.gafferDeployer);
-		statement = new RunBefores(statement, this.gafferDeployerClass.getAnnotatedMethods(BeforeClass.class), null);
-		statement = new RunRules(statement, this.gafferDeployerClass.getAnnotatedFieldValues(this.gafferDeployer, Rule.class, TestRule.class), this.getDescription());
-		return statement;
-	}
+        // Be careful with the ordering of the following statements!
+        // We want to run the normal JUnit test process for all of the ITs that have been identified...
+        Statement statement = super.classBlock(notifier);
+        // ...but we want to wrap them with processing that will set up and tear down a gaffer-slider instance:
+        statement = new RunBefores(statement, Collections.singletonList(new FrameworkMethod(setupAbstractStoreITs)), this);
+        statement = new RunAfters(statement, this.gafferDeployerClass.getAnnotatedMethods(After.class), this.gafferDeployer);
+        statement = new RunAfters(statement, this.gafferDeployerClass.getAnnotatedMethods(AfterClass.class), null);
+        statement = new RunBefores(statement, this.gafferDeployerClass.getAnnotatedMethods(Before.class), this.gafferDeployer);
+        statement = new RunBefores(statement, this.gafferDeployerClass.getAnnotatedMethods(BeforeClass.class), null);
+        statement = new RunRules(statement, this.gafferDeployerClass.getAnnotatedFieldValues(this.gafferDeployer, Rule.class, TestRule.class), this.getDescription());
+        return statement;
+    }
 
 }

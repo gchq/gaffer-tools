@@ -60,178 +60,178 @@ import java.util.Properties;
  */
 public class GafferSliderDeployer extends AgentCommandTestBase {
 
-	private final Logger log = LoggerFactory.getLogger(GafferSliderDeployer.class);
+    private final Logger log = LoggerFactory.getLogger(GafferSliderDeployer.class);
 
-	private static final String CLUSTER_NAME = "gaffer-slider-integration-tests";
+    private static final String CLUSTER_NAME = "gaffer-slider-integration-tests";
 
-	private StoreProperties gafferStoreProperties;
-	private ConfTree appConfig;
+    private StoreProperties gafferStoreProperties;
+    private ConfTree appConfig;
 
-	@Override
-	protected String getAppResource () {
-		return new File(GafferSliderProperties.TEST_APP_RESOURCES_DIR, "resources.json").getAbsolutePath();
-	}
+    @Override
+    protected String getAppResource() {
+        return new File(GafferSliderProperties.TEST_APP_RESOURCES_DIR, "resources.json").getAbsolutePath();
+    }
 
-	@Override
-	protected String getAppTemplate () {
-		return new File(GafferSliderProperties.TEST_APP_RESOURCES_DIR, "appConfig-default.json").getAbsolutePath();
-	}
+    @Override
+    protected String getAppTemplate() {
+        return new File(GafferSliderProperties.TEST_APP_RESOURCES_DIR, "appConfig-default.json").getAbsolutePath();
+    }
 
-	private ConfTree getAppConfig () throws IOException {
-		if (this.appConfig == null) {
-			ConfTreeSerDeser c = new ConfTreeSerDeser();
-			this.appConfig = c.fromFile(new File(this.getAppTemplate()));
-			SliderUtils.replaceTokens(this.appConfig, CLUSTER_NAME);
-		}
-		return this.appConfig;
-	}
+    private ConfTree getAppConfig() throws IOException {
+        if (this.appConfig == null) {
+            ConfTreeSerDeser c = new ConfTreeSerDeser();
+            this.appConfig = c.fromFile(new File(this.getAppTemplate()));
+            SliderUtils.replaceTokens(this.appConfig, CLUSTER_NAME);
+        }
+        return this.appConfig;
+    }
 
-	private String generatePassword () {
-		SecureRandom random = new SecureRandom();
-		return new BigInteger(130, random).toString(32);
-	}
+    private String generatePassword() {
+        SecureRandom random = new SecureRandom();
+        return new BigInteger(130, random).toString(32);
+    }
 
-	private String createGafferAccumuloUser (final Connector accumulo, final String user, final String password) throws AccumuloSecurityException, AccumuloException {
-		accumulo.securityOperations().createLocalUser(user, new PasswordToken(password));
-		accumulo.securityOperations().grantSystemPermission(user, SystemPermission.CREATE_TABLE);
-		accumulo.securityOperations().changeUserAuthorizations(user, new Authorizations(
-			// Required by: uk.gov.gchq.gaffer.integration.impl.VisibilityIT
-			"vis1",
-			"vis2",
-			// Required by: uk.gov.gchq.gaffer.accumulostore.integration.AccumuloAggregationIT
-			"publicVisibility",
-			"privateVisibility"
-		));
+    private String createGafferAccumuloUser(final Connector accumulo, final String user, final String password) throws AccumuloSecurityException, AccumuloException {
+        accumulo.securityOperations().createLocalUser(user, new PasswordToken(password));
+        accumulo.securityOperations().grantSystemPermission(user, SystemPermission.CREATE_TABLE);
+        accumulo.securityOperations().changeUserAuthorizations(user, new Authorizations(
+                // Required by: uk.gov.gchq.gaffer.integration.impl.VisibilityIT
+                "vis1",
+                "vis2",
+                // Required by: uk.gov.gchq.gaffer.accumulostore.integration.AccumuloAggregationIT
+                "publicVisibility",
+                "privateVisibility"
+        ));
 
-		log.info("Created Accumulo user called {} with password {} and authorizations {}",
-			user, password, accumulo.securityOperations().getUserAuthorizations(user).toString());
+        log.info("Created Accumulo user called {} with password {} and authorizations {}",
+                user, password, accumulo.securityOperations().getUserAuthorizations(user).toString());
 
-		return password;
-	}
+        return password;
+    }
 
-	private StoreProperties buildGafferStoreProperties (final String zookeepers, final String instanceName, final String user, final String password) throws IOException {
-		Properties props = new Properties();
+    private StoreProperties buildGafferStoreProperties(final String zookeepers, final String instanceName, final String user, final String password) throws IOException {
+        Properties props = new Properties();
 
-		// Load base store properties from file
-		InputStream baseStorePropertiesFile = StreamUtil.storeProps(GafferSliderDeployer.class);
-		if (baseStorePropertiesFile != null) {
-			try {
-				props.load(baseStorePropertiesFile);
-			} finally {
-				try {
-					baseStorePropertiesFile.close();
-				} catch (final IOException e) {
-					// Ignore
-				}
-			}
-		}
+        // Load base store properties from file
+        InputStream baseStorePropertiesFile = StreamUtil.storeProps(GafferSliderDeployer.class);
+        if (baseStorePropertiesFile != null) {
+            try {
+                props.load(baseStorePropertiesFile);
+            } finally {
+                try {
+                    baseStorePropertiesFile.close();
+                } catch (final IOException e) {
+                    // Ignore
+                }
+            }
+        }
 
-		// Add store properties based on deployed Gaffer instance
-		props.setProperty(AccumuloProperties.STORE_CLASS, SingleUseAccumuloStore.class.getCanonicalName());
-		props.setProperty(AccumuloProperties.INSTANCE_NAME, instanceName);
-		props.setProperty(AccumuloProperties.ZOOKEEPERS, zookeepers);
-		props.setProperty(AccumuloProperties.USER, user);
-		props.setProperty(AccumuloProperties.PASSWORD, password);
+        // Add store properties based on deployed Gaffer instance
+        props.setProperty(AccumuloProperties.STORE_CLASS, SingleUseAccumuloStore.class.getCanonicalName());
+        props.setProperty(AccumuloProperties.INSTANCE_NAME, instanceName);
+        props.setProperty(AccumuloProperties.ZOOKEEPERS, zookeepers);
+        props.setProperty(AccumuloProperties.USER, user);
+        props.setProperty(AccumuloProperties.PASSWORD, password);
 
-		return StoreProperties.loadStoreProperties(props);
-	}
+        return StoreProperties.loadStoreProperties(props);
+    }
 
-	public StoreProperties getGafferStoreProperties () {
-		return this.gafferStoreProperties;
-	}
+    public StoreProperties getGafferStoreProperties() {
+        return this.gafferStoreProperties;
+    }
 
-	@Before
-	public void setup () throws Exception {
-		SliderKeystoreUtils.ensureCredentialKeyStoresAbsent(this.getAppConfig());
+    @Before
+    public void setup() throws Exception {
+        SliderKeystoreUtils.ensureCredentialKeyStoresAbsent(this.getAppConfig());
 
-		CommandTestBase.setupCluster(CLUSTER_NAME);
+        CommandTestBase.setupCluster(CLUSTER_NAME);
 
-		// Use Slider to deploy an Accumulo app pkg with the Gaffer add-on package
-		SliderTestUtils.describe("Deploying Gaffer instance");
+        // Use Slider to deploy an Accumulo app pkg with the Gaffer add-on package
+        SliderTestUtils.describe("Deploying Gaffer instance");
 
-		final String rootPassword = this.generatePassword();
-		final String instanceSecret = this.generatePassword();
-		String tracePassword = this.generatePassword();
+        final String rootPassword = this.generatePassword();
+        final String instanceSecret = this.generatePassword();
+        String tracePassword = this.generatePassword();
 
-		// If Accumulo is being deployed using the root user for tracing then make sure it is using the correct password
-		if (this.getAppConfig().global.get(AccumuloSliderProperties.TRACE_USER_PROPERTY).equals("root")) {
-			tracePassword = rootPassword;
-		}
+        // If Accumulo is being deployed using the root user for tracing then make sure it is using the correct password
+        if (this.getAppConfig().global.get(AccumuloSliderProperties.TRACE_USER_PROPERTY).equals("root")) {
+            tracePassword = rootPassword;
+        }
 
-		log.info("Accumulo Root Password: {}", rootPassword);
-		log.info("Accumulo Instance Secret: {}", instanceSecret);
-		log.info("Accumulo Tracer Password: {}", tracePassword);
+        log.info("Accumulo Root Password: {}", rootPassword);
+        log.info("Accumulo Instance Secret: {}", instanceSecret);
+        log.info("Accumulo Tracer Password: {}", tracePassword);
 
-		File passwordFile = AccumuloSliderUtils.generatePasswordFile(this.folder, rootPassword, instanceSecret, tracePassword);
+        File passwordFile = AccumuloSliderUtils.generatePasswordFile(this.folder, rootPassword, instanceSecret, tracePassword);
 
-		SliderShell shell = this.createTemplatedSliderApplication(
-			CLUSTER_NAME,
-			this.getAppTemplate(),
-			this.getAppResource(),
-			Arrays.asList(
-				ARG_APPDEF,
-				new File(TEST_APP_PKG_DIR, TEST_APP_PKG_FILE).getAbsolutePath(),
-				ARG_ADDON,
-				GafferSliderProperties.TEST_ADDON_PKG_NAME,
-				new File(GafferSliderProperties.TEST_ADDON_PKG_DIR, GafferSliderProperties.TEST_ADDON_PKG_FILE).getAbsolutePath(),
-				"<",
-				passwordFile.getAbsolutePath()
-			)
-		);
+        SliderShell shell = this.createTemplatedSliderApplication(
+                CLUSTER_NAME,
+                this.getAppTemplate(),
+                this.getAppResource(),
+                Arrays.asList(
+                        ARG_APPDEF,
+                        new File(TEST_APP_PKG_DIR, TEST_APP_PKG_FILE).getAbsolutePath(),
+                        ARG_ADDON,
+                        GafferSliderProperties.TEST_ADDON_PKG_NAME,
+                        new File(GafferSliderProperties.TEST_ADDON_PKG_DIR, GafferSliderProperties.TEST_ADDON_PKG_FILE).getAbsolutePath(),
+                        "<",
+                        passwordFile.getAbsolutePath()
+                )
+        );
 
-		CommandTestBase.logShell(shell);
+        CommandTestBase.logShell(shell);
 
-		// Make sure the credential keystore contains the correct root password
-		assertTrue("The root password in the credential keystore contains the wrong password",
-			AccumuloSliderUtils.getRootPassword(this.getAppConfig()).equals(rootPassword));
+        // Make sure the credential keystore contains the correct root password
+        assertTrue("The root password in the credential keystore contains the wrong password",
+                AccumuloSliderUtils.getRootPassword(this.getAppConfig()).equals(rootPassword));
 
-		// Check with YARN that the deployed application is running
-		this.ensureApplicationIsUp(CLUSTER_NAME);
+        // Check with YARN that the deployed application is running
+        this.ensureApplicationIsUp(CLUSTER_NAME);
 
-		// Obtain the deployed configuration for the instance
-		SliderClient sliderClient = this.bondToCluster(CommandTestBase.SLIDER_CONFIG, CLUSTER_NAME);
-		ClusterDescription clusterDescription = sliderClient.getClusterDescription();
-		assert clusterDescription.name.equals(CLUSTER_NAME);
+        // Obtain the deployed configuration for the instance
+        SliderClient sliderClient = this.bondToCluster(CommandTestBase.SLIDER_CONFIG, CLUSTER_NAME);
+        ClusterDescription clusterDescription = sliderClient.getClusterDescription();
+        assert clusterDescription.name.equals(CLUSTER_NAME);
 
-		// Wait for all the YARN containers to spin up and for each Slider Agent to report in
-		SliderTestUtils.describe("Waiting for YARN containers to be allocated");
-		Map<String, Integer> roleMap = SliderUtils.getRoleMap(clusterDescription);
-		SliderTestUtils.waitForRoleCount(sliderClient, roleMap, AccumuloSliderProperties.ACCUMULO_LAUNCH_WAIT_TIME);
+        // Wait for all the YARN containers to spin up and for each Slider Agent to report in
+        SliderTestUtils.describe("Waiting for YARN containers to be allocated");
+        Map<String, Integer> roleMap = SliderUtils.getRoleMap(clusterDescription);
+        SliderTestUtils.waitForRoleCount(sliderClient, roleMap, AccumuloSliderProperties.ACCUMULO_LAUNCH_WAIT_TIME);
 
-		String zookeepers = clusterDescription.getZkHosts();
-		String instanceName = clusterDescription.getMandatoryOption(AccumuloSliderProperties.INSTANCE_PROPERTY);
-		// Replace ${CLUSTER_NAME}
-		instanceName = SliderUtils.replaceClusterTokens(instanceName, CLUSTER_NAME);
+        String zookeepers = clusterDescription.getZkHosts();
+        String instanceName = clusterDescription.getMandatoryOption(AccumuloSliderProperties.INSTANCE_PROPERTY);
+        // Replace ${CLUSTER_NAME}
+        instanceName = SliderUtils.replaceClusterTokens(instanceName, CLUSTER_NAME);
 
-		SliderTestUtils.describe("Connecting to deployed Accumulo instance");
-		Connector accumulo = AccumuloSliderUtils.waitForAccumuloConnection(
-			zookeepers,
-			instanceName,
-			"root",
-			rootPassword,
-			AccumuloSliderProperties.ACCUMULO_GO_LIVE_TIME
-		);
+        SliderTestUtils.describe("Connecting to deployed Accumulo instance");
+        Connector accumulo = AccumuloSliderUtils.waitForAccumuloConnection(
+                zookeepers,
+                instanceName,
+                "root",
+                rootPassword,
+                AccumuloSliderProperties.ACCUMULO_GO_LIVE_TIME
+        );
 
-		// Wait for all the tablet servers to register with the Accumulo instance
-		int tabletServerCount = roleMap.get(AccumuloSliderProperties.ACCUMULO_TABLET_SERVER_ROLE_NAME);
-		AccumuloSliderUtils.waitForAccumuloTabletServers(accumulo, tabletServerCount, AccumuloSliderProperties.ACCUMULO_GO_LIVE_TIME);
+        // Wait for all the tablet servers to register with the Accumulo instance
+        int tabletServerCount = roleMap.get(AccumuloSliderProperties.ACCUMULO_TABLET_SERVER_ROLE_NAME);
+        AccumuloSliderUtils.waitForAccumuloTabletServers(accumulo, tabletServerCount, AccumuloSliderProperties.ACCUMULO_GO_LIVE_TIME);
 
-		// Create an Accumulo user to run all the Gaffer integration tests with.
-		// This makes sure the user is granted all the permissions and visibilities required by the tests.
-		SliderTestUtils.describe("Creating Accumulo user");
-		String userPassword = this.createGafferAccumuloUser(accumulo, GafferSliderProperties.GAFFER_ACCUMULO_USER, this.generatePassword());
+        // Create an Accumulo user to run all the Gaffer integration tests with.
+        // This makes sure the user is granted all the permissions and visibilities required by the tests.
+        SliderTestUtils.describe("Creating Accumulo user");
+        String userPassword = this.createGafferAccumuloUser(accumulo, GafferSliderProperties.GAFFER_ACCUMULO_USER, this.generatePassword());
 
-		// Generate the configuration that Gaffer needs in order to connect to the Accumulo instance
-		this.gafferStoreProperties = this.buildGafferStoreProperties(zookeepers, instanceName, GafferSliderProperties.GAFFER_ACCUMULO_USER, userPassword);
+        // Generate the configuration that Gaffer needs in order to connect to the Accumulo instance
+        this.gafferStoreProperties = this.buildGafferStoreProperties(zookeepers, instanceName, GafferSliderProperties.GAFFER_ACCUMULO_USER, userPassword);
 
-		SliderTestUtils.describe("Running Gaffer Integration Tests");
-	}
+        SliderTestUtils.describe("Running Gaffer Integration Tests");
+    }
 
-	@After
-	public void cleanup () throws IOException, URISyntaxException {
-		SliderTestUtils.describe("Tearing down Gaffer instance");
-		CommandTestBase.ensureClusterDestroyed(CLUSTER_NAME);
-		SliderKeystoreUtils.deleteCredentialKeyStores(this.getAppConfig());
-	}
+    @After
+    public void cleanup() throws IOException, URISyntaxException {
+        SliderTestUtils.describe("Tearing down Gaffer instance");
+        CommandTestBase.ensureClusterDestroyed(CLUSTER_NAME);
+        SliderKeystoreUtils.deleteCredentialKeyStores(this.getAppConfig());
+    }
 
 }
