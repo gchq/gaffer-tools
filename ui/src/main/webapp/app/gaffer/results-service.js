@@ -29,6 +29,7 @@ angular.module('app').factory('results', ['events', function(events) {
 
     resultService.clear = function(broadcast) {
         results = {entities: [], edges: [], other: []};
+        uniqueResults = [];
         if(broadcast === undefined || broadcast) {
             events.broadcast('resultsUpdated', [results]);
             events.broadcast('resultsCleared');
