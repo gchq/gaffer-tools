@@ -14,6 +14,9 @@ export class ParameterInputComponent implements OnInit {
   analytic; //The chosen analytic
   analyticOperation; //The analytic operation to execute
   timeConfig;
+  color = "primary";
+  mode = "indeterminate";
+  value = 50;
   @ViewChild("operationChainForm") operationChainForm;
 
   constructor(
@@ -56,5 +59,6 @@ export class ParameterInputComponent implements OnInit {
 
   executeAnalytic = function() {
     this.analyticsService.executeAnalytic();
+    this.loading = true;
   };
 }
