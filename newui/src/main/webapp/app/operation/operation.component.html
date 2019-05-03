@@ -2,8 +2,8 @@
     <div class="md-list-item-text">
       <p>{{model.description}}</p>
     </div>
-    <app-parameter-form *ngIf="model.parameters" title-class="layout-padding md-title section-title"
-      [parameters]="model.parameters">
+    <app-parameter-form *ngIf="model.uiMapping" title-class="layout-padding md-title section-title"
+      [parameters]="model.uiMapping">
     </app-parameter-form>
     <div *ngIf="hasOtherConfig()">
       <h3 class="section-title md-title">

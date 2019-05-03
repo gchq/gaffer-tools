@@ -15,7 +15,7 @@ import { cloneDeep } from 'lodash';
 export class AnalyticsService {
   arrayAnalytic; //The analytic with array parameters
 
-  ANALYTIC_CLASS = "uk.gov.gchq.gaffer.operation.analytic.AnalyticOperation";
+  NAMED_OPERATION_CLASS = "uk.gov.gchq.gaffer.named.operation.NamedOperation";
 
   constructor(
     private query: QueryService,
@@ -40,7 +40,7 @@ export class AnalyticsService {
     for (let i = 0; i < parameters.length; i++) {
       let parameterPair = parameters[i];
       if (parameterPair[0] === parameterName) {
-        this.arrayAnalytic.parameters[i][1].currentValue = newValue;
+        this.arrayAnalytic.uiMapping[i][1].currentValue = newValue;
         return;
       }
     }
@@ -51,38 +51,39 @@ export class AnalyticsService {
   createArrayAnalytic = function(analytic) {
 
       //Convert the key value map of parameters into an iterable array
-      let arrayParams = analytic.parameters;
+      let arrayParams = analytic.uiMapping;
       if (arrayParams != null || arrayParams != undefined) {
-        arrayParams = Object.keys(analytic.parameters).map(function(key) {
-          return [key, analytic.parameters[key]];
+        arrayParams = Object.keys(analytic.uiMapping).map(function(key) {
+          return [key, analytic.uiMapping[key]];
         });
 
         //Add a new key and value in parameters to store the current value of that parameter
         for (let i = 0; i < arrayParams.length; i++) {
-          arrayParams[i][1].currentValue = arrayParams[i][1].defaultValue;
+          arrayParams[i][1].currentValue = null;
         }
       } else {
         arrayParams = null;
       }
 
       //Create the analytic operation from these parameters if any
-      this.arrayAnalytic = {
-        class: this.ANALYTIC_CLASS,
-        operationName: analytic.operationName,
-        parameters: arrayParams
-      };
+      this.arrayAnalytic = cloneDeep(analytic);
+      this.arrayAnalytic.uiMapping = arrayParams;
   }
 
   /** Execute the analytic operation */
   executeAnalytic = function() {
-    let operation = cloneDeep(this.arrayAnalytic);
+    let operation = {
+      class: this.NAMED_OPERATION_CLASS,
+      operationName: this.arrayAnalytic.operationName,
+      parameters: null
+    };
 
     //Convert parameters from an array to a key value map 
     //so the parameters are in the correct form when they reach the server
-    if (this.arrayAnalytic.parameters != null) {
+    if (this.arrayAnalytic.uiMapping != null) {
       let parametersMap = {};
-      for (let param of this.arrayAnalytic.parameters) {
-        parametersMap[param[0]] = param[1].currentValue;
+      for (let param of this.arrayAnalytic.uiMapping) {
+        parametersMap[param[1].parameterName] = param[1].currentValue;
       }
       operation.parameters = parametersMap;
     }
