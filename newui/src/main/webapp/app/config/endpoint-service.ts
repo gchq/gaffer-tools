@@ -13,13 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-export class DefaultRestEndpointService {
+export class EndpointService {
 
-    //defaultRestEndpoint = window.location.origin + "/rest/latest";
+    defaultUIEndpoint = "http://localhost:4200";
     defaultRestEndpoint = "http://localhost:8080" + "/rest/latest";
 
-    get = function() {
+    getRestEndpoint = function() {
         return this.defaultRestEndpoint;
+    }
+
+    getUIEndpoint = function() {
+        return this.defaultUIEndpoint;
     }
 
 }

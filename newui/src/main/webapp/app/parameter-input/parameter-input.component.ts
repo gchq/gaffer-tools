@@ -2,7 +2,6 @@ import { Component, OnInit, Injectable, ViewChild } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { Router } from "@angular/router";
 import { AnalyticsService } from "../gaffer/analytics.service";
-import { ConfigService } from "../config/config.service";
 import { QueryService } from "../gaffer/query.service";
 
 @Component({
@@ -21,16 +20,11 @@ export class ParameterInputComponent implements OnInit {
 
   constructor(
     private analyticsService: AnalyticsService,
-    private config: ConfigService
   ) {}
 
   ngOnInit() {
     //Get the analytic from the analyticsService
     this.analytic = this.analyticsService.getAnalytic();
-
-    this.config.get().subscribe(function(conf) {
-      this.timeConfig = conf.time;
-    });
   }
 
   NAMED_VIEW_CLASS = "uk.gov.gchq.gaffer.data.elementdefinition.view.NamedView";

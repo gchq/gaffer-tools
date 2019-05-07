@@ -1,14 +1,14 @@
 import { Injectable } from "@angular/core";
-import { Observable, Observer } from "rxjs";
+import { Observable, Observer, config } from "rxjs";
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { Router } from "@angular/router";
 
 import { QueryService } from './query.service';
-import { ConfigService } from '../config/config.service';
 import { ErrorService } from '../dynamic-input/error.service';
 import { CommonService } from '../dynamic-input/common.service';
 import { ResultsService } from './results.service';
 import { cloneDeep } from 'lodash';
+import { EndpointService } from '../config/endpoint-service';
 
 //Used to store and get the selected analytic
 @Injectable()
@@ -19,12 +19,12 @@ export class AnalyticsService {
 
   constructor(
     private query: QueryService,
-    private config: ConfigService,
     private error: ErrorService,
     private common: CommonService,
     private http: HttpClient,
     private router: Router,
-    private results: ResultsService
+    private results: ResultsService,
+    private endpoint: EndpointService
   ) {}
 
   /** Get the chosen analytic on load of parameters page */
@@ -105,40 +105,20 @@ export class AnalyticsService {
       //Configure the http headers
       let headers = new HttpHeaders();
       headers = headers.set("Content-Type", "application/json; charset=utf-8");
-      //Get the config
-      this.config.get().subscribe(
+      //Make the http request
+      let queryUrl = this.common.parseUrl(
+        this.endpoint.getRestEndpoint() + "/graph/operations/execute"
+      );
+      this.http.post(queryUrl, operation, { headers: headers }).subscribe(
         //On success
-        conf => {
-          //Make the http request
-          let queryUrl = this.common.parseUrl(
-            conf.restEndpoint + "/graph/operations/execute"
-          );
-          this.http.post(queryUrl, operation, { headers: headers }).subscribe(
-            //On success
-            data => {
-              observer.next(data);
-            },
-            //On error
-            err => {
-              if (loud) {
-                this.error.handle(
-                  "Failed to load analytics, see the console for details",
-                  null,
-                  err
-                );
-                console.error(err);
-                observer.error(err);
-              } else {
-                observer.next(err);
-              }
-            }
-          );
+        data => {
+          observer.next(data);
         },
         //On error
         err => {
           if (loud) {
             this.error.handle(
-              "Failed to load config, see the console for details",
+              "Failed to load analytics, see the console for details",
               null,
               err
             );
