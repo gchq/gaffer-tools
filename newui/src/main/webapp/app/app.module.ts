@@ -8,7 +8,7 @@ import { LayoutModule } from "@angular/cdk/layout";
 import { FlexLayoutModule } from "@angular/flex-layout";
 import { AppRoutingModule } from "./app-routing.module";
 import { HttpClientModule } from "@angular/common/http";
-import { ToastrModule, ToastrService } from "ngx-toastr";
+import { ToastrModule} from "ngx-toastr";
 
 import { AppComponent } from "./app.component";
 import { AboutComponent } from "./about/about.component";
@@ -19,14 +19,12 @@ import { AnalyticComponent } from "./analytic/analytic.component";
 import { NavComponent } from "./nav/nav.component";
 import { ParameterFormComponent } from "./parameter-form/parameter-form.component";
 import { ParameterInputComponent } from "./parameter-input/parameter-input.component";
-import { OptionsComponent } from "./options/options.component";
 
 import { AnalyticsService } from "./gaffer/analytics.service";
-import { ConfigService } from "./config/config.service";
 import { EventsService } from "./dynamic-input/events.service";
 import { CommonService } from "./dynamic-input/common.service";
 import { ErrorService } from "./dynamic-input/error.service";
-import { DefaultRestEndpointService } from './config/default-rest-endpoint-service';
+import { EndpointService } from './config/endpoint-service';
 import { QueryService } from './gaffer/query.service';
 import { ResultsService } from './gaffer/results.service';
 import { SettingsService } from './settings/settings.service';
@@ -42,7 +40,6 @@ import { SettingsService } from './settings/settings.service';
     TableComponent,
     ParameterFormComponent,
     ParameterInputComponent,
-    OptionsComponent
   ],
   imports: [
     BrowserModule,
@@ -58,11 +55,10 @@ import { SettingsService } from './settings/settings.service';
   ],
   providers: [
     AnalyticsService,
-    ConfigService,
     EventsService,
     CommonService,
     ErrorService,
-    DefaultRestEndpointService,
+    EndpointService,
     QueryService,
     ResultsService,
     SettingsService,

@@ -15,7 +15,6 @@
  */
 
 import { Component, OnInit } from "@angular/core";
-import { ConfigService } from "../config/config.service";
 
 @Component({
   selector: "app-about",
@@ -32,7 +31,7 @@ export class AboutComponent implements OnInit {
   properitesLoaded = false;
   properties;
 
-  constructor(private config: ConfigService) {}
+  constructor() {}
 
   /** Opens the users default email client so they can send feedback by email */
   sendFeedback = function(emailId, subject, message) {
@@ -43,21 +42,5 @@ export class AboutComponent implements OnInit {
   };
 
   ngOnInit() {
-    this.properties.get().subscribe(function(props) {
-      this.docs = props[this.DOCS_PROPERTY];
-      this.description =
-        props[this.DESCRIPTION_PROPERTY] || "no description provided";
-      this.propertiesLoaded = true;
-    });
-
-    this.config.get().subscribe(function(conf) {
-      let endpoint = conf.restEndpoint.replace(/\/$/, "");
-
-      this.restApi = endpoint.substring(0, endpoint.lastIndexOf("/"));
-      if (conf.feedback) {
-        this.emailRecipients = conf.feedback.recipients;
-        this.emailSubject = conf.feedback.subject || "Gaffer feedback";
-      }
-    });
   }
 }
