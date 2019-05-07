@@ -22,11 +22,10 @@ import { ParameterInputComponent } from "./parameter-input/parameter-input.compo
 import { OptionsComponent } from "./options/options.component";
 
 import { AnalyticsService } from "./gaffer/analytics.service";
-import { ConfigService } from "./config/config.service";
 import { EventsService } from "./dynamic-input/events.service";
 import { CommonService } from "./dynamic-input/common.service";
 import { ErrorService } from "./dynamic-input/error.service";
-import { DefaultRestEndpointService } from './config/default-rest-endpoint-service';
+import { EndpointService } from './config/endpoint-service';
 import { QueryService } from './gaffer/query.service';
 import { ResultsService } from './gaffer/results.service';
 import { SettingsService } from './settings/settings.service';
@@ -58,11 +57,10 @@ import { SettingsService } from './settings/settings.service';
   ],
   providers: [
     AnalyticsService,
-    ConfigService,
     EventsService,
     CommonService,
     ErrorService,
-    DefaultRestEndpointService,
+    EndpointService,
     QueryService,
     ResultsService,
     SettingsService,

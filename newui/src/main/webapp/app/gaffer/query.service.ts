@@ -16,21 +16,21 @@
 import { Injectable } from "@angular/core";
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 
-import { ConfigService } from "../config/config.service";
 import { CommonService } from "../dynamic-input/common.service";
 import { ErrorService } from "../dynamic-input/error.service";
 import { SettingsService } from "../settings/settings.service";
 import { ResultsService } from "./results.service";
+import { EndpointService } from '../config/endpoint-service';
 
 @Injectable()
 export class QueryService {
   constructor(
-    private config: ConfigService,
     private common: CommonService,
     private error: ErrorService,
     private http: HttpClient,
     private settings: SettingsService,
-    private results: ResultsService
+    private results: ResultsService,
+    private endpoint: EndpointService
   ) {}
 
   /**
@@ -101,44 +101,29 @@ export class QueryService {
     //Configure the http headers
     let headers = new HttpHeaders();
     headers = headers.set("Content-Type", "application/json; charset=utf-8");
-    //Get the config
-    this.config.get().subscribe(
+    //Post the request to the server
+    let queryUrl = this.common.parseUrl(
+      this.endpoint.getRestEndpoint() + "/graph/operations/execute"
+    );
+    this.http.post(queryUrl, operation, { headers: headers }).subscribe(
       //On success
-      conf => {
-        //Post the request to the server
-        let queryUrl = this.common.parseUrl(
-          conf.restEndpoint + "/graph/operations/execute"
-        );
-        this.http.post(queryUrl, operation, { headers: headers }).subscribe(
-          //On success
-          data => {
-            if (onSuccess) {
-              onSuccess(data);
-            }
-          },
-          //On error
-          err => {
-            if (onFailure) {
-              onFailure(err);
-            } else {
-              this.error.handle(
-                "Error running operation, see the console for details",
-                null,
-                err
-              );
-              console.error(err);
-            }
-          }
-        );
+      data => {
+        if (onSuccess) {
+          onSuccess(data);
+        }
       },
       //On error
       err => {
-        this.error.handle(
-          "Unable to load config, see the console for details",
-          null,
-          err
-        );
-        console.error(err);
+        if (onFailure) {
+          onFailure(err);
+        } else {
+          this.error.handle(
+            "Error running operation, see the console for details",
+            null,
+            err
+          );
+          console.error(err);
+        }
       }
     );
   };
