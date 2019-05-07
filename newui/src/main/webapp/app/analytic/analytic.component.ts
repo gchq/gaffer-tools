@@ -20,11 +20,6 @@ export class AnalyticComponent implements OnInit {
   /** Save the chosen analytic in the analytics service */
   execute(analytic) {
     this.analyticsService.createArrayAnalytic(analytic);
-    if (analytic.uiMapping.param1 == null) {
-      this.analyticsService.executeAnalytic();
-      this.router.navigate(["/results"]);
-    } else {
-      this.router.navigate(["/parameters"]);
-    }
+    this.router.navigate(["/parameters"]);
   }
 }
