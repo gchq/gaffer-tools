@@ -1,6 +1,23 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { Router } from '@angular/router';
 
 import { AnalyticComponent } from './analytic.component';
+import { AnalyticsService } from '../gaffer/analytics.service';
+import { QueryService } from '../gaffer/query.service';
+import { CommonService } from '../dynamic-input/common.service';
+import { ErrorService } from '../dynamic-input/error.service';
+import { ToastrService, ToastrModule } from 'ngx-toastr';
+import { HttpClient } from '@angular/common/http';
+import { MatCardModule, MatTooltipModule } from '@angular/material';
+
+class RouterStub {
+  navigate(params) {
+  }
+}
+
+class AnalyticsServiceStub {
+}
 
 describe('AnalyticComponent', () => {
   let component: AnalyticComponent;
@@ -8,7 +25,23 @@ describe('AnalyticComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ AnalyticComponent ]
+      declarations: [ AnalyticComponent ],
+      //schemas: [ CUSTOM_ELEMENTS_SCHEMA ],
+      providers: [
+        { provide: Router, useClass: RouterStub },
+        { provide: AnalyticsService, useClass: AnalyticsServiceStub}
+      ],
+      imports: [
+        // NoopAnimationsModule,
+        // LayoutModule,
+        // MatButtonModule,
+        // MatIconModule,
+        // MatListModule,
+        // MatSidenavModule,
+        // MatToolbarModule,
+        MatCardModule,
+        MatTooltipModule
+      ]
     })
     .compileComponents();
   }));
@@ -16,6 +49,12 @@ describe('AnalyticComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(AnalyticComponent);
     component = fixture.componentInstance;
+    component.model = {
+      description : 'Test description',
+      metaData: {
+        iconURL: 'Test url',
+      }
+    };
     fixture.detectChanges();
   });
 
