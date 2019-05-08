@@ -2,6 +2,20 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 
 import { AnalyticsComponent } from './analytics.component';
+import { AnalyticsService } from '../gaffer/analytics.service';
+import { ErrorService } from '../dynamic-input/error.service';
+import { Observable } from 'rxjs';
+import { empty} from "rxjs";
+
+class AnalyticsServiceStub {
+  reloadAnalytics = () => {
+    return empty();
+  }
+}
+
+class ErrorServiceStub {
+
+}
 
 describe('AnalyticsComponent', () => {
   let component: AnalyticsComponent;
@@ -10,7 +24,11 @@ describe('AnalyticsComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ AnalyticsComponent ],
-      schemas: [ CUSTOM_ELEMENTS_SCHEMA ]
+      schemas: [ CUSTOM_ELEMENTS_SCHEMA ],
+      providers: [
+        { provide: AnalyticsService, useClass: AnalyticsServiceStub},
+        { provide: ErrorService, useClass: ErrorServiceStub}
+      ],
     })
     .compileComponents();
   }));

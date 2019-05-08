@@ -12,8 +12,6 @@ import { HttpClient } from '@angular/common/http';
 import { MatCardModule, MatTooltipModule } from '@angular/material';
 
 class RouterStub {
-  navigate(params) {
-  }
 }
 
 class AnalyticsServiceStub {
@@ -26,19 +24,11 @@ describe('AnalyticComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ AnalyticComponent ],
-      //schemas: [ CUSTOM_ELEMENTS_SCHEMA ],
       providers: [
         { provide: Router, useClass: RouterStub },
         { provide: AnalyticsService, useClass: AnalyticsServiceStub}
       ],
       imports: [
-        // NoopAnimationsModule,
-        // LayoutModule,
-        // MatButtonModule,
-        // MatIconModule,
-        // MatListModule,
-        // MatSidenavModule,
-        // MatToolbarModule,
         MatCardModule,
         MatTooltipModule
       ]
