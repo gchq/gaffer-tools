@@ -1,15 +1,9 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { Router } from '@angular/router';
+import { MatCardModule, MatTooltipModule } from '@angular/material';
 
 import { AnalyticComponent } from './analytic.component';
 import { AnalyticsService } from '../gaffer/analytics.service';
-import { QueryService } from '../gaffer/query.service';
-import { CommonService } from '../dynamic-input/common.service';
-import { ErrorService } from '../dynamic-input/error.service';
-import { ToastrService, ToastrModule } from 'ngx-toastr';
-import { HttpClient } from '@angular/common/http';
-import { MatCardModule, MatTooltipModule } from '@angular/material';
 
 class RouterStub {
 }
