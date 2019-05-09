@@ -47,10 +47,10 @@ describe('ParameterInputComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(ParameterInputComponent);
     component = fixture.componentInstance;
-    fixture.detectChanges();
   });
 
   it('should create', () => {
+    fixture.detectChanges();
     expect(component).toBeTruthy();
   });
 });

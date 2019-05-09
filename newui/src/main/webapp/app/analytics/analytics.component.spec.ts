@@ -33,10 +33,16 @@ describe('AnalyticsComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(AnalyticsComponent);
     component = fixture.componentInstance;
-    fixture.detectChanges();
   });
 
   it('should create', () => {
+    fixture.detectChanges();
     expect(component).toBeTruthy();
   });
+
+  it('should call reload analytics at initialisation', () => {
+    let spy = spyOn(component, 'reloadAnalytics');
+    fixture.detectChanges();
+    expect(spy).toHaveBeenCalledWith();
+  })
 });

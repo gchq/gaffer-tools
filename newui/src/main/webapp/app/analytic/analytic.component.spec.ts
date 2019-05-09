@@ -1,14 +1,21 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { MatCardModule, MatTooltipModule } from '@angular/material';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { AnalyticComponent } from './analytic.component';
 import { AnalyticsService } from '../gaffer/analytics.service';
 
 class RouterStub {
+  navigate(params) {
+
+  }
 }
 
 class AnalyticsServiceStub {
+  createArrayAnalytic = () => {
+    return [];
+  }
 }
 
 describe('AnalyticComponent', () => {
@@ -24,7 +31,8 @@ describe('AnalyticComponent', () => {
       ],
       imports: [
         MatCardModule,
-        MatTooltipModule
+        MatTooltipModule,
+        BrowserAnimationsModule
       ]
     })
     .compileComponents();
@@ -39,10 +47,30 @@ describe('AnalyticComponent', () => {
         iconURL: 'Test url',
       }
     };
-    fixture.detectChanges();
   });
 
   it('should create', () => {
+    fixture.detectChanges();
     expect(component).toBeTruthy();
   });
+
+  it('should call navigate on execute', () => {
+    fixture.detectChanges();
+    let router = TestBed.get(Router);
+    let spy = spyOn(router, 'navigate');
+
+    component.execute([]);
+
+    expect(spy).toHaveBeenCalledWith(['/parameters']);
+  })
+
+  it('should call create array analytic on execute', () => {
+    fixture.detectChanges();
+    let analyticsService = TestBed.get(AnalyticsService);
+    let spy = spyOn(analyticsService, 'createArrayAnalytic');
+
+    component.execute([]);
+
+    expect(spy).toHaveBeenCalledWith([]);
+  })
 });

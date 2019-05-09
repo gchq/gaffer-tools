@@ -31,10 +31,10 @@ describe("OperationComponent", () => {
       uiMapping: {
       }
     }
-    fixture.detectChanges();
   });
 
   it("should create", () => {
+    fixture.detectChanges();
     expect(component).toBeTruthy();
   });
 });

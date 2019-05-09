@@ -12,7 +12,6 @@ import {
 import { RouterTestingModule } from '@angular/router/testing';
 
 import { NavComponent } from './nav.component';
-import { RouterModule } from '@angular/router';
 
 describe('NavComponent', () => {
   let component: NavComponent;
@@ -38,10 +37,10 @@ describe('NavComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(NavComponent);
     component = fixture.componentInstance;
-    fixture.detectChanges();
   });
 
   it('should compile', () => {
+    fixture.detectChanges();
     expect(component).toBeTruthy();
   });
 });

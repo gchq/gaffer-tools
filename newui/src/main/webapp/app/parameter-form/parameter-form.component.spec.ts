@@ -32,6 +32,7 @@ describe('ParameterFormComponent', () => {
   });
 
   it('should create', () => {
+    fixture.detectChanges();
     expect(component).toBeTruthy();
   });
 });
