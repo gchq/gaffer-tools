@@ -6,25 +6,16 @@ This is the GafferPy docker instances. This guide will help set out how to build
 - Docker
 - (Optional) OpenSSL
 
-## Running GafferPy
-1. Pull the Gaffer Quickstart branch
-2. Go into the python-api project and run ``` mvn clean install ```
+## Running the Docker Compose
+1. Pull and build the Gaffer Quickstart branch, once complete run the script to create the quickstart image.
+2. Return to here and in the python-api project run ``` mvn clean install ```
 3. Once the project is built you should have a gaffer-release-{verison} folder.
-4. Run (in this folder) ``` docker build -f Dockerfile.gaffer.quickstart.local -t gaffer-local . ```
-5. Once this is built run ``` docker run -p 8888:8888 gaffer-local ```
-6. Go to [localhost:8888](localhost:8888), enter your token and happy coding!
- 
-## Running with PySpark
-To run this with PySpark, you need to repeat the previous steps however replace the file with the ```Dockerfile.gaffer.quickstart.pyspark``` file.
+4. Next run the script called ``` run.sh ``` this will build and start up a secured session and notebook with a gaffer service running as well.
+5. You should now be able to access this by copying and pasting the url and the token generated displayed in the terminal by ```gaffer-quickstart-pyspark```. 
+6. Now you have access you can start exectuing operations in your python notebook over Gaffer. You can follow the [documentation](https://gchq.github.io/gaffer-doc/) for more information upon how to do this.
 
+## Alternative Builds
+You can build run this without security element, to do this you need to make changes to the compose file. 
+You just need to remove the ```auth``` element. If you do this you will also need to make changes to the environment variables in the pyspark file.
 
-## Running Securely
-**This will require OpenSSL**
-
-1. You will need to create certificates using **OpenSSL** (or alternatives) for your NoteBook and Gaffer Session. These can be added via the ```Application.properties``` file and by changing the ```Cert-Path``` in the ```Dockerfile.gaffer.quickstart.authenticated``` file
-
-- To add this to the ```application.properties``` file you need to enable ssl (by setting ```use-ssl``` to true), add your certificate to a [keystore](https://docs.oracle.com/cd/E19798-01/821-1841/gjrgy/)  and fill in the rest of the file with the correct information.
-
-2. Build and Deploy the docker image using the command: ```docker build -f Dockerfile.gaffer.quickstart.authenticated -t gaffer-auth .; docker run -p 8888:8888 gaffer-auth ```
-
-3. Go to [localhost:8888](https://localhost:8888), enter your token and happy coding!
+You can run your new configured Docker Compose by either running ```docker-compose up``` or by exectuing the run script. We recommend using the script as it will rebuild the images for you before starting them up.
