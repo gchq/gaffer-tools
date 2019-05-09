@@ -1,6 +1,11 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { MatFormFieldModule } from '@angular/material';
 
 import { ParameterFormComponent } from './parameter-form.component';
+import { AnalyticsService } from '../gaffer/analytics.service';
+
+class AnalyticsServiceStub {
+}
 
 describe('ParameterFormComponent', () => {
   let component: ParameterFormComponent;
@@ -8,7 +13,13 @@ describe('ParameterFormComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ ParameterFormComponent ]
+      declarations: [ ParameterFormComponent ],
+      imports: [
+        MatFormFieldModule,
+      ],
+      providers: [
+        { provide: AnalyticsService, useClass: AnalyticsServiceStub}
+      ],
     })
     .compileComponents();
   }));
@@ -16,6 +27,7 @@ describe('ParameterFormComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(ParameterFormComponent);
     component = fixture.componentInstance;
+    component.parameters = []
     fixture.detectChanges();
   });
 
