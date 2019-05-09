@@ -1,4 +1,4 @@
-# GaffferPy Docker 
+# GafferPy Docker 
 This is the GafferPy docker instances. This guide will help set out how to build and run your graph database in a container, and run operations from python.
 
 ## Requirements
