@@ -1,11 +1,10 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { empty} from "rxjs";
 
 import { AnalyticsComponent } from './analytics.component';
 import { AnalyticsService } from '../gaffer/analytics.service';
 import { ErrorService } from '../dynamic-input/error.service';
-import { Observable } from 'rxjs';
-import { empty} from "rxjs";
 
 class AnalyticsServiceStub {
   reloadAnalytics = () => {
@@ -13,9 +12,7 @@ class AnalyticsServiceStub {
   }
 }
 
-class ErrorServiceStub {
-
-}
+class ErrorServiceStub {}
 
 describe('AnalyticsComponent', () => {
   let component: AnalyticsComponent;

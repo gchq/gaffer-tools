@@ -8,9 +8,7 @@ import { OperationComponent } from "./operation.component";
   template: ''
 })
 class MockParameterFormComponent {
-
   @Input() parameters;
-
 }
 
 describe("OperationComponent", () => {
