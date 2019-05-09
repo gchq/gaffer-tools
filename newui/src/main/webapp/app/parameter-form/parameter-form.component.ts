@@ -7,7 +7,6 @@ import { AnalyticsService } from '../gaffer/analytics.service';
 })
 export class ParameterFormComponent implements OnInit {
   @Input("parameters") parameters;
-  title;
 
   constructor(private analyticsService: AnalyticsService) {}
 
@@ -15,18 +14,6 @@ export class ParameterFormComponent implements OnInit {
     if (this.parameters === null || this.parameters === undefined) {
       throw "Expected defined, non-null value for parameters. Got " +
         this.parameters;
-    }
-
-    //Check we have only one parameter
-    // if (Array.isArray(this.parameters)) {
-    //   if (!Array.isArray(this.parameters[0]) {
-    //     let array = [];
-    //     this.parameters
-    //   }
-    // }
-
-    if (!this.title) {
-      this.title = "Parameters";
     }
   }
 
