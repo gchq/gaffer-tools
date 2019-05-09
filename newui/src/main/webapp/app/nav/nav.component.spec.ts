@@ -43,4 +43,15 @@ describe('NavComponent', () => {
     fixture.detectChanges();
     expect(component).toBeTruthy();
   });
+
+  it('should contain the correct navlinks', () => {
+    let navLinks = [
+      { path: "analytics", label: "ANALYTICS" },
+      { path: "parameters", label: "PARAMETERS" },
+      { path: "results", label: "RESULTS" },
+      { path: "about", label: "ABOUT" }
+    ];
+    fixture.detectChanges();
+    expect(component.navLinks).toEqual(navLinks);
+  });
 });
