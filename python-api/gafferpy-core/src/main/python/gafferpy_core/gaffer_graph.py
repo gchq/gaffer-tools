@@ -50,7 +50,7 @@ class Graph():
     }
 
     def __init__(self):
-        self._gaffer_session = Session.GafferPythonSession()._java_gaffer_session
+        self._gaffer_session = Session.GafferPythonSession().getSession()
 
     def _convertFileToBytes(self, file):
         with open(file, "rb") as f:
@@ -112,8 +112,8 @@ class Graph():
         else:
             self.setPythonSerialisers(self._python_serialisers)
 
-    def execute(self, operation, user):
-            result = self._java_python_graph.execute(self._encode(operation), self._encode(user))
+    def execute(self, operation):
+            result = self._java_python_graph.execute(self._encode(operation))
             if isinstance(result, int):
                 return result
             resultClass = result.getClass().getCanonicalName()

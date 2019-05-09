@@ -62,10 +62,6 @@ public class PropertiesService {
             Properties prop = new Properties();
             prop.load(new FileInputStream(fileName));
 
-            setStoreProperties(prop.getProperty("store-properties-path"));
-            setSchemaPath(prop.getProperty("schema-path"));
-            setGraphConfig(prop.getProperty("graph-config-path"));
-
             setSingleService(prop.getProperty("single-service"));
 
             setInsecure(prop.getProperty("insecure"));
@@ -96,6 +92,10 @@ public class PropertiesService {
                 setKeystoreLocation(prop.getProperty("keystore-location"));
                 setProtocol(prop.getProperty("protocol"));
                 setKeymanagerType(prop.getProperty("keymanager-type"));
+
+                setStoreProperties(prop.getProperty("store-properties-path"));
+                setSchemaPath(prop.getProperty("schema-path"));
+                setGraphConfig(prop.getProperty("graph-config-path"));
             }
 
         } catch (final FileNotFoundException e) {

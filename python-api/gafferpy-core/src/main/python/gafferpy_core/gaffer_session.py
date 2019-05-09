@@ -64,9 +64,6 @@ class GafferPythonSession(metaclass=Singleton):
     _lib_jars = None
     _this_session_pid = None
 
-    # Internal stuff
-    __user = None
-
     def create_session(self, jar=None, lib_jars=None, kill_existing_sessions=False):
         """
         A public method for creating a python gaffer session.
@@ -159,15 +156,15 @@ class GafferPythonSession(metaclass=Singleton):
             s.post(url=os.environ.get('Auth-URL'),
                    data={'username': username, 'password': password})
 
-            sessionResponse = s.get(os.environ.get('Session-Create-URL'))
-
-            if(sessionResponse.status_code == 200):
+            sessionResponse = s.get(os.environ.get('Session-Create-URL')).json
+            print(sessionResponse.text())
+            if(sessionResponse.status_code() == 200):
+                print(sessionResponse)
                 response = json.loads(sessionResponse.text)
                 addres = response['address'].split('/')
                 address = addres[1]
                 port = response['portNumber']
                 token = response['token']
-                self.__user = u.User(user_id=username)
             else:
                 logger.error(sessionResponse.text)
                 raise sessionResponse.text
@@ -248,5 +245,5 @@ class GafferPythonSession(metaclass=Singleton):
         res = self._run_shell_command(kill_command)
         logger.info("killed process " + pid)
 
-    def getUser(self):
-        return self.__user
+    def getSession(self):
+        return self._java_gaffer_session

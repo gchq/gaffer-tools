@@ -1,0 +1,7 @@
+FROM openjdk:8-alpine
+
+COPY jars/example-1.0-SNAPSHOT.jar .
+
+ENV AUTH_URL=172.18.0.4
+
+CMD java -jar example-1.0-SNAPSHOT.jar

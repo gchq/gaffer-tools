@@ -42,6 +42,8 @@ public final class Application {
 
         LOGGER.info("Starting up on {} at {}", InetAddress.getLocalHost().getHostAddress(), new Date());
 
+        SecureSessionAuth.getInstance().setPropertiesService(SERVICE);
+
         if (SERVICE.getSingleService().equalsIgnoreCase("true")) {
             SessionManager.getInstance().sessionFactory().run(); // Runs the default gaffer session - this is unsecured
         }

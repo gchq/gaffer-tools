@@ -1,8 +1,19 @@
 version: "3"
 
 services:
-    gaffer-quickstart:
-        image: "gaffer-quickstart-pyspark"
+    gaffer:
+        image: "gaffer-quickstart-session"
         ports:
           - "8085:8085"
+          - "8080:8080"
+    notebook:
+        image: "gaffer-quickstart-pyspark"
+        ports:
           - "8888:8888"
+        volumes: 
+          - ./python:/notebooks
+    auth:
+      image: "gaffer-quickstart-auth"
+      ports:
+        - "8443:8443"
+      

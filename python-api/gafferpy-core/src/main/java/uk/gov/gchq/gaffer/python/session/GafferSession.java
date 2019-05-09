@@ -60,13 +60,30 @@ public final class GafferSession implements Runnable {
         this.authToken = authToken;
         this.user = user;
 
-        this.server = new GatewayServer.GatewayServerBuilder()
-                .entryPoint(this)
-                .authToken(this.getAuthToken())
-                .javaAddress(this.getAddress())
-                .javaPort(this.getPortNumber())
-                .callbackClient(this.portNumber + 1, this.getAddress())
-                .build();
+        if (this.getUser() == null) {
+            this.user = new User.Builder()
+                    .userId("example")
+                    .dataAuth("Something")
+                    .opAuths("Something")
+                    .build();
+        }
+
+        if (this.getAuthToken() != null) {
+            this.server = new GatewayServer.GatewayServerBuilder()
+                    .entryPoint(this)
+                    .authToken(this.getAuthToken())
+                    .javaAddress(this.getAddress())
+                    .javaPort(this.getPortNumber())
+                    .callbackClient(this.portNumber + 1, this.getAddress())
+                    .build();
+        } else {
+            this.server = new GatewayServer.GatewayServerBuilder()
+                    .entryPoint(this)
+                    .javaAddress(this.getAddress())
+                    .javaPort(this.getPortNumber())
+                    .callbackClient(this.portNumber + 1, this.getAddress())
+                    .build();
+        }
     }
 
     public int getStatusCode() {
@@ -101,9 +118,19 @@ public final class GafferSession implements Runnable {
      */
     public PythonGraph getPythonGraph(final byte[] schemaPath, final byte[] configPath, final byte[] storePropertiesPath) {
         return new PythonGraph.Builder()
+                .user(this.getUser())
                 .storeProperties(storePropertiesPath)
                 .schemaConfig(schemaPath)
                 .graphConfig(configPath)
+                .build();
+    }
+
+    public PythonGraph getPythonGraph() {
+        return new PythonGraph.Builder()
+                .user(this.getUser())
+                .storeProperties(service.getStoreProperties())
+                .schemaConfig(service.getSchemaPath())
+                .graphConfig(service.getGraphConfig())
                 .build();
     }
 

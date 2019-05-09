@@ -19,10 +19,10 @@ import logging
 from gafferpy_core import gaffer_utils as u
 from gafferpy_core import gaffer_graph as gs
 
-from gafferpy_core import gaffer_session as Session
-
 from gafferpy_pyspark import gafferpy_pyspark_core as gps_core 
 from gafferpy_pyspark import pyspark_utils as gps_utils
+
+from gafferpy_pyspark import gafferpy_pyspark_session as Session
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
@@ -35,6 +35,8 @@ class Graph(gs.Graph):
 
     """
 
+    _java_python_graph = None
+
     _python_serialisers = {
         'uk.gov.gchq.gaffer.data.element.Element' : 'uk.gov.gchq.gaffer.python.pyspark.serialiser.impl.PysparkElementMapSerialiser',
         'uk.gov.gchq.gaffer.operation.data.ElementSeed' : 'uk.gov.gchq.gaffer.python.pyspark.serialiser.impl.PysparkElementSeedMapSerialiser'
@@ -43,21 +45,19 @@ class Graph(gs.Graph):
     def __init__(self):
         super(gs.Graph, self)
 
-    # def _getGraph(self):
-    #     self._java_python_graph = Session.GafferPythonSession()._java_gaffer_session.getPythonGraph(
-    #                                                                 self._convertFileToBytes(self.schemaPath), 
-    #                                                                 self._convertFileToBytes(self.graphConfigPath), 
-    #                                                                 self._convertFileToBytes(self.storePropertiesPath)
-    #                                                             )
-    #     self._set_element_serialisers(store_properties_path=self.storePropertiesPath)
-    #     return self
+    def _getGraph(self):
+        self._java_python_graph = Session.GafferPysparkSession().getGafferSession().getPythonGraph(
+                                                                    self._convertFileToBytes(self.schemaPath), 
+                                                                    self._convertFileToBytes(self.graphConfigPath), 
+                                                                    self._convertFileToBytes(self.storePropertiesPath)
+                                                                )
+        self._set_element_serialisers(store_properties_path=self.storePropertiesPath)
+        return self
 
-    
-    # OVERRIDE - This overrides the execute function
-    def execute(self, operation, user):
+    def execute(self, operation):
         logger.info("executing operation " + operation.CLASS)
         if operation.CLASS == "getPySparkRDDOfAllElements":
-            if self._gaffer_session._spark_context == None:
+            if Session.GafferPysparkSession().getSparkContext() == None:
                 msg = "No spark context: pyspark operations not available"
                 logger.info(msg)
                 return None
@@ -73,13 +73,13 @@ class Graph(gs.Graph):
                     raise ValueError(msg)
             else:
                 keyConverterClass = operation.pythonSerialiserClass
-            hadoop_conf = self._get_hadoop_conf(operation, user)
+            hadoop_conf = self._get_hadoop_conf(operation)
             logger.info("using key converter class " + keyConverterClass)
             return self._get_rdd(hadoop_conf, keyConverterClass)
 
         elif operation.CLASS == "getPysparkDataFrameOfElements":
             view = operation.view
-            if self._gaffer_session._spark_context == None:
+            if Session.GafferPysparkSession().getSparkContext() == None:
                 msg = "No spark context: pyspark operations not available"
                 logger.info(msg)
                 return None
@@ -96,19 +96,19 @@ class Graph(gs.Graph):
                     raise ValueError(msg)
             else:
                 keyConverterClass = operation.pythonSerialiserClass
-            df_conf = self._get_hadoop_conf(operation, user)
+            df_conf = self._get_hadoop_conf(operation)
             logger.info("using key converter class " + keyConverterClass)
             return self._get_dataframe(df_conf,keyConverterClass, view, operation.sampleRatio)
 
         elif operation.CLASS == "uk.gov.gchq.gaffer.python.pyspark.operation.GetPythonRDDConfiguration":
-            java_conf = self._java_python_graph.execute(self._encode(operation), self._encode(user))
+            java_conf = self._java_python_graph.execute(self._encode(operation))
             rdd_conf = self._convert_java_conf(java_conf)
             return rdd_conf
 
         elif operation.CLASS == "AddElementsFromPysparkRDD" :
 
             get_conf_op = gps_core.GetPythonRDDConfiguration()
-            conf = self.execute(get_conf_op, user)
+            conf = self.execute(get_conf_op)
             schema = conf.get("Schema")
             key_package = self._java_python_graph.getKeyPackageClassName()
             output_path = operation.outputDirectory + "/rfiles"
@@ -124,10 +124,10 @@ class Graph(gs.Graph):
             logger.info("rfiles written to " + output_path)
             import_op = gps_core.ImportAccumuloKeyValueFiles(inputPath=output_path, failurePath=operation.outputDirectory + "/failure")
             logger.info("importing accumulo files from " + output_path)
-            self.execute(import_op, user)
+            self.execute(import_op)
 
         else:
-            result = self._java_python_graph.execute(self._encode(operation), self._encode(user))
+            result = self._java_python_graph.execute(self._encode(operation))
             if isinstance(result, int):
                 return result
             resultClass = result.getClass().getCanonicalName()
@@ -136,14 +136,14 @@ class Graph(gs.Graph):
                 return iterator
             return result
 
-    def _get_hadoop_conf(self, operation, user):
+    def _get_hadoop_conf(self, operation):
 
         if operation.view == None:
             get_conf_op = gps_core.GetPythonRDDConfiguration()
         else:
             get_conf_op = gps_core.GetPythonRDDConfiguration(view=operation.view)
 
-        return self.execute(get_conf_op, user)
+        return self.execute(get_conf_op)
 
 
     def _convert_java_conf(self, java_conf):
@@ -161,7 +161,7 @@ class Graph(gs.Graph):
         keyclass = "uk.gov.gchq.gaffer.data.element.Element"
         valueclass = "org.apache.hadoop.io.NullWritable"
 
-        rdd = self._gaffer_session._spark_context.newAPIHadoopRDD(inputformatclass, keyclass, valueclass, keyConverter=keyConverter, conf=conf)
+        rdd = Session.GafferPysparkSession().getSparkContext().newAPIHadoopRDD(inputformatclass, keyclass, valueclass, keyConverter=keyConverter, conf=conf)
         return rdd.map(u.convertElement)
 
     def _getRowSchemas(self, schema, view=None):
@@ -238,7 +238,7 @@ class Graph(gs.Graph):
         for key in mergedSchemaDict.keys():
             mergedSchemaAsList.append(key)
         mergedSchemaAsList.sort()
-        rdd = self._gaffer_session._spark_context.newAPIHadoopRDD(inputformatclass, keyclass, valueclass, keyConverter=keyConverter, conf=conf)
+        rdd = Session.GafferPysparkSession().getSparkContext().newAPIHadoopRDD(inputformatclass, keyclass, valueclass, keyConverter=keyConverter, conf=conf)
         return rdd.map(lambda x : gps_utils.toRow(x, rowSchemas)).toDF(mergedSchemaAsList,sampleRatio=sampleRatio)
 
     def _parse_java_conf_entry(self,entry):

@@ -79,6 +79,22 @@ public final class SessionManager {
         return built;
     }
 
+    public GafferSession sessionFactory(final User user) throws PortInUseException {
+
+        if (isPortNumberInUse(DEFAULT_PORT)) {
+            throw new PortInUseException("Cannot use this port as it currently being used by another session");
+        }
+
+        GafferSession built = new GafferSession.Builder()
+                .address(defaultAddress)
+                .portNumber(DEFAULT_PORT)
+                .user(user)
+                .build();
+
+        this.addSession(built);
+        return built;
+    }
+
     public GafferSession sessionFactory(final InetAddress address) throws NoPortsAvailableException {
 
         GafferSession built = new GafferSession.Builder()
