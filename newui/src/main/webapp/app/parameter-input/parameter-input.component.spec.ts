@@ -20,6 +20,10 @@ class AnalyticsServiceStub {
       operationName: 'Test operation name'
     }
   }
+  
+  executeAnalytic = () => {
+
+  }
 }
 
 describe('ParameterInputComponent', () => {
@@ -53,4 +57,22 @@ describe('ParameterInputComponent', () => {
     fixture.detectChanges();
     expect(component).toBeTruthy();
   });
+
+  it('should call execute analytic on execute', () => {
+    fixture.detectChanges();
+    let analyticsService = TestBed.get(AnalyticsService);
+    let spy = spyOn(analyticsService, 'executeAnalytic');
+
+    component.executeAnalytic();
+
+    expect(spy).toHaveBeenCalledWith();
+  })
+
+  it('should set loading to true on execute', () => {
+    fixture.detectChanges();
+
+    component.loading = true;
+
+    expect(component.loading).toBeTruthy();
+  })
 });

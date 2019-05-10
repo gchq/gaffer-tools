@@ -51,4 +51,11 @@ describe('TableComponent', () => {
     fixture.detectChanges();
     expect(component).toBeTruthy();
   });
+
+  it('should call events subscribe at initialisation', () => {
+    let eventsService = TestBed.get(EventsService);
+    let spy = spyOn(eventsService, 'subscribe');
+    fixture.detectChanges();
+    expect(spy).toHaveBeenCalled();
+  })
 });

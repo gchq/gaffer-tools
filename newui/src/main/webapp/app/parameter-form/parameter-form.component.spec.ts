@@ -43,6 +43,11 @@ describe('ParameterFormComponent', () => {
     expect(component).toBeTruthy();
   });
 
+  // it('should throw an error if parameters are not defined', () => {
+  //   fixture.detectChanges();
+  //   expect(component).toBeTruthy();
+  // });
+
   // it('should call update analytic on change of input', fakeAsync(() => {
   //   let analyticsService = TestBed.get(AnalyticsService);
   //   let spy = spyOn(analyticsService, 'updateAnalytic');
