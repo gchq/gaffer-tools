@@ -40,14 +40,11 @@ describe('AboutComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should open link to documentation', () => {
+  it('should have a link to documentation', () => {
     const debugElements = fixture.debugElement.queryAll(By.css('a'));
-    console.log(debugElements);
+
     const index = debugElements.findIndex(de => de.attributes['href'] === 'https://gchq.github.io/gaffer-doc/');
-    console.log(index);
-    debugElements[index].nativeElement.click();
-    //fixture.detectChanges();
-    //tick();
-    expect(location.path()).toBe('/analytics');
+
+    expect(index).toBeGreaterThan(-1);
   });
 });
