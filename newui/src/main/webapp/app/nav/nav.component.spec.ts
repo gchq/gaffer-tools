@@ -1,5 +1,5 @@
 import { LayoutModule } from '@angular/cdk/layout';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { async, ComponentFixture, TestBed, inject, fakeAsync, tick } from '@angular/core/testing';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import {
   MatButtonModule,
@@ -12,13 +12,45 @@ import {
 import { RouterTestingModule } from '@angular/router/testing';
 
 import { NavComponent } from './nav.component';
-import { CommonModule } from '@angular/common';
+import { CommonModule, Location } from '@angular/common';
 import { By } from '@angular/platform-browser';
+import { RouterLinkWithHref, Routes, Router } from '@angular/router';
+import { Component } from '@angular/core';
+
+@Component({
+  template: ''
+})
+class AboutComponentStub {}
+
+@Component({
+  template: ''
+})
+class AnalyticsComponentStub {}
+
+@Component({
+  template: ''
+})
+class ParameterInputComponentStub {}
+
+@Component({
+  template: ''
+})
+class TableComponentStub {}
 
 describe('NavComponent', () => {
+  let location: Location;
+  let router: Router;
   let component: NavComponent;
   let fixture: ComponentFixture<NavComponent>;
-  let navLinks = [
+  const routes: Routes = [
+    { path: "about", component: AboutComponentStub },
+    { path: "analytics", component: AnalyticsComponentStub },
+    { path: "parameters", component: ParameterInputComponentStub },
+    { path: "parameters/:operation", component: ParameterInputComponentStub },
+    { path: "results", component: TableComponentStub },
+    { path: "**", redirectTo: "analytics" }
+  ];
+  const navLinks = [
     { path: "analytics", label: "ANALYTICS" },
     { path: "parameters", label: "PARAMETERS" },
     { path: "results", label: "RESULTS" },
@@ -27,7 +59,13 @@ describe('NavComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [NavComponent],
+      declarations: [ 
+        NavComponent,
+        AboutComponentStub,
+        ParameterInputComponentStub,
+        TableComponentStub,
+        AnalyticsComponentStub
+      ],
       imports: [
         NoopAnimationsModule,
         LayoutModule,
@@ -36,15 +74,19 @@ describe('NavComponent', () => {
         MatListModule,
         MatSidenavModule,
         MatToolbarModule,
-        RouterTestingModule,
+        RouterTestingModule.withRoutes(routes),
         MatTabsModule,
         CommonModule
       ]
-    }).compileComponents();
+    });
+
+    router = TestBed.get(Router);
+    location = TestBed.get(Location);
+    fixture = TestBed.createComponent(NavComponent);
+    router.initialNavigation();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(NavComponent);
     component = fixture.componentInstance;
     component.navLinks = navLinks;
   });
@@ -54,13 +96,38 @@ describe('NavComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should contain the correct navlinks', () => {
+  it('should contain the correct navigation links', () => {
     fixture.detectChanges();
     expect(component.navLinks).toEqual(navLinks);
   });
 
-  // it('should navigate to analytics', () => {
-  //   let href = fixture.debugElement.query(By.css('a')).nativeElement.getAttribute('href');
-  //   expect(href).toEqual('/analytics');
-  // })
+  it('should navigate to analytics', fakeAsync(() => {
+    router.navigate(['analytics']);
+    tick();
+    expect(location.path()).toBe('/analytics');
+  }))
+
+  it('should navigate to about', fakeAsync(() => {
+    router.navigate(['about']);
+    tick();
+    expect(location.path()).toBe('/about');
+  }))
+
+  it('should navigate to parameters', fakeAsync(() => {
+    router.navigate(['parameters']);
+    tick();
+    expect(location.path()).toBe('/parameters');
+  }))
+
+  it('should navigate to results', fakeAsync(() => {
+    router.navigate(['results']);
+    tick();
+    expect(location.path()).toBe('/results');
+  }))
+
+  it('should redirect to analytics', fakeAsync(() => {
+    router.navigate(['**']);
+    tick();
+    expect(location.path()).toBe('/analytics');
+  }))
 });
