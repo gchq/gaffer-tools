@@ -47,4 +47,12 @@ describe('AboutComponent', () => {
 
     expect(index).toBeGreaterThan(-1);
   });
+
+  it('should have a link to the rest api', () => {
+    const debugElements = fixture.debugElement.queryAll(By.css('a'));
+
+    const index = debugElements.findIndex(de => de.attributes['href'] === 'http://localhost:8080/rest');
+
+    expect(index).toBeGreaterThan(-1);  
+  })
 });
