@@ -12,10 +12,18 @@ import {
 import { RouterTestingModule } from '@angular/router/testing';
 
 import { NavComponent } from './nav.component';
+import { CommonModule } from '@angular/common';
+import { By } from '@angular/platform-browser';
 
 describe('NavComponent', () => {
   let component: NavComponent;
   let fixture: ComponentFixture<NavComponent>;
+  let navLinks = [
+    { path: "analytics", label: "ANALYTICS" },
+    { path: "parameters", label: "PARAMETERS" },
+    { path: "results", label: "RESULTS" },
+    { path: "about", label: "ABOUT" }
+  ];
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -29,7 +37,8 @@ describe('NavComponent', () => {
         MatSidenavModule,
         MatToolbarModule,
         RouterTestingModule,
-        MatTabsModule
+        MatTabsModule,
+        CommonModule
       ]
     }).compileComponents();
   }));
@@ -37,6 +46,7 @@ describe('NavComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(NavComponent);
     component = fixture.componentInstance;
+    component.navLinks = navLinks;
   });
 
   it('should compile', () => {
@@ -45,13 +55,12 @@ describe('NavComponent', () => {
   });
 
   it('should contain the correct navlinks', () => {
-    let navLinks = [
-      { path: "analytics", label: "ANALYTICS" },
-      { path: "parameters", label: "PARAMETERS" },
-      { path: "results", label: "RESULTS" },
-      { path: "about", label: "ABOUT" }
-    ];
     fixture.detectChanges();
     expect(component.navLinks).toEqual(navLinks);
   });
+
+  // it('should navigate to analytics', () => {
+  //   let href = fixture.debugElement.query(By.css('a')).nativeElement.getAttribute('href');
+  //   expect(href).toEqual('/analytics');
+  // })
 });

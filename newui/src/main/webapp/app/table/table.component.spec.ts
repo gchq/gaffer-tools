@@ -55,7 +55,26 @@ describe('TableComponent', () => {
   it('should call events subscribe at initialisation', () => {
     let eventsService = TestBed.get(EventsService);
     let spy = spyOn(eventsService, 'subscribe');
+
     fixture.detectChanges();
+
+    expect(spy).toHaveBeenCalled();
+  })
+
+  it('should call results get at initialisation', () => {
+    let resultsService = TestBed.get(ResultsService);
+    let spy = spyOn(resultsService, 'get');
+
+    fixture.detectChanges();
+
+    expect(spy).toHaveBeenCalled();
+  })
+
+  it('should call processResults at initialisation', () => {
+    let spy = spyOn(component, 'processResults');
+
+    fixture.detectChanges();
+
     expect(spy).toHaveBeenCalled();
   })
 });
