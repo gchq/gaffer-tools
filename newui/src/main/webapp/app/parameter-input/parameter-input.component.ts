@@ -17,6 +17,7 @@ export class ParameterInputComponent implements OnInit {
   mode = "indeterminate";
   value = 50;
   @ViewChild("operationChainForm") operationChainForm;
+  loading: boolean;
 
   constructor(
     private analyticsService: AnalyticsService,

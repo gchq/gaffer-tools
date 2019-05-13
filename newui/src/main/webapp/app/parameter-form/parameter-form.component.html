@@ -1,21 +1,12 @@
 <div fxLayout="column" layout-margin>
   <form name="parameterForm" layout-margin>
-    <div *ngIf="title == 'Parameters'">
       <div fxLayout="column">
         <div *ngFor="let paramArray of parameters; let i = index" flex="noshrink">
           <mat-form-field class="example-full-width" appearance="fill">
             <mat-label>{{paramArray[1].label}}</mat-label>
-            <input matInput id="id" name="name" param="param" [(value)]="paramArray[1].currentValue" (change)="onChange($event.target.value, parameters[i][0])">
+            <input matInput id="paramArray[1].label" name="name" param="param" [(value)]="paramArray[1].currentValue" (change)="onChange($event.target.value, parameters[i][0])">
           </mat-form-field>
         </div>
       </div>
-    </div>
-    <div *ngIf="title != 'Parameters'">
-      <div layout-wrap fxLayout="row">
-        <div *ngFor="let params of parameters" flex="noshrink">
-          <input matInput name="name" param="param" date-unit="getTimeUnit(name)">
-        </div>
-      </div>
-    </div>
   </form>
 </div>
