@@ -43,10 +43,17 @@ describe('ParameterFormComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  // it('should throw an error if parameters are not defined', () => {
-  //   fixture.detectChanges();
-  //   expect(component).toBeTruthy();
-  // });
+  it('should call update analytic', fakeAsync(() => {
+    let analyticsService = TestBed.get(AnalyticsService);
+    let spy = spyOn(analyticsService, 'updateAnalytic');
+    component.parameters = 'Test parameters';
+    let parameter = 'Test parameter';
+    let parameterName = 'Test parameter name';
+
+    component.onChange(parameter,parameterName);
+
+    expect(spy).toHaveBeenCalledWith(component.parameters,parameter,parameterName);
+  }))
 
   // it('should call update analytic on change of input', fakeAsync(() => {
   //   let analyticsService = TestBed.get(AnalyticsService);

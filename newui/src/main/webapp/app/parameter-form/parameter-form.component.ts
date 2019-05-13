@@ -10,12 +10,7 @@ export class ParameterFormComponent implements OnInit {
 
   constructor(private analyticsService: AnalyticsService) {}
 
-  ngOnInit() {
-    if (this.parameters === null || this.parameters === undefined) {
-      throw "Expected defined, non-null value for parameters. Got " +
-        this.parameters;
-    }
-  }
+  ngOnInit() {}
 
   /** Update the analytic operation whenever a parameter changes */
   onChange = function(parameter, parameterName) {
