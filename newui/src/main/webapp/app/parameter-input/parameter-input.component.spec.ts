@@ -53,12 +53,12 @@ describe('ParameterInputComponent', () => {
     component = fixture.componentInstance;
   });
 
-  it('should create', () => {
+  it('should be created', () => {
     fixture.detectChanges();
     expect(component).toBeTruthy();
   });
 
-  it('should call execute analytic on execute', () => {
+  it('should execute the named operation on execute', () => {
     fixture.detectChanges();
     let analyticsService = TestBed.get(AnalyticsService);
     let spy = spyOn(analyticsService, 'executeAnalytic');

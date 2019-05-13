@@ -47,7 +47,7 @@ describe('TableComponent', () => {
     component = fixture.componentInstance;
   });
 
-  it('should create', () => {
+  it('should be created', () => {
     fixture.detectChanges();
     expect(component).toBeTruthy();
   });
@@ -61,7 +61,7 @@ describe('TableComponent', () => {
     expect(spy).toHaveBeenCalled();
   })
 
-  it('should call results get at initialisation', () => {
+  it('should get results at initialisation', () => {
     let resultsService = TestBed.get(ResultsService);
     let spy = spyOn(resultsService, 'get');
 
@@ -70,7 +70,7 @@ describe('TableComponent', () => {
     expect(spy).toHaveBeenCalled();
   })
 
-  it('should call processResults at initialisation', () => {
+  it('should process results at initialisation', () => {
     let spy = spyOn(component, 'processResults');
 
     fixture.detectChanges();

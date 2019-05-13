@@ -91,7 +91,7 @@ describe('NavComponent', () => {
     component.navLinks = navLinks;
   });
 
-  it('should compile', () => {
+  it('should be created', () => {
     fixture.detectChanges();
     expect(component).toBeTruthy();
   });
