@@ -55,4 +55,17 @@ describe('AboutComponent', () => {
 
     expect(index).toBeGreaterThan(-1);  
   })
+
+  it('should open email client on sendFeedback', () => {
+    let emailId = 'test email id';
+    let subject = 'test subject';
+    let message = 'test message';
+    let spy = spyOn(window, 'open');
+
+    component.sendFeedback(emailId,subject,message);
+
+    expect(spy).toHaveBeenCalledWith(
+      "mailto:" + emailId + "?subject=" + subject + "&body=" + message,
+      "_self");
+  })
 });
