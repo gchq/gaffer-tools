@@ -8,6 +8,7 @@ import { AnalyticsService } from "../gaffer/analytics.service";
 })
 @Injectable()
 export class AnalyticsComponent implements OnInit {
+  analytics: any;
   constructor(
     private analyticsService: AnalyticsService,
     private error: ErrorService

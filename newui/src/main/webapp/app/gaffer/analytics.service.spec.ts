@@ -6,43 +6,36 @@
 // import { AnalyticsService } from '../gaffer/analytics.service';
 // import { ErrorService } from '../dynamic-input/error.service';
 
-// class AnalyticsServiceStub {
-//   reloadAnalytics = () => {
-//     return empty();
-//   }
-// }
-
 // class ErrorServiceStub {}
 
-// describe('AnalyticsComponent', () => {
-//   let component: AnalyticsComponent;
-//   let fixture: ComponentFixture<AnalyticsComponent>;
+// describe('AnalyticsService', () => {
+//   let component: AnalyticsService;
+//   let fixture: ComponentFixture<AnalyticsService>;
 
 //   beforeEach(async(() => {
 //     TestBed.configureTestingModule({
-//       declarations: [ AnalyticsComponent ],
-//       schemas: [ CUSTOM_ELEMENTS_SCHEMA ],
+//       declarations: [ AnalyticsService ],
+//     //   schemas: [ CUSTOM_ELEMENTS_SCHEMA ],
 //       providers: [
-//         { provide: AnalyticsService, useClass: AnalyticsServiceStub},
-//         { provide: ErrorService, useClass: ErrorServiceStub}
+//         // { provide: ErrorService, useClass: ErrorServiceStub}
 //       ],
 //     })
 //     .compileComponents();
 //   }));
 
 //   beforeEach(() => {
-//     fixture = TestBed.createComponent(AnalyticsComponent);
+//     fixture = TestBed.createComponent(AnalyticsService);
 //     component = fixture.componentInstance;
 //   });
 
-//   it('should create', () => {
+//   it('should be created', () => {
 //     fixture.detectChanges();
 //     expect(component).toBeTruthy();
 //   });
 
-//   it('should call reload analytics at initialisation', () => {
-//     let spy = spyOn(component, 'reloadAnalytics');
-//     fixture.detectChanges();
-//     expect(spy).toHaveBeenCalledWith();
-//   })
+// //   it('should call reload analytics at initialisation', () => {
+// //     let spy = spyOn(component, 'reloadAnalytics');
+// //     fixture.detectChanges();
+// //     expect(spy).toHaveBeenCalledWith();
+// //   })
 // });

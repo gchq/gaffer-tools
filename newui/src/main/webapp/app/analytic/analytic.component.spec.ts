@@ -69,8 +69,8 @@ describe('AnalyticComponent', () => {
     let analyticsService = TestBed.get(AnalyticsService);
     let spy = spyOn(analyticsService, 'createArrayAnalytic');
 
-    component.execute([]);
+    component.execute(['Test data']);
 
-    expect(spy).toHaveBeenCalledWith([]);
+    expect(spy).toHaveBeenCalledWith(['Test data']);
   })
 });
