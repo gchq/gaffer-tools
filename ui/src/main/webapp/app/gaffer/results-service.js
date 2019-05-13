@@ -19,6 +19,8 @@
 angular.module('app').factory('results', ['events', function(events) {
 
     var resultService = {};
+    // cache of unique stringified results
+    var uniqueResults = [];
     var results = {entities: [], edges: [], other: []};
 
     resultService.get = function() {
@@ -27,27 +29,22 @@ angular.module('app').factory('results', ['events', function(events) {
 
     resultService.clear = function(broadcast) {
         results = {entities: [], edges: [], other: []};
+        uniqueResults = [];
         if(broadcast === undefined || broadcast) {
             events.broadcast('resultsUpdated', [results]);
             events.broadcast('resultsCleared');
         }
     }
 
-    var elementExistsInArray = function(array, element) {
-        console.log(JSON.stringify(element));
-        return array && array.some(function(ele) { 
-            return JSON.stringify(element) === JSON.stringify(ele);
-        });
-    }
-
     var addUniqueResult = function(results, newResult) {
-        if (results && !elementExistsInArray(results, newResult)) {
-            results.push(newResult);
+        var stringified = JSON.stringify(newResult)
+        if (uniqueResults.indexOf(stringified) === -1) {
+            uniqueResults.push(stringified)
+            results.push(newResult)
         }
     }
 
     resultService.update = function(newResults) {
-        console.log(newResults);
         var incomingResults = {
             entities: [], edges: [], other: []
         }
