@@ -3,6 +3,7 @@ import { MatFormFieldModule, MatInputModule } from '@angular/material';
 import { By } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
+
 import { ParameterFormComponent } from './parameter-form.component';
 import { AnalyticsService } from '../gaffer/analytics.service';
 
@@ -31,19 +32,19 @@ describe('ParameterFormComponent', () => {
     .compileComponents();
   }));
 
-  beforeEach(() => {
+  beforeEach(async(() => {
     fixture = TestBed.createComponent(ParameterFormComponent);
     component = fixture.componentInstance;
     component.parameters = []
     fixture.detectChanges();
-  });
+  }));
 
   it('should be created', () => {
     fixture.detectChanges();
     expect(component).toBeTruthy();
   });
 
-  it('should call update analytic', fakeAsync(() => {
+  it('should call update analytic on change of input', fakeAsync(() => {
     let analyticsService = TestBed.get(AnalyticsService);
     let spy = spyOn(analyticsService, 'updateAnalytic');
     component.parameters = 'Test parameters';
@@ -55,29 +56,44 @@ describe('ParameterFormComponent', () => {
     expect(spy).toHaveBeenCalledWith(component.parameters,parameter,parameterName);
   }))
 
-  // it('should call update analytic on change of input', fakeAsync(() => {
-  //   let analyticsService = TestBed.get(AnalyticsService);
-  //   let spy = spyOn(analyticsService, 'updateAnalytic');
-  //   component.parameters = [
-  //     [ null, 
-  //       { label : 'label',
-  //       currentValue: 'value' }
-  //     ]
-  //   ]
+  it('should change stored parameter value on change of input', fakeAsync(() => {
+    let spy = spyOn(component, 'onChange');
+    component.parameters = [
+      [ null, 
+        { label : 'label',
+        currentValue: 'value' }
+      ]
+    ]
+    let newValue = 'new value';
+    fixture.detectChanges();
+    tick();
 
-  //   setInputValue('label', 'Test Input Value');
-  //   fixture.detectChanges();
+    //let input = fixture.debugElement.queryAll(By.css('input'));
+    // let input = fixture.debugElement.componentInstance.searchInput.setValue(newValue);
+    let input = fixture.debugElement.query(By.css('input')).nativeElement;
+    console.log(input);
+    // input.value = newValue;
+    // input.dispatchEvent(new Event('input'));
+    // fixture.detectChanges();
+    // TestUtils.Simulate.change(input, { target: { value: newValue }});
+    // fixture.debugElement.nativeElement.find('input')
+    // console.log(fixture.debugElement.nativeElement.find('input'));
 
-  //   expect(spy).toHaveBeenCalled();
-  // }))
+    sendInput(input, newValue);
+    fixture.detectChanges();
 
-  // function setInputValue(selector: string, value: string) {
-  //   fixture.detectChanges();
-  //   tick();
+    expect(spy).toHaveBeenCalled();
+    //fixture.detectChanges();
+  }))
 
-  //   let input = fixture.debugElement.query(By.css(selector)).nativeElement;
-  //   input.value = value;
-  //   input.dispatchEvent(new Event('input'));
-  //   tick();
-  // }
+  function sendInput(input, newValue) {
+    // input.value = newValue;
+    // dispatchEvent(fixture.nativeElement, 'input');
+    // // input.dispatchEvent(new Event('input'));
+    // fixture.detectChanges();
+    // return fixture.whenStable();
+    input.value = newValue;
+    input.dispatchEvent(new Event('input'));
+    tick();
+  }
 });
