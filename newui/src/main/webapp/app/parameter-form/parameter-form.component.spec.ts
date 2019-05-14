@@ -56,44 +56,31 @@ describe('ParameterFormComponent', () => {
     expect(spy).toHaveBeenCalledWith(component.parameters,parameter,parameterName);
   }))
 
-  it('should change stored parameter value on change of input', fakeAsync(() => {
+  it('should change stored parameter value on change of input', async(() => {
     let spy = spyOn(component, 'onChange');
     component.parameters = [
       [ null, 
         { label : 'label',
-        currentValue: 'value' }
+        currentValue: 'new value' }
       ]
     ]
-    let newValue = 'new value';
     fixture.detectChanges();
-    tick();
-
-    //let input = fixture.debugElement.queryAll(By.css('input'));
-    // let input = fixture.debugElement.componentInstance.searchInput.setValue(newValue);
     let input = fixture.debugElement.query(By.css('input')).nativeElement;
-    console.log(input);
-    // input.value = newValue;
-    // input.dispatchEvent(new Event('input'));
-    // fixture.detectChanges();
-    // TestUtils.Simulate.change(input, { target: { value: newValue }});
-    // fixture.debugElement.nativeElement.find('input')
-    // console.log(fixture.debugElement.nativeElement.find('input'));
 
-    sendInput(input, newValue);
+    dispatchFakeEvent(input, 'change');
+    
     fixture.detectChanges();
-
     expect(spy).toHaveBeenCalled();
-    //fixture.detectChanges();
   }))
 
-  function sendInput(input, newValue) {
-    // input.value = newValue;
-    // dispatchEvent(fixture.nativeElement, 'input');
-    // // input.dispatchEvent(new Event('input'));
-    // fixture.detectChanges();
-    // return fixture.whenStable();
-    input.value = newValue;
-    input.dispatchEvent(new Event('input'));
-    tick();
-  }
+  function createFakeEvent(type: string) {
+    const event = document.createEvent('Event');
+    event.initEvent(type, true, true);
+    return event;
+   }
+   
+  function dispatchFakeEvent(node: Node | Window, type: string) 
+   {
+     node.dispatchEvent(createFakeEvent(type));
+   }
 });
