@@ -462,9 +462,6 @@ function GraphController($q, graph, config, error, loading, query, operationOpti
     }
 
     var createVertexData = function(vertex, vertexTypeDefinition, isEntity) {
-
-        var vertexType = Object.keys(vertexTypeDefinition)[0];
-
         var data = {
             id: common.parseVertex(vertex),
             label: types.getShortValue(vertex)
@@ -475,15 +472,18 @@ function GraphController($q, graph, config, error, loading, query, operationOpti
             data.entity = true;
         }
 
-        data[vertexType] = true;
+        if(vertexTypeDefinition != null) {
+            var vertexType = Object.keys(vertexTypeDefinition)[0];
 
-        var vertexClass = vertexTypeDefinition[vertexType].class;
-        var parts = types.createParts(vertexClass, vertex);
-        
-        for (var key in parts) {
-            data[key] = parts[key];
+            data[vertexType] = true;
+
+            var vertexClass = vertexTypeDefinition[vertexType].class;
+            var parts = types.createParts(vertexClass, vertex);
+
+            for (var key in parts) {
+                data[key] = parts[key];
+            }
         }
-
 
         return data;
     }
