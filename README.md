@@ -1,4 +1,10 @@
-# README
+---
+description: >-
+  A brief explanation of the product, and instructions on how to run the UI and
+  REST API.
+---
+
+# Overview & Getting Started
 
 Copyright 2016 Crown Copyright
 
