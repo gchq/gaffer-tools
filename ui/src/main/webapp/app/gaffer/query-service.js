@@ -34,7 +34,7 @@ angular.module('app').factory('query', ['$http', 'config', 'events', 'common', '
                     var operation = JSON.parse(operationJsonArray[i]);
                     query.addOperation(operation);
                     query.executeQuery(operation);
-                } catch {
+                } catch (err) {
                     error.handle('Error executing operation. Is it a valid json operation string?', operationJsonArray[i]);
                 }
             }
