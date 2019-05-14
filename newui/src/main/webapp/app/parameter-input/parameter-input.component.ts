@@ -1,8 +1,5 @@
 import { Component, OnInit, Injectable, ViewChild } from "@angular/core";
-import { ActivatedRoute } from "@angular/router";
-import { Router } from "@angular/router";
 import { AnalyticsService } from "../gaffer/analytics.service";
-import { QueryService } from "../gaffer/query.service";
 
 @Component({
   selector: "app-parameter-input",
@@ -12,12 +9,9 @@ import { QueryService } from "../gaffer/query.service";
 export class ParameterInputComponent implements OnInit {
   analytic; //The chosen analytic
   analyticOperation; //The analytic operation to execute
-  timeConfig;
-  color = "primary";
-  mode = "indeterminate";
-  value = 50;
-  @ViewChild("operationChainForm") operationChainForm;
-  loading: boolean;
+  color = "primary"; //Spinner color
+  mode = "indeterminate"; //mode of the progress spinner
+  loading: boolean; //Used to determine whether or not to show spinner
 
   constructor(
     private analyticsService: AnalyticsService,
@@ -27,19 +21,8 @@ export class ParameterInputComponent implements OnInit {
     //Get the analytic from the analyticsService
     this.analytic = this.analyticsService.getAnalytic();
   }
-
-  NAMED_VIEW_CLASS = "uk.gov.gchq.gaffer.data.elementdefinition.view.NamedView";
-  OPERATION_CHAIN_CLASS = "uk.gov.gchq.gaffer.operation.OperationChain";
-  ANALYTIC_CLASS = "uk.gov.gchq.gaffer.operation.analytic.AnalyticOperation";
-  ENTITY_SEED_CLASS = "uk.gov.gchq.gaffer.operation.data.EntitySeed";
-  PAIR_ARRAY_CLASS =
-    "uk.gov.gchq.gaffer.commonutil.pair.Pair<uk.gov.gchq.gaffer.data.element.id.ElementId,uk.gov.gchq.gaffer.data.element.id.ElementId>[]";
-  PAIR_CLASS = "uk.gov.gchq.gaffer.commonutil.pair.Pair";
-
-  $onDestroy = function() {
-    this.operationChain.setOperationChain(this.operations);
-  };
-
+  
+  /** Start executing the analytic and load the data */
   executeAnalytic = function() {
     this.analyticsService.executeAnalytic();
     this.loading = true;

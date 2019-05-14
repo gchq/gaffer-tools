@@ -1,17 +1,16 @@
 <div style="margin-left:110px">
   <h1>Parameters for {{analytic.analyticName}}</h1>
 </div>
-<form name="operationChainForm" #operationChainForm="ngForm">
+<form name="parameterPageForm" #parameterPageForm="ngForm">
   <mat-card>
-    <app-query [model]="analytic" index="$index" time-config="timeConfig" on-delete="deleteOperation(index)"
-      on-reset="resetOperation(index)" on-execute="execute(op)" chain-length="operations.length">
+    <app-query [model]="analytic">
     </app-query>
   </mat-card>
   <div style="margin-right:110px" fxLayout="row" fxLayoutAlign="end none">
     <mat-progress-spinner *ngIf="loading" class="example-margin" style="margin-right:10px" [color]="color" [mode]="mode"
-      [value]="value" [diameter]="40">
+     [diameter]="40">
     </mat-progress-spinner>
-    <button mat-raised-button color="primary" id="execute-chain" (click)="executeAnalytic()">EXECUTE
+    <button mat-raised-button color="primary" id="execute-analytic" (click)="executeAnalytic()">EXECUTE
     </button>
   </div>
 </form>
