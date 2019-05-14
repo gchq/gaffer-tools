@@ -1,5 +1,5 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { MatTableModule, MatCardModule } from '@angular/material';
+import { MatTableModule, MatCardModule, MatTableDataSource } from '@angular/material';
 import { empty} from "rxjs";
 
 import { TableComponent } from './table.component';
@@ -33,10 +33,8 @@ describe('TableComponent', () => {
         MatCardModule
       ],
       providers: [
-        { provide: ErrorService, useClass: ErrorServiceStub },
         { provide: EventsService, useClass: EventsServiceStub },
         { provide: ResultsService, useClass: ResultsServiceStub },
-        { provide: CommonService, useClass: CommonServiceStub }
       ],
     })
     .compileComponents();
@@ -61,7 +59,7 @@ describe('TableComponent', () => {
     expect(spy).toHaveBeenCalled();
   })
 
-  it('should get results at initialisation', () => {
+  it('should get the results at initialisation', () => {
     let resultsService = TestBed.get(ResultsService);
     let spy = spyOn(resultsService, 'get');
 
@@ -70,11 +68,23 @@ describe('TableComponent', () => {
     expect(spy).toHaveBeenCalled();
   })
 
-  it('should process results at initialisation', () => {
-    let spy = spyOn(component, 'processResults');
+  it('should update the table at initialisation', () => {
+    let spy = spyOn(component, 'onResultsUpdated');
 
     fixture.detectChanges();
 
     expect(spy).toHaveBeenCalled();
+  })
+
+  it('should update the results correctly', () => {
+    component.data = {
+      results: new MatTableDataSource([0])
+    };
+    let arrayNewResults = [0,1,2]
+    fixture.detectChanges();
+
+    component.onResultsUpdated(arrayNewResults)
+
+    expect(component.data.results).toEqual(arrayNewResults);
   })
 });
