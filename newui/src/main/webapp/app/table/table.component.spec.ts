@@ -74,7 +74,7 @@ describe('TableComponent', () => {
     fixture.detectChanges();
 
     expect(spy).toHaveBeenCalled();
-  })
+  });
 
   it('should update the results correctly', () => {
     component.data = {
@@ -86,5 +86,17 @@ describe('TableComponent', () => {
     component.onResultsUpdated(arrayNewResults)
 
     expect(component.data.results).toEqual(arrayNewResults);
-  })
+  });
+
+  it('should calculate the columns correctly', () => {
+    component.displayedColumns = new Set();
+    let arrayNewResults = [{key1: 'key1 value'},
+                           {key2: 'key2 value'}];
+    let keys = new Set(['key1','key2']);
+    fixture.detectChanges();
+
+    component.onResultsUpdated(arrayNewResults)
+
+    expect(component.displayedColumns).toEqual(keys);
+  });
 });

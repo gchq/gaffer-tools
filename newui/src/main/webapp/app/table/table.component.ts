@@ -16,6 +16,7 @@ export class TableComponent implements OnInit {
   };
   @ViewChild(MatSort) sort: MatSort;
   schema;
+  displayedColumns: Set<any>;
 
   constructor(
     private events: EventsService,
