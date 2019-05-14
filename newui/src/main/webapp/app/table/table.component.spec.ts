@@ -3,15 +3,14 @@ import { MatTableModule, MatCardModule, MatTableDataSource } from '@angular/mate
 import { empty} from "rxjs";
 
 import { TableComponent } from './table.component';
-import { ErrorService } from '../dynamic-input/error.service';
 import { EventsService } from '../dynamic-input/events.service';
 import { ResultsService } from '../gaffer/results.service';
-import { CommonService } from '../dynamic-input/common.service';
 
-class ErrorServiceStub {}
 class EventsServiceStub {
   subscribe = () => {
     return empty();
+  }
+  unsubscribe = (params) => {
   }
 }
 class ResultsServiceStub {
@@ -19,7 +18,6 @@ class ResultsServiceStub {
     return [];
   }
 }
-class CommonServiceStub {}
 
 describe('TableComponent', () => {
   let component: TableComponent;
@@ -98,5 +96,14 @@ describe('TableComponent', () => {
     component.onResultsUpdated(arrayNewResults)
 
     expect(component.displayedColumns).toEqual(keys);
+  });
+
+  it('should unsubscribe from resultsUpdated event', () => {
+    let eventsService = TestBed.get(EventsService);
+    let spy = spyOn(eventsService, 'unsubscribe');
+
+    fixture.destroy();
+
+    expect(spy).toHaveBeenCalledWith("resultsUpdated", component.onResultsUpdated)
   });
 });

@@ -34,7 +34,7 @@ export class TableComponent implements OnInit {
   /**
    * Unsubscribes from resultsUpdated events.
    */
-  onDestroy = function() {
+  ngOnDestroy() {
     this.events.unsubscribe("resultsUpdated", this.onResultsUpdated);
   };
 
