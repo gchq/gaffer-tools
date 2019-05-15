@@ -2,7 +2,7 @@ import { AnalyticsService } from "./analytics.service";
 import { QueryService } from './query.service';
 import { ErrorService } from '../dynamic-input/error.service';
 import { CommonService } from '../dynamic-input/common.service';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { ResultsService } from './results.service';
 import { EndpointService } from '../config/endpoint-service';
@@ -15,8 +15,24 @@ class QueryServiceStub {
     }
 }
 class ErrorServiceStub {}
-class CommonServiceStub {}
-class HttpClientStub {}
+class CommonServiceStub {
+    startsWith = function(str, prefix) {
+        // to support ES5
+        return str.indexOf(prefix) === 0;
+    };
+    parseUrl = (url) => {
+        if (!this.startsWith(url, "http")) {
+          url = "http://" + url;
+        }
+    
+        return url;
+    };
+}
+class HttpClientStub {
+    post = (params) => {
+        return empty();
+    }
+}
 class RouterStub {
     navigate = (params) => {
 
@@ -27,7 +43,12 @@ class ResultsServiceStub {
 
     }
 }
-class EndpointServiceStub {}
+class EndpointServiceStub {
+    getRestEndpoint = () => {
+        return "http://localhost:8080" + "/rest/latest";
+    }
+
+}
 
 describe('AnalyticsService', () => {
     let service: AnalyticsService;
@@ -191,5 +212,24 @@ describe('AnalyticsService', () => {
         service.executeAnalytic();
 
         expect(spy).toHaveBeenCalledWith(operation, jasmine.any(Function));
+    });
+
+    it('should get the analytics from the server', () => {
+        let http = TestBed.get(HttpClient);
+        let spy = spyOn(http, 'post');
+        let common = TestBed.get(CommonService);
+        let endpoint = TestBed.get(EndpointService);
+        let queryUrl = common.parseUrl(
+            endpoint.getRestEndpoint() + "/graph/operations/execute"
+        );
+        let operation = {
+            class: "uk.gov.gchq.gaffer.operation.analytic.GetAllAnalyticOperations"
+        };
+        let headers = new HttpHeaders();
+        headers = headers.set("Content-Type", "application/json; charset=utf-8");
+
+        service.reloadAnalytics(true).subscribe(
+            () => {expect(spy).toHaveBeenCalledWith(queryUrl, operation, { headers: headers });}
+        );
     });
 });
