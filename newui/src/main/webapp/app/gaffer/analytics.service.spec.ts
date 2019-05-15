@@ -6,17 +6,22 @@ import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { ResultsService } from './results.service';
 import { EndpointService } from '../config/endpoint-service';
-import { TestBed, async, ComponentFixture } from '@angular/core/testing';
+import { TestBed, async, ComponentFixture, fakeAsync, tick } from '@angular/core/testing';
+import { empty, Observable, from, throwError, of} from "rxjs";
 
 class QueryServiceStub {
-    executeQuery = (params) => {
-
+    executeQuery = (operation, onSuccess) => {
+        onSuccess();
     }
 }
 class ErrorServiceStub {}
 class CommonServiceStub {}
 class HttpClientStub {}
-class RouterStub {}
+class RouterStub {
+    navigate = (params) => {
+
+    }
+}
 class ResultsServiceStub {
     clear = () => {
 
@@ -130,5 +135,22 @@ describe('AnalyticsService', () => {
         service.executeAnalytic();
 
         expect(spy).toHaveBeenCalled();
+    })
+
+    it('Should navigate to the results page after execution', () => {
+        let router = TestBed.get(Router);
+        let spy = spyOn(router, 'navigate');
+        service.arrayAnalytic = {
+            operationName: 'Test name'
+        }
+
+        service.executeAnalytic();
+
+        //tick();
+        expect(spy).toHaveBeenCalledWith(['/results'])
+    })
+
+    it('Should execute the analytic correctly', () => {
+
     })
   });

@@ -92,8 +92,8 @@ export class AnalyticsService {
     this.results.clear();
 
     //Execute the analytic and then navigate when finished loading
-    this.query.executeQuery(operation, () => {
-      this.router.navigate(['/results'])});
+    this.query.executeQuery(operation, 
+      () => {this.router.navigate(['/results'])});
   };
 
   /** Get the analytics from the server */
