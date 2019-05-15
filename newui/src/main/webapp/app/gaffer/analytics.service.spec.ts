@@ -8,12 +8,20 @@ import { ResultsService } from './results.service';
 import { EndpointService } from '../config/endpoint-service';
 import { TestBed, async, ComponentFixture } from '@angular/core/testing';
 
-class QueryServiceStub {}
+class QueryServiceStub {
+    executeQuery = (params) => {
+
+    }
+}
 class ErrorServiceStub {}
 class CommonServiceStub {}
 class HttpClientStub {}
 class RouterStub {}
-class ResultsServiceStub {}
+class ResultsServiceStub {
+    clear = () => {
+
+    }
+}
 class EndpointServiceStub {}
 
 describe('AnalyticsService', () => {
@@ -110,5 +118,17 @@ describe('AnalyticsService', () => {
         service.createArrayAnalytic(analytic);
 
         expect(service.arrayAnalytic).toEqual(arrayAnalytic);
+    })
+
+    it('Should clear the table results after execution', () => {
+        let resultsService = TestBed.get(ResultsService);
+        let spy = spyOn(resultsService, 'clear');
+        service.arrayAnalytic = {
+            operationName: 'Test name'
+        }
+
+        service.executeAnalytic();
+
+        expect(spy).toHaveBeenCalled();
     })
   });
