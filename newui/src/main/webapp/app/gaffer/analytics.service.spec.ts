@@ -146,11 +146,50 @@ describe('AnalyticsService', () => {
 
         service.executeAnalytic();
 
-        //tick();
         expect(spy).toHaveBeenCalledWith(['/results'])
     })
 
     it('Should execute the analytic correctly', () => {
+        let operationName = 'test name';
+        service.arrayAnalytic = {
+            uiMapping : [
+                [
+                    'key1', 
+                    {
+                        label: "Label",
+                        userInputType: "TextBox", 
+                        parameterName: "param1", 
+                        inputClass: "java.lang.Integer",
+                        currentValue: 'value1'
+                    }
+                ],
+                [
+                    'key2', 
+                    {
+                        label: "Label",
+                        userInputType: "TextBox", 
+                        parameterName: "param2", 
+                        inputClass: "java.lang.Integer",
+                        currentValue: 'value2'
+                    }
+                ],
+            ],
+            operationName: operationName
+        }
+        let parametersMap = {
+            param1: 'value1',
+            param2: 'value2'
+        }
+        let operation = {
+            class: "uk.gov.gchq.gaffer.named.operation.NamedOperation",
+            operationName: operationName,
+            parameters: parametersMap
+        };
+        let queryService = TestBed.get(QueryService);
+        let spy = spyOn(queryService, 'executeQuery');
 
-    })
-  });
+        service.executeAnalytic();
+
+        expect(spy).toHaveBeenCalledWith(operation, jasmine.any(Function));
+    });
+});

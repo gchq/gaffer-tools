@@ -52,7 +52,7 @@ export class AnalyticsService {
 
       //Convert the key value map of parameters into an iterable array
       let arrayParams = analytic.uiMapping;
-      if (arrayParams != null || arrayParams != undefined) {
+      if (arrayParams != null && arrayParams != undefined) {
         arrayParams = Object.keys(analytic.uiMapping).map(function(key) {
           return [key, analytic.uiMapping[key]];
         });
