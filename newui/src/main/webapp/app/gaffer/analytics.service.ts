@@ -33,12 +33,12 @@ export class AnalyticsService {
   }
 
   /** Update the analytic operation on change of parameters */
-  updateAnalytic = function(parameters, newValue, parameterName) {
+  updateAnalytic = function(newValue, parameterName) {
     //Convert to an integer
     newValue = parseInt(newValue);
     //Look for the parameter in the list of parameters and set the new current value
-    for (let i = 0; i < parameters.length; i++) {
-      let parameterPair = parameters[i];
+    for (let i = 0; i < this.arrayAnalytic.uiMapping.length; i++) {
+      let parameterPair = this.arrayAnalytic.uiMapping[i];
       if (parameterPair[0] === parameterName) {
         this.arrayAnalytic.uiMapping[i][1].currentValue = newValue;
         return;

@@ -6,7 +6,7 @@ import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { ResultsService } from './results.service';
 import { EndpointService } from '../config/endpoint-service';
-import { TestBed, async } from '@angular/core/testing';
+import { TestBed, async, ComponentFixture } from '@angular/core/testing';
 
 class QueryServiceStub {}
 class ErrorServiceStub {}
@@ -45,18 +45,41 @@ describe('AnalyticsService', () => {
       expect(service.getAnalytic()).toEqual(analytic);
     });
    
-    // it('Should update the analytic correctly', () => {
-    //     let parameters = 'Parameters';
-    //     let newValue = 'New Value';
-    //     let parameterName = 'Parameter Name';
-    //     let arrayAnalytic = {
-    //         []
-    //     }
+    it('Should update the analytic correctly', () => {
+        let newValue = 8;
+        let parameterName = 'key1';
+        service.arrayAnalytic = {
+            uiMapping : [
+                [
+                    'key1', 
+                    {
+                        label: "Label",
+                        userInputType: "TextBox", 
+                        parameterName: "Parameter Name", 
+                        inputClass: "java.lang.Integer",
+                    }
+                ],
+            ]            
+        }
+        let arrayAnalytic = {
+            uiMapping : [
+                [
+                    'key1', 
+                    {
+                        label: "Label",
+                        userInputType: "TextBox", 
+                        parameterName: "Parameter Name", 
+                        inputClass: "java.lang.Integer",
+                        currentValue: newValue
+                    }
+                ],
+            ]
+        }
 
-    //     service.updateAnalytic(parameters, newValue, parameterName);
+        service.updateAnalytic(newValue, parameterName);
 
-    //     expect(service.arrayAnalytic).toEqual();
-    // })
+        expect(service.arrayAnalytic).toEqual(arrayAnalytic);
+    })
 
     it('Should create the array analytic correctly', () => {
         let analytic = {

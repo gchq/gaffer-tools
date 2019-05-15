@@ -8,8 +8,14 @@ import { ParameterFormComponent } from './parameter-form.component';
 import { AnalyticsService } from '../gaffer/analytics.service';
 
 class AnalyticsServiceStub {
-  updateAnalytic = () => {
+  updateAnalytic = (params) => {
 
+  }
+  getAnalytic = (params) => {
+    let analytic = {
+      uiMapping : []
+    }
+    return analytic
   }
 }
 
@@ -47,13 +53,12 @@ describe('ParameterFormComponent', () => {
   it('should call update analytic on change of input', fakeAsync(() => {
     let analyticsService = TestBed.get(AnalyticsService);
     let spy = spyOn(analyticsService, 'updateAnalytic');
-    component.parameters = 'Test parameters';
     let parameter = 'Test parameter';
     let parameterName = 'Test parameter name';
 
     component.onChange(parameter,parameterName);
 
-    expect(spy).toHaveBeenCalledWith(component.parameters,parameter,parameterName);
+    expect(spy).toHaveBeenCalledWith(parameter,parameterName);
   }))
 
   it('should change stored parameter value on change of input', async(() => {
