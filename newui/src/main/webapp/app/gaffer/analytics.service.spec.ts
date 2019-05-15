@@ -1,41 +1,91 @@
-// import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-// import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-// import { empty} from "rxjs";
+import { AnalyticsService } from "./analytics.service";
+import { QueryService } from './query.service';
+import { ErrorService } from '../dynamic-input/error.service';
+import { CommonService } from '../dynamic-input/common.service';
+import { HttpClient } from '@angular/common/http';
+import { Router } from '@angular/router';
+import { ResultsService } from './results.service';
+import { EndpointService } from '../config/endpoint-service';
+import { TestBed, async } from '@angular/core/testing';
 
-// import { AnalyticsComponent } from '../analytics/analytics.component';
-// import { AnalyticsService } from '../gaffer/analytics.service';
-// import { ErrorService } from '../dynamic-input/error.service';
+class QueryServiceStub {}
+class ErrorServiceStub {}
+class CommonServiceStub {}
+class HttpClientStub {}
+class RouterStub {}
+class ResultsServiceStub {}
+class EndpointServiceStub {}
 
-// class ErrorServiceStub {}
+describe('AnalyticsService', () => {
+    let service: AnalyticsService;
 
-// describe('AnalyticsService', () => {
-//   let component: AnalyticsService;
-//   let fixture: ComponentFixture<AnalyticsService>;
+    beforeEach(async(() => {
+        TestBed.configureTestingModule({
+          providers: [
+            AnalyticsService,
+            { provide: QueryService, useClass: QueryServiceStub},
+            { provide: ErrorService, useClass: ErrorServiceStub},
+            { provide: CommonService, useClass: CommonServiceStub},
+            { provide: HttpClient, useClass: HttpClientStub},
+            { provide: Router, useClass: RouterStub},
+            { provide: ResultsService, useClass: ResultsServiceStub},
+            { provide: EndpointService, useClass: EndpointServiceStub},
+          ],
+        })
+        .compileComponents();
 
-//   beforeEach(async(() => {
-//     TestBed.configureTestingModule({
-//       declarations: [ AnalyticsService ],
-//     //   schemas: [ CUSTOM_ELEMENTS_SCHEMA ],
-//       providers: [
-//         // { provide: ErrorService, useClass: ErrorServiceStub}
-//       ],
-//     })
-//     .compileComponents();
-//   }));
+        service = TestBed.get(AnalyticsService);
+    }));
+   
+    it('Should get the analytic correctly', () => {
+      let analytic = [0,1,2];
 
-//   beforeEach(() => {
-//     fixture = TestBed.createComponent(AnalyticsService);
-//     component = fixture.componentInstance;
-//   });
+      service.arrayAnalytic = analytic;
 
-//   it('should be created', () => {
-//     fixture.detectChanges();
-//     expect(component).toBeTruthy();
-//   });
+      expect(service.getAnalytic()).toEqual(analytic);
+    });
+   
+    // it('Should update the analytic correctly', () => {
+    //     let parameters = 'Parameters';
+    //     let newValue = 'New Value';
+    //     let parameterName = 'Parameter Name';
+    //     let arrayAnalytic = {
+    //         []
+    //     }
 
-// //   it('should call reload analytics at initialisation', () => {
-// //     let spy = spyOn(component, 'reloadAnalytics');
-// //     fixture.detectChanges();
-// //     expect(spy).toHaveBeenCalledWith();
-// //   })
-// });
+    //     service.updateAnalytic(parameters, newValue, parameterName);
+
+    //     expect(service.arrayAnalytic).toEqual();
+    // })
+
+    it('Should create the array analytic correctly', () => {
+        let analytic = {
+            uiMapping : {
+                key1: {
+                    label: "Label",
+                    userInputType: "TextBox", 
+                    parameterName: "Parameter Name", 
+                    inputClass: "java.lang.Integer"
+                }
+            }
+        }
+        let arrayAnalytic = {
+            uiMapping : [
+                [
+                    'key1', 
+                    {
+                        label: "Label",
+                        userInputType: "TextBox", 
+                        parameterName: "Parameter Name", 
+                        inputClass: "java.lang.Integer",
+                        currentValue: null
+                    }
+                ],
+            ]
+        }
+
+        service.createArrayAnalytic(analytic);
+
+        expect(service.arrayAnalytic).toEqual(arrayAnalytic);
+    })
+  });

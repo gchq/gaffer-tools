@@ -30,7 +30,6 @@ describe('AppComponent', () => {
   it('should be created', () => {
     fixture = TestBed.createComponent(AppComponent);
     component = fixture.debugElement.componentInstance;
-    //component = fixture.componentInstance;
     fixture.detectChanges();
     expect(component).toBeTruthy();
   });

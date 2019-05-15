@@ -12,6 +12,4 @@ export class NavComponent {
     { path: "results", label: "RESULTS" },
     { path: "about", label: "ABOUT" }
   ];
-  activeLink = this.navLinks[0];
-  background = "";
 }
