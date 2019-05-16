@@ -122,7 +122,6 @@ export class AnalyticsService {
               null,
               err
             );
-            console.error(err);
             observer.error(err);
           } else {
             observer.next(err);
