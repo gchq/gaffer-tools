@@ -81,7 +81,6 @@ export class QueryService {
           null,
           err
         );
-        console.error(err);
         if (onFailure) {
           onFailure(err);
         }
@@ -122,7 +121,6 @@ export class QueryService {
             null,
             err
           );
-          console.error(err);
         }
       }
     );

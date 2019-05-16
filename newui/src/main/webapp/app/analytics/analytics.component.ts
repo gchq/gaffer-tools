@@ -30,7 +30,6 @@ export class AnalyticsComponent implements OnInit {
           null,
           err
         );
-        console.error(err);
       }
     );
   };
