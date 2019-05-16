@@ -60,7 +60,7 @@ describe('QueryService', () => {
         service = TestBed.get(QueryService);
     }));
 
-    it('should show an error notification if too many results', fakeAsync(() => {
+    it('should show an error notification if too many results', () => {
         let error = TestBed.get(ErrorService);
         let spy = spyOn(error, 'handle');
         let resultLimit = 1000;
@@ -73,7 +73,18 @@ describe('QueryService', () => {
 
         service.executeQuery(null,() => {},() => {});
 
-        tick();
         expect(spy).toHaveBeenCalledWith(message,null,null);
-    }))
+    })
+
+    it('should store the results retrieved from the server', () => {
+        let results = TestBed.get(ResultsService);
+        let spy = spyOn(results, 'update');
+        let http = TestBed.get(HttpClient);
+        let data = [0];
+        spyOn(http, 'post').and.returnValue(of(data));
+
+        service.executeQuery(null,() => {},() => {});
+
+        expect(spy).toHaveBeenCalledWith(data);
+    })
 });
