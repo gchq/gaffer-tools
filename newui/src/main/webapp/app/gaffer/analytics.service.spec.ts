@@ -14,7 +14,11 @@ class QueryServiceStub {
         onSuccess();
     }
 }
-class ErrorServiceStub {}
+class ErrorServiceStub {
+    handle = () => {
+
+    }
+}
 class CommonServiceStub {
     startsWith = function(str, prefix) {
         // to support ES5
@@ -214,7 +218,7 @@ describe('AnalyticsService', () => {
         expect(spy).toHaveBeenCalledWith(operation, jasmine.any(Function));
     });
 
-    it('should get the analytics from the server', () => {
+    it('should post a request to the server', () => {
         let http = TestBed.get(HttpClient);
         let spy = spyOn(http, 'post');
         let common = TestBed.get(CommonService);
@@ -232,4 +236,17 @@ describe('AnalyticsService', () => {
             () => {expect(spy).toHaveBeenCalledWith(queryUrl, operation, { headers: headers });}
         );
     });
+
+    // it('should show an error if failed to load analytics', () => {
+    //     let error = TestBed.get(ErrorService);
+    //     let spy = spyOn(error, 'handle');
+    //     let http = TestBed.get(HttpClient);
+    //     let exampleError = new Error();
+    //     let testData = throwError(exampleError);
+    //     spyOn(http, 'post').and.returnValue(testData);
+
+    //     service.reloadAnalytics(true);
+
+    //     expect(spy).toHaveBeenCalledWith('Failed to load analytics, see the console for details', null, exampleError);
+    // })
 });
