@@ -8,8 +8,7 @@ import { AppComponent } from './app.component';
   selector: 'app-nav',
   template: ''
 })
-class MockNavComponent {
-}
+class MockNavComponent {}
 
 describe('AppComponent', () => {
   let component: AppComponent;

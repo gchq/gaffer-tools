@@ -1,16 +1,13 @@
-import { async, ComponentFixture, TestBed, tick, fakeAsync } from '@angular/core/testing';
+import { async, ComponentFixture, TestBed, fakeAsync } from '@angular/core/testing';
 import { MatFormFieldModule, MatInputModule } from '@angular/material';
 import { By } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-
 
 import { ParameterFormComponent } from './parameter-form.component';
 import { AnalyticsService } from '../gaffer/analytics.service';
 
 class AnalyticsServiceStub {
-  updateAnalytic = (params) => {
-
-  }
+  updateAnalytic = (params) => {}
   getAnalytic = (params) => {
     let analytic = {
       uiMapping : []
@@ -61,7 +58,7 @@ describe('ParameterFormComponent', () => {
     expect(spy).toHaveBeenCalledWith(parameter,parameterName);
   }))
 
-  it('should change stored parameter value on change of input', async(() => {
+  it('should change the stored parameter value when the input is changed', async(() => {
     let spy = spyOn(component, 'onChange');
     component.parameters = [
       [ null, 

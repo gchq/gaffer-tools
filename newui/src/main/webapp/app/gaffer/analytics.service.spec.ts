@@ -1,13 +1,13 @@
+import { TestBed, async, fakeAsync, tick } from '@angular/core/testing';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Router } from '@angular/router';
+
 import { AnalyticsService } from "./analytics.service";
 import { QueryService } from './query.service';
 import { ErrorService } from '../dynamic-input/error.service';
 import { CommonService } from '../dynamic-input/common.service';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Router } from '@angular/router';
 import { ResultsService } from './results.service';
 import { EndpointService } from '../config/endpoint-service';
-import { TestBed, async, ComponentFixture, fakeAsync, tick } from '@angular/core/testing';
-import { empty, Observable, from, throwError, of} from "rxjs";
 
 class QueryServiceStub {
     executeQuery = (operation, onSuccess) => {
@@ -15,9 +15,7 @@ class QueryServiceStub {
     }
 }
 class ErrorServiceStub {
-    handle = () => {
-
-    }
+    handle = () => {}
 }
 class CommonServiceStub {
     startsWith = function(str, prefix) {
@@ -34,24 +32,19 @@ class CommonServiceStub {
 }
 class HttpClientStub {
     post = (params) => {
-        return ;
+        return;
     }
 }
 class RouterStub {
-    navigate = (params) => {
-
-    }
+    navigate = (params) => {}
 }
 class ResultsServiceStub {
-    clear = () => {
-
-    }
+    clear = () => {}
 }
 class EndpointServiceStub {
     getRestEndpoint = () => {
         return "http://localhost:8080" + "/rest/latest";
     }
-
 }
 
 describe('AnalyticsService', () => {
@@ -75,15 +68,16 @@ describe('AnalyticsService', () => {
         service = TestBed.get(AnalyticsService);
     }));
    
-    it('Should get the analytic correctly', () => {
+    it('Should be able to get the analytic', () => {
       let analytic = [0,1,2];
-
       service.arrayAnalytic = analytic;
 
-      expect(service.getAnalytic()).toEqual(analytic);
+      let result = service.getAnalytic();
+
+      expect(result).toEqual(analytic);
     });
    
-    it('Should update the analytic correctly', () => {
+    it('Should be able to update the analytic', () => {
         let newValue = 8;
         let parameterName = 'key1';
         service.arrayAnalytic = {
@@ -119,7 +113,7 @@ describe('AnalyticsService', () => {
         expect(service.arrayAnalytic).toEqual(arrayAnalytic);
     })
 
-    it('Should create the array analytic correctly', () => {
+    it('Should be able to create the iterable array analytic', () => {
         let analytic = {
             uiMapping : {
                 key1: {
@@ -150,7 +144,7 @@ describe('AnalyticsService', () => {
         expect(service.arrayAnalytic).toEqual(arrayAnalytic);
     })
 
-    it('Should clear the table results after execution', () => {
+    it('Should be able to clear the table results after execution', () => {
         let resultsService = TestBed.get(ResultsService);
         let spy = spyOn(resultsService, 'clear');
         service.arrayAnalytic = {
@@ -162,7 +156,7 @@ describe('AnalyticsService', () => {
         expect(spy).toHaveBeenCalled();
     })
 
-    it('Should navigate to the results page after execution', () => {
+    it('Should be able to navigate to the results page after execution', () => {
         let router = TestBed.get(Router);
         let spy = spyOn(router, 'navigate');
         service.arrayAnalytic = {
@@ -174,7 +168,7 @@ describe('AnalyticsService', () => {
         expect(spy).toHaveBeenCalledWith(['/results'])
     })
 
-    it('Should execute the analytic correctly', () => {
+    it('Should be able to execute the analytic', () => {
         let operationName = 'test name';
         service.arrayAnalytic = {
             uiMapping : [
@@ -218,7 +212,7 @@ describe('AnalyticsService', () => {
         expect(spy).toHaveBeenCalledWith(operation, jasmine.any(Function));
     });
 
-    it('should post a request to the server', fakeAsync(() => {
+    it('should be able to post a request to the server', fakeAsync(() => {
         let http = TestBed.get(HttpClient);
         let spy = spyOn(http, 'post');
         let common = TestBed.get(CommonService);
@@ -237,17 +231,4 @@ describe('AnalyticsService', () => {
         tick();
         expect(spy).toHaveBeenCalledWith(queryUrl, operation, { headers: headers });
     }));
-
-    // it('should show an error if failed to load analytics', () => {
-    //     let error = TestBed.get(ErrorService);
-    //     let spy = spyOn(error, 'handle');
-    //     let http = TestBed.get(HttpClient);
-    //     let exampleError = new Error();
-    //     let testData = throwError(exampleError);
-    //     spyOn(http, 'post').and.returnValue(testData);
-
-    //     service.reloadAnalytics(true);
-
-    //     expect(spy).toHaveBeenCalledWith('Failed to load analytics, see the console for details', null, exampleError);
-    // })
 });

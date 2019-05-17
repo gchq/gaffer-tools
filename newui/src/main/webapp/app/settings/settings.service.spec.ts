@@ -1,5 +1,5 @@
-import { TestBed, async, ComponentFixture, fakeAsync, tick } from '@angular/core/testing';
-import { empty, Observable, from, throwError, of} from "rxjs";
+import { TestBed, async} from '@angular/core/testing';
+
 import { SettingsService } from './settings.service';
 
 describe('SettingsService', () => {
@@ -16,7 +16,7 @@ describe('SettingsService', () => {
         service = TestBed.get(SettingsService);
     }));
 
-    it('should get the result limit correctly', () => {
+    it('should be able to get the result limit', () => {
         let resultLimit = service.resultLimit;
 
         let testResultLimit = service.getResultLimit();
@@ -24,7 +24,7 @@ describe('SettingsService', () => {
         expect(testResultLimit).toEqual(resultLimit);        
     })
 
-    it('should set the result limit correctly', () => {
+    it('should be able to set the result limit', () => {
         let resultLimit = 2000;
 
         service.setResultLimit(resultLimit);

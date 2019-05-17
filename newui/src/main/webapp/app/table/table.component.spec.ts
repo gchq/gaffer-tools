@@ -10,8 +10,7 @@ class EventsServiceStub {
   subscribe = () => {
     return empty();
   }
-  unsubscribe = (params) => {
-  }
+  unsubscribe = (params) => {}
 }
 class ResultsServiceStub {
   get = () => {
@@ -48,7 +47,7 @@ describe('TableComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should call events subscribe at initialisation', () => {
+  it('should subscribe to the results updated event at initialisation', () => {
     let eventsService = TestBed.get(EventsService);
     let spy = spyOn(eventsService, 'subscribe');
 
@@ -74,7 +73,7 @@ describe('TableComponent', () => {
     expect(spy).toHaveBeenCalled();
   });
 
-  it('should update the results correctly', () => {
+  it('should be able to update the results', () => {
     component.data = {
       results: new MatTableDataSource([0])
     };
@@ -86,7 +85,7 @@ describe('TableComponent', () => {
     expect(component.data.results.data).toEqual(arrayNewResults);
   });
 
-  it('should calculate the columns correctly', () => {
+  it('should be able to calculate the columns', () => {
     component.displayedColumns = new Set();
     let arrayNewResults = [{key1: 'key1 value'},
                            {key2: 'key2 value'}];
@@ -98,7 +97,7 @@ describe('TableComponent', () => {
     expect(component.displayedColumns).toEqual(keys);
   });
 
-  it('should unsubscribe from resultsUpdated event', () => {
+  it('should unsubscribe from all events when its destroyed', () => {
     let eventsService = TestBed.get(EventsService);
     let spy = spyOn(eventsService, 'unsubscribe');
 

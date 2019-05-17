@@ -1,23 +1,20 @@
 
-import { TestBed, async, tick, fakeAsync } from '@angular/core/testing';
+import { TestBed, async} from '@angular/core/testing';
+import { empty, of } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
+
 import { QueryService } from './query.service';
 import { CommonService } from '../dynamic-input/common.service';
 import { ErrorService } from '../dynamic-input/error.service';
-import { HttpClient } from '@angular/common/http';
 import { SettingsService } from '../settings/settings.service';
 import { ResultsService } from './results.service';
 import { EndpointService } from '../config/endpoint-service';
-import { empty, from, of } from 'rxjs';
 
 class CommonServiceStub {
-    parseUrl = () => {
-
-    }
+    parseUrl = () => {}
 }
 class ErrorServiceStub {
-    handle = () => {
-
-    }
+    handle = () => {}
 }
 class HttpClientStub {
     post = () => {
@@ -30,14 +27,10 @@ class SettingsServiceStub {
     }
 }
 class ResultsServiceStub {
-    update = () => {
-
-    }
+    update = () => {}
 }
 class EndpointServiceStub {
-    getRestEndpoint = () => {
-
-    }
+    getRestEndpoint = () => {}
 }
 
 describe('QueryService', () => {
@@ -60,7 +53,7 @@ describe('QueryService', () => {
         service = TestBed.get(QueryService);
     }));
 
-    it('should show an error notification if too many results', () => {
+    it('should show an error notification if there are too many results', () => {
         let error = TestBed.get(ErrorService);
         let spy = spyOn(error, 'handle');
         let resultLimit = 1000;

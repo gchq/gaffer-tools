@@ -1,11 +1,10 @@
 import { TestBed, async, fakeAsync, tick } from '@angular/core/testing';
-import { ErrorService } from './error.service';
 import { ToastrService } from 'ngx-toastr';
 
-class ToastrServiceStub {
-    error = (params) => {
+import { ErrorService } from './error.service';
 
-    }
+class ToastrServiceStub {
+    error = (params) => {}
 }
 
 describe('ErrorService', () => {
@@ -23,7 +22,7 @@ describe('ErrorService', () => {
         service = TestBed.get(ErrorService);
     }));
 
-    it('should handle an error with message correctly', fakeAsync(() => {
+    it('should be able to show an error notification with a particular message', fakeAsync(() => {
         let toastr = TestBed.get(ToastrService);
         let spy = spyOn(toastr, 'error').and.callFake(() => {});
         let msg = 'message';

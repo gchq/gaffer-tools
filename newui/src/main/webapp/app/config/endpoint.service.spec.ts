@@ -1,6 +1,6 @@
+import { TestBed, async} from '@angular/core/testing';
+
 import { EndpointService } from '../config/endpoint-service';
-import { TestBed, async, ComponentFixture, fakeAsync, tick } from '@angular/core/testing';
-import { empty, Observable, from, throwError, of} from "rxjs";
 
 describe('EndpointService', () => {
     let service: EndpointService;
@@ -16,7 +16,7 @@ describe('EndpointService', () => {
         service = TestBed.get(EndpointService);
     }));
 
-    it('should get the REST endpoint correctly', () => {
+    it('should be able to get the REST endpoint', () => {
         let endpoint = service.defaultRestEndpoint;
 
         let testEndpoint = service.getRestEndpoint();
@@ -24,7 +24,7 @@ describe('EndpointService', () => {
         expect(testEndpoint).toEqual(endpoint);
     })
 
-    it('should get the UI endpoint correctly', () => {
+    it('should be able to get the UI endpoint', () => {
         let endpoint = service.defaultUIEndpoint;
 
         let testEndpoint = service.getUIEndpoint();

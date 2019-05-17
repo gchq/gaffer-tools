@@ -1,11 +1,10 @@
 import { TestBed, async} from '@angular/core/testing';
+
 import { EventsService } from './events.service';
 import { CommonService } from './common.service';
 
 class CommonServiceStub {
-    arrayContainsObject = () => {
-
-    }
+    arrayContainsObject = () => {}
 }
 
 describe('EventsService', () => {
@@ -23,7 +22,7 @@ describe('EventsService', () => {
         service = TestBed.get(EventsService);
     }));
 
-    it('should add a callback function not already added', () => {
+    it('should be able to add a callback function', () => {
         let eventName = 'test event name'
         let callback = () => { console.log('test callback function') }; 
         service.events = {};
@@ -34,7 +33,7 @@ describe('EventsService', () => {
         expect(result).toBeTruthy();
     })
 
-    it('should call all the callbacks of an event', () => {
+    it('should be able to call all the callback functions of an event', () => {
         let testObject = {
             callback1 : () => { console.log('callback1') },
             callback2 : () => { console.log('callback2') }
@@ -50,7 +49,7 @@ describe('EventsService', () => {
         expect(spy2).toHaveBeenCalled();
     })
 
-    it('should unsubscribe a callback function from an event', () => {
+    it('should be able to unsubscribe a callback function from an event', () => {
         let eventName = 'test event';
         let callback = () => { console.log('callback1') }
         service.events[eventName] = [callback];

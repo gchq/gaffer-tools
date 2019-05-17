@@ -5,9 +5,7 @@ import { ResultsService } from './results.service';
 import { EventsService } from '../dynamic-input/events.service';
 
 class EventsServiceStub {
-    broadcast = (params) => {
-
-    }
+    broadcast = (params) => {}
 }
 
 describe('ResultsService', () => {
@@ -25,7 +23,7 @@ describe('ResultsService', () => {
         service = TestBed.get(ResultsService);
     }));
 
-    it('should get the results correctly', () => {
+    it('should be able to get the results', () => {
         let results = service.results;
 
         let testResults = service.get();
@@ -33,7 +31,7 @@ describe('ResultsService', () => {
         expect(testResults).toEqual(results);
     })
 
-    it('should clear the results', () => {
+    it('should be able to clear the results', () => {
         service.results = [0,1,2];
 
         service.clear();
@@ -41,7 +39,7 @@ describe('ResultsService', () => {
         expect(service.results).toEqual([]);
     })
 
-    it('should broadcast that the results have been updated when clearing', () => {
+    it('should be able to broadcast that the results have been updated when clearing', () => {
         let events = TestBed.get(EventsService);
         let spy = spyOn(events, 'broadcast');
 
@@ -50,7 +48,7 @@ describe('ResultsService', () => {
         expect(spy).toHaveBeenCalledWith('resultsUpdated',[[]]);
     })
    
-    it('should broadcast that the results have been updated when updating', () => {
+    it('should be able to broadcast that the results have been updated when updating', () => {
         let events = TestBed.get(EventsService);
         let spy = spyOn(events, 'broadcast');
         let results = [0,1,2];
@@ -60,7 +58,7 @@ describe('ResultsService', () => {
         expect(spy).toHaveBeenCalledWith('resultsUpdated',[results]);
     })
 
-    it('should convert results to an array if one result', () => {
+    it('should be able to convert results to an array if there is only one result', () => {
         let events = TestBed.get(EventsService);
         let spy = spyOn(events, 'broadcast');
         let results = 0;
