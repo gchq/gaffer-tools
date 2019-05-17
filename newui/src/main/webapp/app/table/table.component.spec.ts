@@ -78,12 +78,12 @@ describe('TableComponent', () => {
     component.data = {
       results: new MatTableDataSource([0])
     };
-    let arrayNewResults = [0,1,2]
+    let arrayNewResults = [0,1,2];
     fixture.detectChanges();
 
-    component.onResultsUpdated(arrayNewResults)
+    component.onResultsUpdated(arrayNewResults);
 
-    expect(component.data.results).toEqual(arrayNewResults);
+    expect(component.data.results.data).toEqual(arrayNewResults);
   });
 
   it('should calculate the columns correctly', () => {

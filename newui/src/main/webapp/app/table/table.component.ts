@@ -12,11 +12,12 @@ import { CommonService } from "../dynamic-input/common.service";
 @Injectable()
 export class TableComponent implements OnInit {
   data = {
-    results: new MatTableDataSource()
+    results: new MatTableDataSource([])
   };
   @ViewChild(MatSort) sort: MatSort;
   schema;
   displayedColumns: Set<any>;
+  // data.results: Set<any>
 
   constructor(
     private events: EventsService,
@@ -43,11 +44,10 @@ export class TableComponent implements OnInit {
    * */
   onResultsUpdated = function(resultsData) {
     if (resultsData) {
-      this.data.results = resultsData;
 
       //Get all the different column names
       this.displayedColumns = new Set();
-      this.data.results.forEach((item, index) => {
+      resultsData.forEach((item, index) => {
         
         let keys = Object.keys(item);
         for (let i in keys) {
@@ -55,7 +55,7 @@ export class TableComponent implements OnInit {
           //If the key is class then strip the class name to the last part after the full stop
           let key = keys[i];
           if (key === 'class') {
-            this.data.results[index][key] = this.data.results[index][key].split('.').pop();
+            resultsData[index][key] = resultsData[index][key].split('.').pop();
           }
   
           //Get a set of all the different keys to show as columns
@@ -63,6 +63,7 @@ export class TableComponent implements OnInit {
         }
       });
     }
+    this.data.results = new MatTableDataSource(resultsData);
     this.columnsToDisplay = this.displayedColumns;
   };
 }
