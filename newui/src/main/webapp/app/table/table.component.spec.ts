@@ -53,7 +53,7 @@ describe('TableComponent', () => {
 
     fixture.detectChanges();
 
-    expect(spy).toHaveBeenCalled();
+    expect(spy).toHaveBeenCalledWith('resultsUpdated',jasmine.any(Function));
   })
 
   it('should get the results at initialisation', () => {
