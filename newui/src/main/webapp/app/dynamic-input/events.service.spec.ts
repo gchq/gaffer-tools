@@ -49,4 +49,15 @@ describe('EventsService', () => {
         expect(spy1).toHaveBeenCalled();
         expect(spy2).toHaveBeenCalled();
     })
+
+    it('should unsubscribe a callback function from an event', () => {
+        let eventName = 'test event';
+        let callback = () => { console.log('callback1') }
+        service.events[eventName] = [callback];
+
+        service.unsubscribe(eventName, callback);
+
+        let functions = service.events[eventName];
+        expect(functions).not.toContain(callback)
+    })
 });
