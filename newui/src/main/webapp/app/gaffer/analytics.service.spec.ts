@@ -34,7 +34,7 @@ class CommonServiceStub {
 }
 class HttpClientStub {
     post = (params) => {
-        return empty();
+        return ;
     }
 }
 class RouterStub {
@@ -218,7 +218,7 @@ describe('AnalyticsService', () => {
         expect(spy).toHaveBeenCalledWith(operation, jasmine.any(Function));
     });
 
-    it('should post a request to the server', () => {
+    it('should post a request to the server', fakeAsync(() => {
         let http = TestBed.get(HttpClient);
         let spy = spyOn(http, 'post');
         let common = TestBed.get(CommonService);
@@ -232,10 +232,11 @@ describe('AnalyticsService', () => {
         let headers = new HttpHeaders();
         headers = headers.set("Content-Type", "application/json; charset=utf-8");
 
-        service.reloadAnalytics(true).subscribe(
-            () => {expect(spy).toHaveBeenCalledWith(queryUrl, operation, { headers: headers });}
-        );
-    });
+        service.reloadAnalytics(true).subscribe(() => {},() => {});
+
+        tick();
+        expect(spy).toHaveBeenCalledWith(queryUrl, operation, { headers: headers });
+    }));
 
     // it('should show an error if failed to load analytics', () => {
     //     let error = TestBed.get(ErrorService);
