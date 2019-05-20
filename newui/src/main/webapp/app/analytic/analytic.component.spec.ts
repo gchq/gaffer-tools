@@ -7,11 +7,8 @@ import { AnalyticComponent } from './analytic.component';
 import { AnalyticsService } from '../gaffer/analytics.service';
 
 class RouterStub {
-  navigate(params) {
-
-  }
+  navigate = () => {}
 }
-
 class AnalyticsServiceStub {
   createArrayAnalytic = () => {
     return [];
@@ -54,7 +51,7 @@ describe('AnalyticComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should call navigate on execute', () => {
+  it('should navigate on execution of analytic', () => {
     fixture.detectChanges();
     let router = TestBed.get(Router);
     let spy = spyOn(router, 'navigate');
@@ -64,7 +61,7 @@ describe('AnalyticComponent', () => {
     expect(spy).toHaveBeenCalledWith(['/parameters']);
   })
 
-  it('should call create array analytic on execute', () => {
+  it('should create the named operation on execution of analytic', () => {
     fixture.detectChanges();
     let analyticsService = TestBed.get(AnalyticsService);
     let spy = spyOn(analyticsService, 'createArrayAnalytic');

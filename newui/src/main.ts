@@ -20,6 +20,6 @@ context.keys().forEach((file: any) => {
   try {
     context(file);
   } catch (err) {
-    console.log(err, file);
+    console.error(err, file);
   }
 });

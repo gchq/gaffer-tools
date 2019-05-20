@@ -15,9 +15,10 @@ export class ParameterFormComponent implements OnInit {
   /** Update the analytic operation whenever a parameter changes */
   onChange = function(parameter, parameterName) {
     this.analyticsService.updateAnalytic(
-      this.parameters,
       parameter,
       parameterName
     );
+    let analytic = this.analyticsService.getAnalytic();
+    this.parameters = analytic.uiMapping;
   };
 }

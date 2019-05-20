@@ -1,5 +1,5 @@
 import { LayoutModule } from '@angular/cdk/layout';
-import { async, ComponentFixture, TestBed, inject, fakeAsync, tick } from '@angular/core/testing';
+import { async, ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import {
   MatButtonModule,
@@ -10,12 +10,11 @@ import {
   MatTabsModule,
 } from '@angular/material';
 import { RouterTestingModule } from '@angular/router/testing';
+import { CommonModule, Location } from '@angular/common';
+import { Routes, Router } from '@angular/router';
+import { Component } from '@angular/core';
 
 import { NavComponent } from './nav.component';
-import { CommonModule, Location } from '@angular/common';
-import { By } from '@angular/platform-browser';
-import { RouterLinkWithHref, Routes, Router } from '@angular/router';
-import { Component } from '@angular/core';
 
 @Component({
   template: ''
@@ -101,25 +100,25 @@ describe('NavComponent', () => {
     expect(component.navLinks).toEqual(navLinks);
   });
 
-  it('should navigate to analytics', fakeAsync(() => {
+  it('should be able to navigate to analytics', fakeAsync(() => {
     router.navigate(['analytics']);
     tick();
     expect(location.path()).toBe('/analytics');
   }))
 
-  it('should navigate to about', fakeAsync(() => {
+  it('should be able to navigate to about', fakeAsync(() => {
     router.navigate(['about']);
     tick();
     expect(location.path()).toBe('/about');
   }))
 
-  it('should navigate to parameters', fakeAsync(() => {
+  it('should be able to navigate to parameters', fakeAsync(() => {
     router.navigate(['parameters']);
     tick();
     expect(location.path()).toBe('/parameters');
   }))
 
-  it('should navigate to results', fakeAsync(() => {
+  it('should be able to navigate to results', fakeAsync(() => {
     router.navigate(['results']);
     tick();
     expect(location.path()).toBe('/results');

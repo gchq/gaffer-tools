@@ -1,11 +1,11 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { Input, Component } from '@angular/core';
-import { empty, Observable, from, throwError} from "rxjs";
+import { empty, from, throwError} from "rxjs";
+import { MatGridListModule, MatCardModule, MatTooltipModule } from '@angular/material';
 
 import { AnalyticsComponent } from './analytics.component';
 import { AnalyticsService } from '../gaffer/analytics.service';
 import { ErrorService } from '../dynamic-input/error.service';
-import { MatGridListModule, MatCardModule, MatTooltipModule } from '@angular/material';
 
 class AnalyticsServiceStub {
   reloadAnalytics = () => {
@@ -22,8 +22,7 @@ class AnalyticComponentStub {
 }
 
 class ErrorServiceStub {
-  handle = (data) => {
-  }
+  handle = (data) => {}
 }
 
 describe('AnalyticsComponent', () => {
@@ -56,13 +55,13 @@ describe('AnalyticsComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should call reload analytics at initialisation', () => {
+  it('should load the analytics at initialisation', () => {
     let spy = spyOn(component, 'reloadAnalytics');
     fixture.detectChanges();
     expect(spy).toHaveBeenCalledWith();
   })
 
-  it('should set analytics if successfully loads analytics', () => {
+  it('should store the analytics it loads from the server', () => {
     let testData = 'Test data';
     let analyticsService = TestBed.get(AnalyticsService);
     spyOn(analyticsService, 'reloadAnalytics').and.returnValue(from([testData]));
@@ -72,7 +71,7 @@ describe('AnalyticsComponent', () => {
     expect(component.analytics).toEqual(testData);
   });
 
-  it('should show error if fails to load analytics', () => {
+  it('should show an error notification if it fails to load the analytics', () => {
     let error = new Error()
     let testData = throwError(error);
     let analyticsService = TestBed.get(AnalyticsService);

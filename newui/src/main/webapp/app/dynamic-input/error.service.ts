@@ -21,8 +21,17 @@ export class ErrorService {
 
   constructor(private toastr: ToastrService) {}
 
-  /** Show an error notification */
-  private showToast = function(msg, title, err) {
+  /** Create a notification from an error */
+  handle = function(message, title, err) {
+    let msg;
+    console.error(err);
+
+    //If no message provided, use a default error message
+    if (!message) {
+      msg = "Something went wrong. Check the log for details";
+    } else {
+      msg = message;
+    }
 
     setTimeout(() => {
       this.toastr.error(msg, title, {
@@ -32,20 +41,5 @@ export class ErrorService {
         extendedTimeOut: 2000
       });
     });
-
-  };
-
-  /** Create a notification from an error */
-  handle = function(message, title, err) {
-    let msg;
-
-    //If no message provided, use a default error message
-    if (!message) {
-      msg = "Something went wrong. Check the log for details";
-    } else {
-      msg = message;
-    }
-
-    this.showToast(msg, title, err);
   };
 }

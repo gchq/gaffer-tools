@@ -1,4 +1,4 @@
-import { TestBed, async } from '@angular/core/testing';
+import { TestBed, async, ComponentFixture } from '@angular/core/testing';
 import { MatToolbarModule} from '@angular/material';
 import { Component } from '@angular/core';
 
@@ -8,10 +8,12 @@ import { AppComponent } from './app.component';
   selector: 'app-nav',
   template: ''
 })
-class MockNavComponent {
-}
+class MockNavComponent {}
 
 describe('AppComponent', () => {
+  let component: AppComponent;
+  let fixture: ComponentFixture<AppComponent>;
+
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [
@@ -25,9 +27,15 @@ describe('AppComponent', () => {
   }));
 
   it('should be created', () => {
-    const fixture = TestBed.createComponent(AppComponent);
-    const app = fixture.debugElement.componentInstance;
+    fixture = TestBed.createComponent(AppComponent);
+    component = fixture.debugElement.componentInstance;
     fixture.detectChanges();
-    expect(app).toBeTruthy();
+    expect(component).toBeTruthy();
   });
+
+  it('should have the correct title', () => {
+    let title = 'Analytic UI';
+
+    expect(component.title).toEqual(title)
+  })
 });

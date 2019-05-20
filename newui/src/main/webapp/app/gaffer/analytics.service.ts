@@ -33,12 +33,12 @@ export class AnalyticsService {
   }
 
   /** Update the analytic operation on change of parameters */
-  updateAnalytic = function(parameters, newValue, parameterName) {
+  updateAnalytic = function(newValue, parameterName) {
     //Convert to an integer
     newValue = parseInt(newValue);
     //Look for the parameter in the list of parameters and set the new current value
-    for (let i = 0; i < parameters.length; i++) {
-      let parameterPair = parameters[i];
+    for (let i = 0; i < this.arrayAnalytic.uiMapping.length; i++) {
+      let parameterPair = this.arrayAnalytic.uiMapping[i];
       if (parameterPair[0] === parameterName) {
         this.arrayAnalytic.uiMapping[i][1].currentValue = newValue;
         return;
@@ -52,7 +52,7 @@ export class AnalyticsService {
 
       //Convert the key value map of parameters into an iterable array
       let arrayParams = analytic.uiMapping;
-      if (arrayParams != null || arrayParams != undefined) {
+      if (arrayParams != null && arrayParams != undefined) {
         arrayParams = Object.keys(analytic.uiMapping).map(function(key) {
           return [key, analytic.uiMapping[key]];
         });
@@ -92,8 +92,8 @@ export class AnalyticsService {
     this.results.clear();
 
     //Execute the analytic and then navigate when finished loading
-    this.query.executeQuery(operation, () => {
-      this.router.navigate(['/results'])});
+    this.query.executeQuery(operation, 
+      () => {this.router.navigate(['/results'])});
   };
 
   /** Get the analytics from the server */
@@ -122,7 +122,6 @@ export class AnalyticsService {
               null,
               err
             );
-            console.error(err);
             observer.error(err);
           } else {
             observer.next(err);
