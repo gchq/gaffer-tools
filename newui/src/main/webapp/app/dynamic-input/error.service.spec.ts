@@ -40,4 +40,24 @@ describe('ErrorService', () => {
         tick();
         expect(spy).toHaveBeenCalledWith(msg, title, toastSettings);
     }))
+
+    it('should show the default error message if not specified', fakeAsync(() => {
+        let toastr = TestBed.get(ToastrService);
+        let spy = spyOn(toastr, 'error').and.callFake(() => {});
+        let msg = null;
+        let title = 'title';
+        let err = new Error();
+        let toastSettings = {
+            timeOut : 7000,
+            progressBar: true,
+            positionClass: 'toast-top-right',
+            extendedTimeOut: 2000
+        }
+        let defaultMessage = 'Something went wrong. Check the log for details';
+
+        service.handle(msg, title, err);
+    
+        tick();
+        expect(spy).toHaveBeenCalledWith(defaultMessage, title, toastSettings);
+    }))
 });
