@@ -105,4 +105,47 @@ describe('TableComponent', () => {
 
     expect(spy).toHaveBeenCalledWith("resultsUpdated", component.onResultsUpdated)
   });
+
+  it('should not display the properties column', () => {
+    let results = [
+      { key1: 'key1 value',
+        properties: { 'count' : 10 }
+      },
+      { key2: 'key2 value',
+        properties: { 'count' : 20 }
+      }
+    ];
+
+    component.onResultsUpdated(results);
+
+    expect(component.displayedColumns.has('properties')).toBeFalsy();
+  })
+
+  it('should display the count column if there is count data', () => {
+    let results = [
+      { key1: 'key1 value',
+        properties: { 'count' : 10 }
+      },
+      { key2: 'key2 value',
+        properties: { 'count' : 20 }
+      }
+    ];
+    
+    component.onResultsUpdated(results);
+
+    expect(component.displayedColumns.has('count')).toBeTruthy();
+  })
+
+  it('should strip the class name', () => {
+    let results = [
+      { key1: 'key1 value',
+        class: 'test.class.name.Entity',
+        properties: { 'count' : 10 }
+      }
+    ];
+
+    component.onResultsUpdated(results);
+
+    expect(component.data.results.data[0]['class']).toEqual('Entity');
+  })
 });
