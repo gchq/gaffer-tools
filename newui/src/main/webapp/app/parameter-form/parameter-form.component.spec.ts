@@ -47,7 +47,7 @@ describe('ParameterFormComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should call update analytic on change of input', fakeAsync(() => {
+  it('should update the analytic on change of input', () => {
     let analyticsService = TestBed.get(AnalyticsService);
     let spy = spyOn(analyticsService, 'updateAnalytic');
     let parameter = 'Test parameter';
@@ -56,7 +56,7 @@ describe('ParameterFormComponent', () => {
     component.onChange(parameter,parameterName);
 
     expect(spy).toHaveBeenCalledWith(parameter,parameterName);
-  }))
+  })
 
   it('should change the stored parameter value when the input is changed', async(() => {
     let spy = spyOn(component, 'onChange');
