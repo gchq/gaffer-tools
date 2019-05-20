@@ -4,6 +4,7 @@ import { MatSort, MatTableDataSource } from "@angular/material";
 import { EventsService } from "../dynamic-input/events.service";
 import { ResultsService } from "../gaffer/results.service";
 import { CommonService } from "../dynamic-input/common.service";
+import { cloneDeep } from 'lodash';
 
 @Component({
   selector: "app-table",
@@ -43,6 +44,7 @@ export class TableComponent implements OnInit {
    * Updates the results table and recalculates the new columns 
    * */
   onResultsUpdated = function(resultsData) {
+    let displayedResults = cloneDeep(resultsData);
     if (resultsData) {
 
       //Get all the different column names
@@ -55,15 +57,31 @@ export class TableComponent implements OnInit {
           //If the key is class then strip the class name to the last part after the full stop
           let key = keys[i];
           if (key === 'class') {
-            resultsData[index][key] = resultsData[index][key].split('.').pop();
+            displayedResults[index][key] = resultsData[index][key].split('.').pop();
+          }
+
+          //If the key is properties
+          if (key === 'properties') {
+
+            //Check there is a count property
+            if (resultsData[index][key]['count']) {
+              displayedResults[index]['count'] = resultsData[index][key]['count']['java.lang.Long']
+              this.displayedColumns.add('count');
+            }
+
           }
   
           //Get a set of all the different keys to show as columns
-          this.displayedColumns.add(key);
+          if (key != 'properties') {
+            this.displayedColumns.add(key);
+          }
         }
+
+        //Remove the properties key
+        delete displayedResults[index]['properties'];
       });
     }
-    this.data.results = new MatTableDataSource(resultsData);
+    this.data.results = new MatTableDataSource(displayedResults);
     this.columnsToDisplay = this.displayedColumns;
   };
 }
