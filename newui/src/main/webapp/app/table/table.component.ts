@@ -64,9 +64,9 @@ export class TableComponent implements OnInit {
           if (key === 'properties') {
 
             //Check there is a count property
-            if (resultsData[index][key]['count']) {
-              displayedResults[index]['count'] = resultsData[index][key]['count']['java.lang.Long']
-              this.displayedColumns.add('count');
+            if (resultsData[index][key]['busCount']) {
+              displayedResults[index]['busCount'] = resultsData[index][key]['busCount']['java.lang.Long']
+              this.displayedColumns.add('busCount');
             }
 
           }
