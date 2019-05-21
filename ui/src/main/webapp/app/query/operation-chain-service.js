@@ -16,7 +16,17 @@
 
 'use strict';
 
-angular.module('app').factory('operationChain', ['common', 'settings', 'events', function(common, settings, events) {
+angular.module('app').factory('operationChain', ['common', 'settings', 'events', function(common, settings, events)
+    .controller('RightCtrl', function ($scope, $timeout, $mdSidenav, $log)
+    $scope.close = function () {
+      // Component lookup should always be available since we are not using `ng-if`
+      $mdSidenav('right').close()
+        .then(function () {
+          $log.debug("close RIGHT is done");
+        });
+    };
+  ); 
+  {
     var service = {};
 
     var EVENT_NAME = 'onOperationUpdate';
@@ -51,10 +61,10 @@ angular.module('app').factory('operationChain', ['common', 'settings', 'events',
     // operations in chain
     var operations = [service.createBlankOperation(true)];
 
-    service.toggleSideNav = function() {
-        showSideNav = !showSideNav;
-        $mdSidenav('right').toggle();
-    }
+    // service.toggleSideNav = function() {
+    //     showSideNav = !showSideNav;
+    //     $mdSidenav('right').toggle();
+    // }
 
 
     /**

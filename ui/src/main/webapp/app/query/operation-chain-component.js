@@ -16,7 +16,7 @@
 
 'use strict';
 
-angular.module('app').component('operationChain', operationChainBuilder());
+angular.module('app').component('operationChain', operationChainBuilder())
 
 function operationChainBuilder() {
     return {
@@ -27,7 +27,7 @@ function operationChainBuilder() {
 }
 
 
-function OperationChainController(operationChain, config, loading, query, error, events, $mdDialog, $mdSidenav, navigation, $location, $routeParams, operationService, common, graph, types, previousQueries, operationOptions) {
+function OperationChainController(operationChain, config, loading, query, error, events, $scope, $mdDialog, $mdSidenav, navigation, $location, $routeParams, operationService, common, graph, types, previousQueries, operationOptions) {
     var vm = this;
     vm.timeConfig;
     vm.operations = operationChain.getOperationChain();
@@ -215,9 +215,9 @@ function OperationChainController(operationChain, config, loading, query, error,
         runQuery(operations);
     }
 
-    vm.toggleSideNav = function () {
-        operationChain.toggleSideNav();
-    }
+    // vm.toggleSideNav = function () {
+    //     operationChain.toggleSideNav();
+    // }
 
     vm.canAddOperation = function() {
         if(vm.operations.length == 0) {
@@ -236,7 +236,6 @@ function OperationChainController(operationChain, config, loading, query, error,
             },
             function(data) {
                 submitResults(data);
-                navigation.goTo('results');
             }
         );
     }
@@ -517,4 +516,35 @@ function OperationChainController(operationChain, config, loading, query, error,
 
         return op;
     }
+
+    vm.toggleSideNav = function() {
+        $mdSidenav('right')
+            .toggle()
+            .then(() => console.log('Sidenav was toggled'))
+    }
+
+    // vm.openLeftMenu = function() {
+    //     $mdSidenav('left').toggle();
+    // };
 }
+
+// angular
+//     .module('app')
+//     .controller('sideNavController', sideNavController);
+
+// function sideNavController ($scope, $mdSidenav) {
+
+//     $scope.toggleSideNav = function() {
+//         $mdSidenav('right').toggle();
+//     };
+// }
+
+// controller('RightCtrl', function ($scope, $timeout, $mdSidenav, $log) {
+//     $scope.close = function () {
+//       // Component lookup should always be available since we are not using `ng-if`
+//       $mdSidenav('right').close()
+//         .then(function () {
+//           $log.debug("close RIGHT is done");
+//         });
+//     };
+// });
