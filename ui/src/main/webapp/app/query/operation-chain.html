@@ -1,4 +1,4 @@
-<form name="ctrl.operationChainForm">
+<!-- <form name="ctrl.operationChainForm">
     <div ng-repeat="operation in ctrl.operations" class="operation">
         <operation model="operation" index="$index" time-config="ctrl.timeConfig" on-delete="ctrl.deleteOperation(index)" on-reset="ctrl.resetOperation(index)" on-execute="ctrl.execute(op)" chain-length="ctrl.operations.length"></operation>
         <div layout="row" layout-align="center" ng-if="ctrl.isNotLast($index)">
@@ -11,7 +11,7 @@
         <md-icon md-svg-icon="add"></md-icon>
         <md-tooltip>Add a new operation to the chain</md-tooltip>
     </md-button>
-</div>
+</div> -->
 <div layout="row" layout-align="end">
     <md-button class="md-primary md-raised" ng-disabled="!ctrl.canExecute()" id="execute-chain" ng-click="ctrl.executeChain()">Execute operation chain</md-button>
     <md-button class="md-raised" ng-disabled="!ctrl.canExecute()" id="save-chain" ng-click="ctrl.toggleSideNav()">Save operation chain</md-button>
@@ -25,20 +25,17 @@
     <md-content layout-padding>
       <form flex>
         <div width='100%'>
-          <md-input-container>
-              <label for="name">Name</label>
-              <input type="text" id="name"
+          <md-input-container style="display: flex;">
+              <label style="align-items: stretch;" for="name">Name</label>
+              <input style="align-items: stretch;" type="text" id="name"
                       ng-model="ctrl.namedOperationName" md-autofocus>
           </md-input-container>     
         </div>
         <div width='100%'>
-          <md-input-container>
-              <label for="description">Description</label>
+          <md-input-container class="md-block" flex>
+              <label style="align-items: stretch;" for="description" required>Description</label>
               <textarea 
-                ng-required="ctrl.isRequired(field)"
-                id="description"
-                md-select-on-focus
-                rows="3"
+                md-no-autogrow
                 ng-model="ctrl.namedOperationDescription">
               </textarea>
             </md-input-container>
