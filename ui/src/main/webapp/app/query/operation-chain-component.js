@@ -22,7 +22,11 @@ function operationChainBuilder() {
     return {
         templateUrl: 'app/query/operation-chain.html',
         controller: OperationChainController,
-        controllerAs: 'ctrl'
+        controllerAs: 'ctrl',
+        bindings: {
+            namedOperationName: '<',
+            namedOperationDescription: '<'
+        }
     }
 }
 
@@ -165,15 +169,15 @@ function OperationChainController(operationChain, config, loading, query, error,
         .targetEvent(ev)
         .ok('Ok')
 
-        if (vm.operationName != null) {
+        if (vm.namedOperationName != null) {
             query.executeQuery(
                 {
                     class: ADD_NAMED_OPERATION_CLASS,
-                    operationName: vm.operationName,
+                    operationName: vm.namedOperationName,
                     operationChain: chain,
-                    description: 'test description',
+                    description: vm.namedOperationDescription,
                     options: {},
-                    score: 2,
+                    score: 1,
                     overwriteFlag: true,
                 },
                 function(data) {
@@ -517,29 +521,4 @@ function OperationChainController(operationChain, config, loading, query, error,
             .toggle()
             .then(() => console.log('Sidenav was toggled'));
     }
-    
-    // vm.openLeftMenu = function() {
-    //     $mdSidenav('left').toggle();
-    // };
 }
-
-// angular
-//     .module('app')
-//     .controller('sideNavController', sideNavController);
-
-// function sideNavController ($scope, $mdSidenav) {
-
-//     $scope.toggleSideNav = function() {
-//         $mdSidenav('right').toggle();
-//     };
-// }
-
-// controller('RightCtrl', function ($scope, $timeout, $mdSidenav, $log) {
-//     $scope.close = function () {
-//       // Component lookup should always be available since we are not using `ng-if`
-//       $mdSidenav('right').close()
-//         .then(function () {
-//           $log.debug("close RIGHT is done");
-//         });
-//     };
-// });

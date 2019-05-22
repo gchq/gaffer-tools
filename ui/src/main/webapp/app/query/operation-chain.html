@@ -5,7 +5,7 @@
             <md-icon md-svg-icon="arrow-downward"></md-icon>
         </div>
     </div>
-</form> -->
+</form>
 <div layout="row" layout-align="center">
     <md-button class="md-fab md-mini overlapping-fab" ng-click="ctrl.addOperation()">
         <md-icon md-svg-icon="add"></md-icon>
@@ -19,23 +19,40 @@
 </div>
 <div layout="vertical">
   <md-sidenav class="md-sidenav-right md-whiteframe-4dp" md-component-id="right" flex>
-
     <md-toolbar class="md-theme-light">
-      <h1 class="md-toolbar-tools">Sidenav Right</h1>
+      <h1 class="md-toolbar-tools">Save Operation Chain</h1>
     </md-toolbar>
     <md-content layout-padding>
-      <form>
-        <md-input-container>
-          <label for="testInput">Test input</label>
-          <input type="text" id="testInput"
-                 ng-model="data" md-autofocus>
-        </md-input-container>
+      <form flex>
+        <div width='100%'>
+          <md-input-container>
+              <label for="name">Name</label>
+              <input type="text" id="name"
+                      ng-model="ctrl.namedOperationName" md-autofocus>
+          </md-input-container>     
+        </div>
+        <div width='100%'>
+          <md-input-container>
+              <label for="description">Description</label>
+              <textarea 
+                ng-required="ctrl.isRequired(field)"
+                id="description"
+                md-select-on-focus
+                rows="3"
+                ng-model="ctrl.namedOperationDescription">
+              </textarea>
+            </md-input-container>
+        </div>
       </form>
-      <md-button ng-click="close()" class="md-primary">
-        Close Sidenav Right
-      </md-button>
+      <div layout="row">
+        <md-button ng-click="ctrl.saveChain()" class="md-primary">
+          Save
+        </md-button>
+        <md-button ng-click="ctrl.toggleSideNav()" class="md-primary">
+          Close
+        </md-button>
+      </div>
     </md-content>
-
   </md-sidenav>
 </div>
  
