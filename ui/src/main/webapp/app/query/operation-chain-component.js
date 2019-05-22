@@ -26,7 +26,6 @@ function operationChainBuilder() {
     }
 }
 
-
 function OperationChainController(operationChain, config, loading, query, error, events, $scope, $mdDialog, $mdSidenav, navigation, $location, $routeParams, operationService, common, graph, types, previousQueries, operationOptions) {
     var vm = this;
     vm.timeConfig;
@@ -214,10 +213,6 @@ function OperationChainController(operationChain, config, loading, query, error,
         }
         runQuery(operations);
     }
-
-    // vm.toggleSideNav = function () {
-    //     operationChain.toggleSideNav();
-    // }
 
     vm.canAddOperation = function() {
         if(vm.operations.length == 0) {
@@ -517,12 +512,12 @@ function OperationChainController(operationChain, config, loading, query, error,
         return op;
     }
 
-    vm.toggleSideNav = function() {
+    vm.toggleSideNav  = function () {
         $mdSidenav('right')
             .toggle()
-            .then(() => console.log('Sidenav was toggled'))
+            .then(() => console.log('Sidenav was toggled'));
     }
-
+    
     // vm.openLeftMenu = function() {
     //     $mdSidenav('left').toggle();
     // };
