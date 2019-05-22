@@ -138,6 +138,7 @@ function OperationChainController(operationChain, config, loading, query, error,
         });
     }
 
+    /** Save the operation chain as a named operation. */
     vm.saveChain = function(ev) {
         events.broadcast('onPreExecute', []);
         if (!vm.canExecute()) {
@@ -165,36 +166,43 @@ function OperationChainController(operationChain, config, loading, query, error,
 
         var invalidName = $mdDialog.confirm()
         .title('Operation chain name is invalid!')
-        .textContent('The operation chain cannot be empty')
+        .textContent('You must provide a name for the operation')
         .targetEvent(ev)
         .ok('Ok')
 
-        if (vm.namedOperationName != null) {
-            query.executeQuery(
-                {
-                    class: ADD_NAMED_OPERATION_CLASS,
-                    operationName: vm.namedOperationName,
-                    operationChain: chain,
-                    description: vm.namedOperationDescription,
-                    options: {},
-                    score: 1,
-                    overwriteFlag: true,
-                },
-                function(data) {
-                    // On success of saving operation chain
-                    submitResults(data);
-                    $mdDialog.show(confirm).then(function() {
-                    }, function() {
-                    });
-                    operationService.reloadOperations()
-                }
-            );
-        } else {
-            $mdDialog.show(invalidName).then(function() {
-            }, function() {
-            });
-        }
+        var invalidDescription = $mdDialog.confirm()
+        .title('Operation chain description is invalid!')
+        .textContent('You must provide a description for the operation')
+        .targetEvent(ev)
+        .ok('Ok')
 
+        if (vm.namedOperationName != null && vm.namedOperationName != '') {
+            if (vm.namedOperationDescription != null && vm.namedOperationDescription != '') {
+                query.executeQuery(
+                    {
+                        class: ADD_NAMED_OPERATION_CLASS,
+                        operationName: vm.namedOperationName,
+                        operationChain: chain,
+                        description: vm.namedOperationDescription,
+                        options: {},
+                        score: 1,
+                        overwriteFlag: true,
+                    },
+                    function(data) {
+                        // On success of saving operation chain
+                        submitResults(data);
+                        vm.toggleSideNav();
+                        $mdDialog.show(confirm);
+                        // Reload the operations
+                        operationService.reloadOperations()
+                    }
+                );
+            } else {
+                $mdDialog.show(invalidDescription);
+            }
+        } else {
+            $mdDialog.show(invalidName);
+        }
     }
 
     /**
