@@ -1048,7 +1048,25 @@ class ToBytes(AbstractFunction):
         if (self.charset is not None):
             function_json["charset"] = self.charset
         
-        return function_json  
+        return function_json
+
+class ApplyBiFunction(AbstractFunction):
+    CLASS = "uk.gov.gchq.koryphe.impl.function.ApplyBiFunction"
+
+    def __init__(self, function=None):
+        super().__init__(_class_name=self.CLASS)
+        self.function = function
+
+    def to_json(self):
+        function_json = super().to_json()
+
+        if (self.function is not None):
+            if (isinstance(self.function, ToJson)):
+                function_json["function"] = self.function.to_json()
+            else:
+                function_json["function"] = self.function
+        
+        return function_json
 
 def function_context_converter(obj):
     if 'class' in obj:

@@ -732,6 +732,30 @@ class GafferFunctionsTest(unittest.TestCase):
             }
             ''',
             g.func.ToBytes(charset="UTF-8")
+        ],
+        [
+            '''
+            {
+                "class": "uk.gov.gchq.koryphe.impl.function.ApplyBiFunction",
+                "function": {
+                    "class": "uk.gov.gchq.koryphe.impl.binaryoperator.Sum"
+                }
+            }
+            ''',
+            g.func.ApplyBiFunction(function=g.gaffer_binaryoperators.Sum())
+        ],
+        [
+            '''
+            {
+                "class": "uk.gov.gchq.koryphe.impl.function.ApplyBiFunction",
+                "function": {
+                    "class": "uk.gov.gchq.koryphe.impl.binaryoperator.Product"
+                }
+            }
+            ''',
+            g.func.ApplyBiFunction(function={
+                "class": "uk.gov.gchq.koryphe.impl.binaryoperator.Product"
+            })
         ]
     ]
 
