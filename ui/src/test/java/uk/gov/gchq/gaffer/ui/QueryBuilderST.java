@@ -259,6 +259,32 @@ public class QueryBuilderST {
         assertEquals(expectedResults, resultList);
     }
 
+    // @Test
+    // public void shouldBeAbleToSaveOperationChain() throws InterruptedException {
+
+    //     //Set up an operation chain
+    //     autoComplete("operation-name", "Get Elements");
+    //     enterText("seedVertices", "M5");
+    //     click("create-custom-filter");
+    //     selectMultiOption("view-entities", "Cardinality");
+
+
+    //     //Save the operation
+    //     click("save-chain");
+    //     enterText("saved-name", "A Test Name");
+    //     enterText("saved-description", "A test description");
+    //     click("save-named-operation");
+
+    //     //Check the operation is in the list of operations
+    //     String results = getElement("operation-name").getText();
+    //     System.out.println(results);
+
+    //     // String result = getElement("raw-entity-results").getText().trim();
+    //     // JSONSerialiser json = JSONSerialiser.getInstance();
+    //     // List results = json.deserialise(result, List.class);
+    //     // assertEquals(1, results.size());
+    // }
+
     private void enterText(final String id, final String value) {
         getElement(id).sendKeys(value);
     }

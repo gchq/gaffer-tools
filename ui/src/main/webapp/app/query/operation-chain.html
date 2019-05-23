@@ -26,15 +26,16 @@
       <form flex>
         <div width='100%'>
           <md-input-container class="md-block">
-              <label for="name">Name</label>
-              <input type="text" id="name"
+              <label for="saved-name">Name</label>
+              <input type="text" id="saved-name"
                       ng-model="ctrl.namedOperationName" md-autofocus>
           </md-input-container>     
         </div>
         <div width='100%'>
           <md-input-container class="md-block">
-            <label for="description" required>Description</label>
+            <label for="saved-description" required>Description</label>
             <textarea 
+              id="saved-description"
               md-no-autogrow
               ng-model="ctrl.namedOperationDescription"
               rows="3"
@@ -44,10 +45,10 @@
         </div>
         <div layout="row" class="content">
             <md-input-container class="md-block">
-              <md-button ng-click="ctrl.saveChain()" class="md-primary">
+              <md-button id="save-named-operation" ng-click="ctrl.saveChain()" class="md-primary">
                 Save
               </md-button>
-              <md-button ng-click="ctrl.toggleSideNav()" class="md-primary">
+              <md-button id="close-save-sidenav" ng-click="ctrl.toggleSideNav()" class="md-primary">
                 Close
               </md-button>
             </md-input-container>

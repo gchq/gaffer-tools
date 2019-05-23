@@ -119,6 +119,7 @@ function OperationChainController(operationChain, config, loading, query, error,
         });
 
         runQuery(chain.operations);
+        navigation.goTo('query');
     }
 
     vm.resetChain = function(ev) {
