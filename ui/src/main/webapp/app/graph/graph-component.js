@@ -312,10 +312,20 @@ function GraphController($q, graph, config, error, loading, query, operationOpti
         var styles = [];
 
         for (var edgeGroup in configuration.style.edges) {
+            var edgeStyle = configuration.style.edges[edgeGroup];
             styles.push({
                 selector: 'edge[group="' + edgeGroup + '"]',
-                style: configuration.style.edges[edgeGroup]
+                style: edgeStyle
             });
+            if(edgeStyle.properties) {
+                for (var property in edgeStyle.properties) {
+                        styles.push({
+                            selector: 'edge[group="' + edgeGroup + '"][' + property + '="' + propertyVal + '"]',
+                            style: edgeStyle.properties[property][propertyVal]
+                        });
+                    }
+                }
+            }
         }
 
         return styles;
@@ -498,7 +508,7 @@ function GraphController($q, graph, config, error, loading, query, operationOpti
         // Create the Id
         var id = source + "\0" + destination + "\0" + edge.directed + "\0" + edge.group;
 
-        return {
+        var edgeData = {
             source: createVertexData(edge.source, vertexTypes.source),
             destination: createVertexData(edge.destination, vertexTypes.destination),
             edge: {
@@ -508,6 +518,15 @@ function GraphController($q, graph, config, error, loading, query, operationOpti
                 group: edge.group
             }
         };
+
+        if(edge.properties) {
+            for (var property in edge.properties){
+                if(property != "id" && property != "source" && property != "target" && property != "group") {
+                   edgeData.edge[property] = types.getShortValue(edge.properties[property]).toString();
+                }
+            }
+        }
+        return edgeData;
     }
 
     /**
