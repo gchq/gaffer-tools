@@ -319,6 +319,7 @@ function GraphController($q, graph, config, error, loading, query, operationOpti
             });
             if(edgeStyle.properties) {
                 for (var property in edgeStyle.properties) {
+                    for (var propertyVal in edgeStyle.properties[property]) {
                         styles.push({
                             selector: 'edge[group="' + edgeGroup + '"][' + property + '="' + propertyVal + '"]',
                             style: edgeStyle.properties[property][propertyVal]
