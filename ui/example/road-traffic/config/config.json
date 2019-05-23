@@ -27,6 +27,10 @@
   },
   "graph": {
     "style": {
+      "edgeWidth": {
+        "properties": ["count"],
+        "factor": 30
+      },
       "edges": {
         "RoadUse": {
           "line-color": "#9C27B0",

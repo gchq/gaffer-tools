@@ -39,6 +39,12 @@ function GraphController($q, graph, config, error, loading, query, operationOpti
     var tappedTimeout;
     var cytoscapeGraph;    // Internal graph model which gets reloaded every time graph page is loaded.
 
+    var minCountDefault = 99999999;
+    var maxCountDefault = 0;
+    var minCount = minCountDefault;
+    var maxCount = maxCountDefault;
+    var countFactor = 20;
+
     var configuration = {
         name: 'cytoscape-ngraph.forcelayout',
         async: {
@@ -245,6 +251,10 @@ function GraphController($q, graph, config, error, loading, query, operationOpti
      * and loads the them into cytoscape.
      */
     var generateStylesheets = function() {
+        if(configuration && configuration.style && configuration.style.edgeWidth && configuration.style.edgeWidth.factor) {
+            countFactor = parseInt(configuration.style.edgeWidth.factor)
+        }
+        
         var oldStyleSheet = cytoscapeGraph.style().json();
         var newStyleSheet = [
             {
@@ -367,6 +377,56 @@ function GraphController($q, graph, config, error, loading, query, operationOpti
         $scope.$apply();
     }
 
+    var getCountProperty = function(properties) {
+        var resultCount = undefined;
+
+        if(configuration && configuration.style && configuration.style.edgeWidth && configuration.style.edgeWidth.properties) {
+            if(properties) {
+                for(var i in configuration.style.edgeWidth.properties) {
+                    var countProp = properties[configuration.style.edgeWidth.properties[i]];
+                    if(countProp) {
+                        try {
+                            var countVal = parseInt(types.getShortValue(countProp));
+                            if(countVal && countVal != NaN && countVal > 0) {
+                                resultCount = countVal;
+                                break;
+                            }
+                        } catch(e) {
+                            // ignore
+                        }
+                    }
+                }
+            }            
+        }
+
+        return resultCount;
+    }
+
+    var updateCountBounderies = function(edges) {
+        if(edges) {
+            for (var i in edges) {
+                updateCountBounderiesForEdge(edges[i]);
+            }
+        }
+    }
+
+    var updateCountBounderiesForEdge = function(edge) {
+        if(edge) {
+            updateCountBounderiesForCount(getCountProperty(edge.properties));
+        }
+    }
+
+    var updateCountBounderiesForCount = function(countVal) {
+        if(countVal != undefined) {
+            if(countVal > maxCount) {
+                maxCount = countVal;
+            }
+            if(countVal < minCount) {
+                minCount = countVal;
+            }
+        }
+    }
+
     /**
      * Adds Entities, Edges and seeds to the graph model.
      * 
@@ -401,10 +461,10 @@ function GraphController($q, graph, config, error, loading, query, operationOpti
             // if it does not exist in the graph, add it.
             if (cytoscapeGraph.getElementById(edgeData.edge.id).length == 0 && cytoscapeGraph.getElementById(edgeDataReverse.edge.id).length == 0) {
                 elementsToAdd.push({
-                    group: 'edges',
-                    data: edgeData.edge,
-                    selected: common.arrayContainsValue(vm.selectedElements.edges, edgeData.edge.id)
-                });
+                   group: 'edges',
+                   data: edgeData.edge,
+                   selected: common.arrayContainsValue(vm.selectedElements.edges, edgeData.edge.id)
+               });
             }
         }
         
@@ -414,9 +474,35 @@ function GraphController($q, graph, config, error, loading, query, operationOpti
                 cytoscapeGraph.getElementById(id).data(elementsToMergeData[id]);
             }
 
+            updateElementStyles();
             vm.redraw();
         });
+    }
 
+    var updateElementStyles = function() {
+        var edges = cytoscapeGraph.edges();
+        if(edges && edges.length > 0) {
+            edges.forEach(function(edge){
+                var edgeStyle = getEdgeStyle(edge.data());
+                edge.css(edgeStyle);
+            });
+        }
+    }
+
+    var getEdgeStyle = function(edgeData) {
+        var edgeStyle = {};
+        var countDelta = maxCount - minCount
+        if(countDelta > 0) {
+            var countVal = undefined;
+            if(edgeData && edgeData.count) {
+                countVal = edgeData.count;
+            }
+            if(countVal != undefined) {
+                var lineWith = 5 + countFactor * (countVal-minCount)/countDelta;
+                edgeStyle.width = lineWith;
+            }
+        }
+        return edgeStyle;
     }
 
     var addVertices = function(elementsToAdd, elementsToMergeData, data) {
@@ -498,6 +584,9 @@ function GraphController($q, graph, config, error, loading, query, operationOpti
         // Create the Id
         var id = source + "\0" + destination + "\0" + edge.directed + "\0" + edge.group;
 
+        var countVal = getCountProperty(edge.properties);
+        updateCountBounderiesForCount(countVal);
+
         return {
             source: createVertexData(edge.source, vertexTypes.source),
             destination: createVertexData(edge.destination, vertexTypes.destination),
@@ -505,7 +594,8 @@ function GraphController($q, graph, config, error, loading, query, operationOpti
                 id: id,
                 source: source,
                 target: destination,
-                group: edge.group
+                group: edge.group,
+                count: countVal
             }
         };
     }
@@ -597,6 +687,8 @@ function GraphController($q, graph, config, error, loading, query, operationOpti
     vm.reset = function() {
         vm.clear();
         vm.update(results.get());
+        minCount = minCountDefault;
+        maxCount = maxCountDefault;
     }
 
     /**
