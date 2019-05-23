@@ -498,6 +498,7 @@ function GraphController($q, graph, config, error, loading, query, operationOpti
                 countVal = edgeData.count;
             }
             if(countVal != undefined) {
+                countVal = parseInt(countVal);
                 var lineWith = 5 + countFactor * (countVal-minCount)/countDelta;
                 edgeStyle.width = lineWith;
             }
