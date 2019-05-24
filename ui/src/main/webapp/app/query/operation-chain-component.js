@@ -188,9 +188,8 @@ function OperationChainController(operationChain, config, loading, query, error,
                         score: 1,
                         overwriteFlag: true,
                     },
-                    function(data) {
+                    function() {
                         // On success of saving operation chain
-                        submitResults(data);
                         vm.toggleSideNav();
                         $mdDialog.show(confirm);
                         // Reload the operations
