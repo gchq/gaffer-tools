@@ -38,6 +38,7 @@ function GraphController($q, graph, config, error, loading, query, operationOpti
     var tappedBefore;
     var tappedTimeout;
     var cytoscapeGraph;    // Internal graph model which gets reloaded every time graph page is loaded.
+    var seedStyle;
 
     var configuration = {
         name: 'cytoscape-ngraph.forcelayout',
@@ -58,6 +59,16 @@ function GraphController($q, graph, config, error, loading, query, operationOpti
         fit: true,
         animate: false,
         defaultStyle: {
+            seeds: {
+                match: {
+                  "border-width": 4,
+                  "border-color": "#2ECC71"
+                },
+                partialMatch: {
+                  "border-width": 4,
+                  "border-color": "#F39C12"
+                }
+            },
             edges: {
                 'curve-style': 'bezier',
                 'min-zoomed-font-size': 35,
@@ -245,6 +256,12 @@ function GraphController($q, graph, config, error, loading, query, operationOpti
      * and loads the them into cytoscape.
      */
     var generateStylesheets = function() {
+        if(configuration && configuration.style && configuration.style.seeds) {
+            seedStyle = configuration.style.seeds;
+        } else if(configuration && configuration.defaultStyle && configuration.defaultStyle.seeds) {
+            seedStyle = configuration.defaultStyle.seeds;
+        }
+
         var oldStyleSheet = cytoscapeGraph.style().json();
         var newStyleSheet = [
             {
@@ -414,9 +431,81 @@ function GraphController($q, graph, config, error, loading, query, operationOpti
                 cytoscapeGraph.getElementById(id).data(elementsToMergeData[id]);
             }
 
+            updateElementStyles();
             vm.redraw();
         });
+    }
 
+    var updateElementStyles = function() {
+        if(seedStyle && (seedStyle.match || seedStyle.partialMatch)) {
+            var nodes = cytoscapeGraph.nodes();
+            if(nodes) {
+                var seeds = getOperationSeeds(query.getOperations());
+                var cleanSeeds = [];
+                for(var i in seeds) {
+                    var cleanSeed = ',' + seeds[i].replace(/,/g,"") + ',';
+                    if(cleanSeeds.indexOf(cleanSeed) == -1) {
+                        cleanSeeds.push(cleanSeed);
+                    }
+                }
+
+                nodes.forEach(function(node){
+                    var nodeStyle = getNodeStyle(node.data(), seeds, cleanSeeds);
+                    node.css(nodeStyle);
+                });
+            }
+        }
+    }
+
+    var getOperationSeeds = function(ops) {
+        var seeds = []
+        if(typeof ops == "array") {
+            
+        } else if(typeof ops == "object") {
+            if(ops.operations) {
+                seeds = seeds + getOperationSeeds(ops.operations);
+            } else {
+                for(var i in ops) {
+                    var op = ops[i];
+                    if(op) {
+                        if(op.input) {
+                            for(var j in op.input) {
+                                var inputItem = op.input[j];
+                                if(inputItem && inputItem.class 
+                                  && inputItem.class.endsWith("EntitySeed")
+                                  && inputItem.vertex) {
+                                    var seed = types.getShortValue(inputItem.vertex);
+                                    if(seeds.indexOf(seed) == -1) {
+                                        seeds.push(seed);
+                                    }
+                                }
+                            }
+                        }
+                        if(op.operations) {
+                            seeds = seeds.concat(getOperationSeeds(op.operations));
+                        }
+                    }
+                }
+            }
+        }
+
+        return seeds;
+    }
+
+    var getNodeStyle = function(nodeData, seeds, cleanSeeds) {
+        var nodeStyle = {};
+        var nodeLabel = nodeData.label;
+        if(seeds.indexOf(nodeLabel) > -1) {
+            if(seedStyle.match) {
+                nodeStyle = angular.merge(nodeStyle, angular.copy(seedStyle.match));
+            }
+        } else if(seedStyle.partialMatch) {
+            var nodeLabelWrapped = ',' + nodeLabel + ',';
+            if(cleanSeeds.findIndex(i => nodeLabelWrapped.indexOf(i) > -1) > -1) {
+                nodeStyle = angular.merge(nodeStyle, angular.copy(seedStyle.partialMatch));
+            }
+        }
+        return nodeStyle;
     }
 
     var addVertices = function(elementsToAdd, elementsToMergeData, data) {

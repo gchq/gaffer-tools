@@ -14,6 +14,20 @@
         "startDate",
         "endDate"
       ]
+    },
+    "SeenAs": {
+      "description": "A value was seen as a type-subtype-value.",
+      "source": "vertex",
+      "destination": "vertex",
+      "directed": "true",
+      "properties": {
+        "startDate": "date.earliest",
+        "endDate": "date.latest"
+      },
+      "groupBy": [
+        "startDate",
+        "endDate"
+      ]
     }
   },
   "entities": {

@@ -74,7 +74,57 @@ curl -X POST --header 'Content-Type: application/json' --header 'Accept: applica
                 "java.util.Date": 1519893253773  
              }  
           }  
-       }  
+       },
+       {
+         "class": "uk.gov.gchq.gaffer.data.element.Edge",
+         "group": "SeenAs",
+         "source": {
+            "uk.gov.gchq.gaffer.types.TypeSubTypeValue": {
+               "value": "v1"
+           }
+         },
+         "destination": {
+            "uk.gov.gchq.gaffer.types.TypeSubTypeValue": {
+               "type": "t1",
+               "subType": "st1",
+               "value": "v1"
+           }
+         },
+         "directed": true,
+         "properties": {
+            "endDate": {
+               "java.util.Date": 1519893253773
+            },
+            "startDate": {
+               "java.util.Date": 1519893253773
+            }
+         }
+      },
+      {
+           "class": "uk.gov.gchq.gaffer.data.element.Edge",
+           "group": "SeenAs",
+           "source": {
+              "uk.gov.gchq.gaffer.types.TypeSubTypeValue": {
+                 "value": "v2"
+             }
+           },
+           "destination": {
+              "uk.gov.gchq.gaffer.types.TypeSubTypeValue": {
+                 "type": "t2",
+                 "subType": "st2",
+                 "value": "v2"
+             }
+           },
+           "directed": true,
+           "properties": {
+              "endDate": {
+                 "java.util.Date": 1519893253773
+              },
+              "startDate": {
+                 "java.util.Date": 1519893253773
+              }
+           }
+        }
     ],  
     "skipInvalidElements": false,  
     "validate": true  
