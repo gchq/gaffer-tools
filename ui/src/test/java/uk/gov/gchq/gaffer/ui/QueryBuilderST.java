@@ -268,7 +268,6 @@ public class QueryBuilderST {
         click("create-custom-filter");
         selectMultiOption("view-entities", "Cardinality");
 
-
         //Save the operation
         click("save-chain");
         enterText("saved-name", "A Test Name");
@@ -276,13 +275,11 @@ public class QueryBuilderST {
         click("save-named-operation");
 
         //Check the operation is in the list of operations
-        String results = getElement("operation-name").getText();
-        System.out.println("The results are: " + results);
-
-        // String result = getElement("raw-entity-results").getText().trim();
-        // JSONSerialiser json = JSONSerialiser.getInstance();
-        // List results = json.deserialise(result, List.class);
-        // assertEquals(1, results.size());
+        click("md-confirm-button");
+        autoComplete("operation-name", "A Test Nam");
+        String text = getElement("operation-name").getAttribute("value");
+        
+        assertEquals("A Test Name", text);
     }
 
     private void enterText(final String id, final String value) {
@@ -295,7 +292,7 @@ public class QueryBuilderST {
         ac.sendKeys(input);
         ac.sendKeys(Keys.ENTER);
 
-        Thread.sleep(slowFactor * 1000);
+        Thread.sleep(slowFactor * 500);
     }
 
     private void enterIntoDatePicker(final String id, final String date) throws InterruptedException {
