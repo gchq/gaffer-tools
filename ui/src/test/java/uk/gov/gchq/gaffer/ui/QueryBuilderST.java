@@ -259,31 +259,31 @@ public class QueryBuilderST {
         assertEquals(expectedResults, resultList);
     }
 
-    // @Test
-    // public void shouldBeAbleToSaveOperationChain() throws InterruptedException {
+    @Test
+    public void shouldBeAbleToSaveOperationChain() throws InterruptedException {
 
-    //     //Set up an operation chain
-    //     autoComplete("operation-name", "Get Elements");
-    //     enterText("seedVertices", "M5");
-    //     click("create-custom-filter");
-    //     selectMultiOption("view-entities", "Cardinality");
+        //Set up an operation chain
+        autoComplete("operation-name", "Get Elements");
+        enterText("seedVertices", "M5");
+        click("create-custom-filter");
+        selectMultiOption("view-entities", "Cardinality");
 
 
-    //     //Save the operation
-    //     click("save-chain");
-    //     enterText("saved-name", "A Test Name");
-    //     enterText("saved-description", "A test description");
-    //     click("save-named-operation");
+        //Save the operation
+        click("save-chain");
+        enterText("saved-name", "A Test Name");
+        enterText("saved-description", "A test description");
+        click("save-named-operation");
 
-    //     //Check the operation is in the list of operations
-    //     String results = getElement("operation-name").getText();
-    //     System.out.println(results);
+        //Check the operation is in the list of operations
+        String results = getElement("operation-name").getText();
+        System.out.println("The results are: " + results);
 
-    //     // String result = getElement("raw-entity-results").getText().trim();
-    //     // JSONSerialiser json = JSONSerialiser.getInstance();
-    //     // List results = json.deserialise(result, List.class);
-    //     // assertEquals(1, results.size());
-    // }
+        // String result = getElement("raw-entity-results").getText().trim();
+        // JSONSerialiser json = JSONSerialiser.getInstance();
+        // List results = json.deserialise(result, List.class);
+        // assertEquals(1, results.size());
+    }
 
     private void enterText(final String id, final String value) {
         getElement(id).sendKeys(value);
@@ -295,7 +295,7 @@ public class QueryBuilderST {
         ac.sendKeys(input);
         ac.sendKeys(Keys.ENTER);
 
-        Thread.sleep(slowFactor * 500);
+        Thread.sleep(slowFactor * 1000);
     }
 
     private void enterIntoDatePicker(final String id, final String date) throws InterruptedException {
