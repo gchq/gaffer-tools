@@ -16,7 +16,7 @@
 
 'use strict';
 
-angular.module('app').component('operationChain', operationChainBuilder())
+angular.module('app').component('operationChain', operationChainBuilder());
 
 function operationChainBuilder() {
     return {
@@ -30,7 +30,7 @@ function operationChainBuilder() {
     }
 }
 
-function OperationChainController(operationChain, config, loading, query, error, events, $scope, $mdDialog, $mdSidenav, navigation, $location, $routeParams, operationService, common, graph, types, previousQueries, operationOptions) {
+function OperationChainController(operationChain, config, loading, query, error, events, $mdDialog, $mdSidenav, navigation, $location, $routeParams, operationService, common, graph, types, previousQueries, operationOptions) {
     var vm = this;
     vm.timeConfig;
     vm.operations = operationChain.getOperationChain();
@@ -119,7 +119,6 @@ function OperationChainController(operationChain, config, loading, query, error,
         });
 
         runQuery(chain.operations);
-        navigation.goTo('query');
     }
 
     vm.resetChain = function(ev) {
@@ -254,6 +253,7 @@ function OperationChainController(operationChain, config, loading, query, error,
      */
     var submitResults = function(data) {
         graph.deselectAll();
+        navigation.goTo('results');
 
         // Remove the input query param
         delete $routeParams['input'];
@@ -527,7 +527,6 @@ function OperationChainController(operationChain, config, loading, query, error,
 
     vm.toggleSideNav  = function () {
         $mdSidenav('right')
-            .toggle()
-            .then(() => console.log('Sidenav was toggled'));
+            .toggle();
     }
 }
