@@ -267,6 +267,82 @@ describe('The operation chain component', function() {
         });
     });
 
+    describe('ctrl.saveChain()', function() {
+
+        var events, query, operationService, error, previousQueries;
+
+        var valid;
+
+        beforeEach(inject(function(_events_, _query_, _operationService_, _error_, _previousQueries_) {
+            events = _events_;
+            query = _query_;
+            operationService = _operationService_;
+            error = _error_;
+            previousQueries = _previousQueries_;
+        }));
+
+        beforeEach(function() {
+            valid = true;
+
+            spyOn(ctrl, 'canExecute').and.callFake(function() {
+                return valid;
+            });
+        });
+
+        beforeEach(function() {
+            spyOn(query, 'executeQuery').and.stub();
+
+            ctrl.operations = [];
+        });
+        
+        it('should not save if a name has not been entered', function() {
+            ctrl.namedOperationName = '';
+            ctrl.namedOperationDescription = 'test description';
+
+            ctrl.saveChain();
+
+            expect(query.executeQuery).not.toHaveBeenCalled();
+        })
+
+        it('should not save if a description has not been entered', function() {
+            ctrl.namedOperationName = 'test name';
+            ctrl.namedOperationDescription = '';
+
+            ctrl.saveChain();
+
+            expect(query.executeQuery).not.toHaveBeenCalled();
+        })
+
+        it('should send an add named operation query', function() {
+            let testName = 'test name';
+            let testDescription = 'test description';
+            var OPERATION_CHAIN_CLASS = "uk.gov.gchq.gaffer.operation.OperationChain";    
+            let chain = {
+                    class: OPERATION_CHAIN_CLASS,
+                    operations: []
+            }
+            const ADD_NAMED_OPERATION_CLASS = "uk.gov.gchq.gaffer.named.operation.AddNamedOperation";
+
+            ctrl.operations.length = 1;
+            ctrl.namedOperationName = testName;
+            ctrl.namedOperationDescription = testDescription;
+
+            let expectedQuery = {
+                class: ADD_NAMED_OPERATION_CLASS,
+                operationName: testName,
+                operationChain: chain,
+                description: testDescription,
+                options: {},
+                score: 1,
+                overwriteFlag: true,
+            }
+            
+            ctrl.saveChain();
+
+            expect(query.executeQuery).toHaveBeenCalledWith(expectedQuery, jasmine.any(Function));    
+        })
+    })
+
     describe('ctrl.execute()', function() {
 
         var query, types;
