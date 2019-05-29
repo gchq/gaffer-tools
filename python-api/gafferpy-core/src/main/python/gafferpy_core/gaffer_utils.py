@@ -100,15 +100,3 @@ def convertElement(input):
     elif map.get("type") == "edge_seed":
         seed = g.EdgeSeed(source="source", destination="destination",directed_type="directed", matched_vertex="matched_vertex")
         return seed
-
-
-
-class User(g.ToJson):
-    CLASS='uk.gov.gchq.gaffer.user.User'
-
-    def __init__(self, user_id=None):
-        self._class_name=self.CLASS,
-        self.user_id=user_id
-
-    def to_json(self):
-        return {'userId': self.user_id}

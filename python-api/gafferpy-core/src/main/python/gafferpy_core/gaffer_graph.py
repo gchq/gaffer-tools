@@ -33,7 +33,7 @@ ch.setLevel(logging.DEBUG)
 logger.addHandler(ch)
 
 
-class Graph():
+class Graph:
 
     """
     A class that wraps the Java class uk.gov.gchq.gaffer.python.graph.PythonGraph
@@ -80,7 +80,7 @@ class Graph():
             python_serialisers[class_name] = serialisers.get(serialiser).getCanonicalName()
         return python_serialisers
 
-    def getSchema(self):
+    def getSchema(self): # needed?
         return self._java_python_graph.getGraph().getSchema()
 
     def getVertexSerialiserClass(self):
@@ -113,14 +113,17 @@ class Graph():
             self.setPythonSerialisers(self._python_serialisers)
 
     def execute(self, operation):
-            result = self._java_python_graph.execute(self._encode(operation))
-            if isinstance(result, int):
-                return result
+        result = self._java_python_graph.execute(self._encode(operation))
+        if isinstance(result, int):
+            return result
+        elif hasattr(result, 'getClass'):
             resultClass = result.getClass().getCanonicalName()
             if resultClass == "uk.gov.gchq.gaffer.python.data.PythonIterator":
                 iterator = u.ElementIterator(result)
                 return iterator
-            return result
+        elif isinstance(result, str):
+            raise TypeError(result)
+        return result
 
     def _encode(self, input):
         return str(input.to_json()).replace("'", '"').replace("True", "true")

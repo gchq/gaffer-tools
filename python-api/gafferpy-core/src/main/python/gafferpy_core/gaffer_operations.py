@@ -18,8 +18,10 @@
 """
 This module contains Python copies of Gaffer operation java classes
 """
+import sys
+import inspect
 
-from gafferpy_core.gaffer_core import *
+from gafferpy_core.gaffer_core import MatchKey, JoinType, ToCodeString, ToJson, JsonConverter, ElementSeed, EntitySeed, Comparator, SeedPair
 import gafferpy_core.gaffer_predicates as gaffer_predicates
 import gafferpy_core.gaffer_functions as gaffer_functions
 import gafferpy_core.gaffer_binaryoperators as gaffer_binaryoperators
@@ -2334,6 +2336,53 @@ class If(Operation):
         if self.otherwise is not None:
             operation['otherwise'] = self.otherwise.to_json()
 
+        return operation
+
+class Join(Operation): 
+    CLASS = 'uk.gov.gchq.gaffer.operation.impl.join.Join'
+
+    def __init__(self, join_type, match_key, input=None, 
+                operation=None, flatten=False, 
+                match_method=None, options=None):
+        super().__init__(_class_name=self.CLASS, options=options)
+
+        self.input = input
+        self.flatten = flatten
+
+        if isinstance(join_type, JoinType):
+            self.join_type = join_type
+        else:
+            raise TypeError("join_type is not a JoinType")
+        
+        if isinstance(match_key, MatchKey):
+            self.match_key = match_key
+        else:
+            raise TypeError("match_key is not a MatchKey")
+        
+        if isinstance(operation, Operation):
+            self.operation = operation
+
+        if isinstance(match_method, Operation):
+            self.match_method = match_method
+
+
+    def to_json(self):
+        operation = super().to_json()
+
+        operation['flatten'] = self.flatten
+
+        if self.input is not None:
+            operation['input'] = self.input 
+
+        if self.join_type is not None:
+            operation['joinType'] = self.join_type
+        
+        if self.match_key is not None:
+            operation['matchKey'] = self.match_key
+        
+        if self.match_method is not None:
+            operation['matchMethod'] = self.match_method
+        
         return operation
 
 

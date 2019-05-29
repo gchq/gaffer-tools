@@ -20,7 +20,6 @@ This module contains Python copies of Gaffer predicate java classes
 
 from gafferpy_core.gaffer_core import *
 
-
 class PredicateContext(ToJson, ToCodeString):
     CLASS = "gaffer.PredicateContext"
 

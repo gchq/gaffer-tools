@@ -1,4 +1,4 @@
-__version__ = "1.8.0"
+__version__ = "1.9.0"
 
 __title__ = "gafferpy_core_test"
 __description__ = "GafferPy Core Tests"

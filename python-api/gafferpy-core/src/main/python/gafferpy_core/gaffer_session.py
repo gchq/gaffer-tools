@@ -247,3 +247,6 @@ class GafferPythonSession(metaclass=Singleton):
 
     def getSession(self):
         return self._java_gaffer_session
+
+    def getGraph(self):
+        return self._java_gaffer_session.getGraphById("0")

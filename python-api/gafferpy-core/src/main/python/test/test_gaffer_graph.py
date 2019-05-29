@@ -1,55 +1,67 @@
-import unittest
-from unittest.mock import Mock
+import os
 
-from gafferpy_core.gaffer_graph import Graph
-import gafferpy_core.gaffer_session as Session
+import unittest
+from unittest.mock import patch, MagicMock
+
+from gafferpy_core import gaffer_graph, gaffer_session, gaffer, gaffer_utils
+
+class JavaIterator:
+
+    name_string = "uk.gov.gchq.gaffer.python.data.PythonIterator"
+
+    def getClass(self):
+        return self
+    
+    def getCanonicalName(self):
+        return self.name_string
 
 class gaffer_graph_test(unittest.TestCase):
 
+    __graph = gaffer_graph.Graph()
+
     @classmethod
     def setUpClass(self):
-        Session.GafferPythonSession().connect_to_session("localhost", 25332)
+        dirName = os.path.dirname(__file__)
+        self._dataFilePath = os.path.join(dirName, './resources/data.csv')
+        self._schemaFilePath = os.path.join(dirName, './resources/simple-schema.json')
+        self._configFilePath = os.path.join(dirName, './resources/graphconfig.json')
+        self._propertiesFilePath = os.path.join(dirName, './resources/pyspark-mock-accumulo.properties')
 
-    @classmethod
-    def tearDownClass(self):
-        # Session.GafferPythonSession().disconnect()
-        pass
+    def setUp(self):
+        self.__graph._java_python_graph = MagicMock()
 
-    def test_gaffer_graph_creatable(self):
-        newGraph = Graph()
-        self.assertIsNotNone(newGraph)
+    def test_gaffer_graph_execute_is_callable(self):
+        # Test code
+        edges = []
+        with open(self._dataFilePath, "r") as f:
+            for line in f:
+                t = line.rstrip().split(",")
+                edges.append(gaffer.Edge(source=str(t[0]), destination=str(t[1]), directed=True, group="BasicEdge", properties={"count": {"java.lang.Long" : 1}}))
+        add_op = gaffer.AddElements(input=edges)
+        self.__graph.execute(operation=add_op)
+
+        # Assert code ran correctly
+        self.__graph._java_python_graph.execute.assert_called_once_with(self.__graph._encode(add_op))
+        
+    def test_gaffer_graph_execute_can_return_iterators(self):
+        self.__graph._java_python_graph.execute = MagicMock(return_value=JavaIterator())
+
+        result = self.__graph.execute(operation=gaffer.GetAllElements())
+
+        self.assertIsInstance(result, gaffer_utils.ElementIterator)
     
-    def test_gaffer_graph_getSerialisers_returns_dict(self):
-        # serialisers = Graph().getPythonSerialisers()
-        # self.assertIsInstance(dict, serialisers)
-        pass
-    
-    def test_gaffer_graph_getSerialisers_fails_successfully(self):
-        pass
+    def test_gaffer_graph_execute_can_return_dict(self):
+        self.__graph._java_python_graph.execute = MagicMock(return_value={"class": "dict", "test": "something"})
 
-    def test_gaffer_graph_getSchema_returns_schema(self):
-        pass
-    
-    def test_gaffer_graph_getVertexSerialiserClass_returns_correct(self):
-        pass
+        result = self.__graph.execute(operation=gaffer.GetAllElements())
 
-    def test_gaffer_graph_getKeyPackageClassName_returns_correct(self):
-        pass
-
-    def test_gaffer_graph_setPythonSerialisers_can_be_set(self):
-        pass 
-
-    def test_gaffer_graph_execute_can_execute_operations(self):
-        pass
+        self.assertIsInstance(result, dict)
 
     def test_gaffer_graph_execute_can_error_correctly(self):
-        pass
+        self.__graph._java_python_graph.execute = MagicMock(return_value="Couldn't preform operation")
 
-    def test_gaffer_graph_builder_can_build(self):
-        pass
-
-    def test_gaffer_graph_builder_can_error(self):
-        pass
+        with self.assertRaises(TypeError):
+            self.__graph.execute(operation=gaffer.GetAllElements())
 
 if __name__ == "__main__":
     suite = unittest.TestLoader().loadTestsFromTestCase(gaffer_graph_test)

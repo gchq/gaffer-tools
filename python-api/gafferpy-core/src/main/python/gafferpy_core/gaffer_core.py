@@ -24,8 +24,9 @@ import re
 import inspect
 import sys
 
+from enum import Enum
 
-class ToJson: # TODO: Remove to just use the standard JSON library
+class ToJson:
     """
     Enables implementations to be converted to json via a to_json method
     """
@@ -118,7 +119,7 @@ class ToCodeString:
                + new_line + ')'
 
 
-class DirectedType:
+class DirectedType(Enum):
     EITHER = 'EITHER'
     DIRECTED = 'DIRECTED'
     UNDIRECTED = 'UNDIRECTED'
@@ -147,6 +148,13 @@ class UseMatchedVertex:
     EQUAL = 'EQUAL'
     OPPOSITE = 'OPPOSITE'
 
+class JoinType(Enum):
+    INNER = 'INNER'
+    OUT = 'OUTER'
+
+class MatchKey(Enum):
+    RIGHT = 'RIGHT'
+    LEFT = 'LEFT'
 
 class ElementSeed(ToJson, ToCodeString):
     def __repr__(self):
@@ -182,16 +190,14 @@ class EntitySeed(ElementSeed):
 class EdgeSeed(ElementSeed):
     CLASS = 'uk.gov.gchq.gaffer.operation.data.EdgeSeed'
 
-    def __init__(self, source, destination, directed_type, matched_vertex=None):
+    def __init__(self, source, destination, directed_type=None, matched_vertex=None):
         super().__init__()
         self.source = source
         self.destination = destination
-        if isinstance(directed_type, str):
-            self.directed_type = directed_type
-        elif directed_type:
-            self.directed_type = DirectedType.DIRECTED
+        if isinstance(directed_type, DirectedType):
+            self.directed_type = directed_type.value
         else:
-            self.directed_type = DirectedType.UNDIRECTED
+            self.directed_type = DirectedType.UNDIRECTED.value
         self.matched_vertex = matched_vertex
 
     def to_json(self):

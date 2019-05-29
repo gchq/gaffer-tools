@@ -1,12 +1,11 @@
 import unittest
 
-import gafferpy_core 
+from gafferpy_core import gaffer_functions as func
 
 class gaffer_functions_test(unittest.TestCase):
 
     def testFunctionContext(self):
         self.assertTrue(True)
-
 
 
 if __name__ == "__main__":
