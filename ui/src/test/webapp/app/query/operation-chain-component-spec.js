@@ -269,16 +269,17 @@ describe('The operation chain component', function() {
 
     describe('ctrl.saveChain()', function() {
 
-        var events, query, operationService, error, previousQueries;
+        var events, query, operationService, error, previousQueries, $mdDialog;
 
         var valid;
 
-        beforeEach(inject(function(_events_, _query_, _operationService_, _error_, _previousQueries_) {
+        beforeEach(inject(function(_events_, _query_, _operationService_, _error_, _previousQueries_, _$mdDialog_) {
             events = _events_;
             query = _query_;
             operationService = _operationService_;
             error = _error_;
             previousQueries = _previousQueries_;
+            $mdDialog = _$mdDialog_
         }));
 
         beforeEach(function() {
@@ -291,8 +292,44 @@ describe('The operation chain component', function() {
 
         beforeEach(function() {
             spyOn(query, 'executeQuery').and.stub();
+            spyOn(error, 'handle').and.stub();
+            spyOn($mdDialog, 'show').and.stub();
 
             ctrl.operations = [];
+        });
+
+        it('should not save if canExecute() returns false', function() {
+            valid = false;
+
+            ctrl.saveChain();
+
+            expect(query.executeQuery).not.toHaveBeenCalled();
+        });
+
+        it('should broadcast an error if the length of the chain is 0', function() {
+            ctrl.saveChain();
+            expect(error.handle).toHaveBeenCalledWith("Unable to save operation chain with no operations");
+        });
+
+        it('should not save the chain if the length of the chain is 0', function() {
+            ctrl.saveChain();
+            expect(query.executeQuery).not.toHaveBeenCalled();
+        })
+
+        it('should set the class of the operation to operation chain', function() {
+            ctrl.operations = [
+                {
+                    selectedOperation: {
+                        class: 'test',
+                        fields: {}
+                    }
+                }
+            ]
+            ctrl.executeChain();
+            expect(query.executeQuery).toHaveBeenCalled();
+            var json = query.executeQuery.calls.first().args[0];
+
+            expect(json.class).toEqual("uk.gov.gchq.gaffer.operation.OperationChain");
         });
         
         it('should not save if a name has not been entered', function() {
@@ -304,6 +341,24 @@ describe('The operation chain component', function() {
             expect(query.executeQuery).not.toHaveBeenCalled();
         })
 
+        // expected [ o({ _options: Object({ template: '<md-dialog md-theme="{{ dialog.theme || dialog.defaultTheme }}" aria-label="{{ dialog.ariaLabel }}" ng-class="dialog.css"><md-dialog-content class="md-dialog-content" role="document" tabIndex="-1"><h2 class="md-title">{{ dialog.title }}</h2><div ng-if="::dialog.mdHtmlContent" class="md-dialog-content-body"ng-bind-html="::dialog.mdHtmlContent"></div><div ng-if="::!dialog.mdHtmlContent" class="md-dialog-content-body"><p>{{::dialog.mdTextContent}}</p></div><md-input-container md-no-float ng-if="::dialog.$type == 'prompt'" class="md-prompt-input-container"><input ng-keypress="dialog.keypress($event)" md-autofocus ng-model="dialog.result"placeholder="{{::dialog.placeholder}}" ng-required="dialog.required"></md-input-container></md-dialog-content><md-dialog-actions><md-button ng-if="dialog.$type === 'confirm' || dialog.$type === 'prompt'"ng-click="dialog.abort()" class="md-primary md-cancel-button">{{ dialog.cancel }}</md-button><md-button ng-click="dialog.hide()" class="md-primary md-confirm-button" md-autofocus="dialog.$type==='alert'"ng-disabled="dialog.required && !dialog.result">{{ dialog.ok }}</md-button></md-dialog-actions></md-dialog>', controller: Function, controllerAs: 'dialog', bindToController: true, $type: 'confirm', title: 'Operation chain description is invalid!', textContent: 'You must provide a description for the operation', ok: 'Ok' }) }) ]
+        // recieved [ o({ _options: Object({ template: '<md-dialog md-theme="{{ dialog.theme || dialog.defaultTheme }}" aria-label="{{ dialog.ariaLabel }}" ng-class="dialog.css"><md-dialog-content class="md-dialog-content" role="document" tabIndex="-1"><h2 class="md-title">{{ dialog.title }}</h2><div ng-if="::dialog.mdHtmlContent" class="md-dialog-content-body"ng-bind-html="::dialog.mdHtmlContent"></div><div ng-if="::!dialog.mdHtmlContent" class="md-dialog-content-body"><p>{{::dialog.mdTextContent}}</p></div><md-input-container md-no-float ng-if="::dialog.$type == 'prompt'" class="md-prompt-input-container"><input ng-keypress="dialog.keypress($event)" md-autofocus ng-model="dialog.result"placeholder="{{::dialog.placeholder}}" ng-required="dialog.required"></md-input-container></md-dialog-content><md-dialog-actions><md-button ng-if="dialog.$type === 'confirm' || dialog.$type === 'prompt'"ng-click="dialog.abort()" class="md-primary md-cancel-button">{{ dialog.cancel }}</md-button><md-button ng-click="dialog.hide()" class="md-primary md-confirm-button" md-autofocus="dialog.$type==='alert'"ng-disabled="dialog.required && !dialog.result">{{ dialog.ok }}</md-button></md-dialog-actions></md-dialog>', controller: Function, controllerAs: 'dialog', bindToController: true, $type: 'confirm', title: 'Operation chain description is invalid!', textContent: 'You must provide a description for the operation', targetEvent: undefined, ok: 'Ok' }) }) ]
+
+        it('should show an error dialog if the name is invalid', function() {
+            ctrl.namedOperationName = '';
+            ctrl.namedOperationDescription = 'test description';
+            ctrl.operations.length = 1;
+
+            var invalidName = $mdDialog.confirm()
+            .title('Operation chain name is invalid!')
+            .textContent('You must provide a name for the operation')
+            .ok('Ok')
+
+            ctrl.saveChain();
+
+            expect($mdDialog.show).toHaveBeenCalledWith(invalidName);
+        })
+
         it('should not save if a description has not been entered', function() {
             ctrl.namedOperationName = 'test name';
             ctrl.namedOperationDescription = '';
@@ -313,7 +368,22 @@ describe('The operation chain component', function() {
             expect(query.executeQuery).not.toHaveBeenCalled();
         })
 
-        it('should send an add named operation query', function() {
+        it('should show an error dialog if the description is invalid', function() {
+            ctrl.namedOperationName = 'test name';
+            ctrl.namedOperationDescription = '';
+            ctrl.operations.length = 1;
+
+            let invalidDescription = $mdDialog.confirm()
+            .title('Operation chain description is invalid!')
+            .textContent('You must provide a description for the operation')
+            .ok('Ok')
+
+            ctrl.saveChain();
+
+            expect($mdDialog.show).toHaveBeenCalledWith(invalidDescription);
+        })
+
+        it('should save using an add named operation query', function() {
             let testName = 'test name';
             let testDescription = 'test description';
             var OPERATION_CHAIN_CLASS = "uk.gov.gchq.gaffer.operation.OperationChain";    
@@ -340,6 +410,10 @@ describe('The operation chain component', function() {
             ctrl.saveChain();
 
             expect(query.executeQuery).toHaveBeenCalledWith(expectedQuery, jasmine.any(Function));    
+        })
+
+        it('should show a confirmation dialog', function() {
+
         })
     })
 

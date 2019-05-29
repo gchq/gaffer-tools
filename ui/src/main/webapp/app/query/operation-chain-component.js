@@ -140,7 +140,7 @@ function OperationChainController(operationChain, config, loading, query, error,
 
     /** Save the operation chain as a named operation. */
     vm.saveChain = function(ev) {
-        events.broadcast('onPreExecute', []);
+
         if (!vm.canExecute()) {
             return;
         }
@@ -161,19 +161,16 @@ function OperationChainController(operationChain, config, loading, query, error,
         var confirm = $mdDialog.confirm()
         .title('Operation chain saved as named operation!')
         .textContent('You can now see your saved operation in the list of operations')
-        .targetEvent(ev)
         .ok('Ok')
 
         var invalidName = $mdDialog.confirm()
         .title('Operation chain name is invalid!')
         .textContent('You must provide a name for the operation')
-        .targetEvent(ev)
         .ok('Ok')
 
         var invalidDescription = $mdDialog.confirm()
         .title('Operation chain description is invalid!')
         .textContent('You must provide a description for the operation')
-        .targetEvent(ev)
         .ok('Ok')
 
         if (vm.namedOperationName != null && vm.namedOperationName != '') {
