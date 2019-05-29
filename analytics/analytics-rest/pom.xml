@@ -22,10 +22,8 @@
         <version>1.8.4-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
-    <artifactId>newui</artifactId>
     <packaging>war</packaging>
     <properties>
-        <standalone-ui-path>ui</standalone-ui-path>
         <standalone-rest-path>rest</standalone-rest-path>
         <standalone-port>8080</standalone-port>
         <selenium.version>3.4.0</selenium.version>
@@ -125,34 +123,6 @@
     </build>
 
     <profiles>
-        <profile>
-            <id>standalone-ui</id>
-            <properties>
-                <maven.test.skip>true</maven.test.skip>
-            </properties>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.apache.tomcat.maven</groupId>
-                        <artifactId>tomcat7-maven-plugin</artifactId>
-                        <version>2.0</version>
-                        <configuration>
-                            <path>/${standalone-ui-path}</path>
-                            <port>4200</port>
-                        </configuration>
-                        <executions>
-                            <execution>
-                                <id>deploy</id>
-                                <phase>integration-test</phase>
-                                <goals>
-                                    <goal>run-war</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
 
         <profile>
             <id>road-traffic-demo</id>
@@ -184,15 +154,6 @@
                             <path>/</path>
                             <port>${standalone-port}</port>
                             <webapps>
-                                <!-- <webapp>
-                                    <contextPath>/${standalone-ui-path}
-                                    </contextPath>
-                                    <groupId>uk.gov.gchq.gaffer</groupId>
-                                    <artifactId>newui</artifactId>
-                                    <version>${project.parent.version}</version>
-                                    <type>war</type>
-                                    <asWebapp>true</asWebapp>
-                                </webapp> -->
                                 <webapp>
                                     <contextPath>/${standalone-rest-path}
                                     </contextPath>
@@ -291,15 +252,6 @@
                             <port>${standalone-port}</port>
                             <webapps>
                                 <webapp>
-                                    <contextPath>/${standalone-ui-path}
-                                    </contextPath>
-                                    <groupId>uk.gov.gchq.gaffer</groupId>
-                                    <artifactId>ui</artifactId>
-                                    <version>${project.parent.version}</version>
-                                    <type>war</type>
-                                    <asWebapp>true</asWebapp>
-                                </webapp>
-                                <webapp>
                                     <contextPath>/${standalone-rest-path}
                                     </contextPath>
                                     <groupId>uk.gov.gchq.gaffer</groupId>
@@ -377,15 +329,6 @@
                             <path>/</path>
                             <port>${standalone-port}</port>
                             <webapps>
-                                <webapp>
-                                    <contextPath>/${standalone-ui-path}
-                                    </contextPath>
-                                    <groupId>uk.gov.gchq.gaffer</groupId>
-                                    <artifactId>ui</artifactId>
-                                    <version>${project.parent.version}</version>
-                                    <type>war</type>
-                                    <asWebapp>true</asWebapp>
-                                </webapp>
                                 <webapp>
                                     <contextPath>/${standalone-rest-path}
                                     </contextPath>
