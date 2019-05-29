@@ -1,8 +1,5 @@
-from fishbowl.fishbowl_core import *
-from fishbowl.fishbowl_util import *
+from fishbowl.util import *
 
-import urllib.request
-import urllib.error
 import os
 import shutil
 
@@ -10,15 +7,8 @@ OPERATION_CHAIN_DAO = "uk.gov.gchq.gaffer.operation.OperationChainDAO"
 
 
 class Fishbowl:
-    def __init__(self, endpoint, generated_directory_path="g"):
-        self.gaffer_endpoint = endpoint
-
-        # Create the opener
-        self._opener = urllib.request.build_opener(
-            urllib.request.HTTPHandler())
-
-        self.__print_status()
-
+    def __init__(self, gaffer_connector, generated_directory_path="generated"):
+        self._gaffer_connector = gaffer_connector
         self.generated_directory_path = generated_directory_path
         print("Generating python Library from REST service")
         self.__generate_library()
@@ -41,41 +31,14 @@ class Fishbowl:
                       "__all__ = [ \"operations\", \"predicates\", \"functions\" ]\n")
 
     def __generate_functions(self, path):
-        functions_request = urllib.request.Request(self.gaffer_endpoint + path)
-
-        try:
-            response = self._opener.open(functions_request)
-        except urllib.error.HTTPError as error:
-            error_body = error.read().decode('utf-8')
-            new_error_string = ('HTTP error ' +
-                                str(error.code) + ' ' +
-                                error.reason + ': ' +
-                                error_body)
-            raise ConnectionError(new_error_string)
-
-        response_text = response.read().decode('utf-8')
         # functions is a list of function classes
-        functions = json.loads(response_text)
+        functions = self._gaffer_connector.get(path)
 
-        functions_python = ["from fishbowl.fishbowl_core import *\n\n"]
+        functions_python = ["from fishbowl.core import *\n\n"]
 
         for fn in functions:
-            serialised_fields_request = urllib.request.Request(self.gaffer_endpoint + "/graph/config/serialisedFields/"
-                                                               + fn)
-            try:
-                response = self._opener.open(serialised_fields_request)
-            except urllib.error.HTTPError as error:
-                error_body = error.read().decode('utf-8')
-                new_error_string = ('HTTP error ' +
-                                    str(error.code) + ' ' +
-                                    error.reason + ': ' +
-                                    error_body)
-                print(new_error_string)
-                # Do some counting of error messages and throw if count reaches certain limit
-
-            response_text = response.read().decode('utf-8')
             # functions is a list of function classes
-            function_fields = json.loads(response_text)
+            function_fields = self._gaffer_connector.get("/graph/config/serialisedFields/" + fn)
 
             # Map of fields to snake case fields
             function_field_mappings = dict()
@@ -107,22 +70,9 @@ class Fishbowl:
         return "\n".join(functions_python)
 
     def __generate_operations(self):
-        operations_request = urllib.request.Request(self.gaffer_endpoint + "/graph/operations/details")
-        try:
-            response = self._opener.open(operations_request)
-        except urllib.error.HTTPError as error:
-            error_body = error.read().decode('utf-8')
-            new_error_string = ('HTTP error ' +
-                                str(error.code) + ' ' +
-                                error.reason + ': ' +
-                                error_body)
-            raise ConnectionError(new_error_string)
+        operation_summaries = self._gaffer_connector.get("/graph/operations/details")
 
-        response_text = response.read().decode('utf-8')
-
-        operation_summaries = json.loads(response_text)
-
-        operations_python = ["from fishbowl.fishbowl_core import *\n\n"]
+        operations_python = ["from fishbowl.core import *\n\n"]
 
         for operation in operation_summaries:
             # Don't add OperationChainDAO as this has a field called class which breaks python
@@ -168,22 +118,9 @@ class Fishbowl:
 
         return "\n".join(operations_python)
 
-    def __print_status(self):
-        status_request = urllib.request.Request(self.gaffer_endpoint + "/graph/status")
-        try:
-            response = self._opener.open(status_request)
-        except urllib.error.HTTPError as error:
-            error_body = error.read().decode('utf-8')
-            new_error_string = ('HTTP error ' +
-                                str(error.code) + ' ' +
-                                error.reason + ': ' +
-                                error_body)
-            raise ConnectionError(new_error_string)
-
-        response_text = response.read().decode('utf-8')
-
-        print(response_text)
+    def get_connector(self):
+        return self._gaffer_connector
 
     def tear_down(self):
-        self._opener.close()
+        self._gaffer_connector.close_connection()
         shutil.rmtree(self.generated_directory_path)

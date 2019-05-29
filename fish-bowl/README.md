@@ -21,9 +21,10 @@ An experimental Python client which generates a Gaffer python library from a Gaf
 Things it currently does:
 * Generates python files for Operations, Predicates and Functions based on an Gaffer API
 * Provide different methods and functions based on those available on the Gaffer API
+* Provide a mechanism for executing the operations on the remote REST API
 
 Things it will do:
-* Provide a mechanism for executing the operations on the remote REST API
+Provide shortcuts for creating views and other Gaffer specific objects
 
 Things it should do:
 * Generate Binary operators based on the API (needs server side work)
@@ -34,17 +35,20 @@ Things it will not do:
 ## How does it work?
 
 ```python
+from fishbowl.connector import GafferConnector
 from fishbowl.fishbowl import Fishbowl
-fb = Fishbowl("http://localhost:8080/rest/latest")
+
+fb = Fishbowl(gaffer_connector=GafferConnector(host="http://localhost:8080/rest/latest"))
 ```
-Your python files will be appear in a folder called `g`
+Your python files will be appear in a folder called `generated`
 They can be imported using the following command:
 ```python
-from g import *
+from generated import *
 ```
 
-You can then construct Gaffer objects using the following syntax
+You can then construct and execute Gaffer operations using the following syntax
 
 ```python
-get = g.operations.GetElements()
+conn = fb.get_connector()
+conn.execute(operations.OperationChain(operations=[operations.GetAllElements(), operations.Count()]))
 ```
