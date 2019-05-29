@@ -4,10 +4,10 @@ with open("README.md", "r") as fh:
     long_description = fh.read()
 
 setuptools.setup(
-    name="GafferPy2",
+    name="Fishbowl",
     version="0.0.1",
     author="GCHQ",
-    description="A Dynamically generated Gaffer python shell",
+    description="A Dynamically generated Gaffer python API",
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/gchq/gaffer-tools",
