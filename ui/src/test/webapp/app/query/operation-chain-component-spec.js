@@ -289,7 +289,7 @@ describe('The operation chain component', function() {
         });
 
         beforeEach(function() {
-            spyOn(query, 'executeQuery').and.callFake((query,onSuccess) => {
+            spyOn(query, 'executeQuery').and.callFake(function(query,onSuccess) {
                 onSuccess();
             });
             spyOn(error, 'handle').and.stub();
@@ -370,7 +370,7 @@ describe('The operation chain component', function() {
             ctrl.namedOperationDescription = '';
             ctrl.operations.length = 1;
 
-            let invalidDescription = $mdDialog.confirm()
+            var invalidDescription = $mdDialog.confirm()
             .title('Operation chain description is invalid!')
             .textContent('You must provide a description for the operation')
             .ok('Ok')
@@ -381,10 +381,10 @@ describe('The operation chain component', function() {
         })
 
         it('should save using an add named operation query', function() {
-            let testName = 'test name';
-            let testDescription = 'test description';
+            var testName = 'test name';
+            var testDescription = 'test description';
             var OPERATION_CHAIN_CLASS = "uk.gov.gchq.gaffer.operation.OperationChain";    
-            let chain = {
+            var chain = {
                     class: OPERATION_CHAIN_CLASS,
                     operations: []
             }
@@ -394,7 +394,7 @@ describe('The operation chain component', function() {
             ctrl.namedOperationName = testName;
             ctrl.namedOperationDescription = testDescription;
 
-            let expectedQuery = {
+            var expectedQuery = {
                 class: ADD_NAMED_OPERATION_CLASS,
                 operationName: testName,
                 operationChain: chain,
@@ -414,7 +414,7 @@ describe('The operation chain component', function() {
             ctrl.namedOperationDescription = 'test description';
             ctrl.operations.length = 1;
 
-            let confirm = $mdDialog.confirm()
+            var confirm = $mdDialog.confirm()
             .title('Operation chain saved as named operation!')
             .textContent('You can now see your saved operation in the list of operations')
             .ok('Ok')
