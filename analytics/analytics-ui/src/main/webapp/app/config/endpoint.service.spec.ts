@@ -23,12 +23,4 @@ describe('EndpointService', () => {
 
         expect(testEndpoint).toEqual(endpoint);
     })
-
-    it('should be able to get the UI endpoint', () => {
-        let endpoint = service.defaultUIEndpoint;
-
-        let testEndpoint = service.getUIEndpoint();
-
-        expect(testEndpoint).toEqual(endpoint);
-    })
 });
