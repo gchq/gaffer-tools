@@ -1,48 +1,48 @@
-import { LayoutModule } from '@angular/cdk/layout';
-import { async, ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
-import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { LayoutModule } from "@angular/cdk/layout";
+import {
+  async,
+  ComponentFixture,
+  TestBed,
+  fakeAsync,
+  tick
+} from "@angular/core/testing";
+import { NoopAnimationsModule } from "@angular/platform-browser/animations";
 import {
   MatButtonModule,
   MatIconModule,
   MatListModule,
   MatSidenavModule,
   MatToolbarModule,
-  MatTabsModule,
-} from '@angular/material';
-import { RouterTestingModule } from '@angular/router/testing';
-import { CommonModule, Location } from '@angular/common';
-import { Routes, Router } from '@angular/router';
-import { Component } from '@angular/core';
+  MatTabsModule
+} from "@angular/material";
+import { RouterTestingModule } from "@angular/router/testing";
+import { CommonModule, Location } from "@angular/common";
+import { Routes, Router } from "@angular/router";
+import { Component } from "@angular/core";
 
-import { NavComponent } from './nav.component';
-
-@Component({
-  template: ''
-})
-class AboutComponentStub {}
+import { NavComponent } from "./nav.component";
 
 @Component({
-  template: ''
+  template: ""
 })
 class AnalyticsComponentStub {}
 
 @Component({
-  template: ''
+  template: ""
 })
 class ParameterInputComponentStub {}
 
 @Component({
-  template: ''
+  template: ""
 })
 class TableComponentStub {}
 
-describe('NavComponent', () => {
+describe("NavComponent", () => {
   let location: Location;
   let router: Router;
   let component: NavComponent;
   let fixture: ComponentFixture<NavComponent>;
   const routes: Routes = [
-    { path: "about", component: AboutComponentStub },
     { path: "analytics", component: AnalyticsComponentStub },
     { path: "parameters", component: ParameterInputComponentStub },
     { path: "parameters/:operation", component: ParameterInputComponentStub },
@@ -52,15 +52,13 @@ describe('NavComponent', () => {
   const navLinks = [
     { path: "analytics", label: "ANALYTICS" },
     { path: "parameters", label: "PARAMETERS" },
-    { path: "results", label: "RESULTS" },
-    { path: "about", label: "ABOUT" }
+    { path: "results", label: "RESULTS" }
   ];
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ 
+      declarations: [
         NavComponent,
-        AboutComponentStub,
         ParameterInputComponentStub,
         TableComponentStub,
         AnalyticsComponentStub
@@ -90,43 +88,37 @@ describe('NavComponent', () => {
     component.navLinks = navLinks;
   });
 
-  it('should be created', () => {
+  it("should be created", () => {
     fixture.detectChanges();
     expect(component).toBeTruthy();
   });
 
-  it('should contain the correct navigation links', () => {
+  it("should contain the correct navigation links", () => {
     fixture.detectChanges();
     expect(component.navLinks).toEqual(navLinks);
   });
 
-  it('should be able to navigate to analytics', fakeAsync(() => {
-    router.navigate(['analytics']);
+  it("should be able to navigate to analytics", fakeAsync(() => {
+    router.navigate(["analytics"]);
     tick();
-    expect(location.path()).toBe('/analytics');
-  }))
+    expect(location.path()).toBe("/analytics");
+  }));
 
-  it('should be able to navigate to about', fakeAsync(() => {
-    router.navigate(['about']);
+  it("should be able to navigate to parameters", fakeAsync(() => {
+    router.navigate(["parameters"]);
     tick();
-    expect(location.path()).toBe('/about');
-  }))
+    expect(location.path()).toBe("/parameters");
+  }));
 
-  it('should be able to navigate to parameters', fakeAsync(() => {
-    router.navigate(['parameters']);
+  it("should be able to navigate to results", fakeAsync(() => {
+    router.navigate(["results"]);
     tick();
-    expect(location.path()).toBe('/parameters');
-  }))
+    expect(location.path()).toBe("/results");
+  }));
 
-  it('should be able to navigate to results', fakeAsync(() => {
-    router.navigate(['results']);
+  it("should redirect to analytics", fakeAsync(() => {
+    router.navigate(["**"]);
     tick();
-    expect(location.path()).toBe('/results');
-  }))
-
-  it('should redirect to analytics', fakeAsync(() => {
-    router.navigate(['**']);
-    tick();
-    expect(location.path()).toBe('/analytics');
-  }))
+    expect(location.path()).toBe("/analytics");
+  }));
 });

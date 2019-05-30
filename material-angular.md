@@ -8,11 +8,11 @@ description: >-
 
 The following are some of the pre-built Material Angular components that have been used in the html code to enhance the aesthetics of the product. They include a short explanation of:
 
-a\)    The function of the component
+a\) The function of the component
 
-b\)    An example of how it has been used here
+b\) An example of how it has been used here
 
-c\)    A link to further documentation on the Material Angular website, [https://material.angular.io/components/categories](https://material.angular.io/components/categories)
+c\) A link to further documentation on the Material Angular website, [https://material.angular.io/components/categories](https://material.angular.io/components/categories)
 
 ### **Mat-Card**
 
@@ -20,11 +20,11 @@ Mat-card acts as a container for any other objects, creating a raised portion of
 
 ### **Mat-Icon**
 
-This tool allows for the use of the material angular icon library, a set of vector images used in a ‘common language’ sense for the user, e.g. the ‘burger’ \(three horizontal lines\) icon meaning “Menu”, or an i in a circle meaning information, and a small house meaning Home Page. For our purposes, it has been used on the About page to get the information icon, and is also in the \(potentially redundant\) date picker component. [https://material.angular.io/components/icon/overview](https://material.angular.io/components/icon/overview) \(NB on some occassions this has not worked, and so material-icon has been used as a class on a regular I component, such as in the analytic component\)
+This tool allows for the use of the material angular icon library, a set of vector images used in a ‘common language’ sense for the user, e.g. the ‘burger’ \(three horizontal lines\) icon meaning “Menu”, or an i in a circle meaning information, and a small house meaning Home Page. [https://material.angular.io/components/icon/overview](https://material.angular.io/components/icon/overview) \(NB on some occassions this has not worked, and so material-icon has been used as a class on a regular I component, such as in the analytic component\)
 
 ### **Mat-Divider**
 
-This provides a thin line to create a divide/space between components. It is used on the About page to delineate between the links to the documents and restAPI, and the Send Feedback button. [https://material.angular.io/components/divider/overview](https://material.angular.io/components/divider/overview)
+This provides a thin line to create a divide/space between components. [https://material.angular.io/components/divider/overview](https://material.angular.io/components/divider/overview)
 
 ### **Mat-Button**
 
@@ -41,4 +41,3 @@ Again, while not a component in itself, this is a modifier for a nav component, 
 ### **Mat-Input**
 
 This is a modifier for a standard input component, which elevates it from a simple, often difficult. This has been used on the nav component in the mat-toolbar, as can be seen at the top of each page. [https://material.angular.io/components/tabs/overview](https://material.angular.io/components/tabs/overview)
-

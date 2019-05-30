@@ -9,7 +9,6 @@ export class NavComponent {
   navLinks = [
     { path: "analytics", label: "ANALYTICS" },
     { path: "parameters", label: "PARAMETERS" },
-    { path: "results", label: "RESULTS" },
-    { path: "about", label: "ABOUT" }
+    { path: "results", label: "RESULTS" }
   ];
 }

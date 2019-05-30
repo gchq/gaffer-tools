@@ -8,10 +8,9 @@ import { LayoutModule } from "@angular/cdk/layout";
 import { FlexLayoutModule } from "@angular/flex-layout";
 import { AppRoutingModule } from "./app-routing.module";
 import { HttpClientModule } from "@angular/common/http";
-import { ToastrModule} from "ngx-toastr";
+import { ToastrModule } from "ngx-toastr";
 
 import { AppComponent } from "./app.component";
-import { AboutComponent } from "./about/about.component";
 import { OperationComponent } from "./operation/operation.component";
 import { TableComponent } from "./table/table.component";
 import { AnalyticsComponent } from "./analytics/analytics.component";
@@ -24,22 +23,21 @@ import { AnalyticsService } from "./gaffer/analytics.service";
 import { EventsService } from "./dynamic-input/events.service";
 import { CommonService } from "./dynamic-input/common.service";
 import { ErrorService } from "./dynamic-input/error.service";
-import { EndpointService } from './config/endpoint-service';
-import { QueryService } from './gaffer/query.service';
-import { ResultsService } from './gaffer/results.service';
-import { SettingsService } from './settings/settings.service';
+import { EndpointService } from "./config/endpoint-service";
+import { QueryService } from "./gaffer/query.service";
+import { ResultsService } from "./gaffer/results.service";
+import { SettingsService } from "./settings/settings.service";
 
 @NgModule({
   declarations: [
     AppComponent,
-    AboutComponent,
     AnalyticsComponent,
     AnalyticComponent,
     OperationComponent,
     NavComponent,
     TableComponent,
     ParameterFormComponent,
-    ParameterInputComponent,
+    ParameterInputComponent
   ],
   imports: [
     BrowserModule,
@@ -61,7 +59,7 @@ import { SettingsService } from './settings/settings.service';
     EndpointService,
     QueryService,
     ResultsService,
-    SettingsService,
+    SettingsService
   ],
   bootstrap: [AppComponent]
 })
