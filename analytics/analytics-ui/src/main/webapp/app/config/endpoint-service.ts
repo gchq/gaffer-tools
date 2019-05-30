@@ -15,15 +15,10 @@
  */
 export class EndpointService {
 
-    defaultUIEndpoint = "http://localhost:4200";
     defaultRestEndpoint = "http://localhost:8080" + "/rest/latest";
 
     getRestEndpoint = function() {
         return this.defaultRestEndpoint;
-    }
-
-    getUIEndpoint = function() {
-        return this.defaultUIEndpoint;
     }
 
 }
