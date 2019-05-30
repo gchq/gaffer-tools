@@ -1,9 +1,7 @@
 import { Component, OnInit, Injectable, ViewChild } from "@angular/core";
 import { MatSort, MatTableDataSource } from "@angular/material";
 
-import { EventsService } from "../dynamic-input/events.service";
 import { ResultsService } from "../gaffer/results.service";
-import { CommonService } from "../dynamic-input/common.service";
 import { cloneDeep } from 'lodash';
 
 @Component({
@@ -18,27 +16,17 @@ export class TableComponent implements OnInit {
   @ViewChild(MatSort) sort: MatSort;
   schema;
   displayedColumns: Set<any>;
-  // data.results: Set<any>
 
   constructor(
-    private events: EventsService,
     private results: ResultsService,
   ) {}
 
   /**
-   * Fetches the results and subscribes to resultsUpdated events.
+   * Fetches the results.
    */
   ngOnInit() {
-    this.events.subscribe("resultsUpdated", () => this.onResultsUpdated);
     this.onResultsUpdated(this.results.get());
   }
-
-  /**
-   * Unsubscribes from resultsUpdated events.
-   */
-  ngOnDestroy() {
-    this.events.unsubscribe("resultsUpdated", this.onResultsUpdated);
-  };
 
   /** 
    * Updates the results table and recalculates the new columns 

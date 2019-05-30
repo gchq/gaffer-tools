@@ -3,15 +3,8 @@ import { MatTableModule, MatCardModule, MatTableDataSource } from '@angular/mate
 import { empty} from "rxjs";
 
 import { TableComponent } from './table.component';
-import { EventsService } from '../dynamic-input/events.service';
 import { ResultsService } from '../gaffer/results.service';
 
-class EventsServiceStub {
-  subscribe = () => {
-    return empty();
-  }
-  unsubscribe = (params) => {}
-}
 class ResultsServiceStub {
   get = () => {
     return [];
@@ -30,7 +23,6 @@ describe('TableComponent', () => {
         MatCardModule
       ],
       providers: [
-        { provide: EventsService, useClass: EventsServiceStub },
         { provide: ResultsService, useClass: ResultsServiceStub },
       ],
     })
@@ -46,15 +38,6 @@ describe('TableComponent', () => {
     fixture.detectChanges();
     expect(component).toBeTruthy();
   });
-
-  it('should subscribe to the results updated event at initialisation', () => {
-    let eventsService = TestBed.get(EventsService);
-    let spy = spyOn(eventsService, 'subscribe');
-
-    fixture.detectChanges();
-
-    expect(spy).toHaveBeenCalledWith('resultsUpdated',jasmine.any(Function));
-  })
 
   it('should get the results at initialisation', () => {
     let resultsService = TestBed.get(ResultsService);
@@ -95,15 +78,6 @@ describe('TableComponent', () => {
     component.onResultsUpdated(arrayNewResults)
 
     expect(component.displayedColumns).toEqual(keys);
-  });
-
-  it('should unsubscribe from all events when its destroyed', () => {
-    let eventsService = TestBed.get(EventsService);
-    let spy = spyOn(eventsService, 'unsubscribe');
-
-    fixture.destroy();
-
-    expect(spy).toHaveBeenCalledWith("resultsUpdated", component.onResultsUpdated)
   });
 
   it('should not display the properties column', () => {

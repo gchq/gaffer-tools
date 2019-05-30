@@ -2,11 +2,6 @@
 import { TestBed, async } from '@angular/core/testing';
 
 import { ResultsService } from './results.service';
-import { EventsService } from '../dynamic-input/events.service';
-
-class EventsServiceStub {
-    broadcast = (params) => {}
-}
 
 describe('ResultsService', () => {
     let service: ResultsService;
@@ -15,7 +10,6 @@ describe('ResultsService', () => {
         TestBed.configureTestingModule({
           providers: [
             ResultsService,
-            { provide: EventsService, useClass: EventsServiceStub},
           ],
         })
         .compileComponents();
@@ -39,32 +33,11 @@ describe('ResultsService', () => {
         expect(service.results).toEqual([]);
     })
 
-    it('should be able to broadcast that the results have been updated when clearing', () => {
-        let events = TestBed.get(EventsService);
-        let spy = spyOn(events, 'broadcast');
-
-        service.clear();
-
-        expect(spy).toHaveBeenCalledWith('resultsUpdated',[[]]);
-    })
-   
-    it('should be able to broadcast that the results have been updated when updating', () => {
-        let events = TestBed.get(EventsService);
-        let spy = spyOn(events, 'broadcast');
-        let results = [0,1,2];
-
-        service.update(results);
-
-        expect(spy).toHaveBeenCalledWith('resultsUpdated',[results]);
-    })
-
     it('should be able to convert results to an array if there is only one result', () => {
-        let events = TestBed.get(EventsService);
-        let spy = spyOn(events, 'broadcast');
         let results = 0;
 
         service.update(results);
 
-        expect(spy).toHaveBeenCalledWith('resultsUpdated',[[results]]);
+        expect(service.results).toEqual([0]);
     })
 });
