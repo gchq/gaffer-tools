@@ -1,0 +1,28 @@
+{
+    "operations": [
+      {
+        "operation": "uk.gov.gchq.gaffer.analytic.operation.AddAnalyticOperation",
+        "handler": {
+          "class": "uk.gov.gchq.gaffer.analytic.operation.handler.AddAnalyticOperationHandler"
+        }
+      },
+      {
+        "operation": "uk.gov.gchq.gaffer.analytic.operation.AnalyticOperation",
+        "handler": {
+          "class": "uk.gov.gchq.gaffer.analytic.operation.handler.AnalyticOperationHandler"
+        }
+      },
+      {
+        "operation": "uk.gov.gchq.gaffer.analytic.operation.DeleteAnalyticOperation",
+        "handler": {
+          "class": "uk.gov.gchq.gaffer.analytic.operation.handler.DeleteAnalyticOperationHandler"
+        }
+      },
+      {
+        "operation": "uk.gov.gchq.gaffer.analytic.operation.GetAllAnalyticOperations",
+        "handler": {
+          "class": "uk.gov.gchq.gaffer.analytic.operation.handler.GetAllAnalyticOperationsHandler"
+        }
+      }
+    ]
+  }
