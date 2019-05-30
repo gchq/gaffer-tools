@@ -269,17 +269,15 @@ describe('The operation chain component', function() {
 
     describe('ctrl.saveChain()', function() {
 
-        var events, query, operationService, error, previousQueries, $mdDialog;
+        var query, error, $mdDialog, operationService;
 
         var valid;
 
-        beforeEach(inject(function(_events_, _query_, _operationService_, _error_, _previousQueries_, _$mdDialog_) {
-            events = _events_;
+        beforeEach(inject(function(_query_, _error_, _$mdDialog_, _operationService_) {
             query = _query_;
-            operationService = _operationService_;
             error = _error_;
-            previousQueries = _previousQueries_;
-            $mdDialog = _$mdDialog_
+            $mdDialog = _$mdDialog_;
+            operationService = _operationService_;
         }));
 
         beforeEach(function() {
@@ -291,7 +289,9 @@ describe('The operation chain component', function() {
         });
 
         beforeEach(function() {
-            spyOn(query, 'executeQuery').and.stub();
+            spyOn(query, 'executeQuery').and.callFake((query,onSuccess) => {
+                onSuccess();
+            });
             spyOn(error, 'handle').and.stub();
             spyOn($mdDialog, 'show').and.stub();
 
@@ -340,9 +340,6 @@ describe('The operation chain component', function() {
 
             expect(query.executeQuery).not.toHaveBeenCalled();
         })
-
-        // expected [ o({ _options: Object({ template: '<md-dialog md-theme="{{ dialog.theme || dialog.defaultTheme }}" aria-label="{{ dialog.ariaLabel }}" ng-class="dialog.css"><md-dialog-content class="md-dialog-content" role="document" tabIndex="-1"><h2 class="md-title">{{ dialog.title }}</h2><div ng-if="::dialog.mdHtmlContent" class="md-dialog-content-body"ng-bind-html="::dialog.mdHtmlContent"></div><div ng-if="::!dialog.mdHtmlContent" class="md-dialog-content-body"><p>{{::dialog.mdTextContent}}</p></div><md-input-container md-no-float ng-if="::dialog.$type == 'prompt'" class="md-prompt-input-container"><input ng-keypress="dialog.keypress($event)" md-autofocus ng-model="dialog.result"placeholder="{{::dialog.placeholder}}" ng-required="dialog.required"></md-input-container></md-dialog-content><md-dialog-actions><md-button ng-if="dialog.$type === 'confirm' || dialog.$type === 'prompt'"ng-click="dialog.abort()" class="md-primary md-cancel-button">{{ dialog.cancel }}</md-button><md-button ng-click="dialog.hide()" class="md-primary md-confirm-button" md-autofocus="dialog.$type==='alert'"ng-disabled="dialog.required && !dialog.result">{{ dialog.ok }}</md-button></md-dialog-actions></md-dialog>', controller: Function, controllerAs: 'dialog', bindToController: true, $type: 'confirm', title: 'Operation chain description is invalid!', textContent: 'You must provide a description for the operation', ok: 'Ok' }) }) ]
-        // recieved [ o({ _options: Object({ template: '<md-dialog md-theme="{{ dialog.theme || dialog.defaultTheme }}" aria-label="{{ dialog.ariaLabel }}" ng-class="dialog.css"><md-dialog-content class="md-dialog-content" role="document" tabIndex="-1"><h2 class="md-title">{{ dialog.title }}</h2><div ng-if="::dialog.mdHtmlContent" class="md-dialog-content-body"ng-bind-html="::dialog.mdHtmlContent"></div><div ng-if="::!dialog.mdHtmlContent" class="md-dialog-content-body"><p>{{::dialog.mdTextContent}}</p></div><md-input-container md-no-float ng-if="::dialog.$type == 'prompt'" class="md-prompt-input-container"><input ng-keypress="dialog.keypress($event)" md-autofocus ng-model="dialog.result"placeholder="{{::dialog.placeholder}}" ng-required="dialog.required"></md-input-container></md-dialog-content><md-dialog-actions><md-button ng-if="dialog.$type === 'confirm' || dialog.$type === 'prompt'"ng-click="dialog.abort()" class="md-primary md-cancel-button">{{ dialog.cancel }}</md-button><md-button ng-click="dialog.hide()" class="md-primary md-confirm-button" md-autofocus="dialog.$type==='alert'"ng-disabled="dialog.required && !dialog.result">{{ dialog.ok }}</md-button></md-dialog-actions></md-dialog>', controller: Function, controllerAs: 'dialog', bindToController: true, $type: 'confirm', title: 'Operation chain description is invalid!', textContent: 'You must provide a description for the operation', targetEvent: undefined, ok: 'Ok' }) }) ]
 
         it('should show an error dialog if the name is invalid', function() {
             ctrl.namedOperationName = '';
@@ -413,7 +410,40 @@ describe('The operation chain component', function() {
         })
 
         it('should show a confirmation dialog', function() {
+            ctrl.namedOperationName = 'test name';
+            ctrl.namedOperationDescription = 'test description';
+            ctrl.operations.length = 1;
 
+            let confirm = $mdDialog.confirm()
+            .title('Operation chain saved as named operation!')
+            .textContent('You can now see your saved operation in the list of operations')
+            .ok('Ok')
+
+            ctrl.saveChain();
+
+            expect($mdDialog.show).toHaveBeenCalledWith(confirm);
+        })
+
+        it('should close the sidenav on success', function() {
+            spyOn(ctrl, 'toggleSideNav').and.stub();
+            ctrl.namedOperationName = 'test name';
+            ctrl.namedOperationDescription = 'test description';
+            ctrl.operations.length = 1;
+
+            ctrl.saveChain();
+
+            expect(ctrl.toggleSideNav).toHaveBeenCalled();
+        })
+
+        it('should reload the operations on success', function() {
+            spyOn(operationService, 'reloadOperations').and.stub();
+            ctrl.namedOperationName = 'test name';
+            ctrl.namedOperationDescription = 'test description';
+            ctrl.operations.length = 1;
+
+            ctrl.saveChain();
+
+            expect(operationService.reloadOperations).toHaveBeenCalled();
         })
     })
 
