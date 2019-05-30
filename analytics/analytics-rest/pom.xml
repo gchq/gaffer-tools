@@ -26,7 +26,6 @@
     <properties>
         <standalone-rest-path>rest</standalone-rest-path>
         <standalone-port>8080</standalone-port>
-        <selenium.version>3.4.0</selenium.version>
     </properties>
 
     <dependencies>
@@ -34,12 +33,6 @@
             <groupId>uk.gov.gchq.gaffer</groupId>
             <artifactId>analytics-operations</artifactId>
             <version>${project.parent.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.seleniumhq.selenium</groupId>
-            <artifactId>selenium-server</artifactId>
-            <version>${selenium.version}</version>
-            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>com.google.guava</groupId>
@@ -60,6 +53,7 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
+
     <build>
         <plugins>
             <plugin>
@@ -328,39 +322,6 @@
                                 <goals>
                                     <goal>run-war</goal>
                                 </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-
-        <profile>
-            <id>continuous-integration</id>
-            <properties>
-                <skipTests>true</skipTests>
-                <skip.surefire.tests>true</skip.surefire.tests>
-                <skip.failsafe.tests>true</skip.failsafe.tests>
-            </properties>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-checkstyle-plugin</artifactId>
-                        <executions>
-                            <execution>
-                                <id>validate</id>
-                                <phase>none</phase>
-                            </execution>
-                        </executions>
-                    </plugin>
-                    <plugin>
-                        <groupId>org.codehaus.mojo</groupId>
-                        <artifactId>findbugs-maven-plugin</artifactId>
-                        <executions>
-                            <execution>
-                                <id>analyze-compile</id>
-                                <phase>none</phase>
                             </execution>
                         </executions>
                     </plugin>
