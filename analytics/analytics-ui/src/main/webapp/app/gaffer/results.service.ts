@@ -13,16 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Injectable } from '@angular/core';
-
-import { EventsService } from '../dynamic-input/events.service';
-
-@Injectable()
 export class ResultsService {
 
     results = [];
 
-    constructor(private events: EventsService) {}
+    constructor() {}
 
     /** Get the results */
     get = function() {
@@ -32,7 +27,6 @@ export class ResultsService {
     /** Clear the results */
     clear = function() {
         this.results = [];
-        this.events.broadcast('resultsUpdated', [this.results]);
     }
 
     /** Update the results */
@@ -43,7 +37,6 @@ export class ResultsService {
                 newResults = [newResults];
             }
             this.results = newResults;
-            this.events.broadcast('resultsUpdated', [this.results]);
         }
     }
 };

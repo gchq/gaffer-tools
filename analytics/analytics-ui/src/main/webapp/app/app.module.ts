@@ -20,7 +20,6 @@ import { ParameterFormComponent } from "./parameter-form/parameter-form.componen
 import { ParameterInputComponent } from "./parameter-input/parameter-input.component";
 
 import { AnalyticsService } from "./gaffer/analytics.service";
-import { EventsService } from "./dynamic-input/events.service";
 import { CommonService } from "./dynamic-input/common.service";
 import { ErrorService } from "./dynamic-input/error.service";
 import { EndpointService } from "./config/endpoint-service";
@@ -53,7 +52,6 @@ import { SettingsService } from "./settings/settings.service";
   ],
   providers: [
     AnalyticsService,
-    EventsService,
     CommonService,
     ErrorService,
     EndpointService,
