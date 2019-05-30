@@ -18,9 +18,8 @@ import { HttpClient, HttpHeaders } from "@angular/common/http";
 
 import { CommonService } from "../dynamic-input/common.service";
 import { ErrorService } from "../dynamic-input/error.service";
-import { SettingsService } from "../settings/settings.service";
 import { ResultsService } from "./results.service";
-import { EndpointService } from '../config/endpoint-service';
+import { EndpointService } from "../config/endpoint-service";
 
 @Injectable()
 export class QueryService {
@@ -28,7 +27,6 @@ export class QueryService {
     private common: CommonService,
     private error: ErrorService,
     private http: HttpClient,
-    private settings: SettingsService,
     private results: ResultsService,
     private endpoint: EndpointService
   ) {}
@@ -37,17 +35,6 @@ export class QueryService {
    * Alerts the user if they hit the result limit
    * @param {Array} data The data returned by the Gaffer REST service
    */
-  private showTooManyResultsPrompt = function(data, onSuccess) {
-    onSuccess(data);
-    let resultLimit = this.settings.getResultLimit();
-    this.error.handle(
-      "Too many results to show, showing only the first " +
-        resultLimit +
-        " rows",
-      null,
-      null
-    );
-  };
 
   /**
    * Executes a query. If too many results are returned a dialog is shown
@@ -61,17 +48,11 @@ export class QueryService {
       //On success
       data => {
         //If there are too many results tell the user and only show a slice of the data
-        if (data.length >= this.settings.getResultLimit()) {
-          this.showTooManyResultsPrompt(
-            data.slice(0, this.settings.getResultLimit()),
-            onSuccess
-          );
-        } else {
-          //Store these results and show them
-          this.results.update(data);
-          if (onSuccess) {
-            onSuccess(data);
-          }
+
+        //Store these results and show them
+        this.results.update(data);
+        if (onSuccess) {
+          onSuccess(data);
         }
       },
       //On error

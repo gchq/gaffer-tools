@@ -25,7 +25,6 @@ import { ErrorService } from "./dynamic-input/error.service";
 import { EndpointService } from "./config/endpoint-service";
 import { QueryService } from "./gaffer/query.service";
 import { ResultsService } from "./gaffer/results.service";
-import { SettingsService } from "./settings/settings.service";
 
 @NgModule({
   declarations: [
@@ -56,8 +55,7 @@ import { SettingsService } from "./settings/settings.service";
     ErrorService,
     EndpointService,
     QueryService,
-    ResultsService,
-    SettingsService
+    ResultsService
   ],
   bootstrap: [AppComponent]
 })
