@@ -25,6 +25,8 @@ import { ErrorService } from "./dynamic-input/error.service";
 import { EndpointService } from "./config/endpoint-service";
 import { QueryService } from "./gaffer/query.service";
 import { ResultsService } from "./gaffer/results.service";
+import { TypeService } from "./gaffer/type.service";
+import { TimeService } from "./gaffer/time.service";
 
 @NgModule({
   declarations: [
@@ -55,7 +57,9 @@ import { ResultsService } from "./gaffer/results.service";
     ErrorService,
     EndpointService,
     QueryService,
-    ResultsService
+    ResultsService,
+    TypeService,
+    TimeService
   ],
   bootstrap: [AppComponent]
 })

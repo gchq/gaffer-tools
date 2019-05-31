@@ -14,7 +14,7 @@ platformBrowserDynamic()
 
 declare const require: any;
 
-const context = require.context("./main/webapp/app", true, /\.js$/);
+const context = require.context("./app", true, /\.js$/);
 
 context.keys().forEach((file: any) => {
   try {
