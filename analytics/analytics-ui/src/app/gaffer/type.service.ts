@@ -13,7 +13,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { Injectable } from '@angular/core';
+import {  } from 'lodash';
+
+import { CommonService } from '../dynamic-input/common.service';
+
+@Injectable()
 export class TypeService {
+
+    types = {};
+    // var simpleClassNames = {};
+
+    unknownType =
+        {
+            fields: [
+                {
+                    label: "Value",
+                    type: "text",
+                    class: "java.lang.String"
+                }
+            ]
+        }
+
+    constructor(private common: CommonService) {}
 
     getShortValue = function(value) {
 
@@ -48,12 +70,39 @@ export class TypeService {
         }
 
         if (typeof parts === 'object') {
-            return Object.keys(parts).map(function(key){
+            return Object.keys(parts).map((key) => {
                 var val = parts[key];
                 return this.getShortValue(val);
             }).join("|");
         }
 
         return parts;
+    }
+
+    private getType = function(typeClass) {
+        if (typeClass !== undefined && this.types[typeClass]) {
+            return this.types[typeClass];
+        }
+        return this.unknownType;
+    }
+
+    isKnown = function(className) {
+        var knownType = this.types[className];
+
+        if(knownType) {
+            return true;
+        }
+
+        return false;
+    }
+
+    defaultShortValue = function(value) {
+        return JSON.stringify(value);
+    }
+
+    listShortValue = function(values) {
+        return values.map((value) => {
+            return this.getShortValue(value);
+        }).join(', ');
     }
 };

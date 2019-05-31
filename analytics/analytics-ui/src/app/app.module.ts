@@ -27,6 +27,7 @@ import { QueryService } from "./gaffer/query.service";
 import { ResultsService } from "./gaffer/results.service";
 import { TypeService } from "./gaffer/type.service";
 import { TimeService } from "./gaffer/time.service";
+import { SchemaService } from "./gaffer/schema.service";
 
 @NgModule({
   declarations: [
@@ -59,7 +60,8 @@ import { TimeService } from "./gaffer/time.service";
     QueryService,
     ResultsService,
     TypeService,
-    TimeService
+    TimeService,
+    SchemaService
   ],
   bootstrap: [AppComponent]
 })

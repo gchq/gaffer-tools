@@ -115,4 +115,13 @@ export class CommonService {
   arrayContainsValue = function(arr, value) {
     return arr && arr.indexOf(value) !== -1;
   }
+
+  /**
+  * Checks whether a string ends with a given suffix
+  * @param {String} str The string to test
+  * @param {String} suffix The ending you want to check against
+  */
+  endsWith = function(str, suffix) { // to support ES5
+    return str.indexOf(suffix, str.length - suffix.length) !== -1;
+  }
 }

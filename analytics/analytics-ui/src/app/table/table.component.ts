@@ -6,6 +6,7 @@ import { ResultsService } from "../gaffer/results.service";
 import { CommonService } from '../dynamic-input/common.service';
 import { TypeService } from '../gaffer/type.service';
 import { TimeService } from '../gaffer/time.service';
+import { SchemaService } from '../gaffer/schema.service';
 
 @Component({
   selector: "app-table",
@@ -17,14 +18,15 @@ export class TableComponent implements OnInit {
     results: new MatTableDataSource([])
   };
   @ViewChild(MatSort) sort: MatSort;
-  schema;
   displayedColumns: Set<any>;
+  schema = {edges:{}, entities:{}, types:{}};
 
   constructor(
     private results: ResultsService,
     private common: CommonService,
     private types: TypeService,
-    private time: TimeService
+    private time: TimeService,
+    // private schema: SchemaService
   ) {}
 
   /**
@@ -49,6 +51,8 @@ export class TableComponent implements OnInit {
         sortedResults.other.push(results[i]);
       }
     }
+
+    // schema = this.schema.get()
 
     this.processResults(sortedResults);
   }
@@ -106,9 +110,9 @@ export class TableComponent implements OnInit {
     this.data.tooltips = {};
 
     //Transform the edges into a displayable form
-    this.processElements("Edge", "edges", ["result type", "GROUP", "SOURCE", "DESTINATION", "DIRECTED"], ids, groupByProperties, properties, resultsData);
+    this.processElements("Edge", "edges", ["resultType", "GROUP", "SOURCE", "DESTINATION", "DIRECTED"], ids, groupByProperties, properties, resultsData);
     //Transform the entities into a displayable form
-    this.processElements("Entity", "entities", ["result type", "GROUP", "SOURCE"], ids, groupByProperties, properties, resultsData);
+    this.processElements("Entity", "entities", ["resultType", "GROUP", "SOURCE"], ids, groupByProperties, properties, resultsData);
     //Transform the other types into a displayable form
     this.processOtherTypes(ids, properties, resultsData);
 
@@ -136,6 +140,22 @@ export class TableComponent implements OnInit {
     this.updateFilteredResults();
   }
 
+  updateFilteredResults = function() {
+    this.data.results = [];
+    for(var t in this.data.types) {
+        if(this.data.types[t] in this.resultsByType) {
+            for(var g in this.data.groups) {
+                if(this.data.groups[g] in this.resultsByType[this.data.types[t]]) {
+                  this.data.results = this.data.results.concat(this.resultsByType[this.data.types[t]][this.data.groups[g]]);
+                }
+            }
+        }
+    }
+    //Set the results to be displayed in the table
+    this.data.results = new MatTableDataSource(this.data.results);
+    this.columnsToDisplay = this.data.columns;
+  }
+
   private processElements = function(type, typePlural, idKeys, ids, groupByProperties, properties, resultsData) {
     //If there are elements of this type
     if(resultsData[typePlural] && Object.keys(resultsData[typePlural]).length > 0) {
@@ -155,7 +175,7 @@ export class TableComponent implements OnInit {
                         result[id] = this.convertValue(id, element[id.toLowerCase()]);
                     }
                 }
-                result['result type'] = type;
+                result['resultType'] = type;
 
                 //Get all of the properties to show in the table
                 if(element.properties) {
@@ -205,8 +225,8 @@ export class TableComponent implements OnInit {
             for(var key in item) {
                 var value = this.convertValue(key, item[key]);
                 if("class" === key) {
-                    result["result type"] = item[key].split(".").pop();
-                    this.common.pushValueIfUnique("result type", ids);
+                    result["resultType"] = item[key].split(".").pop();
+                    this.common.pushValueIfUnique("resultType", ids);
                 } else if("vertex" === key) {
                     result["SOURCE"] = value;
                     this.common.pushValueIfUnique("SOURCE", ids);
@@ -222,13 +242,13 @@ export class TableComponent implements OnInit {
                     this.common.pushValueIfUnique(key, properties);
                 }
             }
-            if(!(result['result type'] in this.resultsByType)) {
-                this.resultsByType[result['result type']] = {};
+            if(!(result['resultType'] in this.resultsByType)) {
+                this.resultsByType[result['resultType']] = {};
             }
-            if(!(result.GROUP in this.resultsByType[result['result type']])) {
-                this.resultsByType[result['result type']][result.GROUP] = [];
+            if(!(result.GROUP in this.resultsByType[result['resultType']])) {
+                this.resultsByType[result['resultType']][result.GROUP] = [];
             }
-            this.resultsByType[result['result type']][result.GROUP].push(result);
+            this.resultsByType[result['resultType']][result.GROUP].push(result);
         }
     }
   }
