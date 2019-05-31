@@ -105,8 +105,11 @@ export class TableComponent implements OnInit {
     this.resultsByType = {};
     this.data.tooltips = {};
 
+    //Transform the edges into a displayable form
     this.processElements("Edge", "edges", ["result type", "GROUP", "SOURCE", "DESTINATION", "DIRECTED"], ids, groupByProperties, properties, resultsData);
+    //Transform the entities into a displayable form
     this.processElements("Entity", "entities", ["result type", "GROUP", "SOURCE"], ids, groupByProperties, properties, resultsData);
+    //Transform the other types into a displayable form
     this.processOtherTypes(ids, properties, resultsData);
 
     this.data.allColumns = this.common.concatUniqueValues(this.common.concatUniqueValues(ids, groupByProperties), properties);
@@ -134,12 +137,15 @@ export class TableComponent implements OnInit {
   }
 
   private processElements = function(type, typePlural, idKeys, ids, groupByProperties, properties, resultsData) {
+    //If there are elements of this type
     if(resultsData[typePlural] && Object.keys(resultsData[typePlural]).length > 0) {
         this.resultsByType[type] = [];
         this.common.pushValuesIfUnique(idKeys, ids);
+        //For each element
         for(var i in resultsData[typePlural]) {
             var element = resultsData[typePlural][i];
             if(element) {
+                //Convert the ids (i.e. result type, GROUP and SOURCE) into a displayable form for the table
                 var result = {};
                 for(var idIndex in idKeys) {
                     var id = idKeys[idIndex];
@@ -151,6 +157,7 @@ export class TableComponent implements OnInit {
                 }
                 result['result type'] = type;
 
+                //Get all of the properties to show in the table
                 if(element.properties) {
                     if(!(element.group in this.resultsByType[type])) {
                         this.resultsByType[type][element.group] = [];
