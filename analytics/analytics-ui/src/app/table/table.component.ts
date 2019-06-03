@@ -55,6 +55,7 @@ export class TableComponent implements OnInit {
     // schema = this.schema.get()
 
     this.processResults(sortedResults);
+    //this.onResultsUpdated(results);
   }
 
   /** 

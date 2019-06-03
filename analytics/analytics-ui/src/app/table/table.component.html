@@ -5,7 +5,7 @@
 <!-- Dynamic Table -->
 <mat-card>
   <mat-table [dataSource]="data.results" matSort>
-    <ng-container [matColumnDef]="column" *ngFor="let column of displayedColumns">
+    <ng-container [matColumnDef]="column" *ngFor="let column of columnsToDisplay">
       <mat-header-cell *matHeaderCellDef mat-sort-header>
         <h3>{{ column | uppercase }}</h3>
       </mat-header-cell>
