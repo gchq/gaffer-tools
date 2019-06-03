@@ -28,7 +28,7 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
-public class AnalyticOperationDetail implements Serializable {
+public class AnalyticDetail implements Serializable {
 
     private String analyticName;
     private String operationName;
@@ -42,10 +42,10 @@ public class AnalyticOperationDetail implements Serializable {
     private Map<String, String> outputType = Maps.newHashMap();
     private Integer score;
 
-    public AnalyticOperationDetail() {
+    public AnalyticDetail() {
     }
 
-    public AnalyticOperationDetail(final String analyticName, final String operationName, final String description,
+    public AnalyticDetail(final String analyticName, final String operationName, final String description,
                                    final String userId, final List<String> readers,
                                    final List<String> writers, final Map<String, UIMappingDetail> uiMapping,
                                    final Map<String, String> metaData, final Map<String, String> outputType,
@@ -131,7 +131,7 @@ public class AnalyticOperationDetail implements Serializable {
             return false;
         }
 
-        final AnalyticOperationDetail op = (AnalyticOperationDetail) obj;
+        final AnalyticDetail op = (AnalyticDetail) obj;
 
         return new EqualsBuilder()
                 .append(analyticName, op.analyticName)
@@ -225,63 +225,63 @@ public class AnalyticOperationDetail implements Serializable {
         private Integer score;
         private Map<String, String> options;
 
-        public AnalyticOperationDetail.Builder creatorId(final String creatorId) {
+        public AnalyticDetail.Builder creatorId(final String creatorId) {
             this.creatorId = creatorId;
             return this;
         }
 
-        public AnalyticOperationDetail.Builder analyticName(final String analyticName) {
+        public AnalyticDetail.Builder analyticName(final String analyticName) {
             this.analyticName = analyticName;
             return this;
         }
 
-        public AnalyticOperationDetail.Builder operationName(final String operationName) {
+        public AnalyticDetail.Builder operationName(final String operationName) {
             this.operationName = operationName;
             return this;
         }
 
-        public AnalyticOperationDetail.Builder description(final String description) {
+        public AnalyticDetail.Builder description(final String description) {
             this.description = description;
             return this;
         }
 
-        public AnalyticOperationDetail.Builder uiMapping(final Map<String, UIMappingDetail> uiMapping) {
+        public AnalyticDetail.Builder uiMapping(final Map<String, UIMappingDetail> uiMapping) {
             this.uiMapping = uiMapping;
             return this;
         }
 
-        public AnalyticOperationDetail.Builder readers(final List<String> readers) {
+        public AnalyticDetail.Builder readers(final List<String> readers) {
             this.readers = readers;
             return this;
         }
 
-        public AnalyticOperationDetail.Builder writers(final List<String> writers) {
+        public AnalyticDetail.Builder writers(final List<String> writers) {
             this.writers = writers;
             return this;
         }
 
-        public AnalyticOperationDetail.Builder score(final Integer score) {
+        public AnalyticDetail.Builder score(final Integer score) {
             this.score = score;
             return this;
         }
 
-        public AnalyticOperationDetail.Builder options(final Map<String, String> options) {
+        public AnalyticDetail.Builder options(final Map<String, String> options) {
             this.options = options;
             return this;
         }
 
-        public AnalyticOperationDetail.Builder metaData(final Map<String, String> metaData) {
+        public AnalyticDetail.Builder metaData(final Map<String, String> metaData) {
             this.metaData = metaData;
             return this;
         }
 
-        public AnalyticOperationDetail.Builder outputType(final Map<String, String> outputType) {
+        public AnalyticDetail.Builder outputType(final Map<String, String> outputType) {
             this.outputType = outputType;
             return this;
         }
 
-        public AnalyticOperationDetail build() {
-            return new AnalyticOperationDetail(analyticName, operationName, description, creatorId, readers, writers, uiMapping, metaData, outputType, score, options);
+        public AnalyticDetail build() {
+            return new AnalyticDetail(analyticName, operationName, description, creatorId, readers, writers, uiMapping, metaData, outputType, score, options);
         }
     }
 }

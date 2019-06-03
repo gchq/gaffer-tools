@@ -25,13 +25,13 @@ import uk.gov.gchq.koryphe.Summary;
 import java.util.Map;
 
 /**
- * A {@code DeleteAnalyticOperation} is an {@link Operation} for removing an existing
- * {@link AnalyticOperationDetail} from a Gaffer graph.
+ * A {@code DeleteAnalytic} is an {@link Operation} for removing an existing
+ * {@link AnalyticDetail} from a Gaffer graph.
  */
 @JsonPropertyOrder(value = {"class", "operationName"}, alphabetic = true)
 @Since("1.0.0")
 @Summary("Deletes an analytic operation")
-public class DeleteAnalyticOperation implements Operation {
+public class DeleteAnalytic implements Operation {
     @Required
     private String operationName;
     private Map<String, String> options;
@@ -45,8 +45,8 @@ public class DeleteAnalyticOperation implements Operation {
     }
 
     @Override
-    public DeleteAnalyticOperation shallowClone() {
-        return new DeleteAnalyticOperation.Builder()
+    public DeleteAnalytic shallowClone() {
+        return new DeleteAnalytic.Builder()
                 .name(operationName)
                 .options(options)
                 .build();
@@ -62,12 +62,12 @@ public class DeleteAnalyticOperation implements Operation {
         this.options = options;
     }
 
-    public static class Builder extends BaseBuilder<DeleteAnalyticOperation, DeleteAnalyticOperation.Builder> {
+    public static class Builder extends BaseBuilder<DeleteAnalytic, DeleteAnalytic.Builder> {
         public Builder() {
-            super(new DeleteAnalyticOperation());
+            super(new DeleteAnalytic());
         }
 
-        public DeleteAnalyticOperation.Builder name(final String name) {
+        public DeleteAnalytic.Builder name(final String name) {
             _getOp().setOperationName(name);
             return _self();
         }

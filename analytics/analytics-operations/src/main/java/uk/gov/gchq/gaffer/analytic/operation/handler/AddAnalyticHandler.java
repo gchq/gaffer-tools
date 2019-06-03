@@ -20,33 +20,33 @@ import uk.gov.gchq.gaffer.named.operation.NamedOperationDetail;
 import uk.gov.gchq.gaffer.named.operation.cache.exception.CacheOperationFailedException;
 import uk.gov.gchq.gaffer.operation.Operation;
 import uk.gov.gchq.gaffer.operation.OperationException;
-import uk.gov.gchq.gaffer.operation.analytic.AddAnalyticOperation;
-import uk.gov.gchq.gaffer.operation.analytic.AnalyticOperationDetail;
+import uk.gov.gchq.gaffer.operation.analytic.AddAnalytic;
+import uk.gov.gchq.gaffer.operation.analytic.AnalyticDetail;
 import uk.gov.gchq.gaffer.operation.analytic.UIMappingDetail;
 import uk.gov.gchq.gaffer.store.Context;
 import uk.gov.gchq.gaffer.store.Store;
 import uk.gov.gchq.gaffer.store.operation.handler.OperationHandler;
-import uk.gov.gchq.gaffer.store.operation.handler.analytic.cache.AnalyticOperationCache;
+import uk.gov.gchq.gaffer.store.operation.handler.analytic.cache.AnalyticCache;
 import uk.gov.gchq.gaffer.store.operation.handler.named.cache.NamedOperationCache;
 
 import java.util.Map;
 
-public class AddAnalyticOperationHandler implements OperationHandler<AddAnalyticOperation> {
-    private final AnalyticOperationCache cache;
+public class AddAnalyticHandler implements OperationHandler<AddAnalytic> {
+    private final AnalyticCache cache;
 
-    public AddAnalyticOperationHandler() {
-        this(new AnalyticOperationCache());
+    public AddAnalyticHandler() {
+        this(new AnalyticCache());
     }
 
-    public AddAnalyticOperationHandler(final AnalyticOperationCache cache) {
+    public AddAnalyticHandler(final AnalyticCache cache) {
         this.cache = cache;
     }
 
     /**
-     * Adds a AnalyticOperation to a cache which must be specified in the operation declarations file. An
-     * AnalyticOperationDetail is built using the fields on the AddAnalyticOperation. The operation name and operation chain
+     * Adds a Analytic to a cache which must be specified in the operation declarations file. An
+     * AnalyticDetail is built using the fields on the AddAnalytic. The operation name and operation chain
      * fields must be set and cannot be left empty, or the build() method will fail and a runtime exception will be
-     * thrown. The handler then adds/overwrites the AnalyticOperation according toa an overwrite flag.
+     * thrown. The handler then adds/overwrites the Analytic according toa an overwrite flag.
      *
      * @param operation the {@link Operation} to be executed
      * @param context   the operation chain context, containing the user who executed the operation
@@ -55,9 +55,9 @@ public class AddAnalyticOperationHandler implements OperationHandler<AddAnalytic
      * @throws OperationException if the operation on the cache fails
      */
     @Override
-    public Void doOperation(final AddAnalyticOperation operation, final Context context, final Store store) throws OperationException {
+    public Void doOperation(final AddAnalytic operation, final Context context, final Store store) throws OperationException {
         try {
-            final AnalyticOperationDetail analyticOperationDetail = new AnalyticOperationDetail.Builder()
+            final AnalyticDetail AnalyticDetail = new AnalyticDetail.Builder()
                     .analyticName(operation.getAnalyticName())
                     .operationName(operation.getOperationName())
                     .creatorId(context.getUser().getUserId())
@@ -71,9 +71,9 @@ public class AddAnalyticOperationHandler implements OperationHandler<AddAnalytic
                     .options(operation.getOptions())
                     .build();
 
-            validate(analyticOperationDetail);
+            validate(AnalyticDetail);
 
-            cache.addAnalyticOperation(analyticOperationDetail, operation.isOverwriteFlag(), context
+            cache.addAnalytic(AnalyticDetail, operation.isOverwriteFlag(), context
                     .getUser(), store.getProperties().getAdminAuth());
         } catch (final CacheOperationFailedException e) {
             throw new OperationException(e.getMessage(), e);
@@ -81,11 +81,11 @@ public class AddAnalyticOperationHandler implements OperationHandler<AddAnalytic
         return null;
     }
 
-    private void validate(final AnalyticOperationDetail analyticOperationDetail) throws OperationException {
+    private void validate(final AnalyticDetail AnalyticDetail) throws OperationException {
 
-        if (null != analyticOperationDetail.getUiMapping()) {
-            Map<String, UIMappingDetail> uiMap = analyticOperationDetail.getUiMapping();
-            for (String current : analyticOperationDetail.getUiMapping().keySet()) {
+        if (null != AnalyticDetail.getUiMapping()) {
+            Map<String, UIMappingDetail> uiMap = AnalyticDetail.getUiMapping();
+            for (String current : AnalyticDetail.getUiMapping().keySet()) {
                 if (uiMap.get(current).getLabel() == null) {
                     throw new OperationException("UIMapping: label not specified.");
                 } else if (uiMap.get(current).getParameterName() == null) {
@@ -95,7 +95,7 @@ public class AddAnalyticOperationHandler implements OperationHandler<AddAnalytic
                 } else {
                     NamedOperationCache noc = new NamedOperationCache();
                     try {
-                        NamedOperationDetail nod = noc.getFromCache(analyticOperationDetail.getOperationName());
+                        NamedOperationDetail nod = noc.getFromCache(AnalyticDetail.getOperationName());
                         if (nod.getParameters().get(uiMap.get(current).getParameterName()) == null) {
                             throw new OperationException("UIMapping: parameter '" + uiMap.get(current).getParameterName() + "' does not exist in Named Operation");
                         }
@@ -106,20 +106,20 @@ public class AddAnalyticOperationHandler implements OperationHandler<AddAnalytic
             }
         }
 
-        if (null == analyticOperationDetail.getOutputType()) {
-            throw new OperationException("Missing outputType field in AddAnalyticOperation");
-        } else if (analyticOperationDetail.getOutputType().containsKey("output")) {
-            if (!analyticOperationDetail.getOutputType().get("output").equals("table") && !analyticOperationDetail.getOutputType().get("output").equals("graph")) {
-                throw new OperationException("OutputType: output does not equal either 'table' or 'graph' in AddAnalyticOperation");
+        if (null == AnalyticDetail.getOutputType()) {
+            throw new OperationException("Missing outputType field in AddAnalytic");
+        } else if (AnalyticDetail.getOutputType().containsKey("output")) {
+            if (!AnalyticDetail.getOutputType().get("output").equals("table") && !AnalyticDetail.getOutputType().get("output").equals("graph")) {
+                throw new OperationException("OutputType: output does not equal either 'table' or 'graph' in AddAnalytic");
             }
         } else {
-            throw new OperationException("OutputType: output field was not specified in AddAnalyticOperation");
+            throw new OperationException("OutputType: output field was not specified in AddAnalytic");
         }
 
-        if (null == analyticOperationDetail.getMetaData()) {
-            throw new OperationException("Missing metaData field in AddAnalyticOperation");
-        } else if (!analyticOperationDetail.getMetaData().containsKey("iconURL")) {
-            throw new OperationException("Header: iconURL field was not specified in AddAnalyticOperation");
+        if (null == AnalyticDetail.getMetaData()) {
+            throw new OperationException("Missing metaData field in AddAnalytic");
+        } else if (!AnalyticDetail.getMetaData().containsKey("iconURL")) {
+            throw new OperationException("Header: iconURL field was not specified in AddAnalytic");
         }
     }
 }

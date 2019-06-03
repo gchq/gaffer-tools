@@ -36,10 +36,10 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Analytic operations enable encapsulation of an OperationChain into a new single {@code AnalyticOperation}.
- * The {@code AnalyticOperation} can be added to OperationChains and executed, just like any other Operation.
+ * Analytic operations enable encapsulation of an OperationChain into a new single {@code Analytic}.
+ * The {@code Analytic} can be added to OperationChains and executed, just like any other Operation.
  * When run it executes the encapsulated OperationChain.
- * There are various possible uses for AnalyticOperations, including:
+ * There are various possible uses for Analytics, including:
  * <ul>
  * <li>making it simpler to run frequently used OperationChains</li>
  * <li>in a controlled way, allowing specific OperationChains to be run by a user that would not normally have permission to run them</li>
@@ -54,7 +54,7 @@ import java.util.Map;
 @JsonPropertyOrder(value = {"class", "input", "operationName"}, alphabetic = true)
 @Since("1.0.0")
 @Summary("Runs a analytic operation")
-public class AnalyticOperation<I_ITEM, O> implements
+public class Analytic<I_ITEM, O> implements
         InputOutput<Iterable<? extends I_ITEM>, O>,
         MultiInput<I_ITEM>,
         Operation,
@@ -109,8 +109,8 @@ public class AnalyticOperation<I_ITEM, O> implements
     }
 
     @Override
-    public AnalyticOperation shallowClone() {
-        return new AnalyticOperation.Builder<I_ITEM, O>()
+    public Analytic shallowClone() {
+        return new Analytic.Builder<I_ITEM, O>()
                 .input(input)
                 .name(operationName)
                 .parameters(parameters)
@@ -145,11 +145,11 @@ public class AnalyticOperation<I_ITEM, O> implements
         return operations;
     }
 
-    public static class Builder<I_ITEM, O> extends BaseBuilder<AnalyticOperation<I_ITEM, O>, Builder<I_ITEM, O>>
-            implements InputOutput.Builder<AnalyticOperation<I_ITEM, O>, Iterable<? extends I_ITEM>, O, Builder<I_ITEM, O>>,
-            MultiInput.Builder<AnalyticOperation<I_ITEM, O>, I_ITEM, Builder<I_ITEM, O>> {
+    public static class Builder<I_ITEM, O> extends BaseBuilder<Analytic<I_ITEM, O>, Builder<I_ITEM, O>>
+            implements InputOutput.Builder<Analytic<I_ITEM, O>, Iterable<? extends I_ITEM>, O, Builder<I_ITEM, O>>,
+            MultiInput.Builder<Analytic<I_ITEM, O>, I_ITEM, Builder<I_ITEM, O>> {
         public Builder() {
-            super(new AnalyticOperation<>());
+            super(new Analytic<>());
         }
 
         public Builder<I_ITEM, O> name(final String name) {
