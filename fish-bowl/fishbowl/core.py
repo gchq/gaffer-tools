@@ -219,35 +219,8 @@ class SeedPair(ToJson):
     def __init__(self, first, second):
         super().__init__()
 
-        if isinstance(first, ElementSeed):
-            self.first = first
-        elif isinstance(first, dict) and 'class' in first:
-            self.first = JsonConverter.from_json(first)
-        elif isinstance(first, dict) and EntitySeed.CLASS in first:
-            self.first = first[EntitySeed.CLASS]
-            if isinstance(self.first, dict):
-                self.first = JsonConverter.from_json(self.first, EntitySeed)
-        elif isinstance(first, dict) and EdgeSeed.CLASS in first:
-            self.first = first[EdgeSeed.CLASS]
-            if isinstance(self.first, dict):
-                self.first = JsonConverter.from_json(self.first, EdgeSeed)
-        else:
-            self.first = EntitySeed(first)
-
-        if isinstance(second, ElementSeed):
-            self.second = second
-        elif isinstance(second, dict) and 'class' in second:
-            self.second = JsonConverter.from_json(second)
-        elif isinstance(second, dict) and EntitySeed.CLASS in second:
-            self.second = second[EntitySeed.CLASS]
-            if isinstance(self.second, dict):
-                self.second = JsonConverter.from_json(self.second, EntitySeed)
-        elif isinstance(second, dict) and EdgeSeed.CLASS in second:
-            self.second = second[EdgeSeed.CLASS]
-            if isinstance(self.second, dict):
-                self.second = JsonConverter.from_json(self.second, EdgeSeed)
-        else:
-            self.second = EntitySeed(second)
+        self.first = first
+        self.second = second
 
     def to_json(self):
         return {
