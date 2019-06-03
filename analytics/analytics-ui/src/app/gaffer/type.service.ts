@@ -25,7 +25,6 @@ import { ErrorService } from '../dynamic-input/error.service';
 export class TypeService {
 
     types = {};
-    // var simpleClassNames = {};
 
     unknownType =
         {
@@ -46,14 +45,6 @@ export class TypeService {
             this.get(true).subscribe((myConfig) => {
                 if(myConfig) {
                     this.types = myConfig.types;
-                    // console.log(myConfig);
-                    // console.log(myConfig.types);
-                    // console.log(this.types);
-                    // for(var className in this.types) {
-                    //     var parts = className.split('.');
-                    //     var simpleClassName = parts.pop().replace(/<.*>/, "");
-                    //     simpleClassNames[simpleClassName] = className;
-                    // }
                 }
             });
         }
@@ -71,7 +62,6 @@ export class TypeService {
             //On success
             data => {
                 observer.next(data);
-                //this.types = data;
             },
             //On error
             err => {
