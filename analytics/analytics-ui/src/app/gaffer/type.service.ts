@@ -17,6 +17,9 @@ import { Injectable } from '@angular/core';
 import {  } from 'lodash';
 
 import { CommonService } from '../dynamic-input/common.service';
+import { HttpHeaders, HttpClient } from '@angular/common/http';
+import { Observable, Observer } from 'rxjs';
+import { ErrorService } from '../dynamic-input/error.service';
 
 @Injectable()
 export class TypeService {
@@ -35,7 +38,58 @@ export class TypeService {
             ]
         }
 
-    constructor(private common: CommonService) {}
+    constructor(
+        private common: CommonService,
+        private http: HttpClient,
+        private error: ErrorService
+        ) {
+            this.get(true).subscribe((myConfig) => {
+                if(myConfig) {
+                    this.types = myConfig.types;
+                    // console.log(myConfig);
+                    // console.log(myConfig.types);
+                    // console.log(this.types);
+                    // for(var className in this.types) {
+                    //     var parts = className.split('.');
+                    //     var simpleClassName = parts.pop().replace(/<.*>/, "");
+                    //     simpleClassNames[simpleClassName] = className;
+                    // }
+                }
+            });
+        }
+
+    get(loud) {
+      let observable = Observable.create((observer: Observer<Object>) => {
+        //Configure the http headers
+        let headers = new HttpHeaders();
+        headers = headers.set("Content-Type", "application/json; charset=utf-8");
+        //Make the http request
+        let queryUrl = this.common.parseUrl(
+            "http://localhost:4200" + "/assets/defaultConfig.json"
+        );
+        this.http.get(queryUrl, { headers: headers }).subscribe(
+            //On success
+            data => {
+                observer.next(data);
+                //this.types = data;
+            },
+            //On error
+            err => {
+            if (loud) {
+                this.error.handle(
+                "Failed to load the config, see the console for details",
+                null,
+                err
+                );
+                observer.error(err);
+            } else {
+                observer.next(err);
+            }
+            }
+        );
+      })
+      return observable;
+    }
 
     getShortValue = function(value) {
 
@@ -103,6 +157,32 @@ export class TypeService {
     listShortValue = function(values) {
         return values.map((value) => {
             return this.getShortValue(value);
+        }).join(', ');
+    }
+
+    private mapShortValue = function(value) {
+        return Object.keys(value).map((key) => {
+            return key + ": " + this.getShortValue(value[key]);
+        }).join(", ");
+    }
+
+    private customShortValue = function(fields, parts) {
+        var showWithLabel = (fields.length !== 1)
+
+        return fields.map((field) => {
+            var layers = field.key.split('.');
+            var customValue = parts;
+            for (var i in layers) {
+                customValue = customValue[layers[i]];
+            }
+
+            customValue = this.getShortValue(customValue);
+
+            if (showWithLabel) {
+                return field.label + ': ' + customValue;
+            }
+            return customValue;
+
         }).join(', ');
     }
 };

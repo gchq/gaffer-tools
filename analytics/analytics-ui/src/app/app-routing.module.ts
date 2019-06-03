@@ -9,7 +9,7 @@ const routes: Routes = [
   { path: "parameters", component: ParameterInputComponent },
   { path: "parameters/:operation", component: ParameterInputComponent },
   { path: "results", component: TableComponent },
-  { path: "**", redirectTo: "analytics" }
+  //{ path: "**", redirectTo: "analytics" }
 ];
 
 @NgModule({
