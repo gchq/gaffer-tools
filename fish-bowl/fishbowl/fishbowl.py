@@ -12,6 +12,9 @@ class Fishbowl:
         self.generated_directory_path = generated_directory_path
         print("Generating python Library from REST service")
         self.__generate_library()
+        print("done")
+        print("To import operations, predicates and functions, use the following command:")
+        print("from " + generated_directory_path + " import *")
 
     def __generate_library(self):
 

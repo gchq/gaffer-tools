@@ -23,14 +23,10 @@ Things it currently does:
 * Provide different methods and functions based on those available on the Gaffer API
 * Provide a mechanism for executing the operations on the remote REST API
 
-Things it will do:
-Provide shortcuts for creating views and other Gaffer specific objects
-
 Things it should do:
+* Provide shortcuts for creating views and other Gaffer specific objects
 * Generate Binary operators based on the API (needs server side work)
-
-Things it will not do:
-* Make toast... yet
+* Pull back data in CSV form so it can be easily turned into a pandas DataFrame
 
 ## How does it work?
 
