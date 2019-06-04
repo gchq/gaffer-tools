@@ -55,8 +55,8 @@ public class GetAnalyticHandler implements OutputOperationHandler<GetAnalytic, A
     public AnalyticDetail doOperation(final GetAnalytic operation, final Context context, final Store store) throws OperationException {
         final AnalyticDetail op;
         try {
-            op = cache.getAnalytic(operation.getAnalyticName(),context.getUser(), store.getProperties().getAdminAuth());
-        } catch (CacheOperationFailedException e) {
+            op = cache.getAnalyticOperation(operation.getAnalyticName(), context.getUser(), store.getProperties().getAdminAuth());
+        } catch (final CacheOperationFailedException e) {
             throw new OperationException(e.getMessage());
         }
         return op;

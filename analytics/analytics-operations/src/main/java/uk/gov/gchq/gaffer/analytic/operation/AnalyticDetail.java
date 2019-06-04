@@ -101,8 +101,8 @@ public class AnalyticDetail implements Serializable {
         return uiMapping;
     }
 
-    public void setUiMapping(Map<String, UIMappingDetail> parameters) {
-        this.uiMapping = parameters;
+    public void setUiMapping(final Map<String, UIMappingDetail> uiMapping) {
+        this.uiMapping = uiMapping;
     }
 
     public Integer getScore() {

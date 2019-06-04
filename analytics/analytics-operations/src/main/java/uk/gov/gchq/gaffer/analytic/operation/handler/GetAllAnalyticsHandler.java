@@ -76,9 +76,9 @@ public class GetAllAnalyticHandler implements OutputOperationHandler<GetAllAnaly
         private AnalyticDetail resolveParameters(final AnalyticDetail analyticOp) {
             if (null != analyticOp) {
                 try {
-                    NamedOperationDetail nod = new NamedOperationCache().getNamedOperation(analyticOp.getOperationName(), GetAllAnalyticHandler.context.getUser());
-                    for (String currentParam : nod.getParameters().keySet()) {
-                        for (String uiKey : analyticOp.getUiMapping().keySet()) {
+                    NamedOperationDetail nod = new NamedOperationCache().getNamedOperation(analyticOp.getOperationName(), GetAllAnalyticOperationHandler.context.getUser());
+                    for (final String currentParam : nod.getParameters().keySet()) {
+                        for (final String uiKey : analyticOp.getUiMapping().keySet()) {
                             UIMappingDetail uiParam = analyticOp.getUiMapping().get(uiKey);
                             if (uiParam.getParameterName().equals(currentParam)) {
                                 uiParam.setInputClass(nod.getParameters().get(currentParam).getValueClass());
@@ -88,7 +88,7 @@ public class GetAllAnalyticHandler implements OutputOperationHandler<GetAllAnaly
                     }
 
                 } catch (final Exception e) {
-                    // ignore - no need to map parameters
+                    // Can't find the parameter.
                 }
             }
             return analyticOp;

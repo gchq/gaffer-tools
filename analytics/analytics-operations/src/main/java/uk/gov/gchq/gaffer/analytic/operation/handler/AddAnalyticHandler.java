@@ -18,7 +18,6 @@ package uk.gov.gchq.gaffer.store.operation.handler.analytic;
 
 import uk.gov.gchq.gaffer.named.operation.NamedOperationDetail;
 import uk.gov.gchq.gaffer.named.operation.cache.exception.CacheOperationFailedException;
-import uk.gov.gchq.gaffer.operation.Operation;
 import uk.gov.gchq.gaffer.operation.OperationException;
 import uk.gov.gchq.gaffer.operation.analytic.AddAnalytic;
 import uk.gov.gchq.gaffer.operation.analytic.AnalyticDetail;
@@ -48,7 +47,7 @@ public class AddAnalyticHandler implements OperationHandler<AddAnalytic> {
      * fields must be set and cannot be left empty, or the build() method will fail and a runtime exception will be
      * thrown. The handler then adds/overwrites the Analytic according toa an overwrite flag.
      *
-     * @param operation the {@link Operation} to be executed
+     * @param operation the {@link uk.gov.gchq.gaffer.operation.Operation} to be executed
      * @param context   the operation chain context, containing the user who executed the operation
      * @param store     the {@link Store} the operation should be run on
      * @return null (since the output is void)
@@ -83,9 +82,9 @@ public class AddAnalyticHandler implements OperationHandler<AddAnalytic> {
 
     private void validate(final AnalyticDetail AnalyticDetail) throws OperationException {
 
-        if (null != AnalyticDetail.getUiMapping()) {
-            Map<String, UIMappingDetail> uiMap = AnalyticDetail.getUiMapping();
-            for (String current : AnalyticDetail.getUiMapping().keySet()) {
+        if (null != analyticOperationDetail.getUiMapping()) {
+            Map<String, UIMappingDetail> uiMap = analyticOperationDetail.getUiMapping();
+            for (final String current : analyticOperationDetail.getUiMapping().keySet()) {
                 if (uiMap.get(current).getLabel() == null) {
                     throw new OperationException("UIMapping: label not specified.");
                 } else if (uiMap.get(current).getParameterName() == null) {
@@ -99,7 +98,7 @@ public class AddAnalyticHandler implements OperationHandler<AddAnalytic> {
                         if (nod.getParameters().get(uiMap.get(current).getParameterName()) == null) {
                             throw new OperationException("UIMapping: parameter '" + uiMap.get(current).getParameterName() + "' does not exist in Named Operation");
                         }
-                    } catch (CacheOperationFailedException e) {
+                    } catch (final CacheOperationFailedException e) {
                         throw new OperationException(e.getMessage());
                     }
                 }

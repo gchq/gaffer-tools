@@ -32,7 +32,7 @@ import java.util.Map;
 
 import static java.util.Objects.isNull;
 
-@JsonPropertyOrder(value = {"class", "analyticName","operationName", "description", "score"}, alphabetic = true)
+@JsonPropertyOrder(value = {"class", "analyticName", "operationName", "description", "score"}, alphabetic = true)
 @Since("1.0.0")
 @Summary("Adds a new analytic")
 public class AddAnalytic implements Operation {

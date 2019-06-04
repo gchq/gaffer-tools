@@ -82,7 +82,7 @@ public class Analytic<I_ITEM, O> implements
 
     @JsonSetter("parameters")
     public void setParameters(final LinkedHashMap<String, Object> parameters) {
-        this.parameters = parameters;
+        this.parameters = uiMapping;
     }
 
     public void setParameters(final Map<String, Object> parameters) {
