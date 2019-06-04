@@ -29,13 +29,13 @@
         <standalone-port>8080</standalone-port>
     </properties>
 
-    <dependencies>
+    <!-- <dependencies>
         <dependency>
             <groupId>uk.gov.gchq.gaffer</groupId>
             <artifactId>analytics-operations</artifactId>
             <version>${project.parent.version}</version>
         </dependency>
-    </dependencies>
+    </dependencies> -->
 
     <build>
         <plugins>
