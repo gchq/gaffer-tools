@@ -12,18 +12,18 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 1. [Introduction](ui.md#introduction)
 2. [Road Traffic example](ui.md#road-traffic-example)
-   * [Walkthrough](ui.md#walkthrough)
+   - [Walkthrough](ui.md#walkthrough)
 3. [Federated Store Demo](ui.md#federated-store-demo)
 4. [Deployment](ui.md#deployment)
 5. [Configuration](ui.md#configuration)
-   * [Rest Endpoint](ui.md#rest-endpoint)
-   * [Operations](ui.md#operations)
-   * [Types](ui.md#types)
-   * [Time](ui.md#time)
-   * [Operation options](ui.md#operation-options)
-   * [Quick Query](ui.md#quick-query)
-   * [Graph](ui.md#graph)
-   * [Feedback](ui.md#feedback)
+   - [Rest Endpoint](ui.md#rest-endpoint)
+   - [Operations](ui.md#operations)
+   - [Types](ui.md#types)
+   - [Time](ui.md#time)
+   - [Operation options](ui.md#operation-options)
+   - [Quick Query](ui.md#quick-query)
+   - [Graph](ui.md#graph)
+   - [Feedback](ui.md#feedback)
 6. [Testing](ui.md#testing)
 
 ### Introduction
@@ -58,11 +58,11 @@ We've modelled the road use data as a simple Gaffer graph to demonstrate how Gaf
 
 There are edges representing:
 
-* Region to Location: e.g South West - Bristol, South West - Devon etc.
-* Location to Roads: e.g. Bristol - M32 etc
-* Roads and their Junctions: e.g. M32 - M32:1, M32 - M32:2, etc.
-* Junctions and their locations: e.g. M32:2 - 361150,175250, etc.
-* Traffic counts between junctions during specific hours: e.g. M32:1 - M32:2 etc.
+- Region to Location: e.g South West - Bristol, South West - Devon etc.
+- Location to Roads: e.g. Bristol - M32 etc
+- Roads and their Junctions: e.g. M32 - M32:1, M32 - M32:2, etc.
+- Junctions and their locations: e.g. M32:2 - 361150,175250, etc.
+- Traffic counts between junctions during specific hours: e.g. M32:1 - M32:2 etc.
 
 We can start with a uk region, such as the South West, and find the locations within that region. Then pick one or more of those locations, find the roads there and list their junctions. Then between any pair of adjacent junctions, we can summarise the vehicle counts over a time range of our choosing.
 
@@ -122,45 +122,45 @@ You will be taken directly to the query page. Here is where you can build your q
 
 **Build and execute a query to find all locations within the South West region:**
 
-* in the "Add Seeds" section we will add a seed as the starting point for your query:
-  * Value: `South West`
-  * Click '+' or press 'enter'  Don't forget this step!
-* in the Filters section select 'RegionContainsLocation' from the edges dropdown to tell Gaffer you only want 'RegionContainsLocation' edges to be returned. If you didn't select any groups then you would just get all groups returned.
-* click the execute query button in the bottom right hand corner
+- in the "Add Seeds" section we will add a seed as the starting point for your query:
+  - Value: `South West`
+  - Click '+' or press 'enter' Don't forget this step!
+- in the Filters section select 'RegionContainsLocation' from the edges dropdown to tell Gaffer you only want 'RegionContainsLocation' edges to be returned. If you didn't select any groups then you would just get all groups returned.
+- click the execute query button in the bottom right hand corner
 
 Move the graph around by clicking and dragging the cursor. Scroll to zoom in/out.
 
 **Build and execute a query to find all roads within Bristol:**
 
-* click on the 'Bristol, City of' vertex
-* navigate to the 'query' page
-* in the 'Add Seeds' section you can see the 'Bristol, City of' vertex is selected. We do not need to add anymore seeds this time.
-* select 'LocationContainsRoad' edges drop down of the filters section
-* click the execute button in the bottom right hand corner
+- click on the 'Bristol, City of' vertex
+- navigate to the 'query' page
+- in the 'Add Seeds' section you can see the 'Bristol, City of' vertex is selected. We do not need to add anymore seeds this time.
+- select 'LocationContainsRoad' edges drop down of the filters section
+- click the execute button in the bottom right hand corner
 
 **Build and execute a query to find all junctions on the M32:**
 
-* click on the 'M32' vertex
-* navigate to the 'query' page
-* select 'RoadHasJunction' from the edges dropdown in the filter section.
-* click the execute button in the bottom right hand corner
+- click on the 'M32' vertex
+- navigate to the 'query' page
+- select 'RoadHasJunction' from the edges dropdown in the filter section.
+- click the execute button in the bottom right hand corner
 
 **Build and execute a query to find the road use between junctions M32:1 and M32:M4 between 6AM and 7AM on 3/5/2005:**
 
-* click on the 'M32:1' vertex
-* navigate to the 'query' page
-* to add the time filter, go to the date card
-  * enter or select '03/05/2005' into the start and end date
-  * enter 07:00 and 09:00 into the appropriate time boxes
-* to specify the edge type we need to use the filters section again
-  * select 'RoadUse' from the edges drop down
-* click the execute button in the bottom right hand corner
+- click on the 'M32:1' vertex
+- navigate to the 'query' page
+- to add the time filter, go to the date card
+  - enter or select '03/05/2005' into the start and end date
+  - enter 07:00 and 09:00 into the appropriate time boxes
+- to specify the edge type we need to use the filters section again
+  - select 'RoadUse' from the edges drop down
+- click the execute button in the bottom right hand corner
 
 If you find the 'RoadUse' edge in the graph and click on it, you will see the following information in the selected elements window:
 
 ```text
 M32:1 to M32:M4 (19)
-RoadUse    
+RoadUse
 startDate: 1115103600000
 endDate: 1115107200000
 count: 14400
@@ -177,12 +177,12 @@ Clicking the 'Raw' tab at the top of the UI displays the Json constructed and ha
 
 **Now we will repeat the previous query but with a bigger time window - this time between 6AM and 8AM on 3/5/2005:**
 
-* click on the 'M32:1' vertex
-* navigate to the 'query' page
-* select 'Get Elements' from the operation drop down
-* enter '03/05/2005' into the start and end date, but this time enter 06:00 and 08:00 as the start and end time.
-* select 'RoadUse'
-* click the execute button in the bottom right hand corner
+- click on the 'M32:1' vertex
+- navigate to the 'query' page
+- select 'Get Elements' from the operation drop down
+- enter '03/05/2005' into the start and end date, but this time enter 06:00 and 08:00 as the start and end time.
+- select 'RoadUse'
+- click the execute button in the bottom right hand corner
 
 Now if you click on the 'RoadUse' edge, or visit the 'Edges' Table view, you'll see that two 'RoadUse' summaries are displayed:
 
@@ -243,9 +243,9 @@ Now, when you compose a query you will see there is an operation option predefin
 
 Building the Gaffer UI using maven creates a WAR file which can be deployed alongside the REST API. This can be done as-is but should you wish to make changes to the UI such as:
 
-* Adding your own config
-* Changing the theme
-* Altering the routes
+- Adding your own config
+- Changing the theme
+- Altering the routes
 
 You will need to unpack and repackage the WAR - much the same as if you were to make changes to the REST API.
 
@@ -311,53 +311,57 @@ Changing these values will have a knock-on effect to the sidebar in the UI.
 Here is the default example:
 
 ```javascript
-angular.module('app').config(['$locationProvider', '$routeProvider', function($locationProvider, $routeProvider) {
-    $locationProvider.html5Mode(false)
+angular.module("app").config([
+  "$locationProvider",
+  "$routeProvider",
+  function($locationProvider, $routeProvider) {
+    $locationProvider.html5Mode(false);
 
     $routeProvider
-        .when('/query', {
-            title: 'Query',
-            template: '<operation-chain></operation-chain>',
-            icon: 'query',
-            inNav: true
-        })
-        .when('/table', {
-            title: 'Table',
-            template: '<results-table></results-table>',
-            icon: 'table',
-            inNav: true
-        })
-        .when('/graph', {
-            title: 'Graph',
-            templateUrl: 'app/graph/graph-page.html',
-            icon: 'graph',
-            inNav: true
-        })
-        .when('/schema', {
-            title: 'Schema',
-            templateUrl: 'app/schema/schema-view-page.html',
-            icon: 'schema',
-            inNav: true
-        })
-        .when('/raw', {
-            title: 'Raw',
-            template: '<raw></raw>',
-            icon: 'raw',
-            inNav: true
-        })
-        .when('/settings', {
-            title: 'Settings',
-            template: '<settings-view></settings-view>',
-            icon: 'settings',
-            inNav: true
-        })
-        .when('/results', {
-            redirectTo: '/table'
-        })
-        .when('/', {
-            redirectTo: '/query'
-        });
-}]);
+      .when("/query", {
+        title: "Query",
+        template: "<operation-chain></operation-chain>",
+        icon: "query",
+        inNav: true
+      })
+      .when("/table", {
+        title: "Table",
+        template: "<results-table></results-table>",
+        icon: "table",
+        inNav: true
+      })
+      .when("/graph", {
+        title: "Graph",
+        templateUrl: "app/graph/graph-page.html",
+        icon: "graph",
+        inNav: true
+      })
+      .when("/schema", {
+        title: "Schema",
+        templateUrl: "app/schema/schema-view-page.html",
+        icon: "schema",
+        inNav: true
+      })
+      .when("/raw", {
+        title: "Raw",
+        template: "<raw></raw>",
+        icon: "raw",
+        inNav: true
+      })
+      .when("/settings", {
+        title: "Settings",
+        template: "<settings-view></settings-view>",
+        icon: "settings",
+        inNav: true
+      })
+      .when("/results", {
+        redirectTo: "/table"
+      })
+      .when("/", {
+        redirectTo: "/query"
+      });
+  }
+]);
 ```
 
 #### app/config/theme-config.js
@@ -367,11 +371,15 @@ This file contains the configuration for theming within the UI. Changes to this 
 Here is the default:
 
 ```javascript
-angular.module('app').config(['$mdThemingProvider', function($mdThemingProvider) {
-    $mdThemingProvider.theme('default')
-        .primaryPalette('blue-grey')
-        .accentPalette('orange');
-}]);
+angular.module("app").config([
+  "$mdThemingProvider",
+  function($mdThemingProvider) {
+    $mdThemingProvider
+      .theme("default")
+      .primaryPalette("blue-grey")
+      .accentPalette("orange");
+  }
+]);
 ```
 
 Once you've built the WAR with maven, just add it to the deployments alongside your REST API.
@@ -382,9 +390,9 @@ Like much of Gaffer, the UI is customisable. This is achieved using a config fil
 
 You can find examples of these within the example directory:
 
-* config/config.json
-* road-traffic/config/config.json - The config used for the road traffic demo
-* federated/config/config.json - The config used for the federated store demo
+- config/config.json
+- road-traffic/config/config.json - The config used for the road traffic demo
+- federated/config/config.json - The config used for the federated store demo
 
 The configuration is made up of different sections and is written in JSON:
 
@@ -407,9 +415,9 @@ An example of a changed rest endpoint:
 
 The operations section allows you to choose what operations should be available by default.
 
-| variable | type | description |
-| :--- | :--- | :--- |
-| whiteList | array | optional list of operations to expose to a user. By default all operations are available |
+| variable  | type  | description                                                                                                               |
+| :-------- | :---- | :------------------------------------------------------------------------------------------------------------------------ |
+| whiteList | array | optional list of operations to expose to a user. By default all operations are available                                  |
 | blackList | array | optional list of banned operations. Operations on this list will not be allowed. By default no operations are blacklisted |
 
 #### Types
@@ -420,24 +428,24 @@ The types section of the configuration tells the UI how to interpret and show ja
 
 To create a type, use the full class name as the key and create an object with the following fields:
 
-| name | type | description |
-| :--- | :--- | :--- |
-| fields | array | The fields within the class _see below for creating fields_ |
+| name       | type    | description                                                                                                                  |
+| :--------- | :------ | :--------------------------------------------------------------------------------------------------------------------------- |
+| fields     | array   | The fields within the class _see below for creating fields_                                                                  |
 | wrapInJson | boolean | \(optional\) Should the object be wrapped in JSON. For example Longs, you should wrap but Integers and Strings you shouldn't |
-| custom | boolean | \(optional\) indicates whether the object is a custom object. _see below for details_ |
+| custom     | boolean | \(optional\) indicates whether the object is a custom object. _see below for details_                                        |
 
 **Fields**
 
 Fields are the individual parts which make up an object. They are made up of various sub-fields which describe how the field should be created and stored.
 
-| name | type | description |
-| :--- | :--- | :--- |
-| label | string | A label to be applied to inputs |
-| key | string | \(optional\) a key to store the field against. Omit this field for simple objects that store a value against a class name eg: { "java.lang.Long": 1000000 } as opposed to { "java.lang.Long": { "key": 1000000}} |
-| type | string | the javascript/html type. This translates to how the value is inputted |
-| step | number | \(number values only\) how much to increment a value by if using the up/down arrows |
-| class | string | The class of this field - this can be another type |
-| required | boolean | Whether the field is required to make up the object |
+| name     | type    | description                                                                                                                                                                                                      |
+| :------- | :------ | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| label    | string  | A label to be applied to inputs                                                                                                                                                                                  |
+| key      | string  | \(optional\) a key to store the field against. Omit this field for simple objects that store a value against a class name eg: { "java.lang.Long": 1000000 } as opposed to { "java.lang.Long": { "key": 1000000}} |
+| type     | string  | the javascript/html type. This translates to how the value is inputted                                                                                                                                           |
+| step     | number  | \(number values only\) how much to increment a value by if using the up/down arrows                                                                                                                              |
+| class    | string  | The class of this field - this can be another type                                                                                                                                                               |
+| required | boolean | Whether the field is required to make up the object                                                                                                                                                              |
 
 For complex types like the HyperLogLogPlus, the value can be determined by going a few layers down in the object. in order to create a custom object use a '.' in the key to separate the layers. Using the example of the HyperLogLogPlus, the key is 'hyperLogLogPlus.cardinality' because the cardinality is the only meaningful part:
 
@@ -462,19 +470,19 @@ You can create a filter object which contains all the necessary values needed to
 
 To use the time window feature, some assumptions should be true:
 
-* Your start and end date properties must be the same on each element
-* The units must be the same for the start and end date
-* The classes of object must be the same for the start and end date
+- Your start and end date properties must be the same on each element
+- The units must be the same for the start and end date
+- The classes of object must be the same for the start and end date
 
   If all these are true, we can proceed and start creating the filter. It takes the following parameters:
 
-| name | type | description |
-| :--- | :--- | :--- |
-| startProperty | string | The name of the start date property |
-| endProperty | string | The name of the end date property |
-| unit | string | The unit of time. This can be one of: day, hour, minute, second, millisecond, microsecond. This is not case sensitive. |
-| class | string | The java class of the object - this class should exist in the types section |
-| presets | object | An object specifying the preset suggestions. \(see below for details\) |
+| name          | type   | description                                                                                                            |
+| :------------ | :----- | :--------------------------------------------------------------------------------------------------------------------- |
+| startProperty | string | The name of the start date property                                                                                    |
+| endProperty   | string | The name of the end date property                                                                                      |
+| unit          | string | The unit of time. This can be one of: day, hour, minute, second, millisecond, microsecond. This is not case sensitive. |
+| class         | string | The java class of the object - this class should exist in the types section                                            |
+| presets       | object | An object specifying the preset suggestions. \(see below for details\)                                                 |
 
 It's worth noting that if your elements have a single timestamp, just use the same timestamp property in the startProperty and endProperty
 
@@ -490,12 +498,12 @@ Telling the UI which properties relate to time is good practice as it helps the 
 
 To configure time properties, you need to provide an object which is keyed by the name of the properties. Each property should contain the class of the class associated with the property and the unit. This unit should be one of:
 
-* Microsecond
-* Millisecond
-* Second
-* Minute
-* Hour
-* Day
+- Microsecond
+- Millisecond
+- Second
+- Minute
+- Hour
+- Day
 
 **Example**
 
@@ -583,15 +591,15 @@ If you add more options to the visible array, the options will be shown by defau
 
 The options themselves are objects with the following fields:
 
-| field name | type | description |
-| :--- | :--- | :--- |
-| key | string | The operation option key which will be sent to the rest service |
-| label | string | The label which will summarise what the option is |
-| multiple | boolean | \(optional\) uses chips to create comma delimited strings - defaults to false |
-| value | string or array | \(optional\) The default value of this option. Use arrays when multiple is set to true |
-| autocomplete | object | \(optional\) Configuration for autocompleting values - see below |
-| autocomplete.options | array | Static array of string to use for autocompleting |
-| autocomplete.asyncOptions | operation | operation to be executed to get the autocomplete values. Operation must return an iterable of strings |
+| field name                | type            | description                                                                                           |
+| :------------------------ | :-------------- | :---------------------------------------------------------------------------------------------------- |
+| key                       | string          | The operation option key which will be sent to the rest service                                       |
+| label                     | string          | The label which will summarise what the option is                                                     |
+| multiple                  | boolean         | \(optional\) uses chips to create comma delimited strings - defaults to false                         |
+| value                     | string or array | \(optional\) The default value of this option. Use arrays when multiple is set to true                |
+| autocomplete              | object          | \(optional\) Configuration for autocompleting values - see below                                      |
+| autocomplete.options      | array           | Static array of string to use for autocompleting                                                      |
+| autocomplete.asyncOptions | operation       | operation to be executed to get the autocomplete values. Operation must return an iterable of strings |
 
 #### Quick Query
 
@@ -603,14 +611,14 @@ You can edit the behaviour of the quick query component in the Gaffer UI using t
 }
 ```
 
-| name | type | description |
-| :--- | :--- | :--- |
-| placeholder | string | The string placeholder on the search box. Defaults to "Quick Query" |
-| description | string | A breif description of what the query does. Defaults to "Get related elements" |
-| operation | gaffer operation | An operation or operation chain you wish to execute when the user runs the query. Make sure to substitue "${input}" \(with quotes\) for where the input should be. The quick query component will generate an entity seed and replace the "${input}" string with the entity seed. Defaults to a GetElements operation. |
-| useDefaultOperationOptions | boolean | A flag representing whether the UI should add the default operation options specified in the settings page \(if they are specified\). Defaults to false |
-| deduplicate | boolean | A flag representing whether a ToSet operation is added to the chain to remove duplicate values. Defaults to true. |
-| limit | boolean | A flag representing whether a Limit operation is added to the chain. The operation will use the result limit specified in the settings page. If disabled and the query returns more than the result limit, the results will be truncated anyway. Therefore the limit operation is there to save query time. Defaults to true. |
+| name                       | type             | description                                                                                                                                                                                                                                                                                                                   |
+| :------------------------- | :--------------- | :---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| placeholder                | string           | The string placeholder on the search box. Defaults to "Quick Query"                                                                                                                                                                                                                                                           |
+| description                | string           | A breif description of what the query does. Defaults to "Get related elements"                                                                                                                                                                                                                                                |
+| operation                  | gaffer operation | An operation or operation chain you wish to execute when the user runs the query. Make sure to substitue "${input}" \(with quotes\) for where the input should be. The quick query component will generate an entity seed and replace the "${input}" string with the entity seed. Defaults to a GetElements operation.        |
+| useDefaultOperationOptions | boolean          | A flag representing whether the UI should add the default operation options specified in the settings page \(if they are specified\). Defaults to false                                                                                                                                                                       |
+| deduplicate                | boolean          | A flag representing whether a ToSet operation is added to the chain to remove duplicate values. Defaults to true.                                                                                                                                                                                                             |
+| limit                      | boolean          | A flag representing whether a Limit operation is added to the chain. The operation will use the result limit specified in the settings page. If disabled and the query returns more than the result limit, the results will be truncated anyway. Therefore the limit operation is there to save query time. Defaults to true. |
 
 **Example**
 
@@ -715,10 +723,10 @@ If you're using a simple string or number as your vertex, use "undefined" as you
 
 An optional feedback section can be added which the UI uses to send feedback to developers using email. If this section is left blank, no feedback button will be rendered. You can specify a list of email addresses and the subject of the email.
 
-| field | type | description |
-| :--- | :--- | :--- |
-| subject | String | An optional \(defaults to "Gaffer feedback"\) subject header of the email |
-| recipients | array&lt;string&gt; | A list of email addresses who receive the emails. |
+| field      | type                | description                                                               |
+| :--------- | :------------------ | :------------------------------------------------------------------------ |
+| subject    | String              | An optional \(defaults to "Gaffer feedback"\) subject header of the email |
+| recipients | array&lt;string&gt; | A list of email addresses who receive the emails.                         |
 
 **Example**
 
@@ -783,4 +791,3 @@ You can also run the jasmine continuous integration tool using this command:
 ```bash
 mvn clean install -Pcontinuous-integration
 ```
-
