@@ -76,32 +76,11 @@ function TableController(schema, results, table, events, common, types, time, cs
     /* Add drag and scroll to results table once its created */
     var tableBody = document.getElementById('scrollDragableBody');
     var tableHeader = document.getElementById('scrollDragableHeader');
-    vm.curDown = false;
 
     if ((tableBody != null) && (tableHeader != null)) {
         tableBody.addEventListener("scroll", function(e) {
             tableHeader.scrollLeft = tableBody.scrollLeft;
         });
-    
-        tableBody.addEventListener('mousemove', function(e){ 
-            if(vm.curDown === true) {
-                tableBody.scrollLeft = vm.oldScrollLeft + (vm.curXPos - e.pageX);
-                tableHeader.scrollLeft = vm.oldScrollLeft + (vm.curXPos - e.pageX);
-                tableBody.scrollTop = vm.oldScrollTop + (vm.curYPos - e.pageY);
-            }
-        });
-    
-        tableBody.addEventListener('mousedown', function(e){ 
-            vm.curDown = true; 
-            vm.curYPos = e.pageY; 
-            vm.curXPos = e.pageX; 
-            vm.oldScrollLeft = tableBody.scrollLeft;
-            vm.oldScrollTop = tableBody.scrollTop;
-        });
-    
-        tableBody.addEventListener('mouseup', function(e){ 
-            vm.curDown = false; 
-        }); 
     }
 
     /**

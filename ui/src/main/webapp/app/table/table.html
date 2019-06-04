@@ -27,7 +27,7 @@
             <md-button ng-click="ctrl.hideVisualisation()">hide</md-button>
         </md-card-actions>
     </md-card>
-    <md-card>
+    <md-card class="table-card-container">
         <md-toolbar class="table-toolbar">
             <div class="md-toolbar-tools" layout-align="start start">
                 <md-input-container flex="25">
@@ -65,7 +65,7 @@
             No results
         </md-card-content>
 
-        <md-table-container layout-fill style="overflow-y:hidden;">
+        <md-table-container class="table-container">
             <div id="scrollDragableHeader">
             <table md-table id="results-table" class="compact">
                 <thead md-head md-order="ctrl.sortType">
@@ -191,6 +191,6 @@
                 </table>
             </div>
         </md-table-container>
-        <md-table-pagination md-limit="ctrl.pagination.limit" md-limit-options="[50, 100, 200]" md-page="ctrl.pagination.page" md-total="{{ctrl.filteredResults.length}}" md-page-select md-boundary-links></md-table-pagination>
+        <md-table-pagination class="pagination" md-limit="ctrl.pagination.limit" md-limit-options="[50, 100, 200]" md-page="ctrl.pagination.page" md-total="{{ctrl.filteredResults.length}}" md-page-select md-boundary-links></md-table-pagination>
     </md-card>
 </div>

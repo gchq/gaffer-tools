@@ -385,17 +385,37 @@ quick-query {
 }
 
 #scrollDragableBody {
-    width: auto;
-    height: 600px;
+    flex: 1;
     border: 1px solid #ccc;
     overflow-x: scroll;
     overflow-y: scroll;
   }
 
 #scrollDragableHeader {
-    width: auto;
-    height: auto;
+    flex: 0 0 auto;
     border: 1px solid #ccc;
     overflow-x: hidden;
     overflow-y: scroll;
+}
+
+.table-card-container {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.table-toolbar {
+    flex: 0;
+}
+
+.table-container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow-y: none;
+    overflow-x: none;
+}
+
+.pagination {
+    flex: 0 0 auto;
 }
