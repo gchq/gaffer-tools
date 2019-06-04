@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package uk.gov.gchq.gaffer.operation.analytic;
+package uk.gov.gchq.gaffer.analytic.operation;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
@@ -82,7 +82,7 @@ public class Analytic<I_ITEM, O> implements
 
     @JsonSetter("parameters")
     public void setParameters(final LinkedHashMap<String, Object> parameters) {
-        this.parameters = uiMapping;
+        this.parameters = parameters;
     }
 
     public void setParameters(final Map<String, Object> parameters) {

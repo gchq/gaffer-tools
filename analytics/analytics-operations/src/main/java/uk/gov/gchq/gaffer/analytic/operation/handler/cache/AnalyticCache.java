@@ -14,17 +14,17 @@
  * limitations under the License.
  */
 
-package uk.gov.gchq.gaffer.store.operation.handler.analytic.cache;
+package uk.gov.gchq.gaffer.analytic.operation.handler.cache;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import uk.gov.gchq.gaffer.analytic.operation.AnalyticDetail;
 import uk.gov.gchq.gaffer.cache.CacheServiceLoader;
 import uk.gov.gchq.gaffer.cache.exception.CacheOperationException;
 import uk.gov.gchq.gaffer.commonutil.iterable.CloseableIterable;
 import uk.gov.gchq.gaffer.commonutil.iterable.WrappedCloseableIterable;
 import uk.gov.gchq.gaffer.named.operation.cache.exception.CacheOperationFailedException;
-import uk.gov.gchq.gaffer.operation.analytic.AnalyticDetail;
 import uk.gov.gchq.gaffer.user.User;
 
 import java.util.HashSet;
@@ -32,7 +32,7 @@ import java.util.Set;
 
 /**
  * Wrapper around the {@link CacheServiceLoader} to provide an interface for handling
- * the {@link uk.gov.gchq.gaffer.operation.analytic.AnalyticDetail}s for a Gaffer graph.
+ * the {@link uk.gov.gchq.gaffer.analytic.operation.AnalyticDetail}s for a Gaffer graph.
  */
 public class AnalyticCache {
 
@@ -45,14 +45,14 @@ public class AnalyticCache {
      * against the write roles associated with the {@link AnalyticDetail}. If it turns out the user is overwriting a
      * non-existent AnalyticDetail, then the users AnalyticDetail will be added normally.
      *
-     * @param Analytic The AnalyticDetail that the user wants to store.
+     * @param analytic The AnalyticDetail that the user wants to store.
      * @param overwrite         Flag relating to whether the user is adding (false) or updating/overwriting (true).
      * @param user              The user making the request.
      * @throws CacheOperationFailedException thrown if the user doesn't have write access to the AnalyticDetail requested,
      *                                       or if the add operation fails for some reason.
      */
-    public void addAnalytic(final AnalyticDetail Analytic, final boolean overwrite, final User user) throws CacheOperationFailedException {
-        add(Analytic, overwrite, user, null);
+    public void addAnalytic(final AnalyticDetail analytic, final boolean overwrite, final User user) throws CacheOperationFailedException {
+        add(analytic, overwrite, user, null);
     }
 
     /**
@@ -61,15 +61,15 @@ public class AnalyticCache {
      * against the write roles associated with the {@link AnalyticDetail}. If it turns out the user is overwriting a
      * non-existent AnalyticDetail, then the users AnalyticDetail will be added normally.
      *
-     * @param Analytic The AnalyticDetail that the user wants to store.
+     * @param analytic The AnalyticDetail that the user wants to store.
      * @param overwrite         Flag relating to whether the user is adding (false) or updating/overwriting (true).
      * @param user              The user making the request.
      * @param adminAuth         The admin auth supplied for permissions.
      * @throws CacheOperationFailedException thrown if the user doesn't have write access to the AnalyticDetail requested,
      *                                       or if the add operation fails for some reason.
      */
-    public void addAnalytic(final AnalyticDetail Analytic, final boolean overwrite, final User user, final String adminAuth) throws CacheOperationFailedException {
-        add(Analytic, overwrite, user, adminAuth);
+    public void addAnalytic(final AnalyticDetail analytic, final boolean overwrite, final User user, final String adminAuth) throws CacheOperationFailedException {
+        add(analytic, overwrite, user, adminAuth);
     }
 
     /**
@@ -166,7 +166,7 @@ public class AnalyticCache {
     }
 
     /**
-     * Delete the specified {@link uk.gov.gchq.gaffer.operation.analytic.AnalyticDetail}
+     * Delete the specified {@link AnalyticDetail}
      * from the cache.
      *
      * @param name the name of the operation to delete
@@ -223,10 +223,10 @@ public class AnalyticCache {
         throw new CacheOperationFailedException("No Analytic operation with the name " + name + " exists in the cache");
     }
 
-    private void add(final AnalyticDetail Analytic, final boolean overwrite, final User user, final String adminAuth) throws CacheOperationFailedException {
+    private void add(final AnalyticDetail analytic, final boolean overwrite, final User user, final String adminAuth) throws CacheOperationFailedException {
         String name;
         try {
-            name = Analytic.getAnalyticName();
+            name = analytic.getAnalyticName();
         } catch (final NullPointerException e) {
             throw new CacheOperationFailedException("Analytic cannot be null", e);
         }
@@ -234,7 +234,7 @@ public class AnalyticCache {
             throw new CacheOperationFailedException("Analytic name cannot be null");
         }
         if (!overwrite) {
-            addToCache(name, Analytic, false);
+            addToCache(name, analytic, false);
             return;
         }
 
@@ -243,11 +243,11 @@ public class AnalyticCache {
         try {
             existing = getFromCache(name);
         } catch (final CacheOperationFailedException e) { // if there is no existing Analytic Operation add one
-            addToCache(name, Analytic, false);
+            addToCache(name, analytic, false);
             return;
         }
         if (existing.hasWriteAccess(user, adminAuth)) {
-            addToCache(name, Analytic, true);
+            addToCache(name, analytic, true);
         } else {
             throw new CacheOperationFailedException("User " + user.getUserId() + " does not have permission to overwrite");
         }

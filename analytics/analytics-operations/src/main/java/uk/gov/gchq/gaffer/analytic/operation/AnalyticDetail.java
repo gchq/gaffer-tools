@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package uk.gov.gchq.gaffer.operation.analytic;
+package uk.gov.gchq.gaffer.analytic.operation;
 
 import com.google.common.collect.Maps;
 import org.apache.commons.lang.StringUtils;
@@ -30,6 +30,7 @@ import java.util.Map;
 
 public class AnalyticDetail implements Serializable {
 
+    private static final long serialVersionUID = -6554727316218989708L;
     private String analyticName;
     private String operationName;
     private String description;

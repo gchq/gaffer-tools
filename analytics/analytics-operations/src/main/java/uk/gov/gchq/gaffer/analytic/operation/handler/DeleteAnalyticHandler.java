@@ -13,15 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package uk.gov.gchq.gaffer.store.operation.handler.analytic;
+package uk.gov.gchq.gaffer.analytic.operation.handler;
 
+import uk.gov.gchq.gaffer.analytic.operation.DeleteAnalytic;
+import uk.gov.gchq.gaffer.analytic.operation.handler.cache.AnalyticCache;
 import uk.gov.gchq.gaffer.named.operation.cache.exception.CacheOperationFailedException;
 import uk.gov.gchq.gaffer.operation.OperationException;
-import uk.gov.gchq.gaffer.operation.analytic.DeleteAnalytic;
 import uk.gov.gchq.gaffer.store.Context;
 import uk.gov.gchq.gaffer.store.Store;
 import uk.gov.gchq.gaffer.store.operation.handler.OperationHandler;
-import uk.gov.gchq.gaffer.store.operation.handler.analytic.cache.AnalyticCache;
 
 /**
  * Operation Handler for DeleteAnalytic.

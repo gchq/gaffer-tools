@@ -29,13 +29,13 @@
         <standalone-port>8080</standalone-port>
     </properties>
 
-    <!-- <dependencies>
+    <dependencies>
         <dependency>
             <groupId>uk.gov.gchq.gaffer</groupId>
             <artifactId>analytics-operations</artifactId>
             <version>${project.parent.version}</version>
         </dependency>
-    </dependencies> -->
+    </dependencies>
 
     <build>
         <plugins>
@@ -52,6 +52,37 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-dependency-plugin</artifactId>
                 <version>2.10</version>
+                <dependencies>
+                    <dependency>
+                        <groupId>uk.gov.gchq.gaffer</groupId>
+                        <artifactId>road-traffic-rest</artifactId>
+                        <version>${gaffer.version}</version>
+                        <type>war</type>
+                    </dependency>
+                </dependencies>
+                <executions>
+                    <execution>
+                        <id>unpack</id>
+                        <phase>compile</phase>
+                        <goals>
+                            <goal>unpack</goal>
+                        </goals>
+                        <configuration>
+                            <artifactItems>
+                                <artifactItem>
+                                    <groupId>uk.gov.gchq.gaffer</groupId>
+                                    <artifactId>road-traffic-rest</artifactId>
+                                    <version>${gaffer.version}</version>
+                                    <type>war</type>
+                                    <overWrite>false</overWrite>
+                                    <outputDirectory>
+                                        ${project.build.directory}/${project.artifactId}-${project.version}
+                                    </outputDirectory>
+                                </artifactItem>
+                            </artifactItems>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>
@@ -65,18 +96,6 @@
             <build>
                 <plugins>
                     <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-war-plugin</artifactId>
-                        <version>${maven-war-plugin.version}</version>
-                        <configuration>
-                            <webResources>
-                                <resource>
-                                    <directory>example/road-traffic</directory>
-                                </resource>
-                            </webResources>
-                        </configuration>
-                    </plugin>
-                    <plugin>
                         <groupId>org.apache.tomcat.maven</groupId>
                         <artifactId>tomcat7-maven-plugin</artifactId>
                         <version>2.0</version>
@@ -87,20 +106,20 @@
                                 <webapp>
                                     <contextPath>/${standalone-rest-path}</contextPath>
                                     <groupId>uk.gov.gchq.gaffer</groupId>
-                                    <artifactId>road-traffic-rest</artifactId>
-                                    <version>${gaffer.version}</version>
+                                    <artifactId>analytics-rest</artifactId>
+                                    <version>${project.parent.version}</version>
                                     <type>war</type>
                                     <asWebapp>true</asWebapp>
                                 </webapp>
                             </webapps>
                             <systemProperties>
                                 <gaffer.properties.app.title>
-                                    Road Traffic Example
+                                    Analytics Example
                                 </gaffer.properties.app.title>
                                 <gaffer.properties.app.description>
-                                    Example using road traffic data.
+                                    Example Gaffer API which supports Analytics and contains road traffic data.
                                     The sample data used is taken from the
-                                    Department for Transport
+                                    Department for Transport.
                                     &lt;a
                                     href='http://data.dft.gov.uk/gb-traffic-matrix/Raw_count_data_major_roads.zip'
                                     &gt;GB Road Traffic Counts&lt;/a&gt;,
@@ -113,16 +132,16 @@
                                     ${standalone-rest-path}
                                 </gaffer.rest-api.basePath>
                                 <gaffer.graph.config>
-                                    ${project.basedir}/example/road-traffic/graphConfig.json
+                                    ${project.build.outputDirectory}/graphConfig.json
                                 </gaffer.graph.config>
                                 <gaffer.schemas>
-                                    ${project.basedir}/example/road-traffic/schema
+                                    ${project.build.outputDirectory}/schema
                                 </gaffer.schemas>
                                 <gaffer.storeProperties>
-                                    ${project.basedir}/example/road-traffic/accumulo/store.properties
+                                    ${project.build.outputDirectory}/accumulo/store.properties
                                 </gaffer.storeProperties>
                                 <roadTraffic.dataLoader.dataPath>
-                                    ${project.basedir}/example/road-traffic/roadTrafficSampleData.csv
+                                    ${project.build.outputDirectory}/roadTrafficSampleData.csv
                                 </roadTraffic.dataLoader.dataPath>
                                 <gaffer.error-mode.debug>
                                     false
@@ -130,7 +149,6 @@
                                 <gaffer.properties.app.logo.src>
                                     images/logo.png
                                 </gaffer.properties.app.logo.src>
-
                             </systemProperties>
                         </configuration>
                         <executions>

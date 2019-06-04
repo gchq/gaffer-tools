@@ -14,18 +14,18 @@
  * limitations under the License.
  */
 
-package uk.gov.gchq.gaffer.store.operation.handler.analytic;
+package uk.gov.gchq.gaffer.analytic.operation.handler;
 
+import uk.gov.gchq.gaffer.analytic.operation.AddAnalytic;
+import uk.gov.gchq.gaffer.analytic.operation.AnalyticDetail;
+import uk.gov.gchq.gaffer.analytic.operation.UIMappingDetail;
+import uk.gov.gchq.gaffer.analytic.operation.handler.cache.AnalyticCache;
 import uk.gov.gchq.gaffer.named.operation.NamedOperationDetail;
 import uk.gov.gchq.gaffer.named.operation.cache.exception.CacheOperationFailedException;
 import uk.gov.gchq.gaffer.operation.OperationException;
-import uk.gov.gchq.gaffer.operation.analytic.AddAnalytic;
-import uk.gov.gchq.gaffer.operation.analytic.AnalyticDetail;
-import uk.gov.gchq.gaffer.operation.analytic.UIMappingDetail;
 import uk.gov.gchq.gaffer.store.Context;
 import uk.gov.gchq.gaffer.store.Store;
 import uk.gov.gchq.gaffer.store.operation.handler.OperationHandler;
-import uk.gov.gchq.gaffer.store.operation.handler.analytic.cache.AnalyticCache;
 import uk.gov.gchq.gaffer.store.operation.handler.named.cache.NamedOperationCache;
 
 import java.util.Map;
@@ -56,7 +56,7 @@ public class AddAnalyticHandler implements OperationHandler<AddAnalytic> {
     @Override
     public Void doOperation(final AddAnalytic operation, final Context context, final Store store) throws OperationException {
         try {
-            final AnalyticDetail AnalyticDetail = new AnalyticDetail.Builder()
+            final AnalyticDetail analyticDetail = new AnalyticDetail.Builder()
                     .analyticName(operation.getAnalyticName())
                     .operationName(operation.getOperationName())
                     .creatorId(context.getUser().getUserId())
@@ -70,9 +70,9 @@ public class AddAnalyticHandler implements OperationHandler<AddAnalytic> {
                     .options(operation.getOptions())
                     .build();
 
-            validate(AnalyticDetail);
+            validate(analyticDetail);
 
-            cache.addAnalytic(AnalyticDetail, operation.isOverwriteFlag(), context
+            cache.addAnalytic(analyticDetail, operation.isOverwriteFlag(), context
                     .getUser(), store.getProperties().getAdminAuth());
         } catch (final CacheOperationFailedException e) {
             throw new OperationException(e.getMessage(), e);
@@ -80,7 +80,7 @@ public class AddAnalyticHandler implements OperationHandler<AddAnalytic> {
         return null;
     }
 
-    private void validate(final AnalyticDetail AnalyticDetail) throws OperationException {
+    private void validate(final AnalyticDetail analyticDetail) throws OperationException {
 
         if (null != analyticDetail.getUiMapping()) {
             Map<String, UIMappingDetail> uiMap = analyticDetail.getUiMapping();
@@ -94,7 +94,7 @@ public class AddAnalyticHandler implements OperationHandler<AddAnalytic> {
                 } else {
                     NamedOperationCache noc = new NamedOperationCache();
                     try {
-                        NamedOperationDetail nod = noc.getFromCache(AnalyticDetail.getOperationName());
+                        NamedOperationDetail nod = noc.getFromCache(analyticDetail.getOperationName());
                         if (nod.getParameters().get(uiMap.get(current).getParameterName()) == null) {
                             throw new OperationException("UIMapping: parameter '" + uiMap.get(current).getParameterName() + "' does not exist in Named Operation");
                         }
@@ -105,19 +105,19 @@ public class AddAnalyticHandler implements OperationHandler<AddAnalytic> {
             }
         }
 
-        if (null == AnalyticDetail.getOutputType()) {
+        if (null == analyticDetail.getOutputType()) {
             throw new OperationException("Missing outputType field in AddAnalytic");
-        } else if (AnalyticDetail.getOutputType().containsKey("output")) {
-            if (!AnalyticDetail.getOutputType().get("output").equals("table") && !AnalyticDetail.getOutputType().get("output").equals("graph")) {
+        } else if (analyticDetail.getOutputType().containsKey("output")) {
+            if (!analyticDetail.getOutputType().get("output").equals("table") && !analyticDetail.getOutputType().get("output").equals("graph")) {
                 throw new OperationException("OutputType: output does not equal either 'table' or 'graph' in AddAnalytic");
             }
         } else {
             throw new OperationException("OutputType: output field was not specified in AddAnalytic");
         }
 
-        if (null == AnalyticDetail.getMetaData()) {
+        if (null == analyticDetail.getMetaData()) {
             throw new OperationException("Missing metaData field in AddAnalytic");
-        } else if (!AnalyticDetail.getMetaData().containsKey("iconURL")) {
+        } else if (!analyticDetail.getMetaData().containsKey("iconURL")) {
             throw new OperationException("Header: iconURL field was not specified in AddAnalytic");
         }
     }

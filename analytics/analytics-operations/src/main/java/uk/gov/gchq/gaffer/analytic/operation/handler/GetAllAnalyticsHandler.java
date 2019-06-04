@@ -14,20 +14,20 @@
  * limitations under the License.
  */
 
-package uk.gov.gchq.gaffer.store.operation.handler.analytic;
+package uk.gov.gchq.gaffer.analytic.operation.handler;
 
 
+import uk.gov.gchq.gaffer.analytic.operation.AnalyticDetail;
+import uk.gov.gchq.gaffer.analytic.operation.GetAllAnalytics;
+import uk.gov.gchq.gaffer.analytic.operation.UIMappingDetail;
+import uk.gov.gchq.gaffer.analytic.operation.handler.cache.AnalyticCache;
 import uk.gov.gchq.gaffer.commonutil.iterable.CloseableIterable;
 import uk.gov.gchq.gaffer.commonutil.iterable.WrappedCloseableIterable;
 import uk.gov.gchq.gaffer.named.operation.NamedOperationDetail;
 import uk.gov.gchq.gaffer.operation.OperationException;
-import uk.gov.gchq.gaffer.operation.analytic.AnalyticDetail;
-import uk.gov.gchq.gaffer.operation.analytic.GetAllAnalytics;
-import uk.gov.gchq.gaffer.operation.analytic.UIMappingDetail;
 import uk.gov.gchq.gaffer.store.Context;
 import uk.gov.gchq.gaffer.store.Store;
 import uk.gov.gchq.gaffer.store.operation.handler.OutputOperationHandler;
-import uk.gov.gchq.gaffer.store.operation.handler.analytic.cache.AnalyticCache;
 import uk.gov.gchq.gaffer.store.operation.handler.named.cache.NamedOperationCache;
 import uk.gov.gchq.koryphe.util.IterableUtil;
 
@@ -36,15 +36,15 @@ import java.util.function.Function;
 /**
  * Operation Handler for GetAllAnalytics
  */
-public class GetAllAnalyticHandler implements OutputOperationHandler<GetAllAnalytics, CloseableIterable<AnalyticDetail>> {
+public class GetAllAnalyticsHandler implements OutputOperationHandler<GetAllAnalytics, CloseableIterable<AnalyticDetail>> {
     private final AnalyticCache cache;
     private static Context context;
 
-    public GetAllAnalyticHandler() {
+    public GetAllAnalyticsHandler() {
         this(new AnalyticCache());
     }
 
-    public GetAllAnalyticHandler(final AnalyticCache cache) {
+    public GetAllAnalyticsHandler(final AnalyticCache cache) {
         this.cache = cache;
     }
 
@@ -61,7 +61,7 @@ public class GetAllAnalyticHandler implements OutputOperationHandler<GetAllAnaly
      */
     @Override
     public CloseableIterable<AnalyticDetail> doOperation(final GetAllAnalytics operation, final Context context, final Store store) throws OperationException {
-        GetAllAnalyticHandler.context = context;
+        GetAllAnalyticsHandler.context = context;
         final CloseableIterable<AnalyticDetail> ops = cache.getAllAnalytics(context.getUser(), store.getProperties().getAdminAuth());
         return new WrappedCloseableIterable<>(IterableUtil.map(ops, new AddInputType()));
     }
@@ -76,7 +76,7 @@ public class GetAllAnalyticHandler implements OutputOperationHandler<GetAllAnaly
         private AnalyticDetail resolveParameters(final AnalyticDetail analyticOp) {
             if (null != analyticOp) {
                 try {
-                    NamedOperationDetail nod = new NamedOperationCache().getNamedOperation(analyticOp.getOperationName(), GetAllAnalyticHandler.context.getUser());
+                    NamedOperationDetail nod = new NamedOperationCache().getNamedOperation(analyticOp.getOperationName(), GetAllAnalyticsHandler.context.getUser());
                     for (final String currentParam : nod.getParameters().keySet()) {
                         for (final String uiKey : analyticOp.getUiMapping().keySet()) {
                             UIMappingDetail uiParam = analyticOp.getUiMapping().get(uiKey);

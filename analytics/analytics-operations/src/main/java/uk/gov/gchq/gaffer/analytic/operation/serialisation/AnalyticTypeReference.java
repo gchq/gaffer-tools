@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package uk.gov.gchq.gaffer.operation.analytic.serialisation;
+package uk.gov.gchq.gaffer.analytic.operation.serialisation;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 
 import uk.gov.gchq.gaffer.commonutil.iterable.CloseableIterable;
-import uk.gov.gchq.gaffer.operation.analytic.AnalyticDetail;
+
 
 /**
  * {@link TypeReference} objects for analytic operations.
@@ -29,6 +29,13 @@ public final class AnalyticTypeReference {
         // Private constructor to prevent instantiation.
     }
 
-    public static class IterableAnalyticDetail extends TypeReference<CloseableIterable<AnalyticDetail>> {
+    public static class IterableAnalyticDetail extends TypeReference<CloseableIterable<uk.gov.gchq.gaffer.analytic.operation.AnalyticDetail>> {
+        public IterableAnalyticDetail() {
+        }
+    }
+
+    public static class AnalyticDetail extends TypeReference<uk.gov.gchq.gaffer.analytic.operation.AnalyticDetail> {
+        public AnalyticDetail() {
+        }
     }
 }
