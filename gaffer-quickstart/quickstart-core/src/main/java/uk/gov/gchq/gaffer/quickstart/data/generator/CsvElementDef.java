@@ -22,11 +22,7 @@ public class CsvElementDef extends HashMap<String, Object> {
     private static final long serialVersionUID = -2147030485732699831L;
 
     // Just for json serialisation
-    CsvElementDef() {
-    }
-
-    public CsvElementDef(final String group) {
-        put("GROUP", group);
+    public CsvElementDef() {
     }
 
     public String getGroup() {
@@ -51,6 +47,11 @@ public class CsvElementDef extends HashMap<String, Object> {
 
     public  CsvElementDef source(final Object value) {
         put("SOURCE", value);
+        return this;
+    }
+
+    public CsvElementDef group(final String group){
+        put("GROUP", group);
         return this;
     }
 

@@ -44,7 +44,7 @@ import java.util.*;
 import static java.util.Objects.requireNonNull;
 
 @Since("1.8.0")
-@Summary("Generates elements form a CSV string")
+@Summary("Generates elements from a CSV string")
 @JsonPropertyOrder(value = {
         "header", "firstRow", "delimiter", "quoted", "quoteChar",
         "requiredFields", "allFieldsRequired",
@@ -53,6 +53,7 @@ import static java.util.Objects.requireNonNull;
         alphabetic = true)
 @JsonInclude(JsonInclude.Include.NON_DEFAULT)
 public class CsvElementGenerator implements OneToManyElementGenerator<String>, Serializable {
+
     private static final long serialVersionUID = -821376598172364516L;
     private List<String> header = new ArrayList<>();
     private int firstRow = 0;
@@ -70,7 +71,7 @@ public class CsvElementGenerator implements OneToManyElementGenerator<String>, S
     private ElementFilter elementValidator;
 
     @Override
-    public Iterable<? extends Element> apply(final Iterable<? extends String> strings) {
+    public synchronized Iterable<? extends Element> apply(final Iterable<? extends String> strings) {
         if (allFieldsRequired) {
             requiredFields = header;
         }
@@ -92,6 +93,7 @@ public class CsvElementGenerator implements OneToManyElementGenerator<String>, S
             elements = new TransformIterable<Element, Element>(elements, validator, skipInvalid) {
                 @Override
                 protected Element transform(final Element element) {
+
                     return element;
                 }
             };
@@ -101,7 +103,7 @@ public class CsvElementGenerator implements OneToManyElementGenerator<String>, S
     }
 
     @Override
-    public Iterable<Element> _apply(final String csv) {
+    public synchronized Iterable<Element> _apply(final String csv) {
         return generateElements(csv);
     }
 
@@ -171,13 +173,15 @@ public class CsvElementGenerator implements OneToManyElementGenerator<String>, S
 
     private Element transformCsvToElement(final Properties properties,
                                           final CsvElementDef csvElementDef) {
+
         requireNonNull(csvElementDef.get("GROUP"), "GROUP is required");
         final Element element;
         if (csvElementDef.containsKey("VERTEX")) {
             element = new Entity(csvElementDef.getGroup(), getField("VERTEX", csvElementDef, properties));
         } else {
             element = new Edge(
-                    csvElementDef.getGroup(),
+//                    csvElementDef.getGroup(),
+                    getField("GROUP", csvElementDef, properties).toString(),
                     getField("SOURCE", csvElementDef, properties),
                     getField("DESTINATION", csvElementDef, properties),
                     (boolean) getField("DIRECTED", csvElementDef, properties)
@@ -358,10 +362,10 @@ public class CsvElementGenerator implements OneToManyElementGenerator<String>, S
         return null != transformer ? transformer.getComponents() : null;
     }
 
-    public void setCsvTransforms(final List<TupleAdaptedFunction<String, ?, ?>> transformeFunctions) {
+    public void setCsvTransforms(final List<TupleAdaptedFunction<String, ?, ?>> transformFunctions) {
         requireNonNull(transformer, "transformer is required");
         this.transformer = new PropertiesTransformer();
-        this.transformer.setComponents(transformeFunctions);
+        this.transformer.setComponents(transformFunctions);
     }
 
     public char getDelimiter() {

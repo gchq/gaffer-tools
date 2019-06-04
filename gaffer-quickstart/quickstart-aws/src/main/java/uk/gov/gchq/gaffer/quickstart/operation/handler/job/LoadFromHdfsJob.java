@@ -17,8 +17,10 @@
 package uk.gov.gchq.gaffer.quickstart.operation.handler.job;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.spark.SparkContext;
 import org.apache.spark.api.java.JavaRDD;
 import org.apache.spark.api.java.JavaSparkContext;
+import org.apache.spark.api.java.function.FlatMapFunction;
 import org.apache.spark.broadcast.Broadcast;
 import org.apache.spark.sql.SparkSession;
 import org.mortbay.util.ajax.JSON;
@@ -29,6 +31,7 @@ import uk.gov.gchq.gaffer.graph.Graph;
 import uk.gov.gchq.gaffer.graph.GraphConfig;
 import uk.gov.gchq.gaffer.jsonserialisation.JSONSerialiser;
 import uk.gov.gchq.gaffer.operation.OperationException;
+import uk.gov.gchq.gaffer.operation.impl.add.AddElements;
 import uk.gov.gchq.gaffer.quickstart.data.generator.CsvElementGenerator;
 import uk.gov.gchq.gaffer.spark.SparkContextUtil;
 import uk.gov.gchq.gaffer.spark.operation.javardd.ImportJavaRDDOfElements;
@@ -37,10 +40,14 @@ import uk.gov.gchq.gaffer.store.library.NoGraphLibrary;
 import uk.gov.gchq.gaffer.store.schema.Schema;
 import uk.gov.gchq.gaffer.user.User;
 
+import javax.swing.text.ElementIterator;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.List;
 
 public class LoadFromHdfsJob {
 
@@ -55,6 +62,25 @@ public class LoadFromHdfsJob {
     private String schemaJson;
     private String tableName;
     private String accumuloStorePropertiesJson;
+
+    private final ThreadLocal<CsvElementGenerator> generator = new ThreadLocal<CsvElementGenerator>(){
+
+        @Override
+        protected CsvElementGenerator initialValue() {
+            CsvElementGenerator csvElementGenerator = null;
+            try {
+                csvElementGenerator = JSONSerialiser.deserialise(
+                        FileUtils.openInputStream(new File(generatorPath)),
+                        CsvElementGenerator.class
+                );
+            } catch (final IOException e) {
+                e.printStackTrace();
+            }
+
+            return csvElementGenerator;
+        }
+    };
+
 
     public static void main(String[] args){
 
@@ -116,27 +142,15 @@ public class LoadFromHdfsJob {
 
         Context context = SparkContextUtil.createContext(user, graph.getStoreProperties());
 
-        SparkSession sparkSession = SparkContextUtil.getSparkSession(context, graph.getStoreProperties())
-                .builder()
-                .getOrCreate();
-
-        JavaSparkContext sc = JavaSparkContext.fromSparkContext(sparkSession.sparkContext());
-
-        final CsvElementGenerator csvElementGenerator;
-        try {
-            csvElementGenerator = JSONSerialiser.deserialise(
-                    FileUtils.openInputStream(new File(generatorPath)),
-                    CsvElementGenerator.class
-            );
-        } catch (final IOException e) {
-            throw new OperationException("Cannot create fieldMappings from file " + generatorPath + " " + e.getMessage());
-        }
+        SparkContext sc = SparkContextUtil.getSparkSession(context, graph.getStoreProperties()).sparkContext();
 
         System.out.println("Using csv generator");
 
-        Broadcast<CsvElementGenerator> generatorBroadcast = sc.broadcast(csvElementGenerator);
+        JavaSparkContext jsc = JavaSparkContext.fromSparkContext(sc);
 
-        JavaRDD<Element> rdd = sc.textFile(dataPath, Integer.parseInt(numPartitions))
+        Broadcast<CsvElementGenerator> generatorBroadcast = jsc.broadcast(generator.get());
+
+        JavaRDD<Element> rdd = jsc.textFile(dataPath, Integer.parseInt(numPartitions))
                 .flatMap(s -> generatorBroadcast.getValue()._apply(s).iterator());
 
         ImportJavaRDDOfElements importRDDOfElements = new ImportJavaRDDOfElements.Builder()
@@ -153,3 +167,5 @@ public class LoadFromHdfsJob {
     }
 
 }
+
+

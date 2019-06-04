@@ -35,7 +35,7 @@ import java.util.function.Function;
 public class PropertiesTransformer extends TupleAdaptedFunctionComposite<String> implements Serializable {
     private final PropertiesTuple propertiesTuple = new PropertiesTuple();
 
-    public Properties apply(final Properties properties) {
+    public synchronized Properties apply(final Properties properties) {
         propertiesTuple.setProperties(properties);
         apply(propertiesTuple);
         return properties;

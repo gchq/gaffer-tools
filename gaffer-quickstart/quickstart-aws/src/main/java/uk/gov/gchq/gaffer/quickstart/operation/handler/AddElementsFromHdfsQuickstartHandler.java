@@ -27,6 +27,7 @@ import uk.gov.gchq.gaffer.quickstart.operation.AddElementsFromHdfsQuickstart;
 import uk.gov.gchq.gaffer.quickstart.operation.handler.job.LoadFromHdfsJob;
 import uk.gov.gchq.gaffer.store.Context;
 import uk.gov.gchq.gaffer.store.Store;
+import uk.gov.gchq.gaffer.store.StoreException;
 import uk.gov.gchq.gaffer.store.operation.handler.OperationHandler;
 import uk.gov.gchq.gaffer.store.schema.Schema;
 
@@ -36,6 +37,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 import java.util.UUID;
+
+
 
 public class AddElementsFromHdfsQuickstartHandler implements OperationHandler<AddElementsFromHdfsQuickstart> {
 
@@ -83,10 +86,30 @@ public class AddElementsFromHdfsQuickstartHandler implements OperationHandler<Ad
         }
 
         String jobMainClass = LoadFromHdfsJob.class.getCanonicalName();
+//        String jobMainClass = LoadFromHdfs.class.getCanonicalName();
         String sparkMaster = accumuloStore.getProperties().get(SPARK_MASTER_KEY);
         String jarPath = accumuloStore.getProperties().get(JOB_JAR_PATH_KEY);
         String sparkHome = accumuloStore.getProperties().get(SPARK_HOME_KEY);
-        String numPartitions = String.valueOf(operation.getNumPartitions());
+
+        String numPartitionsString;
+        int numPartitions = operation.getNumPartitions();
+
+        if(numPartitions == 0){
+            int numTabletServers = 0;
+            try {
+                numTabletServers = (accumuloStore.getTabletServers().size());
+            } catch (StoreException e) {
+                e.printStackTrace();
+            }
+
+            if(0 != numTabletServers){
+                numPartitionsString = String.valueOf(numTabletServers);
+            }else{
+                numPartitionsString = String.valueOf(operation.getNumPartitions());
+            }
+        }else{
+            numPartitionsString = String.valueOf(operation.getNumPartitions());
+        }
 
         Map<String, String> env = new HashMap<>();
         env.put("SPARK_PRINT_LAUNCH_COMMAND", "1");
@@ -98,12 +121,13 @@ public class AddElementsFromHdfsQuickstartHandler implements OperationHandler<Ad
                     .setMainClass(jobMainClass)
                     .setAppResource(jarPath)
                     .setSparkHome(sparkHome)
+//                    .addSparkArg("spark.executor.cores", "1")
                     .addAppArgs(
                             operation.getDataPath(),
                             operation.getElementGeneratorConfig(),
                             outputPath,
                             failurePath,
-                            numPartitions,
+                            numPartitionsString,
                             schemaJson,
                             tableName,
                             accumuloPropertiesJson
