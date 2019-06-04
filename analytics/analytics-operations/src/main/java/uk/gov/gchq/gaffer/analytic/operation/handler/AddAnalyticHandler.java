@@ -82,9 +82,9 @@ public class AddAnalyticHandler implements OperationHandler<AddAnalytic> {
 
     private void validate(final AnalyticDetail AnalyticDetail) throws OperationException {
 
-        if (null != analyticOperationDetail.getUiMapping()) {
-            Map<String, UIMappingDetail> uiMap = analyticOperationDetail.getUiMapping();
-            for (final String current : analyticOperationDetail.getUiMapping().keySet()) {
+        if (null != analyticDetail.getUiMapping()) {
+            Map<String, UIMappingDetail> uiMap = analyticDetail.getUiMapping();
+            for (final String current : analyticDetail.getUiMapping().keySet()) {
                 if (uiMap.get(current).getLabel() == null) {
                     throw new OperationException("UIMapping: label not specified.");
                 } else if (uiMap.get(current).getParameterName() == null) {

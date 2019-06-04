@@ -26,7 +26,7 @@ import uk.gov.gchq.gaffer.commonutil.ToStringBuilder;
 import java.io.Serializable;
 
 /**
- * Simple POJO providing parameter details for {@link AnalyticOperationDetail}s.
+ * Simple POJO providing parameter details for {@link AnalyticDetail}s.
  */
 @JsonDeserialize(builder = UIMappingDetail.Builder.class)
 public class UIMappingDetail implements Serializable {
