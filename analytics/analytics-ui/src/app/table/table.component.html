@@ -3,18 +3,21 @@
 </div>
 
 <!-- Dynamic Table -->
+
 <mat-card>
+  <div class="example-container">
   <mat-table [dataSource]="data.results" matSort>
-    <ng-container [matColumnDef]="column" *ngFor="let column of displayedColumns">
+    <ng-container [matColumnDef]="column" *ngFor="let column of columnsToDisplay">
       <mat-header-cell *matHeaderCellDef mat-sort-header>
         <h3>{{ column | uppercase }}</h3>
       </mat-header-cell>
       <mat-cell *matCellDef="let element"> {{element[column]}} </mat-cell>
     </ng-container>
 
-    <mat-header-row *matHeaderRowDef="columnsToDisplay">
+    <mat-header-row *matHeaderRowDef="columnsToDisplay; sticky: true">
     </mat-header-row>
     <mat-row *matRowDef="let row; columns: columnsToDisplay;">
     </mat-row>
   </mat-table>
+  </div>
 </mat-card>
