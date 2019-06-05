@@ -45,7 +45,7 @@ In this guide we will be constructing a very simple analytic, which runs a GetAl
          "overwriteFlag": true
       },
       {
-         "class": "uk.gov.gchq.gaffer.operation.analytic.AddAnalyticOperation",
+         "class": "uk.gov.gchq.gaffer.operation.analytic.AddAnalytic",
          "analyticName": "Analytic X",
          "operationName": "getAllX",
          "description": "Get Elements with Result Limit",
@@ -94,7 +94,7 @@ In this guide we will be constructing a very simple analytic, which runs a GetAl
 }
 ```
 
-4\) Once again from the Description dropdown, select _Limit_ and click Add Example. This will chain these operations into an **Operation Chain** in the Value input. Change the value assigned to "result-limit" from whatever value has been generated to **"${result-limit}"** - this will allow the user to input it later. The value input should look like this:
+4\) Once again from the Description dropdown, select _Limit_ and click Add Example. This will chain these operations into an **Operation Chain** in the Value input. Change the value assigned to "result-limit" from whatever value has been generated to **"\${result-limit}"** - this will allow the user to input it later. The value input should look like this:
 
 ```text
 {
@@ -112,9 +112,9 @@ In this guide we will be constructing a very simple analytic, which runs a GetAl
 }
 ```
 
-5\) Cut the now complete Operation Chain from the value input. then go to the Description dropdown and select _AddNamedOperation_ and click Add Example. Change the **operationName** and **Description** to whatever you want them to be \(in our example they are "getAllX" with a description of "10"\). Then replace the value assigned to **operationChain** with our previously generated operation chain from before by pasting it in. 
+5\) Cut the now complete Operation Chain from the value input. then go to the Description dropdown and select _AddNamedOperation_ and click Add Example. Change the **operationName** and **Description** to whatever you want them to be \(in our example they are "getAllX" with a description of "10"\). Then replace the value assigned to **operationChain** with our previously generated operation chain from before by pasting it in.
 
-Finally, we add our parameters in. The following code creates a parameter of "result-limit" which will be assigned to the "${result-limit}" input we created earlier, with a description, a default value, a value class, and a boolean on whether this is required to run the operation or not. Do this for all the parameters to be inputted in this analytic \(in our case, just the one\)
+Finally, we add our parameters in. The following code creates a parameter of "result-limit" which will be assigned to the "\${result-limit}" input we created earlier, with a description, a default value, a value class, and a boolean on whether this is required to run the operation or not. Do this for all the parameters to be inputted in this analytic \(in our case, just the one\)
 
 ```text
 "parameters": {
@@ -160,9 +160,9 @@ The value input should now be as follows.
 }
 ```
 
-6\) Again from the Description dropdown, select _AddAnalyticOperation_ and click Add Example - this will create an operation chain where first the Named Operation we have outlined above will be added, and then an analytic utilising this operation will be generated. Make sure to give the analytic a name to be displayed by altering the value given to **analyticName** \(in our example, Analytic X\) and to make sure **operationName** matches the name of the named operation we have generated \(in our example, getAllX\).
+6\) Again from the Description dropdown, select _AddAnalytic_ and click Add Example - this will create an operation chain where first the Named Operation we have outlined above will be added, and then an analytic utilising this operation will be generated. Make sure to give the analytic a name to be displayed by altering the value given to **analyticName** \(in our example, Analytic X\) and to make sure **operationName** matches the name of the named operation we have generated \(in our example, getAllX\).
 
-Add a **Description**, and alter the **metaData** - change the input of **iconURL** to the name of an icon from the Material Design icon library \(a full list of which can be found [here](https://material.io/tools/icons/)\), and add a **"color"** input and specify a color for the analytic card \(in this example, we chose "yellow"\). Your code should match the excerpt below, which matches our code shown at the beginning. 
+Add a **Description**, and alter the **metaData** - change the input of **iconURL** to the name of an icon from the Material Design icon library \(a full list of which can be found [here](https://material.io/tools/icons/)\), and add a **"color"** input and specify a color for the analytic card \(in this example, we chose "yellow"\). Your code should match the excerpt below, which matches our code shown at the beginning.
 
 ```text
 {
@@ -197,7 +197,7 @@ Add a **Description**, and alter the **metaData** - change the input of **iconUR
          "overwriteFlag": true
       },
       {
-         "class": "uk.gov.gchq.gaffer.operation.analytic.AddAnalyticOperation",
+         "class": "uk.gov.gchq.gaffer.operation.analytic.AddAnalytic",
          "analyticName": "Analytic X",
          "operationName": "getAllX",
          "description": "Get Elements with Result Limit",
@@ -229,6 +229,3 @@ Add a **Description**, and alter the **metaData** - change the input of **iconUR
 ```
 
 7\) Click the **Try it out!** button in the bottom left hand corner, and check down to see the response. If the restAPI has given a 200 code response, then that means the Analytic has been successfully added to your restAPI, and when the UI is opened, it will be displayed in the grid.
-
-
-

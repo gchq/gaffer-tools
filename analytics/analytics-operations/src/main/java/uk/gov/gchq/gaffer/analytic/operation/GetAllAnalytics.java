@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package uk.gov.gchq.gaffer.operation.analytic;
+package uk.gov.gchq.gaffer.analytic.operation;
 
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.core.type.TypeReference;
 
+import uk.gov.gchq.gaffer.analytic.operation.serialisation.AnalyticTypeReference;
 import uk.gov.gchq.gaffer.commonutil.iterable.CloseableIterable;
-import uk.gov.gchq.gaffer.operation.analytic.serialisation.AnalyticOperationTypeReference;
 import uk.gov.gchq.gaffer.operation.io.Output;
 import uk.gov.gchq.koryphe.Since;
 import uk.gov.gchq.koryphe.Summary;
@@ -28,24 +28,21 @@ import uk.gov.gchq.koryphe.Summary;
 import java.util.Map;
 
 /**
- * A {@link GetAllAnalyticOperations} is an {@link uk.gov.gchq.gaffer.operation.Operation}
- * for retrieving all {@link AnalyticOperationDetail}s associated with a Gaffer graph.
+ * A {@link GetAllAnalytics} is an {@link uk.gov.gchq.gaffer.operation.Operation}
+ * for retrieving all {@link AnalyticDetail}s associated with a Gaffer graph.
  */
 @JsonPropertyOrder(value = {"class"}, alphabetic = true)
 @Since("1.0.0")
 @Summary("Gets all available analytic operations")
-public class GetAllAnalyticOperations implements
-        Output<CloseableIterable<AnalyticOperationDetail>> {
+public class GetAllAnalytics implements
+        Output<CloseableIterable<AnalyticDetail>> {
     private Map<String, String> options;
 
-    @Override
-    public TypeReference<CloseableIterable<AnalyticOperationDetail>> getOutputTypeReference() {
-        return new AnalyticOperationTypeReference.IterableAnalyticOperationDetail();
-    }
+
 
     @Override
-    public GetAllAnalyticOperations shallowClone() {
-        return new GetAllAnalyticOperations.Builder()
+    public GetAllAnalytics shallowClone() {
+        return new GetAllAnalytics.Builder()
                 .options(options)
                 .build();
     }
@@ -60,10 +57,15 @@ public class GetAllAnalyticOperations implements
         this.options = options;
     }
 
-    public static class Builder extends BaseBuilder<GetAllAnalyticOperations, Builder>
-            implements Output.Builder<GetAllAnalyticOperations, CloseableIterable<AnalyticOperationDetail>, Builder> {
+    @Override
+    public TypeReference<CloseableIterable<AnalyticDetail>> getOutputTypeReference() {
+        return new AnalyticTypeReference.IterableAnalyticDetail();
+    }
+
+    public static class Builder extends BaseBuilder<GetAllAnalytics, Builder>
+            implements Output.Builder<GetAllAnalytics, CloseableIterable<AnalyticDetail>, Builder> {
         public Builder() {
-            super(new GetAllAnalyticOperations());
+            super(new GetAllAnalytics());
         }
     }
 }

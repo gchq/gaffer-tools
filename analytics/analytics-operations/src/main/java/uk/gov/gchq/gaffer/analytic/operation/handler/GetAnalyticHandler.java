@@ -14,29 +14,29 @@
  * limitations under the License.
  */
 
-package uk.gov.gchq.gaffer.store.operation.handler.analytic;
+package uk.gov.gchq.gaffer.analytic.operation.handler;
 
 
+import uk.gov.gchq.gaffer.analytic.operation.AnalyticDetail;
+import uk.gov.gchq.gaffer.analytic.operation.GetAnalytic;
+import uk.gov.gchq.gaffer.analytic.operation.handler.cache.AnalyticCache;
 import uk.gov.gchq.gaffer.named.operation.cache.exception.CacheOperationFailedException;
 import uk.gov.gchq.gaffer.operation.OperationException;
-import uk.gov.gchq.gaffer.operation.analytic.AnalyticOperationDetail;
-import uk.gov.gchq.gaffer.operation.analytic.GetAnalyticOperation;
 import uk.gov.gchq.gaffer.store.Context;
 import uk.gov.gchq.gaffer.store.Store;
 import uk.gov.gchq.gaffer.store.operation.handler.OutputOperationHandler;
-import uk.gov.gchq.gaffer.store.operation.handler.analytic.cache.AnalyticOperationCache;
 
 /**
- * Operation Handler for GetAnalyticOperation
+ * Operation Handler for GetAnalytic
  */
-public class GetAnalyticOperationHandler implements OutputOperationHandler<GetAnalyticOperation, AnalyticOperationDetail> {
-    private final AnalyticOperationCache cache;
+public class GetAnalyticHandler implements OutputOperationHandler<GetAnalytic, AnalyticDetail> {
+    private final AnalyticCache cache;
 
-    public GetAnalyticOperationHandler() {
-        this(new AnalyticOperationCache());
+    public GetAnalyticHandler() {
+        this(new AnalyticCache());
     }
 
-    public GetAnalyticOperationHandler(final AnalyticOperationCache cache) {
+    public GetAnalyticHandler(final AnalyticCache cache) {
         this.cache = cache;
     }
 
@@ -48,15 +48,15 @@ public class GetAnalyticOperationHandler implements OutputOperationHandler<GetAn
      * @param operation the {@link uk.gov.gchq.gaffer.operation.Operation} to be executed
      * @param context   the operation chain context, containing the user who executed the operation
      * @param store     the {@link Store} the operation should be run on
-     * @return an iterable of AnalyticOperations
+     * @return an iterable of Analytics
      * @throws OperationException thrown if the cache has not been initialized in the operation declarations file
      */
     @Override
-    public AnalyticOperationDetail doOperation(final GetAnalyticOperation operation, final Context context, final Store store) throws OperationException {
-        final AnalyticOperationDetail op;
+    public AnalyticDetail doOperation(final GetAnalytic operation, final Context context, final Store store) throws OperationException {
+        final AnalyticDetail op;
         try {
-            op = cache.getAnalyticOperation(operation.getAnalyticName(),context.getUser(), store.getProperties().getAdminAuth());
-        } catch (CacheOperationFailedException e) {
+            op = cache.getAnalytic(operation.getAnalyticName(), context.getUser(), store.getProperties().getAdminAuth());
+        } catch (final CacheOperationFailedException e) {
             throw new OperationException(e.getMessage());
         }
         return op;

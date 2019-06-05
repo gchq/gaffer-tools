@@ -8,20 +8,18 @@ import { AnalyticsService } from "../gaffer/analytics.service";
 @Injectable()
 export class ParameterInputComponent implements OnInit {
   analytic; //The chosen analytic
-  analyticOperation; //The analytic operation to execute
+  Analytic; //The analytic operation to execute
   color = "primary"; //Spinner color
   mode = "indeterminate"; //mode of the progress spinner
   loading: boolean; //Used to determine whether or not to show spinner
 
-  constructor(
-    private analyticsService: AnalyticsService,
-  ) {}
+  constructor(private analyticsService: AnalyticsService) {}
 
   ngOnInit() {
     //Get the analytic from the analyticsService
     this.analytic = this.analyticsService.getAnalytic();
   }
-  
+
   /** Start executing the analytic and load the data */
   executeAnalytic = function() {
     this.analyticsService.executeAnalytic();

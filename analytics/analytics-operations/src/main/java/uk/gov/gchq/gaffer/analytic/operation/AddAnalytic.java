@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package uk.gov.gchq.gaffer.operation.analytic;
+package uk.gov.gchq.gaffer.analytic.operation;
 
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.annotation.JsonSetter;
@@ -32,10 +32,10 @@ import java.util.Map;
 
 import static java.util.Objects.isNull;
 
-@JsonPropertyOrder(value = {"class", "analyticName","operationName", "description", "score"}, alphabetic = true)
+@JsonPropertyOrder(value = {"class", "analyticName", "operationName", "description", "score"}, alphabetic = true)
 @Since("1.0.0")
 @Summary("Adds a new analytic")
-public class AddAnalyticOperation implements Operation {
+public class AddAnalytic implements Operation {
     @Required
     private String analyticName;
     private String operationName;
@@ -125,8 +125,8 @@ public class AddAnalyticOperation implements Operation {
     }
 
     @Override
-    public AddAnalyticOperation shallowClone() {
-        return new AddAnalyticOperation.Builder()
+    public AddAnalytic shallowClone() {
+        return new AddAnalytic.Builder()
                 .analyticName(analyticName)
                 .operationName(operationName)
                 .description(description)
@@ -159,42 +159,42 @@ public class AddAnalyticOperation implements Operation {
         this.score = score;
     }
 
-    public static class Builder extends BaseBuilder<AddAnalyticOperation, AddAnalyticOperation.Builder> {
+    public static class Builder extends BaseBuilder<AddAnalytic, AddAnalytic.Builder> {
         public Builder() {
-            super(new AddAnalyticOperation());
+            super(new AddAnalytic());
         }
 
-        public AddAnalyticOperation.Builder analyticName(final String analyticName) {
+        public AddAnalytic.Builder analyticName(final String analyticName) {
             _getOp().setAnalyticName(analyticName);
             return _self();
         }
 
-        public AddAnalyticOperation.Builder operationName(final String name) {
+        public AddAnalytic.Builder operationName(final String name) {
             _getOp().setOperationName(name);
             return _self();
         }
 
-        public AddAnalyticOperation.Builder description(final String description) {
+        public AddAnalytic.Builder description(final String description) {
             _getOp().setDescription(description);
             return _self();
         }
 
-        public AddAnalyticOperation.Builder readAccessRoles(final String... roles) {
+        public AddAnalytic.Builder readAccessRoles(final String... roles) {
             Collections.addAll(_getOp().getReadAccessRoles(), roles);
             return _self();
         }
 
-        public AddAnalyticOperation.Builder writeAccessRoles(final String... roles) {
+        public AddAnalytic.Builder writeAccessRoles(final String... roles) {
             Collections.addAll(_getOp().getWriteAccessRoles(), roles);
             return _self();
         }
 
-        public AddAnalyticOperation.Builder uiMapping(final Map<String, UIMappingDetail> uiMapping) {
+        public AddAnalytic.Builder uiMapping(final Map<String, UIMappingDetail> uiMapping) {
             _getOp().setUiMapping(uiMapping);
             return _self();
         }
 
-        public AddAnalyticOperation.Builder uiMapping(final String name, final UIMappingDetail detail) {
+        public AddAnalytic.Builder uiMapping(final String name, final UIMappingDetail detail) {
             Map<String, UIMappingDetail> uiMapping = _getOp().getUiMapping();
             if (isNull(uiMapping)) {
                 uiMapping = new HashMap<>();
@@ -204,26 +204,26 @@ public class AddAnalyticOperation implements Operation {
             return _self();
         }
 
-        public AddAnalyticOperation.Builder metaData(final Map<String, String> metaData) {
+        public AddAnalytic.Builder metaData(final Map<String, String> metaData) {
             _getOp().setMetaData(metaData);
             return _self();
         }
 
-        public AddAnalyticOperation.Builder outputType(final Map<String, String> outputType) {
+        public AddAnalytic.Builder outputType(final Map<String, String> outputType) {
             _getOp().setOutputType(outputType);
             return _self();
         }
 
-        public AddAnalyticOperation.Builder overwrite(final boolean overwriteFlag) {
+        public AddAnalytic.Builder overwrite(final boolean overwriteFlag) {
             _getOp().setOverwriteFlag(overwriteFlag);
             return _self();
         }
 
-        public AddAnalyticOperation.Builder overwrite() {
+        public AddAnalytic.Builder overwrite() {
             return overwrite(true);
         }
 
-        public AddAnalyticOperation.Builder score(final Integer score) {
+        public AddAnalytic.Builder score(final Integer score) {
             _getOp().setScore(score);
             return _self();
         }

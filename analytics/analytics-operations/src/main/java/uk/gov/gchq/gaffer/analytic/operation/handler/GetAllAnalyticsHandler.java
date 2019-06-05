@@ -14,37 +14,37 @@
  * limitations under the License.
  */
 
-package uk.gov.gchq.gaffer.store.operation.handler.analytic;
+package uk.gov.gchq.gaffer.analytic.operation.handler;
 
 
+import uk.gov.gchq.gaffer.analytic.operation.AnalyticDetail;
+import uk.gov.gchq.gaffer.analytic.operation.GetAllAnalytics;
+import uk.gov.gchq.gaffer.analytic.operation.UIMappingDetail;
+import uk.gov.gchq.gaffer.analytic.operation.handler.cache.AnalyticCache;
 import uk.gov.gchq.gaffer.commonutil.iterable.CloseableIterable;
 import uk.gov.gchq.gaffer.commonutil.iterable.WrappedCloseableIterable;
 import uk.gov.gchq.gaffer.named.operation.NamedOperationDetail;
 import uk.gov.gchq.gaffer.operation.OperationException;
-import uk.gov.gchq.gaffer.operation.analytic.AnalyticOperationDetail;
-import uk.gov.gchq.gaffer.operation.analytic.GetAllAnalyticOperations;
-import uk.gov.gchq.gaffer.operation.analytic.UIMappingDetail;
 import uk.gov.gchq.gaffer.store.Context;
 import uk.gov.gchq.gaffer.store.Store;
 import uk.gov.gchq.gaffer.store.operation.handler.OutputOperationHandler;
-import uk.gov.gchq.gaffer.store.operation.handler.analytic.cache.AnalyticOperationCache;
 import uk.gov.gchq.gaffer.store.operation.handler.named.cache.NamedOperationCache;
 import uk.gov.gchq.koryphe.util.IterableUtil;
 
 import java.util.function.Function;
 
 /**
- * Operation Handler for GetAllAnalyticOperations
+ * Operation Handler for GetAllAnalytics
  */
-public class GetAllAnalyticOperationHandler implements OutputOperationHandler<GetAllAnalyticOperations, CloseableIterable<AnalyticOperationDetail>> {
-    private final AnalyticOperationCache cache;
+public class GetAllAnalyticsHandler implements OutputOperationHandler<GetAllAnalytics, CloseableIterable<AnalyticDetail>> {
+    private final AnalyticCache cache;
     private static Context context;
 
-    public GetAllAnalyticOperationHandler() {
-        this(new AnalyticOperationCache());
+    public GetAllAnalyticsHandler() {
+        this(new AnalyticCache());
     }
 
-    public GetAllAnalyticOperationHandler(final AnalyticOperationCache cache) {
+    public GetAllAnalyticsHandler(final AnalyticCache cache) {
         this.cache = cache;
     }
 
@@ -56,29 +56,29 @@ public class GetAllAnalyticOperationHandler implements OutputOperationHandler<Ge
      * @param operation the {@link uk.gov.gchq.gaffer.operation.Operation} to be executed
      * @param context   the operation chain context, containing the user who executed the operation
      * @param store     the {@link Store} the operation should be run on
-     * @return an iterable of AnalyticOperations
+     * @return an iterable of Analytics
      * @throws OperationException thrown if the cache has not been initialized in the operation declarations file
      */
     @Override
-    public CloseableIterable<AnalyticOperationDetail> doOperation(final GetAllAnalyticOperations operation, final Context context, final Store store) throws OperationException {
-        GetAllAnalyticOperationHandler.context = context;
-        final CloseableIterable<AnalyticOperationDetail> ops = cache.getAllAnalyticOperations(context.getUser(), store.getProperties().getAdminAuth());
+    public CloseableIterable<AnalyticDetail> doOperation(final GetAllAnalytics operation, final Context context, final Store store) throws OperationException {
+        GetAllAnalyticsHandler.context = context;
+        final CloseableIterable<AnalyticDetail> ops = cache.getAllAnalytics(context.getUser(), store.getProperties().getAdminAuth());
         return new WrappedCloseableIterable<>(IterableUtil.map(ops, new AddInputType()));
     }
 
-    private static class AddInputType implements Function<AnalyticOperationDetail, AnalyticOperationDetail> {
+    private static class AddInputType implements Function<AnalyticDetail, AnalyticDetail> {
 
         @Override
-        public AnalyticOperationDetail apply(final AnalyticOperationDetail analyticOp) {
+        public AnalyticDetail apply(final AnalyticDetail analyticOp) {
             return resolveParameters(analyticOp);
         }
 
-        private AnalyticOperationDetail resolveParameters(final AnalyticOperationDetail analyticOp) {
+        private AnalyticDetail resolveParameters(final AnalyticDetail analyticOp) {
             if (null != analyticOp) {
                 try {
-                    NamedOperationDetail nod = new NamedOperationCache().getNamedOperation(analyticOp.getOperationName(), GetAllAnalyticOperationHandler.context.getUser());
-                    for (String currentParam : nod.getParameters().keySet()) {
-                        for (String uiKey : analyticOp.getUiMapping().keySet()) {
+                    NamedOperationDetail nod = new NamedOperationCache().getNamedOperation(analyticOp.getOperationName(), GetAllAnalyticsHandler.context.getUser());
+                    for (final String currentParam : nod.getParameters().keySet()) {
+                        for (final String uiKey : analyticOp.getUiMapping().keySet()) {
                             UIMappingDetail uiParam = analyticOp.getUiMapping().get(uiKey);
                             if (uiParam.getParameterName().equals(currentParam)) {
                                 uiParam.setInputClass(nod.getParameters().get(currentParam).getValueClass());
@@ -88,7 +88,7 @@ public class GetAllAnalyticOperationHandler implements OutputOperationHandler<Ge
                     }
 
                 } catch (final Exception e) {
-                    // ignore - no need to map parameters
+                    // Can't find the parameter.
                 }
             }
             return analyticOp;
