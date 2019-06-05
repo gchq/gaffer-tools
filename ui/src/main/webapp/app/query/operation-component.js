@@ -35,7 +35,7 @@ function operation() {
     }
 }
 
-function OperationController(loading, operationChain) {
+function OperationController(loading) {
     var vm = this;
     var coreFields = ["view", "views", "input", "inputB", "options"];
 
@@ -44,8 +44,6 @@ function OperationController(loading, operationChain) {
         if (!vm.model) {
             throw 'An operation has been created without a model to bind to'
         }
-        // Get the user's chosen operation
-        vm.model.selectedOperation = operationChain.getOperation();
     }
 
     vm.getConfigFields = function() {

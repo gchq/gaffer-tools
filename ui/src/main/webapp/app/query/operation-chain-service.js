@@ -18,7 +18,6 @@
 
 angular.module('app').factory('operationChain', ['common', 'settings', 'events', function(common, settings, events) {
     var service = {};
-    var chosenNamedOperation = '';
 
     var EVENT_NAME = 'onOperationUpdate';
 
@@ -60,16 +59,6 @@ angular.module('app').factory('operationChain', ['common', 'settings', 'events',
 
     service.setOperationChain = function(chain) {
         operations = chain;
-    }
-
-    // Store the user's chosen operation
-    service.setOperation = function(namedOperation) {
-        chosenNamedOperation = namedOperation;
-    }
-
-    // Get the user's chosen operation
-    service.getOperation = function() {
-        return chosenNamedOperation;
     }
 
     service.addInput = function(seed) {

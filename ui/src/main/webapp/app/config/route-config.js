@@ -16,29 +16,63 @@
 
 'use strict';
 
-angular.module('app').config(['$locationProvider', '$routeProvider', function ($locationProvider, $routeProvider) {
+angular.module('app').config(['$locationProvider', '$routeProvider', function($locationProvider, $routeProvider) {
     $locationProvider.html5Mode(false)
 
     $routeProvider
-        .when('/analytics', {
-            title: 'Analytics',
-            template: '<analytics></analytics>', //The element that displays in the content section of each page
-            icon: 'rerun',
-            inNav: true
-        })
-        .when('/parameters', {
-            title: 'Parameters',
-            template: '<parameter-input></parameter-input>',
+        .when('/query', {
+            title: 'Query',
+            template: '<operation-chain></operation-chain>',
             icon: 'query',
             inNav: true
         })
-        .when('/results', {
-            title: 'Results',
+        .when('/my-queries', {
+            title: 'My Queries',
+            template: '<my-queries></my-queries>',
+            icon: 'rerun',
+            inNav: true
+        })
+        .when('/table', {
+            title: 'Table',
             template: '<results-table></results-table>',
             icon: 'table',
             inNav: true
         })
+        .when('/graph', {
+            title: 'Graph',
+            template: '<graph-page></graph-page>',
+            icon: 'graph',
+            inNav: true
+        })
+        .when('/schema', {
+            title: 'Schema',
+            templateUrl: 'app/schema/schema-view-page.html',
+            icon: 'schema',
+            inNav: true
+        })
+        .when('/raw', {
+            title: 'Raw',
+            template: '<raw></raw>',
+            icon: 'raw',
+            inNav: true
+        })
+        .when('/settings', {
+            title: 'Settings',
+            template: '<settings-view></settings-view>',
+            icon: 'settings',
+            inNav: true
+        })
+        .when('/about', {
+            title: 'About',
+            template: '<about></about>',
+            icon: 'info',
+            inNav: true
+        })
+        .when('/results', {
+            redirectTo: '/table'
+        })
         .when('/', {
-            redirectTo: '/analytics' //If no page specified then automatically navigate to first page
+            redirectTo: '/query'
         });
 }]);
+
