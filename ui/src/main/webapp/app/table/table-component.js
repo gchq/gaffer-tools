@@ -107,32 +107,36 @@ function TableController(schema, results, table, events, common, types, time, cs
 
     /** Keep checking that the cursor is near the edge of the table and if so scroll the table */
     var scrollNearEdge = function() {
-        while(vm.inTableArea) {
-            var tableLeftPosition = getPos(tableBody);
-            var tableRightPosition = tableBody.offsetWidth + tableLeftPosition;
-            var delta = 100;
-            var scrollLeft = tableBody.scrollLeft;
-            console.log('Left: ' + tableLeftPosition);
-            console.log('Right: ' + tableRightPosition);
-            console.log('Width: ' + tableBody.offsetWidth);
-            console.log('X: ' + vm.cursorX);
-            if (vm.cursorX < tableLeftPosition + delta) {
-                console.log('Near the left edge');
-                scrollLeft = scrollLeft - 0.1*((tableLeftPosition + delta) - e.pageX);
-                console.log('Current scroll: ' + tableBody.scrollLeft);
-                console.log('New Scroll: ' + scrollLeft);
-                tableBody.scrollLeft = scrollLeft;
-                tableHeader.scrollLeft = scrollLeft;
+        vm.intervalId = setInterval(() => {
+            if (vm.inTableArea) {
+                var tableLeftPosition = getPos(tableBody);
+                var tableRightPosition = tableBody.offsetWidth + tableLeftPosition;
+                var delta = 100;
+                var scrollLeft = tableBody.scrollLeft;
+                console.log('Left: ' + tableLeftPosition);
+                console.log('Right: ' + tableRightPosition);
+                console.log('Width: ' + tableBody.offsetWidth);
+                console.log('X: ' + vm.cursorX);
+                if (vm.cursorX < tableLeftPosition + delta) {
+                    console.log('Near the left edge');
+                    scrollLeft = scrollLeft - 0.5*((tableLeftPosition + delta) - vm.cursorX);
+                    console.log('Current scroll: ' + tableBody.scrollLeft);
+                    console.log('New Scroll: ' + scrollLeft);
+                    tableBody.scrollLeft = scrollLeft;
+                    tableHeader.scrollLeft = scrollLeft;
+                }
+                else if (vm.cursorX > tableRightPosition - delta) {
+                    console.log('Near the right edge');
+                    scrollLeft = scrollLeft + 0.5*(vm.cursorX - (tableRightPosition - delta));
+                    console.log('Current scroll: ' + tableBody.scrollLeft);
+                    console.log('New Scroll: ' + scrollLeft);
+                    tableBody.scrollLeft = scrollLeft;
+                    tableHeader.scrollLeft = scrollLeft;
+                }
+            } else {
+                clearInterval(vm.intervalId)
             }
-            else if (vm.cursorX > tableRightPosition - delta) {
-                console.log('Near the right edge');
-                scrollLeft = scrollLeft + 0.1*(e.pageX - (tableRightPosition - delta));
-                console.log('Current scroll: ' + tableBody.scrollLeft);
-                console.log('New Scroll: ' + scrollLeft);
-                tableBody.scrollLeft = scrollLeft;
-                tableHeader.scrollLeft = scrollLeft;
-            }
-        }
+        }, 100);
     }
 
     var getPos = function(el) {
