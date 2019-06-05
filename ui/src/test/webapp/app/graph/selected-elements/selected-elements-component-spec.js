@@ -334,7 +334,7 @@ describe('The Selected Elements Component', function() {
 
         it('should extract an object source and destination from an edge id', function() {
             var edgeId = '{ "TypeSubTypeValue": {"type": "t1", "subType": "st1", "value": "v1"}}\0{ "TypeSubTypeValue": {"type": "t2", "subType": "st2", "value": "v2"}}\0true\0unusedEdgeGroup';
-            expect(ctrl.resolveEdge(edgeId)).toEqual("t1|st1|v1 to t2|st2|v2");
+            expect(ctrl.resolveEdge(edgeId)).toEqual("t1,st1,v1 to t2,st2,v2");
         });
     });
 });

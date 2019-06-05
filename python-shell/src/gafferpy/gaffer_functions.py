@@ -91,6 +91,18 @@ class ExtractKeys(AbstractFunction):
     def to_json(self):
         return super().to_json()
 
+class DictionaryLookup(AbstractFunction):
+    CLASS = 'uk.gov.gchq.koryphe.impl.function.DictionaryLookup'
+
+    def __init__(self, dictionary):
+        super().__init__(_class_name=self.CLASS)
+        self.dictionary = dictionary
+    
+    def to_json(self):
+        function_json = super().to_json()
+        function_json["dictionary"] = self.dictionary
+
+        return function_json
 
 class ExtractValue(AbstractFunction):
     CLASS = 'uk.gov.gchq.koryphe.impl.function.ExtractValue'
@@ -769,7 +781,25 @@ class IterableFilter(AbstractFunction):
 
         return predicate_json
 
-      
+class MaskTimestampSetByTimeRange(AbstractFunction):
+    CLASS = "uk.gov.gchq.gaffer.time.function.MaskTimestampSetByTimeRange"
+
+    def __init__(self, start_time=None, end_time=None, time_unit=None):
+        super().__init__(_class_name=self.CLASS)
+        self.start_time = start_time
+        self.end_time = end_time
+        self.time_unit = time_unit
+
+    def to_json(self):
+        function_json = super().to_json()
+        function_json['startTime'] = self.start_time
+        function_json['endTime'] = self.end_time
+
+        if (self.time_unit is not None):
+            function_json["timeUnit"] = self.time_unit
+
+        return function_json
+
 class ToList(AbstractFunction):
     CLASS = 'uk.gov.gchq.koryphe.impl.function.ToList'
 
@@ -800,6 +830,21 @@ class ToArray(AbstractFunction):
     def to_json(self):
         return super().to_json()
       
+class CreateObject(AbstractFunction):
+    CLASS = "uk.gov.gchq.koryphe.impl.function.CreateObject"
+
+    def __init__(self, object_class=None):
+        super().__init__(self.CLASS)
+
+        self.object_class = object_class
+
+    def to_json(self):
+        function_json = super().to_json()
+
+        if self.object_class is not None:
+            function_json['objectClass'] = self.object_class
+
+        return function_json
 
       
 def function_context_converter(obj):
