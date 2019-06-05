@@ -12,70 +12,6 @@ Before following any of the below steps, make sure you have started the restAPI 
 
 In this guide we will be constructing a very simple analytic, which runs a GetAllElements operation and limits the number of results displayed. The end result will be as follows:
 
-```text
-{
-   "class": "uk.gov.gchq.gaffer.operation.OperationChain",
-   "operations": [
-      {
-         "class": "uk.gov.gchq.gaffer.named.operation.AddNamedOperation",
-         "operationName": "getAllX",
-         "description": "4",
-         "score": 2,
-         "operationChain": {
-            "class": "uk.gov.gchq.gaffer.operation.OperationChain",
-            "operations": [
-               {
-                  "class": "uk.gov.gchq.gaffer.operation.impl.get.GetAllElements"
-               },
-               {
-                  "class": "uk.gov.gchq.gaffer.operation.impl.Limit",
-                  "resultLimit": "${result-limit}",
-                  "truncate": true
-               }
-            ]
-         },
-         "parameters": {
-            "result-limit": {
-               "description": "The maximum number of junctions to return",
-               "defaultValue": 2,
-               "valueClass": "java.lang.Integer",
-               "required": false
-            }
-         },
-         "overwriteFlag": true
-      },
-      {
-         "class": "uk.gov.gchq.gaffer.operation.analytic.AddAnalytic",
-         "analyticName": "Analytic X",
-         "operationName": "getAllX",
-         "description": "Get Elements with Result Limit",
-         "score": 4,
-         "metaData": {
-            "iconURL": "example"
-            "color" : "yellow"
-         },
-         "outputType": {
-            "output": "table"
-         },
-         "overwriteFlag": false,
-         "readAccessRoles": [
-            "User"
-         ],
-         "uiMapping": {
-            "param1": {
-               "label": "Maximum Results",
-               "userInputType": "TextBox",
-               "parameterName": "result-limit"
-            }
-         },
-         "writeAccessRoles": [
-            "User"
-         ]
-      }
-   ]
-}
-```
-
 ## Instructions
 
 1\) Navigate to http://localhost:8080/rest, and you will see the below page
@@ -160,42 +96,13 @@ The value input should now be as follows.
 }
 ```
 
-6\) Again from the Description dropdown, select _AddAnalytic_ and click Add Example - this will create an operation chain where first the Named Operation we have outlined above will be added, and then an analytic utilising this operation will be generated. Make sure to give the analytic a name to be displayed by altering the value given to **analyticName** \(in our example, Analytic X\) and to make sure **operationName** matches the name of the named operation we have generated \(in our example, getAllX\).
+6\) Click the **Try it out!** button in the bottom left hand corner, and check down to see the response. If the restAPI has given a 200 code response, then that means the Named Operation has been successfully added to your restAPI, and can be used in Analytics, one of which we will add in the next few steps.
+
+7\) Again from the Description dropdown, select _AddAnalytic_ and click Add Example - a blank analytic will be generated. Make sure to give the analytic a name to be displayed by altering the value given to **analyticName** \(in our example, Analytic X\) and to make sure **operationName** matches the name of the named operation we have generated \(in our example, getAllX\).
 
 Add a **Description**, and alter the **metaData** - change the input of **iconURL** to the name of an icon from the Material Design icon library \(a full list of which can be found [here](https://material.io/tools/icons/)\), and add a **"color"** input and specify a color for the analytic card \(in this example, we chose "yellow"\). Your code should match the excerpt below, which matches our code shown at the beginning.
 
 ```text
-{
-   "class": "uk.gov.gchq.gaffer.operation.OperationChain",
-   "operations": [
-      {
-         "class": "uk.gov.gchq.gaffer.named.operation.AddNamedOperation",
-         "operationName": "getAllX",
-         "description": "4",
-         "score": 2,
-         "operationChain": {
-            "class": "uk.gov.gchq.gaffer.operation.OperationChain",
-            "operations": [
-               {
-                  "class": "uk.gov.gchq.gaffer.operation.impl.get.GetAllElements"
-               },
-               {
-                  "class": "uk.gov.gchq.gaffer.operation.impl.Limit",
-                  "resultLimit": "${result-limit}",
-                  "truncate": true
-               }
-            ]
-         },
-         "parameters": {
-            "result-limit": {
-               "description": "The maximum number of junctions to return",
-               "defaultValue": 2,
-               "valueClass": "java.lang.Integer",
-               "required": false
-            }
-         },
-         "overwriteFlag": true
-      },
       {
          "class": "uk.gov.gchq.gaffer.operation.analytic.AddAnalytic",
          "analyticName": "Analytic X",
@@ -203,7 +110,7 @@ Add a **Description**, and alter the **metaData** - change the input of **iconUR
          "description": "Get Elements with Result Limit",
          "score": 4,
          "metaData": {
-            "iconURL": "example"
+            "iconURL": "public"
             "color" : "yellow"
          },
          "outputType": {
@@ -224,8 +131,6 @@ Add a **Description**, and alter the **metaData** - change the input of **iconUR
             "User"
          ]
       }
-   ]
-}
 ```
 
 7\) Click the **Try it out!** button in the bottom left hand corner, and check down to see the response. If the restAPI has given a 200 code response, then that means the Analytic has been successfully added to your restAPI, and when the UI is opened, it will be displayed in the grid.
