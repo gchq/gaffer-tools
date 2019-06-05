@@ -6,9 +6,9 @@
       }
     },
     {
-      "operation": "uk.gov.gchq.gaffer.analytic.operation.Analytic",
+      "operation": "uk.gov.gchq.gaffer.analytic.operation.GetAnalytic",
       "handler": {
-        "class": "uk.gov.gchq.gaffer.analytic.operation.handler.AnalyticHandler"
+        "class": "uk.gov.gchq.gaffer.analytic.operation.handler.GetAnalyticHandler"
       }
     },
     {

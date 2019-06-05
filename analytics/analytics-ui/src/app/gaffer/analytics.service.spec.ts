@@ -220,7 +220,7 @@ describe("AnalyticsService", () => {
       endpoint.getRestEndpoint() + "/graph/operations/execute"
     );
     let operation = {
-      class: "uk.gov.gchq.gaffer.operation.analytic.GetAllAnalytics"
+      class: "uk.gov.gchq.gaffer.analytic.operation.GetAllAnalytics"
     };
     let headers = new HttpHeaders();
     headers = headers.set("Content-Type", "application/json; charset=utf-8");

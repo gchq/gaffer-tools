@@ -100,7 +100,7 @@ export class AnalyticsService {
   reloadAnalytics = function(loud) {
     let observable = Observable.create((observer: Observer<String>) => {
       let operation = {
-        class: "uk.gov.gchq.gaffer.operation.analytic.GetAllAnalytics"
+        class: "uk.gov.gchq.gaffer.analytic.operation.GetAllAnalytics"
       };
       //Configure the http headers
       let headers = new HttpHeaders();
