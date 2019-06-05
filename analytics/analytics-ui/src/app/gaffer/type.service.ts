@@ -18,7 +18,7 @@ import {  } from 'lodash';
 
 import { CommonService } from '../dynamic-input/common.service';
 import { HttpHeaders, HttpClient } from '@angular/common/http';
-import { Observable, Observer } from 'rxjs';
+import { Observable, Observer, of } from 'rxjs';
 import { ErrorService } from '../dynamic-input/error.service';
 
 @Injectable()
@@ -41,16 +41,23 @@ export class TypeService {
         private common: CommonService,
         private http: HttpClient,
         private error: ErrorService
-        ) {
-            this.get(true).subscribe((myConfig) => {
-                if(myConfig) {
-                    this.types = myConfig.types;
-                }
+        ) {}
+
+    /**
+	* Asynchronously gets the types from the config. The types will be saved until update is called to reduce number of http requests.
+    */
+    get = function() {
+        if (this.schema) {
+            return of(this.schema);
+        } else if (!this.schemaObservable) {
+            this.schemaObservable = Observable.create((observer: Observer<String>) => {
+                this.getTypes(true, observer);
             });
         }
+        return this.schemaObservable;
+    };
 
-    get(loud) {
-      let observable = Observable.create((observer: Observer<Object>) => {
+    getTypes(loud, observer) {
         //Configure the http headers
         let headers = new HttpHeaders();
         headers = headers.set("Content-Type", "application/json; charset=utf-8");
@@ -61,7 +68,7 @@ export class TypeService {
         this.http.get(queryUrl, { headers: headers }).subscribe(
             //On success
             data => {
-                observer.next(data);
+                observer.next(data.types);
             },
             //On error
             err => {
@@ -77,9 +84,8 @@ export class TypeService {
             }
             }
         );
-      })
-      return observable;
     }
+    
 
     getShortValue = function(value) {
 
