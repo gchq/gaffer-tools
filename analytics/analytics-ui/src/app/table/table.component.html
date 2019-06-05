@@ -14,7 +14,7 @@
       <mat-cell *matCellDef="let element"> {{element[column]}} </mat-cell>
     </ng-container>
 
-    <mat-header-row *matHeaderRowDef="columnsToDisplay; sticky: true">
+    <mat-header-row *matHeaderRowDef="columnsToDisplay;">
     </mat-header-row>
     <mat-row *matRowDef="let row; columns: columnsToDisplay;">
     </mat-row>

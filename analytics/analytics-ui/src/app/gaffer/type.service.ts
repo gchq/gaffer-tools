@@ -18,13 +18,13 @@ import {  } from 'lodash';
 
 import { CommonService } from '../dynamic-input/common.service';
 import { HttpHeaders, HttpClient } from '@angular/common/http';
-import { Observable, Observer } from 'rxjs';
+import { Observable, Observer, of } from 'rxjs';
 import { ErrorService } from '../dynamic-input/error.service';
 
 @Injectable()
 export class TypeService {
 
-    types = {};
+    types = null;
 
     unknownType =
         {
@@ -41,16 +41,24 @@ export class TypeService {
         private common: CommonService,
         private http: HttpClient,
         private error: ErrorService
-        ) {
-            this.get(true).subscribe((myConfig) => {
-                if(myConfig) {
-                    this.types = myConfig.types;
-                }
+        ) {}
+
+    /**
+	* Asynchronously gets the types from the config. The types will be saved until update is called to reduce number of http requests.
+    */
+    get = function() {
+        if (this.types) {
+            return of(this.types);
+        } else if (!this.typesObservable) {
+            this.typesObservable = Observable.create((observer: Observer<String>) => {
+                this.getTypes(true, observer);
             });
         }
+        return this.typesObservable;
+    };
 
-    get(loud) {
-      let observable = Observable.create((observer: Observer<Object>) => {
+    /** Get the types from the config */
+    getTypes = function(loud, observer) {
         //Configure the http headers
         let headers = new HttpHeaders();
         headers = headers.set("Content-Type", "application/json; charset=utf-8");
@@ -61,7 +69,8 @@ export class TypeService {
         this.http.get(queryUrl, { headers: headers }).subscribe(
             //On success
             data => {
-                observer.next(data);
+                this.types = data.types;
+                observer.next(data.types);
             },
             //On error
             err => {
@@ -77,10 +86,8 @@ export class TypeService {
             }
             }
         );
-      })
-      return observable;
     }
-
+    
     getShortValue = function(value) {
 
         if (typeof value === 'string' || value instanceof String || typeof value === 'number' || typeof value === 'boolean' || value === null || value === undefined) {
