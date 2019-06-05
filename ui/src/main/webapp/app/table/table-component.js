@@ -88,7 +88,6 @@ function TableController(schema, results, table, events, common, types, time, cs
 
     //On entering the area, start the loop to check the cursor is near the edge
     tableBody.addEventListener("mouseenter", function(e) {
-        console.log('Entered the area');
         vm.inTableArea = true;
         scrollNearEdge();
     })
@@ -96,12 +95,10 @@ function TableController(schema, results, table, events, common, types, time, cs
     //Update the cursor position on mousemove event
     tableBody.addEventListener("mousemove", function(e) {
         vm.cursorX = e.pageX;
-        console.log('New mouse left: ' + vm.cursorX)
     })
 
     //On leaving the table area set inTableArea to false and end the loop to check the cursor is near the edge
     tableBody.addEventListener("mouseleave", function(e) {
-        console.log('Left the area');
         vm.inTableArea = false;
     })
 
@@ -113,37 +110,25 @@ function TableController(schema, results, table, events, common, types, time, cs
                 var tableRightPosition = tableBody.offsetWidth + tableLeftPosition;
                 var delta = 100;
                 var scrollLeft = tableBody.scrollLeft;
-                console.log('Left: ' + tableLeftPosition);
-                console.log('Right: ' + tableRightPosition);
-                console.log('Width: ' + tableBody.offsetWidth);
-                console.log('X: ' + vm.cursorX);
                 if (vm.cursorX < tableLeftPosition + delta) {
-                    console.log('Near the left edge');
                     scrollLeft = scrollLeft - 0.5*((tableLeftPosition + delta) - vm.cursorX);
-                    console.log('Current scroll: ' + tableBody.scrollLeft);
-                    console.log('New Scroll: ' + scrollLeft);
                     tableBody.scrollLeft = scrollLeft;
                     tableHeader.scrollLeft = scrollLeft;
                 }
                 else if (vm.cursorX > tableRightPosition - delta) {
-                    console.log('Near the right edge');
                     scrollLeft = scrollLeft + 0.5*(vm.cursorX - (tableRightPosition - delta));
-                    console.log('Current scroll: ' + tableBody.scrollLeft);
-                    console.log('New Scroll: ' + scrollLeft);
                     tableBody.scrollLeft = scrollLeft;
                     tableHeader.scrollLeft = scrollLeft;
                 }
             } else {
                 clearInterval(vm.intervalId)
             }
-        }, 100);
+        }, 50);
     }
 
+    /** Get the position of the leftmost part of an element */
     var getPos = function(el) {
-        console.log(el);
         var rect=el.getBoundingClientRect();
-        console.log(rect);
-        console.log(rect.left);
         return rect.left;
     }
 
