@@ -30,29 +30,31 @@ export class TableComponent implements OnInit {
   ) {}
 
   /**
-   * Fetches the results.
+   * Fetches the results. It first loads the latest types from the config and the latest schema.
    */
   ngOnInit() {
-    this.schemaService.get().subscribe((schema) => {this.schema = schema});
-    const sortedResults = {
-      edges : [],
-      entities: [],
-      other: []
-    };
-    let results = this.results.get()
-    for (let i in results) {
-      if (results[i]['class'].split('.').pop() === 'Entity') {
-        sortedResults.entities.push(results[i]);
-      }
-      else if (results[i]['class'].split('.').pop() === 'Edge') {
-        sortedResults.edges.push(results[i]);
-      }
-      else {
-        sortedResults.other.push(results[i]);
-      }
-    }
-
-    this.processResults(sortedResults);
+    this.types.get().subscribe(() => {
+        this.schemaService.get().subscribe((schema) => {this.schema = schema});
+        const sortedResults = {
+          edges : [],
+          entities: [],
+          other: []
+        };
+        let results = this.results.get()
+        for (let i in results) {
+          if (results[i]['class'].split('.').pop() === 'Entity') {
+            sortedResults.entities.push(results[i]);
+          }
+          else if (results[i]['class'].split('.').pop() === 'Edge') {
+            sortedResults.edges.push(results[i]);
+          }
+          else {
+            sortedResults.other.push(results[i]);
+          }
+        }
+    
+        this.processResults(sortedResults);
+    })
   }
 
   private processResults = function(resultsData) {

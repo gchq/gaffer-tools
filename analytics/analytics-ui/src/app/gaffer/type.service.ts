@@ -24,7 +24,7 @@ import { ErrorService } from '../dynamic-input/error.service';
 @Injectable()
 export class TypeService {
 
-    types = {};
+    types = null;
 
     unknownType =
         {
@@ -47,17 +47,18 @@ export class TypeService {
 	* Asynchronously gets the types from the config. The types will be saved until update is called to reduce number of http requests.
     */
     get = function() {
-        if (this.schema) {
-            return of(this.schema);
-        } else if (!this.schemaObservable) {
-            this.schemaObservable = Observable.create((observer: Observer<String>) => {
+        if (this.types) {
+            return of(this.types);
+        } else if (!this.typesObservable) {
+            this.typesObservable = Observable.create((observer: Observer<String>) => {
                 this.getTypes(true, observer);
             });
         }
-        return this.schemaObservable;
+        return this.typesObservable;
     };
 
-    getTypes(loud, observer) {
+    /** Get the types from the config */
+    getTypes = function(loud, observer) {
         //Configure the http headers
         let headers = new HttpHeaders();
         headers = headers.set("Content-Type", "application/json; charset=utf-8");
@@ -68,6 +69,7 @@ export class TypeService {
         this.http.get(queryUrl, { headers: headers }).subscribe(
             //On success
             data => {
+                this.types = data.types;
                 observer.next(data.types);
             },
             //On error
@@ -86,7 +88,6 @@ export class TypeService {
         );
     }
     
-
     getShortValue = function(value) {
 
         if (typeof value === 'string' || value instanceof String || typeof value === 'number' || typeof value === 'boolean' || value === null || value === undefined) {
