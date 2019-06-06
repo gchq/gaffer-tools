@@ -24,6 +24,7 @@ env:
   - MODULES=:ui
   - MODULES=:random-element-generation,:performance-testing,:performance-testing-core,:performance-testing-accumulo-store,:performance-testing-aws
   - MODULES=:slider
+  - MODULES=:analytics,:analytics-rest
 
   global:
     - secure: "G58eMiza1eSFALXesop4TO+mWELR3fj9BSgxZ1kW8+mrGAmaI7OdKIcloyNoPE06+BoO2vJGGoyA9H7RqPOOh4PG71VJY0R8o9KGJMtTGyWMiKHhnrKC1/LUb7d+yAXYGxJE6abZ+JsU551zI7i4/Y8/8G0EkxXpny3MyLdMbZ2ZuQsdKPyQfQMhknhv0MxyE5StbZzV3d+UVSCadMSb1sMk698D7QnUi+QVXzPhdiq2+YBqJBXE++z8sZmF/9I1NbU5r6s+IFMUaqCgLHg3BxCko4UXxB5M8CuDr35Bkto9QJmUIaJawN3JmEotmBwplz1wVPDW0fVXILegCOznm1AbNbuu+LGPIPemAmQDh8G6H2QXoMJipyBNuW5kwscST5IL7PWyyRc/vd0BJQZvuZDY1pnM/8IAjEDT6WyDhS9ARBOlNjh9fEA9BEvZ9uVvjYldXcqpvOaItunPTGygmegTeky9FwaQJXHXyWqSRttgrs0ePVCfKH8U8sNfuiFo+4WMuSlIfuPwuPWIncuaImWIE8WTRroLShq1Or8bADdS1GmVXMYWOoW61nzgQjFVJx/pNJu05Eu1uChAtH371Y804R5vVUlmmC9Rn3VmVLwJxTcSSLKxsiOzJxGDT6kp9BfP3h+3gCpEhKfKVkc1wcpHAthzS7w4G613GfaFcx0="
