@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2019 Crown Copyright
+ * Copyright 2019 Crown Copyright
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,8 +31,9 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * Wrapper around the {@link CacheServiceLoader} to provide an interface for handling
- * the {@link uk.gov.gchq.gaffer.analytic.operation.AnalyticDetail}s for a Gaffer graph.
+ * Wrapper around the {@link CacheServiceLoader} to provide an interface for
+ * handling the {@link uk.gov.gchq.gaffer.analytic.operation.AnalyticDetail}s
+ * for a Gaffer graph.
  */
 public class AnalyticCache {
 
@@ -40,100 +41,127 @@ public class AnalyticCache {
     private static final String CACHE_NAME = "Analytic";
 
     /**
-     * If the user is just adding to the cache, ie the overwrite flag is set to false, then no security is added.
-     * However if the user is overwriting the Analytic operation stored in the cache, then their opAuths must be checked
-     * against the write roles associated with the {@link AnalyticDetail}. If it turns out the user is overwriting a
-     * non-existent AnalyticDetail, then the users AnalyticDetail will be added normally.
+     * If the user is just adding to the cache, ie the overwrite flag is set to
+     * false, then no security is added. However if the user is overwriting the
+     * Analytic operation stored in the cache, then their opAuths must be checked
+     * against the write roles associated with the {@link AnalyticDetail}. If it
+     * turns out the user is overwriting a non-existent AnalyticDetail, then the
+     * users AnalyticDetail will be added normally.
      *
-     * @param analytic The AnalyticDetail that the user wants to store.
-     * @param overwrite         Flag relating to whether the user is adding (false) or updating/overwriting (true).
-     * @param user              The user making the request.
-     * @throws CacheOperationFailedException thrown if the user doesn't have write access to the AnalyticDetail requested,
-     *                                       or if the add operation fails for some reason.
+     * @param analytic  The AnalyticDetail that the user wants to store.
+     * @param overwrite Flag relating to whether the user is adding (false) or
+     *                  updating/overwriting (true).
+     * @param user      The user making the request.
+     * @throws CacheOperationFailedException thrown if the user doesn't have write
+     *                                       access to the AnalyticDetail requested,
+     *                                       or if the add operation fails for some
+     *                                       reason.
      */
-    public void addAnalytic(final AnalyticDetail analytic, final boolean overwrite, final User user) throws CacheOperationFailedException {
+    public void addAnalytic(final AnalyticDetail analytic, final boolean overwrite, final User user)
+            throws CacheOperationFailedException {
         add(analytic, overwrite, user, null);
     }
 
     /**
-     * If the user is just adding to the cache, ie the overwrite flag is set to false, then no security is added.
-     * However if the user is overwriting the Analytic operation stored in the cache, then their opAuths must be checked
-     * against the write roles associated with the {@link AnalyticDetail}. If it turns out the user is overwriting a
-     * non-existent AnalyticDetail, then the users AnalyticDetail will be added normally.
+     * If the user is just adding to the cache, ie the overwrite flag is set to
+     * false, then no security is added. However if the user is overwriting the
+     * Analytic operation stored in the cache, then their opAuths must be checked
+     * against the write roles associated with the {@link AnalyticDetail}. If it
+     * turns out the user is overwriting a non-existent AnalyticDetail, then the
+     * users AnalyticDetail will be added normally.
      *
-     * @param analytic The AnalyticDetail that the user wants to store.
-     * @param overwrite         Flag relating to whether the user is adding (false) or updating/overwriting (true).
-     * @param user              The user making the request.
-     * @param adminAuth         The admin auth supplied for permissions.
-     * @throws CacheOperationFailedException thrown if the user doesn't have write access to the AnalyticDetail requested,
-     *                                       or if the add operation fails for some reason.
+     * @param analytic  The AnalyticDetail that the user wants to store.
+     * @param overwrite Flag relating to whether the user is adding (false) or
+     *                  updating/overwriting (true).
+     * @param user      The user making the request.
+     * @param adminAuth The admin auth supplied for permissions.
+     * @throws CacheOperationFailedException thrown if the user doesn't have write
+     *                                       access to the AnalyticDetail requested,
+     *                                       or if the add operation fails for some
+     *                                       reason.
      */
-    public void addAnalytic(final AnalyticDetail analytic, final boolean overwrite, final User user, final String adminAuth) throws CacheOperationFailedException {
+    public void addAnalytic(final AnalyticDetail analytic, final boolean overwrite, final User user,
+            final String adminAuth) throws CacheOperationFailedException {
         add(analytic, overwrite, user, adminAuth);
     }
 
     /**
-     * Checks whether a {@link User} has write access to the cache. If they do then the AnalyticDetail and name is
-     * removed from the cache. If they don't or the AnalyticDetail doesn't exist then an Exception is thrown.
+     * Checks whether a {@link User} has write access to the cache. If they do then
+     * the AnalyticDetail and name is removed from the cache. If they don't or the
+     * AnalyticDetail doesn't exist then an Exception is thrown.
      *
      * @param name The name of the AnalyticDetail a user would like to delete.
-     * @param user A {@link User} object that can optionally be used for checking permissions.
-     * @throws CacheOperationFailedException Thrown when the AnalyticDetail doesn't exist or the User doesn't have
-     *                                       write permission on the AnalyticDetail.
+     * @param user A {@link User} object that can optionally be used for checking
+     *             permissions.
+     * @throws CacheOperationFailedException Thrown when the AnalyticDetail doesn't
+     *                                       exist or the User doesn't have write
+     *                                       permission on the AnalyticDetail.
      */
     public void deleteAnalytic(final String name, final User user) throws CacheOperationFailedException {
         remove(name, user, null);
     }
 
     /**
-     * Checks whether a {@link User} has write access to the cache. If they do then the AnalyticDetail and name is
-     * removed from the cache. If they don't or the AnalyticDetail doesn't exist then an Exception is thrown.
+     * Checks whether a {@link User} has write access to the cache. If they do then
+     * the AnalyticDetail and name is removed from the cache. If they don't or the
+     * AnalyticDetail doesn't exist then an Exception is thrown.
      *
      * @param name      The name of the AnalyticDetail a user would like to delete.
-     * @param user      A {@link User} object that can optionally be used for checking permissions.
+     * @param user      A {@link User} object that can optionally be used for
+     *                  checking permissions.
      * @param adminAuth The admin auth supplied for permissions.
-     * @throws CacheOperationFailedException Thrown when the AnalyticDetail doesn't exist or the User doesn't have
-     *                                       write permission on the AnalyticDetail.
+     * @throws CacheOperationFailedException Thrown when the AnalyticDetail doesn't
+     *                                       exist or the User doesn't have write
+     *                                       permission on the AnalyticDetail.
      */
-    public void deleteAnalytic(final String name, final User user, final String adminAuth) throws CacheOperationFailedException {
+    public void deleteAnalytic(final String name, final User user, final String adminAuth)
+            throws CacheOperationFailedException {
         remove(name, user, adminAuth);
     }
 
     /**
-     * First gets the AnalyticDetail in question and checks whether the user has read access before returning the value.
-     * If the AnalyticDetail doesn't exist or the User doesn't have permission to read this AnalyticDetail, then an
+     * First gets the AnalyticDetail in question and checks whether the user has
+     * read access before returning the value. If the AnalyticDetail doesn't exist
+     * or the User doesn't have permission to read this AnalyticDetail, then an
      * exception is thrown.
      *
      * @param name The name of the AnalyticDetail held in the cache.
-     * @param user The {@link User} object that is used for checking read permissions.
+     * @param user The {@link User} object that is used for checking read
+     *             permissions.
      * @return AnalyticDetail.
-     * @throws CacheOperationFailedException thrown if the AnalyticDetail doesn't exist or the User doesn't have permission
-     *                                       to read it.
+     * @throws CacheOperationFailedException thrown if the AnalyticDetail doesn't
+     *                                       exist or the User doesn't have
+     *                                       permission to read it.
      */
     public AnalyticDetail getAnalytic(final String name, final User user) throws CacheOperationFailedException {
         return get(name, user, null);
     }
 
     /**
-     * First gets the AnalyticDetail in question and checks whether the user has read access before returning the value.
-     * If the AnalyticDetail doesn't exist or the User doesn't have permission to read this AnalyticDetail, then an
+     * First gets the AnalyticDetail in question and checks whether the user has
+     * read access before returning the value. If the AnalyticDetail doesn't exist
+     * or the User doesn't have permission to read this AnalyticDetail, then an
      * exception is thrown.
      *
      * @param name      The name of the AnalyticDetail held in the cache.
-     * @param user      The {@link User} object that is used for checking read permissions.
+     * @param user      The {@link User} object that is used for checking read
+     *                  permissions.
      * @param adminAuth The admin auth supplied for permissions.
      * @return AnalyticDetail.
-     * @throws CacheOperationFailedException thrown if the AnalyticDetail doesn't exist or the User doesn't have permission
-     *                                       to read it.
+     * @throws CacheOperationFailedException thrown if the AnalyticDetail doesn't
+     *                                       exist or the User doesn't have
+     *                                       permission to read it.
      */
-    public AnalyticDetail getAnalytic(final String name, final User user, final String adminAuth) throws CacheOperationFailedException {
+    public AnalyticDetail getAnalytic(final String name, final User user, final String adminAuth)
+            throws CacheOperationFailedException {
         return get(name, user, adminAuth);
     }
 
     /**
      * Get all the Analytic operations held in the cache.
      *
-     * @param user The {@link User} object that is used for checking read permissions.
+     * @param user The {@link User} object that is used for checking read
+     *             permissions.
      * @return a {@link CloseableIterable} containing the Analytic operation details
      */
     public CloseableIterable<AnalyticDetail> getAllAnalytics(final User user) {
@@ -143,7 +171,8 @@ public class AnalyticCache {
     /**
      * Get all the Analytic operations held in the cache.
      *
-     * @param user      The {@link User} object that is used for checking read permissions.
+     * @param user      The {@link User} object that is used for checking read
+     *                  permissions.
      * @param adminAuth The admin auth supplied for permissions.
      * @return a {@link CloseableIterable} containing the Analytic operation details
      */
@@ -166,8 +195,7 @@ public class AnalyticCache {
     }
 
     /**
-     * Delete the specified {@link AnalyticDetail}
-     * from the cache.
+     * Delete the specified {@link AnalyticDetail} from the cache.
      *
      * @param name the name of the operation to delete
      * @throws CacheOperationFailedException if there was an error deleting the
@@ -191,7 +219,8 @@ public class AnalyticCache {
      * @throws CacheOperationFailedException if there was an error adding the
      *                                       operation to the cache
      */
-    public void addToCache(final String name, final AnalyticDetail operation, final boolean overwrite) throws CacheOperationFailedException {
+    public void addToCache(final String name, final AnalyticDetail operation, final boolean overwrite)
+            throws CacheOperationFailedException {
         try {
             if (overwrite) {
                 CacheServiceLoader.getService().putInCache(CACHE_NAME, name, operation);
@@ -223,7 +252,8 @@ public class AnalyticCache {
         throw new CacheOperationFailedException("No Analytic operation with the name " + name + " exists in the cache");
     }
 
-    private void add(final AnalyticDetail analytic, final boolean overwrite, final User user, final String adminAuth) throws CacheOperationFailedException {
+    private void add(final AnalyticDetail analytic, final boolean overwrite, final User user, final String adminAuth)
+            throws CacheOperationFailedException {
         String name;
         try {
             name = analytic.getAnalyticName();
@@ -249,11 +279,13 @@ public class AnalyticCache {
         if (existing.hasWriteAccess(user, adminAuth)) {
             addToCache(name, analytic, true);
         } else {
-            throw new CacheOperationFailedException("User " + user.getUserId() + " does not have permission to overwrite");
+            throw new CacheOperationFailedException(
+                    "User " + user.getUserId() + " does not have permission to overwrite");
         }
     }
 
-    private void remove(final String name, final User user, final String adminAuth) throws CacheOperationFailedException {
+    private void remove(final String name, final User user, final String adminAuth)
+            throws CacheOperationFailedException {
         if (null == name) {
             throw new CacheOperationFailedException("Analytic name cannot be null");
         }
@@ -261,12 +293,13 @@ public class AnalyticCache {
         if (existing.hasWriteAccess(user, adminAuth)) {
             deleteFromCache(name);
         } else {
-            throw new CacheOperationFailedException("User " + user +
-                    " does not have authority to delete Analytic operation: " + name);
+            throw new CacheOperationFailedException(
+                    "User " + user + " does not have authority to delete Analytic operation: " + name);
         }
     }
 
-    private AnalyticDetail get(final String name, final User user, final String adminAuth) throws CacheOperationFailedException {
+    private AnalyticDetail get(final String name, final User user, final String adminAuth)
+            throws CacheOperationFailedException {
         final AnalyticDetail op = getFromCache(name);
         if (op.hasReadAccess(user, adminAuth)) {
             return op;
