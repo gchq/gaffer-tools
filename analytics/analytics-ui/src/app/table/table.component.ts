@@ -1,9 +1,8 @@
 import { Component, OnInit, Injectable, ViewChild } from "@angular/core";
 import { MatSort, MatTableDataSource } from "@angular/material";
-import { cloneDeep } from 'lodash';
+import { cloneDeep, union } from 'lodash';
 
 import { ResultsService } from "../gaffer/results.service";
-import { CommonService } from '../dynamic-input/common.service';
 import { TypeService } from '../gaffer/type.service';
 import { TimeService } from '../gaffer/time.service';
 import { SchemaService } from '../gaffer/schema.service';
@@ -23,7 +22,6 @@ export class TableComponent implements OnInit {
 
   constructor(
     private results: ResultsService,
-    private common: CommonService,
     private types: TypeService,
     private time: TimeService,
     private schemaService: SchemaService 
@@ -71,7 +69,7 @@ export class TableComponent implements OnInit {
     //Transform the other types into a displayable form
     this.processOtherTypes(ids, properties, resultsData);
 
-    this.data.allColumns = this.common.concatUniqueValues(this.common.concatUniqueValues(ids, groupByProperties), properties);
+    this.data.allColumns = union(union(ids, groupByProperties), properties);
 
     if (!this.data.columns || this.data.columns.length === 0) {
         this.data.columns = cloneDeep(this.data.allColumns);
@@ -81,7 +79,7 @@ export class TableComponent implements OnInit {
     for(var type in this.resultsByType) {
         this.data.allTypes.push(type);
         for(var group in this.resultsByType[type]) {
-            this.common.pushValueIfUnique(group, this.data.allGroups);
+            this.data.allGroups = union(group, this.data.allGroups);
         }
     }
 
@@ -115,7 +113,7 @@ export class TableComponent implements OnInit {
     //If there are elements of this type
     if(resultsData[typePlural] && Object.keys(resultsData[typePlural]).length > 0) {
         this.resultsByType[type] = [];
-        this.common.pushValuesIfUnique(idKeys, ids);
+        ids = union(idKeys, ids);
         //For each element
         for(var i in resultsData[typePlural]) {
             var element = resultsData[typePlural][i];
@@ -146,7 +144,7 @@ export class TableComponent implements OnInit {
                                     if(typeDef && typeDef.description && !(propName in this.data.tooltips)) {
                                         this.data.tooltips[propName] = typeDef.description;
                                     }
-                                    this.common.pushValueIfUnique(propName, groupByProperties);
+                                    groupByProperties = union(propName, groupByProperties);
                                  }
                              }
                              for(var propertyName in elementDef.properties) {
@@ -154,12 +152,12 @@ export class TableComponent implements OnInit {
                                 if(typeDef && typeDef.description && !(propertyName in this.data.tooltips)) {
                                     this.data.tooltips[propertyName] = typeDef.description;
                                 }
-                                this.common.pushValueIfUnique(propertyName, properties);
+                                properties = union(propertyName, properties);
                              }
                         }
                     }
                     for(var prop in element.properties) {
-                        this.common.pushValueIfUnique(prop, properties);
+                        properties = union(prop, properties);
                         result[prop] = this.convertValue(prop, element.properties[prop]);
                     }
                 }
@@ -181,20 +179,20 @@ export class TableComponent implements OnInit {
                 var value = this.convertValue(key, item[key]);
                 if("class" === key) {
                     result["resultType"] = item[key].split(".").pop();
-                    this.common.pushValueIfUnique("resultType", ids);
+                    ids = union("resultType", ids);
                 } else if("vertex" === key) {
                     result["SOURCE"] = value;
-                    this.common.pushValueIfUnique("SOURCE", ids);
+                    ids = union("SOURCE", ids);
                 } else if("source" === key || 'destination' === key || 'directed' === key || 'group' === key) {
                     var parsedKey = key.toUpperCase();
                     result[parsedKey] = value;
-                    this.common.pushValueIfUnique(parsedKey, ids);
+                    ids = union(parsedKey, ids);
                 } else if("value" === key) {
                     result[key] = value;
-                    this.common.pushValueIfUnique(key, ids);
+                    ids = union(key, ids);
                 } else {
                     result[key] = value;
-                    this.common.pushValueIfUnique(key, properties);
+                    properties = union(key, properties);
                 }
             }
             if(!(result['resultType'] in this.resultsByType)) {
