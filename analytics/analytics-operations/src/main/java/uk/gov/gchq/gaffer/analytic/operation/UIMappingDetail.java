@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2019 Crown Copyright
+ * Copyright 2019 Crown Copyright
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -40,7 +40,8 @@ public class UIMappingDetail implements Serializable {
         this(label, userInputType, parameterName, null);
     }
 
-    public UIMappingDetail(final String label, final String userInputType, final String parameterName, final Class inputClass) {
+    public UIMappingDetail(final String label, final String userInputType, final String parameterName,
+            final Class inputClass) {
         if (null == label) {
             throw new IllegalArgumentException("label must not be empty");
         }
@@ -89,33 +90,21 @@ public class UIMappingDetail implements Serializable {
 
         final UIMappingDetail pd = (UIMappingDetail) obj;
 
-        return new EqualsBuilder()
-                .append(label, pd.label)
-                .append(userInputType, pd.userInputType)
-                .append(parameterName, pd.parameterName)
-                .append(inputClass, pd.inputClass)
-                .isEquals();
+        return new EqualsBuilder().append(label, pd.label).append(userInputType, pd.userInputType)
+                .append(parameterName, pd.parameterName).append(inputClass, pd.inputClass).isEquals();
     }
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder(71, 5)
-                .append(label)
-                .append(userInputType)
-                .append(parameterName)
-                .append(inputClass)
+        return new HashCodeBuilder(71, 5).append(label).append(userInputType).append(parameterName).append(inputClass)
                 .hashCode();
     }
 
     @Override
     public String toString() {
-        return new ToStringBuilder(this)
-                .appendSuper(super.toString())
-                .append("label", label)
-                .append("userInputType", userInputType)
-                .append("parameterName", parameterName)
-                .append("inputClass", inputClass)
-                .toString();
+        return new ToStringBuilder(this).appendSuper(super.toString()).append("label", label)
+                .append("userInputType", userInputType).append("parameterName", parameterName)
+                .append("inputClass", inputClass).toString();
     }
 
     @JsonPOJOBuilder(withPrefix = "")

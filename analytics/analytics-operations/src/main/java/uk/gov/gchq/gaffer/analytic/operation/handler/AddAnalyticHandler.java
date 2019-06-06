@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2019 Crown Copyright
+ * Copyright 2019 Crown Copyright
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -42,38 +42,36 @@ public class AddAnalyticHandler implements OperationHandler<AddAnalytic> {
     }
 
     /**
-     * Adds a Analytic to a cache which must be specified in the operation declarations file. An
-     * AnalyticDetail is built using the fields on the AddAnalytic. The operation name and operation chain
-     * fields must be set and cannot be left empty, or the build() method will fail and a runtime exception will be
-     * thrown. The handler then adds/overwrites the Analytic according toa an overwrite flag.
+     * Adds a Analytic to a cache which must be specified in the operation
+     * declarations file. An AnalyticDetail is built using the fields on the
+     * AddAnalytic. The operation name and operation chain fields must be set and
+     * cannot be left empty, or the build() method will fail and a runtime exception
+     * will be thrown. The handler then adds/overwrites the Analytic according toa
+     * an overwrite flag.
      *
-     * @param operation the {@link uk.gov.gchq.gaffer.operation.Operation} to be executed
-     * @param context   the operation chain context, containing the user who executed the operation
+     * @param operation the {@link uk.gov.gchq.gaffer.operation.Operation} to be
+     *                  executed
+     * @param context   the operation chain context, containing the user who
+     *                  executed the operation
      * @param store     the {@link Store} the operation should be run on
      * @return null (since the output is void)
      * @throws OperationException if the operation on the cache fails
      */
     @Override
-    public Void doOperation(final AddAnalytic operation, final Context context, final Store store) throws OperationException {
+    public Void doOperation(final AddAnalytic operation, final Context context, final Store store)
+            throws OperationException {
         try {
-            final AnalyticDetail analyticDetail = new AnalyticDetail.Builder()
-                    .analyticName(operation.getAnalyticName())
-                    .operationName(operation.getOperationName())
-                    .creatorId(context.getUser().getUserId())
-                    .readers(operation.getReadAccessRoles())
-                    .writers(operation.getWriteAccessRoles())
-                    .description(operation.getDescription())
-                    .uiMapping(operation.getUiMapping())
-                    .metaData(operation.getMetaData())
-                    .outputType(operation.getOutputType())
-                    .score(operation.getScore())
-                    .options(operation.getOptions())
-                    .build();
+            final AnalyticDetail analyticDetail = new AnalyticDetail.Builder().analyticName(operation.getAnalyticName())
+                    .operationName(operation.getOperationName()).creatorId(context.getUser().getUserId())
+                    .readers(operation.getReadAccessRoles()).writers(operation.getWriteAccessRoles())
+                    .description(operation.getDescription()).uiMapping(operation.getUiMapping())
+                    .metaData(operation.getMetaData()).outputType(operation.getOutputType()).score(operation.getScore())
+                    .options(operation.getOptions()).build();
 
             validate(analyticDetail);
 
-            cache.addAnalytic(analyticDetail, operation.isOverwriteFlag(), context
-                    .getUser(), store.getProperties().getAdminAuth());
+            cache.addAnalytic(analyticDetail, operation.isOverwriteFlag(), context.getUser(),
+                    store.getProperties().getAdminAuth());
         } catch (final CacheOperationFailedException e) {
             throw new OperationException(e.getMessage(), e);
         }
@@ -96,7 +94,8 @@ public class AddAnalyticHandler implements OperationHandler<AddAnalytic> {
                     try {
                         NamedOperationDetail nod = noc.getFromCache(analyticDetail.getOperationName());
                         if (nod.getParameters().get(uiMap.get(current).getParameterName()) == null) {
-                            throw new OperationException("UIMapping: parameter '" + uiMap.get(current).getParameterName() + "' does not exist in Named Operation");
+                            throw new OperationException("UIMapping: parameter '"
+                                    + uiMap.get(current).getParameterName() + "' does not exist in Named Operation");
                         }
                     } catch (final CacheOperationFailedException e) {
                         throw new OperationException(e.getMessage());
@@ -108,8 +107,10 @@ public class AddAnalyticHandler implements OperationHandler<AddAnalytic> {
         if (null == analyticDetail.getOutputType()) {
             throw new OperationException("Missing outputType field in AddAnalytic");
         } else if (analyticDetail.getOutputType().containsKey("output")) {
-            if (!analyticDetail.getOutputType().get("output").equals("table") && !analyticDetail.getOutputType().get("output").equals("graph")) {
-                throw new OperationException("OutputType: output does not equal either 'table' or 'graph' in AddAnalytic");
+            if (!analyticDetail.getOutputType().get("output").equals("table")
+                    && !analyticDetail.getOutputType().get("output").equals("graph")) {
+                throw new OperationException(
+                        "OutputType: output does not equal either 'table' or 'graph' in AddAnalytic");
             }
         } else {
             throw new OperationException("OutputType: output field was not specified in AddAnalytic");

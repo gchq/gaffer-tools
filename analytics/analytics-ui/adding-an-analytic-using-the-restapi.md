@@ -7,7 +7,7 @@ description: >-
 # Adding an Analytic using the restAPI
 
 {% hint style="info" %}
-Before following any of the below steps, make sure you have started the restAPI running by following the steps specified in [Overview & Getting Started](./#running-the-rest-api)
+Before following any of the below steps, make sure you have started the REST API running by following the steps specified in [Overview & Getting Started](./#running-the-rest-api)
 {% endhint %}
 
 In this guide we will be constructing a very simple analytic, which runs a GetAllElements operation and limits the number of results displayed. The end result will be as follows:
@@ -16,11 +16,11 @@ In this guide we will be constructing a very simple analytic, which runs a GetAl
 
 1\) Navigate to http://localhost:8080/rest, and you will see the below page
 
-![](.gitbook/assets/screenshot-2019-05-10-at-11.31.58.png)
+![](./analytics/analytics-ui/assets/rest_closed.png)
 
 2\) Click on the **operations** section to open it up, and select the **POST/graph/operations/execute** function. This will allow us to put in our operations.
 
-![](.gitbook/assets/screenshot-2019-05-10-at-11.37.33.png)
+![](./analytics/analytics-ui/assets/rest_opened.png)
 
 3\) From the **Description** dropdown menu, select _Get All Elements_ and click the **Add Example** button to the right of the dropdown. This will add a simple GetAllElements operation \(as below\) to your Value input.
 

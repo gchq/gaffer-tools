@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2019 Crown Copyright
+ * Copyright 2019 Crown Copyright
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,7 +20,6 @@ import com.fasterxml.jackson.core.type.TypeReference;
 
 import uk.gov.gchq.gaffer.commonutil.iterable.CloseableIterable;
 
-
 /**
  * {@link TypeReference} objects for analytic operations.
  */
@@ -29,7 +28,8 @@ public final class AnalyticTypeReference {
         // Private constructor to prevent instantiation.
     }
 
-    public static class IterableAnalyticDetail extends TypeReference<CloseableIterable<uk.gov.gchq.gaffer.analytic.operation.AnalyticDetail>> {
+    public static class IterableAnalyticDetail
+            extends TypeReference<CloseableIterable<uk.gov.gchq.gaffer.analytic.operation.AnalyticDetail>> {
         public IterableAnalyticDetail() {
         }
     }

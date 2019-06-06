@@ -1,7 +1,7 @@
 ---
 description: >-
   A list of the components, services, modules and other files contained in the
-  newui/src/main/webapp/app folder
+  analytic-ui/src/main/webapp/app folder
 ---
 
 # Contents and components
