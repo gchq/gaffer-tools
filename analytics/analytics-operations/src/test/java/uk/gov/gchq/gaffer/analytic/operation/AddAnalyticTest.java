@@ -68,7 +68,7 @@ public class AddAnalyticTest extends OperationTest<AddAnalytic> {
 
         // Then
         JsonAssert.assertEquals(String.format("{\n" +
-                "   \"class\": \"uk.gov.gchq.gaffer.operation.analytic.AddAnalyticOperation\",\n" +
+                "   \"class\": \"uk.gov.gchq.gaffer.operation.analytic.AddAnalytic\",\n" +
                 "   \"analyticName\": \"Test Analytic name\",\n" +
                 "   \"operationName\": \"Test Operation name\",\n" +
                 "   \"description\": \"Test description\",\n" +
