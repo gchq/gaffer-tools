@@ -86,11 +86,11 @@ function TableController(schema, results, table, events, common, types, time, cs
 
         if (vm.tableBody != null) {
             //On entering the area, start the loop to check the cursor is near the edge
-            vm.tableBody.addEventListener("mouseenter", onMouseEnterTable());
+            vm.tableBody.addEventListener("mouseenter", onMouseEnterTable);
             //Update the cursor position on mousemove event
-            vm.tableBody.addEventListener("mousemove", onMouseMoveTable());
+            vm.tableBody.addEventListener("mousemove", onMouseMoveTable);
             //On leaving the table area set inTableArea to false and end the loop to check the cursor is near the edge
-            vm.tableBody.addEventListener("mouseleave", onMouseLeaveTable());
+            vm.tableBody.addEventListener("mouseleave", onMouseLeaveTable);
         }
     }
 
@@ -112,7 +112,7 @@ function TableController(schema, results, table, events, common, types, time, cs
 
     /** Keep checking that the cursor is near the edge of the table and if so scroll the table */
     var scrollNearEdge = function() {
-        vm.intervalId = setInterval(() => {
+        vm.intervalId = setInterval(function() {
             if (vm.inTableArea) {
                 var tableLeftPosition = getPos(vm.tableBody);
                 var tableRightPosition = vm.tableBody.offsetWidth + tableLeftPosition;
@@ -129,7 +129,7 @@ function TableController(schema, results, table, events, common, types, time, cs
                     vm.tableHeader.scrollLeft = scrollLeft;
                 }
             } else {
-                clearInterval(vm.intervalId)
+                clearInterval(vm.intervalId);
             }
         }, 50);
     }
@@ -142,15 +142,15 @@ function TableController(schema, results, table, events, common, types, time, cs
 
     /**
      * Cleans up the controller. Unsubscribes from resultsUpdated events and
-     * caches table preferences.
+     * caches table preferences. Removes mouse event listeners on the table.
      */
     vm.$onDestroy = function() {
         events.unsubscribe('resultsUpdated', onResultsUpdated);
         cacheValues();
         if (vm.tableBody) {
-            vm.tableBody.removeEventListener("mousemove", myFunction);
-            vm.tableBody.removeEventListener("mouseenter", myFunction);
-            vm.tableBody.removeEventListener("mouseleave", myFunction);
+            vm.tableBody.removeEventListener("mousemove", onMouseMoveTable);
+            vm.tableBody.removeEventListener("mouseenter", onMouseEnterTable);
+            vm.tableBody.removeEventListener("mouseleave", onMouseLeaveTable);
         }
     }
 
