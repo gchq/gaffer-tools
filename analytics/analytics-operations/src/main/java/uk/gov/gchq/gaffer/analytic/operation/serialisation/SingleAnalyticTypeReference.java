@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package uk.gov.gchq.gaffer.operation.analytic.serialisation;
+package uk.gov.gchq.gaffer.analytic.operation.serialisation;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 
-import uk.gov.gchq.gaffer.operation.analytic.AnalyticDetail;
+import uk.gov.gchq.gaffer.analytic.operation.AnalyticDetail;
 
 /**
  * {@link TypeReference} objects for analytic operations.

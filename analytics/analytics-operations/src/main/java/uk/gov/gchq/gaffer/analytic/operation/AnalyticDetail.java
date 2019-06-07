@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package uk.gov.gchq.gaffer.operation.analytic;
+package uk.gov.gchq.gaffer.analytic.operation;
 
 import com.google.common.collect.Maps;
 import org.apache.commons.lang.StringUtils;
