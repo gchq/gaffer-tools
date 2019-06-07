@@ -48,8 +48,6 @@ $ mvn clean install -pl :analytics-rest -Proad-traffic-demo
 
 The REST API should open up in your browser at http://localhost:8080/rest.
 
-It is advised that you follow the subsequent steps to add your analytics to the restAPI **before** following the below instructions for starting the UI itself.
-
 ## Running The UI
 
 In a separate terminal window or tab, navigate to the analytic-ui folder and type the following.
