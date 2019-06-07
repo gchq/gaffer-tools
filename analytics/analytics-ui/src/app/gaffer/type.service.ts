@@ -14,9 +14,8 @@
  * limitations under the License.
  */
 import { Injectable } from '@angular/core';
-import {  } from 'lodash';
+import { endsWith, startsWith } from 'lodash';
 
-import { CommonService } from '../dynamic-input/common.service';
 import { HttpHeaders, HttpClient } from '@angular/common/http';
 import { Observable, Observer, of } from 'rxjs';
 import { ErrorService } from '../dynamic-input/error.service';
@@ -38,7 +37,6 @@ export class TypeService {
         }
 
     constructor(
-        private common: CommonService,
         private http: HttpClient,
         private error: ErrorService
         ) {}
@@ -63,9 +61,10 @@ export class TypeService {
         let headers = new HttpHeaders();
         headers = headers.set("Content-Type", "application/json; charset=utf-8");
         //Make the http request
-        let queryUrl = this.common.parseUrl(
-            "http://localhost:4200" + "/assets/defaultConfig.json"
-        );
+        let queryUrl = "http://localhost:4200" + "/assets/defaultConfig.json";
+        if (!startsWith(queryUrl, "http")) {
+            queryUrl = "http://" + queryUrl;
+        }
         this.http.get(queryUrl, { headers: headers }).subscribe(
             //On success
             data => {
@@ -113,9 +112,9 @@ export class TypeService {
         }
 
         if (!this.isKnown(typeClass)) {
-            if (this.common.endsWith(typeClass, 'Map')) {
+            if (endsWith(typeClass, 'Map')) {
                 return this.mapShortValue(parts);
-            } else if (this.common.endsWith(typeClass, 'List') || this.common.endsWith(typeClass, 'Set')) {
+            } else if (endsWith(typeClass, 'List') || endsWith(typeClass, 'Set')) {
                 return this.listShortValue(parts);
             }
         }

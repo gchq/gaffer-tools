@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2019 Crown Copyright
+ * Copyright 2019 Crown Copyright
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -46,15 +46,19 @@ public class AddAnalyticHandler implements OperationHandler<AddAnalytic> {
      * AnalyticOperationDetail is built using the fields on the AddAnalyticOperation. The operation name and operation chain
      * fields must be set and cannot be left empty, or the build() method will fail and a runtime exception will be
      * thrown. The handler then adds/overwrites the AnalyticOperation according toa an overwrite flag.
+
      *
-     * @param operation the {@link uk.gov.gchq.gaffer.operation.Operation} to be executed
-     * @param context   the operation chain context, containing the user who executed the operation
+     * @param operation the {@link uk.gov.gchq.gaffer.operation.Operation} to be
+     *                  executed
+     * @param context   the operation chain context, containing the user who
+     *                  executed the operation
      * @param store     the {@link Store} the operation should be run on
      * @return null (since the output is void)
      * @throws OperationException if the operation on the cache fails
      */
     @Override
-    public Void doOperation(final AddAnalytic operation, final Context context, final Store store) throws OperationException {
+    public Void doOperation(final AddAnalytic operation, final Context context, final Store store)
+            throws OperationException {
         try {
             final AnalyticDetail analyticOperationDetail = new AnalyticDetail.Builder()
                     .analyticName(operation.getAnalyticName())
@@ -71,9 +75,9 @@ public class AddAnalyticHandler implements OperationHandler<AddAnalytic> {
                     .build();
 
             validate(analyticOperationDetail);
-
             cache.addAnalyticOperation(analyticOperationDetail, operation.isOverwriteFlag(), context
                     .getUser(), store.getProperties().getAdminAuth());
+
         } catch (final CacheOperationFailedException e) {
             throw new OperationException(e.getMessage(), e);
         }
@@ -96,7 +100,8 @@ public class AddAnalyticHandler implements OperationHandler<AddAnalytic> {
                     try {
                         NamedOperationDetail nod = noc.getFromCache(analyticOperationDetail.getOperationName());
                         if (nod.getParameters().get(uiMap.get(current).getParameterName()) == null) {
-                            throw new OperationException("UIMapping: parameter '" + uiMap.get(current).getParameterName() + "' does not exist in Named Operation");
+                            throw new OperationException("UIMapping: parameter '"
+                                    + uiMap.get(current).getParameterName() + "' does not exist in Named Operation");
                         }
                     } catch (final CacheOperationFailedException e) {
                         throw new OperationException(e.getMessage());

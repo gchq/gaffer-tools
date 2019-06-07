@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2019 Crown Copyright
+ * Copyright 2019 Crown Copyright
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -133,51 +133,27 @@ public class AnalyticDetail implements Serializable {
 
         final AnalyticDetail op = (AnalyticDetail) obj;
 
-        return new EqualsBuilder()
-                .append(analyticName, op.analyticName)
-                .append(operationName, op.operationName)
-                .append(creatorId, op.creatorId)
-                .append(readAccessRoles, op.readAccessRoles)
-                .append(writeAccessRoles, op.writeAccessRoles)
-                .append(uiMapping, op.uiMapping)
-                .append(metaData, op.metaData)
-                .append(outputType, op.outputType)
-                .append(score, op.score)
-                .append(options, op.options)
-                .isEquals();
+        return new EqualsBuilder().append(analyticName, op.analyticName).append(operationName, op.operationName)
+                .append(creatorId, op.creatorId).append(readAccessRoles, op.readAccessRoles)
+                .append(writeAccessRoles, op.writeAccessRoles).append(uiMapping, op.uiMapping)
+                .append(metaData, op.metaData).append(outputType, op.outputType).append(score, op.score)
+                .append(options, op.options).isEquals();
     }
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder(71, 3)
-                .append(analyticName)
-                .append(operationName)
-                .append(creatorId)
-                .append(readAccessRoles)
-                .append(writeAccessRoles)
-                .append(uiMapping)
-                .append(metaData)
-                .append(outputType)
-                .append(score)
-                .append(options)
-                .hashCode();
+        return new HashCodeBuilder(71, 3).append(analyticName).append(operationName).append(creatorId)
+                .append(readAccessRoles).append(writeAccessRoles).append(uiMapping).append(metaData).append(outputType)
+                .append(score).append(options).hashCode();
     }
 
     @Override
     public String toString() {
-        return new ToStringBuilder(this)
-                .appendSuper(super.toString())
-                .append("analyticName", analyticName)
-                .append("operationName", operationName)
-                .append("creatorId", creatorId)
-                .append("readAccessRoles", readAccessRoles)
-                .append("writeAccessRoles", writeAccessRoles)
-                .append("uiMapping", uiMapping)
-                .append("metaData", metaData)
-                .append("outputType", outputType)
-                .append("score", score)
-                .append("options", options)
-                .toString();
+        return new ToStringBuilder(this).appendSuper(super.toString()).append("analyticName", analyticName)
+                .append("operationName", operationName).append("creatorId", creatorId)
+                .append("readAccessRoles", readAccessRoles).append("writeAccessRoles", writeAccessRoles)
+                .append("uiMapping", uiMapping).append("metaData", metaData).append("outputType", outputType)
+                .append("score", score).append("options", options).toString();
     }
 
     public boolean hasReadAccess(final User user) {
@@ -281,7 +257,8 @@ public class AnalyticDetail implements Serializable {
         }
 
         public AnalyticDetail build() {
-            return new AnalyticDetail(analyticName, operationName, description, creatorId, readers, writers, uiMapping, metaData, outputType, score, options);
+            return new AnalyticDetail(analyticName, operationName, description, creatorId, readers, writers, uiMapping,
+                    metaData, outputType, score, options);
         }
     }
 }

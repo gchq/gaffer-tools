@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2019 Crown Copyright
+ * Copyright 2019 Crown Copyright
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,7 +32,7 @@ import java.util.Map;
 
 import static java.util.Objects.isNull;
 
-@JsonPropertyOrder(value = {"class", "analyticName", "operationName", "description", "score"}, alphabetic = true)
+@JsonPropertyOrder(value = { "class", "analyticName", "operationName", "description", "score" }, alphabetic = true)
 @Since("1.0.0")
 @Summary("Adds a new analytic")
 public class AddAnalytic implements Operation {
@@ -126,19 +126,11 @@ public class AddAnalytic implements Operation {
 
     @Override
     public AddAnalytic shallowClone() {
-        return new AddAnalytic.Builder()
-                .analyticName(analyticName)
-                .operationName(operationName)
-                .description(description)
-                .readAccessRoles(readAccessRoles.toArray(new String[readAccessRoles.size()]))
+        return new AddAnalytic.Builder().analyticName(analyticName).operationName(operationName)
+                .description(description).readAccessRoles(readAccessRoles.toArray(new String[readAccessRoles.size()]))
                 .writeAccessRoles(writeAccessRoles.toArray(new String[writeAccessRoles.size()]))
-                .overwrite(overwriteFlag)
-                .uiMapping(uiMapping)
-                .metaData(metaData)
-                .outputType(outputType)
-                .options(options)
-                .score(score)
-                .build();
+                .overwrite(overwriteFlag).uiMapping(uiMapping).metaData(metaData).outputType(outputType)
+                .options(options).score(score).build();
     }
 
     @Override

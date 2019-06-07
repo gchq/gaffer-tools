@@ -16,15 +16,14 @@
 import { Injectable } from "@angular/core";
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 
-import { CommonService } from "../dynamic-input/common.service";
 import { ErrorService } from "../dynamic-input/error.service";
 import { ResultsService } from "./results.service";
 import { EndpointService } from "../config/endpoint-service";
+import { startsWith } from 'lodash';
 
 @Injectable()
 export class QueryService {
   constructor(
-    private common: CommonService,
     private error: ErrorService,
     private http: HttpClient,
     private results: ResultsService,
@@ -82,9 +81,10 @@ export class QueryService {
     let headers = new HttpHeaders();
     headers = headers.set("Content-Type", "application/json; charset=utf-8");
     //Post the request to the server
-    let queryUrl = this.common.parseUrl(
-      this.endpoint.getRestEndpoint() + "/graph/operations/execute"
-    );
+    let queryUrl = this.endpoint.getRestEndpoint() + "/graph/operations/execute";
+    if (!startsWith(queryUrl, "http")) {
+        queryUrl = "http://" + queryUrl;
+    }
     this.http.post(queryUrl, operation, { headers: headers }).subscribe(
       //On success
       data => {

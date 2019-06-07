@@ -5,9 +5,8 @@ import { Router } from "@angular/router";
 
 import { QueryService } from "./query.service";
 import { ErrorService } from "../dynamic-input/error.service";
-import { CommonService } from "../dynamic-input/common.service";
 import { ResultsService } from "./results.service";
-import { cloneDeep } from "lodash";
+import { cloneDeep, startsWith } from "lodash";
 import { EndpointService } from "../config/endpoint-service";
 
 //Used to store and get the selected analytic
@@ -20,7 +19,6 @@ export class AnalyticsService {
   constructor(
     private query: QueryService,
     private error: ErrorService,
-    private common: CommonService,
     private http: HttpClient,
     private router: Router,
     private results: ResultsService,
@@ -106,9 +104,10 @@ export class AnalyticsService {
       let headers = new HttpHeaders();
       headers = headers.set("Content-Type", "application/json; charset=utf-8");
       //Make the http request
-      let queryUrl = this.common.parseUrl(
-        this.endpoint.getRestEndpoint() + "/graph/operations/execute"
-      );
+      let queryUrl = this.endpoint.getRestEndpoint() + "/graph/operations/execute";
+      if (!startsWith(queryUrl, "http")) {
+          queryUrl = "http://" + queryUrl;
+      }
       this.http.post(queryUrl, operation, { headers: headers }).subscribe(
         //On success
         data => {

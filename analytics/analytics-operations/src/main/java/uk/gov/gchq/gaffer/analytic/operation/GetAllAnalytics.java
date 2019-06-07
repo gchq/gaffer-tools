@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2019 Crown Copyright
+ * Copyright 2019 Crown Copyright
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,14 +28,14 @@ import uk.gov.gchq.koryphe.Summary;
 import java.util.Map;
 
 /**
- * A {@link GetAllAnalytics} is an {@link uk.gov.gchq.gaffer.operation.Operation}
- * for retrieving all {@link AnalyticDetail}s associated with a Gaffer graph.
+ * A {@link GetAllAnalytics} is an
+ * {@link uk.gov.gchq.gaffer.operation.Operation} for retrieving all
+ * {@link AnalyticDetail}s associated with a Gaffer graph.
  */
-@JsonPropertyOrder(value = {"class"}, alphabetic = true)
+@JsonPropertyOrder(value = { "class" }, alphabetic = true)
 @Since("1.0.0")
 @Summary("Gets all available analytic operations")
-public class GetAllAnalytics implements
-        Output<CloseableIterable<AnalyticDetail>> {
+public class GetAllAnalytics implements Output<CloseableIterable<AnalyticDetail>> {
     private Map<String, String> options;
 
     @Override
@@ -45,9 +45,7 @@ public class GetAllAnalytics implements
 
     @Override
     public GetAllAnalytics shallowClone() {
-        return new GetAllAnalytics.Builder()
-                .options(options)
-                .build();
+        return new GetAllAnalytics.Builder().options(options).build();
     }
 
     @Override
