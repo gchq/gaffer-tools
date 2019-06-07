@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package uk.gov.gchq.gaffer.operation.analytic;
+package uk.gov.gchq.gaffer.analytic.operation;
 
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
+import uk.gov.gchq.gaffer.analytic.operation.AddAnalytic.Builder;
 import uk.gov.gchq.gaffer.commonutil.JsonAssert;
 import uk.gov.gchq.gaffer.operation.OperationTest;
-import uk.gov.gchq.gaffer.operation.analytic.AddAnalytic.Builder;
 
 import java.util.Collections;
 import java.util.HashMap;

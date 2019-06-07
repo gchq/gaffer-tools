@@ -16,27 +16,28 @@
 
 package uk.gov.gchq.gaffer.store.integration.analytic;
 
+
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import uk.gov.gchq.gaffer.analytic.operation.AddAnalytic;
+import uk.gov.gchq.gaffer.analytic.operation.AnalyticDetail;
+import uk.gov.gchq.gaffer.analytic.operation.DeleteAnalytic;
+import uk.gov.gchq.gaffer.analytic.operation.GetAllAnalytics;
+import uk.gov.gchq.gaffer.analytic.operation.handler.AddAnalyticHandler;
+import uk.gov.gchq.gaffer.analytic.operation.handler.DeleteAnalyticHandler;
+import uk.gov.gchq.gaffer.analytic.operation.handler.GetAllAnalyticsHandler;
 import uk.gov.gchq.gaffer.cache.CacheServiceLoader;
 import uk.gov.gchq.gaffer.cache.exception.CacheOperationException;
 import uk.gov.gchq.gaffer.cache.impl.HashMapCacheService;
 import uk.gov.gchq.gaffer.cache.util.CacheProperties;
 import uk.gov.gchq.gaffer.operation.OperationException;
-import uk.gov.gchq.gaffer.operation.analytic.AddAnalytic;
-import uk.gov.gchq.gaffer.operation.analytic.AnalyticDetail;
-import uk.gov.gchq.gaffer.operation.analytic.DeleteAnalytic;
-import uk.gov.gchq.gaffer.operation.analytic.GetAllAnalytics;
 import uk.gov.gchq.gaffer.store.Context;
 import uk.gov.gchq.gaffer.store.Store;
 import uk.gov.gchq.gaffer.store.StoreProperties;
-import uk.gov.gchq.gaffer.store.operation.handler.analytic.AddAnalyticHandler;
-import uk.gov.gchq.gaffer.store.operation.handler.analytic.DeleteAnalyticHandler;
-import uk.gov.gchq.gaffer.store.operation.handler.analytic.GetAllAnalyticsHandler;
 import uk.gov.gchq.gaffer.user.User;
 
 import java.util.ArrayList;
