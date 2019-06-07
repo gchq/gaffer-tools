@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2019 Crown Copyright
+ * Copyright 2019 Crown Copyright
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -133,7 +133,8 @@ public class AnalyticCache {
     /**
      * Get all the Analytic operations held in the cache.
      *
-     * @param user The {@link User} object that is used for checking read permissions.
+     * @param user The {@link User} object that is used for checking read
+     *             permissions.
      * @return a {@link CloseableIterable} containing the Analytic operation details
      */
     public CloseableIterable<AnalyticDetail> getAllAnalyticOperations(final User user) {
@@ -143,7 +144,8 @@ public class AnalyticCache {
     /**
      * Get all the Analytic operations held in the cache.
      *
-     * @param user      The {@link User} object that is used for checking read permissions.
+     * @param user      The {@link User} object that is used for checking read
+     *                  permissions.
      * @param adminAuth The admin auth supplied for permissions.
      * @return a {@link CloseableIterable} containing the Analytic operation details
      */
@@ -166,8 +168,7 @@ public class AnalyticCache {
     }
 
     /**
-     * Delete the specified {@link AnalyticDetail}
-     * from the cache.
+     * Delete the specified {@link AnalyticDetail} from the cache.
      *
      * @param name the name of the operation to delete
      * @throws CacheOperationFailedException if there was an error deleting the
@@ -191,7 +192,8 @@ public class AnalyticCache {
      * @throws CacheOperationFailedException if there was an error adding the
      *                                       operation to the cache
      */
-    public void addToCache(final String name, final AnalyticDetail operation, final boolean overwrite) throws CacheOperationFailedException {
+    public void addToCache(final String name, final AnalyticDetail operation, final boolean overwrite)
+            throws CacheOperationFailedException {
         try {
             if (overwrite) {
                 CacheServiceLoader.getService().putInCache(CACHE_NAME, name, operation);
@@ -249,11 +251,13 @@ public class AnalyticCache {
         if (existing.hasWriteAccess(user, adminAuth)) {
             addToCache(name, analyticOperation, true);
         } else {
-            throw new CacheOperationFailedException("User " + user.getUserId() + " does not have permission to overwrite");
+            throw new CacheOperationFailedException(
+                    "User " + user.getUserId() + " does not have permission to overwrite");
         }
     }
 
-    private void remove(final String name, final User user, final String adminAuth) throws CacheOperationFailedException {
+    private void remove(final String name, final User user, final String adminAuth)
+            throws CacheOperationFailedException {
         if (null == name) {
             throw new CacheOperationFailedException("AnalyticOperation name cannot be null");
         }
@@ -261,12 +265,13 @@ public class AnalyticCache {
         if (existing.hasWriteAccess(user, adminAuth)) {
             deleteFromCache(name);
         } else {
-            throw new CacheOperationFailedException("User " + user +
-                    " does not have authority to delete Analytic operation: " + name);
+            throw new CacheOperationFailedException(
+                    "User " + user + " does not have authority to delete Analytic operation: " + name);
         }
     }
 
-    private AnalyticDetail get(final String name, final User user, final String adminAuth) throws CacheOperationFailedException {
+    private AnalyticDetail get(final String name, final User user, final String adminAuth)
+            throws CacheOperationFailedException {
         final AnalyticDetail op = getFromCache(name);
         if (op.hasReadAccess(user, adminAuth)) {
             return op;

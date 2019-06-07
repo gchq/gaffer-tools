@@ -14,7 +14,7 @@ The Analytic UI provides the capability for a user to run an ‘Analytic’ quer
 
 Install Homebrew - instructions can be found [here](https://www.howtogeek.com/211541/homebrew-for-os-x-easily-installs-desktop-apps-and-terminal-utilities/)
 
-Having cloned the analyticui repo, in a terminal, navigate to the analytic-ui/analytics/analytics-ui folder and run an npm install \(assuming you have npm installed - if you don't, follow [this guide](https://www.npmjs.com/get-npm) or use [Homebrew](https://www.dyclassroom.com/howto-mac/how-to-install-nodejs-and-npm-on-mac-using-homebrew)\):
+Having cloned the gaffer-tools repo, in a terminal, navigate to the analytics/analytics-ui folder and run an npm install \(assuming you have npm installed - if you don't, follow [this guide](https://www.npmjs.com/get-npm) or use [Homebrew](https://www.dyclassroom.com/howto-mac/how-to-install-nodejs-and-npm-on-mac-using-homebrew)\):
 
 ```
 $ npm install
@@ -40,7 +40,7 @@ $ mvn clean install -Pquick
 
 ## Running The REST API
 
-Execute the following in analytic-ui/analytics/analytics-rest:
+Execute the following in analytics/analytics-rest:
 
 ```
 $ mvn clean install -pl :analytics-rest -Proad-traffic-demo
@@ -48,11 +48,9 @@ $ mvn clean install -pl :analytics-rest -Proad-traffic-demo
 
 The REST API should open up in your browser at http://localhost:8080/rest.
 
-It is advised that you follow the subsequent steps to add your analytics to the restAPI **before** following the below instructions for starting the UI itself.
-
 ## Running The UI
 
-In a separate terminal window or tab, navigate to the newui folder and type the following.
+In a separate terminal window or tab, navigate to the analytic-ui folder and type the following.
 
 ```
 $ ng serve -o

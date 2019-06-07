@@ -1,26 +1,37 @@
-import { TestBed, async} from '@angular/core/testing';
+// Copyright 2019 Crown Copyright
 
-import { EndpointService } from '../config/endpoint-service';
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
 
-describe('EndpointService', () => {
-    let service: EndpointService;
+//     http://www.apache.org/licenses/LICENSE-2.0
 
-    beforeEach(async(() => {
-        TestBed.configureTestingModule({
-          providers: [
-            EndpointService,
-          ],
-        })
-        .compileComponents();
+//  Unless required by applicable law or agreed to in writing, software
+//  distributed under the License is distributed on an "AS IS" BASIS,
+//  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+//  See the License for the specific language governing permissions and
+//  limitations under the License.
 
-        service = TestBed.get(EndpointService);
-    }));
+import { TestBed, async } from "@angular/core/testing";
 
-    it('should be able to get the REST endpoint', () => {
-        let endpoint = service.defaultRestEndpoint;
+import { EndpointService } from "../config/endpoint-service";
 
-        let testEndpoint = service.getRestEndpoint();
+describe("EndpointService", () => {
+  let service: EndpointService;
 
-        expect(testEndpoint).toEqual(endpoint);
-    })
+  beforeEach(async(() => {
+    TestBed.configureTestingModule({
+      providers: [EndpointService]
+    }).compileComponents();
+
+    service = TestBed.get(EndpointService);
+  }));
+
+  it("should be able to get the REST endpoint", () => {
+    let endpoint = service.defaultRestEndpoint;
+
+    let testEndpoint = service.getRestEndpoint();
+
+    expect(testEndpoint).toEqual(endpoint);
+  });
 });

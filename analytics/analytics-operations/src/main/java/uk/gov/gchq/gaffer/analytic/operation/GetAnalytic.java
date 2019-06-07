@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2019 Crown Copyright
+ * Copyright 2019 Crown Copyright
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,11 +30,10 @@ import java.util.Map;
  * A {@link GetAnalytic} is an {@link uk.gov.gchq.gaffer.operation.Operation}
  * for retrieving all {@link AnalyticDetail}s associated with a Gaffer graph.
  */
-@JsonPropertyOrder(value = {"class", "analyticName"}, alphabetic = true)
+@JsonPropertyOrder(value = { "class", "analyticName" }, alphabetic = true)
 @Since("1.0.0")
 @Summary("Gets all available analytic operations")
-public class GetAnalytic implements
-        Output<AnalyticDetail> {
+public class GetAnalytic implements Output<AnalyticDetail> {
     private Map<String, String> options;
     private String analyticName;
 
@@ -53,10 +52,7 @@ public class GetAnalytic implements
 
     @Override
     public GetAnalytic shallowClone() {
-        return new GetAnalytic.Builder()
-                .analyticName(analyticName)
-                .options(options)
-                .build();
+        return new GetAnalytic.Builder().analyticName(analyticName).options(options).build();
     }
 
     @Override
