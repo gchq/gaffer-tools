@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package uk.gov.gchq.gaffer.analytic.operation;
+package uk.gov.gchq.gaffer.operation.analytic;
 
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.core.type.TypeReference;
 
-import uk.gov.gchq.gaffer.analytic.operation.serialisation.AnalyticTypeReference;
+import uk.gov.gchq.gaffer.operation.analytic.serialisation.SingleAnalyticTypeReference;
 import uk.gov.gchq.gaffer.operation.io.Output;
 import uk.gov.gchq.koryphe.Since;
 import uk.gov.gchq.koryphe.Summary;
@@ -47,7 +47,7 @@ public class GetAnalytic implements Output<AnalyticDetail> {
 
     @Override
     public TypeReference<AnalyticDetail> getOutputTypeReference() {
-        return new AnalyticTypeReference.AnalyticDetail();
+        return new SingleAnalyticTypeReference.SingularAnalyticOperationDetail();
     }
 
     @Override

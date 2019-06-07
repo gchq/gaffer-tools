@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package uk.gov.gchq.gaffer.analytic.operation;
+package uk.gov.gchq.gaffer.operation.analytic;
 
 import com.google.common.collect.Maps;
 import org.apache.commons.lang.StringUtils;
@@ -30,7 +30,6 @@ import java.util.Map;
 
 public class AnalyticDetail implements Serializable {
 
-    private static final long serialVersionUID = -6554727316218989708L;
     private String analyticName;
     private String operationName;
     private String description;
@@ -47,9 +46,10 @@ public class AnalyticDetail implements Serializable {
     }
 
     public AnalyticDetail(final String analyticName, final String operationName, final String description,
-            final String userId, final List<String> readers, final List<String> writers,
-            final Map<String, UIMappingDetail> uiMapping, final Map<String, String> metaData,
-            final Map<String, String> outputType, final Integer score, final Map<String, String> options) {
+                          final String userId, final List<String> readers,
+                          final List<String> writers, final Map<String, UIMappingDetail> uiMapping,
+                          final Map<String, String> metaData, final Map<String, String> outputType,
+                          final Integer score, final Map<String, String> options) {
 
         if (null == operationName || operationName.isEmpty()) {
             throw new IllegalArgumentException("Operation Name must not be empty");

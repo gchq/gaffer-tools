@@ -14,19 +14,19 @@
  * limitations under the License.
  */
 
-package uk.gov.gchq.gaffer.analytic.operation.handler;
+package uk.gov.gchq.gaffer.store.operation.handler.analytic;
 
-import uk.gov.gchq.gaffer.analytic.operation.AnalyticDetail;
-import uk.gov.gchq.gaffer.analytic.operation.GetAnalytic;
-import uk.gov.gchq.gaffer.analytic.operation.handler.cache.AnalyticCache;
 import uk.gov.gchq.gaffer.named.operation.cache.exception.CacheOperationFailedException;
 import uk.gov.gchq.gaffer.operation.OperationException;
+import uk.gov.gchq.gaffer.operation.analytic.AnalyticDetail;
+import uk.gov.gchq.gaffer.operation.analytic.GetAnalytic;
 import uk.gov.gchq.gaffer.store.Context;
 import uk.gov.gchq.gaffer.store.Store;
 import uk.gov.gchq.gaffer.store.operation.handler.OutputOperationHandler;
+import uk.gov.gchq.gaffer.store.operation.handler.analytic.cache.AnalyticCache;
 
 /**
- * Operation Handler for GetAnalytic
+ * Operation Handler for GetAnalyticOperation
  */
 public class GetAnalyticHandler implements OutputOperationHandler<GetAnalytic, AnalyticDetail> {
     private final AnalyticCache cache;
@@ -50,17 +50,15 @@ public class GetAnalyticHandler implements OutputOperationHandler<GetAnalytic, A
      * @param context   the operation chain context, containing the user who
      *                  executed the operation
      * @param store     the {@link Store} the operation should be run on
-     * @return an iterable of Analytics
-     * @throws OperationException thrown if the cache has not been initialized in
-     *                            the operation declarations file
+     * @return an iterable of AnalyticOperations
+     * @throws OperationException thrown if the cache has not been initialized in the operation declarations file
      */
     @Override
     public AnalyticDetail doOperation(final GetAnalytic operation, final Context context, final Store store)
             throws OperationException {
         final AnalyticDetail op;
         try {
-            op = cache.getAnalytic(operation.getAnalyticName(), context.getUser(),
-                    store.getProperties().getAdminAuth());
+            op = cache.getAnalyticOperation(operation.getAnalyticName(), context.getUser(), store.getProperties().getAdminAuth());
         } catch (final CacheOperationFailedException e) {
             throw new OperationException(e.getMessage());
         }
