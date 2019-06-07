@@ -14,27 +14,27 @@
  * limitations under the License.
  */
 
-package uk.gov.gchq.gaffer.analytic.operation.handler;
+package uk.gov.gchq.gaffer.store.operation.handler.analytic;
 
 
-import uk.gov.gchq.gaffer.analytic.operation.AnalyticDetail;
-import uk.gov.gchq.gaffer.analytic.operation.GetAllAnalytics;
-import uk.gov.gchq.gaffer.analytic.operation.UIMappingDetail;
-import uk.gov.gchq.gaffer.analytic.operation.handler.cache.AnalyticCache;
 import uk.gov.gchq.gaffer.commonutil.iterable.CloseableIterable;
 import uk.gov.gchq.gaffer.commonutil.iterable.WrappedCloseableIterable;
 import uk.gov.gchq.gaffer.named.operation.NamedOperationDetail;
 import uk.gov.gchq.gaffer.operation.OperationException;
+import uk.gov.gchq.gaffer.operation.analytic.AnalyticDetail;
+import uk.gov.gchq.gaffer.operation.analytic.GetAllAnalytics;
+import uk.gov.gchq.gaffer.operation.analytic.UIMappingDetail;
 import uk.gov.gchq.gaffer.store.Context;
 import uk.gov.gchq.gaffer.store.Store;
 import uk.gov.gchq.gaffer.store.operation.handler.OutputOperationHandler;
+import uk.gov.gchq.gaffer.store.operation.handler.analytic.cache.AnalyticCache;
 import uk.gov.gchq.gaffer.store.operation.handler.named.cache.NamedOperationCache;
 import uk.gov.gchq.koryphe.util.IterableUtil;
 
 import java.util.function.Function;
 
 /**
- * Operation Handler for GetAllAnalytics
+ * Operation Handler for GetAllAnalyticOperations
  */
 public class GetAllAnalyticsHandler implements OutputOperationHandler<GetAllAnalytics, CloseableIterable<AnalyticDetail>> {
     private final AnalyticCache cache;
@@ -56,13 +56,13 @@ public class GetAllAnalyticsHandler implements OutputOperationHandler<GetAllAnal
      * @param operation the {@link uk.gov.gchq.gaffer.operation.Operation} to be executed
      * @param context   the operation chain context, containing the user who executed the operation
      * @param store     the {@link Store} the operation should be run on
-     * @return an iterable of Analytics
+     * @return an iterable of AnalyticOperations
      * @throws OperationException thrown if the cache has not been initialized in the operation declarations file
      */
     @Override
     public CloseableIterable<AnalyticDetail> doOperation(final GetAllAnalytics operation, final Context context, final Store store) throws OperationException {
         GetAllAnalyticsHandler.context = context;
-        final CloseableIterable<AnalyticDetail> ops = cache.getAllAnalytics(context.getUser(), store.getProperties().getAdminAuth());
+        final CloseableIterable<AnalyticDetail> ops = cache.getAllAnalyticOperations(context.getUser(), store.getProperties().getAdminAuth());
         return new WrappedCloseableIterable<>(IterableUtil.map(ops, new AddInputType()));
     }
 

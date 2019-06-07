@@ -21,7 +21,7 @@ import com.google.common.collect.Sets;
 
 import uk.gov.gchq.gaffer.commonutil.JsonAssert;
 import uk.gov.gchq.gaffer.operation.OperationTest;
-import uk.gov.gchq.gaffer.operation.analytic.AddAnalyticOperation.Builder;
+import uk.gov.gchq.gaffer.operation.analytic.AddAnalytic.Builder;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -33,7 +33,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNotSame;
 
-public class AddAnalyticOperationTest extends OperationTest<AddAnalyticOperation> {
+public class AddAnalyticTest extends OperationTest<AddAnalytic> {
     public static final String USER = "User";
 
     @Override
@@ -49,7 +49,7 @@ public class AddAnalyticOperationTest extends OperationTest<AddAnalyticOperation
         Map<String, String> outputType = new HashMap<>();
         outputType.put("output", "table");
 
-        AddAnalyticOperation AddAnalyticOperation = new AddAnalyticOperation.Builder()
+        AddAnalytic AddAnalyticOperation = new AddAnalytic.Builder()
                 .analyticName("Test Analytic name")
                 .operationName("Test Operation name")
                 .description("Test description")
@@ -64,7 +64,7 @@ public class AddAnalyticOperationTest extends OperationTest<AddAnalyticOperation
 
         // When
         final byte[] json = toJson(AddAnalyticOperation);
-        final AddAnalyticOperation deserialisedObj = fromJson(json);
+        final AddAnalytic deserialisedObj = fromJson(json);
 
         // Then
         JsonAssert.assertEquals(String.format("{\n" +
@@ -109,7 +109,7 @@ public class AddAnalyticOperationTest extends OperationTest<AddAnalyticOperation
         Map<String, String> outputType = new HashMap<>();
         outputType.put("output", "table");
 
-        AddAnalyticOperation AddAnalyticOperation = new Builder()
+        AddAnalytic AddAnalyticOperation = new Builder()
                 .analyticName("Test Analytic name")
                 .operationName("Test Operation name")
                 .description("Test description")
@@ -155,7 +155,7 @@ public class AddAnalyticOperationTest extends OperationTest<AddAnalyticOperation
         Map<String, String> outputType = new HashMap<>();
         outputType.put("output", "table");
 
-        AddAnalyticOperation AddAnalyticOperation = new AddAnalyticOperation.Builder()
+        AddAnalytic AddAnalyticOperation = new AddAnalytic.Builder()
                 .analyticName("Test Analytic name")
                 .operationName("Test Operation name")
                 .description("Test description")
@@ -170,7 +170,7 @@ public class AddAnalyticOperationTest extends OperationTest<AddAnalyticOperation
                 .build();
 
         // When
-        AddAnalyticOperation clone = AddAnalyticOperation.shallowClone();
+        AddAnalytic clone = AddAnalyticOperation.shallowClone();
 
         // Then
         assertNotSame(AddAnalyticOperation, clone);
@@ -189,8 +189,8 @@ public class AddAnalyticOperationTest extends OperationTest<AddAnalyticOperation
 
 
     @Override
-    protected AddAnalyticOperation getTestObject() {
-        return new AddAnalyticOperation();
+    protected AddAnalytic getTestObject() {
+        return new AddAnalytic();
     }
 
     protected Set<String> getRequiredFields() {
