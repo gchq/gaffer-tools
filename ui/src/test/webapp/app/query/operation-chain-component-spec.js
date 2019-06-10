@@ -1218,16 +1218,18 @@ describe('The operation chain component', function() {
 
     describe('ctrl.executeChain()', function() {
 
-        var events, query, operationService, error, previousQueries;
+        var events, query, operationService, error, previousQueries, settings, operationChain;
 
         var valid;
 
-        beforeEach(inject(function(_events_, _query_, _operationService_, _error_, _previousQueries_) {
+        beforeEach(inject(function(_events_, _query_, _operationService_, _error_, _previousQueries_, _settings_, _operationChain_) {
             events = _events_;
             query = _query_;
             operationService = _operationService_;
             error = _error_;
             previousQueries = _previousQueries_;
+            settings = _settings_;
+            operationChain = _operationChain_;
         }));
 
         beforeEach(function() {
@@ -1242,6 +1244,7 @@ describe('The operation chain component', function() {
             spyOn(query, 'execute').and.stub();
             spyOn(error, 'handle').and.stub();
             spyOn(previousQueries, 'addQuery').and.stub();
+            spyOn(operationChain, 'reset').and.stub();
         });
 
         beforeEach(function() {
@@ -1601,6 +1604,24 @@ describe('The operation chain component', function() {
             ctrl.executeChain();
             expect(query.execute).toHaveBeenCalled();
         });
+
+        it('should reset the chain if the clear chain checkbox has been checked', function() {
+            spyOn(settings, 'getClearChainCheckbox').and.returnValue(true);
+            ctrl = $componentController('operationChain');
+
+            ctrl.executeChain();
+
+            expect(operationChain.reset).not.toHaveBeenCalled();
+        })
+
+        it('should not reset the chain if the clear chain checkbox has not been checked', function() {
+            spyOn(settings, 'getClearChainCheckbox').and.returnValue(false);
+            ctrl = $componentController('operationChain');
+
+            ctrl.executeChain();
+
+            expect(operationChain.reset).not.toHaveBeenCalled();
+        })
     });
 
     describe('ctrl.resetChain()', function() {
