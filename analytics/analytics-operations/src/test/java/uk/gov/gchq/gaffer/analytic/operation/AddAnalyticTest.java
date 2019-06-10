@@ -34,120 +34,120 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNotSame;
 
 public class AddAnalyticTest extends OperationTest<AddAnalytic> {
-    public static final String USER = "User";
+        public static final String USER = "User";
 
-    @Override
-    public void shouldJsonSerialiseAndDeserialise() {
-        Map<String, UIMappingDetail> uiMapping = Maps.newHashMap();
-        uiMapping.put("result-limit", new UIMappingDetail.Builder().label("param1").userInputType("textbox")
-                .parameterName("result-limit1").build());
-        Map<String, String> metaData = new HashMap<>();
-        metaData.put("iconURL", "icon");
-        Map<String, String> outputType = new HashMap<>();
-        outputType.put("output", "table");
+        @Override
+        public void shouldJsonSerialiseAndDeserialise() {
+                Map<String, UIMappingDetail> uiMapping = Maps.newHashMap();
+                uiMapping.put("result-limit", new UIMappingDetail.Builder().label("param1").userInputType("textbox")
+                                .parameterName("result-limit1").build());
+                Map<String, String> metaData = new HashMap<>();
+                metaData.put("iconURL", "icon");
+                Map<String, String> outputType = new HashMap<>();
+                outputType.put("output", "table");
 
-        AddAnalytic addAnalyticOperation = new AddAnalytic.Builder().analyticName("Test Analytic name")
-                .operationName("Test Operation name").description("Test description").readAccessRoles(USER)
-                .writeAccessRoles(USER).overwrite(false).uiMapping(uiMapping).metaData(metaData).outputType(outputType)
-                .score(4).build();
+                AddAnalytic addAnalyticOperation = new AddAnalytic.Builder().analyticName("Test Analytic name")
+                                .operationName("Test Operation name").description("Test description")
+                                .readAccessRoles(USER).writeAccessRoles(USER).overwrite(false).uiMapping(uiMapping)
+                                .metaData(metaData).outputType(outputType).score(4).build();
 
-        // When
-        final byte[] json = toJson(addAnalyticOperation);
-        final AddAnalytic deserialisedObj = fromJson(json);
+                // When
+                final byte[] json = toJson(addAnalyticOperation);
+                final AddAnalytic deserialisedObj = fromJson(json);
 
-        // Then
-        JsonAssert.assertEquals(String.format("{\n"
-                + "   \"class\": \"uk.gov.gchq.gaffer.operation.analytic.AddAnalytic\",\n"
-                + "   \"analyticName\": \"Test Analytic name\",\n"
-                        + "   \"operationName\": \"Test Operation name\",\n"
-                + "   \"description\": \"Test description\",\n" + "   \"score\": 4,\n" + "   \"metaData\": {\n"
-                + "      \"iconURL\": \"icon\"\n" + "   },\n" + "   \"outputType\": {\n"
-                + "      \"output\": \"table\"\n" + "   },\n" + "   \"overwriteFlag\": false,\n"
-                + "   \"readAccessRoles\": [" + "      \"User\"" + "   ],\n" + "   \"uiMapping\": {\n"
-                + "      \"result-limit\": {\n" + "         \"label\": \"param1\",\n"
-                + "         \"userInputType\": \"textbox\",\n" + "         \"parameterName\": \"result-limit1\"\n"
-                + "      }\n" + "   },\n" + "writeAccessRoles\": [" + "      \"User\"" + "   ]\n" + "}"),
-                new String(json));
-        assertNotNull(deserialisedObj);
-    }
+                // Then
+                JsonAssert.assertEquals(String.format("{\n"
+                                + "  \"class\": \"uk.gov.gchq.gaffer.operation.analytic.AddAnalytic\",\n"
+                                + "  \"analyticName\": \"Test Analytic name\",\n"
+                                + "  \"operationName\": \"Test Operation name\",\n"
+                                + "  \"description\": \"Test description\",\n" + "  \"score\": 4,\n"
+                                + "  \"metaData\": {\n" + "    \"iconURL\": \"icon\"\n" + "   },\n"
+                                + "  \"outputType\": {\n" + "    \"output\": \"table\"\n" + "   },\n"
+                                + "  \"overwriteFlag\": false,\n" + "   \"readAccessRoles\": [" + " \"User\"" + " ],\n"
+                                + "  \"uiMapping\": {\n" + "    \"result-limit\": {\n"
+                                + "      \"label\": \"param1\",\n" + "      \"userInputType\" : \"textbox\",\n"
+                                + "      \"parameterName\" : \"result-limit1\"\n" + "      }\n" + "  },\n"
+                                + "  \"writeAccessRoles\" : [" + " \"User\"" + " ]\n" + "}"), new String(json));
+                assertNotNull(deserialisedObj);
+        }
 
-    @Override
-    public void builderShouldCreatePopulatedOperation() {
-        // Given
-        Map<String, UIMappingDetail> uiMapping = Maps.newHashMap();
-        uiMapping.put("uiMappingConstructorTest",
-                new UIMappingDetail("Maximum Results", "String", "finalMaxResultLimit"));
-        Map<String, String> options = new HashMap<>();
-        options.put("option1", "example Option");
-        Map<String, String> metaData = new HashMap<>();
-        metaData.put("iconURL", "icon");
-        Map<String, String> outputType = new HashMap<>();
-        outputType.put("output", "table");
+        @Override
+        public void builderShouldCreatePopulatedOperation() {
+                // Given
+                Map<String, UIMappingDetail> uiMapping = Maps.newHashMap();
+                uiMapping.put("uiMappingConstructorTest",
+                                new UIMappingDetail("Maximum Results", "String", "finalMaxResultLimit"));
+                Map<String, String> options = new HashMap<>();
+                options.put("option1", "example Option");
+                Map<String, String> metaData = new HashMap<>();
+                metaData.put("iconURL", "icon");
+                Map<String, String> outputType = new HashMap<>();
+                outputType.put("output", "table");
 
-        AddAnalytic addAnalyticOperation = new Builder().analyticName("Test Analytic name")
-                .operationName("Test Operation name").description("Test description").readAccessRoles(USER)
-                .writeAccessRoles(USER).overwrite(false).uiMapping(uiMapping).metaData(metaData).outputType(outputType)
-                .options(options).score(4).build();
-        // When
+                AddAnalytic addAnalyticOperation = new Builder().analyticName("Test Analytic name")
+                                .operationName("Test Operation name").description("Test description")
+                                .readAccessRoles(USER).writeAccessRoles(USER).overwrite(false).uiMapping(uiMapping)
+                                .metaData(metaData).outputType(outputType).options(options).score(4).build();
+                // When
 
-        // Then
-        assertEquals("Test Analytic name", addAnalyticOperation.getAnalyticName());
-        assertEquals("Test Operation name", addAnalyticOperation.getOperationName());
-        assertEquals("Test description", addAnalyticOperation.getDescription());
-        assertEquals(Collections.singletonList(USER), addAnalyticOperation.getReadAccessRoles());
-        assertEquals(Collections.singletonList(USER), addAnalyticOperation.getWriteAccessRoles());
-        assertFalse(addAnalyticOperation.isOverwriteFlag());
-        assertEquals(uiMapping, addAnalyticOperation.getUiMapping());
-        assertEquals(metaData, addAnalyticOperation.getMetaData());
-        assertEquals(outputType, addAnalyticOperation.getOutputType());
-        assertEquals(options, addAnalyticOperation.getOptions());
-        assertEquals(4, (int) addAnalyticOperation.getScore());
-    }
+                // Then
+                assertEquals("Test Analytic name", addAnalyticOperation.getAnalyticName());
+                assertEquals("Test Operation name", addAnalyticOperation.getOperationName());
+                assertEquals("Test description", addAnalyticOperation.getDescription());
+                assertEquals(Collections.singletonList(USER), addAnalyticOperation.getReadAccessRoles());
+                assertEquals(Collections.singletonList(USER), addAnalyticOperation.getWriteAccessRoles());
+                assertFalse(addAnalyticOperation.isOverwriteFlag());
+                assertEquals(uiMapping, addAnalyticOperation.getUiMapping());
+                assertEquals(metaData, addAnalyticOperation.getMetaData());
+                assertEquals(outputType, addAnalyticOperation.getOutputType());
+                assertEquals(options, addAnalyticOperation.getOptions());
+                assertEquals(4, (int) addAnalyticOperation.getScore());
+        }
 
-    @Override
-    public void shouldShallowCloneOperation() {
-        // Given
-        Map<String, UIMappingDetail> uiMapping = Maps.newHashMap();
-        uiMapping.put("uiMappingBuilderTest", new UIMappingDetail.Builder().label("Maximum Results")
-                .userInputType("String").parameterName("finalMaxResultLimit").build());
-        uiMapping.put("uiMappingConstructorTest",
-                new UIMappingDetail("Maximum Results", "String", "finalMaxResultLimit"));
-        Map<String, String> options = new HashMap<>();
-        options.put("option1", "example Option");
-        Map<String, String> metaData = new HashMap<>();
-        metaData.put("iconURL", "icon");
-        Map<String, String> outputType = new HashMap<>();
-        outputType.put("output", "table");
+        @Override
+        public void shouldShallowCloneOperation() {
+                // Given
+                Map<String, UIMappingDetail> uiMapping = Maps.newHashMap();
+                uiMapping.put("uiMappingBuilderTest", new UIMappingDetail.Builder().label("Maximum Results")
+                                .userInputType("String").parameterName("finalMaxResultLimit").build());
+                uiMapping.put("uiMappingConstructorTest",
+                                new UIMappingDetail("Maximum Results", "String", "finalMaxResultLimit"));
+                Map<String, String> options = new HashMap<>();
+                options.put("option1", "example Option");
+                Map<String, String> metaData = new HashMap<>();
+                metaData.put("iconURL", "icon");
+                Map<String, String> outputType = new HashMap<>();
+                outputType.put("output", "table");
 
-        AddAnalytic addAnalyticOperation = new AddAnalytic.Builder().analyticName("Test Analytic name")
-                .operationName("Test Operation name").description("Test description").readAccessRoles(USER)
-                .writeAccessRoles(USER).overwrite(false).uiMapping(uiMapping).metaData(metaData).outputType(outputType)
-                .options(options).score(4).build();
+                AddAnalytic addAnalyticOperation = new AddAnalytic.Builder().analyticName("Test Analytic name")
+                                .operationName("Test Operation name").description("Test description")
+                                .readAccessRoles(USER).writeAccessRoles(USER).overwrite(false).uiMapping(uiMapping)
+                                .metaData(metaData).outputType(outputType).options(options).score(4).build();
 
-        // When
-        AddAnalytic clone = addAnalyticOperation.shallowClone();
+                // When
+                AddAnalytic clone = addAnalyticOperation.shallowClone();
 
-        // Then
-        assertNotSame(addAnalyticOperation, clone);
-        assertEquals("Test Analytic name", clone.getAnalyticName());
-        assertEquals("Test Operation name", clone.getOperationName());
-        assertEquals("Test description", clone.getDescription());
-        assertEquals(Collections.singletonList(USER), clone.getReadAccessRoles());
-        assertEquals(Collections.singletonList(USER), clone.getWriteAccessRoles());
-        assertFalse(clone.isOverwriteFlag());
-        assertEquals(uiMapping, clone.getUiMapping());
-        assertEquals(metaData, clone.getMetaData());
-        assertEquals(outputType, clone.getOutputType());
-        assertEquals(options, clone.getOptions());
-        assertEquals(4, (int) clone.getScore());
-    }
+                // Then
+                assertNotSame(addAnalyticOperation, clone);
+                assertEquals("Test Analytic name", clone.getAnalyticName());
+                assertEquals("Test Operation name", clone.getOperationName());
+                assertEquals("Test description", clone.getDescription());
+                assertEquals(Collections.singletonList(USER), clone.getReadAccessRoles());
+                assertEquals(Collections.singletonList(USER), clone.getWriteAccessRoles());
+                assertFalse(clone.isOverwriteFlag());
+                assertEquals(uiMapping, clone.getUiMapping());
+                assertEquals(metaData, clone.getMetaData());
+                assertEquals(outputType, clone.getOutputType());
+                assertEquals(options, clone.getOptions());
+                assertEquals(4, (int) clone.getScore());
+        }
 
-    @Override
-    protected AddAnalytic getTestObject() {
-        return new AddAnalytic();
-    }
+        @Override
+        protected AddAnalytic getTestObject() {
+                return new AddAnalytic();
+        }
 
-    protected Set<String> getRequiredFields() {
-        return Sets.newHashSet("analyticName");
-    }
+        protected Set<String> getRequiredFields() {
+                return Sets.newHashSet("analyticName");
+        }
 }
