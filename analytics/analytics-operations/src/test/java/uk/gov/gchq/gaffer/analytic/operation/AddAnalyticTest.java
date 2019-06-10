@@ -56,18 +56,16 @@ public class AddAnalyticTest extends OperationTest<AddAnalytic> {
         final AddAnalytic deserialisedObj = fromJson(json);
 
         // Then
-        JsonAssert.assertEquals(
-                String.format("{\n" + "   \"class\": \"uk.gov.gchq.gaffer.operation.analytic.AddAnalytic\",\n"
-                        + "   \"analyticName\": \"Test Analytic name\",\n"
-                        + "   \"operationName\": \"Test Operation name\",\n"
-                        + "   \"description\": \"Test description\",\n" + "   \"uiMapping\": {\n"
-                        + "      \"result-limit\": {\n" + "         \"label\": \"param1\",\n"
-                        + "         \"userInputType\": \"textbox\",\n"
-                        + "         \"parameterName\": \"result-limit1\"\n" + "      }\n" + "   },\n"
-                        + "   \"score\": 4,\n" + "   \"metaData\": {\n" + "      \"iconURL\": \"icon\"\n" + "   },\n"
-                        + "   \"outputType\": {\n" + "      \"output\": \"table\"\n" + "   },\n"
-                        + "   \"overwriteFlag\": false,\n" + "   \"readAccessRoles\": [\n" + "      \"User\"\n"
-                        + "   ],\n" + "   \"writeAccessRoles\": [\n" + "      \"User\"\n" + "   ]\n" + "}"),
+        JsonAssert.assertEquals(String.format("{\n"
+                + "   \"class\": \"uk.gov.gchq.gaffer.operation.analytic.AddAnalytic\",\n"
+                + "   \"analyticName\": \"Test Analytic name\",\n" + "   \"operationName\": \"Test Operation name\",\n"
+                + "   \"description\": \"Test description\",\n" + "   \"score\": 4,\n" + "   \"metaData\": {\n"
+                + "      \"iconURL\": \"icon\"\n" + "   },\n" + "   \"outputType\": {\n"
+                + "      \"output\": \"table\"\n" + "   },\n" + "   \"overwriteFlag\": false,\n"
+                + "   \"readAccessRoles\": [\n" + "      \"User\"\n" + "   ],\n" + "   \"uiMapping\": {\n"
+                + "      \"result-limit\": {\n" + "         \"label\": \"param1\",\n"
+                + "         \"userInputType\": \"textbox\",\n" + "         \"parameterName\": \"result-limit1\"\n"
+                + "      }\n" + "   },\n" + "writeAccessRoles\": [\n" + "      \"User\"\n" + "   ]\n" + "}"),
                 new String(json));
         assertNotNull(deserialisedObj);
     }
