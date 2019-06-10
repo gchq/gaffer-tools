@@ -63,7 +63,7 @@ public class AddAnalyticTest extends OperationTest<AddAnalytic> {
                 + "      \"iconURL\": \"icon\"\n" + "   },\n" + "   \"outputType\": {\n"
                 + "      \"output\": \"table\"\n" + "   },\n" + "   \"overwriteFlag\": false,\n"
                 + "   \"readAccessRoles\": [\n" + "      \"User\"\n" + "   ],\n" + "   \"uiMapping\": {\n"
-                + "      \"result-limit\": {\n" + "         \"label\": \"param1\",\n"
+                + "      \"result-limit\": {\n" + " \"label\": \"param1\",\n"
                 + "         \"userInputType\": \"textbox\",\n" + "         \"parameterName\": \"result-limit1\"\n"
                 + "      }\n" + "   },\n" + "writeAccessRoles\": [\n" + "      \"User\"\n" + "   ]\n" + "}"),
                 new String(json));
