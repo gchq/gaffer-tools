@@ -56,21 +56,20 @@ public class AddAnalyticTest extends OperationTest<AddAnalytic> {
                 final AddAnalytic deserialisedObj = fromJson(json);
 
                 // Then
-                JsonAssert.assertEquals(new String(json), 
-                    String.format("{\n"
-                                + "  \"class\": \"uk.gov.gchq.gaffer.operation.analytic.AddAnalytic\",\n"
+                JsonAssert.assertEquals(String.format("{\n"
+                                + "  \"class\": \"uk.gov.gchq.gaffer.analytic.operation.AddAnalytic\",\n"
                                 + "  \"analyticName\": \"Test Analytic name\",\n"
                                 + "  \"operationName\": \"Test Operation name\",\n"
-                                + "  \"description\": \"Test description\",\n" 
-                                + "  \"uiMapping\": {\n" + "    \"result-limit\": {\n"
-                                + "      \"label\": \"param1\",\n" + "      \"userInputType\" : \"textbox\",\n"
-                                + "      \"parameterName\" : \"result-limit1\"\n" + "      }\n" + "  },\n"
+                                + "  \"description\": \"Test description\",\n"
                                 + "  \"score\": 4,\n"
                                 + "  \"metaData\": {\n" + "    \"iconURL\": \"icon\"\n" + "   },\n"
                                 + "  \"outputType\": {\n" + "    \"output\": \"table\"\n" + "   },\n"
-                                + "  \"overwriteFlag\": false,\n" 
+                                 + "  \"overwriteFlag\": false,\n"
                                 + "   \"readAccessRoles\": [" + " \"User\"" + " ],\n"
-                                + "  \"writeAccessRoles\" : [" + " \"User\"" + " ]\n" + "}"));
+                                + "  \"uiMapping\": {\n" + "    \"result-limit\": {\n"
+                                + "      \"label\": \"param1\",\n" + "      \"userInputType\" : \"textbox\",\n"
+                                + "      \"parameterName\" : \"result-limit1\"\n" + "      }\n" + "  },\n"
+                                + "  \"writeAccessRoles\" : [" + " \"User\"" + " ]\n" + "}"), new String(json));
                 assertNotNull(deserialisedObj);
         }
 
