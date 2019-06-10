@@ -58,14 +58,15 @@ public class AddAnalyticTest extends OperationTest<AddAnalytic> {
         // Then
         JsonAssert.assertEquals(String.format("{\n"
                 + "   \"class\": \"uk.gov.gchq.gaffer.operation.analytic.AddAnalytic\",\n"
-                + "   \"analyticName\": \"Test Analytic name\",\n" + "   \"operationName\": \"Test Operation name\",\n"
+                + "   \"analyticName\": \"Test Analytic name\",\n"
+                        + "   \"operationName\": \"Test Operation name\",\n"
                 + "   \"description\": \"Test description\",\n" + "   \"score\": 4,\n" + "   \"metaData\": {\n"
                 + "      \"iconURL\": \"icon\"\n" + "   },\n" + "   \"outputType\": {\n"
                 + "      \"output\": \"table\"\n" + "   },\n" + "   \"overwriteFlag\": false,\n"
                 + "   \"readAccessRoles\": [" + "      \"User\"" + "   ],\n" + "   \"uiMapping\": {\n"
-                + "      \"result-limit\": {\n" + " \"         label\": \"param1\",\n"
+                + "      \"result-limit\": {\n" + "         \"label\": \"param1\",\n"
                 + "         \"userInputType\": \"textbox\",\n" + "         \"parameterName\": \"result-limit1\"\n"
-                + "      }\n" + "   },\n" + "writeAccessRoles\": [" + "      \"User\"" + "   ]\n" + "}"g),
+                + "      }\n" + "   },\n" + "writeAccessRoles\": [" + "      \"User\"" + "   ]\n" + "}"),
                 new String(json));
         assertNotNull(deserialisedObj);
     }
