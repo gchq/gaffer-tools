@@ -2730,6 +2730,8 @@ class FederatedOperationChain(Operation):
                     self.operation_chain = OperationChain(operation_chain)
             elif isinstance(operation_chain,Operation):
                 self.operation_chain = OperationChain(operation_chain)
+            else:
+                self.operation_chain = JsonConverter.from_json(operation_chain, OperationChain)
         
     def to_json(self):
         operation = super().to_json()
