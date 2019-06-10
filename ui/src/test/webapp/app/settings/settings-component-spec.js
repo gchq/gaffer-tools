@@ -6,7 +6,7 @@ describe('The Settings Component', function() {
         var $componentController, $httpBackend;
         var scope;
         var ctrl;
-        var schema, operationService;
+        var schema, operationService, settings;
 
         beforeEach(module(function($provide) {
             $provide.factory('schema', function($q) {
@@ -21,11 +21,12 @@ describe('The Settings Component', function() {
             });
         }));
 
-        beforeEach(inject(function(_$componentController_, _$rootScope_, _schema_, _operationService_, _$httpBackend_) {
+        beforeEach(inject(function(_$componentController_, _$rootScope_, _schema_, _operationService_, _settings_, _$httpBackend_) {
             $componentController = _$componentController_;
             scope = _$rootScope_.$new();
             schema = _schema_;
             operationService = _operationService_;
+            settings = _settings_;
             $httpBackend = _$httpBackend_;
         }));
 
@@ -35,10 +36,21 @@ describe('The Settings Component', function() {
 
         beforeEach(function() {
             $httpBackend.whenGET('config/defaultConfig.json').respond(200, {});
+        }); 
+
+        beforeEach(function() {
+            spyOn(settings, 'getClearChainCheckbox').and.stub();
         });
 
         it('should exist', function() {
             expect(ctrl).toBeDefined();
+        });
+
+        it('should load the clear chain setting from the settings service', function() {
+
+
+            expect(settings.getClearChainCheckbox).toHaveBeenCalled();
+            expect(ctrl.clearChainCheckbox).toBeTruthy();
         });
 
         describe('ctrl.$onInit()', function() {
