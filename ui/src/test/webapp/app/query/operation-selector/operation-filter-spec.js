@@ -122,4 +122,34 @@ describe('the operation filter', function() {
 
     });
 
+    it('should prioritise hits in the operation title', function() {
+        var ops = [
+            {
+                formattedName: 'similar to test',
+                formattedDescription: 'keyword in the description'
+            },
+            {
+                formattedName: 'test keyword',
+                formattedDescription: 'an operation'
+            },
+            {
+                formattedName: 'unrelated',
+                formattedDescription: 'thing that has nothing to do with the first two'
+            }
+        ];
+
+        var expected = [
+            {
+                formattedName: 'test keyword',
+                formattedDescription: 'an operation'
+            },
+            {
+                formattedName: 'similar to test',
+                formattedDescription: 'keyword in the description'
+            },
+        ]
+
+        expect(operationFilter(ops, 'keyword')).toEqual(expected);
+    });
+
 });

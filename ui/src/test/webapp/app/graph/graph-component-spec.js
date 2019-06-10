@@ -19,6 +19,8 @@ describe("The Graph Component", function() {
     var ctrl;
     var injectableCytoscape;
 
+    var entityVertexType = {'vertex': { "class": "java.lang.String"}};
+    var edgeVertexType = { 'source': {'src': { "class": "java.lang.String"}}, 'destination': {'dest': { "class": "java.lang.String"}} };
     beforeEach(module('app'));
 
     beforeEach(module(function($provide) {
@@ -31,10 +33,10 @@ describe("The Graph Component", function() {
                     return vertices;
                 },
                 getVertexTypeFromEntityGroup: function() {
-                    return {'vertex': { "class": "java.lang.String"}};
+                    return entityVertexType;
                 },
                 getVertexTypesFromEdgeGroup: function() {
-                    return { 'source': {'src': { "class": "java.lang.String"}}, 'destination': {'dest': { "class": "java.lang.String"}} };
+                    return edgeVertexType
                 }
             }
         });
@@ -672,6 +674,13 @@ describe("The Graph Component", function() {
         describe('ctrl.update()', function() {
             
             it('should add elements from the results to the graph', function() {
+                ctrl.update(elements);
+                expect(injectableCytoscape.elements().size()).toEqual(3);
+            });
+
+            it('should not error when vertex type is unknown', function() {
+                entityVertexType = undefined;
+
                 ctrl.update(elements);
                 expect(injectableCytoscape.elements().size()).toEqual(3);
             });
