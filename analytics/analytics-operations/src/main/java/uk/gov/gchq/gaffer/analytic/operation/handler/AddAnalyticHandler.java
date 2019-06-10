@@ -18,11 +18,11 @@ package uk.gov.gchq.gaffer.analytic.operation.handler;
 
 import uk.gov.gchq.gaffer.analytic.operation.AddAnalytic;
 import uk.gov.gchq.gaffer.analytic.operation.AnalyticDetail;
+import uk.gov.gchq.gaffer.analytic.operation.UIMappingDetail;
 import uk.gov.gchq.gaffer.analytic.operation.handler.cache.AnalyticCache;
 import uk.gov.gchq.gaffer.named.operation.NamedOperationDetail;
 import uk.gov.gchq.gaffer.named.operation.cache.exception.CacheOperationFailedException;
 import uk.gov.gchq.gaffer.operation.OperationException;
-import uk.gov.gchq.gaffer.analytic.operation.UIMappingDetail;
 import uk.gov.gchq.gaffer.store.Context;
 import uk.gov.gchq.gaffer.store.Store;
 import uk.gov.gchq.gaffer.store.operation.handler.OperationHandler;
@@ -42,11 +42,12 @@ public class AddAnalyticHandler implements OperationHandler<AddAnalytic> {
     }
 
     /**
-     * Adds a AnalyticOperation to a cache which must be specified in the operation declarations file. An
-     * AnalyticOperationDetail is built using the fields on the AddAnalyticOperation. The operation name and operation chain
-     * fields must be set and cannot be left empty, or the build() method will fail and a runtime exception will be
-     * thrown. The handler then adds/overwrites the AnalyticOperation according toa an overwrite flag.
-
+     * Adds a AnalyticOperation to a cache which must be specified in the operation
+     * declarations file. An AnalyticOperationDetail is built using the fields on
+     * the AddAnalyticOperation. The operation name and operation chain fields must
+     * be set and cannot be left empty, or the build() method will fail and a
+     * runtime exception will be thrown. The handler then adds/overwrites the
+     * AnalyticOperation according toa an overwrite flag.
      *
      * @param operation the {@link uk.gov.gchq.gaffer.operation.Operation} to be
      *                  executed
@@ -61,22 +62,16 @@ public class AddAnalyticHandler implements OperationHandler<AddAnalytic> {
             throws OperationException {
         try {
             final AnalyticDetail analyticOperationDetail = new AnalyticDetail.Builder()
-                    .analyticName(operation.getAnalyticName())
-                    .operationName(operation.getOperationName())
-                    .creatorId(context.getUser().getUserId())
-                    .readers(operation.getReadAccessRoles())
-                    .writers(operation.getWriteAccessRoles())
-                    .description(operation.getDescription())
-                    .uiMapping(operation.getUiMapping())
-                    .metaData(operation.getMetaData())
-                    .outputType(operation.getOutputType())
-                    .score(operation.getScore())
-                    .options(operation.getOptions())
+                    .analyticName(operation.getAnalyticName()).operationName(operation.getOperationName())
+                    .creatorId(context.getUser().getUserId()).readers(operation.getReadAccessRoles())
+                    .writers(operation.getWriteAccessRoles()).description(operation.getDescription())
+                    .uiMapping(operation.getUiMapping()).metaData(operation.getMetaData())
+                    .outputType(operation.getOutputType()).score(operation.getScore()).options(operation.getOptions())
                     .build();
 
             validate(analyticOperationDetail);
-            cache.addAnalyticOperation(analyticOperationDetail, operation.isOverwriteFlag(), context
-                    .getUser(), store.getProperties().getAdminAuth());
+            cache.addAnalyticOperation(analyticOperationDetail, operation.isOverwriteFlag(), context.getUser(),
+                    store.getProperties().getAdminAuth());
 
         } catch (final CacheOperationFailedException e) {
             throw new OperationException(e.getMessage(), e);
@@ -113,8 +108,10 @@ public class AddAnalyticHandler implements OperationHandler<AddAnalytic> {
         if (null == analyticOperationDetail.getOutputType()) {
             throw new OperationException("Missing outputType field in AddAnalyticOperation");
         } else if (analyticOperationDetail.getOutputType().containsKey("output")) {
-            if (!analyticOperationDetail.getOutputType().get("output").equals("table") && !analyticOperationDetail.getOutputType().get("output").equals("graph")) {
-                throw new OperationException("OutputType: output does not equal either 'table' or 'graph' in AddAnalyticOperation");
+            if (!analyticOperationDetail.getOutputType().get("output").equals("table")
+                    && !analyticOperationDetail.getOutputType().get("output").equals("graph")) {
+                throw new OperationException(
+                        "OutputType: output does not equal either 'table' or 'graph' in AddAnalyticOperation");
             }
         } else {
             throw new OperationException("OutputType: output field was not specified in AddAnalyticOperation");
