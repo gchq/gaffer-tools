@@ -62,10 +62,10 @@ public class AddAnalyticTest extends OperationTest<AddAnalytic> {
                 + "   \"description\": \"Test description\",\n" + "   \"score\": 4,\n" + "   \"metaData\": {\n"
                 + "      \"iconURL\": \"icon\"\n" + "   },\n" + "   \"outputType\": {\n"
                 + "      \"output\": \"table\"\n" + "   },\n" + "   \"overwriteFlag\": false,\n"
-                + "   \"readAccessRoles\": [\n" + "      \"User\"\n" + "   ],\n" + "   \"uiMapping\": {\n"
-                + "      \"result-limit\": {\n" + " \"label\": \"param1\",\n"
+                + "   \"readAccessRoles\": [" + "      \"User\"" + "   ],\n" + "   \"uiMapping\": {\n"
+                + "      \"result-limit\": {\n" + " \"         label\": \"param1\",\n"
                 + "         \"userInputType\": \"textbox\",\n" + "         \"parameterName\": \"result-limit1\"\n"
-                + "      }\n" + "   },\n" + "writeAccessRoles\": [\n" + "      \"User\"\n" + "   ]\n" + "}"),
+                + "      }\n" + "   },\n" + "writeAccessRoles\": [" + "      \"User\"" + "   ]\n" + "}"g),
                 new String(json));
         assertNotNull(deserialisedObj);
     }
