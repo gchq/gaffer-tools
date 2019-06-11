@@ -14,16 +14,16 @@
  * limitations under the License.
  */
 
-import { Injectable } from '@angular/core'
-import { endsWith, startsWith } from 'lodash'
+import { Injectable } from '@angular/core';
+import { endsWith, startsWith } from 'lodash';
 
-import { HttpHeaders, HttpClient } from '@angular/common/http'
-import { Observable, Observer, of } from 'rxjs'
-import { ErrorService } from '../dynamic-input/error.service'
+import { HttpHeaders, HttpClient } from '@angular/common/http';
+import { Observable, Observer, of } from 'rxjs';
+import { ErrorService } from '../dynamic-input/error.service';
 
 @Injectable()
 export class TypeService {
-  types = null
+  types = null;
 
   unknownType = {
     fields: [
@@ -33,39 +33,39 @@ export class TypeService {
         class: 'java.lang.String'
       }
     ]
-  }
+  };
 
-  constructor(private http: HttpClient, private error: ErrorService) {}
+  constructor(private http: HttpClient, private error: ErrorService) { }
 
   /**
    * Asynchronously gets the types from the config. The types will be saved until update is called to reduce number of http requests.
    */
-  get = function() {
+  get = function () {
     if (this.types) {
-      return of(this.types)
+      return of(this.types);
     } else if (!this.typesObservable) {
       this.typesObservable = Observable.create((observer: Observer<string>) => {
-        this.getTypes(true, observer)
-      })
+        this.getTypes(true, observer);
+      });
     }
-    return this.typesObservable
-  }
+    return this.typesObservable;
+  };
 
   /** Get the types from the config */
-  getTypes = function(loud, observer) {
+  getTypes = function (loud, observer) {
     // Configure the http headers
-    let headers = new HttpHeaders()
-    headers = headers.set('Content-Type', 'application/json; charset=utf-8')
+    let headers = new HttpHeaders();
+    headers = headers.set('Content-Type', 'application/json; charset=utf-8');
     // Make the http request
-    let queryUrl = 'http://localhost:4200' + '/assets/defaultConfig.json'
+    let queryUrl = 'http://localhost:4200' + '/assets/defaultConfig.json';
     if (!startsWith(queryUrl, 'http')) {
-      queryUrl = 'http://' + queryUrl
+      queryUrl = 'http://' + queryUrl;
     }
     this.http.get(queryUrl, { headers: '{headers}' }).subscribe(
       // On success
       data => {
-        this.types = data.types
-        observer.next(data.types)
+        this.types = data.types;
+        observer.next(data.types);
       },
       // On error
       err => {
@@ -74,16 +74,16 @@ export class TypeService {
             'Failed to load the config, see the console for details',
             null,
             err
-          )
-          observer.error(err)
+          );
+          observer.error(err);
         } else {
-          observer.next(err)
+          observer.next(err);
         }
       }
-    )
-  }
+    );
+  };
 
-  getShortValue = function(value) {
+  getShortValue = function (value) {
     if (
       typeof value === 'string' ||
       value instanceof String ||
@@ -92,102 +92,102 @@ export class TypeService {
       value === null ||
       value === undefined
     ) {
-      return value
+      return value;
     }
 
     if (value.constructor === Array) {
-      return this.listShortValue(value)
+      return this.listShortValue(value);
     } else if (Object.keys(value).length !== 1) {
-      return this.defaultShortValue(value)
+      return this.defaultShortValue(value);
     }
 
-    const typeClass = Object.keys(value)[0]
-    const parts = value[typeClass] // the value without the class prepended
+    const typeClass = Object.keys(value)[0];
+    const parts = value[typeClass]; // the value without the class prepended
     if (parts === undefined) {
-      return ''
+      return '';
     }
 
-    const type = this.getType(typeClass)
+    const type = this.getType(typeClass);
 
     if (type.custom) {
-      return this.customShortValue(type.fields, parts)
+      return this.customShortValue(type.fields, parts);
     }
 
     if (!this.isKnown(typeClass)) {
       if (endsWith(typeClass, 'Map')) {
-        return this.mapShortValue(parts)
+        return this.mapShortValue(parts);
       } else if (endsWith(typeClass, 'List') || endsWith(typeClass, 'Set')) {
-        return this.listShortValue(parts)
+        return this.listShortValue(parts);
       }
     }
 
     if (typeof parts === 'object') {
       return Object.keys(parts)
         .map(key => {
-          const val = parts[key]
-          return this.getShortValue(val)
+          const val = parts[key];
+          return this.getShortValue(val);
         })
-        .join('|')
+        .join('|');
     }
 
-    return parts
-  }
+    return parts;
+  };
 
-  private getType = function(typeClass) {
+  private getType = function (typeClass) {
     if (typeClass !== undefined && this.types[typeClass]) {
-      return this.types[typeClass]
+      return this.types[typeClass];
     }
-    return this.unknownType
-  }
+    return this.unknownType;
+  };
 
-  isKnown = function(className) {
-    const knownType = this.types[className]
+  isKnown = function (className) {
+    const knownType = this.types[className];
 
     if (knownType) {
-      return true
+      return true;
     }
 
-    return false
-  }
+    return false;
+  };
 
   defaultShortValue = value => {
-    return JSON.stringify(value)
+    return JSON.stringify(value);
   }
 
-  listShortValue = function(values) {
+  listShortValue = function (values) {
     return values
       .map(value => {
-        return this.getShortValue(value)
+        return this.getShortValue(value);
       })
-      .join(', ')
-  }
+      .join(', ');
+  };
 
-  private mapShortValue = function(value) {
+  private mapShortValue = function (value) {
     return Object.keys(value)
       .map(key => {
-        return key + ': ' + this.getShortValue(value[key])
+        return key + ': ' + this.getShortValue(value[key]);
       })
-      .join(', ')
-  }
+      .join(', ');
+  };
 
-  private customShortValue = function(fields, parts) {
-    var showWithLabel = fields.length !== 1
+  private customShortValue = function (fields, parts) {
+    const showWithLabel = fields.length !== 1;
 
     return fields
       .map(field => {
-        const layers = field.key.split('.')
-        let customValue = parts
+        const layers = field.key.split('.');
+        let customValue = parts;
         for (const i in layers) {
-          customValue = customValue[layers[i]]
+          customValue = customValue[layers[i]];
         }
 
-        customValue = this.getShortValue(customValue)
+        customValue = this.getShortValue(customValue);
 
         if (showWithLabel) {
-          return field.label + ': ' + customValue
+          return field.label + ': ' + customValue;
         }
-        return customValue
+        return customValue;
       })
-      .join(', ')
-  }
+      .join(', ');
+  };
 }

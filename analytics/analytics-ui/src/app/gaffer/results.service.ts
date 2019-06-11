@@ -15,28 +15,28 @@
  */
 
 export class ResultsService {
-  results = []
+  results = [];
 
   constructor() {}
 
   /** Get the results */
   get = function() {
-    return this.results
-  }
+    return this.results;
+  };
 
   /** Clear the results */
   clear = function() {
-    this.results = []
-  }
+    this.results = [];
+  };
 
   /** Update the results */
   update = function(newResults) {
     if (newResults !== undefined && newResults !== null && newResults !== '') {
       // Convert it to an array if theres only one result
       if (!Array.isArray(newResults)) {
-        newResults = [newResults]
+        newResults = [newResults];
       }
-      this.results = newResults
+      this.results = newResults;
     }
-  }
+  };
 }

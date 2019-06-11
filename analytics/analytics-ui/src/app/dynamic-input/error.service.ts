@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-import { Injectable } from '@angular/core'
-import { ToastrService } from 'ngx-toastr'
+import { Injectable } from '@angular/core';
+import { ToastrService } from 'ngx-toastr';
 
 @Injectable()
 export class ErrorService {
@@ -23,14 +23,14 @@ export class ErrorService {
 
   /** Create a notification from an error */
   handle = function(message, title, err) {
-    let msg
-    console.error(err)
+    let msg;
+    console.error(err);
 
     // If no message provided, use a default error message
     if (!message) {
-      msg = 'Something went wrong. Check the log for details'
+      msg = 'Something went wrong. Check the log for details';
     } else {
-      msg = message
+      msg = message;
     }
 
     setTimeout(() => {
@@ -39,7 +39,7 @@ export class ErrorService {
         progressBar: true,
         positionClass: 'toast-top-right',
         extendedTimeOut: 2000
-      })
-    })
-  }
+      });
+    });
+  };
 }

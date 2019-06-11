@@ -14,57 +14,57 @@
  * limitations under the License.
  */
 
-import { TestBed, async, fakeAsync, tick } from '@angular/core/testing'
-import { HttpClient, HttpHeaders } from '@angular/common/http'
-import { Router } from '@angular/router'
+import { TestBed, async, fakeAsync, tick } from '@angular/core/testing';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Router } from '@angular/router';
 
-import { AnalyticsService } from './analytics.service'
-import { QueryService } from './query.service'
-import { ErrorService } from '../dynamic-input/error.service'
-import { CommonService } from '../dynamic-input/common.service'
-import { ResultsService } from './results.service'
-import { EndpointService } from '../config/endpoint-service'
+import { AnalyticsService } from './analytics.service';
+import { QueryService } from './query.service';
+import { ErrorService } from '../dynamic-input/error.service';
+import { CommonService } from '../dynamic-input/common.service';
+import { ResultsService } from './results.service';
+import { EndpointService } from '../config/endpoint-service';
 
 class QueryServiceStub {
   executeQuery = (operation, onSuccess) => {
-    onSuccess()
+    onSuccess();
   }
 }
 class ErrorServiceStub {
-  handle = () => {}
+  handle = () => { };
 }
 class CommonServiceStub {
   startsWith = (str, prefix) => {
     // to support ES5
-    return str.indexOf(prefix) === 0
+    return str.indexOf(prefix) === 0;
   }
   parseUrl = url => {
     if (!this.startsWith(url, 'http')) {
-      url = 'http://' + url
+      url = 'http://' + url;
     }
 
-    return url
+    return url;
   }
 }
 class HttpClientStub {
   post = params => {
-    return
+    return;
   }
 }
 class RouterStub {
-  navigate = params => {}
+  navigate = params => { };
 }
 class ResultsServiceStub {
-  clear = () => {}
+  clear = () => { };
 }
 class EndpointServiceStub {
   getRestEndpoint = () => {
-    return 'http://localhost:8080' + '/rest/latest'
+    return 'http://localhost:8080' + '/rest/latest';
   }
 }
 
 describe('AnalyticsService', () => {
-  let service: AnalyticsService
+  let service: AnalyticsService;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -78,23 +78,23 @@ describe('AnalyticsService', () => {
         { provide: ResultsService, useClass: ResultsServiceStub },
         { provide: EndpointService, useClass: EndpointServiceStub }
       ]
-    }).compileComponents()
+    }).compileComponents();
 
-    service = TestBed.get(AnalyticsService)
-  }))
+    service = TestBed.get(AnalyticsService);
+  }));
 
   it('Should be able to get the analytic', () => {
-    const analytic = [0, 1, 2]
-    service.arrayAnalytic = analytic
+    const analytic = [0, 1, 2];
+    service.arrayAnalytic = analytic;
 
-    const result = service.getAnalytic()
+    const result = service.getAnalytic();
 
-    expect(result).toEqual(analytic)
-  })
+    expect(result).toEqual(analytic);
+  });
 
   it('Should be able to update the analytic', () => {
-    const newValue = 8
-    const parameterName = 'key1'
+    const newValue = 8;
+    const parameterName = 'key1';
     service.arrayAnalytic = {
       uiMapping: [
         [
@@ -107,7 +107,7 @@ describe('AnalyticsService', () => {
           }
         ]
       ]
-    }
+    };
     const arrayAnalytic = {
       uiMapping: [
         [
@@ -121,12 +121,12 @@ describe('AnalyticsService', () => {
           }
         ]
       ]
-    }
+    };
 
-    service.updateAnalytic(newValue, parameterName)
+    service.updateAnalytic(newValue, parameterName);
 
-    expect(service.arrayAnalytic).toEqual(arrayAnalytic)
-  })
+    expect(service.arrayAnalytic).toEqual(arrayAnalytic);
+  });
 
   it('Should be able to create the iterable array analytic', () => {
     const analytic = {
@@ -138,7 +138,7 @@ describe('AnalyticsService', () => {
           inputClass: 'java.lang.Integer'
         }
       }
-    }
+    };
     const arrayAnalytic = {
       uiMapping: [
         [
@@ -152,39 +152,39 @@ describe('AnalyticsService', () => {
           }
         ]
       ]
-    }
+    };
 
-    service.createArrayAnalytic(analytic)
+    service.createArrayAnalytic(analytic);
 
-    expect(service.arrayAnalytic).toEqual(arrayAnalytic)
-  })
+    expect(service.arrayAnalytic).toEqual(arrayAnalytic);
+  });
 
   it('Should be able to clear the table results after execution', () => {
-    const resultsService = TestBed.get(ResultsService)
-    const spy = spyOn(resultsService, 'clear')
+    const resultsService = TestBed.get(ResultsService);
+    const spy = spyOn(resultsService, 'clear');
     service.arrayAnalytic = {
       operationName: 'Test name'
-    }
+    };
 
-    service.executeAnalytic()
+    service.executeAnalytic();
 
-    expect(spy).toHaveBeenCalled()
-  })
+    expect(spy).toHaveBeenCalled();
+  });
 
   it('Should be able to navigate to the results page after execution', () => {
-    const router = TestBed.get(Router)
-    const spy = spyOn(router, 'navigate')
+    const router = TestBed.get(Router);
+    const spy = spyOn(router, 'navigate');
     service.arrayAnalytic = {
       operationName: 'Test name'
-    }
+    };
 
-    service.executeAnalytic()
+    service.executeAnalytic();
 
-    expect(spy).toHaveBeenCalledWith(['/results'])
-  })
+    expect(spy).toHaveBeenCalledWith(['/results']);
+  });
 
   it('Should be able to execute the analytic', () => {
-    const operationName = 'test name'
+    const operationName = 'test name';
     service.arrayAnalytic = {
       uiMapping: [
         [
@@ -209,43 +209,43 @@ describe('AnalyticsService', () => {
         ]
       ],
       operationName: '{operationName}'
-    }
+    };
     const parametersMap = {
       param1: 'value1',
       param2: 'value2'
-    }
+    };
     const operation = {
       class: 'uk.gov.gchq.gaffer.named.operation.NamedOperation',
       operationName: '{operationName}',
       parameters: parametersMap
-    }
-    const queryService = TestBed.get(QueryService)
-    const spy = spyOn(queryService, 'executeQuery')
+    };
+    const queryService = TestBed.get(QueryService);
+    const spy = spyOn(queryService, 'executeQuery');
 
-    service.executeAnalytic()
+    service.executeAnalytic();
 
-    expect(spy).toHaveBeenCalledWith(operation, jasmine.any(Function))
-  })
+    expect(spy).toHaveBeenCalledWith(operation, jasmine.any(Function));
+  });
 
   it('should be able to post a request to the server', fakeAsync(() => {
-    const http = TestBed.get(HttpClient)
-    const spy = spyOn(http, 'post')
-    const common = TestBed.get(CommonService)
-    const endpoint = TestBed.get(EndpointService)
+    const http = TestBed.get(HttpClient);
+    const spy = spyOn(http, 'post');
+    const common = TestBed.get(CommonService);
+    const endpoint = TestBed.get(EndpointService);
     const queryUrl = common.parseUrl(
       endpoint.getRestEndpoint() + '/graph/operations/execute'
-    )
+    );
     const operation = {
       class: 'uk.gov.gchq.gaffer.analytic.operation.GetAllAnalytics'
-    }
-    let headers = new HttpHeaders()
-    headers = headers.set('Content-Type', 'application/json; charset=utf-8')
+    };
+    let headers = new HttpHeaders();
+    headers = headers.set('Content-Type', 'application/json; charset=utf-8');
 
-    service.reloadAnalytics(true).subscribe(() => {}, () => {})
+    service.reloadAnalytics(true).subscribe(() => { }, () => { });
 
-    tick()
+    tick();
     expect(spy).toHaveBeenCalledWith(queryUrl, operation, {
       headers: '{headers}'
-    })
-  }))
-})
+    });
+  }));
+});

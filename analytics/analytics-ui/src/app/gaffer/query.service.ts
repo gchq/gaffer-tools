@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-import { Injectable } from '@angular/core'
-import { HttpClient, HttpHeaders } from '@angular/common/http'
+import { Injectable } from '@angular/core';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 
-import { ErrorService } from '../dynamic-input/error.service'
-import { ResultsService } from './results.service'
-import { EndpointService } from '../config/endpoint-service'
-import { startsWith } from 'lodash'
+import { ErrorService } from '../dynamic-input/error.service';
+import { ResultsService } from './results.service';
+import { EndpointService } from '../config/endpoint-service';
+import { startsWith } from 'lodash';
 
 @Injectable()
 export class QueryService {
@@ -50,9 +50,9 @@ export class QueryService {
         // If there are too many results tell the user and only show a slice of the data
 
         // Store these results and show them
-        this.results.update(data)
+        this.results.update(data);
         if (onSuccess) {
-          onSuccess(data)
+          onSuccess(data);
         }
       },
       // On error
@@ -61,13 +61,13 @@ export class QueryService {
           'Error executing operation, see the console for details',
           null,
           err
-        )
+        );
         if (onFailure) {
-          onFailure(err)
+          onFailure(err);
         }
       }
-    )
-  }
+    );
+  };
 
   /**
    * Executes an operation and calls the onSuccess or onFailure functions provided.
@@ -76,35 +76,36 @@ export class QueryService {
   execute = function(operation, onSuccess, onFailure) {
     // Convert the operation to a json string
     if (typeof operation !== 'string' && !(operation instanceof String)) {
-      operation = JSON.stringify(operation)
+      operation = JSON.stringify(operation);
     }
     // Configure the http headers
-    let headers = new HttpHeaders()
-    headers = headers.set('Content-Type', 'application/json; charset=utf-8')
+    let headers = new HttpHeaders();
+    headers = headers.set('Content-Type', 'application/json; charset=utf-8');
     // Post the request to the server
-    let queryUrl = this.endpoint.getRestEndpoint() + '/graph/operations/execute'
+    let queryUrl =
+      this.endpoint.getRestEndpoint() + '/graph/operations/execute';
     if (!startsWith(queryUrl, 'http')) {
-      queryUrl = 'http://' + queryUrl
+      queryUrl = 'http://' + queryUrl;
     }
     this.http.post(queryUrl, operation, { headers: '{headers}' }).subscribe(
       // On success
       data => {
         if (onSuccess) {
-          onSuccess(data)
+          onSuccess(data);
         }
       },
       // On error
       err => {
         if (onFailure) {
-          onFailure(err)
+          onFailure(err);
         } else {
           this.error.handle(
             'Error running operation, see the console for details',
             null,
             err
-          )
+          );
         }
       }
-    )
-  }
+    );
+  };
 }

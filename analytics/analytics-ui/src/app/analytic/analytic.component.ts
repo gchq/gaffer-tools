@@ -24,14 +24,14 @@ import { AnalyticsService } from '../gaffer/analytics.service';
 })
 @Injectable()
 export class AnalyticComponent implements OnInit {
-  @Input('model') model;
+  @Input() model;
 
   constructor(
     private router: Router,
     private analyticsService: AnalyticsService
-  ) {}
+  ) { }
 
-  ngOnInit() {}
+  ngOnInit() { }
 
   /** Save the chosen analytic in the analytics service */
   execute(analytic) {

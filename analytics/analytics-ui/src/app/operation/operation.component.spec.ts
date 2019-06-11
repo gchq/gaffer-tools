@@ -14,39 +14,39 @@
  * limitations under the License.
  */
 
-import { async, ComponentFixture, TestBed } from '@angular/core/testing'
-import { Component, Input } from '@angular/core'
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { Component, Input } from '@angular/core';
 
-import { OperationComponent } from './operation.component'
+import { OperationComponent } from './operation.component';
 
 @Component({
   selector: 'app-parameter-form',
   template: ''
 })
 class MockParameterFormComponent {
-  @Input() parameters
+  @Input() parameters;
 }
 
 describe('OperationComponent', () => {
-  let component: OperationComponent
-  let fixture: ComponentFixture<OperationComponent>
+  let component: OperationComponent;
+  let fixture: ComponentFixture<OperationComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [OperationComponent, MockParameterFormComponent]
-    }).compileComponents()
-  }))
+    }).compileComponents();
+  }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(OperationComponent)
-    component = fixture.componentInstance
+    fixture = TestBed.createComponent(OperationComponent);
+    component = fixture.componentInstance;
     component.model = {
       uiMapping: {}
-    }
-  })
+    };
+  });
 
   it('should be created', () => {
-    fixture.detectChanges()
-    expect(component).toBeTruthy()
-  })
-})
+    fixture.detectChanges();
+    expect(component).toBeTruthy();
+  });
+});

@@ -14,25 +14,25 @@
  * limitations under the License.
  */
 
-import { Component, OnInit, Input } from '@angular/core'
-import { AnalyticsService } from '../gaffer/analytics.service'
-import { constants } from 'os'
+import { Component, OnInit, Input } from '@angular/core';
+import { AnalyticsService } from '../gaffer/analytics.service';
+import { constants } from 'os';
 
 @Component({
   selector: 'app-parameter-form',
   templateUrl: './parameter-form.component.html'
 })
 export class ParameterFormComponent implements OnInit {
-  @Input('parameters') parameters
+  @Input() parameters;
 
-  constructor(private analyticsService: AnalyticsService) {}
+  constructor(private analyticsService: AnalyticsService) { }
 
-  ngOnInit() {}
+  ngOnInit() { }
 
   /** Update the analytic operation whenever a parameter changes */
-  onChange = function(parameter, parameterName) {
-    this.analyticsService.updateAnalytic(parameter, parameterName)
-    const analytic = this.analyticsService.getAnalytic()
-    this.parameters = analytic.uiMapping
-  }
+  onChange = function (parameter, parameterName) {
+    this.analyticsService.updateAnalytic(parameter, parameterName);
+    const analytic = this.analyticsService.getAnalytic();
+    this.parameters = analytic.uiMapping;
+  };
 }

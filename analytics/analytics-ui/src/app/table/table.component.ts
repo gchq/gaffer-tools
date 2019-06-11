@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-import { Component, OnInit, Injectable, ViewChild } from '@angular/core'
-import { MatSort, MatTableDataSource } from '@angular/material'
-import { cloneDeep, union } from 'lodash'
+import { Component, OnInit, Injectable, ViewChild } from '@angular/core';
+import { MatSort, MatTableDataSource } from '@angular/material';
+import { cloneDeep, union } from 'lodash';
 
-import { ResultsService } from '../gaffer/results.service'
-import { TypeService } from '../gaffer/type.service'
-import { TimeService } from '../gaffer/time.service'
-import { SchemaService } from '../gaffer/schema.service'
+import { ResultsService } from '../gaffer/results.service';
+import { TypeService } from '../gaffer/type.service';
+import { TimeService } from '../gaffer/time.service';
+import { SchemaService } from '../gaffer/schema.service';
 
 @Component({
   selector: 'app-table',
@@ -31,10 +31,10 @@ import { SchemaService } from '../gaffer/schema.service'
 export class TableComponent implements OnInit {
   data = {
     results: new MatTableDataSource([])
-  }
-  @ViewChild(MatSort) sort: MatSort
-  displayedColumns: Set<any>
-  schema = { edges: {}, entities: {}, types: {} }
+  };
+  @ViewChild(MatSort) sort: MatSort;
+  displayedColumns: Set<any>;
+  schema = { edges: {}, entities: {}, types: {} };
 
   constructor(
     private results: ResultsService,
@@ -49,34 +49,34 @@ export class TableComponent implements OnInit {
   ngOnInit() {
     this.types.get().subscribe(() => {
       this.schemaService.get().subscribe(schema => {
-        this.schema = schema
-      })
+        this.schema = schema;
+      });
       const sortedResults = {
         edges: [],
         entities: [],
         other: []
-      }
-      const results = this.results.get()
+      };
+      const results = this.results.get();
       for (const i in results) {
         if (results[i]['class'].split('.').pop() === 'Entity') {
-          sortedResults.entities.push(results[i])
+          sortedResults.entities.push(results[i]);
         } else if (results[i]['class'].split('.').pop() === 'Edge') {
-          sortedResults.edges.push(results[i])
+          sortedResults.edges.push(results[i]);
         } else {
-          sortedResults.other.push(results[i])
+          sortedResults.other.push(results[i]);
         }
       }
 
-      this.processResults(sortedResults)
-    })
+      this.processResults(sortedResults);
+    });
   }
 
   private processResults = function(resultsData) {
-    const ids = []
-    const groupByProperties = []
-    const properties = []
-    this.resultsByType = {}
-    this.data.tooltips = {}
+    const ids = [];
+    const groupByProperties = [];
+    const properties = [];
+    this.resultsByType = {};
+    this.data.tooltips = {};
 
     // Transform the edges into a displayable form
     this.processElements(
@@ -87,7 +87,7 @@ export class TableComponent implements OnInit {
       groupByProperties,
       properties,
       resultsData
-    )
+    );
     // Transform the entities into a displayable form
     this.processElements(
       'Entity',
@@ -97,51 +97,51 @@ export class TableComponent implements OnInit {
       groupByProperties,
       properties,
       resultsData
-    )
+    );
     // Transform the other types into a displayable form
-    this.processOtherTypes(ids, properties, resultsData)
+    this.processOtherTypes(ids, properties, resultsData);
 
-    this.data.allColumns = union(union(ids, groupByProperties), properties)
+    this.data.allColumns = union(union(ids, groupByProperties), properties);
 
     if (!this.data.columns || this.data.columns.length === 0) {
-      this.data.columns = cloneDeep(this.data.allColumns)
+      this.data.columns = cloneDeep(this.data.allColumns);
     }
-    this.data.allTypes = []
-    this.data.allGroups = []
+    this.data.allTypes = [];
+    this.data.allGroups = [];
     for (const type in this.resultsByType) {
-      this.data.allTypes.push(type)
+      this.data.allTypes.push(type);
       for (const group in this.resultsByType[type]) {
-        this.data.allGroups = union(group, this.data.allGroups)
+        this.data.allGroups = union(group, this.data.allGroups);
       }
     }
 
     if (!this.data.types || this.data.types.length === 0) {
-      this.data.types = cloneDeep(this.data.allTypes)
+      this.data.types = cloneDeep(this.data.allTypes);
     }
     if (!this.data.groups || this.data.groups.length === 0) {
-      this.data.groups = cloneDeep(this.data.allGroups)
+      this.data.groups = cloneDeep(this.data.allGroups);
     }
 
-    this.updateFilteredResults()
-  }
+    this.updateFilteredResults();
+  };
 
   updateFilteredResults = function() {
-    this.data.results = []
+    this.data.results = [];
     for (const t in this.data.types) {
       if (this.data.types[t] in this.resultsByType) {
         for (const g in this.data.groups) {
           if (this.data.groups[g] in this.resultsByType[this.data.types[t]]) {
             this.data.results = this.data.results.concat(
               this.resultsByType[this.data.types[t]][this.data.groups[g]]
-            )
+            );
           }
         }
       }
     }
     // Set the results to be displayed in the table
-    this.data.results = new MatTableDataSource(this.data.results)
-    this.columnsToDisplay = this.data.columns
-  }
+    this.data.results = new MatTableDataSource(this.data.results);
+    this.columnsToDisplay = this.data.columns;
+  };
 
   private processElements = function(
     type,
@@ -157,125 +157,125 @@ export class TableComponent implements OnInit {
       resultsData[typePlural] &&
       Object.keys(resultsData[typePlural]).length > 0
     ) {
-      this.resultsByType[type] = []
-      ids = union(idKeys, ids)
+      this.resultsByType[type] = [];
+      ids = union(idKeys, ids);
       // For each element
       for (const i in resultsData[typePlural]) {
-        const element = resultsData[typePlural][i]
+        const element = resultsData[typePlural][i];
         if (element) {
           // Convert the ids (i.e. result type, GROUP and SOURCE) into a displayable form for the table
-          const result = {}
+          const result = {};
           for (const idIndex in idKeys) {
-            const id = idKeys[idIndex]
+            const id = idKeys[idIndex];
             if ('SOURCE' === id && element.source === undefined) {
-              result[id] = this.convertValue(id, element.vertex)
+              result[id] = this.convertValue(id, element.vertex);
             } else {
-              result[id] = this.convertValue(id, element[id.toLowerCase()])
+              result[id] = this.convertValue(id, element[id.toLowerCase()]);
             }
           }
-          result['resultType'] = type
+          result['resultType'] = type;
 
           // Get all of the properties to show in the table
           if (element.properties) {
             if (!(element.group in this.resultsByType[type])) {
-              this.resultsByType[type][element.group] = []
+              this.resultsByType[type][element.group] = [];
 
-              const elementDef = this.schema[typePlural][element.group]
+              const elementDef = this.schema[typePlural][element.group];
               if (elementDef && elementDef.properties) {
                 if (elementDef.groupBy) {
                   for (const j in elementDef.groupBy) {
-                    const propName = elementDef.groupBy[j]
+                    const propName = elementDef.groupBy[j];
                     const typeDef = this.schema.types[
                       elementDef.properties[propName]
-                    ]
+                    ];
                     if (
                       typeDef &&
                       typeDef.description &&
                       !(propName in this.data.tooltips)
                     ) {
-                      this.data.tooltips[propName] = typeDef.description
+                      this.data.tooltips[propName] = typeDef.description;
                     }
-                    groupByProperties = union(propName, groupByProperties)
+                    groupByProperties = union(propName, groupByProperties);
                   }
                 }
                 for (const propertyName in elementDef.properties) {
                   const typeDef = this.schema.types[
                     elementDef.properties[propertyName]
-                  ]
+                  ];
                   if (
                     typeDef &&
                     typeDef.description &&
                     !(propertyName in this.data.tooltips)
                   ) {
-                    this.data.tooltips[propertyName] = typeDef.description
+                    this.data.tooltips[propertyName] = typeDef.description;
                   }
-                  properties = union(propertyName, properties)
+                  properties = union(propertyName, properties);
                 }
               }
             }
             for (const prop in element.properties) {
-              properties = union(prop, properties)
-              result[prop] = this.convertValue(prop, element.properties[prop])
+              properties = union(prop, properties);
+              result[prop] = this.convertValue(prop, element.properties[prop]);
             }
           }
           if (!(element.group in this.resultsByType[type])) {
-            this.resultsByType[type][element.group] = []
+            this.resultsByType[type][element.group] = [];
           }
-          this.resultsByType[type][element.group].push(result)
+          this.resultsByType[type][element.group].push(result);
         }
       }
     }
-  }
+  };
 
   private processOtherTypes = function(ids, properties, resultsData) {
     for (const i in resultsData.other) {
-      const item = resultsData.other[i]
+      const item = resultsData.other[i];
       if (item) {
-        const result = { GROUP: '' }
+        const result = { GROUP: '' };
         for (const key in item) {
-          const value = this.convertValue(key, item[key])
+          const value = this.convertValue(key, item[key]);
           if ('class' === key) {
-            result['resultType'] = item[key].split('.').pop()
-            ids = union('resultType', ids)
+            result['resultType'] = item[key].split('.').pop();
+            ids = union('resultType', ids);
           } else if ('vertex' === key) {
-            result['SOURCE'] = value
-            ids = union('SOURCE', ids)
+            result['SOURCE'] = value;
+            ids = union('SOURCE', ids);
           } else if (
             'source' === key ||
             'destination' === key ||
             'directed' === key ||
             'group' === key
           ) {
-            const parsedKey = key.toUpperCase()
-            result[parsedKey] = value
-            ids = union(parsedKey, ids)
+            const parsedKey = key.toUpperCase();
+            result[parsedKey] = value;
+            ids = union(parsedKey, ids);
           } else if ('value' === key) {
-            result[key] = value
-            ids = union(key, ids)
+            result[key] = value;
+            ids = union(key, ids);
           } else {
-            result[key] = value
-            properties = union(key, properties)
+            result[key] = value;
+            properties = union(key, properties);
           }
         }
         if (!(result['resultType'] in this.resultsByType)) {
-          this.resultsByType[result['resultType']] = {}
+          this.resultsByType[result['resultType']] = {};
         }
         if (!(result.GROUP in this.resultsByType[result['resultType']])) {
-          this.resultsByType[result['resultType']][result.GROUP] = []
+          this.resultsByType[result['resultType']][result.GROUP] = [];
         }
-        this.resultsByType[result['resultType']][result.GROUP].push(result)
+        this.resultsByType[result['resultType']][result.GROUP].push(result);
       }
     }
-  }
+  };
 
   private convertValue = function(name, value) {
-    let parsedValue = value
+    let parsedValue = value;
     if (parsedValue) {
-      parsedValue = this.types.getShortValue(parsedValue)
+      parsedValue = this.types.getShortValue(parsedValue);
       if (this.time.isTimeProperty(name)) {
-        parsedValue = this.time.getDateString(name, parsedValue)
+        parsedValue = this.time.getDateString(name, parsedValue);
       }
     }
-    return parsedValue
-  }
+    return parsedValue;
+  };
 }

@@ -1,25 +1,25 @@
-import { enableProdMode } from '@angular/core'
-import { platformBrowserDynamic } from '@angular/platform-browser-dynamic'
+import { enableProdMode } from '@angular/core';
+import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
 
-import { AppModule } from './app/app.module'
-import { environment } from './environments/environment'
+import { AppModule } from './app/app.module';
+import { environment } from './environments/environment';
 
 if (environment.production) {
-  enableProdMode()
+  enableProdMode();
 }
 
 platformBrowserDynamic()
   .bootstrapModule(AppModule)
-  .catch(err => console.error(err))
+  .catch(err => console.error(err));
 
-declare const require: any
+declare const require: any;
 
-const context = require.context('./app', true, /\.js$/)
+const context = require.context('./app', true, /\.js$/);
 
 context.keys().forEach((file: any) => {
   try {
-    context(file)
+    context(file);
   } catch (err) {
-    console.error(err, file)
+    console.error(err, file);
   }
-})
+});

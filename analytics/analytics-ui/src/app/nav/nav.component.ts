@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { Component } from '@angular/core'
+import { Component } from '@angular/core';
 
 @Component({
   selector: 'app-nav',
@@ -26,5 +26,5 @@ export class NavComponent {
     { path: 'analytics', label: 'ANALYTICS' },
     { path: 'parameters', label: 'PARAMETERS' },
     { path: 'results', label: 'RESULTS' }
-  ]
+  ];
 }
