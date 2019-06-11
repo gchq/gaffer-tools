@@ -119,7 +119,7 @@ export class SchemaService {
           vertices.push(this.schema.entities[i].vertex);
         }
       }
-      for (const i in this.schema.edges) {
+      for (const i of this.schema.edges) {
         if (vertices.indexOf(this.schema.edges[i].source) === -1) {
           vertices.push(this.schema.edges[i].source);
         }

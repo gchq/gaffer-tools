@@ -49,7 +49,7 @@ export class AnalyticsService {
   /** Update the analytic operation on change of parameters */
   updateAnalytic = function(newValue, parameterName) {
     // Convert to an integer
-    newValue = parseInt(newValue);
+    newValue = parseInt(newValue, 10);
     // Look for the parameter in the list of parameters and set the new current value
     for (const i of this.arrayAnalytic.uiMapping.length) {
       const parameterPair = this.arrayAnalytic.uiMapping[i];

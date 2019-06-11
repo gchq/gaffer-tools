@@ -111,9 +111,9 @@ export class TableComponent implements OnInit {
     }
     this.data.allTypes = [];
     this.data.allGroups = [];
-    for (const type in this.resultsByType) {
+    for (const type of this.resultsByType) {
       this.data.allTypes.push(type);
-      for (const group in this.resultsByType[type]) {
+      for (const group of this.resultsByType[type]) {
         this.data.allGroups = union(group, this.data.allGroups);
       }
     }
@@ -163,13 +163,13 @@ export class TableComponent implements OnInit {
       this.resultsByType[type] = [];
       ids = union(idKeys, ids);
       // For each element
-      for (const i in resultsData[typePlural]) {
+      for (const i of resultsData[typePlural]) {
         const element = resultsData[typePlural][i];
         if (element) {
           // Convert the ids (i.e. result type, GROUP and SOURCE) into a displayable form for the table
           const result = {};
           const a = 'resultType';
-          for (const idIndex in idKeys) {
+          for (const idIndex of idKeys) {
             const id = idKeys[idIndex];
             if ('SOURCE' === id && element.source === undefined) {
               result[id] = this.convertValue(id, element.vertex);
@@ -187,7 +187,7 @@ export class TableComponent implements OnInit {
               const elementDef = this.schema[typePlural][element.group];
               if (elementDef && elementDef.properties) {
                 if (elementDef.groupBy) {
-                  for (const j in elementDef.groupBy) {
+                  for (const j of elementDef.groupBy) {
                     const propName = elementDef.groupBy[j];
                     const typeDef = this.schema.types[
                       elementDef.properties[propName]
@@ -202,7 +202,7 @@ export class TableComponent implements OnInit {
                     groupByProperties = union(propName, groupByProperties);
                   }
                 }
-                for (const propertyName in elementDef.properties) {
+                for (const propertyName of elementDef.properties) {
                   const typeDef = this.schema.types[
                     elementDef.properties[propertyName]
                   ];
@@ -217,7 +217,7 @@ export class TableComponent implements OnInit {
                 }
               }
             }
-            for (const prop in element.properties) {
+            for (const prop of element.properties) {
               properties = union(prop, properties);
               result[prop] = this.convertValue(prop, element.properties[prop]);
             }
@@ -232,7 +232,7 @@ export class TableComponent implements OnInit {
   };
 
   private processOtherTypes = function(ids, properties, resultsData) {
-    for (const i in resultsData.other) {
+    for (const i of resultsData.other) {
       const item = resultsData.other[i];
       if (item) {
         const result = { GROUP: '' };
@@ -240,7 +240,7 @@ export class TableComponent implements OnInit {
         const b = 'resultType';
         const c = 'vertex';
         const d = 'SOURCE';
-        for (const key in item) {
+        for (const key of item) {
           const value = this.convertValue(key, item[key]);
           if (a === key) {
             result[b] = item[key].split('.').pop();
