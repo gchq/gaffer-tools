@@ -14,17 +14,10 @@
  * limitations under the License.
  */
 export class TimeService {
-  validUnits = [
-    "day",
-    "hour",
-    "minute",
-    "second",
-    "millisecond",
-    "microsecond"
-  ];
-  timeProperties = {};
+  validUnits = ['day', 'hour', 'minute', 'second', 'millisecond', 'microsecond']
+  timeProperties = {}
 
   isTimeProperty = function(propName) {
-    return propName in this.timeProperties;
-  };
+    return propName in this.timeProperties
+  }
 }

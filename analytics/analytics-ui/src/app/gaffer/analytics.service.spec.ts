@@ -14,57 +14,57 @@
  * limitations under the License.
  */
 
-import { TestBed, async, fakeAsync, tick } from "@angular/core/testing";
-import { HttpClient, HttpHeaders } from "@angular/common/http";
-import { Router } from "@angular/router";
+import { TestBed, async, fakeAsync, tick } from '@angular/core/testing'
+import { HttpClient, HttpHeaders } from '@angular/common/http'
+import { Router } from '@angular/router'
 
-import { AnalyticsService } from "./analytics.service";
-import { QueryService } from "./query.service";
-import { ErrorService } from "../dynamic-input/error.service";
-import { CommonService } from "../dynamic-input/common.service";
-import { ResultsService } from "./results.service";
-import { EndpointService } from "../config/endpoint-service";
+import { AnalyticsService } from './analytics.service'
+import { QueryService } from './query.service'
+import { ErrorService } from '../dynamic-input/error.service'
+import { CommonService } from '../dynamic-input/common.service'
+import { ResultsService } from './results.service'
+import { EndpointService } from '../config/endpoint-service'
 
 class QueryServiceStub {
   executeQuery = (operation, onSuccess) => {
-    onSuccess();
-  };
+    onSuccess()
+  }
 }
 class ErrorServiceStub {
-  handle = () => {};
+  handle = () => {}
 }
 class CommonServiceStub {
-  startsWith = function(str, prefix) {
+  startsWith = (str, prefix) => {
     // to support ES5
-    return str.indexOf(prefix) === 0;
-  };
+    return str.indexOf(prefix) === 0
+  }
   parseUrl = url => {
-    if (!this.startsWith(url, "http")) {
-      url = "http://" + url;
+    if (!this.startsWith(url, 'http')) {
+      url = 'http://' + url
     }
 
-    return url;
-  };
+    return url
+  }
 }
 class HttpClientStub {
   post = params => {
-    return;
-  };
+    return
+  }
 }
 class RouterStub {
-  navigate = params => {};
+  navigate = params => {}
 }
 class ResultsServiceStub {
-  clear = () => {};
+  clear = () => {}
 }
 class EndpointServiceStub {
   getRestEndpoint = () => {
-    return "http://localhost:8080" + "/rest/latest";
-  };
+    return 'http://localhost:8080' + '/rest/latest'
+  }
 }
 
-describe("AnalyticsService", () => {
-  let service: AnalyticsService;
+describe('AnalyticsService', () => {
+  let service: AnalyticsService
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -78,172 +78,174 @@ describe("AnalyticsService", () => {
         { provide: ResultsService, useClass: ResultsServiceStub },
         { provide: EndpointService, useClass: EndpointServiceStub }
       ]
-    }).compileComponents();
+    }).compileComponents()
 
-    service = TestBed.get(AnalyticsService);
-  }));
+    service = TestBed.get(AnalyticsService)
+  }))
 
-  it("Should be able to get the analytic", () => {
-    let analytic = [0, 1, 2];
-    service.arrayAnalytic = analytic;
+  it('Should be able to get the analytic', () => {
+    const analytic = [0, 1, 2]
+    service.arrayAnalytic = analytic
 
-    let result = service.getAnalytic();
+    const result = service.getAnalytic()
 
-    expect(result).toEqual(analytic);
-  });
+    expect(result).toEqual(analytic)
+  })
 
-  it("Should be able to update the analytic", () => {
-    let newValue = 8;
-    let parameterName = "key1";
+  it('Should be able to update the analytic', () => {
+    const newValue = 8
+    const parameterName = 'key1'
     service.arrayAnalytic = {
       uiMapping: [
         [
-          "key1",
+          'key1',
           {
-            label: "Label",
-            userInputType: "TextBox",
-            parameterName: "Parameter Name",
-            inputClass: "java.lang.Integer"
+            label: 'Label',
+            userInputType: 'TextBox',
+            parameterName: 'Parameter Name',
+            inputClass: 'java.lang.Integer'
           }
         ]
       ]
-    };
-    let arrayAnalytic = {
+    }
+    const arrayAnalytic = {
       uiMapping: [
         [
-          "key1",
+          'key1',
           {
-            label: "Label",
-            userInputType: "TextBox",
-            parameterName: "Parameter Name",
-            inputClass: "java.lang.Integer",
+            label: 'Label',
+            userInputType: 'TextBox',
+            parameterName: 'Parameter Name',
+            inputClass: 'java.lang.Integer',
             currentValue: newValue
           }
         ]
       ]
-    };
+    }
 
-    service.updateAnalytic(newValue, parameterName);
+    service.updateAnalytic(newValue, parameterName)
 
-    expect(service.arrayAnalytic).toEqual(arrayAnalytic);
-  });
+    expect(service.arrayAnalytic).toEqual(arrayAnalytic)
+  })
 
-  it("Should be able to create the iterable array analytic", () => {
-    let analytic = {
+  it('Should be able to create the iterable array analytic', () => {
+    const analytic = {
       uiMapping: {
         key1: {
-          label: "Label",
-          userInputType: "TextBox",
-          parameterName: "Parameter Name",
-          inputClass: "java.lang.Integer"
+          label: 'Label',
+          userInputType: 'TextBox',
+          parameterName: 'Parameter Name',
+          inputClass: 'java.lang.Integer'
         }
       }
-    };
-    let arrayAnalytic = {
+    }
+    const arrayAnalytic = {
       uiMapping: [
         [
-          "key1",
+          'key1',
           {
-            label: "Label",
-            userInputType: "TextBox",
-            parameterName: "Parameter Name",
-            inputClass: "java.lang.Integer",
+            label: 'Label',
+            userInputType: 'TextBox',
+            parameterName: 'Parameter Name',
+            inputClass: 'java.lang.Integer',
             currentValue: null
           }
         ]
       ]
-    };
+    }
 
-    service.createArrayAnalytic(analytic);
+    service.createArrayAnalytic(analytic)
 
-    expect(service.arrayAnalytic).toEqual(arrayAnalytic);
-  });
+    expect(service.arrayAnalytic).toEqual(arrayAnalytic)
+  })
 
-  it("Should be able to clear the table results after execution", () => {
-    let resultsService = TestBed.get(ResultsService);
-    let spy = spyOn(resultsService, "clear");
+  it('Should be able to clear the table results after execution', () => {
+    const resultsService = TestBed.get(ResultsService)
+    const spy = spyOn(resultsService, 'clear')
     service.arrayAnalytic = {
-      operationName: "Test name"
-    };
+      operationName: 'Test name'
+    }
 
-    service.executeAnalytic();
+    service.executeAnalytic()
 
-    expect(spy).toHaveBeenCalled();
-  });
+    expect(spy).toHaveBeenCalled()
+  })
 
-  it("Should be able to navigate to the results page after execution", () => {
-    let router = TestBed.get(Router);
-    let spy = spyOn(router, "navigate");
+  it('Should be able to navigate to the results page after execution', () => {
+    const router = TestBed.get(Router)
+    const spy = spyOn(router, 'navigate')
     service.arrayAnalytic = {
-      operationName: "Test name"
-    };
+      operationName: 'Test name'
+    }
 
-    service.executeAnalytic();
+    service.executeAnalytic()
 
-    expect(spy).toHaveBeenCalledWith(["/results"]);
-  });
+    expect(spy).toHaveBeenCalledWith(['/results'])
+  })
 
-  it("Should be able to execute the analytic", () => {
-    let operationName = "test name";
+  it('Should be able to execute the analytic', () => {
+    const operationName = 'test name'
     service.arrayAnalytic = {
       uiMapping: [
         [
-          "key1",
+          'key1',
           {
-            label: "Label",
-            userInputType: "TextBox",
-            parameterName: "param1",
-            inputClass: "java.lang.Integer",
-            currentValue: "value1"
+            label: 'Label',
+            userInputType: 'TextBox',
+            parameterName: 'param1',
+            inputClass: 'java.lang.Integer',
+            currentValue: 'value1'
           }
         ],
         [
-          "key2",
+          'key2',
           {
-            label: "Label",
-            userInputType: "TextBox",
-            parameterName: "param2",
-            inputClass: "java.lang.Integer",
-            currentValue: "value2"
+            label: 'Label',
+            userInputType: 'TextBox',
+            parameterName: 'param2',
+            inputClass: 'java.lang.Integer',
+            currentValue: 'value2'
           }
         ]
       ],
-      operationName: operationName
-    };
-    let parametersMap = {
-      param1: "value1",
-      param2: "value2"
-    };
-    let operation = {
-      class: "uk.gov.gchq.gaffer.named.operation.NamedOperation",
-      operationName: operationName,
+      operationName: '{operationName}'
+    }
+    const parametersMap = {
+      param1: 'value1',
+      param2: 'value2'
+    }
+    const operation = {
+      class: 'uk.gov.gchq.gaffer.named.operation.NamedOperation',
+      operationName: '{operationName}',
       parameters: parametersMap
-    };
-    let queryService = TestBed.get(QueryService);
-    let spy = spyOn(queryService, "executeQuery");
+    }
+    const queryService = TestBed.get(QueryService)
+    const spy = spyOn(queryService, 'executeQuery')
 
-    service.executeAnalytic();
+    service.executeAnalytic()
 
-    expect(spy).toHaveBeenCalledWith(operation, jasmine.any(Function));
-  });
+    expect(spy).toHaveBeenCalledWith(operation, jasmine.any(Function))
+  })
 
-  it("should be able to post a request to the server", fakeAsync(() => {
-    let http = TestBed.get(HttpClient);
-    let spy = spyOn(http, "post");
-    let common = TestBed.get(CommonService);
-    let endpoint = TestBed.get(EndpointService);
-    let queryUrl = common.parseUrl(
-      endpoint.getRestEndpoint() + "/graph/operations/execute"
-    );
-    let operation = {
-      class: "uk.gov.gchq.gaffer.analytic.operation.GetAllAnalytics"
-    };
-    let headers = new HttpHeaders();
-    headers = headers.set("Content-Type", "application/json; charset=utf-8");
+  it('should be able to post a request to the server', fakeAsync(() => {
+    const http = TestBed.get(HttpClient)
+    const spy = spyOn(http, 'post')
+    const common = TestBed.get(CommonService)
+    const endpoint = TestBed.get(EndpointService)
+    const queryUrl = common.parseUrl(
+      endpoint.getRestEndpoint() + '/graph/operations/execute'
+    )
+    const operation = {
+      class: 'uk.gov.gchq.gaffer.analytic.operation.GetAllAnalytics'
+    }
+    let headers = new HttpHeaders()
+    headers = headers.set('Content-Type', 'application/json; charset=utf-8')
 
-    service.reloadAnalytics(true).subscribe(() => {}, () => {});
+    service.reloadAnalytics(true).subscribe(() => {}, () => {})
 
-    tick();
-    expect(spy).toHaveBeenCalledWith(queryUrl, operation, { headers: headers });
-  }));
-});
+    tick()
+    expect(spy).toHaveBeenCalledWith(queryUrl, operation, {
+      headers: '{headers}'
+    })
+  }))
+})

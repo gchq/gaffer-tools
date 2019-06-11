@@ -14,37 +14,37 @@
  * limitations under the License.
  */
 
-import { TestBed, async } from "@angular/core/testing";
-import { empty, of } from "rxjs";
-import { HttpClient } from "@angular/common/http";
+import { TestBed, async } from '@angular/core/testing'
+import { empty, of, EMPTY } from 'rxjs'
+import { HttpClient } from '@angular/common/http'
 
-import { QueryService } from "./query.service";
-import { CommonService } from "../dynamic-input/common.service";
-import { ErrorService } from "../dynamic-input/error.service";
-import { ResultsService } from "./results.service";
-import { EndpointService } from "../config/endpoint-service";
+import { QueryService } from './query.service'
+import { CommonService } from '../dynamic-input/common.service'
+import { ErrorService } from '../dynamic-input/error.service'
+import { ResultsService } from './results.service'
+import { EndpointService } from '../config/endpoint-service'
 
 class CommonServiceStub {
-  parseUrl = () => {};
+  parseUrl = () => {}
 }
 class ErrorServiceStub {
-  handle = () => {};
+  handle = () => {}
 }
 class HttpClientStub {
   post = () => {
-    return empty();
-  };
+    return EMPTY
+  }
 }
 
 class ResultsServiceStub {
-  update = () => {};
+  update = () => {}
 }
 class EndpointServiceStub {
-  getRestEndpoint = () => {};
+  getRestEndpoint = () => {}
 }
 
-describe("QueryService", () => {
-  let service: QueryService;
+describe('QueryService', () => {
+  let service: QueryService
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -56,40 +56,40 @@ describe("QueryService", () => {
         { provide: ResultsService, useClass: ResultsServiceStub },
         { provide: EndpointService, useClass: EndpointServiceStub }
       ]
-    }).compileComponents();
+    }).compileComponents()
 
-    service = TestBed.get(QueryService);
-  }));
+    service = TestBed.get(QueryService)
+  }))
 
-  it("should show an error notification if there are too many results", () => {
-    let error = TestBed.get(ErrorService);
-    let spy = spyOn(error, "handle");
-    let resultLimit = 1000;
-    let message =
-      "Too many results to show, showing only the first " +
+  it('should show an error notification if there are too many results', () => {
+    const error = TestBed.get(ErrorService)
+    const spy = spyOn(error, 'handle')
+    const resultLimit = 1000
+    const message =
+      'Too many results to show, showing only the first ' +
       resultLimit +
-      " rows";
-    let testData = Array.apply(null, { length: resultLimit + 1 }).map(
+      ' rows'
+    const testData = Array.apply(null, { length: resultLimit + 1 }).map(
       Number.call,
       Number
-    );
-    let http = TestBed.get(HttpClient);
-    spyOn(http, "post").and.returnValue(of(testData));
+    )
+    const http = TestBed.get(HttpClient)
+    spyOn(http, 'post').and.returnValue(of(testData))
 
-    service.executeQuery(null, () => {}, () => {});
+    service.executeQuery(null, () => {}, () => {})
 
-    expect(spy).toHaveBeenCalledWith(message, null, null);
-  });
+    expect(spy).toHaveBeenCalledWith(message, null, null)
+  })
 
-  it("should store the results retrieved from the server", () => {
-    let results = TestBed.get(ResultsService);
-    let spy = spyOn(results, "update");
-    let http = TestBed.get(HttpClient);
-    let data = [0];
-    spyOn(http, "post").and.returnValue(of(data));
+  it('should store the results retrieved from the server', () => {
+    const results = TestBed.get(ResultsService)
+    const spy = spyOn(results, 'update')
+    const http = TestBed.get(HttpClient)
+    const data = [0]
+    spyOn(http, 'post').and.returnValue(of(data))
 
-    service.executeQuery(null, () => {}, () => {});
+    service.executeQuery(null, () => {}, () => {})
 
-    expect(spy).toHaveBeenCalledWith(data);
-  });
-});
+    expect(spy).toHaveBeenCalledWith(data)
+  })
+})

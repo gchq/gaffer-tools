@@ -14,16 +14,16 @@
  * limitations under the License.
  */
 
-import { of, Observable, Observer } from "rxjs";
-import { Injectable } from "@angular/core";
+import { of, Observable, Observer } from 'rxjs'
+import { Injectable } from '@angular/core'
 
-import { QueryService } from "./query.service";
+import { QueryService } from './query.service'
 
 @Injectable()
 export class SchemaService {
-  deferred;
-  schema;
-  schemaVertices = {};
+  deferred
+  schema
+  schemaVertices = {}
 
   constructor(private query: QueryService) {}
 
@@ -35,100 +35,100 @@ export class SchemaService {
    */
   get = function() {
     if (this.schema) {
-      return of(this.schema);
+      return of(this.schema)
     } else if (!this.schemaObservable) {
       this.schemaObservable = Observable.create(
-        (observer: Observer<String>) => {
-          this.getSchema(null, observer);
+        (observer: Observer<string>) => {
+          this.getSchema(null, observer)
         }
-      );
+      )
     }
-    return this.schemaObservable;
-  };
+    return this.schemaObservable
+  }
 
   /**
    * Creates the get schema operation using the default operation options.
-   * @param {Boolean} loud Flag passed down to indicate whether to broadcast errors
+   * Flag passed down to indicate whether to broadcast errors
    */
   private getSchema = function(loud, observer) {
-    var getSchemaOperation = this.createGetSchemaOperation();
-    this.getSchemaWithOperation(getSchemaOperation, loud, observer);
-  };
+    const getSchemaOperation = this.createGetSchemaOperation()
+    this.getSchemaWithOperation(getSchemaOperation, loud, observer)
+  }
 
   /**
    * Runs the GetSchema operation. Will fail if the Request sends back a non-200 response or the query.execute method
    * errors
-   * @param {Operation} operation The GetSchema operation
-   * @param {*} loud A flag indicating whether to broadcast errors
+   * The GetSchema operation
+   * A flag indicating whether to broadcast errors
    */
   private getSchemaWithOperation = function(operation, loud, observer) {
     try {
       this.query.execute(
         operation,
         response => {
-          this.schema = response;
+          this.schema = response
           if (!this.schema.entities) {
-            this.schema.entities = {};
+            this.schema.entities = {}
           }
           if (!this.schema.edges) {
-            this.schema.edges = {};
+            this.schema.edges = {}
           }
           if (!this.schema.types) {
-            this.schema.types = {};
+            this.schema.types = {}
           }
 
-          this.updateSchemaVertices();
-          observer.next(this.schema);
-          observer.complete(undefined);
+          this.updateSchemaVertices()
+          observer.next(this.schema)
+          observer.complete(undefined)
         },
         err => {
-          observer.error(err);
+          observer.error(err)
           if (loud) {
-            this.error.handle("Failed to load schema", null, err);
-            console.error(err);
+            this.error.handle('Failed to load schema', null, err)
+            console.error(err)
           }
-          observer.complete(undefined);
+          observer.complete(undefined)
         }
-      );
+      )
     } catch (e) {
-      observer.error(e);
+      observer.error(e)
       if (loud) {
-        this.error.handle("Failed to load schema", null, e);
-        console.error(e);
+        this.error.handle('Failed to load schema', null, e)
+        console.error(e)
       }
-      observer.complete(undefined);
+      observer.complete(undefined)
     }
-  };
+  }
 
-  createGetSchemaOperation = function() {
+  createGetSchemaOperation = () => {
     return {
-      class: "uk.gov.gchq.gaffer.store.operation.GetSchema",
+      class: 'uk.gov.gchq.gaffer.store.operation.GetSchema',
       compact: false,
       options: {}
-    };
-  };
+    }
+  }
 
   /**
    * Function which updates the schema vertices.
    */
   private updateSchemaVertices = function() {
-    var vertices = [];
+    const vertices = []
     if (this.schema) {
-      for (var i in this.schema.entities) {
-        if (vertices.indexOf(this.schema.entities[i].vertex) == -1) {
-          vertices.push(this.schema.entities[i].vertex);
+      for (let i in this.schema.entities) {
+        if (vertices.indexOf(this.schema.entities[i].vertex) === -1) {
+          vertices.push(this.schema.entities[i].vertex)
         }
       }
-      for (var i in this.schema.edges) {
-        if (vertices.indexOf(this.schema.edges[i].source) == -1) {
-          vertices.push(this.schema.edges[i].source);
+      for (const i in this.schema.edges) {
+        if (vertices.indexOf(this.schema.edges[i].source) === -1) {
+          vertices.push(this.schema.edges[i].source)
         }
-        if (vertices.indexOf(this.schema.edges[i].destination) == -1) {
-          vertices.push(this.schema.edges[i].destination);
+        if (vertices.indexOf(this.schema.edges[i].destination) === -1) {
+          vertices.push(this.schema.edges[i].destination)
         }
       }
     }
 
-    this.schemaVertices = vertices;
-  };
+    this.schemaVertices = vertices
+  }
 }

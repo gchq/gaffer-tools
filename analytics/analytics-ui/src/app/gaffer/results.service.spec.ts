@@ -14,42 +14,42 @@
  * limitations under the License.
  */
 
-import { TestBed, async } from "@angular/core/testing";
+import { TestBed, async } from '@angular/core/testing'
 
-import { ResultsService } from "./results.service";
+import { ResultsService } from './results.service'
 
-describe("ResultsService", () => {
-  let service: ResultsService;
+describe('ResultsService', () => {
+  let service: ResultsService
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       providers: [ResultsService]
-    }).compileComponents();
+    }).compileComponents()
 
-    service = TestBed.get(ResultsService);
-  }));
+    service = TestBed.get(ResultsService)
+  }))
 
-  it("should be able to get the results", () => {
-    let results = service.results;
+  it('should be able to get the results', () => {
+    const results = service.results
 
-    let testResults = service.get();
+    const testResults = service.get()
 
-    expect(testResults).toEqual(results);
-  });
+    expect(testResults).toEqual(results)
+  })
 
-  it("should be able to clear the results", () => {
-    service.results = [0, 1, 2];
+  it('should be able to clear the results', () => {
+    service.results = [0, 1, 2]
 
-    service.clear();
+    service.clear()
 
-    expect(service.results).toEqual([]);
-  });
+    expect(service.results).toEqual([])
+  })
 
-  it("should be able to convert results to an array if there is only one result", () => {
-    let results = 0;
+  it('should be able to convert results to an array if there is only one result', () => {
+    const results = 0
 
-    service.update(results);
+    service.update(results)
 
-    expect(service.results).toEqual([0]);
-  });
-});
+    expect(service.results).toEqual([0])
+  })
+})

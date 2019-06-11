@@ -14,17 +14,17 @@
  * limitations under the License.
  */
 
-import { TestBed, async, fakeAsync, tick } from "@angular/core/testing";
-import { ToastrService } from "ngx-toastr";
+import { TestBed, async, fakeAsync, tick } from '@angular/core/testing'
+import { ToastrService } from 'ngx-toastr'
 
-import { ErrorService } from "./error.service";
+import { ErrorService } from './error.service'
 
 class ToastrServiceStub {
-  error = params => {};
+  error = params => {}
 }
 
-describe("ErrorService", () => {
-  let service: ErrorService;
+describe('ErrorService', () => {
+  let service: ErrorService
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -32,47 +32,47 @@ describe("ErrorService", () => {
         ErrorService,
         { provide: ToastrService, useClass: ToastrServiceStub }
       ]
-    }).compileComponents();
+    }).compileComponents()
 
-    service = TestBed.get(ErrorService);
-  }));
+    service = TestBed.get(ErrorService)
+  }))
 
-  it("should be able to show an error notification with a particular message", fakeAsync(() => {
-    let toastr = TestBed.get(ToastrService);
-    let spy = spyOn(toastr, "error").and.callFake(() => {});
-    let msg = "message";
-    let title = "title";
-    let err = new Error();
-    let toastSettings = {
+  it('should be able to show an error notification with a particular message', fakeAsync(() => {
+    const toastr = TestBed.get(ToastrService)
+    const spy = spyOn(toastr, 'error').and.callFake(() => {})
+    const msg = 'message'
+    const title = 'title'
+    const err = new Error()
+    const toastSettings = {
       timeOut: 7000,
       progressBar: true,
-      positionClass: "toast-top-right",
+      positionClass: 'toast-top-right',
       extendedTimeOut: 2000
-    };
+    }
 
-    service.handle(msg, title, err);
+    service.handle(msg, title, err)
 
-    tick();
-    expect(spy).toHaveBeenCalledWith(msg, title, toastSettings);
-  }));
+    tick()
+    expect(spy).toHaveBeenCalledWith(msg, title, toastSettings)
+  }))
 
-  it("should show the default error message if not specified", fakeAsync(() => {
-    let toastr = TestBed.get(ToastrService);
-    let spy = spyOn(toastr, "error").and.callFake(() => {});
-    let msg = null;
-    let title = "title";
-    let err = new Error();
-    let toastSettings = {
+  it('should show the default error message if not specified', fakeAsync(() => {
+    const toastr = TestBed.get(ToastrService)
+    const spy = spyOn(toastr, 'error').and.callFake(() => {})
+    const msg = null
+    const title = 'title'
+    const err = new Error()
+    const toastSettings = {
       timeOut: 7000,
       progressBar: true,
-      positionClass: "toast-top-right",
+      positionClass: 'toast-top-right',
       extendedTimeOut: 2000
-    };
-    let defaultMessage = "Something went wrong. Check the log for details";
+    }
+    const defaultMessage = 'Something went wrong. Check the log for details'
 
-    service.handle(msg, title, err);
+    service.handle(msg, title, err)
 
-    tick();
-    expect(spy).toHaveBeenCalledWith(defaultMessage, title, toastSettings);
-  }));
-});
+    tick()
+    expect(spy).toHaveBeenCalledWith(defaultMessage, title, toastSettings)
+  }))
+})
