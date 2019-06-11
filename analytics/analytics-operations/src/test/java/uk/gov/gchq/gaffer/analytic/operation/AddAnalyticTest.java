@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2019 Crown Copyright
+ * Copyright 2019 Crown Copyright
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -60,12 +60,10 @@ public class AddAnalyticTest extends OperationTest<AddAnalytic> {
                                 + "  \"class\": \"uk.gov.gchq.gaffer.analytic.operation.AddAnalytic\",\n"
                                 + "  \"analyticName\": \"Test Analytic name\",\n"
                                 + "  \"operationName\": \"Test Operation name\",\n"
-                                + "  \"description\": \"Test description\",\n"
-                                + "  \"score\": 4,\n"
+                                + "  \"description\": \"Test description\",\n" + "  \"score\": 4,\n"
                                 + "  \"metaData\": {\n" + "    \"iconURL\": \"icon\"\n" + "   },\n"
                                 + "  \"outputType\": {\n" + "    \"output\": \"table\"\n" + "   },\n"
-                                 + "  \"overwriteFlag\": false,\n"
-                                + "   \"readAccessRoles\": [" + " \"User\"" + " ],\n"
+                                + "  \"overwriteFlag\": false,\n" + "   \"readAccessRoles\": [" + " \"User\"" + " ],\n"
                                 + "  \"uiMapping\": {\n" + "    \"result-limit\": {\n"
                                 + "      \"label\": \"param1\",\n" + "      \"userInputType\" : \"textbox\",\n"
                                 + "      \"parameterName\" : \"result-limit1\"\n" + "      }\n" + "  },\n"

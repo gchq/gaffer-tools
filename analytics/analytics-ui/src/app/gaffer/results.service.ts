@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2019 Crown Copyright
+ * Copyright 2019 Crown Copyright
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,30 +13,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 export class ResultsService {
+  results = [];
 
-    results = [];
+  constructor() {}
 
-    constructor() {}
+  /** Get the results */
+  get = function() {
+    return this.results;
+  };
 
-    /** Get the results */
-    get = function() {
-        return this.results;
+  /** Clear the results */
+  clear = function() {
+    this.results = [];
+  };
+
+  /** Update the results */
+  update = function(newResults) {
+    if (newResults !== undefined && newResults !== null && newResults !== "") {
+      //Convert it to an array if theres only one result
+      if (!Array.isArray(newResults)) {
+        newResults = [newResults];
+      }
+      this.results = newResults;
     }
-
-    /** Clear the results */
-    clear = function() {
-        this.results = [];
-    }
-
-    /** Update the results */
-    update = function(newResults) {
-        if(newResults !== undefined && newResults !== null && newResults !== "") {
-            //Convert it to an array if theres only one result
-            if(!Array.isArray(newResults)) {
-                newResults = [newResults];
-            }
-            this.results = newResults;
-        }
-    }
-};
+  };
+}

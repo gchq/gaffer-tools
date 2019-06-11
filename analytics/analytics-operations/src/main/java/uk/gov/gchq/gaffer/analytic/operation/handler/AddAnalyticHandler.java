@@ -42,12 +42,12 @@ public class AddAnalyticHandler implements OperationHandler<AddAnalytic> {
     }
 
     /**
-     * Adds a AnalyticOperation to a cache which must be specified in the operation
-     * declarations file. An AnalyticOperationDetail is built using the fields on
-     * the AddAnalyticOperation. The operation name and operation chain fields must
-     * be set and cannot be left empty, or the build() method will fail and a
-     * runtime exception will be thrown. The handler then adds/overwrites the
-     * AnalyticOperation according toa an overwrite flag.
+     * Adds an Analytic to a cache which must be specified in the operation
+     * declarations file. An AnalyticDetail is built using the fields on the
+     * AddAnalytic. The operation name and operation chain fields must be set and
+     * cannot be left empty, or the build() method will fail and a runtime exception
+     * will be thrown. The handler then adds/overwrites the Analytic according toa
+     * an overwrite flag.
      *
      * @param operation the {@link uk.gov.gchq.gaffer.operation.Operation} to be
      *                  executed

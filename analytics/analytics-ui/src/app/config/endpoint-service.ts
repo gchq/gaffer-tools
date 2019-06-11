@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2019 Crown Copyright
+ * Copyright 2019 Crown Copyright
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,11 +14,9 @@
  * limitations under the License.
  */
 export class EndpointService {
+  defaultRestEndpoint = "http://localhost:8080" + "/rest/latest";
 
-    defaultRestEndpoint = "http://localhost:8080" + "/rest/latest";
-
-    getRestEndpoint = function() {
-        return this.defaultRestEndpoint;
-    }
-
+  getRestEndpoint = function() {
+    return this.defaultRestEndpoint;
+  };
 }
