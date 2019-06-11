@@ -47,7 +47,7 @@ export class AnalyticsService {
   }
 
   /** Update the analytic operation on change of parameters */
-  updateAnalytic = function (newValue, parameterName) {
+  updateAnalytic = function(newValue, parameterName) {
     // Convert to an integer
     newValue = parseInt(newValue);
     // Look for the parameter in the list of parameters and set the new current value
@@ -62,11 +62,11 @@ export class AnalyticsService {
   };
 
   /** Create an analytic with array parameters that can be iterated over */
-  createArrayAnalytic = function (analytic) {
+  createArrayAnalytic = function(analytic) {
     // Convert the key value map of parameters into an iterable array
     let arrayParams = analytic.uiMapping;
     if (arrayParams !== null && arrayParams !== undefined) {
-      arrayParams = Object.keys(analytic.uiMapping).map(function (key) {
+      arrayParams = Object.keys(analytic.uiMapping).map((key) => {
         return [key, analytic.uiMapping[key]];
       });
 
@@ -84,7 +84,7 @@ export class AnalyticsService {
   };
 
   /** Execute the analytic operation */
-  executeAnalytic = function () {
+  executeAnalytic = function() {
     const operation = {
       class: this.NAMED_OPERATION_CLASS,
       operationName: this.arrayAnalytic.operationName,
@@ -111,8 +111,8 @@ export class AnalyticsService {
   };
 
   /** Get the analytics from the server */
-  reloadAnalytics = function (loud) {
-    const observable = Observable.create((observer: Observer<string>) => {
+  reloadAnalytics = function(loud) {
+    const observable = new Observable((observer: Observer<string>) => {
       const operation = {
         class: 'uk.gov.gchq.gaffer.analytic.operation.GetAllAnalytics'
       };

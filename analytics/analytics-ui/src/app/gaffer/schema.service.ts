@@ -33,15 +33,15 @@ export class SchemaService {
    * If called while an existing request is in progress, it will be resolved by the existing request,
    * rather than sending another one.
    */
-  get = function () {
+  get = function() {
     if (this.schema) {
       return of(this.schema);
     } else if (!this.schemaObservable) {
-      this.schemaObservable = Observable.create(
+      this.schemaObservable = new Observable((
         (observer: Observer<string>) => {
           this.getSchema(null, observer);
         }
-      );
+      ));
     }
     return this.schemaObservable;
   };
@@ -50,7 +50,7 @@ export class SchemaService {
    * Creates the get schema operation using the default operation options.
    * Flag passed down to indicate whether to broadcast errors
    */
-  private getSchema = function (loud, observer) {
+  private getSchema = function(loud, observer) {
     const getSchemaOperation = this.createGetSchemaOperation();
     this.getSchemaWithOperation(getSchemaOperation, loud, observer);
   };
@@ -61,7 +61,7 @@ export class SchemaService {
    * The GetSchema operation
    * A flag indicating whether to broadcast errors
    */
-  private getSchemaWithOperation = function (operation, loud, observer) {
+  private getSchemaWithOperation = function(operation, loud, observer) {
     try {
       this.query.execute(
         operation,
@@ -111,7 +111,7 @@ export class SchemaService {
   /**
    * Function which updates the schema vertices.
    */
-  private updateSchemaVertices = function () {
+  private updateSchemaVertices = function() {
     const vertices = [];
     if (this.schema) {
       for (const i in this.schema.entities) {

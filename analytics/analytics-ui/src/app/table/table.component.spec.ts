@@ -126,6 +126,7 @@ describe('TableComponent', () => {
 
     component.onResultsUpdated(results);
 
-    expect(component.data.results.data[0]['class']).toEqual('Entity');
+    const a = 'class';
+    expect(component.data.results.data[0][a]).toEqual('Entity');
   });
 });

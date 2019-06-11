@@ -40,11 +40,11 @@ export class TypeService {
   /**
    * Asynchronously gets the types from the config. The types will be saved until update is called to reduce number of http requests.
    */
-  get = function () {
+  get = function() {
     if (this.types) {
       return of(this.types);
     } else if (!this.typesObservable) {
-      this.typesObservable = Observable.create((observer: Observer<string>) => {
+      this.typesObservable = new Observable((observer: Observer<string>) => {
         this.getTypes(true, observer);
       });
     }
@@ -52,7 +52,7 @@ export class TypeService {
   };
 
   /** Get the types from the config */
-  getTypes = function (loud, observer) {
+  getTypes = function(loud, observer) {
     // Configure the http headers
     let headers = new HttpHeaders();
     headers = headers.set('Content-Type', 'application/json; charset=utf-8');
@@ -83,7 +83,7 @@ export class TypeService {
     );
   };
 
-  getShortValue = function (value) {
+  getShortValue = function(value) {
     if (
       typeof value === 'string' ||
       value instanceof String ||
@@ -133,14 +133,14 @@ export class TypeService {
     return parts;
   };
 
-  private getType = function (typeClass) {
+  private getType = function(typeClass) {
     if (typeClass !== undefined && this.types[typeClass]) {
       return this.types[typeClass];
     }
     return this.unknownType;
   };
 
-  isKnown = function (className) {
+  isKnown = function(className) {
     const knownType = this.types[className];
 
     if (knownType) {
@@ -154,7 +154,7 @@ export class TypeService {
     return JSON.stringify(value);
   }
 
-  listShortValue = function (values) {
+  listShortValue = function(values) {
     return values
       .map(value => {
         return this.getShortValue(value);
@@ -162,7 +162,7 @@ export class TypeService {
       .join(', ');
   };
 
-  private mapShortValue = function (value) {
+  private mapShortValue = function(value) {
     return Object.keys(value)
       .map(key => {
         return key + ': ' + this.getShortValue(value[key]);
@@ -170,7 +170,7 @@ export class TypeService {
       .join(', ');
   };
 
-  private customShortValue = function (fields, parts) {
+  private customShortValue = function(fields, parts) {
     const showWithLabel = fields.length !== 1;
 
     return fields

@@ -41,7 +41,7 @@ export class TableComponent implements OnInit {
     private types: TypeService,
     private time: TimeService,
     private schemaService: SchemaService
-  ) {}
+  ) { }
 
   /**
    * Fetches the results. It first loads the latest types from the config and the latest schema.
@@ -57,10 +57,13 @@ export class TableComponent implements OnInit {
         other: []
       };
       const results = this.results.get();
+      const a = 'class';
+      const b = 'Entity';
+      const c = 'Edge';
       for (const i in results) {
-        if (results[i]['class'].split('.').pop() === 'Entity') {
+        if (results[i][a].split('.').pop() === b) {
           sortedResults.entities.push(results[i]);
-        } else if (results[i]['class'].split('.').pop() === 'Edge') {
+        } else if (results[i][a].split('.').pop() === c) {
           sortedResults.edges.push(results[i]);
         } else {
           sortedResults.other.push(results[i]);
@@ -165,6 +168,7 @@ export class TableComponent implements OnInit {
         if (element) {
           // Convert the ids (i.e. result type, GROUP and SOURCE) into a displayable form for the table
           const result = {};
+          const a = 'resultType';
           for (const idIndex in idKeys) {
             const id = idKeys[idIndex];
             if ('SOURCE' === id && element.source === undefined) {
@@ -173,7 +177,7 @@ export class TableComponent implements OnInit {
               result[id] = this.convertValue(id, element[id.toLowerCase()]);
             }
           }
-          result['resultType'] = type;
+          result[a] = type;
 
           // Get all of the properties to show in the table
           if (element.properties) {
@@ -232,14 +236,18 @@ export class TableComponent implements OnInit {
       const item = resultsData.other[i];
       if (item) {
         const result = { GROUP: '' };
+        const a = 'class';
+        const b = 'resultType';
+        const c = 'vertex';
+        const d = 'SOURCE';
         for (const key in item) {
           const value = this.convertValue(key, item[key]);
-          if ('class' === key) {
-            result['resultType'] = item[key].split('.').pop();
-            ids = union('resultType', ids);
-          } else if ('vertex' === key) {
-            result['SOURCE'] = value;
-            ids = union('SOURCE', ids);
+          if (a === key) {
+            result[b] = item[key].split('.').pop();
+            ids = union(b, ids);
+          } else if (c === key) {
+            result[d] = value;
+            ids = union(d, ids);
           } else if (
             'source' === key ||
             'destination' === key ||
@@ -257,13 +265,13 @@ export class TableComponent implements OnInit {
             properties = union(key, properties);
           }
         }
-        if (!(result['resultType'] in this.resultsByType)) {
-          this.resultsByType[result['resultType']] = {};
+        if (!(result[b] in this.resultsByType)) {
+          this.resultsByType[result[b]] = {};
         }
-        if (!(result.GROUP in this.resultsByType[result['resultType']])) {
-          this.resultsByType[result['resultType']][result.GROUP] = [];
+        if (!(result.GROUP in this.resultsByType[result[b]])) {
+          this.resultsByType[result[b]][result.GROUP] = [];
         }
-        this.resultsByType[result['resultType']][result.GROUP].push(result);
+        this.resultsByType[result[b]][result.GROUP].push(result);
       }
     }
   };

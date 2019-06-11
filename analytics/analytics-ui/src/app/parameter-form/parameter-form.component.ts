@@ -30,7 +30,7 @@ export class ParameterFormComponent implements OnInit {
   ngOnInit() { }
 
   /** Update the analytic operation whenever a parameter changes */
-  onChange = function (parameter, parameterName) {
+  onChange = function(parameter, parameterName) {
     this.analyticsService.updateAnalytic(parameter, parameterName);
     const analytic = this.analyticsService.getAnalytic();
     this.parameters = analytic.uiMapping;
