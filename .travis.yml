@@ -54,11 +54,99 @@ matrix:
     matrix:
       fast_finish: true
     env:
-       matrix:
         - RELEASE=true 
-        - MODULES=:gaffer-tools,:mini-accumulo-cluster,:schema-builder,:schema-builder-rest
-        - MODULES=:ui
-        - MODULES=:random-element-generation,:performance-testing,:performance-testing-core,:performance-testing-accumulo-store,:performance-testing-aws
-        - MODULES=:slider
-        - MODULES=:analytics,:analytics-rest,:analytics-operations
 
+  - language: java
+    jdk:
+      - oraclejdk8
+    dist: trusty
+    cache:
+      timeout: 1000
+      directories:
+      - $HOME/.m2
+    sudo: required
+    addons:
+      firefox: latest
+      apt:
+        packages:
+          - python3
+    matrix:
+      fast_finish: true
+    env:
+        - MODULES=:gaffer-tools,:mini-accumulo-cluster,:schema-builder,:schema-builder-rest
+
+  - language: java
+    jdk:
+      - oraclejdk8
+    dist: trusty
+    cache:
+      timeout: 1000
+      directories:
+      - $HOME/.m2
+    sudo: required
+    addons:
+      firefox: latest
+      apt:
+        packages:
+          - python3
+    matrix:
+      fast_finish: true
+    env:
+        - MODULES=:ui
+
+  - language: java
+    jdk:
+      - oraclejdk8
+    dist: trusty
+    cache:
+      timeout: 1000
+      directories:
+      - $HOME/.m2
+    sudo: required
+    addons:
+      firefox: latest
+      apt:
+        packages:
+          - python3
+    matrix:
+      fast_finish: true
+    env:
+        - MODULES=:random-element-generation,:performance-testing,:performance-testing-core,:performance-testing-accumulo-store,:performance-testing-aws
+
+  - language: java
+    jdk:
+      - oraclejdk8
+    dist: trusty
+    cache:
+      timeout: 1000
+      directories:
+      - $HOME/.m2
+    sudo: required
+    addons:
+      firefox: latest
+      apt:
+        packages:
+          - python3
+    matrix:
+      fast_finish: true
+    env:
+        - MODULES=:slider
+
+  - language: java
+    jdk:
+      - oraclejdk8
+    dist: trusty
+    cache:
+      timeout: 1000
+      directories:
+      - $HOME/.m2
+    sudo: required
+    addons:
+      firefox: latest
+      apt:
+        packages:
+          - python3
+    matrix:
+      fast_finish: true
+    env:
+        - MODULES=:analytics,:analytics-rest,:analytics-operations
