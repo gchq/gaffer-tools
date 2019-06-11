@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2019 Crown Copyright
+ * Copyright 2019 Crown Copyright
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,13 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 import { Injectable } from "@angular/core";
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 
 import { ErrorService } from "../dynamic-input/error.service";
 import { ResultsService } from "./results.service";
 import { EndpointService } from "../config/endpoint-service";
-import { startsWith } from 'lodash';
+import { startsWith } from "lodash";
 
 @Injectable()
 export class QueryService {
@@ -81,9 +82,10 @@ export class QueryService {
     let headers = new HttpHeaders();
     headers = headers.set("Content-Type", "application/json; charset=utf-8");
     //Post the request to the server
-    let queryUrl = this.endpoint.getRestEndpoint() + "/graph/operations/execute";
+    let queryUrl =
+      this.endpoint.getRestEndpoint() + "/graph/operations/execute";
     if (!startsWith(queryUrl, "http")) {
-        queryUrl = "http://" + queryUrl;
+      queryUrl = "http://" + queryUrl;
     }
     this.http.post(queryUrl, operation, { headers: headers }).subscribe(
       //On success

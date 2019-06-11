@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2019 Crown Copyright
+ * Copyright 2019 Crown Copyright
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,12 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Injectable } from '@angular/core';
-import { ToastrService } from 'ngx-toastr';
+
+import { Injectable } from "@angular/core";
+import { ToastrService } from "ngx-toastr";
 
 @Injectable()
 export class ErrorService {
-
   constructor(private toastr: ToastrService) {}
 
   /** Create a notification from an error */
@@ -35,9 +35,9 @@ export class ErrorService {
 
     setTimeout(() => {
       this.toastr.error(msg, title, {
-        timeOut : 7000,
+        timeOut: 7000,
         progressBar: true,
-        positionClass: 'toast-top-right',
+        positionClass: "toast-top-right",
         extendedTimeOut: 2000
       });
     });

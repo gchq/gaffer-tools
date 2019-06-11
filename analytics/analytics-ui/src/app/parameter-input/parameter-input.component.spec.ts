@@ -1,14 +1,30 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { Component, Input } from '@angular/core';
-import { MatCardModule, MatProgressSpinnerModule } from '@angular/material';
-import { FormsModule } from '@angular/forms';
+/*
+ * Copyright 2019 Crown Copyright
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
-import { AnalyticsService } from '../gaffer/analytics.service';
-import { ParameterInputComponent } from './parameter-input.component';
+import { async, ComponentFixture, TestBed } from "@angular/core/testing";
+import { Component, Input } from "@angular/core";
+import { MatCardModule, MatProgressSpinnerModule } from "@angular/material";
+import { FormsModule } from "@angular/forms";
+
+import { AnalyticsService } from "../gaffer/analytics.service";
+import { ParameterInputComponent } from "./parameter-input.component";
 
 @Component({
-  selector: 'app-query',
-  template: ''
+  selector: "app-query",
+  template: ""
 })
 class MockOperationComponent {
   @Input() model;
@@ -17,32 +33,22 @@ class MockOperationComponent {
 class AnalyticsServiceStub {
   getAnalytic = () => {
     return {
-      operationName: 'Test operation name'
-    }
-  }
-  executeAnalytic = () => {}
+      operationName: "Test operation name"
+    };
+  };
+  executeAnalytic = () => {};
 }
 
-describe('ParameterInputComponent', () => {
+describe("ParameterInputComponent", () => {
   let component: ParameterInputComponent;
   let fixture: ComponentFixture<ParameterInputComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ 
-        ParameterInputComponent,
-        MockOperationComponent
-       ],
-      imports: [
-        MatCardModule,
-        MatProgressSpinnerModule,
-        FormsModule
-      ],
-      providers: [
-        { provide: AnalyticsService, useClass: AnalyticsServiceStub}
-      ],
-    })
-    .compileComponents();
+      declarations: [ParameterInputComponent, MockOperationComponent],
+      imports: [MatCardModule, MatProgressSpinnerModule, FormsModule],
+      providers: [{ provide: AnalyticsService, useClass: AnalyticsServiceStub }]
+    }).compileComponents();
   }));
 
   beforeEach(() => {
@@ -50,26 +56,26 @@ describe('ParameterInputComponent', () => {
     component = fixture.componentInstance;
   });
 
-  it('should be created', () => {
+  it("should be created", () => {
     fixture.detectChanges();
     expect(component).toBeTruthy();
   });
 
-  it('should execute the named operation on execution', () => {
+  it("should execute the named operation on execution", () => {
     fixture.detectChanges();
     let analyticsService = TestBed.get(AnalyticsService);
-    let spy = spyOn(analyticsService, 'executeAnalytic');
+    let spy = spyOn(analyticsService, "executeAnalytic");
 
     component.executeAnalytic();
 
     expect(spy).toHaveBeenCalledWith();
-  })
+  });
 
-  it('should set loading to true on execute', () => {
+  it("should set loading to true on execute", () => {
     fixture.detectChanges();
 
     component.loading = true;
 
     expect(component.loading).toBeTruthy();
-  })
+  });
 });
