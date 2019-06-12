@@ -16,7 +16,6 @@
 
 import { Component, OnInit, Input } from '@angular/core';
 import { AnalyticsService } from '../gaffer/analytics.service';
-import { constants } from 'os';
 
 @Component({
   selector: 'app-parameter-form',
