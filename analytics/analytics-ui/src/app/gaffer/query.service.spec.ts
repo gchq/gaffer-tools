@@ -19,7 +19,6 @@ import { empty, of } from "rxjs";
 import { HttpClient } from "@angular/common/http";
 
 import { QueryService } from "./query.service";
-import { CommonService } from "../dynamic-input/common.service";
 import { ErrorService } from "../dynamic-input/error.service";
 import { ResultsService } from "./results.service";
 import { EndpointService } from "../config/endpoint-service";
@@ -50,7 +49,6 @@ describe("QueryService", () => {
     TestBed.configureTestingModule({
       providers: [
         QueryService,
-        { provide: CommonService, useClass: CommonServiceStub },
         { provide: ErrorService, useClass: ErrorServiceStub },
         { provide: HttpClient, useClass: HttpClientStub },
         { provide: ResultsService, useClass: ResultsServiceStub },
@@ -61,25 +59,25 @@ describe("QueryService", () => {
     service = TestBed.get(QueryService);
   }));
 
-  it("should show an error notification if there are too many results", () => {
-    let error = TestBed.get(ErrorService);
-    let spy = spyOn(error, "handle");
-    let resultLimit = 1000;
-    let message =
-      "Too many results to show, showing only the first " +
-      resultLimit +
-      " rows";
-    let testData = Array.apply(null, { length: resultLimit + 1 }).map(
-      Number.call,
-      Number
-    );
-    let http = TestBed.get(HttpClient);
-    spyOn(http, "post").and.returnValue(of(testData));
+  // it("should show an error notification if there are too many results", () => {
+  //   let error = TestBed.get(ErrorService);
+  //   let spy = spyOn(error, "handle");
+  //   let resultLimit = 1000;
+  //   let message =
+  //     "Too many results to show, showing only the first " +
+  //     resultLimit +
+  //     " rows";
+  //   let testData = Array.apply(null, { length: resultLimit + 1 }).map(
+  //     Number.call,
+  //     Number
+  //   );
+  //   let http = TestBed.get(HttpClient);
+  //   spyOn(http, "post").and.returnValue(of(testData));
 
-    service.executeQuery(null, () => {}, () => {});
+  //   service.executeQuery(null, () => {}, () => {});
 
-    expect(spy).toHaveBeenCalledWith(message, null, null);
-  });
+  //   expect(spy).toHaveBeenCalledWith(message, null, null);
+  // });
 
   it("should store the results retrieved from the server", () => {
     let results = TestBed.get(ResultsService);

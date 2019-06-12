@@ -20,16 +20,445 @@ import {
   MatCardModule,
   MatTableDataSource
 } from "@angular/material";
-import { empty } from "rxjs";
+import { empty, of } from "rxjs";
+import { HttpClientTestingModule, HttpTestingController } from "@angular/common/http/testing";
 
 import { TableComponent } from "./table.component";
 import { ResultsService } from "../gaffer/results.service";
+import { TypeService } from '../gaffer/type.service';
+import { TimeService } from '../gaffer/time.service';
+import { SchemaService } from '../gaffer/schema.service';
+import { ErrorService } from '../dynamic-input/error.service';
+
+
+var fullResultsData = [
+      {
+          class: 'Entity',
+          group: 'BasicEntity1',
+          vertex: 'vertex1',
+          properties: {
+              count: 1,
+              prop1: 'value1'
+          }
+      },
+      {
+          class: 'Entity',
+          group: 'BasicEntity1',
+          vertex: 'vertex2',
+          properties: {
+              count: 2,
+              prop1: 'value2'
+          }
+      },
+      {
+          class: 'Entity',
+          group: 'BasicEntity2',
+          vertex: 'vertex1',
+          properties: {
+              count: 1,
+              prop2: 'value1'
+          }
+      },
+      {
+          class: 'Edge',
+          group: 'BasicEdge1',
+          source: 'source1',
+          destination: 'destination1',
+          directed: true,
+          properties: {
+              count: 1,
+              prop1: 'value1'
+          }
+      },
+      {
+          class: 'Edge',
+          group: 'BasicEdge1',
+          source: 'source2',
+          destination: 'destination2',
+          directed: true,
+          properties: {
+              count: 2,
+              prop1: 'value2'
+          }
+      },
+      {
+          class: 'Edge',
+          group: 'BasicEdge2',
+          source: 'source1',
+          destination: 'destination1',
+          directed: true,
+          properties: {
+              count: 1,
+              prop2: 'value1'
+          }
+      },
+      {
+          class: "String",
+          value: "value1"
+      },
+      {
+          class: "Integer",
+          value: 4
+      },
+      {
+          class: "EntitySeed",
+          vertex: "vertex1"
+      }
+];
+
+var fullData = {
+  results: [
+      {
+          'result type': 'Edge',
+          GROUP: 'BasicEdge1',
+          SOURCE: "source1",
+          DESTINATION: 'destination1',
+          DIRECTED: true,
+          count: 1,
+          prop1: 'value1'
+      },
+      {
+          'result type': 'Edge',
+          GROUP: 'BasicEdge1',
+          SOURCE: "source2",
+          DESTINATION: 'destination2',
+          DIRECTED: true,
+          count: 2,
+          prop1: 'value2'
+      },
+      {
+          'result type': 'Edge',
+          GROUP: 'BasicEdge2',
+          SOURCE: "source1",
+          DESTINATION: 'destination1',
+          DIRECTED: true,
+          count: 1,
+          prop2: 'value1'
+      },
+      {
+          'result type': 'Entity',
+          GROUP: 'BasicEntity1',
+          SOURCE: 'vertex1',
+          count: 1,
+          prop1: 'value1'
+      },
+      {
+          'result type': 'Entity',
+          GROUP: 'BasicEntity1',
+          SOURCE: 'vertex2',
+          count: 2,
+          prop1: 'value2'
+      },
+      {
+          'result type': 'Entity',
+          GROUP: 'BasicEntity2',
+          SOURCE: 'vertex1',
+          count: 1,
+          prop2: 'value1'
+      },
+      {
+          GROUP: '',
+          'result type': 'String',
+          value: 'value1'
+      },
+      {
+          GROUP: '',
+          'result type': 'Integer',
+          value: 4
+      },
+      {
+          GROUP: '',
+          'result type': 'EntitySeed',
+          SOURCE: 'vertex1'
+      }
+  ],
+  columns: [ 'result type', 'GROUP', 'SOURCE', 'DESTINATION', 'DIRECTED', 'value', 'count', 'prop1', 'prop2'],
+  allColumns: [ 'result type', 'GROUP', 'SOURCE', 'DESTINATION', 'DIRECTED', 'value', 'count', 'prop1', 'prop2' ],
+  groups: [ 'BasicEdge1', 'BasicEdge2', 'BasicEntity1', 'BasicEntity2', '' ],
+  allGroups: [ 'BasicEdge1', 'BasicEdge2', 'BasicEntity1', 'BasicEntity2', '' ],
+  types: [ 'Edge', 'Entity', 'String', 'Integer', 'EntitySeed' ],
+  allTypes: [ 'Edge', 'Entity', 'String', 'Integer', 'EntitySeed' ],
+  tooltips: {}
+}
+
+var types = {
+    "java.util.Date": {
+      "fields": [
+        {
+          "type": "number",
+          "step": "1",
+          "class": "java.util.Date"
+        }
+      ],
+      "wrapInJson": true
+    },
+    "java.lang.Boolean": {
+      "fields": [
+        {
+          "type": "checkbox",
+          "class": "java.lang.Boolean",
+          "required": true
+        }
+      ]
+    },
+    "boolean": {
+      "fields": [
+        {
+          "type": "checkbox",
+          "class": "java.lang.Boolean",
+          "required": true
+        }
+      ]
+    },
+    "java.lang.Long": {
+      "fields": [
+        {
+          "type": "number",
+          "step": "1",
+          "class": "java.lang.Long",
+          "required": true
+        }
+      ],
+      "wrapInJson": true
+    },
+    "long": {
+      "fields": [
+        {
+          "type": "number",
+          "step": "1",
+          "class": "java.lang.Long",
+          "required": true
+        }
+      ],
+      "wrapInJson": true
+    },
+    "java.lang.Integer": {
+      "fields": [
+        {
+          "type": "number",
+          "step": "1",
+          "class": "java.lang.Integer",
+          "required": true
+        }
+      ]
+    },
+    "integer": {
+      "fields": [
+        {
+          "type": "number",
+          "step": "1",
+          "class": "java.lang.Integer",
+          "required": true
+        }
+      ]
+    },
+    "int": {
+      "fields": [
+        {
+          "type": "number",
+          "step": "1",
+          "class": "java.lang.Integer",
+          "required": true
+        }
+      ]
+    },
+    "java.lang.Short": {
+      "fields": [
+        {
+          "type": "number",
+          "step": "1",
+          "class": "java.lang.Short",
+          "required": true
+        }
+      ],
+      "wrapInJson": true
+    },
+    "short": {
+      "fields": [
+        {
+          "type": "number",
+          "step": "1",
+          "class": "java.lang.Short",
+          "required": true
+        }
+      ],
+      "wrapInJson": true
+    },
+    "java.lang.Double": {
+      "fields": [
+        {
+          "type": "number",
+          "step": "0.1",
+          "class": "java.lang.Double",
+          "required": true
+        }
+      ],
+      "wrapInJson": true
+    },
+    "double": {
+      "fields": [
+        {
+          "type": "number",
+          "step": "0.1",
+          "class": "java.lang.Double",
+          "required": true
+        }
+      ],
+      "wrapInJson": true
+    },
+    "java.lang.Float": {
+      "fields": [
+        {
+          "type": "number",
+          "step": "0.1",
+          "class": "java.lang.Float",
+          "required": true
+        }
+      ],
+      "wrapInJson": true
+    },
+    "float": {
+      "fields": [
+        {
+          "type": "number",
+          "step": "0.1",
+          "class": "java.lang.Float",
+          "required": true
+        }
+      ],
+      "wrapInJson": true
+    },
+    "java.lang.String": {
+      "fields": [
+        {
+          "type": "text",
+          "class": "java.lang.String",
+          "required": true
+        }
+      ]
+    },
+    "java.lang.Class": {
+      "fields": [
+        {
+          "type": "text",
+          "class": "java.lang.Class",
+          "required": true
+        }
+      ]
+    },
+    "uk.gov.gchq.gaffer.types.TypeValue": {
+      "fields": [
+        {
+          "label": "Type",
+          "type": "text",
+          "key": "type",
+          "class": "java.lang.String"
+        },
+        {
+          "label": "Value",
+          "type": "text",
+          "key": "value",
+          "class": "java.lang.String",
+          "required": true
+        }
+      ],
+      "wrapInJson": true
+    },
+    "uk.gov.gchq.gaffer.types.TypeSubTypeValue": {
+      "fields": [
+        {
+          "label": "Type",
+          "type": "text",
+          "key": "type",
+          "class": "java.lang.String"
+        },
+        {
+          "label": "Sub Type",
+          "type": "text",
+          "key": "subType",
+          "class": "java.lang.String"
+        },
+        {
+          "label": "Value",
+          "type": "text",
+          "key": "value",
+          "class": "java.lang.String",
+          "required": true
+        }
+      ],
+      "wrapInJson": true
+    },
+    "com.clearspring.analytics.stream.cardinality.HyperLogLogPlus": {
+      "fields": [
+        {
+          "label": "cardinality",
+          "type": "number",
+          "key": "hyperLogLogPlus.cardinality",
+          "class": "java.lang.Integer",
+          "step": 1,
+          "required": true
+        }
+      ],
+      "custom": true,
+      "wrapInJson": true
+    },
+    "JSON": {
+      "fields": [
+        {
+          "label": "JSON",
+          "type": "textarea",
+          "class": ""
+        }
+      ],
+      "wrapInJson": false
+    }
+}
+var schema = {
+  "entities": {
+      "BasicEntity1": {
+          "properties": {
+              "count": "long"
+          }
+      },
+      "BasicEntity2": {
+          "properties": {
+              "count": "long"
+          }
+      }
+  },
+  "edges": {
+      "BasicEdge1": {
+          "properties": {
+              "count": "long"
+          }
+      }
+  },
+  "types": {
+      "long": {
+          "class": "java.lang.Long"
+      }
+  }
+}
 
 class ResultsServiceStub {
   get = () => {
-    return [];
-  };
+    return fullResultsData;
+  }
 }
+// class TypeServiceStub {
+//   get = () => {
+//     return of(types);
+//   }
+// }
+// class TimeServiceStub {
+//   isTimeProperty = () => {}
+// }
+class SchemaServiceStub {
+  get = () => {
+    return of(schema);
+  }
+}
+class ErrorServiceStub {}
 
 describe("TableComponent", () => {
   let component: TableComponent;
@@ -38,14 +467,21 @@ describe("TableComponent", () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [TableComponent],
-      imports: [MatTableModule, MatCardModule],
-      providers: [{ provide: ResultsService, useClass: ResultsServiceStub }]
+      imports: [MatTableModule, MatCardModule, HttpClientTestingModule],
+      providers: [{ provide: ResultsService, useClass: ResultsServiceStub },
+                  TypeService,
+                  TimeService,
+                  { provide: SchemaService, useClass: SchemaServiceStub },
+                  { provide: ErrorService, useClass: ErrorServiceStub },
+                  ]
     }).compileComponents();
   }));
 
   beforeEach(() => {
     fixture = TestBed.createComponent(TableComponent);
     component = fixture.componentInstance;
+    let typeService = TestBed.get(TypeService);
+    spyOn(typeService, "get").and.returnValue(of(types))
   });
 
   it("should be created", () => {
@@ -59,73 +495,74 @@ describe("TableComponent", () => {
 
     fixture.detectChanges();
 
-    expect(spy).toHaveBeenCalled();
+    expect(spy).toHaveBeenCalledTimes(1);
   });
 
   it("should update the table at initialisation", () => {
-    let spy = spyOn(component, "onResultsUpdated");
+    let spy = spyOn(component, "updateFilteredResults");
 
     fixture.detectChanges();
 
-    expect(spy).toHaveBeenCalled();
+    expect(spy).toHaveBeenCalledTimes(1);
   });
 
-  it("should be able to update the results", () => {
-    component.data = {
-      results: new MatTableDataSource([0])
-    };
-    let arrayNewResults = [0, 1, 2];
-    fixture.detectChanges();
+  // it("should be able to update the results", () => {
+  //   component.data = {
+  //     results: new MatTableDataSource([0])
+  //   };
+  //   let arrayNewResults = [""];
+  //   fixture.detectChanges();
 
-    component.onResultsUpdated(arrayNewResults);
+  //   component.processResults(arrayNewResults);
 
-    expect(component.data.results.data).toEqual(arrayNewResults);
+  //   expect(component.data.results.data).toEqual(arrayNewResults);
+  // });
+
+  it('should format the data correctly', function() {
+    expect(component.data.results).toEqual(fullData.results);
+    console.log(fullData.results);
+    console.log(component.data.results);
   });
 
-  it("should be able to calculate the columns", () => {
-    component.displayedColumns = new Set();
-    let arrayNewResults = [{ key1: "key1 value" }, { key2: "key2 value" }];
-    let keys = new Set(["key1", "key2"]);
-    fixture.detectChanges();
+  // it('should have the correct columns', function() {
+  //     // expect(component.data.columns).toEqual(fullData.columns);
+  //     // expect(component.data.allColumns).toEqual(fullData.allColumns);
+  //     expect(component.columnsToDisplay).toEqual(fullData.allColumns);
+  // })
 
-    component.onResultsUpdated(arrayNewResults);
+  // it("should not display the properties column", () => {
+  //   let results = [
+  //     { key1: "key1 value", properties: { count: 10 } },
+  //     { key2: "key2 value", properties: { count: 20 } }
+  //   ];
 
-    expect(component.displayedColumns).toEqual(keys);
-  });
+  //   component.onResultsUpdated(results);
 
-  it("should not display the properties column", () => {
-    let results = [
-      { key1: "key1 value", properties: { count: 10 } },
-      { key2: "key2 value", properties: { count: 20 } }
-    ];
+  //   expect(component.displayedColumns.has("properties")).toBeFalsy();
+  // });
 
-    component.onResultsUpdated(results);
+  // it("should display the count column if there is count data", () => {
+  //   let results = [
+  //     { key1: "key1 value", properties: { count: 10 } },
+  //     { key2: "key2 value", properties: { count: 20 } }
+  //   ];
 
-    expect(component.displayedColumns.has("properties")).toBeFalsy();
-  });
+  //   component.onResultsUpdated(results);
 
-  it("should display the count column if there is count data", () => {
-    let results = [
-      { key1: "key1 value", properties: { count: 10 } },
-      { key2: "key2 value", properties: { count: 20 } }
-    ];
+  //   expect(component.displayedColumns.has("count")).toBeTruthy();
+  // });
 
-    component.onResultsUpdated(results);
+  // it("should strip the class name", () => {
+  //   let results = [
+  //     {
+  //       key1: "key1 value",
+  //       class: "test.class.name.Entity",
+  //       properties: { count: 10 }
+  //     }
+  //   ];
 
-    expect(component.displayedColumns.has("count")).toBeTruthy();
-  });
+  //   component.onResultsUpdated(results);
 
-  it("should strip the class name", () => {
-    let results = [
-      {
-        key1: "key1 value",
-        class: "test.class.name.Entity",
-        properties: { count: 10 }
-      }
-    ];
-
-    component.onResultsUpdated(results);
-
-    expect(component.data.results.data[0]["class"]).toEqual("Entity");
-  });
+  //   expect(component.data.results.data[0]["class"]).toEqual("Entity");
+  // });
 });
