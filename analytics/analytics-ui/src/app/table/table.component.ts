@@ -33,8 +33,8 @@ export class TableComponent implements OnInit {
     results: new MatTableDataSource([])
   };
   @ViewChild(MatSort) sort: MatSort;
-  displayedColumns: Set<any>;
   schema = { edges: {}, entities: {}, types: {} };
+  columnsToDisplay;
 
   constructor(
     private results: ResultsService,
@@ -75,36 +75,30 @@ export class TableComponent implements OnInit {
   }
 
   private processResults = function(resultsData) {
-    const ids = [];
-    const groupByProperties = [];
-    const properties = [];
+    this.ids = [];
+    this.groupByProperties = [];
+    this.properties = [];
     this.resultsByType = {};
     this.data.tooltips = {};
 
     // Transform the edges into a displayable form
     this.processElements(
-      'Edge',
-      'edges',
-      ['resultType', 'GROUP', 'SOURCE', 'DESTINATION', 'DIRECTED'],
-      ids,
-      groupByProperties,
-      properties,
+      "Edge",
+      "edges",
+      ["result type", "GROUP", "SOURCE", "DESTINATION", "DIRECTED"],
       resultsData
     );
     // Transform the entities into a displayable form
     this.processElements(
-      'Entity',
-      'entities',
-      ['resultType', 'GROUP', 'SOURCE'],
-      ids,
-      groupByProperties,
-      properties,
+      "Entity",
+      "entities",
+      ["result type", "GROUP", "SOURCE"],
       resultsData
     );
-    // Transform the other types into a displayable form
-    this.processOtherTypes(ids, properties, resultsData);
+    //Transform the other types into a displayable form
+    this.processOtherTypes(resultsData);
 
-    this.data.allColumns = union(union(ids, groupByProperties), properties);
+    this.data.allColumns = union(union(this.ids, this.groupByProperties), this.properties);
 
     if (!this.data.columns || this.data.columns.length === 0) {
       this.data.columns = cloneDeep(this.data.allColumns);
@@ -113,8 +107,8 @@ export class TableComponent implements OnInit {
     this.data.allGroups = [];
     for (const type of this.resultsByType) {
       this.data.allTypes.push(type);
-      for (const group of this.resultsByType[type]) {
-        this.data.allGroups = union(group, this.data.allGroups);
+      for (var group in this.resultsByType[type]) {
+        this.data.allGroups = union([group], this.data.allGroups);
       }
     }
 
@@ -150,9 +144,6 @@ export class TableComponent implements OnInit {
     type,
     typePlural,
     idKeys,
-    ids,
-    groupByProperties,
-    properties,
     resultsData
   ) {
     // If there are elements of this type
@@ -161,10 +152,10 @@ export class TableComponent implements OnInit {
       Object.keys(resultsData[typePlural]).length > 0
     ) {
       this.resultsByType[type] = [];
-      ids = union(idKeys, ids);
-      // For each element
-      for (const i of resultsData[typePlural]) {
-        const element = resultsData[typePlural][i];
+      this.ids = union(idKeys, this.ids);
+      //For each element
+      for (var i in resultsData[typePlural]) {
+        var element = resultsData[typePlural][i];
         if (element) {
           // Convert the ids (i.e. result type, GROUP and SOURCE) into a displayable form for the table
           const result = {};
@@ -177,7 +168,7 @@ export class TableComponent implements OnInit {
               result[id] = this.convertValue(id, element[id.toLowerCase()]);
             }
           }
-          result[a] = type;
+          result["result type"] = type;
 
           // Get all of the properties to show in the table
           if (element.properties) {
@@ -199,7 +190,7 @@ export class TableComponent implements OnInit {
                     ) {
                       this.data.tooltips[propName] = typeDef.description;
                     }
-                    groupByProperties = union(propName, groupByProperties);
+                    this.groupByProperties = union([propName], this.groupByProperties);
                   }
                 }
                 for (const propertyName of elementDef.properties) {
@@ -213,12 +204,12 @@ export class TableComponent implements OnInit {
                   ) {
                     this.data.tooltips[propertyName] = typeDef.description;
                   }
-                  properties = union(propertyName, properties);
+                  this.properties = union([propertyName], this.properties);
                 }
               }
             }
-            for (const prop of element.properties) {
-              properties = union(prop, properties);
+            for (var prop in element.properties) {
+              this.properties = union([prop], this.properties);
               result[prop] = this.convertValue(prop, element.properties[prop]);
             }
           }
@@ -231,23 +222,19 @@ export class TableComponent implements OnInit {
     }
   };
 
-  private processOtherTypes = function(ids, properties, resultsData) {
-    for (const i of resultsData.other) {
-      const item = resultsData.other[i];
+  private processOtherTypes = function(resultsData) {
+    for (var i in resultsData.other) {
+      var item = resultsData.other[i];
       if (item) {
-        const result = { GROUP: '' };
-        const a = 'class';
-        const b = 'resultType';
-        const c = 'vertex';
-        const d = 'SOURCE';
-        for (const key of item) {
-          const value = this.convertValue(key, item[key]);
-          if (a === key) {
-            result[b] = item[key].split('.').pop();
-            ids = union(b, ids);
-          } else if (c === key) {
-            result[d] = value;
-            ids = union(d, ids);
+        var result = { GROUP: "" };
+        for (var key in item) {
+          var value = this.convertValue(key, item[key]);
+          if ("class" === key) {
+            result["result type"] = item[key].split(".").pop();
+            this.ids = union(["result type"], this.ids);
+          } else if ("vertex" === key) {
+            result["SOURCE"] = value;
+            this.ids = union(["SOURCE"], this.ids);
           } else if (
             'source' === key ||
             'destination' === key ||
@@ -256,22 +243,22 @@ export class TableComponent implements OnInit {
           ) {
             const parsedKey = key.toUpperCase();
             result[parsedKey] = value;
-            ids = union(parsedKey, ids);
-          } else if ('value' === key) {
+            this.ids = union([parsedKey], this.ids);
+          } else if ("value" === key) {
             result[key] = value;
-            ids = union(key, ids);
+            this.ids = union([key], this.ids);
           } else {
             result[key] = value;
-            properties = union(key, properties);
+            this.properties = union([key], this.properties);
           }
         }
-        if (!(result[b] in this.resultsByType)) {
-          this.resultsByType[result[b]] = {};
+        if (!(result["result type"] in this.resultsByType)) {
+          this.resultsByType[result["result type"]] = {};
         }
-        if (!(result.GROUP in this.resultsByType[result[b]])) {
-          this.resultsByType[result[b]][result.GROUP] = [];
+        if (!(result.GROUP in this.resultsByType[result["result type"]])) {
+          this.resultsByType[result["result type"]][result.GROUP] = [];
         }
-        this.resultsByType[result[b]][result.GROUP].push(result);
+        this.resultsByType[result["result type"]][result.GROUP].push(result);
       }
     }
   };
