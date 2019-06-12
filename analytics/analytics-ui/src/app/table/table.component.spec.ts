@@ -33,7 +33,7 @@ import { ErrorService } from '../dynamic-input/error.service';
 
 var fullResultsData = [
       {
-          class: 'Entity',
+          class: 'test.Entity',
           group: 'BasicEntity1',
           vertex: 'vertex1',
           properties: {
@@ -42,7 +42,7 @@ var fullResultsData = [
           }
       },
       {
-          class: 'Entity',
+          class: 'test.Entity',
           group: 'BasicEntity1',
           vertex: 'vertex2',
           properties: {
@@ -51,7 +51,7 @@ var fullResultsData = [
           }
       },
       {
-          class: 'Entity',
+          class: 'test.Entity',
           group: 'BasicEntity2',
           vertex: 'vertex1',
           properties: {
@@ -60,7 +60,7 @@ var fullResultsData = [
           }
       },
       {
-          class: 'Edge',
+          class: 'test.Edge',
           group: 'BasicEdge1',
           source: 'source1',
           destination: 'destination1',
@@ -71,7 +71,7 @@ var fullResultsData = [
           }
       },
       {
-          class: 'Edge',
+          class: 'test.Edge',
           group: 'BasicEdge1',
           source: 'source2',
           destination: 'destination2',
@@ -82,7 +82,7 @@ var fullResultsData = [
           }
       },
       {
-          class: 'Edge',
+          class: 'test.Edge',
           group: 'BasicEdge2',
           source: 'source1',
           destination: 'destination1',
@@ -172,8 +172,8 @@ var fullData = {
           SOURCE: 'vertex1'
       }
   ],
-  columns: [ 'result type', 'GROUP', 'SOURCE', 'DESTINATION', 'DIRECTED', 'value', 'count', 'prop1', 'prop2'],
-  allColumns: [ 'result type', 'GROUP', 'SOURCE', 'DESTINATION', 'DIRECTED', 'value', 'count', 'prop1', 'prop2' ],
+  columns: [ 'SOURCE', 'result type', 'value', 'GROUP', 'DESTINATION', 'DIRECTED', 'prop2', 'count', 'prop1' ],
+  allColumns: [ 'SOURCE', 'result type', 'value', 'GROUP', 'DESTINATION', 'DIRECTED', 'prop2', 'count', 'prop1' ],
   groups: [ 'BasicEdge1', 'BasicEdge2', 'BasicEntity1', 'BasicEntity2', '' ],
   allGroups: [ 'BasicEdge1', 'BasicEdge2', 'BasicEntity1', 'BasicEntity2', '' ],
   types: [ 'Edge', 'Entity', 'String', 'Integer', 'EntitySeed' ],
@@ -445,14 +445,6 @@ class ResultsServiceStub {
     return fullResultsData;
   }
 }
-// class TypeServiceStub {
-//   get = () => {
-//     return of(types);
-//   }
-// }
-// class TimeServiceStub {
-//   isTimeProperty = () => {}
-// }
 class SchemaServiceStub {
   get = () => {
     return of(schema);
@@ -485,23 +477,20 @@ describe("TableComponent", () => {
   });
 
   it("should be created", () => {
-    console.log('should be created test');
     fixture.detectChanges();
     expect(component).toBeTruthy();
   });
 
-  // it("should get the results at initialisation", () => {
-  //   console.log('should get the results at initialisation test');
-  //   let resultsService = TestBed.get(ResultsService);
-  //   let spy = spyOn(resultsService, "get");
+  it("should get the results at initialisation", () => {
+    let resultsService = TestBed.get(ResultsService);
+    let spy = spyOn(resultsService, "get");
 
-  //   fixture.detectChanges();
+    fixture.detectChanges();
 
-  //   expect(spy).toHaveBeenCalledTimes(1);
-  // });
+    expect(spy).toHaveBeenCalledTimes(1);
+  });
 
   it("should update the table at initialisation", () => {
-    console.log('should update test');
     let spy = spyOn(component, "updateFilteredResults");
 
     fixture.detectChanges();
@@ -509,66 +498,16 @@ describe("TableComponent", () => {
     expect(spy).toHaveBeenCalledTimes(1);
   });
 
-  // it("should be able to update the results", () => {
-  //   component.data = {
-  //     results: new MatTableDataSource([0])
-  //   };
-  //   let arrayNewResults = [""];
-  //   fixture.detectChanges();
-
-  //   component.processResults(arrayNewResults);
-
-  //   expect(component.data.results.data).toEqual(arrayNewResults);
-  // });
-
   it('should format the data correctly', () => {
-    console.log('should format the data test');
     fixture.detectChanges();
 
     expect(component.data.results.data).toEqual(fullData.results);
-    console.log(fullData.results);
-    console.log(component.data.results);
+
   });
 
-  // it('should have the correct columns', function() {
-  //     // expect(component.data.columns).toEqual(fullData.columns);
-  //     // expect(component.data.allColumns).toEqual(fullData.allColumns);
-  //     expect(component.columnsToDisplay).toEqual(fullData.allColumns);
-  // })
+  it('should have the correct columns', () => {
+    fixture.detectChanges();
 
-  // it("should not display the properties column", () => {
-  //   let results = [
-  //     { key1: "key1 value", properties: { count: 10 } },
-  //     { key2: "key2 value", properties: { count: 20 } }
-  //   ];
-
-  //   component.onResultsUpdated(results);
-
-  //   expect(component.displayedColumns.has("properties")).toBeFalsy();
-  // });
-
-  // it("should display the count column if there is count data", () => {
-  //   let results = [
-  //     { key1: "key1 value", properties: { count: 10 } },
-  //     { key2: "key2 value", properties: { count: 20 } }
-  //   ];
-
-  //   component.onResultsUpdated(results);
-
-  //   expect(component.displayedColumns.has("count")).toBeTruthy();
-  // });
-
-  // it("should strip the class name", () => {
-  //   let results = [
-  //     {
-  //       key1: "key1 value",
-  //       class: "test.class.name.Entity",
-  //       properties: { count: 10 }
-  //     }
-  //   ];
-
-  //   component.onResultsUpdated(results);
-
-  //   expect(component.data.results.data[0]["class"]).toEqual("Entity");
-  // });
+    expect(component.columnsToDisplay).toEqual(fullData.allColumns);
+  })
 });

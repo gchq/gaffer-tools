@@ -34,7 +34,7 @@ export class TableComponent implements OnInit {
   };
   @ViewChild(MatSort) sort: MatSort;
   schema = { edges: {}, entities: {}, types: {} };
-  columnsToDisplay: Set<any>;
+  columnsToDisplay;
 
   constructor(
     private results: ResultsService,
