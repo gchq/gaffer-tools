@@ -1,14 +1,14 @@
 /*
  * Copyright 2019 Crown Copyright
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
+ * Licensed under the Apache License, Version 2.0 (the 'License');
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
  *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
+ * distributed under the License is distributed on an 'AS IS' BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
@@ -18,11 +18,11 @@ import { TestBed, async, fakeAsync, tick } from '@angular/core/testing';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Router } from '@angular/router';
 
-import { AnalyticsService } from "./analytics.service";
-import { QueryService } from "./query.service";
-import { ErrorService } from "../dynamic-input/error.service";
-import { ResultsService } from "./results.service";
-import { EndpointService } from "../config/endpoint-service";
+import { AnalyticsService } from './analytics.service';
+import { QueryService } from './query.service';
+import { ErrorService } from '../dynamic-input/error.service';
+import { ResultsService } from './results.service';
+import { EndpointService } from '../config/endpoint-service';
 
 class QueryServiceStub {
   executeQuery = (operation, onSuccess) => {
@@ -225,19 +225,19 @@ describe('AnalyticsService', () => {
     expect(spy).toHaveBeenCalledWith(operation, jasmine.any(Function));
   });
 
-  // it("should be able to post a request to the server", fakeAsync(() => {
+  // it('should be able to post a request to the server', fakeAsync(() => {
   //   let http = TestBed.get(HttpClient);
-  //   let spy = spyOn(http, "post");
+  //   let spy = spyOn(http, 'post');
   //   let common = TestBed.get(CommonService);
   //   let endpoint = TestBed.get(EndpointService);
   //   let queryUrl = common.parseUrl(
-  //     endpoint.getRestEndpoint() + "/graph/operations/execute"
+  //     endpoint.getRestEndpoint() + '/graph/operations/execute'
   //   );
   //   let operation = {
-  //     class: "uk.gov.gchq.gaffer.analytic.operation.GetAllAnalytics"
+  //     class: 'uk.gov.gchq.gaffer.analytic.operation.GetAllAnalytics'
   //   };
   //   let headers = new HttpHeaders();
-  //   headers = headers.set("Content-Type", "application/json; charset=utf-8");
+  //   headers = headers.set('Content-Type', 'application/json; charset=utf-8');
 
   //   service.reloadAnalytics(true).subscribe(() => {}, () => {});
 

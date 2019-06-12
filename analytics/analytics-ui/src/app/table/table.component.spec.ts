@@ -1,14 +1,14 @@
 /*
  * Copyright 2019 Crown Copyright
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
+ * Licensed under the Apache License, Version 2.0 (the 'License');
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
  *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
+ * distributed under the License is distributed on an 'AS IS' BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
@@ -19,19 +19,19 @@ import {
   MatTableModule,
   MatCardModule,
   MatTableDataSource
-} from "@angular/material";
-import { empty, of } from "rxjs";
-import { HttpClientTestingModule, HttpTestingController } from "@angular/common/http/testing";
+} from '@angular/material';
+import { empty, of } from 'rxjs';
+import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 
-import { TableComponent } from "./table.component";
-import { ResultsService } from "../gaffer/results.service";
+import { TableComponent } from './table.component';
+import { ResultsService } from '../gaffer/results.service';
 import { TypeService } from '../gaffer/type.service';
 import { TimeService } from '../gaffer/time.service';
 import { SchemaService } from '../gaffer/schema.service';
 import { ErrorService } from '../dynamic-input/error.service';
 
 
-var fullResultsData = [
+const fullResultsData = [
       {
           class: 'test.Entity',
           group: 'BasicEntity1',
@@ -93,25 +93,25 @@ var fullResultsData = [
           }
       },
       {
-          class: "String",
-          value: "value1"
+          class: 'String',
+          value: 'value1'
       },
       {
-          class: "Integer",
+          class: 'Integer',
           value: 4
       },
       {
-          class: "EntitySeed",
-          vertex: "vertex1"
+          class: 'EntitySeed',
+          vertex: 'vertex1'
       }
 ];
 
-var fullData = {
+const fullData = {
   results: [
       {
         'result type': 'Edge',
         GROUP: 'BasicEdge2',
-        SOURCE: "source1",
+        SOURCE: 'source1',
         DESTINATION: 'destination1',
         DIRECTED: true,
         count: 1,
@@ -120,7 +120,7 @@ var fullData = {
       {
           'result type': 'Edge',
           GROUP: 'BasicEdge1',
-          SOURCE: "source1",
+          SOURCE: 'source1',
           DESTINATION: 'destination1',
           DIRECTED: true,
           count: 1,
@@ -129,7 +129,7 @@ var fullData = {
       {
           'result type': 'Edge',
           GROUP: 'BasicEdge1',
-          SOURCE: "source2",
+          SOURCE: 'source2',
           DESTINATION: 'destination2',
           DIRECTED: true,
           count: 2,
@@ -179,266 +179,266 @@ var fullData = {
   types: [ 'Edge', 'Entity', 'String', 'Integer', 'EntitySeed' ],
   allTypes: [ 'Edge', 'Entity', 'String', 'Integer', 'EntitySeed' ],
   tooltips: {}
-}
+};
 
-var types = {
-    "java.util.Date": {
-      "fields": [
+const types = {
+    'java.util.Date': {
+      fields: [
         {
-          "type": "number",
-          "step": "1",
-          "class": "java.util.Date"
+          type: 'number',
+          step: '1',
+          class: 'java.util.Date'
         }
       ],
-      "wrapInJson": true
+      wrapInJson: true
     },
-    "java.lang.Boolean": {
-      "fields": [
+    'java.lang.Boolean': {
+      fields: [
         {
-          "type": "checkbox",
-          "class": "java.lang.Boolean",
-          "required": true
+          type: 'checkbox',
+          class: 'java.lang.Boolean',
+          required: true
         }
       ]
     },
-    "boolean": {
-      "fields": [
+    boolean: {
+      fields: [
         {
-          "type": "checkbox",
-          "class": "java.lang.Boolean",
-          "required": true
+          type: 'checkbox',
+          class: 'java.lang.Boolean',
+          required: true
         }
       ]
     },
-    "java.lang.Long": {
-      "fields": [
+    'java.lang.Long': {
+      fields: [
         {
-          "type": "number",
-          "step": "1",
-          "class": "java.lang.Long",
-          "required": true
+          type: 'number',
+          step: '1',
+          class: 'java.lang.Long',
+          required: true
         }
       ],
-      "wrapInJson": true
+      wrapInJson: true
     },
-    "long": {
-      "fields": [
+    long: {
+      fields: [
         {
-          "type": "number",
-          "step": "1",
-          "class": "java.lang.Long",
-          "required": true
+          type: 'number',
+          step: '1',
+          class: 'java.lang.Long',
+          required: true
         }
       ],
-      "wrapInJson": true
+      wrapInJson: true
     },
-    "java.lang.Integer": {
-      "fields": [
+    'java.lang.Integer': {
+      fields: [
         {
-          "type": "number",
-          "step": "1",
-          "class": "java.lang.Integer",
-          "required": true
+          type: 'number',
+          step: '1',
+          class: 'java.lang.Integer',
+          required: true
         }
       ]
     },
-    "integer": {
-      "fields": [
+    integer: {
+      fields: [
         {
-          "type": "number",
-          "step": "1",
-          "class": "java.lang.Integer",
-          "required": true
+          type: 'number',
+          step: '1',
+          class: 'java.lang.Integer',
+          required: true
         }
       ]
     },
-    "int": {
-      "fields": [
+    int: {
+      fields: [
         {
-          "type": "number",
-          "step": "1",
-          "class": "java.lang.Integer",
-          "required": true
+          type: 'number',
+          step: '1',
+          class: 'java.lang.Integer',
+          required: true
         }
       ]
     },
-    "java.lang.Short": {
-      "fields": [
+    'java.lang.Short': {
+      fields: [
         {
-          "type": "number",
-          "step": "1",
-          "class": "java.lang.Short",
-          "required": true
+          type: 'number',
+          step: '1',
+          class: 'java.lang.Short',
+          required: true
         }
       ],
-      "wrapInJson": true
+      wrapInJson: true
     },
-    "short": {
-      "fields": [
+    short: {
+      fields: [
         {
-          "type": "number",
-          "step": "1",
-          "class": "java.lang.Short",
-          "required": true
+          type: 'number',
+          step: '1',
+          class: 'java.lang.Short',
+          required: true
         }
       ],
-      "wrapInJson": true
+      wrapInJson: true
     },
-    "java.lang.Double": {
-      "fields": [
+    'java.lang.Double': {
+      fields: [
         {
-          "type": "number",
-          "step": "0.1",
-          "class": "java.lang.Double",
-          "required": true
+          type: 'number',
+          step: '0.1',
+          class: 'java.lang.Double',
+          required: true
         }
       ],
-      "wrapInJson": true
+      wrapInJson: true
     },
-    "double": {
-      "fields": [
+    double: {
+      fields: [
         {
-          "type": "number",
-          "step": "0.1",
-          "class": "java.lang.Double",
-          "required": true
+          type: 'number',
+          step: '0.1',
+          class: 'java.lang.Double',
+          required: true
         }
       ],
-      "wrapInJson": true
+      wrapInJson: true
     },
-    "java.lang.Float": {
-      "fields": [
+    'java.lang.Float': {
+      fields: [
         {
-          "type": "number",
-          "step": "0.1",
-          "class": "java.lang.Float",
-          "required": true
+          type: 'number',
+          step: '0.1',
+          class: 'java.lang.Float',
+          required: true
         }
       ],
-      "wrapInJson": true
+      wrapInJson: true
     },
-    "float": {
-      "fields": [
+    float: {
+      fields: [
         {
-          "type": "number",
-          "step": "0.1",
-          "class": "java.lang.Float",
-          "required": true
+          type: 'number',
+          step: '0.1',
+          class: 'java.lang.Float',
+          required: true
         }
       ],
-      "wrapInJson": true
+      wrapInJson: true
     },
-    "java.lang.String": {
-      "fields": [
+    'java.lang.String': {
+      fields: [
         {
-          "type": "text",
-          "class": "java.lang.String",
-          "required": true
+          type: 'text',
+          class: 'java.lang.String',
+          required: true
         }
       ]
     },
-    "java.lang.Class": {
-      "fields": [
+    'java.lang.Class': {
+      fields: [
         {
-          "type": "text",
-          "class": "java.lang.Class",
-          "required": true
+          type: 'text',
+          class: 'java.lang.Class',
+          required: true
         }
       ]
     },
-    "uk.gov.gchq.gaffer.types.TypeValue": {
-      "fields": [
+    'uk.gov.gchq.gaffer.types.TypeValue': {
+      fields: [
         {
-          "label": "Type",
-          "type": "text",
-          "key": "type",
-          "class": "java.lang.String"
+          label: 'Type',
+          type: 'text',
+          key: 'type',
+          class: 'java.lang.String'
         },
         {
-          "label": "Value",
-          "type": "text",
-          "key": "value",
-          "class": "java.lang.String",
-          "required": true
+          label: 'Value',
+          type: 'text',
+          key: 'value',
+          class: 'java.lang.String',
+          required: true
         }
       ],
-      "wrapInJson": true
+      wrapInJson: true
     },
-    "uk.gov.gchq.gaffer.types.TypeSubTypeValue": {
-      "fields": [
+    'uk.gov.gchq.gaffer.types.TypeSubTypeValue': {
+      fields: [
         {
-          "label": "Type",
-          "type": "text",
-          "key": "type",
-          "class": "java.lang.String"
+          label: 'Type',
+          type: 'text',
+          key: 'type',
+          class: 'java.lang.String'
         },
         {
-          "label": "Sub Type",
-          "type": "text",
-          "key": "subType",
-          "class": "java.lang.String"
+          label: 'Sub Type',
+          type: 'text',
+          key: 'subType',
+          class: 'java.lang.String'
         },
         {
-          "label": "Value",
-          "type": "text",
-          "key": "value",
-          "class": "java.lang.String",
-          "required": true
+          label: 'Value',
+          type: 'text',
+          key: 'value',
+          class: 'java.lang.String',
+          required: true
         }
       ],
-      "wrapInJson": true
+      wrapInJson: true
     },
-    "com.clearspring.analytics.stream.cardinality.HyperLogLogPlus": {
-      "fields": [
+    'com.clearspring.analytics.stream.cardinality.HyperLogLogPlus': {
+      fields: [
         {
-          "label": "cardinality",
-          "type": "number",
-          "key": "hyperLogLogPlus.cardinality",
-          "class": "java.lang.Integer",
-          "step": 1,
-          "required": true
+          label: 'cardinality',
+          type: 'number',
+          key: 'hyperLogLogPlus.cardinality',
+          class: 'java.lang.Integer',
+          step: 1,
+          required: true
         }
       ],
-      "custom": true,
-      "wrapInJson": true
+      custom: true,
+      wrapInJson: true
     },
-    "JSON": {
-      "fields": [
+    JSON: {
+      fields: [
         {
-          "label": "JSON",
-          "type": "textarea",
-          "class": ""
+          label: 'JSON',
+          type: 'textarea',
+          class: ''
         }
       ],
-      "wrapInJson": false
+      wrapInJson: false
     }
-}
-var schema = {
-  "entities": {
-      "BasicEntity1": {
-          "properties": {
-              "count": "long"
+};
+const schema = {
+  entities: {
+      BasicEntity1: {
+          properties: {
+              count: 'long'
           }
       },
-      "BasicEntity2": {
-          "properties": {
-              "count": "long"
+      BasicEntity2: {
+          properties: {
+              count: 'long'
           }
       }
   },
-  "edges": {
-      "BasicEdge1": {
-          "properties": {
-              "count": "long"
+  edges: {
+      BasicEdge1: {
+          properties: {
+              count: 'long'
           }
       }
   },
-  "types": {
-      "long": {
-          "class": "java.lang.Long"
+  types: {
+      long: {
+          class: 'java.lang.Long'
       }
   }
-}
+};
 
 class ResultsServiceStub {
   get = () => {
@@ -472,8 +472,8 @@ describe('TableComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(TableComponent);
     component = fixture.componentInstance;
-    let typeService = TestBed.get(TypeService);
-    spyOn(typeService, "get").and.returnValue(of(types))
+    const typeService = TestBed.get(TypeService);
+    spyOn(typeService, 'get').and.returnValue(of(types));
   });
 
   it('should be created', () => {
@@ -490,11 +490,11 @@ describe('TableComponent', () => {
     expect(spy).toHaveBeenCalledTimes(1);
   });
 
-  it("should update the table at initialisation", () => {
-    let spy = spyOn(component, "updateFilteredResults");
+  it('should update the table at initialisation', () => {
+    const spy = spyOn(component, 'updateFilteredResults');
 
     fixture.detectChanges();
-    
+
     expect(spy).toHaveBeenCalledTimes(1);
   });
 
@@ -509,6 +509,6 @@ describe('TableComponent', () => {
     fixture.detectChanges();
 
     expect(component.columnsToDisplay).toEqual(fullData.allColumns);
-  })
+  });
 
 });
