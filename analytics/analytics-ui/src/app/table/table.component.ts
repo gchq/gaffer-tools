@@ -82,14 +82,14 @@ export class TableComponent implements OnInit {
     this.processElements(
       "Edge",
       "edges",
-      ["resultType", "GROUP", "SOURCE", "DESTINATION", "DIRECTED"],
+      ["result type", "GROUP", "SOURCE", "DESTINATION", "DIRECTED"],
       resultsData
     );
     //Transform the entities into a displayable form
     this.processElements(
       "Entity",
       "entities",
-      ["resultType", "GROUP", "SOURCE"],
+      ["result type", "GROUP", "SOURCE"],
       resultsData
     );
     //Transform the other types into a displayable form
@@ -164,7 +164,7 @@ export class TableComponent implements OnInit {
               result[id] = this.convertValue(id, element[id.toLowerCase()]);
             }
           }
-          result["resultType"] = type;
+          result["result type"] = type;
 
           //Get all of the properties to show in the table
           if (element.properties) {
@@ -226,8 +226,8 @@ export class TableComponent implements OnInit {
         for (var key in item) {
           var value = this.convertValue(key, item[key]);
           if ("class" === key) {
-            result["resultType"] = item[key].split(".").pop();
-            this.ids = union(["resultType"], this.ids);
+            result["result type"] = item[key].split(".").pop();
+            this.ids = union(["result type"], this.ids);
           } else if ("vertex" === key) {
             result["SOURCE"] = value;
             this.ids = union(["SOURCE"], this.ids);
@@ -248,13 +248,13 @@ export class TableComponent implements OnInit {
             this.properties = union([key], this.properties);
           }
         }
-        if (!(result["resultType"] in this.resultsByType)) {
-          this.resultsByType[result["resultType"]] = {};
+        if (!(result["result type"] in this.resultsByType)) {
+          this.resultsByType[result["result type"]] = {};
         }
-        if (!(result.GROUP in this.resultsByType[result["resultType"]])) {
-          this.resultsByType[result["resultType"]][result.GROUP] = [];
+        if (!(result.GROUP in this.resultsByType[result["result type"]])) {
+          this.resultsByType[result["result type"]][result.GROUP] = [];
         }
-        this.resultsByType[result["resultType"]][result.GROUP].push(result);
+        this.resultsByType[result["result type"]][result.GROUP].push(result);
       }
     }
   };
