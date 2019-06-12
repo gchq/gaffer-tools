@@ -14,20 +14,20 @@
  * limitations under the License.
  */
 
-import { async, ComponentFixture, TestBed } from "@angular/core/testing";
-import { Component, Input } from "@angular/core";
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { Component, Input } from '@angular/core';
 
-import { OperationComponent } from "./operation.component";
+import { OperationComponent } from './operation.component';
 
 @Component({
-  selector: "app-parameter-form",
-  template: ""
+  selector: 'app-parameter-form',
+  template: ''
 })
 class MockParameterFormComponent {
   @Input() parameters;
 }
 
-describe("OperationComponent", () => {
+describe('OperationComponent', () => {
   let component: OperationComponent;
   let fixture: ComponentFixture<OperationComponent>;
 
@@ -45,7 +45,7 @@ describe("OperationComponent", () => {
     };
   });
 
-  it("should be created", () => {
+  it('should be created', () => {
     fixture.detectChanges();
     expect(component).toBeTruthy();
   });

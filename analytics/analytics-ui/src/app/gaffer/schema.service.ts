@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-import { of, Observable, Observer } from "rxjs";
-import { Injectable } from "@angular/core";
+import { of, Observable, Observer } from 'rxjs';
+import { Injectable } from '@angular/core';
 
-import { QueryService } from "./query.service";
+import { QueryService } from './query.service';
 
 @Injectable()
 export class SchemaService {
@@ -25,7 +25,7 @@ export class SchemaService {
   schema;
   schemaVertices = {};
 
-  constructor(private query: QueryService) {}
+  constructor(private query: QueryService) { }
 
   /**
    * Asynchronously gets the schema. It will reject the promise if it fails to get the schema but won't
@@ -37,29 +37,29 @@ export class SchemaService {
     if (this.schema) {
       return of(this.schema);
     } else if (!this.schemaObservable) {
-      this.schemaObservable = Observable.create(
-        (observer: Observer<String>) => {
+      this.schemaObservable = new Observable((
+        (observer: Observer<string>) => {
           this.getSchema(null, observer);
         }
-      );
+      ));
     }
     return this.schemaObservable;
   };
 
   /**
    * Creates the get schema operation using the default operation options.
-   * @param {Boolean} loud Flag passed down to indicate whether to broadcast errors
+   * Flag passed down to indicate whether to broadcast errors
    */
   private getSchema = function(loud, observer) {
-    var getSchemaOperation = this.createGetSchemaOperation();
+    const getSchemaOperation = this.createGetSchemaOperation();
     this.getSchemaWithOperation(getSchemaOperation, loud, observer);
   };
 
   /**
    * Runs the GetSchema operation. Will fail if the Request sends back a non-200 response or the query.execute method
    * errors
-   * @param {Operation} operation The GetSchema operation
-   * @param {*} loud A flag indicating whether to broadcast errors
+   * The GetSchema operation
+   * A flag indicating whether to broadcast errors
    */
   private getSchemaWithOperation = function(operation, loud, observer) {
     try {
@@ -84,7 +84,7 @@ export class SchemaService {
         err => {
           observer.error(err);
           if (loud) {
-            this.error.handle("Failed to load schema", null, err);
+            this.error.handle('Failed to load schema', null, err);
             console.error(err);
           }
           observer.complete(undefined);
@@ -93,37 +93,37 @@ export class SchemaService {
     } catch (e) {
       observer.error(e);
       if (loud) {
-        this.error.handle("Failed to load schema", null, e);
+        this.error.handle('Failed to load schema', null, e);
         console.error(e);
       }
       observer.complete(undefined);
     }
   };
 
-  createGetSchemaOperation = function() {
+  createGetSchemaOperation = () => {
     return {
-      class: "uk.gov.gchq.gaffer.store.operation.GetSchema",
+      class: 'uk.gov.gchq.gaffer.store.operation.GetSchema',
       compact: false,
       options: {}
     };
-  };
+  }
 
   /**
    * Function which updates the schema vertices.
    */
   private updateSchemaVertices = function() {
-    var vertices = [];
+    const vertices = [];
     if (this.schema) {
-      for (var i in this.schema.entities) {
-        if (vertices.indexOf(this.schema.entities[i].vertex) == -1) {
+      for (const i in this.schema.entities) {
+        if (vertices.indexOf(this.schema.entities[i].vertex) === -1) {
           vertices.push(this.schema.entities[i].vertex);
         }
       }
-      for (var i in this.schema.edges) {
-        if (vertices.indexOf(this.schema.edges[i].source) == -1) {
+      for (const i of this.schema.edges) {
+        if (vertices.indexOf(this.schema.edges[i].source) === -1) {
           vertices.push(this.schema.edges[i].source);
         }
-        if (vertices.indexOf(this.schema.edges[i].destination) == -1) {
+        if (vertices.indexOf(this.schema.edges[i].destination) === -1) {
           vertices.push(this.schema.edges[i].destination);
         }
       }

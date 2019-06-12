@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { async, ComponentFixture, TestBed } from "@angular/core/testing";
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import {
   MatTableModule,
   MatCardModule,
@@ -452,7 +452,7 @@ class SchemaServiceStub {
 }
 class ErrorServiceStub {}
 
-describe("TableComponent", () => {
+describe('TableComponent', () => {
   let component: TableComponent;
   let fixture: ComponentFixture<TableComponent>;
 
@@ -476,14 +476,14 @@ describe("TableComponent", () => {
     spyOn(typeService, "get").and.returnValue(of(types))
   });
 
-  it("should be created", () => {
+  it('should be created', () => {
     fixture.detectChanges();
     expect(component).toBeTruthy();
   });
 
-  it("should get the results at initialisation", () => {
-    let resultsService = TestBed.get(ResultsService);
-    let spy = spyOn(resultsService, "get");
+  it('should get the results at initialisation', () => {
+    const resultsService = TestBed.get(ResultsService);
+    const spy = spyOn(resultsService, 'get');
 
     fixture.detectChanges();
 
@@ -510,4 +510,5 @@ describe("TableComponent", () => {
 
     expect(component.columnsToDisplay).toEqual(fullData.allColumns);
   })
+
 });

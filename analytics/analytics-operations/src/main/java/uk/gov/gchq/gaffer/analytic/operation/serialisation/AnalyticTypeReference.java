@@ -29,6 +29,9 @@ public final class AnalyticTypeReference {
         // Private constructor to prevent instantiation.
     }
 
+    public static class SingularAnalyticOperationDetail extends TypeReference<AnalyticDetail> {
+    }
+
     public static class IterableAnalyticOperationDetail extends TypeReference<CloseableIterable<AnalyticDetail>> {
     }
 }

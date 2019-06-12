@@ -19,7 +19,7 @@ package uk.gov.gchq.gaffer.analytic.operation;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.core.type.TypeReference;
 
-import uk.gov.gchq.gaffer.analytic.operation.serialisation.SingleAnalyticTypeReference;
+import uk.gov.gchq.gaffer.analytic.operation.serialisation.AnalyticTypeReference;
 import uk.gov.gchq.gaffer.operation.io.Output;
 import uk.gov.gchq.koryphe.Since;
 import uk.gov.gchq.koryphe.Summary;
@@ -47,7 +47,7 @@ public class GetAnalytic implements Output<AnalyticDetail> {
 
     @Override
     public TypeReference<AnalyticDetail> getOutputTypeReference() {
-        return new SingleAnalyticTypeReference.SingularAnalyticOperationDetail();
+        return new AnalyticTypeReference.SingularAnalyticOperationDetail();
     }
 
     @Override

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 export class EndpointService {
-  defaultRestEndpoint = "http://localhost:8080" + "/rest/latest";
+  defaultRestEndpoint = 'http://localhost:8080' + '/rest/latest';
 
   getRestEndpoint = function() {
     return this.defaultRestEndpoint;

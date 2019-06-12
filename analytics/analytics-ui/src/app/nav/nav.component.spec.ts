@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 
-import { LayoutModule } from "@angular/cdk/layout";
+import { LayoutModule } from '@angular/cdk/layout';
 import {
   async,
   ComponentFixture,
   TestBed,
   fakeAsync,
   tick
-} from "@angular/core/testing";
-import { NoopAnimationsModule } from "@angular/platform-browser/animations";
+} from '@angular/core/testing';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import {
   MatButtonModule,
   MatIconModule,
@@ -30,54 +30,54 @@ import {
   MatSidenavModule,
   MatToolbarModule,
   MatTabsModule
-} from "@angular/material";
-import { RouterTestingModule } from "@angular/router/testing";
-import { CommonModule, Location } from "@angular/common";
-import { Routes, Router } from "@angular/router";
-import { Component } from "@angular/core";
+} from '@angular/material';
+import { RouterTestingModule } from '@angular/router/testing';
+import { CommonModule, Location } from '@angular/common';
+import { Routes, Router } from '@angular/router';
+import { Component } from '@angular/core';
 
-import { NavComponent } from "./nav.component";
-
-@Component({
-  template: ""
-})
-class AnalyticsComponentStub {}
+import { NavComponent } from './nav.component';
 
 @Component({
-  template: ""
+  template: ''
 })
-class ParameterInputComponentStub {}
+class AnalyticsStubComponent {}
 
 @Component({
-  template: ""
+  template: ''
 })
-class TableComponentStub {}
+class ParameterInputStubComponent {}
 
-describe("NavComponent", () => {
+@Component({
+  template: ''
+})
+class TableStubComponent {}
+
+describe('NavComponent', () => {
   let location: Location;
   let router: Router;
   let component: NavComponent;
   let fixture: ComponentFixture<NavComponent>;
   const routes: Routes = [
-    { path: "analytics", component: AnalyticsComponentStub },
-    { path: "parameters", component: ParameterInputComponentStub },
-    { path: "parameters/:operation", component: ParameterInputComponentStub },
-    { path: "results", component: TableComponentStub },
-    { path: "**", redirectTo: "analytics" }
+    { path: 'analytics', component: AnalyticsStubComponent },
+    { path: 'parameters', component: ParameterInputStubComponent },
+    { path: 'parameters/:operation', component: ParameterInputStubComponent },
+    { path: 'results', component: TableStubComponent },
+    { path: '**', redirectTo: 'analytics' }
   ];
   const navLinks = [
-    { path: "analytics", label: "ANALYTICS" },
-    { path: "parameters", label: "PARAMETERS" },
-    { path: "results", label: "RESULTS" }
+    { path: 'analytics', label: 'ANALYTICS' },
+    { path: 'parameters', label: 'PARAMETERS' },
+    { path: 'results', label: 'RESULTS' }
   ];
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [
         NavComponent,
-        ParameterInputComponentStub,
-        TableComponentStub,
-        AnalyticsComponentStub
+        ParameterInputStubComponent,
+        TableStubComponent,
+        AnalyticsStubComponent
       ],
       imports: [
         NoopAnimationsModule,
@@ -104,37 +104,37 @@ describe("NavComponent", () => {
     component.navLinks = navLinks;
   });
 
-  it("should be created", () => {
+  it('should be created', () => {
     fixture.detectChanges();
     expect(component).toBeTruthy();
   });
 
-  it("should contain the correct navigation links", () => {
+  it('should contain the correct navigation links', () => {
     fixture.detectChanges();
     expect(component.navLinks).toEqual(navLinks);
   });
 
-  it("should be able to navigate to analytics", fakeAsync(() => {
-    router.navigate(["analytics"]);
+  it('should be able to navigate to analytics', fakeAsync(() => {
+    router.navigate(['analytics']);
     tick();
-    expect(location.path()).toBe("/analytics");
+    expect(location.path()).toBe('/analytics');
   }));
 
-  it("should be able to navigate to parameters", fakeAsync(() => {
-    router.navigate(["parameters"]);
+  it('should be able to navigate to parameters', fakeAsync(() => {
+    router.navigate(['parameters']);
     tick();
-    expect(location.path()).toBe("/parameters");
+    expect(location.path()).toBe('/parameters');
   }));
 
-  it("should be able to navigate to results", fakeAsync(() => {
-    router.navigate(["results"]);
+  it('should be able to navigate to results', fakeAsync(() => {
+    router.navigate(['results']);
     tick();
-    expect(location.path()).toBe("/results");
+    expect(location.path()).toBe('/results');
   }));
 
-  it("should redirect to analytics", fakeAsync(() => {
-    router.navigate(["**"]);
+  it('should redirect to analytics', fakeAsync(() => {
+    router.navigate(['**']);
     tick();
-    expect(location.path()).toBe("/analytics");
+    expect(location.path()).toBe('/analytics');
   }));
 });

@@ -14,17 +14,17 @@
  * limitations under the License.
  */
 
-import { async, ComponentFixture, TestBed } from "@angular/core/testing";
-import { Component, Input } from "@angular/core";
-import { MatCardModule, MatProgressSpinnerModule } from "@angular/material";
-import { FormsModule } from "@angular/forms";
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { Component, Input } from '@angular/core';
+import { MatCardModule, MatProgressSpinnerModule } from '@angular/material';
+import { FormsModule } from '@angular/forms';
 
-import { AnalyticsService } from "../gaffer/analytics.service";
-import { ParameterInputComponent } from "./parameter-input.component";
+import { AnalyticsService } from '../gaffer/analytics.service';
+import { ParameterInputComponent } from './parameter-input.component';
 
 @Component({
-  selector: "app-query",
-  template: ""
+  selector: 'app-query',
+  template: ''
 })
 class MockOperationComponent {
   @Input() model;
@@ -33,13 +33,13 @@ class MockOperationComponent {
 class AnalyticsServiceStub {
   getAnalytic = () => {
     return {
-      operationName: "Test operation name"
+      operationName: 'Test operation name'
     };
-  };
-  executeAnalytic = () => {};
+  }
+  executeAnalytic = () => { };
 }
 
-describe("ParameterInputComponent", () => {
+describe('ParameterInputComponent', () => {
   let component: ParameterInputComponent;
   let fixture: ComponentFixture<ParameterInputComponent>;
 
@@ -56,22 +56,22 @@ describe("ParameterInputComponent", () => {
     component = fixture.componentInstance;
   });
 
-  it("should be created", () => {
+  it('should be created', () => {
     fixture.detectChanges();
     expect(component).toBeTruthy();
   });
 
-  it("should execute the named operation on execution", () => {
+  it('should execute the named operation on execution', () => {
     fixture.detectChanges();
-    let analyticsService = TestBed.get(AnalyticsService);
-    let spy = spyOn(analyticsService, "executeAnalytic");
+    const analyticsService = TestBed.get(AnalyticsService);
+    const spy = spyOn(analyticsService, 'executeAnalytic');
 
     component.executeAnalytic();
 
     expect(spy).toHaveBeenCalledWith();
   });
 
-  it("should set loading to true on execute", () => {
+  it('should set loading to true on execute', () => {
     fixture.detectChanges();
 
     component.loading = true;

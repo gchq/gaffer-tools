@@ -14,18 +14,18 @@
  * limitations under the License.
  */
 
-import { Component, OnInit, Injectable, ViewChild } from "@angular/core";
-import { MatSort, MatTableDataSource } from "@angular/material";
-import { cloneDeep, union } from "lodash";
+import { Component, OnInit, Injectable, ViewChild } from '@angular/core';
+import { MatSort, MatTableDataSource } from '@angular/material';
+import { cloneDeep, union } from 'lodash';
 
-import { ResultsService } from "../gaffer/results.service";
-import { TypeService } from "../gaffer/type.service";
-import { TimeService } from "../gaffer/time.service";
-import { SchemaService } from "../gaffer/schema.service";
+import { ResultsService } from '../gaffer/results.service';
+import { TypeService } from '../gaffer/type.service';
+import { TimeService } from '../gaffer/time.service';
+import { SchemaService } from '../gaffer/schema.service';
 
 @Component({
-  selector: "app-table",
-  templateUrl: "./table.component.html"
+  selector: 'app-table',
+  templateUrl: './table.component.html'
 })
 @Injectable()
 export class TableComponent implements OnInit {
@@ -41,7 +41,7 @@ export class TableComponent implements OnInit {
     private types: TypeService,
     private time: TimeService,
     private schemaService: SchemaService
-  ) {}
+  ) { }
 
   /**
    * Fetches the results. It first loads the latest types from the config and the latest schema.
@@ -56,11 +56,14 @@ export class TableComponent implements OnInit {
         entities: [],
         other: []
       };
-      let results = this.results.get();
-      for (let i in results) {
-        if (results[i]["class"].split(".").pop() === "Entity") {
+      const results = this.results.get();
+      const a = 'class';
+      const b = 'Entity';
+      const c = 'Edge';
+      for (const i in results) {
+        if (results[i][a].split('.').pop() === b) {
           sortedResults.entities.push(results[i]);
-        } else if (results[i]["class"].split(".").pop() === "Edge") {
+        } else if (results[i][a].split('.').pop() === c) {
           sortedResults.edges.push(results[i]);
         } else {
           sortedResults.other.push(results[i]);
@@ -78,14 +81,14 @@ export class TableComponent implements OnInit {
     this.resultsByType = {};
     this.data.tooltips = {};
 
-    //Transform the edges into a displayable form
+    // Transform the edges into a displayable form
     this.processElements(
       "Edge",
       "edges",
       ["result type", "GROUP", "SOURCE", "DESTINATION", "DIRECTED"],
       resultsData
     );
-    //Transform the entities into a displayable form
+    // Transform the entities into a displayable form
     this.processElements(
       "Entity",
       "entities",
@@ -102,7 +105,7 @@ export class TableComponent implements OnInit {
     }
     this.data.allTypes = [];
     this.data.allGroups = [];
-    for (var type in this.resultsByType) {
+    for (const type of this.resultsByType) {
       this.data.allTypes.push(type);
       for (var group in this.resultsByType[type]) {
         this.data.allGroups = union([group], this.data.allGroups);
@@ -121,9 +124,9 @@ export class TableComponent implements OnInit {
 
   updateFilteredResults = function() {
     this.data.results = [];
-    for (var t in this.data.types) {
+    for (const t in this.data.types) {
       if (this.data.types[t] in this.resultsByType) {
-        for (var g in this.data.groups) {
+        for (const g in this.data.groups) {
           if (this.data.groups[g] in this.resultsByType[this.data.types[t]]) {
             this.data.results = this.data.results.concat(
               this.resultsByType[this.data.types[t]][this.data.groups[g]]
@@ -132,7 +135,7 @@ export class TableComponent implements OnInit {
         }
       }
     }
-    //Set the results to be displayed in the table
+    // Set the results to be displayed in the table
     this.data.results = new MatTableDataSource(this.data.results);
     this.columnsToDisplay = this.data.columns;
   };
@@ -143,7 +146,7 @@ export class TableComponent implements OnInit {
     idKeys,
     resultsData
   ) {
-    //If there are elements of this type
+    // If there are elements of this type
     if (
       resultsData[typePlural] &&
       Object.keys(resultsData[typePlural]).length > 0
@@ -154,11 +157,12 @@ export class TableComponent implements OnInit {
       for (var i in resultsData[typePlural]) {
         var element = resultsData[typePlural][i];
         if (element) {
-          //Convert the ids (i.e. result type, GROUP and SOURCE) into a displayable form for the table
-          var result = {};
-          for (var idIndex in idKeys) {
-            var id = idKeys[idIndex];
-            if ("SOURCE" === id && element.source === undefined) {
+          // Convert the ids (i.e. result type, GROUP and SOURCE) into a displayable form for the table
+          const result = {};
+          const a = 'resultType';
+          for (const idIndex of idKeys) {
+            const id = idKeys[idIndex];
+            if ('SOURCE' === id && element.source === undefined) {
               result[id] = this.convertValue(id, element.vertex);
             } else {
               result[id] = this.convertValue(id, element[id.toLowerCase()]);
@@ -166,17 +170,17 @@ export class TableComponent implements OnInit {
           }
           result["result type"] = type;
 
-          //Get all of the properties to show in the table
+          // Get all of the properties to show in the table
           if (element.properties) {
             if (!(element.group in this.resultsByType[type])) {
               this.resultsByType[type][element.group] = [];
 
-              var elementDef = this.schema[typePlural][element.group];
+              const elementDef = this.schema[typePlural][element.group];
               if (elementDef && elementDef.properties) {
                 if (elementDef.groupBy) {
-                  for (var j in elementDef.groupBy) {
-                    var propName = elementDef.groupBy[j];
-                    var typeDef = this.schema.types[
+                  for (const j of elementDef.groupBy) {
+                    const propName = elementDef.groupBy[j];
+                    const typeDef = this.schema.types[
                       elementDef.properties[propName]
                     ];
                     if (
@@ -189,8 +193,8 @@ export class TableComponent implements OnInit {
                     this.groupByProperties = union([propName], this.groupByProperties);
                   }
                 }
-                for (var propertyName in elementDef.properties) {
-                  var typeDef = this.schema.types[
+                for (const propertyName of elementDef.properties) {
+                  const typeDef = this.schema.types[
                     elementDef.properties[propertyName]
                   ];
                   if (
@@ -232,12 +236,12 @@ export class TableComponent implements OnInit {
             result["SOURCE"] = value;
             this.ids = union(["SOURCE"], this.ids);
           } else if (
-            "source" === key ||
-            "destination" === key ||
-            "directed" === key ||
-            "group" === key
+            'source' === key ||
+            'destination' === key ||
+            'directed' === key ||
+            'group' === key
           ) {
-            var parsedKey = key.toUpperCase();
+            const parsedKey = key.toUpperCase();
             result[parsedKey] = value;
             this.ids = union([parsedKey], this.ids);
           } else if ("value" === key) {
@@ -260,7 +264,7 @@ export class TableComponent implements OnInit {
   };
 
   private convertValue = function(name, value) {
-    var parsedValue = value;
+    let parsedValue = value;
     if (parsedValue) {
       parsedValue = this.types.getShortValue(parsedValue);
       if (this.time.isTimeProperty(name)) {

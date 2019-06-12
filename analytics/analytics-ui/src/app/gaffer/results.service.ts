@@ -31,8 +31,8 @@ export class ResultsService {
 
   /** Update the results */
   update = function(newResults) {
-    if (newResults !== undefined && newResults !== null && newResults !== "") {
-      //Convert it to an array if theres only one result
+    if (newResults !== undefined && newResults !== null && newResults !== '') {
+      // Convert it to an array if theres only one result
       if (!Array.isArray(newResults)) {
         newResults = [newResults];
       }

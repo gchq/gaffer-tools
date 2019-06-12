@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-import { TestBed, async } from "@angular/core/testing";
-import { empty, of } from "rxjs";
-import { HttpClient } from "@angular/common/http";
+import { TestBed, async } from '@angular/core/testing';
+import { empty, of, EMPTY } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
 
 import { QueryService } from "./query.service";
 import { ErrorService } from "../dynamic-input/error.service";
@@ -24,25 +24,25 @@ import { ResultsService } from "./results.service";
 import { EndpointService } from "../config/endpoint-service";
 
 class CommonServiceStub {
-  parseUrl = () => {};
+  parseUrl = () => { };
 }
 class ErrorServiceStub {
-  handle = () => {};
+  handle = () => { };
 }
 class HttpClientStub {
   post = () => {
-    return empty();
-  };
+    return EMPTY;
+  }
 }
 
 class ResultsServiceStub {
-  update = () => {};
+  update = () => { };
 }
 class EndpointServiceStub {
-  getRestEndpoint = () => {};
+  getRestEndpoint = () => { };
 }
 
-describe("QueryService", () => {
+describe('QueryService', () => {
   let service: QueryService;
 
   beforeEach(async(() => {
@@ -76,17 +76,18 @@ describe("QueryService", () => {
 
   //   service.executeQuery(null, () => {}, () => {});
 
+
   //   expect(spy).toHaveBeenCalledWith(message, null, null);
   // });
 
-  it("should store the results retrieved from the server", () => {
-    let results = TestBed.get(ResultsService);
-    let spy = spyOn(results, "update");
-    let http = TestBed.get(HttpClient);
-    let data = [0];
-    spyOn(http, "post").and.returnValue(of(data));
+  it('should store the results retrieved from the server', () => {
+    const results = TestBed.get(ResultsService);
+    const spy = spyOn(results, 'update');
+    const http = TestBed.get(HttpClient);
+    const data = [0];
+    spyOn(http, 'post').and.returnValue(of(data));
 
-    service.executeQuery(null, () => {}, () => {});
+    service.executeQuery(null, () => { }, () => { });
 
     expect(spy).toHaveBeenCalledWith(data);
   });

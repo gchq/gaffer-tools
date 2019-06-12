@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-import { Injectable } from "@angular/core";
-import { HttpClient, HttpHeaders } from "@angular/common/http";
+import { Injectable } from '@angular/core';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 
-import { ErrorService } from "../dynamic-input/error.service";
-import { ResultsService } from "./results.service";
-import { EndpointService } from "../config/endpoint-service";
-import { startsWith } from "lodash";
+import { ErrorService } from '../dynamic-input/error.service';
+import { ResultsService } from './results.service';
+import { EndpointService } from '../config/endpoint-service';
+import { startsWith } from 'lodash';
 
 @Injectable()
 export class QueryService {
@@ -33,32 +33,32 @@ export class QueryService {
 
   /**
    * Alerts the user if they hit the result limit
-   * @param {Array} data The data returned by the Gaffer REST service
+   * The data returned by the Gaffer REST service
    */
 
   /**
    * Executes a query. If too many results are returned a dialog is shown
    * to ask the user if they would like to view the results or amend their
    * query. On success, the result service is called to update the results.
-   * @param {Object} The operation chain to execute. It can either be an object or a json string.
+   * The operation chain to execute. It can either be an object or a json string.
    */
   executeQuery = function(operation, onSuccess, onFailure) {
     this.execute(
       operation,
-      //On success
+      // On success
       data => {
-        //If there are too many results tell the user and only show a slice of the data
+        // If there are too many results tell the user and only show a slice of the data
 
-        //Store these results and show them
+        // Store these results and show them
         this.results.update(data);
         if (onSuccess) {
           onSuccess(data);
         }
       },
-      //On error
+      // On error
       err => {
         this.error.handle(
-          "Error executing operation, see the console for details",
+          'Error executing operation, see the console for details',
           null,
           err
         );
@@ -71,36 +71,36 @@ export class QueryService {
 
   /**
    * Executes an operation and calls the onSuccess or onFailure functions provided.
-   * @param {Object} The operation chain to execute. It can either be an object or a json string.
+   * The operation chain to execute. It can either be an object or a json string.
    */
   execute = function(operation, onSuccess, onFailure) {
-    //Convert the operation to a json string
-    if (typeof operation !== "string" && !(operation instanceof String)) {
+    // Convert the operation to a json string
+    if (typeof operation !== 'string' && !(operation instanceof String)) {
       operation = JSON.stringify(operation);
     }
-    //Configure the http headers
+    // Configure the http headers
     let headers = new HttpHeaders();
-    headers = headers.set("Content-Type", "application/json; charset=utf-8");
-    //Post the request to the server
+    headers = headers.set('Content-Type', 'application/json; charset=utf-8');
+    // Post the request to the server
     let queryUrl =
-      this.endpoint.getRestEndpoint() + "/graph/operations/execute";
-    if (!startsWith(queryUrl, "http")) {
-      queryUrl = "http://" + queryUrl;
+      this.endpoint.getRestEndpoint() + '/graph/operations/execute';
+    if (!startsWith(queryUrl, 'http')) {
+      queryUrl = 'http://' + queryUrl;
     }
-    this.http.post(queryUrl, operation, { headers: headers }).subscribe(
-      //On success
+    this.http.post(queryUrl, operation, { headers: '{headers}' }).subscribe(
+      // On success
       data => {
         if (onSuccess) {
           onSuccess(data);
         }
       },
-      //On error
+      // On error
       err => {
         if (onFailure) {
           onFailure(err);
         } else {
           this.error.handle(
-            "Error running operation, see the console for details",
+            'Error running operation, see the console for details',
             null,
             err
           );

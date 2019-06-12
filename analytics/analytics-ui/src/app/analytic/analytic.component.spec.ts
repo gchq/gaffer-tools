@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-import { async, ComponentFixture, TestBed } from "@angular/core/testing";
-import { Router } from "@angular/router";
-import { MatCardModule, MatTooltipModule } from "@angular/material";
-import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { Router } from '@angular/router';
+import { MatCardModule, MatTooltipModule } from '@angular/material';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
-import { AnalyticComponent } from "./analytic.component";
-import { AnalyticsService } from "../gaffer/analytics.service";
+import { AnalyticComponent } from './analytic.component';
+import { AnalyticsService } from '../gaffer/analytics.service';
 
 class RouterStub {
   navigate = () => {};
@@ -28,10 +28,10 @@ class RouterStub {
 class AnalyticsServiceStub {
   createArrayAnalytic = () => {
     return [];
-  };
+  }
 }
 
-describe("AnalyticComponent", () => {
+describe('AnalyticComponent', () => {
   let component: AnalyticComponent;
   let fixture: ComponentFixture<AnalyticComponent>;
 
@@ -50,35 +50,35 @@ describe("AnalyticComponent", () => {
     fixture = TestBed.createComponent(AnalyticComponent);
     component = fixture.componentInstance;
     component.model = {
-      description: "Test description",
+      description: 'Test description',
       metaData: {
-        iconURL: "Test url"
+        iconURL: 'Test url'
       }
     };
   });
 
-  it("should be created", () => {
+  it('should be created', () => {
     fixture.detectChanges();
     expect(component).toBeTruthy();
   });
 
-  it("should navigate on execution of analytic", () => {
+  it('should navigate on execution of analytic', () => {
     fixture.detectChanges();
-    let router = TestBed.get(Router);
-    let spy = spyOn(router, "navigate");
+    const router = TestBed.get(Router);
+    const spy = spyOn(router, 'navigate');
 
     component.execute([]);
 
-    expect(spy).toHaveBeenCalledWith(["/parameters"]);
+    expect(spy).toHaveBeenCalledWith(['/parameters']);
   });
 
-  it("should create the named operation on execution of analytic", () => {
+  it('should create the named operation on execution of analytic', () => {
     fixture.detectChanges();
-    let analyticsService = TestBed.get(AnalyticsService);
-    let spy = spyOn(analyticsService, "createArrayAnalytic");
+    const analyticsService = TestBed.get(AnalyticsService);
+    const spy = spyOn(analyticsService, 'createArrayAnalytic');
 
-    component.execute(["Test data"]);
+    component.execute(['Test data']);
 
-    expect(spy).toHaveBeenCalledWith(["Test data"]);
+    expect(spy).toHaveBeenCalledWith(['Test data']);
   });
 });

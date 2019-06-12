@@ -15,12 +15,12 @@
  */
 export class TimeService {
   validUnits = [
-    "day",
-    "hour",
-    "minute",
-    "second",
-    "millisecond",
-    "microsecond"
+    'day',
+    'hour',
+    'minute',
+    'second',
+    'millisecond',
+    'microsecond'
   ];
   timeProperties = {};
 

@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-import { Injectable } from "@angular/core";
-import { endsWith, startsWith } from "lodash";
+import { Injectable } from '@angular/core';
+import { endsWith, startsWith } from 'lodash';
 
-import { HttpHeaders, HttpClient } from "@angular/common/http";
-import { Observable, Observer, of } from "rxjs";
-import { ErrorService } from "../dynamic-input/error.service";
+import { HttpHeaders, HttpClient } from '@angular/common/http';
+import { Observable, Observer, of } from 'rxjs';
+import { ErrorService } from '../dynamic-input/error.service';
 
 @Injectable()
 export class TypeService {
@@ -28,14 +28,14 @@ export class TypeService {
   unknownType = {
     fields: [
       {
-        label: "Value",
-        type: "text",
-        class: "java.lang.String"
+        label: 'Value',
+        type: 'text',
+        class: 'java.lang.String'
       }
     ]
   };
 
-  constructor(private http: HttpClient, private error: ErrorService) {}
+  constructor(private http: HttpClient, private error: ErrorService) { }
 
   /**
    * Asynchronously gets the types from the config. The types will be saved until update is called to reduce number of http requests.
@@ -44,7 +44,7 @@ export class TypeService {
     if (this.types) {
       return of(this.types);
     } else if (!this.typesObservable) {
-      this.typesObservable = Observable.create((observer: Observer<String>) => {
+      this.typesObservable = new Observable((observer: Observer<string>) => {
         this.getTypes(true, observer);
       });
     }
@@ -53,25 +53,25 @@ export class TypeService {
 
   /** Get the types from the config */
   getTypes = function(loud, observer) {
-    //Configure the http headers
+    // Configure the http headers
     let headers = new HttpHeaders();
-    headers = headers.set("Content-Type", "application/json; charset=utf-8");
-    //Make the http request
-    let queryUrl = "http://localhost:4200" + "/assets/defaultConfig.json";
-    if (!startsWith(queryUrl, "http")) {
-      queryUrl = "http://" + queryUrl;
+    headers = headers.set('Content-Type', 'application/json; charset=utf-8');
+    // Make the http request
+    let queryUrl = 'http://localhost:4200' + '/assets/defaultConfig.json';
+    if (!startsWith(queryUrl, 'http')) {
+      queryUrl = 'http://' + queryUrl;
     }
-    this.http.get(queryUrl, { headers: headers }).subscribe(
-      //On success
+    this.http.get(queryUrl, { headers: '{headers}' }).subscribe(
+      // On success
       data => {
         this.types = data.types;
         observer.next(data.types);
       },
-      //On error
+      // On error
       err => {
         if (loud) {
           this.error.handle(
-            "Failed to load the config, see the console for details",
+            'Failed to load the config, see the console for details',
             null,
             err
           );
@@ -85,10 +85,10 @@ export class TypeService {
 
   getShortValue = function(value) {
     if (
-      typeof value === "string" ||
+      typeof value === 'string' ||
       value instanceof String ||
-      typeof value === "number" ||
-      typeof value === "boolean" ||
+      typeof value === 'number' ||
+      typeof value === 'boolean' ||
       value === null ||
       value === undefined
     ) {
@@ -97,37 +97,37 @@ export class TypeService {
 
     if (value.constructor === Array) {
       return this.listShortValue(value);
-    } else if (Object.keys(value).length != 1) {
+    } else if (Object.keys(value).length !== 1) {
       return this.defaultShortValue(value);
     }
 
-    var typeClass = Object.keys(value)[0];
-    var parts = value[typeClass]; // the value without the class prepended
+    const typeClass = Object.keys(value)[0];
+    const parts = value[typeClass]; // the value without the class prepended
     if (parts === undefined) {
-      return "";
+      return '';
     }
 
-    var type = this.getType(typeClass);
+    const type = this.getType(typeClass);
 
     if (type.custom) {
       return this.customShortValue(type.fields, parts);
     }
 
     if (!this.isKnown(typeClass)) {
-      if (endsWith(typeClass, "Map")) {
+      if (endsWith(typeClass, 'Map')) {
         return this.mapShortValue(parts);
-      } else if (endsWith(typeClass, "List") || endsWith(typeClass, "Set")) {
+      } else if (endsWith(typeClass, 'List') || endsWith(typeClass, 'Set')) {
         return this.listShortValue(parts);
       }
     }
 
-    if (typeof parts === "object") {
+    if (typeof parts === 'object') {
       return Object.keys(parts)
         .map(key => {
-          var val = parts[key];
+          const val = parts[key];
           return this.getShortValue(val);
         })
-        .join("|");
+        .join('|');
     }
 
     return parts;
@@ -141,7 +141,7 @@ export class TypeService {
   };
 
   isKnown = function(className) {
-    var knownType = this.types[className];
+    const knownType = this.types[className];
 
     if (knownType) {
       return true;
@@ -150,44 +150,44 @@ export class TypeService {
     return false;
   };
 
-  defaultShortValue = function(value) {
+  defaultShortValue = value => {
     return JSON.stringify(value);
-  };
+  }
 
   listShortValue = function(values) {
     return values
       .map(value => {
         return this.getShortValue(value);
       })
-      .join(", ");
+      .join(', ');
   };
 
   private mapShortValue = function(value) {
     return Object.keys(value)
       .map(key => {
-        return key + ": " + this.getShortValue(value[key]);
+        return key + ': ' + this.getShortValue(value[key]);
       })
-      .join(", ");
+      .join(', ');
   };
 
   private customShortValue = function(fields, parts) {
-    var showWithLabel = fields.length !== 1;
+    const showWithLabel = fields.length !== 1;
 
     return fields
       .map(field => {
-        var layers = field.key.split(".");
-        var customValue = parts;
-        for (var i in layers) {
+        const layers = field.key.split('.');
+        let customValue = parts;
+        for (const i of layers) {
           customValue = customValue[layers[i]];
         }
 
         customValue = this.getShortValue(customValue);
 
         if (showWithLabel) {
-          return field.label + ": " + customValue;
+          return field.label + ': ' + customValue;
         }
         return customValue;
       })
-      .join(", ");
+      .join(', ');
   };
 }

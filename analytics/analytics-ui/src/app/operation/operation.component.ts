@@ -14,16 +14,16 @@
  * limitations under the License.
  */
 
-import { Component, OnInit, Input } from "@angular/core";
+import { Component, OnInit, Input } from '@angular/core';
 
 @Component({
-  selector: "app-query",
-  templateUrl: "./operation.component.html"
+  selector: 'app-query',
+  templateUrl: './operation.component.html'
 })
 export class OperationComponent implements OnInit {
-  @Input("model") model;
+  @Input() model;
 
-  constructor() {}
+  constructor() { }
 
-  ngOnInit() {}
+  ngOnInit() { }
 }
