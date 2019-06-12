@@ -24,7 +24,11 @@ matrix:
         - "node_modules"
     sudo: required
     addons:
-      chrome: stable
+      apt:
+        sources:
+          - google-chrome
+        packages:
+          - google-chrome-stable
     before_install:
       - cd ./analytics/analytics-ui
     install:
@@ -32,7 +36,7 @@ matrix:
       - npm install
     script:
       - ng lint
-      - ng test --watch false -cc
+      - ng test --watch=false --progress=false --browsers=ChromeHeadlessCI
       - ng build --prod --watch
     matrix:
       fast_finish: true
