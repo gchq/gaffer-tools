@@ -1,10 +1,10 @@
 ---
 description: >-
-  The following is a step-by-step guide on the use of the restAPI to create
+  The following is a step-by-step guide on the use of the REST API to create
   analytics to be run in the UI
 ---
 
-# Adding an Analytic using the restAPI
+# Adding an Analytic using the REST API
 
 {% hint style="info" %}
 Before following any of the below steps, make sure you have started the REST API running by following the steps specified in [Overview & Getting Started](./#running-the-rest-api)
@@ -96,7 +96,7 @@ The value input should now be as follows.
 }
 ```
 
-6\) Click the **Try it out!** button in the bottom left hand corner, and check down to see the response. If the restAPI has given a 200 code response, then that means the Named Operation has been successfully added to your restAPI, and can be used in Analytics, one of which we will add in the next few steps.
+6\) Click the **Try it out!** button in the bottom left hand corner, and check down to see the response. If the REST API has given a 200 code response, then that means the Named Operation has been successfully added to your REST API, and can be used in Analytics, one of which we will add in the next few steps.
 
 7\) Again from the Description dropdown, select _AddAnalytic_ and click Add Example - a blank analytic will be generated. Make sure to give the analytic a name to be displayed by altering the value given to **analyticName** \(in our example, Analytic X\) and to make sure **operationName** matches the name of the named operation we have generated \(in our example, getAllX\).
 
@@ -133,4 +133,4 @@ Add a **Description**, and alter the **metaData** - change the input of **iconUR
       }
 ```
 
-7\) Click the **Try it out!** button in the bottom left hand corner, and check down to see the response. If the restAPI has given a 200 code response, then that means the Analytic has been successfully added to your restAPI, and when the UI is opened, it will be displayed in the grid.
+7\) Click the **Try it out!** button in the bottom left hand corner, and check down to see the response. If the REST API has given a 200 code response, then that means the Analytic has been successfully added to your REST API, and when the UI is opened, it will be displayed in the grid.
