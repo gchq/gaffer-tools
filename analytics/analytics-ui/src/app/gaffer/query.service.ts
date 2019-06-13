@@ -32,11 +32,6 @@ export class QueryService {
   ) {}
 
   /**
-   * Alerts the user if they hit the result limit
-   * The data returned by the Gaffer REST service
-   */
-
-  /**
    * Executes a query. If too many results are returned a dialog is shown
    * to ask the user if they would like to view the results or amend their
    * query. On success, the result service is called to update the results.
