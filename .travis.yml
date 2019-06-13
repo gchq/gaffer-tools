@@ -37,7 +37,7 @@ matrix:
     script:
       - ng lint
       - ng test --watch=false --progress=false --browsers=ChromeHeadlessCI
-      - ng build --prod --watch
+      - ng build --prod
     matrix:
       fast_finish: true
 
