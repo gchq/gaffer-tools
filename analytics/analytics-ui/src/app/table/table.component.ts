@@ -60,7 +60,7 @@ export class TableComponent implements OnInit {
       const a = 'class';
       const b = 'Entity';
       const c = 'Edge';
-      for (const i in results) {
+      for (let i in results) {
         if (results[i][a].split('.').pop() === b) {
           sortedResults.entities.push(results[i]);
         } else if (results[i][a].split('.').pop() === c) {
@@ -105,9 +105,9 @@ export class TableComponent implements OnInit {
     }
     this.data.allTypes = [];
     this.data.allGroups = [];
-    for (const type of this.resultsByType) {
+    for (let type in this.resultsByType) {
       this.data.allTypes.push(type);
-      for (const group in this.resultsByType[type]) {
+      for (let group in this.resultsByType[type]) {
         if (this.resultsByType[type].hasOwnProperty(group)) {
           this.data.allGroups = union([group], this.data.allGroups);
         }
@@ -126,9 +126,9 @@ export class TableComponent implements OnInit {
 
   updateFilteredResults = function() {
     this.data.results = [];
-    for (const t in this.data.types) {
+    for (let t in this.data.types) {
       if (this.data.types[t] in this.resultsByType) {
-        for (const g in this.data.groups) {
+        for (let g in this.data.groups) {
           if (this.data.groups[g] in this.resultsByType[this.data.types[t]]) {
             this.data.results = this.data.results.concat(
               this.resultsByType[this.data.types[t]][this.data.groups[g]]
@@ -156,15 +156,14 @@ export class TableComponent implements OnInit {
       this.resultsByType[type] = [];
       this.ids = union(idKeys, this.ids);
       // For each element
-      for (const i in resultsData[typePlural]) {
+      for (let i in resultsData[typePlural]) {
         if (resultsData[typePlural].hasOwnProperty(i)) {
           const element = resultsData[typePlural][i];
           if (element) {
             // Convert the ids (i.e. result type, GROUP and SOURCE) into a displayable form for the table
             const result = {};
             const a = 'resultType';
-            for (const idIndex of idKeys) {
-              const id = idKeys[idIndex];
+            for (let id of idKeys) {
               if ('SOURCE' === id && element.source === undefined) {
                 result[id] = this.convertValue(id, element.vertex);
               } else {
@@ -181,7 +180,7 @@ export class TableComponent implements OnInit {
                 const elementDef = this.schema[typePlural][element.group];
                 if (elementDef && elementDef.properties) {
                   if (elementDef.groupBy) {
-                    for (const j of elementDef.groupBy) {
+                    for (let j of elementDef.groupBy) {
                       const propName = elementDef.groupBy[j];
                       const typeDef = this.schema.types[
                         elementDef.properties[propName]
@@ -196,7 +195,7 @@ export class TableComponent implements OnInit {
                       this.groupByProperties = union([propName], this.groupByProperties);
                     }
                   }
-                  for (const propertyName of elementDef.properties) {
+                  for (let propertyName of elementDef.properties) {
                     const typeDef = this.schema.types[
                       elementDef.properties[propertyName]
                     ];
@@ -211,7 +210,7 @@ export class TableComponent implements OnInit {
                   }
                 }
               }
-              for (const prop in element.properties) {
+              for (let prop in element.properties) {
                 if (element.properties.hasOwnProperty(prop)) {
                   this.properties = union([prop], this.properties);
                   result[prop] = this.convertValue(prop, element.properties[prop]);
@@ -229,12 +228,12 @@ export class TableComponent implements OnInit {
   };
 
   private processOtherTypes = function(resultsData) {
-    for (const i in resultsData.other) {
+    for (let i in resultsData.other) {
       if (resultsData.other.hasOwnProperty(i)) {
         const item = resultsData.other[i];
         if (item) {
           const result = { GROUP: '' };
-          for (const key in item) {
+          for (let key in item) {
             if (item.hasOwnProperty(key)) {
               const value = this.convertValue(key, item[key]);
               if ('class' === key) {

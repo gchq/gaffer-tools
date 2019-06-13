@@ -114,12 +114,12 @@ export class SchemaService {
   private updateSchemaVertices = function() {
     const vertices = [];
     if (this.schema) {
-      for (const i in this.schema.entities) {
+      for (let i in this.schema.entities) {
         if (vertices.indexOf(this.schema.entities[i].vertex) === -1) {
           vertices.push(this.schema.entities[i].vertex);
         }
       }
-      for (const i of this.schema.edges) {
+      for (let i of this.schema.edges) {
         if (vertices.indexOf(this.schema.edges[i].source) === -1) {
           vertices.push(this.schema.edges[i].source);
         }

@@ -74,10 +74,6 @@ export class QueryService {
    * The operation chain to execute. It can either be an object or a json string.
    */
   execute = function(operation, onSuccess, onFailure) {
-    // Convert the operation to a json string
-    if (typeof operation !== 'string' && !(operation instanceof String)) {
-      operation = JSON.stringify(operation);
-    }
     // Configure the http headers
     let headers = new HttpHeaders();
     headers = headers.set('Content-Type', 'application/json; charset=utf-8');

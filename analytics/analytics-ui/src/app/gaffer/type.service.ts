@@ -177,7 +177,7 @@ export class TypeService {
       .map(field => {
         const layers = field.key.split('.');
         let customValue = parts;
-        for (const i of layers) {
+        for (let i in layers) {
           customValue = customValue[layers[i]];
         }
 
