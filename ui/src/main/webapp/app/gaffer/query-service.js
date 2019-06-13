@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2018 Crown Copyright
+ * Copyright 2017-2019 Crown Copyright
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,10 +16,30 @@
 
 'use strict';
 
-angular.module('app').factory('query', ['$http', 'config', 'events', 'common', 'error', 'loading', 'settings', 'results', '$mdDialog', function($http, config, events, common, error, loading, settings, results, $mdDialog) {
+angular.module('app').factory('query', ['$http', 'config', 'events', 'common', 'error', 'loading', 'settings', 'results', '$mdDialog', '$routeParams', '$location', function($http, config, events, common, error, loading, settings, results, $mdDialog, $routeParams, $location) {
 
     var query = {};
     var operations = [];
+
+    query.executeOperationJson = function(operationJson) {
+        if(operationJson) {
+            var operationJsonArray;
+            if(Array.isArray(operationJson)) {
+                operationJsonArray = operationJson;
+            } else {
+                operationJsonArray = [operationJson];
+            }
+            for (var i in operationJsonArray) {
+                try {
+                    var operation = JSON.parse(operationJsonArray[i]);
+                    query.addOperation(operation);
+                    query.executeQuery(operation);
+                } catch (err) {
+                    error.handle('Error executing operation. Is it a valid json operation string?', operationJsonArray[i]);
+                }
+            }
+        }
+    }
 
     /**
      * Alerts the user if they hit the result limit
@@ -111,6 +131,12 @@ angular.module('app').factory('query', ['$http', 'config', 'events', 'common', '
     query.setOperations = function(ops) {
         operations = ops;
         events.broadcast('operationsUpdated', [operations]);
+    }
+
+
+    if($routeParams.preQuery) {
+        query.executeOperationJson($routeParams.preQuery);
+        $location.search("preQuery", null);
     }
 
     return query;

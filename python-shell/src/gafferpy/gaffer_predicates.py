@@ -1,5 +1,5 @@
 #
-# Copyright 2016-2018 Crown Copyright
+# Copyright 2016-2019 Crown Copyright
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -609,6 +609,7 @@ class TimeUnit:
     MINUTE = 'MINUTE'
     SECOND = 'SECOND'
     MILLISECOND = 'MILLISECOND'
+    MICROSECOND = 'MICROSECOND'
 
 
 class InTimeRange(AbstractPredicate):
@@ -800,6 +801,9 @@ class ElementJoinComparator(AbstractPredicate):
 
         
 def predicate_context_converter(obj):
+    if obj is None:
+        return None
+
     if 'class' in obj:
         predicate = dict(obj)
     else:
@@ -824,6 +828,9 @@ def predicate_context_converter(obj):
 
 
 def predicate_converter(obj):
+    if obj is None:
+        return None
+
     if isinstance(obj, dict):
         predicate = dict(obj)
     else:

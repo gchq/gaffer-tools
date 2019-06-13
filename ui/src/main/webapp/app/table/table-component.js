@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2018 Crown Copyright
+ * Copyright 2017-2019 Crown Copyright
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -61,8 +61,7 @@ function TableController(schema, results, table, events, common, types, time, cs
         schema.get().then(function(gafferSchema) {
             vm.schema = gafferSchema;
             loadFromCache();
-            processResults(results.get());
-            
+            processResults(results.get());          
         }, function(err) {
             vm.schema = {types: {}, edges: {}, entities: {}};
             loadFromCache();
@@ -322,7 +321,6 @@ function TableController(schema, results, table, events, common, types, time, cs
         if (cachedValues.pagination) {
             vm.pagination = cachedValues.pagination;
         }
-        
     }
 
     var cacheValues = function() {

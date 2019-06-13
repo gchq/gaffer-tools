@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2018 Crown Copyright
+ * Copyright 2017-2019 Crown Copyright
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,24 +20,28 @@ import org.apache.slider.common.SliderXMLConfKeysForTesting;
 import org.apache.slider.funtest.framework.CommandTestBase;
 import org.apache.slider.test.SliderTestUtils;
 
-public class AccumuloSliderProperties {
+public final class AccumuloSliderProperties {
 
-	public static final String ACCUMULO_TABLET_SERVER_ROLE_NAME = "ACCUMULO_TSERVER";
+    private AccumuloSliderProperties() {
+        // private to prevent instantiation
+    }
 
-	public static final String TRACE_USER_PROPERTY = "site.accumulo-site.trace.user";
+    public static final String ACCUMULO_TABLET_SERVER_ROLE_NAME = "ACCUMULO_TSERVER";
 
-	public static final String INSTANCE_PROPERTY = "site.client.instance.name";
+    public static final String TRACE_USER_PROPERTY = "site.accumulo-site.trace.user";
 
-	public static final int ACCUMULO_LAUNCH_WAIT_TIME = SliderTestUtils.getTimeOptionMillis(
-		CommandTestBase.SLIDER_CONFIG,
-		SliderXMLConfKeysForTesting.KEY_ACCUMULO_LAUNCH_TIME,
-		SliderXMLConfKeysForTesting.DEFAULT_ACCUMULO_LAUNCH_TIME_SECONDS * 1000
-	);
+    public static final String INSTANCE_PROPERTY = "site.client.instance.name";
 
-	public static final int ACCUMULO_GO_LIVE_TIME = SliderTestUtils.getTimeOptionMillis(
-		CommandTestBase.SLIDER_CONFIG,
-		SliderXMLConfKeysForTesting.KEY_ACCUMULO_GO_LIVE_TIME,
-		SliderXMLConfKeysForTesting.DEFAULT_ACCUMULO_LIVE_TIME_SECONDS * 1000
-	);
+    public static final int ACCUMULO_LAUNCH_WAIT_TIME = SliderTestUtils.getTimeOptionMillis(
+            CommandTestBase.SLIDER_CONFIG,
+            SliderXMLConfKeysForTesting.KEY_ACCUMULO_LAUNCH_TIME,
+            SliderXMLConfKeysForTesting.DEFAULT_ACCUMULO_LAUNCH_TIME_SECONDS * 1000
+    );
+
+    public static final int ACCUMULO_GO_LIVE_TIME = SliderTestUtils.getTimeOptionMillis(
+            CommandTestBase.SLIDER_CONFIG,
+            SliderXMLConfKeysForTesting.KEY_ACCUMULO_GO_LIVE_TIME,
+            SliderXMLConfKeysForTesting.DEFAULT_ACCUMULO_LIVE_TIME_SECONDS * 1000
+    );
 
 }

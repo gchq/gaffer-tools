@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2018 Crown Copyright
+ * Copyright 2017-2019 Crown Copyright
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -50,9 +50,8 @@ angular.module('app').factory('types', ['config', 'common', function(config, com
     }
 
     var customShortValue = function(fields, parts) {
-        var showWithLabel = (fields.length !== 1)
-
-        return fields.map(function(field) {
+        var showWithLabel = (fields.length > 1);
+        var parsedFields = fields.map(function(field) {
             var layers = field.key.split('.');
             var customValue = parts;
             for (var i in layers) {
@@ -65,7 +64,16 @@ angular.module('app').factory('types', ['config', 'common', function(config, com
                 return field.label + ': ' + customValue;
             }
             return customValue;
-        }).join(', ');
+        });
+
+        if (showWithLabel) {
+            return parsedFields.join(", ");
+        } else if (parsedFields.length === 1) {
+            return parsedFields[0];
+        } else {
+            throw 'Expected fields in custom object, received empty!';
+        }
+        
     }
 
     service.getFields = function(className) {
@@ -254,10 +262,26 @@ angular.module('app').factory('types', ['config', 'common', function(config, com
         }
 
         if (typeof parts === 'object') {
+            if(type && type["fields"] && type["fields"].length > 0) {
+                var allHaveKeys = true;
+                for(var i in type["fields"]) {
+                    if(type["fields"][i]["key"] === undefined || type["fields"][i]["key"] == '') {
+                        allHaveKeys = false;
+                        break;
+                    }
+                }
+                if(allHaveKeys) {
+                    return type["fields"].map(function(field){
+                        var val = parts[field.key];
+                        return service.getShortValue(val);
+                    }).join(",");
+                }
+            }
+
             return Object.keys(parts).map(function(key){
                 var val = parts[key];
                 return service.getShortValue(val);
-            }).join("|");
+            }).join(",");
         }
 
         return parts;

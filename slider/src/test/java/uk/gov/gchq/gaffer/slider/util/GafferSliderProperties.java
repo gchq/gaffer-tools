@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2018 Crown Copyright
+ * Copyright 2017-2019 Crown Copyright
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,18 +18,22 @@ package uk.gov.gchq.gaffer.slider.util;
 
 import org.apache.slider.funtest.framework.CommandTestBase;
 
-public class GafferSliderProperties {
+public final class GafferSliderProperties {
 
-	public static final String GAFFER_ACCUMULO_USER = "gaffer_slider";
+    private GafferSliderProperties() {
+        // private to prevent instantiation
+    }
 
-	public static final String TEST_APP_RESOURCES_DIR_PROP = "test.app.resources.dir";
-	public static final String TEST_ADDON_PKG_DIR_PROP = "test.addon.pkg.dir";
-	public static final String TEST_ADDON_PKG_FILE_PROP = "test.addon.pkg.file";
-	public static final String TEST_ADDON_PKG_NAME_PROP = "test.addon.pkg.name";
+    public static final String GAFFER_ACCUMULO_USER = "gaffer_slider";
 
-	public static final String TEST_APP_RESOURCES_DIR = CommandTestBase.sysprop(TEST_APP_RESOURCES_DIR_PROP);
-	public static final String TEST_ADDON_PKG_DIR = CommandTestBase.sysprop(TEST_ADDON_PKG_DIR_PROP);
-	public static final String TEST_ADDON_PKG_FILE = CommandTestBase.sysprop(TEST_ADDON_PKG_FILE_PROP);
-	public static final String TEST_ADDON_PKG_NAME = CommandTestBase.sysprop(TEST_ADDON_PKG_NAME_PROP);
+    public static final String TEST_APP_RESOURCES_DIR_PROP = "test.app.resources.dir";
+    public static final String TEST_ADDON_PKG_DIR_PROP = "test.addon.pkg.dir";
+    public static final String TEST_ADDON_PKG_FILE_PROP = "test.addon.pkg.file";
+    public static final String TEST_ADDON_PKG_NAME_PROP = "test.addon.pkg.name";
+
+    public static final String TEST_APP_RESOURCES_DIR = CommandTestBase.sysprop(TEST_APP_RESOURCES_DIR_PROP);
+    public static final String TEST_ADDON_PKG_DIR = CommandTestBase.sysprop(TEST_ADDON_PKG_DIR_PROP);
+    public static final String TEST_ADDON_PKG_FILE = CommandTestBase.sysprop(TEST_ADDON_PKG_FILE_PROP);
+    public static final String TEST_ADDON_PKG_NAME = CommandTestBase.sysprop(TEST_ADDON_PKG_NAME_PROP);
 
 }

@@ -1,5 +1,5 @@
 #
-# Copyright 2016-2018 Crown Copyright
+# Copyright 2016-2019 Crown Copyright
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -597,37 +597,30 @@ class ElementMatch(Match):
         
         return match_json
 
+class KeyFunctionMatch(Match):
+    CLASS = "uk.gov.gchq.gaffer.store.operation.handler.join.match.KeyFunctionMatch"
 
-class Merge(ToJson, ToCodeString):
-    CLASS = "uk.gov.gchq.gaffer.operation.impl.join.merge.Merge"
-
-    def __init__(self, _class_name):
-        self._class_name = _class_name
-
-    def to_json(self):
-        return {
-            'class': self._class_name
-        }
-    
-class ElementMerge(Merge):
-    CLASS = "uk.gov.gchq.gaffer.store.operation.handler.join.merge.ElementMerge"
-
-    def __init__(self, results_wanted=None, merge_type=None, schema=None):
+    def __init__(self, first_key_function=None, second_key_function=None):
         super().__init__(_class_name=self.CLASS)
-        self.results_wanted = results_wanted
-        self.merge_type = merge_type
-        self.schema = schema
+        
+        if not isinstance(first_key_function, gaffer_functions.Function):
+            self.first_key_function = JsonConverter.from_json(first_key_function, class_obj=gaffer_functions.Function)
+        else:
+            self.first_key_function = first_key_function
+
+        if not isinstance(second_key_function, gaffer_functions.Function):
+            self.second_key_function = JsonConverter.from_json(second_key_function, class_obj=gaffer_functions.Function)
+        else:
+            self.second_key_function = second_key_function
 
     def to_json(self):
-        merge_json = super().to_json()
-        if self.results_wanted is not None:
-            merge_json['resultsWanted'] = self.results_wanted
-        if self.merge_type is not None:
-            merge_json['mergeType'] = self.merge_type
-        if self.schema is not None:
-            merge_json['schema'] = self.schema
-        
-        return merge_json
+        match_json = super().to_json()
+        if self.first_key_function is not None:
+            match_json['firstKeyFunction'] = self.first_key_function.to_json()
+        if self.second_key_function is not None:
+            match_json['secondKeyFunction'] = self.second_key_function.to_json()
+
+        return match_json
 
 class OperationChain(Operation):
     CLASS = "uk.gov.gchq.gaffer.operation.OperationChain"
@@ -987,6 +980,20 @@ class GetJobResults(Operation):
         return operation
 
 
+class CancelScheduledJob(Operation):
+    CLASS = "uk.gov.gchq.gaffer.operation.impl.job.CancelScheduledJob"
+
+    def __init__(self, job_id):
+        super().__init__(_class_name=self.CLASS)
+        self.job_id = job_id
+
+    def to_json(self):
+        operation_json = super().to_json()
+        if self.job_id is not None:
+            operation_json['jobId'] = self.job_id
+        return operation_json
+
+
 class SplitStoreFromFile(Operation):
     CLASS = 'uk.gov.gchq.gaffer.operation.impl.SplitStoreFromFile'
 
@@ -1124,24 +1131,17 @@ class GetElements(GetOperation):
             seed_matching=seed_matching,
             options=options)
 
-class GetAsElementsFromEndpoint(Operation):
-    CLASS = "uk.gov.gchq.gaffer.operation.impl.get.GetAsElementsFromEndpoint"
+class GetFromEndpoint(Operation):
+    CLASS = "uk.gov.gchq.gaffer.operation.impl.get.GetFromEndpoint"
 
-    def __init__(self, endpoint, element_generator, options=None):
+    def __init__(self, endpoint, options=None):
         super().__init__(_class_name=self.CLASS, options=options)
         self.endpoint = endpoint
-        if element_generator is not None:
-            if not isinstance(element_generator, gaffer_functions.Function):
-                self.element_generator = JsonConverter.from_json(element_generator)
-            else:
-                self.element_generator = element_generator
 
     def to_json(self):
         operation_json = super().to_json()
         if self.endpoint is not None:
             operation_json['endpoint'] = self.endpoint
-        if self.element_generator is not None:
-            operation_json['elementGenerator'] = self.element_generator.to_json()
 
         return operation_json
 
@@ -2651,9 +2651,8 @@ class Join(Operation):
     
     CLASS = 'uk.gov.gchq.gaffer.operation.impl.join.Join'
 
-    def __init__(self, input=None, operation=None, match_method=None, match_key=None, merge_method=None, join_type=None, collection_limit=None, options=None):
+    def __init__(self, input=None, operation=None, match_method=None, match_key=None, flatten=None, join_type=None, collection_limit=None, options=None):
         super().__init__(_class_name=self.CLASS, options=options)
-        
         
         if operation is not None:
             if not isinstance(operation, Operation):
@@ -2667,14 +2666,8 @@ class Join(Operation):
             else:
                 self.match_method = match_method
 
-
-        if merge_method is not None:
-            if not isinstance(merge_method, Merge):
-                self.merge_method = JsonConverter.from_json(merge_method)
-            else:
-                self.merge_method = merge_method
-
         self.input = input
+        self.flatten = flatten
         self.match_key = match_key
         self.collection_limit = collection_limit
         self.join_type = join_type
@@ -2697,8 +2690,8 @@ class Join(Operation):
             operation_json['matchMethod'] = self.match_method.to_json()
         if self.match_key is not None:
             operation_json['matchKey'] = self.match_key
-        if self.merge_method is not None:
-            operation_json['mergeMethod'] = self.merge_method.to_json()
+        if self.flatten is not None:
+            operation_json['flatten'] = self.flatten
         if self.join_type is not None:
             operation_json['joinType'] = self.join_type
         if self.collection_limit is not None:
