@@ -1,23 +1,49 @@
 import { NgModule } from '@angular/core';
 
-import * as MATERIAL_MODULES from '@angular/material';
-
-export function mapMaterialModules() {
-  return Object.keys(MATERIAL_MODULES)
-    .filter(k => {
-      const asset = MATERIAL_MODULES[k];
-      return (
-        typeof asset === 'function' &&
-        asset.name.startsWith('Mat') &&
-        asset.name.includes('Module')
-      );
-    })
-    .map(k => MATERIAL_MODULES[k]);
-}
-const modules = mapMaterialModules();
+import { MatButtonModule } from '@angular/material';
+import { MatInputModule } from '@angular/material/input';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatSidenavModule } from '@angular/material/sidenav';
+import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatListModule } from '@angular/material/list';
+import { MatGridListModule } from '@angular/material/grid-list';
+import { MatCardModule } from '@angular/material/card';
+import { MatTabsModule } from '@angular/material/tabs';
+import { MatIconModule } from '@angular/material/icon';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatTableModule } from '@angular/material/table';
 
 @NgModule({
-  imports: modules,
-  exports: modules
+  imports: [
+    MatButtonModule,
+    MatInputModule,
+    MatFormFieldModule,
+    MatSidenavModule,
+    MatToolbarModule,
+    MatListModule,
+    MatGridListModule,
+    MatCardModule,
+    MatTabsModule,
+    MatIconModule,
+    MatProgressSpinnerModule,
+    MatTooltipModule,
+    MatTableModule
+  ],
+  exports: [
+    MatButtonModule,
+    MatInputModule,
+    MatFormFieldModule,
+    MatSidenavModule,
+    MatToolbarModule,
+    MatListModule,
+    MatGridListModule,
+    MatCardModule,
+    MatTabsModule,
+    MatIconModule,
+    MatProgressSpinnerModule,
+    MatTooltipModule,
+    MatTableModule
+  ]
 })
 export class MaterialModule {}

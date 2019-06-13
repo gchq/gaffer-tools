@@ -9,9 +9,6 @@ import { FlexLayoutModule } from '@angular/flex-layout';
 import { AppRoutingModule } from './app-routing.module';
 import { HttpClientModule } from '@angular/common/http';
 import { ToastrModule } from 'ngx-toastr';
-import { MatGridListModule } from '@angular/material';
-import { MatCardModule } from '@angular/material';
-import { MatTooltipModule } from '@angular/material';
 
 import { AppComponent } from './app.component';
 import { OperationComponent } from './operation/operation.component';
@@ -30,7 +27,6 @@ import { ResultsService } from './gaffer/results.service';
 import { TypeService } from './gaffer/type.service';
 import { TimeService } from './gaffer/time.service';
 import { SchemaService } from './gaffer/schema.service';
-import { angular1Providers } from '@angular/upgrade/static/src/angular1_providers';
 
 @NgModule({
   declarations: [
@@ -53,10 +49,7 @@ import { angular1Providers } from '@angular/upgrade/static/src/angular1_provider
     MaterialModule,
     LayoutModule,
     FlexLayoutModule,
-    ToastrModule.forRoot(),
-    MatGridListModule,
-    MatCardModule,
-    MatTooltipModule
+    ToastrModule.forRoot()
   ],
   providers: [
     AnalyticsService,
