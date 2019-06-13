@@ -297,7 +297,6 @@ public class QueryBuilderST {
         click("md-confirm-button");
         autoComplete("operation-name", "A Test Nam");
         String text = getElement("operation-name").getAttribute("value");
-        
         assertEquals("A Test Name", text);
     }
 
