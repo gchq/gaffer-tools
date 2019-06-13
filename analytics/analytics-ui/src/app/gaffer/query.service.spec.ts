@@ -59,27 +59,6 @@ describe('QueryService', () => {
     service = TestBed.get(QueryService);
   }));
 
-  // it('should show an error notification if there are too many results', () => {
-  //   let error = TestBed.get(ErrorService);
-  //   let spy = spyOn(error, 'handle');
-  //   let resultLimit = 1000;
-  //   let message =
-  //     'Too many results to show, showing only the first ' +
-  //     resultLimit +
-  //     ' rows';
-  //   let testData = Array.apply(null, { length: resultLimit + 1 }).map(
-  //     Number.call,
-  //     Number
-  //   );
-  //   let http = TestBed.get(HttpClient);
-  //   spyOn(http, 'post').and.returnValue(of(testData));
-
-  //   service.executeQuery(null, () => {}, () => {});
-
-
-  //   expect(spy).toHaveBeenCalledWith(message, null, null);
-  // });
-
   it('should store the results retrieved from the server', () => {
     const results = TestBed.get(ResultsService);
     const spy = spyOn(results, 'update');
