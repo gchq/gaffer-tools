@@ -114,17 +114,17 @@ export class SchemaService {
   private updateSchemaVertices = function() {
     const vertices = [];
     if (this.schema) {
-      for (let i in this.schema.entities) {
-        if (vertices.indexOf(this.schema.entities[i].vertex) === -1) {
-          vertices.push(this.schema.entities[i].vertex);
+      for (const entity of this.schema.entities) {
+        if (vertices.indexOf(entity.vertex) === -1) {
+          vertices.push(entity.vertex);
         }
       }
-      for (let i of this.schema.edges) {
-        if (vertices.indexOf(this.schema.edges[i].source) === -1) {
-          vertices.push(this.schema.edges[i].source);
+      for (const edge of this.schema.edges) {
+        if (vertices.indexOf(edge.source) === -1) {
+          vertices.push(edge.source);
         }
-        if (vertices.indexOf(this.schema.edges[i].destination) === -1) {
-          vertices.push(this.schema.edges[i].destination);
+        if (vertices.indexOf(edge.destination) === -1) {
+          vertices.push(edge.destination);
         }
       }
     }

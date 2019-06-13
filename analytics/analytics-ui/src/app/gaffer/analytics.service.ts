@@ -51,12 +51,11 @@ export class AnalyticsService {
     // Convert to an integer
     newValue = parseInt(newValue, 10);
     // Look for the parameter in the list of parameters and set the new current value
-    for (let i in this.arrayAnalytic.uiMapping) {
-      const parameterPair = this.arrayAnalytic.uiMapping[i];
-      if (parameterPair[0] === parameterName) {
-        parameterPair[1].currentValue = newValue;
-        return;
-      }
+    for (const parameterPair of this.arrayAnalytic.uiMapping) {
+        if (parameterPair[0] === parameterName) {
+          parameterPair[1].currentValue = newValue;
+          return;
+        }
     }
     return;
   };
@@ -71,8 +70,8 @@ export class AnalyticsService {
       });
 
       // Add a new key and value in parameters to store the current value of that parameter
-      for (let i in arrayParams) {
-        arrayParams[i][1].currentValue = null;
+      for (const param of arrayParams) {
+        param[1].currentValue = null;
       }
     } else {
       arrayParams = null;
@@ -95,7 +94,7 @@ export class AnalyticsService {
     // so the parameters are in the correct form when they reach the server
     if (this.arrayAnalytic.uiMapping != null) {
       const parametersMap = {};
-      for (let param of this.arrayAnalytic.uiMapping) {
+      for (const param of this.arrayAnalytic.uiMapping) {
         parametersMap[param[1].parameterName] = param[1].currentValue;
       }
       operation.parameters = parametersMap;
