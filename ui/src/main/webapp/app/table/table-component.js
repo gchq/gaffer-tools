@@ -73,53 +73,88 @@ function TableController(schema, results, table, events, common, types, time, cs
         });
 
         events.subscribe('resultsUpdated', onResultsUpdated);
-        
+        addTableEventListeners();
     }
 
-    /* Add drag and scroll to results table once its created */
-    var tableBody = document.getElementById('scrollDragableBody');
-    var tableHeader = document.getElementById('scrollDragableHeader');
+    /** 
+     *  Keep trying to add the table event listeners to enable scrolling with the cursor.
+     *  Waits for the table body and header elements to load, up to a certain number of tries.
+     */
+    var addTableEventListeners = function() {
+        var maxTime = 5000;
+        var timeBetweenRetry = 50;
+        var maxRetries = maxTime/timeBetweenRetry;
+        var retries = 0;
+        var tableBody;
+        var tableHeader;
+        vm.addEventListeners = setInterval(() => {
+            if ((!tableBody || !tableHeader) && retries < maxRetries) {
+    
+                // Try get the table body and header div elements
+                tableBody = document.getElementById('scrollDragableBody');
+                tableHeader = document.getElementById('scrollDragableHeader');
+                retries += 1;
 
-    if ((tableBody != null) && (tableHeader != null)) {
-        tableBody.addEventListener("scroll", function(e) {
-            tableHeader.scrollLeft = tableBody.scrollLeft;
-        });
+            } else if (tableBody || tableHeader) {
+    
+                // Scroll the header horizontally when the table body is scrolled horizontally
+                tableBody.addEventListener("scroll", function(e) {
+                    tableHeader.scrollLeft = tableBody.scrollLeft;
+                });
+    
+                // On entering the area, start the loop to check the cursor is near the edge
+                tableBody.addEventListener("mouseenter", function(e) {
+                    vm.inTableArea = true;
+                    scrollNearEdge(tableBody,tableHeader);
+                })
+    
+                // Update the cursor position on mousemove event
+                tableBody.addEventListener("mousemove", function(e) {
+                    vm.cursorX = e.pageX;
+                })
+    
+                // On leaving the table area set inTableArea to false and end the loop to check the cursor is near the edge
+                tableBody.addEventListener("mouseleave", function(e) {
+                    vm.inTableArea = false;
+                })
+
+                // Start scrolling now
+                vm.inTableArea = true;
+                scrollNearEdge(tableBody,tableHeader);
+
+                clearInterval(vm.addEventListeners);
+            } else {
+                // Failed to load the elements, giving up
+                clearInterval(vm.addEventListeners);
+            }
+        }, 50);
     }
-
-    //On entering the area, start the loop to check the cursor is near the edge
-    tableBody.addEventListener("mouseenter", function(e) {
-        vm.inTableArea = true;
-        scrollNearEdge();
-    })
-
-    //Update the cursor position on mousemove event
-    tableBody.addEventListener("mousemove", function(e) {
-        vm.cursorX = e.pageX;
-    })
-
-    //On leaving the table area set inTableArea to false and end the loop to check the cursor is near the edge
-    tableBody.addEventListener("mouseleave", function(e) {
-        vm.inTableArea = false;
-    })
 
     /** Keep checking that the cursor is near the edge of the table and if so scroll the table */
-    var scrollNearEdge = function() {
+    var scrollNearEdge = function(tableBody,tableHeader) {
+        clearInterval(vm.intervalId);
         vm.intervalId = setInterval(() => {
             if (vm.inTableArea) {
+
                 var tableLeftPosition = getPos(tableBody);
                 var tableRightPosition = tableBody.offsetWidth + tableLeftPosition;
                 var delta = 100;
                 var scrollLeft = tableBody.scrollLeft;
+
+                // Scroll the table left when the cursor is near the left edge of the table
                 if (vm.cursorX < tableLeftPosition + delta) {
                     scrollLeft = scrollLeft - 0.5*((tableLeftPosition + delta) - vm.cursorX);
                     tableBody.scrollLeft = scrollLeft;
                     tableHeader.scrollLeft = scrollLeft;
                 }
+
+                // Scroll the table right when the cursor is near the right edge of the table
                 else if (vm.cursorX > tableRightPosition - delta) {
                     scrollLeft = scrollLeft + 0.5*(vm.cursorX - (tableRightPosition - delta));
                     tableBody.scrollLeft = scrollLeft;
                     tableHeader.scrollLeft = scrollLeft;
                 }
+            // If no longer in the area stop checking the cursor position
             } else {
                 clearInterval(vm.intervalId)
             }

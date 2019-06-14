@@ -240,6 +240,40 @@ describe('The Table component', function() {
             expect(ctrl.pagination.page).toEqual(1);
         });
 
+        it('should scroll the table header when the body is scrolled horizontally', function() {
+            //Scroll the table body to a certain position
+            var tableBody = document.getElementById('scrollDragableBody')
+            
+            if (tableBody) {
+                tableBody.dispatchEvent(new CustomEvent('scroll'));
+            }
+
+            var tableHeader = document.getElementById('scrollDragableHeader');
+
+            //Check the table header is at the same position
+            expect(tableHeader.scrollLeft).toEqual(tableBody.scrollLeft);
+        });
+
+        it('should start checking the cursor position when the cursor enters the table area', function() {
+            
+        });
+
+        it('should stop checking the cursor position when the cursor leaves the table area', function() {
+            
+        });
+
+        it('should save the cursor position when the cursor moves', function() {
+            
+        });
+
+        it('should scroll the table left when the cursor is near the left edge', function() {
+            
+        });
+
+        it('should scroll the table right when the cursor is near the right edge', function() {
+            
+        });
+
         describe('ctrl.$onInit()', function() {
             beforeEach(function() {
                 spyOn(results, 'get').and.returnValue(resultsData);
