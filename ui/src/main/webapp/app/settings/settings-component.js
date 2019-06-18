@@ -30,15 +30,15 @@ function settingsView() {
 function SettingsController(settings, schema, operationService, events, config) {
     var vm = this;
 
-    vm.saveClearChainCheckbox = function() {
-        settings.setClearChainCheckbox(!vm.clearChainCheckbox);
-        vm.clearChainCheckbox = !vm.clearChainCheckbox;
+    vm.saveClearChainAfterExecution = function() {
+        settings.setClearChainAfterExecution(!vm.clearChainAfterExecution);
+        vm.clearChainAfterExecution = !vm.clearChainAfterExecution;
     }
 
     vm.$onInit = function() {
         vm.showOptions = false;
         vm.resultLimit = settings.getResultLimit();
-        vm.clearChainCheckbox = settings.getClearChainCheckbox();
+        vm.clearChainAfterExecution = settings.getClearChainAfterExecution();
         config.get().then(function(conf) {
             vm.showOptions = (conf.operationOptions !== undefined || conf.operationOptionKeys !== undefined);
         });

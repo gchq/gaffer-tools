@@ -20,7 +20,7 @@ angular.module('app').factory('settings', function() {
     var settings = {};
 
     var resultLimit = 1000;
-    var clearChainCheckboxState = false;
+    var clearChainAfterExecution = true;
 
     settings.getResultLimit = function() {
         return resultLimit;
@@ -30,12 +30,12 @@ angular.module('app').factory('settings', function() {
         resultLimit = limit;
     }
 
-    settings.setClearChainCheckbox = function(state) {
-        clearChainCheckboxState = state;
+    settings.setClearChainAfterExecution = function(state) {
+        clearChainAfterExecution = state;
     }
 
-    settings.getClearChainCheckbox = function () {    
-        return clearChainCheckboxState;
+    settings.getClearChainAfterExecution = function () {    
+        return clearChainAfterExecution;
     }
 
     return settings;

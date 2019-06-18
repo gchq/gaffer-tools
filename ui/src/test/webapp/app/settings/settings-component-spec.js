@@ -49,7 +49,8 @@ describe('The Settings Component', function() {
             }));
 
             beforeEach(function() {
-                spyOn(settings, 'getClearChainCheckbox').and.stub();
+                spyOn(settings, 'getClearChainAfterExecution').and.stub();
+                spyOn(settings, 'getResultLimit').and.stub();
             });
 
             it('should set showOptions to true if the config contains an operationOptions section', function() {
@@ -80,11 +81,16 @@ describe('The Settings Component', function() {
             });
 
             it('should load the clear chain setting from the settings service', function() {
-
                 ctrl.$onInit();
 
-                expect(settings.getClearChainCheckbox).toHaveBeenCalled();
+                expect(settings.getClearChainAfterExecution).toHaveBeenCalledTimes(1);
             });
+
+            it('should load the result limit from the settings service', function() {
+                ctrl.$onInit();
+
+                expect(settings.getResultLimit).toHaveBeenCalledTimes(1);
+            })
         });
 
         describe('ctrl.updateResultLimit', function() {

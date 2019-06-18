@@ -115,7 +115,7 @@ function OperationChainController(operationChain, settings, config, loading, que
 
         runQuery(chain.operations);
 
-        if (settings.getClearChainCheckbox() == true) {
+        if (settings.getClearChainAfterExecution() == true) {
             resetChainWithoutDialog();
         }
     }

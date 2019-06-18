@@ -1244,7 +1244,6 @@ describe('The operation chain component', function() {
             spyOn(query, 'execute').and.stub();
             spyOn(error, 'handle').and.stub();
             spyOn(previousQueries, 'addQuery').and.stub();
-            spyOn(operationChain, 'reset').and.stub();
         });
 
         beforeEach(function() {
@@ -1515,6 +1514,7 @@ describe('The operation chain component', function() {
                     }
                 }
             ];
+            spyOn(settings, 'getClearChainAfterExecution').and.returnValue(false);
 
             ctrl.executeChain();
 
@@ -1606,22 +1606,65 @@ describe('The operation chain component', function() {
         });
 
         it('should reset the chain if the clear chain checkbox has been checked', function() {
-            spyOn(settings, 'getClearChainCheckbox').and.returnValue(true);
-            ctrl = $componentController('operationChain');
+            ctrl.operations = [
+                {
+                    selectedOperation: {
+                        class: 'test',
+                        fields: {}
+                    },
+                    opOptions: {
+                        'option1': 'value1'
+                    }
+                }
+            ];
+            spyOn(settings, 'getClearChainAfterExecution').and.returnValue(true);
+            spyOn(operationChain, 'reset').and.stub();
 
             ctrl.executeChain();
 
-            expect(operationChain.reset).not.toHaveBeenCalled();
-        })
+            expect(operationChain.reset).toHaveBeenCalledTimes(1);
+        });
 
         it('should not reset the chain if the clear chain checkbox has not been checked', function() {
-            spyOn(settings, 'getClearChainCheckbox').and.returnValue(false);
-            ctrl = $componentController('operationChain');
+            ctrl.operations = [
+                {
+                    selectedOperation: {
+                        class: 'test',
+                        fields: {}
+                    },
+                    opOptions: {
+                        'option1': 'value1'
+                    }
+                }
+            ];
+            spyOn(settings, 'getClearChainAfterExecution').and.returnValue(false);
+            spyOn(operationChain, 'reset').and.stub();
 
             ctrl.executeChain();
 
             expect(operationChain.reset).not.toHaveBeenCalled();
-        })
+        });
+
+        it('should reload the operations if the chain is reset', function() {
+            ctrl.operations = [
+                {
+                    selectedOperation: {
+                        class: 'test',
+                        fields: {}
+                    },
+                    opOptions: {
+                        'option1': 'value1'
+                    }
+                }
+            ];
+            spyOn(settings, 'getClearChainAfterExecution').and.returnValue(true);
+            spyOn(operationChain, 'getOperationChain').and.stub();
+            spyOn(operationChain, 'reset').and.stub();
+
+            ctrl.executeChain();
+
+            expect(operationChain.getOperationChain).toHaveBeenCalledTimes(1);            
+        });
     });
 
     describe('ctrl.resetChain()', function() {
