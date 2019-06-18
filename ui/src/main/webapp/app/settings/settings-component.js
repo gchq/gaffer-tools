@@ -31,8 +31,7 @@ function SettingsController(settings, schema, operationService, events, config) 
     var vm = this;
 
     vm.saveClearChainAfterExecution = function() {
-        settings.setClearChainAfterExecution(!vm.clearChainAfterExecution);
-        vm.clearChainAfterExecution = !vm.clearChainAfterExecution;
+        settings.setClearChainAfterExecution(vm.clearChainAfterExecution);
     }
 
     vm.$onInit = function() {

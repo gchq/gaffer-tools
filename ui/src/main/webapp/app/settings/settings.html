@@ -49,7 +49,7 @@
                                 </div>
                                 <div flex></div>
                                 <md-input-container class="md-secondary">
-                                    <md-checkbox ng-click="ctrl.saveClearChainCheckbox()" ng-checked="ctrl.clearChainCheckbox"></md-checkbox>
+                                    <md-checkbox ng-change="ctrl.saveClearChainAfterExecution()" ng-model="ctrl.clearChainAfterExecution"></md-checkbox>
                                 </md-input-container>
                             </md-list-item>
                         </md-list>
