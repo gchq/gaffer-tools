@@ -144,19 +144,19 @@ function TableController(schema, results, table, events, common, types, time, cs
                 // Scroll the table left when the cursor is near the left edge of the table
                 if (vm.cursorX < tableLeftPosition + delta) {
                     scrollLeft = scrollLeft - 0.5*((tableLeftPosition + delta) - vm.cursorX);
-                    tableBody.scrollLeft = scrollLeft;
-                    tableHeader.scrollLeft = scrollLeft;
+                    vm.tableBody.scrollLeft = scrollLeft;
+                    vm.tableHeader.scrollLeft = scrollLeft;
                 }
 
                 // Scroll the table right when the cursor is near the right edge of the table
                 else if (vm.cursorX > tableRightPosition - delta) {
                     scrollLeft = scrollLeft + 0.5*(vm.cursorX - (tableRightPosition - delta));
-                    tableBody.scrollLeft = scrollLeft;
-                    tableHeader.scrollLeft = scrollLeft;
+                    vm.tableBody.scrollLeft = scrollLeft;
+                    vm.tableHeader.scrollLeft = scrollLeft;
                 }
             // If no longer in the area stop checking the cursor position
             } else {
-                clearInterval(vm.intervalId)
+                clearInterval(vm.intervalId);
             }
         }, 50);
     }
@@ -169,11 +169,16 @@ function TableController(schema, results, table, events, common, types, time, cs
 
     /**
      * Cleans up the controller. Unsubscribes from resultsUpdated events and
-     * caches table preferences.
+     * caches table preferences. Removes mouse event listeners on the table.
      */
     vm.$onDestroy = function() {
         events.unsubscribe('resultsUpdated', onResultsUpdated);
         cacheValues();
+        if (vm.tableBody) {
+            vm.tableBody.removeEventListener("mousemove", onMouseMoveTable);
+            vm.tableBody.removeEventListener("mouseenter", onMouseEnterTable);
+            vm.tableBody.removeEventListener("mouseleave", onMouseLeaveTable);
+        }
     }
 
     vm.createVisualisation = function(ev) {
