@@ -1,26 +1,21 @@
-/*
- * Copyright 2019 Crown Copyright
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+Copyright 2019 Crown Copyright
 
----
-description: >-
-  A list of the components, services, modules and other files contained in the
-  analytic-ui/src/main/webapp/app folder
----
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
 
 # Contents and components
+
+A list of the components, services, modules and other files contained in the
+analytic-ui/src/main/webapp/app folder
 
 - **analytic** - The files representing each analytic, which creates a card with the title of said analytic, an icon, and fills in with a specified colour.
 - **analytics** - The analytics screen, displaying a grid of analytic components each of which corresponds to an analytic from the restAPI.
