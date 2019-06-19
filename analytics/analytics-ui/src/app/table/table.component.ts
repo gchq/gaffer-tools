@@ -180,8 +180,7 @@ export class TableComponent implements OnInit {
               const elementDef = this.schema[typePlural][element.group];
               if (elementDef && elementDef.properties) {
                 if (elementDef.groupBy) {
-                  for (const j of elementDef.groupBy) {
-                    const propName = elementDef.groupBy[j];
+                  for (const propName of elementDef.groupBy) {
                     const typeDef = this.schema.types[
                       elementDef.properties[propName]
                     ];
