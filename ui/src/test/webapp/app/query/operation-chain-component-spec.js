@@ -1619,7 +1619,7 @@ describe('The operation chain component', function() {
             ];
             spyOn(settings, 'getClearChainAfterExecution').and.returnValue(true);
             spyOn(operationChain, 'reset').and.stub();
-            spyOn(query, 'executeQuery').and.callFake((data, onSuccess, onFailure) => {
+            spyOn(query, 'executeQuery').and.callFake(function(data, onSuccess, onFailure) {
                 onSuccess();
             });
 
@@ -1663,7 +1663,7 @@ describe('The operation chain component', function() {
             spyOn(settings, 'getClearChainAfterExecution').and.returnValue(true);
             spyOn(operationChain, 'getOperationChain').and.stub();
             spyOn(operationChain, 'reset').and.stub();
-            spyOn(query, 'executeQuery').and.callFake((data, onSuccess, onFailure) => {
+            spyOn(query, 'executeQuery').and.callFake(function(data, onSuccess, onFailure) {
                 onSuccess();
             });
 
