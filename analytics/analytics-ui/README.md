@@ -77,9 +77,7 @@ A step by step guide to the use of the Analytic UI product
 
 ## 1. Analytics
 
-{% hint style="info" %}
 As stated in Getting Started, this whole process requires that one or more analytic\(s\) have been added to your REST API.
-{% endhint %}
 
 To start, select one of the analytics displayed on screen in the grid by clicking the card/tile it is displayed on. Their titles are displayed on the cards, as well as a description appearing below when the card is hovered over.
 
@@ -198,13 +196,13 @@ Add a **Description**, and alter the **metaData** - change the input of **iconUR
 
 ```
       {
-         "class": "uk.gov.gchq.gaffer.operation.analytic.AddAnalytic",
+         "class": "uk.gov.gchq.gaffer.analytic.operation.AddAnalytic",
          "analyticName": "Analytic X",
          "operationName": "getAllX",
          "description": "Get Elements with Result Limit",
          "score": 4,
          "metaData": {
-            "iconURL": "public"
+            "iconURL": "public",
             "color" : "yellow"
          },
          "outputType": {
