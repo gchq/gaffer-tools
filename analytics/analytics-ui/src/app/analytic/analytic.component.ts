@@ -29,13 +29,13 @@ export class AnalyticComponent implements OnInit {
   constructor(
     private router: Router,
     private analyticsService: AnalyticsService
-  ) { }
+  ) {}
 
-  ngOnInit() { }
+  ngOnInit() {}
 
   /** Save the chosen analytic in the analytics service */
   execute(analytic) {
     this.analyticsService.createArrayAnalytic(analytic);
-    this.router.navigate(['/parameters']);
+    this.router.navigate(['parameters']);
   }
 }

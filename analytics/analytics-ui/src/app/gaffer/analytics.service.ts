@@ -39,7 +39,7 @@ export class AnalyticsService {
     private router: Router,
     private results: ResultsService,
     private endpoint: EndpointService
-  ) { }
+  ) {}
 
   /** Get the chosen analytic on load of parameters page */
   getAnalytic() {
@@ -52,10 +52,10 @@ export class AnalyticsService {
     newValue = parseInt(newValue, 10);
     // Look for the parameter in the list of parameters and set the new current value
     for (const parameterPair of this.arrayAnalytic.uiMapping) {
-        if (parameterPair[0] === parameterName) {
-          parameterPair[1].currentValue = newValue;
-          return;
-        }
+      if (parameterPair[0] === parameterName) {
+        parameterPair[1].currentValue = newValue;
+        return;
+      }
     }
     return;
   };
@@ -65,7 +65,7 @@ export class AnalyticsService {
     // Convert the key value map of parameters into an iterable array
     let arrayParams = analytic.uiMapping;
     if (arrayParams !== null && arrayParams !== undefined) {
-      arrayParams = Object.keys(analytic.uiMapping).map((key) => {
+      arrayParams = Object.keys(analytic.uiMapping).map(key => {
         return [key, analytic.uiMapping[key]];
       });
 
@@ -105,7 +105,7 @@ export class AnalyticsService {
 
     // Execute the analytic and then navigate when finished loading
     this.query.executeQuery(operation, () => {
-      this.router.navigate(['/results']);
+      this.router.navigate(['parameters/results']);
     });
   };
 
