@@ -114,10 +114,6 @@ function OperationChainController(operationChain, settings, config, loading, que
         });
 
         runQuery(chain.operations);
-
-        if (settings.getClearChainAfterExecution() == true) {
-            resetChainWithoutDialog();
-        }
     }
 
     var resetChainWithoutDialog = function() {
@@ -179,6 +175,9 @@ function OperationChainController(operationChain, settings, config, loading, que
             },
             function(data) {
                 submitResults(data);
+                if (settings.getClearChainAfterExecution() == true) {
+                    resetChainWithoutDialog();
+                }
             }
         );
     }
