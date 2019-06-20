@@ -66,10 +66,14 @@ describe('AnalyticComponent', () => {
     fixture.detectChanges();
     const router = TestBed.get(Router);
     const spy = spyOn(router, 'navigate');
+    const testName = 'Test name';
+    component.model = {
+      analyticName: testName
+    };
 
     component.execute([]);
 
-    expect(spy).toHaveBeenCalledWith(['/parameters']);
+    expect(spy).toHaveBeenCalledWith([testName]);
   });
 
   it('should create the named operation on execution of analytic', () => {
