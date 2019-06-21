@@ -31,6 +31,7 @@
     <modules>
         <module>analytics-operations</module>
         <module>analytics-rest</module>
+        <module>analytics-functions</module>
     </modules>
 
 </project>
