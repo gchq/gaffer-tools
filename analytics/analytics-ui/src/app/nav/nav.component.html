@@ -1,0 +1,20 @@
+<mat-sidenav-container class="sidenav-container">
+  <mat-sidenav-content>
+    <mat-toolbar color="primary">
+      <mat-toolbar-row>
+        <span>Analytic UI</span>
+      </mat-toolbar-row>
+
+      <mat-toolbar-row>
+        <nav mat-tab-nav-bar>
+          <a mat-tab-link style="color: white" *ngFor="let link of navLinks" [routerLink]="link.path" routerLinkActive
+            #rla="routerLinkActive" [active]="rla.isActive" id='link.path'>
+            {{link.label}}
+          </a>
+        </nav>
+      </mat-toolbar-row>
+
+    </mat-toolbar>
+    <router-outlet></router-outlet>
+  </mat-sidenav-content>
+</mat-sidenav-container>
