@@ -39,6 +39,7 @@ public class OutputVisualisation implements Serializable {
     private VisualisationType visualisationType = VisualisationType.TABLE;
     // Stored as string so it can be serialised.
     private String outputAdapter;
+    private Class outputAdapterClass;
 
     @JsonGetter("outputAdapter")
     public Function getOutputAdapter() {
@@ -46,9 +47,9 @@ public class OutputVisualisation implements Serializable {
             return null;
         }
         try {
-            return JSONSerialiser.deserialise(outputAdapter, Function.class);
+            return (Function) JSONSerialiser.deserialise(outputAdapter, outputAdapterClass);
         } catch (final SerialisationException e) {
-            throw new RuntimeException("Failed to deserialise keyFunction", e);
+            throw new RuntimeException("Failed to deserialise output adapter", e);
         }
     }
 
@@ -59,9 +60,10 @@ public class OutputVisualisation implements Serializable {
             this.outputAdapter = null;
         } else {
             try {
+                this.outputAdapterClass = outputAdapter.getClass();
                 this.outputAdapter = new String(JSONSerialiser.serialise(outputAdapter));
             } catch (final SerialisationException e) {
-                throw new RuntimeException("Failed to serialise Function", e);
+                throw new RuntimeException("Failed to serialise output adapter", e);
             }
         }
     }
