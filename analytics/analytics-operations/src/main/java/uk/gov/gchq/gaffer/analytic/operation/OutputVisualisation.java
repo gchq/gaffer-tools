@@ -16,7 +16,6 @@
 package uk.gov.gchq.gaffer.analytic.operation;
 
 import com.fasterxml.jackson.annotation.JsonGetter;
-import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import org.apache.commons.lang.builder.EqualsBuilder;
@@ -32,10 +31,10 @@ import java.util.function.Function;
 /**
  * TODO meaningful comment
  */
+
 public class OutputVisualisation implements Serializable {
 
     private static final long serialVersionUID = 471605385474366632L;
-    @JsonInclude(JsonInclude.Include.NON_DEFAULT)
     private VisualisationType visualisationType = VisualisationType.TABLE;
     // Stored as string so it can be serialised.
     private String outputAdapter;

@@ -40,7 +40,6 @@ import { ErrorService } from './dynamic-input/error.service';
 import { EndpointService } from './config/endpoint-service';
 import { QueryService } from './gaffer/query.service';
 import { ResultsService } from './gaffer/results.service';
-import { TypeService } from './gaffer/type.service';
 import { TimeService } from './gaffer/time.service';
 import { SchemaService } from './gaffer/schema.service';
 
@@ -73,7 +72,6 @@ import { SchemaService } from './gaffer/schema.service';
     EndpointService,
     QueryService,
     ResultsService,
-    TypeService,
     TimeService,
     SchemaService
   ],

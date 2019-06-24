@@ -111,11 +111,11 @@ public class AnalyticDetail implements Serializable {
         return metaData;
     }
 
-    public OutputVisualisation getVisualisationType() {
+    public OutputVisualisation getOutputVisualisation() {
         return outputVisualisation;
     }
 
-    public void setVisualisationType(final OutputVisualisation outputVisualisation) {
+    public void setOutputVisualisation(final OutputVisualisation outputVisualisation) {
         this.outputVisualisation = outputVisualisation;
     }
 

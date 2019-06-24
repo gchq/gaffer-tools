@@ -540,13 +540,3 @@ a {
   width: '100%';
   overflow: auto;
 }
-
-.mat-row, .mat-header-row {
-  background: white;
-  min-width: 2000px;
-}
-
-.mat-header-row {
-  position: sticky;
-  top: 0;
-}
