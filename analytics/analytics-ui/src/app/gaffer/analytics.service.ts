@@ -20,7 +20,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Router } from '@angular/router';
 
 import { QueryService } from './query.service';
-import { ErrorService } from '../dynamic-input/error.service';
+import { ErrorService } from '../error/error.service';
 import { ResultsService } from './results.service';
 import { cloneDeep, startsWith } from 'lodash';
 import { EndpointService } from '../config/endpoint-service';
