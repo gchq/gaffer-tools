@@ -17,15 +17,12 @@
 package uk.gov.gchq.gaffer.analytic.operation;
 
 import com.google.common.collect.Maps;
-import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import uk.gov.gchq.gaffer.commonutil.ToStringBuilder;
-import uk.gov.gchq.gaffer.user.User;
 
 import java.io.Serializable;
-import java.util.List;
 import java.util.Map;
 
 public class AnalyticDetail implements Serializable {
@@ -34,8 +31,6 @@ public class AnalyticDetail implements Serializable {
     private String operationName;
     private String description;
     private String creatorId;
-    private List<String> readAccessRoles;
-    private List<String> writeAccessRoles;
     private Map<String, UIMappingDetail> uiMapping = Maps.newHashMap();
     private Map<String, String> options = Maps.newHashMap();
     private Map<String, String> metaData = Maps.newHashMap();
@@ -46,8 +41,7 @@ public class AnalyticDetail implements Serializable {
     }
 
     public AnalyticDetail(final String analyticName, final String operationName, final String description,
-                          final String userId, final List<String> readers,
-                          final List<String> writers, final Map<String, UIMappingDetail> uiMapping,
+                          final String userId, final Map<String, UIMappingDetail> uiMapping,
                           final Map<String, String> metaData, final Map<String, String> outputType,
                           final Integer score, final Map<String, String> options) {
 
@@ -64,8 +58,6 @@ public class AnalyticDetail implements Serializable {
         this.description = description;
         this.creatorId = userId;
 
-        this.readAccessRoles = readers;
-        this.writeAccessRoles = writers;
         this.uiMapping = uiMapping;
         this.metaData = metaData;
         this.outputType = outputType;
@@ -83,14 +75,6 @@ public class AnalyticDetail implements Serializable {
 
     public String getDescription() {
         return description;
-    }
-
-    public List<String> getReadAccessRoles() {
-        return readAccessRoles;
-    }
-
-    public List<String> getWriteAccessRoles() {
-        return writeAccessRoles;
     }
 
     public String getCreatorId() {
@@ -134,8 +118,7 @@ public class AnalyticDetail implements Serializable {
         final AnalyticDetail op = (AnalyticDetail) obj;
 
         return new EqualsBuilder().append(analyticName, op.analyticName).append(operationName, op.operationName)
-                .append(creatorId, op.creatorId).append(readAccessRoles, op.readAccessRoles)
-                .append(writeAccessRoles, op.writeAccessRoles).append(uiMapping, op.uiMapping)
+                .append(creatorId, op.creatorId).append(uiMapping, op.uiMapping)
                 .append(metaData, op.metaData).append(outputType, op.outputType).append(score, op.score)
                 .append(options, op.options).isEquals();
     }
@@ -143,7 +126,7 @@ public class AnalyticDetail implements Serializable {
     @Override
     public int hashCode() {
         return new HashCodeBuilder(71, 3).append(analyticName).append(operationName).append(creatorId)
-                .append(readAccessRoles).append(writeAccessRoles).append(uiMapping).append(metaData).append(outputType)
+                .append(uiMapping).append(metaData).append(outputType)
                 .append(score).append(options).hashCode();
     }
 
@@ -151,41 +134,8 @@ public class AnalyticDetail implements Serializable {
     public String toString() {
         return new ToStringBuilder(this).appendSuper(super.toString()).append("analyticName", analyticName)
                 .append("operationName", operationName).append("creatorId", creatorId)
-                .append("readAccessRoles", readAccessRoles).append("writeAccessRoles", writeAccessRoles)
                 .append("uiMapping", uiMapping).append("metaData", metaData).append("outputType", outputType)
                 .append("score", score).append("options", options).toString();
-    }
-
-    public boolean hasReadAccess(final User user) {
-        return hasAccess(user, readAccessRoles, null);
-    }
-
-    public boolean hasReadAccess(final User user, final String adminAuth) {
-        return hasAccess(user, readAccessRoles, adminAuth);
-    }
-
-    public boolean hasWriteAccess(final User user) {
-        return hasAccess(user, writeAccessRoles, null);
-    }
-
-    public boolean hasWriteAccess(final User user, final String adminAuth) {
-        return hasAccess(user, writeAccessRoles, adminAuth);
-    }
-
-    private boolean hasAccess(final User user, final List<String> roles, final String adminAuth) {
-        if (null != roles) {
-            for (final String role : roles) {
-                if (user.getOpAuths().contains(role)) {
-                    return true;
-                }
-            }
-        }
-        if (StringUtils.isNotBlank(adminAuth)) {
-            if (user.getOpAuths().contains(adminAuth)) {
-                return true;
-            }
-        }
-        return user.getUserId().equals(creatorId);
     }
 
     public static final class Builder {
@@ -193,8 +143,6 @@ public class AnalyticDetail implements Serializable {
         private String operationName;
         private String description;
         private String creatorId;
-        private List<String> readers;
-        private List<String> writers;
         private Map<String, UIMappingDetail> uiMapping;
         private Map<String, String> metaData;
         private Map<String, String> outputType;
@@ -226,16 +174,6 @@ public class AnalyticDetail implements Serializable {
             return this;
         }
 
-        public AnalyticDetail.Builder readers(final List<String> readers) {
-            this.readers = readers;
-            return this;
-        }
-
-        public AnalyticDetail.Builder writers(final List<String> writers) {
-            this.writers = writers;
-            return this;
-        }
-
         public AnalyticDetail.Builder score(final Integer score) {
             this.score = score;
             return this;
@@ -257,7 +195,7 @@ public class AnalyticDetail implements Serializable {
         }
 
         public AnalyticDetail build() {
-            return new AnalyticDetail(analyticName, operationName, description, creatorId, readers, writers, uiMapping,
+            return new AnalyticDetail(analyticName, operationName, description, creatorId, uiMapping,
                     metaData, outputType, score, options);
         }
     }

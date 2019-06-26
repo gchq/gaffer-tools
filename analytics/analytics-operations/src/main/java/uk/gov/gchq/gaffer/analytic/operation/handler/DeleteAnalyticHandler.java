@@ -55,8 +55,7 @@ public class DeleteAnalyticHandler implements OperationHandler<DeleteAnalytic> {
     public Void doOperation(final DeleteAnalytic operation, final Context context, final Store store)
             throws OperationException {
         try {
-            cache.deleteAnalyticOperation(operation.getOperationName(), context.getUser(),
-                    store.getProperties().getAdminAuth());
+            cache.deleteAnalyticOperation(operation.getOperationName());
         } catch (final CacheOperationFailedException e) {
             throw new OperationException(e.getMessage(), e);
         }
