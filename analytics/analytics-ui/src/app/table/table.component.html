@@ -1,7 +1,6 @@
-
-<mat-table [dataSource]="tableData" class="mat-elevation-z8">
+<mat-table [dataSource]="dataSource" class="mat-elevation-z8" matSort>
   <ng-container [matColumnDef]="column" *ngFor="let column of tableColumns">
-    <mat-header-cell *matHeaderCellDef>{{column}}</mat-header-cell>
+    <mat-header-cell *matHeaderCellDef mat-sort-header>{{column}}</mat-header-cell>
     <mat-cell *matCellDef="let element">{{element[column]}}</mat-cell>
   </ng-container>
 

@@ -14,33 +14,59 @@
  * limitations under the License.
  */
 
-import { Component, OnInit} from '@angular/core'
+import { Component, OnInit, ViewChild} from '@angular/core'
 import { ResultsService } from '../gaffer/results.service'
+import { MatTableDataSource, MatSort } from '@angular/material';
 
 @Component({
   selector: 'app-table',
   templateUrl: './table.component.html'
 })
 export class TableComponent implements OnInit {
-  tableData = [];
-  tableColumns = [];
+
+  dataSource = new MatTableDataSource([]);
+  tableColumns: string[] = [];
+  @ViewChild(MatSort) sort: MatSort;
 
   constructor(
     private results: ResultsService
   ) {}
 
   ngOnInit() {
-    this.tableData = this.results.get();
+    let tableData = this.results.get();
 
-    // Trying to think of a more efficient way of implementing this.
-    this.tableData.forEach(element => {
-      for (const key of Object.keys(element)) {
-        if (this.tableColumns.indexOf(key) == -1) {
-          this.tableColumns.push(key);
+    if (tableData == null) {
+      return;
+    }
+    // To transform non-object results into objects, we need to build an array of replacements and indexes
+    const toAdd: any[] = []
+    const toRemove: number[] = [];
+
+    tableData.forEach((element, index) => {
+      if (element instanceof Object) {
+        // Use the keys of objects as the tableColumns
+        for (const key of Object.keys(element)) {
+          if (this.tableColumns.indexOf(key) == -1) {
+            this.tableColumns.push(key);
+          }
+        }
+      } else {
+        toRemove.push(index);
+        toAdd.push({"value": element});
+        if (this.tableColumns.indexOf("value") == -1) {
+          this.tableColumns.push("value");
         }
       }
     });
 
+    // Iterate in reverse order so that the indices of later objects are unaffected
+    toRemove.reverse().forEach(index => {
+      tableData.splice(index, 1);
+    });
 
+    tableData = tableData.concat(toAdd);
+
+    this.dataSource = new MatTableDataSource(tableData);
+    this.dataSource.sort = this.sort;
   }
 }
