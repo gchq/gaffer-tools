@@ -33,7 +33,6 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNotSame;
 
 public class AddAnalyticTest extends OperationTest<AddAnalytic> {
-        public static final String USER = "User";
 
         @Override
         public void shouldJsonSerialiseAndDeserialise() {
