@@ -18,20 +18,19 @@ A list of the components, services, modules and other files contained in the
 analytic-ui/src/main/webapp/app folder
 
 - **analytic** - The files representing each analytic, which creates a card with the title of said analytic, an icon, and fills in with a specified colour.
-- **analytics** - The analytics screen, displaying a grid of analytic components each of which corresponds to an analytic from the restAPI.
+- **analytics** - The analytics screen, displaying a grid of analytic components each of which corresponds to an analytic from the REST API.
 - **config**
   - **config.service.ts** - Used to load and get the config
-  - **default-rest-endpoint.service.ts** - Holds the URL of the restAPI
+  - **default-rest-endpoint.service.ts** - Holds the URL of the REST API
 - **dynamic-input**
   - **common.service.ts** - Common functions that are used in various places
   - **error.service.ts** - Used to create toast notifications when errors occur
   - **events.service.ts**
 - **g**
-  - **analytics.service.ts** - Used to load analytics from the restAPI, store the chosen analytic, and execute the analytic.
-  - **query.service.ts** - Sends a http request to the restAPI to execute the final analytic.
+  - **analytics.service.ts** - Used to load analytics from the REST API, store the chosen analytic, and execute the analytic.
+  - **query.service.ts** - Sends a http request to the REST API to execute the final analytic.
   - **results.service.ts** - Used to store the results of the analytic operation and to update and clear the table of results.
-  - **schema.service.ts** - Used to get the schema from the restAPI, update it, and store it.
-  - **type.service.ts**
+  - **schema.service.ts** - Used to get the schema from the REST API, update it, and store it.
 - **nav** - Holds the overall layout of the final product, including the toolbar and tabs at the top, and the component display/page content area.
 - **operation** - The component on the parameter input screen where the user enters their parameters, including seeds, date ranges and other inputs necessary for the running of their chosen analytic.
 - **parameter-form** - Used in the operation component to allow the generate the inputs necessary user to give inputs for each of the parameters on their chosen analytic.
