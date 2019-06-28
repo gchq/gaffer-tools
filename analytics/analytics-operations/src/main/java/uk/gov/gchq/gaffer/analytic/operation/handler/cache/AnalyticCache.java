@@ -188,7 +188,6 @@ public class AnalyticCache {
         deleteFromCache(name);
     }
 
-
     private AnalyticDetail get(final String name) throws CacheOperationFailedException {
         if (null == name) {
             throw new CacheOperationFailedException("AnalyticOperation name cannot be null");
