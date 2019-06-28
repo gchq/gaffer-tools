@@ -25,19 +25,44 @@ import java.util.Map;
 import java.util.function.Function;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 public class OutputVisualisationTest {
 
     @Test
     public void shouldGetAndSetOutputAdapter() {
-
+        // Given
         OutputVisualisation outputVisualisation = new OutputVisualisation();
 
+        // When
         Map<String, Function> keyFunctions = new HashMap<>();
         keyFunctions.put("blah", new Identity());
         outputVisualisation.setOutputAdapter(new ToMap(keyFunctions));
 
+        // Then
         assertEquals(ToMap.class, outputVisualisation.getOutputAdapter().getClass());
         assertEquals(keyFunctions, ((ToMap) outputVisualisation.getOutputAdapter()).getKeyFunctions());
+    }
+
+    @Test
+    public void shouldThrowExceptionIfOutputAdapterIsNotJsonSerialisable() {
+        // Given
+        OutputVisualisation outputVisualisation = new OutputVisualisation();
+
+        // When
+        outputVisualisation.setOutputAdapter(new Function() {
+            @Override
+            public Object apply(final Object o) {
+                return null;
+            }
+        });
+
+        // Then
+        try {
+            Function fn = outputVisualisation.getOutputAdapter();
+            fail("Exception expected");
+        } catch (final RuntimeException e) {
+            assertEquals("Failed to deserialise output adapter", e.getMessage());
+        }
     }
 }

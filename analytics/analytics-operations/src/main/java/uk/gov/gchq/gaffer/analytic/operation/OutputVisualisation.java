@@ -29,7 +29,15 @@ import java.io.Serializable;
 import java.util.function.Function;
 
 /**
- * TODO meaningful comment
+ * An OutputVisualisation contains information relating to how data is displayed
+ * in the Analytic UI. It contains the method of visualisation and how to adapt
+ * the results into something which complies with the UI's expected format.
+ * The default visualisation type is table and currently is the only one
+ * supported by the Analytic UI.
+ *
+ * The outputAdapter must be JSON serialisable.
+ *
+ * The table visualisation expects values in a key value format.
  */
 
 public class OutputVisualisation implements Serializable {
@@ -71,20 +79,6 @@ public class OutputVisualisation implements Serializable {
         setOutputAdapter(outputAdapter);
         return this;
     }
-
-//  TODO see if it's possible to work without these methods. Don't want to expose the underlying storage mechanism if I can help it.
-
-//    public String getOutputAdapter() {
-//        return outputAdapter;
-//    }
-//
-//    public void setOutputAdapter(final String outputAdapter) {
-//        this.outputAdapter = outputAdapter;
-//    }
-//
-//    public OutputVisualisation outputAdapter(final String outputAdapter) {
-//        this.outputAdapter =
-//    }
 
     public VisualisationType getVisualisationType() {
         return this.visualisationType;
