@@ -46,8 +46,6 @@ import java.util.List;
 import java.util.Properties;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 
@@ -55,9 +53,7 @@ public class AnalyticCacheIT {
     private static final String CACHE_NAME = "AnalyticOperation";
     private final Properties cacheProps = new Properties();
     private final Store store = mock(Store.class);
-    private final String adminAuth = "admin auth";
     private final StoreProperties properties = new StoreProperties();
-
     private final HashMap<String, String> outputType = Maps.newHashMap();
     private final HashMap<String, String> metaData = Maps.newHashMap();
 
@@ -72,8 +68,6 @@ public class AnalyticCacheIT {
             .build();
 
     private User user = new User();
-    private User authorisedUser = new User.Builder().userId("authorisedUser").opAuth("authorised").build();
-    private User adminAuthUser = new User.Builder().userId("adminAuthUser").opAuth(adminAuth).build();
     private Context context = new Context(user);
     private GetAllAnalyticsHandler getAllAnalyticOperationHandler = new GetAllAnalyticsHandler();
     private AddAnalyticHandler addAnalyticOperationHandler = new AddAnalyticHandler();
@@ -83,7 +77,6 @@ public class AnalyticCacheIT {
     @Before
     public void before() throws CacheOperationException {
         cacheProps.clear();
-        properties.setAdminAuth(adminAuth);
         given(store.getProperties()).willReturn(properties);
     }
 
@@ -109,12 +102,6 @@ public class AnalyticCacheIT {
     private void runTests() throws OperationException, CacheOperationException {
         shouldAllowUpdatingOfAnalyticOperations();
         after();
-        shouldAllowUpdatingOfAnalyticOperationsWithAllowedUsers();
-        after();
-        shouldAllowReadingOfAnalyticOperationsUsingAdminAuth();
-        after();
-        shouldAllowUpdatingOfAnalyticOperationsUsingAdminAuth();
-        after();
         shouldBeAbleToAddAnalyticOperationToCache();
         after();
         shouldBeAbleToDeleteAnalyticOperationFromCache();
@@ -134,8 +121,6 @@ public class AnalyticCacheIT {
                 .operationName(add.getOperationName())
                 .analyticName(add.getAnalyticName())
                 .creatorId(user.getUserId())
-                .readers(new ArrayList<>())
-                .writers(new ArrayList<>())
                 .description(add.getDescription())
                 .score(0)
                 .outputType(outputType)
@@ -204,138 +189,12 @@ public class AnalyticCacheIT {
                 .analyticName(update.getAnalyticName())
                 .description(update.getDescription())
                 .creatorId(user.getUserId())
-                .readers(new ArrayList<>())
-                .writers(new ArrayList<>())
                 .outputType(outputType)
                 .metaData(metaData)
                 .score(0)
                 .build();
 
         ArrayList<AnalyticDetail> expected = Lists.newArrayList(expectedAnalyticOp);
-
-        // then
-        assertEquals(expected.size(), results.size());
-        assertEquals(expected, results);
-    }
-
-    private void shouldAllowUpdatingOfAnalyticOperationsWithAllowedUsers() throws OperationException {
-        // given
-        final Store store = mock(Store.class);
-        given(store.getProperties()).willReturn(properties);
-
-        new AddAnalyticHandler().doOperation(add, context, store);
-
-        AddAnalytic update = new AddAnalytic.Builder()
-                .operationName(add.getOperationName())
-                .description("a different operation")
-                .analyticName(add.getAnalyticName())
-                .overwrite()
-                .outputType(outputType)
-                .metaData(metaData)
-                .score(0)
-                .build();
-
-        GetAllAnalytics get = new GetAllAnalytics();
-
-        // when
-        new AddAnalyticHandler().doOperation(add, context, store);
-
-        List<AnalyticDetail> results = Lists.newArrayList(getAllAnalyticOperationHandler.doOperation(get, context, store));
-
-        AnalyticDetail expectedAnalyticOp = new AnalyticDetail.Builder()
-                .operationName(update.getOperationName())
-                .analyticName(update.getAnalyticName())
-                .description(update.getDescription())
-                .creatorId(user.getUserId())
-                .readers(new ArrayList<>())
-                .writers(new ArrayList<>())
-                .outputType(outputType)
-                .metaData(metaData)
-                .score(0)
-                .build();
-
-        ArrayList<AnalyticDetail> expected = Lists.newArrayList(expectedAnalyticOp);
-
-        // then
-        assertEquals(expected.size(), results.size());
-        assertEquals(expected, results);
-    }
-
-    private void shouldAllowReadingOfAnalyticOperationsUsingAdminAuth() throws OperationException {
-        // given
-        Context contextWithAuthorisedUser = new Context(authorisedUser);
-        Context contextWithAdminUser = new Context(adminAuthUser);
-        AnalyticDetail expectedAnalyticOp = new AnalyticDetail.Builder()
-                .operationName(add.getOperationName())
-                .analyticName(add.getAnalyticName())
-                .description(add.getDescription())
-                .creatorId(authorisedUser.getUserId())
-                .readers(new ArrayList<>())
-                .writers(new ArrayList<>())
-                .outputType(outputType)
-                .metaData(metaData)
-                .score(0)
-                .build();
-        ArrayList<AnalyticDetail> expected = Lists.newArrayList(expectedAnalyticOp);
-
-        addAnalyticOperationHandler.doOperation(add, contextWithAuthorisedUser, store);
-
-        // when
-        List<AnalyticDetail> resultsWithNoAdminRole = Lists.newArrayList(getAllAnalyticOperationHandler.doOperation(get, context, store));
-
-        // then
-        assertEquals(0, resultsWithNoAdminRole.size());
-
-        // when
-        List<AnalyticDetail> resultsWithAdminRole = Lists.newArrayList(getAllAnalyticOperationHandler.doOperation(get, contextWithAdminUser, store));
-
-        // then
-        assertEquals(1, resultsWithAdminRole.size());
-        assertEquals(expected, resultsWithAdminRole);
-    }
-
-    private void shouldAllowUpdatingOfAnalyticOperationsUsingAdminAuth() throws OperationException {
-        // given
-        Context contextWithAuthorisedUser = new Context(authorisedUser);
-        Context contextWithAdminUser = new Context(adminAuthUser);
-        addAnalyticOperationHandler.doOperation(add, contextWithAuthorisedUser, store);
-
-        AddAnalytic update = new AddAnalytic.Builder()
-                .operationName(add.getOperationName())
-                .description("a different operation")
-                .analyticName(add.getAnalyticName())
-                .overwrite()
-                .outputType(outputType)
-                .metaData(metaData)
-                .score(0)
-                .build();
-
-        AnalyticDetail expectedAnalyticOp = new AnalyticDetail.Builder()
-                .operationName(update.getOperationName())
-                .analyticName(update.getAnalyticName())
-                .description(update.getDescription())
-                .creatorId(adminAuthUser.getUserId())
-                .readers(new ArrayList<>())
-                .writers(new ArrayList<>())
-                .outputType(outputType)
-                .metaData(metaData)
-                .score(0)
-                .build();
-
-        ArrayList<AnalyticDetail> expected = Lists.newArrayList(expectedAnalyticOp);
-
-        // when / then
-        try {
-            addAnalyticOperationHandler.doOperation(update, context, store);
-            fail("Exception expected");
-        } catch (final OperationException e) {
-            assertTrue(e.getMessage().contains("User UNKNOWN does not have permission to overwrite"));
-        }
-
-        // when
-        addAnalyticOperationHandler.doOperation(update, contextWithAdminUser, store);
-
-        List<AnalyticDetail> results = Lists.newArrayList(getAllAnalyticOperationHandler.doOperation(get, contextWithAdminUser, store));
 
         // then
         assertEquals(expected.size(), results.size());

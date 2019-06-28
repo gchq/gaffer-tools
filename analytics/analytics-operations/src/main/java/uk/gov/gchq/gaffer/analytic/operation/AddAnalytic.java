@@ -24,10 +24,7 @@ import uk.gov.gchq.gaffer.operation.Operation;
 import uk.gov.gchq.koryphe.Since;
 import uk.gov.gchq.koryphe.Summary;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import static java.util.Objects.isNull;
@@ -40,8 +37,6 @@ public class AddAnalytic implements Operation {
     private String analyticName;
     private String operationName;
     private String description;
-    private List<String> readAccessRoles = new ArrayList<>();
-    private List<String> writeAccessRoles = new ArrayList<>();
     private boolean overwriteFlag = false;
     private Map<String, UIMappingDetail> uiMapping;
     private Map<String, String> options;
@@ -71,22 +66,6 @@ public class AddAnalytic implements Operation {
 
     public void setOperationName(final String operationName) {
         this.operationName = operationName;
-    }
-
-    public List<String> getReadAccessRoles() {
-        return readAccessRoles;
-    }
-
-    public void setReadAccessRoles(final List<String> readAccessRoles) {
-        this.readAccessRoles = readAccessRoles;
-    }
-
-    public List<String> getWriteAccessRoles() {
-        return writeAccessRoles;
-    }
-
-    public void setWriteAccessRoles(final List<String> writeAccessRoles) {
-        this.writeAccessRoles = writeAccessRoles;
     }
 
     public String getDescription() {
@@ -127,9 +106,8 @@ public class AddAnalytic implements Operation {
     @Override
     public AddAnalytic shallowClone() {
         return new AddAnalytic.Builder().analyticName(analyticName).operationName(operationName)
-                .description(description).readAccessRoles(readAccessRoles.toArray(new String[readAccessRoles.size()]))
-                .writeAccessRoles(writeAccessRoles.toArray(new String[writeAccessRoles.size()]))
-                .overwrite(overwriteFlag).uiMapping(uiMapping).metaData(metaData).outputType(outputType)
+                .description(description).overwrite(overwriteFlag)
+                .uiMapping(uiMapping).metaData(metaData).outputType(outputType)
                 .options(options).score(score).build();
     }
 
@@ -168,16 +146,6 @@ public class AddAnalytic implements Operation {
 
         public AddAnalytic.Builder description(final String description) {
             _getOp().setDescription(description);
-            return _self();
-        }
-
-        public AddAnalytic.Builder readAccessRoles(final String... roles) {
-            Collections.addAll(_getOp().getReadAccessRoles(), roles);
-            return _self();
-        }
-
-        public AddAnalytic.Builder writeAccessRoles(final String... roles) {
-            Collections.addAll(_getOp().getWriteAccessRoles(), roles);
             return _self();
         }
 

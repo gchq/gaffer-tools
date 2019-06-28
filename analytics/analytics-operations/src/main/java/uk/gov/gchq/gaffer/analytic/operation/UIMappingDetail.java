@@ -41,7 +41,7 @@ public class UIMappingDetail implements Serializable {
     }
 
     public UIMappingDetail(final String label, final String userInputType, final String parameterName,
-            final Class inputClass) {
+                           final Class inputClass) {
         if (null == label) {
             throw new IllegalArgumentException("label must not be empty");
         }

@@ -65,10 +65,9 @@ public class GetAllAnalyticsHandler
      */
     @Override
     public CloseableIterable<AnalyticDetail> doOperation(final GetAllAnalytics operation, final Context context,
-            final Store store) throws OperationException {
+                                                         final Store store) throws OperationException {
         GetAllAnalyticsHandler.context = context;
-        final CloseableIterable<AnalyticDetail> ops = cache.getAllAnalyticOperations(context.getUser(),
-                store.getProperties().getAdminAuth());
+        final CloseableIterable<AnalyticDetail> ops = cache.getAllAnalyticOperations();
         return new WrappedCloseableIterable<>(IterableUtil.map(ops, new AddInputType()));
     }
 

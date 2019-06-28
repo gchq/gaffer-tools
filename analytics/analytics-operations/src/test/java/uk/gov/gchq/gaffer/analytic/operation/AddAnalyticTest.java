@@ -23,7 +23,6 @@ import uk.gov.gchq.gaffer.analytic.operation.AddAnalytic.Builder;
 import uk.gov.gchq.gaffer.commonutil.JsonAssert;
 import uk.gov.gchq.gaffer.operation.OperationTest;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -34,40 +33,48 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNotSame;
 
 public class AddAnalyticTest extends OperationTest<AddAnalytic> {
-        public static final String USER = "User";
 
         @Override
         public void shouldJsonSerialiseAndDeserialise() {
                 Map<String, UIMappingDetail> uiMapping = Maps.newHashMap();
                 uiMapping.put("result-limit", new UIMappingDetail.Builder().label("param1").userInputType("textbox")
-                                .parameterName("result-limit1").build());
+                        .parameterName("result-limit1").build());
                 Map<String, String> metaData = new HashMap<>();
                 metaData.put("iconURL", "icon");
                 Map<String, String> outputType = new HashMap<>();
                 outputType.put("output", "table");
 
                 AddAnalytic addAnalyticOperation = new AddAnalytic.Builder().analyticName("Test Analytic name")
-                                .operationName("Test Operation name").description("Test description")
-                                .readAccessRoles(USER).writeAccessRoles(USER).overwrite(false).uiMapping(uiMapping)
-                                .metaData(metaData).outputType(outputType).score(4).build();
+                        .operationName("Test Operation name").description("Test description")
+                        .overwrite(false).uiMapping(uiMapping)
+                        .metaData(metaData).outputType(outputType).score(4).build();
 
                 // When
                 final byte[] json = toJson(addAnalyticOperation);
                 final AddAnalytic deserialisedObj = fromJson(json);
 
                 // Then
-                JsonAssert.assertEquals(String.format("{\n"
-                                + "  \"class\": \"uk.gov.gchq.gaffer.analytic.operation.AddAnalytic\",\n"
-                                + "  \"analyticName\": \"Test Analytic name\",\n"
-                                + "  \"operationName\": \"Test Operation name\",\n"
-                                + "  \"description\": \"Test description\",\n" + "  \"score\": 4,\n"
-                                + "  \"metaData\": {\n" + "    \"iconURL\": \"icon\"\n" + "   },\n"
-                                + "  \"outputType\": {\n" + "    \"output\": \"table\"\n" + "   },\n"
-                                + "  \"overwriteFlag\": false,\n" + "   \"readAccessRoles\": [" + " \"User\"" + " ],\n"
-                                + "  \"uiMapping\": {\n" + "    \"result-limit\": {\n"
-                                + "      \"label\": \"param1\",\n" + "      \"userInputType\" : \"textbox\",\n"
-                                + "      \"parameterName\" : \"result-limit1\"\n" + "      }\n" + "  },\n"
-                                + "  \"writeAccessRoles\" : [" + " \"User\"" + " ]\n" + "}"), new String(json));
+                JsonAssert.assertEquals(String.format("{\n" +
+                        "  \"class\" : \"uk.gov.gchq.gaffer.analytic.operation.AddAnalytic\",\n" +
+                        "  \"analyticName\" : \"Test Analytic name\",\n" +
+                        "  \"operationName\" : \"Test Operation name\",\n" +
+                        "  \"description\" : \"Test description\",\n" +
+                        "  \"score\" : 4,\n" +
+                        "  \"metaData\" : {\n" +
+                        "    \"iconURL\" : \"icon\"\n" +
+                        "  },\n" +
+                        "  \"outputType\" : {\n" +
+                        "    \"output\" : \"table\"\n" +
+                        "  },\n" +
+                        "  \"overwriteFlag\" : false,\n" +
+                        "  \"uiMapping\" : {\n" +
+                        "    \"result-limit\" : {\n" +
+                        "      \"label\" : \"param1\",\n" +
+                        "      \"userInputType\" : \"textbox\",\n" +
+                        "      \"parameterName\" : \"result-limit1\"\n" +
+                        "    }\n" +
+                        "  }\n" +
+                        "}"), new String(json));
                 assertNotNull(deserialisedObj);
         }
 
@@ -76,7 +83,7 @@ public class AddAnalyticTest extends OperationTest<AddAnalytic> {
                 // Given
                 Map<String, UIMappingDetail> uiMapping = Maps.newHashMap();
                 uiMapping.put("uiMappingConstructorTest",
-                                new UIMappingDetail("Maximum Results", "String", "finalMaxResultLimit"));
+                        new UIMappingDetail("Maximum Results", "String", "finalMaxResultLimit"));
                 Map<String, String> options = new HashMap<>();
                 options.put("option1", "example Option");
                 Map<String, String> metaData = new HashMap<>();
@@ -85,17 +92,15 @@ public class AddAnalyticTest extends OperationTest<AddAnalytic> {
                 outputType.put("output", "table");
 
                 AddAnalytic addAnalyticOperation = new Builder().analyticName("Test Analytic name")
-                                .operationName("Test Operation name").description("Test description")
-                                .readAccessRoles(USER).writeAccessRoles(USER).overwrite(false).uiMapping(uiMapping)
-                                .metaData(metaData).outputType(outputType).options(options).score(4).build();
+                        .operationName("Test Operation name").description("Test description")
+                        .overwrite(false).uiMapping(uiMapping)
+                        .metaData(metaData).outputType(outputType).options(options).score(4).build();
                 // When
 
                 // Then
                 assertEquals("Test Analytic name", addAnalyticOperation.getAnalyticName());
                 assertEquals("Test Operation name", addAnalyticOperation.getOperationName());
                 assertEquals("Test description", addAnalyticOperation.getDescription());
-                assertEquals(Collections.singletonList(USER), addAnalyticOperation.getReadAccessRoles());
-                assertEquals(Collections.singletonList(USER), addAnalyticOperation.getWriteAccessRoles());
                 assertFalse(addAnalyticOperation.isOverwriteFlag());
                 assertEquals(uiMapping, addAnalyticOperation.getUiMapping());
                 assertEquals(metaData, addAnalyticOperation.getMetaData());
@@ -109,9 +114,9 @@ public class AddAnalyticTest extends OperationTest<AddAnalytic> {
                 // Given
                 Map<String, UIMappingDetail> uiMapping = Maps.newHashMap();
                 uiMapping.put("uiMappingBuilderTest", new UIMappingDetail.Builder().label("Maximum Results")
-                                .userInputType("String").parameterName("finalMaxResultLimit").build());
+                        .userInputType("String").parameterName("finalMaxResultLimit").build());
                 uiMapping.put("uiMappingConstructorTest",
-                                new UIMappingDetail("Maximum Results", "String", "finalMaxResultLimit"));
+                        new UIMappingDetail("Maximum Results", "String", "finalMaxResultLimit"));
                 Map<String, String> options = new HashMap<>();
                 options.put("option1", "example Option");
                 Map<String, String> metaData = new HashMap<>();
@@ -120,9 +125,9 @@ public class AddAnalyticTest extends OperationTest<AddAnalytic> {
                 outputType.put("output", "table");
 
                 AddAnalytic addAnalyticOperation = new AddAnalytic.Builder().analyticName("Test Analytic name")
-                                .operationName("Test Operation name").description("Test description")
-                                .readAccessRoles(USER).writeAccessRoles(USER).overwrite(false).uiMapping(uiMapping)
-                                .metaData(metaData).outputType(outputType).options(options).score(4).build();
+                        .operationName("Test Operation name").description("Test description")
+                        .overwrite(false).uiMapping(uiMapping)
+                        .metaData(metaData).outputType(outputType).options(options).score(4).build();
 
                 // When
                 AddAnalytic clone = addAnalyticOperation.shallowClone();
@@ -132,8 +137,6 @@ public class AddAnalyticTest extends OperationTest<AddAnalytic> {
                 assertEquals("Test Analytic name", clone.getAnalyticName());
                 assertEquals("Test Operation name", clone.getOperationName());
                 assertEquals("Test description", clone.getDescription());
-                assertEquals(Collections.singletonList(USER), clone.getReadAccessRoles());
-                assertEquals(Collections.singletonList(USER), clone.getWriteAccessRoles());
                 assertFalse(clone.isOverwriteFlag());
                 assertEquals(uiMapping, clone.getUiMapping());
                 assertEquals(metaData, clone.getMetaData());

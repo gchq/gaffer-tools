@@ -63,15 +63,13 @@ public class AddAnalyticHandler implements OperationHandler<AddAnalytic> {
         try {
             final AnalyticDetail analyticOperationDetail = new AnalyticDetail.Builder()
                     .analyticName(operation.getAnalyticName()).operationName(operation.getOperationName())
-                    .creatorId(context.getUser().getUserId()).readers(operation.getReadAccessRoles())
-                    .writers(operation.getWriteAccessRoles()).description(operation.getDescription())
+                    .creatorId(context.getUser().getUserId()).description(operation.getDescription())
                     .uiMapping(operation.getUiMapping()).metaData(operation.getMetaData())
                     .outputType(operation.getOutputType()).score(operation.getScore()).options(operation.getOptions())
                     .build();
 
             validate(analyticOperationDetail);
-            cache.addAnalyticOperation(analyticOperationDetail, operation.isOverwriteFlag(), context.getUser(),
-                    store.getProperties().getAdminAuth());
+            cache.addAnalyticOperation(analyticOperationDetail, operation.isOverwriteFlag());
 
         } catch (final CacheOperationFailedException e) {
             throw new OperationException(e.getMessage(), e);
