@@ -63,18 +63,18 @@ describe('TableComponent', () => {
 
     fixture.detectChanges();
 
-    let expected = [{
-        'value': 'a'
+    const expected = [{
+        value: 'a'
       },
       {
-        'value': 'b'
+        value: 'b'
       },
       {
-        'value': 'c'
+        value: 'c'
       }
     ];
 
-    expect(component.dataSource.data).toEqual(expected)
+    expect(component.dataSource.data).toEqual(expected);
   });
 
   it('should use "value" as the key for non-object result for column names', () => {
@@ -87,15 +87,15 @@ describe('TableComponent', () => {
 
   it('should use the keys of objects for object results for column names', () => {
     results = [ {
-        'varA': 1
+        varA: 1
       },
       {
-        'varB': 'B'
+        varB: 'B'
       }
     ];
 
     fixture.detectChanges();
 
-    expect(component.tableColumns).toEqual(['varA', 'varB'])
+    expect(component.tableColumns).toEqual(['varA', 'varB']);
   });
 });

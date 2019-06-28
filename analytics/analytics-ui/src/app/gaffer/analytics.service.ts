@@ -109,7 +109,7 @@ export class AnalyticsService {
     const operationChain = {
       class: OPERATION_CHAIN_CLASS,
       operations: []
-    }
+    };
 
     operationChain.operations.push(operation);
 
@@ -119,7 +119,7 @@ export class AnalyticsService {
         functions: [
           this.arrayAnalytic.outputVisualisation.outputAdapter
         ]
-      })
+      });
     }
 
     // Execute the analytic and then navigate when finished loading

@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-import { Component, OnInit, ViewChild} from '@angular/core'
-import { ResultsService } from '../gaffer/results.service'
+import { Component, OnInit, ViewChild} from '@angular/core';
+import { ResultsService } from '../gaffer/results.service';
 import { MatTableDataSource, MatSort } from '@angular/material';
 
 @Component({
@@ -39,22 +39,22 @@ export class TableComponent implements OnInit {
       return;
     }
     // To transform non-object results into objects, we need to build an array of replacements and indexes
-    const toAdd: any[] = []
+    const toAdd: any[] = [];
     const toRemove: number[] = [];
 
     tableData.forEach((element, index) => {
       if (element instanceof Object) {
         // Use the keys of objects as the tableColumns
         for (const key of Object.keys(element)) {
-          if (this.tableColumns.indexOf(key) == -1) {
+          if (this.tableColumns.indexOf(key) === -1) {
             this.tableColumns.push(key);
           }
         }
       } else {
         toRemove.push(index);
-        toAdd.push({"value": element});
-        if (this.tableColumns.indexOf("value") == -1) {
-          this.tableColumns.push("value");
+        toAdd.push({value: element});
+        if (this.tableColumns.indexOf('value') === -1) {
+          this.tableColumns.push('value');
         }
       }
     });
