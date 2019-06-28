@@ -46,11 +46,11 @@ public class AnalyticDetail implements Serializable {
                           final Integer score, final Map<String, String> options) {
 
         if (null == operationName || operationName.isEmpty()) {
-            throw new IllegalArgumentException("Operation Name must not be empty");
+            throw new IllegalArgumentException("Operation Name must not be empty.");
         }
 
         if (null == analyticName || analyticName.isEmpty()) {
-            throw new IllegalArgumentException("Analytic Name must not be empty");
+            throw new IllegalArgumentException("Analytic Name must not be empty.");
         }
 
         this.analyticName = analyticName;
