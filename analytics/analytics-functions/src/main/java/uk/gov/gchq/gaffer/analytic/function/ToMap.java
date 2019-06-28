@@ -30,13 +30,13 @@ import java.util.function.Function;
  */
 public class ToMap extends KorypheFunction<Object, Map<String, Object>> {
 
-    private Map<String, Function> keyFunctions;
+    private Map<String, ? extends Function> keyFunctions;
 
     public ToMap() {
         // Required for serialisation
     }
 
-    public ToMap(final Map<String, Function> keyFunctions) {
+    public ToMap(final Map<String, ? extends Function> keyFunctions) {
         this.keyFunctions = keyFunctions;
     }
 
@@ -48,21 +48,20 @@ public class ToMap extends KorypheFunction<Object, Map<String, Object>> {
 
         Map<String, Object> generatedMap = new HashMap<>();
 
-        for (final Map.Entry<String, Function> keyFunction : keyFunctions.entrySet()) {
+        for (final Map.Entry<String, ? extends Function> keyFunction : keyFunctions.entrySet()) {
             generatedMap.put(keyFunction.getKey(), keyFunction.getValue().apply(o));
         }
 
         return generatedMap;
     }
 
-
-    public Map<String, Function> getKeyFunctions() {
+    public Map<String, ? extends Function> getKeyFunctions() {
         return keyFunctions;
     }
 
 
     @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, include = JsonTypeInfo.As.PROPERTY, property = "class")
-    public void setKeyFunctions(final Map<String, Function> keyFunctions) {
+    public void setKeyFunctions(final Map<String, ? extends Function> keyFunctions) {
         this.keyFunctions = keyFunctions;
     }
 }
