@@ -299,7 +299,7 @@ public class QueryBuilderST {
         String text = getElement("operation-name").getAttribute("value");
         assertEquals("A Test Name", text);
     }
-  
+
     private void enterText(final String id, final String value) throws InterruptedException {
         getElement(id).sendKeys(value);
 
