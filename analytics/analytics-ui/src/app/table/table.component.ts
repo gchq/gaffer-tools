@@ -15,6 +15,7 @@
  */
 
 import { Component, OnInit, Injectable, ViewChild } from '@angular/core';
+import { Location } from '@angular/common';
 import { MatSort, MatTableDataSource } from '@angular/material';
 import { cloneDeep, union } from 'lodash';
 
@@ -40,8 +41,13 @@ export class TableComponent implements OnInit {
     private results: ResultsService,
     private types: TypeService,
     private time: TimeService,
-    private schemaService: SchemaService
-  ) { }
+    private schemaService: SchemaService,
+    private _location: Location
+  ) {}
+
+  goback() {
+    this._location.back();
+  }
 
   /**
    * Fetches the results. It first loads the latest types from the config and the latest schema.
@@ -98,7 +104,10 @@ export class TableComponent implements OnInit {
     // Transform the other types into a displayable form
     this.processOtherTypes(resultsData);
 
-    this.data.allColumns = union(union(this.ids, this.groupByProperties), this.properties);
+    this.data.allColumns = union(
+      union(this.ids, this.groupByProperties),
+      this.properties
+    );
 
     if (!this.data.columns || this.data.columns.length === 0) {
       this.data.columns = cloneDeep(this.data.allColumns);
@@ -144,12 +153,7 @@ export class TableComponent implements OnInit {
     this.columnsToDisplay = this.data.columns;
   };
 
-  private processElements = function(
-    type,
-    typePlural,
-    idKeys,
-    resultsData
-  ) {
+  private processElements = function(type, typePlural, idKeys, resultsData) {
     // If there are elements of this type
     if (
       resultsData[typePlural] &&
@@ -191,7 +195,10 @@ export class TableComponent implements OnInit {
                     ) {
                       this.data.tooltips[propName] = typeDef.description;
                     }
-                    this.groupByProperties = union([propName], this.groupByProperties);
+                    this.groupByProperties = union(
+                      [propName],
+                      this.groupByProperties
+                    );
                   }
                 }
                 for (const propertyName of elementDef.properties) {
@@ -212,7 +219,10 @@ export class TableComponent implements OnInit {
             for (const prop in element.properties) {
               if (element.properties.hasOwnProperty(prop)) {
                 this.properties = union([prop], this.properties);
-                result[prop] = this.convertValue(prop, element.properties[prop]);
+                result[prop] = this.convertValue(
+                  prop,
+                  element.properties[prop]
+                );
               }
             }
           }
