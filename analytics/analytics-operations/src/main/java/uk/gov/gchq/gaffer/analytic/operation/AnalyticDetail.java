@@ -45,6 +45,14 @@ public class AnalyticDetail implements Serializable {
     public AnalyticDetail() {
     }
 
+    public void setReadAccessRoles(final List<String> readAccessRoles) {
+        this.readAccessRoles = readAccessRoles;
+    }
+
+    public void setWriteAccessRoles(final List<String> writeAccessRoles) {
+        this.writeAccessRoles = writeAccessRoles;
+    }
+
     public AnalyticDetail(final String analyticName, final String operationName, final String description,
                           final String userId, final List<String> readers,
                           final List<String> writers, final Map<String, UIMappingDetail> uiMapping,
