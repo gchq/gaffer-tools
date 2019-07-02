@@ -1,9 +1,21 @@
-<mat-table [dataSource]="dataSource" class="mat-elevation-z8" matSort>
-  <ng-container [matColumnDef]="column" *ngFor="let column of tableColumns">
-    <mat-header-cell *matHeaderCellDef mat-sort-header>{{column}}</mat-header-cell>
-    <mat-cell *matCellDef="let element">{{element[column]}}</mat-cell>
-  </ng-container>
+<div style="margin-left:110px">
+  <h1>Table</h1>
+</div>
 
-  <mat-header-row *matHeaderRowDef="tableColumns; sticky: true"></mat-header-row>
-  <mat-row *matRowDef="let row; columns: tableColumns;"></mat-row>
-</mat-table>
+<!-- Dynamic Table -->
+<div class="container">
+  <div class="spacer"></div>
+  <mat-table [dataSource]="dataSource" class="mat-elevation-z8" matSort>
+    <ng-container [matColumnDef]="column" *ngFor="let column of tableColumns">
+      <mat-header-cell *matHeaderCellDef mat-sort-header>
+        <h3>{{ column }}</h3>
+      </mat-header-cell>
+      <mat-cell *matCellDef="let element"> {{element[column]}} </mat-cell>
+    </ng-container>
+
+    <mat-header-row *matHeaderRowDef="tableColumns; sticky: true">
+    </mat-header-row>
+    <mat-row *matRowDef="let row; columns: tableColumns;"></mat-row>
+  </mat-table>
+  <div class="spacer"></div>
+</div>

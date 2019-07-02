@@ -34,7 +34,7 @@ describe('TableComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [TableComponent],
-      imports: [ MatTableModule ],
+      imports: [MatTableModule],
       providers: [{ provide: ResultsService, useClass: ResultsServiceStub }]
     }).compileComponents();
   }));
@@ -59,26 +59,26 @@ describe('TableComponent', () => {
   });
 
   it('should use a "value" key for string results', () => {
-    results = [ 'a', 'b', 'c' ];
+    results = ['a', 'b', 'c'];
 
     fixture.detectChanges();
 
     const expected = [{
-        value: 'a'
-      },
-      {
-        value: 'b'
-      },
-      {
-        value: 'c'
-      }
+      value: 'a'
+    },
+    {
+      value: 'b'
+    },
+    {
+      value: 'c'
+    }
     ];
 
     expect(component.dataSource.data).toEqual(expected);
   });
 
   it('should use "value" as the key for non-object result for column names', () => {
-    results = [ 1, 2, 3 ];
+    results = [1, 2, 3];
 
     fixture.detectChanges();
 
@@ -86,12 +86,12 @@ describe('TableComponent', () => {
   });
 
   it('should use the keys of objects for object results for column names', () => {
-    results = [ {
-        varA: 1
-      },
-      {
-        varB: 'B'
-      }
+    results = [{
+      varA: 1
+    },
+    {
+      varB: 'B'
+    }
     ];
 
     fixture.detectChanges();
