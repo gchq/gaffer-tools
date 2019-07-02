@@ -20,6 +20,7 @@ import {
   MatCardModule,
   MatTableDataSource
 } from '@angular/material';
+import { Location } from '@angular/common';
 import { empty, of } from 'rxjs';
 import {
   HttpClientTestingModule,
@@ -473,6 +474,7 @@ class SchemaServiceStub {
   }
 }
 class ErrorServiceStub {}
+class LocationServiceStub {}
 
 describe('TableComponent', () => {
   let component: TableComponent;
@@ -487,7 +489,8 @@ describe('TableComponent', () => {
         TypeService,
         TimeService,
         { provide: SchemaService, useClass: SchemaServiceStub },
-        { provide: ErrorService, useClass: ErrorServiceStub }
+        { provide: ErrorService, useClass: ErrorServiceStub },
+        { provide: Location, useClass: LocationServiceStub }
       ]
     }).compileComponents();
   }));
