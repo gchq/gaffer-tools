@@ -14,24 +14,24 @@
  * limitations under the License.
  */
 
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing'
 import {
   MatTableModule,
   MatCardModule,
   MatTableDataSource
-} from '@angular/material';
-import { empty, of } from 'rxjs';
+} from '@angular/material'
+import { empty, of } from 'rxjs'
 import {
   HttpClientTestingModule,
   HttpTestingController
-} from '@angular/common/http/testing';
+} from '@angular/common/http/testing'
 
-import { TableComponent } from './table.component';
-import { ResultsService } from '../gaffer/results.service';
-import { TypeService } from '../gaffer/type.service';
-import { TimeService } from '../gaffer/time.service';
-import { SchemaService } from '../gaffer/schema.service';
-import { ErrorService } from '../dynamic-input/error.service';
+import { TableComponent } from './table.component'
+import { ResultsService } from '../gaffer/results.service'
+import { TypeService } from '../gaffer/type.service'
+import { TimeService } from '../gaffer/time.service'
+import { SchemaService } from '../gaffer/schema.service'
+import { ErrorService } from '../dynamic-input/error.service'
 
 const fullResultsData = [
   {
@@ -106,7 +106,7 @@ const fullResultsData = [
     class: 'EntitySeed',
     vertex: 'vertex1'
   }
-];
+]
 
 const fullData = {
   results: [
@@ -201,7 +201,7 @@ const fullData = {
   types: ['Edge', 'Entity', 'String', 'Integer', 'EntitySeed'],
   allTypes: ['Edge', 'Entity', 'String', 'Integer', 'EntitySeed'],
   tooltips: {}
-};
+}
 
 const types = {
   'java.util.Date': {
@@ -434,7 +434,7 @@ const types = {
     ],
     wrapInJson: false
   }
-};
+}
 const schema = {
   entities: {
     BasicEntity1: {
@@ -460,23 +460,23 @@ const schema = {
       class: 'java.lang.Long'
     }
   }
-};
+}
 
 class ResultsServiceStub {
   get = () => {
-    return fullResultsData;
-  };
+    return fullResultsData
+  }
 }
 class SchemaServiceStub {
   get = () => {
-    return of(schema);
-  };
+    return of(schema)
+  }
 }
 class ErrorServiceStub {}
 
 describe('TableComponent', () => {
-  let component: TableComponent;
-  let fixture: ComponentFixture<TableComponent>;
+  let component: TableComponent
+  let fixture: ComponentFixture<TableComponent>
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -486,51 +486,50 @@ describe('TableComponent', () => {
         { provide: ResultsService, useClass: ResultsServiceStub },
         TypeService,
         TimeService,
-        Location,
         { provide: SchemaService, useClass: SchemaServiceStub },
         { provide: ErrorService, useClass: ErrorServiceStub }
       ]
-    }).compileComponents();
-  }));
+    }).compileComponents()
+  }))
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(TableComponent);
-    component = fixture.componentInstance;
-    const typeService = TestBed.get(TypeService);
-    spyOn(typeService, 'get').and.returnValue(of(types));
-  });
+    fixture = TestBed.createComponent(TableComponent)
+    component = fixture.componentInstance
+    const typeService = TestBed.get(TypeService)
+    spyOn(typeService, 'get').and.returnValue(of(types))
+  })
 
   it('should be created', () => {
-    fixture.detectChanges();
-    expect(component).toBeTruthy();
-  });
+    fixture.detectChanges()
+    expect(component).toBeTruthy()
+  })
 
   it('should get the results at initialisation', () => {
-    const resultsService = TestBed.get(ResultsService);
-    const spy = spyOn(resultsService, 'get');
+    const resultsService = TestBed.get(ResultsService)
+    const spy = spyOn(resultsService, 'get')
 
-    fixture.detectChanges();
+    fixture.detectChanges()
 
-    expect(spy).toHaveBeenCalledTimes(1);
-  });
+    expect(spy).toHaveBeenCalledTimes(1)
+  })
 
   it('should update the table at initialisation', () => {
-    const spy = spyOn(component, 'updateFilteredResults');
+    const spy = spyOn(component, 'updateFilteredResults')
 
-    fixture.detectChanges();
+    fixture.detectChanges()
 
-    expect(spy).toHaveBeenCalledTimes(1);
-  });
+    expect(spy).toHaveBeenCalledTimes(1)
+  })
 
   it('should format the data correctly', () => {
-    fixture.detectChanges();
+    fixture.detectChanges()
 
-    expect(component.data.results.data).toEqual(fullData.results);
-  });
+    expect(component.data.results.data).toEqual(fullData.results)
+  })
 
   it('should have the correct columns', () => {
-    fixture.detectChanges();
+    fixture.detectChanges()
 
-    expect(component.columnsToDisplay).toEqual(fullData.allColumns);
-  });
-});
+    expect(component.columnsToDisplay).toEqual(fullData.allColumns)
+  })
+})

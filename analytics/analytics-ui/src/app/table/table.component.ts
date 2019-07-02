@@ -42,11 +42,11 @@ export class TableComponent implements OnInit {
     private types: TypeService,
     private time: TimeService,
     private schemaService: SchemaService,
-    private _location: Location
+    private location: Location
   ) {}
 
   goback() {
-    this._location.back();
+    this.location.back();
   }
 
   /**
