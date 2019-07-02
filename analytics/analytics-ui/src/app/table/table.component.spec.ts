@@ -17,7 +17,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { TableComponent } from './table.component';
 import { ResultsService } from '../gaffer/results.service';
-import { MatTableModule, MatCardModule } from '@angular/material';
+import { MatTableModule } from '@angular/material';
 
 let results;
 
@@ -34,7 +34,7 @@ describe('TableComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [TableComponent],
-      imports: [MatTableModule, MatCardModule],
+      imports: [MatTableModule],
       providers: [{ provide: ResultsService, useClass: ResultsServiceStub }]
     }).compileComponents();
   }));

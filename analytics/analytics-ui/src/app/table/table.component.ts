@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an 'AS IS' BASIS,
@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { Component, OnInit, ViewChild} from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { ResultsService } from '../gaffer/results.service';
 import { MatTableDataSource, MatSort } from '@angular/material';
 
@@ -30,7 +30,7 @@ export class TableComponent implements OnInit {
 
   constructor(
     private results: ResultsService
-  ) {}
+  ) { }
 
   ngOnInit() {
     let tableData = this.results.get();
@@ -52,7 +52,7 @@ export class TableComponent implements OnInit {
         }
       } else {
         toRemove.push(index);
-        toAdd.push({value: element});
+        toAdd.push({ value: element });
         if (this.tableColumns.indexOf('value') === -1) {
           this.tableColumns.push('value');
         }
