@@ -4,11 +4,11 @@
 
 <!-- Dynamic Table -->
 
-<mat-card class="mat-elevation-z8">
+<mat-card style="padding: 0">
   <mat-table [dataSource]="dataSource" matSort>
     <ng-container [matColumnDef]="column" *ngFor="let column of tableColumns">
       <mat-header-cell *matHeaderCellDef mat-sort-header>
-        <h3>{{ column | uppercase }}</h3>
+        <h3>{{ column }}</h3>
       </mat-header-cell>
       <mat-cell *matCellDef="let element"> {{element[column]}} </mat-cell>
     </ng-container>
