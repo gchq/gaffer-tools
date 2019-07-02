@@ -26,15 +26,26 @@ function sidenav() {
     };
 }
 
-function SideNavController(navigation, $route) {
+function SideNavController(navigation, $route, $routeParams, $location, operationOptions) {
     var vm = this;
     vm.routes = $route.routes
     vm.goTo = navigation.goTo;
     vm.collapsed = false;
 
     vm.$onInit = function() {
+        window.addEventListener('hashchange', vm.hashChangeCallback);
+        vm.hashChangeCallback(); // Added as callback function is not called on first navigation to domain
+        console.log('$location', $location);
+        console.log('$route:', $route);
+        console.log("routes:", vm.routes);
+        console.log('$routeParams:', $routeParams);
+
+        // $route.current.pathParams.program = "someValue";
+        // $location.path('/myapp/' + $routeParams.program);
+
         if($routeParams.graphid) {
-	            $routeParams.graphid = $routeParams.graphid.split(',');
+                $routeParams.graphid = $routeParams.graphid.split(',');
+                console.log("GraphID parameter is:", $routeParams.graphid);
 	
 	        //     if(Array.isArray($routeParams.graphid)) {
 	        //         // Add the first operation
@@ -64,6 +75,45 @@ function SideNavController(navigation, $route) {
 	        // }        
         }
     }
+
+    vm.$onDestroy = function() {
+        window.removeEventListener(vm.hashChangeCallback);
+    }
+
+    vm.hashChangeCallback = function (event) {
+        console.log('//////////////////////////////')
+        console.log('event: ', event);
+        // Set the graphId option if there is one
+        var params = $route.current.params
+        console.log('params: ', params);
+        var optionsConfig = operationOptions.getDefaultConfiguration();
+        console.log('optionsConfig Before: ', optionsConfig);
+        if (optionsConfig) {
+            optionsConfig.visible.forEach(element => {
+                if (element.key == 'gaffer.federatedstore.operation.graphIds') {
+                    if (params.graphId) {
+                        element.value = [params.graphId] 
+                    }
+                }
+            });
+        }
+        //var options = operationOptions.getDefaultOperationOptions();
+        console.log('optionsConfig After: ', optionsConfig);
+        //console.log(options);
+        operationOptions.setDefaultConfiguration(optionsConfig);
+        if (params.graphId) {
+            
+        }
+
+    }
+
+        // if (optionsConfig) {
+    //     Object.keys(optionsConfig.visible).forEach((key, index) => {
+    //         element = optionsConfig.visible[key]
+    //         if (element.key == 'gaffer.federatedstore.operation.graphIds') {
+    //             element.value = [params]            }
+    //     });
+    // }
 
     vm.isActive = function(route) {
         if(route) {
