@@ -188,5 +188,4 @@ public class AddAnalytic implements Operation {
             return _self();
         }
     }
-
 }
