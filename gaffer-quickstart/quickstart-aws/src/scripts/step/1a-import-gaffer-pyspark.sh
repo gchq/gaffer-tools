@@ -40,6 +40,6 @@ aws s3 cp $S3_BUCKET/ ${HOME} --recursive
 
 hadoop fs -put ${HOME}/gafferpy-build-${GAFFERPY_VERSION}-jar-with-dependencies.jar $GAFFER_LIBS_HDFS
 
-echo -e "alias gafferpy=\"pyspark --jars ${HOME}/gafferpy-build-${GAFFERPY_VERSION}-jar-with-dependencies.jar,${HOME}/gaffer-quickstart-jar-with-dependencies.jar --py-files ${HOME}/gafferpy-build-${GAFFERPY_VERSION}-python-modules.zip --packages graphframes:graphframes:0.6.0-spark2.3-s_2.11\"" >> .bashrc
+echo -e "alias gafferpy=\"pyspark --jars ${HOME}/gafferpy-build-${GAFFERPY_VERSION}-jar-with-dependencies.jar,${HOME}/gaffer-quickstart-full.jar --py-files ${HOME}/gafferpy-build-${GAFFERPY_VERSION}-python-modules.zip --packages graphframes:graphframes:0.6.0-spark2.3-s_2.11\"" >> .bashrc
 
 source .bashrc

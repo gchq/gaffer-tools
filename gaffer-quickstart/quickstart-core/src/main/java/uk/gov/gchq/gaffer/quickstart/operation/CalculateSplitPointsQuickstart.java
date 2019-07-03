@@ -1,19 +1,3 @@
-/*
- * Copyright 2016-2018 Crown Copyright
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 package uk.gov.gchq.gaffer.quickstart.operation;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -24,7 +8,7 @@ import uk.gov.gchq.gaffer.operation.Validatable;
 
 import java.util.Map;
 
-public class AddElementsFromHdfsQuickstart implements Operation, Validatable {
+public class CalculateSplitPointsQuickstart implements Operation, Validatable {
 
     @Required
     private String dataPath;
@@ -33,7 +17,10 @@ public class AddElementsFromHdfsQuickstart implements Operation, Validatable {
 
     private String outputPath;
     private String failurePath;
-    private int numPartitions = 0;
+
+    private String sampleRatioForSplits = "0.001";
+    private int numSplits = 0;
+    private String splitsFilePath;
 
     private boolean validate = true;
 
@@ -61,12 +48,12 @@ public class AddElementsFromHdfsQuickstart implements Operation, Validatable {
         this.elementGeneratorConfig = elementGeneratorConfigPath;
     }
 
-    public int getNumPartitions() {
-        return numPartitions;
+    public int getNumSplits() {
+        return numSplits;
     }
 
-    public void setNumPartitions(int numPartitions) {
-        this.numPartitions = numPartitions;
+    public void setNumSplits(int numSplits) {
+        this.numSplits = numSplits;
     }
 
     public String getDataPath(){
@@ -83,9 +70,11 @@ public class AddElementsFromHdfsQuickstart implements Operation, Validatable {
                 .dataPath(dataPath)
                 .outputPath(outputPath)
                 .failurePath(failurePath)
+                .sampleRatioForSplits(sampleRatioForSplits)
+                .splitsFilePath(splitsFilePath)
                 .elementGeneratorConfig(elementGeneratorConfig)
                 .validate(validate)
-                .numPartitions(numPartitions)
+                .numPartitions(numSplits)
                 .build();
     }
 
@@ -121,9 +110,25 @@ public class AddElementsFromHdfsQuickstart implements Operation, Validatable {
         this.validate = validate;
     }
 
-    public static class Builder extends BaseBuilder<AddElementsFromHdfsQuickstart, Builder> implements Validatable.Builder<AddElementsFromHdfsQuickstart, Builder> {
+    public String getSampleRatioForSplits() {
+        return sampleRatioForSplits;
+    }
+
+    public void setSampleRatioForSplits(String sampleRatioForSplits) {
+        this.sampleRatioForSplits = sampleRatioForSplits;
+    }
+
+    public String getSplitsFilePath() {
+        return splitsFilePath;
+    }
+
+    public void setSplitsFilePath(String splitsFilePath) {
+        this.splitsFilePath = splitsFilePath;
+    }
+
+    public static class Builder extends BaseBuilder<CalculateSplitPointsQuickstart, Builder> implements Validatable.Builder<CalculateSplitPointsQuickstart, Builder> {
         public Builder() {
-            super(new AddElementsFromHdfsQuickstart());
+            super(new CalculateSplitPointsQuickstart());
         }
 
         public Builder dataPath(final String inputPath){
@@ -147,18 +152,23 @@ public class AddElementsFromHdfsQuickstart implements Operation, Validatable {
         }
 
         public Builder numPartitions(final int numPartitions){
-            _getOp().setNumPartitions(numPartitions);
+            _getOp().setNumSplits(numPartitions);
             return _self();
         }
 
         public Builder elementGeneratorConfig(final String elementGeneratorConfigPath){
-                _getOp().setElementGeneratorConfig(elementGeneratorConfigPath);
+            _getOp().setElementGeneratorConfig(elementGeneratorConfigPath);
+            return _self();
+        }
 
+        public Builder sampleRatioForSplits(final String sampleRatioForSplits){
+            _getOp().setSampleRatioForSplits(sampleRatioForSplits);
+            return _self();
+        }
+
+        public Builder splitsFilePath(final String splitsFilePath){
+            _getOp().setSplitsFilePath(splitsFilePath);
             return _self();
         }
     }
 }
-
-
-
-

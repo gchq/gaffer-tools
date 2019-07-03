@@ -31,10 +31,10 @@
             <outputDirectory>example</outputDirectory>
         </fileSet>
         <fileSet>
-            <directory>../quickstart-aws/target</directory>
+            <directory>../quickstart-core/target</directory>
             <outputDirectory>lib</outputDirectory>
             <includes>
-                <include>gaffer-quickstart-jar-with-dependencies.jar</include>
+                <include>gaffer-quickstart-full.jar</include>
             </includes>
         </fileSet>
         <fileSet>

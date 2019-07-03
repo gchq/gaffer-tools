@@ -16,7 +16,7 @@
 
 package uk.gov.gchq.gaffer.quickstart.operation.handler;
 
-import org.apache.commons.io.IOUtils;
+import org.apache.commons.io.FileUtils;
 import org.apache.spark.launcher.SparkLauncher;
 import uk.gov.gchq.gaffer.accumulostore.AccumuloProperties;
 import uk.gov.gchq.gaffer.accumulostore.AccumuloStore;
@@ -31,21 +31,19 @@ import uk.gov.gchq.gaffer.store.StoreException;
 import uk.gov.gchq.gaffer.store.operation.handler.OperationHandler;
 import uk.gov.gchq.gaffer.store.schema.Schema;
 
+import java.io.File;
 import java.io.IOException;
-import java.io.StringWriter;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Properties;
-import java.util.UUID;
-
-
 
 public class AddElementsFromHdfsQuickstartHandler implements OperationHandler<AddElementsFromHdfsQuickstart> {
 
     private static final String JOB_JAR_PATH_KEY = "spark.loader.jar";
     private static final String SPARK_MASTER_KEY = "spark.master";
     private static final String SPARK_HOME_KEY = "spark.home";
-    private static final String APP_NAME = AddElementsFromHdfsQuickstart.class.getCanonicalName();
+    private static final String APP_NAME = "AddElementsFromQuickstart";
 
     @Override
     public Object doOperation(AddElementsFromHdfsQuickstart operation, Context context, Store store) throws OperationException {
@@ -68,33 +66,36 @@ public class AddElementsFromHdfsQuickstartHandler implements OperationHandler<Ad
 
         String tableName = accumuloStore.getTableName();
 
-        UUID uuid = UUID.randomUUID();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss_SSS");
+        Date date = new Date(System.currentTimeMillis());
+        String dateString = dateFormat.format(date);
+
+        String jobname = APP_NAME + "_" + dateString;
+
         String failurePath;
         String outputPath;
-        String jobname = APP_NAME + "_" + uuid;
+        String numSplitsString;
 
         if(null == operation.getFailurePath()){
-            failurePath = "failure_" + uuid;
+            failurePath = APP_NAME + "_" + dateString + "/failure";
         }else{
             failurePath = operation.getFailurePath();
         }
 
         if(null == operation.getOutputPath()){
-            outputPath = "output_" + uuid;
+            outputPath = APP_NAME + "_" + dateString + "/output";
         }else{
             outputPath = operation.getOutputPath();
         }
 
         String jobMainClass = LoadFromHdfsJob.class.getCanonicalName();
-//        String jobMainClass = LoadFromHdfs.class.getCanonicalName();
         String sparkMaster = accumuloStore.getProperties().get(SPARK_MASTER_KEY);
         String jarPath = accumuloStore.getProperties().get(JOB_JAR_PATH_KEY);
         String sparkHome = accumuloStore.getProperties().get(SPARK_HOME_KEY);
 
-        String numPartitionsString;
-        int numPartitions = operation.getNumPartitions();
+        int numSplits = operation.getNumSplits();
 
-        if(numPartitions == 0){
+        if(numSplits == 0){
             int numTabletServers = 0;
             try {
                 numTabletServers = (accumuloStore.getTabletServers().size());
@@ -103,16 +104,25 @@ public class AddElementsFromHdfsQuickstartHandler implements OperationHandler<Ad
             }
 
             if(0 != numTabletServers){
-                numPartitionsString = String.valueOf(numTabletServers);
+                numSplitsString = String.valueOf(numTabletServers);
             }else{
-                numPartitionsString = String.valueOf(operation.getNumPartitions());
+                numSplitsString = String.valueOf(operation.getNumSplits());
             }
         }else{
-            numPartitionsString = String.valueOf(operation.getNumPartitions());
+            numSplitsString = String.valueOf(operation.getNumSplits());
         }
 
         Map<String, String> env = new HashMap<>();
         env.put("SPARK_PRINT_LAUNCH_COMMAND", "1");
+
+        File logFile = new File(APP_NAME + "_" + dateString + "/log/stdout.log");
+        File errFile = new File(APP_NAME + "_" + dateString + "/log/stderr.log");
+        try {
+            FileUtils.write(logFile, "logs for job " + APP_NAME, true);
+            FileUtils.write(errFile, "logs for job " + APP_NAME, true);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         try {
             Process sparkLauncherProcess = new SparkLauncher(env)
@@ -121,28 +131,19 @@ public class AddElementsFromHdfsQuickstartHandler implements OperationHandler<Ad
                     .setMainClass(jobMainClass)
                     .setAppResource(jarPath)
                     .setSparkHome(sparkHome)
-//                    .addSparkArg("spark.executor.cores", "1")
+                    .redirectOutput(logFile)
+                    .redirectError(errFile)
                     .addAppArgs(
                             operation.getDataPath(),
                             operation.getElementGeneratorConfig(),
                             outputPath,
                             failurePath,
-                            numPartitionsString,
+                            numSplitsString,
                             schemaJson,
                             tableName,
                             accumuloPropertiesJson
                     )
                     .launch();
-
-            StringWriter inputStreamWriter = new StringWriter();
-            StringWriter errorStreamWriter = new StringWriter();
-            IOUtils.copy(sparkLauncherProcess.getInputStream(), inputStreamWriter);
-            IOUtils.copy(sparkLauncherProcess.getErrorStream(), errorStreamWriter);
-            String inputStream = inputStreamWriter.toString();
-            String errorStream = errorStreamWriter.toString();
-
-            System.out.println(inputStream);
-            System.out.println(errorStream);
 
         } catch (IOException e) {
             throw new OperationException("cannot launch job " + jobMainClass + " from " + jarPath);

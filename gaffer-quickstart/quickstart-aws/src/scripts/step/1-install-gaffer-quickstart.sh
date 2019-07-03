@@ -96,12 +96,12 @@ then
     UI_CONFIG_PATH=$S3_BUCKET/gaffer-quickstart/example/ui-config.json
 fi
 
-aws s3 cp $S3_BUCKET/gaffer-quickstart/lib/gaffer-quickstart-jar-with-dependencies.jar .
-echo -e "JAR_FILE_PATH=${HOME}/gaffer-quickstart-jar-with-dependencies.jar" >> $ENV_FILE
+aws s3 cp $S3_BUCKET/gaffer-quickstart/lib/gaffer-quickstart-full.jar .
+echo -e "JAR_FILE_PATH=${HOME}/gaffer-quickstart-full.jar" >> $ENV_FILE
 
 hadoop fs -mkdir gaffer-libs
-hadoop fs -put $HOME/gaffer-quickstart-jar-with-dependencies.jar $GAFFER_LIBS_HDFS
-echo -e "JAR_FILE_PATH_HDFS=${GAFFER_LIBS_HDFS}/gaffer-quickstart-jar-with-dependencies.jar" >> $ENV_FILE
+hadoop fs -put $HOME/gaffer-quickstart-full.jar $GAFFER_LIBS_HDFS
+echo -e "JAR_FILE_PATH_HDFS=${GAFFER_LIBS_HDFS}/gaffer-quickstart-full.jar" >> $ENV_FILE
 
 REST_WAR_PATH=$S3_BUCKET/gaffer-quickstart/lib/quickstart-rest-${QUICKSTART_VERSION}.war
 UI_WAR_PATH=$S3_BUCKET/gaffer-quickstart/lib/quickstart-ui-${QUICKSTART_VERSION}.war

@@ -93,11 +93,11 @@ fi
 
 if [ -z $CUSTOM_OPS_DIR ]
 then
-    echo -e "\ngaffer.store.operation.declarations=${GAFFER_HOME}/conf/operationDeclarations.json\n" >> $STORE_PROPERTIES
+    echo -e "\ngaffer.store.operation.declarations=sparkAccumuloOperationsDeclarations.json,${GAFFER_HOME}/conf/operationDeclarations.json\n" >> $STORE_PROPERTIES
 else
     $GAFFER_HOME/bin/_repackage_war.sh $CUSTOM_OPS_DIR >> $GAFFER_HOME/gaffer.log 2>&1
     customOpDecs=$(ls -m $CUSTOM_OPS_DIR/*.json)
-    echo -e "\ngaffer.store.operation.declarations=${GAFFER_HOME}/conf/operationDeclarations.json,${customOpDecs}\n" >> $STORE_PROPERTIES
+    echo -e "\ngaffer.store.operation.declarations=sparkAccumuloOperationsDeclarations.json,${GAFFER_HOME}/conf/operationDeclarations.json,${customOpDecs}\n" >> $STORE_PROPERTIES
 fi
 
 echo -e "\ngaffer.serialisation.json.modules=uk.gov.gchq.gaffer.sketches.serialisation.json.SketchesJsonModules\n" >> $STORE_PROPERTIES

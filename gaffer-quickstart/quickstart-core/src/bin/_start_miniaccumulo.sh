@@ -40,9 +40,9 @@ fi
 
 if [ -z $CUSTOM_OPS_DIR ]
 then
-    java -cp "$GAFFER_HOME/lib/gaffer-quickstart-${VERSION}.jar:$GAFFER_HOME/lib/*" uk.gov.gchq.gaffer.miniaccumulocluster.MiniAccumuloClusterController -d $GAFFER_HOME/miniaccumulo >> $GAFFER_HOME/gaffer.log 2>&1 &
+    java -cp "$GAFFER_HOME/lib/gaffer-quickstart-full.jar:$GAFFER_HOME/lib/*" uk.gov.gchq.gaffer.miniaccumulocluster.MiniAccumuloClusterController -d $GAFFER_HOME/miniaccumulo >> $GAFFER_HOME/gaffer.log 2>&1 &
 else
-    java -cp "$GAFFER_HOME/lib/gaffer-quickstart-${VERSION}.jar:$GAFFER_HOME/lib/*:$CUSTOM_OPS_DIR/*" uk.gov.gchq.gaffer.miniaccumulocluster.MiniAccumuloClusterController -d $GAFFER_HOME/miniaccumulo >> $GAFFER_HOME/gaffer.log 2>&1 &
+    java -cp "$GAFFER_HOME/lib/gaffer-quickstart-full.jar:$GAFFER_HOME/lib/*:$CUSTOM_OPS_DIR/*" uk.gov.gchq.gaffer.miniaccumulocluster.MiniAccumuloClusterController -d $GAFFER_HOME/miniaccumulo >> $GAFFER_HOME/gaffer.log 2>&1 &
 
 fi
 
@@ -55,5 +55,9 @@ do
     echo -n "."
     sleep 0.5
 done
+
+echo -e "\n\nspark.master=local[*]" >> $GAFFER_HOME/miniaccumulo/store.properties
+echo -e "\nspark.home=${SPARK_HOME}" >> $GAFFER_HOME/miniaccumulo/store.properties
+echo -e "\nspark.loader.jar=${GAFFER_HOME}/lib/gaffer-quickstart-full.jar" >> $GAFFER_HOME/miniaccumulo/store.properties
 
 echo -e "\nminiaccumulo started"

@@ -8,6 +8,8 @@ else
     echo "GAFFER_HOME is $GAFFER_HOME"
 fi
 
+source $GAFFER_HOME/bin/_version.sh
+
 operationDeclarations="\ngaffer.store.operation.declarations=sparkAccumuloOperationsDeclarations.json,pySparkAccumuloOperationsDeclarations.json,${GAFFER_HOME}/conf/operationDeclarations.json"
 pythonSerialisers="\npythonserialiser.declarations=${GAFFER_HOME}/conf/customPysparkSerialisers.json"
 
