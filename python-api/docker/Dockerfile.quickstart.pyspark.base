@@ -14,8 +14,8 @@ RUN curl -L -O https://archive.apache.org/dist/spark/spark-2.2.1/spark-2.2.1-bin
 
 RUN tar -xvf spark-2.2.1-bin-hadoop2.7.tgz
 
-ENV ANACONDA_HOME="/usr/gaffer/anaconda3"
-ENV SPARK_HOME="/usr/gaffer/spark-2.2.1-bin-hadoop2.7"
+ENV ANACONDA_HOME=/usr/gaffer/anaconda3
+ENV SPARK_HOME=/usr/gaffer/spark-2.2.1-bin-hadoop2.7
 ENV PYSPARK_DRIVER_PYTHON=jupyter
 ENV PYSPARK_DRIVER_PYTHON_OPTS='notebook --ip 0.0.0.0 --no-browser --allow-root'
 ENV PATH=$ANACONDA_HOME/bin:$SPARK_HOME/bin:$ANACONDA_HOME/lib/:$PATH
@@ -25,6 +25,4 @@ COPY gafferpy-build-1.8.4-SNAPSHOT-python-modules.zip gafferpy-build-1.8.4-SNAPS
 
 RUN yum install -y docker
 
-ENV LIBS="gafferpy-build-1.8.4-SNAPSHOT-jar-with-dependencies.jar,$GAFFER_HOME/lib/quickstart-core-1.8.4-SNAPSHOT.jar,$GAFFER_HOME/lib/commons-csv-1.4.jar,$GAFFER_HOME/lib/functions-library-1.8.4-SNAPSHOT.jar"
-
-CMD $GAFFER_HOME/bin/startup.sh --schema $SCHEMA --graphconfig $GRAPHCONFIG --storeproperties $STOREPROPERTIES --ui-config $UICONFIG --rest-config $RESTCONFIG; pyspark --jars $LIBS --py-files gafferpy-build-1.8.4-SNAPSHOT-python-modules.zip --packages graphframes:graphframes:0.6.0-spark2.3-s_2.11
+ENV LIBS=/usr/gaffer/gafferpy-build-1.8.4-SNAPSHOT-jar-with-dependencies.jar,$GAFFER_HOME/lib/quickstart-core-1.8.4-SNAPSHOT.jar,$GAFFER_HOME/lib/commons-csv-1.4.jar,$GAFFER_HOME/lib/functions-library-1.8.4-SNAPSHOT.jar

@@ -2583,63 +2583,6 @@ class AddElementsFromCsv(Operation):
 
         return operation
 
-
-
-
-
-
-
-class AddElementsFromHdfsQuickstart(Operation):
-    CLASS = 'uk.gov.gchq.gaffer.hdfs.operation.AddElementsFromHdfsQuickstart'
-
-    def __init__(self, dataPath=None, elementGeneratorConfig=None,
-                 outputPath=None, failurePath=None,
-                 validate=None, skip_invalid_elements=None,
-                 options=None):
-        super().__init__(
-            self.CLASS,
-            options=options
-        )
-
-        self.dataPath = dataPath
-        self.elementGeneratorConfig = elementGeneratorConfig
-        self.outputPath = outputPath
-        self.failurePath = failurePath
-        self.validate = validate
-        self.skip_invalid_elements = skip_invalid_elements
-
-    def to_json(self):
-        operation = super().to_json()
-
-        if self.dataPath is not None:
-            operation['dataPath'] = self.dataPath
-
-        if self.elementGeneratorConfig is not None:
-            operation['elementGeneratorConfig'] = self.elementGeneratorConfig
-
-        if self.outputPath is not None:
-            operation['outputPath'] = self.outputPath
-
-        if self.failurePath is not None:
-            operation['failurePath'] = self.failurePath
-
-        if self.validate is not None:
-            operation['validate'] = self.validate
-
-        if self.skip_invalid_elements is not None:
-            operation['skipInvalidElements'] = self.skip_invalid_elements
-
-        return operation
-
-
-
-
-
-
-
-
-
-
 def load_operation_json_map():
     for name, class_obj in inspect.getmembers(
             sys.modules[__name__], inspect.isclass):

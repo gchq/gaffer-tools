@@ -98,6 +98,108 @@ class ImportAccumuloKeyValueFiles(g.Operation):
 
 
 
+class AddElementsFromHdfsQuickstart(g.Operation):
+
+    CLASS = 'uk.gov.gchq.gaffer.quickstart.operation.AddElementsFromHdfsQuickstart'
+
+    def __init__(self, dataPath=None,
+                 elementGeneratorConfig=None,
+                 outputPath=None,
+                 failurePath=None,
+                 numPartitions=None,
+                 splitsFilePath=None,
+                 options=None):
+
+        self.dataPath=dataPath
+        self.elementGeneratorConfig=elementGeneratorConfig
+        self.outputPath = outputPath
+        self.failurePath = failurePath
+        self.numPartitions = numPartitions
+        self.splitsFilePath=splitsFilePath
+        self.options=options
+
+        super().__init__(
+            _class_name=self.CLASS,
+            view=None,
+            options=None)
+
+    def to_json(self):
+        operation = super().to_json()
+        if self.dataPath is not None:
+            operation['dataPath'] = self.dataPath
+        if self.failurePath is not None:
+            operation['failurePath'] = self.failurePath
+        if self.elementGeneratorConfig is not None:
+            operation['elementGeneratorConfig'] = self.elementGeneratorConfig
+        if self.outputPath is not None:
+            operation['outputPath'] = self.outputPath
+        if self.numPartitions is not None:
+            operation['numPartitions'] = self.numPartitions
+        if self.splitsFilePath is not None:
+            operation['splitsFilePath'] = self.splitsFilePath
+        return operation
+
+
+
+class CalculateSplitPointsQuickstart(g.Operation):
+    CLASS = 'uk.gov.gchq.gaffer.quickstart.operation.CalculateSplitPointsQuickstart'
+
+    def __init__(self, dataPath=None, elementGeneratorConfig=None,
+                 outputPath=None, failurePath=None,
+                 validate=None, skip_invalid_elements=None,
+                 sampleRatioForSplits=None,
+                 numSplits=None,
+                 splitsFilePath=None,
+                 options=None):
+        super().__init__(
+            self.CLASS,
+            options=options
+        )
+
+        self.dataPath = dataPath
+        self.elementGeneratorConfig = elementGeneratorConfig
+        self.outputPath = outputPath
+        self.failurePath = failurePath
+        self.validate = validate
+        self.skip_invalid_elements = skip_invalid_elements
+        self.sampleRatioForSplits=sampleRatioForSplits
+        self.numSplits=numSplits
+        self.splitsFilePath=splitsFilePath
+
+    def to_json(self):
+        operation = super().to_json()
+
+        if self.dataPath is not None:
+            operation['dataPath'] = self.dataPath
+
+        if self.elementGeneratorConfig is not None:
+            operation['elementGeneratorConfig'] = self.elementGeneratorConfig
+
+        if self.outputPath is not None:
+            operation['outputPath'] = self.outputPath
+
+        if self.failurePath is not None:
+            operation['failurePath'] = self.failurePath
+
+        if self.validate is not None:
+            operation['validate'] = self.validate
+
+        if self.skip_invalid_elements is not None:
+            operation['skipInvalidElements'] = self.skip_invalid_elements
+
+        if self.sampleRatioForSplits is not None:
+            operation['sampleRatioForSplits'] = self.sampleRatioForSplits
+
+        if self.numSplits is not None:
+            operation['numSplits'] = self.numSplits
+
+        if self.splitsFilePath is not None:
+            operation['splitsFilePath'] = self.splitsFilePath
+
+        return operation
+
+
+
 
 
 
