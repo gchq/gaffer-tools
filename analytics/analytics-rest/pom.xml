@@ -15,7 +15,9 @@
   ~ limitations under the License.
   -->
 
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <parent>
         <groupId>uk.gov.gchq.gaffer</groupId>
         <artifactId>analytics</artifactId>
@@ -24,6 +26,7 @@
     <modelVersion>4.0.0</modelVersion>
     <artifactId>analytics-rest</artifactId>
     <packaging>war</packaging>
+
     <properties>
         <standalone-rest-path>rest</standalone-rest-path>
         <standalone-port>8080</standalone-port>
@@ -33,6 +36,11 @@
         <dependency>
             <groupId>uk.gov.gchq.gaffer</groupId>
             <artifactId>analytics-operations</artifactId>
+            <version>${project.parent.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>uk.gov.gchq.gaffer</groupId>
+            <artifactId>analytics-functions</artifactId>
             <version>${project.parent.version}</version>
         </dependency>
     </dependencies>
@@ -104,7 +112,8 @@
                             <port>${standalone-port}</port>
                             <webapps>
                                 <webapp>
-                                    <contextPath>/${standalone-rest-path}</contextPath>
+                                    <contextPath>/${standalone-rest-path}
+                                    </contextPath>
                                     <groupId>uk.gov.gchq.gaffer</groupId>
                                     <artifactId>analytics-rest</artifactId>
                                     <version>${project.parent.version}</version>
@@ -117,7 +126,8 @@
                                     Analytics Example
                                 </gaffer.properties.app.title>
                                 <gaffer.properties.app.description>
-                                    Example Gaffer API which supports Analytics and contains road traffic data.
+                                    Example Gaffer API which supports Analytics
+                                    and contains road traffic data.
                                     The sample data used is taken from the
                                     Department for Transport.
                                     &lt;a
@@ -164,6 +174,5 @@
                 </plugins>
             </build>
         </profile>
-   
     </profiles>
 </project>

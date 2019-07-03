@@ -17,6 +17,7 @@ limitations under the License.
 A list of the components, services, modules and other files contained in the
 analytic-ui/src/app folder. (tests and .spec.ts files have not been included, as their purpose of testing is implicit).
 
+
 - **analytic** - The files representing each analytic, which creates a card with the title of said analytic, an icon, and fills in with a specified colour. When clicked, this then calls services which populate the parameters page, which is subsequently navigated to.
 - **analytics** - The analytics screen, displaying a grid of analytic components each of which corresponds to an analytic created in the restAPI.
 - **config**
@@ -24,13 +25,12 @@ analytic-ui/src/app folder. (tests and .spec.ts files have not been included, as
 - **dynamic-input**
   - **error.service.ts** - Used to create toast notifications when errors occur.
 - **g**
-  - **analytics.service.ts** - Used to load analytics from the restAPI, store the chosen analytic, and execute the analytic.
-  - **query.service.ts** - Sends a http request to the restAPI to execute the final analytic.
+  - **analytics.service.ts** - Used to load analytics from the REST API, store the chosen analytic, and execute the analytic.
+  - **query.service.ts** - Sends a http request to the REST API to execute the final analytic.
   - **results.service.ts** - Used to store the results of the analytic operation and to update and clear the table of results.
   - **schema.service.ts** - Used to get the schema from the restAPI, update it, and store it.
   - **time.service.ts** - Provides and checks the valid units of time permitted within the application; i.e. if something is a time, it must be in days, minutes, hours, or some other valid unit of time.
-  - **type.service.ts** - Converts type values of returned data into types that can be easily displayed by the table component.
-- **nav** - Holds the overall layout of the final product, including the toolbar and home button/title at the top, and the component display/page content area.
+  - **nav** - Holds the overall layout of the final product, including the toolbar and home button/title at the top, and the component display/page content area.
 - **operation** - The component on the parameter input screen where the user enters their parameters, including seeds, date ranges and other inputs necessary for the running of their chosen analytic.
 - **parameter-form** - Used in the operation component to allow the generation of the inputs necessary user to give inputs for each of the parameters on their chosen analytic.
 - **parameter-input** - The parameter input screen, which contains the operation component, and the execute button which allows the user to execute the analytic.

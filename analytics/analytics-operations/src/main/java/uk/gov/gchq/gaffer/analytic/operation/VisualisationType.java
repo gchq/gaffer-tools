@@ -13,30 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package uk.gov.gchq.gaffer.analytic.operation;
 
-export class ResultsService {
-  results = [];
-
-  constructor() {}
-
-  /** Get the results */
-  get = function() {
-    return this.results;
-  };
-
-  /** Clear the results */
-  clear = function() {
-    this.results = [];
-  };
-
-  /** Update the results */
-  update = function(newResults) {
-    if (newResults != null && newResults !== '') {
-      // Convert it to an array if theres only one result
-      if (!Array.isArray(newResults)) {
-        newResults = [newResults];
-      }
-      this.results = newResults;
-    }
-  };
+/**
+ * List of visualisations supported by the Analytic UI
+ */
+public enum VisualisationType {
+    TABLE
 }

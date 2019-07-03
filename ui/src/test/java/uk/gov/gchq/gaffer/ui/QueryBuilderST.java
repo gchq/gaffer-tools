@@ -278,8 +278,10 @@ public class QueryBuilderST {
         assertEquals(expectedResults, resultList);
     }
 
-    private void enterText(final String id, final String value) {
+    private void enterText(final String id, final String value) throws InterruptedException {
         getElement(id).sendKeys(value);
+
+        Thread.sleep(slowFactor * 500);
     }
 
     private void backspace(final String id) {
