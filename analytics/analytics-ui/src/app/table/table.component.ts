@@ -33,7 +33,7 @@ export class TableComponent implements OnInit {
   constructor(
     private results: ResultsService,
     private location: Location
-  ) {}
+  ) { }
 
   goback() {
     this.location.back();
@@ -70,7 +70,6 @@ export class TableComponent implements OnInit {
     toRemove.reverse().forEach(index => {
       tableData.splice(index, 1);
     });
-    
     tableData = tableData.concat(toAdd);
 
     this.dataSource = new MatTableDataSource(tableData);

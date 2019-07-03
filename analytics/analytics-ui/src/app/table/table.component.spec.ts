@@ -18,6 +18,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { TableComponent } from './table.component';
 import { ResultsService } from '../gaffer/results.service';
 import { MatTableModule } from '@angular/material';
+import { Location } from '@angular/common';
 
 let results;
 
@@ -27,6 +28,8 @@ class ResultsServiceStub {
   }
 }
 
+class LocationServiceStub { }
+
 describe('TableComponent', () => {
   let component: TableComponent;
   let fixture: ComponentFixture<TableComponent>;
@@ -35,7 +38,10 @@ describe('TableComponent', () => {
     TestBed.configureTestingModule({
       declarations: [TableComponent],
       imports: [MatTableModule],
-      providers: [{ provide: ResultsService, useClass: ResultsServiceStub }]
+      providers: [
+        { provide: ResultsService, useClass: ResultsServiceStub },
+        { provide: Location, useClass: LocationServiceStub }
+      ]
     }).compileComponents();
   }));
 
