@@ -31,7 +31,36 @@ export class AnalyticComponent implements OnInit {
     private analyticsService: AnalyticsService
   ) { }
 
-  ngOnInit() { }
+  ngOnInit() { 
+
+    // Change this to work for element with more than one attribute
+    console.log(this.model.metaData.iconURL);
+    var split = this.model.metaData.iconURL.split('\'');
+    split.pop() // Remove the end tag
+    var first = split[0].split(' ');
+    first = first[1].split('=')[0];
+    split.shift();
+    split = split[0];
+    // split.unshift(first);
+    var attrs = Object(); 
+    attrs[first] = split //turn into for loop
+    console.log(split);
+    console.log(first);
+    console.log(attrs);
+    console.log(attrs.d);
+    var svg = document.querySelector('#mysvg');
+    var path = this.makeSVGElement('path', attrs);
+    console.log(path);
+    svg.appendChild(path);
+  }
+
+  makeSVGElement(tag, attrs) {
+    var el= document.createElementNS('http://www.w3.org/2000/svg', tag);
+    for (var k in attrs) {
+        el.setAttribute(k, attrs[k]);
+    }
+    return el;
+  };
 
   /** Save the chosen analytic in the analytics service */
   execute(analytic) {
