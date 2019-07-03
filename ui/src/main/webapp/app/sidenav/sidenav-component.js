@@ -81,30 +81,49 @@ function SideNavController(navigation, $route, $routeParams, $location, operatio
     }
 
     vm.hashChangeCallback = function (event) {
+
+        // Load the saved options config
         console.log('//////////////////////////////')
         console.log('event: ', event);
-        // Set the graphId option if there is one
         var params = $route.current.params
         console.log('params: ', params);
         var optionsConfig = operationOptions.getDefaultConfiguration();
         console.log('optionsConfig Before: ', optionsConfig);
+        console.log('optionsConfig Before: ', optionsConfig.visible[0].value);
+
+        // Merge the config with the url parameters. The url parameters override saved settings.
         if (optionsConfig) {
             optionsConfig.visible.forEach(element => {
                 if (element.key == 'gaffer.federatedstore.operation.graphIds') {
                     if (params.graphId) {
-                        element.value = [params.graphId] 
+                        element.value = params.graphId.split(',');
                     }
                 }
             });
         }
         //var options = operationOptions.getDefaultOperationOptions();
         console.log('optionsConfig After: ', optionsConfig);
+        console.log('optionsConfig After: ', optionsConfig.visible[0].value);
         //console.log(options);
         operationOptions.setDefaultConfiguration(optionsConfig);
-        if (params.graphId) {
-            
-        }
 
+        // Update the url parameters with the merged settings
+        var graphIds = null
+        optionsConfig.visible.forEach(element => {
+            if (element.key == 'gaffer.federatedstore.operation.graphIds') {
+                graphIds = element.value;
+                return;
+            }
+        });
+        console.log('graphIds for url: ', graphIds);
+        var url = window.location.href.split('?')[0]
+        // $route.current.params.graphId = graphIds;
+        if (graphIds.length > 0) {
+            url += '?graphId=' + graphIds;
+        }
+        //var url = $location.search('graphId', graphIds);
+        console.log('new url: ', url);
+        window.history.pushState("", "", url);
     }
 
         // if (optionsConfig) {

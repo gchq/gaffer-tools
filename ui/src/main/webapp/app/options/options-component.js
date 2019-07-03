@@ -30,7 +30,7 @@ function options() {
     }
 }
 
-function OptionsController(operationOptions, config, events, $q, query, error) {
+function OptionsController(operationOptions, config, events, $q, $route, $location, query, error) {
     var vm = this;
 
     /**
@@ -112,8 +112,25 @@ function OptionsController(operationOptions, config, events, $q, query, error) {
     }
 
     var saveToService = function() {
-        if (vm.master) {        // If master is being destroyed, for example when the user navigates away, the service is updated
+        // If master is being destroyed, for example when the user navigates away, the service is updated
+        if (vm.master) {        
             operationOptions.setDefaultConfiguration(vm.model);
+            // var graphIds = null
+            // vm.model.visible.forEach(element => {
+            //     if (element.key == 'gaffer.federatedstore.operation.graphIds') {
+            //         graphIds = element.value;
+            //         return;
+            //     }
+            // });
+            // console.log('graphIds for url: ', graphIds);
+            // var url = window.location.href.split('?')[0]
+            // // $route.current.params.graphId = graphIds;
+            // if (graphIds.length > 0) {
+            //     url += '?graphId=' + graphIds;
+            // }
+            // //var url = $location.search('graphId', graphIds);
+            // console.log('new url: ', url);
+            // window.history.pushState("", "", url);
         }
     }
 
@@ -222,6 +239,11 @@ function OptionsController(operationOptions, config, events, $q, query, error) {
      */
     vm.isEmpty = function(value) {
         return (value == undefined || ((Array.isArray(value) && !value.length)))
+    }
+
+    vm.updateURL = function(event) {
+        console.log('Value changed');
+        console.log('event: ', event);
     }
 
 }

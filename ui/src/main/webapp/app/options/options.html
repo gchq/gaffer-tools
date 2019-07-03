@@ -76,12 +76,14 @@
                         <div layout="row" class="padding-sides" flex> 
                             <!-- simple strings -->
                             <md-input-container ng-if="!option.autocomplete && !option.multiple" flex>
-                                <input aria-label="{{ option.label }}" ng-model="option.value" type="text">
+                                <input aria-label="{{ option.label }}" ng-model="option.value" type="text" ng-change="ctrl.updateURL()">
                             </md-input-container>
                             <!-- Multiple with autocompleted synchronous or asynchronous options -->
                             <md-chips 
                                 ng-if="option.multiple && option.autocomplete"
                                 ng-model="option.value"
+                                md-on-add="ctrl.updateURL()" 
+                                md-on-remove="ctrl.updateURL()"
                                 md-add-on-blur
                                 flex>
                                 <md-autocomplete
@@ -95,14 +97,17 @@
                             <md-chips
                                 ng-if="option.multiple && !option.autocomplete"
                                 ng-model="option.value"
+                                md-on-add="ctrl.updateURL()" 
+                                md-on-remove="ctrl.updateURL()"
                                 md-add-on-blur
                                 flex>
-                                <input type="text" aria-label="{{ option.label }}">
+                                <input type="text" aria-label="{{ option.label }}" ng-change="ctrl.updateURL()">
                             </md-chips>
                             <!-- Synchronous single options -->
                             <md-select
                                 ng-if="option.autocomplete && !option.multiple && option.autocomplete.options"
                                 ng-model="option.value"
+                                ng-change="ctrl.updateURL()"
                                 aria-label="{{ option.label }}"
                                 flex>
                                 <md-option ng-value="value" ng-repeat="value in option.autocomplete.options">{{ value }}</md-option>
@@ -111,6 +116,7 @@
                             <md-select 
                                 ng-if="option.autocomplete && !option.multiple && !option.autocomplete.options"
                                 ng-model="option.value"
+                                ng-change="ctrl.updateURL()"
                                 aria-label="{{ option.label }}"
                                 md-on-open="ctrl.loadValues(option)"
                                 flex>
