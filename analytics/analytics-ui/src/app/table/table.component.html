@@ -3,24 +3,21 @@
 </div>
 
 <!-- Dynamic Table -->
+<div class="container">
+  <div class="spacer"></div>
+  <mat-table [dataSource]="dataSource" class="mat-elevation-z8" matSort>
+    <ng-container [matColumnDef]="column" *ngFor="let column of tableColumns">
+      <mat-header-cell *matHeaderCellDef mat-sort-header>
+        <h3>{{ column }}</h3>
+      </mat-header-cell>
+      <mat-cell *matCellDef="let element"> {{element[column]}} </mat-cell>
+    </ng-container>
 
-<mat-card>
-  <div class="example-container">
-    <mat-table [dataSource]="data.results" matSort>
-      <ng-container [matColumnDef]="column" *ngFor="let column of columnsToDisplay">
-        <mat-header-cell *matHeaderCellDef mat-sort-header>
-          <h3>{{ column | uppercase }}</h3>
-        </mat-header-cell>
-        <mat-cell *matCellDef="let element"> {{element[column]}} </mat-cell>
-      </ng-container>
-
-      <mat-header-row *matHeaderRowDef="columnsToDisplay;">
-      </mat-header-row>
-      <mat-row *matRowDef="let row; columns: columnsToDisplay;">
-      </mat-row>
-    </mat-table>
-  </div>
-</mat-card>
+    <mat-header-row *matHeaderRowDef="tableColumns; sticky: true">
+    </mat-header-row>
+    <mat-row *matRowDef="let row; columns: tableColumns;"></mat-row>
+  </mat-table>
+  <div class="spacer"></div>
 <div style="margin-left:110px" fxLayout="row">
   <button mat-raised-button color="secondary" id="execute-analytic" (click)="goback()">BACK TO PARAMETERS
   </button>
