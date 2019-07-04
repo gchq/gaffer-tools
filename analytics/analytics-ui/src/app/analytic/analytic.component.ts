@@ -32,31 +32,45 @@ export class AnalyticComponent implements OnInit {
   ) { }
 
   ngOnInit() { 
+    let svg = document.querySelector('#mysvg');
 
-    // Change this to work for element with more than one attribute
-    console.log(this.model.metaData.iconURL);
-    var split = this.model.metaData.iconURL.split('\'');
-    split.pop() // Remove the end tag
-    var first = split[0].split(' ');
-    first = first[1].split('=')[0];
-    split.shift();
-    split = split[0];
-    // split.unshift(first);
-    var attrs = Object(); 
-    attrs[first] = split //turn into for loop
-    console.log(split);
-    console.log(first);
-    console.log(attrs);
-    console.log(attrs.d);
-    var svg = document.querySelector('#mysvg');
-    var path = this.makeSVGElement('path', attrs);
-    console.log(path);
-    svg.appendChild(path);
+    // Split up the string into the different elements
+    let split = this.model.metaData.iconURL.split('>');
+
+    // For each tag
+    for (let element of split) {
+
+      // Remove the end tag
+      element = element.split('\'');
+
+      // Get the start tag and name of the first attribute
+      let start = element[0].split(' ');
+      let firstAttribute = start[1].split('=')[0]; // Get the name of the first attribute
+      let tag = start[0].split('<')[1]; // Get the tag
+      element.shift(); // Remove the tag from the array
+
+      // Get the value of the first attribute
+      var firstAttributeValue = element[0];
+
+      // Create a key value pair array of attributes
+      let attrs = Object();
+      attrs[firstAttribute] = firstAttributeValue
+      element.shift(); // Remove the first attribute
+      element.pop(); // Remove the slash
+
+      for (let i = 0; i < element.length; i=i+2) {
+        attrs[element[i].split('=')[0].split(' ')[1]] = element[i+1];
+      }
+
+      let path = this.makeSVGElement(tag, attrs);
+      svg.appendChild(path);
+    }
+
   }
 
   makeSVGElement(tag, attrs) {
-    var el= document.createElementNS('http://www.w3.org/2000/svg', tag);
-    for (var k in attrs) {
+    let el= document.createElementNS('http://www.w3.org/2000/svg', tag);
+    for (let k in attrs) {
         el.setAttribute(k, attrs[k]);
     }
     return el;
