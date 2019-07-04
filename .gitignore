@@ -35,6 +35,7 @@ __pycache__
 */.DS_Store
 .vscode/
 .ipynb_checkpoints
+<<<<<<< HEAD
 .gaffer/
 parquet_data/
 */graphLibrary/
@@ -45,4 +46,5 @@ metastore_db
 derby.log
 spark-warehouse
 *release*
-
+# nohup
+nohup.out

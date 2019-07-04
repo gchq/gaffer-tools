@@ -609,6 +609,7 @@ class TimeUnit:
     MINUTE = 'MINUTE'
     SECOND = 'SECOND'
     MILLISECOND = 'MILLISECOND'
+    MICROSECOND = 'MICROSECOND'
 
 
 class InTimeRange(AbstractPredicate):
