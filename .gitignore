@@ -34,3 +34,5 @@ __pycache__
 .vscode/
 .ipynb_checkpoints
 *gaffer-quickstart-release-*
+# nohup
+nohup.out

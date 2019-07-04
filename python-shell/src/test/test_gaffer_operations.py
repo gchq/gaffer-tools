@@ -5225,6 +5225,37 @@ class GafferOperationsTest(unittest.TestCase):
         [
             '''
             {
+              "class" : "uk.gov.gchq.gaffer.federatedstore.operation.FederatedOperationChain",
+              "operationChain" : {
+                "class" : "uk.gov.gchq.gaffer.operation.OperationChain",
+                "operations" : [ {
+                  "class" : "uk.gov.gchq.gaffer.operation.impl.add.AddElements"
+                }, {
+                  "class" : "uk.gov.gchq.gaffer.operation.impl.get.GetElements"
+                } ]
+              },
+              "options" : {
+                "key" : "value"
+              }
+            }
+            ''',
+            g.FederatedOperationChain(
+                operation_chain={
+                    "class": "uk.gov.gchq.gaffer.operation.OperationChain",
+                    "operations": [{
+                        "class": "uk.gov.gchq.gaffer.operation.impl.add.AddElements"
+                    }, {
+                        "class": "uk.gov.gchq.gaffer.operation.impl.get.GetElements"
+                    }]
+                },
+                options={
+                    "key": "value"
+                }
+            )
+        ],
+        [
+            '''
+            {
                 "class": "uk.gov.gchq.gaffer.operation.impl.join.Join",
                 "input": [ "test2" ],
                 "operation": {
@@ -5255,6 +5286,15 @@ class GafferOperationsTest(unittest.TestCase):
                 match_key=g.MatchKey.RIGHT,
                 flatten=False,
                 join_type=g.JoinType.OUTER)
+        ],
+        [
+            '''
+            {
+                "class": "uk.gov.gchq.gaffer.operation.impl.job.CancelScheduledJob",
+                "jobId": "238492-2ad-fadf034-324-2a"
+            }
+            ''',
+            g.CancelScheduledJob(job_id="238492-2ad-fadf034-324-2a")
         ]
     ]
 

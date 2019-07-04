@@ -19,6 +19,8 @@
 angular.module('app').factory('results', ['events', function(events) {
 
     var resultService = {};
+    // cache of unique stringified results
+    var uniqueResults = [];
     var results = {entities: [], edges: [], other: []};
 
     resultService.get = function() {
@@ -27,9 +29,18 @@ angular.module('app').factory('results', ['events', function(events) {
 
     resultService.clear = function(broadcast) {
         results = {entities: [], edges: [], other: []};
+        uniqueResults = [];
         if(broadcast === undefined || broadcast) {
             events.broadcast('resultsUpdated', [results]);
             events.broadcast('resultsCleared');
+        }
+    }
+
+    var addUniqueResult = function(results, newResult) {
+        var stringified = JSON.stringify(newResult)
+        if (uniqueResults.indexOf(stringified) === -1) {
+            uniqueResults.push(stringified)
+            results.push(newResult)
         }
     }
 
@@ -60,17 +71,17 @@ angular.module('app').factory('results', ['events', function(events) {
                 if(result.class === "uk.gov.gchq.gaffer.data.element.Entity") {
                     if(result.vertex !== undefined && result.vertex !== '') {
                         incomingResults.entities.push(result);
-                        results.entities.push(result);
+                        addUniqueResult(results.entities, result);
                     }
                 } else if(result.class === "uk.gov.gchq.gaffer.data.element.Edge") {
                     if(result.source !== undefined && result.source !== ''
                     && result.destination !== undefined && result.destination !== '') {
                         incomingResults.edges.push(result);
-                        results.edges.push(result);
+                        addUniqueResult(results.edges, result);
                     }
                 } else {
-                    incomingResults.other.push(result)
-                    results.other.push(result);
+                    incomingResults.other.push(result);
+                    addUniqueResult(results.other, result);
                 }
             }
             events.broadcast('incomingResults', [incomingResults]);
