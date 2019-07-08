@@ -35,6 +35,11 @@
         </dependency>
         <dependency>
             <groupId>uk.gov.gchq.gaffer</groupId>
+            <artifactId>analytics-functions</artifactId>
+            <version>${project.parent.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>uk.gov.gchq.gaffer</groupId>
             <artifactId>operation</artifactId>
             <version>${gaffer.version}</version>
             <type>test-jar</type>
