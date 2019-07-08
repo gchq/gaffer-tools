@@ -66,7 +66,8 @@ public class AddAnalyticHandler implements OperationHandler<AddAnalytic> {
                     .creatorId(context.getUser().getUserId()).readers(operation.getReadAccessRoles())
                     .writers(operation.getWriteAccessRoles()).description(operation.getDescription())
                     .uiMapping(operation.getUiMapping()).metaData(operation.getMetaData())
-                    .outputType(operation.getOutputType()).score(operation.getScore()).options(operation.getOptions())
+                    .outputVisualisation(operation.getOutputVisualisation())
+                    .score(operation.getScore()).options(operation.getOptions())
                     .build();
 
             validate(analyticOperationDetail);
@@ -106,18 +107,6 @@ public class AddAnalyticHandler implements OperationHandler<AddAnalytic> {
                     }
                 }
             }
-        }
-
-        if (null == analyticOperationDetail.getOutputType()) {
-            throw new OperationException("Missing outputType field in AddAnalyticOperation");
-        } else if (analyticOperationDetail.getOutputType().containsKey("output")) {
-            if (!analyticOperationDetail.getOutputType().get("output").equals("table")
-                    && !analyticOperationDetail.getOutputType().get("output").equals("graph")) {
-                throw new OperationException(
-                        "OutputType: output does not equal either 'table' or 'graph' in AddAnalyticOperation");
-            }
-        } else {
-            throw new OperationException("OutputType: output field was not specified in AddAnalyticOperation");
         }
 
         if (null == analyticOperationDetail.getMetaData()) {

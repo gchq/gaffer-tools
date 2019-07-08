@@ -30,6 +30,7 @@ import java.util.Map;
 
 public class AnalyticDetail implements Serializable {
 
+    private static final long serialVersionUID = 704999037152944606L;
     private String analyticName;
     private String operationName;
     private String description;
@@ -39,7 +40,7 @@ public class AnalyticDetail implements Serializable {
     private Map<String, UIMappingDetail> uiMapping = Maps.newHashMap();
     private Map<String, String> options = Maps.newHashMap();
     private Map<String, String> metaData = Maps.newHashMap();
-    private Map<String, String> outputType = Maps.newHashMap();
+    private OutputVisualisation outputVisualisation;
     private Integer score;
 
     public AnalyticDetail() {
@@ -56,16 +57,9 @@ public class AnalyticDetail implements Serializable {
     public AnalyticDetail(final String analyticName, final String operationName, final String description,
                           final String userId, final List<String> readers,
                           final List<String> writers, final Map<String, UIMappingDetail> uiMapping,
-                          final Map<String, String> metaData, final Map<String, String> outputType,
-                          final Integer score, final Map<String, String> options) {
+                          final Map<String, String> metaData, final OutputVisualisation outputVisualisation, final Integer score,
+                          final Map<String, String> options) {
 
-        if (null == operationName || operationName.isEmpty()) {
-            throw new IllegalArgumentException("Operation Name must not be empty");
-        }
-
-        if (null == analyticName || analyticName.isEmpty()) {
-            throw new IllegalArgumentException("Analytic Name must not be empty");
-        }
 
         this.analyticName = analyticName;
         this.operationName = operationName;
@@ -76,7 +70,7 @@ public class AnalyticDetail implements Serializable {
         this.writeAccessRoles = writers;
         this.uiMapping = uiMapping;
         this.metaData = metaData;
-        this.outputType = outputType;
+        this.outputVisualisation = outputVisualisation;
         this.score = score;
         this.options = options;
     }
@@ -125,8 +119,12 @@ public class AnalyticDetail implements Serializable {
         return metaData;
     }
 
-    public Map<String, String> getOutputType() {
-        return outputType;
+    public OutputVisualisation getOutputVisualisation() {
+        return outputVisualisation;
+    }
+
+    public void setOutputVisualisation(final OutputVisualisation outputVisualisation) {
+        this.outputVisualisation = outputVisualisation;
     }
 
     @Override
@@ -144,15 +142,16 @@ public class AnalyticDetail implements Serializable {
         return new EqualsBuilder().append(analyticName, op.analyticName).append(operationName, op.operationName)
                 .append(creatorId, op.creatorId).append(readAccessRoles, op.readAccessRoles)
                 .append(writeAccessRoles, op.writeAccessRoles).append(uiMapping, op.uiMapping)
-                .append(metaData, op.metaData).append(outputType, op.outputType).append(score, op.score)
+                .append(metaData, op.metaData).append(outputVisualisation, op.outputVisualisation)
+                .append(score, op.score)
                 .append(options, op.options).isEquals();
     }
 
     @Override
     public int hashCode() {
         return new HashCodeBuilder(71, 3).append(analyticName).append(operationName).append(creatorId)
-                .append(readAccessRoles).append(writeAccessRoles).append(uiMapping).append(metaData).append(outputType)
-                .append(score).append(options).hashCode();
+                .append(readAccessRoles).append(writeAccessRoles).append(uiMapping).append(metaData)
+                .append(outputVisualisation).append(score).append(options).hashCode();
     }
 
     @Override
@@ -160,8 +159,9 @@ public class AnalyticDetail implements Serializable {
         return new ToStringBuilder(this).appendSuper(super.toString()).append("analyticName", analyticName)
                 .append("operationName", operationName).append("creatorId", creatorId)
                 .append("readAccessRoles", readAccessRoles).append("writeAccessRoles", writeAccessRoles)
-                .append("uiMapping", uiMapping).append("metaData", metaData).append("outputType", outputType)
-                .append("score", score).append("options", options).toString();
+                .append("uiMapping", uiMapping).append("metaData", metaData)
+                .append("outputVisualisation", outputVisualisation).append("score", score)
+                .append("options", options).toString();
     }
 
     public boolean hasReadAccess(final User user) {
@@ -196,6 +196,7 @@ public class AnalyticDetail implements Serializable {
         return user.getUserId().equals(creatorId);
     }
 
+
     public static final class Builder {
         private String analyticName;
         private String operationName;
@@ -205,7 +206,7 @@ public class AnalyticDetail implements Serializable {
         private List<String> writers;
         private Map<String, UIMappingDetail> uiMapping;
         private Map<String, String> metaData;
-        private Map<String, String> outputType;
+        private OutputVisualisation outputVisualisation;
         private Integer score;
         private Map<String, String> options;
 
@@ -259,14 +260,14 @@ public class AnalyticDetail implements Serializable {
             return this;
         }
 
-        public AnalyticDetail.Builder outputType(final Map<String, String> outputType) {
-            this.outputType = outputType;
+        public AnalyticDetail.Builder outputVisualisation(final OutputVisualisation outputVisualisation) {
+            this.outputVisualisation = outputVisualisation;
             return this;
         }
 
         public AnalyticDetail build() {
             return new AnalyticDetail(analyticName, operationName, description, creatorId, readers, writers, uiMapping,
-                    metaData, outputType, score, options);
+                    metaData, outputVisualisation, score, options);
         }
     }
 }

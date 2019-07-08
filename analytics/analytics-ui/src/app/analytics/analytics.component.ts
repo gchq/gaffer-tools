@@ -15,7 +15,7 @@
  */
 
 import { Component, OnInit, Injectable } from '@angular/core';
-import { ErrorService } from '../dynamic-input/error.service';
+import { ErrorService } from '../error/error.service';
 import { AnalyticsService } from '../gaffer/analytics.service';
 
 @Component({

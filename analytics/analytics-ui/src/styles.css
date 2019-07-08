@@ -338,6 +338,19 @@ graph-control mat-input-container .mat-errors-spacer {
   display: none;
 }
 
+mat-table {
+  flex: 80;
+}
+
+.container {
+  display: flex;
+  flex-direction: row;
+}
+
+.spacer {
+  flex: 10;
+}
+
 mat-tab-data {
   opacity: 1;
   display: table;
@@ -539,14 +552,4 @@ a {
   height: 400px;
   width: '100%';
   overflow: auto;
-}
-
-.mat-row, .mat-header-row {
-  background: white;
-  min-width: 2000px;
-}
-
-.mat-header-row {
-  position: sticky;
-  top: 0;
 }
