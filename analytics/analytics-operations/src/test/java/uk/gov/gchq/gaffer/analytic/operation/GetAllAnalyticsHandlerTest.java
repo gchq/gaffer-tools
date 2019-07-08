@@ -15,7 +15,6 @@
  */
 package uk.gov.gchq.gaffer.analytic.operation;
 
-import com.google.common.collect.Maps;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
@@ -73,12 +72,9 @@ public class GetAllAnalyticsHandlerTest {
     @Test
     public void shouldReturnNamedOperationRoles() throws Exception {
         // Given
-        Map<String, UIMappingDetail> uiMapping = Maps.newHashMap();
+        Map<String, UIMappingDetail> uiMapping = new HashMap<>();
         Map<String, String> metaData = new HashMap<>();
         metaData.put("iconURL", "icon");
-        Map<String, String> outputType = new HashMap<>();
-        outputType.put("output", "table");
-
 
         AddAnalytic addAnalytic = new AddAnalytic.Builder()
                 .analyticName("exampleAnalytic1")
@@ -87,7 +83,7 @@ public class GetAllAnalyticsHandlerTest {
                 .writeAccessRoles(analyticWriters.toArray(new String[0]))
                 .uiMapping(uiMapping)
                 .metaData(metaData)
-                .outputType(outputType)
+                .outputVisualisation(new OutputVisualisation())
                 .score(4)
                 .build();
 
@@ -98,7 +94,7 @@ public class GetAllAnalyticsHandlerTest {
                 .writeAccessRoles(analyticWriters.toArray(new String[0]))
                 .uiMapping(uiMapping)
                 .metaData(metaData)
-                .outputType(outputType)
+                .outputVisualisation(new OutputVisualisation())
                 .score(4)
                 .build();
 
@@ -128,11 +124,9 @@ public class GetAllAnalyticsHandlerTest {
     @Test
     public void shouldReturnModifiedNamedOperationRoles() throws Exception {
         // Given
-        Map<String, UIMappingDetail> uiMapping = Maps.newHashMap();
+        Map<String, UIMappingDetail> uiMapping = new HashMap<>();
         Map<String, String> metaData = new HashMap<>();
         metaData.put("iconURL", "icon");
-        Map<String, String> outputType = new HashMap<>();
-        outputType.put("output", "table");
 
         AddNamedOperation addNamedOperation = new AddNamedOperation.Builder()
                 .name(exampleNamedOp.getOperationName())
@@ -149,7 +143,7 @@ public class GetAllAnalyticsHandlerTest {
                 .writeAccessRoles(analyticWriters.toArray(new String[0]))
                 .uiMapping(uiMapping)
                 .metaData(metaData)
-                .outputType(outputType)
+                .outputVisualisation(new OutputVisualisation())
                 .score(4)
                 .build();
 
@@ -160,7 +154,7 @@ public class GetAllAnalyticsHandlerTest {
                 .writeAccessRoles(analyticWriters.toArray(new String[0]))
                 .uiMapping(uiMapping)
                 .metaData(metaData)
-                .outputType(outputType)
+                .outputVisualisation(new OutputVisualisation())
                 .score(4)
                 .build();
 
