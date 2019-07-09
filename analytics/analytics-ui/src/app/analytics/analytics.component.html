@@ -1,8 +1,8 @@
 <div style="margin-left:110px">
   <h1>Analytics</h1>
 </div>
-<mat-card style="min-height: 300px;">
-  <mat-grid-list cols="4">
+<mat-card>
+  <mat-grid-list cols="4" gutterSize="20px">
     <mat-grid-tile *ngFor="let analytic of analytics">
       <app-analytic [model]="analytic"></app-analytic>
     </mat-grid-tile>

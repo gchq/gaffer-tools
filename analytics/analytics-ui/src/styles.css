@@ -11,6 +11,8 @@ h2 {
   color: #8c6759;
   font-family: Arial, Helvetica, sans-serif;
   font-size: 150%;
+  padding: 0;
+  margin: 0;
 }
 
 h3 {
@@ -45,10 +47,6 @@ a {
   font-weight: bold;
 }
 
-.material-icons {
-  transform: scale(1.4);
-}
-
 .work {
   display: flex;
   flex-direction: row;
@@ -63,9 +61,15 @@ mat-card-content {
 
 mat-card {
   max-width: 80%;
+  height: auto;
   margin: 2em auto;
   text-align: center;
   display: flex;
+}
+
+.grid-button.mat-card {
+  padding: 0;
+  height: 100%;
 }
 
 mat-toolbar-row {
@@ -115,10 +119,6 @@ pre {
   background: white;
   padding: 5px;
   font-family: Arial, Helvetica, sans-serif;
-}
-
-mat-icon svg {
-  fill: inherit;
 }
 
 .logo {
@@ -359,6 +359,14 @@ app-analytic {
   height: 100%;
 }
 
+app-analytic > mat-card {
+  max-width: 100%;
+  margin: 0;
+  padding: 0;
+  text-align: center;
+  display: flex;
+}
+
 .abs-full-page {
   position: absolute;
   left: 0;
@@ -467,11 +475,6 @@ quick-query {
   margin-right: 0px !important;
 }
 
-.grid-container {
-  display: grid;
-  grid-template-columns: auto auto auto auto;
-}
-
 .grid-button:not([disabled]):hover {
   background-color: rgba(200, 200, 200, 1);
 }
@@ -519,10 +522,6 @@ body {
   font-family: Arial, Helvetica, sans-serif;
 }
 
-.material-icons {
-  transform: scale(2);
-}
-
 a {
   text-decoration: none;
 }
@@ -549,4 +548,16 @@ a {
 .mat-header-row {
   position: sticky;
   top: 0;
+}
+
+.iconContainer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.titleContainer {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
 }

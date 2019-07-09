@@ -31,9 +31,23 @@ export class AnalyticComponent implements OnInit {
     private analyticsService: AnalyticsService
   ) { }
 
-  ngOnInit() {
-    let svgContainer = document.querySelector('#svgContainer');
+  ngOnInit() {}
+
+  ngAfterViewInit() {
+    // Make sure the icon is scaled to the correct size
+    var width = this.model.metaData.iconURL.split('width')[1].split('=')[1].trim().split(' ')[0].trim();
+    var width = width.slice(1,width.length-1);
+    var height = this.model.metaData.iconURL.split('height')[1].split('=')[1].trim().split(' ')[0].trim();
+    var height = height.slice(1,height.length-1);
+
+    var desiredWidth = 120;
+    var desiredHeight = 120;
+    var widthScale = desiredWidth/width;
+    var heightScale = desiredHeight/height;
+
+    let svgContainer = <HTMLElement> document.getElementById(this.model.operationName.toString() + '-svgContainer');
     svgContainer.innerHTML = this.model.metaData.iconURL;
+    svgContainer.style.transform = 'scale(' + widthScale.toString() + ',' + heightScale.toString() + ')';
   }
 
   /** Save the chosen analytic in the analytics service */
