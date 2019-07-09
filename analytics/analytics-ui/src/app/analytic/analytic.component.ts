@@ -34,19 +34,28 @@ export class AnalyticComponent implements OnInit {
   ngOnInit() {}
 
   ngAfterViewInit() {
+
+    // Set the default icon if an icon is not specified
+    let defaultIcon = "<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'><path d='M0 0h24v24H0z' fill='none'/><path d='M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z'/><path d='M0 0h24v24H0z' fill='none'/></svg>";
+    let icon = defaultIcon;
+    if (this.model.metaData.iconURL) {
+      icon = this.model.metaData.iconURL;
+    }
+
     // Make sure the icon is scaled to the correct size
-    var width = this.model.metaData.iconURL.split('width')[1].split('=')[1].trim().split(' ')[0].trim();
-    var width = width.slice(1,width.length-1);
-    var height = this.model.metaData.iconURL.split('height')[1].split('=')[1].trim().split(' ')[0].trim();
-    var height = height.slice(1,height.length-1);
+    let widthString: string = icon.split('width')[1].split('=')[1].trim().split(' ')[0].trim();
+    let width = Number(widthString.slice(1,widthString.length-1));
+    let heightString: string = icon.split('height')[1].split('=')[1].trim().split(' ')[0].trim();
+    let height = Number(heightString.slice(1,heightString.length-1));
 
-    var desiredWidth = 120;
-    var desiredHeight = 120;
-    var widthScale = desiredWidth/width;
-    var heightScale = desiredHeight/height;
+    let desiredWidth = 120;
+    let desiredHeight = 120;
+    let widthScale = desiredWidth/width;
+    let heightScale = desiredHeight/height;
 
+    // Add the icon and scale it to the correct size
     let svgContainer = <HTMLElement> document.getElementById(this.model.operationName.toString() + '-svgContainer');
-    svgContainer.innerHTML = this.model.metaData.iconURL;
+    svgContainer.innerHTML = icon;
     svgContainer.style.transform = 'scale(' + widthScale.toString() + ',' + heightScale.toString() + ')';
   }
 
