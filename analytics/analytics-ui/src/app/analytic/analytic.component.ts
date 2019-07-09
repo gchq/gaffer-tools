@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { Component, OnInit, Input, Injectable } from '@angular/core';
+import { Component, OnInit, Input, Injectable, AfterViewInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AnalyticsService } from '../gaffer/analytics.service';
 
@@ -23,7 +23,7 @@ import { AnalyticsService } from '../gaffer/analytics.service';
   templateUrl: './analytic.component.html'
 })
 @Injectable()
-export class AnalyticComponent implements OnInit {
+export class AnalyticComponent implements OnInit, AfterViewInit {
   @Input() model;
 
   constructor(
@@ -36,25 +36,28 @@ export class AnalyticComponent implements OnInit {
   ngAfterViewInit() {
 
     // Set the default icon if an icon is not specified
-    let defaultIcon = "<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'><path d='M0 0h24v24H0z' fill='none'/><path d='M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z'/><path d='M0 0h24v24H0z' fill='none'/></svg>";
+    const defaultIcon = '<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'24\' height=\'24\' viewBox=\'0 0 24 24\'>' +
+    '<path d=\'M0 0h24v24H0z\' fill=\'none\'/>' +
+    '<path d=\'M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z\'/>' +
+    '<path d=\'M0 0h24v24H0z\' fill=\'none\'/></svg>';
     let icon = defaultIcon;
     if (this.model.metaData.iconURL) {
       icon = this.model.metaData.iconURL;
     }
 
     // Make sure the icon is scaled to the correct size
-    let widthString: string = icon.split('width')[1].split('=')[1].trim().split(' ')[0].trim();
-    let width = Number(widthString.slice(1,widthString.length-1));
-    let heightString: string = icon.split('height')[1].split('=')[1].trim().split(' ')[0].trim();
-    let height = Number(heightString.slice(1,heightString.length-1));
+    const widthString: string = icon.split('width')[1].split('=')[1].trim().split(' ')[0].trim();
+    const width = Number(widthString.slice(1, widthString.length - 1));
+    const heightString: string = icon.split('height')[1].split('=')[1].trim().split(' ')[0].trim();
+    const height = Number(heightString.slice(1, heightString.length - 1));
 
-    let desiredWidth = 120;
-    let desiredHeight = 120;
-    let widthScale = desiredWidth/width;
-    let heightScale = desiredHeight/height;
+    const desiredWidth = 120;
+    const desiredHeight = 120;
+    const widthScale = desiredWidth / width;
+    const heightScale = desiredHeight / height;
 
     // Add the icon and scale it to the correct size
-    let svgContainer = <HTMLElement> document.getElementById(this.model.operationName.toString() + '-svgContainer');
+    const svgContainer: HTMLElement = document.getElementById(this.model.operationName.toString() + '-svgContainer');
     svgContainer.innerHTML = icon;
     svgContainer.style.transform = 'scale(' + widthScale.toString() + ',' + heightScale.toString() + ')';
   }
