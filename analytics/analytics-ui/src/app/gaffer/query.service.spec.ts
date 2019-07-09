@@ -19,7 +19,7 @@ import { empty, of, EMPTY } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 
 import { QueryService } from './query.service';
-import { ErrorService } from '../dynamic-input/error.service';
+import { ErrorService } from '../error/error.service';
 import { ResultsService } from './results.service';
 import { EndpointService } from '../config/endpoint-service';
 

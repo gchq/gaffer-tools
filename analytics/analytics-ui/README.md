@@ -77,9 +77,7 @@ A step by step guide to the use of the Analytic UI product
 
 ## 1. Analytics
 
-{% hint style="info" %}
 As stated in Getting Started, this whole process requires that one or more analytic\(s\) have been added to your REST API.
-{% endhint %}
 
 To start, select one of the analytics displayed on screen in the grid by clicking the card/tile it is displayed on. Their titles are displayed on the cards, as well as a description appearing below when the card is hovered over.
 
@@ -104,7 +102,7 @@ Once the analytic has finished running, the results page will load and display a
 The following is a step-by-step guide on the use of the REST API to create
 analytics to be run in the UI
 
-In this guide we will be constructing a very simple analytic, which runs a GetAllElements operation and limits the number of results displayed. The end result will be as follows:
+In this guide we will be constructing a very simple analytic, which gets all cardinality elements and limits the number of results displayed. The end result will be as follows:
 
 ## Instructions
 
@@ -126,7 +124,7 @@ In this guide we will be constructing a very simple analytic, which runs a GetAl
 
 4\) Once again from the Description dropdown, select _Limit_ and click Add Example. This will chain these operations into an **Operation Chain** in the Value input. Change the value assigned to "result-limit" from whatever value has been generated to **"\${result-limit}"** - this will allow the user to input it later. The value input should look like this:
 
-```
+```json
 {
    "class": "uk.gov.gchq.gaffer.operation.OperationChain",
    "operations": [
@@ -142,42 +140,61 @@ In this guide we will be constructing a very simple analytic, which runs a GetAl
 }
 ```
 
-5\) Cut the now complete Operation Chain from the value input. then go to the Description dropdown and select _AddNamedOperation_ and click Add Example. Change the **operationName** and **Description** to whatever you want them to be \(in our example they are "getAllX" with a description of "10"\). Then replace the value assigned to **operationChain** with our previously generated operation chain from before by pasting it in.
+5\) Add the following view to the GetAllElements operation. This will restrict elements returned to cardinalities and also aggregate them together (So that we get one element per vertex)
 
-Finally, we add our parameters in. The following code creates a parameter of "result-limit" which will be assigned to the "\${result-limit}" input we created earlier, with a description, a default value, a value class, and a boolean on whether this is required to run the operation or not. Do this for all the parameters to be inputted in this analytic \(in our case, just the one\)
-
+```json
+"view": {
+   "entities": {
+      "Cardinality": { 
+         "groupBy": []
+      }
+   }
+}
 ```
+
+
+6\) Cut the now complete Operation Chain from the value input. then go to the Operation dropdown and select _AddNamedOperation_ and click Add Example. Change the **operationName** and **Description** to whatever you want them to be \(in our example they are "getAllCardinalities" with a description of "Gets all aggregated cardinality elements"\). Then replace the value assigned to **operationChain** with our previously generated operation chain from before by pasting it in.
+
+7\) Finally, we add our parameters in. The following code creates a parameter of "result-limit" which will be assigned to the "\${result-limit}" input we created earlier, with a description, a default value, a value class, and a boolean on whether this is required to run the operation or not. Do this for all the parameters to be inputted in this analytic \(in our case, just the one\)
+
+```json
 "parameters": {
-            "result-limit": {
-               "description": "The maximum number of junctions to return",
-               "defaultValue": 2,
-               "valueClass": "java.lang.Integer",
-               "required": false
-            }
-         },
+   "result-limit": {
+      "description": "The maximum number of junctions to return",
+      "defaultValue": 2,
+      "valueClass": "java.lang.Integer",
+      "required": false
+   }
+}
 ```
 
 The value input should now be as follows.
 
-```
+```json
 {
    "class": "uk.gov.gchq.gaffer.named.operation.AddNamedOperation",
-   "operationName": "getAllX",
-   "description": "10",
-   "score": 7,
-   "operationChain": {
-   "class": "uk.gov.gchq.gaffer.operation.OperationChain",
-   "operations": [
-      {
-         "class": "uk.gov.gchq.gaffer.operation.impl.get.GetAllElements"
-      },
-      {
-         "class": "uk.gov.gchq.gaffer.operation.impl.Limit",
-         "resultLimit": "${result-limit}",
-         "truncate": true
-      }
-   ]
-},
+   "operationName": "getAllCardinalities",
+   "description": "Gets all aggregated cardinality elements",
+   "score": 1,
+   "operationChain": { 
+      "operations": [
+         {
+            "class": "GetAllElements",
+            "view": {
+               "entities": {
+                  "Cardinality": { 
+                     "groupBy": []
+                  }
+               }
+            }
+         },
+         {
+            "class": "uk.gov.gchq.gaffer.operation.impl.Limit",
+            "resultLimit": "${result-limit}",
+            "truncate": true
+         }
+      ]
+   },
    "parameters": {
          "result-limit": {
          "description": "The maximum number of junctions to return",
@@ -190,41 +207,63 @@ The value input should now be as follows.
 }
 ```
 
-6\) Click the **Try it out!** button in the bottom left hand corner, and check down to see the response. If the REST API has given a 200 code response, then that means the Named Operation has been successfully added to your REST API, and can be used in Analytics, one of which we will add in the next few steps.
+8\) Click the **Try it out!** button in the bottom left hand corner, and check down to see the response. If the REST API has given a 200 code response, then that means the Named Operation has been successfully added to your REST API, and can be used in Analytics, one of which we will add in the next few steps.
 
-7\) Again from the Description dropdown, select _AddAnalytic_ and click Add Example - a blank analytic will be generated. Make sure to give the analytic a name to be displayed by altering the value given to **analyticName** \(in our example, Analytic X\) and to make sure **operationName** matches the name of the named operation we have generated \(in our example, getAllX\).
+9\) Again from the Description dropdown, select _AddAnalytic_ and click Add Example - a blank analytic will be generated. Make sure to give the analytic a name to be displayed by altering the value given to **analyticName** \(in our example, Get All Cardialities\) and to make sure **operationName** matches the name of the named operation we have generated \(in our example, getAllCardinalities\).
 
 Add a **Description**, and alter the **metaData** - change the input of **iconURL** to the name of an icon from the Material Design icon library \(a full list of which can be found [here](https://material.io/tools/icons/)\), and add a **"color"** input and specify a color for the analytic card \(in this example, we chose "yellow"\). Your code should match the excerpt below.
 
-```
-      {
-         "class": "uk.gov.gchq.gaffer.operation.analytic.AddAnalytic",
-         "analyticName": "Analytic X",
-         "operationName": "getAllX",
-         "description": "Get Elements with Result Limit",
-         "score": 4,
-         "metaData": {
-            "iconURL": "public"
-            "color" : "yellow"
-         },
-         "outputType": {
-            "output": "table"
-         },
-         "overwriteFlag": false,
-         "readAccessRoles": [
-            "User"
-         ],
-         "uiMapping": {
-            "param1": {
-               "label": "Maximum Results",
-               "userInputType": "TextBox",
-               "parameterName": "result-limit"
+For this example, we also use an output adapter to take elements and convert them into something which will display in the table correctly. The table component takes simple objects (booleans / strings / integers) and objects of simple key value format.
+
+```json
+{
+   "class": "uk.gov.gchq.gaffer.analytic.operation.AddAnalytic",
+   "analyticName": "Get All Cardinalities",
+   "operationName": "getAllCardinalities",
+   "description": "Gets a list of vertices and their cardinalities within the graph",
+   "score": 4,
+   "metaData": {
+      "iconURL": "public",
+      "color" : "yellow"
+   },
+   "uiMapping": {
+      "param1": {
+         "label": "Maximum Results",
+         "userInputType": "TextBox",
+         "parameterName": "result-limit"
+      }
+   },
+   "outputVisualisation": {
+      "outputAdapter": {
+         "class": "IterableFunction",
+         "functions": [
+            {
+               "class": "uk.gov.gchq.gaffer.analytic.function.ToMap",
+               "keyFunctions": {
+                  "vertex": {
+                     "class": "ExtractId",
+                     "id": "VERTEX"
+                  },
+                  "cardinality": {
+                     "class": "FunctionComposite",
+                     "functions": [
+                        {
+                           "class": "ExtractProperty",
+                           "name": "hllp"
+                        },
+                        {
+                           "class": "CallMethod",
+                           "method": "cardinality"
+                        }
+                     ]
+                  }
+               }
             }
-         },
-         "writeAccessRoles": [
-            "User"
          ]
       }
+  },
+  "overwriteFlag": true
+}
 ```
 
-8\) Click the **Try it out!** button in the bottom left hand corner, and check down to see the response. If the REST API has given a 200 code response, then that means the Analytic has been successfully added to your REST API, and when the UI is opened, it will be displayed in the grid.
+10\) Click the **Try it out!** button in the bottom left hand corner, and check down to see the response. If the REST API has given a 200 code response, then that means the Analytic has been successfully added to your REST API, and when the UI is opened, it will be displayed in the grid.

@@ -20,11 +20,13 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Router } from '@angular/router';
 
 import { QueryService } from './query.service';
-import { ErrorService } from '../dynamic-input/error.service';
+import { ErrorService } from '../error/error.service';
 import { ResultsService } from './results.service';
 import { cloneDeep, startsWith } from 'lodash';
 import { EndpointService } from '../config/endpoint-service';
 
+const OPERATION_CHAIN_CLASS = 'uk.gov.gchq.gaffer.operation.OperationChain';
+const MAP_OPERATION_CLASS = 'uk.gov.gchq.gaffer.operation.impl.Map';
 // Used to store and get the selected analytic
 @Injectable()
 export class AnalyticsService {
@@ -103,8 +105,25 @@ export class AnalyticsService {
     // Clear the current results
     this.results.clear();
 
+    // Create an operation chain, add the operation and if theres an output adapter, apply it
+    const operationChain = {
+      class: OPERATION_CHAIN_CLASS,
+      operations: []
+    };
+
+    operationChain.operations.push(operation);
+
+    if (this.arrayAnalytic.outputVisualisation != null && this.arrayAnalytic.outputVisualisation.outputAdapter != null) {
+      operationChain.operations.push({
+        class: MAP_OPERATION_CLASS,
+        functions: [
+          this.arrayAnalytic.outputVisualisation.outputAdapter
+        ]
+      });
+    }
+
     // Execute the analytic and then navigate when finished loading
-    this.query.executeQuery(operation, () => {
+    this.query.executeQuery(operationChain, () => {
       this.router.navigate(['/results']);
     });
   };
