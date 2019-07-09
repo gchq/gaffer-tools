@@ -16,7 +16,7 @@
 
 import { NgModule } from '@angular/core';
 
-import { MatButtonModule } from '@angular/material';
+import { MatButtonModule, MatSortModule } from '@angular/material';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSidenavModule } from '@angular/material/sidenav';
@@ -44,7 +44,8 @@ import { MatTableModule } from '@angular/material/table';
     MatIconModule,
     MatProgressSpinnerModule,
     MatTooltipModule,
-    MatTableModule
+    MatTableModule,
+    MatSortModule
   ],
   exports: [
     MatButtonModule,
@@ -59,7 +60,8 @@ import { MatTableModule } from '@angular/material/table';
     MatIconModule,
     MatProgressSpinnerModule,
     MatTooltipModule,
-    MatTableModule
+    MatTableModule,
+    MatSortModule
   ]
 })
 export class MaterialModule {}
