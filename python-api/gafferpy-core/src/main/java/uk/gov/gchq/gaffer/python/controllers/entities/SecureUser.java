@@ -18,25 +18,19 @@ package uk.gov.gchq.gaffer.python.controllers.entities;
 
 import uk.gov.gchq.gaffer.user.User;
 
+import java.util.HashSet;
 import java.util.List;
 
 public class SecureUser extends User {
 
     private String token;
 
-    private User user;
-
     public SecureUser(final String username,
-                      final List<String> opRoles,
                       final List<String> dataRoles,
+                      final List<String> opRoles,
                       final String token) {
+        super(username, new HashSet<>(dataRoles), new HashSet<>(opRoles));
         this.setToken(token);
-
-        this.setUser(new Builder()
-                .userId(username)
-                .dataAuths(dataRoles)
-                .opAuths(opRoles)
-                .build());
     }
 
     public String getToken() {
@@ -45,14 +39,6 @@ public class SecureUser extends User {
 
     private void setToken(final String token) {
         this.token = token;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    private void setUser(final User user) {
-        this.user = user;
     }
 
     @Override

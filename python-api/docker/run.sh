@@ -16,9 +16,7 @@ basic)
     cd basic/
     docker build -f Dockerfile.gaffer.basic.session -t gaffer-quickstart-session .
     docker build -f Dockerfile.gaffer.basic.pyspark -t gaffer-quickstart-pyspark .
-    cd ..
+    echo "BUILT BASIC EXAMPLE"
+    docker-compose up
 ;;
 esac
-cd ..
-
-docker-compose up
