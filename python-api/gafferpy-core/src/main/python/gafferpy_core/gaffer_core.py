@@ -370,7 +370,7 @@ class Edge(Element):
         return edge
 
 
-class JsonConverter:  # TODO: Remove and use the standard JSON library
+class JsonConverter:
     GENERIC_JSON_CONVERTERS = {}
     CUSTOM_JSON_CONVERTERS = {}
 

@@ -4,60 +4,64 @@ import org.junit.Test;
 
 import uk.gov.gchq.gaffer.python.util.UtilFunctions;
 
+import java.io.File;
+
 import static org.junit.Assert.assertEquals;
 
 public class PropertiesServiceTest {
 
     @Test
     public void ifSingleService_OnlyNecessaryValuesToBeSet() {
-        PropertiesService test = new PropertiesService(new UtilFunctions().loadFile("test.properties"));
+        File in = new File(getClass().getClassLoader().getResource("test.properties").getFile());
+        PropertiesService test = new PropertiesService(in);
         assertEquals("AllProps=[single-service=true,insecure=false,use-ssl=false," +
-                "optional=[auth-service-url=,ssl-password=,keystore-type=,keystore-location=," +
-                "protocol=,keymanager-type=]]", test.toString());
+                "optional=[auth-service-url=,ssl-password=,keystore-location=,protocol=]]", test.toString());
     }
 
     @Test
     public void ifNoNecessaryValuesSet_defaultToSingleService() {
-        PropertiesService test1 = new PropertiesService(new UtilFunctions().loadFile("test1.properties"));
+        File in = new File(getClass().getClassLoader().getResource("test1.properties").getFile());
+        PropertiesService test1 = new PropertiesService(in);
         assertEquals("AllProps=[single-service=true,insecure=true,use-ssl=false," +
-                "optional=[auth-service-url=,ssl-password=,keystore-type=,keystore-location=," +
-                "protocol=,keymanager-type=]]", test1.toString());
+                "optional=[auth-service-url=,ssl-password=,keystore-location=,protocol=]]", test1.toString());
     }
 
     @Test
     public void ifSecuredSession_isEnabled_NeededPropsArePopulated() {
-        PropertiesService test2 = new PropertiesService(new UtilFunctions().loadFile("test2.properties"));
+        File in = new File(getClass().getClassLoader().getResource("test2.properties").getFile());
+        PropertiesService test2 = new PropertiesService(in);
         assertEquals("AllProps=[single-service=false,insecure=false,use-ssl=false," +
-                "optional=[auth-service-url=https://localhost:8080,ssl-password=,keystore-type=,keystore-location=," +
-                "protocol=,keymanager-type=]]", test2.toString());
+                "optional=[auth-service-url=https://localhost:8080,ssl-password=,keystore-location=," +
+                "protocol=]]", test2.toString());
     }
 
     @Test
     public void ifSecuredSession_isDisabled_PropsArentPopulated() {
-        PropertiesService test3 = new PropertiesService(new UtilFunctions().loadFile("test3.properties"));
+        File in = new File(getClass().getClassLoader().getResource("test3.properties").getFile());
+        PropertiesService test3 = new PropertiesService(in);
         assertEquals("AllProps=[single-service=false,insecure=true,use-ssl=false," +
-                "optional=[auth-service-url=,ssl-password=,keystore-type=,keystore-location=," +
-                "protocol=,keymanager-type=]]", test3.toString());
+                "optional=[auth-service-url=,ssl-password=,keystore-location=," +
+                "protocol=]]", test3.toString());
     }
 
     @Test
     public void ifSSL_isEnabled_OtherPropsArePopulated() {
-        PropertiesService test4 = new PropertiesService(new UtilFunctions().loadFile("test4.properties"));
+        File in = new File(getClass().getClassLoader().getResource("test4.properties").getFile());
+        PropertiesService test4 = new PropertiesService(in);
         assertEquals("AllProps=[single-service=false,insecure=false,use-ssl=true," +
-                "optional=[auth-service-url=https://localhost:8080/create_session,ssl-password=placeholder," +
-                "keystore-type=JKS," +
-                "keystore-location=src/test/resources/example.jks," +
-                "protocol=TLSv1.2,keymanager-type=JKS]" +
+                "optional=[auth-service-url=https://localhost:8080/create_session," +
+                "ssl-password=placeholder," +
+                "keystore-location=example.jks," +
+                "protocol=TLSv1.2]" +
                 "]", test4.toString());
     }
 
     @Test
     public void ifSSL_isDisabled_OtherPropsAreOptional() {
-        PropertiesService test5 = new PropertiesService(new UtilFunctions().loadFile("test5.properties"));
+        File in = new File(getClass().getClassLoader().getResource("test5.properties").getFile());
+        PropertiesService test5 = new PropertiesService(in);
         assertEquals("AllProps=[single-service=true,insecure=false,use-ssl=false," +
-                "optional=[auth-service-url=,ssl-password=," +
-                "keystore-type=,keystore-location=,protocol=,keymanager-type=]" +
-                "]", test5.toString());
+                "optional=[auth-service-url=,ssl-password=,keystore-location=,protocol=]]", test5.toString());
     }
 
 

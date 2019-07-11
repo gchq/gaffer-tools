@@ -27,7 +27,9 @@ import uk.gov.gchq.gaffer.python.util.exceptions.ServerNullException;
 import uk.gov.gchq.gaffer.user.User;
 
 import java.net.InetAddress;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * A GafferSession starts a Py4j gateway server process and has methods for constructing Gaffer graphs that can be called from Python
@@ -35,6 +37,9 @@ import java.util.HashMap;
 public final class GafferSession implements Runnable {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(GafferSession.class);
+
+    private static final String GRAPH_BUILDING_MESSAGE = "{} IS CREATING GRAPH: {}";
+    private static final String GRAPH_BUILT_MESSAGE = "GRAPH BUILT BY {}: {}";
 
     private static PropertiesService service = new PropertiesService();
 
@@ -69,6 +74,7 @@ public final class GafferSession implements Runnable {
         }
 
         if (this.getAuthToken() != null) {
+            LOGGER.info("Using token {} from {}", this.getAuthToken(), this.getUser().getUserId());
             this.server = new GatewayServer.GatewayServerBuilder()
                     .entryPoint(this)
                     .authToken(this.getAuthToken())
@@ -98,7 +104,7 @@ public final class GafferSession implements Runnable {
         return portNumber;
     }
 
-    public String getAuthToken() {
+    private String getAuthToken() {
         return authToken;
     }
 
@@ -117,24 +123,40 @@ public final class GafferSession implements Runnable {
      * @return PythonGraph reference back to python
      */
     public PythonGraph getPythonGraph(final byte[] schemaPath, final byte[] configPath, final byte[] storePropertiesPath) {
-        return new PythonGraph.Builder()
+        LOGGER.info(GRAPH_BUILDING_MESSAGE,
+                this.getUser().getUserId(),
+                new Date());
+
+        PythonGraph graph = new PythonGraph.Builder()
                 .user(this.getUser())
                 .storeProperties(storePropertiesPath)
                 .schemaConfig(schemaPath)
                 .graphConfig(configPath)
                 .build();
+
+        LOGGER.info(GRAPH_BUILT_MESSAGE, this.getUser().getUserId(), new Date());
+
+        return graph;
     }
 
     public PythonGraph getPythonGraph() {
-        return new PythonGraph.Builder()
+        LOGGER.info(GRAPH_BUILDING_MESSAGE,
+                this.getUser().getUserId(),
+                new Date());
+
+        PythonGraph graph = new PythonGraph.Builder()
                 .user(this.getUser())
                 .storeProperties(service.getStoreProperties())
                 .schemaConfig(service.getSchemaPath())
                 .graphConfig(service.getGraphConfig())
                 .build();
+
+        LOGGER.info(GRAPH_BUILT_MESSAGE, this.getUser().getUserId(), new Date());
+
+        return graph;
     }
 
-    public HashMap<String, PythonGraph> getAllPythonGraphs() {
+    public Map getAllPythonGraphs() {
         return allGraphs;
     }
 
@@ -146,6 +168,10 @@ public final class GafferSession implements Runnable {
             return graph;
         }
 
+        LOGGER.info(GRAPH_BUILDING_MESSAGE,
+                this.getUser().getUserId(),
+                new Date());
+
         graph = new PythonGraph.Builder()
                 .user(this.user)
                 .graphConfig(service.getGraphConfig())
@@ -154,6 +180,8 @@ public final class GafferSession implements Runnable {
                 .build();
 
         this.allGraphs.put(id, graph);
+
+        LOGGER.info(GRAPH_BUILT_MESSAGE, this.getUser().getUserId(), new Date());
 
         return graph;
     }

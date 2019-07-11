@@ -1,4 +1,4 @@
-__version__ = "1.8.0"
+__version__ = "1.9.1"
 
 __title__ = "gafferpy-pyspark"
 __description__ = "Gaffer Python API Extension to allow use of PySpark functions"

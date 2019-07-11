@@ -1,0 +1,19 @@
+FROM gaffer-quickstart-base-session
+
+COPY graphconfig.json .
+COPY pyspark-mock-accumulo.properties .
+COPY simple-schema.json .
+
+ENV SCHEMA="/usr/gaffer/simple-schema.json"
+ENV STOREPROPERTIES="/usr/gaffer/pyspark-mock-accumulo.properties"
+ENV GRAPHCONFIG="/usr/gaffer/graphconfig.json"
+
+RUN touch application.properties
+
+RUN echo -e 'single-service=false\ninsecure=false\nuse-ssl=true\nauth-service-url=https://localhost:8443/create_session\nssl-password=placeholder\nkeystore-location=example.jks\nprotocol=TLSv1.2\nstore-properties-path=/usr/gaffer/pyspark-mock-accumulo.properties\nschema-path=/usr/gaffer/simple-schema.json\ngraph-config-path=/usr/gaffer/graphconfig.json' >> application.properties 
+
+RUN touch index.html
+
+RUN echo -e "<html><head><title>Gaffer Session</title></head><body><h1>GafferPy Session Controller</h1></body></html>" >> index.html
+
+CMD $GAFFER_HOME/bin/startup.sh --schema $SCHEMA --graphconfig $GRAPHCONFIG --storeproperties $STOREPROPERTIES --ui-config $UICONFIG ; java -jar gafferpy-build-1.9.1-SNAPSHOT-jar-with-dependencies.jar 

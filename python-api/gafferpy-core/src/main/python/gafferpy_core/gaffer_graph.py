@@ -22,9 +22,10 @@ Gaffer Graph Class
 import configparser
 import logging
 
+from py4j.java_collections import MapConverter, JavaIterator
+
 from gafferpy_core import gaffer_session as Session
 from gafferpy_core import gaffer_utils as u
-
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
@@ -33,7 +34,7 @@ ch.setLevel(logging.DEBUG)
 logger.addHandler(ch)
 
 
-class Graph:
+class Graph():
 
     """
     A class that wraps the Java class uk.gov.gchq.gaffer.python.graph.PythonGraph
@@ -44,10 +45,14 @@ class Graph:
     _gaffer_session = None
 
     _java_python_graph = None
-    _python_serialisers={
+    _python_serialisers = {
         'uk.gov.gchq.gaffer.data.element.Element' : 'uk.gov.gchq.gaffer.python.data.serialiser.PythonElementMapSerialiser',
         'uk.gov.gchq.gaffer.operation.data.ElementSeed' : 'uk.gov.gchq.gaffer.python.data.serialiser.PythonElementSeedMapSerialiser'
     }
+
+    schemaPath = None
+    graphConfigPath = None
+    storePropertiesPath = None
 
     def __init__(self):
         self._gaffer_session = Session.GafferPythonSession().getSession()
@@ -67,6 +72,14 @@ class Graph:
     def _setStoreProperties(self, storePropertiesPath):
         self.storePropertiesPath = storePropertiesPath
 
+    def getGraph(self, graphId=None):
+        if self.schemaPath is None and self.graphConfigPath is None and self.storePropertiesPath is None:
+            if graphId is not None and isinstance(graphId, str):
+                self._java_python_graph = self._gaffer_session.getGraphById(graphId)
+            else:
+                self._java_python_graph = self._gaffer_session.getPythonGraph()
+        return self
+
     def _getGraph(self):
         self._java_python_graph = self._gaffer_session.getPythonGraph(self._convertFileToBytes(self.schemaPath), self._convertFileToBytes(self.graphConfigPath), self._convertFileToBytes(self.storePropertiesPath))
         self._set_element_serialisers(store_properties_path=self.storePropertiesPath)
@@ -80,7 +93,7 @@ class Graph:
             python_serialisers[class_name] = serialisers.get(serialiser).getCanonicalName()
         return python_serialisers
 
-    def getSchema(self): # needed?
+    def getSchema(self):
         return self._java_python_graph.getGraph().getSchema()
 
     def getVertexSerialiserClass(self):
@@ -90,7 +103,8 @@ class Graph:
         return self._java_python_graph.getKeyPackageClassName()
 
     def setPythonSerialisers(self, serialisers):
-        self._java_python_graph.setPythonSerialisers(serialisers)
+        m_map = MapConverter().convert(serialisers, self._gaffer_session._gateway_client)
+        self._java_python_graph.setPythonSerialisers(m_map)
         self._python_serialisers = serialisers
 
     def _set_element_serialisers(self, store_properties_path):
@@ -116,11 +130,12 @@ class Graph:
         result = self._java_python_graph.execute(self._encode(operation))
         if isinstance(result, int):
             return result
+        elif isinstance(result, JavaIterator):
+            return result
         elif hasattr(result, 'getClass'):
             resultClass = result.getClass().getCanonicalName()
             if resultClass == "uk.gov.gchq.gaffer.python.data.PythonIterator":
-                iterator = u.ElementIterator(result)
-                return iterator
+                return u.ElementIterator(result)
         elif isinstance(result, str):
             raise TypeError(result)
         return result

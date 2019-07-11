@@ -26,36 +26,19 @@ ch = logging.StreamHandler()
 ch.setLevel(logging.DEBUG)
 logger.addHandler(ch)
 
-class Singleton(type):
-    _instances = {}
-
-    def __call__(cls, *args, **kwargs):
-        if cls not in cls._instances:
-            cls._instances[cls] = super(
-                Singleton, cls).__call__(*args, **kwargs)
-        return cls._instances[cls]
-
-class GafferPysparkSession(metaclass=Singleton):
+class GafferPysparkSession(Session.GafferPythonSession):
+    """
+    Subclass of Session to deal with Spark connections
     """
 
-    """
-
-    # #general things
-    _java_gaffer_session = None
-    _java_gateway = None
-    _java_server_process = None
-
-    _user = None
-
-    #pyspark things
+    # pyspark things
     _spark_context = None
 
-
     def __init__(self):
+        super(Session.GafferPythonSession, self)
         self._spark_context = SparkContext.getOrCreate()
 
     def create_session(self):
-
         """
         A public method for creating a python gaffer session.
         """
@@ -65,16 +48,17 @@ class GafferPysparkSession(metaclass=Singleton):
         gaffer_session = self
 
     def connect_to_session(self, address="172.0.0.1", port="25333"):
-        self._java_gaffer_session = Session.GafferPythonSession().connect_to_session(address, port)
+        self._connect(address=address, port=port)
         if self._java_gaffer_session.getStatusCode() == 1:
-            logger.info("In a pyspark environment. Using SparkSession as the Gaffer Session")
+            logger.info(
+                "In a pyspark environment. Using SparkSession as the Gaffer Session")
         else:
             msg = "failed to create gaffer session from a pyspark context"
             logger.error(msg)
             raise ValueError(msg)
+        return self
 
     def __start_session(self):
-
         """
         A private method used for instantiating a java Gaffer session
         """
@@ -82,14 +66,13 @@ class GafferPysparkSession(metaclass=Singleton):
         self._java_gaffer_session = self._spark_context._jvm.uk.gov.gchq.gaffer.python.controllers.SessionManager.getInstance().sessionFactory()
         self._java_gaffer_session.run()
         if self._java_gaffer_session.getStatusCode() == 1:
-            logger.info("In a pyspark environment. Using SparkSession as the Gaffer Session")
+            logger.info(
+                "In a pyspark environment. Using SparkSession as the Gaffer Session")
         else:
             msg = "failed to create gaffer session from a pyspark context"
             logger.error(msg)
             raise ValueError(msg)
+        return self
 
     def getSparkContext(self):
         return self._spark_context
-
-    def getGafferSession(self):
-        return self._java_gaffer_session

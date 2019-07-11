@@ -1,7 +1,7 @@
 import os
 
 import unittest
-from unittest.mock import patch, MagicMock
+from unittest.mock import patch, MagicMock, PropertyMock
 
 from gafferpy_core import gaffer_graph, gaffer_session, gaffer, gaffer_utils
 
@@ -21,6 +21,7 @@ class gaffer_graph_test(unittest.TestCase):
 
     @classmethod
     def setUpClass(self):
+        # self.__graph._gaffer_session.getPythonGraph = MagicMock(return_value=object)
         dirName = os.path.dirname(__file__)
         self._dataFilePath = os.path.join(dirName, './resources/data.csv')
         self._schemaFilePath = os.path.join(dirName, './resources/simple-schema.json')
@@ -44,11 +45,11 @@ class gaffer_graph_test(unittest.TestCase):
         self.__graph._java_python_graph.execute.assert_called_once_with(self.__graph._encode(add_op))
         
     def test_gaffer_graph_execute_can_return_iterators(self):
-        self.__graph._java_python_graph.execute = MagicMock(return_value=JavaIterator())
+            self.__graph._java_python_graph.execute = MagicMock(return_value=JavaIterator())
 
-        result = self.__graph.execute(operation=gaffer.GetAllElements())
+            result = self.__graph.execute(operation=gaffer.GetAllElements())
 
-        self.assertIsInstance(result, gaffer_utils.ElementIterator)
+            self.assertIsInstance(result, gaffer_utils.ElementIterator)
     
     def test_gaffer_graph_execute_can_return_dict(self):
         self.__graph._java_python_graph.execute = MagicMock(return_value={"class": "dict", "test": "something"})

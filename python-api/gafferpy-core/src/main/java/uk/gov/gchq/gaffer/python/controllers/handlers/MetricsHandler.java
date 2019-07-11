@@ -25,7 +25,6 @@ import uk.gov.gchq.gaffer.python.controllers.SessionManager;
 import uk.gov.gchq.gaffer.python.util.SessionCounter;
 
 import java.io.IOException;
-import java.io.OutputStream;
 import java.util.Date;
 
 public class MetricsHandler implements HttpHandler {
@@ -34,16 +33,19 @@ public class MetricsHandler implements HttpHandler {
 
     @Override
     public void handle(final HttpExchange httpExchange) throws IOException {
-        LOGGER.info("Connection made to HTTP server from: {} at {}", httpExchange.getRemoteAddress(), new Date());
+
+        System.out.println("Connection made");
+
+        LOGGER.info("Connection made from: {} at {}", httpExchange.getRemoteAddress(), new Date());
 
         String payload = "Total number of running sessions: " + SessionCounter.getInstance().getCounter();
 
+        httpExchange.getResponseHeaders().set("Content-Type", "text/html");
         httpExchange.sendResponseHeaders(200, payload.getBytes().length);
-        OutputStream output = httpExchange.getResponseBody();
-        output.write(payload.getBytes());
-        output.flush();
-        httpExchange.close();
-        LOGGER.info("POST sent to: {} at {}", httpExchange.getRemoteAddress(), new Date());
-    }
+        httpExchange.getResponseBody().write(payload.getBytes());
 
+        httpExchange.close();
+
+        LOGGER.info("GET sent to: {} at {}", httpExchange.getRemoteAddress(), new Date());
+    }
 }

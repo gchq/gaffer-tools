@@ -1,8 +1,0 @@
-{
-  "graphId" : "simple",
-  "library" : {
-    "class" : "uk.gov.gchq.gaffer.store.library.NoGraphLibrary"
-  },
-  "description" : "A really simple graph",
-  "hooks" : [ ]
-}

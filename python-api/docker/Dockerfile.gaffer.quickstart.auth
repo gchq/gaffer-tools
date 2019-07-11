@@ -1,7 +1,10 @@
 FROM openjdk:8-alpine
 
-COPY jars/example-1.0-SNAPSHOT.jar .
+COPY /auth /example
 
-ENV AUTH_URL=172.18.0.4
+ENV AUTH_URL=172.18.0.3
+ENV PORT=443
+
+WORKDIR example
 
 CMD java -jar example-1.0-SNAPSHOT.jar

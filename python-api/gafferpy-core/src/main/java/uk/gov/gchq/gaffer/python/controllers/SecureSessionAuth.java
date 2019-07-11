@@ -18,7 +18,6 @@ package uk.gov.gchq.gaffer.python.controllers;
 
 import com.sun.net.httpserver.HttpServer;
 import com.sun.net.httpserver.HttpsConfigurator;
-import com.sun.net.httpserver.HttpsParameters;
 import com.sun.net.httpserver.HttpsServer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,34 +29,35 @@ import uk.gov.gchq.gaffer.python.controllers.services.PropertiesService;
 
 import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.SSLContext;
-import javax.net.ssl.SSLParameters;
 import javax.net.ssl.TrustManagerFactory;
 
 import java.io.FileInputStream;
 import java.io.IOException;
+
 import java.io.InputStream;
+import java.net.InetAddress;
 import java.net.InetSocketAddress;
+import java.net.UnknownHostException;
+
 import java.security.KeyManagementException;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
-import java.security.SecureRandom;
 import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
 import java.util.Date;
-import java.util.concurrent.Executors;
 
 public final class SecureSessionAuth implements Runnable {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SessionManager.class);
 
-    private static final int DEFAULT_PORT = 8080;
-
     private static final String INDEX_HTML = "index.html";
 
     private static SecureSessionAuth sessionAuth = null;
 
-    private HttpServer server;
+    private static HttpServer httpServer;
+    private static HttpsServer httpsServer;
+
     private PropertiesService propertiesService;
 
     private SecureSessionAuth() {
@@ -71,80 +71,62 @@ public final class SecureSessionAuth implements Runnable {
         return sessionAuth;
     }
 
-    private void start() {
+    private void start() throws UnknownHostException {
+        String hostname = InetAddress.getLocalHost().getHostAddress();
+        InetSocketAddress address = new InetSocketAddress(hostname, 8080);
         try {
-
             if (propertiesService.isSsl().equalsIgnoreCase("true")) {
+                HttpsServer server = HttpsServer.create(address, 10);
 
-                HttpsServer httpsServer = HttpsServer.create(new InetSocketAddress(DEFAULT_PORT), 0);
-                SSLContext sslContext = SSLContext.getInstance(this.propertiesService.getProtocol());
-                char[] password = this.propertiesService.getSslPassword().toCharArray();
-                KeyStore store = KeyStore.getInstance(this.propertiesService.getKeystoreType());
+                SSLContext sslContext = getSSLContext();
 
-                InputStream inputStream = new FileInputStream(this.propertiesService.getKeystoreLocation());
-                store.load(inputStream, password);
+                server.setHttpsConfigurator(new HttpsConfigurator(sslContext));
+                server.createContext("/api/1.0", new GetHandler(INDEX_HTML));
+                server.createContext("/api/1.0/create", new PostHandler());
+                server.createContext("/api/1.0/metrics", new MetricsHandler());
 
-                KeyManagerFactory keyManagerFactory = KeyManagerFactory.getInstance("SunX509");
-                keyManagerFactory.init(store, password);
+                server.setExecutor(null);
+                server.start();
 
-                TrustManagerFactory trustManagerFactory = TrustManagerFactory.getInstance("SunX509");
-                trustManagerFactory.init(store);
+                LOGGER.info("Gaffer Session HTTPS Server started: {} at {}", server.getAddress(), new Date());
 
-                sslContext.init(keyManagerFactory.getKeyManagers(), trustManagerFactory.getTrustManagers(), new SecureRandom());
+                setHttpsServer(server);
 
-
-                HttpsConfigurator configurator = new HttpsConfigurator(sslContext) {
-                    @Override
-                    public void configure(final HttpsParameters params) {
-                        SSLContext sslContext = getSSLContext();
-                        SSLParameters defaultSSLParameters = sslContext.getDefaultSSLParameters();
-                        params.setSSLParameters(defaultSSLParameters);
-                    }
-                };
-
-                httpsServer.createContext("/api/1.0", new GetHandler(INDEX_HTML, true));
-                httpsServer.createContext("/api/1.0/create", new PostHandler());
-                httpsServer.createContext("/api/1.0/metrics", new MetricsHandler());
-                httpsServer.setHttpsConfigurator(configurator);
-                httpsServer.setExecutor(Executors.newCachedThreadPool());
-
-                this.setServer(httpsServer);
-
-                httpsServer.start();
-
-                LOGGER.info("Gaffer Session HTTPS Server started: Listening for connections on port : {} at {}", DEFAULT_PORT, new Date());
             } else {
-                this.setServer(createServer());
-                this.getServer().createContext("/api/1.0", new GetHandler(INDEX_HTML, false));
-                this.getServer().createContext("/api/1.0/create", new PostHandler());
-                this.getServer().createContext("/api/1.0/metrics", new MetricsHandler());
+                setHttpServer(HttpServer.create(address, 10));
 
-                this.getServer().setExecutor(null);
-                this.getServer().start();
+                getHttpServer().createContext("/api/1.0", new GetHandler(INDEX_HTML));
+                getHttpServer().createContext("/api/1.0/create", new PostHandler());
+                getHttpServer().createContext("/api/1.0/metrics", new MetricsHandler());
 
-                LOGGER.info("Gaffer Session HTTP Server started: Listening for connections on port : {} at {}", DEFAULT_PORT, new Date());
+                getHttpServer().setExecutor(null);
+                getHttpServer().start();
+
+                LOGGER.info("Gaffer Session HTTP Server started: {} at {}", getHttpServer().getAddress(), new Date());
             }
 
             LOGGER.info("GET requests running on: /api/1.0");
-            LOGGER.info("POST requests running on: /api/1.0/create");
             LOGGER.info("GET requests running on: /api/1.0/metrics");
+            LOGGER.info("POST requests running on: /api/1.0/create");
+        } catch (final IOException e) {
+            LOGGER.error(e.getMessage());
+            e.printStackTrace();
         } catch (final CertificateException e) {
             LOGGER.error(e.getMessage());
-        } catch (final UnrecoverableKeyException e) {
+            e.printStackTrace();
+        } catch (final NoSuchAlgorithmException e) {
             LOGGER.error(e.getMessage());
-        } catch (final KeyStoreException e) {
-            LOGGER.error(e.getMessage());
+            e.printStackTrace();
         } catch (final KeyManagementException e) {
             LOGGER.error(e.getMessage());
-        } catch (final IOException e) {
-            LOGGER.error(e.getLocalizedMessage());
-        } catch (final NoSuchAlgorithmException e) {
-            LOGGER.error(e.getLocalizedMessage());
+            e.printStackTrace();
+        } catch (final UnrecoverableKeyException e) {
+            LOGGER.error(e.getMessage());
+            e.printStackTrace();
+        } catch (final KeyStoreException e) {
+            LOGGER.error(e.getMessage());
+            e.printStackTrace();
         }
-    }
-
-    private HttpServer createServer() throws IOException {
-        return HttpServer.create(new InetSocketAddress(DEFAULT_PORT), 0);
     }
 
     public void setPropertiesService(final PropertiesService propertiesService) {
@@ -154,25 +136,37 @@ public final class SecureSessionAuth implements Runnable {
     @Override
     public void run() {
         Runtime.getRuntime().addShutdownHook(new ServerShutDownHook());
-        this.start();
+        try {
+            this.start();
+        } catch (final UnknownHostException e) {
+            LOGGER.error(e.getMessage());
+        }
     }
 
     public void stop() {
         if (this.propertiesService.isSsl().equalsIgnoreCase("true")) {
             LOGGER.info("Gaffer Session HTTPS Server stopping: {}", new Date());
+            getHttpsServer().stop(1);
         } else {
             LOGGER.info("Gaffer Session HTTP Server stopping: {}", new Date());
+            getHttpServer().stop(1);
         }
-        this.getServer().stop(1);
-
     }
 
-    private HttpServer getServer() {
-        return server;
+    private static HttpServer getHttpServer() {
+        return httpServer;
     }
 
-    private void setServer(final HttpServer server) {
-        this.server = server;
+    private static void setHttpServer(final HttpServer httpServer) {
+        SecureSessionAuth.httpServer = httpServer;
+    }
+
+    private static HttpsServer getHttpsServer() {
+        return httpsServer;
+    }
+
+    private static void setHttpsServer(final HttpsServer httpsServer) {
+        SecureSessionAuth.httpsServer = httpsServer;
     }
 
     private class ServerShutDownHook extends Thread { // killing the thread also handles shutdown
@@ -180,5 +174,37 @@ public final class SecureSessionAuth implements Runnable {
         public void run() {
             SecureSessionAuth.getInstance().stop();
         }
+    }
+
+    private SSLContext getSSLContext()
+            throws KeyStoreException, IOException, NoSuchAlgorithmException,
+            KeyManagementException, CertificateException, UnrecoverableKeyException {
+
+        LOGGER.info("Using certificate from: {} - {}", this.propertiesService.getKeystoreLocation(), new Date());
+
+        InputStream store = this.getClass().getClassLoader().getResourceAsStream(this.propertiesService.getKeystoreLocation());
+
+
+        if (store == null) {
+            store = new FileInputStream(this.propertiesService.getKeystoreLocation());
+        }
+
+        char[] password =  this.propertiesService.getSslPassword().toCharArray();
+
+        String keyStoreType = KeyStore.getDefaultType();
+        KeyStore keyStore = KeyStore.getInstance(keyStoreType);
+        keyStore.load(store, password);
+
+        String kmfAlgorithm = KeyManagerFactory.getDefaultAlgorithm();
+        KeyManagerFactory kmf = KeyManagerFactory.getInstance(kmfAlgorithm);
+        kmf.init(keyStore, password);
+
+        String tmfAlgorithm = TrustManagerFactory.getDefaultAlgorithm();
+        TrustManagerFactory tmf = TrustManagerFactory.getInstance(tmfAlgorithm);
+        tmf.init(keyStore);
+
+        SSLContext context = SSLContext.getInstance("TLSv1.2");
+        context.init(kmf.getKeyManagers(), tmf.getTrustManagers(), null);
+        return context;
     }
 }

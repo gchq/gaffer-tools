@@ -37,21 +37,44 @@ ch.setLevel(logging.DEBUG)
 logger.addHandler(ch)
 
 
-class Singleton(type):
-    _instances = {}
+class MetaBorg(type):
+    _state = {"__skip_init__": False}
+
+    def __check_args(cls, *args, **kwargs):
+        nargs = len(args)
+        if nargs > 0:
+            raise TypeError(
+                '{}() takes 0 positional arguments after first initialization but {} was given'.format(
+                    cls.__name__, nargs
+                )
+            )
+        nkeys = len(kwargs)
+        if nkeys > 0:
+            raise TypeError(
+                "{}() got an unexpected keyword argument '{}' after first initialization".format(
+                    cls.__name__, list(kwargs.keys())[0]
+                )
+            )
 
     def __call__(cls, *args, **kwargs):
-        if cls not in cls._instances:
-            cls._instances[cls] = super(
-                Singleton, cls).__call__(*args, **kwargs)
-        return cls._instances[cls]
+        if cls._state['__skip_init__']:
+            cls.__check_args(*args, **kwargs)
+        instance = object().__new__(cls, *args, **kwargs)
+        instance.__dict__ = cls._state
+        if not cls._state['__skip_init__']:
+            instance.__init__(*args, **kwargs)
+            cls._state['__skip_init__'] = True
+        return instance
 
 
-class GafferPythonSession(metaclass=Singleton):
+class GafferPythonSession(metaclass=MetaBorg):
 
     """
     Creates a Python Session and instanticates User Object plus others
     """
+
+    # Session Id
+    __gaffer_session = None
 
     # general things
     _java_gaffer_session = None
@@ -68,9 +91,8 @@ class GafferPythonSession(metaclass=Singleton):
         """
         A public method for creating a python gaffer session.
         """
-        global gaffer_session
-        if 'gaffer_session' in globals():
-            pid = globals().get('gaffer_session').get_session_pid()
+        if self.__gaffer_session is not None:
+            pid = self.__gaffer_session.get_session_pid()
             logger.info("already a gaffer session at pid " + str(pid))
         else:
             logger.info("no gaffer session available, creating one")
@@ -78,8 +100,8 @@ class GafferPythonSession(metaclass=Singleton):
             self._lib_jars = lib_jars
             self._check_running_processes(kill_existing_sessions)
             self._start_session()
-            gaffer_session = self
-        return gaffer_session
+            self.__gaffer_session = self
+        return self.__gaffer_session
 
     def _start_session(self):
         """
@@ -113,26 +135,29 @@ class GafferPythonSession(metaclass=Singleton):
         """
         Public method for just connecting to a running gaffer session
         """
-        print("""
-             _<^```\                                                                          
-           __>'- ~--^^~            .                                                          
-           _>  / '     \             o                           .                            
-          _> ,/ .  @_^`^)                      O                         O                       
-         -   |.   /_,__ )     o                                                               
-         _> | /   '  (.       ________        _____  __O__       o      _______             .        
-          >_(/ _    (_ \     /  _____/_____ _/ ____\/ ____\___________  \__  _ \__o_.__.   
-            /.'    (  `.\   /   \  ___\__  \\\\   __\\\\   __\/ __ \_  ___\   |  __/\_  |  |  
-              (   (         \    \_\  \/ __ \|  |   |  | \  ___/|  |      |  |    \__  |      
-               (   (         \________/(____/|__|   |__|  \_____|__|      |__|    / ___|  
-                `( `l./^^>               __                                       \/      
-                  `l.  /                /  \                                                      
-                    l |                 \__/   _                                              
-                     l(                       (_)                                           
-        """)
+        self._connect(address=address, port=port)
+        return self
 
-        global gaffer_session
-        if 'gaffer_session' in globals():
-            return globals().get('gaffer_session')
+    def _connect(self, address="127.0.0.1", port=25333):
+        port = int(port)
+        print("""
+
+             _<^```\
+           __>'- ~--^^~            .
+           _>  / '     \             o                           .
+          _> ,/ .  @_^`^)                      O                         O
+         -   |.   /_,__ )     o
+         _> | /   '  (.       ________        _____  __O__       o      _______             .
+          >_(/ _    (_ \     /  _____/_____ _/ ____\/ ____\___________  \__  _ \__o_.__.
+            /.'    (  `.\   /   \  ___\__  \\\\   __\\\\   __\/ __ \_  ___\   |  __/\_  |  |
+              (   (         \    \_\  \/ __ \|  |   |  | \  ___/|  |      |  |    \__  |
+               (   (         \________/(____/|__|   |__|  \_____|__|      |__|    / ___|
+                `( `l./^^>               __                                       \/
+                  `l.  /                /  \
+                    l |                 \__/   _
+                     l(                       (_)
+        
+        """)
 
         if(os.environ.get('SSL-Enabled') == "True"):
             s = requests.Session()
@@ -153,36 +178,55 @@ class GafferPythonSession(metaclass=Singleton):
             username = input("Please enter your username: ")
             password = getpass.getpass(
                 prompt='Please enter your password: ', stream=None)
-            s.post(url=os.environ.get('Auth-URL'),
-                   data={'username': username, 'password': password})
+            login = s.post(url=os.environ.get('Auth-URL'),
+                           data={'username': username, 'password': password})
+            if login.status_code == 200:
+                auth = s.post(url=os.environ.get('Validate'),
+                              data={'grant_type': 'authorization_code',
+                                    'client_id': os.environ.get('Client-Id'),
+                                    'client_secret': os.environ.get('Client-Secret'),
+                                    'code': "loginToken['token']"
+                                    }
+                              )
 
-            sessionResponse = s.get(os.environ.get('Session-Create-URL')).json
-            print(sessionResponse.text())
-            if(sessionResponse.status_code() == 200):
-                print(sessionResponse)
-                response = json.loads(sessionResponse.text)
-                addres = response['address'].split('/')
-                address = addres[1]
-                port = response['portNumber']
-                token = response['token']
+                authResponse = json.loads(auth.text)
+                self._token = authResponse['access_token']
+
+                sessionResponse = s.post(
+                    url=address + "/api/1.0/create", data=authResponse)
+
+                if(sessionResponse.status_code == 200):
+                    response = json.loads(sessionResponse.text)
+                    addres = response['address'].split('/')
+                    self._address = addres[1]
+                    self._port = response['portNumber']
+                else:
+                    logger.error(sessionResponse.text)
+                    raise ConnectionError(sessionResponse.text)
             else:
-                logger.error(sessionResponse.text)
-                raise sessionResponse.text
+                logger.error(login.text)
+                raise ConnectionError(login.text)
 
         try:
             session = None
             if(os.environ.get('SSL-Enabled') == "True"):
-                session = JavaGateway(gateway_parameters=GatewayParameters(address=address,
-                                                                           port=port,
-                                                                           auth_token=token
-                                                                           ))
+                session = JavaGateway(gateway_parameters=GatewayParameters(address=self._address,
+                                                                           port=self._port,
+                                                                           auth_token=self._token
+                                                                           ),
+                                      callback_server_parameters=CallbackServerParameters(
+                    port=(self._port+1)))
             else:
                 session = JavaGateway(
-                    gateway_parameters=GatewayParameters(address=address, port=port))
+                    gateway_parameters=GatewayParameters(
+                        address=self._address, port=self._port),
+                    callback_server_parameters=CallbackServerParameters(
+                        port=(self._port+1))
+                )
             self._java_gateway = session
             self._java_gaffer_session = session.entry_point
             logger.info("Connected to Gaffer Session")
-            gaffer_session = self
+            return self
         except:
             logger.error("Issue connecting to Gaffer Session")
 
@@ -195,7 +239,7 @@ class GafferPythonSession(metaclass=Singleton):
             logger.info("stopping gaffer session")
             self._java_server_process.send_signal(signal.SIGTERM)
             self._java_gateway = None
-            globals().pop('gaffer_session', None)
+            self.__gaffer_session = None
             logger.info("session stopped")
 
     def get_session_pid(self):
@@ -247,6 +291,3 @@ class GafferPythonSession(metaclass=Singleton):
 
     def getSession(self):
         return self._java_gaffer_session
-
-    def getGraph(self):
-        return self._java_gaffer_session.getGraphById("0")

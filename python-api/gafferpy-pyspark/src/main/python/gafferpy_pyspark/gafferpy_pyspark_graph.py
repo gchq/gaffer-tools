@@ -16,6 +16,8 @@
 
 import logging
 
+from py4j.java_collections import JavaIterator
+
 from gafferpy_core import gaffer_utils as u
 from gafferpy_core import gaffer_graph as gs
 
@@ -44,14 +46,23 @@ class Graph(gs.Graph):
 
     def __init__(self):
         super(gs.Graph, self)
+        self._gaffer_session = Session.GafferPysparkSession().getSession()
 
     def _getGraph(self):
-        self._java_python_graph = Session.GafferPysparkSession().getGafferSession().getPythonGraph(
+        self._java_python_graph = self._gaffer_session.getPythonGraph(
                                                                     self._convertFileToBytes(self.schemaPath), 
                                                                     self._convertFileToBytes(self.graphConfigPath), 
                                                                     self._convertFileToBytes(self.storePropertiesPath)
                                                                 )
         self._set_element_serialisers(store_properties_path=self.storePropertiesPath)
+        return self
+
+    def getGraph(self, graphId=None):
+        if self.schemaPath is None and self.graphConfigPath is None and self.storePropertiesPath is None:
+            if graphId is not None and isinstance(graphId, str):
+                self._java_python_graph = self._gaffer_session.getGraphById(graphId)
+            else:
+                self._java_python_graph = self._gaffer_session.getPythonGraph()
         return self
 
     def execute(self, operation):
@@ -129,6 +140,8 @@ class Graph(gs.Graph):
         else:
             result = self._java_python_graph.execute(self._encode(operation))
             if isinstance(result, int):
+                return result
+            if isinstance(result, JavaIterator):
                 return result
             resultClass = result.getClass().getCanonicalName()
             if resultClass == "uk.gov.gchq.gaffer.python.data.PythonIterator":

@@ -19,6 +19,7 @@ package uk.gov.gchq.gaffer.python.controllers.services;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -38,9 +39,7 @@ public class PropertiesService {
     private String authServiceUrl = "";
 
     private String sslPassword = "";
-    private String keystoreType = "";
     private String keystoreLocation = "";
-    private String keymanagerType = "";
     private String protocol = "";
 
     private String schemaPath = "";
@@ -48,14 +47,14 @@ public class PropertiesService {
     private String storeProperties = "";
 
     public PropertiesService() {
-        init("application.properties");
+        init(new File("application.properties"));
     }
 
-    public PropertiesService(final String fileName) {
+    public PropertiesService(final File fileName) {
         init(fileName);
     }
 
-    private void init(final String fileName) {
+    private void init(final File fileName) {
         LOGGER.info("Using Custom Configuration");
         try {
 
@@ -88,15 +87,13 @@ public class PropertiesService {
             if (isSsl().equalsIgnoreCase(TRUE)) {
                 LOGGER.info("Using SSL: Adding configuration settings");
                 setSslPassword(prop.getProperty("ssl-password"));
-                setKeystoreType(prop.getProperty("keystore-type"));
                 setKeystoreLocation(prop.getProperty("keystore-location"));
                 setProtocol(prop.getProperty("protocol"));
-                setKeymanagerType(prop.getProperty("keymanager-type"));
-
-                setStoreProperties(prop.getProperty("store-properties-path"));
-                setSchemaPath(prop.getProperty("schema-path"));
-                setGraphConfig(prop.getProperty("graph-config-path"));
             }
+
+            setStoreProperties(prop.getProperty("store-properties-path"));
+            setSchemaPath(prop.getProperty("schema-path"));
+            setGraphConfig(prop.getProperty("graph-config-path"));
 
         } catch (final FileNotFoundException e) {
             LOGGER.error(e.getLocalizedMessage());
@@ -137,28 +134,12 @@ public class PropertiesService {
         this.sslPassword = sslPassword;
     }
 
-    public String getKeystoreType() {
-        return keystoreType;
-    }
-
-    private void setKeystoreType(final String keystoreType) {
-        this.keystoreType = keystoreType;
-    }
-
     public String getKeystoreLocation() {
         return keystoreLocation;
     }
 
     private void setKeystoreLocation(final String keystoreLocation) {
         this.keystoreLocation = keystoreLocation;
-    }
-
-    public String getKeymanagerType() {
-        return keymanagerType;
-    }
-
-    private void setKeymanagerType(final String keymanagerType) {
-        this.keymanagerType = keymanagerType;
     }
 
     public String getAuthServiceUrl() {
@@ -205,8 +186,8 @@ public class PropertiesService {
     public String toString() {
         return "AllProps=[single-service=" + this.getSingleService() + ",insecure=" + this.getInsecure()
                 + ",use-ssl=" + this.isSsl() + ",optional=[auth-service-url=" + this.getAuthServiceUrl()
-                + ",ssl-password=" + this.getSslPassword() + ",keystore-type=" + this.getKeystoreType()
-                + ",keystore-location=" + this.getKeystoreLocation() + ",protocol=" + this.getProtocol()
-                + ",keymanager-type=" + this.getKeymanagerType() + "]]";
+                + ",ssl-password=" + this.getSslPassword() + ",keystore-location="
+                + this.getKeystoreLocation() + ",protocol=" + this.getProtocol()
+                + "]]";
     }
 }

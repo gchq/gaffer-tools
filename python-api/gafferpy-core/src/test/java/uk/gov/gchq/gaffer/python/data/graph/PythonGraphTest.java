@@ -32,9 +32,9 @@ import static org.junit.Assert.assertNotNull;
 
 public class PythonGraphTest {
 
-    private final String schemaPath = "simple-schema.json";
-    private final String graphConfigPath = "graphconfig.json";
-    private final String storePropertiesPath = "mock-accumulo.properties";
+    private final String schemaPath = "src/test/resources/simple-schema.json";
+    private final String graphConfigPath = "src/test/resources/graphconfig.json";
+    private final String storePropertiesPath = "src/test/resources/mock-accumulo.properties";
 
     @Test
     public void testCanConstructGraph(){

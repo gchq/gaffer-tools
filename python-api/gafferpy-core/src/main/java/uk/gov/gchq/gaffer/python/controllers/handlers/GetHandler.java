@@ -18,17 +18,14 @@ package uk.gov.gchq.gaffer.python.controllers.handlers;
 
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
-import com.sun.net.httpserver.HttpsExchange;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import uk.gov.gchq.gaffer.python.controllers.SessionManager;
-import uk.gov.gchq.gaffer.python.util.UtilFunctions;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.util.Date;
 
 public class GetHandler implements HttpHandler {
@@ -39,35 +36,34 @@ public class GetHandler implements HttpHandler {
      * A file location for transmission
      */
     private String location;
-    private boolean secure;
 
-    public GetHandler(final String location, final boolean secure) {
+    public GetHandler(final String location) {
         this.setLocation(location);
-        this.setSecure(secure);
     }
 
     @Override
     public void handle(final HttpExchange httpExchange) throws IOException {
-        LOGGER.info("Connection made to HTTP server from: {} at {}", httpExchange.getRemoteAddress(), new Date());
 
-        File in = new File(new UtilFunctions().loadFile(getLocation()));
+        System.out.println("Connection made");
+
+        LOGGER.info("Connection made from: {} at {}", httpExchange.getRemoteAddress(), new Date());
+
+
+        File in = new File(getClass().getClassLoader().getResource(getLocation()).getFile());
+
+        if (!in.exists()) {
+            in = new File(getLocation());
+        }
+
+        LOGGER.info("File Location: {}", in.getPath());
+
         byte[] bytes = readFileData(in, (int) in.length());
 
-        if (this.isSecure()) {
-            HttpsExchange httpsExchange = (HttpsExchange) httpExchange;
-            httpsExchange.getSSLSession();
-            httpsExchange.sendResponseHeaders(200, bytes.length);
-            OutputStream os = httpsExchange.getResponseBody();
-            os.write(bytes);
-            os.flush();
-            httpsExchange.close();
-        } else {
-            httpExchange.sendResponseHeaders(200, bytes.length);
-            OutputStream output = httpExchange.getResponseBody();
-            output.write(bytes);
-            output.flush();
-            httpExchange.close();
-        }
+        httpExchange.getResponseHeaders().set("Content-Type", "text/html");
+        httpExchange.sendResponseHeaders(200, bytes.length);
+        httpExchange.getResponseBody().write(bytes);
+
+        httpExchange.close();
     }
 
     public String getLocation() {
@@ -85,13 +81,5 @@ public class GetHandler implements HttpHandler {
             fileInputStream.read(fileData);
         }
         return fileData;
-    }
-
-    private boolean isSecure() {
-        return secure;
-    }
-
-    private void setSecure(final boolean secure) {
-        this.secure = secure;
     }
 }

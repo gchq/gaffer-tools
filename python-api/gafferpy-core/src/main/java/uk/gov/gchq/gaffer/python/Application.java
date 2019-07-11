@@ -48,8 +48,12 @@ public final class Application {
             SessionManager.getInstance().sessionFactory().run(); // Runs the default gaffer session - this is unsecured
         }
 
-        if (SERVICE.getInsecure().equalsIgnoreCase("false")) {
-            SecureSessionAuth.getInstance().run(); // Starts up the HTTP Server to "Secure" sessions
+        if (SERVICE.isSsl().equalsIgnoreCase("true")) {
+            SecureSessionAuth.getInstance().run(); // Starts up the HTTPS Server
+        }
+
+        if (SERVICE.getInsecure().equalsIgnoreCase("true")) {
+            SecureSessionAuth.getInstance().run(); // Starts up the HTTP Server
         }
     }
 }

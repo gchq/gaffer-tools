@@ -16,8 +16,8 @@
 
 import pyspark.sql as sql
 
-def flattenElementDict(inputt, schema=None):
-    elementDict = inputt[0]
+def flattenElementDict(input, schema=None):
+    elementDict = input[0]
     if schema == None:
         res = {}
     else:
@@ -33,7 +33,9 @@ def flattenElementDict(inputt, schema=None):
 def mergeRowSchemasAsDict(rowSchemas):
     merged = {}
     for key in rowSchemas.keys():
+        print("key: " + key)
         for entry in rowSchemas[key]:
+            print("entry: " + entry)
             merged[entry] = None
     return merged
 

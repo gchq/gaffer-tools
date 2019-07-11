@@ -34,7 +34,6 @@ import uk.gov.gchq.gaffer.python.data.PythonIterator;
 import uk.gov.gchq.gaffer.python.data.serialiser.PythonSerialiser;
 import uk.gov.gchq.gaffer.python.data.serialiser.config.PythonSerialiserConfig;
 import uk.gov.gchq.gaffer.python.util.Constants;
-import uk.gov.gchq.gaffer.python.util.UtilFunctions;
 import uk.gov.gchq.gaffer.store.Store;
 import uk.gov.gchq.gaffer.store.StoreProperties;
 import uk.gov.gchq.gaffer.store.schema.Schema;
@@ -44,18 +43,15 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.io.InputStream;
-import java.nio.file.Files;
+import java.util.HashMap;
 import java.util.Iterator;
-import java.util.Map;
 
 /**
  * An entry point for python to interact with a java Gaffer graph object through wrapper methods
  */
 
 public final class PythonGraph {
-
 
     private static final Logger LOGGER = LoggerFactory.getLogger(PythonGraph.class);
 
@@ -75,9 +71,7 @@ public final class PythonGraph {
     private PythonGraph(final User user, final InputStream schemaConfig, final InputStream graphConfig, final InputStream storeProperties) {
         this.user = user;
         try {
-            this.schema = new Schema.Builder()
-                    .json(schemaConfig)
-                    .build();
+            this.schema = Schema.fromJson(schemaConfig);
 
             this.graphConfig = new GraphConfig.Builder()
                     .json(graphConfig)
@@ -85,7 +79,7 @@ public final class PythonGraph {
 
             this.storeProperties = StoreProperties.loadStoreProperties(storeProperties);
         } catch (final SchemaException e) {
-            LOGGER.debug(e.getMessage());
+            LOGGER.error("ERROR BUILDING GRAPH: {}", e.getMessage());
         }
         buildGraph();
     }
@@ -173,10 +167,10 @@ public final class PythonGraph {
             }
             if (result instanceof Iterable) {
                 Iterator it = ((Iterable) result).iterator();
-                //((Output) operation).getOutputTypeReference()
+//                //((Output) operation).getOutputTypeReference()
                 Object first = it.next();
                 PythonSerialiser serialiser = getSerialiser(first);
-                //make sure iterable is closed
+//                //make sure iterable is closed
                 return new PythonIterator(((Iterable) result).iterator(), serialiser);
             }
         }
@@ -209,7 +203,7 @@ public final class PythonGraph {
         return null;
     }
 
-    public void setPythonSerialisers(final Map<String, String> serialisers) {
+    public void setPythonSerialisers(final HashMap<String, String> serialisers) {
         for (final String classNameToSerialise : serialisers.keySet()) {
             setPythonSerialiser(classNameToSerialise, serialisers.get(classNameToSerialise));
         }
@@ -289,17 +283,29 @@ public final class PythonGraph {
         }
 
         public Builder graphConfig(final String graphConfigPath) {
-            this.graphConfig = new ByteArrayInputStream(fileToBytes(graphConfigPath));
+            try {
+                this.graphConfig = new FileInputStream(graphConfigPath);
+            } catch (final FileNotFoundException e) {
+                LOGGER.info("GRAPH CONFIG ERROR: {}", e.getMessage());
+            }
             return this;
         }
 
         public Builder schemaConfig(final String schemaConfigPath) {
-            this.schemaConfig = new ByteArrayInputStream(fileToBytes(schemaConfigPath));
+            try {
+                this.schemaConfig = new FileInputStream(schemaConfigPath);
+            } catch (final FileNotFoundException e) {
+                LOGGER.info("SCHEMA ERROR: {}", e.getMessage());
+            }
             return this;
         }
 
         public Builder storeProperties(final String storePropertiesPath) {
-            this.storeProperties = new ByteArrayInputStream(fileToBytes(storePropertiesPath));
+            try {
+                this.storeProperties = new FileInputStream(storePropertiesPath);
+            } catch (final FileNotFoundException e) {
+                LOGGER.info("STORE PROPERTIES ERROR: {}", e.getMessage());
+            }
             return this;
         }
 
@@ -308,14 +314,5 @@ public final class PythonGraph {
             return this;
         }
 
-        private byte[] fileToBytes(final String filePath) {
-            byte[] bytes = null;
-            try {
-                bytes = Files.readAllBytes(new File(new UtilFunctions().loadFile(filePath)).toPath());
-            } catch (final IOException e) {
-                LOGGER.error(e.getMessage());
-            }
-            return bytes;
-        }
     }
 }

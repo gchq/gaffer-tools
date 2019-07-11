@@ -14,7 +14,10 @@ RUN openssl req \
 
 ENV SSL-Enabled=True
 ENV Cert-Path="/home/jovyan/gaffer.auth.key"
-ENV Auth-URL=https://172.18.0.3:8443/login
-ENV Session-Create-URL=https://172.18.0.3:8443/create_session
+ENV Client-Id="client_id"
+ENV Client-Secret="client_secret"
+ENV Auth-URL=https://172.18.0.2:8443/login
+ENV Validate=https://172.18.0.2:8443/oauth/token
+ENV Session-Create-URL=https://172.18.0.2:8443/create_session
 
 ENV PYTHONPATH="$PYTHONPATH:/home/jovyan/gafferpy-build-1.9.1-SNAPSHOT-python-modules.zip"

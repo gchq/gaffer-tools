@@ -16,6 +16,9 @@
 
 package uk.gov.gchq.gaffer.python.controllers.handlers;
 
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.exceptions.JWTDecodeException;
+import com.auth0.jwt.interfaces.DecodedJWT;
 import com.google.gson.JsonObject;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
@@ -27,15 +30,12 @@ import uk.gov.gchq.gaffer.python.controllers.entities.SecureUser;
 import uk.gov.gchq.gaffer.python.controllers.services.PropertiesService;
 import uk.gov.gchq.gaffer.python.session.GafferSession;
 import uk.gov.gchq.gaffer.python.util.exceptions.NoPortsAvailableException;
-import uk.gov.gchq.gaffer.user.User;
+import uk.gov.gchq.gaffer.python.util.exceptions.NullUserException;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
 import java.net.InetAddress;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -43,18 +43,50 @@ public class PostHandler implements HttpHandler {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SessionManager.class);
 
-    private static final PropertiesService PROPERTIES_SERVICE = new PropertiesService();
-
-    private String username;
-    private List<String> dataRoles;
-    private List<String> opRoles;
+    private SecureUser username;
     private String token;
+    private String refreshToken;
+    private int timeout;
+    private String tokenType;
 
     @Override
     public void handle(final HttpExchange httpExchange) throws IOException {
-        LOGGER.info("Connection made to HTTP server from: {} at {}", httpExchange.getRemoteAddress(), new Date());
+        LOGGER.info("Connection made from: {} at {}", httpExchange.getRemoteAddress(), new Date());
+        try (InputStreamReader inputStreamReader = new InputStreamReader(httpExchange.getRequestBody())) {
+            JsonObject object = this.buildPayload(inputStreamReader);
 
-        BufferedReader br = new BufferedReader(new InputStreamReader(httpExchange.getRequestBody()));
+            GafferSession session;
+
+            if (new PropertiesService().isSsl().equalsIgnoreCase("true")) {
+                session = SessionManager.getInstance().sessionFactory(InetAddress.getLocalHost(), this.getToken(), this.getUser());
+            } else {
+                session = SessionManager.getInstance().sessionFactory(InetAddress.getLocalHost(), this.getUser());
+            }
+
+            session.run();
+            if (session.getStatusCode() == 1) {
+                object.addProperty("address", session.getAddress().toString());
+                object.addProperty("portNumber", session.getPortNumber());
+            }
+
+            String payload = object.toString();
+
+            httpExchange.sendResponseHeaders(200, payload.getBytes().length);
+            httpExchange.getResponseBody().write(payload.getBytes());
+
+            LOGGER.info("POST sent to: {} at {}", httpExchange.getRemoteAddress(), new Date());
+
+        } catch (final NoPortsAvailableException e) {
+            LOGGER.error(e.getMessage());
+        } catch (final NullUserException e) {
+            LOGGER.error(e.getMessage());
+        }
+
+        httpExchange.close();
+    }
+
+    private JsonObject buildPayload(final InputStreamReader requestBody) throws NullUserException, IOException {
+        BufferedReader br = new BufferedReader(requestBody);
 
         String line;
         String[] manipulator = null;
@@ -68,81 +100,85 @@ public class PostHandler implements HttpHandler {
 
         JsonObject object = new JsonObject();
 
+        String idToken = null;
+
         for (final String split : manipulator) {
             String[] lines = split.split("=");
             switch (lines[0]) {
-                case "user":
-                    setUser(lines[1]);
-                    object.addProperty("user", getUser());
+                case "id_token":
+                    idToken = lines[1];
                     break;
-                case "opAuths":
-                    setOpRoles(toArray(lines[1]));
-                    object.addProperty("opAuths", getOpRoles().toString());
+                case "refresh_token":
+                    setRefreshToken(lines[1]);
                     break;
-                case "dataAuths":
-                    setDataRoles(toArray(lines[1]));
-                    object.addProperty("dataAuths", getDataRoles().toString());
+                case "token_type":
+                    setTokenType(lines[1]);
                     break;
-                case "token":
+                case "access_token":
                     setToken(lines[1]);
-                    object.addProperty("token", getToken());
+                    break;
+                case "expires_in":
+                    setTimeout(new Integer(lines[1]));
                     break;
                 default:
                     LOGGER.debug("WARNING: Additional parameters found {} with values: {}", lines[0], lines[1]);
             }
         }
 
-        try {
-            User user;
-            GafferSession session;
+        SecureUser user = getUserFromToken(idToken);
 
-            if (PROPERTIES_SERVICE.isSsl().equalsIgnoreCase("true")) {
-                user = new SecureUser(this.getUser(), this.getOpRoles(), this.getDataRoles(), this.getToken());
-                session = SessionManager.getInstance().sessionFactory(InetAddress.getLocalHost(), ((SecureUser) user).getToken(), user);
-            } else {
-                user = new User.Builder()
-                        .dataAuths(this.getDataRoles())
-                        .userId(this.getUser())
-                        .opAuths(this.getOpRoles())
-                        .build();
-
-                session = SessionManager.getInstance().sessionFactory(InetAddress.getLocalHost(), user);
-            }
-
-            session.run();
-            if (session.getStatusCode() == 1) {
-                object.addProperty("address", session.getAddress().toString());
-                object.addProperty("portNumber", session.getPortNumber());
-            }
-        } catch (final NoPortsAvailableException e) {
-            LOGGER.error(e.getMessage());
+        if (user != null) {
+            setUser(user);
+        } else {
+            throw new NullUserException("Couldn't build user object");
         }
 
-
-        String payload = object.toString();
-
-        httpExchange.sendResponseHeaders(200, payload.getBytes().length);
-        OutputStream output = httpExchange.getResponseBody();
-        output.write(payload.getBytes());
-        output.flush();
-        httpExchange.close();
-        LOGGER.info("POST sent to: {} at {}", httpExchange.getRemoteAddress(), new Date());
+        br.close();
+        return object;
     }
 
-    private String getUser() {
+    private SecureUser getUserFromToken(final String token) {
+        SecureUser secureUser = null;
+        DecodedJWT jwt = null;
+
+        if (getTokenType().equalsIgnoreCase("bearer")) {
+            try {
+                jwt = JWT.decode(token);
+            } catch (final JWTDecodeException exception) {
+                LOGGER.error(exception.getMessage());
+            }
+
+            if (jwt != null) {
+                LOGGER.info("Decoded {} -  {}", jwt.getIssuer(), new Date());
+
+                String user = jwt.getClaim("user").asString();
+
+                List<String> dataAuth = null;
+                List<String> opAuth = null;
+
+                try {
+                    dataAuth = (List<String>) jwt.getClaim("data_auth").asList(Class.forName("java.lang.String"));
+                    opAuth = (List<String>) jwt.getClaim("op_auth").asList(Class.forName("java.lang.String"));
+                } catch (final ClassNotFoundException e) {
+                    LOGGER.error(e.getMessage());
+                }
+
+                LOGGER.info("Access token is {} - {}", this.getToken(), new Date());
+
+                secureUser = new SecureUser(user, dataAuth, opAuth, this.getToken());
+                LOGGER.info("User {} authenticated and authorised with roles of {} and {} - {}",
+                        secureUser.getUserId(), dataAuth, opAuth, new Date());
+            }
+        }
+        return secureUser;
+    }
+
+    private SecureUser getUser() {
         return username;
     }
 
-    private void setUser(final String user) {
+    private void setUser(final SecureUser user) {
         this.username = user;
-    }
-
-    private List<String> getOpRoles() {
-        return opRoles;
-    }
-
-    private void setOpRoles(final List<String> roles) {
-        this.opRoles = roles;
     }
 
     private String getToken() {
@@ -153,19 +189,27 @@ public class PostHandler implements HttpHandler {
         this.token = token;
     }
 
-    private List<String> getDataRoles() {
-        return dataRoles;
+    public int getTimeout() {
+        return timeout;
     }
 
-    private void setDataRoles(final List<String> dataRoles) {
-        this.dataRoles = dataRoles;
+    public void setTimeout(final int timeout) {
+        this.timeout = timeout;
     }
 
+    public String getTokenType() {
+        return tokenType;
+    }
 
-    private List<String> toArray(final String list) {
-        String[] roles  = list.split(",");
-        List<String> temp = new ArrayList<>();
-        Collections.addAll(temp, roles);
-        return temp;
+    public void setTokenType(final String tokenType) {
+        this.tokenType = tokenType;
+    }
+
+    public String getRefreshToken() {
+        return refreshToken;
+    }
+
+    public void setRefreshToken(final String refreshToken) {
+        this.refreshToken = refreshToken;
     }
 }

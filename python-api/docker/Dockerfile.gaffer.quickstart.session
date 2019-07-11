@@ -5,25 +5,20 @@ RUN yum install mod_ssl -y
 RUN openssl req \
   -new \
   -newkey rsa:4096 \
-  -days 3650 \
+  -days 365 \
   -nodes \
   -x509 \
   -subj "/C=UK/ST=EN/L=SF/O=Gaffer-Auth/CN=gaffer.auth" \
-  -keyout gaffer.auth.key \
+  -keyout gaffer.auth.pem \
   -out gaffer.auth.cert
 
 RUN keytool -importcert \
-    -trustcacerts \
-    -noprompt \
-    -file gaffer.auth.cert \
-    -storepass placeholder \
-    -keystore example.jks \
-    -alias "Alias" 
-
-RUN touch application.properties
-
-RUN echo -e "single-service=false\ninsecure=false\nuse-ssl=true\nauth-service-url=https://localhost:8443/create_session\nssl-password=placeholder\nkeystore-type=JKS\nkeystore-location=example.jks\nkeymanager-type=JKS\nprotocol=TLSv1.2\nstore-properties-path=$STOREPROPERTIES\nschema-path=$SCHEMA\ngraph-config-path=$GRAPHCONFIG" >> application.properties 
+  -trustcacerts \
+  -noprompt \
+  -file gaffer.auth.cert \
+  -storepass placeholder \
+  -keystore example.jks \
+  -alias "Alias" 
 
 COPY gafferpy-build-1.9.1-SNAPSHOT-jar-with-dependencies.jar .
 
-CMD $GAFFER_HOME/bin/startup.sh --schema $SCHEMA --graphconfig $GRAPHCONFIG --storeproperties $STOREPROPERTIES --ui-config $UICONFIG ; java -jar gafferpy-build-1.9.1-SNAPSHOT-jar-with-dependencies.jar 

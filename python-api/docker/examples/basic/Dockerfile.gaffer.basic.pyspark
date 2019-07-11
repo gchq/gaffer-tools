@@ -1,0 +1,3 @@
+FROM gaffer-quickstart-base-pyspark
+
+COPY data.csv .

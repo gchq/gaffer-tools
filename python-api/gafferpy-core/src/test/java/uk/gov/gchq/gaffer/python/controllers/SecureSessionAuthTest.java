@@ -1,38 +1,41 @@
 package uk.gov.gchq.gaffer.python.controllers;
 
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Assert;
-import org.junit.Test;
-
+import org.junit.*;
 import uk.gov.gchq.gaffer.python.controllers.services.PropertiesService;
-import uk.gov.gchq.gaffer.python.util.UtilFunctions;
 import uk.gov.gchq.gaffer.python.util.exceptions.ServerNullException;
 
-import javax.net.ssl.*;
-import java.io.BufferedReader;
-import java.io.DataOutputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.security.KeyManagementException;
-import java.security.NoSuchAlgorithmException;
-import java.security.SecureRandom;
-import java.security.cert.CertificateException;
-import java.security.cert.X509Certificate;
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLSocketFactory;
+import java.io.*;
+import java.net.*;
 
 public class SecureSessionAuthTest {
 
     private static final String USER_AGENT = "Mozilla/5.0";
 
-    private static final String GET_HOME = "http://localhost:8080/api/1.0";
-    private static final String SECURE_GET_HOME = "https://localhost:8080/api/1.0";
-    private static final String GET_METRICS = "http://localhost:8080/api/1.0/metrics";
-    private static final String POST_REQUEST = "http://localhost:8080/api/1.0/create";
-    private static final String NONE_EXISTING_PAGE = "http://localhost:8080/api/1.0/lol";
+    private static String GET_HOME;
+    private static String SECURE_GET_HOME;
+    private static String GET_METRICS;
+    private static String POST_REQUEST;
+    private static String NONE_EXISTING_PAGE;
+
+    private static String ADDRESS;
 
     private static SecureSessionAuth auth = SecureSessionAuth.getInstance();
+
+    @BeforeClass
+    public static void setUp() throws UnknownHostException {
+        System.setProperty("javax.net.ssl.trustStore", "src/test/resources/client-truststore.jks");
+
+        ADDRESS = InetAddress.getLocalHost().getHostAddress();
+
+        GET_HOME = "http://" + ADDRESS + ":8080/api/1.0";
+        SECURE_GET_HOME = "https://" + ADDRESS + ":8080/api/1.0";
+        GET_METRICS = "http://" + ADDRESS + ":8080/api/1.0/metrics";
+        POST_REQUEST = "http://" + ADDRESS + ":8080/api/1.0/create";
+        NONE_EXISTING_PAGE = "http://" + ADDRESS + ":8080/api/1.0/lol";
+
+    }
 
     @After
     public void tearDown() {
@@ -46,22 +49,28 @@ public class SecureSessionAuthTest {
 
     @Test
     public void sessionAuth_ReturnsMetrics() throws IOException {
-        PropertiesService service = new PropertiesService(new UtilFunctions().loadFile("test1.properties"));
+        File file = new File(getClass().getClassLoader().getResource("test.properties").getFile());
+        PropertiesService service = new PropertiesService(file);
 
         auth.setPropertiesService(service);
+
+        // Make it use the current properties
+        auth.run();
 
         URL url = new URL(GET_METRICS);
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 
-        // Make it use the current properties
-        auth.run();
+        System.out.println(connection.getResponseMessage());
 
         Assert.assertEquals(HttpURLConnection.HTTP_OK, connection.getResponseCode());
     }
 
     @Test
     public void sessionAuth_CanCreateSessions() throws IOException {
-        PropertiesService service = new PropertiesService(new UtilFunctions().loadFile("test.properties"));
+
+        File file = new File(getClass().getClassLoader().getResource("test.properties").getFile());
+
+        PropertiesService service = new PropertiesService(file);
         auth.setPropertiesService(service);
 
         // Make it use the current properties
@@ -74,7 +83,11 @@ public class SecureSessionAuthTest {
         connection.setRequestProperty("User-Agent", USER_AGENT);
         connection.setRequestProperty("Accept-Language", "en-US,en");
 
-        String urlParameters = "token=C02G8416DRJM&user=example&dataAuths=caller&opAuths=1,2,3";
+        String urlParameters = "id_token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJ1c2VyIiwiZGF0YV9hdXRoIjpbIlRFU1" +
+                "QiXSwib3BfYXV0aCI6WyJSRUFEIiwiV1JJVEUiXSwiaXNzIjoiRVhBTVBMRV9JREFNIiwidXNlciI6Im5hbWUifQ.oCKcOuV0YAcC0Gc" +
+                "XNs_yaml6txVfaMiCN0hhR5laaTc" +
+                "&access_token=xtcryvhbkjnlmdrfwefweffsfexample&" +
+                "token_type=Bearer";
 
         // Send post request
         connection.setDoOutput(true);
@@ -95,7 +108,8 @@ public class SecureSessionAuthTest {
 
     @Test
     public void sessionAuth_DisplaysDefaultPage() throws IOException {
-        PropertiesService service = new PropertiesService(new UtilFunctions().loadFile("test1.properties"));
+        File file = new File(getClass().getClassLoader().getResource("test.properties").getFile());
+        PropertiesService service = new PropertiesService(file);
         auth.setPropertiesService(service);
 
         // Make it use the current properties
@@ -110,7 +124,8 @@ public class SecureSessionAuthTest {
 
     @Test
     public void sessionAuth_ShowsCorrectErrorPage() throws IOException {
-        PropertiesService service = new PropertiesService(new UtilFunctions().loadFile("test1.properties"));
+        File file = new File(getClass().getClassLoader().getResource("test.properties").getFile());
+        PropertiesService service = new PropertiesService(file);
         auth.setPropertiesService(service);
 
         // Make it use the current properties
@@ -124,16 +139,13 @@ public class SecureSessionAuthTest {
     }
 
     @Test
-    public void sessionAuth_CanBeSetToUseSSL() throws IOException, NoSuchAlgorithmException, KeyManagementException {
-        PropertiesService service = new PropertiesService(new UtilFunctions().loadFile("test4.properties"));
+    public void sessionAuth_CanBeSetToUseSSL() throws IOException {
+        File file = new File(getClass().getClassLoader().getResource("test4.properties").getFile());
+        PropertiesService service = new PropertiesService(file);
         auth.setPropertiesService(service);
 
         // Make it use the current properties
         auth.run();
-
-        SSLContext ctx = SSLContext.getInstance("TLS");
-        ctx.init(new KeyManager[0], new TrustManager[] {new DefaultTrustManager()}, new SecureRandom());
-        SSLContext.setDefault(ctx);
 
         URL url = new URL(SECURE_GET_HOME);
         HttpsURLConnection connection = (HttpsURLConnection) url.openConnection();
@@ -141,12 +153,56 @@ public class SecureSessionAuthTest {
         connection.setHostnameVerifier((arg0, arg1) -> true);
 
         Assert.assertEquals("true", service.isSsl());
-        Assert.assertEquals(HttpURLConnection.HTTP_OK, connection.getResponseCode());
+        System.out.println(getBody(connection));
+        Assert.assertEquals(HttpsURLConnection.HTTP_OK, connection.getResponseCode());
+    }
+
+
+    @Test
+    public void sessionAuth_SeeIfServerIsConfiguredCorrectly() throws IOException {
+        File file = new File(getClass().getClassLoader().getResource("test4.properties").getFile());
+        PropertiesService service = new PropertiesService(file);
+        auth.setPropertiesService(service);
+
+        // Make it use the current properties
+        auth.run();
+
+        Socket socket = SSLSocketFactory.getDefault().
+                createSocket(ADDRESS, 8080);
+        try {
+            Writer out = new OutputStreamWriter(
+                    socket.getOutputStream(), "ISO-8859-1");
+            out.write("GET / HTTP/1.1\r\n");
+            out.write("Host: " + ADDRESS + ":" +
+                    8080 + "\r\n");
+            out.write("Agent: SSL-TEST\r\n");
+            out.write("\r\n");
+            out.flush();
+            BufferedReader in = new BufferedReader(
+                    new InputStreamReader(socket.getInputStream(), "ISO-8859-1"));
+            String line;
+            while ((line = in.readLine()) != null) {
+                System.out.println(line);
+            }
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+            Assert.fail();
+        } catch (IOException e) {
+            e.printStackTrace();
+            Assert.fail();
+        } catch (Exception e) {
+            e.printStackTrace();
+            Assert.fail();
+        } finally {
+            socket.close();
+        }
+        auth.stop();
     }
 
     @Test
     public void sessionAuth_CanBeRanInInsecureMode() throws IOException {
-        PropertiesService service = new PropertiesService(new UtilFunctions().loadFile("test1.properties"));
+        File file = new File(getClass().getClassLoader().getResource("test1.properties").getFile());
+        PropertiesService service = new PropertiesService(file);
         auth.setPropertiesService(service);
 
         // Make it use the current properties
@@ -171,20 +227,4 @@ public class SecureSessionAuthTest {
 
         return response.toString();
     }
-
-
-    private static class DefaultTrustManager implements X509TrustManager {
-
-        @Override
-        public void checkClientTrusted(X509Certificate[] arg0, String arg1) throws CertificateException {}
-
-        @Override
-        public void checkServerTrusted(X509Certificate[] arg0, String arg1) throws CertificateException {}
-
-        @Override
-        public X509Certificate[] getAcceptedIssuers() {
-            return null;
-        }
-    }
-
 }

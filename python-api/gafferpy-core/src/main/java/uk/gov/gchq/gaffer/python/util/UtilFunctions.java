@@ -19,8 +19,6 @@ package uk.gov.gchq.gaffer.python.util;
 public final class UtilFunctions {
 
     public String loadFile(final String fileName) {
-        ClassLoader loader = this.getClass().getClassLoader();
-        return loader.getResource(fileName).getPath();
+        return this.getClass().getClassLoader().getResource(fileName).getPath();
     }
-
 }
