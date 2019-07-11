@@ -20,6 +20,7 @@ import com.google.common.collect.Maps;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.codehaus.jackson.annotate.JsonIgnore;
 
 import uk.gov.gchq.gaffer.commonutil.ToStringBuilder;
 import uk.gov.gchq.gaffer.user.User;
@@ -44,14 +45,6 @@ public class AnalyticDetail implements Serializable {
     private Integer score;
 
     public AnalyticDetail() {
-    }
-
-    public void setReadAccessRoles(final List<String> readAccessRoles) {
-        this.readAccessRoles = readAccessRoles;
-    }
-
-    public void setWriteAccessRoles(final List<String> writeAccessRoles) {
-        this.writeAccessRoles = writeAccessRoles;
     }
 
     public AnalyticDetail(final String analyticName, final String operationName, final String description,
@@ -125,6 +118,16 @@ public class AnalyticDetail implements Serializable {
 
     public void setOutputVisualisation(final OutputVisualisation outputVisualisation) {
         this.outputVisualisation = outputVisualisation;
+    }
+
+    @JsonIgnore
+    public void setReadAccessRoles(final List<String> readAccessRoles) {
+        this.readAccessRoles = readAccessRoles;
+    }
+
+    @JsonIgnore
+    public void setWriteAccessRoles(final List<String> writeAccessRoles) {
+        this.writeAccessRoles = writeAccessRoles;
     }
 
     @Override
