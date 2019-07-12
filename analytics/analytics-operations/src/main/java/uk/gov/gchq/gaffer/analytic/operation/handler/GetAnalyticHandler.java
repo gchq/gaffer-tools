@@ -33,7 +33,6 @@ import uk.gov.gchq.gaffer.store.operation.handler.named.cache.NamedOperationCach
  */
 public class GetAnalyticHandler implements OutputOperationHandler<GetAnalytic, AnalyticDetail> {
     private final AnalyticCache cache;
-    private static Context context;
 
     public GetAnalyticHandler() {
         this(new AnalyticCache());
@@ -61,7 +60,6 @@ public class GetAnalyticHandler implements OutputOperationHandler<GetAnalytic, A
     @Override
     public AnalyticDetail doOperation(final GetAnalytic operation, final Context context, final Store store)
             throws OperationException {
-        GetAnalyticHandler.context = context;
         final AnalyticDetail op;
         try {
             op = cache.getAnalyticOperation(operation.getAnalyticName(), context.getUser(),
@@ -70,14 +68,14 @@ public class GetAnalyticHandler implements OutputOperationHandler<GetAnalytic, A
             throw new OperationException(e.getMessage());
         }
 
-        return resolveParameters(op);
+        return resolveParameters(op, context);
     }
 
-    private AnalyticDetail resolveParameters(final AnalyticDetail analyticOp) {
+    private AnalyticDetail resolveParameters(final AnalyticDetail analyticOp, final Context context) {
         if (null != analyticOp) {
             try {
                 NamedOperationDetail nod = new NamedOperationCache()
-                        .getNamedOperation(analyticOp.getOperationName(), GetAnalyticHandler.context.getUser());
+                        .getNamedOperation(analyticOp.getOperationName(), context.getUser());
                 analyticOp.setReadAccessRoles(nod.getReadAccessRoles());
                 analyticOp.setWriteAccessRoles(nod.getWriteAccessRoles());
                 for (final String currentParam : nod.getParameters().keySet()) {
