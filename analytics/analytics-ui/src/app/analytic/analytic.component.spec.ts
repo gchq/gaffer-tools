@@ -18,9 +18,12 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { MatCardModule, MatTooltipModule, MatIconModule } from '@angular/material';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { EMPTY } from 'rxjs';
 
 import { AnalyticComponent } from './analytic.component';
 import { AnalyticsService } from '../gaffer/analytics.service';
+import { HttpClient } from '@angular/common/http';
 
 class RouterStub {
   navigate = () => {};
@@ -28,6 +31,11 @@ class RouterStub {
 class AnalyticsServiceStub {
   createArrayAnalytic = () => {
     return [];
+  }
+}
+class HttpClientStub {
+  get = params => {
+    return EMPTY;
   }
 }
 
@@ -40,7 +48,8 @@ describe('AnalyticComponent', () => {
       declarations: [AnalyticComponent],
       providers: [
         { provide: Router, useClass: RouterStub },
-        { provide: AnalyticsService, useClass: AnalyticsServiceStub }
+        { provide: AnalyticsService, useClass: AnalyticsServiceStub },
+        { provide: HttpClient, useClass: HttpClientStub }
       ],
       imports: [MatCardModule, MatTooltipModule, MatIconModule, BrowserAnimationsModule]
     }).compileComponents();
@@ -59,6 +68,7 @@ describe('AnalyticComponent', () => {
       },
       operationName: 'test operation name'
     };
+    const http = TestBed.get(HttpClient);
   });
 
   it('should be created', () => {

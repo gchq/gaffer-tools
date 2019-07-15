@@ -17,6 +17,7 @@
 import { Component, OnInit, Input, Injectable, AfterViewInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AnalyticsService } from '../gaffer/analytics.service';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-analytic',
@@ -28,38 +29,40 @@ export class AnalyticComponent implements OnInit, AfterViewInit {
 
   constructor(
     private router: Router,
-    private analyticsService: AnalyticsService
+    private analyticsService: AnalyticsService,
+    private http: HttpClient,
   ) { }
 
   ngOnInit() {}
 
   ngAfterViewInit() {
 
-    // Set the default icon if an icon is not specified
-    const defaultIcon = '<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'24\' height=\'24\' viewBox=\'0 0 24 24\'>' +
-    '<path d=\'M0 0h24v24H0z\' fill=\'none\'/>' +
-    '<path d=\'M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z\'/>' +
-    '<path d=\'M0 0h24v24H0z\' fill=\'none\'/></svg>';
-    let icon = defaultIcon;
-    if (this.model.metaData.iconURL) {
-      icon = this.model.metaData.iconURL;
-    }
+    // Load the default icon from file
+    this.http.get<any>('../../assets/defaultIcon.json').subscribe(data => {
+      const defaultIcon = data.svg;
 
-    // Make sure the icon is scaled to the correct size
-    const widthString: string = icon.split('width')[1].split('=')[1].trim().split(' ')[0].trim();
-    const width = Number(widthString.slice(1, widthString.length - 1));
-    const heightString: string = icon.split('height')[1].split('=')[1].trim().split(' ')[0].trim();
-    const height = Number(heightString.slice(1, heightString.length - 1));
+      // Set the default icon if an icon is not specified
+      let icon = defaultIcon;
+      if (this.model.metaData.iconURL) {
+        icon = this.model.metaData.iconURL;
+      }
 
-    const desiredWidth = 120;
-    const desiredHeight = 120;
-    const widthScale = desiredWidth / width;
-    const heightScale = desiredHeight / height;
+      // Get the current width and height and calculate what scaling is required for the desired width and height
+      const widthString: string = icon.split('width')[1].split('=')[1].trim().split(' ')[0].trim();
+      const width = Number(widthString.slice(1, widthString.length - 1));
+      const heightString: string = icon.split('height')[1].split('=')[1].trim().split(' ')[0].trim();
+      const height = Number(heightString.slice(1, heightString.length - 1));
 
-    // Add the icon and scale it to the correct size
-    const svgContainer: HTMLElement = document.getElementById(this.model.operationName.toString() + '-svgContainer');
-    svgContainer.innerHTML = icon;
-    svgContainer.style.transform = 'scale(' + widthScale.toString() + ',' + heightScale.toString() + ')';
+      const desiredWidth = 120;
+      const desiredHeight = 120;
+      const widthScale = desiredWidth / width;
+      const heightScale = desiredHeight / height;
+
+      // Add the icon and scale it to the correct size
+      const svgContainer: HTMLElement = document.getElementById(this.model.operationName.toString() + '-svgContainer');
+      svgContainer.innerHTML = icon;
+      svgContainer.style.transform = 'scale(' + widthScale.toString() + ',' + heightScale.toString() + ')';
+    });
   }
 
   /** Save the chosen analytic in the analytics service */
