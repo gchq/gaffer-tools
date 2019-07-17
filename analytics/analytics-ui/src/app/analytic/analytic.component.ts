@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { Component, OnInit, Input, Injectable, AfterViewInit } from '@angular/core';
+import { Component, OnInit, Input, Injectable, AfterViewInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { AnalyticsService } from '../gaffer/analytics.service';
 import { HttpClient } from '@angular/common/http';
@@ -24,8 +24,10 @@ import { HttpClient } from '@angular/common/http';
   templateUrl: './analytic.component.html'
 })
 @Injectable()
-export class AnalyticComponent implements OnInit, AfterViewInit {
+export class AnalyticComponent implements OnInit, AfterViewInit, OnDestroy {
   @Input() model;
+  currentIconWidth: number;
+  currentIconHeight: number;
 
   constructor(
     private router: Router,
@@ -47,27 +49,58 @@ export class AnalyticComponent implements OnInit, AfterViewInit {
         icon = this.model.metaData.iconURL;
       }
 
-      // Get the current width and height and calculate what scaling is required for the desired width and height
+      // Get the current width and height of the icon
       const widthString: string = icon.split('width')[1].split('=')[1].trim().split(' ')[0].trim();
-      const width = Number(widthString.slice(1, widthString.length - 1));
+      this.currentIconWidth = Number(widthString.slice(1, widthString.length - 1));
       const heightString: string = icon.split('height')[1].split('=')[1].trim().split(' ')[0].trim();
-      const height = Number(heightString.slice(1, heightString.length - 1));
+      this.currentIconHeight = Number(heightString.slice(1, heightString.length - 1));
 
-      const desiredWidth = 120;
-      const desiredHeight = 120;
-      const widthScale = desiredWidth / width;
-      const heightScale = desiredHeight / height;
+      // Scale the icon
+      this.scaleIcon();
 
-      // Add the icon and scale it to the correct size
+      // Display the icon
       const svgContainer: HTMLElement = document.getElementById(this.model.operationName.toString() + '-svgContainer');
       svgContainer.innerHTML = icon;
-      svgContainer.style.transform = 'scale(' + widthScale.toString() + ',' + heightScale.toString() + ')';
+
+      // Scale the icon whenever the window resizes
+      window.addEventListener('resize', () => this.scaleIcon());
     });
+  }
+
+  ngOnDestroy() {
+    // Remove all event listeners
+    window.removeEventListener('resize', () => this.scaleIcon());
   }
 
   /** Save the chosen analytic in the analytics service */
   execute(analytic) {
     this.analyticsService.createArrayAnalytic(analytic);
     this.router.navigate(['/parameters']);
+  }
+
+  /** Scale the icon to fit its container without distorting it */
+  scaleIcon() {
+    // Get the width and height of the container of the svg
+    const svgDiv: HTMLElement = document.getElementById(this.model.operationName.toString() + '-svgDiv');
+    const containerWidth = svgDiv.offsetWidth;
+    const containerHeight = svgDiv.offsetHeight;
+
+    let desiredHeight;
+    let desiredWidth;
+    // If the container width is smaller than the height, use the width to determine the size of the icon
+    if (containerWidth < containerHeight) {
+      desiredHeight = 0.8 * containerWidth;
+      desiredWidth = 0.8 * containerWidth;
+    // Otherwise use the height to determine the size of the icon
+    } else {
+      desiredHeight = 0.8 * containerHeight;
+      desiredWidth = 0.8 * containerHeight;
+    }
+
+    // Scale the icon based on its current size and desired size
+    const svgContainer: HTMLElement = document.getElementById(this.model.operationName.toString() + '-svgContainer');
+    const widthScale = desiredWidth / svgContainer.offsetWidth;
+    const heightScale = desiredHeight / svgContainer.offsetHeight;
+    svgContainer.style.transform = 'scale(' + widthScale.toString() + ',' + heightScale.toString() + ')';
   }
 }

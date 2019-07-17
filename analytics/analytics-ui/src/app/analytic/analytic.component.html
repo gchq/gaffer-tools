@@ -2,9 +2,9 @@
   matTooltip="{{model.description}}" style.background="{{model.metaData.color}}">
   <div style="height: 100%" fxLayout="column" fxLayoutAlign="center">
     <div fxFlex="30%" class="titleContainer">
-      <h2> {{model.analyticName}}</h2>
+      <h2 class="scalableFont">{{model.analyticName}}</h2>
     </div>
-    <div fxFlex="70%" class="iconContainer">
+    <div fxFlex="70%" id="{{model.operationName}}-svgDiv" class="iconContainer">
       <mat-icon id="{{model.operationName}}-svgContainer">
       </mat-icon>
     </div>

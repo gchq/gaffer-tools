@@ -574,3 +574,9 @@ a {
   align-items: flex-end;
   justify-content: center;
 }
+
+.scalableFont {
+  font-size: 1.8vw;
+  margin-left: 1vw;
+  margin-right: 1vw;
+}
