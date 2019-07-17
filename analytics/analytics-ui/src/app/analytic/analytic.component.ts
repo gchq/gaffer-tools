@@ -45,8 +45,8 @@ export class AnalyticComponent implements OnInit, AfterViewInit, OnDestroy {
 
       // Set the default icon if an icon is not specified
       let icon = defaultIcon;
-      if (this.model.metaData.iconURL) {
-        icon = this.model.metaData.iconURL;
+      if (this.model.metaData.icon) {
+        icon = this.model.metaData.icon;
       }
 
       // Get the current width and height of the icon
