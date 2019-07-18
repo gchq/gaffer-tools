@@ -18,8 +18,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { MatCardModule, MatTooltipModule, MatIconModule } from '@angular/material';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { EMPTY } from 'rxjs';
+import { empty, of } from 'rxjs';
 
 import { AnalyticComponent } from './analytic.component';
 import { AnalyticsService } from '../gaffer/analytics.service';
@@ -35,7 +34,7 @@ class AnalyticsServiceStub {
 }
 class HttpClientStub {
   get = params => {
-    return EMPTY;
+    return of([0]);
   }
 }
 
@@ -66,7 +65,8 @@ describe('AnalyticComponent', () => {
         '<path d=\'M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z\'/>' +
         '<path d=\'M0 0h24v24H0z\' fill=\'none\'/></svg>'
       },
-      operationName: 'test operation name'
+      operationName: 'test operation name',
+      analyticName: 'test analytic name'
     };
     const http = TestBed.get(HttpClient);
   });
@@ -94,5 +94,14 @@ describe('AnalyticComponent', () => {
     component.execute(['Test data']);
 
     expect(spy).toHaveBeenCalledWith(['Test data']);
+  });
+
+  it('should load the default icon', () => {
+    const http = TestBed.get(HttpClient);
+    const spy = spyOn(http, 'get').and.returnValue(of('svg text'));
+
+    component.ngAfterViewInit();
+
+    expect(spy).toHaveBeenCalledWith('../../assets/defaultIcon.svg' , {responseType: 'text'});
   });
 });

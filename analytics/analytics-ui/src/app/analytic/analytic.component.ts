@@ -60,7 +60,9 @@ export class AnalyticComponent implements OnInit, AfterViewInit, OnDestroy {
 
       // Display the icon
       const svgContainer: HTMLElement = document.getElementById(this.model.analyticName.toString() + '-svgContainer');
-      svgContainer.innerHTML = icon;
+      if (svgContainer) {
+        svgContainer.innerHTML = icon;
+      }
 
       // Scale the icon whenever the window resizes
       window.addEventListener('resize', () => this.scaleIcon());
@@ -82,25 +84,27 @@ export class AnalyticComponent implements OnInit, AfterViewInit, OnDestroy {
   scaleIcon() {
     // Get the width and height of the container of the svg
     const svgDiv: HTMLElement = document.getElementById(this.model.analyticName.toString() + '-svgDiv');
-    const containerWidth = svgDiv.offsetWidth;
-    const containerHeight = svgDiv.offsetHeight;
+    if (svgDiv) {
+      const containerWidth = svgDiv.offsetWidth;
+      const containerHeight = svgDiv.offsetHeight;
 
-    let desiredHeight;
-    let desiredWidth;
-    // If the container width is smaller than the height, use the width to determine the size of the icon
-    if (containerWidth < containerHeight) {
-      desiredHeight = 0.8 * containerWidth;
-      desiredWidth = 0.8 * containerWidth;
-    // Otherwise use the height to determine the size of the icon
-    } else {
-      desiredHeight = 0.8 * containerHeight;
-      desiredWidth = 0.8 * containerHeight;
+      let desiredHeight;
+      let desiredWidth;
+      // If the container width is smaller than the height, use the width to determine the size of the icon
+      if (containerWidth < containerHeight) {
+        desiredHeight = 0.8 * containerWidth;
+        desiredWidth = 0.8 * containerWidth;
+      // Otherwise use the height to determine the size of the icon
+      } else {
+        desiredHeight = 0.8 * containerHeight;
+        desiredWidth = 0.8 * containerHeight;
+      }
+
+      // Scale the icon based on its current size and desired size
+      const svgContainer: HTMLElement = document.getElementById(this.model.analyticName.toString() + '-svgContainer');
+      const widthScale = desiredWidth / svgContainer.offsetWidth;
+      const heightScale = desiredHeight / svgContainer.offsetHeight;
+      svgContainer.style.transform = 'scale(' + widthScale.toString() + ',' + heightScale.toString() + ')';
     }
-
-    // Scale the icon based on its current size and desired size
-    const svgContainer: HTMLElement = document.getElementById(this.model.analyticName.toString() + '-svgContainer');
-    const widthScale = desiredWidth / svgContainer.offsetWidth;
-    const heightScale = desiredHeight / svgContainer.offsetHeight;
-    svgContainer.style.transform = 'scale(' + widthScale.toString() + ',' + heightScale.toString() + ')';
   }
 }
