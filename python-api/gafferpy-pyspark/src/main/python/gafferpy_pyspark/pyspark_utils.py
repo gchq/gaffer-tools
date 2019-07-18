@@ -33,9 +33,7 @@ def flattenElementDict(input, schema=None):
 def mergeRowSchemasAsDict(rowSchemas):
     merged = {}
     for key in rowSchemas.keys():
-        print("key: " + key)
         for entry in rowSchemas[key]:
-            print("entry: " + entry)
             merged[entry] = None
     return merged
 

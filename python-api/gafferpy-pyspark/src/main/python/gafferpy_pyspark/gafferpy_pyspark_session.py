@@ -43,9 +43,8 @@ class GafferPysparkSession(Session.GafferPythonSession):
         A public method for creating a python gaffer session.
         """
 
-        global gaffer_session
         self.__start_session()
-        gaffer_session = self
+        self.__gaffer_session = self
 
     def connect_to_session(self, address="172.0.0.1", port="25333"):
         self._connect(address=address, port=port)
