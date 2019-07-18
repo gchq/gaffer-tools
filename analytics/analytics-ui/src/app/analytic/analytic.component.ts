@@ -40,8 +40,8 @@ export class AnalyticComponent implements OnInit, AfterViewInit, OnDestroy {
   ngAfterViewInit() {
 
     // Load the default icon from file
-    this.http.get<any>('../../assets/defaultIcon.json').subscribe(data => {
-      const defaultIcon = data.svg;
+    this.http.get('../../assets/defaultIcon.svg', {responseType: 'text'}).subscribe(svg => {
+      const defaultIcon = svg;
 
       // Set the default icon if an icon is not specified
       let icon = defaultIcon;
@@ -59,7 +59,7 @@ export class AnalyticComponent implements OnInit, AfterViewInit, OnDestroy {
       this.scaleIcon();
 
       // Display the icon
-      const svgContainer: HTMLElement = document.getElementById(this.model.operationName.toString() + '-svgContainer');
+      const svgContainer: HTMLElement = document.getElementById(this.model.analyticName.toString() + '-svgContainer');
       svgContainer.innerHTML = icon;
 
       // Scale the icon whenever the window resizes
@@ -81,7 +81,7 @@ export class AnalyticComponent implements OnInit, AfterViewInit, OnDestroy {
   /** Scale the icon to fit its container without distorting it */
   scaleIcon() {
     // Get the width and height of the container of the svg
-    const svgDiv: HTMLElement = document.getElementById(this.model.operationName.toString() + '-svgDiv');
+    const svgDiv: HTMLElement = document.getElementById(this.model.analyticName.toString() + '-svgDiv');
     const containerWidth = svgDiv.offsetWidth;
     const containerHeight = svgDiv.offsetHeight;
 
@@ -98,7 +98,7 @@ export class AnalyticComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     // Scale the icon based on its current size and desired size
-    const svgContainer: HTMLElement = document.getElementById(this.model.operationName.toString() + '-svgContainer');
+    const svgContainer: HTMLElement = document.getElementById(this.model.analyticName.toString() + '-svgContainer');
     const widthScale = desiredWidth / svgContainer.offsetWidth;
     const heightScale = desiredHeight / svgContainer.offsetHeight;
     svgContainer.style.transform = 'scale(' + widthScale.toString() + ',' + heightScale.toString() + ')';
