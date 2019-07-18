@@ -33,14 +33,14 @@ public class MetaData implements Serializable {
 
     private static final long serialVersionUID = -5681012439126964680L;
     private String icon;
-    private String colour;
+    private String color;
 
-    public String getColour() {
-        return colour;
+    public String getColor() {
+        return color;
     }
 
-    public void setColour(final String colour) {
-        this.colour = colour;
+    public void setColor(final String color) {
+        this.color = color;
     }
 
     public String getIcon() {
@@ -64,7 +64,7 @@ public class MetaData implements Serializable {
         final MetaData op = (MetaData) obj;
 
         return new EqualsBuilder().append(this.icon, op.icon)
-                .append(this.colour, op.colour)
+                .append(this.color, op.color)
                 .isEquals();
     }
 
@@ -72,7 +72,7 @@ public class MetaData implements Serializable {
     public int hashCode() {
         return new HashCodeBuilder()
                 .append(icon)
-                .append(colour)
+                .append(color)
                 .toHashCode();
     }
 
@@ -80,7 +80,7 @@ public class MetaData implements Serializable {
     public String toString() {
         return new ToStringBuilder(this)
                 .append(icon)
-                .append(colour)
+                .append(color)
                 .toString();
     }
 }
