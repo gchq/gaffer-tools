@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2018 Crown Copyright
+ * Copyright 2017-2019 Crown Copyright
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -287,9 +287,11 @@ function GraphController($q, graph, config, error, loading, query, operationOpti
         for (var vertexType in configuration.style.vertexTypes) {
             var standardStyle = configuration.style.vertexTypes[vertexType].style;
 
+            var parsedVertexType = vertexType.replace(/\.|\#/g, "-");
+
             if (standardStyle) {
                 styles.push({
-                    selector: 'node[' + vertexType + ']',
+                    selector: 'node[' + parsedVertexType + ']',
                     style: standardStyle
                 });
             }
@@ -298,7 +300,7 @@ function GraphController($q, graph, config, error, loading, query, operationOpti
             for (var field in fieldOverrides) {
                 for (var fieldValue in fieldOverrides[field]) {
                     styles.push({
-                        selector: 'node[' + vertexType + '][' + field + '="' + fieldValue + '"]',
+                        selector: 'node[' + parsedVertexType + '][' + field + '="' + fieldValue + '"]',
                         style: fieldOverrides[field][fieldValue]
                     });
                 }
@@ -390,12 +392,16 @@ function GraphController($q, graph, config, error, loading, query, operationOpti
 
             var edge = angular.copy(results.edges[i]);
             var edgeData = createEdgeData(edge);
+            var tempSource = edge.source;
+            edge.source = edge.destination;
+            edge.destination = tempSource;
+            var edgeDataReverse = createEdgeData(edge);
 
             addVertices(elementsToAdd, elementsToMergeData, edgeData.source);
             addVertices(elementsToAdd, elementsToMergeData, edgeData.destination);
             
             // if it does not exist in the graph, add it.
-            if (cytoscapeGraph.getElementById(edgeData.edge.id).length == 0) {
+            if (cytoscapeGraph.getElementById(edgeData.edge.id).length == 0 && cytoscapeGraph.getElementById(edgeDataReverse.edge.id).length == 0) {
                 elementsToAdd.push({
                     group: 'edges',
                     data: edgeData.edge,
@@ -458,9 +464,6 @@ function GraphController($q, graph, config, error, loading, query, operationOpti
     }
 
     var createVertexData = function(vertex, vertexTypeDefinition, isEntity) {
-
-        var vertexType = Object.keys(vertexTypeDefinition)[0];
-
         var data = {
             id: common.parseVertex(vertex),
             label: types.getShortValue(vertex)
@@ -471,15 +474,18 @@ function GraphController($q, graph, config, error, loading, query, operationOpti
             data.entity = true;
         }
 
-        data[vertexType] = true;
+        if(vertexTypeDefinition != null) {
+            var vertexType = Object.keys(vertexTypeDefinition)[0];
 
-        var vertexClass = vertexTypeDefinition[vertexType].class;
-        var parts = types.createParts(vertexClass, vertex);
-        
-        for (var key in parts) {
-            data[key] = parts[key];
+            data[vertexType.replace(/\.|\#/g, "-")] = true;
+
+            var vertexClass = vertexTypeDefinition[vertexType].class;
+            var parts = types.createParts(vertexClass, vertex);
+
+            for (var key in parts) {
+                data[key] = parts[key];
+            }
         }
-
 
         return data;
     }

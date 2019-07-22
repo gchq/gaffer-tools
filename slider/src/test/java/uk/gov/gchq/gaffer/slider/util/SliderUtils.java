@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2018 Crown Copyright
+ * Copyright 2017-2019 Crown Copyright
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,58 +29,63 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 
-public class SliderUtils {
+public final class SliderUtils {
 
-	public static void replaceTokens (final ConfTree appConfig, final String clusterName) throws IOException {
-		// Replace ${USER} and ${USER_NAME}
-		SliderClient.replaceTokens(appConfig, UserGroupInformation.getCurrentUser().getShortUserName(), clusterName);
-		// Replace ${CLUSTER_NAME}
-		replaceClusterTokens(appConfig, clusterName);
-	}
+    private SliderUtils() {
+        // private to prevent instantiation
+    }
 
-	public static void replaceClusterTokens (final ConfTree appConfig, final String clusterName) {
-		Map<String,String> newglobal = new HashMap<>();
-		for (final Map.Entry<String, String> entry : appConfig.global.entrySet()) {
-			newglobal.put(entry.getKey(), replaceClusterTokens(entry.getValue(), clusterName));
-		}
-		appConfig.global.putAll(newglobal);
+    public static void replaceTokens(final ConfTree appConfig, final String clusterName) throws IOException {
+        // Replace ${USER} and ${USER_NAME}
+        SliderClient.replaceTokens(appConfig, UserGroupInformation.getCurrentUser().getShortUserName(), clusterName);
+        // Replace ${CLUSTER_NAME}
+        replaceClusterTokens(appConfig, clusterName);
+    }
 
-		for (final String component : appConfig.components.keySet()) {
-			Map<String, String> newComponent = new HashMap<>();
-			for (final Map.Entry<String, String> entry : appConfig.components.get(component).entrySet()) {
-				newComponent.put(entry.getKey(), replaceClusterTokens(entry.getValue(), clusterName));
-			}
-			appConfig.components.get(component).putAll(newComponent);
-		}
+    public static void replaceClusterTokens(final ConfTree appConfig, final String clusterName) {
+        Map<String, String> newglobal = new HashMap<>();
+        for (final Map.Entry<String, String> entry : appConfig.global.entrySet()) {
+            newglobal.put(entry.getKey(), replaceClusterTokens(entry.getValue(), clusterName));
+        }
+        appConfig.global.putAll(newglobal);
 
-		Map<String,List<String>> newcred = new HashMap<>();
-		for (final Map.Entry<String, List<String>> entry : appConfig.credentials.entrySet()) {
-			List<String> resultList = new ArrayList<>();
-			for (final String v : entry.getValue()) {
-				resultList.add(replaceClusterTokens(v, clusterName));
-			}
-			newcred.put(replaceClusterTokens(entry.getKey(), clusterName), resultList);
-		}
-		appConfig.credentials.clear();
-		appConfig.credentials.putAll(newcred);
-	}
+        for (final String component : appConfig.components.keySet()) {
+            Map<String, String> newComponent = new HashMap<>();
+            for (final Map.Entry<String, String> entry : appConfig.components.get(component).entrySet()) {
+                newComponent.put(entry.getKey(), replaceClusterTokens(entry.getValue(), clusterName));
+            }
+            appConfig.components.get(component).putAll(newComponent);
+        }
 
-	public static String replaceClusterTokens (final String input, final String clusterName) {
-		return input.replaceAll(Pattern.quote("${CLUSTER_NAME}"), clusterName);
-	}
+        Map<String, List<String>> newcred = new HashMap<>();
+        for (final Map.Entry<String, List<String>> entry : appConfig.credentials.entrySet()) {
+            List<String> resultList = new ArrayList<>();
+            for (final String v : entry.getValue()) {
+                resultList.add(replaceClusterTokens(v, clusterName));
+            }
+            newcred.put(replaceClusterTokens(entry.getKey(), clusterName), resultList);
+        }
+        appConfig.credentials.clear();
+        appConfig.credentials.putAll(newcred);
+    }
 
-	/**
-	 * Extracts the number of desired instances for each application component from a cluster's description
-	 * @param clusterDescription Cluster description for an application instance
-	 * @return The number of desired instances for each application component
-	 */
-	public static Map<String, Integer> getRoleMap (final ClusterDescription clusterDescription) {
-		Map<String, Integer> roleMap = new HashMap<String, Integer>();
-		for (final String role : clusterDescription.getRoleNames()) {
-			int desiredInstances = clusterDescription.getRoleOptInt(role, ResourceKeys.COMPONENT_INSTANCES, 0);
-			roleMap.put(role, desiredInstances);
-		}
-		return roleMap;
-	}
+    public static String replaceClusterTokens(final String input, final String clusterName) {
+        return input.replaceAll(Pattern.quote("${CLUSTER_NAME}"), clusterName);
+    }
+
+    /**
+     * Extracts the number of desired instances for each application component from a cluster's description
+     *
+     * @param clusterDescription Cluster description for an application instance
+     * @return The number of desired instances for each application component
+     */
+    public static Map<String, Integer> getRoleMap(final ClusterDescription clusterDescription) {
+        Map<String, Integer> roleMap = new HashMap<String, Integer>();
+        for (final String role : clusterDescription.getRoleNames()) {
+            int desiredInstances = clusterDescription.getRoleOptInt(role, ResourceKeys.COMPONENT_INSTANCES, 0);
+            roleMap.put(role, desiredInstances);
+        }
+        return roleMap;
+    }
 
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2018 Crown Copyright
+ * Copyright 2017-2019 Crown Copyright
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,44 +29,48 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public class SliderKeystoreUtils {
+public final class SliderKeystoreUtils {
 
-	public static Map<String, List<String>> getCredentialKeyStores (final ConfTree appConfig) throws IOException, URISyntaxException {
-		return appConfig.credentials;
-	}
+    private SliderKeystoreUtils() {
+        // private to prevent instantiation
+    }
 
-	public static Set<String> getCredentialKeyStoreLocations (final ConfTree appConfig) throws IOException, URISyntaxException {
-		return getCredentialKeyStores(appConfig).keySet();
-	}
+    public static Map<String, List<String>> getCredentialKeyStores(final ConfTree appConfig) throws IOException, URISyntaxException {
+        return appConfig.credentials;
+    }
 
-	public static void ensureCredentialKeyStoresAbsent (final ConfTree appConfig) throws IOException, URISyntaxException {
-		Set<String> keystores = getCredentialKeyStoreLocations(appConfig);
-		FileSystem fs = CommandTestBase.getClusterFS();
+    public static Set<String> getCredentialKeyStoreLocations(final ConfTree appConfig) throws IOException, URISyntaxException {
+        return getCredentialKeyStores(appConfig).keySet();
+    }
 
-		for (final String keystore : keystores) {
-			// Convert from jceks URL
-			Path keystorePath = ProviderUtils.unnestUri(new URI(keystore));
+    public static void ensureCredentialKeyStoresAbsent(final ConfTree appConfig) throws IOException, URISyntaxException {
+        Set<String> keystores = getCredentialKeyStoreLocations(appConfig);
+        FileSystem fs = CommandTestBase.getClusterFS();
 
-			if (fs.exists(keystorePath)) {
-				throw new IOException("Credential keystore already exists: " + keystorePath);
-			}
-		}
-	}
+        for (final String keystore : keystores) {
+            // Convert from jceks URL
+            Path keystorePath = ProviderUtils.unnestUri(new URI(keystore));
 
-	public static void deleteCredentialKeyStores (final ConfTree appConfig) throws IOException, URISyntaxException {
-		Set<String> keystores = getCredentialKeyStoreLocations(appConfig);
-		FileSystem fs = CommandTestBase.getClusterFS();
+            if (fs.exists(keystorePath)) {
+                throw new IOException("Credential keystore already exists: " + keystorePath);
+            }
+        }
+    }
 
-		for (final String keystore : keystores) {
-			// Convert from jceks URL
-			Path keystorePath = ProviderUtils.unnestUri(new URI(keystore));
+    public static void deleteCredentialKeyStores(final ConfTree appConfig) throws IOException, URISyntaxException {
+        Set<String> keystores = getCredentialKeyStoreLocations(appConfig);
+        FileSystem fs = CommandTestBase.getClusterFS();
 
-			if (fs.exists(keystorePath)) {
-				if (!fs.delete(keystorePath, false)) {
-					throw new IOException("Unable to delete credential keystore: " + keystorePath);
-				}
-			}
-		}
-	}
+        for (final String keystore : keystores) {
+            // Convert from jceks URL
+            Path keystorePath = ProviderUtils.unnestUri(new URI(keystore));
+
+            if (fs.exists(keystorePath)) {
+                if (!fs.delete(keystorePath, false)) {
+                    throw new IOException("Unable to delete credential keystore: " + keystorePath);
+                }
+            }
+        }
+    }
 
 }

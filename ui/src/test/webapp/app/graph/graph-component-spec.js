@@ -19,6 +19,8 @@ describe("The Graph Component", function() {
     var ctrl;
     var injectableCytoscape;
 
+    var entityVertexType = {'vertex': { "class": "java.lang.String"}};
+    var edgeVertexType = { 'source': {'src': { "class": "java.lang.String"}}, 'destination': {'dest': { "class": "java.lang.String"}} };
     beforeEach(module('app'));
 
     beforeEach(module(function($provide) {
@@ -31,10 +33,10 @@ describe("The Graph Component", function() {
                     return vertices;
                 },
                 getVertexTypeFromEntityGroup: function() {
-                    return {'vertex': { "class": "java.lang.String"}};
+                    return entityVertexType;
                 },
                 getVertexTypesFromEdgeGroup: function() {
-                    return { 'source': {'src': { "class": "java.lang.String"}}, 'destination': {'dest': { "class": "java.lang.String"}} };
+                    return edgeVertexType
                 }
             }
         });
@@ -85,6 +87,8 @@ describe("The Graph Component", function() {
                     undefined: value
                 }
             }
+
+            return value;
         })
     })
 
@@ -675,6 +679,13 @@ describe("The Graph Component", function() {
                 ctrl.update(elements);
                 expect(injectableCytoscape.elements().size()).toEqual(3);
             });
+
+            it('should not error when vertex type is unknown', function() {
+                entityVertexType = undefined;
+
+                ctrl.update(elements);
+                expect(injectableCytoscape.elements().size()).toEqual(3);
+            });
     
             it('should use quoted strings as vertex ids for string seeds', function() {
                 ctrl.update(elements);
@@ -764,7 +775,7 @@ describe("The Graph Component", function() {
                 var node = injectableCytoscape.getElementById('"foo"');
 
                 expect(node.data().entity).toBeTruthy();
-            })
+            });
         });
     
         describe('ctrl.reset()', function() {
@@ -857,5 +868,122 @@ describe("The Graph Component", function() {
                 expect(ctrl.reset).toHaveBeenCalled();
             })
         });
+    });
+
+    describe("edge cases", function() {
+
+        var elements = {
+            entities: [
+            {
+                class: 'Entity',
+                vertex: {
+                    "type": "green",
+                    "value": "v"
+                },
+                group: 'fooEntity',
+                properties: {}
+            },
+            {
+                class: 'Entity',
+                vertex: {
+                    "type": "blue",
+                    "value": "v"
+                },
+                group: 'fooEntity',
+                properties: {}
+            }
+        ]
+        };
+
+        beforeEach(inject(function(_schema_) {
+            schema = _schema_;
+        }));
+
+        beforeEach(function() {
+            $httpBackend.whenGET('config/config.json').respond(200, {
+                "graph": {
+                    "style": {
+                        "vertexTypes": {
+                            "vertex.fullStop": {
+                                "style": {
+                                    "background-color": "blue"
+                                },
+                                "fieldOverrides": {
+                                    "type": {
+                                        "green": {
+                                            "background-color": "green"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+
+            ctrl.$onInit();
+            $httpBackend.flush();
+            jasmine.clock().tick(101);
+        })
+
+        it('should not error when adding style for a schema vertex type containing a full stop', function() {
+            spyOn(console, 'error').and.stub();
+            scope.$digest();
+            expect(console.error).not.toHaveBeenCalled();
+        });
+
+        it('should take on the special type css class when adding elements which have a schema vertex type containing a full stop and are of a special type', function() {          
+            scope.$digest();
+
+            spyOn(schema, 'getVertexTypeFromEntityGroup').and.returnValue({
+                "vertex.fullStop": {
+                    "class": "TypeValue"
+                }
+            });
+
+            ctrl.update(elements);
+
+            expect(injectableCytoscape.getElementById('{"type":"green","value":"v"}').style()["background-color"]).toEqual("green");
+            
+            expect(injectableCytoscape.getElementById('{"type":"blue","value":"v"}').style()["background-color"]).toEqual("blue");
+        });
+
+        it('should use correct css classes for vertices when adding edges which connect vertex types containing a full stop', function() {
+            var edges = {"edges": [{
+                class: 'Edge',
+                source: {
+                    "type": "blue",
+                    "value": "v"
+                },
+                destination: {
+                    "type": "green",
+                    "value": "v"
+                },
+                group: "myEdge",
+                directed: false,
+                properties: {}
+            }]};
+
+            scope.$digest();
+
+            spyOn(schema, 'getVertexTypesFromEdgeGroup').and.returnValue({
+                "source": {
+                    "vertex.fullStop": {
+                        "class": "TypeValue"
+                    }
+                },
+                "destination": {
+                    "vertex.fullStop": {
+                        "class": "TypeValue"
+                    }
+                }
+            });
+
+            ctrl.update(edges);
+
+            expect(injectableCytoscape.getElementById('{"type":"green","value":"v"}').style()["background-color"]).toEqual("green");
+            
+            expect(injectableCytoscape.getElementById('{"type":"blue","value":"v"}').style()["background-color"]).toEqual("blue");
+        })
     });
 });

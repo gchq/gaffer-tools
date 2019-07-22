@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2018 Crown Copyright
+ * Copyright 2017-2019 Crown Copyright
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -80,7 +80,7 @@ function SeedBuilderController(schema, csv, types, error, events, common, $route
      * Creates the placeholder for the seed input
      */
     vm.getPlaceHolder = function() {
-        return vm.usePrevious ? "Input is provided by the output of the previous operation" : "Enter your seeds, each seed on a new line\n" + vm.getCsvHeader()
+        return vm.usePrevious ? "Input is provided by the output of the previous operation" : "Enter your seeds, each seed on a new line \n" + vm.getCsvHeader()
     }
 
     /**
