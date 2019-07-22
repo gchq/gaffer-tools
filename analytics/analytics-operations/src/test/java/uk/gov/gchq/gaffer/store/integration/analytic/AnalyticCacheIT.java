@@ -23,10 +23,12 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import uk.gov.gchq.gaffer.analytic.function.ToMap;
 import uk.gov.gchq.gaffer.analytic.operation.AddAnalytic;
 import uk.gov.gchq.gaffer.analytic.operation.AnalyticDetail;
 import uk.gov.gchq.gaffer.analytic.operation.DeleteAnalytic;
 import uk.gov.gchq.gaffer.analytic.operation.GetAllAnalytics;
+import uk.gov.gchq.gaffer.analytic.operation.OutputVisualisation;
 import uk.gov.gchq.gaffer.analytic.operation.handler.AddAnalyticHandler;
 import uk.gov.gchq.gaffer.analytic.operation.handler.DeleteAnalyticHandler;
 import uk.gov.gchq.gaffer.analytic.operation.handler.GetAllAnalyticsHandler;
@@ -34,6 +36,7 @@ import uk.gov.gchq.gaffer.cache.CacheServiceLoader;
 import uk.gov.gchq.gaffer.cache.exception.CacheOperationException;
 import uk.gov.gchq.gaffer.cache.impl.HashMapCacheService;
 import uk.gov.gchq.gaffer.cache.util.CacheProperties;
+import uk.gov.gchq.gaffer.data.element.function.ExtractProperty;
 import uk.gov.gchq.gaffer.operation.OperationException;
 import uk.gov.gchq.gaffer.store.Context;
 import uk.gov.gchq.gaffer.store.Store;
@@ -43,7 +46,9 @@ import uk.gov.gchq.gaffer.user.User;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
+import java.util.function.Function;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -57,15 +62,15 @@ public class AnalyticCacheIT {
     private final Store store = mock(Store.class);
     private final String adminAuth = "admin auth";
     private final StoreProperties properties = new StoreProperties();
+    OutputVisualisation outputVisualisation = new OutputVisualisation();
 
-    private final HashMap<String, String> outputType = Maps.newHashMap();
     private final HashMap<String, String> metaData = Maps.newHashMap();
 
     private AddAnalytic add = new AddAnalytic.Builder()
             .analyticName("op")
             .operationName("op1")
             .description("test operation")
-            .outputType(outputType)
+            .outputVisualisation(outputVisualisation)
             .metaData(metaData)
             .overwrite()
             .score(0)
@@ -85,6 +90,8 @@ public class AnalyticCacheIT {
         cacheProps.clear();
         properties.setAdminAuth(adminAuth);
         given(store.getProperties()).willReturn(properties);
+
+
     }
 
     @After
@@ -94,7 +101,9 @@ public class AnalyticCacheIT {
 
     @Test
     public void shouldWorkUsingHashMapServiceClass() throws OperationException, CacheOperationException {
-        outputType.put("output", "graph");
+        Map<String, Function> keyFunctions = new HashMap<>();
+        keyFunctions.put("prop 1", new ExtractProperty("prop1"));
+        outputVisualisation.setOutputAdapter((new ToMap(keyFunctions)));
         metaData.put("iconURL", "example");
         reInitialiseCacheService(HashMapCacheService.class);
         runTests();
@@ -138,7 +147,7 @@ public class AnalyticCacheIT {
                 .writers(new ArrayList<>())
                 .description(add.getDescription())
                 .score(0)
-                .outputType(outputType)
+                .outputVisualisation(outputVisualisation)
                 .metaData(metaData)
                 .build();
 
@@ -187,7 +196,7 @@ public class AnalyticCacheIT {
                 .operationName(add.getOperationName())
                 .description("a different operation")
                 .overwrite()
-                .outputType(outputType)
+                .outputVisualisation(outputVisualisation)
                 .metaData(metaData)
                 .score(0)
                 .build();
@@ -206,7 +215,7 @@ public class AnalyticCacheIT {
                 .creatorId(user.getUserId())
                 .readers(new ArrayList<>())
                 .writers(new ArrayList<>())
-                .outputType(outputType)
+                .outputVisualisation(outputVisualisation)
                 .metaData(metaData)
                 .score(0)
                 .build();
@@ -230,7 +239,7 @@ public class AnalyticCacheIT {
                 .description("a different operation")
                 .analyticName(add.getAnalyticName())
                 .overwrite()
-                .outputType(outputType)
+                .outputVisualisation(outputVisualisation)
                 .metaData(metaData)
                 .score(0)
                 .build();
@@ -249,7 +258,7 @@ public class AnalyticCacheIT {
                 .creatorId(user.getUserId())
                 .readers(new ArrayList<>())
                 .writers(new ArrayList<>())
-                .outputType(outputType)
+                .outputVisualisation(outputVisualisation)
                 .metaData(metaData)
                 .score(0)
                 .build();
@@ -272,7 +281,7 @@ public class AnalyticCacheIT {
                 .creatorId(authorisedUser.getUserId())
                 .readers(new ArrayList<>())
                 .writers(new ArrayList<>())
-                .outputType(outputType)
+                .outputVisualisation(outputVisualisation)
                 .metaData(metaData)
                 .score(0)
                 .build();
@@ -305,7 +314,7 @@ public class AnalyticCacheIT {
                 .description("a different operation")
                 .analyticName(add.getAnalyticName())
                 .overwrite()
-                .outputType(outputType)
+                .outputVisualisation(outputVisualisation)
                 .metaData(metaData)
                 .score(0)
                 .build();
@@ -317,7 +326,7 @@ public class AnalyticCacheIT {
                 .creatorId(adminAuthUser.getUserId())
                 .readers(new ArrayList<>())
                 .writers(new ArrayList<>())
-                .outputType(outputType)
+                .outputVisualisation(outputVisualisation)
                 .metaData(metaData)
                 .score(0)
                 .build();

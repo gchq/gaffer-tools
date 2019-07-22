@@ -17,7 +17,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 
-import { ErrorService } from '../dynamic-input/error.service';
+import { ErrorService } from '../error/error.service';
 import { ResultsService } from './results.service';
 import { EndpointService } from '../config/endpoint-service';
 import { startsWith } from 'lodash';

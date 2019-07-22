@@ -58,7 +58,7 @@ matrix:
     matrix:
       fast_finish: true
     env:
-        - RELEASE=true 
+        - RELEASE=true
 
   - language: java
     jdk:
@@ -153,4 +153,4 @@ matrix:
     matrix:
       fast_finish: true
     env:
-        - MODULES=:analytics,:analytics-rest,:analytics-operations
+        - MODULES=:analytics,:analytics-rest,:analytics-operations,:analytics-functions
