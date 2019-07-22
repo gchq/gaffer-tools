@@ -20,6 +20,7 @@ angular.module('app').factory('settings', function() {
     var settings = {};
 
     var resultLimit = 1000;
+    var clearChainAfterExecution = true;
 
     settings.getResultLimit = function() {
         return resultLimit;
@@ -27,6 +28,14 @@ angular.module('app').factory('settings', function() {
 
     settings.setResultLimit = function(limit) {
         resultLimit = limit;
+    }
+
+    settings.setClearChainAfterExecution = function(state) {
+        clearChainAfterExecution = state;
+    }
+
+    settings.getClearChainAfterExecution = function () {    
+        return clearChainAfterExecution;
     }
 
     return settings;

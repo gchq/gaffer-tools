@@ -1398,16 +1398,18 @@ describe('The operation chain component', function() {
 
     describe('ctrl.executeChain()', function() {
 
-        var events, query, operationService, error, previousQueries;
+        var events, query, operationService, error, previousQueries, settings, operationChain;
 
         var valid;
 
-        beforeEach(inject(function(_events_, _query_, _operationService_, _error_, _previousQueries_) {
+        beforeEach(inject(function(_events_, _query_, _operationService_, _error_, _previousQueries_, _settings_, _operationChain_) {
             events = _events_;
             query = _query_;
             operationService = _operationService_;
             error = _error_;
             previousQueries = _previousQueries_;
+            settings = _settings_;
+            operationChain = _operationChain_;
         }));
 
         beforeEach(function() {
@@ -1692,6 +1694,7 @@ describe('The operation chain component', function() {
                     }
                 }
             ];
+            spyOn(settings, 'getClearChainAfterExecution').and.returnValue(false);
 
             ctrl.executeChain();
 
@@ -1780,6 +1783,73 @@ describe('The operation chain component', function() {
 
             ctrl.executeChain();
             expect(query.execute).toHaveBeenCalled();
+        });
+
+        it('should reset the chain if the clear chain checkbox has been checked', function() {
+            ctrl.operations = [
+                {
+                    selectedOperation: {
+                        class: 'test',
+                        fields: {}
+                    },
+                    opOptions: {
+                        'option1': 'value1'
+                    }
+                }
+            ];
+            spyOn(settings, 'getClearChainAfterExecution').and.returnValue(true);
+            spyOn(operationChain, 'reset').and.stub();
+            spyOn(query, 'executeQuery').and.callFake(function(data, onSuccess, onFailure) {
+                onSuccess();
+            });
+
+            ctrl.executeChain();
+
+            expect(operationChain.reset).toHaveBeenCalledTimes(1);
+        });
+
+        it('should not reset the chain if the clear chain checkbox has not been checked', function() {
+            ctrl.operations = [
+                {
+                    selectedOperation: {
+                        class: 'test',
+                        fields: {}
+                    },
+                    opOptions: {
+                        'option1': 'value1'
+                    }
+                }
+            ];
+            spyOn(settings, 'getClearChainAfterExecution').and.returnValue(false);
+            spyOn(operationChain, 'reset').and.stub();
+
+            ctrl.executeChain();
+
+            expect(operationChain.reset).not.toHaveBeenCalled();
+        });
+
+        it('should reload the operations if the chain is reset', function() {
+            ctrl.operations = [
+                {
+                    selectedOperation: {
+                        class: 'test',
+                        fields: {}
+                    },
+                    opOptions: {
+                        'option1': 'value1'
+                    }
+                }
+            ];
+            spyOn(settings, 'getClearChainAfterExecution').and.returnValue(true);
+            spyOn(operationChain, 'getOperationChain').and.stub();
+            spyOn(operationChain, 'reset').and.stub();
+            spyOn(query, 'executeQuery').and.callFake(function(data, onSuccess, onFailure) {
+                onSuccess();
+            });
+
+            ctrl.executeChain();
+
+            expect(operationChain.getOperationChain).toHaveBeenCalledTimes(1);            
         });
     });
 

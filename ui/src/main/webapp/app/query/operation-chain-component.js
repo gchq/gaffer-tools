@@ -30,7 +30,7 @@ function operationChainBuilder() {
     }
 }
 
-function OperationChainController(operationChain, config, loading, query, error, events, $mdDialog, $mdSidenav, navigation, $location, $routeParams, operationService, common, graph, types, previousQueries, operationOptions) {
+function OperationChainController(operationChain, settings, config, loading, query, error, events, $mdDialog, $mdSidenav, navigation, $location, $routeParams, operationService, common, graph, types, previousQueries, operationOptions) {
     var vm = this;
     vm.timeConfig;
     vm.operations = operationChain.getOperationChain();
@@ -121,6 +121,11 @@ function OperationChainController(operationChain, config, loading, query, error,
         runQuery(chain.operations);
     }
 
+    var resetChainWithoutDialog = function() {
+        operationChain.reset();
+        vm.operations = operationChain.getOperationChain();
+    }
+
     vm.resetChain = function(ev) {
         var confirm = $mdDialog.confirm()
             .title('Are your sure you want to reset the chain?')
@@ -131,8 +136,7 @@ function OperationChainController(operationChain, config, loading, query, error,
             .cancel('Cancel');
 
         $mdDialog.show(confirm).then(function() {
-            operationChain.reset();
-            vm.operations = operationChain.getOperationChain();
+            resetChainWithoutDialog();
         }, function() {
             // do nothing if they don't want to reset
         });
@@ -239,6 +243,9 @@ function OperationChainController(operationChain, config, loading, query, error,
             },
             function(data) {
                 submitResults(data);
+                if (settings.getClearChainAfterExecution() == true) {
+                    resetChainWithoutDialog();
+                }
             }
         );
     }
