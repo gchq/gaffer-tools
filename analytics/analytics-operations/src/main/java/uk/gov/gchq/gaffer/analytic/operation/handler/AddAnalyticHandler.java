@@ -95,6 +95,9 @@ public class AddAnalyticHandler implements OperationHandler<AddAnalytic> {
                     NamedOperationCache noc = new NamedOperationCache();
                     try {
                         NamedOperationDetail nod = noc.getFromCache(analyticOperationDetail.getOperationName());
+                        if (nod.getParameters() == null) {
+                            throw new OperationException("UIMapping exists, parameters should not be null");
+                        }
                         if (nod.getParameters().get(uiMap.get(current).getParameterName()) == null) {
                             throw new OperationException("UIMapping: parameter '"
                                     + uiMap.get(current).getParameterName() + "' does not exist in Named Operation");
