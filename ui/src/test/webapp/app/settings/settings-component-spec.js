@@ -35,13 +35,24 @@ describe('The Settings Component', function() {
 
         beforeEach(function() {
             $httpBackend.whenGET('config/defaultConfig.json').respond(200, {});
-        });
+        }); 
 
         it('should exist', function() {
             expect(ctrl).toBeDefined();
         });
 
         describe('ctrl.$onInit()', function() {
+            var settings
+
+            beforeEach(inject(function(_settings_) {
+                settings = _settings_;
+            }));
+
+            beforeEach(function() {
+                spyOn(settings, 'getClearChainAfterExecution').and.stub();
+                spyOn(settings, 'getResultLimit').and.stub();
+            });
+
             it('should set showOptions to true if the config contains an operationOptions section', function() {
                 $httpBackend.expectGET('config/config.json').respond(200, { operationOptions: {}});
 
@@ -68,6 +79,18 @@ describe('The Settings Component', function() {
 
                 expect(ctrl.showOptions).toBeFalsy();
             });
+
+            it('should load the clear chain setting from the settings service', function() {
+                ctrl.$onInit();
+
+                expect(settings.getClearChainAfterExecution).toHaveBeenCalledTimes(1);
+            });
+
+            it('should load the result limit from the settings service', function() {
+                ctrl.$onInit();
+
+                expect(settings.getResultLimit).toHaveBeenCalledTimes(1);
+            })
         });
 
         describe('ctrl.updateResultLimit', function() {

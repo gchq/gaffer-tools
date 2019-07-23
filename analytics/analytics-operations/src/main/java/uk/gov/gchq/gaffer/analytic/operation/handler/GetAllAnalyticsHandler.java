@@ -84,6 +84,8 @@ public class GetAllAnalyticsHandler
                 try {
                     NamedOperationDetail nod = new NamedOperationCache()
                             .getNamedOperation(analyticOp.getOperationName(), GetAllAnalyticsHandler.context.getUser());
+                    analyticOp.setReadAccessRoles(nod.getReadAccessRoles());
+                    analyticOp.setWriteAccessRoles(nod.getWriteAccessRoles());
                     for (final String currentParam : nod.getParameters().keySet()) {
                         for (final String uiKey : analyticOp.getUiMapping().keySet()) {
                             UIMappingDetail uiParam = analyticOp.getUiMapping().get(uiKey);
