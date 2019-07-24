@@ -73,8 +73,8 @@ public class GetAllAnalyticsHandlerTest {
     public void shouldReturnNamedOperationRoles() throws Exception {
         // Given
         Map<String, UIMappingDetail> uiMapping = new HashMap<>();
-        Map<String, String> metaData = new HashMap<>();
-        metaData.put("iconURL", "icon");
+        MetaData metaData = new MetaData();
+        metaData.setIcon("icon");
 
         AddAnalytic addAnalytic = new AddAnalytic.Builder()
                 .analyticName("exampleAnalytic1")
@@ -125,8 +125,8 @@ public class GetAllAnalyticsHandlerTest {
     public void shouldReturnModifiedNamedOperationRoles() throws Exception {
         // Given
         Map<String, UIMappingDetail> uiMapping = new HashMap<>();
-        Map<String, String> metaData = new HashMap<>();
-        metaData.put("iconURL", "icon");
+        MetaData metaData = new MetaData();
+        metaData.setIcon("icon");
 
         AddNamedOperation addNamedOperation = new AddNamedOperation.Builder()
                 .name(exampleNamedOp.getOperationName())

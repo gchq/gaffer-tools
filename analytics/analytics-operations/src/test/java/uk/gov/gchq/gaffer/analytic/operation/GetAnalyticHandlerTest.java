@@ -72,8 +72,8 @@ public class GetAnalyticHandlerTest {
     public void shouldReturnNamedOperationRoles() throws Exception {
         // Given
         Map<String, UIMappingDetail> uiMapping = new HashMap<>();
-        Map<String, String> metaData = new HashMap<>();
-        metaData.put("iconURL", "icon");
+        MetaData metaData = new MetaData();
+        metaData.setIcon("icon");
 
         AddAnalytic addAnalytic = new AddAnalytic.Builder()
                 .analyticName("exampleAnalytic")
@@ -110,8 +110,8 @@ public class GetAnalyticHandlerTest {
     public void shouldReturnModifiedNamedOperationRoles() throws Exception {
         // Given
         Map<String, UIMappingDetail> uiMapping = new HashMap<>();
-        Map<String, String> metaData = new HashMap<>();
-        metaData.put("iconURL", "icon");
+        MetaData metaData = new MetaData();
+        metaData.setIcon("icon");
         Map<String, String> outputType = new HashMap<>();
         outputType.put("output", "table");
 
