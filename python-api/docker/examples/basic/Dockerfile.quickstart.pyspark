@@ -1,6 +1,4 @@
-FROM jupyter/datascience-notebook
-
-COPY gafferpy-build-1.9.1-SNAPSHOT-python-modules.zip .
+FROM gaffer-quickstart-pyspark-base
 
 RUN openssl req \
   -new \
@@ -20,4 +18,5 @@ ENV Auth-URL=https://172.18.0.2:8443/login
 ENV Validate=https://172.18.0.2:8443/oauth/token
 ENV Session-Create-URL=https://172.18.0.2:8443/create_session
 
-ENV PYTHONPATH="$PYTHONPATH:/home/jovyan/gafferpy-build-1.9.1-SNAPSHOT-python-modules.zip"
+
+CMD $GAFFER_HOME/bin/startup.sh --schema $SCHEMA --graphconfig $GRAPHCONFIG --storeproperties $STOREPROPERTIES --ui-config $UICONFIG --rest-config $RESTCONFIG --customops-dir $CUSTOMOPSDIR; pyspark --jars $LIBS --py-files /usr/gaffer/gafferpy-build-1.9.3-SNAPSHOT-python-modules.zip --packages graphframes:graphframes:0.6.0-spark2.3-s_2.11

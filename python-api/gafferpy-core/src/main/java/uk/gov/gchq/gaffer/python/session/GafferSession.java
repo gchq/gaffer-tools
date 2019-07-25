@@ -21,7 +21,7 @@ import org.slf4j.LoggerFactory;
 import py4j.GatewayServer;
 
 import uk.gov.gchq.gaffer.python.controllers.services.PropertiesService;
-import uk.gov.gchq.gaffer.python.graph.PythonGraph;
+import uk.gov.gchq.gaffer.python.graph.Grapper;
 import uk.gov.gchq.gaffer.python.util.SessionCounter;
 import uk.gov.gchq.gaffer.python.util.exceptions.ServerNullException;
 import uk.gov.gchq.gaffer.user.User;
@@ -50,7 +50,7 @@ public final class GafferSession implements Runnable {
     private String authToken;
     private User user;
 
-    private HashMap<String, PythonGraph> allGraphs = new HashMap<>();
+    private HashMap<String, Grapper> allGraphs = new HashMap<>();
 
     /**
      * @param address custom address on network
@@ -120,14 +120,14 @@ public final class GafferSession implements Runnable {
      * @param schemaPath path to graph schema
      * @param configPath path to graph config
      * @param storePropertiesPath path to store properties
-     * @return PythonGraph reference back to python
+     * @return Grapper reference back to python
      */
-    public PythonGraph getPythonGraph(final byte[] schemaPath, final byte[] configPath, final byte[] storePropertiesPath) {
+    public Grapper getGraph(final byte[] schemaPath, final byte[] configPath, final byte[] storePropertiesPath) {
         LOGGER.info(GRAPH_BUILDING_MESSAGE,
                 this.getUser().getUserId(),
                 new Date());
 
-        PythonGraph graph = new PythonGraph.Builder()
+        Grapper graph = new Grapper.Builder()
                 .user(this.getUser())
                 .storeProperties(storePropertiesPath)
                 .schemaConfig(schemaPath)
@@ -139,12 +139,12 @@ public final class GafferSession implements Runnable {
         return graph;
     }
 
-    public PythonGraph getPythonGraph() {
+    public Grapper getGraph() {
         LOGGER.info(GRAPH_BUILDING_MESSAGE,
                 this.getUser().getUserId(),
                 new Date());
 
-        PythonGraph graph = new PythonGraph.Builder()
+        Grapper graph = new Grapper.Builder()
                 .user(this.getUser())
                 .storeProperties(service.getStoreProperties())
                 .schemaConfig(service.getSchemaPath())
@@ -156,13 +156,13 @@ public final class GafferSession implements Runnable {
         return graph;
     }
 
-    public Map getAllPythonGraphs() {
+    public Map getAllGraphs() {
         return allGraphs;
     }
 
-    public PythonGraph getGraphById(final String id) {
+    public Grapper getGraphById(final String id) {
 
-        PythonGraph graph = this.allGraphs.get(id);
+        Grapper graph = this.allGraphs.get(id);
 
         if (graph != null) {
             return graph;
@@ -172,7 +172,7 @@ public final class GafferSession implements Runnable {
                 this.getUser().getUserId(),
                 new Date());
 
-        graph = new PythonGraph.Builder()
+        graph = new Grapper.Builder()
                 .user(this.user)
                 .graphConfig(service.getGraphConfig())
                 .schemaConfig(service.getSchemaPath())

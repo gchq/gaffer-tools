@@ -36,18 +36,18 @@ class GafferPysparkSession(Session.GafferPythonSession):
 
     def __init__(self):
         super(Session.GafferPythonSession, self)
-        self._spark_context = SparkContext.getOrCreate()
 
     def create_session(self):
         """
         A public method for creating a python gaffer session.
         """
 
-        self.__start_session()
+        self._start_session()
         self.__gaffer_session = self
 
     def connect_to_session(self, address="172.0.0.1", port="25333"):
         self._connect(address=address, port=port)
+        self._spark_context = SparkContext.getOrCreate()
         if self._java_gaffer_session.getStatusCode() == 1:
             logger.info(
                 "In a pyspark environment. Using SparkSession as the Gaffer Session")
@@ -57,7 +57,7 @@ class GafferPysparkSession(Session.GafferPythonSession):
             raise ValueError(msg)
         return self
 
-    def __start_session(self):
+    def _start_session(self):
         """
         A private method used for instantiating a java Gaffer session
         """

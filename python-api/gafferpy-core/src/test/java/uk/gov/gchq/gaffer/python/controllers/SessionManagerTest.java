@@ -68,13 +68,7 @@ public class SessionManagerTest {
         gs = sessionManager.sessionFactory(address);
         assertTrue(sessionManager.removeSession(gs));
     }
-
-//    @Test(expected = NoPortsAvailableException.class)
-//    public void sessionFactory1_WhenAllPortsAreInUseItErrors() throws NoPortsAvailableException {
-//        // gs = sessionManager.sessionFactory(address);
-//        // TODO: Figure out away to do this
-//    }
-
+    
     @Test
     public void sessionFactory2_CreatesASession() throws PortInUseException, PortNotInRangeException {
         gs = sessionManager.sessionFactory(address, 25339);

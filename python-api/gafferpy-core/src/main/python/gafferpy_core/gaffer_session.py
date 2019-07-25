@@ -87,9 +87,9 @@ class GafferPythonSession(metaclass=MetaBorg):
     _this_session_pid = None
 
     # session things
-    __port = 25333
-    __address = "127.0.0.1"
-    __token = None
+    _port = 25333
+    _address = "127.0.0.1"
+    _token = None
 
     def create_session(self, jar=None, lib_jars=None, kill_existing_sessions=False):
         """
@@ -194,7 +194,7 @@ class GafferPythonSession(metaclass=MetaBorg):
                               )
 
                 authResponse = json.loads(auth.text)
-                self.__token = authResponse['access_token']
+                self._token = authResponse['access_token']
 
                 sessionResponse = s.post(
                     url=address + "/api/1.0/create", data=authResponse)
@@ -202,8 +202,8 @@ class GafferPythonSession(metaclass=MetaBorg):
                 if(sessionResponse.status_code == 200):
                     response = json.loads(sessionResponse.text)
                     addres = response['address'].split('/')
-                    self.__address = addres[1]
-                    self.__port = response['portNumber']
+                    self._address = addres[1]
+                    self._port = response['portNumber']
                 else:
                     logger.error(sessionResponse.text)
                     raise ConnectionError(sessionResponse.text)
@@ -214,18 +214,18 @@ class GafferPythonSession(metaclass=MetaBorg):
         try:
             session = None
             if(os.environ.get('SSL-Enabled') == "True"):
-                session = JavaGateway(gateway_parameters=GatewayParameters(address=self.__address,
-                                                                           port=self.__port,
-                                                                           auth_token=self.__token
+                session = JavaGateway(gateway_parameters=GatewayParameters(address=self._address,
+                                                                           port=self._port,
+                                                                           auth_token=self._token
                                                                            ),
                                       callback_server_parameters=CallbackServerParameters(
-                    port=(self.__port+1)))
+                    port=(self._port+1)))
             else:
                 session = JavaGateway(
                     gateway_parameters=GatewayParameters(
-                        address=self.__address, port=self.__port),
+                        address=self._address, port=self._port),
                     callback_server_parameters=CallbackServerParameters(
-                        port=(self.__port+1))
+                        port=(self._port+1))
                 )
             self._java_gateway = session
             self._java_gaffer_session = session.entry_point

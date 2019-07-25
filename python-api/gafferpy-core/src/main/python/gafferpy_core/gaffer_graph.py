@@ -37,7 +37,7 @@ logger.addHandler(ch)
 class Graph():
 
     """
-    A class that wraps the Java class uk.gov.gchq.gaffer.python.graph.PythonGraph
+    A class that wraps the Java class uk.gov.gchq.gaffer.python.graph.Grapper
     Enables users in python to able to access all of the functionality of the 
     Graph, with simple interfaces like the Builder() and execute() functions
     """

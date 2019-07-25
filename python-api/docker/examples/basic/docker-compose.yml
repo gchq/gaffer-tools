@@ -2,14 +2,14 @@ version: "3"
 
 services:
     gaffer:
-        image: "gaffer-quickstart-session"
+        image: "gaffer-quickstart-pyspark-session"
         ports:
           - "8085:8085"
           - "80:8080"
-        environment:
-          SCHEMA: "/usr/gaffer/simple-schema.json"
-          STOREPROPERTIES: "/usr/gaffer/pyspark-mock-accumulo.properties"
-          GRAPHCONFIG: "/usr/gaffer/graphconfig.json"
+        # environment:
+        #   SCHEMA: "/usr/gaffer/simple-schema.json"
+        #   STOREPROPERTIES: "/usr/gaffer/pyspark-mock-accumulo.properties"
+        #   GRAPHCONFIG: "/usr/gaffer/graphconfig.json"
     notebook:
         image: "gaffer-quickstart-pyspark"
         ports:

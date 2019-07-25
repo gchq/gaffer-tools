@@ -37,7 +37,7 @@ class gaffer_graph_test(unittest.TestCase):
 
     @classmethod
     def setUpClass(self):
-        # self.__graph._gaffer_session.getPythonGraph = MagicMock(return_value=object)
+        # self.__graph._gaffer_session.getGraph = MagicMock(return_value=object)
         dirName = os.path.dirname(__file__)
         self._dataFilePath = os.path.join(dirName, './resources/data.csv')
         self._schemaFilePath = os.path.join(dirName, './resources/simple-schema.json')

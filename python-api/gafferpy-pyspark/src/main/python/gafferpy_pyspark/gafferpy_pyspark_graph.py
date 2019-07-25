@@ -66,6 +66,7 @@ class Graph(gs.Graph):
         return self
 
     def execute(self, operation):
+        justification = input("What is your reason for this operation?")
         logger.info("executing operation " + operation.CLASS)
         if operation.CLASS == "getPySparkRDDOfAllElements":
             if Session.GafferPysparkSession().getSparkContext() == None:
@@ -112,7 +113,7 @@ class Graph(gs.Graph):
             return self._get_dataframe(df_conf,keyConverterClass, view, operation.sampleRatio)
 
         elif operation.CLASS == "uk.gov.gchq.gaffer.python.pyspark.operation.GetPythonRDDConfiguration":
-            java_conf = self._java_python_graph.execute(self._encode(operation))
+            java_conf = self._java_python_graph.execute(self._encode(operation), justification)
             rdd_conf = self._convert_java_conf(java_conf)
             return rdd_conf
 
@@ -138,7 +139,7 @@ class Graph(gs.Graph):
             self.execute(import_op)
 
         else:
-            result = self._java_python_graph.execute(self._encode(operation))
+            result = self._java_python_graph.execute(self._encode(operation), justification)
             if isinstance(result, int):
                 return result
             if isinstance(result, JavaIterator):

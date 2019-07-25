@@ -30,6 +30,9 @@ import uk.gov.gchq.gaffer.operation.Operation;
 import uk.gov.gchq.gaffer.operation.OperationException;
 import uk.gov.gchq.gaffer.operation.io.Input;
 import uk.gov.gchq.gaffer.operation.io.Output;
+import uk.gov.gchq.gaffer.python.controllers.services.veradb.VeraDB;
+import uk.gov.gchq.gaffer.python.controllers.services.veradb.VeraDBImpl;
+import uk.gov.gchq.gaffer.python.controllers.services.veradb.execptions.VeraDBException;
 import uk.gov.gchq.gaffer.python.data.PythonIterator;
 import uk.gov.gchq.gaffer.python.data.serialiser.PythonSerialiser;
 import uk.gov.gchq.gaffer.python.data.serialiser.config.PythonSerialiserConfig;
@@ -51,9 +54,11 @@ import java.util.Iterator;
  * An entry point for python to interact with a java Gaffer graph object through wrapper methods
  */
 
-public final class PythonGraph {
+public final class Grapper {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(PythonGraph.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(Grapper.class);
+
+    private VeraDB veraDB;
 
     private PythonSerialiserConfig pythonSerialisers = null;
     private Graph graph;
@@ -68,7 +73,7 @@ public final class PythonGraph {
      * @param graphConfig passes in the graph configuration file
      * @param storeProperties passes in the store properties
      */
-    private PythonGraph(final User user, final InputStream schemaConfig, final InputStream graphConfig, final InputStream storeProperties) {
+    private Grapper(final User user, final InputStream schemaConfig, final InputStream graphConfig, final InputStream storeProperties) {
         this.user = user;
         try {
             this.schema = Schema.fromJson(schemaConfig);
@@ -78,6 +83,9 @@ public final class PythonGraph {
                     .build();
 
             this.storeProperties = StoreProperties.loadStoreProperties(storeProperties);
+
+            veraDB = new VeraDBImpl(this.schema, this.graphConfig, this.storeProperties);
+
         } catch (final SchemaException e) {
             LOGGER.error("ERROR BUILDING GRAPH: {}", e.getMessage());
         }
@@ -117,7 +125,7 @@ public final class PythonGraph {
         return storeProperties;
     }
 
-    public Object execute(final String opJson) {
+    public Object execute(final String opJson, final String opReason) {
 
         LOGGER.info("received operation : {}", opJson);
         LOGGER.info("received user : {}", this.getUser().getUserId());
@@ -127,6 +135,14 @@ public final class PythonGraph {
         try {
             operation = JSONSerialiser.deserialise(opJson, Operation.class);
         } catch (final SerialisationException e) {
+            LOGGER.error(e.getMessage());
+        }
+
+        Graph graph = null;
+
+        try {
+             graph = veraDB.executeOperation(this.getUser(), operation, opReason);
+        } catch (final VeraDBException e) {
             LOGGER.error(e.getMessage());
         }
 
@@ -261,8 +277,8 @@ public final class PythonGraph {
         private InputStream schemaConfig;
         private InputStream storeProperties;
 
-        public PythonGraph build() {
-            return new PythonGraph(
+        public Grapper build() {
+            return new Grapper(
                     this.user, this.schemaConfig, this.graphConfig, this.storeProperties
             );
         }

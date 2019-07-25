@@ -24,22 +24,24 @@ import uk.gov.gchq.gaffer.operation.impl.add.AddElements;
 import uk.gov.gchq.gaffer.operation.impl.get.GetAllElements;
 import uk.gov.gchq.gaffer.python.data.PythonIterator;
 import uk.gov.gchq.gaffer.python.data.serialiser.PythonElementMapSerialiser;
-import uk.gov.gchq.gaffer.python.graph.PythonGraph;
+import uk.gov.gchq.gaffer.python.graph.Grapper;
 import uk.gov.gchq.gaffer.user.User;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-public class PythonGraphTest {
+public class GrapperTest {
 
     private final String schemaPath = "src/test/resources/simple-schema.json";
     private final String graphConfigPath = "src/test/resources/graphconfig.json";
     private final String storePropertiesPath = "src/test/resources/mock-accumulo.properties";
 
+    private final String opReason = "Test reason";
+
     @Test
     public void testCanConstructGraph(){
 
-        PythonGraph pythonGraph = new PythonGraph.Builder()
+        Grapper grapper = new Grapper.Builder()
                 .user(
                     new User.Builder()
                             .userId("user")
@@ -50,7 +52,7 @@ public class PythonGraphTest {
                 .storeProperties(storePropertiesPath)
                 .build();
 
-        assertNotNull(pythonGraph.getGraph().getSchema());
+        assertNotNull(grapper.getGraph().getSchema());
     }
 
     @Test
@@ -64,7 +66,7 @@ public class PythonGraphTest {
                 .property("count", 1L)
                 .build();
 
-        PythonGraph pythonGraph = new PythonGraph.Builder().user(new User.Builder()
+        Grapper grapper = new Grapper.Builder().user(new User.Builder()
                 .userId("user")
                 .build())
                 .graphConfig(graphConfigPath)
@@ -85,7 +87,7 @@ public class PythonGraphTest {
             e.printStackTrace();
         }
 
-        assertEquals(0, pythonGraph.execute(addOpJson));
+        assertEquals(0, grapper.execute(addOpJson,opReason));
     }
 
     @Test
@@ -98,7 +100,7 @@ public class PythonGraphTest {
                 .property("count", 1L)
                 .build();
 
-        PythonGraph pythonGraph = new PythonGraph.Builder()
+        Grapper grapper = new Grapper.Builder()
                 .user(
                     new User.Builder()
                             .userId("user")
@@ -122,7 +124,7 @@ public class PythonGraphTest {
             e.printStackTrace();
         }
 
-        pythonGraph.execute(addOpJson);
+        grapper.execute(addOpJson, opReason);
 
         GetAllElements getAllElements = new GetAllElements.Builder()
                 .build();
@@ -136,9 +138,9 @@ public class PythonGraphTest {
 
         PythonElementMapSerialiser serialiser = new PythonElementMapSerialiser();
 
-        pythonGraph.setPythonSerialiser(Edge.class.getCanonicalName(), serialiser.getClass().getCanonicalName());
+        grapper.setPythonSerialiser(Edge.class.getCanonicalName(), serialiser.getClass().getCanonicalName());
 
-        PythonIterator iterator = (PythonIterator) pythonGraph.execute(getAllElementsJson);
+        PythonIterator iterator = (PythonIterator) grapper.execute(getAllElementsJson, opReason);
 
         while(iterator.hasNext()){
             assertEquals(serialiser.serialise(edge), iterator.next());
