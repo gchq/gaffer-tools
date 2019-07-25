@@ -44,8 +44,8 @@ public class AddAnalyticTest extends OperationTest<AddAnalytic> {
                 Map<String, UIMappingDetail> uiMapping = Maps.newHashMap();
                 uiMapping.put("result-limit", new UIMappingDetail.Builder().label("param1").userInputType("textbox")
                                 .parameterName("result-limit1").build());
-                Map<String, String> metaData = new HashMap<>();
-                metaData.put("iconURL", "icon");
+                MetaData metaData = new MetaData();
+                metaData.setIcon("icon");
                 Map<String, Function> keyFunctions = new HashMap<>();
                 keyFunctions.put("prop 1", new ExtractProperty("prop1"));
 
@@ -64,7 +64,7 @@ public class AddAnalyticTest extends OperationTest<AddAnalytic> {
                                 + "  \"analyticName\": \"Test Analytic name\",\n"
                                 + "  \"operationName\": \"Test Operation name\",\n"
                                 + "  \"description\": \"Test description\",\n" + "  \"score\": 4,\n"
-                                + "  \"metaData\": {\n" + "    \"iconURL\": \"icon\"\n" + "   },\n"
+                                + "  \"metaData\": {\n" + "    \"icon\": \"icon\"\n" + "   },\n"
                                 + "  \"outputVisualisation\": {\n"
                                 + "    \"visualisationType\": \"TABLE\",\n"
                                 + "    \"outputAdapter\": {\n"
@@ -93,8 +93,8 @@ public class AddAnalyticTest extends OperationTest<AddAnalytic> {
                                 new UIMappingDetail("Maximum Results", "String", "finalMaxResultLimit"));
                 Map<String, String> options = new HashMap<>();
                 options.put("option1", "example Option");
-                Map<String, String> metaData = new HashMap<>();
-                metaData.put("iconURL", "icon");
+                MetaData metaData = new MetaData();
+                metaData.setIcon("icon");
                 Map<String, Function> keyFunctions = new HashMap<>();
                 keyFunctions.put("prop 1", new ExtractProperty("prop1"));
                 OutputVisualisation outputVisualisation = new OutputVisualisation().outputAdapter(new ToMap(keyFunctions));
@@ -129,8 +129,8 @@ public class AddAnalyticTest extends OperationTest<AddAnalytic> {
                                 new UIMappingDetail("Maximum Results", "String", "finalMaxResultLimit"));
                 Map<String, String> options = new HashMap<>();
                 options.put("option1", "example Option");
-                Map<String, String> metaData = new HashMap<>();
-                metaData.put("iconURL", "icon");
+                MetaData metaData = new MetaData();
+                metaData.setIcon("icon");
                 Map<String, Function> keyFunctions = new HashMap<>();
                 keyFunctions.put("prop 1", new ExtractProperty("prop1"));
                 OutputVisualisation outputVisualisation = new OutputVisualisation().outputAdapter(new ToMap(keyFunctions));

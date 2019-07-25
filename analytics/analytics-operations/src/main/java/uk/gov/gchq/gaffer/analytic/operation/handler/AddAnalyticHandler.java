@@ -111,8 +111,6 @@ public class AddAnalyticHandler implements OperationHandler<AddAnalytic> {
 
         if (null == analyticOperationDetail.getMetaData()) {
             throw new OperationException("Missing metaData field in AddAnalyticOperation");
-        } else if (!analyticOperationDetail.getMetaData().containsKey("iconURL")) {
-            throw new OperationException("Header: iconURL field was not specified in AddAnalyticOperation");
         }
     }
 }

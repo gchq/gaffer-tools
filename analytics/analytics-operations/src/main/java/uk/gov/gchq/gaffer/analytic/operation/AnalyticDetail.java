@@ -40,7 +40,7 @@ public class AnalyticDetail implements Serializable {
     private List<String> writeAccessRoles;
     private Map<String, UIMappingDetail> uiMapping = Maps.newHashMap();
     private Map<String, String> options = Maps.newHashMap();
-    private Map<String, String> metaData = Maps.newHashMap();
+    private MetaData metaData;
     private OutputVisualisation outputVisualisation;
     private Integer score;
 
@@ -50,7 +50,8 @@ public class AnalyticDetail implements Serializable {
     public AnalyticDetail(final String analyticName, final String operationName, final String description,
                           final String userId, final List<String> readers,
                           final List<String> writers, final Map<String, UIMappingDetail> uiMapping,
-                          final Map<String, String> metaData, final OutputVisualisation outputVisualisation, final Integer score,
+                          final MetaData metaData,
+                          final OutputVisualisation outputVisualisation, final Integer score,
                           final Map<String, String> options) {
 
 
@@ -108,7 +109,7 @@ public class AnalyticDetail implements Serializable {
         return options;
     }
 
-    public Map<String, String> getMetaData() {
+    public MetaData getMetaData() {
         return metaData;
     }
 
@@ -208,7 +209,7 @@ public class AnalyticDetail implements Serializable {
         private List<String> readers;
         private List<String> writers;
         private Map<String, UIMappingDetail> uiMapping;
-        private Map<String, String> metaData;
+        private MetaData metaData;
         private OutputVisualisation outputVisualisation;
         private Integer score;
         private Map<String, String> options;
@@ -258,7 +259,7 @@ public class AnalyticDetail implements Serializable {
             return this;
         }
 
-        public AnalyticDetail.Builder metaData(final Map<String, String> metaData) {
+        public AnalyticDetail.Builder metaData(final MetaData metaData) {
             this.metaData = metaData;
             return this;
         }

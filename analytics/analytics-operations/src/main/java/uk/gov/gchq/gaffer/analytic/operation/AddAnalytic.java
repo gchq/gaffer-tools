@@ -45,7 +45,7 @@ public class AddAnalytic implements Operation {
     private Map<String, UIMappingDetail> uiMapping;
     private Map<String, String> options;
     private Integer score;
-    private Map<String, String> metaData;
+    private MetaData metaData;
     private OutputVisualisation outputVisualisation;
 
     public boolean isOverwriteFlag() {
@@ -104,11 +104,11 @@ public class AddAnalytic implements Operation {
         return uiMapping;
     }
 
-    public void setMetaData(final Map<String, String> metaData) {
+    public void setMetaData(final MetaData metaData) {
         this.metaData = metaData;
     }
 
-    public Map<String, String> getMetaData() {
+    public MetaData getMetaData() {
         return metaData;
     }
 
@@ -193,7 +193,7 @@ public class AddAnalytic implements Operation {
             return _self();
         }
 
-        public AddAnalytic.Builder metaData(final Map<String, String> metaData) {
+        public AddAnalytic.Builder metaData(final MetaData metaData) {
             _getOp().setMetaData(metaData);
             return _self();
         }

@@ -18,7 +18,6 @@ package uk.gov.gchq.gaffer.store.integration.analytic;
 
 
 import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -28,6 +27,7 @@ import uk.gov.gchq.gaffer.analytic.operation.AddAnalytic;
 import uk.gov.gchq.gaffer.analytic.operation.AnalyticDetail;
 import uk.gov.gchq.gaffer.analytic.operation.DeleteAnalytic;
 import uk.gov.gchq.gaffer.analytic.operation.GetAllAnalytics;
+import uk.gov.gchq.gaffer.analytic.operation.MetaData;
 import uk.gov.gchq.gaffer.analytic.operation.OutputVisualisation;
 import uk.gov.gchq.gaffer.analytic.operation.handler.AddAnalyticHandler;
 import uk.gov.gchq.gaffer.analytic.operation.handler.DeleteAnalyticHandler;
@@ -62,9 +62,10 @@ public class AnalyticCacheIT {
     private final Store store = mock(Store.class);
     private final String adminAuth = "admin auth";
     private final StoreProperties properties = new StoreProperties();
-    OutputVisualisation outputVisualisation = new OutputVisualisation();
+    private final OutputVisualisation outputVisualisation =
+            new OutputVisualisation();
 
-    private final HashMap<String, String> metaData = Maps.newHashMap();
+    private final MetaData metaData = new MetaData();
 
     private AddAnalytic add = new AddAnalytic.Builder()
             .analyticName("op")
@@ -104,7 +105,7 @@ public class AnalyticCacheIT {
         Map<String, Function> keyFunctions = new HashMap<>();
         keyFunctions.put("prop 1", new ExtractProperty("prop1"));
         outputVisualisation.setOutputAdapter((new ToMap(keyFunctions)));
-        metaData.put("iconURL", "example");
+        metaData.setIcon("icon");
         reInitialiseCacheService(HashMapCacheService.class);
         runTests();
     }
