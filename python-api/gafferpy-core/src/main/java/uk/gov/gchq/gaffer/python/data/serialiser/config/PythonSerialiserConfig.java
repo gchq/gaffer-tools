@@ -65,9 +65,9 @@ public class PythonSerialiserConfig implements Serializable {
         } catch (final SerialisationException e) {
             e.printStackTrace();
         }
-        for (final String s : serialisersMap.keySet()) {
+        for (final String s : map.keySet()) {
             try {
-                this.serialisers.put(Class.forName(s), Class.forName(serialisersMap.get(s)));
+                this.serialisers.put(Class.forName(s), Class.forName(map.get(s).toString()));
             } catch (final ClassNotFoundException e) {
                 LOGGER.error(e.getMessage());
             }

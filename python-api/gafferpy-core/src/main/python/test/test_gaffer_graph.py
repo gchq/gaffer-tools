@@ -47,6 +47,7 @@ class gaffer_graph_test(unittest.TestCase):
     def setUp(self):
         self.__graph._java_python_graph = MagicMock()
 
+    @patch('builtins.input', lambda *args:'test')
     def test_gaffer_graph_execute_is_callable(self):
         # Test code
         edges = []
@@ -58,15 +59,17 @@ class gaffer_graph_test(unittest.TestCase):
         self.__graph.execute(operation=add_op)
 
         # Assert code ran correctly
-        self.__graph._java_python_graph.execute.assert_called_once_with(self.__graph._encode(add_op))
+        self.__graph._java_python_graph.execute.assert_called_once_with(self.__graph._encode(add_op), 'test')
         
+    @patch('builtins.input', lambda *args:'test')
     def test_gaffer_graph_execute_can_return_iterators(self):
             self.__graph._java_python_graph.execute = MagicMock(return_value=JavaIterator())
 
             result = self.__graph.execute(operation=gaffer.GetAllElements())
 
             self.assertIsInstance(result, gaffer_utils.ElementIterator)
-    
+
+    @patch('builtins.input', lambda *args:'test')
     def test_gaffer_graph_execute_can_return_dict(self):
         self.__graph._java_python_graph.execute = MagicMock(return_value={"class": "dict", "test": "something"})
 
@@ -74,6 +77,7 @@ class gaffer_graph_test(unittest.TestCase):
 
         self.assertIsInstance(result, dict)
 
+    @patch('builtins.input', lambda *args:'test')
     def test_gaffer_graph_execute_can_error_correctly(self):
         self.__graph._java_python_graph.execute = MagicMock(return_value="Couldn't preform operation")
 

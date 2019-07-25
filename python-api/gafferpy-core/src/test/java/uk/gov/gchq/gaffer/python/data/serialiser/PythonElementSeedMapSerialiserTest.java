@@ -17,6 +17,7 @@
 package uk.gov.gchq.gaffer.python.data.serialiser;
 
 import org.junit.Test;
+
 import uk.gov.gchq.gaffer.data.element.id.DirectedType;
 import uk.gov.gchq.gaffer.data.element.id.EdgeId;
 import uk.gov.gchq.gaffer.operation.data.EdgeSeed;
@@ -34,7 +35,7 @@ public class PythonElementSeedMapSerialiserTest {
     private DirectedType directedType = DirectedType.DIRECTED;
 
     @Test
-    public void testCanDefaultSerialiseEdgeSeed(){
+    public void testCanDefaultSerialiseEdgeSeed() {
 
         EdgeSeed edgeSeed = new EdgeSeed();
         edgeSeed.setIdentifiers(source, "dest", directedType);
@@ -54,7 +55,7 @@ public class PythonElementSeedMapSerialiserTest {
     }
 
     @Test
-    public void testCanDefaultSerialiseEntitySeed(){
+    public void testCanDefaultSerialiseEntitySeed() {
 
         EntitySeed entitySeed = new EntitySeed();
         entitySeed.setVertex(source);

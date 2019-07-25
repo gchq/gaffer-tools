@@ -17,6 +17,7 @@
 package uk.gov.gchq.gaffer.python.data.serialiser.impl;
 
 import org.junit.Test;
+
 import org.roaringbitmap.RoaringBitmap;
 
 import java.util.ArrayList;
@@ -27,12 +28,12 @@ import static org.junit.Assert.assertEquals;
 public class RoaringBitMapPythonSerialiserTests {
 
     @Test
-    public void testSerialiser(){
-        int[] ints = {1,2,3,4,5,6,7};
+    public void testSerialiser() {
+        int[] ints = {1, 2, 3, 4, 5, 6, 7};
         List<Integer> intsList = new ArrayList<>(ints.length);
 
         RoaringBitmap rbm = new RoaringBitmap();
-        for(int i : ints){
+        for (int i : ints) {
             rbm.add(i);
             intsList.add(i);
         }

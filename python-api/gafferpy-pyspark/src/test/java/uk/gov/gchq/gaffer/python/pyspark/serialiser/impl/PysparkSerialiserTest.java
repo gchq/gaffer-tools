@@ -17,6 +17,7 @@
 package uk.gov.gchq.gaffer.python.pyspark.serialiser.impl;
 
 import org.junit.Test;
+
 import uk.gov.gchq.gaffer.data.element.Edge;
 import uk.gov.gchq.gaffer.data.element.Entity;
 import uk.gov.gchq.gaffer.data.element.id.DirectedType;
@@ -32,7 +33,7 @@ import static org.junit.Assert.assertEquals;
 public class PysparkSerialiserTest {
 
     @Test
-    public void testPysparkElementMapSerialiser(){
+    public void testPysparkElementMapSerialiser() {
 
         String source = "A";
         String dest = "B";
@@ -81,7 +82,7 @@ public class PysparkSerialiserTest {
     }
 
     @Test
-    public void testPysparkElementJsonSerialiser(){
+    public void testPysparkElementJsonSerialiser() {
         String source = "A";
         String dest = "B";
         String edgeGroup = "edges";

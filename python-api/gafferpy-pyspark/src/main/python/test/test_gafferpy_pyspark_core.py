@@ -33,6 +33,10 @@ class gaffer_pyspark_core_test(unittest.TestCase):
     def test_example(self):
         pass
 
+    def test_AddElementsFromHdfsQuickstart_can_be_instantiated(self):
+        add_op = core.AddElementsFromHdfsQuickstart()
+        assert add_op is not None
+
 
 if __name__ == "__main__":
     suite = unittest.TestLoader().loadTestsFromTestCase(gaffer_pyspark_core_test)

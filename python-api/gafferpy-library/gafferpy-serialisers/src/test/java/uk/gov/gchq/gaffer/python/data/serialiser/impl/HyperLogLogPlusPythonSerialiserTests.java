@@ -17,6 +17,7 @@
 package uk.gov.gchq.gaffer.python.data.serialiser.impl;
 
 import com.clearspring.analytics.stream.cardinality.HyperLogLogPlus;
+
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
@@ -24,8 +25,8 @@ import static org.junit.Assert.assertEquals;
 public class HyperLogLogPlusPythonSerialiserTests {
 
     @Test
-    public void testHyperLogLogPlusPythonSerialiser(){
-        HyperLogLogPlus hllp = new HyperLogLogPlus(10,10);
+    public void testHyperLogLogPlusPythonSerialiser() {
+        HyperLogLogPlus hllp = new HyperLogLogPlus(10, 10);
 
         hllp.offer("a");
         hllp.offer("a");
@@ -43,8 +44,8 @@ public class HyperLogLogPlusPythonSerialiserTests {
     }
 
     @Test
-    public void testCanSerialiseEmptySketch(){
-        HyperLogLogPlus hllp = new HyperLogLogPlus(10,10);
+    public void testCanSerialiseEmptySketch() {
+        HyperLogLogPlus hllp = new HyperLogLogPlus(10, 10);
 
         assertEquals((Long) 0L, new HyperLogLogPlusPythonSerialiser().serialise(hllp));
 

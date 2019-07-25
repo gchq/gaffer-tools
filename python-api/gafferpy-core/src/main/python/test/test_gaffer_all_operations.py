@@ -34,10 +34,6 @@ class gaffer_operations_test(unittest.TestCase):
     def test_AddElementsFromFile_can_be_instantiated(self):
         add_op = op.AddElementsFromCsv()
         assert add_op is not None
-
-    def test_AddElementsFromHdfsQuickstart_can_be_instantiated(self):
-        add_op = op.AddElementsFromHdfsQuickstart()
-        assert add_op is not None
     
     def test_AddElementsFromKafka_can_be_instantiated(self):
         add_op = op.AddElementsFromKafka(topic="",group_id="",bootstrap_servers="", element_generator="")

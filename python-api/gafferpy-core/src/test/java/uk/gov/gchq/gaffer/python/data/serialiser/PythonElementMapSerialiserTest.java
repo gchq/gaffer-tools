@@ -18,6 +18,7 @@ package uk.gov.gchq.gaffer.python.data.serialiser;
 
 import org.junit.Before;
 import org.junit.Test;
+
 import uk.gov.gchq.gaffer.data.element.Edge;
 import uk.gov.gchq.gaffer.data.element.Entity;
 import uk.gov.gchq.gaffer.data.element.id.DirectedType;
@@ -38,13 +39,13 @@ public class PythonElementMapSerialiserTest {
     private FreqMap map = new FreqMap();
 
     @Before
-    public void initialiseFreqMap(){
-        map.upsert("test_1",4L);
+    public void initialiseFreqMap() {
+        map.upsert("test_1", 4L);
         map.upsert("test_2");
     }
 
     @Test
-    public void testCanDefaultSerialiseEdge(){
+    public void testCanDefaultSerialiseEdge() {
 
         Edge edge = new Edge.Builder()
                 .group("Test")
@@ -73,7 +74,7 @@ public class PythonElementMapSerialiserTest {
     }
 
     @Test
-    public void testCanDefaultSerialiseEntity(){
+    public void testCanDefaultSerialiseEntity() {
 
         Entity entity = new Entity.Builder()
                 .group(group)

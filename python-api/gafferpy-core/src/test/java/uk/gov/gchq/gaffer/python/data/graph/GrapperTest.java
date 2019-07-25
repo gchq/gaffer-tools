@@ -17,6 +17,7 @@
 package uk.gov.gchq.gaffer.python.data.graph;
 
 import org.junit.Test;
+
 import uk.gov.gchq.gaffer.data.element.Edge;
 import uk.gov.gchq.gaffer.exception.SerialisationException;
 import uk.gov.gchq.gaffer.jsonserialisation.JSONSerialiser;
@@ -39,7 +40,7 @@ public class GrapperTest {
     private final String opReason = "Test reason";
 
     @Test
-    public void testCanConstructGraph(){
+    public void testCanConstructGraph() {
 
         Grapper grapper = new Grapper.Builder()
                 .user(
@@ -56,7 +57,7 @@ public class GrapperTest {
     }
 
     @Test
-    public void testCanAddElements(){
+    public void testCanAddElements() {
 
         Edge edge = new Edge.Builder()
                 .source("a")
@@ -87,11 +88,11 @@ public class GrapperTest {
             e.printStackTrace();
         }
 
-        assertEquals(0, grapper.execute(addOpJson,opReason));
+        assertEquals(0, grapper.execute(addOpJson, opReason));
     }
 
     @Test
-    public void testCanRetrieveElements(){
+    public void testCanRetrieveElements() {
         Edge edge = new Edge.Builder()
                 .source("a")
                 .dest("b")
@@ -142,11 +143,8 @@ public class GrapperTest {
 
         PythonIterator iterator = (PythonIterator) grapper.execute(getAllElementsJson, opReason);
 
-        while(iterator.hasNext()){
+        while (iterator.hasNext()) {
             assertEquals(serialiser.serialise(edge), iterator.next());
         }
-
     }
-
-
 }

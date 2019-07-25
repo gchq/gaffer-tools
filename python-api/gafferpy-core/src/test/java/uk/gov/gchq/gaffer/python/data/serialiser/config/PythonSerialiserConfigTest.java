@@ -17,6 +17,7 @@
 package uk.gov.gchq.gaffer.python.data.serialiser.config;
 
 import org.junit.Test;
+
 import uk.gov.gchq.gaffer.data.element.Element;
 import uk.gov.gchq.gaffer.operation.data.ElementSeed;
 import uk.gov.gchq.gaffer.python.data.serialiser.PythonElementMapSerialiser;
@@ -35,7 +36,7 @@ public class PythonSerialiserConfigTest {
 
         PythonSerialiserConfig config = new PythonSerialiserConfig();
 
-        assert(config.getSerialisers().isEmpty());
+        assert (config.getSerialisers().isEmpty());
     }
 
     @Test
@@ -43,7 +44,10 @@ public class PythonSerialiserConfigTest {
 
         PythonSerialiserConfig config = null;
         try {
-            config = new PythonSerialiserConfig(new FileInputStream(new File("src/test/resources/pythonSerialisers.json")));
+
+            File file = new File(getClass().getClassLoader().getResource("pythonSerialisers.json").getPath());
+
+            config = new PythonSerialiserConfig(new FileInputStream(file));
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }

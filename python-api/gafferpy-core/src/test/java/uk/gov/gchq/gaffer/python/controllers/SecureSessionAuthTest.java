@@ -1,25 +1,60 @@
+/*
+ * Copyright 2016-2019 Crown Copyright
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package uk.gov.gchq.gaffer.python.controllers;
 
-import org.junit.*;
+import org.junit.After;
+import org.junit.AfterClass;
+import org.junit.Assert;
+import org.junit.BeforeClass;
+import org.junit.Test;
+
 import uk.gov.gchq.gaffer.python.controllers.services.PropertiesService;
 import uk.gov.gchq.gaffer.python.util.exceptions.ServerNullException;
 
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLSocketFactory;
-import java.io.*;
-import java.net.*;
+
+import java.io.BufferedReader;
+import java.io.DataOutputStream;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.io.UnsupportedEncodingException;
+import java.io.Writer;
+
+import java.net.HttpURLConnection;
+import java.net.InetAddress;
+import java.net.Socket;
+import java.net.URL;
+import java.net.UnknownHostException;
+
 
 public class SecureSessionAuthTest {
 
     private static final String USER_AGENT = "Mozilla/5.0";
 
-    private static String GET_HOME;
-    private static String SECURE_GET_HOME;
-    private static String GET_METRICS;
-    private static String POST_REQUEST;
-    private static String NONE_EXISTING_PAGE;
+    private static String getHome;
+    private static String secureGetHome;
+    private static String getMetrics;
+    private static String postRequest;
+    private static String noneExistingPage;
 
-    private static String ADDRESS;
+    private static String address;
 
     private static SecureSessionAuth auth = SecureSessionAuth.getInstance();
 
@@ -27,13 +62,13 @@ public class SecureSessionAuthTest {
     public static void setUp() throws UnknownHostException {
         System.setProperty("javax.net.ssl.trustStore", "src/test/resources/client-truststore.jks");
 
-        ADDRESS = InetAddress.getLocalHost().getHostAddress();
+        address = InetAddress.getLocalHost().getHostAddress();
 
-        GET_HOME = "http://" + ADDRESS + ":8080/api/1.0";
-        SECURE_GET_HOME = "https://" + ADDRESS + ":8080/api/1.0";
-        GET_METRICS = "http://" + ADDRESS + ":8080/api/1.0/metrics";
-        POST_REQUEST = "http://" + ADDRESS + ":8080/api/1.0/create";
-        NONE_EXISTING_PAGE = "http://" + ADDRESS + ":8080/api/1.0/lol";
+        getHome = "http://" + address + ":8080/api/1.0";
+        secureGetHome = "https://" + address + ":8080/api/1.0";
+        getMetrics = "http://" + address + ":8080/api/1.0/metrics";
+        postRequest = "http://" + address + ":8080/api/1.0/create";
+        noneExistingPage = "http://" + address + ":8080/api/1.0/lol";
 
     }
 
@@ -57,7 +92,7 @@ public class SecureSessionAuthTest {
         // Make it use the current properties
         auth.run();
 
-        URL url = new URL(GET_METRICS);
+        URL url = new URL(getMetrics);
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 
         System.out.println(connection.getResponseMessage());
@@ -76,7 +111,7 @@ public class SecureSessionAuthTest {
         // Make it use the current properties
         auth.run();
 
-        URL url = new URL(POST_REQUEST);
+        URL url = new URL(postRequest);
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 
         connection.setRequestMethod("POST");
@@ -116,7 +151,7 @@ public class SecureSessionAuthTest {
         auth.run();
 
 
-        URL url = new URL(GET_HOME);
+        URL url = new URL(getHome);
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 
         Assert.assertEquals(HttpURLConnection.HTTP_OK, connection.getResponseCode());
@@ -132,7 +167,7 @@ public class SecureSessionAuthTest {
         auth.run();
 
 
-        URL url = new URL(NONE_EXISTING_PAGE);
+        URL url = new URL(noneExistingPage);
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 
         Assert.assertEquals(HttpURLConnection.HTTP_OK, connection.getResponseCode());
@@ -147,7 +182,7 @@ public class SecureSessionAuthTest {
         // Make it use the current properties
         auth.run();
 
-        URL url = new URL(SECURE_GET_HOME);
+        URL url = new URL(secureGetHome);
         HttpsURLConnection connection = (HttpsURLConnection) url.openConnection();
 
         connection.setHostnameVerifier((arg0, arg1) -> true);
@@ -168,12 +203,12 @@ public class SecureSessionAuthTest {
         auth.run();
 
         Socket socket = SSLSocketFactory.getDefault().
-                createSocket(ADDRESS, 8080);
+                createSocket(address, 8080);
         try {
             Writer out = new OutputStreamWriter(
                     socket.getOutputStream(), "ISO-8859-1");
             out.write("GET / HTTP/1.1\r\n");
-            out.write("Host: " + ADDRESS + ":" +
+            out.write("Host: " + address + ":" +
                     8080 + "\r\n");
             out.write("Agent: SSL-TEST\r\n");
             out.write("\r\n");
@@ -208,7 +243,7 @@ public class SecureSessionAuthTest {
         // Make it use the current properties
         auth.run();
 
-        URL url = new URL(GET_HOME);
+        URL url = new URL(getHome);
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 
         Assert.assertEquals("true", service.getInsecure());
