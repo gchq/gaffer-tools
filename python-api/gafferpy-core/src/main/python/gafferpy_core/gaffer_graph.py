@@ -127,7 +127,8 @@ class Graph():
             self.setPythonSerialisers(self._python_serialisers)
 
     def execute(self, operation):
-        result = self._java_python_graph.execute(self._encode(operation))
+        justification = input("What is your reason for this operation?")
+        result = self._java_python_graph.execute(self._encode(operation), justification)
         if isinstance(result, int):
             return result
         elif isinstance(result, JavaIterator):

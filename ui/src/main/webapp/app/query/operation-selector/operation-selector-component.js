@@ -31,29 +31,49 @@ app.filter('operationFilter', function() {
         var searchWords = search.toLowerCase().split(" ");
 
         // Return the matches that have the words in the same order as the search query first.
-        var results = [];
+        // Matches in the title are prioritised over matches in other areas like the description.
+        // Full exact matches are prioritised over matches of individual words.
+        var titleResults = [];
         var otherResults = [];
+        var titleWordResults = [];
+        var otherWordResults = [];
 
         angular.forEach(operations, function(operation) {
-            if((operation.formattedName.indexOf(formattedSearch) > -1)
-             || (operation.formattedDescription.indexOf(formattedSearch) > -1)) {
-                results.push(operation);
+            if(operation.formattedName.indexOf(formattedSearch) > -1) {
+                titleResults.push(operation);
+            } else if(operation.formattedDescription.indexOf(formattedSearch) > -1) {
+                otherResults.push(operation);
             } else {
+                var hasAllWordsInTitle = true;
                 var hasAllWords = true;
                 angular.forEach(searchWords, function(word) {
-                     if((operation.formattedName.indexOf(word) == -1)
-                        && (operation.formattedDescription.indexOf(word) == -1)) {
-                         hasAllWords = false;
-                         return;
+                     if(operation.formattedName.indexOf(word) == -1) {
+                        hasAllWordsInTitle = false;
+                        if(operation.formattedDescription.indexOf(word) == -1) {
+                            hasAllWords = false;
+                            return;
+                        }
                      }
                 });
-                if(hasAllWords) {
-                   otherResults.push(operation);
+                if(hasAllWordsInTitle) {
+                    titleWordResults.push(operation);
+                } else if(hasAllWords) {
+                   otherWordResults.push(operation);
                 }
             }
         });
 
+        var results = [];
+        angular.forEach(titleResults, function(result) {
+            results.push(result);
+        });
+        angular.forEach(titleWordResults, function(result) {
+            results.push(result);
+        });
         angular.forEach(otherResults, function(result) {
+            results.push(result);
+        });
+        angular.forEach(otherWordResults, function(result) {
             results.push(result);
         });
 
