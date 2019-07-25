@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2018 Crown Copyright
+ * Copyright 2017-2019 Crown Copyright
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,17 +22,21 @@ function operationChainBuilder() {
     return {
         templateUrl: 'app/query/operation-chain.html',
         controller: OperationChainController,
-        controllerAs: 'ctrl'
+        controllerAs: 'ctrl',
+        bindings: {
+            namedOperationName: '<',
+            namedOperationDescription: '<'
+        }
     }
 }
 
-
-function OperationChainController(operationChain, config, loading, query, error, events, $mdDialog, navigation, $location, $routeParams, operationService, common, graph, types, previousQueries, operationOptions) {
+function OperationChainController(operationChain, settings, config, loading, query, error, events, $mdDialog, $mdSidenav, navigation, $location, $routeParams, operationService, common, graph, types, previousQueries, operationOptions) {
     var vm = this;
     vm.timeConfig;
     vm.operations = operationChain.getOperationChain();
 
     var NAMED_VIEW_CLASS = "uk.gov.gchq.gaffer.data.elementdefinition.view.NamedView";
+    var ADD_NAMED_OPERATION_CLASS = "uk.gov.gchq.gaffer.named.operation.AddNamedOperation";
     var OPERATION_CHAIN_CLASS = "uk.gov.gchq.gaffer.operation.OperationChain";
     var ENTITY_SEED_CLASS = "uk.gov.gchq.gaffer.operation.data.EntitySeed";
     var PAIR_ARRAY_CLASS = "uk.gov.gchq.gaffer.commonutil.pair.Pair<uk.gov.gchq.gaffer.data.element.id.ElementId,uk.gov.gchq.gaffer.data.element.id.ElementId>[]";
@@ -108,7 +112,6 @@ function OperationChainController(operationChain, config, loading, query, error,
             chain.operations.push(operationService.createDeduplicateOperation(options));
         }
 
-        
         previousQueries.addQuery({
             name: "Operation Chain",
             lastRun: moment().format('HH:mm'),
@@ -116,6 +119,11 @@ function OperationChainController(operationChain, config, loading, query, error,
         });
 
         runQuery(chain.operations);
+    }
+
+    var resetChainWithoutDialog = function() {
+        operationChain.reset();
+        vm.operations = operationChain.getOperationChain();
     }
 
     vm.resetChain = function(ev) {
@@ -128,11 +136,73 @@ function OperationChainController(operationChain, config, loading, query, error,
             .cancel('Cancel');
 
         $mdDialog.show(confirm).then(function() {
-            operationChain.reset();
-            vm.operations = operationChain.getOperationChain();
+            resetChainWithoutDialog();
         }, function() {
             // do nothing if they don't want to reset
         });
+    }
+
+    /** Save the operation chain as a named operation. */
+    vm.saveChain = function(ev) {
+
+        if (!vm.canExecute()) {
+            return;
+        }
+
+        if (vm.operations.length === 0) {
+            error.handle("Unable to save operation chain with no operations");
+            return;
+        }
+
+        var chain = {
+            class: OPERATION_CHAIN_CLASS,
+            operations: []
+        }
+        for (var i in vm.operations) {
+            chain.operations.push(createOperationForQuery(vm.operations[i]));
+        }
+
+        var confirm = $mdDialog.confirm()
+        .title('Operation chain saved as named operation!')
+        .textContent('You can now see your saved operation in the list of operations')
+        .ok('Ok')
+
+        var invalidName = $mdDialog.confirm()
+        .title('Operation chain name is invalid!')
+        .textContent('You must provide a name for the operation')
+        .ok('Ok')
+
+        var invalidDescription = $mdDialog.confirm()
+        .title('Operation chain description is invalid!')
+        .textContent('You must provide a description for the operation')
+        .ok('Ok')
+
+        if (vm.namedOperationName != null && vm.namedOperationName != '') {
+            if (vm.namedOperationDescription != null && vm.namedOperationDescription != '') {
+                query.executeQuery(
+                    {
+                        class: ADD_NAMED_OPERATION_CLASS,
+                        operationName: vm.namedOperationName,
+                        operationChain: chain,
+                        description: vm.namedOperationDescription,
+                        options: {},
+                        score: 1,
+                        overwriteFlag: true,
+                    },
+                    function() {
+                        // On success of saving operation chain
+                        vm.toggleSideNav();
+                        $mdDialog.show(confirm);
+                        // Reload the operations
+                        operationService.reloadOperations()
+                    }
+                );
+            } else {
+                $mdDialog.show(invalidDescription);
+            }
+        } else {
+            $mdDialog.show(invalidName);
+        }
     }
 
     /**
@@ -173,6 +243,9 @@ function OperationChainController(operationChain, config, loading, query, error,
             },
             function(data) {
                 submitResults(data);
+                if (settings.getClearChainAfterExecution() == true) {
+                    resetChainWithoutDialog();
+                }
             }
         );
     }
@@ -184,7 +257,7 @@ function OperationChainController(operationChain, config, loading, query, error,
     var submitResults = function(data) {
         graph.deselectAll();
         navigation.goTo('results');
-        
+
         // Remove the input query param
         delete $routeParams['input'];
         $location.search('input', null);
@@ -453,5 +526,10 @@ function OperationChainController(operationChain, config, loading, query, error,
         }
 
         return op;
+    }
+
+    vm.toggleSideNav  = function () {
+        $mdSidenav('right')
+            .toggle();
     }
 }

@@ -46,8 +46,6 @@ To build the war file along with all its dependencies then run the following com
 
 To deploy it to a server of your choice, take target/ui-[version].war and deploy as per the usual deployment process for your server.
 
-There is a settings page in the ui where you can temporarily change the REST API URL, alternatively you will need to edit the settings.js file to set the URL permanently.
-
 Alternatively there is a maven profile "standalone-ui" that you can use to start the UI in a standalone tomcat server.
 Note that in order to use the UI it will need to be connected separately to a Gaffer REST API.
 

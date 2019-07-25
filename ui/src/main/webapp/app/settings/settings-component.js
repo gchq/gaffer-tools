@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2018 Crown Copyright
+ * Copyright 2017-2019 Crown Copyright
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,12 +30,16 @@ function settingsView() {
 function SettingsController(settings, schema, operationService, events, config) {
     var vm = this;
 
-    vm.resultLimit = settings.getResultLimit()
-    vm.showOptions = false;
+    vm.saveClearChainAfterExecution = function() {
+        settings.setClearChainAfterExecution(vm.clearChainAfterExecution);
+    }
 
     vm.$onInit = function() {
+        vm.showOptions = false;
+        vm.resultLimit = settings.getResultLimit();
+        vm.clearChainAfterExecution = settings.getClearChainAfterExecution();
         config.get().then(function(conf) {
-            vm.showOptions = (conf.operationOptions !== undefined || conf.operationOptionKeys !== undefined)
+            vm.showOptions = (conf.operationOptions !== undefined || conf.operationOptionKeys !== undefined);
         });
     }
 

@@ -1,5 +1,5 @@
 #
-# Copyright 2016-2018 Crown Copyright
+# Copyright 2016-2019 Crown Copyright
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -147,6 +147,15 @@ class UseMatchedVertex:
     EQUAL = 'EQUAL'
     OPPOSITE = 'OPPOSITE'
 
+
+class MatchKey:
+    LEFT = 'LEFT'
+    RIGHT = 'RIGHT'
+
+class JoinType:
+    FULL = 'FULL'
+    OUTER = 'OUTER'
+    INNER = 'INNER'
 
 class ElementSeed(ToJson, ToCodeString):
     def __repr__(self):

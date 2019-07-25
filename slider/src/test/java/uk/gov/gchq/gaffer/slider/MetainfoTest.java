@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2018 Crown Copyright
+ * Copyright 2017-2019 Crown Copyright
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,18 +30,18 @@ import java.io.InputStream;
  */
 public class MetainfoTest {
 
-	private static final String METAINFO_FILE = "/metainfo.xml";
+    private static final String METAINFO_FILE = "/metainfo.xml";
 
-	@Test
-	public void checkMetainfoIsValid () throws IOException, SliderException {
-		InputStream metainfoStream = this.getClass().getResourceAsStream(METAINFO_FILE);
-		Assert.assertNotNull("Unable to load metainfo file for testing: " + METAINFO_FILE, metainfoStream);
+    @Test
+    public void checkMetainfoIsValid() throws IOException, SliderException {
+        InputStream metainfoStream = this.getClass().getResourceAsStream(METAINFO_FILE);
+        Assert.assertNotNull("Unable to load metainfo file for testing: " + METAINFO_FILE, metainfoStream);
 
-		AddonPackageMetainfoParser parser = new AddonPackageMetainfoParser();
-		Metainfo metainfo = parser.fromXmlStream(metainfoStream);
-		Assert.assertNotNull("Parsing of " + METAINFO_FILE + " failed!", metainfo);
+        AddonPackageMetainfoParser parser = new AddonPackageMetainfoParser();
+        Metainfo metainfo = parser.fromXmlStream(metainfoStream);
+        Assert.assertNotNull("Parsing of " + METAINFO_FILE + " failed!", metainfo);
 
-		metainfo.validate();
-	}
+        metainfo.validate();
+    }
 
 }

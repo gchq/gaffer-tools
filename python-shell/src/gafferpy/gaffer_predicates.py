@@ -1,5 +1,5 @@
 #
-# Copyright 2016-2018 Crown Copyright
+# Copyright 2016-2019 Crown Copyright
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -609,6 +609,7 @@ class TimeUnit:
     MINUTE = 'MINUTE'
     SECOND = 'SECOND'
     MILLISECOND = 'MILLISECOND'
+    MICROSECOND = 'MICROSECOND'
 
 
 class InTimeRange(AbstractPredicate):
@@ -782,8 +783,27 @@ class InDateRangeDual(AbstractPredicate):
             predicate_json['timeZone'] = self.time_zone
         return predicate_json
 
+class ElementJoinComparator(AbstractPredicate):
 
+    CLASS = "uk.gov.gchq.gaffer.data.element.comparison.ElementJoinComparator"
+
+    def __init__(self, group_by_properties=None):
+        super().__init__(_class_name=self.CLASS)
+
+        self.group_by_properties = group_by_properties
+
+    def to_json(self):
+        predicate_json = super().to_json()
+        if self.group_by_properties is not None:
+            predicate_json['groupByProperties'] = self.group_by_properties
+
+        return predicate_json
+
+        
 def predicate_context_converter(obj):
+    if obj is None:
+        return None
+
     if 'class' in obj:
         predicate = dict(obj)
     else:
@@ -808,6 +828,9 @@ def predicate_context_converter(obj):
 
 
 def predicate_converter(obj):
+    if obj is None:
+        return None
+
     if isinstance(obj, dict):
         predicate = dict(obj)
     else:

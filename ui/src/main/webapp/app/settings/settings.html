@@ -1,5 +1,5 @@
 <!--
-  ~ Copyright 2017-2018 Crown Copyright
+  ~ Copyright 2017-2019 Crown Copyright
   ~
   ~ Licensed under the Apache License, Version 2.0 (the "License");
   ~ you may not use this file except in compliance with the License.
@@ -40,6 +40,16 @@
                                         <div ng-message="step">The limit must be a whole number</div>
                                         <div ng-message="number">The limit must be a valid number</div>
                                     </div>
+                                </md-input-container>
+                            </md-list-item>
+                            <md-list-item class="md-2-line">
+                                <div class="md-list-item-text" flex="60">
+                                    <h3>Clear Operation Chain</h3>
+                                    <p>Clear the operation chain after each execution</p>
+                                </div>
+                                <div flex></div>
+                                <md-input-container class="md-secondary">
+                                    <md-checkbox ng-change="ctrl.saveClearChainAfterExecution()" ng-model="ctrl.clearChainAfterExecution"></md-checkbox>
                                 </md-input-container>
                             </md-list-item>
                         </md-list>

@@ -1,5 +1,5 @@
 #
-# Copyright 2016-2018 Crown Copyright
+# Copyright 2016-2019 Crown Copyright
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -99,13 +99,16 @@ class View(ToJson, ToCodeString):
     CLASS = 'uk.gov.gchq.gaffer.data.elementdefinition.view.View'
 
     def __init__(self, entities=None, edges=None, global_elements=None,
-                 global_entities=None, global_edges=None):
+                 global_entities=None, global_edges=None, all_edges=False,
+                 all_entities=False):
         super().__init__()
         self.entities = None
         self.edges = None
         self.global_elements = None
         self.global_entities = None
         self.global_edges = None
+        self.all_edges = all_edges
+        self.all_entities = all_entities
 
         if entities is not None:
             self.entities = []
@@ -220,6 +223,12 @@ class View(ToJson, ToCodeString):
             for el_def in self.global_edges:
                 el_defs.append(el_def.to_json())
             view['globalEdges'] = el_defs
+
+        if self.all_edges is True:
+            view['allEdges'] = True
+
+        if self.all_entities is True:
+            view['allEntities'] = True
 
         return view
 
@@ -564,6 +573,54 @@ class Operation(ToJson, ToCodeString):
 
         return operation
 
+class Match(ToJson, ToCodeString):
+    def __init__(self, _class_name):
+        self._class_name = _class_name
+
+    def to_json(self):
+        return {
+            'class': self._class_name
+        }
+
+class ElementMatch(Match):
+
+    CLASS = "uk.gov.gchq.gaffer.store.operation.handler.join.match.ElementMatch"
+
+    def __init__(self, group_by_properties=None):
+        super().__init__(_class_name=self.CLASS)
+        self.group_by_properties = group_by_properties
+
+    def to_json(self):
+        match_json = super().to_json()
+        if (self.group_by_properties is not None):
+            match_json['groupByProperties'] = self.group_by_properties
+        
+        return match_json
+
+class KeyFunctionMatch(Match):
+    CLASS = "uk.gov.gchq.gaffer.store.operation.handler.join.match.KeyFunctionMatch"
+
+    def __init__(self, first_key_function=None, second_key_function=None):
+        super().__init__(_class_name=self.CLASS)
+        
+        if not isinstance(first_key_function, gaffer_functions.Function):
+            self.first_key_function = JsonConverter.from_json(first_key_function, class_obj=gaffer_functions.Function)
+        else:
+            self.first_key_function = first_key_function
+
+        if not isinstance(second_key_function, gaffer_functions.Function):
+            self.second_key_function = JsonConverter.from_json(second_key_function, class_obj=gaffer_functions.Function)
+        else:
+            self.second_key_function = second_key_function
+
+    def to_json(self):
+        match_json = super().to_json()
+        if self.first_key_function is not None:
+            match_json['firstKeyFunction'] = self.first_key_function.to_json()
+        if self.second_key_function is not None:
+            match_json['secondKeyFunction'] = self.second_key_function.to_json()
+
+        return match_json
 
 class OperationChain(Operation):
     CLASS = "uk.gov.gchq.gaffer.operation.OperationChain"
@@ -923,6 +980,20 @@ class GetJobResults(Operation):
         return operation
 
 
+class CancelScheduledJob(Operation):
+    CLASS = "uk.gov.gchq.gaffer.operation.impl.job.CancelScheduledJob"
+
+    def __init__(self, job_id):
+        super().__init__(_class_name=self.CLASS)
+        self.job_id = job_id
+
+    def to_json(self):
+        operation_json = super().to_json()
+        if self.job_id is not None:
+            operation_json['jobId'] = self.job_id
+        return operation_json
+
+
 class SplitStoreFromFile(Operation):
     CLASS = 'uk.gov.gchq.gaffer.operation.impl.SplitStoreFromFile'
 
@@ -1059,6 +1130,20 @@ class GetElements(GetOperation):
             seed_matching_type=seed_matching_type,
             seed_matching=seed_matching,
             options=options)
+
+class GetFromEndpoint(Operation):
+    CLASS = "uk.gov.gchq.gaffer.operation.impl.get.GetFromEndpoint"
+
+    def __init__(self, endpoint, options=None):
+        super().__init__(_class_name=self.CLASS, options=options)
+        self.endpoint = endpoint
+
+    def to_json(self):
+        operation_json = super().to_json()
+        if self.endpoint is not None:
+            operation_json['endpoint'] = self.endpoint
+
+        return operation_json
 
 
 class GetAdjacentIds(GetOperation):
@@ -2562,11 +2647,97 @@ class Conditional(ToJson, ToCodeString):
         return conditional_json
 
 
+class Join(Operation):
+    
+    CLASS = 'uk.gov.gchq.gaffer.operation.impl.join.Join'
+
+    def __init__(self, input=None, operation=None, match_method=None, match_key=None, flatten=None, join_type=None, collection_limit=None, options=None):
+        super().__init__(_class_name=self.CLASS, options=options)
+        
+        if operation is not None:
+            if not isinstance(operation, Operation):
+                self.operation = JsonConverter.from_json(operation)
+            else:
+                self.operation = operation
+
+        if match_method is not None:
+            if not isinstance(match_method, Match):
+                self.match_method = JsonConverter.from_json(match_method)
+            else:
+                self.match_method = match_method
+
+        self.input = input
+        self.flatten = flatten
+        self.match_key = match_key
+        self.collection_limit = collection_limit
+        self.join_type = join_type
+
+    def to_json(self):
+        operation_json = super().to_json()
+
+        if self.input is not None:
+            json_input = []
+            for input in self.input:
+                if isinstance(input, ToJson):
+                    json_input.append(input.to_json())
+                else:
+                    json_input.append(input)
+                
+            operation_json['input'] = json_input
+        if self.operation is not None:
+            operation_json['operation'] = self.operation.to_json()
+        if self.match_method is not None:
+            operation_json['matchMethod'] = self.match_method.to_json()
+        if self.match_key is not None:
+            operation_json['matchKey'] = self.match_key
+        if self.flatten is not None:
+            operation_json['flatten'] = self.flatten
+        if self.join_type is not None:
+            operation_json['joinType'] = self.join_type
+        if self.collection_limit is not None:
+            operation_json['collectionLimit'] = self.collection_limit
+
+        return operation_json
+
+
 class GetAllGraphIds(Operation):
     CLASS = 'uk.gov.gchq.gaffer.federatedstore.operation.GetAllGraphIds'
 
     def __init__(self, options=None):
         super().__init__(_class_name=self.CLASS, options=options)
+
+
+class FederatedOperationChain(Operation):
+    CLASS = 'uk.gov.gchq.gaffer.federatedstore.operation.FederatedOperationChain'
+
+    def __init__(self,operation_chain=None,options=None):
+        super().__init__(_class_name=self.CLASS, options=options)
+
+        if operation_chain is None:
+            raise ValueError('operation_chain is required')
+
+        if operation_chain is not None:
+            if isinstance(operation_chain,OperationChain):
+                self.operation_chain = operation_chain
+            elif isinstance(operation_chain,list):
+                allOperations = True
+                if (len(allOperations) == 0):
+                    allOperations = False
+                for op in operation_chain:
+                    if not isinstance(op,Operation):
+                        allOperations = False
+                if allOperations:
+                    self.operation_chain = OperationChain(operation_chain)
+            elif isinstance(operation_chain,Operation):
+                self.operation_chain = OperationChain(operation_chain)
+            else:
+                self.operation_chain = JsonConverter.from_json(operation_chain, OperationChain)
+        
+    def to_json(self):
+        operation = super().to_json()
+        operation['operationChain'] = self.operation_chain.to_json()
+
+        return operation
 
 
 class RemoveGraph(Operation):
@@ -2683,6 +2854,58 @@ class AddGraphWithHooks(Operation):
 
         if self.hooks is not None:
             operation['hooks'] = self.hooks
+
+        return operation
+
+
+class GetVariable(Operation):
+    CLASS = 'uk.gov.gchq.gaffer.operation.impl.GetVariable'
+
+    def __init__(self, variable_name=None, options=None):
+        super().__init__(_class_name=self.CLASS, options=options)
+        self.variable_name = variable_name
+
+    def to_json(self):
+        operation = super().to_json()
+
+        if self.variable_name is not None:
+            operation['variableName'] = self.variable_name
+
+        return operation
+
+
+class GetVariables(Operation):
+    CLASS = 'uk.gov.gchq.gaffer.operation.impl.GetVariables'
+
+    def __init__(self, variable_names=None, options=None):
+        super().__init__(_class_name=self.CLASS, options=options)
+        self.variable_names = variable_names
+
+    def to_json(self):
+        operation = super().to_json()
+
+        if self.variable_names is not None:
+            operation['variableNames'] = self.variable_names
+
+        return operation
+
+
+class SetVariable(Operation):
+    CLASS = 'uk.gov.gchq.gaffer.operation.impl.SetVariable'
+
+    def __init__(self, input=None, variable_name=None, options=None):
+        super().__init__(_class_name=self.CLASS, options=options)
+        self.input = input
+        self.variable_name = variable_name
+
+    def to_json(self):
+        operation = super().to_json()
+
+        if self.variable_name is not None:
+            operation['variableName'] = self.variable_name
+
+        if self.input is not None:
+            operation['input'] = self.input
 
         return operation
 
