@@ -1,3 +1,0 @@
-FROM gaffer-quickstart-base-notebook
-
-COPY data.csv .

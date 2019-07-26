@@ -77,11 +77,11 @@ class Graph():
             if graphId is not None and isinstance(graphId, str):
                 self._java_python_graph = self._gaffer_session.getGraphById(graphId)
             else:
-                self._java_python_graph = self._gaffer_session.getPythonGraph()
+                self._java_python_graph = self._gaffer_session.getGraph()
         return self
 
     def _getGraph(self):
-        self._java_python_graph = self._gaffer_session.getPythonGraph(self._convertFileToBytes(self.schemaPath), self._convertFileToBytes(self.graphConfigPath), self._convertFileToBytes(self.storePropertiesPath))
+        self._java_python_graph = self._gaffer_session.getGraph(self._convertFileToBytes(self.schemaPath), self._convertFileToBytes(self.graphConfigPath), self._convertFileToBytes(self.storePropertiesPath))
         self._set_element_serialisers(store_properties_path=self.storePropertiesPath)
         return self
 
@@ -130,8 +130,6 @@ class Graph():
         justification = input("What is your reason for this operation?")
         result = self._java_python_graph.execute(self._encode(operation), justification)
         if isinstance(result, int):
-            return result
-        elif isinstance(result, JavaIterator):
             return result
         elif hasattr(result, 'getClass'):
             resultClass = result.getClass().getCanonicalName()

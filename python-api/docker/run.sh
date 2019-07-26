@@ -16,7 +16,7 @@ basic)
     echo "BUILDING BASIC EXAMPLE"
     cd basic/
     docker build -t gaffer-quickstart-pyspark-session .
-    docker build -f Dockerfile.gaffer.pyspark -t gaffer-quickstart-pyspark .
+    docker build -f Dockerfile.gaffer.basic.notebook -t gaffer-basic-notebook .
     echo "BUILT BASIC EXAMPLE"
     docker-compose up
 ;;
