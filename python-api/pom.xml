@@ -17,6 +17,7 @@
         <module>gafferpy-rest</module>
         <module>gafferpy-library</module>
         <module>gafferpy-build</module>
+        <module>jaffer</module>
     </modules>
 
     <properties>

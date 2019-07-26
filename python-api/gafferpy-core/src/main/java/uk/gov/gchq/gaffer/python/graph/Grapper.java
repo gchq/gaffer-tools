@@ -30,9 +30,9 @@ import uk.gov.gchq.gaffer.operation.Operation;
 import uk.gov.gchq.gaffer.operation.OperationException;
 import uk.gov.gchq.gaffer.operation.io.Input;
 import uk.gov.gchq.gaffer.operation.io.Output;
-import uk.gov.gchq.gaffer.python.controllers.services.veradb.VeraDB;
-import uk.gov.gchq.gaffer.python.controllers.services.veradb.VeraDBImpl;
-import uk.gov.gchq.gaffer.python.controllers.services.veradb.execptions.VeraDBException;
+import uk.gov.gchq.gaffer.python.controllers.services.compliance.Compliance;
+import uk.gov.gchq.gaffer.python.controllers.services.compliance.ComplianceImpl;
+import uk.gov.gchq.gaffer.python.controllers.services.compliance.execptions.ComplianceException;
 import uk.gov.gchq.gaffer.python.data.PythonIterator;
 import uk.gov.gchq.gaffer.python.data.serialiser.PythonSerialiser;
 import uk.gov.gchq.gaffer.python.data.serialiser.config.PythonSerialiserConfig;
@@ -58,7 +58,7 @@ public final class Grapper {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Grapper.class);
 
-    private VeraDB veraDB;
+    private Compliance compliance;
 
     private PythonSerialiserConfig pythonSerialisers = null;
     private Graph graph;
@@ -66,6 +66,10 @@ public final class Grapper {
     private Schema schema;
     private GraphConfig graphConfig;
     private StoreProperties storeProperties;
+
+    private Grapper() {
+        buildGraph();
+    }
 
     /**
      * @param user created user object inorder to run queries against a prebuilt graph
@@ -84,7 +88,7 @@ public final class Grapper {
 
             this.storeProperties = StoreProperties.loadStoreProperties(storeProperties);
 
-            veraDB = new VeraDBImpl(this.schema, this.graphConfig, this.storeProperties);
+            compliance = new ComplianceImpl(this.schema, this.graphConfig, this.storeProperties);
 
         } catch (final SchemaException e) {
             LOGGER.error("ERROR BUILDING GRAPH: {}", e.getMessage());
@@ -141,8 +145,8 @@ public final class Grapper {
         Graph graph = null;
 
         try {
-             graph = veraDB.executeOperation(this.getUser(), operation, opReason);
-        } catch (final VeraDBException e) {
+             graph = compliance.executeOperation(this.getUser(), operation, opReason);
+        } catch (final ComplianceException e) {
             LOGGER.error(e.getMessage());
         }
 

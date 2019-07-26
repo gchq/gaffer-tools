@@ -14,12 +14,15 @@
  * limitations under the License.
  */
 
-package uk.gov.gchq.gaffer.python.controllers.services.veradb.execptions;
+package session;
 
-public class VeraDBException extends Exception {
+import org.junit.Test;
 
-    public VeraDBException(final String message) {
-        super(message);
+public class GafferSessionTest {
+
+    @Test
+    public void sessionIsCreatable() {
+       new GafferSession.Builder().username("user").password("userPass").build();
     }
 
 }

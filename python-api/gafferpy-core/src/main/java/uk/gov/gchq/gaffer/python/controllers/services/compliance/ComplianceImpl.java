@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package uk.gov.gchq.gaffer.python.controllers.services.veradb;
+package uk.gov.gchq.gaffer.python.controllers.services.compliance;
 
 import uk.gov.gchq.gaffer.graph.Graph;
 import uk.gov.gchq.gaffer.graph.GraphConfig;
 import uk.gov.gchq.gaffer.operation.Operation;
 import uk.gov.gchq.gaffer.python.controllers.services.PropertiesService;
-import uk.gov.gchq.gaffer.python.controllers.services.veradb.execptions.VeraDBException;
+import uk.gov.gchq.gaffer.python.controllers.services.compliance.execptions.ComplianceException;
 import uk.gov.gchq.gaffer.store.StoreProperties;
 import uk.gov.gchq.gaffer.store.schema.Schema;
 import uk.gov.gchq.gaffer.user.User;
@@ -28,7 +28,7 @@ import uk.gov.gchq.gaffer.user.User;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 
-public class VeraDBImpl implements VeraDB {
+public class ComplianceImpl implements Compliance {
 
     private static PropertiesService service = new PropertiesService();
 
@@ -36,7 +36,7 @@ public class VeraDBImpl implements VeraDB {
     private GraphConfig graphConfig;
     private StoreProperties storeProperties;
 
-    public VeraDBImpl(final Schema schema, final GraphConfig graphConfig, final StoreProperties storeProperties) {
+    public ComplianceImpl(final Schema schema, final GraphConfig graphConfig, final StoreProperties storeProperties) {
         setSchema(schema);
         setGraphConfig(graphConfig);
         setStoreProperties(storeProperties);
@@ -44,7 +44,7 @@ public class VeraDBImpl implements VeraDB {
 
 
     @Override
-    public Graph createGraph(final User user, final String reason) throws VeraDBException {
+    public Graph createGraph(final User user, final String reason) throws ComplianceException {
         try {
             if (getSchema() == null || getGraphConfig() == null || getStoreProperties() == null) {
                 return new Graph.Builder()
@@ -60,12 +60,12 @@ public class VeraDBImpl implements VeraDB {
                         .build();
             }
         } catch (final FileNotFoundException e) {
-            throw new VeraDBException(e.getMessage());
+            throw new ComplianceException(e.getMessage());
         }
     }
 
     @Override
-    public Graph executeOperation(final User user, final Operation op, final String reason) throws VeraDBException {
+    public Graph executeOperation(final User user, final Operation op, final String reason) throws ComplianceException {
         try {
             if (getSchema() == null || getGraphConfig() == null || getStoreProperties() == null) {
                 return new Graph.Builder()
@@ -81,7 +81,7 @@ public class VeraDBImpl implements VeraDB {
                         .build();
             }
         } catch (final FileNotFoundException e) {
-            throw new VeraDBException(e.getMessage());
+            throw new ComplianceException(e.getMessage());
         }
     }
 

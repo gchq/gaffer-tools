@@ -14,21 +14,12 @@
  * limitations under the License.
  */
 
-package uk.gov.gchq.gaffer.python.controllers.services.veradb;
+package uk.gov.gchq.gaffer.python.controllers.services.compliance.execptions;
 
-import uk.gov.gchq.gaffer.graph.Graph;
-import uk.gov.gchq.gaffer.operation.Operation;
-import uk.gov.gchq.gaffer.python.controllers.services.veradb.execptions.VeraDBException;
-import uk.gov.gchq.gaffer.user.User;
+public class ComplianceException extends Exception {
 
-/**
-    This class is for the stubbing of external calls for governance checks
- */
-
-public interface VeraDB {
-
-    Graph createGraph(final User user, final String reason) throws VeraDBException;
-
-    Graph executeOperation(final User user, final Operation op, final String reason) throws VeraDBException;
+    public ComplianceException(final String message) {
+        super(message);
+    }
 
 }

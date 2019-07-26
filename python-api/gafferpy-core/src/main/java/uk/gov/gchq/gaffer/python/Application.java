@@ -22,8 +22,10 @@ import org.slf4j.LoggerFactory;
 import uk.gov.gchq.gaffer.python.controllers.SecureSessionAuth;
 import uk.gov.gchq.gaffer.python.controllers.SessionManager;
 import uk.gov.gchq.gaffer.python.controllers.services.PropertiesService;
+import uk.gov.gchq.gaffer.python.session.GafferJSession;
 import uk.gov.gchq.gaffer.python.util.exceptions.PortInUseException;
 
+import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.Date;
@@ -54,6 +56,13 @@ public final class Application {
 
         if (SERVICE.getInsecure().equalsIgnoreCase("true")) {
             SecureSessionAuth.getInstance().run(); // Starts up the HTTP Server
+        }
+
+        try { // Gaffer Java Session Server
+            GafferJSession session = new GafferJSession(SERVICE);
+            session.run();
+        } catch (final IOException e) {
+            LOGGER.error(e.getMessage());
         }
     }
 }
