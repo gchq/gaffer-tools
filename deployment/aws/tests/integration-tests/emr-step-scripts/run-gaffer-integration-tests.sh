@@ -126,6 +126,9 @@ for file in ./store-implementation/accumulo-store/src/test/resources/*.propertie
 	sed -i "s|^accumulo.file.replication=.*$|accumulo.file.replication=3|" $file
 done
 
+# Configure the AddElementsFromHDFS to work with the instance on the EMR cluster
+sed -i 's|^fs.uri=.*$|fs.uri=hdfs:///|' ./library/hdfs-library/src/test/resources/filesystem.properties
+
 # Report test results script
 tee -a failsafe-report.py <<EOF
 #!/usr/bin/python
