@@ -22,6 +22,7 @@ This module contains Python copies of Gaffer function java classes
 from gafferpy.gaffer_core import *
 import gafferpy.gaffer_predicates as pred
 
+
 class FunctionContext(ToJson, ToCodeString):
     CLASS = "gaffer.FunctionContext"
 
@@ -91,6 +92,7 @@ class ExtractKeys(AbstractFunction):
     def to_json(self):
         return super().to_json()
 
+
 class DictionaryLookup(AbstractFunction):
     CLASS = 'uk.gov.gchq.koryphe.impl.function.DictionaryLookup'
 
@@ -103,6 +105,7 @@ class DictionaryLookup(AbstractFunction):
         function_json["dictionary"] = self.dictionary
 
         return function_json
+
 
 class ExtractValue(AbstractFunction):
     CLASS = 'uk.gov.gchq.koryphe.impl.function.ExtractValue'
@@ -529,6 +532,7 @@ class ToInteger(AbstractFunction):
     def to_json(self):
         return super().to_json()
 
+
 class ToTypeSubTypeValue(AbstractFunction):
     CLASS = "uk.gov.gchq.gaffer.types.function.ToTypeSubTypeValue"
     
@@ -547,7 +551,8 @@ class ToTypeValue(AbstractFunction):
 
     def to_json(self):
         return super().to_json()
-      
+
+
 class Cast(AbstractFunction):
     CLASS = 'uk.gov.gchq.koryphe.impl.function.Cast'
 
@@ -634,6 +639,7 @@ class CsvGenerator(AbstractFunction):
 
         return function
 
+
 class FreqMapExtractor(AbstractFunction):
     CLASS = 'uk.gov.gchq.gaffer.types.function.FreqMapExtractor'
 
@@ -691,7 +697,6 @@ class CallMethod(AbstractFunction):
         return function_json
 
 
-
 class If(AbstractFunction):
     CLASS = "uk.gov.gchq.koryphe.impl.function.If"
 
@@ -716,6 +721,7 @@ class If(AbstractFunction):
             predicate_json['otherwise'] = self.otherwise.to_json()
 
         return predicate_json
+
 
 class ToFreqMap(AbstractFunction):
     CLASS = 'uk.gov.gchq.gaffer.types.function.ToFreqMap'
@@ -786,6 +792,7 @@ class IterableFilter(AbstractFunction):
 
         return predicate_json
 
+
 class MaskTimestampSetByTimeRange(AbstractFunction):
     CLASS = "uk.gov.gchq.gaffer.time.function.MaskTimestampSetByTimeRange"
 
@@ -805,6 +812,7 @@ class MaskTimestampSetByTimeRange(AbstractFunction):
 
         return function_json
 
+
 class ToList(AbstractFunction):
     CLASS = 'uk.gov.gchq.koryphe.impl.function.ToList'
 
@@ -813,7 +821,6 @@ class ToList(AbstractFunction):
 
     def to_json(self):
         return super().to_json()
-      
 
       
 class ToSet(AbstractFunction):
@@ -834,7 +841,8 @@ class ToArray(AbstractFunction):
 
     def to_json(self):
         return super().to_json()
-      
+
+
 class CreateObject(AbstractFunction):
     CLASS = "uk.gov.gchq.koryphe.impl.function.CreateObject"
 
@@ -851,6 +859,7 @@ class CreateObject(AbstractFunction):
 
         return function_json
 
+
 class Base64Decode(AbstractFunction):
     CLASS = "uk.gov.gchq.koryphe.impl.function.Base64Decode"
 
@@ -860,15 +869,16 @@ class Base64Decode(AbstractFunction):
     def to_json(self):
         return super().to_json()
 
+
 class CsvLinesToMaps(AbstractFunction):
     CLASS = "uk.gov.gchq.koryphe.impl.function.CsvLinesToMaps"
 
-    def __init__(self, delimiter=',', header=[], first_row=0, quoted=False, quote_char='"'):
+    def __init__(self, delimiter=None, header=None, first_row=None, quoted=None, quote_char=None):
         super().__init__(_class_name=self.CLASS)
         self.delimiter = delimiter
         self.header = header
         self.first_row = first_row
-        self.quoted =  quoted
+        self.quoted = quoted
         self.quote_char = quote_char
 
     def to_json(self):
@@ -890,12 +900,12 @@ class CsvLinesToMaps(AbstractFunction):
 class CsvToMaps(AbstractFunction):
     CLASS = "uk.gov.gchq.koryphe.impl.function.CsvToMaps"
 
-    def __init__(self, delimiter=',', header=[], first_row=0, quoted=False, quote_char='"'):
+    def __init__(self, delimiter=None, header=None, first_row=None, quoted=None, quote_char=None):
         super().__init__(_class_name=self.CLASS)
         self.delimiter = delimiter
         self.header = header
         self.first_row = first_row
-        self.quoted =  quoted
+        self.quoted = quoted
         self.quote_char = quote_char
 
     def to_json(self):
@@ -913,6 +923,7 @@ class CsvToMaps(AbstractFunction):
         
         return function_json
 
+
 class CurrentDate(AbstractFunction):
     CLASS = "uk.gov.gchq.koryphe.impl.function.CurrentDate"
 
@@ -922,6 +933,7 @@ class CurrentDate(AbstractFunction):
     def to_json(self):
         return super().to_json()
 
+
 class CurrentTime(AbstractFunction):
     CLASS = "uk.gov.gchq.koryphe.impl.function.CurrentTime"
 
@@ -930,6 +942,7 @@ class CurrentTime(AbstractFunction):
 
     def to_json(self):
         return super().to_json()
+
 
 class DeserialiseJson(AbstractFunction):
     CLASS = "uk.gov.gchq.koryphe.impl.function.DeserialiseJson"
@@ -945,6 +958,7 @@ class DeserialiseJson(AbstractFunction):
 
         return function_json
 
+
 class DeserialiseXml(AbstractFunction):
     CLASS = "uk.gov.gchq.koryphe.impl.function.DeserialiseXml"
 
@@ -953,7 +967,8 @@ class DeserialiseXml(AbstractFunction):
 
     def to_json(self):
         return super().to_json()
-      
+
+
 class Gunzip(AbstractFunction):
     CLASS = "uk.gov.gchq.koryphe.impl.function.Gunzip"
 
@@ -962,6 +977,7 @@ class Gunzip(AbstractFunction):
 
     def to_json(self):
         return super().to_json()
+
 
 class Increment(AbstractFunction):
     CLASS = "uk.gov.gchq.koryphe.impl.function.Increment"
@@ -976,6 +992,7 @@ class Increment(AbstractFunction):
             function_json["increment"] = self.increment
         return function_json
 
+
 class MapToTuple(AbstractFunction):
     CLASS = "uk.gov.gchq.koryphe.impl.function.MapToTuple"
 
@@ -984,6 +1001,7 @@ class MapToTuple(AbstractFunction):
 
     def to_json(self):
         return super().to_json()
+
 
 class ParseDate(AbstractFunction):
     CLASS = "uk.gov.gchq.koryphe.impl.function.ParseDate"
@@ -1001,6 +1019,7 @@ class ParseDate(AbstractFunction):
             function_json["format"] = self.format
 
         return function_json
+
 
 class ParseTime(AbstractFunction):
     CLASS = "uk.gov.gchq.koryphe.impl.function.ParseTime"
@@ -1022,6 +1041,7 @@ class ParseTime(AbstractFunction):
 
         return function_json
 
+
 class ToDateString(AbstractFunction):
     CLASS = "uk.gov.gchq.koryphe.impl.function.ToDateString"
 
@@ -1036,6 +1056,7 @@ class ToDateString(AbstractFunction):
 
         return function_json
 
+
 class ToBytes(AbstractFunction):
     CLASS = "uk.gov.gchq.koryphe.impl.function.ToBytes"
 
@@ -1049,6 +1070,7 @@ class ToBytes(AbstractFunction):
             function_json["charset"] = self.charset
         
         return function_json
+
 
 class ApplyBiFunction(AbstractFunction):
     CLASS = "uk.gov.gchq.koryphe.impl.function.ApplyBiFunction"
@@ -1067,6 +1089,64 @@ class ApplyBiFunction(AbstractFunction):
                 function_json["function"] = self.function
         
         return function_json
+
+
+class ToTuple(AbstractFunction):
+    CLASS = "uk.gov.gchq.koryphe.impl.function.ToTuple"
+
+    def __init__(self):
+        super().__init__(_class_name=self.CLASS)
+
+    def to_json(self):
+        return super().to_json()
+
+
+class ToPropertiesTuple(AbstractFunction):
+    CLASS = "uk.gov.gchq.gaffer.data.element.function.ToPropertiesTuple"
+
+    def __init__(self):
+        super().__init__(_class_name=self.CLASS)
+
+    def to_json(self):
+        return super().to_json()
+
+
+class ToElementTuple(AbstractFunction):
+    CLASS = "uk.gov.gchq.gaffer.data.element.function.ToElementTuple"
+
+    def __init__(self):
+        super().__init__(_class_name=self.CLASS)
+
+    def to_json(self):
+        return super().to_json()
+
+
+class FunctionChain(AbstractFunction):
+    CLASS = 'uk.gov.gchq.koryphe.impl.function.FunctionChain'
+
+    def __init__(self, functions):
+        super().__init__(_class_name=self.CLASS)
+
+        if functions is None:
+            raise TypeError('No function(s) provided')
+        else:
+            self.functions = []
+            for func in functions:
+                if not isinstance(func, Function):
+                    func = JsonConverter.from_json(
+                        func, Function)
+                self.functions.append(func)
+
+    def to_json(self):
+        function = super().to_json()
+
+        functions_json = []
+        for func in self.functions:
+            functions_json.append(func.to_json())
+        function['functions'] = functions_json
+
+        return function
+
 
 def function_context_converter(obj):
     if 'class' in obj:

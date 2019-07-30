@@ -756,6 +756,51 @@ class GafferFunctionsTest(unittest.TestCase):
             g.func.ApplyBiFunction(function={
                 "class": "uk.gov.gchq.koryphe.impl.binaryoperator.Product"
             })
+        ],
+        [
+            '''
+            {
+                "class": "uk.gov.gchq.koryphe.impl.function.ToTuple"
+            }
+            ''',
+            g.func.ToTuple()
+        ],
+        [
+            '''
+            {
+                "class": "uk.gov.gchq.gaffer.data.element.function.ToPropertiesTuple"
+            }
+            ''',
+            g.func.ToPropertiesTuple()
+        ],
+        [
+            '''
+            {
+                "class": "uk.gov.gchq.gaffer.data.element.function.ToElementTuple"
+            }
+            ''',
+            g.func.ToElementTuple()
+        ],
+        [
+            '''
+            {
+                "class": "uk.gov.gchq.koryphe.impl.function.FunctionChain",
+                "functions": [
+                    {
+                        "class": "uk.gov.gchq.koryphe.impl.function.Base64Decode"
+                    },
+                    {
+                        "class": "uk.gov.gchq.koryphe.impl.function.CsvLinesToMaps",
+                        "delimiter": "|",
+                        "quoted": true
+                    }
+                ]
+            }
+            ''',
+            g.FunctionChain(functions=[
+                g.Base64Decode(),
+                g.CsvLinesToMaps(delimiter="|", quoted=True)
+            ])
         ]
     ]
 
