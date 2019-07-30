@@ -1,4 +1,9 @@
 uk.gov.gchq.gaffer.accumulostore.performancetesting.ingest
+uk.gov.gchq.gaffer.analytic.function
+uk.gov.gchq.gaffer.analytic.operation
+uk.gov.gchq.gaffer.analytic.operation.handler
+uk.gov.gchq.gaffer.analytic.operation.handler.cache
+uk.gov.gchq.gaffer.analytic.operation.serialisation
 uk.gov.gchq.gaffer.miniaccumulocluster
 uk.gov.gchq.gaffer.performancetesting
 uk.gov.gchq.gaffer.performancetesting.aws
