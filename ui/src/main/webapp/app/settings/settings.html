@@ -42,6 +42,16 @@
                                     </div>
                                 </md-input-container>
                             </md-list-item>
+                            <md-list-item class="md-2-line">
+                                <div class="md-list-item-text" flex="60">
+                                    <h3>Clear Operation Chain</h3>
+                                    <p>Clear the operation chain after each execution</p>
+                                </div>
+                                <div flex></div>
+                                <md-input-container class="md-secondary">
+                                    <md-checkbox ng-change="ctrl.saveClearChainAfterExecution()" ng-model="ctrl.clearChainAfterExecution"></md-checkbox>
+                                </md-input-container>
+                            </md-list-item>
                         </md-list>
                     </form>
                 </md-card>
