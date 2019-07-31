@@ -23,12 +23,3 @@ do
         exit 1;
     fi
 done
-
-if [[ "$MODULES" == 'analytics-ui' ]]; then
-    wget https://raw.githubusercontent.com/creationix/nvm/v0.31.0/nvm.sh -O ~/.nvm/nvm.sh
-    source ~/.nvm/nvm.sh
-    nvm install node
-
-    node --version
-    cd analytics/analytics-ui
-fi

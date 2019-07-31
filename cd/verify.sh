@@ -9,6 +9,16 @@ if [[ "$RELEASE" != 'true' ]] && [[ "$TRAVIS_PULL_REQUEST" != 'false' ]]; then
         echo "Running verify script: mvn -q verify -P travis,test -B"
         mvn -q verify -P travis,test -B
     elif [[ "$MODULES" == 'analytics-ui' ]]; then
+        wget https://raw.githubusercontent.com/creationix/nvm/v0.31.0/nvm.sh -O ~/.nvm/nvm.sh
+        source ~/.nvm/nvm.sh
+        nvm install node
+
+        node --version
+        cd analytics/analytics-ui
+
+        npm install -g @angular/cli
+        npm install
+
         ng lint
         ng test --watch=false --progress=false --browsers=ChromeHeadlessCI
         ng build --prod
