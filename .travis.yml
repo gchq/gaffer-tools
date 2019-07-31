@@ -25,7 +25,7 @@ env:
   - MODULES=:random-element-generation,:performance-testing,:performance-testing-core,:performance-testing-accumulo-store,:performance-testing-aws
   - MODULES=:slider
   - MODULES=:analytics,:analytics-functions,:analytics-operations,:analytics-rest
-  - MODULES=:analytics-ui
+  - MODULES=analytics-ui
     language: node_js
     node_js:
       - "10"
