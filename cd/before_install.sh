@@ -25,8 +25,8 @@ do
 done
 
 if [[ "$MODULES" == 'analytics-ui' ]]; then
-    wget https://raw.githubusercontent.com/nvm-sh/nvm/v0.34.0/install.sh -O ~/.nvm/install.sh
-    source ~/.nvm/install.sh
+    wget https://raw.githubusercontent.com/creationix/nvm/v0.31.0/nvm.sh -O ~/.nvm/nvm.sh
+    source ~/.nvm/nvm.sh
     nvm install node
 
     node --version
