@@ -26,4 +26,5 @@ done
 
 if [[ "$MODULES" == 'analytics-ui' ]]; then
     cd analytics/analytics-ui
+    nvm install node
 fi

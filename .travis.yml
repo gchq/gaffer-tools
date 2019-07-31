@@ -3,7 +3,7 @@ cache:
   timeout: 1000
   directories:
   - $HOME/.m2
-  - node_modules
+  - analytics/analytics-ui/node_modules
 dist: trusty
 jdk:
   - oraclejdk8
