@@ -7,8 +7,6 @@ cache:
 dist: trusty
 jdk:
   - oraclejdk8
-node_js:
-  - "10"
 sudo: required
 addons:
   firefox: latest
