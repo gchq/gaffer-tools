@@ -21,7 +21,7 @@ import uk.gov.gchq.koryphe.function.KorypheFunction;
 public class ToDouble extends KorypheFunction<Object, Double> {
 
     @Override
-    public Double apply(Object o) {
+    public Double apply(final Object o) {
 
         if (null == o) {
             return null;

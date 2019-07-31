@@ -28,7 +28,7 @@ public class ToFreqMap extends KorypheFunction<String, FreqMap> {
     @Override
     public FreqMap apply(final String s) {
         FreqMap freqMap = new FreqMap();
-        if(s == null){
+        if (s == null) {
             return freqMap;
         }
         if (s.equals("")) {

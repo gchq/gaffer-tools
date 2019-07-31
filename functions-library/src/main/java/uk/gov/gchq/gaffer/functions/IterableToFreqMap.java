@@ -22,9 +22,9 @@ import uk.gov.gchq.koryphe.function.KorypheFunction;
 public class IterableToFreqMap extends KorypheFunction<Iterable<String>, FreqMap> {
 
     @Override
-    public FreqMap apply(Iterable<String> strings) {
+    public FreqMap apply(final Iterable<String> strings) {
         FreqMap freqMap = new FreqMap();
-        for(String s : strings){
+        for (final String s : strings) {
             freqMap.upsert(s);
         }
         return freqMap;

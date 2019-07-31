@@ -26,7 +26,7 @@ import static org.junit.Assert.assertEquals;
 public class StringSplitterTests {
 
     @Test
-    public void testCanSplitString(){
+    public void testCanSplitString() {
 
         String input = "a,b,c,def,g";
         StringSplitter splitter = new StringSplitter(",");

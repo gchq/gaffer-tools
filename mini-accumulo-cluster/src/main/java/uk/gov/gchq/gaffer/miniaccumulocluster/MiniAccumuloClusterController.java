@@ -99,7 +99,7 @@ public class MiniAccumuloClusterController {
                 isTempDir = cmd.hasOption("t") || DEFAULT_IS_TEMP_DIR;
                 password = cmd.getOptionValue("p", DEFAULT_PASSWORD);
                 instanceName = cmd.getOptionValue("i", DEFAULT_INSTANCE_NAME);
-                if(cmd.hasOption("f")){
+                if (cmd.hasOption("f")) {
                     storePropertiesTemplatePath = cmd.getOptionValue("f");
                     defaultTemplateSet = false;
                     LOGGER.info("\tStore Properties Template Path set to: " + storePropertiesTemplatePath);
@@ -218,9 +218,9 @@ public class MiniAccumuloClusterController {
 
         try {
             final File propsFile = new File(clusterPath + "/store.properties");
-            if(defaultTemplateSet){
+            if (defaultTemplateSet) {
                 FileUtils.copyInputStreamToFile(getClass().getResourceAsStream(storePropertiesTemplatePath), propsFile);
-            }else{
+            } else {
                 FileUtils.copyInputStreamToFile(new FileInputStream(new File(storePropertiesTemplatePath)), propsFile);
             }
             FileUtils.write(propsFile, "\naccumulo.zookeepers=" + cluster.getZooKeepers(), true);

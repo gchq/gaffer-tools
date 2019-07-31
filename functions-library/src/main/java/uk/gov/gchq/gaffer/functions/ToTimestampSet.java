@@ -13,9 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package uk.gov.gchq.gaffer.functions;
 
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+
 import uk.gov.gchq.gaffer.commonutil.CommonTimeUtil;
 import uk.gov.gchq.gaffer.commonutil.Required;
 import uk.gov.gchq.gaffer.time.BoundedTimestampSet;
@@ -41,7 +43,7 @@ public class ToTimestampSet extends KorypheFunction<Long, TimestampSet> {
     public ToTimestampSet() {
     }
 
-    public ToTimestampSet(final CommonTimeUtil.TimeBucket bucket, boolean toMilliseconds) {
+    public ToTimestampSet(final CommonTimeUtil.TimeBucket bucket, final boolean toMilliseconds) {
         this.bucket = bucket;
         if (toMilliseconds) {
             this.millisCorrection = 1000L;
@@ -76,7 +78,7 @@ public class ToTimestampSet extends KorypheFunction<Long, TimestampSet> {
         return bucket;
     }
 
-    public void setBucket(final String bucket){
+    public void setBucket(final String bucket) {
         this.bucket = CommonTimeUtil.TimeBucket.valueOf(bucket);
     }
 

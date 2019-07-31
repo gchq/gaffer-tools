@@ -17,6 +17,7 @@
 package uk.gov.gchq.gaffer.functions;
 
 import com.clearspring.analytics.stream.cardinality.HyperLogLogPlus;
+
 import uk.gov.gchq.koryphe.function.KorypheFunction;
 
 public class IterableToHyperLogLogPlus extends KorypheFunction<Iterable<Object>, HyperLogLogPlus> {
@@ -34,7 +35,7 @@ public class IterableToHyperLogLogPlus extends KorypheFunction<Iterable<Object>,
     @Override
     public HyperLogLogPlus apply(final Iterable<Object> o) {
         final HyperLogLogPlus hllp = new HyperLogLogPlus(p, sp);
-        for(Object obj : o){
+        for (final Object obj : o) {
             if (null != o) {
                 hllp.offer(o);
             }

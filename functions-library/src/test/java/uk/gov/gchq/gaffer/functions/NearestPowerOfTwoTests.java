@@ -26,9 +26,9 @@ public class NearestPowerOfTwoTests {
     public void testCorrectPowersCalculated() {
         NearestPowerOfTwo nearestPowerOfTwo = new NearestPowerOfTwo();
         long twoToThePower = 1L;
-        for(long l=0;l<63;l++){
+        for (long l = 0; l < 63; l++) {
             assertEquals(new Long(l), nearestPowerOfTwo.apply(twoToThePower));
-            twoToThePower = twoToThePower*2L;
+            twoToThePower = twoToThePower * 2L;
         }
     }
 

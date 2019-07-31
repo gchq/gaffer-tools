@@ -17,6 +17,7 @@
 package uk.gov.gchq.gaffer.functions;
 
 import uk.gov.gchq.gaffer.commonutil.CommonTimeUtil;
+
 import uk.gov.gchq.koryphe.function.KorypheFunction;
 
 public class ToTimeBucket extends KorypheFunction<Long, Long> {
@@ -28,7 +29,7 @@ public class ToTimeBucket extends KorypheFunction<Long, Long> {
         return bucket;
     }
 
-    public void setBucket(String bucket) {
+    public void setBucket(final String bucket) {
         this.bucket = bucket;
     }
 
@@ -36,12 +37,12 @@ public class ToTimeBucket extends KorypheFunction<Long, Long> {
         return millisCorrection;
     }
 
-    public void setMillisCorrection(Long millisCorrection) {
+    public void setMillisCorrection(final Long millisCorrection) {
         this.millisCorrection = millisCorrection;
     }
 
     @Override
-    public Long apply(Long time) {
-        return CommonTimeUtil.timeToBucket(time*millisCorrection, CommonTimeUtil.TimeBucket.valueOf(bucket));
+    public Long apply(final Long time) {
+        return CommonTimeUtil.timeToBucket(time * millisCorrection, CommonTimeUtil.TimeBucket.valueOf(bucket));
     }
 }
