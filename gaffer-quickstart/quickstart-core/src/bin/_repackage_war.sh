@@ -1,5 +1,7 @@
 #!/bin/bash
 
+echo -e "adding custom operations to rest service"
+
 source $GAFFER_HOME/bin/_version.sh
 
 CUSTOM_OP_DIR=$1

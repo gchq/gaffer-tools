@@ -1,7 +1,24 @@
+/*
+ * Copyright 2016-2018 Crown Copyright
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package uk.gov.gchq.gaffer.quickstart.operation;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.apache.commons.lang3.exception.CloneFailedException;
+
 import uk.gov.gchq.gaffer.commonutil.Required;
 import uk.gov.gchq.gaffer.operation.Operation;
 import uk.gov.gchq.gaffer.operation.Validatable;
@@ -28,7 +45,7 @@ public class CalculateSplitPointsQuickstart implements Operation, Validatable {
         this.dataPath = inputPath;
     }
 
-    public void setOutputPath(String outputPath) {
+    public void setOutputPath(final String outputPath) {
         this.outputPath = outputPath;
     }
 
@@ -36,7 +53,7 @@ public class CalculateSplitPointsQuickstart implements Operation, Validatable {
         return failurePath;
     }
 
-    public void setFailurePath(String failurePath) {
+    public void setFailurePath(final String failurePath) {
         this.failurePath = failurePath;
     }
 
@@ -52,15 +69,15 @@ public class CalculateSplitPointsQuickstart implements Operation, Validatable {
         return numSplits;
     }
 
-    public void setNumSplits(int numSplits) {
+    public void setNumSplits(final int numSplits) {
         this.numSplits = numSplits;
     }
 
-    public String getDataPath(){
+    public String getDataPath() {
         return dataPath;
     }
 
-    public String getElementGeneratorConfig(){
+    public String getElementGeneratorConfig() {
         return this.elementGeneratorConfig;
     }
 
@@ -86,7 +103,7 @@ public class CalculateSplitPointsQuickstart implements Operation, Validatable {
 
     @JsonIgnore
     @Override
-    public void setOptions(Map<String, String> options) {
+    public void setOptions(final Map<String, String> options) {
 
     }
 
@@ -96,7 +113,7 @@ public class CalculateSplitPointsQuickstart implements Operation, Validatable {
     }
 
     @Override
-    public void setSkipInvalidElements(boolean skipInvalidElements) {
+    public void setSkipInvalidElements(final boolean skipInvalidElements) {
 
     }
 
@@ -106,7 +123,7 @@ public class CalculateSplitPointsQuickstart implements Operation, Validatable {
     }
 
     @Override
-    public void setValidate(boolean validate) {
+    public void setValidate(final boolean validate) {
         this.validate = validate;
     }
 
@@ -114,7 +131,7 @@ public class CalculateSplitPointsQuickstart implements Operation, Validatable {
         return sampleRatioForSplits;
     }
 
-    public void setSampleRatioForSplits(String sampleRatioForSplits) {
+    public void setSampleRatioForSplits(final String sampleRatioForSplits) {
         this.sampleRatioForSplits = sampleRatioForSplits;
     }
 
@@ -122,7 +139,7 @@ public class CalculateSplitPointsQuickstart implements Operation, Validatable {
         return splitsFilePath;
     }
 
-    public void setSplitsFilePath(String splitsFilePath) {
+    public void setSplitsFilePath(final String splitsFilePath) {
         this.splitsFilePath = splitsFilePath;
     }
 
@@ -131,42 +148,42 @@ public class CalculateSplitPointsQuickstart implements Operation, Validatable {
             super(new CalculateSplitPointsQuickstart());
         }
 
-        public Builder dataPath(final String inputPath){
+        public Builder dataPath(final String inputPath) {
             _getOp().setDataPath(inputPath);
             return _self();
         }
 
-        public Builder outputPath(final String outputPath){
+        public Builder outputPath(final String outputPath) {
             _getOp().setOutputPath(outputPath);
             return _self();
         }
 
-        public Builder failurePath(final String failurePath){
+        public Builder failurePath(final String failurePath) {
             _getOp().setFailurePath(failurePath);
             return _self();
         }
 
-        public Builder validate(final boolean validate){
+        public Builder validate(final boolean validate) {
             _getOp().setValidate(validate);
             return _self();
         }
 
-        public Builder numPartitions(final int numPartitions){
+        public Builder numPartitions(final int numPartitions) {
             _getOp().setNumSplits(numPartitions);
             return _self();
         }
 
-        public Builder elementGeneratorConfig(final String elementGeneratorConfigPath){
+        public Builder elementGeneratorConfig(final String elementGeneratorConfigPath) {
             _getOp().setElementGeneratorConfig(elementGeneratorConfigPath);
             return _self();
         }
 
-        public Builder sampleRatioForSplits(final String sampleRatioForSplits){
+        public Builder sampleRatioForSplits(final String sampleRatioForSplits) {
             _getOp().setSampleRatioForSplits(sampleRatioForSplits);
             return _self();
         }
 
-        public Builder splitsFilePath(final String splitsFilePath){
+        public Builder splitsFilePath(final String splitsFilePath) {
             _getOp().setSplitsFilePath(splitsFilePath);
             return _self();
         }

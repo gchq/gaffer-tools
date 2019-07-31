@@ -17,6 +17,7 @@
 package uk.gov.gchq.gaffer.quickstart.operation.handler;
 
 import org.apache.commons.io.FileUtils;
+
 import uk.gov.gchq.gaffer.jsonserialisation.JSONSerialiser;
 import uk.gov.gchq.gaffer.operation.OperationChain;
 import uk.gov.gchq.gaffer.operation.OperationException;

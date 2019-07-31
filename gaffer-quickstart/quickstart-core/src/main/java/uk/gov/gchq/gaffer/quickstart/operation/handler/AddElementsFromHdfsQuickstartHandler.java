@@ -18,6 +18,7 @@ package uk.gov.gchq.gaffer.quickstart.operation.handler;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.spark.launcher.SparkLauncher;
+
 import uk.gov.gchq.gaffer.accumulostore.AccumuloProperties;
 import uk.gov.gchq.gaffer.accumulostore.AccumuloStore;
 import uk.gov.gchq.gaffer.exception.SerialisationException;
@@ -46,18 +47,18 @@ public class AddElementsFromHdfsQuickstartHandler implements OperationHandler<Ad
     private static final String APP_NAME = "AddElementsFromQuickstart";
 
     @Override
-    public Object doOperation(AddElementsFromHdfsQuickstart operation, Context context, Store store) throws OperationException {
+    public Object doOperation(final AddElementsFromHdfsQuickstart operation, final Context context, final Store store) throws OperationException {
         doOperation(operation, context, (AccumuloStore) store);
         return null;
     }
 
-    private void doOperation(AddElementsFromHdfsQuickstart operation, Context context, AccumuloStore accumuloStore) throws OperationException {
+    private void doOperation(final AddElementsFromHdfsQuickstart operation, final Context context, final AccumuloStore accumuloStore) throws OperationException {
 
         AccumuloProperties properties = accumuloStore.getProperties();
         String accumuloPropertiesJson  = null;
         try {
             accumuloPropertiesJson = new String(JSONSerialiser.serialise(properties));
-        } catch (SerialisationException e) {
+        } catch (final SerialisationException e) {
             e.printStackTrace();
         }
 
@@ -76,15 +77,15 @@ public class AddElementsFromHdfsQuickstartHandler implements OperationHandler<Ad
         String outputPath;
         String numSplitsString;
 
-        if(null == operation.getFailurePath()){
+        if (null == operation.getFailurePath()) {
             failurePath = APP_NAME + "_" + dateString + "/failure";
-        }else{
+        } else  {
             failurePath = operation.getFailurePath();
         }
 
-        if(null == operation.getOutputPath()){
+        if (null == operation.getOutputPath()) {
             outputPath = APP_NAME + "_" + dateString + "/output";
-        }else{
+        } else {
             outputPath = operation.getOutputPath();
         }
 
@@ -95,20 +96,20 @@ public class AddElementsFromHdfsQuickstartHandler implements OperationHandler<Ad
 
         int numSplits = operation.getNumSplits();
 
-        if(numSplits == 0){
+        if (numSplits == 0) {
             int numTabletServers = 0;
             try {
                 numTabletServers = (accumuloStore.getTabletServers().size());
-            } catch (StoreException e) {
+            } catch (final StoreException e) {
                 e.printStackTrace();
             }
 
-            if(0 != numTabletServers){
+            if (0 != numTabletServers) {
                 numSplitsString = String.valueOf(numTabletServers);
-            }else{
+            } else {
                 numSplitsString = String.valueOf(operation.getNumSplits());
             }
-        }else{
+        } else {
             numSplitsString = String.valueOf(operation.getNumSplits());
         }
 
@@ -120,7 +121,7 @@ public class AddElementsFromHdfsQuickstartHandler implements OperationHandler<Ad
         try {
             FileUtils.write(logFile, "logs for job " + APP_NAME, true);
             FileUtils.write(errFile, "logs for job " + APP_NAME, true);
-        } catch (IOException e) {
+        } catch (final IOException e) {
             e.printStackTrace();
         }
 
@@ -145,7 +146,7 @@ public class AddElementsFromHdfsQuickstartHandler implements OperationHandler<Ad
                     )
                     .launch();
 
-        } catch (IOException e) {
+        } catch (final IOException e) {
             throw new OperationException("cannot launch job " + jobMainClass + " from " + jarPath);
         }
 

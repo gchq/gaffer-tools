@@ -1,3 +1,19 @@
+/*
+ * Copyright 2016-2018 Crown Copyright
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package uk.gov.gchq.gaffer.quickstart.operation.handler.job;
 
 import org.apache.accumulo.core.data.Key;
@@ -9,6 +25,7 @@ import org.apache.hadoop.fs.Path;
 import org.apache.spark.SparkContext;
 import org.apache.spark.api.java.JavaSparkContext;
 import org.apache.spark.broadcast.Broadcast;
+
 import uk.gov.gchq.gaffer.accumulostore.AccumuloProperties;
 import uk.gov.gchq.gaffer.accumulostore.key.AccumuloElementConverter;
 import uk.gov.gchq.gaffer.commonutil.CommonConstants;
@@ -36,7 +53,7 @@ import java.util.List;
 
 public class CalculateSplitPointsJob {
 
-    private static final int numArgs = 11;
+    private static final int NUM_ARGS = 11;
 
     private String dataPath;
     private String generatorPath;
@@ -52,20 +69,20 @@ public class CalculateSplitPointsJob {
     private String sampleRatioForSplitsString;
     private String keyConverterClassName;
 
-    public static void main(String[] args){
+    public static void main(final String[] args) {
 
-        if(args.length != numArgs){
-            throw new IllegalArgumentException("not enough args: got " + args.length +", need " + numArgs);
+        if (args.length != NUM_ARGS) {
+            throw new IllegalArgumentException("not enough args: got " + args.length + ", need " + NUM_ARGS);
         }
 
         try {
             new CalculateSplitPointsJob().run(args);
-        } catch (OperationException e) {
+        } catch (final OperationException e) {
             e.printStackTrace();
         }
     }
 
-    private void run(String[] args) throws OperationException{
+    private void run(final String[] args) throws OperationException {
 
         this.dataPath = args[0];
         this.generatorPath = args[1];
@@ -86,7 +103,7 @@ public class CalculateSplitPointsJob {
 
         try {
             accumuloProperties = JSONSerialiser.deserialise(accumuloStorePropertiesJson, AccumuloProperties.class);
-        } catch (SerialisationException e) {
+        } catch (final SerialisationException e) {
             throw new OperationException(e.getMessage());
         }
 
@@ -94,7 +111,7 @@ public class CalculateSplitPointsJob {
 
         try {
             schema = JSONSerialiser.deserialise(schemaJson, Schema.class);
-        } catch (SerialisationException e) {
+        } catch (final SerialisationException e) {
             throw new OperationException(e.getMessage());
         }
 
@@ -137,7 +154,7 @@ public class CalculateSplitPointsJob {
         try {
             Constructor constructor = Class.forName(keyConverterClassName).getConstructor(Schema.class);
             keyConverter = (AccumuloElementConverter) constructor.newInstance(schema);
-        } catch (InstantiationException | IllegalAccessException | ClassNotFoundException | NoSuchMethodException | InvocationTargetException e) {
+        } catch (final InstantiationException | IllegalAccessException | ClassNotFoundException | NoSuchMethodException | InvocationTargetException e) {
             e.printStackTrace();
         }
 
@@ -160,7 +177,7 @@ public class CalculateSplitPointsJob {
         FileSystem fs = null;
         try {
             fs = FileSystem.get(conf);
-        } catch (IOException e) {
+        } catch (final IOException e) {
             e.printStackTrace();
         }
 
@@ -169,16 +186,16 @@ public class CalculateSplitPointsJob {
             splitsWriter = new PrintStream(
                     new BufferedOutputStream(fs.create(new Path(splitsFilePath), true)),
                     false, CommonConstants.UTF_8);
-        } catch (IOException e) {
+        } catch (final IOException e) {
             e.printStackTrace();
         }
 
         int i = 0;
-        for(Key k : rowKeys){
-            if(i == outputNth){
+        for (final Key k : rowKeys) {
+            if (i == outputNth) {
                 String split = new String(Base64.encodeBase64(k.getRow().getBytes()));
                 splitsWriter.println(split);
-                i=0;
+                i = 0;
             }
             i++;
         }
@@ -187,7 +204,7 @@ public class CalculateSplitPointsJob {
 
         try {
             fs.close();
-        } catch (IOException e) {
+        } catch (final IOException e) {
             e.printStackTrace();
         }
 

@@ -21,6 +21,7 @@ import org.apache.spark.SparkContext;
 import org.apache.spark.api.java.JavaRDD;
 import org.apache.spark.api.java.JavaSparkContext;
 import org.apache.spark.broadcast.Broadcast;
+
 import uk.gov.gchq.gaffer.accumulostore.AccumuloProperties;
 import uk.gov.gchq.gaffer.data.element.Element;
 import uk.gov.gchq.gaffer.exception.SerialisationException;
@@ -41,7 +42,7 @@ import java.io.IOException;
 
 public class LoadFromHdfsJob {
 
-    private static final int numArgs = 8;
+    private static final int NUM_ARGS = 8;
 
     private String dataPath;
     private String generatorPath;
@@ -53,21 +54,21 @@ public class LoadFromHdfsJob {
     private String tableName;
     private String accumuloStorePropertiesJson;
 
-    public static void main(String[] args){
+    public static void main(final String[] args) {
 
-        if(args.length != numArgs){
-            throw new IllegalArgumentException("not enough args: got " + args.length +", need " + numArgs);
+        if (args.length != NUM_ARGS) {
+            throw new IllegalArgumentException("not enough args: got " + args.length + ", need " + NUM_ARGS);
         }
 
         try {
             new LoadFromHdfsJob().run(args);
-        } catch (OperationException e) {
+        } catch (final OperationException e) {
             e.printStackTrace();
         }
 
     }
 
-    public void run(String[] args) throws OperationException {
+    public void run(final String[] args) throws OperationException {
 
         this.dataPath = args[0];
         this.generatorPath = args[1];
@@ -84,7 +85,7 @@ public class LoadFromHdfsJob {
 
         try {
             accumuloProperties = JSONSerialiser.deserialise(accumuloStorePropertiesJson, AccumuloProperties.class);
-        } catch (SerialisationException e) {
+        } catch (final SerialisationException e) {
             throw new OperationException(e.getMessage());
         }
 
@@ -92,7 +93,7 @@ public class LoadFromHdfsJob {
 
         try {
             schema = JSONSerialiser.deserialise(schemaJson, Schema.class);
-        } catch (SerialisationException e) {
+        } catch (final SerialisationException e) {
             throw new OperationException(e.getMessage());
         }
 
@@ -140,7 +141,7 @@ public class LoadFromHdfsJob {
 
         try {
             graph.execute(importRDDOfElements, user);
-        } catch (OperationException e) {
+        } catch (final OperationException e) {
             e.printStackTrace();
         }
 

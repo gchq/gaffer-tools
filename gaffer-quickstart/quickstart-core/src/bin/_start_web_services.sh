@@ -95,6 +95,7 @@ if [ -z $CUSTOM_OPS_DIR ]
 then
     echo -e "\ngaffer.store.operation.declarations=sparkAccumuloOperationsDeclarations.json,${GAFFER_HOME}/conf/operationDeclarations.json\n" >> $STORE_PROPERTIES
 else
+    echo -e "adding custom operations..."
     $GAFFER_HOME/bin/_repackage_war.sh $CUSTOM_OPS_DIR >> $GAFFER_HOME/gaffer.log 2>&1
     customOpDecs=$(ls -m $CUSTOM_OPS_DIR/*.json)
     echo -e "\ngaffer.store.operation.declarations=sparkAccumuloOperationsDeclarations.json,${GAFFER_HOME}/conf/operationDeclarations.json,${customOpDecs}\n" >> $STORE_PROPERTIES

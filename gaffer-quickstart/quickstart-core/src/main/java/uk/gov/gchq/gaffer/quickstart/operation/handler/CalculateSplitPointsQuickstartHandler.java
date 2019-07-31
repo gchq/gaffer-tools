@@ -1,7 +1,24 @@
+/*
+ * Copyright 2016-2018 Crown Copyright
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package uk.gov.gchq.gaffer.quickstart.operation.handler;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.spark.launcher.SparkLauncher;
+
 import uk.gov.gchq.gaffer.accumulostore.AccumuloProperties;
 import uk.gov.gchq.gaffer.accumulostore.AccumuloStore;
 import uk.gov.gchq.gaffer.exception.SerialisationException;
@@ -30,18 +47,18 @@ public class CalculateSplitPointsQuickstartHandler implements OperationHandler<C
     private static final String APP_NAME = "AddElementsFromQuickstart";
 
     @Override
-    public Object doOperation(CalculateSplitPointsQuickstart operation, Context context, Store store) throws OperationException {
+    public Object doOperation(final CalculateSplitPointsQuickstart operation, final Context context, final Store store) throws OperationException {
         doOperation(operation, context, (AccumuloStore) store);
         return null;
     }
 
-    private void doOperation(CalculateSplitPointsQuickstart operation, Context context, AccumuloStore accumuloStore) throws OperationException {
+    private void doOperation(final CalculateSplitPointsQuickstart operation, final Context context, final AccumuloStore accumuloStore) throws OperationException {
 
         AccumuloProperties properties = accumuloStore.getProperties();
         String accumuloPropertiesJson  = null;
         try {
             accumuloPropertiesJson = new String(JSONSerialiser.serialise(properties));
-        } catch (SerialisationException e) {
+        } catch (final SerialisationException e) {
             e.printStackTrace();
         }
 
@@ -63,24 +80,24 @@ public class CalculateSplitPointsQuickstartHandler implements OperationHandler<C
 
         String splitsFilePath = null;
 
-        if (null == operation.getSplitsFilePath()){
+        if (null == operation.getSplitsFilePath()) {
             splitsFilePath = APP_NAME + "_" + dateString + "/splitsFile";
-        }else{
+        } else {
             splitsFilePath = operation.getSplitsFilePath();
         }
 
         String sampleRatioForSplitsString = operation.getSampleRatioForSplits();
         String keyConverterClassName = accumuloStore.getKeyPackage().getKeyConverter().getClass().getCanonicalName();
 
-        if(null == operation.getFailurePath()){
+        if (null == operation.getFailurePath()) {
             failurePath = APP_NAME + "_" + dateString + "/failure";
-        }else{
+        } else {
             failurePath = operation.getFailurePath();
         }
 
-        if(null == operation.getOutputPath()){
+        if (null == operation.getOutputPath()) {
             outputPath = APP_NAME + "_" + dateString + "/output";
-        }else{
+        } else {
             outputPath = operation.getOutputPath();
         }
 
@@ -91,20 +108,20 @@ public class CalculateSplitPointsQuickstartHandler implements OperationHandler<C
 
         int numSplits = operation.getNumSplits();
 
-        if(numSplits == 0){
+        if (numSplits == 0) {
             int numTabletServers = 0;
             try {
                 numTabletServers = (accumuloStore.getTabletServers().size());
-            } catch (StoreException e) {
+            } catch (final StoreException e) {
                 e.printStackTrace();
             }
 
-            if(0 != numTabletServers){
+            if (0 != numTabletServers) {
                 numSplitsString = String.valueOf(numTabletServers);
-            }else{
+            } else {
                 numSplitsString = String.valueOf(operation.getNumSplits());
             }
-        }else{
+        } else {
             numSplitsString = String.valueOf(operation.getNumSplits());
         }
 
@@ -116,7 +133,7 @@ public class CalculateSplitPointsQuickstartHandler implements OperationHandler<C
         try {
             FileUtils.write(logFile, "logs for job " + APP_NAME, true);
             FileUtils.write(errFile, "logs for job " + APP_NAME, true);
-        } catch (IOException e) {
+        } catch (final IOException e) {
             e.printStackTrace();
         }
 
@@ -144,7 +161,7 @@ public class CalculateSplitPointsQuickstartHandler implements OperationHandler<C
                     )
                     .launch();
 
-        } catch (IOException e) {
+        } catch (final IOException e) {
             throw new OperationException("cannot launch job " + jobMainClass + " from " + jarPath);
         }
 

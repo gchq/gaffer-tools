@@ -50,7 +50,7 @@ public class CsvElementDef extends HashMap<String, Object> {
         return this;
     }
 
-    public CsvElementDef group(final String group){
+    public CsvElementDef group(final String group) {
         put("GROUP", group);
         return this;
     }

@@ -21,12 +21,12 @@ import org.apache.catalina.startup.Tomcat;
 import org.apache.commons.io.FileUtils;
 
 import javax.servlet.ServletException;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.*;
 
 public class GafferWebServices {
 
@@ -93,7 +93,7 @@ public class GafferWebServices {
         System.setProperty("gaffer.graph.config", graphConfigPath);
         System.setProperty("gaffer.serialiser.json.modules", "uk.gov.gchq.gaffer.sketches.serialisation.json.SketchesJsonModules");
 
-        for(String key : restOptions.keySet()){
+        for (final String key : restOptions.keySet()) {
             System.setProperty(key, restOptions.get(key));
         }
 
@@ -107,16 +107,16 @@ public class GafferWebServices {
         System.exit(0);
     }
 
-    private Map<String, String> getRestOptions(String restOptionsPath){
+    private Map<String, String> getRestOptions(final String restOptionsPath) {
         Map<String, String> result = new HashMap<>();
         List<String> lines = null;
         try {
             lines = FileUtils.readLines(new File(restOptionsPath));
-        } catch (IOException e) {
+        } catch (final IOException e) {
             e.printStackTrace();
         }
 
-        for(String s : lines){
+        for (final String s : lines) {
             String[] t = s.split("=");
             result.put(t[0], t[1]);
         }
@@ -176,7 +176,7 @@ public class GafferWebServices {
         return restOptionsPath;
     }
 
-    public void setRestOptionsPath(String restOptionsPath) {
+    public void setRestOptionsPath(final String restOptionsPath) {
         this.restOptionsPath = restOptionsPath;
     }
 
@@ -184,7 +184,7 @@ public class GafferWebServices {
         return port;
     }
 
-    public void setPort(int port) {
+    public void setPort(final int port) {
         this.port = port;
     }
 }

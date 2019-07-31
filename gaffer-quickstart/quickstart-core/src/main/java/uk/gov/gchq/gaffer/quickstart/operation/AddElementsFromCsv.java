@@ -18,6 +18,7 @@ package uk.gov.gchq.gaffer.quickstart.operation;
 
 
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+
 import uk.gov.gchq.gaffer.commonutil.Required;
 import uk.gov.gchq.gaffer.operation.Operation;
 import uk.gov.gchq.gaffer.operation.Validatable;
@@ -95,7 +96,7 @@ public class AddElementsFromCsv implements
         return delimiter;
     }
 
-    public void setDelimiter(String delimiter) {
+    public void setDelimiter(final String delimiter) {
         this.delimiter = delimiter;
     }
 
@@ -103,7 +104,7 @@ public class AddElementsFromCsv implements
         return quoted;
     }
 
-    public void setQuoted(boolean quoted) {
+    public void setQuoted(final boolean quoted) {
         this.quoted = quoted;
     }
 
@@ -111,7 +112,7 @@ public class AddElementsFromCsv implements
         return quoteChar;
     }
 
-    public void setQuoteChar(String quoteChar) {
+    public void setQuoteChar(final String quoteChar) {
         this.quoteChar = quoteChar;
     }
 

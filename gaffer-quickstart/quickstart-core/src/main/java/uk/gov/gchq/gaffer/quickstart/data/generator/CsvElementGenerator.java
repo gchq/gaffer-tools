@@ -23,8 +23,15 @@ import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
 import org.apache.commons.lang3.StringUtils;
-import uk.gov.gchq.gaffer.commonutil.iterable.*;
-import uk.gov.gchq.gaffer.data.element.*;
+
+import uk.gov.gchq.gaffer.commonutil.iterable.LimitedCloseableIterable;
+import uk.gov.gchq.gaffer.commonutil.iterable.TransformIterable;
+import uk.gov.gchq.gaffer.commonutil.iterable.TransformOneToManyIterable;
+import uk.gov.gchq.gaffer.commonutil.iterable.Validator;
+import uk.gov.gchq.gaffer.data.element.Edge;
+import uk.gov.gchq.gaffer.data.element.Element;
+import uk.gov.gchq.gaffer.data.element.Entity;
+import uk.gov.gchq.gaffer.data.element.IdentifierType;
 import uk.gov.gchq.gaffer.data.element.Properties;
 import uk.gov.gchq.gaffer.data.element.function.ElementFilter;
 import uk.gov.gchq.gaffer.data.generator.ElementGenerator;
@@ -39,7 +46,13 @@ import uk.gov.gchq.koryphe.tuple.function.TupleAdaptedFunction;
 import java.io.IOException;
 import java.io.Serializable;
 import java.io.StringReader;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 import static java.util.Objects.requireNonNull;
 
@@ -120,7 +133,7 @@ public class CsvElementGenerator implements OneToManyElementGenerator<String>, S
             }
 
             //TODO skipInvalid
-            if(!skipInvalid){
+            if (!skipInvalid) {
                 if (!requiredFieldsResult.isValid()) {
                     throw new IllegalArgumentException("CSV is invalid: " + csv + "\n " + requiredFieldsResult.getErrorString());
                 }

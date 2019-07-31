@@ -16,9 +16,6 @@
 
 package uk.gov.gchq.gaffer.quickstart.data.element.function;
 
-import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
-import uk.gov.gchq.gaffer.commonutil.ToStringBuilder;
 import uk.gov.gchq.gaffer.data.element.Properties;
 import uk.gov.gchq.gaffer.data.element.function.PropertiesTuple;
 import uk.gov.gchq.koryphe.impl.function.Identity;
@@ -34,7 +31,6 @@ import java.util.function.Function;
  */
 public class PropertiesTransformer extends TupleAdaptedFunctionComposite<String> implements Serializable {
 
-//    private final PropertiesTuple propertiesTuple = new PropertiesTuple();
 
     public Properties apply(final Properties properties) {
         PropertiesTuple propsTuple = new PropertiesTuple();
@@ -42,39 +38,6 @@ public class PropertiesTransformer extends TupleAdaptedFunctionComposite<String>
         apply(propsTuple);
         return properties;
     }
-
-//    @Override
-//    public boolean equals(final Object obj) {
-//        if (this == obj) {
-//            return true;
-//        }
-//
-//        if (null == obj || getClass() != obj.getClass()) {
-//            return false;
-//        }
-//
-//        final PropertiesTransformer that = (PropertiesTransformer) obj;
-//
-//        return new EqualsBuilder()
-//                .appendSuper(super.equals(obj))
-//                .append(propertiesTuple, that.propertiesTuple)
-//                .isEquals();
-//    }
-//
-//    @Override
-//    public int hashCode() {
-//        return new HashCodeBuilder(47, 13)
-//                .appendSuper(super.hashCode())
-//                .append(propertiesTuple)
-//                .toHashCode();
-//    }
-//
-//    @Override
-//    public String toString() {
-//        return new ToStringBuilder(this)
-//                .append("propertiesTuple", propertiesTuple)
-//                .toString();
-//    }
 
     public static class Builder {
         private final PropertiesTransformer transformer;
