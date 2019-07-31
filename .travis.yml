@@ -40,26 +40,26 @@ matrix:
         - ./cd/deploy.sh
 
     - language: node_js
-        node_js:
-          - "10"
-        dist: trusty
-        cache:
-          timeout: 1000
-          directories:
-            - "node_modules"
-        sudo: required
-        addons:
-          apt:
-            sources:
-              - google-chrome
-            packages:
-              - google-chrome-stable
-        before_install:
-          - cd ./analytics/analytics-ui
-        install:
-          - npm install -g @angular/cli
-          - npm install
-        script:
-          - ng lint
-          - ng test --watch=false --progress=false --browsers=ChromeHeadlessCI
-          - ng build --prod
+      node_js:
+        - "10"
+      dist: trusty
+      cache:
+        timeout: 1000
+        directories:
+          - "node_modules"
+      sudo: required
+      addons:
+        apt:
+          sources:
+            - google-chrome
+          packages:
+            - google-chrome-stable
+      before_install:
+        - cd ./analytics/analytics-ui
+      install:
+        - npm install -g @angular/cli
+        - npm install
+      script:
+        - ng lint
+        - ng test --watch=false --progress=false --browsers=ChromeHeadlessCI
+        - ng build --prod
