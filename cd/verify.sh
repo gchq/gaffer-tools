@@ -2,12 +2,16 @@
 
 set -e
 
-if [ "$RELEASE" != 'true' ] && [ "$TRAVIS_PULL_REQUEST" != 'false' ] && ["$MODULES" != 'analytics-ui']; then
-    if [ "$MODULES" == '' ]; then
+if [[ "$RELEASE" != 'true' ]] && [[ "$TRAVIS_PULL_REQUEST" != 'false' ]]; then
+    if [[ "$MODULES" == '' ]]; then
         echo "Running verify script: mvn -q verify -P travis,analyze -B"
         mvn -q verify -P travis,analyze -B
         echo "Running verify script: mvn -q verify -P travis,test -B"
         mvn -q verify -P travis,test -B
+    elif [[ "$MODULES" == 'analytics-ui' ]]; then
+        ng lint
+        ng test --watch=false --progress=false --browsers=ChromeHeadlessCI
+        ng build --prod
     else
         echo "Running verify script: mvn -q verify -P travis,analyze -B -pl $MODULES"
         mvn -q verify -P travis,analyze -B -pl $MODULES

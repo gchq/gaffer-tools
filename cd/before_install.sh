@@ -23,3 +23,7 @@ do
         exit 1;
     fi
 done
+
+if [[ "$MODULES" == 'analytics-ui' ]]; then
+    cd analytics/analytics-ui
+fi
