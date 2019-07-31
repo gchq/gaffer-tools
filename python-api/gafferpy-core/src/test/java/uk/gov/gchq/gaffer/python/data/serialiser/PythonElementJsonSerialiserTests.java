@@ -18,6 +18,7 @@ package uk.gov.gchq.gaffer.python.data.serialiser;
 
 import org.junit.Before;
 import org.junit.Test;
+
 import uk.gov.gchq.gaffer.data.element.Edge;
 import uk.gov.gchq.gaffer.data.element.Entity;
 import uk.gov.gchq.gaffer.data.element.id.DirectedType;
@@ -42,13 +43,13 @@ public class PythonElementJsonSerialiserTests {
     FreqMap map = new FreqMap();
 
     @Before
-    public void initialiseFreqMap(){
-        map.upsert("test_1",4L);
+    public void initialiseFreqMap() {
+        map.upsert("test_1", 4L);
         map.upsert("test_2");
     }
 
     @Test
-    public void testCanDefaultSerialiseEdge(){
+    public void testCanDefaultSerialiseEdge() {
 
         Edge edge = new Edge.Builder()
                 .group("Test")
@@ -63,13 +64,13 @@ public class PythonElementJsonSerialiserTests {
 
         try {
             json = new String(JSONSerialiser.serialise(edge));
-        } catch (SerialisationException e) {
+        } catch (final SerialisationException e) {
             e.printStackTrace();
         }
 
         PythonElementJsonSerialiser serialiser = new PythonElementJsonSerialiser();
 
-        if(json == null){
+        if (json == null) {
             assert false;
         }
 
@@ -81,7 +82,7 @@ public class PythonElementJsonSerialiserTests {
     }
 
     @Test
-    public void testCanDefaultSerialiseEntity(){
+    public void testCanDefaultSerialiseEntity() {
 
         Entity entity = new Entity.Builder()
                 .group(group)
@@ -94,13 +95,13 @@ public class PythonElementJsonSerialiserTests {
 
         try {
             json = new String(JSONSerialiser.serialise(entity));
-        } catch (SerialisationException e) {
+        } catch (final SerialisationException e) {
             e.printStackTrace();
         }
 
         PythonElementJsonSerialiser serialiser = new PythonElementJsonSerialiser();
 
-        if(json == null){
+        if (json == null) {
             assert false;
         }
 

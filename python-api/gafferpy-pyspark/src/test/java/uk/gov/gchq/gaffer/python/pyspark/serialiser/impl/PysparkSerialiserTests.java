@@ -16,8 +16,8 @@
 
 package uk.gov.gchq.gaffer.python.pyspark.serialiser.impl;
 
-import org.apache.commons.io.FileUtils;
 import org.junit.Test;
+
 import uk.gov.gchq.gaffer.data.element.Edge;
 import uk.gov.gchq.gaffer.data.element.Entity;
 import uk.gov.gchq.gaffer.data.element.id.DirectedType;
@@ -25,11 +25,7 @@ import uk.gov.gchq.gaffer.exception.SerialisationException;
 import uk.gov.gchq.gaffer.jsonserialisation.JSONSerialiser;
 import uk.gov.gchq.gaffer.python.util.Constants;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
@@ -37,7 +33,7 @@ import static org.junit.Assert.assertEquals;
 public class PysparkSerialiserTests {
 
     @Test
-    public void testPysparkElementMapSerialiser(){
+    public void testPysparkElementMapSerialiser() {
 
         String source = "A";
         String dest = "B";
@@ -85,7 +81,7 @@ public class PysparkSerialiserTests {
     }
 
     @Test
-    public void testPysparkElementJsonSerialiser(){
+    public void testPysparkElementJsonSerialiser() {
         String source = "A";
         String dest = "B";
         String edgeGroup = "edges";

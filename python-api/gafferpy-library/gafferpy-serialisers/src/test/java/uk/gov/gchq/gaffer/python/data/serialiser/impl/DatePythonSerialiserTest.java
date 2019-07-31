@@ -25,7 +25,7 @@ import static org.junit.Assert.assertEquals;
 public class DatePythonSerialiserTest {
 
     @Test
-    public void testDatePythonSerialiser(){
+    public void testDatePythonSerialiser() {
 
         Long time = System.currentTimeMillis();
 

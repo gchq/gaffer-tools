@@ -17,22 +17,16 @@
 package uk.gov.gchq.gaffer.python.data.graph;
 
 import org.junit.Test;
+
 import uk.gov.gchq.gaffer.data.element.Edge;
 import uk.gov.gchq.gaffer.exception.SerialisationException;
 import uk.gov.gchq.gaffer.jsonserialisation.JSONSerialiser;
 import uk.gov.gchq.gaffer.operation.impl.add.AddElements;
 import uk.gov.gchq.gaffer.operation.impl.get.GetAllElements;
-import uk.gov.gchq.gaffer.operation.impl.get.GetElements;
 import uk.gov.gchq.gaffer.python.data.PythonIterator;
 import uk.gov.gchq.gaffer.python.data.serialiser.PythonElementMapSerialiser;
 import uk.gov.gchq.gaffer.python.graph.PythonGraph;
-import uk.gov.gchq.gaffer.store.schema.Schema;
 import uk.gov.gchq.gaffer.user.User;
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 
 import static org.junit.Assert.assertEquals;
 
@@ -43,18 +37,18 @@ public class PythonGraphTests {
     String storePropertiesPath = "src/test/resources/mock-accumulo.properties";
 
     @Test
-    public void testCanConstructGraph(){
+    public void testCanConstructGraph() {
 
         PythonGraph pythonGraph = new PythonGraph(schemaPath, graphConfigPath, storePropertiesPath);
 
-        if(pythonGraph.getGraph().getSchema() != null){
-            assert(true);
+        if (pythonGraph.getGraph().getSchema() != null) {
+            assert (true);
         }
 
     }
 
     @Test
-    public void testCanAddElements(){
+    public void testCanAddElements() {
 
         Edge edge = new Edge.Builder()
                 .source("a")
@@ -74,7 +68,7 @@ public class PythonGraphTests {
 
         try {
             userJson = new String(JSONSerialiser.serialise(user));
-        } catch (SerialisationException e) {
+        } catch (final SerialisationException e) {
             e.printStackTrace();
         }
 
@@ -87,7 +81,7 @@ public class PythonGraphTests {
 
         try {
             addOpJson = new String(JSONSerialiser.serialise(addElements));
-        } catch (SerialisationException e) {
+        } catch (final SerialisationException e) {
             e.printStackTrace();
         }
 
@@ -95,7 +89,7 @@ public class PythonGraphTests {
     }
 
     @Test
-    public void testCanRetrieveElements(){
+    public void testCanRetrieveElements() {
         Edge edge = new Edge.Builder()
                 .source("a")
                 .dest("b")
@@ -114,7 +108,7 @@ public class PythonGraphTests {
 
         try {
             userJson = new String(JSONSerialiser.serialise(user));
-        } catch (SerialisationException e) {
+        } catch (final SerialisationException e) {
             e.printStackTrace();
         }
 
@@ -126,7 +120,7 @@ public class PythonGraphTests {
 
         try {
             addOpJson = new String(JSONSerialiser.serialise(addElements));
-        } catch (SerialisationException e) {
+        } catch (final SerialisationException e) {
             e.printStackTrace();
         }
 
@@ -138,7 +132,7 @@ public class PythonGraphTests {
         String getAllElementsJson = null;
         try {
             getAllElementsJson = new String(JSONSerialiser.serialise(getAllElements));
-        } catch (SerialisationException e) {
+        } catch (final SerialisationException e) {
             e.printStackTrace();
         }
 
@@ -148,7 +142,7 @@ public class PythonGraphTests {
 
         PythonIterator iterator = (PythonIterator) pythonGraph.execute(getAllElementsJson, userJson);
 
-        while(iterator.hasNext()){
+        while (iterator.hasNext()) {
             assertEquals(serialiser.serialise(edge), iterator.next());
         }
 

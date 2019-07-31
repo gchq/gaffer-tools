@@ -19,13 +19,12 @@ package uk.gov.gchq.gaffer.python.data.serialiser.custom.pyspark;
 import com.clearspring.analytics.stream.cardinality.HyperLogLogPlus;
 import org.junit.Before;
 import org.junit.Test;
+
 import uk.gov.gchq.gaffer.commonutil.CommonTimeUtil;
 import uk.gov.gchq.gaffer.data.element.Edge;
-import uk.gov.gchq.gaffer.data.element.Entity;
 import uk.gov.gchq.gaffer.data.element.id.DirectedType;
 import uk.gov.gchq.gaffer.exception.SerialisationException;
 import uk.gov.gchq.gaffer.jsonserialisation.JSONSerialiser;
-import uk.gov.gchq.gaffer.python.data.serialiser.custom.CustomPythonElementMapSerialiser;
 import uk.gov.gchq.gaffer.python.data.serialiser.impl.HyperLogLogPlusPythonSerialiser;
 import uk.gov.gchq.gaffer.python.data.serialiser.impl.RBMBackedTimestampSetPythonSerialiser;
 import uk.gov.gchq.gaffer.python.util.Constants;
@@ -49,8 +48,8 @@ public class CustomPysparkElementMapSerialiserTests {
     Long time;
 
     @Before
-    public void setHllp(){
-        hllp = new HyperLogLogPlus(10,10);
+    public void setHllp() {
+        hllp = new HyperLogLogPlus(10, 10);
         hllp.offer("a");
         hllp.offer("a");
         hllp.offer("a");
@@ -64,7 +63,7 @@ public class CustomPysparkElementMapSerialiserTests {
     }
 
     @Before
-    public void setTimestamps(){
+    public void setTimestamps() {
         time = System.currentTimeMillis();
         timestamps = new RBMBackedTimestampSet(CommonTimeUtil.TimeBucket.SECOND, Instant.ofEpochMilli(time));
     }
@@ -94,7 +93,7 @@ public class CustomPysparkElementMapSerialiserTests {
 
         try {
             System.out.println(JSONSerialiser.serialise(timestamps, true));
-        } catch (SerialisationException e) {
+        } catch (final SerialisationException e) {
             e.printStackTrace();
         }
 

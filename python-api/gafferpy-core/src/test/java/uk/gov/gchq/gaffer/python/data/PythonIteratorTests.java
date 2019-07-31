@@ -18,6 +18,7 @@ package uk.gov.gchq.gaffer.python.data;
 
 import org.junit.Before;
 import org.junit.Test;
+
 import uk.gov.gchq.gaffer.data.element.Edge;
 import uk.gov.gchq.gaffer.data.element.Element;
 import uk.gov.gchq.gaffer.python.data.serialiser.PythonElementMapSerialiser;
@@ -33,7 +34,7 @@ public class PythonIteratorTests {
     List<Edge> edgesList = null;
 
     @Before
-    public void getEdges(){
+    public void getEdges() {
         edgesList = new ArrayList<>(3);
 
         Edge edge1 = new Edge.Builder()
@@ -66,7 +67,7 @@ public class PythonIteratorTests {
     }
 
     @Test
-    public void testPythonIterator(){
+    public void testPythonIterator() {
 
         Iterator iterator = edgesList.iterator();
 
@@ -74,7 +75,7 @@ public class PythonIteratorTests {
 
         PythonIterator pythonIterator = new PythonIterator(edgesList.iterator(), serialiser);
 
-        while(pythonIterator.hasNext()){
+        while (pythonIterator.hasNext()) {
             assertEquals(serialiser.serialise((Element) iterator.next()), pythonIterator.next());
         }
     }

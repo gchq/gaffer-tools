@@ -17,6 +17,7 @@
 package uk.gov.gchq.gaffer.python.data.serialiser.impl;
 
 import org.junit.Test;
+
 import uk.gov.gchq.gaffer.commonutil.CommonTimeUtil;
 import uk.gov.gchq.gaffer.python.util.Constants;
 import uk.gov.gchq.gaffer.time.RBMBackedTimestampSet;
@@ -32,10 +33,10 @@ import static org.junit.Assert.assertEquals;
 public class RBMBackedTimestampSetPythonSerialiserTests {
 
     @Test
-    public void testSerialiser(){
+    public void testSerialiser() {
         Long time = System.currentTimeMillis();
         Long time2 = time - 86400000L;
-        Long time3 = time - 2*86400000L;
+        Long time3 = time - 2 * 86400000L;
         CommonTimeUtil.TimeBucket timeBucket = CommonTimeUtil.TimeBucket.SECOND;
 
         RBMBackedTimestampSet timestampSet = new RBMBackedTimestampSet(timeBucket);
@@ -46,9 +47,9 @@ public class RBMBackedTimestampSetPythonSerialiserTests {
 
         Map<String, Object> timestampsMap = new HashMap<>();
         List<Integer> timestampsList = new ArrayList<>(3);
-        timestampsList.add((int) (CommonTimeUtil.timeToBucket(time3, CommonTimeUtil.TimeBucket.SECOND)/1000L));
-        timestampsList.add((int) (CommonTimeUtil.timeToBucket(time2, CommonTimeUtil.TimeBucket.SECOND)/1000L));
-        timestampsList.add((int) (CommonTimeUtil.timeToBucket(time, CommonTimeUtil.TimeBucket.SECOND)/1000L));
+        timestampsList.add((int) (CommonTimeUtil.timeToBucket(time3, CommonTimeUtil.TimeBucket.SECOND) / 1000L));
+        timestampsList.add((int) (CommonTimeUtil.timeToBucket(time2, CommonTimeUtil.TimeBucket.SECOND) / 1000L));
+        timestampsList.add((int) (CommonTimeUtil.timeToBucket(time, CommonTimeUtil.TimeBucket.SECOND) / 1000L));
         timestampsMap.put(Constants.TIMESTAMPS_KEY_NAME, timestampsList);
         timestampsMap.put(Constants.TIMEBUCKET_KEY_NAME, timeBucket);
 
