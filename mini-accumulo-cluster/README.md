@@ -28,7 +28,7 @@ java -cp target/mini-accumulo-cluster-*-jar-with-dependencies.jar uk.gov.gchq.ga
 
 When starting up it will print out something similar to:
 
-```text
+```
 Cluster started:
     Location - <directory-started-in>miniAccumuloCLuster
     Zookeepers - localhost:<random port number>
