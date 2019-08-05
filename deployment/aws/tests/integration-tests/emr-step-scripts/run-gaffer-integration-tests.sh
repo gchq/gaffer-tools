@@ -129,7 +129,7 @@ done
 # Add the core-site.xml to make Gaffer use hdfs
 cp /etc/hadoop/conf/core-site.xml ./library/hdfs-library/src/test/resources
 # Remove LZO codec to avoid class not found exceptions
-sed -i 's:<value>.*com.hadoop.compression.lzo.LzoCodec,com.hadoop.compression.lzo.LzopCodec.*</value>$:<value>org.apache.hadoop.io.compress.GzipCodec,org.apache.hadoop.io.compress.DefaultCodec,org.apache.hadoop.io.compress.BZip2Codec,org.apache.hadoop.io.compress.SnappyCodec</value>' ./library/hdfs-library/src/test/resources/core-site.xml
+sed -i 's|<value>.*com\.hadoop\.compression\.lzo\.LzoCodec,com\.hadoop\.compression\.lzo\.LzopCodec.*</value>$|<value>org.apache.hadoop.io.compress.GzipCodec,org.apache.hadoop.io.compress.DefaultCodec,org.apache.hadoop.io.compress.BZip2Codec,org.apache.hadoop.io.compress.SnappyCodec</value>|' ./library/hdfs-library/src/test/resources/core-site.xml
 
 # Report test results script
 tee -a failsafe-report.py <<EOF
