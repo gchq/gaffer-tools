@@ -14,20 +14,20 @@ This python shell connects to a Gaffer REST API and requires Python 3.x See [gaf
 
 To start using the python shell you will need an instance of the REST API running. You can start the Gaffer road-traffic-demo rest server and ui \(see ui/README.md\) using the command:
 
-```text
+```bash
 ./ui/example/road-traffic/scripts/start.sh
 ```
 
 Once this is running you can run the python example by using the command \(all commands are run from the root of the python-shell project\):
 
-```text
+```bash
 python3 src/example.py
 python3 src/example_accumulo.py
 ```
 
 Alternatively if you have you own REST API running that is authenticated with PKI certificates then you can follow the pki example. Before using the example you will need to export your PKI certificate into a .pem file:
 
-```text
+```bash
 python3 src/examplePki.py
 python3 src/example_accumulo_pki.py
 ```
@@ -123,13 +123,13 @@ gc = gaffer_connector.GafferConnector("localhost:8080/rest/latest")
 
 We have some unit and integration tests for our python shell. To run all of the tests, first deploy the REST API \(UI will also be deploy\):
 
-```text
+```bash
 ./ui/example/road-traffic/scripts/start.sh
 ```
 
 then from within the python-shell folder run:
 
-```text
+```bash
 python3 -m unittest discover -s src
 ```
 
