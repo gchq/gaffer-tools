@@ -30,7 +30,7 @@ function options() {
     }
 }
 
-function OptionsController(operationOptions, config, events, $q, $route, $location, query, error) {
+function OptionsController(operationOptions, config, events, $q, $route, $location, query, error, navigation) {
     var vm = this;
 
     /**
@@ -51,7 +51,6 @@ function OptionsController(operationOptions, config, events, $q, $route, $locati
      * If not yet defined, it looks to the UI config to determine the defaults.
      */
     vm.$onInit = function() {
-        events.subscribe('onPreExecute', saveToService);
         if (!vm.model) {    // If the model is not yet defined, it must get the default from somewhere.
             var currentDefaults = operationOptions.getDefaultConfiguration();
             if (currentDefaults !== null) { // null implies not set.
@@ -100,37 +99,6 @@ function OptionsController(operationOptions, config, events, $q, $route, $locati
                     }
                 }
             });
-        }
-    }
-
-    /**
-     * Unsubscribes from the event service to avoid too many event subscriptions.
-     */
-    vm.$onDestroy = function() {
-        events.unsubscribe('onPreExecute', saveToService);
-        saveToService()
-    }
-
-    var saveToService = function() {
-        // If master is being destroyed, for example when the user navigates away, the service is updated
-        if (vm.master) {        
-            operationOptions.setDefaultConfiguration(vm.model);
-            // var graphIds = null
-            // vm.model.visible.forEach(element => {
-            //     if (element.key == 'gaffer.federatedstore.operation.graphIds') {
-            //         graphIds = element.value;
-            //         return;
-            //     }
-            // });
-            // console.log('graphIds for url: ', graphIds);
-            // var url = window.location.href.split('?')[0]
-            // // $route.current.params.graphId = graphIds;
-            // if (graphIds.length > 0) {
-            //     url += '?graphId=' + graphIds;
-            // }
-            // //var url = $location.search('graphId', graphIds);
-            // console.log('new url: ', url);
-            // window.history.pushState("", "", url);
         }
     }
 
@@ -241,9 +209,23 @@ function OptionsController(operationOptions, config, events, $q, $route, $locati
         return (value == undefined || ((Array.isArray(value) && !value.length)))
     }
 
-    vm.updateURL = function(event) {
-        console.log('Value changed');
-        console.log('event: ', event);
-    }
+    vm.updateURL = function() {
+        // On entering a graphId save the graphId
+        operationOptions.setDefaultConfiguration(vm.model);
 
+        // Take that graph Id and update the url
+        // var optionsConfig = operationOptions.getDefaultConfiguration()
+        var graphIds = null
+        console.log("Updating the url")
+        console.log("options config is", vm.model)
+        if (vm.model) {
+            vm.model.visible.forEach(element => {
+                if (element.key == 'gaffer.federatedstore.operation.graphIds') {
+                    graphIds = element.value;
+                }
+            });
+        }
+        console.log("graphIds are: ", graphIds)
+        navigation.updateURL(graphIds)
+    }
 }

@@ -16,7 +16,7 @@
 
 'use strict';
 
-angular.module('app').factory('navigation', ['$location', 'events', 'common', function($location, events, common) {
+angular.module('app').factory('navigation', ['$location', 'events', 'common', function($location, $scope, events, common) {
 
     var navigation = {};
 
@@ -31,12 +31,21 @@ angular.module('app').factory('navigation', ['$location', 'events', 'common', fu
     }
 
     navigation.goTo = function(pageName) {
+        console.log("page going to is: ", pageName)
         if(pageName && common.startsWith(pageName, "/")) {
             pageName = pageName.substr(1);
         }
         currentPage = pageName;
         $location.path('/' + pageName);
         events.broadcast('routeChange', [currentPage]);
+    }
+
+    navigation.updateURL = function(graphIds) {
+        var url = window.location.href.split('?')[0]
+        if (graphIds.length > 0) {
+            url += '?graphId=' + graphIds;
+        }
+        window.history.pushState("", "", url);
     }
 
     return navigation;

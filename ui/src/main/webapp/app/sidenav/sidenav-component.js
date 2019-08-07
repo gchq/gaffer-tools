@@ -33,47 +33,8 @@ function SideNavController(navigation, $route, $routeParams, $location, operatio
     vm.collapsed = false;
 
     vm.$onInit = function() {
-        window.addEventListener('hashchange', vm.hashChangeCallback);
-        vm.hashChangeCallback(); // Added as callback function is not called on first navigation to domain
-        console.log('$location', $location);
-        console.log('$route:', $route);
-        console.log("routes:", vm.routes);
-        console.log('$routeParams:', $routeParams);
-
-        // $route.current.pathParams.program = "someValue";
-        // $location.path('/myapp/' + $routeParams.program);
-
-        if($routeParams.graphid) {
-                $routeParams.graphid = $routeParams.graphid.split(',');
-                console.log("GraphID parameter is:", $routeParams.graphid);
-	
-	        //     if(Array.isArray($routeParams.graphid)) {
-	        //         // Add the first operation
-	        //         var opFirst = $routeParams.operation[0] 
-	        //         var opParam = opFirst.replace(/[\W_]+/g, "").toLowerCase();
-	        //         for(var i in vm.availableOperations) {
-	        //             if(vm.availableOperations[i].name.replace(/[\W_]+/g, "").toLowerCase() === opParam) {
-	        //                 vm.model = vm.availableOperations[i];
-	        //                 break;
-	        //             }
-	        //         }
-	
-	        //         // Added a new blank operation and fill it
-	        //         for (var j = 1; j < $routeParams.operation.length; j++) {
-	        //             operationChain.add(false);
-	        //             var op = $routeParams.operation[j];
-	        //             var opParam = op.replace(/[\W_]+/g, "").toLowerCase();
-	        //             for(var i in vm.availableOperations) {
-	        //                 if(vm.availableOperations[i].name.replace(/[\W_]+/g, "").toLowerCase() === opParam) {
-	        //                     vm.model = vm.availableOperations[i];
-	        //                     break;
-	        //                 }
-	        //             }
-	
-	        //         }
-	        //     }
-	        // }        
-        }
+        window.onhashchange = vm.hashChangeCallback;
+        vm.hashChangeCallback();
     }
 
     vm.$onDestroy = function() {
@@ -82,16 +43,17 @@ function SideNavController(navigation, $route, $routeParams, $location, operatio
 
     vm.hashChangeCallback = function (event) {
 
-        // Load the saved options config
+        // Get the url parameters
         console.log('//////////////////////////////')
         console.log('event: ', event);
         var params = $route.current.params
         console.log('params: ', params);
+        // Load the options config
         var optionsConfig = operationOptions.getDefaultConfiguration();
         console.log('optionsConfig Before: ', optionsConfig);
         console.log('optionsConfig Before: ', optionsConfig.visible[0].value);
 
-        // Merge the config with the url parameters. The url parameters override saved settings.
+        // Overwrite the graph Id setting with the setting from the url parameter.
         if (optionsConfig) {
             optionsConfig.visible.forEach(element => {
                 if (element.key == 'gaffer.federatedstore.operation.graphIds') {
@@ -105,34 +67,14 @@ function SideNavController(navigation, $route, $routeParams, $location, operatio
         console.log('optionsConfig After: ', optionsConfig);
         console.log('optionsConfig After: ', optionsConfig.visible[0].value);
         //console.log(options);
+        
+        // Save this new graph Id setting
         operationOptions.setDefaultConfiguration(optionsConfig);
 
-        // Update the url parameters with the merged settings
-        var graphIds = null
-        optionsConfig.visible.forEach(element => {
-            if (element.key == 'gaffer.federatedstore.operation.graphIds') {
-                graphIds = element.value;
-                return;
-            }
-        });
-        console.log('graphIds for url: ', graphIds);
-        var url = window.location.href.split('?')[0]
-        // $route.current.params.graphId = graphIds;
-        if (graphIds.length > 0) {
-            url += '?graphId=' + graphIds;
-        }
-        //var url = $location.search('graphId', graphIds);
-        console.log('new url: ', url);
-        window.history.pushState("", "", url);
+        // Update the URL parameters
+        console.log('graphIds for url: ', params.graphId);
+        navigation.updateURL(params.graphId);
     }
-
-        // if (optionsConfig) {
-    //     Object.keys(optionsConfig.visible).forEach((key, index) => {
-    //         element = optionsConfig.visible[key]
-    //         if (element.key == 'gaffer.federatedstore.operation.graphIds') {
-    //             element.value = [params]            }
-    //     });
-    // }
 
     vm.isActive = function(route) {
         if(route) {
