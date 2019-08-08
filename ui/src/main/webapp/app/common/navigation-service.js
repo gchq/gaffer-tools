@@ -16,7 +16,7 @@
 
 'use strict';
 
-angular.module('app').factory('navigation', ['$location', 'events', 'common', function($location, events, common) {
+angular.module('app').factory('navigation', ['$location', '$route', 'common', function($location, $route, common) {
 
     var navigation = {};
 
@@ -42,11 +42,15 @@ angular.module('app').factory('navigation', ['$location', 'events', 'common', fu
     navigation.updateURL = function(graphIds) {
         var pageName = window.location.href.split('!/')[1].split('?')[0]
         console.log('pageName is: ', pageName)
-        if (graphIds.length > 0) {
+        if (graphIds != null && graphIds.length > 0) {
             var params = {graphId: graphIds}
             $location.path('/' + pageName).search(params);
         } else {
             $location.path('/' + pageName).search('graphId',null);
+        }
+        // If updating url directly while on settings page, then update the ui with the new values
+        if (pageName == 'settings') {
+            $route.reload()
         }
     }
 

@@ -58,7 +58,11 @@ function SideNavController(navigation, $route, $routeParams, $location, operatio
             optionsConfig.visible.forEach(element => {
                 if (element.key == 'gaffer.federatedstore.operation.graphIds') {
                     if (params.graphId) {
-                        element.value = params.graphId.split(',');
+                        if (Array.isArray(params.graphId)) {
+                            element.value = params.graphId;
+                        } else {
+                            element.value = [params.graphId];
+                        }
                     }
                 }
             });
@@ -73,7 +77,11 @@ function SideNavController(navigation, $route, $routeParams, $location, operatio
 
         // Update the URL parameters
         console.log('graphIds for url: ', params.graphId);
-        navigation.updateURL(params.graphId);
+        if (params.graphId) {
+            navigation.updateURL(params.graphId);
+        } else {
+            navigation.updateURL(null);
+        }
     }
 
     vm.isActive = function(route) {
