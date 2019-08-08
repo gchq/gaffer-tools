@@ -34,14 +34,14 @@ import { NavComponent } from './nav/nav.component';
 import { ParameterFormComponent } from './parameter-form/parameter-form.component';
 import { ParameterInputComponent } from './parameter-input/parameter-input.component';
 
-import { AnalyticsService } from './gaffer/analytics.service';
-import { ErrorService } from './dynamic-input/error.service';
-import { EndpointService } from './config/endpoint-service';
-import { QueryService } from './gaffer/query.service';
-import { ResultsService } from './gaffer/results.service';
-import { TypeService } from './gaffer/type.service';
-import { TimeService } from './gaffer/time.service';
-import { SchemaService } from './gaffer/schema.service';
+import { AnalyticsService } from './services/analytics.service';
+import { ErrorService } from './services/error.service';
+import { EndpointService } from './services/endpoint-service';
+import { QueryService } from './services/query.service';
+import { ResultsService } from './services/results.service';
+import { TypeService } from './services/type.service';
+import { TimeService } from './services/time.service';
+import { SchemaService } from './services/schema.service';
 
 @NgModule({
   declarations: [

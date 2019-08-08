@@ -18,10 +18,10 @@ import { Component, OnInit, Injectable, ViewChild } from '@angular/core';
 import { MatSort, MatTableDataSource } from '@angular/material';
 import { cloneDeep, union } from 'lodash';
 
-import { ResultsService } from '../gaffer/results.service';
-import { TypeService } from '../gaffer/type.service';
-import { TimeService } from '../gaffer/time.service';
-import { SchemaService } from '../gaffer/schema.service';
+import { ResultsService } from '../services/results.service';
+import { TypeService } from '../services/type.service';
+import { TimeService } from '../services/time.service';
+import { SchemaService } from '../services/schema.service';
 
 @Component({
   selector: 'app-table',

@@ -19,7 +19,7 @@ import { endsWith, startsWith } from 'lodash';
 
 import { HttpHeaders, HttpClient } from '@angular/common/http';
 import { Observable, Observer, of } from 'rxjs';
-import { ErrorService } from '../dynamic-input/error.service';
+import { ErrorService } from './error.service';
 
 @Injectable()
 export class TypeService {

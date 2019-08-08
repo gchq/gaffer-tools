@@ -17,9 +17,9 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 
-import { ErrorService } from '../dynamic-input/error.service';
+import { ErrorService } from './error.service';
 import { ResultsService } from './results.service';
-import { EndpointService } from '../config/endpoint-service';
+import { EndpointService } from './endpoint-service';
 import { startsWith } from 'lodash';
 
 @Injectable()
@@ -29,7 +29,7 @@ export class QueryService {
     private http: HttpClient,
     private results: ResultsService,
     private endpoint: EndpointService
-  ) {}
+  ) { }
 
   /**
    * Executes a query. If too many results are returned a dialog is shown

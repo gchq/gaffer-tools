@@ -16,7 +16,7 @@
 
 import { TestBed, async } from '@angular/core/testing';
 
-import { EndpointService } from '../config/endpoint-service';
+import { EndpointService } from './endpoint-service';
 
 describe('EndpointService', () => {
   let service: EndpointService;

@@ -15,8 +15,8 @@
  */
 
 import { Component, OnInit, Injectable } from '@angular/core';
-import { ErrorService } from '../dynamic-input/error.service';
-import { AnalyticsService } from '../gaffer/analytics.service';
+import { ErrorService } from '../services/error.service';
+import { AnalyticsService } from '../services/analytics.service';
 
 @Component({
   selector: 'app-analytics',
@@ -28,7 +28,7 @@ export class AnalyticsComponent implements OnInit {
   constructor(
     private analyticsService: AnalyticsService,
     private error: ErrorService
-  ) {}
+  ) { }
 
   ngOnInit() {
     this.reloadAnalytics();

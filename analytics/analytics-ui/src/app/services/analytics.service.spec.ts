@@ -20,9 +20,9 @@ import { Router } from '@angular/router';
 
 import { AnalyticsService } from './analytics.service';
 import { QueryService } from './query.service';
-import { ErrorService } from '../dynamic-input/error.service';
+import { ErrorService } from './error.service';
 import { ResultsService } from './results.service';
-import { EndpointService } from '../config/endpoint-service';
+import { EndpointService } from './endpoint-service';
 
 class QueryServiceStub {
   executeQuery = (operation, onSuccess) => {
