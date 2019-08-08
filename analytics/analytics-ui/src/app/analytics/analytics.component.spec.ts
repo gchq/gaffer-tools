@@ -35,7 +35,7 @@ class AnalyticsServiceStub {
 
 @Component({
   selector: 'app-analytic',
-  templateUrl: '../analytic/analytic.component.html'
+  templateUrl: './analytic/analytic.component.html'
 })
 class AnalyticStubComponent {
   @Input() model;
