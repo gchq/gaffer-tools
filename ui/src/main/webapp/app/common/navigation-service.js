@@ -36,23 +36,18 @@ angular.module('app').factory('navigation', ['$location', 'events', 'common', fu
             pageName = pageName.substr(1);
         }
         currentPage = pageName;
-        // $location.path('/' + pageName);
-        var domain = window.location.href.split('!/')[0]
-        var params = window.location.href.split('?')[1]
-        console.log("params are: ", params)
-        window.location.href = domain + '!/' + pageName 
-        if (params) {
-            window.location.href += '/?' + params
-        }
-        console.log('url is: ', window.location.href)
+        $location.path('/' + pageName);
     }
 
     navigation.updateURL = function(graphIds) {
-        var url = window.location.href.split('?')[0]
+        var pageName = window.location.href.split('!/')[1].split('?')[0]
+        console.log('pageName is: ', pageName)
         if (graphIds.length > 0) {
-            url += '?graphId=' + graphIds;
+            var params = {graphId: graphIds}
+            $location.path('/' + pageName).search(params);
+        } else {
+            $location.path('/' + pageName).search('graphId',null);
         }
-        window.history.pushState("", "", url);
     }
 
     return navigation;
