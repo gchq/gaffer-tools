@@ -15,7 +15,7 @@
  */
 
 import { Component, OnInit, Injectable, ViewChild } from '@angular/core';
-import { AnalyticsService } from '../services/analytics.service';
+import { AnalyticsService } from '../../services/analytics.service';
 
 @Component({
   selector: 'app-parameter-input',

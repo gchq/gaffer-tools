@@ -27,12 +27,10 @@ import { HttpClientModule } from '@angular/common/http';
 import { ToastrModule } from 'ngx-toastr';
 
 import { AppComponent } from './app.component';
-import { OperationComponent } from './operation/operation.component';
-import { TableModule } from './table/table.module';
-import { AnalyticsModule } from './analytics/analytics.module';
 import { NavComponent } from './nav/nav.component';
-import { ParameterFormComponent } from './parameter-form/parameter-form.component';
-import { ParameterInputComponent } from './parameter-input/parameter-input.component';
+import { AnalyticsModule } from './analytics/analytics.module';
+import { ParametersModule } from './parameters/parameters.module';
+import { TableModule } from './table/table.module';
 
 import { AnalyticsService } from './services/analytics.service';
 import { ErrorService } from './services/error.service';
@@ -46,10 +44,7 @@ import { SchemaService } from './services/schema.service';
 @NgModule({
   declarations: [
     AppComponent,
-    OperationComponent,
-    NavComponent,
-    ParameterFormComponent,
-    ParameterInputComponent
+    NavComponent
   ],
   imports: [
     BrowserModule,
@@ -63,7 +58,8 @@ import { SchemaService } from './services/schema.service';
     FlexLayoutModule,
     ToastrModule.forRoot(),
     TableModule,
-    AnalyticsModule
+    AnalyticsModule,
+    ParametersModule
   ],
   providers: [
     AnalyticsService,
