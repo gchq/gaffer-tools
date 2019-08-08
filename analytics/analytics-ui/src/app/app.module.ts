@@ -28,7 +28,7 @@ import { ToastrModule } from 'ngx-toastr';
 
 import { AppComponent } from './app.component';
 import { OperationComponent } from './operation/operation.component';
-import { TableComponent } from './table/table.component';
+import { TableModule } from './table/table.module';
 import { AnalyticsComponent } from './analytics/analytics.component';
 import { AnalyticComponent } from './analytic/analytic.component';
 import { NavComponent } from './nav/nav.component';
@@ -51,7 +51,6 @@ import { SchemaService } from './gaffer/schema.service';
     AnalyticComponent,
     OperationComponent,
     NavComponent,
-    TableComponent,
     ParameterFormComponent,
     ParameterInputComponent
   ],
@@ -65,7 +64,8 @@ import { SchemaService } from './gaffer/schema.service';
     MaterialModule,
     LayoutModule,
     FlexLayoutModule,
-    ToastrModule.forRoot()
+    ToastrModule.forRoot(),
+    TableModule
   ],
   providers: [
     AnalyticsService,
@@ -80,7 +80,7 @@ import { SchemaService } from './gaffer/schema.service';
   bootstrap: [AppComponent]
 })
 export class AppModule {
-  constructor(private upgrade: UpgradeModule) {}
+  constructor(private upgrade: UpgradeModule) { }
   ngDoBootstrap() {
     this.upgrade.bootstrap(document.body, ['myApp'], { strictDi: true });
   }
