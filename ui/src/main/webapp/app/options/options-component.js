@@ -209,15 +209,15 @@ function OptionsController(operationOptions, config, events, $q, $route, $locati
         return (value == undefined || ((Array.isArray(value) && !value.length)))
     }
 
-    vm.updateURL = function() {
-        // On entering a graphId save the graphId
+    /**
+     * On change of input, save the model and update the url parameters
+     */
+    vm.onChange = function() {
+        // Save the model
         operationOptions.setDefaultConfiguration(vm.model);
 
-        // Take that graph Id and update the url
-        // var optionsConfig = operationOptions.getDefaultConfiguration()
+        // Take any graph Ids and update the url parameters
         var graphIds = null
-        console.log("Updating the url")
-        console.log("options config is", vm.model)
         if (vm.model) {
             vm.model.visible.forEach(element => {
                 if (element.key == 'gaffer.federatedstore.operation.graphIds') {
@@ -225,7 +225,6 @@ function OptionsController(operationOptions, config, events, $q, $route, $locati
                 }
             });
         }
-        console.log("graphIds are: ", graphIds)
         navigation.updateURL(graphIds)
     }
 }

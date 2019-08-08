@@ -30,8 +30,10 @@ angular.module('app').factory('navigation', ['$location', '$route', 'common', fu
         navigation.goTo("query");
     }
 
+    /**
+     * Change the page, keeping the parameters in the url
+     */
     navigation.goTo = function(pageName) {
-        console.log("page going to is: ", pageName)
         if(pageName && common.startsWith(pageName, "/")) {
             pageName = pageName.substr(1);
         }
@@ -39,16 +41,19 @@ angular.module('app').factory('navigation', ['$location', '$route', 'common', fu
         $location.path('/' + pageName);
     }
 
+    /**
+     * Update the url with new parameters, without changing the page
+     */
     navigation.updateURL = function(graphIds) {
         var pageName = window.location.href.split('!/')[1].split('?')[0]
-        console.log('pageName is: ', pageName)
+        // Update the graphId parameters
         if (graphIds != null && graphIds.length > 0) {
             var params = {graphId: graphIds}
             $location.path('/' + pageName).search(params);
         } else {
             $location.path('/' + pageName).search('graphId',null);
         }
-        // If updating url directly while on settings page, then update the ui with the new values
+        // If updating the URL directly while on the settings page, then reload the settings page to update the UI
         if (pageName == 'settings') {
             $route.reload()
         }

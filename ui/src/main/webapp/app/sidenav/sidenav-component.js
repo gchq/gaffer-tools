@@ -26,32 +26,88 @@ function sidenav() {
     };
 }
 
-function SideNavController(navigation, $route, $routeParams, $location, operationOptions) {
+function SideNavController(navigation, $route, operationOptions, config) {
     var vm = this;
     vm.routes = $route.routes
     vm.goTo = navigation.goTo;
     vm.collapsed = false;
+    vm.optionsConfig = null;
 
     vm.$onInit = function() {
+        // Listen for changes in the url
         window.addEventListener('hashchange', vm.hashChangeCallback);
-        vm.hashChangeCallback();
+        getConfig()
+        console.log('Initialising the sidenav')
     }
 
     vm.$onDestroy = function() {
         window.removeEventListener(vm.hashChangeCallback);
     }
 
+    /**
+     * If the default configuration is not yet set by the user, look to the config to get the default operation options 
+     */ 
+    var getConfig = function() {
+        config.get().then(function(conf) {
+            var optionsConfig = angular.copy(conf.operationOptions);
+            if (optionsConfig) {
+                if (optionsConfig.visible === undefined) {
+                    optionsConfig.visible = [];
+                } 
+                if (optionsConfig.hidden === undefined) {
+                    optionsConfig.hidden = [];
+                }
+
+                for (var visibleOrHidden in optionsConfig) {
+                    for (var i in optionsConfig[visibleOrHidden]) {
+                        var option = optionsConfig[visibleOrHidden][i];
+                        if (option.value) {
+                            if (option.multiple && !Array.isArray(option.value)) {
+                                option.value = [ option.value ]
+                            }
+                            vm.presets = {}
+                            vm.presets[option.key] = option.value;
+                        } else if (option.multiple) {
+                            option.value = [];
+                        }
+                    }
+                }
+            } else if (conf.operationOptionKeys) {
+                console.warn('UI "operationOptionKeys" config is deprecated. See the docs for the new options configuration.');
+
+                optionsConfig = {
+                    visible: [],
+                    hidden: []
+                };
+
+                for (var label in conf.operationOptionKeys) {
+                    var option = {
+                        'key': conf.operationOptionKeys[label],
+                        'label': label
+                    };
+
+                    optionsConfig.visible.push(option);
+                }
+            }
+            vm.optionsConfig = optionsConfig;
+            vm.hashChangeCallback();
+        });
+    }
+
+    /**
+     * Save the url parameters
+     */
     vm.hashChangeCallback = function (event) {
 
         // Get the url parameters
-        console.log('//////////////////////////////')
-        console.log('event: ', event);
         var params = $route.current.params
-        console.log('params: ', params);
+        console.log('params are: ', params)
+
         // Load the options config
         var optionsConfig = operationOptions.getDefaultConfiguration();
-        console.log('optionsConfig Before: ', optionsConfig);
-        console.log('optionsConfig Before: ', optionsConfig.visible[0].value);
+        if (optionsConfig == null) {
+            optionsConfig = vm.optionsConfig
+        }
 
         // Overwrite the graph Id setting with the setting from the url parameter.
         if (optionsConfig) {
@@ -67,16 +123,13 @@ function SideNavController(navigation, $route, $routeParams, $location, operatio
                 }
             });
         }
-        //var options = operationOptions.getDefaultOperationOptions();
-        console.log('optionsConfig After: ', optionsConfig);
-        console.log('optionsConfig After: ', optionsConfig.visible[0].value);
-        //console.log(options);
+
+        console.log('optionsConfig is: ', optionsConfig.visible)
         
         // Save this new graph Id setting
         operationOptions.setDefaultConfiguration(optionsConfig);
 
         // Update the URL parameters
-        console.log('graphIds for url: ', params.graphId);
         if (params.graphId) {
             navigation.updateURL(params.graphId);
         } else {
