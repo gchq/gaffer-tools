@@ -16,7 +16,7 @@
 
 'use strict';
 
-angular.module('app').factory('navigation', ['$location', 'events', 'common', function($location, $scope, events, common) {
+angular.module('app').factory('navigation', ['$location', 'events', 'common', function($location, events, common) {
 
     var navigation = {};
 
@@ -36,8 +36,15 @@ angular.module('app').factory('navigation', ['$location', 'events', 'common', fu
             pageName = pageName.substr(1);
         }
         currentPage = pageName;
-        $location.path('/' + pageName);
-        events.broadcast('routeChange', [currentPage]);
+        // $location.path('/' + pageName);
+        var domain = window.location.href.split('!/')[0]
+        var params = window.location.href.split('?')[1]
+        console.log("params are: ", params)
+        window.location.href = domain + '!/' + pageName 
+        if (params) {
+            window.location.href += '/?' + params
+        }
+        console.log('url is: ', window.location.href)
     }
 
     navigation.updateURL = function(graphIds) {

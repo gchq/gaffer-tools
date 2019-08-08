@@ -33,7 +33,7 @@ function SideNavController(navigation, $route, $routeParams, $location, operatio
     vm.collapsed = false;
 
     vm.$onInit = function() {
-        window.onhashchange = vm.hashChangeCallback;
+        window.addEventListener('hashchange', vm.hashChangeCallback);
         vm.hashChangeCallback();
     }
 
