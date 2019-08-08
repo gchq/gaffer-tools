@@ -29,8 +29,7 @@ import { ToastrModule } from 'ngx-toastr';
 import { AppComponent } from './app.component';
 import { OperationComponent } from './operation/operation.component';
 import { TableModule } from './table/table.module';
-import { AnalyticsComponent } from './analytics/analytics.component';
-import { AnalyticComponent } from './analytic/analytic.component';
+import { AnalyticsModule } from './analytics/analytics.module';
 import { NavComponent } from './nav/nav.component';
 import { ParameterFormComponent } from './parameter-form/parameter-form.component';
 import { ParameterInputComponent } from './parameter-input/parameter-input.component';
@@ -47,8 +46,6 @@ import { SchemaService } from './gaffer/schema.service';
 @NgModule({
   declarations: [
     AppComponent,
-    AnalyticsComponent,
-    AnalyticComponent,
     OperationComponent,
     NavComponent,
     ParameterFormComponent,
@@ -65,7 +62,8 @@ import { SchemaService } from './gaffer/schema.service';
     LayoutModule,
     FlexLayoutModule,
     ToastrModule.forRoot(),
-    TableModule
+    TableModule,
+    AnalyticsModule
   ],
   providers: [
     AnalyticsService,

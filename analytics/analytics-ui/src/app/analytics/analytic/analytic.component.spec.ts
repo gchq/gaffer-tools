@@ -20,10 +20,10 @@ import { MatCardModule, MatTooltipModule } from '@angular/material';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { AnalyticComponent } from './analytic.component';
-import { AnalyticsService } from '../gaffer/analytics.service';
+import { AnalyticsService } from '../../gaffer/analytics.service';
 
 class RouterStub {
-  navigate = () => {};
+  navigate = () => { };
 }
 class AnalyticsServiceStub {
   createArrayAnalytic = () => {
