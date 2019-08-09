@@ -19,11 +19,16 @@ describe('The options component', function() {
         });
     }));
 
-    beforeEach(inject(function(_$rootScope_, _$componentController_, _$httpBackend_, _operationOptions_) {
+    beforeEach(inject(function(_$rootScope_, _$componentController_, _$httpBackend_, _$q_, _operationOptions_, _config_, _query_, _error_, _navigation_) {
         scope = _$rootScope_.$new();
         $componentController = _$componentController_;
         $httpBackend = _$httpBackend_;
+        $q = _$q_;
         operationOptions = _operationOptions_;
+        config = _config_;
+        query = _query_;
+        error = _error_;
+        navigation = _navigation_;
 
         ctrl = _$componentController_('options', {$scope: scope})
     }));
@@ -351,77 +356,6 @@ describe('The options component', function() {
         });
     });
 
-    describe('ctrl.$onDestroy', function() {
-        var events;
-        beforeEach(inject(function(_events_) {
-            events = _events_;
-        }));
-
-        beforeEach(function() {
-            spyOn(events, 'unsubscribe');
-            spyOn(operationOptions, 'setDefaultConfiguration')
-        });
-
-        it('should unsubscribe from the events service', function() {
-            ctrl.$onDestroy();
-
-            expect(events.unsubscribe).toHaveBeenCalledWith('onPreExecute', jasmine.any(Function));
-        });
-
-        it('should push the model to the operationOptions service if the component is the master', function() {
-            ctrl.master = true;
-            
-            ctrl.model = 'test';
-            ctrl.$onDestroy();
-
-            expect(operationOptions.setDefaultConfiguration).toHaveBeenCalledWith('test');
-
-        });
-
-        it('should not push the model to the operationOptions service if the component is not the master', function() {
-            ctrl.master = false;
-            
-            ctrl.model = 'test';
-            ctrl.$onDestroy();
-
-            expect(operationOptions.setDefaultConfiguration).not.toHaveBeenCalled();
-        });
-    });
-
-    describe('When an "onPreExecute" is called', function() {
-        var events;
-
-        beforeEach(inject(function(_events_) {
-            events = _events_;
-        }));
-
-        beforeEach(function() {
-            ctrl.$onInit();
-        });
-
-        beforeEach(function() {
-            spyOn(operationOptions, 'setDefaultConfiguration');
-        })
-
-        it('should update the operation options if the component is the master', function() {
-            ctrl.master = true;
-            ctrl.model = 'new model'
-
-            events.broadcast('onPreExecute', []);
-
-            expect(operationOptions.setDefaultConfiguration).toHaveBeenCalledWith('new model');
-        });
-
-        it('should not update the operation options if the component is not the master', function() {
-            ctrl.master = false;
-            ctrl.model = 'new model'
-
-            events.broadcast('onPreExecute', []);
-
-            expect(operationOptions.setDefaultConfiguration).not.toHaveBeenCalled();
-        });
-    });
-
     describe('ctrl.addOption()', function() {
 
         beforeEach(function() {
@@ -528,10 +462,12 @@ describe('The options component', function() {
         });
 
         it('should set the value to undefined', function() {
+            spyOn(ctrl, 'onChange').and.stub();
             ctrl.clearValue(0);
 
             expect(ctrl.model.visible[0].value).toBeUndefined();
             expect(ctrl.model.hidden[0].value).toEqual(2);
+            expect(ctrl.onChange).toHaveBeenCalled();
         });
     });
 

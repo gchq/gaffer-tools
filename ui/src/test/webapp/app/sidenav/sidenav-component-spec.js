@@ -7,10 +7,12 @@ describe('The Navigation Component', function() {
         var $componentController;
         var navigation, $route;
 
-        beforeEach(inject(function(_$componentController_, _navigation_, _$route_) {
+        beforeEach(inject(function(_$componentController_, _navigation_, _$route_, _operationOptions_, _config_) {
             $componentController = _$componentController_;
             navigation = _navigation_;
             $route = _$route_;
+            operationOptions = _operationOptions_;
+            config = _config_;
         }));
 
         it('should exist', function() {

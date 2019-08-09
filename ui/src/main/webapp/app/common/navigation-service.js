@@ -16,7 +16,7 @@
 
 'use strict';
 
-angular.module('app').factory('navigation', ['$location', '$route', 'common', function($location, $route, common) {
+angular.module('app').factory('navigation', ['$location', 'common', function($location, common) {
 
     var navigation = {};
 
@@ -52,10 +52,6 @@ angular.module('app').factory('navigation', ['$location', '$route', 'common', fu
             $location.path('/' + pageName).search(params);
         } else {
             $location.path('/' + pageName).search('graphId',null);
-        }
-        // If updating the URL directly while on the settings page, then reload the settings page to update the UI
-        if (pageName == 'settings') {
-            $route.reload()
         }
     }
 

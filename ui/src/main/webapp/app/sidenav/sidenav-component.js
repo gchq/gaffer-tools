@@ -26,18 +26,17 @@ function sidenav() {
     };
 }
 
-function SideNavController(navigation, $route, operationOptions, config) {
+function SideNavController($route, navigation, operationOptions, config) {
     var vm = this;
     vm.routes = $route.routes
     vm.goTo = navigation.goTo;
     vm.collapsed = false;
-    vm.optionsConfig = null;
 
     vm.$onInit = function() {
         // Listen for changes in the url
         window.addEventListener('hashchange', vm.hashChangeCallback);
+        // Check if there are initial parameters on loading the site. First get the config and save it.
         getConfig()
-        console.log('Initialising the sidenav')
     }
 
     vm.$onDestroy = function() {
@@ -45,7 +44,7 @@ function SideNavController(navigation, $route, operationOptions, config) {
     }
 
     /**
-     * If the default configuration is not yet set by the user, look to the config to get the default operation options 
+     * If the default configuration is not yet set by the user, get the default operation options from the config.
      */ 
     var getConfig = function() {
         config.get().then(function(conf) {
@@ -89,8 +88,9 @@ function SideNavController(navigation, $route, operationOptions, config) {
                     optionsConfig.visible.push(option);
                 }
             }
-            vm.optionsConfig = optionsConfig;
-            vm.hashChangeCallback();
+            operationOptions.setDefaultConfiguration(optionsConfig);
+            // Check if there are initial parameters on loading the site.
+            vm.hashChangeCallback()
         });
     }
 
@@ -101,13 +101,9 @@ function SideNavController(navigation, $route, operationOptions, config) {
 
         // Get the url parameters
         var params = $route.current.params
-        console.log('params are: ', params)
 
         // Load the options config
         var optionsConfig = operationOptions.getDefaultConfiguration();
-        if (optionsConfig == null) {
-            optionsConfig = vm.optionsConfig
-        }
 
         // Overwrite the graph Id setting with the setting from the url parameter.
         if (optionsConfig) {
@@ -123,17 +119,14 @@ function SideNavController(navigation, $route, operationOptions, config) {
                 }
             });
         }
-
-        console.log('optionsConfig is: ', optionsConfig.visible)
         
         // Save this new graph Id setting
         operationOptions.setDefaultConfiguration(optionsConfig);
 
-        // Update the URL parameters
-        if (params.graphId) {
-            navigation.updateURL(params.graphId);
-        } else {
-            navigation.updateURL(null);
+        // If updating the URL directly while on the settings page, then reload the settings page to update the UI
+        var pageName = window.location.href.split('!/')[1].split('?')[0]
+        if (pageName == 'settings') {
+            $route.reload()
         }
     }
 

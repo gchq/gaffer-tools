@@ -30,7 +30,7 @@ function options() {
     }
 }
 
-function OptionsController(operationOptions, config, events, $q, $route, $location, query, error, navigation) {
+function OptionsController(operationOptions, config, $q, query, error, navigation) {
     var vm = this;
 
     /**
@@ -109,6 +109,7 @@ function OptionsController(operationOptions, config, events, $q, $route, $locati
     vm.clearValue = function(index) {
         var currentValue = vm.model.visible[index].value
         vm.model.visible[index].value = Array.isArray(currentValue) ? [] : undefined;
+        vm.onChange()
     }
 
     /**
