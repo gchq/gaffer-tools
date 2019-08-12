@@ -114,7 +114,7 @@ function SideNavController($route, navigation, operationOptions, config) {
 
         // Overwrite the graph Id setting with the setting from the url parameter.
         if (optionsConfig) {
-            optionsConfig.visible.forEach(element => {
+            optionsConfig.visible.forEach(function(element) {
                 if (element.key == 'gaffer.federatedstore.operation.graphIds') {
                     if (params.graphId) {
                         if (Array.isArray(params.graphId)) {

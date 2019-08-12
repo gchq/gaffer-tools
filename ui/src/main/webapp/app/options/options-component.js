@@ -220,7 +220,7 @@ function OptionsController(operationOptions, config, $q, query, error, navigatio
         // Take any graph Ids and update the url parameters
         var graphIds = null
         if (vm.model) {
-            vm.model.visible.forEach(element => {
+            vm.model.visible.forEach(function(element) {
                 if (element.key == 'gaffer.federatedstore.operation.graphIds') {
                     graphIds = element.value;
                 }
