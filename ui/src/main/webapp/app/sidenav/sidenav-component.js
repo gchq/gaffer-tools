@@ -34,7 +34,7 @@ function SideNavController($route, navigation, operationOptions, config) {
 
     vm.$onInit = function() {
         // Listen for changes in the url
-        window.addEventListener('hashchange', vm.hashChangeCallback);
+        window.addEventListener('hashchange', vm.saveURLParameters);
         // Check if there are initial parameters on loading the site. First get the config and save it.
         getConfig()
     }
@@ -90,17 +90,24 @@ function SideNavController($route, navigation, operationOptions, config) {
             }
             operationOptions.setDefaultConfiguration(optionsConfig);
             // Check if there are initial parameters on loading the site.
-            vm.hashChangeCallback()
+            vm.saveURLParameters()
         });
+    }
+
+    /**
+     * Get the current URL parameters
+     */
+    vm.getRouteParams = function() {
+        return $route.current.params
     }
 
     /**
      * Save the url parameters
      */
-    vm.hashChangeCallback = function (event) {
+    vm.saveURLParameters = function() {
 
         // Get the url parameters
-        var params = $route.current.params
+        var params = vm.getRouteParams();
 
         // Load the options config
         var optionsConfig = operationOptions.getDefaultConfiguration();
@@ -124,10 +131,14 @@ function SideNavController($route, navigation, operationOptions, config) {
         operationOptions.setDefaultConfiguration(optionsConfig);
 
         // If updating the URL directly while on the settings page, then reload the settings page to update the UI
-        var pageName = window.location.href.split('!/')[1].split('?')[0]
+        var pageName = vm.getCurrentURL().split('!/')[1].split('?')[0]
         if (pageName == 'settings') {
             $route.reload()
         }
+    }
+
+    vm.getCurrentURL = function() {
+        return window.location.href;
     }
 
     vm.isActive = function(route) {

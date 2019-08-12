@@ -681,4 +681,56 @@ describe('The options component', function() {
         });
     });
 
+    describe('ctrl.onChange()', function() {
+
+        beforeEach(function() {
+            spyOn(operationOptions, 'setDefaultConfiguration').and.stub();
+            spyOn(navigation, 'updateURL').and.stub();
+        });
+
+        beforeEach(function() {
+            ctrl.model = {
+                visible: [
+                    {
+                        key: 'marco',
+                        label: 'Marco'
+                    },
+                    {
+                        key: 'gaffer.federatedstore.operation.graphIds',
+                        value: 'testGraphId'
+                    }
+                ],
+                hidden: [
+                    {
+                        key: 'key1',
+                        label: 'Key one',
+                        value: 2
+                    },
+                    {
+                        key: 'foo',
+                        label: 'Foo but more readable'
+                    },
+                    {
+                        key: 'bar',
+                        label: 'bar'
+                    }
+                ]
+            }
+        });
+
+        it('should save the model', function () {
+
+            ctrl.onChange();
+
+            expect(operationOptions.setDefaultConfiguration).toHaveBeenCalledWith(ctrl.model);
+        });
+
+        it('should update the URL with the new parameters', function () {
+
+            ctrl.onChange();
+
+            expect(navigation.updateURL).toHaveBeenCalledWith('testGraphId');
+        });
+    });
+
 });

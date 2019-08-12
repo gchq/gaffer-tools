@@ -45,7 +45,7 @@ angular.module('app').factory('navigation', ['$location', 'common', function($lo
      * Update the url with new parameters, without changing the page
      */
     navigation.updateURL = function(graphIds) {
-        var pageName = window.location.href.split('!/')[1].split('?')[0]
+        var pageName = navigation.getCurrentURL().split('!/')[1].split('?')[0]
         // Update the graphId parameters
         if (graphIds != null && graphIds.length > 0) {
             var params = {graphId: graphIds}
@@ -53,6 +53,10 @@ angular.module('app').factory('navigation', ['$location', 'common', function($lo
         } else {
             $location.path('/' + pageName).search('graphId',null);
         }
+    }
+
+    navigation.getCurrentURL = function() {
+        return window.location.href;
     }
 
     return navigation;
