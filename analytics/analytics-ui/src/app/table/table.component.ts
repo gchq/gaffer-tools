@@ -15,6 +15,7 @@
  */
 
 import { Component, OnInit, Injectable, ViewChild } from '@angular/core';
+import { FormControl } from '@angular/forms';
 import { MatSort, MatTableDataSource } from '@angular/material';
 import { cloneDeep, union } from 'lodash';
 
@@ -29,6 +30,7 @@ import { SchemaService } from '../gaffer/schema.service';
 })
 @Injectable()
 export class TableComponent implements OnInit {
+  columns = new FormControl();
   data = {
     results: new MatTableDataSource([])
   };
