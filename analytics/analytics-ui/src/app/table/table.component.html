@@ -13,12 +13,16 @@
 <mat-card>
   <div class="example-container">
     <mat-table [dataSource]="data.results" matSort>
+
       <ng-container [matColumnDef]="column" *ngFor="let column of columnsToDisplay">
-        <mat-header-cell *matHeaderCellDef mat-sort-header>
-          <h3>{{ column | uppercase }}</h3>
-        </mat-header-cell>
-        <mat-cell *matCellDef="let element"> {{element[column]}} </mat-cell>
+        <ng-template [ngIf]="true">
+          <mat-header-cell *matHeaderCellDef mat-sort-header>
+            <h3>{{ column | uppercase }}</h3>
+          </mat-header-cell>
+          <mat-cell *matCellDef="let element"> {{element[column]}} </mat-cell>
+        </ng-template>
       </ng-container>
+
 
       <mat-header-row *matHeaderRowDef="columnsToDisplay;">
       </mat-header-row>
