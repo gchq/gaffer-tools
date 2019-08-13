@@ -2,13 +2,14 @@
   <h1>Table</h1>
   <mat-form-field>
     <mat-label>Columns</mat-label>
-    <mat-select>
-      <mat-option *ngFor="let column of columnsToDisplay" [value]="column">
+    <mat-select [(value)]="selected">
+      <mat-option *ngFor="let column of columnsToDisplay" value={{column}}>
         {{ column | uppercase }}
       </mat-option>
     </mat-select>
   </mat-form-field>
-  <button mat-raised-button (click)="removeColumn(column)"> Remove column </button>
+  <button mat-raised-button (click)="removeColumn()"> Remove column </button>
+  <p>You selected: {{selected}}</p>
 </div>
 
 <!-- Dynamic Table -->

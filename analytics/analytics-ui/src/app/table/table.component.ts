@@ -37,6 +37,7 @@ export class TableComponent implements OnInit {
   @ViewChild(MatSort) sort: MatSort;
   schema = { edges: {}, entities: {}, types: {} };
   columnsToDisplay;
+  selected;
 
   constructor(
     private results: ResultsService,
@@ -45,10 +46,8 @@ export class TableComponent implements OnInit {
     private schemaService: SchemaService
   ) { }
 
-  removeColumn(column) {
-    if (this.columnsToDisplay.length) {
-      this.columnsToDisplay.pop(column);
-    }
+  removeColumn() {
+    this.columnsToDisplay.splice(this.selected, 1);
   }
 
   /**
