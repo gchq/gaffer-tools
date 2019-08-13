@@ -45,9 +45,9 @@ export class TableComponent implements OnInit {
     private schemaService: SchemaService
   ) { }
 
-  removeColumn() {
+  removeColumn(column) {
     if (this.columnsToDisplay.length) {
-      this.columnsToDisplay.pop();
+      this.columnsToDisplay.pop(column);
     }
   }
 
