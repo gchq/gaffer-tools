@@ -47,7 +47,11 @@ export class TableComponent implements OnInit {
   ) { }
 
   removeColumn() {
-    this.columnsToDisplay.splice(this.selected, 1);
+    Object.keys(this.columnsToDisplay).forEach(key => {
+      if (this.columnsToDisplay[key] == this.selected) {
+        this.columnsToDisplay.splice(key, 1);
+      }
+    });
   }
 
   /**
