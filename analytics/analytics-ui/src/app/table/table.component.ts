@@ -45,6 +45,12 @@ export class TableComponent implements OnInit {
     private schemaService: SchemaService
   ) { }
 
+  removeColumn() {
+    if (this.columnsToDisplay.length) {
+      this.columnsToDisplay.pop();
+    }
+  }
+
   /**
    * Fetches the results. It first loads the latest types from the config and the latest schema.
    */
