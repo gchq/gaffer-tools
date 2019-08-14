@@ -126,6 +126,11 @@ for file in ./store-implementation/accumulo-store/src/test/resources/*.propertie
 	sed -i "s|^accumulo.file.replication=.*$|accumulo.file.replication=3|" $file
 done
 
+# Add the core-site.xml to make Gaffer use hdfs
+cp /etc/hadoop/conf/core-site.xml ./store-implementation/accumulo-store/src/test/resources
+# Remove LZO codec to avoid class not found exceptions
+sed -i 's|<value>.*com\.hadoop\.compression\.lzo\.LzoCodec,com\.hadoop\.compression\.lzo\.LzopCodec.*</value>$|<value>org.apache.hadoop.io.compress.GzipCodec,org.apache.hadoop.io.compress.DefaultCodec,org.apache.hadoop.io.compress.BZip2Codec,org.apache.hadoop.io.compress.SnappyCodec</value>|' ./store-implementation/accumulo-store/src/test/resources/core-site.xml
+
 # Report test results script
 tee -a failsafe-report.py <<EOF
 #!/usr/bin/python
