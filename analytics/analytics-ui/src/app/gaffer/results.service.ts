@@ -39,4 +39,5 @@ export class ResultsService {
       this.results = newResults;
     }
   };
+
 }

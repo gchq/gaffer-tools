@@ -19,5 +19,6 @@ package uk.gov.gchq.gaffer.analytic.operation;
  * List of visualisations supported by the Analytic UI
  */
 public enum VisualisationType {
-    TABLE
+    TABLE,
+    HTML
 }

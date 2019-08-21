@@ -48,6 +48,13 @@ export class AnalyticsService {
     return this.arrayAnalytic;
   }
 
+  /** 
+   * Get the type of the results. E.g. TABLE or HTML
+   */
+  getOutputVisualisationType() {
+    return this.arrayAnalytic.outputVisualisation.visualisationType;
+  }
+
   /** Update the analytic operation on change of parameters */
   updateAnalytic = function(newValue, parameterName) {
     // Convert to an integer
