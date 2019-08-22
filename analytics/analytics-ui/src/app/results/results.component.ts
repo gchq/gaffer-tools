@@ -36,10 +36,10 @@ export class ResultsComponent implements OnInit, AfterViewInit {
   ) { }
 
   ngOnInit() {
-    let tableData = this.results.get();
     this.outputType = this.analyticsService.getOutputVisualisationType();
 
     if (this.outputType === 'TABLE') {
+      let tableData = this.results.get();
       if (tableData == null) {
         return;
       }
@@ -78,7 +78,8 @@ export class ResultsComponent implements OnInit, AfterViewInit {
 
   ngAfterViewInit() {
     if (this.outputType === 'HTML') {
-      const html = '<div>Here is some random text in a div<div>';
+      const html = this.results.get();
+      // const html = '<img crossorigin="anonymous" src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/66/An_up-close_picture_of_a_curious_male_domestic_shorthair_tabby_cat.jpg/1280px-An_up-close_picture_of_a_curious_male_domestic_shorthair_tabby_cat.jpg" class="mw-mmv-final-image jpg mw-mmv-dialog-is-open" alt="" style="" width="624" height="624">';
 
       // Display the icon
       const htmlContainer: HTMLElement = document.getElementById('htmlContainer');
