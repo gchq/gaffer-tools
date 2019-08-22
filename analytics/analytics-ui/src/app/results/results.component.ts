@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
 import { MatTableDataSource, MatSort } from '@angular/material';
 
 import { ResultsService } from '../gaffer/results.service';
@@ -21,9 +21,9 @@ import { AnalyticsService } from '../gaffer/analytics.service';
 
 @Component({
   selector: 'app-table',
-  templateUrl: './table.component.html'
+  templateUrl: './results.component.html'
 })
-export class TableComponent implements OnInit {
+export class ResultsComponent implements OnInit, AfterViewInit {
 
   dataSource = new MatTableDataSource([]);
   tableColumns: string[] = [];
@@ -39,14 +39,14 @@ export class TableComponent implements OnInit {
     let tableData = this.results.get();
     this.outputType = this.analyticsService.getOutputVisualisationType();
 
-    if (this.outputType == 'TABLE') {
+    if (this.outputType === 'TABLE') {
       if (tableData == null) {
         return;
       }
       // To transform non-object results into objects, we need to build an array of replacements and indexes
       const toAdd: any[] = [];
       const toRemove: number[] = [];
-  
+
       tableData.forEach((element, index) => {
         if (element instanceof Object) {
           // Use the keys of objects as the tableColumns
@@ -63,22 +63,22 @@ export class TableComponent implements OnInit {
           }
         }
       });
-  
+
       // Iterate in reverse order so that the indices of later objects are unaffected
       toRemove.reverse().forEach(index => {
         tableData.splice(index, 1);
       });
-  
+
       tableData = tableData.concat(toAdd);
-  
+
       this.dataSource = new MatTableDataSource(tableData);
       this.dataSource.sort = this.sort;
     }
   }
 
   ngAfterViewInit() {
-    if (this.outputType == 'HTML') {
-      let html = "<div>Here is some random text in a div<div>";
+    if (this.outputType === 'HTML') {
+      const html = '<div>Here is some random text in a div<div>';
 
       // Display the icon
       const htmlContainer: HTMLElement = document.getElementById('htmlContainer');

@@ -48,9 +48,7 @@ export class AnalyticsService {
     return this.arrayAnalytic;
   }
 
-  /** 
-   * Get the type of the results. E.g. TABLE or HTML
-   */
+  /** Get the type of the results. E.g. TABLE or HTML */
   getOutputVisualisationType() {
     return this.arrayAnalytic.outputVisualisation.visualisationType;
   }

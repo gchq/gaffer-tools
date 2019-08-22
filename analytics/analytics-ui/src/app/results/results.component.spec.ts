@@ -15,9 +15,10 @@
  */
 
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { TableComponent } from './table.component';
+import { ResultsComponent } from './results.component';
 import { ResultsService } from '../gaffer/results.service';
 import { MatTableModule } from '@angular/material';
+import { AnalyticsService } from '../gaffer/analytics.service';
 
 let results;
 
@@ -26,21 +27,27 @@ class ResultsServiceStub {
     return results;
   }
 }
+class AnalyticsServiceStub {
+  getOutputVisualisationType = () => {
+    return 'TABLE';
+  }
+}
 
-describe('TableComponent', () => {
-  let component: TableComponent;
-  let fixture: ComponentFixture<TableComponent>;
+describe('ResultsComponent', () => {
+  let component: ResultsComponent;
+  let fixture: ComponentFixture<ResultsComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [TableComponent],
+      declarations: [ResultsComponent],
       imports: [MatTableModule],
-      providers: [{ provide: ResultsService, useClass: ResultsServiceStub }]
+      providers: [{ provide: ResultsService, useClass: ResultsServiceStub },
+                  { provide: AnalyticsService, useClass: AnalyticsServiceStub }]
     }).compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(TableComponent);
+    fixture = TestBed.createComponent(ResultsComponent);
     component = fixture.componentInstance;
   });
 

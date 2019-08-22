@@ -28,7 +28,7 @@ import { ToastrModule } from 'ngx-toastr';
 
 import { AppComponent } from './app.component';
 import { OperationComponent } from './operation/operation.component';
-import { TableComponent } from './table/table.component';
+import { ResultsComponent } from './results/results.component';
 import { AnalyticsComponent } from './analytics/analytics.component';
 import { AnalyticComponent } from './analytic/analytic.component';
 import { NavComponent } from './nav/nav.component';
@@ -50,7 +50,7 @@ import { SchemaService } from './gaffer/schema.service';
     AnalyticComponent,
     OperationComponent,
     NavComponent,
-    TableComponent,
+    ResultsComponent,
     ParameterFormComponent,
     ParameterInputComponent
   ],
