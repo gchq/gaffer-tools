@@ -22,9 +22,8 @@ import { ParameterInputComponent } from './parameters/parameter-input/parameter-
 
 const routes: Routes = [
   { path: 'analytics', component: AnalyticsComponent },
-  { path: 'parameters', component: ParameterInputComponent },
-  { path: 'parameters/:operation', component: ParameterInputComponent },
-  { path: 'results', component: TableComponent },
+  { path: ':analyticName', component: ParameterInputComponent },
+  { path: ':analyticName/results', component: TableComponent },
   { path: '**', redirectTo: 'analytics' }
 ];
 

@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+import { Location } from '@angular/common';
 import { Component, OnInit, Injectable, ViewChild, AfterViewInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { MatSort, MatTableDataSource, MatPaginator } from '@angular/material';
@@ -44,7 +45,8 @@ export class TableComponent implements AfterViewInit, OnInit {
     private results: ResultsService,
     private types: TypeService,
     private time: TimeService,
-    private schemaService: SchemaService
+    private schemaService: SchemaService,
+    private _location: Location
   ) { }
 
   removeColumn() {
@@ -53,6 +55,10 @@ export class TableComponent implements AfterViewInit, OnInit {
         this.columnsToDisplay.splice(key, 1);
       }
     });
+  }
+
+  goback() {
+    this._location.back();
   }
 
   /**
