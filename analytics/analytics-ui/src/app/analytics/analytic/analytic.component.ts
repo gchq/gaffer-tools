@@ -37,6 +37,6 @@ export class AnalyticComponent implements OnInit {
   execute(analytic) {
     const name = this.model.analyticName;
     this.analyticsService.createArrayAnalytic(analytic);
-    this.router.navigate(['name']);
+    this.router.navigate([name]);
   }
 }
