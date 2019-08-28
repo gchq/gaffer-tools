@@ -105,7 +105,7 @@ export class AnalyticsService {
 
     // Execute the analytic and then navigate when finished loading
     this.query.executeQuery(operation, () => {
-      let name = this.arrayAnalytic.analyticName;
+      const name = this.arrayAnalytic.analyticName;
       this.router.navigate([name, 'results']);
     });
   };

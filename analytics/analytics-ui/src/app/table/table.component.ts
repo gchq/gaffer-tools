@@ -46,7 +46,7 @@ export class TableComponent implements AfterViewInit, OnInit {
     private types: TypeService,
     private time: TimeService,
     private schemaService: SchemaService,
-    private _location: Location
+    private location: Location
   ) { }
 
   removeColumn() {
@@ -58,7 +58,7 @@ export class TableComponent implements AfterViewInit, OnInit {
   }
 
   goback() {
-    this._location.back();
+    this.location.back();
   }
 
   /**
