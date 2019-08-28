@@ -23,7 +23,7 @@ import {
 import { empty, of } from 'rxjs';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 
-import { TableComponent } from './table.component';
+import { ResultsComponent } from './results.component';
 import { ResultsService } from '../services/results.service';
 import { TypeService } from '../services/type.service';
 import { TimeService } from '../services/time.service';
@@ -452,13 +452,13 @@ class SchemaServiceStub {
 }
 class ErrorServiceStub { }
 
-describe('TableComponent', () => {
-  let component: TableComponent;
-  let fixture: ComponentFixture<TableComponent>;
+describe('ResultsComponent', () => {
+  let component: ResultsComponent;
+  let fixture: ComponentFixture<ResultsComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [TableComponent],
+      declarations: [ResultsComponent],
       imports: [MatTableModule, MatCardModule, HttpClientTestingModule],
       providers: [{ provide: ResultsService, useClass: ResultsServiceStub },
         TypeService,
@@ -470,7 +470,7 @@ describe('TableComponent', () => {
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(TableComponent);
+    fixture = TestBed.createComponent(ResultsComponent);
     component = fixture.componentInstance;
     const typeService = TestBed.get(TypeService);
     spyOn(typeService, 'get').and.returnValue(of(types));

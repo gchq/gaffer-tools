@@ -30,7 +30,7 @@ import { AppComponent } from './app.component';
 import { NavComponent } from './nav/nav.component';
 import { AnalyticsModule } from './analytics/analytics.module';
 import { ParametersModule } from './parameters/parameters.module';
-import { TableModule } from './table/table.module';
+import { ResultsModule } from './results/results.module';
 
 import { AnalyticsService } from './services/analytics.service';
 import { ErrorService } from './services/error.service';
@@ -57,7 +57,7 @@ import { SchemaService } from './services/schema.service';
     LayoutModule,
     FlexLayoutModule,
     ToastrModule.forRoot(),
-    TableModule,
+    ResultsModule,
     AnalyticsModule,
     ParametersModule
   ],

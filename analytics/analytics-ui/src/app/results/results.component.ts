@@ -27,10 +27,10 @@ import { SchemaService } from '../services/schema.service';
 
 @Component({
   selector: 'app-table',
-  templateUrl: './table.component.html'
+  templateUrl: './results.component.html'
 })
 @Injectable()
-export class TableComponent implements AfterViewInit, OnInit {
+export class ResultsComponent implements AfterViewInit, OnInit {
   columns = new FormControl();
   data = {
     results: new MatTableDataSource([])
