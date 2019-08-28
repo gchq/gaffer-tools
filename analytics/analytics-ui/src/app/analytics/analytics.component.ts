@@ -34,6 +34,14 @@ export class AnalyticsComponent implements OnInit {
     this.reloadAnalytics();
   }
 
+  reverseAnalytics = function(value: string) {
+    if (this.order === value) {
+      this.reverse = !this.reverse;
+    }
+
+    this.order = value;
+  }
+
   /** Load the analytics */
   reloadAnalytics = function() {
     this.analyticsService.reloadAnalytics(true).subscribe(
