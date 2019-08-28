@@ -1,23 +1,34 @@
 <div style="margin-left:110px">
-  <h1>Table</h1>
+  <h1>Results</h1>
+  <mat-form-field>
+    <mat-label>Columns</mat-label>
+    <mat-select [(value)]="selected">
+      <mat-option *ngFor="let column of columnsToDisplay" value={{column}}>
+        {{ column | uppercase }}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+  <button mat-raised-button (click)="removeColumn()"> Remove column </button>
 </div>
 
 <!-- Dynamic Table -->
 
 <mat-card>
   <div class="example-container">
-  <mat-table [dataSource]="data.results" matSort>
-    <ng-container [matColumnDef]="column" *ngFor="let column of columnsToDisplay">
-      <mat-header-cell *matHeaderCellDef mat-sort-header>
-        <h3>{{ column | uppercase }}</h3>
-      </mat-header-cell>
-      <mat-cell *matCellDef="let element"> {{element[column]}} </mat-cell>
-    </ng-container>
+    <mat-table [dataSource]="data.results" matSort>
+      <ng-container [matColumnDef]="column" *ngFor="let column of columnsToDisplay">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>
+          <h3>{{ column | uppercase }}</h3>
+        </mat-header-cell>
+        <mat-cell *matCellDef="let element"> {{element[column]}} </mat-cell>
+      </ng-container>
 
-    <mat-header-row *matHeaderRowDef="columnsToDisplay;">
-    </mat-header-row>
-    <mat-row *matRowDef="let row; columns: columnsToDisplay;">
-    </mat-row>
-  </mat-table>
+      <mat-header-row *matHeaderRowDef="columnsToDisplay;">
+      </mat-header-row>
+      <mat-row *matRowDef="let row; columns: columnsToDisplay;">
+      </mat-row>
+    </mat-table>
+    <mat-paginator [pageSize]="4" [pageSizeOptions]="[4, 8, 12, 24]" showFirstLastButtons>
+    </mat-paginator>
   </div>
 </mat-card>

@@ -14,8 +14,9 @@
  * limitations under the License.
  */
 
-import { Component, OnInit, Injectable, ViewChild } from '@angular/core';
-import { MatSort, MatTableDataSource } from '@angular/material';
+import { Component, OnInit, Injectable, ViewChild, AfterViewInit } from '@angular/core';
+import { FormControl } from '@angular/forms';
+import { MatSort, MatTableDataSource, MatPaginator } from '@angular/material';
 import { cloneDeep, union } from 'lodash';
 
 import { ResultsService } from '../services/results.service';
@@ -28,13 +29,16 @@ import { SchemaService } from '../services/schema.service';
   templateUrl: './table.component.html'
 })
 @Injectable()
-export class TableComponent implements OnInit {
+export class TableComponent implements AfterViewInit, OnInit {
+  columns = new FormControl();
   data = {
     results: new MatTableDataSource([])
   };
+  @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
   schema = { edges: {}, entities: {}, types: {} };
   columnsToDisplay;
+  selected;
 
   constructor(
     private results: ResultsService,
@@ -42,6 +46,14 @@ export class TableComponent implements OnInit {
     private time: TimeService,
     private schemaService: SchemaService
   ) { }
+
+  removeColumn() {
+    Object.keys(this.columnsToDisplay).forEach(key => {
+      if (this.columnsToDisplay[key] === this.selected) {
+        this.columnsToDisplay.splice(key, 1);
+      }
+    });
+  }
 
   /**
    * Fetches the results. It first loads the latest types from the config and the latest schema.
@@ -72,6 +84,11 @@ export class TableComponent implements OnInit {
 
       this.processResults(sortedResults);
     });
+  }
+
+  ngAfterViewInit() {
+    this.data.results.paginator = this.paginator;
+    this.data.results.sort = this.sort;
   }
 
   private processResults = function(resultsData) {
