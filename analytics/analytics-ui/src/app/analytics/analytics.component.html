@@ -3,7 +3,7 @@
 </div>
 <mat-card style="min-height: 300px;">
   <mat-grid-list cols="4">
-    <mat-grid-tile *ngFor="let analytic of analytics">
+    <mat-grid-tile *ngFor="let analytic of analytics | orderBy: 'analyticName'">
       <app-analytic [model]="analytic"></app-analytic>
     </mat-grid-tile>
   </mat-grid-list>
