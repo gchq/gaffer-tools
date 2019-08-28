@@ -28,5 +28,7 @@
       <mat-row *matRowDef="let row; columns: columnsToDisplay;">
       </mat-row>
     </mat-table>
+    <mat-paginator [pageSize]="4" [pageSizeOptions]="[4, 8, 12, 24]" showFirstLastButtons>
+    </mat-paginator>
   </div>
 </mat-card>

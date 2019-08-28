@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-import { Component, OnInit, Injectable, ViewChild } from '@angular/core';
+import { Component, OnInit, Injectable, ViewChild, AfterViewInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { MatSort, MatTableDataSource } from '@angular/material';
+import { MatSort, MatTableDataSource, MatPaginator } from '@angular/material';
 import { cloneDeep, union } from 'lodash';
 
 import { ResultsService } from '../gaffer/results.service';
@@ -29,11 +29,16 @@ import { SchemaService } from '../gaffer/schema.service';
   templateUrl: './table.component.html'
 })
 @Injectable()
-export class TableComponent implements OnInit {
+export class TableComponent implements AfterViewInit, OnInit {
+  ngAfterViewInit() {
+    this.data.results.paginator = this.paginator;
+    this.data.results.sort = this.sort;
+  }
   columns = new FormControl();
   data = {
     results: new MatTableDataSource([])
   };
+  @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
   schema = { edges: {}, entities: {}, types: {} };
   columnsToDisplay;
