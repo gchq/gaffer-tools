@@ -30,10 +30,6 @@ import { SchemaService } from '../gaffer/schema.service';
 })
 @Injectable()
 export class TableComponent implements AfterViewInit, OnInit {
-  ngAfterViewInit() {
-    this.data.results.paginator = this.paginator;
-    this.data.results.sort = this.sort;
-  }
   columns = new FormControl();
   data = {
     results: new MatTableDataSource([])
@@ -53,7 +49,7 @@ export class TableComponent implements AfterViewInit, OnInit {
 
   removeColumn() {
     Object.keys(this.columnsToDisplay).forEach(key => {
-      if (this.columnsToDisplay[key] == this.selected) {
+      if (this.columnsToDisplay[key] === this.selected) {
         this.columnsToDisplay.splice(key, 1);
       }
     });
@@ -88,6 +84,11 @@ export class TableComponent implements AfterViewInit, OnInit {
 
       this.processResults(sortedResults);
     });
+  }
+
+  ngAfterViewInit() {
+    this.data.results.paginator = this.paginator;
+    this.data.results.sort = this.sort;
   }
 
   private processResults = function(resultsData) {
