@@ -131,7 +131,6 @@ export class AnalyticsService {
     this.query.executeQuery(operation, () => {
       const name = this.arrayAnalytic.analyticName;
       this.router.navigate([name, 'results']);
-
     });
   };
 

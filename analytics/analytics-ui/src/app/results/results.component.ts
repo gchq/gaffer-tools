@@ -40,13 +40,12 @@ export class ResultsComponent implements AfterViewInit, OnInit {
   @ViewChild(MatSort) sort: MatSort;
   outputType = null;
   schema = { edges: {}, entities: {}, types: {} };
-  columnsToDisplay;
+  columnsToDisplay: string[] = [];
   selected;
 
   constructor(
     private analyticsService: AnalyticsService,
     private results: ResultsService,
-    private types: TypeService,
     private time: TimeService,
     private schemaService: SchemaService,
     private location: Location
@@ -62,31 +61,44 @@ export class ResultsComponent implements AfterViewInit, OnInit {
     this.location.back();
   }
   ngOnInit() {
-    this.types.get().subscribe(() => {
-      this.schemaService.get().subscribe(schema => {
-        this.schema = schema;
-      });
-      const sortedResults = {
-        edges: [],
-        entities: [],
-        other: []
-      };
-      const results = this.results.get();
-      const clazz = 'class';
-      const entity = 'Entity';
-      const edge = 'Edge';
-      for (const result of results) {
-        if (result[clazz].split('.').pop() === entity) {
-          sortedResults.entities.push(result);
-        } else if (result[clazz].split('.').pop() === edge) {
-          sortedResults.edges.push(result);
-        } else {
-          sortedResults.other.push(result);
-        }
-      }
+    this.outputType = this.analyticsService.getOutputVisualisationType();
 
-      this.processResults(sortedResults);
-    });
+    if (this.outputType === 'TABLE') {
+      let tableData = this.results.get();
+      if (tableData == null) {
+        return;
+      }
+      // To transform non-object results into objects, we need to build an array of replacements and indexes
+      const toAdd: any[] = [];
+      const toRemove: number[] = [];
+
+      tableData.forEach((element, index) => {
+        if (element instanceof Object) {
+          // Use the keys of objects as the tableColumns
+          for (const key of Object.keys(element)) {
+            if (this.columnsToDisplay.indexOf(key) === -1) {
+              this.columnsToDisplay.push(key);
+            }
+          }
+        } else {
+          toRemove.push(index);
+          toAdd.push({ value: element });
+          if (this.columnsToDisplay.indexOf('value') === -1) {
+            this.columnsToDisplay.push('value');
+          }
+        }
+      });
+
+      // Iterate in reverse order so that the indices of later objects are unaffected
+      toRemove.reverse().forEach(index => {
+        tableData.splice(index, 1);
+      });
+
+      tableData = tableData.concat(toAdd);
+
+      this.dataSource = new MatTableDataSource(tableData);
+      this.dataSource.sort = this.sort;
+    }
   }
   ngAfterViewInit() {
     this.data.results.paginator = this.paginator;
