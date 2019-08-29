@@ -15,9 +15,11 @@
  */
 
 import { NgModule } from '@angular/core';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { MatButtonModule, MatSortModule } from '@angular/material';
 import { MatInputModule } from '@angular/material/input';
+import { MatDividerModule } from '@angular/material/divider';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatToolbarModule } from '@angular/material/toolbar';
@@ -26,7 +28,10 @@ import { MatGridListModule } from '@angular/material/grid-list';
 import { MatCardModule } from '@angular/material/card';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatIconModule } from '@angular/material/icon';
+import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatSortModule } from '@angular/material/sort';
+import { MatSelectModule } from '@angular/material/select';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatTableModule } from '@angular/material/table';
 
@@ -42,10 +47,15 @@ import { MatTableModule } from '@angular/material/table';
     MatCardModule,
     MatTabsModule,
     MatIconModule,
+    MatPaginatorModule,
     MatProgressSpinnerModule,
+    MatSortModule,
+    MatSelectModule,
     MatTooltipModule,
     MatTableModule,
-    MatSortModule
+    FormsModule,
+    ReactiveFormsModule,
+    MatDividerModule
   ],
   exports: [
     MatButtonModule,
@@ -58,10 +68,15 @@ import { MatTableModule } from '@angular/material/table';
     MatCardModule,
     MatTabsModule,
     MatIconModule,
+    MatPaginatorModule,
     MatProgressSpinnerModule,
+    MatSortModule,
+    MatSelectModule,
     MatTooltipModule,
     MatTableModule,
-    MatSortModule
+    FormsModule,
+    ReactiveFormsModule,
+    MatDividerModule
   ]
 })
-export class MaterialModule {}
+export class MaterialModule { }

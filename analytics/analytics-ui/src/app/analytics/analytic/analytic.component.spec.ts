@@ -32,6 +32,7 @@ class AnalyticsServiceStub {
     return [];
   }
 }
+
 class HttpClientStub {
   get = params => {
     return of([0]);

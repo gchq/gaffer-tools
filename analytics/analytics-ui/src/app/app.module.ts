@@ -27,32 +27,24 @@ import { HttpClientModule } from '@angular/common/http';
 import { ToastrModule } from 'ngx-toastr';
 
 import { AppComponent } from './app.component';
-import { OperationComponent } from './parameters/operation/operation.component';
-import { ResultsComponent } from './results/results.component';
-import { AnalyticsComponent } from './analytics/analytics.component';
-import { AnalyticComponent } from './analytics/analytic/analytic.component';
 import { NavComponent } from './nav/nav.component';
-import { ParameterFormComponent } from './parameters/parameter-form/parameter-form.component';
-import { ParameterInputComponent } from './parameters/parameter-input/parameter-input.component';
+import { AnalyticsModule } from './analytics/analytics.module';
+import { ParametersModule } from './parameters/parameters.module';
+import { ResultsModule } from './results/results.module';
 
 import { AnalyticsService } from './services/analytics.service';
 import { ErrorService } from './services/error.service';
 import { EndpointService } from './services/endpoint-service';
 import { QueryService } from './services/query.service';
 import { ResultsService } from './services/results.service';
+import { TypeService } from './services/type.service';
 import { TimeService } from './services/time.service';
 import { SchemaService } from './services/schema.service';
 
 @NgModule({
   declarations: [
     AppComponent,
-    AnalyticsComponent,
-    AnalyticComponent,
-    OperationComponent,
-    NavComponent,
-    ResultsComponent,
-    ParameterFormComponent,
-    ParameterInputComponent
+    NavComponent
   ],
   imports: [
     BrowserModule,
@@ -64,7 +56,10 @@ import { SchemaService } from './services/schema.service';
     MaterialModule,
     LayoutModule,
     FlexLayoutModule,
-    ToastrModule.forRoot()
+    ToastrModule.forRoot(),
+    ResultsModule,
+    AnalyticsModule,
+    ParametersModule
   ],
   providers: [
     AnalyticsService,

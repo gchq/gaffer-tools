@@ -27,6 +27,7 @@ import { EndpointService } from './endpoint-service';
 
 const OPERATION_CHAIN_CLASS = 'uk.gov.gchq.gaffer.operation.OperationChain';
 const MAP_OPERATION_CLASS = 'uk.gov.gchq.gaffer.operation.impl.Map';
+
 // Used to store and get the selected analytic
 @Injectable()
 export class AnalyticsService {
@@ -52,7 +53,6 @@ export class AnalyticsService {
   getOutputVisualisationType() {
     return this.arrayAnalytic.outputVisualisation.visualisationType;
   }
-
   /** Update the analytic operation on change of parameters */
   updateAnalytic = function(newValue, parameterName) {
     // Convert to an integer
@@ -128,8 +128,10 @@ export class AnalyticsService {
     }
 
     // Execute the analytic and then navigate when finished loading
-    this.query.executeQuery(operationChain, () => {
-      this.router.navigate(['/results']);
+    this.query.executeQuery(operation, () => {
+      const name = this.arrayAnalytic.analyticName;
+      this.router.navigate([name, 'results']);
+
     });
   };
 

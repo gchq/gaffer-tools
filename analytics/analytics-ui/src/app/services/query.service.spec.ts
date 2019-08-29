@@ -15,7 +15,7 @@
  */
 
 import { TestBed, async } from '@angular/core/testing';
-import { of, EMPTY } from 'rxjs';
+import { empty, of, EMPTY } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 
 import { QueryService } from './query.service';

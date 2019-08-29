@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-import { TestBed, async } from '@angular/core/testing';
-import { HttpClient } from '@angular/common/http';
+import { TestBed, async, fakeAsync, tick } from '@angular/core/testing';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Router } from '@angular/router';
 
 import { AnalyticsService } from './analytics.service';
