@@ -40,7 +40,7 @@ export class ResultsComponent implements AfterViewInit, OnInit {
   @ViewChild(MatSort) sort: MatSort;
   outputType = null;
   schema = { edges: {}, entities: {}, types: {} };
-  columnsToDisplay: string[] = [];
+  columnsToDisplay;
   selected;
 
   constructor(
