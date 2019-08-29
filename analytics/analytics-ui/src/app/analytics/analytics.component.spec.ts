@@ -20,7 +20,8 @@ import { empty, from, throwError, EMPTY } from 'rxjs';
 import {
   MatGridListModule,
   MatCardModule,
-  MatTooltipModule
+  MatTooltipModule,
+  MatIconModule
 } from '@angular/material';
 
 import { AnalyticsComponent } from './analytics.component';
@@ -56,7 +57,7 @@ describe('AnalyticsComponent', () => {
         { provide: AnalyticsService, useClass: AnalyticsServiceStub },
         { provide: ErrorService, useClass: ErrorServiceStub }
       ],
-      imports: [MatGridListModule, MatCardModule, MatTooltipModule]
+      imports: [MatGridListModule, MatCardModule, MatTooltipModule, MatIconModule]
     }).compileComponents();
   }));
 

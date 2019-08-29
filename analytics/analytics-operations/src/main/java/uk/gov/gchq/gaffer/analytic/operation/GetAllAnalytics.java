@@ -33,7 +33,7 @@ import java.util.Map;
  * {@link AnalyticDetail}s associated with a Gaffer graph.
  */
 @JsonPropertyOrder(value = { "class" }, alphabetic = true)
-@Since("1.0.0")
+@Since("1.10.0")
 @Summary("Gets all available analytic operations")
 public class GetAllAnalytics implements Output<CloseableIterable<AnalyticDetail>> {
     private Map<String, String> options;

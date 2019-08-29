@@ -34,4 +34,5 @@ public final class AnalyticTypeReference {
 
     public static class IterableAnalyticOperationDetail extends TypeReference<CloseableIterable<AnalyticDetail>> {
     }
+
 }

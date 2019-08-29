@@ -19,19 +19,22 @@ package uk.gov.gchq.gaffer.analytic.operation;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
-import uk.gov.gchq.gaffer.analytic.operation.AddAnalytic.Builder;
+import uk.gov.gchq.gaffer.analytic.function.ToMap;
 import uk.gov.gchq.gaffer.commonutil.JsonAssert;
+import uk.gov.gchq.gaffer.data.element.function.ExtractProperty;
 import uk.gov.gchq.gaffer.operation.OperationTest;
 
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Function;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNotSame;
+
 
 public class AddAnalyticTest extends OperationTest<AddAnalytic> {
         public static final String USER = "User";
@@ -41,15 +44,15 @@ public class AddAnalyticTest extends OperationTest<AddAnalytic> {
                 Map<String, UIMappingDetail> uiMapping = Maps.newHashMap();
                 uiMapping.put("result-limit", new UIMappingDetail.Builder().label("param1").userInputType("textbox")
                                 .parameterName("result-limit1").build());
-                Map<String, String> metaData = new HashMap<>();
-                metaData.put("iconURL", "icon");
-                Map<String, String> outputType = new HashMap<>();
-                outputType.put("output", "table");
+                MetaData metaData = new MetaData();
+                metaData.setIcon("icon");
+                Map<String, Function> keyFunctions = new HashMap<>();
+                keyFunctions.put("prop 1", new ExtractProperty("prop1"));
 
                 AddAnalytic addAnalyticOperation = new AddAnalytic.Builder().analyticName("Test Analytic name")
                                 .operationName("Test Operation name").description("Test description")
                                 .readAccessRoles(USER).writeAccessRoles(USER).overwrite(false).uiMapping(uiMapping)
-                                .metaData(metaData).outputType(outputType).score(4).build();
+                                .metaData(metaData).outputVisualisation(new OutputVisualisation().outputAdapter(new ToMap(keyFunctions))).score(4).build();
 
                 // When
                 final byte[] json = toJson(addAnalyticOperation);
@@ -61,8 +64,19 @@ public class AddAnalyticTest extends OperationTest<AddAnalytic> {
                                 + "  \"analyticName\": \"Test Analytic name\",\n"
                                 + "  \"operationName\": \"Test Operation name\",\n"
                                 + "  \"description\": \"Test description\",\n" + "  \"score\": 4,\n"
-                                + "  \"metaData\": {\n" + "    \"iconURL\": \"icon\"\n" + "   },\n"
-                                + "  \"outputType\": {\n" + "    \"output\": \"table\"\n" + "   },\n"
+                                + "  \"metaData\": {\n" + "    \"icon\": \"icon\"\n" + "   },\n"
+                                + "  \"outputVisualisation\": {\n"
+                                + "    \"visualisationType\": \"TABLE\",\n"
+                                + "    \"outputAdapter\": {\n"
+                                + "      \"class\": \"uk.gov.gchq.gaffer.analytic.function.ToMap\",\n"
+                                + "      \"keyFunctions\": {\n"
+                                + "        \"prop 1\": {\n"
+                                + "          \"class\": \"uk.gov.gchq.gaffer.data.element.function.ExtractProperty\",\n"
+                                + "          \"name\": \"prop1\"\n"
+                                + "        }\n"
+                                + "      }\n"
+                                + "    }\n"
+                                + "  },\n"
                                 + "  \"overwriteFlag\": false,\n" + "   \"readAccessRoles\": [" + " \"User\"" + " ],\n"
                                 + "  \"uiMapping\": {\n" + "    \"result-limit\": {\n"
                                 + "      \"label\": \"param1\",\n" + "      \"userInputType\" : \"textbox\",\n"
@@ -79,15 +93,16 @@ public class AddAnalyticTest extends OperationTest<AddAnalytic> {
                                 new UIMappingDetail("Maximum Results", "String", "finalMaxResultLimit"));
                 Map<String, String> options = new HashMap<>();
                 options.put("option1", "example Option");
-                Map<String, String> metaData = new HashMap<>();
-                metaData.put("iconURL", "icon");
-                Map<String, String> outputType = new HashMap<>();
-                outputType.put("output", "table");
+                MetaData metaData = new MetaData();
+                metaData.setIcon("icon");
+                Map<String, Function> keyFunctions = new HashMap<>();
+                keyFunctions.put("prop 1", new ExtractProperty("prop1"));
+                OutputVisualisation outputVisualisation = new OutputVisualisation().outputAdapter(new ToMap(keyFunctions));
 
-                AddAnalytic addAnalyticOperation = new Builder().analyticName("Test Analytic name")
+                AddAnalytic addAnalyticOperation = new AddAnalytic.Builder().analyticName("Test Analytic name")
                                 .operationName("Test Operation name").description("Test description")
                                 .readAccessRoles(USER).writeAccessRoles(USER).overwrite(false).uiMapping(uiMapping)
-                                .metaData(metaData).outputType(outputType).options(options).score(4).build();
+                                .metaData(metaData).outputVisualisation(outputVisualisation).options(options).score(4).build();
                 // When
 
                 // Then
@@ -99,7 +114,7 @@ public class AddAnalyticTest extends OperationTest<AddAnalytic> {
                 assertFalse(addAnalyticOperation.isOverwriteFlag());
                 assertEquals(uiMapping, addAnalyticOperation.getUiMapping());
                 assertEquals(metaData, addAnalyticOperation.getMetaData());
-                assertEquals(outputType, addAnalyticOperation.getOutputType());
+                assertEquals(outputVisualisation, addAnalyticOperation.getOutputVisualisation());
                 assertEquals(options, addAnalyticOperation.getOptions());
                 assertEquals(4, (int) addAnalyticOperation.getScore());
         }
@@ -114,15 +129,17 @@ public class AddAnalyticTest extends OperationTest<AddAnalytic> {
                                 new UIMappingDetail("Maximum Results", "String", "finalMaxResultLimit"));
                 Map<String, String> options = new HashMap<>();
                 options.put("option1", "example Option");
-                Map<String, String> metaData = new HashMap<>();
-                metaData.put("iconURL", "icon");
-                Map<String, String> outputType = new HashMap<>();
-                outputType.put("output", "table");
+                MetaData metaData = new MetaData();
+                metaData.setIcon("icon");
+                Map<String, Function> keyFunctions = new HashMap<>();
+                keyFunctions.put("prop 1", new ExtractProperty("prop1"));
+                OutputVisualisation outputVisualisation = new OutputVisualisation().outputAdapter(new ToMap(keyFunctions));
 
-                AddAnalytic addAnalyticOperation = new AddAnalytic.Builder().analyticName("Test Analytic name")
+
+            AddAnalytic addAnalyticOperation = new AddAnalytic.Builder().analyticName("Test Analytic name")
                                 .operationName("Test Operation name").description("Test description")
                                 .readAccessRoles(USER).writeAccessRoles(USER).overwrite(false).uiMapping(uiMapping)
-                                .metaData(metaData).outputType(outputType).options(options).score(4).build();
+                                .metaData(metaData).outputVisualisation(outputVisualisation).options(options).score(4).build();
 
                 // When
                 AddAnalytic clone = addAnalyticOperation.shallowClone();
@@ -137,7 +154,7 @@ public class AddAnalyticTest extends OperationTest<AddAnalytic> {
                 assertFalse(clone.isOverwriteFlag());
                 assertEquals(uiMapping, clone.getUiMapping());
                 assertEquals(metaData, clone.getMetaData());
-                assertEquals(outputType, clone.getOutputType());
+                assertEquals(outputVisualisation, clone.getOutputVisualisation());
                 assertEquals(options, clone.getOptions());
                 assertEquals(4, (int) clone.getScore());
         }

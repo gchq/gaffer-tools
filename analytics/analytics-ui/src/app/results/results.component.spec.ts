@@ -22,7 +22,9 @@ import {
 } from '@angular/material';
 import { empty, of } from 'rxjs';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import { MatTableModule } from '@angular/material';
 
+import { AnalyticsService } from '../services/analytics.service';
 import { ResultsComponent } from './results.component';
 import { ResultsService } from '../services/results.service';
 import { TypeService } from '../services/type.service';
@@ -452,6 +454,12 @@ class SchemaServiceStub {
 }
 class ErrorServiceStub { }
 
+class AnalyticsServiceStub {
+  getOutputVisualisationType = () => {
+    return 'TABLE';
+  }
+}
+
 describe('ResultsComponent', () => {
   let component: ResultsComponent;
   let fixture: ComponentFixture<ResultsComponent>;
@@ -464,6 +472,7 @@ describe('ResultsComponent', () => {
         TypeService,
         TimeService,
       { provide: SchemaService, useClass: SchemaServiceStub },
+      { provide: AnalyticsService, useClass: AnalyticsServiceStub },
       { provide: ErrorService, useClass: ErrorServiceStub },
       ]
     }).compileComponents();
@@ -488,6 +497,47 @@ describe('ResultsComponent', () => {
     fixture.detectChanges();
 
     expect(spy).toHaveBeenCalledTimes(1);
+  });
+
+  it('should use a "value" key for string results', () => {
+    results = ['a', 'b', 'c'];
+
+    fixture.detectChanges();
+
+    const expected = [{
+      value: 'a'
+    },
+    {
+      value: 'b'
+    },
+    {
+      value: 'c'
+    }
+    ];
+
+    expect(component.data.results).toEqual(expected);
+  });
+
+  it('should use "value" as the key for non-object result for column names', () => {
+    results = [1, 2, 3];
+
+    fixture.detectChanges();
+
+    expect(component.columnsToDisplay).toEqual(['value']);
+  });
+
+  it('should use the keys of objects for object results for column names', () => {
+    results = [{
+      varA: 1
+    },
+    {
+      varB: 'B'
+    }
+    ];
+
+    fixture.detectChanges();
+
+    expect(component.columnsToDisplay).toEqual(['varA', 'varB']);
   });
 
   it('should update the table at initialisation', () => {

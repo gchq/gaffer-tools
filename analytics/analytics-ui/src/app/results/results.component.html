@@ -1,6 +1,8 @@
 <div style="margin-left:110px">
   <h1>Results</h1>
-  <mat-form-field>
+</div>
+
+<mat-form-field>
     <mat-label>Columns</mat-label>
     <mat-select [(value)]="selected">
       <mat-option *ngFor="let column of columnsToDisplay" value={{column}}>
@@ -12,8 +14,9 @@
 </div>
 
 <!-- Dynamic Table -->
-
 <mat-card>
+  <div *ngIf="outputType=='TABLE'" class="container">
+    <div class="spacer"></div>
   <div class="example-container">
     <mat-table [dataSource]="data.results" matSort>
       <ng-container [matColumnDef]="column" *ngFor="let column of columnsToDisplay">
@@ -23,14 +26,18 @@
         <mat-cell *matCellDef="let element"> {{element[column]}} </mat-cell>
       </ng-container>
 
-      <mat-header-row *matHeaderRowDef="columnsToDisplay;">
+      <mat-header-row *matHeaderRowDef="columnsToDisplay; sticky: true">
       </mat-header-row>
       <mat-row *matRowDef="let row; columns: columnsToDisplay;">
       </mat-row>
     </mat-table>
     <mat-paginator [pageSize]="4" [pageSizeOptions]="[4, 8, 12, 24]" showFirstLastButtons>
     </mat-paginator>
+  <div class="spacer"></div>
   </div>
+<!-- HTML -->
+<div *ngIf="outputType=='HTML'" id="htmlContainer" class="container">
+</div>
 </mat-card>
 
 <div style="margin-left:110px" fxLayout="row">

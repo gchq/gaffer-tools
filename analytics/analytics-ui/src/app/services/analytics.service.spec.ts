@@ -213,9 +213,12 @@ describe('AnalyticsService', () => {
       param2: 'value2'
     };
     const operation = {
-      class: 'uk.gov.gchq.gaffer.named.operation.NamedOperation',
-      operationName: '{operationName}',
-      parameters: parametersMap
+      class: 'uk.gov.gchq.gaffer.operation.OperationChain',
+      operations: [{
+        class: 'uk.gov.gchq.gaffer.named.operation.NamedOperation',
+        operationName: '{operationName}',
+        parameters: parametersMap
+      }]
     };
     const queryService = TestBed.get(QueryService);
     const spy = spyOn(queryService, 'executeQuery');

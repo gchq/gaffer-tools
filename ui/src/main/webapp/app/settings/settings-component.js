@@ -30,12 +30,16 @@ function settingsView() {
 function SettingsController(settings, schema, operationService, events, config) {
     var vm = this;
 
-    vm.resultLimit = settings.getResultLimit()
-    vm.showOptions = false;
+    vm.saveClearChainAfterExecution = function() {
+        settings.setClearChainAfterExecution(vm.clearChainAfterExecution);
+    }
 
     vm.$onInit = function() {
+        vm.showOptions = false;
+        vm.resultLimit = settings.getResultLimit();
+        vm.clearChainAfterExecution = settings.getClearChainAfterExecution();
         config.get().then(function(conf) {
-            vm.showOptions = (conf.operationOptions !== undefined || conf.operationOptionKeys !== undefined)
+            vm.showOptions = (conf.operationOptions !== undefined || conf.operationOptionKeys !== undefined);
         });
     }
 

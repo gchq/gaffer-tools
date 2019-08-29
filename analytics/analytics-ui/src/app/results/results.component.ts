@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an 'AS IS' BASIS,
@@ -20,6 +20,7 @@ import { FormControl } from '@angular/forms';
 import { MatSort, MatTableDataSource, MatPaginator } from '@angular/material';
 import { cloneDeep, union } from 'lodash';
 
+import { AnalyticsService } from '../services/analytics.service';
 import { ResultsService } from '../services/results.service';
 import { TypeService } from '../services/type.service';
 import { TimeService } from '../services/time.service';
@@ -37,18 +38,20 @@ export class ResultsComponent implements AfterViewInit, OnInit {
   };
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
+  outputType = null;
   schema = { edges: {}, entities: {}, types: {} };
   columnsToDisplay;
   selected;
 
-  constructor(
+    constructor(
+    private analyticsService: AnalyticsService,
     private results: ResultsService,
     private types: TypeService,
     private time: TimeService,
     private schemaService: SchemaService,
     private location: Location
   ) { }
-
+  
   removeColumn() {
     Object.keys(this.columnsToDisplay).forEach(key => {
       if (this.columnsToDisplay[key] === this.selected) {
@@ -56,12 +59,11 @@ export class ResultsComponent implements AfterViewInit, OnInit {
       }
     });
   }
-
+  
   goback() {
     this.location.back();
   }
-
-  /**
+    /**
    * Fetches the results. It first loads the latest types from the config and the latest schema.
    */
   ngOnInit() {
@@ -91,11 +93,30 @@ export class ResultsComponent implements AfterViewInit, OnInit {
       this.processResults(sortedResults);
     });
   }
-
   ngAfterViewInit() {
     this.data.results.paginator = this.paginator;
     this.data.results.sort = this.sort;
+    if (this.outputType === 'HTML') {
+      const html = this.results.get();
+
+      // Display the icon
+      const htmlContainer: HTMLElement = document.getElementById('htmlContainer');
+      if (htmlContainer) {
+        htmlContainer.innerHTML = html;
+      }
+    }
   }
+  
+  private convertValue = function(name, value) {
+    let parsedValue = value;
+    if (parsedValue) {
+      parsedValue = this.types.getShortValue(parsedValue);
+      if (this.time.isTimeProperty(name)) {
+        parsedValue = this.time.getDateString(name, parsedValue);
+      }
+    }
+    return parsedValue;
+  };
 
   private processResults = function(resultsData) {
     this.ids = [];
@@ -290,14 +311,5 @@ export class ResultsComponent implements AfterViewInit, OnInit {
     }
   };
 
-  private convertValue = function(name, value) {
-    let parsedValue = value;
-    if (parsedValue) {
-      parsedValue = this.types.getShortValue(parsedValue);
-      if (this.time.isTimeProperty(name)) {
-        parsedValue = this.time.getDateString(name, parsedValue);
-      }
-    }
-    return parsedValue;
-  };
+
 }

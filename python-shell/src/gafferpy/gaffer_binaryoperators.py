@@ -20,6 +20,49 @@ This module contains Python copies of Gaffer java classes
 
 from gafferpy.gaffer_core import *
 
+class BinaryOperator(ToJson, ToCodeString):
+    CLASS = "java.util.function.BinaryOperator"
+
+    def __init__(self, class_name=None, fields=None):
+        self.class_name = class_name
+        self.fields = fields
+
+    def to_json(self):
+        if self.fields is not None:
+            function_json = dict(self.fields)
+        else:
+            function_json = {}
+
+        if self.class_name is not None:
+            function_json['class'] = self.class_name
+
+        return function_json
+
+class AbstractBinaryOperator(BinaryOperator):
+    CLASS = "java.util.function.BinaryOperator"
+
+    def __init__(self, _class_name=None):
+        super().__init__()
+        self._class_name = _class_name
+
+    def to_json(self):
+        function_json = {}
+
+        if self._class_name is not None:
+            function_json['class'] = self._class_name
+
+        return function_json
+
+
+class Sum(AbstractBinaryOperator):
+    CLASS = "uk.gov.gchq.koryphe.impl.binaryoperator.Sum"
+
+    def __init__(self):
+        super().__init__(_class_name=self.CLASS)
+    
+    def to_json(self):
+        return super().to_json()
+
 
 class BinaryOperatorContext(ToJson, ToCodeString):
     CLASS = "gaffer.AggregatorContext"
@@ -39,26 +82,6 @@ class BinaryOperatorContext(ToJson, ToCodeString):
             function_json['binaryOperator'] = self.binary_operator.to_json()
 
         return function_json
-
-
-class BinaryOperator(ToJson, ToCodeString):
-    CLASS = "java.util.function.BinaryOperator"
-
-    def __init__(self, class_name=None, fields=None):
-        self.class_name = class_name
-        self.fields = fields
-
-    def to_json(self):
-        if self.fields is not None:
-            function_json = dict(self.fields)
-        else:
-            function_json = {}
-
-        if self.class_name is not None:
-            function_json['class'] = self.class_name
-
-        return function_json
-
 
 def binary_operator_context_converter(obj):
     if 'class' in obj:

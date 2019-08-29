@@ -18,12 +18,15 @@ package uk.gov.gchq.gaffer.analytic.operation.handler;
 
 import uk.gov.gchq.gaffer.analytic.operation.AnalyticDetail;
 import uk.gov.gchq.gaffer.analytic.operation.GetAnalytic;
+import uk.gov.gchq.gaffer.analytic.operation.UIMappingDetail;
 import uk.gov.gchq.gaffer.analytic.operation.handler.cache.AnalyticCache;
+import uk.gov.gchq.gaffer.named.operation.NamedOperationDetail;
 import uk.gov.gchq.gaffer.named.operation.cache.exception.CacheOperationFailedException;
 import uk.gov.gchq.gaffer.operation.OperationException;
 import uk.gov.gchq.gaffer.store.Context;
 import uk.gov.gchq.gaffer.store.Store;
 import uk.gov.gchq.gaffer.store.operation.handler.OutputOperationHandler;
+import uk.gov.gchq.gaffer.store.operation.handler.named.cache.NamedOperationCache;
 
 /**
  * Operation Handler for GetAnalyticOperation
@@ -40,7 +43,7 @@ public class GetAnalyticHandler implements OutputOperationHandler<GetAnalytic, A
     }
 
     /**
-     * Retrieves all the Analytic Operations that a user is allowed to see. As the
+     * Retrieves the Analytic Operation that a user is allowed to see. As the
      * expected behaviour is to bring back a summary of each operation, the simple
      * flag is set to true. This means all the details regarding access roles and
      * operation chain details are not included in the output.
@@ -64,6 +67,31 @@ public class GetAnalyticHandler implements OutputOperationHandler<GetAnalytic, A
         } catch (final CacheOperationFailedException e) {
             throw new OperationException(e.getMessage());
         }
-        return op;
+
+        return resolveParameters(op, context);
+    }
+
+    private AnalyticDetail resolveParameters(final AnalyticDetail analyticOp, final Context context) {
+        if (null != analyticOp) {
+            try {
+                NamedOperationDetail nod = new NamedOperationCache()
+                        .getNamedOperation(analyticOp.getOperationName(), context.getUser());
+                analyticOp.setReadAccessRoles(nod.getReadAccessRoles());
+                analyticOp.setWriteAccessRoles(nod.getWriteAccessRoles());
+                for (final String currentParam : nod.getParameters().keySet()) {
+                    for (final String uiKey : analyticOp.getUiMapping().keySet()) {
+                        UIMappingDetail uiParam = analyticOp.getUiMapping().get(uiKey);
+                        if (uiParam.getParameterName().equals(currentParam)) {
+                            uiParam.setInputClass(nod.getParameters().get(currentParam).getValueClass());
+                            analyticOp.getUiMapping().put(uiKey, uiParam);
+                        }
+                    }
+                }
+
+            } catch (final Exception e) {
+                // Can't find the parameter.
+            }
+        }
+        return analyticOp;
     }
 }

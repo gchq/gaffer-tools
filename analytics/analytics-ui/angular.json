@@ -20,8 +20,7 @@
             "tsConfig": "src/tsconfig.app.json",
             "assets": [
               "src/favicon.ico",
-              "src/assets",
-              { "glob": "defaultConfig.json", "input": "./", "output": "./config/" }
+              "src/assets"
             ],
             "styles": [
               "src/custom-theme.scss",

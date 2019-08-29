@@ -1,7 +1,8 @@
 <div style="margin-left:110px">
   <h1>Analytics</h1>
 </div>
-<mat-card style="min-height: 300px;">
+
+<mat-card style="min-height: 300px;" gutterSize="3vw">
   <mat-grid-list cols="4">
     <mat-grid-tile *ngFor="let analytic of analytics | orderBy: 'analyticName':reverse">
       <app-analytic [model]="analytic"></app-analytic>

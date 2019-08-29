@@ -25,6 +25,9 @@ import { ResultsService } from './results.service';
 import { cloneDeep, startsWith } from 'lodash';
 import { EndpointService } from './endpoint-service';
 
+const OPERATION_CHAIN_CLASS = 'uk.gov.gchq.gaffer.operation.OperationChain';
+const MAP_OPERATION_CLASS = 'uk.gov.gchq.gaffer.operation.impl.Map';
+
 // Used to store and get the selected analytic
 @Injectable()
 export class AnalyticsService {
@@ -46,6 +49,10 @@ export class AnalyticsService {
     return this.arrayAnalytic;
   }
 
+  /** Get the type of the results. E.g. TABLE or HTML */
+  getOutputVisualisationType() {
+    return this.arrayAnalytic.outputVisualisation.visualisationType;
+  }
   /** Update the analytic operation on change of parameters */
   updateAnalytic = function(newValue, parameterName) {
     // Convert to an integer
@@ -103,10 +110,28 @@ export class AnalyticsService {
     // Clear the current results
     this.results.clear();
 
+    // Create an operation chain, add the operation and if theres an output adapter, apply it
+    const operationChain = {
+      class: OPERATION_CHAIN_CLASS,
+      operations: []
+    };
+
+    operationChain.operations.push(operation);
+
+    if (this.arrayAnalytic.outputVisualisation != null && this.arrayAnalytic.outputVisualisation.outputAdapter != null) {
+      operationChain.operations.push({
+        class: MAP_OPERATION_CLASS,
+        functions: [
+          this.arrayAnalytic.outputVisualisation.outputAdapter
+        ]
+      });
+    }
+
     // Execute the analytic and then navigate when finished loading
     this.query.executeQuery(operation, () => {
       const name = this.arrayAnalytic.analyticName;
       this.router.navigate([name, 'results']);
+
     });
   };
 

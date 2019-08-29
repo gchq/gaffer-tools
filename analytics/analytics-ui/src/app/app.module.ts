@@ -67,7 +67,6 @@ import { SchemaService } from './services/schema.service';
     EndpointService,
     QueryService,
     ResultsService,
-    TypeService,
     TimeService,
     SchemaService
   ],

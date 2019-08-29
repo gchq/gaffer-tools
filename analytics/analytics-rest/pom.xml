@@ -19,11 +19,12 @@
     <parent>
         <groupId>uk.gov.gchq.gaffer</groupId>
         <artifactId>analytics</artifactId>
-        <version>1.9.3-SNAPSHOT</version>
+        <version>1.10.0-RC3-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>analytics-rest</artifactId>
     <packaging>war</packaging>
+
     <properties>
         <standalone-rest-path>rest</standalone-rest-path>
         <standalone-port>8080</standalone-port>
@@ -33,6 +34,11 @@
         <dependency>
             <groupId>uk.gov.gchq.gaffer</groupId>
             <artifactId>analytics-operations</artifactId>
+            <version>${project.parent.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>uk.gov.gchq.gaffer</groupId>
+            <artifactId>analytics-functions</artifactId>
             <version>${project.parent.version}</version>
         </dependency>
     </dependencies>
@@ -104,7 +110,8 @@
                             <port>${standalone-port}</port>
                             <webapps>
                                 <webapp>
-                                    <contextPath>/${standalone-rest-path}</contextPath>
+                                    <contextPath>/${standalone-rest-path}
+                                    </contextPath>
                                     <groupId>uk.gov.gchq.gaffer</groupId>
                                     <artifactId>analytics-rest</artifactId>
                                     <version>${project.parent.version}</version>
@@ -117,7 +124,8 @@
                                     Analytics Example
                                 </gaffer.properties.app.title>
                                 <gaffer.properties.app.description>
-                                    Example Gaffer API which supports Analytics and contains road traffic data.
+                                    Example Gaffer API which supports Analytics
+                                    and contains road traffic data.
                                     The sample data used is taken from the
                                     Department for Transport.
                                     &lt;a
@@ -164,6 +172,5 @@
                 </plugins>
             </build>
         </profile>
-   
     </profiles>
 </project>
