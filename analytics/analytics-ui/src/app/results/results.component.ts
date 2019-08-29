@@ -50,6 +50,7 @@ export class ResultsComponent implements AfterViewInit, OnInit {
     private schemaService: SchemaService,
     private location: Location
   ) { }
+
   removeColumn() {
     Object.keys(this.columnsToDisplay).forEach(key => {
       if (this.columnsToDisplay[key] === this.selected) {
@@ -57,9 +58,11 @@ export class ResultsComponent implements AfterViewInit, OnInit {
       }
     });
   }
+
   goback() {
     this.location.back();
   }
+
   ngOnInit() {
     this.outputType = this.analyticsService.getOutputVisualisationType();
 
@@ -96,10 +99,11 @@ export class ResultsComponent implements AfterViewInit, OnInit {
 
       tableData = tableData.concat(toAdd);
 
-      this.dataSource = new MatTableDataSource(tableData);
-      this.dataSource.sort = this.sort;
+      this.data.results = new MatTableDataSource(tableData);
+      this.data.results.sort = this.sort;
     }
   }
+
   ngAfterViewInit() {
     this.data.results.paginator = this.paginator;
     this.data.results.sort = this.sort;
@@ -113,6 +117,7 @@ export class ResultsComponent implements AfterViewInit, OnInit {
       }
     }
   }
+
   private convertValue = function(name, value) {
     let parsedValue = value;
     if (parsedValue) {
@@ -123,6 +128,7 @@ export class ResultsComponent implements AfterViewInit, OnInit {
     }
     return parsedValue;
   };
+
   private processResults = function(resultsData) {
     this.ids = [];
     this.groupByProperties = [];
