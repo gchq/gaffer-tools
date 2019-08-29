@@ -54,7 +54,7 @@ export class ResultsComponent implements AfterViewInit, OnInit {
   removeColumn() {
     Object.keys(this.columnsToDisplay).forEach(key => {
       if (this.columnsToDisplay[key] === this.selected) {
-        this.columnsToDisplay.splice(key, 1);
+        this.columnsToDisplay.splice(parseInt(key), 1);
       }
     });
   }

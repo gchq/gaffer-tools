@@ -6,7 +6,7 @@
   <div layout="row">
 
     <!--Remove column-->
-    <mat-form-field>
+    <mat-form-field *ngIf="outputType=='TABLE'">
       <mat-label>Columns</mat-label>
       <mat-select [(value)]="selected">
         <mat-option *ngFor="let column of columnsToDisplay" value={{column}}>
@@ -14,7 +14,8 @@
         </mat-option>
       </mat-select>
     </mat-form-field>
-    <button style="margin-left:30px" mat-raised-button (click)="removeColumn()"> Remove column </button>
+    <button *ngIf="outputType=='TABLE'" style="margin-left:30px" mat-raised-button (click)="removeColumn()"> Remove
+      column </button>
 
     <!--Back button-->
     <button style="margin-left:50%" mat-raised-button color="secondary" id="execute-analytic" (click)="goback()">BACK
