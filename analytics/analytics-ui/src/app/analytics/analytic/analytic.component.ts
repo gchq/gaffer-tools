@@ -79,6 +79,7 @@ export class AnalyticComponent implements OnInit, AfterViewInit, OnDestroy {
     const name = this.model.analyticName;
     this.analyticsService.createArrayAnalytic(analytic);
     this.router.navigate([name]);
+  }
 
   /** Scale the icon to fit its container without distorting it */
   scaleIcon() {

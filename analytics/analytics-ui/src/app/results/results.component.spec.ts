@@ -16,7 +16,6 @@
 
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import {
-  MatTableModule,
   MatCardModule,
   MatTableDataSource
 } from '@angular/material';
@@ -32,7 +31,7 @@ import { TimeService } from '../services/time.service';
 import { SchemaService } from '../services/schema.service';
 import { ErrorService } from '../services/error.service';
 
-
+let results: string[] | number[] | ({ varA: number; varB?: undefined; } | { varB: string; varA?: undefined; })[];
 const fullResultsData = [
   {
     class: 'test.Entity',

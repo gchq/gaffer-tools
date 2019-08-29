@@ -40,7 +40,7 @@ export class AnalyticsComponent implements OnInit {
     }
 
     this.order = value;
-  }
+  };
 
   /** Load the analytics */
   reloadAnalytics = function() {

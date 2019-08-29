@@ -43,7 +43,7 @@ export class ResultsComponent implements AfterViewInit, OnInit {
   columnsToDisplay;
   selected;
 
-    constructor(
+  constructor(
     private analyticsService: AnalyticsService,
     private results: ResultsService,
     private types: TypeService,
@@ -51,7 +51,6 @@ export class ResultsComponent implements AfterViewInit, OnInit {
     private schemaService: SchemaService,
     private location: Location
   ) { }
-  
   removeColumn() {
     Object.keys(this.columnsToDisplay).forEach(key => {
       if (this.columnsToDisplay[key] === this.selected) {
@@ -59,13 +58,9 @@ export class ResultsComponent implements AfterViewInit, OnInit {
       }
     });
   }
-  
   goback() {
     this.location.back();
   }
-    /**
-   * Fetches the results. It first loads the latest types from the config and the latest schema.
-   */
   ngOnInit() {
     this.types.get().subscribe(() => {
       this.schemaService.get().subscribe(schema => {
@@ -106,7 +101,6 @@ export class ResultsComponent implements AfterViewInit, OnInit {
       }
     }
   }
-  
   private convertValue = function(name, value) {
     let parsedValue = value;
     if (parsedValue) {
@@ -117,7 +111,6 @@ export class ResultsComponent implements AfterViewInit, OnInit {
     }
     return parsedValue;
   };
-
   private processResults = function(resultsData) {
     this.ids = [];
     this.groupByProperties = [];
