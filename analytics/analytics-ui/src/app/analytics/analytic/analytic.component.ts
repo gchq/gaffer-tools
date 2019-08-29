@@ -16,7 +16,7 @@
 
 import { Component, OnInit, Input, Injectable, AfterViewInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
-import { AnalyticsService } from '../gaffer/analytics.service';
+import { AnalyticsService } from '../../services/analytics.service';
 import { HttpClient } from '@angular/common/http';
 
 @Component({
@@ -35,12 +35,12 @@ export class AnalyticComponent implements OnInit, AfterViewInit, OnDestroy {
     private http: HttpClient,
   ) { }
 
-  ngOnInit() {}
+  ngOnInit() { }
 
   ngAfterViewInit() {
 
     // Load the default icon from file
-    this.http.get('../../assets/defaultIcon.svg', {responseType: 'text'}).subscribe(svg => {
+    this.http.get('../../assets/defaultIcon.svg', { responseType: 'text' }).subscribe(svg => {
       const defaultIcon = svg;
 
       // Set the default icon if an icon is not specified
@@ -94,7 +94,7 @@ export class AnalyticComponent implements OnInit, AfterViewInit, OnDestroy {
       if (containerWidth < containerHeight) {
         desiredHeight = 0.8 * containerWidth;
         desiredWidth = 0.8 * containerWidth;
-      // Otherwise use the height to determine the size of the icon
+        // Otherwise use the height to determine the size of the icon
       } else {
         desiredHeight = 0.8 * containerHeight;
         desiredWidth = 0.8 * containerHeight;

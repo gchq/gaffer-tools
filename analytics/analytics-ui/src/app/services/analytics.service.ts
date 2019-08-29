@@ -20,10 +20,10 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Router } from '@angular/router';
 
 import { QueryService } from './query.service';
-import { ErrorService } from '../error/error.service';
+import { ErrorService } from './error.service';
 import { ResultsService } from './results.service';
 import { cloneDeep, startsWith } from 'lodash';
-import { EndpointService } from '../config/endpoint-service';
+import { EndpointService } from './endpoint-service';
 
 const OPERATION_CHAIN_CLASS = 'uk.gov.gchq.gaffer.operation.OperationChain';
 const MAP_OPERATION_CLASS = 'uk.gov.gchq.gaffer.operation.impl.Map';
@@ -59,10 +59,10 @@ export class AnalyticsService {
     newValue = parseInt(newValue, 10);
     // Look for the parameter in the list of parameters and set the new current value
     for (const parameterPair of this.arrayAnalytic.uiMapping) {
-        if (parameterPair[0] === parameterName) {
-          parameterPair[1].currentValue = newValue;
-          return;
-        }
+      if (parameterPair[0] === parameterName) {
+        parameterPair[1].currentValue = newValue;
+        return;
+      }
     }
     return;
   };

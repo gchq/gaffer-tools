@@ -20,9 +20,9 @@ import { Router } from '@angular/router';
 
 import { AnalyticsService } from './analytics.service';
 import { QueryService } from './query.service';
-import { ErrorService } from '../error/error.service';
+import { ErrorService } from './error.service';
 import { ResultsService } from './results.service';
-import { EndpointService } from '../config/endpoint-service';
+import { EndpointService } from './endpoint-service';
 
 class QueryServiceStub {
   executeQuery = (operation, onSuccess) => {
@@ -215,10 +215,11 @@ describe('AnalyticsService', () => {
     const operation = {
       class: 'uk.gov.gchq.gaffer.operation.OperationChain',
       operations: [{
-      class: 'uk.gov.gchq.gaffer.named.operation.NamedOperation',
-      operationName: '{operationName}',
-      parameters: parametersMap
-    }]};
+        class: 'uk.gov.gchq.gaffer.named.operation.NamedOperation',
+        operationName: '{operationName}',
+        parameters: parametersMap
+      }]
+    };
     const queryService = TestBed.get(QueryService);
     const spy = spyOn(queryService, 'executeQuery');
 

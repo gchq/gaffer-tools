@@ -16,9 +16,9 @@
 
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { ResultsComponent } from './results.component';
-import { ResultsService } from '../gaffer/results.service';
+import { ResultsService } from '../services/results.service';
 import { MatTableModule } from '@angular/material';
-import { AnalyticsService } from '../gaffer/analytics.service';
+import { AnalyticsService } from '../services/analytics.service';
 
 let results;
 
@@ -42,7 +42,7 @@ describe('ResultsComponent', () => {
       declarations: [ResultsComponent],
       imports: [MatTableModule],
       providers: [{ provide: ResultsService, useClass: ResultsServiceStub },
-                  { provide: AnalyticsService, useClass: AnalyticsServiceStub }]
+      { provide: AnalyticsService, useClass: AnalyticsServiceStub }]
     }).compileComponents();
   }));
 

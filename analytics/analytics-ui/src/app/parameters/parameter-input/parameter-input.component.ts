@@ -15,7 +15,7 @@
  */
 
 import { Component, OnInit, Injectable, ViewChild } from '@angular/core';
-import { AnalyticsService } from '../gaffer/analytics.service';
+import { AnalyticsService } from '../../services/analytics.service';
 
 @Component({
   selector: 'app-parameter-input',
@@ -29,7 +29,7 @@ export class ParameterInputComponent implements OnInit {
   mode = 'indeterminate'; // mode of the progress spinner
   loading: boolean; // Used to determine whether or not to show spinner
 
-  constructor(private analyticsService: AnalyticsService) {}
+  constructor(private analyticsService: AnalyticsService) { }
 
   ngOnInit() {
     // Get the analytic from the analyticsService

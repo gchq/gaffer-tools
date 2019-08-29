@@ -25,8 +25,8 @@ import {
 } from '@angular/material';
 
 import { AnalyticsComponent } from './analytics.component';
-import { AnalyticsService } from '../gaffer/analytics.service';
-import { ErrorService } from '../error/error.service';
+import { AnalyticsService } from '../services/analytics.service';
+import { ErrorService } from '../services/error.service';
 
 class AnalyticsServiceStub {
   reloadAnalytics = () => {

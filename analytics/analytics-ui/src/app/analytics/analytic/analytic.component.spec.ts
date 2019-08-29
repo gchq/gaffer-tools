@@ -21,11 +21,11 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { empty, of } from 'rxjs';
 
 import { AnalyticComponent } from './analytic.component';
-import { AnalyticsService } from '../gaffer/analytics.service';
+import { AnalyticsService } from '../../services/analytics.service';
 import { HttpClient } from '@angular/common/http';
 
 class RouterStub {
-  navigate = () => {};
+  navigate = () => { };
 }
 class AnalyticsServiceStub {
   createArrayAnalytic = () => {
@@ -61,9 +61,9 @@ describe('AnalyticComponent', () => {
       description: 'Test description',
       metaData: {
         icon: '<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'24\' height=\'24\' viewBox=\'0 0 24 24\'>' +
-        '<path d=\'M0 0h24v24H0z\' fill=\'none\'/>' +
-        '<path d=\'M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z\'/>' +
-        '<path d=\'M0 0h24v24H0z\' fill=\'none\'/></svg>'
+          '<path d=\'M0 0h24v24H0z\' fill=\'none\'/>' +
+          '<path d=\'M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z\'/>' +
+          '<path d=\'M0 0h24v24H0z\' fill=\'none\'/></svg>'
       },
       operationName: 'test operation name',
       analyticName: 'test analytic name'
@@ -102,6 +102,6 @@ describe('AnalyticComponent', () => {
 
     component.ngAfterViewInit();
 
-    expect(spy).toHaveBeenCalledWith('../../assets/defaultIcon.svg' , {responseType: 'text'});
+    expect(spy).toHaveBeenCalledWith('../../assets/defaultIcon.svg', { responseType: 'text' });
   });
 });

@@ -16,8 +16,8 @@
 import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
 import { MatTableDataSource, MatSort } from '@angular/material';
 
-import { ResultsService } from '../gaffer/results.service';
-import { AnalyticsService } from '../gaffer/analytics.service';
+import { ResultsService } from '../services/results.service';
+import { AnalyticsService } from '../services/analytics.service';
 
 @Component({
   selector: 'app-table',
@@ -79,7 +79,7 @@ export class ResultsComponent implements OnInit, AfterViewInit {
   ngAfterViewInit() {
     if (this.outputType === 'HTML') {
       const html = this.results.get();
-      
+
       // Display the icon
       const htmlContainer: HTMLElement = document.getElementById('htmlContainer');
       if (htmlContainer) {

@@ -27,21 +27,21 @@ import { HttpClientModule } from '@angular/common/http';
 import { ToastrModule } from 'ngx-toastr';
 
 import { AppComponent } from './app.component';
-import { OperationComponent } from './operation/operation.component';
+import { OperationComponent } from './parameters/operation/operation.component';
 import { ResultsComponent } from './results/results.component';
 import { AnalyticsComponent } from './analytics/analytics.component';
-import { AnalyticComponent } from './analytic/analytic.component';
+import { AnalyticComponent } from './analytics/analytic/analytic.component';
 import { NavComponent } from './nav/nav.component';
-import { ParameterFormComponent } from './parameter-form/parameter-form.component';
-import { ParameterInputComponent } from './parameter-input/parameter-input.component';
+import { ParameterFormComponent } from './parameters/parameter-form/parameter-form.component';
+import { ParameterInputComponent } from './parameters/parameter-input/parameter-input.component';
 
-import { AnalyticsService } from './gaffer/analytics.service';
-import { ErrorService } from './error/error.service';
-import { EndpointService } from './config/endpoint-service';
-import { QueryService } from './gaffer/query.service';
-import { ResultsService } from './gaffer/results.service';
-import { TimeService } from './gaffer/time.service';
-import { SchemaService } from './gaffer/schema.service';
+import { AnalyticsService } from './services/analytics.service';
+import { ErrorService } from './services/error.service';
+import { EndpointService } from './services/endpoint-service';
+import { QueryService } from './services/query.service';
+import { ResultsService } from './services/results.service';
+import { TimeService } from './services/time.service';
+import { SchemaService } from './services/schema.service';
 
 @NgModule({
   declarations: [
@@ -78,7 +78,7 @@ import { SchemaService } from './gaffer/schema.service';
   bootstrap: [AppComponent]
 })
 export class AppModule {
-  constructor(private upgrade: UpgradeModule) {}
+  constructor(private upgrade: UpgradeModule) { }
   ngDoBootstrap() {
     this.upgrade.bootstrap(document.body, ['myApp'], { strictDi: true });
   }
