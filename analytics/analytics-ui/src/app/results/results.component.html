@@ -1,16 +1,28 @@
 <div style="margin-left:110px">
-  <h1>Results</h1>
-</div>
 
-<mat-form-field>
-  <mat-label>Columns</mat-label>
-  <mat-select [(value)]="selected">
-    <mat-option *ngFor="let column of columnsToDisplay" value={{column}}>
-      {{ column | uppercase }}
-    </mat-option>
-  </mat-select>
-</mat-form-field>
-<button mat-raised-button (click)="removeColumn()"> Remove column </button>
+  <!--Title-->
+  <h1>Results</h1>
+
+  <div layout="row">
+
+    <!--Remove column-->
+    <mat-form-field>
+      <mat-label>Columns</mat-label>
+      <mat-select [(value)]="selected">
+        <mat-option *ngFor="let column of columnsToDisplay" value={{column}}>
+          {{ column | uppercase }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+    <button style="margin-left:30px" mat-raised-button (click)="removeColumn()"> Remove column </button>
+
+    <!--Back button-->
+    <button style="margin-left:50%" mat-raised-button color="secondary" id="execute-analytic" (click)="goback()">BACK
+      TO PARAMETERS
+    </button>
+  </div>
+
+</div>
 
 <!-- Dynamic Table -->
 <mat-card>
@@ -40,8 +52,3 @@
   <div *ngIf="outputType=='HTML'" id="htmlContainer" class="container">
   </div>
 </mat-card>
-
-<div style="margin-left:110px" fxLayout="row">
-  <button mat-raised-button color="secondary" id="execute-analytic" (click)="goback()">BACK TO PARAMETERS
-  </button>
-</div>
