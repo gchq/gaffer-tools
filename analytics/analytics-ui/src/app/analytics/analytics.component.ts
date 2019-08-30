@@ -15,8 +15,9 @@
  */
 
 import { Component, OnInit, Injectable } from '@angular/core';
-import { ErrorService } from '../dynamic-input/error.service';
-import { AnalyticsService } from '../gaffer/analytics.service';
+import { ErrorService } from '../services/error.service';
+import { AnalyticsService } from '../services/analytics.service';
+import { FilterPipe } from 'ngx-filter-pipe';
 
 @Component({
   selector: 'app-analytics',
@@ -25,14 +26,24 @@ import { AnalyticsService } from '../gaffer/analytics.service';
 @Injectable()
 export class AnalyticsComponent implements OnInit {
   analytics: any;
+  analyticFilter: any = { analyticName: '' };
   constructor(
+    private filterPipe: FilterPipe,
     private analyticsService: AnalyticsService,
     private error: ErrorService
-  ) {}
+  ) { }
 
   ngOnInit() {
     this.reloadAnalytics();
   }
+
+  reverseAnalytics = function(value: string) {
+    if (this.order === value) {
+      this.reverse = !this.reverse;
+    }
+
+    this.order = value;
+  };
 
   /** Load the analytics */
   reloadAnalytics = function() {

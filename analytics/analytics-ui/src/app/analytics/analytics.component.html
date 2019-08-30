@@ -1,10 +1,15 @@
 <div style="margin-left:110px">
   <h1>Analytics</h1>
+  <mat-form-field>
+    <input matInput [(ngModel)]="analyticFilter.analyticName" placeholder="Search analytics">
+  </mat-form-field>
 </div>
-<mat-card style="min-height: 300px;">
+
+<mat-card style="min-height: 300px;" gutterSize="3vw">
   <mat-grid-list cols="4">
-    <mat-grid-tile *ngFor="let analytic of analytics">
+    <mat-grid-tile *ngFor="let analytic of analytics | orderBy: 'analyticName':reverse | filterBy: analyticFilter">
       <app-analytic [model]="analytic"></app-analytic>
     </mat-grid-tile>
   </mat-grid-list>
+  <button mat-flat-button (click)="reverseAnalytics()">SORT REVERSE</button>
 </mat-card>

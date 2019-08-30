@@ -154,6 +154,15 @@ class GafferFunctionsTest(unittest.TestCase):
         [
             '''
             {
+                "class" : "uk.gov.gchq.koryphe.impl.function.ToString",
+                "charset": "UTF-16"
+            }
+            ''',
+            g.ToString(charset="UTF-16")
+        ],
+        [
+            '''
+            {
                 "class" : "uk.gov.gchq.gaffer.operation.function.ToEntityId"
             }
             ''',
@@ -590,6 +599,208 @@ class GafferFunctionsTest(unittest.TestCase):
                 end_time=g.long(15400000000000),
                 time_unit=g.TimeUnit.SECOND
             )
+        ],
+        [
+            '''
+            {
+                "class": "uk.gov.gchq.koryphe.impl.function.Base64Decode"
+            }
+            ''',
+            g.func.Base64Decode()
+        ],
+        [
+            '''
+            {
+                "class": "uk.gov.gchq.koryphe.impl.function.CsvLinesToMaps",
+                "delimiter": "|",
+                "header": ["my", "csv", "file"],
+                "firstRow": 1,
+                "quoted": true,
+                "quoteChar": "'"
+            }
+            ''',
+            g.func.CsvLinesToMaps(delimiter='|', header=["my", "csv", "file"], first_row=1, quoted=True, quote_char='\'')
+        ],
+        [
+            '''
+            {
+                "class": "uk.gov.gchq.koryphe.impl.function.CsvToMaps",
+                "delimiter": "|",
+                "header": ["my", "csv", "file"],
+                "firstRow": 1,
+                "quoted": true,
+                "quoteChar": "'"
+            }
+            ''',
+            g.func.CsvToMaps(delimiter='|', header=["my", "csv", "file"], first_row=1, quoted=True, quote_char='\'')
+        ],
+        [
+            '''
+            {
+                "class": "uk.gov.gchq.koryphe.impl.function.CurrentDate"
+            }
+            ''',
+            g.func.CurrentDate()
+        ],
+        [
+            '''
+            {
+                "class": "uk.gov.gchq.koryphe.impl.function.CurrentTime"
+            }
+            ''',
+            g.func.CurrentTime()
+        ],
+        [
+            '''
+            {
+                "class": "uk.gov.gchq.koryphe.impl.function.DeserialiseJson",
+                "outputClass": "uk.gov.gchq.gaffer.data.element.Edge"
+            }
+            ''',
+            g.func.DeserialiseJson(output_class=g.Edge.CLASS)
+        ],
+        [
+            '''
+            {
+                "class": "uk.gov.gchq.koryphe.impl.function.DeserialiseXml"
+            }
+            ''',
+            g.func.DeserialiseXml()
+        ],
+        [
+            '''
+            {
+                "class": "uk.gov.gchq.koryphe.impl.function.Gunzip"
+            }
+            ''',
+            g.func.Gunzip()
+        ],
+        [
+            '''
+            {
+                "class": "uk.gov.gchq.koryphe.impl.function.Increment",
+                "increment": {
+                    "java.lang.Long": 1000000
+                }
+            }
+            ''',
+            g.Increment(increment=g.long(1000000))
+        ],
+        [
+            '''
+            {
+                "class": "uk.gov.gchq.koryphe.impl.function.MapToTuple"
+            }
+            ''',
+            g.func.MapToTuple()
+        ],
+        [
+            '''
+            {
+                "class": "uk.gov.gchq.koryphe.impl.function.ParseDate",
+                "timeZone": "BST",
+                "format": "DD-MM-YYYY"
+            }
+            ''',
+            g.func.ParseDate(time_zone="BST", format="DD-MM-YYYY")
+        ],
+        [
+            '''
+            {
+                "class": "uk.gov.gchq.koryphe.impl.function.ParseTime",
+                "timeZone": "EST",
+                "format": "MM-DD-YYYY HH:mm:ss.SSS",
+                "timeUnit": "MICROSECOND"
+            }
+            ''',
+            g.func.ParseTime(time_zone="EST", format="MM-DD-YYYY HH:mm:ss.SSS", time_unit=g.TimeUnit.MICROSECOND)
+        ],
+        [
+            '''
+            {
+                "class": "uk.gov.gchq.koryphe.impl.function.ToDateString",
+                "format": "YYYY-MMM-dd"
+            }
+            ''',
+            g.func.ToDateString(format="YYYY-MMM-dd")
+        ],
+        [
+            '''
+            {
+                "class": "uk.gov.gchq.koryphe.impl.function.ToBytes",
+                "charset": "UTF-8"
+            }
+            ''',
+            g.func.ToBytes(charset="UTF-8")
+        ],
+        [
+            '''
+            {
+                "class": "uk.gov.gchq.koryphe.impl.function.ApplyBiFunction",
+                "function": {
+                    "class": "uk.gov.gchq.koryphe.impl.binaryoperator.Sum"
+                }
+            }
+            ''',
+            g.func.ApplyBiFunction(function=g.gaffer_binaryoperators.Sum())
+        ],
+        [
+            '''
+            {
+                "class": "uk.gov.gchq.koryphe.impl.function.ApplyBiFunction",
+                "function": {
+                    "class": "uk.gov.gchq.koryphe.impl.binaryoperator.Product"
+                }
+            }
+            ''',
+            g.func.ApplyBiFunction(function={
+                "class": "uk.gov.gchq.koryphe.impl.binaryoperator.Product"
+            })
+        ],
+        [
+            '''
+            {
+                "class": "uk.gov.gchq.koryphe.impl.function.ToTuple"
+            }
+            ''',
+            g.func.ToTuple()
+        ],
+        [
+            '''
+            {
+                "class": "uk.gov.gchq.gaffer.data.element.function.ToPropertiesTuple"
+            }
+            ''',
+            g.func.ToPropertiesTuple()
+        ],
+        [
+            '''
+            {
+                "class": "uk.gov.gchq.gaffer.data.element.function.ToElementTuple"
+            }
+            ''',
+            g.func.ToElementTuple()
+        ],
+        [
+            '''
+            {
+                "class": "uk.gov.gchq.koryphe.impl.function.FunctionChain",
+                "functions": [
+                    {
+                        "class": "uk.gov.gchq.koryphe.impl.function.Base64Decode"
+                    },
+                    {
+                        "class": "uk.gov.gchq.koryphe.impl.function.CsvLinesToMaps",
+                        "delimiter": "|",
+                        "quoted": true
+                    }
+                ]
+            }
+            ''',
+            g.FunctionChain(functions=[
+                g.Base64Decode(),
+                g.CsvLinesToMaps(delimiter="|", quoted=True)
+            ])
         ]
     ]
 

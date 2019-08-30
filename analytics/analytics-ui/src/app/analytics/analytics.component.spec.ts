@@ -20,12 +20,13 @@ import { empty, from, throwError, EMPTY } from 'rxjs';
 import {
   MatGridListModule,
   MatCardModule,
-  MatTooltipModule
+  MatTooltipModule,
+  MatIconModule
 } from '@angular/material';
 
 import { AnalyticsComponent } from './analytics.component';
-import { AnalyticsService } from '../gaffer/analytics.service';
-import { ErrorService } from '../dynamic-input/error.service';
+import { AnalyticsService } from '../services/analytics.service';
+import { ErrorService } from '../services/error.service';
 
 class AnalyticsServiceStub {
   reloadAnalytics = () => {
@@ -35,7 +36,7 @@ class AnalyticsServiceStub {
 
 @Component({
   selector: 'app-analytic',
-  templateUrl: '../analytic/analytic.component.html'
+  templateUrl: './analytic/analytic.component.html'
 })
 class AnalyticStubComponent {
   @Input() model;
@@ -56,7 +57,7 @@ describe('AnalyticsComponent', () => {
         { provide: AnalyticsService, useClass: AnalyticsServiceStub },
         { provide: ErrorService, useClass: ErrorServiceStub }
       ],
-      imports: [MatGridListModule, MatCardModule, MatTooltipModule]
+      imports: [MatGridListModule, MatCardModule, MatTooltipModule, MatIconModule]
     }).compileComponents();
   }));
 

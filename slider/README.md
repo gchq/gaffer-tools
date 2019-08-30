@@ -49,7 +49,7 @@ Use the following instructions to quickly deploy a Gaffer instance. It will depl
 
 The versions of Gaffer and Accumulo that are deployed, and the version of Slider that is used to do the deployment can be overridden on the command line:
 
-```text
+```bash
 mvn clean package \
   -Dgaffer.version=<gafferVersion> \
   -Daccumulo.version=<accumuloVersion> \
@@ -75,7 +75,7 @@ Two JSON files are used to configure how an instance of a Slider application is 
 
 A Gaffer instance can then be deployed using the following command:
 
-```text
+```bash
 slider create <gafferInstanceName> \
     --appdef <slider-accumulo-app-package.zip> \
     --addon Gaffer <gaffer-slider.zip> \

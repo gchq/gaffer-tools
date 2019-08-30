@@ -267,6 +267,186 @@ describe('The operation chain component', function() {
         });
     });
 
+    describe('ctrl.saveChain()', function() {
+
+        var query, error, $mdDialog, operationService;
+
+        var valid;
+
+        beforeEach(inject(function(_query_, _error_, _$mdDialog_, _operationService_) {
+            query = _query_;
+            error = _error_;
+            $mdDialog = _$mdDialog_;
+            operationService = _operationService_;
+        }));
+
+        beforeEach(function() {
+            valid = true;
+
+            spyOn(ctrl, 'canExecute').and.callFake(function() {
+                return valid;
+            });
+        });
+
+        beforeEach(function() {
+            spyOn(query, 'executeQuery').and.callFake(function(query,onSuccess) {
+                onSuccess();
+            });
+            spyOn(error, 'handle').and.stub();
+            spyOn($mdDialog, 'show').and.stub();
+
+            ctrl.operations = [];
+        });
+
+        it('should not save if canExecute() returns false', function() {
+            valid = false;
+
+            ctrl.saveChain();
+
+            expect(query.executeQuery).not.toHaveBeenCalled();
+        });
+
+        it('should broadcast an error if the length of the chain is 0', function() {
+            ctrl.saveChain();
+            expect(error.handle).toHaveBeenCalledWith("Unable to save operation chain with no operations");
+        });
+
+        it('should not save the chain if the length of the chain is 0', function() {
+            ctrl.saveChain();
+            expect(query.executeQuery).not.toHaveBeenCalled();
+        })
+
+        it('should set the class of the operation to operation chain', function() {
+            ctrl.operations = [
+                {
+                    selectedOperation: {
+                        class: 'test',
+                        fields: {}
+                    }
+                }
+            ]
+            ctrl.executeChain();
+            expect(query.executeQuery).toHaveBeenCalled();
+            var json = query.executeQuery.calls.first().args[0];
+
+            expect(json.class).toEqual("uk.gov.gchq.gaffer.operation.OperationChain");
+        });
+        
+        it('should not save if a name has not been entered', function() {
+            ctrl.namedOperationName = '';
+            ctrl.namedOperationDescription = 'test description';
+
+            ctrl.saveChain();
+
+            expect(query.executeQuery).not.toHaveBeenCalled();
+        })
+
+        it('should show an error dialog if the name is invalid', function() {
+            ctrl.namedOperationName = '';
+            ctrl.namedOperationDescription = 'test description';
+            ctrl.operations.length = 1;
+
+            var invalidName = $mdDialog.confirm()
+            .title('Operation chain name is invalid!')
+            .textContent('You must provide a name for the operation')
+            .ok('Ok')
+
+            ctrl.saveChain();
+
+            expect($mdDialog.show).toHaveBeenCalledWith(invalidName);
+        })
+
+        it('should not save if a description has not been entered', function() {
+            ctrl.namedOperationName = 'test name';
+            ctrl.namedOperationDescription = '';
+
+            ctrl.saveChain();
+
+            expect(query.executeQuery).not.toHaveBeenCalled();
+        })
+
+        it('should show an error dialog if the description is invalid', function() {
+            ctrl.namedOperationName = 'test name';
+            ctrl.namedOperationDescription = '';
+            ctrl.operations.length = 1;
+
+            var invalidDescription = $mdDialog.confirm()
+            .title('Operation chain description is invalid!')
+            .textContent('You must provide a description for the operation')
+            .ok('Ok')
+
+            ctrl.saveChain();
+
+            expect($mdDialog.show).toHaveBeenCalledWith(invalidDescription);
+        })
+
+        it('should save using an add named operation query', function() {
+            var testName = 'test name';
+            var testDescription = 'test description';
+            var OPERATION_CHAIN_CLASS = "uk.gov.gchq.gaffer.operation.OperationChain";    
+            var chain = {
+                    class: OPERATION_CHAIN_CLASS,
+                    operations: []
+            }
+            const ADD_NAMED_OPERATION_CLASS = "uk.gov.gchq.gaffer.named.operation.AddNamedOperation";
+
+            ctrl.operations.length = 1;
+            ctrl.namedOperationName = testName;
+            ctrl.namedOperationDescription = testDescription;
+
+            var expectedQuery = {
+                class: ADD_NAMED_OPERATION_CLASS,
+                operationName: testName,
+                operationChain: chain,
+                description: testDescription,
+                options: {},
+                score: 1,
+                overwriteFlag: true,
+            }
+            
+            ctrl.saveChain();
+
+            expect(query.executeQuery).toHaveBeenCalledWith(expectedQuery, jasmine.any(Function));    
+        })
+
+        it('should show a confirmation dialog', function() {
+            ctrl.namedOperationName = 'test name';
+            ctrl.namedOperationDescription = 'test description';
+            ctrl.operations.length = 1;
+
+            var confirm = $mdDialog.confirm()
+            .title('Operation chain saved as named operation!')
+            .textContent('You can now see your saved operation in the list of operations')
+            .ok('Ok')
+
+            ctrl.saveChain();
+
+            expect($mdDialog.show).toHaveBeenCalledWith(confirm);
+        })
+
+        it('should close the sidenav on success', function() {
+            spyOn(ctrl, 'toggleSideNav').and.stub();
+            ctrl.namedOperationName = 'test name';
+            ctrl.namedOperationDescription = 'test description';
+            ctrl.operations.length = 1;
+
+            ctrl.saveChain();
+
+            expect(ctrl.toggleSideNav).toHaveBeenCalled();
+        })
+
+        it('should reload the operations on success', function() {
+            spyOn(operationService, 'reloadOperations').and.stub();
+            ctrl.namedOperationName = 'test name';
+            ctrl.namedOperationDescription = 'test description';
+            ctrl.operations.length = 1;
+
+            ctrl.saveChain();
+
+            expect(operationService.reloadOperations).toHaveBeenCalled();
+        })
+    })
+
     describe('ctrl.execute()', function() {
 
         var query, types;
@@ -1218,16 +1398,18 @@ describe('The operation chain component', function() {
 
     describe('ctrl.executeChain()', function() {
 
-        var events, query, operationService, error, previousQueries;
+        var events, query, operationService, error, previousQueries, settings, operationChain;
 
         var valid;
 
-        beforeEach(inject(function(_events_, _query_, _operationService_, _error_, _previousQueries_) {
+        beforeEach(inject(function(_events_, _query_, _operationService_, _error_, _previousQueries_, _settings_, _operationChain_) {
             events = _events_;
             query = _query_;
             operationService = _operationService_;
             error = _error_;
             previousQueries = _previousQueries_;
+            settings = _settings_;
+            operationChain = _operationChain_;
         }));
 
         beforeEach(function() {
@@ -1512,6 +1694,7 @@ describe('The operation chain component', function() {
                     }
                 }
             ];
+            spyOn(settings, 'getClearChainAfterExecution').and.returnValue(false);
 
             ctrl.executeChain();
 
@@ -1600,6 +1783,73 @@ describe('The operation chain component', function() {
 
             ctrl.executeChain();
             expect(query.execute).toHaveBeenCalled();
+        });
+
+        it('should reset the chain if the clear chain checkbox has been checked', function() {
+            ctrl.operations = [
+                {
+                    selectedOperation: {
+                        class: 'test',
+                        fields: {}
+                    },
+                    opOptions: {
+                        'option1': 'value1'
+                    }
+                }
+            ];
+            spyOn(settings, 'getClearChainAfterExecution').and.returnValue(true);
+            spyOn(operationChain, 'reset').and.stub();
+            spyOn(query, 'executeQuery').and.callFake(function(data, onSuccess, onFailure) {
+                onSuccess();
+            });
+
+            ctrl.executeChain();
+
+            expect(operationChain.reset).toHaveBeenCalledTimes(1);
+        });
+
+        it('should not reset the chain if the clear chain checkbox has not been checked', function() {
+            ctrl.operations = [
+                {
+                    selectedOperation: {
+                        class: 'test',
+                        fields: {}
+                    },
+                    opOptions: {
+                        'option1': 'value1'
+                    }
+                }
+            ];
+            spyOn(settings, 'getClearChainAfterExecution').and.returnValue(false);
+            spyOn(operationChain, 'reset').and.stub();
+
+            ctrl.executeChain();
+
+            expect(operationChain.reset).not.toHaveBeenCalled();
+        });
+
+        it('should reload the operations if the chain is reset', function() {
+            ctrl.operations = [
+                {
+                    selectedOperation: {
+                        class: 'test',
+                        fields: {}
+                    },
+                    opOptions: {
+                        'option1': 'value1'
+                    }
+                }
+            ];
+            spyOn(settings, 'getClearChainAfterExecution').and.returnValue(true);
+            spyOn(operationChain, 'getOperationChain').and.stub();
+            spyOn(operationChain, 'reset').and.stub();
+            spyOn(query, 'executeQuery').and.callFake(function(data, onSuccess, onFailure) {
+                onSuccess();
+            });
+
+            ctrl.executeChain();
+
+            expect(operationChain.getOperationChain).toHaveBeenCalledTimes(1);            
         });
     });
 

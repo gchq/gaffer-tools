@@ -278,8 +278,32 @@ public class QueryBuilderST {
         assertEquals(expectedResults, resultList);
     }
 
-    private void enterText(final String id, final String value) {
+    @Test
+    public void shouldBeAbleToSaveOperationChain() throws InterruptedException {
+
+        //Set up an operation chain
+        autoComplete("operation-name", "Get Elements");
+        enterText("seedVertices", "M5");
+        click("create-custom-filter");
+        selectMultiOption("view-entities", "Cardinality");
+
+        //Save the operation
+        click("save-chain");
+        enterText("saved-name", "A Test Name");
+        enterText("saved-description", "A test description");
+        click("save-named-operation");
+
+        //Check the operation is in the list of operations
+        click("md-confirm-button");
+        autoComplete("operation-name", "A Test Nam");
+        String text = getElement("operation-name").getAttribute("value");
+        assertEquals("A Test Name", text);
+    }
+
+    private void enterText(final String id, final String value) throws InterruptedException {
         getElement(id).sendKeys(value);
+
+        Thread.sleep(slowFactor * 500);
     }
 
     private void backspace(final String id) {

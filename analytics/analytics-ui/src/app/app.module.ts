@@ -27,33 +27,24 @@ import { HttpClientModule } from '@angular/common/http';
 import { ToastrModule } from 'ngx-toastr';
 
 import { AppComponent } from './app.component';
-import { OperationComponent } from './operation/operation.component';
-import { TableComponent } from './table/table.component';
-import { AnalyticsComponent } from './analytics/analytics.component';
-import { AnalyticComponent } from './analytic/analytic.component';
 import { NavComponent } from './nav/nav.component';
-import { ParameterFormComponent } from './parameter-form/parameter-form.component';
-import { ParameterInputComponent } from './parameter-input/parameter-input.component';
+import { AnalyticsModule } from './analytics/analytics.module';
+import { ParametersModule } from './parameters/parameters.module';
+import { ResultsModule } from './results/results.module';
 
-import { AnalyticsService } from './gaffer/analytics.service';
-import { ErrorService } from './dynamic-input/error.service';
-import { EndpointService } from './config/endpoint-service';
-import { QueryService } from './gaffer/query.service';
-import { ResultsService } from './gaffer/results.service';
-import { TypeService } from './gaffer/type.service';
-import { TimeService } from './gaffer/time.service';
-import { SchemaService } from './gaffer/schema.service';
+import { AnalyticsService } from './services/analytics.service';
+import { ErrorService } from './services/error.service';
+import { EndpointService } from './services/endpoint-service';
+import { QueryService } from './services/query.service';
+import { ResultsService } from './services/results.service';
+import { TypeService } from './services/type.service';
+import { TimeService } from './services/time.service';
+import { SchemaService } from './services/schema.service';
 
 @NgModule({
   declarations: [
     AppComponent,
-    AnalyticsComponent,
-    AnalyticComponent,
-    OperationComponent,
-    NavComponent,
-    TableComponent,
-    ParameterFormComponent,
-    ParameterInputComponent
+    NavComponent
   ],
   imports: [
     BrowserModule,
@@ -65,7 +56,10 @@ import { SchemaService } from './gaffer/schema.service';
     MaterialModule,
     LayoutModule,
     FlexLayoutModule,
-    ToastrModule.forRoot()
+    ToastrModule.forRoot(),
+    ResultsModule,
+    AnalyticsModule,
+    ParametersModule
   ],
   providers: [
     AnalyticsService,
@@ -73,14 +67,13 @@ import { SchemaService } from './gaffer/schema.service';
     EndpointService,
     QueryService,
     ResultsService,
-    TypeService,
     TimeService,
     SchemaService
   ],
   bootstrap: [AppComponent]
 })
 export class AppModule {
-  constructor(private upgrade: UpgradeModule) {}
+  constructor(private upgrade: UpgradeModule) { }
   ngDoBootstrap() {
     this.upgrade.bootstrap(document.body, ['myApp'], { strictDi: true });
   }

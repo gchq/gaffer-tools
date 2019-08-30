@@ -17,7 +17,6 @@
 package uk.gov.gchq.gaffer.analytic.operation;
 
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-import com.fasterxml.jackson.annotation.JsonSetter;
 
 import uk.gov.gchq.gaffer.commonutil.Required;
 import uk.gov.gchq.gaffer.operation.Operation;
@@ -32,8 +31,8 @@ import java.util.Map;
 
 import static java.util.Objects.isNull;
 
-@JsonPropertyOrder(value = { "class", "analyticName", "operationName", "description", "score" }, alphabetic = true)
-@Since("1.0.0")
+@JsonPropertyOrder(value = {"class", "analyticName", "operationName", "description", "score"}, alphabetic = true)
+@Since("1.10.0")
 @Summary("Adds a new analytic")
 public class AddAnalytic implements Operation {
     @Required
@@ -46,8 +45,8 @@ public class AddAnalytic implements Operation {
     private Map<String, UIMappingDetail> uiMapping;
     private Map<String, String> options;
     private Integer score;
-    private Map<String, String> metaData;
-    private Map<String, String> outputType;
+    private MetaData metaData;
+    private OutputVisualisation outputVisualisation;
 
     public boolean isOverwriteFlag() {
         return overwriteFlag;
@@ -97,7 +96,6 @@ public class AddAnalytic implements Operation {
         this.description = description;
     }
 
-    @JsonSetter("uiMapping")
     public void setUiMapping(final Map<String, UIMappingDetail> uiMapping) {
         this.uiMapping = uiMapping;
     }
@@ -106,30 +104,21 @@ public class AddAnalytic implements Operation {
         return uiMapping;
     }
 
-    @JsonSetter("metaData")
-    public void setMetaData(final Map<String, String> metaData) {
+    public void setMetaData(final MetaData metaData) {
         this.metaData = metaData;
     }
 
-    public Map<String, String> getMetaData() {
+    public MetaData getMetaData() {
         return metaData;
     }
 
-    @JsonSetter("outputType")
-    public void setOutputType(final Map<String, String> outputType) {
-        this.outputType = outputType;
-    }
-
-    public Map<String, String> getOutputType() {
-        return outputType;
-    }
 
     @Override
     public AddAnalytic shallowClone() {
         return new AddAnalytic.Builder().analyticName(analyticName).operationName(operationName)
                 .description(description).readAccessRoles(readAccessRoles.toArray(new String[readAccessRoles.size()]))
                 .writeAccessRoles(writeAccessRoles.toArray(new String[writeAccessRoles.size()]))
-                .overwrite(overwriteFlag).uiMapping(uiMapping).metaData(metaData).outputType(outputType)
+                .overwrite(overwriteFlag).uiMapping(uiMapping).metaData(metaData).outputVisualisation(outputVisualisation)
                 .options(options).score(score).build();
     }
 
@@ -149,6 +138,14 @@ public class AddAnalytic implements Operation {
 
     public void setScore(final Integer score) {
         this.score = score;
+    }
+
+    public OutputVisualisation getOutputVisualisation() {
+        return outputVisualisation;
+    }
+
+    public void setOutputVisualisation(final OutputVisualisation outputVisualisation) {
+        this.outputVisualisation = outputVisualisation;
     }
 
     public static class Builder extends BaseBuilder<AddAnalytic, AddAnalytic.Builder> {
@@ -196,13 +193,13 @@ public class AddAnalytic implements Operation {
             return _self();
         }
 
-        public AddAnalytic.Builder metaData(final Map<String, String> metaData) {
+        public AddAnalytic.Builder metaData(final MetaData metaData) {
             _getOp().setMetaData(metaData);
             return _self();
         }
 
-        public AddAnalytic.Builder outputType(final Map<String, String> outputType) {
-            _getOp().setOutputType(outputType);
+        public AddAnalytic.Builder outputVisualisation(final OutputVisualisation outputVisualisation) {
+            _getOp().setOutputVisualisation(outputVisualisation);
             return _self();
         }
 

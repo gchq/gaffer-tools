@@ -31,7 +31,7 @@ import java.util.Map;
  * for retrieving all {@link AnalyticDetail}s associated with a Gaffer graph.
  */
 @JsonPropertyOrder(value = { "class", "analyticName" }, alphabetic = true)
-@Since("1.0.0")
+@Since("1.10.0")
 @Summary("Gets all available analytic operations")
 public class GetAnalytic implements Output<AnalyticDetail> {
     private Map<String, String> options;

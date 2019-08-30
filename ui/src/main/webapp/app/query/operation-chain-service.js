@@ -17,6 +17,7 @@
 'use strict';
 
 angular.module('app').factory('operationChain', ['common', 'settings', 'events', function(common, settings, events) {
+
     var service = {};
 
     var EVENT_NAME = 'onOperationUpdate';

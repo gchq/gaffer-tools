@@ -29,7 +29,7 @@ import java.util.Map;
  * {@link AnalyticDetail} from a Gaffer graph.
  */
 @JsonPropertyOrder(value = {"class", "operationName"}, alphabetic = true)
-@Since("1.0.0")
+@Since("1.10.0")
 @Summary("Deletes an analytic operation")
 public class DeleteAnalytic implements Operation {
     @Required
