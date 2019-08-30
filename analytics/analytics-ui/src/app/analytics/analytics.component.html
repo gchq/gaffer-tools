@@ -1,6 +1,8 @@
 <div style="margin-left:110px">
   <h1>Analytics</h1>
-  <input matInput [(ngModel)]="analyticFilter.analyticName" placeholder="Type to filter by analytic name">
+  <mat-form-field>
+    <input matInput [(ngModel)]="analyticFilter.analyticName" placeholder="Search analytics">
+  </mat-form-field>
 </div>
 
 <mat-card style="min-height: 300px;" gutterSize="3vw">
