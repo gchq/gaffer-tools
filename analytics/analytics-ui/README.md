@@ -234,6 +234,7 @@ For this example, we also use an output adapter to take elements and convert the
       }
    },
    "outputVisualisation": {
+      "visualisationType": "TABLE",
       "outputAdapter": {
          "class": "IterableFunction",
          "functions": [
