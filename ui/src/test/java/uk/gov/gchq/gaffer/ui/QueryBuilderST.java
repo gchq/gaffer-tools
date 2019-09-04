@@ -1,3 +1,20 @@
+/*
+ * Copyright 2017-2019 Crown Copyright
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+
 package uk.gov.gchq.gaffer.ui;
 
 import com.google.common.collect.Maps;
@@ -12,6 +29,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxProfile;
+
 import uk.gov.gchq.gaffer.exception.SerialisationException;
 import uk.gov.gchq.gaffer.graph.Graph;
 import uk.gov.gchq.gaffer.jsonserialisation.JSONSerialiser;
@@ -89,7 +107,7 @@ public class QueryBuilderST {
             "    }\n" +
             "  ]\n" +
             "}";
-    private static final String EXPECTED_RESULTS[] = {
+    private static final String[] EXPECTED_RESULTS = {
             "\"group\": \"RoadUse\",\n" +
                     "    \"source\": \"M5:10\",\n" +
                     "    \"destination\": \"M5:9\",\n" +
@@ -260,8 +278,32 @@ public class QueryBuilderST {
         assertEquals(expectedResults, resultList);
     }
 
-    private void enterText(final String id, final String value) {
+    @Test
+    public void shouldBeAbleToSaveOperationChain() throws InterruptedException {
+
+        //Set up an operation chain
+        autoComplete("operation-name", "Get Elements");
+        enterText("seedVertices", "M5");
+        click("create-custom-filter");
+        selectMultiOption("view-entities", "Cardinality");
+
+        //Save the operation
+        click("save-chain");
+        enterText("saved-name", "A Test Name");
+        enterText("saved-description", "A test description");
+        click("save-named-operation");
+
+        //Check the operation is in the list of operations
+        click("md-confirm-button");
+        autoComplete("operation-name", "A Test Nam");
+        String text = getElement("operation-name").getAttribute("value");
+        assertEquals("A Test Name", text);
+    }
+
+    private void enterText(final String id, final String value) throws InterruptedException {
         getElement(id).sendKeys(value);
+
+        Thread.sleep(slowFactor * 500);
     }
 
     private void backspace(final String id) {

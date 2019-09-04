@@ -1,0 +1,238 @@
+{
+  "compileOnSave": false,
+  "compilerOptions": {
+    "baseUrl": "./",
+    "outDir": "./dist/out-tsc",
+    "sourceMap": true,
+    "declaration": false,
+    "module": "es2015",
+    "moduleResolution": "node",
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "importHelpers": true,
+    "target": "es5",
+    "resolveJsonModule": true,
+    "esModuleInterop": true,  
+    "typeRoots": [
+      "node_modules/@types"
+    ],
+    "lib": [
+      "es2018",
+      "dom"
+    ]
+  },
+  "operations": {
+    "loadNamedOperationsOnStartup": true
+  },
+  "quickQuery": {
+    "defaultOperation": {
+      "class": "uk.gov.gchq.gaffer.operation.impl.get.GetElements",
+      "input": [
+        "${input}"
+      ],
+      "view": {
+        "globalElements": [{
+          "groupBy": []
+        }]
+      }
+    },
+    "deduplicate": true,
+    "limit": true,
+    "description": "Get related Elements",
+    "useDefaultOperationOptions": false
+  },
+  "types": {
+    "java.util.Date": {
+      "fields": [{
+        "type": "number",
+        "step": "1",
+        "class": "java.util.Date"
+      }],
+      "wrapInJson": true
+    },
+    "java.lang.Boolean": {
+      "fields": [{
+        "type": "checkbox",
+        "class": "java.lang.Boolean",
+        "required": true
+      }]
+    },
+    "boolean": {
+      "fields": [{
+        "type": "checkbox",
+        "class": "java.lang.Boolean",
+        "required": true
+      }]
+    },
+    "java.lang.Long": {
+      "fields": [{
+        "type": "number",
+        "step": "1",
+        "class": "java.lang.Long",
+        "required": true
+      }],
+      "wrapInJson": true
+    },
+    "long": {
+      "fields": [{
+        "type": "number",
+        "step": "1",
+        "class": "java.lang.Long",
+        "required": true
+      }],
+      "wrapInJson": true
+    },
+    "java.lang.Integer": {
+      "fields": [{
+        "type": "number",
+        "step": "1",
+        "class": "java.lang.Integer",
+        "required": true
+      }]
+    },
+    "integer": {
+      "fields": [{
+        "type": "number",
+        "step": "1",
+        "class": "java.lang.Integer",
+        "required": true
+      }]
+    },
+    "int": {
+      "fields": [{
+        "type": "number",
+        "step": "1",
+        "class": "java.lang.Integer",
+        "required": true
+      }]
+    },
+    "java.lang.Short": {
+      "fields": [{
+        "type": "number",
+        "step": "1",
+        "class": "java.lang.Short",
+        "required": true
+      }],
+      "wrapInJson": true
+    },
+    "short": {
+      "fields": [{
+        "type": "number",
+        "step": "1",
+        "class": "java.lang.Short",
+        "required": true
+      }],
+      "wrapInJson": true
+    },
+    "java.lang.Double": {
+      "fields": [{
+        "type": "number",
+        "step": "0.1",
+        "class": "java.lang.Double",
+        "required": true
+      }],
+      "wrapInJson": true
+    },
+    "double": {
+      "fields": [{
+        "type": "number",
+        "step": "0.1",
+        "class": "java.lang.Double",
+        "required": true
+      }],
+      "wrapInJson": true
+    },
+    "java.lang.Float": {
+      "fields": [{
+        "type": "number",
+        "step": "0.1",
+        "class": "java.lang.Float",
+        "required": true
+      }],
+      "wrapInJson": true
+    },
+    "float": {
+      "fields": [{
+        "type": "number",
+        "step": "0.1",
+        "class": "java.lang.Float",
+        "required": true
+      }],
+      "wrapInJson": true
+    },
+    "java.lang.String": {
+      "fields": [{
+        "type": "text",
+        "class": "java.lang.String",
+        "required": true
+      }]
+    },
+    "java.lang.Class": {
+      "fields": [{
+        "type": "text",
+        "class": "java.lang.Class",
+        "required": true
+      }]
+    },
+    "uk.gov.gchq.gaffer.types.TypeValue": {
+      "fields": [{
+          "label": "Type",
+          "type": "text",
+          "key": "type",
+          "class": "java.lang.String"
+        },
+        {
+          "label": "Value",
+          "type": "text",
+          "key": "value",
+          "class": "java.lang.String",
+          "required": true
+        }
+      ],
+      "wrapInJson": true
+    },
+    "uk.gov.gchq.gaffer.types.TypeSubTypeValue": {
+      "fields": [{
+          "label": "Type",
+          "type": "text",
+          "key": "type",
+          "class": "java.lang.String"
+        },
+        {
+          "label": "Sub Type",
+          "type": "text",
+          "key": "subType",
+          "class": "java.lang.String"
+        },
+        {
+          "label": "Value",
+          "type": "text",
+          "key": "value",
+          "class": "java.lang.String",
+          "required": true
+        }
+      ],
+      "wrapInJson": true
+    },
+    "com.clearspring.analytics.stream.cardinality.HyperLogLogPlus": {
+      "fields": [{
+        "label": "cardinality",
+        "type": "number",
+        "key": "hyperLogLogPlus.cardinality",
+        "class": "java.lang.Integer",
+        "step": 1,
+        "required": true
+      }],
+      "custom": true,
+      "wrapInJson": true
+    },
+    "JSON": {
+      "fields": [{
+        "label": "JSON",
+        "type": "textarea",
+        "class": ""
+      }],
+      "wrapInJson": false
+    }
+  }
+}

@@ -2707,6 +2707,39 @@ class GetAllGraphIds(Operation):
         super().__init__(_class_name=self.CLASS, options=options)
 
 
+class FederatedOperationChain(Operation):
+    CLASS = 'uk.gov.gchq.gaffer.federatedstore.operation.FederatedOperationChain'
+
+    def __init__(self,operation_chain=None,options=None):
+        super().__init__(_class_name=self.CLASS, options=options)
+
+        if operation_chain is None:
+            raise ValueError('operation_chain is required')
+
+        if operation_chain is not None:
+            if isinstance(operation_chain,OperationChain):
+                self.operation_chain = operation_chain
+            elif isinstance(operation_chain,list):
+                allOperations = True
+                if (len(allOperations) == 0):
+                    allOperations = False
+                for op in operation_chain:
+                    if not isinstance(op,Operation):
+                        allOperations = False
+                if allOperations:
+                    self.operation_chain = OperationChain(operation_chain)
+            elif isinstance(operation_chain,Operation):
+                self.operation_chain = OperationChain(operation_chain)
+            else:
+                self.operation_chain = JsonConverter.from_json(operation_chain, OperationChain)
+        
+    def to_json(self):
+        operation = super().to_json()
+        operation['operationChain'] = self.operation_chain.to_json()
+
+        return operation
+
+
 class RemoveGraph(Operation):
     CLASS = 'uk.gov.gchq.gaffer.federatedstore.operation.RemoveGraph'
 
