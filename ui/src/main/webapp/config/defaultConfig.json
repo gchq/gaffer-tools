@@ -1,4 +1,5 @@
 {
+  "title": "Gaffer",
   "operations": {
     "loadNamedOperationsOnStartup": true
   },
