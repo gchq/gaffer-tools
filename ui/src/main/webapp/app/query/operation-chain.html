@@ -21,38 +21,4 @@
         <md-button class="md-primary md-raised" ng-disabled="!ctrl.canExecute()" id="execute-chain" ng-click="ctrl.executeChain()">Execute operation chain</md-button>
     </div> 
 </div>
-<div layout="vertical">
-    <md-sidenav class="md-sidenav-right md-whiteframe-4dp" md-component-id="right" flex>
-        <md-toolbar class="md-theme-light">
-            <h1 class="md-toolbar-tools">Save Operation Chain</h1>
-        </md-toolbar>
-        <md-content layout-padding>
-            <form flex>
-                <div width='100%'>
-                    <md-input-container class="md-block">
-                        <label for="saved-name">Name</label>
-                        <input type="text" id="saved-name" ng-model="ctrl.namedOperationName" md-autofocus>
-                    </md-input-container>     
-                </div>
-                <div width='100%'>
-                    <md-input-container class="md-block">
-                        <label for="saved-description" required>Description</label>
-                        <textarea 
-                            id="saved-description"
-                            md-no-autogrow
-                            ng-model="ctrl.namedOperationDescription"
-                            rows="3"
-                        >
-                        </textarea>
-                    </md-input-container>
-                </div>
-                <div layout="row" class="content">
-                    <md-input-container class="md-block">
-                        <md-button id="save-named-operation" ng-click="ctrl.saveChain()" class="md-primary">Save</md-button>
-                        <md-button id="close-save-sidenav" ng-click="ctrl.toggleSideNav()" class="md-primary">Close</md-button>
-                    </md-input-container>
-                </div>
-            </form>
-        </md-content>
-    </md-sidenav>
-</div>
+<save-sidenav named-operation="ctrl.namedOperation" on-save="ctrl.saveChain()" on-close="ctrl.toggleSideNav()"></save-sidenav>

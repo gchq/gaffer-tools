@@ -23,10 +23,6 @@ function operationChainBuilder() {
         templateUrl: 'app/query/operation-chain.html',
         controller: OperationChainController,
         controllerAs: 'ctrl',
-        bindings: {
-            namedOperationName: '<',
-            namedOperationDescription: '<'
-        }
     }
 }
 
@@ -34,6 +30,10 @@ function OperationChainController(operationChain, settings, config, loading, que
     var vm = this;
     vm.timeConfig;
     vm.operations = operationChain.getOperationChain();
+    vm.namedOperation = {
+        name: null,
+        description: null
+    }
 
     var NAMED_VIEW_CLASS = "uk.gov.gchq.gaffer.data.elementdefinition.view.NamedView";
     var ADD_NAMED_OPERATION_CLASS = "uk.gov.gchq.gaffer.named.operation.AddNamedOperation";
@@ -182,9 +182,9 @@ function OperationChainController(operationChain, settings, config, loading, que
                 query.executeQuery(
                     {
                         class: ADD_NAMED_OPERATION_CLASS,
-                        operationName: vm.namedOperationName,
+                        operationName: vm.namedOperation.name,
                         operationChain: chain,
-                        description: vm.namedOperationDescription,
+                        description: vm.namedOperation.description,
                         options: {},
                         score: 1,
                         overwriteFlag: true,
