@@ -30,6 +30,7 @@ function OperationChainController(operationChain, settings, config, loading, que
     var vm = this;
     vm.timeConfig;
     vm.operations = operationChain.getOperationChain();
+    vm.enableChainSaving;
     vm.namedOperation = {
         name: null,
         description: null
@@ -48,6 +49,7 @@ function OperationChainController(operationChain, settings, config, loading, que
     vm.$onInit = function() {
         config.get().then(function(conf) {
             vm.timeConfig = conf.time;
+            vm.enableChainSaving = conf.enableChainSaving;
         });
     }
 

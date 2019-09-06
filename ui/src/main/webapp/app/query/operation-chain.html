@@ -17,8 +17,8 @@
         <md-button ng-click="ctrl.resetChain($event)">Reset operation chain</md-button>
     </div>
     <div>
-        <md-button ng-disabled="!ctrl.canExecute()" id="save-chain" ng-click="ctrl.toggleSideNav()">Save operation chain</md-button>
+        <md-button ng-if="ctrl.enableChainSaving" ng-disabled="!ctrl.canExecute()" id="save-chain" ng-click="ctrl.toggleSideNav()">Save operation chain</md-button>
         <md-button class="md-primary md-raised" ng-disabled="!ctrl.canExecute()" id="execute-chain" ng-click="ctrl.executeChain()">Execute operation chain</md-button>
     </div> 
 </div>
-<save-sidenav named-operation="ctrl.namedOperation" on-save="ctrl.saveChain()" on-close="ctrl.toggleSideNav()"></save-sidenav>
+<save-sidenav ng-if="ctrl.enableChainSaving" named-operation="ctrl.namedOperation" on-save="ctrl.saveChain()" on-close="ctrl.toggleSideNav()"></save-sidenav>
