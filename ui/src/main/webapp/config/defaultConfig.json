@@ -1,4 +1,5 @@
 {
+  "enableChainSaving": true,
   "operations": {
     "loadNamedOperationsOnStartup": true
   },

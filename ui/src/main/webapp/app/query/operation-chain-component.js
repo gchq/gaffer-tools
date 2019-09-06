@@ -23,10 +23,6 @@ function operationChainBuilder() {
         templateUrl: 'app/query/operation-chain.html',
         controller: OperationChainController,
         controllerAs: 'ctrl',
-        bindings: {
-            namedOperationName: '<',
-            namedOperationDescription: '<'
-        }
     }
 }
 
@@ -34,6 +30,11 @@ function OperationChainController(operationChain, settings, config, loading, que
     var vm = this;
     vm.timeConfig;
     vm.operations = operationChain.getOperationChain();
+    vm.enableChainSaving;
+    vm.namedOperation = {
+        name: null,
+        description: null
+    }
 
     var NAMED_VIEW_CLASS = "uk.gov.gchq.gaffer.data.elementdefinition.view.NamedView";
     var ADD_NAMED_OPERATION_CLASS = "uk.gov.gchq.gaffer.named.operation.AddNamedOperation";
@@ -48,6 +49,7 @@ function OperationChainController(operationChain, settings, config, loading, que
     vm.$onInit = function() {
         config.get().then(function(conf) {
             vm.timeConfig = conf.time;
+            vm.enableChainSaving = conf.enableChainSaving;
         });
     }
 
@@ -172,34 +174,25 @@ function OperationChainController(operationChain, settings, config, loading, que
         .textContent('You must provide a name for the operation')
         .ok('Ok')
 
-        var invalidDescription = $mdDialog.confirm()
-        .title('Operation chain description is invalid!')
-        .textContent('You must provide a description for the operation')
-        .ok('Ok')
-
-        if (vm.namedOperationName != null && vm.namedOperationName != '') {
-            if (vm.namedOperationDescription != null && vm.namedOperationDescription != '') {
-                query.executeQuery(
-                    {
-                        class: ADD_NAMED_OPERATION_CLASS,
-                        operationName: vm.namedOperationName,
-                        operationChain: chain,
-                        description: vm.namedOperationDescription,
-                        options: {},
-                        score: 1,
-                        overwriteFlag: true,
-                    },
-                    function() {
-                        // On success of saving operation chain
-                        vm.toggleSideNav();
-                        $mdDialog.show(confirm);
-                        // Reload the operations
-                        operationService.reloadOperations()
-                    }
-                );
-            } else {
-                $mdDialog.show(invalidDescription);
-            }
+        if (vm.namedOperation.name != null && vm.namedOperation.name != '') {
+            query.executeQuery(
+                {
+                    class: ADD_NAMED_OPERATION_CLASS,
+                    operationName: vm.namedOperation.name,
+                    operationChain: chain,
+                    description: vm.namedOperation.description,
+                    options: {},
+                    score: 1,
+                    overwriteFlag: true,
+                },
+                function() {
+                    // On success of saving operation chain
+                    vm.toggleSideNav();
+                    $mdDialog.show(confirm);
+                    // Reload the operations
+                    operationService.reloadOperations()
+                }
+            );
         } else {
             $mdDialog.show(invalidName);
         }
