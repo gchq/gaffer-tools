@@ -27,6 +27,7 @@ import { FilterPipe } from 'ngx-filter-pipe';
 export class AnalyticsComponent implements OnInit {
   analytics: any;
   analyticFilter: any = { analyticName: '' };
+  order;
   constructor(
     private filterPipe: FilterPipe,
     private analyticsService: AnalyticsService,
