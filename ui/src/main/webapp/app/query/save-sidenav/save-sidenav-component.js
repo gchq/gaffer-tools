@@ -16,9 +16,9 @@
 
 'use strict';
 
-angular.module('app').component('operation', operation());
+angular.module('app').component('saveSidenav', saveSidenav());
 
-function operation() {
+function saveSidenav() {
     return {
         templateUrl: 'app/query/save-sidenav/save-sidenav.html',
         controller: SaveSidenavController,
