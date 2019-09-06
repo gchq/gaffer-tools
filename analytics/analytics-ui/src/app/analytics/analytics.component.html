@@ -6,14 +6,16 @@
   <mat-form-field>
     <mat-label>Sort by:</mat-label>
     <mat-select [(value)]="order">
-      <mat-option value="None">---Select---</mat-option>
-      <mat-option value="analyticName">A-Z Analytic Name</mat-option>
-      <mat-option value="operationName">A-Z Operation Name</mat-option>
+      <mat-option value="null">---Select---</mat-option>
+      <mat-option value="analyticName">Analytic Name</mat-option>
+      <mat-option value="operationName">Operation Name</mat-option>
     </mat-select>
   </mat-form-field>
   <button mat-icon-button (click)="reverseAnalytics()">
-    <img
-      src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAQAAACROWYpAAAAAmJLR0QA/4ePzL8AAAB0SURBVEjH7dQ7CoAwEATQuYRhvP81jLUSKxuPs7ZBTDYZEESc/jX7GeBzCdiQEBQ6YIfBcGBUqcBz2smvtIPf0UZeog28Rl2+VqnBsJRxdPGEP1lmd2DxoVX5R0L9PKk/BvWXpF4G1GuIegFSq96kVu+rcwK6+NKnbo9BbgAAAABJRU5ErkJggg==">
+    <svg width='24' height='24' viewBox='0 0 24 24'>
+      <polygon points="12,1 1,11 24,11" />
+      <polygon points="12,24 1,14 24,14" />
+    </svg>
   </button>
 </div>
 
