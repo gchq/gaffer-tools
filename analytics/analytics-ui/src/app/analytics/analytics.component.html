@@ -3,13 +3,26 @@
   <mat-form-field>
     <input matInput [(ngModel)]="analyticFilter.analyticName" placeholder="Search analytics">
   </mat-form-field>
+  <mat-form-field>
+    <mat-label>Sort by:</mat-label>
+    <mat-select [(value)]="order">
+      <mat-option value="null">---Select---</mat-option>
+      <mat-option value="analyticName">Analytic Name</mat-option>
+      <mat-option value="operationName">Operation Name</mat-option>
+    </mat-select>
+  </mat-form-field>
+  <button mat-icon-button (click)="reverseAnalytics()">
+    <svg width='24' height='24' viewBox='0 0 24 24'>
+      <polygon points="12,1 1,11 24,11" />
+      <polygon points="12,24 1,14 24,14" />
+    </svg>
+  </button>
 </div>
 
 <mat-card style="min-height: 300px;" gutterSize="3vw">
   <mat-grid-list cols="4">
-    <mat-grid-tile *ngFor="let analytic of analytics | orderBy: 'analyticName':reverse | filterBy: analyticFilter">
+    <mat-grid-tile *ngFor="let analytic of analytics | orderBy: order :reverse | filterBy: analyticFilter">
       <app-analytic [model]="analytic"></app-analytic>
     </mat-grid-tile>
   </mat-grid-list>
-  <button mat-flat-button (click)="reverseAnalytics()">SORT REVERSE</button>
 </mat-card>
