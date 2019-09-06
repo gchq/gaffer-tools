@@ -39,11 +39,7 @@ export class AnalyticsComponent implements OnInit {
   }
 
   reverseAnalytics = function(value: string) {
-    if (this.order === value) {
-      this.reverse = !this.reverse;
-    }
-
-    this.order = value;
+    this.reverse = !this.reverse;
   };
 
   /** Load the analytics */
