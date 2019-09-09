@@ -36,11 +36,6 @@ div {
   padding: 5;
 }
 
-mat-card-content {
-  flex: 1;
-  padding: 0.25em 0.3em 0;
-}
-
 mat-card {
   max-width: 80%;
   height: auto;
@@ -51,16 +46,6 @@ mat-card {
 
 .grid-button.mat-card {
   padding: 0;
-  height: 100%;
-}
-
-.mat-toolbar.mat-primary {
-  background: #67598c;
-  color: #fff;
-}
-
-app-analytic {
-  width: 100%;
   height: 100%;
 }
 
@@ -76,16 +61,6 @@ app-analytic>mat-card {
   height: 400px;
   width: '100%';
   overflow: auto;
-}
-
-.mat-row,
-.mat-header-row {
-  min-width: 2000px;
-}
-
-.mat-header-row {
-  position: sticky;
-  top: 0;
 }
 
 .iconContainer {

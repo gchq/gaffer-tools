@@ -23,7 +23,8 @@ import { ResultsService } from '../services/results.service';
 
 @Component({
   selector: 'app-table',
-  templateUrl: './results.component.html'
+  templateUrl: './results.component.html',
+  styleUrls: ['./results.component.css']
 })
 @Injectable()
 export class ResultsComponent implements AfterViewInit, OnInit {
