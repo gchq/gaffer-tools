@@ -53,7 +53,7 @@ import java.util.List;
 
 public class CalculateSplitPointsJob {
 
-    private static final int NUM_ARGS = 11;
+    private static final int NUM_ARGS = 12;
 
     private String dataPath;
     private String generatorPath;
@@ -68,6 +68,8 @@ public class CalculateSplitPointsJob {
     private String splitsFilePath;
     private String sampleRatioForSplitsString;
     private String keyConverterClassName;
+
+    private String delimiter;
 
     public static void main(final String[] args) {
 
@@ -95,6 +97,7 @@ public class CalculateSplitPointsJob {
         this.splitsFilePath = args[8];
         this.sampleRatioForSplitsString = args[9];
         this.keyConverterClassName = args[10];
+        this.delimiter = args[11];
 
         double sampleRatioForsplits = Double.parseDouble(sampleRatioForSplitsString);
         int numPartitions = Integer.parseInt(numPartitionsString);
@@ -145,6 +148,8 @@ public class CalculateSplitPointsJob {
         } catch (final IOException e) {
             e.printStackTrace();
         }
+
+        csvElementGenerator.setDelimiter(delimiter.charAt(0));
 
         Broadcast<CsvElementGenerator> generatorBroadcast = jsc.broadcast(csvElementGenerator);
 

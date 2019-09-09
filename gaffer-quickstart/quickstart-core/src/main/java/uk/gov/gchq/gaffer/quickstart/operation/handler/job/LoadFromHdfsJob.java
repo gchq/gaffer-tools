@@ -42,7 +42,7 @@ import java.io.IOException;
 
 public class LoadFromHdfsJob {
 
-    private static final int NUM_ARGS = 8;
+    private static final int NUM_ARGS = 9;
 
     private String dataPath;
     private String generatorPath;
@@ -53,6 +53,7 @@ public class LoadFromHdfsJob {
     private String schemaJson;
     private String tableName;
     private String accumuloStorePropertiesJson;
+    private String delimiter;
 
     public static void main(final String[] args) {
 
@@ -78,6 +79,7 @@ public class LoadFromHdfsJob {
         this.schemaJson = args[5];
         this.tableName = args[6];
         this.accumuloStorePropertiesJson = args[7];
+        this.delimiter = args[8];
 
         int numPartitions = Integer.parseInt(numPartitionsString);
 
@@ -127,6 +129,8 @@ public class LoadFromHdfsJob {
         } catch (final IOException e) {
             e.printStackTrace();
         }
+
+        csvElementGenerator.setDelimiter(delimiter.charAt(0));
 
         Broadcast<CsvElementGenerator> generatorBroadcast = jsc.broadcast(csvElementGenerator);
 

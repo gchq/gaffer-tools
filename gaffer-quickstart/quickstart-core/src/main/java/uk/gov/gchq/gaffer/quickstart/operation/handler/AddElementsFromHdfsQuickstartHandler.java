@@ -142,7 +142,8 @@ public class AddElementsFromHdfsQuickstartHandler implements OperationHandler<Ad
                             numSplitsString,
                             schemaJson,
                             tableName,
-                            accumuloPropertiesJson
+                            accumuloPropertiesJson,
+                            operation.getDelimiter()
                     )
                     .launch();
 

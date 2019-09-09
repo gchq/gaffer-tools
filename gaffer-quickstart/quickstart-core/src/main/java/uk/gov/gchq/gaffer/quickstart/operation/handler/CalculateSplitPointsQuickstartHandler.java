@@ -157,7 +157,8 @@ public class CalculateSplitPointsQuickstartHandler implements OperationHandler<C
                             accumuloPropertiesJson,
                             splitsFilePath,
                             sampleRatioForSplitsString,
-                            keyConverterClassName
+                            keyConverterClassName,
+                            operation.getDelimiter()
                     )
                     .launch();
 

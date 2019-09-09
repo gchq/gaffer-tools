@@ -39,6 +39,8 @@ public class CalculateSplitPointsQuickstart implements Operation, Validatable {
     private int numSplits = 0;
     private String splitsFilePath;
 
+    private String delimiter = ",";
+
     private boolean validate = true;
 
     public void setDataPath(final String inputPath) {
@@ -81,6 +83,14 @@ public class CalculateSplitPointsQuickstart implements Operation, Validatable {
         return this.elementGeneratorConfig;
     }
 
+    public String getDelimiter() {
+        return delimiter;
+    }
+
+    public void setDelimiter(final String delimiter) {
+        this.delimiter = delimiter;
+    }
+
     @Override
     public Operation shallowClone() throws CloneFailedException {
         return new Builder()
@@ -92,6 +102,7 @@ public class CalculateSplitPointsQuickstart implements Operation, Validatable {
                 .elementGeneratorConfig(elementGeneratorConfig)
                 .validate(validate)
                 .numPartitions(numSplits)
+                .delimiter(delimiter)
                 .build();
     }
 
@@ -185,6 +196,11 @@ public class CalculateSplitPointsQuickstart implements Operation, Validatable {
 
         public Builder splitsFilePath(final String splitsFilePath) {
             _getOp().setSplitsFilePath(splitsFilePath);
+            return _self();
+        }
+
+        public Builder delimiter(final String delimiter) {
+            _getOp().setDelimiter(delimiter);
             return _self();
         }
     }

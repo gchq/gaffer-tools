@@ -32,6 +32,8 @@ public class AddElementsFromHdfsQuickstart implements Operation, Validatable {
     @Required
     private String elementGeneratorConfig;
 
+    private String delimiter = ",";
+
     private String outputPath;
     private String failurePath;
 
@@ -82,6 +84,14 @@ public class AddElementsFromHdfsQuickstart implements Operation, Validatable {
         return this.elementGeneratorConfig;
     }
 
+    public String getDelimiter() {
+        return delimiter;
+    }
+
+    public void setDelimiter(final String delimiter) {
+        this.delimiter = delimiter;
+    }
+
     @Override
     public Operation shallowClone() throws CloneFailedException {
         return new Builder()
@@ -94,6 +104,7 @@ public class AddElementsFromHdfsQuickstart implements Operation, Validatable {
                 .elementGeneratorConfig(elementGeneratorConfig)
                 .validate(validate)
                 .numPartitions(numSplits)
+                .delimiter(delimiter)
                 .build();
     }
 
@@ -200,6 +211,11 @@ public class AddElementsFromHdfsQuickstart implements Operation, Validatable {
 
         public Builder splitsFilePath(final String splitsFilePath) {
             _getOp().setSplitsFilePath(splitsFilePath);
+            return _self();
+        }
+
+        public Builder delimiter(final String delimiter) {
+            _getOp().setDelimiter(delimiter);
             return _self();
         }
     }
