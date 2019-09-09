@@ -26,7 +26,7 @@ echo -e "creating gaffer pyspark properties file at $GAFFER_HOME/miniaccumulo/py
 
 cp $GAFFER_HOME/miniaccumulo/store.properties $GAFFER_HOME/miniaccumulo/pyspark.store.properties
 
-echo -e $operationDeclarations >> $GAFFER_HOME/miniaccumulo/pyspark.store.properties
+sed -ie "/gaffer.store.operation.declarations/s/$/,pySparkAccumuloOperationsDeclarations.json/" $GAFFER_HOME/miniaccumulo/pyspark.store.properties
 echo -e $pythonSerialisers >> $GAFFER_HOME/miniaccumulo/pyspark.store.properties
 
 echo -e "\nPyspark operations loaded"
