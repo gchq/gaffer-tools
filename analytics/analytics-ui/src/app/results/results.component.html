@@ -13,13 +13,7 @@
 </div>
 
 <!-- Dynamic Table -->
-<mat-card>
-  <div *ngIf="outputType=='TABLE'" class="container">
-    <app-table></app-table>
-  </div>
+<app-table *ngIf="outputType=='TABLE'"></app-table>
 
-  <!-- HTML -->
-  <div *ngIf="outputType=='HTML'">
-    <app-html></app-html>
-  </div>
-</mat-card>
+<!-- HTML -->
+<app-html *ngIf="outputType=='HTML'"></app-html>
