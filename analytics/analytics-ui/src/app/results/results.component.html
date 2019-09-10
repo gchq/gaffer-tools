@@ -28,25 +28,7 @@
 <!-- Dynamic Table -->
 <mat-card>
   <div *ngIf="outputType=='TABLE'" class="container">
-    <div class="spacer"></div>
-    <div class="example-container">
-      <mat-table [dataSource]="data.results" matSort>
-        <ng-container [matColumnDef]="column" *ngFor="let column of columnsToDisplay">
-          <mat-header-cell *matHeaderCellDef mat-sort-header>
-            <h3>{{ column | uppercase }}</h3>
-          </mat-header-cell>
-          <mat-cell *matCellDef="let element"> {{element[column]}} </mat-cell>
-        </ng-container>
-
-        <mat-header-row *matHeaderRowDef="columnsToDisplay; sticky: true">
-        </mat-header-row>
-        <mat-row *matRowDef="let row; columns: columnsToDisplay;">
-        </mat-row>
-      </mat-table>
-      <mat-paginator [pageSize]="4" [pageSizeOptions]="[4, 8, 12, 24]" showFirstLastButtons>
-      </mat-paginator>
-      <div class="spacer"></div>
-    </div>
+    <app-table [receivedData]="data.results"></app-table>
   </div>
 
   <!-- HTML -->

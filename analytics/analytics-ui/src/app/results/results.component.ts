@@ -23,7 +23,7 @@ import { ResultsService } from '../services/results.service';
 import { HtmlComponent } from './html/html.component';
 
 @Component({
-  selector: 'app-table',
+  selector: 'app-results',
   templateUrl: './results.component.html'
 })
 @Injectable()
