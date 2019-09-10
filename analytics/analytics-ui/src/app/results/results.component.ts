@@ -17,7 +17,6 @@ import { Location } from '@angular/common';
 import { Component, OnInit, Injectable, AfterViewInit } from '@angular/core';
 
 import { AnalyticsService } from '../services/analytics.service';
-import { TableComponent } from './table/table.component';
 
 @Component({
   selector: 'app-results',
@@ -25,9 +24,8 @@ import { TableComponent } from './table/table.component';
 })
 @Injectable()
 export class ResultsComponent implements OnInit {
-  outputType = null;
+  outputType;
   selected;
-  tableComp: TableComponent;
 
   constructor(
     private analyticsService: AnalyticsService,

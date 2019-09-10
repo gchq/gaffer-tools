@@ -7,14 +7,11 @@ import { ResultsService } from 'src/app/services/results.service';
   styleUrls: ['./html.component.css']
 })
 
-export class HtmlComponent implements AfterViewInit, OnInit {
+export class HtmlComponent implements AfterViewInit {
 
   constructor(
     private results: ResultsService,
   ) { }
-
-  ngOnInit() {
-  }
 
   ngAfterViewInit() {
     const html = this.results.get();
