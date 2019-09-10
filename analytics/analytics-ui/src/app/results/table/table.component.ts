@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, ViewChild } from '@angular/core';
+import { Component, OnInit, Input, ViewChild, AfterViewInit } from '@angular/core';
 import { MatTableDataSource, MatPaginator, MatSort } from '@angular/material';
 import { ResultsService } from 'src/app/services/results.service';
 import { FormControl } from '@angular/forms';
@@ -8,8 +8,8 @@ import { FormControl } from '@angular/forms';
   templateUrl: './table.component.html',
   styleUrls: ['./table.component.css']
 })
-export class TableComponent implements OnInit {
-  columns = new FormControl;
+export class TableComponent implements AfterViewInit, OnInit {
+  columns = new FormControl();
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
 

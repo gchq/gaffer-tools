@@ -17,7 +17,6 @@ import { Location } from '@angular/common';
 import { Component, OnInit, Injectable, AfterViewInit } from '@angular/core';
 
 import { AnalyticsService } from '../services/analytics.service';
-import { ResultsService } from '../services/results.service';
 import { TableComponent } from './table/table.component';
 
 @Component({
@@ -25,14 +24,13 @@ import { TableComponent } from './table/table.component';
   templateUrl: './results.component.html'
 })
 @Injectable()
-export class ResultsComponent implements AfterViewInit, OnInit {
+export class ResultsComponent implements OnInit {
   outputType = null;
   selected;
   tableComp: TableComponent;
 
   constructor(
     private analyticsService: AnalyticsService,
-    private results: ResultsService,
     private location: Location
   ) { }
 
@@ -42,18 +40,5 @@ export class ResultsComponent implements AfterViewInit, OnInit {
 
   ngOnInit() {
     this.outputType = this.analyticsService.getOutputVisualisationType();
-  }
-
-
-  ngAfterViewInit() {
-    if (this.outputType === 'HTML') {
-      const html = this.results.get();
-
-      // Display the icon
-      const htmlContainer: HTMLElement = document.getElementById('htmlContainer');
-      if (htmlContainer) {
-        htmlContainer.innerHTML = html;
-      }
-    }
   }
 }

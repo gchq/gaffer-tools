@@ -31,7 +31,6 @@ import { TimeService } from '../services/time.service';
 import { SchemaService } from '../services/schema.service';
 import { ErrorService } from '../services/error.service';
 
-let results: string[] | number[] | ({ varA: number; varB?: undefined; } | { varB: string; varA?: undefined; })[];
 const fullResultsData = [
   {
     class: 'test.Entity',
@@ -496,68 +495,6 @@ describe('ResultsComponent', () => {
     fixture.detectChanges();
 
     expect(spy).toHaveBeenCalledTimes(1);
-  });
-
-  it('should use a "value" key for string results', () => {
-    results = ['a', 'b', 'c'];
-
-    fixture.detectChanges();
-
-    const expected = [{
-      value: 'a'
-    },
-    {
-      value: 'b'
-    },
-    {
-      value: 'c'
-    }
-    ];
-
-    expect(component.data.results).toEqual(expected);
-  });
-
-  it('should use "value" as the key for non-object result for column names', () => {
-    results = [1, 2, 3];
-
-    fixture.detectChanges();
-
-    expect(component.columnsToDisplay).toEqual(['value']);
-  });
-
-  it('should use the keys of objects for object results for column names', () => {
-    results = [{
-      varA: 1
-    },
-    {
-      varB: 'B'
-    }
-    ];
-
-    fixture.detectChanges();
-
-    expect(component.columnsToDisplay).toEqual(['varA', 'varB']);
-  });
-
-  it('should update the table at initialisation', () => {
-    const spy = spyOn(component, 'updateFilteredResults');
-
-    fixture.detectChanges();
-
-    expect(spy).toHaveBeenCalledTimes(1);
-  });
-
-  it('should format the data correctly', () => {
-    fixture.detectChanges();
-
-    expect(component.data.results.data).toEqual(fullData.results);
-
-  });
-
-  it('should have the correct columns', () => {
-    fixture.detectChanges();
-
-    expect(component.columnsToDisplay).toEqual(fullData.allColumns);
   });
 
 });
