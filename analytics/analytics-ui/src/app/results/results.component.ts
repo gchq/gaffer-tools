@@ -14,13 +14,11 @@
  * limitations under the License.
  */
 import { Location } from '@angular/common';
-import { Component, OnInit, Injectable, ViewChild, AfterViewInit } from '@angular/core';
-import { FormControl } from '@angular/forms';
-import { MatSort, MatTableDataSource, MatPaginator } from '@angular/material';
+import { Component, OnInit, Injectable, AfterViewInit } from '@angular/core';
 
 import { AnalyticsService } from '../services/analytics.service';
 import { ResultsService } from '../services/results.service';
-import { HtmlComponent } from './html/html.component';
+import { TableComponent } from './table/table.component';
 
 @Component({
   selector: 'app-results',
@@ -28,16 +26,9 @@ import { HtmlComponent } from './html/html.component';
 })
 @Injectable()
 export class ResultsComponent implements AfterViewInit, OnInit {
-  columns = new FormControl();
-  data = {
-    results: new MatTableDataSource([])
-  };
-  @ViewChild(MatPaginator) paginator: MatPaginator;
-  @ViewChild(MatSort) sort: MatSort;
   outputType = null;
-  schema = { edges: {}, entities: {}, types: {} };
-  columnsToDisplay: string[] = [];
   selected;
+  tableComp: TableComponent;
 
   constructor(
     private analyticsService: AnalyticsService,
@@ -45,63 +36,16 @@ export class ResultsComponent implements AfterViewInit, OnInit {
     private location: Location
   ) { }
 
-  removeColumn() {
-    Object.keys(this.columnsToDisplay).forEach(key => {
-      if (this.columnsToDisplay[key] === this.selected) {
-        this.columnsToDisplay.splice(parseInt(key), 1);
-      }
-    });
-  }
-
   goback() {
     this.location.back();
   }
 
   ngOnInit() {
     this.outputType = this.analyticsService.getOutputVisualisationType();
-
-    if (this.outputType === 'TABLE') {
-      let tableData = this.results.get();
-      if (tableData == null) {
-        return;
-      }
-      // To transform non-object results into objects, we need to build an array of replacements and indexes
-      const toAdd: any[] = [];
-      const toRemove: number[] = [];
-
-      tableData.forEach((element, index) => {
-        if (element instanceof Object) {
-          // Use the keys of objects as the tableColumns
-          for (const key of Object.keys(element)) {
-            if (this.columnsToDisplay.indexOf(key) === -1) {
-              this.columnsToDisplay.push(key);
-            }
-          }
-        } else {
-          toRemove.push(index);
-          toAdd.push({ value: element });
-          if (this.columnsToDisplay.indexOf('value') === -1) {
-            this.columnsToDisplay.push('value');
-          }
-        }
-      });
-
-      // Iterate in reverse order so that the indices of later objects are unaffected
-      toRemove.reverse().forEach(index => {
-        tableData.splice(index, 1);
-      });
-
-      tableData = tableData.concat(toAdd);
-
-      this.data.results = new MatTableDataSource(tableData);
-      this.data.results.sort = this.sort;
-    }
   }
 
 
   ngAfterViewInit() {
-    this.data.results.paginator = this.paginator;
-    this.data.results.sort = this.sort;
     if (this.outputType === 'HTML') {
       const html = this.results.get();
 
