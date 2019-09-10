@@ -20,6 +20,7 @@ import { MatSort, MatTableDataSource, MatPaginator } from '@angular/material';
 
 import { AnalyticsService } from '../services/analytics.service';
 import { ResultsService } from '../services/results.service';
+import { HtmlComponent } from './html/html.component';
 
 @Component({
   selector: 'app-table',
@@ -96,6 +97,7 @@ export class ResultsComponent implements AfterViewInit, OnInit {
       this.data.results.sort = this.sort;
     }
   }
+
 
   ngAfterViewInit() {
     this.data.results.paginator = this.paginator;
