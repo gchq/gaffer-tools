@@ -173,12 +173,12 @@ describe('AnalyticsService', () => {
     const router = TestBed.get(Router);
     const spy = spyOn(router, 'navigate');
     service.arrayAnalytic = {
-      operationName: 'Test name'
+      analyticName: 'Test name'
     };
 
     service.executeAnalytic();
 
-    expect(spy).toHaveBeenCalledWith(['/results']);
+    expect(spy).toHaveBeenCalledWith([service.arrayAnalytic.analyticName, 'results']);
   });
 
   it('Should be able to execute the analytic', () => {

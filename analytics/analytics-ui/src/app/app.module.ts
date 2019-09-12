@@ -15,7 +15,7 @@
  */
 
 import { BrowserModule } from '@angular/platform-browser';
-import { FormsModule } from '@angular/forms'; // <-- NgModel lives here
+import { FormsModule, ReactiveFormsModule } from '@angular/forms'; // <-- NgModel lives here
 import { NgModule } from '@angular/core';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { UpgradeModule } from '@angular/upgrade/static';
@@ -37,7 +37,6 @@ import { ErrorService } from './services/error.service';
 import { EndpointService } from './services/endpoint-service';
 import { QueryService } from './services/query.service';
 import { ResultsService } from './services/results.service';
-import { TypeService } from './services/type.service';
 import { TimeService } from './services/time.service';
 import { SchemaService } from './services/schema.service';
 
@@ -50,6 +49,7 @@ import { SchemaService } from './services/schema.service';
     BrowserModule,
     UpgradeModule,
     FormsModule,
+    ReactiveFormsModule,
     HttpClientModule,
     AppRoutingModule,
     BrowserAnimationsModule,
