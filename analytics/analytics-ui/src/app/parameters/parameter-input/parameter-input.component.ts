@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { Component, OnInit, Injectable, ViewChild } from '@angular/core';
+import { Component, OnInit, Injectable } from '@angular/core';
 import { AnalyticsService } from '../../services/analytics.service';
 
 @Component({

@@ -34,14 +34,14 @@ public class UIMappingDetail implements Serializable {
     private String label;
     private String userInputType;
     private String parameterName;
-    private Class inputClass;
+    private String inputClass;
 
     public UIMappingDetail(final String label, final String userInputType, final String parameterName) {
         this(label, userInputType, parameterName, null);
     }
 
     public UIMappingDetail(final String label, final String userInputType, final String parameterName,
-            final Class inputClass) {
+            final String inputClass) {
         if (null == label) {
             throw new IllegalArgumentException("label must not be empty");
         }
@@ -70,11 +70,11 @@ public class UIMappingDetail implements Serializable {
         return parameterName;
     }
 
-    public Class getInputClass() {
+    public String getInputClass() {
         return inputClass;
     }
 
-    public void setInputClass(final Class inputClass) {
+    public void setInputClass(final String inputClass) {
         this.inputClass = inputClass;
     }
 
@@ -112,7 +112,7 @@ public class UIMappingDetail implements Serializable {
         private String label;
         private String userInputType;
         private String parameterName;
-        private Class inputClass;
+        private String inputClass;
 
         public Builder label(final String label) {
             this.label = label;
@@ -129,7 +129,7 @@ public class UIMappingDetail implements Serializable {
             return this;
         }
 
-        public Builder inputClass(final Class inputClass) {
+        public Builder inputClass(final String inputClass) {
             this.inputClass = inputClass;
             return this;
         }
