@@ -24,6 +24,7 @@ import { ErrorService } from './error.service';
 import { ResultsService } from './results.service';
 import { cloneDeep, startsWith } from 'lodash';
 import { EndpointService } from './endpoint-service';
+import { ParameterFormComponent } from '../parameters/parameter-form/parameter-form.component';
 
 const OPERATION_CHAIN_CLASS = 'uk.gov.gchq.gaffer.operation.OperationChain';
 const MAP_OPERATION_CLASS = 'uk.gov.gchq.gaffer.operation.impl.Map';
@@ -77,7 +78,12 @@ export class AnalyticsService {
 
       // Add a new key and value in parameters to store the current value of that parameter
       for (const param of arrayParams) {
-        param[1].currentValue = null;
+        // If boolean type, set its initial value to false, otherwise set it to null
+        if (param[1].userInputType == 'boolean') {
+          param[1].currentValue = false;
+        } else {
+          param[1].currentValue = null;
+        }
       }
     } else {
       arrayParams = null;

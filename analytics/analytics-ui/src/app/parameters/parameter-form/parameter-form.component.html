@@ -19,7 +19,7 @@
             <mat-form-field class="example-full-width margin-top" appearance="fill">
               <mat-label>{{paramArray[1].label}}</mat-label>
               <input matInput [matDatepicker]="picker" name="paramArray[1].name" [placeholder]="paramArray[1].label"
-                [(value)]="paramArray[1].currentValue" (change)="onChange($event.target.value, parameters[i][0])" />
+                [(value)]="paramArray[1].currentValue" (dateChange)="onChange($event.target.value, parameters[i][0])" />
               <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
               <mat-datepicker #picker></mat-datepicker>
             </mat-form-field>
@@ -29,7 +29,7 @@
           <div *ngSwitchCase="'boolean'">
             <div class="demo-full-width margin-top">
               <input type="checkbox" name="paramArray[1].name"
-                (change)="onChange($event.target.checked, parameters[i][0])" id="paramArray[1].label" [checked]="" />
+                (change)="onChange($event.target.checked, parameters[i][0])" id="paramArray[1].label" [checked]="paramArray[1].currentValue" />
               <mat-label>{{paramArray[1].label}}</mat-label>
             </div>
           </div>
