@@ -32,8 +32,8 @@ export class ParameterFormComponent implements OnInit {
   onChange = function(parameter, parameterName) {
     if (parameter instanceof Date) {
       parameter = parameter.getFullYear() + '-'
-             + ('0' + (parameter.getMonth()+1)).slice(-2) + '-'
-             + ('0' + parameter.getDate()).slice(-2);
+        + ('0' + (parameter.getMonth() + 1)).slice(-2) + '-'
+        + ('0' + parameter.getDate()).slice(-2);
     }
 
     this.analyticsService.updateAnalytic(parameter, parameterName);

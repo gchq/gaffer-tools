@@ -79,7 +79,7 @@ export class AnalyticsService {
       // Add a new key and value in parameters to store the current value of that parameter
       for (const param of arrayParams) {
         // If boolean type, set its initial value to false, otherwise set it to null
-        if (param[1].userInputType == 'boolean') {
+        if (param[1].userInputType === 'boolean') {
           param[1].currentValue = false;
         } else {
           param[1].currentValue = null;
