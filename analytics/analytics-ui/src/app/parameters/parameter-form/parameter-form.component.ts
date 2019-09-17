@@ -29,11 +29,13 @@ export class ParameterFormComponent implements OnInit {
   ngOnInit() {
     // Go through the list of parameters and extract the class of the iterable inputs
     for (const i in this.parameters) {
-      let param = this.parameters[i];
-      let split = param[1].userInputType.split("-");
-      if (split.length > 1) {
-        this.parameters[i][1].userInputType = split[0];
-        this.parameters[i][1].iterableClass = split[1];
+      if (this.parameters.hasOwnProperty(i)) {
+        const param = this.parameters[i];
+        const split = param[1].userInputType.split('-');
+        if (split.length > 1) {
+          this.parameters[i][1].userInputType = split[0];
+          this.parameters[i][1].iterableClass = split[1];
+        }
       }
     }
   }

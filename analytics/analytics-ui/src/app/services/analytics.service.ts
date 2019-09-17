@@ -104,26 +104,28 @@ export class AnalyticsService {
 
     // Convert iterable parameters into the right form
     for (const i in this.arrayAnalytic.uiMapping) {
-      let param = this.arrayAnalytic.uiMapping[i];
-      if (param[1].userInputType == "iterable") {
-        let iterable = [];
-        let inputValues = param[1].currentValue.split("\n");
-        for (const inputValue of inputValues) {
-          let inputObject = {}
-          if (param[1].iterableClass == "EntitySeed") {
-            inputObject = {
-              class: param[1].iterableClass,
-              vertex: inputValue
+      if (this.arrayAnalytic.uiMapping.hasOwnProperty(i)) {
+        const param = this.arrayAnalytic.uiMapping[i];
+        if (param[1].userInputType === 'iterable') {
+          const iterable = [];
+          const inputValues = param[1].currentValue.split('\n');
+          for (const inputValue of inputValues) {
+            let inputObject = {};
+            if (param[1].iterableClass === 'EntitySeed') {
+              inputObject = {
+                class: param[1].iterableClass,
+                vertex: inputValue
+              };
+            } else if (param[1].iterableClass === 'EdgeSeed') {
+              inputObject = {
+                class: param[1].iterableClass,
+                source: inputValue
+              };
             }
-          } else if (param[1].iterableClass == "EdgeSeed") {
-            inputObject = {
-              class: param[1].iterableClass,
-              source: inputValue
-            }
+            iterable.push(inputObject);
           }
-          iterable.push(inputObject);
+          this.arrayAnalytic.uiMapping[i][1].iterable = iterable;
         }
-        this.arrayAnalytic.uiMapping[i][1].iterable = iterable;
       }
     }
 
@@ -132,7 +134,7 @@ export class AnalyticsService {
     if (this.arrayAnalytic.uiMapping != null) {
       const parametersMap = {};
       for (const param of this.arrayAnalytic.uiMapping) {
-        if (param[1].userInputType == "iterable") {
+        if (param[1].userInputType === 'iterable') {
           parametersMap[param[1].parameterName] = param[1].iterable;
         } else {
           parametersMap[param[1].parameterName] = param[1].currentValue;
