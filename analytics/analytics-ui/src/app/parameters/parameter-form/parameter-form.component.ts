@@ -47,24 +47,6 @@ export class ParameterFormComponent implements OnInit {
         + ('0' + parameter.getDate()).slice(-2);
     }
 
-    // Convert iterable parameters into the right form
-    for (const i in this.parameters) {
-      let param = this.parameters[i];
-      if (param[0] == parameterName && param[1].userInputType == "iterable") {
-        let iterableObject = [];
-        let inputValues = parameter.split("\n");
-        for (const inputValue of inputValues) {
-          let inputObject = {
-            class: param[1].iterableClass,
-            vertex: inputValue
-          }
-          iterableObject.push(inputObject);
-        }
-        parameter = iterableObject;
-        break;
-      }
-    }
-
     this.analyticsService.updateAnalytic(parameter, parameterName);
     const analytic = this.analyticsService.getAnalytic();
     this.parameters = analytic.uiMapping;
