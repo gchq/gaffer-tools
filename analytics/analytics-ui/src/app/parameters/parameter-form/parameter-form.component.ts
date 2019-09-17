@@ -26,10 +26,23 @@ export class ParameterFormComponent implements OnInit {
 
   constructor(private analyticsService: AnalyticsService) { }
 
-  ngOnInit() { }
+  ngOnInit() {
+    // Go through the list of parameters and extract the class of the iterable inputs
+    for (const i in this.parameters) {
+      if (this.parameters.hasOwnProperty(i)) {
+        const param = this.parameters[i];
+        const split = param[1].userInputType.split('-');
+        if (split.length > 1) {
+          this.parameters[i][1].userInputType = split[0];
+          this.parameters[i][1].iterableClass = split[1];
+        }
+      }
+    }
+  }
 
   /** Update the analytic operation whenever a parameter changes */
   onChange = function(parameter, parameterName) {
+    // Convert date parameters into the right form
     if (parameter instanceof Date) {
       parameter = parameter.getFullYear() + '-'
         + ('0' + (parameter.getMonth() + 1)).slice(-2) + '-'

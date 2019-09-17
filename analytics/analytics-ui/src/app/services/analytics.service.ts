@@ -102,12 +102,43 @@ export class AnalyticsService {
       parameters: null
     };
 
+    // Convert iterable parameters into the right form
+    for (const i in this.arrayAnalytic.uiMapping) {
+      if (this.arrayAnalytic.uiMapping.hasOwnProperty(i)) {
+        const param = this.arrayAnalytic.uiMapping[i];
+        if (param[1].userInputType === 'iterable') {
+          const iterable = [];
+          const inputValues = param[1].currentValue.split('\n');
+          for (const inputValue of inputValues) {
+            let inputObject = {};
+            if (param[1].iterableClass === 'EntitySeed') {
+              inputObject = {
+                class: param[1].iterableClass,
+                vertex: inputValue
+              };
+            } else if (param[1].iterableClass === 'EdgeSeed') {
+              inputObject = {
+                class: param[1].iterableClass,
+                source: inputValue
+              };
+            }
+            iterable.push(inputObject);
+          }
+          this.arrayAnalytic.uiMapping[i][1].iterable = iterable;
+        }
+      }
+    }
+
     // Convert parameters from an array to a key value map
     // so the parameters are in the correct form when they reach the server
     if (this.arrayAnalytic.uiMapping != null) {
       const parametersMap = {};
       for (const param of this.arrayAnalytic.uiMapping) {
-        parametersMap[param[1].parameterName] = param[1].currentValue;
+        if (param[1].userInputType === 'iterable') {
+          parametersMap[param[1].parameterName] = param[1].iterable;
+        } else {
+          parametersMap[param[1].parameterName] = param[1].currentValue;
+        }
       }
       operation.parameters = parametersMap;
     }
