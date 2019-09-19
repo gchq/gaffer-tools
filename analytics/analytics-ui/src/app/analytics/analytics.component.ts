@@ -21,7 +21,8 @@ import { FilterPipe } from 'ngx-filter-pipe';
 
 @Component({
   selector: 'app-analytics',
-  templateUrl: './analytics.component.html'
+  templateUrl: './analytics.component.html',
+  styleUrls: ['./analytics.component.css']
 })
 @Injectable()
 export class AnalyticsComponent implements OnInit {

@@ -20,7 +20,8 @@ import { AnalyticsService } from '../services/analytics.service';
 
 @Component({
   selector: 'app-results',
-  templateUrl: './results.component.html'
+  templateUrl: './results.component.html',
+  styleUrls: ['./results.component.css']
 })
 @Injectable()
 export class ResultsComponent implements OnInit {
