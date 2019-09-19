@@ -1,4 +1,6 @@
 {
+  "title": "Gaffer",
+  "enableChainSaving": true,
   "operations": {
     "loadNamedOperationsOnStartup": true
   },
