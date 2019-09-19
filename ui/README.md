@@ -781,6 +781,18 @@ left blank, no feedback button will be rendered. You can specify a list of email
 }
 ```
 
+### Operation Chain Saving
+
+Added in Gaffer UI 1.10.0, users now have the ability to save their operation chains. This uses Gaffer's Named
+Operation feature and saving a query runs an AddNamedOperation under the hood. The named operations that are saved are only visible to the user that created them. Users should be aware that all inputs and filters in the operation chain are added to the named operation.
+
+However if your Gaffer Graph does not make use of this feature, the "Save operation chain" button can be removed along with the sidenav by adding the following to the configuration:
+```json
+{
+    "enableChainSaving": false
+}
+```
+
 ## Testing
 
 The UI contains both End-to-End Selenium tests and Jasmine unit tests. The former testing user interactions, and the

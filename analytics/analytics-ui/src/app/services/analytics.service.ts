@@ -24,6 +24,7 @@ import { ErrorService } from './error.service';
 import { ResultsService } from './results.service';
 import { cloneDeep, startsWith } from 'lodash';
 import { EndpointService } from './endpoint-service';
+import { ParameterFormComponent } from '../parameters/parameter-form/parameter-form.component';
 
 const OPERATION_CHAIN_CLASS = 'uk.gov.gchq.gaffer.operation.OperationChain';
 const MAP_OPERATION_CLASS = 'uk.gov.gchq.gaffer.operation.impl.Map';
@@ -55,8 +56,7 @@ export class AnalyticsService {
   }
   /** Update the analytic operation on change of parameters */
   updateAnalytic = function(newValue, parameterName) {
-    // Convert to an integer
-    newValue = parseInt(newValue, 10);
+
     // Look for the parameter in the list of parameters and set the new current value
     for (const parameterPair of this.arrayAnalytic.uiMapping) {
       if (parameterPair[0] === parameterName) {
@@ -72,13 +72,18 @@ export class AnalyticsService {
     // Convert the key value map of parameters into an iterable array
     let arrayParams = analytic.uiMapping;
     if (arrayParams !== null && arrayParams !== undefined) {
-      arrayParams = Object.keys(analytic.uiMapping).map((key) => {
+      arrayParams = Object.keys(analytic.uiMapping).map(key => {
         return [key, analytic.uiMapping[key]];
       });
 
       // Add a new key and value in parameters to store the current value of that parameter
       for (const param of arrayParams) {
-        param[1].currentValue = null;
+        // If boolean type, set its initial value to false, otherwise set it to null
+        if (param[1].userInputType === 'boolean') {
+          param[1].currentValue = false;
+        } else {
+          param[1].currentValue = null;
+        }
       }
     } else {
       arrayParams = null;
@@ -97,12 +102,43 @@ export class AnalyticsService {
       parameters: null
     };
 
+    // Convert iterable parameters into the right form
+    for (const i in this.arrayAnalytic.uiMapping) {
+      if (this.arrayAnalytic.uiMapping.hasOwnProperty(i)) {
+        const param = this.arrayAnalytic.uiMapping[i];
+        if (param[1].userInputType === 'iterable') {
+          const iterable = [];
+          const inputValues = param[1].currentValue.split('\n');
+          for (const inputValue of inputValues) {
+            let inputObject = {};
+            if (param[1].iterableClass === 'EntitySeed') {
+              inputObject = {
+                class: param[1].iterableClass,
+                vertex: inputValue
+              };
+            } else if (param[1].iterableClass === 'EdgeSeed') {
+              inputObject = {
+                class: param[1].iterableClass,
+                source: inputValue
+              };
+            }
+            iterable.push(inputObject);
+          }
+          this.arrayAnalytic.uiMapping[i][1].iterable = iterable;
+        }
+      }
+    }
+
     // Convert parameters from an array to a key value map
     // so the parameters are in the correct form when they reach the server
     if (this.arrayAnalytic.uiMapping != null) {
       const parametersMap = {};
       for (const param of this.arrayAnalytic.uiMapping) {
-        parametersMap[param[1].parameterName] = param[1].currentValue;
+        if (param[1].userInputType === 'iterable') {
+          parametersMap[param[1].parameterName] = param[1].iterable;
+        } else {
+          parametersMap[param[1].parameterName] = param[1].currentValue;
+        }
       }
       operation.parameters = parametersMap;
     }

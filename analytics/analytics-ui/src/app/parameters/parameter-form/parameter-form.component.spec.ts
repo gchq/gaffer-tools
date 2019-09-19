@@ -20,7 +20,7 @@ import {
   TestBed,
   fakeAsync
 } from '@angular/core/testing';
-import { MatFormFieldModule, MatInputModule } from '@angular/material';
+import { MatFormFieldModule, MatInputModule, MatSelectModule, MatDatepickerModule, MatCheckboxModule } from '@angular/material';
 import { By } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
@@ -44,7 +44,7 @@ describe('ParameterFormComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ParameterFormComponent],
-      imports: [MatFormFieldModule, MatInputModule, BrowserAnimationsModule],
+      imports: [MatFormFieldModule, MatInputModule, BrowserAnimationsModule, MatSelectModule, MatDatepickerModule, MatCheckboxModule],
       providers: [{ provide: AnalyticsService, useClass: AnalyticsServiceStub }]
     }).compileComponents();
   }));

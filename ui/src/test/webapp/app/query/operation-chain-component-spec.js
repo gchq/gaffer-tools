@@ -339,7 +339,7 @@ describe('The operation chain component', function() {
             ctrl.saveChain();
 
             expect(query.executeQuery).not.toHaveBeenCalled();
-        })
+        });
 
         it('should show an error dialog if the name is invalid', function() {
             ctrl.namedOperationName = '';
@@ -354,31 +354,7 @@ describe('The operation chain component', function() {
             ctrl.saveChain();
 
             expect($mdDialog.show).toHaveBeenCalledWith(invalidName);
-        })
-
-        it('should not save if a description has not been entered', function() {
-            ctrl.namedOperationName = 'test name';
-            ctrl.namedOperationDescription = '';
-
-            ctrl.saveChain();
-
-            expect(query.executeQuery).not.toHaveBeenCalled();
-        })
-
-        it('should show an error dialog if the description is invalid', function() {
-            ctrl.namedOperationName = 'test name';
-            ctrl.namedOperationDescription = '';
-            ctrl.operations.length = 1;
-
-            var invalidDescription = $mdDialog.confirm()
-            .title('Operation chain description is invalid!')
-            .textContent('You must provide a description for the operation')
-            .ok('Ok')
-
-            ctrl.saveChain();
-
-            expect($mdDialog.show).toHaveBeenCalledWith(invalidDescription);
-        })
+        });
 
         it('should save using an add named operation query', function() {
             var testName = 'test name';
@@ -391,8 +367,8 @@ describe('The operation chain component', function() {
             const ADD_NAMED_OPERATION_CLASS = "uk.gov.gchq.gaffer.named.operation.AddNamedOperation";
 
             ctrl.operations.length = 1;
-            ctrl.namedOperationName = testName;
-            ctrl.namedOperationDescription = testDescription;
+            ctrl.namedOperation.name = testName;
+            ctrl.namedOperation.description = testDescription;
 
             var expectedQuery = {
                 class: ADD_NAMED_OPERATION_CLASS,
@@ -410,8 +386,8 @@ describe('The operation chain component', function() {
         })
 
         it('should show a confirmation dialog', function() {
-            ctrl.namedOperationName = 'test name';
-            ctrl.namedOperationDescription = 'test description';
+            ctrl.namedOperation.name = 'test name';
+            ctrl.namedOperation.description = 'test description';
             ctrl.operations.length = 1;
 
             var confirm = $mdDialog.confirm()
@@ -426,8 +402,8 @@ describe('The operation chain component', function() {
 
         it('should close the sidenav on success', function() {
             spyOn(ctrl, 'toggleSideNav').and.stub();
-            ctrl.namedOperationName = 'test name';
-            ctrl.namedOperationDescription = 'test description';
+            ctrl.namedOperation.name = 'test name';
+            ctrl.namedOperation.description = 'test description';
             ctrl.operations.length = 1;
 
             ctrl.saveChain();
@@ -437,8 +413,8 @@ describe('The operation chain component', function() {
 
         it('should reload the operations on success', function() {
             spyOn(operationService, 'reloadOperations').and.stub();
-            ctrl.namedOperationName = 'test name';
-            ctrl.namedOperationDescription = 'test description';
+            ctrl.namedOperation.name = 'test name';
+            ctrl.namedOperation.description = 'test description';
             ctrl.operations.length = 1;
 
             ctrl.saveChain();
