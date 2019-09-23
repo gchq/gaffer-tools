@@ -1,86 +1,9 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
-import { TableComponent } from './table.component';
-import { MatTableDataSource } from '@angular/material';
-import { MaterialModule } from 'src/app/material.module';
-import { ResultsService } from 'src/app/services/results.service';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
-let results: string[] | number[] | ({ varA: number; varB?: undefined; } | { varB: string; varA?: undefined; })[];
-const fullData = {
-  results: [
-    {
-      'result type': 'Edge',
-      GROUP: 'BasicEdge2',
-      SOURCE: 'source1',
-      DESTINATION: 'destination1',
-      DIRECTED: true,
-      count: 1,
-      prop2: 'value1'
-    },
-    {
-      'result type': 'Edge',
-      GROUP: 'BasicEdge1',
-      SOURCE: 'source1',
-      DESTINATION: 'destination1',
-      DIRECTED: true,
-      count: 1,
-      prop1: 'value1'
-    },
-    {
-      'result type': 'Edge',
-      GROUP: 'BasicEdge1',
-      SOURCE: 'source2',
-      DESTINATION: 'destination2',
-      DIRECTED: true,
-      count: 2,
-      prop1: 'value2'
-    },
-    {
-      'result type': 'Entity',
-      GROUP: 'BasicEntity2',
-      SOURCE: 'vertex1',
-      count: 1,
-      prop2: 'value1'
-    },
-    {
-      'result type': 'Entity',
-      GROUP: 'BasicEntity1',
-      SOURCE: 'vertex1',
-      count: 1,
-      prop1: 'value1'
-    },
-    {
-      'result type': 'Entity',
-      GROUP: 'BasicEntity1',
-      SOURCE: 'vertex2',
-      count: 2,
-      prop1: 'value2'
-    },
-    {
-      GROUP: '',
-      'result type': 'String',
-      value: 'value1'
-    },
-    {
-      GROUP: '',
-      'result type': 'Integer',
-      value: 4
-    },
-    {
-      GROUP: '',
-      'result type': 'EntitySeed',
-      SOURCE: 'vertex1'
-    }
-  ],
-  columns: ['SOURCE', 'result type', 'value', 'GROUP', 'DESTINATION', 'DIRECTED', 'prop2', 'count', 'prop1'],
-  allColumns: ['SOURCE', 'result type', 'value', 'GROUP', 'DESTINATION', 'DIRECTED', 'prop2', 'count', 'prop1'],
-  groups: ['BasicEdge1', 'BasicEdge2', 'BasicEntity1', 'BasicEntity2', ''],
-  allGroups: ['BasicEdge1', 'BasicEdge2', 'BasicEntity1', 'BasicEntity2', ''],
-  types: ['Edge', 'Entity', 'String', 'Integer', 'EntitySeed'],
-  allTypes: ['Edge', 'Entity', 'String', 'Integer', 'EntitySeed'],
-  tooltips: {}
-};
+import { MaterialModule } from 'src/app/material.module';
+import { TableComponent } from './table.component';
+import { ResultsService } from 'src/app/services/results.service';
 
 const fullResultsData = [
   {
