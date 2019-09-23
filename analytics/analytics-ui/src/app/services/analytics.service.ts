@@ -108,7 +108,7 @@ export class AnalyticsService {
       const parametersMap = {};
       for (const param of this.arrayAnalytic.uiMapping) {
         if (param[1].userInputType === 'iterable') {
-          parametersMap[param[1].parameterName] = ["Iterable", param[1].currentValue.split('\n')];
+          parametersMap[param[1].parameterName] = ['Iterable', param[1].currentValue.split('\n')];
         } else {
           parametersMap[param[1].parameterName] = param[1].currentValue;
         }
