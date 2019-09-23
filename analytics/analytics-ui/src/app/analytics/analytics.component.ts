@@ -39,7 +39,7 @@ export class AnalyticsComponent implements OnInit {
     this.reloadAnalytics();
   }
 
-  reverseAnalytics = function(value: string) {
+  reverseAnalytics = function() {
     this.reverse = !this.reverse;
   };
 
