@@ -21,7 +21,7 @@
 
 <mat-card style="min-height: 300px;" gutterSize="3vw">
   <mat-grid-list cols="4">
-    <mat-grid-tile *ngFor="let analytic of analytics | orderBy: order :reverse | filterBy: analyticFilter">
+    <mat-grid-tile *ngFor="let analytic of analytics | orderBy: order | filterBy: analyticFilter">
       <app-analytic [model]="analytic"></app-analytic>
     </mat-grid-tile>
   </mat-grid-list>
