@@ -21,7 +21,9 @@ import {
 } from '@angular/material';
 import { empty, of } from 'rxjs';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
-import { MatTableModule } from '@angular/material';
+import { MaterialModule } from '../material.module';
+import { Location, LocationStrategy, PathLocationStrategy } from '@angular/common';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { AnalyticsService } from '../services/analytics.service';
 import { ResultsComponent } from './results.component';
@@ -30,6 +32,8 @@ import { TypeService } from '../services/type.service';
 import { TimeService } from '../services/time.service';
 import { SchemaService } from '../services/schema.service';
 import { ErrorService } from '../services/error.service';
+import { TableComponent } from './table/table.component';
+import { HtmlComponent } from './html/html.component';
 
 const fullResultsData = [
   {
@@ -464,11 +468,13 @@ describe('ResultsComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ResultsComponent],
-      imports: [MatTableModule, MatCardModule, HttpClientTestingModule],
+      declarations: [ResultsComponent, TableComponent, HtmlComponent],
+      imports: [MaterialModule, HttpClientTestingModule, BrowserAnimationsModule],
       providers: [{ provide: ResultsService, useClass: ResultsServiceStub },
         TypeService,
         TimeService,
+        Location,
+      { provide: LocationStrategy, useClass: PathLocationStrategy },
       { provide: SchemaService, useClass: SchemaServiceStub },
       { provide: AnalyticsService, useClass: AnalyticsServiceStub },
       { provide: ErrorService, useClass: ErrorServiceStub },

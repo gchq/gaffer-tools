@@ -17,12 +17,11 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { Input, Component } from '@angular/core';
 import { empty, from, throwError, EMPTY } from 'rxjs';
-import {
-  MatGridListModule,
-  MatCardModule,
-  MatTooltipModule,
-  MatIconModule
-} from '@angular/material';
+import { MaterialModule } from '../material.module';
+import { OrderModule } from 'ngx-order-pipe';
+import { FilterPipeModule } from 'ngx-filter-pipe';
+import { FilterPipe } from 'ngx-filter-pipe';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { AnalyticsComponent } from './analytics.component';
 import { AnalyticsService } from '../services/analytics.service';
@@ -57,7 +56,7 @@ describe('AnalyticsComponent', () => {
         { provide: AnalyticsService, useClass: AnalyticsServiceStub },
         { provide: ErrorService, useClass: ErrorServiceStub }
       ],
-      imports: [MatGridListModule, MatCardModule, MatTooltipModule, MatIconModule]
+      imports: [MaterialModule, OrderModule, FilterPipeModule, BrowserAnimationsModule]
     }).compileComponents();
   }));
 
