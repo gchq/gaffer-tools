@@ -35,6 +35,7 @@ __pycache__
 */.DS_Store
 .vscode/
 .ipynb_checkpoints
+*.PythonBin
 
 # nohup
 nohup.out
