@@ -662,6 +662,14 @@ class GafferFunctionsTest(unittest.TestCase):
         [
             '''
             {
+                "class": "uk.gov.gchq.koryphe.impl.function.DeserialiseJson"
+            }
+            ''',
+            g.func.DeserialiseJson()
+        ],
+        [
+            '''
+            {
                 "class": "uk.gov.gchq.koryphe.impl.function.DeserialiseXml"
             }
             ''',

@@ -947,7 +947,7 @@ class CurrentTime(AbstractFunction):
 class DeserialiseJson(AbstractFunction):
     CLASS = "uk.gov.gchq.koryphe.impl.function.DeserialiseJson"
 
-    def __init__(self, output_class):
+    def __init__(self, output_class=None):
         super().__init__(_class_name=self.CLASS)
         self.output_class = output_class
 
