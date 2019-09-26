@@ -23,3 +23,6 @@ do
         exit 1;
     fi
 done
+
+# Remove the mirror set in Travis
+rm ~/.m2/settings.xml
