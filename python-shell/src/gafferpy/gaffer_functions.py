@@ -89,6 +89,33 @@ class TupleAdaptedFunction(AbstractFunction):
         return function_json
 
 
+class TupleAdaptedFunctionComposite(AbstractFunction):
+    CLASS = "uk.gov.gchq.koryphe.tuple.function.TupleAdaptedFunctionComposite"
+
+    def __init__(self, functions):
+        super().__init__(_class_name=self.CLASS)
+
+        if functions is None:
+            raise TypeError('No function(s) provided')
+        else:
+            self.functions = []
+            for func in functions:
+                if not isinstance(func, FunctionContext):
+                    func = JsonConverter.from_json(
+                        func, FunctionContext)
+                self.functions.append(func)
+
+    def to_json(self):
+        function = super().to_json()
+
+        functions_json = []
+        for func in self.functions:
+            functions_json.append(func.to_json())
+        function['functions'] = functions_json
+
+        return function
+
+
 class FunctionContext(TupleAdaptedFunction):
     CLASS = "gaffer.FunctionContext"
 
