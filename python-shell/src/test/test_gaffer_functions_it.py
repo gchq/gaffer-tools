@@ -38,7 +38,6 @@ class GafferFunctionsIntegrationTest(unittest.TestCase):
             'uk.gov.gchq.gaffer.traffic.generator.RoadTrafficCsvElementGenerator',
             'uk.gov.gchq.koryphe.tuple.function.TupleAdaptedFunctionComposite',
             'uk.gov.gchq.gaffer.store.util.AggregatorUtil$ToElementKey',
-            'uk.gov.gchq.koryphe.tuple.function.TupleAdaptedFunction',
             'uk.gov.gchq.koryphe.function.FunctionComposite',
             'uk.gov.gchq.gaffer.rest.example.ExampleTransformFunction',
             'uk.gov.gchq.gaffer.data.graph.function.walk.ExtractWalkEdgesFromHop',

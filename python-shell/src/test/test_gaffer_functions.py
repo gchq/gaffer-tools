@@ -809,6 +809,48 @@ class GafferFunctionsTest(unittest.TestCase):
                 g.Base64Decode(),
                 g.CsvLinesToMaps(delimiter="|", quoted=True)
             ])
+        ],
+        [
+            '''
+            {
+                "class":"uk.gov.gchq.koryphe.tuple.function.TupleAdaptedFunction",
+                "selection":[0],
+                "function": {
+                    "class": "uk.gov.gchq.gaffer.operation.function.ToEntityId"
+                },
+                "projection": [1]
+            }
+            ''',
+            g.TupleAdaptedFunction(selection=[0], function=g.ToEntityId(), projection=[1])
+        ],
+        [
+            '''
+            {
+                "class":"uk.gov.gchq.koryphe.impl.function.FunctionChain",
+                "functions": [
+                    {
+                        "class":"uk.gov.gchq.koryphe.tuple.function.TupleAdaptedFunction",
+                        "selection":[0],
+                        "function": {
+                            "class": "uk.gov.gchq.koryphe.impl.function.ToUpperCase"
+                        },
+                        "projection": [1]
+                    },
+                    {
+                        "class":"uk.gov.gchq.koryphe.tuple.function.TupleAdaptedFunction",
+                        "selection": [1],
+                        "function": {
+                            "class": "uk.gov.gchq.koryphe.impl.function.ToSet"
+                        },
+                        "projection": [2]
+                    }
+                ]
+            }
+            ''',
+            g.FunctionChain(functions=[
+                g.TupleAdaptedFunction(selection=[0], function=g.ToUpperCase(), projection=[1]),
+                g.TupleAdaptedFunction(selection=[1], function=g.gaffer_functions.ToSet(), projection=[2])
+            ])
         ]
     ]
 
