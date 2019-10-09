@@ -859,7 +859,7 @@ class GafferFunctionsTest(unittest.TestCase):
                  "class": "uk.gov.gchq.koryphe.tuple.function.TupleAdaptedFunctionComposite",
                  "functions": [ 
                     { 
-                       "selection": [0],
+                       "selection": [ "something" ],
                        "function": { 
                           "class":"uk.gov.gchq.koryphe.impl.function.ToUpperCase"
                        },
@@ -870,8 +870,8 @@ class GafferFunctionsTest(unittest.TestCase):
             ''',
             g.TupleAdaptedFunctionComposite(
                 functions=[g.FunctionContext(selection=["something"],
-                                             function=g.Identity(),
-                                             projection=["anotherThing"]
+                                             function=g.ToUpperCase(),
+                                             projection=[1]
                                              )
                            ]
             ),
