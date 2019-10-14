@@ -13,7 +13,7 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-<div ng-cloak layout="column" layout-align=" stretch">
+<div ng-cloak layout="column" layout-align=" stretch" style="height: 100%">
     <md-card ng-show="ctrl.showVisualisation">
         <canvas 
             class="chart-base" 
@@ -27,7 +27,7 @@
             <md-button ng-click="ctrl.hideVisualisation()">hide</md-button>
         </md-card-actions>
     </md-card>
-    <md-card>
+    <md-card style="max-height: calc(100% - 20px)">
         <md-toolbar class="table-toolbar">
             <div class="md-toolbar-tools" layout-align="start start">
                 <md-input-container flex="25">
@@ -66,67 +66,69 @@
         </md-card-content>
 
         <md-table-container>
-            <table md-table id="results-table" class="compact">
-                <thead md-head md-order="ctrl.sortType">
-                <tr md-row>
-                    <th md-column ng-repeat="col in ctrl.data.columns"
-                        md-order-by="{{col}}">
-                        <md-input-container ng-if="'result type' === col">
-                            <md-select
-                                class="md-no-underline"
-                                ng-click="$event.stopPropagation();"
-                                ng-model="ctrl.data.types" multiple
-                                ng-change="ctrl.updateFilteredResults()"
-                                aria-label="data type"
-                                md-selected-text="ctrl.typeColumnName">
-                                <md-option ng-value="type"
-                                        ng-repeat="type in ctrl.data.allTypes">
-                                    {{type}}
-                                </md-option>
-                            </md-select>
-                        </md-input-container>
+            <div style="overflow: auto; max-height: calc(100% - 35px);">
+                <table md-table id="results-table" class="compact">
+                    <thead fix-head md-head md-order="ctrl.sortType">
+                    <tr md-row>
+                        <th md-column ng-repeat="col in ctrl.data.columns"
+                            md-order-by="{{col}}">
+                            <md-input-container ng-if="'result type' === col">
+                                <md-select
+                                    class="md-no-underline"
+                                    ng-click="$event.stopPropagation();"
+                                    ng-model="ctrl.data.types" multiple
+                                    ng-change="ctrl.updateFilteredResults()"
+                                    aria-label="data type"
+                                    md-selected-text="ctrl.typeColumnName">
+                                    <md-option ng-value="type"
+                                            ng-repeat="type in ctrl.data.allTypes">
+                                        {{type}}
+                                    </md-option>
+                                </md-select>
+                            </md-input-container>
 
-                        <md-input-container ng-if="'GROUP' === col">
-                            <md-select
-                                class="md-no-underline"
-                                ng-click="$event.stopPropagation();"
-                                ng-model="ctrl.data.groups" multiple
-                                ng-change="ctrl.updateFilteredResults()"
-                                aria-label="element type"
-                                md-selected-text="ctrl.groupColumnName">
-                                <md-option ng-value="group"
-                                        ng-repeat="group in ctrl.data.allGroups">
-                                    {{group}}
-                                </md-option>
-                            </md-select>
-                        </md-input-container>
+                            <md-input-container ng-if="'GROUP' === col">
+                                <md-select
+                                    class="md-no-underline"
+                                    ng-click="$event.stopPropagation();"
+                                    ng-model="ctrl.data.groups" multiple
+                                    ng-change="ctrl.updateFilteredResults()"
+                                    aria-label="element type"
+                                    md-selected-text="ctrl.groupColumnName">
+                                    <md-option ng-value="group"
+                                            ng-repeat="group in ctrl.data.allGroups">
+                                        {{group}}
+                                    </md-option>
+                                </md-select>
+                            </md-input-container>
 
-                        <span ng-if="'result type' !== col && 'GROUP' !== col">{{col}}</span>
+                            <span ng-if="'result type' !== col && 'GROUP' !== col">{{col}}</span>
 
-                        <span ng-if="'SOURCE' === col">/ VERTEX</span>
+                            <span ng-if="'SOURCE' === col">/ VERTEX</span>
 
-                        <md-tooltip md-direction="top"
-                                    ng-if="ctrl.data.tooltips[col]">
-                            {{ctrl.data.tooltips[col]}}
-                        </md-tooltip>
+                            <md-tooltip md-direction="top"
+                                        ng-if="ctrl.data.tooltips[col]">
+                                {{ctrl.data.tooltips[col]}}
+                            </md-tooltip>
 
-                        <a ng-click="ctrl.hideColumn(col)">
-                            <md-icon md-svg-icon="cancel" class="small-icon">
-                            </md-icon>
-                        </a>
-                    </th>
-                </tr>
-                </thead>
-                <tbody md-body>
-                <tr md-row
-                    ng-repeat="result in (ctrl.filteredResults = (ctrl.data.results | orderBy:ctrl.getValue() | filter:ctrl.searchTerm)) | limitTo: ctrl.pagination.limit: (ctrl.pagination.page - 1) * ctrl.pagination.limit">
-                    <td md-cell ng-repeat="col in ctrl.data.columns">
-                        {{ctrl.getTruncatedValue(result[col])}}
-                        <span ng-click="ctrl.showValueDialog(col, result[col])" ng-if="ctrl.shouldShowTruncation(result[col])">...</span>
-                    </td>
-                </tr>
-                </tbody>
-            </table>
+                            <a ng-click="ctrl.hideColumn(col)">
+                                <md-icon md-svg-icon="cancel" class="small-icon">
+                                </md-icon>
+                            </a>
+                        </th>
+                    </tr>
+                    </thead>
+                    <tbody md-body>
+                    <tr md-row
+                        ng-repeat="result in (ctrl.filteredResults = (ctrl.data.results | orderBy:ctrl.getValue() | filter:ctrl.searchTerm)) | limitTo: ctrl.pagination.limit: (ctrl.pagination.page - 1) * ctrl.pagination.limit">
+                        <td md-cell ng-repeat="col in ctrl.data.columns">
+                            {{ctrl.getTruncatedValue(result[col])}}
+                            <span ng-click="ctrl.showValueDialog(col, result[col])" ng-if="ctrl.shouldShowTruncation(result[col])">...</span>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
         </md-table-container>
         <md-table-pagination md-limit="ctrl.pagination.limit" md-limit-options="[50, 100, 200]" md-page="ctrl.pagination.page" md-total="{{ctrl.filteredResults.length}}" md-page-select md-boundary-links></md-table-pagination>
     </md-card>

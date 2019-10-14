@@ -116,6 +116,7 @@
                         <source>${project.build.directory}/${project.build.finalName}/lib/moment/moment.min.js</source>
                         <source>${project.build.directory}/${project.build.finalName}/lib/chart/js/chart.min.js</source>
                         <source>${project.build.directory}/${project.build.finalName}/lib/angular-chart/js/angular-chart.min.js</source>
+                        <source>${project.build.directory}/${project.build.finalName}/lib/fixed-table-header/js/fixed-table-header.min.js</source>
                     </preloadSources>
                 </configuration>
             </plugin>
