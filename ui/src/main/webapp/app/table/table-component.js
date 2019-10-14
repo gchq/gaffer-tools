@@ -40,6 +40,7 @@ function resultsTable() {
  */
 function TableController(schema, results, table, events, common, types, time, csv, $mdDialog) {
     var vm = this;
+    var maxValueLength = 500;
     var resultsByType = [];
     vm.filteredResults = [];
     vm.data = {results:[], columns:[]};
@@ -306,6 +307,24 @@ function TableController(schema, results, table, events, common, types, time, cs
         }
 
         return '"' + vm.sortType + '"';
+    }
+
+    vm.shouldShowTruncation = function(value) {
+        return value && typeof value === 'string' && value.length > maxValueLength;
+    }
+
+    vm.getTruncatedValue = function(value) {
+        if(vm.shouldShowTruncation(value)) {
+            return value.substring(0,maxValueLength-3);
+        }
+        return value;
+    }
+
+    vm.showValueDialog = function(name, value) {
+        $mdDialog.show($mdDialog.confirm()
+                .title('Full ' + name + ' value')
+                .textContent(value)
+                .ok('Ok'));
     }
 
     var loadFromCache = function() {

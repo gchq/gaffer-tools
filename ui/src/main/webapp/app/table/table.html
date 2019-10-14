@@ -121,7 +121,8 @@
                 <tr md-row
                     ng-repeat="result in (ctrl.filteredResults = (ctrl.data.results | orderBy:ctrl.getValue() | filter:ctrl.searchTerm)) | limitTo: ctrl.pagination.limit: (ctrl.pagination.page - 1) * ctrl.pagination.limit">
                     <td md-cell ng-repeat="col in ctrl.data.columns">
-                        {{result[col]}}
+                        {{ctrl.getTruncatedValue(result[col])}}
+                        <span ng-click="ctrl.showValueDialog(col, result[col])" ng-if="ctrl.shouldShowTruncation(result[col])">...</span>
                     </td>
                 </tr>
                 </tbody>

@@ -524,6 +524,52 @@ describe('The Table component', function() {
             });
         });
 
+        describe('ctrl.getTruncatedValue()', function() {
+            var longValue = "1234567890".repeat(100);
+            var truncatedValue = longValue.substring(0, 497);
+            it('should truncate long values', function() {
+                expect(ctrl.getTruncatedValue(longValue)).toEqual(truncatedValue);
+            });
+
+            var shortValue = "test value";
+            it('should not truncate short values', function() {
+                expect(ctrl.getTruncatedValue(shortValue)).toEqual(shortValue);
+            });
+
+            var numberValue = 1234567890;
+            it('should not truncate number values', function() {
+                expect(ctrl.getTruncatedValue(numberValue)).toEqual(numberValue);
+            });
+
+            var objValue = {"test": 1234567890};
+            it('should not truncate number values', function() {
+                expect(ctrl.getTruncatedValue(objValue)).toEqual(objValue);
+            });
+        });
+
+        describe('ctrl.showValueDialog()', function() {
+            var $mdDialog;
+
+            beforeEach(inject(function(_$mdDialog_) {
+                $mdDialog = _$mdDialog_;
+            }));
+
+
+            it('should show the full value in a dialog' ,function() {
+                spyOn($mdDialog, 'show').and.returnValue($q.when('test'));
+
+                ctrl.showValueDialog('property name', 'property value');
+
+                scope.$digest();
+
+                var fullValueDialog = $mdDialog.confirm()
+                      .title('Full property name value')
+                      .textContent('property value')
+                      .ok('Ok');
+                expect($mdDialog.show).toHaveBeenCalledWith(fullValueDialog);
+            });
+        });
+
         describe('ctrl.download()', function() {
 
             var fakeElement;
