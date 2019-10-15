@@ -67,6 +67,7 @@ angular.module('app').factory('config', ['$http', '$q', 'defaultRestEndpoint', '
                         }
                         angular.merge(mergedConfig, customConfig);
                         config = mergedConfig;
+                        document.title = config.title;
                         defer.resolve(config);
                     },
                     function(err) {

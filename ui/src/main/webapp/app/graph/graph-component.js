@@ -304,9 +304,11 @@ function GraphController($q, graph, config, error, loading, query, operationOpti
         for (var vertexType in configuration.style.vertexTypes) {
             var standardStyle = configuration.style.vertexTypes[vertexType].style;
 
+            var parsedVertexType = vertexType.replace(/\.|\#/g, "-");
+
             if (standardStyle) {
                 styles.push({
-                    selector: 'node[' + vertexType + ']',
+                    selector: 'node[' + parsedVertexType + ']',
                     style: standardStyle
                 });
             }
@@ -315,7 +317,7 @@ function GraphController($q, graph, config, error, loading, query, operationOpti
             for (var field in fieldOverrides) {
                 for (var fieldValue in fieldOverrides[field]) {
                     styles.push({
-                        selector: 'node[' + vertexType + '][' + field + '="' + fieldValue + '"]',
+                        selector: 'node[' + parsedVertexType + '][' + field + '="' + fieldValue + '"]',
                         style: fieldOverrides[field][fieldValue]
                     });
                 }
@@ -564,7 +566,7 @@ function GraphController($q, graph, config, error, loading, query, operationOpti
         if(vertexTypeDefinition != null) {
             var vertexType = Object.keys(vertexTypeDefinition)[0];
 
-            data[vertexType] = true;
+            data[vertexType.replace(/\.|\#/g, "-")] = true;
 
             var vertexClass = vertexTypeDefinition[vertexType].class;
             var parts = types.createParts(vertexClass, vertex);
