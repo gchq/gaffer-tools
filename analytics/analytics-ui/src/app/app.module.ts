@@ -16,7 +16,7 @@
 
 import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms'; // <-- NgModel lives here
-import { NgModule } from '@angular/core';
+import { NgModule, LOCALE_ID } from '@angular/core';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { UpgradeModule } from '@angular/upgrade/static';
 import { MaterialModule } from './material.module';
@@ -25,6 +25,8 @@ import { FlexLayoutModule } from '@angular/flex-layout';
 import { AppRoutingModule } from './app-routing.module';
 import { HttpClientModule } from '@angular/common/http';
 import { ToastrModule } from 'ngx-toastr';
+import { MatMomentDateModule, MAT_MOMENT_DATE_ADAPTER_OPTIONS } from '@angular/material-moment-adapter';
+import { MatDatepickerModule } from '@angular/material';
 
 import { AppComponent } from './app.component';
 import { NavComponent } from './nav/nav.component';
@@ -59,7 +61,9 @@ import { SchemaService } from './services/schema.service';
     ToastrModule.forRoot(),
     ResultsModule,
     AnalyticsModule,
-    ParametersModule
+    ParametersModule,
+    MatMomentDateModule,
+    MatDatepickerModule
   ],
   providers: [
     AnalyticsService,
@@ -68,7 +72,8 @@ import { SchemaService } from './services/schema.service';
     QueryService,
     ResultsService,
     TimeService,
-    SchemaService
+    SchemaService,
+    { provide: LOCALE_ID, useValue: "en-gb" },
   ],
   bootstrap: [AppComponent]
 })
