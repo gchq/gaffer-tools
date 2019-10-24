@@ -20,25 +20,37 @@ import org.apache.commons.io.FileUtils;
 import org.apache.spark.SparkContext;
 import org.apache.spark.api.java.JavaRDD;
 import org.apache.spark.api.java.JavaSparkContext;
+import org.apache.spark.api.java.function.Function2;
+import org.apache.spark.api.java.function.PairFlatMapFunction;
 import org.apache.spark.broadcast.Broadcast;
 
+import scala.Tuple2;
 import uk.gov.gchq.gaffer.accumulostore.AccumuloProperties;
 import uk.gov.gchq.gaffer.data.element.Element;
+import uk.gov.gchq.gaffer.data.element.Properties;
+import uk.gov.gchq.gaffer.data.element.function.ElementAggregator;
+import uk.gov.gchq.gaffer.data.element.id.ElementId;
 import uk.gov.gchq.gaffer.exception.SerialisationException;
 import uk.gov.gchq.gaffer.graph.Graph;
 import uk.gov.gchq.gaffer.graph.GraphConfig;
 import uk.gov.gchq.gaffer.jsonserialisation.JSONSerialiser;
 import uk.gov.gchq.gaffer.operation.OperationException;
+import uk.gov.gchq.gaffer.quickstart.data.element.function.ElementFlatMapFunction;
+import uk.gov.gchq.gaffer.quickstart.data.element.function.ElementMapper;
+import uk.gov.gchq.gaffer.quickstart.data.element.function.ElementReduceFunction;
 import uk.gov.gchq.gaffer.quickstart.data.generator.CsvElementGenerator;
 import uk.gov.gchq.gaffer.spark.SparkContextUtil;
 import uk.gov.gchq.gaffer.spark.operation.javardd.ImportJavaRDDOfElements;
 import uk.gov.gchq.gaffer.store.Context;
+import uk.gov.gchq.gaffer.store.element.ElementKey;
 import uk.gov.gchq.gaffer.store.library.NoGraphLibrary;
 import uk.gov.gchq.gaffer.store.schema.Schema;
+import uk.gov.gchq.gaffer.store.schema.SchemaElementDefinition;
 import uk.gov.gchq.gaffer.user.User;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Iterator;
 
 public class LoadFromHdfsJob {
 
@@ -134,8 +146,15 @@ public class LoadFromHdfsJob {
 
         Broadcast<CsvElementGenerator> generatorBroadcast = jsc.broadcast(csvElementGenerator);
 
-        JavaRDD<Element> rdd = jsc.textFile(dataPath, numPartitions)
-                .flatMap(s -> generatorBroadcast.getValue()._apply(s).iterator());
+        Broadcast<ElementReduceFunction> elementReduceFunctionBroadcast = jsc.broadcast(new ElementReduceFunction(schemaJson));
+        Broadcast<ElementFlatMapFunction> elementFlatMapFunctionBroadcast = jsc.broadcast(new ElementFlatMapFunction(schemaJson));
+
+        JavaRDD<Element> rdd =
+                jsc.textFile(dataPath, numPartitions)
+                .flatMap(s -> generatorBroadcast.getValue()._apply(s).iterator())
+                .flatMapToPair(elementFlatMapFunctionBroadcast.getValue())
+                .reduceByKey(elementReduceFunctionBroadcast.getValue())
+                .map(new ElementMapper());
 
         ImportJavaRDDOfElements importRDDOfElements = new ImportJavaRDDOfElements.Builder()
                 .input(rdd)

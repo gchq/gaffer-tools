@@ -11,7 +11,7 @@ fi
 source $GAFFER_HOME/bin/_version.sh
 
 operationDeclarations="\ngaffer.store.operation.declarations=sparkAccumuloOperationsDeclarations.json,pySparkAccumuloOperationsDeclarations.json,${GAFFER_HOME}/conf/operationDeclarations.json"
-pythonSerialisers="\npythonserialiser.declarations=${GAFFER_HOME}/conf/customPysparkSerialisers.json"
+
 
 HERE=$(pwd)
 
@@ -25,6 +25,10 @@ done
 echo -e "creating gaffer pyspark properties file at $GAFFER_HOME/miniaccumulo/pyspark.store.properties" >> $GAFFER_HOME/gaffer.log
 
 cp $GAFFER_HOME/miniaccumulo/store.properties $GAFFER_HOME/miniaccumulo/pyspark.store.properties
+
+echo -e "\n\nspark.master=local[*]" >> $GAFFER_HOME/miniaccumulo/pyspark.store.properties
+echo -e "\nspark.home=${SPARK_HOME}" >> $GAFFER_HOME/miniaccumulo/pyspark.store.properties
+echo -e "\nspark.loader.jar=${GAFFER_HOME}/lib/gaffer-quickstart-full.jar" >> $GAFFER_HOME/miniaccumulo/pyspark.store.properties
 
 sed -ie "/gaffer.store.operation.declarations/s/$/,pySparkAccumuloOperationsDeclarations.json/" $GAFFER_HOME/miniaccumulo/pyspark.store.properties
 echo -e $pythonSerialisers >> $GAFFER_HOME/miniaccumulo/pyspark.store.properties

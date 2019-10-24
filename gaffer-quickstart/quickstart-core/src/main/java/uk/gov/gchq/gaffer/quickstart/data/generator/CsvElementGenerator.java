@@ -84,7 +84,7 @@ public class CsvElementGenerator implements OneToManyElementGenerator<String>, S
     private ElementFilter elementValidator;
 
     @Override
-    public synchronized Iterable<? extends Element> apply(final Iterable<? extends String> strings) {
+    public Iterable<? extends Element> apply(final Iterable<? extends String> strings) {
         if (allFieldsRequired) {
             requiredFields = header;
         }
@@ -116,7 +116,7 @@ public class CsvElementGenerator implements OneToManyElementGenerator<String>, S
     }
 
     @Override
-    public synchronized Iterable<Element> _apply(final String csv) {
+    public Iterable<Element> _apply(final String csv) {
         return generateElements(csv);
     }
 

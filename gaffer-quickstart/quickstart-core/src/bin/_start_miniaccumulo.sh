@@ -56,8 +56,8 @@ do
     sleep 0.5
 done
 
-echo -e "\n\nspark.master=local[*]" >> $GAFFER_HOME/miniaccumulo/store.properties
-echo -e "\nspark.home=${SPARK_HOME}" >> $GAFFER_HOME/miniaccumulo/store.properties
-echo -e "\nspark.loader.jar=${GAFFER_HOME}/lib/gaffer-quickstart-full.jar" >> $GAFFER_HOME/miniaccumulo/store.properties
-
 echo -e "\nminiaccumulo started"
+
+pythonSerialisers="\npythonserialiser.declarations=${GAFFER_HOME}/conf/customPysparkSerialisers.json"
+echo -e $pythonSerialisers >> $GAFFER_HOME/miniaccumulo/store.properties
+

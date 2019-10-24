@@ -25,7 +25,8 @@
     "selection" : [ "timestamp" ],
     "function" : {
       "class" : "ToTimeBucket",
-      "bucket" : "HOUR"
+      "bucket" : "HOUR",
+      "millisCorrection" : 1000
     },
     "projection" : [ "timebucket" ]
   }, {

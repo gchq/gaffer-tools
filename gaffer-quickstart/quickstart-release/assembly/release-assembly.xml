@@ -38,10 +38,6 @@
             <outputDirectory>example</outputDirectory>
         </fileSet>
         <fileSet>
-            <directory>../quickstart-core/src/example/</directory>
-            <outputDirectory>example</outputDirectory>
-        </fileSet>
-        <fileSet>
             <directory>../quickstart-core/src/python/</directory>
             <outputDirectory>python</outputDirectory>
         </fileSet>
