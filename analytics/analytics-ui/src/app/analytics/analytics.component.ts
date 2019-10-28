@@ -28,7 +28,6 @@ import { FilterPipe } from 'ngx-filter-pipe';
 export class AnalyticsComponent implements OnInit {
   analytics: any;
   analyticFilter: any = { analyticName: '' };
-  order;
   constructor(
     private filterPipe: FilterPipe,
     private analyticsService: AnalyticsService,
@@ -38,10 +37,6 @@ export class AnalyticsComponent implements OnInit {
   ngOnInit() {
     this.reloadAnalytics();
   }
-
-  reverseAnalytics = function() {
-    this.reverse = !this.reverse;
-  };
 
   /** Load the analytics */
   reloadAnalytics = function() {
