@@ -4,7 +4,7 @@
     <mat-label>Columns</mat-label>
     <mat-select [(value)]="selected">
       <mat-option *ngFor="let column of columnsToDisplay" value={{column}}>
-        {{ column | uppercase }}
+        {{ column }}
       </mat-option>
     </mat-select>
   </mat-form-field>
@@ -18,7 +18,7 @@
     <mat-table [dataSource]="data.results" matSort>
       <ng-container [matColumnDef]="column" *ngFor="let column of columnsToDisplay">
         <mat-header-cell *matHeaderCellDef mat-sort-header>
-          <h3>{{ column | uppercase }}</h3>
+          <h3>{{ column }}</h3>
         </mat-header-cell>
         <mat-cell *matCellDef="let element"> {{element[column]}} </mat-cell>
       </ng-container>
