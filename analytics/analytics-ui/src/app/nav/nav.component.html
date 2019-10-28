@@ -2,11 +2,12 @@
   <mat-toolbar-row>
     <!-- <a style="cursor:pointer;" (click)="goHome()">Analytic UI</a> -->
     <span>Analytic UI</span>
-    <svg viewBox="0 0 24 24" width="24" height="24" fill="#fff" style="cursor:pointer;margin-left: 10px;"
-      (click)="goHome()">
-      <path
-        d="M 12 2.0996094 L 1 12 L 4 12 L 4 21 L 10 21 L 10 14 L 14 14 L 14 21 L 20 21 L 20 12 L 23 12 L 12 2.0996094 z" />
-    </svg>
+    <button mat-icon-button style="cursor:pointer;margin-left: 10px;" (click)="goHome()">
+      <svg viewBox="0 0 24 24" width="24" height="24" fill="#fff">
+        <path
+          d="M 12 2.0996094 L 1 12 L 4 12 L 4 21 L 10 21 L 10 14 L 14 14 L 14 21 L 20 21 L 20 12 L 23 12 L 12 2.0996094 z" />
+      </svg>
+    </button>
   </mat-toolbar-row>
 </mat-toolbar>
 <router-outlet></router-outlet>
