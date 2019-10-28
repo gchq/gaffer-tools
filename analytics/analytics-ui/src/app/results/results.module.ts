@@ -1,33 +1,31 @@
-import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ResultsComponent } from './results.component';
+import { NgModule } from '@angular/core';
 import { FlexLayoutModule } from '@angular/flex-layout';
-import { HtmlComponent } from './html/html.component';
-import { TableComponent } from './table/table.component';
 import {
-  MatTableModule,
+  MatButtonModule,
+  MatCardModule,
+  MatFormFieldModule,
+  MatPaginatorModule,
   MatSelectModule,
   MatSortModule,
-  MatPaginatorModule,
-  MatCardModule,
-  MatListModule,
-  MatFormFieldModule,
-  MatButtonModule,
-  MatInputModule,
+  MatTableModule
 } from '@angular/material';
+
+import { HtmlComponent } from './html/html.component';
+import { ResultsComponent } from './results.component';
+import { TableComponent } from './table/table.component';
 
 @NgModule({
   declarations: [ResultsComponent, HtmlComponent, TableComponent],
   imports: [
-    CommonModule, FlexLayoutModule,
+    CommonModule,
+    FlexLayoutModule,
     MatButtonModule,
-    MatInputModule,
-    MatFormFieldModule,
-    MatListModule,
     MatCardModule,
+    MatFormFieldModule,
     MatPaginatorModule,
-    MatSortModule,
     MatSelectModule,
+    MatSortModule,
     MatTableModule
   ]
 })

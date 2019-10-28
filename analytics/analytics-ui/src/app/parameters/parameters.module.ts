@@ -1,42 +1,46 @@
-import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { NgModule } from '@angular/core';
+import { FlexLayoutModule } from '@angular/flex-layout';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import {
+  MatButtonModule,
+  MatCardModule,
+  MatCheckboxModule,
+  MatDatepickerModule,
+  MatFormFieldModule,
+  MatInputModule,
+  MatNativeDateModule,
+  MatOptionModule,
+  MatProgressSpinnerModule,
+  MatRadioModule,
+  MatSelectModule,
+  MatTooltipModule,
+  MAT_DATE_LOCALE
+} from '@angular/material';
+
 import { ParameterInputComponent } from './parameter-input/parameter-input.component';
 import { ParameterFormComponent } from './parameter-form/parameter-form.component';
 import { OperationComponent } from './operation/operation.component';
-import { FlexLayoutModule } from '@angular/flex-layout';
-import { MAT_DATE_LOCALE } from '@angular/material/core';
-import {
-  MatTooltipModule,
-  MatSelectModule,
-  MatProgressSpinnerModule,
-  MatCardModule,
-  MatFormFieldModule,
-  MatButtonModule,
-  MatInputModule,
-  MatDatepickerModule,
-  MatNativeDateModule,
-  MatOptionModule,
-  MatCheckboxModule,
-  MatRadioModule
-} from '@angular/material';
 
 @NgModule({
   declarations: [ParameterInputComponent, ParameterFormComponent, OperationComponent],
   imports: [
-    CommonModule, FormsModule, ReactiveFormsModule, FlexLayoutModule,
+    CommonModule,
+    FlexLayoutModule,
+    FormsModule,
     MatButtonModule,
+    MatCardModule,
+    MatCheckboxModule,
     MatDatepickerModule,
+    MatFormFieldModule,
+    MatInputModule,
     MatNativeDateModule,
     MatOptionModule,
-    MatCheckboxModule,
-    MatRadioModule,
-    MatInputModule,
-    MatFormFieldModule,
-    MatCardModule,
     MatProgressSpinnerModule,
+    MatRadioModule,
     MatSelectModule,
-    MatTooltipModule
+    MatTooltipModule,
+    ReactiveFormsModule
   ],
   providers: [
     { provide: MAT_DATE_LOCALE, useValue: 'en-CA' },

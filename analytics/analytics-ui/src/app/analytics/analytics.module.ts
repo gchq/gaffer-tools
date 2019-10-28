@@ -1,34 +1,34 @@
-import { NgModule } from '@angular/core';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { NgModule } from '@angular/core';
+import { FlexLayoutModule } from '@angular/flex-layout';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import {
+  MatCardModule,
+  MatFormFieldModule,
+  MatGridListModule,
+  MatIconModule,
+  MatInputModule,
+  MatTooltipModule,
+} from '@angular/material';
+
+import { FilterPipeModule } from 'ngx-filter-pipe';
+
 import { AnalyticsComponent } from './analytics.component';
 import { AnalyticComponent } from './analytic/analytic.component';
-import { FlexLayoutModule } from '@angular/flex-layout';
-import { FilterPipeModule } from 'ngx-filter-pipe';
-import {
-  MatTooltipModule,
-  MatIconModule,
-  MatTabsModule,
-  MatCardModule,
-  MatGridListModule,
-  MatFormFieldModule,
-  MatButtonModule,
-  MatInputModule,
-} from '@angular/material';
 
 @NgModule({
   declarations: [AnalyticsComponent, AnalyticComponent],
   imports: [
-    CommonModule, FlexLayoutModule, FilterPipeModule,
-    MatButtonModule,
-    MatInputModule,
+    CommonModule,
+    FilterPipeModule,
+    FlexLayoutModule,
+    FormsModule,
+    MatCardModule,
     MatFormFieldModule,
     MatGridListModule,
-    MatCardModule,
-    MatTabsModule,
     MatIconModule,
+    MatInputModule,
     MatTooltipModule,
-    FormsModule,
     ReactiveFormsModule
   ]
 })
