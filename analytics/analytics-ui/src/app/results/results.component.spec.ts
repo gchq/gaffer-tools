@@ -21,7 +21,6 @@ import {
 } from '@angular/material';
 import { empty, of } from 'rxjs';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
-import { MaterialModule } from '../material.module';
 import { Location, LocationStrategy, PathLocationStrategy } from '@angular/common';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
@@ -469,7 +468,7 @@ describe('ResultsComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ResultsComponent, TableComponent, HtmlComponent],
-      imports: [MaterialModule, HttpClientTestingModule, BrowserAnimationsModule],
+      imports: [HttpClientTestingModule, BrowserAnimationsModule, MatCardModule, MatTableDataSource],
       providers: [{ provide: ResultsService, useClass: ResultsServiceStub },
         TypeService,
         TimeService,

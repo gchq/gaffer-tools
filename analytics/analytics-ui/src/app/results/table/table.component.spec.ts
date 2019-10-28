@@ -1,7 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
-import { MaterialModule } from 'src/app/material.module';
 import { TableComponent } from './table.component';
 import { ResultsService } from 'src/app/services/results.service';
 
@@ -93,7 +92,7 @@ describe('TableComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [TableComponent],
-      imports: [MaterialModule, BrowserAnimationsModule],
+      imports: [BrowserAnimationsModule],
       providers: [{ provide: ResultsService, useClass: ResultsServiceStub }
       ]
     })

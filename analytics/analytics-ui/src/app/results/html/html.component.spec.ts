@@ -1,5 +1,4 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { MaterialModule } from '../../material.module';
 import { EMPTY } from 'rxjs';
 
 import { HtmlComponent } from './html.component';
@@ -102,15 +101,14 @@ describe('HtmlComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ HtmlComponent ],
+      declarations: [HtmlComponent],
       providers: [
         { provide: AnalyticsService, useClass: AnalyticsServiceStub },
         { provide: ResultsService, useClass: ResultsServiceStub },
         { provide: ErrorService, useClass: ErrorServiceStub }
-      ],
-      imports: [MaterialModule]
+      ]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {

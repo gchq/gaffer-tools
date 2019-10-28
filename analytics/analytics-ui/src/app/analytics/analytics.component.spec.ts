@@ -17,7 +17,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { Input, Component } from '@angular/core';
 import { empty, from, throwError, EMPTY } from 'rxjs';
-import { MaterialModule } from '../material.module';
 import { OrderModule } from 'ngx-order-pipe';
 import { FilterPipeModule } from 'ngx-filter-pipe';
 import { FilterPipe } from 'ngx-filter-pipe';
@@ -56,7 +55,7 @@ describe('AnalyticsComponent', () => {
         { provide: AnalyticsService, useClass: AnalyticsServiceStub },
         { provide: ErrorService, useClass: ErrorServiceStub }
       ],
-      imports: [MaterialModule, OrderModule, FilterPipeModule, BrowserAnimationsModule]
+      imports: [OrderModule, FilterPipeModule, BrowserAnimationsModule]
     }).compileComponents();
   }));
 
