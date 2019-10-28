@@ -22,7 +22,7 @@
                         </td>
                         <td md-cell>
                             <p ng-repeat="(key, value) in entity.properties">
-                                <span ng-if="value != null && value != undefined && value != '' && value != [] && value != {}">
+                                <span ng-if="value != null && value != '' && value != [] && value != {}">
                                     {{key}}: {{ value }}
                                 </span>
                             </p>
