@@ -23,32 +23,6 @@ from gafferpy.gaffer_core import *
 import gafferpy.gaffer_predicates as pred
 
 
-class FunctionContext(ToJson, ToCodeString):
-    CLASS = "gaffer.FunctionContext"
-
-    def __init__(self, selection=None, function=None, projection=None):
-        if isinstance(selection, list):
-            self.selection = selection
-        else:
-            self.selection = [selection]
-        self.function = function
-        if isinstance(projection, list):
-            self.projection = projection
-        else:
-            self.projection = [projection]
-
-    def to_json(self):
-        function_json = {}
-        if self.selection is not None:
-            function_json['selection'] = self.selection
-        if self.function is not None:
-            function_json['function'] = self.function.to_json()
-        if self.projection is not None:
-            function_json['projection'] = self.projection
-
-        return function_json
-
-
 class Function(ToJson, ToCodeString):
     CLASS = "java.util.function.Function"
 
@@ -79,6 +53,78 @@ class AbstractFunction(Function):
         function_json = {}
         if self._class_name is not None:
             function_json['class'] = self._class_name
+
+        return function_json
+
+
+class TupleAdaptedFunction(AbstractFunction):
+    CLASS = "uk.gov.gchq.koryphe.tuple.function.TupleAdaptedFunction"
+
+    def __init__(self, selection=None, function=None, projection=None):
+        super().__init__(_class_name=self.CLASS)
+        if isinstance(selection, list):
+            self.selection = selection
+        else:
+            self.selection = [selection]
+
+        if not isinstance(function, Function):
+            self.function = JsonConverter.from_json(function, Function)
+        else:
+            self.function = function
+
+        if isinstance(projection, list):
+            self.projection = projection
+        else:
+            self.projection = [projection]
+
+    def to_json(self):
+        function_json = super().to_json()
+        if self.selection is not None:
+            function_json['selection'] = self.selection
+        if self.function is not None:
+            function_json['function'] = self.function.to_json()
+        if self.projection is not None:
+            function_json['projection'] = self.projection
+
+        return function_json
+
+
+class TupleAdaptedFunctionComposite(AbstractFunction):
+    CLASS = "uk.gov.gchq.koryphe.tuple.function.TupleAdaptedFunctionComposite"
+
+    def __init__(self, functions):
+        super().__init__(_class_name=self.CLASS)
+
+        if functions is None:
+            raise TypeError('No function(s) provided')
+        else:
+            self.functions = []
+            for func in functions:
+                if not isinstance(func, FunctionContext):
+                    func = JsonConverter.from_json(
+                        func, FunctionContext)
+                self.functions.append(func)
+
+    def to_json(self):
+        function = super().to_json()
+
+        functions_json = []
+        for func in self.functions:
+            functions_json.append(func.to_json())
+        function['functions'] = functions_json
+
+        return function
+
+
+class FunctionContext(TupleAdaptedFunction):
+    CLASS = "gaffer.FunctionContext"
+
+    def __init__(self, selection=None, function=None, projection=None):
+        super().__init__(selection=selection, function=function, projection=projection)
+
+    def to_json(self):
+        function_json = super().to_json()
+        del function_json["class"]
 
         return function_json
 
