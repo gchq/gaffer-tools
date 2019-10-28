@@ -5,7 +5,8 @@
   </mat-form-field>
 </div>
 
-<mat-grid-list cols="4" gutterSize="4vw" class="mat-elevation-z8" style="margin-left: 110px;margin-right: 110px;">
+<mat-grid-list cols="4" gutterSize="4vw" class="mat-elevation-z8"
+  style="margin-left: 110px;margin-right: 110px;padding: 50px;">
   <mat-grid-tile *ngFor="let analytic of analytics | filterBy: analyticFilter">
     <app-analytic [model]="analytic"></app-analytic>
   </mat-grid-tile>
