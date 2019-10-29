@@ -108,4 +108,22 @@ describe('TableComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
+  it('should set the page to 1 by default', function() {
+    expect(component.paginator.pageIndex).toEqual(1);
+  });
+
+  describe('removeColumn()', function() {
+    it('should hide an existing column', function() {
+      let columnsToDisplay = ["1", "2", "3"];
+      let selected = "2";
+      component.removeColumn();
+      expect(columnsToDisplay).toEqual(["1", "3"]);
+    });
+    it('should do nothing if column is already hidden', function() {
+      let columnsToDisplay = ["1", "3"];
+      let selected = "2";
+      expect(columnsToDisplay).toEqual(["1", "3"]);
+    });
+  });
 });
