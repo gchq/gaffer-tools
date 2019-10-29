@@ -3,95 +3,18 @@ import { EMPTY } from 'rxjs';
 
 import { HtmlComponent } from './html.component';
 import { AnalyticsService } from 'src/app/services/analytics.service';
-import { ErrorService } from 'src/app/services/error.service';
 import { ResultsService } from 'src/app/services/results.service';
 
-const fullResultsData = [
-  {
-    class: 'test.Entity',
-    group: 'BasicEntity1',
-    vertex: 'vertex1',
-    properties: {
-      count: 1,
-      prop1: 'value1'
-    }
-  },
-  {
-    class: 'test.Entity',
-    group: 'BasicEntity1',
-    vertex: 'vertex2',
-    properties: {
-      count: 2,
-      prop1: 'value2'
-    }
-  },
-  {
-    class: 'test.Entity',
-    group: 'BasicEntity2',
-    vertex: 'vertex1',
-    properties: {
-      count: 1,
-      prop2: 'value1'
-    }
-  },
-  {
-    class: 'test.Edge',
-    group: 'BasicEdge1',
-    source: 'source1',
-    destination: 'destination1',
-    directed: true,
-    properties: {
-      count: 1,
-      prop1: 'value1'
-    }
-  },
-  {
-    class: 'test.Edge',
-    group: 'BasicEdge1',
-    source: 'source2',
-    destination: 'destination2',
-    directed: true,
-    properties: {
-      count: 2,
-      prop1: 'value2'
-    }
-  },
-  {
-    class: 'test.Edge',
-    group: 'BasicEdge2',
-    source: 'source1',
-    destination: 'destination1',
-    directed: true,
-    properties: {
-      count: 1,
-      prop2: 'value1'
-    }
-  },
-  {
-    class: 'String',
-    value: 'value1'
-  },
-  {
-    class: 'Integer',
-    value: 4
-  },
-  {
-    class: 'EntitySeed',
-    vertex: 'vertex1'
-  }
-];
-
+const htmlData = "<img src='https://cdn.pixabay.com/photo/2018/05/07/10/48/husky-3380548__340.jpg'>"
+const expectedOutput = "<mat-card>" + "<img src='https://cdn.pixabay.com/photo/2018/05/07/10/48/husky-3380548__340.jpg'>" + "</mat-card>"
 class AnalyticsServiceStub {
   reloadAnalytics = () => {
     return EMPTY;
   }
 }
-class ErrorServiceStub {
-  handle = data => { };
-}
 class ResultsServiceStub {
   get = () => {
-    return fullResultsData;
+    return htmlData;
   }
 }
 
@@ -104,8 +27,7 @@ describe('HtmlComponent', () => {
       declarations: [HtmlComponent],
       providers: [
         { provide: AnalyticsService, useClass: AnalyticsServiceStub },
-        { provide: ResultsService, useClass: ResultsServiceStub },
-        { provide: ErrorService, useClass: ErrorServiceStub }
+        { provide: ResultsService, useClass: ResultsServiceStub }
       ]
     })
       .compileComponents();
@@ -120,4 +42,37 @@ describe('HtmlComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+});
+
+describe('HTMLDataInput', function() {
+
+  let component: HtmlComponent;
+  let fixture: ComponentFixture<HtmlComponent>;
+  const htmlContainer: HTMLElement = document.getElementById('htmlContainer');
+  if (htmlContainer) {
+    htmlContainer.innerHTML = htmlData;
+  }
+
+  beforeEach(async(() => {
+    TestBed.configureTestingModule({
+      declarations: [HtmlComponent],
+      providers: [
+        { provide: AnalyticsService, useClass: AnalyticsServiceStub },
+        { provide: ResultsService, useClass: ResultsServiceStub }
+      ]
+    })
+      .compileComponents();
+  }));
+
+  beforeEach(() => {
+    fixture = TestBed.createComponent(HtmlComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+  });
+
+  let output = component.ngAfterViewInit.toString;
+
+  it('should equal', () => {
+    expect(output).toEqual(expectedOutput);
+  })
 });
