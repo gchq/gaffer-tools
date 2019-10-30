@@ -33,10 +33,6 @@ export class ResultsComponent implements OnInit {
     private location: Location
   ) { }
 
-  goback() {
-    this.location.back();
-  }
-
   ngOnInit() {
     this.outputType = this.analyticsService.getOutputVisualisationType();
   }

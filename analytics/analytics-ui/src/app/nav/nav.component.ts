@@ -29,8 +29,4 @@ export class NavComponent {
     { path: 'parameters', label: 'PARAMETERS' },
     { path: 'results', label: 'RESULTS' }
   ];
-
-  goHome() {
-    this.router.navigate(['analytics']);
-  }
 }

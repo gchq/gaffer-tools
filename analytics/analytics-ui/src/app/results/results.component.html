@@ -4,9 +4,10 @@
   <h1>Results</h1>
 
   <!--Back button-->
-  <a id="back-params" (click)="goback()" style="cursor:pointer">
+  <button mat-raised-button id="back-params" [routerLink]="['/:analyticName']" style="cursor:pointer"
+    aria-label="Return to parameters input">
     BACK TO PARAMETERS
-  </a>
+  </button>
 
 </div>
 
