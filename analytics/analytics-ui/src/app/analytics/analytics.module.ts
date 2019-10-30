@@ -11,16 +11,15 @@ import {
   MatTooltipModule,
 } from '@angular/material';
 
-import { FilterPipeModule } from 'ngx-filter-pipe';
+import { FilterPipe } from '../services/filter.pipe';
 
 import { AnalyticsComponent } from './analytics.component';
 import { AnalyticComponent } from './analytic/analytic.component';
 
 @NgModule({
-  declarations: [AnalyticsComponent, AnalyticComponent],
+  declarations: [AnalyticsComponent, AnalyticComponent, FilterPipe],
   imports: [
     CommonModule,
-    FilterPipeModule,
     FlexLayoutModule,
     FormsModule,
     MatCardModule,
