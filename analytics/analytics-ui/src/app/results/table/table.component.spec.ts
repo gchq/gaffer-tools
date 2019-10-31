@@ -1,5 +1,14 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import {
+  MatButtonModule,
+  MatCardModule,
+  MatFormFieldModule,
+  MatPaginatorModule,
+  MatSelectModule,
+  MatSortModule,
+  MatTableModule
+} from '@angular/material';
 
 import { TableComponent } from './table.component';
 import { ResultsService } from 'src/app/services/results.service';
@@ -92,7 +101,15 @@ describe('TableComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [TableComponent],
-      imports: [BrowserAnimationsModule],
+      imports: [
+        BrowserAnimationsModule,
+        MatButtonModule,
+        MatCardModule,
+        MatFormFieldModule,
+        MatPaginatorModule,
+        MatSelectModule,
+        MatSortModule,
+        MatTableModule],
       providers: [{ provide: ResultsService, useClass: ResultsServiceStub }
       ]
     })
@@ -107,5 +124,26 @@ describe('TableComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should set the page to 0 by default', function() {
+    expect(component.paginator.pageIndex).toEqual(0);
+  });
+
+  describe('removeColumn()', function() {
+    it('should hide an existing column', function() {
+      component.columnsToDisplay = ["1", "2", "3"]
+      component.selected = "2";
+      component.removeColumn();
+      fixture.detectChanges();
+      expect(component.columnsToDisplay).toEqual(["1", "3"]);
+    });
+    it('should do nothing if column is already hidden', function() {
+      component.columnsToDisplay = ["1", "3"];
+      component.selected = "2";
+      component.removeColumn();
+      fixture.detectChanges();
+      expect(component.columnsToDisplay).toEqual(["1", "3"]);
+    });
   });
 });

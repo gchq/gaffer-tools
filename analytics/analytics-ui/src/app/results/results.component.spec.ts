@@ -16,8 +16,13 @@
 
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import {
+  MatButtonModule,
   MatCardModule,
-  MatTableDataSource
+  MatFormFieldModule,
+  MatPaginatorModule,
+  MatSelectModule,
+  MatSortModule,
+  MatTableModule
 } from '@angular/material';
 import { empty, of } from 'rxjs';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
@@ -468,7 +473,14 @@ describe('ResultsComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ResultsComponent, TableComponent, HtmlComponent],
-      imports: [HttpClientTestingModule, BrowserAnimationsModule, MatCardModule, MatTableDataSource],
+      imports: [HttpClientTestingModule, BrowserAnimationsModule,
+        MatButtonModule,
+        MatCardModule,
+        MatFormFieldModule,
+        MatPaginatorModule,
+        MatSelectModule,
+        MatSortModule,
+        MatTableModule],
       providers: [{ provide: ResultsService, useClass: ResultsServiceStub },
         TypeService,
         TimeService,

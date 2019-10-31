@@ -16,6 +16,10 @@
 
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { Input, Component } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import {
+  MatFormFieldModule
+} from '@angular/material';
 import { empty, from, throwError, EMPTY } from 'rxjs';
 import { OrderModule } from 'ngx-order-pipe';
 import { FilterPipe } from '../services/filter.pipe';
@@ -55,7 +59,7 @@ describe('AnalyticsComponent', () => {
         { provide: ErrorService, useClass: ErrorServiceStub },
         { provide: FilterPipe, useClass: FilterPipe }
       ],
-      imports: [OrderModule, BrowserAnimationsModule]
+      imports: [OrderModule, BrowserAnimationsModule, FormsModule, MatFormFieldModule]
     }).compileComponents();
   }));
 
