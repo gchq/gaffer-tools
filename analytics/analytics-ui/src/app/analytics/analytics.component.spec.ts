@@ -18,7 +18,12 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { Input, Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import {
-  MatFormFieldModule
+  MatGridListModule,
+  MatFormFieldModule,
+  MatCardModule,
+  MatTooltipModule,
+  MatIconModule,
+  MatInputModule
 } from '@angular/material';
 import { empty, from, throwError, EMPTY } from 'rxjs';
 import { OrderModule } from 'ngx-order-pipe';
@@ -53,13 +58,13 @@ describe('AnalyticsComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [AnalyticsComponent, AnalyticStubComponent],
+      declarations: [AnalyticsComponent, AnalyticStubComponent, FilterPipe],
       providers: [
         { provide: AnalyticsService, useClass: AnalyticsServiceStub },
         { provide: ErrorService, useClass: ErrorServiceStub },
         { provide: FilterPipe, useClass: FilterPipe }
       ],
-      imports: [OrderModule, BrowserAnimationsModule, FormsModule, MatFormFieldModule]
+      imports: [OrderModule, BrowserAnimationsModule, FormsModule, MatFormFieldModule, MatGridListModule, MatCardModule, MatTooltipModule, MatIconModule, MatInputModule]
     }).compileComponents();
   }));
 
