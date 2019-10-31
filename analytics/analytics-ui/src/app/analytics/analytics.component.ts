@@ -17,7 +17,6 @@
 import { Component, OnInit, Injectable } from '@angular/core';
 import { ErrorService } from '../services/error.service';
 import { AnalyticsService } from '../services/analytics.service';
-import { FilterPipe } from 'ngx-filter-pipe';
 
 @Component({
   selector: 'app-analytics',
@@ -29,7 +28,6 @@ export class AnalyticsComponent implements OnInit {
   analytics: any;
   analyticFilter: any = { analyticName: '' };
   constructor(
-    private filterPipe: FilterPipe,
     private analyticsService: AnalyticsService,
     private error: ErrorService
   ) { }

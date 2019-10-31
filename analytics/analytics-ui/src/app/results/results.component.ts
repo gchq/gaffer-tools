@@ -20,8 +20,7 @@ import { AnalyticsService } from '../services/analytics.service';
 
 @Component({
   selector: 'app-results',
-  templateUrl: './results.component.html',
-  styleUrls: ['./results.component.css']
+  templateUrl: './results.component.html'
 })
 @Injectable()
 export class ResultsComponent implements OnInit {
@@ -32,10 +31,6 @@ export class ResultsComponent implements OnInit {
     private analyticsService: AnalyticsService,
     private location: Location
   ) { }
-
-  goback() {
-    this.location.back();
-  }
 
   ngOnInit() {
     this.outputType = this.analyticsService.getOutputVisualisationType();
