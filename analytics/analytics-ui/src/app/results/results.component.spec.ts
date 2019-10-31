@@ -22,7 +22,6 @@ import {
   MatPaginatorModule,
   MatSelectModule,
   MatSortModule,
-  MatTableDataSource,
   MatTableModule
 } from '@angular/material';
 import { empty, of } from 'rxjs';
@@ -481,7 +480,6 @@ describe('ResultsComponent', () => {
         MatPaginatorModule,
         MatSelectModule,
         MatSortModule,
-        MatTableDataSource,
         MatTableModule],
       providers: [{ provide: ResultsService, useClass: ResultsServiceStub },
         TypeService,

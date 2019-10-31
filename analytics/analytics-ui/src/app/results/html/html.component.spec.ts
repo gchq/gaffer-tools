@@ -1,5 +1,14 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { EMPTY } from 'rxjs';
+import {
+  MatButtonModule,
+  MatCardModule,
+  MatFormFieldModule,
+  MatPaginatorModule,
+  MatSelectModule,
+  MatSortModule,
+  MatTableModule
+} from '@angular/material';
 
 import { HtmlComponent } from './html.component';
 import { AnalyticsService } from 'src/app/services/analytics.service';
@@ -25,6 +34,14 @@ describe('HtmlComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [HtmlComponent],
+      imports: [
+        MatButtonModule,
+        MatCardModule,
+        MatFormFieldModule,
+        MatPaginatorModule,
+        MatSelectModule,
+        MatSortModule,
+        MatTableModule],
       providers: [
         { provide: AnalyticsService, useClass: AnalyticsServiceStub },
         { provide: ResultsService, useClass: ResultsServiceStub }
@@ -56,6 +73,14 @@ describe('HTMLDataInput', function() {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [HtmlComponent],
+      imports: [
+        MatButtonModule,
+        MatCardModule,
+        MatFormFieldModule,
+        MatPaginatorModule,
+        MatSelectModule,
+        MatSortModule,
+        MatTableModule],
       providers: [
         { provide: AnalyticsService, useClass: AnalyticsServiceStub },
         { provide: ResultsService, useClass: ResultsServiceStub }
