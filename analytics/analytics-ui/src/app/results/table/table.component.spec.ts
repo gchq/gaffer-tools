@@ -132,15 +132,16 @@ describe('TableComponent', () => {
 
   describe('removeColumn()', function() {
     it('should hide an existing column', function() {
-      let columnsToDisplay = ["1", "2", "3"];
-      let selected = "2";
+      component.columnsToDisplay = ["1", "2", "3"]
+      component.selected = 2;
       component.removeColumn();
-      expect(columnsToDisplay).toEqual(["1", "3"]);
+      expect(component.columnsToDisplay).toEqual(["1", "3"]);
     });
     it('should do nothing if column is already hidden', function() {
-      let columnsToDisplay = ["1", "3"];
-      let selected = "2";
-      expect(columnsToDisplay).toEqual(["1", "3"]);
+      component.columnsToDisplay = ["1", "3"];
+      component.selected = 2;
+      component.removeColumn();
+      expect(component.columnsToDisplay).toEqual(["1", "3"]);
     });
   });
 });
