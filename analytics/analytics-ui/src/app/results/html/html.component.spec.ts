@@ -95,9 +95,7 @@ describe('HTMLDataInput', function() {
     fixture.detectChanges();
   });
 
-  let output = component.ngAfterViewInit.toString;
-
   it('should equal', () => {
-    expect(output).toEqual(expectedOutput);
+    expect(component).toEqual(expectedOutput);
   })
 });

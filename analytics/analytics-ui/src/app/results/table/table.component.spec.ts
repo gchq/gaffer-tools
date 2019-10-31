@@ -126,8 +126,8 @@ describe('TableComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should set the page to 1 by default', function() {
-    expect(component.paginator.pageIndex).toEqual(1);
+  it('should set the page to 0 by default', function() {
+    expect(component.paginator.pageIndex).toEqual(0);
   });
 
   describe('removeColumn()', function() {
