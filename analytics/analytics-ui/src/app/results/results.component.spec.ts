@@ -24,6 +24,7 @@ import {
   MatSortModule,
   MatTableModule
 } from '@angular/material';
+import { RouterModule, Routes } from '@angular/router';
 import { empty, of } from 'rxjs';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { Location, LocationStrategy, PathLocationStrategy } from '@angular/common';
@@ -38,6 +39,10 @@ import { SchemaService } from '../services/schema.service';
 import { ErrorService } from '../services/error.service';
 import { TableComponent } from './table/table.component';
 import { HtmlComponent } from './html/html.component';
+
+const routes: Routes = [
+  { path: '**', redirectTo: 'analytics' }
+];
 
 const fullResultsData = [
   {
@@ -480,7 +485,8 @@ describe('ResultsComponent', () => {
         MatPaginatorModule,
         MatSelectModule,
         MatSortModule,
-        MatTableModule],
+        MatTableModule,
+        RouterModule.forRoot(routes)],
       providers: [{ provide: ResultsService, useClass: ResultsServiceStub },
         TypeService,
         TimeService,
