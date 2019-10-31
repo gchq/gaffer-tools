@@ -18,7 +18,7 @@ import {
   MAT_DATE_LOCALE
 } from '@angular/material';
 
-import { ParameterInputComponent } from './parameter-input/parameter-input.component';
+import { ParameterInputComponent } from './parameter-page/parameter-page.component';
 import { ParameterFormComponent } from './parameter-form/parameter-form.component';
 import { OperationComponent } from './operation/operation.component';
 
