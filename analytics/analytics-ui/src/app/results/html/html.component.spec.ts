@@ -64,8 +64,6 @@ describe('HtmlComponent', () => {
     expect(component).toBeTruthy();
   });
 
-
-
   it('should equal', () => {
     expect(fixture.debugElement.query(By.css("#htmlContainer")).nativeElement.innerHTML).toEqual(htmlData);
   })

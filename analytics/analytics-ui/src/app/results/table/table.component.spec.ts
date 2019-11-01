@@ -9,6 +9,7 @@ import {
   MatSortModule,
   MatTableModule
 } from '@angular/material';
+import { By } from '@angular/platform-browser'
 
 import { TableComponent } from './table.component';
 import { ResultsService } from 'src/app/services/results.service';
@@ -129,6 +130,10 @@ describe('TableComponent', () => {
   it('should set the page to 0 by default', function() {
     expect(component.paginator.pageIndex).toEqual(0);
   });
+
+  it('should contain the data sent'), function() {
+    expect(component.data.results.data).toEqual(fullResultsData);
+  }
 
   describe('removeColumn()', function() {
     it('should hide an existing column', function() {
