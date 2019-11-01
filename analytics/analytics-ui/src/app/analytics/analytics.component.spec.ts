@@ -64,7 +64,15 @@ describe('AnalyticsComponent', () => {
         { provide: ErrorService, useClass: ErrorServiceStub },
         { provide: FilterPipe, useClass: FilterPipe }
       ],
-      imports: [OrderModule, BrowserAnimationsModule, FormsModule, MatFormFieldModule, MatGridListModule, MatCardModule, MatTooltipModule, MatIconModule, MatInputModule]
+      imports: [OrderModule,
+        BrowserAnimationsModule,
+        FormsModule,
+        MatFormFieldModule,
+        MatGridListModule,
+        MatCardModule,
+        MatTooltipModule,
+        MatIconModule,
+        MatInputModule]
     }).compileComponents();
   }));
 

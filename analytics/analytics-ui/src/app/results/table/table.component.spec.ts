@@ -9,7 +9,6 @@ import {
   MatSortModule,
   MatTableModule
 } from '@angular/material';
-import { By } from '@angular/platform-browser'
 
 import { TableComponent } from './table.component';
 import { ResultsService } from 'src/app/services/results.service';
@@ -127,28 +126,28 @@ describe('TableComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should set the page to 0 by default', function() {
+  it('should set the page to 0 by default', () => {
     expect(component.paginator.pageIndex).toEqual(0);
   });
 
-  it('should contain the data sent'), function() {
+  it('should contain the data sent', () => {
     expect(component.data.results.data).toEqual(fullResultsData);
-  }
+  });
 
-  describe('removeColumn()', function() {
-    it('should hide an existing column', function() {
-      component.columnsToDisplay = ["1", "2", "3"]
-      component.selected = "2";
+  describe('removeColumn()', () => {
+    it('should hide an existing column', () => {
+      component.columnsToDisplay = ['1', '2', '3'];
+      component.selected = '2';
       component.removeColumn();
       fixture.detectChanges();
-      expect(component.columnsToDisplay).toEqual(["1", "3"]);
+      expect(component.columnsToDisplay).toEqual(['1', '3']);
     });
-    it('should do nothing if column is already hidden', function() {
-      component.columnsToDisplay = ["1", "3"];
-      component.selected = "2";
+    it('should do nothing if column is already hidden', () => {
+      component.columnsToDisplay = ['1', '3'];
+      component.selected = '2';
       component.removeColumn();
       fixture.detectChanges();
-      expect(component.columnsToDisplay).toEqual(["1", "3"]);
+      expect(component.columnsToDisplay).toEqual(['1', '3']);
     });
   });
 });
