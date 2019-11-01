@@ -5,6 +5,7 @@ mat-card {
   text-align: center;
   display: flex;
   height: 100%;
+  cursor: pointer;
 }
 
 .iconContainer {

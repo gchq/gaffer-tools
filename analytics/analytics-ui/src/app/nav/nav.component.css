@@ -16,3 +16,12 @@
   background: #67598c;
   color: #fff;
 }
+
+span {
+  cursor: pointer;
+}
+
+button {
+  cursor: pointer;
+  margin-left: 10px;
+}
