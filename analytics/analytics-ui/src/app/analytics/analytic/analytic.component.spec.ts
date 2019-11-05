@@ -84,7 +84,7 @@ describe('AnalyticComponent', () => {
 
     component.execute([]);
 
-    expect(spy).toHaveBeenCalledWith([component.model.analyticName]);
+    expect(spy).toHaveBeenCalledWith(['test analytic name']);
   });
 
   it('should create the named operation on execution of analytic', () => {
