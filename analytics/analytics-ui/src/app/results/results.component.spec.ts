@@ -33,7 +33,6 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AnalyticsService } from '../services/analytics.service';
 import { ResultsComponent } from './results.component';
 import { ResultsService } from '../services/results.service';
-import { TypeService } from '../services/type.service';
 import { TimeService } from '../services/time.service';
 import { SchemaService } from '../services/schema.service';
 import { ErrorService } from '../services/error.service';
