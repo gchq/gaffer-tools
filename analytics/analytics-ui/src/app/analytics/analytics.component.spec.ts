@@ -26,7 +26,6 @@ import {
   MatInputModule
 } from '@angular/material';
 import { empty, from, throwError, EMPTY } from 'rxjs';
-import { OrderModule } from 'ngx-order-pipe';
 import { FilterPipe } from '../services/filter.pipe';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
@@ -64,7 +63,7 @@ describe('AnalyticsComponent', () => {
         { provide: ErrorService, useClass: ErrorServiceStub },
         { provide: FilterPipe, useClass: FilterPipe }
       ],
-      imports: [OrderModule,
+      imports: [
         BrowserAnimationsModule,
         FormsModule,
         MatFormFieldModule,
