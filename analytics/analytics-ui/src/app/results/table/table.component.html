@@ -1,6 +1,6 @@
 <!--Column Remove Selector and Button-->
 <div>
-  <mat-form-field style="margin-left:110px">
+  <mat-form-field>
     <mat-label>Columns</mat-label>
     <mat-select [(value)]="selected">
       <mat-option *ngFor="let column of columnsToDisplay" value={{column}}>
@@ -14,7 +14,7 @@
 </div>
 
 <!--Data Table-->
-<div class="mat-elevation-z8" style="margin-left: 110px;margin-right: 110px; overflow-x:auto;">
+<div class="mat-elevation-z8">
   <table mat-table [dataSource]="data.results" matSort>
     <ng-container [matColumnDef]="column" *ngFor="let column of columnsToDisplay">
       <mat-header-cell *matHeaderCellDef mat-sort-header>

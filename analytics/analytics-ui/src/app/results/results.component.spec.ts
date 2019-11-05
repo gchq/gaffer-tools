@@ -487,7 +487,6 @@ describe('ResultsComponent', () => {
         MatTableModule,
         RouterModule.forRoot(routes)],
       providers: [{ provide: ResultsService, useClass: ResultsServiceStub },
-        TypeService,
         TimeService,
         Location,
       { provide: LocationStrategy, useClass: PathLocationStrategy },
@@ -501,8 +500,6 @@ describe('ResultsComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(ResultsComponent);
     component = fixture.componentInstance;
-    const typeService = TestBed.get(TypeService);
-    spyOn(typeService, 'get').and.returnValue(of(types));
   });
 
   it('should be created', () => {

@@ -16,3 +16,13 @@
   margin-right: 110px;
   text-align: center;
 }
+
+mat-form-field {
+  margin-left: 110px
+}
+
+.mat-elevation-z8 {
+  margin-left: 110px;
+  margin-right: 110px;
+  overflow-x: auto;
+}
