@@ -17,7 +17,6 @@
 import { Component, OnInit, Injectable } from '@angular/core';
 import { ErrorService } from '../services/error.service';
 import { AnalyticsService } from '../services/analytics.service';
-import { FilterPipe } from 'ngx-filter-pipe';
 
 @Component({
   selector: 'app-analytics',
@@ -28,9 +27,7 @@ import { FilterPipe } from 'ngx-filter-pipe';
 export class AnalyticsComponent implements OnInit {
   analytics: any;
   analyticFilter: any = { analyticName: '' };
-  order;
   constructor(
-    private filterPipe: FilterPipe,
     private analyticsService: AnalyticsService,
     private error: ErrorService
   ) { }
@@ -38,10 +35,6 @@ export class AnalyticsComponent implements OnInit {
   ngOnInit() {
     this.reloadAnalytics();
   }
-
-  reverseAnalytics = function() {
-    this.reverse = !this.reverse;
-  };
 
   /** Load the analytics */
   reloadAnalytics = function() {

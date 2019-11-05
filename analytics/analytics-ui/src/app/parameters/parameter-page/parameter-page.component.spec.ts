@@ -20,7 +20,7 @@ import { MatCardModule, MatProgressSpinnerModule } from '@angular/material';
 import { FormsModule } from '@angular/forms';
 
 import { AnalyticsService } from '../../services/analytics.service';
-import { ParameterInputComponent } from './parameter-input.component';
+import { ParameterInputComponent } from './parameter-page.component';
 
 @Component({
   selector: 'app-query',

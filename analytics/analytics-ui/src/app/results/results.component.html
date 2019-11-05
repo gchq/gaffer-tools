@@ -4,8 +4,9 @@
   <h1>Results</h1>
 
   <!--Back button-->
-  <button mat-raised-button color="secondary" id="execute-analytic" (click)="goback()">BACK
-    TO PARAMETERS
+  <button mat-raised-button id="back-params" [routerLink]="['..']" style="cursor:pointer"
+    aria-label="Return to parameters input">
+    BACK TO PARAMETERS
   </button>
 
 </div>

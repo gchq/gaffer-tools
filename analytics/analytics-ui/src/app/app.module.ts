@@ -19,11 +19,14 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms'; // <-- NgMode
 import { NgModule } from '@angular/core';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { UpgradeModule } from '@angular/upgrade/static';
-import { MaterialModule } from './material.module';
 import { LayoutModule } from '@angular/cdk/layout';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { AppRoutingModule } from './app-routing.module';
 import { HttpClientModule } from '@angular/common/http';
+import {
+  MatToolbarModule,
+  MatButtonModule
+} from '@angular/material';
 import { ToastrModule } from 'ngx-toastr';
 
 import { AppComponent } from './app.component';
@@ -53,13 +56,14 @@ import { SchemaService } from './services/schema.service';
     HttpClientModule,
     AppRoutingModule,
     BrowserAnimationsModule,
-    MaterialModule,
     LayoutModule,
     FlexLayoutModule,
     ToastrModule.forRoot(),
     ResultsModule,
     AnalyticsModule,
-    ParametersModule
+    ParametersModule,
+    MatButtonModule,
+    MatToolbarModule
   ],
   providers: [
     AnalyticsService,

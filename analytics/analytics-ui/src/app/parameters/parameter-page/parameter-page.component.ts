@@ -18,8 +18,8 @@ import { Component, OnInit, Injectable } from '@angular/core';
 import { AnalyticsService } from '../../services/analytics.service';
 
 @Component({
-  selector: 'app-parameter-input',
-  templateUrl: './parameter-input.component.html'
+  selector: 'app-parameter-page',
+  templateUrl: './parameter-page.component.html'
 })
 @Injectable()
 export class ParameterInputComponent implements OnInit {
