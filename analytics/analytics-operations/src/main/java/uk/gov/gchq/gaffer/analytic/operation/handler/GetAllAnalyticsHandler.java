@@ -90,7 +90,7 @@ public class GetAllAnalyticsHandler
                         for (final String uiKey : analyticOp.getUiMapping().keySet()) {
                             UIMappingDetail uiParam = analyticOp.getUiMapping().get(uiKey);
                             if (uiParam.getParameterName().equals(currentParam)) {
-                                uiParam.setInputClass(nod.getParameters().get(currentParam).getValueClass().getSimpleName());
+                                uiParam.setInputClass(nod.getParameters().get(currentParam).getValueClass());
                                 analyticOp.getUiMapping().put(uiKey, uiParam);
                             }
                         }
