@@ -73,7 +73,7 @@ import { SchemaService } from './services/schema.service';
     ResultsService,
     TimeService,
     SchemaService,
-    { provide: LOCALE_ID, useValue: "en-gb" },
+    { provide: LOCALE_ID, useValue: navigator.language },
   ],
   bootstrap: [AppComponent]
 })
