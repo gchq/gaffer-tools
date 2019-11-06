@@ -9,13 +9,15 @@ import uk.gov.gchq.gaffer.quickstart.data.element.utils.ElementValue;
 import uk.gov.gchq.gaffer.store.schema.Schema;
 import uk.gov.gchq.gaffer.store.schema.SchemaElementDefinition;
 
-public class ElementReduceFunction implements Function2<ElementValue, ElementValue, ElementValue> {
+import java.io.Serializable;
+
+public class ElementReduceFunction implements Function2<ElementValue, ElementValue, ElementValue>, Serializable {
 
     private String schemaJson;
 
     public ElementReduceFunction(){}
 
-    public ElementReduceFunction(String schemaJson) {
+    public ElementReduceFunction(String schemaJson){
         this.schemaJson = schemaJson;
     }
 
@@ -39,6 +41,11 @@ public class ElementReduceFunction implements Function2<ElementValue, ElementVal
         result.setProperties(state);
         return result;
 
+    }
+
+    @Override
+    public int hashCode() {
+        return super.hashCode();
     }
 }
 

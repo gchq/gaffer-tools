@@ -6,23 +6,19 @@ import uk.gov.gchq.gaffer.data.element.Edge;
 import uk.gov.gchq.gaffer.data.element.Element;
 import uk.gov.gchq.gaffer.data.element.Entity;
 import uk.gov.gchq.gaffer.data.element.Properties;
-import uk.gov.gchq.gaffer.data.generator.ElementGenerator;
 import uk.gov.gchq.gaffer.exception.SerialisationException;
 import uk.gov.gchq.gaffer.jsonserialisation.JSONSerialiser;
-import uk.gov.gchq.gaffer.quickstart.data.element.utils.EdgeKey;
-import uk.gov.gchq.gaffer.quickstart.data.element.utils.ElementKey;
-import uk.gov.gchq.gaffer.quickstart.data.element.utils.ElementValue;
-import uk.gov.gchq.gaffer.quickstart.data.element.utils.EntityKey;
-import uk.gov.gchq.gaffer.quickstart.data.generator.CsvElementGenerator;
+import uk.gov.gchq.gaffer.quickstart.data.element.utils.*;
 import uk.gov.gchq.gaffer.store.schema.Schema;
 import uk.gov.gchq.gaffer.store.schema.SchemaElementDefinition;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-public class ElementFlatMapFunction implements PairFlatMapFunction<Element, ElementKey, ElementValue> {
+public class ElementFlatMapFunction implements PairFlatMapFunction<Element, ElementKey, ElementValue>, Serializable {
 
     private String schemaJson;
 
@@ -94,5 +90,10 @@ public class ElementFlatMapFunction implements PairFlatMapFunction<Element, Elem
             }
 
         return tuples2s.iterator();
+    }
+
+    @Override
+    public int hashCode() {
+        return super.hashCode();
     }
 }

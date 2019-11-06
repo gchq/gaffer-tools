@@ -54,6 +54,10 @@ public class AddElementsFromHdfsQuickstartHandler implements OperationHandler<Ad
 
     private void doOperation(final AddElementsFromHdfsQuickstart operation, final Context context, final AccumuloStore accumuloStore) throws OperationException {
 
+        if (operation.getElementGeneratorClassName().equals("none") && operation.getElementGeneratorConfig().equals("none")){
+            throw new OperationException("you must specify either an element-generator-config file path or an element-generator class name");
+        }
+
         AccumuloProperties properties = accumuloStore.getProperties();
         String accumuloPropertiesJson  = null;
         try {
@@ -143,7 +147,8 @@ public class AddElementsFromHdfsQuickstartHandler implements OperationHandler<Ad
                             schemaJson,
                             tableName,
                             accumuloPropertiesJson,
-                            operation.getDelimiter()
+                            operation.getDelimiter(),
+                            operation.getElementGeneratorClassName()
                     )
                     .launch();
 

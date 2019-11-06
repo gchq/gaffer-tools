@@ -44,7 +44,7 @@ public class CalculateSplitPointsQuickstartHandler implements OperationHandler<C
     private static final String JOB_JAR_PATH_KEY = "spark.loader.jar";
     private static final String SPARK_MASTER_KEY = "spark.master";
     private static final String SPARK_HOME_KEY = "spark.home";
-    private static final String APP_NAME = "AddElementsFromQuickstart";
+    private static final String APP_NAME = "CalculateSplitPoints";
 
     @Override
     public Object doOperation(final CalculateSplitPointsQuickstart operation, final Context context, final Store store) throws OperationException {
@@ -53,6 +53,10 @@ public class CalculateSplitPointsQuickstartHandler implements OperationHandler<C
     }
 
     private void doOperation(final CalculateSplitPointsQuickstart operation, final Context context, final AccumuloStore accumuloStore) throws OperationException {
+
+        if (operation.getElementGeneratorClassName().equals("none") && operation.getElementGeneratorConfig().equals("none")){
+            throw new OperationException("you must supply an element generator config path or an element generator class name");
+        }
 
         AccumuloProperties properties = accumuloStore.getProperties();
         String accumuloPropertiesJson  = null;
@@ -158,7 +162,8 @@ public class CalculateSplitPointsQuickstartHandler implements OperationHandler<C
                             splitsFilePath,
                             sampleRatioForSplitsString,
                             keyConverterClassName,
-                            operation.getDelimiter()
+                            operation.getDelimiter(),
+                            operation.getElementGeneratorClassName()
                     )
                     .launch();
 

@@ -29,6 +29,7 @@ import org.apache.spark.broadcast.Broadcast;
 import uk.gov.gchq.gaffer.accumulostore.AccumuloProperties;
 import uk.gov.gchq.gaffer.accumulostore.key.AccumuloElementConverter;
 import uk.gov.gchq.gaffer.commonutil.CommonConstants;
+import uk.gov.gchq.gaffer.data.generator.OneToManyElementGenerator;
 import uk.gov.gchq.gaffer.exception.SerialisationException;
 import uk.gov.gchq.gaffer.graph.Graph;
 import uk.gov.gchq.gaffer.graph.GraphConfig;
@@ -53,7 +54,7 @@ import java.util.List;
 
 public class CalculateSplitPointsJob {
 
-    private static final int NUM_ARGS = 12;
+    private static final int NUM_ARGS = 13;
 
     private String dataPath;
     private String generatorPath;
@@ -70,6 +71,7 @@ public class CalculateSplitPointsJob {
     private String keyConverterClassName;
 
     private String delimiter;
+    private String elementGeneratorClassName;
 
     public static void main(final String[] args) {
 
@@ -98,6 +100,7 @@ public class CalculateSplitPointsJob {
         this.sampleRatioForSplitsString = args[9];
         this.keyConverterClassName = args[10];
         this.delimiter = args[11];
+        this.elementGeneratorClassName = args[12];
 
         double sampleRatioForsplits = Double.parseDouble(sampleRatioForSplitsString);
         int numPartitions = Integer.parseInt(numPartitionsString);
@@ -139,19 +142,36 @@ public class CalculateSplitPointsJob {
 
         JavaSparkContext jsc = JavaSparkContext.fromSparkContext(sc);
 
-        CsvElementGenerator csvElementGenerator = null;
-        try {
-            csvElementGenerator = JSONSerialiser.deserialise(
-                    FileUtils.openInputStream(new File(generatorPath)),
-                    CsvElementGenerator.class
-            );
-        } catch (final IOException e) {
-            e.printStackTrace();
+        OneToManyElementGenerator<String> generator = null;
+
+        if (elementGeneratorClassName.equals("none")) {
+            CsvElementGenerator csvElementGenerator = null;
+            try {
+                csvElementGenerator = JSONSerialiser.deserialise(
+                        FileUtils.openInputStream(new File(generatorPath)),
+                        CsvElementGenerator.class
+                );
+            } catch (final IOException e) {
+                e.printStackTrace();
+            }
+
+            csvElementGenerator.setDelimiter(delimiter.charAt(0));
+
+            generator = csvElementGenerator;
+        }else{
+
+            try {
+                generator = (OneToManyElementGenerator<String>) Class.forName(elementGeneratorClassName).newInstance();
+            } catch (InstantiationException e) {
+                e.printStackTrace();
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+            }
         }
 
-        csvElementGenerator.setDelimiter(delimiter.charAt(0));
-
-        Broadcast<CsvElementGenerator> generatorBroadcast = jsc.broadcast(csvElementGenerator);
+        Broadcast<OneToManyElementGenerator<String>> generatorBroadcast = jsc.broadcast(generator);
 
 
         AccumuloElementConverter keyConverter = null;

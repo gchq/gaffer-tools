@@ -30,6 +30,8 @@ import uk.gov.gchq.gaffer.data.element.Element;
 import uk.gov.gchq.gaffer.data.element.Properties;
 import uk.gov.gchq.gaffer.data.element.function.ElementAggregator;
 import uk.gov.gchq.gaffer.data.element.id.ElementId;
+import uk.gov.gchq.gaffer.data.generator.ElementGenerator;
+import uk.gov.gchq.gaffer.data.generator.OneToManyElementGenerator;
 import uk.gov.gchq.gaffer.exception.SerialisationException;
 import uk.gov.gchq.gaffer.graph.Graph;
 import uk.gov.gchq.gaffer.graph.GraphConfig;
@@ -54,7 +56,7 @@ import java.util.Iterator;
 
 public class LoadFromHdfsJob {
 
-    private static final int NUM_ARGS = 9;
+    private static final int NUM_ARGS = 10;
 
     private String dataPath;
     private String generatorPath;
@@ -66,6 +68,7 @@ public class LoadFromHdfsJob {
     private String tableName;
     private String accumuloStorePropertiesJson;
     private String delimiter;
+    private String elementGeneratorClassName;
 
     public static void main(final String[] args) {
 
@@ -92,6 +95,7 @@ public class LoadFromHdfsJob {
         this.tableName = args[6];
         this.accumuloStorePropertiesJson = args[7];
         this.delimiter = args[8];
+        this.elementGeneratorClassName = args[9];
 
         int numPartitions = Integer.parseInt(numPartitionsString);
 
@@ -132,20 +136,42 @@ public class LoadFromHdfsJob {
 
         JavaSparkContext jsc = JavaSparkContext.fromSparkContext(sc);
 
-        CsvElementGenerator csvElementGenerator = null;
-        try {
-            csvElementGenerator = JSONSerialiser.deserialise(
-                    FileUtils.openInputStream(new File(generatorPath)),
-                    CsvElementGenerator.class
-            );
-        } catch (final IOException e) {
-            e.printStackTrace();
+        OneToManyElementGenerator<String> generator = null;
+
+        if (elementGeneratorClassName.equals("none")) {
+
+            System.out.println("using the csv element generator");
+
+            CsvElementGenerator csvElementGenerator = null;
+            try {
+                csvElementGenerator = JSONSerialiser.deserialise(
+                        FileUtils.openInputStream(new File(generatorPath)),
+                        CsvElementGenerator.class
+                );
+            } catch (final IOException e) {
+                e.printStackTrace();
+            }
+
+            csvElementGenerator.setDelimiter(delimiter.charAt(0));
+
+            generator = csvElementGenerator;
+
+        }else{
+
+            System.out.println("using the generator class " + elementGeneratorClassName);
+
+            try {
+                generator = (OneToManyElementGenerator) Class.forName(elementGeneratorClassName).newInstance();
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            } catch (InstantiationException e) {
+                e.printStackTrace();
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+            }
         }
 
-        csvElementGenerator.setDelimiter(delimiter.charAt(0));
-
-        Broadcast<CsvElementGenerator> generatorBroadcast = jsc.broadcast(csvElementGenerator);
-
+        Broadcast<OneToManyElementGenerator<String>> generatorBroadcast = jsc.broadcast(generator);
         Broadcast<ElementReduceFunction> elementReduceFunctionBroadcast = jsc.broadcast(new ElementReduceFunction(schemaJson));
         Broadcast<ElementFlatMapFunction> elementFlatMapFunctionBroadcast = jsc.broadcast(new ElementFlatMapFunction(schemaJson));
 

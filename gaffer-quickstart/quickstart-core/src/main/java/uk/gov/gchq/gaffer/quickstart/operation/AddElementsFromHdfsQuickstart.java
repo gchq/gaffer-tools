@@ -29,8 +29,9 @@ public class AddElementsFromHdfsQuickstart implements Operation, Validatable {
 
     @Required
     private String dataPath;
-    @Required
-    private String elementGeneratorConfig;
+
+    private String elementGeneratorConfig = "none";
+    private String elementGeneratorClassName = "none";
 
     private String delimiter = ",";
 
@@ -102,6 +103,7 @@ public class AddElementsFromHdfsQuickstart implements Operation, Validatable {
                 .sampleRatioForSplits(sampleRatioForSplits)
                 .splitsFilePath(splitsFilePath)
                 .elementGeneratorConfig(elementGeneratorConfig)
+                .elementGeneratorClassName(elementGeneratorClassName)
                 .validate(validate)
                 .numPartitions(numSplits)
                 .delimiter(delimiter)
@@ -164,6 +166,14 @@ public class AddElementsFromHdfsQuickstart implements Operation, Validatable {
         this.splitsFilePath = splitsFilePath;
     }
 
+    public String getElementGeneratorClassName() {
+        return elementGeneratorClassName;
+    }
+
+    public void setElementGeneratorClassName(String elementGeneratorClassName) {
+        this.elementGeneratorClassName = elementGeneratorClassName;
+    }
+
     public static class Builder extends BaseBuilder<AddElementsFromHdfsQuickstart, Builder> implements Validatable.Builder<AddElementsFromHdfsQuickstart, Builder> {
         public Builder() {
             super(new AddElementsFromHdfsQuickstart());
@@ -196,6 +206,11 @@ public class AddElementsFromHdfsQuickstart implements Operation, Validatable {
 
         public Builder elementGeneratorConfig(final String elementGeneratorConfigPath) {
                 _getOp().setElementGeneratorConfig(elementGeneratorConfigPath);
+            return _self();
+        }
+
+        public Builder elementGeneratorClassName(final String elementGeneratorClassName) {
+            _getOp().setElementGeneratorClassName(elementGeneratorClassName);
             return _self();
         }
 
