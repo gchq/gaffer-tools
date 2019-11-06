@@ -16,7 +16,7 @@
 
 import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms'; // <-- NgModel lives here
-import { NgModule } from '@angular/core';
+import { NgModule, LOCALE_ID } from '@angular/core';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { UpgradeModule } from '@angular/upgrade/static';
 import { LayoutModule } from '@angular/cdk/layout';
@@ -28,6 +28,8 @@ import {
   MatButtonModule
 } from '@angular/material';
 import { ToastrModule } from 'ngx-toastr';
+import { MatMomentDateModule, MAT_MOMENT_DATE_ADAPTER_OPTIONS } from '@angular/material-moment-adapter';
+import { MatDatepickerModule } from '@angular/material';
 
 import { AppComponent } from './app.component';
 import { NavComponent } from './nav/nav.component';
@@ -62,6 +64,8 @@ import { SchemaService } from './services/schema.service';
     ResultsModule,
     AnalyticsModule,
     ParametersModule,
+    MatMomentDateModule,
+    MatDatepickerModule
     MatButtonModule,
     MatToolbarModule
   ],
@@ -72,7 +76,8 @@ import { SchemaService } from './services/schema.service';
     QueryService,
     ResultsService,
     TimeService,
-    SchemaService
+    SchemaService,
+    { provide: LOCALE_ID, useValue: navigator.language },
   ],
   bootstrap: [AppComponent]
 })
