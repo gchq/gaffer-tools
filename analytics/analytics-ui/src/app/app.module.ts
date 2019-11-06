@@ -19,11 +19,14 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms'; // <-- NgMode
 import { NgModule, LOCALE_ID } from '@angular/core';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { UpgradeModule } from '@angular/upgrade/static';
-import { MaterialModule } from './material.module';
 import { LayoutModule } from '@angular/cdk/layout';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { AppRoutingModule } from './app-routing.module';
 import { HttpClientModule } from '@angular/common/http';
+import {
+  MatToolbarModule,
+  MatButtonModule
+} from '@angular/material';
 import { ToastrModule } from 'ngx-toastr';
 import { MatMomentDateModule, MAT_MOMENT_DATE_ADAPTER_OPTIONS } from '@angular/material-moment-adapter';
 import { MatDatepickerModule } from '@angular/material';
@@ -55,7 +58,6 @@ import { SchemaService } from './services/schema.service';
     HttpClientModule,
     AppRoutingModule,
     BrowserAnimationsModule,
-    MaterialModule,
     LayoutModule,
     FlexLayoutModule,
     ToastrModule.forRoot(),
@@ -64,6 +66,8 @@ import { SchemaService } from './services/schema.service';
     ParametersModule,
     MatMomentDateModule,
     MatDatepickerModule
+    MatButtonModule,
+    MatToolbarModule
   ],
   providers: [
     AnalyticsService,

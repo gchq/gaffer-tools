@@ -18,7 +18,7 @@ import { AnalyticsComponent } from './analytics/analytics.component';
 import { ResultsComponent } from './results/results.component';
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { ParameterInputComponent } from './parameters/parameter-input/parameter-input.component';
+import { ParameterInputComponent } from './parameters/parameter-page/parameter-page.component';
 
 const routes: Routes = [
   { path: 'analytics', component: AnalyticsComponent },

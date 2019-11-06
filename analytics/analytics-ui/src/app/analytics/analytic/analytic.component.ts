@@ -21,7 +21,8 @@ import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-analytic',
-  templateUrl: './analytic.component.html'
+  templateUrl: './analytic.component.html',
+  styleUrls: ['./analytic.component.css']
 })
 @Injectable()
 export class AnalyticComponent implements OnInit, AfterViewInit, OnDestroy {

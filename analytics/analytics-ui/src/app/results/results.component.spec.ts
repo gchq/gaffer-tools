@@ -16,24 +16,32 @@
 
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import {
+  MatButtonModule,
   MatCardModule,
-  MatTableDataSource
+  MatFormFieldModule,
+  MatPaginatorModule,
+  MatSelectModule,
+  MatSortModule,
+  MatTableModule
 } from '@angular/material';
+import { RouterModule, Routes } from '@angular/router';
 import { empty, of } from 'rxjs';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
-import { MaterialModule } from '../material.module';
 import { Location, LocationStrategy, PathLocationStrategy } from '@angular/common';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { AnalyticsService } from '../services/analytics.service';
 import { ResultsComponent } from './results.component';
 import { ResultsService } from '../services/results.service';
-import { TypeService } from '../services/type.service';
 import { TimeService } from '../services/time.service';
 import { SchemaService } from '../services/schema.service';
 import { ErrorService } from '../services/error.service';
 import { TableComponent } from './table/table.component';
 import { HtmlComponent } from './html/html.component';
+
+const routes: Routes = [
+  { path: '**', redirectTo: 'analytics' }
+];
 
 const fullResultsData = [
   {
@@ -469,9 +477,16 @@ describe('ResultsComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ResultsComponent, TableComponent, HtmlComponent],
-      imports: [MaterialModule, HttpClientTestingModule, BrowserAnimationsModule],
+      imports: [HttpClientTestingModule, BrowserAnimationsModule,
+        MatButtonModule,
+        MatCardModule,
+        MatFormFieldModule,
+        MatPaginatorModule,
+        MatSelectModule,
+        MatSortModule,
+        MatTableModule,
+        RouterModule.forRoot(routes)],
       providers: [{ provide: ResultsService, useClass: ResultsServiceStub },
-        TypeService,
         TimeService,
         Location,
       { provide: LocationStrategy, useClass: PathLocationStrategy },
@@ -485,8 +500,6 @@ describe('ResultsComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(ResultsComponent);
     component = fixture.componentInstance;
-    const typeService = TestBed.get(TypeService);
-    spyOn(typeService, 'get').and.returnValue(of(types));
   });
 
   it('should be created', () => {

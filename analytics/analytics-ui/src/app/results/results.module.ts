@@ -1,15 +1,34 @@
-import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ResultsComponent } from './results.component';
-import { MaterialModule } from '../material.module';
+import { NgModule } from '@angular/core';
 import { FlexLayoutModule } from '@angular/flex-layout';
+import {
+  MatButtonModule,
+  MatCardModule,
+  MatFormFieldModule,
+  MatPaginatorModule,
+  MatSelectModule,
+  MatSortModule,
+  MatTableModule
+} from '@angular/material';
+import { AppRoutingModule } from '../app-routing.module';
+
 import { HtmlComponent } from './html/html.component';
+import { ResultsComponent } from './results.component';
 import { TableComponent } from './table/table.component';
 
 @NgModule({
   declarations: [ResultsComponent, HtmlComponent, TableComponent],
   imports: [
-    CommonModule, MaterialModule, FlexLayoutModule
+    AppRoutingModule,
+    CommonModule,
+    FlexLayoutModule,
+    MatButtonModule,
+    MatCardModule,
+    MatFormFieldModule,
+    MatPaginatorModule,
+    MatSelectModule,
+    MatSortModule,
+    MatTableModule
   ]
 })
 export class ResultsModule { }
