@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { NgModule } from '@angular/core';
+import { NgModule, LOCALE_ID } from '@angular/core';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import {
@@ -14,8 +14,7 @@ import {
   MatProgressSpinnerModule,
   MatRadioModule,
   MatSelectModule,
-  MatTooltipModule,
-  MAT_DATE_LOCALE
+  MatTooltipModule
 } from '@angular/material';
 
 import { ParameterInputComponent } from './parameter-page/parameter-page.component';
@@ -43,7 +42,7 @@ import { OperationComponent } from './operation/operation.component';
     ReactiveFormsModule
   ],
   providers: [
-    { provide: MAT_DATE_LOCALE, useValue: 'en-CA' },
+    { provide: LOCALE_ID, useValue: navigator.language },
   ]
 })
 export class ParametersModule { }
