@@ -1,14 +1,14 @@
 /*
  * Copyright 2019 Crown Copyright
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
+ * Licensed under the Apache License, Version 2.0 (the 'License');
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
  *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
+ * distributed under the License is distributed on an 'AS IS' BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
@@ -26,15 +26,16 @@ export class ParameterFormComponent implements OnInit {
 
   constructor(private analyticsService: AnalyticsService) { }
 
-  ngOnInit() {}
+  ngOnInit() { }
 
   /** Update the analytic operation whenever a parameter changes */
   onChange = function(parameter, parameterName) {
     // Convert date parameters into the right form
-    if (parameter["_d"] instanceof Date) {
-      parameter = parameter["_d"].getFullYear() + '-'
-        + ('0' + (parameter["_d"].getMonth() + 1)).slice(-2) + '-'
-        + ('0' + parameter["_d"].getDate()).slice(-2);
+    const key = '_d';
+    if (parameter[key] instanceof Date) {
+      parameter = parameter[key].getFullYear() + '-'
+        + ('0' + (parameter[key].getMonth() + 1)).slice(-2) + '-'
+        + ('0' + parameter[key].getDate()).slice(-2);
     }
 
     this.analyticsService.updateAnalytic(parameter, parameterName);
