@@ -65,7 +65,7 @@ import { SchemaService } from './services/schema.service';
     AnalyticsModule,
     ParametersModule,
     MatMomentDateModule,
-    MatDatepickerModule
+    MatDatepickerModule,
     MatButtonModule,
     MatToolbarModule
   ],
