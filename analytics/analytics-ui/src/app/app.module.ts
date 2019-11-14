@@ -25,7 +25,8 @@ import { AppRoutingModule } from './app-routing.module';
 import { HttpClientModule } from '@angular/common/http';
 import {
   MatToolbarModule,
-  MatButtonModule
+  MatButtonModule,
+  MatIconModule
 } from '@angular/material';
 import { ToastrModule } from 'ngx-toastr';
 
@@ -61,7 +62,8 @@ import { ResultsService } from './services/results.service';
     AnalyticsModule,
     ParametersModule,
     MatButtonModule,
-    MatToolbarModule
+    MatToolbarModule,
+    MatIconModule
   ],
   providers: [
     AnalyticsService,
