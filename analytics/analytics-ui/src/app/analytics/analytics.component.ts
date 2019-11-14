@@ -26,7 +26,6 @@ import { AnalyticsService } from '../services/analytics.service';
 @Injectable()
 export class AnalyticsComponent implements OnInit {
   analytics: any;
-  analyticFilter: any = { analyticName: '' };
   constructor(
     private analyticsService: AnalyticsService,
     private error: ErrorService

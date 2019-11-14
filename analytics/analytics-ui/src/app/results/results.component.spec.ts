@@ -25,16 +25,13 @@ import {
   MatTableModule
 } from '@angular/material';
 import { RouterModule, Routes } from '@angular/router';
-import { empty, of } from 'rxjs';
-import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { Location, LocationStrategy, PathLocationStrategy } from '@angular/common';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { AnalyticsService } from '../services/analytics.service';
 import { ResultsComponent } from './results.component';
 import { ResultsService } from '../services/results.service';
-import { TimeService } from '../services/time.service';
-import { SchemaService } from '../services/schema.service';
 import { ErrorService } from '../services/error.service';
 import { TableComponent } from './table/table.component';
 import { HtmlComponent } from './html/html.component';
@@ -193,275 +190,12 @@ const fullData = {
   tooltips: {}
 };
 
-const types = {
-  'java.util.Date': {
-    fields: [
-      {
-        type: 'number',
-        step: '1',
-        class: 'java.util.Date'
-      }
-    ],
-    wrapInJson: true
-  },
-  'java.lang.Boolean': {
-    fields: [
-      {
-        type: 'checkbox',
-        class: 'java.lang.Boolean',
-        required: true
-      }
-    ]
-  },
-  boolean: {
-    fields: [
-      {
-        type: 'checkbox',
-        class: 'java.lang.Boolean',
-        required: true
-      }
-    ]
-  },
-  'java.lang.Long': {
-    fields: [
-      {
-        type: 'number',
-        step: '1',
-        class: 'java.lang.Long',
-        required: true
-      }
-    ],
-    wrapInJson: true
-  },
-  long: {
-    fields: [
-      {
-        type: 'number',
-        step: '1',
-        class: 'java.lang.Long',
-        required: true
-      }
-    ],
-    wrapInJson: true
-  },
-  'java.lang.Integer': {
-    fields: [
-      {
-        type: 'number',
-        step: '1',
-        class: 'java.lang.Integer',
-        required: true
-      }
-    ]
-  },
-  integer: {
-    fields: [
-      {
-        type: 'number',
-        step: '1',
-        class: 'java.lang.Integer',
-        required: true
-      }
-    ]
-  },
-  int: {
-    fields: [
-      {
-        type: 'number',
-        step: '1',
-        class: 'java.lang.Integer',
-        required: true
-      }
-    ]
-  },
-  'java.lang.Short': {
-    fields: [
-      {
-        type: 'number',
-        step: '1',
-        class: 'java.lang.Short',
-        required: true
-      }
-    ],
-    wrapInJson: true
-  },
-  short: {
-    fields: [
-      {
-        type: 'number',
-        step: '1',
-        class: 'java.lang.Short',
-        required: true
-      }
-    ],
-    wrapInJson: true
-  },
-  'java.lang.Double': {
-    fields: [
-      {
-        type: 'number',
-        step: '0.1',
-        class: 'java.lang.Double',
-        required: true
-      }
-    ],
-    wrapInJson: true
-  },
-  double: {
-    fields: [
-      {
-        type: 'number',
-        step: '0.1',
-        class: 'java.lang.Double',
-        required: true
-      }
-    ],
-    wrapInJson: true
-  },
-  'java.lang.Float': {
-    fields: [
-      {
-        type: 'number',
-        step: '0.1',
-        class: 'java.lang.Float',
-        required: true
-      }
-    ],
-    wrapInJson: true
-  },
-  float: {
-    fields: [
-      {
-        type: 'number',
-        step: '0.1',
-        class: 'java.lang.Float',
-        required: true
-      }
-    ],
-    wrapInJson: true
-  },
-  'java.lang.String': {
-    fields: [
-      {
-        type: 'text',
-        class: 'java.lang.String',
-        required: true
-      }
-    ]
-  },
-  'java.lang.Class': {
-    fields: [
-      {
-        type: 'text',
-        class: 'java.lang.Class',
-        required: true
-      }
-    ]
-  },
-  'uk.gov.gchq.gaffer.types.TypeValue': {
-    fields: [
-      {
-        label: 'Type',
-        type: 'text',
-        key: 'type',
-        class: 'java.lang.String'
-      },
-      {
-        label: 'Value',
-        type: 'text',
-        key: 'value',
-        class: 'java.lang.String',
-        required: true
-      }
-    ],
-    wrapInJson: true
-  },
-  'uk.gov.gchq.gaffer.types.TypeSubTypeValue': {
-    fields: [
-      {
-        label: 'Type',
-        type: 'text',
-        key: 'type',
-        class: 'java.lang.String'
-      },
-      {
-        label: 'Sub Type',
-        type: 'text',
-        key: 'subType',
-        class: 'java.lang.String'
-      },
-      {
-        label: 'Value',
-        type: 'text',
-        key: 'value',
-        class: 'java.lang.String',
-        required: true
-      }
-    ],
-    wrapInJson: true
-  },
-  'com.clearspring.analytics.stream.cardinality.HyperLogLogPlus': {
-    fields: [
-      {
-        label: 'cardinality',
-        type: 'number',
-        key: 'hyperLogLogPlus.cardinality',
-        class: 'java.lang.Integer',
-        step: 1,
-        required: true
-      }
-    ],
-    custom: true,
-    wrapInJson: true
-  },
-  JSON: {
-    fields: [
-      {
-        label: 'JSON',
-        type: 'textarea',
-        class: ''
-      }
-    ],
-    wrapInJson: false
-  }
-};
-const schema = {
-  entities: {
-    BasicEntity1: {
-      properties: {
-        count: 'long'
-      }
-    },
-    BasicEntity2: {
-      properties: {
-        count: 'long'
-      }
-    }
-  },
-  edges: {
-    BasicEdge1: {
-      properties: {
-        count: 'long'
-      }
-    }
-  },
-  types: {
-    long: {
-      class: 'java.lang.Long'
-    }
-  }
-};
-
 class ResultsServiceStub {
   get = () => {
     return fullResultsData;
   }
 }
-class SchemaServiceStub {
-  get = () => {
-    return of(schema);
-  }
-}
+
 class ErrorServiceStub { }
 
 class AnalyticsServiceStub {
@@ -487,10 +221,8 @@ describe('ResultsComponent', () => {
         MatTableModule,
         RouterModule.forRoot(routes)],
       providers: [{ provide: ResultsService, useClass: ResultsServiceStub },
-        TimeService,
         Location,
       { provide: LocationStrategy, useClass: PathLocationStrategy },
-      { provide: SchemaService, useClass: SchemaServiceStub },
       { provide: AnalyticsService, useClass: AnalyticsServiceStub },
       { provide: ErrorService, useClass: ErrorServiceStub },
       ]

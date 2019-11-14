@@ -28,8 +28,6 @@ import {
   MatButtonModule
 } from '@angular/material';
 import { ToastrModule } from 'ngx-toastr';
-import { MatMomentDateModule, MAT_MOMENT_DATE_ADAPTER_OPTIONS } from '@angular/material-moment-adapter';
-import { MatDatepickerModule } from '@angular/material';
 
 import { AppComponent } from './app.component';
 import { NavComponent } from './nav/nav.component';
@@ -42,8 +40,6 @@ import { ErrorService } from './services/error.service';
 import { EndpointService } from './services/endpoint-service';
 import { QueryService } from './services/query.service';
 import { ResultsService } from './services/results.service';
-import { TimeService } from './services/time.service';
-import { SchemaService } from './services/schema.service';
 
 @NgModule({
   declarations: [
@@ -64,8 +60,6 @@ import { SchemaService } from './services/schema.service';
     ResultsModule,
     AnalyticsModule,
     ParametersModule,
-    MatMomentDateModule,
-    MatDatepickerModule,
     MatButtonModule,
     MatToolbarModule
   ],
@@ -75,8 +69,6 @@ import { SchemaService } from './services/schema.service';
     EndpointService,
     QueryService,
     ResultsService,
-    TimeService,
-    SchemaService,
     { provide: LOCALE_ID, useValue: navigator.language },
   ],
   bootstrap: [AppComponent]
