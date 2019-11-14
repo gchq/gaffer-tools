@@ -92,22 +92,34 @@ describe('AnalyticsService', () => {
 
   it('Should be able to update the analytic', () => {
     const newValue = 8;
-    const parameterName = 'key1';
+    const parameterKey = 'key1';
     service.analytic = {
-      uiMapping: [
-        [
-          'key1',
+      uiMapping: {
+          key1 :
           {
             label: 'Label',
             userInputType: 'TextBox',
             parameterName: 'Parameter Name',
-            inputClass: 'java.lang.Integer'
+            inputClass: 'java.lang.Integer',
+            currentValue: null
           }
-        ]
-      ]
+      }
     };
 
-    service.updateAnalytic(newValue, parameterName);
+    const analytic = {
+      uiMapping: {
+          key1 :
+          {
+            label: 'Label',
+            userInputType: 'TextBox',
+            parameterName: 'Parameter Name',
+            inputClass: 'java.lang.Integer',
+            currentValue: 8
+          }
+      }
+    };
+
+    service.updateAnalytic(newValue, parameterKey);
 
     expect(service.analytic).toEqual(analytic);
   });
@@ -124,7 +136,7 @@ describe('AnalyticsService', () => {
       }
     };
 
-    service.intialiseAnalytic(analytic);
+    service.initialiseAnalytic(analytic);
 
     expect(service.analytic).toEqual(analytic);
   });
@@ -154,21 +166,18 @@ describe('AnalyticsService', () => {
   });
 
   it('Should be able to execute the analytic', () => {
-    const operationName = 'test name';
+    const opName = 'test name';
     service.analytic = {
-      uiMapping: [
-        [
-          'key1',
+      uiMapping: {
+          key1 :
           {
             label: 'Label',
             userInputType: 'TextBox',
             parameterName: 'param1',
             inputClass: 'java.lang.Integer',
             currentValue: 'value1'
-          }
-        ],
-        [
-          'key2',
+          },
+          key2 :
           {
             label: 'Label',
             userInputType: 'TextBox',
@@ -176,11 +185,10 @@ describe('AnalyticsService', () => {
             inputClass: 'java.lang.Integer',
             currentValue: 'value2'
           }
-        ]
-      ],
-      operationName: '{operationName}'
+      },
+      operationName: opName
     };
-    const parametersMap = {
+    const params = {
       param1: 'value1',
       param2: 'value2'
     };
@@ -188,8 +196,8 @@ describe('AnalyticsService', () => {
       class: 'uk.gov.gchq.gaffer.operation.OperationChain',
       operations: [{
         class: 'uk.gov.gchq.gaffer.named.operation.NamedOperation',
-        operationName: '{operationName}',
-        parameters: parametersMap
+        operationName: opName,
+        parameters: params
       }]
     };
     const queryService = TestBed.get(QueryService);

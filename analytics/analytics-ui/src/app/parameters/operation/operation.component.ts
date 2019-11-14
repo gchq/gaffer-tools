@@ -21,7 +21,7 @@ import { Component, OnInit, Input } from '@angular/core';
   templateUrl: './operation.component.html'
 })
 export class OperationComponent implements OnInit {
-  @Input() analytic;
+  @Input() model;
 
   constructor() { }
 

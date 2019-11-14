@@ -57,9 +57,9 @@ export class AnalyticsService {
   /** Update the analytic operation on change of parameters */
   updateAnalytic = function(newValue, parameterName) {
 
-    let parameterKeys = Object.keys(this.analytic.uiMapping);
+    const parameterKeys = Object.keys(this.analytic.uiMapping);
     // Look for the parameter in the list of parameters and set the new current value
-    for (let parameterKey of parameterKeys) {
+    for (const parameterKey of parameterKeys) {
       if (parameterKey === parameterName) {
         this.analytic.uiMapping[parameterKey].currentValue = newValue;
         return;
@@ -69,10 +69,10 @@ export class AnalyticsService {
   };
 
   /** Initialise the analytic current values */
-  intialiseAnalytic = function(analytic) {
-    let parameterKeys = Object.keys(analytic.uiMapping);
-    for (let parameterKey of parameterKeys) {
-      if (analytic.uiMapping[parameterKey].userInputType == 'boolean') {
+  initialiseAnalytic = function(analytic) {
+    const parameterKeys = Object.keys(analytic.uiMapping);
+    for (const parameterKey of parameterKeys) {
+      if (analytic.uiMapping[parameterKey].userInputType === 'boolean') {
         analytic.uiMapping[parameterKey].currentValue = false;
       } else {
         analytic.uiMapping[parameterKey].currentValue = null;
@@ -89,22 +89,24 @@ export class AnalyticsService {
       parameters: null
     };
 
-    // Get a map of the parameters and their values. 
+    // Get a map of the parameters and their values.
     // Make sure iterable parameters are in the correct form
     if (this.analytic.uiMapping != null) {
       const parameters = {};
-      let parameterKeys = Object.keys(this.analytic.uiMapping);
-      for (let parameterKey of parameterKeys) {
+      const parameterKeys = Object.keys(this.analytic.uiMapping);
+      for (const parameterKey of parameterKeys) {
         if (this.analytic.uiMapping[parameterKey].userInputType === 'iterable') {
-          parameters[this.analytic.uiMapping[parameterKey].parameterName] = ['Iterable', this.analytic.uiMapping[parameterKey].currentValue.split('\n')];
+          parameters[this.analytic.uiMapping[parameterKey].parameterName] =
+            ['Iterable', this.analytic.uiMapping[parameterKey].currentValue.split('\n')];
         } else {
-          parameters[this.analytic.uiMapping[parameterKey].parameterName] = this.analytic.uiMapping[parameterKey].currentValue;
+          parameters[this.analytic.uiMapping[parameterKey].parameterName] =
+            this.analytic.uiMapping[parameterKey].currentValue;
         }
       }
       operation.parameters = parameters;
     }
 
-    // Create an operation chain from the operation 
+    // Create an operation chain from the operation
     const operationChain = {
       class: OPERATION_CHAIN_CLASS,
       operations: []
