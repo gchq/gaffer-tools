@@ -83,7 +83,7 @@ describe('AnalyticsService', () => {
 
   it('Should be able to get the analytic', () => {
     const analytic = [0, 1, 2];
-    service.arrayAnalytic = analytic;
+    service.analytic = analytic;
 
     const result = service.getAnalytic();
 
@@ -93,7 +93,7 @@ describe('AnalyticsService', () => {
   it('Should be able to update the analytic', () => {
     const newValue = 8;
     const parameterName = 'key1';
-    service.arrayAnalytic = {
+    service.analytic = {
       uiMapping: [
         [
           'key1',
@@ -106,24 +106,10 @@ describe('AnalyticsService', () => {
         ]
       ]
     };
-    const arrayAnalytic = {
-      uiMapping: [
-        [
-          'key1',
-          {
-            label: 'Label',
-            userInputType: 'TextBox',
-            parameterName: 'Parameter Name',
-            inputClass: 'java.lang.Integer',
-            currentValue: newValue
-          }
-        ]
-      ]
-    };
 
     service.updateAnalytic(newValue, parameterName);
 
-    expect(service.arrayAnalytic).toEqual(arrayAnalytic);
+    expect(service.analytic).toEqual(analytic);
   });
 
   it('Should be able to create the iterable array analytic', () => {
@@ -137,30 +123,16 @@ describe('AnalyticsService', () => {
         }
       }
     };
-    const arrayAnalytic = {
-      uiMapping: [
-        [
-          'key1',
-          {
-            label: 'Label',
-            userInputType: 'TextBox',
-            parameterName: 'Parameter Name',
-            inputClass: 'java.lang.Integer',
-            currentValue: null
-          }
-        ]
-      ]
-    };
 
-    service.createArrayAnalytic(analytic);
+    service.intialiseAnalytic(analytic);
 
-    expect(service.arrayAnalytic).toEqual(arrayAnalytic);
+    expect(service.analytic).toEqual(analytic);
   });
 
   it('Should be able to clear the table results after execution', () => {
     const resultsService = TestBed.get(ResultsService);
     const spy = spyOn(resultsService, 'clear');
-    service.arrayAnalytic = {
+    service.analytic = {
       operationName: 'Test name'
     };
 
@@ -172,18 +144,18 @@ describe('AnalyticsService', () => {
   it('Should be able to navigate to the results page after execution', () => {
     const router = TestBed.get(Router);
     const spy = spyOn(router, 'navigate');
-    service.arrayAnalytic = {
+    service.analytic = {
       analyticName: 'Test name'
     };
 
     service.executeAnalytic();
 
-    expect(spy).toHaveBeenCalledWith([service.arrayAnalytic.analyticName, 'results']);
+    expect(spy).toHaveBeenCalledWith([service.analytic.analyticName, 'results']);
   });
 
   it('Should be able to execute the analytic', () => {
     const operationName = 'test name';
-    service.arrayAnalytic = {
+    service.analytic = {
       uiMapping: [
         [
           'key1',

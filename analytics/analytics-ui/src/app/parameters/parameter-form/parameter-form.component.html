@@ -1,25 +1,25 @@
 <div fxLayout="column" layout-margin>
   <form name="dynamicInputForm" layout-margin>
     <div fxLayout="column">
-      <div *ngFor="let paramArray of parameters; let i = index" flex="noshrink">
-        <div [ngSwitch]="paramArray[1].userInputType">
+      <div *ngFor="let parameter of parameters | keyvalue" flex="noshrink">
+        <div [ngSwitch]="parameter.value.userInputType">
 
           <!-- Iterable -->
           <div *ngSwitchCase="'iterable'">
             <mat-form-field class="example-full-width margin-top" appearance="fill">
-              <mat-label>{{paramArray[1].label}}</mat-label>
-              <textarea matInput name="paramArray[1].name" [placeholder]="paramArray[1].label" id="paramArray[1].label"
-                [type]="paramArray[1].userInputType" [(value)]="paramArray[1].currentValue"
-                (change)="onChange($event.target.value, parameters[i][0])"></textarea>
+              <mat-label>{{parameter.value.label}}</mat-label>
+              <textarea matInput name="parameter.value.name" [placeholder]="parameter.value.label" id="parameter.value.label"
+                [type]="parameter.value.userInputType" [(value)]="parameter.value.currentValue"
+                (change)="onChange($event.target.value, parameter.key)"></textarea>
             </mat-form-field>
           </div>
 
           <!-- Date Picker -->
           <div *ngSwitchCase="'date'">
             <mat-form-field class="example-full-width margin-top" appearance="fill">
-              <mat-label>{{paramArray[1].label}}</mat-label>
-              <input matInput [matDatepicker]="picker" name="paramArray[1].name" [placeholder]="paramArray[1].label"
-                [(value)]="paramArray[1].currentValue" (dateChange)="onChange($event.target.value, parameters[i][0])" />
+              <mat-label>{{parameter.value.label}}</mat-label>
+              <input matInput [matDatepicker]="picker" name="parameter.value.name" [placeholder]="parameter.value.label"
+                [(value)]="parameter.value.currentValue" (dateChange)="onChange($event.target.value, parameter.key)" />
               <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
               <mat-datepicker #picker></mat-datepicker>
             </mat-form-field>
@@ -28,19 +28,19 @@
           <!-- Checkbox -->
           <div *ngSwitchCase="'boolean'">
             <div class="demo-full-width margin-top">
-              <input type="checkbox" name="paramArray[1].name"
-                (change)="onChange($event.target.checked, parameters[i][0])" id="paramArray[1].label" [checked]="paramArray[1].currentValue" />
-              <mat-label>{{paramArray[1].label}}</mat-label>
+              <input type="checkbox" name="parameter.value.name"
+                (change)="onChange($event.target.checked, parameter.key)" id="parameter.value.label" [checked]="parameter.value.currentValue" />
+              <mat-label>{{parameter.value.label}}</mat-label>
             </div>
           </div>
 
           <!-- Standard Input -->
           <div *ngSwitchDefault>
             <mat-form-field class="example-full-width margin-top" appearance="fill">
-              <mat-label>{{paramArray[1].label}}</mat-label>
-              <input matInput name="paramArray[1].name" [placeholder]="paramArray[1].label" id="paramArray[1].label"
-                [type]="paramArray[1].userInputType" [(value)]="paramArray[1].currentValue"
-                (change)="onChange($event.target.value, parameters[i][0])" />
+              <mat-label>{{parameter.value.label}}</mat-label>
+              <input matInput name="parameter.value.name" [placeholder]="parameter.value.label" id="parameter.value.label"
+                [type]="parameter.value.userInputType" [(value)]="parameter.value.currentValue"
+                (change)="onChange($event.target.value, parameter.key)" />
             </mat-form-field>
           </div>
 

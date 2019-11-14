@@ -28,7 +28,7 @@ class RouterStub {
   navigate = () => { };
 }
 class AnalyticsServiceStub {
-  createArrayAnalytic = () => {
+  initialiseAnalytic = () => {
     return [];
   }
 }
@@ -90,7 +90,7 @@ describe('AnalyticComponent', () => {
   it('should create the named operation on execution of analytic', () => {
     fixture.detectChanges();
     const analyticsService = TestBed.get(AnalyticsService);
-    const spy = spyOn(analyticsService, 'createArrayAnalytic');
+    const spy = spyOn(analyticsService, 'initialiseAnalytic');
 
     component.execute(['Test data']);
 
