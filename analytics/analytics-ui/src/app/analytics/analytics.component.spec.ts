@@ -26,7 +26,7 @@ import {
   MatInputModule
 } from '@angular/material';
 import { empty, from, throwError, EMPTY } from 'rxjs';
-import { FilterPipe } from '../services/filter.pipe';
+import { AnalyticFilterPipe } from '../services/analytic-filter.pipe';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { AnalyticsComponent } from './analytics.component';
@@ -57,11 +57,11 @@ describe('AnalyticsComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [AnalyticsComponent, AnalyticStubComponent, FilterPipe],
+      declarations: [AnalyticsComponent, AnalyticStubComponent, AnalyticFilterPipe],
       providers: [
         { provide: AnalyticsService, useClass: AnalyticsServiceStub },
         { provide: ErrorService, useClass: ErrorServiceStub },
-        { provide: FilterPipe, useClass: FilterPipe }
+        { provide: AnalyticFilterPipe, useClass: AnalyticFilterPipe }
       ],
       imports: [
         BrowserAnimationsModule,

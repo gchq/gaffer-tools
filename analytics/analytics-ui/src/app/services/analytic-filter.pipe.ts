@@ -1,9 +1,13 @@
 import { Pipe, PipeTransform } from '@angular/core';
+class analytic {
+    analyticName: string;
+}
+
 @Pipe({
-    name: 'filter'
+    name: 'analyticFilter'
 })
-export class FilterPipe implements PipeTransform {
-    transform(items: any[], searchText: string): any[] {
+export class AnalyticFilterPipe implements PipeTransform {
+    transform(items: analytic[], searchText: string): analytic[] {
         if (!items) { return []; }
         if (!searchText) { return items; }
         searchText = searchText.toLowerCase();

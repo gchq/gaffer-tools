@@ -27,13 +27,13 @@ import {
   MatTooltipModule,
 } from '@angular/material';
 
-import { FilterPipe } from '../services/filter.pipe';
+import { AnalyticFilterPipe } from '../services/analytic-filter.pipe';
 
 import { AnalyticsComponent } from './analytics.component';
 import { AnalyticComponent } from './analytic/analytic.component';
 
 @NgModule({
-  declarations: [AnalyticsComponent, AnalyticComponent, FilterPipe],
+  declarations: [AnalyticsComponent, AnalyticComponent, AnalyticFilterPipe],
   imports: [
     CommonModule,
     FlexLayoutModule,

@@ -1,21 +1,21 @@
-import { FilterPipe } from './filter.pipe';
+import { AnalyticFilterPipe } from './analytic-filter.pipe';
 
-describe('FilterPipe', () => {
-    let filterPipe: FilterPipe;
+describe('AnalyticFilterPipe', () => {
+    let analyticFilterPipe: AnalyticFilterPipe;
 
     // synchronous beforeEach
     beforeEach(() => {
-        filterPipe = new FilterPipe();
+        analyticFilterPipe = new AnalyticFilterPipe();
     });
 
     it('should be instanciated', () => {
-        expect(filterPipe).toBeDefined();
+        expect(analyticFilterPipe).toBeDefined();
     });
 
     it('should return empty array if no items given', () => {
         const items = null;
 
-        const filtered = filterPipe.transform(items, 'Hans');
+        const filtered = analyticFilterPipe.transform(items, 'Hans');
 
         expect(filtered.length).toBe(0);
         expect(filtered).toEqual([]);
@@ -25,7 +25,7 @@ describe('FilterPipe', () => {
         const items = [];
         items.push({ id: 1, analyticName: 'Hans' });
 
-        const filtered = filterPipe.transform(items, null);
+        const filtered = analyticFilterPipe.transform(items, null);
 
         expect(filtered).toEqual(items);
     });
@@ -38,7 +38,7 @@ describe('FilterPipe', () => {
         items.push({ id: 3, analyticName: 'Kurt' });
         items.push({ id: 4, analyticName: 'Gustav' });
 
-        const filtered = filterPipe.transform(items, 'Hans');
+        const filtered = analyticFilterPipe.transform(items, 'Hans');
 
         expect(filtered.length).toBe(1);
     });
@@ -51,7 +51,7 @@ describe('FilterPipe', () => {
         items.push({ id: 3, analyticName: 'Kurt' });
         items.push({ id: 4, analyticName: 'Gustav' });
 
-        const filtered = filterPipe.transform(items, 'Hans');
+        const filtered = analyticFilterPipe.transform(items, 'Hans');
 
         expect(filtered.length).toBe(2);
     });
