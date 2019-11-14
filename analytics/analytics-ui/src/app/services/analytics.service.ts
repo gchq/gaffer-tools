@@ -32,7 +32,7 @@ const MAP_OPERATION_CLASS = 'uk.gov.gchq.gaffer.operation.impl.Map';
 // Used to store and get the selected analytic
 @Injectable()
 export class AnalyticsService {
-  arrayAnalytic; // The analytic with array parameters
+  analytic; // The analytic with array parameters
 
   NAMED_OPERATION_CLASS = 'uk.gov.gchq.gaffer.named.operation.NamedOperation';
 
@@ -47,99 +47,88 @@ export class AnalyticsService {
 
   /** Get the chosen analytic on load of parameters page */
   getAnalytic() {
-    return this.arrayAnalytic;
+    return this.analytic;
   }
 
   /** Get the type of the results. E.g. TABLE or HTML */
   getOutputVisualisationType() {
-    return this.arrayAnalytic.outputVisualisation.visualisationType;
+    return this.analytic.outputVisualisation.visualisationType;
   }
   /** Update the analytic operation on change of parameters */
   updateAnalytic = function(newValue, parameterName) {
 
+    const parameterKeys = Object.keys(this.analytic.uiMapping);
     // Look for the parameter in the list of parameters and set the new current value
-    for (const parameterPair of this.arrayAnalytic.uiMapping) {
-      if (parameterPair[0] === parameterName) {
-        parameterPair[1].currentValue = newValue;
+    for (const parameterKey of parameterKeys) {
+      if (parameterKey === parameterName) {
+        this.analytic.uiMapping[parameterKey].currentValue = newValue;
         return;
       }
     }
     return;
   };
 
-  /** Create an analytic with array parameters that can be iterated over */
-  createArrayAnalytic = function(analytic) {
-    // Convert the key value map of parameters into an iterable array
-    let arrayParams = analytic.uiMapping;
-    if (arrayParams !== null && arrayParams !== undefined) {
-      arrayParams = Object.keys(analytic.uiMapping).map(key => {
-        return [key, analytic.uiMapping[key]];
-      });
-
-      // Add a new key and value in parameters to store the current value of that parameter
-      for (const param of arrayParams) {
-        // If boolean type, set its initial value to false, otherwise set it to null
-        if (param[1].userInputType === 'boolean') {
-          param[1].currentValue = false;
-        } else {
-          param[1].currentValue = null;
-        }
+  /** Initialise the analytic current values */
+  initialiseAnalytic = function(analytic) {
+    const parameterKeys = Object.keys(analytic.uiMapping);
+    for (const parameterKey of parameterKeys) {
+      if (analytic.uiMapping[parameterKey].userInputType === 'boolean') {
+        analytic.uiMapping[parameterKey].currentValue = false;
+      } else {
+        analytic.uiMapping[parameterKey].currentValue = null;
       }
-    } else {
-      arrayParams = null;
     }
-
-    // Create the analytic operation from these parameters if any
-    this.arrayAnalytic = cloneDeep(analytic);
-    this.arrayAnalytic.uiMapping = arrayParams;
+    this.analytic = analytic;
   };
 
   /** Execute the analytic operation */
   executeAnalytic = function() {
     const operation = {
       class: this.NAMED_OPERATION_CLASS,
-      operationName: this.arrayAnalytic.operationName,
+      operationName: this.analytic.operationName,
       parameters: null
     };
 
-    // Convert parameters from an array to a key value map
-    // so the parameters are in the correct form when they reach the server
-    if (this.arrayAnalytic.uiMapping != null) {
-      const parametersMap = {};
-      for (const param of this.arrayAnalytic.uiMapping) {
-        if (param[1].userInputType === 'iterable') {
-          parametersMap[param[1].parameterName] = ['Iterable', param[1].currentValue.split('\n')];
+    // Get a map of the parameters and their values.
+    // Make sure iterable parameters are in the correct form
+    if (this.analytic.uiMapping != null) {
+      const parameters = {};
+      const parameterKeys = Object.keys(this.analytic.uiMapping);
+      for (const parameterKey of parameterKeys) {
+        if (this.analytic.uiMapping[parameterKey].userInputType === 'iterable') {
+          parameters[this.analytic.uiMapping[parameterKey].parameterName] =
+            ['Iterable', this.analytic.uiMapping[parameterKey].currentValue.split('\n')];
         } else {
-          parametersMap[param[1].parameterName] = param[1].currentValue;
+          parameters[this.analytic.uiMapping[parameterKey].parameterName] =
+            this.analytic.uiMapping[parameterKey].currentValue;
         }
       }
-      operation.parameters = parametersMap;
+      operation.parameters = parameters;
+    }
+
+    // Create an operation chain from the operation
+    const operationChain = {
+      class: OPERATION_CHAIN_CLASS,
+      operations: []
+    };
+    operationChain.operations.push(operation);
+
+    // If there is an output adapter add it to the end of the operation chain
+    if (this.analytic.outputVisualisation != null && this.analytic.outputVisualisation.outputAdapter != null) {
+      operationChain.operations.push({
+        class: MAP_OPERATION_CLASS,
+        functions: [
+          this.analytic.outputVisualisation.outputAdapter
+        ]
+      });
     }
 
     // Clear the current results
     this.results.clear();
 
-    // Create an operation chain, add the operation and if theres an output adapter, apply it
-    const operationChain = {
-      class: OPERATION_CHAIN_CLASS,
-      operations: []
-    };
-
-    operationChain.operations.push(operation);
-
-    if (this.arrayAnalytic.outputVisualisation != null && this.arrayAnalytic.outputVisualisation.outputAdapter != null) {
-      operationChain.operations.push({
-        class: MAP_OPERATION_CLASS,
-        functions: [
-          this.arrayAnalytic.outputVisualisation.outputAdapter
-        ]
-      });
-    }
-
-    // Execute the analytic and then navigate when finished loading
+    // Execute the operation chain and then navigate to the results page when finished loading
     this.query.executeQuery(operationChain, () => {
-      const name = this.arrayAnalytic.analyticName;
-      this.router.navigate([name, 'results']);
+      this.router.navigate([this.analytic.analyticName, 'results']);
     });
   };
 
