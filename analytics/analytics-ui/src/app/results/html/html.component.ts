@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { Component, OnInit, AfterViewInit } from '@angular/core';
+import { Component, AfterViewInit } from '@angular/core';
 import { ResultsService } from 'src/app/services/results.service';
 
 @Component({

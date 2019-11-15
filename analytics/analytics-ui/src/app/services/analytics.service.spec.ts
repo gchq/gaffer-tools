@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-import { TestBed, async, fakeAsync, tick } from '@angular/core/testing';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { TestBed, async } from '@angular/core/testing';
+import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 
 import { AnalyticsService } from './analytics.service';
@@ -23,6 +23,9 @@ import { QueryService } from './query.service';
 import { ErrorService } from './error.service';
 import { ResultsService } from './results.service';
 import { EndpointService } from './endpoint-service';
+import testAnalytic from './test/test.analytic';
+import { clone } from 'lodash';
+import { UIMappingDetail } from '../analytics/classes/uiMappingDetail.class';
 
 class QueryServiceStub {
   executeQuery = (operation, onSuccess) => {
@@ -82,71 +85,37 @@ describe('AnalyticsService', () => {
   }));
 
   it('Should be able to get the analytic', () => {
-    const analytic = [0, 1, 2];
-    service.analytic = analytic;
+    service.analytic = testAnalytic;
 
     const result = service.getAnalytic();
 
-    expect(result).toEqual(analytic);
+    expect(result).toEqual(testAnalytic);
   });
 
   it('Should be able to update the analytic', () => {
     const newValue = 8;
-    const parameterKey = 'key1';
-    service.analytic = {
-      uiMapping: {
-          key1 :
-          {
-            label: 'Label',
-            userInputType: 'TextBox',
-            parameterName: 'Parameter Name',
-            inputClass: 'java.lang.Integer',
-            currentValue: null
-          }
-      }
-    };
+    const parameterKey = 'key1'
+    service.analytic = testAnalytic;
 
-    const analytic = {
-      uiMapping: {
-          key1 :
-          {
-            label: 'Label',
-            userInputType: 'TextBox',
-            parameterName: 'Parameter Name',
-            inputClass: 'java.lang.Integer',
-            currentValue: 8
-          }
-      }
+    let expectedAnalytic = clone(testAnalytic);
+    const uiMappingDetail1 : UIMappingDetail = {
+      label: 'Label',
+      userInputType: 'TextBox',
+      parameterName: 'param1',
+      inputClass: 'java.lang.Integer',
+      currentValue: newValue
     };
+    expectedAnalytic.uiMapping.set(parameterKey,uiMappingDetail1);
 
     service.updateAnalytic(newValue, parameterKey);
 
-    expect(service.analytic).toEqual(analytic);
-  });
-
-  it('Should be able to create the iterable array analytic', () => {
-    const analytic = {
-      uiMapping: {
-        key1: {
-          label: 'Label',
-          userInputType: 'TextBox',
-          parameterName: 'Parameter Name',
-          inputClass: 'java.lang.Integer'
-        }
-      }
-    };
-
-    service.initialiseAnalytic(analytic);
-
-    expect(service.analytic).toEqual(analytic);
+    expect(service.analytic).toEqual(expectedAnalytic);
   });
 
   it('Should be able to clear the table results after execution', () => {
     const resultsService = TestBed.get(ResultsService);
     const spy = spyOn(resultsService, 'clear');
-    service.analytic = {
-      operationName: 'Test name'
-    };
+    service.analytic = testAnalytic;
 
     service.executeAnalytic();
 
@@ -156,9 +125,7 @@ describe('AnalyticsService', () => {
   it('Should be able to navigate to the results page after execution', () => {
     const router = TestBed.get(Router);
     const spy = spyOn(router, 'navigate');
-    service.analytic = {
-      analyticName: 'Test name'
-    };
+    service.analytic = testAnalytic;
 
     service.executeAnalytic();
 
@@ -166,28 +133,8 @@ describe('AnalyticsService', () => {
   });
 
   it('Should be able to execute the analytic', () => {
-    const opName = 'test name';
-    service.analytic = {
-      uiMapping: {
-          key1 :
-          {
-            label: 'Label',
-            userInputType: 'TextBox',
-            parameterName: 'param1',
-            inputClass: 'java.lang.Integer',
-            currentValue: 'value1'
-          },
-          key2 :
-          {
-            label: 'Label',
-            userInputType: 'TextBox',
-            parameterName: 'param2',
-            inputClass: 'java.lang.Integer',
-            currentValue: 'value2'
-          }
-      },
-      operationName: opName
-    };
+    service.analytic = testAnalytic;
+
     const params = {
       param1: 'value1',
       param2: 'value2'
@@ -196,10 +143,11 @@ describe('AnalyticsService', () => {
       class: 'uk.gov.gchq.gaffer.operation.OperationChain',
       operations: [{
         class: 'uk.gov.gchq.gaffer.named.operation.NamedOperation',
-        operationName: opName,
+        operationName: 'test operation name',
         parameters: params
       }]
     };
+
     const queryService = TestBed.get(QueryService);
     const spy = spyOn(queryService, 'executeQuery');
 

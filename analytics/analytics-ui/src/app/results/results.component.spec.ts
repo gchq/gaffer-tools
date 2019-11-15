@@ -33,18 +33,37 @@ import { AnalyticsService } from '../services/analytics.service';
 import { ResultsComponent } from './results.component';
 import { ResultsService } from '../services/results.service';
 import { ErrorService } from '../services/error.service';
-import { TableComponent } from './table/table.component';
-import { HtmlComponent } from './html/html.component';
+import { Component, Input } from '@angular/core';
 
 const routes: Routes = [
   { path: '**', redirectTo: 'analytics' }
 ];
 
-class ErrorServiceStub { }
+@Component({
+  selector: 'app-table',
+  template: ''
+})
+class MockTableComponent {
+  @Input() model;
+}
 
+@Component({
+  selector: 'app-html',
+  template: ''
+})
+class MockHtmlComponent {
+  @Input() model;
+}
+
+class ErrorServiceStub { }
 class AnalyticsServiceStub {
   getOutputVisualisationType = () => {
     return 'TABLE';
+  }
+}
+class ResultsServiceStub {
+  get = () => {
+    return [];
   }
 }
 
@@ -54,7 +73,7 @@ describe('ResultsComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ResultsComponent, TableComponent, HtmlComponent],
+      declarations: [ResultsComponent, MockTableComponent, MockHtmlComponent],
       imports: [HttpClientTestingModule, BrowserAnimationsModule,
         MatButtonModule,
         MatCardModule,
@@ -69,6 +88,7 @@ describe('ResultsComponent', () => {
         { provide: LocationStrategy, useClass: PathLocationStrategy },
         { provide: AnalyticsService, useClass: AnalyticsServiceStub },
         { provide: ErrorService, useClass: ErrorServiceStub },
+        { provide: ResultsService, useClass: ResultsServiceStub }
       ]
     }).compileComponents();
   }));
@@ -83,13 +103,12 @@ describe('ResultsComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should get the results at initialisation', () => {
-    const resultsService = TestBed.get(ResultsService);
-    const spy = spyOn(resultsService, 'get');
+  it('should get the output visualisation type at initialisation', () => {
+    const analyticsService = TestBed.get(AnalyticsService);
+    const spy = spyOn(analyticsService, 'getOutputVisualisationType');
 
     fixture.detectChanges();
 
     expect(spy).toHaveBeenCalledTimes(1);
   });
-
 });

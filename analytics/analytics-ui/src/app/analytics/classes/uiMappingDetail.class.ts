@@ -19,4 +19,5 @@ export class UIMappingDetail {
     userInputType: string;
     parameterName: string;
     inputClass: string;
+    currentValue: any;
 }

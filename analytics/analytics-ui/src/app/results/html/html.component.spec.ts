@@ -83,4 +83,13 @@ describe('HtmlComponent', () => {
   it('should display input HTML correctly', () => {
     expect(fixture.debugElement.query(By.css('#htmlContainer')).nativeElement.innerHTML).toEqual(htmlData);
   });
+
+  it('should get the results at initialisation', () => {
+    const resultsService = TestBed.get(ResultsService);
+    const spy = spyOn(resultsService, 'get');
+
+    fixture.detectChanges();
+
+    expect(spy).toHaveBeenCalledTimes(1);
+  });
 });

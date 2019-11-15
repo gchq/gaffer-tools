@@ -13,8 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Location } from '@angular/common';
-import { Component, OnInit, Injectable, AfterViewInit } from '@angular/core';
+import { Component, OnInit, Injectable } from '@angular/core';
 
 import { AnalyticsService } from '../services/analytics.service';
 
@@ -29,7 +28,6 @@ export class ResultsComponent implements OnInit {
 
   constructor(
     private analyticsService: AnalyticsService,
-    private location: Location
   ) { }
 
   ngOnInit() {

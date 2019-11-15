@@ -17,6 +17,7 @@
 import { Component, OnInit, Injectable } from '@angular/core';
 import { ErrorService } from '../services/error.service';
 import { AnalyticsService } from '../services/analytics.service';
+import { Analytic } from './classes/analytic.class';
 
 @Component({
   selector: 'app-analytics',
@@ -25,7 +26,7 @@ import { AnalyticsService } from '../services/analytics.service';
 })
 @Injectable()
 export class AnalyticsComponent implements OnInit {
-  analytics: any;
+  analytics: Analytic[];
   constructor(
     private analyticsService: AnalyticsService,
     private error: ErrorService
@@ -40,6 +41,7 @@ export class AnalyticsComponent implements OnInit {
     this.analyticsService.reloadAnalytics(true).subscribe(
       availableAnalytics => {
         this.analytics = availableAnalytics;
+        console.log(this.analytics);
       },
       err => {
         this.error.handle(

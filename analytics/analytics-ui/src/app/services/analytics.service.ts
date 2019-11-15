@@ -26,6 +26,7 @@ import { EndpointService } from './endpoint-service';
 import { Analytic } from '../analytics/classes/analytic.class';
 
 import { startsWith } from 'lodash';
+import testAnalytic from './test/test.analytic';
 
 const OPERATION_CHAIN_CLASS = 'uk.gov.gchq.gaffer.operation.OperationChain';
 const MAP_OPERATION_CLASS = 'uk.gov.gchq.gaffer.operation.impl.Map';
@@ -33,7 +34,7 @@ const MAP_OPERATION_CLASS = 'uk.gov.gchq.gaffer.operation.impl.Map';
 // Used to store and get the selected analytic
 @Injectable()
 export class AnalyticsService {
-  analytic: Analytic; // The selected analytic
+  analytic: Analytic = testAnalytic; // The selected analytic
 
   NAMED_OPERATION_CLASS = 'uk.gov.gchq.gaffer.named.operation.NamedOperation';
 
@@ -48,6 +49,7 @@ export class AnalyticsService {
 
   /** Get the chosen analytic on load of parameters page */
   getAnalytic() {
+    console.log(this.analytic);
     return this.analytic;
   }
 
@@ -94,7 +96,9 @@ export class AnalyticsService {
     // Make sure iterable parameters are in the correct form
     if (this.analytic.uiMapping != null) {
       const parameters = {};
+      console.log(this.analytic.uiMapping);
       const parameterKeys = Object.keys(this.analytic.uiMapping);
+      // console.log(parameterKeys);
       for (const parameterKey of parameterKeys) {
         if (this.analytic.uiMapping[parameterKey].userInputType === 'iterable') {
           parameters[this.analytic.uiMapping[parameterKey].parameterName] =
@@ -105,7 +109,9 @@ export class AnalyticsService {
         }
       }
       operation.parameters = parameters;
+      // console.log(parameters);
     }
+
 
     // Create an operation chain from the operation
     const operationChain = {
