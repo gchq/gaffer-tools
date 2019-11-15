@@ -22,9 +22,10 @@ import { Router } from '@angular/router';
 import { QueryService } from './query.service';
 import { ErrorService } from './error.service';
 import { ResultsService } from './results.service';
-import { cloneDeep, startsWith } from 'lodash';
 import { EndpointService } from './endpoint-service';
-import { ParameterFormComponent } from '../parameters/parameter-form/parameter-form.component';
+import { Analytic } from '../analytics/classes/analytic.class';
+
+import { startsWith } from 'lodash';
 
 const OPERATION_CHAIN_CLASS = 'uk.gov.gchq.gaffer.operation.OperationChain';
 const MAP_OPERATION_CLASS = 'uk.gov.gchq.gaffer.operation.impl.Map';
@@ -32,7 +33,7 @@ const MAP_OPERATION_CLASS = 'uk.gov.gchq.gaffer.operation.impl.Map';
 // Used to store and get the selected analytic
 @Injectable()
 export class AnalyticsService {
-  analytic; // The analytic with array parameters
+  analytic: Analytic; // The selected analytic
 
   NAMED_OPERATION_CLASS = 'uk.gov.gchq.gaffer.named.operation.NamedOperation';
 

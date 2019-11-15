@@ -14,19 +14,20 @@
  * limitations under the License.
  */
 
-import { Pipe, PipeTransform } from '@angular/core';
-import { Analytic } from './classes/analytic.class';
+import { UIMappingDetail } from './uiMappingDetail.class';
+import { OutputVisualisation } from './outputVisualisation.class';
+import { MetaData } from './metaData.class';
 
-@Pipe({
-    name: 'analyticFilter'
-})
-export class AnalyticFilterPipe implements PipeTransform {
-    transform(items: Analytic[], searchText: string): Analytic[] {
-        if (!items) { return []; }
-        if (!searchText) { return items; }
-        searchText = searchText.toLowerCase();
-        return items.filter(it => {
-            return it.analyticName.toLowerCase().includes(searchText);
-        });
-    }
+export class Analytic {
+    analyticName: string;
+    operationName: string;
+    description: string;
+    creatorId: string;
+    readAccessRoles: Array<string>;
+    writeAccessRoles: Array<string>;
+    uiMapping: Map<string, UIMappingDetail>;
+    options: Map<string, string>;
+    metaData: MetaData;
+    outputVisualisation: OutputVisualisation;
+    score: number;
 }

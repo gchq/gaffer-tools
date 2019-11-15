@@ -14,19 +14,9 @@
  * limitations under the License.
  */
 
-import { Pipe, PipeTransform } from '@angular/core';
-import { Analytic } from './classes/analytic.class';
-
-@Pipe({
-    name: 'analyticFilter'
-})
-export class AnalyticFilterPipe implements PipeTransform {
-    transform(items: Analytic[], searchText: string): Analytic[] {
-        if (!items) { return []; }
-        if (!searchText) { return items; }
-        searchText = searchText.toLowerCase();
-        return items.filter(it => {
-            return it.analyticName.toLowerCase().includes(searchText);
-        });
-    }
+export class UIMappingDetail {
+    label: string;
+    userInputType: string;
+    parameterName: string;
+    inputClass: string;
 }
