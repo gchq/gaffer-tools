@@ -70,8 +70,7 @@ import { ResultsService } from './services/results.service';
     ErrorService,
     EndpointService,
     QueryService,
-    ResultsService,
-    { provide: LOCALE_ID, useValue: navigator.language },
+    ResultsService
   ],
   bootstrap: [AppComponent]
 })

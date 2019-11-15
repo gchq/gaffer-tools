@@ -27,7 +27,7 @@ import {
   MatTooltipModule,
 } from '@angular/material';
 
-import { AnalyticFilterPipe } from '../services/analytic-filter.pipe';
+import { AnalyticFilterPipe } from './analytic-filter.pipe';
 
 import { AnalyticsComponent } from './analytics.component';
 import { AnalyticComponent } from './analytic/analytic.component';

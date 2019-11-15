@@ -19,7 +19,8 @@ import { AnalyticsService } from '../../services/analytics.service';
 
 @Component({
   selector: 'app-parameter-page',
-  templateUrl: './parameter-page.component.html'
+  templateUrl: './parameter-page.component.html',
+  styleUrls: ['./parameter-page.component.css']
 })
 @Injectable()
 export class ParameterInputComponent implements OnInit {

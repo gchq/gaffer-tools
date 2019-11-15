@@ -26,7 +26,7 @@ import {
   MatInputModule
 } from '@angular/material';
 import { empty, from, throwError, EMPTY } from 'rxjs';
-import { AnalyticFilterPipe } from '../services/analytic-filter.pipe';
+import { AnalyticFilterPipe } from './analytic-filter.pipe';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { AnalyticsComponent } from './analytics.component';

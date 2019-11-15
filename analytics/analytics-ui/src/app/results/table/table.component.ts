@@ -1,3 +1,19 @@
+/*
+ * Copyright 2019 Crown Copyright
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 import { Component, OnInit, Input, ViewChild, AfterViewInit } from '@angular/core';
 import { MatTableDataSource, MatPaginator, MatSort } from '@angular/material';
 import { ResultsService } from 'src/app/services/results.service';
@@ -17,7 +33,7 @@ export class TableComponent implements AfterViewInit, OnInit {
     results: new MatTableDataSource([])
   };
   columnsToDisplay: string[] = [];
-  selected: any;
+  selected: any[];
 
   constructor(
     private results: ResultsService,
@@ -67,9 +83,11 @@ export class TableComponent implements AfterViewInit, OnInit {
 
   removeColumn() {
     Object.keys(this.columnsToDisplay).forEach(key => {
-      if (this.columnsToDisplay[key] === this.selected) {
-        this.columnsToDisplay.splice(parseInt(key, 10), 1);
-      }
+      this.selected.forEach(column => {
+        if (this.columnsToDisplay[key] === column) {
+          this.columnsToDisplay.splice(parseInt(key, 10), 1);
+        }
+      });
     });
   }
 }
