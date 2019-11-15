@@ -33,7 +33,7 @@ export class TableComponent implements AfterViewInit, OnInit {
     results: new MatTableDataSource([])
   };
   columnsToDisplay: string[] = [];
-  selected: any;
+  selected: any[];
 
   constructor(
     private results: ResultsService,
@@ -83,9 +83,11 @@ export class TableComponent implements AfterViewInit, OnInit {
 
   removeColumn() {
     Object.keys(this.columnsToDisplay).forEach(key => {
-      if (this.columnsToDisplay[key] === this.selected) {
-        this.columnsToDisplay.splice(parseInt(key, 10), 1);
-      }
+      this.selected.forEach(column => {
+        if (this.columnsToDisplay[key] === column) {
+          this.columnsToDisplay.splice(parseInt(key, 10), 1);
+        }
+      });
     });
   }
 }

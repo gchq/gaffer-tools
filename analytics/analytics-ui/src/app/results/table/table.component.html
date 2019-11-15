@@ -2,7 +2,7 @@
 <div>
   <mat-form-field>
     <mat-label>Columns</mat-label>
-    <mat-select [(value)]="selected">
+    <mat-select [(value)]="selected" multiple>
       <mat-option *ngFor="let column of columnsToDisplay" value={{column}}>
         {{ column }}
       </mat-option>
