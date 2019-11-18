@@ -87,7 +87,7 @@ export class TableComponent implements AfterViewInit, OnInit {
 
   refineColumns() {
     this.displayedColumns = [] = [];
-    if (this.selected.length == 0) {
+    if (this.selected.length === 0) {
       this.availableColumns.forEach(availableColumn => {
         this.displayedColumns.push(availableColumn);
       });
@@ -98,7 +98,7 @@ export class TableComponent implements AfterViewInit, OnInit {
             this.displayedColumns.push(selectedColumn);
           }
         });
-      })
-    };
+      });
+    }
   }
 }
