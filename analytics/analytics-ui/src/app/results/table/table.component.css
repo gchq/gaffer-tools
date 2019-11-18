@@ -30,3 +30,7 @@ mat-form-field {
 button {
   margin-left: 30px;
 }
+
+.column-select {
+  margin-top: 15px;
+}
