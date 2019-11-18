@@ -33,7 +33,7 @@ import { ResultsService } from 'src/app/services/results.service';
 
 const htmlData = '<img src="https://cdn.pixabay.com/photo/2018/05/07/10/48/husky-3380548__340.jpg">';
 class AnalyticsServiceStub {
-  reloadAnalytics = () => {
+  getAnalytics = () => {
     return EMPTY;
   }
 }

@@ -14,18 +14,6 @@
  * limitations under the License.
  */
 
-import { Serializable } from './serializable.interface';
-
-export class OutputVisualisation implements Serializable<OutputVisualisation>{
-
-    outputAdapter: string;
-    visualisationType: string;
-
-    deserialize(input: any): OutputVisualisation {
-
-        this.outputAdapter = input.outputAdapter;
-        this.visualisationType = input.visualisationType;
-
-        return this;
-    }
+export interface Serializable<T> {
+    deserialize(input: object): T;
 }

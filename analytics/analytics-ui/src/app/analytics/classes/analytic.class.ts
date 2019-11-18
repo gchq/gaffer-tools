@@ -17,8 +17,9 @@
 import { UIMappingDetail } from './uiMappingDetail.class';
 import { OutputVisualisation } from './outputVisualisation.class';
 import { MetaData } from './metaData.class';
+import { Serializable } from './serializable.interface';
 
-export class Analytic {
+export class Analytic implements Serializable<Analytic> {
     analyticName: string;
     operationName: string;
     description: string;
@@ -30,4 +31,26 @@ export class Analytic {
     metaData: MetaData;
     outputVisualisation: OutputVisualisation;
     score: number;
+
+    deserialize(input: any) {
+        this.analyticName = input.analyticName;
+        this.operationName = input.operationName;
+        this.description = input.description;
+        this.creatorId = input.creatorId;
+        this.readAccessRoles = input.readAccessRoles;
+        this.writeAccessRoles = input.writeAccessRoles;
+
+        let uiMapping = new Map();
+        for (const key of Object.keys(input.uiMapping)) {
+            uiMapping.set(key,new UIMappingDetail().deserialize(input.uiMapping[key]))
+        }
+        this.uiMapping = uiMapping as Map<string, UIMappingDetail>;
+        
+        this.options = input.options;
+        this.metaData = new MetaData().deserialize(input.metaData);
+        this.outputVisualisation = new OutputVisualisation().deserialize(input.outputVisualisation);
+        this.score = input.score;
+        
+        return this;
+    }
 }

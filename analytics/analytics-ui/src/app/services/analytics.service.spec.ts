@@ -24,7 +24,7 @@ import { ErrorService } from './error.service';
 import { ResultsService } from './results.service';
 import { EndpointService } from './endpoint-service';
 import testAnalytic from './test/test.analytic';
-import { clone } from 'lodash';
+import { cloneDeep } from 'lodash';
 import { UIMappingDetail } from '../analytics/classes/uiMappingDetail.class';
 
 class QueryServiceStub {
@@ -97,15 +97,15 @@ describe('AnalyticsService', () => {
     const parameterKey = 'key1'
     service.analytic = testAnalytic;
 
-    let expectedAnalytic = clone(testAnalytic);
-    const uiMappingDetail1 : UIMappingDetail = {
+    let expectedAnalytic = cloneDeep(testAnalytic);
+    const uiMappingDetail1 = {
       label: 'Label',
       userInputType: 'TextBox',
       parameterName: 'param1',
       inputClass: 'java.lang.Integer',
       currentValue: newValue
     };
-    expectedAnalytic.uiMapping.set(parameterKey,uiMappingDetail1);
+    expectedAnalytic.uiMapping.set(parameterKey,new UIMappingDetail().deserialize(uiMappingDetail1));
 
     service.updateAnalytic(newValue, parameterKey);
 

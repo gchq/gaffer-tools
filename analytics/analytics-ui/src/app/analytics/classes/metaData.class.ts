@@ -14,7 +14,16 @@
  * limitations under the License.
  */
 
-export class MetaData {
+import { Serializable } from './serializable.interface';
+
+export class MetaData implements Serializable<MetaData> {
+
     icon: string;
     colour: string;
+
+    deserialize(input: any): MetaData {
+        this.icon = input.icon;
+        this.colour = input.colour;
+        return this;
+    }
 }

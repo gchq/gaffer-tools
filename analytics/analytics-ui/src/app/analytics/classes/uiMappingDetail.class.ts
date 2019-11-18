@@ -14,10 +14,24 @@
  * limitations under the License.
  */
 
-export class UIMappingDetail {
+import { Serializable } from './serializable.interface';
+
+export class UIMappingDetail implements Serializable<UIMappingDetail> {
+
     label: string;
     userInputType: string;
     parameterName: string;
     inputClass: string;
     currentValue: any;
+
+    deserialize(input: any): UIMappingDetail {
+
+        this.label = input.label;
+        this.userInputType = input.userInputType;
+        this.parameterName = input.parameterName;
+        this.inputClass = input.inputClass;
+        this.currentValue = input.currentValue;
+
+        return this;
+    }
 }

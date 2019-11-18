@@ -18,6 +18,9 @@ import { Component, OnInit, Injectable } from '@angular/core';
 import { ErrorService } from '../services/error.service';
 import { AnalyticsService } from '../services/analytics.service';
 import { Analytic } from './classes/analytic.class';
+import { UIMappingDetail } from './classes/uiMappingDetail.class';
+import { MetaData } from './classes/metaData.class';
+import { OutputVisualisation } from './classes/outputVisualisation.class';
 
 @Component({
   selector: 'app-analytics',
@@ -33,22 +36,27 @@ export class AnalyticsComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.reloadAnalytics();
+    this.getAnalytics();
   }
 
   /** Load the analytics */
-  reloadAnalytics = function() {
-    this.analyticsService.reloadAnalytics(true).subscribe(
-      availableAnalytics => {
-        this.analytics = availableAnalytics;
-        console.log(this.analytics);
+  getAnalytics = function() : void {
+    this.analyticsService.getAnalytics().subscribe(
+      // On success
+      analytics => {
+        let deserialisedAnalytics = new Array<Analytic>();
+        analytics.forEach(analytic => {
+          deserialisedAnalytics.push(new Analytic().deserialize(analytic));
+        });
+        this.analytics = deserialisedAnalytics;
       },
+      // On error
       err => {
-        this.error.handle(
-          'Error loading operations, see the console for details',
-          null,
-          err
-        );
+          this.error.handle(
+            'Failed to load the analytics, see the console for details',
+            null,
+            err
+          );
       }
     );
   };

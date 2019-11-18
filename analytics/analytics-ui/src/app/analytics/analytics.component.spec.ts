@@ -32,9 +32,10 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AnalyticsComponent } from './analytics.component';
 import { AnalyticsService } from '../services/analytics.service';
 import { ErrorService } from '../services/error.service';
+import testAnalytic from '../services/test/test.analytic';
 
 class AnalyticsServiceStub {
-  reloadAnalytics = () => {
+  getAnalytics = () => {
     return EMPTY;
   }
 }
@@ -86,19 +87,19 @@ describe('AnalyticsComponent', () => {
   });
 
   it('should load the analytics at initialisation', () => {
-    const spy = spyOn(component, 'reloadAnalytics');
+    const spy = spyOn(component, 'getAnalytics');
     fixture.detectChanges();
     expect(spy).toHaveBeenCalledWith();
   });
 
   it('should store the analytics it loads from the server', () => {
-    const testData = 'Test data';
+    const testData = [testAnalytic];
     const analyticsService = TestBed.get(AnalyticsService);
-    spyOn(analyticsService, 'reloadAnalytics').and.returnValue(
+    spyOn(analyticsService, 'getAnalytics').and.returnValue(
       from([testData])
     );
 
-    component.reloadAnalytics();
+    component.getAnalytics();
 
     expect(component.analytics).toEqual(testData);
   });
@@ -107,14 +108,14 @@ describe('AnalyticsComponent', () => {
     const error = new Error();
     const testData = throwError(error);
     const analyticsService = TestBed.get(AnalyticsService);
-    spyOn(analyticsService, 'reloadAnalytics').and.returnValue(testData);
+    spyOn(analyticsService, 'getAnalytics').and.returnValue(testData);
     const errorService = TestBed.get(ErrorService);
     const spy = spyOn(errorService, 'handle');
 
-    component.reloadAnalytics();
+    component.getAnalytics();
 
     expect(spy).toHaveBeenCalledWith(
-      'Error loading operations, see the console for details',
+      'Failed to load the analytics, see the console for details',
       null,
       error
     );
