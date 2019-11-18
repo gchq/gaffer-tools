@@ -86,19 +86,6 @@ export class TableComponent implements AfterViewInit, OnInit {
   }
 
   refineColumns() {
-    this.displayedColumns = [] = [];
-    if (this.selected.length === 0) {
-      this.availableColumns.forEach(availableColumn => {
-        this.displayedColumns.push(availableColumn);
-      });
-    } else {
-      this.availableColumns.forEach(availableColumn => {
-        this.selected.forEach(selectedColumn => {
-          if (selectedColumn === availableColumn) {
-            this.displayedColumns.push(selectedColumn);
-          }
-        });
-      });
-    }
+    this.displayedColumns = this.selected;
   }
 }

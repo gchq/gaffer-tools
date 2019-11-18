@@ -1,7 +1,7 @@
 <!--Column Remove Selector and Button-->
 <div>
   <mat-form-field>
-    <mat-label>Columns</mat-label>
+    <mat-label>Select columns to be displayed</mat-label>
     <mat-select [(value)]="selected" multiple>
       <mat-option *ngFor="let column of availableColumns" value={{column}} (click)="refineColumns()">
         {{ column }}
