@@ -133,11 +133,8 @@ export class AnalyticsService {
     });
   };
 
-// getHeroes (): Observable<Hero[]> { return this.http.get<Hero[]>(this.heroesUrl) }
-    
-
   /** Get the analytics from the server */
-  getAnalytics = function() : Observable<Analytic[]> {
+  getAnalytics = function(): Observable<object> {
     const operation = {
       class: 'uk.gov.gchq.gaffer.analytic.operation.GetAllAnalytics'
     };
@@ -150,6 +147,6 @@ export class AnalyticsService {
     if (!startsWith(queryUrl, 'http')) {
       queryUrl = 'http://' + queryUrl;
     }
-    return this.http.post(queryUrl, operation, { headers: '{headers}' })
+    return this.http.post(queryUrl, operation, { headers: '{headers}' });
   };
 }

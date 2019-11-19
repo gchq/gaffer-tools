@@ -16,7 +16,7 @@
 
 import { Serializable } from './serializable.interface';
 
-export class OutputVisualisation implements Serializable<OutputVisualisation>{
+export class OutputVisualisation implements Serializable<OutputVisualisation> {
 
     outputAdapter: string;
     visualisationType: string;

@@ -23,9 +23,10 @@ import { QueryService } from './query.service';
 import { ErrorService } from './error.service';
 import { ResultsService } from './results.service';
 import { EndpointService } from './endpoint-service';
-import testAnalytic from './test/test.analytic';
-import { cloneDeep } from 'lodash';
+import { deserialisedTestAnalytic, serialisedTestAnalytic } from './test/test.analytic';
+import { cloneDeep, clone } from 'lodash';
 import { UIMappingDetail } from '../analytics/classes/uiMappingDetail.class';
+import { Analytic } from '../analytics/classes/analytic.class';
 
 class QueryServiceStub {
   executeQuery = (operation, onSuccess) => {
@@ -82,30 +83,29 @@ describe('AnalyticsService', () => {
     }).compileComponents();
 
     service = TestBed.get(AnalyticsService);
+    service.analytic = cloneDeep(deserialisedTestAnalytic);
   }));
 
   it('Should be able to get the analytic', () => {
-    service.analytic = testAnalytic;
 
     const result = service.getAnalytic();
 
-    expect(result).toEqual(testAnalytic);
+    expect(result).toEqual(deserialisedTestAnalytic);
   });
 
   it('Should be able to update the analytic', () => {
-    const newValue = 8;
-    const parameterKey = 'key1'
-    service.analytic = testAnalytic;
+    const newValue = 'newValue';
+    const parameterKey = 'key1';
 
-    let expectedAnalytic = cloneDeep(testAnalytic);
+    const expectedAnalytic = new Analytic().deserialize(serialisedTestAnalytic);
     const uiMappingDetail1 = {
       label: 'Label',
       userInputType: 'TextBox',
       parameterName: 'param1',
-      inputClass: 'java.lang.Integer',
+      inputClass: 'java.lang.String',
       currentValue: newValue
     };
-    expectedAnalytic.uiMapping.set(parameterKey,new UIMappingDetail().deserialize(uiMappingDetail1));
+    expectedAnalytic.uiMapping.set(parameterKey, new UIMappingDetail().deserialize(uiMappingDetail1));
 
     service.updateAnalytic(newValue, parameterKey);
 
@@ -115,7 +115,6 @@ describe('AnalyticsService', () => {
   it('Should be able to clear the table results after execution', () => {
     const resultsService = TestBed.get(ResultsService);
     const spy = spyOn(resultsService, 'clear');
-    service.analytic = testAnalytic;
 
     service.executeAnalytic();
 
@@ -125,7 +124,6 @@ describe('AnalyticsService', () => {
   it('Should be able to navigate to the results page after execution', () => {
     const router = TestBed.get(Router);
     const spy = spyOn(router, 'navigate');
-    service.analytic = testAnalytic;
 
     service.executeAnalytic();
 
@@ -133,11 +131,11 @@ describe('AnalyticsService', () => {
   });
 
   it('Should be able to execute the analytic', () => {
-    service.analytic = testAnalytic;
+    service.analytic = deserialisedTestAnalytic;
 
     const params = {
       param1: 'value1',
-      param2: 'value2'
+      param2: 2
     };
     const operation = {
       class: 'uk.gov.gchq.gaffer.operation.OperationChain',
@@ -145,6 +143,10 @@ describe('AnalyticsService', () => {
         class: 'uk.gov.gchq.gaffer.named.operation.NamedOperation',
         operationName: 'test operation name',
         parameters: params
+      },
+      {
+        class: 'uk.gov.gchq.gaffer.operation.impl.Map',
+        functions: [ 'test output adapter' ]
       }]
     };
 

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { async, ComponentFixture, TestBed, tick, fakeAsync } from '@angular/core/testing';
 import { Input, Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import {
@@ -25,14 +25,14 @@ import {
   MatIconModule,
   MatInputModule
 } from '@angular/material';
-import { empty, from, throwError, EMPTY } from 'rxjs';
+import { from, throwError, EMPTY } from 'rxjs';
 import { AnalyticFilterPipe } from './analytic-filter.pipe';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { AnalyticsComponent } from './analytics.component';
 import { AnalyticsService } from '../services/analytics.service';
 import { ErrorService } from '../services/error.service';
-import testAnalytic from '../services/test/test.analytic';
+import { deserialisedTestAnalytic, serialisedTestAnalytic } from '../services/test/test.analytic';
 
 class AnalyticsServiceStub {
   getAnalytics = () => {
@@ -92,17 +92,19 @@ describe('AnalyticsComponent', () => {
     expect(spy).toHaveBeenCalledWith();
   });
 
-  it('should store the analytics it loads from the server', () => {
-    const testData = [testAnalytic];
+  it('should store the analytics it loads from the server', fakeAsync(() => {
+    const testData = [deserialisedTestAnalytic];
+    const analyticArray = new Array<object>();
+    analyticArray.push(serialisedTestAnalytic);
     const analyticsService = TestBed.get(AnalyticsService);
     spyOn(analyticsService, 'getAnalytics').and.returnValue(
-      from([testData])
+      from([analyticArray])
     );
 
     component.getAnalytics();
-
+    tick();
     expect(component.analytics).toEqual(testData);
-  });
+  }));
 
   it('should show an error notification if it fails to load the analytics', () => {
     const error = new Error();

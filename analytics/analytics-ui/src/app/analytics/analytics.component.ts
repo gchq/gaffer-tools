@@ -40,11 +40,11 @@ export class AnalyticsComponent implements OnInit {
   }
 
   /** Load the analytics */
-  getAnalytics = function() : void {
+  getAnalytics = function(): void {
     this.analyticsService.getAnalytics().subscribe(
       // On success
       analytics => {
-        let deserialisedAnalytics = new Array<Analytic>();
+        const deserialisedAnalytics = new Array<Analytic>();
         analytics.forEach(analytic => {
           deserialisedAnalytics.push(new Analytic().deserialize(analytic));
         });

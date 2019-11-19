@@ -40,17 +40,18 @@ export class Analytic implements Serializable<Analytic> {
         this.readAccessRoles = input.readAccessRoles;
         this.writeAccessRoles = input.writeAccessRoles;
 
-        let uiMapping = new Map();
+        const uiMapping = new Map<string, UIMappingDetail>();
         for (const key of Object.keys(input.uiMapping)) {
-            uiMapping.set(key,new UIMappingDetail().deserialize(input.uiMapping[key]))
+            uiMapping.set(key, new UIMappingDetail().deserialize(input.uiMapping[key]));
         }
-        this.uiMapping = uiMapping as Map<string, UIMappingDetail>;
-        
+        this.uiMapping = uiMapping;
+
         this.options = input.options;
         this.metaData = new MetaData().deserialize(input.metaData);
         this.outputVisualisation = new OutputVisualisation().deserialize(input.outputVisualisation);
         this.score = input.score;
-        
+
         return this;
     }
 }
+

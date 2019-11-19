@@ -171,7 +171,7 @@ describe('TableComponent', () => {
     const resultsService = TestBed.get(ResultsService);
     const spy = spyOn(resultsService, 'get');
 
-    fixture.detectChanges();
+    component.ngOnInit();
 
     expect(spy).toHaveBeenCalledTimes(1);
   });

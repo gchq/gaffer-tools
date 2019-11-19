@@ -88,7 +88,7 @@ describe('HtmlComponent', () => {
     const resultsService = TestBed.get(ResultsService);
     const spy = spyOn(resultsService, 'get');
 
-    fixture.detectChanges();
+    component.ngAfterViewInit();
 
     expect(spy).toHaveBeenCalledTimes(1);
   });
