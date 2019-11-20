@@ -58,7 +58,7 @@ import { OperationComponent } from './operation/operation.component';
     ReactiveFormsModule
   ],
   providers: [
-    { provide: LOCALE_ID, useValue: "en-GB" },
+    { provide: LOCALE_ID, useValue: 'en-GB' },
   ]
 })
 export class ParametersModule { }

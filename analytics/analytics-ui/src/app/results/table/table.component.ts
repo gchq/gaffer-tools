@@ -32,7 +32,8 @@ export class TableComponent implements AfterViewInit, OnInit {
   data = {
     results: new MatTableDataSource([])
   };
-  columnsToDisplay: string[] = [];
+  availableColumns: string[] = [];
+  displayedColumns: string[] = [];
   selected: any[];
 
   constructor(
@@ -48,22 +49,26 @@ export class TableComponent implements AfterViewInit, OnInit {
     const toAdd: any[] = [];
     const toRemove: number[] = [];
 
+    // Creates a list of available columns
     tableData.forEach((element, index) => {
       if (element instanceof Object) {
         // Use the keys of objects as the tableColumns
         for (const key of Object.keys(element)) {
-          if (this.columnsToDisplay.indexOf(key) === -1) {
-            this.columnsToDisplay.push(key);
+          if (this.availableColumns.indexOf(key) === -1) {
+            this.availableColumns.push(key);
           }
         }
       } else {
         toRemove.push(index);
         toAdd.push({ value: element });
-        if (this.columnsToDisplay.indexOf('value') === -1) {
-          this.columnsToDisplay.push('value');
+        if (this.availableColumns.indexOf('value') === -1) {
+          this.availableColumns.push('value');
         }
       }
     });
+
+    this.selected = this.availableColumns;
+    this.displayedColumns = this.selected;
 
     // Iterate in reverse order so that the indices of later objects are unaffected
     toRemove.reverse().forEach(index => {
@@ -81,13 +86,7 @@ export class TableComponent implements AfterViewInit, OnInit {
     this.data.results.sort = this.sort;
   }
 
-  removeColumn() {
-    Object.keys(this.columnsToDisplay).forEach(key => {
-      this.selected.forEach(column => {
-        if (this.columnsToDisplay[key] === column) {
-          this.columnsToDisplay.splice(parseInt(key, 10), 1);
-        }
-      });
-    });
+  refineColumns() {
+    this.displayedColumns = this.selected;
   }
 }
