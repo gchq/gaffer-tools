@@ -67,7 +67,8 @@ export class TableComponent implements AfterViewInit, OnInit {
       }
     });
 
-    this.displayedColumns = this.availableColumns;
+    this.selected = this.availableColumns;
+    this.displayedColumns = this.selected;
 
     // Iterate in reverse order so that the indices of later objects are unaffected
     toRemove.reverse().forEach(index => {
