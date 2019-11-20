@@ -166,4 +166,13 @@ describe('TableComponent', () => {
       expect(component.columnsToDisplay).toEqual(['1', '3']);
     });
   });
+
+  it('should get the results at initialisation', () => {
+    const resultsService = TestBed.get(ResultsService);
+    const spy = spyOn(resultsService, 'get');
+
+    component.ngOnInit();
+
+    expect(spy).toHaveBeenCalledTimes(1);
+  });
 });

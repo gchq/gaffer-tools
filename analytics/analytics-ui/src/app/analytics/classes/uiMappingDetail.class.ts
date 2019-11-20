@@ -14,19 +14,24 @@
  * limitations under the License.
  */
 
-import { Pipe, PipeTransform } from '@angular/core';
-import { Analytic } from './classes/analytic.class';
+import { Serializable } from './serializable.interface';
 
-@Pipe({
-    name: 'analyticFilter'
-})
-export class AnalyticFilterPipe implements PipeTransform {
-    transform(items: Analytic[], searchText: string): Analytic[] {
-        if (!items) { return []; }
-        if (!searchText) { return items; }
-        searchText = searchText.toLowerCase();
-        return items.filter(it => {
-            return it.analyticName.toLowerCase().includes(searchText);
-        });
+export class UIMappingDetail implements Serializable<UIMappingDetail> {
+
+    label: string;
+    userInputType: string;
+    parameterName: string;
+    inputClass: string;
+    currentValue: any;
+
+    deserialize(input: any): UIMappingDetail {
+
+        this.label = input.label;
+        this.userInputType = input.userInputType;
+        this.parameterName = input.parameterName;
+        this.inputClass = input.inputClass;
+        this.currentValue = input.currentValue;
+
+        return this;
     }
 }

@@ -14,19 +14,18 @@
  * limitations under the License.
  */
 
-import { Pipe, PipeTransform } from '@angular/core';
-import { Analytic } from './classes/analytic.class';
+import { Serializable } from './serializable.interface';
 
-@Pipe({
-    name: 'analyticFilter'
-})
-export class AnalyticFilterPipe implements PipeTransform {
-    transform(items: Analytic[], searchText: string): Analytic[] {
-        if (!items) { return []; }
-        if (!searchText) { return items; }
-        searchText = searchText.toLowerCase();
-        return items.filter(it => {
-            return it.analyticName.toLowerCase().includes(searchText);
-        });
+export class OutputVisualisation implements Serializable<OutputVisualisation> {
+
+    outputAdapter: string;
+    visualisationType: string;
+
+    deserialize(input: any): OutputVisualisation {
+
+        this.outputAdapter = input.outputAdapter;
+        this.visualisationType = input.visualisationType;
+
+        return this;
     }
 }

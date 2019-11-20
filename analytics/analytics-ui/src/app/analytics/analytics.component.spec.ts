@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { async, ComponentFixture, TestBed, tick, fakeAsync } from '@angular/core/testing';
 import { Input, Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import {
@@ -25,16 +25,17 @@ import {
   MatIconModule,
   MatInputModule
 } from '@angular/material';
-import { empty, from, throwError, EMPTY } from 'rxjs';
+import { from, throwError, EMPTY } from 'rxjs';
 import { AnalyticFilterPipe } from './analytic-filter.pipe';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { AnalyticsComponent } from './analytics.component';
 import { AnalyticsService } from '../services/analytics.service';
 import { ErrorService } from '../services/error.service';
+import { deserialisedTestAnalytic, serialisedTestAnalytic } from '../services/test/test.analytic';
 
 class AnalyticsServiceStub {
-  reloadAnalytics = () => {
+  getAnalytics = () => {
     return EMPTY;
   }
 }
@@ -86,35 +87,37 @@ describe('AnalyticsComponent', () => {
   });
 
   it('should load the analytics at initialisation', () => {
-    const spy = spyOn(component, 'reloadAnalytics');
+    const spy = spyOn(component, 'getAnalytics');
     fixture.detectChanges();
     expect(spy).toHaveBeenCalledWith();
   });
 
-  it('should store the analytics it loads from the server', () => {
-    const testData = 'Test data';
+  it('should store the analytics it loads from the server', fakeAsync(() => {
+    const testData = [deserialisedTestAnalytic];
+    const analyticArray = new Array<object>();
+    analyticArray.push(serialisedTestAnalytic);
     const analyticsService = TestBed.get(AnalyticsService);
-    spyOn(analyticsService, 'reloadAnalytics').and.returnValue(
-      from([testData])
+    spyOn(analyticsService, 'getAnalytics').and.returnValue(
+      from([analyticArray])
     );
 
-    component.reloadAnalytics();
-
+    component.getAnalytics();
+    tick();
     expect(component.analytics).toEqual(testData);
-  });
+  }));
 
   it('should show an error notification if it fails to load the analytics', () => {
     const error = new Error();
     const testData = throwError(error);
     const analyticsService = TestBed.get(AnalyticsService);
-    spyOn(analyticsService, 'reloadAnalytics').and.returnValue(testData);
+    spyOn(analyticsService, 'getAnalytics').and.returnValue(testData);
     const errorService = TestBed.get(ErrorService);
     const spy = spyOn(errorService, 'handle');
 
-    component.reloadAnalytics();
+    component.getAnalytics();
 
     expect(spy).toHaveBeenCalledWith(
-      'Error loading operations, see the console for details',
+      'Failed to load the analytics, see the console for details',
       null,
       error
     );

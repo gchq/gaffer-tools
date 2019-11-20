@@ -33,7 +33,7 @@ import { ResultsService } from 'src/app/services/results.service';
 
 const htmlData = '<img src="https://cdn.pixabay.com/photo/2018/05/07/10/48/husky-3380548__340.jpg">';
 class AnalyticsServiceStub {
-  reloadAnalytics = () => {
+  getAnalytics = () => {
     return EMPTY;
   }
 }
@@ -82,5 +82,14 @@ describe('HtmlComponent', () => {
 
   it('should display input HTML correctly', () => {
     expect(fixture.debugElement.query(By.css('#htmlContainer')).nativeElement.innerHTML).toEqual(htmlData);
+  });
+
+  it('should get the results at initialisation', () => {
+    const resultsService = TestBed.get(ResultsService);
+    const spy = spyOn(resultsService, 'get');
+
+    component.ngAfterViewInit();
+
+    expect(spy).toHaveBeenCalledTimes(1);
   });
 });
