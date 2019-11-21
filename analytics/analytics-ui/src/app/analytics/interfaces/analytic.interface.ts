@@ -14,16 +14,22 @@
  * limitations under the License.
  */
 
-import { Serializable } from './serializable.interface';
+import { UIMappingDetail } from './uiMappingDetail.interface';
+import { OutputVisualisation } from './outputVisualisation.interface';
+import { MetaData } from './metaData.interface';
 
-export class MetaData implements Serializable<MetaData> {
+export interface Analytic {
+    analyticName: string;
+    operationName: string;
+    description: string;
+    creatorId: string;
+    readAccessRoles: Array<string>;
+    writeAccessRoles: Array<string>;
+    uiMapping: Map<string, UIMappingDetail>;
+    options: Map<string, string>;
+    metaData: MetaData;
+    outputVisualisation: OutputVisualisation;
+    score: number;
 
-    icon: string;
-    colour: string;
-
-    deserialize(input: any): MetaData {
-        this.icon = input.icon;
-        this.colour = input.colour;
-        return this;
-    }
 }
+

@@ -23,10 +23,10 @@ import { QueryService } from './query.service';
 import { ErrorService } from './error.service';
 import { ResultsService } from './results.service';
 import { EndpointService } from './endpoint-service';
-import { deserialisedTestAnalytic, serialisedTestAnalytic } from './test/test.analytic';
-import { cloneDeep, clone } from 'lodash';
-import { UIMappingDetail } from '../analytics/classes/uiMappingDetail.class';
-import { Analytic } from '../analytics/classes/analytic.class';
+import { UIMappingDetail } from '../analytics/interfaces/uiMappingDetail.interface';
+import { testAnalytic } from './test/test.analytic';
+
+import { cloneDeep } from 'lodash';
 
 class QueryServiceStub {
   executeQuery = (operation, onSuccess) => {
@@ -83,21 +83,21 @@ describe('AnalyticsService', () => {
     }).compileComponents();
 
     service = TestBed.get(AnalyticsService);
-    service.analytic = cloneDeep(deserialisedTestAnalytic);
+    service.analytic = cloneDeep(testAnalytic);
   }));
 
   it('Should be able to get the analytic', () => {
 
     const result = service.getAnalytic();
 
-    expect(result).toEqual(deserialisedTestAnalytic);
+    expect(result).toEqual(testAnalytic);
   });
 
   it('Should be able to update the analytic', () => {
     const newValue = 'newValue';
     const parameterKey = 'key1';
 
-    const expectedAnalytic = new Analytic().deserialize(serialisedTestAnalytic);
+    const expectedAnalytic = cloneDeep(testAnalytic);
     const uiMappingDetail1 = {
       label: 'Label',
       userInputType: 'TextBox',
@@ -105,7 +105,7 @@ describe('AnalyticsService', () => {
       inputClass: 'java.lang.String',
       currentValue: newValue
     };
-    expectedAnalytic.uiMapping.set(parameterKey, new UIMappingDetail().deserialize(uiMappingDetail1));
+    expectedAnalytic.uiMapping[parameterKey] = uiMappingDetail1;
 
     service.updateAnalytic(newValue, parameterKey);
 
@@ -131,7 +131,7 @@ describe('AnalyticsService', () => {
   });
 
   it('Should be able to execute the analytic', () => {
-    service.analytic = deserialisedTestAnalytic;
+    service.analytic = testAnalytic;
 
     const params = {
       param1: 'value1',

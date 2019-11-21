@@ -1,5 +1,3 @@
-import { Analytic } from 'src/app/analytics/classes/analytic.class';
-
 const uiMappingDetail1 = {
     label: 'Label',
     userInputType: 'TextBox',
@@ -16,8 +14,8 @@ const uiMappingDetail2 = {
 };
 
 const uiMapping1 = {
-    key1 : uiMappingDetail1,
-    key2 : uiMappingDetail2,
+    key1: uiMappingDetail1,
+    key2: uiMappingDetail2
 };
 
 const metaData1 = {
@@ -30,10 +28,11 @@ const outputVisualisation1 = {
     visualisationType: 'test visualisation type'
 };
 
-const options1 = new Map<string, string>();
-options1.set('option1', 'option1Value');
+const options1 = {
+    option1: 'option1value'
+};
 
-const serialisedTestAnalytic = {
+const testAnalytic = {
     analyticName : 'test analytic name',
     operationName : 'test operation name',
     description : 'test description',
@@ -46,7 +45,4 @@ const serialisedTestAnalytic = {
     outputVisualisation : outputVisualisation1,
     score : 5
 };
-export { serialisedTestAnalytic };
-
-const deserialisedTestAnalytic = new Analytic().deserialize(serialisedTestAnalytic);
-export { deserialisedTestAnalytic };
+export { testAnalytic };
