@@ -563,7 +563,7 @@ class GafferFunctionsTest(unittest.TestCase):
             g.func.CreateObject(
                 object_class="java.lang.Long"
             )
-        ],     
+        ],
         [
             '''
             {
@@ -619,7 +619,8 @@ class GafferFunctionsTest(unittest.TestCase):
                 "quoteChar": "'"
             }
             ''',
-            g.func.CsvLinesToMaps(delimiter='|', header=["my", "csv", "file"], first_row=1, quoted=True, quote_char='\'')
+            g.func.CsvLinesToMaps(delimiter='|', header=["my", "csv", "file"], first_row=1, quoted=True,
+                                  quote_char='\'')
         ],
         [
             '''
@@ -658,6 +659,14 @@ class GafferFunctionsTest(unittest.TestCase):
             }
             ''',
             g.func.DeserialiseJson(output_class=g.Edge.CLASS)
+        ],
+        [
+            '''
+            {
+                "class": "uk.gov.gchq.koryphe.impl.function.DeserialiseJson"
+            }
+            ''',
+            g.func.DeserialiseJson()
         ],
         [
             '''
@@ -800,6 +809,111 @@ class GafferFunctionsTest(unittest.TestCase):
             g.FunctionChain(functions=[
                 g.Base64Decode(),
                 g.CsvLinesToMaps(delimiter="|", quoted=True)
+            ])
+        ],
+        [
+            '''
+            {
+                "class":"uk.gov.gchq.koryphe.tuple.function.TupleAdaptedFunction",
+                "selection":[0],
+                "function": {
+                    "class": "uk.gov.gchq.gaffer.operation.function.ToEntityId"
+                },
+                "projection": [1]
+            }
+            ''',
+            g.TupleAdaptedFunction(selection=[0], function=g.ToEntityId(), projection=[1])
+        ],
+        [
+            '''
+            {
+                "class":"uk.gov.gchq.koryphe.impl.function.FunctionChain",
+                "functions": [
+                    {
+                        "class":"uk.gov.gchq.koryphe.tuple.function.TupleAdaptedFunction",
+                        "selection":[0],
+                        "function": {
+                            "class": "uk.gov.gchq.koryphe.impl.function.ToUpperCase"
+                        },
+                        "projection": [1]
+                    },
+                    {
+                        "class":"uk.gov.gchq.koryphe.tuple.function.TupleAdaptedFunction",
+                        "selection": [1],
+                        "function": {
+                            "class": "uk.gov.gchq.koryphe.impl.function.ToSet"
+                        },
+                        "projection": [2]
+                    }
+                ]
+            }
+            ''',
+            g.FunctionChain(functions=[
+                g.TupleAdaptedFunction(selection=[0], function=g.ToUpperCase(), projection=[1]),
+                g.TupleAdaptedFunction(selection=[1], function=g.gaffer_functions.ToSet(), projection=[2])
+            ])
+        ],
+        [
+            '''
+            { 
+                 "class": "uk.gov.gchq.koryphe.tuple.function.TupleAdaptedFunctionComposite",
+                 "functions": [ 
+                    { 
+                       "selection": [ "something" ],
+                       "function": { 
+                          "class":"uk.gov.gchq.koryphe.impl.function.ToUpperCase"
+                       },
+                       "projection": [1]
+                    }
+                 ]
+              }
+            ''',
+            g.TupleAdaptedFunctionComposite(
+                functions=[g.FunctionContext(selection=["something"],
+                                             function=g.ToUpperCase(),
+                                             projection=[1]
+                                             )
+                           ]
+            ),
+
+        ],
+        [
+            '''
+            { 
+               "class": "uk.gov.gchq.koryphe.impl.function.FunctionChain",
+               "functions": [ 
+                  { 
+                     "class": "uk.gov.gchq.koryphe.tuple.function.TupleAdaptedFunctionComposite",
+                     "functions": [ 
+                        { 
+                           "selection": [0],
+                           "function": { 
+                              "class":"uk.gov.gchq.koryphe.impl.function.ToUpperCase"
+                           },
+                           "projection": [1]
+                        }
+                     ]
+                  },
+                  { 
+                     "class": "uk.gov.gchq.koryphe.tuple.function.TupleAdaptedFunctionComposite",
+                     "functions": [ 
+                        { 
+                           "selection": [1],
+                           "function": { 
+                              "class":"uk.gov.gchq.koryphe.impl.function.ToSet"
+                           },
+                           "projection": [2]
+                        }
+                     ]
+                  }
+               ]
+            }
+            ''',
+            g.FunctionChain(functions=[
+                g.TupleAdaptedFunctionComposite(
+                    functions=[g.FunctionContext(selection=[0], function=g.ToUpperCase(), projection=[1])]),
+                g.TupleAdaptedFunctionComposite(
+                    functions=[g.FunctionContext(selection=[1], function=g.gaffer_functions.ToSet(), projection=[2])])
             ])
         ]
     ]
