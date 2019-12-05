@@ -38,14 +38,17 @@ function resultsTable() {
  * @param {*} csv For downloading results
  * @param {*} $mdDialog For creating chart visualisations
  */
-function TableController(schema, results, table, events, common, types, time, csv, $mdDialog) {
+function TableController(schema, results, table, events, common, types, time, csv, $mdDialog, config) {
     var vm = this;
-    var maxValueLength = 500;
+    var truncation = {
+        maxLength: 500,
+        text: "..."
+    };
     var resultsByType = [];
     vm.filteredResults = [];
     vm.data = {results:[], columns:[]};
     vm.searchTerm = '';
-    
+
     vm.pagination = {limit: 50, page: 1};
     vm.sortType = undefined;
     vm.schema = {edges:{}, entities:{}, types:{}};
@@ -62,11 +65,17 @@ function TableController(schema, results, table, events, common, types, time, cs
         schema.get().then(function(gafferSchema) {
             vm.schema = gafferSchema;
             loadFromCache();
-            processResults(results.get());          
+            processResults(results.get());
         }, function(err) {
             vm.schema = {types: {}, edges: {}, entities: {}};
             loadFromCache();
             processResults(results.get());
+        });
+
+        config.get().then(function(conf) {
+            if(conf && conf.table && conf.table.truncation && conf.table.truncation) {
+                truncation = conf.table.truncation;
+            }
         });
 
         events.subscribe('resultsUpdated', onResultsUpdated);
@@ -310,14 +319,18 @@ function TableController(schema, results, table, events, common, types, time, cs
     }
 
     vm.shouldShowTruncation = function(value) {
-        return value && typeof value === 'string' && value.length > maxValueLength;
+        return truncation.maxLength > 0 && value && typeof value === 'string' && value.length > truncation.maxLength;
     }
 
     vm.getTruncatedValue = function(value) {
         if(vm.shouldShowTruncation(value)) {
-            return value.substring(0,maxValueLength-3);
+            return value.substring(0, truncation.maxLength - truncation.text.length);
         }
         return value;
+    }
+
+    vm.getTruncationText = function() {
+        return truncation.text;
     }
 
     vm.showValueDialog = function(name, value) {
