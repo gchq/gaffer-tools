@@ -26,11 +26,12 @@ function toolbar() {
     };
 }
 
-function ToolbarController($rootScope, $mdDialog, operationService, results, query, config, loading, events, properties, error) {
+function ToolbarController($rootScope, $mdDialog, operationService, results, query, config, loading, events, properties, error, $mdToast) {
     var vm = this;
     vm.addMultipleSeeds = false;
     vm.appTitle;
 
+    var savedResultsKey = "savedResults";
     var defaultTitle = "Gaffer";
     vm.$onInit = function() {
         config.get().then(function(conf) {
@@ -91,7 +92,67 @@ function ToolbarController($rootScope, $mdDialog, operationService, results, que
             }
         );
     }
+    vm.saveResults = function() {
+        var rawResults = results.get();
+        var resultsArray = rawResults.edges.concat(rawResults.entities).concat(rawResults.other);
+        if(resultsArray.length < 1) {
+            error.handle("There are no results to save");
+            return;
+        }
 
+        loading.load();
+        query.execute(
+            {
+                class: "uk.gov.gchq.gaffer.operation.OperationChain",
+                operations: [
+                    {
+                        "class" : "uk.gov.gchq.gaffer.operation.impl.export.resultcache.ExportToGafferResultCache",
+                        "input" : [
+                            "java.util.ArrayList",
+                            resultsArray
+                        ]
+                    },
+                    {
+                        "class" : "uk.gov.gchq.gaffer.operation.impl.DiscardOutput"
+                    },
+                    {
+                        "class" : "uk.gov.gchq.gaffer.operation.impl.job.GetJobDetails"
+                    }
+                ]
+            },
+            function(data) {
+                var now = new Date();
+                var localId = now.toUTCString();
+                var timestamp = now.getTime();
+                var jobId = data.jobId;
+                var savedResults = localStorage.getItem(savedResultsKey);
+                if(savedResults) {
+                    savedResults = JSON.parse(savedResults);
+                } else {
+                    savedResults = [];
+                }
+                savedResults.push({
+                    "localId" : localId,
+                    "timestamp": timestamp,
+                    "jobId": jobId
+                });
+                localStorage.setItem(savedResultsKey, JSON.stringify(savedResults));
+                events.broadcast('resultsSaved', []);
+                loading.finish();
+                console.log(data);
+                $mdToast.show(
+                    $mdToast.simple()
+                        .textContent("Results saved")
+                        .position('top right')
+                )
+            },
+            function(err) {
+                loading.finish();
+                error.handle('Error executing operation', err);
+            }
+        );
+    }
+    
     vm.executeAll = function() {
         var ops = query.getOperations();
         if (ops.length > 0) {
