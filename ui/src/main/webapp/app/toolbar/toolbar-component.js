@@ -31,6 +31,7 @@ function ToolbarController($rootScope, $mdDialog, operationService, results, que
     vm.addMultipleSeeds = false;
     vm.appTitle;
 
+    var savedResultsKey = "savedResults";
     var defaultTitle = "Gaffer";
     vm.$onInit = function() {
         config.get().then(function(conf) {
@@ -99,6 +100,7 @@ function ToolbarController($rootScope, $mdDialog, operationService, results, que
             return;
         }
 
+        loading.load();
         query.execute(
             {
                 class: "uk.gov.gchq.gaffer.operation.OperationChain",
@@ -123,7 +125,7 @@ function ToolbarController($rootScope, $mdDialog, operationService, results, que
                 var localId = now.toUTCString();
                 var timestamp = now.getTime();
                 var jobId = data.jobId;
-                var savedResults = localStorage.getItem("savedResults");
+                var savedResults = localStorage.getItem(savedResultsKey);
                 if(savedResults) {
                     savedResults = JSON.parse(savedResults);
                 } else {
@@ -134,7 +136,7 @@ function ToolbarController($rootScope, $mdDialog, operationService, results, que
                     "timestamp": timestamp,
                     "jobId": jobId
                 });
-                localStorage.setItem("savedResults", JSON.stringify(savedResults));
+                localStorage.setItem(savedResultsKey, JSON.stringify(savedResults));
                 events.broadcast('resultsSaved', []);
                 loading.finish();
                 console.log(data);

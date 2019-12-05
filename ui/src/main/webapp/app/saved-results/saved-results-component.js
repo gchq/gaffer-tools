@@ -43,6 +43,11 @@ function SavedResultsController(loading, query, graph, error, navigation, events
         });
     }
 
+    vm.updateSavedResults = function() {
+        updateSavedResults(vm.savedResults);
+        vm.savedResults = loadSavedResults();
+    }
+
     vm.deleteSavedResults = function(jobId) {
         deleteSavedResults(jobId);
         vm.savedResults = loadSavedResults();
@@ -94,7 +99,13 @@ function SavedResultsController(loading, query, graph, error, navigation, events
              savedResults.splice(i, 1);
            }
         }
-        sortSavedResults(savedResults);
+        localStorage.setItem(savedResultsKey, JSON.stringify(savedResults));
+    }
+
+    var updateSavedResults = function(savedResults) {
+        for( var i = 0; i < savedResults.length; i++){
+            savedResults[i].edit = false;
+        }
         localStorage.setItem(savedResultsKey, JSON.stringify(savedResults));
     }
 

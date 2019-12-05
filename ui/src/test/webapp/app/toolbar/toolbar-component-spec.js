@@ -60,17 +60,19 @@ describe('The Toolbar Component', function() {
     describe('The Controller', function() {
 
         var $componentController;
-        var navigation, query, graph;;
+        var navigation, query, graph, loading, results;
         var $rootScope;
         var scope;
 
-        beforeEach(inject(function(_$componentController_, _navigation_, _$rootScope_, _query_, _graph_) {
+        beforeEach(inject(function(_$componentController_, _navigation_, _$rootScope_, _query_, _graph_, _loading_, _results_) {
             $componentController = _$componentController_;
             navigation = _navigation_;
             $rootScope = _$rootScope_;
             scope = $rootScope.$new();
             query = _query_;
             graph = _graph_;
+            loading = _loading_;
+            results = _results_;
         }));
 
         it('should exist', function() {
@@ -106,6 +108,45 @@ describe('The Toolbar Component', function() {
             scope.$digest();
 
             expect(ctrl.appTitle).toEqual('Gaffer');
+        });
+
+        describe('ctrl.saveResults()', function() {
+            it('should execute a save query', function() {
+                var ctrl = $componentController('toolbar', {$scope: scope});
+                ctrl.$onInit();
+                spyOn(loading, 'load');
+                spyOn(query, 'execute');
+                var jobId = "10003"
+                spyOn(results, 'get').and.returnValue({"edges":[1,2,3], "entities": [4,5,6], "other": [7,8,9]});
+                var resultsArray = [1,2,3,4,5,6,7,8,9];
+
+                ctrl.saveResults();
+
+                expect(loading.load).toHaveBeenCalledTimes(1);
+                expect(query.execute).toHaveBeenCalledTimes(1);
+                expect(query.execute).toHaveBeenCalledWith(
+                    {
+                        class: "uk.gov.gchq.gaffer.operation.OperationChain",
+                        operations: [
+                            {
+                                "class" : "uk.gov.gchq.gaffer.operation.impl.export.resultcache.ExportToGafferResultCache",
+                                "input" : [
+                                    "java.util.ArrayList",
+                                    resultsArray
+                                ]
+                            },
+                            {
+                                "class" : "uk.gov.gchq.gaffer.operation.impl.DiscardOutput"
+                            },
+                            {
+                                "class" : "uk.gov.gchq.gaffer.operation.impl.job.GetJobDetails"
+                            }
+                        ]
+                    },
+                    jasmine.any(Function),
+                    jasmine.any(Function)
+                );
+            });
         });
     });
 });

@@ -33,7 +33,14 @@
                             <md-icon md-svg-icon="save"></md-icon>
                         </md-card-avatar>
                         <md-card-header-text>
-                            <span class="md-title">{{savedResult.localId}}</span>
+                            <span ng-click="savedResult.edit = true" class="md-title" ng-show="!savedResult.edit">{{savedResult.localId}}</span>
+                            <md-input-container class="md-secondary no-errors no-margin" ng-show="savedResult.edit">
+                                <input type="text"
+                                       ng-model="savedResult.localId"
+                                       aria-label="Edit saved results ID"
+                                       ng-blur="ctrl.updateSavedResults()"
+                                       class="md-title">
+                            </md-input-container>
                             <span class="md-subhead">ID: {{savedResult.jobId}}</span>
                         </md-card-header-text>
                         <md-button class="md-primary md-icon-button" ng-click="ctrl.deleteSavedResults(savedResult.jobId)">
