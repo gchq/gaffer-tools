@@ -110,6 +110,8 @@ function SavedResultsController(loading, query, graph, error, navigation, events
     }
 
     var sortSavedResults = function(savedResults) {
-        savedResults.sort((a,b) => a.timestamp > b.timestamp ? -1 : (a.timestamp < b.timestamp ? 1 : 0));
+        savedResults.sort(function(a, b) {
+            return a.timestamp > b.timestamp ? -1 : (a.timestamp < b.timestamp ? 1 : 0);
+        })
     }
 }
