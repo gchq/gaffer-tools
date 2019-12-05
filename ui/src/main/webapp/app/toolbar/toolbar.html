@@ -24,6 +24,15 @@
         <quick-query flex></quick-query>
         <loading-circle></loading-circle>
         <md-button class="md-icon-button md-primary"
+                   id="save-results"
+                   aria-label="Save Results"
+                   ng-click="ctrl.saveResults()">
+            <md-icon md-svg-icon="save"></md-icon>
+            <md-tooltip md-direction="bottom">
+                Save Results
+            </md-tooltip>
+        </md-button>
+        <md-button class="md-icon-button md-primary"
                    id="rerun"
                    aria-label="Rerun operations"
                    ng-click="ctrl.executeAll()">
