@@ -31,13 +31,15 @@ function graphView() {
 }
 
 
-function GraphController($q, graph, config, error, loading, query, operationOptions, types, schema, results, common, operationChain, operationService, events, $scope) {
+function GraphController($q, graph, config, error, loading, query, operationOptions, types, schema, results, common, operationChain, operationService, events, $scope, settings) {
     var vm = this;
     vm.graphLoading = true;    // used for the loading indicator
 
     var tappedBefore;
     var tappedTimeout;
     var cytoscapeGraph;    // Internal graph model which gets reloaded every time graph page is loaded.
+
+    var customVertexLabels = settings.getCustomVertexLabelsMap();
 
     var configuration = {
         name: 'cytoscape-ngraph.forcelayout',
@@ -99,6 +101,8 @@ function GraphController($q, graph, config, error, loading, query, operationOpti
         if (!vm.selectedElements) {
             throw 'Graph view must have selected elements injected into it'
         }
+
+
 
         // Then get configuration
         var conf = graph.getGraphConfiguration()
@@ -463,10 +467,18 @@ function GraphController($q, graph, config, error, loading, query, operationOpti
         return createVertexData(entity.vertex, vertexType, true);
     }
 
+    var getLabel = function(vertex) {
+        var shortVertex = types.getShortValue(vertex);
+        if(customVertexLabels && shortVertex in customVertexLabels) {
+            return customVertexLabels[shortVertex];
+        }
+        return shortVertex;
+    }
+
     var createVertexData = function(vertex, vertexTypeDefinition, isEntity) {
         var data = {
             id: common.parseVertex(vertex),
-            label: types.getShortValue(vertex)
+            label: getLabel(vertex)
         }
 
         // Don't set entity value to undefined or false to avoid overwriting 'true' values (which we want to keep)
@@ -505,8 +517,8 @@ function GraphController($q, graph, config, error, loading, query, operationOpti
             destination: createVertexData(edge.destination, vertexTypes.destination),
             edge: {
                 id: id,
-                source: source,
-                target: destination,
+                source: getLabel(source),
+                target: getLabel(destination),
                 group: edge.group
             }
         };

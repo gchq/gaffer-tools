@@ -38,7 +38,7 @@ function resultsTable() {
  * @param {*} csv For downloading results
  * @param {*} $mdDialog For creating chart visualisations
  */
-function TableController(schema, results, table, events, common, types, time, csv, $mdDialog) {
+function TableController(schema, results, table, events, common, types, time, csv, $mdDialog, settings) {
     var vm = this;
     var resultsByType = [];
     vm.filteredResults = [];
@@ -51,6 +51,8 @@ function TableController(schema, results, table, events, common, types, time, cs
 
     vm.groupColumnName = 'GROUP';
     vm.typeColumnName = 'result type';
+
+    var customVertexLabels = settings.getCustomVertexLabelsMap();
 
     /**
      * Initialises the controller.
@@ -175,6 +177,14 @@ function TableController(schema, results, table, events, common, types, time, cs
         vm.updateFilteredResults();
     }
 
+    var getLabel = function(vertex) {
+        var shortVertex = types.getShortValue(vertex);
+        if(customVertexLabels && shortVertex in customVertexLabels) {
+            return customVertexLabels[shortVertex];
+        }
+        return shortVertex;
+    }
+
     var processElements = function(type, typePlural, idKeys, ids, groupByProperties, properties, resultsData) {
         if(resultsData[typePlural] && Object.keys(resultsData[typePlural]).length > 0) {
             resultsByType[type] = [];
@@ -189,6 +199,10 @@ function TableController(schema, results, table, events, common, types, time, cs
                             result[id] = convertValue(id, element.vertex);
                         } else {
                             result[id] = convertValue(id, element[id.toLowerCase()]);
+                        }
+
+                        if("SOURCE" === id || "DESTINATION" === id ) {
+                            result[id] = getLabel(result[id]);
                         }
                     }
                     result['result type'] = type;

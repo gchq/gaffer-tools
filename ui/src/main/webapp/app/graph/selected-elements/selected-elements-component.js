@@ -34,7 +34,9 @@ function selectedElements() {
  * @param {*} types The types service
  * @param {*} time The time service
  */
-function SelectedElementsController(results, types, time, common, events) {
+function SelectedElementsController(results, types, time, common, events, settings) {
+    var customVertexLabels = settings.getCustomVertexLabelsMap();
+
     var vm = this;
     
     vm.processedResults = {
@@ -123,7 +125,7 @@ function SelectedElementsController(results, types, time, common, events) {
             vertex = JSON.parse(value)
         }
 
-        return types.getShortValue(vertex);
+        return getLabel(vertex);
     }
 
     vm.resolveEdge = function(value) {
@@ -133,5 +135,13 @@ function SelectedElementsController(results, types, time, common, events) {
         var destination = JSON.parse(edgeIds[1]);
 
         return types.getShortValue(source) + ' to ' + types.getShortValue(destination);
+    }
+
+    var getLabel = function(vertex) {
+        var shortVertex = types.getShortValue(vertex);
+        if(customVertexLabels && shortVertex in customVertexLabels) {
+            return customVertexLabels[shortVertex];
+        }
+        return shortVertex;
     }
 }

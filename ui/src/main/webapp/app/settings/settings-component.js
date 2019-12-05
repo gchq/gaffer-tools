@@ -38,6 +38,7 @@ function SettingsController(settings, schema, operationService, events, config) 
         vm.showOptions = false;
         vm.resultLimit = settings.getResultLimit();
         vm.clearChainAfterExecution = settings.getClearChainAfterExecution();
+        vm.customVertexLabels = settings.getCustomVertexLabels();
         config.get().then(function(conf) {
             vm.showOptions = (conf.operationOptions !== undefined || conf.operationOptionKeys !== undefined);
         });
@@ -47,6 +48,34 @@ function SettingsController(settings, schema, operationService, events, config) 
         if (vm.querySettingsForm.resultLimit.$valid) {
             settings.setResultLimit(vm.resultLimit);
         }
+    }
+
+    vm.addCustomVertexLabel = function() {
+        var newLabel = {
+           "label": "Custom Label",
+           "vertex": "vertex value",
+           "id": String(new Date().getTime()) + Math.random(),
+           "timestamp": String(new Date().getTime()),
+           "edit": false
+        }
+        vm.customVertexLabels.unshift(newLabel);
+        settings.setCustomVertexLabels(vm.customVertexLabels);
+        newLabel.edit = true;
+    }
+
+    vm.deleteCustomVertexLabel = function(id) {
+        for( var i = 0; i < vm.customVertexLabels.length; i++){
+            if (vm.customVertexLabels[i].id === id) {
+              vm.customVertexLabels.splice(i, 1);
+            }
+        }
+        settings.setCustomVertexLabels(vm.customVertexLabels);
+    }
+
+    vm.saveCustomVertexLabel = function(saveCustomLabel) {
+        saveCustomLabel.labelEdit = false;
+        saveCustomLabel.vertexEdit = false;
+        settings.setCustomVertexLabels(vm.customVertexLabels);
     }
 
     vm.updateSchema = function() {

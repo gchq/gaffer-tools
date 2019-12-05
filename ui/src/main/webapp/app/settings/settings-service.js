@@ -19,23 +19,55 @@
 angular.module('app').factory('settings', function() {
     var settings = {};
 
-    var resultLimit = 1000;
-    var clearChainAfterExecution = true;
-
     settings.getResultLimit = function() {
-        return resultLimit;
+        return getSetting("resultLimit", 1000);
     }
 
     settings.setResultLimit = function(limit) {
-        resultLimit = limit;
+        setSetting("resultLimit", limit);
+    }
+
+    settings.getClearChainAfterExecution = function() {
+        return getSetting("clearChainAfterExecution", true);
     }
 
     settings.setClearChainAfterExecution = function(state) {
-        clearChainAfterExecution = state;
+        setSetting("clearChainAfterExecution", state);
     }
 
-    settings.getClearChainAfterExecution = function () {    
-        return clearChainAfterExecution;
+    settings.getCustomVertexLabels = function() {
+        var labels =  getSetting("customVertexLabels", []);
+        labels.sort(function(a, b) {
+             return a.timestamp > b.timestamp ? -1 : (a.timestamp < b.timestamp ? 1 : 0);
+        })
+        return labels;
+    }
+
+    settings.setCustomVertexLabels = function(labels) {
+        setSetting("customVertexLabels", labels);
+    }
+
+    settings.getCustomVertexLabelsMap = function() {
+        var customVertexLabelsArray = settings.getCustomVertexLabels();
+        var customVertexLabelsMap = {}
+        for(var i in customVertexLabelsArray) {
+            customVertexLabelsMap[customVertexLabelsArray[i].vertex] = customVertexLabelsArray[i].label;
+        }
+        return customVertexLabelsMap;
+    }
+
+    var getSetting = function(key, defaultValue) {
+        var value = localStorage.getItem(key);
+        if(value !== undefined && value !== null) {
+            value = JSON.parse(value);
+        } else {
+            value = defaultValue;
+        }
+        return value;
+    }
+
+    var setSetting = function(key, value) {
+        localStorage.setItem(key, JSON.stringify(value));
     }
 
     return settings;

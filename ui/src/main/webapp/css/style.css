@@ -383,3 +383,33 @@ quick-query {
     margin-left: 0px !important;
     margin-right: 0px !important;
 }
+
+.inline {
+    display: inline;
+}
+
+.margin-right {
+    margin-right: 8px;
+}
+
+.list-h3 {
+    font-size: 16px;
+    font-weight: 400;
+    letter-spacing: .01em;
+    line-height: 1.2em;
+}
+
+.list-p {
+    font-size: 14px;
+    font-weight: 500;
+    letter-spacing: .01em;
+    line-height: 1.6em;
+    color: rgba(0,0,0,0.54);
+}
+
+.inline-button {
+    margin: 0 !important;
+    padding: 0 !important;
+    min-height: unset;
+    height: unset !important;
+}
