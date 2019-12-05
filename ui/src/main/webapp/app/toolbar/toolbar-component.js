@@ -139,7 +139,6 @@ function ToolbarController($rootScope, $mdDialog, operationService, results, que
                 localStorage.setItem(savedResultsKey, JSON.stringify(savedResults));
                 events.broadcast('resultsSaved', []);
                 loading.finish();
-                console.log(data);
                 $mdToast.show(
                     $mdToast.simple()
                         .textContent("Results saved")
