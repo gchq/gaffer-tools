@@ -722,6 +722,10 @@ describe("The Graph Component", function() {
                 var types = _types_;
     
                 spyOn(types, 'getShortValue').and.callFake(function(val) {
+                    // Copied this if statement from the getShortValue method.
+                    if (typeof value === 'string' || value instanceof String || typeof value === 'number' || typeof value === 'boolean' || value === null || value === undefined) {
+                        return val;
+                    }
                     var value = val[Object.keys(val)[0]];
                     return Object.keys(value).map(function(key){
                         return value[key]
