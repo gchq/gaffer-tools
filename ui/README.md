@@ -408,6 +408,30 @@ You can find examples of these within the example directory:
 
 The configuration is made up of different sections and is written in JSON:
 
+### Description
+
+By default the UI will use the description provided by the REST API. If you wish to override this value and set a
+custom description for the UI you can do this by using the 'description' configuration key.
+
+
+```json
+{
+    "description": "Customised description for the UI"
+}
+```
+
+### Documentation URL
+
+By default the UI will use the documentation URL provided by the REST API. If you wish to override this value and set a
+custom documentation URL for the UI you can do this by using the 'docUrl' configuration key.
+
+
+```json
+{
+    "docUrl": "https://some-url.com"
+}
+```
+
 ### Rest Endpoint
 
 The rest endpoint that the UI uses can be changed. By default, it assumes that the rest service is running on the same
@@ -643,7 +667,7 @@ You can edit the behaviour of the quick query component in the Gaffer UI using t
 | name                        |  type           | description                            
 |-----------------------------|-----------------|---------------------------------------------------------
 | placeholder                 | string          | The string placeholder on the search box. Defaults to "Quick Query"
-| description                 | string          | A breif description of what the query does. Defaults to "Get related elements" 
+| description                 | string          | A brief description of what the query does. Defaults to "Get related elements"
 | operation                   | gaffer operation| An operation or operation chain you wish to execute when the user runs the query. Make sure to substitue "${input}" (with quotes) for where the input should be. The quick query component will generate an entity seed and replace the "${input}" string with the entity seed. Defaults to a GetElements operation.
 | useDefaultOperationOptions  | boolean         | A flag representing whether the UI should add the default operation options specified in the settings page (if they are specified). Defaults to false
 | deduplicate                 | boolean         | A flag representing whether a ToSet operation is added to the chain to remove duplicate values. Defaults to true.

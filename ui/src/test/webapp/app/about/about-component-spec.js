@@ -116,8 +116,41 @@ describe('The about component', function() {
         });
 
         it('should load the config', function() {
+            // Given
             ctrl.$onInit();
+
+            // When
+            scope.$digest();
+
+            // Then
             expect(config.get).toHaveBeenCalled();
+        });
+
+        it('should extract the description from the config when set', function() {
+            // Given
+            propsValue['gaffer.properties.app.description'] = 'description in props';
+            confValue['description'] = 'description in config';
+
+            // When
+            ctrl.$onInit();
+            scope.$digest();
+
+            // Then
+            expect(ctrl.description).toEqual('description in config');
+        });
+
+        it('should extract the documentation url from the config when set', function() {
+            // Given
+            propsValue['gaffer.properties.app.doc.url'] = 'doc url in props';
+            confValue['docUrl'] = 'doc url in config';
+
+            // When
+            ctrl.$onInit();
+            scope.$digest();
+
+            // Then
+            expect(ctrl.docs).toEqual('doc url in config')
+
         });
 
         it('should trim the REST API to remove the version', function() {
