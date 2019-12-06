@@ -26,15 +26,19 @@ function toolbar() {
     };
 }
 
-function ToolbarController($rootScope, $mdDialog, operationService, results, query, config, loading, events, properties, error, $mdToast) {
+function ToolbarController($rootScope, $mdDialog, operationService, results, query, config, loading, events, properties, error, $mdToast, $cookies) {
     var vm = this;
     vm.addMultipleSeeds = false;
     vm.appTitle;
-
-    var savedResultsKey = "savedResults";
+    var saveResultsConfig = {
+        enabled: false
+    };
     var defaultTitle = "Gaffer";
     vm.$onInit = function() {
         config.get().then(function(conf) {
+            if (conf.savedResults) {
+                saveResultsConfig = conf.savedResults;
+            }
             if (conf.title) {
                 vm.appTitle = conf.title;
                 return;
@@ -92,7 +96,16 @@ function ToolbarController($rootScope, $mdDialog, operationService, results, que
             }
         );
     }
+
+    vm.isSaveResultsEnabled = function() {
+        return saveResultsConfig.enabled;
+    }
+
     vm.saveResults = function() {
+        if(!saveResultsConfig.enabled) {
+            error.handle("Saving results is currently disabled");
+            return;
+        }
         var rawResults = results.get();
         var resultsArray = rawResults.edges.concat(rawResults.entities).concat(rawResults.other);
         if(resultsArray.length < 1) {
@@ -125,10 +138,8 @@ function ToolbarController($rootScope, $mdDialog, operationService, results, que
                 var localId = now.toUTCString();
                 var timestamp = now.getTime();
                 var jobId = data.jobId;
-                var savedResults = localStorage.getItem(savedResultsKey);
-                if(savedResults) {
-                    savedResults = JSON.parse(savedResults);
-                } else {
+                var savedResults = $cookies.getObject(saveResultsConfig.key);
+                if(!savedResults) {
                     savedResults = [];
                 }
                 savedResults.push({
@@ -136,7 +147,7 @@ function ToolbarController($rootScope, $mdDialog, operationService, results, que
                     "timestamp": timestamp,
                     "jobId": jobId
                 });
-                localStorage.setItem(savedResultsKey, JSON.stringify(savedResults));
+                $cookies.putObject(saveResultsConfig.key, savedResults, {expires: getExpiry()});
                 events.broadcast('resultsSaved', []);
                 loading.finish();
                 $mdToast.show(
@@ -151,7 +162,7 @@ function ToolbarController($rootScope, $mdDialog, operationService, results, que
             }
         );
     }
-    
+
     vm.executeAll = function() {
         var ops = query.getOperations();
         if (ops.length > 0) {
@@ -165,5 +176,15 @@ function ToolbarController($rootScope, $mdDialog, operationService, results, que
 
     vm.clearResults = function() {
         results.clear();
+    }
+
+    var getExpiry = function() {
+      var result = new Date();
+      var ttl = saveResultsConfig.timeToLiveInDays;
+      if(!ttl) {
+        ttl = 7;
+      }
+      result.setDate(result.getDate() + ttl);
+      return result.toUTCString();
     }
 }

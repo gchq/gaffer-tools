@@ -19,17 +19,19 @@
         <div layout="column" flex>
             <h3 class="md-headline">
                 Saved Data
-                <md-button class="md-primary md-icon-button" ng-click="ctrl.deleteAllSavedResults()">
+                <md-button ng-show="ctrl.isEnabled()" class="md-primary md-icon-button" ng-click="ctrl.deleteAllSavedResults()">
                     <md-icon md-svg-icon="delete"></md-icon>
                     <md-tooltip>Delete all results</md-tooltip>
                 </md-button>
             </h3>
-            <p class="padding-bottom">
+            <p ng-show="ctrl.isEnabled()" class="padding-bottom">
                 Any results you save, using the 'Save' button on the toolbar at the top, will be listed here.
                 The results are cached on a server and will automatically expire.
                 This list of saved result IDs is cached in your current browser and will not be available in another browser or computer.
             </p>
-            <div ng-if="ctrl.savedResults.length == 0">
+            <p ng-show="!ctrl.isEnabled()" class="padding-bottom">Saving results is currently disabled</p>
+
+            <div ng-show="ctrl.isEnabled() && ctrl.savedResults.length == 0">
                 <md-card flex>
                     <md-card-title>
                         <md-card-title-text>
@@ -42,7 +44,8 @@
                     </md-card-content>
                 </md-card>
             </div>
-            <div ng-repeat="savedResult in ctrl.savedResults">
+
+            <div ng-show="ctrl.isEnabled()" ng-repeat="savedResult in ctrl.savedResults">
                 <md-card flex>
                     <md-card-header>
                         <md-card-avatar>

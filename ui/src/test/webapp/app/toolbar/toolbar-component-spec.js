@@ -112,8 +112,17 @@ describe('The Toolbar Component', function() {
 
         describe('ctrl.saveResults()', function() {
             it('should execute a save query', function() {
+                configForTesting = {
+                   "savedResults": {
+                       "enabled": true,
+                       "key": "savedResults",
+                       "timeToLiveInDays": 7
+                   }
+                };
                 var ctrl = $componentController('toolbar', {$scope: scope});
                 ctrl.$onInit();
+                scope.$digest();
+
                 spyOn(loading, 'load');
                 spyOn(query, 'execute');
                 var jobId = "10003"

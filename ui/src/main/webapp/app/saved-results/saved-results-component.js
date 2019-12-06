@@ -26,8 +26,10 @@ function savedResults() {
     }   
 }
 
-function SavedResultsController(loading, query, graph, error, navigation, events) {
-    var savedResultsKey = "savedResults";
+function SavedResultsController(loading, query, graph, error, navigation, events, $cookies, config) {
+    var saveResultsConfig = {
+        enabled: false
+    };
 
     var vm = this;
     vm.savedResults = [];
@@ -36,10 +38,17 @@ function SavedResultsController(loading, query, graph, error, navigation, events
      * Loads the saved results
      */
     vm.$onInit = function() {
-        vm.savedResults = loadSavedResults();
-
         events.subscribe('resultsSaved', function() {
             vm.savedResults = loadSavedResults();
+        });
+
+        config.get().then(function(conf) {
+            if (conf.savedResults) {
+                saveResultsConfig = conf.savedResults;
+                if(saveResultsConfig.enabled) {
+                    vm.savedResults = loadSavedResults();
+                }
+            }
         });
     }
 
@@ -54,8 +63,8 @@ function SavedResultsController(loading, query, graph, error, navigation, events
     }
 
     vm.deleteAllSavedResults = function() {
-        localStorage.setItem(savedResultsKey, JSON.stringify([]));
         vm.savedResults = []
+        updateSavedResults(vm.savedResults);
     }
 
     vm.reloadSavedResults = function(jobId) {
@@ -81,13 +90,16 @@ function SavedResultsController(loading, query, graph, error, navigation, events
         }
     }
 
+    vm.isEnabled = function() {
+        return saveResultsConfig.enabled;
+    }
+
     var loadSavedResults = function(query) {
-        var savedResults = localStorage.getItem(savedResultsKey);
-        if(savedResults) {
-            savedResults = JSON.parse(savedResults);
-        } else {
+        var savedResults = $cookies.getObject(saveResultsConfig.key);
+        if(!savedResults) {
             savedResults = [];
         }
+        removeExpired(savedResults);
         sortSavedResults(savedResults);
         return savedResults;
     }
@@ -99,19 +111,48 @@ function SavedResultsController(loading, query, graph, error, navigation, events
              savedResults.splice(i, 1);
            }
         }
-        localStorage.setItem(savedResultsKey, JSON.stringify(savedResults));
+        updateSavedResults(savedResults);
     }
 
     var updateSavedResults = function(savedResults) {
         for( var i = 0; i < savedResults.length; i++){
             savedResults[i].edit = false;
         }
-        localStorage.setItem(savedResultsKey, JSON.stringify(savedResults));
+        $cookies.putObject(saveResultsConfig.key, savedResults, getExpiry());
     }
 
     var sortSavedResults = function(savedResults) {
         savedResults.sort(function(a, b) {
             return a.timestamp > b.timestamp ? -1 : (a.timestamp < b.timestamp ? 1 : 0);
         })
+    }
+
+    var removeExpired = function(savedResults) {
+        var ttl = saveResultsConfig.timeToLiveInDays;
+        if(!ttl) {
+            return;
+        }
+        var ttlInMillis = ttl * 24 * 60 * 60 * 1000;
+        var removedItem = false;
+        var now = new Date().getTime();
+        for(var i = 0; i < savedResults.length; i++){
+           if (savedResults[i].timestamp + ttlInMillis < now) {
+             savedResults.splice(i, 1);
+             removedItem = true;
+           }
+        }
+        if(removedItem) {
+            updateSavedResults(savedResults);
+        }
+    }
+
+    var getExpiry = function() {
+      var result = new Date();
+      var ttl = saveResultsConfig.timeToLiveInDays;
+      if(!ttl) {
+        ttl = 7;
+      }
+      result.setDate(result.getDate() + ttl);
+      return result.toUTCString();
     }
 }
