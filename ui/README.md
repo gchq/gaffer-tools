@@ -29,6 +29,7 @@ UI
     - [Operation options](#operation-options)
     - [Quick Query](#quick-query)
     - [Graph](#graph)
+    - [Saved Results](#saved-results)
     - [Feedback](#feedback)
 6. [Testing](#testing)
 
@@ -779,6 +780,27 @@ We have all the material design icons [here](https://github.com/gchq/gaffer-tool
 
 If you're using a simple string or number as your vertex, use "undefined" as your key. Otherwise you'll need to use the field
 name specified in the [types section](#types).
+
+### Saved Results
+
+You can configure the UI to allow results to be saved. The results are stored using the Gaffer ExportToGafferResultCache
+and GetGafferResultCacheExport operations, which if configured, will store the results in a separate Gaffer graph.
+
+This UI feature then adds a cookie 'savedResults' which contains the IDs of the user's saved results.
+
+```json
+"savedResults": {
+    "enabled": true,
+    "key": "savedResults",
+    "timeToLiveInDays": 7
+},
+```
+
+| name                 |  type    | description
+|----------------------|----------|---------------------------------------------------------
+| enabled              | boolean  | If true then the feature is enabled
+| key                  | string   | The cookie key
+| timeToLiveInDays     | number   | The number of days the cookie should be kept for.
 
 
 ### Feedback
