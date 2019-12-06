@@ -16,11 +16,18 @@
 
 'use strict';
 
-angular.module('app').factory('settings', function() {
+angular.module('app').factory('settings', ['$cookies', function($cookies) {
     var settings = {};
 
+    var settingsDefaultConfig = {
+        "resultLimit": 1000,
+        "clearChainAfterExecution": true,
+        "customVertexLabels": [],
+        "timeToLiveInDays": 30
+    };
+
     settings.getResultLimit = function() {
-        return getSetting("resultLimit", 1000);
+        return getSetting("resultLimit", settingsDefaultConfig.resultLimit);
     }
 
     settings.setResultLimit = function(limit) {
@@ -28,7 +35,7 @@ angular.module('app').factory('settings', function() {
     }
 
     settings.getClearChainAfterExecution = function() {
-        return getSetting("clearChainAfterExecution", true);
+        return getSetting("clearChainAfterExecution", settingsDefaultConfig.clearChainAfterExecution);
     }
 
     settings.setClearChainAfterExecution = function(state) {
@@ -36,7 +43,7 @@ angular.module('app').factory('settings', function() {
     }
 
     settings.getCustomVertexLabels = function() {
-        var labels =  getSetting("customVertexLabels", []);
+        var labels =  getSetting("customVertexLabels", settingsDefaultConfig.customVertexLabels);
         labels.sort(function(a, b) {
              return a.timestamp > b.timestamp ? -1 : (a.timestamp < b.timestamp ? 1 : 0);
         })
@@ -57,18 +64,23 @@ angular.module('app').factory('settings', function() {
     }
 
     var getSetting = function(key, defaultValue) {
-        var value = localStorage.getItem(key);
-        if(value !== undefined && value !== null) {
-            value = JSON.parse(value);
-        } else {
+        var value = $cookies.getObject(key);
+        if(value == undefined || value == null) {
             value = defaultValue;
         }
         return value;
     }
 
     var setSetting = function(key, value) {
-        localStorage.setItem(key, JSON.stringify(value));
+        $cookies.putObject(key, value, getExpiry());
+    }
+
+    var getExpiry = function() {
+      var result = new Date();
+      var ttl = settingsDefaultConfig.timeToLiveInDays;
+      result.setDate(result.getDate() + ttl);
+      return result.toUTCString();
     }
 
     return settings;
-});
+}]);
