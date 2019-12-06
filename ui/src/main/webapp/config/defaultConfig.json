@@ -23,6 +23,11 @@
     "description": "Get related Elements",
     "useDefaultOperationOptions": false
   },
+  "savedResults": {
+    "enabled": true,
+    "key": "savedResults",
+    "timeToLiveInDays": 7
+  },
   "types": {
     "java.util.Date": {
       "fields": [
