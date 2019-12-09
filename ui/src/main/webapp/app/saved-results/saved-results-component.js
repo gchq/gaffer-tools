@@ -94,6 +94,16 @@ function SavedResultsController(loading, query, graph, error, navigation, events
         return saveResultsConfig.enabled;
     }
 
+    vm.daysToLive = function() {
+        if(vm.isEnabled() && saveResultsConfig.timeToLiveInDays) {
+            if(saveResultsConfig.timeToLiveInDays == 1) {
+                return "1 day"
+            }
+            return saveResultsConfig.timeToLiveInDays + " days";
+        }
+        return "0 days";
+    }
+
     var loadSavedResults = function(query) {
         var savedResults = $cookies.getObject(saveResultsConfig.key);
         if(!savedResults) {

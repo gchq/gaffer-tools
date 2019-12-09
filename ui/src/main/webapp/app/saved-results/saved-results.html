@@ -26,7 +26,7 @@
             </h3>
             <p ng-show="ctrl.isEnabled()" class="padding-bottom">
                 Any results you save, using the 'Save' button on the toolbar at the top, will be listed here.
-                The results are cached on a server and will automatically expire.
+                The results are cached on a server and will automatically expire after {{ ctrl.daysToLive() }}.
                 This list of saved result IDs is cached in your current browser and will not be available in another browser or computer.
             </p>
             <p ng-show="!ctrl.isEnabled()" class="padding-bottom">Saving results is currently disabled</p>
