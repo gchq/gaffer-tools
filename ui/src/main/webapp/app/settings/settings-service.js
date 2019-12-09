@@ -54,6 +54,14 @@ angular.module('app').factory('settings', ['$cookies', function($cookies) {
         setSetting("customVertexLabels", labels);
     }
 
+    settings.getTimeToLiveInDays = function() {
+        if(settingsDefaultConfig.timeToLiveInDays && settingsDefaultConfig.timeToLiveInDays > 0) {
+            return settingsDefaultConfig.timeToLiveInDays;
+        }
+
+        return 0;
+    }
+
     settings.getCustomVertexLabelsMap = function() {
         var customVertexLabelsArray = settings.getCustomVertexLabels();
         var customVertexLabelsMap = {}
@@ -77,8 +85,7 @@ angular.module('app').factory('settings', ['$cookies', function($cookies) {
 
     var getExpiry = function() {
       var result = new Date();
-      var ttl = settingsDefaultConfig.timeToLiveInDays;
-      result.setDate(result.getDate() + ttl);
+      result.setDate(result.getDate() + settings.getTimeToLiveInDays());
       return result.toUTCString();
     }
 

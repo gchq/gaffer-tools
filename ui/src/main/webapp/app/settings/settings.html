@@ -18,7 +18,7 @@
     <div flex-offset-gt-sm="20" flex-gt-sm="60" flex="100">
         <div layout="column" flex>
             <h3 class="md-headline">Settings</h3>
-
+            <p>{{ ctrl.getCacheTtlMessage() }}</p>
             <section>
                 <md-subheader class="md-no-sticky">Queries</md-subheader>
                 <md-card>
@@ -85,7 +85,6 @@
                 </md-button>
             </md-subheader>
             <md-card>
-                <!--<md-list class="no-vertical-padding">-->
                 <md-card-content>
 
                     <p class="list-p" ng-if="ctrl.customVertexLabels.length == 0">No custom vertex labels</p>
@@ -113,7 +112,6 @@
                         </md-button>
                     </div>
                 </md-card-content>
-                <!--</md-list>-->
             </md-card>
         </div>
     </div>
