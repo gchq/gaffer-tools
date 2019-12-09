@@ -83,4 +83,17 @@ function SettingsController(settings, schema, operationService, events, config) 
         schema.update();
         operationService.reloadOperations(true);
     }
+
+    vm.getCacheTtlMessage = function() {
+        var ttl = settings.getTimeToLiveInDays();
+        if(ttl > 0) {
+            var msg = "These settings will be cached for ";
+            if(ttl > 1) {
+                return msg + ttl + " days.";
+            }
+            return msg + "1 day.";
+        }
+
+        return "";
+    }
 }
