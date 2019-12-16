@@ -45,17 +45,27 @@ function AboutController(properties, config, error) {
         properties.get().then(function(props) {
             vm.docs = props[DOCS_PROPERTY];
             vm.description = props[DESCRIPTION_PROPERTY] || 'no description provided';
-            vm.propertiesLoaded = true
-        });
+            vm.propertiesLoaded = true;
 
-        config.get().then(function(conf) {
-            var endpoint = conf.restEndpoint.replace(/\/$/, "");
+            config.get().then(function(conf) {
+                var endpoint = conf.restEndpoint.replace(/\/$/, "");
 
-            vm.restApi = endpoint.substring(0, endpoint.lastIndexOf('/'));
-            if (conf.feedback) {
-                vm.emailRecipients = conf.feedback.recipients;
-                vm.emailSubject = conf.feedback.subject || "Gaffer feedback";
-            }
+                vm.restApi = endpoint.substring(0, endpoint.lastIndexOf('/'));
+                if (conf.feedback) {
+                    vm.emailRecipients = conf.feedback.recipients;
+                    vm.emailSubject = conf.feedback.subject || "Gaffer feedback";
+                }
+
+                // Override the rest properties description if the description is set in the config
+                if (conf.description) {
+                    vm.description = conf.description;
+                }
+
+                // Override the rest properties docs if the docs is set in the config
+                if (conf.docUrl) {
+                    vm.docs = conf.docUrl;
+                }
+            });
         });
     }
 
