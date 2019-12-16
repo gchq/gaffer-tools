@@ -90,6 +90,20 @@ export class AnalyticsService {
       parameters: null
     };
 
+    operation.parameters = this.mapParams();
+
+    let operationChain = this.createOpChain(operation);
+
+    // Clear the current results
+    this.results.clear();
+
+    // Execute the operation chain and then navigate to the results page when finished loading
+    this.query.executeQuery(operationChain, () => {
+      this.router.navigate([this.analytic.analyticName, 'results']);
+    });
+  };
+
+  mapParams = function() {
     // Get a map of the parameters and their values.
     // Make sure iterable parameters are in the correct form
     if (this.analytic.uiMapping != null) {
@@ -104,9 +118,11 @@ export class AnalyticsService {
             this.analytic.uiMapping.get(parameterKey).currentValue;
         }
       }
-      operation.parameters = parameters;
+      return parameters;
     }
+  }
 
+  createOpChain = function(operation) {
     // Create an operation chain from the operation
     const operationChain = {
       class: OPERATION_CHAIN_CLASS,
@@ -123,15 +139,8 @@ export class AnalyticsService {
         ]
       });
     }
-
-    // Clear the current results
-    this.results.clear();
-
-    // Execute the operation chain and then navigate to the results page when finished loading
-    this.query.executeQuery(operationChain, () => {
-      this.router.navigate([this.analytic.analyticName, 'results']);
-    });
-  };
+    return operationChain;
+  }
 
   /** Get the analytics from the server */
   getAnalytics = function(): Observable<object> {
