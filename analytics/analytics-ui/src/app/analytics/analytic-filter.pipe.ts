@@ -15,7 +15,8 @@
  */
 
 import { Pipe, PipeTransform } from '@angular/core';
-import { Analytic } from './classes/analytic.class';
+
+import { Analytic } from './interfaces/analytic.interface';
 
 @Pipe({
     name: 'analyticFilter'

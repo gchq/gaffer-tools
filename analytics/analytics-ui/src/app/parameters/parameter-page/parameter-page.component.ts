@@ -15,6 +15,7 @@
  */
 
 import { Component, OnInit, Injectable } from '@angular/core';
+
 import { AnalyticsService } from '../../services/analytics.service';
 
 @Component({

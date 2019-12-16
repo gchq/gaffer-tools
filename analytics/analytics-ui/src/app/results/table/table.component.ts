@@ -14,10 +14,11 @@
  * limitations under the License.
  */
 
-import { Component, OnInit, Input, ViewChild, AfterViewInit } from '@angular/core';
+import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
 import { MatTableDataSource, MatPaginator, MatSort } from '@angular/material';
-import { ResultsService } from 'src/app/services/results.service';
 import { FormControl } from '@angular/forms';
+
+import { ResultsService } from 'src/app/services/results.service';
 
 @Component({
   selector: 'app-table',

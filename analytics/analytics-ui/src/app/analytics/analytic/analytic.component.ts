@@ -16,8 +16,9 @@
 
 import { Component, OnInit, Input, Injectable, AfterViewInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
-import { AnalyticsService } from '../../services/analytics.service';
 import { HttpClient } from '@angular/common/http';
+
+import { AnalyticsService } from '../../services/analytics.service';
 
 @Component({
   selector: 'app-analytic',

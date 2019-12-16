@@ -14,6 +14,12 @@
  * limitations under the License.
  */
 
-export interface Serializable<T> {
-    deserialize(input: object): T;
+export interface UIMappingDetail {
+
+    label: string;
+    userInputType: string;
+    parameterName: string;
+    inputClass: string;
+    currentValue: any;
+
 }

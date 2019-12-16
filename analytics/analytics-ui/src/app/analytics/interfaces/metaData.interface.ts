@@ -14,18 +14,9 @@
  * limitations under the License.
  */
 
-import { Serializable } from './serializable.interface';
+export interface MetaData {
 
-export class OutputVisualisation implements Serializable<OutputVisualisation> {
+    icon: string;
+    colour: string;
 
-    outputAdapter: string;
-    visualisationType: string;
-
-    deserialize(input: any): OutputVisualisation {
-
-        this.outputAdapter = input.outputAdapter;
-        this.visualisationType = input.visualisationType;
-
-        return this;
-    }
 }
