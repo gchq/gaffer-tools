@@ -92,7 +92,7 @@ export class AnalyticsService {
 
     operation.parameters = this.mapParams();
 
-    let operationChain = this.createOpChain(operation);
+    const operationChain = this.createOpChain(operation);
 
     // Clear the current results
     this.results.clear();
@@ -120,7 +120,7 @@ export class AnalyticsService {
       }
       return parameters;
     }
-  }
+  };
 
   createOpChain = function(operation) {
     // Create an operation chain from the operation
@@ -140,7 +140,7 @@ export class AnalyticsService {
       });
     }
     return operationChain;
-  }
+  };
 
   /** Get the analytics from the server */
   getAnalytics = function(): Observable<object> {
