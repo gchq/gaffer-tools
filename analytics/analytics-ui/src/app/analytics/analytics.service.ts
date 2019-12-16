@@ -103,9 +103,8 @@ export class AnalyticsService {
     });
   };
 
+  /** Get a map of the parameters and their values. */
   mapParams = function() {
-    // Get a map of the parameters and their values.
-    // Make sure iterable parameters are in the correct form
     if (this.analytic.uiMapping != null) {
       const parameters = {};
       const parameterKeys = Array.from(this.analytic.uiMapping.keys());
@@ -122,8 +121,8 @@ export class AnalyticsService {
     }
   };
 
+  /** Create an operation chain from the operation */
   createOpChain = function(operation) {
-    // Create an operation chain from the operation
     const operationChain = {
       class: OPERATION_CHAIN_CLASS,
       operations: []
