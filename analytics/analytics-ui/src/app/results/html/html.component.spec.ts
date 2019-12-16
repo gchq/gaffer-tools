@@ -28,7 +28,7 @@ import {
 import { By } from '@angular/platform-browser';
 
 import { HtmlComponent } from './html.component';
-import { AnalyticsService } from 'src/app/services/analytics.service';
+import { AnalyticsService } from 'src/app/analytics/analytics.service';
 import { ResultsService } from 'src/app/services/results.service';
 
 const htmlData = '<img src="https://cdn.pixabay.com/photo/2018/05/07/10/48/husky-3380548__340.jpg">';

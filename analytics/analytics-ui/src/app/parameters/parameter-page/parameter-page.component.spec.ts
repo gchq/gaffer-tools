@@ -19,7 +19,7 @@ import { Component, Input } from '@angular/core';
 import { MatCardModule, MatProgressSpinnerModule } from '@angular/material';
 import { FormsModule } from '@angular/forms';
 
-import { AnalyticsService } from '../../services/analytics.service';
+import { AnalyticsService } from '../../analytics/analytics.service';
 import { ParameterInputComponent } from './parameter-page.component';
 
 @Component({

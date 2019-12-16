@@ -16,7 +16,7 @@
 
 import { Component, OnInit, Injectable } from '@angular/core';
 import { ErrorService } from '../services/error.service';
-import { AnalyticsService } from '../services/analytics.service';
+import { AnalyticsService } from './analytics.service';
 import { Analytic } from './classes/analytic.class';
 import { UIMappingDetail } from './classes/uiMappingDetail.class';
 import { MetaData } from './classes/metaData.class';
@@ -52,11 +52,11 @@ export class AnalyticsComponent implements OnInit {
       },
       // On error
       err => {
-          this.error.handle(
-            'Failed to load the analytics, see the console for details',
-            null,
-            err
-          );
+        this.error.handle(
+          'Failed to load the analytics, see the console for details',
+          null,
+          err
+        );
       }
     );
   };

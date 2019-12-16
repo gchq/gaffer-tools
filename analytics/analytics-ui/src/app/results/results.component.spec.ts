@@ -29,7 +29,7 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { Location, LocationStrategy, PathLocationStrategy } from '@angular/common';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
-import { AnalyticsService } from '../services/analytics.service';
+import { AnalyticsService } from '../analytics/analytics.service';
 import { ResultsComponent } from './results.component';
 import { ResultsService } from '../services/results.service';
 import { ErrorService } from '../services/error.service';

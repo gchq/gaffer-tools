@@ -36,7 +36,7 @@ import { AnalyticsModule } from './analytics/analytics.module';
 import { ParametersModule } from './parameters/parameters.module';
 import { ResultsModule } from './results/results.module';
 
-import { AnalyticsService } from './services/analytics.service';
+import { AnalyticsService } from './analytics/analytics.service';
 import { ErrorService } from './services/error.service';
 import { EndpointService } from './services/endpoint-service';
 import { QueryService } from './services/query.service';

@@ -19,14 +19,14 @@ import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 
 import { AnalyticsService } from './analytics.service';
-import { QueryService } from './query.service';
-import { ErrorService } from './error.service';
-import { ResultsService } from './results.service';
-import { EndpointService } from './endpoint-service';
-import { deserialisedTestAnalytic, serialisedTestAnalytic } from './test/test.analytic';
+import { QueryService } from '../services/query.service';
+import { ErrorService } from '../services/error.service';
+import { ResultsService } from '../services/results.service';
+import { EndpointService } from '../services/endpoint-service';
+import { deserialisedTestAnalytic, serialisedTestAnalytic } from '../services/test/test.analytic';
 import { cloneDeep, clone } from 'lodash';
-import { UIMappingDetail } from '../analytics/classes/uiMappingDetail.class';
-import { Analytic } from '../analytics/classes/analytic.class';
+import { UIMappingDetail } from './classes/uiMappingDetail.class';
+import { Analytic } from './classes/analytic.class';
 
 class QueryServiceStub {
   executeQuery = (operation, onSuccess) => {
@@ -146,7 +146,7 @@ describe('AnalyticsService', () => {
       },
       {
         class: 'uk.gov.gchq.gaffer.operation.impl.Map',
-        functions: [ 'test output adapter' ]
+        functions: ['test output adapter']
       }]
     };
 

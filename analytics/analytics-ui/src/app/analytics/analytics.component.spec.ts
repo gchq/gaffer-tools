@@ -30,7 +30,7 @@ import { AnalyticFilterPipe } from './analytic-filter.pipe';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { AnalyticsComponent } from './analytics.component';
-import { AnalyticsService } from '../services/analytics.service';
+import { AnalyticsService } from './analytics.service';
 import { ErrorService } from '../services/error.service';
 import { deserialisedTestAnalytic, serialisedTestAnalytic } from '../services/test/test.analytic';
 

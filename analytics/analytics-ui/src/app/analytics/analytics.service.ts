@@ -19,11 +19,11 @@ import { Observable } from 'rxjs';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Router } from '@angular/router';
 
-import { QueryService } from './query.service';
-import { ErrorService } from './error.service';
-import { ResultsService } from './results.service';
-import { EndpointService } from './endpoint-service';
-import { Analytic } from '../analytics/classes/analytic.class';
+import { QueryService } from '../services/query.service';
+import { ErrorService } from '../services/error.service';
+import { ResultsService } from '../services/results.service';
+import { EndpointService } from '../services/endpoint-service';
+import { Analytic } from './classes/analytic.class';
 
 import { startsWith } from 'lodash';
 
