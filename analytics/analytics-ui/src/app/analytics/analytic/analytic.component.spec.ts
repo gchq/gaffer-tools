@@ -21,7 +21,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { empty, of } from 'rxjs';
 
 import { AnalyticComponent } from './analytic.component';
-import { AnalyticsService } from '../../services/analytics.service';
+import { AnalyticsService } from '../analytics.service';
 import { HttpClient } from '@angular/common/http';
 
 class RouterStub {

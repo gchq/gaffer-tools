@@ -150,20 +150,13 @@ describe('TableComponent', () => {
     expect(component.data.results.data).toEqual(fullResultsData);
   });
 
-  describe('removeColumn()', () => {
-    it('should hide an existing column', () => {
-      component.columnsToDisplay = ['1', '2', '3'];
-      component.selected = '2';
-      component.removeColumn();
+  describe('refineColumns()', () => {
+    it('should refine to selected column', () => {
+      component.displayedColumns = ['1', '2', '3'];
+      component.selected = ['2'];
+      component.refineColumns();
       fixture.detectChanges();
-      expect(component.columnsToDisplay).toEqual(['1', '3']);
-    });
-    it('should do nothing if column is already hidden', () => {
-      component.columnsToDisplay = ['1', '3'];
-      component.selected = '2';
-      component.removeColumn();
-      fixture.detectChanges();
-      expect(component.columnsToDisplay).toEqual(['1', '3']);
+      expect(component.displayedColumns).toEqual(['2']);
     });
   });
 

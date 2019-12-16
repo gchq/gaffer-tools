@@ -25,7 +25,7 @@ import { By } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { ParameterFormComponent } from './parameter-form.component';
-import { AnalyticsService } from '../../services/analytics.service';
+import { AnalyticsService } from '../../analytics/analytics.service';
 
 class AnalyticsServiceStub {
   updateAnalytic = params => { };

@@ -15,7 +15,7 @@
  */
 
 import { Component, OnInit, Injectable } from '@angular/core';
-import { AnalyticsService } from '../../services/analytics.service';
+import { AnalyticsService } from '../../analytics/analytics.service';
 
 @Component({
   selector: 'app-parameter-page',

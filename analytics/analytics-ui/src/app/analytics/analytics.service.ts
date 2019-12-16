@@ -19,11 +19,11 @@ import { Observable } from 'rxjs';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Router } from '@angular/router';
 
-import { QueryService } from './query.service';
-import { ErrorService } from './error.service';
-import { ResultsService } from './results.service';
-import { EndpointService } from './endpoint-service';
-import { Analytic } from '../analytics/classes/analytic.class';
+import { QueryService } from '../services/query.service';
+import { ErrorService } from '../services/error.service';
+import { ResultsService } from '../services/results.service';
+import { EndpointService } from '../services/endpoint-service';
+import { Analytic } from './classes/analytic.class';
 
 import { startsWith } from 'lodash';
 
@@ -90,8 +90,21 @@ export class AnalyticsService {
       parameters: null
     };
 
-    // Get a map of the parameters and their values.
-    // Make sure iterable parameters are in the correct form
+    operation.parameters = this.mapParams();
+
+    const operationChain = this.createOpChain(operation);
+
+    // Clear the current results
+    this.results.clear();
+
+    // Execute the operation chain and then navigate to the results page when finished loading
+    this.query.executeQuery(operationChain, () => {
+      this.router.navigate([this.analytic.analyticName, 'results']);
+    });
+  };
+
+  /** Get a map of the parameters and their values. */
+  mapParams = function() {
     if (this.analytic.uiMapping != null) {
       const parameters = {};
       const parameterKeys = Array.from(this.analytic.uiMapping.keys());
@@ -104,10 +117,12 @@ export class AnalyticsService {
             this.analytic.uiMapping.get(parameterKey).currentValue;
         }
       }
-      operation.parameters = parameters;
+      return parameters;
     }
+  };
 
-    // Create an operation chain from the operation
+  /** Create an operation chain from the operation */
+  createOpChain = function(operation) {
     const operationChain = {
       class: OPERATION_CHAIN_CLASS,
       operations: []
@@ -123,14 +138,7 @@ export class AnalyticsService {
         ]
       });
     }
-
-    // Clear the current results
-    this.results.clear();
-
-    // Execute the operation chain and then navigate to the results page when finished loading
-    this.query.executeQuery(operationChain, () => {
-      this.router.navigate([this.analytic.analyticName, 'results']);
-    });
+    return operationChain;
   };
 
   /** Get the analytics from the server */
