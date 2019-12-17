@@ -16,20 +16,19 @@
 
 import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms'; // <-- NgModel lives here
-import { NgModule, LOCALE_ID } from '@angular/core';
+import { NgModule } from '@angular/core';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { UpgradeModule } from '@angular/upgrade/static';
 import { LayoutModule } from '@angular/cdk/layout';
 import { FlexLayoutModule } from '@angular/flex-layout';
-import { AppRoutingModule } from './app-routing.module';
 import { HttpClientModule } from '@angular/common/http';
 import {
   MatToolbarModule,
   MatButtonModule,
   MatIconModule
 } from '@angular/material';
-import { ToastrModule } from 'ngx-toastr';
 
+import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { NavComponent } from './nav/nav.component';
 import { AnalyticsModule } from './analytics/analytics.module';
@@ -57,7 +56,6 @@ import { ResultsService } from './services/results.service';
     BrowserAnimationsModule,
     LayoutModule,
     FlexLayoutModule,
-    ToastrModule.forRoot(),
     ResultsModule,
     AnalyticsModule,
     ParametersModule,

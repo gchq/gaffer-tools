@@ -33,7 +33,7 @@ const uiMappingDetail2 = {
 
 const uiMapping1 = {
     key1: uiMappingDetail1,
-    key2: uiMappingDetail2,
+    key2: uiMappingDetail2
 };
 
 const metaData1 = {
@@ -46,23 +46,21 @@ const outputVisualisation1 = {
     visualisationType: 'test visualisation type'
 };
 
-const options1 = new Map<string, string>();
-options1.set('option1', 'option1Value');
-
-const serialisedTestAnalytic = {
-    analyticName: 'test analytic name',
-    operationName: 'test operation name',
-    description: 'test description',
-    creatorId: 'test creator id',
-    readAccessRoles: [],
-    writeAccessRoles: [],
-    uiMapping: uiMapping1,
-    options: options1,
-    metaData: metaData1,
-    outputVisualisation: outputVisualisation1,
-    score: 5
+const options1 = {
+    option1: 'option1value'
 };
-export { serialisedTestAnalytic };
 
-const deserialisedTestAnalytic = new Analytic().deserialize(serialisedTestAnalytic);
-export { deserialisedTestAnalytic };
+const testAnalytic = {
+    analyticName : 'test analytic name',
+    operationName : 'test operation name',
+    description : 'test description',
+    creatorId : 'test creator id',
+    readAccessRoles : [],
+    writeAccessRoles : [],
+    uiMapping : uiMapping1,
+    options : options1,
+    metaData : metaData1,
+    outputVisualisation : outputVisualisation1,
+    score : 5
+};
+export { testAnalytic };

@@ -15,12 +15,13 @@
  */
 
 import { Component, OnInit, Injectable } from '@angular/core';
+
 import { ErrorService } from '../services/error.service';
 import { AnalyticsService } from './analytics.service';
-import { Analytic } from './classes/analytic.class';
-import { UIMappingDetail } from './classes/uiMappingDetail.class';
-import { MetaData } from './classes/metaData.class';
-import { OutputVisualisation } from './classes/outputVisualisation.class';
+import { Analytic } from './interfaces/analytic.interface';
+import { UIMappingDetail } from './interfaces/uiMappingDetail.interface';
+import { MetaData } from './interfaces/metaData.interface';
+import { OutputVisualisation } from './interfaces/outputVisualisation.interface';
 
 @Component({
   selector: 'app-analytics',
@@ -29,7 +30,7 @@ import { OutputVisualisation } from './classes/outputVisualisation.class';
 })
 @Injectable()
 export class AnalyticsComponent implements OnInit {
-  analytics: Analytic[];
+  analytics;
   constructor(
     private analyticsService: AnalyticsService,
     private error: ErrorService
@@ -44,11 +45,7 @@ export class AnalyticsComponent implements OnInit {
     this.analyticsService.getAnalytics().subscribe(
       // On success
       analytics => {
-        const deserialisedAnalytics = new Array<Analytic>();
-        analytics.forEach(analytic => {
-          deserialisedAnalytics.push(new Analytic().deserialize(analytic));
-        });
-        this.analytics = deserialisedAnalytics;
+        this.analytics = analytics;
       },
       // On error
       err => {

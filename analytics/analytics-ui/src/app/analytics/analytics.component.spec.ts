@@ -32,7 +32,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AnalyticsComponent } from './analytics.component';
 import { AnalyticsService } from './analytics.service';
 import { ErrorService } from '../services/error.service';
-import { deserialisedTestAnalytic, serialisedTestAnalytic } from '../services/test/test.analytic';
+import { testAnalytic } from '../services/test/test.analytic';
 
 class AnalyticsServiceStub {
   getAnalytics = () => {
@@ -93,9 +93,9 @@ describe('AnalyticsComponent', () => {
   });
 
   it('should store the analytics it loads from the server', fakeAsync(() => {
-    const testData = [deserialisedTestAnalytic];
+    const testData = [testAnalytic];
     const analyticArray = new Array<object>();
-    analyticArray.push(serialisedTestAnalytic);
+    analyticArray.push(testAnalytic);
     const analyticsService = TestBed.get(AnalyticsService);
     spyOn(analyticsService, 'getAnalytics').and.returnValue(
       from([analyticArray])

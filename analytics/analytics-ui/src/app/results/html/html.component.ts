@@ -15,6 +15,7 @@
  */
 
 import { Component, AfterViewInit } from '@angular/core';
+
 import { ResultsService } from 'src/app/services/results.service';
 
 @Component({
