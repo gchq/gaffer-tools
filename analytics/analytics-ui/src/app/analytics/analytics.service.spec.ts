@@ -155,6 +155,6 @@ describe('AnalyticsService', () => {
 
     service.executeAnalytic();
 
-    expect(spy).toHaveBeenCalledWith(operation, jasmine.any(Function));
+    expect(spy).toHaveBeenCalledWith(operation, jasmine.any(Function), jasmine.any(Function));
   });
 });
