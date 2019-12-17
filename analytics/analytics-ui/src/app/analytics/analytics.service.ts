@@ -56,7 +56,7 @@ export class AnalyticsService {
     return this.analytic.outputVisualisation.visualisationType;
   }
   /** Update the value of the given parameter of the analytic operation */
-  updateAnalytic = function(newValue, parameterName) {
+  updateAnalytic(newValue: any, parameterName: any) {
 
     const parameterKeys = Object.keys(this.analytic.uiMapping);
     // Look for the parameter in the list of parameters and set the new current value
@@ -67,10 +67,10 @@ export class AnalyticsService {
       }
     }
     return;
-  };
+  }
 
   /** Initialise the analytic current values */
-  initialiseAnalytic = function(analytic) {
+  initialiseAnalytic(analytic: any) {
     const parameterKeys = Object.keys(analytic.uiMapping);
     for (const parameterKey of parameterKeys) {
       if (analytic.uiMapping[parameterKey].userInputType === 'boolean') {
@@ -80,10 +80,10 @@ export class AnalyticsService {
       }
     }
     this.analytic = analytic;
-  };
+  }
 
   /** Execute the analytic operation */
-  executeAnalytic = function() {
+  executeAnalytic(): any {
     const operation = {
       class: this.NAMED_OPERATION_CLASS,
       operationName: this.analytic.operationName,
@@ -101,10 +101,10 @@ export class AnalyticsService {
     this.query.executeQuery(operationChain, () => {
       this.router.navigate([this.analytic.analyticName, 'results']);
     });
-  };
+  }
 
   /** Get a map of the parameters and their values. */
-  mapParams = function() {
+  mapParams() {
     if (this.analytic.uiMapping != null) {
       const parameters = {};
       const parameterKeys = Object.keys(this.analytic.uiMapping);
@@ -119,10 +119,10 @@ export class AnalyticsService {
       }
       return parameters;
     }
-  };
+  }
 
   /** Create an operation chain from the operation */
-  createOpChain = function(operation) {
+  createOpChain(operation: any) {
     const operationChain = {
       class: OPERATION_CHAIN_CLASS,
       operations: []
@@ -139,10 +139,10 @@ export class AnalyticsService {
       });
     }
     return operationChain;
-  };
+  }
 
   /** Get the analytics from the server */
-  getAnalytics = function(): Observable<Analytic[]> {
+  getAnalytics(): Observable<Analytic[]> {
     const operation = {
       class: 'uk.gov.gchq.gaffer.analytic.operation.GetAllAnalytics'
     };
@@ -156,5 +156,5 @@ export class AnalyticsService {
       queryUrl = 'http://' + queryUrl;
     }
     return this.http.post(queryUrl, operation, { headers: '{headers}' });
-  };
+  }
 }
