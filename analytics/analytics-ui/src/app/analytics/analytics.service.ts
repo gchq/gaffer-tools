@@ -147,14 +147,14 @@ export class AnalyticsService {
       class: 'uk.gov.gchq.gaffer.analytic.operation.GetAllAnalytics'
     };
     // Configure the http headers
-    let headers = new HttpHeaders();
-    headers = headers.set('Content-Type', 'application/json; charset=utf-8');
+    let header = new HttpHeaders();
+    header = header.set('Content-Type', 'application/json; charset=utf-8');
     // Make the http requests
     let queryUrl =
       this.endpoint.getRestEndpoint() + '/graph/operations/execute';
     if (!startsWith(queryUrl, 'http')) {
       queryUrl = 'http://' + queryUrl;
     }
-    return this.http.post(queryUrl, operation, { headers: '{headers}' });
+    return this.http.post<Analytic[]>(queryUrl, operation, { headers: header });
   }
 }
