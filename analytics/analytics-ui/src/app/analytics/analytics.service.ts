@@ -100,7 +100,7 @@ export class AnalyticsService {
     // Execute the operation chain and then navigate to the results page when finished loading
     this.query.executeQuery(operationChain, () => {
       this.router.navigate([this.analytic.analyticName, 'results']);
-    });
+    }, () => { });
   }
 
   /** Get a map of the parameters and their values. */
