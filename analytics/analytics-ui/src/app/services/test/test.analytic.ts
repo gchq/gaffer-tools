@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { Analytic } from 'src/app/analytics/classes/analytic.class';
+import { Analytic } from '../../analytics/interfaces/analytic.interface';
 
 const uiMappingDetail1 = {
     label: 'Label',
@@ -51,16 +51,16 @@ const options1 = {
 };
 
 const testAnalytic = {
-    analyticName : 'test analytic name',
-    operationName : 'test operation name',
-    description : 'test description',
-    creatorId : 'test creator id',
-    readAccessRoles : [],
-    writeAccessRoles : [],
-    uiMapping : uiMapping1,
-    options : options1,
-    metaData : metaData1,
-    outputVisualisation : outputVisualisation1,
-    score : 5
+    analyticName: 'test analytic name',
+    operationName: 'test operation name',
+    description: 'test description',
+    creatorId: 'test creator id',
+    readAccessRoles: [],
+    writeAccessRoles: [],
+    uiMapping: uiMapping1,
+    options: options1,
+    metaData: metaData1,
+    outputVisualisation: outputVisualisation1,
+    score: 5
 };
 export { testAnalytic };
