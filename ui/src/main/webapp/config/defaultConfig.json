@@ -28,6 +28,12 @@
     "key": "savedResults",
     "timeToLiveInDays": 7
   },
+  "table": {
+    "truncation": {
+      "maxLength": 500,
+      "text": "..."
+    }
+  },
   "types": {
     "java.util.Date": {
       "fields": [
