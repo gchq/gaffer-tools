@@ -7,8 +7,7 @@
     </app-query>
   </mat-card>
   <div fxLayout="row" fxLayoutAlign="end none" class="execute">
-    <mat-progress-spinner *ngIf="loading" class="example-margin" style="margin-right:10px" [color]="color" [mode]="mode"
-      [diameter]="40">
+    <mat-progress-spinner *ngIf="loading" class="spinner" [color]="color" [mode]="mode" [diameter]="40">
     </mat-progress-spinner>
     <button mat-raised-button color="primary" id="execute-analytic" (click)="executeAnalytic()"
       aria-label="Execute analytic">EXECUTE
