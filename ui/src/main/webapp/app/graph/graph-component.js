@@ -140,6 +140,7 @@ function GraphController($q, graph, config, error, loading, query, operationOpti
         events.unsubscribe('resultsCleared', vm.reset);
 
         if (cytoscapeGraph) {
+            saveGraph();
             cytoscapeGraph.destroy();
         }
     }
@@ -151,14 +152,34 @@ function GraphController($q, graph, config, error, loading, query, operationOpti
         createCytoscapeGraph().then(function(cy) {
             cytoscapeGraph = cy;
             generateStylesheets();
-            vm.reset()
+
+            if(graph.hasGraphJson()) {
+                restoreGraph();
+                cytoscapeGraph.elements().lock();
+                vm.update(results.get());
+                cytoscapeGraph.elements().unlock();
+            } else {
+                vm.reset();
+            }
             vm.graphLoading = false;
             var searchTerm = graph.getSearchTerm();
-            
             if (searchTerm !== null && searchTerm !== undefined && searchTerm !== "") {
                 vm.filter(searchTerm)
             }
         });
+    }
+
+    var saveGraph = function() {
+        if(cytoscapeGraph) {
+            graph.setGraphJson(cytoscapeGraph.json());
+        }
+    }
+
+    var restoreGraph = function() {
+        if(graph.hasGraphJson() && cytoscapeGraph) {
+            cytoscapeGraph.json(graph.getGraphJson());
+            cytoscapeGraph.nodes().removeClass("filtered"); // seems to be a bug in cytoscape json
+        }
     }
     
     /**
@@ -416,6 +437,7 @@ function GraphController($q, graph, config, error, loading, query, operationOpti
                 cytoscapeGraph.getElementById(id).data(elementsToMergeData[id]);
             }
 
+            removePreviouslyRemovedElements();
             vm.redraw();
         });
 
@@ -598,6 +620,8 @@ function GraphController($q, graph, config, error, loading, query, operationOpti
      */
     vm.reset = function() {
         vm.clear();
+        graph.setRemovedElements([]);
+        saveGraph();
         vm.update(results.get());
     }
 
@@ -610,7 +634,7 @@ function GraphController($q, graph, config, error, loading, query, operationOpti
         searchTerm = searchTerm.toLowerCase();
         cytoscapeGraph.batch(function() {
             var nodes = cytoscapeGraph.nodes();
-            for(var i in nodes) {
+            for(var i = 0; i < nodes.length; i++) {
                 if(nodes[i].data && nodes[i].data('id')) {
                     if(nodes[i].data('id').toLowerCase().indexOf(searchTerm) === -1) {
                         nodes[i].addClass("filtered");
@@ -630,9 +654,24 @@ function GraphController($q, graph, config, error, loading, query, operationOpti
      * Removes every selected element in the graph.
      */
     vm.removeSelected = function() {
-        cytoscapeGraph.filter(":selected").remove();
+        var removedElements = cytoscapeGraph.filter(":selected").remove();
+        for(var i = 0; i < removedElements.length; i++) {
+            graph.getRemovedElements().push(removedElements[i]);
+        }
+
         cytoscapeGraph.elements().unselect();
         vm.selectedElements.entities = [];
         vm.selectedElements.edges = [];
+    }
+
+    var removePreviouslyRemovedElements = function() {
+        var elements = cytoscapeGraph.elements();
+        for(var i = 0; i < graph.getRemovedElements().length; i++) {
+            var removedElement = graph.getRemovedElements()[i];
+            var element = elements.getElementById(removedElement.id());
+            if(element && element.id()) {
+                element.remove();
+            }
+        }
     }
 }
