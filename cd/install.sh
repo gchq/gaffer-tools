@@ -6,8 +6,11 @@ if [[ "$RELEASE" != 'true' ]]; then
     if [[ "$TRAVIS_BRANCH" == 'develop' ]] || [[ "$TRAVIS_PULL_REQUEST" != 'false' ]] && [[ "$MODULES" != 'analytics-ui' ]]; then
         # Check if Gaffer version is in maven central and build from source if not
         gaffer_version=`mvn help:evaluate -Dexpression=gaffer.version -q -DforceStdout`
-        mvn dependency:get -Dartifact=uk.gov.gchq.gaffer:gaffer2:${gaffer_version} -q
-        if [[ $? != 0 ]]; then
+        set +e
+        mvn dependency:get -Dartifact=uk.gov.gchq.gaffer:gaffer2:${gaffer_version} -q #-Dpackaging=pom
+        return_value=$?
+        set -e
+        if [[ ${return_value} -ne 0 ]]; then
             echo "Building Koryphe from source"
             cd .. && git clone https://github.com/gchq/koryphe.git && cd koryphe && mvn install -Pquick -T2C -q
             echo "Building Gaffer from source"
