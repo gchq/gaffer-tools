@@ -92,19 +92,34 @@
 
                     <div ng-repeat="vertexLabel in ctrl.customVertexLabels track by $index">
 
-                        <h3 class="list-h3 inline margin-right" ng-click="vertexLabel.labelEdit = true" ng-show="!vertexLabel.labelEdit">{{ vertexLabel.label }}</h3>
-                        <md-input-container class="md-secondary no-errors no-margin list-h3" ng-show="vertexLabel.labelEdit">
+                        <md-input-container class="md-secondary no-errors no-margin list-h3">
                             <input type="text"
                                    ng-model="vertexLabel.label"
                                    aria-label="Edit label"
                                    ng-blur="ctrl.saveCustomVertexLabel(vertexLabel)">
                         </md-input-container>
-                        <p class="list-p inline margin-right" ng-click="vertexLabel.vertexEdit = true" ng-show="!vertexLabel.vertexEdit">{{ vertexLabel.vertex }}</p>
-                        <md-input-container class="md-secondary no-errors no-margin list-p" ng-show="vertexLabel.vertexEdit">
+
+                        <md-input-container class="md-secondary no-errors no-margin list-p">
                             <input type="text"
                                    ng-model="vertexLabel.vertex"
                                    aria-label="Edit vertex"
                                    ng-blur="ctrl.saveCustomVertexLabel(vertexLabel)">
+                        </md-input-container>
+
+                        <md-input-container class="md-secondary no-errors no-margin list-p">
+                            <md-select ng-model="vertexLabel.shape" md-selected-text="vertexLabel.shape" ng-change="ctrl.saveCustomVertexLabel(vertexLabel)">
+                                <md-option ng-repeat="shape in ctrl.vertexShapes">
+                                    {{shape}}
+                                </md-option>
+                            </md-select>
+                        </md-input-container>
+
+                        <md-input-container class="md-secondary no-errors no-margin list-p">
+                            <md-select ng-model="vertexLabel.colour" md-selected-text="vertexLabel.colour" ng-change="ctrl.saveCustomVertexLabel(vertexLabel)">
+                                <md-option ng-repeat="colour in ctrl.vertexColours">
+                                    {{colour}}
+                                </md-option>
+                            </md-select>
                         </md-input-container>
 
                         <md-button class="md-primary md-icon-button" ng-click="ctrl.deleteCustomVertexLabel(vertexLabel.id)">

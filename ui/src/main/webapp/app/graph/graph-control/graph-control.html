@@ -16,6 +16,13 @@
     <div flex="70" layout="row" layout-align="end end">
         <div layout="row" class="on-top-of-graph">
             <md-button class="md-fab md-mini" id="new-query"
+                       ng-click="ctrl.customiseVertex()">
+                <md-icon md-svg-icon="grade"></md-icon>
+                <md-tooltip md-direction="top">
+                    Customise
+                </md-tooltip>
+            </md-button>
+            <md-button class="md-fab md-mini" id="new-query"
                        ng-click="ctrl.goToQuery()">
                 <md-icon md-svg-icon="query"></md-icon>
                 <md-tooltip md-direction="top">

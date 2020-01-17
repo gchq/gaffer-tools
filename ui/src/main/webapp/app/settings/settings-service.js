@@ -26,6 +26,33 @@ angular.module('app').factory('settings', ['$cookies', function($cookies) {
         "timeToLiveInDays": 30
     };
 
+    settings.vertexShapes = [
+        "Rectangle",
+        "Triangle",
+        "Diamond",
+        "Star",
+        "Vee",
+        "Ellipse",
+        "Pentagon",
+        "Hexagon",
+        "Octagon",
+    ];
+
+    settings.vertexColours = [
+        "Red",
+        "Orange",
+        "Yellow",
+        "Green",
+        "Blue",
+        "Pink",
+        "Purple",
+        "Grey",
+        "Black"
+    ];
+
+    settings.defaultShape = settings.vertexShapes[0];
+    settings.defaultColour = settings.vertexColours[0];
+
     settings.getResultLimit = function() {
         return getSetting("resultLimit", settingsDefaultConfig.resultLimit);
     }
@@ -66,7 +93,7 @@ angular.module('app').factory('settings', ['$cookies', function($cookies) {
         var customVertexLabelsArray = settings.getCustomVertexLabels();
         var customVertexLabelsMap = {}
         for(var i in customVertexLabelsArray) {
-            customVertexLabelsMap[customVertexLabelsArray[i].vertex] = customVertexLabelsArray[i].label;
+            customVertexLabelsMap[customVertexLabelsArray[i].vertex] = customVertexLabelsArray[i];
         }
         return customVertexLabelsMap;
     }

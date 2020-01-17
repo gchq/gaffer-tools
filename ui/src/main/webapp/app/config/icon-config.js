@@ -50,5 +50,6 @@ angular.module('app').config(['$mdIconProvider', function($mdIconProvider) {
         .icon('list', 'app/img/material-icons/list.svg')
         .icon('edit', 'app/img/material-icons/edit.svg')
         .icon('hide', 'app/img/material-icons/visibility_off.svg')
-        .icon('clear', 'app/img/material-icons/clear.svg');
+        .icon('clear', 'app/img/material-icons/clear.svg')
+        .icon('grade', 'app/img/material-icons/grade.svg');
 }]);

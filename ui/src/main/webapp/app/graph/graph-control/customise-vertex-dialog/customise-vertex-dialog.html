@@ -1,0 +1,41 @@
+<md-dialog>
+    <md-toolbar>
+        <div class="md-toolbar-tools">
+            <span>
+                <h2 class="md-headline">Customise Vertex: {{vertex}}</h2>
+            </span>
+        </div>
+    </md-toolbar>
+    <md-dialog-content>
+        <div class="md-dialog-content">
+            <ng-form name="customiseVertex">
+                <md-input-container class="md-secondary no-errors no-margin list-h3">
+                    <input type="text"
+                           ng-model="label"
+                           aria-label="Edit label">
+                </md-input-container>
+
+                <md-input-container class="md-secondary no-errors no-margin list-p">
+                    <md-select ng-model="shape" md-selected-text="shape">
+                        <md-option ng-repeat="shape in vertexShapes">
+                            {{shape}}
+                        </md-option>
+                    </md-select>
+                </md-input-container>
+
+                <md-input-container class="md-secondary no-errors no-margin list-p">
+                    <md-select ng-model="colour" md-selected-text="colour">
+                        <md-option ng-repeat="colour in vertexColours">
+                            {{colour}}
+                        </md-option>
+                    </md-select>
+                </md-input-container>
+            </ng-form>
+        </div>
+    </md-dialog-content>
+    <md-dialog-actions layout="row" layout-align="end">
+        <md-button id="cancel" ng-click="cancel()">Cancel</md-button>
+        <md-button id="submit" ng-click="save()" class="md-primary">Save
+        </md-button>
+    </md-dialog-actions>
+</md-dialog>

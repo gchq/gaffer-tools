@@ -40,6 +40,19 @@ function GraphController($q, graph, config, error, loading, query, operationOpti
     var cytoscapeGraph;    // Internal graph model which gets reloaded every time graph page is loaded.
 
     var customVertexLabels = settings.getCustomVertexLabelsMap();
+    var lastSelectedVertex;
+
+    var colours = {
+        "Red": "#f44336",
+        "Orange": "#ff9100",
+        "Yellow": "#ffeb3b",
+        "Green": "#4caf50",
+        "Blue": "#2196f3",
+        "Pink": "#ff6cd5",
+        "Purple": "#9c27b0",
+        "Grey": "#999999",
+        "Black": "#000000",
+    }
 
     var configuration = {
         name: 'cytoscape-ngraph.forcelayout',
@@ -330,7 +343,8 @@ function GraphController($q, graph, config, error, loading, query, operationOpti
     var selectNode = function(element) {
         var id = element.id();
         common.pushValueIfUnique(id, vm.selectedElements.entities);
-
+        graph.setSelectedElements(vm.selectedElements);
+        graph.setLastSelectedVertex(element);
 
         schema.get().then(function(gafferSchema) {
             if (typeof id === 'string') {
@@ -347,12 +361,14 @@ function GraphController($q, graph, config, error, loading, query, operationOpti
 
     var selectEdge = function(element) {
         common.pushValueIfUnique(element.id(), vm.selectedElements.edges);
+        graph.setSelectedElements(vm.selectedElements);
         $scope.$apply();
     }
 
     var deselectNode = function(element) {
         var id = element.id();
         vm.selectedElements.entities.splice(vm.selectedElements.entities.indexOf(id), 1);
+        graph.setSelectedElements(vm.selectedElements);
 
         schema.get().then(function(gafferSchema) {
             if (typeof id === 'string') {
@@ -370,6 +386,7 @@ function GraphController($q, graph, config, error, loading, query, operationOpti
     var deselectEdge = function(element) {
         var id = element.id();
         vm.selectedElements.edges.splice(vm.selectedElements.edges.indexOf(id), 1);
+        graph.setSelectedElements(vm.selectedElements);
         $scope.$apply();
     }
 
@@ -420,9 +437,61 @@ function GraphController($q, graph, config, error, loading, query, operationOpti
                 cytoscapeGraph.getElementById(id).data(elementsToMergeData[id]);
             }
 
+            vm.updateElementData();
             vm.redraw();
         });
 
+    }
+
+    vm.updateElementData = function() {
+        customVertexLabels = settings.getCustomVertexLabelsMap();
+        var nodes = cytoscapeGraph.nodes();
+        if(nodes) {
+            nodes.forEach(function(node){
+                node.data().label = getLabel(node.data().originalLabel);
+                var nodeStyle = getNodeStyle(node.data());
+                node.css(nodeStyle);
+            });
+        }
+    }
+
+    var getNodeStyle = function(nodeData) {
+        var nodeStyle = {};
+        var nodeLabel = nodeData.originalLabel;
+        if(!nodeLabel) {
+            nodeLabel = nodeData.label;
+        }
+        if(customVertexLabels && nodeLabel in customVertexLabels) {
+            var customVertex = customVertexLabels[nodeLabel];
+            nodeStyle = angular.merge(nodeStyle, getCustomNodeStyle(customVertex));
+        }
+        return nodeStyle;
+    }
+
+    var getCustomNodeStyle = function(customVertex) {
+        if(customVertex) {
+            return {
+              "border-width": 4,
+              "border-color": getColour(customVertex.colour),
+              "shape": getShape(customVertex.shape)
+            }
+        }
+
+        return {};
+    }
+
+    var getShape = function(shape) {
+        if(shape) {
+            return shape.toLowerCase();
+        }
+        return "ellipse";
+    }
+
+    var getColour = function(colourLabel) {
+        if(colourLabel in colours) {
+            return colours[colourLabel];
+        }
+        return "#000000";
     }
 
     var addVertices = function(elementsToAdd, elementsToMergeData, data) {
@@ -467,18 +536,26 @@ function GraphController($q, graph, config, error, loading, query, operationOpti
         return createVertexData(entity.vertex, vertexType, true);
     }
 
-    var getLabel = function(vertex) {
-        var shortVertex = types.getShortValue(vertex);
-        if(customVertexLabels && shortVertex in customVertexLabels) {
-            return customVertexLabels[shortVertex];
+    var getShortValue = function(vertex) {
+        return types.getShortValue(vertex);
+    }
+
+    var getLabel = function(shortValue) {
+        if(customVertexLabels && shortValue in customVertexLabels) {
+            var customVertex = customVertexLabels[shortValue];
+            if(customVertex) {
+                return customVertex.label;
+            }
         }
-        return shortVertex;
+        return shortValue;
     }
 
     var createVertexData = function(vertex, vertexTypeDefinition, isEntity) {
+        var shortValue = getShortValue(vertex);
         var data = {
             id: common.parseVertex(vertex),
-            label: getLabel(vertex)
+            label: getLabel(shortValue),
+            originalLabel: shortValue
         }
 
         // Don't set entity value to undefined or false to avoid overwriting 'true' values (which we want to keep)
@@ -512,14 +589,18 @@ function GraphController($q, graph, config, error, loading, query, operationOpti
         // Create the Id
         var id = source + "\0" + destination + "\0" + edge.directed + "\0" + edge.group;
 
+        var shortSource = getShortValue(source);
+        var shortDestination = getShortValue(destination);
         return {
             source: createVertexData(edge.source, vertexTypes.source),
             destination: createVertexData(edge.destination, vertexTypes.destination),
             edge: {
                 id: id,
-                source: getLabel(source),
-                target: getLabel(destination),
-                group: edge.group
+                source: getLabel(shortSource),
+                target: getLabel(shortDestination),
+                group: edge.group,
+                originalSource: shortSource,
+                originalTarget: shortDestination
             }
         };
     }

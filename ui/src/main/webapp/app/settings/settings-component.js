@@ -30,6 +30,11 @@ function settingsView() {
 function SettingsController(settings, schema, operationService, events, config) {
     var vm = this;
 
+    vm.vertexColours = settings.vertexColours;
+    vm.vertexShapes = settings.vertexShapes;
+    vm.defaultShape = settings.defaultShape;
+    vm.defaultColour = settings.defaultColour;
+
     vm.saveClearChainAfterExecution = function() {
         settings.setClearChainAfterExecution(vm.clearChainAfterExecution);
     }
@@ -54,13 +59,13 @@ function SettingsController(settings, schema, operationService, events, config) 
         var newLabel = {
            "label": "Custom Label",
            "vertex": "vertex value",
+           "shape": defaultShape,
+           "colour": defaultColour,
            "id": String(new Date().getTime()) + Math.random(),
-           "timestamp": String(new Date().getTime()),
-           "edit": false
-        }
+           "timestamp": String(new Date().getTime())
+        };
         vm.customVertexLabels.unshift(newLabel);
         settings.setCustomVertexLabels(vm.customVertexLabels);
-        newLabel.edit = true;
     }
 
     vm.deleteCustomVertexLabel = function(id) {

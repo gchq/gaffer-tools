@@ -28,7 +28,8 @@ function graphControl() {
             'redraw': '&',
             'reset': '&',
             'remove': '&',
-            'filter': '&'
+            'filter': '&',
+            'updateElementData': '&'
         }
     }
 }
@@ -40,7 +41,7 @@ function graphControl() {
  * @param {*} graph The graph service
  * @param {*} navigation The navigation service
  */
-function GraphControlController(graph, navigation) {
+function GraphControlController(graph, navigation, error, $mdDialog, types, settings) {
     var vm = this;
     vm.searchTerm;
 
@@ -70,5 +71,37 @@ function GraphControlController(graph, navigation) {
      */
     vm.goToQuery = function() {
         navigation.goToQuery() 
+    }
+
+    vm.customiseVertex = function() {
+        var lastSelectedVertex = graph.getLastSelectedVertex();
+        if(!lastSelectedVertex) {
+            error.handle("First select a vertex in the graph to customise it");
+        } else {
+            var customVertices = settings.getCustomVertexLabelsMap()
+            var vertexValue = lastSelectedVertex.data().originalLabel;
+            var vertexLabel = "Custom Label";
+            var vertexShape = "Rectangle";
+            var vertexColour = "Red";
+            if(vertexValue in customVertices){
+                var customVertex = customVertices[vertexValue]
+                vertexLabel = customVertex.label;
+                vertexShape = customVertex.shape;
+                vertexColour = customVertex.colour;
+            }
+            $mdDialog.show({
+                templateUrl: 'app/graph/graph-control/customise-vertex-dialog/customise-vertex-dialog.html',
+                controller: 'CustomiseVertexDialogController',
+                locals: {
+                    label: vertexLabel,
+                    vertex: vertexValue,
+                    shape: vertexShape,
+                    colour: vertexColour,
+                    onSave: vm.updateElementData
+                },
+                bindToController: true,
+                clickOutsideToClose: false
+            });
+        }
     }
 }

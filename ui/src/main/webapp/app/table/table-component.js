@@ -179,8 +179,8 @@ function TableController(schema, results, table, events, common, types, time, cs
 
     var getLabel = function(vertex) {
         var shortVertex = types.getShortValue(vertex);
-        if(customVertexLabels && shortVertex in customVertexLabels) {
-            return customVertexLabels[shortVertex];
+        if(customVertexLabels && shortVertex in customVertexLabels && customVertexLabels[shortVertex]) {
+            return customVertexLabels[shortVertex].label;
         }
         return shortVertex;
     }

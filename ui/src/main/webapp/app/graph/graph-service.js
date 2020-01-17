@@ -31,6 +31,8 @@ angular.module('app').factory('graph', function() {
 
     var searchTerm = null;
 
+    var lastSelectedVertex = null;
+
     /**
      * Gets the graph configuration
      */
@@ -84,6 +86,14 @@ angular.module('app').factory('graph', function() {
             entities: [],
             edges: []
         }
+    }
+
+    service.setLastSelectedVertex = function(vertex) {
+        lastSelectedVertex = vertex;
+    }
+
+    service.getLastSelectedVertex = function() {
+        return lastSelectedVertex;
     }
 
     return service;
