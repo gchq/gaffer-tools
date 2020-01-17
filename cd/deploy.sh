@@ -7,7 +7,7 @@ repoId="gaffer-tools"
 artifactId="gaffer-tools"
 
 if [ "$RELEASE" == 'true' ] && [ "$TRAVIS_BRANCH" == 'master' ] && [ "$TRAVIS_PULL_REQUEST" == 'false' ]; then
-    source ./install_dependencies.sh
+    ./install_dependencies.sh
     git checkout master
     mvn org.apache.maven.plugins:maven-help-plugin:2.1.1:evaluate -Dexpression=project.version
     POM_VERSION=`mvn org.apache.maven.plugins:maven-help-plugin:2.1.1:evaluate -Dexpression=project.version | grep -v '\['`
