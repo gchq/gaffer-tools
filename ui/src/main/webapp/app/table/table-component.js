@@ -38,8 +38,12 @@ function resultsTable() {
  * @param {*} csv For downloading results
  * @param {*} $mdDialog For creating chart visualisations
  */
-function TableController(schema, results, table, events, common, types, time, csv, $mdDialog, settings) {
+function TableController(schema, results, table, events, common, types, time, csv, $mdDialog, config, settings) {
     var vm = this;
+    var truncation = {
+        maxLength: 500,
+        text: "..."
+    };
     var resultsByType = [];
     vm.filteredResults = [];
     vm.data = {results:[], columns:[]};
@@ -68,6 +72,12 @@ function TableController(schema, results, table, events, common, types, time, cs
             vm.schema = {types: {}, edges: {}, entities: {}};
             loadFromCache();
             processResults(results.get());
+        });
+
+        config.get().then(function(conf) {
+            if(conf && conf.table && conf.table.truncation && conf.table.truncation) {
+                truncation = conf.table.truncation;
+            }
         });
 
         events.subscribe('resultsUpdated', onResultsUpdated);
@@ -177,14 +187,6 @@ function TableController(schema, results, table, events, common, types, time, cs
         vm.updateFilteredResults();
     }
 
-    var getLabel = function(vertex) {
-        var shortVertex = types.getShortValue(vertex);
-        if(customVertexLabels && shortVertex in customVertexLabels && customVertexLabels[shortVertex]) {
-            return customVertexLabels[shortVertex].label;
-        }
-        return shortVertex;
-    }
-
     var processElements = function(type, typePlural, idKeys, ids, groupByProperties, properties, resultsData) {
         if(resultsData[typePlural] && Object.keys(resultsData[typePlural]).length > 0) {
             resultsByType[type] = [];
@@ -199,10 +201,6 @@ function TableController(schema, results, table, events, common, types, time, cs
                             result[id] = convertValue(id, element.vertex);
                         } else {
                             result[id] = convertValue(id, element[id.toLowerCase()]);
-                        }
-
-                        if("SOURCE" === id || "DESTINATION" === id ) {
-                            result[id] = getLabel(result[id]);
                         }
                     }
                     result['result type'] = type;
@@ -320,6 +318,28 @@ function TableController(schema, results, table, events, common, types, time, cs
         }
 
         return '"' + vm.sortType + '"';
+    }
+
+    vm.shouldShowTruncation = function(value) {
+        return truncation.maxLength > 0 && value && typeof value === 'string' && value.length > truncation.maxLength;
+    }
+
+    vm.getTruncatedValue = function(value) {
+        if(vm.shouldShowTruncation(value)) {
+            return value.substring(0, truncation.maxLength - truncation.text.length);
+        }
+        return value;
+    }
+
+    vm.getTruncationText = function() {
+        return truncation.text;
+    }
+
+    vm.showValueDialog = function(name, value) {
+        $mdDialog.show($mdDialog.confirm()
+                .title('Full ' + name + ' value')
+                .textContent(value)
+                .ok('Ok'));
     }
 
     var loadFromCache = function() {

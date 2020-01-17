@@ -827,6 +827,30 @@ left blank, no feedback button will be rendered. You can specify a list of email
 }
 ```
 
+
+### Table
+
+You can also configure the way data is displayed in the table view.
+
+| field          | type                | description
+|----------------|---------------------|--------------------------------------------------------------------------
+|    truncation  |       String        | Allows you to configure how truncation is used in the table view.
+|    - maxLength |       Number        | The maximum length of a value to display, values longer will be truncated. Default is 500. Set it to -1 to disable truncation.
+|    - text      |       String        | The text to use to signal to the user that the value was truncated. Default is "..."
+
+#### Example
+
+```json
+{
+    "table": {
+        "truncation": {
+            "maxLength": 500
+            "text": "..."
+        }
+    }
+}
+```
+
 ### Operation Chain Saving
 
 Added in Gaffer UI 1.10.0, users now have the ability to save their operation chains. This uses Gaffer's Named
