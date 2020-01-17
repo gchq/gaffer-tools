@@ -33,7 +33,6 @@ const MAP_OPERATION_CLASS = 'uk.gov.gchq.gaffer.operation.impl.Map';
 // Used to store and get the selected analytic
 @Injectable()
 export class AnalyticsService {
-  analytic; // The selected analytic
 
   NAMED_OPERATION_CLASS = 'uk.gov.gchq.gaffer.named.operation.NamedOperation';
 
@@ -54,7 +53,7 @@ export class AnalyticsService {
   /** Update the value of the given parameter of the analytic operation */
   updateAnalytic(newValue: any, parameterName: any, analytic: Analytic) {
 
-    const parameterKeys = Object.keys(this.analytic.uiMapping);
+    const parameterKeys = Object.keys(analytic.uiMapping);
     // Look for the parameter in the list of parameters and set the new current value
     for (const parameterKey of parameterKeys) {
       if (parameterKey === parameterName) {
@@ -103,7 +102,7 @@ export class AnalyticsService {
   mapParams(analytic: Analytic) {
     if (analytic.uiMapping != null) {
       const parameters = {};
-      const parameterKeys = Object.keys(this.analytic.uiMapping);
+      const parameterKeys = Object.keys(analytic.uiMapping);
       for (const parameterKey of parameterKeys) {
         if (analytic.uiMapping[parameterKey].userInputType === 'iterable') {
           parameters[analytic.uiMapping[parameterKey].parameterName] =

@@ -67,9 +67,14 @@ class EndpointServiceStub {
   }
 }
 
+class AnalyticStoreServiceStub {
+  getAnalytic = () => {
+    return testAnalytic;
+  }
+}
+
 describe('AnalyticsService', () => {
   let service: AnalyticsService;
-  let store: AnalyticStoreService;
   let result;
 
   beforeEach(async(() => {
@@ -81,20 +86,13 @@ describe('AnalyticsService', () => {
         { provide: HttpClient, useClass: HttpClientStub },
         { provide: Router, useClass: RouterStub },
         { provide: ResultsService, useClass: ResultsServiceStub },
-        { provide: EndpointService, useClass: EndpointServiceStub }
+        { provide: EndpointService, useClass: EndpointServiceStub },
+        { provide: AnalyticStoreService, useClass: AnalyticStoreServiceStub }
       ]
     }).compileComponents();
 
     service = TestBed.get(AnalyticsService);
-    service.analytic = cloneDeep(testAnalytic);
-  }));
-
-  it('Should be able to get the analytic', () => {
-
-    result = store.getAnalytic();
-
-    expect(result).toEqual(testAnalytic);
-  });
+  })); gi
 
   it('Should be able to update the analytic', () => {
     const newValue = 'newValue';
@@ -112,7 +110,7 @@ describe('AnalyticsService', () => {
 
     service.updateAnalytic(newValue, parameterKey, result);
 
-    expect(service.analytic).toEqual(expectedAnalytic);
+    expect(result).toEqual(expectedAnalytic);
   });
 
   it('Should be able to clear the table results after execution', () => {
@@ -130,11 +128,11 @@ describe('AnalyticsService', () => {
 
     service.executeAnalytic(result);
 
-    expect(spy).toHaveBeenCalledWith([service.analytic.analyticName, 'results']);
+    expect(spy).toHaveBeenCalledWith([result.analyticName, 'results']);
   });
 
   it('Should be able to execute the analytic', () => {
-    service.analytic = testAnalytic;
+    result = testAnalytic;
 
     const params = {
       param1: 'value1',
