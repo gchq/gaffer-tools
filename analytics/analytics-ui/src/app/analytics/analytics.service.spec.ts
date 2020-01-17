@@ -19,6 +19,7 @@ import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 
 import { AnalyticsService } from './analytics.service';
+import { AnalyticStoreService } from './analytic-store.service';
 import { QueryService } from '../services/query.service';
 import { ErrorService } from '../services/error.service';
 import { ResultsService } from '../services/results.service';
@@ -68,6 +69,7 @@ class EndpointServiceStub {
 
 describe('AnalyticsService', () => {
   let service: AnalyticsService;
+  let store: AnalyticStoreService;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -83,15 +85,9 @@ describe('AnalyticsService', () => {
     }).compileComponents();
 
     service = TestBed.get(AnalyticsService);
-    service.analytic = cloneDeep(testAnalytic);
+    store = TestBed.get(AnalyticStoreService);
+    store.analytic = cloneDeep(testAnalytic);
   }));
-
-  it('Should be able to get the analytic', () => {
-
-    const result = service.getAnalytic();
-
-    expect(result).toEqual(testAnalytic);
-  });
 
   it('Should be able to update the analytic', () => {
     const newValue = 'newValue';
@@ -107,16 +103,16 @@ describe('AnalyticsService', () => {
     };
     expectedAnalytic.uiMapping[parameterKey] = uiMappingDetail1;
 
-    service.updateAnalytic(newValue, parameterKey);
+    service.updateAnalytic(newValue, parameterKey, store.analytic);
 
-    expect(service.analytic).toEqual(expectedAnalytic);
+    expect(store.analytic).toEqual(expectedAnalytic);
   });
 
   it('Should be able to clear the table results after execution', () => {
     const resultsService = TestBed.get(ResultsService);
     const spy = spyOn(resultsService, 'clear');
 
-    service.executeAnalytic();
+    service.executeAnalytic(store.analytic);
 
     expect(spy).toHaveBeenCalled();
   });
@@ -125,13 +121,13 @@ describe('AnalyticsService', () => {
     const router = TestBed.get(Router);
     const spy = spyOn(router, 'navigate');
 
-    service.executeAnalytic();
+    service.executeAnalytic(store.analytic);
 
-    expect(spy).toHaveBeenCalledWith([service.analytic.analyticName, 'results']);
+    expect(spy).toHaveBeenCalledWith([store.analytic.analyticName, 'results']);
   });
 
   it('Should be able to execute the analytic', () => {
-    service.analytic = testAnalytic;
+    store.analytic = testAnalytic;
 
     const params = {
       param1: 'value1',
@@ -153,7 +149,7 @@ describe('AnalyticsService', () => {
     const queryService = TestBed.get(QueryService);
     const spy = spyOn(queryService, 'executeQuery');
 
-    service.executeAnalytic();
+    service.executeAnalytic(store.analytic);
 
     expect(spy).toHaveBeenCalledWith(operation, jasmine.any(Function), jasmine.any(Function));
   });

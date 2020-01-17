@@ -31,6 +31,7 @@ import { OutputVisualisation } from './interfaces/outputVisualisation.interface'
 @Injectable()
 export class AnalyticsComponent implements OnInit {
   analytics;
+  searchText;
   constructor(
     private analyticsService: AnalyticsService,
     private error: ErrorService
