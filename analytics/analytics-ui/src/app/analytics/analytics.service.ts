@@ -46,23 +46,18 @@ export class AnalyticsService {
     private endpoint: EndpointService
   ) { }
 
-  /** Get the chosen analytic on load of parameters page */
-  getAnalytic() {
-    return this.analytic;
-  }
-
   /** Get the type of the results. E.g. TABLE or HTML */
-  getOutputVisualisationType() {
-    return this.analytic.outputVisualisation.visualisationType;
+  getOutputVisualisationType(analytic: Analytic) {
+    return analytic.outputVisualisation.visualisationType;
   }
   /** Update the value of the given parameter of the analytic operation */
-  updateAnalytic(newValue: any, parameterName: any) {
+  updateAnalytic(newValue: any, parameterName: any, analytic: Analytic) {
 
     const parameterKeys = Object.keys(this.analytic.uiMapping);
     // Look for the parameter in the list of parameters and set the new current value
     for (const parameterKey of parameterKeys) {
       if (parameterKey === parameterName) {
-        this.analytic.uiMapping[parameterKey].currentValue = newValue;
+        analytic.uiMapping[parameterKey].currentValue = newValue;
         return;
       }
     }
@@ -70,7 +65,7 @@ export class AnalyticsService {
   }
 
   /** Initialise the analytic current values */
-  initialiseAnalytic(analytic: any) {
+  initialiseAnalytic(analytic: Analytic) {
     const parameterKeys = Object.keys(analytic.uiMapping);
     for (const parameterKey of parameterKeys) {
       if (analytic.uiMapping[parameterKey].userInputType === 'boolean') {
@@ -79,42 +74,42 @@ export class AnalyticsService {
         analytic.uiMapping[parameterKey].currentValue = null;
       }
     }
-    this.analytic = analytic;
+    return analytic;
   }
 
   /** Execute the analytic operation */
-  executeAnalytic(): any {
+  executeAnalytic(analytic: Analytic): any {
     const operation = {
       class: this.NAMED_OPERATION_CLASS,
-      operationName: this.analytic.operationName,
+      operationName: analytic.operationName,
       parameters: null
     };
 
-    operation.parameters = this.mapParams();
+    operation.parameters = this.mapParams(analytic);
 
-    const operationChain = this.createOpChain(operation);
+    const operationChain = this.createOpChain(operation, analytic);
 
     // Clear the current results
     this.results.clear();
 
     // Execute the operation chain and then navigate to the results page when finished loading
     this.query.executeQuery(operationChain, () => {
-      this.router.navigate([this.analytic.analyticName, 'results']);
+      this.router.navigate([analytic.analyticName, 'results']);
     }, () => { });
   }
 
   /** Get a map of the parameters and their values. */
-  mapParams() {
-    if (this.analytic.uiMapping != null) {
+  mapParams(analytic: Analytic) {
+    if (analytic.uiMapping != null) {
       const parameters = {};
       const parameterKeys = Object.keys(this.analytic.uiMapping);
       for (const parameterKey of parameterKeys) {
-        if (this.analytic.uiMapping[parameterKey].userInputType === 'iterable') {
-          parameters[this.analytic.uiMapping[parameterKey].parameterName] =
-            ['Iterable', this.analytic.uiMapping[parameterKey].currentValue.split('\n')];
+        if (analytic.uiMapping[parameterKey].userInputType === 'iterable') {
+          parameters[analytic.uiMapping[parameterKey].parameterName] =
+            ['Iterable', analytic.uiMapping[parameterKey].currentValue.split('\n')];
         } else {
-          parameters[this.analytic.uiMapping[parameterKey].parameterName] =
-            this.analytic.uiMapping[parameterKey].currentValue;
+          parameters[analytic.uiMapping[parameterKey].parameterName] =
+            analytic.uiMapping[parameterKey].currentValue;
         }
       }
       return parameters;
@@ -122,7 +117,7 @@ export class AnalyticsService {
   }
 
   /** Create an operation chain from the operation */
-  createOpChain(operation: any) {
+  createOpChain(operation: any, analytic: Analytic) {
     const operationChain = {
       class: OPERATION_CHAIN_CLASS,
       operations: []
@@ -130,11 +125,11 @@ export class AnalyticsService {
     operationChain.operations.push(operation);
 
     // If there is an output adapter add it to the end of the operation chain
-    if (this.analytic.outputVisualisation != null && this.analytic.outputVisualisation.outputAdapter != null) {
+    if (analytic.outputVisualisation != null && analytic.outputVisualisation.outputAdapter != null) {
       operationChain.operations.push({
         class: MAP_OPERATION_CLASS,
         functions: [
-          this.analytic.outputVisualisation.outputAdapter
+          analytic.outputVisualisation.outputAdapter
         ]
       });
     }

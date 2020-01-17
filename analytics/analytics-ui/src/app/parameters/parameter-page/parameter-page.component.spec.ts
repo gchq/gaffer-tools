@@ -20,6 +20,7 @@ import { MatCardModule, MatProgressSpinnerModule } from '@angular/material';
 import { FormsModule } from '@angular/forms';
 
 import { AnalyticsService } from '../../analytics/analytics.service';
+import { AnalyticStoreService } from '../../analytics/analytic-store.service';
 import { ParameterInputComponent } from './parameter-page.component';
 
 @Component({
@@ -30,12 +31,15 @@ class MockOperationComponent {
   @Input() model;
 }
 
-class AnalyticsServiceStub {
+class AnalyticStoreServiceStub {
   getAnalytic = () => {
     return {
       operationName: 'Test operation name'
     };
   }
+}
+
+class AnalyticsServiceStub {
   executeAnalytic = () => { };
 }
 
@@ -47,7 +51,8 @@ describe('ParameterInputComponent', () => {
     TestBed.configureTestingModule({
       declarations: [ParameterInputComponent, MockOperationComponent],
       imports: [MatCardModule, MatProgressSpinnerModule, FormsModule],
-      providers: [{ provide: AnalyticsService, useClass: AnalyticsServiceStub }]
+      providers: [{ provide: AnalyticsService, useClass: AnalyticsServiceStub },
+      { provide: AnalyticStoreService, useClass: AnalyticStoreServiceStub }]
     }).compileComponents();
   }));
 
@@ -64,9 +69,11 @@ describe('ParameterInputComponent', () => {
   it('should execute the named operation on execution', () => {
     fixture.detectChanges();
     const analyticsService = TestBed.get(AnalyticsService);
+    const analyticStoreService = TestBed.get(AnalyticStoreService);
     const spy = spyOn(analyticsService, 'executeAnalytic');
 
-    component.executeAnalytic();
+    let analytic = analyticStoreService.getAnalytic();
+    component.executeAnalytic(analytic);
 
     expect(spy).toHaveBeenCalledWith();
   });

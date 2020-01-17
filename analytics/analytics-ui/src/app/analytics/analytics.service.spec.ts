@@ -19,6 +19,7 @@ import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 
 import { AnalyticsService } from './analytics.service';
+import { AnalyticStoreService } from './analytic-store.service';
 import { QueryService } from '../services/query.service';
 import { ErrorService } from '../services/error.service';
 import { ResultsService } from '../services/results.service';
@@ -68,6 +69,8 @@ class EndpointServiceStub {
 
 describe('AnalyticsService', () => {
   let service: AnalyticsService;
+  let store: AnalyticStoreService;
+  let result;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -88,7 +91,7 @@ describe('AnalyticsService', () => {
 
   it('Should be able to get the analytic', () => {
 
-    const result = service.getAnalytic();
+    result = store.getAnalytic();
 
     expect(result).toEqual(testAnalytic);
   });
@@ -107,7 +110,7 @@ describe('AnalyticsService', () => {
     };
     expectedAnalytic.uiMapping[parameterKey] = uiMappingDetail1;
 
-    service.updateAnalytic(newValue, parameterKey);
+    service.updateAnalytic(newValue, parameterKey, result);
 
     expect(service.analytic).toEqual(expectedAnalytic);
   });
@@ -116,7 +119,7 @@ describe('AnalyticsService', () => {
     const resultsService = TestBed.get(ResultsService);
     const spy = spyOn(resultsService, 'clear');
 
-    service.executeAnalytic();
+    service.executeAnalytic(result);
 
     expect(spy).toHaveBeenCalled();
   });
@@ -125,7 +128,7 @@ describe('AnalyticsService', () => {
     const router = TestBed.get(Router);
     const spy = spyOn(router, 'navigate');
 
-    service.executeAnalytic();
+    service.executeAnalytic(result);
 
     expect(spy).toHaveBeenCalledWith([service.analytic.analyticName, 'results']);
   });
@@ -153,7 +156,7 @@ describe('AnalyticsService', () => {
     const queryService = TestBed.get(QueryService);
     const spy = spyOn(queryService, 'executeQuery');
 
-    service.executeAnalytic();
+    service.executeAnalytic(result);
 
     expect(spy).toHaveBeenCalledWith(operation, jasmine.any(Function), jasmine.any(Function));
   });

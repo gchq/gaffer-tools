@@ -16,6 +16,7 @@
 import { Component, OnInit, Injectable } from '@angular/core';
 
 import { AnalyticsService } from '../analytics/analytics.service';
+import { AnalyticStoreService } from '../analytics/analytic-store.service';
 
 @Component({
   selector: 'app-results',
@@ -28,9 +29,10 @@ export class ResultsComponent implements OnInit {
 
   constructor(
     private analyticsService: AnalyticsService,
+    private analyticStoreService: AnalyticStoreService
   ) { }
 
   ngOnInit() {
-    this.outputType = this.analyticsService.getOutputVisualisationType();
+    this.outputType = this.analyticsService.getOutputVisualisationType(this.analyticStoreService.getAnalytic());
   }
 }
