@@ -5,7 +5,7 @@
 if [[ "$RELEASE" != 'true' ]]; then
     if [[ "$TRAVIS_BRANCH" == 'develop' ]] || [[ "$TRAVIS_PULL_REQUEST" != 'false' ]] && [[ "$MODULES" != 'analytics-ui' ]]; then
         # Check if Gaffer version is in maven central and build from source if not
-        gaffer_version=`grep "gaffer.version" "pom.xml" | sed 's:^ *\<gaffer\.version\>\(.*\)\</gaffer\.version\>:\1:'`
+        gaffer_version=`grep "gaffer.version" "pom.xml" | sed 's:^.*\<gaffer\.version\>\(.*\)\</gaffer\.version\>.*$:\1:'`
         #set +e
         echo "using gaffer version $gaffer_version"
         mvn dependency:get -Dartifact=uk.gov.gchq.gaffer:gaffer2:${gaffer_version} -q -Dpackaging=pom
