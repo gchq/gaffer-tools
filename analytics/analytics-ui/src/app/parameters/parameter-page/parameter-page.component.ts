@@ -15,6 +15,7 @@
  */
 
 import { Component, OnInit, Injectable } from '@angular/core';
+import { AnalyticsService } from '../../analytics/analytics.service';
 import { AnalyticStoreService } from '../../analytics/analytic-store.service';
 import { Analytic } from 'src/app/analytics/interfaces/analytic.interface';
 
@@ -31,7 +32,10 @@ export class ParameterInputComponent implements OnInit {
   mode = 'indeterminate'; // mode of the progress spinner
   loading: boolean; // Used to determine whether or not to show spinner
 
-  constructor(private analyticStoreService: AnalyticStoreService) { }
+  constructor(
+    private analyticStoreService: AnalyticStoreService,
+    private analyticsService: AnalyticsService
+  ) { }
 
   ngOnInit() {
     // Get the analytic from the analyticsService

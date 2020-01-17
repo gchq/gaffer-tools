@@ -75,7 +75,7 @@ describe('ParameterInputComponent', () => {
     let analytic = analyticStoreService.getAnalytic();
     component.executeAnalytic(analytic);
 
-    expect(spy).toHaveBeenCalledWith();
+    expect(spy).toHaveBeenCalledWith(analytic);
   });
 
   it('should set loading to true on execute', () => {
