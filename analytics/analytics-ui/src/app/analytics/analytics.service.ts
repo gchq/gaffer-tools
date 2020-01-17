@@ -50,6 +50,7 @@ export class AnalyticsService {
   getOutputVisualisationType(analytic: Analytic) {
     return analytic.outputVisualisation.visualisationType;
   }
+
   /** Update the value of the given parameter of the analytic operation */
   updateAnalytic(newValue: any, parameterName: any, analytic: Analytic) {
 
