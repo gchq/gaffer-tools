@@ -19,8 +19,8 @@ describe('AnalyticStoreService', () => {
   }));
 
   it('should be created', () => {
-    const service: AnalyticStoreService = TestBed.get(AnalyticStoreService);
-    expect(service).toBeTruthy();
+    const store: AnalyticStoreService = TestBed.get(AnalyticStoreService);
+    expect(store).toBeTruthy();
   });
 
   it('Should be able to get the analytic', () => {

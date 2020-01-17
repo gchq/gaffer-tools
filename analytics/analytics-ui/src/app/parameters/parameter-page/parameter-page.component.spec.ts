@@ -72,7 +72,7 @@ describe('ParameterInputComponent', () => {
     const analyticStoreService = TestBed.get(AnalyticStoreService);
     const spy = spyOn(analyticsService, 'executeAnalytic');
 
-    let analytic = analyticStoreService.getAnalytic();
+    const analytic = analyticStoreService.getAnalytic();
     component.executeAnalytic(analytic);
 
     expect(spy).toHaveBeenCalledWith(analytic);
