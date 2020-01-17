@@ -5,6 +5,8 @@ import { testAnalytic } from '../services/test/test.analytic';
 import { cloneDeep } from 'lodash';
 
 describe('AnalyticStoreService', () => {
+  let service: AnalyticStoreService;
+
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       providers: [

@@ -92,7 +92,7 @@ describe('AnalyticsService', () => {
     }).compileComponents();
 
     service = TestBed.get(AnalyticsService);
-  })); gi
+  }));
 
   it('Should be able to update the analytic', () => {
     const newValue = 'newValue';
