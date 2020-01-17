@@ -7,7 +7,7 @@ if [[ "$RELEASE" != 'true' ]]; then
         # Check if Gaffer version is in maven central and build from source if not
         gaffer_version=`mvn help:evaluate -Dexpression=gaffer.version -q -DforceStdout`
         set +e
-        mvn dependency:get -Dartifact=uk.gov.gchq.gaffer:gaffer2:${gaffer_version} -q #-Dpackaging=pom
+        mvn dependency:get -Dartifact=uk.gov.gchq.gaffer:gaffer2:${gaffer_version} -q -Dpackaging=pom
         return_value=$?
         set -e
         if [[ ${return_value} -ne 0 ]]; then
