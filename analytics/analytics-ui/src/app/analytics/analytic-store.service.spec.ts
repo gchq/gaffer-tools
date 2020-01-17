@@ -1,10 +1,20 @@
-import { TestBed } from '@angular/core/testing';
+import { TestBed, async } from '@angular/core/testing';
 
 import { AnalyticStoreService } from './analytic-store.service';
 import { testAnalytic } from '../services/test/test.analytic';
+import { cloneDeep } from 'lodash';
 
 describe('AnalyticStoreService', () => {
-  beforeEach(() => TestBed.configureTestingModule({}));
+  beforeEach(async(() => {
+    TestBed.configureTestingModule({
+      providers: [
+        AnalyticStoreService,
+      ]
+    }).compileComponents();
+
+    service = TestBed.get(AnalyticStoreService);
+    service.analytic = cloneDeep(testAnalytic);
+  }));
 
   it('should be created', () => {
     const service: AnalyticStoreService = TestBed.get(AnalyticStoreService);
@@ -12,8 +22,8 @@ describe('AnalyticStoreService', () => {
   });
 
   it('Should be able to get the analytic', () => {
-    const service: AnalyticStoreService = TestBed.get(AnalyticStoreService);
-    let result = service.getAnalytic();
+    const result = service.getAnalytic();
+
     expect(result).toEqual(testAnalytic);
   });
 });
