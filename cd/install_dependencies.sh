@@ -10,7 +10,4 @@ if [[ ${return_value} -ne 0 ]]; then
     cd .. && git clone https://github.com/gchq/koryphe.git && cd koryphe && git checkout master && mvn clean install -Pquick -q
     echo "Building Gaffer from source"
     cd .. && git clone https://github.com/gchq/gaffer.git && cd gaffer && git checkout master && mvn clean install -Pquick -q
-    ls -l ~/.m2/repository/uk/gov/gchq/gaffer
-    ls -l ~/.m2/repository/uk/gov/gchq/gaffer/gaffer2/
-    ls -l ~/.m2/repository/uk/gov/gchq/gaffer/gaffer2/1.10.5
 fi
