@@ -187,6 +187,14 @@ function TableController(schema, results, table, events, common, types, time, cs
         vm.updateFilteredResults();
     }
 
+    var getLabel = function(vertex) {
+        var shortVertex = types.getShortValue(vertex);
+        if(customVertexLabels && shortVertex in customVertexLabels && customVertexLabels[shortVertex]) {
+            return customVertexLabels[shortVertex].label;
+        }
+        return shortVertex;
+    }
+
     var processElements = function(type, typePlural, idKeys, ids, groupByProperties, properties, resultsData) {
         if(resultsData[typePlural] && Object.keys(resultsData[typePlural]).length > 0) {
             resultsByType[type] = [];
@@ -201,6 +209,10 @@ function TableController(schema, results, table, events, common, types, time, cs
                             result[id] = convertValue(id, element.vertex);
                         } else {
                             result[id] = convertValue(id, element[id.toLowerCase()]);
+                        }
+
+                        if("SOURCE" === id || "DESTINATION" === id ) {
+                            result[id] = getLabel(result[id]);
                         }
                     }
                     result['result type'] = type;
