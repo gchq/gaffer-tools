@@ -9,7 +9,7 @@
   <div fxLayout="row" fxLayoutAlign="end none" class="execute">
     <mat-progress-spinner *ngIf="loading" class="spinner" [color]="color" [mode]="mode" [diameter]="40">
     </mat-progress-spinner>
-    <button mat-raised-button color="primary" id="execute-analytic" (click)="executeAnalytic()"
+    <button mat-raised-button color="primary" id="execute-analytic" (click)="executeAnalytic(analytic)"
       aria-label="Execute analytic">EXECUTE
     </button>
   </div>
