@@ -25,6 +25,18 @@ angular.module('app').controller('CustomiseVertexDialogController', ['$scope', '
     $scope.colour = this.colour;
     $scope.onSave = this.onSave;
 
+    var ttl = settings.getTimeToLiveInDays();
+    if(ttl > 0) {
+        var msg = "These customisations will be cached for ";
+        if(ttl > 1) {
+            $scope.cacheTtlMessage = msg + ttl + " days.";
+        } else {
+            $scope.cacheTtlMessage = msg + "1 day.";
+        }
+    } else {
+        $scope.cacheTtlMessage =  "";
+    }
+
     $scope.cancel = function() {
         $mdDialog.cancel();
     }
