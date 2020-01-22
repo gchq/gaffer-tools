@@ -56,6 +56,12 @@ angular.module('app').config(['$locationProvider', '$routeProvider', function($l
             icon: 'raw',
             inNav: true
         })
+        .when('/saved-data', {
+            title: 'Saved Data',
+            template: '<saved-results></saved-results>',
+            icon: 'save',
+            inNav: true
+        })
         .when('/settings', {
             title: 'Settings',
             template: '<settings-view></settings-view>',
