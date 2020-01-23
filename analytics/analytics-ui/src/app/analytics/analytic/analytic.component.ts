@@ -18,6 +18,7 @@ import { Component, OnInit, Input, Injectable, AfterViewInit, OnDestroy } from '
 import { Router } from '@angular/router';
 import { AnalyticsService } from '../analytics.service';
 import { HttpClient } from '@angular/common/http';
+import { AnalyticStoreService } from '../analytic-store.service';
 
 @Component({
   selector: 'app-analytic',
@@ -33,6 +34,7 @@ export class AnalyticComponent implements OnInit, AfterViewInit, OnDestroy {
   constructor(
     private router: Router,
     private analyticsService: AnalyticsService,
+    private analyticStoreService: AnalyticStoreService,
     private http: HttpClient,
   ) { }
 
@@ -78,7 +80,8 @@ export class AnalyticComponent implements OnInit, AfterViewInit, OnDestroy {
   /** Save the chosen analytic in the analytics service */
   execute(analytic) {
     const name = this.model.analyticName;
-    this.analyticsService.initialiseAnalytic(analytic);
+    let initialisedAnalytic = this.analyticsService.initialiseAnalytic(analytic);
+    this.analyticStoreService.setAnalytic(initialisedAnalytic);
     this.router.navigate([name]);
   }
 
