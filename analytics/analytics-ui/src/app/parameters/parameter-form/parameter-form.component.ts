@@ -27,7 +27,7 @@ export class ParameterFormComponent implements OnInit {
 
   constructor(
     private analyticsService: AnalyticsService,
-    private analyticsStoreService: AnalyticStoreService
+    private analyticStoreService: AnalyticStoreService
   ) { }
 
   ngOnInit() { }
@@ -42,9 +42,9 @@ export class ParameterFormComponent implements OnInit {
         + ('0' + parameter[key].getDate()).slice(-2);
     }
 
-    let analytic = this.analyticsStoreService.getAnalytic();
+    let analytic = this.analyticStoreService.getAnalytic();
     analytic = this.analyticsService.updateAnalytic(parameter, parameterName, analytic);
-    this.analyticsStoreService.setAnalytic(analytic)
+    this.analyticStoreService.setAnalytic(analytic);
     this.parameters = analytic.uiMapping;
   };
 }

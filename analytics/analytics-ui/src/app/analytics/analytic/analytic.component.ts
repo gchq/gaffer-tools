@@ -80,7 +80,7 @@ export class AnalyticComponent implements OnInit, AfterViewInit, OnDestroy {
   /** Save the chosen analytic in the analytics service */
   execute(analytic) {
     const name = this.model.analyticName;
-    let initialisedAnalytic = this.analyticsService.initialiseAnalytic(analytic);
+    const initialisedAnalytic = this.analyticsService.initialiseAnalytic(analytic);
     this.analyticStoreService.setAnalytic(initialisedAnalytic);
     this.router.navigate([name]);
   }

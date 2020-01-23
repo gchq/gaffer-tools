@@ -26,14 +26,22 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { ParameterFormComponent } from './parameter-form.component';
 import { AnalyticsService } from '../../analytics/analytics.service';
+import { AnalyticStoreService } from 'src/app/analytics/analytic-store.service';
 
 class AnalyticsServiceStub {
-  updateAnalytic = params => { };
+  updateAnalytic = (parameter, parameterName, analytic) => {
+    return analytic;
+  }
+}
+class AnalyticStoreServiceStub {
   getAnalytic = params => {
     const analytic = {
       uiMapping: []
     };
     return analytic;
+  }
+  setAnalytic = analytic => {
+    return;
   }
 }
 
@@ -45,7 +53,10 @@ describe('ParameterFormComponent', () => {
     TestBed.configureTestingModule({
       declarations: [ParameterFormComponent],
       imports: [MatFormFieldModule, MatInputModule, BrowserAnimationsModule, MatSelectModule, MatDatepickerModule, MatCheckboxModule],
-      providers: [{ provide: AnalyticsService, useClass: AnalyticsServiceStub }]
+      providers: [
+        { provide: AnalyticsService, useClass: AnalyticsServiceStub },
+        { provide: AnalyticStoreService, useClass: AnalyticStoreServiceStub }
+      ]
     }).compileComponents();
   }));
 
@@ -63,13 +74,15 @@ describe('ParameterFormComponent', () => {
 
   it('should update the analytic on change of input', () => {
     const analyticsService = TestBed.get(AnalyticsService);
+    const analyticStoreService = TestBed.get(AnalyticStoreService);
     const spy = spyOn(analyticsService, 'updateAnalytic');
+    spy.and.returnValue(analyticStoreService.getAnalytic());
     const parameter = 'Test parameter';
     const parameterName = 'Test parameter name';
 
     component.onChange(parameter, parameterName);
 
-    expect(spy).toHaveBeenCalledWith(parameter, parameterName);
+    expect(spy).toHaveBeenCalledWith(parameter, parameterName, analyticStoreService.getAnalytic());
   });
 
   it('should change the stored parameter value when the input is changed', async(() => {
