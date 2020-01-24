@@ -10,12 +10,12 @@ jdk:
 sudo: required
 addons:
   firefox: latest
+  chrome: stable
   apt:
     sources:
       - google-chrome
     packages:
       - python3
-      - google-chrome-stable
 matrix:
   fast_finish: true
 

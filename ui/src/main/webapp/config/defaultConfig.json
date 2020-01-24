@@ -23,6 +23,17 @@
     "description": "Get related Elements",
     "useDefaultOperationOptions": false
   },
+  "savedResults": {
+    "enabled": true,
+    "key": "savedResults",
+    "timeToLiveInDays": 7
+  },
+  "table": {
+    "truncation": {
+      "maxLength": 500,
+      "text": "..."
+    }
+  },
   "types": {
     "java.util.Date": {
       "fields": [

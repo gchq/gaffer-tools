@@ -29,6 +29,7 @@ UI
     - [Operation options](#operation-options)
     - [Quick Query](#quick-query)
     - [Graph](#graph)
+    - [Saved Results](#saved-results)
     - [Feedback](#feedback)
 6. [Testing](#testing)
 
@@ -780,6 +781,27 @@ We have all the material design icons [here](https://github.com/gchq/gaffer-tool
 If you're using a simple string or number as your vertex, use "undefined" as your key. Otherwise you'll need to use the field
 name specified in the [types section](#types).
 
+### Saved Results
+
+You can configure the UI to allow results to be saved. The results are stored using the Gaffer ExportToGafferResultCache
+and GetGafferResultCacheExport operations, which if configured, will store the results in a separate Gaffer graph.
+
+This UI feature then adds a cookie 'savedResults' which contains the IDs of the user's saved results.
+
+```json
+"savedResults": {
+    "enabled": true,
+    "key": "savedResults",
+    "timeToLiveInDays": 7
+},
+```
+
+| name                 |  type    | description
+|----------------------|----------|---------------------------------------------------------
+| enabled              | boolean  | If true then the feature is enabled
+| key                  | string   | The cookie key
+| timeToLiveInDays     | number   | The number of days the cookie should be kept for.
+
 
 ### Feedback
 
@@ -801,6 +823,30 @@ left blank, no feedback button will be rendered. You can specify a list of email
             "adminperson@organisation.com",
             "someoneElse@theSameOrganisation.com"
         ]
+    }
+}
+```
+
+
+### Table
+
+You can also configure the way data is displayed in the table view.
+
+| field          | type                | description
+|----------------|---------------------|--------------------------------------------------------------------------
+|    truncation  |       String        | Allows you to configure how truncation is used in the table view.
+|    - maxLength |       Number        | The maximum length of a value to display, values longer will be truncated. Default is 500. Set it to -1 to disable truncation.
+|    - text      |       String        | The text to use to signal to the user that the value was truncated. Default is "..."
+
+#### Example
+
+```json
+{
+    "table": {
+        "truncation": {
+            "maxLength": 500
+            "text": "..."
+        }
     }
 }
 ```
