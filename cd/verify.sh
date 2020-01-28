@@ -4,10 +4,10 @@ set -e
 
 if [[ "$RELEASE" != 'true' ]] && [[ "$TRAVIS_PULL_REQUEST" != 'false' ]]; then
     if [[ "$MODULES" == '' ]]; then
-        echo "Running verify script: mvn -q verify -P travis,analyze -B"
-        mvn -q verify -P travis,analyze -B
-        echo "Running verify script: mvn -q verify -P travis,test -B"
-        mvn -q verify -P travis,test -B
+        echo "Running verify script: mvn -q -nsu verify -P travis,analyze -B"
+        mvn -q -nsu verify -P travis,analyze -B
+        echo "Running verify script: mvn -q -nsu verify -P travis,test -B"
+        mvn -q -nsu verify -P travis,test -B
     elif [[ "$MODULES" == 'analytics-ui' ]]; then
         # It would be good to move these into the pre-install and install phases. For now though, it works.
 
@@ -28,10 +28,10 @@ if [[ "$RELEASE" != 'true' ]] && [[ "$TRAVIS_PULL_REQUEST" != 'false' ]]; then
         ng test --watch=false --progress=false --browsers=ChromeHeadlessCI
         ng build --prod
     else
-        echo "Running verify script: mvn -q verify -P travis,analyze -B -pl $MODULES"
-        mvn -q verify -P travis,analyze -B -pl $MODULES
-        echo "Running verify script: mvn -q verify -P travis,test -B -pl $MODULES"
-        mvn -q verify -P travis,test -B -pl $MODULES
+        echo "Running verify script: mvn -q -nsu verify -P travis,analyze -B -pl $MODULES"
+        mvn -q -nsu verify -P travis,analyze -B -pl $MODULES
+        echo "Running verify script: mvn -q -nsu verify -P travis,test -B -pl $MODULES"
+        mvn -q -nsu verify -P travis,test -B -pl $MODULES
     fi
 
     if [[ $MODULES == *":ui"* ]]; then
