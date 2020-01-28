@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Crown Copyright
+ * Copyright 2019-2020 Crown Copyright
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -41,17 +41,17 @@ import { NavComponent } from './nav.component';
 @Component({
   template: ''
 })
-class AnalyticsStubComponent {}
+class AnalyticsStubComponent { }
 
 @Component({
   template: ''
 })
-class ParameterInputStubComponent {}
+class ParameterInputStubComponent { }
 
 @Component({
   template: ''
 })
-class TableStubComponent {}
+class TableStubComponent { }
 
 describe('NavComponent', () => {
   let location: Location;

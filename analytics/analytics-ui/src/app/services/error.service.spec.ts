@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Crown Copyright
+ * Copyright 2019-2020 Crown Copyright
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,7 +20,7 @@ import { ToastrService } from 'ngx-toastr';
 import { ErrorService } from './error.service';
 
 class ToastrServiceStub {
-  error = params => {};
+  error = params => { };
 }
 
 describe('ErrorService', () => {
@@ -39,7 +39,7 @@ describe('ErrorService', () => {
 
   it('should be able to show an error notification with a particular message', fakeAsync(() => {
     const toastr = TestBed.get(ToastrService);
-    const spy = spyOn(toastr, 'error').and.callFake(() => {});
+    const spy = spyOn(toastr, 'error').and.callFake(() => { });
     const msg = 'message';
     const title = 'title';
     const err = new Error();
@@ -58,7 +58,7 @@ describe('ErrorService', () => {
 
   it('should show the default error message if not specified', fakeAsync(() => {
     const toastr = TestBed.get(ToastrService);
-    const spy = spyOn(toastr, 'error').and.callFake(() => {});
+    const spy = spyOn(toastr, 'error').and.callFake(() => { });
     const msg = null;
     const title = 'title';
     const err = new Error();
