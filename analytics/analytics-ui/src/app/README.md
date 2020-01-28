@@ -20,8 +20,9 @@ analytic-ui/src/app folder. (tests and .spec.ts files have not been included, as
 
 - **analytics** - The analytics screen, displaying a grid of analytic components each of which corresponds to an analytic created in the restAPI.
   - **analytic** - The files representing each analytic, which creates a card with the title of said analytic, an icon, and fills in with a specified colour. When clicked, this then calls services which populate the parameters page, which is subsequently navigated to.
-  - **classes** - Typescript classes made to mirror the java classes used in the execution of analytics
+  - **interfaces** - Typescript interfaces made to mirror the java classes used in the execution of analytics
   - **analytic-filter** - A custom filter pipe used in filtering the analytics so the user can search for a specific one
+  - **analytic-store.service** - Used to get and set the analytic for the analytics service from the front end, to keep analytics service stateless.
   - **analytics.service** - Used to load analytics from the REST API, store the chosen analytic, and execute the analytic.
 - **nav** - Holds the overall layout of the final product, including the toolbar and home button/title at the top, and the component display/page content area.
 - **parameters** - The parameter input screen, which contains the operation component, and the execute button which allows the user to execute the analytic.
