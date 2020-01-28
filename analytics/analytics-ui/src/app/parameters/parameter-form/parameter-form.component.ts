@@ -16,6 +16,7 @@
 
 import { Component, OnInit, Input, ViewChild } from '@angular/core';
 import { AnalyticsService } from '../../analytics/analytics.service';
+import { AnalyticStoreService } from 'src/app/analytics/analytic-store.service';
 
 @Component({
   selector: 'app-parameter-form',
@@ -24,7 +25,10 @@ import { AnalyticsService } from '../../analytics/analytics.service';
 export class ParameterFormComponent implements OnInit {
   @Input() parameters;
 
-  constructor(private analyticsService: AnalyticsService) { }
+  constructor(
+    private analyticsService: AnalyticsService,
+    private analyticStoreService: AnalyticStoreService
+  ) { }
 
   ngOnInit() { }
 
@@ -38,8 +42,9 @@ export class ParameterFormComponent implements OnInit {
         + ('0' + parameter[key].getDate()).slice(-2);
     }
 
-    this.analyticsService.updateAnalytic(parameter, parameterName);
-    const analytic = this.analyticsService.getAnalytic();
+    let analytic = this.analyticStoreService.getAnalytic();
+    analytic = this.analyticsService.updateAnalytic(parameter, parameterName, analytic);
+    this.analyticStoreService.setAnalytic(analytic);
     this.parameters = analytic.uiMapping;
   };
 }

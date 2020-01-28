@@ -1,0 +1,86 @@
+<!--
+  ~ Copyright 2020 Crown Copyright
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<div layout="row" layout-padding>
+    <div flex-offset-gt-sm="20" flex-gt-sm="60" flex="100">
+        <div layout="column" flex>
+            <h3 class="md-headline">
+                Saved Data
+                <md-button ng-show="ctrl.isEnabled()" class="md-primary md-icon-button" ng-click="ctrl.deleteAllSavedResults()">
+                    <md-icon md-svg-icon="delete"></md-icon>
+                    <md-tooltip>Delete all results</md-tooltip>
+                </md-button>
+            </h3>
+            <p ng-show="ctrl.isEnabled()" class="padding-bottom">
+                Any results you save, using the 'Save' button on the toolbar at the top, will be listed here.
+                The results are cached on a server and will automatically expire after {{ ctrl.daysToLive() }}.
+                This list of saved result IDs is cached in your current browser and will not be available in another browser or computer.
+            </p>
+            <p ng-show="!ctrl.isEnabled()" class="padding-bottom">Saving results is currently disabled</p>
+
+            <div ng-show="ctrl.isEnabled() && ctrl.savedResults.length == 0">
+                <md-card flex>
+                    <md-card-title>
+                        <md-card-title-text>
+                            <span class="md-headline">No saved results</span>
+                        </md-card-title-text>
+                    </md-card-title>
+                    <md-card-content>
+                        It doesn't look like you've got any saved results. You can use the 'Save' button on the toolbar
+                        at the top to save your results.
+                    </md-card-content>
+                </md-card>
+            </div>
+
+            <div ng-show="ctrl.isEnabled()" ng-repeat="savedResult in ctrl.savedResults">
+                <md-card flex>
+                    <md-card-header>
+                        <md-card-avatar>
+                            <md-icon md-svg-icon="save"></md-icon>
+                        </md-card-avatar>
+                        <md-card-header-text>
+                            <span ng-click="savedResult.edit = true" class="md-title" ng-show="!savedResult.edit">{{savedResult.localId}}</span>
+                            <md-input-container class="md-secondary no-errors no-margin" ng-show="savedResult.edit">
+                                <input type="text"
+                                       ng-model="savedResult.localId"
+                                       aria-label="Edit saved results ID"
+                                       ng-blur="ctrl.updateSavedResults()"
+                                       class="md-title">
+                            </md-input-container>
+                            <span class="md-subhead">ID: {{savedResult.jobId}}</span>
+                        </md-card-header-text>
+                        <md-button ng-show="savedResult.edit" class="md-primary md-icon-button" ng-click="savedResult.edit = false">
+                            <md-icon md-svg-icon="save"></md-icon>
+                            <md-tooltip>Save</md-tooltip>
+                        </md-button>
+                        <md-button ng-show="!savedResult.edit" class="md-primary md-icon-button" ng-click="savedResult.edit = true">
+                            <md-icon md-svg-icon="edit"></md-icon>
+                            <md-tooltip>Rename</md-tooltip>
+                        </md-button>
+                        <md-button class="md-primary md-icon-button" ng-click="ctrl.deleteSavedResults(savedResult.jobId)">
+                            <md-icon md-svg-icon="delete"></md-icon>
+                            <md-tooltip>Delete results</md-tooltip>
+                        </md-button>
+                        <md-button class="md-primary md-icon-button" ng-click="ctrl.reloadSavedResults(savedResult.jobId)">
+                            <md-icon md-svg-icon="open-in-new"></md-icon>
+                            <md-tooltip>Reload results</md-tooltip>
+                        </md-button>
+                    </md-card-header>
+                </md-card>
+            </div>
+        </div>
+    </div>
+</div>

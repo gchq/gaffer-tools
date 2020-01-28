@@ -58,10 +58,10 @@ export class AnalyticsService {
     for (const parameterKey of parameterKeys) {
       if (parameterKey === parameterName) {
         analytic.uiMapping[parameterKey].currentValue = newValue;
-        return;
+        return analytic;
       }
     }
-    return;
+    return analytic;
   }
 
   /** Initialise the analytic current values */
