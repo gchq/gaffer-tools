@@ -1,0 +1,18 @@
+<md-dialog-content>
+    <div class="md-dialog-content">
+        <h2 class="md-headline">Import or Export results</h2>
+
+
+        Import your results from a Gaffer JSON file.
+        <input type="file" id="import-results-file" name="file" ng-model="importFilename"/>
+        <div style="display:flex; justify-content:flex-end; width:100%; padding:0;">
+            <md-button class="md-raised" ng-click="import()">Import</md-button>
+        </div>
+
+        Export your results to a Gaffer JSON file.
+        <div style="display:flex; justify-content:flex-end; width:100%; padding:0;">
+            <md-button class="md-raised" ng-click="export()">Export</md-button>
+        </div>
+
+    </div>
+</md-dialog-content>
