@@ -26,7 +26,7 @@ function toolbar() {
     };
 }
 
-function ToolbarController($rootScope, $mdDialog, operationService, results, query, config, loading, events, properties, error, $mdToast, $cookies) {
+function ToolbarController($rootScope, $mdDialog, operationService, results, query, config, loading, events, properties, error, $mdToast, $cookies, graph) {
     var vm = this;
     vm.addMultipleSeeds = false;
     vm.appTitle;
@@ -165,6 +165,7 @@ function ToolbarController($rootScope, $mdDialog, operationService, results, que
 
     vm.executeAll = function() {
         var ops = query.getOperations();
+        graph.setGraphJson(null);
         if (ops.length > 0) {
             results.clear(false);
             loading.load();
@@ -175,6 +176,7 @@ function ToolbarController($rootScope, $mdDialog, operationService, results, que
     }
 
     vm.clearResults = function() {
+        graph.setGraphJson(null);
         results.clear();
     }
 

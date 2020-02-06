@@ -176,7 +176,7 @@ function GraphController($q, graph, config, error, loading, query, operationOpti
     }
 
     var restoreGraph = function() {
-        if(graph.hasGraphJson() && cytoscapeGraph) {
+        if(graph.hasGraphJson() && cytoscapeGraph && (results.get().edges || results.get().entities)) {
             cytoscapeGraph.json(graph.getGraphJson());
             cytoscapeGraph.nodes().removeClass("filtered"); // seems to be a bug in cytoscape json
         }
