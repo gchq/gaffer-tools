@@ -1,0 +1,28 @@
+mat-card {
+  max-width: 100%;
+  margin: 0;
+  padding: 0;
+  text-align: center;
+  display: flex;
+  height: 100%;
+  cursor: pointer;
+}
+
+.iconContainer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.titleContainer {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  height: 100%
+}
+
+.scalableFont {
+  font-size: 1.8vw;
+  margin-left: 1vw;
+  margin-right: 1vw;
+}
