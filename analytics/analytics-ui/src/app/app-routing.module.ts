@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Crown Copyright
+ * Copyright 2019-2020 Crown Copyright
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,17 +14,17 @@
  * limitations under the License.
  */
 
-import { AnalyticsComponent } from './analytics/analytics.component';
-import { TableComponent } from './table/table.component';
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { ParameterInputComponent } from './parameter-input/parameter-input.component';
+
+import { AnalyticsComponent } from './analytics/analytics.component';
+import { ResultsComponent } from './results/results.component';
+import { ParameterInputComponent } from './parameters/parameter-page/parameter-page.component';
 
 const routes: Routes = [
   { path: 'analytics', component: AnalyticsComponent },
-  { path: 'parameters', component: ParameterInputComponent },
-  { path: 'parameters/:operation', component: ParameterInputComponent },
-  { path: 'results', component: TableComponent },
+  { path: ':analyticName', component: ParameterInputComponent },
+  { path: ':analyticName/results', component: ResultsComponent },
   { path: '**', redirectTo: 'analytics' }
 ];
 
@@ -32,4 +32,4 @@ const routes: Routes = [
   exports: [RouterModule],
   imports: [RouterModule.forRoot(routes)]
 })
-export class AppRoutingModule {}
+export class AppRoutingModule { }

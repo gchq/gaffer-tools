@@ -1,0 +1,36 @@
+.mat-row,
+.mat-header-row {
+  min-width: 2000px;
+}
+
+.mat-header-row {
+  position: sticky;
+  top: 0;
+}
+
+.footer {
+  position: fixed;
+  right: 0;
+  width: 100%;
+  margin-left: 110px;
+  margin-right: 110px;
+  text-align: center;
+}
+
+mat-form-field {
+  margin-left: 110px
+}
+
+.mat-elevation-z8 {
+  margin-left: 110px;
+  margin-right: 110px;
+  overflow-x: auto;
+}
+
+button {
+  margin-left: 30px;
+}
+
+.column-select {
+  margin-top: 15px;
+}

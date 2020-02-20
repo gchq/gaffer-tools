@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Crown Copyright
+ * Copyright 2019-2020 Crown Copyright
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,34 +15,43 @@
  */
 
 import { Component, OnInit, Injectable } from '@angular/core';
-import { ErrorService } from '../error/error.service';
-import { AnalyticsService } from '../gaffer/analytics.service';
+
+import { ErrorService } from '../services/error.service';
+import { AnalyticsService } from './analytics.service';
+import { Analytic } from './interfaces/analytic.interface';
+import { UIMappingDetail } from './interfaces/uiMappingDetail.interface';
+import { MetaData } from './interfaces/metaData.interface';
+import { OutputVisualisation } from './interfaces/outputVisualisation.interface';
 
 @Component({
   selector: 'app-analytics',
-  templateUrl: './analytics.component.html'
+  templateUrl: './analytics.component.html',
+  styleUrls: ['./analytics.component.css']
 })
 @Injectable()
 export class AnalyticsComponent implements OnInit {
-  analytics: any;
+  analytics;
+  searchText;
   constructor(
     private analyticsService: AnalyticsService,
     private error: ErrorService
-  ) {}
+  ) { }
 
   ngOnInit() {
-    this.reloadAnalytics();
+    this.getAnalytics();
   }
 
   /** Load the analytics */
-  reloadAnalytics = function() {
-    this.analyticsService.reloadAnalytics(true).subscribe(
-      availableAnalytics => {
-        this.analytics = availableAnalytics;
+  getAnalytics = function(): void {
+    this.analyticsService.getAnalytics().subscribe(
+      // On success
+      analytics => {
+        this.analytics = analytics;
       },
+      // On error
       err => {
         this.error.handle(
-          'Error loading operations, see the console for details',
+          'Failed to load the analytics, see the console for details',
           null,
           err
         );

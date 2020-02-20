@@ -1,0 +1,32 @@
+<!--Column Remove Selector and Button-->
+<div class="column-select">
+  <mat-form-field>
+    <mat-label>Columns to display</mat-label>
+    <mat-select [(value)]="selected" multiple>
+      <mat-option *ngFor="let column of availableColumns" value={{column}} (click)="refineColumns()">
+        {{ column }}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+</div>
+
+<!--Data Table-->
+<div class="mat-elevation-z8">
+  <table mat-table [dataSource]="data.results" matSort>
+    <ng-container [matColumnDef]="column" *ngFor="let column of displayedColumns">
+      <mat-header-cell *matHeaderCellDef mat-sort-header>
+        <h3>{{ column }}</h3>
+      </mat-header-cell>
+      <mat-cell *matCellDef="let element"> {{element[column]}} </mat-cell>
+    </ng-container>
+
+    <mat-header-row *matHeaderRowDef="displayedColumns; sticky: true">
+    </mat-header-row>
+    <mat-row *matRowDef="let row; columns: displayedColumns;">
+    </mat-row>
+  </table>
+  <div class="footer">
+    <mat-paginator fixed [pageSize]="4" [pageSizeOptions]="[4, 8, 12, 24]" showFirstLastButtons>
+    </mat-paginator>
+  </div>
+</div>
