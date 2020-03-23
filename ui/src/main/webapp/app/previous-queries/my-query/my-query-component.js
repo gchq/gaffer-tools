@@ -29,7 +29,7 @@ function myQuery() {
     }
 }
 
-function MyQueryController(operationChain, navigation) {
+function MyQueryController(operationChain, navigation, $mdSidenav) {
     var vm = this;
 
     /**
@@ -39,4 +39,14 @@ function MyQueryController(operationChain, navigation) {
         operationChain.setOperationChain(vm.model.operations);
         navigation.goToQuery();
     }
+    /**
+    Allows renaming of operation chains in the my queries section
+    */
+    vm.edit = function(){
+
+    }
+    vm.toggleSideNav  = function () {
+            $mdSidenav('right')
+                .toggle();
+        }
 }

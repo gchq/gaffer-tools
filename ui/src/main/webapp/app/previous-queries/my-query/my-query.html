@@ -21,4 +21,8 @@
             </div>
         </md-list-item>
     </md-list>
+    <md-menu-item>
+        <md-button id="edit-query" ng-click="ctrl.toggleSideNav()">EDIT QUERY</md-button>
+    </md-menu-item>
 </md-card>
+<edit-sidenav on-close="ctrl.toggleSideNav()"></edit-sidenav>
