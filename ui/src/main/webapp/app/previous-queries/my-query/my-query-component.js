@@ -31,6 +31,11 @@ function myQuery() {
 
 function MyQueryController(operationChain, navigation, $mdSidenav) {
     var vm = this;
+    /*vm.updatedQuery = {
+            name: null,
+            description: null
+        }*/
+    //var OPERATION_CHAIN_CLASS = "uk.gov.gchq.gaffer.operation.OperationChain";
 
     /**
      * Loads the operation into the operation chain builder
@@ -39,14 +44,12 @@ function MyQueryController(operationChain, navigation, $mdSidenav) {
         operationChain.setOperationChain(vm.model.operations);
         navigation.goToQuery();
     }
-    /**
-    Allows renaming of operation chains in the my queries section
-    */
-    vm.edit = function(){
-
-    }
     vm.toggleSideNav  = function () {
             $mdSidenav('right')
                 .toggle();
         }
+    /*vm.saveUpdatedDetails = function() {
+
+    }*/
+
 }

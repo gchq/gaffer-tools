@@ -24,7 +24,7 @@ function editSidenav() {
         controller: EditSidenavController,
         controllerAs: 'ctrl',
         bindings: {
-            namedOperation: '=',    // an namedOperation model
+            updatedQuery: '=',    // an updatedQuery model
             onClose: '&',           // a function to close the sidenav
             onSave: '&',            // a function to save the named operation
         }

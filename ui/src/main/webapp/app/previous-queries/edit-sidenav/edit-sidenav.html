@@ -1,13 +1,13 @@
 <md-sidenav class="md-sidenav-right md-whiteframe-4dp" md-component-id="right" flex>
     <md-toolbar class="md-theme-light">
-        <h1 class="md-toolbar-tools">Edit Query</h1>
+        <h1 class="md-toolbar-tools">Edit Details</h1>
     </md-toolbar>
     <md-content layout-padding>
         <form flex>
             <div width='100%'>
                 <md-input-container class="md-block">
                     <label for="saved-name">Name</label>
-                    <input type="text" id="saved-name" required ng-model="ctrl.namedOperation.name" md-autofocus>
+                    <input type="text" id="saved-name" required ng-model="ctrl.updatedQuery.name" md-autofocus>
                 </md-input-container>
             </div>
             <div width='100%'>
@@ -16,7 +16,7 @@
                     <textarea
                             id="saved-description"
                             md-no-autogrow
-                            ng-model="ctrl.namedOperation.description"
+                            ng-model="ctrl.updatedQuery.description"
                             rows="3"
                     >
                     </textarea>

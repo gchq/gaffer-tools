@@ -26,10 +26,14 @@ function myQueries() {
     }   
 }
 
-function MyQueriesController(previousQueries, navigation, operationChain) {
+function MyQueriesController(previousQueries, navigation, operationChain, $mdSidenav) {
 
     var vm = this;
     vm.queries = [];
+    vm.updatedQuery = {
+    	name: null,
+    	description: null
+    }
 
     /**
      * Sets the previously run queries on initialisation
@@ -44,5 +48,8 @@ function MyQueriesController(previousQueries, navigation, operationChain) {
     vm.createNew = function() {
         operationChain.reset();
         navigation.goToQuery();
+    }
+    vm.saveUpdatedDetails = function(ev) {
+
     }
 }

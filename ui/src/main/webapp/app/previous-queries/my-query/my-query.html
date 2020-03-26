@@ -6,6 +6,7 @@
         <md-card-header-text>
             <span class="md-title">{{ctrl.model.name}}</span>
             <span class="md-subhead">Last ran at: {{ctrl.model.lastRun}}</span>
+
         </md-card-header-text>
         <md-button class="md-primary md-icon-button" ng-click="ctrl.load()">
             <md-icon md-svg-icon="open-in-new"></md-icon>
@@ -22,7 +23,10 @@
         </md-list-item>
     </md-list>
     <md-menu-item>
-        <md-button id="edit-query" ng-click="ctrl.toggleSideNav()">EDIT QUERY</md-button>
+        <span class = "md-description">{{ctrl.model.description}}</span>
+    </md-menu-item>
+    <md-menu-item>
+        <md-button id="edit-query" ng-click="ctrl.toggleSideNav()">EDIT DETAILS</md-button>
     </md-menu-item>
 </md-card>
-<edit-sidenav on-close="ctrl.toggleSideNav()"></edit-sidenav>
+<edit-sidenav updated-query= "ctrl.updatedQuery" on-save="ctrl.saveUpdatedDetails()" on-close="ctrl.toggleSideNav()"></edit-sidenav>
