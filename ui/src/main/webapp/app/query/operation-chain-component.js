@@ -117,7 +117,8 @@ function OperationChainController(operationChain, settings, config, loading, que
         previousQueries.addQuery({
             name: "Operation Chain",
             lastRun: moment().format('HH:mm'),
-            operations: vm.operations
+            operations: vm.operations,
+            description:"test"
         });
 
         runQuery(chain.operations);
