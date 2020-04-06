@@ -44,7 +44,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.SortedMap;
 
 /*
  * This utility periodically collects metrics from an Accumulo Master and publishes them to AWS CloudWatch
@@ -62,7 +61,7 @@ public class PublishAccumuloMetricsToCloudWatch implements Runnable {
     private MasterClientService.Client client;
     private AmazonCloudWatch cloudwatch;
 
-    private SortedMap<String, String> tableIdToNameMap;
+    private Map<String, String> tableIdToNameMap;
     private Date previousCaptureDate = null;
     private Map<Pair<String, List<Dimension>>, Double> previousMetrics = null;
 
