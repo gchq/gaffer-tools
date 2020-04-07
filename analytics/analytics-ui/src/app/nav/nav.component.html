@@ -1,16 +1,9 @@
 <mat-toolbar color="primary">
   <mat-toolbar-row>
-    <span>Analytic UI</span>
+    <span [routerLink]="['/analytics']">Analytic UI</span>
+    <button mat-icon-button [routerLink]="['/analytics']" aria-label="Go back to analytics">
+      <mat-icon>home</mat-icon>
+    </button>
   </mat-toolbar-row>
-
-  <mat-toolbar-row>
-    <nav mat-tab-nav-bar>
-      <a mat-tab-link style="color: white" *ngFor="let link of navLinks" [routerLink]="link.path" routerLinkActive
-        #rla="routerLinkActive" [active]="rla.isActive" id='link.path'>
-        {{link.label}}
-      </a>
-    </nav>
-  </mat-toolbar-row>
-
 </mat-toolbar>
 <router-outlet></router-outlet>

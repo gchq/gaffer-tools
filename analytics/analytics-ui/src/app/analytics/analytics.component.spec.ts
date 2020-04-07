@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Crown Copyright
+ * Copyright 2019-2020 Crown Copyright
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,29 +14,35 @@
  * limitations under the License.
  */
 
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { async, ComponentFixture, TestBed, tick, fakeAsync } from '@angular/core/testing';
 import { Input, Component } from '@angular/core';
-import { empty, from, throwError, EMPTY } from 'rxjs';
+import { FormsModule } from '@angular/forms';
 import {
   MatGridListModule,
+  MatFormFieldModule,
   MatCardModule,
   MatTooltipModule,
-  MatIconModule
+  MatIconModule,
+  MatInputModule
 } from '@angular/material';
+import { from, throwError, EMPTY } from 'rxjs';
+import { AnalyticFilterPipe } from './analytic-filter.pipe';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { AnalyticsComponent } from './analytics.component';
-import { AnalyticsService } from '../gaffer/analytics.service';
-import { ErrorService } from '../error/error.service';
+import { AnalyticsService } from './analytics.service';
+import { ErrorService } from '../services/error.service';
+import { testAnalytic } from '../services/test/test.analytic';
 
 class AnalyticsServiceStub {
-  reloadAnalytics = () => {
+  getAnalytics = () => {
     return EMPTY;
   }
 }
 
 @Component({
   selector: 'app-analytic',
-  templateUrl: '../analytic/analytic.component.html'
+  templateUrl: './analytic/analytic.component.html'
 })
 class AnalyticStubComponent {
   @Input() model;
@@ -52,12 +58,21 @@ describe('AnalyticsComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [AnalyticsComponent, AnalyticStubComponent],
+      declarations: [AnalyticsComponent, AnalyticStubComponent, AnalyticFilterPipe],
       providers: [
         { provide: AnalyticsService, useClass: AnalyticsServiceStub },
-        { provide: ErrorService, useClass: ErrorServiceStub }
+        { provide: ErrorService, useClass: ErrorServiceStub },
+        { provide: AnalyticFilterPipe, useClass: AnalyticFilterPipe }
       ],
-      imports: [MatGridListModule, MatCardModule, MatTooltipModule, MatIconModule]
+      imports: [
+        BrowserAnimationsModule,
+        FormsModule,
+        MatFormFieldModule,
+        MatGridListModule,
+        MatCardModule,
+        MatTooltipModule,
+        MatIconModule,
+        MatInputModule]
     }).compileComponents();
   }));
 
@@ -72,35 +87,37 @@ describe('AnalyticsComponent', () => {
   });
 
   it('should load the analytics at initialisation', () => {
-    const spy = spyOn(component, 'reloadAnalytics');
+    const spy = spyOn(component, 'getAnalytics');
     fixture.detectChanges();
     expect(spy).toHaveBeenCalledWith();
   });
 
-  it('should store the analytics it loads from the server', () => {
-    const testData = 'Test data';
+  it('should store the analytics it loads from the server', fakeAsync(() => {
+    const testData = [testAnalytic];
+    const analyticArray = new Array<object>();
+    analyticArray.push(testAnalytic);
     const analyticsService = TestBed.get(AnalyticsService);
-    spyOn(analyticsService, 'reloadAnalytics').and.returnValue(
-      from([testData])
+    spyOn(analyticsService, 'getAnalytics').and.returnValue(
+      from([analyticArray])
     );
 
-    component.reloadAnalytics();
-
+    component.getAnalytics();
+    tick();
     expect(component.analytics).toEqual(testData);
-  });
+  }));
 
   it('should show an error notification if it fails to load the analytics', () => {
     const error = new Error();
     const testData = throwError(error);
     const analyticsService = TestBed.get(AnalyticsService);
-    spyOn(analyticsService, 'reloadAnalytics').and.returnValue(testData);
+    spyOn(analyticsService, 'getAnalytics').and.returnValue(testData);
     const errorService = TestBed.get(ErrorService);
     const spy = spyOn(errorService, 'handle');
 
-    component.reloadAnalytics();
+    component.getAnalytics();
 
     expect(spy).toHaveBeenCalledWith(
-      'Error loading operations, see the console for details',
+      'Failed to load the analytics, see the console for details',
       null,
       error
     );

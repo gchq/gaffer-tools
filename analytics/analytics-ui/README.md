@@ -1,4 +1,4 @@
-Copyright 2019 Crown Copyright
+Copyright 2019-2020 Crown Copyright
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -91,7 +91,7 @@ Once an analytic is selected, the Parameters page will load, displaying the titl
 
 ## 3. Results
 
-Once the analytic has finished running, the results page will load and display a table in which the results of the analytic are displayed. The columns of the table will have titles based on the description of the data provided by the REST API.
+Once the analytic has finished running, the results page will load and display the returned results, either in HTML format or as a data table, depending on which is specified in the analytic. The columns of the table will have titles based on the description of the data provided by the REST API.
 
 ![The is the Results page as it would be when Analytic Y is run with a Maximum Results parameter of 5.](./assets/results.png)
 
@@ -234,6 +234,7 @@ For this example, we also use an output adapter to take elements and convert the
       }
    },
    "outputVisualisation": {
+      "visualisationType": "TABLE",
       "outputAdapter": {
          "class": "IterableFunction",
          "functions": [

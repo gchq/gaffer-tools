@@ -1,0 +1,14 @@
+app-analytic {
+  width: 100%;
+  height: 100%;
+}
+
+mat-grid-list {
+  margin-left: 110px;
+  margin-right: 110px;
+  padding: 50px;
+}
+
+div {
+  margin-left: 110px;
+}
