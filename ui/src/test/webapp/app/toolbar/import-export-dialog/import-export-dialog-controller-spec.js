@@ -43,8 +43,13 @@ describe('The import/export dialog controller', function() {
 
     }));
 
-    it('should init with Import File Name as empty string', function() {
+    it('should exist', function() {
+        var controller = $controller('ImportExportDialogController', { $scope: $scope });
 
+        expect(controller).toBeDefined();
+    });
+
+    it('should init with Import File Name as empty string', function() {
         $controller('ImportExportDialogController', { $scope: $scope });
 
         expect($scope.importFilename).toBe("");
@@ -107,7 +112,6 @@ describe('The import/export dialog controller', function() {
             expect($mdToast.simple).toHaveBeenCalled();
             expect($mdDialog.hide).toHaveBeenCalled();
         });
-
     });
 
     it('should not parse if file is not in JSON format', function() {
