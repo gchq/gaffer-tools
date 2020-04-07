@@ -25,7 +25,7 @@ describe('The import/export dialog controller', function() {
     var results;
     var error;
     var $mdToast
-    var $scope={};
+    var $scope = {};
 
     beforeEach(inject(function(_$controller_, _$mdDialog_, _results_, _error_, _$mdToast_){
         $controller = _$controller_;
