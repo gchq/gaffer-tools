@@ -26,13 +26,6 @@ describe('The import/export dialog controller', function() {
     var error;
     var $mdToast
     var $scope={};
-    var mockData = {
-        group: "Somedata",
-        source: "Somedata",
-        destination: "Somedata",
-        directed: true,
-        class: "Somedata"
-    };
 
     beforeEach(inject(function(_$controller_, _$mdDialog_, _results_, _error_, _$mdToast_){
         $controller = _$controller_;
@@ -64,75 +57,126 @@ describe('The import/export dialog controller', function() {
         expect($mdDialog.hide).toHaveBeenCalled();
     });
 
-    it('should export file successfully', function(){
-        spyOn($mdDialog, 'hide');
-        spyOn(results, 'get').and.returnValue({ edges: [mockData], entities: [], other: []});
-        $controller('ImportExportDialogController', { $scope: $scope, results: results });
+    describe('Export', function() {
+        it('should call back No Results To Export error when all results are empty', function() {
+            spyOn(error, 'handle');
+            var emptyResults = { edges: [], entities: [], other: [] };
+            spyOn(results, 'get').and.returnValue(emptyResults);
+            $controller('ImportExportDialogController', { $scope: $scope, results: results, error: error });
 
-        $scope.export();
+            $scope.export();
 
-        expect(results.get()).toEqual({edges: [mockData], entities: [], other: []});
-        expect($mdDialog.hide).toHaveBeenCalled();
-    });
-
-    it('should call back errors when there are no results to export', function() {
-        spyOn(error, 'handle');
-        $controller('ImportExportDialogController', { $scope: $scope,  error: error });
-
-        $scope.export();
-
-        expect(error.handle).toHaveBeenCalledWith("There are no results to export.");
-    });
-
-    it('should import file successfully', function() {
-        var element = document.createElement('input');
-        element.id = 'import-results-file';
-        document.body.appendChild(element);
-
-        var reader = new FileReader();
-        var toast = $mdToast.simple().textContent("Results imported").position('top right');
-
-        spyOn(results, 'update').and.returnValue(mockData);
-        spyOn($mdDialog, 'hide');
-        spyOn(error, 'handle');
-        spyOn($mdToast, 'simple');
-
-        $controller('ImportExportDialogController', { $scope:$scope, $mdDialog:$mdDialog, results:results, error:error, $mdToast:$mdToast});
-
-        $scope.import();
-
-        reader.addEventListener('onloadend', function(e) {
-            expect(e.target.result).toEqual(mockData);
-            done();
+            expect(error.handle).toHaveBeenCalledWith("There are no results to export.");
         });
-        expect(results.update()).toEqual(mockData);
 
-        $mdToast.show(toast).then(function() {
+        it('should no show No Results error when at least one edge exists', function() {
+            spyOn(error, 'handle');
+            var emptyResults = { edges: ["edge"], entities: [], other: [] };
+            spyOn(results, 'get').and.returnValue(emptyResults);
+            $controller('ImportExportDialogController', { $scope: $scope, results: results, error: error });
 
-            expect($mdToast.simple).toHaveBeenCalled();
+            $scope.export();
+
+            expect(error.handle).not.toHaveBeenCalledWith("There are no results to export.");
+        });
+
+        it('should no show No Results error when at least one entity exists', function() {
+            spyOn(error, 'handle');
+            var emptyResults = { edges: [], entities: ["entity"], other: [] };
+            spyOn(results, 'get').and.returnValue(emptyResults);
+            $controller('ImportExportDialogController', { $scope: $scope, results: results, error: error });
+
+            $scope.export();
+
+            expect(error.handle).not.toHaveBeenCalledWith("There are no results to export.");
+        });
+
+        it('should no show No Results error when at least one other result exists', function() {
+            spyOn(error, 'handle');
+            var emptyResults = { edges: [], entities: [], other: ["other result"] };
+            spyOn(results, 'get').and.returnValue(emptyResults);
+            $controller('ImportExportDialogController', { $scope: $scope, results: results, error: error });
+
+            $scope.export();
+
+            expect(error.handle).not.toHaveBeenCalledWith("There are no results to export.");
+        });
+
+        it('should hide mdDialog and append/remove <a> element when results exist', function() {
+            spyOn($mdDialog, 'hide');
+            spyOn(URL, 'createObjectURL');
+            spyOn(URL, 'revokeObjectURL');
+            spyOn(document.body, 'appendChild');
+            spyOn(document.body, 'removeChild');
+            spyOn(results, 'get').and.returnValue({ edges: ["edge"], entities: ["entity"], other: ["other"]});
+            $controller('ImportExportDialogController', { $scope: $scope, results: results });
+
+            $scope.export();
+
+            expect(URL.createObjectURL).toHaveBeenCalledWith(jasmine.any(Blob));
+            expect(URL.revokeObjectURL).toHaveBeenCalled();
+            expect(document.body.appendChild).toHaveBeenCalledWith(jasmine.any(HTMLElement));
+            expect(document.body.removeChild).toHaveBeenCalledWith(jasmine.any(HTMLElement));
             expect($mdDialog.hide).toHaveBeenCalled();
         });
     });
 
-    it('should not parse if file is not in JSON format', function() {
-        var mockArg = 'anything';
-        var reader = new FileReader();
-        spyOn(error, 'handle').and.stub();
+    describe('Import', function() {
+        it('should return Please choose file when import-results element has null files', function() {
+            spyOn(error, 'handle');
+            var emptyDiv = document.createElement('div');
+            emptyDiv.id = 'import-results-file';
+            document.body.appendChild(emptyDiv);
+            $controller('ImportExportDialogController', { $scope: $scope, error: error });
 
-        $controller('ImportExportDialogController', { $scope: $scope,  error: error });
+            $scope.import();
 
-        $scope.import();
+            expect(error.handle).toHaveBeenCalledWith("Please choose a file before clicking import.");
+        });
 
-        expect(function(){reader.onloadend(mockArg)}).toThrow();
-        expect(error.handle).toHaveBeenCalled();
-    });
+        it('should return Please choose file when import-results element has empty files', function() {
+            spyOn(error, 'handle');
+            var emptyFilesArray = { files: [] };
+            spyOn(document, 'getElementById').and.returnValue(emptyFilesArray);
+            $controller('ImportExportDialogController', { $scope: $scope, error: error });
 
-    it('should call back with choose file error when no file exists', function() {
-        spyOn(error, 'handle');
-        $controller('ImportExportDialogController', { $scope: $scope,  error: error });
+            $scope.import();
 
-        $scope.import();
+            expect(error.handle).toHaveBeenCalledWith("Please choose a file before clicking import.");
+        });
 
-        expect(error.handle).toHaveBeenCalledWith("Please choose a file before clicking import.");
+        it('should return Please choose file when import-results has more than 1 file', function() {
+            spyOn(error, 'handle');
+            var twoFiles = { files: ["1", "2"] };
+            spyOn(document, 'getElementById').and.returnValue(twoFiles);
+            $controller('ImportExportDialogController', { $scope: $scope, error: error });
+
+            $scope.import();
+
+            expect(error.handle).toHaveBeenCalledWith("Please choose a file before clicking import.");
+        });
+
+        it('should return Please choose file when import-results first file is empty', function() {
+            spyOn(error, 'handle');
+            var emptyFile = { files: [""] };
+            spyOn(document, 'getElementById').and.returnValue(emptyFile);
+            $controller('ImportExportDialogController', { $scope: $scope, error: error });
+
+            $scope.import();
+
+            expect(error.handle).toHaveBeenCalledWith("Please choose a file before clicking import.");
+        });
+
+        it('should NOT return Please choose file when import-results element has a file', function() {
+            spyOn(error, 'handle');
+            var oneFile = { files: ['Mock'] };
+            spyOn(document, 'getElementById').and.returnValue(oneFile);
+
+            $controller('ImportExportDialogController', { $scope: $scope, error: error });
+
+            $scope.import();
+
+            expect(error.handle).not.toHaveBeenCalledWith("Please choose a file before clicking import.");
+        });
     });
 });
