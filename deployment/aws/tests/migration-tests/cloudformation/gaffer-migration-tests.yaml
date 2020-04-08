@@ -5,28 +5,28 @@ Parameters:
 
   GafferVersionA:
     Type: String
-    Default: 1.0.0
+    Default: master
     MinLength: 1
     AllowedPattern: "\\S+"
     Description: The version of Gaffer to deploy initially - can be a version number (e.g. 1.0.0) or a git branch (e.g. gh-X-feature-name) / commit hash etc
 
   GafferToolsVersionA:
     Type: String
-    Default: 1.0.0
+    Default: master
     MinLength: 1
     AllowedPattern: "\\S+"
     Description: The version of Gaffer Tools to use to deploy the initial version of Gaffer on EMR - can be a version number (e.g. 1.0.0) or a git branch (e.g. gh-X-feature-name) / commit hash etc
 
   GafferVersionB:
     Type: String
-    Default: 1.0.0
+    Default: develop
     MinLength: 1
     AllowedPattern: "\\S+"
     Description: The version of Gaffer to migrate the cluster to - can be a version number (e.g. 1.0.0) or a git branch (e.g. gh-X-feature-name) / commit hash etc
 
   GafferToolsVersionB:
     Type: String
-    Default: 1.0.0
+    Default: develop
     MinLength: 1
     AllowedPattern: "\\S+"
     Description: The version of Gaffer Tools to use to upgrade Gaffer - can be a version number (e.g. 1.0.0) or a git branch (e.g. gh-X-feature-name) / commit hash etc
@@ -39,7 +39,7 @@ Parameters:
 
   AccumuloVersion:
     Type: String
-    Default: 1.8.1
+    Default: 1.9.3
     MinLength: 1
     AllowedPattern: "\\S+"
 

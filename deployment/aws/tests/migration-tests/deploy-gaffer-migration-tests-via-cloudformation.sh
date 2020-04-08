@@ -18,8 +18,8 @@
 
 # ----- CONFIG ----- #
 
-GAFFER_VERSION_A="1.0.0"
-GAFFER_TOOLS_VERSION_A="develop"
+GAFFER_VERSION_A="master"
+GAFFER_TOOLS_VERSION_A="master"
 
 GAFFER_VERSION_B="develop"
 GAFFER_TOOLS_VERSION_B="develop"
@@ -65,7 +65,7 @@ aws cloudformation create-stack \
 		ParameterKey=GafferToolsVersionA,ParameterValue=$GAFFER_TOOLS_VERSION_A \
 		ParameterKey=GafferVersionB,ParameterValue=$GAFFER_VERSION_B \
 		ParameterKey=GafferToolsVersionB,ParameterValue=$GAFFER_TOOLS_VERSION_B \
-		ParameterKey=AccumuloVersion,ParameterValue=1.8.1 \
+		ParameterKey=AccumuloVersion,ParameterValue=1.9.3 \
 		ParameterKey=VpcId,ParameterValue=$VPC_ID \
 		ParameterKey=SubnetId,ParameterValue=$SUBNET_ID \
 		ParameterKey=ExtraSecurityGroups,ParameterValue=\"$EXTRA_SECURITY_GROUPS\" \

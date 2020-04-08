@@ -19,7 +19,7 @@ Parameters:
 
   AccumuloVersion:
     Type: String
-    Default: 1.8.1
+    Default: 1.9.3
     MinLength: 1
     AllowedPattern: "\\S+"
 

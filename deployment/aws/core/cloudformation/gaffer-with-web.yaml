@@ -5,21 +5,21 @@ Parameters:
 
   GafferVersion:
     Type: String
-    Default: 0.7.8
+    Default: master
     MinLength: 1
     AllowedPattern: "\\S+"
     Description: The version of Gaffer to deploy - can be a version number (e.g. 0.7.8) or a git branch (e.g. gh-X-feature-name) / commit hash etc
 
   GafferToolsVersion:
     Type: String
-    Default: 0.7.8
+    Default: master
     MinLength: 1
     AllowedPattern: "\\S+"
     Description: The version of Gaffer Tools to use to deploy Gaffer on EMR - can be a version number (e.g. 0.7.8) or a git branch (e.g. gh-X-feature-name) / commit hash etc
 
   AccumuloVersion:
     Type: String
-    Default: 1.8.1
+    Default: 1.9.3
     MinLength: 1
     AllowedPattern: "\\S+"
 
