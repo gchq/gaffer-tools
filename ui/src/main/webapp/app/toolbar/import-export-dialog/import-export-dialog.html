@@ -1,18 +1,34 @@
 <md-dialog-content>
     <div class="md-dialog-content">
-        <h2 class="md-headline">Import or Export results</h2>
+        <md-card-avatar>
+            <md-icon md-svg-icon="import-export"></md-icon>
+        </md-card-avatar>
+        <md-card-header-text>
+            <span class="md-title">Import or Export Results</span>
+        </md-card-header-text>
 
+        <md-list class="layout-column">
+            <md-list-item class="md-2-line">
+                <div class="md-list-item-text">
+                    <p>Import your results from a Gaffer JSON file.</p>
+                    <input type="file" id="import-results-file" name="file" ng-model="importFilename"/>
+                </div>
+                <md-button class="md-primary md-raised md-list-item-text" aria-label="import results"
+                           ng-click="import()">
+                    Import
+                </md-button>
+            </md-list-item>
 
-        Import your results from a Gaffer JSON file.
-        <input type="file" id="import-results-file" name="file" ng-model="importFilename"/>
-        <div style="display:flex; justify-content:flex-end; width:100%; padding:0;">
-            <md-button class="md-raised" ng-click="import()">Import</md-button>
-        </div>
-
-        Export your results to a Gaffer JSON file.
-        <div style="display:flex; justify-content:flex-end; width:100%; padding:0;">
-            <md-button class="md-raised" ng-click="export()">Export</md-button>
-        </div>
+            <md-list-item class="md-2-line">
+                <div class="md-list-item-text">
+                    <p>Export your results to a Gaffer JSON file.</p>
+                </div>
+                <md-button class="md-primary md-raised md-list-item-text" aria-label="export results"
+                           ng-click="export()">
+                    Export
+                </md-button>
+            </md-list-item>
+        </md-list>
 
     </div>
 </md-dialog-content>
