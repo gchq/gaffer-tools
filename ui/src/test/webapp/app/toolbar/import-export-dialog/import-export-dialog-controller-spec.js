@@ -66,40 +66,40 @@ describe('The import/export dialog controller', function() {
 
             $scope.export();
 
-            expect(error.handle).toHaveBeenCalledWith("There are no results to export.");
+            expect(error.handle).toHaveBeenCalledWith('There are no results to export.');
         });
 
         it('should no show No Results error when at least one edge exists', function() {
             spyOn(error, 'handle');
-            var emptyResults = { edges: ["edge"], entities: [], other: [] };
+            var emptyResults = { edges: ['edge'], entities: [], other: [] };
             spyOn(results, 'get').and.returnValue(emptyResults);
             $controller('ImportExportDialogController', { $scope: $scope, results: results, error: error });
 
             $scope.export();
 
-            expect(error.handle).not.toHaveBeenCalledWith("There are no results to export.");
+            expect(error.handle).not.toHaveBeenCalledWith('There are no results to export.');
         });
 
         it('should no show No Results error when at least one entity exists', function() {
             spyOn(error, 'handle');
-            var emptyResults = { edges: [], entities: ["entity"], other: [] };
+            var emptyResults = { edges: [], entities: ['entity'], other: [] };
             spyOn(results, 'get').and.returnValue(emptyResults);
             $controller('ImportExportDialogController', { $scope: $scope, results: results, error: error });
 
             $scope.export();
 
-            expect(error.handle).not.toHaveBeenCalledWith("There are no results to export.");
+            expect(error.handle).not.toHaveBeenCalledWith('There are no results to export.');
         });
 
         it('should no show No Results error when at least one other result exists', function() {
             spyOn(error, 'handle');
-            var emptyResults = { edges: [], entities: [], other: ["other result"] };
+            var emptyResults = { edges: [], entities: [], other: ['other result'] };
             spyOn(results, 'get').and.returnValue(emptyResults);
             $controller('ImportExportDialogController', { $scope: $scope, results: results, error: error });
 
             $scope.export();
 
-            expect(error.handle).not.toHaveBeenCalledWith("There are no results to export.");
+            expect(error.handle).not.toHaveBeenCalledWith('There are no results to export.');
         });
 
         it('should hide mdDialog and append/remove <a> element when results exist', function() {
@@ -108,7 +108,7 @@ describe('The import/export dialog controller', function() {
             spyOn(URL, 'revokeObjectURL');
             spyOn(document.body, 'appendChild');
             spyOn(document.body, 'removeChild');
-            spyOn(results, 'get').and.returnValue({ edges: ["edge"], entities: ["entity"], other: ["other"]});
+            spyOn(results, 'get').and.returnValue({ edges: ['edge'], entities: ['entity'], other: ['other']});
             $controller('ImportExportDialogController', { $scope: $scope, results: results });
 
             $scope.export();
@@ -131,7 +131,7 @@ describe('The import/export dialog controller', function() {
 
             $scope.import();
 
-            expect(error.handle).toHaveBeenCalledWith("Please choose a file before clicking import.");
+            expect(error.handle).toHaveBeenCalledWith('Please choose a file before clicking import.');
         });
 
         it('should return Please choose file when import-results element has empty files', function() {
@@ -142,18 +142,18 @@ describe('The import/export dialog controller', function() {
 
             $scope.import();
 
-            expect(error.handle).toHaveBeenCalledWith("Please choose a file before clicking import.");
+            expect(error.handle).toHaveBeenCalledWith('Please choose a file before clicking import.');
         });
 
         it('should return Please choose file when import-results has more than 1 file', function() {
             spyOn(error, 'handle');
-            var twoFiles = { files: ["1", "2"] };
+            var twoFiles = { files: ['1', '2'] };
             spyOn(document, 'getElementById').and.returnValue(twoFiles);
             $controller('ImportExportDialogController', { $scope: $scope, error: error });
 
             $scope.import();
 
-            expect(error.handle).toHaveBeenCalledWith("Please choose a file before clicking import.");
+            expect(error.handle).toHaveBeenCalledWith('Please choose a file before clicking import.');
         });
 
         it('should return Please choose file when import-results first file is empty', function() {
@@ -164,7 +164,7 @@ describe('The import/export dialog controller', function() {
 
             $scope.import();
 
-            expect(error.handle).toHaveBeenCalledWith("Please choose a file before clicking import.");
+            expect(error.handle).toHaveBeenCalledWith('Please choose a file before clicking import.');
         });
 
         it('should NOT return Please choose file when import-results element has a file', function() {
@@ -176,7 +176,7 @@ describe('The import/export dialog controller', function() {
 
             $scope.import();
 
-            expect(error.handle).not.toHaveBeenCalledWith("Please choose a file before clicking import.");
+            expect(error.handle).not.toHaveBeenCalledWith('Please choose a file before clicking import.');
         });
     });
 });
