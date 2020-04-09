@@ -1,6 +1,6 @@
 #!/bin/bash -xe
 
-GAFFER_VERSION=""
+GAFFER_VERSION="master"
 HOST=""
 PORT=80
 WAIT_HANDLE_URL=""
