@@ -177,7 +177,9 @@ describe('The import/export dialog controller', function() {
 
             expect(error.handle).not.toHaveBeenCalled();
         });
+    });
 
+    describe('Import JSON File Helper Function', function() {
         it('should handle "Failed to parse file" error when result is not JSON', function() {
             spyOn(error, 'handle');
             var mockEvent = { target: { result: 'String type, not JSON' } };
