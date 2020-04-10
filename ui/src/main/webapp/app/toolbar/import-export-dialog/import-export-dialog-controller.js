@@ -17,6 +17,7 @@
 'use strict';
 
 angular.module('app').controller('ImportExportDialogController', ['$scope', '$mdDialog', 'results', 'error', '$mdToast', function($scope, $mdDialog, results, error, $mdToast) {
+
     var downloadData = function(fileName, data, mimeType, callback) {
         var downloadLink = document.createElement('a');
         downloadLink.href = URL.createObjectURL(new Blob([data], {type: mimeType}));
@@ -53,22 +54,24 @@ angular.module('app').controller('ImportExportDialogController', ['$scope', '$md
             var file = files[0];
             var reader = new FileReader();
             reader.onloadend = function(e) {
-                  try {
-                      var json = JSON.parse(e.target.result);
-                      results.update(json);
-                      $mdToast.show(
-                          $mdToast.simple()
-                              .textContent("Results imported")
-                              .position('top right')
-                      );
-                      $mdDialog.hide();
-                  } catch(e) {
-                    error.handle("Failed to parse import file. Only JSON import files are supported.");
-                  }
-            }
+                $scope.importJsonFile(e);
+            };
             reader.readAsBinaryString(file);
         } else {
             error.handle("Please choose a file before clicking import.");
         }
     }
+
+    $scope.importJsonFile = function(e) {
+        try {
+            var json = JSON.parse(e.target.result);
+            results.update(json);
+            $mdToast.show(
+                $mdToast.simple().textContent("Results imported").position('top right')
+            );
+            $mdDialog.hide();
+        } catch(e) {
+            error.handle("Failed to parse import file. Only JSON import files are supported.");
+        }
+    };
 }]);
