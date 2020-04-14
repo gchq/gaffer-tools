@@ -165,20 +165,21 @@ function OperationChainController(operationChain, settings, config, loading, que
         }
 
         var confirm = $mdDialog.confirm()
-        .title('Operation chain saved as named operation!')
-        .textContent('You can now see your saved operation in the list of operations')
-        .ok('Ok')
+            .title('Operation chain saved as named operation!')
+            .textContent('You can now see your saved operation in the list of operations')
+            .ok('Ok');
 
         var invalidName = $mdDialog.confirm()
-        .title('Operation chain name is invalid!')
-        .textContent('You must provide a name for the operation')
-        .ok('Ok')
+            .title('Operation chain name is invalid!')
+            .textContent('You must provide a name for the operation')
+            .ok('Ok');
 
         if (vm.namedOperation.name != null && vm.namedOperation.name != '') {
             query.executeQuery(
                 {
                     class: ADD_NAMED_OPERATION_CLASS,
                     operationName: vm.namedOperation.name,
+                    label: vm.namedOperation.label,
                     operationChain: chain,
                     description: vm.namedOperation.description,
                     options: {},

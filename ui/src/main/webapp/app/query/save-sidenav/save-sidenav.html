@@ -8,12 +8,18 @@
                 <md-input-container class="md-block">
                     <label for="saved-name">Name</label>
                     <input type="text" id="saved-name" required ng-model="ctrl.namedOperation.name" md-autofocus>
-                </md-input-container>     
+                </md-input-container>
+            </div>
+            <div width='100%'>
+                <md-input-container class="md-block">
+                    <label for="saved-label">Label</label>
+                    <input type="text" id="saved-label" required ng-model="ctrl.namedOperation.label" md-autofocus>
+                </md-input-container>
             </div>
             <div width='100%'>
                 <md-input-container class="md-block">
                     <label for="saved-description" required>Description</label>
-                    <textarea 
+                    <textarea
                         id="saved-description"
                         md-no-autogrow
                         ng-model="ctrl.namedOperation.description"
