@@ -383,3 +383,13 @@ quick-query {
     margin-left: 0px !important;
     margin-right: 0px !important;
 }
+/* Operation chain edit details */
+.md-list-item-text {
+    position: relative;
+}
+
+#edit-query {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+}

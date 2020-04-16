@@ -26,7 +26,7 @@ function myQueries() {
     }   
 }
 
-function MyQueriesController(previousQueries, navigation, operationChain, $mdSidenav) {
+function MyQueriesController(previousQueries, navigation, operationChain) {
 
     var vm = this;
     vm.queries = [];

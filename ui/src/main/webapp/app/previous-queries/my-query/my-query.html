@@ -17,16 +17,18 @@
         <md-subheader class="md-no-sticky">Operations</md-subheader>
         <md-list-item class="md-2-line" ng-repeat="operation in ctrl.model.operations">
             <div class="md-list-item-text">
+                        <md-button class="md-primary md-icon-button" id="edit-query" ng-click="ctrl.toggleSideNav()">
+                                <md-icon md-svg-icon="edit"></md-icon>
+                                <md-tooltip>Edit Name</md-tooltip>
+                        </md-button>
                 <h3>{{operation.selectedOperation.name}}</h3>
                 <p>{{operation.selectedOperation.description}}</p>
             </div>
         </md-list-item>
     </md-list>
     <md-menu-item>
-        <span class = "md-description">{{ctrl.model.description}}</span>
+        <span class = "md-description">{{ctrl.model.description}}test</span>
     </md-menu-item>
-    <md-menu-item>
-        <md-button id="edit-query" ng-click="ctrl.toggleSideNav()">EDIT DETAILS</md-button>
-    </md-menu-item>
+    
 </md-card>
 <edit-sidenav updated-query= "ctrl.updatedQuery" on-save="ctrl.saveUpdatedDetails()" on-close="ctrl.toggleSideNav()"></edit-sidenav>
