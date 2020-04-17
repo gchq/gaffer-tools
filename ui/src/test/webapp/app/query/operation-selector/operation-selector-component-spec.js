@@ -8,9 +8,10 @@ describe('Operation Selector Component', function() {
     var $routeParams;
 
     var availableOperations = [
-        {name: "op Name 1", description: "OP description 1"},
-        {name: "op Name 2", description: "OP description 2"},
-        {name: "op Name 3", description: "OP description 3"}
+        {name: 'op Name 1', label: 'Group 1', description: 'OP description 1'},
+        {name: 'op Name 2', label: 'Group 1', description: 'OP description 2'},
+        {name: 'op Name 3', label: null, description: 'OP description 3'},
+        {name: 'op Name 4', description: 'OP description 4'}
     ];
     
     beforeEach(module('app'));
@@ -152,27 +153,21 @@ describe('Operation Selector Component', function() {
             expect(operationService.reloadOperations).toHaveBeenCalled();
         });
 
-        it('should update the list of available operations with the results', function() {
+        it('should update the list of available operations with the results and display name with group', function() {
             scope.$digest();
             expect(ctrl.availableOperations).toEqual([
-                {name: "op Name 1", description: "OP description 1", formattedName: "opname1", formattedDescription: "opdescription1"},
-                {name: "op Name 2", description: "OP description 2", formattedName: "opname2", formattedDescription: "opdescription2"},
-                {name: "op Name 3", description: "OP description 3", formattedName: "opname3", formattedDescription: "opdescription3"}
+                {name: 'op Name 1', label:'Group 1', description: 'OP description 1', displayName: '[Group 1] op Name 1', formattedName: '[group1]opname1', formattedDescription: 'opdescription1'},
+                {name: 'op Name 2', label:'Group 1', description: 'OP description 2', displayName: '[Group 1] op Name 2', formattedName: '[group1]opname2', formattedDescription: 'opdescription2'},
+                {name: 'op Name 3', label: null, description: 'OP description 3', displayName: 'op Name 3', formattedName: 'opname3', formattedDescription: 'opdescription3'},
+                {name: 'op Name 4', description: 'OP description 4', displayName: 'op Name 4', formattedName: 'opname4', formattedDescription: 'opdescription4'}
             ]);
         });
 
         describe('should order by', function() {
             it('named operation first', function() {
                 availableOperations = [
-                    {
-                        name: 'abc',
-                        description: 'abc'
-                    },
-                    {
-                        name: 'xyz',
-                        description: 'xyz',
-                        namedOp: true
-                    }
+                    {name: 'abc', description: 'abc' },
+                    {name: 'xyz', description: 'xyz', namedOp: true}
                 ];
 
                 ctrl.reloadOperations();

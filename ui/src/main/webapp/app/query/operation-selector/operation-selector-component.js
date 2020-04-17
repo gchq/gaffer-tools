@@ -20,7 +20,7 @@ var app = angular.module('app');
 
 app.filter('operationFilter', function() {
     return function(operations, search) {
-        if(!operations) {
+        if (!operations) {
             return operations;
         }
         if (!search) {
@@ -106,14 +106,15 @@ function OperationSelectorController(operationService, $routeParams, $filter) {
     var populateOperations = function(availableOperations) {
         vm.availableOperations = [];
 
-        for(var i in availableOperations) {
+        for (var i in availableOperations) {
             var operation = availableOperations[i];
 
-            if(!vm.previous || !vm.previous.selectedOperation || !vm.previous.selectedOperation.next || vm.previous.selectedOperation.next.indexOf(operation.class) > -1) {
-                operation.formattedName = operation.name !== undefined ? operation.name.toLowerCase().replace(/\s+/g, '') : '';
+            if (!vm.previous || !vm.previous.selectedOperation || !vm.previous.selectedOperation.next || vm.previous.selectedOperation.next.indexOf(operation.class) > -1) {
+                operation.displayName = operation.label ? '[' + operation.label + '] ' + operation.name : operation.name;
+                operation.formattedName = operation.displayName !== undefined ? operation.displayName.toLowerCase().replace(/\s+/g, '') : '';
                 operation.formattedDescription = operation.description !== undefined ? operation.description.toLowerCase().replace(/\s+/g, '') : '';
 
-                if(operation.formattedName === "getelements") {
+                if (operation.formattedName === "getelements") {
                     vm.placeholder = "Search for an operation (e.g Get Elements)";
                 }
                 vm.availableOperations.push(operation);

@@ -25,12 +25,10 @@ describe('the operation filter', function() {
             {
                 formattedName: 'test',
                 formattedDescription: 'an operation'
-            },
-            {
+            }, {
                 formattedName: 'similar to test',
                 formattedDescription: ''
-            },
-            {
+            }, {
                 formattedName: 'unrelated',
                 formattedDescription: 'thing that has nothing to do with the first two'
             }
@@ -40,8 +38,7 @@ describe('the operation filter', function() {
             {
                 formattedName: 'test',
                 formattedDescription: 'an operation'
-            },
-            {
+            }, {
                 formattedName: 'similar to test',
                 formattedDescription: ''
             }
@@ -55,12 +52,10 @@ describe('the operation filter', function() {
             {
                 formattedName: 'test',
                 formattedDescription: 'an operation'
-            },
-            {
+            }, {
                 formattedName: 'similar to test',
                 formattedDescription: ''
-            },
-            {
+            }, {
                 formattedName: 'unrelated',
                 formattedDescription: 'thing that has nothing to do with the first two'
             }
@@ -81,12 +76,10 @@ describe('the operation filter', function() {
             {
                 formattedName: 'test',
                 formattedDescription: 'an operation'
-            },
-            {
+            }, {
                 formattedName: 'similar to test',
                 formattedDescription: ''
-            },
-            {
+            }, {
                 formattedName: 'unrelated',
                 formattedDescription: 'thing that has nothing to do with the first two'
             }
@@ -100,12 +93,10 @@ describe('the operation filter', function() {
             {
                 formattedName: 'foo',
                 formattedDescription: 'a foo operation'
-            },
-            {
+            }, {
                 formattedName: 'bar',
                 formattedDescription: ''
-            },
-            {
+            }, {
                 formattedName: 'test',
                 formattedDescription: 'a test operation'
             }
@@ -127,12 +118,10 @@ describe('the operation filter', function() {
             {
                 formattedName: 'similar to test',
                 formattedDescription: 'keyword in the description'
-            },
-            {
+            }, {
                 formattedName: 'test keyword',
                 formattedDescription: 'an operation'
-            },
-            {
+            }, {
                 formattedName: 'unrelated',
                 formattedDescription: 'thing that has nothing to do with the first two'
             }
@@ -142,14 +131,48 @@ describe('the operation filter', function() {
             {
                 formattedName: 'test keyword',
                 formattedDescription: 'an operation'
-            },
-            {
+            }, {
                 formattedName: 'similar to test',
                 formattedDescription: 'keyword in the description'
             },
-        ]
+        ];
 
         expect(operationFilter(ops, 'keyword')).toEqual(expected);
     });
 
+    it('should search ops with prefixed group label', function() {
+        var ops = [
+            {
+                displayName: '[Group 1] Operation 1',
+                label: 'Group 1',
+                formattedName: '[group1]operation1',
+                formattedDescription: 'a description'
+            }, {
+                displayName: '[Group 1] Operation 2',
+                label: 'Group 1',
+                formattedName: '[group1]operation2',
+                formattedDescription: 'the description'
+            }, {
+                displayName: 'Other Op 3',
+                formattedName: 'otherop3',
+                formattedDescription: 'some description'
+            }
+        ];
+
+        var expected = [
+            {
+                displayName: '[Group 1] Operation 1',
+                label: 'Group 1',
+                formattedName: '[group1]operation1',
+                formattedDescription: 'a description'
+            }, {
+                displayName: '[Group 1] Operation 2',
+                label: 'Group 1',
+                formattedName: '[group1]operation2',
+                formattedDescription: 'the description'
+            }
+        ];
+
+        expect(operationFilter(ops, 'Group1')).toEqual(expected);
+    });
 });
