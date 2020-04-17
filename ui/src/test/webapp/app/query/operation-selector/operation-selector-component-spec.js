@@ -7,25 +7,18 @@ describe('Operation Selector Component', function() {
     var operationService;
     var $routeParams;
 
-    var availableOperations = [
-        {name: "op Name 1", description: "OP description 1"},
-        {name: "op Name 2", description: "OP description 2"},
-        {name: "op Name 3", description: "OP description 3"}
-    ];
-    
     beforeEach(module('app'));
 
     beforeEach(module(function($provide) {
         $provide.factory('config', function($q) {
             var get = function() {
                 return $q.when({});
-            }
+            };
 
             return {
                 get: get
-            }
+            };
         });
-
         $provide.factory('schema', function($q) {
             return {
                 get: function() {
@@ -34,7 +27,6 @@ describe('Operation Selector Component', function() {
             }
         });
     }));
-        
 
     beforeEach(inject(function(_$componentController_, _$rootScope_, _$q_, _operationService_, _$routeParams_) {
         $componentController = _$componentController_;
@@ -48,26 +40,11 @@ describe('Operation Selector Component', function() {
         ctrl = $componentController('operationSelector', {$scope: scope});
     });
 
-    beforeEach(function() {
-        spyOn(operationService, 'reloadOperations').and.callFake(function() {
-            return $q.when(availableOperations);
-        });
-    })
-
     it('should exist', function() {
         expect(ctrl).toBeDefined();
     });
 
     describe('ctrl.getOperations()', function() {
-
-        it('should load the operations', function() {
-            var ctrl = $componentController('operationSelector', { $scope: scope });
-
-            ctrl.getOperations();
-            scope.$digest();
-
-            expect(operationService.reloadOperations).toHaveBeenCalledTimes(1);
-        });
 
         it('should select the operation defined in the query operation parameter', function() {
             $routeParams.operation = "operationX";
@@ -158,12 +135,12 @@ describe('Operation Selector Component', function() {
 
     describe('ctrl.reloadOperations()', function() {
 
-        beforeEach(function() {
-            ctrl.reloadOperations();
-        });
+        var availableOperations = [];
 
-        it('should refresh the operations', function() {
-            expect(operationService.reloadOperations).toHaveBeenCalled();
+        beforeEach(function() {
+            spyOn(operationService, 'reloadOperations').and.callFake(function() {
+                return $q.when(availableOperations);
+            });
         });
 
         it('should populate and sort operations as NamedOps first and in alphabetical name order', function() {
