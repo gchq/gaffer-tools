@@ -8,10 +8,9 @@ describe('Operation Selector Component', function() {
     var $routeParams;
 
     var availableOperations = [
-        {name: 'op Name 1', label: 'Group 1', description: 'OP description 1'},
-        {name: 'op Name 2', label: 'Group 1', description: 'OP description 2'},
-        {name: 'op Name 3', label: null, description: 'OP description 3'},
-        {name: 'op Name 4', description: 'OP description 4'}
+        {name: "op Name 1", description: "OP description 1"},
+        {name: "op Name 2", description: "OP description 2"},
+        {name: "op Name 3", description: "OP description 3"}
     ];
     
     beforeEach(module('app'));
@@ -63,9 +62,10 @@ describe('Operation Selector Component', function() {
 
         it('should load the operations', function() {
             var ctrl = $componentController('operationSelector', { $scope: scope });
-            ctrl.getOperations();
 
+            ctrl.getOperations();
             scope.$digest();
+
             expect(operationService.reloadOperations).toHaveBeenCalledTimes(1);
         });
 
@@ -73,17 +73,14 @@ describe('Operation Selector Component', function() {
             $routeParams.operation = "operationX";
             var ctrl = $componentController('operationSelector', { $scope: scope });
             var availableOperations = [
-                {
-                    name: "GetElements"
-                },
-                {
-                    name: "operationX"
-                }
-            ]
+                {name: "GetElements"},
+                {name: "operationX"}
+            ];
             spyOn(operationService, 'getAvailableOperations').and.returnValue($q.when(availableOperations));
-            ctrl.getOperations();
 
+            ctrl.getOperations();
             scope.$digest();
+
             expect(ctrl.model.name).toEqual('operationX');
         });
 
@@ -91,17 +88,14 @@ describe('Operation Selector Component', function() {
             $routeParams.operation = "operation-x.";
             var ctrl = $componentController('operationSelector', { $scope: scope });
             var availableOperations = [
-                {
-                    name: "GetElements"
-                },
-                {
-                    name: "operationX"
-                }
-            ]
+                {name: "GetElements"},
+                {name: "operationX"}
+            ];
             spyOn(operationService, 'getAvailableOperations').and.returnValue($q.when(availableOperations));
-            ctrl.getOperations();
 
+            ctrl.getOperations();
             scope.$digest();
+
             expect(ctrl.model.name).toEqual('operationX');
         });
 
@@ -109,17 +103,14 @@ describe('Operation Selector Component', function() {
             $routeParams.op = "operationX";
             var ctrl = $componentController('operationSelector', { $scope: scope });
             var availableOperations = [
-                {
-                    name: "GetElements"
-                },
-                {
-                    name: "operationX"
-                }
-            ]
+                {name: "GetElements"},
+                {name: "operationX"}
+            ];
             spyOn(operationService, 'getAvailableOperations').and.returnValue($q.when(availableOperations));
-            ctrl.getOperations();
 
+            ctrl.getOperations();
             scope.$digest();
+
             expect(ctrl.model.name).toEqual('operationX');
         });
 
@@ -128,18 +119,40 @@ describe('Operation Selector Component', function() {
             var ctrl = $componentController('operationSelector', { $scope: scope });
             ctrl.selectedOp = undefined;
             var availableOperations = [
-                {
-                    name: "GetElements"
-                },
-                {
-                    name: "operationX"
-                }
-            ]
+                {name: "GetElements"},
+                {name: "operationX"}
+            ];
             spyOn(operationService, 'getAvailableOperations').and.returnValue($q.when(availableOperations));
-            ctrl.getOperations();
 
+            ctrl.getOperations();
             scope.$digest();
+
             expect(ctrl.model).not.toBeDefined();
+        });
+
+        it('should populate and sort operations as NamedOps first and in alphabetical name order', function() {
+            var operationsInWrongOrder = [
+                {namedOp: false, name: 'Get All Elements', description: 'Gets all elements'},
+                {namedOp: true, name: 'Op Name 4', description: 'OP description 4'},
+                {namedOp: true, name: 'Op Name 3', label: null, description: 'OP description 3'},
+                {namedOp: true, name: 'Op Name 2', label: 'Group 1', description: 'OP description 2'},
+                {namedOp: true, name: 'Op Name 1', label: 'Group 1', description: 'OP description 1'}
+            ];
+            spyOn(operationService, 'getAvailableOperations').and.returnValue($q.when(operationsInWrongOrder));
+
+            ctrl.getOperations();
+            scope.$digest();
+
+            var firstOp = {displayName: '[Group 1] Op Name 1', namedOp: true, name: 'Op Name 1', label:'Group 1', description: 'OP description 1', formattedName: '[group1]opname1', formattedDescription: 'opdescription1'};
+            var secondOp = {displayName: '[Group 1] Op Name 2', namedOp: true, name: 'Op Name 2', label:'Group 1', description: 'OP description 2', formattedName: '[group1]opname2', formattedDescription: 'opdescription2'};
+            var thirdOp = {displayName: 'Op Name 3', namedOp: true, name: 'Op Name 3', label: null, description: 'OP description 3', formattedName: 'opname3', formattedDescription: 'opdescription3'};
+            var fourthOp = {displayName: 'Op Name 4', namedOp: true, name: 'Op Name 4', description: 'OP description 4', formattedName: 'opname4', formattedDescription: 'opdescription4'};
+            var fifthOp = {displayName: 'Get All Elements', namedOp: false, name: 'Get All Elements', description: 'Gets all elements', formattedName: 'getallelements', formattedDescription: 'getsallelements'};
+            expect(ctrl.availableOperations[0]).toEqual(firstOp);
+            expect(ctrl.availableOperations[1]).toEqual(secondOp);
+            expect(ctrl.availableOperations[2]).toEqual(thirdOp);
+            expect(ctrl.availableOperations[3]).toEqual(fourthOp);
+            expect(ctrl.availableOperations[4]).toEqual(fifthOp);
         });
     });
 
@@ -153,14 +166,28 @@ describe('Operation Selector Component', function() {
             expect(operationService.reloadOperations).toHaveBeenCalled();
         });
 
-        it('should update the list of available operations with the results and display name with group', function() {
+        it('should populate and sort operations as NamedOps first and in alphabetical name order', function() {
+            availableOperations = [
+                {namedOp: false, name: 'Get All Elements', description: 'Gets all elements'},
+                {namedOp: true, name: 'Op Name 4', description: 'OP description 4'},
+                {namedOp: true, name: 'Op Name 3', label: null, description: 'OP description 3'},
+                {namedOp: true, name: 'Op Name 2', label: 'Group 1', description: 'OP description 2'},
+                {namedOp: true, name: 'Op Name 1', label: 'Group 1', description: 'OP description 1'}
+            ];
+
+            ctrl.reloadOperations();
             scope.$digest();
-            expect(ctrl.availableOperations).toEqual([
-                {name: 'op Name 1', label:'Group 1', description: 'OP description 1', displayName: '[Group 1] op Name 1', formattedName: '[group1]opname1', formattedDescription: 'opdescription1'},
-                {name: 'op Name 2', label:'Group 1', description: 'OP description 2', displayName: '[Group 1] op Name 2', formattedName: '[group1]opname2', formattedDescription: 'opdescription2'},
-                {name: 'op Name 3', label: null, description: 'OP description 3', displayName: 'op Name 3', formattedName: 'opname3', formattedDescription: 'opdescription3'},
-                {name: 'op Name 4', description: 'OP description 4', displayName: 'op Name 4', formattedName: 'opname4', formattedDescription: 'opdescription4'}
-            ]);
+
+            var firstOp = {displayName: '[Group 1] Op Name 1', namedOp: true, name: 'Op Name 1', label:'Group 1', description: 'OP description 1', formattedName: '[group1]opname1', formattedDescription: 'opdescription1'};
+            var secondOp = {displayName: '[Group 1] Op Name 2', namedOp: true, name: 'Op Name 2', label:'Group 1', description: 'OP description 2', formattedName: '[group1]opname2', formattedDescription: 'opdescription2'};
+            var thirdOp = {displayName: 'Op Name 3', namedOp: true, name: 'Op Name 3', label: null, description: 'OP description 3', formattedName: 'opname3', formattedDescription: 'opdescription3'};
+            var fourthOp = {displayName: 'Op Name 4', namedOp: true, name: 'Op Name 4', description: 'OP description 4', formattedName: 'opname4', formattedDescription: 'opdescription4'};
+            var fifthOp = {displayName: 'Get All Elements', namedOp: false, name: 'Get All Elements', description: 'Gets all elements', formattedName: 'getallelements', formattedDescription: 'getsallelements'};
+            expect(ctrl.availableOperations[0]).toEqual(firstOp);
+            expect(ctrl.availableOperations[1]).toEqual(secondOp);
+            expect(ctrl.availableOperations[2]).toEqual(thirdOp);
+            expect(ctrl.availableOperations[3]).toEqual(fourthOp);
+            expect(ctrl.availableOperations[4]).toEqual(fifthOp);
         });
 
         describe('should order by', function() {
@@ -178,14 +205,8 @@ describe('Operation Selector Component', function() {
 
             it('operation name second', function() {
                 availableOperations = [
-                    {
-                        name: 'abc',
-                        description: 'xyz'
-                    },
-                    {
-                        name: 'xyz',
-                        description: 'abc'
-                    }
+                    {name: 'abc', description: 'xyz'},
+                    {name: 'xyz', description: 'abc'}
                 ];
 
                 ctrl.reloadOperations();
@@ -196,14 +217,8 @@ describe('Operation Selector Component', function() {
 
             it('operation description third', function() {
                 availableOperations = [
-                    {
-                        name: 'abc',
-                        description: 'xyz'
-                    },
-                    {
-                        name: 'abc',
-                        description: 'abc'
-                    }
+                    {name: 'abc', description: 'xyz'},
+                    {name: 'abc', description: 'abc'}
                 ];
 
                 ctrl.reloadOperations();
@@ -214,15 +229,8 @@ describe('Operation Selector Component', function() {
 
             it('the order it came in if all the above are the equal', function() {
                 availableOperations = [
-                    {
-                        name: 'abc',
-                        description: 'abc',
-                        passed: true
-                    },
-                    {
-                        name: 'abc',
-                        description: 'abc'
-                    }
+                    {name: 'abc', description: 'abc', passed: true},
+                    {name: 'abc', description: 'abc'}
                 ];
 
                 ctrl.reloadOperations();
