@@ -109,6 +109,30 @@ Parameters:
     AllowedPattern: "|(\\S+\\.tar\\.gz)"
     ConstraintDescription: "Please specify this as <bucketName>/<filename>.tar.gz"
 
+  TimeoutFileUpload:
+    Type: Number
+    Default: 180
+    Description: "Timeout value for the File Upload Lanbda function"
+    MinValue: 1
+
+  TimeoutCreateUsers:
+    Type: Number
+    Default: 600
+    Description: "Timeout value for creating the users"
+    MinValue: 1
+
+  TimeoutGaffer:
+    Type: Number
+    Default: 3600
+    Description: "Timeout value for Gaffer"
+    MinValue: 1
+
+  TimeoutEmrCleanup:
+    Type: Number
+    Default: 180
+    Description: "Timeout value for the EMR clean-up"
+    MinValue: 1
+
 Metadata:
   AWS::CloudFormation::Interface:
     ParameterGroups:
@@ -138,6 +162,13 @@ Metadata:
           - ExtraEmrSecurityGroups
           - ManageSecurityGroups
           - MavenRepoTarball
+      - Label:
+          default: Timeouts
+        Parameters:
+          - TimeoutFileUpload
+          - TimeoutCreateUsers
+          - TimeoutEmrCleanup
+          - TimeoutGaffer
 
 Resources:
 
@@ -161,6 +192,10 @@ Resources:
         TabletServersPerYarnNode: !Ref TabletServersPerYarnNode
         MavenRepoTarball: !Ref MavenRepoTarball
         ClusterUsage: !Ref ClusterUsage
+        TimeoutFileUpload: !Ref TimeoutFileUpload
+        TimeoutGaffer: !Ref TimeoutGaffer
+        TimeoutEmrCleanup: !Ref TimeoutEmrCleanup
+
 
   GafferUser:
     Type: AWS::CloudFormation::Stack
@@ -172,6 +207,7 @@ Resources:
         GafferInstanceName: !Ref GafferInstanceName
         UserName: !Ref UserName
         AccumuloVisibilities: !Ref AccumuloVisibilities
+        TimeoutCreateUsers: !Ref TimeoutCreateUsers
 
   ##############################
   ## Upload dependencies into S3
@@ -196,7 +232,7 @@ Resources:
       Runtime: python2.7
       Handler: index.lambda_handler
       MemorySize: 128
-      Timeout: 180
+      Timeout: !Ref TimeoutFileUpload
       Code:
         ZipFile: !Sub |
           #!/usr/bin/env python

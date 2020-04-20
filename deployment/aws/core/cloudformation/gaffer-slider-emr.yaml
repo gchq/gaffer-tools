@@ -95,6 +95,24 @@ Parameters:
     AllowedPattern: "|(\\S+\\.tar\\.gz)"
     ConstraintDescription: "Please specify this as <bucketName>/<filename>.tar.gz"
 
+  TimeoutFileUpload:
+    Type: Number
+    Default: 180
+    Description: "Timeout value for the File Upload Lanbda function"
+    MinValue: 1
+
+  TimeoutGaffer:
+    Type: Number
+    Default: 3600
+    Description: "Timeout value for Gafffern"
+    MinValue: 1
+
+  TimeoutEmrCleanup:
+    Type: Number
+    Default: 180
+    Description: "Timeout value for the EMR clean-up"
+    MinValue: 1
+
 Metadata:
   AWS::CloudFormation::Interface:
     ParameterGroups:
@@ -125,6 +143,12 @@ Metadata:
           - ExtraEmrSecurityGroups
           - ManageSecurityGroups
           - MavenRepoTarball
+      - Label:
+          default: Timeouts
+        Parameters:
+          - TimeoutFileUpload
+          - TimeoutEmrCleanup
+          - TimeoutGaffer
 
 Conditions:
 
@@ -257,7 +281,7 @@ Resources:
       Runtime: nodejs6.10
       Handler: index.handler
       MemorySize: 128
-      Timeout: 180
+      Timeout: !Ref TimeoutEmrCleanup
       Code:
         ZipFile: |
           const aws = require('aws-sdk')
@@ -483,7 +507,7 @@ Resources:
     Type: AWS::CloudFormation::WaitCondition
     Properties:
       Handle: !Ref WaitForGafferHandler
-      Timeout: 3600
+      Timeout: !Ref TimeoutGaffer
 
   WaitForGafferHandler:
     Type: AWS::CloudFormation::WaitConditionHandle
@@ -512,7 +536,7 @@ Resources:
       Runtime: python2.7
       Handler: index.lambda_handler
       MemorySize: 128
-      Timeout: 180
+      Timeout: !Ref TimeoutFileUpload
       Code:
         ZipFile: !Sub |
           #!/usr/bin/env python

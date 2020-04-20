@@ -97,6 +97,12 @@ Parameters:
     AllowedPattern: "|(\\S+\\.tar\\.gz)"
     ConstraintDescription: "Please specify this as <bucketName>/<filename>.tar.gz"
 
+  TimeoutWebServer:
+    Type: Number
+    Default: 900
+    Description: "Timeout to wait for the Web Server"
+    MinValue: 1
+
 Metadata:
   AWS::CloudFormation::Interface:
     ParameterGroups:
@@ -128,6 +134,10 @@ Metadata:
         Parameters:
           - GafferSchemaJarS3Url
           - GafferSchemaJarHttpUrl
+      - Label:
+          default: Timeouts
+        Parameters:
+          - TimeoutWebServer
 
 Mappings:
 
@@ -461,7 +471,7 @@ Resources:
     Type: AWS::CloudFormation::WaitCondition
     Properties:
       Handle: !Ref WebServerReadyHandler
-      Timeout: 900
+      Timeout: !Ref TimeoutWebServer
 
   WebServerReadyHandler:
     Type: AWS::CloudFormation::WaitConditionHandle
