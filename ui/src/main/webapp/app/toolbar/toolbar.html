@@ -34,6 +34,15 @@
             </md-tooltip>
         </md-button>
         <md-button class="md-icon-button md-primary"
+                   id="save-results"
+                   aria-label="Import / Export Raw Results"
+                   ng-click="ctrl.openImportExport()">
+            <md-icon md-svg-icon="import-export"></md-icon>
+            <md-tooltip md-direction="bottom">
+                Import / Export Raw Results
+            </md-tooltip>
+        </md-button>
+        <md-button class="md-icon-button md-primary"
                    id="rerun"
                    aria-label="Rerun operations"
                    ng-click="ctrl.executeAll()">
