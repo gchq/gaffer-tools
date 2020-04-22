@@ -33,13 +33,24 @@ app.filter('operationFilter', function() {
         // Return the matches that have the words in the same order as the search query first.
         // Matches in the title are prioritised over matches in other areas like the description.
         // Full exact matches are prioritised over matches of individual words.
+        var labelResults = [];
         var titleResults = [];
         var otherResults = [];
         var titleWordResults = [];
         var otherWordResults = [];
 
         angular.forEach(operations, function(operation) {
-            if(operation.formattedName.indexOf(formattedSearch) > -1) {
+            if(formattedSearch && formattedSearch.charAt(0) === '#' &&
+                operation.labels && operation.labels.length > 0) {
+
+                var searchLabel = formattedSearch.substring(1);
+                angular.forEach(operation.labels, function (label) {
+                    if (label.toLowerCase().replace(/\s+/g, '').indexOf(searchLabel) > -1) {
+                        labelResults.push(operation);
+                    };
+                });
+            }
+            else if(operation.formattedName.indexOf(formattedSearch) > -1) {
                 titleResults.push(operation);
             } else if(operation.formattedDescription.indexOf(formattedSearch) > -1) {
                 otherResults.push(operation);
@@ -64,6 +75,9 @@ app.filter('operationFilter', function() {
         });
 
         var results = [];
+        angular.forEach(labelResults, function(result) {
+            results.push(result);
+        });
         angular.forEach(titleResults, function(result) {
             results.push(result);
         });

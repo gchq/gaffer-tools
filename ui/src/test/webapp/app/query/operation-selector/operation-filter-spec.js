@@ -140,39 +140,93 @@ describe('the operation filter', function() {
         expect(operationFilter(ops, 'keyword')).toEqual(expected);
     });
 
-    it('should search ops with prefixed group label', function() {
-        var ops = [
-            {
-                displayName: '[Group 1] Operation 1',
-                label: 'Group 1',
-                formattedName: '[group1]operation1',
-                formattedDescription: 'a description'
-            }, {
-                displayName: '[Group 1] Operation 2',
-                label: 'Group 1',
-                formattedName: '[group1]operation2',
-                formattedDescription: 'the description'
-            }, {
-                displayName: 'Other Op 3',
-                formattedName: 'otherop3',
-                formattedDescription: 'some description'
-            }
-        ];
+    it('should filter grouped NamedOperations by using # search', function() {
+        var operations = [{
+            formattedName: 'Labelled Op',
+            formattedDescription : 'Labelled Op',
+            labels: ['group 1']
+        }, {
+            formattedName: 'No Labels Op',
+            formattedDescription : 'No Labels Op',
+            labels: []
+        }, {
+            formattedName: 'Undefined Labelled Op',
+            formattedDescription : 'Undefined Labelled Op',
+        }];
 
-        var expected = [
-            {
-                displayName: '[Group 1] Operation 1',
-                label: 'Group 1',
-                formattedName: '[group1]operation1',
-                formattedDescription: 'a description'
-            }, {
-                displayName: '[Group 1] Operation 2',
-                label: 'Group 1',
-                formattedName: '[group1]operation2',
-                formattedDescription: 'the description'
-            }
-        ];
+        var expected = [{
+            formattedName: 'Labelled Op',
+            formattedDescription : 'Labelled Op',
+            labels: ['group 1']
+        }];
+        expect(operationFilter(operations, '#')).toEqual(expected);
+    });
 
-        expect(operationFilter(ops, 'Group1')).toEqual(expected);
+    it('should filter grouped NamedOperations by using # and part of the label name as search', function() {
+        var operations = [{
+            formattedName: 'Labelled Op',
+            formattedDescription: 'Labelled Op',
+            labels: ['group 1']
+        }, {
+        formattedName: 'Labelled Op',
+            formattedDescription: 'Labelled Op',
+            labels: ['bananas']
+        }, {
+            formattedName: 'No Labels Op',
+            formattedDescription: 'No Labels Op',
+            labels: []
+        }, {
+            formattedName: 'Undefined Labelled Op',
+            formattedDescription: 'Undefined Labelled Op',
+        }];
+
+        var expected = [{
+            formattedName: 'Labelled Op',
+            formattedDescription : 'Labelled Op',
+            labels: ['group 1']
+        }];
+        expect(operationFilter(operations, '#g')).toEqual(expected);
+    });
+
+    it('should filter group NamedOperations and ignore casing using the #search', function() {
+        var operations = [{
+            formattedName: 'Labelled Op',
+            formattedDescription : 'Labelled Op',
+            labels: ['group 1']
+        }, {
+            formattedName: 'No Labels Op',
+            formattedDescription : 'No Labels Op',
+            labels: ['GROUP 1']
+        }];
+
+        var expected = [{
+            formattedName: 'Labelled Op',
+            formattedDescription : 'Labelled Op',
+            labels: ['group 1']
+        }, {
+            formattedName: 'No Labels Op',
+            formattedDescription : 'No Labels Op',
+            labels: ['GROUP 1']
+        }];
+        expect(operationFilter(operations, '#group')).toEqual(expected);
+    });
+
+    it('should filter group NamedOperations and ignore spacing using the #search', function() {
+        var operations = [{
+            formattedName: 'Labelled Op',
+            formattedDescription : 'Labelled Op',
+            labels: ['Group 1']
+        }, {
+            formattedName: 'No Labels Op',
+            formattedDescription : 'No Labels Op',
+            labels: ['Group 2']
+        }];
+
+        var expected = [{
+            formattedName: 'Labelled Op',
+            formattedDescription : 'Labelled Op',
+            labels: ['Group 1']
+        }];
+        expect(operationFilter(operations, '#group1')).toEqual(expected);
     });
 });
