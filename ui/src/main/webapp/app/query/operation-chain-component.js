@@ -179,7 +179,7 @@ function OperationChainController(operationChain, settings, config, loading, que
                 {
                     class: ADD_NAMED_OPERATION_CLASS,
                     operationName: vm.namedOperation.name,
-                    label: vm.namedOperation.label,
+                    labels: vm.namedOperation.labels,
                     operationChain: chain,
                     description: vm.namedOperation.description,
                     options: {},

@@ -103,18 +103,25 @@ function OperationSelectorController(operationService, $routeParams, $filter) {
     vm.showCustomOp = false;
     vm.placeholder = "Search for an operation";
 
-    var populateOperations = function(availableOperations) {
+    var hasLabels = function(operation) {
+        return operation.labels && operation.labels.length > 0;
+    }
+
+    vm.populateOperations = function(availableOperations) {
+
         vm.availableOperations = [];
 
-        for (var i in availableOperations) {
+        for(var i in availableOperations) {
             var operation = availableOperations[i];
 
-            if (!vm.previous || !vm.previous.selectedOperation || !vm.previous.selectedOperation.next || vm.previous.selectedOperation.next.indexOf(operation.class) > -1) {
-                operation.displayName = operation.label ? '[' + operation.label + '] ' + operation.name : operation.name;
-                operation.formattedName = operation.displayName !== undefined ? operation.displayName.toLowerCase().replace(/\s+/g, '') : '';
+            if(!vm.previous || !vm.previous.selectedOperation || !vm.previous.selectedOperation.next || vm.previous.selectedOperation.next.indexOf(operation.class) > -1) {
+                operation.formattedName = operation.name !== undefined ? operation.name.toLowerCase().replace(/\s+/g, '') : '';
                 operation.formattedDescription = operation.description !== undefined ? operation.description.toLowerCase().replace(/\s+/g, '') : '';
-
-                if (operation.formattedName === "getelements") {
+                
+                if(operation.labels){
+                    operation.labels.sort();
+                }
+                if(operation.formattedName === "getelements") {
                     vm.placeholder = "Search for an operation (e.g Get Elements)";
                 }
                 vm.availableOperations.push(operation);
@@ -128,17 +135,23 @@ function OperationSelectorController(operationService, $routeParams, $filter) {
             if(!a.namedOp && b.namedOp) {
                 return 1;
             }
-            if(a.formattedName > b.formattedName) {
+            if(hasLabels(a) && !hasLabels(b) || hasLabels(a) && hasLabels(b) && a.labels.toString().toLowerCase() < b.labels.toString().toLowerCase()) {
+                return -1;
+            }
+            if(!hasLabels(a) && hasLabels(b) || hasLabels(a) && hasLabels(b) && a.labels.toString().toLowerCase() > b.labels.toString().toLowerCase()) {
                 return 1;
             }
             if(a.formattedName < b.formattedName) {
                 return -1;
             }
-            if(a.formattedDescription > b.formattedDescription) {
+            if(a.formattedName > b.formattedName) {
                 return 1;
             }
             if(a.formattedDescription < b.formattedDescription) {
                 return -1;
+            }
+            if(a.formattedDescription > b.formattedDescription) {
+                return 1;
             }
             return 0
         });
@@ -161,18 +174,20 @@ function OperationSelectorController(operationService, $routeParams, $filter) {
 
     vm.getOperations = function() {
         return operationService.getAvailableOperations(true).then(function(ops) {
-            populateOperations(ops)
+            vm.populateOperations(ops);
             return $filter('operationFilter')(vm.availableOperations, vm.searchTerm);
+        });
+    }
+
+    vm.reloadOperations = function() {
+        operationService.reloadOperations(true).then(function(ops) {
+            vm.populateOperations(ops)
         });
     }
 
     vm.clearSearchTerm = function() {
         vm.searchTerm = '';
     };
-
-    vm.reloadOperations = function() {
-        operationService.reloadOperations(true).then(populateOperations);
-    }
 
     vm.selectedText = function() {
         if(vm.model) {
