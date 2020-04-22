@@ -55,5 +55,17 @@ angular.module('app').factory('previousQueries', function() {
         queries = angular.copy(operations);
     }
 
+     /**
+     * Find query currently held by the service.
+     */
+    service.findQuery = function() {
+        queries.forEach(function(query) {
+            console.log(query.operations);
+            query.operations.forEach(function(operation){
+                console.log(operation.selectedOperation.name)
+                console.log(operation.selectedOperation.description)
+            })
+        })
+    }
     return service;
 });

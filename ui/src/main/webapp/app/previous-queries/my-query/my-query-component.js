@@ -29,12 +29,23 @@ function myQuery() {
     }
 }
 
-function MyQueryController(operationChain, navigation, $mdSidenav) {
+function MyQueryController(operationChain, navigation, previousQueries, $mdSidenav, $mdDialog) {
     var vm = this;
-    /*vm.updatedQuery = {
+
+    var confirm = $mdDialog.confirm()
+    .title('Selected Query Name  and Description will changed ?')
+    .ok('Ok')
+
+    var invalidName = $mdDialog.confirm()
+    .title('Invalid Data!')
+    .textContent('Please enter valid Name and Description')
+    .ok('Ok')
+
+    vm.updatedQuery = {
             name: null,
             description: null
-        }*/
+        }
+        
     //var OPERATION_CHAIN_CLASS = "uk.gov.gchq.gaffer.operation.OperationChain";
 
     /**
@@ -43,13 +54,23 @@ function MyQueryController(operationChain, navigation, $mdSidenav) {
     vm.load = function() {
         operationChain.setOperationChain(vm.model.operations);
         navigation.goToQuery();
-    }
+    }  
     vm.toggleSideNav  = function () {
             $mdSidenav('right')
                 .toggle();
+            if($mdSidenav('right').isOpen())
+            {
+                previousQueries.findQuery();
+            }     
         }
-    /*vm.saveUpdatedDetails = function() {
-
-    }*/
+    vm.saveUpdatedDetails = function() {
+        
+        if (vm.updatedQuery.name != null && vm.updatedQuery.name != '') {
+            $mdDialog.show(confirm);
+        } else {
+            $mdDialog.show(invalidName);
+        }
+       
+    }
 
 }
