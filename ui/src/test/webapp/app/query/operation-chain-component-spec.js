@@ -359,7 +359,7 @@ describe('The operation chain component', function() {
         it('should save using an add named operation query', function() {
             ctrl.operations.length = 1;
             ctrl.namedOperation.name = 'Operation Name';
-            ctrl.namedOperation.label = 'Group Label Name'
+            ctrl.namedOperation.labels = ['Group Label 1'];
             ctrl.namedOperation.description = 'A description';
 
             ctrl.saveChain();
@@ -367,7 +367,7 @@ describe('The operation chain component', function() {
             var expectedQuery = {
                 class: 'uk.gov.gchq.gaffer.named.operation.AddNamedOperation',
                 operationName: 'Operation Name',
-                label: 'Group Label Name',
+                labels: ['Group Label 1'],
                 operationChain: {
                     class: 'uk.gov.gchq.gaffer.operation.OperationChain',
                     operations: []
