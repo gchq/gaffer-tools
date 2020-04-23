@@ -12,12 +12,6 @@
             </div>
             <div width='100%'>
                 <md-input-container class="md-block">
-                    <label for="saved-label">Label</label>
-                    <input type="text" id="saved-label" ng-model="ctrl.namedOperation.label">
-                </md-input-container>
-            </div>
-            <div width='100%'>
-                <md-input-container class="md-block">
                     <label for="saved-description" required>Description</label>
                     <textarea
                         id="saved-description"
@@ -27,9 +21,27 @@
                     ></textarea>
                 </md-input-container>
             </div>
-            <div layout="row" class="content">
-                <md-button id="close-save-sidenav" ng-click="ctrl.onClose()" class="md-primary">Close</md-button>
-                <md-button id="save-named-operation" ng-click="ctrl.onSave()" class="md-primary">Save</md-button>
+            <div width='100%'>
+                <md-input-container class="md-block">
+                    <label for="saved-label">Label Tags <i>(list each label on new line)</i></label>
+                    <textarea
+                        id="saved-label"
+                        md-no-autogrow
+                        ng-model="ctrl.namedOperation.labels"
+                        rows="3"
+                    ></textarea>
+                    <md-list class="no-vertical-padding layout-column">
+                    <md-list-item class="md-2-line">
+                        <div class="md-list-item-text">
+                            <p>{{ctrl.namedOperation.labels ? 'Tagged: #' + ctrl.namedOperation.getLabelsList().join(' #') : ''}}</p>
+                        </div>
+                    </md-list-item>
+                    </md-list>
+                </md-input-container>
+            </div>
+            <div layout="row" layout-align="space-between" class="content">
+                <md-button id="close-save-sidenav" ng-click="ctrl.onClose()" class="md-raised">Close</md-button>
+                <md-button id="save-named-operation" ng-click="ctrl.onSave()" class="md-primary md-raised" >Save</md-button>
             </div>
         </form>
     </md-content>

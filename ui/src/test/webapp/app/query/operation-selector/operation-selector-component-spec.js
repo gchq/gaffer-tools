@@ -43,6 +43,33 @@ describe('Operation Selector Component', function() {
     });
 
     describe('ctrl.getOperations()', function() {
+        it('should set placeholder with "(e.g. Get Elements)" when Get Elements is an operation', function() {
+            var operations = [
+              {name: 'Get Elements'},
+            ];
+            spyOn(operationService, 'getAvailableOperations').and.returnValue($q.when(operations));
+
+            ctrl.getOperations();
+            scope.$digest();
+
+            expect(ctrl.placeholder).toBe('Search for an operation (e.g Get Elements)');
+        });
+
+        it('should use #tag in placeholder if a NamedOperation has a label tag', function() {
+            var operations = [
+              {name: 'Get Elements'},
+              {name: 'Named Operation', labels: ['label']}
+            ];
+            spyOn(operationService, 'getAvailableOperations').and.returnValue($q.when(operations));
+
+            ctrl.getOperations();
+            scope.$digest();
+
+            expect(ctrl.placeholder).toBe('Search for an operation or #labeltag (e.g Get Elements, #MyLabelTag)');
+        });
+    });
+
+    describe('ctrl.getOperations()', function() {
 
         it('should select the operation defined in the query operation parameter', function() {
             $routeParams.operation = "operationX";

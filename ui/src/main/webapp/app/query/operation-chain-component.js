@@ -33,7 +33,19 @@ function OperationChainController(operationChain, settings, config, loading, que
     vm.enableChainSaving;
     vm.namedOperation = {
         name: null,
-        description: null
+        description: null,
+        labels: '',
+    }
+
+    vm.namedOperation.getLabelsList = function() {
+        if(vm.namedOperation.labels) {
+            var labelsList = vm.namedOperation.labels.split('\n');
+            return labelsList.map(function(label) {
+                return label.trim();
+            });
+        } else {
+            return [];
+        }
     }
 
     var NAMED_VIEW_CLASS = "uk.gov.gchq.gaffer.data.elementdefinition.view.NamedView";
@@ -179,7 +191,7 @@ function OperationChainController(operationChain, settings, config, loading, que
                 {
                     class: ADD_NAMED_OPERATION_CLASS,
                     operationName: vm.namedOperation.name,
-                    labels: vm.namedOperation.labels,
+                    labels: vm.namedOperation.getLabelsList(),
                     operationChain: chain,
                     description: vm.namedOperation.description,
                     options: {},

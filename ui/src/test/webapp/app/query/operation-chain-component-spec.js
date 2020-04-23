@@ -359,7 +359,7 @@ describe('The operation chain component', function() {
         it('should save using an add named operation query', function() {
             ctrl.operations.length = 1;
             ctrl.namedOperation.name = 'Operation Name';
-            ctrl.namedOperation.labels = ['Group Label 1'];
+            ctrl.namedOperation.labels = 'Group Label 1';
             ctrl.namedOperation.description = 'A description';
 
             ctrl.saveChain();
@@ -378,7 +378,7 @@ describe('The operation chain component', function() {
                 overwriteFlag: true,
             }
             expect(query.executeQuery).toHaveBeenCalledWith(expectedQuery, jasmine.any(Function));
-        })
+        });
 
         it('should show a confirmation dialog', function() {
             ctrl.namedOperation.name = 'test name';
@@ -393,7 +393,7 @@ describe('The operation chain component', function() {
             ctrl.saveChain();
 
             expect($mdDialog.show).toHaveBeenCalledWith(confirm);
-        })
+        });
 
         it('should close the sidenav on success', function() {
             spyOn(ctrl, 'toggleSideNav').and.stub();
@@ -404,7 +404,7 @@ describe('The operation chain component', function() {
             ctrl.saveChain();
 
             expect(ctrl.toggleSideNav).toHaveBeenCalled();
-        })
+        });
 
         it('should reload the operations on success', function() {
             spyOn(operationService, 'reloadOperations').and.stub();
@@ -415,8 +415,8 @@ describe('The operation chain component', function() {
             ctrl.saveChain();
 
             expect(operationService.reloadOperations).toHaveBeenCalled();
-        })
-    })
+        });
+    });
 
     describe('ctrl.execute()', function() {
 
@@ -1888,9 +1888,24 @@ describe('The operation chain component', function() {
                 ctrl.resetChain();
                 scope.$digest();
 
-                expect(ctrl.operations).toEqual([1, 2 , 3]);
+                expect(ctrl.operations).toEqual([1, 2, 3]);
             });
 
         })
+    });
+
+    describe('ctrl.namedOperation.getLabelsList()', function() {
+        it('should return labels as a list when labels are inputted as a new line list', function() {
+            ctrl.namedOperation.labels = 'First label\nSecond label';
+
+            var expected = ['First label', 'Second label'];
+            expect(ctrl.namedOperation.getLabelsList()).toEqual(expected);
+        });
+        it('should trim each label and return as a list', function() {
+            ctrl.namedOperation.labels = 'End spaces   \n   Spaces at start';
+
+            var expected = ['End spaces', 'Spaces at start'];
+            expect(ctrl.namedOperation.getLabelsList()).toEqual(expected);
+        });
     });
 });

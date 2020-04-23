@@ -132,11 +132,12 @@ function OperationSelectorController(operationService, $routeParams, $filter) {
                 operation.formattedName = operation.name !== undefined ? operation.name.toLowerCase().replace(/\s+/g, '') : '';
                 operation.formattedDescription = operation.description !== undefined ? operation.description.toLowerCase().replace(/\s+/g, '') : '';
                 
+                if(operation.formattedName === 'getelements') {
+                    vm.placeholder = 'Search for an operation (e.g Get Elements)';
+                }
                 if(operation.labels){
                     operation.labels.sort();
-                }
-                if(operation.formattedName === "getelements") {
-                    vm.placeholder = "Search for an operation (e.g Get Elements)";
+                    vm.placeholder = 'Search for an operation or #labeltag (e.g Get Elements, #MyLabelTag)';
                 }
                 vm.availableOperations.push(operation);
             }
