@@ -178,6 +178,17 @@ function ToolbarController($rootScope, $mdDialog, operationService, results, que
         results.clear();
     }
 
+    vm.openImportExport = function(ev) {
+        $mdDialog.show({
+            controller: 'ImportExportDialogController',
+            templateUrl: 'app/toolbar/import-export-dialog/import-export-dialog.html',
+            targetEvent: ev,
+            clickOutsideToClose: true,
+            parent: angular.element(document.body),
+            bindToController: true,
+        });
+    }
+
     var getExpiry = function() {
       var result = new Date();
       var ttl = saveResultsConfig.timeToLiveInDays;
