@@ -15,8 +15,8 @@ if [[ "$RELEASE" != 'true' ]] && [[ "$TRAVIS_PULL_REQUEST" != 'false' ]]; then
         wget https://raw.githubusercontent.com/creationix/nvm/v0.31.0/nvm.sh -O ~/.nvm/nvm.sh
         source ~/.nvm/nvm.sh
 
-        # Update nodejs to the latest version
-        nvm install node --lts
+        # Update nodejs to the current LTS version
+        nvm install --lts
 
         # Install the Analytics UI
         cd analytics/analytics-ui
