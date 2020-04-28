@@ -12,8 +12,7 @@ if [[ "$RELEASE" != 'true' ]] && [[ "$TRAVIS_PULL_REQUEST" != 'false' ]]; then
         # It would be good to move these into the pre-install and install phases. For now though, it works.
 
         # Install node version manager
-        wget https://raw.githubusercontent.com/creationix/nvm/v0.31.0/nvm.sh -O ~/.nvm/nvm.sh
-        source ~/.nvm/nvm.sh
+        wget -qO- https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.3/install.sh | bash
 
         # Update nodejs to the current LTS version
         nvm install --lts
