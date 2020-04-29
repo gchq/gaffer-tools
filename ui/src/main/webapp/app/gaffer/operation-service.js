@@ -84,23 +84,28 @@ angular.module('app').factory('operationService', ['$http', '$q', 'settings', 'c
         return undefined;
     }
 
-    var opAllowed = function(opName, configuredOperations) {
-        if (!configuredOperations) {
-            return true; // allow all by default
+    operationService.isAllowedOperation = function(operation, configOperations) {
+        // #1 No config or no blacklist = everything allowed
+        if (!configOperations || !configOperations.blackList || configOperations.blackList.length === 0) {
+          return true;
         }
-
-        var allowed = true;
-
-        var whiteList = configuredOperations.whiteList;
-        var blackList = configuredOperations.blackList;
-
-        if(whiteList) {
-            allowed = whiteList.indexOf(opName) > -1;
+        // #2 if Operation Name is whitelisted = allowed
+        if (configOperations.whiteList.indexOf(operation.name) > -1) {
+          return true;
         }
-        if(allowed && blackList) {
-            allowed = blackList.indexOf(opName) == -1;
+        // #3 if minimum 1 Operation label is whitelisted = allowed
+        if (operation.labels && configOperations.whiteList.length > 0 && configOperations.whiteList.every(function(whiteListLabel) {return operation.labels.indexOf(whiteListLabel) > -1})) {
+          return true;
         }
-        return allowed;
+        // #4 if Operation name is blacklisted = not allowed
+        if (configOperations.blackList.indexOf(operation.name) > -1) {
+          return false;
+        }
+        // #5 if minimum 1 Operation label is blacklisted = not allowed
+        if (operation.labels && configOperations.blackList.every(function(blackListLabel) {return operation.labels.indexOf(blackListLabel) > -1})) {
+          return false;
+        }
+        return true; // allow by default
     }
 
     var addOperations = function(operations, conf) {
@@ -108,7 +113,7 @@ angular.module('app').factory('operationService', ['$http', '$q', 'settings', 'c
             for (var i in operations) {
                 var op = operations[i];
 
-                if(opAllowed(op.name, conf.operations) && operationService.canHandleOperation(op)) {
+                if(operationService.isAllowedOperation(op, conf.operations) && operationService.canHandleOperation(op)) {
                     var fields = {};
                     for(var j in op.fields) {
                         fields[op.fields[j].name] = op.fields[j];
@@ -131,7 +136,7 @@ angular.module('app').factory('operationService', ['$http', '$q', 'settings', 'c
             if(operations) {
                 for (var i in operations) {
                     var op = operations[i];
-                    if(opAllowed(op.operationName, conf.operations)) {
+                    if(operationService.isAllowedOperation(op, conf.operations)) {
                         if(op.parameters) {
                             for(var j in op.parameters) {
                                 op.parameters[j].value = op.parameters[j].defaultValue;
