@@ -22,7 +22,7 @@ matrix:
 if: (branch == master && type == push) || (branch == develop && type == push) || (branch != master && type == pull_request)
 
 env:
-  - TRAVIS_NODE_VERSION=node
+  - TRAVIS_NODE_VERSION="13.13.0"
 
   matrix:
   - RELEASE=true
