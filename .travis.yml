@@ -22,6 +22,8 @@ matrix:
 if: (branch == master && type == push) || (branch == develop && type == push) || (branch != master && type == pull_request)
 
 env:
+  - TRAVIS_NODE_VERSION=node
+
   matrix:
   - RELEASE=true
   - MODULES=:gaffer-tools,:mini-accumulo-cluster,:schema-builder,:schema-builder-rest
