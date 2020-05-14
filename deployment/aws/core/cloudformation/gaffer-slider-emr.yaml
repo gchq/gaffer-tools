@@ -98,19 +98,19 @@ Parameters:
   TimeoutUpload:
     Type: Number
     Default: 180
-    Description: "Timeout value for the File Upload Lanbda function"
+    Description: "Timeout value for the upload file(s) function"
     MinValue: 1
 
   TimeoutGafferDeploy:
     Type: Number
     Default: 3600
-    Description: "Timeout value for Gafffern"
+    Description: "Timeout value for deploying Gafffer"
     MinValue: 1
 
   TimeoutSecurityCleanup:
     Type: Number
     Default: 180
-    Description: "Timeout value for the EMR clean-up"
+    Description: "Timeout value for the security clean-up"
     MinValue: 1
 
 Metadata:

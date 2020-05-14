@@ -90,43 +90,43 @@ Parameters:
   TimeoutUpload:
     Type: Number
     Default: 180
-    Description: "Timeout value for the File Upload Lanbda function"
+    Description: "Timeout value for the upload file(s) function"
     MinValue: 1
 
   TimeoutServer:
     Type: Number
     Default: 900
-    Description: "Timeout to wait for the Web Server"
+    Description: "Timeout for deploying and securing a server"
     MinValue: 1
 
   TimeoutCreateUsers:
     Type: Number
     Default: 600
-    Description: "Timeout value for cxreating the users"
+    Description: "Timeout value for creating the Gaffer user(s)"
     MinValue: 1
 
   TimeoutGafferDeploy:
     Type: Number
     Default: 3600
-    Description: "Timeout value for Gafffer"
+    Description: "Timeout value for deploying Gafffer"
     MinValue: 1
 
   TimeoutSecurityCleanup:
     Type: Number
     Default: 180
-    Description: "Timeout value for the EMR clean-up"
+    Description: "Timeout value for the security clean-up"
     MinValue: 1
 
   TimeoutSchemaBuild:
     Type: Number
     Default: 3600
-    Description: "Timeout value for the Road Traffic"
+    Description: "Timeout value for a schema build"
     MinValue: 1
 
   TimeoutIngest:
     Type: Number
     Default: 3600
-    Description: "Timeout value for the Road Traffic"
+    Description: "Timeout value for data ingest"
     MinValue: 1
 
 Metadata:

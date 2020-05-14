@@ -40,7 +40,7 @@ Parameters:
   TimeoutCreateUsers:
     Type: Number
     Default: 600
-    Description: "Timeout value for creating users"
+    Description: "Timeout value for creating the Gaffer users(s)"
     MinValue: 1
 
 Resources:

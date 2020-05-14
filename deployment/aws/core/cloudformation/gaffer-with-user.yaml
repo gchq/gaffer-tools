@@ -112,25 +112,25 @@ Parameters:
   TimeoutUpload:
     Type: Number
     Default: 180
-    Description: "Timeout value for the File Upload Lanbda function"
+    Description: "Timeout value for the upload file(s) function"
     MinValue: 1
 
   TimeoutCreateUsers:
     Type: Number
     Default: 600
-    Description: "Timeout value for creating the users"
+    Description: "Timeout value for creating the Gaffer user(s)"
     MinValue: 1
 
   TimeoutGafferDeploy:
     Type: Number
     Default: 3600
-    Description: "Timeout value for Gaffer"
+    Description: "Timeout value for deploying Gaffer"
     MinValue: 1
 
   TimeoutSecurityCleanup:
     Type: Number
     Default: 180
-    Description: "Timeout value for the EMR clean-up"
+    Description: "Timeout value for the security clean-up"
     MinValue: 1
 
 Metadata:

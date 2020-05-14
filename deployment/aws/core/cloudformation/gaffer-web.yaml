@@ -100,7 +100,7 @@ Parameters:
   TimeoutServer:
     Type: Number
     Default: 900
-    Description: "Timeout to wait for the Web Server"
+    Description: "Timeout for deploying and securing a server"
     MinValue: 1
 
 Metadata:
