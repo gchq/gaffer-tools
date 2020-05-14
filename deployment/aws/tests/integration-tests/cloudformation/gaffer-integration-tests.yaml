@@ -78,7 +78,7 @@ Parameters:
     AllowedPattern: "|(\\S+\\.tar\\.gz)"
     ConstraintDescription: "Please specify this as <bucketName>/<filename>.tar.gz"
 
-  TimeoutFileUpload:
+  TimeoutUpload:
     Type: Number
     Default: 180
     Description: "Timeout value for the File Upload Lanbda function"
@@ -90,19 +90,19 @@ Parameters:
     Description: "Timeout value for cxreating the users"
     MinValue: 1
 
-  TimeoutGaffer:
+  TimeoutGafferDeploy:
     Type: Number
     Default: 3600
     Description: "Timeout value for Gafffer"
     MinValue: 1
 
-  TimeoutEmrCleanup:
+  TimeoutSecurityCleanup:
     Type: Number
     Default: 180
     Description: "Timeout value for the EMR clean-up"
     MinValue: 1
 
-  TimeoutRunTests:
+  TimeoutTestIntegration:
     Type: Number
     Default: 7200
     Description: "Timeout value for running tests"
@@ -137,11 +137,11 @@ Metadata:
       - Label:
           default: Timeouts
         Parameters:
-          - TimeoutFileUpload
+          - TimeoutUpload
           - TimeoutCreateUsers
-          - TimeoutEmrCleanup
-          - TimeoutGaffer
-          - TimeoutRunTests
+          - TimeoutSecurityCleanup
+          - TimeoutGafferDeploy
+          - TimeoutTestIntegration
 
 Conditions:
 
@@ -169,9 +169,9 @@ Resources:
         AccumuloVisibilities: "vis1,vis2,publicVisibility,privateVisibility,public,private"
         MavenRepoTarball: !Ref MavenRepoTarball
         ClusterUsage: !Ref ClusterUsage
-        TimeoutFileUpload: !Ref TimeoutFileUpload
-        TimeoutGaffer: !Ref TimeoutGaffer
-        TimeoutEmrCleanup: !Ref TimeoutEmrCleanup
+        TimeoutUpload: !Ref TimeoutUpload
+        TimeoutGafferDeploy: !Ref TimeoutGafferDeploy
+        TimeoutSecurityCleanup: !Ref TimeoutSecurityCleanup
         TimeoutCreateUsers: !Ref TimeoutCreateUsers
 
   EmrSnsPolicy:
@@ -197,7 +197,7 @@ Resources:
     Type: AWS::CloudFormation::WaitCondition
     Properties:
       Handle: !Ref WaitForTestsToFinishHandler
-      Timeout: !Ref TimeoutRunTests
+      Timeout: !Ref TimeoutTestIntegration
 
   WaitForTestsToFinishHandler:
     Type: AWS::CloudFormation::WaitConditionHandle
@@ -258,7 +258,7 @@ Resources:
       Runtime: python2.7
       Handler: index.lambda_handler
       MemorySize: 128
-      Timeout: !Ref TimeoutFileUpload
+      Timeout: !Ref TimeoutUpload
       Code:
         ZipFile: !Sub |
           #!/usr/bin/env python

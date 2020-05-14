@@ -172,6 +172,49 @@ Parameters:
     AllowedPattern: "|(\\S+\\.tar\\.gz)"
     ConstraintDescription: "Please specify this as <bucketName>/<filename>.tar.gz"
 
+  TimeoutUpload:
+    Type: Number
+    Default: 180
+    Description: "Timeout value for the File Upload Lanbda function"
+    MinValue: 1
+
+  TimeoutCreateUsers:
+    Type: Number
+    Default: 600
+    Description: "Timeout value for cxreating the users"
+    MinValue: 1
+
+  TimeoutGafferDeploy:
+    Type: Number
+    Default: 3600
+    Description: "Timeout value for Gafffer"
+    MinValue: 1
+
+  TimeoutSecurityCleanup:
+    Type: Number
+    Default: 180
+    Description: "Timeout value for the EMR clean-up"
+    MinValue: 1
+
+  TimeoutAccumuloSplitPoints:
+    Type: Number
+    Default: 900
+    Description: "Timeout value for the EMR clean-up"
+    MinValue: 1
+
+  TimeoutMetricsInstall:
+    Type: Number
+    Default: 900
+    Description: "Timeout value for the EMR clean-up"
+    MinValue: 1
+
+  TimeoutMetricsUpdate:
+    Type: Number
+    Default: 180
+    Description: "Timeout value for the EMR clean-up"
+    MinValue: 1
+
+
 Metadata:
 
   AWS::CloudFormation::Interface:
@@ -222,6 +265,16 @@ Metadata:
           - SubnetId
           - KeyName
           - ExtraSecurityGroups
+      - Label:
+          default: Timeouts
+        Parameters:
+          - TimeoutUpload
+          - TimeoutSecurityCleanup
+          - TimeoutGafferDeploy
+          - TimeoutCreateUsers
+          - TimeoutAccumuloSplitPoints
+          - TimeoutMetricsInstall
+          - TimeoutMetricsUpdate
 
 Mappings:
 
@@ -308,6 +361,10 @@ Resources:
         TabletServersPerYarnNode: !Ref TabletServersPerYarnNode
         MavenRepoTarball: !Ref MavenRepoTarball
         ClusterUsage: !Ref ClusterUsage
+        TimeoutUpload: !Ref TimeoutUpload
+        TimeoutCreateUsers: !Ref TimeoutCreateUsers
+        TimeoutSecurityCleanup: !Ref TimeoutSecurityCleanup
+        TimeoutGafferDeploy: !Ref TimeoutGafferDeploy
 
   # Security group that all generators (data and query) will be a member of
   GeneratorSecurityGroup:
@@ -347,7 +404,7 @@ Resources:
     Type: AWS::CloudFormation::WaitCondition
     Properties:
       Handle: !Ref WaitForMetricCollectionHandler
-      Timeout: 900
+      Timeout: !Ref TimeoutMetricsInstall
 
   WaitForMetricCollectionHandler:
     Type: AWS::CloudFormation::WaitConditionHandle
@@ -377,7 +434,7 @@ Resources:
     Type: AWS::CloudFormation::WaitCondition
     Properties:
       Handle: !Ref WaitForSplitPointsToBeSetHandler
-      Timeout: 900
+      Timeout: !Ref TimeoutAccumuloSplitPoints
 
   WaitForSplitPointsToBeSetHandler:
     Type: AWS::CloudFormation::WaitConditionHandle
@@ -726,7 +783,7 @@ Resources:
         Variables:
           STACK_NAME: !Ref "AWS::StackName"
       MemorySize: 128
-      Timeout: 180
+      Timeout: !Ref TimeoutMetricsUpdate
       Code:
         S3Bucket: !Ref S3Bucket
         S3Key: "lambda/update-cloudwatch-dashboard.zip"
@@ -814,7 +871,7 @@ Resources:
       Runtime: python2.7
       Handler: index.lambda_handler
       MemorySize: 128
-      Timeout: 180
+      Timeout: !Ref TimeoutUpload
       Code:
         ZipFile: !Sub |
           #!/usr/bin/env python

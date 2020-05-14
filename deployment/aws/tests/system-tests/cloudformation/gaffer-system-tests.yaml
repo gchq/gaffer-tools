@@ -84,6 +84,54 @@ Parameters:
     AllowedPattern: "|(\\S+\\.tar\\.gz)"
     ConstraintDescription: "Please specify this as <bucketName>/<filename>.tar.gz"
 
+  TimeoutUpload:
+    Type: Number
+    Default: 180
+    Description: "Timeout value for the File Upload Lanbda function"
+    MinValue: 1
+
+  TimeoutServer:
+    Type: Number
+    Default: 900
+    Description: "Timeout to wait for the Web Server"
+    MinValue: 1
+
+  TimeoutCreateUsers:
+    Type: Number
+    Default: 600
+    Description: "Timeout value for cxreating the users"
+    MinValue: 1
+
+  TimeoutGafferDeploy:
+    Type: Number
+    Default: 3600
+    Description: "Timeout value for Gafffer"
+    MinValue: 1
+
+  TimeoutSecurityCleanup:
+    Type: Number
+    Default: 180
+    Description: "Timeout value for the EMR clean-up"
+    MinValue: 1
+
+  TimeoutSchemaBuild:
+    Type: Number
+    Default: 3600
+    Description: "Timeout value for the Road Traffic"
+    MinValue: 1
+
+  TimeoutIngest:
+    Type: Number
+    Default: 3600
+    Description: "Timeout value for the Road Traffic"
+    MinValue: 1
+
+  TimeoutTestSystem:
+    Type: Number
+    Default: 3600
+    Description: "Timeout value for the Road Traffic"
+    MinValue: 1
+
 Metadata:
   AWS::CloudFormation::Interface:
     ParameterGroups:
@@ -110,6 +158,15 @@ Metadata:
           default: Test Config
         Parameters:
           - TestReportSnsTopic
+        Parameters:
+          - TimeoutUpload
+          - TimeoutSecurityCleanup
+          - TimeoutGafferDeploy
+          - TimeoutCreateUsers
+          - TimeoutServer
+          - TimeoutSchemaBuild
+          - TimeoutIngest
+          - TimeoutTestSystem
 
 Conditions:
 
@@ -136,6 +193,13 @@ Resources:
         RoadTrafficDataUrl: "https://raw.githubusercontent.com/gchq/Gaffer/master/example/road-traffic/road-traffic-demo/src/main/resources/roadTrafficSampleData.csv"
         MavenRepoTarball: !Ref MavenRepoTarball
         ClusterUsage: !Ref ClusterUsage
+        TimeoutUpload: !Ref TimeoutUpload
+        TimeoutSecurityCleanup: !Ref TimeoutSecurityCleanup
+        TimeoutGafferDeploy: !Ref TimeoutGafferDeploy
+        TimeoutCreateUsers: !Ref TimeoutCreateUsers
+        TimeoutServer: !Ref TimeoutServer
+        TimeoutSchemaBuild: !Ref TimeoutSchemaBuild
+        TimeoutIngest: !Ref TimeoutIngest
 
   EmrSnsPolicy:
     Condition: TestReportEnabled
@@ -169,7 +233,7 @@ Resources:
     Type: AWS::CloudFormation::WaitCondition
     Properties:
       Handle: !Ref WaitForSystemTestsHandler
-      Timeout: 3600
+      Timeout: !Ref TimeoutTestSystem
 
   WaitForSystemTestsHandler:
     Type: AWS::CloudFormation::WaitConditionHandle
@@ -226,7 +290,7 @@ Resources:
       Runtime: python2.7
       Handler: index.lambda_handler
       MemorySize: 128
-      Timeout: 180
+      Timeout: !Ref TimeoutUpload
       Code:
         ZipFile: !Sub |
           #!/usr/bin/env python
