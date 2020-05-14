@@ -130,13 +130,13 @@ Parameters:
     AllowedPattern: "|(\\S+\\.tar\\.gz)"
     ConstraintDescription: "Please specify this as <bucketName>/<filename>.tar.gz"
 
-  TimeoutFileUpload:
+  TimeoutUpload:
     Type: Number
     Default: 180
     Description: "Timeout value for the File Upload Lanbda function"
     MinValue: 1
 
-  TimeoutWebServer:
+  TimeoutServer:
     Type: Number
     Default: 900
     Description: "Timeout to wait for the Web Server"
@@ -148,13 +148,13 @@ Parameters:
     Description: "Timeout value for cxreating the users"
     MinValue: 1
 
-  TimeoutGaffer:
+  TimeoutGafferDeploy:
     Type: Number
     Default: 3600
     Description: "Timeout value for Gafffer"
     MinValue: 1
 
-  TimeoutEmrCleanup:
+  TimeoutSecurityCleanup:
     Type: Number
     Default: 180
     Description: "Timeout value for the EMR clean-up"
@@ -195,11 +195,11 @@ Metadata:
       - Label:
           default: Timeouts
         Parameters:
-          - TimeoutFileUpload
-          - TimeoutEmrCleanup
-          - TimeoutGaffer
+          - TimeoutUpload
+          - TimeoutSecurityCleanup
+          - TimeoutGafferDeploy
           - TimeoutCreateUsers
-          - TimeoutWebServer
+          - TimeoutServer
 
 Resources:
 
@@ -224,10 +224,10 @@ Resources:
         AccumuloVisibilities: !Ref AccumuloVisibilities
         MavenRepoTarball: !Ref MavenRepoTarball
         ClusterUsage: !Ref ClusterUsage
-        TimeoutFileUpload: !Ref TimeoutFileUpload
+        TimeoutUpload: !Ref TimeoutUpload
         TimeoutCreateUsers: !Ref TimeoutCreateUsers
-        TimeoutEmrCleanup: !Ref TimeoutEmrCleanup
-        TimeoutGaffer: !Ref TimeoutGaffer
+        TimeoutSecurityCleanup: !Ref TimeoutSecurityCleanup
+        TimeoutGafferDeploy: !Ref TimeoutGafferDeploy
 
   GafferWebServer:
     Type: AWS::CloudFormation::Stack
@@ -250,7 +250,7 @@ Resources:
         GafferSchemaJarS3Url: !Ref GafferSchemaJarS3Url
         GafferSchemaJarHttpUrl: !Ref GafferSchemaJarHttpUrl
         MavenRepoTarball: !Ref MavenRepoTarball
-        TimeoutWebServer: !Ref TimeoutWebServer
+        TimeoutServer: !Ref TimeoutServer
 
   WebServerAccessToEmrMasterIngressRule:
     Type: AWS::EC2::SecurityGroupIngress
@@ -301,7 +301,7 @@ Resources:
       Runtime: python2.7
       Handler: index.lambda_handler
       MemorySize: 128
-      Timeout: !Ref TimeoutFileUpload
+      Timeout: !Ref TimeoutUpload
       Code:
         ZipFile: !Sub |
           #!/usr/bin/env python

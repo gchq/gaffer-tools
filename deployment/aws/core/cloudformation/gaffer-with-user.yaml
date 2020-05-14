@@ -109,7 +109,7 @@ Parameters:
     AllowedPattern: "|(\\S+\\.tar\\.gz)"
     ConstraintDescription: "Please specify this as <bucketName>/<filename>.tar.gz"
 
-  TimeoutFileUpload:
+  TimeoutUpload:
     Type: Number
     Default: 180
     Description: "Timeout value for the File Upload Lanbda function"
@@ -121,13 +121,13 @@ Parameters:
     Description: "Timeout value for creating the users"
     MinValue: 1
 
-  TimeoutGaffer:
+  TimeoutGafferDeploy:
     Type: Number
     Default: 3600
     Description: "Timeout value for Gaffer"
     MinValue: 1
 
-  TimeoutEmrCleanup:
+  TimeoutSecurityCleanup:
     Type: Number
     Default: 180
     Description: "Timeout value for the EMR clean-up"
@@ -165,10 +165,10 @@ Metadata:
       - Label:
           default: Timeouts
         Parameters:
-          - TimeoutFileUpload
+          - TimeoutUpload
           - TimeoutCreateUsers
-          - TimeoutEmrCleanup
-          - TimeoutGaffer
+          - TimeoutSecurityCleanup
+          - TimeoutGafferDeploy
 
 Resources:
 
@@ -192,9 +192,9 @@ Resources:
         TabletServersPerYarnNode: !Ref TabletServersPerYarnNode
         MavenRepoTarball: !Ref MavenRepoTarball
         ClusterUsage: !Ref ClusterUsage
-        TimeoutFileUpload: !Ref TimeoutFileUpload
-        TimeoutGaffer: !Ref TimeoutGaffer
-        TimeoutEmrCleanup: !Ref TimeoutEmrCleanup
+        TimeoutUpload: !Ref TimeoutUpload
+        TimeoutGafferDeploy: !Ref TimeoutGafferDeploy
+        TimeoutSecurityCleanup: !Ref TimeoutSecurityCleanup
 
 
   GafferUser:
@@ -232,7 +232,7 @@ Resources:
       Runtime: python2.7
       Handler: index.lambda_handler
       MemorySize: 128
-      Timeout: !Ref TimeoutFileUpload
+      Timeout: !Ref TimeoutUpload
       Code:
         ZipFile: !Sub |
           #!/usr/bin/env python
