@@ -98,13 +98,13 @@ Parameters:
     AllowedPattern: "|(\\S+\\.tar\\.gz)"
     ConstraintDescription: "Please specify this as <bucketName>/<filename>.tar.gz"
 
-  TimeoutUpload:
+  TimeoutUploadFile:
     Type: Number
     Default: 180
     Description: "Timeout value for the upload file(s) function"
     MinValue: 1
 
-  TimeoutServer:
+  TimeoutDeployServer:
     Type: Number
     Default: 900
     Description: "Timeout for deploying and securing a server"
@@ -116,31 +116,31 @@ Parameters:
     Description: "Timeout value for creating the Gaffer user(s)"
     MinValue: 1
 
-  TimeoutGafferDeploy:
+  TimeoutDeployGaffer:
     Type: Number
     Default: 3600
     Description: "Timeout value for deploying Gafffer"
     MinValue: 1
 
-  TimeoutSecurityCleanup:
+  TimeoutCleanupSecurity:
     Type: Number
     Default: 180
     Description: "Timeout value for the security clean-up"
     MinValue: 1
 
-  TimeoutSchemaBuild:
+  TimeoutBuildSchema:
     Type: Number
     Default: 3600
     Description: "Timeout value for a schema build"
     MinValue: 1
 
-  TimeoutIngest:
+  TimeoutIngestData:
     Type: Number
     Default: 3600
     Description: "Timeout value for data ingest"
     MinValue: 1
 
-  TimeoutGafferUpgrade:
+  TimeoutUpdateGaffer:
     Type: Number
     Default: 3600
     Description: "Timeout value for upgrading Gaffer"
@@ -195,14 +195,14 @@ Metadata:
       - Label:
           default: Timeouts
         Parameters:
-          - TimeoutUpload
-          - TimeoutSecurityCleanup
-          - TimeoutGafferDeploy
-          - TimeoutGafferUpgrade
+          - TimeoutUploadFile
+          - TimeoutCleanupSecurity
+          - TimeoutDeployGaffer
+          - TimeoutUpdateGaffer
           - TimeoutCreateUsers
-          - TimeoutServer
-          - TimeoutSchemaBuild
-          - TimeoutIngest
+          - TimeoutDeployServer
+          - TimeoutBuildSchema
+          - TimeoutIngestData
           - TimeoutTestMigration
           - TimeoutTestSystem
 
@@ -231,13 +231,13 @@ Resources:
         MavenRepoTarball: !Ref MavenRepoTarball
         TestReportSnsTopic: !Ref TestReportSnsTopic
         ClusterUsage: !Ref ClusterUsage
-        TimeoutUpload: !Ref TimeoutUpload
-        TimeoutSecurityCleanup: !Ref TimeoutSecurityCleanup
-        TimeoutGafferDeploy: !Ref TimeoutGafferDeploy
+        TimeoutUploadFile: !Ref TimeoutUploadFile
+        TimeoutCleanupSecurity: !Ref TimeoutCleanupSecurity
+        TimeoutDeployGaffer: !Ref TimeoutDeployGaffer
         TimeoutCreateUsers: !Ref TimeoutCreateUsers
-        TimeoutServer: !Ref TimeoutServer
-        TimeoutSchemaBuild: !Ref TimeoutSchemaBuild
-        TimeoutIngest: !Ref TimeoutIngest
+        TimeoutDeployServer: !Ref TimeoutDeployServer
+        TimeoutBuildSchema: !Ref TimeoutBuildSchema
+        TimeoutIngestData: !Ref TimeoutIngestData
         TimeoutTestSystem: !Ref TimeoutTestSystem
 
   ###############################################
@@ -248,7 +248,7 @@ Resources:
     Type: AWS::CloudFormation::WaitCondition
     Properties:
       Handle: !Ref WaitForClusterUpgradeHandler
-      Timeout: !Ref TimeoutGafferUpgrade
+      Timeout: !Ref TimeoutUpdateGaffer
 
   WaitForClusterUpgradeHandler:
     Type: AWS::CloudFormation::WaitConditionHandle
@@ -298,7 +298,7 @@ Resources:
     Type: AWS::CloudFormation::WaitCondition
     Properties:
       Handle: !Ref WaitForSchemaJarHandler
-      Timeout: !Ref TimeoutSchemaBuild
+      Timeout: !Ref TimeoutBuildSchema
 
   WaitForSchemaJarHandler:
     Type: AWS::CloudFormation::WaitConditionHandle
@@ -361,7 +361,7 @@ Resources:
         EncryptionKey: !Sub ${GafferCluster.Outputs.PasswordEncryptionKey}
         GafferSchemaJarS3Url: !Join ["", [!Ref S3Bucket, "/schemas/road-traffic-model-", !Ref GafferVersionB, ".jar"]]
         MavenRepoTarball: !Ref MavenRepoTarball
-        TimeoutServer: !Ref TimeoutServer
+        TimeoutDeployServer: !Ref TimeoutDeployServer
 
   WebServerAccessToEmrMasterIngressRule:
     Type: AWS::EC2::SecurityGroupIngress
@@ -462,7 +462,7 @@ Resources:
       Runtime: python2.7
       Handler: index.lambda_handler
       MemorySize: 128
-      Timeout: !Ref TimeoutUpload
+      Timeout: !Ref TimeoutUploadFile
       Code:
         ZipFile: !Sub |
           #!/usr/bin/env python

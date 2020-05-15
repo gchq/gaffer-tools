@@ -130,13 +130,13 @@ Parameters:
     AllowedPattern: "|(\\S+\\.tar\\.gz)"
     ConstraintDescription: "Please specify this as <bucketName>/<filename>.tar.gz"
 
-  TimeoutUpload:
+  TimeoutUploadFile:
     Type: Number
     Default: 180
     Description: "Timeout value for the upload file(s) function"
     MinValue: 1
 
-  TimeoutServer:
+  TimeoutDeployServer:
     Type: Number
     Default: 900
     Description: "Timeout for deploying and securing a server"
@@ -148,13 +148,13 @@ Parameters:
     Description: "Timeout value for creating the Gaffer user(s)"
     MinValue: 1
 
-  TimeoutGafferDeploy:
+  TimeoutDeployGaffer:
     Type: Number
     Default: 3600
     Description: "Timeout value for deploying Gafffer"
     MinValue: 1
 
-  TimeoutSecurityCleanup:
+  TimeoutCleanupSecurity:
     Type: Number
     Default: 180
     Description: "Timeout value for the security clean-up"
@@ -195,11 +195,11 @@ Metadata:
       - Label:
           default: Timeouts
         Parameters:
-          - TimeoutUpload
-          - TimeoutSecurityCleanup
-          - TimeoutGafferDeploy
+          - TimeoutUploadFile
+          - TimeoutCleanupSecurity
+          - TimeoutDeployGaffer
           - TimeoutCreateUsers
-          - TimeoutServer
+          - TimeoutDeployServer
 
 Resources:
 
@@ -224,10 +224,10 @@ Resources:
         AccumuloVisibilities: !Ref AccumuloVisibilities
         MavenRepoTarball: !Ref MavenRepoTarball
         ClusterUsage: !Ref ClusterUsage
-        TimeoutUpload: !Ref TimeoutUpload
+        TimeoutUploadFile: !Ref TimeoutUploadFile
         TimeoutCreateUsers: !Ref TimeoutCreateUsers
-        TimeoutSecurityCleanup: !Ref TimeoutSecurityCleanup
-        TimeoutGafferDeploy: !Ref TimeoutGafferDeploy
+        TimeoutCleanupSecurity: !Ref TimeoutCleanupSecurity
+        TimeoutDeployGaffer: !Ref TimeoutDeployGaffer
 
   GafferWebServer:
     Type: AWS::CloudFormation::Stack
@@ -250,7 +250,7 @@ Resources:
         GafferSchemaJarS3Url: !Ref GafferSchemaJarS3Url
         GafferSchemaJarHttpUrl: !Ref GafferSchemaJarHttpUrl
         MavenRepoTarball: !Ref MavenRepoTarball
-        TimeoutServer: !Ref TimeoutServer
+        TimeoutDeployServer: !Ref TimeoutDeployServer
 
   WebServerAccessToEmrMasterIngressRule:
     Type: AWS::EC2::SecurityGroupIngress
@@ -301,7 +301,7 @@ Resources:
       Runtime: python2.7
       Handler: index.lambda_handler
       MemorySize: 128
-      Timeout: !Ref TimeoutUpload
+      Timeout: !Ref TimeoutUploadFile
       Code:
         ZipFile: !Sub |
           #!/usr/bin/env python

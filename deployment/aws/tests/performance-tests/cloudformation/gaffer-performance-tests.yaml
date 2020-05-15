@@ -172,7 +172,7 @@ Parameters:
     AllowedPattern: "|(\\S+\\.tar\\.gz)"
     ConstraintDescription: "Please specify this as <bucketName>/<filename>.tar.gz"
 
-  TimeoutUpload:
+  TimeoutUploadFile:
     Type: Number
     Default: 180
     Description: "Timeout value for the upload file(s) function"
@@ -184,31 +184,31 @@ Parameters:
     Description: "Timeout value for creating the Gaffer user(s)"
     MinValue: 1
 
-  TimeoutGafferDeploy:
+  TimeoutDeployGaffer:
     Type: Number
     Default: 3600
     Description: "Timeout value for deploying Gafffer"
     MinValue: 1
 
-  TimeoutSecurityCleanup:
+  TimeoutCleanupSecurity:
     Type: Number
     Default: 180
     Description: "Timeout value for the security clean-up"
     MinValue: 1
 
-  TimeoutAccumuloSplitPoints:
+  TimeoutCreateAccumuloSplitPoints:
     Type: Number
     Default: 900
     Description: "Timeout value for creating the Accumulo table split points"
     MinValue: 1
 
-  TimeoutMetricsInstall:
+  TimeoutDeployMetrics:
     Type: Number
     Default: 900
     Description: "Timeout value for installing the metrics"
     MinValue: 1
 
-  TimeoutMetricsUpdate:
+  TimeoutUpdateMetrics:
     Type: Number
     Default: 180
     Description: "Timeout value for updating the metrics"
@@ -268,13 +268,13 @@ Metadata:
       - Label:
           default: Timeouts
         Parameters:
-          - TimeoutUpload
-          - TimeoutSecurityCleanup
-          - TimeoutGafferDeploy
+          - TimeoutUploadFile
+          - TimeoutCleanupSecurity
+          - TimeoutDeployGaffer
           - TimeoutCreateUsers
-          - TimeoutAccumuloSplitPoints
-          - TimeoutMetricsInstall
-          - TimeoutMetricsUpdate
+          - TimeoutCreateAccumuloSplitPoints
+          - TimeoutDeployMetrics
+          - TimeoutUpdateMetrics
 
 Mappings:
 
@@ -361,10 +361,10 @@ Resources:
         TabletServersPerYarnNode: !Ref TabletServersPerYarnNode
         MavenRepoTarball: !Ref MavenRepoTarball
         ClusterUsage: !Ref ClusterUsage
-        TimeoutUpload: !Ref TimeoutUpload
+        TimeoutUploadFile: !Ref TimeoutUploadFile
         TimeoutCreateUsers: !Ref TimeoutCreateUsers
-        TimeoutSecurityCleanup: !Ref TimeoutSecurityCleanup
-        TimeoutGafferDeploy: !Ref TimeoutGafferDeploy
+        TimeoutCleanupSecurity: !Ref TimeoutCleanupSecurity
+        TimeoutDeployGaffer: !Ref TimeoutDeployGaffer
 
   # Security group that all generators (data and query) will be a member of
   GeneratorSecurityGroup:
@@ -404,7 +404,7 @@ Resources:
     Type: AWS::CloudFormation::WaitCondition
     Properties:
       Handle: !Ref WaitForMetricCollectionHandler
-      Timeout: !Ref TimeoutMetricsInstall
+      Timeout: !Ref TimeoutDeployMetrics
 
   WaitForMetricCollectionHandler:
     Type: AWS::CloudFormation::WaitConditionHandle
@@ -434,7 +434,7 @@ Resources:
     Type: AWS::CloudFormation::WaitCondition
     Properties:
       Handle: !Ref WaitForSplitPointsToBeSetHandler
-      Timeout: !Ref TimeoutAccumuloSplitPoints
+      Timeout: !Ref TimeoutCreateAccumuloSplitPoints
 
   WaitForSplitPointsToBeSetHandler:
     Type: AWS::CloudFormation::WaitConditionHandle
@@ -783,7 +783,7 @@ Resources:
         Variables:
           STACK_NAME: !Ref "AWS::StackName"
       MemorySize: 128
-      Timeout: !Ref TimeoutMetricsUpdate
+      Timeout: !Ref TimeoutUpdateMetrics
       Code:
         S3Bucket: !Ref S3Bucket
         S3Key: "lambda/update-cloudwatch-dashboard.zip"
@@ -871,7 +871,7 @@ Resources:
       Runtime: python2.7
       Handler: index.lambda_handler
       MemorySize: 128
-      Timeout: !Ref TimeoutUpload
+      Timeout: !Ref TimeoutUploadFile
       Code:
         ZipFile: !Sub |
           #!/usr/bin/env python

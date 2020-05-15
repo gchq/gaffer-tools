@@ -78,7 +78,7 @@ Parameters:
     AllowedPattern: "|(\\S+\\.tar\\.gz)"
     ConstraintDescription: "Please specify this as <bucketName>/<filename>.tar.gz"
 
-  TimeoutUpload:
+  TimeoutUploadFile:
     Type: Number
     Default: 180
     Description: "Timeout value for the upload file(s) function"
@@ -90,13 +90,13 @@ Parameters:
     Description: "Timeout value for creating the Gaffer user(s)"
     MinValue: 1
 
-  TimeoutGafferDeploy:
+  TimeoutDeployGaffer:
     Type: Number
     Default: 3600
     Description: "Timeout value for deploying Gafffer"
     MinValue: 1
 
-  TimeoutSecurityCleanup:
+  TimeoutCleanupSecurity:
     Type: Number
     Default: 180
     Description: "Timeout value for the security clean-up"
@@ -137,10 +137,10 @@ Metadata:
       - Label:
           default: Timeouts
         Parameters:
-          - TimeoutUpload
+          - TimeoutUploadFile
           - TimeoutCreateUsers
-          - TimeoutSecurityCleanup
-          - TimeoutGafferDeploy
+          - TimeoutCleanupSecurity
+          - TimeoutDeployGaffer
           - TimeoutTestIntegration
 
 Conditions:
@@ -169,9 +169,9 @@ Resources:
         AccumuloVisibilities: "vis1,vis2,publicVisibility,privateVisibility,public,private"
         MavenRepoTarball: !Ref MavenRepoTarball
         ClusterUsage: !Ref ClusterUsage
-        TimeoutUpload: !Ref TimeoutUpload
-        TimeoutGafferDeploy: !Ref TimeoutGafferDeploy
-        TimeoutSecurityCleanup: !Ref TimeoutSecurityCleanup
+        TimeoutUploadFile: !Ref TimeoutUploadFile
+        TimeoutDeployGaffer: !Ref TimeoutDeployGaffer
+        TimeoutCleanupSecurity: !Ref TimeoutCleanupSecurity
         TimeoutCreateUsers: !Ref TimeoutCreateUsers
 
   EmrSnsPolicy:
@@ -258,7 +258,7 @@ Resources:
       Runtime: python2.7
       Handler: index.lambda_handler
       MemorySize: 128
-      Timeout: !Ref TimeoutUpload
+      Timeout: !Ref TimeoutUploadFile
       Code:
         ZipFile: !Sub |
           #!/usr/bin/env python

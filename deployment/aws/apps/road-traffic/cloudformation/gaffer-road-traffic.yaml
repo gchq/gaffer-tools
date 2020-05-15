@@ -87,13 +87,13 @@ Parameters:
     AllowedPattern: "|(\\S+\\.tar\\.gz)"
     ConstraintDescription: "Please specify this as <bucketName>/<filename>.tar.gz"
 
-  TimeoutUpload:
+  TimeoutUploadFile:
     Type: Number
     Default: 180
     Description: "Timeout value for the upload file(s) function"
     MinValue: 1
 
-  TimeoutServer:
+  TimeoutDeployServer:
     Type: Number
     Default: 900
     Description: "Timeout for deploying and securing a server"
@@ -105,25 +105,25 @@ Parameters:
     Description: "Timeout value for creating the Gaffer user(s)"
     MinValue: 1
 
-  TimeoutGafferDeploy:
+  TimeoutDeployGaffer:
     Type: Number
     Default: 3600
     Description: "Timeout value for deploying Gafffer"
     MinValue: 1
 
-  TimeoutSecurityCleanup:
+  TimeoutCleanupSecurity:
     Type: Number
     Default: 180
     Description: "Timeout value for the security clean-up"
     MinValue: 1
 
-  TimeoutSchemaBuild:
+  TimeoutBuildSchema:
     Type: Number
     Default: 3600
     Description: "Timeout value for a schema build"
     MinValue: 1
 
-  TimeoutIngest:
+  TimeoutIngestData:
     Type: Number
     Default: 3600
     Description: "Timeout value for data ingest"
@@ -158,13 +158,13 @@ Metadata:
       - Label:
           default: Timeouts
         Parameters:
-          - TimeoutUpload
-          - TimeoutSecurityCleanup
-          - TimeoutGafferDeploy
+          - TimeoutUploadFile
+          - TimeoutCleanupSecurity
+          - TimeoutDeployGaffer
           - TimeoutCreateUsers
-          - TimeoutServer
-          - TimeoutSchemaBuild
-          - TimeoutIngest
+          - TimeoutDeployServer
+          - TimeoutBuildSchema
+          - TimeoutIngestData
 
 Resources:
 
@@ -188,10 +188,10 @@ Resources:
         UserName: road_traffic_user
         MavenRepoTarball: !Ref MavenRepoTarball
         ClusterUsage: !Ref ClusterUsage
-        TimeoutUpload: !Ref TimeoutUpload
+        TimeoutUploadFile: !Ref TimeoutUploadFile
         TimeoutCreateUsers: !Ref TimeoutCreateUsers
-        TimeoutSecurityCleanup: !Ref TimeoutSecurityCleanup
-        TimeoutGafferDeploy: !Ref TimeoutGafferDeploy
+        TimeoutCleanupSecurity: !Ref TimeoutCleanupSecurity
+        TimeoutDeployGaffer: !Ref TimeoutDeployGaffer
 
   # Build the Road Traffic schema JAR using an EMR step script
 
@@ -199,7 +199,7 @@ Resources:
     Type: AWS::CloudFormation::WaitCondition
     Properties:
       Handle: !Ref WaitForSchemaJarHandler
-      Timeout: !Ref TimeoutSchemaBuild
+      Timeout: !Ref TimeoutBuildSchema
 
   WaitForSchemaJarHandler:
     Type: AWS::CloudFormation::WaitConditionHandle
@@ -244,7 +244,7 @@ Resources:
         EncryptionKey: !Sub ${GafferWithUser.Outputs.PasswordEncryptionKey}
         GafferSchemaJarS3Url: !Join ["", [!Ref S3Bucket, "/schemas/road-traffic-model-", !Ref GafferVersion, ".jar"]]
         MavenRepoTarball: !Ref MavenRepoTarball
-        TimeoutServer: !Ref TimeoutServer
+        TimeoutDeployServer: !Ref TimeoutDeployServer
 
   WebServerAccessToEmrMasterIngressRule:
     Type: AWS::EC2::SecurityGroupIngress
@@ -280,7 +280,7 @@ Resources:
     Type: AWS::CloudFormation::WaitCondition
     Properties:
       Handle: !Ref WaitForDataIngestHandler
-      Timeout: !Ref TimeoutIngest
+      Timeout: !Ref TimeoutIngestData
 
   WaitForDataIngestHandler:
     Type: AWS::CloudFormation::WaitConditionHandle
@@ -339,7 +339,7 @@ Resources:
       Runtime: python2.7
       Handler: index.lambda_handler
       MemorySize: 128
-      Timeout: !Ref TimeoutUpload
+      Timeout: !Ref TimeoutUploadFile
       Code:
         ZipFile: !Sub |
           #!/usr/bin/env python

@@ -84,13 +84,13 @@ Parameters:
     AllowedPattern: "|(\\S+\\.tar\\.gz)"
     ConstraintDescription: "Please specify this as <bucketName>/<filename>.tar.gz"
 
-  TimeoutUpload:
+  TimeoutUploadFile:
     Type: Number
     Default: 180
     Description: "Timeout value for the upload file(s) function"
     MinValue: 1
 
-  TimeoutServer:
+  TimeoutDeployServer:
     Type: Number
     Default: 900
     Description: "Timeout for deploying and securing a server"
@@ -102,25 +102,25 @@ Parameters:
     Description: "Timeout value for creating the Gaffer user(s)"
     MinValue: 1
 
-  TimeoutGafferDeploy:
+  TimeoutDeployGaffer:
     Type: Number
     Default: 3600
     Description: "Timeout value for deploying Gafffer"
     MinValue: 1
 
-  TimeoutSecurityCleanup:
+  TimeoutCleanupSecurity:
     Type: Number
     Default: 180
     Description: "Timeout value for the security clean-up"
     MinValue: 1
 
-  TimeoutSchemaBuild:
+  TimeoutBuildSchema:
     Type: Number
     Default: 3600
     Description: "Timeout value for a schema build"
     MinValue: 1
 
-  TimeoutIngest:
+  TimeoutIngestData:
     Type: Number
     Default: 3600
     Description: "Timeout value for data ingest"
@@ -159,13 +159,13 @@ Metadata:
         Parameters:
           - TestReportSnsTopic
         Parameters:
-          - TimeoutUpload
-          - TimeoutSecurityCleanup
-          - TimeoutGafferDeploy
+          - TimeoutUploadFile
+          - TimeoutCleanupSecurity
+          - TimeoutDeployGaffer
           - TimeoutCreateUsers
-          - TimeoutServer
-          - TimeoutSchemaBuild
-          - TimeoutIngest
+          - TimeoutDeployServer
+          - TimeoutBuildSchema
+          - TimeoutIngestData
           - TimeoutTestSystem
 
 Conditions:
@@ -193,13 +193,13 @@ Resources:
         RoadTrafficDataUrl: "https://raw.githubusercontent.com/gchq/Gaffer/master/example/road-traffic/road-traffic-demo/src/main/resources/roadTrafficSampleData.csv"
         MavenRepoTarball: !Ref MavenRepoTarball
         ClusterUsage: !Ref ClusterUsage
-        TimeoutUpload: !Ref TimeoutUpload
-        TimeoutSecurityCleanup: !Ref TimeoutSecurityCleanup
-        TimeoutGafferDeploy: !Ref TimeoutGafferDeploy
+        TimeoutUploadFile: !Ref TimeoutUploadFile
+        TimeoutCleanupSecurity: !Ref TimeoutCleanupSecurity
+        TimeoutDeployGaffer: !Ref TimeoutDeployGaffer
         TimeoutCreateUsers: !Ref TimeoutCreateUsers
-        TimeoutServer: !Ref TimeoutServer
-        TimeoutSchemaBuild: !Ref TimeoutSchemaBuild
-        TimeoutIngest: !Ref TimeoutIngest
+        TimeoutDeployServer: !Ref TimeoutDeployServer
+        TimeoutBuildSchema: !Ref TimeoutBuildSchema
+        TimeoutIngestData: !Ref TimeoutIngestData
 
   EmrSnsPolicy:
     Condition: TestReportEnabled
@@ -290,7 +290,7 @@ Resources:
       Runtime: python2.7
       Handler: index.lambda_handler
       MemorySize: 128
-      Timeout: !Ref TimeoutUpload
+      Timeout: !Ref TimeoutUploadFile
       Code:
         ZipFile: !Sub |
           #!/usr/bin/env python
