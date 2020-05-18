@@ -24,6 +24,11 @@ angular.module('app').factory('previousQueries', function() {
     
     var queries = [];
 
+    var currentChain = {
+        chain: 0,
+        operationIndex: 0
+    };
+
     /**
      * Adds an object to the start of the previous queries. 
      * This is to give the impression that they are sorted by newest first.
@@ -55,17 +60,41 @@ angular.module('app').factory('previousQueries', function() {
         queries = angular.copy(operations);
     }
 
-     /**
-     * Find query currently held by the service.
+    /**
+     * Updates the specified query currently held by the service.
+     * @param {Integer} chain the operation chain being modified
+     * @param {Integer} operation the operation being changed with the chain
+     * @param {Object} updatedQuery the new name and description
      */
-    service.findQuery = function() {
-        queries.forEach(function(query) {
-            console.log(query.operations);
-            query.operations.forEach(function(operation){
-                console.log(operation.selectedOperation.name)
-                console.log(operation.selectedOperation.description)
-            })
-        })
+    service.updateQuery = function(chain, operationIndex, updatedQuery) {
+        if (chain >= 0 && chain <= queries.length) {
+            var query = queries[chain];
+            if (operationIndex >= 0 && operationIndex <= query.operations.length) {
+                var operationSelectedOperation = Object.assign({}, query.operations[operationIndex].selectedOperation);
+                operationSelectedOperation.name = updatedQuery.name;
+                operationSelectedOperation.description = updatedQuery.description;
+                //query.operations[operationIndex] = {...query.operations[operationIndex], selectedOperation: operationSelectedOperation };
+                query.operations[operationIndex] = Object.assign(query.operations[operationIndex], {selectedOperation: operationSelectedOperation});
+            }
+        }
     }
+
+    /**
+     * Saves the current edit position in My Queries.
+     * @param {Integer} the operation chain being edited.
+     * @param {Integer} the operation being edited.
+     */
+    service.setCurrentChain = function(chain, operationIndex) {
+       currentChain.chain = chain;
+       currentChain.operationIndex = operationIndex;
+    }
+
+    /**
+     * Returns the current edit position in My Queries.
+     */
+    service.getCurrentChain = function() {
+        return currentChain;
+    }
+
     return service;
 });

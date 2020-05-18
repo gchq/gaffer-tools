@@ -24,29 +24,17 @@ function myQuery() {
         controller: MyQueryController,
         controllerAs: 'ctrl',
         bindings: {
-            model: '='
+            model: '=',
+            chain: '='
+        },
+        require: {
+            parent: '?^^myQueries'
         }
     }
 }
 
-function MyQueryController(operationChain, navigation, previousQueries, $mdSidenav, $mdDialog) {
+function MyQueryController(operationChain, navigation, previousQueries, $mdSidenav) {
     var vm = this;
-
-    var confirm = $mdDialog.confirm()
-    .title('Selected Query Name  and Description will changed ?')
-    .ok('Ok')
-
-    var invalidName = $mdDialog.confirm()
-    .title('Invalid Data!')
-    .textContent('Please enter valid Name and Description')
-    .ok('Ok')
-
-    vm.updatedQuery = {
-            name: null,
-            description: null
-        }
-        
-    //var OPERATION_CHAIN_CLASS = "uk.gov.gchq.gaffer.operation.OperationChain";
 
     /**
      * Loads the operation into the operation chain builder
@@ -54,23 +42,15 @@ function MyQueryController(operationChain, navigation, previousQueries, $mdSiden
     vm.load = function() {
         operationChain.setOperationChain(vm.model.operations);
         navigation.goToQuery();
-    }  
-    vm.toggleSideNav  = function () {
-            $mdSidenav('right')
-                .toggle();
-            if($mdSidenav('right').isOpen())
-            {
-                previousQueries.findQuery();
-            }     
-        }
-    vm.saveUpdatedDetails = function() {
-        
-        if (vm.updatedQuery.name != null && vm.updatedQuery.name != '') {
-            $mdDialog.show(confirm);
-        } else {
-            $mdDialog.show(invalidName);
-        }
-       
     }
-
+     /**
+     * Open edit sidenav for my queries 
+     */
+    vm.openSideNav = function (operationIndex, operation) {
+        if(!$mdSidenav('right').isOpen()) {
+            $mdSidenav('right').toggle();
+            previousQueries.setCurrentChain(vm.chain, operationIndex);
+        }
+        vm.parent.getUpdatedOperations(operation);
+    } 
 }
