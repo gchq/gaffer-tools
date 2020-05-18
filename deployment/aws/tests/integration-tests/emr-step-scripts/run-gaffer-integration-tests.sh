@@ -1,6 +1,6 @@
 #!/bin/bash -xe
 
-GAFFER_VERSION=""
+GAFFER_VERSION="master"
 ACCUMULO_INSTANCE=""
 KMS_ID=""
 PARAM_NAME=""

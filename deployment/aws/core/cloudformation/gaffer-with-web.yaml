@@ -5,21 +5,21 @@ Parameters:
 
   GafferVersion:
     Type: String
-    Default: 0.7.8
+    Default: master
     MinLength: 1
     AllowedPattern: "\\S+"
     Description: The version of Gaffer to deploy - can be a version number (e.g. 0.7.8) or a git branch (e.g. gh-X-feature-name) / commit hash etc
 
   GafferToolsVersion:
     Type: String
-    Default: 0.7.8
+    Default: master
     MinLength: 1
     AllowedPattern: "\\S+"
     Description: The version of Gaffer Tools to use to deploy Gaffer on EMR - can be a version number (e.g. 0.7.8) or a git branch (e.g. gh-X-feature-name) / commit hash etc
 
   AccumuloVersion:
     Type: String
-    Default: 1.8.1
+    Default: 1.9.3
     MinLength: 1
     AllowedPattern: "\\S+"
 
@@ -130,6 +130,36 @@ Parameters:
     AllowedPattern: "|(\\S+\\.tar\\.gz)"
     ConstraintDescription: "Please specify this as <bucketName>/<filename>.tar.gz"
 
+  TimeoutUploadFile:
+    Type: Number
+    Default: 180
+    Description: "Timeout value for the upload file(s) function"
+    MinValue: 1
+
+  TimeoutDeployServer:
+    Type: Number
+    Default: 900
+    Description: "Timeout for deploying and securing a server"
+    MinValue: 1
+
+  TimeoutCreateUsers:
+    Type: Number
+    Default: 600
+    Description: "Timeout value for creating the Gaffer user(s)"
+    MinValue: 1
+
+  TimeoutDeployGaffer:
+    Type: Number
+    Default: 3600
+    Description: "Timeout value for deploying Gafffer"
+    MinValue: 1
+
+  TimeoutCleanupSecurity:
+    Type: Number
+    Default: 180
+    Description: "Timeout value for the security clean-up"
+    MinValue: 1
+
 Metadata:
   AWS::CloudFormation::Interface:
     ParameterGroups:
@@ -162,6 +192,14 @@ Metadata:
           - ExtraSecurityGroups
           - ManageSecurityGroups
           - MavenRepoTarball
+      - Label:
+          default: Timeouts
+        Parameters:
+          - TimeoutUploadFile
+          - TimeoutCleanupSecurity
+          - TimeoutDeployGaffer
+          - TimeoutCreateUsers
+          - TimeoutDeployServer
 
 Resources:
 
@@ -186,6 +224,10 @@ Resources:
         AccumuloVisibilities: !Ref AccumuloVisibilities
         MavenRepoTarball: !Ref MavenRepoTarball
         ClusterUsage: !Ref ClusterUsage
+        TimeoutUploadFile: !Ref TimeoutUploadFile
+        TimeoutCreateUsers: !Ref TimeoutCreateUsers
+        TimeoutCleanupSecurity: !Ref TimeoutCleanupSecurity
+        TimeoutDeployGaffer: !Ref TimeoutDeployGaffer
 
   GafferWebServer:
     Type: AWS::CloudFormation::Stack
@@ -208,6 +250,7 @@ Resources:
         GafferSchemaJarS3Url: !Ref GafferSchemaJarS3Url
         GafferSchemaJarHttpUrl: !Ref GafferSchemaJarHttpUrl
         MavenRepoTarball: !Ref MavenRepoTarball
+        TimeoutDeployServer: !Ref TimeoutDeployServer
 
   WebServerAccessToEmrMasterIngressRule:
     Type: AWS::EC2::SecurityGroupIngress
@@ -258,7 +301,7 @@ Resources:
       Runtime: python2.7
       Handler: index.lambda_handler
       MemorySize: 128
-      Timeout: 180
+      Timeout: !Ref TimeoutUploadFile
       Code:
         ZipFile: !Sub |
           #!/usr/bin/env python

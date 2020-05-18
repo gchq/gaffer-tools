@@ -1,6 +1,6 @@
 #!/bin/bash -xe
 
-GAFFER_VERSION=1.0.0
+GAFFER_VERSION="master"
 WAIT_HANDLE_URL=""
 DESTINATION=""
 
