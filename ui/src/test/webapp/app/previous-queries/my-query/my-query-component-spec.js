@@ -1,6 +1,7 @@
 describe('The My Query component', function() {
 
     var ctrl;
+    ctrl.parent = {}
     var require = {};
     var $componentController;
 
@@ -20,7 +21,7 @@ describe('The My Query component', function() {
     });
     it('should take a parent as input', function() {
         var ctrl = $componentController('myQuery', null, {parent: 'test'});
-        expect(require.parent).toEqual('test');
+        expect(ctrl.parent).toEqual('test');
     });
 
     describe('ctrl.load()', function() {
@@ -61,31 +62,43 @@ describe('The My Query component', function() {
         var operationIndex = 0;
         var chain = 0;
         var operation = {test: 'test'};
+
         beforeEach(inject(function(_previousQueries_, _$mdSidenav_) {
             previousQueries = _previousQueries_;
             $mdSidenav = _$mdSidenav_;
         }));
+
         beforeEach(function() {
-            require.parent = 'myQueries'
+            ctrl.parent = 'myQueries';
         });
+
         it('should open edit sidenav in my query', function() {
            
             spyOn($mdSidenav('right'), 'toggle');
+
             ctrl.openSideNav(operationIndex, operation);
+
             expect($mdSidenav.toggle).toHaveBeenCalled();
         });
+
         it('should set chain and operation index', function() {
             
             spyOn($mdSidenav('right'), 'toggle');
+
             spyOn(previousQueries, 'setCurrentChain');
+
             ctrl.openSideNav(operationIndex, operation);
-            expect(previousQueries.setOperationChain).toHaveBeenCalledWith(chain, operationIndex)
+
+            expect(previousQueries.setOperationChain).toHaveBeenCalledWith(chain, operationIndex);
         });
+
         it('should get updated operations from edit sidenav', function() {
             
-            spyOn(require.parent, 'getUpdatedOperations');
+            spyOn(ctrl.parent, 'getUpdatedOperations');
+
             ctrl.openSideNav(operationIndex, operation);
-            expect(require.parent.getUpdatedOperations).toHaveBeenCalledWith(operation);
+
+            expect(ctrl.parent.getUpdatedOperations).toHaveBeenCalledWith(operation);
         });
     });
 });
