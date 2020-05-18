@@ -66,15 +66,13 @@ angular.module('app').factory('previousQueries', function() {
      * @param {Integer} operation the operation being changed with the chain
      * @param {Object} updatedQuery the new name and description
      */
-    service.updateQuery = function(chain, operationIndex, updatedQuery) {
-        if (chain >= 0 && chain <= queries.length) {
-            var query = queries[chain];
+    service.updateQuery = function(operationChainIndex, operationIndex, updatedQuery) {
+        if (operationChainIndex >= 0 && operationChainIndex <= queries.length) {
+            var query = queries[operationChainIndex];
             if (operationIndex >= 0 && operationIndex <= query.operations.length) {
-                var operationSelectedOperation = Object.assign({}, query.operations[operationIndex].selectedOperation);
-                operationSelectedOperation.name = updatedQuery.name;
-                operationSelectedOperation.description = updatedQuery.description;
-                //query.operations[operationIndex] = {...query.operations[operationIndex], selectedOperation: operationSelectedOperation };
-                query.operations[operationIndex] = Object.assign(query.operations[operationIndex], {selectedOperation: operationSelectedOperation});
+
+                query.operations[operationIndex].selectedOperation.name = updatedQuery.name;
+                query.operations[operationIndex].selectedOperation.description = updatedQuery.description;
             }
         }
     }
