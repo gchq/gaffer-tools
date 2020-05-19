@@ -70,9 +70,11 @@ angular.module('app').factory('previousQueries', function() {
         if (operationChainIndex >= 0 && operationChainIndex <= queries.length) {
             var query = queries[operationChainIndex];
             if (operationIndex >= 0 && operationIndex <= query.operations.length) {
+                var operationToBeUpdated = angular.extend({}, query.operations[operationIndex].selectedOperation);
+                operationToBeUpdated.name = updatedQuery.name;
+                operationToBeUpdated.description = updatedQuery.description;
 
-                query.operations[operationIndex].selectedOperation.name = updatedQuery.name;
-                query.operations[operationIndex].selectedOperation.description = updatedQuery.description;
+                query.operations[operationIndex] = angular.extend(query.operations[operationIndex], { selectedOperation: operationToBeUpdated });
             }
         }
     }
