@@ -81,7 +81,7 @@ function MyQueriesController(previousQueries, navigation, operationChain, $mdSid
     vm.saveUpdatedDetails = function() {
 
         var chainToUpdate = previousQueries.getCurrentChain();       
-
+        previousQueries.updateQuery(chainToUpdate.chain, chainToUpdate.operationIndex, vm.updatedQuery);
         if (vm.updatedQuery.name != null && vm.updatedQuery.name != '') {
             $mdDialog.show(confirm).then(function() {
                 //Update the local model to force the UI to update
@@ -89,14 +89,13 @@ function MyQueriesController(previousQueries, navigation, operationChain, $mdSid
                     var query = vm.queries[chainToUpdate.chain];
                  
                     if (chainToUpdate.operationIndex >= 0 && chainToUpdate.operationIndex <= query.operations.length) {
-                        var operationSelectedOperation = Object.assign({}, query.operations[chainToUpdate.operationIndex].selectedOperation);
+                        var operationSelectedOperation = angular.extend({}, query.operations[chainToUpdate.operationIndex].selectedOperation);
                         operationSelectedOperation.name = vm.updatedQuery.name;
                         operationSelectedOperation.description = vm.updatedQuery.description;
-                        //query.operations[chainToUpdate.operationIndex] = {...query.operations[chainToUpdate.operationIndex], selectedOperation: operationSelectedOperation };
-                        query.operations[chainToUpdate.operationIndex] = Object.assign(query.operations[chainToUpdate.operationIndex], {selectedOperation: operationSelectedOperation});
+                        query.operations[chainToUpdate.operationIndex] = angular.extend(query.operations[chainToUpdate.operationIndex], {selectedOperation: operationSelectedOperation});
                     }
                 }
-                previousQueries.updateQuery(chainToUpdate.chain, chainToUpdate.operationIndex, vm.updatedQuery);
+                
                 $mdSidenav('right').toggle();
             });
         } else {

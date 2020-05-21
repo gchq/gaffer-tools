@@ -1,8 +1,7 @@
 describe('The My Query component', function() {
 
     var ctrl;
-    ctrl.parent = {}
-    var require = {};
+    
     var $componentController;
 
     beforeEach(module('app'));
@@ -93,6 +92,7 @@ describe('The My Query component', function() {
         });
 
         it('should get updated operations from edit sidenav', function() {
+            ctrl.parent = {};
             
             spyOn(ctrl.parent, 'getUpdatedOperations');
 

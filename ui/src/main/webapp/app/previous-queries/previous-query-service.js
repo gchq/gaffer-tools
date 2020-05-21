@@ -73,7 +73,6 @@ angular.module('app').factory('previousQueries', function() {
                 var operationToBeUpdated = angular.extend({}, query.operations[operationIndex].selectedOperation);
                 operationToBeUpdated.name = updatedQuery.name;
                 operationToBeUpdated.description = updatedQuery.description;
-
                 query.operations[operationIndex] = angular.extend(query.operations[operationIndex], { selectedOperation: operationToBeUpdated });
             }
         }
