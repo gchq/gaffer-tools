@@ -386,10 +386,16 @@ quick-query {
 
 .md-list-item-text {
     position: relative;
+    margin: 15px 0 !important;
 }
 
 #edit-query {
     position: absolute;
     right: 0;
-    bottom: 0;
+    top: 0;
+}
+
+.md-list-item-text p , h3 {
+    width: 90%;
+    text-align: justify;
 }

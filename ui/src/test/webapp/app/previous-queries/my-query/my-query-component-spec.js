@@ -56,49 +56,4 @@ describe('The My Query component', function() {
         });
     });
 
-    describe('ctrl.openSideNav()', function() {
-        var previousQueries, $mdSidenav;
-        var operationIndex = 0;
-        var chain = 0;
-        var operation = {test: 'test'};
-
-        beforeEach(inject(function(_previousQueries_, _$mdSidenav_) {
-            previousQueries = _previousQueries_;
-            $mdSidenav = _$mdSidenav_;
-        }));
-
-        beforeEach(function() {
-            ctrl.parent = 'myQueries';
-        });
-
-        it('should open edit sidenav in my query', function() {
-           
-            spyOn($mdSidenav('right'), 'toggle');
-
-            ctrl.openSideNav(operationIndex, operation);
-
-            expect($mdSidenav.toggle).toHaveBeenCalled();
-        });
-
-        it('should set chain and operation index', function() {
-            
-            spyOn($mdSidenav('right'), 'toggle');
-
-            spyOn(previousQueries, 'setCurrentChain');
-
-            ctrl.openSideNav(operationIndex, operation);
-
-            expect(previousQueries.setOperationChain).toHaveBeenCalledWith(chain, operationIndex);
-        });
-
-        it('should get updated operations from edit sidenav', function() {
-            ctrl.parent = {};
-            
-            spyOn(ctrl.parent, 'getUpdatedOperations');
-
-            ctrl.openSideNav(operationIndex, operation);
-
-            expect(ctrl.parent.getUpdatedOperations).toHaveBeenCalledWith(operation);
-        });
-    });
 });

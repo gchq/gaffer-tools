@@ -7,7 +7,7 @@
             <div width='100%'>
                 <md-input-container class="md-block">
                     <label for="saved-name">Name</label>
-                    <input type="text" id="saved-name" required ng-model="ctrl.updatedQuery.name" md-autofocus>
+                    <input type="text" id="saved-name" maxlength="1000" required ng-model="ctrl.updatedQuery.name" md-autofocus>
                 </md-input-container>
             </div>
             <div width='100%'>
@@ -18,6 +18,7 @@
                             md-no-autogrow
                             ng-model="ctrl.updatedQuery.description"
                             rows="3"
+                            maxlength="3000"
                     >
                     </textarea>
                 </md-input-container>
