@@ -68,32 +68,19 @@ describe('The My Query component', function() {
         }));
 
         beforeEach(function() {
-            ctrl.parent = 'myQueries';
-        });
-
-        it('should open edit sidenav in my query', function() {
-           
-            spyOn($mdSidenav('right'), 'toggle');
-
-            ctrl.openSideNav(operationIndex, operation);
-
-            expect($mdSidenav.toggle).toHaveBeenCalled();
+            ctrl.chain = chain;
+            ctrl.parent = { getUpdatedOperations: function(operation) {} };
         });
 
         it('should set chain and operation index', function() {
-            
-            spyOn($mdSidenav('right'), 'toggle');
-
             spyOn(previousQueries, 'setCurrentChain');
 
             ctrl.openSideNav(operationIndex, operation);
 
-            expect(previousQueries.setOperationChain).toHaveBeenCalledWith(chain, operationIndex);
+            expect(previousQueries.setCurrentChain).toHaveBeenCalledWith(chain, operationIndex);
         });
 
         it('should get updated operations from edit sidenav', function() {
-            ctrl.parent = {};
-            
             spyOn(ctrl.parent, 'getUpdatedOperations');
 
             ctrl.openSideNav(operationIndex, operation);

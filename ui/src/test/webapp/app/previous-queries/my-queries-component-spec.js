@@ -79,23 +79,30 @@ describe('The My Queries component', function() {
     });
 
     describe('ctrl.saveUpdatedDetails()', function() {
-        var previousQueries
+        var previousQueries;
+
         beforeEach(inject(function( _previousQueries_) {
-          
             previousQueries = _previousQueries_;
-           
-           
         }));
+
+        beforeEach(function() {
+            spyOn(previousQueries, 'updateQuery');
+            ctrl.queries = [{
+                name: 'Operation Chain',
+                operations: [{
+                    selectedOperation: { name: 'Get All Elements', description: 'Some description' }
+                }]
+            }];
+        });
       
-        it('should get udated name and description', function() {
-           
-            spyOn(previousQueries, 'getCurrentChain');
+        it('should get updated name and description', function() {
+            spyOn(previousQueries, 'getCurrentChain').and.returnValue({ chain: 0, operationIndex: 0 });
 
             ctrl.saveUpdatedDetails();
 
             expect(previousQueries.getCurrentChain).toHaveBeenCalled();
-
         });
+
         it('should show error message dialog if name is "null" ', function() {
             ctrl.updatedQuery = {
                 name: null,
@@ -114,6 +121,7 @@ describe('The My Queries component', function() {
             expect(ctrl.updatedQuery.name).toEqual(null);
             expect($mdDialog.show).toHaveBeenCalledWith(invalidName);
         });
+
         it('should show error message dialog if name is empty string ', function() {
             ctrl.updatedQuery = {
                 name: '',
@@ -132,6 +140,7 @@ describe('The My Queries component', function() {
             expect(ctrl.updatedQuery.name).toEqual('');
             expect($mdDialog.show).toHaveBeenCalledWith(invalidName);
         });
+
         it('should confirm with user to edit name and description', function(){
             var returnMock = {
                 then: jasmine.createSpy()
@@ -147,11 +156,9 @@ describe('The My Queries component', function() {
             ctrl.saveUpdatedDetails();
             expect(ctrl.updatedQuery.name).toEqual('test');
             expect($mdDialog.show).toHaveBeenCalledWith(confirm);
-
         });
         
         it('should update the name and description in (1st) operation in (1st) chain', function() {
-
             // given
             var query = {
                 name: 'Operation Chain 0',
@@ -164,7 +171,7 @@ describe('The My Queries component', function() {
             }
 
              // when
-             var updatedQuery = {
+            var updatedQuery = {
                 name: 'test updated name', description: 'test updated description'
             };
              
@@ -179,10 +186,9 @@ describe('The My Queries component', function() {
             };
        
             expect(updatedQuery.name).toEqual(query.operations[0].selectedOperation.name);
-
         });
-        it('should update the name and description in (2nd) operation in (1st) chain', function() {
 
+        it('should update the name and description in (2nd) operation in (1st) chain', function() {
             // given
             var query = {
                 name: 'Operation Chain 0',
@@ -195,7 +201,7 @@ describe('The My Queries component', function() {
             }
 
              // when
-             var updatedQuery = {
+            var updatedQuery = {
                 name: 'test updated name', description: 'test updated description'
             };
              
@@ -213,8 +219,8 @@ describe('The My Queries component', function() {
             };
        
             expect(updatedQuery.name).toEqual(query.operations[1].selectedOperation.name);
-
         });
+
         it('should update the name and description in (1st) operation in (2nd) chain', function() {
 
             // given
@@ -241,25 +247,21 @@ describe('The My Queries component', function() {
             };
        
             expect(updatedQuery.name).toEqual(query.operations[0].selectedOperation.name);
-
         });
+
         it('should call the updatedQuery function', function() {
             ctrl.updatedQuery = {
                 name: 'test',
                 description: 'test'
-            }
+            };
             var chainToUpdate = {
                 chain: 0,
                 operationIndex: 0
-            }
-            
-            spyOn(previousQueries, 'updatedQuery');
+            };
 
             ctrl.saveUpdatedDetails();
           
-          expect(previousQueries.updateQuery()).toHaveBeenCalledWith(chainToUpdate.chain,chainToUpdate.operationIndex,ctrl.updatedQuery);
-            
+            expect(previousQueries.updateQuery).toHaveBeenCalledWith(chainToUpdate.chain,chainToUpdate.operationIndex,ctrl.updatedQuery);
         });
     });
-    
 });
