@@ -56,4 +56,37 @@ describe('The My Query component', function() {
         });
     });
 
+    describe('ctrl.openSideNav()', function() {
+        var previousQueries, $mdSidenav;
+        var operationIndex = 0;
+        var chain = 0;
+        var operation = {test: 'test'};
+
+        beforeEach(inject(function(_previousQueries_, _$mdSidenav_) {
+            previousQueries = _previousQueries_;
+            $mdSidenav = _$mdSidenav_;
+        }));
+
+        beforeEach(function() {
+            ctrl.chain = chain;
+            ctrl.parent = { getUpdatedOperations: function(operation) {} };
+        });
+
+        it('should set chain and operation index', function() {
+            spyOn(previousQueries, 'setCurrentChain');
+
+            ctrl.openSideNav(operationIndex, operation);
+
+            expect(previousQueries.setCurrentChain).toHaveBeenCalledWith(chain, operationIndex);
+        });
+
+        it('should get updated operations from edit sidenav', function() {
+            spyOn(ctrl.parent, 'getUpdatedOperations');
+
+            ctrl.openSideNav(operationIndex, operation);
+
+            expect(ctrl.parent.getUpdatedOperations).toHaveBeenCalledWith(operation);
+        });
+    });
+
 });
