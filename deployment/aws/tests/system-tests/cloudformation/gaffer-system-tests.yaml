@@ -5,21 +5,21 @@ Parameters:
 
   GafferVersion:
     Type: String
-    Default: 1.0.0
+    Default: develop
     MinLength: 1
     AllowedPattern: "\\S+"
     Description: The version of Gaffer to deploy - can be a version number (e.g. 1.0.0) or a git branch (e.g. gh-X-feature-name) / commit hash etc
 
   GafferToolsVersion:
     Type: String
-    Default: 1.0.0
+    Default: develop
     MinLength: 1
     AllowedPattern: "\\S+"
     Description: The version of Gaffer Tools to use to deploy Gaffer on EMR - can be a version number (e.g. 1.0.0) or a git branch (e.g. gh-X-feature-name) / commit hash etc
 
   AccumuloVersion:
     Type: String
-    Default: 1.8.1
+    Default: 1.9.3
     MinLength: 1
     AllowedPattern: "\\S+"
 
@@ -84,6 +84,54 @@ Parameters:
     AllowedPattern: "|(\\S+\\.tar\\.gz)"
     ConstraintDescription: "Please specify this as <bucketName>/<filename>.tar.gz"
 
+  TimeoutUploadFile:
+    Type: Number
+    Default: 180
+    Description: "Timeout value for the upload file(s) function"
+    MinValue: 1
+
+  TimeoutDeployServer:
+    Type: Number
+    Default: 900
+    Description: "Timeout for deploying and securing a server"
+    MinValue: 1
+
+  TimeoutCreateUsers:
+    Type: Number
+    Default: 600
+    Description: "Timeout value for creating the Gaffer user(s)"
+    MinValue: 1
+
+  TimeoutDeployGaffer:
+    Type: Number
+    Default: 3600
+    Description: "Timeout value for deploying Gafffer"
+    MinValue: 1
+
+  TimeoutCleanupSecurity:
+    Type: Number
+    Default: 180
+    Description: "Timeout value for the security clean-up"
+    MinValue: 1
+
+  TimeoutBuildSchema:
+    Type: Number
+    Default: 3600
+    Description: "Timeout value for a schema build"
+    MinValue: 1
+
+  TimeoutIngestData:
+    Type: Number
+    Default: 3600
+    Description: "Timeout value for data ingest"
+    MinValue: 1
+
+  TimeoutTestSystem:
+    Type: Number
+    Default: 3600
+    Description: "Timeout value for performing the system tests"
+    MinValue: 1
+
 Metadata:
   AWS::CloudFormation::Interface:
     ParameterGroups:
@@ -110,6 +158,15 @@ Metadata:
           default: Test Config
         Parameters:
           - TestReportSnsTopic
+        Parameters:
+          - TimeoutUploadFile
+          - TimeoutCleanupSecurity
+          - TimeoutDeployGaffer
+          - TimeoutCreateUsers
+          - TimeoutDeployServer
+          - TimeoutBuildSchema
+          - TimeoutIngestData
+          - TimeoutTestSystem
 
 Conditions:
 
@@ -136,6 +193,13 @@ Resources:
         RoadTrafficDataUrl: "https://raw.githubusercontent.com/gchq/Gaffer/master/example/road-traffic/road-traffic-demo/src/main/resources/roadTrafficSampleData.csv"
         MavenRepoTarball: !Ref MavenRepoTarball
         ClusterUsage: !Ref ClusterUsage
+        TimeoutUploadFile: !Ref TimeoutUploadFile
+        TimeoutCleanupSecurity: !Ref TimeoutCleanupSecurity
+        TimeoutDeployGaffer: !Ref TimeoutDeployGaffer
+        TimeoutCreateUsers: !Ref TimeoutCreateUsers
+        TimeoutDeployServer: !Ref TimeoutDeployServer
+        TimeoutBuildSchema: !Ref TimeoutBuildSchema
+        TimeoutIngestData: !Ref TimeoutIngestData
 
   EmrSnsPolicy:
     Condition: TestReportEnabled
@@ -169,7 +233,7 @@ Resources:
     Type: AWS::CloudFormation::WaitCondition
     Properties:
       Handle: !Ref WaitForSystemTestsHandler
-      Timeout: 3600
+      Timeout: !Ref TimeoutTestSystem
 
   WaitForSystemTestsHandler:
     Type: AWS::CloudFormation::WaitConditionHandle
@@ -226,7 +290,7 @@ Resources:
       Runtime: python2.7
       Handler: index.lambda_handler
       MemorySize: 128
-      Timeout: 180
+      Timeout: !Ref TimeoutUploadFile
       Code:
         ZipFile: !Sub |
           #!/usr/bin/env python
