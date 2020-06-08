@@ -5,14 +5,14 @@ Parameters:
 
   GafferVersion:
     Type: String
-    Default: 0.7.8
+    Default: master
     MinLength: 1
     AllowedPattern: "\\S+"
     Description: The version of the Gaffer REST API to deploy - can be a version number (e.g. 0.7.8) or a git branch (e.g. gh-X-feature-name) / commit hash etc
 
   GafferToolsVersion:
     Type: String
-    Default: 0.7.8
+    Default: master
     MinLength: 1
     AllowedPattern: "\\S+"
     Description: The version of Gaffer UI to deploy - can be a version number (e.g. 0.7.8) or a git branch (e.g. gh-X-feature-name) / commit hash etc
@@ -97,6 +97,12 @@ Parameters:
     AllowedPattern: "|(\\S+\\.tar\\.gz)"
     ConstraintDescription: "Please specify this as <bucketName>/<filename>.tar.gz"
 
+  TimeoutDeployServer:
+    Type: Number
+    Default: 900
+    Description: "Timeout for deploying and securing a server"
+    MinValue: 1
+
 Metadata:
   AWS::CloudFormation::Interface:
     ParameterGroups:
@@ -128,6 +134,10 @@ Metadata:
         Parameters:
           - GafferSchemaJarS3Url
           - GafferSchemaJarHttpUrl
+      - Label:
+          default: Timeouts
+        Parameters:
+          - TimeoutDeployServer
 
 Mappings:
 
@@ -461,7 +471,7 @@ Resources:
     Type: AWS::CloudFormation::WaitCondition
     Properties:
       Handle: !Ref WebServerReadyHandler
-      Timeout: 900
+      Timeout: !Ref TimeoutDeployServer
 
   WebServerReadyHandler:
     Type: AWS::CloudFormation::WaitConditionHandle

@@ -37,6 +37,12 @@ Parameters:
     AllowedPattern: "[A-Za-z0-9-_:,]+"
     Description: The visibility authorisations that this user should be granted (as a csv list)
 
+  TimeoutCreateUsers:
+    Type: Number
+    Default: 600
+    Description: "Timeout value for creating the Gaffer users(s)"
+    MinValue: 1
+
 Resources:
 
   #################################
@@ -47,7 +53,7 @@ Resources:
     Type: AWS::CloudFormation::WaitCondition
     Properties:
       Handle: !Ref WaitForGafferUserHandler
-      Timeout: 600
+      Timeout: !Ref TimeoutCreateUsers
 
   WaitForGafferUserHandler:
     Type: AWS::CloudFormation::WaitConditionHandle

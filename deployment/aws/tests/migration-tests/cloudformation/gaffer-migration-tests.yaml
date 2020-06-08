@@ -5,28 +5,28 @@ Parameters:
 
   GafferVersionA:
     Type: String
-    Default: 1.0.0
+    Default: master
     MinLength: 1
     AllowedPattern: "\\S+"
     Description: The version of Gaffer to deploy initially - can be a version number (e.g. 1.0.0) or a git branch (e.g. gh-X-feature-name) / commit hash etc
 
   GafferToolsVersionA:
     Type: String
-    Default: 1.0.0
+    Default: master
     MinLength: 1
     AllowedPattern: "\\S+"
     Description: The version of Gaffer Tools to use to deploy the initial version of Gaffer on EMR - can be a version number (e.g. 1.0.0) or a git branch (e.g. gh-X-feature-name) / commit hash etc
 
   GafferVersionB:
     Type: String
-    Default: 1.0.0
+    Default: develop
     MinLength: 1
     AllowedPattern: "\\S+"
     Description: The version of Gaffer to migrate the cluster to - can be a version number (e.g. 1.0.0) or a git branch (e.g. gh-X-feature-name) / commit hash etc
 
   GafferToolsVersionB:
     Type: String
-    Default: 1.0.0
+    Default: develop
     MinLength: 1
     AllowedPattern: "\\S+"
     Description: The version of Gaffer Tools to use to upgrade Gaffer - can be a version number (e.g. 1.0.0) or a git branch (e.g. gh-X-feature-name) / commit hash etc
@@ -39,7 +39,7 @@ Parameters:
 
   AccumuloVersion:
     Type: String
-    Default: 1.8.1
+    Default: 1.9.3
     MinLength: 1
     AllowedPattern: "\\S+"
 
@@ -98,6 +98,66 @@ Parameters:
     AllowedPattern: "|(\\S+\\.tar\\.gz)"
     ConstraintDescription: "Please specify this as <bucketName>/<filename>.tar.gz"
 
+  TimeoutUploadFile:
+    Type: Number
+    Default: 180
+    Description: "Timeout value for the upload file(s) function"
+    MinValue: 1
+
+  TimeoutDeployServer:
+    Type: Number
+    Default: 900
+    Description: "Timeout for deploying and securing a server"
+    MinValue: 1
+
+  TimeoutCreateUsers:
+    Type: Number
+    Default: 600
+    Description: "Timeout value for creating the Gaffer user(s)"
+    MinValue: 1
+
+  TimeoutDeployGaffer:
+    Type: Number
+    Default: 3600
+    Description: "Timeout value for deploying Gafffer"
+    MinValue: 1
+
+  TimeoutCleanupSecurity:
+    Type: Number
+    Default: 180
+    Description: "Timeout value for the security clean-up"
+    MinValue: 1
+
+  TimeoutBuildSchema:
+    Type: Number
+    Default: 3600
+    Description: "Timeout value for a schema build"
+    MinValue: 1
+
+  TimeoutIngestData:
+    Type: Number
+    Default: 3600
+    Description: "Timeout value for data ingest"
+    MinValue: 1
+
+  TimeoutUpdateGaffer:
+    Type: Number
+    Default: 3600
+    Description: "Timeout value for upgrading Gaffer"
+    MinValue: 1
+
+  TimeoutTestMigration:
+    Type: Number
+    Default: 3600
+    Description: "Timeout value for performing migration tests"
+    MinValue: 1
+
+  TimeoutTestSystem:
+    Type: Number
+    Default: 3600
+    Description: "Timeout value for performing system tests"
+    MinValue: 1
+
 Metadata:
   AWS::CloudFormation::Interface:
     ParameterGroups:
@@ -132,6 +192,19 @@ Metadata:
           default: Test Config
         Parameters:
           - TestReportSnsTopic
+      - Label:
+          default: Timeouts
+        Parameters:
+          - TimeoutUploadFile
+          - TimeoutCleanupSecurity
+          - TimeoutDeployGaffer
+          - TimeoutUpdateGaffer
+          - TimeoutCreateUsers
+          - TimeoutDeployServer
+          - TimeoutBuildSchema
+          - TimeoutIngestData
+          - TimeoutTestMigration
+          - TimeoutTestSystem
 
 Conditions:
 
@@ -158,6 +231,14 @@ Resources:
         MavenRepoTarball: !Ref MavenRepoTarball
         TestReportSnsTopic: !Ref TestReportSnsTopic
         ClusterUsage: !Ref ClusterUsage
+        TimeoutUploadFile: !Ref TimeoutUploadFile
+        TimeoutCleanupSecurity: !Ref TimeoutCleanupSecurity
+        TimeoutDeployGaffer: !Ref TimeoutDeployGaffer
+        TimeoutCreateUsers: !Ref TimeoutCreateUsers
+        TimeoutDeployServer: !Ref TimeoutDeployServer
+        TimeoutBuildSchema: !Ref TimeoutBuildSchema
+        TimeoutIngestData: !Ref TimeoutIngestData
+        TimeoutTestSystem: !Ref TimeoutTestSystem
 
   ###############################################
   ## EMR step script to upgrade version of Gaffer
@@ -167,7 +248,7 @@ Resources:
     Type: AWS::CloudFormation::WaitCondition
     Properties:
       Handle: !Ref WaitForClusterUpgradeHandler
-      Timeout: 3600
+      Timeout: !Ref TimeoutUpdateGaffer
 
   WaitForClusterUpgradeHandler:
     Type: AWS::CloudFormation::WaitConditionHandle
@@ -217,7 +298,7 @@ Resources:
     Type: AWS::CloudFormation::WaitCondition
     Properties:
       Handle: !Ref WaitForSchemaJarHandler
-      Timeout: 3600
+      Timeout: !Ref TimeoutBuildSchema
 
   WaitForSchemaJarHandler:
     Type: AWS::CloudFormation::WaitConditionHandle
@@ -280,6 +361,7 @@ Resources:
         EncryptionKey: !Sub ${GafferCluster.Outputs.PasswordEncryptionKey}
         GafferSchemaJarS3Url: !Join ["", [!Ref S3Bucket, "/schemas/road-traffic-model-", !Ref GafferVersionB, ".jar"]]
         MavenRepoTarball: !Ref MavenRepoTarball
+        TimeoutDeployServer: !Ref TimeoutDeployServer
 
   WebServerAccessToEmrMasterIngressRule:
     Type: AWS::EC2::SecurityGroupIngress
@@ -324,7 +406,7 @@ Resources:
     Type: AWS::CloudFormation::WaitCondition
     Properties:
       Handle: !Ref WaitForSystemTestsHandler
-      Timeout: 3600
+      Timeout: !Ref TimeoutTestMigration
 
   WaitForSystemTestsHandler:
     Type: AWS::CloudFormation::WaitConditionHandle
@@ -380,7 +462,7 @@ Resources:
       Runtime: python2.7
       Handler: index.lambda_handler
       MemorySize: 128
-      Timeout: 180
+      Timeout: !Ref TimeoutUploadFile
       Code:
         ZipFile: !Sub |
           #!/usr/bin/env python
