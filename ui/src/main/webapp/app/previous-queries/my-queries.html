@@ -17,8 +17,9 @@
                 </md-card>
             </div>
             <div ng-repeat="query in ctrl.queries">
-                <my-query model="query" flex></my-query>
+                <my-query model="query" chain=$index flex></my-query>
             </div>
+            <edit-sidenav updated-query= "ctrl.updatedQuery" on-save="ctrl.saveUpdatedDetails()" on-close="ctrl.closeSideNav()"></edit-sidenav>
         </div>
     </div>
 </div>

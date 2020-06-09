@@ -24,12 +24,16 @@ function myQuery() {
         controller: MyQueryController,
         controllerAs: 'ctrl',
         bindings: {
-            model: '='
+            model: '=',
+            chain: '='
+        },
+        require: {
+            parent: '?^^myQueries'
         }
     }
 }
 
-function MyQueryController(operationChain, navigation) {
+function MyQueryController(operationChain, navigation, previousQueries, $mdSidenav) {
     var vm = this;
 
     /**
@@ -39,4 +43,14 @@ function MyQueryController(operationChain, navigation) {
         operationChain.setOperationChain(vm.model.operations);
         navigation.goToQuery();
     }
+     /**
+     * Open edit sidenav for my queries 
+     */
+    vm.openSideNav = function (operationIndex, operation) {
+        if(!$mdSidenav('right').isOpen()) {
+            $mdSidenav('right').toggle();
+            previousQueries.setCurrentChain(vm.chain, operationIndex);
+        }
+        vm.parent.getUpdatedOperations(operation);
+    } 
 }
