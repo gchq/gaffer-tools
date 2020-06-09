@@ -26,11 +26,28 @@ function myQueries() {
     }   
 }
 
-function MyQueriesController(previousQueries, navigation, operationChain) {
+function MyQueriesController(previousQueries, navigation, operationChain, $mdSidenav, $mdDialog) {
 
     var vm = this;
+
     vm.queries = [];
 
+    vm.updatedQuery = {
+    	name: null,
+    	description: null
+    }
+
+    var confirm = $mdDialog.confirm()
+    .title('Are you sure you want to change the Name and Description?')
+    .ok('Ok')
+    .cancel('Cancel')
+
+    var invalidName = $mdDialog.confirm()
+    .title('Invalid Data!')
+    .textContent('Please enter a valid Name and Description')
+    .ok('Ok')
+    .cancel('Cancel')
+    
     /**
      * Sets the previously run queries on initialisation
      */
@@ -44,5 +61,52 @@ function MyQueriesController(previousQueries, navigation, operationChain) {
     vm.createNew = function() {
         operationChain.reset();
         navigation.goToQuery();
+    }
+
+    vm.queriesList = function(){
+        return vm.queries;
+    }
+    /**
+     * Get updated operations for update vm edit sidenav
+     */
+    vm.getUpdatedOperations = function(operation) {
+        vm.updatedQuery = {
+            name: operation.selectedOperation.name,
+            description: operation.selectedOperation.description
+        }
+    }
+    /**
+     * Change operations name and description
+     */
+    vm.saveUpdatedDetails = function() {
+
+        var chainToUpdate = previousQueries.getCurrentChain();       
+        previousQueries.updateQuery(chainToUpdate.chain, chainToUpdate.operationIndex, vm.updatedQuery);
+        if (vm.updatedQuery.name != null && vm.updatedQuery.name != '') {
+            $mdDialog.show(confirm).then(function() {
+                //Update the local model to force the UI to update
+                if (chainToUpdate.chain >= 0 && chainToUpdate.chain <= vm.queries.length) {
+                    var query = vm.queries[chainToUpdate.chain];
+                 
+                    if (chainToUpdate.operationIndex >= 0 && chainToUpdate.operationIndex <= query.operations.length) {
+                        var operationSelectedOperation = angular.extend({}, query.operations[chainToUpdate.operationIndex].selectedOperation);
+                        operationSelectedOperation.name = vm.updatedQuery.name;
+                        operationSelectedOperation.description = vm.updatedQuery.description;
+                        query.operations[chainToUpdate.operationIndex] = angular.extend(query.operations[chainToUpdate.operationIndex], {selectedOperation: operationSelectedOperation});
+                    }
+                }
+                
+                $mdSidenav('right').toggle();
+            });
+        } else {
+            // Name is mandatory
+            $mdDialog.show(invalidName);
+        }
+    }
+
+    vm.closeSideNav = function() {
+        if($mdSidenav('right').isOpen()) {
+            $mdSidenav('right').toggle();
+        }
     }
 }

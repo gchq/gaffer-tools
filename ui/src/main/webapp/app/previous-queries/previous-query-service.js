@@ -24,6 +24,11 @@ angular.module('app').factory('previousQueries', function() {
     
     var queries = [];
 
+    var currentChain = {
+        chain: 0,
+        operationIndex: 0
+    };
+
     /**
      * Adds an object to the start of the previous queries. 
      * This is to give the impression that they are sorted by newest first.
@@ -53,6 +58,41 @@ angular.module('app').factory('previousQueries', function() {
      */
     service.setQueries = function(operations) {
         queries = angular.copy(operations);
+    }
+
+    /**
+     * Updates the specified query currently held by the service.
+     * @param {Integer} chain the operation chain being modified
+     * @param {Integer} operation the operation being changed with the chain
+     * @param {Object} updatedQuery the new name and description
+     */
+    service.updateQuery = function(operationChainIndex, operationIndex, updatedQuery) {
+        if (operationChainIndex >= 0 && operationChainIndex <= queries.length) {
+            var query = queries[operationChainIndex];
+            if (operationIndex >= 0 && operationIndex <= query.operations.length) {
+                var operationToBeUpdated = angular.extend({}, query.operations[operationIndex].selectedOperation);
+                operationToBeUpdated.name = updatedQuery.name;
+                operationToBeUpdated.description = updatedQuery.description;
+                query.operations[operationIndex] = angular.extend(query.operations[operationIndex], { selectedOperation: operationToBeUpdated });
+            }
+        }
+    }
+
+    /**
+     * Saves the current edit position in My Queries.
+     * @param {Integer} the operation chain being edited.
+     * @param {Integer} the operation being edited.
+     */
+    service.setCurrentChain = function(chain, operationIndex) {
+       currentChain.chain = chain;
+       currentChain.operationIndex = operationIndex;
+    }
+
+    /**
+     * Returns the current edit position in My Queries.
+     */
+    service.getCurrentChain = function() {
+        return currentChain;
     }
 
     return service;

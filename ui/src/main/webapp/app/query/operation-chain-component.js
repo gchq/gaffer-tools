@@ -35,6 +35,10 @@ function OperationChainController(operationChain, settings, config, loading, que
         name: null,
         description: null
     }
+    vm.updatedQuery = {
+        name: null,
+        description: null
+    }
 
     var NAMED_VIEW_CLASS = "uk.gov.gchq.gaffer.data.elementdefinition.view.NamedView";
     var ADD_NAMED_OPERATION_CLASS = "uk.gov.gchq.gaffer.named.operation.AddNamedOperation";
@@ -117,7 +121,8 @@ function OperationChainController(operationChain, settings, config, loading, que
         previousQueries.addQuery({
             name: "Operation Chain",
             lastRun: moment().format('HH:mm'),
-            operations: vm.operations
+            operations: vm.operations,
+            description: vm.updatedQuery.description
         });
 
         runQuery(chain.operations);
