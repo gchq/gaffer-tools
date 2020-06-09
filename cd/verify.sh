@@ -15,7 +15,7 @@ if [[ "$RELEASE" != 'true' ]] && [[ "$TRAVIS_PULL_REQUEST" != 'false' ]]; then
         source ~/.nvm/nvm.sh
 
         # Update nodejs to the latest version
-        nvm install 13.13.0
+        nvm install node
 
         # Install the Analytics UI
         cd analytics/analytics-ui
