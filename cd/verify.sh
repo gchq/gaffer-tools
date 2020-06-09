@@ -10,7 +10,6 @@ if [[ "$RELEASE" != 'true' ]] && [[ "$TRAVIS_PULL_REQUEST" != 'false' ]]; then
         mvn -q -nsu verify -P travis,test -B
     elif [[ "$MODULES" == 'analytics-ui' ]]; then
         # It would be good to move these into the pre-install and install phases. For now though, it works.
-
         # Install node version manager
         wget https://raw.githubusercontent.com/creationix/nvm/v0.31.0/nvm.sh -O ~/.nvm/nvm.sh
         source ~/.nvm/nvm.sh
