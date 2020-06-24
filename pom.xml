@@ -36,6 +36,7 @@
         <module>schema-builder</module>
         <module>slider</module>
         <module>analytics</module>
+        <module>operation-runner</module>
     </modules>
 
     <properties>
