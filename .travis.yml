@@ -26,7 +26,7 @@ env:
   - RELEASE=true
   - MODULES=:gaffer-tools,:mini-accumulo-cluster,:schema-builder,:schema-builder-rest
   - MODULES=:ui
-  - MODULES=:random-element-generation,:performance-testing,:performance-testing-core,:performance-testing-accumulo-store,:performance-testing-aws
+  - MODULES=:random-element-generation,:performance-testing,:performance-testing-core,:performance-testing-accumulo-store,:performance-testing-aws,:operation-runner
   - MODULES=:slider
   - MODULES=:analytics,:analytics-functions,:analytics-operations,:analytics-rest
   - MODULES=analytics-ui
