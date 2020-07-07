@@ -21,9 +21,12 @@
                     md-menu-class="named-view-template"
                     md-dropdown-items="10">
                 <md-item-template>
-                    <div class="md-body-2" md-highlight-flags="i">{{op.name}}
-                    </div>
-                    <em class="md-body-1" md-highlight-flags="i">{{op.description}}</em>
+                    <div class="md-body-2" md-highlight-flags="i">{{op.name}}</div>
+                    <em class="md-body-1" md-highlight-flags="i">
+                        {{op.description}}
+                        <br ng-if="op.description && op.labels" />
+                        {{op.labels ? 'Labels: #' + op.labels.join(' #') : ''}}
+                    </em>
                 </md-item-template>
                 <div ng-messages="ctrl.operationForm.autocomplete.$error">
                     <div ng-message="required">You must select an operation

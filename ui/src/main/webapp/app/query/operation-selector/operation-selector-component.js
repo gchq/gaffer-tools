@@ -20,7 +20,7 @@ var app = angular.module('app');
 
 app.filter('operationFilter', function() {
     return function(operations, search) {
-        if(!operations) {
+        if (!operations) {
             return operations;
         }
         if (!search) {
@@ -33,13 +33,24 @@ app.filter('operationFilter', function() {
         // Return the matches that have the words in the same order as the search query first.
         // Matches in the title are prioritised over matches in other areas like the description.
         // Full exact matches are prioritised over matches of individual words.
+        var labelResults = [];
         var titleResults = [];
         var otherResults = [];
         var titleWordResults = [];
         var otherWordResults = [];
 
         angular.forEach(operations, function(operation) {
-            if(operation.formattedName.indexOf(formattedSearch) > -1) {
+            if(formattedSearch && formattedSearch.charAt(0) === '#' &&
+                operation.labels && operation.labels.length > 0) {
+
+                var searchLabel = formattedSearch.substring(1);
+                angular.forEach(operation.labels, function (label) {
+                    if (label.toLowerCase().replace(/\s+/g, '').indexOf(searchLabel) > -1) {
+                        labelResults.push(operation);
+                    };
+                });
+            }
+            else if(operation.formattedName.indexOf(formattedSearch) > -1) {
                 titleResults.push(operation);
             } else if(operation.formattedDescription.indexOf(formattedSearch) > -1) {
                 otherResults.push(operation);
@@ -64,6 +75,9 @@ app.filter('operationFilter', function() {
         });
 
         var results = [];
+        angular.forEach(labelResults, function(result) {
+            results.push(result);
+        });
         angular.forEach(titleResults, function(result) {
             results.push(result);
         });
@@ -103,7 +117,12 @@ function OperationSelectorController(operationService, $routeParams, $filter) {
     vm.showCustomOp = false;
     vm.placeholder = "Search for an operation";
 
-    var populateOperations = function(availableOperations) {
+    var hasLabels = function(operation) {
+        return operation.labels && operation.labels.length > 0;
+    }
+
+    vm.populateOperations = function(availableOperations) {
+
         vm.availableOperations = [];
 
         for(var i in availableOperations) {
@@ -112,9 +131,13 @@ function OperationSelectorController(operationService, $routeParams, $filter) {
             if(!vm.previous || !vm.previous.selectedOperation || !vm.previous.selectedOperation.next || vm.previous.selectedOperation.next.indexOf(operation.class) > -1) {
                 operation.formattedName = operation.name !== undefined ? operation.name.toLowerCase().replace(/\s+/g, '') : '';
                 operation.formattedDescription = operation.description !== undefined ? operation.description.toLowerCase().replace(/\s+/g, '') : '';
-
-                if(operation.formattedName === "getelements") {
-                    vm.placeholder = "Search for an operation (e.g Get Elements)";
+                
+                if(operation.formattedName === 'getelements') {
+                    vm.placeholder = 'Search for an operation (e.g Get Elements)';
+                }
+                if(operation.labels){
+                    operation.labels.sort();
+                    vm.placeholder = 'Search for an operation or #labeltag (e.g Get Elements, #MyLabelTag)';
                 }
                 vm.availableOperations.push(operation);
             }
@@ -127,17 +150,23 @@ function OperationSelectorController(operationService, $routeParams, $filter) {
             if(!a.namedOp && b.namedOp) {
                 return 1;
             }
-            if(a.formattedName > b.formattedName) {
+            if(hasLabels(a) && !hasLabels(b) || hasLabels(a) && hasLabels(b) && a.labels.toString().toLowerCase() < b.labels.toString().toLowerCase()) {
+                return -1;
+            }
+            if(!hasLabels(a) && hasLabels(b) || hasLabels(a) && hasLabels(b) && a.labels.toString().toLowerCase() > b.labels.toString().toLowerCase()) {
                 return 1;
             }
             if(a.formattedName < b.formattedName) {
                 return -1;
             }
-            if(a.formattedDescription > b.formattedDescription) {
+            if(a.formattedName > b.formattedName) {
                 return 1;
             }
             if(a.formattedDescription < b.formattedDescription) {
                 return -1;
+            }
+            if(a.formattedDescription > b.formattedDescription) {
+                return 1;
             }
             return 0
         });
@@ -160,18 +189,20 @@ function OperationSelectorController(operationService, $routeParams, $filter) {
 
     vm.getOperations = function() {
         return operationService.getAvailableOperations(true).then(function(ops) {
-            populateOperations(ops)
+            vm.populateOperations(ops);
             return $filter('operationFilter')(vm.availableOperations, vm.searchTerm);
+        });
+    }
+
+    vm.reloadOperations = function() {
+        operationService.reloadOperations(true).then(function(ops) {
+            vm.populateOperations(ops)
         });
     }
 
     vm.clearSearchTerm = function() {
         vm.searchTerm = '';
     };
-
-    vm.reloadOperations = function() {
-        operationService.reloadOperations(true).then(populateOperations);
-    }
 
     vm.selectedText = function() {
         if(vm.model) {
