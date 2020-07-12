@@ -33,7 +33,19 @@ function OperationChainController(operationChain, settings, config, loading, que
     vm.enableChainSaving;
     vm.namedOperation = {
         name: null,
-        description: null
+        description: null,
+        labels: '',
+    }
+
+    vm.namedOperation.getLabelsList = function() {
+        if(vm.namedOperation.labels) {
+            var labelsList = vm.namedOperation.labels.split('\n');
+            return labelsList.map(function(label) {
+                return label.trim();
+            });
+        } else {
+            return [];
+        }
     }
     vm.updatedQuery = {
         name: null,
@@ -170,20 +182,21 @@ function OperationChainController(operationChain, settings, config, loading, que
         }
 
         var confirm = $mdDialog.confirm()
-        .title('Operation chain saved as named operation!')
-        .textContent('You can now see your saved operation in the list of operations')
-        .ok('Ok')
+            .title('Operation chain saved as named operation!')
+            .textContent('You can now see your saved operation in the list of operations')
+            .ok('Ok');
 
         var invalidName = $mdDialog.confirm()
-        .title('Operation chain name is invalid!')
-        .textContent('You must provide a name for the operation')
-        .ok('Ok')
+            .title('Operation chain name is invalid!')
+            .textContent('You must provide a name for the operation')
+            .ok('Ok');
 
         if (vm.namedOperation.name != null && vm.namedOperation.name != '') {
             query.executeQuery(
                 {
                     class: ADD_NAMED_OPERATION_CLASS,
                     operationName: vm.namedOperation.name,
+                    labels: vm.namedOperation.getLabelsList(),
                     operationChain: chain,
                     description: vm.namedOperation.description,
                     options: {},

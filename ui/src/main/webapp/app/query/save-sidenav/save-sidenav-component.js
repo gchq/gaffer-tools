@@ -16,6 +16,9 @@
 
 'use strict';
 
+function SaveSidenavController() {
+}
+
 angular.module('app').component('saveSidenav', saveSidenav());
 
 function saveSidenav() {
@@ -29,7 +32,4 @@ function saveSidenav() {
             onSave: '&',            // a function to save the named operation
         }
     }
-}
-
-function SaveSidenavController() {
 }
