@@ -27,8 +27,8 @@ import org.slf4j.LoggerFactory;
 
 import uk.gov.gchq.gaffer.accumulostore.AccumuloProperties;
 import uk.gov.gchq.gaffer.accumulostore.AccumuloStore;
-import uk.gov.gchq.gaffer.accumulostore.MiniAccumuloStore;
 import uk.gov.gchq.gaffer.accumulostore.AccumuloTestClusterManager;
+import uk.gov.gchq.gaffer.accumulostore.MiniAccumuloStore;
 import uk.gov.gchq.gaffer.commonutil.CommonTestConstants;
 import uk.gov.gchq.gaffer.commonutil.StreamUtil;
 import uk.gov.gchq.gaffer.graph.Graph;
