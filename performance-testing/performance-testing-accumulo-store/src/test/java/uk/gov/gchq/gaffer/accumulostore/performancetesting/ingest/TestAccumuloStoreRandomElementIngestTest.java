@@ -16,13 +16,19 @@
 package uk.gov.gchq.gaffer.accumulostore.performancetesting.ingest;
 
 import org.apache.hadoop.conf.Configuration;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import uk.gov.gchq.gaffer.accumulostore.AccumuloProperties;
 import uk.gov.gchq.gaffer.accumulostore.AccumuloStore;
-import uk.gov.gchq.gaffer.accumulostore.MockAccumuloStore;
+import uk.gov.gchq.gaffer.accumulostore.MiniAccumuloStore;
+import uk.gov.gchq.gaffer.accumulostore.AccumuloTestClusterManager;
 import uk.gov.gchq.gaffer.commonutil.CommonTestConstants;
 import uk.gov.gchq.gaffer.commonutil.StreamUtil;
 import uk.gov.gchq.gaffer.graph.Graph;
@@ -32,9 +38,34 @@ import uk.gov.gchq.gaffer.randomelementgeneration.supplier.RmatElementSupplier;
 import uk.gov.gchq.gaffer.store.StoreException;
 import uk.gov.gchq.gaffer.store.schema.Schema;
 
+import java.io.File;
 import java.io.IOException;
 
 public class TestAccumuloStoreRandomElementIngestTest {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(TestAccumuloStoreRandomElementIngestTest.class);
+
+    @ClassRule
+    public static TemporaryFolder storeBaseFolder = new TemporaryFolder(CommonTestConstants.TMP_DIRECTORY);
+
+    private static AccumuloTestClusterManager accumuloTestClusterManager;
+    private static final AccumuloProperties PROPERTIES = AccumuloProperties.loadStoreProperties(StreamUtil.openStream(Constants.class, "miniaccumulostore.properties"));
+
+    @BeforeClass
+    public static void setup() {
+        File storeFolder = null;
+        try {
+            storeFolder = storeBaseFolder.newFolder();
+        } catch (IOException e) {
+            LOGGER.error("Failed to create sub folder in : " + storeBaseFolder.getRoot().getAbsolutePath() + ": " + e.getMessage());
+        }
+        accumuloTestClusterManager = new AccumuloTestClusterManager(PROPERTIES, storeFolder.getAbsolutePath());
+    }
+
+    @AfterClass
+    public static void tearDown() {
+        accumuloTestClusterManager.close();
+    }
 
     @Rule
     public TemporaryFolder tempFolder = new TemporaryFolder(CommonTestConstants.TMP_DIRECTORY);
@@ -51,11 +82,8 @@ public class TestAccumuloStoreRandomElementIngestTest {
         testProperties.setTempDirectory(tempFolder.newFolder().getCanonicalPath());
 
         final Schema schema = Schema.fromJson(StreamUtil.schemas(Constants.class));
-        final AccumuloProperties storeProperties = AccumuloProperties.loadStoreProperties(
-                StreamUtil.openStream(Constants.class, "mockaccumulostore.properties")
-        );
-        final AccumuloStore accumuloStore = new MockAccumuloStore();
-        accumuloStore.initialise("1", schema, storeProperties);
+        final AccumuloStore accumuloStore = new MiniAccumuloStore();
+        accumuloStore.initialise("1", schema, PROPERTIES);
         final Graph graph = new Graph.Builder()
                 .graphId("1")
                 .store(accumuloStore)

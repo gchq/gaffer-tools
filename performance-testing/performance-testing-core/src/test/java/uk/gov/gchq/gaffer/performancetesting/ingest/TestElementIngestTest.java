@@ -16,12 +16,18 @@
 package uk.gov.gchq.gaffer.performancetesting.ingest;
 
 import org.apache.commons.io.FileUtils;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import uk.gov.gchq.gaffer.accumulostore.AccumuloProperties;
-import uk.gov.gchq.gaffer.accumulostore.MockAccumuloStore;
+import uk.gov.gchq.gaffer.accumulostore.AccumuloTestClusterManager;
+import uk.gov.gchq.gaffer.accumulostore.MiniAccumuloStore;
 import uk.gov.gchq.gaffer.commonutil.CommonTestConstants;
 import uk.gov.gchq.gaffer.commonutil.StreamUtil;
 import uk.gov.gchq.gaffer.graph.Graph;
@@ -37,6 +43,37 @@ import static org.junit.Assert.assertTrue;
 
 public class TestElementIngestTest {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(TestElementIngestTest.class);
+
+    @ClassRule
+    public static TemporaryFolder storeBaseFolder = new TemporaryFolder(CommonTestConstants.TMP_DIRECTORY);
+
+    private static AccumuloTestClusterManager accumuloTestClusterManager;
+    private static final AccumuloProperties PROPERTIES = new AccumuloProperties();
+
+    @BeforeClass
+    public static void setup() {
+        PROPERTIES.setStoreClass(MiniAccumuloStore.class.getName());
+        PROPERTIES.setStorePropertiesClassName(AccumuloProperties.class.getName());
+        PROPERTIES.setInstance("instance01");
+        PROPERTIES.setUser("user01");
+        PROPERTIES.setPassword("password01");
+        PROPERTIES.setZookeepers("aZookeeper");
+
+        File storeFolder = null;
+        try {
+            storeFolder = storeBaseFolder.newFolder();
+        } catch (IOException e) {
+            LOGGER.error("Failed to create sub folder in : " + storeBaseFolder.getRoot().getAbsolutePath() + ": " + e.getMessage());
+        }
+        accumuloTestClusterManager = new AccumuloTestClusterManager(PROPERTIES, storeFolder.getAbsolutePath());
+    }
+
+    @AfterClass
+    public static void tearDown() {
+        accumuloTestClusterManager.close();
+    }
+
     @Rule
     public TemporaryFolder folder = new TemporaryFolder(CommonTestConstants.TMP_DIRECTORY);
 
@@ -49,11 +86,9 @@ public class TestElementIngestTest {
         testProperties.setElementSupplierClass(RmatElementSupplier.class.getName());
         testProperties.setRmatProbabilities(Constants.RMAT_PROBABILITIES);
         testProperties.setRmatMaxNodeId(100L);
-        final AccumuloProperties storeProperties = new AccumuloProperties();
-        storeProperties.setStoreClass(MockAccumuloStore.class.getName());
         final Graph graph = new Graph.Builder()
                 .graphId("id")
-                .storeProperties(storeProperties)
+                .storeProperties(PROPERTIES)
                 .addSchemas(StreamUtil.schemas(Constants.class))
                 .build();
 
@@ -78,11 +113,9 @@ public class TestElementIngestTest {
         final File metricsResults = folder.newFile();
         final String metricsResultsFilename = metricsResults.getPath();
         testProperties.setProperty(FileWriterMetricsListener.FILENAME, metricsResultsFilename);
-        final AccumuloProperties storeProperties = new AccumuloProperties();
-        storeProperties.setStoreClass(MockAccumuloStore.class.getName());
         final Graph graph = new Graph.Builder()
                 .graphId("id")
-                .storeProperties(storeProperties)
+                .storeProperties(PROPERTIES)
                 .addSchemas(StreamUtil.schemas(Constants.class))
                 .build();
 
