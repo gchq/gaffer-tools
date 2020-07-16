@@ -121,7 +121,37 @@ class GafferConnector:
         return response.read().decode('utf-8')
 
     def is_operation_supported(self, operation=None, headers={}):
-        url = self._host + '/graph/operations/' + operation.get_operation()
+        """
+        This method queries the Gaffer API to provide details about operations
+
+        If no operation is provided then a list of all operations is returned.
+        Example:
+            gc.is_operation_supported()
+            >>  [
+                    "uk.gov.gchq.gaffer.operation.impl.add.AddElements",
+                    "uk.gov.gchq.gaffer.operation.impl.get.GetElements",
+                    ...
+                ]
+
+        If an operation is provided then a JSON array containing details about the operation is returned.
+        The operation parameter expects an input of the form:
+            g.IsOperationSupported(
+                operation='uk.gov.gchq.gaffer.operation.impl.get.GetElements'
+            )
+            or you can use:
+            g.IsOperationSupported(
+                operation=g.GetElements().CLASS
+            )
+        Example:
+            gc.is_operation_supported(
+                g.IsOperationSupported(
+                    operation='uk.gov.gchq.gaffer.operation.impl.get.GetElements'
+                )
+            )
+        """
+        url = self._host + '/graph/operations/'
+        if operation is not None:
+            url += operation.get_operation()
         headers['Content-Type'] = 'application/json;charset=utf-8'
 
         request = urllib.request.Request(url, headers=headers)
