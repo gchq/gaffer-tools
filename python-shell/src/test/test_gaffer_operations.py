@@ -4744,6 +4744,14 @@ class GafferOperationsTest(unittest.TestCase):
         [
             '''
             {
+              "class" : "uk.gov.gchq.gaffer.federatedstore.operation.GetAllGraphInfo"
+            }
+            ''',
+            g.GetAllGraphInfo()
+        ],
+        [
+            '''
+            {
               "class" : "uk.gov.gchq.gaffer.federatedstore.operation.AddGraph",
               "graphId" : "graph1",
               "isPublic" : false,
