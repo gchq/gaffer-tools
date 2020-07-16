@@ -2706,6 +2706,11 @@ class GetAllGraphIds(Operation):
     def __init__(self, options=None):
         super().__init__(_class_name=self.CLASS, options=options)
 
+class GetAllGraphInfo(Operation):
+    CLASS = "uk.gov.gchq.gaffer.federatedstore.operation.GetAllGraphInfo"
+
+    def __init__(self, options=None):
+        super().__init__(_class_name=self.CLASS, options=options)
 
 class FederatedOperationChain(Operation):
     CLASS = 'uk.gov.gchq.gaffer.federatedstore.operation.FederatedOperationChain'
