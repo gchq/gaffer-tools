@@ -2436,6 +2436,7 @@ class GafferOperationsTest(unittest.TestCase):
               "readAccessRoles" : [ "read-user" ],
               "writeAccessRoles" : [ "write-user" ],
               "overwriteFlag" : true,
+              "labels": ["label_1", "label_2"],
               "operationChain" : {
                 "operations" : [ {
                   "class" : "uk.gov.gchq.gaffer.operation.impl.get.GetAdjacentIds",
@@ -2466,7 +2467,8 @@ class GafferOperationsTest(unittest.TestCase):
                 read_access_roles=[
                     "read-user"
                 ],
-                operation_name="2-hop"
+                operation_name="2-hop",
+                labels = ["label_1", "label_2"]
             )
         ],
         [
