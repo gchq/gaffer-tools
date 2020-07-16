@@ -111,18 +111,20 @@ class GafferConnector:
         from the class 'gafferpy.gaffer_config.GetGraph'.
 
         The following are accepted inputs:
-            g.GetFilterFunctions
-            g.GetTransformFunctions
-            g.GetClassFilterFunctions
-            g.GetElementGenerators
-            g.GetObjectGenerators
-            g.GetOperations
-            g.GetSerialisedFields
-            g.GetStoreTraits
+            g.GetFilterFunctions()
+            g.GetTransformFunctions()
+            g.GetClassFilterFunctions()
+            g.GetElementGenerators()
+            g.GetObjectGenerators()
+            g.GetOperations()
+            g.GetSerialisedFields()
+            g.GetStoreTraits()
+
+        Returns a JSON array
 
         Example:
               gc.execute_get(
-                g.GetOperations()
+                operation = g.GetOperations()
               )
         """
         url = self._host + operation.get_url()
