@@ -104,6 +104,27 @@ class GafferConnector:
         return g.JsonConverter.from_json(result)
 
     def execute_get(self, operation, headers={}):
+        """
+        This method queries Gaffer with a GET request to a specified endpoint.
+
+        The operation parameter expects an input of the form: g.<OperationClass>, where <OperationClass> must inherit
+        from the class 'gafferpy.gaffer_config.GetGraph'.
+
+        The following are accepted inputs:
+            GetFilterFunctions
+            GetTransformFunctions
+            GetClassFilterFunctions
+            GetElementGenerators
+            GetObjectGenerators
+            GetOperations
+            GetSerialisedFields
+            GetStoreTraits
+
+        Example:
+              gc.execute_get(
+                g.GetOperations()
+              )          
+        """
         url = self._host + operation.get_url()
         headers['Content-Type'] = 'application/json;charset=utf-8'
         request = urllib.request.Request(url, headers=headers)
