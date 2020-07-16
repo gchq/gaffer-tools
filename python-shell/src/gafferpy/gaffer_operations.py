@@ -904,7 +904,7 @@ class GetExports(Operation):
     CLASS = 'uk.gov.gchq.gaffer.operation.impl.export.GetExports'
 
     def __init__(self,
-                 get_exports=None,
+                 get_exports,
                  options=None):
         super().__init__(
             _class_name=self.CLASS,
@@ -919,11 +919,7 @@ class GetExports(Operation):
     def to_json(self):
         operation = super().to_json()
 
-        if self.get_exports is not None:
-            exports = []
-            for export in self.get_exports:
-                exports.append(export.to_json())
-            operation['getExports'] = exports
+        operation['getExports'] = [export.to_json() for export in self.get_exports]
 
         return operation
 
