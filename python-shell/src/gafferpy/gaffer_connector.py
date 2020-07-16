@@ -123,7 +123,7 @@ class GafferConnector:
         Example:
               gc.execute_get(
                 g.GetOperations()
-              )          
+              )
         """
         url = self._host + operation.get_url()
         headers['Content-Type'] = 'application/json;charset=utf-8'
