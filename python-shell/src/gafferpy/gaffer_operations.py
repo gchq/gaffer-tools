@@ -2863,6 +2863,42 @@ class AddGraphWithHooks(Operation):
         return operation
 
 
+class ChangeGraphAccess(Operation):
+    CLASS = "uk.gov.gchq.gaffer.federatedstore.operation.ChangeGraphAccess"
+
+    def __init__(self,
+                 graph_id: str,
+                 graph_auths: list=None,
+                 owner_user_id: str=None,
+                 is_public: bool=None,
+                 disabled_by_default: bool=None,
+                 options=None):
+        super().__init__(_class_name=self.CLASS, options=options)
+        self.graph_id = graph_id
+        self.graph_auths = graph_auths
+        self.owner_user_id = owner_user_id
+        self.is_public = is_public
+        self.disabled_by_default = disabled_by_default
+
+    def to_json(self):
+        operation = super().to_json()
+        operation['graphId'] = self.graph_id
+
+        if self.graph_auths is not None:
+            operation['graphAuths'] = self.graph_auths
+
+        if self.owner_user_id is not None:
+            operation['ownerUserId'] = self.owner_user_id
+
+        if self.is_public is not None:
+            operation['isPublic'] = self.is_public
+
+        if self.disabled_by_default is not None:
+            operation['disabledByDefault'] = self.disabled_by_default
+
+        return operation
+
+
 class GetVariable(Operation):
     CLASS = 'uk.gov.gchq.gaffer.operation.impl.GetVariable'
 

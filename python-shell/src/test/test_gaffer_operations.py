@@ -4890,6 +4890,25 @@ class GafferOperationsTest(unittest.TestCase):
         [
             '''
             {
+                "class": "uk.gov.gchq.gaffer.federatedstore.operation.ChangeGraphAccess", 
+                "graphId": "example_graph_id",
+                "graphAuths": ["Auth_1", "Auth_2"], 
+                "ownerUserId": "example_user_id",
+                "isPublic": true, 
+                "disabledByDefault": false
+            }
+            ''',
+            g.ChangeGraphAccess(
+                graph_id="example_graph_id",
+                graph_auths=["Auth_1", "Auth_2"],
+                owner_user_id="example_user_id",
+                is_public=True,
+                disabled_by_default=False
+            )
+        ],
+        [
+            '''
+            {
                 "class" : "uk.gov.gchq.gaffer.operation.impl.While",
                 "maxRepeats" : 5,
                 "input" : [
