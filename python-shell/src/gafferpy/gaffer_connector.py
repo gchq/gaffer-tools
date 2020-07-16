@@ -139,7 +139,14 @@ class GafferConnector:
                                 error_body)
             raise ConnectionError(new_error_string)
 
-        return response.read().decode('utf-8')
+        response_text = response.read().decode('utf-8')
+
+        if response_text is not None and response_text is not '':
+            result = json.loads(response_text)
+        else:
+            result = None
+
+        return result
 
     def is_operation_supported(self, operation=None, headers={}):
         """
@@ -189,4 +196,9 @@ class GafferConnector:
 
         response_text = response.read().decode('utf-8')
 
-        return response_text
+        if response_text is not None and response_text is not '':
+            result = json.loads(response_text)
+        else:
+            result = None
+
+        return result
