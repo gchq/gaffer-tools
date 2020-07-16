@@ -111,14 +111,14 @@ class GafferConnector:
         from the class 'gafferpy.gaffer_config.GetGraph'.
 
         The following are accepted inputs:
-            GetFilterFunctions
-            GetTransformFunctions
-            GetClassFilterFunctions
-            GetElementGenerators
-            GetObjectGenerators
-            GetOperations
-            GetSerialisedFields
-            GetStoreTraits
+            g.GetFilterFunctions
+            g.GetTransformFunctions
+            g.GetClassFilterFunctions
+            g.GetElementGenerators
+            g.GetObjectGenerators
+            g.GetOperations
+            g.GetSerialisedFields
+            g.GetStoreTraits
 
         Example:
               gc.execute_get(
