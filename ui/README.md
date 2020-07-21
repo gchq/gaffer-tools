@@ -228,7 +228,7 @@ There is also a Federated Store Demo, which can be run using:
 
 After the REST and UI have been started you will need to add some federated graphs. There are some example scripts that will execute the AddGraph operation on the REST api (via curl):
 ```bash
-./ui/example/federated/basic/scripts/addAccumuloEntitiesGraph.sh
+./ui/example/federated/basic/scripts/addEntitiesGraph.sh
 ./ui/example/federated/basic/scripts/addMapEdgesGraph.sh
 ```
 
