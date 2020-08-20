@@ -179,3 +179,4 @@ class GafferConnector:
         response_text = response.read().decode('utf-8')
 
         return response_text
+    
