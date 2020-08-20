@@ -140,7 +140,7 @@ class GafferConnectorTest(unittest.TestCase):
 
         self.assertEqual(
             json.loads(expected_response_text),
-            response_text
+            json.loads(response_text)
         )
 
     def test_execute_get(self):
@@ -224,7 +224,7 @@ class GafferConnectorTest(unittest.TestCase):
 
         self.assertEqual(
             json.loads(expected_response_text),
-            response_text
+            json.loads(response_text)
         )
 
 if __name__ == "__main__":

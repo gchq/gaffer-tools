@@ -28,6 +28,7 @@ class GafferFunctionsIntegrationTest(unittest.TestCase):
         functions = gc.execute_get(
             g.GetTransformFunctions()
         )
+        functions = json.loads(functions)
 
         ignore_functions = [
             'uk.gov.gchq.gaffer.operation.data.generator.EdgeIdExtractor',
