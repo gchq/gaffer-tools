@@ -1218,7 +1218,8 @@ class AddNamedOperation(Operation):
                  overwrite_flag=None,
                  parameters=None,
                  options=None,
-                 score=None):
+                 score=None,
+                 labels=None):
         super().__init__(
             _class_name=self.CLASS,
             options=options)
@@ -1245,6 +1246,7 @@ class AddNamedOperation(Operation):
         self.write_access_roles = write_access_roles
         self.overwrite_flag = overwrite_flag
         self.score = score
+        self.labels = labels
 
         self.parameters = None
         if parameters is not None:
@@ -1280,6 +1282,8 @@ class AddNamedOperation(Operation):
             operation['writeAccessRoles'] = self.write_access_roles
         if self.score is not None:
             operation['score'] = self.score
+        if self.labels is not None:
+            operation['labels'] = self.labels
         if self.parameters is not None:
             operation['parameters'] = {}
             for param in self.parameters:
@@ -2702,6 +2706,11 @@ class GetAllGraphIds(Operation):
     def __init__(self, options=None):
         super().__init__(_class_name=self.CLASS, options=options)
 
+class GetAllGraphInfo(Operation):
+    CLASS = "uk.gov.gchq.gaffer.federatedstore.operation.GetAllGraphInfo"
+
+    def __init__(self, options=None):
+        super().__init__(_class_name=self.CLASS, options=options)
 
 class FederatedOperationChain(Operation):
     CLASS = 'uk.gov.gchq.gaffer.federatedstore.operation.FederatedOperationChain'
@@ -2850,6 +2859,42 @@ class AddGraphWithHooks(Operation):
 
         if self.hooks is not None:
             operation['hooks'] = self.hooks
+
+        return operation
+
+
+class ChangeGraphAccess(Operation):
+    CLASS = "uk.gov.gchq.gaffer.federatedstore.operation.ChangeGraphAccess"
+
+    def __init__(self,
+                 graph_id: str,
+                 graph_auths: list=None,
+                 owner_user_id: str=None,
+                 is_public: bool=None,
+                 disabled_by_default: bool=None,
+                 options=None):
+        super().__init__(_class_name=self.CLASS, options=options)
+        self.graph_id = graph_id
+        self.graph_auths = graph_auths
+        self.owner_user_id = owner_user_id
+        self.is_public = is_public
+        self.disabled_by_default = disabled_by_default
+
+    def to_json(self):
+        operation = super().to_json()
+        operation['graphId'] = self.graph_id
+
+        if self.graph_auths is not None:
+            operation['graphAuths'] = self.graph_auths
+
+        if self.owner_user_id is not None:
+            operation['ownerUserId'] = self.owner_user_id
+
+        if self.is_public is not None:
+            operation['isPublic'] = self.is_public
+
+        if self.disabled_by_default is not None:
+            operation['disabledByDefault'] = self.disabled_by_default
 
         return operation
 
