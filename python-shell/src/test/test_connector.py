@@ -226,6 +226,42 @@ class GafferConnectorTest(unittest.TestCase):
             json.loads(expected_response_text),
             json.loads(response_text)
         )
+        
+    def test_dummy_header(self):
+        """Test that the addition of a dummy header does not effect the standard test"""
+        gc = gaffer_connector.GafferConnector('http://localhost:8080/rest/latest', headers={"dummy_Header": "value"})
+        elements = gc.execute_operation(
+            g.GetElements(
+                input=[
+                    g.EntitySeed('M5:10')
+                ],
+                view=g.View(
+                    edges=[
+                        g.ElementDefinition(
+                            group='JunctionLocatedAt'
+                        )
+                    ]
+                )
+            )
+        )
+
+        self.assertEqual(
+            [g.Edge("JunctionLocatedAt", "M5:10", "390466,225615", True, {},
+                    "SOURCE")],
+            elements)
+
+    def test_class_initilisation(self):
+        """Test that the gaffer_connector class is correctly initialised with instance attributes"""
+        host = 'http://localhost:8080/rest/latest',
+        verbose = False,
+        headers = {"dummy_Header": "value"}
+        gc = gaffer_connector.GafferConnector(host, verbose, headers)
+
+        actuals = [gc._host, gc._verbose, gc._headers]
+        expecteds = [host, verbose, headers]
+
+        for actual, expected in zip(actuals, expecteds):
+            self.assertEqual(actual, expected)
 
 if __name__ == "__main__":
     unittest.main()

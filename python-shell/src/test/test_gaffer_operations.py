@@ -2436,6 +2436,7 @@ class GafferOperationsTest(unittest.TestCase):
               "readAccessRoles" : [ "read-user" ],
               "writeAccessRoles" : [ "write-user" ],
               "overwriteFlag" : true,
+              "labels": ["label_1", "label_2"],
               "operationChain" : {
                 "operations" : [ {
                   "class" : "uk.gov.gchq.gaffer.operation.impl.get.GetAdjacentIds",
@@ -2466,7 +2467,8 @@ class GafferOperationsTest(unittest.TestCase):
                 read_access_roles=[
                     "read-user"
                 ],
-                operation_name="2-hop"
+                operation_name="2-hop",
+                labels = ["label_1", "label_2"]
             )
         ],
         [
@@ -4744,6 +4746,14 @@ class GafferOperationsTest(unittest.TestCase):
         [
             '''
             {
+              "class" : "uk.gov.gchq.gaffer.federatedstore.operation.GetAllGraphInfo"
+            }
+            ''',
+            g.GetAllGraphInfo()
+        ],
+        [
+            '''
+            {
               "class" : "uk.gov.gchq.gaffer.federatedstore.operation.AddGraph",
               "graphId" : "graph1",
               "isPublic" : false,
@@ -4877,6 +4887,25 @@ class GafferOperationsTest(unittest.TestCase):
                 hooks=[{
                     "class": "uk.gov.gchq.gaffer.graph.hook.Log4jLogger"
                 }]
+            )
+        ],
+        [
+            '''
+            {
+                "class": "uk.gov.gchq.gaffer.federatedstore.operation.ChangeGraphAccess", 
+                "graphId": "example_graph_id",
+                "graphAuths": ["Auth_1", "Auth_2"], 
+                "ownerUserId": "example_user_id",
+                "isPublic": true, 
+                "disabledByDefault": false
+            }
+            ''',
+            g.ChangeGraphAccess(
+                graph_id="example_graph_id",
+                graph_auths=["Auth_1", "Auth_2"],
+                owner_user_id="example_user_id",
+                is_public=True,
+                disabled_by_default=False
             )
         ],
         [

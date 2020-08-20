@@ -31,7 +31,7 @@ class GafferConnector:
     This class is initialised with a host to connect to.
     """
 
-    def __init__(self, host, verbose=False):
+    def __init__(self, host, verbose=False, headers={}):
         """
         This initialiser sets up a connection to the specified Gaffer server.
 
@@ -40,29 +40,38 @@ class GafferConnector:
         """
         self._host = host
         self._verbose = verbose
+        self._headers = headers
 
         # Create the opener
         self._opener = urllib.request.build_opener(
             urllib.request.HTTPHandler())
 
-    def execute_operation(self, operation, headers={}):
+    def execute_operation(self, operation, headers=None):
         """
         This method queries Gaffer with the single provided operation.
         """
+        # If headers are not specified use those set at class initilisation
+        if headers is None:
+            headers = self._headers
         return self.execute_operations([operation], headers)
 
-    def execute_operations(self, operations, headers={}):
+    def execute_operations(self, operations, headers=None):
         """
         This method queries Gaffer with the provided array of operations.
         """
+        # If headers are not specified use those set at class initilisation
+        if headers is None:
+            headers = self._headers
         return self.execute_operation_chain(g.OperationChain(operations),
                                             headers)
 
-    def execute_operation_chain(self, operation_chain, headers={}):
+    def execute_operation_chain(self, operation_chain, headers=None):
         """
         This method queries Gaffer with the provided operation chain.
         """
-
+        # If headers are not specified use those set at class initialisation
+        if headers is None:
+            headers = self._headers
         # Construct the full URL path to the Gaffer server
         url = self._host + '/graph/operations/execute'
 
@@ -103,7 +112,7 @@ class GafferConnector:
 
         return g.JsonConverter.from_json(result)
 
-    def execute_get(self, operation, headers={}):
+    def execute_get(self, operation, headers=None):
         """
         This method queries Gaffer with a GET request to a specified endpoint.
 
@@ -126,6 +135,9 @@ class GafferConnector:
               )
         """
         url = self._host + operation.get_url()
+        # If headers are not specified use those set at class initilisation
+        if headers is None:
+            headers = self._headers
         headers['Content-Type'] = 'application/json;charset=utf-8'
         request = urllib.request.Request(url, headers=headers)
 
@@ -141,7 +153,7 @@ class GafferConnector:
 
         return response.read().decode('utf-8')
 
-    def is_operation_supported(self, operation, headers={}):
+    def is_operation_supported(self, operation, headers=None):
         """
         This method queries the Gaffer API to provide details about operations
         Returns a JSON array containing details about the operation.
@@ -162,6 +174,9 @@ class GafferConnector:
             )
         """
         url = self._host + '/graph/operations/' + operation.get_operation()
+        # If headers are not specified use those set at class initilisation
+        if headers is None:
+            headers = self._headers
         headers['Content-Type'] = 'application/json;charset=utf-8'
 
         request = urllib.request.Request(url, headers=headers)
