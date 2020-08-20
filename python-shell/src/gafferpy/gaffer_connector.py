@@ -111,18 +111,18 @@ class GafferConnector:
         from the class 'gafferpy.gaffer_config.GetGraph'.
 
         The following are accepted inputs:
-            g.GetFilterFunctions
-            g.GetTransformFunctions
-            g.GetClassFilterFunctions
-            g.GetElementGenerators
-            g.GetObjectGenerators
-            g.GetOperations
-            g.GetSerialisedFields
-            g.GetStoreTraits
+            g.GetFilterFunctions()
+            g.GetTransformFunctions()
+            g.GetClassFilterFunctions()
+            g.GetElementGenerators()
+            g.GetObjectGenerators()
+            g.GetOperations()
+            g.GetSerialisedFields()
+            g.GetStoreTraits()
 
         Example:
               gc.execute_get(
-                g.GetOperations()
+                operation = g.GetOperations()
               )
         """
         url = self._host + operation.get_url()
@@ -141,20 +141,11 @@ class GafferConnector:
 
         return response.read().decode('utf-8')
 
-    def is_operation_supported(self, operation=None, headers={}):
+    def is_operation_supported(self, operation, headers={}):
         """
         This method queries the Gaffer API to provide details about operations
+        Returns a JSON array containing details about the operation.
 
-        If no operation is provided then a list of all operations is returned.
-        Example:
-            gc.is_operation_supported()
-            >>  [
-                    "uk.gov.gchq.gaffer.operation.impl.add.AddElements",
-                    "uk.gov.gchq.gaffer.operation.impl.get.GetElements",
-                    ...
-                ]
-
-        If an operation is provided then a JSON array containing details about the operation is returned.
         The operation parameter expects an input of the form:
             g.IsOperationSupported(
                 operation='uk.gov.gchq.gaffer.operation.impl.get.GetElements'
@@ -165,14 +156,12 @@ class GafferConnector:
             )
         Example:
             gc.is_operation_supported(
-                g.IsOperationSupported(
+                operation = g.IsOperationSupported(
                     operation='uk.gov.gchq.gaffer.operation.impl.get.GetElements'
                 )
             )
         """
-        url = self._host + '/graph/operations/'
-        if operation is not None:
-            url += operation.get_operation()
+        url = self._host + '/graph/operations/' + operation.get_operation()
         headers['Content-Type'] = 'application/json;charset=utf-8'
 
         request = urllib.request.Request(url, headers=headers)
