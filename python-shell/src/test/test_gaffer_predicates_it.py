@@ -28,7 +28,6 @@ class GafferPredicatesIntegrationTest(unittest.TestCase):
         predicates = gc.execute_get(
             g.GetFilterFunctions()
         )
-        predicates = json.loads(predicates)
 
         ignore_predicates = [
             'uk.gov.gchq.koryphe.predicate.AdaptedPredicate',

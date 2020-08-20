@@ -28,7 +28,6 @@ class GafferOperationsIntegrationTest(unittest.TestCase):
         operations = gc.execute_get(
             g.GetOperations()
         )
-        operations = json.loads(operations)
         for op in operations:
             self.assertTrue(op in g.JsonConverter.GENERIC_JSON_CONVERTERS,
                             'Missing operation class: ' + op)
