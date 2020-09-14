@@ -111,6 +111,33 @@ class GafferFunctionsTest(unittest.TestCase):
         [
             '''
             {
+                "class" : "uk.gov.gchq.koryphe.impl.function.Longest"
+            }
+            ''',
+            g.Longest()
+        ],
+        [
+            '''
+            {
+                "class" : "uk.gov.gchq.koryphe.impl.function.IterableLongest"
+            }
+            ''',
+            g.IterableLongest()
+        ],
+        [
+            '''
+            {
+                "class" : "uk.gov.gchq.koryphe.impl.function.IterableFlatten",
+                "operator": {
+                    "class": "uk.gov.gchq.koryphe.impl.binaryoperator.Max"
+                }
+            }
+            ''',
+            g.IterableFlatten(operator=g.bop.Max())
+        ],
+        [
+            '''
+            {
                 "class" : "uk.gov.gchq.koryphe.impl.function.IterableConcat"
             }
             ''',
@@ -138,6 +165,17 @@ class GafferFunctionsTest(unittest.TestCase):
         [
             '''
             {
+                "class" : "uk.gov.gchq.koryphe.impl.function.MultiplyLongBy",
+                "by" : 4
+            }
+            ''',
+            g.MultiplyLongBy(
+                by=4
+            )
+        ],
+        [
+            '''
+            {
                 "class" : "uk.gov.gchq.koryphe.impl.function.Size"
             }
             ''',
@@ -159,6 +197,115 @@ class GafferFunctionsTest(unittest.TestCase):
             }
             ''',
             g.ToString(charset="UTF-16")
+        ],
+        [
+            '''
+            {
+                "class" : "uk.gov.gchq.koryphe.impl.function.StringReplace",
+                "searchString": "replaceme",
+                "replacement": "withthis"
+            }
+            ''',
+            g.StringReplace(search_string="replaceme", replacement="withthis")
+        ],
+        [
+            '''
+            {
+                "class" : "uk.gov.gchq.koryphe.impl.function.StringRegexReplace",
+                "regex": "repl.*me",
+                "replacement": "withthis"
+            }
+            ''',
+            g.StringRegexReplace(regex="repl.*me", replacement="withthis")
+        ],
+        [
+            '''
+            {
+                "class" : "uk.gov.gchq.koryphe.impl.function.StringSplit",
+                "delimiter": " "
+            }
+            ''',
+            g.StringSplit(delimiter=" ")
+        ],
+        [
+            '''
+            {
+                "class" : "uk.gov.gchq.koryphe.impl.function.StringRegexSplit",
+                "regex": "[ \\t]*"
+            }
+            ''',
+            g.StringRegexSplit(regex="[ \t]*")
+        ],
+        [
+            '''
+            {
+                "class" : "uk.gov.gchq.koryphe.impl.function.StringJoin",
+                "delimiter": " "
+            }
+            ''',
+            g.StringJoin(delimiter=" ")
+        ],
+        [
+            '''
+            {
+                "class" : "uk.gov.gchq.koryphe.impl.function.StringTrim"
+            }
+            ''',
+            g.StringTrim()
+        ],
+        [
+            '''
+            {
+                "class" : "uk.gov.gchq.koryphe.impl.function.StringAppend",
+                "suffix": "test"
+            }
+            ''',
+            g.StringAppend(suffix="test")
+        ],
+        [
+            '''
+            {
+                "class" : "uk.gov.gchq.koryphe.impl.function.StringPrepend",
+                "prefix": "test"
+            }
+            ''',
+            g.StringPrepend(prefix="test")
+        ],
+        [
+            '''
+            {
+                "class" : "uk.gov.gchq.koryphe.impl.function.StringTruncate",
+                "length": 20,
+                "ellipses": false
+            }
+            ''',
+            g.StringTruncate(length=20, ellipses=False)
+        ],
+        [
+            '''
+            {
+                "class" : "uk.gov.gchq.koryphe.impl.function.ReverseString"
+            }
+            ''',
+            g.ReverseString()
+        ],
+        [
+            '''
+            {
+                "class" : "uk.gov.gchq.koryphe.impl.function.DefaultIfNull",
+                "defaultValue": "test"
+            }
+            ''',
+            g.DefaultIfNull(default_value="test")
+        ],
+        [
+            '''
+            {
+                "class" : "uk.gov.gchq.koryphe.impl.function.DefaultIfEmpty",
+                "defaultValue": "test"
+            }
+            ''',
+            g.DefaultIfEmpty(default_value="test")
         ],
         [
             '''
@@ -511,6 +658,43 @@ class GafferFunctionsTest(unittest.TestCase):
                     value="someValue",
                     ignore_case=False
                 )
+            )
+        ],
+        [
+            '''
+            {
+                "class": "uk.gov.gchq.koryphe.impl.function.FirstValid",
+                "predicate": {
+                    "class":"uk.gov.gchq.koryphe.impl.predicate.StringContains",
+                    "value":"someValue",
+                    "ignoreCase":false
+                }
+            }
+            ''',
+            g.func.FirstValid(
+                predicate=g.pred.StringContains(
+                    value="someValue",
+                    ignore_case=False
+                )
+            )
+        ],
+        [
+            '''
+            {
+                "class": "uk.gov.gchq.koryphe.impl.function.FirstValid",
+                "predicate": {
+                    "class":"uk.gov.gchq.koryphe.impl.predicate.StringContains",
+                    "value":"someValue",
+                    "ignoreCase":false
+                }
+            }
+            ''',
+            g.func.FirstValid(
+                predicate={
+                    "class": "uk.gov.gchq.koryphe.impl.predicate.StringContains",
+                    "value": "someValue",
+                    "ignoreCase": False
+                }
             )
         ],
         [

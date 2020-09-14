@@ -589,6 +589,42 @@ class GafferPredicatesTest(unittest.TestCase):
             }
             ''',
             g.ElementJoinComparator(group_by_properties=["test1", "test2"])
+        ],
+        [
+            '''
+            {
+                "class": "uk.gov.gchq.gaffer.access.predicate.user.DefaultUserPredicate",
+                "auths": [ "a", "test2" ],
+                "creatingUserId": "user1"
+            }
+            ''',
+            g.DefaultUserPredicate(auths=["a", "test2"], creating_user_id="user1")
+        ],
+        [
+            '''
+            {
+                "class": "uk.gov.gchq.gaffer.access.predicate.user.UnrestrictedAccessUserPredicate"
+            }
+            ''',
+            g.UnrestrictedAccessUserPredicate()
+        ],
+        [
+            '''
+            {
+                "class": "uk.gov.gchq.gaffer.access.predicate.user.NoAccessUserPredicate"
+            }
+            ''',
+            g.NoAccessUserPredicate()
+        ],
+        [
+            '''
+            {
+                "class": "uk.gov.gchq.gaffer.data.elementdefinition.view.access.predicate.user.NamedViewWriteUserPredicate",
+                "auths": [ "a", "test2" ],
+                "creatingUserId": "user1"
+            }
+            ''',
+            g.NamedViewWriteUserPredicate(auths=["a", "test2"], creating_user_id="user1")
         ]
     ]
 
