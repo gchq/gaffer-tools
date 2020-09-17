@@ -74,6 +74,60 @@ class AbstractPredicate(Predicate):
         return predicate_json
 
 
+class DefaultUserPredicate(AbstractPredicate):
+    CLASS = "uk.gov.gchq.gaffer.access.predicate.user.DefaultUserPredicate"
+
+    def __init__(self, auths=None, creating_user_id=None):
+        super().__init__(_class_name=self.CLASS)
+        self.auths = auths
+        self.creating_user_id = creating_user_id
+
+    def to_json(self):
+        function_json = super().to_json()
+        if self.auths is not None:
+            function_json["auths"] = self.auths
+        if self.creating_user_id is not None:
+            function_json["creatingUserId"] = self.creating_user_id
+        return function_json
+
+
+class UnrestrictedAccessUserPredicate(AbstractPredicate):
+    CLASS = "uk.gov.gchq.gaffer.access.predicate.user.UnrestrictedAccessUserPredicate"
+
+    def __init__(self):
+        super().__init__(_class_name=self.CLASS)
+
+    def to_json(self):
+        return super().to_json()
+
+
+class NamedViewWriteUserPredicate(AbstractPredicate):
+    CLASS = "uk.gov.gchq.gaffer.data.elementdefinition.view.access.predicate.user.NamedViewWriteUserPredicate"
+
+    def __init__(self, auths=None, creating_user_id=None):
+        super().__init__(_class_name=self.CLASS)
+        self.auths = auths
+        self.creating_user_id = creating_user_id
+
+    def to_json(self):
+        function_json = super().to_json()
+        if self.auths is not None:
+            function_json["auths"] = self.auths
+        if self.creating_user_id is not None:
+            function_json["creatingUserId"] = self.creating_user_id
+        return function_json
+
+
+class NoAccessUserPredicate(AbstractPredicate):
+    CLASS = "uk.gov.gchq.gaffer.access.predicate.user.NoAccessUserPredicate"
+
+    def __init__(self):
+        super().__init__(_class_name=self.CLASS)
+
+    def to_json(self):
+        return super().to_json()
+
+
 class And(AbstractPredicate):
     CLASS = "uk.gov.gchq.koryphe.impl.predicate.And"
 
