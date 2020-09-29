@@ -389,7 +389,7 @@
                                     <contextPath>/${standalone-rest-path}
                                     </contextPath>
                                     <groupId>uk.gov.gchq.gaffer</groupId>
-                                    <artifactId>map-rest</artifactId>
+                                    <artifactId>accumulo-rest</artifactId>
                                     <version>${gaffer.version}</version>
                                     <type>war</type>
                                     <asWebapp>true</asWebapp>
