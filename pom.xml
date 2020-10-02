@@ -28,6 +28,7 @@
     <version>1.13.1-SNAPSHOT</version>
     <packaging>pom</packaging>
 
+    
     <modules>
         <module>ui</module>
         <module>mini-accumulo-cluster</module>
