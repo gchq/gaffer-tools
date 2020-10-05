@@ -54,7 +54,7 @@
         </dependency>
         <dependency>
             <groupId>uk.gov.gchq.gaffer</groupId>
-            <artifactId>accumulo-store</artifactId>
+            <artifactId>map-store</artifactId>
             <version>${gaffer.version}</version>
             <scope>test</scope>
         </dependency>
