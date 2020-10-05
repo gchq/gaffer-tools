@@ -22,7 +22,7 @@
     <parent>
         <groupId>uk.gov.gchq.gaffer</groupId>
         <artifactId>analytics</artifactId>
-        <version>1.12.1-SNAPSHOT</version>
+        <version>1.13.1-SNAPSHOT</version>
     </parent>
 
     <artifactId>analytics-operations</artifactId>
