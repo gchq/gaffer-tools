@@ -58,6 +58,11 @@
             <version>${gaffer.version}</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>uk.gov.gchq.gaffer</groupId>
+            <artifactId>sketches-library</artifactId>
+            <version>${project.parent.version}</version>
+        </dependency>
     </dependencies>
     <build>
         <plugins>
