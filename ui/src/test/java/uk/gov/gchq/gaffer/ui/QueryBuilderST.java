@@ -183,6 +183,7 @@ public class QueryBuilderST {
 
     @Test
     public void shouldNotThrowErrorIfPageIsReloadedWithCustomView() throws InterruptedException, SerialisationException {
+        // Given
         autoComplete("operation-name", "Get Elements");
         enterText("seedVertices", "M5");
         click("create-custom-filter");
@@ -191,7 +192,9 @@ public class QueryBuilderST {
         click("open-query");
         click("execute-chain");
         click("open-raw");
+        // When
         clickTab("Results");
+        // Then
         String result = getElement("raw-entity-results").getText().trim();
         JSONSerialiser json = JSONSerialiser.getInstance();
         List results = json.deserialise(result, List.class);
