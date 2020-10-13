@@ -134,7 +134,6 @@ public class QueryBuilderST {
         profile.setPreference("intl.accept_languages", "en-GB"); // for dates
         driver = new FirefoxDriver(profile);
 
-
         // Create a large window to ensure we don't need to scroll
         final Dimension dimension = new Dimension(1200, 1000);
         driver.manage().window().setSize(dimension);
