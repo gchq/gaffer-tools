@@ -61,7 +61,8 @@
         <dependency>
             <groupId>uk.gov.gchq.gaffer</groupId>
             <artifactId>sketches-library</artifactId>
-            <version>${project.parent.version}</version>
+<!--            <version>${project.parent.version}</version>-->
+            <version>1.13.2</version>
         </dependency>
     </dependencies>
     <build>
