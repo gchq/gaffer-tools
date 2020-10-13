@@ -130,7 +130,7 @@ public class QueryBuilderST {
         url = System.getProperty(URL_PROPERTY, DEFAULT_URL);
 //        TODO: Change back to env variable setter
 //        slowFactor = Integer.parseInt(System.getProperty(SLOW_FACTOR_PROPERTY, DEFAULT_SLOW_FACTOR));
-        slowFactor = 10;
+        slowFactor = 100;
 
         FirefoxProfile profile = new FirefoxProfile();
         profile.setPreference("intl.accept_languages", "en-GB"); // for dates
@@ -201,6 +201,7 @@ public class QueryBuilderST {
         JSONSerialiser json = JSONSerialiser.getInstance();
         List results = json.deserialise(result, List.class);
         assertEquals(1, results.size());
+        assertEquals(1, results.size());
     }
 
     @Test
@@ -257,7 +258,6 @@ public class QueryBuilderST {
 
 
         assert (getElement("operation-0-json").getText().trim().contains(expectedString));
-
     }
 
     @Test
