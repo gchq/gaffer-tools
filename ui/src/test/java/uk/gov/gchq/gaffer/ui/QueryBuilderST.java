@@ -284,7 +284,6 @@ public class QueryBuilderST {
 
     @Test
     public void shouldBeAbleToSaveOperationChain() throws InterruptedException {
-
         //Set up an operation chain
         autoComplete("operation-name", "Get Elements");
         enterText("seedVertices", "M5");
