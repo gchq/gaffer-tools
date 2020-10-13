@@ -66,7 +66,7 @@ public class QueryBuilderST {
     public static final String URL_PROPERTY = "gaffer.ui.test.url";
     public static final String SLOW_FACTOR_PROPERTY = "gaffer.ui.test.slow-factor";
     private static final String DEFAULT_URL = "http://localhost:8080/ui";
-    private static final String DEFAULT_SLOW_FACTOR = "10";
+    private static final String DEFAULT_SLOW_FACTOR = "10"; // TODO: Change back to 5
 
     private static final String EXPECTED_OPERATION_JSON = "{\n" +
             "  \"class\": \"uk.gov.gchq.gaffer.operation.OperationChain\",\n" +
@@ -128,7 +128,9 @@ public class QueryBuilderST {
     public static void beforeClass() throws OperationException {
         assertNotNull("System property " + GECKO_PROPERTY + " has not been set", System.getProperty(GECKO_PROPERTY));
         url = System.getProperty(URL_PROPERTY, DEFAULT_URL);
-        slowFactor = Integer.parseInt(System.getProperty(SLOW_FACTOR_PROPERTY, DEFAULT_SLOW_FACTOR));
+//        TODO: Change back to env variable setter
+//        slowFactor = Integer.parseInt(System.getProperty(SLOW_FACTOR_PROPERTY, DEFAULT_SLOW_FACTOR));
+        slowFactor = 10;
 
         FirefoxProfile profile = new FirefoxProfile();
         profile.setPreference("intl.accept_languages", "en-GB"); // for dates
