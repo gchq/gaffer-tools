@@ -129,8 +129,8 @@ public class QueryBuilderST {
         assertNotNull("System property " + GECKO_PROPERTY + " has not been set", System.getProperty(GECKO_PROPERTY));
         url = System.getProperty(URL_PROPERTY, DEFAULT_URL);
 //        TODO: Change back to env variable setter
-        slowFactor = Integer.parseInt(System.getProperty(SLOW_FACTOR_PROPERTY, DEFAULT_SLOW_FACTOR));
-//        slowFactor = 20;
+//        slowFactor = Integer.parseInt(System.getProperty(SLOW_FACTOR_PROPERTY, DEFAULT_SLOW_FACTOR));
+        slowFactor = 20;
 
         FirefoxProfile profile = new FirefoxProfile();
         profile.setPreference("intl.accept_languages", "en-GB"); // for dates
