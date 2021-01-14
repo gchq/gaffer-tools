@@ -56,7 +56,7 @@ jobs:
       working-directory: ${{ matrix.module }}
     - run: npm run lint
       working-directory: ${{ matrix.module }}
-    - run: npm run test --watch=false --progress=false --browsers=ChromeHeadlessCI
+    - run: npm run ci-test
       working-directory: ${{ matrix.module }}
 
   java-build:
