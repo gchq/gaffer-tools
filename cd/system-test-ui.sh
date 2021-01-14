@@ -1,4 +1,6 @@
-#!/usr/bin/env bash -e
+#!/bin/bash
+
+set -e
 
 mvn install -P quick,travis,road-traffic-demo -B -pl ui &
 export DISPLAY=:99.0

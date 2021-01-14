@@ -36,7 +36,6 @@ jobs:
   npm-build:
     runs-on: ubuntu-latest
     strategy:
-      fail-fast: true
       matrix:
         node_version:
         - 8
