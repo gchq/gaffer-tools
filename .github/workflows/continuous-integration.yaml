@@ -43,7 +43,7 @@ jobs:
         - 14
         module:
         - analytics/analytics-ui
-#        - schema-builder/schema-builder-ui # Doesn't pass
+        - schema-builder/schema-builder-ui
 
     steps:
     - uses: actions/checkout@v2
