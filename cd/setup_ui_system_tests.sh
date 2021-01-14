@@ -7,4 +7,3 @@ curl -OL https://github.com/mozilla/geckodriver/releases/download/v0.23.0/geckod
 tar -xf geckodriver-v0.23.0-linux64.tar.gz
 mv geckodriver ui/
 sleep 1m
-
