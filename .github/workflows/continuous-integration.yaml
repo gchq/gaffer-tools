@@ -32,10 +32,14 @@ jobs:
     - name: Setup System tests
       run: ./cd/setup_ui_system_tests.sh
 
-    - name: Run Tests
+    - name: Run Selenium Tests
       uses: GabrielBB/xvfb-action@v1
       with:
-        run: ./cd/run_ui_system_tests.sh
+        run: mvn verify -P system-test -Dwebdriver.gecko.driver=geckodriver -pl ui
+
+    - name: Run Python tests
+      working-directory: python-shell
+      run: python3 -m unittest discover -s src
 
   npm-build:
     runs-on: ubuntu-latest
