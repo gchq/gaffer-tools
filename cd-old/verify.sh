@@ -36,7 +36,7 @@ if [[ "$RELEASE" != 'true' ]] && [[ "$TRAVIS_PULL_REQUEST" != 'false' ]]; then
     if [[ $MODULES == *":ui"* ]]; then
       mvn install -P quick,travis,road-traffic-demo -B -pl ui &
       export DISPLAY=:99.0
-      sh -e /etc/init.d/xvfb start
+      sh -e /etc/init.d/xvfbX start
       sudo apt-get -qq update
       sudo apt-get install -y dbus
       sudo bash -c "dbus-uuidgen > /etc/machine-id"
