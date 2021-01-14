@@ -21,7 +21,7 @@ jobs:
       uses: actions/setup-java@v1
       with:
         java-version: 1.8
-
+    - run: sudo apt-get install xvfb
     - name: Cache dependencies
       uses: actions/cache@v2
       with:
@@ -40,8 +40,8 @@ jobs:
         node_version:
         - 8
         - 10
-        - 12
-        - 14
+#        - 12
+#        - 14
         module:
         - analytics/analytics-ui
         - schema-builder/schema-builder-ui
