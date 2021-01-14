@@ -29,8 +29,13 @@ jobs:
           !~/.m2/repository/uk
         key: gaffer-tools-dependencies
 
-    - name: Run System tests
-      run: ./cd/system-test-ui.sh
+    - name: Setup System tests
+      run: ./cd/setup_ui_system_tests.sh
+
+    - name: Run Tests
+      uses: GabrielBB/xvfb-action@v1
+      with:
+        run: ./cd/run_ui_system_tests.sh
 
   npm-build:
     runs-on: ubuntu-latest
