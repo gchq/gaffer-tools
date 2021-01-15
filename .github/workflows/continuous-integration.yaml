@@ -88,10 +88,15 @@ jobs:
         key: gaffer-tools-dependencies
 
     - name: Install dependents
-      run: mvn clean install -pl :ui -Pquick -am
+      run: mvn -q clean install -pl :ui -Pquick -am
+
+    - name: discovery
+      run: |
+        ls -l /etc/init.d
+        ls -l /etc/xvfb
 
     - name: Run Tests
-      run: xvfb-run mvn verify -pl :ui
+      run: xvfb-run mvn -X verify -pl :ui
 
 #  java-build:
 #    runs-on: ubuntu-latest
