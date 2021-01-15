@@ -15,7 +15,7 @@
  */
 
 import { Component, OnInit } from '@angular/core';
-import { LocalStorageService } from 'ng2-webstorage';
+import { LocalStorageService } from 'ngx-webstorage';
 import { GraphQLType } from '../shared/graphql-type.interface';
 import { GafferService } from '../services/gaffer.service';
 
@@ -47,7 +47,7 @@ export class TypesComponent implements OnInit {
 
     getNodes() {
         const storedNodes = this.storage.retrieve('graphNodes');
-        if (storedNodes !== null) {
+        if (storedNodes != null) {
             this.nodeTypes = [];
             _.forEach(storedNodes._data, (node: any) => {
                 this.nodeTypes.push({
@@ -105,7 +105,7 @@ export class TypesComponent implements OnInit {
     nodeTypeChanged(event) {
         const type = event.value;
         const storedNodes = this.storage.retrieve('graphNodes');
-        if (storedNodes !== null) {
+        if (storedNodes != null) {
             _.forEach(storedNodes._data, (node: any) => {
                 if (node.label === type.type) {
                     node.class = type.class;

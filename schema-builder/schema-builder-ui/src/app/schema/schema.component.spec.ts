@@ -16,19 +16,15 @@
 
 /* tslint:disable:no-unused-variable */
 
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { waitForAsync, ComponentFixture, TestBed } from '@angular/core/testing';
 import { CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
-import { By } from '@angular/platform-browser';
-import { DebugElement } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { PrettyJsonModule } from 'angular2-prettyjson';
 import { GafferService } from '../services/gaffer.service';
-import { ConfigModule, ConfigLoader, ConfigStaticLoader, ConfigService } from 'ng2-config';
-import { Http, BaseRequestOptions, HttpModule, Response, ResponseOptions } from '@angular/http';
-import { MockBackend, MockConnection } from '@angular/http/testing';
-import { LocalStorageService } from 'ng2-webstorage';
-import { Observable } from 'rxjs/Rx';
+import { HttpClientModule } from '@angular/common/http';
+import { LocalStorageService } from 'ngx-webstorage';
+import { of } from 'rxjs';
 import { SchemaComponent } from './schema.component';
 
 class MockGafferService {
@@ -41,12 +37,21 @@ class MockGafferService {
   }
 }
 
+class MockStorageService {
+  storage = new Map<string, any>()
+
+  retrieve = (key: string) => {
+    return this.storage.get(key)
+  }
+
+}
+
 describe('SchemaComponent', () => {
   let component: SchemaComponent;
   let fixture: ComponentFixture<SchemaComponent>;
   const routerStub = {} as Router;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       declarations: [
@@ -55,17 +60,15 @@ describe('SchemaComponent', () => {
       imports: [
         FormsModule,
         PrettyJsonModule,
-        HttpModule
-      ],
-      providers: [
-        LocalStorageService
+        HttpClientModule
       ]
     }).overrideComponent(SchemaComponent, {
       set: {
         providers: [
           {provide: GafferService, useClass: MockGafferService},
-          {provide: ActivatedRoute, useValue: { 'params': Observable.from([{ 'id': 1 }]) }},
+          {provide: ActivatedRoute, useValue: { 'params': of([{ 'id': 1 }]) }},
           {provide: Router, useValue: routerStub},
+          {provide: LocalStorageService, useClass: MockStorageService }
         ]
     }})
     .compileComponents();

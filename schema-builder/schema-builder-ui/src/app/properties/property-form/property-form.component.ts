@@ -15,7 +15,7 @@
  */
 
 import { Component, OnInit, Input, Output, EventEmitter  } from '@angular/core';
-import { LocalStorageService } from 'ng2-webstorage';
+import { LocalStorageService } from 'ngx-webstorage';
 import { GafferService } from '../../services/gaffer.service';
 import { UUID } from 'angular2-uuid';
 import * as _ from 'lodash';

@@ -15,26 +15,26 @@
  */
 
 import { Injectable } from '@angular/core';
-import { Http, Headers, Response, RequestOptions } from '@angular/http';
-import { Observable } from 'rxjs/Observable';
-import { ConfigService } from 'ng2-config';
+import { HttpClient, HttpErrorResponse, HttpHeaders, HttpResponse } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { ConfigService } from '@ngx-config/core';
 
 @Injectable()
 export class GafferService {
 
   GAFFER_HOST: string = this.config.getSettings('system', 'gafferUrl');
 
-  constructor(private http: Http, private config: ConfigService) { }
+  constructor(private http: HttpClient, private config: ConfigService) { }
 
-  private extractData(res: Response) {
-    const body = res.json();
+  private extractData(res: HttpResponse<any>) {
+    const body = res.body;
     return body || { };
   }
 
-  private handleError (error: Response | any) {
+  private handleError (error: HttpErrorResponse | any) {
     let errMsg: string;
-    if (error instanceof Response) {
-      const body = error.json() || '';
+    if (error instanceof HttpErrorResponse) {
+      const body = error.error || '';
       const err = body.error || JSON.stringify(body);
       errMsg = `${error.status} - ${error.statusText || ''} ${err}`;
     } else {
@@ -46,41 +46,33 @@ export class GafferService {
 
   getCommonTypes(): Observable<any> {
     const gafferUrl = this.GAFFER_HOST + '/schema-builder-rest/v1/commonSchema';
-    const headers = new Headers({ 'Content-Type': 'application/json' });
-    const options = new RequestOptions({ headers: headers });
-    return this.http.get(gafferUrl, options)
-          .map(this.extractData)
-          .catch(this.handleError);
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+    const options = { headers: headers };
+    return this.http.get(gafferUrl, options);
   }
 
   getSimpleFunctions(typeName: string, typeClass: string): Observable<any> {
     const gafferUrl = this.GAFFER_HOST + '/schema-builder-rest/v1/functions';
-    const headers = new Headers({ 'Content-Type': 'application/json' });
-    const options = new RequestOptions({ headers: headers });
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
     const params = {
       typeName: typeName,
       typeClass: typeClass
     };
-    return this.http.post(gafferUrl, params, options)
-          .map(this.extractData)
-          .catch(this.handleError);
+    const options = { headers: headers, params: params };
+    return this.http.post(gafferUrl, options);
   }
 
   validateSchema(elements: any, types: any): Observable<any> {
     const gafferUrl = this.GAFFER_HOST + '/schema-builder-rest/v1/validate';
-    const headers = new Headers({ 'Content-Type': 'application/json' });
-    const options = new RequestOptions({ headers: headers });
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
     const params = [elements, types];
-    return this.http.post(gafferUrl, params, options)
-          .map(this.extractData)
-          .catch(this.handleError);
+    const options = { headers: headers, params: params};
+    return this.http.post(gafferUrl, options);
   }
 
   getSchemaFromURL(url) {
-    const headers = new Headers({ 'Content-Type': 'application/json' });
-    const options = new RequestOptions({ headers: headers });
-    return this.http.get(url, options)
-          .map(this.extractData)
-          .catch(this.handleError);
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+    const options = { headers: headers };
+    return this.http.get(url, options);
   }
 }

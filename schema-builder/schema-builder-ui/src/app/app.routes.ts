@@ -34,4 +34,4 @@ export const routes: Routes = [
   ...typesRoutes
 ];
 
-export const routing: ModuleWithProviders = RouterModule.forRoot(routes);
+export const routing: ModuleWithProviders<RouterModule> = RouterModule.forRoot(routes);

@@ -27,15 +27,13 @@
             <div class="form-group">
                 <div class="flex-container" fxLayout="row">
                     <h4 style="margin-left: 10px; font-size: 18pt; word-break: break-all;" fxFlex>{{entity.name}}</h4>
-                    <button md-icon-button color="warn" mdTooltip="delete entity" aria-label="delete entity" (click)="removeEntity(entity.id)"
+                    <button mat-icon-button color="warn" mdTooltip="delete entity" aria-label="delete entity" (click)="removeEntity(entity.id)"
                         class="button-spacing" style="margin-top: 10px;">
-                        <md-icon>delete</md-icon>
+                        <mat-icon>delete</mat-icon>
                         </button>
                 </div>
                 <div class="input-field">
-                    <md-input-container class="full-width">
-                        <input mdInput name="name" placeholder="Entity name" formControlName="{{entity.id}}">
-                    </md-input-container>
+                    <input mdInput name="name" class="full-width" placeholder="Entity name" formControlName="{{entity.id}}">
                 </div>
             </div>
         </div>

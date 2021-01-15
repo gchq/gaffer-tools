@@ -28,17 +28,17 @@
         </div>
         <div class="flex-container" fxLayout="row" fxLayoutWrap="wrap">
             <div fxFlex="100%" fxFlex.gt-sm="50%" style="padding: 10px;" *ngFor="let type of types; let i = index">
-                <md-card>
+                <mat-card>
                     <div class="content-card-header" fxLayout="row">
-                        <md-card-title fxFlex style="word-break: break-all;">{{type.type}}</md-card-title>
-                        <button md-icon-button color="accent" (click)="type.editing = true;" mdTooltip="edit type" aria-label="edit type" *ngIf="!type.editing" class="button-spacing">
-                            <md-icon>edit</md-icon>
+                        <mat-card-title fxFlex style="word-break: break-all;">{{type.type}}</mat-card-title>
+                        <button mat-icon-button color="accent" (click)="type.editing = true;" mdTooltip="edit type" aria-label="edit type" *ngIf="!type.editing" class="button-spacing">
+                            <mat-icon>edit</mat-icon>
                         </button>
-                        <button md-icon-button color="warn" (click)="removeType(i)" mdTooltip="delete type" aria-label="delete type" class="button-spacing">
-                            <md-icon>delete</md-icon>
+                        <button mat-icon-button color="warn" (click)="removeType(i)" mdTooltip="delete type" aria-label="delete type" class="button-spacing">
+                            <mat-icon>delete</mat-icon>
                         </button>
                     </div>
-                    <md-card-content>
+                    <mat-card-content>
                         <div *ngIf="!type.editing">
                             <md-list dense>
                                 <md-list-item>
@@ -63,21 +63,21 @@
                             </md-list>
                         </div>
                         <app-type-form [type]="types[i]" (typeChange)="typeChanged($event)" *ngIf="type.editing"></app-type-form>
-                    </md-card-content>
-                </md-card>
+                    </mat-card-content>
+                </mat-card>
             </div>
             <div  fxFlex="100%" fxFlex.gt-sm="50%" style="padding: 10px;" *ngFor="let type of nodeTypes; let i = index">
-                <md-card>
+                <mat-card>
                     <div class="content-card-header" fxLayout="row">
-                        <md-card-title fxFlex style="word-break: break-all;">{{type.type}}</md-card-title>
-                        <button md-icon-button color="accent" (click)="type.editing = true;" mdTooltip="edit type" aria-label="edit type" *ngIf="!type.editing" class="button-spacing">
-                            <md-icon>edit</md-icon>
+                        <mat-card-title fxFlex style="word-break: break-all;">{{type.type}}</mat-card-title>
+                        <button mat-icon-button color="accent" (click)="type.editing = true;" mdTooltip="edit type" aria-label="edit type" *ngIf="!type.editing" class="button-spacing">
+                            <mat-icon>edit</mat-icon>
                         </button>
-                        <button md-icon-button color="warn" (click)="removeType(i)" mdTooltip="delete type" aria-label="delete type" class="button-spacing">
-                            <md-icon>delete</md-icon>
+                        <button mat-icon-button color="warn" (click)="removeType(i)" mdTooltip="delete type" aria-label="delete type" class="button-spacing">
+                            <mat-icon>delete</mat-icon>
                         </button>
                     </div>
-                    <md-card-content>
+                    <mat-card-content>
                         <div *ngIf="!type.editing">
                             <md-list dense>
                                 <md-list-item>
@@ -92,8 +92,8 @@
                             </md-list>
                         </div>
                         <app-type-form [type]="nodeTypes[i]" (typeChange)="nodeTypeChanged($event)" *ngIf="type.editing"></app-type-form>
-                    </md-card-content>
-                </md-card>
+                    </mat-card-content>
+                </mat-card>
             </div>
         </div>
     </div>

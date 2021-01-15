@@ -20,17 +20,24 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
 import { GafferService } from '../services/gaffer.service';
 import { Router, ActivatedRoute } from '@angular/router';
-import { By } from '@angular/platform-browser';
-import { DebugElement } from '@angular/core';
-import { HttpModule } from '@angular/http';
-import { LocalStorageService } from 'ng2-webstorage';
-import { Observable } from 'rxjs/Rx';
+import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { LocalStorageService } from 'ngx-webstorage';
+import { of } from 'rxjs';
 import { TypesComponent } from './types.component';
 
 class MockGafferService {
   getCommonTypes() {
-    return Observable.from([{ 'test': 1 }]);
+    return of([{ 'test': 1 }]);
   }
+}
+
+class MockStorageService {
+  storage = new Map<string, any>()
+
+  retrieve = (key: string) => {
+    return this.storage.get(key)
+  }
+
 }
 
 describe('TypesComponent', () => {
@@ -41,21 +48,19 @@ describe('TypesComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
-      declarations: [
-        TypesComponent
-      ],
       imports: [
-        HttpModule
+        HttpClientModule
       ],
       providers: [
-        LocalStorageService
+        TypesComponent
       ]
     }).overrideComponent(TypesComponent, {
       set: {
         providers: [
-          {provide: GafferService, useClass: MockGafferService},
-          {provide: ActivatedRoute, useValue: { 'params': Observable.from([{ 'id': 1 }]) }},
-          {provide: Router, useValue: routerStub},
+          { provide: GafferService, useClass: MockGafferService },
+          { provide: ActivatedRoute, useValue: { 'params': of([{ 'id': 1 }]) }},
+          { provide: Router, useValue: routerStub},
+          { provide: LocalStorageService, useClass: MockStorageService }
         ]
     }})
     .compileComponents();
