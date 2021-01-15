@@ -91,7 +91,7 @@ jobs:
       run: mvn clean install -pl :ui -Pquick -am
 
     - name: Run Tests
-      run: xvfb-run --auto-servernum mvn verify -pl :ui
+      run: xvfb-run mvn verify -pl :ui
 
 #  java-build:
 #    runs-on: ubuntu-latest

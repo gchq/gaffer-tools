@@ -31,7 +31,6 @@
         <selenium.version>3.4.0</selenium.version>
         <jasmine.plugin.version>2.2</jasmine.plugin.version>
         <jasmine.test.paths>**/*-spec.js</jasmine.test.paths>
-        <jasmine.server.port>9000</jasmine.server.port>
     </properties>
 
     <dependencies>
@@ -91,7 +90,6 @@
                     <phantomjs>
                         <version>2.1.1</version>
                     </phantomjs>
-                    <serverPort>${jasmine.server.port}</serverPort>
                     <jsSrcDir>${project.build.directory}/${project.build.finalName}/app</jsSrcDir>
                     <sourceIncludes>
                         <include>*.js</include>
