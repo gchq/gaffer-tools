@@ -108,7 +108,7 @@ export class SchemaComponent implements OnInit {
                     aggregateFunction: type.aggregateFunction || null,
                     serialiser: type.serialiser || null
                 };
-                if(formattedType.aggregateFunction && Object.keys(formattedType.aggregateFunction).length === 0) {
+                if (formattedType.aggregateFunction && Object.keys(formattedType.aggregateFunction).length === 0) {
                     formattedType.aggregateFunction = null;
                 }
                 this.types.types[type.type] = formattedType;

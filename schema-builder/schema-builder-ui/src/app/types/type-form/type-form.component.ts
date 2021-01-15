@@ -90,7 +90,7 @@ export class TypeFormComponent implements OnInit {
         } else {
             this.functions = undefined;
         }
-        if(!this._type.aggregateFunction) {
+        if (!this._type.aggregateFunction) {
             this._type.aggregateFunction = {};
         }
     }
@@ -119,7 +119,7 @@ export class TypeFormComponent implements OnInit {
 
     changeType(value: any, key: string, secondaryKey?: string) {
         if (key === 'aggregateFields') {
-            if(this.aggregateFields && this._type.aggregateFunction !== null) {
+            if (this.aggregateFields && this._type.aggregateFunction !== null) {
                 try {
                     const fieldsObject = JSON.parse(this.aggregateFields);
                     fieldsObject.class = this._type.aggregateFunction.class;

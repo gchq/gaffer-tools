@@ -68,7 +68,7 @@ export class GraphComponent implements OnInit {
     }
 
     saveEdges(data, callback) {
-        if (data.to != undefined) {
+        if (data.to !== undefined) {
             data.length = 200;
             data.arrows = 'to';
             if (data.label === undefined) {
