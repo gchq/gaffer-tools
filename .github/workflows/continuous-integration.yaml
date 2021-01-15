@@ -1,9 +1,7 @@
 name: Continuous Integration
 
 on:
-  push:
-    branches:
-      - gh-862-migrate-ci
+  [ pull_request ]
 
 jobs:
   check-all-modules-are-tested:
@@ -13,7 +11,7 @@ jobs:
     - name: Check all modules are tested
       run: ./cd/check_modules.sh
 
-  ui-system-test:
+  system-test:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
