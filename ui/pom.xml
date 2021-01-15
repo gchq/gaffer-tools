@@ -79,7 +79,7 @@
                 <version>${jasmine.plugin.version}</version>
                 <executions>
                     <execution>
-                        <phase>test</phase>
+                        <phase>integration-test</phase>
                         <goals>
                             <goal>test</goal>
                         </goals>
