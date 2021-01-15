@@ -90,11 +90,6 @@ jobs:
     - name: Install dependents
       run: mvn -q clean install -pl :ui -Pquick -am
 
-    - name: discovery
-      run: |
-        ls -l /etc/init.d
-        ls -l /etc/xvfb
-
     - name: Run Tests
       run: xvfb-run mvn -X verify -pl :ui
 
