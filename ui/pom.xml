@@ -90,6 +90,7 @@
                     <phantomjs>
                         <version>2.1.1</version>
                     </phantomjs>
+                    <serverPort>9000</serverPort>
                     <jsSrcDir>${project.build.directory}/${project.build.finalName}/app</jsSrcDir>
                     <sourceIncludes>
                         <include>*.js</include>
