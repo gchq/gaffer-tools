@@ -1,5 +1,5 @@
 #
-# Copyright 2016-2019 Crown Copyright
+# Copyright 2021 Crown Copyright
 #
 # Licensed under the Apache License, Version 2.0 (the 'License');
 # you may not use this file except in compliance with the License.
@@ -16,12 +16,12 @@
 
 import unittest
 
-import example_accumulo
+import example_map
 
 
-class ExampleAccumuloTest(unittest.TestCase):
-    def test_example_accumulo_does_not_error(self):
-        example_accumulo.run('http://localhost:8080/rest/latest')
+class ExampleMapTest(unittest.TestCase):
+    def test_example_map_does_not_error(self):
+        example_map.run('http://localhost:8080/rest/latest')
 
 
 if __name__ == "__main__":
