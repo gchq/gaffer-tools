@@ -146,7 +146,7 @@
                                     ${project.build.outputDirectory}/schema
                                 </gaffer.schemas>
                                 <gaffer.storeProperties>
-                                    ${project.build.outputDirectory}/accumulo/store.properties
+                                    ${project.build.outputDirectory}/map/store.properties
                                 </gaffer.storeProperties>
                                 <roadTraffic.dataLoader.dataPath>
                                     ${project.build.outputDirectory}/roadTrafficSampleData.csv

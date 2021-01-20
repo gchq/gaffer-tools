@@ -58,6 +58,12 @@
             <version>${gaffer.version}</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>uk.gov.gchq.gaffer</groupId>
+            <artifactId>map-store</artifactId>
+            <version>${gaffer.version}</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
     <build>
         <plugins>
@@ -228,7 +234,7 @@
                                     ${project.basedir}/example/road-traffic/schema
                                 </gaffer.schemas>
                                 <gaffer.storeProperties>
-                                    ${project.basedir}/example/road-traffic/accumulo/store.properties
+                                    ${project.basedir}/example/road-traffic/map/store.properties
                                 </gaffer.storeProperties>
                                 <roadTraffic.dataLoader.dataPath>
                                     ${project.basedir}/example/road-traffic/roadTrafficSampleData.csv
@@ -389,7 +395,7 @@
                                     <contextPath>/${standalone-rest-path}
                                     </contextPath>
                                     <groupId>uk.gov.gchq.gaffer</groupId>
-                                    <artifactId>accumulo-rest</artifactId>
+                                    <artifactId>map-rest</artifactId>
                                     <version>${gaffer.version}</version>
                                     <type>war</type>
                                     <asWebapp>true</asWebapp>
@@ -412,7 +418,7 @@
                                     ${project.basedir}/example/type-subtype-value/schema
                                 </gaffer.schemas>
                                 <gaffer.storeProperties>
-                                    ${project.basedir}/example/type-subtype-value/accumulo/store.properties
+                                    ${project.basedir}/example/type-subtype-value/map/store.properties
                                 </gaffer.storeProperties>
                                 <gaffer.error-mode.debug>
                                     true

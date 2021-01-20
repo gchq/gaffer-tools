@@ -21,10 +21,11 @@ import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
 import uk.gov.gchq.gaffer.accumulostore.AccumuloProperties;
-import uk.gov.gchq.gaffer.accumulostore.MockAccumuloStore;
+import uk.gov.gchq.gaffer.accumulostore.MiniAccumuloStore;
 import uk.gov.gchq.gaffer.commonutil.CommonTestConstants;
 import uk.gov.gchq.gaffer.commonutil.StreamUtil;
 import uk.gov.gchq.gaffer.graph.Graph;
+import uk.gov.gchq.gaffer.graph.GraphConfig;
 import uk.gov.gchq.gaffer.operation.OperationException;
 import uk.gov.gchq.gaffer.operation.impl.add.AddElements;
 import uk.gov.gchq.gaffer.performancetesting.FileWriterMetricsListener;
@@ -58,10 +59,12 @@ public class TestQueryTest {
         testProperties.setElementIdSupplierClass(EntitySeedSupplier.class.getName());
         testProperties.setRmatProbabilities(Constants.RMAT_PROBABILITIES);
         testProperties.setRmatMaxNodeId(100L);
-        final AccumuloProperties storeProperties = new AccumuloProperties();
-        storeProperties.setStoreClass(MockAccumuloStore.class.getName());
+        final AccumuloProperties storeProperties = AccumuloProperties.loadStoreProperties(
+                StreamUtil.openStream(Constants.class, "accumuloStore.properties")
+        );
+        storeProperties.setStoreClass(MiniAccumuloStore.class.getName());
         final Graph graph = new Graph.Builder()
-                .graphId("id")
+                .config(new GraphConfig.Builder().graphId("id").build())
                 .storeProperties(storeProperties)
                 .addSchemas(StreamUtil.schemas(Constants.class))
                 .build();
@@ -92,10 +95,12 @@ public class TestQueryTest {
         final File metricsResults = folder.newFile();
         final String metricsResultsFilename = metricsResults.getPath();
         testProperties.setProperty(FileWriterMetricsListener.FILENAME, metricsResultsFilename);
-        final AccumuloProperties storeProperties = new AccumuloProperties();
-        storeProperties.setStoreClass(MockAccumuloStore.class.getName());
+        final AccumuloProperties storeProperties = AccumuloProperties.loadStoreProperties(
+                StreamUtil.openStream(Constants.class, "accumuloStore.properties")
+        );
+        storeProperties.setStoreClass(MiniAccumuloStore.class.getName());
         final Graph graph = new Graph.Builder()
-                .graphId("id")
+                .config(new GraphConfig.Builder().graphId("id").build())
                 .storeProperties(storeProperties)
                 .addSchemas(StreamUtil.schemas(Constants.class))
                 .build();
