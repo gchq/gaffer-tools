@@ -136,6 +136,9 @@
                                 <goals>
                                     <goal>sign</goal>
                                 </goals>
+                                <configuration combine.self="override">
+
+                                </configuration>
                             </execution>
                         </executions>
                     </plugin>
