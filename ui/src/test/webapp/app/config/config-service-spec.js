@@ -61,9 +61,8 @@ describe('The config service', function() {
 
 
     describe('config.get()', function() {
-
         beforeEach(function() {
-            spyOn(defaultRestEndpoint, 'get').and.returnValue('test');
+            spyOn(defaultRestEndpoint, 'get').and.returnValue('http://gaffer:8080/rest/latest');
         });
 
         afterEach(function() {
@@ -75,7 +74,67 @@ describe('The config service', function() {
             $httpBackend.whenGET('config/defaultConfig.json').respond(200, {});
 
             service.get().then(function(config) {
-                expect(config.restEndpoint).toEqual('test');
+                expect(config.restEndpoint).toEqual('http://gaffer:8080/rest/latest');
+            });
+
+            $httpBackend.flush();
+        });
+
+        it('should merge default rest endpoint path if using gafferEndpoint', function() {
+            $httpBackend.whenGET('config/config.json').respond(200, {
+                "gafferEndpoint": {
+                    "path": "/my-custom-path"
+                }
+            });
+            $httpBackend.whenGET('config/defaultConfig.json').respond(200, {});
+
+            service.get().then(function(config) {
+                expect(config.restEndpoint).toEqual(window.location.origin + '/my-custom-path');
+            });
+
+            $httpBackend.flush();
+        });
+
+        it('should merge default rest endpoint port if using gafferEndpoint', function() {
+            $httpBackend.whenGET('config/config.json').respond(200, {
+                "gafferEndpoint": {
+                    "port": 8000
+                }
+            });
+            $httpBackend.whenGET('config/defaultConfig.json').respond(200, {});
+
+            service.get().then(function(config) {
+                expect(config.restEndpoint).toEqual(window.location.protocol + "//" + window.location.hostname + ':8000/rest/latest');
+            });
+
+            $httpBackend.flush();
+        });
+
+        it('should merge default rest endpoint host if using gafferEndpoint', function() {
+            $httpBackend.whenGET('config/config.json').respond(200, {
+                "gafferEndpoint": {
+                    "host": "gaffer.com"
+                }
+            });
+            $httpBackend.whenGET('config/defaultConfig.json').respond(200, {});
+
+            service.get().then(function(config) {
+                expect(config.restEndpoint).toEqual(window.location.protocol + "//gaffer.com:" + window.location.port + '/rest/latest');
+            });
+
+            $httpBackend.flush();
+        });
+
+        it('should merge default rest endpoint protocol if using gafferEndpoint', function() {
+            $httpBackend.whenGET('config/config.json').respond(200, {
+                "gafferEndpoint": {
+                    "protocol": "https"
+                }
+            });
+            $httpBackend.whenGET('config/defaultConfig.json').respond(200, {});
+
+            service.get().then(function(config) {
+                expect(config.restEndpoint).toEqual("https://" + window.location.hostname + ":" + window.location.port + '/rest/latest');
             });
 
             $httpBackend.flush();

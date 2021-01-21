@@ -437,13 +437,29 @@ custom documentation URL for the UI you can do this by using the 'docUrl' config
 
 The rest endpoint that the UI uses can be changed. By default, it assumes that the rest service is running on the same
 machine as the UI, on the same port, at "/rest/latest". You could overwrite this by specifying a value in the
-"restEndpoint" field. This would change where the UI gets the schema from and run operations etc.
+"restEndpoint" or "gafferEndpoint" field. The difference between the two fields is the gafferEndpoint gives more fine grain
+control and allows you to take advantage of the default window.location.orgin setting for the hostname. 
+This would change where the UI gets the schema from and run operations etc.
 
-An example of a changed rest endpoint:
+| variable                     | type    | default                                | description
+|------------------------------|---------|-----------------------------------------------------------------------------------------
+| restEndpoint                 | string  | ${window.location.origin}/rest/latest  | the remote URL to query
+| gafferEndpoint.path          | string  | /rest/latest                           | The path of the remote REST API
+| gafferEndpoint.port          | number  | Whatever the UI uses                   | The port of the remote REST API
+| gafferEndpoint.host          | string  | Whatever the UI uses                   | The hostname of the remote REST API
+| gafferEndpoint.protocol      | string  | whatever the UI uses                   | The web protocol (eg https) of the Remote REST API
 
-```
+As of 1.15.0, the REST endpoint can be configured thus:
+
+```json
 {
-    "restEndpoint": "http://localhost/mygraphname/rest/latest",
+    "restEndpoint": "https://localhost:8443/my-graph/rest",
+    "gafferEndpoint": {
+      "path": "/mygraphName/rest",
+      "host": "localhost",
+      "port": 8443,
+      "protocol": "https"
+    },"http://localhost/mygraphname/rest/latest",
     "operations": { ... },
     "types": { ... },
     "time": { ... }
