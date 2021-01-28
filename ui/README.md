@@ -442,7 +442,7 @@ control and allows you to take advantage of the default window.location.orgin se
 This would change where the UI gets the schema from and run operations etc.
 
 | variable                     | type    | default                                | description
-|------------------------------|---------|-----------------------------------------------------------------------------------------
+|------------------------------|---------|----------------------------------------|------------------------------------------------
 | restEndpoint                 | string  | ${window.location.origin}/rest/latest  | the remote URL to query
 | gafferEndpoint.path          | string  | /rest/latest                           | The path of the remote REST API
 | gafferEndpoint.port          | number  | Whatever the UI uses                   | The port of the remote REST API
