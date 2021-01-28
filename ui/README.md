@@ -449,7 +449,7 @@ This would change where the UI gets the schema from and run operations etc.
 | gafferEndpoint.host          | string  | Whatever the UI uses                   | The hostname of the remote REST API
 | gafferEndpoint.protocol      | string  | whatever the UI uses                   | The web protocol (eg https) of the Remote REST API
 
-As of 1.15.0, the REST endpoint can be configured thus:
+As of 1.15.0, the REST endpoint can be configured like this:
 
 ```json
 {
@@ -459,10 +459,7 @@ As of 1.15.0, the REST endpoint can be configured thus:
       "host": "localhost",
       "port": 8443,
       "protocol": "https"
-    },"http://localhost/mygraphname/rest/latest",
-    "operations": { ... },
-    "types": { ... },
-    "time": { ... }
+    }
 }
 
 ```
