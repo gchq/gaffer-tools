@@ -140,6 +140,21 @@ describe('The config service', function() {
             $httpBackend.flush();
         });
 
+        it('should should not add additional : to the rest endpoint protocol if using gafferEndpoint', function() {
+            $httpBackend.whenGET('config/config.json').respond(200, {
+                "gafferEndpoint": {
+                    "protocol": "https:"
+                }
+            });
+            $httpBackend.whenGET('config/defaultConfig.json').respond(200, {});
+
+            service.get().then(function(config) {
+                expect(config.restEndpoint).toEqual("https://" + window.location.hostname + ":" + window.location.port + '/rest/latest');
+            });
+
+            $httpBackend.flush();
+        });
+
         it('should not make another http request once the config has been resolved', function() {
             $httpBackend.whenGET('config/config.json').respond(200, {});
             $httpBackend.whenGET('config/defaultConfig.json').respond(200, {});
