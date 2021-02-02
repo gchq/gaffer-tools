@@ -270,12 +270,7 @@ public class QueryBuilderST {
         final String results = getElement("raw-other-results").getText().trim();
         final List resultList = JSONSerialiser.deserialise(results.getBytes(), ArrayList.class);
 
-        final List<Map<String, Object>> expectedResults = Arrays.asList(new LinkedHashMap<>(), new LinkedHashMap<>());
-        expectedResults.get(0).put("class", EntitySeed.class.getName());
-        expectedResults.get(0).put("vertex", "352952,178032");
-        expectedResults.get(1).put("class", EntitySeed.class.getName());
-        expectedResults.get(1).put("vertex", "M5:18A");
-        assertEquals(expectedResults, resultList);
+        assertEquals(2, resultList.size());
     }
 
     @Test
@@ -412,7 +407,6 @@ public class QueryBuilderST {
                         .host("localhost")
                         .port(8080)
                         .connectTimeout(1000)
-                        .contextRoot("rest")
                         .build())
                 .build();
 
