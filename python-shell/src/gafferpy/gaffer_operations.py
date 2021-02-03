@@ -594,7 +594,7 @@ class ElementMatch(Match):
         match_json = super().to_json()
         if (self.group_by_properties is not None):
             match_json['groupByProperties'] = self.group_by_properties
-        
+
         return match_json
 
 class KeyFunctionMatch(Match):
@@ -602,7 +602,7 @@ class KeyFunctionMatch(Match):
 
     def __init__(self, first_key_function=None, second_key_function=None):
         super().__init__(_class_name=self.CLASS)
-        
+
         if not isinstance(first_key_function, gaffer_functions.Function):
             self.first_key_function = JsonConverter.from_json(first_key_function, class_obj=gaffer_functions.Function)
         else:
@@ -1159,6 +1159,20 @@ class GetAdjacentIds(GetOperation):
             seed_matching_type=None,
             seed_matching=None,
             options=options)
+
+
+class CountAllElementsDefaultView(Operation):
+    CLASS = "uk.gov.gchq.gaffer.mapstore.operation.CountAllElementsDefaultView"
+
+    def __init__(self, input=None, options=None):
+        super().__init__(_class_name=self.CLASS, options=options)
+        self.input = input
+
+    def to_json(self):
+        operation_json = super().to_json()
+        if self.input is not None:
+            operation_json["input"] = self.input
+        return operation_json
 
 
 class GetAllElements(GetOperation):
@@ -2648,12 +2662,12 @@ class Conditional(ToJson, ToCodeString):
 
 
 class Join(Operation):
-    
+
     CLASS = 'uk.gov.gchq.gaffer.operation.impl.join.Join'
 
     def __init__(self, input=None, operation=None, match_method=None, match_key=None, flatten=None, join_type=None, collection_limit=None, options=None):
         super().__init__(_class_name=self.CLASS, options=options)
-        
+
         if operation is not None:
             if not isinstance(operation, Operation):
                 self.operation = JsonConverter.from_json(operation)
@@ -2682,7 +2696,7 @@ class Join(Operation):
                     json_input.append(input.to_json())
                 else:
                     json_input.append(input)
-                
+
             operation_json['input'] = json_input
         if self.operation is not None:
             operation_json['operation'] = self.operation.to_json()
@@ -2737,7 +2751,7 @@ class FederatedOperationChain(Operation):
                 self.operation_chain = OperationChain(operation_chain)
             else:
                 self.operation_chain = JsonConverter.from_json(operation_chain, OperationChain)
-        
+
     def to_json(self):
         operation = super().to_json()
         operation['operationChain'] = self.operation_chain.to_json()
