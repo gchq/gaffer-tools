@@ -26,6 +26,14 @@ angular.module('app').factory('defaultRestEndpoint', [function() {
         return defaultRestEndpoint;
     }
 
+    service.getMerged = function(gafferEndpoint) {
+        var uiPort = window.location.port == undefined ? "" : ":" + window.location.port;
+        return (gafferEndpoint.protocol == undefined ? window.location.protocol : (gafferEndpoint.protocol.indexOf(':') != -1 ? gafferEndpoint.protocol : gafferEndpoint.protocol + ':')) + "//" +
+        (gafferEndpoint.host == undefined ? window.location.hostname : gafferEndpoint.host) +
+        (gafferEndpoint.port == undefined ? uiPort : (":" + gafferEndpoint.port)) +
+        (gafferEndpoint.path == undefined ? '/rest/latest' : gafferEndpoint.path);
+    }
+
     return service;
 
 }]);
