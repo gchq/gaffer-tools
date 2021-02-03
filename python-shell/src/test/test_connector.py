@@ -121,12 +121,7 @@ class GafferConnectorTest(unittest.TestCase):
             "uk.gov.gchq.gaffer.operation.impl.function.Filter",
             "uk.gov.gchq.gaffer.operation.impl.function.Transform",
             "uk.gov.gchq.gaffer.operation.impl.function.Aggregate",
-            "uk.gov.gchq.gaffer.accumulostore.operation.impl.GetElementsBetweenSets",
-            "uk.gov.gchq.gaffer.accumulostore.operation.impl.GetElementsWithinSet",
-            "uk.gov.gchq.gaffer.operation.impl.SplitStoreFromIterable",
-            "uk.gov.gchq.gaffer.operation.impl.SampleElementsForSplitPoints",
-            "uk.gov.gchq.gaffer.accumulostore.operation.impl.SummariseGroupOverRanges",
-            "uk.gov.gchq.gaffer.accumulostore.operation.impl.GetElementsInRanges",
+            "uk.gov.gchq.gaffer.mapstore.operation.CountAllElementsDefaultView",
             "uk.gov.gchq.gaffer.operation.export.graph.ExportToOtherAuthorisedGraph",
             "uk.gov.gchq.gaffer.operation.export.graph.ExportToOtherGraph",
             "uk.gov.gchq.gaffer.operation.impl.export.resultcache.ExportToGafferResultCache"
@@ -208,13 +203,7 @@ class GafferConnectorTest(unittest.TestCase):
           "uk.gov.gchq.gaffer.operation.impl.function.Transform",
           "uk.gov.gchq.gaffer.operation.impl.function.Aggregate",
           "uk.gov.gchq.gaffer.store.operation.GetTraits",
-          "uk.gov.gchq.gaffer.accumulostore.operation.impl.GetElementsBetweenSets",
-          "uk.gov.gchq.gaffer.accumulostore.operation.impl.GetElementsWithinSet",
-          "uk.gov.gchq.gaffer.operation.impl.SplitStoreFromFile",
-          "uk.gov.gchq.gaffer.operation.impl.SplitStoreFromIterable",
-          "uk.gov.gchq.gaffer.operation.impl.SampleElementsForSplitPoints",
-          "uk.gov.gchq.gaffer.accumulostore.operation.impl.SummariseGroupOverRanges",
-          "uk.gov.gchq.gaffer.accumulostore.operation.impl.GetElementsInRanges",
+          "uk.gov.gchq.gaffer.mapstore.operation.CountAllElementsDefaultView",
           "uk.gov.gchq.gaffer.operation.export.graph.ExportToOtherAuthorisedGraph",
           "uk.gov.gchq.gaffer.operation.export.graph.ExportToOtherGraph",
           "uk.gov.gchq.gaffer.operation.impl.export.resultcache.ExportToGafferResultCache",
@@ -226,7 +215,7 @@ class GafferConnectorTest(unittest.TestCase):
             json.loads(expected_response_text),
             json.loads(response_text)
         )
-        
+
     def test_dummy_header(self):
         """Test that the addition of a dummy header does not effect the standard test"""
         gc = gaffer_connector.GafferConnector('http://localhost:8080/rest/latest', headers={"dummy_Header": "value"})
