@@ -558,6 +558,9 @@ class Operation(ToJson, ToCodeString):
                     view = JsonConverter.from_json(view, View)
                 self.views.append(view)
 
+        if options is not None and isinstance(options, list):
+            # Expects a list of graphId strings options = ["graph_1", "graph_2"]
+            options = {"gaffer.federatedstore.operation.graphIds": ','.join(options)}
         self.options = options
 
     def to_json(self):
