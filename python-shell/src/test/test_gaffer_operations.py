@@ -5322,7 +5322,7 @@ class GafferOperationsTest(unittest.TestCase):
                     {
                         "class" : "uk.gov.gchq.gaffer.operation.data.EntitySeed",
                         "vertex" : 2
-                    },
+                    }
                 ]
             }
             """,
