@@ -1437,7 +1437,7 @@ class CountGroups(Operation):
 class CountAllElementsDefaultView(Operation):
     CLASS = "uk.gov.gchq.gaffer.mapstore.operation.CountAllElementsDefaultView"
 
-    def __init__(self, input, options=None):
+    def __init__(self, input=None, options=None):
         super().__init__(_class_name=self.CLASS, options=options)
         self.input = input
 
