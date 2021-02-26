@@ -46,6 +46,23 @@ class GafferFunctionsIntegrationTest(unittest.TestCase):
             'uk.gov.gchq.gaffer.operation.data.generator.EntityIdExtractor',
             'uk.gov.gchq.gaffer.traffic.generator.RoadTrafficStringElementGenerator',
             'uk.gov.gchq.gaffer.rest.example.ExampleElementGenerator',
+            'uk.gov.gchq.koryphe.impl.function.DefaultIfEmpty',
+            'uk.gov.gchq.koryphe.impl.function.StringAppend',
+            'uk.gov.gchq.koryphe.impl.function.StringRegexReplace',
+            'uk.gov.gchq.koryphe.impl.function.StringTruncate',
+            'uk.gov.gchq.koryphe.impl.function.StringPrepend',
+            'uk.gov.gchq.koryphe.impl.function.IterableFlatten',
+            'uk.gov.gchq.koryphe.impl.function.StringJoin',
+            'uk.gov.gchq.koryphe.impl.function.DefaultIfNull',
+            'uk.gov.gchq.koryphe.impl.function.StringRegexSplit',
+            'uk.gov.gchq.koryphe.impl.function.Longest',
+            'uk.gov.gchq.koryphe.impl.function.FirstValid',
+            'uk.gov.gchq.koryphe.impl.function.MultiplyLongBy',
+            'uk.gov.gchq.koryphe.impl.function.IterableLongest',
+            'uk.gov.gchq.koryphe.impl.function.StringReplace',
+            'uk.gov.gchq.koryphe.impl.function.StringTrim',
+            'uk.gov.gchq.koryphe.impl.function.ReverseString',
+            'uk.gov.gchq.koryphe.impl.function.StringSplit'
         ]
 
         for i in ignore_functions:
@@ -54,7 +71,6 @@ class GafferFunctionsIntegrationTest(unittest.TestCase):
         for op in functions:
             self.assertTrue(op in g.JsonConverter.GENERIC_JSON_CONVERTERS,
                             'Missing transform function class: ' + op)
-
 
 if __name__ == "__main__":
     unittest.main()

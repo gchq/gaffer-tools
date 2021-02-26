@@ -39,7 +39,11 @@ class GafferPredicatesIntegrationTest(unittest.TestCase):
             'uk.gov.gchq.gaffer.data.element.function.ElementFilter',
             'uk.gov.gchq.koryphe.tuple.predicate.TupleAdaptedPredicateComposite',
             'uk.gov.gchq.gaffer.store.util.AggregatorUtil$IsElementAggregated',
-            'uk.gov.gchq.gaffer.graph.hook.migrate.predicate.TransformAndFilter'
+            'uk.gov.gchq.gaffer.graph.hook.migrate.predicate.TransformAndFilter',
+            'uk.gov.gchq.gaffer.data.elementdefinition.view.access.predicate.user.NamedViewWriteUserPredicate',
+            'uk.gov.gchq.gaffer.access.predicate.user.DefaultUserPredicate',
+            'uk.gov.gchq.gaffer.access.predicate.user.UnrestrictedAccessUserPredicate',
+            'uk.gov.gchq.gaffer.access.predicate.user.NoAccessUserPredicate'
         ]
 
         for i in ignore_predicates:
