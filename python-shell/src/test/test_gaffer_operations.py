@@ -4880,6 +4880,19 @@ class GafferOperationsTest(unittest.TestCase):
             )
         ],
         [
+            """
+            {
+                "class": "uk.gov.gchq.gaffer.federatedstore.operation.ChangeGraphId",
+                "graphId": "old_name",
+                "newGraphId": "new_name"
+            }
+            """,
+            g.ChangeGraphId(
+                graph_id="old_name",
+                new_graph_id="new_name"
+            )
+        ],
+        [
             '''
             {
                 "class" : "uk.gov.gchq.gaffer.operation.impl.While",
@@ -5285,7 +5298,8 @@ class GafferOperationsTest(unittest.TestCase):
                 match_method=g.KeyFunctionMatch(first_key_function=g.ExtractId("DESTINATION")),
                 match_key=g.MatchKey.RIGHT,
                 flatten=False,
-                join_type=g.JoinType.OUTER)
+                join_type=g.JoinType.OUTER
+            )
         ],
         [
             '''
@@ -5295,6 +5309,29 @@ class GafferOperationsTest(unittest.TestCase):
             }
             ''',
             g.CancelScheduledJob(job_id="238492-2ad-fadf034-324-2a")
+        ],
+        [
+            """
+            {
+                "class" : "uk.gov.gchq.gaffer.mapstore.operation.CountAllElementsDefaultView",
+                "input" : [
+                    {
+                        "class" : "uk.gov.gchq.gaffer.operation.data.EntitySeed",
+                        "vertex" : 1
+                    },
+                    {
+                        "class" : "uk.gov.gchq.gaffer.operation.data.EntitySeed",
+                        "vertex" : 2
+                    },
+                ]
+            }
+            """,
+            g.CountAllElementsDefaultView(
+                input=[
+                    g.EntitySeed(vertex=1),
+                    g.EntitySeed(vertex=2)
+                ]
+            )
         ]
     ]
 
