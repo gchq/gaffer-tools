@@ -1434,6 +1434,30 @@ class CountGroups(Operation):
 
         return operation
 
+class CountAllElementsDefaultView(Operation):
+    CLASS = "uk.gov.gchq.gaffer.mapstore.operation.CountAllElementsDefaultView"
+
+    def __init__(self, input, options=None):
+        super().__init__(_class_name=self.CLASS, options=options)
+        self.input = input
+
+    def to_json(self):
+        operation = super().to_json()
+        if self.input is not None:
+            json_seeds = []
+            if isinstance(self.input, list):
+                for seed in self.input:
+                    if isinstance(seed, ElementSeed):
+                        json_seeds.append(seed.to_json())
+                    else:
+                        json_seeds.append(EntitySeed(seed).to_json())
+            else:
+                if isinstance(self.input, ElementSeed):
+                    json_seeds.append(self.input.to_json())
+                else:
+                    json_seeds.append(EntitySeed(self.input).to_json())
+            operation['input'] = json_seeds
+        return operation
 
 class Limit(Operation):
     CLASS = 'uk.gov.gchq.gaffer.operation.impl.Limit'
@@ -2857,6 +2881,19 @@ class AddGraphWithHooks(Operation):
 
         return operation
 
+class ChangeGraphId(Operation):
+    CLASS = "uk.gov.gchq.gaffer.federatedstore.operation.ChangeGraphId"
+
+    def __init__(self, graph_id, new_graph_id, options=None):
+        super().__init__(_class_name=self.CLASS, options=options)
+        self.graph_id = graph_id
+        self.new_graph_id = new_graph_id
+
+    def to_json(self):
+        operation = super().to_json()
+        operation["graphId"] = self.graph_id
+        operation["newGraphId"] = self.new_graph_id
+        return operation
 
 class GetVariable(Operation):
     CLASS = 'uk.gov.gchq.gaffer.operation.impl.GetVariable'
