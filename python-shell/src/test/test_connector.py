@@ -215,7 +215,7 @@ class GafferConnectorTest(unittest.TestCase):
             json.loads(expected_response_text),
             json.loads(response_text)
         )
-        
+
     def test_dummy_header(self):
         """Test that the addition of a dummy header does not effect the standard test"""
         gc = gaffer_connector.GafferConnector('http://localhost:8080/rest/latest', headers={"dummy_Header": "value"})

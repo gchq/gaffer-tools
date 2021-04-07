@@ -37,13 +37,10 @@ import uk.gov.gchq.gaffer.named.operation.AddNamedOperation;
 import uk.gov.gchq.gaffer.named.operation.DeleteNamedOperation;
 import uk.gov.gchq.gaffer.named.operation.ParameterDetail;
 import uk.gov.gchq.gaffer.operation.OperationException;
-import uk.gov.gchq.gaffer.operation.data.EntitySeed;
 import uk.gov.gchq.gaffer.proxystore.ProxyStore;
 import uk.gov.gchq.gaffer.user.User;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -270,12 +267,7 @@ public class QueryBuilderST {
         final String results = getElement("raw-other-results").getText().trim();
         final List resultList = JSONSerialiser.deserialise(results.getBytes(), ArrayList.class);
 
-        final List<Map<String, Object>> expectedResults = Arrays.asList(new LinkedHashMap<>(), new LinkedHashMap<>());
-        expectedResults.get(0).put("class", EntitySeed.class.getName());
-        expectedResults.get(0).put("vertex", "352952,178032");
-        expectedResults.get(1).put("class", EntitySeed.class.getName());
-        expectedResults.get(1).put("vertex", "M5:18A");
-        assertEquals(expectedResults, resultList);
+        assertEquals(2, resultList.size());
     }
 
     @Test
@@ -412,7 +404,6 @@ public class QueryBuilderST {
                         .host("localhost")
                         .port(8080)
                         .connectTimeout(1000)
-                        .contextRoot("rest")
                         .build())
                 .build();
 
