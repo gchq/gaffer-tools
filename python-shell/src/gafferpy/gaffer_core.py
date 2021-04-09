@@ -79,7 +79,7 @@ class ToCodeString:
             for item in obj:
                 obj_item_str = ToCodeString.obj_to_code_string(item,
                                                                indent=indent + '  ')
-                if obj_str == '[':
+                if obj_str is '[':
                     obj_str = obj_str + new_line_indent + '  ' + obj_item_str
                 else:
                     obj_str = obj_str + ',' + new_line_indent + '  ' + obj_item_str
@@ -100,7 +100,7 @@ class ToCodeString:
         for name, val in fields.items():
             if (not name.startswith('_')) and val is not None:
                 val_str = ToCodeString.obj_to_code_string(val, indent)
-                if field_code_str == '':
+                if field_code_str is '':
                     field_code_str = name + '=' + val_str
                 else:
                     field_code_str = field_code_str + ',' + new_line_indent + name + '=' + val_str
@@ -110,7 +110,7 @@ class ToCodeString:
         else:
             header_str = ''
 
-        if field_code_str == '':
+        if field_code_str is '':
             return header_str + 'g.' + type(self).__name__ + '()'
 
         return header_str + 'g.' + type(self).__name__ + '(' + new_line_indent \
