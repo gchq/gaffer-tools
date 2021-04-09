@@ -36,6 +36,7 @@ __pycache__
 .vscode/
 .ipynb_checkpoints
 *.ScriptBin
+*.egg-info/
 
 # nohup
 nohup.out
