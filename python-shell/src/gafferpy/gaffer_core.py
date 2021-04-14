@@ -390,6 +390,9 @@ class JsonConverter:
             else:
                 return obj
 
+        if not isinstance(obj, dict):
+            raise TypeError(f'Argument {obj} not of type {class_name}')
+
         custom_json_converter = JsonConverter.CUSTOM_JSON_CONVERTERS.get(
             class_name)
         generic_json_converter = JsonConverter.GENERIC_JSON_CONVERTERS.get(
