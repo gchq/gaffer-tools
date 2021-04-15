@@ -5324,6 +5324,19 @@ class GafferOperationsTest(unittest.TestCase):
             }
             ''',
             g.CancelScheduledJob(job_id="238492-2ad-fadf034-324-2a")
+        ],
+        [
+            """
+            {
+                "class": "uk.gov.gchq.gaffer.federatedstore.operation.ChangeGraphId",
+                "graphId": "old_name",
+                "newGraphId": "new_name"
+            }
+            """,
+            g.ChangeGraphId(
+                graph_id="old_name",
+                new_graph_id="new_name"
+            )
         ]
     ]
 
