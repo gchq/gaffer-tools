@@ -61,7 +61,7 @@ describe('The My Queries component', function() {
 
     //     });
     // });
-ß
+
     describe('ctrl.getUpdatedOperations()', function() {
         
         it('should update name and description inputs', function() {
