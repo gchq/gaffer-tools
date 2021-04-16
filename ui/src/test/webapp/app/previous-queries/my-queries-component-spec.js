@@ -53,14 +53,14 @@ describe('The My Queries component', function() {
         });
     });
 
-    // describe('ctrl.queriesList()', function() {
+    describe('ctrl.queriesList()', function() {
 
-    //     it('should return updated queries to child', function() {
+        it('should return updated queries to child', function() {
 
-    //         spyOn(ctrl, 'queriesList').and.callThrough();
+            spyOn(ctrl, 'queriesList').and.callThrough();
 
-    //     });
-    // });
+        });
+    });
 
     describe('ctrl.getUpdatedOperations()', function() {
         

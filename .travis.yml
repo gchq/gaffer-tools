@@ -4,6 +4,9 @@ cache:
   directories:
   - $HOME/.m2
   - analytics/analytics-ui/node_modules
+dist: xenial
+services:
+  - xvfb
 jdk:
   - openjdk8
 sudo: required
