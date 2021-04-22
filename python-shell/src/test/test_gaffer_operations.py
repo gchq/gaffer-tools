@@ -475,8 +475,8 @@ class GafferOperationsTest(unittest.TestCase):
                   "accumulo.instance" : "someInstanceName",
                   "gaffer.cache.service.class" : "uk.gov.gchq.gaffer.cache.impl.HashMapCacheService",
                   "accumulo.password" : "password",
-                  "accumulo.zookeepers" : "aZookeeper",
-                  "gaffer.store.class" : "uk.gov.gchq.gaffer.accumulostore.MockAccumuloStore",
+                  "accumulo.zookeepers" : "localhost",
+                  "gaffer.store.class" : "uk.gov.gchq.gaffer.accumulostore.MiniAccumuloStore",
                   "gaffer.store.job.tracker.enabled" : "true",
                   "gaffer.store.operation.declarations" : "ExportToOtherGraphOperationDeclarations.json",
                   "gaffer.store.properties.class" : "uk.gov.gchq.gaffer.accumulostore.AccumuloProperties",
@@ -517,11 +517,11 @@ class GafferOperationsTest(unittest.TestCase):
                             'gaffer.cache.service.class': 'uk.gov.gchq.gaffer.cache.impl.HashMapCacheService',
                             'gaffer.store.properties.class': 'uk.gov.gchq.gaffer.accumulostore.AccumuloProperties',
                             'accumulo.instance': 'someInstanceName',
-                            'accumulo.zookeepers': 'aZookeeper',
+                            'accumulo.zookeepers': 'localhost',
                             'accumulo.password': 'password',
                             'gaffer.store.operation.declarations': 'ExportToOtherGraphOperationDeclarations.json',
                             'accumulo.user': 'user01',
-                            'gaffer.store.class': 'uk.gov.gchq.gaffer.accumulostore.MockAccumuloStore'},
+                            'gaffer.store.class': 'uk.gov.gchq.gaffer.accumulostore.MiniAccumuloStore'},
                         graph_id="newGraphId"
                     )
                 ]

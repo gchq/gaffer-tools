@@ -22,10 +22,11 @@ import org.junit.rules.TemporaryFolder;
 
 import uk.gov.gchq.gaffer.accumulostore.AccumuloProperties;
 import uk.gov.gchq.gaffer.accumulostore.AccumuloStore;
-import uk.gov.gchq.gaffer.accumulostore.MockAccumuloStore;
+import uk.gov.gchq.gaffer.accumulostore.MiniAccumuloStore;
 import uk.gov.gchq.gaffer.commonutil.CommonTestConstants;
 import uk.gov.gchq.gaffer.commonutil.StreamUtil;
 import uk.gov.gchq.gaffer.graph.Graph;
+import uk.gov.gchq.gaffer.graph.GraphConfig;
 import uk.gov.gchq.gaffer.operation.OperationException;
 import uk.gov.gchq.gaffer.randomelementgeneration.Constants;
 import uk.gov.gchq.gaffer.randomelementgeneration.supplier.RmatElementSupplier;
@@ -52,12 +53,12 @@ public class TestAccumuloStoreRandomElementIngestTest {
 
         final Schema schema = Schema.fromJson(StreamUtil.schemas(Constants.class));
         final AccumuloProperties storeProperties = AccumuloProperties.loadStoreProperties(
-                StreamUtil.openStream(Constants.class, "mockaccumulostore.properties")
+                StreamUtil.openStream(Constants.class, "accumuloStore.properties")
         );
-        final AccumuloStore accumuloStore = new MockAccumuloStore();
+        final AccumuloStore accumuloStore = new MiniAccumuloStore();
         accumuloStore.initialise("1", schema, storeProperties);
         final Graph graph = new Graph.Builder()
-                .graphId("1")
+                .config(new GraphConfig.Builder().graphId("1").build())
                 .store(accumuloStore)
                 .build();
 

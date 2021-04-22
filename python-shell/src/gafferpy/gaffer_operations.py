@@ -2977,6 +2977,17 @@ class SetVariable(Operation):
 
         return operation
 
+class CountAllElementsDefaultView(Operation):
+    CLASS = 'uk.gov.gchq.gaffer.mapstore.operation.CountAllElementsDefaultView'
+
+    def __init__(self,
+                 view=None,
+                 directed_type=None,
+                 options=None):
+        super().__init__(
+            _class_name=self.CLASS,
+            view=view,
+            options=options)
 
 def load_operation_json_map():
     for name, class_obj in inspect.getmembers(
