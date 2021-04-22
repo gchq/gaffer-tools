@@ -4,9 +4,11 @@ cache:
   directories:
   - $HOME/.m2
   - analytics/analytics-ui/node_modules
-dist: trusty
+dist: xenial
+services:
+  - xvfb
 jdk:
-  - oraclejdk8
+  - openjdk8
 sudo: required
 addons:
   firefox: latest
