@@ -20,6 +20,8 @@ This module queries a Gaffer REST API
 
 import json
 import requests
+from requests.adapters import HTTPAdapter
+from requests.packages.urllib3.poolmanager import PoolManager
 
 from gafferpy import gaffer as g
 
@@ -32,7 +34,7 @@ class GafferConnector:
 
     def __init__(self, host, verbose=False,
                  headers=None, auth=None, cert=None,
-                 verify=True, proxies={}):
+                 verify=True, proxies={}, protocol=None):
         """
         This initialiser sets up a connection to the specified Gaffer server.
 
@@ -50,6 +52,7 @@ class GafferConnector:
         self._session.cert = cert
         self._session.verify = verify
         self._session.proxies = proxies
+        self._session.mount('https://', SSLAdapter(ssl_version=protocol))
 
     def execute_operation(self, operation, headers=None):
         """
@@ -173,3 +176,19 @@ class GafferConnector:
                 f'HTTP error {response.status_code}: {response.text}')
 
         return response.text
+
+class SSLAdapter(HTTPAdapter):
+    """
+    A subclass of the HTTPS Transport Adapter that is used to
+    setup an arbitrary SSL version for the requests session.
+    """
+    def __init__(self, ssl_version=None, **kwargs):
+        self.ssl_version = ssl_version
+
+        super(SSLAdapter, self).__init__(**kwargs)
+
+    def init_poolmanager(self, connections, maxsize, block=False):
+        self.poolmanager = PoolManager(num_pools=connections,
+                                       maxsize=maxsize,
+                                       block=block,
+                                       ssl_version=self.ssl_version)
