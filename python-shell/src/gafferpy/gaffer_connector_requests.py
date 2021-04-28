@@ -85,7 +85,7 @@ class GafferConnector:
                   json.dumps(op_chain_json_obj, indent=4) + '\n')
 
         # Convert the query dictionary into JSON and post the query to Gaffer
-        json_body = json.dumps(op_chain_json_obj).encode()
+        json_body = json.dumps(op_chain_json_obj)
 
         # Add content type header
         if headers is None:

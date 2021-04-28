@@ -1,39 +1,54 @@
-import urllib.request
-import urllib.error
 import json
-import ssl
-import getpass
+import requests
+from requests.adapters import HTTPAdapter
+from requests.packages.urllib3.poolmanager import PoolManager
+
 from fishbowl.util import to_json
 
 
 class GafferConnector:
-    def __init__(self, host):
+    def __init__(self, host, verbose=False,
+                 headers=None, auth=None, cert=None,
+                 verify=True, proxies={}, protocol=None):
         self._host = host
+        self._verbose = verbose
 
-        self._opener = urllib.request.build_opener(
-            urllib.request.HTTPHandler())
+        # Create the session
+        self._session = requests.Session()
+        if headers:
+            self._session.headers = headers
+        self._session.auth = auth
+        self._session.cert = cert
+        self._session.verify = verify
+        self._session.proxies = proxies
+        self._session.mount('https://', SSLAdapter(ssl_version=protocol))
 
         self.__print_status()
 
     def execute(self, operation, headers={}):
         operation_json = to_json(operation)
+        json_body = json.dumps(operation_json)
 
-        json_body = bytes(json.dumps(operation_json), "ascii")
         headers["Content-Type"] = "application/json;charset=utf-8"
 
-        request = urllib.request.Request(self._host + "/graph/operations/execute", headers=headers, data=json_body)
+        if self._verbose:
+            print('\nQuery operations:\n' +
+                  json.dumps(operation_json, indent=4) + '\n')
 
         try:
-            response = self._opener.open(request)
-        except urllib.error.HTTPError as error:
-            error_body = error.read().decode('utf-8')
-            new_error_string = ('HTTP error ' +
-                                str(error.code) + ' ' +
-                                error.reason + ': ' +
-                                error_body)
-            raise ConnectionError(new_error_string)
+            response = self._session.post(
+                self._host + "/graph/operations/execute",
+                headers=headers,
+                data=json_body)
+            response.raise_for_status()
+        except requests.exceptions.HTTPError:
+            raise ConnectionError(
+                f'HTTP error {response.status_code}: {response.text}')
 
-        response_text = response.read().decode('utf-8')
+        response_text = response.text
+
+        if self._verbose:
+            print('Query response: ' + response_text)
 
         if response_text is not None and response_text is not '':
             return json.loads(response_text)
@@ -41,91 +56,35 @@ class GafferConnector:
             return None
 
     def get(self, path):
-        request = urllib.request.Request(self._host + path)
-
         try:
-            response = self._opener.open(request)
-        except urllib.error.HTTPError as error:
-            error_body = error.read().decode('utf-8')
-            new_error_string = ('HTTP error ' +
-                                str(error.code) + ' ' +
-                                error.reason + ': ' +
-                                error_body)
-            raise ConnectionError(new_error_string)
+            response = self._session.get(self._host + path)
+            response.raise_for_status()
+        except requests.exceptions.HTTPError:
+            raise ConnectionError(
+                f'HTTP error {response.status_code}: {response.text}')
 
-        return json.loads(response.read().decode('utf-8'))
+        return response.json()
 
     def __print_status(self):
         status = self.get("/graph/status")
         print(status)
 
     def close_connection(self):
-        self._opener.close()
+        self._session.close()
 
 
-class PKIGafferConnector(GafferConnector):
-    def __init__(self, host, pki, protocol=None):
-        """
-        This initialiser sets up a connection to the specified Gaffer server as
-        per gafferConnector.GafferConnector and
-        requires the additional pki object.
-        """
-        super().__init__(host=host)
-        self._opener = urllib.request.build_opener(
-            urllib.request.HTTPSHandler(context=pki.get_ssl_context(protocol)))
-
-
-class PkiCredentials:
+class SSLAdapter(HTTPAdapter):
     """
-    This class holds a set of PKI credentials. These are loaded from a PEM file
-    which should contain the private key and the public keys for the entire
-    certificate chain.
+    A subclass of the HTTPS Transport Adapter that is used to
+    setup an arbitrary SSL version for the requests session.
     """
+    def __init__(self, ssl_version=None, **kwargs):
+        self.ssl_version = ssl_version
 
-    def __init__(self, cert_filename, password=None):
-        """
-        Construct the credentials class from a PEM file. If a password is not
-        supplied and the file is password-protected then the password will be
-        requested.
-        """
+        super(SSLAdapter, self).__init__(**kwargs)
 
-        # Read the contents of the certificate file to check that it is
-        # readable
-        with open(cert_filename, 'r') as cert_file:
-            self._cert_file_contents = cert_file.read()
-            cert_file.close()
-
-        # Remember the filename
-        self._cert_filename = cert_filename
-
-        # Obtain the password if required and remember it
-        if password is None:
-            password = getpass.getpass('Password for PEM certificate file: ')
-        self._password = password
-
-    def get_ssl_context(self, protocol=None):
-        """
-        This method returns a SSL context based on the file that was specified
-        when this object was created.
-
-        Arguments:
-         - An optional protocol. SSLv2 is used by default.
-
-        Returns:
-         - The SSL context
-        """
-
-        # Validate the arguments
-        if protocol is None:
-            protocol = ssl.PROTOCOL_SSLv2
-
-        # Create an SSL context from the stored file and password.
-        ssl_context = ssl.SSLContext(protocol)
-        ssl_context.load_cert_chain(self._cert_filename,
-                                    password=self._password)
-
-        # Return the context
-        return ssl_context
-
-    def __str__(self):
-        return 'Certificates from ' + self._cert_filename
+    def init_poolmanager(self, connections, maxsize, block=False):
+        self.poolmanager = PoolManager(num_pools=connections,
+                                       maxsize=maxsize,
+                                       block=block,
+                                       ssl_version=self.ssl_version)
