@@ -45,13 +45,17 @@ class GafferConnector:
             raise ConnectionError(
                 f'HTTP error {response.status_code}: {response.text}')
 
-        response_text = response.text
+        try:
+            response_json = response.json()
+        except json.JSONDecodeError:
+            response_json = response.text
 
         if self._verbose:
-            print('Query response: ' + response_text)
+            print('\nQuery response:\n' + 
+                  json.dumps(response_json, indent=4) + '\n')
 
-        if response_text is not None and response_text is not '':
-            return json.loads(response_text)
+        if response_json is not None and response_json is not '':
+            return response_json
         else:
             return None
 
@@ -63,7 +67,15 @@ class GafferConnector:
             raise ConnectionError(
                 f'HTTP error {response.status_code}: {response.text}')
 
-        return response.json()
+        try:
+            response_json = response.json()
+        except json.JSONDecodeError:
+            response_json = response.text
+
+        if response_json is not None and response_json is not '':
+            return response_json
+        else:
+            return None
 
     def __print_status(self):
         status = self.get("/graph/status")
