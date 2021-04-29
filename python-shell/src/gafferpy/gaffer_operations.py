@@ -2308,11 +2308,10 @@ class GetWalks(Operation):
         if operations is not None:
             self.operations = []
             for op in operations:
-                if isinstance(op, Operation):
-                    if not isinstance(op, GetElements) and not isinstance(op, OperationChain):
-                        raise TypeError('Operations must be of type GetElements or OperationChain')
-                else:
+                if not isinstance(op, Operation):
                     op = JsonConverter.from_json(op)
+                if not isinstance(op, GetElements) and not isinstance(op, OperationChain):
+                    raise TypeError('Operations must be of type GetElements or OperationChain')
                 self.operations.append(op)
 
     def to_json(self):

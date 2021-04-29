@@ -384,13 +384,17 @@ class JsonConverter:
 
     @staticmethod
     def object_decoder(obj, class_name=None):
+        if not isinstance(obj, dict):
+            raise TypeError(f'from_json called on object of type {type(obj)},\
+                \nshould be a dict. obj: {obj}')
+
         if class_name is None:
             if 'class' in obj:
                 class_name = obj.get('class')
             else:
                 return obj
-
-        if not isinstance(obj, dict):
+        
+        if class_name != obj.get('class'):
             raise TypeError(f'Argument {obj} not of type {class_name}')
 
         custom_json_converter = JsonConverter.CUSTOM_JSON_CONVERTERS.get(
@@ -433,11 +437,9 @@ class JsonConverter:
                 obj = JsonConverter.object_decoder(
                     json_obj, class_name)
         else:
-            json_obj_str = json_obj
-            if not isinstance(json_obj_str, str):
-                json_obj_str = json.dumps(json_obj_str)
-            obj = json.loads(json_obj_str,
-                             object_hook=JsonConverter.object_decoder)
+            if isinstance(json_obj, str):
+                json_obj = json.loads(json_obj)
+            obj = JsonConverter.object_decoder(json_obj)
 
         if validate:
             if isinstance(obj, ToJson):
