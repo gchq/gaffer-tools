@@ -228,7 +228,7 @@ There is also a Federated Store Demo, which can be run using:
 
 After the REST and UI have been started you will need to add some federated graphs. There are some example scripts that will execute the AddGraph operation on the REST api (via curl):
 ```bash
-./ui/example/federated/basic/scripts/addAccumuloEntitiesGraph.sh
+./ui/example/federated/basic/scripts/addMapEntitiesGraph.sh
 ./ui/example/federated/basic/scripts/addMapEdgesGraph.sh
 ```
 
@@ -242,10 +242,10 @@ To test out some queries you will need to add some elements to these graphs. You
 ./ui/example/federated/basic/scripts/addElements.sh
 ```
 
-Once you have run these scripts you will have 2 graphs available, accEntities and mapEdges.
+Once you have run these scripts you will have 2 graphs available, mapEntities and mapEdges.
 In the UI you can perform queries on these 2 graph simultaneously or you can limit which graph you query.
 When you open the UI, first head to the settings page and add a default operation option:
-'Federated Store - Graph IDs' with the value: accEntities,mapEdges
+'Federated Store - Graph IDs' with the value: mapEntities,mapEdges
 This will tell the Gaffer you want to query both Graphs. You will then need to click the 'Update Schema' button, to
 obtain a merged schema for these 2 graphs.
 

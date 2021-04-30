@@ -2913,6 +2913,19 @@ class ChangeGraphAccess(Operation):
 
         return operation
 
+class ChangeGraphId(Operation):
+    CLASS = "uk.gov.gchq.gaffer.federatedstore.operation.ChangeGraphId"
+
+    def __init__(self, graph_id, new_graph_id, options=None):
+        super().__init__(_class_name=self.CLASS, options=options)
+        self.graph_id = graph_id
+        self.new_graph_id = new_graph_id
+
+    def to_json(self):
+        operation = super().to_json()
+        operation["graphId"] = self.graph_id
+        operation["newGraphId"] = self.new_graph_id
+        return operation
 
 class GetVariable(Operation):
     CLASS = 'uk.gov.gchq.gaffer.operation.impl.GetVariable'
@@ -2965,6 +2978,17 @@ class SetVariable(Operation):
 
         return operation
 
+class CountAllElementsDefaultView(Operation):
+    CLASS = 'uk.gov.gchq.gaffer.mapstore.operation.CountAllElementsDefaultView'
+
+    def __init__(self,
+                 view=None,
+                 directed_type=None,
+                 options=None):
+        super().__init__(
+            _class_name=self.CLASS,
+            view=view,
+            options=options)
 
 def load_operation_json_map():
     for name, class_obj in inspect.getmembers(
