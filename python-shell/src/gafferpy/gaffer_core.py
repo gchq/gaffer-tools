@@ -393,9 +393,10 @@ class JsonConverter:
                 class_name = obj.get('class')
             else:
                 return obj
-        
-        if class_name != obj.get('class'):
-            raise TypeError(f'Argument {obj} not of type {class_name}')
+
+        if obj.get('class'):
+            if class_name != obj.get('class'):
+                raise TypeError(f'Argument {obj} not of type {class_name}')
 
         custom_json_converter = JsonConverter.CUSTOM_JSON_CONVERTERS.get(
             class_name)
@@ -437,9 +438,14 @@ class JsonConverter:
                 obj = JsonConverter.object_decoder(
                     json_obj, class_name)
         else:
-            if isinstance(json_obj, str):
-                json_obj = json.loads(json_obj)
-            obj = JsonConverter.object_decoder(json_obj)
+            json_obj_str = json_obj
+            if not isinstance(json_obj_str, str):
+                try:
+                    json_obj_str = json.dumps(json_obj_str)
+                except json.JSONDecodeError:
+                    json_obj_str = json_obj
+            obj = json.loads(json_obj_str,
+                             object_hook=JsonConverter.object_decoder)
 
         if validate:
             if isinstance(obj, ToJson):
