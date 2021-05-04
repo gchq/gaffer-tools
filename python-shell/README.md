@@ -37,7 +37,7 @@ To use the python shell without installing just ensure you are execute your scri
 ```python
 from gafferpy import gaffer as g
 from gafferpy import gaffer_connector
-gc = gaffer_connector.GafferConnector("localhost:8080/rest/latest")
+gc = gaffer_connector.GafferConnector("http://localhost:8080/rest/latest")
 ```
 
 To fetch the Gaffer schema you can then run:
@@ -116,7 +116,7 @@ After installation the shell can be imported into an application as below:
 ```python
 from gaffer_shell import gaffer as g
 from gaffer_shell import gaffer_connector
-gc = gaffer_connector.GafferConnector("localhost:8080/rest/latest")
+gc = gaffer_connector.GafferConnector("http://localhost:8080/rest/latest")
 ```
 
 ### Testing
