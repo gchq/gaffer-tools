@@ -53,15 +53,6 @@ describe('The My Queries component', function() {
         });
     });
 
-    describe('ctrl.queriesList()', function() {
-
-        it('should return updated queries to child', function() {
-
-            spyOn(ctrl, 'queriesList').and.callThrough();
-
-        });
-    });
-
     describe('ctrl.getUpdatedOperations()', function() {
         
         it('should update name and description inputs', function() {
