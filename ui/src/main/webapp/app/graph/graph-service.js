@@ -24,6 +24,9 @@ angular.module('app').factory('graph', function() {
 
     var graphConfiguration = null;
 
+    var removedElements = [];
+    var graphJson = {};
+
     var selectedElements = {
         entities: [],
         edges: []
@@ -74,6 +77,43 @@ angular.module('app').factory('graph', function() {
      */
     service.setSearchTerm = function(search) {
         searchTerm = angular.copy(search);
+    }
+
+    /**
+     * Gets the removed elements.
+     */
+    service.getRemovedElements = function() {
+        return removedElements;
+    }
+
+    /**
+     * Sets the removed elements.
+     * @param removedElements;
+     */
+    service.setRemovedElements = function(newRemovedElements) {
+        removedElements = newRemovedElements
+    }
+
+    /**
+     * Checks if the graph json has been set.
+     */
+    service.hasGraphJson = function() {
+        return graphJson && Object.keys(graphJson).length > 0 && Object.keys(graphJson.elements).length > 0;
+    }
+
+    /**
+     * Gets the graph json.
+     */
+    service.getGraphJson = function() {
+        return graphJson;
+    }
+
+    /**
+     * Sets the graph json.
+     * @param graphJson;
+     */
+    service.setGraphJson = function(newGraphJson) {
+        graphJson = newGraphJson;
     }
 
     /**

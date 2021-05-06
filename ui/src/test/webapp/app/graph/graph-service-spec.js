@@ -83,6 +83,48 @@ describe('The Graph service', function() {
         });
     });
 
+    describe('graph.getRemovedElements()', function() {
+        it('should set and get the removed elements', function() {
+            var removedElements = [1,3,5,7];
+            service.setRemovedElements(removedElements);
+
+            var result = service.getRemovedElements();
+
+            expect(result).toEqual(removedElements);
+        })
+    });
+
+    describe('graph.getGraphJson()', function() {
+        it('should set and get the graph json', function() {
+            var graphJson = {elements: [1,2]};
+            service.setGraphJson(graphJson);
+
+            var result = service.getGraphJson();
+
+            expect(result).toEqual(graphJson);
+        })
+    });
+
+    describe('graph.hasGraphJson()', function() {
+        it('should return true when the graph json is set', function() {
+            var graphJson = {elements: [1,2]};
+            service.setGraphJson(graphJson);
+
+            var result = service.hasGraphJson();
+
+            expect(result).toEqual(true);
+        })
+
+        it('should return false when the graph json is not set', function() {
+            var graphJson = {elements: []};
+            service.setGraphJson(graphJson);
+
+            var result = service.hasGraphJson();
+
+            expect(result).toEqual(false);
+        })
+    });
+
     describe('graph.deselectAll()', function() {
 
         beforeEach(function() {

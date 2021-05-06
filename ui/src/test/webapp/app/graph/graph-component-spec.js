@@ -308,6 +308,24 @@ describe("The Graph Component", function() {
             expect(ctrl.update).toHaveBeenCalled();
         })
 
+        it('should load the graph from the saved graph json when it exists', function() {
+            var graphJson = {elements: [1,2]};
+            spyOn(ctrl, 'update').and.stub();
+            $httpBackend.whenGET('config/config.json').respond(200, {});
+            graph.setGraphJson(graphJson);
+            spyOn(injectableCytoscape, 'json')
+
+            ctrl.$onInit();
+
+            $httpBackend.flush();
+            jasmine.clock().tick(101);
+
+            scope.$digest();
+
+            expect(injectableCytoscape.json).toHaveBeenCalledWith(graphJson);
+            expect(ctrl.update).toHaveBeenCalled();
+        })
+
         it('should run the filter once loaded if the service holds a filter', function() {
             spyOn(ctrl, 'filter').and.stub();
             spyOn(ctrl, 'update').and.stub();
@@ -447,7 +465,16 @@ describe("The Graph Component", function() {
     
                 expect(events.unsubscribe).toHaveBeenCalledWith("incomingResults", jasmine.any(Function));
             });
-    
+
+            it('should save the graph json', function() {
+                var graphJson = {elements: [1,2]};
+                spyOn(injectableCytoscape, 'json').and.returnValue(graphJson);
+
+                ctrl.$onDestroy();
+                expect(injectableCytoscape.json).toHaveBeenCalled();
+                expect(graph.getGraphJson()).toEqual(graphJson);
+            });
+
             it('should destroy the cytoscape graph cleanly', function() {    
                 spyOn(injectableCytoscape, 'destroy');
 
@@ -649,7 +676,15 @@ describe("The Graph Component", function() {
 
                 expect(injectableCytoscape.nodes().size()).toEqual(1);
             });
-    
+
+            it('should save the removed elements', function() {
+                graph.setRemovedElements([]);
+                ctrl.removeSelected();
+
+                expect(injectableCytoscape.nodes().size()).toEqual(1);
+                expect(graph.getRemovedElements().length).toEqual(2);
+            });
+
             it('should unselect all the elements', function() {
                 expect(injectableCytoscape.elements(':selected').size()).toEqual(1);
 
@@ -678,6 +713,13 @@ describe("The Graph Component", function() {
             it('should add elements from the results to the graph', function() {
                 ctrl.update(elements);
                 expect(injectableCytoscape.elements().size()).toEqual(3);
+            });
+
+            it('should remove previously removed elements from the results', function() {
+                graph.setRemovedElements([{id: function(){return "\"foo\""}}]);
+                injectableCytoscape.elements().restore();
+                ctrl.update(elements);
+                expect(injectableCytoscape.elements().size()).toEqual(1);
             });
 
             it('should not error when vertex type is unknown', function() {
