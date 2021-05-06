@@ -4375,7 +4375,7 @@ class GafferOperationsTest(unittest.TestCase):
                 }
             ],
             "options": {
-                "key1": "value1"
+                "gaffer.federatedstore.operation.graphIds": "value1"
             }
         }
         ''',
@@ -4388,7 +4388,7 @@ class GafferOperationsTest(unittest.TestCase):
                         ]
                     )
                 ],
-                options={"key1": "value1"}
+                options=["value1"]
             )
         ],
         [
@@ -5120,8 +5120,8 @@ class GafferOperationsTest(unittest.TestCase):
                   "class" : "uk.gov.gchq.gaffer.operation.impl.get.GetElements"
                 } ]
               },
-              "options" : {
-                "key" : "value"
+              "options": {
+                "gaffer.federatedstore.operation.graphIds": "value1"
               }
             }
             ''',
@@ -5132,9 +5132,7 @@ class GafferOperationsTest(unittest.TestCase):
                         g.GetElements()
                     ]
                 ),
-                options={
-                    "key": "value"
-                }
+                options=["value1"]
             )
         ],
         [
@@ -5149,8 +5147,8 @@ class GafferOperationsTest(unittest.TestCase):
                   "class" : "uk.gov.gchq.gaffer.operation.impl.get.GetElements"
                 } ]
               },
-              "options" : {
-                "key" : "value"
+              "options": {
+                "gaffer.federatedstore.operation.graphIds": "value1"
               }
             }
             ''',
@@ -5163,9 +5161,7 @@ class GafferOperationsTest(unittest.TestCase):
                         "class": "uk.gov.gchq.gaffer.operation.impl.get.GetElements"
                     }]
                 },
-                options={
-                    "key": "value"
-                }
+                options=["value1"]
             )
         ],
         [
@@ -5174,17 +5170,15 @@ class GafferOperationsTest(unittest.TestCase):
                 "class" : "uk.gov.gchq.gaffer.operation.impl.SetVariable",
                 "input" : "testVal",
                 "variableName" : "testVarName",
-                "options" : {
-                    "key" : "value"
+                "options": {
+                  "gaffer.federatedstore.operation.graphIds": "value1"
                 }
             }
             ''',
             g.SetVariable(
                 input="testVal",
                 variable_name="testVarName",
-                options={
-                    "key": "value"
-                }
+                options=["value1"]
             )
         ],
         [
@@ -5192,16 +5186,14 @@ class GafferOperationsTest(unittest.TestCase):
             {
                 "class" : "uk.gov.gchq.gaffer.operation.impl.GetVariable",
                 "variableName" : "testVarName",
-                "options" : {
-                    "key" : "value"
+                "options": {
+                  "gaffer.federatedstore.operation.graphIds": "value1"
                 }
             }
             ''',
             g.GetVariable(
                 variable_name="testVarName",
-                options={
-                    "key": "value"
-                }
+                options=["value1"]
             )
         ],
         [
@@ -5209,16 +5201,14 @@ class GafferOperationsTest(unittest.TestCase):
             {
                 "class" : "uk.gov.gchq.gaffer.operation.impl.GetVariables",
                 "variableNames" : ["testVarName", "testVarName2"],
-                "options" : {
-                    "key" : "value"
+                "options": {
+                  "gaffer.federatedstore.operation.graphIds": "value1,value2,value3"
                 }
             }
             ''',
             g.GetVariables(
                 variable_names=["testVarName", "testVarName2"],
-                options={
-                    "key": "value"
-                }
+                options=["value1", "value2", "value3"]
             )
         ],
         [
@@ -5263,8 +5253,8 @@ class GafferOperationsTest(unittest.TestCase):
                   "class" : "uk.gov.gchq.gaffer.operation.impl.get.GetElements"
                 } ]
               },
-              "options" : {
-                "key" : "value"
+              "options": {
+                "gaffer.federatedstore.operation.graphIds": "value1,value2"
               }
             }
             ''',
@@ -5277,9 +5267,7 @@ class GafferOperationsTest(unittest.TestCase):
                         "class": "uk.gov.gchq.gaffer.operation.impl.get.GetElements"
                     }]
                 },
-                options={
-                    "key": "value"
-                }
+                options=["value1", "value2"]
             )
         ],
         [
