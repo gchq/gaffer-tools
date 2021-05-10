@@ -2318,12 +2318,11 @@ class GetWalks(Operation):
 
         if conditional is not None:
             if not isinstance(conditional, ToJson):
-                self.conditional = JsonConverter.from_json(conditional,
+                conditional = JsonConverter.from_json(conditional,
                                                            Conditional)
             if not isinstance(conditional, Conditional):
                 raise TypeError('Conditional must be of type Conditional')
-            else:
-                self.conditional = conditional
+            self.conditional = conditional
         else:
             self.conditional = None
 

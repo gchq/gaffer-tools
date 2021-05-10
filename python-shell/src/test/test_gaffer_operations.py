@@ -5337,6 +5337,93 @@ class GafferOperationsTest(unittest.TestCase):
                 graph_id="old_name",
                 new_graph_id="new_name"
             )
+        ],
+        [
+            '''
+            {
+                "class": "uk.gov.gchq.gaffer.operation.OperationChain",
+                "operations": [{
+                    "class": "uk.gov.gchq.gaffer.operation.impl.GetWalks",
+                    "conditional" : {
+                        "predicate" : {
+                            "class" : "uk.gov.gchq.koryphe.impl.predicate.IsMoreThan",
+                            "value" : 3,
+                            "orEqualTo" : true
+                        },
+                        "transform" : {
+                            "class" : "uk.gov.gchq.gaffer.operation.impl.Map",
+                            "functions" : [
+                                {
+                                    "class" : "uk.gov.gchq.gaffer.data.element.function.ExtractProperty",
+                                    "name" : "count"
+                                }
+                            ]
+                        }
+                    },
+                    "include_partial": false,
+                    "resultsLimit": 500000,
+                    "input": [{
+                        "class": "uk.gov.gchq.gaffer.operation.data.EntitySeed",
+                        "vertex": 1
+                    }],
+                    "operations": [{
+                        "class": "uk.gov.gchq.gaffer.operation.impl.get.GetElements",
+                        "input": [{
+                            "class": "uk.gov.gchq.gaffer.operation.data.EntitySeed",
+                            "vertex": 2
+                        }]
+                    }, {
+                        "class": "uk.gov.gchq.gaffer.operation.impl.get.GetElements",
+                        "input": [{
+                            "class": "uk.gov.gchq.gaffer.operation.data.EntitySeed",
+                            "vertex": 4
+                        }]
+                    }]
+                }]
+            }
+            ''',
+            g.OperationChain(
+                operations=[
+                    g.GetWalks(
+                        conditional=g.Conditional(
+                            predicate=g.IsMoreThan(
+                                value=3,
+                                or_equal_to=True
+                            ),
+                            transform=g.Map(
+                                functions=[
+                                    g.ExtractProperty(
+                                        name='count'
+                                    )
+                                ]
+                            )
+                        ),
+                        include_partial=False,
+                        results_limit=500000,
+                        input=[
+                            g.EntitySeed(
+                                vertex=1
+                            )
+                        ],
+                        operations=[
+                            g.GetElements(
+                                input=[
+                                    g.EntitySeed(
+                                        vertex=2
+                                    )
+                                ]
+                            ),
+                            g.GetElements(
+                                input=[
+                                    g.EntitySeed(
+                                        vertex=4
+                                    )
+                                ]
+                            )
+                        ]
+                    )
+                ]
+            )
         ]
     ]
 
