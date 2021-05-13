@@ -20,7 +20,7 @@ Gaffer tools is built using maven. This process will automatically pull in depen
  projects below.
 
 
-Gaffer (uk.gov.gchq.gaffer:gaffer2:1.16.0):
+Gaffer (uk.gov.gchq.gaffer:gaffer2:1.16.1):
 
 - Apache License, Version 2.0
 
