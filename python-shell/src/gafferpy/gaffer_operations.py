@@ -2656,18 +2656,15 @@ class Conditional(ToJson, ToCodeString):
 
     def __init__(self, predicate=None, transform=None):
 
-        if predicate is not None:
-            if not isinstance(predicate, gaffer_predicates.Predicate):
-                self.predicate = JsonConverter.from_json(predicate,
-                                                         gaffer_predicates.Predicate)
-            else:
-                self.predicate = predicate
+        if predicate is not None and not isinstance(predicate, gaffer_predicates.Predicate):
+            self.predicate = JsonConverter.from_json(predicate, gaffer_predicates.Predicate)
+        else:
+            self.predicate = predicate
 
-        if transform is not None:
-            if not isinstance(transform, Operation):
-                self.transform = JsonConverter.from_json(transform, Operation)
-            else:
-                self.transform = transform
+        if transform is not None and not isinstance(transform, Operation):
+            self.transform = JsonConverter.from_json(transform, Operation)
+        else:
+            self.transform = transform
 
     def to_json(self):
         conditional_json = {}
