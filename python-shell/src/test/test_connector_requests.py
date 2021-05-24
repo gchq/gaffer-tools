@@ -18,12 +18,12 @@ import unittest
 import json
 
 from gafferpy import gaffer as g
-from gafferpy import gaffer_connector
+from gafferpy import gaffer_connector_requests
 
 
 class GafferConnectorTest(unittest.TestCase):
     def test_execute_operation(self):
-        gc = gaffer_connector.GafferConnector('http://localhost:8080/rest/latest')
+        gc = gaffer_connector_requests.GafferConnector('http://localhost:8080/rest/latest')
         elements = gc.execute_operation(
             g.GetElements(
                 input=[
@@ -45,7 +45,7 @@ class GafferConnectorTest(unittest.TestCase):
             elements)
 
     def test_is_operation_supported(self):
-        gc = gaffer_connector.GafferConnector('http://localhost:8080/rest/latest')
+        gc = gaffer_connector_requests.GafferConnector('http://localhost:8080/rest/latest')
 
         response_text = gc.is_operation_supported(
             g.IsOperationSupported(
@@ -140,7 +140,7 @@ class GafferConnectorTest(unittest.TestCase):
 
     def test_execute_get(self):
         self.maxDiff = None
-        gc = gaffer_connector.GafferConnector('http://localhost:8080/rest/latest')
+        gc = gaffer_connector_requests.GafferConnector('http://localhost:8080/rest/latest')
 
         response_text = gc.execute_get(
             g.GetOperations()
@@ -218,7 +218,7 @@ class GafferConnectorTest(unittest.TestCase):
 
     def test_dummy_header(self):
         """Test that the addition of a dummy header does not effect the standard test"""
-        gc = gaffer_connector.GafferConnector('http://localhost:8080/rest/latest', headers={"dummy_Header": "value"})
+        gc = gaffer_connector_requests.GafferConnector('http://localhost:8080/rest/latest', headers={"dummy_Header": "value"})
         elements = gc.execute_operation(
             g.GetElements(
                 input=[
@@ -244,9 +244,9 @@ class GafferConnectorTest(unittest.TestCase):
         host = 'http://localhost:8080/rest/latest',
         verbose = False,
         headers = {"dummy_Header": "value"}
-        gc = gaffer_connector.GafferConnector(host, verbose, headers)
+        gc = gaffer_connector_requests.GafferConnector(host, verbose, headers)
 
-        actuals = [gc._host, gc._verbose, gc._headers]
+        actuals = [gc._host, gc._verbose, gc._session.headers]
         expecteds = [host, verbose, headers]
 
         for actual, expected in zip(actuals, expecteds):
@@ -256,7 +256,7 @@ class GafferConnectorTest(unittest.TestCase):
         """Test that a ConnectionError is correctly raised when a HTTP 404 error is caught"""
         # Define a host that has an invalid endpoint in order to get a HTTP 404 error
         host_with_bad_endpoint = "http://localhost:8080/badEndPoint"
-        gc = gaffer_connector.GafferConnector(host_with_bad_endpoint)
+        gc = gaffer_connector_requests.GafferConnector(host_with_bad_endpoint)
 
         # Check that a ConnectionError is raised (which is catching the underlying HTTP 404)
         with self.assertRaises(ConnectionError):
