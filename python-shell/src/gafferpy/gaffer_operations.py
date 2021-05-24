@@ -2297,12 +2297,15 @@ class GetWalks(Operation):
     def __init__(self,
                  input=None,
                  operations=None,
+                 include_partial=None,
+                 conditional=None,
                  results_limit=None,
                  options=None):
         super().__init__(_class_name=self.CLASS,
                          options=options)
         self.input = input
         self.operations = None
+        self.include_partial = include_partial
         self.results_limit = results_limit
 
         if operations is not None:
@@ -2313,6 +2316,16 @@ class GetWalks(Operation):
                 if not isinstance(op, GetElements) and not isinstance(op, OperationChain):
                     raise TypeError('Operations must be of type GetElements or OperationChain')
                 self.operations.append(op)
+
+        if conditional is not None:
+            if not isinstance(conditional, ToJson):
+                conditional = JsonConverter.from_json(conditional,
+                                                           Conditional)
+            if not isinstance(conditional, Conditional):
+                raise TypeError('Conditional must be of type Conditional')
+            self.conditional = conditional
+        else:
+            self.conditional = None
 
     def to_json(self):
         operation = super().to_json()
@@ -2330,6 +2343,12 @@ class GetWalks(Operation):
             for op in self.operations:
                 operations_json.append(op.to_json())
             operation['operations'] = operations_json
+
+        if self.include_partial is not None:
+            operation['include_partial'] = self.include_partial
+
+        if self.conditional is not None:
+            operation['conditional'] = self.conditional.to_json()
 
         return operation
 
@@ -2638,18 +2657,15 @@ class Conditional(ToJson, ToCodeString):
 
     def __init__(self, predicate=None, transform=None):
 
-        if predicate is not None:
-            if not isinstance(predicate, gaffer_predicates.Predicate):
-                self.predicate = JsonConverter.from_json(predicate,
-                                                         gaffer_predicates.Predicate)
-            else:
-                self.predicate = predicate
+        if predicate is not None and not isinstance(predicate, gaffer_predicates.Predicate):
+            self.predicate = JsonConverter.from_json(predicate, gaffer_predicates.Predicate)
+        else:
+            self.predicate = predicate
 
-        if transform is not None:
-            if not isinstance(transform, Operation):
-                self.transform = JsonConverter.from_json(transform, Operation)
-            else:
-                self.transform = transform
+        if transform is not None and not isinstance(transform, Operation):
+            self.transform = JsonConverter.from_json(transform, Operation)
+        else:
+            self.transform = transform
 
     def to_json(self):
         conditional_json = {}
