@@ -41,9 +41,11 @@ class GafferConnector:
                 headers=headers,
                 data=json_body)
             response.raise_for_status()
-        except requests.exceptions.HTTPError:
+        except requests.exceptions.HTTPError as error:
             raise ConnectionError(
-                f'HTTP error {response.status_code}: {response.text}')
+                f'HTTP error {error.response.status_code}: '
+                f'{error.response.text}'
+            )
 
         try:
             response_json = response.json()
@@ -63,9 +65,11 @@ class GafferConnector:
         try:
             response = self._session.get(self._host + path)
             response.raise_for_status()
-        except requests.exceptions.HTTPError:
+        except requests.exceptions.HTTPError as error:
             raise ConnectionError(
-                f'HTTP error {response.status_code}: {response.text}')
+                f'HTTP error {error.response.status_code}: '
+                f'{error.response.text}'
+            )
 
         try:
             response_json = response.json()
