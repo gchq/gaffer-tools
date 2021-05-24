@@ -252,5 +252,15 @@ class GafferConnectorTest(unittest.TestCase):
         for actual, expected in zip(actuals, expecteds):
             self.assertEqual(actual, expected)
 
+    def test_raise_connection_error(self):
+        """Test that a ConnectionError is correctly raised when a HTTP 404 error is caught"""
+        # Define a host that has an invalid endpoint in order to get a HTTP 404 error
+        host_with_bad_endpoint = "http://localhost:8080/badEndPoint"
+        gc = gaffer_connector.GafferConnector(host_with_bad_endpoint)
+
+        # Check that a ConnectionError is raised (which is catching the underlying HTTP 404)
+        with self.assertRaises(ConnectionError):
+            gc.execute_get(g.GetOperations())
+
 if __name__ == "__main__":
     unittest.main()
