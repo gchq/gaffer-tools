@@ -100,7 +100,7 @@ class GafferConnector:
             response.raise_for_status()
         except requests.exceptions.HTTPError as error:
             raise ConnectionError(
-                'HTTP error ' + error.response.status_code + ': ' + error.response.text)
+                'HTTP error ' + str(error.response.status_code) + ': ' + error.response.text)
 
         try:
             response_json = response.json()
@@ -147,7 +147,7 @@ class GafferConnector:
             response.raise_for_status()
         except requests.exceptions.HTTPError as error:
             raise ConnectionError(
-                'HTTP error ' + error.response.status_code + ': ' + error.response.text)
+                'HTTP error ' + str(error.response.status_code) + ': ' + error.response.text)
 
         return response.text
 
@@ -178,7 +178,7 @@ class GafferConnector:
             response.raise_for_status()
         except requests.exceptions.HTTPError as error:
             raise ConnectionError(
-                'HTTP error ' + error.response.status_code + ': ' + error.response.text)
+                'HTTP error ' + str(error.response.status_code) + ': ' + error.response.text)
 
         return response.text
 
