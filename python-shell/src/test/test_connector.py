@@ -241,8 +241,8 @@ class GafferConnectorTest(unittest.TestCase):
 
     def test_class_initilisation(self):
         """Test that the gaffer_connector class is correctly initialised with instance attributes"""
-        host = 'http://localhost:8080/rest/latest',
-        verbose = False,
+        host = 'http://localhost:8080/rest/latest'
+        verbose = False
         headers = {"dummy_Header": "value"}
         gc = gaffer_connector.GafferConnector(host, verbose, headers)
 

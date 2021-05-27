@@ -8,15 +8,14 @@ from fishbowl.util import to_json
 
 class GafferConnector:
     def __init__(self, host, verbose=False,
-                 headers=None, auth=None, cert=None,
+                 headers={}, auth=None, cert=None,
                  verify=True, proxies={}, protocol=None):
         self._host = host
         self._verbose = verbose
 
         # Create the session
         self._session = requests.Session()
-        if headers:
-            self._session.headers = headers
+        self._session.headers.update(headers)
         self._session.auth = auth
         self._session.cert = cert
         self._session.verify = verify
