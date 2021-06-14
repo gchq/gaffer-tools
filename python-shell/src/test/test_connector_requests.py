@@ -241,9 +241,9 @@ class GafferConnectorTest(unittest.TestCase):
 
     def test_class_initilisation(self):
         """Test that the gaffer_connector class is correctly initialised with instance attributes"""
-        host = 'http://localhost:8080/rest/latest',
-        verbose = False,
-        headers = {"dummy_Header": "value"}
+        host = 'http://localhost:8080/rest/latest'
+        verbose = False
+        headers = {'User-Agent': 'python-requests/2.25.1', 'Accept-Encoding': 'gzip, deflate', 'Accept': '*/*', 'Connection': 'keep-alive', 'dummy_Header': 'value'}
         gc = gaffer_connector_requests.GafferConnector(host, verbose, headers)
 
         actuals = [gc._host, gc._verbose, gc._session.headers]

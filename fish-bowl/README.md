@@ -48,3 +48,7 @@ You can then construct and execute Gaffer operations using the following syntax
 conn = fb.get_connector()
 conn.execute(operations.OperationChain(operations=[operations.GetAllElements(), operations.Count()]))
 ```
+
+## Requirements
+- Python 3.6+ 
+- [requests](https://docs.python-requests.org/en/master/index.html)
