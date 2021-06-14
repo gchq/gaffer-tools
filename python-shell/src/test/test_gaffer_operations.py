@@ -5451,6 +5451,42 @@ class GafferOperationsTest(unittest.TestCase):
                 ]
             },
             g.GetElements(input="value").to_json())
+    
+    def test_get_walks_correct_op(self):
+        expected_output_json = {
+            "class": "uk.gov.gchq.gaffer.operation.impl.GetWalks", 
+            "operations": [{
+                "class": "uk.gov.gchq.gaffer.operation.impl.get.GetElements"
+            }]
+        }
+        self.assertEqual(g.GetWalks(
+            operations=[g.GetElements()]), expected_output_json)
+
+    def test_get_walks_incorrect_op(self):
+        with self.assertRaises(TypeError):
+            g.GetWalks(operations=[g.GetAllElements()])
+
+    def test_get_walks_correct_json(self):
+        get_elements_json = {
+            "class" : "uk.gov.gchq.gaffer.operation.impl.get.GetElements"
+        }
+        expected_output_json = {
+            "class": "uk.gov.gchq.gaffer.operation.impl.GetWalks", 
+            "operations": [{
+                "class": "uk.gov.gchq.gaffer.operation.impl.get.GetElements"
+            }]
+        }
+        self.assertEqual(
+            g.GetWalks(operations=[get_elements_json]), 
+            expected_output_json
+        )
+
+    def test_get_walks_incorect_json(self):
+        get_all_elements_json = {
+            "class" : "uk.gov.gchq.gaffer.operation.impl.get.GetAllElements"
+        }
+        with self.assertRaises(TypeError):
+            g.GetWalks(operations=[{"class": "uk.gov.gchq.gaffer.operation.impl.get.GetAllElements"}])
 
 
 if __name__ == "__main__":
