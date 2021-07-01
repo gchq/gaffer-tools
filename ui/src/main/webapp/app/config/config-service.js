@@ -55,7 +55,11 @@ angular.module('app').factory('config', ['$http', '$q', 'defaultRestEndpoint', '
                             customConfig = {};
                         }
                         if (!mergedConfig.restEndpoint && !customConfig.restEndpoint) {
-                            mergedConfig.restEndpoint = defaultRestEndpoint.get();
+                            if (customConfig.gafferEndpoint) {
+                                mergedConfig.restEndpoint = defaultRestEndpoint.getMerged(customConfig.gafferEndpoint)
+                            } else {
+                                mergedConfig.restEndpoint = defaultRestEndpoint.get();
+                            }
                         }
                         if('types' in mergedConfig && 'types' in customConfig) {
                             angular.merge(mergedConfig['types'], customConfig['types']);

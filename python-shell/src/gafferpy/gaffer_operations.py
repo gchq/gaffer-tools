@@ -594,7 +594,7 @@ class ElementMatch(Match):
         match_json = super().to_json()
         if (self.group_by_properties is not None):
             match_json['groupByProperties'] = self.group_by_properties
-        
+
         return match_json
 
 class KeyFunctionMatch(Match):
@@ -602,7 +602,7 @@ class KeyFunctionMatch(Match):
 
     def __init__(self, first_key_function=None, second_key_function=None):
         super().__init__(_class_name=self.CLASS)
-        
+
         if not isinstance(first_key_function, gaffer_functions.Function):
             self.first_key_function = JsonConverter.from_json(first_key_function, class_obj=gaffer_functions.Function)
         else:
@@ -1159,6 +1159,20 @@ class GetAdjacentIds(GetOperation):
             seed_matching_type=None,
             seed_matching=None,
             options=options)
+
+
+class CountAllElementsDefaultView(Operation):
+    CLASS = "uk.gov.gchq.gaffer.mapstore.operation.CountAllElementsDefaultView"
+
+    def __init__(self, input=None, options=None):
+        super().__init__(_class_name=self.CLASS, options=options)
+        self.input = input
+
+    def to_json(self):
+        operation_json = super().to_json()
+        if self.input is not None:
+            operation_json["input"] = self.input
+        return operation_json
 
 
 class GetAllElements(GetOperation):
@@ -2283,21 +2297,35 @@ class GetWalks(Operation):
     def __init__(self,
                  input=None,
                  operations=None,
+                 include_partial=None,
+                 conditional=None,
                  results_limit=None,
                  options=None):
         super().__init__(_class_name=self.CLASS,
                          options=options)
         self.input = input
         self.operations = None
+        self.include_partial = include_partial
         self.results_limit = results_limit
 
         if operations is not None:
             self.operations = []
             for op in operations:
-                if not isinstance(op, GetElements) and not isinstance(op,
-                                                                      OperationChain):
+                if not isinstance(op, Operation):
                     op = JsonConverter.from_json(op)
+                if not isinstance(op, GetElements) and not isinstance(op, OperationChain):
+                    raise TypeError('Operations must be of type GetElements or OperationChain')
                 self.operations.append(op)
+
+        if conditional is not None:
+            if not isinstance(conditional, ToJson):
+                conditional = JsonConverter.from_json(conditional,
+                                                           Conditional)
+            if not isinstance(conditional, Conditional):
+                raise TypeError('Conditional must be of type Conditional')
+            self.conditional = conditional
+        else:
+            self.conditional = None
 
     def to_json(self):
         operation = super().to_json()
@@ -2315,6 +2343,12 @@ class GetWalks(Operation):
             for op in self.operations:
                 operations_json.append(op.to_json())
             operation['operations'] = operations_json
+
+        if self.include_partial is not None:
+            operation['include_partial'] = self.include_partial
+
+        if self.conditional is not None:
+            operation['conditional'] = self.conditional.to_json()
 
         return operation
 
@@ -2623,18 +2657,15 @@ class Conditional(ToJson, ToCodeString):
 
     def __init__(self, predicate=None, transform=None):
 
-        if predicate is not None:
-            if not isinstance(predicate, gaffer_predicates.Predicate):
-                self.predicate = JsonConverter.from_json(predicate,
-                                                         gaffer_predicates.Predicate)
-            else:
-                self.predicate = predicate
+        if predicate is not None and not isinstance(predicate, gaffer_predicates.Predicate):
+            self.predicate = JsonConverter.from_json(predicate, gaffer_predicates.Predicate)
+        else:
+            self.predicate = predicate
 
-        if transform is not None:
-            if not isinstance(transform, Operation):
-                self.transform = JsonConverter.from_json(transform, Operation)
-            else:
-                self.transform = transform
+        if transform is not None and not isinstance(transform, Operation):
+            self.transform = JsonConverter.from_json(transform, Operation)
+        else:
+            self.transform = transform
 
     def to_json(self):
         conditional_json = {}
@@ -2648,12 +2679,12 @@ class Conditional(ToJson, ToCodeString):
 
 
 class Join(Operation):
-    
+
     CLASS = 'uk.gov.gchq.gaffer.operation.impl.join.Join'
 
     def __init__(self, input=None, operation=None, match_method=None, match_key=None, flatten=None, join_type=None, collection_limit=None, options=None):
         super().__init__(_class_name=self.CLASS, options=options)
-        
+
         if operation is not None:
             if not isinstance(operation, Operation):
                 self.operation = JsonConverter.from_json(operation)
@@ -2682,7 +2713,7 @@ class Join(Operation):
                     json_input.append(input.to_json())
                 else:
                     json_input.append(input)
-                
+
             operation_json['input'] = json_input
         if self.operation is not None:
             operation_json['operation'] = self.operation.to_json()
@@ -2737,7 +2768,7 @@ class FederatedOperationChain(Operation):
                 self.operation_chain = OperationChain(operation_chain)
             else:
                 self.operation_chain = JsonConverter.from_json(operation_chain, OperationChain)
-        
+
     def to_json(self):
         operation = super().to_json()
         operation['operationChain'] = self.operation_chain.to_json()
@@ -2898,6 +2929,19 @@ class ChangeGraphAccess(Operation):
 
         return operation
 
+class ChangeGraphId(Operation):
+    CLASS = "uk.gov.gchq.gaffer.federatedstore.operation.ChangeGraphId"
+
+    def __init__(self, graph_id, new_graph_id, options=None):
+        super().__init__(_class_name=self.CLASS, options=options)
+        self.graph_id = graph_id
+        self.new_graph_id = new_graph_id
+
+    def to_json(self):
+        operation = super().to_json()
+        operation["graphId"] = self.graph_id
+        operation["newGraphId"] = self.new_graph_id
+        return operation
 
 class GetVariable(Operation):
     CLASS = 'uk.gov.gchq.gaffer.operation.impl.GetVariable'
@@ -2950,6 +2994,17 @@ class SetVariable(Operation):
 
         return operation
 
+class CountAllElementsDefaultView(Operation):
+    CLASS = 'uk.gov.gchq.gaffer.mapstore.operation.CountAllElementsDefaultView'
+
+    def __init__(self,
+                 view=None,
+                 directed_type=None,
+                 options=None):
+        super().__init__(
+            _class_name=self.CLASS,
+            view=view,
+            options=options)
 
 def load_operation_json_map():
     for name, class_obj in inspect.getmembers(

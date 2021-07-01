@@ -43,7 +43,7 @@ Then, navigate to the top level of the repo and install Maven, which you can do 
 $ mvn clean install -DskipTests
 ```
 
-Finally, navigate into analytic-ui/analytics/analytics-rest, and run a mvn clean install, with -Pquick:
+Finally, navigate into analytics/analytics-rest, and run a mvn clean install, with -Pquick:
 
 ```
 $ mvn clean install -Pquick

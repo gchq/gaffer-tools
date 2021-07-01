@@ -1,5 +1,5 @@
 #
-# Copyright 2016-2017 Crown Copyright
+# Copyright 2021 Crown Copyright
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -14,9 +14,20 @@
 # limitations under the License.
 #
 
-gaffer.store.class=uk.gov.gchq.gaffer.accumulostore.MockAccumuloStore
-gaffer.store.properties.class=uk.gov.gchq.gaffer.accumulostore.AccumuloProperties
-accumulo.instance=someInstanceName
-accumulo.zookeepers=aZookeeper
-accumulo.user=user01
-accumulo.password=password
+import example_map
+from gafferpy import gaffer_connector_pki
+
+
+def run(host, verbose=False, pki_cert='cert.pem'):
+    # Store your PKI certificate in file cert.pem
+    pki = gaffer_connector_pki.PkiCredentials(pki_cert)
+
+    example_map.run_with_connector(create_connector(host, pki, verbose))
+
+
+def create_connector(host, pki, verbose=False):
+    return gaffer_connector_pki.GafferConnector(host, pki, verbose)
+
+
+if __name__ == "__main__":
+    run('localhost:8080/rest/latest')
