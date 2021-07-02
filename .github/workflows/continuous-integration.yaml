@@ -1,9 +1,6 @@
 name: Continuous Integration
 
-on:
-  push:
-    branches:
-      - gh-862-migrate-ci
+on: [ pull_request ]
 
 jobs:
   check-all-modules-are-tested:
