@@ -21,13 +21,13 @@ jobs:
       uses: actions/setup-java@v1
       with:
         java-version: 1.8
-    # - name: Cache dependencies
-    #   uses: actions/cache@v2
-    #   with:
-    #     path: |
-    #       ~/.m2/repository
-    #       !~/.m2/repository/uk
-    #     key: gaffer-tools-dependencies
+    - name: Cache dependencies
+      uses: actions/cache@v2
+      with:
+        path: |
+          ~/.m2/repository
+          !~/.m2/repository/uk
+        key: gaffer-tools-dependencies
 
     - name: Setup System tests
       run: ./cd/setup_ui_system_tests.sh
@@ -45,13 +45,13 @@ jobs:
       uses: actions/setup-java@v1
       with:
         java-version: 1.8
-    # - name: Cache dependencies
-    #   uses: actions/cache@v2
-    #   with:
-    #     path: |
-    #       ~/.m2/repository
-    #       !~/.m2/repository/uk
-    #     key: gaffer-tools-dependencies
+    - name: Cache dependencies
+      uses: actions/cache@v2
+      with:
+        path: |
+          ~/.m2/repository
+          !~/.m2/repository/uk
+        key: gaffer-tools-dependencies
 
     - name: Start road-traffic example
       run: |
@@ -100,13 +100,13 @@ jobs:
       with:
         java-version: 1.8
 
-    # - name: Cache dependencies
-    #   uses: actions/cache@v2
-    #   with:
-    #     path: |
-    #       ~/.m2/repository
-    #       !~/.m2/repository/uk
-    #     key: gaffer-tools-dependencies
+    - name: Cache dependencies
+      uses: actions/cache@v2
+      with:
+        path: |
+          ~/.m2/repository
+          !~/.m2/repository/uk
+        key: gaffer-tools-dependencies
 
     - name: Install dependencies
       run: mvn -q clean install -pl :ui -Pquick -am
