@@ -16,30 +16,37 @@
 
 /* tslint:disable:no-unused-variable */
 
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
 import { By } from '@angular/platform-browser';
-import { DebugElement } from '@angular/core';
-import { LocalStorageService } from 'ng2-webstorage';
+import { LocalStorageService, LocalStorageStrategy } from 'ngx-webstorage';
 import { GraphComponent } from './graph.component';
+import { LocalStorageServiceProvider } from 'ngx-webstorage/lib/services/localStorage';
+import { LocalStorageProvider } from 'ngx-webstorage/lib/core/nativeStorage';
+
+class MockStorageService {
+  storage = new Map<string, any>()
+
+  retrieve = (key: string) => {
+    return this.storage.get(key)
+  }
+
+}
 
 describe('GraphComponent', () => {
   let component: GraphComponent;
   let fixture: ComponentFixture<GraphComponent>;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
-      declarations: [
-        GraphComponent
-      ],
-      imports: [],
       providers: [
-        LocalStorageService
+        GraphComponent,
+        { provide: LocalStorageService, useClass: MockStorageService}
       ]
     })
     .compileComponents();
-  }));
+  });
 
   beforeEach(() => {
     fixture = TestBed.createComponent(GraphComponent);
@@ -48,14 +55,16 @@ describe('GraphComponent', () => {
   });
 
   it('should create GraphComponent', () => {
+    TestBed.createComponent(GraphComponent)
     expect(component).toBeTruthy();
   });
 
-  it('should render the vis network', async(() => {
+  it('should render the vis network', () => {
+    TestBed.createComponent(GraphComponent)
     const de = fixture.debugElement.query(By.css('#schema-graph'));
     const el = de.nativeElement;
     expect(el.firstChild.className).toEqual('vis-network');
     expect(el.innerText).toContain('Add Node');
     expect(el.innerText).toContain('Add Edge');
-  }));
+  });
 });

@@ -16,14 +16,10 @@
 <div class="form-group">
     <div style="margin-bottom: 0;">
         <div class="input-field" *ngIf="!_type.node">
-            <md-input-container class="full-width">
-                <input mdInput class="form-control" type="text" name="type" placeholder="Type name" [(ngModel)]="_type.type" (ngModelChange)="changeType($event, 'type')">
-            </md-input-container>
+            <input mdInput class="form-control full-width" type="text" name="type" placeholder="Type name" [(ngModel)]="_type.type" (ngModelChange)="changeType($event, 'type')">
         </div>
         <div class="input-field">
-            <md-input-container class="full-width">
-                <input mdInput class="form-control" type="text" name="class" placeholder="Java class" [(ngModel)]="_type.class" (ngModelChange)="changeType($event, 'class')">
-            </md-input-container>
+            <input mdInput class="form-control full-width" type="text" name="class" placeholder="Java class" [(ngModel)]="_type.class" (ngModelChange)="changeType($event, 'class')">
         </div>
         <div class="input-field" *ngIf="functions && functions.valid && !_type.node">
             <md-select class="full-width" id="serialiserClass" placeholder="Serialiser class" (change)="changeType(_type.serialiser, 'serialiser', 'class')"
@@ -44,10 +40,8 @@
                 </md-select>
         </div>
         <div class="input-field" *ngIf="functions && functions.valid && !_type.node">
-            <md-input-container class="full-width">
-                <input mdInput class="form-control" type="text" [disabled]="aggregateFieldsDisabled" name="aggregateFields" placeholder="Aggregator fields"
-                    [(ngModel)]="aggregateFields" (ngModelChange)="changeType($event, 'aggregateFields')">
-            </md-input-container>
+            <input mdInput class="form-control full-width" type="text" [disabled]="aggregateFieldsDisabled" name="aggregateFields" placeholder="Aggregator fields"
+                [(ngModel)]="aggregateFields" (ngModelChange)="changeType($event, 'aggregateFields')">
             <p style="color: red; margin-top: -10px;" *ngIf="!aggregateFieldsValid">Invalid JSON</p>
         </div>
         <div *ngIf="functions && functions.valid">
@@ -57,10 +51,8 @@
                     {{validator}}
                 </md-checkbox>
                 <div *ngIf="checkValidation(validator)" style="margin-left: 30px;">
-                    <md-input-container class="full-width">
-                        <input mdInput class="form-control" type="text" name="validatorField_{{validator}}" placeholder="Validator fields" [(ngModel)]="validationFields[validator]"
+                        <input mdInput class="form-control full-width" type="text" name="validatorField_{{validator}}" placeholder="Validator fields" [(ngModel)]="validationFields[validator]"
                             (change)="changeType($event, 'validationFields', validator)">
-                    </md-input-container>
                     <p style="color: red; margin-top: -10px;" *ngIf="!validateFieldsValid">Invalid JSON</p>
                 </div>
             </div>

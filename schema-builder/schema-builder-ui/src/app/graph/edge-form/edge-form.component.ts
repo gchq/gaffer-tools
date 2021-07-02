@@ -15,7 +15,7 @@
  */
 
 import { Component, OnInit, Input } from '@angular/core';
-import { LocalStorageService } from 'ng2-webstorage';
+import { LocalStorageService } from 'ngx-webstorage';
 import { DataSet, Network } from 'vis';
 import { GraphQLNode } from '../../shared/graphql-node.interface';
 import { GraphQLEdge } from '../../shared/graphql-edge.interface';

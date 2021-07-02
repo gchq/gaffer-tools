@@ -17,13 +17,12 @@
 import { Component, OnInit } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
 import { Router, ActivatedRoute } from '@angular/router';
-import { LocalStorageService } from 'ng2-webstorage';
+import { LocalStorageService } from 'ngx-webstorage';
 import { GafferService } from '../services/gaffer.service';
 import { UUID } from 'angular2-uuid';
 import * as _ from 'lodash';
-
-declare const $: any;
-declare const vis: any;
+import { DataSet } from 'vis';
+import * as $ from 'jquery'
 
 @Component({
     selector: 'app-schema',
@@ -109,7 +108,7 @@ export class SchemaComponent implements OnInit {
                     aggregateFunction: type.aggregateFunction || null,
                     serialiser: type.serialiser || null
                 };
-                if(formattedType.aggregateFunction && Object.keys(formattedType.aggregateFunction).length === 0) {
+                if (formattedType.aggregateFunction && Object.keys(formattedType.aggregateFunction).length === 0) {
                     formattedType.aggregateFunction = null;
                 }
                 this.types.types[type.type] = formattedType;
@@ -151,15 +150,15 @@ export class SchemaComponent implements OnInit {
             editedText = input;
         } else {
             try {
-                editedText = JSON.parse($('#elementsTextArea').val());
+                editedText = JSON.parse($('#elementsTextArea').val().toString());
             } catch (e) {
                 editedText = undefined;
                 this.errors.elements = 'Failed to parse JSON: ' + e.message;
             }
         }
         if (editedText) {
-            const edges = new vis.DataSet();
-            const nodes = new vis.DataSet();
+            const edges = new DataSet();
+            const nodes = new DataSet();
             const newNodes = [];
             const newEdges = [];
             this.errors.elements = undefined;
@@ -258,7 +257,7 @@ export class SchemaComponent implements OnInit {
             editedText = input;
         } else {
             try {
-                editedText = JSON.parse($('#typesTextArea').val());
+                editedText = JSON.parse($('#typesTextArea').val().toString());
             } catch (e) {
                 editedText = undefined;
                 this.errors.types = 'Failed to parse JSON: ' + e.message;
@@ -350,7 +349,7 @@ export class SchemaComponent implements OnInit {
             types: false
         };
         this.schemaUrl = '';
-        this.route.params.distinctUntilChanged().subscribe((routeParams: any) => {
+        this.route.params.subscribe((routeParams: any) => {
             if (routeParams.hasOwnProperty('url')) {
                 this.schemaUrl = routeParams.url;
                 this.storage.store('schemaURL', routeParams.url);
@@ -370,7 +369,7 @@ export class SchemaComponent implements OnInit {
                 this.style.height = (this.scrollHeight) + 'px';
             }, 100);
         });
-        if (storedEdges !== null && storedNodes !== null) {
+        if (storedEdges != null && storedNodes != null) {
             this.parseElements();
             this.parseTypes();
             this.validation = undefined;

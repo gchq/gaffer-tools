@@ -23,7 +23,7 @@ body {
   font-family: Roboto,"Helvetica Neue",sans-serif;
 }
 
-md-card-title {
+mat-card-title {
   margin-bottom: 0 !important;
   color: white;
 }
@@ -105,7 +105,7 @@ h1, h2, h3, h4 {
   overflow: visible !important;
 }
 
-.app-content md-card {
+.app-content mat-card {
   margin: 20px;
 }
 

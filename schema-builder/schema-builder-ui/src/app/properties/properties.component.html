@@ -18,8 +18,8 @@
     <div fxFlex="10%" fxShow="true" fxShow.sm="false" fxShow.xs="false"></div>
     <div fxFlex>
         <h4 style="font-size: 16pt;">Edges</h4>
-        <md-card *ngIf="!edges || edges.length === 0">
-            <md-card-content>
+        <mat-card *ngIf="!edges || edges.length === 0">
+            <mat-card-content>
                 <div>
                     <md-list dense>
                         <md-list-item>
@@ -27,18 +27,18 @@
                         </md-list-item>
                     </md-list>
                 </div>
-            </md-card-content>
-        </md-card>
+            </mat-card-content>
+        </mat-card>
         <div class="flex-container" fxLayout="row" fxLayoutWrap="wrap">
             <div fxFlex="50%" fxFlex.gt-md="33%" fxFlex.xs="100%" style="padding: 10px;" *ngFor="let edge of edges">
-                <md-card>
+                <mat-card>
                     <div class="content-card-header" fxLayout="row">
-                        <md-card-title fxFlex style="word-break: break-all;">{{edge.label}}</md-card-title>
-                        <button md-icon-button color="accent" (click)="edge.editing = true;" mdTooltip="edit edge properties" aria-label="edit edge properties" *ngIf="!edge.editing" class="button-spacing">
-                            <md-icon>edit</md-icon>
+                        <mat-card-title fxFlex style="word-break: break-all;">{{edge.label}}</mat-card-title>
+                        <button mat-icon-button color="accent" (click)="edge.editing = true;" mdTooltip="edit edge properties" aria-label="edit edge properties" *ngIf="!edge.editing" class="button-spacing">
+                            <mat-icon>edit</mat-icon>
                         </button>
                     </div>
-                    <md-card-content *ngIf="!edge.editing">
+                    <mat-card-content *ngIf="!edge.editing">
                         <div *ngIf="!edge.properties || edge.properties.length === 0">
                             <md-list dense>
                                 <md-list-item>
@@ -54,16 +54,16 @@
                                 </md-list-item>
                             </md-list>
                         </div>
-                    </md-card-content>
-                    <md-card-content *ngIf="edge.editing" style="overflow: visible;">
+                    </mat-card-content>
+                    <mat-card-content *ngIf="edge.editing" style="overflow: visible;">
                         <app-property-form [propertyHolder]="edge" (holderChange)="edgePropertiesChanged($event)"></app-property-form>
-                    </md-card-content>
-                </md-card>
+                    </mat-card-content>
+                </mat-card>
             </div>
         </div>
         <h4 style="font-size: 16pt;">Entities</h4>
-        <md-card *ngIf="!nodes || nodes.length === 0">
-            <md-card-content>
+        <mat-card *ngIf="!nodes || nodes.length === 0">
+            <mat-card-content>
                 <div>
                     <md-list dense>
                         <md-list-item>
@@ -71,20 +71,20 @@
                         </md-list-item>
                     </md-list>
                 </div>
-            </md-card-content>
-        </md-card>
+            </mat-card-content>
+        </mat-card>
         <div *ngFor="let node of nodes">
             <h3 style="font-size: 12pt;" *ngIf="node.entities && node.entities.length > 0"><b>{{node.label}}</b></h3>
             <div class="flex-container" fxLayout="row" fxLayoutWrap="wrap">
                 <div fxFlex="50%" fxFlex.gt-md="33%" fxFlex.xs="100%" style="padding: 10px;" *ngFor="let entity of node.entities">
-                    <md-card>
+                    <mat-card>
                         <div class="content-card-header" fxLayout="row">
-                            <md-card-title fxFlex style="word-break: break-all;">{{entity.name}}</md-card-title>
-                            <button md-icon-button color="accent" (click)="entity.editing = true;" mdTooltip="edit entity properties" aria-label="edit entity properties" *ngIf="!entity.editing" class="button-spacing">
-                                <md-icon>edit</md-icon>
+                            <mat-card-title fxFlex style="word-break: break-all;">{{entity.name}}</mat-card-title>
+                            <button mat-icon-button color="accent" (click)="entity.editing = true;" mdTooltip="edit entity properties" aria-label="edit entity properties" *ngIf="!entity.editing" class="button-spacing">
+                                <mat-icon>edit</mat-icon>
                             </button>
                         </div>
-                        <md-card-content *ngIf="!entity.editing">
+                        <mat-card-content *ngIf="!entity.editing">
                             <div *ngIf="!entity.properties || entity.properties.length === 0">
                                 <md-list dense>
                                     <md-list-item>
@@ -100,11 +100,11 @@
                                     </md-list-item>
                                 </md-list>
                             </div>
-                        </md-card-content>
-                        <md-card-content *ngIf="entity.editing" style="overflow: visible;">
+                        </mat-card-content>
+                        <mat-card-content *ngIf="entity.editing" style="overflow: visible;">
                             <app-property-form [propertyHolder]="entity" (holderChange)="entityPropertiesChanged($event)"></app-property-form>
-                        </md-card-content>
-                    </md-card>
+                        </mat-card-content>
+                    </mat-card>
                 </div>
             </div>
         </div>

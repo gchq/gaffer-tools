@@ -15,7 +15,7 @@
  */
 
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { LocalStorageService } from 'ng2-webstorage';
+import { LocalStorageService } from 'ngx-webstorage';
 import { GraphQLType } from '../../shared/graphql-type.interface';
 import { GafferService } from '../../services/gaffer.service';
 import * as _ from 'lodash';
@@ -90,7 +90,7 @@ export class TypeFormComponent implements OnInit {
         } else {
             this.functions = undefined;
         }
-        if(!this._type.aggregateFunction) {
+        if (!this._type.aggregateFunction) {
             this._type.aggregateFunction = {};
         }
     }
@@ -119,7 +119,7 @@ export class TypeFormComponent implements OnInit {
 
     changeType(value: any, key: string, secondaryKey?: string) {
         if (key === 'aggregateFields') {
-            if(this.aggregateFields && this._type.aggregateFunction !== null) {
+            if (this.aggregateFields && this._type.aggregateFunction !== null) {
                 try {
                     const fieldsObject = JSON.parse(this.aggregateFields);
                     fieldsObject.class = this._type.aggregateFunction.class;

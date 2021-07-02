@@ -15,11 +15,10 @@
  */
 
 import { Component, OnInit } from '@angular/core';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
 import { DataSet, Network, Node, Edge, Options } from 'vis';
-import { LocalStorageService } from 'ng2-webstorage';
-import * as _ from 'lodash';
-declare const vis: any;
+import { LocalStorageService } from 'ngx-webstorage';
+import { forEach } from 'lodash'
 
 export interface DataContainer {
     nodes: DataSet<Node>,
@@ -83,25 +82,25 @@ export class GraphComponent implements OnInit {
 
     ngOnInit() {
         const storedNodes = this.storage.retrieve('graphNodes');
-        if (storedNodes !== null) {
+        if (storedNodes != null) {
             const nodeArray = [];
-            _.forEach(storedNodes._data, (storedNode: any) => {
+            forEach(storedNodes._data, (storedNode: any) => {
                 nodeArray.push(storedNode);
             });
-            this.nodes = new vis.DataSet(nodeArray);
+            this.nodes = new DataSet(nodeArray);
         } else {
-            this.nodes = new vis.DataSet();
+            this.nodes = new DataSet();
         }
 
         const storedEdges = this.storage.retrieve('graphEdges');
-        if (storedEdges !== null) {
+        if (storedEdges != null) {
             const edgeArray = [];
-            _.forEach(storedEdges._data, (storedEdge: any) => {
+            forEach(storedEdges._data, (storedEdge: any) => {
                 edgeArray.push(storedEdge);
             });
-            this.edges = new vis.DataSet(edgeArray);
+            this.edges = new DataSet(edgeArray);
         } else {
-            this.edges = new vis.DataSet();
+            this.edges = new DataSet();
         }
 
         this.container = document.getElementById('schema-graph');
@@ -137,7 +136,7 @@ export class GraphComponent implements OnInit {
             }
         };
 
-        this.network = new vis.Network(this.container, this.data, this.options);
+        this.network = new Network(this.container, this.data, this.options);
         this.network.on('selectNode', params => this.selectNode(params));
         this.network.on('selectEdge', params => this.selectEdge(params));
         this.network.on('deselectNode', params => this.deselectNode());

@@ -17,12 +17,9 @@ done
 
 for module in $allModules
 do
-    if ! grep -q :$module .travis.yml
+    if ! grep -q :$module .github/workflows/continuous-integration.yaml
     then
-        echo ".travis.yml is missing module $module";
+        echo ".github/workflows/continuous-integration.yaml is missing module $module";
         exit 1;
     fi
 done
-
-# Remove the mirror set in Travis
-rm ~/.m2/settings.xml

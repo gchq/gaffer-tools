@@ -15,31 +15,38 @@
  */
 
 /* tslint:disable:no-unused-variable */
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
-import { By } from '@angular/platform-browser';
-import { LocalStorageService } from 'ng2-webstorage';
-import { DebugElement } from '@angular/core';
+import { LocalStorageService } from 'ngx-webstorage';
 
 import { PropertiesComponent } from './properties.component';
+
+class MockStorageService {
+  storage = new Map<string, any>()
+
+  retrieve = (key: string) => {
+    return this.storage.get(key)
+  }
+
+}
 
 describe('PropertiesComponent', () => {
   let component: PropertiesComponent;
   let fixture: ComponentFixture<PropertiesComponent>;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
+  beforeEach(async() => {
+    await TestBed.configureTestingModule({
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       declarations: [
         PropertiesComponent
       ],
       imports: [],
       providers: [
-        LocalStorageService
+        { provide: LocalStorageService, useClass: MockStorageService }
       ]
     })
     .compileComponents();
-  }));
+  });
 
   beforeEach(() => {
     fixture = TestBed.createComponent(PropertiesComponent);

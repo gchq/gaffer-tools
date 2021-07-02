@@ -32,9 +32,7 @@
             </div>
             <div class="flex-container" fxLayout="row" fxLayoutGap="10px" *ngFor="let property of _propertyHolder.properties">
                 <div class="input-field" fxFlex>
-                    <md-input-container class="full-width">
-                        <input mdInput placeholder="Property name" [(ngModel)]="property.name">
-                    </md-input-container>
+                    <input mdInput class="full-width" placeholder="Property name" [(ngModel)]="property.name">
                 </div>
                 <div class="input-field" fxFlex>
                     <md-select id="{{property.id}}Type" placeholder="Property Type" [(ngModel)]="property.type">
@@ -43,8 +41,8 @@
                         </md-option>
                     </md-select>
                 </div>
-                <button md-icon-button color="warn" (click)="removeProperty(property.id)" mdTooltip="delete property" aria-label="delete property" class="button-spacing" style="margin-top: 15px;">
-                    <md-icon>delete</md-icon>
+                <button mat-icon-button color="warn" (click)="removeProperty(property.id)" mdTooltip="delete property" aria-label="delete property" class="button-spacing" style="margin-top: 15px;">
+                    <mat-icon>delete</mat-icon>
                 </button>
             </div>
         </div>
