@@ -123,7 +123,7 @@ Alternatively, if you want to just install gafferpy locally and have any code ch
 ```bash
 pip3 install -e .
 ```
-Note that this does not install the dependencies, however, which can be found in requirements.txt, and installed with:  
+Note that this does not install the dependencies, which can be found in the `requirements.txt`, and installed with:  
 ```bash
 pip3 install -r requirements.txt
 ```
