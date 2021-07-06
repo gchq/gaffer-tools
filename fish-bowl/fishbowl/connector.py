@@ -55,7 +55,7 @@ class GafferConnector:
             print('\nQuery response:\n' + 
                   json.dumps(response_json, indent=4) + '\n')
 
-        if response_json is not None and response_json is not '':
+        if response_json is not None and response_json != '':
             return response_json
         else:
             return None
@@ -75,7 +75,7 @@ class GafferConnector:
         except json.JSONDecodeError:
             response_json = response.text
 
-        if response_json is not None and response_json is not '':
+        if response_json is not None and response_json != '':
             return response_json
         else:
             return None
@@ -85,6 +85,9 @@ class GafferConnector:
         print(status)
 
     def close_connection(self):
+        self._session.close()
+
+    def __del__(self):
         self._session.close()
 
 

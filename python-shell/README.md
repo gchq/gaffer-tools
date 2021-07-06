@@ -89,12 +89,17 @@ See [operation examples](https://gchq.github.io/gaffer-doc/getting-started/opera
 
 ### Installation
 
-You can either just refer to the python shell source files as described above or the python shell can be compiled and distributed for inclusion in other Python projects.
+We currently don't release gafferpy on pypi, but there are plently of ways to use it once you have the source code.  
+As well as refering to the Python source files as above, you can also build gafferpy from source (useful for distribution) or install a local copy in develop mode that will update when you change the source code.  
 
-Compilation of the project requires the bdist package, this can be installed using pip:
+#### Build with bdist_wheel
+
+This option builds gafferpy and puts the binaries in `python-shell/dist` where it can then be distributed and installed with `pip install`.  
+
+Compilation of the project requires the wheel package, this can be installed using pip:
 
 ```bash
-pip3 install bdist
+pip3 install wheel
 ```
 
 The project can then be compiled by running the following command from the root of the python-shell project:
@@ -108,14 +113,28 @@ This creates a distributable Python wheel which can installed locally to provide
 The wheel file is install using pip:
 
 ```bash
-pip3 install gafferpy-<gaffer.version>-py2.py3-none-any.whl
+pip3 install dist/gafferpy-<gaffer.version>-py2.py3-none-any.whl
 ```
 
-After installation the shell can be imported into an application as below:
+#### Developer installation  
+
+Alternatively, if you want to just install gafferpy locally and have any code changes you make to it reflected in your installation, you can go to the python-shell directory and run:
+
+```bash
+pip3 install -e .
+```
+Note that this does not install the dependencies, however, which can be found in requirements.txt, and installed with:  
+```bash
+pip3 install -r requirements.txt
+```
+
+
+#### Import  
+After either installation, the shell can be imported into an application from anywhere as below:
 
 ```python
-from gaffer_shell import gaffer as g
-from gaffer_shell import gaffer_connector
+from gafferpy import gaffer as g
+from gafferpy import gaffer_connector
 gc = gaffer_connector.GafferConnector("http://localhost:8080/rest/latest")
 ```
 
