@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       MAVEN_OPTS: -Dmaven.wagon.http.retryHandler.count=3 -Dmaven.wagon.httpconnectionManager.ttlSeconds=25
-      VERSION_UPDATE_BRANCH: update-gaffer-version-${{ github.event.inputs.version }}
+      VERSION_UPDATE_BRANCH: updating-gaffer-version-${{ github.event.inputs.version }}
     steps:
     - name: Checkout develop
       uses: actions/checkout@v2
