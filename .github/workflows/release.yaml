@@ -40,6 +40,10 @@ jobs:
     - name: Set version
       run: echo "RELEASE_VERSION=$(echo ${{ github.event.milestone.title }} | cut -c 2-)" >> $GITHUB_ENV
 
+    - name: Update versions
+      run: |
+        mvn versions:set -DnewVersion=$RELEASE_VERSION -DgenerateBackupPoms=false
+
     - name: Push changes
       run: |
         git commit -a -m "prepare release $artifactId-$RELEASE_VERSION"
@@ -152,14 +156,6 @@ jobs:
       uses: actions/setup-java@v1
       with:
         java-version: 1.8
-
-    - name: Cache dependencies
-      uses: actions/cache@v2
-      with:
-        path: |
-          ~/.m2/repository
-          !~/.m2/repository/uk
-        key: gaffer-tools-dependencies
 
     - name: Checkout master
       uses: actions/checkout@v2
