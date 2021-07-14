@@ -105,7 +105,7 @@ class GafferConnector:
         if self._verbose:
             print('Query response: ' + response_text)
 
-        if response_text is not None and response_text is not '':
+        if response_text is not None and response_text != '':
             result = json.loads(response_text)
         else:
             result = None

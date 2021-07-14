@@ -110,7 +110,7 @@ class GafferConnector:
             print('\nQuery response:\n' + 
                   json.dumps(response_json, indent=4) + '\n')
 
-        if response_json is not None and response_json is not '':
+        if response_json is not None and response_json != '':
             result = response_json
         else:
             result = None
@@ -180,6 +180,9 @@ class GafferConnector:
                 'HTTP error ' + str(error.response.status_code) + ': ' + error.response.text)
 
         return response.text
+
+    def __del__(self):
+        self._session.close()
 
 class SSLAdapter(HTTPAdapter):
     """
