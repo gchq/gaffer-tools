@@ -111,6 +111,9 @@ jobs:
     - name: Run Tests
       run: xvfb-run mvn verify -pl :ui
 
+    - name: Cleanup xvfb pidx
+      uses: bcomnes/cleanup-xvfb@v1
+
   java-build:
     runs-on: ubuntu-latest
     strategy:
