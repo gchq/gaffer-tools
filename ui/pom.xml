@@ -58,12 +58,6 @@
             <version>${gaffer.version}</version>
             <scope>test</scope>
         </dependency>
-        <dependency>
-            <groupId>uk.gov.gchq.gaffer</groupId>
-            <artifactId>map-store</artifactId>
-            <version>${gaffer.version}</version>
-            <scope>test</scope>
-        </dependency>
     </dependencies>
     <build>
         <plugins>
