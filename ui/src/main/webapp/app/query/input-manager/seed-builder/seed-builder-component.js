@@ -48,8 +48,8 @@ function seedBuilder() {
 function SeedBuilderController(schema, csv, types, error, events, common, $routeParams, $location) {
     var vm = this;
     vm.seedVertices = '';
-    vm.overrideSeedType = false
-    vm.overriddenSeedType = ''
+    vm.forceSeedType = false
+    vm.seedType = ''
     vm.seedTypes = ('Entity Object').split(' ').map(function (seedType) {
         return {value: seedType};
     })
@@ -77,8 +77,8 @@ function SeedBuilderController(schema, csv, types, error, events, common, $route
     }
 
     vm.onCheckboxChange = function() {
-        if (!vm.overrideSeedType) {
-            vm.overriddenSeedType = ''
+        if (!vm.forceSeedType) {
+            vm.seedType = ''
         }
     }
 
@@ -179,7 +179,7 @@ function SeedBuilderController(schema, csv, types, error, events, common, $route
             vm.seedForm.multiSeedInput.$setValidity('csv', true)
         }
         vm.model.input = deduped
-        vm.model.overriddenSeedType = vm.overriddenSeedType
+        vm.model.seedType = vm.seedType
     }
 
     /**

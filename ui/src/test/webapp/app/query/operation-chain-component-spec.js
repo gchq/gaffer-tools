@@ -1087,7 +1087,7 @@ describe('The operation chain component', function() {
                         selectedOperation: {
                             fields: {
                                 input: {},
-                                overriddenSeedType: ''
+                                seedType: ''
                             }
                         },
                         fields: {
@@ -1175,7 +1175,7 @@ describe('The operation chain component', function() {
                             {valueClass: 'java.lang.String', parts: {undefined: 'test3'}}
                         ];
 
-                        op.fields.overriddenSeedType = "Object";
+                        op.fields.seedType = "Object";
 
                         var expectedInput = JSON.stringify(['test1', 'test2', 'test3']);
 
@@ -1190,7 +1190,7 @@ describe('The operation chain component', function() {
                             {valueClass: 'java.lang.String', parts: {undefined: 'test3'}}
                         ];
 
-                        op.fields.overriddenSeedType = "Entity";
+                        op.fields.seedType = "Entity";
 
                         var expectedInput = JSON.stringify([
                             { 'class': 'uk.gov.gchq.gaffer.operation.data.EntitySeed', 'vertex': 'test1'},

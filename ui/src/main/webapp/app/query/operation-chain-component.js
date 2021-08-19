@@ -280,7 +280,7 @@ function OperationChainController(operationChain, settings, config, loading, que
      * Uses seeds uploaded to the input service to build an input array to the query.
      * @param seeds the input array
      */
-    var createOpInput = function(seeds, overriddenSeedType, inputType) {
+    var createOpInput = function(seeds, seedType, inputType) {
         if (seeds === null || seeds === undefined || !inputType) {
             return undefined;
         }
@@ -297,8 +297,8 @@ function OperationChainController(operationChain, settings, config, loading, que
             opInput = [];
             var inputItemType = inputTypeName.substring(0, inputTypeName.length - 2);
 
-            if (overriddenSeedType) {
-                switch (overriddenSeedType) {
+            if (seedType) {
+                switch (seedType) {
                     case "Entity":
                         inputItemType = ENTITY_ID_CLASS;
                         break;
@@ -309,7 +309,7 @@ function OperationChainController(operationChain, settings, config, loading, que
             }
 
             // Assume the input type is EntityId if it is just Object or unknown.
-            if (!overriddenSeedType && (inputItemType === "" || inputItemType === "java.lang.Object")) {
+            if (!seedType && (inputItemType === "" || inputItemType === "java.lang.Object")) {
                 inputItemType = ENTITY_ID_CLASS;
             }
 
@@ -448,12 +448,12 @@ function OperationChainController(operationChain, settings, config, loading, que
             if (selectedOp.fields.input.className === PAIR_ARRAY_CLASS) {
                 op.input = createPairInput(operation.fields.inputPairs)
             } else {
-                op.input = createOpInput(operation.fields.input, operation.fields.overriddenSeedType, selectedOp.fields.input);
+                op.input = createOpInput(operation.fields.input, operation.fields.seedType, selectedOp.fields.input);
             }
         }
         
         if (selectedOp.fields.inputB && !selectedOp.namedOp) {
-            op.inputB = createOpInput(operation.fields.inputB, operation.fields.overriddenSeedType, selectedOp.fields.inputB);
+            op.inputB = createOpInput(operation.fields.inputB, operation.fields.seedType, selectedOp.fields.inputB);
         }
 
         if (selectedOp.parameters) {
@@ -472,7 +472,7 @@ function OperationChainController(operationChain, settings, config, loading, que
             if (!op.parameters) {
                 op.parameters = {};
             }
-            op.parameters['inputB'] = createOpInput(operation.fields.inputB, operation.fields.overriddenSeedType, selectedOp.fields.inputB);
+            op.parameters['inputB'] = createOpInput(operation.fields.inputB, operation.fields.seedType, selectedOp.fields.inputB);
         }
 
         if (selectedOp.fields.view) {

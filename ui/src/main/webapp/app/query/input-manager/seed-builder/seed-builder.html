@@ -15,14 +15,14 @@
             </div>
         </md-input-container>
         <md-input-container class="md-block">
-            <md-checkbox id="overrideSeedType" ng-model="ctrl.overrideSeedType"
+            <md-checkbox id="forceSeedType" ng-model="ctrl.forceSeedType"
                          ng-change="ctrl.onCheckboxChange()"
                          aria-label="Override the default seed type handling">
                 Override Seed Type
             </md-checkbox>
         </md-input-container>
-        <md-input-container ng-if="ctrl.overrideSeedType" class="md-block">
-            <md-select ng-model="ctrl.overriddenSeedType" required class="no-ellipsis" placeholder="Override seed type">
+        <md-input-container ng-if="ctrl.forceSeedType" class="md-block">
+            <md-select ng-model="ctrl.seedType" required class="no-ellipsis" placeholder="Override seed type">
                 <md-option ng-repeat="seedType in ctrl.seedTypes" ng-value="seedType.value">
                     {{ seedType.value }}
                 </md-option>

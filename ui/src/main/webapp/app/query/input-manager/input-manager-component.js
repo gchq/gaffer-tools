@@ -70,7 +70,7 @@ function InputManagerController(events, results, common, types, schema) {
             vm.model.inputB = [];
             vm.model.inputPairs = [];
         }
-        vm.model.overriddenSeedType = '';
+        vm.model.seedType = '';
     }
 
     /**
