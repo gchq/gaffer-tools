@@ -48,6 +48,11 @@ function seedBuilder() {
 function SeedBuilderController(schema, csv, types, error, events, common, $routeParams, $location) {
     var vm = this;
     vm.seedVertices = '';
+    vm.overrideSeedType = false
+    vm.overriddenSeedType = ''
+    vm.seedTypes = ('Entity Object').split(' ').map(function (seedType) {
+        return {value: seedType};
+    })
 
     vm.$onInit = function() {
         schema.get().then(function(gafferSchema) {
@@ -55,7 +60,7 @@ function SeedBuilderController(schema, csv, types, error, events, common, $route
             if(vertices && vertices.length > 0 && undefined !== vertices[0]) {
                 vm.vertexClass = gafferSchema.types[vertices[0]].class;
             }
-            recalculateSeeds(vm.model);
+            recalculateSeeds(vm.model.input);
             if($routeParams[vm.routeParam]) {
                 if(Array.isArray($routeParams[vm.routeParam])) {
                     vm.seedVertices += '\n' + $routeParams[vm.routeParam].join('\n');
@@ -65,15 +70,20 @@ function SeedBuilderController(schema, csv, types, error, events, common, $route
                 vm.addSeeds(true);
                 $location.search(vm.routeParam, null);
             }
-
         });
 
         events.subscribe('onPreExecute', vm.addSeeds);
         events.subscribe('onOperationUpdate', onOperationUpdate);
     }
 
+    vm.onCheckboxChange = function() {
+        if (!vm.overrideSeedType) {
+            vm.overriddenSeedType = ''
+        }
+    }
+
     var onOperationUpdate = function() {
-        recalculateSeeds(vm.model);
+        recalculateSeeds(vm.model.input);
     }
 
     /**
@@ -168,7 +178,8 @@ function SeedBuilderController(schema, csv, types, error, events, common, $route
         if (vm.seedForm) {
             vm.seedForm.multiSeedInput.$setValidity('csv', true)
         }
-        vm.model = deduped;
+        vm.model.input = deduped
+        vm.model.overriddenSeedType = vm.overriddenSeedType
     }
 
     /**
@@ -245,9 +256,7 @@ function SeedBuilderController(schema, csv, types, error, events, common, $route
         vm.seedVertices = str.slice(0, -1);
     }
 
-
     var createSeed = function(parts) {
-        var vertex = {valueClass: vm.vertexClass, parts: parts};
-        return vertex;
+        return {valueClass: vm.vertexClass, parts: parts};
     }
 }

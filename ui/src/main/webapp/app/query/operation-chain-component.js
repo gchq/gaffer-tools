@@ -55,9 +55,11 @@ function OperationChainController(operationChain, settings, config, loading, que
     var NAMED_VIEW_CLASS = "uk.gov.gchq.gaffer.data.elementdefinition.view.NamedView";
     var ADD_NAMED_OPERATION_CLASS = "uk.gov.gchq.gaffer.named.operation.AddNamedOperation";
     var OPERATION_CHAIN_CLASS = "uk.gov.gchq.gaffer.operation.OperationChain";
+    var ENTITY_ID_CLASS = "uk.gov.gchq.gaffer.data.element.id.EntityId";
     var ENTITY_SEED_CLASS = "uk.gov.gchq.gaffer.operation.data.EntitySeed";
     var PAIR_ARRAY_CLASS = "uk.gov.gchq.gaffer.commonutil.pair.Pair<uk.gov.gchq.gaffer.data.element.id.ElementId,uk.gov.gchq.gaffer.data.element.id.ElementId>[]";
     var PAIR_CLASS = "uk.gov.gchq.gaffer.commonutil.pair.Pair";
+    var JAVA_OBJECT_CLASS = "java.lang.Object";
 
     /**
      * initialises the time config and default operation options
@@ -238,7 +240,7 @@ function OperationChainController(operationChain, settings, config, loading, que
     }
 
     vm.canAddOperation = function() {
-        if(vm.operations.length == 0) {
+        if(vm.operations.length === 0) {
             return true;
         }
 
@@ -278,7 +280,7 @@ function OperationChainController(operationChain, settings, config, loading, que
      * Uses seeds uploaded to the input service to build an input array to the query.
      * @param seeds the input array
      */
-    var createOpInput = function(seeds, inputType) {
+    var createOpInput = function(seeds, overriddenSeedType, inputType) {
         if (seeds === null || seeds === undefined || !inputType) {
             return undefined;
         }
@@ -295,27 +297,40 @@ function OperationChainController(operationChain, settings, config, loading, que
             opInput = [];
             var inputItemType = inputTypeName.substring(0, inputTypeName.length - 2);
 
-            // Assume the input type is EntityId if it is just Object or unknown.
-            if(inputItemType === "" || inputItemType === "java.lang.Object") {
-                inputItemType = "uk.gov.gchq.gaffer.data.element.id.EntityId";
+            if (overriddenSeedType) {
+                switch (overriddenSeedType) {
+                    case "Entity":
+                        inputItemType = ENTITY_ID_CLASS;
+                        break;
+                    case "Object":
+                        inputItemType = JAVA_OBJECT_CLASS;
+                        break;
+                }
             }
 
-            var seedToJson = function(seed) {
+            // Assume the input type is EntityId if it is just Object or unknown.
+            if (!overriddenSeedType && (inputItemType === "" || inputItemType === "java.lang.Object")) {
+                inputItemType = ENTITY_ID_CLASS;
+            }
+
+            var seedToJson = function (seed) {
                 return types.createJsonValue(seed.valueClass, seeds[i].parts);
             };
+
             var formatSeed;
-            if(inputItemType === "uk.gov.gchq.gaffer.data.element.id.EntityId") {
-                formatSeed = function(seed) {
+            if (inputItemType === ENTITY_ID_CLASS) {
+                formatSeed = function (seed) {
                     return {
                         "class": ENTITY_SEED_CLASS,
                         "vertex": seedToJson(seed)
                     };
                 }
             } else {
-                formatSeed = function(seed) {
+                formatSeed = function (seed) {
                     return seedToJson(seed);
                 }
             }
+
             for (var i in seeds) {
                 opInput.push(formatSeed(seeds[i]));
             }
@@ -433,12 +448,12 @@ function OperationChainController(operationChain, settings, config, loading, que
             if (selectedOp.fields.input.className === PAIR_ARRAY_CLASS) {
                 op.input = createPairInput(operation.fields.inputPairs)
             } else {
-                op.input = createOpInput(operation.fields.input, selectedOp.fields.input);
+                op.input = createOpInput(operation.fields.input, operation.fields.overriddenSeedType, selectedOp.fields.input);
             }
         }
         
         if (selectedOp.fields.inputB && !selectedOp.namedOp) {
-            op.inputB = createOpInput(operation.fields.inputB, selectedOp.fields.inputB);
+            op.inputB = createOpInput(operation.fields.inputB, operation.fields.overriddenSeedType, selectedOp.fields.inputB);
         }
 
         if (selectedOp.parameters) {
@@ -457,7 +472,7 @@ function OperationChainController(operationChain, settings, config, loading, que
             if (!op.parameters) {
                 op.parameters = {};
             }
-            op.parameters['inputB'] = createOpInput(operation.fields.inputB, selectedOp.fields.inputB);
+            op.parameters['inputB'] = createOpInput(operation.fields.inputB, operation.fields.overriddenSeedType, selectedOp.fields.inputB);
         }
 
         if (selectedOp.fields.view) {
