@@ -573,6 +573,22 @@ class Operation(ToJson, ToCodeString):
 
         return operation
 
+    def validate_operation_chain(self, operation_chain, allow_none=False):
+        if isinstance(operation_chain, list):
+            for operation in operation_chain:
+                JsonConverter.validate(operation, Operation)
+            return OperationChain(operation_chain)
+        try:
+            return JsonConverter.validate(
+                operation_chain, OperationChain, allow_none
+            )
+        except:
+            return OperationChain([
+                JsonConverter.validate(
+                    operation_chain, Operation, allow_none
+                )
+            ])
+
 class Match(ToJson, ToCodeString):
     def __init__(self, _class_name):
         self._class_name = _class_name
@@ -912,9 +928,7 @@ class GetExports(Operation):
             options=options)
         self.get_exports = []
         for export in get_exports:
-            if not isinstance(export, Operation):
-                export = JsonConverter.from_json(export)
-            self.get_exports.append(export)
+            self.get_exports.append(JsonConverter.validate(export, Operation, False))
 
     def to_json(self):
         operation = super().to_json()
@@ -1267,10 +1281,11 @@ class AddNamedOperation(Operation):
             self.parameters = []
             if isinstance(parameters, list):
                 for param in parameters:
-                    if not isinstance(param, NamedOperationParameter):
-                        param = JsonConverter.from_json(param,
-                                                        NamedOperationParameter)
-                    self.parameters.append(param)
+                    self.parameters.append(
+                        JsonConverter.validate(
+                            param, NamedOperationParameter, False
+                            )
+                        )
             else:
                 for name, param in parameters.items():
                     param = dict(param)
@@ -1344,9 +1359,7 @@ class AddNamedView(Operation):
         super().__init__(
             _class_name=self.CLASS,
             options=options)
-        if not isinstance(view, View):
-            view = JsonConverter.from_json(view, View)
-        self.view = view
+        self.view = JsonConverter.validate(view, View)
 
         self.name = name
         self.description = description
@@ -1357,10 +1370,7 @@ class AddNamedView(Operation):
             self.parameters = []
             if isinstance(parameters, list):
                 for param in parameters:
-                    if not isinstance(param, NamedViewParameter):
-                        param = JsonConverter.from_json(param,
-                                                        NamedViewParameter)
-                    self.parameters.append(param)
+                    self.parameters.append(JsonConverter.validate(param, NamedViewParameter, False))
             else:
                 for name, param in parameters.items():
                     param = dict(param)
@@ -1537,10 +1547,8 @@ class ToCsv(Operation):
         super().__init__(
             _class_name=self.CLASS, options=options
         )
-        if not isinstance(element_generator, gaffer_functions.CsvGenerator):
-            element_generator = JsonConverter.from_json(
-                element_generator, gaffer_functions.CsvGenerator)
-        self.element_generator = element_generator
+        self.element_generator = JsonConverter.validate(element_generator,
+                                        gaffer_functions.CsvGenerator, False)
         self.include_header = include_header
 
     def to_json(self):
@@ -1560,11 +1568,8 @@ class ToMap(Operation):
         super().__init__(
             _class_name=self.CLASS, options=options
         )
-
-        if not isinstance(element_generator, gaffer_functions.MapGenerator):
-            element_generator = JsonConverter.from_json(
-                element_generator, gaffer_functions.MapGenerator)
-        self.element_generator = element_generator
+        self.element_generator = JsonConverter.validate(element_generator,
+                                        gaffer_functions.MapGenerator, False)
 
     def to_json(self):
         operation = super().to_json()
@@ -2046,23 +2051,21 @@ class Filter(Operation):
         self.input = input
         self.entities = None
         self.edges = None
-        self.global_elements = None
-        self.global_entities = None
-        self.global_edges = None
 
         if entities is not None:
             self.entities = []
             if isinstance(entities, list):
                 for el_def in entities:
-                    if not isinstance(el_def, ElementFilterDefinition):
-                        el_def = JsonConverter.from_json(
-                            el_def, ElementFilterDefinition)
-                    self.entities.append(el_def)
+                    self.entities.append(
+                        JsonConverter.validate(
+                            el_def, ElementFilterDefinition, False
+                            )
+                        )
             else:
                 for group, el_def in entities.items():
-                    if not isinstance(el_def, ElementFilterDefinition):
-                        el_def = JsonConverter.from_json(
-                            el_def, ElementFilterDefinition)
+                    el_def = JsonConverter.validate(
+                            el_def, ElementFilterDefinition, False
+                            )
                     el_def.group = group
                     self.entities.append(el_def)
 
@@ -2070,35 +2073,22 @@ class Filter(Operation):
             self.edges = []
             if isinstance(edges, list):
                 for el_def in edges:
-                    if not isinstance(el_def, ElementFilterDefinition):
-                        el_def = JsonConverter.from_json(
-                            el_def, ElementFilterDefinition)
-                    self.edges.append(el_def)
+                    self.edges.append(
+                        JsonConverter.validate(
+                            el_def, ElementFilterDefinition, False
+                            )
+                        )
             else:
                 for group, el_def in edges.items():
-                    if not isinstance(el_def, ElementFilterDefinition):
-                        el_def = JsonConverter.from_json(
-                            el_def, ElementFilterDefinition)
+                    el_def = JsonConverter.validate(
+                            el_def, ElementFilterDefinition, False
+                            )
                     el_def.group = group
                     self.edges.append(el_def)
 
-        if global_elements is not None:
-            if not isinstance(global_elements, GlobalElementFilterDefinition):
-                global_elements = JsonConverter.from_json(
-                    global_elements, GlobalElementFilterDefinition)
-            self.global_elements = global_elements
-
-        if global_entities is not None:
-            if not isinstance(global_entities, GlobalElementFilterDefinition):
-                global_entities = JsonConverter.from_json(
-                    global_entities, GlobalElementFilterDefinition)
-            self.global_entities = global_entities
-
-        if global_edges is not None:
-            if not isinstance(global_edges, GlobalElementFilterDefinition):
-                global_edges = JsonConverter.from_json(
-                    global_edges, GlobalElementFilterDefinition)
-            self.global_edges = global_edges
+        self.global_elements = JsonConverter.validate(global_elements, GlobalElementFilterDefinition)
+        self.global_entities = JsonConverter.validate(global_entities, GlobalElementFilterDefinition)
+        self.global_edges = JsonConverter.validate(global_edges, GlobalElementFilterDefinition)
 
     def to_json(self):
         operation = super().to_json()
@@ -2151,15 +2141,16 @@ class Aggregate(Operation):
             self.entities = []
             if isinstance(entities, list):
                 for el_def in entities:
-                    if not isinstance(el_def, AggregatePair):
-                        el_def = JsonConverter.from_json(
-                            el_def, AggregatePair)
-                    self.entities.append(el_def)
+                    self.entities.append(
+                        JsonConverter.validate(
+                            el_def, AggregatePair, False
+                            )
+                        )
             else:
                 for group, el_def in entities.items():
-                    if not isinstance(el_def, AggregatePair):
-                        el_def = JsonConverter.from_json(
-                            el_def, AggregatePair)
+                    el_def = JsonConverter.validate(
+                            el_def, AggregatePair, False
+                            )
                     el_def.group = group
                     self.entities.append(el_def)
 
@@ -2167,15 +2158,16 @@ class Aggregate(Operation):
             self.edges = []
             if isinstance(edges, list):
                 for el_def in edges:
-                    if not isinstance(el_def, AggregatePair):
-                        el_def = JsonConverter.from_json(
-                            el_def, AggregatePair)
-                    self.edges.append(el_def)
+                    self.edges.append(
+                        JsonConverter.validate(
+                            el_def, AggregatePair, False
+                            )
+                        )
             else:
                 for group, el_def in edges.items():
-                    if not isinstance(el_def, AggregatePair):
-                        el_def = JsonConverter.from_json(
-                            el_def, AggregatePair)
+                    el_def = JsonConverter.validate(
+                            el_def, AggregatePair, False
+                            )
                     el_def.group = group
                     self.edges.append(el_def)
 
@@ -2220,15 +2212,16 @@ class Transform(Operation):
             self.entities = []
             if isinstance(entities, list):
                 for el_def in entities:
-                    if not isinstance(el_def, ElementTransformDefinition):
-                        el_def = JsonConverter.from_json(
-                            el_def, ElementTransformDefinition)
-                    self.entities.append(el_def)
+                    self.entities.append(
+                        JsonConverter.validate(
+                            el_def, ElementTransformDefinition, False
+                            )
+                        )
             else:
                 for group, el_def in entities.items():
-                    if not isinstance(el_def, ElementTransformDefinition):
-                        el_def = JsonConverter.from_json(
-                            el_def, ElementTransformDefinition)
+                    el_def = JsonConverter.validate(
+                            el_def, ElementTransformDefinition, False
+                            )
                     el_def.group = group
                     self.entities.append(el_def)
 
@@ -2236,15 +2229,16 @@ class Transform(Operation):
             self.edges = []
             if isinstance(edges, list):
                 for el_def in edges:
-                    if not isinstance(el_def, ElementTransformDefinition):
-                        el_def = JsonConverter.from_json(
-                            el_def, ElementTransformDefinition)
-                    self.edges.append(el_def)
+                    self.edges.append(
+                        JsonConverter.validate(
+                            el_def, ElementTransformDefinition, False
+                            )
+                        )
             else:
                 for group, el_def in edges.items():
-                    if not isinstance(el_def, ElementTransformDefinition):
-                        el_def = JsonConverter.from_json(
-                            el_def, ElementTransformDefinition)
+                    el_def = JsonConverter.validate(
+                            el_def, ElementTransformDefinition, False
+                            )
                     el_def.group = group
                     self.edges.append(el_def)
 
@@ -2275,14 +2269,7 @@ class ScoreOperationChain(Operation):
     def __init__(self, operation_chain, options=None):
         super().__init__(_class_name=self.CLASS,
                          options=options)
-        if operation_chain is None:
-            raise TypeError('Operation Chain is required')
-
-        if not isinstance(operation_chain, OperationChain):
-            operation_chain = JsonConverter.from_json(operation_chain,
-                                                      OperationChain)
-
-        self.operation_chain = operation_chain
+        self.operation_chain = self.validate_operation_chain(operation_chain)
 
     def to_json(self):
         operation = super().to_json()
@@ -2311,21 +2298,12 @@ class GetWalks(Operation):
         if operations is not None:
             self.operations = []
             for op in operations:
-                if not isinstance(op, Operation):
-                    op = JsonConverter.from_json(op)
+                op = JsonConverter.validate(op, Operation)
                 if not isinstance(op, GetElements) and not isinstance(op, OperationChain):
                     raise TypeError('Operations must be of type GetElements or OperationChain')
                 self.operations.append(op)
 
-        if conditional is not None:
-            if not isinstance(conditional, ToJson):
-                conditional = JsonConverter.from_json(conditional,
-                                                           Conditional)
-            if not isinstance(conditional, Conditional):
-                raise TypeError('Conditional must be of type Conditional')
-            self.conditional = conditional
-        else:
-            self.conditional = None
+        self.conditional = JsonConverter.validate(conditional, Conditional)
 
     def to_json(self):
         operation = super().to_json()
@@ -2368,10 +2346,11 @@ class Map(Operation):
         if functions is not None:
             self.functions = []
             for func in functions:
-                if not isinstance(func, gaffer_functions.Function):
-                    func = JsonConverter.from_json(
-                        func, gaffer_functions.Function)
-                self.functions.append(func)
+                self.functions.append(
+                    JsonConverter.validate(
+                        func, gaffer_functions.Function, False
+                    )
+                )
 
     def to_json(self):
         operation = super().to_json()
@@ -2398,30 +2377,9 @@ class If(Operation):
         self.input = input
         self.condition = condition
 
-        if conditional is not None:
-            if not isinstance(conditional, Conditional):
-                self.conditional = JsonConverter.from_json(conditional,
-                                                           Conditional)
-            else:
-                self.conditional = conditional
-        else:
-            self.conditional = None
-
-        if then is not None:
-            if not isinstance(then, Operation):
-                self.then = JsonConverter.from_json(then, Operation)
-            else:
-                self.then = then
-        else:
-            self.then = None
-
-        if otherwise is not None:
-            if not isinstance(otherwise, Operation):
-                self.otherwise = JsonConverter.from_json(otherwise, Operation)
-            else:
-                self.otherwise = otherwise
-        else:
-            self.otherwise = None
+        self.conditional = JsonConverter.validate(conditional, Conditional)
+        self.then = JsonConverter.validate(then, Operation)
+        self.otherwise = JsonConverter.validate(otherwise, Operation)
 
     def to_json(self):
         operation = super().to_json()
@@ -2469,20 +2427,8 @@ class While(Operation):
         self.input = input
         self.condition = condition
 
-        if operation is not None:
-            if not isinstance(operation, Operation):
-                self.operation = JsonConverter.from_json(operation, Operation)
-            else:
-                self.operation = operation
-
-        if conditional is not None:
-            if not isinstance(conditional, Conditional):
-                self.conditional = JsonConverter.from_json(conditional,
-                                                           Conditional)
-            else:
-                self.conditional = conditional
-        else:
-            self.conditional = conditional
+        self.operation = JsonConverter.validate(operation, Operation)
+        self.conditional = JsonConverter.validate(conditional, Conditional)
 
     def to_json(self):
         operation = super().to_json()
@@ -2528,12 +2474,9 @@ class Reduce(Operation):
         self.input = input
         self.identity = identity
 
-        if aggregate_function is None:
-            raise ValueError('aggregate_function is required')
-        if isinstance(aggregate_function, dict):
-            aggregate_function = JsonConverter.from_json(
-                aggregate_function, gaffer_binaryoperators.BinaryOperator)
-        self.aggregate_function = aggregate_function
+        self.aggregate_function = JsonConverter.validate(
+            aggregate_function, gaffer_binaryoperators.BinaryOperator, False
+        )
 
     def to_json(self):
         operation = super().to_json()
@@ -2574,11 +2517,9 @@ class ForEach(Operation):
 
         self.input = input
 
-        if operation is not None:
-            if not isinstance(operation, Operation):
-                self.operation = JsonConverter.from_json(operation, Operation)
-            else:
-                self.operation = operation
+        self.operation = JsonConverter.validate(
+            operation, Operation, False
+        )
 
     def to_json(self):
         operation = super().to_json()
@@ -2637,14 +2578,7 @@ class ValidateOperationChain(Operation):
 
     def __init__(self, operation_chain=None, options=None):
         super().__init__(_class_name=self.CLASS, options=options)
-        if operation_chain is None:
-            raise ValueError('operation_chain is required')
-
-        if not isinstance(operation_chain, OperationChain):
-            self.operation_chain = JsonConverter.from_json(
-                operation_chain, OperationChain)
-        else:
-            self.operation_chain = operation_chain
+        self.operation_chain = self.validate_operation_chain(operation_chain)
 
     def to_json(self):
         operation_json = super().to_json()
@@ -2656,16 +2590,12 @@ class Conditional(ToJson, ToCodeString):
     CLASS = 'uk.gov.gchq.gaffer.operation.util.Conditional'
 
     def __init__(self, predicate=None, transform=None):
-
-        if predicate is not None and not isinstance(predicate, gaffer_predicates.Predicate):
-            self.predicate = JsonConverter.from_json(predicate, gaffer_predicates.Predicate)
-        else:
-            self.predicate = predicate
-
-        if transform is not None and not isinstance(transform, Operation):
-            self.transform = JsonConverter.from_json(transform, Operation)
-        else:
-            self.transform = transform
+        self.predicate = JsonConverter.validate(
+            predicate, gaffer_predicates.Predicate
+        )
+        self.transform = JsonConverter.validate(
+            transform, Operation
+        )
 
     def to_json(self):
         conditional_json = {}
@@ -2685,17 +2615,12 @@ class Join(Operation):
     def __init__(self, input=None, operation=None, match_method=None, match_key=None, flatten=None, join_type=None, collection_limit=None, options=None):
         super().__init__(_class_name=self.CLASS, options=options)
 
-        if operation is not None:
-            if not isinstance(operation, Operation):
-                self.operation = JsonConverter.from_json(operation)
-            else:
-                self.operation = operation
-
-        if match_method is not None:
-            if not isinstance(match_method, Match):
-                self.match_method = JsonConverter.from_json(match_method)
-            else:
-                self.match_method = match_method
+        self.operation = JsonConverter.validate(
+            operation, Operation, False
+        )
+        self.match_method = JsonConverter.validate(
+            match_method, Match, False
+        )
 
         self.input = input
         self.flatten = flatten
@@ -2749,25 +2674,7 @@ class FederatedOperationChain(Operation):
     def __init__(self,operation_chain=None,options=None):
         super().__init__(_class_name=self.CLASS, options=options)
 
-        if operation_chain is None:
-            raise ValueError('operation_chain is required')
-
-        if operation_chain is not None:
-            if isinstance(operation_chain,OperationChain):
-                self.operation_chain = operation_chain
-            elif isinstance(operation_chain,list):
-                allOperations = True
-                if (len(allOperations) == 0):
-                    allOperations = False
-                for op in operation_chain:
-                    if not isinstance(op,Operation):
-                        allOperations = False
-                if allOperations:
-                    self.operation_chain = OperationChain(operation_chain)
-            elif isinstance(operation_chain,Operation):
-                self.operation_chain = OperationChain(operation_chain)
-            else:
-                self.operation_chain = JsonConverter.from_json(operation_chain, OperationChain)
+        self.operation_chain = self.validate_operation_chain(operation_chain)
 
     def to_json(self):
         operation = super().to_json()

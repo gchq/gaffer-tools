@@ -478,6 +478,21 @@ class JsonConverter:
 
         return obj
 
+    @staticmethod
+    def validate(obj, expected_class, allow_none=True):
+        if obj is None:
+            if allow_none:
+                return None
+            raise TypeError('Argument must be of type ' + str(expected_class))
+        if not issubclass(expected_class, ToJson):
+            raise TypeError(str(expected_class) + ' must inherit ToJson')
+        if not isinstance(obj, ToJson):
+            obj = JsonConverter.from_json(obj, expected_class)
+        if not isinstance(obj, expected_class):
+            raise TypeError(str(obj) + ' must be of type ' +
+                                                        str(expected_class))
+        return obj
+
 
 def load_core_json_map():
     for name, class_obj in inspect.getmembers(
