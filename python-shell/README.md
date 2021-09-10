@@ -22,14 +22,14 @@ Once this is running you can run the python example by using the command \(all c
 
 ```bash
 python3 src/example.py
-python3 src/example_accumulo.py
+python3 src/example_map.py
 ```
 
 Alternatively if you have you own REST API running that is authenticated with PKI certificates then you can follow the pki example. Before using the example you will need to export your PKI certificate into a .pem file:
 
 ```bash
-python3 src/examplePki.py
-python3 src/example_accumulo_pki.py
+python3 src/example_pki.py
+python3 src/example_map_pki.py
 ```
 
 To use the python shell without installing just ensure you are execute your scripts from within the python-shell directory. To connect to gaffer you will need to do something like this:
