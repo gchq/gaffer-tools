@@ -83,6 +83,14 @@ class Min(AbstractBinaryOperator):
     def to_json(self):
         return super().to_json()
 
+class CollectionConcat(AbstractBinaryOperator):
+    CLASS = "uk.gov.gchq.koryphe.impl.binaryoperator.CollectionConcat"
+
+    def __init__(self):
+        super().__init__(_class_name=self.CLASS)
+
+    def to_json(self):
+        return super().to_json()
 
 class BinaryOperatorContext(ToJson, ToCodeString):
     CLASS = "gaffer.AggregatorContext"

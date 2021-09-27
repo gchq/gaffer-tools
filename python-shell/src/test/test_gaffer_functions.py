@@ -977,6 +977,52 @@ class GafferFunctionsTest(unittest.TestCase):
         [
             '''
             {
+                "class" : "uk.gov.gchq.gaffer.data.element.function.ReduceRelatedElements",
+                "vertexAggregator" : {
+                    "class" : "uk.gov.gchq.koryphe.impl.binaryoperator.Max"
+                },
+                "visibilityAggregator" : {
+                    "class" : "uk.gov.gchq.koryphe.impl.binaryoperator.CollectionConcat"
+                },
+                "visibilityProperty" : "visibility",
+                "relatedVertexGroups" : [ "relatesTo" ]
+            }
+            ''',
+            g.func.ReduceRelatedElements(
+                vertex_aggregator=g.gaffer_binaryoperators.Max(),
+                visibility_aggregator=g.gaffer_binaryoperators.CollectionConcat(),
+                visibility_property="visibility",
+                related_vertex_groups=["relatesTo"]
+                )
+        ],
+        [
+            '''
+            {
+                "class" : "uk.gov.gchq.gaffer.operation.function.ToTrailingWildcardPair",
+                "endOfRange" : "~"
+            }
+            ''',
+            g.func.ToTrailingWildcardPair(end_of_range="~")
+        ],
+        [
+            '''
+            {
+                "class" : "uk.gov.gchq.gaffer.data.element.function.TypeValueToTuple"
+            }
+            ''',
+            g.func.TypeValueToTuple()
+        ],
+        [
+            '''
+            {
+                "class" : "uk.gov.gchq.gaffer.data.element.function.TypeSubTypeValueToTuple"
+            }
+            ''',
+            g.func.TypeSubTypeValueToTuple()
+        ],
+        [
+            '''
+            {
                 "class": "uk.gov.gchq.koryphe.impl.function.FunctionChain",
                 "functions": [
                     {

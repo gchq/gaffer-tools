@@ -1398,6 +1398,58 @@ class ToElementTuple(AbstractFunction):
     def to_json(self):
         return super().to_json()
 
+class ReduceRelatedElements(AbstractFunction):
+    CLASS = "uk.gov.gchq.gaffer.data.element.function.ReduceRelatedElements"
+
+    def __init__(self, visibility_aggregator=None, vertex_aggregator=None, related_vertex_groups=None, visibility_property=None):
+        super().__init__(_class_name=self.CLASS)
+        self.visibility_aggregator = JsonConverter.validate(visibility_aggregator, bop.BinaryOperator)
+        self.vertex_aggregator = JsonConverter.validate(vertex_aggregator, bop.BinaryOperator)
+        self.related_vertex_groups = related_vertex_groups
+        self.visibility_property = visibility_property
+
+    def to_json(self):
+        function_json = super().to_json()
+        if self.visibility_aggregator is not None:
+            function_json["visibilityAggregator"] = self.visibility_aggregator.to_json()
+        if self.vertex_aggregator is not None:
+            function_json["vertexAggregator"] = self.vertex_aggregator.to_json()
+        if self.related_vertex_groups is not None:
+            function_json["relatedVertexGroups"] = self.related_vertex_groups
+        if self.visibility_property is not None:
+            function_json["visibilityProperty"] = self.visibility_property
+        return function_json
+
+class ToTrailingWildcardPair(AbstractFunction):
+    CLASS = "uk.gov.gchq.gaffer.operation.function.ToTrailingWildcardPair"
+
+    def __init__(self, end_of_range=None):
+        super().__init__(_class_name=self.CLASS)
+        self.end_of_range = end_of_range
+
+    def to_json(self):
+        function_json = super().to_json()
+        if self.end_of_range is not None:
+            function_json["endOfRange"] = self.end_of_range
+        return function_json
+
+class TypeValueToTuple(AbstractFunction):
+    CLASS = "uk.gov.gchq.gaffer.data.element.function.TypeValueToTuple"
+
+    def __init__(self):
+        super().__init__(_class_name=self.CLASS)
+
+    def to_json(self):
+        return super().to_json()
+
+class TypeSubTypeValueToTuple(AbstractFunction):
+    CLASS = "uk.gov.gchq.gaffer.data.element.function.TypeSubTypeValueToTuple"
+
+    def __init__(self):
+        super().__init__(_class_name=self.CLASS)
+
+    def to_json(self):
+        return super().to_json()
 
 class FunctionChain(AbstractFunction):
     CLASS = 'uk.gov.gchq.koryphe.impl.function.FunctionChain'
