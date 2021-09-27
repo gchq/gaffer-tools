@@ -149,6 +149,6 @@ We have some unit and integration tests for our python shell. To run all of the 
 then from within the python-shell folder run:
 
 ```bash
-python3 -m unittest discover -s src
+python3 -m unittest discover
 ```
 
