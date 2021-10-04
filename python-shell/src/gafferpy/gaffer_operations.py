@@ -558,6 +558,12 @@ class Operation(ToJson, ToCodeString):
                     view = JsonConverter.from_json(view, View)
                 self.views.append(view)
 
+        # Helper so that lists will be interpreted as federated graphIds
+        # e.g. options = ["graph_1", "graph_2"]
+        if isinstance(options, list):
+            options = {
+                "gaffer.federatedstore.operation.graphIds": ','.join(options)
+                }
         self.options = options
 
     def to_json(self):
