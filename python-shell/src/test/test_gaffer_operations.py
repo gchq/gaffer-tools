@@ -5486,7 +5486,19 @@ class GafferOperationsTest(unittest.TestCase):
             "class" : "uk.gov.gchq.gaffer.operation.impl.get.GetAllElements"
         }
         with self.assertRaises(TypeError):
-            g.GetWalks(operations=[{"class": "uk.gov.gchq.gaffer.operation.impl.get.GetAllElements"}])
+            g.GetWalks(operations=[get_all_elements_json])
+
+    def test_federated_graph_ids_helper(self):
+        expected_output_json = {
+            "class" : "uk.gov.gchq.gaffer.operation.impl.get.GetAllElements",
+            "options": {
+                "gaffer.federatedstore.operation.graphIds": "graph1,graph2"
+            }
+        }
+        self.assertEqual(
+            g.GetAllElements(options=["graph1,graph2"]),
+            expected_output_json
+        )
 
 
 if __name__ == "__main__":
