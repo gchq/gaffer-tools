@@ -1,6 +1,6 @@
 # Deprecated
 
-Due to the fact this module is not maintained and doesn't seem to work very well, it has been [deprecated](https://github.com/gchq/gaffer-tools/issues/947) as of 17/11/21. We plan to delete it at some point in the Gaffer 2 release process. We suspect this will not bother anyone as it seems no one uses it, but if this isn't the case see then let us know in this [issue](https://github.com/gchq/gaffer-tools/issues/930).
+Due to the fact this module is not maintained and doesn't seem to work very well, it has been [deprecated](https://github.com/gchq/gaffer-tools/issues/947) as of 17/11/21. We plan to delete it at some point in the Gaffer 2 release process. We suspect this will not bother anyone as it seems no one uses it, but if this isn't the case then please let us know in this [issue](https://github.com/gchq/gaffer-tools/issues/930).
 
 ## Gaffer Schema Builder
 
