@@ -1451,6 +1451,88 @@ class TypeSubTypeValueToTuple(AbstractFunction):
     def to_json(self):
         return super().to_json()
 
+
+class TupleToElements(AbstractFunction):
+    CLASS = "uk.gov.gchq.gaffer.data.element.function.TupleToElements"
+
+    def __init__(self):
+        super().__init__(_class_name=self.CLASS)
+
+    def to_json(self):
+        return super().to_json()
+
+class TuplesToElements(AbstractFunction):
+    CLASS = "uk.gov.gchq.gaffer.data.element.function.TuplesToElements"
+
+    def __init__(self):
+        super().__init__(_class_name=self.CLASS)
+
+    def to_json(self):
+        return super().to_json()
+
+class StringsToTypeValue(AbstractFunction):
+    CLASS = "uk.gov.gchq.gaffer.types.function.StringsToTypeValue"
+
+    def __init__(self):
+        super().__init__(_class_name=self.CLASS)
+
+    def to_json(self):
+        return super().to_json()
+
+class StringsToTypeSubTypeValue(AbstractFunction):
+    CLASS = "uk.gov.gchq.gaffer.types.function.StringsToTypeSubTypeValue"
+
+    def __init__(self):
+        super().__init__(_class_name=self.CLASS)
+
+    def to_json(self):
+        return super().to_json()
+
+class IterableToHllSketch(AbstractFunction):
+    CLASS = "uk.gov.gchq.gaffer.sketches.datasketches.cardinality.function.IterableToHllSketch"
+
+    def __init__(self):
+        super().__init__(_class_name=self.CLASS)
+
+    def to_json(self):
+        return super().to_json()
+
+class IterableToHyperLogLogPlus(AbstractFunction):
+    CLASS = "uk.gov.gchq.gaffer.sketches.clearspring.cardinality.function.IterableToHyperLogLogPlus"
+
+    def __init__(self):
+        super().__init__(_class_name=self.CLASS)
+
+    def to_json(self):
+        return super().to_json()
+
+class IterableToFreqMap(AbstractFunction):
+    CLASS = "uk.gov.gchq.gaffer.types.function.IterableToFreqMap"
+
+    def __init__(self):
+        super().__init__(_class_name=self.CLASS)
+
+    def to_json(self):
+        return super().to_json()
+
+class ToHllSketch(AbstractFunction):
+    CLASS = "uk.gov.gchq.gaffer.sketches.datasketches.cardinality.function.ToHllSketch"
+
+    def __init__(self):
+        super().__init__(_class_name=self.CLASS)
+
+    def to_json(self):
+        return super().to_json()
+
+class ToHyperLogLogPlus(AbstractFunction):
+    CLASS = "uk.gov.gchq.gaffer.sketches.clearspring.cardinality.function.ToHyperLogLogPlus"
+
+    def __init__(self):
+        super().__init__(_class_name=self.CLASS)
+
+    def to_json(self):
+        return super().to_json()
+
 class FunctionChain(AbstractFunction):
     CLASS = 'uk.gov.gchq.koryphe.impl.function.FunctionChain'
 

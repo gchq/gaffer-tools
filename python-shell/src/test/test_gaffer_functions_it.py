@@ -46,6 +46,9 @@ class GafferFunctionsIntegrationTest(unittest.TestCase):
             'uk.gov.gchq.gaffer.operation.data.generator.EntityIdExtractor',
             'uk.gov.gchq.gaffer.traffic.generator.RoadTrafficStringElementGenerator',
             'uk.gov.gchq.gaffer.rest.example.ExampleElementGenerator',
+            'uk.gov.gchq.gaffer.sketches.datasketches.cardinality.HllSketchEntityGenerator',
+            'uk.gov.gchq.gaffer.sketches.clearspring.cardinality.HyperLogLogPlusEntityGenerator',
+            'uk.gov.gchq.gaffer.data.element.function.PropertiesTransformer'
         ]
 
         for i in ignore_functions:
