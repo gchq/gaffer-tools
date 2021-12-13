@@ -1270,10 +1270,11 @@ class MapToTuple(AbstractFunction):
 class ParseDate(AbstractFunction):
     CLASS = "uk.gov.gchq.koryphe.impl.function.ParseDate"
 
-    def __init__(self, time_zone=None, format=None):
+    def __init__(self, time_zone=None, format=None, microseconds=False):
         super().__init__(_class_name=self.CLASS)
         self.time_zone = time_zone
         self.format = format
+        self.microseconds = microseconds
     
     def to_json(self):
         function_json = super().to_json()
@@ -1281,6 +1282,8 @@ class ParseDate(AbstractFunction):
             function_json["timeZone"] = self.time_zone
         if (self.format is not None):
             function_json["format"] = self.format
+        if (self.microseconds is not None):
+            function_json["microseconds"] = self.microseconds
 
         return function_json
 
