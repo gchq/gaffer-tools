@@ -654,10 +654,8 @@ function GraphController($q, graph, config, error, loading, query, operationOpti
      * Removes every selected element in the graph.
      */
     vm.removeSelected = function() {
-        var removedElements = cytoscapeGraph.filter(":selected").remove();
-        for(var i = 0; i < removedElements.length; i++) {
-            graph.getRemovedElements().push(removedElements[i]);
-        }
+        var removedElements = cytoscapeGraph.filter(":selected").remove().toArray();
+        graph.getRemovedElements().concat(removedElements);
 
         cytoscapeGraph.elements().unselect();
         vm.selectedElements.entities = [];
