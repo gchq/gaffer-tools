@@ -664,7 +664,7 @@ function GraphController($q, graph, config, error, loading, query, operationOpti
 
     var removePreviouslyRemovedElements = function() {
         var elements = cytoscapeGraph.elements();
-        graph.getRemovedElements().forEach(removedElement => {
+        graph.getRemovedElements().forEach(function(removedElement) {
             var element = elements.getElementById(removedElement.id());
             if(element && element.id()) {
                 element.remove();
