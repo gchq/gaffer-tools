@@ -669,6 +669,6 @@ function GraphController($q, graph, config, error, loading, query, operationOpti
             if(element && element.id()) {
                 element.remove();
             }
-        }
+        });
     }
 }
