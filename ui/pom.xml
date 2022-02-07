@@ -28,7 +28,7 @@
         <standalone-ui-path>ui</standalone-ui-path>
         <standalone-rest-path>rest</standalone-rest-path>
         <standalone-port>8080</standalone-port>
-        <selenium.version>3.4.0</selenium.version>
+        <selenium.version>3.141.59</selenium.version>
         <jasmine.plugin.version>2.2</jasmine.plugin.version>
         <jasmine.test.paths>**/*-spec.js</jasmine.test.paths>
     </properties>
@@ -43,7 +43,7 @@
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
-            <version>21.0</version>
+            <version>${guava.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
