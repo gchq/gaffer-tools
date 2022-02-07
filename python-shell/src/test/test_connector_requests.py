@@ -129,7 +129,7 @@ class GafferConnectorTest(unittest.TestCase):
           "exampleJson": {
             "class": "uk.gov.gchq.gaffer.operation.impl.get.GetAllElements"
           },
-          "outputClassName": "uk.gov.gchq.gaffer.commonutil.iterable.CloseableIterable<uk.gov.gchq.gaffer.data.element.Element>"
+          "outputClassName": "java.lang.Iterable<uk.gov.gchq.gaffer.data.element.Element>"
         }
             '''
 

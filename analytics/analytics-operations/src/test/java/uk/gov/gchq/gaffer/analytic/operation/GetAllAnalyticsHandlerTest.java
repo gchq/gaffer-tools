@@ -23,7 +23,6 @@ import uk.gov.gchq.gaffer.analytic.operation.handler.AddAnalyticHandler;
 import uk.gov.gchq.gaffer.analytic.operation.handler.GetAllAnalyticsHandler;
 import uk.gov.gchq.gaffer.analytic.operation.handler.cache.AnalyticCache;
 import uk.gov.gchq.gaffer.cache.CacheServiceLoader;
-import uk.gov.gchq.gaffer.commonutil.iterable.CloseableIterable;
 import uk.gov.gchq.gaffer.named.operation.AddNamedOperation;
 import uk.gov.gchq.gaffer.named.operation.NamedOperationDetail;
 import uk.gov.gchq.gaffer.store.Context;
@@ -111,7 +110,7 @@ public class GetAllAnalyticsHandlerTest {
         addAnalyticHandler.doOperation(addAnalytic2, context, store);
 
         // When
-        CloseableIterable<AnalyticDetail> allAnalyticsList = getAllAnalyticsHandler.doOperation(new GetAllAnalytics(), context, store);
+        Iterable<AnalyticDetail> allAnalyticsList = getAllAnalyticsHandler.doOperation(new GetAllAnalytics(), context, store);
 
         // Then
         for (AnalyticDetail analytic : allAnalyticsList) {
@@ -163,7 +162,7 @@ public class GetAllAnalyticsHandlerTest {
         addAnalyticHandler.doOperation(addAnalytic2, context, store);
 
         // When
-        CloseableIterable<AnalyticDetail> allAnalyticsList = getAllAnalyticsHandler.doOperation(new GetAllAnalytics(), context, store);
+        Iterable<AnalyticDetail> allAnalyticsList = getAllAnalyticsHandler.doOperation(new GetAllAnalytics(), context, store);
 
         // Then
         for (AnalyticDetail analytic : allAnalyticsList) {
@@ -177,7 +176,7 @@ public class GetAllAnalyticsHandlerTest {
         addNamedOperation.setReadAccessRoles(Arrays.asList("modifiedReadRoles"));
         addNamedOperation.setWriteAccessRoles(Arrays.asList("modifiedWriteRoles"));
         addNamedOperationHandler.doOperation(addNamedOperation, context, store);
-        CloseableIterable<AnalyticDetail> allAnalyticsList2 = getAllAnalyticsHandler.doOperation(new GetAllAnalytics(), context, store);
+        Iterable<AnalyticDetail> allAnalyticsList2 = getAllAnalyticsHandler.doOperation(new GetAllAnalytics(), context, store);
 
         for (AnalyticDetail analytic : allAnalyticsList2) {
             assertEquals(analytic.getReadAccessRoles(), Arrays.asList("modifiedReadRoles"));

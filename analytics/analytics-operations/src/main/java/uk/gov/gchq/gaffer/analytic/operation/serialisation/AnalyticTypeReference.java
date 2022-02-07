@@ -19,7 +19,6 @@ package uk.gov.gchq.gaffer.analytic.operation.serialisation;
 import com.fasterxml.jackson.core.type.TypeReference;
 
 import uk.gov.gchq.gaffer.analytic.operation.AnalyticDetail;
-import uk.gov.gchq.gaffer.commonutil.iterable.CloseableIterable;
 
 /**
  * {@link TypeReference} objects for analytic operations.
@@ -32,7 +31,7 @@ public final class AnalyticTypeReference {
     public static class SingularAnalyticOperationDetail extends TypeReference<AnalyticDetail> {
     }
 
-    public static class IterableAnalyticOperationDetail extends TypeReference<CloseableIterable<AnalyticDetail>> {
+    public static class IterableAnalyticOperationDetail extends TypeReference<Iterable<AnalyticDetail>> {
     }
 
 }

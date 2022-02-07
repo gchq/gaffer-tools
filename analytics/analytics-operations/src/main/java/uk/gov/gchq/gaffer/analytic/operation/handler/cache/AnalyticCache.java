@@ -22,8 +22,6 @@ import org.slf4j.LoggerFactory;
 import uk.gov.gchq.gaffer.analytic.operation.AnalyticDetail;
 import uk.gov.gchq.gaffer.cache.CacheServiceLoader;
 import uk.gov.gchq.gaffer.cache.exception.CacheOperationException;
-import uk.gov.gchq.gaffer.commonutil.iterable.CloseableIterable;
-import uk.gov.gchq.gaffer.commonutil.iterable.WrappedCloseableIterable;
 import uk.gov.gchq.gaffer.named.operation.cache.exception.CacheOperationFailedException;
 import uk.gov.gchq.gaffer.user.User;
 
@@ -135,9 +133,9 @@ public class AnalyticCache {
      *
      * @param user The {@link User} object that is used for checking read
      *             permissions.
-     * @return a {@link CloseableIterable} containing the Analytic operation details
+     * @return a {@link Iterable} containing the Analytic operation details
      */
-    public CloseableIterable<AnalyticDetail> getAllAnalyticOperations(final User user) {
+    public Iterable<AnalyticDetail> getAllAnalyticOperations(final User user) {
         return getAll(user, null);
     }
 
@@ -147,9 +145,9 @@ public class AnalyticCache {
      * @param user      The {@link User} object that is used for checking read
      *                  permissions.
      * @param adminAuth The admin auth supplied for permissions.
-     * @return a {@link CloseableIterable} containing the Analytic operation details
+     * @return a {@link Iterable} containing the Analytic operation details
      */
-    public CloseableIterable<AnalyticDetail> getAllAnalyticOperations(final User user, final String adminAuth) {
+    public Iterable<AnalyticDetail> getAllAnalyticOperations(final User user, final String adminAuth) {
         return getAll(user, adminAuth);
     }
 
@@ -280,7 +278,7 @@ public class AnalyticCache {
         }
     }
 
-    private CloseableIterable<AnalyticDetail> getAll(final User user, final String adminAuth) {
+    private Iterable<AnalyticDetail> getAll(final User user, final String adminAuth) {
         final Set<String> keys = CacheServiceLoader.getService().getAllKeysFromCache(CACHE_NAME);
         final Set<AnalyticDetail> executables = new HashSet<>();
         for (final String key : keys) {
@@ -294,6 +292,6 @@ public class AnalyticCache {
             }
 
         }
-        return new WrappedCloseableIterable<>(executables);
+        return executables;
     }
 }

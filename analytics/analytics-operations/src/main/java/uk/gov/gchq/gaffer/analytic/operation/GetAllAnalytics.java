@@ -20,7 +20,6 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.core.type.TypeReference;
 
 import uk.gov.gchq.gaffer.analytic.operation.serialisation.AnalyticTypeReference;
-import uk.gov.gchq.gaffer.commonutil.iterable.CloseableIterable;
 import uk.gov.gchq.gaffer.operation.io.Output;
 import uk.gov.gchq.koryphe.Since;
 import uk.gov.gchq.koryphe.Summary;
@@ -35,11 +34,11 @@ import java.util.Map;
 @JsonPropertyOrder(value = { "class" }, alphabetic = true)
 @Since("1.10.0")
 @Summary("Gets all available analytic operations")
-public class GetAllAnalytics implements Output<CloseableIterable<AnalyticDetail>> {
+public class GetAllAnalytics implements Output<Iterable<AnalyticDetail>> {
     private Map<String, String> options;
 
     @Override
-    public TypeReference<CloseableIterable<AnalyticDetail>> getOutputTypeReference() {
+    public TypeReference<Iterable<AnalyticDetail>> getOutputTypeReference() {
         return new AnalyticTypeReference.IterableAnalyticOperationDetail();
     }
 
@@ -59,7 +58,7 @@ public class GetAllAnalytics implements Output<CloseableIterable<AnalyticDetail>
     }
 
     public static class Builder extends BaseBuilder<GetAllAnalytics, Builder>
-            implements Output.Builder<GetAllAnalytics, CloseableIterable<AnalyticDetail>, Builder> {
+            implements Output.Builder<GetAllAnalytics, Iterable<AnalyticDetail>, Builder> {
         public Builder() {
             super(new GetAllAnalytics());
         }

@@ -20,8 +20,6 @@ import uk.gov.gchq.gaffer.analytic.operation.AnalyticDetail;
 import uk.gov.gchq.gaffer.analytic.operation.GetAllAnalytics;
 import uk.gov.gchq.gaffer.analytic.operation.UIMappingDetail;
 import uk.gov.gchq.gaffer.analytic.operation.handler.cache.AnalyticCache;
-import uk.gov.gchq.gaffer.commonutil.iterable.CloseableIterable;
-import uk.gov.gchq.gaffer.commonutil.iterable.WrappedCloseableIterable;
 import uk.gov.gchq.gaffer.named.operation.NamedOperationDetail;
 import uk.gov.gchq.gaffer.operation.OperationException;
 import uk.gov.gchq.gaffer.store.Context;
@@ -36,7 +34,7 @@ import java.util.function.Function;
  * Operation Handler for GetAllAnalyticOperations
  */
 public class GetAllAnalyticsHandler
-        implements OutputOperationHandler<GetAllAnalytics, CloseableIterable<AnalyticDetail>> {
+        implements OutputOperationHandler<GetAllAnalytics, Iterable<AnalyticDetail>> {
     private final AnalyticCache cache;
     private static Context context;
 
@@ -64,12 +62,12 @@ public class GetAllAnalyticsHandler
      *                            the operation declarations file
      */
     @Override
-    public CloseableIterable<AnalyticDetail> doOperation(final GetAllAnalytics operation, final Context context,
+    public Iterable<AnalyticDetail> doOperation(final GetAllAnalytics operation, final Context context,
             final Store store) throws OperationException {
         GetAllAnalyticsHandler.context = context;
-        final CloseableIterable<AnalyticDetail> ops = cache.getAllAnalyticOperations(context.getUser(),
+        final Iterable<AnalyticDetail> ops = cache.getAllAnalyticOperations(context.getUser(),
                 store.getProperties().getAdminAuth());
-        return new WrappedCloseableIterable<>(IterableUtil.map(ops, new AddInputType()));
+        return IterableUtil.map(ops, new AddInputType());
     }
 
     private static class AddInputType implements Function<AnalyticDetail, AnalyticDetail> {
