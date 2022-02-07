@@ -28,6 +28,7 @@ import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.firefox.FirefoxProfile;
 
 import uk.gov.gchq.gaffer.exception.SerialisationException;
@@ -129,7 +130,9 @@ public class QueryBuilderST {
 
         FirefoxProfile profile = new FirefoxProfile();
         profile.setPreference("intl.accept_languages", "en-GB"); // for dates
-        driver = new FirefoxDriver(profile);
+        FirefoxOptions options = new FirefoxOptions();
+        options.setProfile(profile);
+        driver = new FirefoxDriver(options);
 
 
         // Create a large window to ensure we don't need to scroll
