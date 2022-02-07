@@ -20,6 +20,7 @@ import org.slf4j.LoggerFactory;
 
 import uk.gov.gchq.gaffer.data.element.Element;
 import uk.gov.gchq.gaffer.graph.Graph;
+import uk.gov.gchq.gaffer.graph.GraphConfig;
 import uk.gov.gchq.gaffer.operation.OperationException;
 import uk.gov.gchq.gaffer.operation.impl.add.AddElements;
 import uk.gov.gchq.gaffer.performancetesting.MetricsListener;
@@ -155,7 +156,7 @@ public class ElementIngestTest {
         final ElementIngestTestProperties testProperties = new ElementIngestTestProperties();
         testProperties.loadTestProperties(args[2]);
         final Graph graph = new Graph.Builder()
-                .graphId(testProperties.getGraphId())
+                .config(new GraphConfig(testProperties.getGraphId()))
                 .storeProperties(storeProperties)
                 .addSchema(schema)
                 .build();
