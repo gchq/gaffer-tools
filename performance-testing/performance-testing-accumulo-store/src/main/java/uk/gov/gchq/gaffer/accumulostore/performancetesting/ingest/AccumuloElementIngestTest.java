@@ -28,6 +28,7 @@ import org.slf4j.LoggerFactory;
 import uk.gov.gchq.gaffer.accumulostore.AccumuloStore;
 import uk.gov.gchq.gaffer.data.element.Element;
 import uk.gov.gchq.gaffer.graph.Graph;
+import uk.gov.gchq.gaffer.graph.GraphConfig;
 import uk.gov.gchq.gaffer.hdfs.operation.SampleDataForSplitPoints;
 import uk.gov.gchq.gaffer.operation.OperationException;
 import uk.gov.gchq.gaffer.operation.impl.SplitStoreFromFile;
@@ -164,10 +165,10 @@ public class AccumuloElementIngestTest extends Configured {
         accumuloStore.initialise(testProperties.getGraphId(), schema, storeProperties);
         LOGGER.info("Initialised Accumulo store (instance name is {}, graph id is {})",
                 accumuloStore.getProperties().getInstance(),
-                accumuloStore.getProperties().getTable());
+                accumuloStore.getTableName());
         LOGGER.info("Using test properties of {}", testProperties);
         final Graph graph = new Graph.Builder()
-                .graphId(testProperties.getGraphId())
+                .config(new GraphConfig(testProperties.getGraphId()))
                 .store(accumuloStore)
                 .addSchema(schema)
                 .build();

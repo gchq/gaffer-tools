@@ -21,6 +21,7 @@ import org.slf4j.LoggerFactory;
 import uk.gov.gchq.gaffer.commonutil.iterable.CloseableIterable;
 import uk.gov.gchq.gaffer.data.element.Element;
 import uk.gov.gchq.gaffer.graph.Graph;
+import uk.gov.gchq.gaffer.graph.GraphConfig;
 import uk.gov.gchq.gaffer.operation.OperationException;
 import uk.gov.gchq.gaffer.operation.data.ElementSeed;
 import uk.gov.gchq.gaffer.operation.impl.get.GetElements;
@@ -167,7 +168,7 @@ public class QueryTest {
         final QueryTestProperties testProperties = new QueryTestProperties();
         testProperties.loadTestProperties(args[2]);
         final Graph graph = new Graph.Builder()
-                .graphId(testProperties.getGraphId())
+                .config(new GraphConfig(testProperties.getGraphId()))
                 .storeProperties(storeProperties)
                 .addSchema(schema)
                 .build();
