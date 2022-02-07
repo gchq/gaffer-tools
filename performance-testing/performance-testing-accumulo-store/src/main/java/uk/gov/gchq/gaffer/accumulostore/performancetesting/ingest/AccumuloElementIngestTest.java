@@ -30,7 +30,7 @@ import uk.gov.gchq.gaffer.data.element.Element;
 import uk.gov.gchq.gaffer.graph.Graph;
 import uk.gov.gchq.gaffer.hdfs.operation.SampleDataForSplitPoints;
 import uk.gov.gchq.gaffer.operation.OperationException;
-import uk.gov.gchq.gaffer.operation.impl.SplitStore;
+import uk.gov.gchq.gaffer.operation.impl.SplitStoreFromFile;
 import uk.gov.gchq.gaffer.performancetesting.ingest.ElementIngestTest;
 import uk.gov.gchq.gaffer.randomelementgeneration.generator.ElementGeneratorFromSupplier;
 import uk.gov.gchq.gaffer.serialisation.ToBytesSerialiser;
@@ -139,7 +139,7 @@ public class AccumuloElementIngestTest extends Configured {
         } else {
             // Add the splits point to the table
             LOGGER.info("Adding split points to table");
-            final SplitStore splitTable = new SplitStore.Builder()
+            final SplitStoreFromFile splitTable = new SplitStoreFromFile.Builder()
                     .inputPath(splitsFile)
                     .build();
             accumuloStore.execute(splitTable, new Context());
