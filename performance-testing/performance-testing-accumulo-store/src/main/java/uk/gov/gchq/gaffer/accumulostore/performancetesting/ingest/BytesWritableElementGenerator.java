@@ -17,7 +17,6 @@ package uk.gov.gchq.gaffer.accumulostore.performancetesting.ingest;
 
 import org.apache.hadoop.io.BytesWritable;
 
-import uk.gov.gchq.gaffer.commonutil.iterable.WrappedCloseableIterable;
 import uk.gov.gchq.gaffer.data.element.Element;
 import uk.gov.gchq.gaffer.data.generator.ElementGenerator;
 import uk.gov.gchq.gaffer.exception.SerialisationException;
@@ -46,6 +45,6 @@ public class BytesWritableElementGenerator implements ElementGenerator<BytesWrit
                     }
                 });
         final Iterable<Element> elementIterable = elementStream::iterator;
-        return new WrappedCloseableIterable<>(elementIterable::iterator);
+        return elementIterable::iterator;
     }
 }
