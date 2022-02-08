@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package uk.gov.gchq.gaffer.analytic.operation;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
