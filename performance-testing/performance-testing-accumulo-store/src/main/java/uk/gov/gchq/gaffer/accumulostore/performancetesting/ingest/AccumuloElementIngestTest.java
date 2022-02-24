@@ -168,7 +168,9 @@ public class AccumuloElementIngestTest extends Configured {
                 accumuloStore.getTableName());
         LOGGER.info("Using test properties of {}", testProperties);
         final Graph graph = new Graph.Builder()
-                .config(new GraphConfig(testProperties.getGraphId()))
+                .config(new GraphConfig.Builder()
+                        .graphId(testProperties.getGraphId())
+                        .build())
                 .store(accumuloStore)
                 .addSchema(schema)
                 .build();
