@@ -28,9 +28,10 @@ import org.slf4j.LoggerFactory;
 import uk.gov.gchq.gaffer.accumulostore.AccumuloStore;
 import uk.gov.gchq.gaffer.data.element.Element;
 import uk.gov.gchq.gaffer.graph.Graph;
+import uk.gov.gchq.gaffer.graph.GraphConfig;
 import uk.gov.gchq.gaffer.hdfs.operation.SampleDataForSplitPoints;
 import uk.gov.gchq.gaffer.operation.OperationException;
-import uk.gov.gchq.gaffer.operation.impl.SplitStore;
+import uk.gov.gchq.gaffer.operation.impl.SplitStoreFromFile;
 import uk.gov.gchq.gaffer.performancetesting.ingest.ElementIngestTest;
 import uk.gov.gchq.gaffer.randomelementgeneration.generator.ElementGeneratorFromSupplier;
 import uk.gov.gchq.gaffer.serialisation.ToBytesSerialiser;
@@ -139,7 +140,7 @@ public class AccumuloElementIngestTest extends Configured {
         } else {
             // Add the splits point to the table
             LOGGER.info("Adding split points to table");
-            final SplitStore splitTable = new SplitStore.Builder()
+            final SplitStoreFromFile splitTable = new SplitStoreFromFile.Builder()
                     .inputPath(splitsFile)
                     .build();
             accumuloStore.execute(splitTable, new Context());
@@ -164,10 +165,12 @@ public class AccumuloElementIngestTest extends Configured {
         accumuloStore.initialise(testProperties.getGraphId(), schema, storeProperties);
         LOGGER.info("Initialised Accumulo store (instance name is {}, graph id is {})",
                 accumuloStore.getProperties().getInstance(),
-                accumuloStore.getProperties().getTable());
+                accumuloStore.getTableName());
         LOGGER.info("Using test properties of {}", testProperties);
         final Graph graph = new Graph.Builder()
-                .graphId(testProperties.getGraphId())
+                .config(new GraphConfig.Builder()
+                        .graphId(testProperties.getGraphId())
+                        .build())
                 .store(accumuloStore)
                 .addSchema(schema)
                 .build();
