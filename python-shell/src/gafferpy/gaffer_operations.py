@@ -683,7 +683,7 @@ class GetTraits(Operation):
     CLASS = 'uk.gov.gchq.gaffer.store.operation.GetTraits'
 
     def __init__(self,
-                 current_traits=True,
+                 current_traits,
                  options=None):
         super().__init__(
             _class_name=self.CLASS, options=options)
@@ -693,26 +693,6 @@ class GetTraits(Operation):
     def to_json(self):
         operation = super().to_json()
 
-        operation['currentTraits'] = self.current_traits
-        return operation
-
-class HasTrait(Operation):
-    CLASS = 'uk.gov.gchq.gaffer.store.operation.HasTrait'
-
-    def __init__(self,
-                 trait,
-                 current_traits=True,
-                 options=None):
-        super().__init__(
-            _class_name=self.CLASS, options=options)
-
-        self.trait = trait
-        self.current_traits = current_traits
-
-    def to_json(self):
-        operation = super().to_json()
-
-        operation['trait'] = self.trait
         operation['currentTraits'] = self.current_traits
         return operation
 
