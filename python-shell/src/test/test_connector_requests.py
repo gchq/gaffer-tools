@@ -202,6 +202,7 @@ class GafferConnectorTest(unittest.TestCase):
             "uk.gov.gchq.gaffer.operation.impl.function.Filter",
             "uk.gov.gchq.gaffer.operation.impl.function.Transform",
             "uk.gov.gchq.gaffer.operation.impl.function.Aggregate",
+            "uk.gov.gchq.gaffer.store.operation.HasTrait",
             "uk.gov.gchq.gaffer.store.operation.GetTraits",
             "uk.gov.gchq.gaffer.mapstore.operation.CountAllElementsDefaultView",
             "uk.gov.gchq.gaffer.operation.export.graph.ExportToOtherAuthorisedGraph",
