@@ -79,7 +79,6 @@ jobs:
         - 14
         module:
         - analytics/analytics-ui
-        - schema-builder/schema-builder-ui
 
     steps:
     - uses: actions/checkout@v2
@@ -131,7 +130,7 @@ jobs:
       fail-fast: true
       matrix:
         modules:
-        - :gaffer-tools,:mini-accumulo-cluster,:schema-builder,:schema-builder-rest
+        - :gaffer-tools,:mini-accumulo-cluster
         - :slider
         - :random-element-generation,:performance-testing,:performance-testing-core,:performance-testing-accumulo-store,:performance-testing-aws
         - :analytics,:analytics-functions,:analytics-operations,:analytics-rest
