@@ -35,7 +35,6 @@
         <module>random-element-generation</module>
         <module>schema-builder</module>
         <module>slider</module>
-        <module>analytics</module>
     </modules>
 
     <properties>
