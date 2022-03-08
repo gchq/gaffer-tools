@@ -33,8 +33,6 @@
         <module>mini-accumulo-cluster</module>
         <module>performance-testing</module>
         <module>random-element-generation</module>
-        <module>slider</module>
-        <module>analytics</module>
     </modules>
 
     <properties>
