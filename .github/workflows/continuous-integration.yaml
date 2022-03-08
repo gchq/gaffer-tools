@@ -69,29 +69,6 @@ jobs:
       working-directory: python-shell
       run: python3 -m unittest discover -s src
 
-  npm-build:
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node_version:
-        - 10
-        - 12
-        - 14
-
-    steps:
-    - uses: actions/checkout@v2
-    - uses: actions/setup-node@v2
-      with:
-        node-version: ${{ matrix.node_version }}
-    - run: npm install
-      working-directory: ${{ matrix.module }}
-    - run: npm run build
-      working-directory: ${{ matrix.module }}
-    - run: npm run lint
-      working-directory: ${{ matrix.module }}
-    - run: npm run ci-test
-      working-directory: ${{ matrix.module }}
-
   ui-jasmine-test:
     runs-on: ubuntu-latest
     env:
