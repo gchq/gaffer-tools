@@ -17,7 +17,9 @@ package uk.gov.gchq.gaffer.miniaccumulocluster;
 
 import org.apache.accumulo.shell.Shell;
 import org.apache.commons.io.IOUtils;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -29,7 +31,7 @@ import java.util.Properties;
 
 
 public final class MiniAccumuloShellController {
-    private static final Logger LOGGER = Logger.getLogger(MiniAccumuloShellController.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(MiniAccumuloShellController.class);
 
     private static final String ACCUMULO_INSTANCE = "accumulo.instance";
     private static final String ACCUMULO_USER = "accumulo.user";

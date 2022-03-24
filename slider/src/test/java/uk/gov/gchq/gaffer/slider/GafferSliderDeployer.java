@@ -60,7 +60,7 @@ import java.util.Properties;
  */
 public class GafferSliderDeployer extends AgentCommandTestBase {
 
-    private final Logger log = LoggerFactory.getLogger(GafferSliderDeployer.class);
+    private final Logger LOGGER = LoggerFactory.getLogger(GafferSliderDeployer.class);
 
     private static final String CLUSTER_NAME = "gaffer-slider-integration-tests";
 
@@ -103,7 +103,7 @@ public class GafferSliderDeployer extends AgentCommandTestBase {
                 "privateVisibility"
         ));
 
-        log.info("Created Accumulo user called {} with password {} and authorizations {}",
+        LOGGER.info("Created Accumulo user called {} with password {} and authorizations {}",
                 user, password, accumulo.securityOperations().getUserAuthorizations(user).toString());
 
         return password;
@@ -158,9 +158,9 @@ public class GafferSliderDeployer extends AgentCommandTestBase {
             tracePassword = rootPassword;
         }
 
-        log.info("Accumulo Root Password: {}", rootPassword);
-        log.info("Accumulo Instance Secret: {}", instanceSecret);
-        log.info("Accumulo Tracer Password: {}", tracePassword);
+        LOGGER.info("Accumulo Root Password: {}", rootPassword);
+        LOGGER.info("Accumulo Instance Secret: {}", instanceSecret);
+        LOGGER.info("Accumulo Tracer Password: {}", tracePassword);
 
         File passwordFile = AccumuloSliderUtils.generatePasswordFile(this.folder, rootPassword, instanceSecret, tracePassword);
 
