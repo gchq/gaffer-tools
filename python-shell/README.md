@@ -1,6 +1,13 @@
-# Deprecated
+# README
 
-The python-shell, or gafferpy, has been [deprecated](https://github.com/gchq/gaffer-tools/issues/951) as of 24/11/21. We plan to delete it at some point in the Gaffer 2 release process. This is because gafferpy is being replaced by fishbowl for Gaffer 2 graphs. Before Gaffer 2.0.0's full release, fishbowl will be updated to work with Gaffer 2 and have all the missing functionality added to it. Therefore, in the future, you should use fishbowl for interacting with Gaffer 2 graphs and gafferpy for Gaffer 1 graphs.
+Copyright 2016 Crown Copyright
+
+Licensed under the Apache License, Version 2.0 \(the "License"\); you may not use this file except in compliance with the License. You may obtain a copy of the License at
+
+[http://www.apache.org/licenses/LICENSE-2.0](http://www.apache.org/licenses/LICENSE-2.0)
+
+Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
+
 ## Python shell
 
 This python shell connects to a Gaffer REST API and requires Python 3.x See [gaffer-tools/python-shell](https://github.com/gchq/gaffer-tools/tree/master/python-shell).
@@ -145,12 +152,3 @@ then from within the python-shell folder run:
 python3 -m unittest discover
 ```
 
-## License
-
-Copyright 2016 Crown Copyright
-
-Licensed under the Apache License, Version 2.0 \(the "License"\); you may not use this file except in compliance with the License. You may obtain a copy of the License at
-
-[http://www.apache.org/licenses/LICENSE-2.0](http://www.apache.org/licenses/LICENSE-2.0)
-
-Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
