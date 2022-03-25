@@ -4999,6 +4999,19 @@ class GafferOperationsTest(unittest.TestCase):
         [
             '''
             {
+                "class" : "uk.gov.gchq.gaffer.store.operation.HasTrait",
+                "trait": "VISIBILITY",
+                "currentTraits" : true
+            }
+            ''',
+            g.HasTrait(
+                trait="VISIBILITY",
+                current_traits=True
+            )
+        ],
+        [
+            '''
+            {
                 "class" : "uk.gov.gchq.gaffer.store.operation.GetTraits",
                 "currentTraits" : true
             }
