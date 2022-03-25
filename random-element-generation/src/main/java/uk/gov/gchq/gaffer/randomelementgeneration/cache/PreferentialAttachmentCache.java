@@ -15,7 +15,8 @@
  */
 package uk.gov.gchq.gaffer.randomelementgeneration.cache;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -41,7 +42,7 @@ import java.util.TreeMap;
  * when the same element is added multiple times causing many aggregations.
  */
 public class PreferentialAttachmentCache<T> implements Cache<T> {
-    private static final Logger LOGGER = Logger.getLogger(PreferentialAttachmentCache.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(PreferentialAttachmentCache.class);
 
     private final Random random = new Random();
     private TreeMap<Long, Set<T>> mapFreqToItems;
