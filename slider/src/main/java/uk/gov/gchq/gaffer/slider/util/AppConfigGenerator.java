@@ -24,10 +24,11 @@ import org.apache.hadoop.yarn.api.records.YarnClusterMetrics;
 import org.apache.hadoop.yarn.client.api.YarnClient;
 import org.apache.hadoop.yarn.client.api.YarnClientApplication;
 import org.apache.hadoop.yarn.exceptions.YarnException;
-import org.apache.log4j.Logger;
 import org.apache.slider.api.ResourceKeys;
 import org.apache.slider.core.conf.ConfTree;
 import org.apache.slider.core.persist.ConfTreeSerDeser;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
@@ -49,7 +50,7 @@ import java.util.Map;
  */
 public class AppConfigGenerator implements Runnable {
 
-    private static final Logger LOGGER = Logger.getLogger(AppConfigGenerator.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(AppConfigGenerator.class);
 
     static class SliderAppConfig {
 
@@ -263,7 +264,7 @@ public class AppConfigGenerator implements Runnable {
 
         totalCoresAvailable = Math.round((float) totalCoresAvailable * ((float) this.clusterUsagePercent / 100f));
         totalMemoryAvailable = Math.round((float) totalMemoryAvailable * ((float) this.clusterUsagePercent / 100f));
-        LOGGER.info(String.format("Trying to use %s%% of available resources across cluster = cores: %s mem: %s", this.clusterUsagePercent, totalCoresAvailable, totalMemoryAvailable));
+        LOGGER.info("Trying to use {}% of available resources across cluster = cores: {} mem: {}", this.clusterUsagePercent, totalCoresAvailable, totalMemoryAvailable);
 
         // Slider Application Master
         totalCoresAvailable -= ResourceKeys.DEF_YARN_CORES;
@@ -320,7 +321,7 @@ public class AppConfigGenerator implements Runnable {
 
         int coresRemainingPerNode = Math.round((float) availableResources.getMaxCores() * ((float) this.clusterUsagePercent / 100f));
         int memoryRemainingPerNode = Math.round((float) availableResources.getMaxMemory() * ((float) this.clusterUsagePercent / 100f));
-        LOGGER.info(String.format("Trying to use %s%% of available resources per node = cores: %s mem: %s", this.clusterUsagePercent, coresRemainingPerNode, memoryRemainingPerNode));
+        LOGGER.info("Trying to use {}% of available resources per node = cores: {} mem: {}", this.clusterUsagePercent, coresRemainingPerNode, memoryRemainingPerNode);
 
         // Slider Application Master
         coresRemainingPerNode -= ResourceKeys.DEF_YARN_CORES;
@@ -406,27 +407,22 @@ public class AppConfigGenerator implements Runnable {
             final ConfTreeSerDeser parser = new ConfTreeSerDeser();
 
             final ConfTree initialAppConfig = parser.fromFile(new File(this.initialAppConfigPath));
-            LOGGER.info("Initial appConfig.json:");
-            LOGGER.info(initialAppConfig);
+            LOGGER.info("Initial appConfig.json: {}", initialAppConfig);
 
             AvailableResources availableClusterResources = null;
 
             availableClusterResources = this.getYarnResources();
-            LOGGER.info("Available Cluster Resources:");
-            LOGGER.info(availableClusterResources);
+            LOGGER.info("Available Cluster Resources: {}", availableClusterResources);
 
             // We query twice because for some reason YARN on EMR lies about the max resources
             // available per node the first time round :S
             // TODO: Work out why this is the case!
             availableClusterResources = this.getYarnResources();
-            LOGGER.info("Available Cluster Resources:");
-            LOGGER.info(availableClusterResources);
+            LOGGER.info("Available Cluster Resources: {}", availableClusterResources);
 
             final SliderAppConfig config = this.generateSliderAppConfig(initialAppConfig, availableClusterResources);
-            LOGGER.info("Generated appConfig.json:");
-            LOGGER.info(config.getAppConfig());
-            LOGGER.info("Generated resources.json:");
-            LOGGER.info(config.getResources());
+            LOGGER.info("Generated appConfig.json: {}", config.getAppConfig());
+            LOGGER.info("Generated resources.json: {}", config.getResources());
 
             parser.save(config.getAppConfig(), new File(this.appConfigOutputPath));
             parser.save(config.getResources(), new File(this.resourcesOutputPath));
