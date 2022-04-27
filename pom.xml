@@ -153,7 +153,8 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-failsafe-plugin</artifactId>
-                        <version>${failsafe.version}</version>
+                        <!-- Older Failsafe required for Selenium -->
+                        <version>2.22.2</version>
                         <executions>
                             <execution>
                                 <id>system-test</id>
