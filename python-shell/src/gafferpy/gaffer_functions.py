@@ -1090,11 +1090,16 @@ class ToList(AbstractFunction):
 class ToSet(AbstractFunction):
     CLASS = 'uk.gov.gchq.koryphe.impl.function.ToSet'
 
-    def __init__(self):
+    def __init__(self, implementation=None):
         super().__init__(_class_name=self.CLASS)
+        self.implementation = implementation
 
     def to_json(self):
-        return super().to_json()
+        function_json = super().to_json()
+        if (self.implementation is not None):
+            function_json["implementation"] = self.implementation
+
+        return function_json
 
       
 class ToArray(AbstractFunction):
@@ -1338,6 +1343,14 @@ class ToBytes(AbstractFunction):
         
         return function_json
 
+class ToDouble(AbstractFunction):
+    CLASS = "uk.gov.gchq.koryphe.impl.function.ToDouble"
+
+    def __init__(self):
+        super().__init__(_class_name=self.CLASS)
+
+    def to_json(self):
+        return super().to_json()
 
 class FirstValid(AbstractFunction):
     CLASS = "uk.gov.gchq.koryphe.impl.function.FirstValid"

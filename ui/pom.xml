@@ -28,7 +28,7 @@
         <standalone-ui-path>ui</standalone-ui-path>
         <standalone-rest-path>rest</standalone-rest-path>
         <standalone-port>8080</standalone-port>
-        <selenium.version>3.4.0</selenium.version>
+        <selenium.version>3.141.59</selenium.version>
         <jasmine.plugin.version>2.2</jasmine.plugin.version>
         <jasmine.test.paths>**/*-spec.js</jasmine.test.paths>
     </properties>
@@ -43,7 +43,8 @@
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
-            <version>21.0</version>
+            <!-- Newer Guava required for Selenium -->
+            <version>25.0-jre</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -58,13 +59,33 @@
             <version>${gaffer.version}</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>uk.gov.gchq.gaffer</groupId>
+            <artifactId>federated-demo</artifactId>
+            <version>${gaffer.version}</version>
+            <type>war</type>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>uk.gov.gchq.gaffer</groupId>
+            <artifactId>road-traffic-rest</artifactId>
+            <version>${gaffer.version}</version>
+            <type>war</type>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>uk.gov.gchq.gaffer</groupId>
+            <artifactId>map-rest</artifactId>
+            <version>${gaffer.version}</version>
+            <type>war</type>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
     <build>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-war-plugin</artifactId>
-                <version>${maven-war-plugin.version}</version>
                 <configuration>
                     <webResources>
                         <resource>
@@ -133,19 +154,30 @@
             <build>
                 <plugins>
                     <plugin>
-                        <groupId>org.apache.tomcat.maven</groupId>
-                        <artifactId>tomcat7-maven-plugin</artifactId>
-                        <version>2.0</version>
+                        <groupId>org.codehaus.cargo</groupId>
+                        <artifactId>cargo-maven3-plugin</artifactId>
+                        <version>${cargo.plugin.version}</version>
                         <configuration>
-                            <path>/${standalone-ui-path}</path>
-                            <port>${standalone-port}</port>
+                            <deployables>
+                                <deployable>
+                                    <properties>
+                                        <context>/${standalone-ui-path}</context>
+                                    </properties>
+                                </deployable>
+                            </deployables>
+                            <properties>
+                                <cargo.servlet.port>${standalone-port}</cargo.servlet.port>
+                            </properties>
+                            <container>
+                                <containerId>tomcat9x</containerId>
+                            </container>
                         </configuration>
                         <executions>
                             <execution>
                                 <id>deploy</id>
                                 <phase>integration-test</phase>
                                 <goals>
-                                    <goal>run-war</goal>
+                                    <goal>run</goal>
                                 </goals>
                             </execution>
                         </executions>
@@ -164,7 +196,6 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-war-plugin</artifactId>
-                        <version>${maven-war-plugin.version}</version>
                         <configuration>
                             <webResources>
                                 <resource>
@@ -177,81 +208,89 @@
                         </configuration>
                     </plugin>
                     <plugin>
-                        <groupId>org.apache.tomcat.maven</groupId>
-                        <artifactId>tomcat7-maven-plugin</artifactId>
-                        <version>2.0</version>
+                        <groupId>org.codehaus.cargo</groupId>
+                        <artifactId>cargo-maven3-plugin</artifactId>
+                        <version>${cargo.plugin.version}</version>
                         <configuration>
-                            <path>/</path>
-                            <port>${standalone-port}</port>
-                            <webapps>
-                                <webapp>
-                                    <contextPath>/${standalone-ui-path}
-                                    </contextPath>
+                            <deployables>
+                                <deployable>
                                     <groupId>uk.gov.gchq.gaffer</groupId>
                                     <artifactId>ui</artifactId>
-                                    <version>${project.parent.version}</version>
                                     <type>war</type>
-                                    <asWebapp>true</asWebapp>
-                                </webapp>
-                                <webapp>
-                                    <contextPath>/${standalone-rest-path}
-                                    </contextPath>
+                                    <properties>
+                                        <context>/${standalone-ui-path}</context>
+                                    </properties>
+                                </deployable>
+                                <deployable>
                                     <groupId>uk.gov.gchq.gaffer</groupId>
                                     <artifactId>road-traffic-rest</artifactId>
-                                    <version>${gaffer.version}</version>
                                     <type>war</type>
-                                    <asWebapp>true</asWebapp>
-                                </webapp>
-                            </webapps>
-                            <systemProperties>
-                                <gaffer.properties.app.title>
-                                    Road Traffic Example
-                                </gaffer.properties.app.title>
-                                <gaffer.properties.app.description>
-                                    Example using road traffic data.
-                                    The sample data used is taken from the
-                                    Department for Transport
-                                    &lt;a
-                                    href='http://data.dft.gov.uk/gb-traffic-matrix/Raw_count_data_major_roads.zip'
-                                    &gt;GB Road Traffic Counts&lt;/a&gt;,
-                                    which is licensed under the
-                                    &lt;a
-                                    href='http://www.nationalarchives.gov.uk/doc/open-government-licence/version/3'
-                                    &gt;Open Government Licence&lt;/a&gt;.
-                                </gaffer.properties.app.description>
-                                <gaffer.rest-api.basePath>
-                                    ${standalone-rest-path}
-                                </gaffer.rest-api.basePath>
-                                <gaffer.graph.config>
-                                    ${project.basedir}/example/road-traffic/graphConfig.json
-                                </gaffer.graph.config>
-                                <gaffer.schemas>
-                                    ${project.basedir}/example/road-traffic/schema
-                                </gaffer.schemas>
-                                <gaffer.storeProperties>
-                                    ${project.basedir}/example/road-traffic/map/store.properties
-                                </gaffer.storeProperties>
-                                <roadTraffic.dataLoader.dataPath>
-                                    ${project.basedir}/example/road-traffic/roadTrafficSampleData.csv
-                                </roadTraffic.dataLoader.dataPath>
-                                <gaffer.graph.hook.add.operations.path>
-                                    ${project.basedir}/example/road-traffic/addOperationsToChain.json
-                                </gaffer.graph.hook.add.operations.path>
-                                <gaffer.error-mode.debug>
-                                    false
-                                </gaffer.error-mode.debug>
-                                <gaffer.properties.app.logo.src>
-                                    images/logo.png
-                                </gaffer.properties.app.logo.src>
-
-                            </systemProperties>
+                                    <properties>
+                                        <context>/${standalone-rest-path}</context>
+                                    </properties>
+                                </deployable>
+                            </deployables>
+                            <properties>
+                                <cargo.servlet.port>${standalone-port}</cargo.servlet.port>
+                            </properties>
+                            <container>
+                                <containerId>tomcat9x</containerId>
+                                <dependencies>
+                                    <dependency>
+                                        <groupId>uk.gov.gchq.gaffer</groupId>
+                                        <artifactId>road-traffic-rest</artifactId>
+                                        <type>war</type>
+                                    </dependency>
+                                </dependencies>
+                                <systemProperties>
+                                    <gaffer.properties.app.title>
+                                        Road Traffic Example
+                                    </gaffer.properties.app.title>
+                                    <gaffer.properties.app.description>
+                                        Example using road traffic data.
+                                        The sample data used is taken from the
+                                        Department for Transport
+                                        &lt;a
+                                        href='http://data.dft.gov.uk/gb-traffic-matrix/Raw_count_data_major_roads.zip'
+                                        &gt;GB Road Traffic Counts&lt;/a&gt;,
+                                        which is licensed under the
+                                        &lt;a
+                                        href='http://www.nationalarchives.gov.uk/doc/open-government-licence/version/3'
+                                        &gt;Open Government Licence&lt;/a&gt;.
+                                    </gaffer.properties.app.description>
+                                    <gaffer.rest-api.basePath>
+                                        ${standalone-rest-path}
+                                    </gaffer.rest-api.basePath>
+                                    <gaffer.graph.config>
+                                        ${project.basedir}/example/road-traffic/graphConfig.json
+                                    </gaffer.graph.config>
+                                    <gaffer.schemas>
+                                        ${project.basedir}/example/road-traffic/schema
+                                    </gaffer.schemas>
+                                    <gaffer.storeProperties>
+                                        ${project.basedir}/example/road-traffic/map/store.properties
+                                    </gaffer.storeProperties>
+                                    <roadTraffic.dataLoader.dataPath>
+                                        ${project.basedir}/example/road-traffic/roadTrafficSampleData.csv
+                                    </roadTraffic.dataLoader.dataPath>
+                                    <gaffer.graph.hook.add.operations.path>
+                                        ${project.basedir}/example/road-traffic/addOperationsToChain.json
+                                    </gaffer.graph.hook.add.operations.path>
+                                    <gaffer.error-mode.debug>
+                                        false
+                                    </gaffer.error-mode.debug>
+                                    <gaffer.properties.app.logo.src>
+                                        images/logo.png
+                                    </gaffer.properties.app.logo.src>
+                                </systemProperties>
+                            </container>
                         </configuration>
                         <executions>
                             <execution>
                                 <id>deploy</id>
                                 <phase>integration-test</phase>
                                 <goals>
-                                    <goal>run-war</goal>
+                                    <goal>run</goal>
                                 </goals>
                             </execution>
                         </executions>
@@ -270,7 +309,6 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-war-plugin</artifactId>
-                        <version>${maven-war-plugin.version}</version>
                         <configuration>
                             <webResources>
                                 <resource>
@@ -283,62 +321,71 @@
                         </configuration>
                     </plugin>
                     <plugin>
-                        <groupId>org.apache.tomcat.maven</groupId>
-                        <artifactId>tomcat7-maven-plugin</artifactId>
-                        <version>2.0</version>
+                        <groupId>org.codehaus.cargo</groupId>
+                        <artifactId>cargo-maven3-plugin</artifactId>
+                        <version>${cargo.plugin.version}</version>
                         <configuration>
-                            <path>/</path>
-                            <port>${standalone-port}</port>
-                            <webapps>
-                                <webapp>
-                                    <contextPath>/${standalone-ui-path}
-                                    </contextPath>
+                            <deployables>
+                                <deployable>
                                     <groupId>uk.gov.gchq.gaffer</groupId>
                                     <artifactId>ui</artifactId>
-                                    <version>${project.parent.version}</version>
                                     <type>war</type>
-                                    <asWebapp>true</asWebapp>
-                                </webapp>
-                                <webapp>
-                                    <contextPath>/${standalone-rest-path}
-                                    </contextPath>
+                                    <properties>
+                                        <context>/${standalone-ui-path}</context>
+                                    </properties>
+                                </deployable>
+                                <deployable>
                                     <groupId>uk.gov.gchq.gaffer</groupId>
                                     <artifactId>federated-demo</artifactId>
-                                    <version>${gaffer.version}</version>
                                     <type>war</type>
-                                    <asWebapp>true</asWebapp>
-                                </webapp>
-                            </webapps>
-                            <systemProperties>
-                                <gaffer.properties.app.title>
-                                    Federated Gaffer Example
-                                </gaffer.properties.app.title>
-                                <gaffer.properties.app.description>
-                                    Example of a Gaffer Federated Store
-                                </gaffer.properties.app.description>
-                                <gaffer.rest-api.basePath>
-                                    ${standalone-rest-path}
-                                </gaffer.rest-api.basePath>
-                                <gaffer.graph.config>
-                                    ${project.basedir}/example/federated/graphConfig.json
-                                </gaffer.graph.config>
-                                <gaffer.storeProperties>
-                                    ${project.basedir}/example/federated/federatedStore.properties
-                                </gaffer.storeProperties>
-                                <gaffer.error-mode.debug>
-                                    false
-                                </gaffer.error-mode.debug>
-                                <gaffer.properties.app.logo.src>
-                                    images/logo.png
-                                </gaffer.properties.app.logo.src>
-                            </systemProperties>
+                                    <properties>
+                                        <context>/${standalone-rest-path}</context>
+                                    </properties>
+                                </deployable>
+                            </deployables>
+                            <properties>
+                                <cargo.servlet.port>${standalone-port}</cargo.servlet.port>
+                            </properties>
+                            <container>
+                                <containerId>tomcat9x</containerId>
+                                <dependencies>
+                                    <dependency>
+                                        <groupId>uk.gov.gchq.gaffer</groupId>
+                                        <artifactId>federated-demo</artifactId>
+                                        <type>war</type>
+                                    </dependency>
+                                </dependencies>
+                                <systemProperties>
+                                    <gaffer.properties.app.title>
+                                        Federated Gaffer Example
+                                    </gaffer.properties.app.title>
+                                    <gaffer.properties.app.description>
+                                        Example of a Gaffer Federated Store
+                                    </gaffer.properties.app.description>
+                                    <gaffer.rest-api.basePath>
+                                        ${standalone-rest-path}
+                                    </gaffer.rest-api.basePath>
+                                    <gaffer.graph.config>
+                                        ${project.basedir}/example/federated/graphConfig.json
+                                    </gaffer.graph.config>
+                                    <gaffer.storeProperties>
+                                        ${project.basedir}/example/federated/federatedStore.properties
+                                    </gaffer.storeProperties>
+                                    <gaffer.error-mode.debug>
+                                        false
+                                    </gaffer.error-mode.debug>
+                                    <gaffer.properties.app.logo.src>
+                                        images/logo.png
+                                    </gaffer.properties.app.logo.src>
+                                </systemProperties>
+                            </container>
                         </configuration>
                         <executions>
                             <execution>
                                 <id>deploy</id>
                                 <phase>integration-test</phase>
                                 <goals>
-                                    <goal>run-war</goal>
+                                    <goal>run</goal>
                                 </goals>
                             </execution>
                         </executions>
@@ -357,7 +404,6 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-war-plugin</artifactId>
-                        <version>${maven-war-plugin.version}</version>
                         <configuration>
                             <webResources>
                                 <resource>
@@ -370,65 +416,74 @@
                         </configuration>
                     </plugin>
                     <plugin>
-                        <groupId>org.apache.tomcat.maven</groupId>
-                        <artifactId>tomcat7-maven-plugin</artifactId>
-                        <version>2.0</version>
+                        <groupId>org.codehaus.cargo</groupId>
+                        <artifactId>cargo-maven3-plugin</artifactId>
+                        <version>${cargo.plugin.version}</version>
                         <configuration>
-                            <path>/</path>
-                            <port>${standalone-port}</port>
-                            <webapps>
-                                <webapp>
-                                    <contextPath>/${standalone-ui-path}
-                                    </contextPath>
+                            <deployables>
+                                <deployable>
                                     <groupId>uk.gov.gchq.gaffer</groupId>
                                     <artifactId>ui</artifactId>
-                                    <version>${project.parent.version}</version>
                                     <type>war</type>
-                                    <asWebapp>true</asWebapp>
-                                </webapp>
-                                <webapp>
-                                    <contextPath>/${standalone-rest-path}
-                                    </contextPath>
+                                    <properties>
+                                        <context>/${standalone-ui-path}</context>
+                                    </properties>
+                                </deployable>
+                                <deployable>
                                     <groupId>uk.gov.gchq.gaffer</groupId>
                                     <artifactId>map-rest</artifactId>
-                                    <version>${gaffer.version}</version>
                                     <type>war</type>
-                                    <asWebapp>true</asWebapp>
-                                </webapp>
-                            </webapps>
-                            <systemProperties>
-                                <gaffer.properties.app.title>
-                                    TypeSubTypeValue Gaffer Example
-                                </gaffer.properties.app.title>
-                                <gaffer.properties.app.description>
-                                    Example of a Gaffer Store with TypeSubTypeValue vertices
-                                </gaffer.properties.app.description>
-                                <gaffer.rest-api.basePath>
-                                    ${standalone-rest-path}
-                                </gaffer.rest-api.basePath>
-                                <gaffer.graph.config>
-                                    ${project.basedir}/example/type-subtype-value/graphConfig.json
-                                </gaffer.graph.config>
-                                <gaffer.schemas>
-                                    ${project.basedir}/example/type-subtype-value/schema
-                                </gaffer.schemas>
-                                <gaffer.storeProperties>
-                                    ${project.basedir}/example/type-subtype-value/map/store.properties
-                                </gaffer.storeProperties>
-                                <gaffer.error-mode.debug>
-                                    true
-                                </gaffer.error-mode.debug>
-                                <gaffer.properties.app.logo.src>
-                                    images/logo.png
-                                </gaffer.properties.app.logo.src>
-                            </systemProperties>
+                                    <properties>
+                                        <context>/${standalone-rest-path}</context>
+                                    </properties>
+                                </deployable>
+                            </deployables>
+                            <properties>
+                                <cargo.servlet.port>${standalone-port}</cargo.servlet.port>
+                            </properties>
+                            <container>
+                                <containerId>tomcat9x</containerId>
+                                <dependencies>
+                                    <dependency>
+                                        <groupId>uk.gov.gchq.gaffer</groupId>
+                                        <artifactId>map-rest</artifactId>
+                                        <type>war</type>
+                                    </dependency>
+                                </dependencies>
+                                <systemProperties>
+                                    <gaffer.properties.app.title>
+                                        TypeSubTypeValue Gaffer Example
+                                    </gaffer.properties.app.title>
+                                    <gaffer.properties.app.description>
+                                        Example of a Gaffer Store with TypeSubTypeValue vertices
+                                    </gaffer.properties.app.description>
+                                    <gaffer.rest-api.basePath>
+                                        ${standalone-rest-path}
+                                    </gaffer.rest-api.basePath>
+                                    <gaffer.graph.config>
+                                        ${project.basedir}/example/type-subtype-value/graphConfig.json
+                                    </gaffer.graph.config>
+                                    <gaffer.schemas>
+                                        ${project.basedir}/example/type-subtype-value/schema
+                                    </gaffer.schemas>
+                                    <gaffer.storeProperties>
+                                        ${project.basedir}/example/type-subtype-value/map/store.properties
+                                    </gaffer.storeProperties>
+                                    <gaffer.error-mode.debug>
+                                        true
+                                    </gaffer.error-mode.debug>
+                                    <gaffer.properties.app.logo.src>
+                                        images/logo.png
+                                    </gaffer.properties.app.logo.src>
+                                </systemProperties>
+                            </container>
                         </configuration>
                         <executions>
                             <execution>
                                 <id>deploy</id>
                                 <phase>integration-test</phase>
                                 <goals>
-                                    <goal>run-war</goal>
+                                    <goal>run</goal>
                                 </goals>
                             </execution>
                         </executions>
@@ -457,8 +512,8 @@
                         </executions>
                     </plugin>
                     <plugin>
-                        <groupId>org.codehaus.mojo</groupId>
-                        <artifactId>findbugs-maven-plugin</artifactId>
+                        <groupId>com.github.spotbugs</groupId>
+                        <artifactId>spotbugs-maven-plugin</artifactId>
                         <executions>
                             <execution>
                                 <id>analyze-compile</id>

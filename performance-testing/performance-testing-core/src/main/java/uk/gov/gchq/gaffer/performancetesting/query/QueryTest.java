@@ -18,7 +18,6 @@ package uk.gov.gchq.gaffer.performancetesting.query;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import uk.gov.gchq.gaffer.commonutil.iterable.CloseableIterable;
 import uk.gov.gchq.gaffer.data.element.Element;
 import uk.gov.gchq.gaffer.graph.Graph;
 import uk.gov.gchq.gaffer.graph.GraphConfig;
@@ -114,7 +113,7 @@ public class QueryTest {
         final long startTime = System.currentTimeMillis();
         final long numResults;
         try {
-            final CloseableIterable<? extends Element> results = graph.execute(getElements, new User());
+            final Iterable<? extends Element> results = graph.execute(getElements, new User());
             numResults = StreamSupport.stream(results.spliterator(), false).count();
         } catch (final OperationException e) {
             LOGGER.error("OperationException thrown after " + (System.currentTimeMillis() - startTime) / 1000.0
