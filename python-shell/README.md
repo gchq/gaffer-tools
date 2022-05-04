@@ -85,7 +85,7 @@ elements = gc.execute_operation_chain(
 )
 ```
 
-See [operation examples](https://gchq.github.io/gaffer-doc/getting-started/operation-examples.html) for more examples of operations in python.
+See [operation examples](https://gchq.github.io/gaffer-doc/v1docs/getting-started/operations/contents) for more examples of operations in python.
 
 ### Installation
 

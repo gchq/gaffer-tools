@@ -218,7 +218,7 @@ The next is a summary over the two hours we specified in our second query. (You 
 
 In this example we have summarised the vehicle counts by adding them together. Gaffer users are free to define the objects that represent the properties on an edge and the functions used to summarise them and so supports things that are much more complex than adding integers together.
 
-There are some in-depth examples based around the Java API here: [Getting Started](https://gchq.github.io/gaffer-doc/summaries/getting-started.html).
+There are some in-depth examples based around the Java API here: [Getting Started](https://gchq.github.io/gaffer-doc/v1docs/summaries/getting-started.html).
 
 ## Federated Store Demo
 There is also a Federated Store Demo, which can be run using:
