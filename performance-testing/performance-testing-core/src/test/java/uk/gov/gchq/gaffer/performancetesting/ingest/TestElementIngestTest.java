@@ -16,13 +16,11 @@
 package uk.gov.gchq.gaffer.performancetesting.ingest;
 
 import org.apache.commons.io.FileUtils;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 import uk.gov.gchq.gaffer.accumulostore.AccumuloProperties;
 import uk.gov.gchq.gaffer.accumulostore.MiniAccumuloStore;
-import uk.gov.gchq.gaffer.commonutil.CommonTestConstants;
 import uk.gov.gchq.gaffer.commonutil.StreamUtil;
 import uk.gov.gchq.gaffer.graph.Graph;
 import uk.gov.gchq.gaffer.graph.GraphConfig;
@@ -34,12 +32,12 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class TestElementIngestTest {
 
-    @Rule
-    public TemporaryFolder folder = new TemporaryFolder(CommonTestConstants.TMP_DIRECTORY);
+    @TempDir
+    public File folder;
 
     @Test
     public void testElementIngestTestRuns() {
@@ -65,7 +63,7 @@ public class TestElementIngestTest {
         final double result = test.run();
 
         // Then
-        assertTrue(result > 0.0D);
+        assertThat(result > 0.0D).isTrue();
     }
 
     @Test
@@ -78,7 +76,7 @@ public class TestElementIngestTest {
         testProperties.setRmatProbabilities(Constants.RMAT_PROBABILITIES);
         testProperties.setRmatMaxNodeId(100L);
         testProperties.setMetricsListenerClass(FileWriterMetricsListener.class.getName());
-        final File metricsResults = folder.newFile();
+        final File metricsResults = new File(folder, "metricsResults.txt");
         final String metricsResultsFilename = metricsResults.getPath();
         testProperties.setProperty(FileWriterMetricsListener.FILENAME, metricsResultsFilename);
         final AccumuloProperties storeProperties = AccumuloProperties.loadStoreProperties(
@@ -97,15 +95,15 @@ public class TestElementIngestTest {
         final List<String> lines = FileUtils.readLines(new File(metricsResultsFilename));
 
         // Then
-        assertTrue(lines.size() > 0);
+        assertThat(lines.size() > 0).isTrue();
         final int offsetBatch = IngestMetrics.ELEMENTS_PER_SECOND_BATCH.length() + 1;
         final int offsetOverall = IngestMetrics.ELEMENTS_PER_SECOND_OVERALL.length() + 1;
         for (int i = 0; i < lines.size() - 2; i++) {
             final String[] tokens = lines.get(i).split(",");
-            assertTrue(tokens[0].replaceAll(" ", "").startsWith(IngestMetrics.ELEMENTS_PER_SECOND_BATCH + ":"));
-            assertTrue(nullOrPositive(tokens[0].substring(offsetBatch)));
-            assertTrue(tokens[1].replaceAll(" ", "").startsWith(IngestMetrics.ELEMENTS_PER_SECOND_OVERALL + ":"));
-            assertTrue(nullOrPositive(tokens[1].substring(offsetOverall)));
+            assertThat(tokens[0].replaceAll(" ", "").startsWith(IngestMetrics.ELEMENTS_PER_SECOND_BATCH + ":")).isTrue();
+            assertThat(nullOrPositive(tokens[0].substring(offsetBatch))).isTrue();
+            assertThat(tokens[1].replaceAll(" ", "").startsWith(IngestMetrics.ELEMENTS_PER_SECOND_OVERALL + ":")).isTrue();
+            assertThat(nullOrPositive(tokens[1].substring(offsetOverall))).isTrue();
         }
     }
 

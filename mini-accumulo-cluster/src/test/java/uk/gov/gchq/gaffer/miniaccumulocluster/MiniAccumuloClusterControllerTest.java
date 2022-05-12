@@ -16,13 +16,11 @@
 
 package uk.gov.gchq.gaffer.miniaccumulocluster;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.io.File;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class MiniAccumuloClusterControllerTest {
     @Test
@@ -58,9 +56,9 @@ public class MiniAccumuloClusterControllerTest {
             Thread.sleep(5000);
 
             // Then
-            assertNull(null != accumuloException[0] ? accumuloException[0].getMessage() : "", accumuloException[0]);
-            assertTrue("store.properties was not generated", new File(miniAccumuloClusterName + "/store.properties").exists());
-            assertEquals(1024, runner[0].getHeapSize());
+            assertThat(accumuloException[0]).withFailMessage(accumuloException[0].getMessage()).isNull();
+            assertThat(new File(miniAccumuloClusterName + "/store.properties").exists()).withFailMessage("store.properties was not generated").isTrue();
+            assertThat(1024).isEqualTo(runner[0].getHeapSize());
         } finally {
             if (null != runner[0]) {
                 runner[0].stop();
