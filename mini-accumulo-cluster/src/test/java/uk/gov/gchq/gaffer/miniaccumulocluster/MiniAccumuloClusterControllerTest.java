@@ -56,7 +56,7 @@ public class MiniAccumuloClusterControllerTest {
             Thread.sleep(5000);
 
             // Then
-            assertThat(accumuloException[0]).withFailMessage(null != accumuloException[0] ? accumuloException[0].getMessage() : "");
+            assertThat(accumuloException[0]).withFailMessage(null != accumuloException[0] ? accumuloException[0].getMessage() : "").isNull();
             assertThat(new File(miniAccumuloClusterName + "/store.properties").exists()).withFailMessage("store.properties was not generated").isTrue();
             assertThat(1024).isEqualTo(runner[0].getHeapSize());
         } finally {
