@@ -16,7 +16,7 @@
 
 import unittest
 
-import example
+from examples import example
 
 
 class ExampleTest(unittest.TestCase):

@@ -1,70 +1,64 @@
-# Deprecated
+<img align="right" width="200" height="auto" src="https://github.com/gchq/Gaffer/raw/develop/logos/logo.png">
 
-The python-shell, or gafferpy, has been [deprecated](https://github.com/gchq/gaffer-tools/issues/951) as of 24/11/21. We plan to delete it at some point in the Gaffer 2 release process. This is because gafferpy is being replaced by fishbowl for Gaffer 2 graphs. Before Gaffer 2.0.0's full release, fishbowl will be updated to work with Gaffer 2 and have all the missing functionality added to it. Therefore, in the future, you should use fishbowl for interacting with Gaffer 2 graphs and gafferpy for Gaffer 1 graphs.
-## Python shell
+# Gaffer Python Client
 
-This python shell connects to a Gaffer REST API and requires Python 3.x See [gaffer-tools/python-shell](https://github.com/gchq/gaffer-tools/tree/master/python-shell).
+![ci](https://github.com/gchq/gaffer-tools/actions/workflows/continuous-integration.yaml/badge.svg)
+[<img src="https://img.shields.io/badge/docs-passing-success.svg?logo=readthedocs">](https://gchq.github.io/gaffer-doc/latest/)
 
-To start using the python shell you will need an instance of the REST API running. You can start the Gaffer road-traffic-demo rest server and ui \(see ui/README.md\) using the command:
+## Features
+
+- Persistently connect to a Gaffer rest api to run operations
+- Connect using PKI certificates and SSL
+- Generate Python client code for custom Operations, Predicates, Binary Operators and Functions
+- Stream results back
+
+## Installation
+
+Gafferpy requires Python 3.6+. We don't currently release gafferpy on pypi, but you can install it over ssh with:
+
+```bash
+pip install git+https://github.com/gchq/gaffer-tools.git#subdirectory=python-shell
+```
+
+Or if you have the source code locally and want any changes you make reflected in your installation, you can go to the python-shell directory and run:
+
+```bash
+pip install -e .
+```
+
+## Quick Start
+
+The python shell connects to a running Gaffer REST API. You can start the Gaffer road-traffic-demo rest server and [ui](../ui/README.md) using the command:
 
 ```bash
 ./ui/example/road-traffic/scripts/start.sh
 ```
 
-Once this is running you can run the python example by using the command \(all commands are run from the root of the python-shell project\):
-
-```bash
-python3 src/example.py
-python3 src/example_map.py
-```
-
-Alternatively if you have you own REST API running that is authenticated with PKI certificates then you can follow the pki example. Before using the example you will need to export your PKI certificate into a .pem file:
-
-```bash
-python3 src/example_pki.py
-python3 src/example_map_pki.py
-```
-
-To use the python shell without installing just ensure you are execute your scripts from within the python-shell directory. To connect to gaffer you will need to do something like this:
-
 ```python
+# Import the client library and connector
 from gafferpy import gaffer as g
 from gafferpy import gaffer_connector
+
+# Instantiate a connector
 gc = gaffer_connector.GafferConnector("http://localhost:8080/rest/latest")
-```
 
-To fetch the Gaffer schema you can then run:
+# You can use the connector to perform get requests
+schema = gc.execute_get(g.GetSchema())
 
-```python
-result = gc.execute_get(g.GetSchema())
-
-print('Schema:')
-print(result)
-print()
-```
-
-You can run an operation like this:
-
-```python
+# And also run operations
 elements = gc.execute_operation(
     operation=g.GetAllElements()
 )
-```
 
-Multiple operations like this:
-
-```python
+# Multiple operations
 elements = gc.execute_operations(
     operations=[
         g.GetAllElements(),
         g.Limit(result_limit=3)
     ]
 )
-```
 
-And an operation chain like this:
-
-```python
+# And operation chains
 elements = gc.execute_operation_chain(
     operation_chain=g.OperationChain(
         operations=[
@@ -80,69 +74,14 @@ elements = gc.execute_operation_chain(
 
 See [operation examples](https://gchq.github.io/gaffer-doc/v1docs/getting-started/operations/contents) for more examples of operations in python.
 
-### Installation
-
-We currently don't release gafferpy on pypi, but there are plently of ways to use it once you have the source code.  
-As well as refering to the Python source files as above, you can also build gafferpy from source (useful for distribution) or install a local copy in develop mode that will update when you change the source code.  
-
-#### Build with bdist_wheel
-
-This option builds gafferpy and puts the binaries in `python-shell/dist` where it can then be distributed and installed with `pip install`.  
-
-Compilation of the project requires the wheel package, this can be installed using pip:
+## Testing
 
 ```bash
-pip3 install wheel
-```
-
-The project can then be compiled by running the following command from the root of the python-shell project:
-
-```bash
-python3 setup.py bdist_wheel
-```
-
-This creates a distributable Python wheel which can installed locally to provide the Gaffer Python shell to other applications.
-
-The wheel file is install using pip:
-
-```bash
-pip3 install dist/gafferpy-<gaffer.version>-py2.py3-none-any.whl
-```
-
-#### Developer installation  
-
-Alternatively, if you want to just install gafferpy locally and have any code changes you make to it reflected in your installation, you can go to the python-shell directory and run:
-
-```bash
-pip3 install -e .
-```
-Note that this does not install the dependencies, which can be found in the `requirements.txt`, and installed with:  
-```bash
-pip3 install -r requirements.txt
-```
-
-
-#### Import  
-After either installation, the shell can be imported into an application from anywhere as below:
-
-```python
-from gafferpy import gaffer as g
-from gafferpy import gaffer_connector
-gc = gaffer_connector.GafferConnector("http://localhost:8080/rest/latest")
-```
-
-### Testing
-
-We have some unit and integration tests for our python shell. To run all of the tests, first deploy the REST API \(UI will also be deploy\):
-
-```bash
+# To run all of the tests, first deploy the road traffic example
 ./ui/example/road-traffic/scripts/start.sh
-```
 
-then from within the python-shell folder run:
-
-```bash
-python3 -m unittest discover
+# Then from within the python-shell folder run
+python -m unittest discover
 ```
 
 ## License

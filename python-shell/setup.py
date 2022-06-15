@@ -16,18 +16,15 @@ classifiers = [
     "License :: OSI Approved :: Apache Software License",
     "Operating System :: OS Independent",
     "Programming Language :: Python",
-    "Programming Language :: Python :: 3"
-    "Programming Language :: Python :: 3.0",
-    "Programming Language :: Python :: 3.1",
-    "Programming Language :: Python :: 3.2",
-    "Programming Language :: Python :: 3.3",
-    "Programming Language :: Python :: 3.4",
-    "Programming Language :: Python :: 3.5",
+    "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.6",
     "Programming Language :: Python :: 3 :: Only",
     "Topic :: Software Development :: Libraries :: Python Modules",
 ]
-install_requires = []
+python_requires = ">3.6"
+install_requires = [
+    "requests>=2.4.0"
+]
 
 ###############################################################################
 
@@ -81,5 +78,6 @@ setup(
     zip_safe=False,
     classifiers=classifiers,
     install_requires=install_requires,
+    python_requires=python_requires,
     py_modules=['gafferpy.gafferpy', 'gafferpy.example']
 )

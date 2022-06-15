@@ -16,7 +16,7 @@
 
 import unittest
 
-import example_map
+from examples import example_map
 
 
 class ExampleMapTest(unittest.TestCase):
