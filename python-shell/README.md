@@ -1,4 +1,4 @@
-<img align="right" width="200" height="auto" src="https://github.com/gchq/Gaffer/raw/develop/logos/logo.png">
+<img align="right" width="200" height="200" src="https://github.com/gchq/Gaffer/raw/develop/logos/logo.png">
 
 # Gaffer Python Client
 
