@@ -1,5 +1,5 @@
 #
-# Copyright 2016-2019 Crown Copyright
+# Copyright 2016-2022 Crown Copyright
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -14,7 +14,7 @@
 # limitations under the License.
 #
 
-import example
+from examples.example import run_with_connector
 from gafferpy import gaffer_connector_pki
 
 
@@ -22,7 +22,7 @@ def run(host, verbose=False, pki_cert='cert.pem'):
     # Store your PKI certificate in file cert.pem
     pki = gaffer_connector_pki.PkiCredentials(pki_cert)
 
-    example.run_with_connector(create_connector(host, pki, verbose))
+    run_with_connector(create_connector(host, pki, verbose))
 
 
 def create_connector(host, pki, verbose=False):

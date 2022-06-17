@@ -22,9 +22,10 @@ classifiers = [
     "Topic :: Software Development :: Libraries :: Python Modules",
 ]
 python_requires = ">3.6"
-install_requires = [
-    "requests>=2.4.0"
-]
+install_requires = []
+extras_require = {
+    "requests": ["requests>=2.4.0"]
+}
 
 ###############################################################################
 
@@ -60,7 +61,7 @@ version = find_meta("version")
 uri = find_meta("uri")
 
 # Get the long description from the README.md file
-with open(path.join(here, 'README.md'), encoding='utf-8') as f:
+with open(path.join(here, "README.md"), encoding="utf-8") as f:
     long = f.read()
 
 setup(
@@ -78,6 +79,7 @@ setup(
     zip_safe=False,
     classifiers=classifiers,
     install_requires=install_requires,
+    extras_require=extras_require,
     python_requires=python_requires,
-    py_modules=['gafferpy.gafferpy', 'gafferpy.example']
+    py_modules=["gafferpy.gafferpy", "gafferpy.example"]
 )

@@ -1,5 +1,5 @@
 #
-# Copyright 2016-2019 Crown Copyright
+# Copyright 2016-2022 Crown Copyright
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -19,11 +19,16 @@ This module queries a Gaffer REST API
 """
 
 import json
-import urllib.error
-import urllib.request
 
 from gafferpy import gaffer as g
 
+from gafferpy.client import UrllibClient, RequestsClient, PkiClient
+
+CLIENT_CLASS_NAMES = {
+    "urllib": UrllibClient,
+    "requests": RequestsClient,
+    "pki": PkiClient
+}
 
 class GafferConnector:
     """
@@ -31,37 +36,35 @@ class GafferConnector:
     This class is initialised with a host to connect to.
     """
 
-    def __init__(self, host, verbose=False, headers={}):
+    def __init__(self, host, verbose=False, headers={}, config={}, client_class=UrllibClient):
         """
         This initialiser sets up a connection to the specified Gaffer server.
 
         The host (and port) of the Gaffer server, should be in the form,
         'hostname:1234/service-name/version'
         """
-        self._host = host
-        self._verbose = verbose
-        self._headers = headers
 
-        # Create the opener
-        self._opener = urllib.request.build_opener(
-            urllib.request.HTTPHandler())
+        if isinstance(client_class, str):
+            if client_class not in CLIENT_CLASS_NAMES:
+                options = "', '".join(CLIENT_CLASS_NAMES.keys())
+                raise ValueError(
+                    f"Unknown option for client_class: '{client_class}'. "
+                    f"Available options are: '{options}'"
+                )
+            client_class = CLIENT_CLASS_NAMES[client_class]
+
+        self.client = client_class(host, verbose, headers, config)
 
     def execute_operation(self, operation, headers=None):
         """
         This method queries Gaffer with the single provided operation.
         """
-        # If headers are not specified use those set at class initilisation
-        if headers is None:
-            headers = self._headers
         return self.execute_operations([operation], headers)
 
     def execute_operations(self, operations, headers=None):
         """
         This method queries Gaffer with the provided array of operations.
         """
-        # If headers are not specified use those set at class initilisation
-        if headers is None:
-            headers = self._headers
         return self.execute_operation_chain(g.OperationChain(operations),
                                             headers)
 
@@ -69,12 +72,9 @@ class GafferConnector:
         """
         This method queries Gaffer with the provided operation chain.
         """
-        # If headers are not specified use those set at class initialisation
-        if headers is None:
-            headers = self._headers
-        # Construct the full URL path to the Gaffer server
-        url = self._host + '/graph/operations/execute'
+        target = '/graph/operations/execute'
 
+        ## TODO: Handle json recursively
         if hasattr(operation_chain, "to_json"):
             op_chain_json_obj = operation_chain.to_json()
         else:
@@ -87,30 +87,14 @@ class GafferConnector:
 
         # Convert the query dictionary into JSON and post the query to Gaffer
         json_body = bytes(json.dumps(op_chain_json_obj), 'ascii')
-        headers['Content-Type'] = 'application/json;charset=utf-8'
+        ##^ TODO: Handle json recursively
 
-        request = urllib.request.Request(url, headers=headers, data=json_body)
-
-        try:
-            response = self._opener.open(request)
-        except urllib.error.HTTPError as error:
-            error_body = error.read().decode('utf-8')
-            new_error_string = ('HTTP error ' +
-                                str(error.code) + ' ' +
-                                error.reason + ': ' +
-                                error_body)
-            raise ConnectionError(new_error_string)
-        response_text = response.read().decode('utf-8')
-
-        if self._verbose:
-            print('Query response: ' + response_text)
-
-        if response_text is not None and response_text != '':
-            result = json.loads(response_text)
-        else:
-            result = None
-
-        return g.JsonConverter.from_json(result)
+        return self.client.perform_request(
+            "POST",
+            target,
+            headers,
+            json_body
+        )
 
     def execute_get(self, operation, headers=None):
         """
@@ -134,24 +118,13 @@ class GafferConnector:
                 operation = g.GetOperations()
               )
         """
-        url = self._host + operation.get_url()
-        # If headers are not specified use those set at class initilisation
-        if headers is None:
-            headers = self._headers
-        headers['Content-Type'] = 'application/json;charset=utf-8'
-        request = urllib.request.Request(url, headers=headers)
+        target = operation.get_url()
 
-        try:
-            response = self._opener.open(request)
-        except urllib.error.HTTPError as error:
-            error_body = error.read().decode('utf-8')
-            new_error_string = ('HTTP error ' +
-                                str(error.code) + ' ' +
-                                error.reason + ': ' +
-                                error_body)
-            raise ConnectionError(new_error_string)
-
-        return response.read().decode('utf-8')
+        return self.client.perform_request(
+            "GET",
+            target,
+            headers
+        )
 
     def is_operation_supported(self, operation, headers=None):
         """
@@ -173,25 +146,23 @@ class GafferConnector:
                 )
             )
         """
-        url = self._host + '/graph/operations/' + operation.get_operation()
-        # If headers are not specified use those set at class initilisation
-        if headers is None:
-            headers = self._headers
-        headers['Content-Type'] = 'application/json;charset=utf-8'
 
-        request = urllib.request.Request(url, headers=headers)
+        target = '/graph/operations/' + operation.get_operation()
 
-        try:
-            response = self._opener.open(request)
-        except urllib.error.HTTPError as error:
-            error_body = error.read().decode('utf-8')
-            new_error_string = ('HTTP error ' +
-                                str(error.code) + ' ' +
-                                error.reason + ': ' +
-                                error_body)
-            raise ConnectionError(new_error_string)
+        return self.client.perform_request(
+            "GET",
+            target,
+            headers
+        )
 
-        response_text = response.read().decode('utf-8')
+    @property
+    def _host(self):
+        return self.client.base_url
 
-        return response_text
-    
+    @property
+    def _verbose(self):
+        return self.client.verbose
+
+    @property
+    def _headers(self):
+        return self.client.headers

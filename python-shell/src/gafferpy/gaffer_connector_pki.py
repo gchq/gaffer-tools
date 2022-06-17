@@ -1,5 +1,5 @@
 #
-# Copyright 2016-2019 Crown Copyright
+# Copyright 2016-2022 Crown Copyright
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -19,24 +19,25 @@ This module queries a Gaffer REST API with PKI authentication
 """
 
 import getpass
+import warnings
 import ssl
-import urllib.error
-import urllib.request
 
 from gafferpy import gaffer_connector
 
+warnings.warn("This connector is deprecated, please use the standard one with client_class='pki'")
 
 class GafferConnector(gaffer_connector.GafferConnector):
-    def __init__(self, host, pki, protocol=None, verbose=False):
+    def __init__(self, host, pki, protocol=None, verbose=False, headers={}):
         """
         This initialiser sets up a connection to the specified Gaffer server as
         per gafferConnector.GafferConnector and
         requires the additional pki object.
         """
-        super().__init__(host=host, verbose=verbose)
-        self._opener = urllib.request.build_opener(
-            urllib.request.HTTPSHandler(context=pki.get_ssl_context(protocol)))
-
+        pki_config = {
+            "pki": pki,
+            "protocol": protocol
+        }
+        super().__init__(host=host, verbose=verbose, headers=headers, config=pki_config, client_class="pki")
 
 ########################################################
 
