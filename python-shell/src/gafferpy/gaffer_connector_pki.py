@@ -24,8 +24,15 @@ import ssl
 
 from gafferpy import gaffer_connector
 
-warnings.warn("This connector is deprecated, please use the standard one with client_class='pki'")
-
+warnings.warn("""
+This connector is deprecated, instead use gaffer_connector.GafferConnector(
+    host,
+    client_class='pki',
+    config={
+        'pki': pki,
+        'protocol': protocol
+    })
+""")
 class GafferConnector(gaffer_connector.GafferConnector):
     def __init__(self, host, pki, protocol=None, verbose=False, headers={}):
         """
