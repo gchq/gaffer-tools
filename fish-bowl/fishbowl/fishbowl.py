@@ -16,6 +16,10 @@ class Fishbowl:
         print("To import operations, predicates and functions, use the following command:")
         print("from " + generated_directory_path + " import *")
 
+    def _write_to_file(self, file_path, data):
+        with open(file_path, "w+") as file:
+            file.write(data)
+
     def __generate_library(self):
 
         if os.path.exists(self.generated_directory_path):
@@ -23,17 +27,17 @@ class Fishbowl:
 
         os.mkdir(self.generated_directory_path)
 
-        operations_python = self.__generate_operations()
-        functions_python = self.__generate_functions("/graph/config/transformFunctions")
-        predicates_python = self.__generate_functions("/graph/config/filterFunctions")
+        operations_python = self._generate_operations()
+        functions_python = self._generate_functions("/graph/config/transformFunctions")
+        predicates_python = self._generate_functions("/graph/config/filterFunctions")
 
-        write_to_file(os.path.join(self.generated_directory_path, "functions.py"), functions_python)
-        write_to_file(os.path.join(self.generated_directory_path, "predicates.py"), predicates_python)
-        write_to_file(os.path.join(self.generated_directory_path, "operations.py"), operations_python)
-        write_to_file(os.path.join(self.generated_directory_path, "__init__.py"),
+        self._write_to_file(os.path.join(self.generated_directory_path, "functions.py"), functions_python)
+        self._write_to_file(os.path.join(self.generated_directory_path, "predicates.py"), predicates_python)
+        self._write_to_file(os.path.join(self.generated_directory_path, "operations.py"), operations_python)
+        self._write_to_file(os.path.join(self.generated_directory_path, "__init__.py"),
                       "__all__ = [ \"operations\", \"predicates\", \"functions\" ]\n")
 
-    def __generate_functions(self, path):
+    def _generate_functions(self, path):
         # functions is a list of function classes
         functions = self._gaffer_connector.get(path)
 
@@ -72,7 +76,7 @@ class Fishbowl:
 
         return "\n".join(functions_python)
 
-    def __generate_operations(self):
+    def _generate_operations(self):
         operation_summaries = self._gaffer_connector.get("/graph/operations/details")
 
         operations_python = ["from fishbowl.core import *\n\n"]

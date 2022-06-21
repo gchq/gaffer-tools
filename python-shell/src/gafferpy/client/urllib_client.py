@@ -58,8 +58,10 @@ class UrllibClient(BaseClient):
                                 error_body)
             raise ConnectionError(new_error_string)
         
-        ## TODO: Fix json transform
         response_text = response.read().decode('utf-8')
+
+        if method == "GET":
+            return response_text
 
         if self.verbose:
             print('Query response: ' + response_text)
@@ -70,5 +72,3 @@ class UrllibClient(BaseClient):
             result = None
 
         return g.JsonConverter.from_json(result)
-
-        #return response.read().decode('utf-8')

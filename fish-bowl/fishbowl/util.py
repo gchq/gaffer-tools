@@ -1,32 +1,12 @@
-import re
 from fishbowl.core import ToJson
 
-"""
-Convert string from camelCase to snake_case
-"""
-
-
+# JsonConverter
 def camel_to_snake(name):
     s1 = re.sub('(.)([A-Z][a-z]+)', r'\1_\2', name)
     return re.sub('([a-z0-9])([A-Z])', r'\1_\2', s1).lower()
 
 
-"""
-Write data to a file
-"""
-
-
-def write_to_file(file_path, data):
-    file = open(file_path, "w+")
-    file.write(data)
-    file.close()
-
-
-"""
-Returns a json serializable dictionary based off an object
-"""
-
-
+# Move this
 def to_json(obj):
     if obj is None:
         return None

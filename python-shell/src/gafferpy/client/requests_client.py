@@ -86,7 +86,9 @@ class RequestsClient(BaseClient):
             raise ConnectionError(
                 'HTTP error ' + str(error.response.status_code) + ': ' + error.response.text)
 
-        ## TODO: Fix json transform
+        if method == "GET":
+            return response.text
+
         try:
             response_json = response.json()
         except json.JSONDecodeError:
@@ -102,8 +104,6 @@ class RequestsClient(BaseClient):
             result = None
 
         return g.JsonConverter.from_json(result)
-
-        #return response.text
 
     def __del__(self):
         self._session.close()
