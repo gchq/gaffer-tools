@@ -644,6 +644,7 @@ class KeyFunctionMatch(Match):
 
         return match_json
 
+#### Generated:
 class OperationChain(Operation):
     CLASS = "uk.gov.gchq.gaffer.operation.OperationChain"
 

@@ -20,9 +20,11 @@ This module queries a Gaffer REST API
 
 import json
 
-from gafferpy import gaffer as g
-
 from gafferpy.client import UrllibClient, RequestsClient, PkiClient
+from gafferpy.gaffer_core import ToJson
+from gafferpy.gaffer_config import IsOperationSupported
+from gafferpy.gaffer_operations import OperationChain
+
 
 CLIENT_CLASS_NAMES = {
     "urllib": UrllibClient,
@@ -46,7 +48,7 @@ class GafferConnector:
 
         if isinstance(client_class, str):
             if client_class not in CLIENT_CLASS_NAMES:
-                options = "', '".join(CLIENT_CLASS_NAMES.keys())
+                options = "", "".join(CLIENT_CLASS_NAMES.keys())
                 raise ValueError(
                     f"Unknown option for client_class: '{client_class}'. "
                     f"Available options are: '{options}'"
@@ -54,6 +56,12 @@ class GafferConnector:
             client_class = CLIENT_CLASS_NAMES[client_class]
 
         self.client = client_class(host, verbose, headers, config)
+
+    def execute(self, operation, headers=None):
+        """
+        This method queries Gaffer with the single provided operation.
+        """
+        return self.execute_operation(operation, headers)
 
     def execute_operation(self, operation, headers=None):
         """
@@ -65,7 +73,7 @@ class GafferConnector:
         """
         This method queries Gaffer with the provided array of operations.
         """
-        return self.execute_operation_chain(g.OperationChain(operations),
+        return self.execute_operation_chain(OperationChain(operations),
                                             headers)
 
     def execute_operation_chain(self, operation_chain, headers=None):
@@ -74,20 +82,15 @@ class GafferConnector:
         """
         target = '/graph/operations/execute'
 
-        ## TODO: Handle json recursively
-        if hasattr(operation_chain, "to_json"):
-            op_chain_json_obj = operation_chain.to_json()
-        else:
-            op_chain_json_obj = operation_chain
+        op_chain_json_obj = ToJson.recursive_to_json(operation_chain)
 
         # Query Gaffer
         if self._verbose:
-            print('\nQuery operations:\n' +
-                  json.dumps(op_chain_json_obj, indent=4) + '\n')
+            print("\nQuery operations:\n" +
+                  json.dumps(op_chain_json_obj, indent=4) + "\n")
 
         # Convert the query dictionary into JSON and post the query to Gaffer
-        json_body = bytes(json.dumps(op_chain_json_obj), 'ascii')
-        ##^ TODO: Handle json recursively
+        json_body = bytes(json.dumps(op_chain_json_obj), "ascii")
 
         return self.client.perform_request(
             "POST",
@@ -96,7 +99,7 @@ class GafferConnector:
             json_body
         )
 
-    def execute_get(self, operation, headers=None):
+    def execute_get(self, operation, headers=None, serialise_result=False):
         """
         This method queries Gaffer with a GET request to a specified endpoint.
 
@@ -120,13 +123,9 @@ class GafferConnector:
         """
         target = operation.get_url()
 
-        return self.client.perform_request(
-            "GET",
-            target,
-            headers
-        )
+        return self.get(target, headers, serialise_result)
 
-    def is_operation_supported(self, operation, headers=None):
+    def is_operation_supported(self, operation, headers=None, serialise_result=False):
         """
         This method queries the Gaffer API to provide details about operations
         Returns a JSON array containing details about the operation.
@@ -147,12 +146,19 @@ class GafferConnector:
             )
         """
 
-        target = '/graph/operations/' + operation.get_operation()
+        if isinstance(operation, IsOperationSupported):
+            target = "/graph/operations/" + operation.get_operation()
+        else:
+            target = "/graph/operations/" + operation.CLASS
 
+        return self.get(target, headers, serialise_result)
+
+    def get(self, url, headers=None, serialise_result=False):
         return self.client.perform_request(
             "GET",
-            target,
-            headers
+            url,
+            headers,
+            serialise_result=serialise_result
         )
 
     @property

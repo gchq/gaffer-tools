@@ -81,5 +81,5 @@ setup(
     install_requires=install_requires,
     extras_require=extras_require,
     python_requires=python_requires,
-    py_modules=["gafferpy.gafferpy", "gafferpy.example"]
+    py_modules=["gafferpy.gafferpy", "gafferpy.examples", "gafferpy.fishbowl"]
 )

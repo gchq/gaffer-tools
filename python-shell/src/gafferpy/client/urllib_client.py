@@ -41,7 +41,7 @@ class UrllibClient(BaseClient):
         self._opener = urllib.request.build_opener(
             urllib.request.HTTPHandler())
 
-    def perform_request(self, method, target, headers=None, body=None):
+    def perform_request(self, method, target, headers=None, body=None, serialise_result=True):
         url = self.base_url + target
         
         request_headers = self.merge_headers(headers)
@@ -60,7 +60,7 @@ class UrllibClient(BaseClient):
         
         response_text = response.read().decode('utf-8')
 
-        if method == "GET":
+        if not serialise_result:
             return response_text
 
         if self.verbose:
@@ -71,4 +71,8 @@ class UrllibClient(BaseClient):
         else:
             result = None
 
-        return g.JsonConverter.from_json(result)
+        # TODO: Optional
+        try:
+            return g.JsonConverter.from_json(result)
+        except:
+            return result

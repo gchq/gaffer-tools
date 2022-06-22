@@ -31,7 +31,7 @@ class ToJson:
     """
 
     def __repr__(self):
-        return json.dumps(self.to_json())
+        return json.dumps(ToJson.recursive_to_json(self))
 
     def to_json(self):
         """
@@ -40,22 +40,47 @@ class ToJson:
         raise NotImplementedError('Use an implementation')
 
     def to_json_str(self):
-        return json.dumps(self.to_json())
+        return json.dumps(ToJson.recursive_to_json(self))
 
     def to_json_pretty_str(self):
-        return json.dumps(self.to_json(), indent=4, separators=(',', ': '))
+        return json.dumps(ToJson.recursive_to_json(self), indent=4, separators=(',', ': '))
 
     def pretty_print(self):
         print(self.to_json_pretty_str())
 
     def __str__(self):
-        return str(self.to_json())
+        return str(ToJson.recursive_to_json(self))
 
     def __eq__(self, other):
-        other_json = other
-        if isinstance(other_json, ToJson):
-            other_json = other.to_json()
-        return self.to_json() == other_json
+        other_json = ToJson.recursive_to_json(other)
+        self_json = ToJson.recursive_to_json(self.to_json())
+        return self_json == other_json
+
+    @staticmethod
+    def recursive_to_json(obj):
+        if obj is None:
+            return None
+
+        if isinstance(obj, list):
+            serialized_list = []
+
+            for thing in obj:
+                serialized_list.append(ToJson.recursive_to_json(thing))
+
+            return serialized_list
+
+        if isinstance(obj, ToJson):
+            return ToJson.recursive_to_json(obj.to_json())
+
+        if isinstance(obj, dict):
+            serialized_map = {}
+
+            for key in obj.keys():
+                serialized_map[ToJson.recursive_to_json(key)] = ToJson.recursive_to_json(obj[key])
+
+            return serialized_map
+
+        return obj
 
 
 class ToCodeString:
