@@ -71,7 +71,7 @@ class RequestsClient(BaseClient):
         protocol = self.config.get("protocol", None)
         self._session.mount('https://', SSLAdapter(ssl_version=protocol))
 
-    def perform_request(self, method, target, headers=None, body=None, serialise_result=True):
+    def perform_request(self, method, target, headers=None, body=None, json_result=True):
         url = self.base_url + target
 
         request_headers = self.merge_headers(headers)
@@ -86,7 +86,7 @@ class RequestsClient(BaseClient):
             raise ConnectionError(
                 'HTTP error ' + str(error.response.status_code) + ': ' + error.response.text)
 
-        if not serialise_result:
+        if not json_result and method == "GET":
             return response.text
 
         try:
@@ -103,8 +103,10 @@ class RequestsClient(BaseClient):
         else:
             result = None
 
-        # TODO: Optional
-        return g.JsonConverter.from_json(result)
+        if json_result:
+            return result
+        else:
+            return g.JsonConverter.from_json(result)
 
     def __del__(self):
         self._session.close()

@@ -48,13 +48,13 @@ class Fishbowl:
 
     def _generate_functions(self, path, import_path, base_class):
         # functions is a list of function classes
-        functions = self._gaffer_connector.get(path, serialise_result=True)
+        functions = self._gaffer_connector.get(path, json_result=True)
 
         functions_python = [f"from gafferpy.{import_path} import {base_class}\n\n"]
 
         for fn in functions:
             # functions is a list of function classes
-            function_fields = self._gaffer_connector.get("/graph/config/serialisedFields/" + fn, serialise_result=True)
+            function_fields = self._gaffer_connector.get("/graph/config/serialisedFields/" + fn, json_result=True)
 
             # Map of fields to snake case fields
             function_field_mappings = dict()
@@ -86,7 +86,7 @@ class Fishbowl:
         return "\n".join(functions_python)
 
     def _generate_operations(self):
-        operation_summaries = self._gaffer_connector.get("/graph/operations/details", serialise_result=True)
+        operation_summaries = self._gaffer_connector.get("/graph/operations/details", json_result=True)
 
         operations_python = ["from gafferpy.gaffer_operations import Operation\n\n"]
 

@@ -33,7 +33,7 @@ class BaseClient:
         self.headers.setdefault('Content-Type', 'application/json;charset=utf-8')
         self.config = config
 
-    def perform_request(self, method, target, headers=None, body=None, serialise_result=True):
+    def perform_request(self, method, target, headers=None, body=None, json_result=True):
         raise NotImplementedError()
 
     def merge_headers(self, headers):

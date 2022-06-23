@@ -99,7 +99,7 @@ class GafferConnector:
             json_body
         )
 
-    def execute_get(self, operation, headers=None, serialise_result=False):
+    def execute_get(self, operation, headers=None, json_result=False):
         """
         This method queries Gaffer with a GET request to a specified endpoint.
 
@@ -123,9 +123,9 @@ class GafferConnector:
         """
         target = operation.get_url()
 
-        return self.get(target, headers, serialise_result)
+        return self.get(target, headers, json_result)
 
-    def is_operation_supported(self, operation, headers=None, serialise_result=False):
+    def is_operation_supported(self, operation, headers=None, json_result=False):
         """
         This method queries the Gaffer API to provide details about operations
         Returns a JSON array containing details about the operation.
@@ -151,14 +151,14 @@ class GafferConnector:
         else:
             target = "/graph/operations/" + operation.CLASS
 
-        return self.get(target, headers, serialise_result)
+        return self.get(target, headers, json_result)
 
-    def get(self, url, headers=None, serialise_result=False):
+    def get(self, url, headers=None, json_result=False):
         return self.client.perform_request(
             "GET",
             url,
             headers,
-            serialise_result=serialise_result
+            json_result=json_result
         )
 
     @property
