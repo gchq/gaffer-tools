@@ -11,7 +11,7 @@ class Fishbowl:
         self._gaffer_connector = gaffer_connector
         self.generated_directory_path = generated_directory_path
         print("Generating python Library from REST service")
-        self.__generate_library()
+        self._generate_library()
         print("done")
         print("To import operations, predicates and functions, use the following command:")
         print("from " + generated_directory_path + " import *")
@@ -20,7 +20,7 @@ class Fishbowl:
         with open(file_path, "w+") as file:
             file.write(data)
 
-    def __generate_library(self):
+    def _generate_library(self):
 
         if os.path.exists(self.generated_directory_path):
             shutil.rmtree(self.generated_directory_path)
@@ -86,7 +86,11 @@ class Fishbowl:
         return "\n".join(functions_python)
 
     def _generate_operations(self):
-        operation_summaries = self._gaffer_connector.get("/graph/operations/details", json_result=True)
+        # Gaffer 2 spring-rest has an endpoint for every store operation, even ones unsupported by the store
+        try:
+            operation_summaries = self._gaffer_connector.get("/graph/operations/details/all", json_result=True)
+        except ConnectionError:
+            operation_summaries = self._gaffer_connector.get("/graph/operations/details", json_result=True)
 
         operations_python = ["from gafferpy.gaffer_operations import Operation\n\n"]
 

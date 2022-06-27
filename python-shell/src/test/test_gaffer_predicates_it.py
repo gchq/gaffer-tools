@@ -24,7 +24,7 @@ from gafferpy import gaffer_connector
 class GafferPredicatesIntegrationTest(unittest.TestCase):
     def test_all_predicates_have_classes(self):
         gc = gaffer_connector.GafferConnector(
-            'http://localhost:8080/rest/latest')
+            'http://localhost:8080/rest')
         predicates = gc.execute_get(
             g.GetFilterFunctions()
         )

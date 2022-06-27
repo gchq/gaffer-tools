@@ -40,7 +40,7 @@ from gafferpy import gaffer as g
 from gafferpy import gaffer_connector
 
 # Instantiate a connector
-gc = gaffer_connector.GafferConnector("http://localhost:8080/rest/latest")
+gc = gaffer_connector.GafferConnector("http://localhost:8080/rest")
 
 # You can use the connector to perform get requests
 schema = gc.execute_get(g.GetSchema())

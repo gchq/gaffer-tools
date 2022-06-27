@@ -34,7 +34,7 @@ Things it should do:
 from fishbowl.connector import GafferConnector
 from fishbowl.fishbowl import Fishbowl
 
-fb = Fishbowl(gaffer_connector=GafferConnector(host="http://localhost:8080/rest/latest"))
+fb = Fishbowl(gaffer_connector=GafferConnector(host="http://localhost:8080/rest"))
 ```
 Your python files will be appear in a folder called `generated`
 They can be imported using the following command:

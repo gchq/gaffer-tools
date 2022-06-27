@@ -391,7 +391,7 @@ def generate_domain_objects_chain(gc):
         [
             g.GetElements(
                 input=[g.EntitySeed(vertex='M5')],
-                seed_matching_type=g.SeedMatchingType.RELATED,
+                #seed_matching=g.SeedMatchingType.RELATED,
                 view=g.View(
                     edges=[
                         g.ElementDefinition(
@@ -960,4 +960,4 @@ def op_chain_in_json(gc):
 
 
 if __name__ == "__main__":
-    run('http://localhost:8080/rest/latest', False)
+    run('http://localhost:8080/rest', False)

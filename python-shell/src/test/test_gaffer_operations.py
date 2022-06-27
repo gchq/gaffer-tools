@@ -18,6 +18,7 @@ import json
 import unittest
 
 from gafferpy import gaffer as g
+from gafferpy.gaffer_operations import GetSchema
 
 
 class GafferOperationsTest(unittest.TestCase):
@@ -1107,8 +1108,7 @@ class GafferOperationsTest(unittest.TestCase):
                 "directedType" : "EITHER",
                 "matchedVertex" : "SOURCE",
                 "class" : "uk.gov.gchq.gaffer.operation.data.EdgeSeed"
-              } ],
-              "seedMatching": "EQUAL"
+              } ]
             }
             ''',
             g.GetElements(
@@ -1122,8 +1122,7 @@ class GafferOperationsTest(unittest.TestCase):
                         destination=3,
                         matched_vertex="SOURCE"
                     )
-                ],
-                seed_matching=g.SeedMatchingType.EQUAL
+                ]
             )
         ],
         [
@@ -4398,7 +4397,7 @@ class GafferOperationsTest(unittest.TestCase):
                 "compact": true
             }
             ''',
-            g.GetSchema(
+            GetSchema(
                 compact=True
             )
         ],
@@ -5373,7 +5372,7 @@ class GafferOperationsTest(unittest.TestCase):
                             ]
                         }
                     },
-                    "include_partial": false,
+                    "includePartial": false,
                     "resultsLimit": 500000,
                     "input": [{
                         "class": "uk.gov.gchq.gaffer.operation.data.EntitySeed",
@@ -5475,10 +5474,6 @@ class GafferOperationsTest(unittest.TestCase):
         self.assertEqual(g.GetWalks(
             operations=[g.GetElements()]), expected_output_json)
 
-    def test_get_walks_incorrect_op(self):
-        with self.assertRaises(TypeError):
-            g.GetWalks(operations=[g.GetAllElements()])
-
     def test_get_walks_correct_json(self):
         get_elements_json = {
             "class" : "uk.gov.gchq.gaffer.operation.impl.get.GetElements"
@@ -5493,13 +5488,6 @@ class GafferOperationsTest(unittest.TestCase):
             g.GetWalks(operations=[get_elements_json]), 
             expected_output_json
         )
-
-    def test_get_walks_incorect_json(self):
-        get_all_elements_json = {
-            "class" : "uk.gov.gchq.gaffer.operation.impl.get.GetAllElements"
-        }
-        with self.assertRaises(TypeError):
-            g.GetWalks(operations=[get_all_elements_json])
 
     def test_federated_graph_ids_helper(self):
         expected_output_json = {

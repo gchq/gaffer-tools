@@ -30,30 +30,9 @@ class GetGraph:
         return self._url
 
 
-class GetSchema(gaffer_operations.Operation, GetGraph):
-    CLASS = 'uk.gov.gchq.gaffer.store.operation.GetSchema'
-
-    def __init__(self,
-                 compact=None,
-                 options=None):
-        super().__init__(_class_name=self.CLASS,
-                         options=options)
-
-        if compact is not None:
-            self.compact = compact
-        else:
-            self.compact = False
-
-        self._url = '/graph/config/schema'
-
-    def to_json(self):
-        operation = super().to_json()
-
-        if self.compact is not None:
-            operation['compact'] = self.compact
-
-        return operation
-
+class GetSchema(GetGraph):
+    def __init__(self):
+        super().__init__('/graph/config/schema')
 
 class GetFilterFunctions(GetGraph):
     def __init__(self):
@@ -83,6 +62,10 @@ class GetObjectGenerators(GetGraph):
 class GetOperations(GetGraph):
     def __init__(self):
         super().__init__('/graph/operations')
+
+class GetAllOperationDetails(GetGraph):
+    def __init__(self):
+        super().__init__('/graph/operations/details/all')
 
 
 class GetSerialisedFields(GetGraph):

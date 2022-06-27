@@ -21,7 +21,7 @@ from examples import example_map
 
 class ExampleMapTest(unittest.TestCase):
     def test_example_map_does_not_error(self):
-        example_map.run('http://localhost:8080/rest/latest')
+        example_map.run('http://localhost:8080/rest')
 
 
 if __name__ == "__main__":
