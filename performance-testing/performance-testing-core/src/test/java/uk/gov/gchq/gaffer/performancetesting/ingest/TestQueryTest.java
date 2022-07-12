@@ -16,13 +16,11 @@
 package uk.gov.gchq.gaffer.performancetesting.ingest;
 
 import org.apache.commons.io.FileUtils;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 import uk.gov.gchq.gaffer.accumulostore.AccumuloProperties;
 import uk.gov.gchq.gaffer.accumulostore.MiniAccumuloStore;
-import uk.gov.gchq.gaffer.commonutil.CommonTestConstants;
 import uk.gov.gchq.gaffer.commonutil.StreamUtil;
 import uk.gov.gchq.gaffer.graph.Graph;
 import uk.gov.gchq.gaffer.graph.GraphConfig;
@@ -43,12 +41,12 @@ import java.io.IOException;
 import java.util.List;
 import java.util.stream.Stream;
 
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class TestQueryTest {
 
-    @Rule
-    public TemporaryFolder folder = new TemporaryFolder(CommonTestConstants.TMP_DIRECTORY);
+    @TempDir
+    public File folder;
 
     @Test
     public void testQueryTestRuns() throws OperationException {
@@ -79,7 +77,7 @@ public class TestQueryTest {
         final double result = test.run();
 
         // Then
-        assertTrue(result > 0.0D);
+        assertThat(result > 0.0D).isTrue();
     }
 
     @Test
@@ -92,7 +90,7 @@ public class TestQueryTest {
         testProperties.setRmatProbabilities(Constants.RMAT_PROBABILITIES);
         testProperties.setRmatMaxNodeId(100L);
         testProperties.setMetricsListenerClass(FileWriterMetricsListener.class.getName());
-        final File metricsResults = folder.newFile();
+        final File metricsResults = new File(folder, "metricsResults.txt");
         final String metricsResultsFilename = metricsResults.getPath();
         testProperties.setProperty(FileWriterMetricsListener.FILENAME, metricsResultsFilename);
         final AccumuloProperties storeProperties = AccumuloProperties.loadStoreProperties(
@@ -116,13 +114,13 @@ public class TestQueryTest {
         final List<String> lines = FileUtils.readLines(new File(metricsResultsFilename));
 
         // Then
-        assertTrue(lines.size() > 0);
+        assertThat(lines.size() > 0).isTrue();
         lines.forEach(line -> {
             final String[] fields = line.split(", ");
-            assertTrue(fields[0].startsWith(QueryMetrics.RESULTS_PER_SECOND));
-            assertTrue(Double.parseDouble(fields[0].split(":")[1]) > 0.0D);
-            assertTrue(fields[1].startsWith(QueryMetrics.SEEDS_PER_SECOND));
-            assertTrue(Double.parseDouble(fields[1].split(":")[1]) > 0.0D);
+            assertThat(fields[0].startsWith(QueryMetrics.RESULTS_PER_SECOND)).isTrue();
+            assertThat(Double.parseDouble(fields[0].split(":")[1]) > 0.0D).isTrue();
+            assertThat(fields[1].startsWith(QueryMetrics.SEEDS_PER_SECOND)).isTrue();
+            assertThat(Double.parseDouble(fields[1].split(":")[1]) > 0.0D).isTrue();
         });
     }
 }

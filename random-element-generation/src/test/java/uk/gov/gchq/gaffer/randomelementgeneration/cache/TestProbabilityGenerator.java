@@ -15,7 +15,7 @@
  */
 package uk.gov.gchq.gaffer.randomelementgeneration.cache;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.Map;
 import java.util.SortedMap;
@@ -23,7 +23,7 @@ import java.util.TreeMap;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.IntStream;
 
-import static junit.framework.TestCase.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class TestProbabilityGenerator {
 
@@ -46,7 +46,7 @@ public class TestProbabilityGenerator {
 
         // Then
         final double ratio = ((double) counts.get("A")) / counts.get("B");
-        assertTrue(0.99D < ratio && ratio < 1.01D);
+        assertThat(0.99D < ratio && ratio < 1.01D).isTrue();
     }
 
     @Test
@@ -68,6 +68,6 @@ public class TestProbabilityGenerator {
 
         // Then
         final double ratio = ((double) counts.get("A")) / counts.get("B");
-        assertTrue(ratio > 100.0D);
+        assertThat(ratio > 100.0D).isTrue();
     }
 }
