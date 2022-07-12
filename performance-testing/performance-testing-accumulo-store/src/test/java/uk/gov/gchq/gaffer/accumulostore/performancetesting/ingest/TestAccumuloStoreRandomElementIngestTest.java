@@ -16,14 +16,12 @@
 package uk.gov.gchq.gaffer.accumulostore.performancetesting.ingest;
 
 import org.apache.hadoop.conf.Configuration;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 import uk.gov.gchq.gaffer.accumulostore.AccumuloProperties;
 import uk.gov.gchq.gaffer.accumulostore.AccumuloStore;
 import uk.gov.gchq.gaffer.accumulostore.MiniAccumuloStore;
-import uk.gov.gchq.gaffer.commonutil.CommonTestConstants;
 import uk.gov.gchq.gaffer.commonutil.StreamUtil;
 import uk.gov.gchq.gaffer.graph.Graph;
 import uk.gov.gchq.gaffer.graph.GraphConfig;
@@ -33,12 +31,13 @@ import uk.gov.gchq.gaffer.randomelementgeneration.supplier.RmatElementSupplier;
 import uk.gov.gchq.gaffer.store.StoreException;
 import uk.gov.gchq.gaffer.store.schema.Schema;
 
+import java.io.File;
 import java.io.IOException;
 
 public class TestAccumuloStoreRandomElementIngestTest {
 
-    @Rule
-    public TemporaryFolder tempFolder = new TemporaryFolder(CommonTestConstants.TMP_DIRECTORY);
+    @TempDir
+    public File tempFolder;
 
     @Test
     public void testAccumuloStoreRandomElementIngestTestRuns() throws StoreException, OperationException, IOException {
@@ -49,7 +48,7 @@ public class TestAccumuloStoreRandomElementIngestTest {
         testProperties.setElementSupplierClass(RmatElementSupplier.class.getName());
         testProperties.setRmatProbabilities(Constants.RMAT_PROBABILITIES);
         testProperties.setRmatMaxNodeId(100L);
-        testProperties.setTempDirectory(tempFolder.newFolder().getCanonicalPath());
+        testProperties.setTempDirectory(tempFolder.getCanonicalPath());
 
         final Schema schema = Schema.fromJson(StreamUtil.schemas(Constants.class));
         final AccumuloProperties storeProperties = AccumuloProperties.loadStoreProperties(
