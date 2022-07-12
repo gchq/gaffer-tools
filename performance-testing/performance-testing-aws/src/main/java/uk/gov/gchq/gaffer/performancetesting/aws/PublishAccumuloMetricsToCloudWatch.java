@@ -24,17 +24,19 @@ import com.amazonaws.services.cloudwatch.model.MetricDatum;
 import com.amazonaws.services.cloudwatch.model.PutMetricDataRequest;
 import com.amazonaws.services.cloudwatch.model.PutMetricDataResult;
 import com.amazonaws.services.cloudwatch.model.StandardUnit;
-import org.apache.accumulo.core.client.ZooKeeperInstance;
-import org.apache.accumulo.core.client.impl.MasterClient;
-import org.apache.accumulo.core.client.impl.Tables;
+import org.apache.accumulo.core.client.Accumulo;
+import org.apache.accumulo.core.client.AccumuloClient;
+import org.apache.accumulo.core.clientImpl.MasterClient;
+import org.apache.accumulo.core.clientImpl.Tables;
+import org.apache.accumulo.core.conf.SiteConfiguration;
+import org.apache.accumulo.core.data.TableId;
 import org.apache.accumulo.core.master.thrift.MasterClientService;
 import org.apache.accumulo.core.master.thrift.MasterMonitorInfo;
 import org.apache.accumulo.core.master.thrift.TableInfo;
 import org.apache.accumulo.core.master.thrift.TabletServerStatus;
-import org.apache.accumulo.core.trace.Tracer;
+import org.apache.accumulo.core.trace.TraceUtil;
 import org.apache.accumulo.core.util.Pair;
-import org.apache.accumulo.server.AccumuloServerContext;
-import org.apache.accumulo.server.conf.ServerConfigurationFactory;
+import org.apache.accumulo.server.ServerContext;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -56,12 +58,12 @@ public class PublishAccumuloMetricsToCloudWatch implements Runnable {
     private final String zookeepers;
     private int interval = 60;
 
-    private ZooKeeperInstance instance;
-    private AccumuloServerContext context;
+    private AccumuloClient instance;
+    private ServerContext context;
     private MasterClientService.Client client;
     private AmazonCloudWatch cloudwatch;
 
-    private Map<String, String> tableIdToNameMap;
+    private Map<TableId, String> tableIdToNameMap;
     private Date previousCaptureDate = null;
     private Map<Pair<String, List<Dimension>>, Double> previousMetrics = null;
 
@@ -77,9 +79,8 @@ public class PublishAccumuloMetricsToCloudWatch implements Runnable {
 
     private void connect() {
         // Connect to Accumulo Master
-        this.instance = new ZooKeeperInstance(this.instanceName, this.zookeepers);
-        ServerConfigurationFactory config = new ServerConfigurationFactory(this.instance);
-        this.context = new AccumuloServerContext(config);
+        this.instance = Accumulo.newClient().to(instanceName, zookeepers).as("admin", "admin").build();
+        this.context = new ServerContext(new SiteConfiguration());
         this.client = MasterClient.getConnection(this.context);
 
         // Set up connection to AWS CloudWatch
@@ -96,7 +97,7 @@ public class PublishAccumuloMetricsToCloudWatch implements Runnable {
     private String getTableNameForId(final String id) {
         if (this.tableIdToNameMap == null || !this.tableIdToNameMap.containsKey(id)) {
             // Refresh the cache as a table may have just been created
-            this.tableIdToNameMap = Tables.getIdToNameMap(this.instance);
+            this.tableIdToNameMap = Tables.getIdToNameMap(this.context);
         }
 
         return this.tableIdToNameMap.get(id);
@@ -106,7 +107,7 @@ public class PublishAccumuloMetricsToCloudWatch implements Runnable {
     private List<MetricDatum> gatherMetrics() throws TException {
         final String awsEmrJobFlowId = AwsEmrUtils.getJobFlowId();
 
-        final MasterMonitorInfo stats = this.client.getMasterStats(Tracer.traceInfo(), this.context.rpcCreds());
+        final MasterMonitorInfo stats = this.client.getMasterStats(TraceUtil.traceInfo(), this.context.rpcCreds());
         LOGGER.trace(stats.toString());
 
         final Date now = new Date();
