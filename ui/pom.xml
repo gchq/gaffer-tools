@@ -48,6 +48,11 @@
             <scope>test</scope>
         </dependency>
         <dependency>
+            <groupId>org.glassfish.jersey.inject</groupId>
+            <artifactId>jersey-hk2</artifactId>
+            <version>${jersey.version}</version>
+        </dependency>
+        <dependency>
             <groupId>uk.gov.gchq.gaffer</groupId>
             <artifactId>proxy-store</artifactId>
             <version>${gaffer.version}</version>
