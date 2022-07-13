@@ -43,8 +43,8 @@
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
-            <!-- Newer Guava required for Selenium -->
-            <version>25.0-jre</version>
+            <!-- Guava >= 25 required for Selenium -->
+            <version>[25.0-jre,)</version>
             <scope>test</scope>
         </dependency>
         <dependency>
