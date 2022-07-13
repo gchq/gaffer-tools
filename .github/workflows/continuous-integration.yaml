@@ -111,7 +111,9 @@ jobs:
     env:
       MAVEN_OPTS: -Dmaven.wagon.http.retryHandler.count=3 -Dmaven.wagon.httpconnectionManager.ttlSeconds=25
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
 
     - name: Setup JDK
       uses: actions/setup-java@v2
@@ -132,6 +134,10 @@ jobs:
 
     - name: Test
       run: mvn verify -B -P coverage -pl ${{matrix.modules}}
+
+    - name: Check Copyright Headers
+      if: github.event_name == 'pull_request'
+      run: mvn -B -q spotless:check -pl ${{matrix.modules}}
 
     - name: Upload Coverage
       uses: codecov/codecov-action@v2
