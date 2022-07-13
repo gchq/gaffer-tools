@@ -30,9 +30,11 @@ class Fishbowl:
         operations_python = self._generate_operations()
         functions_python = self._generate_transform_functions()
         predicates_python = self._generate_filter_functions()
+        binary_operators_python = self._generate_aggregation_functions()
 
         self._write_to_file(os.path.join(self.generated_directory_path, "functions.py"), functions_python)
         self._write_to_file(os.path.join(self.generated_directory_path, "predicates.py"), predicates_python)
+        self._write_to_file(os.path.join(self.generated_directory_path, "binary_operators.py"), binary_operators_python)
         self._write_to_file(os.path.join(self.generated_directory_path, "operations.py"), operations_python)
         self._write_to_file(os.path.join(self.generated_directory_path, "__init__.py"),
                       "__all__ = [ \"operations\", \"predicates\", \"functions\" ]\n")

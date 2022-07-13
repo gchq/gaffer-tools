@@ -1459,7 +1459,7 @@ class GafferOperationsTest(unittest.TestCase):
                                     selection=[
                                         "count"
                                     ],
-                                    predicate=g.Or(
+                                    predicate=g.pred.Or(
                                         predicates=[
                                             g.IsLessThan(
                                                 or_equal_to=False,
@@ -1536,7 +1536,7 @@ class GafferOperationsTest(unittest.TestCase):
                         g.ElementDefinition(
                             pre_aggregation_filter_functions=[
                                 g.PredicateContext(
-                                    predicate=g.Or(
+                                    predicate=g.pred.Or(
                                         predicates=[
                                             g.NestedPredicate(
                                                 predicate=g.IsLessThan(

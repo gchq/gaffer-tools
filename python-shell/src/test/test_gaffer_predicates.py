@@ -47,7 +47,7 @@ class GafferPredicatesTest(unittest.TestCase):
               } ]
             }
             ''',
-            g.And(
+            g.pred.And(
                 predicates=[
                     g.IsLessThan(
                         value=3,
@@ -83,7 +83,7 @@ class GafferPredicatesTest(unittest.TestCase):
                 } ]
               }
             ''',
-            g.And(
+            g.pred.And(
                 predicates=[
                     g.NestedPredicate(
                         selection=[
@@ -372,7 +372,7 @@ class GafferPredicatesTest(unittest.TestCase):
               } ]
             }
             ''',
-            g.Or(
+            g.pred.Or(
                 predicates=[
                     g.IsLessThan(
                         value=2,
@@ -411,7 +411,7 @@ class GafferPredicatesTest(unittest.TestCase):
               } ]
             }
             ''',
-            g.Or(
+            g.pred.Or(
                 predicates=[
                     g.NestedPredicate(
                         selection=[

@@ -734,6 +734,14 @@ class Transform(Transform):
                     operation_json['entities'][el_def.group] = el_def.to_json()
         return operation_json
 
+# List Input
+class If(If):
+    def to_json(self):
+        operation_json = super().to_json()
+        if not isinstance(self.input, list):
+            operation_json["input"] = [self.input]
+        return operation_json
+
 # Element Input
 class GetElements(GetElements):
     def to_json(self):
