@@ -137,7 +137,7 @@ jobs:
 
     - name: Check Copyright Headers
       if: github.event_name == 'pull_request'
-      run: mvn -B -q spotless:check -pl ${{matrix.modules.values}}
+      run: mvn -B -q spotless:check -pl ${{matrix.modules}}
 
     - name: Upload Coverage
       uses: codecov/codecov-action@v2
