@@ -18,10 +18,10 @@
 package uk.gov.gchq.gaffer.ui;
 
 import com.google.common.collect.Maps;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.Keys;
@@ -45,9 +45,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * UI system test. Runs a simple query for road use around junction M5:10.
@@ -122,9 +120,9 @@ public class QueryBuilderST {
     private static String url;
     private static int slowFactor;
 
-    @BeforeClass
+    @BeforeAll
     public static void beforeClass() throws OperationException {
-        assertNotNull("System property " + GECKO_PROPERTY + " has not been set", System.getProperty(GECKO_PROPERTY));
+        assertThat(System.getProperty(GECKO_PROPERTY)).withFailMessage("System property %s has not been set", GECKO_PROPERTY).isNotNull();
         url = System.getProperty(URL_PROPERTY, DEFAULT_URL);
         slowFactor = Integer.parseInt(System.getProperty(SLOW_FACTOR_PROPERTY, DEFAULT_SLOW_FACTOR));
 
@@ -141,7 +139,7 @@ public class QueryBuilderST {
         addNamedOperation();
     }
 
-    @AfterClass
+    @AfterAll
     public static void afterClass() {
         try {
             driver.close();
@@ -151,7 +149,7 @@ public class QueryBuilderST {
         }
     }
 
-    @Before
+    @BeforeEach
     public void before() throws InterruptedException {
         driver.get(url);
         Thread.sleep(slowFactor * 1000);
@@ -172,13 +170,14 @@ public class QueryBuilderST {
         click("execute-chain");
 
         click("open-raw");
-        assertEquals(EXPECTED_OPERATION_JSON, getElement("operation-0-json").getText().trim());
+        assertThat(getElement("operation-0-json").getText().trim()).isEqualTo(EXPECTED_OPERATION_JSON);
 
         clickTab("Results");
         final String results = getElement("raw-edge-results").getText().trim();
         for (final String expectedResult : EXPECTED_RESULTS) {
-            assertTrue("Results did not contain: \n" + expectedResult
-                    + "\nActual results: \n" + results, results.contains(expectedResult));
+            assertThat(results.contains(expectedResult))
+                    .withFailMessage("Results did not contain: \n %s\nActual results: \n %s", expectedResult, results)
+                    .isTrue();
         }
     }
 
@@ -196,7 +195,7 @@ public class QueryBuilderST {
         String result = getElement("raw-entity-results").getText().trim();
         JSONSerialiser json = JSONSerialiser.getInstance();
         List results = json.deserialise(result, List.class);
-        assertEquals(1, results.size());
+        assertThat(results.size()).isEqualTo(1);
     }
 
     @Test
@@ -212,8 +211,9 @@ public class QueryBuilderST {
         clickTab("Results");
         final String results = getElement("raw-edge-results").getText().trim();
         for (final String expectedResult : EXPECTED_RESULTS) {
-            assertTrue("Results did not contain: \n" + expectedResult
-                    + "\nActual results: \n" + results, results.contains(expectedResult));
+            assertThat(results.contains(expectedResult))
+                    .withFailMessage("Results did not contain: \n %s\nActual results: \n %s", expectedResult, results)
+                    .isTrue();
         }
     }
 
@@ -252,7 +252,7 @@ public class QueryBuilderST {
                 "        ]\n";
 
 
-        assert (getElement("operation-0-json").getText().trim().contains(expectedString));
+        assertThat(getElement("operation-0-json").getText().trim().contains(expectedString)).isTrue();
 
     }
 
@@ -270,7 +270,7 @@ public class QueryBuilderST {
         final String results = getElement("raw-other-results").getText().trim();
         final List resultList = JSONSerialiser.deserialise(results.getBytes(), ArrayList.class);
 
-        assertEquals(2, resultList.size());
+        assertThat(resultList.size()).isEqualTo(2);
     }
 
     @Test
@@ -292,7 +292,7 @@ public class QueryBuilderST {
         click("md-confirm-button");
         autoComplete("operation-name", "A Test Nam");
         String text = getElement("operation-name").getAttribute("value");
-        assertEquals("A Test Name", text);
+        assertThat(text).isEqualTo("A Test Name");
     }
 
     private void enterText(final String id, final String value) throws InterruptedException {
@@ -341,7 +341,7 @@ public class QueryBuilderST {
             choice.click();
         }
 
-        assertNotNull("You must provide at least one option", choice);
+        assertThat(choice).withFailMessage("You must provide at least one option").isNotNull();
 
         choice.sendKeys(Keys.ESCAPE);
 

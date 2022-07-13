@@ -1,4 +1,4 @@
-__version__ = "2.0.0-alpha-0.2"
+__version__ = "2.0.0-alpha-0.3"
 
 __title__ = "gafferpy"
 __description__ = "Gaffer Python Shell"

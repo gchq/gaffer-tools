@@ -15,7 +15,7 @@
  */
 package uk.gov.gchq.gaffer.randomelementgeneration.cache;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -25,8 +25,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.IntStream;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class TestPreferentialAttachmentCache {
 
@@ -43,7 +42,7 @@ public class TestPreferentialAttachmentCache {
         IntStream.range(0, 100).forEach(i -> results.add(cache.get()));
 
         // Then
-        results.forEach(i -> assertTrue(data.contains(i)));
+        results.forEach(i -> assertThat(data.contains(i)).isTrue());
     }
 
     @Test
@@ -56,7 +55,7 @@ public class TestPreferentialAttachmentCache {
         final long numberOfElements = cache.getNumberOfElements();
 
         // Then
-        assertEquals(10, numberOfElements);
+        assertThat(numberOfElements).isEqualTo(10);
     }
 
     /**
@@ -83,6 +82,6 @@ public class TestPreferentialAttachmentCache {
         final long minFrequency = itemToCount.values().stream().mapToLong(Long::longValue).min().getAsLong();
 
         // Then
-        assertTrue(maxFrequency / minFrequency > 5);
+        assertThat(maxFrequency / minFrequency > 5).isTrue();
     }
 }
