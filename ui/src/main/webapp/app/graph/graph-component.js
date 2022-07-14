@@ -655,7 +655,7 @@ function GraphController($q, graph, config, error, loading, query, operationOpti
      */
     vm.removeSelected = function() {
         var removedElements = cytoscapeGraph.filter(":selected").remove().toArray();
-        graph.getRemovedElements().concat(removedElements);
+        graph.setRemovedElements(graph.getRemovedElements().concat(removedElements));
 
         cytoscapeGraph.elements().unselect();
         vm.selectedElements.entities = [];
