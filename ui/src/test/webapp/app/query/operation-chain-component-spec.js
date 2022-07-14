@@ -331,7 +331,7 @@ describe('The operation chain component', function() {
 
             expect(json.class).toEqual("uk.gov.gchq.gaffer.operation.OperationChain");
         });
-        
+
         it('should not save if a name has not been entered', function() {
             ctrl.namedOperationName = '';
             ctrl.namedOperationDescription = 'test description';
@@ -347,9 +347,9 @@ describe('The operation chain component', function() {
             ctrl.operations.length = 1;
 
             var invalidName = $mdDialog.confirm()
-            .title('Operation chain name is invalid!')
-            .textContent('You must provide a name for the operation')
-            .ok('Ok')
+                .title('Operation chain name is invalid!')
+                .textContent('You must provide a name for the operation')
+                .ok('Ok')
 
             ctrl.saveChain();
 
@@ -357,33 +357,28 @@ describe('The operation chain component', function() {
         });
 
         it('should save using an add named operation query', function() {
-            var testName = 'test name';
-            var testDescription = 'test description';
-            var OPERATION_CHAIN_CLASS = "uk.gov.gchq.gaffer.operation.OperationChain";    
-            var chain = {
-                    class: OPERATION_CHAIN_CLASS,
-                    operations: []
-            }
-            const ADD_NAMED_OPERATION_CLASS = "uk.gov.gchq.gaffer.named.operation.AddNamedOperation";
-
             ctrl.operations.length = 1;
-            ctrl.namedOperation.name = testName;
-            ctrl.namedOperation.description = testDescription;
+            ctrl.namedOperation.name = 'Operation Name';
+            ctrl.namedOperation.labels = 'Group Label 1';
+            ctrl.namedOperation.description = 'A description';
+
+            ctrl.saveChain();
 
             var expectedQuery = {
-                class: ADD_NAMED_OPERATION_CLASS,
-                operationName: testName,
-                operationChain: chain,
-                description: testDescription,
+                class: 'uk.gov.gchq.gaffer.named.operation.AddNamedOperation',
+                operationName: 'Operation Name',
+                labels: ['Group Label 1'],
+                operationChain: {
+                    class: 'uk.gov.gchq.gaffer.operation.OperationChain',
+                    operations: []
+                },
+                description: 'A description',
                 options: {},
                 score: 1,
                 overwriteFlag: true,
             }
-            
-            ctrl.saveChain();
-
-            expect(query.executeQuery).toHaveBeenCalledWith(expectedQuery, jasmine.any(Function));    
-        })
+            expect(query.executeQuery).toHaveBeenCalledWith(expectedQuery, jasmine.any(Function));
+        });
 
         it('should show a confirmation dialog', function() {
             ctrl.namedOperation.name = 'test name';
@@ -391,14 +386,14 @@ describe('The operation chain component', function() {
             ctrl.operations.length = 1;
 
             var confirm = $mdDialog.confirm()
-            .title('Operation chain saved as named operation!')
-            .textContent('You can now see your saved operation in the list of operations')
-            .ok('Ok')
+                .title('Operation chain saved as named operation!')
+                .textContent('You can now see your saved operation in the list of operations')
+                .ok('Ok')
 
             ctrl.saveChain();
 
             expect($mdDialog.show).toHaveBeenCalledWith(confirm);
-        })
+        });
 
         it('should close the sidenav on success', function() {
             spyOn(ctrl, 'toggleSideNav').and.stub();
@@ -409,7 +404,7 @@ describe('The operation chain component', function() {
             ctrl.saveChain();
 
             expect(ctrl.toggleSideNav).toHaveBeenCalled();
-        })
+        });
 
         it('should reload the operations on success', function() {
             spyOn(operationService, 'reloadOperations').and.stub();
@@ -420,8 +415,8 @@ describe('The operation chain component', function() {
             ctrl.saveChain();
 
             expect(operationService.reloadOperations).toHaveBeenCalled();
-        })
-    })
+        });
+    });
 
     describe('ctrl.execute()', function() {
 
@@ -577,12 +572,11 @@ describe('The operation chain component', function() {
                         },
                         dates: {}
                     }
-    
+
                     ctrl.execute(op);
                     expect(JSON.stringify(query.execute.calls.first().args[0])).not.toContain('"groupBy":[]');
                 });
             });
-
 
             describe('When adding Named views', function() {
 
@@ -1092,11 +1086,13 @@ describe('The operation chain component', function() {
                     op = {
                         selectedOperation: {
                             fields: {
-                                input: {}
+                                input: {},
+                                seedType: ''
                             }
                         },
                         fields: {
                             input: [],
+                            inputB: {},
                             inputPairs: []
                         }
                     }
@@ -1168,7 +1164,42 @@ describe('The operation chain component', function() {
                         { 'class': 'uk.gov.gchq.gaffer.operation.data.EntitySeed', 'vertex': 3}])
 
                     expect(JSON.stringify(query.execute.calls.first().args[0])).toContain(expectedInput);
+                });
 
+                describe('When overriding the seed type', function () {
+
+                    it('should be able to force an input seed type of java.lang.Object', function () {
+                        op.fields.input = [
+                            {valueClass: 'java.lang.String', parts: {undefined: 'test1'}},
+                            {valueClass: 'java.lang.String', parts: {undefined: 'test2'}},
+                            {valueClass: 'java.lang.String', parts: {undefined: 'test3'}}
+                        ];
+
+                        op.fields.seedType = "Object";
+
+                        var expectedInput = JSON.stringify(['test1', 'test2', 'test3']);
+
+                        ctrl.execute(op);
+                        expect(JSON.stringify(query.execute.calls.first().args[0])).toContain(expectedInput);
+                    })
+
+                    it('should be able to force an input seed type of EntitySeed', function () {
+                        op.fields.input = [
+                            {valueClass: 'java.lang.String', parts: {undefined: 'test1'}},
+                            {valueClass: 'java.lang.String', parts: {undefined: 'test2'}},
+                            {valueClass: 'java.lang.String', parts: {undefined: 'test3'}}
+                        ];
+
+                        op.fields.seedType = "Entity";
+
+                        var expectedInput = JSON.stringify([
+                            { 'class': 'uk.gov.gchq.gaffer.operation.data.EntitySeed', 'vertex': 'test1'},
+                            { 'class': 'uk.gov.gchq.gaffer.operation.data.EntitySeed', 'vertex': 'test2'},
+                            { 'class': 'uk.gov.gchq.gaffer.operation.data.EntitySeed', 'vertex': 'test3'}])
+
+                        ctrl.execute(op);
+                        expect(JSON.stringify(query.execute.calls.first().args[0])).toContain(expectedInput);
+                    })
                 });
 
                 describe('When adding a second input', function() {
@@ -1252,11 +1283,9 @@ describe('The operation chain component', function() {
                         expect(JSON.stringify(json.operations[0].parameters.inputB)).toEqual(expectedInput);
                     });
 
-
                 })
             });
         });
-
 
         it('should add the selected operation to the list of operations', function() {
             var op = {
@@ -1825,7 +1854,7 @@ describe('The operation chain component', function() {
 
             ctrl.executeChain();
 
-            expect(operationChain.getOperationChain).toHaveBeenCalledTimes(1);            
+            expect(operationChain.getOperationChain).toHaveBeenCalledTimes(1);
         });
     });
 
@@ -1893,9 +1922,24 @@ describe('The operation chain component', function() {
                 ctrl.resetChain();
                 scope.$digest();
 
-                expect(ctrl.operations).toEqual([1, 2 , 3]);
+                expect(ctrl.operations).toEqual([1, 2, 3]);
             });
 
         })
+    });
+
+    describe('ctrl.namedOperation.getLabelsList()', function() {
+        it('should return labels as a list when labels are inputted as a new line list', function() {
+            ctrl.namedOperation.labels = 'First label\nSecond label';
+
+            var expected = ['First label', 'Second label'];
+            expect(ctrl.namedOperation.getLabelsList()).toEqual(expected);
+        });
+        it('should trim each label and return as a list', function() {
+            ctrl.namedOperation.labels = 'End spaces   \n   Spaces at start';
+
+            var expected = ['End spaces', 'Spaces at start'];
+            expect(ctrl.namedOperation.getLabelsList()).toEqual(expected);
+        });
     });
 });

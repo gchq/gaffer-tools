@@ -1,0 +1,12 @@
+<mat-card id="{{model.operationName}}" (click)="execute(model)" class="grid-button" md-ink-ripple
+  matTooltip="{{model.description}}" style.background="{{model.metaData.colour}}">
+  <div fxLayout="column" fxLayoutAlign="center">
+    <div fxFlex="30%" class="titleContainer">
+      <h2 class="scalableFont">{{model.analyticName}}</h2>
+    </div>
+    <div fxFlex="70%" id="{{model.analyticName}}-svgDiv" class="iconContainer">
+      <mat-icon id="{{model.analyticName}}-svgContainer">
+      </mat-icon>
+    </div>
+  </div>
+</mat-card>

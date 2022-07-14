@@ -5,21 +5,21 @@ Parameters:
 
   GafferVersion:
     Type: String
-    Default: 1.0.0
+    Default: master
     MinLength: 1
     AllowedPattern: "\\S+"
     Description: The version of Gaffer to deploy - can be a version number (e.g. 1.0.0) or a git branch (e.g. gh-X-feature-name) / commit hash etc
 
   GafferToolsVersion:
     Type: String
-    Default: 1.0.0
+    Default: master
     MinLength: 1
     AllowedPattern: "\\S+"
     Description: The version of Gaffer Tools to use to deploy Gaffer on EMR - can be a version number (e.g. 1.0.0) or a git branch (e.g. gh-X-feature-name) / commit hash etc
 
   AccumuloVersion:
     Type: String
-    Default: 1.8.1
+    Default: 1.9.3
     MinLength: 1
     AllowedPattern: "\\S+"
 
@@ -87,6 +87,48 @@ Parameters:
     AllowedPattern: "|(\\S+\\.tar\\.gz)"
     ConstraintDescription: "Please specify this as <bucketName>/<filename>.tar.gz"
 
+  TimeoutUploadFile:
+    Type: Number
+    Default: 180
+    Description: "Timeout value for the upload file(s) function"
+    MinValue: 1
+
+  TimeoutDeployServer:
+    Type: Number
+    Default: 900
+    Description: "Timeout for deploying and securing a server"
+    MinValue: 1
+
+  TimeoutCreateUsers:
+    Type: Number
+    Default: 600
+    Description: "Timeout value for creating the Gaffer user(s)"
+    MinValue: 1
+
+  TimeoutDeployGaffer:
+    Type: Number
+    Default: 3600
+    Description: "Timeout value for deploying Gafffer"
+    MinValue: 1
+
+  TimeoutCleanupSecurity:
+    Type: Number
+    Default: 180
+    Description: "Timeout value for the security clean-up"
+    MinValue: 1
+
+  TimeoutBuildSchema:
+    Type: Number
+    Default: 3600
+    Description: "Timeout value for a schema build"
+    MinValue: 1
+
+  TimeoutIngestData:
+    Type: Number
+    Default: 3600
+    Description: "Timeout value for data ingest"
+    MinValue: 1
+
 Metadata:
   AWS::CloudFormation::Interface:
     ParameterGroups:
@@ -113,6 +155,16 @@ Metadata:
           - KeyName
           - ExtraSecurityGroups
           - MavenRepoTarball
+      - Label:
+          default: Timeouts
+        Parameters:
+          - TimeoutUploadFile
+          - TimeoutCleanupSecurity
+          - TimeoutDeployGaffer
+          - TimeoutCreateUsers
+          - TimeoutDeployServer
+          - TimeoutBuildSchema
+          - TimeoutIngestData
 
 Resources:
 
@@ -136,6 +188,10 @@ Resources:
         UserName: road_traffic_user
         MavenRepoTarball: !Ref MavenRepoTarball
         ClusterUsage: !Ref ClusterUsage
+        TimeoutUploadFile: !Ref TimeoutUploadFile
+        TimeoutCreateUsers: !Ref TimeoutCreateUsers
+        TimeoutCleanupSecurity: !Ref TimeoutCleanupSecurity
+        TimeoutDeployGaffer: !Ref TimeoutDeployGaffer
 
   # Build the Road Traffic schema JAR using an EMR step script
 
@@ -143,7 +199,7 @@ Resources:
     Type: AWS::CloudFormation::WaitCondition
     Properties:
       Handle: !Ref WaitForSchemaJarHandler
-      Timeout: 3600
+      Timeout: !Ref TimeoutBuildSchema
 
   WaitForSchemaJarHandler:
     Type: AWS::CloudFormation::WaitConditionHandle
@@ -188,6 +244,7 @@ Resources:
         EncryptionKey: !Sub ${GafferWithUser.Outputs.PasswordEncryptionKey}
         GafferSchemaJarS3Url: !Join ["", [!Ref S3Bucket, "/schemas/road-traffic-model-", !Ref GafferVersion, ".jar"]]
         MavenRepoTarball: !Ref MavenRepoTarball
+        TimeoutDeployServer: !Ref TimeoutDeployServer
 
   WebServerAccessToEmrMasterIngressRule:
     Type: AWS::EC2::SecurityGroupIngress
@@ -223,7 +280,7 @@ Resources:
     Type: AWS::CloudFormation::WaitCondition
     Properties:
       Handle: !Ref WaitForDataIngestHandler
-      Timeout: 3600
+      Timeout: !Ref TimeoutIngestData
 
   WaitForDataIngestHandler:
     Type: AWS::CloudFormation::WaitConditionHandle
@@ -282,7 +339,7 @@ Resources:
       Runtime: python2.7
       Handler: index.lambda_handler
       MemorySize: 128
-      Timeout: 180
+      Timeout: !Ref TimeoutUploadFile
       Code:
         ZipFile: !Sub |
           #!/usr/bin/env python

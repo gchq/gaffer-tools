@@ -15,18 +15,22 @@
  */
 
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule, ApplicationRef } from '@angular/core';
+import { NgModule } from '@angular/core';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FormsModule } from '@angular/forms';
-import { MaterialModule } from '@angular/material';
-import { HttpModule } from '@angular/http';
+import { MatCardModule } from '@angular/material/card'
+import { MatToolbarModule } from '@angular/material/toolbar'
+import { MatTabsModule } from '@angular/material/tabs'
+import { MatInputModule } from '@angular/material/input'
+import { MatIconModule } from '@angular/material/icon'
+import { HttpClientModule } from '@angular/common/http';
 import { RouterModule } from '@angular/router';
 import { ReactiveFormsModule } from '@angular/forms';
-import { FlexLayoutModule } from '@angular/flex-layout';
+import { FlexLayoutModule } from '@angular/flex-layout'
 import { GraphComponent } from './graph/graph.component';
 import { EdgeFormComponent } from './graph/edge-form/edge-form.component';
 import { NodeFormComponent } from './graph/node-form/node-form.component';
-import { Ng2Webstorage } from 'ng2-webstorage';
+import { NgxWebstorageModule } from 'ngx-webstorage';
 import { SchemaComponent } from './schema/schema.component';
 import { TypesComponent } from './types/types.component';
 import { PrettyJsonModule } from 'angular2-prettyjson';
@@ -36,12 +40,8 @@ import { NavLinkComponent } from './app.component';
 import { EntityFormComponent } from './graph/entity-form/entity-form.component';
 import { PropertiesComponent } from './properties/properties.component';
 import { PropertyFormComponent } from './properties/property-form/property-form.component';
-import { ConfigModule, ConfigLoader, ConfigStaticLoader } from 'ng2-config';
 import { routing } from './app.routes';
-
-export function configFactory() {
-    return new ConfigStaticLoader('/config.json');
-}
+import { configFactory, ConfigLoader, ConfigModule } from '@ngx-config/core';
 
 @NgModule({
   declarations: [
@@ -58,14 +58,18 @@ export function configFactory() {
     NavLinkComponent
   ],
   imports: [
+    MatCardModule,
+    MatInputModule,
+    MatIconModule,
+    MatTabsModule,
+    MatToolbarModule,
+    HttpClientModule,
     BrowserModule,
-    FormsModule,
-    HttpModule,
     PrettyJsonModule,
+    FormsModule,
     FlexLayoutModule,
-    MaterialModule,
     ReactiveFormsModule,
-    Ng2Webstorage,
+    NgxWebstorageModule.forRoot(),
     BrowserAnimationsModule,
     RouterModule,
     routing,
@@ -81,9 +85,9 @@ export function configFactory() {
   bootstrap: [AppComponent]
 })
 export class AppModule {
-  constructor(private _appRef: ApplicationRef) { }
+  // constructor(private _appRef: ApplicationRef) { }
 
-  ngDoBootstrap() {
-    this._appRef.bootstrap(AppComponent);
-  }
+  // ngDoBootstrap() {
+  //   this._appRef.bootstrap(AppComponent);
+  // }
 }

@@ -19,10 +19,10 @@
 # ----- CONFIG ----- #
 
 # The version of Gaffer to deploy. Can be a branch name or version number.
-GAFFER_VERSION="0.7.8"
+GAFFER_VERSION="master"
 
 # The version of gaffer-tools to use to deploy Gaffer. Can be a branch name or version number.
-GAFFER_TOOLS_VERSION="0.7.8"
+GAFFER_TOOLS_VERSION="master"
 
 # A location in S3 to store scripts and logs
 S3_BUCKET=""

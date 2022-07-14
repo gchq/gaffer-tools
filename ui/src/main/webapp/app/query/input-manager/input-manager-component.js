@@ -63,11 +63,14 @@ function InputManagerController(events, results, common, types, schema) {
     vm.onCheckboxChange = function() {
         if (vm.usePreviousOutput) {
             vm.model.input = null;
+            vm.model.inputB = null;
             vm.model.inputPairs = null;
         } else {
             vm.model.input = [];
+            vm.model.inputB = [];
             vm.model.inputPairs = [];
         }
+        vm.model.seedType = '';
     }
 
     /**

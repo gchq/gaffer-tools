@@ -20,26 +20,24 @@
         <div fxLayout="row">
             <div fxFlex style="margin-top: 15px;">
                 <h5 style="color:green;" *ngIf="validation && validation.valid">
-                    <md-icon>check</md-icon>
+                    <mat-icon>check</mat-icon>
                     {{validation.message}}
                 </h5>
                 <h5 style="color:red;" *ngIf="validation && !validation.valid">
-                    <md-icon>close</md-icon>
+                    <mat-icon>close</mat-icon>
                     <span *ngIf="validation && validation.errors">{{validation.errors}}</span>
                     <span *ngIf="!validation || validation.errors">Unknown validation error</span>
                 </h5>
                 <h5 style="color:red;" *ngIf="errorMessage">
-                    <md-icon>close</md-icon>
+                    <mat-icon>close</mat-icon>
                     <span>{{errorMessage}}</span>
                 </h5>
             </div>
             <div fxFlex>
                 <div fxFlex fxLayout="row">
                     <div fxFlex class="input-field">
-                        <md-input-container class="full-width">
-                            <input mdInput class="form-control" type="text" name="class" placeholder="Gaffer schema URL: <url>/rest/v1/graph/schema" mdTooltip="Gaffer schema URL: <url>/rest/v1/graph/schema" [(ngModel)]="schemaUrl"
-                                (ngModelChange)="schemaUrlChanged()">
-                        </md-input-container>
+                        <input mdInput class="form-control full-width" type="text" name="class" placeholder="Gaffer schema URL: <url>/rest/v1/graph/schema" mdTooltip="Gaffer schema URL: <url>/rest/v1/graph/schema" [(ngModel)]="schemaUrl"
+                            (ngModelChange)="schemaUrlChanged()">
                     </div>
                     <button md-raised-button color="accent" style="height: 40px; margin-top: 16px;" (click)="loadFromUrl()" mdTooltip="load schema from URL"
                         aria-label="load schema from URL" class="button-spacing">
@@ -54,55 +52,51 @@
                 <p style="color:green; margin-top: 0;" *ngIf="successURL">{{successURL}}</p>
             </div>
         </div>
-        <md-card style="margin-bottom: 20px;">
+        <mat-card style="margin-bottom: 20px;">
             <div class="content-card-header">
-                <md-card-title>Elements</md-card-title>
+                <mat-card-title>Elements</mat-card-title>
                 <div class="type-edit-button row">
-                    <button md-icon-button color="accent" (click)="enableEditMode('elements')" mdTooltip="edit elements" aria-label="edit elements"
+                    <button mat-icon-button color="accent" (click)="enableEditMode('elements')" mdTooltip="edit elements" aria-label="edit elements"
                         *ngIf="!editing.elements" class="button-spacing">
-                        <md-icon>edit</md-icon>
+                        <mat-icon>edit</mat-icon>
                         </button>
                         <a class="download-button" [href]="sanitize(elementsDownload)" download="elements.json" mdTooltip="save to file" aria-label="save to file" *ngIf="!editing.elements"><i class="material-icons left">file_download</i></a>
                 </div>
             </div>
-            <md-card-content>
+            <mat-card-content>
                 <pre [hidden]="editing.elements" [innerHtml]="elements | prettyjson:4"></pre>
                 <p style="color: red" *ngIf="errors.elements">{{errors.elements}}</p>
-                <md-input-container style="width: 100%">
-                    <textarea mdInput id="elementsTextArea" value="{{elements | json:4}}" [hidden]="!editing.elements"></textarea>
-                </md-input-container>
+                    <textarea mdInput class="full-width" id="elementsTextArea" value="{{elements | json:4}}" [hidden]="!editing.elements"></textarea>
                 <div class="flex-container" fxLayout="row" *ngIf="editing.elements">
                     <div fxFlex></div>
                     <button class="form-button button-spacing" (click)="updateElements(undefined)" mdTooltip="update elements" aria-label="update elements"
                         md-raised-button color="primary">Update</button>
                 </div>
-            </md-card-content>
-        </md-card>
+            </mat-card-content>
+        </mat-card>
 
-        <md-card style="margin-bottom: 20px;">
+        <mat-card style="margin-bottom: 20px;">
             <div class="content-card-header">
-                <md-card-title>Types</md-card-title>
+                <mat-card-title>Types</mat-card-title>
                 <div class="type-edit-button row">
-                    <button md-icon-button color="accent" (click)="enableEditMode('types')" mdTooltip="edit types" aria-label="edit types"
+                    <button mat-icon-button color="accent" (click)="enableEditMode('types')" mdTooltip="edit types" aria-label="edit types"
                         *ngIf="!editing.types" class="button-spacing">
-                        <md-icon>edit</md-icon>
+                        <mat-icon>edit</mat-icon>
                         </button>
                         <a class="download-button" [href]="sanitize(typesDownload)" download="types.json" mdTooltip="save to file" aria-label="save to file" *ngIf="!editing.types"><i class="material-icons left">file_download</i></a>
                 </div>
             </div>
-            <md-card-content>
+            <mat-card-content>
                 <pre [hidden]="editing.types" [innerHtml]="types | prettyjson:4"></pre>
                 <p style="color: red" *ngIf="errors.types">{{errors.types}}</p>
-                <md-input-container style="width: 100%">
-                    <textarea mdInput id="typesTextArea" value="{{types | json:4}}" [hidden]="!editing.types"></textarea>
-                </md-input-container>
+                    <textarea mdInput class="full-width" id="typesTextArea" value="{{types | json:4}}" [hidden]="!editing.types"></textarea>
                 <div class="flex-container" fxLayout="row" *ngIf="editing.types">
                     <div fxFlex></div>
                     <button class="form-button button-spacing" (click)="updateTypes(undefined)" mdTooltip="update types" aria-label="update types"
                         md-raised-button color="primary">Update</button>
                 </div>
-            </md-card-content>
-        </md-card>
+            </mat-card-content>
+        </mat-card>
     </div>
     <div fxFlex="10%" fxShow="true" fxShow.sm="false" fxShow.xs="false"></div>
 </div>

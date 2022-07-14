@@ -31,7 +31,7 @@ class GafferConnector:
     This class is initialised with a host to connect to.
     """
 
-    def __init__(self, host, verbose=False):
+    def __init__(self, host, verbose=False, headers={}):
         """
         This initialiser sets up a connection to the specified Gaffer server.
 
@@ -40,29 +40,38 @@ class GafferConnector:
         """
         self._host = host
         self._verbose = verbose
+        self._headers = headers
 
         # Create the opener
         self._opener = urllib.request.build_opener(
             urllib.request.HTTPHandler())
 
-    def execute_operation(self, operation, headers={}):
+    def execute_operation(self, operation, headers=None):
         """
         This method queries Gaffer with the single provided operation.
         """
+        # If headers are not specified use those set at class initilisation
+        if headers is None:
+            headers = self._headers
         return self.execute_operations([operation], headers)
 
-    def execute_operations(self, operations, headers={}):
+    def execute_operations(self, operations, headers=None):
         """
         This method queries Gaffer with the provided array of operations.
         """
+        # If headers are not specified use those set at class initilisation
+        if headers is None:
+            headers = self._headers
         return self.execute_operation_chain(g.OperationChain(operations),
                                             headers)
 
-    def execute_operation_chain(self, operation_chain, headers={}):
+    def execute_operation_chain(self, operation_chain, headers=None):
         """
         This method queries Gaffer with the provided operation chain.
         """
-
+        # If headers are not specified use those set at class initialisation
+        if headers is None:
+            headers = self._headers
         # Construct the full URL path to the Gaffer server
         url = self._host + '/graph/operations/execute'
 
@@ -96,15 +105,39 @@ class GafferConnector:
         if self._verbose:
             print('Query response: ' + response_text)
 
-        if response_text is not None and response_text is not '':
+        if response_text is not None and response_text != '':
             result = json.loads(response_text)
         else:
             result = None
 
         return g.JsonConverter.from_json(result)
 
-    def execute_get(self, operation, headers={}):
+    def execute_get(self, operation, headers=None):
+        """
+        This method queries Gaffer with a GET request to a specified endpoint.
+
+        The operation parameter expects an input of the form: g.<OperationClass>, where <OperationClass> must inherit
+        from the class 'gafferpy.gaffer_config.GetGraph'.
+
+        The following are accepted inputs:
+            g.GetFilterFunctions()
+            g.GetTransformFunctions()
+            g.GetClassFilterFunctions()
+            g.GetElementGenerators()
+            g.GetObjectGenerators()
+            g.GetOperations()
+            g.GetSerialisedFields()
+            g.GetStoreTraits()
+
+        Example:
+              gc.execute_get(
+                operation = g.GetOperations()
+              )
+        """
         url = self._host + operation.get_url()
+        # If headers are not specified use those set at class initilisation
+        if headers is None:
+            headers = self._headers
         headers['Content-Type'] = 'application/json;charset=utf-8'
         request = urllib.request.Request(url, headers=headers)
 
@@ -120,8 +153,30 @@ class GafferConnector:
 
         return response.read().decode('utf-8')
 
-    def is_operation_supported(self, operation=None, headers={}):
+    def is_operation_supported(self, operation, headers=None):
+        """
+        This method queries the Gaffer API to provide details about operations
+        Returns a JSON array containing details about the operation.
+
+        The operation parameter expects an input of the form:
+            g.IsOperationSupported(
+                operation='uk.gov.gchq.gaffer.operation.impl.get.GetElements'
+            )
+            or you can use:
+            g.IsOperationSupported(
+                operation=g.GetElements().CLASS
+            )
+        Example:
+            gc.is_operation_supported(
+                operation = g.IsOperationSupported(
+                    operation='uk.gov.gchq.gaffer.operation.impl.get.GetElements'
+                )
+            )
+        """
         url = self._host + '/graph/operations/' + operation.get_operation()
+        # If headers are not specified use those set at class initilisation
+        if headers is None:
+            headers = self._headers
         headers['Content-Type'] = 'application/json;charset=utf-8'
 
         request = urllib.request.Request(url, headers=headers)
@@ -139,3 +194,4 @@ class GafferConnector:
         response_text = response.read().decode('utf-8')
 
         return response_text
+    

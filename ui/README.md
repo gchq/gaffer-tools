@@ -218,7 +218,7 @@ The next is a summary over the two hours we specified in our second query. (You 
 
 In this example we have summarised the vehicle counts by adding them together. Gaffer users are free to define the objects that represent the properties on an edge and the functions used to summarise them and so supports things that are much more complex than adding integers together.
 
-There are some in-depth examples based around the Java API here: [Getting Started](https://gchq.github.io/gaffer-doc/summaries/getting-started.html).
+There are some in-depth examples based around the Java API here: [Getting Started](https://gchq.github.io/gaffer-doc/v1docs/summaries/getting-started.html).
 
 ## Federated Store Demo
 There is also a Federated Store Demo, which can be run using:
@@ -228,7 +228,7 @@ There is also a Federated Store Demo, which can be run using:
 
 After the REST and UI have been started you will need to add some federated graphs. There are some example scripts that will execute the AddGraph operation on the REST api (via curl):
 ```bash
-./ui/example/federated/basic/scripts/addAccumuloEntitiesGraph.sh
+./ui/example/federated/basic/scripts/addMapEntitiesGraph.sh
 ./ui/example/federated/basic/scripts/addMapEdgesGraph.sh
 ```
 
@@ -242,10 +242,10 @@ To test out some queries you will need to add some elements to these graphs. You
 ./ui/example/federated/basic/scripts/addElements.sh
 ```
 
-Once you have run these scripts you will have 2 graphs available, accEntities and mapEdges.
+Once you have run these scripts you will have 2 graphs available, mapEntities and mapEdges.
 In the UI you can perform queries on these 2 graph simultaneously or you can limit which graph you query.
 When you open the UI, first head to the settings page and add a default operation option:
-'Federated Store - Graph IDs' with the value: accEntities,mapEdges
+'Federated Store - Graph IDs' with the value: mapEntities,mapEdges
 This will tell the Gaffer you want to query both Graphs. You will then need to click the 'Update Schema' button, to
 obtain a merged schema for these 2 graphs.
 
@@ -437,16 +437,29 @@ custom documentation URL for the UI you can do this by using the 'docUrl' config
 
 The rest endpoint that the UI uses can be changed. By default, it assumes that the rest service is running on the same
 machine as the UI, on the same port, at "/rest/latest". You could overwrite this by specifying a value in the
-"restEndpoint" field. This would change where the UI gets the schema from and run operations etc.
+"restEndpoint" or "gafferEndpoint" field. The difference between the two fields is the gafferEndpoint gives more fine grain
+control and allows you to take advantage of the default window.location.orgin setting for the hostname. 
+This would change where the UI gets the schema from and run operations etc.
 
-An example of a changed rest endpoint:
+| variable                     | type    | default                                | description
+|------------------------------|---------|----------------------------------------|------------------------------------------------
+| restEndpoint                 | string  | ${window.location.origin}/rest/latest  | the remote URL to query
+| gafferEndpoint.path          | string  | /rest/latest                           | The path of the remote REST API
+| gafferEndpoint.port          | number  | Whatever the UI uses                   | The port of the remote REST API
+| gafferEndpoint.host          | string  | Whatever the UI uses                   | The hostname of the remote REST API
+| gafferEndpoint.protocol      | string  | whatever the UI uses                   | The web protocol (eg https) of the Remote REST API
 
-```
+As of 1.15.0, the REST endpoint can be configured like this:
+
+```json
 {
-    "restEndpoint": "http://localhost/mygraphname/rest/latest",
-    "operations": { ... },
-    "types": { ... },
-    "time": { ... }
+    "restEndpoint": "https://localhost:8443/my-graph/rest",
+    "gafferEndpoint": {
+      "path": "/mygraphName/rest",
+      "host": "localhost",
+      "port": 8443,
+      "protocol": "https"
+    }
 }
 
 ```

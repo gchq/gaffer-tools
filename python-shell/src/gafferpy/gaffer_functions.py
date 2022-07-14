@@ -21,6 +21,7 @@ This module contains Python copies of Gaffer function java classes
 
 from gafferpy.gaffer_core import *
 import gafferpy.gaffer_predicates as pred
+import gafferpy.gaffer_binaryoperators as bop
 
 
 class Function(ToJson, ToCodeString):
@@ -484,6 +485,20 @@ class MultiplyBy(AbstractFunction):
         return function
 
 
+class MultiplyLongBy(AbstractFunction):
+    CLASS = "uk.gov.gchq.koryphe.impl.function.MultiplyLongBy"
+
+    def __init__(self, by=None):
+        super().__init__(_class_name=self.CLASS)
+        self.by = by
+
+    def to_json(self):
+        function_json = super().to_json()
+        if self.by is not None:
+            function_json["by"] = self.by
+        return function_json
+
+
 class ToString(AbstractFunction):
     CLASS = 'uk.gov.gchq.koryphe.impl.function.ToString'
 
@@ -496,6 +511,137 @@ class ToString(AbstractFunction):
         if (self.charset is not None):
             function_json["charset"] = self.charset
 
+        return function_json
+
+
+class StringReplace(AbstractFunction):
+    CLASS = "uk.gov.gchq.koryphe.impl.function.StringReplace"
+
+    def __init__(self, search_string=None, replacement=None):
+        super().__init__(_class_name=self.CLASS)
+        self.search_string = search_string
+        self.replacement = replacement
+
+    def to_json(self):
+        function_json = super().to_json()
+        if self.search_string is not None:
+            function_json["searchString"] = self.search_string
+        if self.replacement is not None:
+            function_json["replacement"] = self.replacement
+        return function_json
+
+
+class StringRegexReplace(AbstractFunction):
+    CLASS = "uk.gov.gchq.koryphe.impl.function.StringRegexReplace"
+
+    def __init__(self, regex=None, replacement=None):
+        super().__init__(_class_name=self.CLASS)
+        self.regex = regex
+        self.replacement = replacement
+
+    def to_json(self):
+        function_json = super().to_json()
+        if self.regex is not None:
+            function_json["regex"] = self.regex
+        if self.replacement is not None:
+            function_json["replacement"] = self.replacement
+        return function_json
+
+
+class StringRegexSplit(AbstractFunction):
+    CLASS = "uk.gov.gchq.koryphe.impl.function.StringRegexSplit"
+
+    def __init__(self, regex=None):
+        super().__init__(_class_name=self.CLASS)
+        self.regex = regex
+
+    def to_json(self):
+        function_json = super().to_json()
+        if self.regex is not None:
+            function_json["regex"] = self.regex
+        return function_json
+
+
+class StringJoin(AbstractFunction):
+    CLASS = "uk.gov.gchq.koryphe.impl.function.StringJoin"
+
+    def __init__(self, delimiter=None):
+        super().__init__(_class_name=self.CLASS)
+        self.delimiter = delimiter
+
+    def to_json(self):
+        function_json = super().to_json()
+        if self.delimiter is not None:
+            function_json["delimiter"] = self.delimiter
+        return function_json
+
+
+class StringAppend(AbstractFunction):
+    CLASS = "uk.gov.gchq.koryphe.impl.function.StringAppend"
+
+    def __init__(self, suffix=None):
+        super().__init__(_class_name=self.CLASS)
+        self.suffix = suffix
+
+    def to_json(self):
+        function_json = super().to_json()
+        if self.suffix is not None:
+            function_json["suffix"] = self.suffix
+        return function_json
+
+
+class StringPrepend(AbstractFunction):
+    CLASS = "uk.gov.gchq.koryphe.impl.function.StringPrepend"
+
+    def __init__(self, prefix=None):
+        super().__init__(_class_name=self.CLASS)
+        self.prefix = prefix
+
+    def to_json(self):
+        function_json = super().to_json()
+        if self.prefix is not None:
+            function_json["prefix"] = self.prefix
+        return function_json
+
+
+class StringTrim(AbstractFunction):
+    CLASS = "uk.gov.gchq.koryphe.impl.function.StringTrim"
+
+    def __init__(self):
+        super().__init__(_class_name=self.CLASS)
+
+    def to_json(self):
+        return super().to_json()
+
+
+class StringTruncate(AbstractFunction):
+    CLASS = "uk.gov.gchq.koryphe.impl.function.StringTruncate"
+
+    def __init__(self, length=None, ellipses=None):
+        super().__init__(_class_name=self.CLASS)
+        self.length = length
+        self.ellipses = ellipses
+
+    def to_json(self):
+        function_json = super().to_json()
+        if self.length is not None:
+            function_json["length"] = self.length
+        if self.ellipses is not None:
+            function_json["ellipses"] = self.ellipses
+        return function_json
+
+
+class StringSplit(AbstractFunction):
+    CLASS = "uk.gov.gchq.koryphe.impl.function.StringSplit"
+
+    def __init__(self, delimiter=None):
+        super().__init__(_class_name=self.CLASS)
+        self.delimiter = delimiter
+
+    def to_json(self):
+        function_json = super().to_json()
+        if self.delimiter is not None:
+            function_json["delimiter"] = self.delimiter
         return function_json
 
 
@@ -549,6 +695,16 @@ class ToLowerCase(AbstractFunction):
         return super().to_json()
 
 
+class ReverseString(AbstractFunction):
+    CLASS = "uk.gov.gchq.koryphe.impl.function.ReverseString"
+
+    def __init__(self):
+        super().__init__(_class_name=self.CLASS)
+
+    def to_json(self):
+        return super().to_json()
+
+
 class ToNull(AbstractFunction):
     CLASS = 'uk.gov.gchq.koryphe.impl.function.ToNull'
 
@@ -557,6 +713,34 @@ class ToNull(AbstractFunction):
 
     def to_json(self):
         return super().to_json()
+
+
+class DefaultIfNull(AbstractFunction):
+    CLASS = "uk.gov.gchq.koryphe.impl.function.DefaultIfNull"
+
+    def __init__(self, default_value=None):
+        super().__init__(_class_name=self.CLASS)
+        self.default_value = default_value
+
+    def to_json(self):
+        function_json = super().to_json()
+        if self.default_value is not None:
+            function_json["defaultValue"] = self.default_value
+        return function_json
+
+
+class DefaultIfEmpty(AbstractFunction):
+    CLASS = "uk.gov.gchq.koryphe.impl.function.DefaultIfEmpty"
+
+    def __init__(self, default_value=None):
+        super().__init__(_class_name=self.CLASS)
+        self.default_value = default_value
+
+    def to_json(self):
+        function_json = super().to_json()
+        if self.default_value is not None:
+            function_json["defaultValue"] = self.default_value
+        return function_json
 
 
 class ToLong(AbstractFunction):
@@ -818,7 +1002,41 @@ class MapFilter(AbstractFunction):
             
         return predicate_json
 
-      
+
+class Longest(AbstractFunction):
+    CLASS = "uk.gov.gchq.koryphe.impl.function.Longest"
+
+    def __init__(self):
+        super().__init__(_class_name=self.CLASS)
+
+    def to_json(self):
+        return super().to_json()
+
+
+class IterableLongest(AbstractFunction):
+    CLASS = "uk.gov.gchq.koryphe.impl.function.IterableLongest"
+
+    def __init__(self):
+        super().__init__(_class_name=self.CLASS)
+
+    def to_json(self):
+        return super().to_json()
+
+
+class IterableFlatten(AbstractFunction):
+    CLASS = "uk.gov.gchq.koryphe.impl.function.IterableFlatten"
+
+    def __init__(self, operator=None):
+        super().__init__(_class_name=self.CLASS)
+        self.operator = bop.binary_operator_converter(operator) if operator is not None else None
+
+    def to_json(self):
+        function_json = super().to_json()
+        if self.operator is not None:
+            function_json["operator"] = self.operator.to_json()
+        return function_json
+
+
 class IterableFilter(AbstractFunction):
     CLASS = "uk.gov.gchq.koryphe.impl.function.IterableFilter"
 
@@ -1052,10 +1270,11 @@ class MapToTuple(AbstractFunction):
 class ParseDate(AbstractFunction):
     CLASS = "uk.gov.gchq.koryphe.impl.function.ParseDate"
 
-    def __init__(self, time_zone=None, format=None):
+    def __init__(self, time_zone=None, format=None, microseconds=False):
         super().__init__(_class_name=self.CLASS)
         self.time_zone = time_zone
         self.format = format
+        self.microseconds = microseconds
     
     def to_json(self):
         function_json = super().to_json()
@@ -1063,6 +1282,8 @@ class ParseDate(AbstractFunction):
             function_json["timeZone"] = self.time_zone
         if (self.format is not None):
             function_json["format"] = self.format
+        if (self.microseconds is not None):
+            function_json["microseconds"] = self.microseconds
 
         return function_json
 
@@ -1118,6 +1339,20 @@ class ToBytes(AbstractFunction):
         return function_json
 
 
+class FirstValid(AbstractFunction):
+    CLASS = "uk.gov.gchq.koryphe.impl.function.FirstValid"
+
+    def __init__(self, predicate=None):
+        super().__init__(_class_name=self.CLASS)
+        self.predicate = pred.predicate_converter(predicate) if predicate is not None else None
+
+    def to_json(self):
+        function_json = super().to_json()
+        if self.predicate is not None:
+            function_json["predicate"] = self.predicate
+        return function_json
+
+
 class ApplyBiFunction(AbstractFunction):
     CLASS = "uk.gov.gchq.koryphe.impl.function.ApplyBiFunction"
 
@@ -1166,6 +1401,140 @@ class ToElementTuple(AbstractFunction):
     def to_json(self):
         return super().to_json()
 
+class ReduceRelatedElements(AbstractFunction):
+    CLASS = "uk.gov.gchq.gaffer.data.element.function.ReduceRelatedElements"
+
+    def __init__(self, visibility_aggregator=None, vertex_aggregator=None, related_vertex_groups=None, visibility_property=None):
+        super().__init__(_class_name=self.CLASS)
+        self.visibility_aggregator = JsonConverter.validate(visibility_aggregator, bop.BinaryOperator)
+        self.vertex_aggregator = JsonConverter.validate(vertex_aggregator, bop.BinaryOperator)
+        self.related_vertex_groups = related_vertex_groups
+        self.visibility_property = visibility_property
+
+    def to_json(self):
+        function_json = super().to_json()
+        if self.visibility_aggregator is not None:
+            function_json["visibilityAggregator"] = self.visibility_aggregator.to_json()
+        if self.vertex_aggregator is not None:
+            function_json["vertexAggregator"] = self.vertex_aggregator.to_json()
+        if self.related_vertex_groups is not None:
+            function_json["relatedVertexGroups"] = self.related_vertex_groups
+        if self.visibility_property is not None:
+            function_json["visibilityProperty"] = self.visibility_property
+        return function_json
+
+class ToTrailingWildcardPair(AbstractFunction):
+    CLASS = "uk.gov.gchq.gaffer.operation.function.ToTrailingWildcardPair"
+
+    def __init__(self, end_of_range=None):
+        super().__init__(_class_name=self.CLASS)
+        self.end_of_range = end_of_range
+
+    def to_json(self):
+        function_json = super().to_json()
+        if self.end_of_range is not None:
+            function_json["endOfRange"] = self.end_of_range
+        return function_json
+
+class TypeValueToTuple(AbstractFunction):
+    CLASS = "uk.gov.gchq.gaffer.data.element.function.TypeValueToTuple"
+
+    def __init__(self):
+        super().__init__(_class_name=self.CLASS)
+
+    def to_json(self):
+        return super().to_json()
+
+class TypeSubTypeValueToTuple(AbstractFunction):
+    CLASS = "uk.gov.gchq.gaffer.data.element.function.TypeSubTypeValueToTuple"
+
+    def __init__(self):
+        super().__init__(_class_name=self.CLASS)
+
+    def to_json(self):
+        return super().to_json()
+
+
+class TupleToElements(AbstractFunction):
+    CLASS = "uk.gov.gchq.gaffer.data.element.function.TupleToElements"
+
+    def __init__(self):
+        super().__init__(_class_name=self.CLASS)
+
+    def to_json(self):
+        return super().to_json()
+
+class TuplesToElements(AbstractFunction):
+    CLASS = "uk.gov.gchq.gaffer.data.element.function.TuplesToElements"
+
+    def __init__(self):
+        super().__init__(_class_name=self.CLASS)
+
+    def to_json(self):
+        return super().to_json()
+
+class StringsToTypeValue(AbstractFunction):
+    CLASS = "uk.gov.gchq.gaffer.types.function.StringsToTypeValue"
+
+    def __init__(self):
+        super().__init__(_class_name=self.CLASS)
+
+    def to_json(self):
+        return super().to_json()
+
+class StringsToTypeSubTypeValue(AbstractFunction):
+    CLASS = "uk.gov.gchq.gaffer.types.function.StringsToTypeSubTypeValue"
+
+    def __init__(self):
+        super().__init__(_class_name=self.CLASS)
+
+    def to_json(self):
+        return super().to_json()
+
+class IterableToHllSketch(AbstractFunction):
+    CLASS = "uk.gov.gchq.gaffer.sketches.datasketches.cardinality.function.IterableToHllSketch"
+
+    def __init__(self):
+        super().__init__(_class_name=self.CLASS)
+
+    def to_json(self):
+        return super().to_json()
+
+class IterableToHyperLogLogPlus(AbstractFunction):
+    CLASS = "uk.gov.gchq.gaffer.sketches.clearspring.cardinality.function.IterableToHyperLogLogPlus"
+
+    def __init__(self):
+        super().__init__(_class_name=self.CLASS)
+
+    def to_json(self):
+        return super().to_json()
+
+class IterableToFreqMap(AbstractFunction):
+    CLASS = "uk.gov.gchq.gaffer.types.function.IterableToFreqMap"
+
+    def __init__(self):
+        super().__init__(_class_name=self.CLASS)
+
+    def to_json(self):
+        return super().to_json()
+
+class ToHllSketch(AbstractFunction):
+    CLASS = "uk.gov.gchq.gaffer.sketches.datasketches.cardinality.function.ToHllSketch"
+
+    def __init__(self):
+        super().__init__(_class_name=self.CLASS)
+
+    def to_json(self):
+        return super().to_json()
+
+class ToHyperLogLogPlus(AbstractFunction):
+    CLASS = "uk.gov.gchq.gaffer.sketches.clearspring.cardinality.function.ToHyperLogLogPlus"
+
+    def __init__(self):
+        super().__init__(_class_name=self.CLASS)
+
+    def to_json(self):
+        return super().to_json()
 
 class FunctionChain(AbstractFunction):
     CLASS = 'uk.gov.gchq.koryphe.impl.function.FunctionChain'

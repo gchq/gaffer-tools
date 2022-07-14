@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Crown Copyright
+ * Copyright 2019-2020 Crown Copyright
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,5 +19,6 @@ package uk.gov.gchq.gaffer.analytic.operation;
  * List of visualisations supported by the Analytic UI
  */
 public enum VisualisationType {
-    TABLE
+    TABLE,
+    HTML
 }

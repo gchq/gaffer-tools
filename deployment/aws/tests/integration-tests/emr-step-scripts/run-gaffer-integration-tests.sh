@@ -1,6 +1,6 @@
 #!/bin/bash -xe
 
-GAFFER_VERSION=""
+GAFFER_VERSION="master"
 ACCUMULO_INSTANCE=""
 KMS_ID=""
 PARAM_NAME=""
@@ -117,8 +117,8 @@ fi
 
 # Configure Gaffer to test against the Gaffer instance deployed on the EMR cluster
 for file in ./store-implementation/accumulo-store/src/test/resources/*.properties; do
-	sed -i "s|^gaffer.store.class=.*SingleUseMockAccumuloStore.*$|gaffer.store.class=uk.gov.gchq.gaffer.accumulostore.SingleUseAccumuloStore|" $file
-	sed -i "s|^gaffer.store.class=.*MockAccumuloStore.*$|gaffer.store.class=uk.gov.gchq.gaffer.accumulostore.AccumuloStore|" $file
+	sed -i "s|^gaffer.store.class=.*SingleUseMiniAccumuloStore.*$|gaffer.store.class=uk.gov.gchq.gaffer.accumulostore.SingleUseAccumuloStore|" $file
+	sed -i "s|^gaffer.store.class=.*MiniAccumuloStore.*$|gaffer.store.class=uk.gov.gchq.gaffer.accumulostore.AccumuloStore|" $file
 	sed -i "s|^accumulo.instance=.*$|accumulo.instance=$ACCUMULO_INSTANCE|" $file
 	sed -i "s|^accumulo.zookeepers=.*$|accumulo.zookeepers=$ZOOKEEPERS|" $file
 	sed -i "s|^accumulo.user=.*$|accumulo.user=$ACCUMULO_USER|" $file

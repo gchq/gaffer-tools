@@ -14,7 +14,7 @@ describe('The Seed Builder', function() {
         types = _types_;
         error = _error_;
         ctrl = _$componentController_('seedBuilder', null, {
-            model: [],
+            model: { input: [] },
         });
     }));
 
@@ -83,7 +83,7 @@ describe('The Seed Builder', function() {
 
     
     var fireEvent = function(newInput) {
-        ctrl.model = newInput;
+        ctrl.model.input = newInput;
         events.broadcast(OPERATION_UPDATE_EVENT, []);
     }
 
@@ -266,11 +266,11 @@ describe('The Seed Builder', function() {
     });
 
     it('should add the seeds if it receives a "onPreExecute" event', function() {
-        expect(ctrl.model).toEqual([]);
+        expect(ctrl.model.input).toEqual([]);
         ctrl.vertexClass='java.lang.String';
         ctrl.seedVertices = 'M5\nM32:1';
         events.broadcast('onPreExecute', []);
-        expect(ctrl.model).toEqual([
+        expect(ctrl.model.input).toEqual([
             {
                 valueClass: 'java.lang.String',
                 parts: {
@@ -284,8 +284,5 @@ describe('The Seed Builder', function() {
                 }
             }
         ])
-
     })
-
-
 })

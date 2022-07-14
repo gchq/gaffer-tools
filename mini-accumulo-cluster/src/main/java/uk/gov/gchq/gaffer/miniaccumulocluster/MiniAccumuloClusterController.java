@@ -26,7 +26,8 @@ import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.apache.commons.io.FileUtils;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
@@ -55,7 +56,7 @@ public class MiniAccumuloClusterController {
     public static final String SHUTDOWN_FILENAME = "shutdown";
     public static final boolean DEFAULT_IS_TEMP_DIR = false;
 
-    private static final Logger LOGGER = Logger.getLogger(MiniAccumuloClusterController.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(MiniAccumuloClusterController.class);
     protected static boolean shutdownHookAdded = false;
 
     protected String dirName;

@@ -13,4 +13,15 @@
 .mat-toolbar.mat-primary {
   top: 0;
   z-index: 1;
+  background: #67598c;
+  color: #fff;
+}
+
+span {
+  cursor: pointer;
+}
+
+button {
+  cursor: pointer;
+  margin-left: 10px;
 }

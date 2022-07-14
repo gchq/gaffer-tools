@@ -22,10 +22,10 @@ GAFFER_USERNAME="gaffer_user"
 ACCUMULO_VISIBILITIES="none"
 
 # The version of Gaffer to deploy. Can be a branch name or version number.
-GAFFER_VERSION="0.7.8"
+GAFFER_VERSION="master"
 
 # The version of gaffer-tools to use to deploy Gaffer. Can be a branch name or version number.
-GAFFER_TOOLS_VERSION="0.7.8"
+GAFFER_TOOLS_VERSION="master"
 
 # The ID of the VPC that the EMR cluster should be deployed into
 VPC_ID=""

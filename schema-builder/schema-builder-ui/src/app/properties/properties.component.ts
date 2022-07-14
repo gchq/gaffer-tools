@@ -15,7 +15,7 @@
  */
 
 import { Component, OnInit } from '@angular/core';
-import { LocalStorageService } from 'ng2-webstorage';
+import { LocalStorageService } from 'ngx-webstorage';
 import { DataSet, Edge } from 'vis';
 import { GraphQLType } from '../shared/graphql-type.interface';
 import { GraphQLNode } from '../shared/graphql-node.interface';
@@ -36,7 +36,7 @@ export class PropertiesComponent implements OnInit {
     ngOnInit() {
         this.types = this.storage.retrieve('types');
         const storedEdges = this.storage.retrieve('graphEdges');
-        if (storedEdges !== null) {
+        if (storedEdges != null) {
             this.edges = [];
             _.forEach(storedEdges._data, (edge: any, key) => {
                 edge.id = key;
@@ -44,7 +44,7 @@ export class PropertiesComponent implements OnInit {
             });
         }
         const storedNodes = this.storage.retrieve('graphNodes');
-        if (storedNodes !== null) {
+        if (storedNodes != null) {
             this.nodes = [];
             _.forEach(storedNodes._data, (node: any, key) => {
                 node.id = key;

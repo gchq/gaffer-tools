@@ -105,7 +105,7 @@ describe('The seed builder component', function() {
                 }
             ]);
 
-            ctrl.model = [
+            ctrl.model.input = [
                 {
                     valueClass: 'java.lang.String',
                     parts: {
@@ -132,7 +132,7 @@ describe('The seed builder component', function() {
                 ctrl.$onInit();
                 scope.$digest();
                 expect(error.handle).not.toHaveBeenCalled();
-                expect(ctrl.model).toEqual([{
+                expect(ctrl.model.input).toEqual([{
                     valueClass: 'my.vertex.Class',
                     parts: {
                         undefined: "seed1"
@@ -145,7 +145,7 @@ describe('The seed builder component', function() {
                 ctrl.$onInit();
                 scope.$digest();
                 expect(error.handle).not.toHaveBeenCalled();
-                expect(ctrl.model).toEqual([{
+                expect(ctrl.model.input).toEqual([{
                         valueClass: 'my.vertex.Class',
                         parts: {
                             undefined: "seed1"
@@ -178,7 +178,7 @@ describe('The seed builder component', function() {
                 ctrl.$onInit();
                 scope.$digest();
                 expect(error.handle).not.toHaveBeenCalled();
-                expect(ctrl.model).toEqual([
+                expect(ctrl.model.input).toEqual([
                     {
                         valueClass: 'my.vertex.Class',
                         parts: {"type": "t1", "value": "v1"}
@@ -191,7 +191,7 @@ describe('The seed builder component', function() {
                 ctrl.$onInit();
                 scope.$digest();
                 expect(error.handle).not.toHaveBeenCalled();
-                expect(ctrl.model).toEqual([
+                expect(ctrl.model.input).toEqual([
                     {
                         valueClass: 'my.vertex.Class',
                         parts: {"type": "t1", "value": "v1"}
@@ -213,7 +213,7 @@ describe('The seed builder component', function() {
                     'required': true
                 }
             ])
-            ctrl.model = [
+            ctrl.model.input = [
                 {
                     valueClass: 'java.lang.Integer',
                     parts: {
@@ -232,7 +232,7 @@ describe('The seed builder component', function() {
                 { key: 'subType' },
                 { key: 'value' }
             ])
-            ctrl.model = [
+            ctrl.model.input = [
                 {
                     valueClass: 'uk.gov.gchq.gaffer.types.TypeSubTypeValue',
                     parts: {
@@ -255,7 +255,7 @@ describe('The seed builder component', function() {
                     'label': ''
                 }
             ]);
-            ctrl.model = [
+            ctrl.model.input = [
                 {
                     valueClass: 'java.lang.String',
                     parts: {
@@ -365,7 +365,7 @@ describe('The seed builder component', function() {
                 }
             ]
             ctrl.addSeeds();
-            expect(ctrl.model).toEqual([
+            expect(ctrl.model.input).toEqual([
                 {
                     valueClass: 'java.lang.String',
                     parts: {
@@ -387,7 +387,7 @@ describe('The seed builder component', function() {
                 }
             ]
             ctrl.addSeeds();
-            expect(ctrl.model).toEqual([
+            expect(ctrl.model.input).toEqual([
                 {
                     valueClass: 'java.lang.Long',
                     parts: {
@@ -407,7 +407,7 @@ describe('The seed builder component', function() {
                 class: 'java.lang.Boolean'
             }];
             ctrl.addSeeds();
-            expect(ctrl.model).toEqual([
+            expect(ctrl.model.input).toEqual([
                 {
                     valueClass: 'java.lang.Boolean',
                     parts: {
@@ -427,7 +427,7 @@ describe('The seed builder component', function() {
             }];
 
             ctrl.addSeeds();
-            expect(ctrl.model).toEqual([
+            expect(ctrl.model.input).toEqual([
                 {
                     valueClass: 'java.lang.Boolean',
                     parts: {
@@ -442,7 +442,7 @@ describe('The seed builder component', function() {
             ctrl.vertexClass = 'java.lang.String';
             ctrl.seedVertices = '"comma,test"';
             ctrl.addSeeds();
-            expect(ctrl.model).toEqual([
+            expect(ctrl.model.input).toEqual([
                 {
                     valueClass: 'java.lang.String',
                     parts: {
@@ -461,7 +461,7 @@ describe('The seed builder component', function() {
                 class: 'java.lang.String'
             }];
             ctrl.addSeeds();
-            expect(ctrl.model).toEqual([
+            expect(ctrl.model.input).toEqual([
                 {
                     valueClass: 'java.lang.String',
                     parts: {
@@ -484,7 +484,7 @@ describe('The seed builder component', function() {
 
             ctrl.addSeeds();
 
-            expect(ctrl.model).toEqual([
+            expect(ctrl.model.input).toEqual([
                 {
                     valueClass: 'customClass',
                     parts: {
@@ -500,7 +500,7 @@ describe('The seed builder component', function() {
             ctrl.vertexClass = 'java.lang.String';
             ctrl.seedVertices = '"I contain a \\"quoted string\\""',
             ctrl.addSeeds();
-            expect(ctrl.model).toEqual([
+            expect(ctrl.model.input).toEqual([
                 {
                     valueClass: 'java.lang.String',
                     parts: {
@@ -515,7 +515,7 @@ describe('The seed builder component', function() {
             ctrl.vertexClass = 'java.lang.String';
             ctrl.seedVertices = '"I contain a \\\\string with \\\\ escape characters"',
             ctrl.addSeeds();
-            expect(ctrl.model).toEqual([
+            expect(ctrl.model.input).toEqual([
                 {
                     valueClass: 'java.lang.String',
                     parts: {
@@ -558,14 +558,14 @@ describe('The seed builder component', function() {
             ctrl.vertexClass = 'java.lang.String';
             ctrl.seedVertices = '',
             ctrl.addSeeds();
-            expect(ctrl.model).toEqual([]);
+            expect(ctrl.model.input).toEqual([]);
         });
 
         it('should add empty strings', function() {
             ctrl.vertexClass = 'java.lang.String';
             ctrl.seedVertices = '""',
             ctrl.addSeeds();
-            expect(ctrl.model).toEqual([
+            expect(ctrl.model.input).toEqual([
                 {
                     valueClass: 'java.lang.String',
                     parts: {
@@ -581,7 +581,7 @@ describe('The seed builder component', function() {
             ctrl.seedVertices = 'This is a \\"test\\"';
             ctrl.addSeeds();
 
-            expect(ctrl.model).toEqual([
+            expect(ctrl.model.input).toEqual([
                 {
                     valueClass: 'java.lang.String',
                     parts: {
@@ -597,7 +597,7 @@ describe('The seed builder component', function() {
             ctrl.seedVertices = 'This is a \\\\test\\\\';
             ctrl.addSeeds();
 
-            expect(ctrl.model).toEqual([
+            expect(ctrl.model.input).toEqual([
                 {
                     valueClass: 'java.lang.String',
                     parts: {
@@ -613,7 +613,7 @@ describe('The seed builder component', function() {
             ctrl.seedVertices = '"This is a \\\\test"';
             ctrl.addSeeds();
 
-            expect(ctrl.model).toEqual([
+            expect(ctrl.model.input).toEqual([
                 {
                     valueClass: 'java.lang.String',
                     parts: {
@@ -629,7 +629,7 @@ describe('The seed builder component', function() {
             ctrl.seedVertices = 'This is a \\test';
             ctrl.addSeeds();
 
-            expect(ctrl.model).toEqual([
+            expect(ctrl.model.input).toEqual([
                 {
                     valueClass: 'java.lang.String',
                     parts: {
@@ -677,7 +677,7 @@ describe('The seed builder component', function() {
             ctrl.vertexClass = 'java.lang.String';
             ctrl.seedVertices = '1';
             ctrl.addSeeds();
-            expect(ctrl.model).toEqual([
+            expect(ctrl.model.input).toEqual([
                 {
                     valueClass: 'java.lang.String',
                     parts: {
@@ -697,7 +697,7 @@ describe('The seed builder component', function() {
             ctrl.vertexClass = 'java.lang.String';
             ctrl.seedVertices='test\ntest\ntest';
             ctrl.addSeeds();
-            expect(ctrl.model).toEqual([
+            expect(ctrl.model.input).toEqual([
                 {
                     valueClass: 'java.lang.String',
                     parts: {
@@ -733,7 +733,7 @@ describe('The seed builder component', function() {
                 ctrl.seedVertices = 'T,,';
                 ctrl.addSeeds();
                 expect(error.handle).not.toHaveBeenCalled();
-                expect(ctrl.model).toEqual([{
+                expect(ctrl.model.input).toEqual([{
                     valueClass: 'TypeSubTypeValue',
                     parts: {
                         'type': 'T',
@@ -748,7 +748,7 @@ describe('The seed builder component', function() {
                 ctrl.seedVertices = '"My type",,""';
                 ctrl.addSeeds();
                 expect(error.handle).not.toHaveBeenCalled();
-                expect(ctrl.model).toEqual([{
+                expect(ctrl.model.input).toEqual([{
                     valueClass: 'TypeSubTypeValue',
                     parts: {
                         'type': 'My type',
@@ -763,7 +763,7 @@ describe('The seed builder component', function() {
                 ctrl.seedVertices = '';
                 ctrl.addSeeds();
                 expect(error.handle).not.toHaveBeenCalled();
-                expect(ctrl.model).toEqual([]);
+                expect(ctrl.model.input).toEqual([]);
                 expect(ctrl.seedForm.multiSeedInput.$setValidity).toHaveBeenCalledWith('csv', true);
             });
 
@@ -771,7 +771,7 @@ describe('The seed builder component', function() {
                 ctrl.seedVertices = 'T';
                 ctrl.addSeeds();
                 expect(error.handle).not.toHaveBeenCalled();
-                expect(ctrl.model).toEqual([{
+                expect(ctrl.model.input).toEqual([{
                     valueClass: 'TypeSubTypeValue',
                     parts: {
                         'type': 'T',
@@ -786,7 +786,7 @@ describe('The seed builder component', function() {
                 ctrl.seedVertices = '1,2,3';
                 ctrl.addSeeds();
                 expect(error.handle).not.toHaveBeenCalled();
-                expect(ctrl.model).toEqual([
+                expect(ctrl.model.input).toEqual([
                     {
                         valueClass: 'TypeSubTypeValue',
                         parts: {
@@ -803,7 +803,7 @@ describe('The seed builder component', function() {
                 ctrl.seedVertices='1,2,3\n1,2,3';
                 ctrl.addSeeds();
                 expect(error.handle).toHaveBeenCalled();
-                expect(ctrl.model).toEqual([
+                expect(ctrl.model.input).toEqual([
                     {
                         valueClass: 'TypeSubTypeValue',
                         parts: {

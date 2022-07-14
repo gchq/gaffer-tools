@@ -1,0 +1,18 @@
+<div class="results">
+
+  <!--Title-->
+  <h1>Results</h1>
+
+  <!--Back button-->
+  <a mat-raised-button id="back-params" [routerLink]="['..']" class="back-button"
+    aria-label="Return to parameters input">
+    BACK TO PARAMETERS
+  </a>
+
+</div>
+
+<!-- Dynamic Table -->
+<app-table *ngIf="outputType=='TABLE'"></app-table>
+
+<!-- HTML -->
+<app-html *ngIf="outputType=='HTML'"></app-html>
