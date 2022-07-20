@@ -892,7 +892,6 @@ class GafferFunctionsTest(unittest.TestCase):
             {
                 "class": "uk.gov.gchq.koryphe.impl.function.ParseDate",
                 "timeZone": "BST",
-                "microseconds": false,
                 "format": "DD-MM-YYYY"
             }
             ''',
