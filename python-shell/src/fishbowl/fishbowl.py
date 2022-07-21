@@ -103,28 +103,39 @@ class Fishbowl:
                 operations_python.append("    CLASS = \"" + operation["name"] + "\"\n")
 
                 # Create a list of field names
-                fields = {}
+                fields = []
                 for field in operation["fields"]:
                     field_name = field["name"]
                     if field_name != "options":
-                        fields[field_name] = JsonConverter.to_snake_case(field_name)
+                        field["camel_name"] = JsonConverter.to_snake_case(field_name)
+                        fields.append(field)
 
-                operations_python.append("    def __init__(self, " + "=None, ".join(fields.values()) +
-                                         "=None, options=None):" if len(fields) > 0 else
-                                         "    def __init__(self, options=None):")
+                if len(fields) > 0:
+                    def_line = "    def __init__(self, "
+                    defs = []
+                    for field in fields:
+                        if field["required"]:
+                            defs = [field["camel_name"] + ", "] + defs
+                        else:
+                            defs.append(field["camel_name"] + "=None, ")
+                    def_line += "".join(defs)
+                    def_line += "options=None):"
+                    operations_python.append(def_line)
+                else:
+                    operations_python.append("    def __init__(self, options=None):")
                 operations_python.append("        super().__init__(_class_name=self.CLASS, options=options)")
-                for field in fields.values():
-                    operations_python.append("        self." + field + " = " + field)
+                for field_name in [field["camel_name"] for field in fields]:
+                    operations_python.append("        self." + field_name + " = " + field_name)
                 operations_python.append("")
                 operations_python.append("    def to_json(self):")
                 if len(fields) == 0:
                     operations_python.append("        return super().to_json()")
                 else:
                     operations_python.append("        operation_json = super().to_json()")
-                    for field in fields.keys():
-                        operations_python.append("        if self." + fields[field] + " is not None:")
+                    for field in fields:
+                        operations_python.append("        if self." + field["camel_name"] + " is not None:")
                         operations_python.append(
-                            "            operation_json[\"" + field + "\"] = self." + fields[field])
+                            "            operation_json[\"" + field["name"] + "\"] = self." + field["camel_name"])
                     operations_python.append("        return operation_json")
                 operations_python.append("\n")
 
