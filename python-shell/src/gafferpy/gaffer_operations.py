@@ -756,6 +756,9 @@ class GetElements(GetElements):
                 else:
                     json_seeds.append(EntitySeed(seed).to_json())
             operation_json['input'] = json_seeds
+        if isinstance(self.view, list):
+            operation_json["views"] = operation_json.pop("view")
+
         return operation_json
 
 class ToVertices(ToVertices):
