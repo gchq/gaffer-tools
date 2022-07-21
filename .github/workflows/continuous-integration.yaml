@@ -40,7 +40,7 @@ jobs:
     - name: Run Selenium Tests
       uses: GabrielBB/xvfb-action@v1
       with:
-        run: mvn verify -P system-test -Dwebdriver.gecko.driver=geckodriver -Dgaffer.ui.test.slow-factor=8 -pl ui
+        run: mvn verify -P system-test -Dwebdriver.gecko.driver=geckodriver -Dgaffer.ui.test.slow-factor=20 -pl ui
 
   python-tests:
     runs-on: ubuntu-latest
