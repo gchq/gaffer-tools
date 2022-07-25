@@ -31,11 +31,13 @@ class Fishbowl:
         functions_python = self._generate_transform_functions()
         predicates_python = self._generate_filter_functions()
         binary_operators_python = self._generate_aggregation_functions()
+        config_python = self._generate_config()
 
         self._write_to_file(os.path.join(self.generated_directory_path, "functions.py"), functions_python)
         self._write_to_file(os.path.join(self.generated_directory_path, "predicates.py"), predicates_python)
         self._write_to_file(os.path.join(self.generated_directory_path, "binary_operators.py"), binary_operators_python)
         self._write_to_file(os.path.join(self.generated_directory_path, "operations.py"), operations_python)
+        self._write_to_file(os.path.join(self.generated_directory_path, "config.py"), config_python)
         self._write_to_file(os.path.join(self.generated_directory_path, "__init__.py"),
                       "__all__ = [ \"operations\", \"predicates\", \"functions\" ]\n")
 
@@ -150,6 +152,43 @@ class Fishbowl:
         operations_python.append("        return operation_chain_json\n")
 
         return "\n".join(operations_python)
+
+    def _generate_config(self):
+        # Gaffer 2 spring-rest uses openapi3 rather than swagger2
+        try:
+            api_summaries = self._gaffer_connector.get("/v3/api-docs", json_result=True)
+        except ConnectionError:
+            api_summaries = self._gaffer_connector.get("/swagger.json", json_result=True)
+
+        config_python = ["from gafferpy.gaffer_config import GetGraph\n\n"]
+
+        for path, data in api_summaries["paths"].items():
+            if path.startswith("/graph/") and "get" in data:
+                name = path.replace("/graph", "")
+                name = name.replace("/config", "")
+
+                # Remove parameters from class name
+                if "{" in name:
+                    name = name.split("{")[0] + path.split("}")[-1]
+                    name = name.replace("//", "/")
+
+                name = name.strip("/")
+                # Make CamelCase class name from path
+                name = "Get" + "".join([name[0].upper() + name[1:] for name in name.split("/")])
+
+                param_python = ""
+                param_format_python = ""
+                if "{" in path:
+                    param = path.split("{")[-1].split("}")[0]
+                    param_python = f", {param}=''"
+                    param_format_python = f".format({param}={param})"
+
+                config_python.append(f"class {name}(GetGraph):")
+                config_python.append(f"    def __init__(self{param_python}):")
+                config_python.append(f"        super().__init__('{path}'{param_format_python})")
+                config_python.append("\n")
+
+        return "\n".join(config_python)
 
     def get_connector(self):
         return self._gaffer_connector

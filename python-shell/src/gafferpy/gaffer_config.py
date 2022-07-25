@@ -17,9 +17,10 @@
 """
 This module contains Python copies of Gaffer config java classes
 """
+import inspect
+import sys
 
-from gafferpy.gaffer_core import *
-import gafferpy.gaffer_operations as gaffer_operations
+from gafferpy.gaffer_core import JsonConverter
 
 
 class GetGraph:
@@ -29,54 +30,11 @@ class GetGraph:
     def get_url(self):
         return self._url
 
+from .generated.config import *
 
-class GetSchema(GetGraph):
-    def __init__(self):
-        super().__init__('/graph/config/schema')
-
-class GetFilterFunctions(GetGraph):
-    def __init__(self):
-        super().__init__('/graph/config/filterFunctions')
-
-
-class GetTransformFunctions(GetGraph):
-    def __init__(self):
-        super().__init__('/graph/config/transformFunctions')
-
-
-class GetClassFilterFunctions(GetGraph):
-    def __init__(self, class_name=None):
-        super().__init__('/graph/config/filterFunctions/' + class_name)
-
-
-class GetElementGenerators(GetGraph):
-    def __init__(self):
-        super().__init__('/graph/config/elementGenerators')
-
-
-class GetObjectGenerators(GetGraph):
-    def __init__(self):
-        super().__init__('/graph/config/objectGenerators')
-
-
-class GetOperations(GetGraph):
-    def __init__(self):
-        super().__init__('/graph/operations')
-
-class GetAllOperationDetails(GetGraph):
-    def __init__(self):
-        super().__init__('/graph/operations/details/all')
-
-
-class GetSerialisedFields(GetGraph):
-    def __init__(self, class_name=None):
-        super().__init__('/graph/config/serialisedFields/' + class_name)
-
-
-class GetStoreTraits(GetGraph):
-    def __init__(self):
-        super().__init__('/graph/config/storeTraits')
-
+class GetClassFilterFunctions(GetFilterFunctions):
+    def __init__(self, class_name=''):
+        super().__init__(class_name)
 
 class IsOperationSupported:
     def __init__(self, operation=None):

@@ -49,7 +49,7 @@ class GafferOperationsIntegrationTest(unittest.TestCase):
 
         try:
             response = gc.execute_get(
-                g.GetAllOperationDetails(),
+                g.GetOperationsDetailsAll(),
                 json_result=True
             )
         except:
