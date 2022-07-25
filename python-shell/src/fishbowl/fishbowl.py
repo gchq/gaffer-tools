@@ -1,3 +1,19 @@
+#
+# Copyright 2022 Crown Copyright
+#
+# Licensed under the Apache License, Version 2.0 (the 'License');
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an 'AS IS' BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+
 from gafferpy.gaffer_core import JsonConverter
 
 import os
@@ -5,6 +21,31 @@ import shutil
 
 OPERATION_CHAIN_DAO = "uk.gov.gchq.gaffer.operation.OperationChainDAO"
 
+LICENSE = \
+'''#
+# Copyright 2022 Crown Copyright
+#
+# Licensed under the Apache License, Version 2.0 (the 'License');
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an 'AS IS' BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+
+'''
+GENERATED_HEADER = \
+'''"""
+This module has been generated with fishbowl.
+To make changes, either extend these classes or change fishbowl.
+"""
+'''
+HEADER = LICENSE + GENERATED_HEADER
 
 class Fishbowl:
     def __init__(self, gaffer_connector, generated_directory_path="generated"):
@@ -54,7 +95,8 @@ class Fishbowl:
         # functions is a list of function classes
         functions = self._gaffer_connector.get(path, json_result=True)
 
-        functions_python = [f"from gafferpy.{import_path} import {base_class}\n\n"]
+        functions_python = [HEADER]
+        functions_python.append(f"from gafferpy.{import_path} import {base_class}\n\n")
 
         for fn in functions:
             # functions is a list of function classes
@@ -96,7 +138,8 @@ class Fishbowl:
         except ConnectionError:
             operation_summaries = self._gaffer_connector.get("/graph/operations/details", json_result=True)
 
-        operations_python = ["from gafferpy.gaffer_operations import Operation\n\n"]
+        operations_python = [HEADER]
+        operations_python.append("from gafferpy.gaffer_operations import Operation\n\n")
 
         for operation in operation_summaries:
             # Don't add OperationChainDAO as this has a field called class which breaks python
@@ -160,7 +203,8 @@ class Fishbowl:
         except ConnectionError:
             api_summaries = self._gaffer_connector.get("/swagger.json", json_result=True)
 
-        config_python = ["from gafferpy.gaffer_config import GetGraph\n\n"]
+        config_python = [HEADER]
+        config_python.append("from gafferpy.gaffer_config import GetGraph\n\n")
 
         for path, data in api_summaries["paths"].items():
             if path.startswith("/graph/") and "get" in data:
