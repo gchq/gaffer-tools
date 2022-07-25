@@ -30,7 +30,7 @@ class GetGraph:
     def get_url(self):
         return self._url
 
-from .generated.config import *
+from gafferpy.generated_api.config import *
 
 class GetClassFilterFunctions(GetFilterFunctions):
     def __init__(self, class_name=''):

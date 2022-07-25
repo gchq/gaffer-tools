@@ -39,7 +39,7 @@ class Fishbowl:
         self._write_to_file(os.path.join(self.generated_directory_path, "operations.py"), operations_python)
         self._write_to_file(os.path.join(self.generated_directory_path, "config.py"), config_python)
         self._write_to_file(os.path.join(self.generated_directory_path, "__init__.py"),
-                      "__all__ = [ \"operations\", \"predicates\", \"functions\" ]\n")
+                      "__all__ = [ \"operations\", \"predicates\", \"functions\", \"binary_operators\", \"config\" ]\n")
 
     def _generate_transform_functions(self):
         return self._generate_functions("/graph/config/transformFunctions", "gaffer_functions", "AbstractFunction")

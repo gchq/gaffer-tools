@@ -92,7 +92,7 @@ class AbstractBinaryOperator(BinaryOperator):
 #     def to_json(self):
 #         return super().to_json()
 
-from .generated.binary_operators import *
+from gafferpy.generated_api.binary_operators import *
 
 class BinaryOperatorContext(ToJson, ToCodeString):
     CLASS = "gaffer.AggregatorContext"

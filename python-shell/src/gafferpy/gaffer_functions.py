@@ -65,7 +65,7 @@ class ElementGenerator(Function):
                  fields=None):
         super().__init__(class_name=class_name, fields=fields)
 
-from .generated.functions import *
+from gafferpy.generated_api.functions import *
 
 class FunctionContext(TupleAdaptedFunction):
     CLASS = "gaffer.FunctionContext"

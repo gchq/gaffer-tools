@@ -82,7 +82,7 @@ class TimeUnit:
     MILLISECOND = 'MILLISECOND'
     MICROSECOND = 'MICROSECOND'
 
-from .generated.predicates import *
+from gafferpy.generated_api.predicates import *
 
 class NestedPredicate(IntegerTupleAdaptedPredicate):
     pass

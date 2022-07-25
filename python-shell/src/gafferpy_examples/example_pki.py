@@ -14,7 +14,7 @@
 # limitations under the License.
 #
 
-from examples.example import run_with_connector
+from gafferpy_examples.example import run_with_connector
 from gafferpy import gaffer_connector_pki
 
 

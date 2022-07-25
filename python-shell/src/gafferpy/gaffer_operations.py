@@ -665,7 +665,7 @@ class Conditional(ToJson, ToCodeString):
 
         return conditional_json
 
-from .generated.operations import *
+from gafferpy.generated_api.operations import *
 
 # Parameters
 class AddNamedOperation(AddNamedOperation):
