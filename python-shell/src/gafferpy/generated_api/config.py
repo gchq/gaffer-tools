@@ -17,18 +17,18 @@ class GetOperations(GetGraph):
 
 
 class GetOperations(GetGraph):
-    def __init__(self, className=''):
-        super().__init__('/graph/operations/{className}'.format(className=className))
+    def __init__(self, class_name=''):
+        super().__init__('/graph/operations/{className}'.format(className=class_name))
 
 
 class GetOperationsNext(GetGraph):
-    def __init__(self, className=''):
-        super().__init__('/graph/operations/{className}/next'.format(className=className))
+    def __init__(self, class_name=''):
+        super().__init__('/graph/operations/{className}/next'.format(className=class_name))
 
 
 class GetOperationsExample(GetGraph):
-    def __init__(self, className=''):
-        super().__init__('/graph/operations/{className}/example'.format(className=className))
+    def __init__(self, class_name=''):
+        super().__init__('/graph/operations/{className}/example'.format(className=class_name))
 
 
 class GetOperationsDetails(GetGraph):
@@ -62,13 +62,13 @@ class GetStoreTraits(GetGraph):
 
 
 class GetSerialisedFields(GetGraph):
-    def __init__(self, className=''):
-        super().__init__('/graph/config/serialisedFields/{className}'.format(className=className))
+    def __init__(self, class_name=''):
+        super().__init__('/graph/config/serialisedFields/{className}'.format(className=class_name))
 
 
 class GetSerialisedFieldsClasses(GetGraph):
-    def __init__(self, className=''):
-        super().__init__('/graph/config/serialisedFields/{className}/classes'.format(className=className))
+    def __init__(self, class_name=''):
+        super().__init__('/graph/config/serialisedFields/{className}/classes'.format(className=class_name))
 
 
 class GetSchema(GetGraph):
@@ -92,8 +92,8 @@ class GetFilterFunctions(GetGraph):
 
 
 class GetFilterFunctions(GetGraph):
-    def __init__(self, inputClass=''):
-        super().__init__('/graph/config/filterFunctions/{inputClass}'.format(inputClass=inputClass))
+    def __init__(self, input_class=''):
+        super().__init__('/graph/config/filterFunctions/{inputClass}'.format(inputClass=input_class))
 
 
 class GetElementGenerators(GetGraph):

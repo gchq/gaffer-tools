@@ -18,7 +18,7 @@ import json
 import urllib.error
 import urllib.request
 
-from gafferpy import gaffer as g
+from gafferpy.gaffer_core import JsonConverter
 
 from .base_client import BaseClient
 
@@ -74,4 +74,4 @@ class UrllibClient(BaseClient):
         if json_result:
             return result
         else:
-            return g.JsonConverter.from_json(result)
+            return JsonConverter.from_json(result)

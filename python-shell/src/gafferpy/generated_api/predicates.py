@@ -1,6 +1,44 @@
 from gafferpy.gaffer_predicates import AbstractPredicate
 
 
+class PredicateComposite(AbstractPredicate):
+    CLASS = "uk.gov.gchq.koryphe.predicate.PredicateComposite"
+
+    def __init__(self, predicates=None):
+        super().__init__(_class_name=self.CLASS)
+        self.predicates = predicates
+
+    def to_json(self):
+        function_json = super().to_json()
+        if self.predicates is not None:
+            function_json["predicates"] = self.predicates
+        return function_json
+
+
+class And(AbstractPredicate):
+    CLASS = "uk.gov.gchq.koryphe.impl.predicate.And"
+
+    def __init__(self, predicates=None):
+        super().__init__(_class_name=self.CLASS)
+        self.predicates = predicates
+
+    def to_json(self):
+        function_json = super().to_json()
+        if self.predicates is not None:
+            function_json["predicates"] = self.predicates
+        return function_json
+
+
+class IsXMoreThanY(AbstractPredicate):
+    CLASS = "uk.gov.gchq.koryphe.impl.predicate.IsXMoreThanY"
+
+    def __init__(self):
+        super().__init__(_class_name=self.CLASS)
+
+    def to_json(self):
+        return super().to_json()
+
+
 class NamedViewWriteUserPredicate(AbstractPredicate):
     CLASS = "uk.gov.gchq.gaffer.data.elementdefinition.view.access.predicate.user.NamedViewWriteUserPredicate"
 
@@ -18,32 +56,96 @@ class NamedViewWriteUserPredicate(AbstractPredicate):
         return function_json
 
 
-class IsA(AbstractPredicate):
-    CLASS = "uk.gov.gchq.koryphe.impl.predicate.IsA"
+class AreEqual(AbstractPredicate):
+    CLASS = "uk.gov.gchq.koryphe.impl.predicate.AreEqual"
 
-    def __init__(self, type=None):
+    def __init__(self):
         super().__init__(_class_name=self.CLASS)
-        self.type = type
+
+    def to_json(self):
+        return super().to_json()
+
+
+class MapContains(AbstractPredicate):
+    CLASS = "uk.gov.gchq.koryphe.impl.predicate.MapContains"
+
+    def __init__(self, key=None):
+        super().__init__(_class_name=self.CLASS)
+        self.key = key
 
     def to_json(self):
         function_json = super().to_json()
-        if self.type is not None:
-            function_json["type"] = self.type
+        if self.key is not None:
+            function_json["key"] = self.key
         return function_json
 
 
-class Regex(AbstractPredicate):
-    CLASS = "uk.gov.gchq.koryphe.impl.predicate.Regex"
+class FederatedGraphWriteUserPredicate(AbstractPredicate):
+    CLASS = "uk.gov.gchq.gaffer.federatedstore.access.predicate.user.FederatedGraphWriteUserPredicate"
 
-    def __init__(self, value=None):
+    def __init__(self, creating_user_id=None):
+        super().__init__(_class_name=self.CLASS)
+        self.creating_user_id = creating_user_id
+
+    def to_json(self):
+        function_json = super().to_json()
+        if self.creating_user_id is not None:
+            function_json["creatingUserId"] = self.creating_user_id
+        return function_json
+
+
+class IsLongerThan(AbstractPredicate):
+    CLASS = "uk.gov.gchq.koryphe.impl.predicate.IsLongerThan"
+
+    def __init__(self, min_length=None, or_equal_to=None):
+        super().__init__(_class_name=self.CLASS)
+        self.min_length = min_length
+        self.or_equal_to = or_equal_to
+
+    def to_json(self):
+        function_json = super().to_json()
+        if self.min_length is not None:
+            function_json["minLength"] = self.min_length
+        if self.or_equal_to is not None:
+            function_json["orEqualTo"] = self.or_equal_to
+        return function_json
+
+
+class IsLessThan(AbstractPredicate):
+    CLASS = "uk.gov.gchq.koryphe.impl.predicate.IsLessThan"
+
+    def __init__(self, value=None, or_equal_to=None):
         super().__init__(_class_name=self.CLASS)
         self.value = value
+        self.or_equal_to = or_equal_to
 
     def to_json(self):
         function_json = super().to_json()
         if self.value is not None:
             function_json["value"] = self.value
+        if self.or_equal_to is not None:
+            function_json["orEqualTo"] = self.or_equal_to
         return function_json
+
+
+class Exists(AbstractPredicate):
+    CLASS = "uk.gov.gchq.koryphe.impl.predicate.Exists"
+
+    def __init__(self):
+        super().__init__(_class_name=self.CLASS)
+
+    def to_json(self):
+        return super().to_json()
+
+
+class IsTrue(AbstractPredicate):
+    CLASS = "uk.gov.gchq.koryphe.impl.predicate.IsTrue"
+
+    def __init__(self):
+        super().__init__(_class_name=self.CLASS)
+
+    def to_json(self):
+        return super().to_json()
 
 
 class InDateRangeDual(AbstractPredicate):
@@ -90,53 +192,28 @@ class InDateRangeDual(AbstractPredicate):
         return function_json
 
 
-class IsEqual(AbstractPredicate):
-    CLASS = "uk.gov.gchq.koryphe.impl.predicate.IsEqual"
+class FederatedGraphReadUserPredicate(AbstractPredicate):
+    CLASS = "uk.gov.gchq.gaffer.federatedstore.access.predicate.user.FederatedGraphReadUserPredicate"
 
-    def __init__(self, value=None):
+    def __init__(self, public=None, auths=None, creating_user_id=None):
         super().__init__(_class_name=self.CLASS)
-        self.value = value
+        self.public = public
+        self.auths = auths
+        self.creating_user_id = creating_user_id
 
     def to_json(self):
         function_json = super().to_json()
-        if self.value is not None:
-            function_json["value"] = self.value
+        if self.public is not None:
+            function_json["public"] = self.public
+        if self.auths is not None:
+            function_json["auths"] = self.auths
+        if self.creating_user_id is not None:
+            function_json["creatingUserId"] = self.creating_user_id
         return function_json
 
 
-class StringContains(AbstractPredicate):
-    CLASS = "uk.gov.gchq.koryphe.impl.predicate.StringContains"
-
-    def __init__(self, ignore_case=None, value=None):
-        super().__init__(_class_name=self.CLASS)
-        self.ignore_case = ignore_case
-        self.value = value
-
-    def to_json(self):
-        function_json = super().to_json()
-        if self.ignore_case is not None:
-            function_json["ignoreCase"] = self.ignore_case
-        if self.value is not None:
-            function_json["value"] = self.value
-        return function_json
-
-
-class MapContains(AbstractPredicate):
-    CLASS = "uk.gov.gchq.koryphe.impl.predicate.MapContains"
-
-    def __init__(self, key=None):
-        super().__init__(_class_name=self.CLASS)
-        self.key = key
-
-    def to_json(self):
-        function_json = super().to_json()
-        if self.key is not None:
-            function_json["key"] = self.key
-        return function_json
-
-
-class HyperLogLogPlusIsLessThan(AbstractPredicate):
-    CLASS = "uk.gov.gchq.gaffer.sketches.clearspring.cardinality.predicate.HyperLogLogPlusIsLessThan"
+class IsMoreThan(AbstractPredicate):
+    CLASS = "uk.gov.gchq.koryphe.impl.predicate.IsMoreThan"
 
     def __init__(self, value=None, or_equal_to=None):
         super().__init__(_class_name=self.CLASS)
@@ -152,31 +229,41 @@ class HyperLogLogPlusIsLessThan(AbstractPredicate):
         return function_json
 
 
-class AdaptedPredicate(AbstractPredicate):
-    CLASS = "uk.gov.gchq.koryphe.predicate.AdaptedPredicate"
+class If(AbstractPredicate):
+    CLASS = "uk.gov.gchq.koryphe.impl.predicate.If"
 
-    def __init__(self, predicate=None, input_adapter=None):
+    def __init__(self, otherwise=None, predicate=None, condition=None, then=None):
         super().__init__(_class_name=self.CLASS)
+        self.otherwise = otherwise
         self.predicate = predicate
-        self.input_adapter = input_adapter
+        self.condition = condition
+        self.then = then
 
     def to_json(self):
         function_json = super().to_json()
+        if self.otherwise is not None:
+            function_json["otherwise"] = self.otherwise
         if self.predicate is not None:
             function_json["predicate"] = self.predicate
-        if self.input_adapter is not None:
-            function_json["inputAdapter"] = self.input_adapter
+        if self.condition is not None:
+            function_json["condition"] = self.condition
+        if self.then is not None:
+            function_json["then"] = self.then
         return function_json
 
 
-class IsXMoreThanY(AbstractPredicate):
-    CLASS = "uk.gov.gchq.koryphe.impl.predicate.IsXMoreThanY"
+class Or(AbstractPredicate):
+    CLASS = "uk.gov.gchq.koryphe.impl.predicate.Or"
 
-    def __init__(self):
+    def __init__(self, predicates=None):
         super().__init__(_class_name=self.CLASS)
+        self.predicates = predicates
 
     def to_json(self):
-        return super().to_json()
+        function_json = super().to_json()
+        if self.predicates is not None:
+            function_json["predicates"] = self.predicates
+        return function_json
 
 
 class InDateRange(AbstractPredicate):
@@ -217,8 +304,8 @@ class InDateRange(AbstractPredicate):
         return function_json
 
 
-class NoAccessUserPredicate(AbstractPredicate):
-    CLASS = "uk.gov.gchq.gaffer.access.predicate.user.NoAccessUserPredicate"
+class IsFalse(AbstractPredicate):
+    CLASS = "uk.gov.gchq.koryphe.impl.predicate.IsFalse"
 
     def __init__(self):
         super().__init__(_class_name=self.CLASS)
@@ -227,8 +314,76 @@ class NoAccessUserPredicate(AbstractPredicate):
         return super().to_json()
 
 
-class IsLessThan(AbstractPredicate):
-    CLASS = "uk.gov.gchq.koryphe.impl.predicate.IsLessThan"
+class IntegerTupleAdaptedPredicate(AbstractPredicate):
+    CLASS = "uk.gov.gchq.koryphe.tuple.predicate.IntegerTupleAdaptedPredicate"
+
+    def __init__(self, predicate=None, input_adapter=None, selection=None):
+        super().__init__(_class_name=self.CLASS)
+        self.predicate = predicate
+        self.input_adapter = input_adapter
+        self.selection = selection
+
+    def to_json(self):
+        function_json = super().to_json()
+        if self.predicate is not None:
+            function_json["predicate"] = self.predicate
+        if self.input_adapter is not None:
+            function_json["inputAdapter"] = self.input_adapter
+        if self.selection is not None:
+            function_json["selection"] = self.selection
+        return function_json
+
+
+class IsShorterThan(AbstractPredicate):
+    CLASS = "uk.gov.gchq.koryphe.impl.predicate.IsShorterThan"
+
+    def __init__(self, max_length=None, or_equal_to=None):
+        super().__init__(_class_name=self.CLASS)
+        self.max_length = max_length
+        self.or_equal_to = or_equal_to
+
+    def to_json(self):
+        function_json = super().to_json()
+        if self.max_length is not None:
+            function_json["maxLength"] = self.max_length
+        if self.or_equal_to is not None:
+            function_json["orEqualTo"] = self.or_equal_to
+        return function_json
+
+
+class TransformAndFilter(AbstractPredicate):
+    CLASS = "uk.gov.gchq.gaffer.graph.hook.migrate.predicate.TransformAndFilter"
+
+    def __init__(self, filter=None, transformer=None):
+        super().__init__(_class_name=self.CLASS)
+        self.filter = filter
+        self.transformer = transformer
+
+    def to_json(self):
+        function_json = super().to_json()
+        if self.filter is not None:
+            function_json["filter"] = self.filter
+        if self.transformer is not None:
+            function_json["transformer"] = self.transformer
+        return function_json
+
+
+class ElementFilter(AbstractPredicate):
+    CLASS = "uk.gov.gchq.gaffer.data.element.function.ElementFilter"
+
+    def __init__(self, predicates=None):
+        super().__init__(_class_name=self.CLASS)
+        self.predicates = predicates
+
+    def to_json(self):
+        function_json = super().to_json()
+        if self.predicates is not None:
+            function_json["predicates"] = self.predicates
+        return function_json
+
+
+class HyperLogLogPlusIsLessThan(AbstractPredicate):
+    CLASS = "uk.gov.gchq.gaffer.sketches.clearspring.cardinality.predicate.HyperLogLogPlusIsLessThan"
 
     def __init__(self, value=None, or_equal_to=None):
         super().__init__(_class_name=self.CLASS)
@@ -244,121 +399,8 @@ class IsLessThan(AbstractPredicate):
         return function_json
 
 
-class Not(AbstractPredicate):
-    CLASS = "uk.gov.gchq.koryphe.impl.predicate.Not"
-
-    def __init__(self, predicate=None):
-        super().__init__(_class_name=self.CLASS)
-        self.predicate = predicate
-
-    def to_json(self):
-        function_json = super().to_json()
-        if self.predicate is not None:
-            function_json["predicate"] = self.predicate
-        return function_json
-
-
-class PredicateComposite(AbstractPredicate):
-    CLASS = "uk.gov.gchq.koryphe.predicate.PredicateComposite"
-
-    def __init__(self, predicates=None):
-        super().__init__(_class_name=self.CLASS)
-        self.predicates = predicates
-
-    def to_json(self):
-        function_json = super().to_json()
-        if self.predicates is not None:
-            function_json["predicates"] = self.predicates
-        return function_json
-
-
-class MapContainsPredicate(AbstractPredicate):
-    CLASS = "uk.gov.gchq.koryphe.impl.predicate.MapContainsPredicate"
-
-    def __init__(self, key_predicate=None):
-        super().__init__(_class_name=self.CLASS)
-        self.key_predicate = key_predicate
-
-    def to_json(self):
-        function_json = super().to_json()
-        if self.key_predicate is not None:
-            function_json["keyPredicate"] = self.key_predicate
-        return function_json
-
-
-class AgeOff(AbstractPredicate):
-    CLASS = "uk.gov.gchq.koryphe.impl.predicate.AgeOff"
-
-    def __init__(self, age_off_hours=None, age_off_days=None, age_off_time=None):
-        super().__init__(_class_name=self.CLASS)
-        self.age_off_hours = age_off_hours
-        self.age_off_days = age_off_days
-        self.age_off_time = age_off_time
-
-    def to_json(self):
-        function_json = super().to_json()
-        if self.age_off_hours is not None:
-            function_json["ageOffHours"] = self.age_off_hours
-        if self.age_off_days is not None:
-            function_json["ageOffDays"] = self.age_off_days
-        if self.age_off_time is not None:
-            function_json["ageOffTime"] = self.age_off_time
-        return function_json
-
-
-class IsLongerThan(AbstractPredicate):
-    CLASS = "uk.gov.gchq.koryphe.impl.predicate.IsLongerThan"
-
-    def __init__(self, min_length=None, or_equal_to=None):
-        super().__init__(_class_name=self.CLASS)
-        self.min_length = min_length
-        self.or_equal_to = or_equal_to
-
-    def to_json(self):
-        function_json = super().to_json()
-        if self.min_length is not None:
-            function_json["minLength"] = self.min_length
-        if self.or_equal_to is not None:
-            function_json["orEqualTo"] = self.or_equal_to
-        return function_json
-
-
-class PropertiesFilter(AbstractPredicate):
-    CLASS = "uk.gov.gchq.gaffer.data.element.function.PropertiesFilter"
-
-    def __init__(self, predicates=None):
-        super().__init__(_class_name=self.CLASS)
-        self.predicates = predicates
-
-    def to_json(self):
-        function_json = super().to_json()
-        if self.predicates is not None:
-            function_json["predicates"] = self.predicates
-        return function_json
-
-
-class AgeOffFromDays(AbstractPredicate):
-    CLASS = "uk.gov.gchq.koryphe.impl.predicate.AgeOffFromDays"
-
-    def __init__(self):
-        super().__init__(_class_name=self.CLASS)
-
-    def to_json(self):
-        return super().to_json()
-
-
-class IsTrue(AbstractPredicate):
-    CLASS = "uk.gov.gchq.koryphe.impl.predicate.IsTrue"
-
-    def __init__(self):
-        super().__init__(_class_name=self.CLASS)
-
-    def to_json(self):
-        return super().to_json()
-
-
-class MultiRegex(AbstractPredicate):
-    CLASS = "uk.gov.gchq.koryphe.impl.predicate.MultiRegex"
+class IsEqual(AbstractPredicate):
+    CLASS = "uk.gov.gchq.koryphe.impl.predicate.IsEqual"
 
     def __init__(self, value=None):
         super().__init__(_class_name=self.CLASS)
@@ -366,6 +408,23 @@ class MultiRegex(AbstractPredicate):
 
     def to_json(self):
         function_json = super().to_json()
+        if self.value is not None:
+            function_json["value"] = self.value
+        return function_json
+
+
+class StringContains(AbstractPredicate):
+    CLASS = "uk.gov.gchq.koryphe.impl.predicate.StringContains"
+
+    def __init__(self, ignore_case=None, value=None):
+        super().__init__(_class_name=self.CLASS)
+        self.ignore_case = ignore_case
+        self.value = value
+
+    def to_json(self):
+        function_json = super().to_json()
+        if self.ignore_case is not None:
+            function_json["ignoreCase"] = self.ignore_case
         if self.value is not None:
             function_json["value"] = self.value
         return function_json
@@ -400,45 +459,18 @@ class InRangeDual(AbstractPredicate):
         return function_json
 
 
-class IsShorterThan(AbstractPredicate):
-    CLASS = "uk.gov.gchq.koryphe.impl.predicate.IsShorterThan"
+class ElementJoinComparator(AbstractPredicate):
+    CLASS = "uk.gov.gchq.gaffer.data.element.comparison.ElementJoinComparator"
 
-    def __init__(self, max_length=None, or_equal_to=None):
+    def __init__(self, group_by_properties=None):
         super().__init__(_class_name=self.CLASS)
-        self.max_length = max_length
-        self.or_equal_to = or_equal_to
+        self.group_by_properties = group_by_properties
 
     def to_json(self):
         function_json = super().to_json()
-        if self.max_length is not None:
-            function_json["maxLength"] = self.max_length
-        if self.or_equal_to is not None:
-            function_json["orEqualTo"] = self.or_equal_to
+        if self.group_by_properties is not None:
+            function_json["groupByProperties"] = self.group_by_properties
         return function_json
-
-
-class TupleAdaptedPredicateComposite(AbstractPredicate):
-    CLASS = "uk.gov.gchq.koryphe.tuple.predicate.TupleAdaptedPredicateComposite"
-
-    def __init__(self, predicates=None):
-        super().__init__(_class_name=self.CLASS)
-        self.predicates = predicates
-
-    def to_json(self):
-        function_json = super().to_json()
-        if self.predicates is not None:
-            function_json["predicates"] = self.predicates
-        return function_json
-
-
-class UnrestrictedAccessUserPredicate(AbstractPredicate):
-    CLASS = "uk.gov.gchq.gaffer.access.predicate.user.UnrestrictedAccessUserPredicate"
-
-    def __init__(self):
-        super().__init__(_class_name=self.CLASS)
-
-    def to_json(self):
-        return super().to_json()
 
 
 class InRange(AbstractPredicate):
@@ -464,65 +496,40 @@ class InRange(AbstractPredicate):
         return function_json
 
 
-class And(AbstractPredicate):
-    CLASS = "uk.gov.gchq.koryphe.impl.predicate.And"
+class IsA(AbstractPredicate):
+    CLASS = "uk.gov.gchq.koryphe.impl.predicate.IsA"
 
-    def __init__(self, predicates=None):
+    def __init__(self, type=None):
         super().__init__(_class_name=self.CLASS)
-        self.predicates = predicates
+        self.type = type
 
     def to_json(self):
         function_json = super().to_json()
-        if self.predicates is not None:
-            function_json["predicates"] = self.predicates
+        if self.type is not None:
+            function_json["type"] = self.type
         return function_json
 
 
-class PredicateMap(AbstractPredicate):
-    CLASS = "uk.gov.gchq.koryphe.predicate.PredicateMap"
+class RBMBackedTimestampSetInRange(AbstractPredicate):
+    CLASS = "uk.gov.gchq.gaffer.time.predicate.RBMBackedTimestampSetInRange"
 
-    def __init__(self, predicate=None, key=None):
+    def __init__(self, start_time=None, end_time=None, include_all_timestamps=None, time_unit=None):
         super().__init__(_class_name=self.CLASS)
-        self.predicate = predicate
-        self.key = key
+        self.start_time = start_time
+        self.end_time = end_time
+        self.include_all_timestamps = include_all_timestamps
+        self.time_unit = time_unit
 
     def to_json(self):
         function_json = super().to_json()
-        if self.predicate is not None:
-            function_json["predicate"] = self.predicate
-        if self.key is not None:
-            function_json["key"] = self.key
-        return function_json
-
-
-class IsMoreThan(AbstractPredicate):
-    CLASS = "uk.gov.gchq.koryphe.impl.predicate.IsMoreThan"
-
-    def __init__(self, value=None, or_equal_to=None):
-        super().__init__(_class_name=self.CLASS)
-        self.value = value
-        self.or_equal_to = or_equal_to
-
-    def to_json(self):
-        function_json = super().to_json()
-        if self.value is not None:
-            function_json["value"] = self.value
-        if self.or_equal_to is not None:
-            function_json["orEqualTo"] = self.or_equal_to
-        return function_json
-
-
-class CollectionContains(AbstractPredicate):
-    CLASS = "uk.gov.gchq.koryphe.impl.predicate.CollectionContains"
-
-    def __init__(self, value=None):
-        super().__init__(_class_name=self.CLASS)
-        self.value = value
-
-    def to_json(self):
-        function_json = super().to_json()
-        if self.value is not None:
-            function_json["value"] = self.value
+        if self.start_time is not None:
+            function_json["startTime"] = self.start_time
+        if self.end_time is not None:
+            function_json["endTime"] = self.end_time
+        if self.include_all_timestamps is not None:
+            function_json["includeAllTimestamps"] = self.include_all_timestamps
+        if self.time_unit is not None:
+            function_json["timeUnit"] = self.time_unit
         return function_json
 
 
@@ -564,45 +571,25 @@ class InTimeRange(AbstractPredicate):
         return function_json
 
 
-class TupleAdaptedPredicate(AbstractPredicate):
-    CLASS = "uk.gov.gchq.koryphe.tuple.predicate.TupleAdaptedPredicate"
+class PredicateMap(AbstractPredicate):
+    CLASS = "uk.gov.gchq.koryphe.predicate.PredicateMap"
 
-    def __init__(self, predicate=None, input_adapter=None, selection=None):
+    def __init__(self, predicate=None, key=None):
         super().__init__(_class_name=self.CLASS)
         self.predicate = predicate
-        self.input_adapter = input_adapter
-        self.selection = selection
+        self.key = key
 
     def to_json(self):
         function_json = super().to_json()
         if self.predicate is not None:
             function_json["predicate"] = self.predicate
-        if self.input_adapter is not None:
-            function_json["inputAdapter"] = self.input_adapter
-        if self.selection is not None:
-            function_json["selection"] = self.selection
+        if self.key is not None:
+            function_json["key"] = self.key
         return function_json
 
 
-class DefaultUserPredicate(AbstractPredicate):
-    CLASS = "uk.gov.gchq.gaffer.access.predicate.user.DefaultUserPredicate"
-
-    def __init__(self, auths=None, creating_user_id=None):
-        super().__init__(_class_name=self.CLASS)
-        self.auths = auths
-        self.creating_user_id = creating_user_id
-
-    def to_json(self):
-        function_json = super().to_json()
-        if self.auths is not None:
-            function_json["auths"] = self.auths
-        if self.creating_user_id is not None:
-            function_json["creatingUserId"] = self.creating_user_id
-        return function_json
-
-
-class AreEqual(AbstractPredicate):
-    CLASS = "uk.gov.gchq.koryphe.impl.predicate.AreEqual"
+class AggregatorUtilIsElementAggregated(AbstractPredicate):
+    CLASS = "uk.gov.gchq.gaffer.store.util.AggregatorUtil$IsElementAggregated"
 
     def __init__(self):
         super().__init__(_class_name=self.CLASS)
@@ -611,31 +598,8 @@ class AreEqual(AbstractPredicate):
         return super().to_json()
 
 
-class If(AbstractPredicate):
-    CLASS = "uk.gov.gchq.koryphe.impl.predicate.If"
-
-    def __init__(self, otherwise=None, predicate=None, condition=None, then=None):
-        super().__init__(_class_name=self.CLASS)
-        self.otherwise = otherwise
-        self.predicate = predicate
-        self.condition = condition
-        self.then = then
-
-    def to_json(self):
-        function_json = super().to_json()
-        if self.otherwise is not None:
-            function_json["otherwise"] = self.otherwise
-        if self.predicate is not None:
-            function_json["predicate"] = self.predicate
-        if self.condition is not None:
-            function_json["condition"] = self.condition
-        if self.then is not None:
-            function_json["then"] = self.then
-        return function_json
-
-
-class IsXLessThanY(AbstractPredicate):
-    CLASS = "uk.gov.gchq.koryphe.impl.predicate.IsXLessThanY"
+class AgeOffFromDays(AbstractPredicate):
+    CLASS = "uk.gov.gchq.koryphe.impl.predicate.AgeOffFromDays"
 
     def __init__(self):
         super().__init__(_class_name=self.CLASS)
@@ -644,8 +608,8 @@ class IsXLessThanY(AbstractPredicate):
         return super().to_json()
 
 
-class AreIn(AbstractPredicate):
-    CLASS = "uk.gov.gchq.koryphe.impl.predicate.AreIn"
+class IsIn(AbstractPredicate):
+    CLASS = "uk.gov.gchq.koryphe.impl.predicate.IsIn"
 
     def __init__(self, values=None):
         super().__init__(_class_name=self.CLASS)
@@ -658,42 +622,48 @@ class AreIn(AbstractPredicate):
         return function_json
 
 
-class Exists(AbstractPredicate):
-    CLASS = "uk.gov.gchq.koryphe.impl.predicate.Exists"
+class MapContainsPredicate(AbstractPredicate):
+    CLASS = "uk.gov.gchq.koryphe.impl.predicate.MapContainsPredicate"
+
+    def __init__(self, key_predicate=None):
+        super().__init__(_class_name=self.CLASS)
+        self.key_predicate = key_predicate
+
+    def to_json(self):
+        function_json = super().to_json()
+        if self.key_predicate is not None:
+            function_json["keyPredicate"] = self.key_predicate
+        return function_json
+
+
+class AgeOff(AbstractPredicate):
+    CLASS = "uk.gov.gchq.koryphe.impl.predicate.AgeOff"
+
+    def __init__(self, age_off_hours=None, age_off_days=None, age_off_time=None):
+        super().__init__(_class_name=self.CLASS)
+        self.age_off_hours = age_off_hours
+        self.age_off_days = age_off_days
+        self.age_off_time = age_off_time
+
+    def to_json(self):
+        function_json = super().to_json()
+        if self.age_off_hours is not None:
+            function_json["ageOffHours"] = self.age_off_hours
+        if self.age_off_days is not None:
+            function_json["ageOffDays"] = self.age_off_days
+        if self.age_off_time is not None:
+            function_json["ageOffTime"] = self.age_off_time
+        return function_json
+
+
+class ExampleFilterFunction(AbstractPredicate):
+    CLASS = "uk.gov.gchq.gaffer.rest.example.ExampleFilterFunction"
 
     def __init__(self):
         super().__init__(_class_name=self.CLASS)
 
     def to_json(self):
         return super().to_json()
-
-
-class ElementFilter(AbstractPredicate):
-    CLASS = "uk.gov.gchq.gaffer.data.element.function.ElementFilter"
-
-    def __init__(self, predicates=None):
-        super().__init__(_class_name=self.CLASS)
-        self.predicates = predicates
-
-    def to_json(self):
-        function_json = super().to_json()
-        if self.predicates is not None:
-            function_json["predicates"] = self.predicates
-        return function_json
-
-
-class Or(AbstractPredicate):
-    CLASS = "uk.gov.gchq.koryphe.impl.predicate.Or"
-
-    def __init__(self, predicates=None):
-        super().__init__(_class_name=self.CLASS)
-        self.predicates = predicates
-
-    def to_json(self):
-        function_json = super().to_json()
-        if self.predicates is not None:
-            function_json["predicates"] = self.predicates
-        return function_json
 
 
 class InTimeRangeDual(AbstractPredicate):
@@ -740,28 +710,8 @@ class InTimeRangeDual(AbstractPredicate):
         return function_json
 
 
-class IntegerTupleAdaptedPredicate(AbstractPredicate):
-    CLASS = "uk.gov.gchq.koryphe.tuple.predicate.IntegerTupleAdaptedPredicate"
-
-    def __init__(self, predicate=None, input_adapter=None, selection=None):
-        super().__init__(_class_name=self.CLASS)
-        self.predicate = predicate
-        self.input_adapter = input_adapter
-        self.selection = selection
-
-    def to_json(self):
-        function_json = super().to_json()
-        if self.predicate is not None:
-            function_json["predicate"] = self.predicate
-        if self.input_adapter is not None:
-            function_json["inputAdapter"] = self.input_adapter
-        if self.selection is not None:
-            function_json["selection"] = self.selection
-        return function_json
-
-
-class ExampleFilterFunction(AbstractPredicate):
-    CLASS = "uk.gov.gchq.gaffer.rest.example.ExampleFilterFunction"
+class UnrestrictedAccessUserPredicate(AbstractPredicate):
+    CLASS = "uk.gov.gchq.gaffer.access.predicate.user.UnrestrictedAccessUserPredicate"
 
     def __init__(self):
         super().__init__(_class_name=self.CLASS)
@@ -770,8 +720,8 @@ class ExampleFilterFunction(AbstractPredicate):
         return super().to_json()
 
 
-class IsFalse(AbstractPredicate):
-    CLASS = "uk.gov.gchq.koryphe.impl.predicate.IsFalse"
+class IsXLessThanY(AbstractPredicate):
+    CLASS = "uk.gov.gchq.koryphe.impl.predicate.IsXLessThanY"
 
     def __init__(self):
         super().__init__(_class_name=self.CLASS)
@@ -780,21 +730,14 @@ class IsFalse(AbstractPredicate):
         return super().to_json()
 
 
-class TransformAndFilter(AbstractPredicate):
-    CLASS = "uk.gov.gchq.gaffer.graph.hook.migrate.predicate.TransformAndFilter"
+class NoAccessUserPredicate(AbstractPredicate):
+    CLASS = "uk.gov.gchq.gaffer.access.predicate.user.NoAccessUserPredicate"
 
-    def __init__(self, filter=None, transformer=None):
+    def __init__(self):
         super().__init__(_class_name=self.CLASS)
-        self.filter = filter
-        self.transformer = transformer
 
     def to_json(self):
-        function_json = super().to_json()
-        if self.filter is not None:
-            function_json["filter"] = self.filter
-        if self.transformer is not None:
-            function_json["transformer"] = self.transformer
-        return function_json
+        return super().to_json()
 
 
 class HllSketchIsLessThan(AbstractPredicate):
@@ -814,28 +757,8 @@ class HllSketchIsLessThan(AbstractPredicate):
         return function_json
 
 
-class FederatedGraphReadUserPredicate(AbstractPredicate):
-    CLASS = "uk.gov.gchq.gaffer.federatedstore.access.predicate.user.FederatedGraphReadUserPredicate"
-
-    def __init__(self, public=None, auths=None, creating_user_id=None):
-        super().__init__(_class_name=self.CLASS)
-        self.public = public
-        self.auths = auths
-        self.creating_user_id = creating_user_id
-
-    def to_json(self):
-        function_json = super().to_json()
-        if self.public is not None:
-            function_json["public"] = self.public
-        if self.auths is not None:
-            function_json["auths"] = self.auths
-        if self.creating_user_id is not None:
-            function_json["creatingUserId"] = self.creating_user_id
-        return function_json
-
-
-class IsIn(AbstractPredicate):
-    CLASS = "uk.gov.gchq.koryphe.impl.predicate.IsIn"
+class AreIn(AbstractPredicate):
+    CLASS = "uk.gov.gchq.koryphe.impl.predicate.AreIn"
 
     def __init__(self, values=None):
         super().__init__(_class_name=self.CLASS)
@@ -848,63 +771,140 @@ class IsIn(AbstractPredicate):
         return function_json
 
 
-class AggregatorUtilIsElementAggregated(AbstractPredicate):
-    CLASS = "uk.gov.gchq.gaffer.store.util.AggregatorUtil$IsElementAggregated"
+class PropertiesFilter(AbstractPredicate):
+    CLASS = "uk.gov.gchq.gaffer.data.element.function.PropertiesFilter"
 
-    def __init__(self):
+    def __init__(self, predicates=None):
         super().__init__(_class_name=self.CLASS)
-
-    def to_json(self):
-        return super().to_json()
-
-
-class RBMBackedTimestampSetInRange(AbstractPredicate):
-    CLASS = "uk.gov.gchq.gaffer.time.predicate.RBMBackedTimestampSetInRange"
-
-    def __init__(self, start_time=None, end_time=None, include_all_timestamps=None, time_unit=None):
-        super().__init__(_class_name=self.CLASS)
-        self.start_time = start_time
-        self.end_time = end_time
-        self.include_all_timestamps = include_all_timestamps
-        self.time_unit = time_unit
+        self.predicates = predicates
 
     def to_json(self):
         function_json = super().to_json()
-        if self.start_time is not None:
-            function_json["startTime"] = self.start_time
-        if self.end_time is not None:
-            function_json["endTime"] = self.end_time
-        if self.include_all_timestamps is not None:
-            function_json["includeAllTimestamps"] = self.include_all_timestamps
-        if self.time_unit is not None:
-            function_json["timeUnit"] = self.time_unit
+        if self.predicates is not None:
+            function_json["predicates"] = self.predicates
         return function_json
 
 
-class ElementJoinComparator(AbstractPredicate):
-    CLASS = "uk.gov.gchq.gaffer.data.element.comparison.ElementJoinComparator"
+class Regex(AbstractPredicate):
+    CLASS = "uk.gov.gchq.koryphe.impl.predicate.Regex"
 
-    def __init__(self, group_by_properties=None):
+    def __init__(self, value=None):
         super().__init__(_class_name=self.CLASS)
-        self.group_by_properties = group_by_properties
+        self.value = value
 
     def to_json(self):
         function_json = super().to_json()
-        if self.group_by_properties is not None:
-            function_json["groupByProperties"] = self.group_by_properties
+        if self.value is not None:
+            function_json["value"] = self.value
         return function_json
 
 
-class FederatedGraphWriteUserPredicate(AbstractPredicate):
-    CLASS = "uk.gov.gchq.gaffer.federatedstore.access.predicate.user.FederatedGraphWriteUserPredicate"
+class TupleAdaptedPredicate(AbstractPredicate):
+    CLASS = "uk.gov.gchq.koryphe.tuple.predicate.TupleAdaptedPredicate"
 
-    def __init__(self, creating_user_id=None):
+    def __init__(self, predicate=None, input_adapter=None, selection=None):
         super().__init__(_class_name=self.CLASS)
+        self.predicate = predicate
+        self.input_adapter = input_adapter
+        self.selection = selection
+
+    def to_json(self):
+        function_json = super().to_json()
+        if self.predicate is not None:
+            function_json["predicate"] = self.predicate
+        if self.input_adapter is not None:
+            function_json["inputAdapter"] = self.input_adapter
+        if self.selection is not None:
+            function_json["selection"] = self.selection
+        return function_json
+
+
+class Not(AbstractPredicate):
+    CLASS = "uk.gov.gchq.koryphe.impl.predicate.Not"
+
+    def __init__(self, predicate=None):
+        super().__init__(_class_name=self.CLASS)
+        self.predicate = predicate
+
+    def to_json(self):
+        function_json = super().to_json()
+        if self.predicate is not None:
+            function_json["predicate"] = self.predicate
+        return function_json
+
+
+class CollectionContains(AbstractPredicate):
+    CLASS = "uk.gov.gchq.koryphe.impl.predicate.CollectionContains"
+
+    def __init__(self, value=None):
+        super().__init__(_class_name=self.CLASS)
+        self.value = value
+
+    def to_json(self):
+        function_json = super().to_json()
+        if self.value is not None:
+            function_json["value"] = self.value
+        return function_json
+
+
+class TupleAdaptedPredicateComposite(AbstractPredicate):
+    CLASS = "uk.gov.gchq.koryphe.tuple.predicate.TupleAdaptedPredicateComposite"
+
+    def __init__(self, predicates=None):
+        super().__init__(_class_name=self.CLASS)
+        self.predicates = predicates
+
+    def to_json(self):
+        function_json = super().to_json()
+        if self.predicates is not None:
+            function_json["predicates"] = self.predicates
+        return function_json
+
+
+class DefaultUserPredicate(AbstractPredicate):
+    CLASS = "uk.gov.gchq.gaffer.access.predicate.user.DefaultUserPredicate"
+
+    def __init__(self, auths=None, creating_user_id=None):
+        super().__init__(_class_name=self.CLASS)
+        self.auths = auths
         self.creating_user_id = creating_user_id
 
     def to_json(self):
         function_json = super().to_json()
+        if self.auths is not None:
+            function_json["auths"] = self.auths
         if self.creating_user_id is not None:
             function_json["creatingUserId"] = self.creating_user_id
+        return function_json
+
+
+class MultiRegex(AbstractPredicate):
+    CLASS = "uk.gov.gchq.koryphe.impl.predicate.MultiRegex"
+
+    def __init__(self, value=None):
+        super().__init__(_class_name=self.CLASS)
+        self.value = value
+
+    def to_json(self):
+        function_json = super().to_json()
+        if self.value is not None:
+            function_json["value"] = self.value
+        return function_json
+
+
+class AdaptedPredicate(AbstractPredicate):
+    CLASS = "uk.gov.gchq.koryphe.predicate.AdaptedPredicate"
+
+    def __init__(self, predicate=None, input_adapter=None):
+        super().__init__(_class_name=self.CLASS)
+        self.predicate = predicate
+        self.input_adapter = input_adapter
+
+    def to_json(self):
+        function_json = super().to_json()
+        if self.predicate is not None:
+            function_json["predicate"] = self.predicate
+        if self.input_adapter is not None:
+            function_json["inputAdapter"] = self.input_adapter
         return function_json
 

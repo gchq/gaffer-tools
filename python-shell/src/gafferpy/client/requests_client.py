@@ -42,7 +42,7 @@ try:
 except ImportError:
     _REQUESTS_AVAILABLE = False
 
-from gafferpy import gaffer as g
+from gafferpy.gaffer_core import JsonConverter
 
 from .base_client import BaseClient
 
@@ -106,7 +106,7 @@ class RequestsClient(BaseClient):
         if json_result:
             return result
         else:
-            return g.JsonConverter.from_json(result)
+            return JsonConverter.from_json(result)
 
     def __del__(self):
         self._session.close()

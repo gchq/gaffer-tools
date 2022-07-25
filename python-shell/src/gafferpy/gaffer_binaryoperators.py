@@ -53,45 +53,6 @@ class AbstractBinaryOperator(BinaryOperator):
 
         return function_json
 
-
-# class Sum(AbstractBinaryOperator):
-#     CLASS = "uk.gov.gchq.koryphe.impl.binaryoperator.Sum"
-
-#     def __init__(self):
-#         super().__init__(_class_name=self.CLASS)
-    
-#     def to_json(self):
-#         return super().to_json()
-
-
-# class Max(AbstractBinaryOperator):
-#     CLASS = "uk.gov.gchq.koryphe.impl.binaryoperator.Max"
-
-#     def __init__(self):
-#         super().__init__(_class_name=self.CLASS)
-
-#     def to_json(self):
-#         return super().to_json()
-
-
-# class Min(AbstractBinaryOperator):
-#     CLASS = "uk.gov.gchq.koryphe.impl.binaryoperator.Min"
-
-#     def __init__(self):
-#         super().__init__(_class_name=self.CLASS)
-
-#     def to_json(self):
-#         return super().to_json()
-
-# class CollectionConcat(AbstractBinaryOperator):
-#     CLASS = "uk.gov.gchq.koryphe.impl.binaryoperator.CollectionConcat"
-
-#     def __init__(self):
-#         super().__init__(_class_name=self.CLASS)
-
-#     def to_json(self):
-#         return super().to_json()
-
 from gafferpy.generated_api.binary_operators import *
 
 class BinaryOperatorContext(ToJson, ToCodeString):

@@ -180,8 +180,8 @@ class Fishbowl:
                 param_format_python = ""
                 if "{" in path:
                     param = path.split("{")[-1].split("}")[0]
-                    param_python = f", {param}=''"
-                    param_format_python = f".format({param}={param})"
+                    param_python = f", {JsonConverter.to_snake_case(param)}=''"
+                    param_format_python = f".format({param}={JsonConverter.to_snake_case(param)})"
 
                 config_python.append(f"class {name}(GetGraph):")
                 config_python.append(f"    def __init__(self{param_python}):")
