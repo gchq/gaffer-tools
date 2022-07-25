@@ -4,11 +4,11 @@
 Fishbowl generates code for the core gafferpy classes by pointing to a running Gaffer rest api.
 It generates the classes for:
 
-- Operations
-- Predicates
-- Functions
-- Binary Operators
-- Config endpoints
+- [Operations](../gafferpy/generated_api/operations.py)
+- [Predicates](../gafferpy/generated_api/predicates.py)
+- [Functions](../gafferpy/generated_api/functions.py)
+- [Binary Operators](../gafferpy/generated_api/binary_operators.py)
+- [Config Endpoints](../gafferpy/generated_api/config.py)
 
 This is done automatically on every Gaffer release from a standard spring-rest api and placed into gafferpy's [generated_api](../gafferpy/generated_api) directory.
 
@@ -28,7 +28,13 @@ Your python files will be appear in a folder called `generated`.
 You can then use these classes in normal gafferpy operations:
 ```python
 import generated
-gc.execute(generated.operations.OperationChain(operations=[generated.operations.GetAllElements(), generated.operations.Count()]))
+gc.execute(generated.operations.YourCustomOperation(custom_field=True))
+gc.execute(generated.operations.OperationChain(
+    operations=[
+        generated.operations.GetAllElements(), 
+        generated.operations.Count()
+    ]
+))
 ```
 
 ## License
