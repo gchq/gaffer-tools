@@ -116,7 +116,7 @@ class BaseTestCases:
             )
 
         def test_dummy_header(self):
-            """Test that the addition of a dummy header does not effect the standard test"""
+            '''Test that the addition of a dummy header does not effect the standard test'''
             gc = gaffer_connector.GafferConnector('http://localhost:8080/rest', headers={"dummy_Header": "value"}, client_class=self.client_class)
             elements = gc.execute_operation(
                 g.GetElements(
@@ -139,7 +139,7 @@ class BaseTestCases:
                 elements)
 
         def test_class_initilisation(self):
-            """Test that the gaffer_connector class is correctly initialised with instance attributes"""
+            '''Test that the gaffer_connector class is correctly initialised with instance attributes'''
             host = 'http://localhost:8080/rest'
             verbose = False
             headers = {"dummy_Header": "value"}
@@ -152,7 +152,7 @@ class BaseTestCases:
                 self.assertEqual(actual, expected)
 
         def test_raise_connection_error(self):
-            """Test that a ConnectionError is correctly raised when a HTTP 404 error is caught"""
+            '''Test that a ConnectionError is correctly raised when a HTTP 404 error is caught'''
             # Define a host that has an invalid endpoint in order to get a HTTP 404 error
             host_with_bad_endpoint = "http://localhost:8080/badEndPoint"
             gc = gaffer_connector.GafferConnector(host_with_bad_endpoint, client_class=self.client_class)
