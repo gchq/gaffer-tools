@@ -26,7 +26,7 @@ class BaseTestCases:
         client_class = ""
 
         def test_execute_operation(self):
-            gc = gaffer_connector.GafferConnector('http://localhost:8080/rest', client_class=self.client_class)
+            gc = gaffer_connector.GafferConnector('http://localhost:8080/rest/latest', client_class=self.client_class)
             elements = gc.execute_operation(
                 g.GetElements(
                     input=[
@@ -48,7 +48,7 @@ class BaseTestCases:
                 elements)
 
         def test_is_operation_supported(self):
-            gc = gaffer_connector.GafferConnector('http://localhost:8080/rest', client_class=self.client_class)
+            gc = gaffer_connector.GafferConnector('http://localhost:8080/rest/latest', client_class=self.client_class)
 
             response = gc.is_operation_supported(
                 g.IsOperationSupported(
@@ -104,7 +104,7 @@ class BaseTestCases:
             )
 
         def test_execute_get(self):
-            gc = gaffer_connector.GafferConnector('http://localhost:8080/rest', client_class=self.client_class)
+            gc = gaffer_connector.GafferConnector('http://localhost:8080/rest/latest', client_class=self.client_class)
 
             response = gc.execute_get(
                 g.GetSchema(),
@@ -117,7 +117,7 @@ class BaseTestCases:
 
         def test_dummy_header(self):
             '''Test that the addition of a dummy header does not effect the standard test'''
-            gc = gaffer_connector.GafferConnector('http://localhost:8080/rest', headers={"dummy_Header": "value"}, client_class=self.client_class)
+            gc = gaffer_connector.GafferConnector('http://localhost:8080/rest/latest', headers={"dummy_Header": "value"}, client_class=self.client_class)
             elements = gc.execute_operation(
                 g.GetElements(
                     input=[
@@ -140,7 +140,7 @@ class BaseTestCases:
 
         def test_class_initilisation(self):
             '''Test that the gaffer_connector class is correctly initialised with instance attributes'''
-            host = 'http://localhost:8080/rest'
+            host = 'http://localhost:8080/rest/latest'
             verbose = False
             headers = {"dummy_Header": "value"}
             gc = gaffer_connector.GafferConnector(host, verbose, headers, client_class=self.client_class)

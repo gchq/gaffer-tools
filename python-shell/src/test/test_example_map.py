@@ -21,7 +21,7 @@ from gafferpy_examples import example_map
 
 class ExampleMapTest(unittest.TestCase):
     def test_example_map_does_not_error(self):
-        example_map.run('http://localhost:8080/rest')
+        example_map.run('http://localhost:8080/rest/latest')
 
 
 if __name__ == "__main__":

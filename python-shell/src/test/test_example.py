@@ -21,7 +21,7 @@ from gafferpy_examples import example
 
 class ExampleTest(unittest.TestCase):
     def test_example_does_not_error(self):
-        example.run('http://localhost:8080/rest')
+        example.run('http://localhost:8080/rest/latest')
 
 
 if __name__ == "__main__":

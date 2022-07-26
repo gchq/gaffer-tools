@@ -24,7 +24,7 @@ from gafferpy import gaffer_connector
 class GafferFunctionsIntegrationTest(unittest.TestCase):
     def test_all_functions_have_classes(self):
         gc = gaffer_connector.GafferConnector(
-            'http://localhost:8080/rest')
+            'http://localhost:8080/rest/latest')
         functions = gc.execute_get(
             g.GetTransformFunctions()
         )

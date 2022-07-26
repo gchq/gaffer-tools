@@ -24,7 +24,7 @@ from gafferpy import gaffer_connector
 class GafferOperationsIntegrationTest(unittest.TestCase):
     def test_all_supported_operations_have_classes(self):
         gc = gaffer_connector.GafferConnector(
-            'http://localhost:8080/rest')
+            'http://localhost:8080/rest/latest')
         operations = gc.execute_get(
             g.GetOperations()
         )
@@ -45,7 +45,7 @@ class GafferOperationsIntegrationTest(unittest.TestCase):
     def test_all_operations_have_classes(self):
         # TODO: This should be in fishbowl tests in the future
         # only the spring-rest has this endpoint
-        gc = gaffer_connector.GafferConnector('http://localhost:8080/rest')
+        gc = gaffer_connector.GafferConnector('http://localhost:8080/rest/latest')
 
         try:
             response = gc.execute_get(
