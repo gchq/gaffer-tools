@@ -52,23 +52,23 @@ class RequestsClient(BaseClient):
     This class handles the connection to a Gaffer server and handles operations.
     This class is initialised with a host to connect to.
     '''
-    def __init__(self, base_url, verbose=False, headers={}, config={}):
+    def __init__(self, base_url, verbose=False, headers={}, **kwargs):
         if not _REQUESTS_AVAILABLE:
             raise ValueError(
                 "You must have 'requests' installed to use RequestsClient"
             )
 
-        super().__init__(base_url, verbose, headers, config)
+        super().__init__(base_url, verbose, headers, **kwargs)
 
         # Create the session
         self._session = requests.Session()
         self._session.headers.update(headers)
             
-        self._session.auth = self.config.get("auth", None)
-        self._session.cert = self.config.get("cert", None)
-        self._session.verify = self.config.get("verify", True)
-        self._session.proxies = self.config.get("proxies", {})
-        protocol = self.config.get("protocol", None)
+        self._session.auth = kwargs.get("auth", None)
+        self._session.cert = kwargs.get("cert", None)
+        self._session.verify = kwargs.get("verify", True)
+        self._session.proxies = kwargs.get("proxies", {})
+        protocol = kwargs.get("protocol", None)
         self._session.mount('https://', SSLAdapter(ssl_version=protocol))
 
     def perform_request(self, method, target, headers=None, body=None, json_result=True):

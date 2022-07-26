@@ -28,10 +28,9 @@ warnings.warn("""
 This connector is deprecated, instead use gaffer_connector.GafferConnector(
     host,
     client_class='pki',
-    config={
-        'pki': pki,
-        'protocol': protocol
-    })
+    pki = pki,
+    protocol = protocol
+    )
 """)
 class GafferConnector(gaffer_connector.GafferConnector):
     def __init__(self, host, pki, protocol=None, verbose=False, headers={}):
@@ -40,11 +39,7 @@ class GafferConnector(gaffer_connector.GafferConnector):
         per gafferConnector.GafferConnector and
         requires the additional pki object.
         """
-        pki_config = {
-            "pki": pki,
-            "protocol": protocol
-        }
-        super().__init__(host=host, verbose=verbose, headers=headers, config=pki_config, client_class="pki")
+        super().__init__(host=host, verbose=verbose, headers=headers, client_class="pki", pki=pki, protocol=protocol)
 
 ########################################################
 

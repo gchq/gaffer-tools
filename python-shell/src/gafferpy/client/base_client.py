@@ -20,7 +20,7 @@ class BaseClient:
     This class is initialised with a host to connect to.
     '''
 
-    def __init__(self, base_url, verbose=False, headers={}, config={}):
+    def __init__(self, base_url, verbose=False, headers={}, **kwargs):
         '''
         This initialiser sets up a connection to the specified Gaffer server.
 
@@ -31,7 +31,6 @@ class BaseClient:
         self.verbose = verbose
         self.headers = headers
         self.headers.setdefault('Content-Type', 'application/json;charset=utf-8')
-        self.config = config
 
     def perform_request(self, method, target, headers=None, body=None, json_result=True):
         raise NotImplementedError()

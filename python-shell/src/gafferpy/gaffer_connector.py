@@ -38,7 +38,7 @@ class GafferConnector:
     This class is initialised with a host to connect to.
     """
 
-    def __init__(self, host, verbose=False, headers={}, config={}, client_class=UrllibClient):
+    def __init__(self, host, verbose=False, headers={}, client_class=UrllibClient, **kwargs):
         """
         This initialiser sets up a connection to the specified Gaffer server.
 
@@ -55,7 +55,7 @@ class GafferConnector:
                 )
             client_class = CLIENT_CLASS_NAMES[client_class]
 
-        self.client = client_class(host, verbose, headers, config)
+        self.client = client_class(host, verbose, headers, **kwargs)
 
     def execute(self, operation, headers=None):
         """

@@ -28,14 +28,14 @@ class UrllibClient(BaseClient):
     This class is initialised with a host to connect to.
     '''
 
-    def __init__(self, base_url, verbose=False, headers={}, config={}):
+    def __init__(self, base_url, verbose=False, headers={}, **kwargs):
         '''
         This initialiser sets up a connection to the specified Gaffer server.
 
         The host (and port) of the Gaffer server, should be in the form,
         'hostname:1234/service-name/version'
         '''
-        super().__init__(base_url, verbose, headers, config)
+        super().__init__(base_url, verbose, headers, **kwargs)
 
         # Create the opener
         self._opener = urllib.request.build_opener(
