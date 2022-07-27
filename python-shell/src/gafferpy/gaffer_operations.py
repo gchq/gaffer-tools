@@ -738,8 +738,9 @@ class Transform(Transform):
 class If(If):
     def to_json(self):
         operation_json = super().to_json()
-        if not isinstance(self.input, list):
-            operation_json["input"] = [self.input]
+        if self.input is not None:
+            if not isinstance(self.input, list):
+                operation_json["input"] = [self.input]
         return operation_json
 
 # Element Input
