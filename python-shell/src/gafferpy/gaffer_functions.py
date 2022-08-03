@@ -65,6 +65,7 @@ class ElementGenerator(Function):
                  fields=None):
         super().__init__(class_name=class_name, fields=fields)
 
+# Import generated function implementations from fishbowl
 from gafferpy.generated_api.functions import *
 
 class FunctionContext(TupleAdaptedFunction):

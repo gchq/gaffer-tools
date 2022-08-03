@@ -665,6 +665,7 @@ class Conditional(ToJson, ToCodeString):
 
         return conditional_json
 
+# Import generated operation implementations from fishbowl
 from gafferpy.generated_api.operations import *
 
 # Parameters
