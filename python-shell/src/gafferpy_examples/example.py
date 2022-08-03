@@ -391,7 +391,6 @@ def generate_domain_objects_chain(gc):
         [
             g.GetElements(
                 input=[g.EntitySeed(vertex='M5')],
-                #seed_matching=g.SeedMatchingType.RELATED,
                 view=g.View(
                     edges=[
                         g.ElementDefinition(
