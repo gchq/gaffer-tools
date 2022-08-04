@@ -10,7 +10,7 @@
 - Persistently connect to a Gaffer rest api to run operations
 - Connect using PKI certificates and SSL
 - Generate Python client code for custom Operations, Predicates, Binary Operators and Functions
-- Stream results back
+- Turn existing json queries into Python objects
 
 ## Installation
 
@@ -86,7 +86,7 @@ python -m unittest discover
 
 ## License
 
-Copyright 2016 Crown Copyright
+Copyright 2016-2022 Crown Copyright
 
 Licensed under the Apache License, Version 2.0 \(the "License"\); you may not use this file except in compliance with the License. You may obtain a copy of the License at
 
