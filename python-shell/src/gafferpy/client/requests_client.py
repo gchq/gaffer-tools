@@ -63,7 +63,7 @@ class RequestsClient(BaseClient):
         # Create the session
         self._session = requests.Session()
         self._session.headers.update(headers)
-            
+
         self._session.auth = kwargs.get("auth", None)
         self._session.cert = kwargs.get("cert", None)
         self._session.verify = kwargs.get("verify", True)
