@@ -92,8 +92,12 @@ class Fishbowl:
         return self._generate_functions("/graph/config/aggregationFunctions", "gaffer_binaryoperators", "AbstractBinaryOperator")
 
     def _generate_functions(self, path, import_path, base_class):
-        # functions is a list of function classes
-        functions = self._gaffer_connector.get(path, json_result=True)
+        # Older Gaffer versions may be missing some function end points
+        try:
+            functions = self._gaffer_connector.get(path, json_result=True)
+        except ConnectionError:
+            print(f"{path} not present, skipping")
+            return ""
 
         functions_python = [HEADER]
         functions_python.append(f"from gafferpy.{import_path} import {base_class}\n\n")
@@ -132,7 +136,8 @@ class Fishbowl:
         return "\n".join(functions_python)
 
     def _generate_operations(self):
-        # Gaffer 2 spring-rest has an endpoint for every store operation, even ones unsupported by the store
+        # spring-rest has an endpoint for every store operation, even ones unsupported by the store
+        # Check if this is supported: 2.0.0+, 1.23.0+
         try:
             operation_summaries = self._gaffer_connector.get("/graph/operations/details/all", json_result=True)
         except ConnectionError:
