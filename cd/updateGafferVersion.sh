@@ -21,6 +21,9 @@ sed -i'' "s/gaffer2:$oldVersion/gaffer2:$newVersion/g" NOTICES
 sed -i'' "s/__version__ = \"$oldVersion\"/__version__ = \"$newVersion\"/g" python-shell/__init__.py
 sed -i'' "s/__version__ = \"$oldVersion\"/__version__ = \"$newVersion\"/g" python-shell/src/__init__.py
 sed -i'' "s/__version__ = \"$oldVersion\"/__version__ = \"$newVersion\"/g" python-shell/src/gafferpy/__init__.py
+sed -i'' "s/__version__ = \"$oldVersion\"/__version__ = \"$newVersion\"/g" python-shell/src/fishbowl/__init__.py
+sed -i'' "s/__version__ = \"$oldVersion\"/__version__ = \"$newVersion\"/g" python-shell/src/gafferpy_examples/__init__.py
+sed -i'' "s/__version__ = \"$oldVersion\"/__version__ = \"$newVersion\"/g" python-shell/src/test/__init__.py
 
 git add pom.xml
 git add NOTICES
