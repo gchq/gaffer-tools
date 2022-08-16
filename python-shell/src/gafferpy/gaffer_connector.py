@@ -42,8 +42,8 @@ class GafferConnector:
         """
         This initialiser sets up a connection to the specified Gaffer server.
 
-        The host (and port) of the Gaffer server, should be in the form,
-        'hostname:1234/service-name/version'
+        The host (and port) of the Gaffer server, should be in the form: 'hostname:1234/service-name/version'.
+        Note that spring-rest endpoints do not require the version.
         """
 
         if isinstance(client_class, str):
