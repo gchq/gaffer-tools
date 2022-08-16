@@ -161,6 +161,16 @@ class BaseTestCases:
             with self.assertRaises(ConnectionError):
                 gc.execute_get(g.GetOperations())
 
+        def test_raise_connection_error_https(self):
+            '''Test that an error is correctly raised when a HTTPS endpoint cannot be found'''
+            # Define a host that uses https
+            host_with_ssh_endpoint = "https://localhost:8080/rest/latest"
+            gc = gaffer_connector.GafferConnector(host_with_ssh_endpoint, client_class=self.client_class)
+
+            # Check that an OSError is raised (caused by SSLError)
+            with self.assertRaises(OSError):
+                gc.execute_get(g.GetOperations())
+
 class GafferConnectorUrllibTest(BaseTestCases.GafferConnectorTest):
     client_class = "urllib"
 class GafferConnectorRequestsTest(BaseTestCases.GafferConnectorTest):
