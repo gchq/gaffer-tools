@@ -1,5 +1,5 @@
 #
-# Copyright 2016-2019 Crown Copyright
+# Copyright 2016-2022 Crown Copyright
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -17,9 +17,10 @@
 """
 This module contains Python copies of Gaffer config java classes
 """
+import inspect
+import sys
 
-from gafferpy.gaffer_core import *
-import gafferpy.gaffer_operations as gaffer_operations
+from gafferpy.gaffer_core import JsonConverter
 
 
 class GetGraph:
@@ -29,71 +30,13 @@ class GetGraph:
     def get_url(self):
         return self._url
 
+# Import generated config implementations from fishbowl
+from gafferpy.generated_api.config import *
 
-class GetSchema(gaffer_operations.Operation, GetGraph):
-    CLASS = 'uk.gov.gchq.gaffer.store.operation.GetSchema'
-
-    def __init__(self,
-                 compact=None,
-                 options=None):
-        super().__init__(_class_name=self.CLASS,
-                         options=options)
-
-        if compact is not None:
-            self.compact = compact
-        else:
-            self.compact = False
-
-        self._url = '/graph/config/schema'
-
-    def to_json(self):
-        operation = super().to_json()
-
-        if self.compact is not None:
-            operation['compact'] = self.compact
-
-        return operation
-
-
-class GetFilterFunctions(GetGraph):
-    def __init__(self):
-        super().__init__('/graph/config/filterFunctions')
-
-
-class GetTransformFunctions(GetGraph):
-    def __init__(self):
-        super().__init__('/graph/config/transformFunctions')
-
-
-class GetClassFilterFunctions(GetGraph):
-    def __init__(self, class_name=None):
-        super().__init__('/graph/config/filterFunctions/' + class_name)
-
-
-class GetElementGenerators(GetGraph):
-    def __init__(self):
-        super().__init__('/graph/config/elementGenerators')
-
-
-class GetObjectGenerators(GetGraph):
-    def __init__(self):
-        super().__init__('/graph/config/objectGenerators')
-
-
-class GetOperations(GetGraph):
-    def __init__(self):
-        super().__init__('/graph/operations')
-
-
-class GetSerialisedFields(GetGraph):
-    def __init__(self, class_name=None):
-        super().__init__('/graph/config/serialisedFields/' + class_name)
-
-
-class GetStoreTraits(GetGraph):
-    def __init__(self):
-        super().__init__('/graph/config/storeTraits')
-
+# Add an alternative name for GetFilterFunctions
+class GetClassFilterFunctions(GetFilterFunctions):
+    def __init__(self, class_name=''):
+        super().__init__(class_name)
 
 class IsOperationSupported:
     def __init__(self, operation=None):

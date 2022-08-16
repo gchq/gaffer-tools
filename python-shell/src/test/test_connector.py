@@ -21,247 +21,160 @@ from gafferpy import gaffer as g
 from gafferpy import gaffer_connector
 
 
-class GafferConnectorTest(unittest.TestCase):
-    def test_execute_operation(self):
-        gc = gaffer_connector.GafferConnector('http://localhost:8080/rest/latest')
-        elements = gc.execute_operation(
-            g.GetElements(
-                input=[
-                    g.EntitySeed('M5:10')
-                ],
-                view=g.View(
-                    edges=[
-                        g.ElementDefinition(
-                            group='JunctionLocatedAt'
-                        )
-                    ]
+class BaseTestCases:
+    class GafferConnectorTest(unittest.TestCase):
+        client_class = ""
+
+        def test_execute_operation(self):
+            gc = gaffer_connector.GafferConnector('http://localhost:8080/rest/latest', client_class=self.client_class)
+            elements = gc.execute_operation(
+                g.GetElements(
+                    input=[
+                        g.EntitySeed('M5:10')
+                    ],
+                    view=g.View(
+                        edges=[
+                            g.ElementDefinition(
+                                group='JunctionLocatedAt'
+                            )
+                        ]
+                    )
                 )
             )
-        )
 
-        self.assertEqual(
-            [g.Edge("JunctionLocatedAt", "M5:10", "390466,225615", True, {},
-                    "SOURCE")],
-            elements)
+            self.assertEqual(
+                [g.Edge("JunctionLocatedAt", "M5:10", "390466,225615", True, {},
+                        "SOURCE")],
+                elements)
 
-    def test_is_operation_supported(self):
-        gc = gaffer_connector.GafferConnector('http://localhost:8080/rest/latest')
+        def test_is_operation_supported(self):
+            gc = gaffer_connector.GafferConnector('http://localhost:8080/rest/latest', client_class=self.client_class)
 
-        response_text = gc.is_operation_supported(
-            g.IsOperationSupported(
-                operation='uk.gov.gchq.gaffer.operation.impl.get.GetAllElements'
+            response = gc.is_operation_supported(
+                g.IsOperationSupported(
+                    operation='uk.gov.gchq.gaffer.operation.impl.get.GetAllElements'
+                ),
+                json_result=True
             )
-        )
+            response.pop("next")
+            response_text = json.dumps(response)
 
-        expected_response_text = '''
-        {
-          "name": "uk.gov.gchq.gaffer.operation.impl.get.GetAllElements",
-          "summary": "Gets all elements compatible with a provided View",
-          "fields": [
+            expected_response_text = '''
             {
-              "name": "view",
-              "className": "uk.gov.gchq.gaffer.data.elementdefinition.view.View",
-              "required": false
+            "name": "uk.gov.gchq.gaffer.operation.impl.get.GetAllElements",
+            "summary": "Gets all elements compatible with a provided View",
+            "fields": [
+                {
+                "name": "view",
+                "className": "uk.gov.gchq.gaffer.data.elementdefinition.view.View",
+                "required": false
+                },
+                {
+                "name": "options",
+                "className": "java.util.Map<java.lang.String,java.lang.String>",
+                "required": false
+                },
+                {
+                "name": "directedType",
+                "summary": "Is the Edge directed?",
+                "className": "java.lang.String",
+                "options": [
+                    "DIRECTED",
+                    "UNDIRECTED",
+                    "EITHER"
+                ],
+                "required": false
+                },
+                {
+                "name": "views",
+                "className": "java.util.List<uk.gov.gchq.gaffer.data.elementdefinition.view.View>",
+                "required": false
+                }
+            ],
+            "exampleJson": {
+                "class": "uk.gov.gchq.gaffer.operation.impl.get.GetAllElements"
             },
-            {
-              "name": "options",
-              "className": "java.util.Map<java.lang.String,java.lang.String>",
-              "required": false
-            },
-            {
-              "name": "directedType",
-              "summary": "Is the Edge directed?",
-              "className": "java.lang.String",
-              "options": [
-                "DIRECTED",
-                "UNDIRECTED",
-                "EITHER"
-              ],
-              "required": false
-            },
-            {
-              "name": "views",
-              "className": "java.util.List<uk.gov.gchq.gaffer.data.elementdefinition.view.View>",
-              "required": false
+            "outputClassName": "java.lang.Iterable<uk.gov.gchq.gaffer.data.element.Element>"
             }
-          ],
-          "next": [
-            "uk.gov.gchq.gaffer.operation.impl.add.AddElements",
-            "uk.gov.gchq.gaffer.operation.impl.get.GetElements",
-            "uk.gov.gchq.gaffer.operation.impl.get.GetAdjacentIds",
-            "uk.gov.gchq.gaffer.operation.impl.export.set.ExportToSet",
-            "uk.gov.gchq.gaffer.operation.impl.output.ToArray",
-            "uk.gov.gchq.gaffer.operation.impl.output.ToEntitySeeds",
-            "uk.gov.gchq.gaffer.operation.impl.output.ToList",
-            "uk.gov.gchq.gaffer.operation.impl.output.ToMap",
-            "uk.gov.gchq.gaffer.operation.impl.output.ToCsv",
-            "uk.gov.gchq.gaffer.operation.impl.output.ToSet",
-            "uk.gov.gchq.gaffer.operation.impl.output.ToStream",
-            "uk.gov.gchq.gaffer.operation.impl.output.ToVertices",
-            "uk.gov.gchq.gaffer.named.operation.NamedOperation",
-            "uk.gov.gchq.gaffer.operation.impl.compare.Max",
-            "uk.gov.gchq.gaffer.operation.impl.compare.Min",
-            "uk.gov.gchq.gaffer.operation.impl.compare.Sort",
-            "uk.gov.gchq.gaffer.operation.impl.GetWalks",
-            "uk.gov.gchq.gaffer.operation.impl.generate.GenerateElements",
-            "uk.gov.gchq.gaffer.operation.impl.generate.GenerateObjects",
-            "uk.gov.gchq.gaffer.operation.impl.Validate",
-            "uk.gov.gchq.gaffer.operation.impl.Count",
-            "uk.gov.gchq.gaffer.operation.impl.CountGroups",
-            "uk.gov.gchq.gaffer.operation.impl.Limit",
-            "uk.gov.gchq.gaffer.operation.impl.DiscardOutput",
-            "uk.gov.gchq.gaffer.operation.impl.Map",
-            "uk.gov.gchq.gaffer.operation.impl.If",
-            "uk.gov.gchq.gaffer.operation.impl.While",
-            "uk.gov.gchq.gaffer.operation.impl.ForEach",
-            "uk.gov.gchq.gaffer.operation.impl.output.ToSingletonList",
-            "uk.gov.gchq.gaffer.operation.impl.Reduce",
-            "uk.gov.gchq.gaffer.operation.impl.join.Join",
-            "uk.gov.gchq.gaffer.operation.impl.SetVariable",
-            "uk.gov.gchq.gaffer.operation.impl.function.Filter",
-            "uk.gov.gchq.gaffer.operation.impl.function.Transform",
-            "uk.gov.gchq.gaffer.operation.impl.function.Aggregate",
-            "uk.gov.gchq.gaffer.mapstore.operation.CountAllElementsDefaultView",
-            "uk.gov.gchq.gaffer.operation.export.graph.ExportToOtherAuthorisedGraph",
-            "uk.gov.gchq.gaffer.operation.export.graph.ExportToOtherGraph",
-            "uk.gov.gchq.gaffer.operation.impl.export.resultcache.ExportToGafferResultCache"
-          ],
-          "exampleJson": {
-            "class": "uk.gov.gchq.gaffer.operation.impl.get.GetAllElements"
-          },
-          "outputClassName": "java.lang.Iterable<uk.gov.gchq.gaffer.data.element.Element>"
-        }
-            '''
+                '''
 
-        self.assertEqual(
-            json.loads(expected_response_text),
-            json.loads(response_text)
-        )
+            self.assertEqual(
+                json.loads(expected_response_text),
+                json.loads(response_text)
+            )
 
-    def test_execute_get(self):
-        self.maxDiff = None
-        gc = gaffer_connector.GafferConnector('http://localhost:8080/rest/latest')
+        def test_execute_get(self):
+            gc = gaffer_connector.GafferConnector('http://localhost:8080/rest/latest', client_class=self.client_class)
 
-        response_text = gc.execute_get(
-            g.GetOperations()
-        )
+            response = gc.execute_get(
+                g.GetSchema(),
+                json_result=True
+            )
 
-        expected_response_text = '''
-        [
-            "uk.gov.gchq.gaffer.operation.impl.add.AddElements",
-            "uk.gov.gchq.gaffer.operation.impl.get.GetElements",
-            "uk.gov.gchq.gaffer.operation.impl.get.GetAdjacentIds",
-            "uk.gov.gchq.gaffer.operation.impl.get.GetAllElements",
-            "uk.gov.gchq.gaffer.operation.impl.export.set.ExportToSet",
-            "uk.gov.gchq.gaffer.operation.impl.export.set.GetSetExport",
-            "uk.gov.gchq.gaffer.operation.impl.export.GetExports",
-            "uk.gov.gchq.gaffer.operation.impl.job.GetJobDetails",
-            "uk.gov.gchq.gaffer.operation.impl.job.GetAllJobDetails",
-            "uk.gov.gchq.gaffer.operation.impl.job.GetJobResults",
-            "uk.gov.gchq.gaffer.operation.impl.output.ToArray",
-            "uk.gov.gchq.gaffer.operation.impl.output.ToEntitySeeds",
-            "uk.gov.gchq.gaffer.operation.impl.output.ToList",
-            "uk.gov.gchq.gaffer.operation.impl.output.ToMap",
-            "uk.gov.gchq.gaffer.operation.impl.output.ToCsv",
-            "uk.gov.gchq.gaffer.operation.impl.output.ToSet",
-            "uk.gov.gchq.gaffer.operation.impl.output.ToStream",
-            "uk.gov.gchq.gaffer.operation.impl.output.ToVertices",
-            "uk.gov.gchq.gaffer.named.operation.NamedOperation",
-            "uk.gov.gchq.gaffer.named.operation.AddNamedOperation",
-            "uk.gov.gchq.gaffer.named.operation.GetAllNamedOperations",
-            "uk.gov.gchq.gaffer.named.operation.DeleteNamedOperation",
-            "uk.gov.gchq.gaffer.named.view.AddNamedView",
-            "uk.gov.gchq.gaffer.named.view.GetAllNamedViews",
-            "uk.gov.gchq.gaffer.named.view.DeleteNamedView",
-            "uk.gov.gchq.gaffer.operation.impl.compare.Max",
-            "uk.gov.gchq.gaffer.operation.impl.compare.Min",
-            "uk.gov.gchq.gaffer.operation.impl.compare.Sort",
-            "uk.gov.gchq.gaffer.operation.OperationChain",
-            "uk.gov.gchq.gaffer.operation.OperationChainDAO",
-            "uk.gov.gchq.gaffer.operation.impl.ValidateOperationChain",
-            "uk.gov.gchq.gaffer.operation.impl.GetWalks",
-            "uk.gov.gchq.gaffer.operation.impl.generate.GenerateElements",
-            "uk.gov.gchq.gaffer.operation.impl.generate.GenerateObjects",
-            "uk.gov.gchq.gaffer.operation.impl.Validate",
-            "uk.gov.gchq.gaffer.operation.impl.Count",
-            "uk.gov.gchq.gaffer.operation.impl.CountGroups",
-            "uk.gov.gchq.gaffer.operation.impl.Limit",
-            "uk.gov.gchq.gaffer.operation.impl.DiscardOutput",
-            "uk.gov.gchq.gaffer.store.operation.GetSchema",
-            "uk.gov.gchq.gaffer.operation.impl.Map",
-            "uk.gov.gchq.gaffer.operation.impl.If",
-            "uk.gov.gchq.gaffer.operation.impl.While",
-            "uk.gov.gchq.gaffer.operation.impl.ForEach",
-            "uk.gov.gchq.gaffer.operation.impl.output.ToSingletonList",
-            "uk.gov.gchq.gaffer.operation.impl.Reduce",
-            "uk.gov.gchq.gaffer.operation.impl.join.Join",
-            "uk.gov.gchq.gaffer.operation.impl.job.CancelScheduledJob",
-            "uk.gov.gchq.gaffer.operation.impl.SetVariable",
-            "uk.gov.gchq.gaffer.operation.impl.GetVariable",
-            "uk.gov.gchq.gaffer.operation.impl.GetVariables",
-            "uk.gov.gchq.gaffer.operation.impl.function.Filter",
-            "uk.gov.gchq.gaffer.operation.impl.function.Transform",
-            "uk.gov.gchq.gaffer.operation.impl.function.Aggregate",
-            "uk.gov.gchq.gaffer.store.operation.HasTrait",
-            "uk.gov.gchq.gaffer.store.operation.GetTraits",
-            "uk.gov.gchq.gaffer.mapstore.operation.CountAllElementsDefaultView",
-            "uk.gov.gchq.gaffer.operation.export.graph.ExportToOtherAuthorisedGraph",
-            "uk.gov.gchq.gaffer.operation.export.graph.ExportToOtherGraph",
-            "uk.gov.gchq.gaffer.operation.impl.export.resultcache.ExportToGafferResultCache",
-            "uk.gov.gchq.gaffer.operation.impl.export.resultcache.GetGafferResultCacheExport"
-        ]
-        '''
+            self.assertTrue(
+                isinstance(response, dict) and response != {}
+            )
 
-        self.assertEqual(
-            json.loads(expected_response_text),
-            json.loads(response_text)
-        )
-
-    def test_dummy_header(self):
-        """Test that the addition of a dummy header does not effect the standard test"""
-        gc = gaffer_connector.GafferConnector('http://localhost:8080/rest/latest', headers={"dummy_Header": "value"})
-        elements = gc.execute_operation(
-            g.GetElements(
-                input=[
-                    g.EntitySeed('M5:10')
-                ],
-                view=g.View(
-                    edges=[
-                        g.ElementDefinition(
-                            group='JunctionLocatedAt'
-                        )
-                    ]
+        def test_dummy_header(self):
+            '''Test that the addition of a dummy header does not effect the standard test'''
+            gc = gaffer_connector.GafferConnector('http://localhost:8080/rest/latest', headers={"dummy_Header": "value"}, client_class=self.client_class)
+            elements = gc.execute_operation(
+                g.GetElements(
+                    input=[
+                        g.EntitySeed('M5:10')
+                    ],
+                    view=g.View(
+                        edges=[
+                            g.ElementDefinition(
+                                group='JunctionLocatedAt'
+                            )
+                        ]
+                    )
                 )
             )
-        )
 
-        self.assertEqual(
-            [g.Edge("JunctionLocatedAt", "M5:10", "390466,225615", True, {},
-                    "SOURCE")],
-            elements)
+            self.assertEqual(
+                [g.Edge("JunctionLocatedAt", "M5:10", "390466,225615", True, {},
+                        "SOURCE")],
+                elements)
 
-    def test_class_initilisation(self):
-        """Test that the gaffer_connector class is correctly initialised with instance attributes"""
-        host = 'http://localhost:8080/rest/latest'
-        verbose = False
-        headers = {"dummy_Header": "value"}
-        gc = gaffer_connector.GafferConnector(host, verbose, headers)
+        def test_class_initilisation(self):
+            '''Test that the gaffer_connector class is correctly initialised with instance attributes'''
+            host = 'http://localhost:8080/rest/latest'
+            verbose = False
+            headers = {"dummy_Header": "value"}
+            gc = gaffer_connector.GafferConnector(host, verbose, headers, client_class=self.client_class)
 
-        actuals = [gc._host, gc._verbose, gc._headers]
-        expecteds = [host, verbose, headers]
+            actuals = [gc._host, gc._verbose, gc._headers]
+            expecteds = [host, verbose, headers]
 
-        for actual, expected in zip(actuals, expecteds):
-            self.assertEqual(actual, expected)
+            for actual, expected in zip(actuals, expecteds):
+                self.assertEqual(actual, expected)
 
-    def test_raise_connection_error(self):
-        """Test that a ConnectionError is correctly raised when a HTTP 404 error is caught"""
-        # Define a host that has an invalid endpoint in order to get a HTTP 404 error
-        host_with_bad_endpoint = "http://localhost:8080/badEndPoint"
-        gc = gaffer_connector.GafferConnector(host_with_bad_endpoint)
+        def test_raise_connection_error(self):
+            '''Test that a ConnectionError is correctly raised when a HTTP 404 error is caught'''
+            # Define a host that has an invalid endpoint in order to get a HTTP 404 error
+            host_with_bad_endpoint = "http://localhost:8080/badEndPoint"
+            gc = gaffer_connector.GafferConnector(host_with_bad_endpoint, client_class=self.client_class)
 
-        # Check that a ConnectionError is raised (which is catching the underlying HTTP 404)
-        with self.assertRaises(ConnectionError):
-            gc.execute_get(g.GetOperations())
+            # Check that a ConnectionError is raised (which is catching the underlying HTTP 404)
+            with self.assertRaises(ConnectionError):
+                gc.execute_get(g.GetOperations())
+
+        def test_raise_connection_error_https(self):
+            '''Test that an error is correctly raised when a HTTPS endpoint cannot be found'''
+            # Define a host that uses https
+            host_with_ssh_endpoint = "https://localhost:8080/rest/latest"
+            gc = gaffer_connector.GafferConnector(host_with_ssh_endpoint, client_class=self.client_class)
+
+            # Check that an OSError is raised (caused by SSLError)
+            with self.assertRaises(OSError):
+                gc.execute_get(g.GetOperations())
+
+class GafferConnectorUrllibTest(BaseTestCases.GafferConnectorTest):
+    client_class = "urllib"
+class GafferConnectorRequestsTest(BaseTestCases.GafferConnectorTest):
+    client_class = "requests"
 
 if __name__ == "__main__":
     unittest.main()

@@ -22,7 +22,7 @@ from gafferpy import gaffer_connector
 
 
 class GafferOperationsIntegrationTest(unittest.TestCase):
-    def test_all_operations_have_classes(self):
+    def test_all_supported_operations_have_classes(self):
         gc = gaffer_connector.GafferConnector(
             'http://localhost:8080/rest/latest')
         operations = gc.execute_get(
@@ -33,6 +33,37 @@ class GafferOperationsIntegrationTest(unittest.TestCase):
             self.assertTrue(op in g.JsonConverter.GENERIC_JSON_CONVERTERS,
                             'Missing operation class: ' + op)
 
+    def _get_all_subclasses(self, cls):
+        all_subclasses = []
+
+        for subclass in cls.__subclasses__():
+            all_subclasses.append(subclass)
+            all_subclasses.extend(self._get_all_subclasses(subclass))
+
+        return all_subclasses
+
+    def test_all_operations_have_classes(self):
+        # TODO: This should be in fishbowl tests in the future
+        # only the spring-rest has this endpoint
+        gc = gaffer_connector.GafferConnector('http://localhost:8080/rest/latest')
+
+        try:
+            response = gc.execute_get(
+                g.GetOperationsDetailsAll(),
+                json_result=True
+            )
+        except:
+            return
+
+        response = [operation["name"] for operation in response]
+
+        operation_subclasses = self._get_all_subclasses(g.Operation)
+        expected_response = set(c.CLASS for c in operation_subclasses)
+
+        self.assertEqual(
+            sorted(expected_response),
+            sorted(response)
+        )
 
 if __name__ == "__main__":
     unittest.main()

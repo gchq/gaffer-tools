@@ -16,7 +16,7 @@
 
 import unittest
 
-import example
+from gafferpy_examples import example
 
 
 class ExampleTest(unittest.TestCase):
