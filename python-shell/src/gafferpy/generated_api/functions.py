@@ -1823,3 +1823,27 @@ class Base64Decode(AbstractFunction):
     def to_json(self):
         return super().to_json()
 
+class OpenCypherCsvGenerator(AbstractFunction):
+    CLASS = "uk.gov.gchq.gaffer.data.generator.OpenCypherCsvGenerator"
+
+    def __init__(self, quoted=None, comma_replacement=None, neo4j_format=None, constants=None, fields=None):
+        super().__init__(_class_name=self.CLASS)
+        self.quoted = quoted
+        self.comma_replacement = comma_replacement
+        self.neo4j_format = neo4j_format
+        self.constants = constants
+        self.fields = fields
+
+    def to_json(self):
+        function_json = super().to_json()
+        if self.quoted is not None:
+            function_json["quoted"] = self.quoted
+        if self.comma_replacement is not None:
+            function_json["commaReplacement"] = self.comma_replacement
+        if self.neo4j_format is not None:
+            function_json["neo4jFormat"] = self.neo4j_format
+        if self.constants is not None:
+            function_json["constants"] = self.constants
+        if self.fields is not None:
+            function_json["fields"] = self.fields
+        return function_json
