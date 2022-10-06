@@ -9,6 +9,33 @@ on:
       - 'alpha-release/**'
 
 jobs:
+  autopep8:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: autopep8
+        id: autopep8
+        uses: peter-evans/autopep8@v1
+        with:
+          # ignore E402 rule to avoid changes that cause circular imports
+          args: --exit-code --recursive --in-place --aggressive --aggressive --ignore E402 .
+      - name: Set autopep8 branch name
+        id: vars
+        run: echo ::set-output name=branch-name::"pep8patches/$GITHUB_HEAD_REF"
+      - name: Create Pull Request
+        if: steps.autopep8.outputs.exit-code == 2
+        uses: peter-evans/create-pull-request@v3
+        with:
+          commit-message: autopep8 action fixes
+          title: Fixes by autopep8 action
+          body: This is an auto-generated PR with fixes by autopep8.
+          labels: autopep8
+          branch: ${{ steps.vars.outputs.branch-name }}
+          base: ${{ github.head_ref }}
+      - name: Fail if autopep8 made changes
+        if: steps.autopep8.outputs.exit-code == 2
+        run: exit 1
+
   check-all-modules-are-tested:
     runs-on: ubuntu-latest
     steps:
