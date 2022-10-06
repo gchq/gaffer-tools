@@ -295,7 +295,12 @@ class AggregatorUtilIngestPropertiesBinaryOperator(AbstractBinaryOperator):
 class TupleAdaptedBinaryOperator(AbstractBinaryOperator):
     CLASS = "uk.gov.gchq.koryphe.tuple.binaryoperator.TupleAdaptedBinaryOperator"
 
-    def __init__(self, input_adapter=None, selection=None, binary_operator=None, output_adapter=None):
+    def __init__(
+            self,
+            input_adapter=None,
+            selection=None,
+            binary_operator=None,
+            output_adapter=None):
         super().__init__(_class_name=self.CLASS)
         self.input_adapter = input_adapter
         self.selection = selection
@@ -412,7 +417,11 @@ class DoublesSketchAggregator(AbstractBinaryOperator):
 class AdaptedBinaryOperator(AbstractBinaryOperator):
     CLASS = "uk.gov.gchq.koryphe.binaryoperator.AdaptedBinaryOperator"
 
-    def __init__(self, input_adapter=None, binary_operator=None, output_adapter=None):
+    def __init__(
+            self,
+            input_adapter=None,
+            binary_operator=None,
+            output_adapter=None):
         super().__init__(_class_name=self.CLASS)
         self.input_adapter = input_adapter
         self.binary_operator = binary_operator
@@ -511,4 +520,3 @@ class BoundedTimestampSetAggregator(AbstractBinaryOperator):
 
     def to_json(self):
         return super().to_json()
-

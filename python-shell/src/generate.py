@@ -3,7 +3,8 @@ import os
 from gafferpy.gaffer_connector import GafferConnector
 from fishbowl.fishbowl import Fishbowl
 
-# Generate the core api using spring-rest as it has access to every store operation
+# Generate the core api using spring-rest as it has access to every store
+# operation
 gc = GafferConnector("http://localhost:8080/rest")
 
 dirname = os.path.dirname(__file__)

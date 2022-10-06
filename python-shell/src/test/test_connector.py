@@ -26,7 +26,9 @@ class BaseTestCases:
         client_class = ""
 
         def test_execute_operation(self):
-            gc = gaffer_connector.GafferConnector('http://localhost:8080/rest/latest', client_class=self.client_class)
+            gc = gaffer_connector.GafferConnector(
+                'http://localhost:8080/rest/latest',
+                client_class=self.client_class)
             elements = gc.execute_operation(
                 g.GetElements(
                     input=[
@@ -48,14 +50,14 @@ class BaseTestCases:
                 elements)
 
         def test_is_operation_supported(self):
-            gc = gaffer_connector.GafferConnector('http://localhost:8080/rest/latest', client_class=self.client_class)
+            gc = gaffer_connector.GafferConnector(
+                'http://localhost:8080/rest/latest',
+                client_class=self.client_class)
 
             response = gc.is_operation_supported(
                 g.IsOperationSupported(
-                    operation='uk.gov.gchq.gaffer.operation.impl.get.GetAllElements'
-                ),
-                json_result=True
-            )
+                    operation='uk.gov.gchq.gaffer.operation.impl.get.GetAllElements'),
+                json_result=True)
             response.pop("next")
             response_text = json.dumps(response)
 
@@ -104,7 +106,9 @@ class BaseTestCases:
             )
 
         def test_execute_get(self):
-            gc = gaffer_connector.GafferConnector('http://localhost:8080/rest/latest', client_class=self.client_class)
+            gc = gaffer_connector.GafferConnector(
+                'http://localhost:8080/rest/latest',
+                client_class=self.client_class)
 
             response = gc.execute_get(
                 g.GetSchema(),
@@ -117,7 +121,11 @@ class BaseTestCases:
 
         def test_dummy_header(self):
             '''Test that the addition of a dummy header does not effect the standard test'''
-            gc = gaffer_connector.GafferConnector('http://localhost:8080/rest/latest', headers={"dummy_Header": "value"}, client_class=self.client_class)
+            gc = gaffer_connector.GafferConnector(
+                'http://localhost:8080/rest/latest',
+                headers={
+                    "dummy_Header": "value"},
+                client_class=self.client_class)
             elements = gc.execute_operation(
                 g.GetElements(
                     input=[
@@ -143,7 +151,8 @@ class BaseTestCases:
             host = 'http://localhost:8080/rest/latest'
             verbose = False
             headers = {"dummy_Header": "value"}
-            gc = gaffer_connector.GafferConnector(host, verbose, headers, client_class=self.client_class)
+            gc = gaffer_connector.GafferConnector(
+                host, verbose, headers, client_class=self.client_class)
 
             actuals = [gc._host, gc._verbose, gc._headers]
             expecteds = [host, verbose, headers]
@@ -153,11 +162,14 @@ class BaseTestCases:
 
         def test_raise_connection_error(self):
             '''Test that a ConnectionError is correctly raised when a HTTP 404 error is caught'''
-            # Define a host that has an invalid endpoint in order to get a HTTP 404 error
+            # Define a host that has an invalid endpoint in order to get a HTTP
+            # 404 error
             host_with_bad_endpoint = "http://localhost:8080/badEndPoint"
-            gc = gaffer_connector.GafferConnector(host_with_bad_endpoint, client_class=self.client_class)
+            gc = gaffer_connector.GafferConnector(
+                host_with_bad_endpoint, client_class=self.client_class)
 
-            # Check that a ConnectionError is raised (which is catching the underlying HTTP 404)
+            # Check that a ConnectionError is raised (which is catching the
+            # underlying HTTP 404)
             with self.assertRaises(ConnectionError):
                 gc.execute_get(g.GetOperations())
 
@@ -165,16 +177,21 @@ class BaseTestCases:
             '''Test that an error is correctly raised when a HTTPS endpoint cannot be found'''
             # Define a host that uses https
             host_with_ssh_endpoint = "https://localhost:8080/rest/latest"
-            gc = gaffer_connector.GafferConnector(host_with_ssh_endpoint, client_class=self.client_class)
+            gc = gaffer_connector.GafferConnector(
+                host_with_ssh_endpoint, client_class=self.client_class)
 
             # Check that an OSError is raised (caused by SSLError)
             with self.assertRaises(OSError):
                 gc.execute_get(g.GetOperations())
 
+
 class GafferConnectorUrllibTest(BaseTestCases.GafferConnectorTest):
     client_class = "urllib"
+
+
 class GafferConnectorRequestsTest(BaseTestCases.GafferConnectorTest):
     client_class = "requests"
+
 
 if __name__ == "__main__":
     unittest.main()

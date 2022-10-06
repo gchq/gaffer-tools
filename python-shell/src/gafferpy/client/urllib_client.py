@@ -22,6 +22,7 @@ from gafferpy.gaffer_core import JsonConverter
 
 from .base_client import BaseClient
 
+
 class UrllibClient(BaseClient):
     '''
     This class handles the connection to a Gaffer server and handles operations.
@@ -41,12 +42,19 @@ class UrllibClient(BaseClient):
         self._opener = urllib.request.build_opener(
             urllib.request.HTTPHandler())
 
-    def perform_request(self, method, target, headers=None, body=None, json_result=True):
+    def perform_request(
+            self,
+            method,
+            target,
+            headers=None,
+            body=None,
+            json_result=True):
         url = self.base_url + target
-        
+
         request_headers = self.merge_headers(headers)
 
-        request = urllib.request.Request(url, headers=request_headers, data=body, method=method)
+        request = urllib.request.Request(
+            url, headers=request_headers, data=body, method=method)
 
         try:
             response = self._opener.open(request)
@@ -57,7 +65,7 @@ class UrllibClient(BaseClient):
                                 error.reason + ': ' +
                                 error_body)
             raise ConnectionError(new_error_string)
-        
+
         response_text = response.read().decode('utf-8')
 
         if not json_result and method == "GET":

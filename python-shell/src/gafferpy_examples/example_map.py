@@ -44,5 +44,6 @@ def count_all_elements_default_view(gc):
     print(elements)
     print()
 
+
 if __name__ == "__main__":
     run('http://localhost:8080/rest/latest', False)

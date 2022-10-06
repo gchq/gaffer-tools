@@ -40,11 +40,11 @@ class GafferPredicatesIntegrationTest(unittest.TestCase):
             'uk.gov.gchq.koryphe.tuple.predicate.TupleAdaptedPredicateComposite',
             'uk.gov.gchq.gaffer.store.util.AggregatorUtil$IsElementAggregated',
             'uk.gov.gchq.gaffer.graph.hook.migrate.predicate.TransformAndFilter',
-            'uk.gov.gchq.gaffer.data.element.function.PropertiesFilter'
-        ]
+            'uk.gov.gchq.gaffer.data.element.function.PropertiesFilter']
 
         for i in ignore_predicates:
-            if i in predicates: predicates.remove(i)
+            if i in predicates:
+                predicates.remove(i)
 
         for op in predicates:
             self.assertTrue(op in g.JsonConverter.GENERIC_JSON_CONVERTERS,

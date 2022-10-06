@@ -75,11 +75,14 @@ setup(
     maintainer=find_meta("author"),
     keywords=keywords,
     packages=packages,
-    package_dir={"": "src"},
+    package_dir={
+        "": "src"},
     zip_safe=False,
     classifiers=classifiers,
     install_requires=install_requires,
     extras_require=extras_require,
     python_requires=python_requires,
-    py_modules=["gafferpy.gafferpy", "gafferpy.gafferpy_examples", "gafferpy.fishbowl"]
-)
+    py_modules=[
+        "gafferpy.gafferpy",
+        "gafferpy.gafferpy_examples",
+        "gafferpy.fishbowl"])

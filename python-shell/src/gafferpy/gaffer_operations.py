@@ -368,8 +368,8 @@ class AggregatePair(ToJson, ToCodeString):
         if group_by is not None and not isinstance(group_by, list):
             group_by = [group_by]
         self.group_by = group_by
-        if element_aggregator is not None and not isinstance(element_aggregator,
-                                                             ElementAggregateDefinition):
+        if element_aggregator is not None and not isinstance(
+                element_aggregator, ElementAggregateDefinition):
             element_aggregator = ElementAggregateDefinition(
                 operators=element_aggregator['operators'])
         self.element_aggregator = element_aggregator
@@ -563,7 +563,7 @@ class Operation(ToJson, ToCodeString):
         if isinstance(options, list):
             options = {
                 "gaffer.federatedstore.operation.graphIds": ','.join(options)
-                }
+            }
         self.options = options
 
     def to_json(self):
@@ -588,12 +588,13 @@ class Operation(ToJson, ToCodeString):
             return JsonConverter.validate(
                 operation_chain, OperationChain, allow_none
             )
-        except:
+        except BaseException:
             return OperationChain([
                 JsonConverter.validate(
                     operation_chain, Operation, allow_none
                 )
             ])
+
 
 class Match(ToJson, ToCodeString):
     def __init__(self, _class_name):
@@ -603,6 +604,7 @@ class Match(ToJson, ToCodeString):
         return {
             'class': self._class_name
         }
+
 
 class ElementMatch(Match):
 
@@ -619,6 +621,7 @@ class ElementMatch(Match):
 
         return match_json
 
+
 class KeyFunctionMatch(Match):
     CLASS = "uk.gov.gchq.gaffer.store.operation.handler.join.match.KeyFunctionMatch"
 
@@ -626,12 +629,14 @@ class KeyFunctionMatch(Match):
         super().__init__(_class_name=self.CLASS)
 
         if not isinstance(first_key_function, gaffer_functions.Function):
-            self.first_key_function = JsonConverter.from_json(first_key_function, class_obj=gaffer_functions.Function)
+            self.first_key_function = JsonConverter.from_json(
+                first_key_function, class_obj=gaffer_functions.Function)
         else:
             self.first_key_function = first_key_function
 
         if not isinstance(second_key_function, gaffer_functions.Function):
-            self.second_key_function = JsonConverter.from_json(second_key_function, class_obj=gaffer_functions.Function)
+            self.second_key_function = JsonConverter.from_json(
+                second_key_function, class_obj=gaffer_functions.Function)
         else:
             self.second_key_function = second_key_function
 
@@ -643,6 +648,7 @@ class KeyFunctionMatch(Match):
             match_json['secondKeyFunction'] = self.second_key_function.to_json()
 
         return match_json
+
 
 class Conditional(ToJson, ToCodeString):
     CLASS = 'uk.gov.gchq.gaffer.operation.util.Conditional'
@@ -665,10 +671,13 @@ class Conditional(ToJson, ToCodeString):
 
         return conditional_json
 
+
 # Import generated operation implementations from fishbowl
 from gafferpy.generated_api.operations import *
 
 # Parameters
+
+
 class AddNamedOperation(AddNamedOperation):
     def to_json(self):
         operation_json = super().to_json()
@@ -678,6 +687,7 @@ class AddNamedOperation(AddNamedOperation):
                 for param in self.parameters:
                     operation_json['parameters'][param.name] = param.get_detail()
         return operation_json
+
 
 class AddNamedView(AddNamedView):
     def to_json(self):
@@ -690,6 +700,8 @@ class AddNamedView(AddNamedView):
         return operation_json
 
 # Element definitions
+
+
 class Filter(Filter):
     def to_json(self):
         operation_json = super().to_json()
@@ -705,6 +717,7 @@ class Filter(Filter):
                     operation_json['entities'][el_def.group] = el_def.to_json()
         return operation_json
 
+
 class Aggregate(Aggregate):
     def to_json(self):
         operation_json = super().to_json()
@@ -719,6 +732,7 @@ class Aggregate(Aggregate):
                 for el_def in self.entities:
                     operation_json['entities'][el_def.group] = el_def.to_json()
         return operation_json
+
 
 class Transform(Transform):
     def to_json(self):
@@ -736,6 +750,8 @@ class Transform(Transform):
         return operation_json
 
 # List Input
+
+
 class If(If):
     def to_json(self):
         operation_json = super().to_json()
@@ -745,6 +761,8 @@ class If(If):
         return operation_json
 
 # Element Input
+
+
 class GetElements(GetElements):
     def to_json(self):
         operation_json = super().to_json()
@@ -763,6 +781,7 @@ class GetElements(GetElements):
 
         return operation_json
 
+
 class ToVertices(ToVertices):
     def to_json(self):
         operation_json = super().to_json()
@@ -780,6 +799,7 @@ class ToVertices(ToVertices):
 
 # Entity Input
 
+
 class GetWalks(GetWalks):
     def to_json(self):
         operation_json = super().to_json()
@@ -794,6 +814,7 @@ class GetWalks(GetWalks):
                     json_seeds.append(EntitySeed(seed).to_json())
             operation_json['input'] = json_seeds
         return operation_json
+
 
 class GetAdjacentIds(GetAdjacentIds):
     def to_json(self):
@@ -810,6 +831,7 @@ class GetAdjacentIds(GetAdjacentIds):
             operation_json['input'] = json_seeds
         return operation_json
 
+
 class GetElementsWithinSet(GetElementsWithinSet):
     def to_json(self):
         operation_json = super().to_json()
@@ -824,6 +846,7 @@ class GetElementsWithinSet(GetElementsWithinSet):
                     json_seeds.append(EntitySeed(seed).to_json())
             operation_json['input'] = json_seeds
         return operation_json
+
 
 def load_operation_json_map():
     for name, class_obj in inspect.getmembers(

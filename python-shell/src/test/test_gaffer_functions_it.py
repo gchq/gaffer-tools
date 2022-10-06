@@ -48,11 +48,11 @@ class GafferFunctionsIntegrationTest(unittest.TestCase):
             'uk.gov.gchq.gaffer.rest.example.ExampleElementGenerator',
             'uk.gov.gchq.gaffer.sketches.datasketches.cardinality.HllSketchEntityGenerator',
             'uk.gov.gchq.gaffer.sketches.clearspring.cardinality.HyperLogLogPlusEntityGenerator',
-            'uk.gov.gchq.gaffer.data.element.function.PropertiesTransformer'
-        ]
+            'uk.gov.gchq.gaffer.data.element.function.PropertiesTransformer']
 
         for i in ignore_functions:
-            if i in functions: functions.remove(i)
+            if i in functions:
+                functions.remove(i)
 
         for op in functions:
             self.assertTrue(op in g.JsonConverter.GENERIC_JSON_CONVERTERS,

@@ -30,9 +30,17 @@ class BaseClient:
         self.base_url = base_url
         self.verbose = verbose
         self.headers = headers
-        self.headers.setdefault('Content-Type', 'application/json;charset=utf-8')
+        self.headers.setdefault(
+            'Content-Type',
+            'application/json;charset=utf-8')
 
-    def perform_request(self, method, target, headers=None, body=None, json_result=True):
+    def perform_request(
+            self,
+            method,
+            target,
+            headers=None,
+            body=None,
+            json_result=True):
         raise NotImplementedError()
 
     def merge_headers(self, headers):

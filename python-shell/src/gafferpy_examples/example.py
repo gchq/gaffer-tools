@@ -372,14 +372,16 @@ def generate_domain_objs(gc):
     input = gc.execute_operation(
         g.GenerateObjects(
             element_generator=g.ElementGenerator(
-                class_name='uk.gov.gchq.gaffer.rest.example.ExampleDomainObjectGenerator'
-            ),
+                class_name='uk.gov.gchq.gaffer.rest.example.ExampleDomainObjectGenerator'),
             input=[
-                g.Entity('entity', '1'),
-                g.Edge('edge', '1', '2', True)
-            ]
-        )
-    )
+                g.Entity(
+                    'entity',
+                    '1'),
+                g.Edge(
+                    'edge',
+                    '1',
+                    '2',
+                    True)]))
     print('Generated input from provided input')
     print(input)
     print()
@@ -846,7 +848,8 @@ def to_vertices_to_entity_seeds(gc):
 
 
 def complex_op_chain(gc):
-    # All road junctions in the South West that were heavily used by buses in year 2000.
+    # All road junctions in the South West that were heavily used by buses in
+    # year 2000.
     junctions = gc.execute_operations(
         operations=[
             g.GetAdjacentIds(

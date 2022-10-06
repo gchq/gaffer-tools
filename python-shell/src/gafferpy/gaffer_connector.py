@@ -32,13 +32,20 @@ CLIENT_CLASS_NAMES = {
     "pki": PkiClient
 }
 
+
 class GafferConnector:
     """
     This class handles the connection to a Gaffer server and handles operations.
     This class is initialised with a host to connect to.
     """
 
-    def __init__(self, host, verbose=False, headers={}, client_class=UrllibClient, **kwargs):
+    def __init__(
+            self,
+            host,
+            verbose=False,
+            headers={},
+            client_class=UrllibClient,
+            **kwargs):
         """
         This initialiser sets up a connection to the specified Gaffer server.
 
@@ -125,7 +132,11 @@ class GafferConnector:
 
         return self.get(target, headers, json_result)
 
-    def is_operation_supported(self, operation, headers=None, json_result=False):
+    def is_operation_supported(
+            self,
+            operation,
+            headers=None,
+            json_result=False):
         """
         This method queries the Gaffer API to provide details about operations
         Returns a JSON array containing details about the operation.
