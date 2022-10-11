@@ -242,7 +242,6 @@ class Fishbowl:
         operations_python.append("        operation_chain_json.pop(\"class\", None)")
         operations_python.append("        return operation_chain_json\n")
 
-        operations_python[-1] = ""
         return "\n".join(operations_python)
 
     def _generate_config(self):

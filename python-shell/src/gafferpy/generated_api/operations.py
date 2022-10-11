@@ -2363,3 +2363,4 @@ class OperationChainDAO(OperationChain):
     def to_json(self):
         operation_chain_json = super().to_json()
         operation_chain_json.pop("class", None)
+        return operation_chain_json
