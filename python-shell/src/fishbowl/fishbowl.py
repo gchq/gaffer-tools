@@ -79,14 +79,17 @@ class Fishbowl:
             os.path.join(self.generated_directory_path, "functions.py"), functions_python)
 
         self._write_to_file(
-            os.path.join(self.generated_directory_path,"predicates.py"), predicates_python)
+            os.path.join(self.generated_directory_path, "predicates.py"), predicates_python)
         self._write_to_file(
-            os.path.join(self.generated_directory_path,"binary_operators.py"),binary_operators_python)
+            os.path.join(
+                self.generated_directory_path,
+                "binary_operators.py"),
+            binary_operators_python)
         self._write_to_file(
-            os.path.join(self.generated_directory_path,"operations.py"),operations_python)
+            os.path.join(self.generated_directory_path, "operations.py"), operations_python)
         self._write_to_file(os.path.join(self.generated_directory_path, "config.py"), config_python)
         self._write_to_file(
-            os.path.join(self.generated_directory_path,"__init__.py"),
+            os.path.join(self.generated_directory_path, "__init__.py"),
             "__all__ = [ \"operations\", \"predicates\", \"functions\", \"binary_operators\", \"config\" ]\n")
 
     def _generate_transform_functions(self):
@@ -129,7 +132,7 @@ class Fishbowl:
                 function_field_mappings[field] = JsonConverter.to_snake_case(field)
 
             functions_python.append(
-                "class " + fn.rsplit(".",1)[1].replace("$","") +
+                "class " + fn.rsplit(".", 1)[1].replace("$", "") +
                 f"({base_class}):")
             functions_python.append("    CLASS = \"" + fn + "\"\n")
             functions_python.append(
@@ -141,7 +144,7 @@ class Fishbowl:
 
             for field in function_field_mappings.values():
                 functions_python.append("        self." + field + " = " + field)
-            
+
             functions_python.append("")
             functions_python.append("    def to_json(self):")
 
@@ -181,7 +184,7 @@ class Fishbowl:
             if operation["name"] != OPERATION_CHAIN_DAO:
                 operations_python.append(
                     "class " +
-                    operation["name"].rsplit(".",1)[1] +
+                    operation["name"].rsplit(".", 1)[1] +
                     "(Operation):")
                 operations_python.append("    CLASS = \"" + operation["name"] + "\"\n")
 
