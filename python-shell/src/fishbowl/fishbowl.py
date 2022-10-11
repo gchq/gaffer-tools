@@ -47,6 +47,7 @@ To make changes, either extend these classes or change fishbowl.
 '''
 HEADER = LICENSE + GENERATED_HEADER
 
+NEWLINE = "\n            "
 
 class Fishbowl:
     def __init__(self, gaffer_connector, generated_directory_path="generated"):
@@ -90,7 +91,7 @@ class Fishbowl:
         self._write_to_file(os.path.join(self.generated_directory_path, "config.py"), config_python)
         self._write_to_file(
             os.path.join(self.generated_directory_path, "__init__.py"),
-            "__all__ = [ \"operations\", \"predicates\", \"functions\", \"binary_operators\", \"config\" ]\n")
+            "__all__ = [\"operations\", \"predicates\", \"functions\", \"binary_operators\", \"config\"]\n")
 
     def _generate_transform_functions(self):
         return self._generate_functions(
@@ -136,8 +137,8 @@ class Fishbowl:
                 f"({base_class}):")
             functions_python.append("    CLASS = \"" + fn + "\"\n")
             functions_python.append(
-                "    def __init__(self, " +
-                "=None, ".join(
+                f"    def __init__({NEWLINE}self,{NEWLINE}" +
+                f"=None,{NEWLINE}".join(
                     function_field_mappings.values()) +
                 "=None):" if len(function_fields) > 0 else "    def __init__(self):")
             functions_python.append("        super().__init__(_class_name=self.CLASS)")
@@ -162,7 +163,7 @@ class Fishbowl:
                         field + "\"] = self." +
                         function_field_mappings[field])
                 functions_python.append("        return function_json")
-            functions_python.append("\n")
+            functions_python.append("")
 
         return "\n".join(functions_python)
 
@@ -197,18 +198,18 @@ class Fishbowl:
                         fields.append(field)
 
                 if len(fields) > 0:
-                    def_line = "    def __init__(self, "
+                    def_line = f"    def __init__({NEWLINE}self,{NEWLINE}"
                     defs = []
                     for field in fields:
                         if field["required"]:
-                            defs = [field["camel_name"] + ", "] + defs
+                            defs = [field["camel_name"] + f",{NEWLINE}"] + defs
                         else:
-                            defs.append(field["camel_name"] + "=None, ")
+                            defs.append(field["camel_name"] + f"=None,{NEWLINE}")
                     def_line += "".join(defs)
                     def_line += "options=None):"
                     operations_python.append(def_line)
                 else:
-                    operations_python.append("    def __init__(self, options=None):")
+                    operations_python.append(f"    def __init__({NEWLINE}self,{NEWLINE}options=None):")
                 operations_python.append(
                     "        super().__init__(_class_name=self.CLASS, options=options)")
                 for field_name in [field["camel_name"] for field in fields]:
@@ -225,7 +226,7 @@ class Fishbowl:
                         operations_python.append(
                             "            operation_json[\"" + field["name"] + "\"] = self." + field["camel_name"])
                     operations_python.append("        return operation_json")
-                operations_python.append("\n")
+                operations_python.append("")
 
         # Add the OperationChainDAO afterwards instead
         operations_python.append("class OperationChainDAO(OperationChain):")
@@ -273,8 +274,8 @@ class Fishbowl:
 
                 config_python.append(f"class {name}(GetGraph):")
                 config_python.append(f"    def __init__(self{param_python}):")
-                config_python.append(f"        super().__init__('{path}'{param_format_python})")
-                config_python.append("\n")
+                config_python.append(f"        super().__init__({NEWLINE}'{path}'{param_format_python})")
+                config_python.append("")
 
         return "\n".join(config_python)
 
