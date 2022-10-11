@@ -18,7 +18,7 @@ jobs:
         uses: peter-evans/autopep8@v1
         with:
           # ignore E402 rule to avoid changes that cause circular imports
-          args: --exit-code --recursive --in-place --aggressive --aggressive --ignore E402 .
+          args: --exit-code --recursive --in-place --aggressive --aggressive --max-line-length 100 --ignore E402 .
       - name: Set autopep8 branch name
         id: vars
         run: echo ::set-output name=branch-name::"pep8patches/$GITHUB_HEAD_REF"
