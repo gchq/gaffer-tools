@@ -32,6 +32,7 @@ CLIENT_CLASS_NAMES = {
     "pki": PkiClient
 }
 
+
 class GafferConnector:
     """
     This class handles the connection to a Gaffer server and handles operations.

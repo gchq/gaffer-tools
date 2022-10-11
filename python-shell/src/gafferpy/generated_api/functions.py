@@ -124,7 +124,14 @@ class ExtractWalkEdgesFromHop(AbstractFunction):
 class HllSketchEntityGenerator(AbstractFunction):
     CLASS = "uk.gov.gchq.gaffer.sketches.datasketches.cardinality.HllSketchEntityGenerator"
 
-    def __init__(self, properties_to_copy=None, count_property=None, cardinality_property_name=None, edge_group_property=None, vertex_value_converter=None, group=None):
+    def __init__(
+            self,
+            properties_to_copy=None,
+            count_property=None,
+            cardinality_property_name=None,
+            edge_group_property=None,
+            vertex_value_converter=None,
+            group=None):
         super().__init__(_class_name=self.CLASS)
         self.properties_to_copy = properties_to_copy
         self.count_property = count_property
@@ -508,7 +515,12 @@ class CurrentDate(AbstractFunction):
 class ReduceRelatedElements(AbstractFunction):
     CLASS = "uk.gov.gchq.gaffer.data.element.function.ReduceRelatedElements"
 
-    def __init__(self, visibility_aggregator=None, vertex_aggregator=None, related_vertex_groups=None, visibility_property=None):
+    def __init__(
+            self,
+            visibility_aggregator=None,
+            vertex_aggregator=None,
+            related_vertex_groups=None,
+            visibility_property=None):
         super().__init__(_class_name=self.CLASS)
         self.visibility_aggregator = visibility_aggregator
         self.vertex_aggregator = vertex_aggregator
@@ -1258,7 +1270,15 @@ class CreateObject(AbstractFunction):
 class CsvLinesToMaps(AbstractFunction):
     CLASS = "uk.gov.gchq.koryphe.impl.function.CsvLinesToMaps"
 
-    def __init__(self, quoted=None, quote_char=None, first_row=None, trim=None, delimiter=None, null_string=None, header=None):
+    def __init__(
+            self,
+            quoted=None,
+            quote_char=None,
+            first_row=None,
+            trim=None,
+            delimiter=None,
+            null_string=None,
+            header=None):
         super().__init__(_class_name=self.CLASS)
         self.quoted = quoted
         self.quote_char = quote_char
@@ -1710,7 +1730,13 @@ class ToNull(AbstractFunction):
 class TupleAdaptedFunction(AbstractFunction):
     CLASS = "uk.gov.gchq.koryphe.tuple.function.TupleAdaptedFunction"
 
-    def __init__(self, input_adapter=None, selection=None, function=None, output_adapter=None, projection=None):
+    def __init__(
+            self,
+            input_adapter=None,
+            selection=None,
+            function=None,
+            output_adapter=None,
+            projection=None):
         super().__init__(_class_name=self.CLASS)
         self.input_adapter = input_adapter
         self.selection = selection
@@ -1760,7 +1786,14 @@ class DeserialiseXml(AbstractFunction):
 class HyperLogLogPlusEntityGenerator(AbstractFunction):
     CLASS = "uk.gov.gchq.gaffer.sketches.clearspring.cardinality.HyperLogLogPlusEntityGenerator"
 
-    def __init__(self, properties_to_copy=None, count_property=None, cardinality_property_name=None, edge_group_property=None, vertex_value_converter=None, group=None):
+    def __init__(
+            self,
+            properties_to_copy=None,
+            count_property=None,
+            cardinality_property_name=None,
+            edge_group_property=None,
+            vertex_value_converter=None,
+            group=None):
         super().__init__(_class_name=self.CLASS)
         self.properties_to_copy = properties_to_copy
         self.count_property = count_property
@@ -1823,10 +1856,17 @@ class Base64Decode(AbstractFunction):
     def to_json(self):
         return super().to_json()
 
+
 class OpenCypherCsvGenerator(AbstractFunction):
     CLASS = "uk.gov.gchq.gaffer.data.generator.OpenCypherCsvGenerator"
 
-    def __init__(self, quoted=None, comma_replacement=None, neo4j_format=None, constants=None, fields=None):
+    def __init__(
+            self,
+            quoted=None,
+            comma_replacement=None,
+            neo4j_format=None,
+            constants=None,
+            fields=None):
         super().__init__(_class_name=self.CLASS)
         self.quoted = quoted
         self.comma_replacement = comma_replacement

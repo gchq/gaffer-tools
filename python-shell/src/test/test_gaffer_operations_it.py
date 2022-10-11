@@ -52,7 +52,7 @@ class GafferOperationsIntegrationTest(unittest.TestCase):
                 g.GetOperationsDetailsAll(),
                 json_result=True
             )
-        except:
+        except BaseException:
             return
 
         response = [operation["name"] for operation in response]
@@ -64,6 +64,7 @@ class GafferOperationsIntegrationTest(unittest.TestCase):
             sorted(expected_response),
             sorted(response)
         )
+
 
 if __name__ == "__main__":
     unittest.main()

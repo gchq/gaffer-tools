@@ -89,7 +89,8 @@ class GetSerialisedFields(GetGraph):
 
 class GetSerialisedFieldsClasses(GetGraph):
     def __init__(self, class_name=''):
-        super().__init__('/graph/config/serialisedFields/{className}/classes'.format(className=class_name))
+        super().__init__(
+            '/graph/config/serialisedFields/{className}/classes'.format(className=class_name))
 
 
 class GetSchema(GetGraph):
@@ -114,7 +115,8 @@ class GetFilterFunctions(GetGraph):
 
 class GetFilterFunctions(GetGraph):
     def __init__(self, input_class=''):
-        super().__init__('/graph/config/filterFunctions/{inputClass}'.format(inputClass=input_class))
+        super().__init__(
+            '/graph/config/filterFunctions/{inputClass}'.format(inputClass=input_class))
 
 
 class GetElementGenerators(GetGraph):
@@ -130,4 +132,3 @@ class GetDescription(GetGraph):
 class GetAggregationFunctions(GetGraph):
     def __init__(self):
         super().__init__('/graph/config/aggregationFunctions')
-

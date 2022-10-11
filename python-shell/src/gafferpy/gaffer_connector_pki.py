@@ -32,6 +32,8 @@ This connector is deprecated, instead use gaffer_connector.GafferConnector(
     protocol = protocol
     )
 """)
+
+
 class GafferConnector(gaffer_connector.GafferConnector):
     def __init__(self, host, pki, protocol=None, verbose=False, headers={}):
         """
@@ -39,9 +41,16 @@ class GafferConnector(gaffer_connector.GafferConnector):
         per gafferConnector.GafferConnector and
         requires the additional pki object.
         """
-        super().__init__(host=host, verbose=verbose, headers=headers, client_class="pki", pki=pki, protocol=protocol)
+        super().__init__(
+            host=host,
+            verbose=verbose,
+            headers=headers,
+            client_class="pki",
+            pki=pki,
+            protocol=protocol)
 
 ########################################################
+
 
 class PkiCredentials:
     """

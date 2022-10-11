@@ -172,7 +172,19 @@ class IsTrue(AbstractPredicate):
 class InDateRangeDual(AbstractPredicate):
     CLASS = "uk.gov.gchq.koryphe.impl.predicate.range.InDateRangeDual"
 
-    def __init__(self, end_fully_contained=None, end_offset=None, offset_unit=None, start_offset=None, start_inclusive=None, start=None, time_zone=None, end=None, end_inclusive=None, start_fully_contained=None, time_unit=None):
+    def __init__(
+            self,
+            end_fully_contained=None,
+            end_offset=None,
+            offset_unit=None,
+            start_offset=None,
+            start_inclusive=None,
+            start=None,
+            time_zone=None,
+            end=None,
+            end_inclusive=None,
+            start_fully_contained=None,
+            time_unit=None):
         super().__init__(_class_name=self.CLASS)
         self.end_fully_contained = end_fully_contained
         self.end_offset = end_offset
@@ -290,7 +302,17 @@ class Or(AbstractPredicate):
 class InDateRange(AbstractPredicate):
     CLASS = "uk.gov.gchq.koryphe.impl.predicate.range.InDateRange"
 
-    def __init__(self, end_offset=None, offset_unit=None, start_offset=None, start_inclusive=None, start=None, time_zone=None, end=None, end_inclusive=None, time_unit=None):
+    def __init__(
+            self,
+            end_offset=None,
+            offset_unit=None,
+            start_offset=None,
+            start_inclusive=None,
+            start=None,
+            time_zone=None,
+            end=None,
+            end_inclusive=None,
+            time_unit=None):
         super().__init__(_class_name=self.CLASS)
         self.end_offset = end_offset
         self.offset_unit = offset_unit
@@ -454,7 +476,14 @@ class StringContains(AbstractPredicate):
 class InRangeDual(AbstractPredicate):
     CLASS = "uk.gov.gchq.koryphe.impl.predicate.range.InRangeDual"
 
-    def __init__(self, end_fully_contained=None, start_inclusive=None, start=None, end=None, end_inclusive=None, start_fully_contained=None):
+    def __init__(
+            self,
+            end_fully_contained=None,
+            start_inclusive=None,
+            start=None,
+            end=None,
+            end_inclusive=None,
+            start_fully_contained=None):
         super().__init__(_class_name=self.CLASS)
         self.end_fully_contained = end_fully_contained
         self.start_inclusive = start_inclusive
@@ -557,7 +586,17 @@ class RBMBackedTimestampSetInRange(AbstractPredicate):
 class InTimeRange(AbstractPredicate):
     CLASS = "uk.gov.gchq.koryphe.impl.predicate.range.InTimeRange"
 
-    def __init__(self, end_offset=None, offset_unit=None, start_offset=None, start_inclusive=None, start=None, time_zone=None, end=None, end_inclusive=None, time_unit=None):
+    def __init__(
+            self,
+            end_offset=None,
+            offset_unit=None,
+            start_offset=None,
+            start_inclusive=None,
+            start=None,
+            time_zone=None,
+            end=None,
+            end_inclusive=None,
+            time_unit=None):
         super().__init__(_class_name=self.CLASS)
         self.end_offset = end_offset
         self.offset_unit = offset_unit
@@ -690,7 +729,19 @@ class ExampleFilterFunction(AbstractPredicate):
 class InTimeRangeDual(AbstractPredicate):
     CLASS = "uk.gov.gchq.koryphe.impl.predicate.range.InTimeRangeDual"
 
-    def __init__(self, end_fully_contained=None, end_offset=None, offset_unit=None, start_offset=None, start_inclusive=None, start=None, time_zone=None, end=None, end_inclusive=None, start_fully_contained=None, time_unit=None):
+    def __init__(
+            self,
+            end_fully_contained=None,
+            end_offset=None,
+            offset_unit=None,
+            start_offset=None,
+            start_inclusive=None,
+            start=None,
+            time_zone=None,
+            end=None,
+            end_inclusive=None,
+            start_fully_contained=None,
+            time_unit=None):
         super().__init__(_class_name=self.CLASS)
         self.end_fully_contained = end_fully_contained
         self.end_offset = end_offset
@@ -928,4 +979,3 @@ class AdaptedPredicate(AbstractPredicate):
         if self.input_adapter is not None:
             function_json["inputAdapter"] = self.input_adapter
         return function_json
-

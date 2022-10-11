@@ -139,7 +139,19 @@ class SampleElementsForSplitPoints(Operation):
 class AddGraph(Operation):
     CLASS = "uk.gov.gchq.gaffer.federatedstore.operation.AddGraph"
 
-    def __init__(self, graph_id, schema=None, write_access_predicate=None, store_properties=None, disabled_by_default=None, parent_properties_id=None, read_access_predicate=None, graph_auths=None, is_public=None, parent_schema_ids=None, options=None):
+    def __init__(
+            self,
+            graph_id,
+            schema=None,
+            write_access_predicate=None,
+            store_properties=None,
+            disabled_by_default=None,
+            parent_properties_id=None,
+            read_access_predicate=None,
+            graph_auths=None,
+            is_public=None,
+            parent_schema_ids=None,
+            options=None):
         super().__init__(_class_name=self.CLASS, options=options)
         self.schema = schema
         self.write_access_predicate = write_access_predicate
@@ -211,7 +223,14 @@ class ImportAccumuloKeyValueFiles(Operation):
 class SummariseGroupOverRanges(Operation):
     CLASS = "uk.gov.gchq.gaffer.accumulostore.operation.impl.SummariseGroupOverRanges"
 
-    def __init__(self, input=None, view=None, include_incoming_out_going=None, directed_type=None, views=None, options=None):
+    def __init__(
+            self,
+            input=None,
+            view=None,
+            include_incoming_out_going=None,
+            directed_type=None,
+            views=None,
+            options=None):
         super().__init__(_class_name=self.CLASS, options=options)
         self.input = input
         self.view = view
@@ -251,7 +270,24 @@ class GetTraits(Operation):
 class AddElementsFromHdfs(Operation):
     CLASS = "uk.gov.gchq.gaffer.hdfs.operation.AddElementsFromHdfs"
 
-    def __init__(self, output_path, failure_path, input_mapper_pairs, job_initialiser, splits_file_path=None, num_map_tasks=None, working_path=None, min_reduce_tasks=None, max_reduce_tasks=None, min_map_tasks=None, use_provided_splits=None, command_line_args=None, partitioner=None, max_map_tasks=None, validate=None, options=None):
+    def __init__(
+            self,
+            output_path,
+            failure_path,
+            input_mapper_pairs,
+            job_initialiser,
+            splits_file_path=None,
+            num_map_tasks=None,
+            working_path=None,
+            min_reduce_tasks=None,
+            max_reduce_tasks=None,
+            min_map_tasks=None,
+            use_provided_splits=None,
+            command_line_args=None,
+            partitioner=None,
+            max_map_tasks=None,
+            validate=None,
+            options=None):
         super().__init__(_class_name=self.CLASS, options=options)
         self.job_initialiser = job_initialiser
         self.splits_file_path = splits_file_path
@@ -394,7 +430,16 @@ class GetSchema(Operation):
 class Join(Operation):
     CLASS = "uk.gov.gchq.gaffer.operation.impl.join.Join"
 
-    def __init__(self, flatten=None, input=None, join_type=None, match_key=None, collection_limit=None, match_method=None, operation=None, options=None):
+    def __init__(
+            self,
+            flatten=None,
+            input=None,
+            join_type=None,
+            match_key=None,
+            collection_limit=None,
+            match_method=None,
+            operation=None,
+            options=None):
         super().__init__(_class_name=self.CLASS, options=options)
         self.flatten = flatten
         self.input = input
@@ -426,7 +471,14 @@ class Join(Operation):
 class ChangeGraphAccess(Operation):
     CLASS = "uk.gov.gchq.gaffer.federatedstore.operation.ChangeGraphAccess"
 
-    def __init__(self, graph_id, disabled_by_default=None, owner_user_id=None, graph_auths=None, is_public=None, options=None):
+    def __init__(
+            self,
+            graph_id,
+            disabled_by_default=None,
+            owner_user_id=None,
+            graph_auths=None,
+            is_public=None,
+            options=None):
         super().__init__(_class_name=self.CLASS, options=options)
         self.disabled_by_default = disabled_by_default
         self.owner_user_id = owner_user_id
@@ -554,7 +606,15 @@ class Reduce(Operation):
 class Filter(Operation):
     CLASS = "uk.gov.gchq.gaffer.operation.impl.function.Filter"
 
-    def __init__(self, input=None, global_edges=None, global_entities=None, entities=None, edges=None, global_elements=None, options=None):
+    def __init__(
+            self,
+            input=None,
+            global_edges=None,
+            global_entities=None,
+            entities=None,
+            edges=None,
+            global_elements=None,
+            options=None):
         super().__init__(_class_name=self.CLASS, options=options)
         self.input = input
         self.global_edges = global_edges
@@ -787,7 +847,14 @@ class CountAllElementsDefaultView(Operation):
 class AddElementsFromFile(Operation):
     CLASS = "uk.gov.gchq.gaffer.operation.impl.add.AddElementsFromFile"
 
-    def __init__(self, filename, element_generator, parallelism=None, skip_invalid_elements=None, validate=None, options=None):
+    def __init__(
+            self,
+            filename,
+            element_generator,
+            parallelism=None,
+            skip_invalid_elements=None,
+            validate=None,
+            options=None):
         super().__init__(_class_name=self.CLASS, options=options)
         self.element_generator = element_generator
         self.filename = filename
@@ -894,7 +961,15 @@ class GetAllGraphInfo(Operation):
 class GetElementsBetweenSets(Operation):
     CLASS = "uk.gov.gchq.gaffer.accumulostore.operation.impl.GetElementsBetweenSets"
 
-    def __init__(self, input=None, view=None, include_incoming_out_going=None, input_b=None, directed_type=None, views=None, options=None):
+    def __init__(
+            self,
+            input=None,
+            view=None,
+            include_incoming_out_going=None,
+            input_b=None,
+            directed_type=None,
+            views=None,
+            options=None):
         super().__init__(_class_name=self.CLASS, options=options)
         self.input = input
         self.view = view
@@ -943,7 +1018,14 @@ class NamedOperation(Operation):
 class GetElementsInRanges(Operation):
     CLASS = "uk.gov.gchq.gaffer.accumulostore.operation.impl.GetElementsInRanges"
 
-    def __init__(self, input=None, view=None, include_incoming_out_going=None, directed_type=None, views=None, options=None):
+    def __init__(
+            self,
+            input=None,
+            view=None,
+            include_incoming_out_going=None,
+            directed_type=None,
+            views=None,
+            options=None):
         super().__init__(_class_name=self.CLASS, options=options)
         self.input = input
         self.view = view
@@ -999,7 +1081,14 @@ class GetAllElements(Operation):
 class GetElements(Operation):
     CLASS = "uk.gov.gchq.gaffer.operation.impl.get.GetElements"
 
-    def __init__(self, input=None, view=None, include_incoming_out_going=None, directed_type=None, views=None, options=None):
+    def __init__(
+            self,
+            input=None,
+            view=None,
+            include_incoming_out_going=None,
+            directed_type=None,
+            views=None,
+            options=None):
         super().__init__(_class_name=self.CLASS, options=options)
         self.input = input
         self.view = view
@@ -1048,7 +1137,17 @@ class Sort(Operation):
 class AddNamedView(Operation):
     CLASS = "uk.gov.gchq.gaffer.named.view.AddNamedView"
 
-    def __init__(self, name, view, overwrite_flag=None, write_access_predicate=None, read_access_predicate=None, description=None, parameters=None, write_access_roles=None, options=None):
+    def __init__(
+            self,
+            name,
+            view,
+            overwrite_flag=None,
+            write_access_predicate=None,
+            read_access_predicate=None,
+            description=None,
+            parameters=None,
+            write_access_roles=None,
+            options=None):
         super().__init__(_class_name=self.CLASS, options=options)
         self.overwrite_flag = overwrite_flag
         self.write_access_predicate = write_access_predicate
@@ -1083,7 +1182,20 @@ class AddNamedView(Operation):
 class AddGraphWithHooks(Operation):
     CLASS = "uk.gov.gchq.gaffer.federatedstore.operation.AddGraphWithHooks"
 
-    def __init__(self, schema=None, write_access_predicate=None, store_properties=None, disabled_by_default=None, parent_properties_id=None, read_access_predicate=None, graph_auths=None, is_public=None, parent_schema_ids=None, graph_id=None, hooks=None, options=None):
+    def __init__(
+            self,
+            schema=None,
+            write_access_predicate=None,
+            store_properties=None,
+            disabled_by_default=None,
+            parent_properties_id=None,
+            read_access_predicate=None,
+            graph_auths=None,
+            is_public=None,
+            parent_schema_ids=None,
+            graph_id=None,
+            hooks=None,
+            options=None):
         super().__init__(_class_name=self.CLASS, options=options)
         self.schema = schema
         self.write_access_predicate = write_access_predicate
@@ -1147,7 +1259,16 @@ class Transform(Operation):
 class ExportToOtherGraph(Operation):
     CLASS = "uk.gov.gchq.gaffer.operation.export.graph.ExportToOtherGraph"
 
-    def __init__(self, graph_id, schema=None, input=None, parent_store_properties_id=None, store_properties=None, parent_schema_ids=None, key=None, options=None):
+    def __init__(
+            self,
+            graph_id,
+            schema=None,
+            input=None,
+            parent_store_properties_id=None,
+            store_properties=None,
+            parent_schema_ids=None,
+            key=None,
+            options=None):
         super().__init__(_class_name=self.CLASS, options=options)
         self.schema = schema
         self.input = input
@@ -1230,7 +1351,15 @@ class GetProxyProperties(Operation):
 class If(Operation):
     CLASS = "uk.gov.gchq.gaffer.operation.impl.If"
 
-    def __init__(self, otherwise=None, input=None, condition=None, conditional=None, multi_input_wrapper=None, then=None, options=None):
+    def __init__(
+            self,
+            otherwise=None,
+            input=None,
+            condition=None,
+            conditional=None,
+            multi_input_wrapper=None,
+            then=None,
+            options=None):
         super().__init__(_class_name=self.CLASS, options=options)
         self.otherwise = otherwise
         self.input = input
@@ -1273,7 +1402,16 @@ class ToSingletonList(Operation):
 class AddElementsFromSocket(Operation):
     CLASS = "uk.gov.gchq.gaffer.operation.impl.add.AddElementsFromSocket"
 
-    def __init__(self, port, hostname, element_generator, delimiter=None, parallelism=None, skip_invalid_elements=None, validate=None, options=None):
+    def __init__(
+            self,
+            port,
+            hostname,
+            element_generator,
+            delimiter=None,
+            parallelism=None,
+            skip_invalid_elements=None,
+            validate=None,
+            options=None):
         super().__init__(_class_name=self.CLASS, options=options)
         self.element_generator = element_generator
         self.hostname = hostname
@@ -1347,7 +1485,15 @@ class CancelScheduledJob(Operation):
 class ImportCsv(Operation):
     CLASS = "uk.gov.gchq.gaffer.operation.impl.add.ImportCsv"
 
-    def __init__(self, filename, trim=None, delimiter=None, null_string=None, skip_invalid_elements=None, validate=None, options=None):
+    def __init__(
+            self,
+            filename,
+            trim=None,
+            delimiter=None,
+            null_string=None,
+            skip_invalid_elements=None,
+            validate=None,
+            options=None):
         super().__init__(_class_name=self.CLASS, options=options)
         self.filename = filename
         self.trim = trim
@@ -1458,7 +1604,15 @@ class AddSchemaToLibrary(Operation):
 class While(Operation):
     CLASS = "uk.gov.gchq.gaffer.operation.impl.While"
 
-    def __init__(self, input=None, condition=None, conditional=None, max_repeats=None, multi_input_wrapper=None, operation=None, options=None):
+    def __init__(
+            self,
+            input=None,
+            condition=None,
+            conditional=None,
+            max_repeats=None,
+            multi_input_wrapper=None,
+            operation=None,
+            options=None):
         super().__init__(_class_name=self.CLASS, options=options)
         self.input = input
         self.condition = condition
@@ -1571,7 +1725,14 @@ class SetVariable(Operation):
 class GetAdjacentIds(Operation):
     CLASS = "uk.gov.gchq.gaffer.operation.impl.get.GetAdjacentIds"
 
-    def __init__(self, input=None, view=None, include_incoming_out_going=None, directed_type=None, views=None, options=None):
+    def __init__(
+            self,
+            input=None,
+            view=None,
+            include_incoming_out_going=None,
+            directed_type=None,
+            views=None,
+            options=None):
         super().__init__(_class_name=self.CLASS, options=options)
         self.input = input
         self.view = view
@@ -1642,7 +1803,20 @@ class ForEach(Operation):
 class AddNamedOperation(Operation):
     CLASS = "uk.gov.gchq.gaffer.named.operation.AddNamedOperation"
 
-    def __init__(self, overwrite_flag=None, write_access_predicate=None, score=None, read_access_roles=None, read_access_predicate=None, description=None, operation_name=None, operation_chain=None, parameters=None, write_access_roles=None, labels=None, options=None):
+    def __init__(
+            self,
+            overwrite_flag=None,
+            write_access_predicate=None,
+            score=None,
+            read_access_roles=None,
+            read_access_predicate=None,
+            description=None,
+            operation_name=None,
+            operation_chain=None,
+            parameters=None,
+            write_access_roles=None,
+            labels=None,
+            options=None):
         super().__init__(_class_name=self.CLASS, options=options)
         self.overwrite_flag = overwrite_flag
         self.write_access_predicate = write_access_predicate
@@ -1686,7 +1860,25 @@ class AddNamedOperation(Operation):
 class SampleDataForSplitPoints(Operation):
     CLASS = "uk.gov.gchq.gaffer.hdfs.operation.SampleDataForSplitPoints"
 
-    def __init__(self, output_path, input_mapper_pairs, job_initialiser, splits_file_path, num_map_tasks=None, min_reduce_tasks=None, num_splits=None, max_reduce_tasks=None, min_map_tasks=None, use_provided_splits=None, command_line_args=None, compression_codec=None, partitioner=None, proportion_to_sample=None, max_map_tasks=None, validate=None, options=None):
+    def __init__(
+            self,
+            output_path,
+            input_mapper_pairs,
+            job_initialiser,
+            splits_file_path,
+            num_map_tasks=None,
+            min_reduce_tasks=None,
+            num_splits=None,
+            max_reduce_tasks=None,
+            min_map_tasks=None,
+            use_provided_splits=None,
+            command_line_args=None,
+            compression_codec=None,
+            partitioner=None,
+            proportion_to_sample=None,
+            max_map_tasks=None,
+            validate=None,
+            options=None):
         super().__init__(_class_name=self.CLASS, options=options)
         self.splits_file_path = splits_file_path
         self.job_initialiser = job_initialiser
@@ -1745,7 +1937,17 @@ class SampleDataForSplitPoints(Operation):
 class AddElementsFromKafka(Operation):
     CLASS = "uk.gov.gchq.gaffer.operation.impl.add.AddElementsFromKafka"
 
-    def __init__(self, topic, group_id, bootstrap_servers, element_generator, parallelism=None, consume_as=None, skip_invalid_elements=None, validate=None, options=None):
+    def __init__(
+            self,
+            topic,
+            group_id,
+            bootstrap_servers,
+            element_generator,
+            parallelism=None,
+            consume_as=None,
+            skip_invalid_elements=None,
+            validate=None,
+            options=None):
         super().__init__(_class_name=self.CLASS, options=options)
         self.element_generator = element_generator
         self.bootstrap_servers = bootstrap_servers
@@ -1780,7 +1982,14 @@ class AddElementsFromKafka(Operation):
 class GetWalks(Operation):
     CLASS = "uk.gov.gchq.gaffer.operation.impl.GetWalks"
 
-    def __init__(self, input=None, operations=None, include_partial=None, conditional=None, results_limit=None, options=None):
+    def __init__(
+            self,
+            input=None,
+            operations=None,
+            include_partial=None,
+            conditional=None,
+            results_limit=None,
+            options=None):
         super().__init__(_class_name=self.CLASS, options=options)
         self.input = input
         self.operations = operations
@@ -1823,7 +2032,14 @@ class GenerateObjects(Operation):
 class ExportToOtherAuthorisedGraph(Operation):
     CLASS = "uk.gov.gchq.gaffer.operation.export.graph.ExportToOtherAuthorisedGraph"
 
-    def __init__(self, graph_id, input=None, parent_store_properties_id=None, parent_schema_ids=None, key=None, options=None):
+    def __init__(
+            self,
+            graph_id,
+            input=None,
+            parent_store_properties_id=None,
+            parent_schema_ids=None,
+            key=None,
+            options=None):
         super().__init__(_class_name=self.CLASS, options=options)
         self.input = input
         self.parent_store_properties_id = parent_store_properties_id

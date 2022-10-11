@@ -139,8 +139,8 @@ class ToCodeString:
             return header_str + 'g.' + type(self).__name__ + '()'
 
         return header_str + 'g.' + type(self).__name__ + '(' + new_line_indent \
-               + field_code_str \
-               + new_line + ')'
+            + field_code_str \
+            + new_line + ')'
 
 
 class DirectedType:
@@ -177,10 +177,12 @@ class MatchKey:
     LEFT = 'LEFT'
     RIGHT = 'RIGHT'
 
+
 class JoinType:
     FULL = 'FULL'
     OUTER = 'OUTER'
     INNER = 'INNER'
+
 
 class ElementSeed(ToJson, ToCodeString):
     def __repr__(self):
@@ -413,7 +415,7 @@ class JsonConverter:
             raise TypeError(
                 'from_json called on object of type ' + str(type(obj)) +
                 ', should be a dict. obj: ' + str(obj)
-                )
+            )
 
         if class_name is None:
             if 'class' in obj:
@@ -425,7 +427,7 @@ class JsonConverter:
             if class_name != obj.get('class'):
                 raise TypeError(
                     'Argument ' + str(obj) + ' not of type ' + str(class_name)
-                    )
+                )
 
         custom_json_converter = JsonConverter.CUSTOM_JSON_CONVERTERS.get(
             class_name)
@@ -515,7 +517,7 @@ class JsonConverter:
             obj = JsonConverter.from_json(obj, expected_class)
         if not isinstance(obj, expected_class):
             raise TypeError(str(obj) + ' must be of type ' +
-                                                        str(expected_class))
+                            str(expected_class))
         return obj
 
 

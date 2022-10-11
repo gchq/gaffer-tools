@@ -35,9 +35,9 @@ try:
 
         def init_poolmanager(self, connections, maxsize, block=False):
             self.poolmanager = PoolManager(num_pools=connections,
-                                        maxsize=maxsize,
-                                        block=block,
-                                        ssl_version=self.ssl_version)
+                                           maxsize=maxsize,
+                                           block=block,
+                                           ssl_version=self.ssl_version)
 
 except ImportError:
     _REQUESTS_AVAILABLE = False
@@ -52,6 +52,7 @@ class RequestsClient(BaseClient):
     This class handles the connection to a Gaffer server and handles operations.
     This class is initialised with a host to connect to.
     '''
+
     def __init__(self, base_url, verbose=False, headers={}, **kwargs):
         if not _REQUESTS_AVAILABLE:
             raise ValueError(
