@@ -41,6 +41,7 @@ class IsLessThan(AbstractPredicate):
             function_json["orEqualTo"] = self.or_equal_to
         return function_json
 
+
 class MultiRegex(AbstractPredicate):
     CLASS = "uk.gov.gchq.koryphe.impl.predicate.MultiRegex"
 
@@ -56,6 +57,7 @@ class MultiRegex(AbstractPredicate):
             function_json["value"] = self.value
         return function_json
 
+
 class TupleAdaptedPredicateComposite(AbstractPredicate):
     CLASS = "uk.gov.gchq.koryphe.tuple.predicate.TupleAdaptedPredicateComposite"
 
@@ -70,6 +72,7 @@ class TupleAdaptedPredicateComposite(AbstractPredicate):
         if self.predicates is not None:
             function_json["predicates"] = self.predicates
         return function_json
+
 
 class IsLongerThan(AbstractPredicate):
     CLASS = "uk.gov.gchq.koryphe.impl.predicate.IsLongerThan"
@@ -89,6 +92,7 @@ class IsLongerThan(AbstractPredicate):
         if self.or_equal_to is not None:
             function_json["orEqualTo"] = self.or_equal_to
         return function_json
+
 
 class FederatedGraphReadUserPredicate(AbstractPredicate):
     CLASS = "uk.gov.gchq.gaffer.federatedstore.access.predicate.user.FederatedGraphReadUserPredicate"
@@ -113,6 +117,7 @@ class FederatedGraphReadUserPredicate(AbstractPredicate):
             function_json["creatingUserId"] = self.creating_user_id
         return function_json
 
+
 class IsFalse(AbstractPredicate):
     CLASS = "uk.gov.gchq.koryphe.impl.predicate.IsFalse"
 
@@ -121,6 +126,7 @@ class IsFalse(AbstractPredicate):
 
     def to_json(self):
         return super().to_json()
+
 
 class InDateRange(AbstractPredicate):
     CLASS = "uk.gov.gchq.koryphe.impl.predicate.range.InDateRange"
@@ -169,6 +175,7 @@ class InDateRange(AbstractPredicate):
             function_json["timeUnit"] = self.time_unit
         return function_json
 
+
 class Or(AbstractPredicate):
     CLASS = "uk.gov.gchq.koryphe.impl.predicate.Or"
 
@@ -184,6 +191,7 @@ class Or(AbstractPredicate):
             function_json["predicates"] = self.predicates
         return function_json
 
+
 class IsXMoreThanY(AbstractPredicate):
     CLASS = "uk.gov.gchq.koryphe.impl.predicate.IsXMoreThanY"
 
@@ -192,6 +200,7 @@ class IsXMoreThanY(AbstractPredicate):
 
     def to_json(self):
         return super().to_json()
+
 
 class TransformAndFilter(AbstractPredicate):
     CLASS = "uk.gov.gchq.gaffer.graph.hook.migrate.predicate.TransformAndFilter"
@@ -211,6 +220,7 @@ class TransformAndFilter(AbstractPredicate):
         if self.transformer is not None:
             function_json["transformer"] = self.transformer
         return function_json
+
 
 class IntegerTupleAdaptedPredicate(AbstractPredicate):
     CLASS = "uk.gov.gchq.koryphe.tuple.predicate.IntegerTupleAdaptedPredicate"
@@ -235,6 +245,7 @@ class IntegerTupleAdaptedPredicate(AbstractPredicate):
             function_json["selection"] = self.selection
         return function_json
 
+
 class NoAccessUserPredicate(AbstractPredicate):
     CLASS = "uk.gov.gchq.gaffer.access.predicate.user.NoAccessUserPredicate"
 
@@ -243,6 +254,7 @@ class NoAccessUserPredicate(AbstractPredicate):
 
     def to_json(self):
         return super().to_json()
+
 
 class RBMBackedTimestampSetInRange(AbstractPredicate):
     CLASS = "uk.gov.gchq.gaffer.time.predicate.RBMBackedTimestampSetInRange"
@@ -271,6 +283,7 @@ class RBMBackedTimestampSetInRange(AbstractPredicate):
             function_json["timeUnit"] = self.time_unit
         return function_json
 
+
 class HyperLogLogPlusIsLessThan(AbstractPredicate):
     CLASS = "uk.gov.gchq.gaffer.sketches.clearspring.cardinality.predicate.HyperLogLogPlusIsLessThan"
 
@@ -289,6 +302,7 @@ class HyperLogLogPlusIsLessThan(AbstractPredicate):
         if self.or_equal_to is not None:
             function_json["orEqualTo"] = self.or_equal_to
         return function_json
+
 
 class HllSketchIsLessThan(AbstractPredicate):
     CLASS = "uk.gov.gchq.gaffer.sketches.datasketches.cardinality.predicate.HllSketchIsLessThan"
@@ -309,6 +323,7 @@ class HllSketchIsLessThan(AbstractPredicate):
             function_json["orEqualTo"] = self.or_equal_to
         return function_json
 
+
 class PredicateMap(AbstractPredicate):
     CLASS = "uk.gov.gchq.koryphe.predicate.PredicateMap"
 
@@ -328,6 +343,7 @@ class PredicateMap(AbstractPredicate):
             function_json["key"] = self.key
         return function_json
 
+
 class Regex(AbstractPredicate):
     CLASS = "uk.gov.gchq.koryphe.impl.predicate.Regex"
 
@@ -342,6 +358,7 @@ class Regex(AbstractPredicate):
         if self.value is not None:
             function_json["value"] = self.value
         return function_json
+
 
 class IsEqual(AbstractPredicate):
     CLASS = "uk.gov.gchq.koryphe.impl.predicate.IsEqual"
@@ -358,6 +375,7 @@ class IsEqual(AbstractPredicate):
             function_json["value"] = self.value
         return function_json
 
+
 class AggregatorUtilIsElementAggregated(AbstractPredicate):
     CLASS = "uk.gov.gchq.gaffer.store.util.AggregatorUtil$IsElementAggregated"
 
@@ -366,6 +384,7 @@ class AggregatorUtilIsElementAggregated(AbstractPredicate):
 
     def to_json(self):
         return super().to_json()
+
 
 class IsIn(AbstractPredicate):
     CLASS = "uk.gov.gchq.koryphe.impl.predicate.IsIn"
@@ -382,6 +401,7 @@ class IsIn(AbstractPredicate):
             function_json["values"] = self.values
         return function_json
 
+
 class ElementFilter(AbstractPredicate):
     CLASS = "uk.gov.gchq.gaffer.data.element.function.ElementFilter"
 
@@ -397,6 +417,7 @@ class ElementFilter(AbstractPredicate):
             function_json["predicates"] = self.predicates
         return function_json
 
+
 class AreIn(AbstractPredicate):
     CLASS = "uk.gov.gchq.koryphe.impl.predicate.AreIn"
 
@@ -411,6 +432,7 @@ class AreIn(AbstractPredicate):
         if self.values is not None:
             function_json["values"] = self.values
         return function_json
+
 
 class AdaptedPredicate(AbstractPredicate):
     CLASS = "uk.gov.gchq.koryphe.predicate.AdaptedPredicate"
@@ -431,6 +453,7 @@ class AdaptedPredicate(AbstractPredicate):
             function_json["inputAdapter"] = self.input_adapter
         return function_json
 
+
 class IsShorterThan(AbstractPredicate):
     CLASS = "uk.gov.gchq.koryphe.impl.predicate.IsShorterThan"
 
@@ -449,6 +472,7 @@ class IsShorterThan(AbstractPredicate):
         if self.or_equal_to is not None:
             function_json["orEqualTo"] = self.or_equal_to
         return function_json
+
 
 class TupleAdaptedPredicate(AbstractPredicate):
     CLASS = "uk.gov.gchq.koryphe.tuple.predicate.TupleAdaptedPredicate"
@@ -473,6 +497,7 @@ class TupleAdaptedPredicate(AbstractPredicate):
             function_json["selection"] = self.selection
         return function_json
 
+
 class PredicateComposite(AbstractPredicate):
     CLASS = "uk.gov.gchq.koryphe.predicate.PredicateComposite"
 
@@ -487,6 +512,7 @@ class PredicateComposite(AbstractPredicate):
         if self.predicates is not None:
             function_json["predicates"] = self.predicates
         return function_json
+
 
 class If(AbstractPredicate):
     CLASS = "uk.gov.gchq.koryphe.impl.predicate.If"
@@ -515,6 +541,7 @@ class If(AbstractPredicate):
             function_json["then"] = self.then
         return function_json
 
+
 class IsXLessThanY(AbstractPredicate):
     CLASS = "uk.gov.gchq.koryphe.impl.predicate.IsXLessThanY"
 
@@ -523,6 +550,7 @@ class IsXLessThanY(AbstractPredicate):
 
     def to_json(self):
         return super().to_json()
+
 
 class InRange(AbstractPredicate):
     CLASS = "uk.gov.gchq.koryphe.impl.predicate.range.InRange"
@@ -551,6 +579,7 @@ class InRange(AbstractPredicate):
             function_json["endInclusive"] = self.end_inclusive
         return function_json
 
+
 class AreEqual(AbstractPredicate):
     CLASS = "uk.gov.gchq.koryphe.impl.predicate.AreEqual"
 
@@ -559,6 +588,7 @@ class AreEqual(AbstractPredicate):
 
     def to_json(self):
         return super().to_json()
+
 
 class InTimeRangeDual(AbstractPredicate):
     CLASS = "uk.gov.gchq.koryphe.impl.predicate.range.InTimeRangeDual"
@@ -615,6 +645,7 @@ class InTimeRangeDual(AbstractPredicate):
             function_json["timeUnit"] = self.time_unit
         return function_json
 
+
 class DefaultUserPredicate(AbstractPredicate):
     CLASS = "uk.gov.gchq.gaffer.access.predicate.user.DefaultUserPredicate"
 
@@ -634,6 +665,7 @@ class DefaultUserPredicate(AbstractPredicate):
             function_json["creatingUserId"] = self.creating_user_id
         return function_json
 
+
 class AgeOffFromDays(AbstractPredicate):
     CLASS = "uk.gov.gchq.koryphe.impl.predicate.AgeOffFromDays"
 
@@ -642,6 +674,7 @@ class AgeOffFromDays(AbstractPredicate):
 
     def to_json(self):
         return super().to_json()
+
 
 class InDateRangeDual(AbstractPredicate):
     CLASS = "uk.gov.gchq.koryphe.impl.predicate.range.InDateRangeDual"
@@ -698,6 +731,7 @@ class InDateRangeDual(AbstractPredicate):
             function_json["timeUnit"] = self.time_unit
         return function_json
 
+
 class InTimeRange(AbstractPredicate):
     CLASS = "uk.gov.gchq.koryphe.impl.predicate.range.InTimeRange"
 
@@ -745,6 +779,7 @@ class InTimeRange(AbstractPredicate):
             function_json["timeUnit"] = self.time_unit
         return function_json
 
+
 class ExampleFilterFunction(AbstractPredicate):
     CLASS = "uk.gov.gchq.gaffer.rest.example.ExampleFilterFunction"
 
@@ -754,6 +789,7 @@ class ExampleFilterFunction(AbstractPredicate):
     def to_json(self):
         return super().to_json()
 
+
 class Exists(AbstractPredicate):
     CLASS = "uk.gov.gchq.koryphe.impl.predicate.Exists"
 
@@ -762,6 +798,7 @@ class Exists(AbstractPredicate):
 
     def to_json(self):
         return super().to_json()
+
 
 class Not(AbstractPredicate):
     CLASS = "uk.gov.gchq.koryphe.impl.predicate.Not"
@@ -778,6 +815,7 @@ class Not(AbstractPredicate):
             function_json["predicate"] = self.predicate
         return function_json
 
+
 class IsTrue(AbstractPredicate):
     CLASS = "uk.gov.gchq.koryphe.impl.predicate.IsTrue"
 
@@ -786,6 +824,7 @@ class IsTrue(AbstractPredicate):
 
     def to_json(self):
         return super().to_json()
+
 
 class InRangeDual(AbstractPredicate):
     CLASS = "uk.gov.gchq.koryphe.impl.predicate.range.InRangeDual"
@@ -822,6 +861,7 @@ class InRangeDual(AbstractPredicate):
             function_json["startFullyContained"] = self.start_fully_contained
         return function_json
 
+
 class NamedViewWriteUserPredicate(AbstractPredicate):
     CLASS = "uk.gov.gchq.gaffer.data.elementdefinition.view.access.predicate.user.NamedViewWriteUserPredicate"
 
@@ -841,6 +881,7 @@ class NamedViewWriteUserPredicate(AbstractPredicate):
             function_json["creatingUserId"] = self.creating_user_id
         return function_json
 
+
 class CollectionContains(AbstractPredicate):
     CLASS = "uk.gov.gchq.koryphe.impl.predicate.CollectionContains"
 
@@ -855,6 +896,7 @@ class CollectionContains(AbstractPredicate):
         if self.value is not None:
             function_json["value"] = self.value
         return function_json
+
 
 class MapContainsPredicate(AbstractPredicate):
     CLASS = "uk.gov.gchq.koryphe.impl.predicate.MapContainsPredicate"
@@ -871,6 +913,7 @@ class MapContainsPredicate(AbstractPredicate):
             function_json["keyPredicate"] = self.key_predicate
         return function_json
 
+
 class FederatedGraphWriteUserPredicate(AbstractPredicate):
     CLASS = "uk.gov.gchq.gaffer.federatedstore.access.predicate.user.FederatedGraphWriteUserPredicate"
 
@@ -885,6 +928,7 @@ class FederatedGraphWriteUserPredicate(AbstractPredicate):
         if self.creating_user_id is not None:
             function_json["creatingUserId"] = self.creating_user_id
         return function_json
+
 
 class IsA(AbstractPredicate):
     CLASS = "uk.gov.gchq.koryphe.impl.predicate.IsA"
@@ -901,6 +945,7 @@ class IsA(AbstractPredicate):
             function_json["type"] = self.type
         return function_json
 
+
 class UnrestrictedAccessUserPredicate(AbstractPredicate):
     CLASS = "uk.gov.gchq.gaffer.access.predicate.user.UnrestrictedAccessUserPredicate"
 
@@ -909,6 +954,7 @@ class UnrestrictedAccessUserPredicate(AbstractPredicate):
 
     def to_json(self):
         return super().to_json()
+
 
 class ElementJoinComparator(AbstractPredicate):
     CLASS = "uk.gov.gchq.gaffer.data.element.comparison.ElementJoinComparator"
@@ -925,6 +971,7 @@ class ElementJoinComparator(AbstractPredicate):
             function_json["groupByProperties"] = self.group_by_properties
         return function_json
 
+
 class PropertiesFilter(AbstractPredicate):
     CLASS = "uk.gov.gchq.gaffer.data.element.function.PropertiesFilter"
 
@@ -939,6 +986,7 @@ class PropertiesFilter(AbstractPredicate):
         if self.predicates is not None:
             function_json["predicates"] = self.predicates
         return function_json
+
 
 class IsMoreThan(AbstractPredicate):
     CLASS = "uk.gov.gchq.koryphe.impl.predicate.IsMoreThan"
@@ -959,6 +1007,7 @@ class IsMoreThan(AbstractPredicate):
             function_json["orEqualTo"] = self.or_equal_to
         return function_json
 
+
 class MapContains(AbstractPredicate):
     CLASS = "uk.gov.gchq.koryphe.impl.predicate.MapContains"
 
@@ -973,6 +1022,7 @@ class MapContains(AbstractPredicate):
         if self.key is not None:
             function_json["key"] = self.key
         return function_json
+
 
 class StringContains(AbstractPredicate):
     CLASS = "uk.gov.gchq.koryphe.impl.predicate.StringContains"
@@ -992,6 +1042,7 @@ class StringContains(AbstractPredicate):
         if self.value is not None:
             function_json["value"] = self.value
         return function_json
+
 
 class AgeOff(AbstractPredicate):
     CLASS = "uk.gov.gchq.koryphe.impl.predicate.AgeOff"
@@ -1015,6 +1066,7 @@ class AgeOff(AbstractPredicate):
         if self.age_off_time is not None:
             function_json["ageOffTime"] = self.age_off_time
         return function_json
+
 
 class And(AbstractPredicate):
     CLASS = "uk.gov.gchq.koryphe.impl.predicate.And"

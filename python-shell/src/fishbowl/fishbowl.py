@@ -49,6 +49,7 @@ HEADER = LICENSE + GENERATED_HEADER
 
 NEWLINE = "\n            "
 
+
 class Fishbowl:
     def __init__(self, gaffer_connector, generated_directory_path="generated"):
         self._gaffer_connector = gaffer_connector
@@ -163,8 +164,9 @@ class Fishbowl:
                         field + "\"] = self." +
                         function_field_mappings[field])
                 functions_python.append("        return function_json")
-            functions_python.append("")
+            functions_python.append("\n")
 
+        functions_python[-1] = ""
         return "\n".join(functions_python)
 
     def _generate_operations(self):
@@ -209,7 +211,8 @@ class Fishbowl:
                     def_line += "options=None):"
                     operations_python.append(def_line)
                 else:
-                    operations_python.append(f"    def __init__({NEWLINE}self,{NEWLINE}options=None):")
+                    operations_python.append(
+                        f"    def __init__({NEWLINE}self,{NEWLINE}options=None):")
                 operations_python.append(
                     "        super().__init__(_class_name=self.CLASS, options=options)")
                 for field_name in [field["camel_name"] for field in fields]:
@@ -226,7 +229,7 @@ class Fishbowl:
                         operations_python.append(
                             "            operation_json[\"" + field["name"] + "\"] = self." + field["camel_name"])
                     operations_python.append("        return operation_json")
-                operations_python.append("")
+                operations_python.append("\n")
 
         # Add the OperationChainDAO afterwards instead
         operations_python.append("class OperationChainDAO(OperationChain):")
@@ -239,6 +242,7 @@ class Fishbowl:
         operations_python.append("        operation_chain_json.pop(\"class\", None)")
         operations_python.append("        return operation_chain_json\n")
 
+        operations_python[-1] = ""
         return "\n".join(operations_python)
 
     def _generate_config(self):
@@ -274,9 +278,11 @@ class Fishbowl:
 
                 config_python.append(f"class {name}(GetGraph):")
                 config_python.append(f"    def __init__(self{param_python}):")
-                config_python.append(f"        super().__init__({NEWLINE}'{path}'{param_format_python})")
-                config_python.append("")
+                config_python.append(
+                    f"        super().__init__({NEWLINE}'{path}'{param_format_python})")
+                config_python.append("\n")
 
+        config_python[-1] = ""
         return "\n".join(config_python)
 
     def get_connector(self):

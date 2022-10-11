@@ -31,6 +31,7 @@ class KllFloatsSketchAggregator(AbstractBinaryOperator):
     def to_json(self):
         return super().to_json()
 
+
 class SketchAggregator(AbstractBinaryOperator):
     CLASS = "uk.gov.gchq.gaffer.sketches.datasketches.theta.binaryoperator.SketchAggregator"
 
@@ -39,6 +40,7 @@ class SketchAggregator(AbstractBinaryOperator):
 
     def to_json(self):
         return super().to_json()
+
 
 class CustomMapAggregator(AbstractBinaryOperator):
     CLASS = "uk.gov.gchq.gaffer.types.binaryoperator.CustomMapAggregator"
@@ -54,6 +56,7 @@ class CustomMapAggregator(AbstractBinaryOperator):
         if self.binary_operator is not None:
             function_json["binaryOperator"] = self.binary_operator
         return function_json
+
 
 class TupleAdaptedBinaryOperator(AbstractBinaryOperator):
     CLASS = "uk.gov.gchq.koryphe.tuple.binaryoperator.TupleAdaptedBinaryOperator"
@@ -82,6 +85,7 @@ class TupleAdaptedBinaryOperator(AbstractBinaryOperator):
             function_json["outputAdapter"] = self.output_adapter
         return function_json
 
+
 class ElementAggregator(AbstractBinaryOperator):
     CLASS = "uk.gov.gchq.gaffer.data.element.function.ElementAggregator"
 
@@ -97,6 +101,7 @@ class ElementAggregator(AbstractBinaryOperator):
             function_json["operators"] = self.operators
         return function_json
 
+
 class And(AbstractBinaryOperator):
     CLASS = "uk.gov.gchq.koryphe.impl.binaryoperator.And"
 
@@ -105,6 +110,7 @@ class And(AbstractBinaryOperator):
 
     def to_json(self):
         return super().to_json()
+
 
 class StringsSketchAggregator(AbstractBinaryOperator):
     CLASS = "uk.gov.gchq.gaffer.sketches.datasketches.frequencies.binaryoperator.StringsSketchAggregator"
@@ -115,6 +121,7 @@ class StringsSketchAggregator(AbstractBinaryOperator):
     def to_json(self):
         return super().to_json()
 
+
 class Product(AbstractBinaryOperator):
     CLASS = "uk.gov.gchq.koryphe.impl.binaryoperator.Product"
 
@@ -123,6 +130,7 @@ class Product(AbstractBinaryOperator):
 
     def to_json(self):
         return super().to_json()
+
 
 class StringConcat(AbstractBinaryOperator):
     CLASS = "uk.gov.gchq.koryphe.impl.binaryoperator.StringConcat"
@@ -139,6 +147,7 @@ class StringConcat(AbstractBinaryOperator):
             function_json["separator"] = self.separator
         return function_json
 
+
 class DoublesUnionAggregator(AbstractBinaryOperator):
     CLASS = "uk.gov.gchq.gaffer.sketches.datasketches.quantiles.binaryoperator.DoublesUnionAggregator"
 
@@ -147,6 +156,7 @@ class DoublesUnionAggregator(AbstractBinaryOperator):
 
     def to_json(self):
         return super().to_json()
+
 
 class Last(AbstractBinaryOperator):
     CLASS = "uk.gov.gchq.koryphe.impl.binaryoperator.Last"
@@ -157,6 +167,7 @@ class Last(AbstractBinaryOperator):
     def to_json(self):
         return super().to_json()
 
+
 class BoundedTimestampSetAggregator(AbstractBinaryOperator):
     CLASS = "uk.gov.gchq.gaffer.time.binaryoperator.BoundedTimestampSetAggregator"
 
@@ -165,6 +176,7 @@ class BoundedTimestampSetAggregator(AbstractBinaryOperator):
 
     def to_json(self):
         return super().to_json()
+
 
 class StringsSketchAggregator(AbstractBinaryOperator):
     CLASS = "uk.gov.gchq.gaffer.sketches.datasketches.quantiles.binaryoperator.StringsSketchAggregator"
@@ -175,6 +187,7 @@ class StringsSketchAggregator(AbstractBinaryOperator):
     def to_json(self):
         return super().to_json()
 
+
 class First(AbstractBinaryOperator):
     CLASS = "uk.gov.gchq.koryphe.impl.binaryoperator.First"
 
@@ -183,6 +196,7 @@ class First(AbstractBinaryOperator):
 
     def to_json(self):
         return super().to_json()
+
 
 class Max(AbstractBinaryOperator):
     CLASS = "uk.gov.gchq.koryphe.impl.binaryoperator.Max"
@@ -193,6 +207,7 @@ class Max(AbstractBinaryOperator):
     def to_json(self):
         return super().to_json()
 
+
 class RoaringBitmapAggregator(AbstractBinaryOperator):
     CLASS = "uk.gov.gchq.gaffer.bitmap.function.aggregate.RoaringBitmapAggregator"
 
@@ -201,6 +216,7 @@ class RoaringBitmapAggregator(AbstractBinaryOperator):
 
     def to_json(self):
         return super().to_json()
+
 
 class Or(AbstractBinaryOperator):
     CLASS = "uk.gov.gchq.koryphe.impl.binaryoperator.Or"
@@ -211,6 +227,7 @@ class Or(AbstractBinaryOperator):
     def to_json(self):
         return super().to_json()
 
+
 class LongsSketchAggregator(AbstractBinaryOperator):
     CLASS = "uk.gov.gchq.gaffer.sketches.datasketches.frequencies.binaryoperator.LongsSketchAggregator"
 
@@ -219,6 +236,7 @@ class LongsSketchAggregator(AbstractBinaryOperator):
 
     def to_json(self):
         return super().to_json()
+
 
 class AggregatorUtilIngestPropertiesBinaryOperator(AbstractBinaryOperator):
     CLASS = "uk.gov.gchq.gaffer.store.util.AggregatorUtil$IngestPropertiesBinaryOperator"
@@ -229,6 +247,7 @@ class AggregatorUtilIngestPropertiesBinaryOperator(AbstractBinaryOperator):
     def to_json(self):
         return super().to_json()
 
+
 class Min(AbstractBinaryOperator):
     CLASS = "uk.gov.gchq.koryphe.impl.binaryoperator.Min"
 
@@ -238,6 +257,7 @@ class Min(AbstractBinaryOperator):
     def to_json(self):
         return super().to_json()
 
+
 class LongTimeSeriesAggregator(AbstractBinaryOperator):
     CLASS = "uk.gov.gchq.gaffer.time.binaryoperator.LongTimeSeriesAggregator"
 
@@ -246,6 +266,7 @@ class LongTimeSeriesAggregator(AbstractBinaryOperator):
 
     def to_json(self):
         return super().to_json()
+
 
 class BinaryOperatorMap(AbstractBinaryOperator):
     CLASS = "uk.gov.gchq.koryphe.binaryoperator.BinaryOperatorMap"
@@ -262,6 +283,7 @@ class BinaryOperatorMap(AbstractBinaryOperator):
             function_json["binaryOperator"] = self.binary_operator
         return function_json
 
+
 class StringsUnionAggregator(AbstractBinaryOperator):
     CLASS = "uk.gov.gchq.gaffer.sketches.datasketches.quantiles.binaryoperator.StringsUnionAggregator"
 
@@ -270,6 +292,7 @@ class StringsUnionAggregator(AbstractBinaryOperator):
 
     def to_json(self):
         return super().to_json()
+
 
 class HyperLogLogPlusAggregator(AbstractBinaryOperator):
     CLASS = "uk.gov.gchq.gaffer.sketches.clearspring.cardinality.binaryoperator.HyperLogLogPlusAggregator"
@@ -280,6 +303,7 @@ class HyperLogLogPlusAggregator(AbstractBinaryOperator):
     def to_json(self):
         return super().to_json()
 
+
 class DoublesSketchAggregator(AbstractBinaryOperator):
     CLASS = "uk.gov.gchq.gaffer.sketches.datasketches.quantiles.binaryoperator.DoublesSketchAggregator"
 
@@ -288,6 +312,7 @@ class DoublesSketchAggregator(AbstractBinaryOperator):
 
     def to_json(self):
         return super().to_json()
+
 
 class AdaptedBinaryOperator(AbstractBinaryOperator):
     CLASS = "uk.gov.gchq.koryphe.binaryoperator.AdaptedBinaryOperator"
@@ -312,6 +337,7 @@ class AdaptedBinaryOperator(AbstractBinaryOperator):
             function_json["outputAdapter"] = self.output_adapter
         return function_json
 
+
 class BinaryOperatorComposite(AbstractBinaryOperator):
     CLASS = "uk.gov.gchq.koryphe.binaryoperator.BinaryOperatorComposite"
 
@@ -327,6 +353,7 @@ class BinaryOperatorComposite(AbstractBinaryOperator):
             function_json["operators"] = self.operators
         return function_json
 
+
 class HllSketchAggregator(AbstractBinaryOperator):
     CLASS = "uk.gov.gchq.gaffer.sketches.datasketches.cardinality.binaryoperator.HllSketchAggregator"
 
@@ -335,6 +362,7 @@ class HllSketchAggregator(AbstractBinaryOperator):
 
     def to_json(self):
         return super().to_json()
+
 
 class RBMBackedTimestampSetAggregator(AbstractBinaryOperator):
     CLASS = "uk.gov.gchq.gaffer.time.binaryoperator.RBMBackedTimestampSetAggregator"
@@ -345,6 +373,7 @@ class RBMBackedTimestampSetAggregator(AbstractBinaryOperator):
     def to_json(self):
         return super().to_json()
 
+
 class FreqMapAggregator(AbstractBinaryOperator):
     CLASS = "uk.gov.gchq.gaffer.types.function.FreqMapAggregator"
 
@@ -353,6 +382,7 @@ class FreqMapAggregator(AbstractBinaryOperator):
 
     def to_json(self):
         return super().to_json()
+
 
 class CollectionConcat(AbstractBinaryOperator):
     CLASS = "uk.gov.gchq.koryphe.impl.binaryoperator.CollectionConcat"
@@ -363,6 +393,7 @@ class CollectionConcat(AbstractBinaryOperator):
     def to_json(self):
         return super().to_json()
 
+
 class AggregatorUtilQueryElementBinaryOperator(AbstractBinaryOperator):
     CLASS = "uk.gov.gchq.gaffer.store.util.AggregatorUtil$QueryElementBinaryOperator"
 
@@ -371,6 +402,7 @@ class AggregatorUtilQueryElementBinaryOperator(AbstractBinaryOperator):
 
     def to_json(self):
         return super().to_json()
+
 
 class TupleAdaptedBinaryOperatorComposite(AbstractBinaryOperator):
     CLASS = "uk.gov.gchq.koryphe.tuple.binaryoperator.TupleAdaptedBinaryOperatorComposite"
@@ -387,6 +419,7 @@ class TupleAdaptedBinaryOperatorComposite(AbstractBinaryOperator):
             function_json["operators"] = self.operators
         return function_json
 
+
 class StringDeduplicateConcat(AbstractBinaryOperator):
     CLASS = "uk.gov.gchq.koryphe.impl.binaryoperator.StringDeduplicateConcat"
 
@@ -402,6 +435,7 @@ class StringDeduplicateConcat(AbstractBinaryOperator):
             function_json["separator"] = self.separator
         return function_json
 
+
 class Sum(AbstractBinaryOperator):
     CLASS = "uk.gov.gchq.koryphe.impl.binaryoperator.Sum"
 
@@ -410,6 +444,7 @@ class Sum(AbstractBinaryOperator):
 
     def to_json(self):
         return super().to_json()
+
 
 class ReservoirLongsSketchAggregator(AbstractBinaryOperator):
     CLASS = "uk.gov.gchq.gaffer.sketches.datasketches.sampling.binaryoperator.ReservoirLongsSketchAggregator"
@@ -420,6 +455,7 @@ class ReservoirLongsSketchAggregator(AbstractBinaryOperator):
     def to_json(self):
         return super().to_json()
 
+
 class UnionAggregator(AbstractBinaryOperator):
     CLASS = "uk.gov.gchq.gaffer.sketches.datasketches.theta.binaryoperator.UnionAggregator"
 
@@ -428,6 +464,7 @@ class UnionAggregator(AbstractBinaryOperator):
 
     def to_json(self):
         return super().to_json()
+
 
 class CollectionIntersect(AbstractBinaryOperator):
     CLASS = "uk.gov.gchq.koryphe.impl.binaryoperator.CollectionIntersect"
@@ -438,6 +475,7 @@ class CollectionIntersect(AbstractBinaryOperator):
     def to_json(self):
         return super().to_json()
 
+
 class ReservoirItemsUnionAggregator(AbstractBinaryOperator):
     CLASS = "uk.gov.gchq.gaffer.sketches.datasketches.sampling.binaryoperator.ReservoirItemsUnionAggregator"
 
@@ -446,6 +484,7 @@ class ReservoirItemsUnionAggregator(AbstractBinaryOperator):
 
     def to_json(self):
         return super().to_json()
+
 
 class ReservoirItemsSketchAggregator(AbstractBinaryOperator):
     CLASS = "uk.gov.gchq.gaffer.sketches.datasketches.sampling.binaryoperator.ReservoirItemsSketchAggregator"
@@ -456,6 +495,7 @@ class ReservoirItemsSketchAggregator(AbstractBinaryOperator):
     def to_json(self):
         return super().to_json()
 
+
 class HllUnionAggregator(AbstractBinaryOperator):
     CLASS = "uk.gov.gchq.gaffer.sketches.datasketches.cardinality.binaryoperator.HllUnionAggregator"
 
@@ -464,6 +504,7 @@ class HllUnionAggregator(AbstractBinaryOperator):
 
     def to_json(self):
         return super().to_json()
+
 
 class AggregatorUtilIngestElementBinaryOperator(AbstractBinaryOperator):
     CLASS = "uk.gov.gchq.gaffer.store.util.AggregatorUtil$IngestElementBinaryOperator"
@@ -474,6 +515,7 @@ class AggregatorUtilIngestElementBinaryOperator(AbstractBinaryOperator):
     def to_json(self):
         return super().to_json()
 
+
 class AggregatorUtilQueryPropertiesBinaryOperator(AbstractBinaryOperator):
     CLASS = "uk.gov.gchq.gaffer.store.util.AggregatorUtil$QueryPropertiesBinaryOperator"
 
@@ -482,6 +524,7 @@ class AggregatorUtilQueryPropertiesBinaryOperator(AbstractBinaryOperator):
 
     def to_json(self):
         return super().to_json()
+
 
 class ReservoirLongsUnionAggregator(AbstractBinaryOperator):
     CLASS = "uk.gov.gchq.gaffer.sketches.datasketches.sampling.binaryoperator.ReservoirLongsUnionAggregator"

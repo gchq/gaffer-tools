@@ -31,6 +31,7 @@ class ToElementId(AbstractFunction):
     def to_json(self):
         return super().to_json()
 
+
 class Divide(AbstractFunction):
     CLASS = "uk.gov.gchq.koryphe.impl.function.Divide"
 
@@ -39,6 +40,7 @@ class Divide(AbstractFunction):
 
     def to_json(self):
         return super().to_json()
+
 
 class ToTypeValue(AbstractFunction):
     CLASS = "uk.gov.gchq.gaffer.types.function.ToTypeValue"
@@ -55,6 +57,7 @@ class ToTypeValue(AbstractFunction):
             function_json["type"] = self.type
         return function_json
 
+
 class IterableLongest(AbstractFunction):
     CLASS = "uk.gov.gchq.koryphe.impl.function.IterableLongest"
 
@@ -63,6 +66,7 @@ class IterableLongest(AbstractFunction):
 
     def to_json(self):
         return super().to_json()
+
 
 class FirstItem(AbstractFunction):
     CLASS = "uk.gov.gchq.koryphe.impl.function.FirstItem"
@@ -73,6 +77,7 @@ class FirstItem(AbstractFunction):
     def to_json(self):
         return super().to_json()
 
+
 class TypeValueToTuple(AbstractFunction):
     CLASS = "uk.gov.gchq.gaffer.data.element.function.TypeValueToTuple"
 
@@ -81,6 +86,7 @@ class TypeValueToTuple(AbstractFunction):
 
     def to_json(self):
         return super().to_json()
+
 
 class CallMethod(AbstractFunction):
     CLASS = "uk.gov.gchq.koryphe.impl.function.CallMethod"
@@ -96,6 +102,7 @@ class CallMethod(AbstractFunction):
         if self.method is not None:
             function_json["method"] = self.method
         return function_json
+
 
 class StringTruncate(AbstractFunction):
     CLASS = "uk.gov.gchq.koryphe.impl.function.StringTruncate"
@@ -116,6 +123,7 @@ class StringTruncate(AbstractFunction):
             function_json["ellipses"] = self.ellipses
         return function_json
 
+
 class ToBytes(AbstractFunction):
     CLASS = "uk.gov.gchq.koryphe.impl.function.ToBytes"
 
@@ -131,6 +139,7 @@ class ToBytes(AbstractFunction):
             function_json["charset"] = self.charset
         return function_json
 
+
 class ToLowerCase(AbstractFunction):
     CLASS = "uk.gov.gchq.koryphe.impl.function.ToLowerCase"
 
@@ -139,6 +148,7 @@ class ToLowerCase(AbstractFunction):
 
     def to_json(self):
         return super().to_json()
+
 
 class ToTimestampSet(AbstractFunction):
     CLASS = "uk.gov.gchq.gaffer.time.function.ToTimestampSet"
@@ -163,6 +173,7 @@ class ToTimestampSet(AbstractFunction):
             function_json["millisCorrection"] = self.millis_correction
         return function_json
 
+
 class StringsToTypeValue(AbstractFunction):
     CLASS = "uk.gov.gchq.gaffer.types.function.StringsToTypeValue"
 
@@ -171,6 +182,7 @@ class StringsToTypeValue(AbstractFunction):
 
     def to_json(self):
         return super().to_json()
+
 
 class EntityIdExtractor(AbstractFunction):
     CLASS = "uk.gov.gchq.gaffer.operation.data.generator.EntityIdExtractor"
@@ -187,6 +199,7 @@ class EntityIdExtractor(AbstractFunction):
             function_json["edgeIdentifierToExtract"] = self.edge_identifier_to_extract
         return function_json
 
+
 class StringTrim(AbstractFunction):
     CLASS = "uk.gov.gchq.koryphe.impl.function.StringTrim"
 
@@ -195,6 +208,7 @@ class StringTrim(AbstractFunction):
 
     def to_json(self):
         return super().to_json()
+
 
 class StringSplit(AbstractFunction):
     CLASS = "uk.gov.gchq.koryphe.impl.function.StringSplit"
@@ -211,6 +225,7 @@ class StringSplit(AbstractFunction):
             function_json["delimiter"] = self.delimiter
         return function_json
 
+
 class DateToTimeBucketStart(AbstractFunction):
     CLASS = "uk.gov.gchq.gaffer.time.function.DateToTimeBucketStart"
 
@@ -226,6 +241,7 @@ class DateToTimeBucketStart(AbstractFunction):
             function_json["bucket"] = self.bucket
         return function_json
 
+
 class AggregatorUtilToQueryElementKey(AbstractFunction):
     CLASS = "uk.gov.gchq.gaffer.store.util.AggregatorUtil$ToQueryElementKey"
 
@@ -235,6 +251,7 @@ class AggregatorUtilToQueryElementKey(AbstractFunction):
     def to_json(self):
         return super().to_json()
 
+
 class CurrentTime(AbstractFunction):
     CLASS = "uk.gov.gchq.koryphe.impl.function.CurrentTime"
 
@@ -243,6 +260,7 @@ class CurrentTime(AbstractFunction):
 
     def to_json(self):
         return super().to_json()
+
 
 class ToSet(AbstractFunction):
     CLASS = "uk.gov.gchq.koryphe.impl.function.ToSet"
@@ -259,6 +277,7 @@ class ToSet(AbstractFunction):
             function_json["implementation"] = self.implementation
         return function_json
 
+
 class ToLong(AbstractFunction):
     CLASS = "uk.gov.gchq.koryphe.impl.function.ToLong"
 
@@ -267,6 +286,7 @@ class ToLong(AbstractFunction):
 
     def to_json(self):
         return super().to_json()
+
 
 class FreqMapExtractor(AbstractFunction):
     CLASS = "uk.gov.gchq.gaffer.types.function.FreqMapExtractor"
@@ -282,6 +302,7 @@ class FreqMapExtractor(AbstractFunction):
         if self.key is not None:
             function_json["key"] = self.key
         return function_json
+
 
 class CsvLinesToMaps(AbstractFunction):
     CLASS = "uk.gov.gchq.koryphe.impl.function.CsvLinesToMaps"
@@ -322,6 +343,7 @@ class CsvLinesToMaps(AbstractFunction):
             function_json["header"] = self.header
         return function_json
 
+
 class Increment(AbstractFunction):
     CLASS = "uk.gov.gchq.koryphe.impl.function.Increment"
 
@@ -337,6 +359,7 @@ class Increment(AbstractFunction):
             function_json["increment"] = self.increment
         return function_json
 
+
 class ToDouble(AbstractFunction):
     CLASS = "uk.gov.gchq.koryphe.impl.function.ToDouble"
 
@@ -345,6 +368,7 @@ class ToDouble(AbstractFunction):
 
     def to_json(self):
         return super().to_json()
+
 
 class ToTimeBucketStart(AbstractFunction):
     CLASS = "uk.gov.gchq.gaffer.time.function.ToTimeBucketStart"
@@ -361,6 +385,7 @@ class ToTimeBucketStart(AbstractFunction):
             function_json["bucket"] = self.bucket
         return function_json
 
+
 class DefaultIfNull(AbstractFunction):
     CLASS = "uk.gov.gchq.koryphe.impl.function.DefaultIfNull"
 
@@ -376,6 +401,7 @@ class DefaultIfNull(AbstractFunction):
             function_json["defaultValue"] = self.default_value
         return function_json
 
+
 class IterableToFreqMap(AbstractFunction):
     CLASS = "uk.gov.gchq.gaffer.types.function.IterableToFreqMap"
 
@@ -384,6 +410,7 @@ class IterableToFreqMap(AbstractFunction):
 
     def to_json(self):
         return super().to_json()
+
 
 class ToHllSketch(AbstractFunction):
     CLASS = "uk.gov.gchq.gaffer.sketches.datasketches.cardinality.function.ToHllSketch"
@@ -400,6 +427,7 @@ class ToHllSketch(AbstractFunction):
             function_json["logK"] = self.log_k
         return function_json
 
+
 class LastItem(AbstractFunction):
     CLASS = "uk.gov.gchq.koryphe.impl.function.LastItem"
 
@@ -409,6 +437,7 @@ class LastItem(AbstractFunction):
     def to_json(self):
         return super().to_json()
 
+
 class JsonToElementGenerator(AbstractFunction):
     CLASS = "uk.gov.gchq.gaffer.data.generator.JsonToElementGenerator"
 
@@ -417,6 +446,7 @@ class JsonToElementGenerator(AbstractFunction):
 
     def to_json(self):
         return super().to_json()
+
 
 class ToTimeBucket(AbstractFunction):
     CLASS = "uk.gov.gchq.gaffer.time.function.ToTimeBucket"
@@ -433,6 +463,7 @@ class ToTimeBucket(AbstractFunction):
             function_json["bucket"] = self.bucket
         return function_json
 
+
 class StringsToTypeSubTypeValue(AbstractFunction):
     CLASS = "uk.gov.gchq.gaffer.types.function.StringsToTypeSubTypeValue"
 
@@ -441,6 +472,7 @@ class StringsToTypeSubTypeValue(AbstractFunction):
 
     def to_json(self):
         return super().to_json()
+
 
 class Base64Decode(AbstractFunction):
     CLASS = "uk.gov.gchq.koryphe.impl.function.Base64Decode"
@@ -451,6 +483,7 @@ class Base64Decode(AbstractFunction):
     def to_json(self):
         return super().to_json()
 
+
 class ToTuple(AbstractFunction):
     CLASS = "uk.gov.gchq.koryphe.impl.function.ToTuple"
 
@@ -459,6 +492,7 @@ class ToTuple(AbstractFunction):
 
     def to_json(self):
         return super().to_json()
+
 
 class StringRegexReplace(AbstractFunction):
     CLASS = "uk.gov.gchq.koryphe.impl.function.StringRegexReplace"
@@ -479,6 +513,7 @@ class StringRegexReplace(AbstractFunction):
             function_json["replacement"] = self.replacement
         return function_json
 
+
 class DeserialiseXml(AbstractFunction):
     CLASS = "uk.gov.gchq.koryphe.impl.function.DeserialiseXml"
 
@@ -487,6 +522,7 @@ class DeserialiseXml(AbstractFunction):
 
     def to_json(self):
         return super().to_json()
+
 
 class ExtractGroup(AbstractFunction):
     CLASS = "uk.gov.gchq.gaffer.data.element.function.ExtractGroup"
@@ -497,6 +533,7 @@ class ExtractGroup(AbstractFunction):
     def to_json(self):
         return super().to_json()
 
+
 class ExtractWalkVertex(AbstractFunction):
     CLASS = "uk.gov.gchq.gaffer.data.graph.function.walk.ExtractWalkVertex"
 
@@ -506,6 +543,7 @@ class ExtractWalkVertex(AbstractFunction):
     def to_json(self):
         return super().to_json()
 
+
 class MapToTuple(AbstractFunction):
     CLASS = "uk.gov.gchq.koryphe.impl.function.MapToTuple"
 
@@ -514,6 +552,7 @@ class MapToTuple(AbstractFunction):
 
     def to_json(self):
         return super().to_json()
+
 
 class ReduceRelatedElements(AbstractFunction):
     CLASS = "uk.gov.gchq.gaffer.data.element.function.ReduceRelatedElements"
@@ -542,6 +581,7 @@ class ReduceRelatedElements(AbstractFunction):
             function_json["visibilityProperty"] = self.visibility_property
         return function_json
 
+
 class TupleAdaptedFunctionComposite(AbstractFunction):
     CLASS = "uk.gov.gchq.koryphe.tuple.function.TupleAdaptedFunctionComposite"
 
@@ -556,6 +596,7 @@ class TupleAdaptedFunctionComposite(AbstractFunction):
         if self.functions is not None:
             function_json["functions"] = self.functions
         return function_json
+
 
 class CsvGenerator(AbstractFunction):
     CLASS = "uk.gov.gchq.gaffer.data.generator.CsvGenerator"
@@ -584,6 +625,7 @@ class CsvGenerator(AbstractFunction):
             function_json["fields"] = self.fields
         return function_json
 
+
 class FunctionMap(AbstractFunction):
     CLASS = "uk.gov.gchq.koryphe.function.FunctionMap"
 
@@ -599,6 +641,7 @@ class FunctionMap(AbstractFunction):
             function_json["function"] = self.function
         return function_json
 
+
 class Size(AbstractFunction):
     CLASS = "uk.gov.gchq.koryphe.impl.function.Size"
 
@@ -607,6 +650,7 @@ class Size(AbstractFunction):
 
     def to_json(self):
         return super().to_json()
+
 
 class MapGenerator(AbstractFunction):
     CLASS = "uk.gov.gchq.gaffer.data.generator.MapGenerator"
@@ -627,6 +671,7 @@ class MapGenerator(AbstractFunction):
             function_json["fields"] = self.fields
         return function_json
 
+
 class IterableToHllSketch(AbstractFunction):
     CLASS = "uk.gov.gchq.gaffer.sketches.datasketches.cardinality.function.IterableToHllSketch"
 
@@ -642,6 +687,7 @@ class IterableToHllSketch(AbstractFunction):
             function_json["logK"] = self.log_k
         return function_json
 
+
 class ToBoolean(AbstractFunction):
     CLASS = "uk.gov.gchq.koryphe.impl.function.ToBoolean"
 
@@ -650,6 +696,7 @@ class ToBoolean(AbstractFunction):
 
     def to_json(self):
         return super().to_json()
+
 
 class DateToTimeBucketEnd(AbstractFunction):
     CLASS = "uk.gov.gchq.gaffer.time.function.DateToTimeBucketEnd"
@@ -666,6 +713,7 @@ class DateToTimeBucketEnd(AbstractFunction):
             function_json["bucket"] = self.bucket
         return function_json
 
+
 class ToElementTuple(AbstractFunction):
     CLASS = "uk.gov.gchq.gaffer.data.element.function.ToElementTuple"
 
@@ -675,6 +723,7 @@ class ToElementTuple(AbstractFunction):
     def to_json(self):
         return super().to_json()
 
+
 class IsEmpty(AbstractFunction):
     CLASS = "uk.gov.gchq.koryphe.impl.function.IsEmpty"
 
@@ -683,6 +732,7 @@ class IsEmpty(AbstractFunction):
 
     def to_json(self):
         return super().to_json()
+
 
 class StringPrepend(AbstractFunction):
     CLASS = "uk.gov.gchq.koryphe.impl.function.StringPrepend"
@@ -699,6 +749,7 @@ class StringPrepend(AbstractFunction):
             function_json["prefix"] = self.prefix
         return function_json
 
+
 class ToPropertiesTuple(AbstractFunction):
     CLASS = "uk.gov.gchq.gaffer.data.element.function.ToPropertiesTuple"
 
@@ -707,6 +758,7 @@ class ToPropertiesTuple(AbstractFunction):
 
     def to_json(self):
         return super().to_json()
+
 
 class Concat(AbstractFunction):
     CLASS = "uk.gov.gchq.koryphe.impl.function.Concat"
@@ -723,6 +775,7 @@ class Concat(AbstractFunction):
             function_json["separator"] = self.separator
         return function_json
 
+
 class CurrentDate(AbstractFunction):
     CLASS = "uk.gov.gchq.koryphe.impl.function.CurrentDate"
 
@@ -731,6 +784,7 @@ class CurrentDate(AbstractFunction):
 
     def to_json(self):
         return super().to_json()
+
 
 class If(AbstractFunction):
     CLASS = "uk.gov.gchq.koryphe.impl.function.If"
@@ -759,6 +813,7 @@ class If(AbstractFunction):
             function_json["then"] = self.then
         return function_json
 
+
 class Multiply(AbstractFunction):
     CLASS = "uk.gov.gchq.koryphe.impl.function.Multiply"
 
@@ -767,6 +822,7 @@ class Multiply(AbstractFunction):
 
     def to_json(self):
         return super().to_json()
+
 
 class HyperLogLogPlusEntityGenerator(AbstractFunction):
     CLASS = "uk.gov.gchq.gaffer.sketches.clearspring.cardinality.HyperLogLogPlusEntityGenerator"
@@ -803,6 +859,7 @@ class HyperLogLogPlusEntityGenerator(AbstractFunction):
             function_json["group"] = self.group
         return function_json
 
+
 class FromEntityId(AbstractFunction):
     CLASS = "uk.gov.gchq.gaffer.operation.function.FromEntityId"
 
@@ -811,6 +868,7 @@ class FromEntityId(AbstractFunction):
 
     def to_json(self):
         return super().to_json()
+
 
 class Length(AbstractFunction):
     CLASS = "uk.gov.gchq.koryphe.impl.function.Length"
@@ -826,6 +884,7 @@ class Length(AbstractFunction):
         if self.max_length is not None:
             function_json["maxLength"] = self.max_length
         return function_json
+
 
 class StringReplace(AbstractFunction):
     CLASS = "uk.gov.gchq.koryphe.impl.function.StringReplace"
@@ -846,6 +905,7 @@ class StringReplace(AbstractFunction):
             function_json["replacement"] = self.replacement
         return function_json
 
+
 class ToFreqMap(AbstractFunction):
     CLASS = "uk.gov.gchq.gaffer.types.function.ToFreqMap"
 
@@ -854,6 +914,7 @@ class ToFreqMap(AbstractFunction):
 
     def to_json(self):
         return super().to_json()
+
 
 class TupleInputAdapter(AbstractFunction):
     CLASS = "uk.gov.gchq.koryphe.tuple.TupleInputAdapter"
@@ -870,6 +931,7 @@ class TupleInputAdapter(AbstractFunction):
             function_json["selection"] = self.selection
         return function_json
 
+
 class ToArray(AbstractFunction):
     CLASS = "uk.gov.gchq.koryphe.impl.function.ToArray"
 
@@ -878,6 +940,7 @@ class ToArray(AbstractFunction):
 
     def to_json(self):
         return super().to_json()
+
 
 class ToTimeBucketEnd(AbstractFunction):
     CLASS = "uk.gov.gchq.gaffer.time.function.ToTimeBucketEnd"
@@ -894,6 +957,7 @@ class ToTimeBucketEnd(AbstractFunction):
             function_json["bucket"] = self.bucket
         return function_json
 
+
 class IterableFilter(AbstractFunction):
     CLASS = "uk.gov.gchq.koryphe.impl.function.IterableFilter"
 
@@ -909,6 +973,7 @@ class IterableFilter(AbstractFunction):
             function_json["predicate"] = self.predicate
         return function_json
 
+
 class ReverseString(AbstractFunction):
     CLASS = "uk.gov.gchq.koryphe.impl.function.ReverseString"
 
@@ -917,6 +982,7 @@ class ReverseString(AbstractFunction):
 
     def to_json(self):
         return super().to_json()
+
 
 class DictionaryLookup(AbstractFunction):
     CLASS = "uk.gov.gchq.koryphe.impl.function.DictionaryLookup"
@@ -933,6 +999,7 @@ class DictionaryLookup(AbstractFunction):
             function_json["dictionary"] = self.dictionary
         return function_json
 
+
 class ToEntityId(AbstractFunction):
     CLASS = "uk.gov.gchq.gaffer.operation.function.ToEntityId"
 
@@ -942,6 +1009,7 @@ class ToEntityId(AbstractFunction):
     def to_json(self):
         return super().to_json()
 
+
 class ExtractWalkEntities(AbstractFunction):
     CLASS = "uk.gov.gchq.gaffer.data.graph.function.walk.ExtractWalkEntities"
 
@@ -950,6 +1018,7 @@ class ExtractWalkEntities(AbstractFunction):
 
     def to_json(self):
         return super().to_json()
+
 
 class ToString(AbstractFunction):
     CLASS = "uk.gov.gchq.koryphe.impl.function.ToString"
@@ -966,6 +1035,7 @@ class ToString(AbstractFunction):
             function_json["charset"] = self.charset
         return function_json
 
+
 class AggregatorUtilToElementKey(AbstractFunction):
     CLASS = "uk.gov.gchq.gaffer.store.util.AggregatorUtil$ToElementKey"
 
@@ -974,6 +1044,7 @@ class AggregatorUtilToElementKey(AbstractFunction):
 
     def to_json(self):
         return super().to_json()
+
 
 class ExtractWalkEntitiesFromHop(AbstractFunction):
     CLASS = "uk.gov.gchq.gaffer.data.graph.function.walk.ExtractWalkEntitiesFromHop"
@@ -989,6 +1060,7 @@ class ExtractWalkEntitiesFromHop(AbstractFunction):
         if self.hop is not None:
             function_json["hop"] = self.hop
         return function_json
+
 
 class TupleToElements(AbstractFunction):
     CLASS = "uk.gov.gchq.gaffer.data.element.function.TupleToElements"
@@ -1009,6 +1081,7 @@ class TupleToElements(AbstractFunction):
             function_json["useGroupMapping"] = self.use_group_mapping
         return function_json
 
+
 class DefaultIfEmpty(AbstractFunction):
     CLASS = "uk.gov.gchq.koryphe.impl.function.DefaultIfEmpty"
 
@@ -1023,6 +1096,7 @@ class DefaultIfEmpty(AbstractFunction):
         if self.default_value is not None:
             function_json["defaultValue"] = self.default_value
         return function_json
+
 
 class OpenCypherCsvGenerator(AbstractFunction):
     CLASS = "uk.gov.gchq.gaffer.data.generator.OpenCypherCsvGenerator"
@@ -1055,6 +1129,7 @@ class OpenCypherCsvGenerator(AbstractFunction):
             function_json["fields"] = self.fields
         return function_json
 
+
 class ToUpperCase(AbstractFunction):
     CLASS = "uk.gov.gchq.koryphe.impl.function.ToUpperCase"
 
@@ -1064,6 +1139,7 @@ class ToUpperCase(AbstractFunction):
     def to_json(self):
         return super().to_json()
 
+
 class ToSingletonTreeSet(AbstractFunction):
     CLASS = "uk.gov.gchq.gaffer.time.function.ToSingletonTreeSet"
 
@@ -1072,6 +1148,7 @@ class ToSingletonTreeSet(AbstractFunction):
 
     def to_json(self):
         return super().to_json()
+
 
 class FunctionChain(AbstractFunction):
     CLASS = "uk.gov.gchq.koryphe.impl.function.FunctionChain"
@@ -1088,6 +1165,7 @@ class FunctionChain(AbstractFunction):
             function_json["functions"] = self.functions
         return function_json
 
+
 class TypeSubTypeValueToTuple(AbstractFunction):
     CLASS = "uk.gov.gchq.gaffer.data.element.function.TypeSubTypeValueToTuple"
 
@@ -1096,6 +1174,7 @@ class TypeSubTypeValueToTuple(AbstractFunction):
 
     def to_json(self):
         return super().to_json()
+
 
 class NthItem(AbstractFunction):
     CLASS = "uk.gov.gchq.koryphe.impl.function.NthItem"
@@ -1112,6 +1191,7 @@ class NthItem(AbstractFunction):
             function_json["selection"] = self.selection
         return function_json
 
+
 class ExtractKeys(AbstractFunction):
     CLASS = "uk.gov.gchq.koryphe.impl.function.ExtractKeys"
 
@@ -1120,6 +1200,7 @@ class ExtractKeys(AbstractFunction):
 
     def to_json(self):
         return super().to_json()
+
 
 class CreateObject(AbstractFunction):
     CLASS = "uk.gov.gchq.koryphe.impl.function.CreateObject"
@@ -1135,6 +1216,7 @@ class CreateObject(AbstractFunction):
         if self.object_class is not None:
             function_json["objectClass"] = self.object_class
         return function_json
+
 
 class ToTypeSubTypeValue(AbstractFunction):
     CLASS = "uk.gov.gchq.gaffer.types.function.ToTypeSubTypeValue"
@@ -1155,6 +1237,7 @@ class ToTypeSubTypeValue(AbstractFunction):
             function_json["type"] = self.type
         return function_json
 
+
 class DivideBy(AbstractFunction):
     CLASS = "uk.gov.gchq.koryphe.impl.function.DivideBy"
 
@@ -1170,6 +1253,7 @@ class DivideBy(AbstractFunction):
             function_json["by"] = self.by
         return function_json
 
+
 class Cast(AbstractFunction):
     CLASS = "uk.gov.gchq.koryphe.impl.function.Cast"
 
@@ -1184,6 +1268,7 @@ class Cast(AbstractFunction):
         if self.output_class is not None:
             function_json["outputClass"] = self.output_class
         return function_json
+
 
 class TuplesToElements(AbstractFunction):
     CLASS = "uk.gov.gchq.gaffer.data.element.function.TuplesToElements"
@@ -1204,6 +1289,7 @@ class TuplesToElements(AbstractFunction):
             function_json["useGroupMapping"] = self.use_group_mapping
         return function_json
 
+
 class FromElementId(AbstractFunction):
     CLASS = "uk.gov.gchq.gaffer.operation.function.FromElementId"
 
@@ -1213,6 +1299,7 @@ class FromElementId(AbstractFunction):
     def to_json(self):
         return super().to_json()
 
+
 class ExampleTransformFunction(AbstractFunction):
     CLASS = "uk.gov.gchq.gaffer.rest.example.ExampleTransformFunction"
 
@@ -1221,6 +1308,7 @@ class ExampleTransformFunction(AbstractFunction):
 
     def to_json(self):
         return super().to_json()
+
 
 class MultiplyLongBy(AbstractFunction):
     CLASS = "uk.gov.gchq.koryphe.impl.function.MultiplyLongBy"
@@ -1237,6 +1325,7 @@ class MultiplyLongBy(AbstractFunction):
             function_json["by"] = self.by
         return function_json
 
+
 class ElementTransformer(AbstractFunction):
     CLASS = "uk.gov.gchq.gaffer.data.element.function.ElementTransformer"
 
@@ -1252,6 +1341,7 @@ class ElementTransformer(AbstractFunction):
             function_json["functions"] = self.functions
         return function_json
 
+
 class ExampleDomainObjectGenerator(AbstractFunction):
     CLASS = "uk.gov.gchq.gaffer.rest.example.ExampleDomainObjectGenerator"
 
@@ -1260,6 +1350,7 @@ class ExampleDomainObjectGenerator(AbstractFunction):
 
     def to_json(self):
         return super().to_json()
+
 
 class TupleAdaptedFunction(AbstractFunction):
     CLASS = "uk.gov.gchq.koryphe.tuple.function.TupleAdaptedFunction"
@@ -1292,6 +1383,7 @@ class TupleAdaptedFunction(AbstractFunction):
             function_json["projection"] = self.projection
         return function_json
 
+
 class Identity(AbstractFunction):
     CLASS = "uk.gov.gchq.koryphe.impl.function.Identity"
 
@@ -1300,6 +1392,7 @@ class Identity(AbstractFunction):
 
     def to_json(self):
         return super().to_json()
+
 
 class PropertiesTransformer(AbstractFunction):
     CLASS = "uk.gov.gchq.gaffer.data.element.function.PropertiesTransformer"
@@ -1315,6 +1408,7 @@ class PropertiesTransformer(AbstractFunction):
         if self.functions is not None:
             function_json["functions"] = self.functions
         return function_json
+
 
 class ParseDate(AbstractFunction):
     CLASS = "uk.gov.gchq.koryphe.impl.function.ParseDate"
@@ -1339,6 +1433,7 @@ class ParseDate(AbstractFunction):
             function_json["microseconds"] = self.microseconds
         return function_json
 
+
 class EdgeIdExtractor(AbstractFunction):
     CLASS = "uk.gov.gchq.gaffer.operation.data.generator.EdgeIdExtractor"
 
@@ -1347,6 +1442,7 @@ class EdgeIdExtractor(AbstractFunction):
 
     def to_json(self):
         return super().to_json()
+
 
 class ExampleElementGenerator(AbstractFunction):
     CLASS = "uk.gov.gchq.gaffer.rest.example.ExampleElementGenerator"
@@ -1357,6 +1453,7 @@ class ExampleElementGenerator(AbstractFunction):
     def to_json(self):
         return super().to_json()
 
+
 class UnwrapEntityId(AbstractFunction):
     CLASS = "uk.gov.gchq.gaffer.data.element.function.UnwrapEntityId"
 
@@ -1366,6 +1463,7 @@ class UnwrapEntityId(AbstractFunction):
     def to_json(self):
         return super().to_json()
 
+
 class ToNull(AbstractFunction):
     CLASS = "uk.gov.gchq.koryphe.impl.function.ToNull"
 
@@ -1374,6 +1472,7 @@ class ToNull(AbstractFunction):
 
     def to_json(self):
         return super().to_json()
+
 
 class IterableFlatten(AbstractFunction):
     CLASS = "uk.gov.gchq.koryphe.impl.function.IterableFlatten"
@@ -1390,6 +1489,7 @@ class IterableFlatten(AbstractFunction):
             function_json["operator"] = self.operator
         return function_json
 
+
 class SetValue(AbstractFunction):
     CLASS = "uk.gov.gchq.koryphe.impl.function.SetValue"
 
@@ -1404,6 +1504,7 @@ class SetValue(AbstractFunction):
         if self.value is not None:
             function_json["value"] = self.value
         return function_json
+
 
 class ApplyBiFunction(AbstractFunction):
     CLASS = "uk.gov.gchq.koryphe.impl.function.ApplyBiFunction"
@@ -1420,6 +1521,7 @@ class ApplyBiFunction(AbstractFunction):
             function_json["function"] = self.function
         return function_json
 
+
 class FirstValid(AbstractFunction):
     CLASS = "uk.gov.gchq.koryphe.impl.function.FirstValid"
 
@@ -1435,6 +1537,7 @@ class FirstValid(AbstractFunction):
             function_json["predicate"] = self.predicate
         return function_json
 
+
 class AggregatorUtilToIngestElementKey(AbstractFunction):
     CLASS = "uk.gov.gchq.gaffer.store.util.AggregatorUtil$ToIngestElementKey"
 
@@ -1443,6 +1546,7 @@ class AggregatorUtilToIngestElementKey(AbstractFunction):
 
     def to_json(self):
         return super().to_json()
+
 
 class ParseTime(AbstractFunction):
     CLASS = "uk.gov.gchq.koryphe.impl.function.ParseTime"
@@ -1467,6 +1571,7 @@ class ParseTime(AbstractFunction):
             function_json["timeUnit"] = self.time_unit
         return function_json
 
+
 class StringRegexSplit(AbstractFunction):
     CLASS = "uk.gov.gchq.koryphe.impl.function.StringRegexSplit"
 
@@ -1481,6 +1586,7 @@ class StringRegexSplit(AbstractFunction):
         if self.regex is not None:
             function_json["regex"] = self.regex
         return function_json
+
 
 class OpenCypherCsvElementGenerator(AbstractFunction):
     CLASS = "uk.gov.gchq.gaffer.data.generator.OpenCypherCsvElementGenerator"
@@ -1513,6 +1619,7 @@ class OpenCypherCsvElementGenerator(AbstractFunction):
             function_json["header"] = self.header
         return function_json
 
+
 class ToList(AbstractFunction):
     CLASS = "uk.gov.gchq.koryphe.impl.function.ToList"
 
@@ -1521,6 +1628,7 @@ class ToList(AbstractFunction):
 
     def to_json(self):
         return super().to_json()
+
 
 class ExtractId(AbstractFunction):
     CLASS = "uk.gov.gchq.gaffer.data.element.function.ExtractId"
@@ -1536,6 +1644,7 @@ class ExtractId(AbstractFunction):
         if self.id is not None:
             function_json["id"] = self.id
         return function_json
+
 
 class HllSketchEntityGenerator(AbstractFunction):
     CLASS = "uk.gov.gchq.gaffer.sketches.datasketches.cardinality.HllSketchEntityGenerator"
@@ -1572,6 +1681,7 @@ class HllSketchEntityGenerator(AbstractFunction):
             function_json["group"] = self.group
         return function_json
 
+
 class IterableConcat(AbstractFunction):
     CLASS = "uk.gov.gchq.koryphe.impl.function.IterableConcat"
 
@@ -1580,6 +1690,7 @@ class IterableConcat(AbstractFunction):
 
     def to_json(self):
         return super().to_json()
+
 
 class MultiplyBy(AbstractFunction):
     CLASS = "uk.gov.gchq.koryphe.impl.function.MultiplyBy"
@@ -1596,6 +1707,7 @@ class MultiplyBy(AbstractFunction):
             function_json["by"] = self.by
         return function_json
 
+
 class ExtractWalkEdges(AbstractFunction):
     CLASS = "uk.gov.gchq.gaffer.data.graph.function.walk.ExtractWalkEdges"
 
@@ -1604,6 +1716,7 @@ class ExtractWalkEdges(AbstractFunction):
 
     def to_json(self):
         return super().to_json()
+
 
 class FunctionComposite(AbstractFunction):
     CLASS = "uk.gov.gchq.koryphe.function.FunctionComposite"
@@ -1620,6 +1733,7 @@ class FunctionComposite(AbstractFunction):
             function_json["functions"] = self.functions
         return function_json
 
+
 class ExtractValues(AbstractFunction):
     CLASS = "uk.gov.gchq.koryphe.impl.function.ExtractValues"
 
@@ -1628,6 +1742,7 @@ class ExtractValues(AbstractFunction):
 
     def to_json(self):
         return super().to_json()
+
 
 class CsvToMaps(AbstractFunction):
     CLASS = "uk.gov.gchq.koryphe.impl.function.CsvToMaps"
@@ -1660,6 +1775,7 @@ class CsvToMaps(AbstractFunction):
             function_json["header"] = self.header
         return function_json
 
+
 class ExtractWalkEdgesFromHop(AbstractFunction):
     CLASS = "uk.gov.gchq.gaffer.data.graph.function.walk.ExtractWalkEdgesFromHop"
 
@@ -1674,6 +1790,7 @@ class ExtractWalkEdgesFromHop(AbstractFunction):
         if self.hop is not None:
             function_json["hop"] = self.hop
         return function_json
+
 
 class StringAppend(AbstractFunction):
     CLASS = "uk.gov.gchq.koryphe.impl.function.StringAppend"
@@ -1690,6 +1807,7 @@ class StringAppend(AbstractFunction):
             function_json["suffix"] = self.suffix
         return function_json
 
+
 class FreqMapPredicator(AbstractFunction):
     CLASS = "uk.gov.gchq.gaffer.types.function.FreqMapPredicator"
 
@@ -1704,6 +1822,7 @@ class FreqMapPredicator(AbstractFunction):
         if self.predicate is not None:
             function_json["predicate"] = self.predicate
         return function_json
+
 
 class MaskTimestampSetByTimeRange(AbstractFunction):
     CLASS = "uk.gov.gchq.gaffer.time.function.MaskTimestampSetByTimeRange"
@@ -1728,6 +1847,7 @@ class MaskTimestampSetByTimeRange(AbstractFunction):
             function_json["timeUnit"] = self.time_unit
         return function_json
 
+
 class Longest(AbstractFunction):
     CLASS = "uk.gov.gchq.koryphe.impl.function.Longest"
 
@@ -1737,6 +1857,7 @@ class Longest(AbstractFunction):
     def to_json(self):
         return super().to_json()
 
+
 class ToFloat(AbstractFunction):
     CLASS = "uk.gov.gchq.koryphe.impl.function.ToFloat"
 
@@ -1745,6 +1866,7 @@ class ToFloat(AbstractFunction):
 
     def to_json(self):
         return super().to_json()
+
 
 class ExtractProperty(AbstractFunction):
     CLASS = "uk.gov.gchq.gaffer.data.element.function.ExtractProperty"
@@ -1761,6 +1883,7 @@ class ExtractProperty(AbstractFunction):
             function_json["name"] = self.name
         return function_json
 
+
 class ToTrailingWildcardPair(AbstractFunction):
     CLASS = "uk.gov.gchq.gaffer.operation.function.ToTrailingWildcardPair"
 
@@ -1775,6 +1898,7 @@ class ToTrailingWildcardPair(AbstractFunction):
         if self.end_of_range is not None:
             function_json["endOfRange"] = self.end_of_range
         return function_json
+
 
 class ToHyperLogLogPlus(AbstractFunction):
     CLASS = "uk.gov.gchq.gaffer.sketches.clearspring.cardinality.function.ToHyperLogLogPlus"
@@ -1795,6 +1919,7 @@ class ToHyperLogLogPlus(AbstractFunction):
             function_json["sp"] = self.sp
         return function_json
 
+
 class ExtractValue(AbstractFunction):
     CLASS = "uk.gov.gchq.koryphe.impl.function.ExtractValue"
 
@@ -1810,6 +1935,7 @@ class ExtractValue(AbstractFunction):
             function_json["key"] = self.key
         return function_json
 
+
 class Gunzip(AbstractFunction):
     CLASS = "uk.gov.gchq.koryphe.impl.function.Gunzip"
 
@@ -1818,6 +1944,7 @@ class Gunzip(AbstractFunction):
 
     def to_json(self):
         return super().to_json()
+
 
 class IterableFunction(AbstractFunction):
     CLASS = "uk.gov.gchq.koryphe.impl.function.IterableFunction"
@@ -1834,6 +1961,7 @@ class IterableFunction(AbstractFunction):
             function_json["functions"] = self.functions
         return function_json
 
+
 class ToInteger(AbstractFunction):
     CLASS = "uk.gov.gchq.koryphe.impl.function.ToInteger"
 
@@ -1842,6 +1970,7 @@ class ToInteger(AbstractFunction):
 
     def to_json(self):
         return super().to_json()
+
 
 class DeserialiseJson(AbstractFunction):
     CLASS = "uk.gov.gchq.koryphe.impl.function.DeserialiseJson"
@@ -1857,6 +1986,7 @@ class DeserialiseJson(AbstractFunction):
         if self.output_class is not None:
             function_json["outputClass"] = self.output_class
         return function_json
+
 
 class MapFilter(AbstractFunction):
     CLASS = "uk.gov.gchq.koryphe.impl.function.MapFilter"
@@ -1881,6 +2011,7 @@ class MapFilter(AbstractFunction):
             function_json["valuePredicate"] = self.value_predicate
         return function_json
 
+
 class StringJoin(AbstractFunction):
     CLASS = "uk.gov.gchq.koryphe.impl.function.StringJoin"
 
@@ -1895,6 +2026,7 @@ class StringJoin(AbstractFunction):
         if self.delimiter is not None:
             function_json["delimiter"] = self.delimiter
         return function_json
+
 
 class IterableToHyperLogLogPlus(AbstractFunction):
     CLASS = "uk.gov.gchq.gaffer.sketches.clearspring.cardinality.function.IterableToHyperLogLogPlus"
@@ -1914,6 +2046,7 @@ class IterableToHyperLogLogPlus(AbstractFunction):
         if self.sp is not None:
             function_json["sp"] = self.sp
         return function_json
+
 
 class ToDateString(AbstractFunction):
     CLASS = "uk.gov.gchq.koryphe.impl.function.ToDateString"
