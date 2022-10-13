@@ -20,6 +20,7 @@ This module contains Python copies of Gaffer java classes
 
 from gafferpy.gaffer_core import *
 
+
 class BinaryOperator(ToJson, ToCodeString):
     CLASS = "java.util.function.BinaryOperator"
 
@@ -38,6 +39,7 @@ class BinaryOperator(ToJson, ToCodeString):
 
         return function_json
 
+
 class AbstractBinaryOperator(BinaryOperator):
     CLASS = "java.util.function.BinaryOperator"
 
@@ -53,8 +55,10 @@ class AbstractBinaryOperator(BinaryOperator):
 
         return function_json
 
+
 # Import generated binary operator implementations from fishbowl
 from gafferpy.generated_api.binary_operators import *
+
 
 class BinaryOperatorContext(ToJson, ToCodeString):
     CLASS = "gaffer.AggregatorContext"
@@ -74,6 +78,7 @@ class BinaryOperatorContext(ToJson, ToCodeString):
             function_json['binaryOperator'] = self.binary_operator.to_json()
 
         return function_json
+
 
 def binary_operator_context_converter(obj):
     if 'class' in obj:
@@ -97,6 +102,7 @@ def binary_operator_context_converter(obj):
         selection=obj.get('selection'),
         binary_operator=binary_operator
     )
+
 
 def binary_operator_converter(obj):
     if isinstance(obj, dict):

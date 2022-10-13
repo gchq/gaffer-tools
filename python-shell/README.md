@@ -74,6 +74,9 @@ elements = gc.execute_operation_chain(
 
 See [operation examples](https://gchq.github.io/gaffer-doc/v1docs/getting-started/operations/contents) for more examples of operations in python.
 
+## Coding Style
+Please ensure that your coding style is consistent with the rest of the Gaffer project. Guides on the coding style for Gaffer can be found [here](https://gchq.github.io/gaffer-doc/latest/ways-of-working/#coding-style)
+
 ## Testing
 
 ```bash

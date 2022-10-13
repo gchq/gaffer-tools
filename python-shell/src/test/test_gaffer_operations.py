@@ -504,13 +504,13 @@ class GafferOperationsTest(unittest.TestCase):
                             'edge': {'groupBy': [], 'directed': 'true',
                                      'properties': {'count': 'int'},
                                      'destination': 'int', 'source': 'int'}},
-                            'entities': {
+                                'entities': {
                                 'entity': {'groupBy': [], 'vertex': 'int',
                                            'properties': {'count': 'int'}}},
-                            'types': {'true': {'validateFunctions': [{
-                                'class': 'uk.gov.gchq.koryphe.impl.predicate.IsTrue'}],
-                                'class': 'java.lang.Boolean'},
-                                'int': {'aggregateFunction': {
+                                'types': {'true': {'validateFunctions': [{
+                                    'class': 'uk.gov.gchq.koryphe.impl.predicate.IsTrue'}],
+                                    'class': 'java.lang.Boolean'},
+                            'int': {'aggregateFunction': {
                                     'class': 'uk.gov.gchq.koryphe.impl.binaryoperator.Sum'},
                                     'class': 'java.lang.Integer'}}},
                         store_properties={
@@ -2467,7 +2467,7 @@ class GafferOperationsTest(unittest.TestCase):
                     "read-user"
                 ],
                 operation_name="2-hop",
-                labels = ["label_1", "label_2"]
+                labels=["label_1", "label_2"]
             )
         ],
         [
@@ -4589,7 +4589,7 @@ class GafferOperationsTest(unittest.TestCase):
                     "predicate" : {
                         "class" : "uk.gov.gchq.koryphe.impl.predicate.IsMoreThan",
                         "value" : 3,
-                        "orEqualTo" : true 
+                        "orEqualTo" : true
                     },
                     "transform" : {
                         "class" : "uk.gov.gchq.gaffer.operation.impl.Map",
@@ -4891,11 +4891,11 @@ class GafferOperationsTest(unittest.TestCase):
         [
             '''
             {
-                "class": "uk.gov.gchq.gaffer.federatedstore.operation.ChangeGraphAccess", 
+                "class": "uk.gov.gchq.gaffer.federatedstore.operation.ChangeGraphAccess",
                 "graphId": "example_graph_id",
-                "graphAuths": ["Auth_1", "Auth_2"], 
+                "graphAuths": ["Auth_1", "Auth_2"],
                 "ownerUserId": "example_user_id",
-                "isPublic": true, 
+                "isPublic": true,
                 "disabledByDefault": false
             }
             ''',
@@ -5217,7 +5217,7 @@ class GafferOperationsTest(unittest.TestCase):
             )
         ],
         [
-          '''
+            '''
             {
                 "class" : "uk.gov.gchq.gaffer.operation.impl.GetVariables",
                 "variableNames" : ["testVarName", "testVarName2"],
@@ -5256,8 +5256,8 @@ class GafferOperationsTest(unittest.TestCase):
             }
             ''',
             g.Join(
-                input=['test2'], 
-                operation=g.GetElements(input=[g.EntitySeed('test')]), 
+                input=['test2'],
+                operation=g.GetElements(input=[g.EntitySeed('test')]),
                 match_method=g.ElementMatch(),
                 flatten=False,
                 join_type=g.JoinType.INNER,
@@ -5321,8 +5321,8 @@ class GafferOperationsTest(unittest.TestCase):
             }
             ''',
             g.Join(
-                input=['test2'], 
-                operation=g.GetElements(input=[g.EntitySeed('test')]), 
+                input=['test2'],
+                operation=g.GetElements(input=[g.EntitySeed('test')]),
                 match_method=g.KeyFunctionMatch(first_key_function=g.ExtractId("DESTINATION")),
                 match_key=g.MatchKey.RIGHT,
                 flatten=False,
@@ -5463,10 +5463,10 @@ class GafferOperationsTest(unittest.TestCase):
                 ]
             },
             g.GetElements(input="value").to_json())
-    
+
     def test_get_walks_correct_op(self):
         expected_output_json = {
-            "class": "uk.gov.gchq.gaffer.operation.impl.GetWalks", 
+            "class": "uk.gov.gchq.gaffer.operation.impl.GetWalks",
             "operations": [{
                 "class": "uk.gov.gchq.gaffer.operation.impl.get.GetElements"
             }]
@@ -5476,22 +5476,22 @@ class GafferOperationsTest(unittest.TestCase):
 
     def test_get_walks_correct_json(self):
         get_elements_json = {
-            "class" : "uk.gov.gchq.gaffer.operation.impl.get.GetElements"
+            "class": "uk.gov.gchq.gaffer.operation.impl.get.GetElements"
         }
         expected_output_json = {
-            "class": "uk.gov.gchq.gaffer.operation.impl.GetWalks", 
+            "class": "uk.gov.gchq.gaffer.operation.impl.GetWalks",
             "operations": [{
                 "class": "uk.gov.gchq.gaffer.operation.impl.get.GetElements"
             }]
         }
         self.assertEqual(
-            g.GetWalks(operations=[get_elements_json]), 
+            g.GetWalks(operations=[get_elements_json]),
             expected_output_json
         )
 
     def test_federated_graph_ids_helper(self):
         expected_output_json = {
-            "class" : "uk.gov.gchq.gaffer.operation.impl.get.GetAllElements",
+            "class": "uk.gov.gchq.gaffer.operation.impl.get.GetAllElements",
             "options": {
                 "gaffer.federatedstore.operation.graphIds": "graph1,graph2"
             }

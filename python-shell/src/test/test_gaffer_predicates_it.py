@@ -44,7 +44,8 @@ class GafferPredicatesIntegrationTest(unittest.TestCase):
         ]
 
         for i in ignore_predicates:
-            if i in predicates: predicates.remove(i)
+            if i in predicates:
+                predicates.remove(i)
 
         for op in predicates:
             self.assertTrue(op in g.JsonConverter.GENERIC_JSON_CONVERTERS,

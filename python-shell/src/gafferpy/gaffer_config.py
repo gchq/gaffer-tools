@@ -30,13 +30,17 @@ class GetGraph:
     def get_url(self):
         return self._url
 
+
 # Import generated config implementations from fishbowl
 from gafferpy.generated_api.config import *
 
 # Add an alternative name for GetFilterFunctions
+
+
 class GetClassFilterFunctions(GetFilterFunctions):
     def __init__(self, class_name=''):
         super().__init__(class_name)
+
 
 class IsOperationSupported:
     def __init__(self, operation=None):
