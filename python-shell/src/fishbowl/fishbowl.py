@@ -182,6 +182,7 @@ class Fishbowl:
         operations_python = [HEADER]
         operations_python.append("from gafferpy.gaffer_operations import Operation\n\n")
 
+        operation_summaries = sorted(operation_summaries, key = lambda op: op["name"])
         for operation in operation_summaries:
             # Don't add OperationChainDAO as this has a field called class which breaks python
             if operation["name"] != OPERATION_CHAIN_DAO:
