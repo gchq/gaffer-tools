@@ -65,17 +65,16 @@ class Fishbowl:
             file.write(data)
 
     def _generate_library(self):
-
-        if os.path.exists(self.generated_directory_path):
-            shutil.rmtree(self.generated_directory_path)
-
-        os.mkdir(self.generated_directory_path)
-
         operations_python = self._generate_operations()
         functions_python = self._generate_transform_functions()
         predicates_python = self._generate_filter_functions()
         binary_operators_python = self._generate_aggregation_functions()
         config_python = self._generate_config()
+
+        if os.path.exists(self.generated_directory_path):
+            shutil.rmtree(self.generated_directory_path)
+
+        os.mkdir(self.generated_directory_path)
 
         self._write_to_file(
             os.path.join(self.generated_directory_path, "functions.py"), functions_python)
@@ -116,6 +115,7 @@ class Fishbowl:
         # Older Gaffer versions may be missing some function end points
         try:
             functions = self._gaffer_connector.get(path, json_result=True)
+            functions = sorted(functions)
         except ConnectionError:
             print(f"{path} not present, skipping")
             return ""
