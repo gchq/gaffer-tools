@@ -1,0 +1,58 @@
+{% extends 'base.py.j2' %}
+
+{% block content %}
+from gafferpy.gaffer_operations import Operation
+{% for op in operations %}
+{%- if op.name != "uk.gov.gchq.gaffer.operation.OperationChainDAO" %}
+
+class {{ short_name(op.name) }}(Operation):
+    """
+    {{ op.summary }}
+    """
+    CLASS = "{{ op.name }}"
+
+    def __init__(
+            self,
+            {%- for field in op.fields|sort(reverse=true, attribute="required") %}
+            {%- if field.name != "options" %}
+            {{ snake_case(field.name) }}{% if not field.required %}=None{% endif %},
+            {%- endif %}
+            {%- endfor %}
+            options=None):
+        super().__init__(_class_name=self.CLASS, options=options)
+        {%- for field in op.fields %}
+        {%- if field.name != "options" %}
+        self.{{ snake_case(field.name) }} = {{ snake_case(field.name) }}
+        {%- endif %}
+        {%- endfor %}
+
+    def to_json(self):
+        {%- if op.fields|length > 1 %}
+        operation_json = super().to_json()
+        {%- for field in op.fields %}
+        {%- if field.name != "options" %}
+        if self.{{ snake_case(field.name) }} is not None:
+            operation_json["{{ field.name }}"] = self.{{ snake_case(field.name) }}
+        {%- endif %}
+        {%- endfor %}
+        return operation_json
+        {%- else %}
+        return super().to_json()
+        {%- endif %}
+{% endif %}
+{%- endfor %}
+
+class OperationChainDAO(OperationChain):
+    """
+    Simple data access object, enabling (de)serialisation of an OperationChain
+    """
+    CLASS = "uk.gov.gchq.gaffer.operation.OperationChainDAO"
+
+    def __init__(self, operations, options=None):
+        super().__init__(operations=operations, options=options)
+
+    def to_json(self):
+        operation_chain_json = super().to_json()
+        operation_chain_json.pop("class", None)
+        return operation_chain_json
+{% endblock %}
