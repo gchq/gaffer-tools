@@ -7,7 +7,7 @@ from gafferpy.gaffer_config import GetGraph
 
 class {{ config_name(conf) }}(GetGraph):
     {%- if '{' in conf %}
-    def __init__(self, {{ snake_case(get_config_parameter(conf)) }}):
+    def __init__(self, {{ snake_case(get_config_parameter(conf)) }}=""):
     {%- else %}
     def __init__(self):
     {%- endif %}

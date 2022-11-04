@@ -38,19 +38,19 @@ class GetOperations(GetGraph):
 
 
 class GetOperations(GetGraph):
-    def __init__(self, class_name):
+    def __init__(self, class_name=""):
         super().__init__(
             '/graph/operations/{className}'.format(className=class_name))
 
 
 class GetOperationsNext(GetGraph):
-    def __init__(self, class_name):
+    def __init__(self, class_name=""):
         super().__init__(
             '/graph/operations/{className}/next'.format(className=class_name))
 
 
 class GetOperationsExample(GetGraph):
-    def __init__(self, class_name):
+    def __init__(self, class_name=""):
         super().__init__(
             '/graph/operations/{className}/example'.format(className=class_name))
 
@@ -66,13 +66,13 @@ class GetOperationsDetailsAll(GetGraph):
 
 
 class GetJobs(GetGraph):
-    def __init__(self, id):
+    def __init__(self, id=""):
         super().__init__(
             '/graph/jobs/{id}'.format(id=id))
 
 
 class GetJobsResults(GetGraph):
-    def __init__(self, id):
+    def __init__(self, id=""):
         super().__init__(
             '/graph/jobs/{id}/results'.format(id=id))
 
@@ -88,13 +88,13 @@ class GetStoreTraits(GetGraph):
 
 
 class GetSerialisedFields(GetGraph):
-    def __init__(self, class_name):
+    def __init__(self, class_name=""):
         super().__init__(
             '/graph/config/serialisedFields/{className}'.format(className=class_name))
 
 
 class GetSerialisedFieldsClasses(GetGraph):
-    def __init__(self, class_name):
+    def __init__(self, class_name=""):
         super().__init__(
             '/graph/config/serialisedFields/{className}/classes'.format(className=class_name))
 
@@ -120,7 +120,7 @@ class GetFilterFunctions(GetGraph):
 
 
 class GetFilterFunctions(GetGraph):
-    def __init__(self, input_class):
+    def __init__(self, input_class=""):
         super().__init__(
             '/graph/config/filterFunctions/{inputClass}'.format(inputClass=input_class))
 
