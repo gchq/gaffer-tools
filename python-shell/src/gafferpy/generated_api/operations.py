@@ -23,12 +23,15 @@ from gafferpy.gaffer_operations import Operation
 
 
 class ImportAccumuloKeyValueFiles(Operation):
+    """
+    Imports Accumulo key value files
+    """
     CLASS = "uk.gov.gchq.gaffer.accumulostore.operation.hdfs.operation.ImportAccumuloKeyValueFiles"
 
     def __init__(
             self,
-            failure_path,
             input_path,
+            failure_path,
             options=None):
         super().__init__(_class_name=self.CLASS, options=options)
         self.input_path = input_path
@@ -44,6 +47,9 @@ class ImportAccumuloKeyValueFiles(Operation):
 
 
 class GetElementsBetweenSets(Operation):
+    """
+    Gets edges that exist between 2 sets and entities in the first set
+    """
     CLASS = "uk.gov.gchq.gaffer.accumulostore.operation.impl.GetElementsBetweenSets"
 
     def __init__(
@@ -81,6 +87,9 @@ class GetElementsBetweenSets(Operation):
 
 
 class GetElementsInRanges(Operation):
+    """
+    Gets elements that have vertices within a given range
+    """
     CLASS = "uk.gov.gchq.gaffer.accumulostore.operation.impl.GetElementsInRanges"
 
     def __init__(
@@ -114,6 +123,9 @@ class GetElementsInRanges(Operation):
 
 
 class GetElementsWithinSet(Operation):
+    """
+    Gets edges with both vertices in a given set and entities with vertices in a given set
+    """
     CLASS = "uk.gov.gchq.gaffer.accumulostore.operation.impl.GetElementsWithinSet"
 
     def __init__(
@@ -143,6 +155,9 @@ class GetElementsWithinSet(Operation):
 
 
 class SummariseGroupOverRanges(Operation):
+    """
+    Gets summarised Elements for each group
+    """
     CLASS = "uk.gov.gchq.gaffer.accumulostore.operation.impl.SummariseGroupOverRanges"
 
     def __init__(
@@ -176,6 +191,9 @@ class SummariseGroupOverRanges(Operation):
 
 
 class AddGraph(Operation):
+    """
+    Adds a new Graph to the federated store
+    """
     CLASS = "uk.gov.gchq.gaffer.federatedstore.operation.AddGraph"
 
     def __init__(
@@ -229,6 +247,9 @@ class AddGraph(Operation):
 
 
 class AddGraphWithHooks(Operation):
+    """
+    Adds a new Graph with hooks to the federated store
+    """
     CLASS = "uk.gov.gchq.gaffer.federatedstore.operation.AddGraphWithHooks"
 
     def __init__(
@@ -286,6 +307,9 @@ class AddGraphWithHooks(Operation):
 
 
 class ChangeGraphAccess(Operation):
+    """
+    Changes the protection used for accessing graphs
+    """
     CLASS = "uk.gov.gchq.gaffer.federatedstore.operation.ChangeGraphAccess"
 
     def __init__(
@@ -319,6 +343,9 @@ class ChangeGraphAccess(Operation):
 
 
 class ChangeGraphId(Operation):
+    """
+    Changes the Id of a graph
+    """
     CLASS = "uk.gov.gchq.gaffer.federatedstore.operation.ChangeGraphId"
 
     def __init__(
@@ -340,6 +367,9 @@ class ChangeGraphId(Operation):
 
 
 class FederatedOperationChain(Operation):
+    """
+    A wrapped OperationChain to be executed in one go on a delegate graph
+    """
     CLASS = "uk.gov.gchq.gaffer.federatedstore.operation.FederatedOperationChain"
 
     def __init__(
@@ -365,6 +395,9 @@ class FederatedOperationChain(Operation):
 
 
 class GetAllGraphIds(Operation):
+    """
+    Gets the ids of all available Graphs from a federated store
+    """
     CLASS = "uk.gov.gchq.gaffer.federatedstore.operation.GetAllGraphIds"
 
     def __init__(
@@ -377,6 +410,9 @@ class GetAllGraphIds(Operation):
 
 
 class GetAllGraphInfo(Operation):
+    """
+    Gets the ids of all available Graphs from a federated store
+    """
     CLASS = "uk.gov.gchq.gaffer.federatedstore.operation.GetAllGraphInfo"
 
     def __init__(
@@ -389,6 +425,9 @@ class GetAllGraphInfo(Operation):
 
 
 class RemoveGraph(Operation):
+    """
+    Removes a Graph from the federated store
+    """
     CLASS = "uk.gov.gchq.gaffer.federatedstore.operation.RemoveGraph"
 
     def __init__(
@@ -406,14 +445,17 @@ class RemoveGraph(Operation):
 
 
 class AddElementsFromHdfs(Operation):
+    """
+    Adds elements from hdfs
+    """
     CLASS = "uk.gov.gchq.gaffer.hdfs.operation.AddElementsFromHdfs"
 
     def __init__(
             self,
-            output_path,
-            failure_path,
-            input_mapper_pairs,
             job_initialiser,
+            input_mapper_pairs,
+            failure_path,
+            output_path,
             splits_file_path=None,
             num_map_tasks=None,
             working_path=None,
@@ -479,14 +521,17 @@ class AddElementsFromHdfs(Operation):
 
 
 class SampleDataForSplitPoints(Operation):
+    """
+    Creates a splits file by sampling given data
+    """
     CLASS = "uk.gov.gchq.gaffer.hdfs.operation.SampleDataForSplitPoints"
 
     def __init__(
             self,
-            output_path,
-            input_mapper_pairs,
-            job_initialiser,
             splits_file_path,
+            job_initialiser,
+            input_mapper_pairs,
+            output_path,
             num_map_tasks=None,
             min_reduce_tasks=None,
             num_splits=None,
@@ -556,6 +601,9 @@ class SampleDataForSplitPoints(Operation):
 
 
 class CountAllElementsDefaultView(Operation):
+    """
+    Counts all elements
+    """
     CLASS = "uk.gov.gchq.gaffer.mapstore.operation.CountAllElementsDefaultView"
 
     def __init__(
@@ -573,6 +621,9 @@ class CountAllElementsDefaultView(Operation):
 
 
 class AddNamedOperation(Operation):
+    """
+    Adds a new named operation
+    """
     CLASS = "uk.gov.gchq.gaffer.named.operation.AddNamedOperation"
 
     def __init__(
@@ -630,6 +681,9 @@ class AddNamedOperation(Operation):
 
 
 class DeleteNamedOperation(Operation):
+    """
+    Deletes a named operation
+    """
     CLASS = "uk.gov.gchq.gaffer.named.operation.DeleteNamedOperation"
 
     def __init__(
@@ -647,6 +701,9 @@ class DeleteNamedOperation(Operation):
 
 
 class GetAllNamedOperations(Operation):
+    """
+    Gets all available named operations
+    """
     CLASS = "uk.gov.gchq.gaffer.named.operation.GetAllNamedOperations"
 
     def __init__(
@@ -659,6 +716,9 @@ class GetAllNamedOperations(Operation):
 
 
 class NamedOperation(Operation):
+    """
+    Runs a named operation
+    """
     CLASS = "uk.gov.gchq.gaffer.named.operation.NamedOperation"
 
     def __init__(
@@ -684,12 +744,15 @@ class NamedOperation(Operation):
 
 
 class AddNamedView(Operation):
+    """
+    Adds a new named view
+    """
     CLASS = "uk.gov.gchq.gaffer.named.view.AddNamedView"
 
     def __init__(
             self,
-            name,
             view,
+            name,
             overwrite_flag=None,
             write_access_predicate=None,
             read_access_predicate=None,
@@ -729,6 +792,9 @@ class AddNamedView(Operation):
 
 
 class DeleteNamedView(Operation):
+    """
+    Deletes a named view
+    """
     CLASS = "uk.gov.gchq.gaffer.named.view.DeleteNamedView"
 
     def __init__(
@@ -746,6 +812,9 @@ class DeleteNamedView(Operation):
 
 
 class GetAllNamedViews(Operation):
+    """
+    Gets all available named views
+    """
     CLASS = "uk.gov.gchq.gaffer.named.view.GetAllNamedViews"
 
     def __init__(
@@ -758,6 +827,9 @@ class GetAllNamedViews(Operation):
 
 
 class OperationChain(Operation):
+    """
+    A chain of operations where the results are passed between each operation
+    """
     CLASS = "uk.gov.gchq.gaffer.operation.OperationChain"
 
     def __init__(
@@ -775,6 +847,9 @@ class OperationChain(Operation):
 
 
 class ExportToOtherAuthorisedGraph(Operation):
+    """
+    Exports elements to another authorised Graph
+    """
     CLASS = "uk.gov.gchq.gaffer.operation.export.graph.ExportToOtherAuthorisedGraph"
 
     def __init__(
@@ -808,6 +883,9 @@ class ExportToOtherAuthorisedGraph(Operation):
 
 
 class ExportToOtherGraph(Operation):
+    """
+    Exports elements to another Graph
+    """
     CLASS = "uk.gov.gchq.gaffer.operation.export.graph.ExportToOtherGraph"
 
     def __init__(
@@ -849,6 +927,9 @@ class ExportToOtherGraph(Operation):
 
 
 class Count(Operation):
+    """
+    Counts the number of items
+    """
     CLASS = "uk.gov.gchq.gaffer.operation.impl.Count"
 
     def __init__(
@@ -866,6 +947,9 @@ class Count(Operation):
 
 
 class CountGroups(Operation):
+    """
+    Counts the different element groups
+    """
     CLASS = "uk.gov.gchq.gaffer.operation.impl.CountGroups"
 
     def __init__(
@@ -887,6 +971,9 @@ class CountGroups(Operation):
 
 
 class DiscardOutput(Operation):
+    """
+    Discards the results from the previous operation
+    """
     CLASS = "uk.gov.gchq.gaffer.operation.impl.DiscardOutput"
 
     def __init__(
@@ -904,6 +991,9 @@ class DiscardOutput(Operation):
 
 
 class ForEach(Operation):
+    """
+    Runs supplied operation on Iterable of inputs
+    """
     CLASS = "uk.gov.gchq.gaffer.operation.impl.ForEach"
 
     def __init__(
@@ -925,6 +1015,9 @@ class ForEach(Operation):
 
 
 class GenerateSplitPointsFromSample(Operation):
+    """
+    Generates split points from the supplied Iterable
+    """
     CLASS = "uk.gov.gchq.gaffer.operation.impl.GenerateSplitPointsFromSample"
 
     def __init__(
@@ -946,6 +1039,9 @@ class GenerateSplitPointsFromSample(Operation):
 
 
 class GetVariable(Operation):
+    """
+    Gets a variable from the Context variable map
+    """
     CLASS = "uk.gov.gchq.gaffer.operation.impl.GetVariable"
 
     def __init__(
@@ -963,6 +1059,9 @@ class GetVariable(Operation):
 
 
 class GetVariables(Operation):
+    """
+    Gets all variables from the Context variable map
+    """
     CLASS = "uk.gov.gchq.gaffer.operation.impl.GetVariables"
 
     def __init__(
@@ -980,6 +1079,9 @@ class GetVariables(Operation):
 
 
 class GetWalks(Operation):
+    """
+    Walks around the Graph, returning the full walks taken
+    """
     CLASS = "uk.gov.gchq.gaffer.operation.impl.GetWalks"
 
     def __init__(
@@ -1013,6 +1115,9 @@ class GetWalks(Operation):
 
 
 class If(Operation):
+    """
+    Conditionally runs an operation or an alternative operation
+    """
     CLASS = "uk.gov.gchq.gaffer.operation.impl.If"
 
     def __init__(
@@ -1050,6 +1155,9 @@ class If(Operation):
 
 
 class Limit(Operation):
+    """
+    Limits the number of items
+    """
     CLASS = "uk.gov.gchq.gaffer.operation.impl.Limit"
 
     def __init__(
@@ -1075,6 +1183,9 @@ class Limit(Operation):
 
 
 class Map(Operation):
+    """
+    Maps an input to an output using provided functions
+    """
     CLASS = "uk.gov.gchq.gaffer.operation.impl.Map"
 
     def __init__(
@@ -1100,6 +1211,9 @@ class Map(Operation):
 
 
 class Reduce(Operation):
+    """
+    Reduces an input to an output with a single value using provided function
+    """
     CLASS = "uk.gov.gchq.gaffer.operation.impl.Reduce"
 
     def __init__(
@@ -1125,6 +1239,9 @@ class Reduce(Operation):
 
 
 class SampleElementsForSplitPoints(Operation):
+    """
+    Samples an iterable of elements and generates split points
+    """
     CLASS = "uk.gov.gchq.gaffer.operation.impl.SampleElementsForSplitPoints"
 
     def __init__(
@@ -1150,6 +1267,9 @@ class SampleElementsForSplitPoints(Operation):
 
 
 class ScoreOperationChain(Operation):
+    """
+    Scores an OperationChain
+    """
     CLASS = "uk.gov.gchq.gaffer.operation.impl.ScoreOperationChain"
 
     def __init__(
@@ -1167,6 +1287,9 @@ class ScoreOperationChain(Operation):
 
 
 class SetVariable(Operation):
+    """
+    Sets a variable in the Context
+    """
     CLASS = "uk.gov.gchq.gaffer.operation.impl.SetVariable"
 
     def __init__(
@@ -1188,6 +1311,9 @@ class SetVariable(Operation):
 
 
 class SplitStoreFromFile(Operation):
+    """
+    Splits a store based on a file of split points
+    """
     CLASS = "uk.gov.gchq.gaffer.operation.impl.SplitStoreFromFile"
 
     def __init__(
@@ -1205,6 +1331,9 @@ class SplitStoreFromFile(Operation):
 
 
 class SplitStoreFromIterable(Operation):
+    """
+    Splits a store based on an iterable of split points
+    """
     CLASS = "uk.gov.gchq.gaffer.operation.impl.SplitStoreFromIterable"
 
     def __init__(
@@ -1222,6 +1351,9 @@ class SplitStoreFromIterable(Operation):
 
 
 class Validate(Operation):
+    """
+    Validates elements based on the schema
+    """
     CLASS = "uk.gov.gchq.gaffer.operation.impl.Validate"
 
     def __init__(
@@ -1247,6 +1379,9 @@ class Validate(Operation):
 
 
 class ValidateOperationChain(Operation):
+    """
+    Validates an OperationChain
+    """
     CLASS = "uk.gov.gchq.gaffer.operation.impl.ValidateOperationChain"
 
     def __init__(
@@ -1264,6 +1399,9 @@ class ValidateOperationChain(Operation):
 
 
 class While(Operation):
+    """
+    Repeatedly executes an operation while a condition is met
+    """
     CLASS = "uk.gov.gchq.gaffer.operation.impl.While"
 
     def __init__(
@@ -1301,6 +1439,9 @@ class While(Operation):
 
 
 class AddElements(Operation):
+    """
+    Adds elements
+    """
     CLASS = "uk.gov.gchq.gaffer.operation.impl.add.AddElements"
 
     def __init__(
@@ -1326,12 +1467,15 @@ class AddElements(Operation):
 
 
 class AddElementsFromFile(Operation):
+    """
+    Adds elements from a file
+    """
     CLASS = "uk.gov.gchq.gaffer.operation.impl.add.AddElementsFromFile"
 
     def __init__(
             self,
-            filename,
             element_generator,
+            filename,
             parallelism=None,
             skip_invalid_elements=None,
             validate=None,
@@ -1359,14 +1503,17 @@ class AddElementsFromFile(Operation):
 
 
 class AddElementsFromKafka(Operation):
+    """
+    Adds elements from Kafka
+    """
     CLASS = "uk.gov.gchq.gaffer.operation.impl.add.AddElementsFromKafka"
 
     def __init__(
             self,
-            topic,
-            group_id,
-            bootstrap_servers,
             element_generator,
+            bootstrap_servers,
+            group_id,
+            topic,
             parallelism=None,
             consume_as=None,
             skip_invalid_elements=None,
@@ -1404,13 +1551,16 @@ class AddElementsFromKafka(Operation):
 
 
 class AddElementsFromSocket(Operation):
+    """
+    Adds elements from a socket
+    """
     CLASS = "uk.gov.gchq.gaffer.operation.impl.add.AddElementsFromSocket"
 
     def __init__(
             self,
-            port,
-            hostname,
             element_generator,
+            hostname,
+            port,
             delimiter=None,
             parallelism=None,
             skip_invalid_elements=None,
@@ -1445,6 +1595,9 @@ class AddElementsFromSocket(Operation):
 
 
 class ImportCsv(Operation):
+    """
+    Adds elements from a openCypher CSV file
+    """
     CLASS = "uk.gov.gchq.gaffer.operation.impl.add.ImportCsv"
 
     def __init__(
@@ -1482,6 +1635,9 @@ class ImportCsv(Operation):
 
 
 class Max(Operation):
+    """
+    Extracts the maximum element based on provided Comparators
+    """
     CLASS = "uk.gov.gchq.gaffer.operation.impl.compare.Max"
 
     def __init__(
@@ -1503,6 +1659,9 @@ class Max(Operation):
 
 
 class Min(Operation):
+    """
+    Extracts the minimum element based on provided Comparators
+    """
     CLASS = "uk.gov.gchq.gaffer.operation.impl.compare.Min"
 
     def __init__(
@@ -1524,6 +1683,9 @@ class Min(Operation):
 
 
 class Sort(Operation):
+    """
+    Sorts elements based on provided Comparators and can be used to extract the top 'n' elements
+    """
     CLASS = "uk.gov.gchq.gaffer.operation.impl.compare.Sort"
 
     def __init__(
@@ -1553,6 +1715,9 @@ class Sort(Operation):
 
 
 class GetExports(Operation):
+    """
+    Fetches multiple exports
+    """
     CLASS = "uk.gov.gchq.gaffer.operation.impl.export.GetExports"
 
     def __init__(
@@ -1570,6 +1735,9 @@ class GetExports(Operation):
 
 
 class ExportToLocalFile(Operation):
+    """
+    Exports elements to a local file
+    """
     CLASS = "uk.gov.gchq.gaffer.operation.impl.export.localfile.ExportToLocalFile"
 
     def __init__(
@@ -1595,6 +1763,9 @@ class ExportToLocalFile(Operation):
 
 
 class ExportToGafferResultCache(Operation):
+    """
+    Exports to a cache backed by a Gaffer graph
+    """
     CLASS = "uk.gov.gchq.gaffer.operation.impl.export.resultcache.ExportToGafferResultCache"
 
     def __init__(
@@ -1620,6 +1791,9 @@ class ExportToGafferResultCache(Operation):
 
 
 class GetGafferResultCacheExport(Operation):
+    """
+    Fetches data from a Gaffer result cache
+    """
     CLASS = "uk.gov.gchq.gaffer.operation.impl.export.resultcache.GetGafferResultCacheExport"
 
     def __init__(
@@ -1641,6 +1815,9 @@ class GetGafferResultCacheExport(Operation):
 
 
 class ExportToSet(Operation):
+    """
+    Exports results to a Set
+    """
     CLASS = "uk.gov.gchq.gaffer.operation.impl.export.set.ExportToSet"
 
     def __init__(
@@ -1662,6 +1839,9 @@ class ExportToSet(Operation):
 
 
 class GetSetExport(Operation):
+    """
+    Fetches data from a Set cache
+    """
     CLASS = "uk.gov.gchq.gaffer.operation.impl.export.set.GetSetExport"
 
     def __init__(
@@ -1691,6 +1871,9 @@ class GetSetExport(Operation):
 
 
 class Aggregate(Operation):
+    """
+    Aggregates elements
+    """
     CLASS = "uk.gov.gchq.gaffer.operation.impl.function.Aggregate"
 
     def __init__(
@@ -1716,6 +1899,9 @@ class Aggregate(Operation):
 
 
 class Filter(Operation):
+    """
+    Filters elements
+    """
     CLASS = "uk.gov.gchq.gaffer.operation.impl.function.Filter"
 
     def __init__(
@@ -1753,6 +1939,9 @@ class Filter(Operation):
 
 
 class Transform(Operation):
+    """
+    Transforms elements
+    """
     CLASS = "uk.gov.gchq.gaffer.operation.impl.function.Transform"
 
     def __init__(
@@ -1778,6 +1967,9 @@ class Transform(Operation):
 
 
 class GenerateElements(Operation):
+    """
+    Generates elements from objects using provided generators
+    """
     CLASS = "uk.gov.gchq.gaffer.operation.impl.generate.GenerateElements"
 
     def __init__(
@@ -1799,6 +1991,9 @@ class GenerateElements(Operation):
 
 
 class GenerateObjects(Operation):
+    """
+    Generates objects from elements using provided generators
+    """
     CLASS = "uk.gov.gchq.gaffer.operation.impl.generate.GenerateObjects"
 
     def __init__(
@@ -1820,6 +2015,9 @@ class GenerateObjects(Operation):
 
 
 class GetAdjacentIds(Operation):
+    """
+    Performs a single hop down related edges
+    """
     CLASS = "uk.gov.gchq.gaffer.operation.impl.get.GetAdjacentIds"
 
     def __init__(
@@ -1853,6 +2051,9 @@ class GetAdjacentIds(Operation):
 
 
 class GetAllElements(Operation):
+    """
+    Gets all elements compatible with a provided View
+    """
     CLASS = "uk.gov.gchq.gaffer.operation.impl.get.GetAllElements"
 
     def __init__(
@@ -1878,6 +2079,9 @@ class GetAllElements(Operation):
 
 
 class GetElements(Operation):
+    """
+    Gets elements related to provided seeds
+    """
     CLASS = "uk.gov.gchq.gaffer.operation.impl.get.GetElements"
 
     def __init__(
@@ -1911,6 +2115,9 @@ class GetElements(Operation):
 
 
 class GetFromEndpoint(Operation):
+    """
+    Gets data from an endpoint
+    """
     CLASS = "uk.gov.gchq.gaffer.operation.impl.get.GetFromEndpoint"
 
     def __init__(
@@ -1928,6 +2135,9 @@ class GetFromEndpoint(Operation):
 
 
 class CancelScheduledJob(Operation):
+    """
+    Cancels a scheduled job
+    """
     CLASS = "uk.gov.gchq.gaffer.operation.impl.job.CancelScheduledJob"
 
     def __init__(
@@ -1945,6 +2155,9 @@ class CancelScheduledJob(Operation):
 
 
 class GetAllJobDetails(Operation):
+    """
+    Gets all running and historic job details
+    """
     CLASS = "uk.gov.gchq.gaffer.operation.impl.job.GetAllJobDetails"
 
     def __init__(
@@ -1957,6 +2170,9 @@ class GetAllJobDetails(Operation):
 
 
 class GetJobDetails(Operation):
+    """
+    Gets the details of a single job
+    """
     CLASS = "uk.gov.gchq.gaffer.operation.impl.job.GetJobDetails"
 
     def __init__(
@@ -1974,6 +2190,9 @@ class GetJobDetails(Operation):
 
 
 class GetJobResults(Operation):
+    """
+    Gets the results of a job
+    """
     CLASS = "uk.gov.gchq.gaffer.operation.impl.job.GetJobResults"
 
     def __init__(
@@ -1991,6 +2210,9 @@ class GetJobResults(Operation):
 
 
 class Join(Operation):
+    """
+    Joins two iterables based on a join type
+    """
     CLASS = "uk.gov.gchq.gaffer.operation.impl.join.Join"
 
     def __init__(
@@ -2032,6 +2254,9 @@ class Join(Operation):
 
 
 class ToArray(Operation):
+    """
+    Converts an Iterable to an Array
+    """
     CLASS = "uk.gov.gchq.gaffer.operation.impl.output.ToArray"
 
     def __init__(
@@ -2049,6 +2274,9 @@ class ToArray(Operation):
 
 
 class ToCsv(Operation):
+    """
+    Converts elements to CSV Strings
+    """
     CLASS = "uk.gov.gchq.gaffer.operation.impl.output.ToCsv"
 
     def __init__(
@@ -2074,6 +2302,9 @@ class ToCsv(Operation):
 
 
 class ToEntitySeeds(Operation):
+    """
+    Converts an objects into EntitySeeds
+    """
     CLASS = "uk.gov.gchq.gaffer.operation.impl.output.ToEntitySeeds"
 
     def __init__(
@@ -2091,6 +2322,9 @@ class ToEntitySeeds(Operation):
 
 
 class ToList(Operation):
+    """
+    Converts an Iterable to a List
+    """
     CLASS = "uk.gov.gchq.gaffer.operation.impl.output.ToList"
 
     def __init__(
@@ -2108,6 +2342,9 @@ class ToList(Operation):
 
 
 class ToMap(Operation):
+    """
+    Converts elements to a Map of key-value pairs
+    """
     CLASS = "uk.gov.gchq.gaffer.operation.impl.output.ToMap"
 
     def __init__(
@@ -2129,6 +2366,9 @@ class ToMap(Operation):
 
 
 class ToOpenCypherCsv(Operation):
+    """
+    Converts elements to CSV Strings
+    """
     CLASS = "uk.gov.gchq.gaffer.operation.impl.output.ToOpenCypherCsv"
 
     def __init__(
@@ -2150,6 +2390,9 @@ class ToOpenCypherCsv(Operation):
 
 
 class ToSet(Operation):
+    """
+    Converts an Iterable to a Set
+    """
     CLASS = "uk.gov.gchq.gaffer.operation.impl.output.ToSet"
 
     def __init__(
@@ -2167,6 +2410,9 @@ class ToSet(Operation):
 
 
 class ToSingletonList(Operation):
+    """
+    Converts a single input of type T to a List
+    """
     CLASS = "uk.gov.gchq.gaffer.operation.impl.output.ToSingletonList"
 
     def __init__(
@@ -2184,6 +2430,9 @@ class ToSingletonList(Operation):
 
 
 class ToStream(Operation):
+    """
+    Converts an Iterable to a Stream
+    """
     CLASS = "uk.gov.gchq.gaffer.operation.impl.output.ToStream"
 
     def __init__(
@@ -2201,6 +2450,9 @@ class ToStream(Operation):
 
 
 class ToVertices(Operation):
+    """
+    Converts element ids into vertices
+    """
     CLASS = "uk.gov.gchq.gaffer.operation.impl.output.ToVertices"
 
     def __init__(
@@ -2226,6 +2478,9 @@ class ToVertices(Operation):
 
 
 class GetProxyProperties(Operation):
+    """
+    Gets ONLY the Proxy Properties value from the Proxy store
+    """
     CLASS = "uk.gov.gchq.gaffer.proxystore.operation.GetProxyProperties"
 
     def __init__(
@@ -2238,6 +2493,9 @@ class GetProxyProperties(Operation):
 
 
 class GetProxyUrl(Operation):
+    """
+    Gets the Proxy URL value from the store properties
+    """
     CLASS = "uk.gov.gchq.gaffer.proxystore.operation.GetProxyUrl"
 
     def __init__(
@@ -2250,6 +2508,9 @@ class GetProxyUrl(Operation):
 
 
 class GetSchema(Operation):
+    """
+    Gets the Schema of a Graph
+    """
     CLASS = "uk.gov.gchq.gaffer.store.operation.GetSchema"
 
     def __init__(
@@ -2267,6 +2528,9 @@ class GetSchema(Operation):
 
 
 class GetTraits(Operation):
+    """
+    An Operation used for getting traits from the Store
+    """
     CLASS = "uk.gov.gchq.gaffer.store.operation.GetTraits"
 
     def __init__(
@@ -2284,6 +2548,9 @@ class GetTraits(Operation):
 
 
 class HasTrait(Operation):
+    """
+    An Operation that will see if a Store has a given trait
+    """
     CLASS = "uk.gov.gchq.gaffer.store.operation.HasTrait"
 
     def __init__(
@@ -2305,12 +2572,15 @@ class HasTrait(Operation):
 
 
 class AddSchemaToLibrary(Operation):
+    """
+    Adds a Schema to the GraphLibrary
+    """
     CLASS = "uk.gov.gchq.gaffer.store.operation.add.AddSchemaToLibrary"
 
     def __init__(
             self,
-            id,
             schema,
+            id,
             parent_schema_ids=None,
             options=None):
         super().__init__(_class_name=self.CLASS, options=options)
@@ -2330,12 +2600,15 @@ class AddSchemaToLibrary(Operation):
 
 
 class AddStorePropertiesToLibrary(Operation):
+    """
+    Adds StoreProperties to the GraphLibrary
+    """
     CLASS = "uk.gov.gchq.gaffer.store.operation.add.AddStorePropertiesToLibrary"
 
     def __init__(
             self,
-            id,
             store_properties,
+            id,
             parent_properties_id=None,
             options=None):
         super().__init__(_class_name=self.CLASS, options=options)
@@ -2355,6 +2628,9 @@ class AddStorePropertiesToLibrary(Operation):
 
 
 class OperationChainDAO(OperationChain):
+    """
+    Simple data access object, enabling (de)serialisation of an OperationChain
+    """
     CLASS = "uk.gov.gchq.gaffer.operation.OperationChainDAO"
 
     def __init__(self, operations, options=None):
