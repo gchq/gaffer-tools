@@ -14,7 +14,9 @@
 # limitations under the License.
 #
 
-import os, re, shutil
+import os
+import re
+import shutil
 from jinja2 import Environment, FileSystemLoader
 from gafferpy.gaffer_core import JsonConverter
 
@@ -37,7 +39,7 @@ class Fishbowl:
     def _get_config_name(self, url):
         name = url.replace("/graph", "").replace("/config", "")
         # Remove parameter
-        name = re.sub("\/\{.*\}", "", name)
+        name = re.sub(r"\/\{.*\}", "", name)
         # Make CamelCase class name
         name = name.strip("/")
         name = "Get" + "".join([name[0].upper() + name[1:] for name in name.split("/")])
@@ -45,12 +47,23 @@ class Fishbowl:
 
     def _get_function_dict(self):
         return {
-            "short_name": lambda n: n.rsplit(".", 1)[1].replace("$", ""),
+            "short_name": lambda n: n.rsplit(
+                ".",
+                1)[1].replace(
+                "$",
+                ""),
             "snake_case": JsonConverter.to_snake_case,
-            "get_fields": lambda f: self._gaffer_connector.get(f"/graph/config/serialisedFields/{f}", json_result=True),
+            "get_fields": lambda f: self._gaffer_connector.get(
+                f"/graph/config/serialisedFields/{f}",
+                json_result=True),
             "config_name": self._get_config_name,
-            "get_config_parameter": lambda n: re.sub(".*\{", "", re.sub("\}.*", "", n))
-        }
+            "get_config_parameter": lambda n: re.sub(
+                    r".*\{",
+                    "",
+                    re.sub(
+                        r"\}.*",
+                        "",
+                        n))}
 
     def _generate_library(self):
         parent_dir = os.path.dirname(__file__)
@@ -114,7 +127,10 @@ class Fishbowl:
 
         function_template = self.env.get_template("functions.py.j2")
         function_template.globals.update(self._get_function_dict())
-        return function_template.render(functions=functions, import_path=import_path, base_class=base_class)
+        return function_template.render(
+            functions=functions,
+            import_path=import_path,
+            base_class=base_class)
 
     def _generate_operations(self):
         # spring-rest has an endpoint for every store operation, even ones unsupported by the store
@@ -130,7 +146,7 @@ class Fishbowl:
                 print(f"/graph/operations/details/ not present, skipping operations")
                 return ""
 
-        operation_summaries = sorted(operation_summaries, key = lambda op: op["name"])
+        operation_summaries = sorted(operation_summaries, key=lambda op: op["name"])
 
         template = self.env.get_template("operations.py.j2")
         template.globals.update(self._get_function_dict())
