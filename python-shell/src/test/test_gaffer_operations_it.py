@@ -55,12 +55,13 @@ class GafferOperationsIntegrationTest(unittest.TestCase):
         all_subclasses = []
 
         for subclass in cls.__subclasses__():
-            all_subclasses.append(subclass)
-            all_subclasses.extend(self._get_all_subclasses(subclass))
+            if hasattr(subclass, "CLASS"):
+                all_subclasses.append(subclass)
+                all_subclasses.extend(self._get_all_subclasses(subclass))
 
         return all_subclasses
 
-    def test_all_operations_have_classes(self):
+    def test_all_operation_classes_are_valid(self):
         # TODO: This should be in fishbowl tests in the future
         # only the spring-rest has this endpoint
         gc = gaffer_connector.GafferConnector('http://localhost:8080/rest/latest')
