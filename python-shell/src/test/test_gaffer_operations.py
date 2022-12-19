@@ -4902,7 +4902,7 @@ class GafferOperationsTest(unittest.TestCase):
                 graph_id="example_graph_id",
                 graph_auths=["Auth_1", "Auth_2"],
                 owner_user_id="example_user_id",
-                is_public=True            
+                is_public=True
             )
         ],
         [

@@ -761,6 +761,8 @@ class If(If):
         return operation_json
 
 # Element Input
+
+
 class GetOperation(Operation):
     def to_json(self):
         operation_json = super().to_json()
@@ -782,26 +784,33 @@ class GetOperation(Operation):
 
         return operation_json
 
+
 class GetElements(GetOperation, GetElements):
     def to_json(self):
         return super().to_json()
+
 
 class ToVertices(GetOperation, ToVertices):
     def to_json(self):
         return super().to_json()
 
 # Entity Input
+
+
 class GetWalks(GetOperation, GetWalks):
     def to_json(self):
         return super().to_json()
+
 
 class GetAdjacentIds(GetOperation, GetAdjacentIds):
     def to_json(self):
         return super().to_json()
 
+
 class GetElementsWithinSet(GetOperation, GetElementsWithinSet):
     def to_json(self):
         return super().to_json()
+
 
 def load_operation_json_map():
     for name, class_obj in inspect.getmembers(
