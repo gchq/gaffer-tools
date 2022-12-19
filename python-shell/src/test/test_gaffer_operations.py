@@ -4895,16 +4895,14 @@ class GafferOperationsTest(unittest.TestCase):
                 "graphId": "example_graph_id",
                 "graphAuths": ["Auth_1", "Auth_2"],
                 "ownerUserId": "example_user_id",
-                "isPublic": true,
-                "disabledByDefault": false
+                "isPublic": true
             }
             ''',
             g.ChangeGraphAccess(
                 graph_id="example_graph_id",
                 graph_auths=["Auth_1", "Auth_2"],
                 owner_user_id="example_user_id",
-                is_public=True,
-                disabled_by_default=False
+                is_public=True            
             )
         ],
         [
@@ -5266,8 +5264,8 @@ class GafferOperationsTest(unittest.TestCase):
         [
             '''
             {
-              "class" : "uk.gov.gchq.gaffer.federatedstore.operation.FederatedOperationChain",
-              "operationChain" : {
+              "class" : "uk.gov.gchq.gaffer.federatedstore.operation.FederatedOperation",
+              "operation": {
                 "class" : "uk.gov.gchq.gaffer.operation.OperationChain",
                 "operations" : [ {
                   "class" : "uk.gov.gchq.gaffer.operation.impl.add.AddElements"
@@ -5280,15 +5278,8 @@ class GafferOperationsTest(unittest.TestCase):
               }
             }
             ''',
-            g.FederatedOperationChain(
-                operation_chain={
-                    "class": "uk.gov.gchq.gaffer.operation.OperationChain",
-                    "operations": [{
-                        "class": "uk.gov.gchq.gaffer.operation.impl.add.AddElements"
-                    }, {
-                        "class": "uk.gov.gchq.gaffer.operation.impl.get.GetElements"
-                    }]
-                },
+            g.FederatedOperation(
+                operation=g.OperationChain([g.AddElements(), g.GetElements()]),
                 options={
                     "key": "value"
                 }
