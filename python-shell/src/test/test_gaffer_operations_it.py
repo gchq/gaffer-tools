@@ -33,7 +33,6 @@ class GafferOperationsIntegrationTest(unittest.TestCase):
             self.assertTrue(op in g.JsonConverter.GENERIC_JSON_CONVERTERS,
                             'Missing operation class: ' + op)
 
-
     def test_all_supported_operation_examples(self):
         gc = gaffer_connector.GafferConnector(
             'http://localhost:8080/rest/latest')
@@ -42,7 +41,10 @@ class GafferOperationsIntegrationTest(unittest.TestCase):
         )
         for detail in operation_details:
             try:
-                gc.execute_operation(g.JsonConverter.from_json(detail["exampleJson"], class_name=detail["name"]))
+                gc.execute_operation(
+                    g.JsonConverter.from_json(
+                        detail["exampleJson"],
+                        class_name=detail["name"]))
             except ConnectionError as e:
                 # Ignore 500 as a lot of operation examples won't run as they have dummy data
                 # We just care they are valid operations and don't return 400 error
