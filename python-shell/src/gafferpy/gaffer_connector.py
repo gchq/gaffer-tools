@@ -135,7 +135,7 @@ class GafferConnector:
             g.IsOperationSupported(
                 operation='uk.gov.gchq.gaffer.operation.impl.get.GetElements'
             )
-            or you can use:
+        or you can use:
             g.IsOperationSupported(
                 operation=g.GetElements().CLASS
             )
