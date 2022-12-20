@@ -25,6 +25,13 @@ from gafferpy.gaffer_operations import Operation
 class ImportAccumuloKeyValueFiles(Operation):
     """
     Imports Accumulo key value files
+
+    Args:
+        input_path: 
+        failure_path: 
+        options: Additional map of options
+    Returns:
+        java.lang.Void
     """
     CLASS = "uk.gov.gchq.gaffer.accumulostore.operation.hdfs.operation.ImportAccumuloKeyValueFiles"
 
@@ -49,6 +56,17 @@ class ImportAccumuloKeyValueFiles(Operation):
 class GetElementsBetweenSets(Operation):
     """
     Gets edges that exist between 2 sets and entities in the first set
+
+    Args:
+        input: 
+        view: Used to filter and transform results
+        include_incoming_out_going: Should the edges point towards, or away from your seeds
+        input_b: 
+        directed_type: Is the Edge directed?
+        views: 
+        options: Additional map of options
+    Returns:
+        java.lang.Iterable<uk.gov.gchq.gaffer.data.element.Element>
     """
     CLASS = "uk.gov.gchq.gaffer.accumulostore.operation.impl.GetElementsBetweenSets"
 
@@ -89,6 +107,16 @@ class GetElementsBetweenSets(Operation):
 class GetElementsInRanges(Operation):
     """
     Gets elements that have vertices within a given range
+
+    Args:
+        input: 
+        view: Used to filter and transform results
+        include_incoming_out_going: Should the edges point towards, or away from your seeds
+        directed_type: Is the Edge directed?
+        views: 
+        options: Additional map of options
+    Returns:
+        java.lang.Iterable<uk.gov.gchq.gaffer.data.element.Element>
     """
     CLASS = "uk.gov.gchq.gaffer.accumulostore.operation.impl.GetElementsInRanges"
 
@@ -125,6 +153,15 @@ class GetElementsInRanges(Operation):
 class GetElementsWithinSet(Operation):
     """
     Gets edges with both vertices in a given set and entities with vertices in a given set
+
+    Args:
+        input: 
+        view: Used to filter and transform results
+        directed_type: Is the Edge directed?
+        views: 
+        options: Additional map of options
+    Returns:
+        java.lang.Iterable<uk.gov.gchq.gaffer.data.element.Element>
     """
     CLASS = "uk.gov.gchq.gaffer.accumulostore.operation.impl.GetElementsWithinSet"
 
@@ -157,6 +194,16 @@ class GetElementsWithinSet(Operation):
 class SummariseGroupOverRanges(Operation):
     """
     Gets summarised Elements for each group
+
+    Args:
+        input: 
+        view: Used to filter and transform results
+        include_incoming_out_going: Should the edges point towards, or away from your seeds
+        directed_type: Is the Edge directed?
+        views: 
+        options: Additional map of options
+    Returns:
+        java.lang.Iterable<uk.gov.gchq.gaffer.data.element.Element>
     """
     CLASS = "uk.gov.gchq.gaffer.accumulostore.operation.impl.SummariseGroupOverRanges"
 
@@ -193,6 +240,21 @@ class SummariseGroupOverRanges(Operation):
 class AddGraph(Operation):
     """
     Adds a new Graph to the federated store
+
+    Args:
+        graph_id: 
+        schema: 
+        write_access_predicate: 
+        store_properties: 
+        parent_properties_id: 
+        read_access_predicate: 
+        graph_auths: 
+        is_public: 
+        parent_schema_ids: 
+        user_requesting_admin_usage: 
+        options: Additional map of options
+    Returns:
+        java.lang.Void
     """
     CLASS = "uk.gov.gchq.gaffer.federatedstore.operation.AddGraph"
 
@@ -202,24 +264,24 @@ class AddGraph(Operation):
             schema=None,
             write_access_predicate=None,
             store_properties=None,
-            disabled_by_default=None,
             parent_properties_id=None,
             read_access_predicate=None,
             graph_auths=None,
             is_public=None,
             parent_schema_ids=None,
+            user_requesting_admin_usage=None,
             options=None):
         super().__init__(_class_name=self.CLASS, options=options)
         self.schema = schema
         self.write_access_predicate = write_access_predicate
         self.store_properties = store_properties
-        self.disabled_by_default = disabled_by_default
         self.parent_properties_id = parent_properties_id
         self.read_access_predicate = read_access_predicate
         self.graph_auths = graph_auths
         self.is_public = is_public
         self.parent_schema_ids = parent_schema_ids
         self.graph_id = graph_id
+        self.user_requesting_admin_usage = user_requesting_admin_usage
 
     def to_json(self):
         operation_json = super().to_json()
@@ -229,8 +291,6 @@ class AddGraph(Operation):
             operation_json["writeAccessPredicate"] = self.write_access_predicate
         if self.store_properties is not None:
             operation_json["storeProperties"] = self.store_properties
-        if self.disabled_by_default is not None:
-            operation_json["disabledByDefault"] = self.disabled_by_default
         if self.parent_properties_id is not None:
             operation_json["parentPropertiesId"] = self.parent_properties_id
         if self.read_access_predicate is not None:
@@ -243,12 +303,30 @@ class AddGraph(Operation):
             operation_json["parentSchemaIds"] = self.parent_schema_ids
         if self.graph_id is not None:
             operation_json["graphId"] = self.graph_id
+        if self.user_requesting_admin_usage is not None:
+            operation_json["userRequestingAdminUsage"] = self.user_requesting_admin_usage
         return operation_json
 
 
 class AddGraphWithHooks(Operation):
     """
     Adds a new Graph with hooks to the federated store
+
+    Args:
+        schema: 
+        write_access_predicate: 
+        store_properties: 
+        parent_properties_id: 
+        read_access_predicate: 
+        graph_auths: 
+        is_public: 
+        parent_schema_ids: 
+        graph_id: 
+        hooks: 
+        user_requesting_admin_usage: 
+        options: Additional map of options
+    Returns:
+        java.lang.Void
     """
     CLASS = "uk.gov.gchq.gaffer.federatedstore.operation.AddGraphWithHooks"
 
@@ -257,7 +335,6 @@ class AddGraphWithHooks(Operation):
             schema=None,
             write_access_predicate=None,
             store_properties=None,
-            disabled_by_default=None,
             parent_properties_id=None,
             read_access_predicate=None,
             graph_auths=None,
@@ -265,12 +342,12 @@ class AddGraphWithHooks(Operation):
             parent_schema_ids=None,
             graph_id=None,
             hooks=None,
+            user_requesting_admin_usage=None,
             options=None):
         super().__init__(_class_name=self.CLASS, options=options)
         self.schema = schema
         self.write_access_predicate = write_access_predicate
         self.store_properties = store_properties
-        self.disabled_by_default = disabled_by_default
         self.parent_properties_id = parent_properties_id
         self.read_access_predicate = read_access_predicate
         self.graph_auths = graph_auths
@@ -278,6 +355,7 @@ class AddGraphWithHooks(Operation):
         self.parent_schema_ids = parent_schema_ids
         self.graph_id = graph_id
         self.hooks = hooks
+        self.user_requesting_admin_usage = user_requesting_admin_usage
 
     def to_json(self):
         operation_json = super().to_json()
@@ -287,8 +365,6 @@ class AddGraphWithHooks(Operation):
             operation_json["writeAccessPredicate"] = self.write_access_predicate
         if self.store_properties is not None:
             operation_json["storeProperties"] = self.store_properties
-        if self.disabled_by_default is not None:
-            operation_json["disabledByDefault"] = self.disabled_by_default
         if self.parent_properties_id is not None:
             operation_json["parentPropertiesId"] = self.parent_properties_id
         if self.read_access_predicate is not None:
@@ -303,34 +379,44 @@ class AddGraphWithHooks(Operation):
             operation_json["graphId"] = self.graph_id
         if self.hooks is not None:
             operation_json["hooks"] = self.hooks
+        if self.user_requesting_admin_usage is not None:
+            operation_json["userRequestingAdminUsage"] = self.user_requesting_admin_usage
         return operation_json
 
 
 class ChangeGraphAccess(Operation):
     """
     Changes the protection used for accessing graphs
+
+    Args:
+        graph_id: 
+        owner_user_id: 
+        graph_auths: 
+        is_public: 
+        user_requesting_admin_usage: 
+        options: Additional map of options
+    Returns:
+        java.lang.Boolean
     """
     CLASS = "uk.gov.gchq.gaffer.federatedstore.operation.ChangeGraphAccess"
 
     def __init__(
             self,
             graph_id,
-            disabled_by_default=None,
             owner_user_id=None,
             graph_auths=None,
             is_public=None,
+            user_requesting_admin_usage=None,
             options=None):
         super().__init__(_class_name=self.CLASS, options=options)
-        self.disabled_by_default = disabled_by_default
         self.owner_user_id = owner_user_id
         self.graph_auths = graph_auths
         self.is_public = is_public
         self.graph_id = graph_id
+        self.user_requesting_admin_usage = user_requesting_admin_usage
 
     def to_json(self):
         operation_json = super().to_json()
-        if self.disabled_by_default is not None:
-            operation_json["disabledByDefault"] = self.disabled_by_default
         if self.owner_user_id is not None:
             operation_json["ownerUserId"] = self.owner_user_id
         if self.graph_auths is not None:
@@ -339,12 +425,22 @@ class ChangeGraphAccess(Operation):
             operation_json["isPublic"] = self.is_public
         if self.graph_id is not None:
             operation_json["graphId"] = self.graph_id
+        if self.user_requesting_admin_usage is not None:
+            operation_json["userRequestingAdminUsage"] = self.user_requesting_admin_usage
         return operation_json
 
 
 class ChangeGraphId(Operation):
     """
     Changes the Id of a graph
+
+    Args:
+        graph_id: 
+        new_graph_id: 
+        user_requesting_admin_usage: 
+        options: Additional map of options
+    Returns:
+        java.lang.Boolean
     """
     CLASS = "uk.gov.gchq.gaffer.federatedstore.operation.ChangeGraphId"
 
@@ -352,10 +448,12 @@ class ChangeGraphId(Operation):
             self,
             graph_id,
             new_graph_id=None,
+            user_requesting_admin_usage=None,
             options=None):
         super().__init__(_class_name=self.CLASS, options=options)
         self.new_graph_id = new_graph_id
         self.graph_id = graph_id
+        self.user_requesting_admin_usage = user_requesting_admin_usage
 
     def to_json(self):
         operation_json = super().to_json()
@@ -363,90 +461,204 @@ class ChangeGraphId(Operation):
             operation_json["newGraphId"] = self.new_graph_id
         if self.graph_id is not None:
             operation_json["graphId"] = self.graph_id
+        if self.user_requesting_admin_usage is not None:
+            operation_json["userRequestingAdminUsage"] = self.user_requesting_admin_usage
         return operation_json
 
 
-class FederatedOperationChain(Operation):
+class FederatedOperation(Operation):
     """
-    A wrapped OperationChain to be executed in one go on a delegate graph
+    Federates a payload operation across given graphs and merges the results with a given function.
+
+    Args:
+        skip_failed_federated_execution: 
+        input: 
+        graph_ids: 
+        operation: 
+        merge_function: 
+        user_requesting_admin_usage: 
+        options: Additional map of options
+    Returns:
+        java.lang.Object
     """
-    CLASS = "uk.gov.gchq.gaffer.federatedstore.operation.FederatedOperationChain"
+    CLASS = "uk.gov.gchq.gaffer.federatedstore.operation.FederatedOperation"
 
     def __init__(
             self,
-            operation_chain,
+            skip_failed_federated_execution=None,
             input=None,
-            multi_input_wrapper=None,
+            graph_ids=None,
+            operation=None,
+            merge_function=None,
+            user_requesting_admin_usage=None,
             options=None):
         super().__init__(_class_name=self.CLASS, options=options)
+        self.skip_failed_federated_execution = skip_failed_federated_execution
         self.input = input
-        self.multi_input_wrapper = multi_input_wrapper
-        self.operation_chain = operation_chain
+        self.graph_ids = graph_ids
+        self.operation = operation
+        self.merge_function = merge_function
+        self.user_requesting_admin_usage = user_requesting_admin_usage
 
     def to_json(self):
         operation_json = super().to_json()
+        if self.skip_failed_federated_execution is not None:
+            operation_json["skipFailedFederatedExecution"] = self.skip_failed_federated_execution
         if self.input is not None:
             operation_json["input"] = self.input
-        if self.multi_input_wrapper is not None:
-            operation_json["multiInputWrapper"] = self.multi_input_wrapper
-        if self.operation_chain is not None:
-            operation_json["operationChain"] = self.operation_chain
+        if self.graph_ids is not None:
+            operation_json["graphIds"] = self.graph_ids
+        if self.operation is not None:
+            operation_json["operation"] = self.operation
+        if self.merge_function is not None:
+            operation_json["mergeFunction"] = self.merge_function
+        if self.user_requesting_admin_usage is not None:
+            operation_json["userRequestingAdminUsage"] = self.user_requesting_admin_usage
         return operation_json
 
 
 class GetAllGraphIds(Operation):
     """
     Gets the ids of all available Graphs from a federated store
+
+    Args:
+        user_requesting_admin_usage: 
+        options: Additional map of options
+    Returns:
+        java.lang.Iterable<java.lang.String>
     """
     CLASS = "uk.gov.gchq.gaffer.federatedstore.operation.GetAllGraphIds"
 
     def __init__(
             self,
+            user_requesting_admin_usage=None,
             options=None):
         super().__init__(_class_name=self.CLASS, options=options)
+        self.user_requesting_admin_usage = user_requesting_admin_usage
 
     def to_json(self):
-        return super().to_json()
+        operation_json = super().to_json()
+        if self.user_requesting_admin_usage is not None:
+            operation_json["userRequestingAdminUsage"] = self.user_requesting_admin_usage
+        return operation_json
 
 
 class GetAllGraphInfo(Operation):
     """
-    Gets the ids of all available Graphs from a federated store
+    Gets graph info of selected Graphs from the FederatedStore
+
+    Args:
+        graph_ids: 
+        user_requesting_admin_usage: 
+        options: Additional map of options
+    Returns:
+        java.util.Map<java.lang.String,java.lang.Object>
     """
     CLASS = "uk.gov.gchq.gaffer.federatedstore.operation.GetAllGraphInfo"
 
     def __init__(
             self,
+            graph_ids=None,
+            user_requesting_admin_usage=None,
             options=None):
         super().__init__(_class_name=self.CLASS, options=options)
+        self.graph_ids = graph_ids
+        self.user_requesting_admin_usage = user_requesting_admin_usage
 
     def to_json(self):
-        return super().to_json()
+        operation_json = super().to_json()
+        if self.graph_ids is not None:
+            operation_json["graphIds"] = self.graph_ids
+        if self.user_requesting_admin_usage is not None:
+            operation_json["userRequestingAdminUsage"] = self.user_requesting_admin_usage
+        return operation_json
 
 
 class RemoveGraph(Operation):
     """
     Removes a Graph from the federated store
+
+    Args:
+        graph_id: 
+        user_requesting_admin_usage: 
+        options: Additional map of options
+    Returns:
+        java.lang.Boolean
     """
     CLASS = "uk.gov.gchq.gaffer.federatedstore.operation.RemoveGraph"
 
     def __init__(
             self,
             graph_id,
+            user_requesting_admin_usage=None,
             options=None):
         super().__init__(_class_name=self.CLASS, options=options)
         self.graph_id = graph_id
+        self.user_requesting_admin_usage = user_requesting_admin_usage
 
     def to_json(self):
         operation_json = super().to_json()
         if self.graph_id is not None:
             operation_json["graphId"] = self.graph_id
+        if self.user_requesting_admin_usage is not None:
+            operation_json["userRequestingAdminUsage"] = self.user_requesting_admin_usage
+        return operation_json
+
+
+class RemoveGraphAndDeleteAllData(Operation):
+    """
+    Used to tell a graph to delete all data, before being removed.
+
+    Args:
+        graph_id: 
+        user_requesting_admin_usage: 
+        options: Additional map of options
+    Returns:
+        java.lang.Boolean
+    """
+    CLASS = "uk.gov.gchq.gaffer.federatedstore.operation.RemoveGraphAndDeleteAllData"
+
+    def __init__(
+            self,
+            graph_id=None,
+            user_requesting_admin_usage=None,
+            options=None):
+        super().__init__(_class_name=self.CLASS, options=options)
+        self.graph_id = graph_id
+        self.user_requesting_admin_usage = user_requesting_admin_usage
+
+    def to_json(self):
+        operation_json = super().to_json()
+        if self.graph_id is not None:
+            operation_json["graphId"] = self.graph_id
+        if self.user_requesting_admin_usage is not None:
+            operation_json["userRequestingAdminUsage"] = self.user_requesting_admin_usage
         return operation_json
 
 
 class AddElementsFromHdfs(Operation):
     """
     Adds elements from hdfs
+
+    Args:
+        job_initialiser: 
+        input_mapper_pairs: 
+        failure_path: 
+        output_path: 
+        splits_file_path: 
+        num_map_tasks: 
+        working_path: 
+        min_reduce_tasks: 
+        max_reduce_tasks: 
+        min_map_tasks: 
+        use_provided_splits: 
+        command_line_args: 
+        partitioner: 
+        max_map_tasks: 
+        validate: 
+        options: Additional map of options
+    Returns:
+        java.lang.Void
     """
     CLASS = "uk.gov.gchq.gaffer.hdfs.operation.AddElementsFromHdfs"
 
@@ -523,6 +735,27 @@ class AddElementsFromHdfs(Operation):
 class SampleDataForSplitPoints(Operation):
     """
     Creates a splits file by sampling given data
+
+    Args:
+        splits_file_path: 
+        job_initialiser: 
+        input_mapper_pairs: 
+        output_path: 
+        num_map_tasks: 
+        min_reduce_tasks: 
+        num_splits: 
+        max_reduce_tasks: 
+        min_map_tasks: 
+        use_provided_splits: 
+        command_line_args: 
+        compression_codec: 
+        partitioner: 
+        proportion_to_sample: 
+        max_map_tasks: 
+        validate: 
+        options: Additional map of options
+    Returns:
+        java.lang.Void
     """
     CLASS = "uk.gov.gchq.gaffer.hdfs.operation.SampleDataForSplitPoints"
 
@@ -603,6 +836,12 @@ class SampleDataForSplitPoints(Operation):
 class CountAllElementsDefaultView(Operation):
     """
     Counts all elements
+
+    Args:
+        input: 
+        options: Additional map of options
+    Returns:
+        java.lang.Long
     """
     CLASS = "uk.gov.gchq.gaffer.mapstore.operation.CountAllElementsDefaultView"
 
@@ -623,6 +862,22 @@ class CountAllElementsDefaultView(Operation):
 class AddNamedOperation(Operation):
     """
     Adds a new named operation
+
+    Args:
+        overwrite_flag: 
+        write_access_predicate: 
+        score: 
+        read_access_roles: 
+        read_access_predicate: 
+        description: 
+        operation_name: 
+        operation_chain: 
+        parameters: 
+        write_access_roles: 
+        labels: 
+        options: Additional map of options
+    Returns:
+        java.lang.Void
     """
     CLASS = "uk.gov.gchq.gaffer.named.operation.AddNamedOperation"
 
@@ -683,6 +938,12 @@ class AddNamedOperation(Operation):
 class DeleteNamedOperation(Operation):
     """
     Deletes a named operation
+
+    Args:
+        operation_name: 
+        options: Additional map of options
+    Returns:
+        java.lang.Void
     """
     CLASS = "uk.gov.gchq.gaffer.named.operation.DeleteNamedOperation"
 
@@ -703,6 +964,11 @@ class DeleteNamedOperation(Operation):
 class GetAllNamedOperations(Operation):
     """
     Gets all available named operations
+
+    Args:
+        options: Additional map of options
+    Returns:
+        java.lang.Iterable<uk.gov.gchq.gaffer.named.operation.NamedOperationDetail>
     """
     CLASS = "uk.gov.gchq.gaffer.named.operation.GetAllNamedOperations"
 
@@ -718,6 +984,14 @@ class GetAllNamedOperations(Operation):
 class NamedOperation(Operation):
     """
     Runs a named operation
+
+    Args:
+        operation_name: 
+        input: 
+        parameters: 
+        options: Additional map of options
+    Returns:
+        java.lang.Object
     """
     CLASS = "uk.gov.gchq.gaffer.named.operation.NamedOperation"
 
@@ -746,6 +1020,19 @@ class NamedOperation(Operation):
 class AddNamedView(Operation):
     """
     Adds a new named view
+
+    Args:
+        view: 
+        name: 
+        overwrite_flag: 
+        write_access_predicate: 
+        read_access_predicate: 
+        description: 
+        parameters: 
+        write_access_roles: 
+        options: Additional map of options
+    Returns:
+        java.lang.Void
     """
     CLASS = "uk.gov.gchq.gaffer.named.view.AddNamedView"
 
@@ -794,6 +1081,12 @@ class AddNamedView(Operation):
 class DeleteNamedView(Operation):
     """
     Deletes a named view
+
+    Args:
+        name: 
+        options: Additional map of options
+    Returns:
+        java.lang.Void
     """
     CLASS = "uk.gov.gchq.gaffer.named.view.DeleteNamedView"
 
@@ -814,6 +1107,11 @@ class DeleteNamedView(Operation):
 class GetAllNamedViews(Operation):
     """
     Gets all available named views
+
+    Args:
+        options: Additional map of options
+    Returns:
+        java.lang.Iterable<uk.gov.gchq.gaffer.data.elementdefinition.view.NamedViewDetail>
     """
     CLASS = "uk.gov.gchq.gaffer.named.view.GetAllNamedViews"
 
@@ -829,6 +1127,12 @@ class GetAllNamedViews(Operation):
 class OperationChain(Operation):
     """
     A chain of operations where the results are passed between each operation
+
+    Args:
+        operations: 
+        options: Additional map of options
+    Returns:
+        java.lang.Iterable<?>
     """
     CLASS = "uk.gov.gchq.gaffer.operation.OperationChain"
 
@@ -849,6 +1153,16 @@ class OperationChain(Operation):
 class ExportToOtherAuthorisedGraph(Operation):
     """
     Exports elements to another authorised Graph
+
+    Args:
+        graph_id: 
+        input: 
+        parent_store_properties_id: 
+        parent_schema_ids: 
+        key: 
+        options: Additional map of options
+    Returns:
+        java.lang.Object
     """
     CLASS = "uk.gov.gchq.gaffer.operation.export.graph.ExportToOtherAuthorisedGraph"
 
@@ -885,6 +1199,18 @@ class ExportToOtherAuthorisedGraph(Operation):
 class ExportToOtherGraph(Operation):
     """
     Exports elements to another Graph
+
+    Args:
+        graph_id: 
+        schema: 
+        input: 
+        parent_store_properties_id: 
+        store_properties: 
+        parent_schema_ids: 
+        key: 
+        options: Additional map of options
+    Returns:
+        java.lang.Iterable<uk.gov.gchq.gaffer.data.element.Element>
     """
     CLASS = "uk.gov.gchq.gaffer.operation.export.graph.ExportToOtherGraph"
 
@@ -929,6 +1255,12 @@ class ExportToOtherGraph(Operation):
 class Count(Operation):
     """
     Counts the number of items
+
+    Args:
+        input: 
+        options: Additional map of options
+    Returns:
+        java.lang.Long
     """
     CLASS = "uk.gov.gchq.gaffer.operation.impl.Count"
 
@@ -949,6 +1281,13 @@ class Count(Operation):
 class CountGroups(Operation):
     """
     Counts the different element groups
+
+    Args:
+        input: 
+        limit: 
+        options: Additional map of options
+    Returns:
+        uk.gov.gchq.gaffer.data.GroupCounts
     """
     CLASS = "uk.gov.gchq.gaffer.operation.impl.CountGroups"
 
@@ -973,6 +1312,12 @@ class CountGroups(Operation):
 class DiscardOutput(Operation):
     """
     Discards the results from the previous operation
+
+    Args:
+        input: 
+        options: Additional map of options
+    Returns:
+        java.lang.Void
     """
     CLASS = "uk.gov.gchq.gaffer.operation.impl.DiscardOutput"
 
@@ -993,6 +1338,13 @@ class DiscardOutput(Operation):
 class ForEach(Operation):
     """
     Runs supplied operation on Iterable of inputs
+
+    Args:
+        input: 
+        operation: 
+        options: Additional map of options
+    Returns:
+        java.lang.Iterable<?>
     """
     CLASS = "uk.gov.gchq.gaffer.operation.impl.ForEach"
 
@@ -1017,6 +1369,13 @@ class ForEach(Operation):
 class GenerateSplitPointsFromSample(Operation):
     """
     Generates split points from the supplied Iterable
+
+    Args:
+        input: 
+        num_splits: 
+        options: Additional map of options
+    Returns:
+        java.util.List<T>
     """
     CLASS = "uk.gov.gchq.gaffer.operation.impl.GenerateSplitPointsFromSample"
 
@@ -1041,6 +1400,12 @@ class GenerateSplitPointsFromSample(Operation):
 class GetVariable(Operation):
     """
     Gets a variable from the Context variable map
+
+    Args:
+        variable_name: 
+        options: Additional map of options
+    Returns:
+        java.lang.Object
     """
     CLASS = "uk.gov.gchq.gaffer.operation.impl.GetVariable"
 
@@ -1061,6 +1426,12 @@ class GetVariable(Operation):
 class GetVariables(Operation):
     """
     Gets all variables from the Context variable map
+
+    Args:
+        variable_names: 
+        options: Additional map of options
+    Returns:
+        java.util.Map<java.lang.String,java.lang.Object>
     """
     CLASS = "uk.gov.gchq.gaffer.operation.impl.GetVariables"
 
@@ -1081,6 +1452,16 @@ class GetVariables(Operation):
 class GetWalks(Operation):
     """
     Walks around the Graph, returning the full walks taken
+
+    Args:
+        input: 
+        operations: 
+        include_partial: 
+        conditional: 
+        results_limit: 
+        options: Additional map of options
+    Returns:
+        java.lang.Iterable<uk.gov.gchq.gaffer.data.graph.Walk>
     """
     CLASS = "uk.gov.gchq.gaffer.operation.impl.GetWalks"
 
@@ -1117,6 +1498,17 @@ class GetWalks(Operation):
 class If(Operation):
     """
     Conditionally runs an operation or an alternative operation
+
+    Args:
+        otherwise: 
+        input: 
+        condition: 
+        conditional: 
+        multi_input_wrapper: 
+        then: 
+        options: Additional map of options
+    Returns:
+        java.lang.Object
     """
     CLASS = "uk.gov.gchq.gaffer.operation.impl.If"
 
@@ -1157,6 +1549,14 @@ class If(Operation):
 class Limit(Operation):
     """
     Limits the number of items
+
+    Args:
+        result_limit: 
+        input: 
+        truncate: 
+        options: Additional map of options
+    Returns:
+        java.lang.Iterable<?>
     """
     CLASS = "uk.gov.gchq.gaffer.operation.impl.Limit"
 
@@ -1185,6 +1585,14 @@ class Limit(Operation):
 class Map(Operation):
     """
     Maps an input to an output using provided functions
+
+    Args:
+        functions: 
+        input: 
+        function: 
+        options: Additional map of options
+    Returns:
+        java.lang.Object
     """
     CLASS = "uk.gov.gchq.gaffer.operation.impl.Map"
 
@@ -1213,6 +1621,14 @@ class Map(Operation):
 class Reduce(Operation):
     """
     Reduces an input to an output with a single value using provided function
+
+    Args:
+        aggregate_function: 
+        input: 
+        identity: 
+        options: Additional map of options
+    Returns:
+        java.lang.Object
     """
     CLASS = "uk.gov.gchq.gaffer.operation.impl.Reduce"
 
@@ -1241,6 +1657,14 @@ class Reduce(Operation):
 class SampleElementsForSplitPoints(Operation):
     """
     Samples an iterable of elements and generates split points
+
+    Args:
+        input: 
+        num_splits: 
+        proportion_to_sample: 
+        options: Additional map of options
+    Returns:
+        java.util.List<T>
     """
     CLASS = "uk.gov.gchq.gaffer.operation.impl.SampleElementsForSplitPoints"
 
@@ -1269,6 +1693,12 @@ class SampleElementsForSplitPoints(Operation):
 class ScoreOperationChain(Operation):
     """
     Scores an OperationChain
+
+    Args:
+        operation_chain: A chain of operations where the results are passed between each operation
+        options: Additional map of options
+    Returns:
+        java.lang.Integer
     """
     CLASS = "uk.gov.gchq.gaffer.operation.impl.ScoreOperationChain"
 
@@ -1289,6 +1719,13 @@ class ScoreOperationChain(Operation):
 class SetVariable(Operation):
     """
     Sets a variable in the Context
+
+    Args:
+        input: 
+        variable_name: 
+        options: Additional map of options
+    Returns:
+        java.lang.Void
     """
     CLASS = "uk.gov.gchq.gaffer.operation.impl.SetVariable"
 
@@ -1313,6 +1750,12 @@ class SetVariable(Operation):
 class SplitStoreFromFile(Operation):
     """
     Splits a store based on a file of split points
+
+    Args:
+        input_path: 
+        options: Additional map of options
+    Returns:
+        java.lang.Void
     """
     CLASS = "uk.gov.gchq.gaffer.operation.impl.SplitStoreFromFile"
 
@@ -1333,6 +1776,12 @@ class SplitStoreFromFile(Operation):
 class SplitStoreFromIterable(Operation):
     """
     Splits a store based on an iterable of split points
+
+    Args:
+        input: 
+        options: Additional map of options
+    Returns:
+        java.lang.Void
     """
     CLASS = "uk.gov.gchq.gaffer.operation.impl.SplitStoreFromIterable"
 
@@ -1353,6 +1802,14 @@ class SplitStoreFromIterable(Operation):
 class Validate(Operation):
     """
     Validates elements based on the schema
+
+    Args:
+        input: 
+        skip_invalid_elements: 
+        validate: 
+        options: Additional map of options
+    Returns:
+        java.lang.Iterable<uk.gov.gchq.gaffer.data.element.Element>
     """
     CLASS = "uk.gov.gchq.gaffer.operation.impl.Validate"
 
@@ -1381,6 +1838,12 @@ class Validate(Operation):
 class ValidateOperationChain(Operation):
     """
     Validates an OperationChain
+
+    Args:
+        operation_chain: A chain of operations where the results are passed between each operation
+        options: Additional map of options
+    Returns:
+        uk.gov.gchq.koryphe.ValidationResult
     """
     CLASS = "uk.gov.gchq.gaffer.operation.impl.ValidateOperationChain"
 
@@ -1401,6 +1864,17 @@ class ValidateOperationChain(Operation):
 class While(Operation):
     """
     Repeatedly executes an operation while a condition is met
+
+    Args:
+        input: 
+        condition: 
+        conditional: 
+        max_repeats: 
+        multi_input_wrapper: 
+        operation: 
+        options: Additional map of options
+    Returns:
+        java.lang.Object
     """
     CLASS = "uk.gov.gchq.gaffer.operation.impl.While"
 
@@ -1441,6 +1915,14 @@ class While(Operation):
 class AddElements(Operation):
     """
     Adds elements
+
+    Args:
+        input: 
+        skip_invalid_elements: 
+        validate: 
+        options: Additional map of options
+    Returns:
+        java.lang.Void
     """
     CLASS = "uk.gov.gchq.gaffer.operation.impl.add.AddElements"
 
@@ -1469,6 +1951,16 @@ class AddElements(Operation):
 class AddElementsFromFile(Operation):
     """
     Adds elements from a file
+
+    Args:
+        element_generator: 
+        filename: 
+        parallelism: 
+        skip_invalid_elements: 
+        validate: 
+        options: Additional map of options
+    Returns:
+        java.lang.Void
     """
     CLASS = "uk.gov.gchq.gaffer.operation.impl.add.AddElementsFromFile"
 
@@ -1505,6 +1997,19 @@ class AddElementsFromFile(Operation):
 class AddElementsFromKafka(Operation):
     """
     Adds elements from Kafka
+
+    Args:
+        element_generator: 
+        bootstrap_servers: 
+        group_id: 
+        topic: 
+        parallelism: 
+        consume_as: 
+        skip_invalid_elements: 
+        validate: 
+        options: Additional map of options
+    Returns:
+        java.lang.Void
     """
     CLASS = "uk.gov.gchq.gaffer.operation.impl.add.AddElementsFromKafka"
 
@@ -1553,6 +2058,18 @@ class AddElementsFromKafka(Operation):
 class AddElementsFromSocket(Operation):
     """
     Adds elements from a socket
+
+    Args:
+        element_generator: 
+        hostname: 
+        port: 
+        delimiter: 
+        parallelism: 
+        skip_invalid_elements: 
+        validate: 
+        options: Additional map of options
+    Returns:
+        java.lang.Void
     """
     CLASS = "uk.gov.gchq.gaffer.operation.impl.add.AddElementsFromSocket"
 
@@ -1594,33 +2111,47 @@ class AddElementsFromSocket(Operation):
         return operation_json
 
 
-class ImportCsv(Operation):
+class CsvToElements(Operation):
     """
     Adds elements from a openCypher CSV file
+
+    Args:
+        input: 
+        trim: 
+        delimiter: 
+        null_string: 
+        skip_invalid_elements: 
+        csv_format: 
+        validate: 
+        options: Additional map of options
+    Returns:
+        java.lang.Iterable<uk.gov.gchq.gaffer.data.element.Element>
     """
-    CLASS = "uk.gov.gchq.gaffer.operation.impl.add.ImportCsv"
+    CLASS = "uk.gov.gchq.gaffer.operation.impl.add.CsvToElements"
 
     def __init__(
             self,
-            filename,
+            input=None,
             trim=None,
             delimiter=None,
             null_string=None,
             skip_invalid_elements=None,
+            csv_format=None,
             validate=None,
             options=None):
         super().__init__(_class_name=self.CLASS, options=options)
-        self.filename = filename
+        self.input = input
         self.trim = trim
         self.delimiter = delimiter
         self.null_string = null_string
         self.skip_invalid_elements = skip_invalid_elements
+        self.csv_format = csv_format
         self.validate = validate
 
     def to_json(self):
         operation_json = super().to_json()
-        if self.filename is not None:
-            operation_json["filename"] = self.filename
+        if self.input is not None:
+            operation_json["input"] = self.input
         if self.trim is not None:
             operation_json["trim"] = self.trim
         if self.delimiter is not None:
@@ -1629,6 +2160,8 @@ class ImportCsv(Operation):
             operation_json["nullString"] = self.null_string
         if self.skip_invalid_elements is not None:
             operation_json["skipInvalidElements"] = self.skip_invalid_elements
+        if self.csv_format is not None:
+            operation_json["csvFormat"] = self.csv_format
         if self.validate is not None:
             operation_json["validate"] = self.validate
         return operation_json
@@ -1637,6 +2170,13 @@ class ImportCsv(Operation):
 class Max(Operation):
     """
     Extracts the maximum element based on provided Comparators
+
+    Args:
+        comparators: 
+        input: 
+        options: Additional map of options
+    Returns:
+        uk.gov.gchq.gaffer.data.element.Element
     """
     CLASS = "uk.gov.gchq.gaffer.operation.impl.compare.Max"
 
@@ -1661,6 +2201,13 @@ class Max(Operation):
 class Min(Operation):
     """
     Extracts the minimum element based on provided Comparators
+
+    Args:
+        comparators: 
+        input: 
+        options: Additional map of options
+    Returns:
+        uk.gov.gchq.gaffer.data.element.Element
     """
     CLASS = "uk.gov.gchq.gaffer.operation.impl.compare.Min"
 
@@ -1685,6 +2232,15 @@ class Min(Operation):
 class Sort(Operation):
     """
     Sorts elements based on provided Comparators and can be used to extract the top 'n' elements
+
+    Args:
+        comparators: 
+        input: 
+        result_limit: 
+        deduplicate: 
+        options: Additional map of options
+    Returns:
+        java.lang.Iterable<uk.gov.gchq.gaffer.data.element.Element>
     """
     CLASS = "uk.gov.gchq.gaffer.operation.impl.compare.Sort"
 
@@ -1717,6 +2273,12 @@ class Sort(Operation):
 class GetExports(Operation):
     """
     Fetches multiple exports
+
+    Args:
+        get_exports: 
+        options: Additional map of options
+    Returns:
+        java.util.Map<java.lang.String,java.util.Set<java.lang.Object>>
     """
     CLASS = "uk.gov.gchq.gaffer.operation.impl.export.GetExports"
 
@@ -1737,6 +2299,14 @@ class GetExports(Operation):
 class ExportToLocalFile(Operation):
     """
     Exports elements to a local file
+
+    Args:
+        file_path: 
+        input: 
+        key: 
+        options: Additional map of options
+    Returns:
+        java.lang.Iterable<java.lang.String>
     """
     CLASS = "uk.gov.gchq.gaffer.operation.impl.export.localfile.ExportToLocalFile"
 
@@ -1762,9 +2332,53 @@ class ExportToLocalFile(Operation):
         return operation_json
 
 
+class ImportFromLocalFile(Operation):
+    """
+    Fetches data from a local file
+
+    Args:
+        file_path: 
+        job_id: 
+        key: 
+        options: Additional map of options
+    Returns:
+        java.lang.Iterable<java.lang.String>
+    """
+    CLASS = "uk.gov.gchq.gaffer.operation.impl.export.localfile.ImportFromLocalFile"
+
+    def __init__(
+            self,
+            file_path,
+            job_id=None,
+            key=None,
+            options=None):
+        super().__init__(_class_name=self.CLASS, options=options)
+        self.job_id = job_id
+        self.file_path = file_path
+        self.key = key
+
+    def to_json(self):
+        operation_json = super().to_json()
+        if self.job_id is not None:
+            operation_json["jobId"] = self.job_id
+        if self.file_path is not None:
+            operation_json["filePath"] = self.file_path
+        if self.key is not None:
+            operation_json["key"] = self.key
+        return operation_json
+
+
 class ExportToGafferResultCache(Operation):
     """
     Exports to a cache backed by a Gaffer graph
+
+    Args:
+        input: 
+        op_auths: 
+        key: 
+        options: Additional map of options
+    Returns:
+        java.lang.Object
     """
     CLASS = "uk.gov.gchq.gaffer.operation.impl.export.resultcache.ExportToGafferResultCache"
 
@@ -1793,6 +2407,13 @@ class ExportToGafferResultCache(Operation):
 class GetGafferResultCacheExport(Operation):
     """
     Fetches data from a Gaffer result cache
+
+    Args:
+        job_id: 
+        key: 
+        options: Additional map of options
+    Returns:
+        java.lang.Iterable<?>
     """
     CLASS = "uk.gov.gchq.gaffer.operation.impl.export.resultcache.GetGafferResultCacheExport"
 
@@ -1817,6 +2438,13 @@ class GetGafferResultCacheExport(Operation):
 class ExportToSet(Operation):
     """
     Exports results to a Set
+
+    Args:
+        input: 
+        key: 
+        options: Additional map of options
+    Returns:
+        java.lang.Object
     """
     CLASS = "uk.gov.gchq.gaffer.operation.impl.export.set.ExportToSet"
 
@@ -1841,6 +2469,15 @@ class ExportToSet(Operation):
 class GetSetExport(Operation):
     """
     Fetches data from a Set cache
+
+    Args:
+        job_id: 
+        start: 
+        end: 
+        key: 
+        options: Additional map of options
+    Returns:
+        java.lang.Iterable<?>
     """
     CLASS = "uk.gov.gchq.gaffer.operation.impl.export.set.GetSetExport"
 
@@ -1873,6 +2510,14 @@ class GetSetExport(Operation):
 class Aggregate(Operation):
     """
     Aggregates elements
+
+    Args:
+        input: 
+        entities: 
+        edges: 
+        options: Additional map of options
+    Returns:
+        java.lang.Iterable<uk.gov.gchq.gaffer.data.element.Element>
     """
     CLASS = "uk.gov.gchq.gaffer.operation.impl.function.Aggregate"
 
@@ -1901,6 +2546,17 @@ class Aggregate(Operation):
 class Filter(Operation):
     """
     Filters elements
+
+    Args:
+        input: 
+        global_edges: 
+        global_entities: 
+        entities: 
+        edges: 
+        global_elements: 
+        options: Additional map of options
+    Returns:
+        java.lang.Iterable<uk.gov.gchq.gaffer.data.element.Element>
     """
     CLASS = "uk.gov.gchq.gaffer.operation.impl.function.Filter"
 
@@ -1941,6 +2597,14 @@ class Filter(Operation):
 class Transform(Operation):
     """
     Transforms elements
+
+    Args:
+        input: 
+        entities: 
+        edges: 
+        options: Additional map of options
+    Returns:
+        java.lang.Iterable<uk.gov.gchq.gaffer.data.element.Element>
     """
     CLASS = "uk.gov.gchq.gaffer.operation.impl.function.Transform"
 
@@ -1969,6 +2633,13 @@ class Transform(Operation):
 class GenerateElements(Operation):
     """
     Generates elements from objects using provided generators
+
+    Args:
+        element_generator: 
+        input: 
+        options: Additional map of options
+    Returns:
+        java.lang.Iterable<uk.gov.gchq.gaffer.data.element.Element>
     """
     CLASS = "uk.gov.gchq.gaffer.operation.impl.generate.GenerateElements"
 
@@ -1993,6 +2664,13 @@ class GenerateElements(Operation):
 class GenerateObjects(Operation):
     """
     Generates objects from elements using provided generators
+
+    Args:
+        element_generator: 
+        input: 
+        options: Additional map of options
+    Returns:
+        java.lang.Iterable<?>
     """
     CLASS = "uk.gov.gchq.gaffer.operation.impl.generate.GenerateObjects"
 
@@ -2017,6 +2695,16 @@ class GenerateObjects(Operation):
 class GetAdjacentIds(Operation):
     """
     Performs a single hop down related edges
+
+    Args:
+        input: 
+        view: Used to filter and transform results
+        include_incoming_out_going: Should the edges point towards, or away from your seeds
+        directed_type: Is the Edge directed?
+        views: 
+        options: Additional map of options
+    Returns:
+        java.lang.Iterable<uk.gov.gchq.gaffer.data.element.id.EntityId>
     """
     CLASS = "uk.gov.gchq.gaffer.operation.impl.get.GetAdjacentIds"
 
@@ -2053,6 +2741,14 @@ class GetAdjacentIds(Operation):
 class GetAllElements(Operation):
     """
     Gets all elements compatible with a provided View
+
+    Args:
+        view: Used to filter and transform results
+        directed_type: Is the Edge directed?
+        views: 
+        options: Additional map of options
+    Returns:
+        java.lang.Iterable<uk.gov.gchq.gaffer.data.element.Element>
     """
     CLASS = "uk.gov.gchq.gaffer.operation.impl.get.GetAllElements"
 
@@ -2081,6 +2777,16 @@ class GetAllElements(Operation):
 class GetElements(Operation):
     """
     Gets elements related to provided seeds
+
+    Args:
+        input: 
+        view: Used to filter and transform results
+        include_incoming_out_going: Should the edges point towards, or away from your seeds
+        directed_type: Is the Edge directed?
+        views: 
+        options: Additional map of options
+    Returns:
+        java.lang.Iterable<uk.gov.gchq.gaffer.data.element.Element>
     """
     CLASS = "uk.gov.gchq.gaffer.operation.impl.get.GetElements"
 
@@ -2117,6 +2823,12 @@ class GetElements(Operation):
 class GetFromEndpoint(Operation):
     """
     Gets data from an endpoint
+
+    Args:
+        endpoint: 
+        options: Additional map of options
+    Returns:
+        java.lang.String
     """
     CLASS = "uk.gov.gchq.gaffer.operation.impl.get.GetFromEndpoint"
 
@@ -2137,6 +2849,12 @@ class GetFromEndpoint(Operation):
 class CancelScheduledJob(Operation):
     """
     Cancels a scheduled job
+
+    Args:
+        job_id: 
+        options: Additional map of options
+    Returns:
+        java.lang.Void
     """
     CLASS = "uk.gov.gchq.gaffer.operation.impl.job.CancelScheduledJob"
 
@@ -2157,6 +2875,11 @@ class CancelScheduledJob(Operation):
 class GetAllJobDetails(Operation):
     """
     Gets all running and historic job details
+
+    Args:
+        options: Additional map of options
+    Returns:
+        java.lang.Iterable<uk.gov.gchq.gaffer.jobtracker.JobDetail>
     """
     CLASS = "uk.gov.gchq.gaffer.operation.impl.job.GetAllJobDetails"
 
@@ -2172,6 +2895,12 @@ class GetAllJobDetails(Operation):
 class GetJobDetails(Operation):
     """
     Gets the details of a single job
+
+    Args:
+        job_id: 
+        options: Additional map of options
+    Returns:
+        uk.gov.gchq.gaffer.jobtracker.JobDetail
     """
     CLASS = "uk.gov.gchq.gaffer.operation.impl.job.GetJobDetails"
 
@@ -2192,6 +2921,12 @@ class GetJobDetails(Operation):
 class GetJobResults(Operation):
     """
     Gets the results of a job
+
+    Args:
+        job_id: 
+        options: Additional map of options
+    Returns:
+        java.lang.Iterable<?>
     """
     CLASS = "uk.gov.gchq.gaffer.operation.impl.job.GetJobResults"
 
@@ -2212,6 +2947,18 @@ class GetJobResults(Operation):
 class Join(Operation):
     """
     Joins two iterables based on a join type
+
+    Args:
+        flatten: 
+        input: 
+        join_type: 
+        match_key: 
+        collection_limit: 
+        match_method: 
+        operation: 
+        options: Additional map of options
+    Returns:
+        java.lang.Iterable<?>
     """
     CLASS = "uk.gov.gchq.gaffer.operation.impl.join.Join"
 
@@ -2256,6 +3003,12 @@ class Join(Operation):
 class ToArray(Operation):
     """
     Converts an Iterable to an Array
+
+    Args:
+        input: 
+        options: Additional map of options
+    Returns:
+        java.lang.Object[]
     """
     CLASS = "uk.gov.gchq.gaffer.operation.impl.output.ToArray"
 
@@ -2276,34 +3029,53 @@ class ToArray(Operation):
 class ToCsv(Operation):
     """
     Converts elements to CSV Strings
+
+    Args:
+        input: 
+        csv_generator: Generates a CSV string for each element
+        include_header: 
+        csv_format: 
+        options: Additional map of options
+    Returns:
+        java.lang.Iterable<java.lang.String>
     """
     CLASS = "uk.gov.gchq.gaffer.operation.impl.output.ToCsv"
 
     def __init__(
             self,
-            element_generator,
             input=None,
+            csv_generator=None,
             include_header=None,
+            csv_format=None,
             options=None):
         super().__init__(_class_name=self.CLASS, options=options)
         self.input = input
-        self.element_generator = element_generator
+        self.csv_generator = csv_generator
         self.include_header = include_header
+        self.csv_format = csv_format
 
     def to_json(self):
         operation_json = super().to_json()
         if self.input is not None:
             operation_json["input"] = self.input
-        if self.element_generator is not None:
-            operation_json["elementGenerator"] = self.element_generator
+        if self.csv_generator is not None:
+            operation_json["csvGenerator"] = self.csv_generator
         if self.include_header is not None:
             operation_json["includeHeader"] = self.include_header
+        if self.csv_format is not None:
+            operation_json["csvFormat"] = self.csv_format
         return operation_json
 
 
 class ToEntitySeeds(Operation):
     """
     Converts an objects into EntitySeeds
+
+    Args:
+        input: 
+        options: Additional map of options
+    Returns:
+        java.lang.Iterable<uk.gov.gchq.gaffer.operation.data.EntitySeed>
     """
     CLASS = "uk.gov.gchq.gaffer.operation.impl.output.ToEntitySeeds"
 
@@ -2324,6 +3096,12 @@ class ToEntitySeeds(Operation):
 class ToList(Operation):
     """
     Converts an Iterable to a List
+
+    Args:
+        input: 
+        options: Additional map of options
+    Returns:
+        java.util.List<T>
     """
     CLASS = "uk.gov.gchq.gaffer.operation.impl.output.ToList"
 
@@ -2344,6 +3122,13 @@ class ToList(Operation):
 class ToMap(Operation):
     """
     Converts elements to a Map of key-value pairs
+
+    Args:
+        element_generator: Generates a Map for each element
+        input: 
+        options: Additional map of options
+    Returns:
+        java.lang.Iterable<java.util.Map<java.lang.String,java.lang.Object>>
     """
     CLASS = "uk.gov.gchq.gaffer.operation.impl.output.ToMap"
 
@@ -2368,6 +3153,13 @@ class ToMap(Operation):
 class ToOpenCypherCsv(Operation):
     """
     Converts elements to CSV Strings
+
+    Args:
+        input: 
+        neo4j_format: 
+        options: Additional map of options
+    Returns:
+        java.lang.Iterable<java.lang.String>
     """
     CLASS = "uk.gov.gchq.gaffer.operation.impl.output.ToOpenCypherCsv"
 
@@ -2392,6 +3184,12 @@ class ToOpenCypherCsv(Operation):
 class ToSet(Operation):
     """
     Converts an Iterable to a Set
+
+    Args:
+        input: 
+        options: Additional map of options
+    Returns:
+        java.util.Set<T>
     """
     CLASS = "uk.gov.gchq.gaffer.operation.impl.output.ToSet"
 
@@ -2412,6 +3210,12 @@ class ToSet(Operation):
 class ToSingletonList(Operation):
     """
     Converts a single input of type T to a List
+
+    Args:
+        input: 
+        options: Additional map of options
+    Returns:
+        java.util.List<T>
     """
     CLASS = "uk.gov.gchq.gaffer.operation.impl.output.ToSingletonList"
 
@@ -2432,6 +3236,12 @@ class ToSingletonList(Operation):
 class ToStream(Operation):
     """
     Converts an Iterable to a Stream
+
+    Args:
+        input: 
+        options: Additional map of options
+    Returns:
+        java.util.stream.Stream<T>
     """
     CLASS = "uk.gov.gchq.gaffer.operation.impl.output.ToStream"
 
@@ -2452,6 +3262,14 @@ class ToStream(Operation):
 class ToVertices(Operation):
     """
     Converts element ids into vertices
+
+    Args:
+        input: 
+        use_matched_vertex: Choose whether to extract vertices based on how the seeds match the edges
+        edge_vertices: Choose whether to extract the edge vertices
+        options: Additional map of options
+    Returns:
+        java.lang.Iterable<?>
     """
     CLASS = "uk.gov.gchq.gaffer.operation.impl.output.ToVertices"
 
@@ -2480,6 +3298,11 @@ class ToVertices(Operation):
 class GetProxyProperties(Operation):
     """
     Gets ONLY the Proxy Properties value from the Proxy store
+
+    Args:
+        options: Additional map of options
+    Returns:
+        java.util.Map<java.lang.String,java.lang.Object>
     """
     CLASS = "uk.gov.gchq.gaffer.proxystore.operation.GetProxyProperties"
 
@@ -2495,8 +3318,33 @@ class GetProxyProperties(Operation):
 class GetProxyUrl(Operation):
     """
     Gets the Proxy URL value from the store properties
+
+    Args:
+        options: Additional map of options
+    Returns:
+        java.lang.String
     """
     CLASS = "uk.gov.gchq.gaffer.proxystore.operation.GetProxyUrl"
+
+    def __init__(
+            self,
+            options=None):
+        super().__init__(_class_name=self.CLASS, options=options)
+
+    def to_json(self):
+        return super().to_json()
+
+
+class DeleteAllData(Operation):
+    """
+    This operation is used to self delete all retained data
+
+    Args:
+        options: Additional map of options
+    Returns:
+        java.lang.Void
+    """
+    CLASS = "uk.gov.gchq.gaffer.store.operation.DeleteAllData"
 
     def __init__(
             self,
@@ -2510,6 +3358,12 @@ class GetProxyUrl(Operation):
 class GetSchema(Operation):
     """
     Gets the Schema of a Graph
+
+    Args:
+        compact: 
+        options: Additional map of options
+    Returns:
+        uk.gov.gchq.gaffer.store.schema.Schema
     """
     CLASS = "uk.gov.gchq.gaffer.store.operation.GetSchema"
 
@@ -2530,6 +3384,12 @@ class GetSchema(Operation):
 class GetTraits(Operation):
     """
     An Operation used for getting traits from the Store
+
+    Args:
+        current_traits: 
+        options: Additional map of options
+    Returns:
+        java.util.Set<uk.gov.gchq.gaffer.store.StoreTrait>
     """
     CLASS = "uk.gov.gchq.gaffer.store.operation.GetTraits"
 
@@ -2550,6 +3410,13 @@ class GetTraits(Operation):
 class HasTrait(Operation):
     """
     An Operation that will see if a Store has a given trait
+
+    Args:
+        current_traits: 
+        trait: The features of the Gaffer store - i.e does it support query aggregation?
+        options: Additional map of options
+    Returns:
+        java.lang.Boolean
     """
     CLASS = "uk.gov.gchq.gaffer.store.operation.HasTrait"
 
@@ -2574,6 +3441,14 @@ class HasTrait(Operation):
 class AddSchemaToLibrary(Operation):
     """
     Adds a Schema to the GraphLibrary
+
+    Args:
+        schema: 
+        id: 
+        parent_schema_ids: 
+        options: Additional map of options
+    Returns:
+        java.lang.Void
     """
     CLASS = "uk.gov.gchq.gaffer.store.operation.add.AddSchemaToLibrary"
 
@@ -2602,6 +3477,14 @@ class AddSchemaToLibrary(Operation):
 class AddStorePropertiesToLibrary(Operation):
     """
     Adds StoreProperties to the GraphLibrary
+
+    Args:
+        store_properties: 
+        id: 
+        parent_properties_id: 
+        options: Additional map of options
+    Returns:
+        java.lang.Void
     """
     CLASS = "uk.gov.gchq.gaffer.store.operation.add.AddStorePropertiesToLibrary"
 

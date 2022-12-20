@@ -343,14 +343,18 @@ class AreIn(AbstractPredicate):
 
     def __init__(
             self,
-            values=None):
+            values=None,
+            null_or_empty_values_accepted=None):
         super().__init__(_class_name=self.CLASS)
         self.values = values
+        self.null_or_empty_values_accepted = null_or_empty_values_accepted
 
     def to_json(self):
         function_json = super().to_json()
         if self.values is not None:
             function_json["values"] = self.values
+        if self.null_or_empty_values_accepted is not None:
+            function_json["nullOrEmptyValuesAccepted"] = self.null_or_empty_values_accepted
         return function_json
 
 
